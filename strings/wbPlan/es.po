@@ -266,7 +266,7 @@ msgstr ""
 #: components/WbPlanView/LineComponents.tsx:155
 #. Used in: Components > Wb Plan View > Line Components
 msgid "clearMapping"
-msgstr "Borrar Asignaciones"
+msgstr "Borrar Asignacione"
 
 #: components/WbPlanView/MapperComponents.tsx:346
 #. Used in: Components > Wb Plan View > Mapper Components

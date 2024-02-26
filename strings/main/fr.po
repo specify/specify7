@@ -58,7 +58,7 @@ msgstr "Nous sommes désolés, quelque chose s'est mal passé"
 #. Used in: Components > Errors > Toasts
 #, fuzzy
 msgid "clickToSeeDetails"
-msgstr "Nous sommes désolés, quelque chose s'est mal passé"
+msgstr ""
 
 #: components/Errors/ErrorDialog.tsx:187
 #. Used in: Components > Errors > Error Dialog

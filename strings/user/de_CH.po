@@ -168,7 +168,7 @@ msgstr "Das Passwort war falsch."
 #. Used in: Components > Forms > Other Collection View
 #, fuzzy
 msgid "noAccessToResource"
-msgstr "Dieser Agent ist bereits einem anderen Benutzer zugeordnet."
+msgstr ""
 
 #: components/Forms/OtherCollectionView.tsx:71
 #. Used in: Components > Forms > Other Collection View
@@ -455,7 +455,7 @@ msgstr "Ressource"
 #. Used in: Components > Security > Preview Components
 #, fuzzy
 msgid "allCollections"
-msgstr "Optionen zur Kontoeinrichtung"
+msgstr ""
 
 #: components/Security/PreviewComponents.tsx:177
 #. Used in: Components > Security > Preview Components
@@ -541,7 +541,7 @@ msgstr "Link zur Benutzereinladung"
 #. Used in: Components > Security > User Invite Link
 #, fuzzy
 msgid "userInviteLinkDescription"
-msgstr "Ausgeschlossene institutionelle Richtlinien:"
+msgstr ""
 
 #: components/Security/UserInviteLink.tsx:72
 #. Used in: Components > Security > User Invite Link
@@ -588,7 +588,7 @@ msgstr "Bitte legen Sie die folgenden Agenten fest, bevor Sie fortfahren:"
 #. Used in: Components > Security > User Components
 #, fuzzy
 msgid "externalIdentityProviders"
-msgstr "Wählen Sie eine der folgenden Sammlungen:"
+msgstr ""
 
 #: components/Security/registry.ts:116
 #. Used in: Components > Security > Registry

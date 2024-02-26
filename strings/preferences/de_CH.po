@@ -323,7 +323,7 @@ msgstr ""
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "queryComboBox"
-msgstr "Anzahl der leeren Zeilen am Ende"
+msgstr ""
 
 #: components/Preferences/UserDefinitions.tsx:1009
 #: components/Preferences/UserDefinitions.tsx:1057
@@ -415,7 +415,7 @@ msgstr ""
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "highlightMatch"
-msgstr "Akzentfarbe 5"
+msgstr ""
 
 #: components/Preferences/UserDefinitions.tsx:725
 #. Used in: Components > Preferences > User Definitions
@@ -635,8 +635,6 @@ msgstr "Bewegungsrichtung, wenn die Taste <key>Tab</key> gedrückt wird"
 #, fuzzy
 msgid "tabMoveDirectionDescription"
 msgstr ""
-"Eine Liste von Trennzeichen, die zusätzlich zu den oben definierten "
-"verwendet werden sollen. Geben Sie ein Trennzeichen pro Zeile ein"
 
 #: components/Preferences/UserDefinitions.tsx:1692
 #: components/Preferences/UserDefinitions.tsx:1709
@@ -767,7 +765,7 @@ msgstr "Übergänge animieren"
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "panInertia"
-msgstr "Anhang-Vorschaumodus"
+msgstr ""
 
 #: components/Preferences/UserDefinitions.tsx:1922
 #. Used in: Components > Preferences > User Definitions
@@ -916,7 +914,7 @@ msgstr "Mit <key>Tab</key> einrücken"
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "formHeaderFormat"
-msgstr "Detaillierte Ansicht"
+msgstr ""
 
 #: components/Preferences/UserDefinitions.tsx:774
 #. Used in: Components > Preferences > User Definitions
@@ -1142,7 +1140,7 @@ msgstr "URL"
 #. Used in: Components > Molecules > Sync Attachment Picker
 #, fuzzy
 msgid "pickAttachment"
-msgstr "Datensatz wird standardmäßig geöffnet"
+msgstr ""
 
 #: components/Molecules/SyncAttachmentPicker.tsx:113
 #. Used in: Components > Molecules > Sync Attachment Picker
@@ -1194,7 +1192,7 @@ msgstr "Schaltflächenfarbe speichern"
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "secondaryButtonColor"
-msgstr "Farbe der Erfolgsschaltfläche"
+msgstr ""
 
 #: components/Preferences/UserDefinitions.tsx:353
 #: components/Preferences/UserDefinitions.tsx:414

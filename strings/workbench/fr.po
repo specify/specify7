@@ -398,7 +398,7 @@ msgstr "Restauration de l’ensemble de données annulée."
 #: components/WorkBench/WbActions.tsx:317
 #. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Work Bench > Wb Actions
 msgid "uploadCanceled"
-msgstr "Validation de l'ensemble de données annulée."
+msgstr ""
 
 #: components/AttachmentsBulkImport/Upload.tsx:110
 #: components/WorkBench/WbActions.tsx:325
@@ -486,7 +486,7 @@ msgstr "Inclure les symboles DMS"
 #: components/WorkBench/Results.tsx:39
 #. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Work Bench > Results
 msgid "uploadResults"
-msgstr "Recherche en direct"
+msgstr ""
 
 #: components/WorkBench/Results.tsx:40
 #. Used in: Components > Work Bench > Results
@@ -521,7 +521,7 @@ msgstr "Priorité du curseur"
 #: components/WorkBench/AdvancedSearch.tsx:131
 #. Used in: Components > Work Bench > Advanced Search
 msgid "columnFirst"
-msgstr "Reculer"
+msgstr ""
 
 #: components/WorkBench/AdvancedSearch.tsx:132
 #. Used in: Components > Work Bench > Advanced Search
@@ -650,12 +650,12 @@ msgstr "Tuyau"
 #: components/WbImport/index.tsx:193
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 msgid "determineAutomatically"
-msgstr "Cas de correspondance"
+msgstr ""
 
 #: components/WbImport/index.tsx:261
 #. Used in: Components > Wb Import > Index
 msgid "chooseDataSetName"
-msgstr "Première rangée"
+msgstr ""
 
 #: components/WbImport/index.tsx:284
 #. Used in: Components > Wb Import > Index
@@ -752,7 +752,7 @@ msgstr "Le propriétaire de l'ensemble de données a changé"
 #: components/WorkBench/DataSetMeta.tsx:373
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSet"
-msgstr "Base de données"
+msgstr ""
 
 #: components/Toolbar/WbsDialog.tsx:122
 #. Used in: Components > Toolbar > Wbs Dialog
@@ -843,4 +843,4 @@ msgstr "Téléchargement WB de \"{dataSet:string}\""
 #: components/WorkBench/Disambiguation.tsx:91
 #. Used in: Components > Work Bench > Disambiguation
 msgid "ambiguousTaxaChild"
-msgstr "Ensemble de données supprimé avec succès."
+msgstr ""

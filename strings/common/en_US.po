@@ -955,8 +955,8 @@ msgstr "{header:string}:"
 #: components/QueryComboBox/spec.ts:72
 #: components/SchemaConfig/Field.tsx:43
 #: components/SchemaConfig/Table.tsx:50
-#: components/SchemaViewer/Fields.tsx:29
-#: components/SchemaViewer/Fields.tsx:36
+#: components/SchemaViewer/Fields.tsx:30
+#: components/SchemaViewer/Fields.tsx:37
 #: components/SchemaViewer/index.tsx:33
 #: components/Security/Collection.tsx:131
 #: components/Security/Institution.tsx:73

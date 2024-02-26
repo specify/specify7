@@ -24,13 +24,13 @@ msgstr "Accueillir"
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Home Page > About Specify ⬤ Components > Router > Overlay Routes
 #, fuzzy
 msgid "aboutSpecify"
-msgstr "À propos de Spécifier 7"
+msgstr "À propos de Specify 7"
 
 #: components/HomePage/AboutSpecify.tsx:56
 #. Used in: Components > Home Page > About Specify
 #, fuzzy
 msgid "downloadInformation"
-msgstr "À propos de Spécifier 7"
+msgstr ""
 
 #: components/HomePage/TaxonTiles.tsx:80
 #: components/Preferences/Renderers.tsx:248

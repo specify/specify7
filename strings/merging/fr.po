@@ -88,7 +88,7 @@ msgstr "Interdire la fusion"
 #. Used in: Components > Merging > Definitions
 #, fuzzy
 msgid "agentContainsGroupDescription"
-msgstr "Enregistrement fusionné"
+msgstr ""
 
 #: components/Merging/InvalidMergeRecords.tsx:30
 #. Used in: Components > Merging > Invalid Merge Records
@@ -100,7 +100,7 @@ msgstr "Les enregistrements suivants ne peuvent pas être fusionnés. Raison:"
 #. Used in: Components > Merging > Invalid Merge Records
 #, fuzzy
 msgid "someCannotBeMerged"
-msgstr "Quelque chose s'est mal passé pendant le processus de fusion."
+msgstr ""
 
 #: components/Merging/InvalidMergeRecords.tsx:88
 #. Used in: Components > Merging > Invalid Merge Records

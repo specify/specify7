@@ -75,9 +75,9 @@ msgstr "Supprimer bloqué"
 #. Used in: Components > Forms > Delete Button
 #, fuzzy
 msgid "deleteBlockedDescription"
-msgstr "Trouver des utilisations"
+msgstr ""
 
-#: components/SchemaViewer/schemaToTsv.tsx:25
+#: components/SchemaViewer/schemaToTsv.tsx:26
 #: components/WbPlanView/CustomSelectElement.tsx:295
 #. Used in: Components > Schema Viewer > Schema To Tsv ⬤ Components > Wb Plan View > Custom Select Element
 #, fuzzy
@@ -102,7 +102,7 @@ msgstr "{geographyTable:string} Obligatoire"
 #. Used in: Components > Form Plugins > Paleo Location
 #, fuzzy
 msgid "paleoRequiresGeographyDescription"
-msgstr "Sélectionnez la source des tables"
+msgstr ""
 
 #: components/FormPlugins/DateInput.tsx:85
 #. Used in: Components > Form Plugins > Date Input
@@ -114,7 +114,7 @@ msgstr "Date invalide"
 #. Used in: Components > Forms > Delete Button
 #, fuzzy
 msgid "deleteConfirmation"
-msgstr "La valeur doit être unique à la base de données"
+msgstr ""
 
 #: components/Forms/DeleteButton.tsx:44
 #. Used in: Components > Forms > Delete Button
@@ -162,7 +162,7 @@ msgstr "Ajouter à {pickListTable:string} ?"
 #. Used in: Components > Pick Lists > Index
 #, fuzzy
 msgid "addToPickListConfirmationDescription"
-msgstr "AAAA"
+msgstr ""
 
 #: components/PickLists/index.tsx:251
 #. Used in: Components > Pick Lists > Index
@@ -174,7 +174,7 @@ msgstr "Type invalide"
 #. Used in: Components > Pick Lists > Index
 #, fuzzy
 msgid "invalidNumericPicklistValue"
-msgstr "Résultats supplémentaires omis"
+msgstr ""
 
 #: components/Attachments/Plugin.tsx:88
 #: components/FormCells/FormTable.tsx:205
@@ -264,7 +264,7 @@ msgstr ""
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "saveBlocked"
-msgstr "Enregistrer des informations"
+msgstr ""
 
 #: components/Forms/Save.tsx:293
 #. Used in: Components > Forms > Save
@@ -290,10 +290,11 @@ msgstr "Commande non disponible"
 #. Used in: Components > Form Commands > Index
 #, fuzzy
 msgid "commandUnavailableDescription"
-msgstr "AAAA"
+msgstr ""
 
 #: components/FormCommands/index.tsx:126
-#. Used in: Components > Form Commands > Index
+#: components/FormPlugins/index.tsx:205
+#. Used in: Components > Form Commands > Index ⬤ Components > Form Plugins > Index
 #, fuzzy
 msgid "commandUnavailableSecondDescription"
 msgstr ""
@@ -326,14 +327,6 @@ msgstr "Plugin non disponible"
 #, fuzzy
 msgid "pluginNotAvailableDescription"
 msgstr "Ce plugin est actuellement indisponible pour Specify 7"
-
-#: components/FormPlugins/index.tsx:205
-#. Used in: Components > Form Plugins > Index
-#, fuzzy
-msgid "pluginNotAvailableSecondDescription"
-msgstr ""
-"Il a probablement été inclus sur ce formulaire à partir de Specify 6 et "
-"pourrait être pris en charge à l'avenir."
 
 #: components/FormPlugins/PaleoLocation.tsx:65
 #: components/FormPlugins/index.tsx:272
@@ -407,8 +400,6 @@ msgstr "Format requis : {format:string}."
 #, fuzzy
 msgid "inputTypeNumber"
 msgstr ""
-"La ressource ne peut pas être supprimée car elle est référencée par les "
-"ressources suivantes :"
 
 #: components/PickLists/definitions.ts:27
 #. Used in: Components > Pick Lists > Definitions
@@ -510,7 +501,7 @@ msgstr "(supprimé)"
 #. 🟥Example: Duplicate Record Set Item. Used in: Components > Form Sliders > Record Set
 #, fuzzy
 msgid "duplicateRecordSetItem"
-msgstr "Résultats supplémentaires omis"
+msgstr ""
 
 #: components/FormSliders/RecordSet.tsx:460
 #. Used in: Components > Form Sliders > Record Set
@@ -696,7 +687,7 @@ msgstr "Grille"
 #. Used in: Components > Form Meta > Index
 #, fuzzy
 msgid "subviewConfiguration"
-msgstr "Reporter"
+msgstr ""
 
 #: components/DataEntryTables/Edit.tsx:50
 #. Used in: Components > Data Entry Tables > Edit

@@ -40,7 +40,7 @@ msgstr "No se encontraron preparativos para los siguientes registros:"
 #. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "preparationsNotAvailableFor"
-msgstr "No se encontraron preparativos para los siguientes registros:"
+msgstr "No hay preparativos disponibles para los siguientes registros:"
 
 #: components/Interactions/InteractionDialog.tsx:361
 #. Used in: Components > Interactions > Interaction Dialog

@@ -180,7 +180,7 @@ msgstr "Reversión interrumpida"
 #: components/AttachmentsBulkImport/Import.tsx:410
 #. Used in: Components > Attachments Bulk Import > Import
 msgid "rollbackInterruptedDescription"
-msgstr "Formateado incorrectamente"
+msgstr ""
 
 #: components/AttachmentsBulkImport/Import.tsx:227
 #. Used in: Components > Attachments Bulk Import > Import
@@ -305,7 +305,7 @@ msgstr "Error al guardar el registro"
 #: components/AttachmentsBulkImport/utils.ts:489
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "interruptionStopped"
-msgstr "Seleccione la ruta"
+msgstr ""
 
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:230
 #. Used in: Components > Attachments Bulk Import > View Attachment Files

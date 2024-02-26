@@ -58,13 +58,7 @@ msgstr "Gemeldet von {provider:string}"
 msgid "collectionDate"
 msgstr "Abholtermin"
 
-#: components/SpecifyNetwork/Map.tsx:226
-#. Used in: Components > Specify Network > Map
-#, fuzzy
-msgid "mapDetails"
-msgstr "Einzelheiten"
-
-#: components/SpecifyNetwork/Map.tsx:220
+#: components/SpecifyNetwork/Map.tsx:221
 #. Used in: Components > Specify Network > Map
 #, fuzzy
 msgid "mapDescription"
@@ -105,7 +99,7 @@ msgstr "Stellen Sie eine Verbindung zu GBIF her"
 #. Used in: Components > Specify Network Collection > Setup
 #, fuzzy
 msgid "searchForInstitution"
-msgstr "Stellen Sie eine Verbindung zu GBIF her"
+msgstr ""
 
 #: components/SpecifyNetworkCollection/index.tsx:75
 #. Used in: Components > Specify Network Collection > Index

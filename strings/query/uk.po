@@ -498,7 +498,7 @@ msgstr "Перейти до відносного"
 #. Used in: Components > Query Builder > Relative Date
 #, fuzzy
 msgid "switchToAbsolute"
-msgstr "Перейти до відносного"
+msgstr ""
 
 #: components/QueryBuilder/Header.tsx:105
 #. Used in: Components > Query Builder > Header

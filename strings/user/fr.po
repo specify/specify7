@@ -180,7 +180,7 @@ msgstr ""
 #. Used in: Components > Forms > Other Collection View
 #, fuzzy
 msgid "selectCollection"
-msgstr "L'utilisateur actuel n'a pas d'agent attribué"
+msgstr ""
 
 #: components/Forms/OtherCollectionView.tsx:92
 #. 🟥Example: You can login to the Collection, to proceed:. Used in: Components > Forms > Other Collection View
@@ -285,8 +285,6 @@ msgstr "Enregistrez d'abord l'utilisateur"
 #, fuzzy
 msgid "mustBeManager"
 msgstr ""
-"Politiques personnalisées au niveau de l'établissement (s'appliquent à "
-"toutes les collections attribuées)"
 
 #: components/AppResources/tree.ts:225
 #: components/Security/CollectionRole.tsx:185
@@ -554,8 +552,6 @@ msgstr "Cet agent est déjà associé à un autre utilisateur."
 #, fuzzy
 msgid "setAgentsBeforeProceeding"
 msgstr ""
-"L'utilisateur connecté n'a eu accès à aucune collection de cette base de "
-"données. Vous devez vous connecter en tant qu'autre utilisateur."
 
 #: components/Security/UserComponents.tsx:210
 #. Used in: Components > Security > User Components

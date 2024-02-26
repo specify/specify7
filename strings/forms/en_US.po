@@ -67,7 +67,7 @@ msgstr ""
 "The resource cannot be deleted because it is referenced by the following "
 "resources:"
 
-#: components/SchemaViewer/schemaToTsv.tsx:25
+#: components/SchemaViewer/schemaToTsv.tsx:26
 #: components/WbPlanView/CustomSelectElement.tsx:295
 #. Used in: Components > Schema Viewer > Schema To Tsv ⬤ Components > Wb Plan View > Custom Select Element
 msgid "relationship"
@@ -258,7 +258,8 @@ msgid "commandUnavailableDescription"
 msgstr "This command is currently unavailable for Specify 7."
 
 #: components/FormCommands/index.tsx:126
-#. Used in: Components > Form Commands > Index
+#: components/FormPlugins/index.tsx:205
+#. Used in: Components > Form Commands > Index ⬤ Components > Form Plugins > Index
 msgid "commandUnavailableSecondDescription"
 msgstr ""
 "It was probably included on this form from Specify 6 and may be supported "
@@ -286,13 +287,6 @@ msgstr "Plugin Not Available"
 #. Used in: Components > Form Plugins > Index
 msgid "pluginNotAvailableDescription"
 msgstr "This plugin is currently unavailable for Specify 7"
-
-#: components/FormPlugins/index.tsx:205
-#. Used in: Components > Form Plugins > Index
-msgid "pluginNotAvailableSecondDescription"
-msgstr ""
-"It was probably included on this form from Specify 6 and may be supported "
-"in the future."
 
 #: components/FormPlugins/PaleoLocation.tsx:65
 #: components/FormPlugins/index.tsx:272

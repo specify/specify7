@@ -233,7 +233,7 @@ msgstr "({directCount:number|formatted})"
 #. 🟥Example: Direct Collection Object count. Used in: Components > Tree View > Helpers
 #, fuzzy
 msgid "directCollectionObjectCount"
-msgstr "Impossible de passer à un synonyme"
+msgstr ""
 
 #: components/TreeView/helpers.ts:202
 #. 🟥Example: Indirect Collection Object count. Used in: Components > Tree View > Helpers

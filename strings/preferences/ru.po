@@ -982,7 +982,7 @@ msgstr "Автозаполнение"
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "searchCaseSensitive"
-msgstr "С учетом регистра"
+msgstr ""
 
 #: components/Preferences/UserDefinitions.tsx:1323
 #. Used in: Components > Preferences > User Definitions
@@ -1171,7 +1171,7 @@ msgstr ""
 #. Used in: Components > Molecules > Sync Attachment Picker
 #, fuzzy
 msgid "url"
-msgstr "Выберите вложение"
+msgstr ""
 
 #: components/Molecules/SyncAttachmentPicker.tsx:85
 #. Used in: Components > Molecules > Sync Attachment Picker
@@ -1222,7 +1222,7 @@ msgstr ""
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "saveButtonColor"
-msgstr "Цвет кнопки информации"
+msgstr ""
 
 #: components/Preferences/UserDefinitions.tsx:345
 #: components/Preferences/UserDefinitions.tsx:406

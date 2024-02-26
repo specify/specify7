@@ -17,7 +17,12 @@ msgid "label"
 msgstr "Etiqueta"
 
 #: components/Reports/index.tsx:157
-#. Used in: Components > Reports > Index
+#: components/SchemaViewer/Fields.tsx:58
+#: components/SchemaViewer/Relationships.tsx:95
+#: components/SchemaViewer/Table.tsx:58
+#: components/SchemaViewer/schemaToTsv.tsx:16
+#: components/SchemaViewer/schemaToTsv.tsx:21
+#. Used in: Components > Reports > Index ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Table ⬤ Components > Schema Viewer > Schema To Tsv
 msgid "labels"
 msgstr "Etiquetas"
 

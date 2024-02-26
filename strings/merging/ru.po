@@ -89,7 +89,7 @@ msgstr "Отклонить от слияния"
 #. Used in: Components > Merging > Definitions
 #, fuzzy
 msgid "agentContainsGroupDescription"
-msgstr "Объединенная запись"
+msgstr ""
 
 #: components/Merging/InvalidMergeRecords.tsx:30
 #. Used in: Components > Merging > Invalid Merge Records
@@ -101,7 +101,7 @@ msgstr "Следующие записи невозможно объединит�
 #. Used in: Components > Merging > Invalid Merge Records
 #, fuzzy
 msgid "someCannotBeMerged"
-msgstr "Что-то пошло не так в процессе слияния."
+msgstr ""
 
 #: components/Merging/InvalidMergeRecords.tsx:88
 #. Used in: Components > Merging > Invalid Merge Records

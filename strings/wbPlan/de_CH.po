@@ -44,12 +44,12 @@ msgstr "Nicht gemappte Spalte"
 #: components/WbPlanView/CustomSelectElement.tsx:647
 #. 🟥Show in pick list in Data Mapper when column is not mapped. Used in: Components > Wb Plan View > Custom Select Element
 msgid "notSelected"
-msgstr "NICHT KARTIERT"
+msgstr "Nicht kartiert"
 
 #: components/Molecules/TableIcon.tsx:96
 #. Used in: Components > Molecules > Table Icon
 msgid "unmapped"
-msgstr "Nicht kartiert"
+msgstr ""
 
 #: components/Molecules/TableIcon.tsx:109
 #. Used in: Components > Molecules > Table Icon

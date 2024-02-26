@@ -140,7 +140,7 @@ msgstr "Formateurs de champ"
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "dataObjectFormatters"
-msgstr "Couches de brochures"
+msgstr ""
 
 #: components/Formatters/Aggregator.tsx:70
 #: components/Formatters/Element.tsx:123

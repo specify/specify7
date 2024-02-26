@@ -31,7 +31,7 @@ msgstr "Про Specify 7"
 #. Used in: Components > Home Page > About Specify
 #, fuzzy
 msgid "downloadInformation"
-msgstr "Про Specify 7"
+msgstr ""
 
 #: components/HomePage/TaxonTiles.tsx:80
 #: components/Preferences/Renderers.tsx:248

@@ -146,7 +146,7 @@ msgstr ""
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
 #, fuzzy
 msgid "generateMasterKey"
-msgstr "В учреждении должен быть хотя бы один администратор учреждения."
+msgstr ""
 
 #: components/Toolbar/MasterKey.tsx:71
 #. Used in: Components > Toolbar > Master Key
@@ -364,7 +364,7 @@ msgstr "Выберите доступ к коллекции пользовате
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security
 #, fuzzy
 msgid "securityPanel"
-msgstr "Сначала пользователя необходимо сохранить как менеджера."
+msgstr ""
 
 #: components/Security/Institution.tsx:83
 #. Used in: Components > Security > Institution
@@ -389,7 +389,7 @@ msgstr "{collectionTable:string} Роли пользователей"
 #. Used in: Components > Security > User Components
 #, fuzzy
 msgid "assignedUserRoles"
-msgstr "Переключиться на вертикальную компоновку"
+msgstr ""
 
 #: components/Security/Role.tsx:153
 #. Used in: Components > Security > Role
@@ -602,7 +602,7 @@ msgstr "Прежде чем продолжить, установите след�
 #. Used in: Components > Security > User Components
 #, fuzzy
 msgid "externalIdentityProviders"
-msgstr "Выберите одну из следующих коллекций:"
+msgstr ""
 
 #: components/Security/registry.ts:116
 #. Used in: Components > Security > Registry
@@ -719,4 +719,4 @@ msgstr "Добавить роль"
 #. Used in: Components > Security > Collection
 #, fuzzy
 msgid "addUser"
-msgstr "Политики разрешений ролей"
+msgstr ""

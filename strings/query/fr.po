@@ -53,7 +53,7 @@ msgstr "Générateur de requêtes"
 #. Used in: Components > Query Builder > Export ⬤ Components > Query Builder > Index ⬤ Components > Router > Overlay Routes ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Toolbar > Query Tables Wrapper
 #, fuzzy
 msgid "newQueryName"
-msgstr "Une liste de valeurs séparées par des virgules"
+msgstr ""
 
 #: components/QueryComboBox/spec.ts:73
 #. 🟥Used in a Query Combo Box's hover-over message to show which fields are being searched on. Used in: Components > Query Combo Box > Spec
@@ -161,7 +161,7 @@ msgstr "Exporter le fichier en cours de création"
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "queryExportStartedDescription"
-msgstr "à l'avenir"
+msgstr ""
 
 #: components/PickLists/index.tsx:187
 #: components/SchemaConfig/Components.tsx:90
@@ -226,7 +226,7 @@ msgstr "Créer {recordSetTable:string}"
 #. Used in: Components > Query Builder > Components
 #, fuzzy
 msgid "saveAs"
-msgstr "Impossible d'exporter vers KML"
+msgstr ""
 
 #: components/WbPlanView/navigator.ts:349
 #. Used in: Components > Wb Plan View > Navigator
@@ -287,7 +287,7 @@ msgstr "Nier"
 #. Used in: Components > Query Builder > Query Line Tools
 #, fuzzy
 msgid "showButtonDescription"
-msgstr "(formaté)"
+msgstr ""
 
 #: components/WbPlanView/navigator.ts:401
 #. Used in: Components > Wb Plan View > Navigator
@@ -589,4 +589,4 @@ msgstr "Passer à l'absolu"
 #. Used in: Components > Query Builder > Header
 #, fuzzy
 msgid "scrollToEditor"
-msgstr "Faux ou vide"
+msgstr ""

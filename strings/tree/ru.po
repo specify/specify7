@@ -256,4 +256,4 @@ msgstr "Вертикальный"
 #. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "synchronize"
-msgstr "Это приведет к безвозвратному удалению следующего ресурса"
+msgstr ""

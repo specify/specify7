@@ -59,7 +59,7 @@ msgstr "Сожалеем, что-то пошло не так"
 #. Used in: Components > Errors > Toasts
 #, fuzzy
 msgid "clickToSeeDetails"
-msgstr "Сожалеем, что-то пошло не так"
+msgstr ""
 
 #: components/Errors/ErrorDialog.tsx:187
 #. Used in: Components > Errors > Error Dialog

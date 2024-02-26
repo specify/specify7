@@ -88,7 +88,7 @@ msgstr "Vom Zusammenführen ablehnen"
 #. Used in: Components > Merging > Definitions
 #, fuzzy
 msgid "agentContainsGroupDescription"
-msgstr "Zusammengeführter Datensatz"
+msgstr ""
 
 #: components/Merging/InvalidMergeRecords.tsx:30
 #. Used in: Components > Merging > Invalid Merge Records
@@ -100,7 +100,7 @@ msgstr "Die folgenden Datensätze können nicht zusammengeführt werden. Grund:"
 #. Used in: Components > Merging > Invalid Merge Records
 #, fuzzy
 msgid "someCannotBeMerged"
-msgstr "Beim Zusammenführen ist ein Fehler aufgetreten."
+msgstr ""
 
 #: components/Merging/InvalidMergeRecords.tsx:88
 #. Used in: Components > Merging > Invalid Merge Records

@@ -357,7 +357,7 @@ msgstr "Ouvrir"
 #: components/WorkBench/DataSetMeta.tsx:180
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Formatters > Element ⬤ Components > Forms > Delete Button ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Notifications > Notifications ⬤ Components > Pick Lists > Definitions ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Security > Preview Tables ⬤ Components > Security > Role ⬤ Components > Tree View > Actions ⬤ Components > Work Bench > Data Set Meta
 msgid "delete"
-msgstr "Fin"
+msgstr "Supprimer"
 
 #: components/Attachments/Dialog.tsx:113
 #: components/Interactions/InteractionDialog.tsx:356
@@ -381,7 +381,7 @@ msgstr "Outil"
 #: components/WorkBench/Template.tsx:201
 #. Used in: Components > Work Bench > Template
 msgid "tools"
-msgstr "Langue"
+msgstr "Outils"
 
 #: components/Core/ContextLoader.tsx:51
 #: components/Core/Contexts.tsx:125
@@ -586,7 +586,7 @@ msgstr "Mise à jour"
 #: components/WbPlanView/navigator.ts:546
 #. Used in: Components > Form Plugins > Date Precision Picker ⬤ Components > Wb Plan View > Navigator
 msgid "fullDate"
-msgstr "Développer tout"
+msgstr ""
 
 #: components/Atoms/DataEntry.tsx:149
 #: components/Atoms/__tests__/Button.test.tsx:13
@@ -614,7 +614,7 @@ msgstr "Voir"
 #: components/WorkBench/WbView.tsx:478
 #. 🟥Used in a hover-over message for links that open in new tab. Used in: Components > Atoms > Link ⬤ Components > Leaflet > Index ⬤ Components > Work Bench > Wb View
 msgid "opensInNewTab"
-msgstr "Copié!"
+msgstr ""
 
 #: components/Atoms/DataEntry.tsx:175
 #: components/Atoms/DataEntry.tsx:178
@@ -851,7 +851,7 @@ msgstr "Développer"
 #: components/AppResources/Aside.tsx:186
 #. Used in: Components > App Resources > Aside
 msgid "expandAll"
-msgstr "Développer tout"
+msgstr "Tout Agrandir"
 
 #: components/FormCells/FormTable.tsx:283
 #: components/FormCells/FormTable.tsx:285
@@ -955,8 +955,8 @@ msgstr "{header:string}:"
 #: components/QueryComboBox/spec.ts:72
 #: components/SchemaConfig/Field.tsx:43
 #: components/SchemaConfig/Table.tsx:50
-#: components/SchemaViewer/Fields.tsx:29
-#: components/SchemaViewer/Fields.tsx:36
+#: components/SchemaViewer/Fields.tsx:30
+#: components/SchemaViewer/Fields.tsx:37
 #: components/SchemaViewer/index.tsx:33
 #: components/Security/Collection.tsx:131
 #: components/Security/Institution.tsx:73
@@ -986,7 +986,7 @@ msgstr "{label:string} : <wrap />"
 #: components/Interactions/PrepDialog.tsx:136
 #. Used in: Components > Interactions > Prep Dialog
 msgid "bulkSelect"
-msgstr "Outil"
+msgstr ""
 
 #: components/Interactions/LoanReturn.tsx:258
 #. Used in: Components > Interactions > Loan Return
@@ -1012,7 +1012,7 @@ msgstr ""
 #: components/SpecifyNetworkCollection/index.tsx:71
 #. 🟥Verb. Used in: Components > Molecules > Sync Attachment Picker ⬤ Components > Specify Network Collection > Index
 msgid "change"
-msgstr "Tous"
+msgstr ""
 
 #: components/Merging/index.tsx:384
 #. Used in: Components > Merging > Index

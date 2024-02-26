@@ -106,7 +106,7 @@ msgstr "Удалено"
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "noFile"
-msgstr "Откат приведет к удалению вложений из базы данных Specify и сервера активов."
+msgstr ""
 
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:169
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
@@ -179,7 +179,7 @@ msgstr "Новый набор данных вложения {дата: стро�
 #. Used in: Components > Attachments Bulk Import > Datasets
 #, fuzzy
 msgid "newAttachmentDatasetBase"
-msgstr "Обнаружены повторяющиеся файлы"
+msgstr ""
 
 #: components/AttachmentsBulkImport/Import.tsx:393
 #. Used in: Components > Attachments Bulk Import > Import
@@ -356,7 +356,7 @@ msgstr "Ошибка сохранения записи"
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "interruptionStopped"
-msgstr "Ищите больше вложений"
+msgstr ""
 
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:230
 #. Used in: Components > Attachments Bulk Import > View Attachment Files

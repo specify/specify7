@@ -450,7 +450,7 @@ msgstr "Datensatz-Rollback abgebrochen."
 #. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Work Bench > Wb Actions
 #, fuzzy
 msgid "uploadCanceled"
-msgstr "Datensatzvalidierung abgebrochen."
+msgstr ""
 
 #: components/AttachmentsBulkImport/Upload.tsx:110
 #: components/WorkBench/WbActions.tsx:325
@@ -547,7 +547,7 @@ msgstr "Fügen Sie DMS-Symbole hinzu"
 #. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Work Bench > Results
 #, fuzzy
 msgid "uploadResults"
-msgstr "Live-Suche"
+msgstr ""
 
 #: components/WorkBench/Results.tsx:40
 #. Used in: Components > Work Bench > Results
@@ -589,7 +589,7 @@ msgstr "Cursorpriorität"
 #. Used in: Components > Work Bench > Advanced Search
 #, fuzzy
 msgid "columnFirst"
-msgstr "Zurück rollen"
+msgstr ""
 
 #: components/WorkBench/AdvancedSearch.tsx:132
 #. Used in: Components > Work Bench > Advanced Search
@@ -673,7 +673,7 @@ msgstr "Vorschau des Datensatzes"
 #. Used in: Components > Wb Import > Index
 #, fuzzy
 msgid "errorImporting"
-msgstr "Keine eindeutige Eindeutigkeit möglich"
+msgstr ""
 
 #: components/WbImport/helpers.ts:112
 #: components/WbImport/helpers.ts:137
@@ -874,7 +874,7 @@ msgstr ""
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSetUploadedLabel"
-msgstr "Validierung ohne Fehler abgeschlossen"
+msgstr ""
 
 #: components/WorkBench/Status.tsx:66
 #. Used in: Components > Work Bench > Status
@@ -945,7 +945,7 @@ msgstr ""
 #. Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Work Bench > Status
 #, fuzzy
 msgid "stop"
-msgstr "Automatisch ermitteln"
+msgstr ""
 
 #: components/WorkBench/Status.tsx:132
 #. Used in: Components > Work Bench > Status
@@ -969,4 +969,4 @@ msgstr "WB-Upload von „{dataSet:string}“"
 #. Used in: Components > Work Bench > Disambiguation
 #, fuzzy
 msgid "ambiguousTaxaChild"
-msgstr "Datensatz erfolgreich gelöscht."
+msgstr ""

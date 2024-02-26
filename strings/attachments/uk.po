@@ -151,7 +151,7 @@ msgstr "Помилка збігу"
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "errorReadingFile"
-msgstr "Щоб почати, виберіть файли або перетягніть їх сюди."
+msgstr ""
 
 #: components/AttachmentsBulkImport/utils.ts:483
 #. Used in: Components > Attachments Bulk Import > Utils
@@ -328,7 +328,7 @@ msgstr "Знайдено дублікати файлів"
 #. Used in: Components > Attachments Bulk Import > Import
 #, fuzzy
 msgid "duplicateFilesDescription"
-msgstr "Скасовано"
+msgstr ""
 
 #: components/AttachmentsBulkImport/utils.ts:490
 #. Used in: Components > Attachments Bulk Import > Utils
@@ -346,7 +346,7 @@ msgstr "Помилка збереження запису"
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "interruptionStopped"
-msgstr "Шукайте більше вкладень"
+msgstr ""
 
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:230
 #. Used in: Components > Attachments Bulk Import > View Attachment Files

@@ -73,9 +73,9 @@ msgstr "Eliminar bloqueado"
 #. Used in: Components > Forms > Delete Button
 #, fuzzy
 msgid "deleteBlockedDescription"
-msgstr "encontrar usos"
+msgstr ""
 
-#: components/SchemaViewer/schemaToTsv.tsx:25
+#: components/SchemaViewer/schemaToTsv.tsx:26
 #: components/WbPlanView/CustomSelectElement.tsx:295
 #. Used in: Components > Schema Viewer > Schema To Tsv ⬤ Components > Wb Plan View > Custom Select Element
 #, fuzzy
@@ -100,7 +100,7 @@ msgstr "{geographyTable:string} Requerido"
 #. Used in: Components > Form Plugins > Paleo Location
 #, fuzzy
 msgid "paleoRequiresGeographyDescription"
-msgstr "Seleccionar fuente de tablas"
+msgstr ""
 
 #: components/FormPlugins/DateInput.tsx:85
 #. Used in: Components > Form Plugins > Date Input
@@ -112,7 +112,7 @@ msgstr "Fecha invalida"
 #. Used in: Components > Forms > Delete Button
 #, fuzzy
 msgid "deleteConfirmation"
-msgstr "El valor debe ser exclusivo de la base de datos."
+msgstr ""
 
 #: components/Forms/DeleteButton.tsx:44
 #. Used in: Components > Forms > Delete Button
@@ -160,7 +160,7 @@ msgstr "¿Agregar a {pickListTable:string}?"
 #. Used in: Components > Pick Lists > Index
 #, fuzzy
 msgid "addToPickListConfirmationDescription"
-msgstr "AAAA"
+msgstr ""
 
 #: components/PickLists/index.tsx:251
 #. Used in: Components > Pick Lists > Index
@@ -172,7 +172,7 @@ msgstr "Tipo no válido"
 #. Used in: Components > Pick Lists > Index
 #, fuzzy
 msgid "invalidNumericPicklistValue"
-msgstr "Resultados adicionales omitidos"
+msgstr ""
 
 #: components/Attachments/Plugin.tsx:88
 #: components/FormCells/FormTable.tsx:205
@@ -262,7 +262,7 @@ msgstr ""
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "saveBlocked"
-msgstr "Información de registro"
+msgstr ""
 
 #: components/Forms/Save.tsx:293
 #. Used in: Components > Forms > Save
@@ -291,7 +291,8 @@ msgid "commandUnavailableDescription"
 msgstr "Este comando no está disponible actualmente para Specify 7."
 
 #: components/FormCommands/index.tsx:126
-#. Used in: Components > Form Commands > Index
+#: components/FormPlugins/index.tsx:205
+#. Used in: Components > Form Commands > Index ⬤ Components > Form Plugins > Index
 #, fuzzy
 msgid "commandUnavailableSecondDescription"
 msgstr ""
@@ -324,14 +325,6 @@ msgstr "Complemento no disponible"
 #, fuzzy
 msgid "pluginNotAvailableDescription"
 msgstr "Este complemento no está disponible actualmente para Specify 7"
-
-#: components/FormPlugins/index.tsx:205
-#. Used in: Components > Form Plugins > Index
-#, fuzzy
-msgid "pluginNotAvailableSecondDescription"
-msgstr ""
-"Probablemente se incluyó en este formulario de la Especificación 6 y es "
-"posible que se admita en el futuro."
 
 #: components/FormPlugins/PaleoLocation.tsx:65
 #: components/FormPlugins/index.tsx:272

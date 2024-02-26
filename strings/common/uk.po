@@ -358,7 +358,7 @@ msgstr "ВІДЧИНЕНО"
 #: components/WorkBench/DataSetMeta.tsx:180
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Formatters > Element ⬤ Components > Forms > Delete Button ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Notifications > Notifications ⬤ Components > Pick Lists > Definitions ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Security > Preview Tables ⬤ Components > Security > Role ⬤ Components > Tree View > Actions ⬤ Components > Work Bench > Data Set Meta
 msgid "delete"
-msgstr "Кінець"
+msgstr "Видалити"
 
 #: components/Attachments/Dialog.tsx:113
 #: components/Interactions/InteractionDialog.tsx:356
@@ -587,7 +587,7 @@ msgstr "оновлення"
 #: components/WbPlanView/navigator.ts:546
 #. Used in: Components > Form Plugins > Date Precision Picker ⬤ Components > Wb Plan View > Navigator
 msgid "fullDate"
-msgstr "Розгорнути все"
+msgstr ""
 
 #: components/Atoms/DataEntry.tsx:149
 #: components/Atoms/__tests__/Button.test.tsx:13
@@ -956,8 +956,8 @@ msgstr "{header:string}:"
 #: components/QueryComboBox/spec.ts:72
 #: components/SchemaConfig/Field.tsx:43
 #: components/SchemaConfig/Table.tsx:50
-#: components/SchemaViewer/Fields.tsx:29
-#: components/SchemaViewer/Fields.tsx:36
+#: components/SchemaViewer/Fields.tsx:30
+#: components/SchemaViewer/Fields.tsx:37
 #: components/SchemaViewer/index.tsx:33
 #: components/Security/Collection.tsx:131
 #: components/Security/Institution.tsx:73
@@ -987,7 +987,7 @@ msgstr "{label:string}: <wrap />"
 #: components/Interactions/PrepDialog.tsx:136
 #. Used in: Components > Interactions > Prep Dialog
 msgid "bulkSelect"
-msgstr "Інструмент"
+msgstr ""
 
 #: components/Interactions/LoanReturn.tsx:258
 #. Used in: Components > Interactions > Loan Return
@@ -1013,7 +1013,7 @@ msgstr ""
 #: components/SpecifyNetworkCollection/index.tsx:71
 #. 🟥Verb. Used in: Components > Molecules > Sync Attachment Picker ⬤ Components > Specify Network Collection > Index
 msgid "change"
-msgstr "все"
+msgstr ""
 
 #: components/Merging/index.tsx:384
 #. Used in: Components > Merging > Index

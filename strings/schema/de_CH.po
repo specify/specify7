@@ -13,7 +13,7 @@ msgstr ""
 "X-Generator: Weblate 5.4-dev\n"
 
 #: components/SchemaConfig/Table.tsx:51
-#: components/SchemaViewer/schemaToTsv.tsx:14
+#: components/SchemaViewer/schemaToTsv.tsx:15
 #: components/Security/PreviewTables.tsx:69
 #: components/Security/registry.ts:78
 #: components/WebLinks/Element.tsx:40
@@ -74,7 +74,7 @@ msgstr "Feld"
 #: components/SchemaConfig/Fields.tsx:49
 #: components/SchemaConfig/Fields.tsx:60
 #: components/SchemaConfig/UniquenessRuleRow.tsx:253
-#: components/SchemaViewer/Fields.tsx:42
+#: components/SchemaViewer/Fields.tsx:43
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Viewer > Fields
 msgid "fields"
 msgstr "Felder"
@@ -83,7 +83,7 @@ msgstr "Felder"
 #: components/Forms/generateFormDefinition.ts:168
 #: components/SchemaConfig/Fields.tsx:68
 #: components/SchemaConfig/UniquenessRuleRow.tsx:254
-#: components/SchemaViewer/Relationships.tsx:44
+#: components/SchemaViewer/Relationships.tsx:45
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Viewer > Relationships
 msgid "relationships"
 msgstr "Beziehungen"
@@ -114,9 +114,9 @@ msgstr "Beschriftung"
 #: components/ExportFeed/Editor.tsx:170
 #: components/SchemaConfig/Field.tsx:59
 #: components/SchemaConfig/Table.tsx:66
-#: components/SchemaViewer/Fields.tsx:58
-#: components/SchemaViewer/Relationships.tsx:95
-#: components/SchemaViewer/schemaToTsv.tsx:21
+#: components/SchemaViewer/Fields.tsx:59
+#: components/SchemaViewer/Relationships.tsx:96
+#: components/SchemaViewer/schemaToTsv.tsx:22
 #: components/Security/Role.tsx:141
 #: components/WebLinks/Element.tsx:30
 #. Used in: Components > Export Feed > Editor ⬤ Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv ⬤ Components > Security > Role ⬤ Components > Web Links > Element
@@ -166,16 +166,16 @@ msgid "manyToMany"
 msgstr "Viele zu viele"
 
 #: components/SchemaConfig/Field.tsx:69
-#: components/SchemaViewer/Fields.tsx:63
-#: components/SchemaViewer/schemaToTsv.tsx:27
+#: components/SchemaViewer/Fields.tsx:64
+#: components/SchemaViewer/schemaToTsv.tsx:28
 #. Used in: Components > Schema Config > Field ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Schema To Tsv
 msgid "fieldLength"
 msgstr "Länge"
 
 #: components/FormMeta/index.tsx:71
-#: components/SchemaViewer/Fields.tsx:60
-#: components/SchemaViewer/Relationships.tsx:97
-#: components/SchemaViewer/schemaToTsv.tsx:23
+#: components/SchemaViewer/Fields.tsx:61
+#: components/SchemaViewer/Relationships.tsx:98
+#: components/SchemaViewer/schemaToTsv.tsx:24
 #. Used in: Components > Form Meta > Index ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 msgid "readOnly"
 msgstr "Nur-Lesen"
@@ -208,42 +208,33 @@ msgstr "Benutzerdefiniert"
 msgid "addLanguage"
 msgstr "Sprache hinzuzufügen"
 
-#: components/SchemaViewer/Fields.tsx:57
-#: components/SchemaViewer/Relationships.tsx:94
-#: components/SchemaViewer/Table.tsx:57
-#: components/SchemaViewer/schemaToTsv.tsx:15
-#: components/SchemaViewer/schemaToTsv.tsx:20
-#. Used in: Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Table ⬤ Components > Schema Viewer > Schema To Tsv
-msgid "fieldLabel"
-msgstr "Etikett"
-
-#: components/SchemaViewer/Fields.tsx:64
-#: components/SchemaViewer/Relationships.tsx:100
-#: components/SchemaViewer/schemaToTsv.tsx:28
+#: components/SchemaViewer/Fields.tsx:65
+#: components/SchemaViewer/Relationships.tsx:101
+#: components/SchemaViewer/schemaToTsv.tsx:29
 #. Used in: Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 msgid "databaseColumn"
 msgstr "Datenbank-Spalte"
 
-#: components/SchemaViewer/Relationships.tsx:101
-#: components/SchemaViewer/schemaToTsv.tsx:29
+#: components/SchemaViewer/Relationships.tsx:102
+#: components/SchemaViewer/schemaToTsv.tsx:30
 #. Used in: Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 msgid "relatedTable"
 msgstr "Zugehöriges Modell"
 
-#: components/SchemaViewer/Relationships.tsx:102
-#: components/SchemaViewer/schemaToTsv.tsx:30
+#: components/SchemaViewer/Relationships.tsx:103
+#: components/SchemaViewer/schemaToTsv.tsx:31
 #. Used in: Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 msgid "otherSideName"
 msgstr "Name der anderen Seite"
 
-#: components/SchemaViewer/Relationships.tsx:60
-#: components/SchemaViewer/Relationships.tsx:103
-#: components/SchemaViewer/schemaToTsv.tsx:31
+#: components/SchemaViewer/Relationships.tsx:61
+#: components/SchemaViewer/Relationships.tsx:104
+#: components/SchemaViewer/schemaToTsv.tsx:32
 #. Used in: Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 msgid "dependent"
 msgstr "Abhängig"
 
-#: components/SchemaViewer/Relationships.tsx:76
+#: components/SchemaViewer/Relationships.tsx:77
 #. Used in: Components > Schema Viewer > Relationships
 msgid "independent"
 msgstr "Unabhängig"
@@ -263,18 +254,18 @@ msgstr "Als XML herunterladen"
 msgid "downloadAsTsv"
 msgstr "Als TSV herunterladen"
 
-#: components/SchemaViewer/Table.tsx:60
-#: components/SchemaViewer/schemaToTsv.tsx:18
+#: components/SchemaViewer/Table.tsx:61
+#: components/SchemaViewer/schemaToTsv.tsx:19
 #. Used in: Components > Schema Viewer > Table ⬤ Components > Schema Viewer > Schema To Tsv
 msgid "tableId"
 msgstr "Tabellen-ID"
 
-#: components/SchemaViewer/Table.tsx:61
+#: components/SchemaViewer/Table.tsx:62
 #. Used in: Components > Schema Viewer > Table
 msgid "fieldCount"
 msgstr "Anzahl Felder"
 
-#: components/SchemaViewer/Table.tsx:62
+#: components/SchemaViewer/Table.tsx:63
 #. Used in: Components > Schema Viewer > Table
 msgid "relationshipCount"
 msgstr "Anzahl Beziehungen"
@@ -296,12 +287,12 @@ msgstr "Ausgewählte Tabellen"
 msgid "possibleTables"
 msgstr "Mögliche Tabellen"
 
-#: components/SchemaViewer/Table.tsx:44
+#: components/SchemaViewer/Table.tsx:45
 #. Used in: Components > Schema Viewer > Table
 msgid "goToTop"
 msgstr "Nach oben"
 
-#: components/SchemaViewer/Fields.tsx:30
+#: components/SchemaViewer/Fields.tsx:31
 #. Used in: Components > Schema Viewer > Fields
 msgid "idField"
 msgstr "Feld-ID"
@@ -340,7 +331,7 @@ msgstr "Eindeutigkeitsregel konfigurieren"
 
 #: components/SchemaConfig/TableUniquenessRules.tsx:179
 #: components/SchemaConfig/UniquenessRuleRow.tsx:300
-#: components/SchemaViewer/Fields.tsx:37
+#: components/SchemaViewer/Fields.tsx:38
 #. Used in: Components > Schema Config > Table Uniqueness Rules ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Viewer > Fields
 msgid "scope"
 msgstr "Anwendungsbereich"

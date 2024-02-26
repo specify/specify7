@@ -41,7 +41,7 @@ msgstr "Не було знайдено жодної підготовки для 
 #. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "preparationsNotAvailableFor"
-msgstr "Продовжити"
+msgstr ""
 
 #: components/Interactions/InteractionDialog.tsx:361
 #. Used in: Components > Interactions > Interaction Dialog

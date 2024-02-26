@@ -177,7 +177,7 @@ msgstr "Nouvel ensemble de données de pièces jointes {date : chaîne}"
 #. Used in: Components > Attachments Bulk Import > Datasets
 #, fuzzy
 msgid "newAttachmentDatasetBase"
-msgstr "Fichiers en double trouvés"
+msgstr ""
 
 #: components/AttachmentsBulkImport/Import.tsx:393
 #. Used in: Components > Attachments Bulk Import > Import
@@ -326,7 +326,7 @@ msgstr "Importer des pièces jointes"
 #. Used in: Components > Attachments Bulk Import > Action State
 #, fuzzy
 msgid "onFile"
-msgstr "Pas de fichier"
+msgstr ""
 
 #: components/AttachmentsBulkImport/Import.tsx:416
 #. Used in: Components > Attachments Bulk Import > Import
@@ -358,7 +358,7 @@ msgstr "Erreur lors de l'enregistrement de l'enregistrement"
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "interruptionStopped"
-msgstr "Rechercher plus de pièces jointes"
+msgstr ""
 
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:230
 #. Used in: Components > Attachments Bulk Import > View Attachment Files

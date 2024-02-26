@@ -277,4 +277,4 @@ msgstr "Aucun de ces objets n'a de préparation. Voulez-vous continuer?"
 #. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "continue"
-msgstr "Continuer sans préparation"
+msgstr "Continuer"

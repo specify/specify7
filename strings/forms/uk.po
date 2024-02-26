@@ -74,9 +74,9 @@ msgstr "Видалити заблокований"
 #. Used in: Components > Forms > Delete Button
 #, fuzzy
 msgid "deleteBlockedDescription"
-msgstr "Знайти використання"
+msgstr ""
 
-#: components/SchemaViewer/schemaToTsv.tsx:25
+#: components/SchemaViewer/schemaToTsv.tsx:26
 #: components/WbPlanView/CustomSelectElement.tsx:295
 #. Used in: Components > Schema Viewer > Schema To Tsv ⬤ Components > Wb Plan View > Custom Select Element
 #, fuzzy
@@ -101,7 +101,7 @@ msgstr "{geographyTable:string} Потрібний"
 #. Used in: Components > Form Plugins > Paleo Location
 #, fuzzy
 msgid "paleoRequiresGeographyDescription"
-msgstr "Виберіть джерело таблиць"
+msgstr ""
 
 #: components/FormPlugins/DateInput.tsx:85
 #. Used in: Components > Form Plugins > Date Input
@@ -113,7 +113,7 @@ msgstr "Недійсна дата"
 #. Used in: Components > Forms > Delete Button
 #, fuzzy
 msgid "deleteConfirmation"
-msgstr "Значення має бути унікальним для бази даних"
+msgstr ""
 
 #: components/Forms/DeleteButton.tsx:44
 #. Used in: Components > Forms > Delete Button
@@ -161,7 +161,7 @@ msgstr "Додати до {pickListTable:string}?"
 #. Used in: Components > Pick Lists > Index
 #, fuzzy
 msgid "addToPickListConfirmationDescription"
-msgstr "РРРР"
+msgstr ""
 
 #: components/PickLists/index.tsx:251
 #. Used in: Components > Pick Lists > Index
@@ -173,7 +173,7 @@ msgstr "Недійсний тип"
 #. Used in: Components > Pick Lists > Index
 #, fuzzy
 msgid "invalidNumericPicklistValue"
-msgstr "Додаткові результати пропущено"
+msgstr ""
 
 #: components/Attachments/Plugin.tsx:88
 #: components/FormCells/FormTable.tsx:205
@@ -263,7 +263,7 @@ msgstr ""
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "saveBlocked"
-msgstr "Запис інформації"
+msgstr ""
 
 #: components/Forms/Save.tsx:293
 #. Used in: Components > Forms > Save
@@ -292,7 +292,8 @@ msgid "commandUnavailableDescription"
 msgstr "Ця команда наразі недоступна для Specify 7."
 
 #: components/FormCommands/index.tsx:126
-#. Used in: Components > Form Commands > Index
+#: components/FormPlugins/index.tsx:205
+#. Used in: Components > Form Commands > Index ⬤ Components > Form Plugins > Index
 #, fuzzy
 msgid "commandUnavailableSecondDescription"
 msgstr ""
@@ -325,14 +326,6 @@ msgstr "Плагін недоступний"
 #, fuzzy
 msgid "pluginNotAvailableDescription"
 msgstr "Цей плагін наразі недоступний для Specify 7"
-
-#: components/FormPlugins/index.tsx:205
-#. Used in: Components > Form Plugins > Index
-#, fuzzy
-msgid "pluginNotAvailableSecondDescription"
-msgstr ""
-"Ймовірно, він був включений у цю форму з Specify 6 і може підтримуватися в "
-"майбутньому."
 
 #: components/FormPlugins/PaleoLocation.tsx:65
 #: components/FormPlugins/index.tsx:272

@@ -376,7 +376,7 @@ msgstr ""
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "queryComboBox"
-msgstr "Zone de liste déroulante de requête"
+msgstr ""
 
 #: components/Preferences/UserDefinitions.tsx:1009
 #: components/Preferences/UserDefinitions.tsx:1057
@@ -440,7 +440,7 @@ msgstr "Contient (sensible à la casse)"
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "containsDescription"
-msgstr "le menu de navigation"
+msgstr ""
 
 #: components/Preferences/UserDefinitions.tsx:1033
 #. Used in: Components > Preferences > User Definitions
@@ -570,7 +570,7 @@ msgstr ""
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "noRestrictionsModeWarning"
-msgstr "Couleur du bouton d'information"
+msgstr ""
 
 #: components/Preferences/index.tsx:245
 #. Used in: Components > Preferences > Index
@@ -708,7 +708,7 @@ msgstr "Ligne"
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "enterMoveDirection"
-msgstr "Afficher un nouvel avertissement sur l'ensemble de données"
+msgstr ""
 
 #: components/Preferences/UserDefinitions.tsx:1702
 #. Used in: Components > Preferences > User Definitions
@@ -827,7 +827,7 @@ msgstr "Inertie du bac"
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "mouseDrags"
-msgstr "Mettre en surbrillance la sous-chaîne correspondante"
+msgstr ""
 
 #: components/Preferences/UserDefinitions.tsx:1929
 #. Used in: Components > Preferences > User Definitions
@@ -1086,7 +1086,7 @@ msgstr "Haut"
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "bottom"
-msgstr "Inertie du bac"
+msgstr ""
 
 #: components/Preferences/UserDefinitions.tsx:574
 #. Used in: Components > Preferences > User Definitions

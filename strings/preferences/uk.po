@@ -1224,7 +1224,7 @@ msgstr ""
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "saveButtonColor"
-msgstr "Колір інформаційної кнопки"
+msgstr ""
 
 #: components/Preferences/UserDefinitions.tsx:345
 #: components/Preferences/UserDefinitions.tsx:406
@@ -1299,7 +1299,7 @@ msgstr "Детальний вигляд"
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "attachmentPreviewMode"
-msgstr "Колір кнопки небезпеки"
+msgstr ""
 
 #: components/Preferences/UserDefinitions.tsx:1290
 #. Used in: Components > Preferences > User Definitions

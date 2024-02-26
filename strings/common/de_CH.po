@@ -957,8 +957,8 @@ msgstr "{header:string}:"
 #: components/QueryComboBox/spec.ts:72
 #: components/SchemaConfig/Field.tsx:43
 #: components/SchemaConfig/Table.tsx:50
-#: components/SchemaViewer/Fields.tsx:29
-#: components/SchemaViewer/Fields.tsx:36
+#: components/SchemaViewer/Fields.tsx:30
+#: components/SchemaViewer/Fields.tsx:37
 #: components/SchemaViewer/index.tsx:33
 #: components/Security/Collection.tsx:131
 #: components/Security/Institution.tsx:73
@@ -1024,7 +1024,7 @@ msgstr "Ändern"
 #. Used in: Components > Merging > Index
 #, fuzzy
 msgid "dontShowAgain"
-msgstr "Wählen Sie Dateien aus oder ziehen Sie sie hierher"
+msgstr ""
 
 #: components/Molecules/FilePicker.tsx:98
 #. Used in: Components > Molecules > File Picker

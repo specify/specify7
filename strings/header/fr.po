@@ -21,7 +21,7 @@ msgstr "Aller au contenu"
 #. 🟥As in "main menu". Used in: Components > Header > Menu Item Processing
 #, fuzzy
 msgid "main"
-msgstr "Le cache a été vidé. Veuillez recharger la page."
+msgstr ""
 
 #: components/Header/ChooseCollection.tsx:75
 #: components/Header/ChooseCollection.tsx:81
@@ -96,7 +96,7 @@ msgstr ""
 #. Used in: Components > Query Builder > Edit
 #, fuzzy
 msgid "labelName"
-msgstr "Outils administratifs"
+msgstr ""
 
 #: components/QueryBuilder/Edit.tsx:211
 #. Used in: Components > Query Builder > Edit
@@ -141,7 +141,7 @@ msgstr ""
 #. Used in: Components > Export Feed > Dwca ⬤ Components > Export Feed > Editor
 #, fuzzy
 msgid "chooseDwca"
-msgstr "Nom du rapport"
+msgstr ""
 
 #: components/ExportFeed/Editor.tsx:209
 #. Used in: Components > Export Feed > Editor

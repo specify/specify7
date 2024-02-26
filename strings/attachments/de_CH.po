@@ -153,7 +153,7 @@ msgstr "Übereinstimmungsfehler"
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "errorReadingFile"
-msgstr "Wählen Sie Dateien aus oder ziehen Sie sie hierher, um zu beginnen."
+msgstr ""
 
 #: components/AttachmentsBulkImport/utils.ts:483
 #. Used in: Components > Attachments Bulk Import > Utils
@@ -336,7 +336,7 @@ msgstr "Doppelte Dateien gefunden"
 #. Used in: Components > Attachments Bulk Import > Import
 #, fuzzy
 msgid "duplicateFilesDescription"
-msgstr "Abgesagt"
+msgstr ""
 
 #: components/AttachmentsBulkImport/utils.ts:490
 #. Used in: Components > Attachments Bulk Import > Utils
@@ -354,7 +354,7 @@ msgstr "Fehler beim Speichern des Datensatzes"
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "interruptionStopped"
-msgstr "Suchen Sie nach weiteren Anhängen"
+msgstr ""
 
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:230
 #. Used in: Components > Attachments Bulk Import > View Attachment Files

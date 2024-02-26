@@ -59,7 +59,7 @@ msgstr "Es tut uns leid, es ist etwas schief gelaufen"
 #. Used in: Components > Errors > Toasts
 #, fuzzy
 msgid "clickToSeeDetails"
-msgstr "Es tut uns leid, es ist etwas schief gelaufen"
+msgstr ""
 
 #: components/Errors/ErrorDialog.tsx:187
 #. Used in: Components > Errors > Error Dialog

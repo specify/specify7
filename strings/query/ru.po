@@ -54,7 +54,7 @@ msgstr "Конструктор запросов"
 #. Used in: Components > Query Builder > Export ⬤ Components > Query Builder > Index ⬤ Components > Router > Overlay Routes ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Toolbar > Query Tables Wrapper
 #, fuzzy
 msgid "newQueryName"
-msgstr "Список значений, разделенных запятыми."
+msgstr ""
 
 #: components/QueryComboBox/spec.ts:73
 #. 🟥Used in a Query Combo Box's hover-over message to show which fields are being searched on. Used in: Components > Query Combo Box > Spec
@@ -160,7 +160,7 @@ msgstr "Создаваемый файл экспорта"
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "queryExportStartedDescription"
-msgstr "в будущем"
+msgstr ""
 
 #: components/PickLists/index.tsx:187
 #: components/SchemaConfig/Components.tsx:90
@@ -225,7 +225,7 @@ msgstr "Создать {recordSetTable:string}"
 #. Used in: Components > Query Builder > Components
 #, fuzzy
 msgid "saveAs"
-msgstr "Невозможно экспортировать в KML."
+msgstr ""
 
 #: components/WbPlanView/navigator.ts:349
 #. Used in: Components > Wb Plan View > Navigator
@@ -286,7 +286,7 @@ msgstr "Отрицать"
 #. Used in: Components > Query Builder > Query Line Tools
 #, fuzzy
 msgid "showButtonDescription"
-msgstr "(отформатированный)"
+msgstr ""
 
 #: components/WbPlanView/navigator.ts:401
 #. Used in: Components > Wb Plan View > Navigator
@@ -588,4 +588,4 @@ msgstr "Переключиться на абсолют"
 #. Used in: Components > Query Builder > Header
 #, fuzzy
 msgid "scrollToEditor"
-msgstr "Ложь или пусто"
+msgstr ""

@@ -17,7 +17,7 @@ msgstr ""
 #. Used in: Components > Developer > Crash Report Visualizer ⬤ Components > Router > Routes
 #, fuzzy
 msgid "crashReportVisualizer"
-msgstr "Подробности"
+msgstr ""
 
 #: components/Developer/CrashReportVisualizer.tsx:34
 #. Used in: Components > Developer > Crash Report Visualizer
@@ -26,7 +26,8 @@ msgid "downloadAsHtml"
 msgstr "Скачать как HTML"
 
 #: components/Developer/CrashReportMapper.tsx:168
-#. Used in: Components > Developer > Crash Report Mapper
+#: components/SpecifyNetwork/Map.tsx:227
+#. Used in: Components > Developer > Crash Report Mapper ⬤ Components > Specify Network > Map
 #, fuzzy
 msgid "details"
 msgstr "Подробности"

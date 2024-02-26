@@ -212,7 +212,7 @@ msgstr "CSV erstellen"
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "createKml"
-msgstr "Scrollen Sie zum Editor"
+msgstr ""
 
 #: components/QueryBuilder/Components.tsx:233
 #: components/QueryBuilder/CreateRecordSet.tsx:55
@@ -226,7 +226,7 @@ msgstr "Erstellen Sie {recordSetTable:string}"
 #. Used in: Components > Query Builder > Components
 #, fuzzy
 msgid "saveAs"
-msgstr "Export nach KML nicht möglich"
+msgstr ""
 
 #: components/WbPlanView/navigator.ts:349
 #. Used in: Components > Wb Plan View > Navigator
@@ -252,7 +252,7 @@ msgstr "Nach oben bewegen"
 #. 🟥As in move it down. Used in: Components > Formatters > Fields ⬤ Components > Query Builder > Query Line Tools ⬤ Components > Toolbar > List Edit
 #, fuzzy
 msgid "moveDown"
-msgstr "Baumbewegung"
+msgstr ""
 
 #: components/QueryBuilder/QueryLineTools.tsx:81
 #: components/QueryBuilder/QueryLineTools.tsx:91
@@ -525,7 +525,7 @@ msgstr "in der Vergangenheit"
 #. Used in: Components > Query Builder > Relative Date
 #, fuzzy
 msgid "day"
-msgstr "Wechseln Sie zu absolut"
+msgstr ""
 
 #: components/QueryBuilder/RelativeDate.tsx:170
 #. Used in: Components > Query Builder > Relative Date

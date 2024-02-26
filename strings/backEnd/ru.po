@@ -145,7 +145,7 @@ msgstr "Ранг узла дерева выше, чем у некоторых е
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "nodeOperationToSynonymizedParent"
-msgstr "Набор данных уже загружен"
+msgstr ""
 
 #: components/Errors/JsonError.tsx:166
 #. Used in: Components > Errors > Json Error
