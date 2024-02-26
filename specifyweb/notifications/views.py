@@ -46,3 +46,15 @@ def delete(request):
         return HttpResponseBadRequest()
     Message.objects.filter(user=request.specify_user, id=request.POST['message_id']).delete()
     return HttpResponse('OK', content_type='text/plain')
+
+@require_POST
+@login_maybe_required
+def delete_all(request):
+   "Delete the notification messages indicated by the 'message_ids' POST parameter."
+   if "message_ids" not in request.POST:
+       return HttpResponseBadRequest()
+
+   message_ids = json.loads(request.POST["message_ids"])
+   Message.objects.filter(user=request.specify_user, id__in=message_ids).delete()
+
+   return HttpResponse("OK", content_type="text/plain")
