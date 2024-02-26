@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.4-dev\n"
 
-#: components/Notifications/Notifications.tsx:94
+#: components/Notifications/Notifications.tsx:96
 #. Used in: Components > Notifications > Notifications
 #, fuzzy
 msgid "notifications"
@@ -29,7 +29,7 @@ msgstr "Notifications : {count:number|formatted}"
 msgid "notificationsLoading"
 msgstr "Notifications : …"
 
-#: components/Notifications/Notifications.tsx:123
+#: components/Notifications/Notifications.tsx:125
 #. Used in: Components > Notifications > Notifications
 #, fuzzy
 msgid "mostRecentNotificationsTop"
