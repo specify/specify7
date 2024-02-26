@@ -91,10 +91,7 @@ export const mainText = createDictionary({
   },
   clickToSeeDetails: {
     'en-us': 'Click to see details',
-    'de-ch': 'Es tut uns leid, es ist etwas schief gelaufen',
     'es-es': 'Haz clic para ver los detalles',
-    'fr-fr': "Nous sommes désolés, quelque chose s'est mal passé",
-    'ru-ru': 'Сожалеем, что-то пошло не так',
     'uk-ua': 'Натисніть, щоб переглянути деталі',
   },
   errorOccurredDescription: {
@@ -325,7 +322,6 @@ export const mainText = createDictionary({
     'fr-fr': 'en ligne',
     'ru-ru': 'онлайн',
     'uk-ua': 'онлайн',
-    'de-ch': '',
   },
   offline: {
     'en-us': 'offline',
@@ -333,6 +329,5 @@ export const mainText = createDictionary({
     'fr-fr': 'hors ligne',
     'ru-ru': 'не в сети',
     'uk-ua': 'офлайн',
-    'de-ch': '',
   },
 } as const);

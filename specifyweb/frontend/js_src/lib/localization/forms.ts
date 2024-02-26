@@ -102,10 +102,6 @@ export const formsText = createDictionary({
       The resource cannot be deleted because it is referenced by the following
       resources:
     `,
-    'ru-ru': 'Найдите способы использования',
-    'es-es': 'encontrar usos',
-    'fr-fr': 'Trouver des utilisations',
-    'uk-ua': 'Знайти використання',
     'de-ch': `
       Die Ressource kann nicht gelöscht werden, da sie von den folgenden
       Ressourcen referenziert wird:
@@ -142,10 +138,6 @@ export const formsText = createDictionary({
       geographic coordinates and that the paleo context have a geographic age
       with at least a start time or and end time populated.
     `,
-    'ru-ru': 'Выберите источник таблиц',
-    'es-es': 'Seleccionar fuente de tablas',
-    'fr-fr': 'Sélectionnez la source des tables',
-    'uk-ua': 'Виберіть джерело таблиць',
     'de-ch': `
       Das Paleo Map-Plugin erfordert, dass die {localityTable:string}
       geografische Koordinaten haben und dass der Paläo-Kontext ein
@@ -165,10 +157,6 @@ export const formsText = createDictionary({
       Are you sure you want to permanently delete this {tableName:string} from
       the database?
     `,
-    'ru-ru': 'Значение должно быть уникальным для базы данных',
-    'es-es': 'El valor debe ser exclusivo de la base de datos.',
-    'fr-fr': 'La valeur doit être unique à la base de données',
-    'uk-ua': 'Значення має бути унікальним для бази даних',
     'de-ch': `
       Sind Sie sicher, dass Sie dieses {tableName:string} dauerhaft aus der
       Datenbank löschen möchten?
@@ -241,10 +229,6 @@ export const formsText = createDictionary({
       Add value "{value:string}" to the {pickListTable:string} named
       "{pickListName:string}"?
     `,
-    'ru-ru': 'ГГГГ',
-    'es-es': 'AAAA',
-    'uk-ua': 'РРРР',
-    'fr-fr': 'AAAA',
     'de-ch': `
       Wert „{value:string}“ zum {pickListTable:string} mit dem Namen
       „{pickListName:string}“ hinzufügen?
@@ -260,10 +244,6 @@ export const formsText = createDictionary({
   },
   invalidNumericPicklistValue: {
     'en-us': 'Only numeric values are supported in this {pickListTable:string}',
-    'ru-ru': 'Дополнительные результаты опущены',
-    'es-es': 'Resultados adicionales omitidos',
-    'fr-fr': 'Résultats supplémentaires omis',
-    'uk-ua': 'Додаткові результати пропущено',
     'de-ch': `
       In diesem {pickListTable:string} werden nur numerische Werte unterstützt.
     `,
@@ -403,11 +383,6 @@ export const formsText = createDictionary({
   },
   saveBlocked: {
     'en-us': 'Save blocked',
-    'ru-ru': 'Запись информации',
-    'es-es': 'Información de registro',
-    'fr-fr': 'Enregistrer des informations',
-    'uk-ua': 'Запис інформації',
-    'de-ch': 'Informationen aufnehmen',
   },
   saveBlockedDescription: {
     'en-us': 'Form cannot be saved because of the following error:',
@@ -441,7 +416,6 @@ export const formsText = createDictionary({
     'en-us': 'This command is currently unavailable for Specify 7.',
     'ru-ru': 'Эта команда в настоящее время недоступна для Specify 7.',
     'es-es': 'Este comando no está disponible actualmente para Specify 7.',
-    'fr-fr': 'AAAA',
     'uk-ua': 'Ця команда наразі недоступна для Specify 7.',
     'de-ch': 'Dieser Befehl ist derzeit für Specify 7 nicht verfügbar.',
   },
@@ -502,32 +476,6 @@ export const formsText = createDictionary({
     'fr-fr': 'Ce plugin est actuellement indisponible pour Specify 7',
     'uk-ua': 'Цей плагін наразі недоступний для Specify 7',
     'de-ch': 'Dieses Plugin ist derzeit für Specify 7 nicht verfügbar',
-  },
-  pluginNotAvailableSecondDescription: {
-    'en-us': `
-      It was probably included on this form from Specify 6 and may be supported
-      in the future.
-    `,
-    'ru-ru': `
-      Вероятно, он был включен в эту форму из Specify 6 и может поддерживаться в
-      будущем.
-    `,
-    'es-es': `
-      Probablemente se incluyó en este formulario de la Especificación 6 y es
-      posible que se admita en el futuro.
-    `,
-    'fr-fr': `
-      Il a probablement été inclus sur ce formulaire à partir de Specify 6 et
-      pourrait être pris en charge à l'avenir.
-    `,
-    'uk-ua': `
-      Ймовірно, він був включений у цю форму з Specify 6 і може підтримуватися в
-      майбутньому.
-    `,
-    'de-ch': `
-      Es war wahrscheinlich in diesem Formular von Specify 6 enthalten und wird
-      möglicherweise in Zukunft unterstützt.
-    `,
   },
   wrongTableForPlugin: {
     comment:
@@ -636,15 +584,7 @@ export const formsText = createDictionary({
     'en-us': 'Value must be a number',
     'ru-ru': 'Значение должно быть числом',
     'es-es': 'El valor debe ser un número.',
-    'fr-fr': `
-      La ressource ne peut pas être supprimée car elle est référencée par les
-      ressources suivantes :
-    `,
     'uk-ua': 'Значення має бути числом',
-    'de-ch': `
-      Die Ressource kann nicht gelöscht werden, da sie von den folgenden
-      Ressourcen referenziert wird:
-    `,
   },
   organization: {
     'en-us': 'Organization',
@@ -789,7 +729,6 @@ export const formsText = createDictionary({
     'en-us': 'Duplicate {recordSetItemTable:string}',
     'ru-ru': 'Дубликат {recordSetItemTable:string}',
     'es-es': 'Duplicado {recordSetItemTable:string}',
-    'fr-fr': 'Résultats supplémentaires omis',
     'uk-ua': 'Дублікат {recordSetItemTable:string}',
     'de-ch': 'Duplizieren {recordSetItemTable:string}',
   },
@@ -1039,7 +978,6 @@ export const formsText = createDictionary({
     'en-us': 'Subview',
     'ru-ru': 'Подпредставление',
     'es-es': 'Subvista',
-    'fr-fr': 'Reporter',
     'uk-ua': 'Підвид',
     'de-ch': 'Unteransicht',
   },
@@ -1057,10 +995,6 @@ export const formsText = createDictionary({
     'es-es': 'Copiar Especificar 6 configuraciones',
     'fr-fr': 'Copier Spécifier 6 paramètres',
     'uk-ua': 'Копіювати Вкажіть 6 параметрів',
-    'de-ch': `
-      Es war wahrscheinlich in diesem Formular von Specify 6 enthalten und wird
-      möglicherweise in Zukunft unterstützt.
-    `,
   },
   useCustomSettings: {
     'en-us': 'Use custom settings',
@@ -1108,7 +1042,6 @@ export const formsText = createDictionary({
     'es-es': 'Metaformulario',
     'fr-fr': 'Méta formulaire',
     'uk-ua': 'Мета форми',
-    'de-ch': 'Formularstatus',
   },
   newResourceTitle: {
     'en-us': 'New {tableName:string}',

@@ -45,12 +45,11 @@ export const interactionsText = createDictionary({
   preparationsNotAvailableFor: {
     'en-us': 'No preparations are available for the following records:',
     'de-ch': 'Für folgende Datensätze liegen keine Vorbereitungen vor:',
-    'es-es': 'No se encontraron preparativos para los siguientes registros:',
+    'es-es': 'No hay preparativos disponibles para los siguientes registros:',
     'fr-fr': `
       Aucune préparation n'est disponible pour les enregistrements suivants :
     `,
     'ru-ru': 'Для следующих записей подготовка невозможна:',
-    'uk-ua': 'Продовжити',
   },
   problemsFound: {
     'en-us': 'There are problems with the entry:',
@@ -366,7 +365,7 @@ export const interactionsText = createDictionary({
     'en-us': 'Continue',
     'de-ch': 'Weitermachen',
     'es-es': 'Continuar',
-    'fr-fr': 'Continuer sans préparation',
+    'fr-fr': 'Continuer',
     'ru-ru': 'Продолжать',
     'uk-ua': 'Продовжити',
   },

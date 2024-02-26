@@ -28,18 +28,12 @@ export const schemaText = createDictionary({
   tableName: {
     'en-us': 'Table Name',
     'ru-ru': 'Имя таблицы',
-    'es-es': 'Relaciones',
     'fr-fr': 'Nom du tableau',
     'uk-ua': 'Назва таблиці',
     'de-ch': 'Tabellennamen',
   },
   withoutTable: {
     'en-us': 'Without Table',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'ru-ru': '',
-    'uk-ua': '',
   },
   schemaConfig: {
     'en-us': 'Schema Config',
@@ -92,7 +86,6 @@ export const schemaText = createDictionary({
   database: {
     'en-us': 'Database',
     'de-ch': 'Datenbank',
-    'es-es': 'Ve arriba',
     'fr-fr': 'Base de données',
     'ru-ru': 'База данных',
     'uk-ua': 'База даних',
@@ -187,7 +180,6 @@ export const schemaText = createDictionary({
   },
   fieldLength: {
     'en-us': 'Length',
-    'ru-ru': 'Сопутствующая модель',
     'es-es': 'Longitud',
     'fr-fr': 'Longueur',
     'uk-ua': 'Довжина',
@@ -227,7 +219,6 @@ export const schemaText = createDictionary({
   },
   userDefined: {
     'en-us': 'User Defined',
-    'ru-ru': 'Один к одному',
     'es-es': 'Usuario definido',
     'fr-fr': "Défini par l'utilisateur",
     'uk-ua': 'Визначений користувачем',
@@ -235,19 +226,9 @@ export const schemaText = createDictionary({
   },
   addLanguage: {
     'en-us': 'Add Language',
-    'ru-ru': 'Уникальные поля',
-    'es-es': 'Campos únicos',
     'fr-fr': 'Ajouter une langue',
     'uk-ua': 'Додати мову',
     'de-ch': 'Sprache hinzuzufügen',
-  },
-  fieldLabel: {
-    'en-us': 'Label',
-    'ru-ru': 'Этикетка',
-    'es-es': 'Longitud',
-    'fr-fr': 'Étiquette',
-    'uk-ua': 'Підпис',
-    'de-ch': 'Etikett',
   },
   databaseColumn: {
     'en-us': 'Database Column',
@@ -268,7 +249,6 @@ export const schemaText = createDictionary({
   otherSideName: {
     'en-us': 'Other side name',
     'ru-ru': 'Длина',
-    'es-es': 'Longitud',
     'fr-fr': "Nom de l'autre côté",
     'uk-ua': "Ім'я на іншій стороні",
     'de-ch': 'Name der anderen Seite',
@@ -365,7 +345,6 @@ export const schemaText = createDictionary({
     'en-us': 'Go to top',
     'es-es': 'Ve arriba',
     'fr-fr': 'Aller en haut',
-    'ru-ru': 'Количество дубликатов',
     'uk-ua': 'Перейти вгору',
     'de-ch': 'Nach oben',
   },
@@ -467,26 +446,11 @@ export const schemaText = createDictionary({
   },
   sortByHiddenFields: {
     'en-us': 'Sort by hidden fields',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'ru-ru': '',
-    'uk-ua': '',
   },
   hidden: {
     'en-us': 'hidden',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'ru-ru': '',
-    'uk-ua': '',
   },
   customFieldFormat: {
     'en-us': 'Custom Field Format',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'ru-ru': '',
-    'uk-ua': '',
   },
 } as const);
