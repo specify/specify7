@@ -69,6 +69,7 @@ export const wbPlanText = createDictionary({
     'es-es': 'sin mapear',
     'fr-fr': 'Non mappé',
     'uk-ua': 'Не зіставлений',
+    'de-ch': '',
   },
   mapped: {
     'en-us': 'Mapped',
@@ -131,6 +132,8 @@ export const wbPlanText = createDictionary({
     'ru-ru': 'Показать скрытые поля формы',
     'es-es': 'Revelar Campos Ocultos del Formulario',
     'de-ch': 'Versteckte Formularfelder anzeigen',
+    'fr-fr': '',
+    'uk-ua': '',
   },
   mappingOptions: {
     'en-us': 'Mapping Options',
@@ -223,6 +226,8 @@ export const wbPlanText = createDictionary({
     'ru-ru': 'Никогда не игнорировать',
     'es-es': 'Nunca Ignorar',
     'de-ch': 'Nie ignorieren',
+    'fr-fr': '',
+    'uk-ua': '',
   },
   ignoreNeverDescription: {
     'en-us': `
@@ -363,6 +368,8 @@ export const wbPlanText = createDictionary({
     'ru-ru': 'Сопоставить',
     'es-es': 'Mapear',
     'de-ch': 'Datenzuordnung erstellen',
+    'fr-fr': '',
+    'uk-ua': '',
   },
   unmap: {
     'en-us': 'Unmap',
@@ -377,6 +384,8 @@ export const wbPlanText = createDictionary({
     'ru-ru': 'Сопоставить выбранное поле с выбранным столбцом',
     'es-es': 'Asignar campo seleccionado al encabezamiento seleccionado',
     'de-ch': 'Ausgewähltes Feld der ausgewählten Feldüberschrift zuordnen',
+    'fr-fr': '',
+    'uk-ua': '',
   },
   relationshipWithTable: {
     'en-us': 'Relationship to the {tableName:string} table',
@@ -632,6 +641,8 @@ export const wbPlanText = createDictionary({
     'ru-ru': 'Автоматически сопоставить?',
     'es-es': '¿Automap para iniciar un nuevo plan de carga?',
     'de-ch': 'Automap, um einen neuen Upload-Plan zu starten?',
+    'fr-fr': '',
+    'uk-ua': '',
   },
   reRunAutoMapperConfirmationDescription: {
     'en-us': 'This will erase existing data field mappings.',

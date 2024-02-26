@@ -106,6 +106,10 @@ export const formsText = createDictionary({
       Die Ressource kann nicht gelöscht werden, da sie von den folgenden
       Ressourcen referenziert wird:
     `,
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   relationship: {
     'en-us': 'Relationship',
@@ -143,6 +147,10 @@ export const formsText = createDictionary({
       geografische Koordinaten haben und dass der Paläo-Kontext ein
       geografisches Alter mit mindestens einer Start- oder Endzeit aufweist.
     `,
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   invalidDate: {
     'en-us': 'Invalid Date',
@@ -161,6 +169,10 @@ export const formsText = createDictionary({
       Sind Sie sicher, dass Sie dieses {tableName:string} dauerhaft aus der
       Datenbank löschen möchten?
     `,
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   deleteConfirmationDescription: {
     'en-us': 'This action cannot be undone.',
@@ -233,6 +245,10 @@ export const formsText = createDictionary({
       Wert „{value:string}“ zum {pickListTable:string} mit dem Namen
       „{pickListName:string}“ hinzufügen?
     `,
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   invalidType: {
     'en-us': 'Invalid Type',
@@ -247,6 +263,10 @@ export const formsText = createDictionary({
     'de-ch': `
       In diesem {pickListTable:string} werden nur numerische Werte unterstützt.
     `,
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   noData: {
     'en-us': 'No Data.',
@@ -383,6 +403,11 @@ export const formsText = createDictionary({
   },
   saveBlocked: {
     'en-us': 'Save blocked',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   saveBlockedDescription: {
     'en-us': 'Form cannot be saved because of the following error:',
@@ -418,6 +443,7 @@ export const formsText = createDictionary({
     'es-es': 'Este comando no está disponible actualmente para Specify 7.',
     'uk-ua': 'Ця команда наразі недоступна для Specify 7.',
     'de-ch': 'Dieser Befehl ist derzeit für Specify 7 nicht verfügbar.',
+    'fr-fr': '',
   },
   commandUnavailableSecondDescription: {
     'en-us': `
@@ -585,6 +611,8 @@ export const formsText = createDictionary({
     'ru-ru': 'Значение должно быть числом',
     'es-es': 'El valor debe ser un número.',
     'uk-ua': 'Значення має бути числом',
+    'de-ch': '',
+    'fr-fr': '',
   },
   organization: {
     'en-us': 'Organization',
@@ -731,6 +759,7 @@ export const formsText = createDictionary({
     'es-es': 'Duplicado {recordSetItemTable:string}',
     'uk-ua': 'Дублікат {recordSetItemTable:string}',
     'de-ch': 'Duplizieren {recordSetItemTable:string}',
+    'fr-fr': '',
   },
   duplicateRecordSetItemDescription: {
     'en-us':
@@ -980,6 +1009,7 @@ export const formsText = createDictionary({
     'es-es': 'Subvista',
     'uk-ua': 'Підвид',
     'de-ch': 'Unteransicht',
+    'fr-fr': '',
   },
   selectSourceOfTables: {
     'en-us': 'Select source of tables',
@@ -995,6 +1025,7 @@ export const formsText = createDictionary({
     'es-es': 'Copiar Especificar 6 configuraciones',
     'fr-fr': 'Copier Spécifier 6 paramètres',
     'uk-ua': 'Копіювати Вкажіть 6 параметрів',
+    'de-ch': '',
   },
   useCustomSettings: {
     'en-us': 'Use custom settings',
@@ -1042,6 +1073,7 @@ export const formsText = createDictionary({
     'es-es': 'Metaformulario',
     'fr-fr': 'Méta formulaire',
     'uk-ua': 'Мета форми',
+    'de-ch': '',
   },
   newResourceTitle: {
     'en-us': 'New {tableName:string}',

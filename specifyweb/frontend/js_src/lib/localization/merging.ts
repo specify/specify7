@@ -101,6 +101,10 @@ export const mergingText = createDictionary({
   agentContainsGroupDescription: {
     'en-us': 'Agents contain group members',
     'es-es': 'Los agentes contienen miembros de grupo',
+    'de-ch': 'Zusammengeführter Datensatz',
+    'fr-fr': 'Enregistrement fusionné',
+    'ru-ru': 'Объединенная запись',
+    'uk-ua': 'Об’єднаний запис',
   },
   recordNotBeMergedReason: {
     'en-us': 'The following records cannot be merged. Reason:',
@@ -115,6 +119,10 @@ export const mergingText = createDictionary({
   someCannotBeMerged: {
     'en-us': 'Some records cannot be merged',
     'es-es': 'Algunos registros no se pueden fusionar',
+    'de-ch': 'Beim Zusammenführen ist ein Fehler aufgetreten.',
+    'fr-fr': "Quelque chose s'est mal passé pendant le processus de fusion.",
+    'ru-ru': 'Что-то пошло не так в процессе слияния.',
+    'uk-ua': 'Щось пішло не так під час процесу об’єднання.',
   },
   mergeOthers: {
     'en-us': 'Merge others',

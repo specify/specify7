@@ -25,6 +25,7 @@ export const headerText = createDictionary({
     'ru-ru': 'Основной',
     'uk-ua': 'Головна',
     'de-ch': 'Allgemein',
+    'fr-fr': '',
   },
   currentCollection: {
     comment: 'Example: Current Collection',
@@ -148,6 +149,7 @@ export const headerText = createDictionary({
     'es-es': 'Nombre de la etiqueta',
     'uk-ua': 'Назва бірки',
     'de-ch': 'Etikett Name',
+    'fr-fr': '',
   },
   reportName: {
     'en-us': 'Report Name',
@@ -191,6 +193,11 @@ export const headerText = createDictionary({
   },
   choose: {
     'en-us': 'Choose',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   chooseDwca: {
     'en-us': 'Choose DwCA',
@@ -198,9 +205,15 @@ export const headerText = createDictionary({
     'es-es': 'Elija un DwCA',
     'uk-ua': 'Виберіть DwCA',
     'de-ch': 'DwCA wählen',
+    'fr-fr': '',
   },
   dwcaResource: {
     'en-us': 'DwCA Resource',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   chooseMetadataResource: {
     'en-us': 'Choose Metadata resource',
@@ -212,6 +225,11 @@ export const headerText = createDictionary({
   },
   metadataResource: {
     'en-us': 'Metadata Resource',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   simpleSearch: {
     'en-us': 'Simple Search',

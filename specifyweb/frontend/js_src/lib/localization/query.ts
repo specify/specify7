@@ -38,6 +38,8 @@ export const queryText = createDictionary({
     'es-es': 'Nueva consulta',
     'uk-ua': 'Новий запит',
     'de-ch': 'Neue Abfrage',
+    'fr-fr': '',
+    'ru-ru': '',
   },
   searchFields: {
     comment: `
@@ -224,6 +226,8 @@ export const queryText = createDictionary({
       Eine Benachrichtigung wird angezeigt, wenn die Exportdatei vollständig und
       zum Download bereit ist.
     `,
+    'fr-fr': '',
+    'ru-ru': '',
   },
   invalidPicklistValue: {
     comment: 'Used when selected pick list value is not one of allowed values',
@@ -309,6 +313,7 @@ export const queryText = createDictionary({
     'es-es': 'Crear KML',
     'fr-fr': 'Créer un KML',
     'uk-ua': 'Створіть KML',
+    'de-ch': '',
   },
   createRecordSet: {
     'en-us': 'Create {recordSetTable:string}',
@@ -322,6 +327,9 @@ export const queryText = createDictionary({
     'en-us': 'Save As',
     'es-es': 'Guardar como',
     'uk-ua': 'Зберегти як',
+    'de-ch': '',
+    'fr-fr': '',
+    'ru-ru': '',
   },
   anyRank: {
     'en-us': '(any rank)',
@@ -347,6 +355,7 @@ export const queryText = createDictionary({
     'es-es': 'Mover hacia abajo',
     'fr-fr': 'Descendre',
     'uk-ua': 'Рухатися вниз',
+    'de-ch': '',
   },
   sort: {
     'en-us': 'Sort',
@@ -386,6 +395,8 @@ export const queryText = createDictionary({
     'es-es': 'Mostrar en resultados',
     'uk-ua': 'Показати в результатах',
     'de-ch': 'In Ergebnissen anzeigen',
+    'fr-fr': '',
+    'ru-ru': '',
   },
   aggregatedInline: {
     'en-us': '(aggregated)',
@@ -736,6 +747,7 @@ export const queryText = createDictionary({
     'fr-fr': 'Jours',
     'ru-ru': 'Дни',
     'uk-ua': 'днів',
+    'de-ch': '',
   },
   week: {
     'en-us': 'Weeks',
@@ -853,11 +865,14 @@ export const queryText = createDictionary({
     'es-es': 'Cambiar a absoluto',
     'fr-fr': "Passer à l'absolu",
     'ru-ru': 'Переключиться на абсолют',
+    'uk-ua': '',
   },
   scrollToEditor: {
     'en-us': 'Scroll to editor',
     'de-ch': 'Scrollen Sie zum Editor',
     'es-es': 'Desplazarse al editor',
     'uk-ua': 'Перейдіть до редактора',
+    'fr-fr': '',
+    'ru-ru': '',
   },
 } as const);

@@ -30,6 +30,8 @@ export const welcomeText = createDictionary({
     'ru-ru': 'Скачать информацию',
     'es-es': 'Descargar información',
     'de-ch': 'Download Information',
+    'fr-fr': '',
+    'uk-ua': '',
   },
   taxonTiles: {
     'en-us': 'Taxon Tiles',

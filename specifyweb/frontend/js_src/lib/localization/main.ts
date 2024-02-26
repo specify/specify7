@@ -93,6 +93,9 @@ export const mainText = createDictionary({
     'en-us': 'Click to see details',
     'es-es': 'Haz clic para ver los detalles',
     'uk-ua': 'Натисніть, щоб переглянути деталі',
+    'de-ch': '',
+    'fr-fr': '',
+    'ru-ru': '',
   },
   errorOccurredDescription: {
     'en-us': `
@@ -322,6 +325,7 @@ export const mainText = createDictionary({
     'fr-fr': 'en ligne',
     'ru-ru': 'онлайн',
     'uk-ua': 'онлайн',
+    'de-ch': '',
   },
   offline: {
     'en-us': 'offline',
@@ -329,5 +333,6 @@ export const mainText = createDictionary({
     'fr-fr': 'hors ligne',
     'ru-ru': 'не в сети',
     'uk-ua': 'офлайн',
+    'de-ch': '',
   },
 } as const);

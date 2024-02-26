@@ -150,6 +150,7 @@ export const userText = createDictionary({
     'es-es': '¡Hola, {userName:string}!',
     'fr-fr': 'Bonjour, {userName:string} !',
     'de-ch': 'Hallo, {userName:string}!',
+    'uk-ua': '',
   },
   oicWelcomeMessage: {
     'en-us': `
@@ -235,6 +236,8 @@ export const userText = createDictionary({
     'es-es': 'Generar clave maestra',
     'fr-fr': 'Générer la clé principale',
     'de-ch': 'Masterschlüssel generieren',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   userPassword: {
     'en-us': 'User Password',
@@ -297,6 +300,7 @@ export const userText = createDictionary({
       Ви не маєте доступу до {collectionTable:string}, що містить цей ресурс,
       через поточний обліковий запис
     `,
+    'de-ch': '',
   },
   resourceInaccessible: {
     'en-us': `
@@ -329,6 +333,7 @@ export const userText = createDictionary({
     'es-es': 'Seleccione una de las siguientes colecciones:',
     'uk-ua': 'Виберіть одну з наступних колекцій:',
     'de-ch': 'Wählen Sie eine der folgenden Sammlungen:',
+    'fr-fr': '',
   },
   loginToProceed: {
     comment: 'Example: You can login to the Collection, to proceed:',
@@ -526,6 +531,8 @@ export const userText = createDictionary({
     'ru-ru': 'Сначала пользователя необходимо сохранить как менеджера.',
     'es-es': 'El usuario debe guardarse primero como administrador',
     'de-ch': 'Der Benutzer muss zuerst als Manager gespeichert werden',
+    'fr-fr': '',
+    'uk-ua': '',
   },
   users: {
     'en-us': 'User Accounts',
@@ -607,6 +614,7 @@ export const userText = createDictionary({
     'fr-fr': 'Sécurité et comptes',
     'uk-ua': 'Безпека та облікові записи',
     'de-ch': 'Sicherheit und Konten',
+    'ru-ru': '',
   },
   userRoleLibrary: {
     'en-us': 'Institution Library of Role Templates',
@@ -638,6 +646,7 @@ export const userText = createDictionary({
     'fr-fr': 'Rôles utilisateur attribués',
     'uk-ua': 'Призначені ролі користувача',
     'de-ch': 'Zugewiesene Benutzerrollen',
+    'ru-ru': '',
   },
   rolePolicies: {
     'en-us': 'Role Permission Policies',
@@ -760,6 +769,7 @@ export const userText = createDictionary({
     'es-es': 'Todas las colecciones',
     'fr-fr': 'Toutes les collections',
     'uk-ua': 'Всі колекції',
+    'de-ch': '',
   },
   thisCollection: {
     'en-us': 'This collection',
@@ -886,6 +896,7 @@ export const userText = createDictionary({
       Надішліть таке посилання на {userName:string}, щоб дозволити їм увійти в
       систему вперше.
     `,
+    'de-ch': '',
   },
   noProvidersForUserInviteLink: {
     'en-us': `
@@ -971,11 +982,15 @@ export const userText = createDictionary({
     'uk-ua': 'Перш ніж продовжити, установіть такі агенти:',
     'de-ch':
       'Bitte legen Sie die folgenden Agenten fest, bevor Sie fortfahren:',
+    'fr-fr': '',
   },
   externalIdentityProviders: {
     'en-us': 'External identity providers:',
     'es-es': 'Proveedores de identidad externos:',
     'fr-fr': "Fournisseurs d'identité externes :",
+    'de-ch': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   allTables: {
     'en-us': 'All tables',
@@ -1095,6 +1110,7 @@ export const userText = createDictionary({
     'es-es': 'Cambiar al diseño vertical',
     'fr-fr': "Passer à l'affichage vertical",
     'de-ch': 'Wechseln Sie zum vertikalen Layout',
+    'uk-ua': '',
   },
   advancedTables: {
     'en-us': 'Advanced tables',
@@ -1167,5 +1183,7 @@ export const userText = createDictionary({
     'de-ch': 'Benutzer hinzufügen',
     'es-es': 'Agregar usuario',
     'fr-fr': 'Ajouter un utilisateur',
+    'ru-ru': '',
+    'uk-ua': '',
   },
 } as const);

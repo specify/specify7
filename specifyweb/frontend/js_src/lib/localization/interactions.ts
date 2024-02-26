@@ -50,6 +50,7 @@ export const interactionsText = createDictionary({
       Aucune préparation n'est disponible pour les enregistrements suivants :
     `,
     'ru-ru': 'Для следующих записей подготовка невозможна:',
+    'uk-ua': '',
   },
   problemsFound: {
     'en-us': 'There are problems with the entry:',

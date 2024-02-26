@@ -126,6 +126,11 @@ export const wbText = createDictionary({
       Note, live validation is an experimental feature and is not a substitute
       for regular validation.
     `,
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   changeOwner: {
     'en-us': 'Change Owner',
@@ -766,6 +771,9 @@ export const wbText = createDictionary({
     'en-us': 'Upload Cancelled',
     'ru-ru': 'Загрузка отменена',
     'es-es': 'Subida cancelada',
+    'de-ch': '',
+    'fr-fr': '',
+    'uk-ua': '',
   },
   uploadCanceledDescription: {
     'en-us': 'Data Set Upload cancelled.',
@@ -930,6 +938,9 @@ export const wbText = createDictionary({
     'en-us': 'Upload Results',
     'ru-ru': 'Результаты загрузки',
     'es-es': 'Cargar Resultados',
+    'de-ch': '',
+    'fr-fr': '',
+    'uk-ua': '',
   },
   potentialUploadResults: {
     'en-us': 'Potential Upload Results',
@@ -987,6 +998,9 @@ export const wbText = createDictionary({
     'en-us': 'Column first',
     'ru-ru': 'Столбец за столбцом',
     'es-es': 'Primero Columna',
+    'de-ch': '',
+    'fr-fr': '',
+    'uk-ua': '',
   },
   rowFirst: {
     'en-us': 'Row first',
@@ -1101,6 +1115,7 @@ export const wbText = createDictionary({
       Les erreurs suivantes se sont produites lors de l'importation du fichier :
     `,
     'uk-ua': 'Під час імпортування файлу виникли такі помилки:',
+    'de-ch': '',
   },
   corruptFile: {
     'en-us': 'The file {fileName:string} is corrupt or contains no data!',
@@ -1175,12 +1190,15 @@ export const wbText = createDictionary({
     'es-es': 'Determinar automáticamente',
     'uk-ua': 'Регістр сірників',
     'de-ch': 'Automatisch ermitteln',
+    'fr-fr': '',
   },
   chooseDataSetName: {
     'en-us': 'Name for New Data Set:',
     'ru-ru': 'Имя для нового набора данных:',
     'es-es': 'Nombre para Nuevo Conjunto de Datos:',
     'de-ch': 'Name für neuen Datensatz:',
+    'fr-fr': '',
+    'uk-ua': '',
   },
   firstRowIsHeader: {
     'en-us': 'First Row is Header:',
@@ -1336,9 +1354,15 @@ export const wbText = createDictionary({
     'es-es': 'Conjunto de Datos',
     'uk-ua': 'Набір даних',
     'de-ch': 'Datensatz',
+    'fr-fr': '',
   },
   dataSetTimestampUploaded: {
     'en-us': 'Timestamp Uploaded',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   dataSetUploadedLabel: {
     'en-us': '(Uploaded, Read-Only)',
@@ -1346,6 +1370,7 @@ export const wbText = createDictionary({
     'es-es': '(Cargado, Solo lectura)',
     'fr-fr': '(Téléchargé, lecture seule)',
     'uk-ua': '(Завантажено, лише для читання)',
+    'de-ch': '',
   },
   wbStatusUnupload: {
     'en-us': 'Data Set Rollback Status',
@@ -1492,6 +1517,7 @@ export const wbText = createDictionary({
     'es-es': 'Deténgase',
     'fr-fr': 'Arrêt',
     'uk-ua': 'СТІЙ',
+    'de-ch': '',
   },
   wbStatusError: {
     'en-us': 'Error occurred during {operationName:string}',
@@ -1524,5 +1550,8 @@ export const wbText = createDictionary({
     'en-us': '{node:string} (in {parent:string})',
     'ru-ru': '{node:string} (в {parent:string})',
     'es-es': '{node:string} (en {parent:string})',
+    'de-ch': '',
+    'fr-fr': '',
+    'uk-ua': '',
   },
 } as const);

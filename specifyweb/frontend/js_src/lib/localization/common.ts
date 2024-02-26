@@ -123,6 +123,7 @@ export const commonText = createDictionary({
     'fr-fr': 'Supprimer',
     'uk-ua': 'Видалити',
     'de-ch': 'Löschen',
+    'ru-ru': '',
   },
   next: {
     'en-us': 'Next',
@@ -267,6 +268,9 @@ export const commonText = createDictionary({
     'en-us': 'Full Date',
     'es-es': 'Fecha completa',
     'de-ch': 'Vollständiges Datum',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   view: {
     comment: 'Verb',
@@ -284,6 +288,7 @@ export const commonText = createDictionary({
     'es-es': '(se abre en una pestaña nueva)',
     'uk-ua': '(відкривається в новій вкладці)',
     'de-ch': '(Öffnet sich in einer neuen Registerkarte)',
+    'fr-fr': '',
   },
   openInNewTab: {
     comment: 'Used in a button that opens a link in a new tab',
@@ -673,12 +678,25 @@ export const commonText = createDictionary({
     'en-us': 'Bulk Select',
     'es-es': 'Selección masiva',
     'de-ch': 'Mehrfachauswahl',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   bulkReturn: {
     'en-us': 'Bulk Return',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   bulkResolve: {
     'en-us': 'Bulk Resolve',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   timeRemaining: {
     'en-us': 'Time remaining',
@@ -690,12 +708,20 @@ export const commonText = createDictionary({
   },
   unlimited: {
     'en-us': 'Unlimited',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   change: {
     comment: 'Verb',
     'en-us': 'Change',
     'de-ch': 'Ändern',
     'es-es': 'Cambiar',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   dontShowAgain: {
     'en-us': "Don't show this again",
@@ -703,6 +729,7 @@ export const commonText = createDictionary({
     'fr-fr': 'Ne montre plus ça',
     'ru-ru': 'Больше не показывать это',
     'uk-ua': 'Не показувати це знову',
+    'de-ch': '',
   },
   multipleFilePickerMessage: {
     'en-us': 'Choose files or drag them here',

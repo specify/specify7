@@ -200,6 +200,11 @@ export const specifyNetworkText = createDictionary({
   },
   searchForInstitution: {
     'en-us': 'Search for your institution:',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   institutionDistributionMap: {
     'en-us': `

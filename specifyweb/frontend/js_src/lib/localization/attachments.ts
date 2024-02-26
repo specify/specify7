@@ -128,6 +128,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Ningún archivo',
     'fr-fr': 'Pas de fichier',
     'uk-ua': 'Немає файлу',
+    'ru-ru': '',
   },
   pleaseReselectAllFiles: {
     'en-us': 'Please reselect all files before uploading.',
@@ -195,6 +196,8 @@ export const attachmentsText = createDictionary({
     'es-es': 'Error al leer el archivo',
     'fr-fr': 'Erreur de lecture du fichier',
     'ru-ru': 'Ошибка чтения файла',
+    'de-ch': '',
+    'uk-ua': '',
   },
   unhandledFatalResourceError: {
     'en-us': 'Unhandled fatal resource error:',
@@ -226,6 +229,8 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Neuer Anhangsdatensatz',
     'es-es': 'Nuevo conjunto de datos adjuntos',
     'uk-ua': 'Новий набір даних вкладення',
+    'fr-fr': '',
+    'ru-ru': '',
   },
   uploadInterrupted: {
     'en-us': 'Upload Interrupted',
@@ -288,6 +293,7 @@ export const attachmentsText = createDictionary({
     `,
     'uk-ua':
       'Тривав відкат, коли сталася перерва. Деякі файли могли бути видалені',
+    'es-es': '',
   },
   attachmentId: {
     'en-us': 'Attachment ID',
@@ -477,6 +483,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'En archivo',
     'ru-ru': 'В файле',
     'uk-ua': 'У файлі',
+    'fr-fr': '',
   },
   duplicateFilesFound: {
     'en-us': 'Duplicate Files Found',
@@ -503,6 +510,8 @@ export const attachmentsText = createDictionary({
       Следующие файлы не выбраны, поскольку они уже существуют в этом наборе
       данных.
     `,
+    'de-ch': '',
+    'uk-ua': '',
   },
   errorFetchingRecord: {
     'en-us': 'Error fetching record',
@@ -522,6 +531,11 @@ export const attachmentsText = createDictionary({
   },
   interruptionStopped: {
     'en-us': 'Stopped because of error uploading a previous file',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   chooseFilesToGetStarted: {
     'en-us': 'Choose files or drag them here to get started.',

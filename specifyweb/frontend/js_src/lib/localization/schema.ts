@@ -31,9 +31,15 @@ export const schemaText = createDictionary({
     'fr-fr': 'Nom du tableau',
     'uk-ua': 'Назва таблиці',
     'de-ch': 'Tabellennamen',
+    'es-es': '',
   },
   withoutTable: {
     'en-us': 'Without Table',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   schemaConfig: {
     'en-us': 'Schema Config',
@@ -89,6 +95,7 @@ export const schemaText = createDictionary({
     'fr-fr': 'Base de données',
     'ru-ru': 'База данных',
     'uk-ua': 'База даних',
+    'es-es': '',
   },
   setScope: {
     'en-us': 'Set Scope',
@@ -184,6 +191,7 @@ export const schemaText = createDictionary({
     'fr-fr': 'Longueur',
     'uk-ua': 'Довжина',
     'de-ch': 'Länge',
+    'ru-ru': '',
   },
   readOnly: {
     'en-us': 'Read-only',
@@ -223,12 +231,15 @@ export const schemaText = createDictionary({
     'fr-fr': "Défini par l'utilisateur",
     'uk-ua': 'Визначений користувачем',
     'de-ch': 'Benutzerdefiniert',
+    'ru-ru': '',
   },
   addLanguage: {
     'en-us': 'Add Language',
     'fr-fr': 'Ajouter une langue',
     'uk-ua': 'Додати мову',
     'de-ch': 'Sprache hinzuzufügen',
+    'es-es': '',
+    'ru-ru': '',
   },
   databaseColumn: {
     'en-us': 'Database Column',
@@ -252,6 +263,7 @@ export const schemaText = createDictionary({
     'fr-fr': "Nom de l'autre côté",
     'uk-ua': "Ім'я на іншій стороні",
     'de-ch': 'Name der anderen Seite',
+    'es-es': '',
   },
   dependent: {
     'en-us': 'Dependent',
@@ -347,6 +359,7 @@ export const schemaText = createDictionary({
     'fr-fr': 'Aller en haut',
     'uk-ua': 'Перейти вгору',
     'de-ch': 'Nach oben',
+    'ru-ru': '',
   },
   idField: {
     'en-us': 'ID Field',
@@ -446,11 +459,26 @@ export const schemaText = createDictionary({
   },
   sortByHiddenFields: {
     'en-us': 'Sort by hidden fields',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   hidden: {
     'en-us': 'hidden',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   customFieldFormat: {
     'en-us': 'Custom Field Format',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
 } as const);

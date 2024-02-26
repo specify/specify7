@@ -77,6 +77,7 @@ export const treeText = createDictionary({
     'de-ch': `
       Der Vorgang konnte aufgrund der folgenden Fehler nicht ausgeführt werden:
     `,
+    'uk-ua': 'Неможливо перейти до синоніма',
   },
   moveNode: {
     'en-us': 'Move node',
@@ -159,7 +160,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Невозможно объединить в синонимы',
     'es-es': 'No se puede fusionar en sinónimos',
     'fr-fr': 'Impossible de fusionner avec des synonymes',
-    'uk-ua': 'Неможливо злити в синоніми',
+    'uk-ua': 'Не можна об’єднувати в синоніми',
     'de-ch': 'Kann nicht zu Synonymen zusammenführen',
   },
   cantSynonymizeSynonym: {
@@ -293,6 +294,7 @@ export const treeText = createDictionary({
       Der {treeName:string}-Knoten "{nodeName:string}" wird zu einem Synonym von
       "{synonymName:string}".
     `,
+    'uk-ua': 'ЗАЧИНЕНО',
   },
   desynonymizeNode: {
     'en-us': 'Desynonymize node',
@@ -316,6 +318,7 @@ export const treeText = createDictionary({
       "{nodeName:string}" wird nicht mehr ein Synonym von
       "{synonymName:string}" sein.
     `,
+    'uk-ua': 'Це призведе до остаточного видалення наступного ресурсу',
   },
   acceptedName: {
     'en-us': 'Preferred: {name:string}',
@@ -393,6 +396,8 @@ export const treeText = createDictionary({
     'ru-ru': 'Количество прямых {collectionObjectTable:string}',
     'es-es': 'Recuento directo de {collectionObjectTable:string}',
     'de-ch': 'Direkte {collectionObjectTable:string} Anzahl',
+    'fr-fr': 'Impossible de passer à un synonyme',
+    'uk-ua': 'Неможливо перейти до синоніма',
   },
   indirectCollectionObjectCount: {
     comment: 'Example: Indirect Collection Object count',
@@ -449,5 +454,6 @@ export const treeText = createDictionary({
     'es-es': 'Sincronizar',
     'fr-fr': 'Synchroniser',
     'uk-ua': 'Синхронізувати',
+    'ru-ru': 'Это приведет к безвозвратному удалению следующего ресурса',
   },
 } as const);
