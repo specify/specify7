@@ -21,7 +21,7 @@ export const interactionsText = createDictionary({
     'en-us': 'Add Items',
     'ru-ru': 'Добавить элементы',
     'es-es': 'Añadir elementos',
-    'fr-fr': 'Tout sélectionner',
+    'fr-fr': 'Ajouter des articles',
     'uk-ua': 'Додати',
     'de-ch': 'Elemente hinzufügen',
   },
@@ -31,7 +31,7 @@ export const interactionsText = createDictionary({
     'es-es': 'Devuelve {table:string}',
     'fr-fr': '{table:string} Retour',
     'uk-ua': 'Повернення {table:string}',
-    'de-ch': 'nicht katalogisiert',
+    'de-ch': '{table:string} Datensätze',
   },
   preparationsNotFoundFor: {
     'en-us': 'No preparations were found for the following records:',
@@ -40,7 +40,7 @@ export const interactionsText = createDictionary({
     'fr-fr':
       "Aucune préparation n'a été trouvée pour les enregistrements suivants :",
     'ru-ru': 'Никаких приготовлений не обнаружено для следующих записей:',
-    'uk-ua': 'Не знайдено жодних препаратів для таких записів:',
+    'uk-ua': 'Не було знайдено жодної підготовки для таких записів:',
   },
   preparationsNotAvailableFor: {
     'en-us': 'No preparations are available for the following records:',
@@ -50,7 +50,7 @@ export const interactionsText = createDictionary({
       Aucune préparation n'est disponible pour les enregistrements suivants :
     `,
     'ru-ru': 'Для следующих записей подготовка невозможна:',
-    'uk-ua': 'Продовжуйте без підготовки',
+    'uk-ua': 'Продовжити',
   },
   problemsFound: {
     'en-us': 'There are problems with the entry:',
@@ -158,7 +158,7 @@ export const interactionsText = createDictionary({
     'en-us': 'Resolve',
     'ru-ru': 'Разрешить',
     'es-es': 'Resolver',
-    'fr-fr': 'Les enregistrements [X0X] [X25X] ont été renvoyés et enregistrés',
+    'fr-fr': 'Résoudre',
     'uk-ua': 'Вирішити',
     'de-ch': 'Lösen',
   },
@@ -252,7 +252,7 @@ export const interactionsText = createDictionary({
     'fr-fr': '{giftTable:string} enregistrements',
     'ru-ru': '{giftTable:string} записи',
     'uk-ua': '{giftTable:string} записи',
-    'de-ch': 'nicht katalogisiert',
+    'de-ch': '{giftTable:string} Datensätze',
   },
   exchanges: {
     comment: 'Example: Exchange In / Exchnage Out records',
@@ -368,6 +368,6 @@ export const interactionsText = createDictionary({
     'es-es': 'Continuar',
     'fr-fr': 'Continuer sans préparation',
     'ru-ru': 'Продолжать',
-    'uk-ua': 'Продовжуйте без підготовки',
+    'uk-ua': 'Продовжити',
   },
 } as const);

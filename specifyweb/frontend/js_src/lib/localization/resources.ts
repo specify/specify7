@@ -496,14 +496,6 @@ export const resourcesText = createDictionary({
     'ru-ru': '',
     'uk-ua': '',
   },
-  promptField: {
-    'en-us': 'Prompt field',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'ru-ru': '',
-    'uk-ua': '',
-  },
   addField: {
     'en-us': 'Add field',
     'de-ch': '',

@@ -60,7 +60,7 @@ export const mergingText = createDictionary({
   nRecords: {
     'en-us': '{count:number|formatted} records',
     'ru-ru': '{count:number|formatted} записи',
-    'de-ch': 'nicht katalogisiert',
+    'de-ch': '{count:number|formatted} Datensätze',
     'es-es': '{count:number|formatted} registros',
     'fr-fr': '{count:number|formatted} enregistrements',
     'uk-ua': '{count:number|formatted} записи',
