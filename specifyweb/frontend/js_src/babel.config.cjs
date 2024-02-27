@@ -6,6 +6,11 @@
 
 'use strict';
 
+/*
+ * Not using ESM due to Jest error:
+ * Error while loading config - You appear to be using a native ECMAScript module configuration file, which is only supported when running Babel asynchronously.
+ * May be fixed after updating dependencies
+ */
 module.exports = {
   env: {
     test: {

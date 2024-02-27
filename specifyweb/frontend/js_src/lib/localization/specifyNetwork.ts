@@ -73,14 +73,6 @@ export const specifyNetworkText = createDictionary({
     'ru-ru': 'Дата сбора',
     'uk-ua': 'Дата збору',
   },
-  mapDetails: {
-    'en-us': 'Details',
-    'de-ch': 'Einzelheiten',
-    'es-es': 'Detalles',
-    'fr-fr': 'Détails',
-    'ru-ru': 'Подробности',
-    'uk-ua': 'Подробиці',
-  },
   mapDescription: {
     'en-us': `
       This map shows occurrences of this taxon from the iDigBio and GBIF
@@ -208,11 +200,11 @@ export const specifyNetworkText = createDictionary({
   },
   searchForInstitution: {
     'en-us': 'Search for your institution:',
-    'de-ch': 'Stellen Sie eine Verbindung zu GBIF her',
-    'es-es': 'Busque su institución:',
-    'fr-fr': 'Connectez-vous au GBIF',
-    'ru-ru': 'Подключиться к ГБИФ',
-    'uk-ua': 'Підключіться до GBIF',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   institutionDistributionMap: {
     'en-us': `

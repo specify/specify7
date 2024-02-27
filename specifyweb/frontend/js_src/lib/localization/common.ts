@@ -119,11 +119,11 @@ export const commonText = createDictionary({
   },
   delete: {
     'en-us': 'Delete',
-    'ru-ru': 'Конец',
     'es-es': 'Borrar',
-    'fr-fr': 'Fin',
-    'uk-ua': 'Кінець',
+    'fr-fr': 'Supprimer',
+    'uk-ua': 'Видалити',
     'de-ch': 'Löschen',
+    'ru-ru': '',
   },
   next: {
     'en-us': 'Next',
@@ -153,7 +153,7 @@ export const commonText = createDictionary({
     'en-us': 'Tools',
     'ru-ru': 'Инструменты',
     'es-es': 'Herramientas',
-    'fr-fr': 'Langue',
+    'fr-fr': 'Outils',
     'uk-ua': 'Інструменти',
     'de-ch': 'Tools',
   },
@@ -266,11 +266,11 @@ export const commonText = createDictionary({
   },
   fullDate: {
     'en-us': 'Full Date',
-    'ru-ru': 'Расширить все',
     'es-es': 'Fecha completa',
-    'fr-fr': 'Développer tout',
-    'uk-ua': 'Розгорнути все',
     'de-ch': 'Vollständiges Datum',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   view: {
     comment: 'Verb',
@@ -286,9 +286,9 @@ export const commonText = createDictionary({
     'en-us': '(opens in a new tab)',
     'ru-ru': '(откроется в новой вкладке)',
     'es-es': '(se abre en una pestaña nueva)',
-    'fr-fr': 'Copié!',
     'uk-ua': '(відкривається в новій вкладці)',
     'de-ch': '(Öffnet sich in einer neuen Registerkarte)',
+    'fr-fr': '',
   },
   openInNewTab: {
     comment: 'Used in a button that opens a link in a new tab',
@@ -570,7 +570,7 @@ export const commonText = createDictionary({
     'en-us': 'Expand All',
     'ru-ru': 'Расширить все',
     'es-es': 'Desplegar todo',
-    'fr-fr': 'Développer tout',
+    'fr-fr': 'Tout Agrandir',
     'uk-ua': 'Розгорнути все',
     'de-ch': 'Alle aufklappen',
   },
@@ -642,8 +642,8 @@ export const commonText = createDictionary({
   },
   colonHeader: {
     comment: `
-      Example usage: "Choose collection:". Used only if there is nothing else
-      on this line after the colon heading
+      Example usage: "Choose collection:". Used only if there is nothing else on
+      this line after the colon heading
     `,
     'en-us': '{header:string}:',
     'ru-ru': '{header:string}:',
@@ -677,16 +677,26 @@ export const commonText = createDictionary({
   bulkSelect: {
     'en-us': 'Bulk Select',
     'es-es': 'Selección masiva',
-    'fr-fr': 'Outil',
-    'ru-ru': 'Инструмент',
-    'uk-ua': 'Інструмент',
     'de-ch': 'Mehrfachauswahl',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   bulkReturn: {
     'en-us': 'Bulk Return',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   bulkResolve: {
     'en-us': 'Bulk Resolve',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   timeRemaining: {
     'en-us': 'Time remaining',
@@ -698,23 +708,28 @@ export const commonText = createDictionary({
   },
   unlimited: {
     'en-us': 'Unlimited',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   change: {
     comment: 'Verb',
     'en-us': 'Change',
     'de-ch': 'Ändern',
     'es-es': 'Cambiar',
-    'fr-fr': 'Tous',
-    'ru-ru': 'Все',
-    'uk-ua': 'все',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   dontShowAgain: {
     'en-us': "Don't show this again",
-    'de-ch': 'Wählen Sie Dateien aus oder ziehen Sie sie hierher',
     'es-es': 'No volver a mostrar esto',
     'fr-fr': 'Ne montre plus ça',
     'ru-ru': 'Больше не показывать это',
     'uk-ua': 'Не показувати це знову',
+    'de-ch': '',
   },
   multipleFilePickerMessage: {
     'en-us': 'Choose files or drag them here',

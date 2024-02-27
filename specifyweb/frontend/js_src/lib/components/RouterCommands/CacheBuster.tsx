@@ -23,7 +23,7 @@ export const clearUrlCache = async (url: string): Promise<void> =>
     method: 'HEAD',
     cache: 'no-cache',
     errorMode: 'silent',
-    expectedErrors: [Http.NOT_FOUND],
+    expectedErrors: [Http.NOT_FOUND, Http.NOT_ALLOWED],
   }).then(() => console.log(`Cleaned cache from ${url}`));
 
 export function CacheBuster(): JSX.Element | null {

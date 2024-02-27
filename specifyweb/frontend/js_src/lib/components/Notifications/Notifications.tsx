@@ -46,15 +46,17 @@ export function Notifications({
 
   function handleClearAll() {
     if (notifications === undefined) return;
-    notifications.forEach((notification) => {
-      ping('/notifications/delete/', {
-        method: 'POST',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        body: formData({ message_id: notification.messageId }),
-        errorMode: 'dismissible',
-      });
+    const message_ids = notifications.map(({ messageId }) => messageId);
+
+    ping('/notifications/delete_all/', {
+      method: 'POST',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      body: formData({ message_ids }),
+      errorMode: 'dismissible',
+    }).then(() => {
+      // After the notifications are deleted on the server, clear them from the local state
+      setNotifications([]);
     });
-    setNotifications([]);
   }
 
   return (

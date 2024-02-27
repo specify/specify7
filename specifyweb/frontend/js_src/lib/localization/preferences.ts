@@ -501,9 +501,9 @@ export const preferencesText = createDictionary({
     'en-us': 'Query Combo Box',
     'ru-ru': 'Поле автозаполнения',
     'es-es': 'Cuadro combinado de consulta',
-    'fr-fr': 'Zone de liste déroulante de requête',
     'uk-ua': 'Поле зі списком запитів',
-    'de-ch': 'Anzahl der leeren Zeilen am Ende',
+    'de-ch': '',
+    'fr-fr': '',
   },
   searchAlgorithm: {
     'en-us': 'Search Algorithm',
@@ -593,7 +593,6 @@ export const preferencesText = createDictionary({
       Buscar valores que contengan una cadena de consulta determinada (no
       distingue entre mayúsculas y minúsculas).
     `,
-    'fr-fr': 'le menu de navigation',
     'uk-ua': `
       Пошук значень, які містять заданий рядок запиту (незалежно від регістру).
     `,
@@ -601,6 +600,7 @@ export const preferencesText = createDictionary({
       Suchen Sie nach Werten, die eine bestimmte Abfragezeichenfolge enthalten
       (ohne Berücksichtigung der Groß- und Kleinschreibung).
     `,
+    'fr-fr': '',
   },
   containsCaseSensitiveDescription: {
     'en-us':
@@ -656,7 +656,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Resaltar subcadena coincidente',
     'fr-fr': 'Mettre en surbrillance la sous-chaîne correspondante',
     'uk-ua': 'Виділіть відповідний підрядок',
-    'de-ch': 'Akzentfarbe 5',
+    'de-ch': '',
   },
   languageDescription: {
     'en-us': 'Determines field captions, usage notes and table captions',
@@ -804,7 +804,6 @@ export const preferencesText = createDictionary({
       corrupción de la base de datos. Por favor asegúrese de saber lo que está
       haciendo
     `,
-    'fr-fr': "Couleur du bouton d'information",
     'uk-ua': `
       ПОПЕРЕДЖЕННЯ: увімкнення цієї функції може призвести до втрати даних або
       пошкодження бази даних. Переконайтеся, що ви знаєте, що робите
@@ -813,6 +812,7 @@ export const preferencesText = createDictionary({
       ACHTUNG: Die Aktivierung kann zu Datenverlust oder Datenbankbeschädigung
       führen. Bitte stellen Sie sicher, dass Sie wissen, was Sie tun
     `,
+    'fr-fr': '',
   },
   adminsOnlyPreference: {
     'en-us': "You don't have permission to change this option",
@@ -848,6 +848,11 @@ export const preferencesText = createDictionary({
   },
   sidebarTheme: {
     'en-us': 'Sidebar theme',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   darkForeground: {
     'en-us': 'Foreground (dark theme)',
@@ -981,10 +986,7 @@ export const preferencesText = createDictionary({
       Ви можете рухатися в протилежному напрямку, натискаючи
       <key>Shift</key>+<key>Tab</key>
     `,
-    'de-ch': `
-      Eine Liste von Trennzeichen, die zusätzlich zu den oben definierten
-      verwendet werden sollen. Geben Sie ein Trennzeichen pro Zeile ein
-    `,
+    'de-ch': '',
   },
   column: {
     'en-us': 'Column',
@@ -1007,9 +1009,9 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Направление движения при нажатии клавиши <key>Enter</key>',
     'es-es':
       'Dirección de movimiento cuando se presiona la tecla <key>Enter</key>',
-    'fr-fr': "Afficher un nouvel avertissement sur l'ensemble de données",
     'uk-ua': 'Напрямок руху, коли натиснуто клавішу <key>Enter</key>',
     'de-ch': 'Bewegungsrichtung, wenn die Taste <key>Enter</key> gedrückt wird',
+    'fr-fr': '',
   },
   enterMoveDirectionDescription: {
     'en-us': `
@@ -1103,9 +1105,19 @@ export const preferencesText = createDictionary({
   },
   clearQueryFiltersDescription: {
     'en-us': 'Clears all query filters when running a Report from a Form',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   queryParamtersFromForm: {
     'en-us': 'Show query filters when running a Report from a Form',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   autoGrowAutoComplete: {
     'en-us': 'Allow autocomplete to grow as wide as need',
@@ -1171,15 +1183,15 @@ export const preferencesText = createDictionary({
     'es-es': 'Inercia panorámica',
     'fr-fr': 'Inertie du bac',
     'uk-ua': 'Інерція панорами',
-    'de-ch': 'Anhang-Vorschaumodus',
+    'de-ch': '',
   },
   mouseDrags: {
     'en-us': 'Mouse drags',
     'ru-ru': 'Мышь может двигать карту',
     'es-es': 'Arrastrar con el ratón',
-    'fr-fr': 'Mettre en surbrillance la sous-chaîne correspondante',
     'uk-ua': 'Мишка тягне',
     'de-ch': 'Maus zieht',
+    'fr-fr': '',
   },
   scrollWheelZoom: {
     'en-us': 'Scroll wheel zoom',
@@ -1401,7 +1413,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Formato del encabezado de formulario',
     'fr-fr': "Format d'en-tête de formulaire",
     'uk-ua': 'Формат заголовка форми',
-    'de-ch': 'Detaillierte Ansicht',
+    'de-ch': '',
   },
   iconAndTableName: {
     'en-us': 'Icon and table name',
@@ -1437,11 +1449,11 @@ export const preferencesText = createDictionary({
   },
   searchCaseSensitive: {
     'en-us': 'Case-sensitive search',
-    'ru-ru': 'С учетом регистра',
     'es-es': 'Búsqueda distinguiendo entre mayúsculas y minúsculas',
     'fr-fr': 'Recherche sensible à la casse',
     'uk-ua': 'Пошук з урахуванням регістру',
     'de-ch': 'Groß- und Kleinschreibung beachtende Suche',
+    'ru-ru': '',
   },
   searchField: {
     'en-us': 'Search field',
@@ -1562,10 +1574,10 @@ export const preferencesText = createDictionary({
   bottom: {
     'en-us': 'Bottom',
     'es-es': 'Abajo',
-    'fr-fr': 'Inertie du bac',
     'ru-ru': 'Нижний',
     'uk-ua': 'Дно',
     'de-ch': 'Unten',
+    'fr-fr': '',
   },
   left: {
     'en-us': 'Left',
@@ -1719,28 +1731,43 @@ export const preferencesText = createDictionary({
   },
   alwaysUseQueryBuilder: {
     'en-us': 'Always use query builder search inside of search form',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   localizeResourceNames: {
     'en-us': 'Localize the names of recognized app resources',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   splitLongXml: {
     'en-us': 'Split long lines of XML into multiple lines',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   url: {
     'en-us': 'URL',
     'de-ch': 'URL',
     'es-es': 'URL',
     'fr-fr': 'URL',
-    'ru-ru': 'Выберите вложение',
     'uk-ua': 'URL',
+    'ru-ru': '',
   },
   pickAttachment: {
     'en-us': 'Pick an attachment',
-    'de-ch': 'Datensatz wird standardmäßig geöffnet',
     'es-es': 'Elegir un archivo adjunto',
     'fr-fr': 'Choisissez une pièce jointe',
     'ru-ru': 'Выберите вложение',
     'uk-ua': 'Виберіть вкладення',
+    'de-ch': '',
   },
   attachmentFailed: {
     'en-us': 'The attachment failed to load.',
@@ -1802,22 +1829,27 @@ export const preferencesText = createDictionary({
   },
   showLineNumber: {
     'en-us': 'Show query result line number',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   saveButtonColor: {
     'en-us': 'Save button color',
     'de-ch': 'Schaltflächenfarbe speichern',
     'es-es': 'Guardar el color del botón',
     'fr-fr': 'Enregistrer la couleur du bouton',
-    'ru-ru': 'Цвет кнопки информации',
-    'uk-ua': 'Колір інформаційної кнопки',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   secondaryButtonColor: {
     'en-us': 'Secondary button color',
-    'de-ch': 'Farbe der Erfolgsschaltfläche',
     'es-es': 'Color de botón secundario',
     'fr-fr': 'Couleur du bouton secondaire',
     'ru-ru': 'Цвет дополнительной кнопки',
     'uk-ua': 'Колір вторинної кнопки',
+    'de-ch': '',
   },
   secondaryLightButtonColor: {
     'en-us': 'Secondary light button color',
@@ -1861,6 +1893,11 @@ export const preferencesText = createDictionary({
   },
   openAsReadOnly: {
     'en-us': 'Open all records in read-only mode',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   displayBasicView: {
     'en-us': 'Display basic view',
@@ -1892,7 +1929,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Modo de vista previa de adjunto',
     'fr-fr': 'Mode aperçu des pièces jointes',
     'ru-ru': 'Режим предварительного просмотра вложений',
-    'uk-ua': 'Колір кнопки небезпеки',
+    'uk-ua': '',
   },
   fullResolution: {
     'en-us': 'Full Resolution',
