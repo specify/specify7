@@ -47,6 +47,17 @@ export type BlockerWithResource = {
   readonly message: string;
 };
 
+export const propagateBlockerEvents = (
+  resource: SpecifyResource<AnySchema>
+) => {
+  if (resource.parent) blockerEvents.trigger('change', resource.parent);
+  if (
+    resource.collection?.related !== undefined &&
+    resource.collection.related !== resource.parent
+  )
+    blockerEvents.trigger('change', resource.collection.related);
+};
+
 export function useSaveBlockers(
   resource: SpecifyResource<AnySchema> | undefined,
   field: LiteralField | Relationship | undefined

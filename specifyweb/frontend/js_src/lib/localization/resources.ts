@@ -157,9 +157,9 @@ export const resourcesText = createDictionary({
     'en-us': 'Record Formatters',
     'ru-ru': 'Форматировщики записей',
     'es-es': 'Formateadores de registros',
-    'fr-fr': 'Couches de brochures',
     'uk-ua': 'Форматери записів',
     'de-ch': 'Datensatz-Formatierer',
+    'fr-fr': '',
   },
   formatter: {
     'en-us': 'Formatter',
@@ -490,14 +490,6 @@ export const resourcesText = createDictionary({
   },
   urlPart: {
     'en-us': 'URL part',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'ru-ru': '',
-    'uk-ua': '',
-  },
-  promptField: {
-    'en-us': 'Prompt field',
     'de-ch': '',
     'es-es': '',
     'fr-fr': '',

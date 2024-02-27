@@ -91,11 +91,11 @@ export const mainText = createDictionary({
   },
   clickToSeeDetails: {
     'en-us': 'Click to see details',
-    'de-ch': 'Es tut uns leid, es ist etwas schief gelaufen',
     'es-es': 'Haz clic para ver los detalles',
-    'fr-fr': "Nous sommes désolés, quelque chose s'est mal passé",
-    'ru-ru': 'Сожалеем, что-то пошло не так',
     'uk-ua': 'Натисніть, щоб переглянути деталі',
+    'de-ch': '',
+    'fr-fr': '',
+    'ru-ru': '',
   },
   errorOccurredDescription: {
     'en-us': `

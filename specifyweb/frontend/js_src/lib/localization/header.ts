@@ -22,10 +22,10 @@ export const headerText = createDictionary({
     comment: 'As in "main menu"',
     'en-us': 'Main',
     'es-es': 'Inicio',
-    'fr-fr': 'Le cache a été vidé. Veuillez recharger la page.',
     'ru-ru': 'Основной',
     'uk-ua': 'Головна',
     'de-ch': 'Allgemein',
+    'fr-fr': '',
   },
   currentCollection: {
     comment: 'Example: Current Collection',
@@ -147,9 +147,9 @@ export const headerText = createDictionary({
     'en-us': 'Label Name',
     'ru-ru': 'Название ярлыка',
     'es-es': 'Nombre de la etiqueta',
-    'fr-fr': 'Outils administratifs',
     'uk-ua': 'Назва бірки',
     'de-ch': 'Etikett Name',
+    'fr-fr': '',
   },
   reportName: {
     'en-us': 'Report Name',
@@ -203,9 +203,9 @@ export const headerText = createDictionary({
     'en-us': 'Choose DwCA',
     'ru-ru': 'Выберите ДвКА',
     'es-es': 'Elija un DwCA',
-    'fr-fr': 'Nom du rapport',
     'uk-ua': 'Виберіть DwCA',
     'de-ch': 'DwCA wählen',
+    'fr-fr': '',
   },
   dwcaResource: {
     'en-us': 'DwCA Resource',
