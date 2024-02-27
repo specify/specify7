@@ -439,7 +439,7 @@ msgstr ""
 msgid "unavailableWhileEditing"
 msgstr "Cette action nécessite que toutes les modifications soient enregistrées"
 
-#: components/WorkBench/CellMeta.ts:381
+#: components/WorkBench/CellMeta.ts:386
 #. Used in: Components > Work Bench > Cell Meta
 msgid "uploadUnavailableWhileHasErrors"
 msgstr ""

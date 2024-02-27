@@ -428,7 +428,7 @@ msgstr ""
 msgid "unavailableWhileEditing"
 msgstr "Esta acción requiere que se guarden todos los cambios"
 
-#: components/WorkBench/CellMeta.ts:381
+#: components/WorkBench/CellMeta.ts:386
 #. Used in: Components > Work Bench > Cell Meta
 msgid "uploadUnavailableWhileHasErrors"
 msgstr "Carga de datos no disponible si hay celdas con error de validación"

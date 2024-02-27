@@ -423,7 +423,7 @@ msgstr ""
 msgid "unavailableWhileEditing"
 msgstr "Это действие требует сохранения всех изменений"
 
-#: components/WorkBench/CellMeta.ts:381
+#: components/WorkBench/CellMeta.ts:386
 #. Used in: Components > Work Bench > Cell Meta
 msgid "uploadUnavailableWhileHasErrors"
 msgstr "Загрузка недоступна, в то время как в некоторых ячейках есть ошибки проверки"

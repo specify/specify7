@@ -498,7 +498,7 @@ msgstr ""
 msgid "unavailableWhileEditing"
 msgstr "Für diese Aktion müssen alle Änderungen gespeichert werden"
 
-#: components/WorkBench/CellMeta.ts:381
+#: components/WorkBench/CellMeta.ts:386
 #. Used in: Components > Work Bench > Cell Meta
 #, fuzzy
 msgid "uploadUnavailableWhileHasErrors"

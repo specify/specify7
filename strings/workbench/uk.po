@@ -422,7 +422,7 @@ msgstr "Перед перевіркою цього набору даних не�
 msgid "unavailableWhileEditing"
 msgstr "Ця дія вимагає збереження всіх змін"
 
-#: components/WorkBench/CellMeta.ts:381
+#: components/WorkBench/CellMeta.ts:386
 #. Used in: Components > Work Bench > Cell Meta
 msgid "uploadUnavailableWhileHasErrors"
 msgstr "Завантаження недоступне, оскільки в деяких клітинках є помилки перевірки"
