@@ -120,7 +120,7 @@ export function getFieldBlockers(
   resource: SpecifyResource<AnySchema>,
   field: LiteralField | Relationship
 ): RA<string> {
-  const blockers = saveBlockers.get(resource)?.blockers ?? [];
+  const blockers = getResourceBlockers(resource).blockers;
   return blockers
     .filter((blocker) => blocker.field === field)
     .map(({ message }) => message);
