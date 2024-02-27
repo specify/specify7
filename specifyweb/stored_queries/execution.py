@@ -10,7 +10,7 @@ from functools import reduce
 
 from django.conf import settings
 from django.db import transaction
-from sqlalchemy import sql, orm
+from sqlalchemy import sql, orm, func
 from sqlalchemy.sql.expression import asc, desc, insert, literal
 
 from specifyweb.stored_queries.group_concat import group_by_displayed_fields
@@ -588,7 +588,7 @@ def build_query(session, collection, user, tableid, field_specs,
     query = QueryConstruct(
         collection=collection,
         objectformatter=ObjectFormatter(collection, user, replace_nulls),
-        query=session.query().distinct() if distinct else session.query(id_field),
+        query=session.query(func.group_concat(id_field.op('SEPARATOR')(',')).label('ids')) if distinct else session.query(id_field),
     )
 
     tables_to_read = set([
@@ -614,7 +614,7 @@ def build_query(session, collection, user, tableid, field_specs,
                 .filter(models.RecordSetItem.recordSet == recordset)
 
     order_by_exprs = []
-    selected_fields = [id_field]
+    selected_fields = []
     predicates_by_field = defaultdict(list)
     #augment_field_specs(field_specs, formatauditobjs)
     for fs in field_specs:
