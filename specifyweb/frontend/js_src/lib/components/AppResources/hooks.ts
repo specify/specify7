@@ -209,7 +209,7 @@ function getResourceExtension(
   else if (mimeType.startsWith('jrxml')) return 'jrxml';
   else if (
     resource.name === 'preferences' &&
-    mimeType === 'text/x-java-properties'
+    mimeType === appResourceSubTypes.otherPropertiesResource.mimeType
   )
     return 'properties';
   else return 'txt';
