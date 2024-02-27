@@ -26,10 +26,6 @@ from ..permissions.permissions import check_table_permissions
 from ..specify.auditlog import auditlog
 from ..specify.models import Loan, Loanpreparation, Loanreturnpreparation
 
-from sqlalchemy.dialects import mysql
-logging.basicConfig()
-logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
-
 logger = logging.getLogger(__name__)
 
 SORT_TYPES = [None, asc, desc]
@@ -652,12 +648,6 @@ def build_query(session, collection, user, tableid, field_specs,
 
     if not distinct:
         query = group_by_displayed_fields(query, selected_fields)
-
-    dialect = mysql.dialect()
-    compiled = query.query.statement.compile(dialect=dialect, compile_kwargs={"literal_binds": True})
-    query_with_values = str(compiled)
-    print(query_with_values)
-    logger.debug(query_with_values)
 
     logger.debug("query: %s", query.query)
     return query.query, order_by_exprs
