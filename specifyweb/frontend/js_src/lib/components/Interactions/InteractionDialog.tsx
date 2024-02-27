@@ -277,7 +277,32 @@ export function InteractionDialog({
           <Dialog
             buttons={
               <>
-                <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+                {typeof itemCollection === 'object' ? (
+                  <Button.Secondary
+                    onClick={(): void => {
+                      itemCollection?.add(
+                        new itemCollection.table.specifyTable.Resource()
+                      );
+                      handleClose();
+                    }}
+                  >
+                    {interactionsText.addUnassociated()}
+                  </Button.Secondary>
+                ) : actionTable.name === 'Loan' &&
+                  !(
+                    state.type === 'MissingState' && prepsData?.length === 0
+                  ) ? (
+                  <Link.Secondary href={getResourceViewUrl('Loan')}>
+                    {interactionsText.withoutPreparations()}
+                  </Link.Secondary>
+                ) : undefined}
+                {actionTable.name === 'Gift' &&
+                  itemCollection === undefined && (
+                    <Link.Secondary href={getResourceViewUrl('Gift')}>
+                      {interactionsText.withoutPreparations()}
+                    </Link.Secondary>
+                  )}
+                <span className="-ml-2 flex-1" />
                 {state.type === 'MissingState' &&
                 prepsData?.length !== 0 &&
                 prepsData ? (
@@ -289,6 +314,7 @@ export function InteractionDialog({
                     {interactionsText.continue()}
                   </Button.Info>
                 ) : null}
+                <Button.DialogClose>{commonText.close()}</Button.DialogClose>
               </>
             }
             header={
@@ -300,28 +326,6 @@ export function InteractionDialog({
             }
             onClose={handleClose}
           >
-            {typeof itemCollection === 'object' ? (
-              <Button.Info
-                onClick={(): void => {
-                  itemCollection?.add(
-                    new itemCollection.table.specifyTable.Resource()
-                  );
-                  handleClose();
-                }}
-              >
-                {interactionsText.addUnassociated()}
-              </Button.Info>
-            ) : actionTable.name === 'Loan' &&
-              !(state.type === 'MissingState' && prepsData?.length === 0) ? (
-              <Link.Info href={getResourceViewUrl('Loan')}>
-                {interactionsText.withoutPreparations()}
-              </Link.Info>
-            ) : undefined}
-            {actionTable.name === 'Gift' && itemCollection === undefined && (
-              <Link.Info href={getResourceViewUrl('Gift')}>
-                {interactionsText.withoutPreparations()}
-              </Link.Info>
-            )}
             <details>
               <summary>
                 {interactionsText.byChoosingRecordSet({ count: totalCount })}
