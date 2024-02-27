@@ -13,6 +13,8 @@ from django.db import transaction
 from sqlalchemy import sql, orm
 from sqlalchemy.sql.expression import asc, desc, insert, literal
 
+from specifyweb.stored_queries.group_concat import group_by_displayed_fields
+
 from . import models
 from .format import ObjectFormatter
 from .query_construct import QueryConstruct
@@ -23,6 +25,10 @@ from ..notifications.models import Message
 from ..permissions.permissions import check_table_permissions
 from ..specify.auditlog import auditlog
 from ..specify.models import Loan, Loanpreparation, Loanreturnpreparation
+
+from sqlalchemy.dialects import mysql
+logging.basicConfig()
+logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
 logger = logging.getLogger(__name__)
 
@@ -612,6 +618,7 @@ def build_query(session, collection, user, tableid, field_specs,
                 .filter(models.RecordSetItem.recordSet == recordset)
 
     order_by_exprs = []
+    selected_fields = [id_field]
     predicates_by_field = defaultdict(list)
     #augment_field_specs(field_specs, formatauditobjs)
     for fs in field_specs:
@@ -619,7 +626,9 @@ def build_query(session, collection, user, tableid, field_specs,
 
         query, field, predicate = fs.add_to_query(query, formatauditobjs=formatauditobjs)
         if fs.display:
-            query = query.add_columns(query.objectformatter.fieldformat(fs, field))
+            formatted_field = query.objectformatter.fieldformat(fs, field)
+            query = query.add_columns(formatted_field)
+            selected_fields.append(formatted_field)
 
         if sort_type is not None:
             order_by_exprs.append(sort_type(field))
@@ -640,6 +649,15 @@ def build_query(session, collection, user, tableid, field_specs,
     else:
         where = reduce(sql.and_, (p for ps in predicates_by_field.values() for p in ps))
         query = query.filter(where)
+
+    if not distinct:
+        query = group_by_displayed_fields(query, selected_fields)
+
+    dialect = mysql.dialect()
+    compiled = query.query.statement.compile(dialect=dialect, compile_kwargs={"literal_binds": True})
+    query_with_values = str(compiled)
+    print(query_with_values)
+    logger.debug(query_with_values)
 
     logger.debug("query: %s", query.query)
     return query.query, order_by_exprs
