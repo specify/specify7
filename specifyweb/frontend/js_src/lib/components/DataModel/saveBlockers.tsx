@@ -24,7 +24,7 @@ const saveBlockers = new WeakMap<
 >();
 
 type FieldValue = number | string | string | null | undefined;
-type FieldsWithValue = { readonly [fieldName: string]: FieldValue };
+type FieldsWithValue = Readonly<Record<string, FieldValue>>;
 
 const previouslySetBlockers = new WeakMap<
   SpecifyResource<AnySchema>,
