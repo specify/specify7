@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-02-28 00:02+0000\n"
+"PO-Revision-Date: 2024-02-28 07:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "interactions/fr/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 #: components/Router/OverlayRoutes.tsx:86
 #, fuzzy
 msgid "interactions"
-msgstr "Interactions"
+msgstr "Les préparatifs"
 
 #. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
 #: components/Interactions/InteractionDialog.tsx:321
