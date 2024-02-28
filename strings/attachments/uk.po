@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-02-28 00:02+0000\n"
+"PO-Revision-Date: 2024-02-28 07:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "attachments/uk/>\n"
@@ -83,7 +83,7 @@ msgstr "Показати форму"
 #: components/Molecules/FilePicker.tsx:43
 #, fuzzy
 msgid "multipleFilesSelected"
-msgstr "Вибрано кілька файлів"
+msgstr "Вибрано декілька файлів"
 
 #. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:205
@@ -145,7 +145,7 @@ msgstr "Виконувався {action:string}, коли сталася пере
 #: components/AttachmentsBulkImport/utils.ts:473
 #, fuzzy
 msgid "matchError"
-msgstr "Помилка збігу"
+msgstr "Помилка відповідності"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:481
@@ -199,7 +199,8 @@ msgstr "Відкат перервано"
 #: components/AttachmentsBulkImport/Import.tsx:410
 #, fuzzy
 msgid "rollbackInterruptedDescription"
-msgstr "Тривав відкат, коли сталася перерва. Деякі файли могли бути видалені"
+msgstr ""
+"Виконувався відкат, коли сталася перерва. Можливо, деякі файли було видалено"
 
 #. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:227
@@ -225,7 +226,7 @@ msgstr "Почати завантаження вкладених файлів?"
 #, fuzzy
 msgid "beginUploadDescription"
 msgstr ""
-"Завантаження вкладень призведе до створення вкладень на сервері активів і в "
+"Завантаження вкладень призведе до створення вкладень на сервері ресурсів і в "
 "базі даних Specify"
 
 #. Used in: Components > Attachments Bulk Import > Action State
@@ -352,13 +353,13 @@ msgstr "Шукайте більше вкладень"
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:230
 #, fuzzy
 msgid "chooseFilesToGetStarted"
-msgstr "Щоб почати, виберіть файли або перетягніть їх сюди."
+msgstr "Виберіть файли або перетягніть їх сюди, щоб почати."
 
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:231
 #, fuzzy
 msgid "selectIdentifier"
-msgstr "Виберіть ідентифікатор для відповідності імені файлу."
+msgstr "Виберіть ідентифікатор, який буде відповідати назві файлів."
 
 #. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:224
