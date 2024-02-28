@@ -69,7 +69,7 @@ export const wbPlanText = createDictionary({
     'es-es': 'sin mapear',
     'fr-fr': 'Non mappé',
     'uk-ua': 'Не зіставлений',
-    'de-ch': 'Nicht zugeordnet',
+    'de-ch': 'Eine Zuordnung ist erforderlich',
   },
   mapped: {
     'en-us': 'Mapped',
@@ -213,7 +213,7 @@ export const wbPlanText = createDictionary({
       uniquement pour le téléchargement.
     `,
     'uk-ua': `
-      Якщо встановлено значення «Ігнорувати завжди», значення в цьому стовпці
+      Якщо встановлено значення «Завжди ігнорувати», значення в цьому стовпці
       ніколи не розглядатиметься для цілей зіставлення, лише для завантаження.
     `,
     'de-ch': `
