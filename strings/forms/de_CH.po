@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-02-28 00:02+0000\n"
+"PO-Revision-Date: 2024-02-28 07:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/forms/de_CH/>\n"
@@ -134,7 +134,7 @@ msgstr "Datumsgenauigkeit"
 #: components/FormPlugins/DatePrecisionPicker.tsx:48
 #, fuzzy
 msgid "monthYear"
-msgstr "Mo./Jahr"
+msgstr "Mo / Jahr"
 
 #. 🟥A placeholder for partial date field when "year" type is selected. Used in: Components > Form Plugins > Date Input
 #: components/FormPlugins/DateInput.tsx:109
@@ -253,7 +253,7 @@ msgstr "Dieses Formular wurde nicht gespeichert."
 #: components/Forms/Save.tsx:257
 #, fuzzy
 msgid "saveConflict"
-msgstr "Konflikt speichern"
+msgstr "Konflikte speichern"
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:260
@@ -338,10 +338,7 @@ msgstr "Dieses Plugin ist derzeit für Specify 7 nicht verfügbar"
 #: components/FormPlugins/index.tsx:272
 #, fuzzy
 msgid "wrongTableForPlugin"
-msgstr ""
-"Dieses Plugin kann nicht auf dem {currentTable:string}-Formular verwendet "
-"werden. Versuchen Sie, es in die {supportedTables:string}-Formulare zu "
-"verschieben."
+msgstr "Neu [X4X]"
 
 #. Used in: Components > Form Commands > Index
 #: components/FormCommands/index.tsx:151
@@ -395,7 +392,7 @@ msgstr "Ungültiger Wert"
 #: utils/parser/__tests__/parse.test.ts:210
 #, fuzzy
 msgid "requiredFormat"
-msgstr "Erforderliches Format: {format:string}."
+msgstr "Felder für die Übertragung konfigurieren ([X35X])"
 
 #. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Parse
 #: utils/parser/definitions.ts:49
@@ -736,7 +733,7 @@ msgstr "Konfigurieren Sie Dateneingabetabellen"
 #: components/DataEntryTables/Edit.tsx:130
 #, fuzzy
 msgid "configureInteractionTables"
-msgstr "Interaktionstabellen konfigurieren"
+msgstr "Konfigurieren Sie Interaktionstabellen"
 
 #. Used in: Components > Form Meta > Index
 #: components/FormMeta/index.tsx:64
