@@ -23,7 +23,8 @@ const saveBlockers = new WeakMap<
   ResourceBlockers
 >();
 
-type FieldsWithValue = IR<number | string | string | null | undefined>;
+type FieldValue = number | string | string | null | undefined;
+type FieldsWithValue = { readonly [fieldName: string]: FieldValue };
 
 const previouslySetBlockers = new WeakMap<
   SpecifyResource<AnySchema>,
@@ -159,19 +160,17 @@ export function getFieldBlockers(
     .map(({ message }) => message);
 }
 
-function usePreviouslySetBlocker<
-  FIELD_VALUE extends number | string | null | undefined
->(
+function usePreviouslySetBlocker(
   resource: SpecifyResource<AnySchema>,
   field: LiteralField | Relationship
-): GetSet<FIELD_VALUE> {
+): GetSet<FieldValue> {
   const fieldAndValue = {
     [field.name]: resource.get(field.name),
   };
   if (!previouslySetBlockers.has(resource))
     previouslySetBlockers.set(resource, fieldAndValue);
 
-  function setPreviouslySetBlocker(value: FIELD_VALUE): void {
+  function setPreviouslySetBlocker(value: FieldValue): void {
     previouslySetBlockers.set(resource, {
       ...previouslySetBlockers.get(resource),
       [field.name]: value,
