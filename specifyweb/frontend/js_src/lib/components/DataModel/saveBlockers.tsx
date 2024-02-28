@@ -7,7 +7,7 @@ import React from 'react';
 
 import { eventListener } from '../../utils/events';
 import { f } from '../../utils/functools';
-import type { GetOrSet, RA } from '../../utils/types';
+import type { GetOrSet, GetSet, IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { removeItem } from '../../utils/utils';
 import { softError } from '../Errors/assert';
@@ -21,6 +21,13 @@ import type { Collection } from './specifyTable';
 const saveBlockers = new WeakMap<
   SpecifyResource<AnySchema>,
   ResourceBlockers
+>();
+
+type FieldsWithValue = IR<number | string | string | null | undefined>;
+
+const previouslySetBlockers = new WeakMap<
+  SpecifyResource<AnySchema>,
+  FieldsWithValue
 >();
 
 type ResourceBlockers = {
@@ -120,6 +127,21 @@ export function setSaveBlockers(
     ...resourceBlockers.blockers.filter((blocker) => blocker.field !== field),
     ...blockers,
   ];
+
+  const fieldValue = resource.get(field.name);
+  const [previouslySet, setPreviouslySetBlocker] = usePreviouslySetBlocker(
+    resource,
+    field
+  );
+
+  /**
+   * If a consumer of this function attempts to reset the saveBlockers but the
+   * current value of the field matches the field value which was previously
+   * set, then the case should be ignored to not override any existing blockers
+   */
+  if (fieldValue === previouslySet && newBlockers.length === 0) return;
+  setPreviouslySetBlocker(fieldValue);
+
   saveBlockers.set(resource, {
     ...resourceBlockers,
     blockers: newBlockers,
@@ -135,6 +157,30 @@ export function getFieldBlockers(
   return blockers
     .filter((blocker) => blocker.field === field)
     .map(({ message }) => message);
+}
+
+function usePreviouslySetBlocker<
+  FIELD_VALUE extends number | string | null | undefined
+>(
+  resource: SpecifyResource<AnySchema>,
+  field: LiteralField | Relationship
+): GetSet<FIELD_VALUE> {
+  const fieldAndValue = {
+    [field.name]: resource.get(field.name),
+  };
+  if (!previouslySetBlockers.has(resource))
+    previouslySetBlockers.set(resource, fieldAndValue);
+
+  function setPreviouslySetBlocker(value: FIELD_VALUE): void {
+    previouslySetBlockers.set(resource, {
+      ...previouslySetBlockers.get(resource),
+      [field.name]: value,
+    });
+  }
+  return [
+    previouslySetBlockers.get(resource)![field.name],
+    setPreviouslySetBlocker,
+  ];
 }
 
 function getResourceBlockers(
