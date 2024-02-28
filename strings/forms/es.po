@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-02-28 00:02+0000\n"
+"PO-Revision-Date: 2024-02-28 07:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/forms/"
 "es/>\n"
@@ -499,7 +499,7 @@ msgstr "(eliminado)"
 #: components/FormSliders/RecordSet.tsx:455
 #, fuzzy
 msgid "duplicateRecordSetItem"
-msgstr "Duplicado {recordSetItemTable:string}"
+msgstr "Resultados adicionales omitidos"
 
 #. Used in: Components > Form Sliders > Record Set
 #: components/FormSliders/RecordSet.tsx:460
