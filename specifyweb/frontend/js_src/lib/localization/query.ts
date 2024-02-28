@@ -38,8 +38,8 @@ export const queryText = createDictionary({
     'es-es': 'Nueva consulta',
     'uk-ua': 'Новий запит',
     'de-ch': 'Neue Abfrage',
-    'fr-fr': '',
-    'ru-ru': '',
+    'fr-fr': 'Une liste de valeurs séparées par des virgules',
+    'ru-ru': 'Список значений, разделенных запятыми.',
   },
   searchFields: {
     comment: `
@@ -226,13 +226,13 @@ export const queryText = createDictionary({
       Eine Benachrichtigung wird angezeigt, wenn die Exportdatei vollständig und
       zum Download bereit ist.
     `,
-    'fr-fr': '',
-    'ru-ru': '',
+    'fr-fr': "à l'avenir",
+    'ru-ru': 'в будущем',
   },
   invalidPicklistValue: {
     comment: 'Used when selected pick list value is not one of allowed values',
     'en-us': '{value:string} (current, invalid value)',
-    'ru-ru': '{value:string} (текущее, неверное значение)',
+    'ru-ru': '{value:string} (текущее, недопустимое значение)',
     'es-es': '{value:string} (valor actual no válido)',
     'fr-fr': '{value:string} (valeur actuelle non valide)',
     'uk-ua': '{value:string} (поточне, недійсне значення)',
@@ -313,7 +313,7 @@ export const queryText = createDictionary({
     'es-es': 'Crear KML',
     'fr-fr': 'Créer un KML',
     'uk-ua': 'Створіть KML',
-    'de-ch': '',
+    'de-ch': 'Scrollen Sie zum Editor',
   },
   createRecordSet: {
     'en-us': 'Create {recordSetTable:string}',
@@ -327,9 +327,9 @@ export const queryText = createDictionary({
     'en-us': 'Save As',
     'es-es': 'Guardar como',
     'uk-ua': 'Зберегти як',
-    'de-ch': '',
-    'fr-fr': '',
-    'ru-ru': '',
+    'de-ch': 'Export nach KML nicht möglich',
+    'fr-fr': "Impossible d'exporter vers KML",
+    'ru-ru': 'Невозможно экспортировать в KML.',
   },
   anyRank: {
     'en-us': '(any rank)',
@@ -355,7 +355,7 @@ export const queryText = createDictionary({
     'es-es': 'Mover hacia abajo',
     'fr-fr': 'Descendre',
     'uk-ua': 'Рухатися вниз',
-    'de-ch': '',
+    'de-ch': 'Baumbewegung',
   },
   sort: {
     'en-us': 'Sort',
@@ -395,8 +395,8 @@ export const queryText = createDictionary({
     'es-es': 'Mostrar en resultados',
     'uk-ua': 'Показати в результатах',
     'de-ch': 'In Ergebnissen anzeigen',
-    'fr-fr': '',
-    'ru-ru': '',
+    'fr-fr': '(formaté)',
+    'ru-ru': '(отформатированный)',
   },
   aggregatedInline: {
     'en-us': '(aggregated)',
@@ -450,7 +450,7 @@ export const queryText = createDictionary({
       Використовуйте "_", щоб відповідати одному символу
     `,
     'de-ch': `
-      Verwenden Sie „%“, um eine beliebige Anzahl von Zeichen zu finden.
+      Verwenden Sie „%“, um eine beliebige Anzahl von Zeichen abzugleichen.
 
       Verwenden Sie „_“, um ein einzelnes Zeichen zuzuordnen
     `,
@@ -747,7 +747,7 @@ export const queryText = createDictionary({
     'fr-fr': 'Jours',
     'ru-ru': 'Дни',
     'uk-ua': 'днів',
-    'de-ch': '',
+    'de-ch': 'Wechseln Sie zu absolut',
   },
   week: {
     'en-us': 'Weeks',
@@ -865,14 +865,14 @@ export const queryText = createDictionary({
     'es-es': 'Cambiar a absoluto',
     'fr-fr': "Passer à l'absolu",
     'ru-ru': 'Переключиться на абсолют',
-    'uk-ua': '',
+    'uk-ua': 'Перейти до відносного',
   },
   scrollToEditor: {
     'en-us': 'Scroll to editor',
     'de-ch': 'Scrollen Sie zum Editor',
     'es-es': 'Desplazarse al editor',
     'uk-ua': 'Перейдіть до редактора',
-    'fr-fr': '',
-    'ru-ru': '',
+    'fr-fr': 'Faux ou vide',
+    'ru-ru': 'Ложь или пусто',
   },
 } as const);
