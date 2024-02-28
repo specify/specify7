@@ -163,11 +163,10 @@ async function formatField(
   const hasPermission = hasPathPermission(fields ?? [], 'read');
   const data = await fetchDistantRelated(parentResource, fields);
 
-  if (data === undefined) return { formatted: '' };
-  const { resource, field } = data;
-  if (field === undefined || resource === undefined) return { formatted: '' };
-
   if (hasPermission) {
+    if (data === undefined) return { formatted: '' };
+    const { resource, field } = data;
+    if (field === undefined || resource === undefined) return { formatted: '' };
     formatted = field.isRelationship
       ? isCycle
         ? ''
@@ -193,7 +192,7 @@ async function formatField(
       : (resource.get(field.name) as string | null) ?? undefined;
   } else
     formatted = tryBest
-      ? naiveFormatter(resource.specifyTable.name, resource.id)
+      ? naiveFormatter(parentResource.specifyTable.name, parentResource.id)
       : userText.noPermission();
 
   return {
