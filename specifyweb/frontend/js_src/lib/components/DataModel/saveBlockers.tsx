@@ -7,7 +7,7 @@ import React from 'react';
 
 import { eventListener } from '../../utils/events';
 import { f } from '../../utils/functools';
-import type { GetOrSet, GetSet, IR, RA } from '../../utils/types';
+import type { GetOrSet, GetSet, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { removeItem } from '../../utils/utils';
 import { softError } from '../Errors/assert';
