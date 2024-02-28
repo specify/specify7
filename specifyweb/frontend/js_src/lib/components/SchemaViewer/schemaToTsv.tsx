@@ -1,4 +1,5 @@
 import { formsText } from '../../localization/forms';
+import { reportsText } from '../../localization/report';
 import { schemaText } from '../../localization/schema';
 import { booleanFormatter } from '../../utils/parser/parse';
 import { getField } from '../DataModel/helpers';
@@ -12,12 +13,12 @@ export const schemaToTsv = (): string =>
   [
     [
       schemaText.table(),
-      schemaText.fieldLabel(),
+      reportsText.labels(),
       getField(tables.SpLocaleContainer, 'isSystem').label,
       getField(tables.SpLocaleContainer, 'isHidden').label,
       schemaText.tableId(),
       getField(tables.SpLocaleContainerItem, 'name').label,
-      schemaText.fieldLabel(),
+      reportsText.labels(),
       schemaText.description(),
       getField(tables.SpLocaleContainerItem, 'isHidden').label,
       schemaText.readOnly(),

@@ -354,7 +354,6 @@ export const backEndText = createDictionary({
       Nœud {operation:string} "{nodeName:string}" vers le parent synonymisé
       "{parentName:string}"
     `,
-    'ru-ru': 'Набор данных уже загружен',
     'uk-ua': `
       {operation:string} вузол "{nodeName:string}" до синонімічного
       батьківського елемента "{parentName:string}"
@@ -363,6 +362,7 @@ export const backEndText = createDictionary({
       {operation:string}-Knoten „{nodeName:string}“ zum synonymisierten
       übergeordneten Knoten „{parentName:string}“
     `,
+    'ru-ru': 'Набор данных уже загружен',
   },
   nodeSynonymizeToSynonymized: {
     'en-us': `
@@ -569,8 +569,8 @@ export const backEndText = createDictionary({
       або "jrxml/report"
     `,
     'de-ch': `
-      Bericht kann nicht erstellt werden: {mimeTypeField:string} ist weder
-      „jrxml/label“ noch „jrxml/report“
+      Bericht kann nicht erstellt werden: {mimeTypeField:string} ist nicht einer
+      von „jrxml/label“ oder „jrxml/report“
     `,
   },
   fieldNotRelationship: {

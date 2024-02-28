@@ -29,9 +29,9 @@ export const welcomeText = createDictionary({
     'en-us': 'Download Information',
     'ru-ru': 'Скачать информацию',
     'es-es': 'Descargar información',
+    'de-ch': 'Download Information',
     'fr-fr': 'À propos de Spécifier 7',
     'uk-ua': 'Про Specify 7',
-    'de-ch': 'Download Information',
   },
   taxonTiles: {
     'en-us': 'Taxon Tiles',
@@ -113,7 +113,7 @@ export const welcomeText = createDictionary({
       Lawrence, KS 66045 États-Unis
     `,
     'uk-ua': `
-      Укажіть консорціум колекцій <br />
+      Консорціум уточнення колекцій <br />
 
       Інститут біорізноманіття <br />
 
@@ -185,14 +185,15 @@ export const welcomeText = createDictionary({
     `,
     'uk-ua': `
       Програмне забезпечення Specify є продуктом консорціуму Specify Collections
-      Consortium, яким керують і фінансують установи-члени. Члени-засновники
-      Консорціуму включають: Організацію наукових і промислових досліджень
-      Співдружності (CSIRO), Consejo Superior de Investigaciones Sientíficas,
-      Датський консорціум музеїв, Muséum d'Histoire Naturelle Geneva,
-      Університет Флориди, Університет Канзасу та Університет Мічигану.
-      Консорціум діє відповідно до некомерційного, 501(c)3, податкового статусу
-      США Центру досліджень Канзаського університету. З 1996 по 2018 рік Specify
-      підтримувався грантами Національного наукового фонду США.
+      Consortium, яким керують і фінансують установи-члени. Серед
+      членів-засновників консорціуму: Організація наукових і промислових
+      досліджень Співдружності (CSIRO), Consejo Superior de Investigaciones
+      Sientíficas, Датський консорціум музеїв, Muséum d'Histoire Naturelle
+      Geneva, Університет Флориди, Університет Канзасу та Мічиганський
+      університет. Консорціум працює відповідно до некомерційного, 501(c)3,
+      податкового статусу США дослідницького центру Канзаського університету. З
+      1996 по 2018 роки Specify підтримувався грантами Національного наукового
+      фонду США.
     `,
     'de-ch': `
       Die Specify-Software ist ein Produkt des Specify Collections Consortiums,
@@ -231,10 +232,10 @@ export const welcomeText = createDictionary({
       v2.
     `,
     'uk-ua': `
-      Укажіть 7, Copyright 2023, Дослідницький центр Канзаського університету.
-      Specify поставляється без АБСОЛЮТНОЇ ГАРАНТІЇ. Це безкоштовне програмне
-      забезпечення з відкритим кодом, ліцензоване згідно з GNU General Public
-      License v2.
+      Укажіть 7, авторське право 2023, Дослідницький центр Канзаського
+      університету. Specify поставляється без АБСОЛЮТНОЇ ГАРАНТІЇ. Це
+      безкоштовне програмне забезпечення з відкритим кодом, ліцензоване згідно з
+      GNU General Public License v2.
     `,
     'de-ch': `
       Specify 7, Copyright 2023, University of Kansas Center for Research.

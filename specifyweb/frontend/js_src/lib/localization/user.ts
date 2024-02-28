@@ -149,8 +149,8 @@ export const userText = createDictionary({
     'ru-ru': 'Привет, {userName:string}!',
     'es-es': '¡Hola, {userName:string}!',
     'fr-fr': 'Bonjour, {userName:string} !',
-    'uk-ua': 'Новий пароль',
     'de-ch': 'Hallo, {userName:string}!',
+    'uk-ua': 'Новий пароль',
   },
   oicWelcomeMessage: {
     'en-us': `
@@ -220,9 +220,9 @@ export const userText = createDictionary({
     `,
     'uk-ua': `
       Наразі немає жодного користувача, пов’язаного з вашим обліковим записом
-      {providerName:string}. Якщо у вас є вказати ім’я користувача та пароль,
-      ви можете ввести їх нижче, щоб пов’язати цього користувача з обліковим
-      записом {providerName:string} для майбутніх входів.
+      {providerName:string}. Якщо у вас є вказане ім’я користувача та пароль,
+      ви можете ввести їх нижче, щоб пов’язати цього користувача з вашим
+      обліковим записом {providerName:string} для майбутніх входів.
     `,
     'de-ch': `
       Derzeit ist Ihrem {providerName:string}-Konto kein Specify-Benutzer
@@ -233,11 +233,11 @@ export const userText = createDictionary({
   },
   generateMasterKey: {
     'en-us': 'Generate Master Key',
-    'ru-ru': 'В учреждении должен быть хотя бы один администратор учреждения.',
     'es-es': 'Generar clave maestra',
     'fr-fr': 'Générer la clé principale',
-    'uk-ua': 'У закладі має бути принаймні один адміністратор установи',
     'de-ch': 'Masterschlüssel generieren',
+    'ru-ru': 'В учреждении должен быть хотя бы один администратор учреждения.',
+    'uk-ua': 'У закладі має бути принаймні один адміністратор установи',
   },
   userPassword: {
     'en-us': 'User Password',
@@ -331,9 +331,9 @@ export const userText = createDictionary({
     'en-us': 'Select one of the following collections:',
     'ru-ru': 'Выберите одну из следующих коллекций:',
     'es-es': 'Seleccione una de las siguientes colecciones:',
-    'fr-fr': "L'utilisateur actuel n'a pas d'agent attribué",
     'uk-ua': 'Виберіть одну з наступних колекцій:',
     'de-ch': 'Wählen Sie eine der folgenden Sammlungen:',
+    'fr-fr': "L'utilisateur actuel n'a pas d'agent attribué",
   },
   loginToProceed: {
     comment: 'Example: You can login to the Collection, to proceed:',
@@ -508,7 +508,7 @@ export const userText = createDictionary({
     'es-es': 'No puede revocar su propio estatus de administrador',
     'fr-fr': "Vous ne pouvez pas révoquer votre propre statut d'administrateur",
     'uk-ua': 'Ви не можете відкликати свій статус адміністратора',
-    'de-ch': 'Sie können Ihren eigenen Admin-Status nicht widerrufen',
+    'de-ch': 'Sie können Ihren eigenen Administratorstatus nicht widerrufen',
   },
   makeAdmin: {
     'en-us': 'Make Admin',
@@ -530,6 +530,7 @@ export const userText = createDictionary({
     'en-us': 'User must be saved as Manager first',
     'ru-ru': 'Сначала пользователя необходимо сохранить как менеджера.',
     'es-es': 'El usuario debe guardarse primero como administrador',
+    'de-ch': 'Der Benutzer muss zuerst als Manager gespeichert werden',
     'fr-fr': `
       Politiques personnalisées au niveau de l'établissement (s'appliquent à
       toutes les collections attribuées)
@@ -538,7 +539,6 @@ export const userText = createDictionary({
       Спеціальна політика на рівні установи (застосовується до всіх призначених
       колекцій)
     `,
-    'de-ch': 'Der Benutzer muss zuerst als Manager gespeichert werden',
   },
   users: {
     'en-us': 'User Accounts',
@@ -616,11 +616,11 @@ export const userText = createDictionary({
   },
   securityPanel: {
     'en-us': 'Security and Accounts',
-    'ru-ru': 'Сначала пользователя необходимо сохранить как менеджера.',
     'es-es': 'Seguridad y cuentas',
     'fr-fr': 'Sécurité et comptes',
     'uk-ua': 'Безпека та облікові записи',
     'de-ch': 'Sicherheit und Konten',
+    'ru-ru': 'Сначала пользователя необходимо сохранить как менеджера.',
   },
   userRoleLibrary: {
     'en-us': 'Institution Library of Role Templates',
@@ -628,7 +628,7 @@ export const userText = createDictionary({
     'es-es': 'Biblioteca institucional de plantillas de roles',
     'fr-fr': 'Bibliothèque institutionnelle de modèles de rôles',
     'uk-ua': 'Бібліотека шаблонів ролей установи',
-    'de-ch': 'Institutionsbibliothek mit Rollenvorlagen',
+    'de-ch': 'Bibliothek der Rollenvorlagen der Institution',
   },
   userRoles: {
     'en-us': 'User Roles',
@@ -643,16 +643,16 @@ export const userText = createDictionary({
     'ru-ru': '{collectionTable:string} Роли пользователей',
     'es-es': 'Roles de usuario de {collectionTable:string}',
     'fr-fr': '{collectionTable:string} Rôles des utilisateurs',
-    'uk-ua': '{collectionTable:string} Ролі користувачів',
+    'uk-ua': '{collectionTable:string} Ролі користувача',
     'de-ch': '{collectionTable:string} Benutzerrollen',
   },
   assignedUserRoles: {
     'en-us': 'Assigned User Roles',
-    'ru-ru': 'Переключиться на вертикальную компоновку',
     'es-es': 'Roles de usuario asignados',
     'fr-fr': 'Rôles utilisateur attribués',
     'uk-ua': 'Призначені ролі користувача',
     'de-ch': 'Zugewiesene Benutzerrollen',
+    'ru-ru': 'Переключиться на вертикальную компоновку',
   },
   rolePolicies: {
     'en-us': 'Role Permission Policies',
@@ -927,8 +927,7 @@ export const userText = createDictionary({
     `,
     'de-ch': `
       Es ist kein externer Identitätsanbieter konfiguriert. Einige davon können
-      Sie unter „Specify 7 Server Settings“ (Servereinstellungen angeben)
-      konfigurieren
+      Sie unter „Festlegen der 7 Servereinstellungen“ konfigurieren
     `,
   },
   legacyPermissions: {
@@ -985,21 +984,21 @@ export const userText = createDictionary({
     'en-us': 'Please set the following agents before proceeding:',
     'ru-ru': 'Прежде чем продолжить, установите следующие агенты:',
     'es-es': 'Configure los siguientes agentes antes de continuar:',
+    'uk-ua': 'Перш ніж продовжити, установіть такі агенти:',
+    'de-ch':
+      'Bitte legen Sie die folgenden Agenten fest, bevor Sie fortfahren:',
     'fr-fr': `
       L'utilisateur connecté n'a eu accès à aucune collection de cette base de
       données. Vous devez vous connecter en tant qu'autre utilisateur.
     `,
-    'uk-ua': 'Перш ніж продовжити, установіть такі агенти:',
-    'de-ch':
-      'Bitte legen Sie die folgenden Agenten fest, bevor Sie fortfahren:',
   },
   externalIdentityProviders: {
     'en-us': 'External identity providers:',
-    'ru-ru': 'Выберите одну из следующих коллекций:',
     'es-es': 'Proveedores de identidad externos:',
     'fr-fr': "Fournisseurs d'identité externes :",
-    'uk-ua': 'Виберіть одну з наступних колекцій:',
     'de-ch': 'Wählen Sie eine der folgenden Sammlungen:',
+    'ru-ru': 'Выберите одну из следующих коллекций:',
+    'uk-ua': 'Виберіть одну з наступних колекцій:',
   },
   allTables: {
     'en-us': 'All tables',
@@ -1118,8 +1117,8 @@ export const userText = createDictionary({
     'ru-ru': 'Переключиться на вертикальную компоновку',
     'es-es': 'Cambiar al diseño vertical',
     'fr-fr': "Passer à l'affichage vertical",
-    'uk-ua': 'Спочатку збережіть користувача',
     'de-ch': 'Wechseln Sie zum vertikalen Layout',
+    'uk-ua': 'Спочатку збережіть користувача',
   },
   advancedTables: {
     'en-us': 'Advanced tables',
