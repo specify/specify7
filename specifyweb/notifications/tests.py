@@ -25,7 +25,7 @@ class NotificationsTests(ApiTests):
         response = c.get('/notifications/messages/?since=2023-07-25T21:20:14.177591')
 
         mockResponse = [json.loads(testMessage.content)]
-        mockResponse[0]['message_id'] = 1
+        mockResponse[0]['message_id'] = testMessage.id
         mockResponse[0]['read'] = False
         mockResponse[0]['timestamp'] = currentTime.strftime('%Y-%m-%dT%H:%M:%S.%f')
 
