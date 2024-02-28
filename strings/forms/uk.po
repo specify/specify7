@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-02-28 00:02+0000\n"
+"PO-Revision-Date: 2024-02-28 07:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "forms/uk/>\n"
@@ -255,8 +255,8 @@ msgstr "Зберегти конфлікт"
 #, fuzzy
 msgid "saveConflictDescription"
 msgstr ""
-"Дані, показані на цій сторінці, були змінені іншим користувачем або на "
-"іншій вкладці браузера та застаріли. Сторінку потрібно перезавантажити, щоб "
+"Дані, показані на цій сторінці, були змінені іншим користувачем або на іншій "
+"вкладці браузера та застаріли. Сторінку необхідно перезавантажити, щоб "
 "запобігти збереженню суперечливих даних."
 
 #. Used in: Components > Forms > Save
@@ -499,7 +499,7 @@ msgstr "(видалено)"
 #: components/FormSliders/RecordSet.tsx:455
 #, fuzzy
 msgid "duplicateRecordSetItem"
-msgstr "Дублікат {recordSetItemTable:string}"
+msgstr "Додаткові результати пропущено"
 
 #. Used in: Components > Form Sliders > Record Set
 #: components/FormSliders/RecordSet.tsx:460
@@ -542,7 +542,7 @@ msgstr "Показати кнопку «Перенести вперед»."
 #: components/Forms/Save.tsx:227
 #, fuzzy
 msgid "carryForwardDescription"
-msgstr "Створіть новий запис із перенесеними певними полями"
+msgstr "Створіть новий запис із певними перенесеними полями"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:118
