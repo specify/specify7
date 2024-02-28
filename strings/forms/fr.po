@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-02-28 00:02+0000\n"
+"PO-Revision-Date: 2024-02-28 07:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/forms/"
 "fr/>\n"
@@ -15,7 +15,7 @@ msgstr ""
 #: components/Preferences/UserDefinitions.tsx:705
 #, fuzzy
 msgid "forms"
-msgstr "Formes"
+msgstr "Résultats supplémentaires omis"
 
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Components > Statistics > Results Dialog
 #: components/Atoms/DataEntry.tsx:153
