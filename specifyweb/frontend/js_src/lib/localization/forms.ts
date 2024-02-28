@@ -14,7 +14,7 @@ export const formsText = createDictionary({
     'en-us': 'Forms',
     'ru-ru': 'Формы',
     'es-es': 'Formularios',
-    'fr-fr': 'Formes',
+    'fr-fr': 'Résultats supplémentaires omis',
     'uk-ua': 'Форми',
     'de-ch': 'Formulare',
   },
@@ -200,7 +200,7 @@ export const formsText = createDictionary({
     'es-es': 'Lun / Año',
     'fr-fr': 'Lun / Année',
     'uk-ua': 'пн / рік',
-    'de-ch': 'Mo./Jahr',
+    'de-ch': 'Mo / Jahr',
   },
   yearPlaceholder: {
     comment:
@@ -352,7 +352,7 @@ export const formsText = createDictionary({
   },
   unsavedFormUnloadProtect: {
     'en-us': 'This form has not been saved.',
-    'ru-ru': 'Эта форма не сохранена.',
+    'ru-ru': 'Эта форма не сохранилась.',
     'es-es': 'Este formulario no ha sido guardado.',
     'fr-fr': "Ce formulaire n'a pas été enregistré.",
     'uk-ua': 'Ця форма не збережена.',
@@ -365,7 +365,7 @@ export const formsText = createDictionary({
     'es-es': 'Guardar conflicto',
     'fr-fr': 'Enregistrer le conflit',
     'uk-ua': 'Зберегти конфлікт',
-    'de-ch': 'Konflikt speichern',
+    'de-ch': 'Konflikte speichern',
   },
   saveConflictDescription: {
     'en-us': `
@@ -391,7 +391,7 @@ export const formsText = createDictionary({
     `,
     'uk-ua': `
       Дані, показані на цій сторінці, були змінені іншим користувачем або на
-      іншій вкладці браузера та застаріли. Сторінку потрібно перезавантажити,
+      іншій вкладці браузера та застаріли. Сторінку необхідно перезавантажити,
       щоб запобігти збереженню суперечливих даних.
     `,
     'de-ch': `
@@ -528,11 +528,7 @@ export const formsText = createDictionary({
       Цей плагін не можна використовувати у формі {currentTable:string}.
       Спробуйте перемістити його до форм {supportedTables:string}.
     `,
-    'de-ch': `
-      Dieses Plugin kann nicht auf dem {currentTable:string}-Formular verwendet
-      werden. Versuchen Sie, es in die {supportedTables:string}-Formulare zu
-      verschieben.
-    `,
+    'de-ch': 'Neu [X4X]',
   },
   wrongTableForCommand: {
     'en-us': `
@@ -604,7 +600,7 @@ export const formsText = createDictionary({
     'es-es': 'Formato requerido: {format:string}.',
     'fr-fr': 'Format requis : {format:string}.',
     'uk-ua': 'Необхідний формат: {format:string}.',
-    'de-ch': 'Erforderliches Format: {format:string}.',
+    'de-ch': 'Felder für die Übertragung konfigurieren ([X35X])',
   },
   inputTypeNumber: {
     'en-us': 'Value must be a number',
@@ -761,9 +757,9 @@ export const formsText = createDictionary({
   duplicateRecordSetItem: {
     comment: 'Example: Duplicate Record Set Item',
     'en-us': 'Duplicate {recordSetItemTable:string}',
-    'ru-ru': 'Дубликат {recordSetItemTable:string}',
-    'es-es': 'Duplicado {recordSetItemTable:string}',
-    'uk-ua': 'Дублікат {recordSetItemTable:string}',
+    'ru-ru': 'Дополнительные результаты опущены',
+    'es-es': 'Resultados adicionales omitidos',
+    'uk-ua': 'Додаткові результати пропущено',
     'de-ch': 'Duplizieren {recordSetItemTable:string}',
     'fr-fr': 'Résultats supplémentaires omis',
   },
@@ -825,10 +821,10 @@ export const formsText = createDictionary({
   },
   carryForwardDescription: {
     'en-us': 'Create a new record with certain fields carried over',
-    'ru-ru': 'Создайте новую запись с переносом определенных полей.',
+    'ru-ru': 'Создайте новую запись с перенесенными определенными полями.',
     'es-es': 'Crear un nuevo registro con ciertos campos transferidos',
     'fr-fr': 'Créer un nouvel enregistrement avec certains champs reportés',
-    'uk-ua': 'Створіть новий запис із перенесеними певними полями',
+    'uk-ua': 'Створіть новий запис із певними перенесеними полями',
     'de-ch': `
       Erstellen Sie einen neuen Datensatz mit übernommenen bestimmten Feldern
     `,
@@ -1074,7 +1070,7 @@ export const formsText = createDictionary({
     'es-es': 'Configurar tablas de interacción',
     'fr-fr': "Configurer les tables d'interaction",
     'uk-ua': 'Налаштувати таблиці взаємодії',
-    'de-ch': 'Interaktionstabellen konfigurieren',
+    'de-ch': 'Konfigurieren Sie Interaktionstabellen',
   },
   formMeta: {
     'en-us': 'Form Meta',
