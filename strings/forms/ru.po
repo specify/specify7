@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-02-28 00:02+0000\n"
+"PO-Revision-Date: 2024-02-28 07:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/forms/"
 "ru/>\n"
@@ -241,7 +241,7 @@ msgstr "Текущий объект (из {total:number|formatted})"
 #: components/Forms/Save.tsx:35
 #, fuzzy
 msgid "unsavedFormUnloadProtect"
-msgstr "Эта форма не сохранена."
+msgstr "Эта форма не сохранилась."
 
 #. 🟥Meaning a conflict occurred when saving. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Forms > Save
 #: components/AttachmentsBulkImport/utils.ts:482
@@ -499,7 +499,7 @@ msgstr "(удалено)"
 #: components/FormSliders/RecordSet.tsx:455
 #, fuzzy
 msgid "duplicateRecordSetItem"
-msgstr "Дубликат {recordSetItemTable:string}"
+msgstr "Дополнительные результаты опущены"
 
 #. Used in: Components > Form Sliders > Record Set
 #: components/FormSliders/RecordSet.tsx:460
@@ -542,7 +542,7 @@ msgstr "Показать кнопку «Перенести вперед»"
 #: components/Forms/Save.tsx:227
 #, fuzzy
 msgid "carryForwardDescription"
-msgstr "Создайте новую запись с переносом определенных полей."
+msgstr "Создайте новую запись с перенесенными определенными полями."
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:118
