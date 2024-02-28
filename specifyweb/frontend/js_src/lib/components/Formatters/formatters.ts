@@ -161,9 +161,9 @@ async function formatField(
 
   let formatted: string | undefined = undefined;
   const hasPermission = hasPathPermission(fields ?? [], 'read');
-  const data = await fetchDistantRelated(parentResource, fields);
 
   if (hasPermission) {
+    const data = await fetchDistantRelated(parentResource, fields);
     if (data === undefined) return { formatted: '' };
     const { resource, field } = data;
     if (field === undefined || resource === undefined) return { formatted: '' };
