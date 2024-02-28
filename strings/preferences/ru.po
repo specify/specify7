@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-02-28 07:02+0000\n"
+"PO-Revision-Date: 2024-02-28 20:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "preferences/ru/>\n"
@@ -327,7 +327,7 @@ msgstr "Показать новое предупреждение набора д
 #: components/Preferences/UserDefinitions.tsx:1781
 #, fuzzy
 msgid "showNewDataSetWarningDescription"
-msgstr "Показывать информационное сообщение при создании нового набора данных"
+msgstr "Показывать информационное сообщение при создании нового набора данных."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:563
@@ -659,13 +659,13 @@ msgstr "Перейдите на другую сторону, достигнув 
 #: components/Preferences/UserDefinitions.tsx:1677
 #, fuzzy
 msgid "autoWrapRows"
-msgstr "Перейдите на другую сторону, когда достигнете краевого ряда."
+msgstr "Перейдите на другую сторону, достигнув краевого ряда."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1718
 #, fuzzy
 msgid "enterBeginsEditing"
-msgstr "Клавиша Enter начинает редактирование ячейки"
+msgstr "Клавиша Enter начинает редактирование ячейки."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1684
