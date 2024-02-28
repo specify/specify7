@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-02-28 00:02+0000\n"
+"PO-Revision-Date: 2024-02-28 07:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/wbPlan/de_CH/>\n"
@@ -50,7 +50,7 @@ msgstr "Nicht kartiert"
 #: components/Molecules/TableIcon.tsx:96
 #, fuzzy
 msgid "unmapped"
-msgstr "Nicht zugeordnet"
+msgstr "Eine Zuordnung ist erforderlich"
 
 #. Used in: Components > Molecules > Table Icon
 #: components/Molecules/TableIcon.tsx:109
