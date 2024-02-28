@@ -362,7 +362,7 @@ export const backEndText = createDictionary({
       {operation:string}-Knoten „{nodeName:string}“ zum synonymisierten
       übergeordneten Knoten „{parentName:string}“
     `,
-    'ru-ru': '',
+    'ru-ru': 'Набор данных уже загружен',
   },
   nodeSynonymizeToSynonymized: {
     'en-us': `
