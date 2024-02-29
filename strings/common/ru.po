@@ -58,7 +58,7 @@ msgstr "Нет"
 #: components/Reports/Report.tsx:200
 #: components/Reports/Report.tsx:227
 #: components/Reports/Report.tsx:312
-#: components/Reports/index.tsx:138
+#: components/Reports/index.tsx:141
 #: components/Router/UnloadProtect.tsx:26
 #: components/SearchDialog/index.tsx:173
 #: components/Security/ImportExport.tsx:81
@@ -498,7 +498,7 @@ msgid "search"
 msgstr "Искать"
 
 #: components/FormCommands/ShowTransactions.tsx:46
-#: components/Reports/index.tsx:197
+#: components/Reports/index.tsx:200
 #: components/SearchDialog/index.tsx:232
 #. Used in: Components > Form Commands > Show Transactions ⬤ Components > Reports > Index ⬤ Components > Search Dialog > Index
 msgid "noResults"
@@ -536,8 +536,8 @@ msgstr "Новый"
 #: components/FormMeta/index.tsx:98
 #: components/Forms/ResourceView.tsx:218
 #: components/Molecules/ResourceLink.tsx:111
-#: components/Reports/index.tsx:252
-#: components/Reports/index.tsx:256
+#: components/Reports/index.tsx:255
+#: components/Reports/index.tsx:259
 #: components/SchemaConfig/Format.tsx:237
 #: components/SchemaConfig/Format.tsx:293
 #: components/SchemaConfig/Table.tsx:165
