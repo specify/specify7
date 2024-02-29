@@ -1380,7 +1380,7 @@ export const preferencesText = createDictionary({
     'es-es':
       'Hacer que los cuadros de diálogo del formulario aparezcan en gris',
     'fr-fr': "Couleur d'accent d'arbre",
-    'uk-ua': 'Зробіть діалогові вікна форми сірими',
+    'uk-ua': 'Зробіть діалогові вікна форми сірими фоном',
     'de-ch': 'Lassen Sie Formulardialoge den Hintergrund ausgrauen',
   },
   autoScrollTree: {
@@ -1434,7 +1434,7 @@ export const preferencesText = createDictionary({
   tableIcon: {
     'en-us': 'Table icon',
     'ru-ru': 'Значок таблицы',
-    'es-es': 'Icono de tabla',
+    'es-es': 'Icono de mesa',
     'fr-fr': 'Icône de tableau',
     'uk-ua': 'Значок таблиці',
     'de-ch': 'Tabellensymbol',
@@ -1729,7 +1729,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Запомнить позиции диалоговых окон',
     'es-es': 'Recordar las posiciones de las ventanas de diálogo',
     'fr-fr': 'Mémoriser les positions des fenêtres de dialogue',
-    'uk-ua': "Запам'ятовуйте положення діалогового вікна",
+    'uk-ua': "Запам'ятовуйте розташування діалогового вікна",
     'de-ch': 'Merken Sie sich die Positionen der Dialogfenster',
   },
   autoPlayMedia: {

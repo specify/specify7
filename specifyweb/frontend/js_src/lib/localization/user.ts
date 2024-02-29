@@ -146,7 +146,7 @@ export const userText = createDictionary({
   },
   helloMessage: {
     'en-us': 'Hello, {userName:string}!',
-    'ru-ru': 'Привет, {userName:string}!',
+    'ru-ru': 'Новый пароль',
     'es-es': '¡Hola, {userName:string}!',
     'fr-fr': 'Bonjour, {userName:string} !',
     'de-ch': 'Hallo, {userName:string}!',
@@ -220,9 +220,9 @@ export const userText = createDictionary({
     `,
     'uk-ua': `
       Наразі немає жодного користувача, пов’язаного з вашим обліковим записом
-      {providerName:string}. Якщо у вас є вказане ім’я користувача та пароль,
-      ви можете ввести їх нижче, щоб пов’язати цього користувача з вашим
-      обліковим записом {providerName:string} для майбутніх входів.
+      {providerName:string}. Якщо у вас є вказати ім’я користувача та пароль,
+      ви можете ввести їх нижче, щоб пов’язати цього користувача з обліковим
+      записом {providerName:string} для майбутніх входів.
     `,
     'de-ch': `
       Derzeit ist Ihrem {providerName:string}-Konto kein Specify-Benutzer
@@ -508,7 +508,7 @@ export const userText = createDictionary({
     'es-es': 'No puede revocar su propio estatus de administrador',
     'fr-fr': "Vous ne pouvez pas révoquer votre propre statut d'administrateur",
     'uk-ua': 'Ви не можете відкликати свій статус адміністратора',
-    'de-ch': 'Sie können Ihren eigenen Administratorstatus nicht widerrufen',
+    'de-ch': 'Sie können Ihren eigenen Admin-Status nicht widerrufen',
   },
   makeAdmin: {
     'en-us': 'Make Admin',
@@ -528,7 +528,10 @@ export const userText = createDictionary({
   },
   mustBeManager: {
     'en-us': 'User must be saved as Manager first',
-    'ru-ru': 'Сначала пользователя необходимо сохранить как менеджера.',
+    'ru-ru': `
+      Пользовательские политики на уровне учреждения (применяются ко всем
+      назначенным коллекциям)
+    `,
     'es-es': 'El usuario debe guardarse primero como administrador',
     'de-ch': 'Der Benutzer muss zuerst als Manager gespeichert werden',
     'fr-fr': `
@@ -628,7 +631,7 @@ export const userText = createDictionary({
     'es-es': 'Biblioteca institucional de plantillas de roles',
     'fr-fr': 'Bibliothèque institutionnelle de modèles de rôles',
     'uk-ua': 'Бібліотека шаблонів ролей установи',
-    'de-ch': 'Bibliothek der Rollenvorlagen der Institution',
+    'de-ch': 'Institutionsbibliothek mit Rollenvorlagen',
   },
   userRoles: {
     'en-us': 'User Roles',
@@ -643,7 +646,7 @@ export const userText = createDictionary({
     'ru-ru': '{collectionTable:string} Роли пользователей',
     'es-es': 'Roles de usuario de {collectionTable:string}',
     'fr-fr': '{collectionTable:string} Rôles des utilisateurs',
-    'uk-ua': '{collectionTable:string} Ролі користувача',
+    'uk-ua': '{collectionTable:string} Ролі користувачів',
     'de-ch': '{collectionTable:string} Benutzerrollen',
   },
   assignedUserRoles: {
@@ -910,7 +913,7 @@ export const userText = createDictionary({
       Specify 7 server settings
     `,
     'ru-ru': `
-      Внешний поставщик удостоверений не настроен. Некоторые из них можно
+      Внешний поставщик удостоверений не настроен. Некоторые настройки можно
       настроить в разделе «Укажите 7 настроек сервера».
     `,
     'es-es': `
@@ -927,7 +930,8 @@ export const userText = createDictionary({
     `,
     'de-ch': `
       Es ist kein externer Identitätsanbieter konfiguriert. Einige davon können
-      Sie unter „Festlegen der 7 Servereinstellungen“ konfigurieren
+      Sie unter „Specify 7 Server Settings“ (Servereinstellungen angeben)
+      konfigurieren
     `,
   },
   legacyPermissions: {
@@ -1114,7 +1118,7 @@ export const userText = createDictionary({
   },
   switchToVerticalLayout: {
     'en-us': 'Switch to vertical layout',
-    'ru-ru': 'Переключиться на вертикальную компоновку',
+    'ru-ru': 'Сначала сохраните пользователя',
     'es-es': 'Cambiar al diseño vertical',
     'fr-fr': "Passer à l'affichage vertical",
     'de-ch': 'Wechseln Sie zum vertikalen Layout',
