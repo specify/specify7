@@ -646,7 +646,7 @@ def build_query(session, collection, user, tableid, field_specs,
         where = reduce(sql.and_, (p for ps in predicates_by_field.values() for p in ps))
         query = query.filter(where)
 
-    if not distinct:
+    if distinct:
         query = group_by_displayed_fields(query, selected_fields)
 
     logger.debug("query: %s", query.query)
