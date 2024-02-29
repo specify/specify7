@@ -62,7 +62,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Операция провалена',
     'es-es': 'Operación fallida',
     'fr-fr': "L'opération a échoué",
-    'uk-ua': 'Операція не вдалася',
+    'uk-ua': 'Не вдалося виконати операцію',
     'de-ch': 'Vorgang fehlgeschlagen',
   },
   actionFailedDescription: {
@@ -74,10 +74,10 @@ export const treeText = createDictionary({
     'fr-fr': `
       L'opération n'a pas pu être effectuée en raison des erreurs suivantes :
     `,
-    'uk-ua': 'Неможливо перейти до синоніма',
     'de-ch': `
       Der Vorgang konnte aufgrund der folgenden Fehler nicht ausgeführt werden:
     `,
+    'uk-ua': 'Неможливо перейти до синоніма',
   },
   moveNode: {
     'en-us': 'Move node',
@@ -160,7 +160,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Невозможно объединить в синонимы',
     'es-es': 'No se puede fusionar en sinónimos',
     'fr-fr': 'Impossible de fusionner avec des synonymes',
-    'uk-ua': 'Не можна об’єднувати в синоніми',
+    'uk-ua': 'Неможливо злити в синоніми',
     'de-ch': 'Kann nicht zu Synonymen zusammenführen',
   },
   cantSynonymizeSynonym: {
@@ -260,7 +260,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Сделайте {nodeName:string} синонимом {synonymName:string}',
     'es-es': 'Hacer de {nodeName:string} un sinónimo de {synonymName:string}',
     'fr-fr': 'Faire de {nodeName:string} un synonyme de {synonymName:string}',
-    'uk-ua': 'Зробіть {nodeName:string} синонімом {synonymName:string}',
+    'uk-ua': 'Зробити {nodeName:string} синонімом {synonymName:string}',
     'de-ch':
       'Aus {nodeName:string} ein Synonym von {synonymName:string} machen',
   },
@@ -270,7 +270,9 @@ export const treeText = createDictionary({
     'es-es':
       'Seleccione un destino para "{nodeName:string}" con el que sinonimizar',
     'fr-fr': 'Sélectionnez une cible pour "{nodeName:string}" à synonymiser',
-    'uk-ua': 'Виберіть ціль для "{nodeName:string}", який буде синонімічним',
+    'uk-ua': `
+      Виберіть ціль для "{nodeName:string}", до якого потрібно синонімізувати
+    `,
     'de-ch': 'Wähle Ziel um "{nodeName:string}" daran zu synonymisieren',
   },
   synonymizeMessage: {
@@ -290,11 +292,11 @@ export const treeText = createDictionary({
       Le nœud {treeName:string} "{nodeName:string}" deviendra synonyme de
       "{synonymName:string}".
     `,
-    'uk-ua': 'ЗАЧИНЕНО',
     'de-ch': `
       Der {treeName:string}-Knoten "{nodeName:string}" wird zu einem Synonym von
       "{synonymName:string}".
     `,
+    'uk-ua': 'ЗАЧИНЕНО',
   },
   desynonymizeNode: {
     'en-us': 'Desynonymize node',
@@ -314,11 +316,11 @@ export const treeText = createDictionary({
       '"{nodeName:string}" ya no será sinónimo de "{synonymName:string}".',
     'fr-fr':
       '"{nodeName:string}" ne sera plus synonyme de "{synonymName:string}".',
-    'uk-ua': 'Це призведе до остаточного видалення наступного ресурсу',
     'de-ch': `
       "{nodeName:string}" wird nicht mehr ein Synonym von
       "{synonymName:string}" sein.
     `,
+    'uk-ua': 'Це призведе до остаточного видалення наступного ресурсу',
   },
   acceptedName: {
     'en-us': 'Preferred: {name:string}',
@@ -395,9 +397,9 @@ export const treeText = createDictionary({
     'en-us': 'Direct {collectionObjectTable:string} Count',
     'ru-ru': 'Количество прямых {collectionObjectTable:string}',
     'es-es': 'Recuento directo de {collectionObjectTable:string}',
+    'de-ch': 'Direkte {collectionObjectTable:string} Anzahl',
     'fr-fr': 'Impossible de passer à un synonyme',
     'uk-ua': 'Неможливо перейти до синоніма',
-    'de-ch': 'Direkte {collectionObjectTable:string} Anzahl',
   },
   indirectCollectionObjectCount: {
     comment: 'Example: Indirect Collection Object count',
@@ -453,7 +455,7 @@ export const treeText = createDictionary({
     'de-ch': 'Synchronisieren',
     'es-es': 'Sincronizar',
     'fr-fr': 'Synchroniser',
-    'ru-ru': 'Это приведет к безвозвратному удалению следующего ресурса',
     'uk-ua': 'Синхронізувати',
+    'ru-ru': 'Это приведет к безвозвратному удалению следующего ресурса',
   },
 } as const);

@@ -91,11 +91,11 @@ export const mainText = createDictionary({
   },
   clickToSeeDetails: {
     'en-us': 'Click to see details',
-    'de-ch': 'Es tut uns leid, es ist etwas schief gelaufen',
     'es-es': 'Haz clic para ver los detalles',
-    'fr-fr': "Nous sommes désolés, quelque chose s'est mal passé",
-    'ru-ru': 'Сожалеем, что-то пошло не так',
     'uk-ua': 'Натисніть, щоб переглянути деталі',
+    'de-ch': 'Klicken Sie hier, um Details anzuzeigen',
+    'fr-fr': 'Cliquez pour voir les détails',
+    'ru-ru': 'Нажмите, чтобы увидеть подробности',
   },
   errorOccurredDescription: {
     'en-us': `
@@ -232,14 +232,10 @@ export const mainText = createDictionary({
   },
   leavePageConfirmationDescription: {
     'en-us': 'Unsaved changes will be lost if you leave this page.',
-    'ru-ru':
-      'Несохраненные изменения будут потеряны, если вы покинете эту страницу.',
+    'ru-ru': 'Нажмите, чтобы увидеть подробности',
     'es-es': 'Los cambios no guardados se perderán si abandona esta página.',
-    'fr-fr': `
-      Les modifications non enregistrées seront perdues si vous quittez cette
-      page.
-    `,
-    'uk-ua': 'Незбережені зміни буде втрачено, якщо ви покинете цю сторінку.',
+    'fr-fr': 'Cliquez pour voir les détails',
+    'uk-ua': 'Натисніть, щоб переглянути деталі',
     'de-ch': `
       Nicht gespeicherte Änderungen gehen verloren, wenn Sie diese Seite
       verlassen.
@@ -325,7 +321,7 @@ export const mainText = createDictionary({
     'fr-fr': 'en ligne',
     'ru-ru': 'онлайн',
     'uk-ua': 'онлайн',
-    'de-ch': '',
+    'de-ch': 'online',
   },
   offline: {
     'en-us': 'offline',
@@ -333,6 +329,9 @@ export const mainText = createDictionary({
     'fr-fr': 'hors ligne',
     'ru-ru': 'не в сети',
     'uk-ua': 'офлайн',
-    'de-ch': '',
+    'de-ch': `
+      Nicht gespeicherte Änderungen gehen verloren, wenn Sie diese Seite
+      verlassen.
+    `,
   },
 } as const);

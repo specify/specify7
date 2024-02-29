@@ -60,7 +60,7 @@ export const mergingText = createDictionary({
   nRecords: {
     'en-us': '{count:number|formatted} records',
     'ru-ru': '{count:number|formatted} записи',
-    'de-ch': 'nicht katalogisiert',
+    'de-ch': '{count:number|formatted} Datensätze',
     'es-es': '{count:number|formatted} registros',
     'fr-fr': '{count:number|formatted} enregistrements',
     'uk-ua': '{count:number|formatted} записи',
@@ -100,8 +100,8 @@ export const mergingText = createDictionary({
   },
   agentContainsGroupDescription: {
     'en-us': 'Agents contain group members',
-    'de-ch': 'Zusammengeführter Datensatz',
     'es-es': 'Los agentes contienen miembros de grupo',
+    'de-ch': 'Zusammengeführter Datensatz',
     'fr-fr': 'Enregistrement fusionné',
     'ru-ru': 'Объединенная запись',
     'uk-ua': 'Об’єднаний запис',
@@ -118,8 +118,8 @@ export const mergingText = createDictionary({
   },
   someCannotBeMerged: {
     'en-us': 'Some records cannot be merged',
-    'de-ch': 'Beim Zusammenführen ist ein Fehler aufgetreten.',
     'es-es': 'Algunos registros no se pueden fusionar',
+    'de-ch': 'Beim Zusammenführen ist ein Fehler aufgetreten.',
     'fr-fr': "Quelque chose s'est mal passé pendant le processus de fusion.",
     'ru-ru': 'Что-то пошло не так в процессе слияния.',
     'uk-ua': 'Щось пішло не так під час процесу об’єднання.',
@@ -212,7 +212,7 @@ export const mergingText = createDictionary({
     'es-es': 'El proceso de fusión ha sido exitoso.',
     'fr-fr': 'Le processus de fusion a réussi.',
     'ru-ru': 'Процесс слияния завершился успешно.',
-    'uk-ua': 'Процес об’єднання пройшов успішно.',
+    'uk-ua': 'Процес об’єднання завершився успішно.',
   },
   mergingHasFailed: {
     'en-us': 'The merge process has failed.',

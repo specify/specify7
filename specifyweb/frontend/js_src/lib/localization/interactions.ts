@@ -13,9 +13,9 @@ export const interactionsText = createDictionary({
     'en-us': 'Interactions',
     'ru-ru': 'Взаимодействия',
     'es-es': 'Interacciones',
-    'fr-fr': 'Interactions',
+    'fr-fr': 'Les préparatifs',
     'uk-ua': 'Взаємодії',
-    'de-ch': 'Interaktionen',
+    'de-ch': 'Vorbereitungen',
   },
   addItems: {
     'en-us': 'Add Items',
@@ -31,7 +31,7 @@ export const interactionsText = createDictionary({
     'es-es': 'Devuelve {table:string}',
     'fr-fr': '{table:string} Retour',
     'uk-ua': 'Повернення {table:string}',
-    'de-ch': 'nicht katalogisiert',
+    'de-ch': '{table:string} Datensätze',
   },
   preparationsNotFoundFor: {
     'en-us': 'No preparations were found for the following records:',
@@ -50,7 +50,7 @@ export const interactionsText = createDictionary({
       Aucune préparation n'est disponible pour les enregistrements suivants :
     `,
     'ru-ru': 'Для следующих записей подготовка невозможна:',
-    'uk-ua': 'Продовжуйте без підготовки',
+    'uk-ua': 'Продовжити',
   },
   problemsFound: {
     'en-us': 'There are problems with the entry:',
