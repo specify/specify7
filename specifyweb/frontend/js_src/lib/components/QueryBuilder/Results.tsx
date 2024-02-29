@@ -181,7 +181,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     'appearance',
     'showLineNumber'
   );
-  const metaColumns = (showLineNumber ? 1 : 0) + (hasIdField ? 2 : 0);
+  const metaColumns = (showLineNumber ? 1 : 0) + 2;
 
   return (
     <Container.Base className="w-full !bg-[color:var(--form-background)]">
