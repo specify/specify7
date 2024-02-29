@@ -274,7 +274,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
           overflow-auto rounded
           ${tableClassName}
           ${showResults ? 'border-b border-gray-500' : ''}
-       `}
+        `}
         ref={scrollerRef}
         role="table"
         style={
@@ -295,7 +295,6 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                   onSortChange={undefined}
                 />
               )}
-              {hasIdField && (
                 <>
                   <TableHeaderCell
                     fieldSpec={undefined}
@@ -308,7 +307,6 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                     onSortChange={undefined}
                   />
                 </>
-              )}
               {fieldSpecs.map((fieldSpec, index) =>
                 fieldSpec.isPhantom ? undefined : (
                   <TableHeaderCell

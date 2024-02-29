@@ -100,7 +100,6 @@ function Row({
     SpecifyResource<AnySchema> | false | undefined
   >(
     React.useCallback((): SpecifyResource<AnySchema> | false => {
-      if (!hasIdField) return false;
       return new table.Resource({
         id: result[queryIdField],
       });
@@ -178,7 +177,7 @@ function Row({
         </div>
       )}
       {result
-        .filter((_, index) => !hasIdField || index !== queryIdField)
+        .filter((_, index) => index !== queryIdField)
         .map((value, index) =>
           fieldSpecs[index].isPhantom ? undefined : (
             <Cell
