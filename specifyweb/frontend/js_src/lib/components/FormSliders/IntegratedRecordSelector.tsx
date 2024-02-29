@@ -130,6 +130,7 @@ export function IntegratedRecordSelector({
           handleExpand();
           if (typeof urlParameter === 'string') setIndex(index.toString());
         }}
+        formType={formType}
         {...rest}
       >
         {({
