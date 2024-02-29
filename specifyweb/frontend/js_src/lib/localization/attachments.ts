@@ -201,7 +201,7 @@ export const attachmentsText = createDictionary({
     'ru-ru': 'Ошибка чтения файла',
     'de-ch':
       'Wählen Sie Dateien aus oder ziehen Sie sie hierher, um zu beginnen.',
-    'uk-ua': 'Виберіть файли або перетягніть їх сюди, щоб почати.',
+    'uk-ua': 'Щоб почати, виберіть файли або перетягніть їх сюди.',
   },
   unhandledFatalResourceError: {
     'en-us': 'Unhandled fatal resource error:',
