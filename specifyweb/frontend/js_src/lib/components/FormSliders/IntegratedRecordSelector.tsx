@@ -115,6 +115,7 @@ export function IntegratedRecordSelector({
       <RecordSelectorFromCollection
         collection={collection}
         defaultIndex={isToOne ? 0 : index}
+        formType={formType}
         isCollapsed={isCollapsed}
         isInteraction={isInteraction}
         relationship={relationship}
@@ -130,7 +131,6 @@ export function IntegratedRecordSelector({
           handleExpand();
           if (typeof urlParameter === 'string') setIndex(index.toString());
         }}
-        formType={formType}
         {...rest}
       >
         {({
