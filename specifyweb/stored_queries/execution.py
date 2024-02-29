@@ -588,7 +588,7 @@ def build_query(session, collection, user, tableid, field_specs,
     query = QueryConstruct(
         collection=collection,
         objectformatter=ObjectFormatter(collection, user, replace_nulls),
-        query=session.query(func.group_concat(id_field, ',').label('ids')) if distinct else session.query(id_field),
+        query=session.query(func.group_concat(id_field, separator=',')) if distinct else session.query(id_field), # Also try id_field.distinct()
     )
 
     tables_to_read = set([
