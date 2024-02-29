@@ -103,7 +103,6 @@ export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
       const resources = isToOne ? rawResources.slice(0, 1) : rawResources;
       if (isDependent && isToOne)
         collection.related?.placeInSameHierarchy(resources[0]);
-      if (!isInteraction) collection.add(resources);
       handleAdd?.(resources);
       const lastIndex = Math.max(0, collection.models.length - 1);
       setIndex(lastIndex);

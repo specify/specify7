@@ -240,7 +240,8 @@ export function IntegratedRecordSelector({
                 preHeaderButtons={collapsibleButton}
                 sortField={sortField}
                 viewName={viewName}
-                onAdd={(): void => {
+                onAdd={(resources): void => {
+                  if (!isInteraction) collection.add(resources);
                   if (typeof handleAdd === 'function') handleAdd();
                 }}
                 onClose={handleClose}
