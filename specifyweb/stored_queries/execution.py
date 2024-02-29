@@ -588,7 +588,7 @@ def build_query(session, collection, user, tableid, field_specs,
     query = QueryConstruct(
         collection=collection,
         objectformatter=ObjectFormatter(collection, user, replace_nulls),
-        query=session.query(func.group_concat(id_field.op('SEPARATOR')(',')).label('ids')) if distinct else session.query(id_field),
+        query=session.query(func.group_concat(id_field, ',').label('ids')) if distinct else session.query(id_field),
     )
 
     tables_to_read = set([
@@ -623,6 +623,7 @@ def build_query(session, collection, user, tableid, field_specs,
         query, field, predicate = fs.add_to_query(query, formatauditobjs=formatauditobjs)
         if fs.display:
             formatted_field = query.objectformatter.fieldformat(fs, field)
+            # TODO: if distinct and field is the record id, then don't add it to the query, or add blank values
             query = query.add_columns(formatted_field)
             selected_fields.append(formatted_field)
 
