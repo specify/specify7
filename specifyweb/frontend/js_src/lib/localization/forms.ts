@@ -145,7 +145,7 @@ export const formsText = createDictionary({
     'de-ch': `
       Das Paleo Map-Plugin erfordert, dass die {localityTable:string}
       geografische Koordinaten haben und dass der Paläo-Kontext ein
-      geografisches Alter mit mindestens einer Start- oder Endzeit hat.
+      geografisches Alter mit mindestens einer Start- oder Endzeit aufweist.
     `,
     'es-es': 'Seleccionar fuente de tablas',
     'fr-fr': 'Sélectionnez la source des tables',
@@ -200,7 +200,7 @@ export const formsText = createDictionary({
     'es-es': 'Lun / Año',
     'fr-fr': 'Lun / Année',
     'uk-ua': 'пн / рік',
-    'de-ch': 'Mo / Jahr',
+    'de-ch': 'Mo./Jahr',
   },
   yearPlaceholder: {
     comment:
@@ -365,7 +365,7 @@ export const formsText = createDictionary({
     'es-es': 'Guardar conflicto',
     'fr-fr': 'Enregistrer le conflit',
     'uk-ua': 'Зберегти конфлікт',
-    'de-ch': 'Konflikte speichern',
+    'de-ch': 'Konflikt speichern',
   },
   saveConflictDescription: {
     'en-us': `
@@ -391,7 +391,7 @@ export const formsText = createDictionary({
     `,
     'uk-ua': `
       Дані, показані на цій сторінці, були змінені іншим користувачем або на
-      іншій вкладці браузера та застаріли. Сторінку необхідно перезавантажити,
+      іншій вкладці браузера та застаріли. Сторінку потрібно перезавантажити,
       щоб запобігти збереженню суперечливих даних.
     `,
     'de-ch': `
@@ -821,10 +821,10 @@ export const formsText = createDictionary({
   },
   carryForwardDescription: {
     'en-us': 'Create a new record with certain fields carried over',
-    'ru-ru': 'Создайте новую запись с перенесенными определенными полями.',
+    'ru-ru': 'Создайте новую запись с переносом определенных полей.',
     'es-es': 'Crear un nuevo registro con ciertos campos transferidos',
     'fr-fr': 'Créer un nouvel enregistrement avec certains champs reportés',
-    'uk-ua': 'Створіть новий запис із певними перенесеними полями',
+    'uk-ua': 'Створіть новий запис із перенесеними певними полями',
     'de-ch': `
       Erstellen Sie einen neuen Datensatz mit übernommenen bestimmten Feldern
     `,
@@ -1070,7 +1070,7 @@ export const formsText = createDictionary({
     'es-es': 'Configurar tablas de interacción',
     'fr-fr': "Configurer les tables d'interaction",
     'uk-ua': 'Налаштувати таблиці взаємодії',
-    'de-ch': 'Konfigurieren Sie Interaktionstabellen',
+    'de-ch': 'Interaktionstabellen konfigurieren',
   },
   formMeta: {
     'en-us': 'Form Meta',
