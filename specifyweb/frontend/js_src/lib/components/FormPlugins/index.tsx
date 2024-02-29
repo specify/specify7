@@ -202,7 +202,7 @@ const pluginRenderers: {
         >
           {formsText.pluginNotAvailableDescription()}
           <br />
-          {formsText.pluginNotAvailableSecondDescription()}
+          {formsText.commandUnavailableSecondDescription()}
           <br />
           {commonText.colonLine({
             label: formsText.pluginName(),

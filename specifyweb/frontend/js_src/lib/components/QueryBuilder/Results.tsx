@@ -181,6 +181,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     'appearance',
     'showLineNumber'
   );
+  const metaColumns = (showLineNumber ? 1 : 0) + (hasIdField ? 2 : 0);
 
   return (
     <Container.Base className="w-full !bg-[color:var(--form-background)]">
@@ -270,19 +271,18 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
         // REFACTOR: turn this into a reusable table component
         className={`
           grid-table auto-rows-min
-          grid-cols-[repeat(var(--meta-columns),min-content)_repeat(var(--columns),auto)]
           overflow-auto rounded
           ${tableClassName}
           ${showResults ? 'border-b border-gray-500' : ''}
         `}
         ref={scrollerRef}
         role="table"
-        style={
-          {
-            '--columns': visibleFieldSpecs.length,
-            '--meta-columns': (showLineNumber ? 1 : 0) + (hasIdField ? 2 : 0),
-          } as React.CSSProperties
-        }
+        style={{
+          gridTemplateColumns: [
+            ...Array.from({ length: metaColumns }).fill('min-content'),
+            ...Array.from({ length: visibleFieldSpecs.length }).fill('auto'),
+          ].join(' '),
+        }}
         onScroll={showResults && !canFetchMore ? undefined : handleScroll}
       >
         {showResults && visibleFieldSpecs.length > 0 ? (
@@ -404,8 +404,8 @@ function TableHeaderCell({
 
   return (
     <div
-      className="sticky z-[2] w-full min-w-max border-b
-        border-gray-500 bg-brand-100 p-1 [inset-block-start:_0] dark:bg-brand-500"
+      className="bg-brand-100 dark:bg-brand-500 sticky z-[2] w-full
+        min-w-max border-b border-gray-500 p-1 [inset-block-start:_0]"
       role={typeof content === 'object' ? `columnheader` : 'cell'}
     >
       {typeof handleSortChange === 'function' ? (
