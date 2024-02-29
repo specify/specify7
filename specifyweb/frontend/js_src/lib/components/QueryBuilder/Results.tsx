@@ -295,18 +295,16 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                   onSortChange={undefined}
                 />
               )}
-                <>
-                  <TableHeaderCell
-                    fieldSpec={undefined}
-                    sortConfig={undefined}
-                    onSortChange={undefined}
-                  />
-                  <TableHeaderCell
-                    fieldSpec={undefined}
-                    sortConfig={undefined}
-                    onSortChange={undefined}
-                  />
-                </>
+              <TableHeaderCell
+                fieldSpec={undefined}
+                sortConfig={undefined}
+                onSortChange={undefined}
+              />
+              <TableHeaderCell
+                fieldSpec={undefined}
+                sortConfig={undefined}
+                onSortChange={undefined}
+              />
               {fieldSpecs.map((fieldSpec, index) =>
                 fieldSpec.isPhantom ? undefined : (
                   <TableHeaderCell
