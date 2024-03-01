@@ -130,20 +130,14 @@ export const wbText = createDictionary({
       Beachten Sie, dass die Live-Validierung eine experimentelle Funktion ist
       und keinen Ersatz für die reguläre Validierung darstellt.
     `,
-    'es-es': `
-      Tenga en cuenta que la validación en vivo es una función experimental y no
-      sustituye a la validación regular.
-    `,
+    'es-es': 'Marca de tiempo cargada',
     'fr-fr': `
       Notez que la validation en direct est une fonctionnalité expérimentale et
       ne remplace pas la validation régulière.
     `,
-    'ru-ru': `
-      Обратите внимание, что живая проверка — это экспериментальная функция,
-      которая не заменяет обычную проверку.
-    `,
+    'ru-ru': 'Временная метка загружена',
     'uk-ua': `
-      Зауважте, перевірка в реальному часі є експериментальною функцією і не
+      Зауважте, що перевірка в реальному часі є експериментальною функцією і не
       замінює звичайну перевірку.
     `,
   },
@@ -364,7 +358,7 @@ export const wbText = createDictionary({
       завантаження.
     `,
     'de-ch': `
-      Beim Zurücksetzen werden die neuen Datensätze entfernt, die dieser
+      Durch ein Rollback werden die neuen Datensätze entfernt, die dieser
       Datensatz zur Specify-Datenbank hinzugefügt hat. Das gesamte Rollback wird
       abgebrochen, wenn die hochgeladenen Daten seit dem Hochladen von anderen
       Datensätzen referenziert (wiederverwendet) wurden.
@@ -955,7 +949,7 @@ export const wbText = createDictionary({
     'es-es': 'Cargar Resultados',
     'de-ch': 'Live-Suche',
     'fr-fr': 'Nom du nouvel ensemble de données :',
-    'uk-ua': 'Завантажити результати',
+    'uk-ua': 'Назва нового набору даних:',
   },
   potentialUploadResults: {
     'en-us': 'Potential Upload Results',

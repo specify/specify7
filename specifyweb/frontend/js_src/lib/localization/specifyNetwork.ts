@@ -91,8 +91,8 @@ export const specifyNetworkText = createDictionary({
       iDigBio et GBIF.
     `,
     'ru-ru': `
-      На этой карте показаны встречаемости этого таксона по данным агрегаторов
-      iDigBio и GBIF.
+      На этой карте показано появление этого таксона в агрегаторах iDigBio и
+      GBIF.
     `,
     'uk-ua': `
       Ця карта показує випадки появи цього таксону з агрегаторів iDigBio та
@@ -228,7 +228,7 @@ export const specifyNetworkText = createDictionary({
       учреждении
     `,
     'uk-ua': `
-      Карта розповсюдження всіх оцифрованих зразків, збережених у вашій установі
+      Карта розповсюдження всіх оцифрованих зразків, курованих у вашій установі
     `,
   },
   collectionDistributionMap: {

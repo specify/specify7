@@ -99,10 +99,10 @@ export const resourcesText = createDictionary({
   },
   appResource: {
     'en-us': 'App Resource',
-    'ru-ru': 'Ресурс приложения',
-    'es-es': 'Recurso de aplicación',
-    'fr-fr': "Ressource d'application",
-    'uk-ua': 'Ресурс програми',
+    'ru-ru': 'Подкатегории',
+    'es-es': 'Subcategorías',
+    'fr-fr': 'Sous-catégories',
+    'uk-ua': 'Підкатегорії',
     'de-ch': 'App Ressource',
   },
   rssExportFeed: {
@@ -175,11 +175,7 @@ export const resourcesText = createDictionary({
       readable text by selecting specific fields and applying a designated
       separator between them.
     `,
-    'de-ch': `
-      Der Formatierer bestimmt, wie einzelne Datenbankressourcen in lesbaren
-      Text umgewandelt werden, indem er bestimmte Felder auswählt und ein
-      bestimmtes Trennzeichen zwischen ihnen anwendet.
-    `,
+    'de-ch': 'JSON-Editor',
     'es-es': `
       El formateador determina cómo transformar recursos de bases de datos
       individuales en texto legible seleccionando campos específicos y aplicando
@@ -241,7 +237,7 @@ export const resourcesText = createDictionary({
   },
   formattedResource: {
     'en-us': 'Formatted Resource',
-    'de-ch': 'Formatierte Ressource',
+    'de-ch': 'In Sammlung ausführen',
     'es-es': 'Recurso formateado',
     'fr-fr': 'Ressource formatée',
     'ru-ru': 'Форматированный ресурс',
@@ -276,10 +272,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Bitte markieren Sie einen dieser Formatierer als Standard',
     'es-es': 'Por favor marque uno de estos formateadores como predeterminado',
     'fr-fr': "Veuillez marquer l'un de ces formateurs par défaut",
-    'ru-ru': `
-      Пожалуйста, отметьте один из этих форматтеров как используемый по
-      умолчанию.
-    `,
+    'ru-ru': 'Пожалуйста, отметьте один из этих форматтеров как стандартный.',
     'uk-ua': 'Позначте один із цих формататорів за замовчуванням',
   },
   duplicateFormatters: {
@@ -533,10 +526,10 @@ export const resourcesText = createDictionary({
   urlPart: {
     'en-us': 'URL part',
     'de-ch': 'URL-Teil',
-    'es-es': 'parte de la URL',
-    'fr-fr': 'Partie URL',
-    'ru-ru': 'часть URL',
-    'uk-ua': 'частина URL',
+    'es-es': 'Otro recurso JSON',
+    'fr-fr': 'Autre ressource JSON',
+    'ru-ru': 'Другой ресурс JSON',
+    'uk-ua': 'Інший ресурс JSON',
   },
   addField: {
     'en-us': 'Add field',
@@ -606,26 +599,10 @@ export const resourcesText = createDictionary({
       dieser Bedingung entspricht oder wenn kein anderer Formatierer mit seiner
       Bedingung übereinstimmt
     `,
-    'es-es': `
-      Este formateador se utilizará solo si el valor del campo de condición es
-      igual a esta condición o si ningún otro formateador coincide con su
-      condición.
-    `,
-    'fr-fr': `
-      Ce formateur ne sera utilisé que si la valeur du champ de condition est
-      égale à cette condition ou si aucun autre formateur ne correspond à sa
-      condition.
-    `,
-    'ru-ru': `
-      Этот форматтер будет использоваться только в том случае, если значение
-      поля условия равно этому условию или если ни один другой форматтер не
-      соответствует этому условию.
-    `,
-    'uk-ua': `
-      Цей засіб форматування використовуватиметься, лише якщо значення поля
-      умови дорівнює цій умові або якщо жоден інший засіб форматування не
-      відповідає його умові
-    `,
+    'es-es': 'Costumbre',
+    'fr-fr': 'Coutume',
+    'ru-ru': 'Обычай',
+    'uk-ua': 'Custom',
   },
   wrongScopeWarning: {
     'en-us': `
@@ -649,7 +626,7 @@ export const resourcesText = createDictionary({
       changer de collection avant de modifier cette ressource.
     `,
     'ru-ru': `
-      Этот ресурс принадлежит другой коллекции/дисциплине, отличной от той, в
+      Этот ресурс принадлежит к другой коллекции/дисциплине, отличной от той, в
       которой вы сейчас находитесь. Перед редактированием этого ресурса
       рекомендуется сменить коллекцию.
     `,

@@ -169,8 +169,22 @@ export function useResourceValue<
   React.useLayoutEffect(() => {
     if (field === undefined || resource === undefined) return;
 
-    if (
+    /*
+     * Don't auto set numeric to "0" or boolean fields to false, unless it is the default value
+     * in the form definition
+     */
+    // REFACTOR: resolveParser() should probably not make up the default value like false/0 out of the blue as it's not safe to assume that it's always desired (vs null)
+    const hasDefault =
       parser.value !== undefined &&
+      (parser.type !== 'number' ||
+        parser.value !== 0 ||
+        defaultParser?.value === 0) &&
+      (parser.type !== 'checkbox' ||
+        parser.value !== false ||
+        defaultParser?.value === false);
+
+    if (
+      hasDefault &&
       /*
        * Even if resource is new, some values may be prepopulated (i.e, by
        * PrepDialog). This is a crude check to see if form's default value
@@ -183,15 +197,8 @@ export function useResourceValue<
       ((parser.type !== 'text' && parser.type !== 'date') ||
         typeof resource.get(field.name) !== 'string' ||
         resource.get(field.name) === '') &&
-      parser.type !== 'checkbox' &&
-      resource.get(field.name) !== true &&
-      /*
-       * Don't auto set numeric fields to "0", unless it is the default value
-       * in the form definition
-       */
-      (parser.type !== 'number' ||
-        parser.value !== 0 ||
-        (defaultParser?.value ?? 0) !== 0)
+      (parser.type !== 'checkbox' ||
+        typeof resource.get(field.name) !== 'boolean')
     )
       resource.set(
         field.name,
