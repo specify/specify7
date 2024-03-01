@@ -27,14 +27,12 @@ import { queryIdField } from './Results';
 export function QueryResultsTable({
   table,
   fieldSpecs,
-  hasIdField,
   results,
   selectedRows,
   onSelected: handleSelected,
 }: {
   readonly table: SpecifyTable;
   readonly fieldSpecs: RA<QueryFieldSpec>;
-  readonly hasIdField: boolean;
   readonly results: RA<QueryResultRow>;
   readonly selectedRows: ReadonlySet<number>;
   readonly onSelected: (
@@ -44,8 +42,8 @@ export function QueryResultsTable({
   ) => void;
 }): JSX.Element {
   const recordFormatter = React.useMemo(
-    () => (hasIdField ? getAuditRecordFormatter(fieldSpecs) : undefined),
-    [fieldSpecs, hasIdField]
+    () => getAuditRecordFormatter(fieldSpecs),
+    [fieldSpecs]
   );
   const [showLineNumber] = userPreferences.use(
     'queryBuilder',
@@ -57,22 +55,15 @@ export function QueryResultsTable({
       {results.map((result, index, { length }) => (
         <Row
           fieldSpecs={fieldSpecs}
-          hasIdField={hasIdField}
           isLast={index + 1 === length}
-          isSelected={
-            hasIdField &&
-            selectedRows.has(results[index][queryIdField] as number)
-          }
+          isSelected={selectedRows.has(results[index][queryIdField] as number)}
           key={index}
           lineIndex={showLineNumber ? index : undefined}
           recordFormatter={recordFormatter}
           result={result}
           table={table}
-          onSelected={
-            hasIdField
-              ? (isSelected, isShiftClick): void =>
-                  handleSelected(index, isSelected, isShiftClick)
-              : undefined
+          onSelected={(isSelected, isShiftClick): void =>
+            handleSelected(index, isSelected, isShiftClick)
           }
         />
       ))}
@@ -83,7 +74,6 @@ export function QueryResultsTable({
 function Row({
   table,
   fieldSpecs,
-  hasIdField,
   result,
   lineIndex,
   recordFormatter,
@@ -93,7 +83,6 @@ function Row({
 }: {
   readonly table: SpecifyTable;
   readonly fieldSpecs: RA<QueryFieldSpec>;
-  readonly hasIdField: boolean;
   readonly result: QueryResultRow;
   readonly lineIndex: number | undefined;
   readonly recordFormatter?: (
@@ -112,7 +101,7 @@ function Row({
         new table.Resource({
           id: result[queryIdField],
         }),
-      [hasIdField, table, result]
+      [table, result]
     )
   );
   const [formattedValues] = useAsyncState(

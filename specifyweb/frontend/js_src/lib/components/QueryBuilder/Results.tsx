@@ -39,7 +39,6 @@ export type QueryResultRow = RA<number | string | null>;
 export type QueryResultsProps = {
   readonly table: SpecifyTable;
   readonly label?: LocalizedString;
-  readonly hasIdField: boolean;
   readonly queryResource: SpecifyResource<SpQuery> | undefined;
   /**
    * A hint for how many records a fetch can return at maximum. This is used to
@@ -76,7 +75,6 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
   const {
     table,
     label = commonText.results(),
-    hasIdField,
     queryResource,
     fetchResults,
     fieldSpecs,
@@ -207,8 +205,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
         totalCount !== 0
           ? extraButtons
           : null}
-        {hasIdField &&
-        Array.isArray(results) &&
+        {Array.isArray(results) &&
         Array.isArray(loadedResults) &&
         results.length > 0 &&
         typeof fetchResults === 'function' &&
@@ -330,7 +327,6 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
           Array.isArray(initialData) ? (
             <QueryResultsTable
               fieldSpecs={fieldSpecs}
-              hasIdField={hasIdField}
               results={loadedResults}
               selectedRows={selectedRows}
               table={table}
