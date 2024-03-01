@@ -253,14 +253,16 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                 canFetchMore && !isFetching ? handleFetchMore : undefined
               }
             />
-            <QueryToForms
-              results={results}
-              selectedRows={selectedRows}
-              table={table}
-              totalCount={totalCount}
-              onDelete={handleDelete}
-              onFetchMore={isFetching ? undefined : handleFetchMore}
-            />
+            {typeof results[0]?.[0] === 'string' ? null : (
+              <QueryToForms
+                results={results}
+                selectedRows={selectedRows}
+                table={table}
+                totalCount={totalCount}
+                onDelete={handleDelete}
+                onFetchMore={isFetching ? undefined : handleFetchMore}
+              />
+            )}
           </>
         ) : undefined}
       </div>
