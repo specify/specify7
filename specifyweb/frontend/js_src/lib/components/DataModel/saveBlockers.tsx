@@ -140,12 +140,13 @@ export function setSaveBlockers(
    * current value of the field matches the field value which was previously
    * set, then the case should be ignored to not override any existing blockers
    */
-  if (
-    field.type.endsWith('to-one') &&
+  const skipResettingBlockers =
+    newBlockers.length === 0 &&
     fieldValue === previouslySet &&
-    newBlockers.length === 0
-  )
-    return;
+    (!field.isRelationship ||
+      (field.isRelationship && field.type.endsWith('to-one')));
+
+  if (skipResettingBlockers) return;
   setPreviouslySetBlocker(fieldValue);
 
   saveBlockers.set(resource, {
