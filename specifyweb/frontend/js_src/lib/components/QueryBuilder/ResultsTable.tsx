@@ -15,6 +15,14 @@ import { getAuditRecordFormatter } from './AuditLogFormatter';
 import type { QueryFieldSpec } from './fieldSpec';
 import type { QueryResultRow } from './Results';
 import { queryIdField } from './Results';
+import { Button } from '../Atoms/Button';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { queryText } from '../../localization/query';
+import { Dialog } from '../Molecules/Dialog';
+import { commonText } from '../../localization/common';
+import { TableIcon } from '../Molecules/TableIcon';
+import { Ul } from '../Atoms';
+import { getResourceViewUrl } from '../DataModel/resource';
 
 export function QueryResultsTable({
   table,
@@ -119,6 +127,13 @@ function Row({
   );
   const viewUrl = typeof resource === 'object' ? resource.viewUrl() : undefined;
 
+  const splitIds: RA<number> | undefined =
+    typeof result[0] === 'string' && result[0].includes(',')
+      ? result[0].split(',').map(Number)
+      : undefined;
+
+  const [isIdListOpen, _, __, handleToggle] = useBooleanState(false);
+
   return (
     <div
       className={`
@@ -168,11 +183,39 @@ function Row({
             className={`${getCellClassName(condenseQueryResults)} sticky`}
             role="cell"
           >
-            <Link.NewTab
-              className="print:hidden"
-              href={viewUrl}
-              rel="noreferrer"
-            />
+            {splitIds === undefined ? (
+              <Link.NewTab
+                className="print:hidden"
+                href={viewUrl}
+                rel="noreferrer"
+              />
+            ) : (
+              <Button.Icon
+                icon={'viewList'}
+                onClick={handleToggle}
+                title={queryText.viewListOfIds()}
+              />
+            )}
+            {isIdListOpen && splitIds !== undefined ? (
+              <Dialog
+                buttons={commonText.cancel()}
+                header={queryText.listOfRecordIds()}
+                onClose={handleToggle}
+              >
+                <Ul className="flex flex-col gap-2">
+                  {splitIds.map((id) => (
+                    <Link.NewTab
+                      className="print:hidden"
+                      href={getResourceViewUrl(table.name, id)}
+                      rel="noreferrer"
+                    >
+                      <TableIcon label name={table.name} />
+                      <label>{id}</label>
+                    </Link.NewTab>
+                  ))}
+                </Ul>
+              </Dialog>
+            ) : null}
           </div>
         </div>
       )}
