@@ -74,10 +74,10 @@ export const treeText = createDictionary({
     'fr-fr': `
       L'opération n'a pas pu être effectuée en raison des erreurs suivantes :
     `,
-    'uk-ua': 'Неможливо перейти до синоніма',
     'de-ch': `
       Der Vorgang konnte aufgrund der folgenden Fehler nicht ausgeführt werden:
     `,
+    'uk-ua': 'Неможливо перейти до синоніма',
   },
   moveNode: {
     'en-us': 'Move node',
@@ -290,11 +290,11 @@ export const treeText = createDictionary({
       Le nœud {treeName:string} "{nodeName:string}" deviendra synonyme de
       "{synonymName:string}".
     `,
-    'uk-ua': 'ЗАЧИНЕНО',
     'de-ch': `
       Der {treeName:string}-Knoten "{nodeName:string}" wird zu einem Synonym von
       "{synonymName:string}".
     `,
+    'uk-ua': 'ЗАЧИНЕНО',
   },
   desynonymizeNode: {
     'en-us': 'Desynonymize node',
@@ -314,11 +314,11 @@ export const treeText = createDictionary({
       '"{nodeName:string}" ya no será sinónimo de "{synonymName:string}".',
     'fr-fr':
       '"{nodeName:string}" ne sera plus synonyme de "{synonymName:string}".',
-    'uk-ua': 'Це призведе до остаточного видалення наступного ресурсу',
     'de-ch': `
       "{nodeName:string}" wird nicht mehr ein Synonym von
       "{synonymName:string}" sein.
     `,
+    'uk-ua': 'Це призведе до остаточного видалення наступного ресурсу',
   },
   acceptedName: {
     'en-us': 'Preferred: {name:string}',
@@ -395,9 +395,9 @@ export const treeText = createDictionary({
     'en-us': 'Direct {collectionObjectTable:string} Count',
     'ru-ru': 'Количество прямых {collectionObjectTable:string}',
     'es-es': 'Recuento directo de {collectionObjectTable:string}',
+    'de-ch': 'Direkte {collectionObjectTable:string} Anzahl',
     'fr-fr': 'Impossible de passer à un synonyme',
     'uk-ua': 'Неможливо перейти до синоніма',
-    'de-ch': 'Direkte {collectionObjectTable:string} Anzahl',
   },
   indirectCollectionObjectCount: {
     comment: 'Example: Indirect Collection Object count',
@@ -453,7 +453,7 @@ export const treeText = createDictionary({
     'de-ch': 'Synchronisieren',
     'es-es': 'Sincronizar',
     'fr-fr': 'Synchroniser',
-    'ru-ru': 'Это приведет к безвозвратному удалению следующего ресурса',
     'uk-ua': 'Синхронізувати',
+    'ru-ru': 'Это приведет к безвозвратному удалению следующего ресурса',
   },
 } as const);

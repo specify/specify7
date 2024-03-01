@@ -111,7 +111,7 @@ export const wbText = createDictionary({
     'es-es': 'Verificar Datos',
     'fr-fr': 'Vérification des données',
     'uk-ua': 'Перевірка даних',
-    'de-ch': 'Datenprüfung',
+    'de-ch': 'Live-Validierung',
   },
   dataCheckOn: {
     'en-us': 'Live Validation: On',
@@ -119,18 +119,27 @@ export const wbText = createDictionary({
     'es-es': 'Verificar Datos: ON',
     'fr-fr': 'Vérification des données : activée',
     'uk-ua': 'Перевірка даних: увімкнено',
-    'de-ch': 'Datenprüfung: Ein',
+    'de-ch': 'Live-Validierung: Ein',
   },
   dataCheckDescription: {
     'en-us': `
       Note, live validation is an experimental feature and is not a substitute
       for regular validation.
     `,
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch': `
+      Beachten Sie, dass die Live-Validierung eine experimentelle Funktion ist
+      und keinen Ersatz für die reguläre Validierung darstellt.
+    `,
+    'es-es': 'Marca de tiempo cargada',
+    'fr-fr': `
+      Notez que la validation en direct est une fonctionnalité expérimentale et
+      ne remplace pas la validation régulière.
+    `,
+    'ru-ru': 'Временная метка загружена',
+    'uk-ua': `
+      Зауважте, що перевірка в реальному часі є експериментальною функцією і не
+      замінює звичайну перевірку.
+    `,
   },
   changeOwner: {
     'en-us': 'Change Owner',
@@ -234,7 +243,7 @@ export const wbText = createDictionary({
     'es-es': 'No se puede desambiguar',
     'fr-fr': "Impossible de lever l'ambiguïté",
     'uk-ua': 'Неможливо усунути неоднозначність',
-    'de-ch': 'Keine eindeutige Eindeutigkeit möglich',
+    'de-ch': 'Name für neuen Datensatz:',
   },
   noDisambiguationResultsDescription: {
     'en-us': `
@@ -542,7 +551,7 @@ export const wbText = createDictionary({
     'es-es': 'Validar completado sin errores',
     'fr-fr': 'Validation terminée sans erreur',
     'uk-ua': 'Перевірка завершена без помилок',
-    'de-ch': 'Validierung ohne Fehler abgeschlossen',
+    'de-ch': 'Status des Datensatz-Uploads',
   },
   validationNoErrorsDescription: {
     'en-us': `
@@ -771,9 +780,9 @@ export const wbText = createDictionary({
     'en-us': 'Upload Cancelled',
     'ru-ru': 'Загрузка отменена',
     'es-es': 'Subida cancelada',
+    'de-ch': 'Datensatzvalidierung abgebrochen.',
     'fr-fr': "Validation de l'ensemble de données annulée.",
     'uk-ua': 'Перевірку набору даних скасовано.',
-    'de-ch': 'Datensatzvalidierung abgebrochen.',
   },
   uploadCanceledDescription: {
     'en-us': 'Data Set Upload cancelled.',
@@ -938,9 +947,9 @@ export const wbText = createDictionary({
     'en-us': 'Upload Results',
     'ru-ru': 'Результаты загрузки',
     'es-es': 'Cargar Resultados',
-    'fr-fr': 'Recherche en direct',
-    'uk-ua': 'Живий пошук',
     'de-ch': 'Live-Suche',
+    'fr-fr': 'Nom du nouvel ensemble de données :',
+    'uk-ua': 'Назва нового набору даних:',
   },
   potentialUploadResults: {
     'en-us': 'Potential Upload Results',
@@ -998,9 +1007,9 @@ export const wbText = createDictionary({
     'en-us': 'Column first',
     'ru-ru': 'Столбец за столбцом',
     'es-es': 'Primero Columna',
+    'de-ch': 'Zurück rollen',
     'fr-fr': 'Reculer',
     'uk-ua': 'Відкат назад',
-    'de-ch': 'Zurück rollen',
   },
   rowFirst: {
     'en-us': 'Row first',
@@ -1115,7 +1124,7 @@ export const wbText = createDictionary({
       Les erreurs suivantes se sont produites lors de l'importation du fichier :
     `,
     'uk-ua': 'Під час імпортування файлу виникли такі помилки:',
-    'de-ch': 'Keine eindeutige Eindeutigkeit möglich',
+    'de-ch': 'Beim Importieren der Datei sind folgende Fehler aufgetreten:',
   },
   corruptFile: {
     'en-us': 'The file {fileName:string} is corrupt or contains no data!',
@@ -1188,17 +1197,17 @@ export const wbText = createDictionary({
     'en-us': 'Determine automatically',
     'ru-ru': 'Определить автоматически',
     'es-es': 'Determinar automáticamente',
-    'fr-fr': 'Cas de correspondance',
     'uk-ua': 'Регістр сірників',
-    'de-ch': 'Automatisch ermitteln',
+    'de-ch': 'Streichholzetui',
+    'fr-fr': 'Cas de correspondance',
   },
   chooseDataSetName: {
     'en-us': 'Name for New Data Set:',
     'ru-ru': 'Имя для нового набора данных:',
     'es-es': 'Nombre para Nuevo Conjunto de Datos:',
-    'fr-fr': 'Première rangée',
-    'uk-ua': 'Перший ряд',
-    'de-ch': 'Name für neuen Datensatz:',
+    'de-ch': 'Reihe zuerst',
+    'fr-fr': 'Nom du nouvel ensemble de données :',
+    'uk-ua': 'Назва нового набору даних:',
   },
   firstRowIsHeader: {
     'en-us': 'First Row is Header:',
@@ -1352,17 +1361,17 @@ export const wbText = createDictionary({
     'en-us': 'Data Set',
     'ru-ru': 'Набор данных',
     'es-es': 'Conjunto de Datos',
-    'fr-fr': 'Base de données',
     'uk-ua': 'Набір даних',
     'de-ch': 'Datensatz',
+    'fr-fr': 'Base de données',
   },
   dataSetTimestampUploaded: {
     'en-us': 'Timestamp Uploaded',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch': 'Zeitstempel hochgeladen',
+    'es-es': 'Marca de tiempo cargada',
+    'fr-fr': 'Horodatage téléchargé',
+    'ru-ru': 'Временная метка загружена',
+    'uk-ua': 'Мітка часу завантажено',
   },
   dataSetUploadedLabel: {
     'en-us': '(Uploaded, Read-Only)',
@@ -1550,8 +1559,8 @@ export const wbText = createDictionary({
     'en-us': '{node:string} (in {parent:string})',
     'ru-ru': '{node:string} (в {parent:string})',
     'es-es': '{node:string} (en {parent:string})',
+    'de-ch': 'Datensatz erfolgreich gelöscht.',
     'fr-fr': 'Ensemble de données supprimé avec succès.',
     'uk-ua': 'Набір даних успішно видалено.',
-    'de-ch': 'Datensatz erfolgreich gelöscht.',
   },
 } as const);

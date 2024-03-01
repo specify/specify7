@@ -127,7 +127,7 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
   [headerText.developers()]: {
     databaseSchema: {
       title: schemaText.databaseSchema(),
-      url: '/specify/datamodel/',
+      url: '/specify/data-model/',
       icon: icons.database,
     },
     clearCache: {
