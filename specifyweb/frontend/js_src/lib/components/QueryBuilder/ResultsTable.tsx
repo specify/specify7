@@ -1,28 +1,28 @@
 import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { useLiveState } from '../../hooks/useLiveState';
+import { commonText } from '../../localization/common';
+import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
+import { Ul } from '../Atoms';
+import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { getResourceViewUrl } from '../DataModel/resource';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { syncFieldFormat } from '../Formatters/fieldFormat';
+import { Dialog } from '../Molecules/Dialog';
+import { TableIcon } from '../Molecules/TableIcon';
 import { userPreferences } from '../Preferences/userPreferences';
 import { getAuditRecordFormatter } from './AuditLogFormatter';
 import type { QueryFieldSpec } from './fieldSpec';
 import type { QueryResultRow } from './Results';
 import { queryIdField } from './Results';
-import { Button } from '../Atoms/Button';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { queryText } from '../../localization/query';
-import { Dialog } from '../Molecules/Dialog';
-import { commonText } from '../../localization/common';
-import { TableIcon } from '../Molecules/TableIcon';
-import { Ul } from '../Atoms';
-import { getResourceViewUrl } from '../DataModel/resource';
 
 export function QueryResultsTable({
   table,
@@ -107,11 +107,13 @@ function Row({
   const [resource] = useLiveState<
     SpecifyResource<AnySchema> | false | undefined
   >(
-    React.useCallback((): SpecifyResource<AnySchema> | false => {
-      return new table.Resource({
-        id: result[queryIdField],
-      });
-    }, [hasIdField, table, result])
+    React.useCallback(
+      (): SpecifyResource<AnySchema> | false =>
+        new table.Resource({
+          id: result[queryIdField],
+        }),
+      [hasIdField, table, result]
+    )
   );
   const [formattedValues] = useAsyncState(
     React.useCallback(
@@ -191,9 +193,9 @@ function Row({
               />
             ) : (
               <Button.Icon
-                icon={'viewList'}
-                onClick={handleToggle}
+                icon="viewList"
                 title={queryText.viewListOfIds()}
+                onClick={handleToggle}
               />
             )}
             {isIdListOpen && splitIds !== undefined ? (
