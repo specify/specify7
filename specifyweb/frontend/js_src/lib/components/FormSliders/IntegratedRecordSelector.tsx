@@ -115,12 +115,11 @@ export function IntegratedRecordSelector({
       <RecordSelectorFromCollection
         collection={collection}
         defaultIndex={isToOne ? 0 : index}
-        formType={formType}
-        isCollapsed={isCollapsed}
-        isInteraction={isInteraction}
         relationship={relationship}
         onAdd={(resource) => {
           if (isInteraction) handleOpenDialog();
+          if (!isInteraction && formType !== 'formTable')
+            collection.add(resource);
           handleAdding(resource);
         }}
         onDelete={(...args): void => {

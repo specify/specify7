@@ -28,8 +28,6 @@ export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
   onSlide: handleSlide,
   children,
   defaultIndex = 0,
-  isInteraction,
-  formType,
   ...rest
 }: Omit<
   RecordSelectorProps<SCHEMA>,
@@ -46,8 +44,6 @@ export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
     readonly relationship: Relationship;
     readonly defaultIndex?: number;
     readonly children: (state: RecordSelectorState<SCHEMA>) => JSX.Element;
-    readonly isInteraction?: boolean;
-    readonly formType: string;
   }): JSX.Element | null {
   const getRecords = React.useCallback(
     (): RA<SpecifyResource<SCHEMA> | undefined> =>
@@ -105,7 +101,6 @@ export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
       const resources = isToOne ? rawResources.slice(0, 1) : rawResources;
       if (isDependent && isToOne)
         collection.related?.placeInSameHierarchy(resources[0]);
-      if (!isInteraction && formType !== 'formTable') collection.add(resources);
       handleAdd?.(resources);
       const lastIndex = Math.max(0, collection.models.length - 1);
       setIndex(lastIndex);
