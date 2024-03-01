@@ -7,7 +7,7 @@ import React from 'react';
 
 import { eventListener } from '../../utils/events';
 import { f } from '../../utils/functools';
-import type { GetOrSet, GetSet, RA } from '../../utils/types';
+import type { GetOrSet, GetSet, IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { removeItem } from '../../utils/utils';
 import { softError } from '../Errors/assert';
@@ -24,7 +24,7 @@ const saveBlockers = new WeakMap<
 >();
 
 type FieldValue = number | string | string | null | undefined;
-type FieldsWithValue = Readonly<Record<string, FieldValue>>;
+type FieldsWithValue = IR<FieldValue>;
 
 const previouslySetBlockers = new WeakMap<
   SpecifyResource<AnySchema>,
@@ -130,7 +130,7 @@ export function setSaveBlockers(
   ];
 
   const fieldValue = resource.get(field.name);
-  const [previouslySet, setPreviouslySetBlocker] = usePreviouslySetBlocker(
+  const [previouslySet, setPreviouslySetBlocker] = getSetPreviouslySetBlocker(
     resource,
     field
   );
@@ -140,7 +140,12 @@ export function setSaveBlockers(
    * current value of the field matches the field value which was previously
    * set, then the case should be ignored to not override any existing blockers
    */
-  if (fieldValue === previouslySet && newBlockers.length === 0) return;
+  if (
+    field.type.endsWith('to-one') &&
+    fieldValue === previouslySet &&
+    newBlockers.length === 0
+  )
+    return;
   setPreviouslySetBlocker(fieldValue);
 
   saveBlockers.set(resource, {
@@ -160,7 +165,7 @@ export function getFieldBlockers(
     .map(({ message }) => message);
 }
 
-function usePreviouslySetBlocker(
+function getSetPreviouslySetBlocker(
   resource: SpecifyResource<AnySchema>,
   field: LiteralField | Relationship
 ): GetSet<FieldValue> {
