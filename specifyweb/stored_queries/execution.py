@@ -576,7 +576,7 @@ def build_query(session, collection, user, tableid, field_specs,
 
     replace_nulls = if True, replace null values with ""
 
-    distinct = if True, do not return record IDs and query distinct rows
+    distinct = if True, group by all display fields, and return all record IDs associated with a row
     """
     model = models.models_by_tableid[tableid]
     id_field = getattr(model, model._id)
@@ -623,7 +623,6 @@ def build_query(session, collection, user, tableid, field_specs,
         query, field, predicate = fs.add_to_query(query, formatauditobjs=formatauditobjs)
         if fs.display:
             formatted_field = query.objectformatter.fieldformat(fs, field)
-            # TODO: if distinct and field is the record id, then don't add it to the query, or add blank values
             query = query.add_columns(formatted_field)
             selected_fields.append(formatted_field)
 
