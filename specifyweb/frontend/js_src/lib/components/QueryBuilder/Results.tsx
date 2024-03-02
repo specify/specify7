@@ -297,13 +297,13 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                   onSortChange={undefined}
                 />
               )}
-              {!isDistinct ? (
+              {isDistinct ? null : (
                 <TableHeaderCell
                   fieldSpec={undefined}
                   sortConfig={undefined}
                   onSortChange={undefined}
                 />
-              ) : null}
+              )}
               <TableHeaderCell
                 fieldSpec={undefined}
                 sortConfig={undefined}
