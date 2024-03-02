@@ -160,16 +160,18 @@ function Row({
               {lineIndex}
             </div>
           )}
-          <div
-            className={`${getCellClassName(condenseQueryResults)} sticky`}
-            role="cell"
-          >
-            <Input.Checkbox
-              checked={isSelected}
-              /* Ignore click event, as click would be handled by onClick on row */
-              onChange={f.undefined}
-            />
-          </div>
+          {typeof result[0] === 'number' && (
+            <div
+              className={`${getCellClassName(condenseQueryResults)} sticky`}
+              role="cell"
+            >
+              <Input.Checkbox
+                checked={isSelected}
+                /* Ignore click event, as click would be handled by onClick on row */
+                onChange={f.undefined}
+              />
+            </div>
+          )}
           <div
             className={`${getCellClassName(condenseQueryResults)} sticky`}
             role="cell"

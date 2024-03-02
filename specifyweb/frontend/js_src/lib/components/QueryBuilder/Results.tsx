@@ -179,7 +179,10 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     'appearance',
     'showLineNumber'
   );
-  const metaColumns = (showLineNumber ? 1 : 0) + 2;
+
+  const isDistinct =
+    typeof loadedResults?.[0]?.[0] === 'string' && loadedResults !== undefined;
+  const metaColumns = (showLineNumber ? 1 : 0) + (isDistinct ? 1 : 2);
 
   return (
     <Container.Base className="w-full !bg-[color:var(--form-background)]">
@@ -294,11 +297,13 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                   onSortChange={undefined}
                 />
               )}
-              <TableHeaderCell
-                fieldSpec={undefined}
-                sortConfig={undefined}
-                onSortChange={undefined}
-              />
+              {!isDistinct ? (
+                <TableHeaderCell
+                  fieldSpec={undefined}
+                  sortConfig={undefined}
+                  onSortChange={undefined}
+                />
+              ) : null}
               <TableHeaderCell
                 fieldSpec={undefined}
                 sortConfig={undefined}
