@@ -10,7 +10,7 @@ from functools import reduce
 
 from django.conf import settings
 from django.db import transaction
-from sqlalchemy import sql, orm, func
+from sqlalchemy import sql, orm, func, select
 from sqlalchemy.sql.expression import asc, desc, insert, literal
 
 from specifyweb.stored_queries.group_concat import group_by_displayed_fields
@@ -384,7 +384,17 @@ def createPlacemark(kmlDoc, row, coord_cols, table, captions, host):
 
     return placemarkElement
 
-
+def test_qb(request):
+    with models.session_context() as session:
+        prep_col = func.max(getattr(models.Preparation, models.Preparation._id))
+        query = select([prep_col]
+                       ).select_from(models.Preparation).where(models.Preparation.CollectionObjectID == models.CollectionObject.collectionObjectId).correlate(models.CollectionObject).as_scalar()
+        new_query = session.query(models.CollectionObject._id).select_from(models.CollectionObject).filter(models.CollectionObject.CollectionID == request.specify_collection.id)
+        new_query = new_query.add_column(query)
+        new_query = new_query.group_by(query)
+        str_query = str(new_query.statement.compile(compile_kwargs={"literal_binds": True}))
+        rr = list(new_query)
+    raise Exception('aha')
 
 def run_ephemeral_query(collection, user, spquery):
     """Execute a Specify query from deserialized json and return the results
@@ -649,5 +659,5 @@ def build_query(session, collection, user, tableid, field_specs,
     if distinct:
         query = group_by_displayed_fields(query, selected_fields)
 
-    logger.debug("query: %s", query.query)
+    logger.warning("query: %s", query.query)
     return query.query, order_by_exprs
