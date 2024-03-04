@@ -25,6 +25,7 @@ import { interactionTables } from '../Interactions/config';
 import { Dialog } from '../Molecules/Dialog';
 import {
   ProtectedAction,
+  ProtectedTable,
   ProtectedTool,
 } from '../Permissions/PermissionDenied';
 import { UnloadProtectsContext } from '../Router/UnloadProtect';
@@ -38,6 +39,8 @@ import { QueryTreeUsages } from './QueryTreeUsages';
 import { ReadOnlyMode } from './ReadOnlyMode';
 import { ShareRecord } from './ShareRecord';
 import { SubViewMeta } from './SubViewMeta';
+import { MergeRecord } from './MergeRecord';
+import { recordMergingTables } from '../Merging';
 
 /**
  * Form preferences host context aware user preferences and other meta-actions.
@@ -213,8 +216,18 @@ function MetaDialog({
                 ))}
               </ProtectedAction>
             </ProtectedTool>
-            {/* FEATURE: A merge records button. See previous implementation at
-            commit 0274eb2 */}
+            <ProtectedAction action="update" resource="/permissions/roles">
+              <ProtectedAction action="delete" resource="/permissions/roles">
+                <ProtectedTable
+                  action="update"
+                  tableName={resource.specifyTable.name}
+                >
+                  {recordMergingTables.has(resource.specifyTable.name) && (
+                    <MergeRecord resource={resource} />
+                  )}
+                </ProtectedTable>
+              </ProtectedAction>
+            </ProtectedAction>
           </>
         }
         header={formsText.recordInformation()}

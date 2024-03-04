@@ -39,6 +39,14 @@ import { recordMergingTableSpec } from './definitions';
 import { InvalidMergeRecordsDialog } from './InvalidMergeRecords';
 import { mergingQueryParameter } from './queryString';
 import { Status } from './Status';
+import { Tables } from '../DataModel/types';
+
+export const recordMergingTables = new Set<keyof Tables>([
+  'Agent',
+  'Locality',
+  'PaleoContext',
+  'CollectingEvent',
+]);
 
 export function RecordMergingLink({
   table,
