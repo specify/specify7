@@ -22,6 +22,7 @@ import type { ViewDescription } from '../FormParse';
 import { SubViewContext } from '../Forms/SubView';
 import { isTreeResource } from '../InitialContext/treeRanks';
 import { interactionTables } from '../Interactions/config';
+import { recordMergingTables } from '../Merging';
 import { Dialog } from '../Molecules/Dialog';
 import {
   ProtectedAction,
@@ -34,13 +35,12 @@ import { CarryForwardConfig } from './CarryForward';
 import { AddButtonConfig, CloneConfig } from './Clone';
 import { Definition } from './Definition';
 import { EditHistory } from './EditHistory';
+import { MergeRecord } from './MergeRecord';
 import { PickListUsages } from './PickListUsages';
 import { QueryTreeUsages } from './QueryTreeUsages';
 import { ReadOnlyMode } from './ReadOnlyMode';
 import { ShareRecord } from './ShareRecord';
 import { SubViewMeta } from './SubViewMeta';
-import { MergeRecord } from './MergeRecord';
-import { recordMergingTables } from '../Merging';
 
 /**
  * Form preferences host context aware user preferences and other meta-actions.

@@ -29,6 +29,7 @@ import { useAllSaveBlockers } from '../DataModel/saveBlockers';
 import { deserializeResource } from '../DataModel/serializers';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getTable } from '../DataModel/tables';
+import type { Tables } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { userPreferences } from '../Preferences/userPreferences';
 import { formatUrl } from '../Router/queryString';
@@ -39,7 +40,6 @@ import { recordMergingTableSpec } from './definitions';
 import { InvalidMergeRecordsDialog } from './InvalidMergeRecords';
 import { mergingQueryParameter } from './queryString';
 import { Status } from './Status';
-import { Tables } from '../DataModel/types';
 
 export const recordMergingTables = new Set<keyof Tables>([
   'Agent',
