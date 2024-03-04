@@ -207,7 +207,7 @@ def query_to_csv(session, collection, user, tableid, field_specs, path,
             if row_filter is not None and not row_filter(row): continue
             encoded = [
                 re.sub('\r|\n', ' ', str(f))
-                for f in (row[1:] if strip_id and not distinct else row)
+                for f in (row[1:] if strip_id or distinct else row)
             ]
             csv_writer.writerow(encoded)
 
