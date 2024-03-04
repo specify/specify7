@@ -89,6 +89,11 @@ class SQLAlchemySetup(ApiTests):
 
 
     def setUp(self):
+        print("""
+            #BUG: If a test which compares the final sql query is added, then it could randomly fail
+            #in multithreaded tests because of usage of .label(None) in aggregate() 
+            #function in stored_queries/format.py 
+              """)
         super().setUp()
 
 

@@ -7,9 +7,8 @@ from xml.etree.ElementTree import Element
 from xml.sax.saxutils import quoteattr
 
 from sqlalchemy import orm, Table as SQLTable, inspect
-from sqlalchemy.sql.expression import case, func, cast, literal
+from sqlalchemy.sql.expression import case, func, cast, literal, Label
 from sqlalchemy.sql.functions import concat, count
-from sqlalchemy.sql.selectable import ScalarSelect
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 from sqlalchemy.sql.elements import Extract
 from sqlalchemy import types
@@ -193,7 +192,7 @@ class ObjectFormatter(object):
     def aggregate(self, query: QueryConstruct,
                   field: Union[Field, Relationship], rel_table: SQLTable,
                   aggregator_name,
-                  cycle_detector=[]) -> ScalarSelect:
+                  cycle_detector=[]) -> Label:
 
         logger.info('aggregating field %s on %s using %s', field, rel_table,
                     aggregator_name)
@@ -236,7 +235,7 @@ class ObjectFormatter(object):
         aggregated = blank_nulls(group_concat(formatted, separator, *order_by_expr))
 
 
-        return subquery.query.add_column(aggregated).limit(limit).as_scalar()
+        return subquery.query.add_column(aggregated).limit(limit).label(None)
 
     def fieldformat(self, query_field: QueryField,
                     field: blank_nulls) -> blank_nulls:
