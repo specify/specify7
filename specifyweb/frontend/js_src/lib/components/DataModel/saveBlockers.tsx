@@ -7,7 +7,7 @@ import React from 'react';
 
 import { eventListener } from '../../utils/events';
 import { f } from '../../utils/functools';
-import type { GetOrSet, RA } from '../../utils/types';
+import type { GetOrSet, GetSet, IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { removeItem } from '../../utils/utils';
 import { softError } from '../Errors/assert';
@@ -21,6 +21,14 @@ import type { Collection } from './specifyTable';
 const saveBlockers = new WeakMap<
   SpecifyResource<AnySchema>,
   ResourceBlockers
+>();
+
+type FieldValue = number | string | string | null | undefined;
+type FieldsWithValue = IR<FieldValue>;
+
+const previouslySetBlockers = new WeakMap<
+  SpecifyResource<AnySchema>,
+  FieldsWithValue
 >();
 
 type ResourceBlockers = {
@@ -120,6 +128,27 @@ export function setSaveBlockers(
     ...resourceBlockers.blockers.filter((blocker) => blocker.field !== field),
     ...blockers,
   ];
+
+  const fieldValue = resource.get(field.name);
+  const [previouslySet, setPreviouslySetBlocker] = getSetPreviouslySetBlocker(
+    resource,
+    field
+  );
+
+  /**
+   * If a consumer of this function attempts to reset the saveBlockers but the
+   * current value of the field matches the field value which was previously
+   * set, then the case should be ignored to not override any existing blockers
+   */
+  const skipResettingBlockers =
+    newBlockers.length === 0 &&
+    fieldValue === previouslySet &&
+    (!field.isRelationship ||
+      (field.isRelationship && field.type.endsWith('to-one')));
+
+  if (skipResettingBlockers) return;
+  setPreviouslySetBlocker(fieldValue);
+
   saveBlockers.set(resource, {
     ...resourceBlockers,
     blockers: newBlockers,
@@ -131,10 +160,32 @@ export function getFieldBlockers(
   resource: SpecifyResource<AnySchema>,
   field: LiteralField | Relationship
 ): RA<string> {
-  const blockers = saveBlockers.get(resource)?.blockers ?? [];
+  const blockers = getResourceBlockers(resource).blockers;
   return blockers
     .filter((blocker) => blocker.field === field)
     .map(({ message }) => message);
+}
+
+function getSetPreviouslySetBlocker(
+  resource: SpecifyResource<AnySchema>,
+  field: LiteralField | Relationship
+): GetSet<FieldValue> {
+  const fieldAndValue = {
+    [field.name]: resource.get(field.name),
+  };
+  if (!previouslySetBlockers.has(resource))
+    previouslySetBlockers.set(resource, fieldAndValue);
+
+  function setPreviouslySetBlocker(value: FieldValue): void {
+    previouslySetBlockers.set(resource, {
+      ...previouslySetBlockers.get(resource),
+      [field.name]: value,
+    });
+  }
+  return [
+    previouslySetBlockers.get(resource)![field.name],
+    setPreviouslySetBlocker,
+  ];
 }
 
 function getResourceBlockers(
