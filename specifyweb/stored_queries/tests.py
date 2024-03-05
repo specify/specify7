@@ -477,7 +477,7 @@ class FormatterAggregatorTests(SQLAlchemySetup):
             self.assertCountEqual(list(query), [('text 1 value for this accession',), (' text 2 value for this accession role2',)])
 
     def test_group_by_with_aggregators(self):
-      with models.session_context() as session:
+      with FormatterAggregatorTests.test_session_context() as session:
         prep_col = func.max(getattr(models.Preparation, models.Preparation._id))
         
         query = (
