@@ -213,7 +213,7 @@ export const wbPlanText = createDictionary({
       uniquement pour le téléchargement.
     `,
     'uk-ua': `
-      Якщо встановлено значення «Завжди ігнорувати», значення в цьому стовпці
+      Якщо встановлено значення «Ігнорувати завжди», значення в цьому стовпці
       ніколи не розглядатиметься для цілей зіставлення, лише для завантаження.
     `,
     'de-ch': `
@@ -484,7 +484,7 @@ export const wbPlanText = createDictionary({
     'en-us': 'Base Table',
     'ru-ru': 'Базовая таблица',
     'es-es': 'Tabla Base',
-    'fr-fr': 'Tableau de base',
+    'fr-fr': 'Table de base',
     'uk-ua': 'Базовий стіл',
     'de-ch': 'Basistabelle',
   },

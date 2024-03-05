@@ -25,7 +25,7 @@ class NotificationsTests(ApiTests):
         response = c.get('/notifications/messages/?since=2023-07-25T21:20:14.177591')
 
         mockResponse = [json.loads(testMessage.content)]
-        mockResponse[0]['message_id'] = 1
+        mockResponse[0]['message_id'] = testMessage.id
         mockResponse[0]['read'] = False
         mockResponse[0]['timestamp'] = currentTime.strftime('%Y-%m-%dT%H:%M:%S.%f')
 
@@ -37,27 +37,22 @@ class NotificationsTests(ApiTests):
         
     def test_delete_all(self):
         # Create some test messages
-        testMessage1 = Message.objects.create(
+
+        messages = [Message.objects.create(
             user=self.specifyuser,
             timestampcreated=datetime.now(),
-            content=json.dumps({'type': 'test-type-1', 'file': 'test_file_1.csv'})
-        )
-        testMessage2 = Message.objects.create(
-            user=self.specifyuser,
-            timestampcreated=datetime.now(),
-            content=json.dumps({'type': 'test-type-2', 'file': 'test_file_2.csv'})
-        )
+            content=json.dumps({'type': f'test-type-{num}', 'file': f'test_file_{num}.csv'})
+        ) for num in range(5)]
 
         c = Client()
         c.force_login(self.specifyuser)
-
+        message_ids = [message.id for message in messages]
         # Send a POST request to the delete_all endpoint with the IDs of the test messages
-        response = c.post('/notifications/delete_all/', {'message_ids': json.dumps([testMessage1.id, testMessage2.id])})
+        response = c.post('/notifications/delete_all/', {'message_ids': json.dumps(message_ids)})
 
         # Check if the response is OK
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content.decode(), 'OK')
 
         # Check if the messages have been deleted
-        self.assertFalse(Message.objects.filter(id=testMessage1.id).exists())
-        self.assertFalse(Message.objects.filter(id=testMessage2.id).exists())
+        self.assertFalse(Message.objects.filter(id__in=message_ids).exists())

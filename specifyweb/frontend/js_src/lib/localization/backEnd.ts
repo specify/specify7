@@ -569,8 +569,8 @@ export const backEndText = createDictionary({
       або "jrxml/report"
     `,
     'de-ch': `
-      Bericht kann nicht erstellt werden: {mimeTypeField:string} ist nicht einer
-      von „jrxml/label“ oder „jrxml/report“
+      Bericht kann nicht erstellt werden: {mimeTypeField:string} ist weder
+      „jrxml/label“ noch „jrxml/report“
     `,
   },
   fieldNotRelationship: {

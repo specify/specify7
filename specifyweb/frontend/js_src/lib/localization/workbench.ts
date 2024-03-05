@@ -130,20 +130,14 @@ export const wbText = createDictionary({
       Beachten Sie, dass die Live-Validierung eine experimentelle Funktion ist
       und keinen Ersatz für die reguläre Validierung darstellt.
     `,
-    'es-es': `
-      Tenga en cuenta que la validación en vivo es una función experimental y no
-      sustituye a la validación regular.
-    `,
+    'es-es': 'Marca de tiempo cargada',
     'fr-fr': `
       Notez que la validation en direct est une fonctionnalité expérimentale et
       ne remplace pas la validation régulière.
     `,
-    'ru-ru': `
-      Обратите внимание, что живая проверка — это экспериментальная функция,
-      которая не заменяет обычную проверку.
-    `,
+    'ru-ru': 'Временная метка загружена',
     'uk-ua': `
-      Зауважте, перевірка в реальному часі є експериментальною функцією і не
+      Зауважте, що перевірка в реальному часі є експериментальною функцією і не
       замінює звичайну перевірку.
     `,
   },
@@ -249,7 +243,7 @@ export const wbText = createDictionary({
     'es-es': 'No se puede desambiguar',
     'fr-fr': "Impossible de lever l'ambiguïté",
     'uk-ua': 'Неможливо усунути неоднозначність',
-    'de-ch': 'Name für neuen Datensatz:',
+    'de-ch': 'Keine eindeutige Eindeutigkeit möglich',
   },
   noDisambiguationResultsDescription: {
     'en-us': `
@@ -364,7 +358,7 @@ export const wbText = createDictionary({
       завантаження.
     `,
     'de-ch': `
-      Beim Zurücksetzen werden die neuen Datensätze entfernt, die dieser
+      Durch ein Rollback werden die neuen Datensätze entfernt, die dieser
       Datensatz zur Specify-Datenbank hinzugefügt hat. Das gesamte Rollback wird
       abgebrochen, wenn die hochgeladenen Daten seit dem Hochladen von anderen
       Datensätzen referenziert (wiederverwendet) wurden.
@@ -683,8 +677,7 @@ export const wbText = createDictionary({
     'uk-ua':
       'Помилка завантаження через одну або кілька помилок значення клітинки.',
     'de-ch': `
-      Der Upload ist aufgrund eines oder mehrerer Zellenwertfehler
-      fehlgeschlagen.
+      Der Upload ist aufgrund eines oder mehrerer Zellwertfehler fehlgeschlagen.
     `,
   },
   uploadErrorsSecondDescription: {
@@ -955,7 +948,7 @@ export const wbText = createDictionary({
     'es-es': 'Cargar Resultados',
     'de-ch': 'Live-Suche',
     'fr-fr': 'Nom du nouvel ensemble de données :',
-    'uk-ua': 'Завантажити результати',
+    'uk-ua': 'Назва нового набору даних:',
   },
   potentialUploadResults: {
     'en-us': 'Potential Upload Results',
@@ -1205,7 +1198,7 @@ export const wbText = createDictionary({
     'es-es': 'Determinar automáticamente',
     'uk-ua': 'Регістр сірників',
     'de-ch': 'Streichholzetui',
-    'fr-fr': 'Cas de correspondance',
+    'fr-fr': 'Déterminer automatiquement',
   },
   chooseDataSetName: {
     'en-us': 'Name for New Data Set:',
@@ -1385,7 +1378,7 @@ export const wbText = createDictionary({
     'es-es': '(Cargado, Solo lectura)',
     'fr-fr': '(Téléchargé, lecture seule)',
     'uk-ua': '(Завантажено, лише для читання)',
-    'de-ch': 'Validierung ohne Fehler abgeschlossen',
+    'de-ch': '(Hochgeladen, schreibgeschützt)',
   },
   wbStatusUnupload: {
     'en-us': 'Data Set Rollback Status',
@@ -1532,7 +1525,7 @@ export const wbText = createDictionary({
     'es-es': 'Deténgase',
     'fr-fr': 'Arrêt',
     'uk-ua': 'СТІЙ',
-    'de-ch': 'Automatisch ermitteln',
+    'de-ch': 'Stoppen',
   },
   wbStatusError: {
     'en-us': 'Error occurred during {operationName:string}',
