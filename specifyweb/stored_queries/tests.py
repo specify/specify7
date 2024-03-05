@@ -12,7 +12,7 @@ from django.conf import settings
 import sqlalchemy
 from sqlalchemy.dialects import mysql
 from django.db import connection
-from sqlalchemy import event
+from sqlalchemy import event, select, func
 from . import models
 from xml.etree import ElementTree
 from datetime import datetime
@@ -476,6 +476,29 @@ class FormatterAggregatorTests(SQLAlchemySetup):
             query = query.query.add_columns(expr)
             self.assertCountEqual(list(query), [('text 1 value for this accession',), (' text 2 value for this accession role2',)])
 
+    def test_group_by_with_aggregators(self):
+      with models.session_context() as session:
+        prep_col = func.max(getattr(models.Preparation, models.Preparation._id))
+        
+        query = (
+            select([prep_col])
+            .select_from(models.Preparation)
+            .where(models.Preparation.CollectionObjectID == models.CollectionObject.collectionObjectId)
+            .correlate(models.CollectionObject)
+            .as_scalar()
+        )
+        
+        new_query = (
+            session.query(models.CollectionObject._id)
+            .select_from(models.CollectionObject)
+            .filter(models.CollectionObject.CollectionID == 1)
+            .add_column(query)
+            .group_by(query)
+        )
+        
+        str_query = str(new_query.statement.compile(compile_kwargs={"literal_binds": True}))
+        rr = list(new_query)
+          
 @skip("These tests are out of date.")
 class StoredQueriesTests(ApiTests):
     # def setUp(self):

@@ -47,6 +47,7 @@ class ObjectFormatter(object):
         self.date_format_month = MYSQL_TO_MONTH.get(self.date_format)
         self.collection = collection
         self.replace_nulls = replace_nulls
+        self.aggregator_count = 0
 
     def getFormatterDef(self, specify_model: Table, formatter_name) -> Optional[
         Element]:
@@ -235,7 +236,9 @@ class ObjectFormatter(object):
         aggregated = blank_nulls(group_concat(formatted, separator, *order_by_expr))
 
 
-        return subquery.query.add_column(aggregated).limit(limit).label(None)
+        aggregator_label = f"aggregator_{self.aggregator_count}"
+        self.aggregator_count = (self.aggregator_count + 1) % 1000
+        return subquery.query.add_column(aggregated).limit(limit).label(aggregator_label)
 
     def fieldformat(self, query_field: QueryField,
                     field: blank_nulls) -> blank_nulls:

@@ -88,8 +88,6 @@ def raise_error(request):
     """This endpoint intentionally throws an error in the server for
     testing purposes.
     """
-    from specifyweb.stored_queries.execution import test_qb
-    test_qb(request)
     raise Exception('This error is a test. You may now return to your regularly '
                     'scheduled hacking.')
 
