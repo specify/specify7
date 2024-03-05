@@ -83,7 +83,7 @@ const rowsSpec = (table: SpecifyTable | undefined) =>
                   Panel: panelSpec,
                   Command: commandSpec,
                   IconView: iconViewSpec,
-                  Blank: blankSpec,
+                  Blank: emptySpec,
                   Unknown: emptySpec,
                 } as const,
                 table
@@ -307,15 +307,6 @@ const buildSpecifyProperties = (properties: IR<string>): string =>
     .join(';');
 
 const labelSpec = f.store(() =>
-  createXmlSpec({
-    label: syncers.xmlAttribute('label', 'skip'),
-    labelForCellId: syncers.xmlAttribute('labelFor', 'skip'),
-    icon: syncers.xmlAttribute('icon', 'skip'),
-    legacyName: syncers.xmlAttribute('name', 'skip'),
-  })
-);
-
-const blankSpec = f.store(() =>
   createXmlSpec({
     label: syncers.xmlAttribute('label', 'skip'),
     labelForCellId: syncers.xmlAttribute('labelFor', 'skip'),
