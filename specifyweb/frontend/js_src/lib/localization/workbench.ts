@@ -243,7 +243,7 @@ export const wbText = createDictionary({
     'es-es': 'No se puede desambiguar',
     'fr-fr': "Impossible de lever l'ambiguïté",
     'uk-ua': 'Неможливо усунути неоднозначність',
-    'de-ch': 'Name für neuen Datensatz:',
+    'de-ch': 'Keine eindeutige Eindeutigkeit möglich',
   },
   noDisambiguationResultsDescription: {
     'en-us': `
@@ -677,8 +677,7 @@ export const wbText = createDictionary({
     'uk-ua':
       'Помилка завантаження через одну або кілька помилок значення клітинки.',
     'de-ch': `
-      Der Upload ist aufgrund eines oder mehrerer Zellenwertfehler
-      fehlgeschlagen.
+      Der Upload ist aufgrund eines oder mehrerer Zellwertfehler fehlgeschlagen.
     `,
   },
   uploadErrorsSecondDescription: {
@@ -1199,7 +1198,7 @@ export const wbText = createDictionary({
     'es-es': 'Determinar automáticamente',
     'uk-ua': 'Регістр сірників',
     'de-ch': 'Streichholzetui',
-    'fr-fr': 'Cas de correspondance',
+    'fr-fr': 'Déterminer automatiquement',
   },
   chooseDataSetName: {
     'en-us': 'Name for New Data Set:',
@@ -1379,7 +1378,7 @@ export const wbText = createDictionary({
     'es-es': '(Cargado, Solo lectura)',
     'fr-fr': '(Téléchargé, lecture seule)',
     'uk-ua': '(Завантажено, лише для читання)',
-    'de-ch': 'Validierung ohne Fehler abgeschlossen',
+    'de-ch': '(Hochgeladen, schreibgeschützt)',
   },
   wbStatusUnupload: {
     'en-us': 'Data Set Rollback Status',
@@ -1526,7 +1525,7 @@ export const wbText = createDictionary({
     'es-es': 'Deténgase',
     'fr-fr': 'Arrêt',
     'uk-ua': 'СТІЙ',
-    'de-ch': 'Automatisch ermitteln',
+    'de-ch': 'Stoppen',
   },
   wbStatusError: {
     'en-us': 'Error occurred during {operationName:string}',
