@@ -1,24 +1,25 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-02-28 07:02+0000\n"
+"PO-Revision-Date: 2024-03-05 18:25+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: French "
-"<https://hosted.weblate.org/projects/specify-7/workbench/fr/>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
+"workbench/fr/>\n"
 "Language: fr\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.5-dev\n"
 
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Work Bench > Wb View
 #: components/Header/menuItemDefinitions.ts:93
 #: components/Preferences/UserDefinitions.tsx:1640
 #: components/Router/OverlayRoutes.tsx:150
 #: components/WorkBench/WbView.tsx:200
-#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Work Bench > Wb View
 msgid "workBench"
 msgstr "Table de travail"
 
+#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Work Bench > Components ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Template
 #: components/AttachmentsBulkImport/Rollback.tsx:29
 #: components/AttachmentsBulkImport/Rollback.tsx:93
 #: components/AttachmentsBulkImport/Rollback.tsx:130
@@ -26,22 +27,22 @@ msgstr "Table de travail"
 #: components/WorkBench/Components.tsx:36
 #: components/WorkBench/Status.tsx:75
 #: components/WorkBench/Template.tsx:164
-#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Work Bench > Components ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Template
 msgid "rollback"
 msgstr "Retour en arriere"
 
+#. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Template
 #: components/AttachmentsBulkImport/Import.tsx:290
 #: components/WbPlanView/Mapper.tsx:380
 #: components/WorkBench/Template.tsx:145
-#. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Template
 msgid "validate"
 msgstr "Valider"
 
-#: components/WorkBench/Status.tsx:73
 #. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:73
 msgid "validation"
 msgstr "Validation"
 
+#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb Actions
 #: components/AttachmentsBulkImport/Upload.tsx:210
 #: components/AttachmentsBulkImport/Upload.tsx:236
 #: components/AttachmentsBulkImport/utils.ts:476
@@ -49,142 +50,141 @@ msgstr "Validation"
 #: components/WorkBench/Status.tsx:74
 #: components/WorkBench/Template.tsx:175
 #: components/WorkBench/WbActions.tsx:65
-#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb Actions
 msgid "upload"
 msgstr "Télécharger"
 
-#: components/WorkBench/Status.tsx:81
 #. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:81
 msgid "rollingBack"
 msgstr "Reculer"
 
+#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Work Bench > Status
 #: components/AttachmentsBulkImport/Upload.tsx:108
 #: components/WorkBench/Status.tsx:80
-#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Work Bench > Status
 msgid "uploading"
 msgstr "Téléchargement"
 
+#. Used in: Components > Attachments Bulk Import > Validation Dialog ⬤ Components > Work Bench > Status
 #: components/AttachmentsBulkImport/ValidationDialog.tsx:41
 #: components/AttachmentsBulkImport/ValidationDialog.tsx:45
 #: components/WorkBench/Status.tsx:79
-#. Used in: Components > Attachments Bulk Import > Validation Dialog ⬤ Components > Work Bench > Status
 msgid "validating"
 msgstr "Validation"
 
-#: components/WorkBench/WbView.tsx:521
 #. Used in: Components > Work Bench > Wb View
+#: components/WorkBench/WbView.tsx:521
 msgid "disambiguate"
 msgstr "Lever l'ambiguïté"
 
-#: components/WorkBench/WbUtils.tsx:592
 #. Used in: Components > Work Bench > Wb Utils
+#: components/WorkBench/WbUtils.tsx:592
 msgid "fillDown"
 msgstr "Remplissez"
 
-#: components/WorkBench/WbUtils.tsx:592
 #. Used in: Components > Work Bench > Wb Utils
+#: components/WorkBench/WbUtils.tsx:592
 msgid "fillUp"
 msgstr "Remplir"
 
+#. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb Actions
 #: components/WorkBench/Template.tsx:185
 #: components/WorkBench/WbActions.tsx:149
-#. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb Actions
 msgid "revert"
 msgstr "Revenir"
 
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb Validation
 #: components/Preferences/UserDefinitions.tsx:1646
 #: components/WorkBench/Template.tsx:138
 #: components/WorkBench/WbValidation.tsx:160
-#. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb Validation
 msgid "dataCheck"
 msgstr "Vérification des données"
 
+#. Used in: Components > Work Bench > Wb Validation
 #: components/WorkBench/WbValidation.tsx:156
 #: components/WorkBench/WbValidation.tsx:159
-#. Used in: Components > Work Bench > Wb Validation
 msgid "dataCheckOn"
 msgstr "Vérification des données : activée"
 
-#: components/Preferences/UserDefinitions.tsx:1647
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1647
 #, fuzzy
 msgid "dataCheckDescription"
 msgstr ""
 "Notez que la validation en direct est une fonctionnalité expérimentale et "
 "ne remplace pas la validation régulière."
 
+#. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 #: components/WorkBench/DataSetMeta.tsx:439
 #: components/WorkBench/Template.tsx:213
-#. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 msgid "changeOwner"
 msgstr "Changer de propriétaire"
 
-#: components/WorkBench/Template.tsx:228
 #. Used in: Components > Work Bench > Template
+#: components/WorkBench/Template.tsx:228
 msgid "convertCoordinates"
 msgstr "Convertir les coordonnées"
 
-#: components/WorkBench/Template.tsx:254
 #. Used in: Components > Work Bench > Template
+#: components/WorkBench/Template.tsx:254
 msgid "navigation"
 msgstr "La navigation"
 
-#: components/WorkBench/Template.tsx:276
 #. Used in: Components > Work Bench > Template
+#: components/WorkBench/Template.tsx:276
 msgid "replace"
 msgstr "Remplacer"
 
+#. Used in: Components > Work Bench > Template
 #: components/WorkBench/Template.tsx:273
 #: components/WorkBench/Template.tsx:277
-#. Used in: Components > Work Bench > Template
 msgid "replacementValue"
 msgstr "Valeur de remplacement"
 
+#. Used in: Components > Specify Network Collection > Setup ⬤ Components > Work Bench > Template
 #: components/SpecifyNetworkCollection/Setup.tsx:69
 #: components/WorkBench/Template.tsx:283
-#. Used in: Components > Specify Network Collection > Setup ⬤ Components > Work Bench > Template
 msgid "searchResults"
 msgstr "Résultats de recherche"
 
-#: components/WorkBench/Template.tsx:66
 #. Used in: Components > Work Bench > Template
+#: components/WorkBench/Template.tsx:66
 msgid "clickToToggle"
 msgstr "Cliquez pour basculer la visibilité"
 
+#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:111
 #: components/WorkBench/AdvancedSearch.tsx:214
 #: components/WorkBench/AdvancedSearch.tsx:216
-#. Used in: Components > Work Bench > Advanced Search
 msgid "configureSearchReplace"
 msgstr "Configurer la recherche et le remplacement"
 
-#: components/WorkBench/Template.tsx:285
 #. Used in: Components > Work Bench > Template
+#: components/WorkBench/Template.tsx:285
 msgid "modifiedCells"
 msgstr "Cellules modifiées"
 
-#: components/WorkBench/Template.tsx:287
 #. Used in: Components > Work Bench > Template
+#: components/WorkBench/Template.tsx:287
 msgid "newCells"
 msgstr "Nouvelles cellules"
 
-#: components/WorkBench/Template.tsx:289
 #. Used in: Components > Work Bench > Template
+#: components/WorkBench/Template.tsx:289
 msgid "errorCells"
 msgstr "Cellules d'erreur"
 
-#: components/WbPlanView/Mapper.tsx:387
 #. Used in: Components > Wb Plan View > Mapper
+#: components/WbPlanView/Mapper.tsx:387
 msgid "dataEditor"
 msgstr "Éditeur de données"
 
-#: components/WorkBench/DisambiguationLogic.tsx:147
 #. Used in: Components > Work Bench > Disambiguation Logic
+#: components/WorkBench/DisambiguationLogic.tsx:147
 msgid "noDisambiguationResults"
 msgstr "Impossible de lever l'ambiguïté"
 
-#: components/WorkBench/DisambiguationLogic.tsx:150
 #. Used in: Components > Work Bench > Disambiguation Logic
+#: components/WorkBench/DisambiguationLogic.tsx:150
 msgid "noDisambiguationResultsDescription"
 msgstr ""
 "Aucun des enregistrements correspondants n'existe actuellement dans la base "
@@ -195,26 +195,26 @@ msgstr ""
 "devrez ajouter des champs et des valeurs à l'ensemble de données pour lever "
 "l'ambiguïté."
 
-#: components/WorkBench/Disambiguation.tsx:59
 #. Used in: Components > Work Bench > Disambiguation
+#: components/WorkBench/Disambiguation.tsx:59
 msgid "disambiguateMatches"
 msgstr "Lever l'ambiguïté des correspondances d'enregistrements multiples"
 
-#: components/WorkBench/DisambiguationLogic.tsx:172
 #. Used in: Components > Work Bench > Disambiguation Logic
+#: components/WorkBench/DisambiguationLogic.tsx:172
 msgid "applyAllUnavailable"
 msgstr ""
 "« Appliquer tout » n'est pas disponible lorsque la vérification des données "
 "est en cours."
 
+#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Work Bench > Components
 #: components/AttachmentsBulkImport/Rollback.tsx:134
 #: components/WorkBench/Components.tsx:43
-#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Work Bench > Components
 msgid "beginRollback"
 msgstr "Commencer la restauration de l'ensemble de données ?"
 
-#: components/WorkBench/Components.tsx:46
 #. Used in: Components > Work Bench > Components
+#: components/WorkBench/Components.tsx:46
 msgid "beginRollbackDescription"
 msgstr ""
 "La restauration supprimera les nouveaux enregistrements de données que cet "
@@ -223,25 +223,25 @@ msgstr ""
 "référencée (réutilisée) par d'autres enregistrements de données depuis leur "
 "téléchargement."
 
-#: components/WorkBench/WbActions.tsx:69
 #. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:69
 msgid "startUpload"
 msgstr "Commencer le téléchargement de l'ensemble de données ?"
 
-#: components/WorkBench/WbActions.tsx:72
 #. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:72
 msgid "startUploadDescription"
 msgstr ""
 "Le téléchargement de l'ensemble de données ajoutera les données à la base "
 "de données Specify."
 
-#: components/WorkBench/DataSetMeta.tsx:164
 #. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:164
 msgid "deleteDataSet"
 msgstr "Supprimer cet ensemble de données ?"
 
-#: components/WorkBench/DataSetMeta.tsx:91
 #. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:91
 msgid "deleteDataSetDescription"
 msgstr ""
 "La suppression d'un ensemble de données le supprime définitivement ainsi "
@@ -250,608 +250,608 @@ msgstr ""
 "suppression, la restauration ne sera plus une option pour un ensemble de "
 "données téléchargé."
 
+#. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 #: components/WorkBench/DataSetMeta.tsx:131
 #: components/WorkBench/Template.tsx:337
-#. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 msgid "dataSetDeleted"
 msgstr "Ensemble de données supprimé avec succès"
 
+#. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 #: components/WorkBench/DataSetMeta.tsx:134
 #: components/WorkBench/Template.tsx:340
-#. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 msgid "dataSetDeletedDescription"
 msgstr "Ensemble de données supprimé avec succès."
 
-#: components/WorkBench/WbActions.tsx:153
 #. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:153
 msgid "revertChanges"
 msgstr "Annuler les modifications non enregistrées ?"
 
-#: components/WorkBench/WbActions.tsx:156
 #. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:156
 msgid "revertChangesDescription"
 msgstr ""
 "Cette action annulera toutes les modifications apportées à l'ensemble de "
 "données depuis le dernier enregistrement."
 
-#: components/WorkBench/WbActions.tsx:171
 #. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:171
 msgid "saving"
 msgstr "Économie..."
 
-#: components/WorkBench/Template.tsx:397
 #. Used in: Components > Work Bench > Template
+#: components/WorkBench/Template.tsx:397
 msgid "wbUnloadProtect"
 msgstr ""
 "Les modifications apportées à cet ensemble de données n'ont pas été "
 "enregistrées."
 
-#: components/WorkBench/WbValidation.tsx:298
 #. Used in: Components > Work Bench > Wb Validation
+#: components/WorkBench/WbValidation.tsx:298
 msgid "noMatchErrorMessage"
 msgstr ""
 "Aucun enregistrement correspondant pour la table à correspondance "
 "obligatoire."
 
-#: components/WorkBench/WbValidation.tsx:327
 #. Used in: Components > Work Bench > Wb Validation
+#: components/WorkBench/WbValidation.tsx:327
 msgid "matchedMultipleErrorMessage"
 msgstr ""
 "Cette valeur correspond à deux enregistrements de base de données existants "
 "ou plus et la correspondance doit être levée avant le téléchargement."
 
-#: components/WorkBench/WbActions.tsx:231
 #. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:231
 msgid "validationNoErrors"
 msgstr "Validation terminée sans erreur"
 
-#: components/WorkBench/WbActions.tsx:234
 #. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:234
 msgid "validationNoErrorsDescription"
 msgstr ""
 "La validation n'a trouvé aucune erreur, elle est prête à être téléchargée "
 "dans la base de données."
 
+#. Used in: Components > Work Bench > Wb Actions
 #: components/WorkBench/WbActions.tsx:237
 #: components/WorkBench/WbActions.tsx:248
-#. Used in: Components > Work Bench > Wb Actions
 msgid "validationReEditWarning"
 msgstr ""
 "Remarque : Si cet ensemble de données est modifié et réenregistré, la "
 "validation doit être réexécutée avant le téléchargement pour vérifier "
 "qu'aucune erreur n'a été introduite."
 
-#: components/WorkBench/WbActions.tsx:242
 #. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:242
 msgid "validationErrors"
 msgstr "Valider terminé avec des erreurs"
 
-#: components/WorkBench/WbActions.tsx:245
 #. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:245
 msgid "validationErrorsDescription"
 msgstr "La validation a détecté des erreurs dans l'ensemble de données."
 
-#: components/WorkBench/WbActions.tsx:255
 #. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:255
 msgid "uploadSuccessful"
 msgstr "Téléchargement terminé sans erreur"
 
-#: components/WorkBench/WbActions.tsx:256
 #. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:256
 msgid "uploadSuccessfulDescription"
 msgstr ""
 "Cliquez sur le bouton « Résultats » pour voir le nombre de nouveaux "
 "enregistrements ajoutés à chaque table de la base de données."
 
-#: components/WorkBench/WbActions.tsx:259
 #. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:259
 msgid "uploadErrors"
 msgstr "Échec du téléchargement en raison de cellules d'erreur"
 
-#: components/WorkBench/WbActions.tsx:262
 #. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:262
 msgid "uploadErrorsDescription"
 msgstr ""
 "Le téléchargement a échoué en raison d'une ou plusieurs erreurs de valeur "
 "de cellule."
 
-#: components/WorkBench/WbActions.tsx:265
 #. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:265
 msgid "uploadErrorsSecondDescription"
 msgstr ""
 "Validez l'ensemble de données et examinez les conseils de passage de la "
 "souris pour chaque cellule d'erreur, puis apportez les corrections "
 "appropriées. Enregistrez et réessayez le téléchargement."
 
-#: components/WorkBench/WbActions.tsx:270
 #. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:270
 msgid "dataSetRollback"
 msgstr "L'ensemble de données a été restauré avec succès"
 
-#: components/WorkBench/WbActions.tsx:271
 #. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:271
 msgid "dataSetRollbackDescription"
 msgstr ""
 "Cet ensemble de données restaurées est enregistré et peut être modifié ou "
 "téléchargé à nouveau."
 
-#: components/WorkBench/WbActions.tsx:314
 #. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:314
 msgid "validationCanceled"
 msgstr "Validation annulée"
 
-#: components/WorkBench/WbActions.tsx:322
 #. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:322
 msgid "validationCanceledDescription"
 msgstr "Validation de l'ensemble de données annulée."
 
+#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Work Bench > Wb Actions
 #: components/AttachmentsBulkImport/Rollback.tsx:30
 #: components/WorkBench/WbActions.tsx:316
-#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Work Bench > Wb Actions
 msgid "rollbackCanceled"
 msgstr "Restauration annulée"
 
+#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Work Bench > Wb Actions
 #: components/AttachmentsBulkImport/Rollback.tsx:31
 #: components/WorkBench/WbActions.tsx:324
-#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Work Bench > Wb Actions
 msgid "rollbackCanceledDescription"
 msgstr "Restauration de l’ensemble de données annulée."
 
+#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Work Bench > Wb Actions
 #: components/AttachmentsBulkImport/Upload.tsx:109
 #: components/WorkBench/WbActions.tsx:317
-#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Work Bench > Wb Actions
 #, fuzzy
 msgid "uploadCanceled"
 msgstr "Validation de l'ensemble de données annulée."
 
+#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Work Bench > Wb Actions
 #: components/AttachmentsBulkImport/Upload.tsx:110
 #: components/WorkBench/WbActions.tsx:325
-#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Work Bench > Wb Actions
 msgid "uploadCanceledDescription"
 msgstr "Téléchargement de l'ensemble de données annulé."
 
-#: components/WorkBench/CoordinateConverter.tsx:172
 #. Used in: Components > Work Bench > Coordinate Converter
+#: components/WorkBench/CoordinateConverter.tsx:172
 msgid "coordinateConverter"
 msgstr "Format de géocoordonnée"
 
-#: components/WorkBench/CoordinateConverter.tsx:181
 #. Used in: Components > Work Bench > Coordinate Converter
+#: components/WorkBench/CoordinateConverter.tsx:181
 msgid "coordinateConverterDescription"
 msgstr "Choisissez un format de géocoordonnée préféré"
 
-#: components/WorkBench/mapping.ts:82
 #. 🟥When empty string is used as a default value for a column, this is shown instead. Used in: Components > Work Bench > Mapping
+#: components/WorkBench/mapping.ts:82
 msgid "emptyStringInline"
 msgstr "(chaîne vide)"
 
+#. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb Actions
 #: components/WorkBench/Template.tsx:152
 #: components/WorkBench/WbActions.tsx:353
-#. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb Actions
 msgid "wbUploadedUnavailable"
 msgstr "L'ensemble de données doit être validé ou téléchargé"
 
-#: components/WorkBench/WbView.tsx:256
 #. Used in: Components > Work Bench > Wb View
+#: components/WorkBench/WbView.tsx:256
 msgid "wbValidateUnavailable"
 msgstr ""
 "Un plan de téléchargement doit être défini avant que cet ensemble de "
 "données puisse être validé"
 
-#: components/WorkBench/WbActions.tsx:342
 #. Used in: Components > Work Bench > Wb Actions
+#: components/WorkBench/WbActions.tsx:342
 msgid "unavailableWhileEditing"
 msgstr "Cette action nécessite que toutes les modifications soient enregistrées"
 
-#: components/WorkBench/CellMeta.ts:386
 #. Used in: Components > Work Bench > Cell Meta
+#: components/WorkBench/CellMeta.ts:386
 msgid "uploadUnavailableWhileHasErrors"
 msgstr ""
 "L'importation n'est pas disponible alors que certaines cellules comportent "
 "des erreurs de validation"
 
-#: components/WorkBench/WbView.tsx:629
 #. Used in: Components > Work Bench > Wb View
+#: components/WorkBench/WbView.tsx:629
 msgid "unavailableWhileViewingResults"
 msgstr ""
 "Cette action n'est pas disponible lors de l'affichage des résultats du "
 "téléchargement"
 
-#: components/WorkBench/WbView.tsx:593
 #. Used in: Components > Work Bench > Wb View
+#: components/WorkBench/WbView.tsx:593
 msgid "unavailableWhileValidating"
 msgstr ""
 "Cette action n'est pas disponible lorsque la vérification des données est "
 "en cours"
 
+#. Used in: Components > Work Bench > Template
 #: components/WorkBench/Template.tsx:225
 #: components/WorkBench/Template.tsx:233
 #: components/WorkBench/Template.tsx:243
-#. Used in: Components > Work Bench > Template
 msgid "unavailableWithoutLocality"
 msgstr "Cet outil nécessite que les colonnes de localité soient mappées"
 
-#: components/WorkBench/WbUtils.tsx:643
 #. Used in: Components > Work Bench > Wb Utils
+#: components/WorkBench/WbUtils.tsx:643
 msgid "unavailableWhenUploaded"
 msgstr "Cet outil ne fonctionne pas avec les ensembles de données téléchargés"
 
-#: components/WorkBench/Template.tsx:333
 #. Used in: Components > Work Bench > Template
+#: components/WorkBench/Template.tsx:333
 msgid "dataSetDeletedOrNotFound"
 msgstr "L'ensemble de données a été supprimé par une autre session."
 
-#: components/WorkBench/CoordinateConverter.tsx:206
 #. Used in: Components > Work Bench > Coordinate Converter
+#: components/WorkBench/CoordinateConverter.tsx:206
 msgid "includeDmsSymbols"
 msgstr "Inclure les symboles DMS"
 
+#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Work Bench > Results
 #: components/AttachmentsBulkImport/Upload.tsx:264
 #: components/WorkBench/Results.tsx:39
-#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Work Bench > Results
 #, fuzzy
 msgid "uploadResults"
 msgstr "Nom du nouvel ensemble de données :"
 
-#: components/WorkBench/Results.tsx:40
 #. Used in: Components > Work Bench > Results
+#: components/WorkBench/Results.tsx:40
 msgid "potentialUploadResults"
 msgstr "Résultats potentiels du téléchargement"
 
-#: components/WorkBench/WbView.tsx:448
 #. Used in: Components > Work Bench > Wb View
+#: components/WorkBench/WbView.tsx:448
 msgid "noUploadResultsAvailable"
 msgstr "Aucun résultat de téléchargement n'est disponible pour cette cellule"
 
-#: components/WorkBench/Results.tsx:44
 #. Used in: Components > Work Bench > Results
+#: components/WorkBench/Results.tsx:44
 msgid "wbUploadedDescription"
 msgstr "Nombre de nouveaux enregistrements créés dans chaque table :"
 
-#: components/WorkBench/Results.tsx:45
 #. Used in: Components > Work Bench > Results
+#: components/WorkBench/Results.tsx:45
 msgid "wbUploadedPotentialDescription"
 msgstr "Nombre de nouveaux enregistrements qui seraient créés dans chaque table :"
 
-#: components/WorkBench/AdvancedSearch.tsx:116
 #. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:116
 msgid "navigationOptions"
 msgstr "Options de navigation"
 
-#: components/WorkBench/AdvancedSearch.tsx:118
 #. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:118
 msgid "cursorPriority"
 msgstr "Priorité du curseur"
 
-#: components/WorkBench/AdvancedSearch.tsx:131
 #. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:131
 #, fuzzy
 msgid "columnFirst"
 msgstr "Reculer"
 
-#: components/WorkBench/AdvancedSearch.tsx:132
 #. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:132
 msgid "rowFirst"
 msgstr "Première rangée"
 
-#: components/WorkBench/AdvancedSearch.tsx:138
 #. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:138
 msgid "searchOptions"
 msgstr "Options de recherche"
 
-#: components/WorkBench/AdvancedSearch.tsx:144
 #. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:144
 msgid "findEntireCellsOnly"
 msgstr "Rechercher uniquement des cellules entières"
 
-#: components/WorkBench/AdvancedSearch.tsx:151
 #. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:151
 msgid "matchCase"
 msgstr "Cas de correspondance"
 
-#: components/WorkBench/AdvancedSearch.tsx:158
 #. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:158
 msgid "useRegularExpression"
 msgstr "Utiliser une expression régulière"
 
-#: components/WorkBench/AdvancedSearch.tsx:165
 #. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:165
 msgid "liveUpdate"
 msgstr "Recherche en direct"
 
-#: components/WorkBench/AdvancedSearch.tsx:170
 #. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:170
 msgid "replaceOptions"
 msgstr "Options de remplacement"
 
-#: components/WorkBench/AdvancedSearch.tsx:172
 #. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:172
 msgid "replaceMode"
 msgstr "Mode de remplacement"
 
-#: components/WorkBench/AdvancedSearch.tsx:185
 #. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:185
 msgid "replaceAll"
 msgstr "Remplacer toutes les correspondances"
 
-#: components/WorkBench/AdvancedSearch.tsx:186
 #. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:186
 msgid "replaceNext"
 msgstr "Remplacer l'occurrence suivante"
 
-#: components/Router/Routes.tsx:207
 #. Used in: Components > Router > Routes
+#: components/Router/Routes.tsx:207
 msgid "importDataSet"
 msgstr "Importer un ensemble de données"
 
-#: components/WbImport/index.tsx:45
 #. Used in: Components > Wb Import > Index
+#: components/WbImport/index.tsx:45
 msgid "wbImportHeader"
 msgstr "Importer un fichier pour créer un nouvel ensemble de données"
 
-#: components/WbImport/index.tsx:321
 #. Used in: Components > Wb Import > Index
+#: components/WbImport/index.tsx:321
 msgid "previewDataSet"
 msgstr "Aperçu de l'ensemble de données"
 
-#: components/WbImport/index.tsx:303
 #. Used in: Components > Wb Import > Index
+#: components/WbImport/index.tsx:303
 msgid "errorImporting"
 msgstr "Les erreurs suivantes se sont produites lors de l'importation du fichier :"
 
+#. Used in: Components > Wb Import > Helpers
 #: components/WbImport/helpers.ts:112
 #: components/WbImport/helpers.ts:137
-#. Used in: Components > Wb Import > Helpers
 msgid "corruptFile"
 msgstr "Le fichier {fileName:string} est corrompu ou ne contient aucune donnée !"
 
-#: components/WbImport/index.tsx:138
 #. Used in: Components > Wb Import > Index
+#: components/WbImport/index.tsx:138
 msgid "characterEncoding"
 msgstr "Encodage de caractère:"
 
-#: components/WbImport/index.tsx:179
 #. Used in: Components > Wb Import > Index
+#: components/WbImport/index.tsx:179
 msgid "delimiter"
 msgstr "Délimiteur :"
 
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 #: components/Preferences/UserDefinitions.tsx:1527
 #: components/Preferences/UserDefinitions.tsx:1754
 #: components/WbImport/index.tsx:153
-#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 msgid "comma"
 msgstr "Virgule"
 
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 #: components/Preferences/UserDefinitions.tsx:1535
 #: components/Preferences/UserDefinitions.tsx:1762
 #: components/WbImport/index.tsx:155
-#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 msgid "semicolon"
 msgstr "Point-virgule"
 
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 #: components/Preferences/UserDefinitions.tsx:1531
 #: components/Preferences/UserDefinitions.tsx:1758
 #: components/WbImport/index.tsx:154
-#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 msgid "tab"
 msgstr "Languette"
 
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 #: components/Preferences/UserDefinitions.tsx:1539
 #: components/Preferences/UserDefinitions.tsx:1766
 #: components/WbImport/index.tsx:156
-#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 msgid "space"
 msgstr "Espace"
 
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 #: components/Preferences/UserDefinitions.tsx:1543
 #: components/Preferences/UserDefinitions.tsx:1770
 #: components/WbImport/index.tsx:157
-#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 msgid "pipe"
 msgstr "Tuyau"
 
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 #: components/Preferences/UserDefinitions.tsx:637
 #: components/Preferences/UserDefinitions.tsx:658
 #: components/Preferences/UserDefinitions.tsx:679
 #: components/WbImport/index.tsx:193
-#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "determineAutomatically"
-msgstr "Cas de correspondance"
+msgstr "Déterminer automatiquement"
 
-#: components/WbImport/index.tsx:261
 #. Used in: Components > Wb Import > Index
+#: components/WbImport/index.tsx:261
 #, fuzzy
 msgid "chooseDataSetName"
 msgstr "Nom du nouvel ensemble de données :"
 
-#: components/WbImport/index.tsx:284
 #. Used in: Components > Wb Import > Index
+#: components/WbImport/index.tsx:284
 msgid "firstRowIsHeader"
 msgstr "La première ligne est l'en-tête :"
 
+#. Used in: Components > Toolbar > Wbs Dialog ⬤ Components > Wb Import > Index
 #: components/Toolbar/WbsDialog.tsx:184
 #: components/WbImport/index.tsx:238
-#. Used in: Components > Toolbar > Wbs Dialog ⬤ Components > Wb Import > Index
 msgid "importFile"
 msgstr "Importer le fichier"
 
-#: components/WbImport/helpers.ts:71
 #. Used in: Components > Wb Import > Helpers
+#: components/WbImport/helpers.ts:71
 msgid "columnName"
 msgstr "Colonne {columnIndex:number}"
 
-#: components/Toolbar/WbsDialog.tsx:39
 #. Used in: Components > Toolbar > Wbs Dialog
+#: components/Toolbar/WbsDialog.tsx:39
 msgid "newDataSetName"
 msgstr "Nouvel ensemble de données {date}"
 
-#: components/Toolbar/WbsDialog.tsx:209
 #. Used in: Components > Toolbar > Wbs Dialog
+#: components/Toolbar/WbsDialog.tsx:209
 msgid "dataSets"
 msgstr "Ensembles de données WorkBench"
 
-#: components/Toolbar/WbsDialog.tsx:220
 #. Used in: Components > Toolbar > Wbs Dialog
+#: components/Toolbar/WbsDialog.tsx:220
 msgid "wbsDialogEmpty"
 msgstr "Actuellement, aucun ensemble de données n'existe."
 
-#: components/Toolbar/WbsDialog.tsx:221
 #. Used in: Components > Toolbar > Wbs Dialog
+#: components/Toolbar/WbsDialog.tsx:221
 msgid "createDataSetInstructions"
 msgstr ""
 "Utilisez « Importer un fichier » ou « Créer un nouveau » pour en créer un "
 "nouveau."
 
-#: components/Toolbar/WbsDialog.tsx:195
 #. Used in: Components > Toolbar > Wbs Dialog
+#: components/Toolbar/WbsDialog.tsx:195
 msgid "createNew"
 msgstr "Créer un nouveau"
 
-#: components/WorkBench/DataSetMeta.tsx:190
 #. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:190
 msgid "dataSetMeta"
 msgstr "Propriétés de l'ensemble de données"
 
+#. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
 #: components/AttachmentsBulkImport/Datasets.tsx:152
 #: components/AttachmentsBulkImport/Datasets.tsx:284
 #: components/WbPlanView/Mapper.tsx:403
 #: components/WorkBench/DataSetMeta.tsx:214
-#. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
 msgid "dataSetName"
 msgstr "Nom de l'ensemble de données"
 
-#: components/WorkBench/DataSetMeta.tsx:237
 #. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:237
 msgid "numberOfRows"
 msgstr "Nombre de rangées"
 
-#: components/WorkBench/DataSetMeta.tsx:244
 #. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:244
 msgid "numberOfColumns"
 msgstr "Le nombre de colonnes"
 
-#: components/WorkBench/DataSetMeta.tsx:343
 #. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:343
 msgid "importedFileName"
 msgstr "Nom du fichier d'importation"
 
-#: components/WorkBench/DataSetMeta.tsx:340
 #. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:340
 msgid "noFileName"
 msgstr "(pas de nom de fichier)"
 
-#: components/WorkBench/DataSetMeta.tsx:443
 #. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:443
 msgid "changeDataSetOwner"
 msgstr "Modifier le propriétaire de l'ensemble de données"
 
-#: components/WorkBench/DataSetMeta.tsx:460
 #. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:460
 msgid "changeDataSetOwnerDescription"
 msgstr "Sélectionnez un nouveau propriétaire :"
 
+#. Used in: Components > Work Bench > Data Set Meta
 #: components/WorkBench/DataSetMeta.tsx:428
 #: components/WorkBench/DataSetMeta.tsx:431
-#. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetOwnerChanged"
 msgstr "Le propriétaire de l'ensemble de données a changé"
 
-#: components/WorkBench/DataSetMeta.tsx:373
 #. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:373
 #, fuzzy
 msgid "dataSet"
 msgstr "Base de données"
 
-#: components/Toolbar/WbsDialog.tsx:122
 #. Used in: Components > Toolbar > Wbs Dialog
+#: components/Toolbar/WbsDialog.tsx:122
 #, fuzzy
 msgid "dataSetTimestampUploaded"
 msgstr "Horodatage téléchargé"
 
-#: components/WorkBench/DataSetMeta.tsx:377
 #. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:377
 msgid "dataSetUploadedLabel"
 msgstr "(Téléchargé, lecture seule)"
 
-#: components/WorkBench/Status.tsx:66
 #. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:66
 msgid "wbStatusUnupload"
 msgstr "État de restauration de l'ensemble de données"
 
-#: components/WorkBench/Status.tsx:65
 #. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:65
 msgid "wbStatusUpload"
 msgstr "Une erreur s'est produite pendant [X22X]"
 
-#: components/WorkBench/Status.tsx:64
 #. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:64
 msgid "wbStatusValidation"
 msgstr "Statut de validation de l'ensemble de données"
 
+#. Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Work Bench > Status
 #: components/AttachmentsBulkImport/ActionState.tsx:38
 #: components/AttachmentsBulkImport/ActionState.tsx:39
 #: components/WorkBench/Status.tsx:101
-#. Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Work Bench > Status
 msgid "aborting"
 msgstr "Abandonner..."
 
-#: components/WorkBench/Status.tsx:91
 #. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:91
 msgid "wbStatusAbortFailed"
 msgstr "Échec de l'abandon de {operationName:string}. Veuillez réessayer plus tard"
 
-#: components/WorkBench/Status.tsx:118
 #. 🟥E.x, Validating... Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:118
 msgid "wbStatusOperationNoProgress"
 msgstr "{operationName:string}..."
 
-#: components/WorkBench/Status.tsx:122
 #. 🟥E.x, Validating row 999/1,000. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:122
 msgid "wbStatusOperationProgress"
 msgstr ""
 "{operationName:string} ligne "
 "{current:number|formatted}/{total:number|formatted}"
 
-#: components/WorkBench/Status.tsx:105
 #. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:105
 msgid "wbStatusPendingDescription"
 msgstr ""
 "{operationName:string} de cet ensemble de données devrait commencer sous "
 "peu."
 
-#: components/WorkBench/Status.tsx:108
 #. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:108
 msgid "wbStatusPendingSecondDescription"
 msgstr ""
 "Si ce message persiste plus de 30 secondes, le processus "
 "{operationName:string} est occupé avec un autre ensemble de données. "
 "Veuillez réessayer plus tard."
 
+#. Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Work Bench > Status
 #: components/AttachmentsBulkImport/ActionState.tsx:24
 #: components/AttachmentsBulkImport/ActionState.tsx:53
 #: components/WorkBench/Status.tsx:161
-#. Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Work Bench > Status
 msgid "stop"
 msgstr "Arrêt"
 
-#: components/WorkBench/Status.tsx:132
 #. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:132
 msgid "wbStatusError"
 msgstr "Une erreur s'est produite pendant {operationName:string}"
 
-#: components/WorkBench/Status.tsx:117
 #. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:117
 msgid "updatingTrees"
 msgstr "Mise à jour des arbres..."
 
-#: components/WorkBench/RecordSet.tsx:66
 #. 🟥Default name of the record that would be created based on upload results. Used in: Components > Work Bench > Record Set
+#: components/WorkBench/RecordSet.tsx:66
 msgid "recordSetName"
 msgstr "Téléchargement WB de \"{dataSet:string}\""
 
-#: components/WorkBench/Disambiguation.tsx:91
 #. Used in: Components > Work Bench > Disambiguation
+#: components/WorkBench/Disambiguation.tsx:91
 #, fuzzy
 msgid "ambiguousTaxaChild"
 msgstr "Ensemble de données supprimé avec succès."
