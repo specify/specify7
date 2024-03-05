@@ -256,7 +256,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                 canFetchMore && !isFetching ? handleFetchMore : undefined
               }
             />
-            {typeof results[0]?.[0] === 'string' ? null : (
+            {isDistinct ? null : (
               <QueryToForms
                 results={results}
                 selectedRows={selectedRows}
