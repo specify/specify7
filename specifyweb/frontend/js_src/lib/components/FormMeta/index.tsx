@@ -22,7 +22,6 @@ import type { ViewDescription } from '../FormParse';
 import { SubViewContext } from '../Forms/SubView';
 import { isTreeResource } from '../InitialContext/treeRanks';
 import { interactionTables } from '../Interactions/config';
-import { recordMergingTables } from '../Merging';
 import { Dialog } from '../Molecules/Dialog';
 import {
   ProtectedAction,
@@ -41,6 +40,7 @@ import { QueryTreeUsages } from './QueryTreeUsages';
 import { ReadOnlyMode } from './ReadOnlyMode';
 import { ShareRecord } from './ShareRecord';
 import { SubViewMeta } from './SubViewMeta';
+import { recordMergingTableSpec } from '../Merging/definitions';
 
 /**
  * Form preferences host context aware user preferences and other meta-actions.
@@ -222,7 +222,7 @@ function MetaDialog({
                   action="update"
                   tableName={resource.specifyTable.name}
                 >
-                  {recordMergingTables.has(resource.specifyTable.name) && (
+                  {resource.specifyTable.name in recordMergingTableSpec && (
                     <MergeRecord resource={resource} />
                   )}
                 </ProtectedTable>

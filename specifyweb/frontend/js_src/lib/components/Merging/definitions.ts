@@ -18,4 +18,13 @@ export const recordMergingTableSpec: Partial<{
     },
     dialogSpecificText: mergingText.agentContainsGroupDescription(),
   },
+  Locality: {
+    dialogSpecificText: mergingText.localityMerging(),
+  },
+  PaleoContext: {
+    dialogSpecificText: mergingText.paleoContextMerging(),
+  },
+  CollectingEvent: {
+    dialogSpecificText: mergingText.collectingEventMerging(),
+  },
 };
