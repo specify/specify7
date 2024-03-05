@@ -86,7 +86,7 @@ export function FilePicker({
           ${containerClassName}
           ${
             isDragging
-              ? 'bg-white ring ring-brand-200 dark:bg-neutral-700 dark:ring-brand-400'
+              ? 'ring-brand-200 dark:ring-brand-400 bg-white ring dark:bg-neutral-700'
               : ''
           }
           ${isFocused ? '!ring ring-blue-500' : ''}
