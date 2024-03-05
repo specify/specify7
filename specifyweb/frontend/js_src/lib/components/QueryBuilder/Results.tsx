@@ -182,7 +182,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
 
   const isDistinct =
     typeof loadedResults?.[0]?.[0] === 'string' && loadedResults !== undefined;
-  const metaColumns = (showLineNumber ? 1 : 0) + (isDistinct ? 1 : 2);
+  const metaColumns = (showLineNumber ? 1 : 0) + 2;
 
   return (
     <Container.Base className="w-full !bg-[color:var(--form-background)]">
@@ -224,7 +224,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                 />
               )}
             {hasToolPermission('recordSets', 'create') && totalCount !== 0 ? (
-              selectedRows.size > 0 ? (
+              selectedRows.size > 0 && !isDistinct ? (
                 <CreateRecordSet
                   /*
                    * This is needed so that IDs are in the same order as they
@@ -297,13 +297,11 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                   onSortChange={undefined}
                 />
               )}
-              {isDistinct ? null : (
-                <TableHeaderCell
-                  fieldSpec={undefined}
-                  sortConfig={undefined}
-                  onSortChange={undefined}
-                />
-              )}
+              <TableHeaderCell
+                fieldSpec={undefined}
+                sortConfig={undefined}
+                onSortChange={undefined}
+              />
               <TableHeaderCell
                 fieldSpec={undefined}
                 sortConfig={undefined}
