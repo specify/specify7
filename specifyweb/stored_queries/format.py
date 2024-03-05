@@ -210,7 +210,7 @@ class ObjectFormatter(object):
         separator = aggregatorNode.attrib.get('separator', ',')
         order_by = aggregatorNode.attrib.get('orderfieldname', '')
         limit = aggregatorNode.attrib.get('count', '')
-        limit = None if limit == '' or limit == 0 else limit
+        limit = None if limit == '' or int(limit) == 0 else limit
         orm_table = getattr(models, field.relatedModelName)
 
 
