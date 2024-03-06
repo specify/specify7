@@ -365,6 +365,8 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
 
                 lastSelectedRow.current = rowIndex;
               }}
+              onDelete={handleDelete}
+              onFetchMore={isFetching ? undefined : handleFetchMore}
             />
           ) : undefined}
           {isFetching || (!showResults && Array.isArray(results)) ? (

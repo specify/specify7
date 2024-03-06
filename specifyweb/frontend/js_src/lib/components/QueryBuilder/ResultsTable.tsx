@@ -6,22 +6,19 @@ import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { getResourceViewUrl } from '../DataModel/resource';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { syncFieldFormat } from '../Formatters/fieldFormat';
-import { Dialog } from '../Molecules/Dialog';
-import { TableIcon } from '../Molecules/TableIcon';
 import { userPreferences } from '../Preferences/userPreferences';
 import { getAuditRecordFormatter } from './AuditLogFormatter';
 import type { QueryFieldSpec } from './fieldSpec';
 import type { QueryResultRow } from './Results';
 import { queryIdField } from './Results';
+import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
 
 export function QueryResultsTable({
   table,
@@ -29,6 +26,8 @@ export function QueryResultsTable({
   results,
   selectedRows,
   onSelected: handleSelected,
+  onDelete: handleDelete,
+  onFetchMore: handleFetchMore,
 }: {
   readonly table: SpecifyTable;
   readonly fieldSpecs: RA<QueryFieldSpec>;
@@ -39,6 +38,8 @@ export function QueryResultsTable({
     isSelected: boolean,
     isShiftClick: boolean
   ) => void;
+  readonly onDelete: (id: number) => void;
+  readonly onFetchMore: ((index: number) => void) | undefined;
 }): JSX.Element {
   const recordFormatter = React.useMemo(
     () => getAuditRecordFormatter(fieldSpecs),
@@ -64,6 +65,8 @@ export function QueryResultsTable({
           onSelected={(isSelected, isShiftClick): void =>
             handleSelected(index, isSelected, isShiftClick)
           }
+          onDelete={handleDelete}
+          onFetchMore={handleFetchMore}
         />
       ))}
     </>
@@ -79,6 +82,8 @@ function Row({
   isSelected,
   isLast,
   onSelected: handleSelected,
+  onDelete: handleDelete,
+  onFetchMore: handleFetchMore,
 }: {
   readonly table: SpecifyTable;
   readonly fieldSpecs: RA<QueryFieldSpec>;
@@ -90,6 +95,8 @@ function Row({
   readonly isSelected: boolean;
   readonly isLast: boolean;
   readonly onSelected?: (isSelected: boolean, isShiftClick: boolean) => void;
+  readonly onDelete: (id: number) => void;
+  readonly onFetchMore: ((index: number) => void) | undefined;
 }): JSX.Element {
   // REFACTOR: replace this with getResourceViewUrl()
   const [resource] = useLiveState<
@@ -187,28 +194,38 @@ function Row({
                 className="print:hidden"
                 icon="viewList"
                 title={queryText.viewListOfIds()}
-                onClick={() => toggleIdListOpen}
+                onClick={() => toggleIdListOpen(true)}
               />
             )}
             {isIdListOpen && splitIds !== undefined ? (
-              <Dialog
-                buttons={commonText.cancel()}
-                header={queryText.listOfRecordIds()}
-                onClose={() => toggleIdListOpen}
-              >
-                <Ul className="flex flex-col gap-2">
-                  {splitIds.map((id) => (
-                    <Link.NewTab
-                      className="print:hidden"
-                      href={getResourceViewUrl(table.name, id)}
-                      rel="noreferrer"
-                    >
-                      <TableIcon label name={table.name} />
-                      <label>{id}</label>
-                    </Link.NewTab>
-                  ))}
-                </Ul>
-              </Dialog>
+              <RecordSelectorFromIds
+                ids={splitIds}
+                defaultIndex={0}
+                dialog="modal"
+                isInRecordSet={false}
+                headerButtons={undefined}
+                isDependent={false}
+                newResource={undefined}
+                title={commonText.colonLine({
+                  label: queryText.queryResults(),
+                  value: table.label,
+                })}
+                onAdd={undefined}
+                onClone={undefined}
+                onClose={() => toggleIdListOpen(false)}
+                onDelete={(index): void => handleDelete(index)}
+                onSaved={f.void}
+                totalCount={splitIds.length}
+                table={table}
+                onSlide={
+                  typeof handleFetchMore === 'function'
+                    ? (index): void =>
+                        splitIds.length === 0 && result[index] === undefined
+                          ? handleFetchMore?.(index)
+                          : undefined
+                    : undefined
+                }
+              />
             ) : null}
           </div>
         </div>

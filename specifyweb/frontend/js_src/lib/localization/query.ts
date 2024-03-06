@@ -878,7 +878,4 @@ export const queryText = createDictionary({
   viewListOfIds: {
     'en-us': 'View list of ids',
   },
-  listOfRecordIds: {
-    'en-us': 'List of record ids',
-  },
 } as const);
