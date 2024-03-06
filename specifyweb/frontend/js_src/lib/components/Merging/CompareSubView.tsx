@@ -27,7 +27,6 @@ import {
 import { serializeResource } from '../DataModel/serializers';
 import type { Relationship } from '../DataModel/specifyField';
 import type { Collection } from '../DataModel/specifyTable';
-import type { Accession } from '../DataModel/types';
 import { SaveButton } from '../Forms/Save';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
@@ -49,17 +48,20 @@ export function MergeSubviewButton({
   readonly merged: SpecifyResource<AnySchema> | undefined;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const getCount = React.useCallback(
-    () =>
-      relationshipIsToMany(relationship)
-        ? (resource as SpecifyResource<Accession>).getDependentResource(
-            relationship.name as 'accessionAgents'
-          )?.models.length ?? 0
-        : resource.get(relationship.name) === undefined
-        ? 0
-        : 1,
-    [relationship, resource]
-  );
+
+  const getCount = React.useCallback(() => {
+    const dependentResource = resource.getDependentResource(
+      relationship.name
+    ) as Collection<AnySchema> | undefined;
+
+    if (dependentResource !== undefined && dependentResource !== null) {
+      if (dependentResource.models === undefined) return 1;
+      return dependentResource.models.length;
+    }
+
+    return resource.get(relationship.name) === undefined ? 0 : 1;
+  }, [relationship, resource]);
+
   const [count, setCount] = React.useState(getCount);
   React.useEffect(
     () =>
