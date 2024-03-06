@@ -26,8 +26,6 @@ export function QueryResultsTable({
   results,
   selectedRows,
   onSelected: handleSelected,
-  onDelete: handleDelete,
-  onFetchMore: handleFetchMore,
 }: {
   readonly table: SpecifyTable;
   readonly fieldSpecs: RA<QueryFieldSpec>;
@@ -38,8 +36,6 @@ export function QueryResultsTable({
     isSelected: boolean,
     isShiftClick: boolean
   ) => void;
-  readonly onDelete: (id: number) => void;
-  readonly onFetchMore: ((index: number) => void) | undefined;
 }): JSX.Element {
   const recordFormatter = React.useMemo(
     () => getAuditRecordFormatter(fieldSpecs),
@@ -62,8 +58,6 @@ export function QueryResultsTable({
           recordFormatter={recordFormatter}
           result={result}
           table={table}
-          onDelete={handleDelete}
-          onFetchMore={handleFetchMore}
           onSelected={(isSelected, isShiftClick): void =>
             handleSelected(index, isSelected, isShiftClick)
           }
@@ -82,8 +76,6 @@ function Row({
   isSelected,
   isLast,
   onSelected: handleSelected,
-  onDelete: handleDelete,
-  onFetchMore: handleFetchMore,
 }: {
   readonly table: SpecifyTable;
   readonly fieldSpecs: RA<QueryFieldSpec>;
@@ -95,8 +87,6 @@ function Row({
   readonly isSelected: boolean;
   readonly isLast: boolean;
   readonly onSelected?: (isSelected: boolean, isShiftClick: boolean) => void;
-  readonly onDelete: (id: number) => void;
-  readonly onFetchMore: ((index: number) => void) | undefined;
 }): JSX.Element {
   // REFACTOR: replace this with getResourceViewUrl()
   const [resource] = useLiveState<
@@ -216,16 +206,9 @@ function Row({
                 onAdd={undefined}
                 onClone={undefined}
                 onClose={() => toggleIsListOfRecordsOpen(false)}
-                onDelete={(index): void => handleDelete(index)}
+                onDelete={undefined}
                 onSaved={f.void}
-                onSlide={
-                  typeof handleFetchMore === 'function'
-                    ? (index): void =>
-                        splitRecords.length === 0 && result[index] === undefined
-                          ? handleFetchMore?.(index)
-                          : undefined
-                    : undefined
-                }
+                onSlide={undefined}
               />
             ) : null}
           </div>

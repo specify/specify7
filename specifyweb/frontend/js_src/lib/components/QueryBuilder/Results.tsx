@@ -335,8 +335,6 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
               results={loadedResults}
               selectedRows={selectedRows}
               table={table}
-              onDelete={handleDelete}
-              onFetchMore={isFetching ? undefined : handleFetchMore}
               onSelected={(rowIndex, isSelected, isShiftClick): void => {
                 /*
                  * If shift/ctrl/cmd key was held during click, toggle all rows
