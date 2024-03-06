@@ -25,9 +25,11 @@ import type { Formatter } from './spec';
 export function Fields({
   table,
   fields: [fields, setFields],
+  isReadOnly,
 }: {
   readonly table: SpecifyTable;
   readonly fields: GetSet<Formatter['definition']['fields'][number]['fields']>;
+  readonly isReadOnly: boolean;
 }): JSX.Element {
   const [displayFormatter, setDisplayFormatter] = React.useState(false);
 
@@ -111,6 +113,7 @@ export function Fields({
               },
             ])
           }
+          disabled={isReadOnly}
         >
           {resourcesText.addField()}
         </Button.Secondary>
@@ -120,6 +123,7 @@ export function Fields({
             <Input.Checkbox
               checked={displayFormatter}
               onClick={(): void => setDisplayFormatter(!displayFormatter)}
+              disabled={isReadOnly}
             />
             {resourcesText.customizeFieldFormatters()}
           </Label.Inline>
@@ -190,6 +194,7 @@ function Field({
           title={commonText.remove()}
           variant={className.dangerButton}
           onClick={handleRemove}
+          disabled={isReadOnly}
         >
           {icons.trash}
         </Button.Small>
@@ -197,6 +202,7 @@ function Field({
           aria-label={queryText.moveUp()}
           title={queryText.moveUp()}
           onClick={moveFieldUp}
+          disabled={isReadOnly}
         >
           {icons.chevronUp}
         </Button.Small>
@@ -204,6 +210,7 @@ function Field({
           aria-label={queryText.moveDown()}
           title={queryText.moveDown()}
           onClick={moveFieldDown}
+          disabled={isReadOnly}
         >
           {icons.chevronDown}
         </Button.Small>

@@ -152,7 +152,7 @@ function ConditionalFormatter({
             </div>
             <span className="-ml-2" />
             {trimmedFieldsLength > 0 && isExpanded ? (
-              <Button.Danger onClick={handleDelete}>
+              <Button.Danger onClick={handleDelete} disabled={isReadOnly}>
                 {resourcesText.deleteDefinition()}
               </Button.Danger>
             ) : null}
@@ -193,6 +193,7 @@ function ConditionalFormatter({
               index
             );
           }}
+          disabled={isReadOnly}
         >
           {resourcesText.addField()}
         </Button.Small>
@@ -215,6 +216,7 @@ function ConditionalFormatter({
             (fields): void => handleChanged({ value, fields }, index),
           ]}
           table={table}
+          isReadOnly={isReadOnly}
         />
       ) : null}
       <span className="-ml-2 flex-1" />
@@ -224,6 +226,7 @@ function ConditionalFormatter({
             icon="trash"
             title={resourcesText.deleteDefinition()}
             onClick={handleDelete}
+            disabled={isReadOnly}
           />
         )}
       </div>
