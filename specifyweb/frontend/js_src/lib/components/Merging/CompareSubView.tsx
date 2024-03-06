@@ -17,9 +17,11 @@ import {
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
+import { DependentCollection } from '../DataModel/collectionApi';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
+import { ResourceBase } from '../DataModel/resourceApi';
 import {
   useAllSaveBlockers,
   useBlockerHandler,
@@ -35,8 +37,6 @@ import { MergeContainer, useMergeConformation } from './Compare';
 import { CompareField, TransferButton } from './CompareField';
 import { mergeCellBackground, mergeHeaderClassName } from './Header';
 import { MergeDialogContainer, ToggleMergeView } from './index';
-import { ResourceBase } from '../DataModel/resourceApi';
-import { DependentCollection } from '../DataModel/collectionApi';
 
 export function MergeSubviewButton({
   relationship,
@@ -54,7 +54,7 @@ export function MergeSubviewButton({
   const getCount = React.useCallback(() => {
     const dependentResource = resource.getDependentResource(
       relationship.name
-    ) as SpecifyResource<AnySchema> | Collection<AnySchema> | undefined;
+    ) as Collection<AnySchema> | SpecifyResource<AnySchema> | undefined;
 
     return dependentResource === undefined
       ? resource.get(relationship.name) === undefined
