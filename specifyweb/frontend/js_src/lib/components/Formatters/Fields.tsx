@@ -101,6 +101,7 @@ export function Fields({
       )}
       <div className="flex gap-2">
         <Button.Secondary
+          disabled={isReadOnly}
           onClick={(): void =>
             setFields([
               ...fields,
@@ -113,7 +114,6 @@ export function Fields({
               },
             ])
           }
-          disabled={isReadOnly}
         >
           {resourcesText.addField()}
         </Button.Secondary>
@@ -122,8 +122,8 @@ export function Fields({
           <Label.Inline>
             <Input.Checkbox
               checked={displayFormatter}
-              onClick={(): void => setDisplayFormatter(!displayFormatter)}
               disabled={isReadOnly}
+              onClick={(): void => setDisplayFormatter(!displayFormatter)}
             />
             {resourcesText.customizeFieldFormatters()}
           </Label.Inline>
@@ -191,26 +191,26 @@ function Field({
       <td>
         <Button.Small
           aria-label={commonText.remove()}
+          disabled={isReadOnly}
           title={commonText.remove()}
           variant={className.dangerButton}
           onClick={handleRemove}
-          disabled={isReadOnly}
         >
           {icons.trash}
         </Button.Small>
         <Button.Small
           aria-label={queryText.moveUp()}
+          disabled={isReadOnly}
           title={queryText.moveUp()}
           onClick={moveFieldUp}
-          disabled={isReadOnly}
         >
           {icons.chevronUp}
         </Button.Small>
         <Button.Small
           aria-label={queryText.moveDown()}
+          disabled={isReadOnly}
           title={queryText.moveDown()}
           onClick={moveFieldDown}
-          disabled={isReadOnly}
         >
           {icons.chevronDown}
         </Button.Small>
