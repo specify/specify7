@@ -124,7 +124,7 @@ function Row({
   );
   const viewUrl = typeof resource === 'object' ? resource.viewUrl() : undefined;
 
-  const splitIds: RA<number> | undefined = React.useMemo(
+  const splitRecords: RA<number> | undefined = React.useMemo(
     () =>
       typeof result[0] === 'string' && result[0].includes(',')
         ? result[0].split(',').map(Number)
@@ -132,7 +132,8 @@ function Row({
     [result]
   );
 
-  const [isIdListOpen, toggleIdListOpen] = React.useState(false);
+  const [isListOfRecordsOpen, toggleIsListOfRecordsOpen] =
+    React.useState(false);
 
   return (
     <div
@@ -183,7 +184,7 @@ function Row({
             className={`${getCellClassName(condenseQueryResults)} sticky`}
             role="cell"
           >
-            {splitIds === undefined ? (
+            {splitRecords === undefined ? (
               <Link.NewTab
                 className="print:hidden"
                 href={viewUrl}
@@ -193,16 +194,16 @@ function Row({
               <Button.Icon
                 className="print:hidden"
                 icon="viewList"
-                title={queryText.viewListOfIds()}
-                onClick={() => toggleIdListOpen(true)}
+                title={queryText.viewRecords()}
+                onClick={() => toggleIsListOfRecordsOpen(true)}
               />
             )}
-            {isIdListOpen && splitIds !== undefined ? (
+            {isListOfRecordsOpen && splitRecords !== undefined ? (
               <RecordSelectorFromIds
                 defaultIndex={0}
                 dialog="modal"
                 headerButtons={undefined}
-                ids={splitIds}
+                ids={splitRecords}
                 isDependent={false}
                 isInRecordSet={false}
                 newResource={undefined}
@@ -211,16 +212,16 @@ function Row({
                   label: queryText.queryResults(),
                   value: table.label,
                 })}
-                totalCount={splitIds.length}
+                totalCount={splitRecords.length}
                 onAdd={undefined}
                 onClone={undefined}
-                onClose={() => toggleIdListOpen(false)}
+                onClose={() => toggleIsListOfRecordsOpen(false)}
                 onDelete={(index): void => handleDelete(index)}
                 onSaved={f.void}
                 onSlide={
                   typeof handleFetchMore === 'function'
                     ? (index): void =>
-                        splitIds.length === 0 && result[index] === undefined
+                        splitRecords.length === 0 && result[index] === undefined
                           ? handleFetchMore?.(index)
                           : undefined
                     : undefined
