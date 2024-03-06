@@ -876,7 +876,7 @@ export const queryText = createDictionary({
     'ru-ru': 'Ложь или пусто',
   },
   viewListOfIds: {
-    'en-us': 'View list of ids.',
+    'en-us': 'View list of ids',
   },
   listOfRecordIds: {
     'en-us': 'List of record ids',

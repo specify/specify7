@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
-import { useBooleanState } from '../../hooks/useBooleanState';
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
@@ -118,12 +117,15 @@ function Row({
   );
   const viewUrl = typeof resource === 'object' ? resource.viewUrl() : undefined;
 
-  const splitIds: RA<number> | undefined =
-    typeof result[0] === 'string' && result[0].includes(',')
-      ? result[0].split(',').map(Number)
-      : undefined;
+  const splitIds: RA<number> | undefined = React.useMemo(
+    () =>
+      typeof result[0] === 'string' && result[0].includes(',')
+        ? result[0].split(',').map(Number)
+        : undefined,
+    [result]
+  );
 
-  const [isIdListOpen, _, __, handleToggle] = useBooleanState(false);
+  const [isIdListOpen, toggleIdListOpen] = React.useState(false);
 
   return (
     <div
@@ -182,16 +184,17 @@ function Row({
               />
             ) : (
               <Button.Icon
+                className="print:hidden"
                 icon="viewList"
                 title={queryText.viewListOfIds()}
-                onClick={handleToggle}
+                onClick={() => toggleIdListOpen}
               />
             )}
             {isIdListOpen && splitIds !== undefined ? (
               <Dialog
                 buttons={commonText.cancel()}
                 header={queryText.listOfRecordIds()}
-                onClose={handleToggle}
+                onClose={() => toggleIdListOpen}
               >
                 <Ul className="flex flex-col gap-2">
                   {splitIds.map((id) => (
