@@ -13,12 +13,12 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { syncFieldFormat } from '../Formatters/fieldFormat';
+import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
 import { userPreferences } from '../Preferences/userPreferences';
 import { getAuditRecordFormatter } from './AuditLogFormatter';
 import type { QueryFieldSpec } from './fieldSpec';
 import type { QueryResultRow } from './Results';
 import { queryIdField } from './Results';
-import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
 
 export function QueryResultsTable({
   table,
@@ -62,11 +62,11 @@ export function QueryResultsTable({
           recordFormatter={recordFormatter}
           result={result}
           table={table}
+          onDelete={handleDelete}
+          onFetchMore={handleFetchMore}
           onSelected={(isSelected, isShiftClick): void =>
             handleSelected(index, isSelected, isShiftClick)
           }
-          onDelete={handleDelete}
-          onFetchMore={handleFetchMore}
         />
       ))}
     </>
@@ -199,24 +199,24 @@ function Row({
             )}
             {isIdListOpen && splitIds !== undefined ? (
               <RecordSelectorFromIds
-                ids={splitIds}
                 defaultIndex={0}
                 dialog="modal"
-                isInRecordSet={false}
                 headerButtons={undefined}
+                ids={splitIds}
                 isDependent={false}
+                isInRecordSet={false}
                 newResource={undefined}
+                table={table}
                 title={commonText.colonLine({
                   label: queryText.queryResults(),
                   value: table.label,
                 })}
+                totalCount={splitIds.length}
                 onAdd={undefined}
                 onClone={undefined}
                 onClose={() => toggleIdListOpen(false)}
                 onDelete={(index): void => handleDelete(index)}
                 onSaved={f.void}
-                totalCount={splitIds.length}
-                table={table}
                 onSlide={
                   typeof handleFetchMore === 'function'
                     ? (index): void =>
