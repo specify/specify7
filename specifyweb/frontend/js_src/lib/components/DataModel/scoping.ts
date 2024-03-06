@@ -31,6 +31,7 @@ export function initializeResource(resource: SpecifyResource<AnySchema>): void {
   if (resource.isNew())
     resource.set(
       'createdByAgent',
+      // @ts-expect-error setting this value is fine as `createdByAgent` exists on every table
       getResourceApiUrl('Agent', userInformation.agent.id)
     );
 
