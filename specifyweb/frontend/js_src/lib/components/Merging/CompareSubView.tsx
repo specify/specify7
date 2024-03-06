@@ -35,6 +35,8 @@ import { MergeContainer, useMergeConformation } from './Compare';
 import { CompareField, TransferButton } from './CompareField';
 import { mergeCellBackground, mergeHeaderClassName } from './Header';
 import { MergeDialogContainer, ToggleMergeView } from './index';
+import { ResourceBase } from '../DataModel/resourceApi';
+import { DependentCollection } from '../DataModel/collectionApi';
 
 export function MergeSubviewButton({
   relationship,
@@ -52,14 +54,17 @@ export function MergeSubviewButton({
   const getCount = React.useCallback(() => {
     const dependentResource = resource.getDependentResource(
       relationship.name
-    ) as Collection<AnySchema> | undefined;
+    ) as SpecifyResource<AnySchema> | Collection<AnySchema> | undefined;
 
-    if (dependentResource !== undefined && dependentResource !== null) {
-      if (dependentResource.models === undefined) return 1;
-      return dependentResource.models.length;
-    }
-
-    return resource.get(relationship.name) === undefined ? 0 : 1;
+    return dependentResource === undefined
+      ? resource.get(relationship.name) === undefined
+        ? 0
+        : 1
+      : dependentResource instanceof ResourceBase
+      ? 1
+      : dependentResource instanceof DependentCollection
+      ? (dependentResource as Collection<AnySchema>).models.length
+      : 0;
   }, [relationship, resource]);
 
   const [count, setCount] = React.useState(getCount);
