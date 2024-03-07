@@ -39,7 +39,6 @@ export type QueryResultRow = RA<number | string | null>;
 export type QueryResultsProps = {
   readonly table: SpecifyTable;
   readonly label?: LocalizedString;
-  readonly hasIdField: boolean;
   readonly queryResource: SpecifyResource<SpQuery> | undefined;
   /**
    * A hint for how many records a fetch can return at maximum. This is used to
@@ -76,7 +75,6 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
   const {
     table,
     label = commonText.results(),
-    hasIdField,
     queryResource,
     fetchResults,
     fieldSpecs,
@@ -181,7 +179,10 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     'appearance',
     'showLineNumber'
   );
-  const metaColumns = (showLineNumber ? 1 : 0) + (hasIdField ? 2 : 0);
+
+  const isDistinct =
+    typeof loadedResults?.[0]?.[0] === 'string' && loadedResults !== undefined;
+  const metaColumns = (showLineNumber ? 1 : 0) + 2;
 
   return (
     <Container.Base className="w-full !bg-[color:var(--form-background)]">
@@ -207,8 +208,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
         totalCount !== 0
           ? extraButtons
           : null}
-        {hasIdField &&
-        Array.isArray(results) &&
+        {Array.isArray(results) &&
         Array.isArray(loadedResults) &&
         results.length > 0 &&
         typeof fetchResults === 'function' &&
@@ -224,7 +224,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                 />
               )}
             {hasToolPermission('recordSets', 'create') && totalCount !== 0 ? (
-              selectedRows.size > 0 ? (
+              selectedRows.size > 0 && !isDistinct ? (
                 <CreateRecordSet
                   /*
                    * This is needed so that IDs are in the same order as they
@@ -256,14 +256,16 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                 canFetchMore && !isFetching ? handleFetchMore : undefined
               }
             />
-            <QueryToForms
-              results={results}
-              selectedRows={selectedRows}
-              table={table}
-              totalCount={totalCount}
-              onDelete={handleDelete}
-              onFetchMore={isFetching ? undefined : handleFetchMore}
-            />
+            {isDistinct ? null : (
+              <QueryToForms
+                results={results}
+                selectedRows={selectedRows}
+                table={table}
+                totalCount={totalCount}
+                onDelete={handleDelete}
+                onFetchMore={isFetching ? undefined : handleFetchMore}
+              />
+            )}
           </>
         ) : undefined}
       </div>
@@ -295,20 +297,16 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                   onSortChange={undefined}
                 />
               )}
-              {hasIdField && (
-                <>
-                  <TableHeaderCell
-                    fieldSpec={undefined}
-                    sortConfig={undefined}
-                    onSortChange={undefined}
-                  />
-                  <TableHeaderCell
-                    fieldSpec={undefined}
-                    sortConfig={undefined}
-                    onSortChange={undefined}
-                  />
-                </>
-              )}
+              <TableHeaderCell
+                fieldSpec={undefined}
+                sortConfig={undefined}
+                onSortChange={undefined}
+              />
+              <TableHeaderCell
+                fieldSpec={undefined}
+                sortConfig={undefined}
+                onSortChange={undefined}
+              />
               {fieldSpecs.map((fieldSpec, index) =>
                 fieldSpec.isPhantom ? undefined : (
                   <TableHeaderCell
@@ -334,7 +332,6 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
           Array.isArray(initialData) ? (
             <QueryResultsTable
               fieldSpecs={fieldSpecs}
-              hasIdField={hasIdField}
               results={loadedResults}
               selectedRows={selectedRows}
               table={table}
