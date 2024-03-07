@@ -170,6 +170,10 @@ export const parsers = f.store(
     'java.lang.String': {
       type: 'text',
       maxLength: 2 ** 31 - 1,
+      /*
+       * Note, despite empty string being default value, empty strings
+       * are cast to null in parseValue
+       */
       value: '',
     },
 

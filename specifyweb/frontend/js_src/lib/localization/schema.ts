@@ -126,7 +126,7 @@ export const schemaText = createDictionary({
     'ru-ru': 'Скрыть таблицу',
     'es-es': 'Ocultar tabla',
     'fr-fr': 'Masquer le tableau',
-    'uk-ua': 'Сховати таблицю',
+    'uk-ua': 'Приховати таблицю',
     'de-ch': 'Tabelle verbergen',
   },
   hideField: {
@@ -431,15 +431,15 @@ export const schemaText = createDictionary({
     'es-es': 'Exportar duplicados',
     'fr-fr': 'Exporter les doublons',
     'ru-ru': 'Экспортировать дубликаты',
-    'uk-ua': 'Експортувати дублікати',
+    'uk-ua': 'Експорт дублікатів',
   },
   numberOfDuplicates: {
     'en-us': 'Number of Duplicates',
     'de-ch': 'Anzahl der Duplikate',
     'es-es': 'Número de duplicados',
-    'fr-fr': 'Nombre de doublons',
+    'fr-fr': 'Agrégation de tables',
     'ru-ru': 'Агрегация таблиц',
-    'uk-ua': 'Кількість дублікатів',
+    'uk-ua': 'Агрегація таблиць',
   },
   schemaViewTitle: {
     'en-us': 'Schema Config: {tableName:string}',
