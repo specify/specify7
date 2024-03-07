@@ -104,7 +104,7 @@ export function Tree<SCHEMA extends AnyTree>({
     <div
       className={`
         grid-table h-full flex-1 grid-cols-[repeat(var(--cols),auto)] 
-        content-start overflow-auto rounded border-2 border
+        content-start overflow-auto rounded border border-2
         border-[var(--edge-color)] from-[var(--edge-color)] via-[var(--middle-color)] to-[var(--edge-color)]
         p-1 pt-0 outline-none
         ${highContrast ? 'border dark:border-white' : 'bg-gradient-to-bl'}
