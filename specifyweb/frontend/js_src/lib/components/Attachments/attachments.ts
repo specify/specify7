@@ -7,7 +7,7 @@ import type { UploadAttachmentSpec } from '../AttachmentsBulkImport/types';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import type { Attachment } from '../DataModel/types';
 import { load } from '../InitialContext';
 import { getIcon, unknownIcon } from '../InitialContext/icons';
@@ -20,6 +20,7 @@ type AttachmentSettings = {
   readonly getmetadata: string;
   readonly read: string;
   readonly testkey: string;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly token_required_for_get: boolean;
   readonly write: string;
 };
@@ -122,9 +123,9 @@ export async function fetchThumbnail(
     src: formatUrl(settings.read, {
       coll: settings.collection,
       type: 'T',
-      fileName: attachment.attachmentLocation ?? '',
-      scale: scale.toString(),
-      ...(typeof token === 'string' ? { token } : {}),
+      fileName: attachment.attachmentLocation,
+      scale,
+      token,
     }),
     alt: attachment.attachmentLocation ?? undefined,
     width: scale,
@@ -140,9 +141,9 @@ export const formatAttachmentUrl = (
     ? formatUrl(settings.read, {
         coll: settings.collection,
         type: 'O',
-        fileName: attachment.attachmentLocation ?? '',
+        fileName: attachment.attachmentLocation,
         downloadName: attachment.origFilename?.replace(/^.*[/\\]/u, ''),
-        ...(typeof token === 'string' ? { token } : {}),
+        token,
       })
     : undefined;
 
@@ -208,6 +209,7 @@ export async function uploadFile(
             handleAjaxResponse({
               expectedErrors: [],
               accept: undefined,
+              // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
               response: {
                 ok: xhr.status === Http.OK,
                 status: xhr.status,
@@ -223,7 +225,7 @@ export async function uploadFile(
         }
     })
   );
-  return new schema.models.Attachment.Resource({
+  return new tables.Attachment.Resource({
     attachmentlocation: data.attachmentLocation,
     mimetype: fixMimeType(file.type),
     origfilename: file.name,
@@ -239,7 +241,7 @@ export async function uploadFile(
  * REFACTOR: remove this once that issue is fixed
  */
 function fixMimeType(originalMimeType: string): string {
-  const maxLength = getField(schema.models.Attachment, 'mimeType').length;
+  const maxLength = getField(tables.Attachment, 'mimeType').length;
   if (maxLength === undefined || originalMimeType.length < maxLength)
     return originalMimeType;
   else {

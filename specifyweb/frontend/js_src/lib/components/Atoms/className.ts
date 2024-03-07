@@ -16,6 +16,7 @@ const secondaryButton = `${buttonClassName} hover:brightness-90 dark:hover:brigh
 dark:text-gray-100`;
 const secondaryLightButton = `${buttonClassName} hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-light-button-color)] text-gray-800 shadow-sm
 dark:text-gray-100`;
+
 const containerBaseUnstyled = `flex flex-col gap-4 overflow-scroll
   overflow-x-auto [overflow-y:overlay] [scrollbar-gutter:auto]`;
 const containerBase = `${containerBaseUnstyled} bg-[color:var(--form-foreground)]
@@ -74,13 +75,13 @@ export const className = {
   containerFullGray: `${containerFull} bg-[color:var(--form-background)]`,
   containerBaseUnstyled,
   containerBase,
-  containerCenter: `${containerBase} max-w-[min(100%,var(--form-max-width))]
+  containerCenter: `${containerBase} max-w-[var(--form-max-width)]
     mx-auto w-full ${formStyles}`,
   formHeader:
     'border-b-2 border-brand-300 flex items-center pb-2 gap-2 md:gap-4 md:justify-between flex-col md:flex-row',
   formTitle: 'text-lg font-bold flex items-center gap-2',
   formStyles,
-  limitedWidth: `max-w-[min(100%,var(--max-field-width))]`,
+  limitedWidth: `max-w-[var(--max-field-width)]`,
   headerPrimary: 'font-semibold text-black dark:text-white',
   headerGray: 'text-gray-500 dark:text-neutral-400',
   // These values must be synchronised with main.css
@@ -88,7 +89,7 @@ export const className = {
   formFooter:
     'border-brand-300 border-t-2 flex print:hidden pt-2 gap-2 flex-wrap justify-center flex-col md:flex-row',
   dataEntryAdd: '!text-green-700 print:hidden',
-  dataEntryView: '!text-orange-400 print:hidden',
+  dataEntryView: '!text-cyan-400 print:hidden',
   dataEntryEdit: '!text-orange-400 print:hidden',
   dataEntryClone: '!text-amber-700 print:hidden',
   dataEntrySearch: '!text-blue-500 print:hidden',

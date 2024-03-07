@@ -13,12 +13,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import type { LocalizedString } from 'typesafe-i18n';
-
 import { formatConjunction } from '../../components/Atoms/Internationalization';
 import { f } from '../../utils/functools';
 import type { IR, R, RA, RR, WritableArray } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import { filterArray, localized } from '../../utils/types';
 import { group, split } from '../../utils/utils';
 import type { Language } from './config';
 import { DEFAULT_LANGUAGE, languages } from './config';
@@ -157,7 +155,7 @@ export async function scanUsages(
     usages.length > 1
       ? error(
           `Key "${stringKey}" is used in multiple dictionaries: ` +
-            `${formatConjunction(usages)}\n` +
+            `${formatConjunction(usages.map(localized))}\n` +
             `Unfortunately, that is not allowed because Weblate get's confused by it`
         )
       : undefined
@@ -178,9 +176,11 @@ export async function scanUsages(
                     [
                       `A string for an undefined language "${language}" was `,
                       `found for key ${dictionaryName}.${key}\n`,
-                      `Defined languages: ${formatConjunction(languages)}\n`,
+                      `Defined languages: ${formatConjunction(
+                        languages.map(localized)
+                      )}\n`,
                       `Allowed meta keys: ${formatConjunction(
-                        localizationMetaKeys
+                        localizationMetaKeys.map(localized)
                       )}\n`,
                       `If you want to add a new language, add it to the `,
                       `languages array in ./localization/utils.tsx`,
@@ -213,7 +213,7 @@ export async function scanUsages(
                   strings: {
                     ...strings,
                     comment: f.maybe(
-                      strings.comment as LocalizedString,
+                      localized(strings.comment),
                       whitespaceSensitive
                     ),
                   },

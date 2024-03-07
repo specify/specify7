@@ -14,7 +14,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Деревья',
     'es-es': 'Árboles',
     'fr-fr': 'Arbres',
-    'uk-ua': 'Дерева',
+    'uk-ua': 'дерева',
     'de-ch': 'Hierarchien',
   },
   badStructure: {
@@ -30,7 +30,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Переместить',
     'es-es': 'Mover',
     'fr-fr': 'Déplacer',
-    'uk-ua': 'Перемістити',
+    'uk-ua': 'рухатися',
     'de-ch': 'Verschieben',
   },
   merge: {
@@ -74,10 +74,10 @@ export const treeText = createDictionary({
     'fr-fr': `
       L'opération n'a pas pu être effectuée en raison des erreurs suivantes :
     `,
-    'uk-ua': 'Операцію не вдалося завершити через такі помилки:',
     'de-ch': `
       Der Vorgang konnte aufgrund der folgenden Fehler nicht ausgeführt werden:
     `,
+    'uk-ua': 'Неможливо перейти до синоніма',
   },
   moveNode: {
     'en-us': 'Move node',
@@ -100,7 +100,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Переместите «{nodeName:string}» сюда',
     'es-es': 'Mover "{nodeName:string}" aquí',
     'fr-fr': 'Déplacer « {nodeName:string} » ici',
-    'uk-ua': 'Перемістити "{nodeName:string}" сюди.',
+    'uk-ua': 'Перемістіть сюди "{nodeName:string}".',
     'de-ch': 'Verschiebe "{nodeName:string}" hierhin',
   },
   nodeMoveMessage: {
@@ -290,11 +290,11 @@ export const treeText = createDictionary({
       Le nœud {treeName:string} "{nodeName:string}" deviendra synonyme de
       "{synonymName:string}".
     `,
-    'uk-ua': 'ЗАЧИНЕНО',
     'de-ch': `
       Der {treeName:string}-Knoten "{nodeName:string}" wird zu einem Synonym von
       "{synonymName:string}".
     `,
+    'uk-ua': 'ЗАЧИНЕНО',
   },
   desynonymizeNode: {
     'en-us': 'Desynonymize node',
@@ -314,19 +314,22 @@ export const treeText = createDictionary({
       '"{nodeName:string}" ya no será sinónimo de "{synonymName:string}".',
     'fr-fr':
       '"{nodeName:string}" ne sera plus synonyme de "{synonymName:string}".',
-    'uk-ua':
-      '"{nodeName:string}" більше не буде синонімом "{synonymName:string}".',
     'de-ch': `
       "{nodeName:string}" wird nicht mehr ein Synonym von
       "{synonymName:string}" sein.
     `,
+    'uk-ua': 'Це призведе до остаточного видалення наступного ресурсу',
   },
   acceptedName: {
     'en-us': 'Preferred: {name:string}',
     'ru-ru': 'Предпочтительний: {name:string}',
     'es-es': 'Preferido: {name:string}',
     'fr-fr': 'Préféré : {name:string}',
-    'uk-ua': 'Бажано: {name:string}',
+    'uk-ua': `
+      Усі посилання на вузол [X18X] «[X42X]» буде замінено на «[X84X]», а всі
+      нащадки «[X130X]» буде переміщено до «[X167X]», а будь-які нащадки, що
+      відповідають імені та рангу, будуть самі собою об'єднані рекурсивно.
+    `,
     'de-ch': 'Bevorzugt: {name:string}',
   },
   treeViewTitle: {
@@ -392,9 +395,9 @@ export const treeText = createDictionary({
     'en-us': 'Direct {collectionObjectTable:string} Count',
     'ru-ru': 'Количество прямых {collectionObjectTable:string}',
     'es-es': 'Recuento directo de {collectionObjectTable:string}',
+    'de-ch': 'Direkte {collectionObjectTable:string} Anzahl',
     'fr-fr': 'Impossible de passer à un synonyme',
     'uk-ua': 'Неможливо перейти до синоніма',
-    'de-ch': 'Direkte {collectionObjectTable:string} Anzahl',
   },
   indirectCollectionObjectCount: {
     comment: 'Example: Indirect Collection Object count',
@@ -453,7 +456,7 @@ export const treeText = createDictionary({
     'de-ch': 'Synchronisieren',
     'es-es': 'Sincronizar',
     'fr-fr': 'Synchroniser',
-    'ru-ru': 'Это приведет к безвозвратному удалению следующего ресурса',
     'uk-ua': 'Синхронізувати',
+    'ru-ru': 'Это приведет к безвозвратному удалению следующего ресурса',
   },
 } as const);

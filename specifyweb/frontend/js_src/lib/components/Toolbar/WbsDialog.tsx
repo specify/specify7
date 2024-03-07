@@ -21,7 +21,7 @@ import { Link } from '../Atoms/Link';
 import type { AttachmentDataSet } from '../AttachmentsBulkImport/types';
 import { LoadingContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { SortConfig } from '../Molecules/Sorting';
@@ -30,7 +30,7 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { hasPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
 import { uniquifyDataSetName } from '../WbImport/helpers';
-import type { Dataset, DatasetBrief } from '../WbPlanView/Wrapped';
+import type { Dataset, DatasetBriefPlan } from '../WbPlanView/Wrapped';
 import { WbDataSetMeta } from '../WorkBench/DataSetMeta';
 
 const createWorkbenchDataSet = async () =>
@@ -85,7 +85,7 @@ export function DataSetMetaOverlay(): JSX.Element | null {
       dataset={dataset}
       onChange={handleClose}
       onClose={handleClose}
-      onDeleted={() => navigate('/specify/', { replace: true })}
+      onDeleted={(): void => navigate('/specify/', { replace: true })}
     />
   ) : null;
 }
@@ -107,19 +107,19 @@ function TableHeader({
           scope="col"
         >
           <Button.LikeLink onClick={(): void => handleSort('name')}>
-            {getField(schema.models.Workbench, 'name').label}
+            {getField(tables.Workbench, 'name').label}
             <SortIndicator fieldName="name" sortConfig={sortConfig} />
           </Button.LikeLink>
         </th>
         <th scope="col">
           <Button.LikeLink onClick={(): void => handleSort('dateCreated')}>
-            {getField(schema.models.Workbench, 'timestampCreated').label}
+            {getField(tables.Workbench, 'timestampCreated').label}
             <SortIndicator fieldName="dateCreated" sortConfig={sortConfig} />
           </Button.LikeLink>
         </th>
         <th scope="col">
           <Button.LikeLink onClick={(): void => handleSort('dateUploaded')}>
-            {getField(schema.models.Workbench, 'timestampModified').label}
+            {wbText.dataSetTimestampUploaded()}
             <SortIndicator fieldName="dateUploaded" sortConfig={sortConfig} />
           </Button.LikeLink>
         </th>
@@ -142,7 +142,7 @@ export function DataSetsDialog({
   const [unsortedDatasets] = useAsyncState(
     React.useCallback(
       async () =>
-        ajax<RA<DatasetBrief>>(
+        ajax<RA<DatasetBriefPlan>>(
           `/api/workbench/dataset/${showTemplates ? '?with_plan' : ''}`,
           { headers: { Accept: 'application/json' } }
         ).then(({ data }) => data),
@@ -180,9 +180,9 @@ export function DataSetsDialog({
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           {canImport && (
             <>
-              <Link.Blue href="/specify/workbench/import/">
+              <Link.Info href="/specify/workbench/import/">
                 {wbText.importFile()}
-              </Link.Blue>
+              </Link.Info>
               <Button.Info
                 onClick={(): void =>
                   loading(
@@ -241,7 +241,10 @@ export function DataSetsDialog({
                           : undefined
                       }
                     >
-                      <TableIcon label={false} name="Workbench" />
+                      <TableIcon
+                        label
+                        name={dataset.uploadplan?.baseTableName ?? 'Workbench'}
+                      />
                       {dataset.name}
                     </Link.Default>
                   </td>

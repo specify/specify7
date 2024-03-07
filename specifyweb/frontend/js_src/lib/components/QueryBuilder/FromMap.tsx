@@ -13,8 +13,7 @@ import type { QueryField } from './helpers';
 
 const emptyArray: RA<never> = [];
 const defaultPoint = [0, 10] as const;
-// REFACTOR: use this type where applicable
-export type Pair<T = number> = readonly [T, T];
+type Pair<T = number> = readonly [T, T];
 
 export function QueryFromMap({
   fields,
@@ -234,6 +233,7 @@ function getNewQueryLines(
     sortType: undefined,
     isDisplay: definedField.isDisplay,
     ...(fields[latitudeLineIndex] as Partial<QueryField>),
+    dataObjFormatter: undefined,
     filters: [
       {
         type: 'between',
@@ -252,6 +252,7 @@ function getNewQueryLines(
     sortType: undefined,
     isDisplay: definedField.isDisplay,
     ...(fields[longitudeLineIndex] as Partial<QueryField>),
+    dataObjFormatter: undefined,
     filters:
       operator === 'between'
         ? [

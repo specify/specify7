@@ -11,15 +11,15 @@ import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { tablesWithAttachments } from '../Attachments';
 import { RecordSetAttachments } from '../Attachments/RecordSetAttachment';
+import { ReadOnlyContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
-import type { FormMode } from '../FormParse';
+import { tables } from '../DataModel/tables';
 import { ResourceView } from '../Forms/ResourceView';
 import { saveFormUnloadProtect } from '../Forms/Save';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
-import { SetUnloadProtectsContext } from '../Router/Router';
+import { SetUnloadProtectsContext } from '../Router/UnloadProtect';
 import type { RecordSelectorProps } from './RecordSelector';
 import { useRecordSelector } from './RecordSelector';
 
@@ -32,13 +32,12 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   newResource,
   onSlide: handleSlide,
   defaultIndex,
-  model,
+  table,
   viewName,
   title,
   headerButtons,
   dialog,
   isDependent,
-  mode,
   canRemove = true,
   totalCount = ids.length + (typeof newResource === 'object' ? 1 : 0),
   isLoading: isExternalLoading = false,
@@ -61,7 +60,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   readonly headerButtons?: JSX.Element;
   readonly dialog: 'modal' | 'nonModal' | false;
   readonly isDependent: boolean;
-  readonly mode: FormMode;
   readonly viewName?: string;
   readonly canRemove?: boolean;
   readonly totalCount?: number;
@@ -80,7 +78,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   const [records, setRecords] = React.useState<
     RA<SpecifyResource<SCHEMA> | undefined>
   >(() =>
-    ids.map((id) => (id === undefined ? undefined : new model.Resource({ id })))
+    ids.map((id) => (id === undefined ? undefined : new table.Resource({ id })))
   );
 
   const previousIds = React.useRef(ids);
@@ -90,14 +88,14 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
       ids.map((id, index) => {
         if (id === undefined) return undefined;
         else if (records[index]?.id === id) return records[index];
-        else return new model.Resource({ id });
+        else return new table.Resource({ id });
       })
     );
 
     return (): void => {
       previousIds.current = ids;
     };
-  }, [ids, model]);
+  }, [ids, table]);
 
   const [rawIndex, setIndex] = useTriggerState(
     Math.max(0, defaultIndex ?? ids.length - 1)
@@ -125,7 +123,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   } = useRecordSelector({
     ...rest,
     index,
-    model,
+    table,
     records:
       typeof newResource === 'object' ? [...records, newResource] : records,
     totalCount,
@@ -173,16 +171,19 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
 
   const addLabel = isInRecordSet
     ? formsText.addToRecordSet({
-        recordSetTable: schema.models.RecordSet.label,
+        recordSetTable: tables.RecordSet.label,
       })
     : commonText.add();
   const removeLabel = isInRecordSet
     ? formsText.removeFromRecordSet({
-        recordSetTable: schema.models.RecordSet.label,
+        recordSetTable: tables.RecordSet.label,
       })
     : commonText.delete();
+  const isReadOnly = React.useContext(ReadOnlyContext);
 
-  const hasAttachments = tablesWithAttachments().includes(model);
+  const hasAttachments = tablesWithAttachments().includes(table);
+
+  const isNewRecordSet = isInRecordSet && title === undefined;
 
   return (
     <>
@@ -198,12 +199,12 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                 }
               />
               {hasTablePermission(
-                model.name,
+                table.name,
                 isDependent ? 'create' : 'read'
               ) && typeof handleAdding === 'function' ? (
                 <DataEntry.Add
                   aria-label={addLabel}
-                  disabled={mode === 'view'}
+                  disabled={isReadOnly}
                   title={addLabel}
                   onClick={handleAdding}
                 />
@@ -211,7 +212,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
               {typeof handleRemove === 'function' && canRemove ? (
                 <DataEntry.Remove
                   aria-label={removeLabel}
-                  disabled={resource === undefined || mode === 'view'}
+                  disabled={resource === undefined || isReadOnly}
                   title={removeLabel}
                   onClick={(): void => handleRemove('minusButton')}
                 />
@@ -223,9 +224,9 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                   className={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
                 />
               )}
-              {hasAttachments && (
+              {hasAttachments && !isNewRecordSet ? (
                 <RecordSetAttachments records={records} onFetch={handleFetch} />
-              )}
+              ) : undefined}
               {specifyNetworkBadge}
             </div>
             {totalCount > 1 && <div>{slider}</div>}
@@ -234,14 +235,13 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
         isDependent={isDependent}
         isLoading={isLoading || isExternalLoading}
         isSubForm={false}
-        mode={mode}
         resource={resource}
         title={title}
         viewName={viewName}
         onAdd={handleClone}
         onClose={handleClose}
         onDeleted={
-          resource?.isNew() === true || hasTablePermission(model.name, 'delete')
+          resource?.isNew() === true || hasTablePermission(table.name, 'delete')
             ? handleRemove?.bind(undefined, 'deleteButton')
             : undefined
         }

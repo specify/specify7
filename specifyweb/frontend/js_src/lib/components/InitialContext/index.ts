@@ -70,22 +70,24 @@ export const load = async <T>(path: string, mimeType: MimeType): Promise<T> =>
     // A very crude detection mechanism
     const isCached = timePassed < 100;
 
-    console.log(
-      `${path} %c[${
-        isCached
-          ? 'cached'
-          : `${formatNumber(f.round(timePassed / MILLISECONDS, 0.01))}s`
-      }]`,
-      `color: ${isCached ? '#9fa' : '#f99'}`
-    );
+    // So as not to spam the tests
+    if (process.env.NODE_ENV !== 'test')
+      console.log(
+        `${path} %c[${
+          isCached
+            ? 'cached'
+            : `${formatNumber(f.round(timePassed / MILLISECONDS, 0.01))}s`
+        }]`,
+        `color: ${isCached ? '#9fa' : '#f99'}`
+      );
     return data;
   });
 
 export const initialContext = Promise.all([
   // Fetch general context information (NOT CACHED)
-  import('../DataModel/schemaBase'),
-  // Fetch schema (cached)
   import('../DataModel/schema'),
+  // Fetch data model (cached)
+  import('../DataModel/tables'),
   // Fetch remote preferences (cached)
   import('./remotePrefs'),
   // Fetch icon definitions (cached)
@@ -93,8 +95,8 @@ export const initialContext = Promise.all([
   // Fetch general system information (cached)
   import('./systemInfo'),
   // Fetch UI formatters (cached)
-  import('../Forms/uiFormatters'),
-  // Fetch Specify 6 UI localization strings (CACHED)
+  import('../FieldFormatters'),
+  // Fetch Specify 6 UI localization strings (cached)
   import('./legacyUiLocalization'),
   // Fetch user information (NOT CACHED)
   import('./userInformation'),

@@ -3,9 +3,9 @@
 from django import http
 from django.conf import settings
 from django.utils.translation import gettext as _
-from django.views.decorators.http import require_GET
 from typing import Dict, List, Tuple
 
+from specifyweb.middleware.general import require_GET
 from .datamodel import (
     Field,
     Relationship,
@@ -162,7 +162,7 @@ def generate_openapi_for_tables():
                 "orderby": {
                     "name": "orderby",
                     "in": "query",
-                    "description": "The name of the field to order by. Prefix the field name with '-' for DESC sort order",
+                    "description": "The name of the field to order by. Prefix the field name with '-' for DESC sort order. Can specify multiple fields separated by comma",
                     "required": False,
                     "schema": {
                         "type": "string",

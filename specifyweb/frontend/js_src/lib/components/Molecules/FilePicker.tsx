@@ -86,7 +86,7 @@ export function FilePicker({
           ${containerClassName}
           ${
             isDragging
-              ? 'bg-white ring ring-brand-200 dark:bg-neutral-700 dark:ring-brand-400'
+              ? 'ring-brand-200 dark:ring-brand-400 bg-white ring dark:bg-neutral-700'
               : ''
           }
           ${isFocused ? '!ring ring-blue-500' : ''}
@@ -134,6 +134,7 @@ export const downloadFile = async (
   new Promise((resolve) => {
     let fileDownloaded = false;
     const iframe = document.createElement('iframe');
+    iframe.classList.add('absolute', 'hidden');
     iframe.addEventListener('load', () => {
       if (iframe.contentWindow === null || fileDownloaded) return;
       const element = iframe.contentWindow.document.createElement('a');

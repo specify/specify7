@@ -12,8 +12,8 @@ import {
 } from '../../utils/types';
 import { formatConjunction } from '../Atoms/Internationalization';
 import { load } from '../InitialContext';
-import { strictGetModel } from './schema';
 import type { LiteralField, Relationship } from './specifyField';
+import { strictGetTable } from './tables';
 import type { Tables } from './types';
 
 export type UniquenessRule = {
@@ -47,14 +47,14 @@ let uniquenessRules: UniquenessRules = {};
 
 export const fetchContext = f
   .all({
-    schemaBase: import('./schemaBase').then(
+    schema: import('./schema').then(async ({ fetchContext }) => fetchContext),
+    tables: import('../DataModel/tables').then(
       async ({ fetchContext }) => fetchContext
     ),
-    schema: import('./schema').then(async ({ fetchContext }) => fetchContext),
   })
-  .then(async ({ schemaBase }) =>
+  .then(async ({ schema }) =>
     load<UniquenessRules>(
-      `/businessrules/uniqueness_rules/${schemaBase.domainLevelIds.discipline}/`,
+      `/businessrules/uniqueness_rules/${schema.domainLevelIds.discipline}/`,
       'application/json'
     )
   )
@@ -62,7 +62,7 @@ export const fetchContext = f
     Object.fromEntries(
       Object.entries(data).map(([lowercaseTableName, rules]) => {
         // Convert all lowercase table names from backend to PascalCase
-        const tableName = strictGetModel(lowercaseTableName).name;
+        const tableName = strictGetTable(lowercaseTableName).name;
         const getDuplicates = (
           uniqueRule: UniquenessRule
         ): UniquenessRuleValidation =>

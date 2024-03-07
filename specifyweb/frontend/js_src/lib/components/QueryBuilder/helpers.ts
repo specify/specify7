@@ -4,16 +4,15 @@ import { today } from '../../utils/relativeDate';
 import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { group, KEY, removeKey, sortFunction, VALUE } from '../../utils/utils';
-import { serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { getModel, schema } from '../DataModel/schema';
+import { serializeResource } from '../DataModel/serializers';
+import { genericTables, getTable, tables } from '../DataModel/tables';
 import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { queryMappingLocalityColumns } from '../Leaflet/config';
 import { uniqueMappingPaths } from '../Leaflet/wbLocalityDataExtractor';
 import { hasTablePermission } from '../Permissions/helpers';
-import { getTransitionDuration } from '../Preferences/Hooks';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import type { MappingPath } from '../WbPlanView/Mapper';
 import {
@@ -22,7 +21,6 @@ import {
   splitJoinedMappingPath,
   valueIsToManyIndex,
 } from '../WbPlanView/mappingHelpers';
-import type { MappingLineData } from '../WbPlanView/navigator';
 import type { QueryFieldFilter } from './FieldFilter';
 import { queryFieldFilters } from './FieldFilter';
 import { QueryFieldSpec } from './fieldSpec';
@@ -45,6 +43,7 @@ export type QueryField = {
   readonly mappingPath: MappingPath;
   readonly sortType: SortTypes;
   readonly isDisplay: boolean;
+  readonly dataObjFormatter: string | undefined;
   readonly filters: RA<{
     readonly type: QueryFieldFilter;
     readonly startValue: string;
@@ -97,6 +96,7 @@ export function parseQueryFields(
             id: index,
             mappingPath,
             sortType: sortTypes[field.sortType],
+            dataObjFormatter: field.formatName ?? undefined,
             filter: {
               type: defined(
                 Object.entries(queryFieldFilters).find(
@@ -209,6 +209,7 @@ const addQueryFields = (
           sortType: undefined,
           isDisplay: true,
           parser: undefined,
+          dataObjFormatter: undefined,
           filters: [
             {
               type: 'any',
@@ -232,7 +233,7 @@ function addLocalityFields(
   );
   const localityIndexes = fieldSpecs.map((spec) =>
     spec.joinPath.findIndex(
-      (part) => part.isRelationship && part.relatedModel.name === 'Locality'
+      (part) => part.isRelationship && part.relatedTable.name === 'Locality'
     )
   );
   const rawLocalityPaths: RA<MappingPath> = [
@@ -256,7 +257,7 @@ function addLocalityFields(
         ? parts[1]
         : error('Only direct locality fields are supported')
     )
-    .map((fieldName) => schema.models.Locality.strictGetField(fieldName).name);
+    .map((fieldName) => tables.Locality.strictGetField(fieldName).name);
 
   return addQueryFields(
     fields,
@@ -278,6 +279,7 @@ export const addFormattedField = (fields: RA<QueryField>): RA<QueryField> =>
           mappingPath: [formattedEntry],
           sortType: undefined,
           isDisplay: true,
+          dataObjFormatter: undefined,
           filters: [
             {
               type: 'any',
@@ -298,6 +300,7 @@ export const unParseQueryFields = (
     ([field, fieldSpec], index) => {
       const commonData = {
         ...fieldSpec.toSpQueryAttributes(),
+        formatName: field.dataObjFormatter,
         sortType: sortTypes.indexOf(field.sortType),
         position: index,
         isDisplay: field.isDisplay,
@@ -342,47 +345,31 @@ export function hasLocalityColumns(fields: RA<QueryField>): boolean {
   return fieldNames.has('latitude1') && fieldNames.has('longitude1');
 }
 
-export const mutateLineData = (
-  lineData: RA<MappingLineData>
-): RA<MappingLineData> =>
-  lineData.filter(
-    ({ customSelectSubtype }) => customSelectSubtype !== 'toMany'
-  );
-
-export function smoothScroll(element: HTMLElement, top: number): void {
-  if (typeof element.scrollTo === 'function')
-    element.scrollTo({
-      top,
-      behavior: getTransitionDuration() === 0 ? 'auto' : 'smooth',
-    });
-  else element.scrollTop = element.scrollHeight;
-}
-
 const containsOr = (
   fieldSpecMapped: RA<readonly [QueryField, QueryFieldSpec]>
-) => fieldSpecMapped.some(([field]) => field.filters.length > 1);
+): boolean => fieldSpecMapped.some(([field]) => field.filters.length > 1);
 
 const containsSpecifyUsername = (
   baseTableName: keyof Tables,
   fieldSpecMapped: RA<readonly [QueryField, QueryFieldSpec]>
-) =>
+): boolean =>
   fieldSpecMapped.some(([field]) => {
     const includesUserValue = field.filters.some(({ startValue }) =>
       startValue.includes(currentUserValue)
     );
-    const terminatingField = schema.models[baseTableName].getField(
+    const terminatingField = genericTables[baseTableName].getField(
       mappingPathToString(field.mappingPath)
     );
     const endsWithSpecifyUser =
       terminatingField?.isRelationship === false &&
       terminatingField.name === 'name' &&
-      terminatingField.model.name === 'SpecifyUser';
+      terminatingField.table.name === 'SpecifyUser';
     return endsWithSpecifyUser && includesUserValue;
   });
 
 const containsRelativeDate = (
   fieldSpecMapped: RA<readonly [QueryField, QueryFieldSpec]>
-) =>
+): boolean =>
   fieldSpecMapped.some(
     ([field, fieldSpec]) =>
       field.filters.some(({ startValue }) => startValue.includes(today)) &&
@@ -392,7 +379,7 @@ const containsRelativeDate = (
 // If contains modern fields/functionality set isFavourite to false, to not appear directly in 6
 export function isModern(query: SpecifyResource<SpQuery>): boolean {
   const serializedQuery = serializeResource(query);
-  const baseTableName = getModel(serializedQuery.contextName)?.name;
+  const baseTableName = getTable(serializedQuery.contextName)?.name;
   if (baseTableName === undefined) return false;
   const fields = serializedQuery.fields;
 
@@ -418,8 +405,8 @@ export function getNoAccessTables(
     );
     return filterArray(
       fieldSpec.joinPath.flatMap((field) => [
-        field.model.name,
-        field.isRelationship ? field.relatedModel.name : undefined,
+        field.table.name,
+        field.isRelationship ? field.relatedTable.name : undefined,
       ])
     );
   });

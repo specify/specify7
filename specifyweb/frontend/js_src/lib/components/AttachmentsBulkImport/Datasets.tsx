@@ -16,25 +16,27 @@ import { Form, Input } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
-import { strictGetModel } from '../DataModel/schema';
+import { strictGetTable } from '../DataModel/tables';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog } from '../Molecules/Dialog';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
+import { TableIcon } from '../Molecules/TableIcon';
 import { hasPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
 import { createEmptyDataSet } from '../Toolbar/WbsDialog';
 import { uniquifyDataSetName } from '../WbImport/helpers';
 import { blueTable } from '../WorkBench/DataSetMeta';
+import { staticAttachmentImportPaths } from './importPaths';
 import { AttachmentDatasetMeta } from './RenameDataSet';
 import type {
   AttachmentDataSet,
-  AttachmentDatasetBrief,
+  AttachmentDataSetPlan,
   FetchedDataSet,
 } from './types';
 import { useEagerDataSet } from './useEagerDataset';
 
 const fetchAttachmentMappings = async () =>
-  ajax<RA<AttachmentDatasetBrief>>(`/attachment_gw/dataset/`, {
+  ajax<RA<AttachmentDataSetPlan>>(`/attachment_gw/dataset/`, {
     headers: { Accept: 'application/json' },
     method: 'GET',
   }).then(({ data }) => data);
@@ -142,7 +144,7 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
         icon={blueTable}
         onClose={handleClose}
       >
-        <table className="grid-table grid-cols-[repeat(3,auto)_min-content] gap-2">
+        <table className="grid-table grid-cols-[1fr_auto_auto_auto] gap-2">
           <thead>
             <tr>
               <th scope="col">
@@ -157,7 +159,7 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
                   onClick={() => handleSort('timestampModified')}
                 >
                   {
-                    strictGetModel('WorkBench').strictGetField(
+                    strictGetTable('WorkBench').strictGetField(
                       'timestampCreated'
                     ).label
                   }
@@ -171,7 +173,7 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
               <th scope="col" onClick={() => handleSort('timestampModified')}>
                 <Button.LikeLink onClick={() => handleSort('timestampCreated')}>
                   {
-                    strictGetModel('WorkBench').strictGetField(
+                    strictGetTable('WorkBench').strictGetField(
                       'timestampModified'
                     ).label
                   }
@@ -189,11 +191,21 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
           <tbody>
             {sortedDatasets.map((attachmentDataSet) => (
               <tr key={attachmentDataSet.id}>
-                <td>
+                <td className="min-w-[theme(spacing.40)] overflow-x-auto">
                   <Link.Default
-                    className="overflow-x-auto font-bold"
+                    className="font-bold"
                     href={`/specify/attachments/import/${attachmentDataSet.id}`}
                   >
+                    <TableIcon
+                      label
+                      name={
+                        attachmentDataSet.uploadplan?.staticPathKey
+                          ? staticAttachmentImportPaths[
+                              attachmentDataSet.uploadplan.staticPathKey
+                            ]?.baseTable ?? 'Workbench'
+                          : 'Workbench'
+                      }
+                    />
                     {attachmentDataSet.name}
                   </Link.Default>
                 </td>
@@ -251,9 +263,7 @@ function NewDataSet(): JSX.Element | null {
           buttons={
             <>
               <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-              <Submit.Orange form={id('form')}>
-                {commonText.save()}
-              </Submit.Orange>
+              <Submit.Save form={id('form')}>{commonText.save()}</Submit.Save>
             </>
           }
           header={attachmentsText.newAttachmentDatasetBase()}
