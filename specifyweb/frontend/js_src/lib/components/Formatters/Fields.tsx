@@ -188,32 +188,34 @@ function Field({
           <FieldFormatter field={[field, handleChange]} />
         </td>
       )}
-      {isReadOnly ? null : (
-        <td>
-          <Button.Small
-            aria-label={commonText.remove()}
-            title={commonText.remove()}
-            variant={className.dangerButton}
-            onClick={handleRemove}
-          >
-            {icons.trash}
-          </Button.Small>
-          <Button.Small
-            aria-label={queryText.moveUp()}
-            title={queryText.moveUp()}
-            onClick={moveFieldUp}
-          >
-            {icons.chevronUp}
-          </Button.Small>
-          <Button.Small
-            aria-label={queryText.moveDown()}
-            title={queryText.moveDown()}
-            onClick={moveFieldDown}
-          >
-            {icons.chevronDown}
-          </Button.Small>
-        </td>
-      )}
+      <td>
+        {isReadOnly ? null : (
+          <>
+            <Button.Small
+              aria-label={commonText.remove()}
+              title={commonText.remove()}
+              variant={className.dangerButton}
+              onClick={handleRemove}
+            >
+              {icons.trash}
+            </Button.Small>
+            <Button.Small
+              aria-label={queryText.moveUp()}
+              title={queryText.moveUp()}
+              onClick={moveFieldUp}
+            >
+              {icons.chevronUp}
+            </Button.Small>
+            <Button.Small
+              aria-label={queryText.moveDown()}
+              title={queryText.moveDown()}
+              onClick={moveFieldDown}
+            >
+              {icons.chevronDown}
+            </Button.Small>
+          </>
+        )}
+      </td>
     </tr>
   );
 }
