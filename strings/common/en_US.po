@@ -205,10 +205,10 @@ msgstr "Create"
 #: components/PickLists/index.tsx:250
 #: components/Preferences/index.tsx:103
 #: components/QueryBuilder/CheckReadAccess.tsx:42
-#: components/QueryBuilder/Components.tsx:290
+#: components/QueryBuilder/Components.tsx:289
 #: components/QueryBuilder/Edit.tsx:145
-#: components/QueryBuilder/Export.tsx:121
-#: components/QueryBuilder/Export.tsx:129
+#: components/QueryBuilder/Export.tsx:123
+#: components/QueryBuilder/Export.tsx:131
 #: components/QueryBuilder/Import.tsx:154
 #: components/QueryBuilder/LoanReturn.tsx:156
 #: components/QueryBuilder/LoanReturn.tsx:222
@@ -415,8 +415,8 @@ msgstr "Tools"
 #: components/Preferences/Renderers.tsx:114
 #: components/QueryBuilder/FieldFilter.tsx:623
 #: components/QueryBuilder/Formatter.tsx:43
-#: components/QueryBuilder/Results.tsx:194
 #: components/QueryBuilder/Results.tsx:195
+#: components/QueryBuilder/Results.tsx:196
 #: components/QueryComboBox/index.tsx:376
 #: components/SchemaConfig/Fields.tsx:62
 #: components/SchemaConfig/index.tsx:165
@@ -809,7 +809,7 @@ msgstr "ID"
 msgid "filter"
 msgstr "Filter"
 
-#: components/QueryBuilder/Results.tsx:78
+#: components/QueryBuilder/Results.tsx:77
 #: components/WorkBench/Template.tsx:155
 #: components/WorkBench/WbView.tsx:590
 #. Used in: Components > Query Builder > Results ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
@@ -950,7 +950,8 @@ msgstr "{header:string}:"
 #: components/Merging/Header.tsx:213
 #: components/Molecules/FilePicker.tsx:105
 #: components/QueryBuilder/Header.tsx:96
-#: components/QueryBuilder/Results.tsx:190
+#: components/QueryBuilder/Results.tsx:191
+#: components/QueryBuilder/ResultsTable.tsx:201
 #: components/QueryBuilder/ToForms.tsx:55
 #: components/QueryComboBox/spec.ts:72
 #: components/SchemaConfig/Field.tsx:43
@@ -968,7 +969,7 @@ msgstr "{header:string}:"
 #: components/WorkBench/DataSetMeta.tsx:372
 #: components/WorkBench/RemainingLoadingTime.tsx:44
 #: components/WorkBench/Results.tsx:89
-#. 🟥Example usage: "Created by: Full Name" OR "Record Set: Record Set Name". Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Form Cells > Index ⬤ Components > Form Commands > Index ⬤ Components > Form Plugins > Index ⬤ Components > Form Sliders > Record Set ⬤ Components > Formatters > Element ⬤ Components > Formatters > Formatter ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Save ⬤ Components > Leaflet > Index ⬤ Components > Merging > Header ⬤ Components > Molecules > File Picker ⬤ Components > Query Builder > Header ⬤ Components > Query Builder > Results ⬤ Components > Query Builder > To Forms ⬤ Components > Query Combo Box > Spec ⬤ Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Index ⬤ Components > Security > Collection ⬤ Components > Security > Institution ⬤ Components > Security > Role ⬤ Components > Tree View > Helpers ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Remaining Loading Time ⬤ Components > Work Bench > Results
+#. 🟥Example usage: "Created by: Full Name" OR "Record Set: Record Set Name". Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Form Cells > Index ⬤ Components > Form Commands > Index ⬤ Components > Form Plugins > Index ⬤ Components > Form Sliders > Record Set ⬤ Components > Formatters > Element ⬤ Components > Formatters > Formatter ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Save ⬤ Components > Leaflet > Index ⬤ Components > Merging > Header ⬤ Components > Molecules > File Picker ⬤ Components > Query Builder > Header ⬤ Components > Query Builder > Results ⬤ Components > Query Builder > Results Table ⬤ Components > Query Builder > To Forms ⬤ Components > Query Combo Box > Spec ⬤ Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Index ⬤ Components > Security > Collection ⬤ Components > Security > Institution ⬤ Components > Security > Role ⬤ Components > Tree View > Helpers ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Remaining Loading Time ⬤ Components > Work Bench > Results
 msgid "colonLine"
 msgstr "{label:string}: {value:string}"
 

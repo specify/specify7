@@ -119,43 +119,43 @@ msgstr ""
 msgid "queryUnloadProtect"
 msgstr "Die neue oder geänderte Abfragedefinition wurde nicht gespeichert"
 
-#: components/QueryBuilder/Components.tsx:269
+#: components/QueryBuilder/Components.tsx:268
 #. 🟥Example: Creating a Record Set from Query. Used in: Components > Query Builder > Components
 #, fuzzy
 msgid "recordSetToQuery"
 msgstr "Erstellen eines {recordSetTable:string} aus einer Abfrage"
 
-#: components/QueryBuilder/Components.tsx:274
+#: components/QueryBuilder/Components.tsx:273
 #. Used in: Components > Query Builder > Components
 #, fuzzy
 msgid "recordSetToQueryDescription"
 msgstr "{recordSetTable:string} wird generiert..."
 
-#: components/QueryBuilder/Components.tsx:291
+#: components/QueryBuilder/Components.tsx:290
 #. Used in: Components > Query Builder > Components
 #, fuzzy
 msgid "recordSetCreated"
 msgstr "{recordSetTable:string} Erstellt"
 
-#: components/QueryBuilder/Export.tsx:130
+#: components/QueryBuilder/Export.tsx:132
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "missingCoordinatesForKml"
 msgstr "Export nach KML nicht möglich"
 
-#: components/QueryBuilder/Export.tsx:133
+#: components/QueryBuilder/Export.tsx:135
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "missingCoordinatesForKmlDescription"
 msgstr "Bitte fügen Sie der Abfrage Felder für Breitengrad und Längengrad hinzu."
 
-#: components/QueryBuilder/Export.tsx:122
+#: components/QueryBuilder/Export.tsx:124
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "queryExportStarted"
 msgstr "Exportdatei wird erstellt"
 
-#: components/QueryBuilder/Export.tsx:125
+#: components/QueryBuilder/Export.tsx:127
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "queryExportStartedDescription"
@@ -202,19 +202,19 @@ msgstr "Zählen"
 msgid "distinct"
 msgstr "Unterscheidbar"
 
-#: components/QueryBuilder/Export.tsx:146
+#: components/QueryBuilder/Export.tsx:148
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "createCsv"
 msgstr "CSV erstellen"
 
-#: components/QueryBuilder/Export.tsx:159
+#: components/QueryBuilder/Export.tsx:161
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "createKml"
 msgstr "Scrollen Sie zum Editor"
 
-#: components/QueryBuilder/Components.tsx:233
+#: components/QueryBuilder/Components.tsx:232
 #: components/QueryBuilder/CreateRecordSet.tsx:55
 #: components/WorkBench/RecordSet.tsx:35
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Create Record Set ⬤ Components > Work Bench > Record Set
@@ -440,8 +440,9 @@ msgstr "Es gibt keine ungelösten Punkte, die zurückgegeben werden müssen"
 msgid "itemsReturned"
 msgstr "Artikel wurden zurückgegeben"
 
+#: components/QueryBuilder/ResultsTable.tsx:202
 #: components/QueryBuilder/ToForms.tsx:56
-#. Used in: Components > Query Builder > To Forms
+#. Used in: Components > Query Builder > Results Table ⬤ Components > Query Builder > To Forms
 #, fuzzy
 msgid "queryResults"
 msgstr "Abfrageergebnisse"
@@ -590,3 +591,8 @@ msgstr "Wechseln Sie zu absolut"
 #, fuzzy
 msgid "scrollToEditor"
 msgstr "Scrollen Sie zum Editor"
+
+#: components/QueryBuilder/ResultsTable.tsx:187
+#. Used in: Components > Query Builder > Results Table
+msgid "viewRecords"
+msgstr ""

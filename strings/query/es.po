@@ -107,37 +107,37 @@ msgstr ""
 msgid "queryUnloadProtect"
 msgstr "La definición de consulta nueva o modificada no se ha guardado"
 
-#: components/QueryBuilder/Components.tsx:269
+#: components/QueryBuilder/Components.tsx:268
 #. 🟥Example: Creating a Record Set from Query. Used in: Components > Query Builder > Components
 msgid "recordSetToQuery"
 msgstr "Creando un {recordSetTable:string} desde la consulta"
 
-#: components/QueryBuilder/Components.tsx:274
+#: components/QueryBuilder/Components.tsx:273
 #. Used in: Components > Query Builder > Components
 msgid "recordSetToQueryDescription"
 msgstr "Generando {recordSetTable:string}..."
 
-#: components/QueryBuilder/Components.tsx:291
+#: components/QueryBuilder/Components.tsx:290
 #. Used in: Components > Query Builder > Components
 msgid "recordSetCreated"
 msgstr "{recordSetTable:string} Fue creado"
 
-#: components/QueryBuilder/Export.tsx:130
+#: components/QueryBuilder/Export.tsx:132
 #. Used in: Components > Query Builder > Export
 msgid "missingCoordinatesForKml"
 msgstr "No se puede exportar a KML"
 
-#: components/QueryBuilder/Export.tsx:133
+#: components/QueryBuilder/Export.tsx:135
 #. Used in: Components > Query Builder > Export
 msgid "missingCoordinatesForKmlDescription"
 msgstr "Agregar los campos de latitud y longitud a la consulta."
 
-#: components/QueryBuilder/Export.tsx:122
+#: components/QueryBuilder/Export.tsx:124
 #. Used in: Components > Query Builder > Export
 msgid "queryExportStarted"
 msgstr "Archivo de exportación en proceso de creación"
 
-#: components/QueryBuilder/Export.tsx:125
+#: components/QueryBuilder/Export.tsx:127
 #. Used in: Components > Query Builder > Export
 msgid "queryExportStartedDescription"
 msgstr ""
@@ -177,17 +177,17 @@ msgstr "Recuento"
 msgid "distinct"
 msgstr "Distinto"
 
-#: components/QueryBuilder/Export.tsx:146
+#: components/QueryBuilder/Export.tsx:148
 #. Used in: Components > Query Builder > Export
 msgid "createCsv"
 msgstr "Crear CSV"
 
-#: components/QueryBuilder/Export.tsx:159
+#: components/QueryBuilder/Export.tsx:161
 #. Used in: Components > Query Builder > Export
 msgid "createKml"
 msgstr "Crear KML"
 
-#: components/QueryBuilder/Components.tsx:233
+#: components/QueryBuilder/Components.tsx:232
 #: components/QueryBuilder/CreateRecordSet.tsx:55
 #: components/WorkBench/RecordSet.tsx:35
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Create Record Set ⬤ Components > Work Bench > Record Set
@@ -379,8 +379,9 @@ msgstr "No hay items sin resolver para devolver"
 msgid "itemsReturned"
 msgstr "Los items han sido devueltos"
 
+#: components/QueryBuilder/ResultsTable.tsx:202
 #: components/QueryBuilder/ToForms.tsx:56
-#. Used in: Components > Query Builder > To Forms
+#. Used in: Components > Query Builder > Results Table ⬤ Components > Query Builder > To Forms
 msgid "queryResults"
 msgstr "Resultados de la consulta"
 
@@ -505,3 +506,8 @@ msgstr "Cambiar a absoluto"
 #. Used in: Components > Query Builder > Header
 msgid "scrollToEditor"
 msgstr "Desplazarse al editor"
+
+#: components/QueryBuilder/ResultsTable.tsx:187
+#. Used in: Components > Query Builder > Results Table
+msgid "viewRecords"
+msgstr ""

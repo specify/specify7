@@ -213,7 +213,7 @@ msgstr ""
 #: components/FormMeta/CarryForward.tsx:253
 #: components/Interactions/LoanReturn.tsx:191
 #: components/Interactions/PrepDialog.tsx:115
-#: components/QueryBuilder/Results.tsx:201
+#: components/QueryBuilder/Results.tsx:202
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Query Builder > Results
 msgid "deselectAll"
 msgstr "Отменить выбор"

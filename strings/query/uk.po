@@ -104,37 +104,37 @@ msgstr "У визначенні запиту є незаповнені поля.
 msgid "queryUnloadProtect"
 msgstr "Нове або змінене визначення запиту не було збережено"
 
-#: components/QueryBuilder/Components.tsx:269
+#: components/QueryBuilder/Components.tsx:268
 #. 🟥Example: Creating a Record Set from Query. Used in: Components > Query Builder > Components
 msgid "recordSetToQuery"
 msgstr "Створення {recordSetTable:string} із запиту"
 
-#: components/QueryBuilder/Components.tsx:274
+#: components/QueryBuilder/Components.tsx:273
 #. Used in: Components > Query Builder > Components
 msgid "recordSetToQueryDescription"
 msgstr "Створення {recordSetTable:string}..."
 
-#: components/QueryBuilder/Components.tsx:291
+#: components/QueryBuilder/Components.tsx:290
 #. Used in: Components > Query Builder > Components
 msgid "recordSetCreated"
 msgstr "{recordSetTable:string} Створено"
 
-#: components/QueryBuilder/Export.tsx:130
+#: components/QueryBuilder/Export.tsx:132
 #. Used in: Components > Query Builder > Export
 msgid "missingCoordinatesForKml"
 msgstr "Не вдалося експортувати в KML"
 
-#: components/QueryBuilder/Export.tsx:133
+#: components/QueryBuilder/Export.tsx:135
 #. Used in: Components > Query Builder > Export
 msgid "missingCoordinatesForKmlDescription"
 msgstr "Будь ласка, додайте поля широти та довготи до запиту."
 
-#: components/QueryBuilder/Export.tsx:122
+#: components/QueryBuilder/Export.tsx:124
 #. Used in: Components > Query Builder > Export
 msgid "queryExportStarted"
 msgstr "Експортний файл створюється"
 
-#: components/QueryBuilder/Export.tsx:125
+#: components/QueryBuilder/Export.tsx:127
 #. Used in: Components > Query Builder > Export
 msgid "queryExportStartedDescription"
 msgstr ""
@@ -174,17 +174,17 @@ msgstr "Рахувати"
 msgid "distinct"
 msgstr "Виразний"
 
-#: components/QueryBuilder/Export.tsx:146
+#: components/QueryBuilder/Export.tsx:148
 #. Used in: Components > Query Builder > Export
 msgid "createCsv"
 msgstr "Створити CSV"
 
-#: components/QueryBuilder/Export.tsx:159
+#: components/QueryBuilder/Export.tsx:161
 #. Used in: Components > Query Builder > Export
 msgid "createKml"
 msgstr "Створіть KML"
 
-#: components/QueryBuilder/Components.tsx:233
+#: components/QueryBuilder/Components.tsx:232
 #: components/QueryBuilder/CreateRecordSet.tsx:55
 #: components/WorkBench/RecordSet.tsx:35
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Create Record Set ⬤ Components > Work Bench > Record Set
@@ -376,8 +376,9 @@ msgstr "Немає невирішених елементів для поверн
 msgid "itemsReturned"
 msgstr "Товари повернуто"
 
+#: components/QueryBuilder/ResultsTable.tsx:202
 #: components/QueryBuilder/ToForms.tsx:56
-#. Used in: Components > Query Builder > To Forms
+#. Used in: Components > Query Builder > Results Table ⬤ Components > Query Builder > To Forms
 msgid "queryResults"
 msgstr "Результати запиту"
 
@@ -505,3 +506,8 @@ msgstr "Перейти до відносного"
 #, fuzzy
 msgid "scrollToEditor"
 msgstr "Перейдіть до редактора"
+
+#: components/QueryBuilder/ResultsTable.tsx:187
+#. Used in: Components > Query Builder > Results Table
+msgid "viewRecords"
+msgstr ""
