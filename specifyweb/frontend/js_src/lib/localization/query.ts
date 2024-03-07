@@ -877,5 +877,10 @@ export const queryText = createDictionary({
   },
   viewRecords: {
     'en-us': 'View records',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
 } as const);
