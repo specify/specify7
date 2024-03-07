@@ -1,9 +1,12 @@
 # Based on stackoverflow answer from Wolph:
 # https://stackoverflow.com/questions/19205850/how-do-i-write-a-group-concat-function-in-sqlalchemy
 
+import re
 import sqlalchemy
 from sqlalchemy.sql import expression
 from sqlalchemy.ext import compiler
+
+from specifyweb.stored_queries.query_construct import QueryConstruct
 
 class group_concat(expression.FunctionElement):
     name = "group_concat"
@@ -25,3 +28,8 @@ def _group_concat_mysql(element, compiler, **kwargs):
 
     return 'GROUP_CONCAT(%s)' % inner
 
+def group_by_displayed_fields(query: QueryConstruct, fields):
+    for field in fields:
+        query = query.group_by(field)
+    
+    return query

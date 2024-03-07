@@ -247,7 +247,6 @@ function TableResult({
           fetchResults={handleFetch}
           fetchSize={expressSearchFetchSize}
           fieldSpecs={fieldSpecs}
-          hasIdField
           initialData={tableResults.results}
           label={table.label}
           queryResource={undefined}

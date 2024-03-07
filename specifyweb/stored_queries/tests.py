@@ -12,7 +12,7 @@ from django.conf import settings
 import sqlalchemy
 from sqlalchemy.dialects import mysql
 from django.db import connection
-from sqlalchemy import event
+from sqlalchemy import event, select, func
 from . import models
 from xml.etree import ElementTree
 from datetime import datetime
@@ -89,6 +89,11 @@ class SQLAlchemySetup(ApiTests):
 
 
     def setUp(self):
+        print("""
+            #BUG: If a test which compares the final sql query is added, then it could randomly fail
+            #in multithreaded tests because of usage of .label(None) in aggregate() 
+            #function in stored_queries/format.py 
+              """)
         super().setUp()
 
 
