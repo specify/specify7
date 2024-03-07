@@ -426,6 +426,11 @@ export const treeText = createDictionary({
   },
   associatedNodesOnly: {
     'en-us': 'Show only nodes with associated objects',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   splitView: {
     'en-us': 'Split View',

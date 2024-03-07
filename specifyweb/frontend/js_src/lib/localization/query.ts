@@ -877,9 +877,9 @@ export const queryText = createDictionary({
   },
   viewRecords: {
     'en-us': 'View records',
-    'de-ch': '',
+    'de-ch': 'Datensätze anzeigen',
     'es-es': '',
-    'fr-fr': '',
+    'fr-fr': 'Afficher les enregistrements',
     'ru-ru': '',
     'uk-ua': '',
   },
