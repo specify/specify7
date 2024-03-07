@@ -1,6 +1,7 @@
 # Based on stackoverflow answer from Wolph:
 # https://stackoverflow.com/questions/19205850/how-do-i-write-a-group-concat-function-in-sqlalchemy
 
+import re
 import sqlalchemy
 from sqlalchemy.sql import expression
 from sqlalchemy.ext import compiler
@@ -40,3 +41,8 @@ def extract_clauses(element, compiler):
 
     return expr, separator, order_by
 
+def group_by_displayed_fields(query: QueryConstruct, fields):
+    for field in fields:
+        query = query.group_by(field)
+    
+    return query

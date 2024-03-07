@@ -7,9 +7,8 @@ from xml.etree.ElementTree import Element
 from xml.sax.saxutils import quoteattr
 
 from sqlalchemy import orm, Table as SQLTable, inspect
-from sqlalchemy.sql.expression import case, func, cast, literal
+from sqlalchemy.sql.expression import case, func, cast, literal, Label
 from sqlalchemy.sql.functions import concat, count
-from sqlalchemy.sql.selectable import ScalarSelect
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 from sqlalchemy.sql.elements import Extract
 from sqlalchemy import types
@@ -48,6 +47,7 @@ class ObjectFormatter(object):
         self.date_format_month = MYSQL_TO_MONTH.get(self.date_format)
         self.collection = collection
         self.replace_nulls = replace_nulls
+        self.aggregator_count = 0
 
     def getFormatterDef(self, specify_model: Table, formatter_name) -> Optional[
         Element]:
@@ -193,7 +193,7 @@ class ObjectFormatter(object):
     def aggregate(self, query: QueryConstruct,
                   field: Union[Field, Relationship], rel_table: SQLTable,
                   aggregator_name,
-                  cycle_detector=[]) -> ScalarSelect:
+                  cycle_detector=[]) -> Label:
 
         logger.info('aggregating field %s on %s using %s', field, rel_table,
                     aggregator_name)
@@ -236,7 +236,9 @@ class ObjectFormatter(object):
         aggregated = blank_nulls(group_concat(formatted, separator, *order_by_expr))
 
 
-        return subquery.query.add_column(aggregated).limit(limit).as_scalar()
+        aggregator_label = f"aggregator_{self.aggregator_count}"
+        self.aggregator_count += 1
+        return subquery.query.add_column(aggregated).limit(limit).label(aggregator_label)
 
     def fieldformat(self, query_field: QueryField,
                     field: blank_nulls) -> blank_nulls:

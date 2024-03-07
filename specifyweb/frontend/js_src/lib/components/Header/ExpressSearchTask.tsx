@@ -229,8 +229,8 @@ function TableResult({
     <details>
       <summary
         className={`
-          link list-item rounded bg-brand-200 p-1.5
-          hover:!text-white dark:bg-brand-500 hover:dark:!bg-brand-400
+          link bg-brand-200 dark:bg-brand-500 hover:dark:!bg-brand-400 list-item
+          rounded p-1.5 hover:!text-white
         `}
       >
         {commonText.countLine({
@@ -247,7 +247,6 @@ function TableResult({
           fetchResults={handleFetch}
           fetchSize={expressSearchFetchSize}
           fieldSpecs={fieldSpecs}
-          hasIdField
           initialData={tableResults.results}
           label={table.label}
           queryResource={undefined}

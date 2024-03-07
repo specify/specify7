@@ -99,9 +99,11 @@ export function QueryExportButtons({
 
     const filteredResults = filterArray(selectedResults);
 
-    const columnsName = fields.map((field) =>
-      generateMappingPathPreview(baseTableName, field.mappingPath)
-    );
+    const columnsName = fields
+      .filter((field) => field.isDisplay)
+      .map((field) =>
+        generateMappingPathPreview(baseTableName, field.mappingPath)
+      );
 
     return downloadDataSet(name, filteredResults, columnsName, separator);
   }

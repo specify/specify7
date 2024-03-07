@@ -577,7 +577,8 @@ function Wrapped({
               <QueryResultsWrapper
                 createRecordSet={
                   !isReadOnly &&
-                  hasPermission('/querybuilder/query', 'create_recordset') ? (
+                  hasPermission('/querybuilder/query', 'create_recordset') &&
+                  !queryResource.get('selectDistinct') ? (
                     <MakeRecordSetButton
                       baseTableName={state.baseTableName}
                       fields={state.fields}

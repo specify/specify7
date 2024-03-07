@@ -875,4 +875,12 @@ export const queryText = createDictionary({
     'fr-fr': 'Faux ou vide',
     'ru-ru': 'Ложь или пусто',
   },
+  viewRecords: {
+    'en-us': 'View records',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
+  },
 } as const);
