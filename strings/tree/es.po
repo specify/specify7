@@ -172,13 +172,13 @@ msgstr "Desinonimizar nodo"
 msgid "desynonymizeNodeMessage"
 msgstr "\"{nodeName:string}\" ya no será sinónimo de \"{synonymName:string}\"."
 
-#: components/TreeView/Row.tsx:223
-#: components/TreeView/Row.tsx:237
+#: components/TreeView/Row.tsx:229
+#: components/TreeView/Row.tsx:243
 #. Used in: Components > Tree View > Row
 msgid "acceptedName"
 msgstr "Preferido: {name:string}"
 
-#: components/TreeView/index.tsx:122
+#: components/TreeView/index.tsx:123
 #. Used in: Components > Tree View > Index
 msgid "treeViewTitle"
 msgstr "Árbol {treeName:string}"
@@ -190,17 +190,17 @@ msgstr "Árbol {treeName:string}"
 msgid "searchTreePlaceholder"
 msgstr "Buscar en el árbol"
 
-#: components/TreeView/Row.tsx:203
+#: components/TreeView/Row.tsx:209
 #. Used in: Components > Tree View > Row
 msgid "opened"
 msgstr "Abierto"
 
-#: components/TreeView/Row.tsx:204
+#: components/TreeView/Row.tsx:210
 #. Used in: Components > Tree View > Row
 msgid "closed"
 msgstr "Cerrado"
 
-#: components/TreeView/Row.tsx:201
+#: components/TreeView/Row.tsx:207
 #. Used in: Components > Tree View > Row
 msgid "leafNode"
 msgstr "Nodos enlazado"
@@ -225,7 +225,7 @@ msgstr "Recuento directo de {collectionObjectTable:string}"
 msgid "indirectCollectionObjectCount"
 msgstr "Recuento indirecto de {collectionObjectTable:string}"
 
-#: components/TreeView/Tree.tsx:155
+#: components/TreeView/Tree.tsx:157
 #. Used in: Components > Tree View > Tree
 msgid "editRanks"
 msgstr "Editar rangos"
@@ -235,22 +235,27 @@ msgstr "Editar rangos"
 msgid "resourceToDelete"
 msgstr "Esto eliminará permanentemente el siguiente recurso"
 
-#: components/TreeView/index.tsx:249
+#: components/TreeView/index.tsx:323
+#. Used in: Components > Tree View > Index
+msgid "associatedNodesOnly"
+msgstr ""
+
+#: components/TreeView/index.tsx:255
 #. Used in: Components > Tree View > Index
 msgid "splitView"
 msgstr "Vista dividida"
 
-#: components/TreeView/index.tsx:255
+#: components/TreeView/index.tsx:261
 #. Used in: Components > Tree View > Index
 msgid "horizontal"
 msgstr "Horizontal"
 
-#: components/TreeView/index.tsx:255
+#: components/TreeView/index.tsx:261
 #. Used in: Components > Tree View > Index
 msgid "vertical"
 msgstr "Vertical"
 
-#: components/TreeView/index.tsx:264
+#: components/TreeView/index.tsx:270
 #. Used in: Components > Tree View > Index
 msgid "synchronize"
 msgstr "Sincronizar"
