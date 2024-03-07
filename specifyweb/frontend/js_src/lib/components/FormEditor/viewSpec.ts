@@ -73,6 +73,7 @@ const rowsSpec = (table: SpecifyTable | undefined) =>
                   panel: 'Panel',
                   command: 'Command',
                   iconview: 'IconView',
+                  blank: 'Blank',
                 } as const,
                 {
                   Label: labelSpec,
@@ -82,6 +83,7 @@ const rowsSpec = (table: SpecifyTable | undefined) =>
                   Panel: panelSpec,
                   Command: commandSpec,
                   IconView: iconViewSpec,
+                  Blank: emptySpec,
                   Unknown: emptySpec,
                 } as const,
                 table
