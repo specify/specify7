@@ -44,7 +44,7 @@ export function AttachmentCell({
       hasTablePermission(table.name, 'read') ? (
         <AttachmentRecordLink
           attachment={attachment}
-          className="absolute top-0 left-0"
+          className="absolute left-0 top-0"
           related={[related, setRelated]}
           table={table}
           variant="icon"

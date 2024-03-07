@@ -67,7 +67,7 @@ export function TaxonTiles(): JSX.Element {
   return (
     <div className="relative flex h-[473px] w-full text-xl">
       <p
-        className="absolute top-3 left-3 z-10 border bg-white px-2 py-0 opacity-80 dark:bg-black"
+        className="absolute left-3 top-3 z-10 border bg-white px-2 py-0 opacity-80 dark:bg-black"
         title={
           typeof treeData === 'object'
             ? welcomeText.taxonTilesDescription({
@@ -80,7 +80,7 @@ export function TaxonTiles(): JSX.Element {
         {welcomeText.taxonTiles()}
       </p>
       {typeof title === 'string' && (
-        <p className="absolute top-3 right-3 z-10 border bg-white px-2 py-0 opacity-80 dark:bg-black">
+        <p className="absolute right-3 top-3 z-10 border bg-white px-2 py-0 opacity-80 dark:bg-black">
           {title}
         </p>
       )}

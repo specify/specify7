@@ -85,7 +85,7 @@ export function SpecifyNetworkBadge({
     </Dialog>
   ) : (
     <div
-      className="flex rounded-full border-2 border-brand-300"
+      className="border-brand-300 flex rounded-full border-2"
       title={specifyNetworkText.specifyNetwork()}
       /*
        * Start loading data as soon as hovered over the badge, even before
