@@ -151,8 +151,8 @@ function ConditionalFormatter({
               />
             </div>
             <span className="-ml-2" />
-            {trimmedFieldsLength > 0 && isExpanded ? (
-              <Button.Danger disabled={isReadOnly} onClick={handleDelete}>
+            {trimmedFieldsLength > 0 && isExpanded && !isReadOnly ? (
+              <Button.Danger onClick={handleDelete}>
                 {resourcesText.deleteDefinition()}
               </Button.Danger>
             ) : null}
@@ -173,9 +173,8 @@ function ConditionalFormatter({
           ) : null}
         </Label.Block>
       )}
-      {expandedNoCondition ? null : fields.length === 0 ? (
+      {expandedNoCondition || isReadOnly ? null : fields.length === 0 ? (
         <Button.Small
-          disabled={isReadOnly}
           onClick={(): void => {
             handleToggle();
             handleChanged(
@@ -215,21 +214,19 @@ function ConditionalFormatter({
             fields,
             (fields): void => handleChanged({ value, fields }, index),
           ]}
-          isReadOnly={isReadOnly}
           table={table}
         />
       ) : null}
       <span className="-ml-2 flex-1" />
-      <div className="inline-flex">
-        {trimmedFieldsLength === 1 || isExpanded ? null : (
+      {trimmedFieldsLength === 1 || isExpanded || isReadOnly ? null : (
+        <div className="inline-flex">
           <Button.Icon
-            disabled={isReadOnly}
             icon="trash"
             title={resourcesText.deleteDefinition()}
             onClick={handleDelete}
           />
-        )}
-      </div>
+        </div>
+      )}
       <div className="flex">
         {hasCondition && !isExpanded ? (
           <Button.Icon
