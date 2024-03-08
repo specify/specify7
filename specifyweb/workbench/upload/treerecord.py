@@ -344,7 +344,7 @@ class BoundTreeRecord(NamedTuple):
 
     def _do_insert(self, model, **kwargs):
         obj = model(**kwargs)
-        obj.save(skip_tree_extras=True)
+        obj.save(skip_tree_extras=True, timestamp_override=True)
         return obj
 
     def force_upload_row(self) -> UploadResult:
