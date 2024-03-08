@@ -5,6 +5,7 @@ Sets up Django ORM with the Specify datamodel
 from .build_models import build_models
 from .check_versions import check_versions
 from .datamodel import datamodel
+from django.db import models
 from django.utils import timezone
 
 class SpTimestampedModel(models.Model):
