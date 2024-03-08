@@ -1716,7 +1716,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Помните о размерах диалогового окна',
     'es-es': 'Recuerde los tamaños de las ventanas de diálogo',
     'fr-fr': 'Mémoriser les tailles des fenêtres de dialogue',
-    'uk-ua': "Запам'ятайте розміри діалогових вікон",
+    'uk-ua': "Пам'ятайте про розміри діалогових вікон",
     'de-ch': 'Denken Sie an die Größe der Dialogfenster',
   },
   rememberDialogPositions: {

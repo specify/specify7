@@ -424,6 +424,14 @@ export const treeText = createDictionary({
     'uk-ua': 'Це призведе до остаточного видалення наступного ресурсу',
     'de-ch': 'Dadurch wird die folgende Ressource dauerhaft gelöscht',
   },
+  associatedNodesOnly: {
+    'en-us': 'Show only nodes with associated objects',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
+  },
   splitView: {
     'en-us': 'Split View',
     'de-ch': 'Geteilte Sicht',

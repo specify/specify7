@@ -99,8 +99,8 @@ export function Header({
   return (
     <header
       className={`
-        flex [z-index:1] dark:border-neutral-700
-        dark:bg-neutral-900 print:hidden hover:[&_a.link]:text-brand-300
+        hover:[&_a.link]:text-brand-300 flex [z-index:1]
+        dark:border-neutral-700 dark:bg-neutral-900 print:hidden
         ${isHorizontal ? '' : 'flex-col'}
         ${
           position === 'left'

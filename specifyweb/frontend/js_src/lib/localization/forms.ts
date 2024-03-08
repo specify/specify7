@@ -145,7 +145,7 @@ export const formsText = createDictionary({
     'de-ch': `
       Das Paleo Map-Plugin erfordert, dass die {localityTable:string}
       geografische Koordinaten haben und dass der Paläo-Kontext ein
-      geografisches Alter mit mindestens einer Start- oder Endzeit aufweist.
+      geografisches Alter mit mindestens einer Start- oder Endzeit hat.
     `,
     'es-es': 'Seleccionar fuente de tablas',
     'fr-fr': 'Sélectionnez la source des tables',
@@ -352,7 +352,7 @@ export const formsText = createDictionary({
   },
   unsavedFormUnloadProtect: {
     'en-us': 'This form has not been saved.',
-    'ru-ru': 'Эта форма не сохранена.',
+    'ru-ru': 'Эта форма не сохранилась.',
     'es-es': 'Este formulario no ha sido guardado.',
     'fr-fr': "Ce formulaire n'a pas été enregistré.",
     'uk-ua': 'Ця форма не збережена.',
