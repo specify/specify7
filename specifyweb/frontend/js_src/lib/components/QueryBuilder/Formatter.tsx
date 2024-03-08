@@ -73,9 +73,7 @@ export function QueryFieldFormatter({
           <Select
             disabled={handleChange === undefined}
             value={formatter}
-            onValueChange={(value) => {
-              handleChange?.(value);
-            }}
+            onValueChange={handleChange}
           >
             <option />
             {availableFormatters.map(({ name, title }, index) => (
