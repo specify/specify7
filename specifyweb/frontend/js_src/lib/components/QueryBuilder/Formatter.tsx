@@ -75,7 +75,6 @@ export function QueryFieldFormatter({
             value={formatter}
             onValueChange={(value) => {
               handleChange?.(value);
-              toggleFormatterSelect(!formatterSelectIsOpen);
             }}
           >
             <option />
