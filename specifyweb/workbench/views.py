@@ -1,4 +1,3 @@
-from functools import wraps
 import json
 import logging
 from typing import List, Optional
@@ -491,7 +490,7 @@ def dataset(request, ds: models.Spdataset) -> http.HttpResponse:
                 ds.rowresults = None
                 ds.uploadresult = None
 
-            ds.save()
+            ds.save(timestamp_override=True)
             return http.HttpResponse(status=204)
 
         if request.method == "DELETE":
@@ -579,7 +578,7 @@ def rows(request, ds) -> http.HttpResponse:
         ds.rowresults = None
         ds.uploadresult = None
         ds.modifiedbyagent = request.specify_user_agent
-        ds.save()
+        ds.save(timestamp_override=True)
         return http.HttpResponse(status=204)
 
     else: # GET
