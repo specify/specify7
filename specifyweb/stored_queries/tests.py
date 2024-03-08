@@ -246,7 +246,7 @@ class FormatterAggregatorTests(SQLAlchemySetup):
                              '\n                                                       WHEN :param_2 THEN concat(IFNULL(agent_1."LastName", \'\'), IFNULL(concat(:concat_1, agent_1."FirstName"), \'\'), IFNULL(concat(:concat_2, agent_1."MiddleInitial"), \'\'))'
                              '\n                                                       WHEN :param_3 THEN IFNULL(agent_1."LastName", \'\')'
                              '\n                                                       WHEN :param_4 THEN IFNULL(agent_1."LastName", \'\')'
-                             '\n                                                   END, \'\'), IFNULL(concat(:concat_3, accessionagent."Role"), \'\')), \'\') SEPARATOR :group_concat_1), \'\') AS blank_nulls_1'
+                             '\n                                                   END, \'\'), IFNULL(concat(:concat_3, accessionagent."Role"), \'\')), \'\') SEPARATOR :sep), \'\') AS blank_nulls_1'
                              '\n   FROM accession,'
                              '\n        accessionagent'
                              '\n   LEFT OUTER JOIN agent AS agent_1 ON agent_1."AgentID" = accessionagent."AgentID"'
@@ -337,7 +337,7 @@ class FormatterAggregatorTests(SQLAlchemySetup):
             self.assertEqual(sqlparse.format(str(expr), reindent=True),
                              'IFNULL('
                              '\n         (SELECT IFNULL(GROUP_CONCAT(IFNULL(accessionagent."Role", \'\')'
-                             '\n                                     ORDER BY accessionagent."TimestampCreated" SEPARATOR :group_concat_1), \'\') AS blank_nulls_1'
+                             '\n                                     ORDER BY accessionagent."TimestampCreated" SEPARATOR :sep), \'\') AS blank_nulls_1'
                              '\n          FROM accessionagent, accession'
                              '\n          WHERE accessionagent."AccessionID" = accession."AccessionID"), \'\')'
                              )
