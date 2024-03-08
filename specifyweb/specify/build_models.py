@@ -67,9 +67,10 @@ def make_model(module, table, datamodel):
             return
 
     def save_timestamped(self, *args, **kwargs):
-        timestamp_override = kwargs.pop('timestamp_override', False)
-
-        if not timestamp_override:
+        # timestamp_override = kwargs.pop('timestamp_override', False)
+        # if not timestamp_override:
+        if 'timestampcreated' not in self.tracker.changed() or \
+           'timestampmodified' not in self.tracker.changed():
             if not self.id:
                 self.timestampcreated = timezone.now()
             
