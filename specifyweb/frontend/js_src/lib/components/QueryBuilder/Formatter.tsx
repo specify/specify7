@@ -5,7 +5,8 @@ import { commonText } from '../../localization/common';
 import { Select } from '../Atoms/Form';
 import type { Tables } from '../DataModel/types';
 import { fetchFormatters } from '../Formatters/formatters';
-import { mappingElementDivider } from '../WbPlanView/LineComponents';
+import { Button } from '../Atoms/Button';
+import { queryText } from '../../localization/query';
 
 export function QueryFieldFormatter({
   type,
@@ -23,42 +24,67 @@ export function QueryFieldFormatter({
     () =>
       // Some code duplication, but required by TypeScript
       (type === 'formatter'
-        ? formatters?.formatters.map(({ table, name, title }) => ({
+        ? formatters?.formatters.map(({ table, name, title, isDefault }) => ({
             table,
             name,
             title,
+            isDefault,
           }))
-        : formatters?.aggregators.map(({ table, name, title }) => ({
+        : formatters?.aggregators.map(({ table, name, title, isDefault }) => ({
             table,
             name,
             title,
+            isDefault,
           }))
       )
         ?.filter(({ table }) => table?.name === tableName)
-        .map(({ name, title = name }) => ({ name, title })),
+        .map(({ name, title = name, isDefault }) => ({
+          name,
+          title,
+          isDefault,
+        })),
     [type, formatters, tableName]
   );
+
+  const [formatterSelectIsOpen, toggleFormatterSelect] = React.useState(false);
+
   return availableFormatters === undefined ? (
     typeof formatter === 'string' ? (
       <>{commonText.loading()}</>
     ) : null
   ) : availableFormatters.length > 1 ? (
     <>
-      {mappingElementDivider}
-      <div>
-        <Select
-          disabled={handleChange === undefined}
-          value={formatter}
-          onValueChange={handleChange}
-        >
-          <option />
-          {availableFormatters.map(({ name, title }, index) => (
-            <option key={index} value={name}>
-              {title}
-            </option>
-          ))}
-        </Select>
-      </div>
+      <Button.Icon
+        icon="cog"
+        title={queryText.chooseFormatter()}
+        onClick={() => toggleFormatterSelect(!formatterSelectIsOpen)}
+        className={
+          formatter &&
+          availableFormatters.find((selected) => selected.name === formatter)
+            ?.isDefault
+            ? ''
+            : 'bg-yellow-250 dark:bg-yellow-900'
+        }
+      />
+      {formatterSelectIsOpen && (
+        <div>
+          <Select
+            disabled={handleChange === undefined}
+            value={formatter}
+            onValueChange={(value) => {
+              handleChange?.(value);
+              toggleFormatterSelect(!formatterSelectIsOpen);
+            }}
+          >
+            <option />
+            {availableFormatters.map(({ name, title }, index) => (
+              <option key={index} value={name}>
+                {title}
+              </option>
+            ))}
+          </Select>
+        </div>
+      )}
     </>
   ) : null;
 }

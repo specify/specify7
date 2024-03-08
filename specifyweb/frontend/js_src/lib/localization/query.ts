@@ -883,4 +883,7 @@ export const queryText = createDictionary({
     'ru-ru': 'Просмотр записей',
     'uk-ua': 'Переглянути записи',
   },
+  chooseFormatter: {
+    'en-us': 'Choose fromatter',
+  },
 } as const);

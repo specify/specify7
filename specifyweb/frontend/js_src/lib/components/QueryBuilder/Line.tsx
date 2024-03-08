@@ -377,7 +377,6 @@ export function QueryLine({
               fieldMeta.fieldType === 'aggregator') &&
             typeof fieldMeta.tableName === 'string' ? (
               <>
-                {mappingElementDivider}
                 <QueryFieldFormatter
                   formatter={field.dataObjFormatter}
                   tableName={fieldMeta.tableName}
