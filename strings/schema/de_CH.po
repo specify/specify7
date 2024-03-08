@@ -62,7 +62,7 @@ msgstr "Schema Änderungen wurden nicht gespeichert"
 msgid "changeBaseTable"
 msgstr "Basis-Tabelle ändern"
 
-#: components/Formatters/Fields.tsx:67
+#: components/Formatters/Fields.tsx:69
 #: components/SchemaConfig/Field.tsx:44
 #: components/WebLinks/Definition.tsx:25
 #. Used in: Components > Formatters > Fields ⬤ Components > Schema Config > Field ⬤ Components > Web Links > Definition
@@ -377,7 +377,7 @@ msgstr "Sortieren Sie nach ausgeblendeten Feldern"
 msgid "hidden"
 msgstr "versteckt"
 
-#: components/Formatters/Fields.tsx:68
+#: components/Formatters/Fields.tsx:70
 #. Used in: Components > Formatters > Fields
 #, fuzzy
 msgid "customFieldFormat"

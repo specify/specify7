@@ -127,8 +127,8 @@ msgid "dataObjectFormatters"
 msgstr "Datensatz-Formatierer"
 
 #: components/Formatters/Aggregator.tsx:70
-#: components/Formatters/Element.tsx:123
-#: components/Formatters/Fields.tsx:259
+#: components/Formatters/Element.tsx:125
+#: components/Formatters/Fields.tsx:267
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 #, fuzzy
 msgid "formatter"
@@ -140,7 +140,7 @@ msgstr "Formatierer"
 msgid "formatterDescription"
 msgstr "JSON-Editor"
 
-#: components/Formatters/Element.tsx:124
+#: components/Formatters/Element.tsx:126
 #. Used in: Components > Formatters > Element
 #, fuzzy
 msgid "aggregator"
@@ -282,7 +282,7 @@ msgstr "Remote-Einstellungen"
 msgid "failedParsingXml"
 msgstr "XML konnte nicht analysiert werden"
 
-#: components/Formatters/Element.tsx:101
+#: components/Formatters/Element.tsx:103
 #. Used in: Components > Formatters > Element
 #, fuzzy
 msgid "name"
@@ -290,7 +290,7 @@ msgstr "Name"
 
 #: components/ExportFeed/Editor.tsx:46
 #: components/ExportFeed/Editor.tsx:160
-#: components/Formatters/Element.tsx:130
+#: components/Formatters/Element.tsx:132
 #. Used in: Components > Export Feed > Editor ⬤ Components > Formatters > Element
 #, fuzzy
 msgid "title"
@@ -303,8 +303,8 @@ msgid "default"
 msgstr "Standard"
 
 #: components/Formatters/Aggregator.tsx:27
-#: components/Formatters/Fields.tsx:66
-#: components/Formatters/Fields.tsx:157
+#: components/Formatters/Fields.tsx:68
+#: components/Formatters/Fields.tsx:161
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Fields
 #, fuzzy
 msgid "separator"
@@ -378,7 +378,7 @@ msgid "urlPart"
 msgstr "URL-Teil"
 
 #: components/Formatters/Definitions.tsx:197
-#: components/Formatters/Fields.tsx:115
+#: components/Formatters/Fields.tsx:118
 #. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Fields
 #, fuzzy
 msgid "addField"
@@ -508,7 +508,7 @@ msgstr "Formular zunächst speichern"
 msgid "saveFormFirstDescription"
 msgstr "Sie müssen dieses Formular speichern, bevor Sie ein anderes bearbeiten"
 
-#: components/Formatters/Element.tsx:156
+#: components/Formatters/Element.tsx:158
 #. Used in: Components > Formatters > Element
 #, fuzzy
 msgid "defaultTableFormatter"
@@ -520,7 +520,7 @@ msgstr "Standard-Tabellenformatierer"
 msgid "conditionalFormatter"
 msgstr "Bedingter Formatierer"
 
-#: components/Formatters/Fields.tsx:124
+#: components/Formatters/Fields.tsx:127
 #. Used in: Components > Formatters > Fields
 #, fuzzy
 msgid "customizeFieldFormatters"

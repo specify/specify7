@@ -114,8 +114,8 @@ msgid "dataObjectFormatters"
 msgstr "Record Formatters"
 
 #: components/Formatters/Aggregator.tsx:70
-#: components/Formatters/Element.tsx:123
-#: components/Formatters/Fields.tsx:259
+#: components/Formatters/Element.tsx:125
+#: components/Formatters/Fields.tsx:267
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 msgid "formatter"
 msgstr "Formatter"
@@ -128,7 +128,7 @@ msgstr ""
 "readable text by selecting specific fields and applying a designated "
 "separator between them."
 
-#: components/Formatters/Element.tsx:124
+#: components/Formatters/Element.tsx:126
 #. Used in: Components > Formatters > Element
 msgid "aggregator"
 msgstr "Aggregator"
@@ -258,14 +258,14 @@ msgstr "Remote Preferences"
 msgid "failedParsingXml"
 msgstr "Failed to parse XML"
 
-#: components/Formatters/Element.tsx:101
+#: components/Formatters/Element.tsx:103
 #. Used in: Components > Formatters > Element
 msgid "name"
 msgstr "Name"
 
 #: components/ExportFeed/Editor.tsx:46
 #: components/ExportFeed/Editor.tsx:160
-#: components/Formatters/Element.tsx:130
+#: components/Formatters/Element.tsx:132
 #. Used in: Components > Export Feed > Editor ⬤ Components > Formatters > Element
 msgid "title"
 msgstr "Title"
@@ -276,8 +276,8 @@ msgid "default"
 msgstr "Default"
 
 #: components/Formatters/Aggregator.tsx:27
-#: components/Formatters/Fields.tsx:66
-#: components/Formatters/Fields.tsx:157
+#: components/Formatters/Fields.tsx:68
+#: components/Formatters/Fields.tsx:161
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Fields
 msgid "separator"
 msgstr "Separator"
@@ -341,7 +341,7 @@ msgid "urlPart"
 msgstr "URL part"
 
 #: components/Formatters/Definitions.tsx:197
-#: components/Formatters/Fields.tsx:115
+#: components/Formatters/Fields.tsx:118
 #. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Fields
 msgid "addField"
 msgstr "Add field"
@@ -450,7 +450,7 @@ msgstr "Save form first"
 msgid "saveFormFirstDescription"
 msgstr "You need to save this form before you edit another one"
 
-#: components/Formatters/Element.tsx:156
+#: components/Formatters/Element.tsx:158
 #. Used in: Components > Formatters > Element
 msgid "defaultTableFormatter"
 msgstr "Default Table Formatter"
@@ -460,7 +460,7 @@ msgstr "Default Table Formatter"
 msgid "conditionalFormatter"
 msgstr "Conditional Formatter"
 
-#: components/Formatters/Fields.tsx:124
+#: components/Formatters/Fields.tsx:127
 #. Used in: Components > Formatters > Fields
 msgid "customizeFieldFormatters"
 msgstr "Customize Field Formatters"
