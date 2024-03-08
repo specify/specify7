@@ -7,6 +7,7 @@ import { Button } from '../Atoms/Button';
 import { Select } from '../Atoms/Form';
 import type { Tables } from '../DataModel/types';
 import { fetchFormatters } from '../Formatters/formatters';
+import { icons } from '../Atoms/Icons';
 
 export function QueryFieldFormatter({
   type,
@@ -54,17 +55,19 @@ export function QueryFieldFormatter({
     ) : null
   ) : availableFormatters.length > 1 ? (
     <>
-      <Button.Icon
+      <Button.Small
+        aria-label={queryText.chooseFormatter()}
         className={`${
           availableFormatters.find((selected) => selected.name === formatter)
             ?.isDefault || formatter === undefined
             ? 'bg-white dark:bg-neutral-600'
             : 'bg-yellow-250 dark:bg-yellow-900 '
-        } border border-gray-500 p-0.5`}
-        icon="cog"
+        }`}
         title={queryText.chooseFormatter()}
         onClick={() => toggleFormatterSelect(!formatterSelectIsOpen)}
-      />
+      >
+        {icons.cog}
+      </Button.Small>
       {formatterSelectIsOpen && (
         <div>
           <Select
