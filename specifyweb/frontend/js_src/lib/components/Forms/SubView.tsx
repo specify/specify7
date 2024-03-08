@@ -210,7 +210,7 @@ export function SubView({
             w-fit 
             ${
               (collection?.models.length ?? 0) > 0
-                ? 'ring-2 !ring-brand-300 dark:!ring-2 dark:!ring-brand-400'
+                ? '!ring-brand-300 dark:!ring-brand-400 ring-2 dark:!ring-2'
                 : ''
             } 
           ${isOpen ? '!bg-brand-300 dark:!bg-brand-500' : ''}`}

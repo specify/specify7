@@ -71,7 +71,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   onClose: handleClose,
   sortField,
   onFetchMore: handleFetchMore,
-  isCollapsed,
+  isCollapsed = false,
   preHeaderButtons,
 }: {
   readonly relationship: Relationship;
@@ -170,7 +170,9 @@ export function FormTable<SCHEMA extends AnySchema>({
   });
 
   const id = useId('form-table');
-  const [isExpanded, setExpandedRecords] = React.useState<IR<boolean>>({});
+  const [isExpanded, setExpandedRecords] = React.useState<
+    IR<boolean | undefined>
+  >({});
   const [state, setState] = React.useState<
     State<'MainState'> | State<'SearchState'>
   >({ type: 'MainState' });
@@ -188,7 +190,15 @@ export function FormTable<SCHEMA extends AnySchema>({
     mode !== 'view' && typeof handleDelete === 'function';
   const displayViewButton = !isDependent;
   const headerIsVisible =
-    resources.length !== 1 || !isExpanded[resources[0].cid];
+    resources.length > 1 ||
+    (resources.length === 1 && isExpanded[resources[0].cid] === false);
+
+  const headerWasVisibleRef = React.useRef(headerIsVisible);
+  headerWasVisibleRef.current =
+    resources.length === 0
+      ? false
+      : headerWasVisibleRef.current || headerIsVisible;
+  const headerWasVisible = headerWasVisibleRef.current;
 
   const scrollerRef = React.useRef<HTMLDivElement | null>(null);
   const { isFetching, handleScroll } = useInfiniteScroll(
@@ -206,7 +216,7 @@ export function FormTable<SCHEMA extends AnySchema>({
     ) : (
       <div className={isCollapsed ? 'hidden' : 'overflow-x-auto'}>
         <DataEntry.Grid
-          className={`sticky w-fit ${headerIsVisible ? 'pt-0' : ''}`}
+          className={`sticky w-fit ${headerWasVisible ? 'pt-0' : ''}`}
           display="inline"
           flexibleColumnWidth={flexibleColumnWidth}
           forwardRef={scrollerRef}
@@ -221,7 +231,20 @@ export function FormTable<SCHEMA extends AnySchema>({
           viewDefinition={viewDefinition}
           onScroll={handleScroll}
         >
-          <div className={headerIsVisible ? 'contents' : 'sr-only'} role="row">
+          <div
+            /*
+             * If header was ever visible, don't hide the header row anymore to
+             * prevent needless layout shifts, but only make it invisible
+             */
+            className={
+              headerIsVisible
+                ? 'contents'
+                : headerWasVisible
+                ? 'invisible contents'
+                : 'sr-only'
+            }
+            role="row"
+          >
             <div className={cellClassName} role="columnheader">
               <span className="sr-only">{commonText.expand()}</span>
             </div>
@@ -276,7 +299,7 @@ export function FormTable<SCHEMA extends AnySchema>({
             {resources.map((resource) => (
               <React.Fragment key={resource.cid}>
                 <div className="contents" role="row">
-                  {isExpanded[resource.cid] ? (
+                  {isExpanded[resource.cid] === true ? (
                     <>
                       <div className="h-full" role="cell">
                         <Button.Small
@@ -378,7 +401,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                     </>
                   )}
                   <div className="flex h-full flex-col gap-2" role="cell">
-                    {displayViewButton && isExpanded[resource.cid] ? (
+                    {displayViewButton && isExpanded[resource.cid] === true ? (
                       <Link.Small
                         aria-label={commonText.openInNewTab()}
                         className="flex-1"
@@ -410,7 +433,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                         {icons.trash}
                       </Button.Small>
                     ) : undefined}
-                    {isExpanded[resource.cid] && (
+                    {isExpanded[resource.cid] === true && (
                       <FormMeta
                         className="flex-1"
                         resource={resource}

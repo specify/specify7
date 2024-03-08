@@ -113,5 +113,5 @@ def add_proxy_method(name):
         return self._replace(query=method(*args, **kwargs))
     setattr(QueryConstruct, name, proxy)
 
-for name in 'filter join outerjoin add_columns reset_joinpoint'.split():
+for name in 'filter join outerjoin add_columns reset_joinpoint group_by'.split():
     add_proxy_method(name)
