@@ -42,22 +42,6 @@ if settings.ANONYMOUS_USER:
     def login_maybe_required(func): return func
 
 
-def disable_auto_now(view):
-    @wraps(view)
-    def wrapped(request, *args, **kwargs):
-        record = None # TODO: get the record model type from the request
-        # TODO: see if the record has a timestampmodified field and if so, disable timestampmodified.auto_now
-        # TODO: see if the record has a timestampcreated field and if so, disable timestampcreated.auto_now_add
-        result = None
-        try:
-            result = view(request, *args, **kwargs)
-        except Exception as e:
-            pass
-        finally:
-            pass # TODO: re-enable timestampmodified.auto_now and timestampcreated.auto_now_add
-        return result
-
-
 class HttpResponseConflict(http.HttpResponse):
     status_code = 409
 

@@ -24,6 +24,21 @@ from .upload import upload as uploader, upload_plan_schema
 
 logger = logging.getLogger(__name__)
 
+def disable_auto_now(view):
+    @wraps(view)
+    def wrapped(request, *args, **kwargs):
+        record = None # TODO: get the record model type from the request
+        # TODO: see if the record has a timestampmodified field and if so, disable timestampmodified.auto_now
+        # TODO: see if the record has a timestampcreated field and if so, disable timestampcreated.auto_now_add
+        result = None
+        try:
+            result = view(request, *args, **kwargs)
+        except Exception as e:
+            pass
+        finally:
+            pass # TODO: re-enable timestampmodified.auto_now and timestampcreated.auto_now_add
+        return result
+
 class DataSetPT(PermissionTarget):
     resource = "/workbench/dataset"
     create = PermissionTargetAction()
