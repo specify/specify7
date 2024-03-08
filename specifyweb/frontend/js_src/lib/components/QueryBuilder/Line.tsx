@@ -47,9 +47,9 @@ import {
 } from './FieldFilter';
 import type { DatePart } from './fieldSpec';
 import { QueryFieldSpec } from './fieldSpec';
+import { QueryFieldFormatter } from './Formatter';
 import type { QueryField } from './helpers';
 import { QueryLineTools } from './QueryLineTools';
-import { QueryFieldFormatter } from './Formatter';
 
 // REFACTOR: split this component into smaller components
 export function QueryLine({
