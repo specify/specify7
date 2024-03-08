@@ -1,5 +1,7 @@
 from django.db import models
 
+from model_utils import FieldTracker
+
 from specifyweb.businessrules.exceptions import AbortSave
 from . import model_extras
 
@@ -87,6 +89,7 @@ def make_model(module, table, datamodel):
         # supercls = SpTimestampedModel
         # attrs.pop('save')
         attrs['save'] = save_timestamped
+        attrs['tracker'] = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     model = type(table.django_name, (supercls,), attrs)
 
     return model
