@@ -57,8 +57,8 @@ export function QueryFieldFormatter({
       <Button.Icon
         className={`${
           availableFormatters.find((selected) => selected.name === formatter)
-            ?.isDefault
-            ? ''
+            ?.isDefault || formatter === undefined
+            ? 'bg-white dark:bg-neutral-600'
             : 'bg-yellow-250 dark:bg-yellow-900 '
         } border border-gray-500 p-0.5`}
         icon="cog"
