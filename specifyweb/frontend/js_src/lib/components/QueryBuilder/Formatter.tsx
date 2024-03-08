@@ -59,7 +59,6 @@ export function QueryFieldFormatter({
         title={queryText.chooseFormatter()}
         onClick={() => toggleFormatterSelect(!formatterSelectIsOpen)}
         className={
-          formatter &&
           availableFormatters.find((selected) => selected.name === formatter)
             ?.isDefault
             ? ''
