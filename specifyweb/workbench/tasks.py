@@ -46,7 +46,7 @@ def upload(self, collection_id: int, uploading_agent_id: int, ds_id: int, no_com
         do_upload_dataset(collection, uploading_agent_id, ds, no_commit, allow_partial, progress)
 
         ds.uploaderstatus = None
-        ds.save(update_fields=['uploaderstatus'])
+        ds.save(update_fields=['uploaderstatus'], timestamp_override=True)
 
 @app.task(base=LogErrorsTask, bind=True)
 def unupload(self, ds_id: int, agent_id: int) -> None:
@@ -77,4 +77,4 @@ def unupload(self, ds_id: int, agent_id: int) -> None:
         unupload_dataset(ds, agent, progress)
 
         ds.uploaderstatus = None
-        ds.save(update_fields=['uploaderstatus'])
+        ds.save(update_fields=['uploaderstatus'], timestamp_override=True)
