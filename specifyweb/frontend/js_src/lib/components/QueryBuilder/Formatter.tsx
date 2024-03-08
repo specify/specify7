@@ -5,9 +5,9 @@ import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { Button } from '../Atoms/Button';
 import { Select } from '../Atoms/Form';
+import { icons } from '../Atoms/Icons';
 import type { Tables } from '../DataModel/types';
 import { fetchFormatters } from '../Formatters/formatters';
-import { icons } from '../Atoms/Icons';
 
 export function QueryFieldFormatter({
   type,
