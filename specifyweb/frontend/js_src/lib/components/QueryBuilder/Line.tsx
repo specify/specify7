@@ -49,6 +49,7 @@ import type { DatePart } from './fieldSpec';
 import { QueryFieldSpec } from './fieldSpec';
 import type { QueryField } from './helpers';
 import { QueryLineTools } from './QueryLineTools';
+import { QueryFieldFormatter } from './Formatter';
 
 // REFACTOR: split this component into smaller components
 export function QueryLine({
@@ -372,6 +373,27 @@ export function QueryLine({
                 mappingElementDivider
               )
             )}
+            {(fieldMeta.fieldType === 'formatter' ||
+              fieldMeta.fieldType === 'aggregator') &&
+            typeof fieldMeta.tableName === 'string' ? (
+              <>
+                {mappingElementDivider}
+                <QueryFieldFormatter
+                  formatter={field.dataObjFormatter}
+                  tableName={fieldMeta.tableName}
+                  type={fieldMeta.fieldType}
+                  onChange={
+                    handleChange === undefined
+                      ? undefined
+                      : (dataObjectFormatter): void =>
+                          handleChange({
+                            ...field,
+                            dataObjFormatter: dataObjectFormatter,
+                          })
+                  }
+                />
+              </>
+            ) : undefined}
           </div>
           {filtersVisible ? (
             <div
