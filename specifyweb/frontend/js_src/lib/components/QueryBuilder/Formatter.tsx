@@ -2,11 +2,11 @@ import React from 'react';
 
 import { usePromise } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
+import { queryText } from '../../localization/query';
+import { Button } from '../Atoms/Button';
 import { Select } from '../Atoms/Form';
 import type { Tables } from '../DataModel/types';
 import { fetchFormatters } from '../Formatters/formatters';
-import { Button } from '../Atoms/Button';
-import { queryText } from '../../localization/query';
 
 export function QueryFieldFormatter({
   type,
@@ -55,15 +55,15 @@ export function QueryFieldFormatter({
   ) : availableFormatters.length > 1 ? (
     <>
       <Button.Icon
-        icon="cog"
-        title={queryText.chooseFormatter()}
-        onClick={() => toggleFormatterSelect(!formatterSelectIsOpen)}
         className={
           availableFormatters.find((selected) => selected.name === formatter)
             ?.isDefault
             ? ''
             : 'bg-yellow-250 dark:bg-yellow-900'
         }
+        icon="cog"
+        title={queryText.chooseFormatter()}
+        onClick={() => toggleFormatterSelect(!formatterSelectIsOpen)}
       />
       {formatterSelectIsOpen && (
         <div>
