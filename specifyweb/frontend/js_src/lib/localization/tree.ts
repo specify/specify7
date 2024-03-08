@@ -426,11 +426,11 @@ export const treeText = createDictionary({
   },
   associatedNodesOnly: {
     'en-us': 'Show only nodes with associated objects',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch': 'Nur Knoten mit zugehörigen Objekten anzeigen',
+    'es-es': 'Mostrar solo nodos con objetos asociados',
+    'fr-fr': 'Afficher uniquement les nœuds avec les objets associés',
+    'ru-ru': 'Показывать только узлы со связанными объектами',
+    'uk-ua': 'Показувати лише вузли з пов’язаними об’єктами',
   },
   splitView: {
     'en-us': 'Split View',
