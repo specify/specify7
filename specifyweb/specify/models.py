@@ -7,23 +7,26 @@ from .check_versions import check_versions
 from .datamodel import datamodel
 from django.db import models
 from django.utils import timezone
+from model_utils import FieldTracker
 
 class SpTimestampedModel(models.Model):
     """
     SpTimestampedModel(id, timestampcreated, timestampmodified)
     """
 
-    # Fields
     timestampcreated = models.DateTimeField(db_column='TimestampCreated')
     timestampmodified = models.DateTimeField(db_column='TimestampModified')
+
+    tracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
 
     class Meta:
         abstract = True
 
     def save(self, *args, **kwargs):
-        timestamp_override = kwargs.pop('timestamp_override', False)
+        # timestamp_override = kwargs.pop('timestamp_override', False)
 
-        if not timestamp_override:
+        if 'timestampcreated' not in self.tracker.changed() and \
+           'timestampmodified' not in self.tracker.changed():
             if not self.id:
                 self.timestampcreated = timezone.now()
             
