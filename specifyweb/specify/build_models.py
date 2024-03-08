@@ -66,10 +66,26 @@ def make_model(module, table, datamodel):
         except AbortSave:
             return
 
+    def save_timestamped(self, *args, **kwargs):
+        timestamp_override = kwargs.pop('timestamp_override', False)
+
+        if not timestamp_override:
+            if not self.id:
+                self.timestampcreated = timezone.now()
+            
+            self.timestampmodified = timezone.now()
+        
+        super(model, self).save(*args, **kwargs)
+
     attrs['save'] = save
     attrs['Meta'] = Meta
 
+    field_names = [field.name.lower() for field in table.fields]
     supercls = getattr(model_extras, table.django_name, models.Model)
+    if 'timestampcreated' in field_names or 'timestampmodified' in field_names:
+        # supercls = SpTimestampedModel
+        # attrs.pop('save')
+        attrs['save'] = save_timestamped
     model = type(table.django_name, (supercls,), attrs)
 
     return model
