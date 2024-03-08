@@ -37,9 +37,11 @@ def make_model(module, table, datamodel):
         maker = field_type_map[field.type]
         fldargs = {}
         if fldname == 'timestampcreated':
-            fldargs['auto_now_add'] = True
+            # fldargs['auto_now_add'] = True
+            pass
         if fldname == 'timestampmodified':
-            fldargs['auto_now'] = True
+            # fldargs['auto_now'] = True
+            pass
         if fldname == 'version':
             fldargs['default'] = 0
         attrs[fldname] = maker(field, fldargs)
