@@ -167,7 +167,7 @@ export const resourcesText = createDictionary({
   formatterDescription: {
     'en-us': `
     The “Table Format” controls how data from a specific table is shown in query results, exports, and query combo boxes. It determines the fields to display and their order. Conditional formatting can be configured based on a value in the record.
-    `
+    `,
   },
   aggregator: {
     'en-us': 'Table Aggregation',
