@@ -125,7 +125,7 @@ function ConditionalFormatter({
   return (
     <div
       className={`flex gap-2
-        ${isExpanded || !hasCondition ? 'flex-col' : ' pb-2 pt-2 items-center'}
+        ${isExpanded || !hasCondition ? 'flex-col' : ' items-center pb-2 pt-2'}
         ${isExpanded ? 'gap-2 pt-2' : ''}
       `}
       key={index}
