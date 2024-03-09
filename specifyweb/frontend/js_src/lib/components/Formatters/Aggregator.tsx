@@ -81,22 +81,22 @@ export function AggregatorElement({
         </Label.Block>
       </div>
       {typeof aggregator.table === 'object' && (
-          <fieldset>
-            <legend>{resourcesText.sortField()}</legend>
-            <ResourceMapping
-              mapping={[
-                aggregator.sortField,
-                (sortField): void =>
-                  setAggregator({
-                    ...aggregator,
-                    sortField,
-                  }),
-              ]}
-              openIndex={[openIndex, setOpenIndex]}
-              table={aggregator.table}
-            />
-          </fieldset>
-        )}
+        <fieldset>
+          <legend>{resourcesText.sortField()}</legend>
+          <ResourceMapping
+            mapping={[
+              aggregator.sortField,
+              (sortField): void =>
+                setAggregator({
+                  ...aggregator,
+                  sortField,
+                }),
+            ]}
+            openIndex={[openIndex, setOpenIndex]}
+            table={aggregator.table}
+          />
+        </fieldset>
+      )}
       <div>
         <AggregatorPreview aggregator={aggregator} />
       </div>
