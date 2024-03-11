@@ -71,9 +71,9 @@ msgstr "Nein"
 #: components/Toolbar/Language.tsx:101
 #: components/Toolbar/MasterKey.tsx:39
 #: components/Toolbar/Query.tsx:77
-#: components/Toolbar/Query.tsx:208
-#: components/Toolbar/RecordSets.tsx:174
-#: components/Toolbar/RecordSets.tsx:213
+#: components/Toolbar/Query.tsx:210
+#: components/Toolbar/RecordSets.tsx:176
+#: components/Toolbar/RecordSets.tsx:215
 #: components/Toolbar/TreeRepair.tsx:73
 #: components/Toolbar/WbsDialog.tsx:180
 #: components/TreeView/Actions.tsx:368
@@ -520,8 +520,8 @@ msgstr "N/A"
 #: components/FormEditor/Create.tsx:68
 #: components/Security/RoleTemplate.tsx:89
 #: components/Statistics/AddStatDialog.tsx:73
-#: components/Toolbar/Query.tsx:211
-#: components/Toolbar/RecordSets.tsx:179
+#: components/Toolbar/Query.tsx:213
+#: components/Toolbar/RecordSets.tsx:181
 #. Used in: Components > App Resources > Create ⬤ Components > Attachments Bulk Import > Datasets ⬤ Components > Form Editor > Create ⬤ Components > Security > Role Template ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets
 msgid "new"
 msgstr "Neu"
@@ -544,7 +544,7 @@ msgstr "Neu"
 #: components/Security/UserComponents.tsx:157
 #: components/Statistics/Buttons.tsx:33
 #: components/Statistics/index.tsx:613
-#: components/Toolbar/RecordSets.tsx:279
+#: components/Toolbar/RecordSets.tsx:281
 #: components/Toolbar/WbsDialog.tsx:266
 #: components/Toolbar/WbsDialog.tsx:270
 #: components/TreeView/Actions.tsx:111
@@ -665,13 +665,13 @@ msgstr "Absteigend"
 #: components/Header/menuItemDefinitions.ts:80
 #: components/Router/OverlayRoutes.tsx:136
 #: components/Security/registry.ts:214
-#: components/Toolbar/RecordSets.tsx:187
-#: components/Toolbar/RecordSets.tsx:214
+#: components/Toolbar/RecordSets.tsx:189
+#: components/Toolbar/RecordSets.tsx:216
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Security > Registry ⬤ Components > Toolbar > Record Sets
 msgid "recordSets"
 msgstr "Satzgruppen"
 
-#: components/Toolbar/RecordSets.tsx:269
+#: components/Toolbar/RecordSets.tsx:271
 #. Used in: Components > Toolbar > Record Sets
 msgid "recordCount"
 msgstr "Anzahl der Datensätze"
@@ -912,8 +912,8 @@ msgstr "Keine Verfügbar"
 #: components/Forms/DeleteBlocked.tsx:93
 #: components/Forms/DeleteBlocked.tsx:196
 #: components/Header/ExpressSearchTask.tsx:236
-#: components/Toolbar/Query.tsx:218
-#: components/Toolbar/RecordSets.tsx:186
+#: components/Toolbar/Query.tsx:220
+#: components/Toolbar/RecordSets.tsx:188
 #: components/Toolbar/WbsDialog.tsx:208
 #: components/WorkBench/WbValidation.tsx:155
 #. 🟥Example usage: Record Sets (1,234). Used in: Components > App Resources > Filters ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Cells > Form Table ⬤ Components > Formatters > Types ⬤ Components > Forms > Delete Blocked ⬤ Components > Header > Express Search Task ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Work Bench > Wb Validation
