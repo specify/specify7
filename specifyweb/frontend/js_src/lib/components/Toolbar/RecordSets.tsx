@@ -164,7 +164,7 @@ export function RecordSetsDialog({
           </table>
           <span className="-mt-2 flex-1" />
           {data === undefined && loadingGif}
-          {data !== undefined && data?.records.length > 0
+          {data !== undefined && data.records.length > 0
             ? paginator(data?.totalCount)
             : null}
         </>
