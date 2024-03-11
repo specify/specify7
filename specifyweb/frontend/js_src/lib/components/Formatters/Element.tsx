@@ -73,14 +73,16 @@ export function XmlEditorShell<
     <Dialog
       buttons={
         <>
-          <Button.Danger
-            onClick={(): void => {
-              setItems(removeItem(items, index));
-              handleClose();
-            }}
-          >
-            {commonText.delete()}
-          </Button.Danger>
+          {isReadOnly ? null : (
+            <Button.Danger
+              onClick={(): void => {
+                setItems(removeItem(items, index));
+                handleClose();
+              }}
+            >
+              {commonText.delete()}
+            </Button.Danger>
+          )}
           <span className="-ml-2 flex-1" />
           <Submit.Secondary form={id('form')}>
             {commonText.close()}
