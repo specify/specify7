@@ -71,17 +71,17 @@ def make_model(module, table, datamodel):
         except AbortSave:
             return
 
-    def save_timestamped(self, *args, **kwargs):
-        timestamp_override = kwargs.pop('timestamp_override', False)
-        if 'timestampcreated' not in self.tracker.changed() or \
-           'timestampmodified' not in self.tracker.changed() or \
-            not timestamp_override:
-            if not self.id:
-                self.timestampcreated = timezone.now()
+    # def save_timestamped(self, *args, **kwargs):
+    #     timestamp_override = kwargs.pop('timestamp_override', False)
+    #     if 'timestampcreated' not in self.tracker.changed() or \
+    #        'timestampmodified' not in self.tracker.changed() or \
+    #         not timestamp_override:
+    #         if not self.id:
+    #             self.timestampcreated = timezone.now()
             
-            self.timestampmodified = timezone.now()
+    #         self.timestampmodified = timezone.now()
         
-        super(model, self).save(*args, **kwargs)
+    #     super(model, self).save(*args, **kwargs)
 
     attrs['save'] = save
     attrs['Meta'] = Meta
@@ -89,14 +89,16 @@ def make_model(module, table, datamodel):
     field_names = [field.name.lower() for field in table.fields]
     has_timestampcreated = 'timestampcreated' in field_names
     has_timestampmodified = 'timestampmodified' in field_names
-    if has_timestampcreated or has_timestampmodified:
-        attrs['save'] = save_timestamped
-        if has_timestampcreated:
-            attrs['tracker'] = FieldTracker(fields=['timestampcreated'])
-        if has_timestampmodified:
-            attrs['tracker'] = FieldTracker(fields=['timestampmodified'])
+    has_timestamp_field = has_timestampcreated or has_timestampmodified
+    # if has_timestamp_field:
+    #     attrs['save'] = save_timestamped
+    #     if has_timestampcreated:
+    #         attrs['tracker'] = FieldTracker(fields=['timestampcreated'])
+    #     if has_timestampmodified:
+    #         attrs['tracker'] = FieldTracker(fields=['timestampmodified'])
     
-    supercls = getattr(model_extras, table.django_name, models.Model)
+    supercls = getattr(model_extras, table.django_name, models.Model) if has_timestamp_field \
+        else getattr(model_extras, table.django_name, SpTimestampedModel)
     model = type(table.django_name, (supercls,), attrs)
 
     return model
@@ -306,3 +308,32 @@ def build_models(module, datamodel):
     return { model.specify_model.tableId: model
              for table in datamodel.tables
              for model in [ make_model(module, table, datamodel) ]}
+
+class SpTimestampedModel(models.Model):
+    """
+    SpTimestampedModel(id, timestampcreated, timestampmodified)
+    """
+
+    timestampcreated = models.DateTimeField(db_column='TimestampCreated')
+    timestampmodified = models.DateTimeField(db_column='TimestampModified')
+
+    tracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+
+    class Meta:
+        abstract = True
+
+    def save(self, *args, **kwargs):
+        timestamp_override = kwargs.pop('timestamp_override', False)
+
+        # Normal behavior is to update the timestamps automatically when saving.
+        # If timestampcreated or timestampmodified have been edited, don't update them to the current time.
+        # Also, if timestamp_override is True, don't update the timestamps.
+        if not timestamp_override and \
+           'timestampcreated' not in self.tracker.changed() and \
+           'timestampmodified' not in self.tracker.changed():
+            if not self.id:
+                self.timestampcreated = timezone.now()
+            
+            self.timestampmodified = timezone.now()
+        
+        super().save(*args, **kwargs)
