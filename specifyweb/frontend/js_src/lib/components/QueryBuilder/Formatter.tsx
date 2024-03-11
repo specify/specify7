@@ -8,6 +8,7 @@ import { Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import type { Tables } from '../DataModel/types';
 import { fetchFormatters } from '../Formatters/formatters';
+import { useId } from '../../hooks/useId';
 
 export function QueryFieldFormatter({
   type,
@@ -47,7 +48,9 @@ export function QueryFieldFormatter({
     [type, formatters, tableName]
   );
 
-  const [formatterSelectIsOpen, toggleFormatterSelect] = React.useState(false);
+  const [formatterSelectIsOpen, setFormatterSelect] = React.useState(false);
+
+  const id = useId('formatters');
 
   return availableFormatters === undefined ? (
     typeof formatter === 'string' ? (
@@ -64,7 +67,8 @@ export function QueryFieldFormatter({
             : 'bg-yellow-250 dark:bg-yellow-900 '
         }`}
         title={queryText.chooseFormatter()}
-        onClick={() => toggleFormatterSelect(!formatterSelectIsOpen)}
+        onClick={() => setFormatterSelect(!formatterSelectIsOpen)}
+        aria-controls={id('list')}
       >
         {icons.cog}
       </Button.Small>
@@ -74,6 +78,8 @@ export function QueryFieldFormatter({
             disabled={handleChange === undefined}
             value={formatter}
             onValueChange={handleChange}
+            aria-label={queryText.chooseFormatter()}
+            id={'list'}
           >
             <option />
             {availableFormatters.map(({ name, title }, index) => (
