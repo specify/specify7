@@ -9,6 +9,7 @@ import { Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import type { Tables } from '../DataModel/types';
 import { fetchFormatters } from '../Formatters/formatters';
+import { customSelectElementBackground } from '../WbPlanView/CustomSelectElement';
 
 export function QueryFieldFormatter({
   type,
@@ -50,7 +51,7 @@ export function QueryFieldFormatter({
 
   const [formatterSelectIsOpen, setFormatterSelect] = React.useState(false);
 
-  const id = useId('formatters');
+  const id = useId('formatters-selection');
 
   return availableFormatters === undefined ? (
     typeof formatter === 'string' ? (
@@ -63,7 +64,9 @@ export function QueryFieldFormatter({
         aria-label={queryText.chooseFormatter()}
         className={`${
           availableFormatters.find((selected) => selected.name === formatter)
-            ?.isDefault || formatter === undefined
+            ?.isDefault ||
+          formatter === undefined ||
+          formatter === ''
             ? 'bg-white dark:bg-neutral-600'
             : 'bg-yellow-250 dark:bg-yellow-900 '
         }`}
@@ -77,9 +80,10 @@ export function QueryFieldFormatter({
           <Select
             aria-label={queryText.chooseFormatter()}
             disabled={handleChange === undefined}
-            id="list"
+            id={id('list')}
             value={formatter}
             onValueChange={handleChange}
+            className={`${customSelectElementBackground}`}
           >
             <option />
             {availableFormatters.map(({ name, title }, index) => (
