@@ -314,8 +314,8 @@ class SpTimestampedModel(models.Model):
     SpTimestampedModel(id, timestampcreated, timestampmodified)
     """
 
-    timestampcreated = models.DateTimeField(db_column='TimestampCreated')
-    timestampmodified = models.DateTimeField(db_column='TimestampModified')
+    timestampcreated = models.DateTimeField(db_column='TimestampCreated', default=timezone.now)
+    timestampmodified = models.DateTimeField(db_column='TimestampModified', default=timezone.now)
 
     tracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
 
