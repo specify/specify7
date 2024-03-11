@@ -1,7 +1,7 @@
-
-from operator import index
+# from operator import index
 from typing import List, Dict, Union, Optional, Iterable, TypeVar, Callable
 from xml.etree import ElementTree
+# from dataclasses import dataclass
 import os
 import warnings
 import logging
@@ -9,9 +9,6 @@ logger = logging.getLogger(__name__)
 
 from django.conf import settings # type: ignore
 from django.utils.translation import gettext as _
-
-# from .specify_tables import datamodel as specify_datamodel
-# datamodel = specify_datamodel
 
 class DoesNotExistError(Exception):
     pass
@@ -21,7 +18,6 @@ class TableDoesNotExistError(DoesNotExistError):
 
 class FieldDoesNotExistError(DoesNotExistError):
     pass
-
 
 T = TypeVar('T')
 U = TypeVar('U')
@@ -35,17 +31,27 @@ def strict_to_optional(f: Callable[[U], T], lookup: U, strict: bool) -> Optional
             return None
         raise
 
-class Datamodel(object):
+# @dataclass
+class Datamodel:
     tables: List['Table']
+
+    def __init__(self, tables: List['Table'] = []):
+        self.tables = tables
 
     def get_table(self, tablename: str, strict: bool=False) -> Optional['Table']:
         return strict_to_optional(self.get_table_strict, tablename, strict)
 
     def get_table_strict(self, tablename: str) -> 'Table':
         tablename = tablename.lower()
+        last_table = None
         for table in self.tables:
+            if table is None:
+                raise Exception(f"table is None, last table {last_table}")
+            if table.name is None:
+                raise Exception(f"table name is None in table {table}")
             if table.name.lower() == tablename:
                 return table
+            last_table = table
         raise TableDoesNotExistError(_("No table with name: %(table_name)r") % {'table_name':tablename})
 
     def get_table_by_id(self, table_id: int, strict: bool=False) -> Optional['Table']:
@@ -63,8 +69,8 @@ class Datamodel(object):
         else:
             return None
 
-class Table(object):
-    system: bool = False
+# @dataclass
+class Table:
     classname: str
     table: str
     tableId: int
@@ -77,25 +83,31 @@ class Table(object):
     indexes: List['Index']
     relationships: List['Relationship']
     fieldAliases: List[Dict[str, str]]
+    system: bool = False
 
-    # def __init__(self, system: bool = False, class_name: str, table: str, tableId: int, idColumn: str, idFieldName: str,
-    #              idField: 'Field', view: Optional[str], searchDialog: Optional[str], fields: List['Field'],
-    #              relationships: List['Relationship'], fieldAliases: List[Dict[str, str]]):
-    #     self.system = system
-    #     self.classname = class_name
-    #     self.table = table
-    #     self.tableId = tableId
-    #     self.idColumn = idColumn
-    #     self.idFieldName = idFieldName
-    #     self.idField = idField
-    #     self.view = view
-    #     self.searchDialog = searchDialog
-    #     self.fields = fields
-    #     self.relationships = relationships
-    #     self.fieldAliases = fieldAliases
+    def __init__(self, classname: Optional[str] = None, table: Optional[str] = None, tableId: Optional[int] = None, 
+                 idColumn: Optional[str] = None, idFieldName: Optional[str] = None, idField: Optional['Field'] = None, 
+                 view: Optional[str] = None, searchDialog: Optional[str] = None, fields: Optional[List['Field']] = None,
+                 indexes: Optional[List['Index']] = None, relationships: Optional[List['Relationship']] = None, 
+                 fieldAliases: Optional[List[Dict[str, str]]] = None, system: bool = False):
+        self.system = system
+        self.classname = classname
+        self.table = table
+        self.tableId = tableId
+        self.idColumn = idColumn
+        self.idFieldName = idFieldName
+        self.idField = idField
+        self.view = view
+        self.searchDialog = searchDialog
+        self.fields = fields if fields is not None else []
+        self.indexes = indexes if indexes is not None else []
+        self.relationships = relationships if relationships is not None else []
+        self.fieldAliases = fieldAliases if fieldAliases is not None else []
 
     @property
     def name(self) -> str:
+        if self.classname is None:
+            raise Exception(f"table {self.table} has no classname")
         return self.classname.split('.')[-1]
 
     @property
@@ -131,6 +143,15 @@ class Table(object):
             raise FieldDoesNotExistError(f"Field {name} in table {self.name} is not a relationship.")
         return field
 
+    def get_index(self, indexname: str, strict: bool=False) -> 'Index':
+        for index in self.indexes:
+            if indexname in index.name:
+                return index
+        if strict:
+            raise FieldDoesNotExistError(_("Index %(index_name)s not in table %(table_name)s. ") % {'index_name':indexname, 'table_name':self.name} +
+                                         _("Indexes: %(indexes)s") % {'indexes':[i.name for i in self.indexes]})
+        return None
+
     @property
     def attachments_field(self) -> Optional['Relationship']:
         try:
@@ -149,7 +170,8 @@ class Table(object):
         return "<SpecifyTable: %s>" % self.name
 
 
-class Field(object):
+# @dataclass
+class Field:
     is_relationship: bool = False
     name: str
     column: str
@@ -159,28 +181,51 @@ class Field(object):
     type: str
     length: int
 
+    def __init__(self, name: Optional[str] = None, column: Optional[str] = None, indexed: Optional[bool] = None, 
+                 unique: Optional[bool] = None, required: Optional[bool] = None, type: Optional[str] = None, 
+                 length: Optional[int] = None, is_relationship: bool = False):
+        self.is_relationship = is_relationship
+        self.name = name
+        self.column = column
+        self.indexed = indexed
+        self.unique = unique
+        self.required = required
+        self.type = type
+        self.length = length
+
     def __repr__(self) -> str:
         return "<SpecifyField: %s>" % self.name
 
     def is_temporal(self) -> bool:
         return self.type in ('java.util.Date', 'java.util.Calendar', 'java.sql.Timestamp')
 
-class Index(object):
+# @dataclass
+class Index:
     name: str
     column_names: List[str] = []
+
+    def __init__(self, name: Optional[str] = None, column_names: Optional[List[str]] = None):
+        self.name = name
+        self.column_names = column_names if column_names is not None else []
 
     def __repr__(self) -> str:
         return "<SpecifyIndex: %s>" % self.name
 
+# @dataclass
 class IdField(Field):
     name: str
     column: str
     type: str
     required: bool = True
 
+    def __init__(self, name: Optional[str] = None, column: Optional[str] = None, 
+                 type: Optional[str] = None, required: bool = True):
+        super().__init__(name, column, indexed=False, unique=False, required=required, type=type, length=0)
+
     def __repr__(self) -> str:
         return "<SpecifyIdField: %s>" % self.name
 
+# @dataclass
 class Relationship(Field):
     is_relationship: bool = True
     dependent: bool = False
@@ -192,92 +237,16 @@ class Relationship(Field):
     otherSideName: str
     is_to_many: bool = lambda self: 'to_many' in self.type
 
-def make_table(tabledef: ElementTree.Element) -> Table:
-    table = Table()
-    table.classname = tabledef.attrib['classname']
-    table.table = tabledef.attrib['table']
-    table.tableId = int(tabledef.attrib['tableid'])
-    iddef = tabledef.find('id')
-    assert iddef is not None
-    table.idColumn = iddef.attrib['column']
-    table.idFieldName = iddef.attrib['name']
-    table.idField = make_id_field(iddef)
-
-    display = tabledef.find('display')
-    if display is not None:
-        table.view = display.attrib.get('view', None)
-        table.searchDialog = display.attrib.get('searchdlg', None)
-
-    table.fields = [make_field(fielddef) for fielddef in tabledef.findall('field')]
-    table.indexes = [make_index(indexdef) for indexdef in tabledef.findall('tableindex')]
-    table.relationships = [make_relationship(reldef) for reldef in tabledef.findall('relationship')]
-    table.fieldAliases = [make_field_alias(aliasdef) for aliasdef in tabledef.findall('fieldalias')]
-    return table
-
-def make_id_field(fielddef: ElementTree.Element) -> IdField:
-    field = IdField()
-    field.name = fielddef.attrib['name']
-    field.column = fielddef.attrib['column']
-    field.type = fielddef.attrib['type']
-    return field
-
-def make_field(fielddef: ElementTree.Element) -> Field:
-    field = Field()
-    field.name = fielddef.attrib['name']
-    field.column = fielddef.attrib['column']
-    field.indexed = fielddef.attrib['indexed'] == "true"
-    field.unique = fielddef.attrib['unique'] == "true"
-    field.required = fielddef.attrib['required'] == "true"
-    field.type = fielddef.attrib['type']
-    if 'length' in fielddef.attrib:
-        field.length = int(fielddef.attrib['length'])
-    return field
-
-def make_index(indexdef: ElementTree.Element) -> Index:
-    index = Index()
-    index.name = indexdef.attrib['indexName']
-    index.column_names = indexdef.attrib['columnNames'].split(',')
-    return index
-
-def make_relationship(reldef: ElementTree.Element) -> Relationship:
-    rel = Relationship()
-    rel.name = reldef.attrib['relationshipname']
-    rel.type = reldef.attrib['type']
-    rel.required = (reldef.attrib['required'] == "true")
-    rel.relatedModelName = reldef.attrib['classname'].split('.')[-1]
-    if 'columnname' in reldef.attrib:
-        rel.column = reldef.attrib['columnname']
-    if 'othersidename' in reldef.attrib:
-        rel.otherSideName = reldef.attrib['othersidename']
-    return rel
-
-def make_field_alias(aliasdef: ElementTree.Element) -> Dict[str, str]:
-    alias = dict(aliasdef.attrib)
-    return alias
-
-# def generate_class_code(cls):
-#     code = f"class {cls.__class__.__name__}:\n"
-#     for attr_name, attr_value in cls.__dict__.items():
-#         if not attr_name.startswith('__'):
-#             code += f"   {attr_name} = {attr_value}\n"
-#     return code
-
-# def write_classes_to_file(classes, filename):
-#    with open(filename, 'w') as file:
-#        for cls in classes:
-#            file.write(generate_class_code(cls))
-#            file.write('\n\n')
-
-def load_datamodel() -> Datamodel:
-    datamodeldef = ElementTree.parse(os.path.join(settings.SPECIFY_CONFIG_DIR, 'specify_datamodel.xml'))
-    datamodel = Datamodel()
-    datamodel.tables = [make_table(tabledef) for tabledef in datamodeldef.findall('table')]
-    add_collectingevents_to_locality(datamodel)
-
-    flag_dependent_fields(datamodel)
-    flag_system_tables(datamodel)
-
-    return datamodel
+    def __init__(self, name: Optional[str] = None, type: Optional[str] = None, required: Optional[bool] = None, 
+                 relatedModelName: Optional[str] = None, column: Optional[str] = None,
+                 otherSideName: Optional[str] = None, dependent: bool = False, is_relationship: bool = True,
+                 is_to_many: Optional[bool] = None):
+        super().__init__(name, column, indexed=False, unique=False, required=required, 
+                         type=type, length=0, is_relationship=is_relationship)
+        self.dependent = dependent
+        self.relatedModelName = relatedModelName
+        self.otherSideName = otherSideName
+        # self.is_to_many = is_to_many if is_to_many is not None else 'to_many' in self.type
 
 def add_collectingevents_to_locality(datamodel: Datamodel) -> None:
     rel = Relationship()
@@ -403,7 +372,6 @@ dependent_fields = {
     'Workbenchtemplate.workbenchtemplatemappingitems',
 }
 
-
 system_tables = {
     'Attachment',
     'Attachmentimageattribute',
@@ -448,7 +416,3 @@ system_tables = {
     'Workbenchtemplate',
     'Workbenchtemplatemappingitem',
 }
-
-# SpecifyTable = getattr('SpecifyTable', None)
-# all_tables = system_tables.union(user_tables)
-# generic_tables = {table_name: SpecifyTable(table_name) for table_name in all_tables}

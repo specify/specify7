@@ -1,7 +1,13 @@
 from django.db import models
+from django.utils import timezone
+
+# from model_utils import FieldTracker
 
 from specifyweb.businessrules.exceptions import AbortSave
 from . import model_extras
+
+# import inspect
+# import os
 
 appname = __name__.split('.')[-2]
 
@@ -37,9 +43,11 @@ def make_model(module, table, datamodel):
         maker = field_type_map[field.type]
         fldargs = {}
         if fldname == 'timestampcreated':
-            fldargs['auto_now_add'] = True
+            # fldargs['auto_now_add'] = True
+            pass
         if fldname == 'timestampmodified':
-            fldargs['auto_now'] = True
+            # fldargs['auto_now'] = True
+            pass
         if fldname == 'version':
             fldargs['default'] = 0
         attrs[fldname] = maker(field, fldargs)
@@ -63,11 +71,28 @@ def make_model(module, table, datamodel):
             return super(model, self).save(*args, **kwargs)
         except AbortSave:
             return
+    
+    def save_timestamped(self, *args, **kwargs):
+        # timestamp_override = kwargs.pop('timestamp_override', False)
+        # if not timestamp_override:
+        if 'timestampcreated' not in self.tracker.changed() or \
+           'timestampmodified' not in self.tracker.changed():
+            if not self.id:
+                self.timestampcreated = timezone.now()
+            
+            self.timestampmodified = timezone.now()
+        
+        super(model, self).save(*args, **kwargs)
 
     attrs['save'] = save
     attrs['Meta'] = Meta
 
+    field_names = [field.name.lower() for field in table.fields]
     supercls = getattr(model_extras, table.django_name, models.Model)
+    if 'timestampcreated' in field_names or 'timestampmodified' in field_names:
+        supercls = SpTimestampedModel
+        attrs.pop('save')
+        attrs['save'] = save_timestamped
     model = type(table.django_name, (supercls,), attrs)
 
     return model
@@ -273,7 +298,46 @@ field_type_map = {
     'java.lang.Boolean': make_boolean_field,
     }
 
+class SpTimestampedModel(models.Model):
+    """
+    SpTimestampedModel(id, timestampcreated, timestampmodified)
+    """
+
+    # Fields
+    timestampcreated = models.DateTimeField(db_column='TimestampCreated')
+    timestampmodified = models.DateTimeField(db_column='TimestampModified')
+
+    class Meta:
+        abstract = True
+
+    def save(self, *args, **kwargs):
+        timestamp_override = kwargs.pop('timestamp_override', False)
+
+        if not timestamp_override:
+            if not self.id:
+                self.timestampcreated = timezone.now()
+            
+            self.timestampmodified = timezone.now()
+        
+        super().save(*args, **kwargs)
+
+# def build_models(module, datamodel):
+#     return { model.specify_model.tableId: model
+#              for table in datamodel.tables
+#              for model in [ make_model(module, table, datamodel) ]}
+
+# def write_class_to_file(cls, filename):
+#    source_code = inspect.getsource(cls)
+#    with open(filename, 'w') as f:
+#        f.write(source_code)
+
 def build_models(module, datamodel):
     return { model.specify_model.tableId: model
              for table in datamodel.tables
              for model in [ make_model(module, table, datamodel) ]}
+    # models = {}
+    # for table in datamodel.tables:
+    #     model = make_model(module, table, datamodel)
+    #     models[model.specify_model.tableId] = model
+    #     write_class_to_file(model, 'specify6_build_models.py')
+    # return models
