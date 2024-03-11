@@ -1,6 +1,6 @@
 import type Handsontable from 'handsontable';
-import { Events } from 'handsontable/pluginHooks';
-import { Action } from 'handsontable/plugins/undoRedo';
+import type { Events } from 'handsontable/pluginHooks';
+import type { Action } from 'handsontable/plugins/undoRedo';
 
 import { backEndText } from '../../localization/backEnd';
 import { whitespaceSensitive } from '../../localization/utils';
@@ -36,7 +36,7 @@ export function getHotHooks(wbView: WbView) {
       td: any,
       visualRow: number,
       visualCol: number,
-      property: string | number,
+      property: number | string,
       _value: string
     ) => {
       if (wbView.hot === undefined) {
@@ -84,12 +84,12 @@ export function getHotHooks(wbView: WbView) {
     beforeValidate: (
       value: any,
       _visualRow: number,
-      property: string | number
+      property: number | string
     ) => {
       if (Boolean(value) || wbView.hot === undefined) return value;
 
       const visualCol = wbView.hot.propToCol(property);
-      const physicalCol = wbView.hot.toPhysicalColumn(visualCol as number);
+      const physicalCol = wbView.hot.toPhysicalColumn(visualCol);
 
       return wbView.mappings?.defaultValues[physicalCol] ?? value;
     },
@@ -104,7 +104,7 @@ export function getHotHooks(wbView: WbView) {
       const visualCol = wbView.hot.propToCol(property);
 
       const physicalRow = wbView.hot.toPhysicalRow(visualRow);
-      const physicalCol = wbView.hot.toPhysicalColumn(visualCol as number);
+      const physicalCol = wbView.hot.toPhysicalColumn(visualCol);
       const issues = wbView.cells.getCellMeta(
         physicalRow,
         physicalCol,
@@ -203,13 +203,13 @@ export function getHotHooks(wbView: WbView) {
       const changes = unfilteredChanges
         .map(([visualRow, property, oldValue, newValue]) => ({
           visualRow,
-          visualCol: wbView.hot!.propToCol(property as string | number),
+          visualCol: wbView.hot!.propToCol(property),
           physicalRow: wbView.hot!.toPhysicalRow(visualRow),
           physicalCol:
             typeof property === 'number'
               ? property
               : wbView.hot!.toPhysicalColumn(
-                  wbView.hot!.propToCol(property as string | number)
+                  wbView.hot!.propToCol(property as number | string)
                 ),
           oldValue,
           newValue,
@@ -225,7 +225,7 @@ export function getHotHooks(wbView: WbView) {
             // Or where value changed from null to empty
             (oldValue !== null || newValue !== '') &&
             // Or the column does not exist (that can happen on paste)
-            (visualCol as number) < wbView.dataset.columns.length
+            visualCol < wbView.dataset.columns.length
         );
 
       if (changes.length === 0) return;

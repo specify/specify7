@@ -4,8 +4,8 @@
  * @module
  */
 
+import type { SortOrderType } from 'handsontable/plugins/columnSorting';
 import type { State } from 'typesafe-reducer';
-import { SortOrderType } from 'handsontable/plugins/columnSorting';
 
 import type { AppResourcesConformation } from '../../components/AppResources/Aside';
 import type { AppResourceFilters } from '../../components/AppResources/filtersHelpers';

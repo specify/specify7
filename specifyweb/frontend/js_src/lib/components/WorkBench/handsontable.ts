@@ -1,5 +1,5 @@
 import type Handsontable from 'handsontable';
-import { Plugins } from 'handsontable/plugins';
+import type { Plugins } from 'handsontable/plugins';
 
 import { getCache } from '../../utils/cache';
 import { writable } from '../../utils/types';
