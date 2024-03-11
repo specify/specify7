@@ -2,6 +2,7 @@
 Tests for api.py
 """
 
+from calendar import c
 from datetime import datetime
 import json
 from unittest import skip
@@ -132,6 +133,33 @@ class SimpleApiTests(ApiTests):
                 'catalognumber': 'foobar'})
         api.delete_resource(self.collection, self.agent, 'collectionobject', obj.id, obj.version)
         self.assertEqual(models.Collectionobject.objects.filter(id=obj.id).count(), 0)
+
+    def test_timestamp_override_object(self):
+        manual_datetime = datetime(1960, 1, 1, 0, 0, 0)
+        obj = api.create_obj(self.collection, self.agent, 'collectionobject', {
+                'collection': api.uri_for_model('collection', self.collection.id),
+                'catalognumber': 'foobar', 
+                'timestampcreated': manual_datetime, 'timestampmodified': manual_datetime})
+        # obj = models.Collectionobject.objects.create(collection=self.collection, agent=self.agent, catalognumber='foobar', timestampcreated=manual_datetime, timestampmodified=manual_datetime)
+        obj = models.Collectionobject.objects.get(id=obj.id)
+        self.assertTrue(obj.id is not None)
+        self.assertEqual(obj.collection, self.collection)
+        self.assertEqual(obj.catalognumber, 'foobar')
+        self.assertEqual(obj.createdbyagent, self.agent)
+        self.assertEqual(obj.timestampcreated, manual_datetime)
+        self.assertEqual(obj.timestampmodified, manual_datetime)
+
+        manual_datetime = datetime(2020, 1, 1, 0, 0, 0)
+        data = api.get_resource('collection', self.collection.id, skip_perms_check)
+        data['collectionname'] = 'New Name'
+        data['timestampcreated'] = manual_datetime
+        data['timestampmodified'] = manual_datetime
+        api.update_obj(self.collection, self.agent, 'collection',
+                       data['id'], data['version'], data)
+        obj = models.Collection.objects.get(id=self.collection.id)
+        self.assertEqual(obj.collectionname, 'New Name')
+        self.assertEqual(obj.timestampcreated, manual_datetime)
+        self.assertEqual(obj.timestampmodified, manual_datetime)
 
 class RecordSetTests(ApiTests):
     def setUp(self):
