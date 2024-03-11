@@ -86,11 +86,12 @@ def make_model(module, table, datamodel):
 
     field_names = [field.name.lower() for field in table.fields]
     supercls = getattr(model_extras, table.django_name, models.Model)
-    if 'timestampcreated' in field_names or 'timestampmodified' in field_names:
-        # supercls = SpTimestampedModel
-        # attrs.pop('save')
+    if 'timestampcreated' in field_names:
         attrs['save'] = save_timestamped
-        attrs['tracker'] = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+        attrs['tracker'] = FieldTracker(fields=['timestampcreated'])
+    if 'timestampmodified' in field_names:
+        attrs['save'] = save_timestamped
+        attrs['tracker'] = FieldTracker(fields=['timestampmodified'])
     model = type(table.django_name, (supercls,), attrs)
 
     return model
