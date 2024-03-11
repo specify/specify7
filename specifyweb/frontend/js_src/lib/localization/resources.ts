@@ -781,4 +781,10 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Свернуть условное поле',
     'uk-ua': 'Згорнути умовне поле',
   },
+  conditionalFieldValue: {
+    'en-us': 'Conditional Field Value',
+  },
+  formatPreview: {
+    'en-us': 'Format Preview',
+  },
 } as const);
