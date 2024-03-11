@@ -7,7 +7,7 @@ from requests import get
 
 from specifyweb.businessrules.exceptions import AbortSave
 from . import model_extras
-from .model_timestamp import SpTimestampedModel
+from .model_timestamp import SpTimestampedModel, pre_save_auto_timestamp_field_with_override
 
 appname = __name__.split('.')[-2]
 
@@ -72,55 +72,35 @@ def make_model(module, table, datamodel):
         except AbortSave:
             return
 
-    # def save_timestamped(self, *args, **kwargs):
-    #     timestamp_override = kwargs.pop('timestamp_override', False)
-
-    #     # Normal behavior is to update the timestamps automatically when saving.
-    #     # If timestampcreated or timestampmodified have been edited, don't update them to the current time.
-    #     # Also, if timestamp_override is True, don't update the timestamps.
-    #     if not timestamp_override and \
-    #        'timestampcreated' not in self.tracker.changed() and \
-    #        'timestampmodified' not in self.tracker.changed():
-    #         if not self.id:
-    #             self.timestampcreated = timezone.now()
-            
-    #         self.timestampmodified = timezone.now()
-        
-    #     if hasattr(self, 'timestampcreated') and getattr(self, 'timestampcreated') is None:
-    #         self.timestampcreated = timezone.now()
-    #     if hasattr(self, 'timestampmodified') and getattr(self, 'timestampmodified') is None:
-    #         self.timestampmodified = timezone.now()
-
-    #     super(model, self).save(*args, **kwargs)
+    def save_timestamped(self, *args, **kwargs):
+        pre_save_auto_timestamp_field_with_override(self, *args, **kwargs)
+        try:
+            super(model, self).save(*args, **kwargs)
+        except AbortSave:
+            return
 
     field_names = [field.name.lower() for field in table.fields]
-    timestamp_fields = filter(lambda x: x in ['timestampcreated', 'timestampmodified'], field_names)
-    has_timestampcreated = 'timestampcreated' in field_names
-    has_timestampmodified = 'timestampmodified' in field_names
-    has_timestamp_field = has_timestampcreated or has_timestampmodified
-    if has_timestamp_field:
-        tracked_fields = []
-        if has_timestampcreated:
-            tracked_fields.append('timestampcreated')
-        if has_timestampmodified:
-            tracked_fields.append('timestampmodified')
+    timestamp_fields = ['timestampcreated', 'timestampmodified']
+    has_timestamp_fields = any(field in field_names for field in timestamp_fields)
+
+    if has_timestamp_fields:
+        tracked_fields = [field for field in timestamp_fields if field in field_names]
         attrs['tracker'] = FieldTracker(fields=tracked_fields)
-    
+
     attrs['Meta'] = Meta
-    if not has_timestamp_field:
+
+    if has_timestamp_fields:
+        attrs['save'] = save_timestamped
+    else:
         attrs['save'] = save
 
-    # supercls = getattr(model_extras, table.django_name, models.Model) if not has_timestamp_field \
-    #     else getattr(model_extras, table.django_name, SpTimestampedModel)
-    
     supercls = models.Model
-    is_in_model_extras = hasattr(model_extras, table.django_name)
-    if is_in_model_extras:
+    if hasattr(model_extras, table.django_name):
         supercls = getattr(model_extras, table.django_name)
-    elif has_timestamp_field:
+    elif has_timestamp_fields:
         supercls = SpTimestampedModel
-    model = type(table.django_name, (supercls,), attrs)
 
+    model = type(table.django_name, (supercls,), attrs)
     return model
 
 def make_id_field(column):

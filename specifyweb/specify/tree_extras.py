@@ -1,6 +1,8 @@
 import re
 from contextlib import contextmanager
 import logging
+
+from specifyweb.specify.model_timestamp import SpTimestampedModel, pre_save_auto_timestamp_field_with_override
 logger = logging.getLogger(__name__)
 
 
@@ -22,12 +24,14 @@ def validate_node_numbers(table, revalidate_after=True):
     if revalidate_after:
         validate_tree_numbering(table)
 
+# class Tree(SpTimestampedModel):
 class Tree(models.Model):
     class Meta:
         abstract = True
 
     def save(self, *args, skip_tree_extras=False, **kwargs):
         def save():
+            pre_save_auto_timestamp_field_with_override(self, *args, **kwargs)
             super(Tree, self).save(*args, **kwargs)
 
         if skip_tree_extras:

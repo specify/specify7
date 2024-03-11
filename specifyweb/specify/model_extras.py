@@ -3,7 +3,9 @@ import logging
 from django.db import models
 from django.contrib.auth.base_user import BaseUserManager
 from django.conf import settings
+from django.utils import timezone
 
+from .model_timestamp import SpTimestampedModel, pre_save_auto_timestamp_field_with_override
 from .tree_extras import Tree
 
 if settings.AUTH_LDAP_SERVER_URI is not None:
@@ -11,6 +13,7 @@ if settings.AUTH_LDAP_SERVER_URI is not None:
 
 logger = logging.getLogger(__name__)
 
+# class SpecifyUserManager(BaseUserManager, SpTimestampedModel):
 class SpecifyUserManager(BaseUserManager):
     def create_user(self, name, password=None):
         raise NotImplementedError()
@@ -18,6 +21,7 @@ class SpecifyUserManager(BaseUserManager):
     def create_superuser(self, name, password=None):
         raise NotImplementedError()
 
+# class Specifyuser(SpTimestampedModel):
 class Specifyuser(models.Model):
     USERNAME_FIELD = 'name'
     REQUIRED_FIELDS = []
@@ -109,6 +113,7 @@ class Specifyuser(models.Model):
         if self.id and self.usertype != 'Manager':
             self.clear_admin()
 
+        pre_save_auto_timestamp_field_with_override(self, *args, **kwargs)
         return super(Specifyuser, self).save(*args, **kwargs)
 
     class Meta:
@@ -116,6 +121,7 @@ class Specifyuser(models.Model):
 
 
 
+# class Preparation(SpTimestampedModel):
 class Preparation(models.Model):
     def isonloan(self):
         # TODO: needs unit tests
