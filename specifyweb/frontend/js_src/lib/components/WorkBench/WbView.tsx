@@ -418,8 +418,8 @@ export class WbView extends Backbone.View {
       contextMenu: {
         items: ensure<
           IR<
-            | Handsontable.contextMenu.MenuItemConfig
-            | Handsontable.contextMenu.PredefinedMenuItemKey
+            | Handsontable.plugins.ContextMenu.MenuItemConfig
+            | Handsontable.plugins.ContextMenu.PredefinedMenuItemKey
           >
         >()(
           this.isUploaded

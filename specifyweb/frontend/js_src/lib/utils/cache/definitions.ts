@@ -4,8 +4,8 @@
  * @module
  */
 
-import type hot from 'handsontable';
 import type { State } from 'typesafe-reducer';
+import { SortOrderType } from 'handsontable/plugins/columnSorting';
 
 import type { AppResourcesConformation } from '../../components/AppResources/Aside';
 import type { AppResourceFilters } from '../../components/AppResources/filtersHelpers';
@@ -89,11 +89,11 @@ export type CacheDefinitions = {
      * WorkBench column sort setting in a given dataset
      * {Collection ID}_{Dataset ID}
      */
-    [key in `${number}_${number}`]: RA<
-      hot.columnSorting.Config & {
-        readonly physicalCol: number;
-      }
-    >;
+    [key in `${number}_${number}`]: RA<{
+      readonly column: number;
+      readonly sortOrder: SortOrderType;
+      readonly physicalCol: number;
+    }>;
   };
   readonly sortConfig: {
     readonly [KEY in keyof SortConfigs]: SortConfig<SortConfigs[KEY]>;
