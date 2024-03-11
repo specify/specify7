@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { usePromise } from '../../hooks/useAsyncState';
+import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { Button } from '../Atoms/Button';
@@ -8,7 +9,6 @@ import { Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import type { Tables } from '../DataModel/types';
 import { fetchFormatters } from '../Formatters/formatters';
-import { useId } from '../../hooks/useId';
 
 export function QueryFieldFormatter({
   type,
@@ -59,6 +59,7 @@ export function QueryFieldFormatter({
   ) : availableFormatters.length > 1 ? (
     <>
       <Button.Small
+        aria-controls={id('list')}
         aria-label={queryText.chooseFormatter()}
         className={`${
           availableFormatters.find((selected) => selected.name === formatter)
@@ -68,18 +69,17 @@ export function QueryFieldFormatter({
         }`}
         title={queryText.chooseFormatter()}
         onClick={() => setFormatterSelect(!formatterSelectIsOpen)}
-        aria-controls={id('list')}
       >
         {icons.cog}
       </Button.Small>
       {formatterSelectIsOpen && (
         <div>
           <Select
+            aria-label={queryText.chooseFormatter()}
             disabled={handleChange === undefined}
+            id="list"
             value={formatter}
             onValueChange={handleChange}
-            aria-label={queryText.chooseFormatter()}
-            id={'list'}
           >
             <option />
             {availableFormatters.map(({ name, title }, index) => (
