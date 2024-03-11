@@ -117,6 +117,7 @@ export function Fields({
           >
             {resourcesText.addField()}
           </Button.Secondary>
+          <span className="-ml-2 flex-1" />
           {fields.length > 0 && (
             <Label.Inline>
               <Input.Checkbox
