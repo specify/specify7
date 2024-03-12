@@ -97,7 +97,7 @@ export function AggregatorElement({
           />
         </fieldset>
       )}
-        <AggregatorPreview aggregator={aggregator} />
+      <AggregatorPreview aggregator={aggregator} />
     </>
   );
 }
