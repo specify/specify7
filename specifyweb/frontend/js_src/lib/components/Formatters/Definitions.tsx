@@ -218,7 +218,10 @@ function ConditionalFormatter({
         />
       ) : null}
       <span className="-ml-2 flex-1" />
-      {trimmedFieldsLength === 1 || isExpanded || isReadOnly ? null : (
+      {trimmedFieldsLength === 1 ||
+      isExpanded ||
+      isReadOnly ||
+      !hasCondition ? null : (
         <div className="inline-flex">
           <Button.Icon
             icon="trash"
