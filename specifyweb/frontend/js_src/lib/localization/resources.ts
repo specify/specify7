@@ -520,6 +520,7 @@ export const resourcesText = createDictionary({
   },
   previewExplainer: {
     'en-us': 'Search your collection records to preview the record formatter',
+    'de-ch': '',
   },
   editorNotAvailable: {
     'en-us': 'Visual editor is not available for this resource',
@@ -817,10 +818,10 @@ export const resourcesText = createDictionary({
   },
   conditionalFieldValue: {
     'en-us': 'Conditional Field Value',
-    'de-ch': '',
+    'de-ch': 'Bedingter Feldwert',
   },
   formatPreview: {
     'en-us': 'Format Preview',
-    'de-ch': '',
+    'de-ch': 'Formatvorschau',
   },
 } as const);

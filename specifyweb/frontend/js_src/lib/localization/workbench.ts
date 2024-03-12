@@ -955,8 +955,8 @@ export const wbText = createDictionary({
     'ru-ru': 'Результаты загрузки',
     'es-es': 'Cargar Resultados',
     'de-ch': 'Live-Suche',
-    'fr-fr': 'Nom du nouvel ensemble de données :',
-    'uk-ua': 'Назва нового набору даних:',
+    'fr-fr': 'Télécharger le forfait',
+    'uk-ua': 'План завантаження',
   },
   potentialUploadResults: {
     'en-us': 'Potential Upload Results',
