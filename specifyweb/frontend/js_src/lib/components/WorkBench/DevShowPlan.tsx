@@ -8,8 +8,8 @@ import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { Dialog } from '../Molecules/Dialog';
-import type { UploadPlan } from '../WbPlanView/uploadPlanParser';
 import { downloadFile } from '../Molecules/FilePicker';
+import type { UploadPlan } from '../WbPlanView/uploadPlanParser';
 
 /**
  * Show upload plan as JSON. Available in Development only
