@@ -113,7 +113,7 @@ msgstr "Field Formatters"
 msgid "dataObjectFormatters"
 msgstr "Record Formatters"
 
-#: components/Formatters/Aggregator.tsx:70
+#: components/Formatters/Aggregator.tsx:69
 #: components/Formatters/Element.tsx:125
 #: components/Formatters/Fields.tsx:267
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
@@ -279,19 +279,19 @@ msgstr "Title"
 msgid "default"
 msgstr "Default"
 
-#: components/Formatters/Aggregator.tsx:27
+#: components/Formatters/Aggregator.tsx:28
 #: components/Formatters/Fields.tsx:68
 #: components/Formatters/Fields.tsx:161
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Fields
 msgid "separator"
 msgstr "Separator"
 
-#: components/Formatters/Aggregator.tsx:40
+#: components/Formatters/Aggregator.tsx:41
 #. Used in: Components > Formatters > Aggregator
 msgid "suffix"
 msgstr "Suffix"
 
-#: components/Formatters/Aggregator.tsx:84
+#: components/Formatters/Aggregator.tsx:54
 #. Used in: Components > Formatters > Aggregator
 msgid "limit"
 msgstr "Limit"
@@ -302,7 +302,7 @@ msgstr "Limit"
 msgid "defaultInline"
 msgstr "(default)"
 
-#: components/Formatters/Aggregator.tsx:54
+#: components/Formatters/Aggregator.tsx:85
 #. Used in: Components > Formatters > Aggregator
 msgid "sortField"
 msgstr "Sort Field"
@@ -313,6 +313,11 @@ msgstr "Sort Field"
 #. Used in: Components > Form Editor > Create ⬤ Components > Formatters > Preview ⬤ Components > Merging > Header
 msgid "preview"
 msgstr "Preview"
+
+#: components/Formatters/Preview.tsx:66
+#. Used in: Components > Formatters > Preview
+msgid "previewExplainer"
+msgstr "Search your collection records to preview the record formatter"
 
 #: components/FormEditor/Table.tsx:86
 #: components/Formatters/Formatter.tsx:33

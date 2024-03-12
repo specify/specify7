@@ -393,8 +393,8 @@ msgstr "Tools"
 #: components/FormFields/Field.tsx:82
 #: components/FormPlugins/CollectionRelOneToMany.tsx:152
 #: components/FormPlugins/CollectionRelOneToOne.tsx:35
-#: components/Formatters/Preview.tsx:98
-#: components/Formatters/Preview.tsx:136
+#: components/Formatters/Preview.tsx:99
+#: components/Formatters/Preview.tsx:137
 #: components/Forms/BaseResourceView.tsx:61
 #: components/Forms/DeleteButton.tsx:109
 #: components/Forms/SubView.tsx:232
@@ -480,7 +480,7 @@ msgid "remove"
 msgstr "Remove"
 
 #: components/Atoms/DataEntry.tsx:158
-#: components/Formatters/Preview.tsx:68
+#: components/Formatters/Preview.tsx:69
 #: components/Header/ExpressSearchTask.tsx:50
 #: components/Header/ExpressSearchTask.tsx:90
 #: components/Header/ExpressSearchTask.tsx:95
