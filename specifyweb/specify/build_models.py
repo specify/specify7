@@ -44,12 +44,9 @@ def make_model(module, table, datamodel):
         fldname = field.name.lower()
         maker = field_type_map[field.type]
         fldargs = {}
-        if fldname == 'timestampcreated':
-            # fldargs['auto_now_add'] = True
-            pass
-        if fldname == 'timestampmodified':
-            # fldargs['auto_now'] = True
-            pass
+        # NOTE: setting fldargs['auto_now_add'] = True and fldargs['auto_now'] = True not needed for 
+        # 'if fldname == 'timestampcreated'' or `if fldname == 'timestampmodified'` 
+        # as we are using pre_save_auto_timestamp_field_with_override
         if fldname == 'version':
             fldargs['default'] = 0
         attrs[fldname] = maker(field, fldargs)
@@ -88,17 +85,13 @@ def make_model(module, table, datamodel):
     if has_timestamp_fields:
         tracked_fields = [field for field in timestamp_fields if field in field_names]
         attrs['tracker'] = FieldTracker(fields=tracked_fields)
-        # attrs['objects'] = SpTimestampManager()
         for field in tracked_fields:
-            # attrs[field] = models.DateTimeField(db_column=field, default=timezone.now)
-            attrs[field] = models.DateTimeField(db_column=field)
-            # pass
+            attrs[field] = models.DateTimeField(db_column=field) # default=timezone.now is handled in pre_save_auto_timestamp_field_with_override
 
     attrs['Meta'] = Meta
 
     if has_timestamp_fields:
         attrs['save'] = save_timestamped
-        # pass
     else:
         attrs['save'] = save
 
@@ -106,13 +99,10 @@ def make_model(module, table, datamodel):
     if hasattr(model_extras, table.django_name):
         supercls = getattr(model_extras, table.django_name)
     elif has_timestamp_fields:
-        # supercls = SpTimestampedModel
+        # FUTURE: supercls = SpTimestampedModel
         pass
 
     model = type(table.django_name, (supercls,), attrs)
-    if has_timestamp_fields:
-        # pre_save.connect(auto_timestamp_fields, sender=model)
-        pass
     return model
 
 def make_id_field(column):

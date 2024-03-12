@@ -24,8 +24,7 @@ def validate_node_numbers(table, revalidate_after=True):
     if revalidate_after:
         validate_tree_numbering(table)
 
-# class Tree(SpTimestampedModel):
-class Tree(models.Model):
+class Tree(models.Model): # FUTURE: class Tree(SpTimestampedModel):
     class Meta:
         abstract = True
 
