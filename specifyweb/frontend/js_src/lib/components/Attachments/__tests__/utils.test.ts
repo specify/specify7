@@ -1,5 +1,5 @@
 import { requireContext } from '../../../tests/helpers';
-import { strictGetModel } from '../../DataModel/schema';
+import { strictGetTable } from '../../DataModel/tables';
 import {
   allTablesWithAttachments,
   attachmentRelatedTables,
@@ -15,13 +15,13 @@ test('allTablesWithAttachments', () =>
   expect(allTablesWithAttachments()).toMatchSnapshot());
 
 test.each([
-  [() => strictGetModel('DNASequence'), 'attachments'],
-  [() => strictGetModel('FieldNotebook'), 'attachments'],
-  [() => strictGetModel('CollectionObject'), 'collectionObjectAttachments'],
-  [() => strictGetModel('Attachment'), undefined],
-  [() => strictGetModel('AttachmentMetadata'), undefined],
-  [() => strictGetModel('CollectingEventAttachment'), undefined],
-  [() => strictGetModel('Author'), undefined],
+  [() => strictGetTable('DNASequence'), 'attachments'],
+  [() => strictGetTable('FieldNotebook'), 'attachments'],
+  [() => strictGetTable('CollectionObject'), 'collectionObjectAttachments'],
+  [() => strictGetTable('Attachment'), undefined],
+  [() => strictGetTable('AttachmentMetadata'), undefined],
+  [() => strictGetTable('CollectingEventAttachment'), undefined],
+  [() => strictGetTable('Author'), undefined],
 ])('getAttachmentRelationship', (getSpecifyModel, relationshipName) =>
   expect(getAttachmentRelationship(getSpecifyModel())?.name).toEqual(
     relationshipName
