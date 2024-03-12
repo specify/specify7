@@ -4,13 +4,13 @@ import { usePromise } from '../../hooks/useAsyncState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
+import { resourcesText } from '../../localization/resources';
 import { Button } from '../Atoms/Button';
 import { Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import type { Tables } from '../DataModel/types';
 import { fetchFormatters } from '../Formatters/formatters';
 import { customSelectElementBackground } from '../WbPlanView/CustomSelectElement';
-import { resourcesText } from '../../localization/resources';
 
 export function QueryFieldFormatter({
   type,
