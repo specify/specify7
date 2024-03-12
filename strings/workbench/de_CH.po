@@ -20,13 +20,18 @@ msgstr ""
 msgid "workBench"
 msgstr "WorkBench"
 
+#: components/WorkBench/Template.tsx:207
+#. Used in: Components > Work Bench > Template
+msgid "uploadPlan"
+msgstr ""
+
 #: components/AttachmentsBulkImport/Rollback.tsx:29
 #: components/AttachmentsBulkImport/Rollback.tsx:93
 #: components/AttachmentsBulkImport/Rollback.tsx:130
 #: components/AttachmentsBulkImport/utils.ts:479
 #: components/WorkBench/Components.tsx:36
 #: components/WorkBench/Status.tsx:75
-#: components/WorkBench/Template.tsx:164
+#: components/WorkBench/Template.tsx:154
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Work Bench > Components ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Template
 #, fuzzy
 msgid "rollback"
@@ -34,7 +39,7 @@ msgstr "Zurückrollen"
 
 #: components/AttachmentsBulkImport/Import.tsx:290
 #: components/WbPlanView/Mapper.tsx:380
-#: components/WorkBench/Template.tsx:145
+#: components/WorkBench/Template.tsx:135
 #. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Template
 msgid "validate"
 msgstr "Validieren"
@@ -50,7 +55,7 @@ msgstr "Validierung"
 #: components/AttachmentsBulkImport/utils.ts:476
 #: components/Molecules/SyncAttachmentPicker.tsx:94
 #: components/WorkBench/Status.tsx:74
-#: components/WorkBench/Template.tsx:175
+#: components/WorkBench/Template.tsx:165
 #: components/WorkBench/WbActions.tsx:65
 #. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb Actions
 #, fuzzy
@@ -96,7 +101,7 @@ msgstr "Abfüllen"
 msgid "fillUp"
 msgstr "Auffüllen"
 
-#: components/WorkBench/Template.tsx:185
+#: components/WorkBench/Template.tsx:175
 #: components/WorkBench/WbActions.tsx:149
 #. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb Actions
 #, fuzzy
@@ -104,7 +109,7 @@ msgid "revert"
 msgstr "Zurückkehren"
 
 #: components/Preferences/UserDefinitions.tsx:1646
-#: components/WorkBench/Template.tsx:138
+#: components/WorkBench/Template.tsx:128
 #: components/WorkBench/WbValidation.tsx:160
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb Validation
 #, fuzzy
@@ -127,39 +132,39 @@ msgstr ""
 "und keinen Ersatz für die reguläre Validierung darstellt."
 
 #: components/WorkBench/DataSetMeta.tsx:439
-#: components/WorkBench/Template.tsx:213
+#: components/WorkBench/Template.tsx:204
 #. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 #, fuzzy
 msgid "changeOwner"
 msgstr "Besitzer wechseln"
 
-#: components/WorkBench/Template.tsx:228
+#: components/WorkBench/Template.tsx:223
 #. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "convertCoordinates"
 msgstr "Koordinaten konvertieren"
 
-#: components/WorkBench/Template.tsx:254
+#: components/WorkBench/Template.tsx:249
 #. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "navigation"
 msgstr "Navigation"
 
-#: components/WorkBench/Template.tsx:276
+#: components/WorkBench/Template.tsx:271
 #. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "replace"
 msgstr "Ersetzen"
 
-#: components/WorkBench/Template.tsx:273
-#: components/WorkBench/Template.tsx:277
+#: components/WorkBench/Template.tsx:268
+#: components/WorkBench/Template.tsx:272
 #. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "replacementValue"
 msgstr "Wiederbeschaffungswert"
 
 #: components/SpecifyNetworkCollection/Setup.tsx:69
-#: components/WorkBench/Template.tsx:283
+#: components/WorkBench/Template.tsx:278
 #. Used in: Components > Specify Network Collection > Setup ⬤ Components > Work Bench > Template
 #, fuzzy
 msgid "searchResults"
@@ -179,19 +184,19 @@ msgstr "Klicken Sie, um die Sichtbarkeit umzuschalten"
 msgid "configureSearchReplace"
 msgstr "Konfigurieren Sie Suchen und Ersetzen"
 
-#: components/WorkBench/Template.tsx:285
+#: components/WorkBench/Template.tsx:280
 #. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "modifiedCells"
 msgstr "Modifizierte Zellen"
 
-#: components/WorkBench/Template.tsx:287
+#: components/WorkBench/Template.tsx:282
 #. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "newCells"
 msgstr "Neue Zellen"
 
-#: components/WorkBench/Template.tsx:289
+#: components/WorkBench/Template.tsx:284
 #. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "errorCells"
@@ -283,14 +288,14 @@ msgstr ""
 "Löschen ist Rollback für einen hochgeladenen Datensatz nicht mehr möglich."
 
 #: components/WorkBench/DataSetMeta.tsx:131
-#: components/WorkBench/Template.tsx:337
+#: components/WorkBench/Template.tsx:332
 #. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 #, fuzzy
 msgid "dataSetDeleted"
 msgstr "Datensatz erfolgreich gelöscht"
 
 #: components/WorkBench/DataSetMeta.tsx:134
-#: components/WorkBench/Template.tsx:340
+#: components/WorkBench/Template.tsx:335
 #. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 #, fuzzy
 msgid "dataSetDeletedDescription"
@@ -316,7 +321,7 @@ msgstr ""
 msgid "saving"
 msgstr "Sparen..."
 
-#: components/WorkBench/Template.tsx:397
+#: components/WorkBench/Template.tsx:392
 #. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "wbUnloadProtect"
@@ -479,7 +484,7 @@ msgstr "Wählen Sie ein bevorzugtes Geokoordinatenformat"
 msgid "emptyStringInline"
 msgstr "(leerer String)"
 
-#: components/WorkBench/Template.tsx:152
+#: components/WorkBench/Template.tsx:142
 #: components/WorkBench/WbActions.tsx:353
 #. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb Actions
 #, fuzzy
@@ -518,9 +523,9 @@ msgstr "Diese Aktion ist beim Anzeigen der Upload-Ergebnisse nicht verfügbar"
 msgid "unavailableWhileValidating"
 msgstr "Diese Aktion ist nicht verfügbar, während die Datenprüfung ausgeführt wird"
 
-#: components/WorkBench/Template.tsx:225
-#: components/WorkBench/Template.tsx:233
-#: components/WorkBench/Template.tsx:243
+#: components/WorkBench/Template.tsx:220
+#: components/WorkBench/Template.tsx:228
+#: components/WorkBench/Template.tsx:238
 #. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "unavailableWithoutLocality"
@@ -532,7 +537,7 @@ msgstr "Für dieses Tool müssen Ortsspalten zugeordnet werden"
 msgid "unavailableWhenUploaded"
 msgstr "Dieses Tool funktioniert nicht mit hochgeladenen Datensätzen"
 
-#: components/WorkBench/Template.tsx:333
+#: components/WorkBench/Template.tsx:328
 #. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "dataSetDeletedOrNotFound"

@@ -20,20 +20,25 @@ msgstr ""
 msgid "workBench"
 msgstr "WorkBench"
 
+#: components/WorkBench/Template.tsx:207
+#. Used in: Components > Work Bench > Template
+msgid "uploadPlan"
+msgstr ""
+
 #: components/AttachmentsBulkImport/Rollback.tsx:29
 #: components/AttachmentsBulkImport/Rollback.tsx:93
 #: components/AttachmentsBulkImport/Rollback.tsx:130
 #: components/AttachmentsBulkImport/utils.ts:479
 #: components/WorkBench/Components.tsx:36
 #: components/WorkBench/Status.tsx:75
-#: components/WorkBench/Template.tsx:164
+#: components/WorkBench/Template.tsx:154
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Work Bench > Components ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Template
 msgid "rollback"
 msgstr "Откат"
 
 #: components/AttachmentsBulkImport/Import.tsx:290
 #: components/WbPlanView/Mapper.tsx:380
-#: components/WorkBench/Template.tsx:145
+#: components/WorkBench/Template.tsx:135
 #. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Template
 msgid "validate"
 msgstr "Проверить"
@@ -48,7 +53,7 @@ msgstr "Проверка"
 #: components/AttachmentsBulkImport/utils.ts:476
 #: components/Molecules/SyncAttachmentPicker.tsx:94
 #: components/WorkBench/Status.tsx:74
-#: components/WorkBench/Template.tsx:175
+#: components/WorkBench/Template.tsx:165
 #: components/WorkBench/WbActions.tsx:65
 #. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb Actions
 msgid "upload"
@@ -87,14 +92,14 @@ msgstr "Заполнить Вниз"
 msgid "fillUp"
 msgstr "Заполнить Вверх"
 
-#: components/WorkBench/Template.tsx:185
+#: components/WorkBench/Template.tsx:175
 #: components/WorkBench/WbActions.tsx:149
 #. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb Actions
 msgid "revert"
 msgstr "Вернуть"
 
 #: components/Preferences/UserDefinitions.tsx:1646
-#: components/WorkBench/Template.tsx:138
+#: components/WorkBench/Template.tsx:128
 #: components/WorkBench/WbValidation.tsx:160
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb Validation
 msgid "dataCheck"
@@ -113,34 +118,34 @@ msgid "dataCheckDescription"
 msgstr "Временная метка загружена"
 
 #: components/WorkBench/DataSetMeta.tsx:439
-#: components/WorkBench/Template.tsx:213
+#: components/WorkBench/Template.tsx:204
 #. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 msgid "changeOwner"
 msgstr "Сменить владельца"
 
-#: components/WorkBench/Template.tsx:228
+#: components/WorkBench/Template.tsx:223
 #. Used in: Components > Work Bench > Template
 msgid "convertCoordinates"
 msgstr "Преобразовать координаты"
 
-#: components/WorkBench/Template.tsx:254
+#: components/WorkBench/Template.tsx:249
 #. Used in: Components > Work Bench > Template
 msgid "navigation"
 msgstr "Навигация"
 
-#: components/WorkBench/Template.tsx:276
+#: components/WorkBench/Template.tsx:271
 #. Used in: Components > Work Bench > Template
 msgid "replace"
 msgstr "Заменять"
 
-#: components/WorkBench/Template.tsx:273
-#: components/WorkBench/Template.tsx:277
+#: components/WorkBench/Template.tsx:268
+#: components/WorkBench/Template.tsx:272
 #. Used in: Components > Work Bench > Template
 msgid "replacementValue"
 msgstr "Замена"
 
 #: components/SpecifyNetworkCollection/Setup.tsx:69
-#: components/WorkBench/Template.tsx:283
+#: components/WorkBench/Template.tsx:278
 #. Used in: Components > Specify Network Collection > Setup ⬤ Components > Work Bench > Template
 msgid "searchResults"
 msgstr "Результаты Поиска"
@@ -157,17 +162,17 @@ msgstr "Нажмите, чтобы переключить видимость"
 msgid "configureSearchReplace"
 msgstr "Настроить поиск и замену"
 
-#: components/WorkBench/Template.tsx:285
+#: components/WorkBench/Template.tsx:280
 #. Used in: Components > Work Bench > Template
 msgid "modifiedCells"
 msgstr "Модифицированные клетки"
 
-#: components/WorkBench/Template.tsx:287
+#: components/WorkBench/Template.tsx:282
 #. Used in: Components > Work Bench > Template
 msgid "newCells"
 msgstr "Новые клетки"
 
-#: components/WorkBench/Template.tsx:289
+#: components/WorkBench/Template.tsx:284
 #. Used in: Components > Work Bench > Template
 msgid "errorCells"
 msgstr "Ячейки с ошибками"
@@ -241,13 +246,13 @@ msgstr ""
 "Отката не будет возможным для загруженного набора данных."
 
 #: components/WorkBench/DataSetMeta.tsx:131
-#: components/WorkBench/Template.tsx:337
+#: components/WorkBench/Template.tsx:332
 #. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 msgid "dataSetDeleted"
 msgstr "Набор данных успешно удален"
 
 #: components/WorkBench/DataSetMeta.tsx:134
-#: components/WorkBench/Template.tsx:340
+#: components/WorkBench/Template.tsx:335
 #. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 msgid "dataSetDeletedDescription"
 msgstr "Набор данных успешно удален."
@@ -269,7 +274,7 @@ msgstr ""
 msgid "saving"
 msgstr "Сохранение..."
 
-#: components/WorkBench/Template.tsx:397
+#: components/WorkBench/Template.tsx:392
 #. Used in: Components > Work Bench > Template
 msgid "wbUnloadProtect"
 msgstr "Изменения в этом наборе данных не были сохранены."
@@ -406,7 +411,7 @@ msgstr "Выберите предпочтительный формат геок�
 msgid "emptyStringInline"
 msgstr "(пуста строка)"
 
-#: components/WorkBench/Template.tsx:152
+#: components/WorkBench/Template.tsx:142
 #: components/WorkBench/WbActions.tsx:353
 #. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb Actions
 msgid "wbUploadedUnavailable"
@@ -439,9 +444,9 @@ msgstr "Это действие недоступно при просмотре �
 msgid "unavailableWhileValidating"
 msgstr "Это действие недоступно, пока выполняется проверка данных"
 
-#: components/WorkBench/Template.tsx:225
-#: components/WorkBench/Template.tsx:233
-#: components/WorkBench/Template.tsx:243
+#: components/WorkBench/Template.tsx:220
+#: components/WorkBench/Template.tsx:228
+#: components/WorkBench/Template.tsx:238
 #. Used in: Components > Work Bench > Template
 msgid "unavailableWithoutLocality"
 msgstr "Этот инструмент требует, чтобы столбцы координат были сопоставлены"
@@ -451,7 +456,7 @@ msgstr "Этот инструмент требует, чтобы столбцы 
 msgid "unavailableWhenUploaded"
 msgstr "Этот инструмент не работает с загруженными наборами данных"
 
-#: components/WorkBench/Template.tsx:333
+#: components/WorkBench/Template.tsx:328
 #. Used in: Components > Work Bench > Template
 msgid "dataSetDeletedOrNotFound"
 msgstr "Набор данных был удален другим сеансом."

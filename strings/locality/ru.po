@@ -11,7 +11,7 @@ msgstr "Открыть карту"
 #: components/Preferences/UserDefinitions.tsx:1888
 #: components/QueryBuilder/ToMap.tsx:68
 #: components/QueryBuilder/ToMap.tsx:261
-#: components/WorkBench/Template.tsx:246
+#: components/WorkBench/Template.tsx:241
 #. Used in: Components > Leaflet > Map ⬤ Components > Preferences > User Definitions ⬤ Components > Query Builder > To Map ⬤ Components > Work Bench > Template
 msgid "geoMap"
 msgstr "Карта"
@@ -68,7 +68,7 @@ msgstr "Полигоны"
 #: components/FormPlugins/GeoLocate.tsx:33
 #: components/Molecules/GeoLocate.tsx:70
 #: components/Molecules/GeoLocate.tsx:74
-#: components/WorkBench/Template.tsx:236
+#: components/WorkBench/Template.tsx:231
 #. Used in: Components > Form Plugins > Geo Locate ⬤ Components > Molecules > Geo Locate ⬤ Components > Work Bench > Template
 msgid "geoLocate"
 msgstr "GEOLocate"

@@ -12,8 +12,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: components/Preferences/UserDefinitions.tsx:1777
-#: components/WorkBench/DevShowPlan.tsx:61
-#: components/WorkBench/Template.tsx:129
+#: components/WorkBench/DevShowPlan.tsx:75
+#: components/WorkBench/Template.tsx:119
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Dev Show Plan ⬤ Components > Work Bench > Template
 msgid "dataMapper"
 msgstr "Mapeador de Datos"
