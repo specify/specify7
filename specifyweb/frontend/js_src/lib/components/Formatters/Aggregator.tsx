@@ -97,9 +97,7 @@ export function AggregatorElement({
           />
         </fieldset>
       )}
-      <div>
         <AggregatorPreview aggregator={aggregator} />
-      </div>
     </>
   );
 }
