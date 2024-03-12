@@ -334,7 +334,7 @@ msgstr "Add definition"
 
 #: components/FormEditor/Editor.tsx:133
 #: components/Formatters/Definitions.tsx:156
-#: components/Formatters/Definitions.tsx:225
+#: components/Formatters/Definitions.tsx:228
 #. Used in: Components > Form Editor > Editor ⬤ Components > Formatters > Definitions
 msgid "deleteDefinition"
 msgstr "Delete definition"
@@ -464,7 +464,7 @@ msgstr "Conditional Format"
 msgid "customizeFieldFormatters"
 msgstr "Customize Field Formats"
 
-#: components/Formatters/Definitions.tsx:234
+#: components/Formatters/Definitions.tsx:237
 #. Used in: Components > Formatters > Definitions
 msgid "expandConditionalField"
 msgstr "Expand Conditional Field"
