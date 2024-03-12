@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-03-12 02:35+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2024-03-12 06:01+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/resources/de_CH/>\n"
 "Language: de_CH\n"
@@ -120,7 +120,7 @@ msgstr "Weblinks"
 #: components/AppResources/types.tsx:159
 #, fuzzy
 msgid "uiFormatters"
-msgstr "Feld-Formatierer"
+msgstr "Feldformatierer"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:167
@@ -133,25 +133,35 @@ msgstr "Datensatz-Formatierer"
 #: components/Formatters/Fields.tsx:267
 #, fuzzy
 msgid "formatter"
-msgstr ""
+msgstr "Tabellenformat"
 
 #. Used in: Components > Formatters > Table
 #: components/Formatters/Table.tsx:31
 #, fuzzy
 msgid "formatterDescription"
 msgstr ""
+"Das „Tabellenformat“ steuert, wie Daten aus einer bestimmten Tabelle in "
+"Abfrageergebnissen, Exporten und Abfragekombinationsfeldern angezeigt "
+"werden. Es bestimmt die anzuzeigenden Felder und deren Reihenfolge. Die "
+"bedingte Formatierung kann basierend auf einem Wert im Datensatz "
+"konfiguriert werden."
 
 #. Used in: Components > Formatters > Element
 #: components/Formatters/Element.tsx:126
 #, fuzzy
 msgid "aggregator"
-msgstr ""
+msgstr "Tabellenaggregation"
 
 #. Used in: Components > Formatters > Table
 #: components/Formatters/Table.tsx:32
 #, fuzzy
 msgid "aggregatorDescription"
 msgstr ""
+"Die „Tabellenaggregation“ steuert, wie mehrere Tabellendatensätze zu einer "
+"einzigen Textzeichenfolge zusammengefasst werden. Das Tabellenformat, das "
+"Trennzeichen, das Suffix, das Sortierfeld und das Limit für die "
+"Datensatzvorschau sind anpassbar. Es kann in Abfrageergebnissen und "
+"Tabellenformaten angezeigt werden."
 
 #. Used in: Components > Web Links > Definition
 #: components/WebLinks/Definition.tsx:28
@@ -163,13 +173,13 @@ msgstr "In Sammlung ausführen"
 #: components/Formatters/List.tsx:66
 #, fuzzy
 msgid "availableFormatters"
-msgstr ""
+msgstr "Verfügbare Tabellenformate"
 
 #. Used in: Components > Formatters > List
 #: components/Formatters/List.tsx:67
 #, fuzzy
 msgid "availableAggregators"
-msgstr ""
+msgstr "Verfügbare Tabellenaggregationen"
 
 #. Used in: Components > Web Links > List
 #: components/WebLinks/List.tsx:24
@@ -182,12 +192,13 @@ msgstr "Verfügbare Weblinks"
 #, fuzzy
 msgid "selectDefaultFormatter"
 msgstr ""
+"Bitte wählen Sie einen Standarddatensatzformatierer für diese Tabelle aus"
 
 #. Used in: Components > Formatters > Element
 #: components/Formatters/Element.tsx:52
 #, fuzzy
 msgid "duplicateFormatters"
-msgstr "Formatierernamen müssen eindeutig sein"
+msgstr "Namen von Datensatzformatierern müssen eindeutig sein"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:175
@@ -408,12 +419,16 @@ msgstr "Bedingungsfeldwert"
 #, fuzzy
 msgid "conditionDescription"
 msgstr ""
+"Dieses Format wird nur verwendet, wenn der Bedingungsfeldwert dieser "
+"Bedingung entspricht."
 
 #. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:170
 #, fuzzy
 msgid "elseConditionDescription"
 msgstr ""
+"Dieses Format wird nur verwendet, wenn der Wert des Bedingungsfelds dieser "
+"Bedingung entspricht oder wenn kein anderes Format damit übereinstimmt."
 
 #. Used in: Components > App Resources > Tabs
 #: components/AppResources/Tabs.tsx:164
@@ -506,13 +521,13 @@ msgstr "Sie müssen dieses Formular speichern, bevor Sie ein anderes bearbeiten"
 #: components/Formatters/Formatter.tsx:77
 #, fuzzy
 msgid "conditionalFormatter"
-msgstr ""
+msgstr "Bedingtes Format"
 
 #. Used in: Components > Formatters > Fields
 #: components/Formatters/Fields.tsx:127
 #, fuzzy
 msgid "customizeFieldFormatters"
-msgstr ""
+msgstr "Passen Sie Feldformate an"
 
 #. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:234
