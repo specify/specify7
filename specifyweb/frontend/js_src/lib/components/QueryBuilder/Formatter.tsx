@@ -10,6 +10,7 @@ import { icons } from '../Atoms/Icons';
 import type { Tables } from '../DataModel/types';
 import { fetchFormatters } from '../Formatters/formatters';
 import { customSelectElementBackground } from '../WbPlanView/CustomSelectElement';
+import { resourcesText } from '../../localization/resources';
 
 export function QueryFieldFormatter({
   type,
@@ -86,9 +87,9 @@ export function QueryFieldFormatter({
             onValueChange={handleChange}
           >
             <option />
-            {availableFormatters.map(({ name, title }, index) => (
+            {availableFormatters.map(({ name, title, isDefault }, index) => (
               <option key={index} value={name}>
-                {title}
+                {title} {isDefault ? resourcesText.defaultInline() : ''}
               </option>
             ))}
           </Select>
