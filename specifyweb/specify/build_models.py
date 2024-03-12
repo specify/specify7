@@ -2,13 +2,14 @@ import time
 from attr import has
 from django.db import models
 from django.utils import timezone
+from django.db.models.signals import pre_save
 
 from model_utils import FieldTracker
 from requests import get
 
 from specifyweb.businessrules.exceptions import AbortSave
 from . import model_extras
-from .model_timestamp import SpTimestampedModel, pre_save_auto_timestamp_field_with_override, SpTimestampManager
+from .model_timestamp import SpTimestampedModel, auto_timestamp_fields, pre_save_auto_timestamp_field_with_override, SpTimestampManager
 
 appname = __name__.split('.')[-2]
 
@@ -87,7 +88,7 @@ def make_model(module, table, datamodel):
     if has_timestamp_fields:
         tracked_fields = [field for field in timestamp_fields if field in field_names]
         attrs['tracker'] = FieldTracker(fields=tracked_fields)
-        attrs['objects'] = SpTimestampManager()
+        # attrs['objects'] = SpTimestampManager()
         for field in tracked_fields:
             # attrs[field] = models.DateTimeField(db_column=field, default=timezone.now)
             attrs[field] = models.DateTimeField(db_column=field)
@@ -97,6 +98,7 @@ def make_model(module, table, datamodel):
 
     if has_timestamp_fields:
         attrs['save'] = save_timestamped
+        # pass
     else:
         attrs['save'] = save
 
@@ -108,6 +110,9 @@ def make_model(module, table, datamodel):
         pass
 
     model = type(table.django_name, (supercls,), attrs)
+    if has_timestamp_fields:
+        # pre_save.connect(auto_timestamp_fields, sender=model)
+        pass
     return model
 
 def make_id_field(column):
