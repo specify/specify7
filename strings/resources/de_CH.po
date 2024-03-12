@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-03-12 14:12+0000\n"
+"PO-Revision-Date: 2024-03-12 23:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/resources/de_CH/>\n"
@@ -340,8 +340,11 @@ msgstr "Vorschau"
 
 #. Used in: Components > Formatters > Preview
 #: components/Formatters/Preview.tsx:66
+#, fuzzy
 msgid "previewExplainer"
 msgstr ""
+"Durchsuchen Sie Ihre Sammlungsdatensätze, um eine Vorschau des "
+"Datensatzformatierers anzuzeigen"
 
 #. Used in: Components > Form Editor > Table ⬤ Components > Formatters > Formatter
 #: components/FormEditor/Table.tsx:86 components/Formatters/Formatter.tsx:33
