@@ -518,6 +518,9 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Aperçu',
     'uk-ua': 'Попередній перегляд',
   },
+  previewExplainer: {
+    'en-us': 'Search your collection records to preview the record formatter',
+  },
   editorNotAvailable: {
     'en-us': 'Visual editor is not available for this resource',
     'de-ch': 'Der visuelle Editor ist für diese Ressource nicht verfügbar',

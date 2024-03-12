@@ -23,32 +23,63 @@ export function AggregatorElement({
   );
   return (
     <>
-      <Label.Block>
-        {resourcesText.separator()}
-        <Input.Text
-          isReadOnly={isReadOnly}
-          value={aggregator.separator}
-          onValueChange={(separator): void =>
-            setAggregator({
-              ...aggregator,
-              separator,
-            })
-          }
-        />
-      </Label.Block>
-      <Label.Block>
-        {resourcesText.suffix()}
-        <Input.Text
-          isReadOnly={isReadOnly}
-          value={aggregator.suffix}
-          onValueChange={(suffix): void =>
-            setAggregator({
-              ...aggregator,
-              suffix,
-            })
-          }
-        />
-      </Label.Block>
+      <div className="grid grid-cols-2 gap-4">
+        <Label.Block>
+          {resourcesText.separator()}
+          <Input.Text
+            isReadOnly={isReadOnly}
+            value={aggregator.separator}
+            onValueChange={(separator): void =>
+              setAggregator({
+                ...aggregator,
+                separator,
+              })
+            }
+          />
+        </Label.Block>
+        <Label.Block>
+          {resourcesText.suffix()}
+          <Input.Text
+            isReadOnly={isReadOnly}
+            value={aggregator.suffix}
+            onValueChange={(suffix): void =>
+              setAggregator({
+                ...aggregator,
+                suffix,
+              })
+            }
+          />
+        </Label.Block>
+        <Label.Block>
+          {resourcesText.limit()}
+          <Input.Integer
+            isReadOnly={isReadOnly}
+            min={0}
+            step={1}
+            value={aggregator.limit ?? 0}
+            onValueChange={(limit): void =>
+              setAggregator({
+                ...aggregator,
+                limit,
+              })
+            }
+          />
+        </Label.Block>
+        <Label.Block>
+          {resourcesText.formatter()}
+          <FormattersPickList
+            table={aggregator.table}
+            type="formatters"
+            value={aggregator.formatter}
+            onChange={(formatter): void =>
+              setAggregator({
+                ...aggregator,
+                formatter,
+              })
+            }
+          />
+        </Label.Block>
+      </div>
       {typeof aggregator.table === 'object' && (
         <fieldset>
           <legend>{resourcesText.sortField()}</legend>
@@ -66,36 +97,7 @@ export function AggregatorElement({
           />
         </fieldset>
       )}
-      <Label.Block>
-        {resourcesText.formatter()}
-        <FormattersPickList
-          table={aggregator.table}
-          type="formatters"
-          value={aggregator.formatter}
-          onChange={(formatter): void =>
-            setAggregator({
-              ...aggregator,
-              formatter,
-            })
-          }
-        />
-      </Label.Block>
-      <Label.Block>
-        {resourcesText.limit()}
-        <Input.Integer
-          isReadOnly={isReadOnly}
-          min={0}
-          step={1}
-          value={aggregator.limit ?? 0}
-          onValueChange={(limit): void =>
-            setAggregator({
-              ...aggregator,
-              limit,
-            })
-          }
-        />
-      </Label.Block>
-      <AggregatorPreview aggregator={aggregator} />
+        <AggregatorPreview aggregator={aggregator} />
     </>
   );
 }
