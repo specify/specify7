@@ -146,7 +146,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Weblinks',
   },
   uiFormatters: {
-    'en-us': 'Field formatters',
+    'en-us': 'Field Formatters',
     'ru-ru': 'Форматировщики полей',
     'es-es': 'Formateadores de campo',
     'fr-fr': 'Formateurs de champs',
@@ -162,77 +162,19 @@ export const resourcesText = createDictionary({
     'fr-fr': "Formateurs d'enregistrement",
   },
   formatter: {
-    'en-us': 'Formatter',
-    'ru-ru': 'Ресурс приложения',
-    'de-ch': 'Formatierer',
-    'es-es': 'Recurso de aplicación',
-    'fr-fr': "Ressource d'application",
-    'uk-ua': 'Ресурс програми',
+    'en-us': 'Table Format',
   },
   formatterDescription: {
     'en-us': `
-      Formatter determines how to transform individual database resources into
-      readable text by selecting specific fields and applying a designated
-      separator between them.
-    `,
-    'de-ch': 'JSON-Editor',
-    'es-es': `
-      El formateador determina cómo transformar recursos de bases de datos
-      individuales en texto legible seleccionando campos específicos y aplicando
-      un separador designado entre ellos.
-    `,
-    'fr-fr': `
-      Formatter détermine comment transformer les ressources de base de données
-      individuelles en texte lisible en sélectionnant des champs spécifiques et
-      en appliquant un séparateur désigné entre eux.
-    `,
-    'ru-ru': `
-      Форматтер определяет, как преобразовать отдельные ресурсы базы данных в
-      читаемый текст, выбирая определенные поля и применяя между ними
-      назначенный разделитель.
-    `,
-    'uk-ua': `
-      Форматувальник визначає, як перетворити окремі ресурси бази даних у
-      читабельний текст, вибираючи певні поля та застосовуючи між ними
-      призначений роздільник.
+    The “Table Format” controls how data from a specific table is shown in query results, exports, and query combo boxes. It determines the fields to display and their order. Conditional formatting can be configured based on a value in the record.
     `,
   },
   aggregator: {
-    'en-us': 'Aggregator',
-    'de-ch': 'Aggregator',
-    'es-es': 'Agregador',
-    'fr-fr': 'Agrégateur',
-    'ru-ru': 'Агрегатор',
-    'uk-ua': 'Агрегатор',
+    'en-us': 'Table Aggregation',
   },
   aggregatorDescription: {
     'en-us': `
-      Aggregator determines how to consolidate multiple resources into a single
-      text string by utilizing formatters and inserting a separator between them
-    `,
-    'de-ch': `
-      Der Aggregator bestimmt, wie mehrere Ressourcen in einer einzigen
-      Textzeichenfolge konsolidiert werden, indem er Formatierer verwendet und
-      ein Trennzeichen dazwischen einfügt
-    `,
-    'es-es': `
-      El agregador determina cómo consolidar múltiples recursos en una sola
-      cadena de texto utilizando formateadores e insertando un separador entre
-      ellos.
-    `,
-    'fr-fr': `
-      L'agrégateur détermine comment consolider plusieurs ressources en une
-      seule chaîne de texte en utilisant des formateurs et en insérant un
-      séparateur entre eux.
-    `,
-    'ru-ru': `
-      Агрегатор определяет, как объединить несколько ресурсов в одну текстовую
-      строку, используя средства форматирования и вставляя между ними
-      разделитель.
-    `,
-    'uk-ua': `
-      Агрегатор визначає, як об’єднати кілька ресурсів в один текстовий рядок,
-      використовуючи засоби форматування та вставляючи між ними роздільник
+    The “Table Aggregation” controls how multiple table records are consolidated together into a single text string. The table format, separator, suffix, sort field, and record preview limit are customizable. It can be displayed in query results and table formats.
     `,
   },
   formattedResource: {
@@ -244,20 +186,10 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Відформатований ресурс',
   },
   availableFormatters: {
-    'en-us': 'Available Formatters',
-    'ru-ru': 'Доступные форматтеры',
-    'de-ch': 'Verfügbare Formatierer',
-    'es-es': 'Formateadores disponibles',
-    'fr-fr': 'Formateurs disponibles',
-    'uk-ua': 'Доступні форматувальники',
+    'en-us': 'Available Table Formats',
   },
   availableAggregators: {
-    'en-us': 'Available Aggregators',
-    'ru-ru': 'Доступные агрегаторы',
-    'de-ch': 'Verfügbare Aggregatoren',
-    'es-es': 'Agregadores disponibles',
-    'fr-fr': 'Agrégateurs disponibles',
-    'uk-ua': 'Доступні агрегатори',
+    'en-us': 'Available Table Aggregations',
   },
   availableWebLink: {
     'en-us': 'Available Web Links',
@@ -268,15 +200,10 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Доступні веб-посилання',
   },
   selectDefaultFormatter: {
-    'en-us': 'Please mark one of these formatters as default',
-    'de-ch': 'Bitte markieren Sie einen dieser Formatierer als Standard',
-    'es-es': 'Por favor marque uno de estos formateadores como predeterminado',
-    'fr-fr': "Veuillez marquer l'un de ces formateurs par défaut",
-    'ru-ru': 'Пожалуйста, отметьте один из этих форматтеров как стандартный.',
-    'uk-ua': 'Позначте один із цих формататорів за замовчуванням',
+    'en-us': 'Please select a default record formatter for this table',
   },
   duplicateFormatters: {
-    'en-us': 'Formatter names must be unique',
+    'en-us': 'Record formatter names must be unique',
     'de-ch': 'Formatierernamen müssen eindeutig sein',
     'es-es': 'Los nombres de los formateadores deben ser únicos.',
     'fr-fr': 'Les noms du formateur doivent être uniques',
@@ -565,44 +492,13 @@ export const resourcesText = createDictionary({
   },
   conditionDescription: {
     'en-us': `
-      This formatter will be used only if the condition field value is equal to
-      this condition
-    `,
-    'de-ch': `
-      Dieser Formatierer wird nur verwendet, wenn der Wert des Bedingungsfelds
-      dieser Bedingung entspricht
-    `,
-    'es-es': `
-      Este formateador se utilizará solo si el valor del campo de condición es
-      igual a esta condición.
-    `,
-    'fr-fr': `
-      Ce formateur ne sera utilisé que si la valeur du champ de condition est
-      égale à cette condition
-    `,
-    'ru-ru': `
-      Этот форматтер будет использоваться только в том случае, если значение
-      поля условия равно этому условию.
-    `,
-    'uk-ua': `
-      Цей засіб форматування використовуватиметься, лише якщо значення поля
-      умови дорівнює цій умові
+    This format will be used only if the condition field value equals this condition.
     `,
   },
   elseConditionDescription: {
     'en-us': `
-      This formatter will be used only if the condition field value is equal to
-      this condition or if no other formatter matches its condition
+      This format will be used only if the condition field value equals this condition or if no other format matches it.
     `,
-    'de-ch': `
-      Dieser Formatierer wird nur verwendet, wenn der Wert des Bedingungsfelds
-      dieser Bedingung entspricht oder wenn kein anderer Formatierer mit seiner
-      Bedingung übereinstimmt
-    `,
-    'es-es': 'Costumbre',
-    'fr-fr': 'Coutume',
-    'ru-ru': 'Обычай',
-    'uk-ua': 'Custom',
   },
   wrongScopeWarning: {
     'en-us': `
@@ -741,29 +637,11 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Имя файла',
     'uk-ua': "Ім'я файлу",
   },
-  defaultTableFormatter: {
-    'en-us': 'Default Table Formatter',
-    'de-ch': 'Standard-Tabellenformatierer',
-    'es-es': 'Formateador de tabla predeterminado',
-    'fr-fr': 'Formateur de table par défaut',
-    'ru-ru': 'Средство форматирования таблиц по умолчанию',
-    'uk-ua': 'Типовий форматувальник таблиць',
-  },
   conditionalFormatter: {
-    'en-us': 'Conditional Formatter',
-    'de-ch': 'Bedingter Formatierer',
-    'es-es': 'Formateador condicional',
-    'fr-fr': 'Formateur conditionnel',
-    'ru-ru': 'Условное форматирование',
-    'uk-ua': 'Умовний форматувальник',
+    'en-us': 'Conditional Format',
   },
   customizeFieldFormatters: {
-    'en-us': 'Customize Field Formatters',
-    'de-ch': 'Passen Sie Feldformatierer an',
-    'es-es': 'Personalizar formateadores de campos',
-    'fr-fr': 'Personnaliser les formateurs de champs',
-    'ru-ru': 'Настройте средства форматирования полей',
-    'uk-ua': 'Налаштування форматувальників полів',
+    'en-us': 'Customize Field Formats',
   },
   expandConditionalField: {
     'en-us': 'Expand Conditional Field',
