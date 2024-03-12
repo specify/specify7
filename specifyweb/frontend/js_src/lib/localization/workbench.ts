@@ -19,11 +19,11 @@ export const wbText = createDictionary({
   },
   uploadPlan: {
     'en-us': 'Upload Plan',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch': 'Plan hochladen',
+    'es-es': 'Subir plano',
+    'fr-fr': 'Télécharger le forfait',
+    'ru-ru': 'Загрузить план',
+    'uk-ua': 'План завантаження',
   },
   rollback: {
     'en-us': 'Roll Back',
@@ -955,8 +955,8 @@ export const wbText = createDictionary({
     'ru-ru': 'Результаты загрузки',
     'es-es': 'Cargar Resultados',
     'de-ch': 'Live-Suche',
-    'fr-fr': 'Nom du nouvel ensemble de données :',
-    'uk-ua': 'Назва нового набору даних:',
+    'fr-fr': 'Télécharger le forfait',
+    'uk-ua': 'План завантаження',
   },
   potentialUploadResults: {
     'en-us': 'Potential Upload Results',
