@@ -1,6 +1,9 @@
+from datetime import datetime
 from attr import has
 from django.db import models
 from django.utils import timezone
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 
 from model_utils import FieldTracker
 
@@ -18,25 +21,25 @@ def pre_save_auto_timestamp_field_with_override(obj, *args, **kwargs):
         
     #     obj.timestampmodified = timezone.now()
 
+    # obj.timestampcreated = datetime(1960, 1, 1, 0, 0, 0)
     cur_time = timezone.now()
-    if not timestamp_override:
-        if hasattr(obj, 'timestampcreated') and 'timestampcreated' not in obj.tracker.changed() and not obj.id:
-            obj.timestampcreated = cur_time
-        if hasattr(obj, 'timestampmodified') and  'timestampmodified' not in obj.tracker.changed():
-            obj.timestampmodified = cur_time
-    else:
-        if hasattr(obj, 'timestampcreated') and not obj.timestampcreated:
-            obj.timestampcreated = cur_time
-        if hasattr(obj, 'timestampmodified') and not obj.timestampmodified:
-            obj.timestampmodified = cur_time
+    timestamp_fields = ['timestampcreated', 'timestampmodified']
+    for field in timestamp_fields:
+        if hasattr(obj, field):
+            if not timestamp_override and field not in obj.tracker.changed() and \
+                (not obj.id or not getattr(obj, field)):
+                setattr(obj, field, cur_time)
+            elif timestamp_override and not getattr(obj, field):
+                setattr(obj, field, cur_time)
 
     avoid_null_timestamp_fields(obj)
 
 def avoid_null_timestamp_fields(obj):
+    cur_time = timezone.now()
     if hasattr(obj, 'timestampcreated') and getattr(obj, 'timestampcreated') is None:
-        obj.timestampcreated = timezone.now()
+        obj.timestampcreated = cur_time
     if hasattr(obj, 'timestampmodified') and getattr(obj, 'timestampmodified') is None:
-        obj.timestampmodified = timezone.now()
+        obj.timestampmodified = cur_time
 
 class SpTimestampManager(models.Manager):
     def create(self, **kwargs):
@@ -71,3 +74,15 @@ class SpTimestampedModel(models.Model):
     def save(self, *args, **kwargs):
         pre_save_auto_timestamp_field_with_override(self, *args, **kwargs)
         super().save(*args, **kwargs)
+
+# @receiver(pre_save, sender=YourModel)
+def auto_timestamp_fields(sender, instance, **kwargs):
+    cur_time = timezone.now()
+    is_new_instance = not instance.id
+
+    # if is_new_instance and not getattr(instance, 'timestampcreated', None):
+    if getattr(instance, 'timestampcreated', None):
+        instance.timestampcreated = cur_time
+
+    if not getattr(instance, 'timestampmodified', None):
+        instance.timestampmodified = cur_time
