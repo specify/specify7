@@ -141,7 +141,7 @@ export const schemaText = createDictionary({
     'en-us': 'Table Format',
     'ru-ru': 'Формат таблицы',
     'es-es': 'Formato de tabla',
-    'fr-fr': 'Format du tableau',
+    'fr-fr': 'Sous-catégories',
     'uk-ua': 'Формат таблиці',
     'de-ch': 'Tabellenformat',
   },
@@ -149,7 +149,10 @@ export const schemaText = createDictionary({
     'en-us': 'Table Aggregation',
     'ru-ru': 'Агрегация таблиц',
     'es-es': 'Agregación de tablas',
-    'fr-fr': 'Agrégation de tables',
+    'fr-fr': `
+      Ce format ne sera utilisé que si la valeur du champ de condition est égale
+      à cette condition ou si aucun autre format ne lui correspond.
+    `,
     'uk-ua': 'Агрегація таблиць',
     'de-ch': 'Tabellenaggregation',
   },
@@ -437,7 +440,7 @@ export const schemaText = createDictionary({
     'en-us': 'Number of Duplicates',
     'de-ch': 'Anzahl der Duplikate',
     'es-es': 'Número de duplicados',
-    'fr-fr': 'Agrégation de tables',
+    'fr-fr': 'ID de table',
     'ru-ru': 'Агрегация таблиц',
     'uk-ua': 'Агрегація таблиць',
   },
