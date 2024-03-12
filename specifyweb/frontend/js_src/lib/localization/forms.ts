@@ -352,7 +352,7 @@ export const formsText = createDictionary({
   },
   unsavedFormUnloadProtect: {
     'en-us': 'This form has not been saved.',
-    'ru-ru': 'Эта форма не сохранилась.',
+    'ru-ru': 'Эта форма не сохранена.',
     'es-es': 'Este formulario no ha sido guardado.',
     'fr-fr': "Ce formulaire n'a pas été enregistré.",
     'uk-ua': 'Ця форма не збережена.',
