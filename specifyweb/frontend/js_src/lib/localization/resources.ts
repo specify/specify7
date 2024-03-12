@@ -148,9 +148,9 @@ export const resourcesText = createDictionary({
   uiFormatters: {
     'en-us': 'Field Formatters',
     'ru-ru': 'Форматировщики полей',
-    'es-es': 'Formateadores de campo',
+    'es-es': 'Formateadores de campos',
     'fr-fr': 'Formateurs de champs',
-    'uk-ua': 'Форматери полів',
+    'uk-ua': 'Форматувальники полів',
     'de-ch': 'Feld-Formatierer',
   },
   dataObjectFormatters: {
@@ -163,18 +163,89 @@ export const resourcesText = createDictionary({
   },
   formatter: {
     'en-us': 'Table Format',
+    'de-ch': '',
+    'es-es': 'Formato de tabla',
+    'fr-fr': 'Format du tableau',
+    'ru-ru': 'Формат таблицы',
+    'uk-ua': 'Формат таблиці',
   },
   formatterDescription: {
     'en-us': `
-    The “Table Format” controls how data from a specific table is shown in query results, exports, and query combo boxes. It determines the fields to display and their order. Conditional formatting can be configured based on a value in the record.
+      The “Table Format” controls how data from a specific table is shown in
+      query results, exports, and query combo boxes. It determines the fields to
+      display and their order. Conditional formatting can be configured based
+      on a value in the record.
+    `,
+    'de-ch': '',
+    'es-es': `
+      El "Formato de tabla" controla cómo se muestran los datos de una tabla
+      específica en los resultados de la consulta, las exportaciones y los
+      cuadros combinados de la consulta. Determina los campos a mostrar y su
+      orden. El formato condicional se puede configurar en función de un valor
+      en el registro.
+    `,
+    'fr-fr': `
+      Le « Format de table » contrôle la manière dont les données d'une table
+      spécifique sont affichées dans les résultats de requête, les exportations
+      et les listes déroulantes de requête. Il détermine les champs à afficher
+      et leur ordre. La mise en forme conditionnelle peut être configurée en
+      fonction d'une valeur dans l'enregistrement.
+    `,
+    'ru-ru': `
+      «Формат таблицы» определяет, как данные из определенной таблицы
+      отображаются в результатах запроса, экспорте и полях со списком запроса.
+      Он определяет поля для отображения и их порядок. Условное форматирование
+      можно настроить на основе значения в записи.
+    `,
+    'uk-ua': `
+      «Формат таблиці» визначає, як дані з певної таблиці відображаються в
+      результатах запиту, експорті та комбінованих полях запиту. Він визначає
+      поля для відображення та їх порядок. Умовне форматування можна налаштувати
+      на основі значення в записі.
     `,
   },
   aggregator: {
     'en-us': 'Table Aggregation',
+    'de-ch': '',
+    'es-es': 'Agregación de tablas',
+    'fr-fr': 'Agrégation de tables',
+    'ru-ru': 'Агрегация таблиц',
+    'uk-ua': 'Агрегація таблиць',
   },
   aggregatorDescription: {
     'en-us': `
-    The “Table Aggregation” controls how multiple table records are consolidated together into a single text string. The table format, separator, suffix, sort field, and record preview limit are customizable. It can be displayed in query results and table formats.
+      The “Table Aggregation” controls how multiple table records are
+      consolidated together into a single text string. The table format,
+      separator, suffix, sort field, and record preview limit are customizable.
+      It can be displayed in query results and table formats.
+    `,
+    'de-ch': '',
+    'es-es': `
+      La "Agregación de tablas" controla cómo se consolidan varios registros de
+      tablas en una sola cadena de texto. El formato de la tabla, el separador,
+      el sufijo, el campo de clasificación y el límite de vista previa de
+      registros se pueden personalizar. Se puede mostrar en resultados de
+      consultas y formatos de tablas.
+    `,
+    'fr-fr': `
+      L'« Agrégation de table » contrôle la manière dont plusieurs
+      enregistrements de table sont consolidés en une seule chaîne de texte. Le
+      format du tableau, le séparateur, le suffixe, le champ de tri et la limite
+      d'aperçu des enregistrements sont personnalisables. Il peut être affiché
+      sous forme de résultats de requête et de formats de tableau.
+    `,
+    'ru-ru': `
+      «Агрегация таблиц» управляет тем, как несколько записей таблицы
+      объединяются в одну текстовую строку. Формат таблицы, разделитель,
+      суффикс, поле сортировки и ограничение предварительного просмотра записи
+      можно настроить. Его можно отобразить в результатах запроса и в форматах
+      таблиц.
+    `,
+    'uk-ua': `
+      «Агрегація таблиць» контролює, як кілька записів таблиці об’єднуються
+      разом в один текстовий рядок. Формат таблиці, роздільник, суфікс, поле
+      сортування та ліміт попереднього перегляду запису можна налаштувати. Він
+      може відображатися в результатах запитів і у форматах таблиць.
     `,
   },
   formattedResource: {
@@ -187,9 +258,19 @@ export const resourcesText = createDictionary({
   },
   availableFormatters: {
     'en-us': 'Available Table Formats',
+    'de-ch': '',
+    'es-es': 'Formatos de tabla disponibles',
+    'fr-fr': 'Formats de tableaux disponibles',
+    'ru-ru': 'Доступные форматы таблиц',
+    'uk-ua': 'Доступні формати таблиць',
   },
   availableAggregators: {
     'en-us': 'Available Table Aggregations',
+    'de-ch': '',
+    'es-es': 'Agregaciones de tablas disponibles',
+    'fr-fr': 'Agrégations de tables disponibles',
+    'ru-ru': 'Доступные агрегации таблиц',
+    'uk-ua': 'Доступні агрегації таблиць',
   },
   availableWebLink: {
     'en-us': 'Available Web Links',
@@ -201,14 +282,25 @@ export const resourcesText = createDictionary({
   },
   selectDefaultFormatter: {
     'en-us': 'Please select a default record formatter for this table',
+    'de-ch': '',
+    'es-es':
+      'Seleccione un formateador de registros predeterminado para esta tabla',
+    'fr-fr': `
+      Veuillez sélectionner un formateur d'enregistrement par défaut pour cette
+      table
+    `,
+    'ru-ru': `
+      Пожалуйста, выберите форматирование записей по умолчанию для этой таблицы.
+    `,
+    'uk-ua': 'Виберіть стандартний формат запису для цієї таблиці',
   },
   duplicateFormatters: {
     'en-us': 'Record formatter names must be unique',
     'de-ch': 'Formatierernamen müssen eindeutig sein',
-    'es-es': 'Los nombres de los formateadores deben ser únicos.',
-    'fr-fr': 'Les noms du formateur doivent être uniques',
-    'ru-ru': 'Имена форматтеров должны быть уникальными.',
-    'uk-ua': 'Імена засобів форматування мають бути унікальними',
+    'es-es': 'Los nombres de los formateadores de registros deben ser únicos.',
+    'fr-fr': "Les noms du formateur d'enregistrement doivent être uniques",
+    'ru-ru': 'Имена средств форматирования записей должны быть уникальными.',
+    'uk-ua': 'Імена форматування записів мають бути унікальними',
   },
   dataEntryTables: {
     'en-us': 'Data Entry Tables',
@@ -340,7 +432,7 @@ export const resourcesText = createDictionary({
   },
   failedParsingXml: {
     'en-us': 'Failed to parse XML',
-    'ru-ru': 'Не удалось разобрать XML',
+    'ru-ru': 'Не удалось проанализировать XML',
     'de-ch': 'XML konnte nicht analysiert werden',
     'es-es': 'No se pudo analizar XML',
     'fr-fr': "Échec de l'analyse du XML",
@@ -492,12 +584,49 @@ export const resourcesText = createDictionary({
   },
   conditionDescription: {
     'en-us': `
-    This format will be used only if the condition field value equals this condition.
+      This format will be used only if the condition field value equals this
+      condition.
+    `,
+    'de-ch': '',
+    'es-es': `
+      Este formato se utilizará sólo si el valor del campo de condición es igual
+      a esta condición.
+    `,
+    'fr-fr': `
+      Ce format ne sera utilisé que si la valeur du champ de condition est égale
+      à cette condition.
+    `,
+    'ru-ru': `
+      Этот формат будет использоваться только в том случае, если значение поля
+      условия соответствует этому условию.
+    `,
+    'uk-ua': `
+      Цей формат використовуватиметься, лише якщо значення поля умови дорівнює
+      цій умові.
     `,
   },
   elseConditionDescription: {
     'en-us': `
-      This format will be used only if the condition field value equals this condition or if no other format matches it.
+      This format will be used only if the condition field value equals this
+      condition or if no other format matches it.
+    `,
+    'de-ch': '',
+    'es-es': `
+      Este formato se utilizará sólo si el valor del campo de condición es igual
+      a esta condición o si ningún otro formato coincide con ella.
+    `,
+    'fr-fr': `
+      Ce format ne sera utilisé que si la valeur du champ de condition est égale
+      à cette condition ou si aucun autre format ne lui correspond.
+    `,
+    'ru-ru': `
+      Этот формат будет использоваться только в том случае, если значение поля
+      условия соответствует этому условию или если ему не соответствует никакой
+      другой формат.
+    `,
+    'uk-ua': `
+      Цей формат використовуватиметься, лише якщо значення поля умови дорівнює
+      цій умові або якщо жоден інший формат йому не відповідає.
     `,
   },
   wrongScopeWarning: {
@@ -522,7 +651,7 @@ export const resourcesText = createDictionary({
       changer de collection avant de modifier cette ressource.
     `,
     'ru-ru': `
-      Этот ресурс принадлежит к другой коллекции/дисциплине, отличной от той, в
+      Этот ресурс принадлежит другой коллекции/дисциплине, отличной от той, в
       которой вы сейчас находитесь. Перед редактированием этого ресурса
       рекомендуется сменить коллекцию.
     `,
@@ -639,9 +768,19 @@ export const resourcesText = createDictionary({
   },
   conditionalFormatter: {
     'en-us': 'Conditional Format',
+    'de-ch': '',
+    'es-es': 'Formato condicional',
+    'fr-fr': 'Format conditionnel',
+    'ru-ru': 'Условный формат',
+    'uk-ua': 'Умовний формат',
   },
   customizeFieldFormatters: {
     'en-us': 'Customize Field Formats',
+    'de-ch': '',
+    'es-es': 'Personalizar formatos de campo',
+    'fr-fr': 'Personnaliser les formats de champs',
+    'ru-ru': 'Настройте форматы полей',
+    'uk-ua': 'Налаштувати формати полів',
   },
   expandConditionalField: {
     'en-us': 'Expand Conditional Field',
