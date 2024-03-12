@@ -1,12 +1,12 @@
 import { f } from '../../utils/functools';
 import { filterArray } from '../../utils/types';
-import { getModel, schema } from '../DataModel/schema';
 import type { Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import { SpecifyTable } from '../DataModel/specifyTable';
+import { genericTables, getTable } from '../DataModel/tables';
 import { hasTablePermission } from '../Permissions/helpers';
 
 export const attachmentRelatedTables = f.store(() =>
-  Object.keys(schema.models).filter((tableName) =>
+  Object.keys(genericTables).filter((tableName) =>
     tableName.endsWith('Attachment')
   )
 );
@@ -14,7 +14,7 @@ export const attachmentRelatedTables = f.store(() =>
 export const allTablesWithAttachments = f.store(() =>
   filterArray(
     attachmentRelatedTables().map((tableName) =>
-      getModel(tableName.slice(0, -1 * 'Attachment'.length))
+      getTable(tableName.slice(0, -1 * 'Attachment'.length))
     )
   )
 );
@@ -38,7 +38,7 @@ export const tablesWithAttachments = f.store(() =>
  * - FieldNotebookPageSet
  */
 export const getAttachmentRelationship = (
-  table: SpecifyModel
+  table: SpecifyTable
 ): Relationship | undefined => {
   if (table.name === 'Attachment') return undefined;
   const commonRelationship = table.field[`${table.name[0].toLowerCase()}${table.name.slice(1)}Attachments`] as
@@ -47,7 +47,7 @@ export const getAttachmentRelationship = (
 
   return commonRelationship === undefined
     ? table.relationships.find((relationship) => {
-        const relatedModel = relationship.relatedModel.name;
+        const relatedModel = relationship.relatedTable.name;
         return (
           relatedModel !== 'Attachment' && relatedModel.endsWith('Attachment')
         );

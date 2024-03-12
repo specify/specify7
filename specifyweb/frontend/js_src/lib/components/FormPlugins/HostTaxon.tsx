@@ -2,34 +2,45 @@ import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { f } from '../../utils/functools';
+import { defined, localized } from '../../utils/types';
 import { Input } from '../Atoms/Form';
 import { fetchCollection } from '../DataModel/collection';
-import { deserializeResource } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
+import { deserializeResource } from '../DataModel/serializers';
+import { tables } from '../DataModel/tables';
 import type { CollectingEventAttribute } from '../DataModel/types';
-import { QueryComboBox } from '../FormFields/QueryComboBox';
-import type { FormMode, FormType } from '../FormParse';
+import type { FormType } from '../FormParse';
 import { hasTreeAccess } from '../Permissions/helpers';
+import { QueryComboBox } from '../QueryComboBox';
+import type { TypeSearch } from '../QueryComboBox/spec';
+import { postProcessTypeSearch } from '../QueryComboBox/spec';
 
-const template = document.createElement('template');
-template.innerHTML =
-  '<typesearch tableid="4" name="HostTaxon" searchfield="fullName" displaycols="fullName" format="%s" dataobjformatter="Taxon"/>';
-const hostTaxonTypeSearch = template.content.firstChild! as Element;
+const hostTaxonTypeSearch = f.store<TypeSearch>(() =>
+  defined(
+    postProcessTypeSearch({
+      name: localized('HostTaxon'),
+      table: tables.Taxon,
+      searchFields: ['fullName'],
+      displayFields: ['fullName'],
+      format: localized('%s'),
+      formatter: localized('Taxon'),
+      query: undefined,
+    }),
+    'Unable to parse host taxon type search'
+  )
+);
 
 export function HostTaxon({
   resource,
   relationship,
   id,
   isRequired,
-  mode,
   formType,
 }: {
   readonly resource: SpecifyResource<CollectingEventAttribute>;
   readonly relationship: string;
   readonly id: string | undefined;
   readonly isRequired: boolean;
-  readonly mode: FormMode;
   readonly formType: FormType;
 }): JSX.Element | null {
   const [rightSideCollection] = useAsyncState(
@@ -38,6 +49,7 @@ export function HostTaxon({
         fetchCollection('CollectionRelType', {
           limit: 1,
           name: relationship,
+          domainFilter: false,
         })
           .then(async ({ records }) =>
             f
@@ -53,17 +65,14 @@ export function HostTaxon({
     <Input.Text isReadOnly />
   ) : hasTreeAccess('Taxon', 'read') ? (
     <QueryComboBox
-      field={schema.models.CollectingEventAttribute.strictGetRelationship(
-        'hostTaxon'
-      )}
+      field={tables.CollectingEventAttribute.strictGetRelationship('hostTaxon')}
       forceCollection={rightSideCollection}
       formType={formType}
       id={id}
       isRequired={isRequired}
-      mode={mode}
-      relatedModel={schema.models.Taxon}
+      relatedTable={tables.Taxon}
       resource={resource}
-      typeSearch={hostTaxonTypeSearch}
+      typeSearch={hostTaxonTypeSearch()}
     />
   ) : null;
 }

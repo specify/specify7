@@ -9,12 +9,12 @@ import type { GetSet, RA } from '../../utils/types';
 import { toggleItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
-import { deserializeResource } from '../DataModel/helpers';
 import type {
   AnyTree,
   FilterTablesByEndsWith,
   SerializedResource,
 } from '../DataModel/helperTypes';
+import { deserializeResource } from '../DataModel/serializers';
 import { ResourceView } from '../Forms/ResourceView';
 import { getPref } from '../InitialContext/remotePrefs';
 import { useHighContrast } from '../Preferences/Hooks';
@@ -35,6 +35,7 @@ export function Tree<SCHEMA extends AnyTree>({
   treeDefinitionItems,
   tableName,
   isEditingRanks,
+  hideEmptyNodes,
   focusPath: [focusPath, setFocusPath],
   rows,
   actionRow,
@@ -53,13 +54,14 @@ export function Tree<SCHEMA extends AnyTree>({
   >;
   readonly tableName: SCHEMA['tableName'];
   readonly isEditingRanks: boolean;
+  readonly hideEmptyNodes: boolean;
   readonly focusPath: GetSet<RA<number>>;
   readonly rows: RA<Row>;
   readonly actionRow: Row | undefined;
   readonly conformation: GetSet<Conformations | undefined>;
   readonly getRows: (parentId: number | 'null') => Promise<RA<Row>>;
   readonly ranks: RA<number>;
-  readonly setFocusedRow: (row: Row) => void;
+  readonly setFocusedRow?: (row: Row) => void;
   readonly focusRef: React.MutableRefObject<HTMLAnchorElement | null>;
   readonly searchBoxRef: React.RefObject<HTMLInputElement | null>;
   readonly baseUrl: string;
@@ -102,7 +104,7 @@ export function Tree<SCHEMA extends AnyTree>({
     <div
       className={`
         grid-table h-full flex-1 grid-cols-[repeat(var(--cols),auto)] 
-        content-start overflow-auto rounded border-2 border
+        content-start overflow-auto rounded border border-2
         border-[var(--edge-color)] from-[var(--edge-color)] via-[var(--middle-color)] to-[var(--edge-color)]
         p-1 pt-0 outline-none
         ${highContrast ? 'border dark:border-white' : 'bg-gradient-to-bl'}
@@ -196,6 +198,7 @@ export function Tree<SCHEMA extends AnyTree>({
             }
             getRows={getRows}
             getStats={getStats}
+            hideEmptyNodes={hideEmptyNodes}
             key={row.nodeId}
             nodeStats={undefined}
             path={[]}
@@ -251,7 +254,6 @@ function EditTreeRank({
           dialog="modal"
           isDependent={false}
           isSubForm={false}
-          mode="edit"
           resource={resource}
           onAdd={undefined}
           onClose={handleClose}

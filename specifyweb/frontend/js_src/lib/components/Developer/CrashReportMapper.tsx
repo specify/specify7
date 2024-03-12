@@ -1,18 +1,22 @@
 import React from 'react';
 
+import { developmentText } from '../../localization/development';
+import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { ErrorIframe } from '../Errors/FormatError';
+import type { deduplicateLogContext } from '../Errors/logContext';
+import { sharedContextKey } from '../Errors/logContext';
 import { DateElement } from '../Molecules/DateElement';
 import { CrashReportLines } from './CrashReportVisualizer';
-import { developmentText } from '../../localization/development';
 
 export const crashReportMapper: IR<
   (props: { readonly value: unknown }) => JSX.Element
 > = {
   consoleLog({ value }) {
-    return Array.isArray(value) ? (
+    const resolveValue = React.useMemo(() => resolveLogValues(value), [value]);
+    return Array.isArray(resolveValue) ? (
       <div className="divide-y divide-gray-500">
-        {value.map((line, index) =>
+        {resolveValue.map((line, index) =>
           typeof line === 'object' ? (
             <LogLine key={index} line={line as IR<unknown>} />
           ) : (
@@ -68,6 +72,39 @@ export const crashReportMapper: IR<
   },
   navigator: GenericObject,
 };
+
+function resolveLogValues(rawValue: unknown): unknown {
+  const value = Array.isArray(rawValue)
+    ? {
+        consoleLog: rawValue,
+        sharedLogContext: [],
+      }
+    : rawValue;
+  if (typeof value !== 'object' || value === null) return value;
+
+  // Undo effect of deduplicateLogContext
+  const { consoleLog, sharedLogContext } = value as ReturnType<
+    typeof deduplicateLogContext
+  >;
+  if (!Array.isArray(consoleLog) || !Array.isArray(sharedLogContext))
+    return value;
+
+  function resolve(value: unknown, top = true): unknown {
+    if (typeof value !== 'string' || !value.startsWith(sharedContextKey))
+      return value;
+    if (Array.isArray(value) && top)
+      return value.map((value) => resolve(value, false));
+    const number = f.parseInt(value.slice(0, sharedContextKey.length));
+    return number === undefined ? value : sharedLogContext[number];
+  }
+
+  return consoleLog.map(({ context, ...rest }) => ({
+    ...rest,
+    context: Object.fromEntries(
+      Object.entries(context).map(([key, value]) => [key, resolve(value)])
+    ),
+  }));
+}
 
 function GenericObject({
   value,
@@ -155,7 +192,7 @@ function EventLine({ value }: { readonly value: unknown }): JSX.Element {
   if (typeof value === 'object') {
     const { name, ...rest } = value as IR<unknown> & { readonly name: string };
     const newValue = { href: name, moreInformation: rest };
-    return <GenericObject value={newValue} expanded={false} />;
+    return <GenericObject expanded={false} value={newValue} />;
   } else return <CrashReportFallback value={value} />;
 }
 

@@ -1,12 +1,10 @@
 import { requireContext } from '../../../tests/helpers';
-import { removeKey } from '../../../utils/utils';
-import { fetchContext } from '../schemaBase';
+import { fetchContext } from '../schema';
 
 requireContext();
 
-test('domain data is fetched and parsed correctly', async () => {
-  const schema = await fetchContext;
-  expect(removeKey(schema, 'models')).toEqual({
+test('domain data is fetched and parsed correctly', async () =>
+  expect(fetchContext).resolves.toEqual({
     catalogNumFormatName: 'CatalogNumberNumeric',
     domainLevelIds: {
       collection: 4,
@@ -27,5 +25,4 @@ test('domain data is fetched and parsed correctly', async () => {
     paleoContextChildTable: 'collectionobject',
     referenceSymbol: '#',
     treeSymbol: '$',
-  });
-});
+  }));

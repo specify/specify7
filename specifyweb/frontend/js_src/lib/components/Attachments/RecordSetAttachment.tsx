@@ -9,9 +9,9 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
-import { serializeResource } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { serializeResource } from '../DataModel/serializers';
 import type { CollectionObjectAttachment } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { defaultAttachmentScale } from '.';
@@ -38,7 +38,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
     React.useCallback(async () => {
       const attachmentField =
         records.length > 0
-          ? getAttachmentRelationship(records.at(0)!.specifyModel)
+          ? getAttachmentRelationship(records.at(0)!.specifyTable)
           : undefined;
       if (!showAttachments || attachmentField === undefined) {
         return { attachments: [], related: [] };
@@ -97,6 +97,8 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
     'scale'
   );
 
+  const isComplete = fetchedCount.current === records.length;
+
   return (
     <>
       <Button.Icon
@@ -113,6 +115,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
           className={{
             container: dialogClassNames.wideContainer,
           }}
+          dimensionsKey={isComplete ? undefined : false}
           header={
             attachmentsRef.current?.attachments === undefined
               ? attachmentsText.attachments()
@@ -143,7 +146,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
           ) : (
             <AttachmentGallery
               attachments={attachmentsRef?.current?.attachments ?? []}
-              isComplete={fetchedCount.current === records.length}
+              isComplete={isComplete}
               scale={scale}
               onChange={(attachment, index): void =>
                 void attachments?.related[index].set(`attachment`, attachment)

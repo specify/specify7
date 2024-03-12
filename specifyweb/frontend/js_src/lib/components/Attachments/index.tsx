@@ -20,9 +20,9 @@ import { Input, Label, Select } from '../Atoms/Form';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
 import { backendFilter } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
+import { genericTables, tables } from '../DataModel/tables';
 import type { Attachment, Tables } from '../DataModel/types';
-import { useMenuItem } from '../Header/useMenuItem';
+import { useMenuItem } from '../Header/MenuContext';
 import { Dialog } from '../Molecules/Dialog';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { OrderPicker } from '../Preferences/Renderers';
@@ -88,6 +88,7 @@ function Attachments({
             'Attachment',
             {
               limit: 1,
+              domainFilter: true,
             },
             allTablesWithAttachments().length === tablesWithAttachments().length
               ? {}
@@ -97,7 +98,7 @@ function Attachments({
           ).then<number>(({ totalCount }) => totalCount),
           unused: fetchCollection(
             'Attachment',
-            { limit: 1 },
+            { limit: 1, domainFilter: true },
             backendFilter('tableId').isNull()
           ).then<number>(({ totalCount }) => totalCount),
           byTable: f.all(
@@ -106,7 +107,9 @@ function Attachments({
                 name,
                 fetchCollection('Attachment', {
                   limit: 1,
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   tableID: tableId,
+                  domainFilter: true,
                 }).then<number>(({ totalCount }) => totalCount),
               ])
             )
@@ -137,7 +140,7 @@ function Attachments({
             ? backendFilter('tableId').isNull()
             : filter.type === 'byTable'
             ? {
-                tableId: schema.models[filter.tableName].tableId,
+                tableId: genericTables[filter.tableName].tableId,
               }
             : allTablesWithAttachments().length ===
               tablesWithAttachments().length
@@ -160,7 +163,7 @@ function Attachments({
           <span className="sr-only">{commonText.filter()}</span>
           <Select
             value={filter.type === 'byTable' ? filter.tableName : filter.type}
-            onValueChange={(filter): void =>
+            onValueChange={(filter: string): void =>
               setFilter(
                 filter === 'all' || filter === 'unused'
                   ? { type: filter }
@@ -207,8 +210,8 @@ function Attachments({
           {attachmentsText.orderBy()}
           <div>
             <OrderPicker
-              model={schema.models.Attachment}
               order={order}
+              table={tables.Attachment}
               onChange={setOrder}
             />
           </div>
@@ -224,7 +227,9 @@ function Attachments({
                 min={minScale}
                 type="range"
                 value={scale}
-                onValueChange={(value) => setScale(Number.parseInt(value))}
+                onValueChange={(value): void =>
+                  setScale(Number.parseInt(value))
+                }
               />
             </Label.Inline>
             <Button.BorderedGray

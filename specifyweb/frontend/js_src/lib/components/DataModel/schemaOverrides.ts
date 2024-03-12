@@ -228,8 +228,8 @@ const endsWithFieldOverwrites: Partial<
   },
 };
 
-// Overwrite SpecifyModel.view
-export const modelViews: Partial<RR<keyof Tables, string>> = {
+// Overwrite SpecifyTable.view
+export const tableViews: Partial<RR<keyof Tables, string>> = {
   SpQuery: 'Query',
 };
 

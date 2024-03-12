@@ -1,26 +1,27 @@
 import React from 'react';
 
 import { useResourceValue } from '../../hooks/useResourceValue';
-import { f } from '../../utils/functools';
+import { parseBoolean } from '../../utils/parser/parse';
 import { Input, Label } from '../Atoms/Form';
+import { ReadOnlyContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { userPreferences } from '../Preferences/userPreferences';
 
 export function PrintOnSave({
   id,
   name,
   field,
-  model,
+  table,
   text,
   defaultValue,
 }: {
   readonly id: string | undefined;
   readonly name: string | undefined;
   readonly field: LiteralField | Relationship | undefined;
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly text: string | undefined;
   readonly defaultValue: boolean | undefined;
 }): JSX.Element {
@@ -33,17 +34,18 @@ export function PrintOnSave({
    * Need to check for object explicitly, because this cache key stored
    * boolean in the past
    */
-  const entry = typeof tables === 'object' ? tables[model.name] : undefined;
+  const entry = typeof tables === 'object' ? tables[table.name] : undefined;
   const handleChange = React.useCallback(
     (checked: boolean): void =>
       setTables({
         ...(typeof tables === 'object' ? tables : {}),
-        [model.name]: checked,
+        [table.name]: checked,
       }),
-    [setTables, tables, model.name]
+    [setTables, tables, table.name]
   );
   React.useEffect(() => {
-    if (entry === undefined && defaultValue === true) handleChange(true);
+    if (entry === undefined && typeof defaultValue === 'boolean')
+      handleChange(defaultValue);
   }, [defaultValue, entry, handleChange]);
 
   const input = (
@@ -70,7 +72,6 @@ export function SpecifyFormCheckbox({
   name,
   field,
   defaultValue,
-  isReadOnly,
   text,
 }: {
   readonly id: string | undefined;
@@ -78,21 +79,24 @@ export function SpecifyFormCheckbox({
   readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly field: LiteralField | undefined;
   readonly defaultValue: boolean | undefined;
-  readonly isReadOnly: boolean;
   readonly text: string | undefined;
 }): JSX.Element {
   const {
     value = false,
     updateValue,
     validationRef,
-  } = useResourceValue<boolean | string>(
+  } = useResourceValue<boolean | string | null>(
     resource,
     field,
     React.useMemo(() => ({ value: defaultValue }), [defaultValue])
   );
-  const isChecked =
-    !f.includes(falsyFields, value?.toString().toLowerCase().trim()) &&
-    Boolean(value);
+
+  const isChecked = React.useMemo(
+    () => (value === null ? false : parseBoolean(value?.toString())),
+    [value]
+  );
+
+  const isReadOnly = React.useContext(ReadOnlyContext);
   const input = (
     <Input.Checkbox
       checked={isChecked}
@@ -113,6 +117,3 @@ export function SpecifyFormCheckbox({
     input
   );
 }
-
-// REFACTOR: use UiParse boolan parser instead
-const falsyFields = ['false', 'no', 'nan', 'null'];

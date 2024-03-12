@@ -38,7 +38,7 @@ export const specifyNetworkText = createDictionary({
     'de-ch': 'Für diese Anfrage konnten keine Daten gefunden werden',
     'es-es': 'No se encuentran datos para esta solicitud',
     'fr-fr': 'Impossible de trouver des données pour cette demande',
-    'ru-ru': 'Не удалось найти данные для этого запроса.',
+    'ru-ru': 'Не удалось найти данные по этому запросу.',
     'uk-ua': 'Неможливо знайти дані для цього запиту',
   },
   noDataErrorDescription: {
@@ -72,14 +72,6 @@ export const specifyNetworkText = createDictionary({
     'fr-fr': 'Date de collecte',
     'ru-ru': 'Дата сбора',
     'uk-ua': 'Дата збору',
-  },
-  mapDetails: {
-    'en-us': 'Details',
-    'de-ch': 'Einzelheiten',
-    'es-es': 'Detalles',
-    'fr-fr': 'Détails',
-    'ru-ru': 'Подробности',
-    'uk-ua': 'Подробиці',
   },
   mapDescription: {
     'en-us': `

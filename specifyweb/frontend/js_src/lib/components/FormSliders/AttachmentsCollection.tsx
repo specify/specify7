@@ -10,9 +10,9 @@ import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { defaultAttachmentScale } from '../Attachments';
 import { AttachmentGallery } from '../Attachments/Gallery';
-import { serializeResource } from '../DataModel/helpers';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
-import type { Collection } from '../DataModel/specifyModel';
+import { serializeResource } from '../DataModel/serializers';
+import type { Collection } from '../DataModel/specifyTable';
 import type {
   Attachment,
   CollectionObjectAttachment,
@@ -34,7 +34,7 @@ export function AttachmentsCollection({
 
   const attachments: RA<SerializedResource<Attachment>> = filterArray(
     Array.from(collection.models, (model) => {
-      if (model.specifyModel.name.includes('Attachment')) {
+      if (model.specifyTable.name.includes('Attachment')) {
         const record = serializeResource(
           model
         ) as SerializedResource<CollectionObjectAttachment>;

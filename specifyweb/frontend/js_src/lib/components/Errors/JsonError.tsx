@@ -2,10 +2,9 @@ import React from 'react';
 
 import { backEndText } from '../../localization/backEnd';
 import { preferencesText } from '../../localization/preferences';
-import { jsonStringify } from '../../utils/utils';
 import { className } from '../Atoms/className';
 import { getField } from '../DataModel/helpers';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import { TableIcon } from '../Molecules/TableIcon';
 
 type JsonResponse = {
@@ -29,7 +28,7 @@ function createJsonResponse(error: string): JsonResponse {
       ? resolveBackendLocalization(data)
       : json.message,
     data,
-    formattedData: jsonStringify(data, 2),
+    formattedData: JSON.stringify(json.data, null, 2),
     traceback: json.traceback,
   };
 }
@@ -203,8 +202,8 @@ function resolveBackendLocalization(jsonResponseData: any): string {
     });
   else if (localizationKey === 'actorIsNotSpecifyUser')
     return backEndText.actorIsNotSpecifyUser({
-      agentTable: schema.models.Agent.label,
-      specifyUserTable: schema.models.SpecifyUser.label,
+      agentTable: tables.Agent.label,
+      specifyUserTable: tables.SpecifyUser.label,
       actor: jsonResponseData.actor,
     });
   else if (localizationKey === 'unexpectedCollectionType')
@@ -214,7 +213,7 @@ function resolveBackendLocalization(jsonResponseData: any): string {
     });
   else if (localizationKey === 'invalidReportMimetype')
     return backEndText.invalidReportMimetype({
-      mimeTypeField: getField(schema.models.SpAppResource, 'mimeType').label,
+      mimeTypeField: getField(tables.SpAppResource, 'mimeType').label,
     });
   else if (localizationKey === 'fieldNotRelationship')
     return backEndText.fieldNotRelationship({ field: jsonResponseData.field });

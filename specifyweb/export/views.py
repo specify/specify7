@@ -1,29 +1,29 @@
-import os
 import errno
+import json
 import logging
+import os
 import traceback
-from zipfile import ZipFile
-from threading import Thread
 from datetime import datetime
 from email.utils import formatdate
-import json
-
+from threading import Thread
 from xml.etree import ElementTree as ET
+from zipfile import ZipFile
 
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, Http404, HttpResponseForbidden
-from django.views.decorators.http import require_POST, require_GET
-from django.views.decorators.cache import never_cache
 from django.conf import settings
-
-from ..specify.views import login_maybe_required
-from ..context.app_resource import get_app_resource
-from ..notifications.models import Message
-from ..specify.models import Spquery
-from ..permissions.permissions import PermissionTarget, PermissionTargetAction, check_permission_targets
+from django.http import HttpResponse, HttpResponseBadRequest, Http404
+from django.views.decorators.cache import never_cache
+from django.views.decorators.http import require_POST
 
 from .dwca import make_dwca, prettify
 from .extract_query import extract_query as extract
 from .feed import FEED_DIR, get_feed_resource, update_feed
+from ..context.app_resource import get_app_resource
+from ..notifications.models import Message
+from ..permissions.permissions import PermissionTarget, PermissionTargetAction, \
+    check_permission_targets
+from ..specify.models import Spquery
+from ..specify.views import login_maybe_required
+from specifyweb.middleware.general import require_GET
 
 logger = logging.getLogger(__name__)
 
@@ -118,10 +118,10 @@ def export(request):
 
     eml_resource = request.POST.get('metadata', None)
 
-    definition, _ = get_app_resource(collection, user, dwca_resource)
+    definition, _, __ = get_app_resource(collection, user, dwca_resource)
 
     if eml_resource is not None:
-        eml, _ = get_app_resource(collection, user, eml_resource)
+        eml, _, __ = get_app_resource(collection, user, eml_resource)
     else:
         eml = None
 
