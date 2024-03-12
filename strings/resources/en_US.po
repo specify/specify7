@@ -106,7 +106,7 @@ msgstr "Web Links"
 #: components/AppResources/types.tsx:159
 #. Used in: Components > App Resources > Types
 msgid "uiFormatters"
-msgstr "Field formatters"
+msgstr "Field Formatters"
 
 #: components/AppResources/types.tsx:167
 #. Used in: Components > App Resources > Types
@@ -118,27 +118,30 @@ msgstr "Record Formatters"
 #: components/Formatters/Fields.tsx:267
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 msgid "formatter"
-msgstr "Formatter"
+msgstr "Table Format"
 
 #: components/Formatters/Table.tsx:31
 #. Used in: Components > Formatters > Table
 msgid "formatterDescription"
 msgstr ""
-"Formatter determines how to transform individual database resources into "
-"readable text by selecting specific fields and applying a designated "
-"separator between them."
+"The “Table Format” controls how data from a specific table is shown in "
+"query results, exports, and query combo boxes. It determines the fields to "
+"display and their order. Conditional formatting can be configured based on "
+"a value in the record."
 
 #: components/Formatters/Element.tsx:126
 #. Used in: Components > Formatters > Element
 msgid "aggregator"
-msgstr "Aggregator"
+msgstr "Table Aggregation"
 
 #: components/Formatters/Table.tsx:32
 #. Used in: Components > Formatters > Table
 msgid "aggregatorDescription"
 msgstr ""
-"Aggregator determines how to consolidate multiple resources into a single "
-"text string by utilizing formatters and inserting a separator between them"
+"The “Table Aggregation” controls how multiple table records are "
+"consolidated together into a single text string. The table format, "
+"separator, suffix, sort field, and record preview limit are customizable. "
+"It can be displayed in query results and table formats."
 
 #: components/WebLinks/Definition.tsx:28
 #. Used in: Components > Web Links > Definition
@@ -148,12 +151,12 @@ msgstr "Formatted Resource"
 #: components/Formatters/List.tsx:66
 #. Used in: Components > Formatters > List
 msgid "availableFormatters"
-msgstr "Available Formatters"
+msgstr "Available Table Formats"
 
 #: components/Formatters/List.tsx:67
 #. Used in: Components > Formatters > List
 msgid "availableAggregators"
-msgstr "Available Aggregators"
+msgstr "Available Table Aggregations"
 
 #: components/WebLinks/List.tsx:24
 #. Used in: Components > Web Links > List
@@ -163,12 +166,12 @@ msgstr "Available Web Links"
 #: components/Formatters/List.tsx:127
 #. Used in: Components > Formatters > List
 msgid "selectDefaultFormatter"
-msgstr "Please mark one of these formatters as default"
+msgstr "Please select a default record formatter for this table"
 
 #: components/Formatters/Element.tsx:52
 #. Used in: Components > Formatters > Element
 msgid "duplicateFormatters"
-msgstr "Formatter names must be unique"
+msgstr "Record formatter names must be unique"
 
 #: components/AppResources/types.tsx:175
 #. Used in: Components > App Resources > Types
@@ -270,8 +273,9 @@ msgstr "Name"
 msgid "title"
 msgstr "Title"
 
+#: components/Formatters/Element.tsx:158
 #: components/Formatters/List.tsx:117
-#. Used in: Components > Formatters > List
+#. Used in: Components > Formatters > Element ⬤ Components > Formatters > List
 msgid "default"
 msgstr "Default"
 
@@ -367,15 +371,15 @@ msgstr "Condition Field Value"
 #. Used in: Components > Formatters > Definitions
 msgid "conditionDescription"
 msgstr ""
-"This formatter will be used only if the condition field value is equal to "
-"this condition"
+"This format will be used only if the condition field value equals this "
+"condition."
 
 #: components/Formatters/Definitions.tsx:170
 #. Used in: Components > Formatters > Definitions
 msgid "elseConditionDescription"
 msgstr ""
-"This formatter will be used only if the condition field value is equal to "
-"this condition or if no other formatter matches its condition"
+"This format will be used only if the condition field value equals this "
+"condition or if no other format matches it."
 
 #: components/AppResources/Tabs.tsx:164
 #. Used in: Components > App Resources > Tabs
@@ -450,20 +454,15 @@ msgstr "Save form first"
 msgid "saveFormFirstDescription"
 msgstr "You need to save this form before you edit another one"
 
-#: components/Formatters/Element.tsx:158
-#. Used in: Components > Formatters > Element
-msgid "defaultTableFormatter"
-msgstr "Default Table Formatter"
-
 #: components/Formatters/Formatter.tsx:77
 #. Used in: Components > Formatters > Formatter
 msgid "conditionalFormatter"
-msgstr "Conditional Formatter"
+msgstr "Conditional Format"
 
 #: components/Formatters/Fields.tsx:127
 #. Used in: Components > Formatters > Fields
 msgid "customizeFieldFormatters"
-msgstr "Customize Field Formatters"
+msgstr "Customize Field Formats"
 
 #: components/Formatters/Definitions.tsx:234
 #. Used in: Components > Formatters > Definitions

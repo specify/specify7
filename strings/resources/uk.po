@@ -149,30 +149,25 @@ msgstr "Форматувальники записів"
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 #, fuzzy
 msgid "formatter"
-msgstr "Ресурс програми"
+msgstr ""
 
 #: components/Formatters/Table.tsx:31
 #. Used in: Components > Formatters > Table
 #, fuzzy
 msgid "formatterDescription"
 msgstr ""
-"Форматувальник визначає, як перетворити окремі ресурси бази даних у "
-"читабельний текст, вибираючи певні поля та застосовуючи між ними "
-"призначений роздільник."
 
 #: components/Formatters/Element.tsx:126
 #. Used in: Components > Formatters > Element
 #, fuzzy
 msgid "aggregator"
-msgstr "Агрегатор"
+msgstr ""
 
 #: components/Formatters/Table.tsx:32
 #. Used in: Components > Formatters > Table
 #, fuzzy
 msgid "aggregatorDescription"
 msgstr ""
-"Агрегатор визначає, як об’єднати кілька ресурсів в один текстовий рядок, "
-"використовуючи засоби форматування та вставляючи між ними роздільник"
 
 #: components/WebLinks/Definition.tsx:28
 #. Used in: Components > Web Links > Definition
@@ -184,13 +179,13 @@ msgstr "Відформатований ресурс"
 #. Used in: Components > Formatters > List
 #, fuzzy
 msgid "availableFormatters"
-msgstr "Доступні форматувальники"
+msgstr ""
 
 #: components/Formatters/List.tsx:67
 #. Used in: Components > Formatters > List
 #, fuzzy
 msgid "availableAggregators"
-msgstr "Доступні агрегатори"
+msgstr ""
 
 #: components/WebLinks/List.tsx:24
 #. Used in: Components > Web Links > List
@@ -202,7 +197,7 @@ msgstr "Доступні веб-посилання"
 #. Used in: Components > Formatters > List
 #, fuzzy
 msgid "selectDefaultFormatter"
-msgstr "Позначте один із цих формататорів за замовчуванням"
+msgstr ""
 
 #: components/Formatters/Element.tsx:52
 #. Used in: Components > Formatters > Element
@@ -329,8 +324,9 @@ msgstr "Ім'я"
 msgid "title"
 msgstr "Назва"
 
+#: components/Formatters/Element.tsx:158
 #: components/Formatters/List.tsx:117
-#. Used in: Components > Formatters > List
+#. Used in: Components > Formatters > Element ⬤ Components > Formatters > List
 #, fuzzy
 msgid "default"
 msgstr "За замовчуванням"
@@ -443,14 +439,12 @@ msgstr "Умова Значення поля"
 #, fuzzy
 msgid "conditionDescription"
 msgstr ""
-"Цей засіб форматування використовуватиметься, лише якщо значення поля умови "
-"дорівнює цій умові"
 
 #: components/Formatters/Definitions.tsx:170
 #. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "elseConditionDescription"
-msgstr "Custom"
+msgstr ""
 
 #: components/AppResources/Tabs.tsx:164
 #. Used in: Components > App Resources > Tabs
@@ -538,23 +532,17 @@ msgstr "Спочатку збережіть форму"
 msgid "saveFormFirstDescription"
 msgstr "Ім'я файлу"
 
-#: components/Formatters/Element.tsx:158
-#. Used in: Components > Formatters > Element
-#, fuzzy
-msgid "defaultTableFormatter"
-msgstr "Типовий форматувальник таблиць"
-
 #: components/Formatters/Formatter.tsx:77
 #. Used in: Components > Formatters > Formatter
 #, fuzzy
 msgid "conditionalFormatter"
-msgstr "Умовний форматувальник"
+msgstr ""
 
 #: components/Formatters/Fields.tsx:127
 #. Used in: Components > Formatters > Fields
 #, fuzzy
 msgid "customizeFieldFormatters"
-msgstr "Налаштування форматувальників полів"
+msgstr ""
 
 #: components/Formatters/Definitions.tsx:234
 #. Used in: Components > Formatters > Definitions

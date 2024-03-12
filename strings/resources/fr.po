@@ -148,31 +148,25 @@ msgstr "Formateurs d'enregistrement"
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 #, fuzzy
 msgid "formatter"
-msgstr "Ressource d'application"
+msgstr ""
 
 #: components/Formatters/Table.tsx:31
 #. Used in: Components > Formatters > Table
 #, fuzzy
 msgid "formatterDescription"
 msgstr ""
-"Formatter détermine comment transformer les ressources de base de données "
-"individuelles en texte lisible en sélectionnant des champs spécifiques et "
-"en appliquant un séparateur désigné entre eux."
 
 #: components/Formatters/Element.tsx:126
 #. Used in: Components > Formatters > Element
 #, fuzzy
 msgid "aggregator"
-msgstr "Agrégateur"
+msgstr ""
 
 #: components/Formatters/Table.tsx:32
 #. Used in: Components > Formatters > Table
 #, fuzzy
 msgid "aggregatorDescription"
 msgstr ""
-"L'agrégateur détermine comment consolider plusieurs ressources en une seule "
-"chaîne de texte en utilisant des formateurs et en insérant un séparateur "
-"entre eux."
 
 #: components/WebLinks/Definition.tsx:28
 #. Used in: Components > Web Links > Definition
@@ -184,13 +178,13 @@ msgstr "Ressource formatée"
 #. Used in: Components > Formatters > List
 #, fuzzy
 msgid "availableFormatters"
-msgstr "Formateurs disponibles"
+msgstr ""
 
 #: components/Formatters/List.tsx:67
 #. Used in: Components > Formatters > List
 #, fuzzy
 msgid "availableAggregators"
-msgstr "Agrégateurs disponibles"
+msgstr ""
 
 #: components/WebLinks/List.tsx:24
 #. Used in: Components > Web Links > List
@@ -202,7 +196,7 @@ msgstr "Liens Web disponibles"
 #. Used in: Components > Formatters > List
 #, fuzzy
 msgid "selectDefaultFormatter"
-msgstr "Veuillez marquer l'un de ces formateurs par défaut"
+msgstr ""
 
 #: components/Formatters/Element.tsx:52
 #. Used in: Components > Formatters > Element
@@ -329,8 +323,9 @@ msgstr "Nom"
 msgid "title"
 msgstr "Titre"
 
+#: components/Formatters/Element.tsx:158
 #: components/Formatters/List.tsx:117
-#. Used in: Components > Formatters > List
+#. Used in: Components > Formatters > Element ⬤ Components > Formatters > List
 #, fuzzy
 msgid "default"
 msgstr "Défaut"
@@ -443,14 +438,12 @@ msgstr "Valeur du champ de condition"
 #, fuzzy
 msgid "conditionDescription"
 msgstr ""
-"Ce formateur ne sera utilisé que si la valeur du champ de condition est "
-"égale à cette condition"
 
 #: components/Formatters/Definitions.tsx:170
 #. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "elseConditionDescription"
-msgstr "Coutume"
+msgstr ""
 
 #: components/AppResources/Tabs.tsx:164
 #. Used in: Components > App Resources > Tabs
@@ -539,23 +532,17 @@ msgstr "Enregistrez d'abord le formulaire"
 msgid "saveFormFirstDescription"
 msgstr "Nom de fichier"
 
-#: components/Formatters/Element.tsx:158
-#. Used in: Components > Formatters > Element
-#, fuzzy
-msgid "defaultTableFormatter"
-msgstr "Formateur de table par défaut"
-
 #: components/Formatters/Formatter.tsx:77
 #. Used in: Components > Formatters > Formatter
 #, fuzzy
 msgid "conditionalFormatter"
-msgstr "Formateur conditionnel"
+msgstr ""
 
 #: components/Formatters/Fields.tsx:127
 #. Used in: Components > Formatters > Fields
 #, fuzzy
 msgid "customizeFieldFormatters"
-msgstr "Personnaliser les formateurs de champs"
+msgstr ""
 
 #: components/Formatters/Definitions.tsx:234
 #. Used in: Components > Formatters > Definitions
