@@ -855,7 +855,7 @@ class ReplaceRecordTests(ApiTests):
                     'addresses': [
                         {
                             'address': '1234 Main St.',
-                            'timestampcreated': '22022-11-30 14:34:51.000',
+                            'timestampcreated': '2022-11-30 14:34:51.000',
                             'agent': agent_1.id
                         },
                         {
@@ -870,7 +870,7 @@ class ReplaceRecordTests(ApiTests):
                         },
                         {
                             'address': '1345 Jayhawk Blvd.',
-                            'timestampcreated': '22022-11-30 14:34:51.000',
+                            'timestampcreated': '2022-11-30 14:34:51.000',
                             'agent': agent_1.id
                         }
                     ],
