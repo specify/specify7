@@ -39,12 +39,7 @@ export function DevShowPlan({
         <>
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
           <Button.Info
-            onClick={(): void =>
-              void downloadFile(
-                `${name}.json`,
-                uploadPlan
-              )
-            }
+            onClick={(): void => void downloadFile(`${name}.json`, uploadPlan)}
           >
             {commonText.export()}
           </Button.Info>
