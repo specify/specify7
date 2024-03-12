@@ -1,6 +1,6 @@
 import { overrideAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
-import { schema } from '../../DataModel/schema';
+import { tables } from '../../DataModel/tables';
 import { fetchBlockers } from '../DeleteButton';
 
 requireContext();
@@ -31,38 +31,11 @@ overrideAjax(
     method: 'POST',
     body: {
       _tablename: 'SpQuery',
-      contextname: 'LoanAgent',
-      contexttableid: 53,
+      contextname: 'Loan',
+      contexttableid: 52,
       countonly: false,
       createdbyagent: null,
       fields: [
-        {
-          _tablename: 'SpQueryField',
-          allownulls: null,
-          alwaysfilter: null,
-          columnalias: null,
-          contexttableident: null,
-          createdbyagent: null,
-          endvalue: null,
-          fieldname: 'loanAgentId',
-          formatname: null,
-          isdisplay: false,
-          isnot: false,
-          isprompt: null,
-          isrelfld: false,
-          modifiedbyagent: null,
-          operend: null,
-          operstart: 10,
-          position: 0,
-          query: null,
-          sorttype: 0,
-          startvalue: '1',
-          stringid: '53.loanagent.loanAgentId',
-          tablelist: '53',
-          timestampcreated: '2022-08-31',
-          timestampmodified: null,
-          version: 1,
-        },
         {
           _tablename: 'SpQueryField',
           allownulls: null,
@@ -82,10 +55,39 @@ overrideAjax(
           operstart: 8,
           position: 0,
           query: null,
+          resource_uri: undefined,
           sorttype: 0,
           startvalue: '',
-          stringid: '53,52.loan.loanId',
-          tablelist: '53,52',
+          stringid: '52.loan.loanId',
+          tablelist: '52',
+          timestampcreated: '2022-08-31',
+          timestampmodified: null,
+          version: 1,
+        },
+        {
+          _tablename: 'SpQueryField',
+          allownulls: null,
+          alwaysfilter: null,
+          columnalias: null,
+          contexttableident: null,
+          createdbyagent: null,
+          endvalue: null,
+          fieldname: 'agentId',
+          formatname: null,
+          isdisplay: false,
+          isnot: false,
+          isprompt: null,
+          isrelfld: false,
+          modifiedbyagent: null,
+          operend: null,
+          operstart: 1,
+          position: 0,
+          query: null,
+          resource_uri: undefined,
+          sorttype: 0,
+          startvalue: '2',
+          stringid: '52,53-loanAgents,5.agent.agentId',
+          tablelist: '52,53-loanAgents,5',
           timestampcreated: '2022-08-31',
           timestampmodified: null,
           version: 1,
@@ -98,6 +100,7 @@ overrideAjax(
       name: 'Delete blockers',
       ordinal: 32_767,
       remarks: null,
+      resource_uri: undefined,
       searchsynonymy: null,
       selectdistinct: false,
       smushed: null,
@@ -111,21 +114,21 @@ overrideAjax(
 );
 
 test('fetchBlockers', async () => {
-  const resource = new schema.models.Agent.Resource({ id: agentId });
+  const resource = new tables.Agent.Resource({ id: agentId });
   const resources = await fetchBlockers(resource);
 
   expect(JSON.parse(JSON.stringify(resources))).toEqual([
     {
       blockers: [
         {
-          directRelationship: '[relationship agent]',
+          directRelationship: '[relationship LoanAgent.agent]',
           ids: [
             {
               direct: 1,
               parent: 3,
             },
           ],
-          parentRelationship: '[relationship loan]',
+          parentRelationship: '[relationship LoanAgent.loan]',
         },
       ],
       table: '[table Loan]',
@@ -133,7 +136,7 @@ test('fetchBlockers', async () => {
     {
       blockers: [
         {
-          directRelationship: '[relationship createdByAgent]',
+          directRelationship: '[relationship CollectionObject.createdByAgent]',
           ids: [
             {
               direct: 2,

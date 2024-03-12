@@ -4,7 +4,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { wbPlanText } from '../../localization/wbPlan';
 import { camelToHuman, spanNumber } from '../../utils/utils';
 import { icons } from '../Atoms/Icons';
-import { getModel } from '../DataModel/schema';
+import { getTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { getIcon } from '../InitialContext/icons';
 import { SvgIcon } from './SvgIcon';
@@ -57,7 +57,7 @@ export function TableIcon({
   readonly label: LocalizedString | boolean;
   readonly className?: string;
 }): JSX.Element {
-  const table = getModel(name);
+  const table = getTable(name);
   const tableName = table?.name;
   const resolvedTableLabel =
     label === false
@@ -95,7 +95,7 @@ export const tableIconUndefined = (
   <span
     aria-label={wbPlanText.unmapped()}
     className={`
-      flex h-table-icon w-table-icon items-center justify-center font-bold
+      h-table-icon w-table-icon flex items-center justify-center font-bold
       text-red-600
     `}
     role="img"
@@ -108,7 +108,7 @@ export const tableIconSelected = (
   <span
     aria-label={wbPlanText.mapped()}
     className={`
-      flex h-table-icon w-table-icon items-center justify-center font-bold
+      h-table-icon w-table-icon flex items-center justify-center font-bold
       text-green-500
     `}
     role="img"

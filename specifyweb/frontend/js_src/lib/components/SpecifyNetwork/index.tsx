@@ -11,6 +11,7 @@ import { commonText } from '../../localization/common';
 import { specifyNetworkText } from '../../localization/specifyNetwork';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { toggleItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { toTable } from '../DataModel/helpers';
@@ -29,7 +30,7 @@ export const displaySpecifyNetwork = (
   userPreferences.get('form', 'ui', 'specifyNetworkBadge') &&
   hasTablePermission('Locality', 'read') &&
   resource?.isNew() === false &&
-  ['Taxon', 'CollectionObject'].includes(resource.specifyModel.name);
+  ['Taxon', 'CollectionObject'].includes(resource.specifyTable.name);
 
 export type SpecifyNetworkBadge = 'CollectionObject' | 'Locality' | 'Taxon';
 
@@ -55,7 +56,7 @@ export function SpecifyNetworkBadge({
     false
   );
   const speciesName = React.useMemo(
-    () => (taxon === false ? undefined : taxon?.get('fullName') ?? undefined),
+    () => (taxon === false ? undefined : taxon?.get('fullName')) ?? undefined,
     [taxon]
   );
   const isNoSpecies =
@@ -83,9 +84,8 @@ export function SpecifyNetworkBadge({
       {specifyNetworkText.occurrenceOrGuidRequired()}
     </Dialog>
   ) : (
-    // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events,jsx-a11y/no-static-element-interactions
     <div
-      className="flex rounded-full border-2 border-brand-300"
+      className="border-brand-300 flex rounded-full border-2"
       title={specifyNetworkText.specifyNetwork()}
       /*
        * Start loading data as soon as hovered over the badge, even before
@@ -128,7 +128,7 @@ export function SpecifyNetworkBadge({
         <SpecifyNetworkOverlays
           guid={guid}
           open={getSetOpen}
-          species={speciesName ?? ''}
+          species={localized(speciesName ?? '')}
           taxonId={isNoSpecies ? false : taxon?.id}
         />
       )}

@@ -9,8 +9,8 @@
  *
  */
 
-import { isElement } from 'react-is';
 import type { NewPlugin } from 'pretty-format';
+import { isElement } from 'react-is';
 
 const reReplace = /<(?<end>\/)?React.Fragment>/gu;
 
