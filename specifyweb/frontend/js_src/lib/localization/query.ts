@@ -164,7 +164,7 @@ export const queryText = createDictionary({
     'es-es': 'Creando un {recordSetTable:string} desde la consulta',
     'fr-fr': "Création d'un {recordSetTable:string} à partir d'une requête",
     'uk-ua': 'Створення {recordSetTable:string} із запиту',
-    'de-ch': 'Erstellen eines {recordSetTable:string} aus einer Abfrage',
+    'de-ch': 'Neue Abfrage',
   },
   recordSetToQueryDescription: {
     'en-us': 'Generating {recordSetTable:string}...',
@@ -232,7 +232,7 @@ export const queryText = createDictionary({
   invalidPicklistValue: {
     comment: 'Used when selected pick list value is not one of allowed values',
     'en-us': '{value:string} (current, invalid value)',
-    'ru-ru': '{value:string} (текущее, неверное значение)',
+    'ru-ru': '{value:string} (текущее, недопустимое значение)',
     'es-es': '{value:string} (valor actual no válido)',
     'fr-fr': '{value:string} (valeur actuelle non valide)',
     'uk-ua': '{value:string} (поточне, недійсне значення)',
@@ -408,9 +408,9 @@ export const queryText = createDictionary({
   },
   formattedInline: {
     'en-us': '(formatted)',
-    'ru-ru': '(отформатированный)',
+    'ru-ru': 'Создать [X7X]',
     'es-es': '(formateado)',
-    'fr-fr': '(formaté)',
+    'fr-fr': 'Créer [X7X]',
     'uk-ua': '(відформатований)',
     'de-ch': '(formatiert)',
   },
@@ -450,7 +450,7 @@ export const queryText = createDictionary({
       Використовуйте "_", щоб відповідати одному символу
     `,
     'de-ch': `
-      Verwenden Sie „%“, um eine beliebige Anzahl von Zeichen abzugleichen.
+      Verwenden Sie „%“, um eine beliebige Anzahl von Zeichen zu finden.
 
       Verwenden Sie „_“, um ein einzelnes Zeichen zuzuordnen
     `,
@@ -545,9 +545,9 @@ export const queryText = createDictionary({
   },
   inDescription: {
     'en-us': 'A comma-separated list of values',
-    'ru-ru': 'Список значений, разделенных запятыми.',
+    'ru-ru': 'Просмотр записей',
     'es-es': 'Una lista de valores separados por comas',
-    'fr-fr': 'Une liste de valeurs séparées par des virgules',
+    'fr-fr': 'Afficher les enregistrements',
     'uk-ua': 'Список значень, розділених комами',
     'de-ch': 'Eine durch Kommas getrennte Liste von Werten',
   },
@@ -679,7 +679,10 @@ export const queryText = createDictionary({
     'es-es': 'Mover el árbol',
     'fr-fr': "Déplacement d'un arbre",
     'uk-ua': 'Переміщення дерева',
-    'de-ch': 'Baumbewegung',
+    'de-ch': `
+      Eine Benachrichtigung wird angezeigt, wenn die Exportdatei vollständig und
+      zum Download bereit ist.
+    `,
   },
   treeSynonymize: {
     comment: 'Audit Log Action Type',
@@ -729,8 +732,8 @@ export const queryText = createDictionary({
     'en-us': 'in the future',
     'de-ch': 'in der Zukunft',
     'es-es': 'en el futuro',
-    'fr-fr': "à l'avenir",
-    'ru-ru': 'в будущем',
+    'fr-fr': 'Exporter le fichier en cours de création',
+    'ru-ru': 'Создаваемый файл экспорта',
     'uk-ua': 'в майбутньому',
   },
   past: {
@@ -861,7 +864,7 @@ export const queryText = createDictionary({
   },
   switchToAbsolute: {
     'en-us': 'Switch to absolute',
-    'de-ch': 'Wechseln Sie zu absolut',
+    'de-ch': 'CSV erstellen',
     'es-es': 'Cambiar a absoluto',
     'fr-fr': "Passer à l'absolu",
     'ru-ru': 'Переключиться на абсолют',
