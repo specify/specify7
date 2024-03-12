@@ -167,7 +167,7 @@ export function QueryLine({
         canOpenMap = fieldName === 'latitude1' || fieldName === 'longitude1';
       } else if (isMapped)
         fieldType =
-          dataModelField?.isRelationship && relationshipIsToMany(dataModelField)
+          isFormatted && mappingPath.at(-1) === '#1'
             ? 'aggregator'
             : 'formatter';
 
