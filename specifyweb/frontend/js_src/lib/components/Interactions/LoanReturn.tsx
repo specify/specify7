@@ -228,8 +228,8 @@ function PreparationReturn({
               const loanReturn = new tables.LoanReturnPreparation.Resource();
               loanReturn.set('loanPreparation', preparation.url());
               loanReturn.set('remarks', remarks);
-              loanReturn.set('quantityResolved', returns);
               loanReturn.set('quantityReturned', returns);
+              loanReturn.set('quantityResolved', resolve);
               loanReturn.set(
                 'receivedBy',
                 loanReturnPreparation.current.get('receivedBy')

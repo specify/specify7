@@ -60,8 +60,7 @@ def check_unique(model, instance):
                 try:
                     return field_path_with_value(instance, model_name, field_name, NO_FIELD_VALUE)
                 except ObjectDoesNotExist:
-                    pass
-                return None
+                    return None
 
             matchable = {}
             field_mapping = {}
@@ -97,11 +96,11 @@ def check_unique(model, instance):
 
         match_result = get_matchable(instance)
         if match_result is None:
-            return
+            continue
 
         field_map, matchable = match_result
         if len(matchable.keys()) == 0 or set(all_fields) != set(field_map.keys()):
-            return
+            continue
 
         conflicts = model.objects.only('id').filter(**matchable)
         if instance.id is not None:
@@ -110,7 +109,7 @@ def check_unique(model, instance):
             raise get_exception(conflicts, matchable, field_map)
 
 
-def field_path_with_value(instance, model_name, field_path, default):
+def field_path_with_value(instance, model_name: str, field_path: str, default):
     object_or_field = reduce(lambda obj, field: getattr(
         obj, field, default), field_path.split('__'), instance)
 

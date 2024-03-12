@@ -300,7 +300,7 @@ export class WbView extends Backbone.View {
       this.wbUtils.toggleCellTypes('invalidCells', 'remove');
 
     this.cells.flushIndexedCellData = true;
-    globalThis.window.addEventListener('resize', this.handleResize);
+    globalThis.addEventListener('resize', this.handleResize);
 
     return this;
   }

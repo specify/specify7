@@ -8,6 +8,7 @@ import { useOutletContext } from 'react-router';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
@@ -56,6 +57,10 @@ export type QueryListContextType = {
     readonly children: JSX.Element;
     readonly dialog: (children: JSX.Element) => JSX.Element;
   }) => JSX.Element;
+  readonly filters?: {
+    readonly specifyUser: number;
+    readonly contextTableId: number;
+  };
 };
 
 export function QueryListOutlet(): JSX.Element {
@@ -66,13 +71,26 @@ export function QueryListOutlet(): JSX.Element {
 const defaultChildren: Exclude<QueryListContextType['children'], undefined> = ({
   children,
   dialog,
-}): JSX.Element => dialog(children);
+}): JSX.Element =>
+  children === undefined ? (
+    <Dialog
+      buttons={<Button.DialogClose>{commonText.cancel()}</Button.DialogClose>}
+      header={queryText.queries()}
+      icon={<span className="text-blue-500">{icons.documentSearch}</span>}
+      onClose={f.never()}
+    >
+      <DialogListSkeleton />
+    </Dialog>
+  ) : (
+    dialog(children)
+  );
 
 export function QueryListDialog({
   newQueryUrl,
   onClose: handleClose,
   getQuerySelectCallback,
   children = defaultChildren,
+  filters,
 }: QueryListContextType): JSX.Element {
   const [sortConfig, handleSort] = useSortConfig(
     'listOfQueries',
@@ -92,7 +110,7 @@ export function QueryListDialog({
         fetchCollection('SpQuery', {
           limit,
           domainFilter: false,
-          specifyUser: userInformation.id,
+          ...(filters ?? { specifyUser: userInformation.id }),
           offset,
           orderBy,
         }),
@@ -125,101 +143,92 @@ export function QueryListDialog({
 
   const isReadOnly = React.useContext(ReadOnlyContext);
 
-  return data === undefined ? (
-    <Dialog
-      buttons={<Button.DialogClose>{commonText.cancel()}</Button.DialogClose>}
-      header={queryText.queries()}
-      icon={<span className="text-blue-500">{icons.documentSearch}</span>}
-      onClose={handleClose}
-    >
-      <DialogListSkeleton />
-    </Dialog>
-  ) : (
-    children({
-      totalCount,
-      records: data?.records,
-      children: (
-        <>
-          <table className="grid-table grid-cols-[repeat(3,auto)_min-content] gap-2">
-            <thead>
-              <tr>
-                <th
-                  className="pl-[calc(theme(spacing.table-icon)_+_theme(spacing.2))]"
-                  scope="col"
+  return children({
+    totalCount,
+    records: data?.records,
+    children: (
+      <>
+        <table className="grid-table grid-cols-[repeat(3,auto)_min-content] gap-2">
+          <thead>
+            <tr>
+              <th
+                className="pl-[calc(theme(spacing.table-icon)_+_theme(spacing.2))]"
+                scope="col"
+              >
+                <Button.LikeLink onClick={(): void => handleSort('name')}>
+                  {getField(tables.SpQuery, 'name').label}
+                  <SortIndicator fieldName="name" sortConfig={sortConfig} />
+                </Button.LikeLink>
+              </th>
+              <th scope="col">
+                <Button.LikeLink
+                  onClick={(): void => handleSort('timestampCreated')}
                 >
-                  <Button.LikeLink onClick={(): void => handleSort('name')}>
-                    {getField(tables.SpQuery, 'name').label}
-                    <SortIndicator fieldName="name" sortConfig={sortConfig} />
-                  </Button.LikeLink>
-                </th>
-                <th scope="col">
-                  <Button.LikeLink
-                    onClick={(): void => handleSort('timestampCreated')}
-                  >
-                    {getField(tables.SpQuery, 'timestampCreated').label}
-                    <SortIndicator
-                      fieldName="timestampCreated"
-                      sortConfig={sortConfig}
-                    />
-                  </Button.LikeLink>
-                </th>
-                <th scope="col">
-                  <Button.LikeLink
-                    onClick={(): void => handleSort('timestampModified')}
-                  >
-                    {getField(tables.SpQuery, 'timestampModified').label}
-                    <SortIndicator
-                      fieldName="timestampModified"
-                      sortConfig={sortConfig}
-                    />
-                  </Button.LikeLink>
-                </th>
-                <td />
-              </tr>
-            </thead>
-            <tbody>
-              {data?.records.map((query) => (
-                <QueryList
-                  getQuerySelectCallback={getQuerySelectCallback}
-                  isReadOnly={isReadOnly}
-                  key={query.id}
-                  query={query}
-                />
-              ))}
-            </tbody>
-          </table>
-          <span className="-ml-2 flex-1" />
-          {data === undefined && loadingGif}
-          {paginator(data?.totalCount)}
-        </>
-      ),
-      dialog: (children) => (
-        <Dialog
-          buttons={
-            <>
-              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-              {(hasToolPermission('queryBuilder', 'create') ||
-                hasPermission('/querybuilder/query', 'execute')) && (
-                <Link.Info href={newQueryUrl}>{commonText.new()}</Link.Info>
-              )}
-            </>
-          }
-          header={
-            totalCount === undefined
-              ? queryText.queries()
-              : commonText.countLine({
-                  resource: queryText.queries(),
-                  count: totalCount,
-                })
-          }
-          icon={<span className="text-blue-500">{icons.documentSearch}</span>}
-          onClose={handleClose}
-        >
-          {children}
-        </Dialog>
-      ),
-    })
-  );
+                  {getField(tables.SpQuery, 'timestampCreated').label}
+                  <SortIndicator
+                    fieldName="timestampCreated"
+                    sortConfig={sortConfig}
+                  />
+                </Button.LikeLink>
+              </th>
+              <th scope="col">
+                <Button.LikeLink
+                  onClick={(): void => handleSort('timestampModified')}
+                >
+                  {getField(tables.SpQuery, 'timestampModified').label}
+                  <SortIndicator
+                    fieldName="timestampModified"
+                    sortConfig={sortConfig}
+                  />
+                </Button.LikeLink>
+              </th>
+              <td />
+            </tr>
+          </thead>
+          <tbody>
+            {data?.records.map((query) => (
+              <QueryList
+                getQuerySelectCallback={getQuerySelectCallback}
+                isReadOnly={isReadOnly}
+                key={query.id}
+                query={query}
+              />
+            ))}
+          </tbody>
+        </table>
+        <span className="-ml-2 flex-1" />
+        {data === undefined && loadingGif}
+        {data !== undefined && data.records.length > 0
+          ? paginator(data?.totalCount)
+          : null}
+      </>
+    ),
+    dialog: (children) => (
+      <Dialog
+        buttons={
+          <>
+            <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+            {(hasToolPermission('queryBuilder', 'create') ||
+              hasPermission('/querybuilder/query', 'execute')) && (
+              <Link.Info href={newQueryUrl}>{commonText.new()}</Link.Info>
+            )}
+          </>
+        }
+        header={
+          totalCount === undefined
+            ? queryText.queries()
+            : commonText.countLine({
+                resource: queryText.queries(),
+                count: totalCount,
+              })
+        }
+        icon={<span className="text-blue-500">{icons.documentSearch}</span>}
+        onClose={handleClose}
+      >
+        {children}
+      </Dialog>
+    ),
+  });
 }
 
 export function QueryList({

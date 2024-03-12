@@ -1,8 +1,6 @@
 import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
-import { commonText } from '../../localization/common';
-import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray, localized } from '../../utils/types';
@@ -91,9 +89,12 @@ const argumentSpec = f.store(() =>
       syncers.maybe(syncers.xmlContent),
       syncers.default(localized(''))
     ),
-    // Specify 7 only
-    shouldPrompt: pipe(
-      syncers.xmlChild('prompt'),
+    /**
+     * Specify 6 only. It was temporary implemented in Specify 7, but was removed
+     * in https://github.com/specify/specify7/issues/4525
+     */
+    legacyShouldPrompt: pipe(
+      syncers.xmlChild('prompt', 'optional'),
       syncers.maybe(syncers.xmlContent),
       syncers.maybe(syncers.toBoolean)
     ),
@@ -127,7 +128,6 @@ const usedBySpec = f.store(() =>
 type ParsedWebLink =
   | State<'Field', { readonly field: RA<LiteralField | Relationship> }>
   | State<'FormattedResource', { readonly formatter: LocalizedString }>
-  | State<'PromptField', { readonly label: LocalizedString }>
   | State<'ThisField'>
   | State<'UrlPart', { readonly value: LocalizedString }>;
 
@@ -161,11 +161,7 @@ function parseField(item: RawWebLink, part: string): ParsedWebLink {
       type: 'FormattedResource',
       formatter: field.title,
     };
-  return {
-    type: 'PromptField',
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    label: localized(field?.title || field?.name || part),
-  };
+  return { type: 'UrlPart', value: localized('') };
 }
 
 function reconstructWeblink(
@@ -173,36 +169,21 @@ function reconstructWeblink(
 ): Pick<RawWebLink, 'parameters' | 'url'> {
   const augmented = parts
     .filter((part) => part.type !== 'Field' || part.field.length > 0)
-    .map((parameter, index) =>
+    .map((parameter) =>
       parameter.type === 'Field'
         ? {
             name: parameter.field.map(({ name }) => name).join('.'),
             title: parameter.field.map(({ label }) => label).join(' > '),
-            shouldPrompt: false,
-          }
-        : parameter.type === 'PromptField'
-        ? {
-            name: `promptField${index}`,
-            title:
-              parameter.label.length > 0
-                ? parameter.label
-                : commonText.countLine({
-                    resource: resourcesText.promptField(),
-                    count: index,
-                  }),
-            shouldPrompt: true,
           }
         : parameter.type === 'ThisField'
         ? {
             name: 'this',
             title: 'This',
-            shouldPrompt: false,
           }
         : parameter.type === 'FormattedResource'
         ? {
             name: `${formatter}${parameter.formatter}`,
             title: parameter.formatter,
-            shouldPrompt: true,
           }
         : parameter.value
     );
@@ -220,6 +201,7 @@ function reconstructWeblink(
               name: localized(argument.name),
               title: localized(argument.title),
               legacyIsEditable: false,
+              legacyShouldPrompt: undefined,
             }
           : undefined
       )

@@ -38,7 +38,7 @@ export const specifyNetworkText = createDictionary({
     'de-ch': 'Für diese Anfrage konnten keine Daten gefunden werden',
     'es-es': 'No se encuentran datos para esta solicitud',
     'fr-fr': 'Impossible de trouver des données pour cette demande',
-    'ru-ru': 'Не удалось найти данные для этого запроса.',
+    'ru-ru': 'Не удалось найти данные по этому запросу.',
     'uk-ua': 'Неможливо знайти дані для цього запиту',
   },
   noDataErrorDescription: {
@@ -72,14 +72,6 @@ export const specifyNetworkText = createDictionary({
     'fr-fr': 'Date de collecte',
     'ru-ru': 'Дата сбора',
     'uk-ua': 'Дата збору',
-  },
-  mapDetails: {
-    'en-us': 'Details',
-    'de-ch': 'Einzelheiten',
-    'es-es': 'Detalles',
-    'fr-fr': 'Détails',
-    'ru-ru': 'Подробности',
-    'uk-ua': 'Подробиці',
   },
   mapDescription: {
     'en-us': `
@@ -154,9 +146,9 @@ export const specifyNetworkText = createDictionary({
       Випадки, записані в iDigBio, відображаються круглими зеленими точками, за
       винятком випадків із поточної колекції, записаної в iDigBio, які мають
       круглі червоні точки. Якщо збільшити масштаб червоних точок, з’явиться
-      блакитна краплеподібна шпилька, натиснувши на шпильку, буде виконано запит
-      місцевості в Specify, який покаже всі види в поточній базі даних
-      Specify, зібрані з цього місця.
+      блакитна краплевидна шпилька, натиснувши на шпильку, буде виконано запит
+      місцевості в Specify, який покаже всі види в поточній базі даних Specify,
+      зібрані з цього місця.
     `,
   },
   gbifDescription: {

@@ -73,16 +73,20 @@ export function XmlEditorShell<
     <Dialog
       buttons={
         <>
-          <Button.Danger
-            onClick={(): void => {
-              setItems(removeItem(items, index));
-              handleClose();
-            }}
-          >
-            {commonText.delete()}
-          </Button.Danger>
+          {isReadOnly ? null : (
+            <Button.Danger
+              onClick={(): void => {
+                setItems(removeItem(items, index));
+                handleClose();
+              }}
+            >
+              {commonText.delete()}
+            </Button.Danger>
+          )}
           <span className="-ml-2 flex-1" />
-          <Submit.Info form={id('form')}>{commonText.close()}</Submit.Info>
+          <Submit.Secondary form={id('form')}>
+            {commonText.close()}
+          </Submit.Secondary>
         </>
       }
       header={commonText.colonLine({
@@ -151,7 +155,7 @@ export function FormatterWrapper(): JSX.Element {
                 )
               }
             />
-            {resourcesText.defaultTableFormatter()}
+            {resourcesText.default()}
           </Label.Inline>
           {type === 'formatter' ? (
             <FormatterElement item={getSet as GetSet<Formatter>} />
