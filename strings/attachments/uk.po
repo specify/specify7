@@ -12,9 +12,9 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.5-dev\n"
 
-#: components/Attachments/RecordSetAttachment.tsx:116
-#: components/Attachments/RecordSetAttachment.tsx:118
-#: components/Attachments/index.tsx:180
+#: components/Attachments/RecordSetAttachment.tsx:121
+#: components/Attachments/RecordSetAttachment.tsx:123
+#: components/Attachments/index.tsx:161
 #: components/FormSliders/AttachmentsCollection.tsx:58
 #: components/FormSliders/AttachmentsCollection.tsx:70
 #: components/Header/menuItemDefinitions.ts:98
@@ -26,26 +26,26 @@ msgstr ""
 msgid "attachments"
 msgstr "Прикріплення"
 
-#: components/Attachments/index.tsx:243
+#: components/Attachments/index.tsx:224
 #. Used in: Components > Attachments > Index
 msgid "scale"
 msgstr "масштаб"
 
 #: components/Attachments/Plugin.tsx:39
 #: components/Attachments/Plugin.tsx:117
-#: components/Attachments/index.tsx:73
+#: components/Attachments/index.tsx:54
 #: components/AttachmentsBulkImport/Upload.tsx:250
 #: components/AttachmentsBulkImport/Upload.tsx:257
 #. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index ⬤ Components > Attachments Bulk Import > Upload
 msgid "attachmentServerUnavailable"
 msgstr "Сервер прикріплень недоступний"
 
-#: components/Attachments/index.tsx:76
+#: components/Attachments/index.tsx:57
 #. Used in: Components > Attachments > Index
 msgid "attachmentServerUnavailableDescription"
 msgstr "Налаштуйте сервер прикріплень"
 
-#: components/Attachments/index.tsx:229
+#: components/Attachments/index.tsx:210
 #: components/FormMeta/SubViewMeta.tsx:42
 #: components/Preferences/UserDefinitions.tsx:1257
 #. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
@@ -58,7 +58,7 @@ msgid "uploadingInline"
 msgstr "Завантаження…"
 
 #: components/Attachments/Gallery.tsx:107
-#: components/Attachments/RecordSetAttachment.tsx:126
+#: components/Attachments/RecordSetAttachment.tsx:131
 #: components/AttachmentsBulkImport/utils.ts:474
 #. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments Bulk Import > Utils
 msgid "noAttachments"
@@ -258,13 +258,13 @@ msgstr "Відкат видалить вкладення з бази даних 
 msgid "noMatch"
 msgstr "Немає відповідності"
 
-#: components/Attachments/RecordSetAttachment.tsx:129
+#: components/Attachments/RecordSetAttachment.tsx:134
 #. Used in: Components > Attachments > Record Set Attachment
 #, fuzzy
 msgid "attachmentHaltLimit"
 msgstr "У перших записах {halt:number} вкладень не знайдено."
 
-#: components/Attachments/RecordSetAttachment.tsx:137
+#: components/Attachments/RecordSetAttachment.tsx:142
 #. Used in: Components > Attachments > Record Set Attachment
 #, fuzzy
 msgid "fetchNextAttachments"

@@ -21,7 +21,7 @@ msgstr ""
 msgid "table"
 msgstr "Mesa"
 
-#: components/Attachments/index.tsx:214
+#: components/Attachments/index.tsx:195
 #: components/FormEditor/Table.tsx:49
 #: components/Router/Routes.tsx:386
 #: components/SchemaConfig/Tables.tsx:48

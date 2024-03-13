@@ -141,8 +141,8 @@ msgstr "Создать"
 #: components/Atoms/__tests__/Submit.test.ts:11
 #: components/Attachments/Cell.tsx:126
 #: components/Attachments/Dialog.tsx:63
-#: components/Attachments/RecordSetAttachment.tsx:108
-#: components/Attachments/index.tsx:72
+#: components/Attachments/RecordSetAttachment.tsx:113
+#: components/Attachments/index.tsx:53
 #: components/AttachmentsBulkImport/ActionState.tsx:43
 #: components/AttachmentsBulkImport/Datasets.tsx:137
 #: components/AttachmentsBulkImport/Datasets.tsx:265
@@ -752,16 +752,16 @@ msgstr "Выберите файл или перетащите его сюда"
 msgid "selectedFileName"
 msgstr "Выбранный файл"
 
-#: components/Attachments/index.tsx:199
-#: components/Attachments/index.tsx:202
+#: components/Attachments/index.tsx:180
+#: components/Attachments/index.tsx:183
 #: components/Security/registry.ts:117
 #: components/Security/registry.ts:145
 #. Used in: Components > Attachments > Index ⬤ Components > Security > Registry
 msgid "all"
 msgstr "Все"
 
-#: components/Attachments/index.tsx:208
-#: components/Attachments/index.tsx:211
+#: components/Attachments/index.tsx:189
+#: components/Attachments/index.tsx:192
 #. Used in: Components > Attachments > Index
 msgid "unused"
 msgstr "Неиспользованный"
@@ -781,7 +781,7 @@ msgstr "Порядковый номер"
 msgid "export"
 msgstr "Экспорт"
 
-#: components/Attachments/index.tsx:257
+#: components/Attachments/index.tsx:238
 #: components/QueryBuilder/Import.tsx:70
 #: components/QueryBuilder/Import.tsx:149
 #: components/Security/ImportExport.tsx:73
@@ -806,7 +806,7 @@ msgstr "Отклонить"
 msgid "id"
 msgstr "ID"
 
-#: components/Attachments/index.tsx:182
+#: components/Attachments/index.tsx:163
 #: components/QueryBuilder/Line.tsx:496
 #: components/QueryBuilder/Line.tsx:504
 #. Used in: Components > Attachments > Index ⬤ Components > Query Builder > Line
@@ -906,9 +906,9 @@ msgstr "Нет доступных"
 #: components/AppResources/Filters.tsx:100
 #: components/AppResources/Filters.tsx:116
 #: components/AppResources/Filters.tsx:142
-#: components/Attachments/RecordSetAttachment.tsx:117
-#: components/Attachments/index.tsx:198
-#: components/Attachments/index.tsx:207
+#: components/Attachments/RecordSetAttachment.tsx:122
+#: components/Attachments/index.tsx:179
+#: components/Attachments/index.tsx:188
 #: components/FormCells/FormTable.tsx:150
 #: components/Formatters/Types.tsx:55
 #: components/Formatters/Types.tsx:59
