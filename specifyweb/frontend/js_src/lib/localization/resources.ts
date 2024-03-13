@@ -164,10 +164,10 @@ export const resourcesText = createDictionary({
   formatter: {
     'en-us': 'Table Format',
     'de-ch': 'Tabellenformat',
-    'es-es': 'Formato de tabla',
-    'fr-fr': 'Format du tableau',
-    'ru-ru': 'Формат таблицы',
-    'uk-ua': 'Формат таблиці',
+    'es-es': 'Subcategorías',
+    'fr-fr': 'Sous-catégories',
+    'ru-ru': 'Подкатегории',
+    'uk-ua': 'Підкатегорії',
   },
   formatterDescription: {
     'en-us': `
@@ -198,8 +198,8 @@ export const resourcesText = createDictionary({
       можно настроить на основе значения в записи.
     `,
     'uk-ua': `
-      «Формат таблиці» визначає, як дані з певної таблиці відображаються в
-      результатах запиту, експорті та комбінованих полях запиту. Він визначає
+      «Формат таблиці» керує тим, як дані з певної таблиці відображаються в
+      результатах запитів, експорті та комбінованих полях запитів. Він визначає
       поля для відображення та їх порядок. Умовне форматування можна налаштувати
       на основі значення в записі.
     `,
@@ -207,10 +207,23 @@ export const resourcesText = createDictionary({
   aggregator: {
     'en-us': 'Table Aggregation',
     'de-ch': 'Tabellenaggregation',
-    'es-es': 'Agregación de tablas',
-    'fr-fr': 'Agrégation de tables',
-    'ru-ru': 'Агрегация таблиц',
-    'uk-ua': 'Агрегація таблиць',
+    'es-es': `
+      Este formato se utilizará sólo si el valor del campo de condición es igual
+      a esta condición o si ningún otro formato coincide con ella.
+    `,
+    'fr-fr': `
+      Ce format ne sera utilisé que si la valeur du champ de condition est égale
+      à cette condition ou si aucun autre format ne lui correspond.
+    `,
+    'ru-ru': `
+      Этот формат будет использоваться только в том случае, если значение поля
+      условия соответствует этому условию или если ему не соответствует никакой
+      другой формат.
+    `,
+    'uk-ua': `
+      Цей формат використовуватиметься, лише якщо значення поля умови дорівнює
+      цій умові або якщо жоден інший формат їй не відповідає.
+    `,
   },
   aggregatorDescription: {
     'en-us': `
@@ -275,7 +288,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Verfügbare Tabellenaggregationen',
     'es-es': 'Agregaciones de tablas disponibles',
     'fr-fr': 'Agrégations de tables disponibles',
-    'ru-ru': 'Доступные агрегации таблиц',
+    'ru-ru': 'Доступные агрегаты таблиц',
     'uk-ua': 'Доступні агрегації таблиць',
   },
   availableWebLink: {
@@ -496,7 +509,7 @@ export const resourcesText = createDictionary({
   },
   defaultInline: {
     'en-us': '(default)',
-    'de-ch': 'Passen Sie Feldformatierer an',
+    'de-ch': 'Formatvorschau',
     'es-es': '(por defecto)',
     'fr-fr': '(défaut)',
     'ru-ru': '(по умолчанию)',
@@ -520,7 +533,26 @@ export const resourcesText = createDictionary({
   },
   previewExplainer: {
     'en-us': 'Search your collection records to preview the record formatter',
-    'de-ch': '',
+    'de-ch': `
+      Durchsuchen Sie Ihre Sammlungsdatensätze, um eine Vorschau des
+      Datensatzformatierers anzuzeigen
+    `,
+    'es-es': `
+      Busque los registros de su colección para obtener una vista previa del
+      formateador de registros
+    `,
+    'fr-fr': `
+      Recherchez les enregistrements de votre collection pour prévisualiser le
+      formateur d'enregistrements
+    `,
+    'ru-ru': `
+      Выполните поиск в записях своей коллекции, чтобы просмотреть средство
+      форматирования записей.
+    `,
+    'uk-ua': `
+      Виконайте пошук у записах колекції, щоб переглянути інструмент
+      форматування записів
+    `,
   },
   editorNotAvailable: {
     'en-us': 'Visual editor is not available for this resource',
@@ -589,10 +621,10 @@ export const resourcesText = createDictionary({
   conditionFieldValue: {
     'en-us': 'Condition Field Value',
     'de-ch': 'Bedingungsfeldwert',
-    'es-es': 'Valor del campo de condición',
-    'fr-fr': 'Valeur du champ de condition',
-    'ru-ru': 'Значение поля условия',
-    'uk-ua': 'Умова Значення поля',
+    'es-es': 'Otro recurso JSON',
+    'fr-fr': 'Autre ressource JSON',
+    'ru-ru': 'Другой ресурс JSON',
+    'uk-ua': 'Інший ресурс JSON',
   },
   conditionDescription: {
     'en-us': `
@@ -644,7 +676,7 @@ export const resourcesText = createDictionary({
     `,
     'uk-ua': `
       Цей формат використовуватиметься, лише якщо значення поля умови дорівнює
-      цій умові або якщо жоден інший формат йому не відповідає.
+      цій умові або якщо жоден інший формат їй не відповідає.
     `,
   },
   wrongScopeWarning: {
@@ -669,7 +701,7 @@ export const resourcesText = createDictionary({
       changer de collection avant de modifier cette ressource.
     `,
     'ru-ru': `
-      Этот ресурс принадлежит другой коллекции/дисциплине, отличной от той, в
+      Этот ресурс принадлежит к другой коллекции/дисциплине, отличной от той, в
       которой вы сейчас находитесь. Перед редактированием этого ресурса
       рекомендуется сменить коллекцию.
     `,
@@ -754,10 +786,10 @@ export const resourcesText = createDictionary({
   copyDefaultForm: {
     'en-us': 'Copy default form',
     'de-ch': 'Standardformular kopieren',
-    'es-es': 'Agregadores',
-    'fr-fr': 'Agrégateurs',
-    'ru-ru': 'Агрегаторы',
-    'uk-ua': 'Агрегатори',
+    'es-es': 'Formateadores de registros',
+    'fr-fr': "Formateurs d'enregistrement",
+    'ru-ru': 'Форматеры записей',
+    'uk-ua': 'Форматувальники записів',
   },
   copyDefaultForms: {
     'en-us': 'Copy default forms',
@@ -819,9 +851,17 @@ export const resourcesText = createDictionary({
   conditionalFieldValue: {
     'en-us': 'Conditional Field Value',
     'de-ch': 'Bedingter Feldwert',
+    'es-es': 'Valor de campo condicional',
+    'fr-fr': 'Valeur du champ conditionnel',
+    'ru-ru': 'Условное значение поля',
+    'uk-ua': 'Умовне значення поля',
   },
   formatPreview: {
     'en-us': 'Format Preview',
     'de-ch': 'Formatvorschau',
+    'es-es': 'Vista previa de formato',
+    'fr-fr': 'Aperçu du format',
+    'ru-ru': 'Предварительный просмотр формата',
+    'uk-ua': 'Попередній перегляд формату',
   },
 } as const);
