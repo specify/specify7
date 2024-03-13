@@ -240,8 +240,8 @@ msgstr "Orden ascendente"
 msgid "descendingSort"
 msgstr "Orden descendente"
 
-#: components/QueryBuilder/Line.tsx:453
-#: components/QueryBuilder/Line.tsx:457
+#: components/QueryBuilder/Line.tsx:472
+#: components/QueryBuilder/Line.tsx:476
 #. 🟥as in negate query condition. Used in: Components > Query Builder > Line
 msgid "negate"
 msgstr "Negar"
@@ -356,9 +356,9 @@ msgstr "y"
 msgid "startsWith"
 msgstr "Comienza con"
 
-#: components/QueryBuilder/Line.tsx:399
-#: components/QueryBuilder/Line.tsx:407
-#: components/QueryBuilder/Line.tsx:434
+#: components/QueryBuilder/Line.tsx:418
+#: components/QueryBuilder/Line.tsx:426
+#: components/QueryBuilder/Line.tsx:453
 #. Used in: Components > Query Builder > Line
 msgid "or"
 msgstr "o"
@@ -512,3 +512,10 @@ msgstr "Desplazarse al editor"
 #, fuzzy
 msgid "viewRecords"
 msgstr "Ver registros"
+
+#: components/QueryBuilder/Formatter.tsx:65
+#: components/QueryBuilder/Formatter.tsx:74
+#: components/QueryBuilder/Formatter.tsx:82
+#. Used in: Components > Query Builder > Formatter
+msgid "chooseFormatter"
+msgstr ""

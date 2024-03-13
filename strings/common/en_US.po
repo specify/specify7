@@ -414,7 +414,7 @@ msgstr "Tools"
 #: components/Permissions/FormatError.tsx:174
 #: components/Preferences/Renderers.tsx:114
 #: components/QueryBuilder/FieldFilter.tsx:623
-#: components/QueryBuilder/Formatter.tsx:43
+#: components/QueryBuilder/Formatter.tsx:59
 #: components/QueryBuilder/Results.tsx:195
 #: components/QueryBuilder/Results.tsx:196
 #: components/QueryComboBox/index.tsx:376
@@ -464,10 +464,10 @@ msgstr "Uploaded"
 #: components/Formatters/Fields.tsx:195
 #: components/Formatters/Fields.tsx:196
 #: components/QueryBuilder/Components.tsx:167
-#: components/QueryBuilder/Line.tsx:293
-#: components/QueryBuilder/Line.tsx:297
-#: components/QueryBuilder/Line.tsx:438
-#: components/QueryBuilder/Line.tsx:441
+#: components/QueryBuilder/Line.tsx:294
+#: components/QueryBuilder/Line.tsx:298
+#: components/QueryBuilder/Line.tsx:457
+#: components/QueryBuilder/Line.tsx:460
 #: components/SchemaConfig/UniquenessRuleRow.tsx:273
 #: components/Security/Policy.tsx:94
 #: components/Security/Policy.tsx:96
@@ -804,8 +804,8 @@ msgid "id"
 msgstr "ID"
 
 #: components/Attachments/index.tsx:182
-#: components/QueryBuilder/Line.tsx:477
-#: components/QueryBuilder/Line.tsx:485
+#: components/QueryBuilder/Line.tsx:496
+#: components/QueryBuilder/Line.tsx:504
 #. Used in: Components > Attachments > Index ⬤ Components > Query Builder > Line
 msgid "filter"
 msgstr "Filter"

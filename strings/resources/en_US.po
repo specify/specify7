@@ -298,7 +298,8 @@ msgstr "Limit"
 
 #: components/Formatters/Components.tsx:72
 #: components/Formatters/Components.tsx:130
-#. Used in: Components > Formatters > Components
+#: components/QueryBuilder/Formatter.tsx:92
+#. Used in: Components > Formatters > Components ⬤ Components > Query Builder > Formatter
 msgid "defaultInline"
 msgstr "(default)"
 
