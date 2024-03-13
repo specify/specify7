@@ -37,7 +37,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
   const [attachments] = useAsyncState(
     React.useCallback(async () => {
       const attachmentField =
-        records.length > 0
+        records.length > 0 && records.at(0) !== undefined
           ? getAttachmentRelationship(records.at(0)!.specifyTable)
           : undefined;
       if (!showAttachments || attachmentField === undefined) {
