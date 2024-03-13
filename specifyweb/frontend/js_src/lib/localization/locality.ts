@@ -305,4 +305,20 @@ export const localityText = createDictionary({
   localityImportedAcceptedHeaders: {
     'en-us': 'Only the following headers are accepted',
   },
+  localityImportErrorDialogHeader: {
+    'en-us': 'Error(s) Occured while Parsing Dataset',
+  },
+  guidHeaderNotProvided: {
+    'en-us': "The Dataset must contain a 'guid' header",
+  },
+  noLocalityMatchingGuid: {
+    'en-us': "No Locality with guid: '{guid:string}'",
+  },
+  multipleLocalitiesWithGuid: {
+    'en-us':
+      'More than one Locality found with guid: {guid:string}. Locality IDs: {localityIds: string}',
+  },
+  rowNumber: {
+    'en-us': 'Row Number',
+  },
 } as const);
