@@ -1,20 +1,19 @@
-from typing import Any, Dict, List, Union, Tuple, Literal, Optional, NamedTuple
-
-from django.db.models import QuerySet
+from typing import get_args as get_typing_args, Any, Dict, List, Tuple, Literal, Optional, NamedTuple, Union
 
 import specifyweb.specify.models as spmodels
 from specifyweb.specify.datamodel import datamodel
-from specifyweb.specify.parse import parse_field as _parse_field, ParseFailure as BaseParseFailure, ParseSucess as BaseParseSuccess
+from specifyweb.specify.parse import ParseFailureKey, parse_field as _parse_field, ParseFailure as BaseParseFailure, ParseSucess as BaseParseSuccess
 
-ParseErrorMessageKey = Literal[
-    'guidNotProvided',
+LocalityParseErrorMessageKey = Literal[
+    'guidHeaderNotProvided',
     'noLocalityMatchingGuid',
     'multipleLocalitiesWithGuid',
-
-    'coordinateBadFormat',
-    'latitudeOutOfRange',
-    'longitudeOutOfRange'
 ]
+
+# constructs a list with the string literals defined in the
+# base ParseFailureKey and LocalityParseErrorMessageKey types
+localityParseErrorMessages: List[LocalityParseErrorMessageKey] = list(
+    set(get_typing_args(LocalityParseErrorMessageKey)) | set(get_typing_args(ParseFailureKey)))
 
 updatable_locality_fields = ['latitude1', 'longitude1', 'datum']
 updatable_geocoorddetail_fields = [
@@ -24,16 +23,16 @@ ImportModel = Literal['Locality', 'Geocoorddetail']
 
 
 class ParseError(NamedTuple):
-    message: ParseErrorMessageKey
+    message: Union[ParseFailureKey, LocalityParseErrorMessageKey]
     payload: Optional[Dict[str, Any]]
     row_number: Optional[int]
 
     @classmethod
     def from_parse_failure(cls, parse_failure: BaseParseFailure, row_number: int):
         return cls(parse_failure.message, parse_failure.payload, row_number)
-    
+
     def to_json(self):
-        return {"message": self.message, "payload": self.payload, "row_number": self.row_number}
+        return {"message": self.message, "payload": self.payload, "rowNumber": self.row_number}
 
 
 class ParseSuccess(NamedTuple):
@@ -71,7 +70,7 @@ def parse_locality_set(collection, raw_headers: List[str], data: List[List[str]]
                           {'guid': guid}, row_mumber))
 
         if len(locality_query) > 1:
-            errors.append(ParseError('multipleLocalitiesWithGuid', {'localityIds': tuple(
+            errors.append(ParseError('multipleLocalitiesWithGuid', {'guid': guid, 'localityIds': list(
                 locality.id for locality in locality_query)}, row_mumber))
 
         locality_values = [{'field': dict['field'], 'value': row[dict['index']].strip()}

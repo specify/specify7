@@ -1,7 +1,7 @@
 import re
 import math
 
-from typing import Dict, List, Tuple, Any, NamedTuple, Union, Optional
+from typing import Dict, List, Tuple, Any, NamedTuple, Union, Optional, Literal
 from datetime import datetime
 from decimal import Decimal
 
@@ -11,9 +11,24 @@ from specifyweb.stored_queries.format import get_date_format, MYSQL_TO_YEAR, MYS
 from specifyweb.specify.datamodel import datamodel, Table, Field, Relationship
 from specifyweb.specify.uiformatters import get_uiformatter, FormatMismatch
 
+ParseFailureKey = Literal[
+'valueTooLong',
+'formatMismatch',
+
+'failedParsingDecimal',
+'failedParsingFloat',
+'failedParsingBoolean',
+'failedParsingAgentType',
+
+'invalidYear',
+'badDateFormat',
+
+'latitudeOutOfRange',
+'longitudeOutOfRange'
+]
 
 class ParseFailure(NamedTuple):
-    message: str
+    message: ParseFailureKey
     payload: Dict[str, Any]
 
     def to_json(self) -> List:
@@ -158,7 +173,7 @@ def parse_formatted(collection, uiformatter, table: Table, field: Union[Field, R
     try:
         parsed = uiformatter.parse(value)
     except FormatMismatch as e:
-        return ParseFailure(e.args[0], {})
+        return ParseFailure('formatMismatch', {'value': e.value, 'formatter': e.formatter})
 
     if uiformatter.needs_autonumber(parsed):
         canonicalized = uiformatter.autonumber_now(
