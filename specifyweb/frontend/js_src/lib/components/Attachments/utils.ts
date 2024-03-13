@@ -41,9 +41,9 @@ export const getAttachmentRelationship = (
   table: SpecifyTable
 ): Relationship | undefined => {
   if (table.name === 'Attachment') return undefined;
-  const commonRelationship = table.field[`${table.name[0].toLowerCase()}${table.name.slice(1)}Attachments`] as
-    | Relationship
-    | undefined;
+  const commonRelationship = table.field[
+    `${table.name[0].toLowerCase()}${table.name.slice(1)}Attachments`
+  ] as Relationship | undefined;
 
   return commonRelationship === undefined
     ? table.relationships.find((relationship) => {
