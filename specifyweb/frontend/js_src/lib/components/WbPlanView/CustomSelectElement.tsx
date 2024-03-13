@@ -285,7 +285,7 @@ function Option({
   if (isDefault)
     classes.push(
       'custom-select-option-selected cursor-auto dark:text-white',
-      'bg-[color:var(--custom-select-accent)]'
+      '!bg-[color:var(--custom-select-accent)]'
     );
 
   const tableLabel = getTable(tableName ?? '')?.label;
