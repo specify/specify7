@@ -234,12 +234,7 @@ export const treeText = createDictionary({
       descendants correspondant en termes de nom et de rang étant eux-mêmes.
       fusionnés de manière récursive.
     `,
-    'uk-ua': `
-      Усі посилання на вузол {treeName:string} «{nodeName:string}» буде замінено
-      на «{parentName:string}», а всі нащадки «{nodeName:string}» буде
-      переміщено до «{parentName:string}», а будь-які нащадки, що відповідають
-      імені та рангу, будуть самі собою об'єднані рекурсивно.
-    `,
+    'uk-ua': 'Непрямий підрахунок [X9X].',
     'de-ch': `
       Alle Referenzen zu {treeName:string} "{nodeName:string}" werden mit
       "{parentName:string}" ersetzt. Alle Nachkommen von "{nodeName:string}"
@@ -426,11 +421,11 @@ export const treeText = createDictionary({
   },
   associatedNodesOnly: {
     'en-us': 'Show only nodes with associated objects',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch': 'Nur Knoten mit zugehörigen Objekten anzeigen',
+    'es-es': 'Mostrar solo nodos con objetos asociados',
+    'fr-fr': 'Afficher uniquement les nœuds avec les objets associés',
+    'ru-ru': 'Это приведет к безвозвратному удалению следующего ресурса',
+    'uk-ua': 'Показувати лише вузли з пов’язаними об’єктами',
   },
   splitView: {
     'en-us': 'Split View',

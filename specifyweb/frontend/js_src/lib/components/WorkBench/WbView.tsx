@@ -816,6 +816,7 @@ export class WbView extends Backbone.View {
     const dialog = this.options.display(
       <DevShowPlan
         dataSetId={this.dataset.id}
+        dataSetName={this.dataset.name}
         uploadPlan={this.dataset.uploadplan ?? ({} as UploadPlan)}
         onChanged={(plan) => {
           overwriteReadOnly(this.dataset, 'uploadplan', plan);

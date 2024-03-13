@@ -291,8 +291,8 @@ export const wbPlanText = createDictionary({
     'en-us': 'Add New Column',
     'ru-ru': 'Добавить новую колонку',
     'es-es': 'Agregar una columna nueva',
-    'fr-fr': 'Relation avec la table [X20X]',
-    'uk-ua': 'Відношення до таблиці [X20X].',
+    'fr-fr': 'Ajouter une nouvelle colonne',
+    'uk-ua': 'Додати новий стовпець',
     'de-ch': 'Neue Spalte hinzufügen',
   },
   validationFailed: {
@@ -494,8 +494,11 @@ export const wbPlanText = createDictionary({
       'Изменить базовую таблицу для сопоставления столбцов набора данных?',
     'es-es':
       '¿Cambiar la tabla base para mapear columnas de conjuntos de datos?',
-    'fr-fr': "Mapper le champ sélectionné à l'en-tête sélectionné",
-    'uk-ua': 'Зіставити вибране поле з вибраним заголовком',
+    'fr-fr': `
+      Modifier la table de base pour le mappage des colonnes de l'ensemble de
+      données ?
+    `,
+    'uk-ua': 'Змінити базову таблицю для зіставлення стовпців набору даних?',
     'de-ch': 'Die Basistabelle für die Zuordnung von Datensatzspalten ändern?',
   },
   goToBaseTableDescription: {
@@ -650,8 +653,9 @@ export const wbPlanText = createDictionary({
     'ru-ru': 'Автоматически сопоставить?',
     'es-es': '¿Automap para iniciar un nuevo plan de carga?',
     'de-ch': 'Automap, um einen neuen Upload-Plan zu starten?',
-    'fr-fr': 'Ensemble de données vide',
-    'uk-ua': 'Порожній набір даних',
+    'fr-fr':
+      'Mappage automatique pour démarrer un nouveau plan de téléchargement ?',
+    'uk-ua': 'Автоматична карта, щоб почати новий план завантаження?',
   },
   reRunAutoMapperConfirmationDescription: {
     'en-us': 'This will erase existing data field mappings.',
