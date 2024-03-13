@@ -13,12 +13,20 @@ if settings.AUTH_LDAP_SERVER_URI is not None:
 
 logger = logging.getLogger(__name__)
 
+class SpecifyUserManager(BaseUserManager):
+    def create_user(self, name, password=None):
+        raise NotImplementedError()
+
+    def create_superuser(self, name, password=None):
+        raise NotImplementedError()
+
 class Specifyuser(models.Model): # FUTURE: class Specifyuser(SpTimestampedModel):
     USERNAME_FIELD = 'name'
     REQUIRED_FIELDS = []
     is_active = True
     is_anonymous = False
     is_authenticated = True
+    objects = SpecifyUserManager()
 
     def get_username(self):
         return getattr(self, self.USERNAME_FIELD)
