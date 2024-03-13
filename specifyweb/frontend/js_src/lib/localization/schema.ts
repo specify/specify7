@@ -126,7 +126,7 @@ export const schemaText = createDictionary({
     'ru-ru': 'Скрыть таблицу',
     'es-es': 'Ocultar tabla',
     'fr-fr': 'Masquer le tableau',
-    'uk-ua': 'Сховати таблицю',
+    'uk-ua': 'Приховати таблицю',
     'de-ch': 'Tabelle verbergen',
   },
   hideField: {
@@ -139,21 +139,28 @@ export const schemaText = createDictionary({
   },
   tableFormat: {
     'en-us': 'Table Format',
-    'ru-ru': 'Формат таблицы',
+    'ru-ru': 'Подкатегории',
     'es-es': 'Formato de tabla',
     'fr-fr': 'Sous-catégories',
-    'uk-ua': 'Формат таблиці',
+    'uk-ua': 'Підкатегорії',
     'de-ch': 'Tabellenformat',
   },
   tableAggregation: {
     'en-us': 'Table Aggregation',
-    'ru-ru': 'Агрегация таблиц',
+    'ru-ru': `
+      Этот формат будет использоваться только в том случае, если значение поля
+      условия соответствует этому условию или если ему не соответствует никакой
+      другой формат.
+    `,
     'es-es': 'Agregación de tablas',
     'fr-fr': `
       Ce format ne sera utilisé que si la valeur du champ de condition est égale
       à cette condition ou si aucun autre format ne lui correspond.
     `,
-    'uk-ua': 'Агрегація таблиць',
+    'uk-ua': `
+      Цей формат використовуватиметься, лише якщо значення поля умови дорівнює
+      цій умові або якщо жоден інший формат їй не відповідає.
+    `,
     'de-ch': 'Tabellenaggregation',
   },
   oneToOne: {
@@ -434,15 +441,15 @@ export const schemaText = createDictionary({
     'es-es': 'Exportar duplicados',
     'fr-fr': 'Exporter les doublons',
     'ru-ru': 'Экспортировать дубликаты',
-    'uk-ua': 'Експортувати дублікати',
+    'uk-ua': 'Експорт дублікатів',
   },
   numberOfDuplicates: {
     'en-us': 'Number of Duplicates',
     'de-ch': 'Anzahl der Duplikate',
     'es-es': 'Número de duplicados',
     'fr-fr': 'ID de table',
-    'ru-ru': 'Агрегация таблиц',
-    'uk-ua': 'Агрегація таблиць',
+    'ru-ru': 'Идентификатор таблицы',
+    'uk-ua': 'Ідентифікатор таблиці',
   },
   schemaViewTitle: {
     'en-us': 'Schema Config: {tableName:string}',
