@@ -1,17 +1,28 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { localityText } from '../../localization/locality';
+import { mainText } from '../../localization/main';
+import { notificationsText } from '../../localization/notifications';
 import { ajax } from '../../utils/ajax';
-import type { RA } from '../../utils/types';
+import { f } from '../../utils/functools';
+import type { IR, RA } from '../../utils/types';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Submit } from '../Atoms/Submit';
+import { LoadingContext } from '../Core/Contexts';
 import { tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
+import { softFail } from '../Errors/Crash';
+import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
 import { Dialog } from '../Molecules/Dialog';
 import { CsvFilePicker } from '../Molecules/FilePicker';
+import { ProtectedTool } from '../Permissions/PermissionDenied';
+import { CreateRecordSet } from '../QueryBuilder/CreateRecordSet';
+import { downloadDataSet } from '../WorkBench/helpers';
+import { resolveBackendParsingMessage } from '../WorkBench/resultsParser';
 
 type Header = Exclude<
   Lowercase<
@@ -34,6 +45,22 @@ const acceptedHeaders = new Set([
 
 const requiredHeaders = new Set<Header>(['guid']);
 
+type LocalityImportParseError = {
+  readonly message: string;
+  readonly payload: IR<unknown>;
+  readonly rowNumber: number;
+};
+
+type LocalityUploadResponse =
+  | {
+      readonly type: 'ParseError';
+      readonly data: RA<LocalityImportParseError>;
+    }
+  | {
+      readonly type: 'Uploaded';
+      readonly data: RA<number>;
+    };
+
 export function ImportLocalitySet(): JSX.Element {
   const [headerErrors, setHeaderErrors] = React.useState({
     missingRequiredHeaders: [] as RA<Header>,
@@ -42,6 +69,11 @@ export function ImportLocalitySet(): JSX.Element {
 
   const [headers, setHeaders] = React.useState<RA<string>>([]);
   const [data, setData] = React.useState<RA<RA<string>>>([]);
+  const [results, setResults] = React.useState<
+    LocalityUploadResponse | undefined
+  >(undefined);
+
+  const loading = React.useContext(LoadingContext);
 
   return (
     <>
@@ -81,15 +113,20 @@ export function ImportLocalitySet(): JSX.Element {
               <Button.DialogClose>{commonText.close()}</Button.DialogClose>
               {headerErrors.missingRequiredHeaders.length === 0 && (
                 <Submit.Save
-                  onClick={() =>
-                    ajax('/api/import/locality_set/', {
-                      headers: { Accept: 'application/json' },
-                      body: {
-                        columnHeaders: headers,
-                        data,
-                      },
-                      method: 'POST',
-                    })
+                  onClick={(): void =>
+                    loading(
+                      ajax<LocalityUploadResponse>(
+                        '/api/import/locality_set/',
+                        {
+                          headers: { Accept: 'application/json' },
+                          body: {
+                            columnHeaders: headers,
+                            data,
+                          },
+                          method: 'POST',
+                        }
+                      ).then(({ data }) => setResults(data))
+                    )
                   }
                 >
                   {commonText.import()}
@@ -128,6 +165,147 @@ export function ImportLocalitySet(): JSX.Element {
           </>
         </Dialog>
       )}
+      {results === undefined ? null : (
+        <LocalityImportResults
+          results={results}
+          onClose={(): void => setResults(undefined)}
+        />
+      )}
     </>
   );
+}
+
+function LocalityImportResults({
+  results,
+  onClose: handleClose,
+}: {
+  readonly results: LocalityUploadResponse;
+  readonly onClose: () => void;
+}): JSX.Element {
+  return (
+    <>
+      {results.type === 'ParseError' ? (
+        <LocalityImportErrors results={results} onClose={handleClose} />
+      ) : results.type === 'Uploaded' ? (
+        <RecordSelectorFromIds
+          defaultIndex={0}
+          dialog="nonModal"
+          headerButtons={
+            <ProtectedTool action="create" tool="recordSets">
+              <CreateRecordSet
+                baseTableName="Locality"
+                recordIds={results.data}
+              />
+            </ProtectedTool>
+          }
+          ids={results.data}
+          isDependent={false}
+          newResource={undefined}
+          table={tables.Locality}
+          title={undefined}
+          totalCount={results.data.length}
+          onAdd={undefined}
+          onClone={undefined}
+          onClose={handleClose}
+          onDelete={undefined}
+          onSaved={f.void}
+          onSlide={undefined}
+        />
+      ) : null}
+    </>
+  );
+}
+
+function LocalityImportErrors({
+  results,
+  onClose: handleClose,
+}: {
+  readonly results: Extract<
+    LocalityUploadResponse,
+    { readonly type: 'ParseError' }
+  >;
+  readonly onClose: () => void;
+}): JSX.Element | null {
+  const loading = React.useContext(LoadingContext);
+
+  return (
+    <Dialog
+      buttons={
+        <>
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+          <Button.Info
+            onClick={(): void => {
+              const fileName = `${localityText.localityImportErrorFileName({
+                date: new Date().toDateString(),
+              })}.csv`;
+
+              const columns = [
+                localityText.rowNumber(),
+                mainText.errorMessage(),
+              ];
+
+              const data = results.data.map(
+                ({ message, payload, rowNumber }) => [
+                  rowNumber.toString(),
+                  resolveImportLocalityErrorMessage(message, payload),
+                ]
+              );
+
+              loading(
+                downloadDataSet(fileName, data, columns, ',').catch(softFail)
+              );
+            }}
+          >
+            {notificationsText.download()}
+          </Button.Info>
+        </>
+      }
+      header={localityText.localityImportErrorDialogHeader()}
+      icon="error"
+      onClose={handleClose}
+    >
+      <table className="grid-cols-2">
+        <thead>
+          <tr>
+            <td>{localityText.rowNumber()}</td>
+            <td>{mainText.errorMessage()}</td>
+          </tr>
+        </thead>
+        {results.data.map(({ rowNumber, message, payload }, index) => (
+          <tr key={index}>
+            <td>{rowNumber}</td>
+            <td>{resolveImportLocalityErrorMessage(message, payload)}</td>
+          </tr>
+        ))}
+      </table>
+    </Dialog>
+  );
+}
+
+function resolveImportLocalityErrorMessage(
+  key: string,
+  payload: IR<unknown>
+): LocalizedString {
+  const baseParseResults = resolveBackendParsingMessage(key, payload);
+
+  if (baseParseResults !== undefined) {
+    return baseParseResults;
+  } else if (key === 'guidHeaderNotProvided') {
+    return localityText.guidHeaderNotProvided();
+  } else if (key === 'noLocalityMatchingGuid') {
+    return localityText.noLocalityMatchingGuid({
+      guid: payload.guid as string,
+    });
+  } else if (key === 'multipleLocalitiesWithGuid') {
+    return localityText.multipleLocalitiesWithGuid({
+      guid: payload.guid as string,
+      localityIds: (payload.localityIds as RA<number>).join(', '),
+    });
+  } else {
+    return commonText.colonLine({
+      label: key,
+      value:
+        Object.keys(payload).length === 0 ? '' : `${JSON.stringify(payload)}`,
+    });
+  }
 }

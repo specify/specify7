@@ -308,6 +308,15 @@ export const localityText = createDictionary({
   localityImportErrorDialogHeader: {
     'en-us': 'Error(s) Occured while Parsing Dataset',
   },
+  localityImportErrorDialogDetails: {
+    'en-us':
+      'The following Errors occured at the provided Row (Line) Numbers of the file while parsing the Dataset: ',
+  },
+  localityImportErrorFileName: {
+    comment:
+      'The file name which is used when Parse Errors are exported. The .csv file extension is appended to the end of this string',
+    'en-us': 'Locality Import Errors - {date:string}',
+  },
   guidHeaderNotProvided: {
     'en-us': "The Dataset must contain a 'guid' header",
   },
