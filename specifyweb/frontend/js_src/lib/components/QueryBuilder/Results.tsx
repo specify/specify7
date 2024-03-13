@@ -25,7 +25,7 @@ import {
 import { fetchPickList } from '../PickLists/fetch';
 import { userPreferences } from '../Preferences/userPreferences';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
-import { CreateRecordSet } from './CreateRecordSet';
+import { CreateRecordSetFromQuery } from './CreateRecordSet';
 import type { QueryFieldSpec } from './fieldSpec';
 import type { QueryField } from './helpers';
 import { sortTypes } from './helpers';
@@ -225,7 +225,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
               )}
             {hasToolPermission('recordSets', 'create') && totalCount !== 0 ? (
               selectedRows.size > 0 && !isDistinct ? (
-                <CreateRecordSet
+                <CreateRecordSetFromQuery
                   /*
                    * This is needed so that IDs are in the same order as they
                    * are in query results (selectedRows set may be out of order

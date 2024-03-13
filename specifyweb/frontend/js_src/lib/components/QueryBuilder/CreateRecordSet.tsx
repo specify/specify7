@@ -16,20 +16,19 @@ import type { RecordSet, SpQuery, Tables } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { recordSetView } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
+import { LoadingScreen } from '../Molecules/Dialog';
 import { RecordSetCreated, recordSetFromQueryLoading } from './Components';
 
-/**
- * Create a record set from selected records.
- * See also `MakeRecordSetButton`
- */
 export function CreateRecordSet({
-  getIds,
+  recordIds,
   baseTableName,
-  queryResource,
+  saveComponent,
+  defaultRecordSetName,
 }: {
-  readonly getIds: () => RA<number>;
+  readonly recordIds: RA<number> | (() => RA<number>);
   readonly baseTableName: keyof Tables;
-  readonly queryResource: SpecifyResource<SpQuery> | undefined;
+  readonly saveComponent?: () => JSX.Element;
+  readonly defaultRecordSetName?: string;
 }): JSX.Element {
   const [state, setState] = React.useState<
     | State<'Editing', { readonly recordSet: SpecifyResource<RecordSet> }>
@@ -38,14 +37,19 @@ export function CreateRecordSet({
     | State<'Saving'>
   >({ type: 'Main' });
 
+  const resolvedRecordIds = React.useMemo(
+    () => (typeof recordIds === 'function' ? recordIds() : recordIds),
+    [recordIds]
+  );
+
   return (
     <>
       <Button.Small
         aria-haspopup="dialog"
         onClick={(): void => {
           const recordSet = new tables.RecordSet.Resource();
-          if (queryResource !== undefined && !queryResource.isNew())
-            recordSet.set('name', queryResource.get('name'));
+          if (defaultRecordSetName !== undefined)
+            recordSet.set('name', defaultRecordSetName);
           setState({
             type: 'Editing',
             recordSet,
@@ -81,7 +85,7 @@ export function CreateRecordSet({
                * duplicate IDs (when displaying a -to-many relationship)
                */
               // @ts-expect-error
-              recordSetItems: f.unique(getIds()).map((id) => ({
+              recordSetItems: f.unique(resolvedRecordIds).map((id) => ({
                 recordId: id,
               })),
             })
@@ -99,7 +103,9 @@ export function CreateRecordSet({
           }}
         />
       )}
-      {state.type === 'Saving' && recordSetFromQueryLoading()}
+      {state.type === 'Saving' && typeof saveComponent === 'function'
+        ? saveComponent()
+        : LoadingScreen()}
       {state.type === 'Saved' && (
         <RecordSetCreated
           recordSet={state.recordSet}
@@ -107,5 +113,32 @@ export function CreateRecordSet({
         />
       )}
     </>
+  );
+}
+
+/**
+ * Create a record set from selected records.
+ * See also `MakeRecordSetButton`
+ */
+export function CreateRecordSetFromQuery({
+  getIds,
+  baseTableName,
+  queryResource,
+}: {
+  readonly getIds: () => RA<number>;
+  readonly baseTableName: keyof Tables;
+  readonly queryResource: SpecifyResource<SpQuery> | undefined;
+}): JSX.Element {
+  const recordSetName =
+    queryResource === undefined || queryResource.isNew()
+      ? undefined
+      : queryResource.get('name');
+  return (
+    <CreateRecordSet
+      baseTableName={baseTableName}
+      defaultRecordSetName={recordSetName}
+      recordIds={getIds}
+      saveComponent={recordSetFromQueryLoading}
+    />
   );
 }
