@@ -1,5 +1,3 @@
-from datetime import datetime
-from attr import has
 from django.db import models
 from django.utils import timezone
 

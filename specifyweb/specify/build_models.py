@@ -1,15 +1,11 @@
-import time
-from attr import has
 from django.db import models
-from django.utils import timezone
-from django.db.models.signals import pre_save
 
 from model_utils import FieldTracker
 from requests import get
 
 from specifyweb.businessrules.exceptions import AbortSave
 from . import model_extras
-from .model_timestamp import SpTimestampedModel, auto_timestamp_fields, pre_save_auto_timestamp_field_with_override, SpTimestampManager
+from .model_timestamp import pre_save_auto_timestamp_field_with_override
 
 appname = __name__.split('.')[-2]
 

@@ -2,14 +2,12 @@
 Tests for api.py
 """
 
-from calendar import c
 from datetime import datetime
 import json
 from unittest import skip
 
 from django.db.models import Max
 from django.test import TestCase, Client
-from specifyweb.context.views import collection
 
 from specifyweb.permissions.models import UserPolicy
 from specifyweb.specify import api, models, scoping
