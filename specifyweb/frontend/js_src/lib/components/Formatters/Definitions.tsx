@@ -128,6 +128,11 @@ function ConditionalFormatter({
       className={`flex
         ${isExpanded || !hasCondition ? 'flex-col' : ''}
         ${isExpanded ? 'gap-2' : ''}
+        ${
+          fields.length === 0 && hasCondition && trimmedFieldsLength > 0
+            ? 'items-center'
+            : ''
+        }
       `}
       key={index}
     >
@@ -237,7 +242,7 @@ function ConditionalFormatter({
           {trimmedFieldsLength === 1 ||
           isExpanded ||
           isReadOnly ||
-          !hasCondition ? null : (
+          fields.length === 0 ? null : (
             <div className="inline-flex">
               <Button.Icon
                 icon="trash"
