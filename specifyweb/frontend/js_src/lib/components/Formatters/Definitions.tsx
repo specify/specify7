@@ -230,14 +230,11 @@ function ConditionalFormatter({
       ) : null}
       <span className="-ml-2 flex-1" />
       <div className="flex flex-col p-2">
-        {!isExpanded && hasCondition && index === 0 ? (
+        {!isExpanded && index === 0 ? (
           <span className="font-bold">{commonText.expand()}</span>
         ) : null}
         <div className="flex justify-end">
-          {trimmedFieldsLength === 1 ||
-          isExpanded ||
-          isReadOnly ||
-          !hasCondition ? null : (
+          {trimmedFieldsLength === 1 || isExpanded || isReadOnly ? null : (
             <div className="inline-flex">
               <Button.Icon
                 icon="trash"
