@@ -29,7 +29,6 @@ import {
   formattedEntry,
   mappingPathToString,
   parsePartialField,
-  relationshipIsToMany,
   valueIsPartialField,
 } from '../WbPlanView/mappingHelpers';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
