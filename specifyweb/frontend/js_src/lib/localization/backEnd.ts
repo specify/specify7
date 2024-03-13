@@ -211,6 +211,9 @@ export const backEndText = createDictionary({
       Tatsächlich: {value:string}
     `,
   },
+  formatMismatch: {
+    'en-us': 'value {value:string} does not match formatter {formatter:string}',
+  },
   invalidPartialRecord: {
     'en-us': 'this field must be empty if {column:string} is empty',
     'ru-ru': 'это поле должно быть пустым, если {column:string} пусто',
