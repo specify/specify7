@@ -29,6 +29,7 @@ import {
   formattedEntry,
   mappingPathToString,
   parsePartialField,
+  relationshipIsToMany,
   valueIsPartialField,
 } from '../WbPlanView/mappingHelpers';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
@@ -166,7 +167,7 @@ export function QueryLine({
         canOpenMap = fieldName === 'latitude1' || fieldName === 'longitude1';
       } else if (isMapped)
         fieldType =
-          isFormatted && mappingPath.at(-1) === '#1'
+          dataModelField?.isRelationship && relationshipIsToMany(dataModelField)
             ? 'aggregator'
             : 'formatter';
 
