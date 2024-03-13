@@ -2,7 +2,7 @@ import re
 from contextlib import contextmanager
 import logging
 
-from specifyweb.specify.model_timestamp import SpTimestampedModel, pre_save_auto_timestamp_field_with_override
+from specifyweb.specify.model_timestamp import pre_save_auto_timestamp_field_with_override
 logger = logging.getLogger(__name__)
 
 
@@ -30,7 +30,7 @@ class Tree(models.Model): # FUTURE: class Tree(SpTimestampedModel):
 
     def save(self, *args, skip_tree_extras=False, **kwargs):
         def save():
-            pre_save_auto_timestamp_field_with_override(self, *args, **kwargs)
+            pre_save_auto_timestamp_field_with_override(self)
             super(Tree, self).save(*args, **kwargs)
 
         if skip_tree_extras:

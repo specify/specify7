@@ -103,7 +103,7 @@ class Specifyuser(models.Model): # FUTURE: class Specifyuser(SpTimestampedModel)
         if self.id and self.usertype != 'Manager':
             self.clear_admin()
 
-        pre_save_auto_timestamp_field_with_override(self, *args, **kwargs)
+        pre_save_auto_timestamp_field_with_override(self)
         return super(Specifyuser, self).save(*args, **kwargs)
 
     class Meta:

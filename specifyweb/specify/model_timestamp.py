@@ -3,9 +3,7 @@ from django.utils import timezone
 
 from model_utils import FieldTracker
 
-def pre_save_auto_timestamp_field_with_override(obj, *kwargs):
-    timestamp_override = kwargs.pop('timestamp_override', False)
-
+def pre_save_auto_timestamp_field_with_override(obj, timestamp_override=False):
     # Normal behavior is to update the timestamps automatically when saving.
     # If timestampcreated or timestampmodified have been edited, don't update them to the current time.
     cur_time = timezone.now()
@@ -43,5 +41,5 @@ class SpTimestampedModel(models.Model):
         abstract = True
 
     def save(self, *args, **kwargs):
-        pre_save_auto_timestamp_field_with_override(self, *args, **kwargs)
+        pre_save_auto_timestamp_field_with_override(self)
         super().save(*args, **kwargs)

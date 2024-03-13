@@ -68,7 +68,8 @@ def make_model(module, table, datamodel):
             return
 
     def save_timestamped(self, *args, **kwargs):
-        pre_save_auto_timestamp_field_with_override(self, *args, **kwargs)
+        timestamp_override = kwargs.pop('timestamp_override', False)
+        pre_save_auto_timestamp_field_with_override(self, timestamp_override)
         try:
             super(model, self).save(*args, **kwargs)
         except AbortSave:
