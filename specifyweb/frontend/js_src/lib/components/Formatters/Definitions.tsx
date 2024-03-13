@@ -125,9 +125,9 @@ function ConditionalFormatter({
 
   return (
     <div
-      className={`flex overflow-x-auto
+      className={`flex
         ${isExpanded || !hasCondition ? 'flex-col' : ''}
-        ${isExpanded ? 'gap-2' : ''}
+        ${isExpanded ? 'gap-2 overflow-x-auto' : ''}
       `}
       key={index}
     >
