@@ -23,6 +23,7 @@ ParseFailureKey = Literal[
 'invalidYear',
 'badDateFormat',
 
+'coordinateBadFormat',
 'latitudeOutOfRange',
 'longitudeOutOfRange'
 ]
@@ -209,7 +210,7 @@ def parse_latlong(field: Field, value: str) -> ParseResult:
     parsed = parse_coord(value)
 
     if parsed is None:
-        return None
+        return ParseFailure('coordinateBadFormat', {'value': value})
 
     coord, unit = parsed
     if field.name.startswith('lat') and abs(coord) >= 90:
