@@ -1,7 +1,7 @@
 import { f } from '../../utils/functools';
 import { filterArray } from '../../utils/types';
 import type { Relationship } from '../DataModel/specifyField';
-import { SpecifyTable } from '../DataModel/specifyTable';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { genericTables, getTable } from '../DataModel/tables';
 import { hasTablePermission } from '../Permissions/helpers';
 
