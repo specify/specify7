@@ -54,8 +54,8 @@ export function Fields({
            *   table layout with list layout
            */
           className={`
-            grid-table gap-x-4 gap-y-4
-            overflow-auto [&_td]:!items-stretch
+            grid-table min-w-[35rem] gap-x-4 gap-y-4
+            [&_td]:!items-stretch
             ${
               displayFormatter
                 ? 'grid-cols-[min-content_1fr_auto_min-content]'
