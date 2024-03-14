@@ -155,7 +155,7 @@ export const resourcesText = createDictionary({
   },
   dataObjectFormatters: {
     'en-us': 'Record Formatters',
-    'ru-ru': 'Форматеры записей',
+    'ru-ru': 'Форматеры записи',
     'es-es': 'Formateadores de registros',
     'uk-ua': 'Форматувальники записів',
     'de-ch': 'Datensatz-Formatierer',
@@ -256,15 +256,15 @@ export const resourcesText = createDictionary({
     'ru-ru': `
       «Агрегация таблиц» управляет тем, как несколько записей таблицы
       объединяются в одну текстовую строку. Формат таблицы, разделитель,
-      суффикс, поле сортировки и предел предварительного просмотра записей можно
-      настроить. Его можно отобразить в результатах запроса и в форматах
+      суффикс, поле сортировки и ограничение предварительного просмотра записи
+      можно настроить. Его можно отобразить в результатах запроса и в форматах
       таблиц.
     `,
     'uk-ua': `
-      «Агрегація таблиць» контролює, як кілька записів таблиці консолідуються в
-      один текстовий рядок. Формат таблиці, роздільник, суфікс, поле сортування
-      та ліміт попереднього перегляду запису можна налаштувати. Він може
-      відображатися в результатах запитів і у форматах таблиць.
+      «Агрегація таблиць» контролює, як кілька записів таблиці об’єднуються
+      разом в один текстовий рядок. Формат таблиці, роздільник, суфікс, поле
+      сортування та ліміт попереднього перегляду запису можна налаштувати. Він
+      може відображатися в результатах запитів і у форматах таблиць.
     `,
   },
   formattedResource: {
@@ -453,7 +453,7 @@ export const resourcesText = createDictionary({
   },
   failedParsingXml: {
     'en-us': 'Failed to parse XML',
-    'ru-ru': 'Не удалось разобрать XML',
+    'ru-ru': 'Не удалось проанализировать XML',
     'de-ch': 'XML konnte nicht analysiert werden',
     'es-es': 'No se pudo analizar XML',
     'fr-fr': "Échec de l'analyse du XML",
@@ -509,7 +509,7 @@ export const resourcesText = createDictionary({
   },
   defaultInline: {
     'en-us': '(default)',
-    'de-ch': 'Passen Sie Feldformatierer an',
+    'de-ch': 'Formatvorschau',
     'es-es': '(por defecto)',
     'fr-fr': '(défaut)',
     'ru-ru': '(по умолчанию)',
@@ -701,7 +701,7 @@ export const resourcesText = createDictionary({
       changer de collection avant de modifier cette ressource.
     `,
     'ru-ru': `
-      Этот ресурс принадлежит другой коллекции/дисциплине, отличной от той, в
+      Этот ресурс принадлежит к другой коллекции/дисциплине, отличной от той, в
       которой вы сейчас находитесь. Перед редактированием этого ресурса
       рекомендуется сменить коллекцию.
     `,
@@ -786,10 +786,10 @@ export const resourcesText = createDictionary({
   copyDefaultForm: {
     'en-us': 'Copy default form',
     'de-ch': 'Standardformular kopieren',
-    'es-es': 'Agregadores',
-    'fr-fr': 'Agrégateurs',
-    'ru-ru': 'Агрегаторы',
-    'uk-ua': 'Агрегатори',
+    'es-es': 'Formateadores de registros',
+    'fr-fr': "Formateurs d'enregistrement",
+    'ru-ru': 'Форматеры записей',
+    'uk-ua': 'Форматувальники записів',
   },
   copyDefaultForms: {
     'en-us': 'Copy default forms',

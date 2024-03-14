@@ -20,9 +20,9 @@ export const wbText = createDictionary({
   uploadPlan: {
     'en-us': 'Upload Plan',
     'de-ch': 'Plan hochladen',
-    'es-es': 'Subir plano',
+    'es-es': 'Marca de tiempo cargada',
     'fr-fr': 'Télécharger le forfait',
-    'ru-ru': 'Загрузить план',
+    'ru-ru': 'Временная метка загружена',
     'uk-ua': 'План завантаження',
   },
   rollback: {

@@ -53,7 +53,7 @@ export function Definitions({
       : trimmedFields;
 
   return table === undefined ? null : (
-    <div className="flex flex-col gap-4 divide-y divide-gray-500 [&>*]:pt-4">
+    <div className="flex flex-col content-center divide-y divide-gray-500">
       {resolvedFields.map(({ value, fields }, index) => (
         <ConditionalFormatter
           fields={fields}
@@ -69,7 +69,7 @@ export function Definitions({
         />
       ))}
       {!isReadOnly && hasCondition ? (
-        <div>
+        <div className="pt-4">
           <Button.Info
             title={resourcesText.addDefinition()}
             onClick={(): void =>
@@ -125,9 +125,8 @@ function ConditionalFormatter({
 
   return (
     <div
-      className={`flex
-        ${isExpanded || !hasCondition ? 'flex-col' : ''}
-        ${isExpanded ? 'gap-2' : ''}
+      className={`flex gap-2 pt-2
+        ${isExpanded || !hasCondition ? 'flex-col' : ' items-center pb-2'}
       `}
       key={index}
     >
