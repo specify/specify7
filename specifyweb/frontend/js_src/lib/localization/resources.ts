@@ -148,14 +148,14 @@ export const resourcesText = createDictionary({
   uiFormatters: {
     'en-us': 'Field Formatters',
     'ru-ru': 'Форматировщики полей',
-    'es-es': 'Formateadores de campos',
+    'es-es': 'Formateadores de campo',
     'fr-fr': 'Formateurs de champs',
     'uk-ua': 'Форматувальники полів',
     'de-ch': 'Feldformatierer',
   },
   dataObjectFormatters: {
     'en-us': 'Record Formatters',
-    'ru-ru': 'Форматеры записи',
+    'ru-ru': 'Форматеры записей',
     'es-es': 'Formateadores de registros',
     'uk-ua': 'Форматувальники записів',
     'de-ch': 'Datensatz-Formatierer',
@@ -453,7 +453,7 @@ export const resourcesText = createDictionary({
   },
   failedParsingXml: {
     'en-us': 'Failed to parse XML',
-    'ru-ru': 'Не удалось проанализировать XML',
+    'ru-ru': 'Не удалось разобрать XML',
     'de-ch': 'XML konnte nicht analysiert werden',
     'es-es': 'No se pudo analizar XML',
     'fr-fr': "Échec de l'analyse du XML",
@@ -738,10 +738,10 @@ export const resourcesText = createDictionary({
   fileName: {
     'en-us': 'File name',
     'de-ch': 'Dateiname',
-    'es-es': 'Nombre del archivo',
-    'fr-fr': 'Nom de fichier',
-    'ru-ru': 'Имя файла',
-    'uk-ua': "Ім'я файлу",
+    'es-es': 'Seleccione la tabla primero',
+    'fr-fr': "Sélectionnez d'abord le tableau",
+    'ru-ru': 'Сначала выберите таблицу',
+    'uk-ua': 'Спочатку виберіть таблицю',
   },
   runAsUser: {
     'en-us': 'Run as user',
@@ -788,7 +788,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Standardformular kopieren',
     'es-es': 'Formateadores de registros',
     'fr-fr': "Formateurs d'enregistrement",
-    'ru-ru': 'Форматеры записей',
+    'ru-ru': 'Форматеры записи',
     'uk-ua': 'Форматувальники записів',
   },
   copyDefaultForms: {
