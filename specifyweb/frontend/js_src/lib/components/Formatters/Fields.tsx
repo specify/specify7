@@ -100,7 +100,7 @@ export function Fields({
         </table>
       )}
       {isReadOnly ? null : (
-        <div className="flex gap-2">
+        <div className="flex gap-2 pt-2">
           <Button.Secondary
             onClick={(): void =>
               setFields([
