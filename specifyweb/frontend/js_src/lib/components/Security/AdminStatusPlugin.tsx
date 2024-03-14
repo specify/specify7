@@ -15,6 +15,9 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyUser } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { hasPermission } from '../Permissions/helpers';
+import { ping } from '../../utils/ajax/ping';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { fetchCollection } from '../DataModel/collection';
 
 export function AdminStatusPlugin({
   user: resource,
@@ -28,7 +31,17 @@ export function AdminStatusPlugin({
   const loading = React.useContext(LoadingContext);
   const [user] = useResource(resource);
   const isCurrentUser = userInformation.id === user.id;
-
+  const [allCollections] = useAsyncState(
+    React.useCallback(
+      async () =>
+        fetchCollection('Collection', { limit: 0, domainFilter: false }).then(
+          ({ records }) => records
+        ),
+      []
+    ),
+    true
+  );
+  const allCollectionIds = allCollections?.map((collection) => collection.id);
   return (
     <Button.Small
       className="w-fit"
@@ -60,7 +73,19 @@ export function AdminStatusPlugin({
             headers: {
               Accept: 'text/plain',
             },
-          }).then(({ data }) => handleChange(data === 'true'))
+          })
+            .then(({ data }) => {
+              handleChange(data === 'true');
+              return data;
+            })
+            .then((data) => {
+              data === 'true'
+                ? ping(`/context/user_collection_access_for_sp6/${user.id}/`, {
+                    method: 'PUT',
+                    body: allCollectionIds,
+                  })
+                : undefined;
+            })
         )
       }
     >
