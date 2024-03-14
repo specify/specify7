@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-03-13 16:39+0000\n"
+"PO-Revision-Date: 2024-03-14 22:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "resources/ru/>\n"
@@ -11,3 +11,586 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.5-dev\n"
+
+#. Used in: Components > Formatters > Definitions
+#: components/Formatters/Definitions.tsx:178
+#, fuzzy
+msgid "collapseConditionalField"
+msgstr "Свернуть условное поле"
+
+#. Used in: Components > Formatters > Definitions
+#: components/Formatters/Definitions.tsx:222
+#, fuzzy
+msgid "formatPreview"
+msgstr "Предварительный просмотр формата"
+
+#. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry
+#: components/AppResources/Filters.tsx:70
+#: components/AppResources/Filters.tsx:117
+#: components/Header/userToolDefinitions.ts:59
+#: components/Preferences/UserDefinitions.tsx:1815
+#: components/Router/Routes.tsx:230
+#: components/Security/registry.ts:218
+#, fuzzy
+msgid "appResources"
+msgstr "Ресурсы приложений"
+
+#. Used in: Components > App Resources > Create ⬤ Components > Form Editor > Create ⬤ Components > Form Meta > Definition ⬤ Components > Preferences > User Definitions
+#: components/AppResources/Create.tsx:284
+#: components/FormEditor/Create.tsx:260
+#: components/FormMeta/Definition.tsx:29
+#: components/FormMeta/Definition.tsx:54
+#: components/Preferences/UserDefinitions.tsx:803
+#, fuzzy
+msgid "formDefinition"
+msgstr "Определение формы"
+
+#. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Types
+#: components/AppResources/EditorComponents.tsx:51
+#: components/AppResources/Filters.tsx:58
+#: components/AppResources/Filters.tsx:101
+#: components/AppResources/types.tsx:35
+#, fuzzy
+msgid "formDefinitions"
+msgstr "Публиковать"
+
+#. Used in: Components > Formatters > List
+#: components/Formatters/List.tsx:127
+#, fuzzy
+msgid "selectDefaultFormatter"
+msgstr ""
+"Пожалуйста, выберите форматирование записей по умолчанию для этой таблицы."
+
+#. Used in: Components > App Resources > Tree
+#: components/AppResources/tree.ts:118
+#, fuzzy
+msgid "globalPreferences"
+msgstr "Глобальные настройки"
+
+#. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Fields
+#: components/Formatters/Definitions.tsx:216
+#: components/Formatters/Fields.tsx:118
+#, fuzzy
+msgid "addField"
+msgstr "Добавить поле"
+
+#. Used in: Components > Web Links > Definition
+#: components/WebLinks/Definition.tsx:152
+#: components/WebLinks/Definition.tsx:166
+#, fuzzy
+msgid "selectTableFirst"
+msgstr "Сначала выберите таблицу"
+
+#. Used in: Components > Export Feed > Editor
+#: components/ExportFeed/Editor.tsx:239
+#, fuzzy
+msgid "runAsUser"
+msgstr "Запуск от имени пользователя"
+
+#. Used in: Components > Form Meta > Index
+#: components/FormMeta/index.tsx:110
+#, fuzzy
+msgid "saveFormFirst"
+msgstr "Сначала сохраните форму"
+
+#. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:204
+#, fuzzy
+msgid "otherPropertiesResource"
+msgstr "Ресурс «Другие свойства»"
+
+#. Used in: Components > App Resources > Tree
+#: components/AppResources/tree.ts:39
+#, fuzzy
+msgid "globalResources"
+msgstr "Глобальные ресурсы"
+
+#. Used in: Components > Formatters > Definitions
+#: components/Formatters/Definitions.tsx:74
+#: components/Formatters/Definitions.tsx:85
+#, fuzzy
+msgid "addDefinition"
+msgstr "Добавить определение"
+
+#. Used in: Components > Formatters > Table
+#: components/Formatters/Table.tsx:32
+#, fuzzy
+msgid "aggregatorDescription"
+msgstr ""
+"«Агрегация таблиц» управляет тем, как несколько записей таблицы объединяются "
+"в одну текстовую строку. Формат таблицы, разделитель, суффикс, поле "
+"сортировки и ограничение предварительного просмотра записи можно настроить. "
+"Его можно отобразить в результатах запроса и в форматах таблиц."
+
+#. Used in: Components > Web Links > Definition
+#: components/WebLinks/Definition.tsx:28
+#, fuzzy
+msgid "formattedResource"
+msgstr "Форматированный ресурс"
+
+#. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:143
+#, fuzzy
+msgid "typeSearches"
+msgstr "Тип поиска"
+
+#. Used in: Components > Export Feed > Editor
+#: components/ExportFeed/Editor.tsx:286
+#, fuzzy
+msgid "publish"
+msgstr "Публиковать"
+
+#. Used in: Components > Formatters > Aggregator
+#: components/Formatters/Aggregator.tsx:41
+#, fuzzy
+msgid "suffix"
+msgstr "Суффикс"
+
+#. Used in: Components > App Resources > Aside ⬤ Components > Router > Routes
+#: components/AppResources/Aside.tsx:331
+#: components/Router/Routes.tsx:238
+#, fuzzy
+msgid "addResource"
+msgstr "Добавить ресурс"
+
+#. Used in: Components > Formatters > Formatter
+#: components/Formatters/Formatter.tsx:77
+#, fuzzy
+msgid "conditionalFormatter"
+msgstr "Условный формат"
+
+#. Used in: Components > App Resources > Editor Components
+#: components/AppResources/EditorComponents.tsx:114
+#: components/AppResources/EditorComponents.tsx:119
+#, fuzzy
+msgid "loadFile"
+msgstr "Загрузить файл"
+
+#. Used in: Components > App Resources > Create ⬤ Components > Schema Config > Field ⬤ Components > Web Links > Definition
+#: components/AppResources/Create.tsx:96
+#: components/SchemaConfig/Field.tsx:73
+#: components/WebLinks/Definition.tsx:49
+#, fuzzy
+msgid "type"
+msgstr "Тип"
+
+#. Used in: Components > App Resources > Tree
+#: components/AppResources/tree.ts:233
+#, fuzzy
+msgid "userTypes"
+msgstr "Типы пользователей"
+
+#. Used in: Components > App Resources > Aside ⬤ Components > App Resources > Index
+#: components/AppResources/Aside.tsx:321
+#: components/AppResources/index.tsx:54
+#, fuzzy
+msgid "resources"
+msgstr "Ресурсы"
+
+#. Used in: Components > App Resources > Aside
+#: components/AppResources/Aside.tsx:264
+#, fuzzy
+msgid "subCategories"
+msgstr "Подкатегории"
+
+#. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:127
+#, fuzzy
+msgid "rssExportFeed"
+msgstr "RSS-канал экспорта"
+
+#. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:159
+#, fuzzy
+msgid "uiFormatters"
+msgstr "Форматировщики полей"
+
+#. Used in: Components > Formatters > Element
+#: components/Formatters/Element.tsx:126
+#, fuzzy
+msgid "aggregator"
+msgstr ""
+"Этот формат будет использоваться только в том случае, если значение поля "
+"условия соответствует этому условию или если ему не соответствует никакой "
+"другой формат."
+
+#. Used in: Components > App Resources > Tabs
+#: components/AppResources/Tabs.tsx:142
+#, fuzzy
+msgid "xmlEditor"
+msgstr "XML-редактор"
+
+#. Used in: Components > Export Feed > Editor ⬤ Components > Formatters > Element
+#: components/ExportFeed/Editor.tsx:46
+#: components/ExportFeed/Editor.tsx:160
+#: components/Formatters/Element.tsx:132
+#, fuzzy
+msgid "title"
+msgstr "Заголовок"
+
+#. Used in: Components > Formatters > Element ⬤ Components > Formatters > List
+#: components/Formatters/Element.tsx:158
+#: components/Formatters/List.tsx:117
+#, fuzzy
+msgid "default"
+msgstr "По умолчанию"
+
+#. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Fields
+#: components/Formatters/Aggregator.tsx:28
+#: components/Formatters/Fields.tsx:68
+#: components/Formatters/Fields.tsx:161
+#, fuzzy
+msgid "separator"
+msgstr "Разделитель"
+
+#. Used in: Components > Export Feed > Editor
+#: components/ExportFeed/Editor.tsx:180
+#, fuzzy
+msgid "fileName"
+msgstr "Сначала выберите таблицу"
+
+#. Used in: Components > Formatters > Components ⬤ Components > Query Builder > Formatter
+#: components/Formatters/Components.tsx:72
+#: components/Formatters/Components.tsx:130
+#: components/QueryBuilder/Formatter.tsx:92
+#, fuzzy
+msgid "defaultInline"
+msgstr "(по умолчанию)"
+
+#. Used in: Components > App Resources > Tabs
+#: components/AppResources/Tabs.tsx:143
+#, fuzzy
+msgid "jsonEditor"
+msgstr "Редактор JSON"
+
+#. Used in: Components > Formatters > Element
+#: components/Formatters/Element.tsx:103
+#, fuzzy
+msgid "name"
+msgstr "Имя"
+
+#. Used in: Components > Form Editor > Create
+#: components/FormEditor/Create.tsx:77
+#, fuzzy
+msgid "copyFromExistingForm"
+msgstr "Копировать из существующей формы"
+
+#. Used in: Components > Export Feed > Editor
+#: components/ExportFeed/Editor.tsx:289
+#, fuzzy
+msgid "publishEveryDays"
+msgstr "Публиковать каждые N дней"
+
+#. Used in: Components > Web Links > Element
+#: components/WebLinks/Element.tsx:82
+#, fuzzy
+msgid "thisFieldName"
+msgstr "Имя этого поля (только для целей предварительного просмотра)"
+
+#. Used in: Components > Web Links > Definition
+#: components/WebLinks/Definition.tsx:27
+#, fuzzy
+msgid "urlPart"
+msgstr "Другой ресурс JSON"
+
+#. Used in: Components > Form Meta > Index
+#: components/FormMeta/index.tsx:113
+#, fuzzy
+msgid "saveFormFirstDescription"
+msgstr "Имя файла"
+
+#. Used in: Components > Formatters > Fields
+#: components/Formatters/Fields.tsx:127
+#, fuzzy
+msgid "customizeFieldFormatters"
+msgstr "Настройте форматы полей"
+
+#. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:119
+#, fuzzy
+msgid "leafletLayers"
+msgstr "Слои листовок"
+
+#. Used in: Components > Formatters > List
+#: components/Formatters/List.tsx:67
+#, fuzzy
+msgid "availableAggregators"
+msgstr "Доступные агрегаты таблиц"
+
+#. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:175
+#, fuzzy
+msgid "dataEntryTables"
+msgstr "Таблицы ввода данных"
+
+#. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:183
+#, fuzzy
+msgid "interactionsTables"
+msgstr "Таблицы взаимодействий"
+
+#. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:197
+#, fuzzy
+msgid "otherJsonResource"
+msgstr "Другой ресурс JSON"
+
+#. Used in: Components > App Resources > Filters
+#: components/AppResources/Filters.tsx:48
+#, fuzzy
+msgid "filters"
+msgstr "Фильтры"
+
+#. Used in: Components > App Resources > Tabs
+#: components/AppResources/Tabs.tsx:144
+#, fuzzy
+msgid "textEditor"
+msgstr "Текстовый редактор"
+
+#. Used in: Components > App Resources > Tree
+#: components/AppResources/tree.ts:120
+#, fuzzy
+msgid "remotePreferences"
+msgstr "Удаленные настройки"
+
+#. Used in: Components > Formatters > Index
+#: components/Formatters/index.tsx:99
+#, fuzzy
+msgid "failedParsingXml"
+msgstr "Не удалось разобрать XML"
+
+#. Used in: Components > Formatters > Aggregator
+#: components/Formatters/Aggregator.tsx:54
+#, fuzzy
+msgid "limit"
+msgstr "Лимит"
+
+#. Used in: Components > Form Editor > Create ⬤ Components > Formatters > Preview ⬤ Components > Merging > Header
+#: components/FormEditor/Create.tsx:209
+#: components/Formatters/Preview.tsx:65
+#: components/Merging/Header.tsx:164
+#, fuzzy
+msgid "preview"
+msgstr "Предварительный просмотр"
+
+#. Used in: Components > Web Links > Definition
+#: components/WebLinks/Definition.tsx:26
+#, fuzzy
+msgid "thisField"
+msgstr "Это поле"
+
+#. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:135
+#, fuzzy
+msgid "expressSearchConfig"
+msgstr "Конфигурация экспресс-поиска"
+
+#. Used in: Components > Form Editor > Create
+#: components/FormEditor/Create.tsx:83
+#, fuzzy
+msgid "copyDefaultForm"
+msgstr "Форматеры записи"
+
+#. Used in: Components > App Resources > Tree
+#: components/AppResources/tree.ts:45
+#, fuzzy
+msgid "disciplineResources"
+msgstr "Дисциплинарные ресурсы"
+
+#. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
+#: components/Formatters/Aggregator.tsx:69
+#: components/Formatters/Element.tsx:125
+#: components/Formatters/Fields.tsx:267
+#, fuzzy
+msgid "formatter"
+msgstr "Подкатегории"
+
+#. Used in: Components > Form Editor > Table ⬤ Components > Formatters > Formatter
+#: components/FormEditor/Table.tsx:86
+#: components/Formatters/Formatter.tsx:33
+#, fuzzy
+msgid "editorNotAvailable"
+msgstr "Визуальный редактор недоступен для этого ресурса."
+
+#. Used in: Components > Form Editor > Table ⬤ Components > Web Links > Definition
+#: components/FormEditor/Table.tsx:83
+#: components/WebLinks/Definition.tsx:44
+#, fuzzy
+msgid "definition"
+msgstr "Определение"
+
+#. Used in: Components > Formatters > Definitions
+#: components/Formatters/Definitions.tsx:186
+#, fuzzy
+msgid "elseConditionDescription"
+msgstr ""
+"Этот формат будет использоваться только в том случае, если значение поля "
+"условия соответствует этому условию или если ему не соответствует никакой "
+"другой формат."
+
+#. Used in: Components > Formatters > Element
+#: components/Formatters/Element.tsx:52
+#, fuzzy
+msgid "duplicateFormatters"
+msgstr "Имена средств форматирования записей должны быть уникальными."
+
+#. Used in: Components > Formatters > Definitions
+#: components/Formatters/Definitions.tsx:265
+#, fuzzy
+msgid "expandConditionalField"
+msgstr "Развернуть условное поле"
+
+#. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:151
+#, fuzzy
+msgid "webLinks"
+msgstr "Веб ссылки"
+
+#. Used in: Components > Export Feed > Editor
+#: components/ExportFeed/Editor.tsx:98
+#, fuzzy
+msgid "exports"
+msgstr "Экспорт"
+
+#. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:167
+#, fuzzy
+msgid "dataObjectFormatters"
+msgstr "Форматеры записей"
+
+#. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:190
+#, fuzzy
+msgid "otherXmlResource"
+msgstr "Выберите тип ресурса"
+
+#. Used in: Components > Formatters > List
+#: components/Formatters/List.tsx:66
+#, fuzzy
+msgid "availableFormatters"
+msgstr "Доступные форматы таблиц"
+
+#. Used in: Components > Export Feed > Editor
+#: components/ExportFeed/Editor.tsx:267
+#, fuzzy
+msgid "runInCollection"
+msgstr "Запустить в коллекцию"
+
+#. Used in: Components > App Resources > Tabs
+#: components/AppResources/Tabs.tsx:141
+#, fuzzy
+msgid "visualEditor"
+msgstr "Визуальный редактор"
+
+#. Used in: Components > Form Editor > Create
+#: components/FormEditor/Create.tsx:72
+#, fuzzy
+msgid "createNewForm"
+msgstr "Создать новую форму"
+
+#. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:30
+#, fuzzy
+msgid "appResource"
+msgstr "Подкатегории"
+
+#. Used in: Components > App Resources > Tabs
+#: components/AppResources/Tabs.tsx:164
+#, fuzzy
+msgid "wrongScopeWarning"
+msgstr ""
+"Этот ресурс принадлежит к другой коллекции/дисциплине, отличной от той, в "
+"которой вы сейчас находитесь. Перед редактированием этого ресурса "
+"рекомендуется сменить коллекцию."
+
+#. Used in: Components > Formatters > Table
+#: components/Formatters/Table.tsx:31
+#, fuzzy
+msgid "formatterDescription"
+msgstr ""
+"«Формат таблицы» определяет, как данные из определенной таблицы отображаются "
+"в результатах запроса, экспорте и полях со списком запроса. Он определяет "
+"поля для отображения и их порядок. Условное форматирование можно настроить "
+"на основе значения в записи."
+
+#. Used in: Components > Web Links > List
+#: components/WebLinks/List.tsx:24
+#, fuzzy
+msgid "availableWebLink"
+msgstr "Доступные веб-ссылки"
+
+#. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:211
+#, fuzzy
+msgid "otherAppResource"
+msgstr "Другой ресурс"
+
+#. Used in: Components > App Resources > Filters
+#: components/AppResources/Filters.tsx:73
+#: components/AppResources/Filters.tsx:74
+#: components/AppResources/Filters.tsx:83
+#, fuzzy
+msgid "custom"
+msgstr "Обычай"
+
+#. Used in: Components > App Resources > Create
+#: components/AppResources/Create.tsx:68
+#: components/AppResources/Create.tsx:90
+#, fuzzy
+msgid "selectResourceType"
+msgstr "Выберите тип ресурса"
+
+#. Used in: Components > Formatters > Aggregator
+#: components/Formatters/Aggregator.tsx:85
+#, fuzzy
+msgid "sortField"
+msgstr "Сортировать поле"
+
+#. Used in: Components > Formatters > Preview
+#: components/Formatters/Preview.tsx:66
+#, fuzzy
+msgid "previewExplainer"
+msgstr ""
+"Выполните поиск в записях своей коллекции, чтобы просмотреть средство "
+"форматирования записей."
+
+#. Used in: Components > Form Editor > Editor ⬤ Components > Formatters > Definitions
+#: components/FormEditor/Editor.tsx:133
+#: components/Formatters/Definitions.tsx:172
+#: components/Formatters/Definitions.tsx:256
+#, fuzzy
+msgid "deleteDefinition"
+msgstr "Удалить определение"
+
+#. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Formatter
+#: components/Formatters/Definitions.tsx:151
+#: components/Formatters/Formatter.tsx:127
+#, fuzzy
+msgid "conditionFieldValue"
+msgstr "Другой ресурс JSON"
+
+#. Used in: Components > Formatters > Definitions
+#: components/Formatters/Definitions.tsx:187
+#, fuzzy
+msgid "conditionDescription"
+msgstr ""
+"Этот формат будет использоваться только в том случае, если значение поля "
+"условия соответствует этому условию."
+
+#. Used in: Components > Export Feed > Editor
+#: components/ExportFeed/Editor.tsx:253
+#, fuzzy
+msgid "notifyUser"
+msgstr "Отправить уведомление о завершении пользователю"
+
+#. Used in: Components > App Resources > Create
+#: components/AppResources/Create.tsx:228
+#, fuzzy
+msgid "copyDefaultForms"
+msgstr "Копировать формы по умолчанию"
+
+#. Used in: Components > Formatters > Definitions
+#: components/Formatters/Definitions.tsx:147
+#, fuzzy
+msgid "conditionalFieldValue"
+msgstr "Условное значение поля"
