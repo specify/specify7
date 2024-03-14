@@ -2,6 +2,7 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
 import type { GetSet } from '../../utils/types';
 import { localized } from '../../utils/types';
@@ -12,7 +13,6 @@ import { ReadOnlyContext } from '../Core/Contexts';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { Fields } from './Fields';
 import type { Formatter } from './spec';
-import { commonText } from '../../localization/common';
 
 export function Definitions({
   item: [formatter, setFormatter],
