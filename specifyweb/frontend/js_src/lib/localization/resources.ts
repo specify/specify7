@@ -417,7 +417,7 @@ export const resourcesText = createDictionary({
     'es-es': 'Editor JSON',
     'fr-fr': 'Éditeur JSON',
     'uk-ua': 'Редактор JSON',
-    'de-ch': 'JSON-Editor',
+    'de-ch': 'Separator',
   },
   visualEditor: {
     'en-us': 'Visual Editor',

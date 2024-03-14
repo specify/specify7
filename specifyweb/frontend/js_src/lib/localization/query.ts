@@ -881,7 +881,7 @@ export const queryText = createDictionary({
   viewRecords: {
     'en-us': 'View records',
     'de-ch': 'Datensätze anzeigen',
-    'es-es': 'Ver registros',
+    'es-es': 'Elige el formateador',
     'fr-fr': 'Afficher les enregistrements',
     'ru-ru': 'Просмотр записей',
     'uk-ua': 'Переглянути записи',
