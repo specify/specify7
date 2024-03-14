@@ -2,7 +2,6 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
 import type { GetSet } from '../../utils/types';
 import { localized } from '../../utils/types';
@@ -13,6 +12,7 @@ import { ReadOnlyContext } from '../Core/Contexts';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { Fields } from './Fields';
 import type { Formatter } from './spec';
+import { commonText } from '../../localization/common';
 
 export function Definitions({
   item: [formatter, setFormatter],
@@ -129,7 +129,11 @@ function ConditionalFormatter({
         ${isExpanded || !hasCondition ? 'flex-col' : ''}
         ${isExpanded ? 'gap-2' : ''}
         ${
-          fields.length === 0 && hasCondition && trimmedFieldsLength > 0
+          fields.length === 0 &&
+          hasCondition &&
+          trimmedFieldsLength > 0 &&
+          !isExpanded &&
+          index !== 0
             ? 'items-center'
             : ''
         }
@@ -187,28 +191,31 @@ function ConditionalFormatter({
         </div>
       )}
       {expandedNoCondition || isReadOnly ? null : fields.length === 0 ? (
-        <Button.Small
-          onClick={(): void => {
-            handleToggle();
-            handleChanged(
-              {
-                value,
-                fields: [
-                  {
-                    separator: localized(' '),
-                    aggregator: undefined,
-                    formatter: undefined,
-                    fieldFormatter: undefined,
-                    field: undefined,
-                  },
-                ],
-              },
-              index
-            );
-          }}
-        >
-          {resourcesText.addField()}
-        </Button.Small>
+        <div className="flex flex-col p-2">
+          <span className="flex-1" />
+          <Button.Small
+            onClick={(): void => {
+              handleToggle();
+              handleChanged(
+                {
+                  value,
+                  fields: [
+                    {
+                      separator: localized(' '),
+                      aggregator: undefined,
+                      formatter: undefined,
+                      fieldFormatter: undefined,
+                      field: undefined,
+                    },
+                  ],
+                },
+                index
+              );
+            }}
+          >
+            {resourcesText.addField()}
+          </Button.Small>
+        </div>
       ) : (
         <div className="flex flex-col flex-wrap whitespace-pre-wrap p-2">
           {index === 0 && (
@@ -234,11 +241,11 @@ function ConditionalFormatter({
         />
       ) : null}
       <span className="-ml-2 flex-1" />
-      <div className="flex flex-col p-2">
+      <div className="flex flex-col">
         {!isExpanded && hasCondition && index === 0 ? (
           <span className="font-bold">{commonText.expand()}</span>
         ) : null}
-        <div className="flex justify-end">
+        <div className="flex">
           {trimmedFieldsLength === 1 ||
           isExpanded ||
           isReadOnly ||
