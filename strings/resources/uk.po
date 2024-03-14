@@ -413,8 +413,8 @@ msgid "addDefinition"
 msgstr "Додати визначення"
 
 #: components/FormEditor/Editor.tsx:133
-#: components/Formatters/Definitions.tsx:162
-#: components/Formatters/Definitions.tsx:240
+#: components/Formatters/Definitions.tsx:172
+#: components/Formatters/Definitions.tsx:256
 #. Used in: Components > Form Editor > Editor ⬤ Components > Formatters > Definitions
 #, fuzzy
 msgid "deleteDefinition"
@@ -426,7 +426,7 @@ msgstr "Видалити визначення"
 msgid "urlPart"
 msgstr "Інший ресурс JSON"
 
-#: components/Formatters/Definitions.tsx:204
+#: components/Formatters/Definitions.tsx:216
 #: components/Formatters/Fields.tsx:118
 #. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Fields
 #, fuzzy
@@ -446,14 +446,14 @@ msgstr "Це поле"
 msgid "selectTableFirst"
 msgstr "Спочатку виберіть таблицю"
 
-#: components/Formatters/Definitions.tsx:141
+#: components/Formatters/Definitions.tsx:151
 #: components/Formatters/Formatter.tsx:127
 #. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Formatter
 #, fuzzy
 msgid "conditionFieldValue"
 msgstr "Інший ресурс JSON"
 
-#: components/Formatters/Definitions.tsx:177
+#: components/Formatters/Definitions.tsx:187
 #. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "conditionDescription"
@@ -461,7 +461,7 @@ msgstr ""
 "Цей формат використовуватиметься, лише якщо значення поля умови дорівнює "
 "цій умові."
 
-#: components/Formatters/Definitions.tsx:176
+#: components/Formatters/Definitions.tsx:186
 #. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "elseConditionDescription"
@@ -567,25 +567,25 @@ msgstr "Умовний формат"
 msgid "customizeFieldFormatters"
 msgstr "Налаштувати формати полів"
 
-#: components/Formatters/Definitions.tsx:249
+#: components/Formatters/Definitions.tsx:265
 #. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "expandConditionalField"
 msgstr "Розгорнути умовне поле"
 
-#: components/Formatters/Definitions.tsx:168
+#: components/Formatters/Definitions.tsx:178
 #. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "collapseConditionalField"
 msgstr "Згорнути умовне поле"
 
-#: components/Formatters/Definitions.tsx:137
+#: components/Formatters/Definitions.tsx:147
 #. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "conditionalFieldValue"
 msgstr "Умовне значення поля"
 
-#: components/Formatters/Definitions.tsx:209
+#: components/Formatters/Definitions.tsx:222
 #. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "formatPreview"

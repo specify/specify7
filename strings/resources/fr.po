@@ -416,8 +416,8 @@ msgid "addDefinition"
 msgstr "Ajouter une définition"
 
 #: components/FormEditor/Editor.tsx:133
-#: components/Formatters/Definitions.tsx:162
-#: components/Formatters/Definitions.tsx:240
+#: components/Formatters/Definitions.tsx:172
+#: components/Formatters/Definitions.tsx:256
 #. Used in: Components > Form Editor > Editor ⬤ Components > Formatters > Definitions
 #, fuzzy
 msgid "deleteDefinition"
@@ -429,7 +429,7 @@ msgstr "Supprimer la définition"
 msgid "urlPart"
 msgstr "Autre ressource JSON"
 
-#: components/Formatters/Definitions.tsx:204
+#: components/Formatters/Definitions.tsx:216
 #: components/Formatters/Fields.tsx:118
 #. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Fields
 #, fuzzy
@@ -449,14 +449,14 @@ msgstr "Ce champ"
 msgid "selectTableFirst"
 msgstr "Sélectionnez d'abord le tableau"
 
-#: components/Formatters/Definitions.tsx:141
+#: components/Formatters/Definitions.tsx:151
 #: components/Formatters/Formatter.tsx:127
 #. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Formatter
 #, fuzzy
 msgid "conditionFieldValue"
 msgstr "Autre ressource JSON"
 
-#: components/Formatters/Definitions.tsx:177
+#: components/Formatters/Definitions.tsx:187
 #. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "conditionDescription"
@@ -464,7 +464,7 @@ msgstr ""
 "Ce format ne sera utilisé que si la valeur du champ de condition est égale "
 "à cette condition."
 
-#: components/Formatters/Definitions.tsx:176
+#: components/Formatters/Definitions.tsx:186
 #. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "elseConditionDescription"
@@ -571,25 +571,25 @@ msgstr "Format conditionnel"
 msgid "customizeFieldFormatters"
 msgstr "Personnaliser les formats de champs"
 
-#: components/Formatters/Definitions.tsx:249
+#: components/Formatters/Definitions.tsx:265
 #. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "expandConditionalField"
 msgstr "Développer le champ conditionnel"
 
-#: components/Formatters/Definitions.tsx:168
+#: components/Formatters/Definitions.tsx:178
 #. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "collapseConditionalField"
 msgstr "Réduire le champ conditionnel"
 
-#: components/Formatters/Definitions.tsx:137
+#: components/Formatters/Definitions.tsx:147
 #. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "conditionalFieldValue"
 msgstr "Valeur du champ conditionnel"
 
-#: components/Formatters/Definitions.tsx:209
+#: components/Formatters/Definitions.tsx:222
 #. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "formatPreview"

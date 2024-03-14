@@ -339,8 +339,8 @@ msgid "addDefinition"
 msgstr "Add definition"
 
 #: components/FormEditor/Editor.tsx:133
-#: components/Formatters/Definitions.tsx:162
-#: components/Formatters/Definitions.tsx:240
+#: components/Formatters/Definitions.tsx:172
+#: components/Formatters/Definitions.tsx:256
 #. Used in: Components > Form Editor > Editor ⬤ Components > Formatters > Definitions
 msgid "deleteDefinition"
 msgstr "Delete definition"
@@ -350,7 +350,7 @@ msgstr "Delete definition"
 msgid "urlPart"
 msgstr "URL part"
 
-#: components/Formatters/Definitions.tsx:204
+#: components/Formatters/Definitions.tsx:216
 #: components/Formatters/Fields.tsx:118
 #. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Fields
 msgid "addField"
@@ -367,20 +367,20 @@ msgstr "This field"
 msgid "selectTableFirst"
 msgstr "Select table first"
 
-#: components/Formatters/Definitions.tsx:141
+#: components/Formatters/Definitions.tsx:151
 #: components/Formatters/Formatter.tsx:127
 #. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Formatter
 msgid "conditionFieldValue"
 msgstr "Condition Field Value"
 
-#: components/Formatters/Definitions.tsx:177
+#: components/Formatters/Definitions.tsx:187
 #. Used in: Components > Formatters > Definitions
 msgid "conditionDescription"
 msgstr ""
 "This format will be used only if the condition field value equals this "
 "condition."
 
-#: components/Formatters/Definitions.tsx:176
+#: components/Formatters/Definitions.tsx:186
 #. Used in: Components > Formatters > Definitions
 msgid "elseConditionDescription"
 msgstr ""
@@ -470,22 +470,22 @@ msgstr "Conditional Format"
 msgid "customizeFieldFormatters"
 msgstr "Customize Field Formats"
 
-#: components/Formatters/Definitions.tsx:249
+#: components/Formatters/Definitions.tsx:265
 #. Used in: Components > Formatters > Definitions
 msgid "expandConditionalField"
 msgstr "Expand Conditional Field"
 
-#: components/Formatters/Definitions.tsx:168
+#: components/Formatters/Definitions.tsx:178
 #. Used in: Components > Formatters > Definitions
 msgid "collapseConditionalField"
 msgstr "Collapse Conditional Field"
 
-#: components/Formatters/Definitions.tsx:137
+#: components/Formatters/Definitions.tsx:147
 #. Used in: Components > Formatters > Definitions
 msgid "conditionalFieldValue"
 msgstr "Conditional Field Value"
 
-#: components/Formatters/Definitions.tsx:209
+#: components/Formatters/Definitions.tsx:222
 #. Used in: Components > Formatters > Definitions
 msgid "formatPreview"
 msgstr "Format Preview"

@@ -377,8 +377,8 @@ msgid "addDefinition"
 msgstr "Definition hinzufügen"
 
 #: components/FormEditor/Editor.tsx:133
-#: components/Formatters/Definitions.tsx:162
-#: components/Formatters/Definitions.tsx:240
+#: components/Formatters/Definitions.tsx:172
+#: components/Formatters/Definitions.tsx:256
 #. Used in: Components > Form Editor > Editor ⬤ Components > Formatters > Definitions
 #, fuzzy
 msgid "deleteDefinition"
@@ -390,7 +390,7 @@ msgstr "Definition löschen"
 msgid "urlPart"
 msgstr "URL-Teil"
 
-#: components/Formatters/Definitions.tsx:204
+#: components/Formatters/Definitions.tsx:216
 #: components/Formatters/Fields.tsx:118
 #. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Fields
 #, fuzzy
@@ -410,14 +410,14 @@ msgstr "Dieses Feld"
 msgid "selectTableFirst"
 msgstr "Wählen Sie zuerst die Tabelle aus"
 
-#: components/Formatters/Definitions.tsx:141
+#: components/Formatters/Definitions.tsx:151
 #: components/Formatters/Formatter.tsx:127
 #. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Formatter
 #, fuzzy
 msgid "conditionFieldValue"
 msgstr "Bedingungsfeldwert"
 
-#: components/Formatters/Definitions.tsx:177
+#: components/Formatters/Definitions.tsx:187
 #. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "conditionDescription"
@@ -425,7 +425,7 @@ msgstr ""
 "Dieses Format wird nur verwendet, wenn der Bedingungsfeldwert dieser "
 "Bedingung entspricht."
 
-#: components/Formatters/Definitions.tsx:176
+#: components/Formatters/Definitions.tsx:186
 #. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "elseConditionDescription"
@@ -532,25 +532,25 @@ msgstr "Bedingtes Format"
 msgid "customizeFieldFormatters"
 msgstr "Passen Sie Feldformate an"
 
-#: components/Formatters/Definitions.tsx:249
+#: components/Formatters/Definitions.tsx:265
 #. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "expandConditionalField"
 msgstr "Erweitern Sie das Bedingungsfeld"
 
-#: components/Formatters/Definitions.tsx:168
+#: components/Formatters/Definitions.tsx:178
 #. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "collapseConditionalField"
 msgstr "Bedingtes Feld ausblenden"
 
-#: components/Formatters/Definitions.tsx:137
+#: components/Formatters/Definitions.tsx:147
 #. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "conditionalFieldValue"
 msgstr "Bedingter Feldwert"
 
-#: components/Formatters/Definitions.tsx:209
+#: components/Formatters/Definitions.tsx:222
 #. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "formatPreview"
