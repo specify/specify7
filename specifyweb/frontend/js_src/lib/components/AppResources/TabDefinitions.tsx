@@ -158,10 +158,12 @@ export const visualAppResourceEditors = f.store<
   },
   leafletLayers: undefined,
   rssExportFeed: {
-    /*** disabled in https://github.com/specify/specify7/issues/4653
+    /**
+     ** Disabled in https://github.com/specify/specify7/issues/4653
      * needs to be enabled when fixing https://github.com/specify/specify7/issues/4650
-     * ***/
-    // visual: RssExportFeedEditor,
+     * **
+     */
+    // Visual: RssExportFeedEditor,
     xml: generateXmlEditor(exportFeedSpec),
   },
   expressSearchConfig: undefined,
