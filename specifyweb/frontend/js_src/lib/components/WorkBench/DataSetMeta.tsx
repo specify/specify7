@@ -350,7 +350,7 @@ export function DataSetMeta({
   );
 }
 
-function DataSetName({
+export function DataSetName({
   dataset,
   getRowCount,
 }: {
@@ -405,7 +405,7 @@ const fetchListOfUsers = async (): Promise<
     ({ records: users }) => users.filter(({ id }) => id !== userInformation.id)
   );
 
-function ChangeOwner({
+export function ChangeOwner({
   dataset,
   onClose: handleClose,
 }: {
