@@ -45,7 +45,7 @@ Documentation for used GitHub secrets.
             <td>WEBLATE_PUSH_TO_GITHUB</td>
             <td>Yes</td>
             <td>
-                Personal GitHub token (from @maxxxxxdlp account). Personal token
+                Personal GitHub token (from @maxpatiiuk account). Personal token
                 is used to bypass branch protection rules (to allow Weblate to
                 push directly to production branch)
             </td>
@@ -59,7 +59,7 @@ Documentation for used GitHub secrets.
             <td>TESTS_PUSH_TO_GITHUB</td>
             <td>Yes</td>
             <td>
-                Personal GitHub token (from @maxxxxxdlp account). Personal token
+                Personal GitHub token (from @maxpatiiuk account). Personal token
                 is used to bypass branch protection rules (to allow Weblate to
                 push directly to production branch)
             </td>

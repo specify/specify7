@@ -1,0 +1,163 @@
+[
+  {
+    "name": "Accession",
+    "class": "edu.ku.brc.specify.datamodel.Accession",
+    "busrules": "edu.ku.brc.specify.datamodel.busrules.AccessionBusRules",
+    "resourcelabels": "false",
+    "altviews": {
+      "Accession View": {
+        "name": "Accession View",
+        "viewdef": "Accession",
+        "mode": "view",
+        "default": "true"
+      },
+      "Accession Edit": {
+        "name": "Accession Edit",
+        "viewdef": "Accession",
+        "mode": "edit"
+      }
+    },
+    "viewdefs": {
+      "Accession": "[OMITTED]"
+    },
+    "view": "[OMITTED]",
+    "viewsetName": "Fish Views",
+    "viewsetLevel": "Collection",
+    "viewsetSource": "db",
+    "viewsetId": 7,
+    "viewsetFile": null
+  },
+  {
+    "name": "AccessionCO",
+    "class": "edu.ku.brc.specify.datamodel.Accession",
+    "busrules": "edu.ku.brc.specify.datamodel.busrules.AccessionBusRules",
+    "altviews": {
+      "AccessionCO View": {
+        "name": "AccessionCO View",
+        "viewdef": "AccessionCO",
+        "mode": "view",
+        "default": "true"
+      },
+      "AccessionCO Edit": {
+        "name": "AccessionCO Edit",
+        "viewdef": "AccessionCO",
+        "mode": "edit"
+      }
+    },
+    "viewdefs": {
+      "AccessionCO": "[OMITTED]"
+    },
+    "view": "[OMITTED]",
+    "viewsetName": "Fish Views",
+    "viewsetLevel": "Collection",
+    "viewsetSource": "db",
+    "viewsetId": 7,
+    "viewsetFile": null
+  },
+  {
+    "name": "Accession",
+    "class": "edu.ku.brc.specify.datamodel.Accession",
+    "busrules": "edu.ku.brc.specify.datamodel.busrules.AccessionBusRules",
+    "altviews": {
+      "Accession View": {
+        "name": "Accession View",
+        "viewdef": "Accession",
+        "mode": "view",
+        "default": "true"
+      },
+      "Accession Edit": {
+        "name": "Accession Edit",
+        "viewdef": "Accession",
+        "mode": "edit"
+      }
+    },
+    "viewdefs": {
+      "Accession": "[OMITTED]"
+    },
+    "view": "[OMITTED]",
+    "viewsetName": "Common",
+    "viewsetLevel": "Common",
+    "viewsetSource": "disk",
+    "viewsetId": null,
+    "viewsetFile": "common/common.views.xml"
+  },
+  {
+    "name": "AccessionCO",
+    "class": "edu.ku.brc.specify.datamodel.Accession",
+    "busrules": "edu.ku.brc.specify.datamodel.busrules.AccessionBusRules",
+    "altviews": {
+      "AccessionCO View": {
+        "name": "AccessionCO View",
+        "viewdef": "AccessionCO",
+        "mode": "view",
+        "default": "true"
+      },
+      "AccessionCO Edit": {
+        "name": "AccessionCO Edit",
+        "viewdef": "AccessionCO",
+        "mode": "edit"
+      }
+    },
+    "viewdefs": {
+      "AccessionCO": "[OMITTED]"
+    },
+    "view": "[OMITTED]",
+    "viewsetName": "Common",
+    "viewsetLevel": "Common",
+    "viewsetSource": "disk",
+    "viewsetId": null,
+    "viewsetFile": "common/common.views.xml"
+  },
+  {
+    "name": "AccessionDeaccession",
+    "class": "edu.ku.brc.specify.datamodel.Accession",
+    "busrules": "edu.ku.brc.specify.datamodel.busrules.AccessionBusRules",
+    "altviews": {
+      "AccessionDeaccession View": {
+        "name": "AccessionDeaccession View",
+        "viewdef": "AccessionDeaccession",
+        "mode": "view"
+      },
+      "AccessionDeaccession Table View": {
+        "name": "AccessionDeaccession Table View",
+        "viewdef": "AccessionDeaccession Table",
+        "mode": "view",
+        "default": "true"
+      }
+    },
+    "viewdefs": {
+      "AccessionDeaccession": "[OMITTED]",
+      "AccessionDeaccession Table": "[OMITTED]"
+    },
+    "view": "[OMITTED]",
+    "viewsetName": "Common",
+    "viewsetLevel": "Common",
+    "viewsetSource": "disk",
+    "viewsetId": null,
+    "viewsetFile": "common/common.views.xml"
+  },
+  {
+    "name": "AccessionSearch",
+    "class": "edu.ku.brc.specify.datamodel.Accession",
+    "usedefbusrule": "false",
+    "resourcelabels": "false",
+    "altviews": {
+      "AccessionSearch": {
+        "name": "AccessionSearch",
+        "viewdef": "AccessionSearch",
+        "mode": "edit",
+        "validated": "false",
+        "default": "true"
+      }
+    },
+    "viewdefs": {
+      "AccessionSearch": "[OMITTED]"
+    },
+    "view": "[OMITTED]",
+    "viewsetName": "Search",
+    "viewsetLevel": "Backstop",
+    "viewsetSource": "disk",
+    "viewsetId": null,
+    "viewsetFile": "backstop/search.views.xml"
+  }
+]

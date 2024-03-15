@@ -25,14 +25,16 @@ import { className } from '../Atoms/className';
 import { Input } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
-import { useMenuItem } from '../Header/useMenuItem';
+import { useMenuItem } from '../Header/MenuContext';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
 import { Dialog } from '../Molecules/Dialog';
 import { Portal } from '../Molecules/Portal';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
 import { NotFoundView } from '../Router/NotFoundView';
 import type { Dataset } from '../WbPlanView/Wrapped';
-import { WBView } from './wbView';
+import type { WbStatus } from './WbView';
+import { WbView as WbViewClass } from './WbView';
 
 function Navigation({
   name,
@@ -48,7 +50,7 @@ function Navigation({
       data-navigation-type={name}
     >
       <Button.Small
-        className="wb-cell-navigation p-2 ring-0 brightness-80 hover:brightness-70"
+        className="wb-cell-navigation brightness-80 hover:brightness-70 p-2 ring-0"
         data-navigation-direction="previous"
         variant="bg-inherit text-gray-800 dark:text-gray-100"
         onClick={f.never}
@@ -57,8 +59,8 @@ function Navigation({
       </Button.Small>
       <Button.Small
         className={`
-          wb-navigation-text grid grid-cols-[auto_1fr_auto_1fr_auto] items-center
-          ring-0 hover:brightness-70
+          wb-navigation-text hover:brightness-70 grid grid-cols-[auto_1fr_auto_1fr_auto]
+          items-center ring-0
           ${className.ariaHandled}
         `}
         title={wbText.clickToToggle()}
@@ -69,7 +71,7 @@ function Navigation({
         <span className="wb-navigation-total">0</span>)
       </Button.Small>
       <Button.Small
-        className="wb-cell-navigation p-2 ring-0 brightness-80 hover:brightness-70"
+        className="wb-cell-navigation brightness-80 hover:brightness-70 p-2 ring-0"
         data-navigation-direction="next"
         type="button"
         variant="bg-inherit text-gray-800 dark:text-gray-100"
@@ -91,6 +93,11 @@ function WbView({
   readonly dataSetId: number;
 }): JSX.Element {
   const canUpdate = hasPermission('/workbench/dataset', 'update');
+  const [canLiveValidate] = userPreferences.use(
+    'workBench',
+    'general',
+    'liveValidation'
+  );
   return (
     <>
       <div
@@ -107,29 +114,27 @@ function WbView({
           {commonText.tools()}
         </Button.Small>
         <span className="-ml-1 flex-1" />
-        {/* This button is here for debugging only */}
-        <Button.Small
-          className={`
-            wb-show-plan
-            ${process.env.NODE_ENV === 'development' ? '' : 'hidden'}
-          `}
-          onClick={f.never}
-        >
-          [DEV] Show Plan
-        </Button.Small>
         {canUpdate || isMapped ? (
           <Link.Small href={`/specify/workbench/plan/${dataSetId}/`}>
             {wbPlanText.dataMapper()}
           </Link.Small>
         ) : undefined}
         {!isUploaded && hasPermission('/workbench/dataset', 'validate') && (
-          <Button.Small
-            aria-haspopup="dialog"
-            className="wb-validate"
-            onClick={undefined}
-          >
-            {wbText.validate()}
-          </Button.Small>
+          <>
+            <Button.Small
+              className={`wb-data-check ${canLiveValidate ? '' : 'hidden'}`}
+              onClick={undefined}
+            >
+              {wbText.dataCheck()}
+            </Button.Small>
+            <Button.Small
+              aria-haspopup="dialog"
+              className="wb-validate"
+              onClick={undefined}
+            >
+              {wbText.validate()}
+            </Button.Small>
+          </>
         )}
         <Button.Small
           aria-haspopup="tree"
@@ -190,13 +195,18 @@ function WbView({
       >
         {hasPermission('/workbench/dataset', 'transfer') &&
         hasTablePermission('SpecifyUser', 'read') ? (
-          <Button.Small
-            aria-haspopup="dialog"
-            className="wb-change-data-set-owner"
-            onClick={f.never}
-          >
-            {wbText.changeOwner()}
-          </Button.Small>
+          <>
+            <Button.Small
+              aria-haspopup="dialog"
+              className="wb-change-data-set-owner"
+              onClick={f.never}
+            >
+              {wbText.changeOwner()}
+            </Button.Small>
+            <Button.Small className="wb-show-plan" onClick={f.never}>
+              {wbText.uploadPlan()}
+            </Button.Small>
+          </>
         ) : undefined}
         <Button.Small className="wb-export-data-set" onClick={f.never}>
           {commonText.export()}
@@ -375,7 +385,7 @@ function useWbView(
     >
   >([]);
 
-  const mode = React.useRef<string | undefined>(undefined);
+  const mode = React.useRef<WbStatus | undefined>(undefined);
   const wasAborted = React.useRef<boolean>(false);
 
   const [hasUnloadProtect, setUnloadProtect] = React.useState<boolean>(false);
@@ -387,38 +397,36 @@ function useWbView(
     const contained = document.createElement('section');
     contained.setAttribute('class', `wbs-form ${className.containerFull}`);
     container.append(contained);
-    const view = new WBView({
-      el: contained,
-      dataset: dataSet,
-      refreshInitiatedBy: mode.current,
-      refreshInitiatorAborted: wasAborted.current,
-      onSetUnloadProtect: setUnloadProtect,
-      onDeleted: handleDeleted,
-      onDeletedConfirmation: handleDeletedConfirmation,
-      display(
-        jsx: JSX.Element,
-        element?: HTMLElement,
-        destructor?: () => void
-      ) {
-        let index = 0;
-        setPortals((portals) => {
-          index = portals.length;
-          return [...portals, { jsx, element }];
-        });
-        return () => {
-          setPortals((portals) => replaceItem(portals, index, undefined));
-          destructor?.();
-        };
-      },
-    })
-      .on('refresh', (newMode: string | undefined, newWasAborted = false) => {
+    const view = new WbViewClass(
+      dataSet,
+      mode.current,
+      wasAborted.current,
+      contained,
+      {
+        onSetUnloadProtect: setUnloadProtect,
+        onDeleted: handleDeleted,
+        onDeletedConfirmation: handleDeletedConfirmation,
+        display(jsx, element, destructor): () => void {
+          let index = 0;
+          setPortals((portals) => {
+            index = portals.length;
+            return [...portals, { jsx, element }];
+          });
+          return () => {
+            setPortals((portals) => replaceItem(portals, index, undefined));
+            destructor?.();
+          };
+        },
+      }
+    )
+      .on('refresh', (newMode: WbStatus | undefined, newWasAborted = false) => {
         setUnloadProtect(false);
         mode.current = newMode;
         wasAborted.current = newWasAborted;
         handleRefresh();
       })
       .render();
-    return () => view.remove();
+    return () => void view.remove();
   }, [treeRanksLoaded, container, dataSet]);
 
   return portals;

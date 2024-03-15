@@ -50,6 +50,10 @@ export type DatasetBriefBase = {
   readonly timestampmodified: string;
 };
 
+export type DatasetBriefPlan = DatasetBrief & {
+  readonly uploadplan: UploadPlan | null;
+};
+
 export type DatasetBase = DatasetBriefBase & {
   readonly createdbyagent: string;
   readonly importedfilename: string;
@@ -75,13 +79,6 @@ export type Dataset = DatasetBase &
     readonly visualorder: RA<number> | null;
   };
 
-export type WbPlanViewProps = {
-  readonly uploadPlan: UploadPlan | null;
-  readonly headers: RA<string>;
-  readonly isReadOnly: boolean;
-  readonly dataset: Dataset;
-};
-
 /**
  * Workbench Plan Mapper root component
  */
@@ -89,8 +86,11 @@ export function WbPlanView({
   dataset,
   uploadPlan,
   headers,
-  isReadOnly,
-}: WbPlanViewProps): JSX.Element {
+}: {
+  readonly uploadPlan: UploadPlan | null;
+  readonly headers: RA<string>;
+  readonly dataset: Dataset;
+}): JSX.Element {
   useTitle(dataset.name);
 
   const [state, setState] = useLiveState<
@@ -154,7 +154,6 @@ export function WbPlanView({
       baseTableName={state.baseTableName}
       changesMade={state.changesMade}
       dataset={dataset}
-      isReadOnly={isReadOnly}
       lines={state.lines}
       mustMatchPreferences={state.mustMatchPreferences}
       onChangeBaseTable={(): void =>

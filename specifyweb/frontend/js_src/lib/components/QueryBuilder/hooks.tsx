@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useTriggerState } from '../../hooks/useTriggerState';
-import type { GetOrSet, GetSet, IR, R, RA } from '../../utils/types';
+import type { GetOrSet, IR, R, RA } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { raise, softFail } from '../Errors/Crash';
 import type { QueryResultRow, QueryResultsProps } from './Results';
@@ -15,7 +15,7 @@ export function useFetchQueryResults({
   QueryResultsProps,
   'fetchResults' | 'fetchSize' | 'initialData' | 'totalCount'
 >): {
-  readonly results: GetSet<RA<QueryResultRow | undefined> | undefined>;
+  readonly results: GetOrSet<RA<QueryResultRow | undefined> | undefined>;
   readonly fetchersRef: {
     readonly current: IR<Promise<RA<QueryResultRow> | void>>;
   };
@@ -34,10 +34,14 @@ export function useFetchQueryResults({
   >(initialData);
   const [results, setResults] = getSetResults;
   const resultsRef = React.useRef(results);
-  const handleSetResults = React.useCallback(
-    (results: RA<QueryResultRow | undefined> | undefined) => {
-      setResults(results);
-      resultsRef.current = results;
+  const handleSetResults: GetOrSet<
+    RA<QueryResultRow | undefined> | undefined
+  >[1] = React.useCallback(
+    (results) => {
+      const resolved =
+        typeof results === 'function' ? results(resultsRef.current) : results;
+      setResults(resolved);
+      resultsRef.current = resolved;
     },
     [setResults]
   );
@@ -104,8 +108,7 @@ export function useFetchQueryResults({
            * This extends the sparse array to fit new results. Without this,
            * splice won't place the results in the correct place.
            */
-          combinedResults[fetchIndex] =
-            combinedResults[fetchIndex] ?? undefined;
+          combinedResults[fetchIndex] ??= undefined;
           combinedResults.splice(fetchIndex, newResults.length, ...newResults);
 
           handleSetResults(combinedResults);

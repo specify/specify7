@@ -1,17 +1,16 @@
 import React from 'react';
 
 import { useLiveState } from '../../hooks/useLiveState';
-import type { AppResourceTab } from '../AppResources/TabDefinitions';
-import { BasePreferences } from './BasePreferences';
-import { PreferencesContent } from './index';
-import { userPreferenceDefinitions } from './UserDefinitions';
-import { userPreferences } from './userPreferences';
+import type { AppResourceTabProps } from '../AppResources/TabDefinitions';
+import { PreferencesContent } from '../Preferences';
+import { BasePreferences } from '../Preferences/BasePreferences';
+import { userPreferenceDefinitions } from '../Preferences/UserDefinitions';
+import { userPreferences } from '../Preferences/userPreferences';
 
-export const UserPreferencesEditor: AppResourceTab = function ({
-  isReadOnly,
+export function UserPreferencesEditor({
   data,
   onChange: handleChange,
-}): JSX.Element {
+}: AppResourceTabProps): JSX.Element {
   const [preferencesContext] = useLiveState<typeof userPreferences>(
     React.useCallback(() => {
       const userPreferences = new BasePreferences({
@@ -37,7 +36,7 @@ export const UserPreferencesEditor: AppResourceTab = function ({
   const Context = userPreferences.Context;
   return (
     <Context.Provider value={preferencesContext}>
-      <PreferencesContent isReadOnly={isReadOnly} />
+      <PreferencesContent />
     </Context.Provider>
   );
-};
+}

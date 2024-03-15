@@ -5,14 +5,18 @@ import { useIsModified } from '../../hooks/useIsModified';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import type { GetSet } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
-import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { tables } from '../DataModel/tables';
 import type { Attachment } from '../DataModel/types';
 import { SaveButton } from '../Forms/Save';
 import { Dialog } from '../Molecules/Dialog';
@@ -33,7 +37,7 @@ export function AttachmentDialog({
   readonly onChange: (attachment: SerializedResource<Attachment>) => void;
   readonly onPrevious: (() => void) | undefined;
   readonly onNext: (() => void) | undefined;
-  readonly onViewRecord: (model: SpecifyModel, recordId: number) => void;
+  readonly onViewRecord: (table: SpecifyTable, recordId: number) => void;
 }): JSX.Element {
   const resource = React.useMemo(
     () => deserializeResource(attachment),
@@ -73,11 +77,9 @@ export function AttachmentDialog({
         </>
       }
       dimensionsKey="AttachmentViewer"
-      header={
-        attachment.title ??
-        attachment.origFilename ??
-        schema.models.Attachment.label
-      }
+      header={localized(
+        attachment.title ?? attachment.origFilename ?? tables.Attachment.label
+      )}
       headerButtons={
         <>
           <span className="-ml-4 flex-1" />

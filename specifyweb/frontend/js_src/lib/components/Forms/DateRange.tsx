@@ -2,42 +2,52 @@ import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { formsText } from '../../localization/forms';
-import { runQuery } from '../../utils/ajax/specifyApi';
+import { dayjs } from '../../utils/dayJs';
 import { f } from '../../utils/functools';
+import { fullDateFormat } from '../../utils/parser/dateFormat';
+import { parseAnyDate } from '../../utils/relativeDate';
 import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
-import { serializeResource } from '../DataModel/helpers';
-import { schema } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
-import type { Tables } from '../DataModel/types';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { serializeResource } from '../DataModel/serializers';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { genericTables } from '../DataModel/tables';
+import type { SpQueryField, Tables } from '../DataModel/types';
 import { createQuery } from '../QueryBuilder';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { flippedSortTypes } from '../QueryBuilder/helpers';
+import { runQuery } from '../QueryBuilder/ResultsWrapper';
 
 export function DateRange({
   table,
-  ids,
+  filterQueryField,
 }: {
-  readonly table: SpecifyModel;
+  readonly filterQueryField: SpecifyResource<SpQueryField>;
+  readonly table: SpecifyTable;
   readonly ids: RA<number>;
 }): JSX.Element | null {
   const dateFields = rangeDateFields()[table.name];
   return dateFields === undefined ? null : (
-    <DateRangeComponent dateFields={dateFields} ids={ids} table={table} />
+    <DateRangeComponent
+      dateFields={dateFields}
+      filterQueryField={filterQueryField}
+      table={table}
+    />
   );
 }
 
 function DateRangeComponent({
   table,
-  ids,
   dateFields,
+  filterQueryField,
 }: {
-  readonly table: SpecifyModel;
-  readonly ids: RA<number>;
+  readonly table: SpecifyTable;
   readonly dateFields: RA<string>;
+  readonly filterQueryField: SpecifyResource<SpQueryField>;
 }): JSX.Element | null {
-  const range = useRange(table, ids, dateFields);
+  const range = useRange(filterQueryField, table, dateFields);
   return range === undefined ? null : (
     <>
       {formsText.dateRange({
@@ -49,8 +59,8 @@ function DateRangeComponent({
 }
 
 function useRange(
-  table: SpecifyModel,
-  ids: RA<number>,
+  filterQueryField: SpecifyResource<SpQueryField>,
+  table: SpecifyTable,
   dateFields: RA<string>
 ): { readonly from: string; readonly to: string } | undefined {
   return useAsyncState(
@@ -68,32 +78,32 @@ function useRange(
                         .set('sortType', sortType)
                         .set('isNot', true)
                         .set('operStart', queryFieldFilters.empty.id),
-                      QueryFieldSpec.fromPath(table.name, ['id'])
-                        .toSpQueryField()
-                        .set('isDisplay', false)
-                        .set('startValue', ids.join(','))
-                        .set('operStart', queryFieldFilters.in.id),
+                      filterQueryField,
                     ])
                   ),
                   {
                     limit: 1,
                   }
-                ).then((rows) => rows[0]?.[1])
+                ).then((rows) => (rows.length === 0 ? null : rows[0][1]))
             )
           )
         ).then((rawDates) => {
-          const dates = rawDates
-            .filter((date) => typeof date === 'string')
-            .map((date) => [date!, new Date(date!)] as const)
-            .sort(sortFunction(([_date, sortable]) => sortable));
+          const dates = Array.from(
+            filterArray(
+              rawDates.map((date) => {
+                if (date === null) return undefined;
+                return parseAnyDate(date);
+              })
+            )
+          ).sort(sortFunction((date) => date.getTime()));
           return dates.length === 0
             ? undefined
             : {
-                from: dates[0][0],
-                to: dates.at(-1)![0],
+                from: dayjs(dates[0]).format(fullDateFormat()),
+                to: dayjs(dates.at(-1)).format(fullDateFormat()),
               };
         }),
-      [table, ids, dateFields]
+      [table, filterQueryField, dateFields]
     ),
     false
   )[0];
@@ -110,7 +120,7 @@ const rangeDateFields = f.store(() => ({
    * that are applicable for use in date ranges.
    */
   ...Object.fromEntries(
-    Object.values(schema.models)
+    Object.values(genericTables)
       .map((table) => [
         table.name,
         table.literalFields

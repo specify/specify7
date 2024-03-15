@@ -2,11 +2,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import gettextParser from 'gettext-parser';
-import type { LocalizedString } from 'typesafe-i18n';
 
 import { formatConjunction } from '../../components/Atoms/Internationalization';
 import type { IR, RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import { filterArray, localized } from '../../utils/types';
 import { group } from '../../utils/utils';
 import type { LocalizationEntry } from './index';
 import { whitespaceSensitive } from './index';
@@ -48,7 +47,7 @@ function ensureConsistency(
   if (missingLocalComponents.length > 0)
     error(
       `Weblate has some components which are not defined ` +
-        `locally: ${formatConjunction(missingLocalComponents)}`
+        `locally: ${formatConjunction(missingLocalComponents.map(localized))}`
     );
 
   const missingRemoteComponents = Object.keys(dictionaries).filter(
@@ -57,7 +56,7 @@ function ensureConsistency(
   if (missingRemoteComponents.length > 0)
     error(
       `Local repository has some components that are absent in ` +
-        `Weblate: ${formatConjunction(missingRemoteComponents)}`
+        `Weblate: ${formatConjunction(missingRemoteComponents.map(localized))}`
     );
 }
 
@@ -99,7 +98,9 @@ async function parseDictionary(
   if (unknownLanguages.length > 0)
     (kind === 'schema' ? warn : error)(
       `Weblate has some languages for "${component}" component which are ` +
-        `not defined locally: ${formatConjunction(unknownLanguages)}.${
+        `not defined locally: ${formatConjunction(
+          unknownLanguages.map(localized)
+        )}.${
           kind === 'userInterface'
             ? '\nIf you indented to add a new language to Specify 7, see ' +
               'documentation: ' +
@@ -118,7 +119,7 @@ async function parseDictionary(
   if (missingLanguages.length > 0)
     error(
       `Some defined languages for "${component}" component are missing ` +
-        `in Weblate: ${formatConjunction(missingLanguages)}`
+        `in Weblate: ${formatConjunction(missingLanguages.map(localized))}`
     );
 
   const entries = await Promise.all(
@@ -196,9 +197,7 @@ const trimStrings = (
         Object.entries(values).map(([language, value]) => [
           language,
           whitespaceSensitive(
-            (trimNewLine
-              ? value!
-              : value!.replaceAll('\n', '\n\n')) as LocalizedString
+            localized(trimNewLine ? value! : value!.replaceAll('\n', '\n\n'))
           ).replaceAll('\n', '\n\n'),
         ])
       ),

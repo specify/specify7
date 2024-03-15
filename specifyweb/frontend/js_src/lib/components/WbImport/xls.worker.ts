@@ -4,10 +4,10 @@
  * @module
  */
 
+import dayjs from 'dayjs';
 import { read, utils } from 'xlsx';
 
 import type { RA } from '../../utils/types';
-import dayjs from 'dayjs';
 
 const context: Worker = self as any;
 
@@ -47,11 +47,11 @@ context.onmessage = function (e) {
     );
 
     const data: RA<RA<string>> = sheetData.map((row) => {
-      const unSparseRow = Array.from(row as RA<string | Date>, (value) => {
+      const unSparseRow = Array.from(row as RA<Date | string>, (value) => {
         if (typeof value === 'object') {
-          if (typeof dateFormat === 'string')
-            return dayjs(value).format(dateFormat);
-          else return value.toLocaleDateString();
+          return typeof dateFormat === 'string'
+            ? dayjs(value).format(dateFormat)
+            : value.toLocaleDateString();
         } else return value || '';
       });
       if (unSparseRow.length < maxWidth) {
