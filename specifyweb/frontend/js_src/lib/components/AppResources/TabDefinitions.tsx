@@ -32,6 +32,7 @@ import { WebLinkEditor } from '../WebLinks/Editor';
 import { webLinksSpec } from '../WebLinks/spec';
 import { useCodeMirrorExtensions } from './EditorComponents';
 import type { appResourceSubTypes } from './types';
+import { RssExportFeedEditor } from '../ExportFeed';
 
 export type AppResourceEditorType = 'generic' | 'json' | 'visual' | 'xml';
 
@@ -158,12 +159,7 @@ export const visualAppResourceEditors = f.store<
   },
   leafletLayers: undefined,
   rssExportFeed: {
-    /**
-     ** Disabled in https://github.com/specify/specify7/issues/4653
-     * needs to be enabled when fixing https://github.com/specify/specify7/issues/4650
-     * **
-     */
-    // Visual: RssExportFeedEditor,
+    visual: RssExportFeedEditor,
     xml: generateXmlEditor(exportFeedSpec),
   },
   expressSearchConfig: undefined,
