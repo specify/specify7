@@ -59,9 +59,9 @@ export const wbPlanText = createDictionary({
     'en-us': 'NONE SELECTED',
     'ru-ru': 'НЕ ВЫБРАНО',
     'es-es': 'NO ASIGNADO/MAPEADO',
-    'fr-fr': 'NON CARTOGRAPHIÉ',
-    'uk-ua': 'НЕ МАПИРОВАНО',
-    'de-ch': 'NICHT KARTIERT',
+    'fr-fr': 'AUCUNE SÉLECTION',
+    'uk-ua': 'НЕ ВИБРАНО',
+    'de-ch': 'Nicht kartiert',
   },
   unmapped: {
     'en-us': 'Unmapped',
@@ -69,7 +69,7 @@ export const wbPlanText = createDictionary({
     'es-es': 'sin mapear',
     'fr-fr': 'Non mappé',
     'uk-ua': 'Не зіставлений',
-    'de-ch': 'Nicht kartiert',
+    'de-ch': 'Eine Zuordnung ist erforderlich',
   },
   mapped: {
     'en-us': 'Mapped',
@@ -107,8 +107,8 @@ export const wbPlanText = createDictionary({
     'en-us': 'Required Fields',
     'ru-ru': 'Обязательные поля',
     'es-es': 'Campos requeridos',
-    'fr-fr': 'Ne jamais ignorer',
-    'uk-ua': 'Ніколи не ігноруйте',
+    'fr-fr': 'Champs obligatoires',
+    'uk-ua': "обов'язкові поля",
     'de-ch': 'Erforderliche Felder',
   },
   optionalFields: {
@@ -123,10 +123,7 @@ export const wbPlanText = createDictionary({
     'en-us': 'Hidden Fields',
     'ru-ru': 'Скрытые поля',
     'es-es': 'Campos Ocultos',
-    'fr-fr': `
-      L'ensemble de données sélectionné n'a pas de plan de téléchargement.
-      Veuillez en sélectionner un autre.
-    `,
+    'fr-fr': 'Champs cachés',
     'uk-ua': 'Приховані поля',
     'de-ch': 'Versteckte Felder',
   },
@@ -134,9 +131,9 @@ export const wbPlanText = createDictionary({
     'en-us': 'Reveal Hidden Form Fields',
     'ru-ru': 'Показать скрытые поля формы',
     'es-es': 'Revelar Campos Ocultos del Formulario',
+    'de-ch': 'Versteckte Formularfelder anzeigen',
     'fr-fr': 'Ensemble de données vide',
     'uk-ua': 'Порожній набір даних',
-    'de-ch': 'Versteckte Formularfelder anzeigen',
   },
   mappingOptions: {
     'en-us': 'Mapping Options',
@@ -228,9 +225,9 @@ export const wbPlanText = createDictionary({
     'en-us': 'Never Ignore',
     'ru-ru': 'Никогда не игнорировать',
     'es-es': 'Nunca Ignorar',
-    'fr-fr': 'Ne jamais ignorer',
-    'uk-ua': 'Ніколи не ігноруйте',
     'de-ch': 'Nie ignorieren',
+    'fr-fr': 'AUCUNE SÉLECTION',
+    'uk-ua': 'НЕ ВИБРАНО',
   },
   ignoreNeverDescription: {
     'en-us': `
@@ -286,8 +283,7 @@ export const wbPlanText = createDictionary({
     'en-us': 'This value would be used in place of empty cells',
     'ru-ru': 'Это значение будет использоваться вместо пустых ячеек',
     'es-es': 'Este valor se usaría en lugar de celdas vacías',
-    'fr-fr':
-      'Mappage automatique pour démarrer un nouveau plan de téléchargement ?',
+    'fr-fr': 'Cette valeur serait utilisée à la place des cellules vides',
     'uk-ua': 'Це значення використовуватиметься замість порожніх клітинок',
     'de-ch': 'Dieser Wert wird anstelle von leeren Zellen verwendet',
   },
@@ -324,8 +320,17 @@ export const wbPlanText = createDictionary({
       cargar por su configuración de Especificar. Agregue las asignaciones
       faltantes que se muestran o guarde este plan de carga como inacabado.
     `,
-    'fr-fr': 'Utiliser la valeur par défaut',
-    'uk-ua': 'Використовувати значення за умовчанням',
+    'fr-fr': `
+      Il manque dans ce mappage de données un ou plusieurs champs de données
+      requis pour le téléchargement par votre configuration Specify. Ajoutez les
+      mappages manquants affichés ou enregistrez ce plan de téléchargement
+      comme inachevé.
+    `,
+    'uk-ua': `
+      У цьому відображенні даних відсутнє одне або кілька полів даних, необхідні
+      для завантаження вашою конфігурацією Specify. Додайте відсутні
+      відображення або збережіть цей план завантаження як незавершений.
+    `,
     'de-ch': `
       In dieser Datenzuordnung fehlen ein oder mehrere Datenfelder, die für das
       Hochladen gemäss Ihrer Specify-Konfiguration erforderlich sind. Fügen Sie
@@ -338,8 +343,9 @@ export const wbPlanText = createDictionary({
     'en-us': 'Mapping is required',
     'ru-ru': 'Необходимо сопоставление',
     'es-es': 'Se requiere asignación',
-    'fr-fr': 'Liaison obligatoire',
-    'uk-ua': 'Необхідне співставлення',
+    'fr-fr': 'Une cartographie est requise',
+    'uk-ua': 'Потрібне відображення',
+    'de-ch': 'Eine Zuordnung ist erforderlich',
   },
   continueEditing: {
     'en-us': 'Continue Editing',
@@ -361,9 +367,9 @@ export const wbPlanText = createDictionary({
     'en-us': 'Map',
     'ru-ru': 'Сопоставить',
     'es-es': 'Mapear',
+    'de-ch': 'Datenzuordnung erstellen',
     'fr-fr': 'Mappeur automatique',
     'uk-ua': 'AutoMapper',
-    'de-ch': 'Datenzuordnung erstellen',
   },
   unmap: {
     'en-us': 'Unmap',
@@ -377,15 +383,24 @@ export const wbPlanText = createDictionary({
     'en-us': 'Map selected field to selected header',
     'ru-ru': 'Сопоставить выбранное поле с выбранным столбцом',
     'es-es': 'Asignar campo seleccionado al encabezamiento seleccionado',
-    'fr-fr': "Mapper le champ sélectionné à l'en-tête sélectionné",
-    'uk-ua': 'Зіставити вибране поле з вибраним заголовком',
     'de-ch': 'Ausgewähltes Feld der ausgewählten Feldüberschrift zuordnen',
+    'fr-fr': `
+      Il manque dans ce mappage de données un ou plusieurs champs de données
+      requis pour le téléchargement par votre configuration Specify. Ajoutez les
+      mappages manquants affichés ou enregistrez ce plan de téléchargement
+      comme inachevé.
+    `,
+    'uk-ua': `
+      У цьому відображенні даних відсутнє одне або кілька полів даних, необхідні
+      для завантаження вашою конфігурацією Specify. Додайте відсутні
+      відображення або збережіть цей план завантаження як незавершений.
+    `,
   },
   relationshipWithTable: {
     'en-us': 'Relationship to the {tableName:string} table',
     'ru-ru': 'Связь с таблицей {tableName:string}',
     'es-es': 'Relación con la tabla {tableName:string}',
-    'fr-fr': 'Relation avec la table {tableName :string}',
+    'fr-fr': 'Relation avec la table {tableName:string}',
     'uk-ua': 'Відношення до таблиці {tableName:string}.',
     'de-ch': 'Beziehung zur Tabelle {tableName:string}',
   },
@@ -409,8 +424,8 @@ export const wbPlanText = createDictionary({
     'en-us': 'Show All Tables',
     'ru-ru': 'Показать дополнительные таблицы',
     'es-es': 'Mostrar Tablas Avanzadas',
-    'fr-fr': 'Afficher les tableaux avancés',
-    'uk-ua': 'Показати додаткові таблиці',
+    'fr-fr': 'Afficher tous les tableaux',
+    'uk-ua': 'Показати всі таблиці',
     'de-ch': 'Erweiterte Tabellen anzeigen',
   },
   dataSetUploaded: {
@@ -469,7 +484,7 @@ export const wbPlanText = createDictionary({
     'en-us': 'Base Table',
     'ru-ru': 'Базовая таблица',
     'es-es': 'Tabla Base',
-    'fr-fr': 'Tableau de base',
+    'fr-fr': 'Table de base',
     'uk-ua': 'Базовий стіл',
     'de-ch': 'Basistabelle',
   },
@@ -530,7 +545,7 @@ export const wbPlanText = createDictionary({
   clearMapping: {
     'en-us': 'Clear Mapping',
     'ru-ru': 'Очистить сопоставление',
-    'es-es': 'Borrar Asignaciones',
+    'es-es': 'Borrar Asignacione',
     'fr-fr': 'Effacer le mappage',
     'uk-ua': 'Очистити відображення',
     'de-ch': 'Datenzuordnung zurücksetzen',
@@ -637,10 +652,10 @@ export const wbPlanText = createDictionary({
     'en-us': 'Automap to start a new Upload Plan?',
     'ru-ru': 'Автоматически сопоставить?',
     'es-es': '¿Automap para iniciar un nuevo plan de carga?',
+    'de-ch': 'Automap, um einen neuen Upload-Plan zu starten?',
     'fr-fr':
       'Mappage automatique pour démarrer un nouveau plan de téléchargement ?',
     'uk-ua': 'Автоматична карта, щоб почати новий план завантаження?',
-    'de-ch': 'Automap, um einen neuen Upload-Plan zu starten?',
   },
   reRunAutoMapperConfirmationDescription: {
     'en-us': 'This will erase existing data field mappings.',
@@ -701,7 +716,7 @@ export const wbPlanText = createDictionary({
     'en-us': 'New Column {index:number}',
     'ru-ru': 'Новый столбец {index:number}',
     'es-es': 'Nueva Columna {index:number}',
-    'fr-fr': 'Nouvelle colonne {index :number}',
+    'fr-fr': 'Nouvelle colonne {index:number}',
     'uk-ua': 'Нова колонка {index:number}',
     'de-ch': 'Neue Spalte {index:number}',
   },

@@ -3,6 +3,7 @@ import React from 'react';
 
 import { useResource } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { developmentText } from '../../localization/development';
 import { specifyNetworkText } from '../../localization/specifyNetwork';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
@@ -223,7 +224,7 @@ export function useExtendedMap(
   ]);
   return items.length === 0 ? undefined : (
     <details>
-      <summary>{specifyNetworkText.mapDetails()}</summary>
+      <summary>{developmentText.details()}</summary>
       {items}
     </details>
   );

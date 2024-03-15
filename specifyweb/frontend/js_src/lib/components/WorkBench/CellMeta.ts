@@ -269,8 +269,13 @@ export class WbCellMeta {
     const visualCol =
       initialVisualCol ?? this.wbView.hot.toVisualColumn(physicalCol);
     const cell = initialCell ?? this.wbView.hot.getCell(visualRow, visualCol);
-    if (typeof cell === 'object' && cell !== null)
-      this.runMetaUpdateEffects(cell, key, value, visualRow, visualCol);
+    this.runMetaUpdateEffects(
+      cell ?? undefined,
+      key,
+      value,
+      visualRow,
+      visualCol
+    );
 
     return true;
   }

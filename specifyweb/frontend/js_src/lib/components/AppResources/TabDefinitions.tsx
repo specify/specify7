@@ -19,7 +19,6 @@ import type {
   SpAppResourceDir,
   SpViewSetObj,
 } from '../DataModel/types';
-import { RssExportFeedEditor } from '../ExportFeed';
 import { exportFeedSpec } from '../ExportFeed/spec';
 import { DataObjectFormatter } from '../Formatters';
 import { formattersSpec } from '../Formatters/spec';
@@ -107,7 +106,7 @@ const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
         onUpdate={({ state }): void => {
           selectionRef.current = state.selection.toJSON();
         }}
-        className={`w-full overflow-auto border border-brand-300 dark:border-none ${className}`}
+        className={`border-brand-300 w-full overflow-auto border dark:border-none ${className}`}
         /*
          * Disable spell check if we are doing own validation as otherwise it's
          * hard to differentiate between browser's spell check errors and our
@@ -159,7 +158,12 @@ export const visualAppResourceEditors = f.store<
   },
   leafletLayers: undefined,
   rssExportFeed: {
-    visual: RssExportFeedEditor,
+    /**
+     ** Disabled in https://github.com/specify/specify7/issues/4653
+     * needs to be enabled when fixing https://github.com/specify/specify7/issues/4650
+     * **
+     */
+    // Visual: RssExportFeedEditor,
     xml: generateXmlEditor(exportFeedSpec),
   },
   expressSearchConfig: undefined,

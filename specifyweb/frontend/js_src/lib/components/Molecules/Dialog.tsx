@@ -76,12 +76,13 @@ const dialogIndexes = new Set<number>();
 const getNextIndex = (): number =>
   dialogIndexes.size === 0 ? initialIndex : Math.max(...dialogIndexes) + 1;
 
-const supportsBackdropBlur = globalThis.CSS.supports(
-  '((-webkit-backdrop-filter: none) or (backdrop-filter: none))'
-);
+const supportsBackdropBlur =
+  globalThis.CSS?.supports(
+    '((-webkit-backdrop-filter: none) or (backdrop-filter: none))'
+  ) ?? false;
 
 // Used for 'inert' attribute addition
-const root = document.getElementById('root');
+const root = globalThis.document?.getElementById('root');
 
 /**
  * Modal or non-modal dialog. Highly customizable. Used all over the place
@@ -495,7 +496,7 @@ export function Dialog({
         {headerButtons}
       </div>
       {specialMode === 'orangeBar' && (
-        <div className="w-full border-b-2 border-brand-300" />
+        <div className="border-brand-300 w-full border-b-2" />
       )}
       <DialogContext.Provider value={handleClose}>
         {/*
@@ -507,8 +508,8 @@ export function Dialog({
          */}
         <div
           className={`
-            -mx-1 flex-1 overflow-y-auto px-1 py-4 text-gray-700
-            dark:text-neutral-350 ${contentClassName}
+            dark:text-neutral-350 -mx-1 flex-1 overflow-y-auto px-1 py-4
+            text-gray-700 ${contentClassName}
           `}
           id={id('content')}
           ref={contentRef}

@@ -300,7 +300,7 @@ export class WbView extends Backbone.View {
       this.wbUtils.toggleCellTypes('invalidCells', 'remove');
 
     this.cells.flushIndexedCellData = true;
-    globalThis.window.addEventListener('resize', this.handleResize);
+    globalThis.addEventListener('resize', this.handleResize);
 
     return this;
   }
@@ -816,6 +816,7 @@ export class WbView extends Backbone.View {
     const dialog = this.options.display(
       <DevShowPlan
         dataSetId={this.dataset.id}
+        dataSetName={this.dataset.name}
         uploadPlan={this.dataset.uploadplan ?? ({} as UploadPlan)}
         onChanged={(plan) => {
           overwriteReadOnly(this.dataset, 'uploadplan', plan);

@@ -222,7 +222,7 @@ function SearchForm<SCHEMA extends AnySchema>({
         </SearchDialogContext.Provider>
         <Ul
           className={`
-            min-w-96 h-40 overflow-auto rounded
+            h-40 min-w-96 overflow-auto rounded
             border bg-white p-2 ring-1 ring-gray-500 dark:bg-neutral-700 dark:ring-0
           `}
         >

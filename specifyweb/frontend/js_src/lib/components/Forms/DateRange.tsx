@@ -9,10 +9,11 @@ import { parseAnyDate } from '../../utils/relativeDate';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { serializeResource } from '../DataModel/serializers';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { genericTables } from '../DataModel/tables';
-import type { Tables } from '../DataModel/types';
+import type { SpQueryField, Tables } from '../DataModel/types';
 import { createQuery } from '../QueryBuilder';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
@@ -21,27 +22,32 @@ import { runQuery } from '../QueryBuilder/ResultsWrapper';
 
 export function DateRange({
   table,
-  ids,
+  filterQueryField,
 }: {
+  readonly filterQueryField: SpecifyResource<SpQueryField>;
   readonly table: SpecifyTable;
   readonly ids: RA<number>;
 }): JSX.Element | null {
   const dateFields = rangeDateFields()[table.name];
   return dateFields === undefined ? null : (
-    <DateRangeComponent dateFields={dateFields} ids={ids} table={table} />
+    <DateRangeComponent
+      dateFields={dateFields}
+      filterQueryField={filterQueryField}
+      table={table}
+    />
   );
 }
 
 function DateRangeComponent({
   table,
-  ids,
   dateFields,
+  filterQueryField,
 }: {
   readonly table: SpecifyTable;
-  readonly ids: RA<number>;
   readonly dateFields: RA<string>;
+  readonly filterQueryField: SpecifyResource<SpQueryField>;
 }): JSX.Element | null {
-  const range = useRange(table, ids, dateFields);
+  const range = useRange(filterQueryField, table, dateFields);
   return range === undefined ? null : (
     <>
       {formsText.dateRange({
@@ -53,8 +59,8 @@ function DateRangeComponent({
 }
 
 function useRange(
+  filterQueryField: SpecifyResource<SpQueryField>,
   table: SpecifyTable,
-  ids: RA<number>,
   dateFields: RA<string>
 ): { readonly from: string; readonly to: string } | undefined {
   return useAsyncState(
@@ -72,11 +78,7 @@ function useRange(
                         .set('sortType', sortType)
                         .set('isNot', true)
                         .set('operStart', queryFieldFilters.empty.id),
-                      QueryFieldSpec.fromPath(table.name, ['id'])
-                        .toSpQueryField()
-                        .set('isDisplay', false)
-                        .set('startValue', ids.join(','))
-                        .set('operStart', queryFieldFilters.in.id),
+                      filterQueryField,
                     ])
                   ),
                   {
@@ -101,7 +103,7 @@ function useRange(
                 to: dayjs(dates.at(-1)).format(fullDateFormat()),
               };
         }),
-      [table, ids, dateFields]
+      [table, filterQueryField, dateFields]
     ),
     false
   )[0];

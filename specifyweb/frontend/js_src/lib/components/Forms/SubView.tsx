@@ -7,8 +7,8 @@ import { commonText } from '../../localization/common';
 import { overwriteReadOnly } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
-import { attachmentRelatedTables } from '../Attachments';
 import { attachmentSettingsPromise } from '../Attachments/attachments';
+import { attachmentRelatedTables } from '../Attachments/utils';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -210,7 +210,7 @@ export function SubView({
             w-fit 
             ${
               (collection?.models.length ?? 0) > 0
-                ? 'ring-2 !ring-brand-300 dark:!ring-2 dark:!ring-brand-400'
+                ? '!ring-brand-300 dark:!ring-brand-400 ring-2 dark:!ring-2'
                 : ''
             } 
           ${isOpen ? '!bg-brand-300 dark:!bg-brand-500' : ''}`}

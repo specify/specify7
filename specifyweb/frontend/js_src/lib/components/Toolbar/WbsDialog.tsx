@@ -30,7 +30,7 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { hasPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
 import { uniquifyDataSetName } from '../WbImport/helpers';
-import type { Dataset, DatasetBrief } from '../WbPlanView/Wrapped';
+import type { Dataset, DatasetBriefPlan } from '../WbPlanView/Wrapped';
 import { WbDataSetMeta } from '../WorkBench/DataSetMeta';
 
 const createWorkbenchDataSet = async () =>
@@ -142,7 +142,7 @@ export function DataSetsDialog({
   const [unsortedDatasets] = useAsyncState(
     React.useCallback(
       async () =>
-        ajax<RA<DatasetBrief>>(
+        ajax<RA<DatasetBriefPlan>>(
           `/api/workbench/dataset/${showTemplates ? '?with_plan' : ''}`,
           { headers: { Accept: 'application/json' } }
         ).then(({ data }) => data),
@@ -241,7 +241,10 @@ export function DataSetsDialog({
                           : undefined
                       }
                     >
-                      <TableIcon label={false} name="Workbench" />
+                      <TableIcon
+                        label
+                        name={dataset.uploadplan?.baseTableName ?? 'Workbench'}
+                      />
                       {dataset.name}
                     </Link.Default>
                   </td>

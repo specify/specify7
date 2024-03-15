@@ -104,7 +104,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Varios archivos seleccionados',
     'fr-fr': 'Plusieurs fichiers sélectionnés',
     'ru-ru': 'Выбрано несколько файлов',
-    'uk-ua': 'Вибрано кілька файлів',
+    'uk-ua': 'Вибрано декілька файлів',
   },
   fileSize: {
     'en-us': 'File Size',
@@ -127,11 +127,11 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Keine Datei',
     'es-es': 'Ningún archivo',
     'fr-fr': 'Pas de fichier',
+    'uk-ua': 'Немає файлу',
     'ru-ru': `
       Откат приведет к удалению вложений из базы данных Specify и сервера
       активов.
     `,
-    'uk-ua': 'Немає файлу',
   },
   pleaseReselectAllFiles: {
     'en-us': 'Please reselect all files before uploading.',
@@ -196,11 +196,11 @@ export const attachmentsText = createDictionary({
   },
   errorReadingFile: {
     'en-us': 'Error reading file',
-    'de-ch':
-      'Wählen Sie Dateien aus oder ziehen Sie sie hierher, um zu beginnen.',
     'es-es': 'Error al leer el archivo',
     'fr-fr': 'Erreur de lecture du fichier',
     'ru-ru': 'Ошибка чтения файла',
+    'de-ch':
+      'Wählen Sie Dateien aus oder ziehen Sie sie hierher, um zu beginnen.',
     'uk-ua': 'Щоб почати, виберіть файли або перетягніть їх сюди.',
   },
   unhandledFatalResourceError: {
@@ -232,9 +232,9 @@ export const attachmentsText = createDictionary({
     'en-us': 'New Attachment Data Set',
     'de-ch': 'Neuer Anhangsdatensatz',
     'es-es': 'Nuevo conjunto de datos adjuntos',
+    'uk-ua': 'Новий набір даних вкладення',
     'fr-fr': 'Fichiers en double trouvés',
     'ru-ru': 'Обнаружены повторяющиеся файлы',
-    'uk-ua': 'Новий набір даних вкладення',
   },
   uploadInterrupted: {
     'en-us': 'Upload Interrupted',
@@ -287,7 +287,6 @@ export const attachmentsText = createDictionary({
       Das Rollback war im Gange, als eine Unterbrechung auftrat. Möglicherweise
       wurden einige Dateien gelöscht
     `,
-    'es-es': 'Formateado incorrectamente',
     'fr-fr': `
       La restauration était en cours lorsqu'une interruption s'est produite.
       Certains fichiers peuvent avoir été supprimés
@@ -298,6 +297,10 @@ export const attachmentsText = createDictionary({
     `,
     'uk-ua':
       'Тривав відкат, коли сталася перерва. Деякі файли могли бути видалені',
+    'es-es': `
+      La reversión estaba en curso cuando se produjo una interrupción. Es
+      posible que algunos archivos hayan sido eliminados.
+    `,
   },
   attachmentId: {
     'en-us': 'Attachment ID',
@@ -485,9 +488,9 @@ export const attachmentsText = createDictionary({
     'en-us': 'On File',
     'de-ch': 'Aktenkundig',
     'es-es': 'En archivo',
-    'fr-fr': 'Pas de fichier',
     'ru-ru': 'В файле',
     'uk-ua': 'У файлі',
+    'fr-fr': 'Pas de fichier',
   },
   duplicateFilesFound: {
     'en-us': 'Duplicate Files Found',
@@ -502,7 +505,6 @@ export const attachmentsText = createDictionary({
       The following files are not selected because they already exist in this
       data set.
     `,
-    'de-ch': 'Abgesagt',
     'es-es': `
       Los siguientes archivos no están seleccionados porque ya existen en este
       conjunto de datos.
@@ -515,6 +517,7 @@ export const attachmentsText = createDictionary({
       Следующие файлы не выбраны, поскольку они уже существуют в этом наборе
       данных.
     `,
+    'de-ch': 'Abgesagt',
     'uk-ua': 'Скасовано',
   },
   errorFetchingRecord: {
@@ -536,7 +539,10 @@ export const attachmentsText = createDictionary({
   interruptionStopped: {
     'en-us': 'Stopped because of error uploading a previous file',
     'de-ch': 'Suchen Sie nach weiteren Anhängen',
-    'es-es': 'Seleccione la ruta',
+    'es-es': `
+      La reversión estaba en curso cuando se produjo una interrupción. Es
+      posible que algunos archivos hayan sido eliminados.
+    `,
     'fr-fr': 'Rechercher plus de pièces jointes',
     'ru-ru': 'Ищите больше вложений',
     'uk-ua': 'Шукайте більше вкладень',

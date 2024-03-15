@@ -47,7 +47,7 @@ export function Toasts({
       {toasts.length > 0 && (
         <div
           className={`
-            absolute top-0 right-0 z-[10000] flex max-h-full w-full max-w-[30rem]
+            absolute right-0 top-0 z-[10000] flex max-h-full w-full max-w-[30rem]
             flex-col gap-2 overflow-auto p-4
           `}
         >
@@ -79,7 +79,7 @@ function Toast({
 }): JSX.Element {
   const previousFocused = React.useRef(document.activeElement);
   return (
-    <div className="flex gap-2 rounded border border-red-500 bg-red-200 shadow hover:brightness-80 dark:bg-red-900">
+    <div className="hover:brightness-80 flex gap-2 rounded border border-red-500 bg-red-200 shadow dark:bg-red-900">
       <Button.LikeLink
         aria-live={toast.type === 'Error' ? 'assertive' : 'polite'}
         className="flex-1 p-4 hover:text-black dark:hover:text-gray-200"
