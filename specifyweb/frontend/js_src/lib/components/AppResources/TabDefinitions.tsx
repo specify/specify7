@@ -19,6 +19,7 @@ import type {
   SpAppResourceDir,
   SpViewSetObj,
 } from '../DataModel/types';
+import { RssExportFeedEditor } from '../ExportFeed';
 import { exportFeedSpec } from '../ExportFeed/spec';
 import { DataObjectFormatter } from '../Formatters';
 import { formattersSpec } from '../Formatters/spec';
@@ -32,7 +33,6 @@ import { WebLinkEditor } from '../WebLinks/Editor';
 import { webLinksSpec } from '../WebLinks/spec';
 import { useCodeMirrorExtensions } from './EditorComponents';
 import type { appResourceSubTypes } from './types';
-import { RssExportFeedEditor } from '../ExportFeed';
 
 export type AppResourceEditorType = 'generic' | 'json' | 'visual' | 'xml';
 
