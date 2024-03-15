@@ -44,8 +44,6 @@ class Scoping(namedtuple('Scoping', 'obj')):
         else:
             return self._simple_division_scope()
 
-    def agent(self): return self._simple_division_scope()
-
     def borrowagent(self): return Scoping(self.obj.agent)()
 
     def conservevent(self): return Scoping(self.obj.conservdescription)()
