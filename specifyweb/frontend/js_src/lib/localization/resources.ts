@@ -148,14 +148,14 @@ export const resourcesText = createDictionary({
   uiFormatters: {
     'en-us': 'Field Formatters',
     'ru-ru': 'Форматировщики полей',
-    'es-es': 'Formateadores de campo',
+    'es-es': 'Formateadores de campos',
     'fr-fr': 'Formateurs de champs',
     'uk-ua': 'Форматувальники полів',
     'de-ch': 'Feldformatierer',
   },
   dataObjectFormatters: {
     'en-us': 'Record Formatters',
-    'ru-ru': 'Форматеры записей',
+    'ru-ru': 'Форматеры записи',
     'es-es': 'Formateadores de registros',
     'uk-ua': 'Форматувальники записів',
     'de-ch': 'Datensatz-Formatierer',
@@ -788,7 +788,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Standardformular kopieren',
     'es-es': 'Formateadores de registros',
     'fr-fr': "Formateurs d'enregistrement",
-    'ru-ru': 'Форматеры записи',
+    'ru-ru': 'Форматеры записей',
     'uk-ua': 'Форматувальники записів',
   },
   copyDefaultForms: {
