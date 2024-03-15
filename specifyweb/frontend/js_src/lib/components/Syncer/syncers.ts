@@ -16,6 +16,7 @@ import {
   pushContext,
   setLogContext,
 } from '../Errors/logContext';
+import { fieldNeedsCamelCase } from './fromSimpleXmlNode';
 import type { BaseSpec, SpecToJson, Syncer } from './index';
 import { runBuilder, runParser, syncer } from './index';
 import { mergeSimpleXmlNodes } from './mergeSimpleXmlNodes';
@@ -26,7 +27,6 @@ import {
   getOriginalSyncerInput,
   setOriginalSyncerInput,
 } from './xmlUtils';
-import { fieldNeedsCamelCase } from './fromSimpleXmlNode';
 
 type NodeWithContext<T> = {
   readonly node: T;

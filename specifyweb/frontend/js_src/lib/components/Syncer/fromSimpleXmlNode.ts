@@ -5,7 +5,7 @@ import { formatXmlNode } from './formatXmlNode';
 import type { SimpleChildren, SimpleXmlNode, XmlNode } from './xmlToJson';
 import { getOriginalSyncerInput } from './xmlUtils';
 
-// needed for RSS export
+// Needed for RSS export
 export const fieldNeedsCamelCase = ['collectionId', 'userId', 'notifyUserId'];
 /**
  * Apply the changes made to SimpleXmlNode onto the XmlNode
