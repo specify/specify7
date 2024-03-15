@@ -26,6 +26,7 @@ import {
   getOriginalSyncerInput,
   setOriginalSyncerInput,
 } from './xmlUtils';
+import { fieldNeedsCamelCase } from './fromSimpleXmlNode';
 
 type NodeWithContext<T> = {
   readonly node: T;
@@ -66,13 +67,20 @@ export const syncers = {
       },
       (rawValue = localized('')) => {
         const value = trim ? rawValue.trim() : rawValue;
+        const isAttributeNeedCamel = fieldNeedsCamelCase.includes(attribute);
         return {
           type: 'SimpleXmlNode',
           tagName: '',
-          attributes: {
-            [attribute.toLowerCase()]:
-              value === '' && mode !== 'empty' ? undefined : value,
-          },
+          attributes: isAttributeNeedCamel
+            ? {
+                [attribute]:
+                  value === '' && mode !== 'empty' ? undefined : value,
+              }
+            : {
+                [attribute.toLowerCase()]:
+                  value === '' && mode !== 'empty' ? undefined : value,
+              },
+
           text: undefined,
           children: {},
         };
@@ -675,7 +683,7 @@ export const syncers = {
         const typeFromRawType =
           ((typeMapper[rawType] ??
             typeMapper[
-              rawType.toString().toLowerCase()
+              rawType.toString()
             ]) as TYPE_MAPPER[keyof TYPE_MAPPER]) ?? ('Unknown' as const);
         /**
          * Let's say a->A, aa->A, b->B
