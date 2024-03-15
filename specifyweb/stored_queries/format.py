@@ -54,6 +54,13 @@ class ObjectFormatter(object):
         def lookup(attr: str, val: str) -> Optional[Element]:
             return self.formattersDom.find(
                 'format[@%s=%s]' % (attr, quoteattr(val)))
+        
+        def lookup_name(name: str) -> Optional[Element]:
+            elements = self.formattersDom.findall('format[@name=%s]' % quoteattr(name))
+            for element in elements:
+                if element.get('class') == specify_model.classname:
+                    return element
+            return None
 
         def getFormatterFromSchema() -> Element:
             try:
@@ -65,18 +72,11 @@ class ObjectFormatter(object):
             except Splocalecontainer.DoesNotExist:
                 return None
 
-            return formatter_name and lookup('name', formatter_name)
+            return formatter_name and lookup_name(formatter_name)
 
-        return (formatter_name and lookup('name', formatter_name)) \
+        return (formatter_name and lookup_name(formatter_name)) \
                or getFormatterFromSchema() \
                or lookup('class', specify_model.classname)
-
-    def getFormatterDefBasic(self, specify_model: Table, formatter_name) -> Optional[Element]:
-        elements = self.formattersDom.findall('format[@name=%s]' % quoteattr(formatter_name))
-        for element in elements:
-            if element.get('class') == specify_model.classname:
-                return element
-        return None
 
     def hasFormatterDef(self, specify_model: Table, formatter_name) -> bool:
         elements = self.formattersDom.findall('format[@name=%s]' % quoteattr(formatter_name))
