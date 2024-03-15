@@ -374,7 +374,7 @@ export function AutoComplete<T>({
   }, [currentValue]);
 
   return (
-    <Combobox
+    <Combobox<'div', AutoCompleteItem<T> | string | null | undefined>
       as="div"
       className="relative w-full"
       disabled={disabled}
@@ -389,7 +389,7 @@ export function AutoComplete<T>({
         else handleChanged(value);
       }}
     >
-      <Combobox.Input
+      <Combobox.Input<'input'>
         autoComplete="off"
         onChange={({ target }): void => {
           const value = (target as HTMLInputElement).value;
@@ -424,7 +424,7 @@ export function AutoComplete<T>({
        * of parents with overflow:hidden
        */}
       <Portal>
-        <Combobox.Options
+        <Combobox.Options<'ul'>
           className={`
             fixed z-[10000] max-h-[50vh] w-[inherit] cursor-pointer
             overflow-y-auto rounded rounded bg-white shadow-lg
@@ -433,7 +433,7 @@ export function AutoComplete<T>({
           ref={dataListRefCallback}
         >
           {isLoading && (
-            <Combobox.Option
+            <Combobox.Option<'li'>
               className={`${optionClassName(false, false)} cursor-auto`}
               disabled
               value=""
@@ -529,7 +529,7 @@ export function AutoComplete<T>({
             </Combobox.Option>
           )}
           {!listHasItems && (
-            <div className={`${optionClassName} cursor-auto`}>
+            <div className={`${optionClassName(false, false)} cursor-auto`}>
               {formsText.nothingFound()}
             </div>
           )}

@@ -3,12 +3,14 @@ import { requireContext } from '../../../tests/helpers';
 import { monthsPickListName } from '../../PickLists/definitions';
 import { formatUrl } from '../../Router/queryString';
 import { addMissingFields } from '../addMissingFields';
+import { formatRelationshipPath } from '../helpers';
+import { getResourceApiUrl } from '../resource';
+import { schema } from '../schema';
 import {
   fetchCollectionsForResource,
   getCollectionForResource,
-} from '../domain';
-import { getResourceApiUrl } from '../resource';
-import { schema } from '../schema';
+} from '../scoping';
+import { tables } from '../tables';
 
 requireContext();
 
@@ -22,13 +24,13 @@ overrideAjax(
 
 describe('getCollectionForResource', () => {
   test('Collection Object', () => {
-    const collectionObject = new schema.models.CollectionObject.Resource({
+    const collectionObject = new tables.CollectionObject.Resource({
       collectionMemberId: 2,
     });
     expect(getCollectionForResource(collectionObject)).toBe(2);
   });
   test('blank Collection Object', () => {
-    const collectionObject = new schema.models.CollectionObject.Resource();
+    const collectionObject = new tables.CollectionObject.Resource();
     /*
      * Prevent Collection object from being associated with current collection
      * automatically
@@ -37,7 +39,7 @@ describe('getCollectionForResource', () => {
     expect(getCollectionForResource(collectionObject)).toBeUndefined();
   });
   test('Locality from current discipline', () => {
-    const locality = new schema.models.Locality.Resource({
+    const locality = new tables.Locality.Resource({
       discipline: getResourceApiUrl(
         'Discipline',
         schema.domainLevelIds.discipline
@@ -48,7 +50,7 @@ describe('getCollectionForResource', () => {
     );
   });
   test('Locality from another discipline', () => {
-    const locality = new schema.models.Locality.Resource({
+    const locality = new tables.Locality.Resource({
       discipline: getResourceApiUrl(
         'Discipline',
         schema.domainLevelIds.discipline + 1
@@ -57,7 +59,7 @@ describe('getCollectionForResource', () => {
     expect(getCollectionForResource(locality)).toBeUndefined();
   });
   test('PickListItem', () => {
-    const pickListItem = new schema.models.PickListItem.Resource();
+    const pickListItem = new tables.PickListItem.Resource();
     expect(getCollectionForResource(pickListItem)).toBeUndefined();
   });
 });
@@ -71,7 +73,7 @@ describe('fetchCollectionsForResource', () => {
   overrideAjax(
     formatUrl('/api/specify/collection/', {
       limit: '0',
-      discipline__division: divisionId.toString(),
+      [formatRelationshipPath('discipline', 'division')]: divisionId.toString(),
     }),
     {
       meta: {
@@ -91,7 +93,7 @@ describe('fetchCollectionsForResource', () => {
   );
   test('ExchangeIn', async () => {
     expect(schema.domainLevelIds.division).not.toBe(divisionId);
-    const exchangeIn = new schema.models.ExchangeIn.Resource({
+    const exchangeIn = new tables.ExchangeIn.Resource({
       division: getResourceApiUrl('Division', divisionId),
     });
     await expect(fetchCollectionsForResource(exchangeIn)).resolves.toEqual([
@@ -111,14 +113,14 @@ describe('Resource initialization preferences', () => {
   });
 
   test('CO_CREATE_COA', () => {
-    const collectionObject = new schema.models.CollectionObject.Resource();
+    const collectionObject = new tables.CollectionObject.Resource();
     expect(collectionObject.get('collectionObjectAttribute')).toBe(
       '/api/specify/collectionobjectattribute/'
     );
   });
 
   test('CO_CREATE_PREP', async () => {
-    const collectionObject = new schema.models.CollectionObject.Resource();
+    const collectionObject = new tables.CollectionObject.Resource();
     await expect(
       collectionObject
         .rgetCollection('preparations')
@@ -127,7 +129,7 @@ describe('Resource initialization preferences', () => {
   });
 
   test('CO_CREATE_DET', async () => {
-    const collectionObject = new schema.models.CollectionObject.Resource();
+    const collectionObject = new tables.CollectionObject.Resource();
     await expect(
       collectionObject
         .rgetCollection('determinations')
@@ -138,7 +140,7 @@ describe('Resource initialization preferences', () => {
   test('Cloning resource does not create duplicates', async () => {
     // See Issue #3278
 
-    const collectionObject = new schema.models.CollectionObject.Resource(
+    const collectionObject = new tables.CollectionObject.Resource(
       addMissingFields('CollectionObject', {
         preparations: [
           {

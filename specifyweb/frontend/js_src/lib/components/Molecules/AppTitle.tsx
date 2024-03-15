@@ -6,8 +6,9 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { mainText } from '../../localization/main';
+import { localized } from '../../utils/types';
 import { userPreferences } from '../Preferences/userPreferences';
-import { UnloadProtectsContext } from '../Router/Router';
+import { UnloadProtectsContext } from '../Router/UnloadProtect';
 
 export function AppTitle({
   title,
@@ -16,12 +17,12 @@ export function AppTitle({
   readonly title: LocalizedString;
   readonly source?: 'form' | undefined;
 }): null {
-  const [updateTitle] = userPreferences.use(
+  const [updateFormTitle] = userPreferences.use(
     'form',
     'behavior',
     'updatePageTitle'
   );
-  useTitle(source !== 'form' && updateTitle ? title : undefined);
+  useTitle(source !== 'form' || updateFormTitle ? title : undefined);
   return null;
 }
 
@@ -38,10 +39,11 @@ export function useTitle(title: LocalizedString | undefined): void {
   // Change page's title
   React.useEffect(() => {
     if (title === undefined) return undefined;
-    titleStack.set(id.current, `${isBlocked ? '*' : ''}${title}`);
+    const ref = id.current;
+    titleStack.set(ref, localized(`${isBlocked ? '*' : ''}${title}`));
     refreshTitle();
     return (): void => {
-      titleStack.delete(id.current);
+      titleStack.delete(ref);
       refreshTitle();
     };
   }, [title, isBlocked]);

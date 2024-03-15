@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { commonText } from '../../localization/common';
 import { statsText } from '../../localization/stats';
@@ -112,7 +113,7 @@ export function Categories({
     | ((categoryIndex: number, itemIndex: number | undefined) => void)
     | undefined;
   readonly onCategoryRename:
-    | ((newName: string, categoryIndex: number) => void)
+    | ((newName: LocalizedString, categoryIndex: number) => void)
     | undefined;
   readonly onEdit:
     | ((categoryIndex: number, itemIndex: number, querySpec: QuerySpec) => void)
@@ -160,7 +161,7 @@ export function Categories({
                 checkEmptyItems ? (
                   <h5 className="font-semibold">{label}</h5>
                 ) : (
-                  <h3 className="overflow-auto rounded-t bg-brand-300 p-3 pt-[0.1rem] pb-[0.1rem] text-lg font-semibold text-white">
+                  <h3 className="bg-brand-300 overflow-auto rounded-t p-3 pb-[0.1rem] pt-[0.1rem] text-lg font-semibold text-white">
                     {label}
                   </h3>
                 )
@@ -269,7 +270,7 @@ export function Categories({
               {typeof handleAdd === 'function' ? (
                 <div className="flex gap-2">
                   <Button.Small
-                    variant={className.secondaryButton}
+                    variant={className.borderedGrayButton}
                     onClick={(): void =>
                       handleRemove?.(categoryIndex, undefined)
                     }

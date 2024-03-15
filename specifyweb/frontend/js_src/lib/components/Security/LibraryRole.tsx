@@ -5,10 +5,11 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
 import type { GetOrSet, IR } from '../../utils/types';
-import { defined } from '../../utils/types';
+import { defined, localized } from '../../utils/types';
 import { removeKey, replaceKey } from '../../utils/utils';
 import { LoadingContext } from '../Core/Contexts';
 import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import { LoadingScreen } from '../Molecules/Dialog';
 import { NotFoundView } from '../Router/NotFoundView';
 import { locationToState } from '../Router/RouterState';
@@ -33,7 +34,7 @@ export function SecurityLibraryRole(): JSX.Element {
     <RoleView
       closeUrl={closeUrl}
       collectionId={schema.domainLevelIds.collection}
-      parentName={institution.name ?? schema.models.Institution.label}
+      parentName={localized(institution.name) ?? tables.Institution.label}
       permissionName="/permissions/library/roles"
       role={role}
       roleUsers={undefined}
@@ -87,8 +88,8 @@ function useRole(
     } else
       return {
         id: undefined,
-        name: '',
-        description: '',
+        name: localized(''),
+        description: localized(''),
         policies: [],
       };
   }, [libraryRoles, roleId, role]);

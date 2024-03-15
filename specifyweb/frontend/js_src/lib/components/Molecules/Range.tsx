@@ -19,7 +19,7 @@ export function Range({
 }): JSX.Element {
   return (
     <div className="flex flex-wrap items-center gap-4">
-      <Input.Number
+      <Input.Integer
         aria-label={specifyNetworkText.startYear()}
         className="w-20"
         isReadOnly={isReadOnly}
@@ -40,7 +40,7 @@ export function Range({
           }
         />
       </div>
-      <Input.Number
+      <Input.Integer
         aria-label={specifyNetworkText.endYear()}
         className="w-20"
         isReadOnly={isReadOnly}
