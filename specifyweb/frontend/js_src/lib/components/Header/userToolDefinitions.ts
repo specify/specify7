@@ -102,7 +102,6 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
   [commonText.import()]: {
     coGeImport: {
       title: headerText.coGeImportDataset(),
-      enabled: () => true,
       url: '/specify/import/from-coge/',
       icon: icons.globe,
     },

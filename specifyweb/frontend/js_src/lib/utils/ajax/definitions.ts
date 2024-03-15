@@ -85,4 +85,6 @@ export const httpCodeToErrorMessage: RR<ValueOf<typeof Http>, string> = {
   [Http.INSUFFICIENT_STORAGE]: `
     This error likely happened because the server has run out of storage space.
   `,
+  [Http.UNPROCESSABLE]:
+    'This error is likely caused by a bug in Specify. Please report it.',
 };

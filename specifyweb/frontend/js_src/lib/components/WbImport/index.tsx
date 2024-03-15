@@ -18,7 +18,8 @@ import { Container, H2 } from '../Atoms';
 import { Input } from '../Atoms/Form';
 import { LoadingContext } from '../Core/Contexts';
 import { useMenuItem } from '../Header/MenuContext';
-import { CsvFilePreview, FilePicker, Layout } from '../Molecules/FilePicker';
+import { CsvFilePreview } from '../Molecules/CsvFilePicker';
+import { FilePicker, Layout } from '../Molecules/FilePicker';
 import {
   createDataSet,
   extractFileName,

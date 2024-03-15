@@ -11,14 +11,14 @@ import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { Submit } from '../Atoms/Submit';
+import { formatConjunction } from '../Atoms/Internationalization';
 import { LoadingContext } from '../Core/Contexts';
 import { tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
+import { CsvFilePicker } from '../Molecules/CsvFilePicker';
 import { Dialog } from '../Molecules/Dialog';
-import { CsvFilePicker } from '../Molecules/FilePicker';
 import { ProtectedTool } from '../Permissions/PermissionDenied';
 import { CreateRecordSet } from '../QueryBuilder/CreateRecordSet';
 import { downloadDataSet } from '../WorkBench/helpers';
@@ -112,7 +112,7 @@ export function ImportLocalitySet(): JSX.Element {
             <>
               <Button.DialogClose>{commonText.close()}</Button.DialogClose>
               {headerErrors.missingRequiredHeaders.length === 0 && (
-                <Submit.Save
+                <Button.Small
                   onClick={(): void =>
                     loading(
                       ajax<LocalityUploadResponse>(
@@ -130,7 +130,7 @@ export function ImportLocalitySet(): JSX.Element {
                   }
                 >
                   {commonText.import()}
-                </Submit.Save>
+                </Button.Small>
               )}
             </>
           }
@@ -151,17 +151,29 @@ export function ImportLocalitySet(): JSX.Element {
             {headerErrors.missingRequiredHeaders.length > 0 && (
               <>
                 <H2>{localityText.localityImportMissingHeader()}</H2>
-                <p>{headerErrors.missingRequiredHeaders.join(', ')}</p>
+                <p>
+                  {formatConjunction(
+                    headerErrors.missingRequiredHeaders as RA<LocalizedString>
+                  )}
+                </p>
               </>
             )}
             {headerErrors.unrecognizedHeaders.length > 0 && (
               <>
                 <H2>{localityText.localityImportUnrecognizedHeaders()}</H2>
-                <p>{headerErrors.unrecognizedHeaders.join(', ')}</p>
+                <p>
+                  {formatConjunction(
+                    headerErrors.unrecognizedHeaders as RA<LocalizedString>
+                  )}
+                </p>
               </>
             )}
             <H2>{localityText.localityImportedAcceptedHeaders()}</H2>
-            <p>{Array.from(acceptedHeaders).join(', ')}</p>
+            <p>
+              {formatConjunction(
+                Array.from(acceptedHeaders) as unknown as RA<LocalizedString>
+              )}
+            </p>
           </>
         </Dialog>
       )}
