@@ -79,6 +79,8 @@ class ObjectFormatter(object):
                or lookup('class', specify_model.classname)
 
     def hasFormatterDef(self, specify_model: Table, formatter_name) -> bool:
+        if formatter_name is None:
+            return False
         elements = self.formattersDom.findall('format[@name=%s]' % quoteattr(formatter_name))
         for element in elements:
             if element.get('class') == specify_model.classname:
