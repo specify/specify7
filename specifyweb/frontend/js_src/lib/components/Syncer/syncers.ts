@@ -683,7 +683,7 @@ export const syncers = {
         const typeFromRawType =
           ((typeMapper[rawType] ??
             typeMapper[
-              rawType.toString()
+              rawType.toString().toLowerCase()
             ]) as TYPE_MAPPER[keyof TYPE_MAPPER]) ?? ('Unknown' as const);
         /**
          * Let's say a->A, aa->A, b->B
