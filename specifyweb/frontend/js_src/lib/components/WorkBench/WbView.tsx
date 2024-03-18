@@ -63,6 +63,7 @@ import { WbToolkit } from './WbToolkit';
 import { getCache } from '../../utils/cache';
 import { WbAdvancedSearch } from './AdvancedSearch';
 import type { WbSearchPreferences } from './AdvancedSearch';
+import { RollbackConfirmation } from './Components';
 
 export type WbStatus = 'unupload' | 'upload' | 'validate';
 
@@ -126,6 +127,7 @@ export type HandlersObject = {
 function useWbViewHandlers() {
   const handlers = {
     toolkit: useBooleanState(),
+    unupload: useBooleanState(),
     devPlan: useBooleanState(),
     changeOwner: useBooleanState(),
     geoLocate: useBooleanState(),
@@ -168,7 +170,7 @@ export function WbViewReact({
     'general',
     'liveValidation'
   );
-  const { toolkit, ...toolkitOptions } = useWbViewHandlers();
+  const { toolkit, unupload, ...toolkitOptions } = useWbViewHandlers();
   const mappings = React.useMemo(
     (): WbMapping | undefined => parseWbMappings(dataset),
     [dataset]
@@ -250,8 +252,9 @@ export function WbViewReact({
           hasPermission('/workbench/dataset', 'unupload') && (
             <Button.Small
               aria-haspopup="dialog"
+              aria-pressed={unupload.show}
               className="wb-unupload"
-              onClick={f.never}
+              onClick={unupload.open}
             >
               {wbText.rollback()}
             </Button.Small>
@@ -298,6 +301,13 @@ export function WbViewReact({
           data={data}
           handleDatasetDelete={handleDatasetDelete}
         />
+      )}
+      {unupload.show && (
+        <RollbackConfirmation
+          dataSetId={dataset.id}
+          onClose={unupload.close}
+          onRollback={() => {}}
+      />
       )}
       <div className="flex flex-1 gap-4 overflow-hidden">
         <section className="wb-spreadsheet flex-1 overflow-hidden overscroll-none">
