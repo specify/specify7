@@ -459,4 +459,10 @@ export const treeText = createDictionary({
     'uk-ua': 'Синхронізувати',
     'ru-ru': 'Это приведет к безвозвратному удалению следующего ресурса',
   },
+  addNewRank: {
+    'en-us': 'Add New Rank',
+  },
+  newRankName: {
+    'en-us': 'New Rank Name',
+  },
 } as const);

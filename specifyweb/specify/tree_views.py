@@ -698,6 +698,7 @@ def delete_tree_rank(request, tree) -> HttpResponse:
     tree_def_item_model_name = (tree + 'treedefitem').lower().title()
     tree_def_model = getattr(spmodels, tree_def_model_name)
     tree_def_item_model = getattr(spmodels, tree_def_item_model_name)
+    tree_def = tree_def_model.objects.get(id=tree_id)
     tree_def = tree_def_model.objects.get(name=tree_name) if tree_name else tree_def_model.objects.get(id=tree_id)
 
     # Make sure no nodes are present in the rank before deleting rank
