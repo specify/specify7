@@ -488,7 +488,7 @@ def tree_edit(edit_func):
                                 "description": "Determine if the default rank IDs should be used (defaults to True)."
                             }
                         },
-                        'required': ['newRankName', 'parentRankName', 'treeName'],
+                        'required': ['newRankName', 'parentRankName'],
                         'additionalProperties': False
                     }
                 }
@@ -538,7 +538,11 @@ def add_tree_rank(request, tree) -> HttpResponse:
 
     # Determine the new rank id parameters
     new_rank_id = None
-    tree_def = tree_def_model.objects.get(name=tree_name) if tree_name else tree_def_model.objects.get(id=tree_id)
+    tree_def = tree_def_model.objects.get(id=tree_id)
+    try:
+        tree_def = tree_def_model.objects.get(name=tree_name)
+    except tree_def_model.DoesNotExist:
+        pass
     parent_rank = tree_def_item_model.objects.filter(treedef=tree_def, name=parent_rank_name).first()
     if parent_rank is None and parent_rank_name != 'root':
         return HttpResponseBadRequest('Target rank name does not exist')
@@ -665,7 +669,7 @@ def add_tree_rank(request, tree) -> HttpResponse:
                                 "description": "The ID of the tree."
                             }
                         },
-                        'required': ['rankName', 'treeName'],
+                        'required': ['rankName'],
                         'additionalProperties': False
                     }
                 }
@@ -707,7 +711,10 @@ def delete_tree_rank(request, tree) -> HttpResponse:
     tree_def_model = getattr(spmodels, tree_def_model_name)
     tree_def_item_model = getattr(spmodels, tree_def_item_model_name)
     tree_def = tree_def_model.objects.get(id=tree_id)
-    tree_def = tree_def_model.objects.get(name=tree_name) if tree_name else tree_def_model.objects.get(id=tree_id)
+    try:
+        tree_def = tree_def_model.objects.get(name=tree_name)
+    except tree_def_model.DoesNotExist:
+        pass
 
     # Make sure no nodes are present in the rank before deleting rank
     rank = tree_def_item_model.objects.get(name=rank_name)
