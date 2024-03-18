@@ -297,6 +297,11 @@ class AddDeleteRanksTest(ApiTests):
             self.assertEqual('3D', d3.fullname)
         if milky_way.fullname is not None:
             self.assertEqual('Milky Way', milky_way.fullname)
+            
+        # Test parents of child nodes
+        self.assertEqual(cfc.id, c137.parent.id)
+        self.assertEqual(c137.id, d3.parent.id)
+        self.assertEqual(d3.id, milky_way.parent.id)
 
 
     def test_add_ranks_with_defaults(self):
