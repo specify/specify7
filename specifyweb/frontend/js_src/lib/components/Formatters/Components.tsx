@@ -4,6 +4,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { usePromise } from '../../hooks/useAsyncState';
 import { useId } from '../../hooks/useId';
+import { headerText } from '../../localization/header';
 import { resourcesText } from '../../localization/resources';
 import { wbPlanText } from '../../localization/wbPlan';
 import { f } from '../../utils/functools';
@@ -40,7 +41,6 @@ import { getMappingLineData } from '../WbPlanView/navigator';
 import { navigatorSpecs } from '../WbPlanView/navigatorSpecs';
 import type { Aggregator, Formatter } from './spec';
 import type { FormatterTypesOutlet } from './Types';
-import { headerText } from '../../localization/header';
 
 export function FormattersPickList({
   table,
@@ -66,23 +66,21 @@ export function FormattersPickList({
   );
 
   return (
-    <>
-      <Select
-        value={value ?? ''}
-        onValueChange={handleChange}
-        disabled={isReadOnly}
-        id={id('list')}
-      >
-        <option disabled value="">
-          {`${headerText.choose()} ${resourcesText.formatter()}`}
+    <Select
+      disabled={isReadOnly}
+      id={id('list')}
+      value={value ?? ''}
+      onValueChange={handleChange}
+    >
+      <option disabled value="">
+        {`${headerText.choose()} ${resourcesText.formatter()}`}
+      </option>
+      {formatters.map((formatter, index) => (
+        <option key={index} value={formatter.name}>
+          {formatter.title ?? formatter.name}
         </option>
-        {formatters.map((formatter, index) => (
-          <option key={index} value={formatter.name}>
-            {formatter.title ?? formatter.name}
-          </option>
-        ))}
-      </Select>
-    </>
+      ))}
+    </Select>
   );
 }
 
