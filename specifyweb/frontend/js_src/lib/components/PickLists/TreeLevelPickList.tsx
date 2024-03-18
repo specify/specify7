@@ -113,6 +113,7 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
   return (
     <PickListComboBox
       {...props}
+      defaultValue={props.defaultValue ?? items?.slice(-1)[0]?.value}
       isDisabled={
         props.isDisabled ||
         props.resource === undefined ||
@@ -123,11 +124,10 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
         props.resource?.specifyTable.getRelationship('definitionItem')
           ?.isRequired ?? true
       }
-      defaultValue={props.defaultValue ?? items?.slice(-1)[0]?.value}
+      onAdd={undefined}
       items={items ?? []}
       // Select next enforced rank by default
       pickList={undefined}
-      onAdd={undefined}
     />
   );
 }
