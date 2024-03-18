@@ -62,7 +62,8 @@ export function useResourcePreview(table: SpecifyTable): {
         // Setting width prevents dialog resizing when output is loaded
         className="flex flex-col gap-2"
       >
-        {resourcesText.preview()}
+        <span className="font-bold">{resourcesText.preview()}</span>
+        {resourcesText.previewExplainer()}
         <div>
           <Button.Secondary onClick={handleOpen}>
             {commonText.search()}

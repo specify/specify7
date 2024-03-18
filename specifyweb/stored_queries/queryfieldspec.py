@@ -1,7 +1,6 @@
 import logging
 import re
 from collections import namedtuple, deque
-from typing import Tuple
 
 from sqlalchemy import sql
 

@@ -81,6 +81,7 @@ export type CacheDefinitions = {
     readonly /** Open nodes in a given tree */
     [key in `conformations${AnyTree['tableName']}`]: Conformations;
   } & {
+    readonly hideEmptyNodes: boolean;
     readonly isSplit: boolean;
     readonly isHorizontal: boolean;
   };

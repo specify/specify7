@@ -87,11 +87,11 @@ export function MergeContainer({
           grid-table
           grid-cols-[auto,repeat(var(--columns),minmax(15rem,1fr))]
           overflow-auto
-          [&_:is(th,td)]:p-1
           [&_:is(td,th):nth-child(2)]:mr-1
           [&_:is(td,th):nth-child(2)]:border-r
           [&_:is(td,th):nth-child(2)]:border-gray-500
           [&_:is(td,th):nth-child(2)]:pr-2
+          [&_:is(th,td)]:p-1
         `}
         style={
           {
