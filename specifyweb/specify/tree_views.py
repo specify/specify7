@@ -471,6 +471,10 @@ def tree_edit(edit_func):
                                 "type": "string",
                                 "description": "The name of the parent rank to add the new rank to (use 'root' to add to the front)."
                             },
+                            "treeName": {
+                                "type": "string",
+                                "description": "The name of tree."
+                            },
                             "treeID": {
                                 "type": "integer",
                                 "description": "The ID of the tree (defaults to the first tree)."
@@ -484,7 +488,7 @@ def tree_edit(edit_func):
                                 "description": "Determine if the default rank IDs should be used (defaults to True)."
                             }
                         },
-                        'required': ['newRankName', 'parentRankName'],
+                        'required': ['newRankName', 'parentRankName', 'treeName'],
                         'additionalProperties': False
                     }
                 }
@@ -514,7 +518,7 @@ def add_tree_rank(request, tree) -> HttpResponse:
     new_rank_name = data.get('newRankName')
     parent_rank_name = data.get('parentRankName')
     tree_id = data.get('treeID', 1)
-    tree_name = data.get('name')
+    tree_name = data.get('treeName')
     new_rank_title = data.get('newRankTitle', new_rank_name)
     use_default_rank_ids = data.get('useDefaultRankIDs', True)
 
@@ -652,12 +656,16 @@ def add_tree_rank(request, tree) -> HttpResponse:
                                 "type": "string",
                                 "description": "The name of the rank to delete."
                             },
+                            "treeName": {
+                                "type": "string",
+                                "description": "The name of tree."
+                            },
                             "treeID": {
                                 "type": "integer",
                                 "description": "The ID of the tree."
                             }
                         },
-                        'required': ['rankName', 'treeID'],
+                        'required': ['rankName', 'treeName'],
                         'additionalProperties': False
                     }
                 }
@@ -685,7 +693,7 @@ def delete_tree_rank(request, tree) -> HttpResponse:
     data = json.loads(request.body)
     rank_name = data.get('rankName')
     tree_id = data.get('treeID', 1)
-    tree_name = data.get('name')
+    tree_name = data.get('treeName')
     
     # Throw exceptions if the required parameters are not given correctly
     if rank_name is None:
