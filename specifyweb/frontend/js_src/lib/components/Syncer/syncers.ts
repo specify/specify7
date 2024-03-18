@@ -67,20 +67,13 @@ export const syncers = {
       },
       (rawValue = localized('')) => {
         const value = trim ? rawValue.trim() : rawValue;
-        const isAttributeNeedCamel = fieldNeedsCamelCase.includes(attribute);
         return {
           type: 'SimpleXmlNode',
           tagName: '',
-          attributes: isAttributeNeedCamel
-            ? {
-                [attribute]:
-                  value === '' && mode !== 'empty' ? undefined : value,
-              }
-            : {
-                [attribute.toLowerCase()]:
-                  value === '' && mode !== 'empty' ? undefined : value,
-              },
-
+          attributes: {
+            [attribute.toLowerCase()]:
+              value === '' && mode !== 'empty' ? undefined : value,
+          },
           text: undefined,
           children: {},
         };

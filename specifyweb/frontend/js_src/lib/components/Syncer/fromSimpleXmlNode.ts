@@ -5,8 +5,6 @@ import { formatXmlNode } from './formatXmlNode';
 import type { SimpleChildren, SimpleXmlNode, XmlNode } from './xmlToJson';
 import { getOriginalSyncerInput } from './xmlUtils';
 
-// Needed for RSS export
-export const fieldNeedsCamelCase = ['collectionId', 'userId', 'notifyUserId'];
 /**
  * Apply the changes made to SimpleXmlNode onto the XmlNode
  * (of if XmlNode is undefined, convert SimpleXmlNode to XmlNode)
@@ -43,12 +41,7 @@ const fromSimpleNode = (
         if (key in updated.attributes && updated.attributes[key] === undefined)
           return undefined;
         const value = updated.attributes[key] ?? old?.attributes[key];
-        const isKeyNeedsCamel = fieldNeedsCamelCase.includes(key);
-        return value === undefined
-          ? undefined
-          : isKeyNeedsCamel
-          ? [key, value]
-          : [key.toLocaleLowerCase(), value];
+        return value === undefined ? undefined : [key.toLowerCase(), value];
       })
     )
   ),
