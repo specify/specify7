@@ -18,6 +18,9 @@ import type { Dataset } from '../WbPlanView/Wrapped';
 import { downloadDataSet } from './helpers';
 import type { WbMapping } from './mapping';
 import type { HandlersObject } from './WbView';
+import type { UploadPlan } from '../WbPlanView/uploadPlanParser';
+import { DevShowPlan } from './DevShowPlan';
+import { overwriteReadOnly } from '../../utils/types';
 
 export function WbToolkit({
   dataset,
@@ -25,12 +28,14 @@ export function WbToolkit({
   toolkitOptions,
   mappings,
   data,
+  handleDatasetDelete,
 }: {
   readonly dataset: Dataset;
   readonly hotRef: any;
   readonly toolkitOptions: HandlersObject;
   readonly mappings: WbMapping;
   readonly data: RA<RA<string | null>>;
+  handleDatasetDelete: () => void;
 }): JSX.Element {
   const hot = hotRef.current.hotInstance;
 
@@ -76,14 +81,24 @@ export function WbToolkit({
     >
       {hasPermission('/workbench/dataset', 'transfer') &&
       hasTablePermission('SpecifyUser', 'read') ? (
-        <Button.Small
-          aria-haspopup="dialog"
-          aria-pressed={toolkitOptions.changeOwner.show}
-          className="wb-change-data-set-owner"
-          onClick={toolkitOptions.changeOwner.open}
-        >
-          {wbText.changeOwner()}
-        </Button.Small>
+        <>
+          <Button.Small
+            aria-haspopup="dialog"
+            aria-pressed={toolkitOptions.changeOwner.show}
+            className="wb-change-data-set-owner"
+            onClick={toolkitOptions.changeOwner.open}
+          >
+            {wbText.changeOwner()}
+          </Button.Small>
+          <Button.Small
+            aria-haspopup="dialog"
+            aria-pressed={toolkitOptions.devPlan.show}
+            className="wb-show-plan"
+            onClick={toolkitOptions.devPlan.open}
+          >
+            {wbText.uploadPlan()}
+          </Button.Small>
+        </>
       ) : undefined}
       <Button.Small className="wb-export-data-set" onClick={handleExport}>
         {commonText.export()}
@@ -127,6 +142,20 @@ export function WbToolkit({
         <ChangeOwner
           dataset={dataset}
           onClose={toolkitOptions.changeOwner.close}
+        />
+      )}
+      {toolkitOptions.devPlan.show && (
+        <DevShowPlan
+          dataSetId={dataset.id}
+          dataSetName={dataset.name}
+          uploadPlan={dataset.uploadplan ?? ({} as UploadPlan)}
+          onChanged={(plan) => {
+            overwriteReadOnly(dataset, 'uploadplan', plan);
+            // TODO: figure out this trigger
+            // trigger('refresh');
+          }}
+          onClose={toolkitOptions.devPlan.close}
+          onDeleted={handleDatasetDelete}
         />
       )}
       {toolkitOptions.coordinatesConversion.show && (

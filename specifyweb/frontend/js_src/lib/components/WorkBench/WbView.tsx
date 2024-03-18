@@ -165,7 +165,7 @@ export function WbViewReact({
     'general',
     'liveValidation'
   );
-  const { toolkit, devPlan, ...toolkitOptions } = useWbViewHandlers();
+  const { toolkit, ...toolkitOptions } = useWbViewHandlers();
   const mappings = React.useMemo(
     (): WbMapping | undefined => parseWbMappings(dataset),
     [dataset]
@@ -196,16 +196,6 @@ export function WbViewReact({
           {commonText.tools()}
         </Button.Small>
         <span className="-ml-1 flex-1" />
-        {/* This button is here for debugging only */}
-        <Button.Small
-          className={`
-            wb-show-plan
-            ${process.env.NODE_ENV === 'development' ? '' : 'hidden'}
-          `}
-          onClick={devPlan.open}
-        >
-          [DEV] Show Plan
-        </Button.Small>
         {canUpdate || isMapped ? (
           <Link.Small href={`/specify/workbench/plan/${dataset.id}/`}>
             {wbPlanText.dataMapper()}
@@ -286,19 +276,7 @@ export function WbViewReact({
           toolkitOptions={toolkitOptions}
           mappings={mappings as WbMapping}
           data={data}
-        />
-      )}
-      {devPlan.show && (
-        <DevShowPlan
-          dataSetId={dataset.id}
-          uploadPlan={dataset.uploadplan ?? ({} as UploadPlan)}
-          onChanged={(plan) => {
-            overwriteReadOnly(dataset, 'uploadplan', plan);
-            // TODO: figure out this trigger
-            // trigger('refresh');
-          }}
-          onClose={devPlan.close}
-          onDeleted={handleDatasetDelete}
+          handleDatasetDelete={handleDatasetDelete}
         />
       )}
       <div className="flex flex-1 gap-4 overflow-hidden">
