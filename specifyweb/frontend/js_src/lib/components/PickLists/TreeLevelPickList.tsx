@@ -123,6 +123,7 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
         props.resource?.specifyTable.getRelationship('definitionItem')
           ?.isRequired ?? true
       }
+      defaultValue={props.defaultValue ?? items?.slice(-1)[0]?.value}
       items={items ?? []}
       // Select next enforced rank by default
       pickList={undefined}
