@@ -11,7 +11,7 @@ import type { GetSet, IR, RA } from '../../utils/types';
 import { filterArray, localized } from '../../utils/types';
 import { multiSortFunction, sortFunction } from '../../utils/utils';
 import { Ul } from '../Atoms';
-import { Input } from '../Atoms/Form';
+import { Input, Select } from '../Atoms/Form';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
@@ -40,6 +40,7 @@ import { getMappingLineData } from '../WbPlanView/navigator';
 import { navigatorSpecs } from '../WbPlanView/navigatorSpecs';
 import type { Aggregator, Formatter } from './spec';
 import type { FormatterTypesOutlet } from './Types';
+import { headerText } from '../../localization/header';
 
 export function FormattersPickList({
   table,
@@ -66,21 +67,21 @@ export function FormattersPickList({
 
   return (
     <>
-      <Input.Text
-        isReadOnly={isReadOnly}
-        list={id('list')}
-        placeholder={resourcesText.defaultInline()}
-        step={1}
+      <Select
         value={value ?? ''}
         onValueChange={handleChange}
-      />
-      <datalist id={id('list')}>
+        disabled={isReadOnly}
+        id={id('list')}
+      >
+        <option disabled value="">
+          {`${headerText.choose()} ${resourcesText.formatter()}`}
+        </option>
         {formatters.map((formatter, index) => (
           <option key={index} value={formatter.name}>
             {formatter.title ?? formatter.name}
           </option>
         ))}
-      </datalist>
+      </Select>
     </>
   );
 }
