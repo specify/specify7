@@ -6,14 +6,12 @@
 import React from 'react';
 
 import { useResource } from '../../hooks/resource';
-import { useAsyncState } from '../../hooks/useAsyncState';
 import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
 import { formData } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
-import { fetchCollection } from '../DataModel/collection';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Collection, SpecifyUser } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
