@@ -212,6 +212,14 @@ function TreeView<SCHEMA extends AnyTree>({
         setLastFocusedTree={() => setLastFocusedTree(type)}
         tableName={tableName}
         treeDefinitionItems={treeDefinitionItems}
+        onRefresh={(): void => {
+          // Force re-load
+          setRows(undefined);
+          globalThis.setTimeout(() => {
+            setLastFocusedRow(undefined);
+            setRows(rows);
+          }, 0);
+        }}
       />
     );
 
