@@ -15,33 +15,27 @@ import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import type { SpecifyUser } from '../DataModel/types';
+import type { Collection, SpecifyUser } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { hasPermission } from '../Permissions/helpers';
+import { SerializedResource } from '../DataModel/helperTypes';
+import { RA } from '../../utils/types';
 
 export function AdminStatusPlugin({
   user: resource,
   isAdmin,
   onChange: handleChange,
+  collections,
 }: {
   readonly user: SpecifyResource<SpecifyUser>;
   readonly isAdmin: boolean;
   readonly onChange: (isAdmin: boolean) => void;
+  readonly collections: RA<SerializedResource<Collection>>;
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const [user] = useResource(resource);
   const isCurrentUser = userInformation.id === user.id;
-  const [allCollections] = useAsyncState(
-    React.useCallback(
-      async () =>
-        fetchCollection('Collection', { limit: 0, domainFilter: false }).then(
-          ({ records }) => records
-        ),
-      []
-    ),
-    true
-  );
-  const allCollectionIds = allCollections?.map((collection) => collection.id);
+  const allCollectionIds = collections?.map((collection) => collection.id);
   return (
     <Button.Small
       className="w-fit"
