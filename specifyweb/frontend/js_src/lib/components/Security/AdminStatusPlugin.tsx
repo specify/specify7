@@ -10,14 +10,14 @@ import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
 import { formData } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
+import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
+import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Collection, SpecifyUser } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { hasPermission } from '../Permissions/helpers';
-import { SerializedResource } from '../DataModel/helperTypes';
-import { RA } from '../../utils/types';
 
 export function AdminStatusPlugin({
   user: resource,
