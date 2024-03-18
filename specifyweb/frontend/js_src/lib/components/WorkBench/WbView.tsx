@@ -60,6 +60,9 @@ import { DataSetName } from './DataSetMeta';
 import { WbSpreadsheet } from './WbSpreadsheet';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { WbToolkit } from './WbToolkit';
+import { getCache } from '../../utils/cache';
+import { WbAdvancedSearch } from './AdvancedSearch';
+import type { WbSearchPreferences } from './AdvancedSearch';
 
 export type WbStatus = 'unupload' | 'upload' | 'validate';
 
@@ -171,6 +174,23 @@ export function WbViewReact({
     [dataset]
   );
   const hot = hotRef.current ? hotRef.current.hotInstance : undefined;
+  const defaultSearchPreferences: WbSearchPreferences = {
+    navigation: {
+      direction: 'columnFirst',
+    },
+    search: {
+      fullMatch: true,
+      caseSensitive: true,
+      useRegex: false,
+      liveUpdate: true,
+    },
+    replace: {
+      replaceMode: 'replaceAll',
+    },
+  };
+  let searchPreferences =
+    getCache('workbench', 'searchProperties') ?? defaultSearchPreferences;
+  const initialNavigationDirection = searchPreferences.navigation.direction;
   return (
     <>
       <div
@@ -318,7 +338,26 @@ export function WbViewReact({
               />
             </div>
           ) : undefined}
-          <span className="wb-advanced-search-wrapper" />
+          <span className="wb-advanced-search-wrapper">
+            <WbAdvancedSearch
+              initialSearchPreferences={searchPreferences}
+              onChange={(newSearchPreferences) => {
+                // searchPreferences = newSearchPreferences;
+                // if (
+                //   searchPreferences.navigation.direction !==
+                //   initialNavigationDirection
+                // ) {
+                //   this.wbView.cells.flushIndexedCellData = true;
+                //   initialNavigationDirection =
+                //     searchPreferences.navigation.direction;
+                // }
+                // if (searchPreferences.search.liveUpdate)
+                //   this.searchCells({
+                //     key: 'SettingsChange',
+                //   }).catch(softFail);
+              }}
+            />
+          </span>
         </span>
         <Navigation label={wbText.searchResults()} name="searchResults" />
         {!isUploaded && hasPermission('/workbench/dataset', 'update') ? (
