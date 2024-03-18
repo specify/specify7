@@ -166,7 +166,7 @@ export function QueryLine({
         canOpenMap = fieldName === 'latitude1' || fieldName === 'longitude1';
       } else if (isMapped)
         fieldType =
-          isFormatted && mappingPath.at(-1) === '#1'
+          isFormatted && mappingPath.at(-1) === `${schema.referenceSymbol}1`
             ? 'aggregator'
             : 'formatter';
 
