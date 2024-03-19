@@ -66,12 +66,21 @@ export function WorkBenchReact(): JSX.Element | null {
   const loading = React.useContext(LoadingContext);
   const [isDeleted, handleDeleted] = useBooleanState();
   const [isDeletedConfirmation, handleDeletedConfirmation] = useBooleanState();
+  const [refresh, setRefresh] = React.useState<number>(0);
 
   const navigate = useNavigate();
   const hotRef = React.useRef(null);
 
   // temporary null check, replace with loading screen?
-  if (!dataSet) return null;
+  if (!dataSet || !treeRanksLoaded) return null;
+
+  const triggerRefresh = () => {
+    setRefresh((previous) => previous + 1);
+  }
+
+  React.useEffect(() => {
+    loading(fetchDataSet(dataSet!.id).then(setDataSet));
+  }, [refresh]);
 
   return dataSetId === undefined ? (
     <NotFoundView />
@@ -92,9 +101,8 @@ export function WorkBenchReact(): JSX.Element | null {
           <WbViewReact
             dataset={dataSet}
             hotRef={hotRef}
-            // isMapped={isMapped}
-            // isUploaded={isUploaded}
             handleDatasetDelete={handleDeleted}
+            triggerRefresh={triggerRefresh}
           />
         </section>
       </div>

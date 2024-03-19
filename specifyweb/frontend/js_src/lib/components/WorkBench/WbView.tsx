@@ -156,10 +156,12 @@ export function WbViewReact({
   dataset,
   hotRef,
   handleDatasetDelete,
+  triggerRefresh
 }: {
   readonly dataset: Dataset;
   readonly hotRef: any;
-  handleDatasetDelete: () => void;
+  readonly handleDatasetDelete: () => void;
+  readonly triggerRefresh: () => void;
 }): JSX.Element {
   const data = React.useMemo<RA<RA<string | null>>>(
     () =>
