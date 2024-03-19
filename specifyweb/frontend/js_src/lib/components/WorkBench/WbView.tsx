@@ -66,6 +66,8 @@ import type { WbSearchPreferences } from './AdvancedSearch';
 import { RollbackConfirmation } from './Components';
 import { WbStatus as WbStatusComponent } from './Status';
 import type { Status } from '../WbPlanView/Wrapped';
+import { loadingBar } from '../Molecules';
+import { CreateRecordSetButton } from './RecordSet';
 
 export type WbStatus = 'unupload' | 'upload' | 'validate';
 
@@ -135,6 +137,10 @@ function useWbViewHandlers() {
     noUploadPlan: useBooleanState(),
     unupload: useBooleanState(),
     statusComponent: useBooleanState(),
+    revertChanges: useBooleanState(),
+    saveProgressBar: useBooleanState(),
+    operationCompleted: useBooleanState(),
+    operationAborted: useBooleanState(),
     devPlan: useBooleanState(),
     changeOwner: useBooleanState(),
     geoLocate: useBooleanState(),
@@ -156,7 +162,7 @@ export function WbViewReact({
   dataset,
   hotRef,
   handleDatasetDelete,
-  triggerRefresh
+  triggerRefresh,
 }: {
   readonly dataset: Dataset;
   readonly hotRef: any;
@@ -185,6 +191,10 @@ export function WbViewReact({
     noUploadPlan,
     unupload,
     statusComponent,
+    revertChanges,
+    saveProgressBar,
+    operationCompleted,
+    operationAborted,
     ...toolkitOptions
   } = useWbViewHandlers();
   const mappings = React.useMemo(
@@ -213,17 +223,26 @@ export function WbViewReact({
     if (statusCode === Http.NOT_FOUND) handleDatasetDelete();
     return statusCode === Http.NOT_FOUND;
   };
+  const mode = React.useRef<WbStatus | undefined>(undefined);
+  const refreshInitiatorAborted = React.useRef<boolean>(false);
+
   const actionsRef = React.useRef<WbActionsReact>(
     new WbActionsReact(
+      data,
       dataset,
       mappings as WbMapping,
       noUploadPlan,
       upload,
       statusComponent,
-      checkDeletedFail
+      checkDeletedFail,
+      triggerRefresh,
+      saveProgressBar,
+      mode,
+      refreshInitiatorAborted,
+      operationCompleted,
+      operationAborted
     )
   );
-  const [mode, setMode] = React.useState<WbStatus | undefined>(undefined);
   React.useEffect(() => {
     if (
       !isUploaded &&
@@ -275,6 +294,12 @@ export function WbViewReact({
               aria-haspopup="dialog"
               className="wb-validate"
               onClick={undefined}
+              disabled={actionsRef.current.hasUnSavedChanges}
+              title={
+                actionsRef.current.hasUnSavedChanges
+                  ? wbText.unavailableWhileEditing()
+                  : ''
+              }
             >
               {wbText.validate()}
             </Button.Small>
@@ -283,7 +308,12 @@ export function WbViewReact({
         <Button.Small
           aria-haspopup="tree"
           className="wb-show-upload-view"
-          title={wbText.wbUploadedUnavailable()}
+          disabled={actionsRef.current.hasUnSavedChanges}
+          title={
+            actionsRef.current.hasUnSavedChanges
+              ? wbText.wbUploadedUnavailable()
+              : ''
+          }
           onClick={undefined}
         >
           {commonText.results()}
@@ -306,10 +336,15 @@ export function WbViewReact({
                 aria-haspopup="dialog"
                 className="wb-upload"
                 onClick={() => {
-                  const mode = 'upload';
-                  setMode(mode);
-                  actionsRef.current.upload(mode);
+                  mode.current = 'upload';
+                  actionsRef.current.upload(mode.current);
                 }}
+                disabled={actionsRef.current.hasUnSavedChanges}
+                title={
+                  actionsRef.current.hasUnSavedChanges
+                    ? wbText.unavailableWhileEditing()
+                    : ''
+                }
               >
                 {wbText.upload()}
               </Button.Small>
@@ -319,7 +354,8 @@ export function WbViewReact({
                 <Button.Small
                   aria-haspopup="dialog"
                   className="wb-revert"
-                  onClick={undefined}
+                  onClick={revertChanges.open}
+                  disabled={!actionsRef.current.hasUnSavedChanges}
                 >
                   {wbText.revert()}
                 </Button.Small>
@@ -328,6 +364,7 @@ export function WbViewReact({
                   className="wb-save"
                   variant={className.saveButton}
                   onClick={undefined}
+                  disabled={!actionsRef.current.hasUnSavedChanges}
                 >
                   {commonText.save()}
                 </Button.Small>
@@ -344,23 +381,24 @@ export function WbViewReact({
           mappings={mappings as WbMapping}
           data={data}
           handleDatasetDelete={handleDatasetDelete}
+          actions={actionsRef.current}
         />
       )}
       {unupload.show && (
         <RollbackConfirmation
           dataSetId={dataset.id}
           onClose={unupload.close}
-          onRollback={() => {}}
+          onRollback={() => actionsRef.current.openStatus('unupload')}
         />
       )}
-      {mode === 'upload' && upload.show && (
+      {mode.current === 'upload' && upload.show && (
         <Dialog
           buttons={
             <>
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
               <Button.Info
                 onClick={(): void => {
-                  actionsRef.current.startUpload(mode);
+                  actionsRef.current.startUpload(mode.current as WbStatus);
                   upload.close();
                 }}
               >
@@ -390,7 +428,7 @@ export function WbViewReact({
           {wbPlanText.noUploadPlanDescription()}
         </Dialog>
       )}
-      {mode && statusComponent.show && (
+      {mode.current && statusComponent.show && (
         <WbStatusComponent
           dataset={{
             ...dataset,
@@ -403,7 +441,7 @@ export function WbViewReact({
                     validate: 'validating',
                     upload: 'uploading',
                     unupload: 'unuploading',
-                  }[mode],
+                  }[mode.current],
                   taskid: '',
                 } as const),
               taskstatus: 'PENDING',
@@ -411,11 +449,79 @@ export function WbViewReact({
             } as Status,
           }}
           onFinished={(wasAborted): void => {
-            console.log('Aborted:', wasAborted);
+            refreshInitiatorAborted.current = wasAborted;
             statusComponent.close();
-            // this.wbView.trigger('refresh', mode, wasAborted);
+            triggerRefresh();
           }}
         />
+      )}
+      {revertChanges.show && (
+        <Dialog
+          buttons={
+            <>
+              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+              <Button.Danger onClick={triggerRefresh}>
+                {wbText.revert()}
+              </Button.Danger>
+            </>
+          }
+          header={wbText.revertChanges()}
+          onClose={revertChanges.close}
+        >
+          {wbText.revertChangesDescription()}
+        </Dialog>
+      )}
+      {saveProgressBar.show && (
+        <Dialog
+          buttons={undefined}
+          header={wbText.saving()}
+          onClose={saveProgressBar.close}
+        >
+          {loadingBar}
+        </Dialog>
+      )}
+      {operationCompleted.show && (
+        <Dialog
+          buttons={
+            <>
+              {
+                /* cellCounts.invalidCells === 0 && */
+                mode.current === 'upload' && (
+                  <CreateRecordSetButton
+                    dataSetId={dataset.id}
+                    dataSetName={dataset.name}
+                    small={false}
+                    onClose={operationCompleted.close}
+                  />
+                )
+              }
+              <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+            </>
+          }
+          // header={messages[this.wbView.refreshInitiatedBy].header}
+          onClose={operationCompleted.close}
+        >
+          {/* {messages[this.wbView.refreshInitiatedBy].message} */}
+        </Dialog>
+      )}
+      {operationAborted.show && (
+        <Dialog
+          buttons={commonText.close()}
+          header={
+            mode.current === 'validate'
+              ? wbText.validationCanceled()
+              : mode.current === 'unupload'
+              ? wbText.rollbackCanceled()
+              : wbText.uploadCanceled()
+          }
+          onClose={operationAborted.close}
+        >
+          {mode.current === 'validate'
+            ? wbText.validationCanceledDescription()
+            : mode.current === 'unupload'
+            ? wbText.rollbackCanceledDescription()
+            : wbText.uploadCanceledDescription()}
+        </Dialog>
       )}
       <div className="flex flex-1 gap-4 overflow-hidden">
         <section className="wb-spreadsheet flex-1 overflow-hidden overscroll-none">

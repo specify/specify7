@@ -66,7 +66,6 @@ export function WorkBenchReact(): JSX.Element | null {
   const loading = React.useContext(LoadingContext);
   const [isDeleted, handleDeleted] = useBooleanState();
   const [isDeletedConfirmation, handleDeletedConfirmation] = useBooleanState();
-  const [refresh, setRefresh] = React.useState<number>(0);
 
   const navigate = useNavigate();
   const hotRef = React.useRef(null);
@@ -75,12 +74,8 @@ export function WorkBenchReact(): JSX.Element | null {
   if (!dataSet || !treeRanksLoaded) return null;
 
   const triggerRefresh = () => {
-    setRefresh((previous) => previous + 1);
-  }
-
-  React.useEffect(() => {
     loading(fetchDataSet(dataSet!.id).then(setDataSet));
-  }, [refresh]);
+  }
 
   return dataSetId === undefined ? (
     <NotFoundView />

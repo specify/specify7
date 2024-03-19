@@ -15,7 +15,186 @@ import type { WbCellCounts } from './CellMeta';
 import { RollbackConfirmation } from './Components';
 import { CreateRecordSetButton } from './RecordSet';
 import { WbStatus as WbStatusComponent } from './Status';
-import type { WbStatus, WbView } from './WbView';
+import type { DialogHandlers, WbStatus, WbView } from './WbView';
+import type { Dataset } from '../WbPlanView/Wrapped';
+import type { WbMapping } from './mapping';
+import type { RA } from '../../utils/types';
+
+/* eslint-disable functional/no-this-expression */
+export class WbActionsReact {
+  // eslint-disable-next-line functional/prefer-readonly-type
+  public hasUnSavedChanges: boolean = false;
+
+  public constructor(
+    private readonly data: RA<RA<string | null>>,
+    private readonly dataset: Dataset,
+    private readonly mappings: WbMapping,
+    private readonly noUploadPlan: DialogHandlers,
+    private readonly uploadDialog: DialogHandlers,
+    private readonly statusComponent: DialogHandlers,
+    private readonly checkDeletedFail: (statusCode: number) => boolean,
+    private readonly triggerRefresh: () => void,
+    private readonly saveProgressBar: DialogHandlers,
+    private refreshInitiatedBy: React.MutableRefObject<WbStatus | undefined>,
+    private refreshInitiatorAborted: React.MutableRefObject<boolean>,
+    private readonly operationCompleted: DialogHandlers,
+    private readonly operationAborted: DialogHandlers
+  ) {}
+
+  // BUG: disable the button if there is nothing to upload
+  upload(mode: WbStatus): void {
+    if ((this.mappings?.lines ?? []).length > 0) {
+      if (mode === 'upload') {
+        this.uploadDialog.open();
+      } else this.startUpload(mode);
+    } else {
+      this.noUploadPlan.open();
+    }
+  }
+
+  startUpload(mode: WbStatus): void {
+    // this.wbView.validation.stopLiveValidation();
+    // this.wbView.validation.updateValidationButton();
+    ping(`/api/workbench/${mode}/${this.dataset.id}/`, {
+      method: 'POST',
+      expectedErrors: [Http.CONFLICT],
+    })
+      .then((statusCode): void => {
+        this.checkDeletedFail(statusCode);
+        this.checkConflictFail(statusCode);
+      })
+      .then(() => this.openStatus(mode));
+  }
+
+  openStatus(mode: WbStatus): void {
+    this.refreshInitiatedBy.current = mode;
+    this.statusComponent.open();
+  }
+
+  async save() {
+    // Clear validation
+    overwriteReadOnly(this.dataset, 'rowresults', null);
+    // this.wbView.validation.stopLiveValidation();
+    // this.wbView.validation.updateValidationButton();
+
+    // Show saving progress bar
+    this.saveProgressBar.open();
+
+    // Send data
+    return ping(`/api/workbench/rows/${this.dataset.id}/`, {
+      method: 'PUT',
+      body: this.data,
+      expectedErrors: [Http.NO_CONTENT, Http.NOT_FOUND],
+    })
+      .then((status) => this.checkDeletedFail(status))
+      .then(() => {
+        this.spreadSheetUpToDate();
+        // this.wbView.cells.cellMeta = [];
+        // this.wbView.wbUtils.searchCells({ key: 'SettingsChange' });
+        // this.wbView.hot?.render();
+      })
+      .finally(this.saveProgressBar.close);
+  }
+
+  // Check if AJAX failed because Data Set was modified by other session
+  checkConflictFail(statusCode: number): boolean {
+    if (statusCode === Http.CONFLICT)
+      /*
+       * Upload/Validation/Un-Upload has been initialized by another session
+       * Need to reload the page to display the new state
+       */
+      this.triggerRefresh();
+    return statusCode === Http.CONFLICT;
+  }
+
+  spreadSheetUpToDate(): void {
+    if (!this.hasUnSavedChanges) return;
+    this.hasUnSavedChanges = false;
+  }
+
+  public operationCompletedMessage(cellCounts: WbCellCounts) {
+    if (this.refreshInitiatedBy.current === undefined) return;
+
+    const messages = {
+      validate:
+        cellCounts.invalidCells === 0
+          ? {
+              header: wbText.validationNoErrors(),
+              message: (
+                <>
+                  {wbText.validationNoErrorsDescription()}
+                  <br />
+                  <br />
+                  {wbText.validationReEditWarning()}
+                </>
+              ),
+            }
+          : {
+              header: wbText.validationErrors(),
+              message: (
+                <>
+                  {wbText.validationErrorsDescription()}
+                  <br />
+                  <br />
+                  {wbText.validationReEditWarning()}
+                </>
+              ),
+            },
+      upload:
+        cellCounts.invalidCells === 0
+          ? {
+              header: wbText.uploadSuccessful(),
+              message: wbText.uploadSuccessfulDescription(),
+            }
+          : {
+              header: wbText.uploadErrors(),
+              message: (
+                <>
+                  {wbText.uploadErrorsDescription()}
+                  <br />
+                  <br />
+                  {wbText.uploadErrorsSecondDescription()}
+                </>
+              ),
+            },
+      unupload: {
+        header: wbText.dataSetRollback(),
+        message: wbText.dataSetRollbackDescription(),
+      },
+    };
+
+    // refactor to set this as a state or ref
+    const messageToShow = messages[this.refreshInitiatedBy.current];
+    this.operationCompleted.open();
+
+    // set this in onClose
+    this.refreshInitiatedBy.current = undefined;
+    this.refreshInitiatorAborted.current = false;
+
+    return messageToShow;
+  }
+
+  operationAbortedMessage(): void {
+    if (
+      this.refreshInitiatedBy.current === undefined ||
+      this.refreshInitiatorAborted.current
+    )
+      return;
+
+    this.operationAborted.open();
+
+    // set this in onClose
+    this.refreshInitiatedBy.current = undefined;
+    this.refreshInitiatorAborted.current = false;
+  }
+
+  spreadSheetChanged(): void {
+    if (this.hasUnSavedChanges) return;
+    this.hasUnSavedChanges = true;
+  }
+}
+
+/* eslint-enable functional/no-this-expression */
 
 /* eslint-disable functional/no-this-expression */
 export class WbActions {

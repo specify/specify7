@@ -21,6 +21,7 @@ import type { HandlersObject } from './WbView';
 import type { UploadPlan } from '../WbPlanView/uploadPlanParser';
 import { DevShowPlan } from './DevShowPlan';
 import { overwriteReadOnly } from '../../utils/types';
+import { WbActionsReact } from './WbActions';
 
 export function WbToolkit({
   dataset,
@@ -29,13 +30,15 @@ export function WbToolkit({
   mappings,
   data,
   handleDatasetDelete,
+  actions,
 }: {
   readonly dataset: Dataset;
   readonly hotRef: any;
   readonly toolkitOptions: HandlersObject;
   readonly mappings: WbMapping;
   readonly data: RA<RA<string | null>>;
-  handleDatasetDelete: () => void;
+  readonly handleDatasetDelete: () => void;
+  readonly actions: WbActionsReact;
 }): JSX.Element {
   const hot = hotRef.current.hotInstance;
 
@@ -87,6 +90,8 @@ export function WbToolkit({
             aria-pressed={toolkitOptions.changeOwner.show}
             className="wb-change-data-set-owner"
             onClick={toolkitOptions.changeOwner.open}
+            disabled={actions.hasUnSavedChanges}
+            title={actions.hasUnSavedChanges ? wbText.unavailableWhileEditing() : ""}
           >
             {wbText.changeOwner()}
           </Button.Small>
@@ -100,7 +105,12 @@ export function WbToolkit({
           </Button.Small>
         </>
       ) : undefined}
-      <Button.Small className="wb-export-data-set" onClick={handleExport}>
+      <Button.Small
+        className="wb-export-data-set"
+        onClick={handleExport}
+        disabled={actions.hasUnSavedChanges}
+        title={actions.hasUnSavedChanges ? wbText.unavailableWhileEditing() : ""}
+      >
         {commonText.export()}
       </Button.Small>
       <span className="-ml-1 flex-1" />
