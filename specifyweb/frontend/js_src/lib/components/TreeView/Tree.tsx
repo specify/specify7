@@ -4,11 +4,16 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useId } from '../../hooks/useId';
+import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
+import { ping } from '../../utils/ajax/ping';
 import type { GetSet, RA } from '../../utils/types';
 import { toggleItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
+import { Form, Input, Label } from '../Atoms/Form';
+import { Submit } from '../Atoms/Submit';
+import { LoadingContext } from '../Core/Contexts';
 import type {
   AnyTree,
   FilterTablesByEndsWith,
@@ -17,17 +22,12 @@ import type {
 import { deserializeResource } from '../DataModel/serializers';
 import { ResourceView } from '../Forms/ResourceView';
 import { getPref } from '../InitialContext/remotePrefs';
+import { Dialog } from '../Molecules/Dialog';
 import { useHighContrast } from '../Preferences/Hooks';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Conformations, Row, Stats } from './helpers';
 import { fetchStats } from './helpers';
 import { TreeRow } from './Row';
-import { commonText } from '../../localization/common';
-import { Dialog } from '../Molecules/Dialog';
-import { Form, Input, Label } from '../Atoms/Form';
-import { Submit } from '../Atoms/Submit';
-import { ping } from '../../utils/ajax/ping';
-import { LoadingContext } from '../Core/Contexts';
 
 const treeToPref = {
   Geography: 'geography',
@@ -107,7 +107,7 @@ export function Tree<SCHEMA extends AnyTree>({
   );
 
   const loading = React.useContext(LoadingContext);
-  const rankId = useId('add-tree-rank')('');
+  const formId = useId('add-tree-rank')('');
   const [isAddingRank, setIsAddingRank] = React.useState(false);
   const [newRankName, setNewRankName] = React.useState('');
   function addRank(parentRankName: string): void {
@@ -116,8 +116,8 @@ export function Tree<SCHEMA extends AnyTree>({
       ping(url, {
         method: 'POST',
         body: {
-          newRankName: newRankName,
-          parentRankName: parentRankName,
+          newRankName,
+          parentRankName,
           treeName: tableName.toLowerCase(),
         },
       }).then(() => globalThis.location.reload())
@@ -199,9 +199,10 @@ export function Tree<SCHEMA extends AnyTree>({
                 </Button.LikeLink>
                 {isEditingRanks && (
                   <>
-                    {collapsedRanks?.includes(rank.rankId) !== true ? (
+                    {collapsedRanks?.includes(rank.rankId) ===
+                    true ? undefined : (
                       <EditTreeRank rank={rank} />
-                    ) : undefined}
+                    )}
                     <Button.Icon
                       icon="plus"
                       title={treeText.addNewRank()}
@@ -216,16 +217,16 @@ export function Tree<SCHEMA extends AnyTree>({
                         <Button.DialogClose>
                           {commonText.cancel()}
                         </Button.DialogClose>
-                        <Submit.Info form={rankId}>
+                        <Submit.Info form={formId}>
                           {commonText.create()}
                         </Submit.Info>
                       </>
                     }
-                    onClose={() => setIsAddingRank(false)}
                     header={treeText.addNewRank()}
+                    onClose={() => setIsAddingRank(false)}
                   >
                     <Form
-                      id={rankId}
+                      id={formId}
                       onSubmit={(): void => {
                         addRank(rankName);
                       }}
