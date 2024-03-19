@@ -547,11 +547,11 @@ def add_tree_rank(request, tree) -> HttpResponse:
     use_default_rank_ids = data.get('useDefaultRankIDs', True)
     new_rank_extra_params = {
         'remarks': data.get('remarks', None),
-        'textAfter': data.get('textAfter', None),
-        'textBefore': data.get('textBefore', None),
-        'isEnforced': data.get('isEnforced', False),
-        'isInFullName': data.get('isInFullName', False),
-        'fullNameSeparator': data.get('fullNameSeparator', None),
+        'textafter': data.get('textAfter', None),
+        'textbefore': data.get('textBefore', None),
+        'isenforced': data.get('isEnforced', None),
+        'isinfullname': data.get('isInFullName', None),
+        'fullnameseparator': data.get('fullNameSeparator', None),
     }
 
     # Throw exceptions if the required parameters are not given correctly
