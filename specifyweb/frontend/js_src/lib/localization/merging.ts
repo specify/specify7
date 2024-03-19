@@ -254,13 +254,4 @@ export const mergingText = createDictionary({
     'ru-ru': 'Связанные записи',
     'uk-ua': "Пов'язані записи",
   },
-  localityMerging: {
-    'en-us': 'Locality merging',
-  },
-  paleoContextMerging: {
-    'en-us': 'Paleo context merging',
-  },
-  collectingEventMerging: {
-    'en-us': 'Collecting event merging',
-  },
 } as const);

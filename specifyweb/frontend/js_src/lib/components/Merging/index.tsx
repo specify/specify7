@@ -141,8 +141,8 @@ function RestrictMerge({
       records === undefined
         ? undefined
         : filterArray(
-            records.map((record) =>
-              recordMergingTableSpec[table.name]?.filterIgnore?.(
+            records.filter((record) =>
+              recordMergingTableSpec[table.name]?.unmergable?.matches(
                 record as never
               )
             )
