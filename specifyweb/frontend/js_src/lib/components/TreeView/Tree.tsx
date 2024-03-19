@@ -107,7 +107,7 @@ export function Tree<SCHEMA extends AnyTree>({
   );
 
   const loading = React.useContext(LoadingContext);
-  const rankId = useId('add-tree-rank')('');
+  const formId = useId('add-tree-rank')('');
   const [isAddingRank, setIsAddingRank] = React.useState(false);
   const [newRankName, setNewRankName] = React.useState('');
   function addRank(parentRankName: string): void {
@@ -216,7 +216,7 @@ export function Tree<SCHEMA extends AnyTree>({
                         <Button.DialogClose>
                           {commonText.cancel()}
                         </Button.DialogClose>
-                        <Submit.Info form={rankId}>
+                        <Submit.Info form={formId}>
                           {commonText.create()}
                         </Submit.Info>
                       </>
@@ -225,7 +225,7 @@ export function Tree<SCHEMA extends AnyTree>({
                     header={treeText.addNewRank()}
                   >
                     <Form
-                      id={rankId}
+                      id={formId}
                       onSubmit={(): void => {
                         addRank(rankName);
                       }}
