@@ -118,7 +118,8 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
         props.isDisabled ||
         props.resource === undefined ||
         !isTreeResource(props.resource) ||
-        props.resource.get('parent') === null
+        props.resource.get('parent') === null ||
+        props.resource.get('parent') === undefined
       }
       isRequired={
         props.resource?.specifyTable.getRelationship('definitionItem')
