@@ -153,7 +153,7 @@ function RestrictMerge({
   return records === undefined ? null : recordsToIgnore !== undefined &&
     recordsToIgnore.length > 0 ? (
     <InvalidMergeRecordsDialog
-      recordsToIgnore={recordsToIgnore as RA<SerializedResource<AnySchema>>}
+      recordsToIgnore={recordsToIgnore}
       tableName={table.name}
       onDismiss={
         // Disable merging if less than 2 remaining

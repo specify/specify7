@@ -1,4 +1,5 @@
-import { LocalizedString } from 'typesafe-i18n';
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { mergingText } from '../../localization/merging';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { Tables } from '../DataModel/types';
@@ -6,8 +7,10 @@ import type { Tables } from '../DataModel/types';
 export const recordMergingTableSpec: Partial<{
   readonly [TABLE_NAME in keyof Tables]: {
     readonly unmergable?: {
-      matches: (resource: SerializedResource<Tables[TABLE_NAME]>) => boolean;
-      message: LocalizedString;
+      readonly matches: (
+        resource: SerializedResource<Tables[TABLE_NAME]>
+      ) => boolean;
+      readonly message: LocalizedString;
     };
   };
 }> = {
