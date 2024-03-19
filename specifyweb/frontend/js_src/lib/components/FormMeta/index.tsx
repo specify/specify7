@@ -216,8 +216,8 @@ function MetaDialog({
                 ))}
               </ProtectedAction>
             </ProtectedTool>
-            <ProtectedAction action="update" resource="/permissions/roles">
-              <ProtectedAction action="delete" resource="/permissions/roles">
+            <ProtectedAction action="update" resource="/record/merge">
+              <ProtectedAction action="delete" resource="/record/merge">
                 <ProtectedTable
                   action="update"
                   tableName={resource.specifyTable.name}
