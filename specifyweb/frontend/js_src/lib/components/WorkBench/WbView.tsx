@@ -50,7 +50,7 @@ import { parseWbMappings } from './mapping';
 import { fetchWbPickLists } from './pickLists';
 import { WbUploaded } from './Results';
 import { wbViewTemplate } from './Template';
-import { WbActions } from './WbActions';
+import { WbActions, WbActionsReact } from './WbActions';
 import { WbUtils } from './WbUtils';
 import { WbValidation } from './WbValidation';
 import type { LocalizedString } from 'typesafe-i18n';
@@ -114,19 +114,23 @@ function Navigation({
   );
 }
 
+export type DialogHandlers = {
+  show: boolean;
+  open: () => void;
+  close: () => void;
+  toggle: () => void;
+};
+
 export type HandlersObject = {
-  [key: string]: {
-    show: boolean;
-    open: () => void;
-    close: () => void;
-    toggle: () => void;
-  };
+  [key: string]: DialogHandlers
 };
 
 // Returns an object consisting of handler objects for dialog actions in the Workbench
 function useWbViewHandlers() {
   const handlers = {
     toolkit: useBooleanState(),
+    upload: useBooleanState(),
+    noUploadPlan: useBooleanState(),
     unupload: useBooleanState(),
     devPlan: useBooleanState(),
     changeOwner: useBooleanState(),
@@ -170,7 +174,8 @@ export function WbViewReact({
     'general',
     'liveValidation'
   );
-  const { toolkit, unupload, ...toolkitOptions } = useWbViewHandlers();
+  const { toolkit, upload, noUploadPlan, unupload, ...toolkitOptions } =
+    useWbViewHandlers();
   const mappings = React.useMemo(
     (): WbMapping | undefined => parseWbMappings(dataset),
     [dataset]
@@ -193,6 +198,19 @@ export function WbViewReact({
   let searchPreferences =
     getCache('workbench', 'searchProperties') ?? defaultSearchPreferences;
   const initialNavigationDirection = searchPreferences.navigation.direction;
+  const actionsRef = React.useRef<WbActionsReact>(
+    new WbActionsReact(dataset, mappings as WbMapping, noUploadPlan, upload)
+  );
+  const [mode, setMode] = React.useState<WbStatus | undefined>(undefined);
+  React.useEffect(() => {
+    if (
+      !isUploaded &&
+      (mappings?.lines ?? []).length === 0 &&
+      hasPermission('/workbench/dataset', 'update')
+    ) {
+      noUploadPlan.open();
+    }
+  }, []);
   return (
     <>
       <div
@@ -265,7 +283,11 @@ export function WbViewReact({
               <Button.Small
                 aria-haspopup="dialog"
                 className="wb-upload"
-                onClick={f.never}
+                onClick={() => {
+                  const mode = "upload";
+                  setMode(mode);
+                  actionsRef.current.upload(mode);
+                }}
               >
                 {wbText.upload()}
               </Button.Small>
@@ -307,7 +329,44 @@ export function WbViewReact({
           dataSetId={dataset.id}
           onClose={unupload.close}
           onRollback={() => {}}
-      />
+        />
+      )}
+      {mode === 'upload' && upload.show && (
+        <Dialog
+          buttons={
+            <>
+              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+              <Button.Info
+                onClick={(): void => {
+                  actionsRef.current.startUpload(mode);
+                  upload.close();
+                }}
+              >
+                {wbText.upload()}
+              </Button.Info>
+            </>
+          }
+          header={wbText.startUpload()}
+          onClose={upload.close}
+        >
+          {wbText.startUploadDescription()}
+        </Dialog>
+      )}
+      {noUploadPlan.show && (
+        <Dialog
+          buttons={
+            <>
+              <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+              <Link.Info href={`/specify/workbench/plan/${dataset.id}/`}>
+                {commonText.create()}
+              </Link.Info>
+            </>
+          }
+          header={wbPlanText.noUploadPlan()}
+          onClose={noUploadPlan.close}
+        >
+          {wbPlanText.noUploadPlanDescription()}
+        </Dialog>
       )}
       <div className="flex flex-1 gap-4 overflow-hidden">
         <section className="wb-spreadsheet flex-1 overflow-hidden overscroll-none">
