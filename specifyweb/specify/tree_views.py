@@ -486,6 +486,30 @@ def tree_edit(edit_func):
                             "useDefaultRankIDs": {
                                 "type": "boolean",
                                 "description": "Determine if the default rank IDs should be used (defaults to True)."
+                            },
+                            "remarks": {
+                                "type": "string",
+                                "description": "Additional remarks for the rank."
+                            },
+                            "textAfter": {
+                                "type": "string",
+                                "description": "Text to be added after the rank."
+                            },
+                            "textBefore": {
+                                "type": "string",
+                                "description": "Text to be added before the rank."
+                            },
+                            "isEnforced": {
+                                "type": "boolean",
+                                "description": "Whether the rank is enforced."
+                            },
+                            "isInFullName": {
+                                "type": "boolean",
+                                "description": "Whether the rank is included in the full name."
+                            },
+                            "fullNameSeparator": {
+                                "type": "string",
+                                "description": "The separator for the full name."
                             }
                         },
                         'required': ['newRankName', 'parentRankName'],
@@ -521,6 +545,14 @@ def add_tree_rank(request, tree) -> HttpResponse:
     tree_name = data.get('treeName')
     new_rank_title = data.get('newRankTitle', new_rank_name)
     use_default_rank_ids = data.get('useDefaultRankIDs', True)
+    new_rank_extra_params = {
+        'remarks': data.get('remarks', None),
+        'textAfter': data.get('textAfter', None),
+        'textBefore': data.get('textBefore', None),
+        'isEnforced': data.get('isEnforced', False),
+        'isInFullName': data.get('isInFullName', False),
+        'fullNameSeparator': data.get('fullNameSeparator', None),
+    }
 
     # Throw exceptions if the required parameters are not given correctly
     if new_rank_name is None:
@@ -572,6 +604,9 @@ def add_tree_rank(request, tree) -> HttpResponse:
         'parent': parent_rank,
         'treedef': tree_def
     }
+    for key, value in new_rank_extra_params.items():
+        if value is not None:
+            new_fields_dict[key] = value
 
     # Determine if the default rank ID can be used
     can_use_default_rank_id = (
