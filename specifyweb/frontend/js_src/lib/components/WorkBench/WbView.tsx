@@ -64,6 +64,8 @@ import { getCache } from '../../utils/cache';
 import { WbAdvancedSearch } from './AdvancedSearch';
 import type { WbSearchPreferences } from './AdvancedSearch';
 import { RollbackConfirmation } from './Components';
+import { WbStatus as WbStatusComponent } from './Status';
+import type { Status } from '../WbPlanView/Wrapped';
 
 export type WbStatus = 'unupload' | 'upload' | 'validate';
 
@@ -122,7 +124,7 @@ export type DialogHandlers = {
 };
 
 export type HandlersObject = {
-  [key: string]: DialogHandlers
+  [key: string]: DialogHandlers;
 };
 
 // Returns an object consisting of handler objects for dialog actions in the Workbench
@@ -132,6 +134,7 @@ function useWbViewHandlers() {
     upload: useBooleanState(),
     noUploadPlan: useBooleanState(),
     unupload: useBooleanState(),
+    statusComponent: useBooleanState(),
     devPlan: useBooleanState(),
     changeOwner: useBooleanState(),
     geoLocate: useBooleanState(),
@@ -174,8 +177,14 @@ export function WbViewReact({
     'general',
     'liveValidation'
   );
-  const { toolkit, upload, noUploadPlan, unupload, ...toolkitOptions } =
-    useWbViewHandlers();
+  const {
+    toolkit,
+    upload,
+    noUploadPlan,
+    unupload,
+    statusComponent,
+    ...toolkitOptions
+  } = useWbViewHandlers();
   const mappings = React.useMemo(
     (): WbMapping | undefined => parseWbMappings(dataset),
     [dataset]
@@ -198,8 +207,19 @@ export function WbViewReact({
   let searchPreferences =
     getCache('workbench', 'searchProperties') ?? defaultSearchPreferences;
   const initialNavigationDirection = searchPreferences.navigation.direction;
+  const checkDeletedFail = (statusCode: number): boolean => {
+    if (statusCode === Http.NOT_FOUND) handleDatasetDelete();
+    return statusCode === Http.NOT_FOUND;
+  };
   const actionsRef = React.useRef<WbActionsReact>(
-    new WbActionsReact(dataset, mappings as WbMapping, noUploadPlan, upload)
+    new WbActionsReact(
+      dataset,
+      mappings as WbMapping,
+      noUploadPlan,
+      upload,
+      statusComponent,
+      checkDeletedFail
+    )
   );
   const [mode, setMode] = React.useState<WbStatus | undefined>(undefined);
   React.useEffect(() => {
@@ -284,7 +304,7 @@ export function WbViewReact({
                 aria-haspopup="dialog"
                 className="wb-upload"
                 onClick={() => {
-                  const mode = "upload";
+                  const mode = 'upload';
                   setMode(mode);
                   actionsRef.current.upload(mode);
                 }}
@@ -367,6 +387,33 @@ export function WbViewReact({
         >
           {wbPlanText.noUploadPlanDescription()}
         </Dialog>
+      )}
+      {mode && statusComponent.show && (
+        <WbStatusComponent
+          dataset={{
+            ...dataset,
+            // Create initial status if it doesn't exist yet
+            uploaderstatus: {
+              uploaderstatus:
+                dataset.uploaderstatus ??
+                ({
+                  operation: {
+                    validate: 'validating',
+                    upload: 'uploading',
+                    unupload: 'unuploading',
+                  }[mode],
+                  taskid: '',
+                } as const),
+              taskstatus: 'PENDING',
+              taskinfo: 'None',
+            } as Status,
+          }}
+          onFinished={(wasAborted): void => {
+            console.log('Aborted:', wasAborted);
+            statusComponent.close();
+            // this.wbView.trigger('refresh', mode, wasAborted);
+          }}
+        />
       )}
       <div className="flex flex-1 gap-4 overflow-hidden">
         <section className="wb-spreadsheet flex-1 overflow-hidden overscroll-none">
