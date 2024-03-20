@@ -14,7 +14,7 @@ exports[`PartialDateUi renders without errors 1`] = `
         Date Precision
       </span>
       <select
-        class="not-touched w-full pr-5 bg-right cursor-pointer !min-w-[unset] print:hidden"
+        class="not-touched w-full pr-5 bg-right cursor-pointer !w-auto !min-w-[unset] print:hidden"
       >
         <option
           value="full"
