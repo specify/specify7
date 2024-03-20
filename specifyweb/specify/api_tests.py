@@ -1234,6 +1234,80 @@ class ReplaceRecordTests(ApiTests):
         merged_data = fix_record_data(_get_record_data(True), target_model, target_model.name.lower(), new_record_id, old_record_ids)
 
         self.assertDictEqual(merged_data, _get_record_data())
+
+    def test_replace_localities(self):
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        # Create localities
+        locality_1 = models.Locality.objects.create(
+            id=1,
+            localityname="locality_1",
+            discipline=self.discipline
+        )
+        locality_2 = models.Locality.objects.create(
+            id=2,
+            localityname="locality_2",
+            discipline=self.discipline
+        )
+        localitydetail = models.Localitydetail.objects.create(id=1, locality=locality_1, island='karate island')
+        geocoorddetail = models.Geocoorddetail.objects.create(id=1, locality=locality_1)
+        collectingevent = models.Collectingevent.objects.create(discipline=self.discipline, locality=locality_1)
+        paleocontext = models.Paleocontext.objects.create(discipline=self.discipline)
+        locality_1.localitydetail = localitydetail
+        locality_1.paleocontext = paleocontext
+        locality_1.save()
+
+        # Assert that the api request ran successfully
+        response = c.post(
+            f'/api/specify/locality/replace/{locality_2.id}/',
+            data=json.dumps({
+                'old_record_ids': [locality_1.id],
+                'background': False
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 204)
+
+        # Assert that the dependent records of locality where deleted
+        self.assertEqual(models.Localitydetail.objects.filter(id=localitydetail.id).exists(), False)
+        self.assertEqual(models.Geocoorddetail.objects.filter(id=geocoorddetail.id).exists(), False)
+
+        # Assert that the locality's indepdendent relationships, with a corresponding real database column,
+        # were updated correctly to the new locality.
+        collectingevent = models.Collectingevent.objects.get(id=collectingevent.id)
+        self.assertEqual(collectingevent.locality.id, locality_2.id)
+
+        # Assert that the old locality's indepdendent relationships, without a corresponding real database column,
+        # were not deleted.
+        self.assertEqual(models.Paleocontext.objects.filter(id=paleocontext.id).exists(), True)
+
+        # Assert that the old agent was deleted
+        with self.assertRaises(models.Locality.DoesNotExist):
+            models.Locality.objects.get(id=locality_1.id)
+
+        # Assert that a new api request will not find the old agent
+        response = c.post(
+            f'/api/specify/locality/replace/{locality_2.id}/',
+            data=json.dumps({
+                'old_record_ids': [locality_1.id],
+                'background': False
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_replace_collecting_events(self):
+        c = Client()
+        c.force_login(self.specifyuser)
+        
+        # TODO
+
+    def test_replace_paleo_contexts(self):
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        #TODO
         
 class ScopingTests(ApiTests):
     def setUp(self):
