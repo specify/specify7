@@ -138,15 +138,9 @@ function RestrictMerge({
 
   const recordsToIgnore = React.useMemo(
     () =>
-      records === undefined
-        ? undefined
-        : filterArray(
-            records.filter((record) =>
-              recordMergingTableSpec[table.name]?.unmergable?.matches(
-                record as never
-              )
-            )
-          ),
+      records?.filter((record) =>
+        recordMergingTableSpec[table.name]?.unmergable?.matches(record as never)
+      ),
     [records]
   );
 
