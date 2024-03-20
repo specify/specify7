@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-03-15 22:01+0000\n"
+"PO-Revision-Date: 2024-03-20 12:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "resources/ru/>\n"
@@ -141,7 +141,7 @@ msgstr "Форматировщики полей"
 #: components/AppResources/types.tsx:167
 #, fuzzy
 msgid "dataObjectFormatters"
-msgstr "Форматеры записи"
+msgstr "Форматеры записей"
 
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 #: components/Formatters/Aggregator.tsx:69
@@ -476,7 +476,7 @@ msgstr ""
 #, fuzzy
 msgid "wrongScopeWarning"
 msgstr ""
-"Этот ресурс принадлежит к другой коллекции/дисциплине, отличной от той, в "
+"Этот ресурс принадлежит другой коллекции/дисциплине, отличной от той, в "
 "которой вы сейчас находитесь. Перед редактированием этого ресурса "
 "рекомендуется сменить коллекцию."
 
@@ -538,7 +538,7 @@ msgstr "Копировать из существующей формы"
 #: components/FormEditor/Create.tsx:83
 #, fuzzy
 msgid "copyDefaultForm"
-msgstr "Форматеры записей"
+msgstr "Форматеры записи"
 
 #. Used in: Components > App Resources > Create
 #: components/AppResources/Create.tsx:228
