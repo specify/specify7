@@ -88,7 +88,7 @@ export function DateInput({
   return (
     <>
       <Input.Generic
-        className="w-[unset] grow"
+        className="!w-[unset] grow"
         forwardRef={validationRef}
         id={id}
         isReadOnly={isReadOnly}
