@@ -29,6 +29,7 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { AttachmentsCollection } from './AttachmentsCollection';
 import { RecordSelectorFromCollection } from './RecordSelectorFromCollection';
+import { useId } from '../../hooks/useId';
 
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
 
@@ -109,7 +110,6 @@ export function IntegratedRecordSelector({
   const [isDialogOpen, handleOpenDialog, handleCloseDialog] = useBooleanState();
 
   const isAttachmentTable = tables.Collection.name.includes('Attachment');
-
   return (
     <ReadOnlyContext.Provider value={isReadOnly}>
       <RecordSelectorFromCollection
@@ -230,6 +230,7 @@ export function IntegratedRecordSelector({
                  * resource
                  */
                 onClose={handleClose}
+                key={resource?.cid}
               />
             ) : null}
             {formType === 'formTable' ? (
