@@ -14,7 +14,7 @@ exports[`PartialDateUi renders without errors 1`] = `
         Date Precision
       </span>
       <select
-        class="not-touched w-full pr-5 bg-right cursor-pointer !w-auto print:hidden"
+        class="not-touched w-full pr-5 bg-right cursor-pointer !w-auto !min-w-[unset] print:hidden"
       >
         <option
           value="full"
@@ -34,7 +34,7 @@ exports[`PartialDateUi renders without errors 1`] = `
       </select>
     </label>
     <input
-      class="not-touched w-full !w-[unset] grow"
+      class="not-touched w-full grow"
       max="9999-12-31"
       placeholder="MM/DD/YYYY"
       type="date"
@@ -50,7 +50,7 @@ exports[`PartialDateUi renders without errors 2`] = `
     class="flex w-full gap-1"
   >
     <input
-      class="not-touched w-full !w-[unset] grow"
+      class="not-touched w-full grow"
       placeholder="MM/YYYY"
       type="month"
       value=""
@@ -65,7 +65,7 @@ exports[`PartialDateUi renders without errors 3`] = `
     class="flex w-full gap-1"
   >
     <input
-      class="not-touched w-full !w-[unset] grow"
+      class="not-touched w-full grow"
       max="9999"
       min="1"
       placeholder="YYYY"
