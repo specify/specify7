@@ -1269,17 +1269,17 @@ class ReplaceRecordTests(ApiTests):
         )
         self.assertEqual(response.status_code, 204)
 
-        # Assert that the dependent records of locality where deleted
+        # Assert that the dependent records of locality were deleted. (localitydetail, geocoorddetail)
         self.assertEqual(models.Localitydetail.objects.filter(id=localitydetail.id).exists(), False)
         self.assertEqual(models.Geocoorddetail.objects.filter(id=geocoorddetail.id).exists(), False)
 
         # Assert that the locality's indepdendent relationships, with a corresponding real database column,
-        # were updated correctly to the new locality.
+        # were updated correctly to the new locality. (collectingevent, geography)
         collectingevent = models.Collectingevent.objects.get(id=collectingevent.id)
         self.assertEqual(collectingevent.locality.id, locality_2.id)
 
         # Assert that the old locality's indepdendent relationships, without a corresponding real database column,
-        # were not deleted.
+        # were not deleted. (paleocontext)
         self.assertEqual(models.Paleocontext.objects.filter(id=paleocontext.id).exists(), True)
 
         # Assert that the old agent was deleted
@@ -1301,13 +1301,119 @@ class ReplaceRecordTests(ApiTests):
         c = Client()
         c.force_login(self.specifyuser)
         
-        # TODO
+        # Create collecting events
+        collecting_event_1 = models.Collectingevent.objects.create(discipline=self.discipline)
+        collecting_event_2 = models.Collectingevent.objects.create(discipline=self.discipline)
+        collecting_event_attribute = models.Collectingeventattribute.objects.create(discipline=self.discipline)
+        collecting_trip = models.Collectingtrip.objects.create(discipline=self.discipline)
+        paleo_context = models.Paleocontext.objects.create(discipline=self.discipline)
+        collection_object = self.collectionobjects[0]
+        collection_object.collectingevent = collecting_event_1
+        collection_object.save()
+        collecting_event_1.collectingeventattribute = collecting_event_attribute
+        collecting_event_1.collectingtrip = collecting_trip
+        collecting_event_1.paleocontext = paleo_context
+        collecting_event_1.save()
+
+        # Assert that the api request ran successfully
+        response = c.post(
+            f'/api/specify/collectingevent/replace/{collecting_event_2.id}/',
+            data=json.dumps({
+                'old_record_ids': [collecting_event_1.id],
+                'background': False
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 204)
+        
+        # Assert that the dependent records of the old collecting event were deleted. (collectingeventattribute)
+        self.assertEqual(models.Collectingeventattribute.objects.filter(id=collecting_event_attribute.id).exists(),
+                         False)
+
+        # Assert that the old collecting event's indepdendent relationships, with a corresponding real database column,
+        # were updated correctly to the new collecting event. (collectingtrip, locality, paleocontext)
+        collecting_trip = models.Collectingtrip.objects.get(id=collecting_trip.id)
+        locality = models.Locality.objects.get(id=locality.id)
+        paleo_context = models.Paleocontext.objects.get(id=paleo_context.id)
+        self.assertEqual(collecting_trip.collectingevent.id, collecting_event_2.id)
+        self.assertEqual(locality.collectingevent.id, collecting_event_2.id)
+        self.assertEqual(paleo_context.collectingevent.id, collecting_event_2.id)
+
+        # Assert that the collecting event's indepdendent relationships, without a corresponding real database column,
+        # were not deleted. (collectingobjects)
+        self.assertEqual(models.Collectionobject.objects.filter(id=collection_object.id).exists(), True)
+
+        # Assert that the old agent was deleted
+        with self.assertRaises(models.Locality.DoesNotExist):
+            models.collectingevent.objects.get(id=collecting_event_1.id)
+
+        # Assert that a new api request will not find the old collection event
+        response = c.post(
+            f'/api/specify/collectingevent/replace/{collecting_event_2.id}/',
+            data=json.dumps({
+                'old_record_ids': [collecting_event_1.id],
+                'background': False
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 404)
 
     def test_replace_paleo_contexts(self):
         c = Client()
         c.force_login(self.specifyuser)
 
-        #TODO
+        # Create paleo contexts
+        paleo_context_1 = models.Paleocontext.objects.create(discipline=self.discipline)
+        paleo_context_2 = models.Paleocontext.objects.create(discipline=self.discipline)
+        biostrat = models.Geologictimeperiod.objects.create(
+            isaccepted=True, isbiostrat=True, name='biostrat', rankid=1000,
+            definition=self.geologictimeperiodtreedef,
+            definitionitem=self.geologictimeperiodtreedef.treedefitems.create(name='biostrat', rankid=1000),
+            parent=None)
+        locality = models.Locality.objects.create(discipline=self.discipline, paleocontext=paleo_context_1)
+        collecting_event = models.Collectingevent.objects.create(
+            discipline=self.discipline,
+            paleocontext=paleo_context_1)
+        collection_object = self.collectionobjects[0]
+        collection_object.paleocontext = paleo_context_1
+        collection_object.save()
+        paleo_context_1.biostrat = biostrat
+        paleo_context_1.save()
+
+        # Assert that the api request ran successfully
+        response = c.post(
+            f'/api/specify/paleocontext/replace/{paleo_context_2.id}/',
+            data=json.dumps({
+                'old_record_ids': [paleo_context_1.id],
+                'background': False
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 204)
+
+        # NOTE: There are no dependent relcations of paleo context to test.
+
+        # Assert that the old paleo context's indepdendent relationships, with a corresponding real database column,
+        # were updated correctly to the new paleo context. (biostrat, chronosstrat, lithostrat)
+        biostrat = models.Geologictimeperiod.objects.get(id=biostrat.id)
+        self.assertEqual(biostrat.biostratspaleocontext.instance.id, paleo_context_2.id)
+
+        # Assert that the paleo context's indepdendent relationships, without a corresponding real database column,
+        # were not deleted. (localities, collectingevents, collectionobjects)
+        self.assertEqual(models.Locality.objects.filter(id=locality.id).exists(), True)
+        self.assertEqual(models.Collectingevent.objects.filter(id=collecting_event.id).exists(), True)
+        self.assertEqual(models.Collectionobject.objects.filter(id=collection_object.id).exists(), True)
+
+        # Assert that a new api request will not find the old paleo context
+        response = c.post(
+            f'/api/specify/paleocontext/replace/{paleo_context_2.id}/',
+            data=json.dumps({
+                'old_record_ids': [paleo_context_1.id],
+                'background': False
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 404)
         
 class ScopingTests(ApiTests):
     def setUp(self):
