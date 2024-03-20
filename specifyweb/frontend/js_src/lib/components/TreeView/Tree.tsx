@@ -179,14 +179,10 @@ export function Tree<SCHEMA extends AnyTree>({
                       : rankName) as LocalizedString
                   }
                 </Button.LikeLink>
-                {isEditingRanks && (
-                  <>
-                    {collapsedRanks?.includes(rank.rankId) ===
-                    true ? undefined : (
-                      <EditTreeRank rank={rank} />
-                    )}
-                  </>
-                )}
+                {isEditingRanks &&
+                collapsedRanks?.includes(rank.rankId) !== true ? (
+                  <EditTreeRank rank={rank} />
+                ) : undefined}
               </div>
             );
           })}
