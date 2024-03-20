@@ -17,6 +17,7 @@ import { RA } from '../../utils/types';
 import { ResourceView } from '../Forms/ResourceView';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { GeographyTreeDefItem } from '../DataModel/types';
+import { strictIdFromUrl } from '../DataModel/resource';
 
 export function AddRank<SCHEMA extends AnyTree>({
   tableName,
@@ -33,6 +34,7 @@ export function AddRank<SCHEMA extends AnyTree>({
   const [isAddingParentRank, setIsAddingParentRank] = React.useState(false);
 
   const [parentRank, setParentRank] = React.useState('');
+  const treeId = strictIdFromUrl(treeDefinitionItems[0].treeDef);
 
   const treeResource = React.useMemo(
     () =>
@@ -64,7 +66,8 @@ export function AddRank<SCHEMA extends AnyTree>({
             treeResource as SpecifyResource<GeographyTreeDefItem>
           ).get('name'),
           parentRankName: parentRank,
-          treeName: tableName.toLowerCase(),
+          // treeName: tableName.toLowerCase(),
+          treeID: treeId,
           newRankTitle: (
             treeResource as SpecifyResource<GeographyTreeDefItem>
           ).get('title'),
