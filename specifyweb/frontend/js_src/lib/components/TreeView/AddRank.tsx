@@ -66,7 +66,6 @@ export function AddRank<SCHEMA extends AnyTree>({
             treeResource as SpecifyResource<GeographyTreeDefItem>
           ).get('name'),
           parentRankName: parentRank,
-          // treeName: tableName.toLowerCase(),
           treeID: treeId,
           newRankTitle: (
             treeResource as SpecifyResource<GeographyTreeDefItem>
