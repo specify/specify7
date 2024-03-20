@@ -27,7 +27,7 @@ export function DatePrecisionPicker({
     <label className="shrink-[3]">
       <span className="sr-only">{formsText.datePrecision()}</span>
       <Select
-        className="!w-auto print:hidden"
+        className="!w-auto !min-w-[unset] print:hidden "
         disabled={isReadOnly}
         forwardRef={precisionValidationRef}
         value={precision}
