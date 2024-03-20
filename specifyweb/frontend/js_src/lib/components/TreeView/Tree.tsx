@@ -4,16 +4,11 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useId } from '../../hooks/useId';
-import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
-import { ping } from '../../utils/ajax/ping';
 import type { GetSet, RA } from '../../utils/types';
 import { toggleItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
-import { Form, Input, Label } from '../Atoms/Form';
-import { Submit } from '../Atoms/Submit';
-import { LoadingContext } from '../Core/Contexts';
 import type {
   AnyTree,
   FilterTablesByEndsWith,
@@ -22,12 +17,12 @@ import type {
 import { deserializeResource } from '../DataModel/serializers';
 import { ResourceView } from '../Forms/ResourceView';
 import { getPref } from '../InitialContext/remotePrefs';
-import { Dialog } from '../Molecules/Dialog';
 import { useHighContrast } from '../Preferences/Hooks';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Conformations, Row, Stats } from './helpers';
 import { fetchStats } from './helpers';
 import { TreeRow } from './Row';
+import { AddRank } from './AddRank';
 
 const treeToPref = {
   Geography: 'geography',
@@ -106,25 +101,6 @@ export function Tree<SCHEMA extends AnyTree>({
     [baseUrl, statsThreshold]
   );
 
-  const loading = React.useContext(LoadingContext);
-  const formId = useId('add-tree-rank')('');
-  const [isAddingRank, setIsAddingRank] = React.useState(false);
-  const [newRankName, setNewRankName] = React.useState('');
-  function addRank(parentRankName: string): void {
-    const url = `/api/specify_tree/${tableName.toLowerCase()}/add_tree_rank/`;
-    loading(
-      ping(url, {
-        method: 'POST',
-        body: {
-          newRankName,
-          parentRankName,
-          treeName: tableName.toLowerCase(),
-        },
-      }).then(() => globalThis.location.reload())
-    );
-    setIsAddingRank(false);
-  }
-
   return (
     <div
       className={`
@@ -176,12 +152,18 @@ export function Tree<SCHEMA extends AnyTree>({
                 role="columnheader"
               >
                 {index === 0 ? (
-                  <Button.Icon
-                    aria-pressed={isEditingRanks}
-                    icon="pencil"
-                    title={treeText.editRanks()}
-                    onClick={handleToggleEditingRanks}
-                  />
+                  <>
+                    <Button.Icon
+                      aria-pressed={isEditingRanks}
+                      icon="pencil"
+                      title={treeText.editRanks()}
+                      onClick={handleToggleEditingRanks}
+                    />
+                    <AddRank
+                      tableName={tableName}
+                      treeDefinitionItems={treeDefinitionItems}
+                    />
+                  </>
                 ) : null}
                 <Button.LikeLink
                   id={id(rank.rankId.toString())}
@@ -203,44 +185,7 @@ export function Tree<SCHEMA extends AnyTree>({
                     true ? undefined : (
                       <EditTreeRank rank={rank} />
                     )}
-                    <Button.Icon
-                      icon="plus"
-                      title={treeText.addNewRank()}
-                      onClick={() => setIsAddingRank(true)}
-                    />
                   </>
-                )}
-                {isAddingRank && (
-                  <Dialog
-                    buttons={
-                      <>
-                        <Button.DialogClose>
-                          {commonText.cancel()}
-                        </Button.DialogClose>
-                        <Submit.Info form={formId}>
-                          {commonText.create()}
-                        </Submit.Info>
-                      </>
-                    }
-                    header={treeText.addNewRank()}
-                    onClose={() => setIsAddingRank(false)}
-                  >
-                    <Form
-                      id={formId}
-                      onSubmit={(): void => {
-                        addRank(rankName);
-                      }}
-                    >
-                      <Label.Block>
-                        {treeText.newRankName()}
-                        <Input.Text
-                          required
-                          value={newRankName}
-                          onValueChange={setNewRankName}
-                        />
-                      </Label.Block>
-                    </Form>
-                  </Dialog>
                 )}
               </div>
             );
