@@ -18,6 +18,7 @@ import { KEY } from '../../utils/utils';
 import { Button, DialogContext } from '../Atoms/Button';
 import { className, dialogIconTriggers } from '../Atoms/className';
 import { dialogIcons } from '../Atoms/Icons';
+import { SECOND } from '../Atoms/timeUnits';
 import { LoadingContext } from '../Core/Contexts';
 import {
   useHighContrast,
@@ -26,7 +27,6 @@ import {
 } from '../Preferences/Hooks';
 import { userPreferences } from '../Preferences/userPreferences';
 import { useTitle } from './AppTitle';
-import { SECOND } from '../Atoms/timeUnits';
 
 /**
  * Modal dialog with a loading bar
@@ -278,7 +278,7 @@ export function Dialog({
     container,
     isOpen,
     dimensionsKey,
-    // handleResize
+    // HandleResize
     handleResize,
     `${containerClassName}${contentClassName}`,
     modal
@@ -320,7 +320,7 @@ export function Dialog({
     [positionKey]
   );
 
-  // useFreezeDialogSize(container, dimensionsKey);
+  // UseFreezeDialogSize(container, dimensionsKey);
 
   const isFullScreen = containerClassName.includes(dialogClassNames.fullScreen);
 
@@ -544,7 +544,7 @@ function useDialogSize(
   container: HTMLElement | null,
   isOpen: boolean,
   dimensionsKey: string | undefined,
-  // handleResize: ((container: HTMLElement) => void) | undefined
+  // HandleResize: ((container: HTMLElement) => void) | undefined
   handleResize: ((container: HTMLElement) => void) | undefined,
   resizeKey: string,
   modal: boolean
@@ -584,15 +584,17 @@ function useDialogSize(
     if (
       !isOpen ||
       container === null ||
-      // (handleResize === undefined && sizeKey === undefined) ||
-      // globalThis.ResizeObserver === undefined
+      /*
+       * (handleResize === undefined && sizeKey === undefined) ||
+       * globalThis.ResizeObserver === undefined
+       */
       (handleResize === undefined && sizeKey === undefined)
     )
       return undefined;
 
-    // const observer = new globalThis.ResizeObserver(() => {
+    // Const observer = new globalThis.ResizeObserver(() => {
     const observer = new ResizeObserver(() => {
-      // handleResize?.(container);
+      // HandleResize?.(container);
       handleResized?.();
       if (typeof sizeKey === 'string') {
         const width = f.parseInt(container.style.width);
