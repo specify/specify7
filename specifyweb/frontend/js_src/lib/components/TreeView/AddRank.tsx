@@ -12,7 +12,7 @@ import { ping } from '../../utils/ajax/ping';
 import { Dialog } from '../Molecules/Dialog';
 import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
-import { Select } from '../Atoms/Form';
+import { Label, Select } from '../Atoms/Form';
 import { RA } from '../../utils/types';
 import { ResourceView } from '../Forms/ResourceView';
 import { SpecifyResource } from '../DataModel/legacyTypes';
@@ -30,29 +30,15 @@ export function AddRank<SCHEMA extends AnyTree>({
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
 
-  const [isAddingRank, setIsAddingRank] = React.useState(false);
-  const [isAddingParentRank, setIsAddingParentRank] = React.useState(false);
+  const [state, setState] = React.useState<'initial' | 'parent' | 'add'>(
+    'initial'
+  );
 
   const [parentRank, setParentRank] = React.useState('');
   const treeId = strictIdFromUrl(treeDefinitionItems[0].treeDef);
 
   const treeResource = React.useMemo(
-    () =>
-      tableName === 'Geography'
-        ? new tables.GeographyTreeDefItem.Resource({
-            _tableName: 'GeographyTreeDefItem',
-          })
-        : tableName === 'Taxon'
-        ? new tables.TaxonTreeDefItem.Resource({
-            _tableName: 'TaxonTreeDefItem',
-          })
-        : tableName === 'LithoStrat'
-        ? new tables.LithoStratTreeDefItem.Resource({
-            _tableName: 'LithoStratTreeDefItem',
-          })
-        : new tables.StorageTreeDefItem.Resource({
-            _tableName: 'StorageTreeDefItem',
-          }),
+    () => new tables[treeDefinitionItems[0]._tableName].Resource(),
     [tableName]
   );
 
@@ -91,7 +77,7 @@ export function AddRank<SCHEMA extends AnyTree>({
         },
       }).then(() => globalThis.location.reload())
     );
-    setIsAddingRank(false);
+    setState('initial');
   }
 
   return (
@@ -99,17 +85,16 @@ export function AddRank<SCHEMA extends AnyTree>({
       <Button.Icon
         icon="plus"
         title={treeText.addNewRank()}
-        onClick={() => setIsAddingParentRank(true)}
+        onClick={() => setState('parent')}
       />
-      {isAddingParentRank && (
+      {state === 'parent' && (
         <Dialog
           buttons={
             <>
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
               <Button.Save
                 onClick={() => {
-                  setIsAddingRank(true);
-                  setIsAddingParentRank(false);
+                  setState('add');
                 }}
               >
                 {interactionsText.continue()}
@@ -117,26 +102,25 @@ export function AddRank<SCHEMA extends AnyTree>({
             </>
           }
           header={treeText.chooseParentRank()}
-          onClose={() => setIsAddingParentRank(false)}
+          onClose={() => setState('initial')}
         >
-          <Select
-            aria-label={treeText.chooseParentRank()}
-            className="w-full min-w-[theme(spacing.40)]"
-            value={parentRank}
-            onChange={({ target }): void => setParentRank(target.value || '')}
-          >
-            <option disabled value="">
-              {treeText.chooseParentRank()}
-            </option>
-            {treeDefinitionItems.map((rank, index) => (
-              <option key={index} value={rank.name}>
-                {rank.name}
-              </option>
-            ))}
-          </Select>
+          <Label.Block className="gap-2">
+            {treeText.chooseParentRank()}
+            <Select
+              className="w-full min-w-[theme(spacing.40)]"
+              value={parentRank}
+              onChange={({ target }): void => setParentRank(target.value || '')}
+            >
+              {treeDefinitionItems.map((rank, index) => (
+                <option key={index} value={rank.name}>
+                  {rank.name}
+                </option>
+              ))}
+            </Select>
+          </Label.Block>
         </Dialog>
       )}
-      {isAddingRank && (
+      {state === 'add' && (
         <ResourceView
           dialog="modal"
           isDependent={false}
@@ -144,7 +128,7 @@ export function AddRank<SCHEMA extends AnyTree>({
           resource={treeResource as SpecifyResource<GeographyTreeDefItem>}
           title={treeText.addNewRank()}
           onAdd={undefined}
-          onClose={(): void => setIsAddingRank(false)}
+          onClose={(): void => setState('initial')}
           onDeleted={undefined}
           onSaved={undefined}
           onSaving={() => {

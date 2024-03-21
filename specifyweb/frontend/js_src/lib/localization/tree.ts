@@ -462,9 +462,6 @@ export const treeText = createDictionary({
   addNewRank: {
     'en-us': 'Add New Rank',
   },
-  newRankName: {
-    'en-us': 'New Rank Name',
-  },
   chooseParentRank: {
     'en-us': 'Choose Parent Rank',
   },

@@ -36,15 +36,11 @@ import { propsToFormMode } from './useViewDefinition';
  */
 export const FORBID_ADDING = new Set<keyof Tables>([
   'TaxonTreeDef',
-  'TaxonTreeDefItem',
   'GeographyTreeDef',
-  'GeographyTreeDefItem',
   'StorageTreeDef',
-  'StorageTreeDefItem',
   'GeologicTimePeriodTreeDef',
   'GeologicTimePeriodTreeDefItem',
   'LithoStratTreeDef',
-  'LithoStratTreeDefItem',
   'Institution',
   'Division',
   'Discipline',
