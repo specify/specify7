@@ -107,81 +107,44 @@ TREE_RANKS_MAPPING = {
 }
 
 def pre_tree_rank_init(tree_def_item_model, new_rank):
-    if new_rank.parent_id is None:
-        raise TreeBusinessRuleException(
-            "Parent id for the rank is not given",
-            {"tree": tree_def_item_model.__class__.__name__,
-             "localizationKey": 'creatingTreeRank',
-             "node": {
-                 "id": new_rank.id
-             }}
-        )
-    tree_def = new_rank.treedef # maybe get patent type
-    tree_def_model = tree_def.__class__
-    tree = tree_def_model.lower()
+    if new_rank.parent is None:
+        raise_tree_business_rule_exception("Parent id for the rank is not given", tree_def_item_model, new_rank.id)
+
     tree_id = 1 # edit this to be dynamic in the future, but currently there is only one tree
+    use_default_rank_ids = True # edit this to be dynamic in the future, so rankids can be set manually
+    # tree_def = tree_def_item_model.objects.get(id=new_rank.parent_id).treedef
+    tree_def = new_rank.parent.treedef
+    tree_def_model = type(tree_def)
+    tree = new_rank.specify_model.name.replace("TreeDefItem", "").lower()
     tree_name = tree_def_model.objects.get(id=tree_id).name
     parent_rank = new_rank.parent
     parent_rank_name = new_rank.parent.name
-    use_default_rank_ids = True # edit this to be dynamic in the future, so rankids can be set manually
     new_rank_id = new_rank.rankid
     new_rank_name = new_rank.name
     new_rank_title = new_rank.title
-    new_rank_extra_params = {
-        'remarks': getattr(new_rank, 'remarks', None),
-        'textafter': getattr(new_rank, 'textafter', None),
-        'textbefore': getattr(new_rank, 'textbefore', None),
-        'isenforced': getattr(new_rank, 'isenforced', None),
-        'isinfullname': getattr(new_rank, 'isinfullname', None),
-        'fullnameseparator': getattr(new_rank, 'fullnameseparator', None),
+    attributes = ['remarks', 'textafter', 'textbefore', 'isenforced', 'isinfullname', 'fullnameseparator']
+    new_rank_extra_params = {attr: getattr(new_rank, attr, None) for attr in attributes}
+
+    required_params = {
+        'new_rank_name': "Rank name is not given",
+        'parent_rank_name': "Parent rank name is not given",
+        'tree': "Invalid tree type"
     }
 
-    # Throw exceptions if the required parameters are not given correctly
-    if new_rank_name is None:
-        raise TreeBusinessRuleException(
-            "Rank name is not given",
-            {"tree": tree_def.__class__.__name__,
-             "localizationKey": 'creatingTreeRank',
-             "node": {
-                 "id": new_rank_id
-             }}
-        )
-    if parent_rank_name is None:
-        raise TreeBusinessRuleException(
-            "Parent rank name is not given",
-            {"tree": tree_def.__class__.__name__,
-             "localizationKey": 'creatingTreeRank',
-             "node": {
-                 "id": new_rank_id
-             }}
-        )
-    if tree is None or tree.lower() not in TREE_RANKS_MAPPING.keys():
-        raise TreeBusinessRuleException(
-            "Invalid tree type",
-            {"tree": tree_def.__class__.__name__,
-             "localizationKey": 'creatingTreeRank',
-             "node": {
-                 "id": new_rank_id
-             }}
-        )
+    for param, message in required_params.items():
+        if locals()[param] is None:
+            raise_tree_business_rule_exception(message, tree_def_item_model, new_rank_id)
 
-    # Determine the new rank id parameters
-    new_rank_id = None
     tree_def = tree_def_model.objects.get(id=tree_id)
     try:
         tree_def = tree_def_model.objects.get(name=tree_name)
     except tree_def_model.DoesNotExist:
         pass
-    parent_rank = tree_def_item_model.objects.filter(treedef=tree_def, name=parent_rank_name).first()
+
+    parent_rank = tree_def_item_model.objects.get(treedef=tree_def, name=parent_rank_name)
     if parent_rank is None and parent_rank_name != 'root':
-        raise TreeBusinessRuleException(
-            "Target rank name does not exist",
-            {"tree": tree_def.__class__.__name__,
-             "localizationKey": 'creatingTreeRank',
-             "node": {
-                 "id": new_rank_id
-             }}
-        )
+        raise_tree_business_rule_exception("Target rank name does not exist", tree_def_item_model, new_rank_id)
+    
     parent_rank_id = parent_rank.rankid if parent_rank_name != 'root' else -1
     rank_ids = sorted(list(tree_def_item_model.objects.filter(treedef=tree_def).values_list('rankid', flat=True)))
     parent_rank_idx = rank_ids.index(parent_rank_id) if rank_ids is not None and parent_rank_name != 'root' else -1
@@ -317,3 +280,15 @@ def pre_tree_rank_deletion(tree_def_item_model, rank):
 def post_tree_rank_deletion(rank):
     # Regenerate full names
     tree_extras.set_fullnames(rank.treedef, null_only=False, node_number_range=None)
+
+def raise_tree_business_rule_exception(message, tree_def, new_rank_id):
+    raise TreeBusinessRuleException(
+        message,
+        {
+            "tree": tree_def.__class__.__name__,
+            "localizationKey": 'creatingTreeRank',
+            "node": {
+                "id": new_rank_id
+            }
+        }
+    )
