@@ -52,6 +52,11 @@ export function AddRank<SCHEMA extends AnyTree>({
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
               <Button.Save
                 onClick={() => {
+                  const resourceParent = React.useMemo(
+                    () => deserializeResource(JSON.parse(parentRank)),
+                    []
+                  ) as SpecifyResource<GeographyTreeDefItem>;
+                  treeResource.set('parent', resourceParent);
                   setState('add');
                 }}
               >
@@ -70,11 +75,6 @@ export function AddRank<SCHEMA extends AnyTree>({
               value={JSON.stringify(parentRank)}
               onChange={({ target }): void => {
                 setParentRank(JSON.parse(target.value));
-                const resourceParent = React.useMemo(
-                  () => deserializeResource(JSON.parse(target.value)),
-                  []
-                );
-                treeResource.set('parent', resourceParent);
               }}
             >
               {treeDefinitionItems.map((rank, index) => (
