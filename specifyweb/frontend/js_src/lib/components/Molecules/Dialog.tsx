@@ -278,7 +278,6 @@ export function Dialog({
     container,
     isOpen,
     dimensionsKey,
-    // HandleResize
     handleResize,
     `${containerClassName}${contentClassName}`,
     modal
@@ -319,8 +318,6 @@ export function Dialog({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [positionKey]
   );
-
-  // UseFreezeDialogSize(container, dimensionsKey);
 
   const isFullScreen = containerClassName.includes(dialogClassNames.fullScreen);
 
@@ -544,7 +541,6 @@ function useDialogSize(
   container: HTMLElement | null,
   isOpen: boolean,
   dimensionsKey: string | undefined,
-  // HandleResize: ((container: HTMLElement) => void) | undefined
   handleResize: ((container: HTMLElement) => void) | undefined,
   resizeKey: string,
   modal: boolean
@@ -584,17 +580,11 @@ function useDialogSize(
     if (
       !isOpen ||
       container === null ||
-      /*
-       * (handleResize === undefined && sizeKey === undefined) ||
-       * globalThis.ResizeObserver === undefined
-       */
       (handleResize === undefined && sizeKey === undefined)
     )
       return undefined;
 
-    // Const observer = new globalThis.ResizeObserver(() => {
     const observer = new ResizeObserver(() => {
-      // HandleResize?.(container);
       handleResized?.();
       if (typeof sizeKey === 'string') {
         const width = f.parseInt(container.style.width);
