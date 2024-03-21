@@ -14,6 +14,9 @@ import type {
 import { tables } from '../DataModel/tables';
 import { ResourceView } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
+import { deserializeResource } from '../DataModel/serializers';
+import { SpecifyResource } from '../DataModel/legacyTypes';
+import { GeographyTreeDefItem } from '../DataModel/types';
 
 export function AddRank<SCHEMA extends AnyTree>({
   tableName,
@@ -63,11 +66,19 @@ export function AddRank<SCHEMA extends AnyTree>({
             {treeText.chooseParentRank()}
             <Select
               className="w-full min-w-[theme(spacing.40)]"
-              value={parentRank}
-              onChange={({ target }): void => setParentRank(target.value || '')}
+              // value={parentRank}
+              value={JSON.stringify(parentRank)}
+              onChange={({ target }): void => {
+                setParentRank(JSON.parse(target.value));
+                const resourceParent = React.useMemo(
+                  () => deserializeResource(JSON.parse(target.value)),
+                  []
+                ) as SpecifyResource<GeographyTreeDefItem>;
+                treeResource.set('parent', resourceParent);
+              }}
             >
               {treeDefinitionItems.map((rank, index) => (
-                <option key={index} value={rank.name}>
+                <option key={index} value={JSON.stringify(rank)}>
                   {rank.name}
                 </option>
               ))}
