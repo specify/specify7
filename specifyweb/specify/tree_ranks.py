@@ -107,8 +107,15 @@ TREE_RANKS_MAPPING = {
 }
 
 def pre_tree_rank_init(tree_def_item_model, new_rank):
-    if new_rank.parent is None:
-        return
+    if new_rank.parent_id is None:
+        raise TreeBusinessRuleException(
+            "Parent id for the rank is not given",
+            {"tree": tree_def_item_model.__class__.__name__,
+             "localizationKey": 'creatingTreeRank',
+             "node": {
+                 "id": new_rank.id
+             }}
+        )
     tree_def = new_rank.treedef # maybe get patent type
     tree_def_model = tree_def.__class__
     tree = tree_def_model.lower()
