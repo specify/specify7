@@ -11,10 +11,10 @@ import type {
   FilterTablesByEndsWith,
   SerializedResource,
 } from '../DataModel/helperTypes';
-import { SpecifyResource } from '../DataModel/legacyTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { deserializeResource } from '../DataModel/serializers';
 import { tables } from '../DataModel/tables';
-import { GeographyTreeDefItem } from '../DataModel/types';
+import type { GeographyTreeDefItem } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
 
@@ -55,7 +55,7 @@ export function AddRank<SCHEMA extends AnyTree>({
                   const resourceParent = React.useMemo(
                     () => deserializeResource(JSON.parse(parentRank)),
                     []
-                  ) as SpecifyResource<GeographyTreeDefItem>;
+                  );
                   treeResource.set('parent', resourceParent);
                   setState('add');
                 }}
