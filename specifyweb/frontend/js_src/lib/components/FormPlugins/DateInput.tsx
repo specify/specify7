@@ -89,7 +89,9 @@ export function DateInput({
     <>
       <Input.Generic
         className={
-          precision === 'full' && dateType === 'text' ? '!w-full' : 'grow'
+          precision === 'full' && dateType === 'text'
+            ? '!w-full'
+            : '!w-[unset] grow'
         }
         forwardRef={validationRef}
         id={id}
