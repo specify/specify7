@@ -61,7 +61,7 @@ export function useBrokerData(
       // Prefer the species name from an aggregator over local as it is more trustworthy
       occurrence === undefined
         ? undefined
-        : extractBrokerField(occurrence, 'gbif', 'dwc:scientificName') ??
+        : extractBrokerField(occurrence, 'gbif', 'dwc:scientificName') ||
           localSpecies,
     [occurrence, localSpecies]
   );

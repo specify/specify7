@@ -26,6 +26,7 @@ import {
 } from '../Preferences/Hooks';
 import { userPreferences } from '../Preferences/userPreferences';
 import { useTitle } from './AppTitle';
+import { SECOND } from '../Atoms/timeUnits';
 
 /**
  * Modal dialog with a loading bar
@@ -277,7 +278,10 @@ export function Dialog({
     container,
     isOpen,
     dimensionsKey,
-    handleResize
+    // handleResize
+    handleResize,
+    `${containerClassName}${contentClassName}`,
+    modal
   );
 
   const [rememberPosition] = userPreferences.use(
@@ -316,7 +320,7 @@ export function Dialog({
     [positionKey]
   );
 
-  useFreezeDialogSize(container, dimensionsKey);
+  // useFreezeDialogSize(container, dimensionsKey);
 
   const isFullScreen = containerClassName.includes(dialogClassNames.fullScreen);
 
@@ -540,7 +544,10 @@ function useDialogSize(
   container: HTMLElement | null,
   isOpen: boolean,
   dimensionsKey: string | undefined,
-  handleResize: ((container: HTMLElement) => void) | undefined
+  // handleResize: ((container: HTMLElement) => void) | undefined
+  handleResize: ((container: HTMLElement) => void) | undefined,
+  resizeKey: string,
+  modal: boolean
 ): { readonly width: number; readonly height: number } | undefined {
   const [rememberSize] = userPreferences.use(
     'general',
@@ -554,8 +561,16 @@ function useDialogSize(
    * dimensions shouldn't affect the other
    */
 
+  const dialogSizesRef = React.useRef(dialogSizes);
+  dialogSizesRef.current = dialogSizes;
+
+  const handleResized = useFreezeDialogSize(
+    sizeKey === undefined || !modal ? null : container,
+    `${sizeKey ?? ''}${resizeKey}`
+  );
+
   const initialSize = React.useMemo(() => {
-    const sizes = dialogSizes[sizeKey ?? ''];
+    const sizes = dialogSizesRef.current[sizeKey ?? ''];
     return typeof sizes === 'object'
       ? {
           width: sizes[0],
@@ -569,13 +584,16 @@ function useDialogSize(
     if (
       !isOpen ||
       container === null ||
-      (handleResize === undefined && sizeKey === undefined) ||
-      globalThis.ResizeObserver === undefined
+      // (handleResize === undefined && sizeKey === undefined) ||
+      // globalThis.ResizeObserver === undefined
+      (handleResize === undefined && sizeKey === undefined)
     )
       return undefined;
 
-    const observer = new globalThis.ResizeObserver(() => {
-      handleResize?.(container);
+    // const observer = new globalThis.ResizeObserver(() => {
+    const observer = new ResizeObserver(() => {
+      // handleResize?.(container);
+      handleResized?.();
       if (typeof sizeKey === 'string') {
         const width = f.parseInt(container.style.width);
         const height = f.parseInt(container.style.height);
@@ -589,7 +607,7 @@ function useDialogSize(
     observer.observe(container);
 
     return (): void => observer.disconnect();
-  }, [isOpen, container, handleResize, sizeKey]);
+  }, [isOpen, container, handleResize, sizeKey, handleResized, setDialogSizes]);
 
   return initialSize;
 }
@@ -606,44 +624,63 @@ function useTitleChangeNotice(dimensionKey: string | undefined): void {
   }, [dimensionKey]);
 }
 
+const freezeSizeAfter = 2 * SECOND;
+
 function useFreezeDialogSize(
-  containerSizeRef: HTMLDivElement | null,
-  dimensionKey: string | undefined
-): void {
+  containerSizeRef: HTMLElement | null,
+  sizeKey: string
+): () => void {
+  const handleResized = React.useRef<(() => void) | undefined>(undefined);
   React.useEffect(() => {
-    if (dimensionKey === undefined) return;
-    if (containerSizeRef === null) return undefined;
+    if (sizeKey === undefined || containerSizeRef === null) return;
     let oldHeight = containerSizeRef.offsetHeight;
     let oldWidth = containerSizeRef.offsetWidth;
-    const resizeObserver = new ResizeObserver(() => {
+    const openTime = Date.now();
+
+    handleResized.current = (): void => {
+      const timeSinceOpen = Date.now() - openTime;
+      if (timeSinceOpen < freezeSizeAfter) return;
+
       const newHeight = containerSizeRef.offsetHeight;
       const newWidth = containerSizeRef.offsetWidth;
 
       const width = f.parseInt(containerSizeRef.style.width);
       const height = f.parseInt(containerSizeRef.style.height);
-      const hasBeenChanged =
+      const userResizedDialog =
         typeof width === 'number' && typeof height === 'number';
 
-      if (oldHeight !== undefined && newHeight < oldHeight && !hasBeenChanged) {
-        containerSizeRef.style.minHeight = `${oldHeight}px`;
+      /*
+       * Using min width/height rather than width/height because width/height
+       * are reserved for the user (they are set when user resizes the dialog).
+       * This allows to determine if the user resized the dialog or not.
+       *
+       * The drawback though is that min-width takes precedence over max-width,
+       * thus could cause dialog size overflow
+       */
+      if (
+        oldHeight !== undefined &&
+        newHeight < oldHeight &&
+        !userResizedDialog
+      ) {
+        containerSizeRef.style.minHeight = `min(100vh, ${oldHeight}px)`;
       } else oldHeight = newHeight;
 
-      if (oldWidth !== undefined && newWidth < oldWidth && !hasBeenChanged) {
-        containerSizeRef.style.minWidth = `${oldWidth}px`;
+      if (oldWidth !== undefined && newWidth < oldWidth && !userResizedDialog) {
+        containerSizeRef.style.minWidth = `min(100vw, ${oldWidth}px)`;
       } else oldWidth = newWidth;
 
-      if (hasBeenChanged) {
+      if (userResizedDialog) {
         containerSizeRef.style.minHeight = '';
         containerSizeRef.style.minWidth = '';
       }
-    });
+    };
 
-    resizeObserver.observe(containerSizeRef);
-
-    return () => {
-      resizeObserver.disconnect();
+    return (): void => {
+      handleResized.current = undefined;
       containerSizeRef.style.minHeight = '';
       containerSizeRef.style.minWidth = '';
     };
-  }, [containerSizeRef, dimensionKey]);
+  }, [containerSizeRef, sizeKey]);
+
+  return React.useCallback(() => handleResized.current?.(), []);
 }
