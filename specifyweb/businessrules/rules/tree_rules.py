@@ -45,7 +45,7 @@ def post_tree_rank_initiation(tree_def_item_model, new_rank):
     if child_ranks.exists():
         # Iterate through the child ranks, but there should only ever be 0 or 1 child ranks to update
         for child_rank in child_ranks:
-            child_rank.parent = new_rank 
+            child_rank.parent = new_rank
             child_rank.save()
 
     # Regenerate full names

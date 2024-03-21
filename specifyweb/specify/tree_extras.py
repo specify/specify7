@@ -660,3 +660,20 @@ def renumber_tree(table):
     tree_model = datamodel.get_table(table)
     tasknames = [name.format(tree_model.name) for name in ("UpdateNodes{}", "BadNodes{}")]
     Sptasksemaphore.objects.filter(taskname__in=tasknames).update(islocked=False)
+
+def is_instance_of_tree_def_item(obj):
+    from specifyweb.specify.models import (
+        Geographytreedefitem,
+        Geologictimeperiodtreedefitem,
+        Lithostrattreedefitem,
+        Storagetreedefitem,
+        Taxontreedefitem,
+    )
+    tree_def_item_classes = [
+        Geographytreedefitem,
+        Geologictimeperiodtreedefitem,
+        Lithostrattreedefitem,
+        Storagetreedefitem,
+        Taxontreedefitem,
+    ]
+    return any(isinstance(obj, cls) for cls in tree_def_item_classes)
