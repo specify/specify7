@@ -46,23 +46,6 @@ const fetchPossibleRanks = async (
       );
     });
 
-const fetchTreeRoot = async (
-  treeName: AnyTree['tableName']
-): Promise<RA<PickListItemSimple>> =>
-  treeRanksPromise
-    .then(
-      () =>
-        strictGetTreeDefinitionItems(treeName as 'Geography', true).find(
-          ({ rankId }) => rankId === 0
-        )!
-    )
-    .then((rank) => [
-      {
-        value: rank.resource_uri,
-        title: (rank.title?.length ?? 0) === 0 ? rank.name : rank.title!,
-      },
-    ]);
-
 const fetchLowestChildRank = async (
   resource: SpecifyResource<AnyTree>
 ): Promise<number> =>
@@ -112,7 +95,7 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
                     resource.specifyTable.name
                   )
                 )
-              : fetchTreeRoot(resource.specifyTable.name)
+              : undefined
           )
           .then((items) => {
             if (destructorCalled) return undefined;
@@ -135,8 +118,7 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
         props.isDisabled ||
         props.resource === undefined ||
         !isTreeResource(props.resource) ||
-        props.resource.get('parent') === null ||
-        props.resource.get('parent') === undefined
+        typeof props.resource.get('parent') !== 'string'
       }
       isRequired={
         props.resource?.specifyTable.getRelationship('definitionItem')
