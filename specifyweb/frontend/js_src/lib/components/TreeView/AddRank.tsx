@@ -1,23 +1,24 @@
 import React from 'react';
-import { Button } from '../Atoms/Button';
+
+import { commonText } from '../../localization/common';
+import { interactionsText } from '../../localization/interactions';
 import { treeText } from '../../localization/tree';
+import { ping } from '../../utils/ajax/ping';
+import type { RA } from '../../utils/types';
+import { Button } from '../Atoms/Button';
+import { Label, Select } from '../Atoms/Form';
 import { LoadingContext } from '../Core/Contexts';
-import { tables } from '../DataModel/tables';
-import {
+import type {
   AnyTree,
   FilterTablesByEndsWith,
   SerializedResource,
 } from '../DataModel/helperTypes';
-import { ping } from '../../utils/ajax/ping';
-import { Dialog } from '../Molecules/Dialog';
-import { commonText } from '../../localization/common';
-import { interactionsText } from '../../localization/interactions';
-import { Label, Select } from '../Atoms/Form';
-import { RA } from '../../utils/types';
-import { ResourceView } from '../Forms/ResourceView';
 import { SpecifyResource } from '../DataModel/legacyTypes';
-import { GeographyTreeDefItem } from '../DataModel/types';
 import { strictIdFromUrl } from '../DataModel/resource';
+import { tables } from '../DataModel/tables';
+import { GeographyTreeDefItem } from '../DataModel/types';
+import { ResourceView } from '../Forms/ResourceView';
+import { Dialog } from '../Molecules/Dialog';
 
 export function AddRank<SCHEMA extends AnyTree>({
   tableName,
@@ -30,7 +31,7 @@ export function AddRank<SCHEMA extends AnyTree>({
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
 
-  const [state, setState] = React.useState<'initial' | 'parent' | 'add'>(
+  const [state, setState] = React.useState<'add' | 'initial' | 'parent'>(
     'initial'
   );
 
@@ -48,32 +49,16 @@ export function AddRank<SCHEMA extends AnyTree>({
       ping(url, {
         method: 'POST',
         body: {
-          newRankName: (
-            treeResource as SpecifyResource<GeographyTreeDefItem>
-          ).get('name'),
+          newRankName: treeResource.get('name'),
           parentRankName: parentRank,
           treeID: treeId,
-          newRankTitle: (
-            treeResource as SpecifyResource<GeographyTreeDefItem>
-          ).get('title'),
-          remarks: (treeResource as SpecifyResource<GeographyTreeDefItem>).get(
-            'remarks'
-          ),
-          textAfter: (
-            treeResource as SpecifyResource<GeographyTreeDefItem>
-          ).get('textAfter'),
-          textBefore: (
-            treeResource as SpecifyResource<GeographyTreeDefItem>
-          ).get('textBefore'),
-          isEnforced: (
-            treeResource as SpecifyResource<GeographyTreeDefItem>
-          ).get('isEnforced'),
-          isInFullName: (
-            treeResource as SpecifyResource<GeographyTreeDefItem>
-          ).get('isInFullName'),
-          fullNameSeparator: (
-            treeResource as SpecifyResource<GeographyTreeDefItem>
-          ).get('fullNameSeparator'),
+          newRankTitle: treeResource.get('title'),
+          remarks: treeResource.get('remarks'),
+          textAfter: treeResource.get('textAfter'),
+          textBefore: treeResource.get('textBefore'),
+          isEnforced: treeResource.get('isEnforced'),
+          isInFullName: treeResource.get('isInFullName'),
+          fullNameSeparator: treeResource.get('fullNameSeparator'),
         },
       }).then(() => globalThis.location.reload())
     );
@@ -125,7 +110,7 @@ export function AddRank<SCHEMA extends AnyTree>({
           dialog="modal"
           isDependent={false}
           isSubForm={false}
-          resource={treeResource as SpecifyResource<GeographyTreeDefItem>}
+          resource={treeResource}
           title={treeText.addNewRank()}
           onAdd={undefined}
           onClose={(): void => setState('initial')}
