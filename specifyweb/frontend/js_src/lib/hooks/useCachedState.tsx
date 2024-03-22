@@ -17,7 +17,7 @@ import type { GetOrSet } from '../utils/types';
  * Can display some sort of loading message while the value is undefined
  */
 export function useCachedState<
-  CATEGORY extends string & keyof CacheDefinitions,
+  CATEGORY extends keyof CacheDefinitions,
   KEY extends string & keyof CacheDefinitions[CATEGORY]
 >(
   category: CATEGORY,

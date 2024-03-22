@@ -1,7 +1,7 @@
 import React from 'react';
 
 import type { GetOrSet, RA } from '../../utils/types';
-import { MILLISECONDS, MINUTE } from '../Atoms/timeUnits';
+import { MINUTE, SECOND } from '../Atoms/timeUnits';
 import type {
   AttachmentWorkProgress,
   AttachmentWorkRef,
@@ -9,7 +9,6 @@ import type {
 } from './types';
 
 const retryTimes = [MINUTE, 2 * MINUTE, 5 * MINUTE, 10 * MINUTE];
-const INTERRUPT_TIME_STEP = 1;
 export function PerformAttachmentTask({
   files,
   workPromiseGenerator,
@@ -206,8 +205,7 @@ const useTimeout = (
             return previousState;
           }
 
-          const nextRemainingTime =
-            previousState.retryingIn - INTERRUPT_TIME_STEP;
+          const nextRemainingTime = previousState.retryingIn - SECOND;
           if (nextRemainingTime <= 0)
             // Trigger action start when interrupt finishes
             return { ...previousState, type: 'safe' };
@@ -217,7 +215,7 @@ const useTimeout = (
             retryingIn: nextRemainingTime,
           };
         });
-      }, INTERRUPT_TIME_STEP * MILLISECONDS);
+      }, SECOND);
     }
     return () => {
       clearInterval(interval);
