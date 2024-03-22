@@ -131,7 +131,7 @@ export const resourcesText = createDictionary({
   },
   typeSearches: {
     'en-us': 'Type Searches',
-    'de-ch': 'Geben Sie Suchen ein',
+    'de-ch': 'Typsuchen',
     'es-es': 'Tipo de búsquedas',
     'fr-fr': 'Recherches de types',
     'ru-ru': 'Тип поиска',
@@ -155,7 +155,7 @@ export const resourcesText = createDictionary({
   },
   dataObjectFormatters: {
     'en-us': 'Record Formatters',
-    'ru-ru': 'Форматеры записи',
+    'ru-ru': 'Форматеры записей',
     'es-es': 'Formateadores de registros',
     'uk-ua': 'Форматувальники записів',
     'de-ch': 'Datensatz-Formatierer',
@@ -701,7 +701,7 @@ export const resourcesText = createDictionary({
       changer de collection avant de modifier cette ressource.
     `,
     'ru-ru': `
-      Этот ресурс принадлежит к другой коллекции/дисциплине, отличной от той, в
+      Этот ресурс принадлежит другой коллекции/дисциплине, отличной от той, в
       которой вы сейчас находитесь. Перед редактированием этого ресурса
       рекомендуется сменить коллекцию.
     `,
@@ -788,7 +788,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Standardformular kopieren',
     'es-es': 'Formateadores de registros',
     'fr-fr': "Formateurs d'enregistrement",
-    'ru-ru': 'Форматеры записей',
+    'ru-ru': 'Форматеры записи',
     'uk-ua': 'Форматувальники записів',
   },
   copyDefaultForms: {
