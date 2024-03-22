@@ -282,6 +282,7 @@ const cellRenderers: {
       viewDefinition === undefined ? null : (
         <SpecifyForm
           display={display}
+          key={definitionIndex}
           resource={resource}
           viewDefinition={viewDefinition}
         />

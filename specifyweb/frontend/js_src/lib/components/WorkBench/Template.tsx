@@ -50,7 +50,7 @@ function Navigation({
       data-navigation-type={name}
     >
       <Button.Small
-        className="wb-cell-navigation p-2 ring-0 brightness-80 hover:brightness-70"
+        className="wb-cell-navigation brightness-80 hover:brightness-70 p-2 ring-0"
         data-navigation-direction="previous"
         variant="bg-inherit text-gray-800 dark:text-gray-100"
         onClick={f.never}
@@ -59,8 +59,8 @@ function Navigation({
       </Button.Small>
       <Button.Small
         className={`
-          wb-navigation-text grid grid-cols-[auto_1fr_auto_1fr_auto] items-center
-          ring-0 hover:brightness-70
+          wb-navigation-text hover:brightness-70 grid grid-cols-[auto_1fr_auto_1fr_auto]
+          items-center ring-0
           ${className.ariaHandled}
         `}
         title={wbText.clickToToggle()}
@@ -71,7 +71,7 @@ function Navigation({
         <span className="wb-navigation-total">0</span>)
       </Button.Small>
       <Button.Small
-        className="wb-cell-navigation p-2 ring-0 brightness-80 hover:brightness-70"
+        className="wb-cell-navigation brightness-80 hover:brightness-70 p-2 ring-0"
         data-navigation-direction="next"
         type="button"
         variant="bg-inherit text-gray-800 dark:text-gray-100"
@@ -114,16 +114,6 @@ function WbView({
           {commonText.tools()}
         </Button.Small>
         <span className="-ml-1 flex-1" />
-        {/* This button is here for debugging only */}
-        <Button.Small
-          className={`
-            wb-show-plan
-            ${process.env.NODE_ENV === 'development' ? '' : 'hidden'}
-          `}
-          onClick={f.never}
-        >
-          [DEV] Show Plan
-        </Button.Small>
         {canUpdate || isMapped ? (
           <Link.Small href={`/specify/workbench/plan/${dataSetId}/`}>
             {wbPlanText.dataMapper()}
@@ -205,13 +195,18 @@ function WbView({
       >
         {hasPermission('/workbench/dataset', 'transfer') &&
         hasTablePermission('SpecifyUser', 'read') ? (
-          <Button.Small
-            aria-haspopup="dialog"
-            className="wb-change-data-set-owner"
-            onClick={f.never}
-          >
-            {wbText.changeOwner()}
-          </Button.Small>
+          <>
+            <Button.Small
+              aria-haspopup="dialog"
+              className="wb-change-data-set-owner"
+              onClick={f.never}
+            >
+              {wbText.changeOwner()}
+            </Button.Small>
+            <Button.Small className="wb-show-plan" onClick={f.never}>
+              {wbText.uploadPlan()}
+            </Button.Small>
+          </>
         ) : undefined}
         <Button.Small className="wb-export-data-set" onClick={f.never}>
           {commonText.export()}

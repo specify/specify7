@@ -2,16 +2,18 @@
  * WebPack config for development and production
  */
 
-const path = require('node:path');
-const webpack = require('webpack');
-const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import webpack from 'webpack';
+import { WebpackManifestPlugin } from 'webpack-manifest-plugin';
+import postcssConfig from './postcss.config.js';
 
-const outputPath = path.resolve(__dirname, 'dist');
+const outputPath = resolve(dirname(fileURLToPath(import.meta.url)), 'dist');
 
 // 1MB in bytes
 const mb = 1024 * 1024;
 
-module.exports = (_environment, argv) =>
+export default (_environment, argv) =>
   /** @type { import('webpack').Configuration } */ ({
     module: {
       rules: [
@@ -21,7 +23,16 @@ module.exports = (_environment, argv) =>
         },
         {
           test: /\.css$/u,
-          use: ['style-loader', 'css-loader', 'postcss-loader'],
+          use: [
+            'style-loader',
+            'css-loader',
+            {
+              loader: 'postcss-loader',
+              options: {
+                postcssOptions: postcssConfig,
+              },
+            },
+          ],
         },
         {
           test: /\.[jt]sx?$/u,
@@ -54,16 +65,11 @@ module.exports = (_environment, argv) =>
       ],
     },
     resolve: {
-      /**
-       * Resolve TypeScript files first. This way, when a .js file is
-       * rewritten to .ts, but the old .js still remains in a docker volume,
-       * it gets ignored in favor of the new .ts file
-       */
       extensions: ['.ts', '.tsx', '.js'],
       symlinks: false,
     },
     plugins: [
-      new WebpackManifestPlugin(),
+      new WebpackManifestPlugin({}),
       ...(process.env.NODE_ENV === 'production'
         ? [
             new webpack.optimize.MinChunkSizePlugin({

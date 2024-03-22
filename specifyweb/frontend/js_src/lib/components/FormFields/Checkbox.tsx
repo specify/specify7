@@ -44,7 +44,8 @@ export function PrintOnSave({
     [setTables, tables, table.name]
   );
   React.useEffect(() => {
-    if (entry === undefined && defaultValue === true) handleChange(true);
+    if (entry === undefined && typeof defaultValue === 'boolean')
+      handleChange(defaultValue);
   }, [defaultValue, entry, handleChange]);
 
   const input = (

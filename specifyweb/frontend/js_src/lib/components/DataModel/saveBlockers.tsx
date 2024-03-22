@@ -38,6 +38,7 @@ const blockerEvents = eventListener<{
 }>();
 
 type Blocker = {
+  readonly key: string;
   readonly field: LiteralField | Relationship;
   readonly message: string;
 };
@@ -47,10 +48,26 @@ export type BlockerWithResource = {
   readonly message: string;
 };
 
+export const getFieldBlockerKey = (
+  field: LiteralField | Relationship,
+  blockerKey: string
+): string => `${blockerKey}-${field.name}`;
+
+export const propagateBlockerEvents = (
+  resource: SpecifyResource<AnySchema>
+) => {
+  if (resource.parent) blockerEvents.trigger('change', resource.parent);
+  if (
+    resource.collection?.related !== undefined &&
+    resource.collection.related !== resource.parent
+  )
+    blockerEvents.trigger('change', resource.collection.related);
+};
+
 export function useSaveBlockers(
   resource: SpecifyResource<AnySchema> | undefined,
   field: LiteralField | Relationship | undefined
-): GetOrSet<RA<string>> {
+): readonly [RA<string>, (value: RA<string>, blockerKey: string) => void] {
   const [blockers, setBlockers] = React.useState<RA<string>>([]);
 
   React.useEffect(
@@ -74,7 +91,7 @@ export function useSaveBlockers(
   return [
     blockers,
     React.useCallback(
-      (errors) => {
+      (errors, blockerKey) => {
         if (resource === undefined || field === undefined) {
           softFail(
             new Error('Unable to set blockers on undefined resource or field'),
@@ -84,7 +101,7 @@ export function useSaveBlockers(
               field,
             }
           );
-        } else setSaveBlockers(resource, field, errors);
+        } else setSaveBlockers(resource, field, errors, blockerKey);
       },
       [resource, field]
     ),
@@ -94,21 +111,26 @@ export function useSaveBlockers(
 export function setSaveBlockers(
   resource: SpecifyResource<AnySchema>,
   field: LiteralField | Relationship,
-  errors: Parameters<GetOrSet<RA<string>>[1]>[0]
+  errors: Parameters<GetOrSet<RA<string>>[1]>[0],
+  blockerKey: string
 ): void {
   const resolvedErrors =
     typeof errors === 'function'
-      ? errors(getFieldBlockers(resource, field))
+      ? errors(getFieldBlockers(resource, field, blockerKey))
       : errors;
-  const blockers = f.unique(resolvedErrors).map((error) => ({
+  const blockers: RA<Blocker> = f.unique(resolvedErrors).map((error) => ({
     field,
     message: error,
+    key: blockerKey,
   }));
   const resourceBlockers = getResourceBlockers(resource)!;
   const newBlockers = [
-    ...resourceBlockers.blockers.filter((blocker) => blocker.field !== field),
+    ...resourceBlockers.blockers.filter(
+      (blocker) => blocker.key !== blockerKey
+    ),
     ...blockers,
   ];
+
   saveBlockers.set(resource, {
     ...resourceBlockers,
     blockers: newBlockers,
@@ -118,11 +140,16 @@ export function setSaveBlockers(
 
 export function getFieldBlockers(
   resource: SpecifyResource<AnySchema>,
-  field: LiteralField | Relationship
+  field: LiteralField | Relationship,
+  blockerKey?: string
 ): RA<string> {
-  const blockers = saveBlockers.get(resource)?.blockers ?? [];
+  const blockers = getResourceBlockers(resource).blockers;
   return blockers
-    .filter((blocker) => blocker.field === field)
+    .filter((blocker) =>
+      blockerKey === undefined
+        ? blocker.field === field
+        : blocker.field === field && blocker.key === blockerKey
+    )
     .map(({ message }) => message);
 }
 

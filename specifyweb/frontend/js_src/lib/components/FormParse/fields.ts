@@ -119,7 +119,7 @@ const processFieldType: {
     }
     return {
       type: 'Checkbox',
-      defaultValue: getBooleanAttribute(cell, 'default') ?? false,
+      defaultValue: getBooleanAttribute(cell, 'default'),
       label:
         f.maybe(getParsedAttribute(cell, 'label'), legacyLocalize) ??
         (printOnSave ? reportsText.generateLabelOnSave() : undefined),

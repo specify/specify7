@@ -30,6 +30,7 @@ export function TreeRow({
   setFocusedRow,
   synonymColor,
   treeName,
+  hideEmptyNodes,
 }: {
   readonly row: Row;
   readonly getRows: (parentId: number | 'null') => Promise<RA<Row>>;
@@ -53,7 +54,8 @@ export function TreeRow({
   readonly setFocusedRow?: (row: Row) => void;
   readonly synonymColor: string;
   readonly treeName: string;
-}): JSX.Element {
+  readonly hideEmptyNodes: boolean;
+}): JSX.Element | null {
   const [rows, setRows] = React.useState<RA<Row> | undefined>(undefined);
   const [childStats, setChildStats] = React.useState<Stats | undefined>(
     undefined
@@ -142,7 +144,10 @@ export function TreeRow({
     []
   );
 
-  return (
+  const hasNoChildrenNodes =
+    nodeStats?.directCount === 0 && nodeStats.childCount === 0;
+
+  return hideEmptyNodes && hasNoChildrenNodes ? null : (
     <li role="treeitem row">
       {ranks.map((rankId) => {
         if (row.rankId === rankId) {
@@ -169,6 +174,7 @@ export function TreeRow({
                     ? 'outline outline-1 outline-blue-500'
                     : ''
                 }
+                ${hideEmptyNodes && isLoadingStats ? 'opacity-50' : ''}
               `}
               forwardRef={isFocused ? handleRef : undefined}
               key={rankId}
@@ -299,6 +305,7 @@ export function TreeRow({
               }
               getRows={getRows}
               getStats={getStats}
+              hideEmptyNodes={hideEmptyNodes}
               key={childRow.nodeId}
               nodeStats={childStats?.[childRow.nodeId]}
               path={[...path, row]}

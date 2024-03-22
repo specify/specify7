@@ -105,7 +105,9 @@ export async function format<SCHEMA extends AnySchema>(
     : undefined;
 
   return Promise.all(
-    fields.map(async (field) => formatField(field, resource, cycleDetection))
+    fields.map(async (field) =>
+      formatField(field, resource, cycleDetection, tryBest)
+    )
   ).then((values) => {
     const joined = values.reduce<string>(
       (result, { formatted, separator = '' }, index) =>
@@ -147,7 +149,8 @@ async function formatField(
     readonly formatFieldValue?: boolean;
   },
   parentResource: SpecifyResource<AnySchema>,
-  cycleDetection: RA<SpecifyResource<AnySchema>> = []
+  cycleDetection: RA<SpecifyResource<AnySchema>> = [],
+  tryBest: boolean = false
 ): Promise<{ readonly formatted: string; readonly separator?: string }> {
   const isCycle = cycleDetection.some(
     (resource) =>
@@ -158,12 +161,12 @@ async function formatField(
 
   let formatted: string | undefined = undefined;
   const hasPermission = hasPathPermission(fields ?? [], 'read');
+
   if (hasPermission) {
     const data = await fetchDistantRelated(parentResource, fields);
     if (data === undefined) return { formatted: '' };
     const { resource, field } = data;
     if (field === undefined || resource === undefined) return { formatted: '' };
-
     formatted = field.isRelationship
       ? isCycle
         ? ''
@@ -187,7 +190,10 @@ async function formatField(
           fieldFormatter
         )
       : (resource.get(field.name) as string | null) ?? undefined;
-  } else formatted = userText.noPermission();
+  } else
+    formatted = tryBest
+      ? naiveFormatter(parentResource.specifyTable.name, parentResource.id)
+      : userText.noPermission();
 
   return {
     formatted: formatted?.toString() ?? '',
