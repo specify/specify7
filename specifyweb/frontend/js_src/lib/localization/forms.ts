@@ -59,8 +59,7 @@ export const formsText = createDictionary({
       Los valores de {values:string} deben ser únicos para {fieldName:string}
     `,
     'fr-fr': `
-      Êtes-vous sûr de vouloir supprimer définitivement ce [X49X] de la base de
-      données ?
+      Les valeurs de {values:string} doivent être uniques à {fieldName:string}
     `,
     'uk-ua':
       'Значення {values:string} мають бути унікальними для {fieldName:string}',
@@ -143,9 +142,9 @@ export const formsText = createDictionary({
       with at least a start time or and end time populated.
     `,
     'de-ch': `
-      Das Paleo Map-Plugin erfordert, dass die {localityTable:string}
-      geografische Koordinaten haben und dass der Paläo-Kontext ein
-      geografisches Alter mit mindestens einer Start- oder Endzeit aufweist.
+      Das Paleo Map-Plugin erfordert, dass das {localityTable:string} über
+      geografische Koordinaten verfügt und dass der Paläo-Kontext über ein
+      geografisches Alter mit mindestens einer Start- oder Endzeit verfügt.
     `,
     'es-es': 'Seleccionar fuente de tablas',
     'fr-fr': 'Sélectionnez la source des tables',
@@ -352,7 +351,7 @@ export const formsText = createDictionary({
   },
   unsavedFormUnloadProtect: {
     'en-us': 'This form has not been saved.',
-    'ru-ru': 'Эта форма не сохранена.',
+    'ru-ru': 'Эта форма не сохранилась.',
     'es-es': 'Este formulario no ha sido guardado.',
     'fr-fr': "Ce formulaire n'a pas été enregistré.",
     'uk-ua': 'Ця форма не збережена.',
@@ -365,7 +364,7 @@ export const formsText = createDictionary({
     'es-es': 'Guardar conflicto',
     'fr-fr': 'Enregistrer le conflit',
     'uk-ua': 'Зберегти конфлікт',
-    'de-ch': 'Konflikt speichern',
+    'de-ch': 'Konflikte speichern',
   },
   saveConflictDescription: {
     'en-us': `
@@ -611,10 +610,7 @@ export const formsText = createDictionary({
       Die Ressource kann nicht gelöscht werden, da sie von den folgenden
       Ressourcen referenziert wird:
     `,
-    'fr-fr': `
-      La ressource ne peut pas être supprimée car elle est référencée par les
-      ressources suivantes :
-    `,
+    'fr-fr': 'La valeur doit être un nombre',
   },
   organization: {
     'en-us': 'Organization',
@@ -824,7 +820,7 @@ export const formsText = createDictionary({
     'ru-ru': 'Создайте новую запись с переносом определенных полей.',
     'es-es': 'Crear un nuevo registro con ciertos campos transferidos',
     'fr-fr': 'Créer un nouvel enregistrement avec certains champs reportés',
-    'uk-ua': 'Створіть новий запис із перенесеними певними полями',
+    'uk-ua': 'Створіть новий запис із певними перенесеними полями',
     'de-ch': `
       Erstellen Sie einen neuen Datensatz mit übernommenen bestimmten Feldern
     `,
@@ -841,7 +837,7 @@ export const formsText = createDictionary({
     'en-us': 'Configure fields to carry forward ({tableName:string})',
     'ru-ru': 'Настройте поля для переноса ({tableName:string})',
     'es-es': 'Configurar campos para transferir ({tableName:string})',
-    'fr-fr': "Cette commande n'est actuellement pas disponible pour Specify 7.",
+    'fr-fr': 'Configurer les champs à reporter ({tableName:string})',
     'uk-ua': 'Налаштувати поля для перенесення ({tableName:string})',
     'de-ch': 'Felder für die Übertragung konfigurieren ({tableName:string})',
   },
@@ -1011,7 +1007,7 @@ export const formsText = createDictionary({
     'es-es': 'Subvista',
     'uk-ua': 'Підвид',
     'de-ch': 'Unteransicht',
-    'fr-fr': 'Reporter',
+    'fr-fr': 'Sous-vue',
   },
   selectSourceOfTables: {
     'en-us': 'Select source of tables',
