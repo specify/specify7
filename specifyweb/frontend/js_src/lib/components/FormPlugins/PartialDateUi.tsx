@@ -49,18 +49,20 @@ export function PartialDateUi({
     React.useContext(ReadOnlyContext) || resource === undefined;
 
   return (
-    <div className="flex w-full gap-1">
+    <div className="grid w-full grid-cols-[fit-content(40%)_1fr] gap-1">
       {!isReadOnly && canChangePrecision ? (
         <DatePrecisionPicker moment={moment} {...precisionProps} />
       ) : undefined}
       <ReadOnlyContext.Provider value={isReadOnly || resource === undefined}>
-        <DateInput
-          id={id}
-          isRequired={isRequired}
-          moment={moment}
-          parser={parser}
-          precision={precision}
-        />
+        <div className="flex">
+          <DateInput
+            id={id}
+            isRequired={isRequired}
+            moment={moment}
+            parser={parser}
+            precision={precision}
+          />
+        </div>
       </ReadOnlyContext.Provider>
     </div>
   );

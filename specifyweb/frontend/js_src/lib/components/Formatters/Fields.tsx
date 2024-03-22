@@ -54,7 +54,7 @@ export function Fields({
            *   table layout with list layout
            */
           className={`
-            grid-table min-w-[35rem] gap-x-4 gap-y-4
+            grid-table min-w-[35rem] gap-x-2 gap-y-2
             [&_td]:!items-stretch
             ${
               displayFormatter
@@ -100,7 +100,7 @@ export function Fields({
         </table>
       )}
       {isReadOnly ? null : (
-        <div className="flex gap-2">
+        <div className="flex gap-2 pt-2">
           <Button.Secondary
             onClick={(): void =>
               setFields([

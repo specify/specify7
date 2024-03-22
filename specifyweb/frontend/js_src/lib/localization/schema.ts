@@ -325,10 +325,10 @@ export const schemaText = createDictionary({
   },
   fieldCount: {
     'en-us': 'Field count',
-    'ru-ru': 'Агрегация таблиц',
+    'ru-ru': 'Количество полей',
     'es-es': 'Recuento de campos',
-    'fr-fr': 'Agrégation de tables',
-    'uk-ua': 'Агрегація таблиць',
+    'fr-fr': 'Nombre de champs',
+    'uk-ua': 'Підрахунок полів',
     'de-ch': 'Anzahl Felder',
   },
   relationshipCount: {

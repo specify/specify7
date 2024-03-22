@@ -27,10 +27,10 @@ export const resourcesText = createDictionary({
   },
   formDefinitions: {
     'en-us': 'Form Definitions',
-    'ru-ru': 'Публиковать',
-    'es-es': 'Publicar',
-    'fr-fr': 'Publier',
-    'uk-ua': 'Опублікувати',
+    'ru-ru': 'Определения форм',
+    'es-es': 'Definiciones de formulario',
+    'fr-fr': 'Définitions de formulaire',
+    'uk-ua': 'Визначення форм',
     'de-ch': 'Formular Definitionen',
   },
   loadFile: {
@@ -131,7 +131,7 @@ export const resourcesText = createDictionary({
   },
   typeSearches: {
     'en-us': 'Type Searches',
-    'de-ch': 'Geben Sie Suchen ein',
+    'de-ch': 'Typsuchen',
     'es-es': 'Tipo de búsquedas',
     'fr-fr': 'Recherches de types',
     'ru-ru': 'Тип поиска',
@@ -148,7 +148,7 @@ export const resourcesText = createDictionary({
   uiFormatters: {
     'en-us': 'Field Formatters',
     'ru-ru': 'Форматировщики полей',
-    'es-es': 'Formateadores de campos',
+    'es-es': 'Formateadores de campo',
     'fr-fr': 'Formateurs de champs',
     'uk-ua': 'Форматувальники полів',
     'de-ch': 'Feldformatierer',
@@ -261,10 +261,10 @@ export const resourcesText = createDictionary({
       таблиц.
     `,
     'uk-ua': `
-      «Агрегація таблиць» контролює, як кілька записів таблиці консолідуються в
-      один текстовий рядок. Формат таблиці, роздільник, суфікс, поле сортування
-      та ліміт попереднього перегляду запису можна налаштувати. Він може
-      відображатися в результатах запитів і у форматах таблиць.
+      «Агрегація таблиць» контролює, як кілька записів таблиці об’єднуються
+      разом в один текстовий рядок. Формат таблиці, роздільник, суфікс, поле
+      сортування та ліміт попереднього перегляду запису можна налаштувати. Він
+      може відображатися в результатах запитів і у форматах таблиць.
     `,
   },
   formattedResource: {
@@ -417,7 +417,7 @@ export const resourcesText = createDictionary({
     'es-es': 'Editor JSON',
     'fr-fr': 'Éditeur JSON',
     'uk-ua': 'Редактор JSON',
-    'de-ch': 'JSON-Editor',
+    'de-ch': 'Separator',
   },
   visualEditor: {
     'en-us': 'Visual Editor',
@@ -502,14 +502,14 @@ export const resourcesText = createDictionary({
   limit: {
     'en-us': 'Limit',
     'ru-ru': 'Лимит',
-    'de-ch': '',
+    'de-ch': 'Grenze',
     'es-es': 'Límite',
     'fr-fr': 'Limite',
     'uk-ua': 'Ліміт',
   },
   defaultInline: {
     'en-us': '(default)',
-    'de-ch': 'Passen Sie Feldformatierer an',
+    'de-ch': 'Formatvorschau',
     'es-es': '(por defecto)',
     'fr-fr': '(défaut)',
     'ru-ru': '(по умолчанию)',
@@ -738,10 +738,10 @@ export const resourcesText = createDictionary({
   fileName: {
     'en-us': 'File name',
     'de-ch': 'Dateiname',
-    'es-es': 'Nombre del archivo',
-    'fr-fr': 'Nom de fichier',
-    'ru-ru': 'Имя файла',
-    'uk-ua': "Ім'я файлу",
+    'es-es': 'Seleccione la tabla primero',
+    'fr-fr': "Sélectionnez d'abord le tableau",
+    'ru-ru': 'Сначала выберите таблицу',
+    'uk-ua': 'Спочатку виберіть таблицю',
   },
   runAsUser: {
     'en-us': 'Run as user',
@@ -786,10 +786,10 @@ export const resourcesText = createDictionary({
   copyDefaultForm: {
     'en-us': 'Copy default form',
     'de-ch': 'Standardformular kopieren',
-    'es-es': 'Agregadores',
-    'fr-fr': 'Agrégateurs',
-    'ru-ru': 'Агрегаторы',
-    'uk-ua': 'Агрегатори',
+    'es-es': 'Formateadores de registros',
+    'fr-fr': "Formateurs d'enregistrement",
+    'ru-ru': 'Форматеры записи',
+    'uk-ua': 'Форматувальники записів',
   },
   copyDefaultForms: {
     'en-us': 'Copy default forms',

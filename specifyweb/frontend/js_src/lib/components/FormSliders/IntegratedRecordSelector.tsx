@@ -216,6 +216,7 @@ export function IntegratedRecordSelector({
                 isDependent={isDependent}
                 isLoading={isLoading}
                 isSubForm={dialog === false}
+                key={resource?.cid}
                 preHeaderButtons={collapsibleButton}
                 resource={resource}
                 title={relationship.label}
