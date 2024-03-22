@@ -62,7 +62,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Операция провалена',
     'es-es': 'Operación fallida',
     'fr-fr': "L'opération a échoué",
-    'uk-ua': 'Не вдалося виконати операцію',
+    'uk-ua': 'Операція не вдалася',
     'de-ch': 'Vorgang fehlgeschlagen',
   },
   actionFailedDescription: {
@@ -160,7 +160,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Невозможно объединить в синонимы',
     'es-es': 'No se puede fusionar en sinónimos',
     'fr-fr': 'Impossible de fusionner avec des synonymes',
-    'uk-ua': 'Неможливо злити в синоніми',
+    'uk-ua': 'Не можна об’єднувати в синоніми',
     'de-ch': 'Kann nicht zu Synonymen zusammenführen',
   },
   cantSynonymizeSynonym: {
@@ -255,7 +255,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Сделайте {nodeName:string} синонимом {synonymName:string}',
     'es-es': 'Hacer de {nodeName:string} un sinónimo de {synonymName:string}',
     'fr-fr': 'Faire de {nodeName:string} un synonyme de {synonymName:string}',
-    'uk-ua': 'Зробити {nodeName:string} синонімом {synonymName:string}',
+    'uk-ua': 'Зробіть {nodeName:string} синонімом {synonymName:string}',
     'de-ch':
       'Aus {nodeName:string} ein Synonym von {synonymName:string} machen',
   },
@@ -289,7 +289,10 @@ export const treeText = createDictionary({
       Der {treeName:string}-Knoten "{nodeName:string}" wird zu einem Synonym von
       "{synonymName:string}".
     `,
-    'uk-ua': 'ЗАЧИНЕНО',
+    'uk-ua': `
+      Вузол {treeName:string} "{nodeName:string}" стане синонімом
+      "{synonymName:string}".
+    `,
   },
   desynonymizeNode: {
     'en-us': 'Desynonymize node',
@@ -392,7 +395,7 @@ export const treeText = createDictionary({
     'es-es': 'Recuento directo de {collectionObjectTable:string}',
     'de-ch': 'Direkte {collectionObjectTable:string} Anzahl',
     'fr-fr': 'Impossible de passer à un synonyme',
-    'uk-ua': 'Неможливо перейти до синоніма',
+    'uk-ua': 'Прямий підрахунок {collectionObjectTable:string}.',
   },
   indirectCollectionObjectCount: {
     comment: 'Example: Indirect Collection Object count',
