@@ -1,6 +1,7 @@
 import json
 from django.test import Client
-from specifyweb.specify import models
+from specifyweb.businessrules.exceptions import TreeBusinessRuleException
+from specifyweb.specify import api, models
 from specifyweb.specify.api_tests import ApiTests, get_table
 from specifyweb.specify.tree_stats import get_tree_stats
 from specifyweb.stored_queries.tests import SQLAlchemySetup
@@ -446,3 +447,213 @@ class AddDeleteRanksTest(ApiTests):
             content_type='application/json'
         )
         # self.assertEqual(response.status_code, 500)
+
+class AddDeleteRankResourcesTest(ApiTests):
+    def setUp(self) -> None:
+        super().setUp()
+    
+    def test_add_ranks_without_defaults(self):
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        # for obj in models.Geographytreedefitem.objects.all():
+        #     obj.delete()
+
+        treedef_geo = models.Geographytreedef.objects.create(name='GeographyTest')
+
+        # Test adding non-default rank on empty heirarchy
+        data = {
+            'name': 'Universe',
+            'parent': None,
+            'treedef': treedef_geo,
+            'rankid': 100
+        }
+        universe_rank = api.create_obj(self.collection, self.agent, 'geographytreedefitem', data)
+        self.assertEqual(100, models.Geographytreedefitem.objects.get(name='Universe').rankid)
+
+        # Test adding non-default rank to the end of the heirarchy
+        data = {
+            'name': 'Galaxy',
+            # 'parent': f'/api/specify/geographytreedefitem/{universe_rank.id}/',
+            'parent': api.uri_for_model(models.Geographytreedefitem, universe_rank.id),
+            'treedef': treedef_geo,
+            'rankid': 200
+        }
+        galaxy_rank = api.create_obj(self.collection, self.agent, 'geographytreedefitem', data)
+        self.assertEqual(200, models.Geographytreedefitem.objects.get(name='Galaxy').rankid)
+
+        # Test adding non-default rank to the front of the heirarchy
+        data = {
+            'name': 'Multiverse',
+            'parent': None,
+            'treedef': treedef_geo,
+            'rankid': 50
+        }
+        multiverse_rank = api.create_obj(self.collection, self.agent, 'geographytreedefitem', data)
+        self.assertEqual(50, models.Geographytreedefitem.objects.get(name='Multiverse').rankid)
+
+        # Test adding non-default rank in the middle of the heirarchy
+        data = {
+            'name': 'Dimension',
+            # 'parent': universe_rank,
+            'parent': api.uri_for_model(models.Geographytreedefitem, universe_rank.id),
+            'treedef': treedef_geo,
+            'rankid': 150
+        }
+        dimersion_rank = api.create_obj(self.collection, self.agent, 'geographytreedefitem', data)
+        self.assertEqual(150, models.Geographytreedefitem.objects.get(name='Dimension').rankid)
+
+        # Test foreign keys
+        self.assertEqual(4, models.Geographytreedefitem.objects.filter(treedef=treedef_geo).count())
+
+        # Create test nodes
+        cfc = models.Geography.objects.create(name='Central Finite Curve', rankid=50, definition=treedef_geo,
+                                              definitionitem=models.Geographytreedefitem.objects.get(name='Multiverse'))
+        c137 = models.Geography.objects.create(name='C137', rankid=100, parent=cfc, definition=treedef_geo,
+                                               definitionitem=models.Geographytreedefitem.objects.get(name='Universe'))
+        d3 = models.Geography.objects.create(name='3D', rankid=150, parent=c137, definition=treedef_geo,
+                                             definitionitem=models.Geographytreedefitem.objects.get(name='Dimension'))
+        milky_way = models.Geography.objects.create(name='Milky Way', parent=d3, rankid=200, definition=treedef_geo,
+                                                    definitionitem=models.Geographytreedefitem.objects.get(
+                                                        name='Galaxy'))
+        
+        # Test full name reconstruction
+        set_fullnames(treedef_geo, null_only=False, node_number_range=None)
+        if cfc.fullname is not None:
+            self.assertEqual('Central Finite Curve', cfc.fullname)
+        if c137.fullname is not None:
+            self.assertEqual('C137', c137.fullname)
+        if d3.fullname is not None:
+            self.assertEqual('3D', d3.fullname)
+        if milky_way.fullname is not None:
+            self.assertEqual('Milky Way', milky_way.fullname)
+            
+        # Test parents of child nodes
+        self.assertEqual(cfc.id, c137.parent.id)
+        self.assertEqual(c137.id, d3.parent.id)
+        self.assertEqual(d3.id, milky_way.parent.id)
+
+
+    def test_add_ranks_with_defaults(self):
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        for obj in models.Taxontreedefitem.objects.all():
+            obj.delete()
+
+        treedef_taxon = models.Taxontreedef.objects.create(name='TaxonTest')
+
+        # Test adding default rank on empty heirarchy
+        data = {
+            'name': 'Taxonomy Root',
+            'parent': None,
+            'treedef': treedef_taxon
+        }
+        taxon_root_rank = api.create_obj(self.collection, self.agent, 'taxontreedefitem', data)
+        # self.assertEqual(response.status_code, 200)
+        self.assertEqual(0, models.Taxontreedefitem.objects.get(name='Taxonomy Root').rankid)
+
+        # Test adding non-default rank in front of rank 0
+        data = {
+            'name': 'Invalid',
+            'parent': None,
+            'treedef': treedef_taxon
+        }
+        with self.assertRaises(TreeBusinessRuleException):
+            api.create_obj(self.collection, self.agent, 'taxontreedefitem', data)
+        # self.assertEqual(response.status_code, 400)
+        self.assertEqual(0, models.Taxontreedefitem.objects.filter(name='Invalid').count())
+
+        # Test adding default rank to the end of the heirarchy
+        data = {
+            'name': 'Division',
+            # 'parent': taxon_root_rank,
+            # 'parent': f'/api/specify/taxontreedefitem/{taxon_root_rank.id}/',
+            'parent': api.uri_for_model(models.Taxontreedefitem, taxon_root_rank.id),
+            'treedef': treedef_taxon
+        }
+        division_rank = api.create_obj(self.collection, self.agent, 'taxontreedefitem', data)
+        self.assertEqual(30, models.Taxontreedefitem.objects.get(name='Division').rankid)
+
+        # Test adding default rank to the middle of the heirarchy
+        data = {
+            'name': 'Kingdom',
+            # 'parent': taxon_root_rank,
+            # 'parent': f'/api/specify/taxontreedefitem/{taxon_root_rank.id}/',
+            'parent': api.uri_for_model(models.Taxontreedefitem, taxon_root_rank.id),
+            'treedef': treedef_taxon
+        }
+        kingdom_rank = api.create_obj(self.collection, self.agent, 'taxontreedefitem', data)
+        self.assertEqual(10, models.Taxontreedefitem.objects.get(name='Kingdom').rankid)
+        self.assertEqual(models.Taxontreedefitem.objects.get(name='Division').parent.id,
+                         models.Taxontreedefitem.objects.get(name='Kingdom').id)
+        self.assertEqual(models.Taxontreedefitem.objects.get(name='Kingdom').parent.id,
+                         models.Taxontreedefitem.objects.get(name='Taxonomy Root').id)
+
+        # Test foreign keys
+        for rank in models.Taxontreedefitem.objects.all():
+            self.assertEqual(treedef_taxon.id, rank.treedef.id)
+
+        # Create test nodes
+        pokemon = models.Taxon.objects.create(name='Pokemon', rankid=50, definition=treedef_taxon,
+                                              definitionitem=models.Taxontreedefitem.objects.get(name='Taxonomy Root'))
+        water = models.Taxon.objects.create(name='Water', rankid=100, parent=pokemon, definition=treedef_taxon,
+                                            definitionitem=models.Taxontreedefitem.objects.get(name='Kingdom'))
+        squirtle = models.Taxon.objects.create(name='Squirtle', rankid=150, parent=water, definition=treedef_taxon,
+                                               definitionitem=models.Taxontreedefitem.objects.get(name='Division'))
+        blastoise = models.Taxon.objects.create(name='Blastoise', parent=water, rankid=200, definition=treedef_taxon,
+                                                definitionitem=models.Taxontreedefitem.objects.get(name='Division'))
+        
+        # Test full name reconstruction
+        set_fullnames(treedef_taxon, null_only=False, node_number_range=None)
+        if pokemon.fullname is not None:
+            self.assertEqual('Pokemon', pokemon.fullname)
+        if water.fullname is not None:
+            self.assertEqual('Water', water.fullname)
+        if squirtle.fullname is not None:
+            self.assertEqual('Squirtle', squirtle.fullname)
+        if blastoise.fullname is not None:
+            self.assertEqual('Blastoise', blastoise.fullname)
+
+    def test_delete_ranks(self):
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        treedef_geotimeperiod = models.Geologictimeperiodtreedef.objects.create(name='GeographyTimePeriodTest')
+        era_rank = models.Geologictimeperiodtreedefitem.objects.create(
+            name='Era',
+            rankid=100,
+            treedef=treedef_geotimeperiod
+        )
+        period_rank = models.Geologictimeperiodtreedefitem.objects.create(
+            name='Period',
+            rankid=200,
+            treedef=treedef_geotimeperiod,
+            parent=era_rank
+        )
+        epoch_rank = models.Geologictimeperiodtreedefitem.objects.create(
+            name='Epoch',
+            rankid=300,
+            treedef=treedef_geotimeperiod,
+            parent=period_rank
+        )
+        age_rank = models.Geologictimeperiodtreedefitem.objects.create(
+            name='Age',
+            rankid=400,
+            treedef=treedef_geotimeperiod,
+            parent=epoch_rank
+        )
+
+        # Test deleting a rank in the middle of the heirarchy
+        api.delete_resource(self.collection, self.agent, 'Geologictimeperiodtreedefitem', epoch_rank.id, epoch_rank.version)
+        self.assertEqual(None, models.Geologictimeperiodtreedefitem.objects.filter(name='Epoch').first())
+        self.assertEqual(period_rank.id, models.Geologictimeperiodtreedefitem.objects.get(name='Age').parent.id)
+
+        # Test deleting a rank at the end of the heirarchy
+        api.delete_resource(self.collection, self.agent, 'Geologictimeperiodtreedefitem', age_rank.id, age_rank.version)
+        self.assertEqual(None, models.Geologictimeperiodtreedefitem.objects.filter(name='Age').first())
+
+        # Test deleting a rank at the head of the heirarchy
+        with self.assertRaises(TreeBusinessRuleException):
+            api.delete_resource(self.collection, self.agent, 'Geologictimeperiodtreedefitem', era_rank.id, era_rank.version)
+            
