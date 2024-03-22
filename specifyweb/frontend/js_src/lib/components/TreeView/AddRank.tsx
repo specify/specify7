@@ -11,10 +11,10 @@ import type {
   FilterTablesByEndsWith,
   SerializedResource,
 } from '../DataModel/helperTypes';
+import { getResourceApiUrl } from '../DataModel/resource';
 import { tables } from '../DataModel/tables';
 import { ResourceView } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
-import { getResourceApiUrl } from '../DataModel/resource';
 
 export function AddRank<SCHEMA extends AnyTree>({
   tableName,
