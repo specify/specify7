@@ -116,7 +116,10 @@ export function useValidation<T extends Input = Input>(
     validationRef: React.useCallback(
       (input): void => {
         inputRef.current = input;
-        setValidation(validationMessageRef.current, 'auto');
+        setValidation(
+          validationMessageRef.current,
+          clearOnTyping ? 'auto' : 'focus'
+        );
       },
       [setValidation]
     ),

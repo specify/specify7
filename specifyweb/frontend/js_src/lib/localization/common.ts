@@ -119,7 +119,7 @@ export const commonText = createDictionary({
   },
   delete: {
     'en-us': 'Delete',
-    'es-es': 'Borrar',
+    'es-es': 'Eliminar',
     'fr-fr': 'Supprimer',
     'uk-ua': 'Видалити',
     'de-ch': 'Löschen',
@@ -318,7 +318,7 @@ export const commonText = createDictionary({
   chooseCollection: {
     'en-us': 'Choose Collection',
     'ru-ru': 'Выбрать коллекцию',
-    'es-es': 'Elige Colección',
+    'es-es': 'Elegir Colección',
     'fr-fr': 'Choisir une collection',
     'uk-ua': 'Виберіть колекцію',
     'de-ch': 'Sammlung auswählen',
@@ -529,7 +529,7 @@ export const commonText = createDictionary({
   downloadErrorMessage: {
     'en-us': 'Download Error Message',
     'ru-ru': 'Загрузить сообщение об ошибке',
-    'es-es': 'Descargar mensaje de error',
+    'es-es': 'Mensaje de error de descarga',
     'fr-fr': "Message d'erreur de téléchargement",
     'uk-ua': 'Завантажити повідомлення про помилку',
     'de-ch': 'Fehlermeldung herunterladen',
@@ -709,7 +709,7 @@ export const commonText = createDictionary({
   unlimited: {
     'en-us': 'Unlimited',
     'de-ch': 'Unbegrenzt',
-    'es-es': 'Resolución masiva',
+    'es-es': 'Ilimitado',
     'fr-fr': 'Résolution groupée',
     'ru-ru': 'Безлимитный',
     'uk-ua': 'Масове вирішення',

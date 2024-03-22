@@ -27,10 +27,10 @@ export const resourcesText = createDictionary({
   },
   formDefinitions: {
     'en-us': 'Form Definitions',
-    'ru-ru': 'Публиковать',
-    'es-es': 'Publicar',
-    'fr-fr': 'Publier',
-    'uk-ua': 'Опублікувати',
+    'ru-ru': 'Определения форм',
+    'es-es': 'Definiciones de formulario',
+    'fr-fr': 'Définitions de formulaire',
+    'uk-ua': 'Визначення форм',
     'de-ch': 'Formular Definitionen',
   },
   loadFile: {
@@ -131,7 +131,7 @@ export const resourcesText = createDictionary({
   },
   typeSearches: {
     'en-us': 'Type Searches',
-    'de-ch': 'Geben Sie Suchen ein',
+    'de-ch': 'Typsuchen',
     'es-es': 'Tipo de búsquedas',
     'fr-fr': 'Recherches de types',
     'ru-ru': 'Тип поиска',
@@ -148,14 +148,14 @@ export const resourcesText = createDictionary({
   uiFormatters: {
     'en-us': 'Field Formatters',
     'ru-ru': 'Форматировщики полей',
-    'es-es': 'Formateadores de campos',
+    'es-es': 'Formateadores de campo',
     'fr-fr': 'Formateurs de champs',
     'uk-ua': 'Форматувальники полів',
     'de-ch': 'Feldformatierer',
   },
   dataObjectFormatters: {
     'en-us': 'Record Formatters',
-    'ru-ru': 'Форматеры записи',
+    'ru-ru': 'Форматеры записей',
     'es-es': 'Formateadores de registros',
     'uk-ua': 'Форматувальники записів',
     'de-ch': 'Datensatz-Formatierer',
@@ -256,8 +256,8 @@ export const resourcesText = createDictionary({
     'ru-ru': `
       «Агрегация таблиц» управляет тем, как несколько записей таблицы
       объединяются в одну текстовую строку. Формат таблицы, разделитель,
-      суффикс, поле сортировки и ограничение предварительного просмотра записи
-      можно настроить. Его можно отобразить в результатах запроса и в форматах
+      суффикс, поле сортировки и предел предварительного просмотра записей можно
+      настроить. Его можно отобразить в результатах запроса и в форматах
       таблиц.
     `,
     'uk-ua': `
@@ -502,7 +502,7 @@ export const resourcesText = createDictionary({
   limit: {
     'en-us': 'Limit',
     'ru-ru': 'Лимит',
-    'de-ch': '',
+    'de-ch': 'Grenze',
     'es-es': 'Límite',
     'fr-fr': 'Limite',
     'uk-ua': 'Ліміт',
@@ -701,7 +701,7 @@ export const resourcesText = createDictionary({
       changer de collection avant de modifier cette ressource.
     `,
     'ru-ru': `
-      Этот ресурс принадлежит к другой коллекции/дисциплине, отличной от той, в
+      Этот ресурс принадлежит другой коллекции/дисциплине, отличной от той, в
       которой вы сейчас находитесь. Перед редактированием этого ресурса
       рекомендуется сменить коллекцию.
     `,
@@ -788,7 +788,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Standardformular kopieren',
     'es-es': 'Formateadores de registros',
     'fr-fr': "Formateurs d'enregistrement",
-    'ru-ru': 'Форматеры записей',
+    'ru-ru': 'Форматеры записи',
     'uk-ua': 'Форматувальники записів',
   },
   copyDefaultForms: {
