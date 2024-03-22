@@ -126,7 +126,7 @@ export const schemaText = createDictionary({
     'ru-ru': 'Скрыть таблицу',
     'es-es': 'Ocultar tabla',
     'fr-fr': 'Masquer le tableau',
-    'uk-ua': 'Сховати таблицю',
+    'uk-ua': 'Приховати таблицю',
     'de-ch': 'Tabelle verbergen',
   },
   hideField: {
@@ -325,10 +325,10 @@ export const schemaText = createDictionary({
   },
   fieldCount: {
     'en-us': 'Field count',
-    'ru-ru': 'Агрегация таблиц',
+    'ru-ru': 'Количество полей',
     'es-es': 'Recuento de campos',
-    'fr-fr': 'Agrégation de tables',
-    'uk-ua': 'Агрегація таблиць',
+    'fr-fr': 'Nombre de champs',
+    'uk-ua': 'Підрахунок полів',
     'de-ch': 'Anzahl Felder',
   },
   relationshipCount: {
@@ -414,7 +414,7 @@ export const schemaText = createDictionary({
   configureUniquenessRule: {
     'en-us': 'Configure Uniqueness Rule',
     'de-ch': 'Eindeutigkeitsregel konfigurieren',
-    'es-es': 'Configurar regla de unicidad',
+    'es-es': 'Configurar la regla de unicidad',
     'fr-fr': "Configurer la règle d'unicité",
     'ru-ru': 'Настройка правила уникальности',
     'uk-ua': 'Налаштувати правило унікальності',
@@ -441,7 +441,7 @@ export const schemaText = createDictionary({
     'es-es': 'Exportar duplicados',
     'fr-fr': 'Exporter les doublons',
     'ru-ru': 'Экспортировать дубликаты',
-    'uk-ua': 'Експортувати дублікати',
+    'uk-ua': 'Експорт дублікатів',
   },
   numberOfDuplicates: {
     'en-us': 'Number of Duplicates',

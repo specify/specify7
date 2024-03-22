@@ -7,16 +7,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { LANGUAGE } from '../../localization/utils/config';
 import type { RA } from '../../utils/types';
 import { capitalize } from '../../utils/utils';
-import {
-  DAY,
-  HOUR,
-  MILLISECONDS,
-  MINUTE,
-  MONTH,
-  SECOND,
-  WEEK,
-  YEAR,
-} from './timeUnits';
+import { DAY, HOUR, MINUTE, MONTH, SECOND, WEEK, YEAR } from './timeUnits';
 
 /* This is an incomplete definition. For complete, see MDN Docs */
 // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -57,7 +48,11 @@ declare namespace Intl {
     public constructor(
       locales?: RA<string> | string,
       options?: {
-        readonly unit: 'byte'; // TODO: Expand unit
+        /*
+         * Full list of possible units:
+         * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat#unit_2
+         */
+        readonly unit: 'byte';
         readonly notation:
           | 'compact'
           | 'engineering'
@@ -161,7 +156,7 @@ const relativeDate = new Intl.RelativeTimeFormat(LANGUAGE, {
 
 /** Does not support future dates */
 export function getRelativeDate(date: Readonly<Date>): LocalizedString {
-  const timePassed = Math.round((Date.now() - date.getTime()) / MILLISECONDS);
+  const timePassed = Date.now() - date.getTime();
   if (timePassed < 0) {
     /*
      * This happens due to time zone conversion issues.
