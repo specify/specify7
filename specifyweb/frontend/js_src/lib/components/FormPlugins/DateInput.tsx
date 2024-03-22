@@ -88,11 +88,6 @@ export function DateInput({
   return (
     <>
       <Input.Generic
-        className={
-          precision === 'full' && dateType === 'text'
-            ? '!w-full'
-            : '!w-[unset] grow'
-        }
         forwardRef={validationRef}
         id={id}
         isReadOnly={isReadOnly}
@@ -144,6 +139,7 @@ export function DateInput({
           (precision === 'month-year' && !monthSupported)) ? (
           <Button.Icon
             aria-label={formsText.today()}
+            className="print:hidden"
             icon="calendar"
             title={formsText.todayButtonDescription()}
             onClick={(): void => setMoment(dayjs())}
