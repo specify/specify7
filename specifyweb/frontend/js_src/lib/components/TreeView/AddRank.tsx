@@ -11,10 +11,7 @@ import type {
   FilterTablesByEndsWith,
   SerializedResource,
 } from '../DataModel/helperTypes';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { deserializeResource } from '../DataModel/serializers';
 import { tables } from '../DataModel/tables';
-import type { GeographyTreeDefItem } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
 import { getResourceApiUrl } from '../DataModel/resource';
