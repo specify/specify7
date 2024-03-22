@@ -583,7 +583,7 @@ msgstr "Кінець"
 msgid "update"
 msgstr "оновлення"
 
-#: components/FormPlugins/DatePrecisionPicker.tsx:47
+#: components/FormPlugins/DatePrecisionPicker.tsx:46
 #: components/WbPlanView/navigator.ts:546
 #. Used in: Components > Form Plugins > Date Precision Picker ⬤ Components > Wb Plan View > Navigator
 #, fuzzy

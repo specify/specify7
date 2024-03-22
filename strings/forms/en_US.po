@@ -115,17 +115,17 @@ msgstr "This action cannot be undone."
 msgid "datePrecision"
 msgstr "Date Precision"
 
-#: components/FormPlugins/DatePrecisionPicker.tsx:48
+#: components/FormPlugins/DatePrecisionPicker.tsx:47
 #. 🟥A placeholder for partial date field when "month /year" type is selected. Visible only in browsers that don't support the "month" input type. Used in: Components > Form Plugins > Date Precision Picker
 msgid "monthYear"
 msgstr "Mon / Year"
 
-#: components/FormPlugins/DateInput.tsx:109
+#: components/FormPlugins/DateInput.tsx:108
 #. 🟥A placeholder for partial date field when "year" type is selected. Used in: Components > Form Plugins > Date Input
 msgid "yearPlaceholder"
 msgstr "YYYY"
 
-#: components/FormPlugins/DateInput.tsx:142
+#: components/FormPlugins/DateInput.tsx:141
 #. Used in: Components > Form Plugins > Date Input
 msgid "today"
 msgstr "Today"
