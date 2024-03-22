@@ -27,13 +27,13 @@ msgstr "Specify Network"
 msgid "occurrenceOrGuidRequired"
 msgstr "Для отображения этой страницы необходимо указать название вида или GUID."
 
-#: components/SpecifyNetwork/Overlay.tsx:118
+#: components/SpecifyNetwork/Overlay.tsx:119
 #. Used in: Components > Specify Network > Overlay
 #, fuzzy
 msgid "noDataError"
 msgstr "Не удалось найти данные по этому запросу."
 
-#: components/SpecifyNetwork/Overlay.tsx:121
+#: components/SpecifyNetwork/Overlay.tsx:122
 #. Used in: Components > Specify Network > Overlay
 #, fuzzy
 msgid "noDataErrorDescription"

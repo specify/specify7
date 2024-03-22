@@ -228,7 +228,7 @@ msgstr "Создать"
 #: components/Security/User.tsx:661
 #: components/Security/UserCollections.tsx:70
 #: components/Security/UserInviteLink.tsx:55
-#: components/SpecifyNetwork/Overlay.tsx:117
+#: components/SpecifyNetwork/Overlay.tsx:118
 #: components/SpecifyNetwork/Table.tsx:27
 #: components/SpecifyNetwork/Table.tsx:113
 #: components/SpecifyNetwork/index.tsx:80

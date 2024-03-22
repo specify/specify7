@@ -26,13 +26,13 @@ msgstr "Réseau Specify"
 msgid "occurrenceOrGuidRequired"
 msgstr "Le nom de l'espèce ou le GUID doit être fourni pour afficher cette page."
 
-#: components/SpecifyNetwork/Overlay.tsx:118
+#: components/SpecifyNetwork/Overlay.tsx:119
 #. Used in: Components > Specify Network > Overlay
 #, fuzzy
 msgid "noDataError"
 msgstr "Impossible de trouver des données pour cette demande"
 
-#: components/SpecifyNetwork/Overlay.tsx:121
+#: components/SpecifyNetwork/Overlay.tsx:122
 #. Used in: Components > Specify Network > Overlay
 #, fuzzy
 msgid "noDataErrorDescription"

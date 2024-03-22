@@ -15,12 +15,12 @@ msgstr "Specify Network"
 msgid "occurrenceOrGuidRequired"
 msgstr "Species Name or GUID must be provided to display this page"
 
-#: components/SpecifyNetwork/Overlay.tsx:118
+#: components/SpecifyNetwork/Overlay.tsx:119
 #. Used in: Components > Specify Network > Overlay
 msgid "noDataError"
 msgstr "Unable to find any data for this request"
 
-#: components/SpecifyNetwork/Overlay.tsx:121
+#: components/SpecifyNetwork/Overlay.tsx:122
 #. Used in: Components > Specify Network > Overlay
 msgid "noDataErrorDescription"
 msgstr "Please try searching for a different record"
