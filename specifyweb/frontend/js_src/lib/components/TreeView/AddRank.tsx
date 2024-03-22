@@ -55,7 +55,6 @@ export function AddRank<SCHEMA extends AnyTree>({
                     parentRank
                   );
                   treeResource.set('parent', resourceParent);
-                  console.log(resourceParent, treeResource);
                   setState('add');
                 }}
               >
