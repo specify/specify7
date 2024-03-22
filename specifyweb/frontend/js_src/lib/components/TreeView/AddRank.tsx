@@ -17,6 +17,7 @@ import { tables } from '../DataModel/tables';
 import type { GeographyTreeDefItem } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
+import { getResourceApiUrl } from '../DataModel/resource';
 
 export function AddRank<SCHEMA extends AnyTree>({
   tableName,
@@ -52,11 +53,12 @@ export function AddRank<SCHEMA extends AnyTree>({
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
               <Button.Save
                 onClick={() => {
-                  const resourceParent = React.useMemo(
-                    () => deserializeResource(JSON.parse(parentRank)),
-                    []
+                  const resourceParent = getResourceApiUrl(
+                    treeDefinitionItems[0]._tableName,
+                    parentRank
                   );
                   treeResource.set('parent', resourceParent);
+                  console.log(resourceParent, treeResource);
                   setState('add');
                 }}
               >
@@ -71,14 +73,13 @@ export function AddRank<SCHEMA extends AnyTree>({
             {treeText.chooseParentRank()}
             <Select
               className="w-full min-w-[theme(spacing.40)]"
-              // Value={parentRank}
-              value={JSON.stringify(parentRank)}
+              value={parentRank}
               onChange={({ target }): void => {
-                setParentRank(JSON.parse(target.value));
+                setParentRank(target.value);
               }}
             >
               {treeDefinitionItems.map((rank, index) => (
-                <option key={index} value={JSON.stringify(rank)}>
+                <option key={index} value={rank.id}>
                   {rank.name}
                 </option>
               ))}
@@ -96,11 +97,10 @@ export function AddRank<SCHEMA extends AnyTree>({
           onAdd={undefined}
           onClose={(): void => setState('initial')}
           onDeleted={undefined}
-          onSaved={undefined}
-          onSaving={() => {
-            setState('initial');
+          onSaved={() => {
             globalThis.location.reload();
           }}
+          onSaving={undefined}
         />
       )}
     </>
