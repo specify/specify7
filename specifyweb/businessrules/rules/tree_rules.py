@@ -20,7 +20,7 @@ def pre_tree_rank_initiation_handler(sender, obj):
 @orm_signal_handler('post_save')
 def post_tree_rank_initiation_handler(sender, obj):
     if hasattr(obj, 'treedef'): # is it a treedefitem?
-        post_tree_rank_init(sender, obj)
+        post_tree_rank_save(sender, obj)
 
 @orm_signal_handler('pre_delete')
 def cannot_delete_root_treedefitem(sender, obj):

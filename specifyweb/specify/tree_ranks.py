@@ -235,11 +235,12 @@ def pre_tree_rank_init(tree_def_item_model, new_rank):
             if next_rank_id - parent_rank_id < 1:
                 return HttpResponseBadRequest(f"Can't add rank id between {new_rank_id} and {parent_rank_id}")
     
-    # Set the new rank fields from new_fields_dict            
+    # Set the new rank fields from new_fields_dict
+    new_fields_dict['rankid'] = new_rank_id
     for key, value in new_fields_dict.items():
         setattr(new_rank, key, value)
 
-def post_tree_rank_init(tree_def_item_model, new_rank):
+def post_tree_rank_save(tree_def_item_model, new_rank):
     tree_def = new_rank.treedef
     parent_rank = new_rank.parent
     new_rank_id = new_rank.rankid
