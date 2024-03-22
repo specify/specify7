@@ -19,8 +19,8 @@ import { softFail } from '../Errors/Crash';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
-import { tablesWithAttachments } from './index';
 import { AttachmentPreview } from './Preview';
+import { getAttachmentRelationship, tablesWithAttachments } from './utils';
 
 export function AttachmentCell({
   attachment,
@@ -44,7 +44,7 @@ export function AttachmentCell({
       hasTablePermission(table.name, 'read') ? (
         <AttachmentRecordLink
           attachment={attachment}
-          className="absolute top-0 left-0"
+          className="absolute left-0 top-0"
           related={[related, setRelated]}
           table={table}
           variant="icon"
@@ -141,7 +141,7 @@ async function fetchAttachmentParent(
 ): Promise<SpecifyResource<AnySchema> | undefined> {
   const { records } = await fetchRelated(
     attachment,
-    `${table.name as 'collectionObject'}Attachments`
+    getAttachmentRelationship(table)!.name as 'collectionObjectAttachments'
   );
   return deserializeResource(records[0]);
 }

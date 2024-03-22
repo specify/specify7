@@ -4,7 +4,10 @@ import { className } from '../components/Atoms/className';
 import type { AnySchema } from '../components/DataModel/helperTypes';
 import type { SpecifyResource } from '../components/DataModel/legacyTypes';
 import { resourceOn } from '../components/DataModel/resource';
-import { useSaveBlockers } from '../components/DataModel/saveBlockers';
+import {
+  getFieldBlockerKey,
+  useSaveBlockers,
+} from '../components/DataModel/saveBlockers';
 import type {
   LiteralField,
   Relationship,
@@ -132,9 +135,13 @@ export function useResourceValue<
       );
       if (field === undefined) return;
 
-      // This assumes that there are no field blockers set by anything else
-      if (parseResults.isValid) setBlockers([]);
-      else setBlockers([parseResults.reason]);
+      if (parseResults.isValid)
+        setBlockers([], getFieldBlockerKey(field, 'parseResult'));
+      else
+        setBlockers(
+          [parseResults.reason],
+          getFieldBlockerKey(field, 'parseResult')
+        );
 
       ignoreChangeRef.current = true;
       /*

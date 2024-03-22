@@ -62,7 +62,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Операция провалена',
     'es-es': 'Operación fallida',
     'fr-fr': "L'opération a échoué",
-    'uk-ua': 'Операція не вдалася',
+    'uk-ua': 'Не вдалося виконати операцію',
     'de-ch': 'Vorgang fehlgeschlagen',
   },
   actionFailedDescription: {
@@ -160,7 +160,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Невозможно объединить в синонимы',
     'es-es': 'No se puede fusionar en sinónimos',
     'fr-fr': 'Impossible de fusionner avec des synonymes',
-    'uk-ua': 'Не можна об’єднувати в синоніми',
+    'uk-ua': 'Неможливо злити в синоніми',
     'de-ch': 'Kann nicht zu Synonymen zusammenführen',
   },
   cantSynonymizeSynonym: {
@@ -234,12 +234,7 @@ export const treeText = createDictionary({
       descendants correspondant en termes de nom et de rang étant eux-mêmes.
       fusionnés de manière récursive.
     `,
-    'uk-ua': `
-      Усі посилання на вузол {treeName:string} «{nodeName:string}» буде замінено
-      на «{parentName:string}», а всі нащадки «{nodeName:string}» буде
-      переміщено до «{parentName:string}», а будь-які нащадки, що відповідають
-      імені та рангу, будуть самі собою об'єднані рекурсивно.
-    `,
+    'uk-ua': 'Непрямий підрахунок [X9X].',
     'de-ch': `
       Alle Referenzen zu {treeName:string} "{nodeName:string}" werden mit
       "{parentName:string}" ersetzt. Alle Nachkommen von "{nodeName:string}"
@@ -260,7 +255,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Сделайте {nodeName:string} синонимом {synonymName:string}',
     'es-es': 'Hacer de {nodeName:string} un sinónimo de {synonymName:string}',
     'fr-fr': 'Faire de {nodeName:string} un synonyme de {synonymName:string}',
-    'uk-ua': 'Зробіть {nodeName:string} синонімом {synonymName:string}',
+    'uk-ua': 'Зробити {nodeName:string} синонімом {synonymName:string}',
     'de-ch':
       'Aus {nodeName:string} ein Synonym von {synonymName:string} machen',
   },
@@ -423,6 +418,14 @@ export const treeText = createDictionary({
     'ru-ru': 'Это приведет к безвозвратному удалению следующего ресурса',
     'uk-ua': 'Це призведе до остаточного видалення наступного ресурсу',
     'de-ch': 'Dadurch wird die folgende Ressource dauerhaft gelöscht',
+  },
+  associatedNodesOnly: {
+    'en-us': 'Show only nodes with associated objects',
+    'de-ch': 'Nur Knoten mit zugehörigen Objekten anzeigen',
+    'es-es': 'Mostrar solo nodos con objetos asociados',
+    'fr-fr': 'Afficher uniquement les nœuds avec les objets associés',
+    'ru-ru': 'Это приведет к безвозвратному удалению следующего ресурса',
+    'uk-ua': 'Показувати лише вузли з пов’язаними об’єктами',
   },
   splitView: {
     'en-us': 'Split View',

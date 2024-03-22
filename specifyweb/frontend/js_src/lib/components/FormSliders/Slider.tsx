@@ -58,7 +58,7 @@ export function Slider({
           </span>
           <Input.Integer
             className={`
-              no-arrows absolute top-0 left-0 h-full bg-white
+              no-arrows absolute left-0 top-0 h-full bg-white
               text-center font-bold ring-1 dark:bg-neutral-600
             `}
             disabled={

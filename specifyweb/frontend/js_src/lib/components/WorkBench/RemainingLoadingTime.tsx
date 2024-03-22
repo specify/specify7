@@ -2,7 +2,7 @@ import React from 'react';
 
 import { commonText } from '../../localization/common';
 import { formatTime } from '../../utils/utils';
-import { MILLISECONDS } from '../Atoms/timeUnits';
+import { SECOND } from '../Atoms/timeUnits';
 
 const minRowsToLoad = 15;
 
@@ -24,13 +24,13 @@ export function RemainingLoadingTime({
       const interval = setInterval(() => {
         const timeElapsed = Date.now() - startTime.current;
         const percentCompleted = (total - current) / current;
-        const estimatedSeconds = (percentCompleted * timeElapsed) / 1000;
+        const estimatedSeconds = (percentCompleted * timeElapsed) / SECOND;
         const remainingSeconds = Math.round(estimatedSeconds);
         setRemainingTime(remainingSeconds);
         if (current >= total) {
           clearInterval(interval);
         }
-      }, MILLISECONDS);
+      }, SECOND);
 
       return () => clearInterval(interval);
     } else {

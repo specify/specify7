@@ -432,10 +432,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Navigation Menu',
     'ru-ru': 'Меню навигации',
     'es-es': 'Menú de Navegación',
-    'fr-fr': `
-      Peut utiliser _ pour correspondre à n'importe quel caractère ou % pour
-      correspondre à n'importe quel nombre de caractères
-    `,
+    'fr-fr': 'le menu de navigation',
     'uk-ua': 'Навігаційне меню',
     'de-ch': 'Navigationsmenü',
   },
@@ -576,10 +573,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Contiene (no distingue entre mayúsculas y minúsculas)',
     'fr-fr': 'Contient (insensible à la casse)',
     'uk-ua': 'Містить (незалежно від регістру)',
-    'de-ch': `
-      ACHTUNG: Die Aktivierung kann zu Datenverlust oder Datenbankbeschädigung
-      führen. Bitte stellen Sie sicher, dass Sie wissen, was Sie tun
-    `,
+    'de-ch': 'Enthält (ohne Berücksichtigung der Groß-/Kleinschreibung)',
   },
   containsCaseSensitive: {
     'en-us': 'Contains (case-sensitive)',
@@ -896,7 +890,7 @@ export const preferencesText = createDictionary({
   accentColor2: {
     'en-us': 'Accent color 2',
     'ru-ru': 'Акцентный цвет 2',
-    'es-es': 'Permitir que el autocompletado crezca tanto como sea necesario',
+    'es-es': 'Color de acento 2',
     'fr-fr': "Couleur d'accent 2",
     'uk-ua': 'Акцентний колір 2',
     'de-ch': 'Akzentfarbe 2',
@@ -1248,7 +1242,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Close on outside click',
     'ru-ru': 'Закрыть внешним щелчком',
     'es-es': 'Cerrar con clic externo',
-    'fr-fr': 'Zone de liste déroulante de requête',
+    'fr-fr': 'Fermer sur clic extérieur',
     'uk-ua': 'Закрийте зовнішнім клацанням',
     'de-ch': 'Mit Außenklick schließen',
   },
@@ -1379,8 +1373,9 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Сделать диалоговые окна формы серыми на фоне',
     'es-es':
       'Hacer que los cuadros de diálogo del formulario aparezcan en gris',
-    'fr-fr': "Couleur d'accent d'arbre",
-    'uk-ua': 'Зробіть діалогові вікна форми сірими фоном',
+    'fr-fr':
+      "Rendre les boîtes de dialogue de formulaire grisées sur l'arrière-plan",
+    'uk-ua': 'Зробіть діалогові вікна форми сірими',
     'de-ch': 'Lassen Sie Formulardialoge den Hintergrund ausgrauen',
   },
   autoScrollTree: {
@@ -1464,7 +1459,7 @@ export const preferencesText = createDictionary({
   },
   searchCaseSensitive: {
     'en-us': 'Case-sensitive search',
-    'es-es': 'Filtrar elementos de la lista de selección',
+    'es-es': 'Búsqueda que distingue entre mayúsculas y minúsculas',
     'fr-fr': 'Recherche sensible à la casse',
     'uk-ua': 'Пошук з урахуванням регістру',
     'de-ch': 'Groß- und Kleinschreibung beachtende Suche',
@@ -1794,7 +1789,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Pick an attachment',
     'es-es': 'Elige un archivo adjunto',
     'fr-fr': 'Choisissez une pièce jointe',
-    'ru-ru': 'Полное разрешение',
+    'ru-ru': 'Выберите вложение',
     'uk-ua': 'Виберіть вкладення',
     'de-ch': 'Wählen Sie einen Anhang',
   },
@@ -1810,10 +1805,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Pick an image',
     'de-ch': 'Wählen Sie ein Bild aus',
     'es-es': 'Elige una imagen',
-    'fr-fr': `
-      Vous pouvez vous déplacer dans la direction opposée en appuyant sur
-      [X51X]Shift[X61X]+[X68X]Tab[X76X]
-    `,
+    'fr-fr': 'Choisissez une image',
     'ru-ru': 'Выберите изображение',
     'uk-ua': 'Виберіть зображення',
   },
@@ -1863,7 +1855,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Show query result line number',
     'de-ch': 'Farbe der Gefahrentaste',
     'es-es': 'Mostrar número de línea de resultado de la consulta',
-    'fr-fr': 'Couleur du bouton Danger',
+    'fr-fr': 'Afficher le numéro de ligne du résultat de la requête',
     'ru-ru': 'Показать номер строки результата запроса',
     'uk-ua': 'Показати номер рядка результату запиту',
   },
@@ -1872,8 +1864,8 @@ export const preferencesText = createDictionary({
     'de-ch': 'Schaltflächenfarbe speichern',
     'es-es': 'Guardar color del botón',
     'fr-fr': 'Enregistrer la couleur du bouton',
-    'ru-ru': 'Цвет кнопки информации',
-    'uk-ua': 'Колір інформаційної кнопки',
+    'ru-ru': 'Сохранить цвет кнопки',
+    'uk-ua': 'Зберегти колір кнопки',
   },
   secondaryButtonColor: {
     'en-us': 'Secondary button color',
@@ -1885,7 +1877,7 @@ export const preferencesText = createDictionary({
   },
   secondaryLightButtonColor: {
     'en-us': 'Secondary light button color',
-    'de-ch': 'Vordergrund (dunkles Thema)',
+    'de-ch': 'Farbe der Sekundärlichttaste',
     'es-es': 'Color del botón de luz secundaria',
     'fr-fr': 'Couleur du bouton d’éclairage secondaire',
     'ru-ru': 'Цвет кнопки вторичного освещения',
@@ -1937,7 +1929,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Mostrar vista básica',
     'fr-fr': 'Afficher la vue de base',
     'ru-ru': 'Отобразить базовый вид',
-    'uk-ua': 'Налаштування колекції',
+    'uk-ua': 'Відобразити базовий вигляд',
   },
   basicView: {
     'en-us': 'Basic view',

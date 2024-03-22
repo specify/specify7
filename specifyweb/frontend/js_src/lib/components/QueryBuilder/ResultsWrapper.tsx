@@ -197,7 +197,6 @@ export function useQueryResultsWrapper({
     initialData
       .then((initialData) =>
         setProps({
-          hasIdField: !isDistinct,
           queryResource,
           fetchSize,
           table,

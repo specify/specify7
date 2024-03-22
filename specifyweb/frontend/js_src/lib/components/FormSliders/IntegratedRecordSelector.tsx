@@ -115,11 +115,11 @@ export function IntegratedRecordSelector({
       <RecordSelectorFromCollection
         collection={collection}
         defaultIndex={isToOne ? 0 : index}
-        isCollapsed={isCollapsed}
-        isInteraction={isInteraction}
         relationship={relationship}
         onAdd={(resource) => {
           if (isInteraction) handleOpenDialog();
+          if (!isInteraction && formType !== 'formTable')
+            collection.add(resource);
           handleAdding(resource);
         }}
         onDelete={(...args): void => {
@@ -216,6 +216,7 @@ export function IntegratedRecordSelector({
                 isDependent={isDependent}
                 isLoading={isLoading}
                 isSubForm={dialog === false}
+                key={resource?.cid}
                 preHeaderButtons={collapsibleButton}
                 resource={resource}
                 title={relationship.label}
@@ -240,7 +241,8 @@ export function IntegratedRecordSelector({
                 preHeaderButtons={collapsibleButton}
                 sortField={sortField}
                 viewName={viewName}
-                onAdd={(): void => {
+                onAdd={(resources): void => {
+                  if (!isInteraction) collection.add(resources);
                   if (typeof handleAdd === 'function') handleAdd();
                 }}
                 onClose={handleClose}

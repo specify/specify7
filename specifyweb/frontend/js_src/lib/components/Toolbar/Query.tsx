@@ -198,7 +198,9 @@ export function QueryListDialog({
         </table>
         <span className="-ml-2 flex-1" />
         {data === undefined && loadingGif}
-        {paginator(data?.totalCount)}
+        {data !== undefined && data.records.length > 0
+          ? paginator(data?.totalCount)
+          : null}
       </>
     ),
     dialog: (children) => (
