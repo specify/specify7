@@ -1551,6 +1551,13 @@ export const userPreferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
+          joinHeadersWithSeparator: definePref<boolean>({
+            title: preferencesText.joinHeadersWithSeparator(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
       appearance: {
