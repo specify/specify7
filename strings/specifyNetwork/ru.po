@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-03-22 17:01+0000\n"
+"PO-Revision-Date: 2024-03-23 15:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "specifyNetwork/ru/>\n"
@@ -63,8 +63,7 @@ msgstr "Дата сбора"
 #, fuzzy
 msgid "mapDescription"
 msgstr ""
-"На этой карте показаны встречаемости этого таксона по данным агрегаторов "
-"iDigBio и GBIF."
+"На этой карте показано появление этого таксона в агрегаторах iDigBio и GBIF."
 
 #. Used in: Components > Specify Network > Overlays
 #: components/SpecifyNetwork/overlays.ts:140
