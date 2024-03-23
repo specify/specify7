@@ -447,9 +447,9 @@ export const schemaText = createDictionary({
     'en-us': 'Number of Duplicates',
     'de-ch': 'Anzahl der Duplikate',
     'es-es': 'Número de duplicados',
-    'fr-fr': 'ID de table',
-    'ru-ru': 'Идентификатор таблицы',
-    'uk-ua': 'Ідентифікатор таблиці',
+    'fr-fr': 'Nombre de champs',
+    'ru-ru': 'Количество полей',
+    'uk-ua': 'Підрахунок полів',
   },
   schemaViewTitle: {
     'en-us': 'Schema Config: {tableName:string}',
