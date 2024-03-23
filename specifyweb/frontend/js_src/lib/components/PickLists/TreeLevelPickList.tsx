@@ -20,6 +20,23 @@ import {
 import { hasTreeAccess } from '../Permissions/helpers';
 import { PickListComboBox } from './index';
 
+const fetchTreeRoot = async (
+  treeName: AnyTree['tableName']
+): Promise<RA<PickListItemSimple>> =>
+  treeRanksPromise
+    .then(
+      () =>
+        strictGetTreeDefinitionItems(treeName as 'Geography', true).find(
+          ({ rankId }) => rankId === 0
+        )!
+    )
+    .then((rank) => [
+      {
+        value: rank.resource_uri,
+        title: (rank.title?.length ?? 0) === 0 ? rank.name : rank.title!,
+      },
+    ]);
+
 const fetchPossibleRanks = async (
   lowestChildRank: number,
   parentRankId: number,
@@ -95,6 +112,8 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
                     resource.specifyTable.name
                   )
                 )
+              : typeof resource.get('definitionItem') === 'string'
+              ? fetchTreeRoot(resource.specifyTable.name)
               : undefined
           )
           .then((items) => {
@@ -113,6 +132,7 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
   return (
     <PickListComboBox
       {...props}
+      // Select next enforced rank by default
       defaultValue={props.defaultValue ?? items?.slice(-1)[0]?.value}
       isDisabled={
         props.isDisabled ||
@@ -124,9 +144,7 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
         props.resource?.specifyTable.getRelationship('definitionItem')
           ?.isRequired ?? true
       }
-      onAdd={undefined}
       items={items ?? []}
-      // Select next enforced rank by default
       pickList={undefined}
     />
   );
