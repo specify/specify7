@@ -289,7 +289,10 @@ export const treeText = createDictionary({
       Der {treeName:string}-Knoten "{nodeName:string}" wird zu einem Synonym von
       "{synonymName:string}".
     `,
-    'uk-ua': 'ЗАЧИНЕНО',
+    'uk-ua': `
+      Вузол {treeName:string} "{nodeName:string}" стане синонімом
+      "{synonymName:string}".
+    `,
   },
   desynonymizeNode: {
     'en-us': 'Desynonymize node',
@@ -392,7 +395,7 @@ export const treeText = createDictionary({
     'es-es': 'Recuento directo de {collectionObjectTable:string}',
     'de-ch': 'Direkte {collectionObjectTable:string} Anzahl',
     'fr-fr': 'Impossible de passer à un synonyme',
-    'uk-ua': 'Неможливо перейти до синоніма',
+    'uk-ua': 'Прямий підрахунок {collectionObjectTable:string}.',
   },
   indirectCollectionObjectCount: {
     comment: 'Example: Indirect Collection Object count',

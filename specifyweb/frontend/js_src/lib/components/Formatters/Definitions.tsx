@@ -53,7 +53,7 @@ export function Definitions({
       : trimmedFields;
 
   return table === undefined ? null : (
-    <div className="flex flex-col gap-4 divide-y divide-gray-500 [&>*]:pt-4">
+    <div className="flex flex-col content-center divide-y divide-gray-500">
       {resolvedFields.map(({ value, fields }, index) => (
         <ConditionalFormatter
           fields={fields}
@@ -69,7 +69,7 @@ export function Definitions({
         />
       ))}
       {!isReadOnly && hasCondition ? (
-        <div>
+        <div className="pt-4">
           <Button.Info
             title={resourcesText.addDefinition()}
             onClick={(): void =>
@@ -128,6 +128,15 @@ function ConditionalFormatter({
       className={`flex
         ${isExpanded || !hasCondition ? 'flex-col' : ''}
         ${isExpanded ? 'gap-2' : ''}
+        ${
+          fields.length === 0 &&
+          hasCondition &&
+          trimmedFieldsLength > 0 &&
+          !isExpanded &&
+          index !== 0
+            ? 'items-center'
+            : ''
+        }
       `}
       key={index}
     >
@@ -182,28 +191,31 @@ function ConditionalFormatter({
         </div>
       )}
       {expandedNoCondition || isReadOnly ? null : fields.length === 0 ? (
-        <Button.Small
-          onClick={(): void => {
-            handleToggle();
-            handleChanged(
-              {
-                value,
-                fields: [
-                  {
-                    separator: localized(' '),
-                    aggregator: undefined,
-                    formatter: undefined,
-                    fieldFormatter: undefined,
-                    field: undefined,
-                  },
-                ],
-              },
-              index
-            );
-          }}
-        >
-          {resourcesText.addField()}
-        </Button.Small>
+        <div className="flex flex-col p-2">
+          <span className="flex-1" />
+          <Button.Small
+            onClick={(): void => {
+              handleToggle();
+              handleChanged(
+                {
+                  value,
+                  fields: [
+                    {
+                      separator: localized(' '),
+                      aggregator: undefined,
+                      formatter: undefined,
+                      fieldFormatter: undefined,
+                      field: undefined,
+                    },
+                  ],
+                },
+                index
+              );
+            }}
+          >
+            {resourcesText.addField()}
+          </Button.Small>
+        </div>
       ) : (
         <div className="flex flex-col flex-wrap whitespace-pre-wrap p-2">
           {index === 0 && (
@@ -229,12 +241,15 @@ function ConditionalFormatter({
         />
       ) : null}
       <span className="-ml-2 flex-1" />
-      <div className="flex flex-col p-2">
-        {!isExpanded && index === 0 ? (
+      <div className="flex flex-col">
+        {!isExpanded && hasCondition && index === 0 ? (
           <span className="font-bold">{commonText.expand()}</span>
         ) : null}
-        <div className="flex justify-end">
-          {trimmedFieldsLength === 1 || isExpanded || isReadOnly ? null : (
+        <div className="flex">
+          {trimmedFieldsLength === 1 ||
+          isExpanded ||
+          isReadOnly ||
+          fields.length === 0 ? null : (
             <div className="inline-flex">
               <Button.Icon
                 icon="trash"
