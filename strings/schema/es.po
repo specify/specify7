@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-03-24 15:44+0000\n"
+"PO-Revision-Date: 2024-03-24 17:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/schema/"
 "es/>\n"
@@ -224,7 +224,7 @@ msgstr "Usuario definido"
 #: components/SchemaConfig/Languages.tsx:78
 #, fuzzy
 msgid "addLanguage"
-msgstr "Agregar idioma"
+msgstr "Campos únicos"
 
 #. Used in: Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/SchemaViewer/Fields.tsx:65
@@ -246,7 +246,7 @@ msgstr "Modelo relacionado"
 #: components/SchemaViewer/schemaToTsv.tsx:31
 #, fuzzy
 msgid "otherSideName"
-msgstr "Otro nombre secundario"
+msgstr "Longitud"
 
 #. Used in: Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/SchemaViewer/Relationships.tsx:61
@@ -376,7 +376,7 @@ msgstr "Alcance"
 #: components/SchemaConfig/UniquenessRuleRow.tsx:173
 #, fuzzy
 msgid "uniquenessDuplicatesFound"
-msgstr "Duplicados encontrados en la base de datos."
+msgstr "muchos a uno"
 
 #. Used in: Components > Schema Config > Uniqueness Rule Row
 #: components/SchemaConfig/UniquenessRuleRow.tsx:233
