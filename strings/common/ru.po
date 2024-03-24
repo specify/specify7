@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-03-24 15:45+0000\n"
+"PO-Revision-Date: 2024-03-24 17:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/common/"
 "ru/>\n"
@@ -589,7 +589,7 @@ msgstr "Обновлять"
 #: components/WbPlanView/navigator.ts:546
 #, fuzzy
 msgid "fullDate"
-msgstr "Полная дата"
+msgstr "Массовый выбор"
 
 #. 🟥Verb. Used in: Components > Atoms > Data Entry ⬤ Atoms > __tests__ > Button ⬤ Atoms > __tests__ > Index ⬤ Components > Molecules > Resource Link ⬤ Components > Tree View > Actions
 #: components/Atoms/DataEntry.tsx:149
