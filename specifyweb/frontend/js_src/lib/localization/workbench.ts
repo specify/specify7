@@ -20,9 +20,9 @@ export const wbText = createDictionary({
   uploadPlan: {
     'en-us': 'Upload Plan',
     'de-ch': 'Plan hochladen',
-    'es-es': 'Marca de tiempo cargada',
+    'es-es': 'Subir plano',
     'fr-fr': 'Télécharger le forfait',
-    'ru-ru': 'Временная метка загружена',
+    'ru-ru': 'Загрузить план',
     'uk-ua': 'План завантаження',
   },
   rollback: {
@@ -138,12 +138,18 @@ export const wbText = createDictionary({
       Beachten Sie, dass die Live-Validierung eine experimentelle Funktion ist
       und keinen Ersatz für die reguläre Validierung darstellt.
     `,
-    'es-es': 'Marca de tiempo cargada',
+    'es-es': `
+      Tenga en cuenta que la validación en vivo es una función experimental y no
+      sustituye a la validación regular.
+    `,
     'fr-fr': `
       Notez que la validation en direct est une fonctionnalité expérimentale et
       ne remplace pas la validation régulière.
     `,
-    'ru-ru': 'Временная метка загружена',
+    'ru-ru': `
+      Обратите внимание, что живая проверка — это экспериментальная функция,
+      которая не заменяет обычную проверку.
+    `,
     'uk-ua': `
       Зауважте, що перевірка в реальному часі є експериментальною функцією і не
       замінює звичайну перевірку.
@@ -394,8 +400,8 @@ export const wbText = createDictionary({
     `,
     'uk-ua': 'Завантаження набору даних додасть дані до бази даних Specify.',
     'de-ch': `
-      Durch das Hochladen des Datensatzes werden die Daten zur Specify-Datenbank
-      hinzugefügt.
+      Durch das Hochladen des Datensatzes werden die Daten zur angegebenen
+      Datenbank hinzugefügt.
     `,
   },
   deleteDataSet: {
@@ -559,7 +565,7 @@ export const wbText = createDictionary({
     'es-es': 'Validar completado sin errores',
     'fr-fr': 'Validation terminée sans erreur',
     'uk-ua': 'Перевірка завершена без помилок',
-    'de-ch': 'Status des Datensatz-Uploads',
+    'de-ch': 'Validierung ohne Fehler abgeschlossen',
   },
   validationNoErrorsDescription: {
     'en-us': `
@@ -787,9 +793,9 @@ export const wbText = createDictionary({
     'en-us': 'Upload Cancelled',
     'ru-ru': 'Загрузка отменена',
     'es-es': 'Subida cancelada',
-    'de-ch': 'Datensatzvalidierung abgebrochen.',
-    'fr-fr': "Validation de l'ensemble de données annulée.",
-    'uk-ua': 'Перевірку набору даних скасовано.',
+    'de-ch': 'Hochladen abgebrochen',
+    'fr-fr': 'Téléchargement annulé',
+    'uk-ua': 'Завантаження скасовано',
   },
   uploadCanceledDescription: {
     'en-us': 'Data Set Upload cancelled.',
@@ -954,9 +960,9 @@ export const wbText = createDictionary({
     'en-us': 'Upload Results',
     'ru-ru': 'Результаты загрузки',
     'es-es': 'Cargar Resultados',
-    'de-ch': 'Live-Suche',
-    'fr-fr': 'Télécharger le forfait',
-    'uk-ua': 'План завантаження',
+    'de-ch': 'Ergebnisse hochladen',
+    'fr-fr': 'Télécharger les résultats',
+    'uk-ua': 'Завантажити результати',
   },
   potentialUploadResults: {
     'en-us': 'Potential Upload Results',
@@ -1014,9 +1020,9 @@ export const wbText = createDictionary({
     'en-us': 'Column first',
     'ru-ru': 'Столбец за столбцом',
     'es-es': 'Primero Columna',
-    'de-ch': 'Zurück rollen',
-    'fr-fr': 'Reculer',
-    'uk-ua': 'Відкат назад',
+    'de-ch': 'Spalte zuerst',
+    'fr-fr': 'Colonne en premier',
+    'uk-ua': 'Колонка перша',
   },
   rowFirst: {
     'en-us': 'Row first',
@@ -1205,14 +1211,14 @@ export const wbText = createDictionary({
     'ru-ru': 'Определить автоматически',
     'es-es': 'Determinar automáticamente',
     'uk-ua': 'Регістр сірників',
-    'de-ch': 'Streichholzetui',
+    'de-ch': 'Automatisch ermitteln',
     'fr-fr': 'Déterminer automatiquement',
   },
   chooseDataSetName: {
     'en-us': 'Name for New Data Set:',
     'ru-ru': 'Имя для нового набора данных:',
     'es-es': 'Nombre para Nuevo Conjunto de Datos:',
-    'de-ch': 'Reihe zuerst',
+    'de-ch': 'Name für neuen Datensatz:',
     'fr-fr': 'Nom du nouvel ensemble de données :',
     'uk-ua': 'Назва нового набору даних:',
   },
@@ -1566,8 +1572,8 @@ export const wbText = createDictionary({
     'en-us': '{node:string} (in {parent:string})',
     'ru-ru': '{node:string} (в {parent:string})',
     'es-es': '{node:string} (en {parent:string})',
-    'de-ch': 'Datensatz erfolgreich gelöscht.',
-    'fr-fr': 'Ensemble de données supprimé avec succès.',
-    'uk-ua': 'Набір даних успішно видалено.',
+    'de-ch': '{node:string} (in {parent:string})',
+    'fr-fr': '{node:string} (dans {parent:string})',
+    'uk-ua': '{node:string} (у {parent:string})',
   },
 } as const);

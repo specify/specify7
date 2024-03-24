@@ -200,9 +200,9 @@ export const specifyNetworkText = createDictionary({
   },
   searchForInstitution: {
     'en-us': 'Search for your institution:',
-    'de-ch': 'Stellen Sie eine Verbindung zu GBIF her',
+    'de-ch': 'Suchen Sie nach Ihrer Institution:',
     'es-es': 'Busque su institución:',
-    'fr-fr': 'Connectez-vous au GBIF',
+    'fr-fr': 'Recherchez votre établissement :',
     'ru-ru': 'Подключиться к ГБИФ',
     'uk-ua': 'Підключіться до GBIF',
   },

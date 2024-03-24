@@ -248,7 +248,7 @@ export const schemaText = createDictionary({
     'fr-fr': 'Champs uniques',
     'uk-ua': 'Унікальні поля',
     'de-ch': 'Sprache hinzuzufügen',
-    'es-es': 'Campos únicos',
+    'es-es': 'Agregar idioma',
     'ru-ru': 'Уникальные поля',
   },
   databaseColumn: {
@@ -273,7 +273,7 @@ export const schemaText = createDictionary({
     'fr-fr': 'Autre nom de côté',
     'uk-ua': 'Інша сторона імені',
     'de-ch': 'Name der anderen Seite',
-    'es-es': 'Longitud',
+    'es-es': 'Otro nombre secundario',
   },
   dependent: {
     'en-us': 'Dependent',
@@ -397,7 +397,7 @@ export const schemaText = createDictionary({
   },
   uniqueFields: {
     'en-us': 'Unique Fields',
-    'de-ch': 'Sortieren Sie nach ausgeblendeten Feldern',
+    'de-ch': 'Einzigartige Felder',
     'es-es': 'Campos únicos',
     'fr-fr': 'Champs uniques',
     'ru-ru': 'Уникальные поля',
@@ -430,7 +430,7 @@ export const schemaText = createDictionary({
   uniquenessDuplicatesFound: {
     'en-us': 'Duplicates found in database',
     'de-ch': 'Duplikate in der Datenbank gefunden',
-    'es-es': 'muchos a uno',
+    'es-es': 'Duplicados encontrados en la base de datos.',
     'fr-fr': 'Doublons trouvés dans la base de données',
     'ru-ru': 'В базе данных найдены дубликаты',
     'uk-ua': 'У базі даних знайдено дублікати',

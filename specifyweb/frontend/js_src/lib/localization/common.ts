@@ -269,7 +269,7 @@ export const commonText = createDictionary({
     'es-es': 'Fecha completa',
     'de-ch': 'Vollständiges Datum',
     'fr-fr': 'Développer tout',
-    'ru-ru': 'Массовый выбор',
+    'ru-ru': 'Полная дата',
     'uk-ua': 'Розгорнути все',
   },
   view: {
@@ -729,7 +729,7 @@ export const commonText = createDictionary({
     'fr-fr': 'Ne montre plus ça',
     'ru-ru': 'Больше не показывать это',
     'uk-ua': 'Не показувати це знову',
-    'de-ch': 'Transaktionen',
+    'de-ch': 'Zeige das nicht noch einmal',
   },
   multipleFilePickerMessage: {
     'en-us': 'Choose files or drag them here',
