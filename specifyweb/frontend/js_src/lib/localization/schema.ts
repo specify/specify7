@@ -139,28 +139,18 @@ export const schemaText = createDictionary({
   },
   tableFormat: {
     'en-us': 'Table Format',
-    'ru-ru': 'Подкатегории',
+    'ru-ru': 'Формат таблицы',
     'es-es': 'Formato de tabla',
-    'fr-fr': 'Sous-catégories',
-    'uk-ua': 'Підкатегорії',
+    'fr-fr': 'Format du tableau',
+    'uk-ua': 'Формат таблиці',
     'de-ch': 'Tabellenformat',
   },
   tableAggregation: {
     'en-us': 'Table Aggregation',
-    'ru-ru': `
-      Этот формат будет использоваться только в том случае, если значение поля
-      условия соответствует этому условию или если ему не соответствует никакой
-      другой формат.
-    `,
+    'ru-ru': 'Агрегация таблиц',
     'es-es': 'Agregación de tablas',
-    'fr-fr': `
-      Ce format ne sera utilisé que si la valeur du champ de condition est égale
-      à cette condition ou si aucun autre format ne lui correspond.
-    `,
-    'uk-ua': `
-      Цей формат використовуватиметься, лише якщо значення поля умови дорівнює
-      цій умові або якщо жоден інший формат їй не відповідає.
-    `,
+    'fr-fr': 'Agrégation de tables',
+    'uk-ua': 'Агрегація таблиць',
     'de-ch': 'Tabellenaggregation',
   },
   oneToOne: {
@@ -248,7 +238,7 @@ export const schemaText = createDictionary({
     'fr-fr': 'Champs uniques',
     'uk-ua': 'Унікальні поля',
     'de-ch': 'Sprache hinzuzufügen',
-    'es-es': 'Agregar idioma',
+    'es-es': 'Campos únicos',
     'ru-ru': 'Уникальные поля',
   },
   databaseColumn: {
@@ -273,7 +263,7 @@ export const schemaText = createDictionary({
     'fr-fr': 'Autre nom de côté',
     'uk-ua': 'Інша сторона імені',
     'de-ch': 'Name der anderen Seite',
-    'es-es': 'Otro nombre secundario',
+    'es-es': 'Longitud',
   },
   dependent: {
     'en-us': 'Dependent',
@@ -397,7 +387,7 @@ export const schemaText = createDictionary({
   },
   uniqueFields: {
     'en-us': 'Unique Fields',
-    'de-ch': 'Einzigartige Felder',
+    'de-ch': 'Sortieren Sie nach ausgeblendeten Feldern',
     'es-es': 'Campos únicos',
     'fr-fr': 'Champs uniques',
     'ru-ru': 'Уникальные поля',
@@ -430,7 +420,7 @@ export const schemaText = createDictionary({
   uniquenessDuplicatesFound: {
     'en-us': 'Duplicates found in database',
     'de-ch': 'Duplikate in der Datenbank gefunden',
-    'es-es': 'Duplicados encontrados en la base de datos.',
+    'es-es': 'muchos a uno',
     'fr-fr': 'Doublons trouvés dans la base de données',
     'ru-ru': 'В базе данных найдены дубликаты',
     'uk-ua': 'У базі даних знайдено дублікати',

@@ -9,7 +9,7 @@ import { createDictionary } from './utils';
 export const specifyNetworkText = createDictionary({
   specifyNetwork: {
     'en-us': 'Specify Network',
-    'ru-ru': 'Specify Network',
+    'ru-ru': 'Укажите сеть',
     'es-es': 'Specify red',
     'fr-fr': 'Réseau Specify',
     'uk-ua': 'Specify Network',
@@ -38,7 +38,7 @@ export const specifyNetworkText = createDictionary({
     'de-ch': 'Für diese Anfrage konnten keine Daten gefunden werden',
     'es-es': 'No se encuentran datos para esta solicitud',
     'fr-fr': 'Impossible de trouver des données pour cette demande',
-    'ru-ru': 'Не удалось найти данные по этому запросу.',
+    'ru-ru': 'Не удалось найти данные для этого запроса.',
     'uk-ua': 'Неможливо знайти дані для цього запиту',
   },
   noDataErrorDescription: {
@@ -203,8 +203,8 @@ export const specifyNetworkText = createDictionary({
     'de-ch': 'Suchen Sie nach Ihrer Institution:',
     'es-es': 'Busque su institución:',
     'fr-fr': 'Recherchez votre établissement :',
-    'ru-ru': 'Подключиться к ГБИФ',
-    'uk-ua': 'Підключіться до GBIF',
+    'ru-ru': 'Найдите свое учреждение:',
+    'uk-ua': 'Шукайте свій заклад:',
   },
   institutionDistributionMap: {
     'en-us': `
