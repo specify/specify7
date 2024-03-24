@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2024-03-24 13:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/header/"
 "es/>\n"
 "Language: es\n"
@@ -13,20 +13,17 @@ msgstr ""
 
 #. 🟥For accessibility purposes. Allows jumping to page content. Used in: Components > Core > Main
 #: components/Core/Main.tsx:63
-#, fuzzy
 msgid "skipToContent"
-msgstr "Saltar al contenido"
+msgstr "Ir al contenido"
 
 #. 🟥As in "main menu". Used in: Components > Header > Menu Item Processing
 #: components/Header/menuItemProcessing.ts:65
-#, fuzzy
 msgid "main"
 msgstr "Principal"
 
 #. 🟥Example: Current Collection. Used in: Components > Header > Choose Collection
 #: components/Header/ChooseCollection.tsx:75
 #: components/Header/ChooseCollection.tsx:81
-#, fuzzy
 msgid "currentCollection"
 msgstr "Actual {collectionTable:string}"
 
@@ -34,62 +31,53 @@ msgstr "Actual {collectionTable:string}"
 #: components/DataEntryTables/index.tsx:44
 #: components/Header/menuItemDefinitions.ts:42
 #: components/Router/OverlayRoutes.tsx:70
-#, fuzzy
 msgid "dataEntry"
 msgstr "Entrada de datos"
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 #: components/Header/userToolDefinitions.ts:90
 #: components/Router/OverlayRoutes.tsx:181
-#, fuzzy
 msgid "makeDwca"
-msgstr "Crear archivo DwC"
+msgstr "Crear un archivo DwC"
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 #: components/Header/userToolDefinitions.ts:96
 #: components/Router/OverlayRoutes.tsx:189
-#, fuzzy
 msgid "updateExportFeed"
-msgstr "Actualizar fuente RSS"
+msgstr "Actualizar feed RSS"
 
 #. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:50
-#, fuzzy
 msgid "updateExportFeedConfirmation"
 msgstr "¿Actualizar el feed de exportación?"
 
 #. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:53
-#, fuzzy
 msgid "updateExportFeedConfirmationDescription"
 msgstr "¿Actualizar todos los elementos del feed de exportación RSS ahora?"
 
 #. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:24
-#, fuzzy
 msgid "feedExportStarted"
-msgstr "Se inició la actualización del feed de exportación"
+msgstr "Iniciada la actualización del feed de exportación"
 
 #. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:27
-#, fuzzy
 msgid "feedExportStartedDescription"
 msgstr ""
-"Actualización iniciada. Recibirá una notificación por cada elemento del "
-"feed actualizado."
+"Actualización iniciada. Recibirá una notificación por cada elemento "
+"actualizado."
 
 #. Used in: Components > Export Feed > Dwca
 #: components/ExportFeed/Dwca.tsx:129
-#, fuzzy
 msgid "dwcaExportStarted"
-msgstr "Se inició la exportación de DwCA"
+msgstr "Exportación DwCA iniciada"
 
 #. Used in: Components > Export Feed > Dwca
 #: components/ExportFeed/Dwca.tsx:132
-#, fuzzy
 msgid "dwcaExportStartedDescription"
 msgstr ""
-"Se inició la exportación. Recibirá una notificación cuando se complete la "
+"Exportación iniciada. Recibirá una notificación cuando finalice la "
 "exportación."
 
 #. Used in: Components > Query Builder > Edit
