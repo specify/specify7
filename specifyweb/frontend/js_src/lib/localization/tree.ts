@@ -104,7 +104,7 @@ export const treeText = createDictionary({
     'de-ch': 'Verschiebe "{nodeName:string}" hierhin',
   },
   moveNodePreparationsHere: {
-    'en-us': 'Move "{nodeName:string}" preparations here',
+    'en-us': 'Move all "{nodeName:string}" preparations here',
   },
   nodeMoveMessage: {
     'en-us': `
