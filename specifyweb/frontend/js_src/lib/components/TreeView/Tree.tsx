@@ -17,13 +17,13 @@ import type {
 import { deserializeResource } from '../DataModel/serializers';
 import { ResourceView } from '../Forms/ResourceView';
 import { getPref } from '../InitialContext/remotePrefs';
+import { hasTablePermission } from '../Permissions/helpers';
 import { useHighContrast } from '../Preferences/Hooks';
 import { userPreferences } from '../Preferences/userPreferences';
+import { AddRank } from './AddRank';
 import type { Conformations, Row, Stats } from './helpers';
 import { fetchStats } from './helpers';
 import { TreeRow } from './Row';
-import { AddRank } from './AddRank';
-import { hasTablePermission } from '../Permissions/helpers';
 
 const treeToPref = {
   Geography: 'geography',
