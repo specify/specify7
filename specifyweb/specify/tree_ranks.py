@@ -173,8 +173,9 @@ def pre_tree_rank_init(tree_def_item_model, new_rank):
 
 def add_tree_rank(new_rank, data, tree):
     """
-    Adds a new rank to the specified tree. Expects 'rank_name' and 'tree'
-    in the POST data. Adds the rank to 
+    Adds a new rank to the specified tree. Expects at least the name and parent of the rank to be set.
+    All the other parameters are optional.
+    The use_default_rank_ids defaults to True, but can be set to false if you do not want to use the default rank ids.
     """
     # Get parameter values from data
     new_rank_name = new_rank.name or data.get('newrankname')
