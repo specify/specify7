@@ -112,12 +112,18 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
                     resource.specifyTable.name
                   )
                 )
-              : typeof resource.get('definitionItem') === 'string'
+              : typeof resource.get('definitionItem') === 'string' &&
+                !resource.isNew()
               ? fetchTreeRoot(resource.specifyTable.name)
               : undefined
           )
           .then((items) => {
             if (destructorCalled) return undefined;
+            if (typeof resource.get('definitionItem') !== 'string')
+              resource.set(
+                'definitionItem',
+                props.defaultValue ?? items?.slice(-1)[0]?.value
+              );
             return void setItems(items);
           }),
       true
@@ -132,12 +138,6 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
   return (
     <PickListComboBox
       {...props}
-      // Select next enforced rank by default
-      defaultValue={
-        props.resource?.isNew() && props.resource.get('parent') === undefined
-          ? undefined
-          : props.defaultValue ?? items?.slice(-1)[0]?.value
-      }
       isDisabled={
         props.isDisabled ||
         props.resource === undefined ||
