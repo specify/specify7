@@ -12,19 +12,16 @@ def pre_tree_rank_initiation_handler(sender, obj):
     if is_instance_of_tree_def_item(obj): # is it a treedefitem?
         if obj.pk is None:
             pre_tree_rank_init(sender, obj)
-        else:
-            # pre_tree_rank_update(sender, obj)
-            pass
 
 # @orm_signal_handler('post_init')
 @orm_signal_handler('post_save')
 def post_tree_rank_initiation_handler(sender, obj):
-    if hasattr(obj, 'treedef'): # is it a treedefitem?
+    if is_instance_of_tree_def_item(obj): # is it a treedefitem?
         post_tree_rank_save(sender, obj)
 
 @orm_signal_handler('pre_delete')
 def cannot_delete_root_treedefitem(sender, obj):
-    if hasattr(obj, 'treedef'):  # is it a treedefitem?
+    if is_instance_of_tree_def_item(obj):  # is it a treedefitem?
         if sender.objects.get(id=obj.id).parent is None:
             raise TreeBusinessRuleException(
                 "cannot delete root level tree definition item",
@@ -37,7 +34,7 @@ def cannot_delete_root_treedefitem(sender, obj):
 
 @orm_signal_handler('post_delete')
 def post_tree_rank_deletion_handler(sender, obj):
-    if hasattr(obj, 'treedef'): # is it a treedefitem?
+    if is_instance_of_tree_def_item(obj): # is it a treedefitem?
         post_tree_rank_deletion(obj)
 
 @orm_signal_handler('pre_save')
