@@ -26,12 +26,12 @@ import { checkMoveViolatesEnforced } from './helpers';
 
 type Action =
   | 'add'
+  | 'bulkMove'
   | 'desynonymize'
   | 'edit'
   | 'merge'
   | 'move'
-  | 'synonymize'
-  | 'bulkMove';
+  | 'synonymize';
 
 export function TreeViewActions<SCHEMA extends AnyTree>({
   tableName,
