@@ -255,6 +255,20 @@ def move(request, tree, id):
                                    'old_value': old_fullname,
                                    'new_value': node.fullname}])
 
+def bulkMove(request, tree, id):
+    """Bulk move the preparations under the <tree> node <id> to have
+    as new location storage the node indicated by the 'target'
+    POST parameter.
+    """
+    # get collection object ids, can be an array, from the request (preparations parent CO id)
+    check_permission_targets(request.specify_collection.id,
+                             request.specify_user.id, [perm_target(tree).move])
+    node = get_object_or_404(tree, id=id)
+    target = get_object_or_404(tree, id=request.POST['target'])
+    old_parent = node.parent
+    old_parentid = old_parent.id
+    node.parent = target
+    old_stamp = node.timestampmodified
 
 @tree_mutation
 def synonymize(request, tree, id):
@@ -313,6 +327,7 @@ class StorageMutationPT(PermissionTarget):
     resource = "/tree/edit/storage"
     merge = PermissionTargetAction()
     move = PermissionTargetAction()
+    bulkMove = PermissionTargetAction()
     synonymize = PermissionTargetAction()
     desynonymize = PermissionTargetAction()
     repair = PermissionTargetAction()

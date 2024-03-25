@@ -24,7 +24,14 @@ import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import type { Row } from './helpers';
 import { checkMoveViolatesEnforced } from './helpers';
 
-type Action = 'add' | 'desynonymize' | 'edit' | 'merge' | 'move' | 'synonymize';
+type Action =
+  | 'add'
+  | 'desynonymize'
+  | 'edit'
+  | 'merge'
+  | 'move'
+  | 'synonymize'
+  | 'bulkMove';
 
 export function TreeViewActions<SCHEMA extends AnyTree>({
   tableName,
@@ -157,6 +164,16 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
           />
         </li>
       )}
+      {hasPermission(resourceName, 'bulkMove') && tableName === 'Storage' ? (
+        <li className="contents">
+          <Button.Icon
+            disabled={disableButtons || isRoot}
+            icon="truck"
+            title={treeText.moveItems()}
+            onClick={(): void => setAction('bulkMove')}
+          />
+        </li>
+      ) : null}
       {hasPermission(resourceName, 'merge') && (
         <li className="contents">
           <Button.Icon
@@ -286,7 +303,9 @@ function ActiveAction<SCHEMA extends AnyTree>({
   readonly onCancelAction: () => void;
   readonly onCompleteAction: () => void;
 }): JSX.Element {
-  if (!['move', 'merge', 'synonymize', 'desynonymize'].includes(type))
+  if (
+    !['move', 'merge', 'synonymize', 'desynonymize', 'bulkMove'].includes(type)
+  )
     throw new Error('Invalid action type');
 
   const table = genericTables[tableName] as SpecifyTable<AnyTree>;
@@ -316,6 +335,8 @@ function ActiveAction<SCHEMA extends AnyTree>({
       ? treeText.nodeMoveHintMessage({ nodeName: actionRow.fullName })
       : type === 'merge'
       ? treeText.mergeNodeHintMessage({ nodeName: actionRow.fullName })
+      : type === 'bulkMove'
+      ? treeText.bulkMoveNodeHintMessage({ nodeName: actionRow.fullName })
       : type === 'synonymize'
       ? treeText.synonymizeNodeHintMessage({ nodeName: actionRow.fullName })
       : treeText.desynonymizeNodeMessage({
@@ -323,7 +344,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
           synonymName: focusedRow.fullName,
         });
   let disabled: string | false = false;
-  if (type === 'move') {
+  if (type === 'move' || type === 'bulkMove') {
     if (isSameRecord) disabled = title;
     else if (
       focusedRow.rankId >= actionRow.rankId ||
@@ -355,6 +376,8 @@ function ActiveAction<SCHEMA extends AnyTree>({
           ? disabled
           : type === 'move'
           ? treeText.moveNodeHere({ nodeName: actionRow.fullName })
+          : type === 'bulkMove'
+          ? treeText.moveNodePreparationsHere({ nodeName: actionRow.fullName })
           : type === 'merge'
           ? treeText.mergeNodeHere({ nodeName: actionRow.fullName })
           : type === 'synonymize'
@@ -393,6 +416,8 @@ function ActiveAction<SCHEMA extends AnyTree>({
               >
                 {type === 'move'
                   ? treeText.moveNode()
+                  : type === 'bulkMove'
+                  ? treeText.moveItems()
                   : type === 'merge'
                   ? treeText.mergeNode()
                   : type === 'synonymize'
@@ -404,6 +429,8 @@ function ActiveAction<SCHEMA extends AnyTree>({
           header={
             type === 'move'
               ? treeText.moveNode()
+              : type === 'bulkMove'
+              ? treeText.moveItems()
               : type === 'merge'
               ? treeText.mergeNode()
               : type === 'synonymize'
@@ -414,6 +441,12 @@ function ActiveAction<SCHEMA extends AnyTree>({
         >
           {type === 'move'
             ? treeText.nodeMoveMessage({
+                treeName,
+                nodeName: actionRow.fullName,
+                parentName: focusedRow.fullName,
+              })
+            : type === 'bulkMove'
+            ? treeText.nodeBulkMoveMessage({
                 treeName,
                 nodeName: actionRow.fullName,
                 parentName: focusedRow.fullName,
