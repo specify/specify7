@@ -1,7 +1,6 @@
 from functools import wraps
-import json
 from django.db import transaction
-from django.http import HttpResponse, HttpResponseServerError, HttpResponseBadRequest
+from django.http import HttpResponse
 from django.views.decorators.http import require_GET, require_POST
 from sqlalchemy import sql
 from sqlalchemy.orm import aliased
@@ -17,8 +16,6 @@ from .auditcodes import TREE_MOVE
 from .models import datamodel
 from .tree_stats import get_tree_stats
 from .views import login_maybe_required, openapi
-from . import models as spmodels
-from sys import maxsize
 
 import logging
 logger = logging.getLogger(__name__)

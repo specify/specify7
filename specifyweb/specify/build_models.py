@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.signals import pre_delete
 
 from specifyweb.businessrules.exceptions import AbortSave
 from . import model_extras
@@ -63,9 +64,18 @@ def make_model(module, table, datamodel):
             return super(model, self).save(*args, **kwargs)
         except AbortSave:
             return
+        
+    def avant_delete(self):
+        # This function is to be called before the object is deleted, and before the pre_delete signal is sent.
+        # It will manually send the pre_delete signal for the django model object.
+        # The pre_delete function must contain logic that will prevent ForeignKey constraints from being violated.
+        # This is needed because database constraints are checked before pre_delete signals are sent.
+        pre_delete.send(sender=self.__class__, instance=self)
 
     attrs['save'] = save
     attrs['Meta'] = Meta
+    if table.django_name in tree_def_item_tables:
+        attrs['avant_delete'] = avant_delete
 
     supercls = getattr(model_extras, table.django_name, models.Model)
     model = type(table.django_name, (supercls,), attrs)
@@ -278,6 +288,14 @@ field_type_map = {
     'java.math.BigDecimal': make_decimal_field,
     'java.lang.Boolean': make_boolean_field,
     }
+
+tree_def_item_tables = [
+    'Geographytreedefitem',
+    'Geologictimeperiodtreedefitem',
+    'Lithostrattreedefitem',
+    'Storagetreedefitem',
+    'Taxontreedefitem',
+]
 
 def build_models(module, datamodel):
     return { model.specify_model.tableId: model
