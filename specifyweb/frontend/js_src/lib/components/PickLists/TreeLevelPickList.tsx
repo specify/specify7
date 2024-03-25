@@ -20,6 +20,23 @@ import {
 import { hasTreeAccess } from '../Permissions/helpers';
 import { PickListComboBox } from './index';
 
+const fetchTreeRoot = async (
+  treeName: AnyTree['tableName']
+): Promise<RA<PickListItemSimple>> =>
+  treeRanksPromise
+    .then(
+      () =>
+        strictGetTreeDefinitionItems(treeName as 'Geography', true).find(
+          ({ rankId }) => rankId === 0
+        )!
+    )
+    .then((rank) => [
+      {
+        value: rank.resource_uri,
+        title: (rank.title?.length ?? 0) === 0 ? rank.name : rank.title!,
+      },
+    ]);
+
 const fetchPossibleRanks = async (
   lowestChildRank: number,
   parentRankId: number,
@@ -95,10 +112,18 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
                     resource.specifyTable.name
                   )
                 )
+              : typeof resource.get('definitionItem') === 'string' &&
+                !resource.isNew()
+              ? fetchTreeRoot(resource.specifyTable.name)
               : undefined
           )
           .then((items) => {
             if (destructorCalled) return undefined;
+            if (typeof resource.get('definitionItem') !== 'string')
+              resource.set(
+                'definitionItem',
+                props.defaultValue ?? items?.slice(-1)[0]?.value ?? ''
+              );
             return void setItems(items);
           }),
       true
@@ -117,16 +142,14 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
         props.isDisabled ||
         props.resource === undefined ||
         !isTreeResource(props.resource) ||
-        props.resource.get('parent') === null
+        typeof props.resource.get('parent') !== 'string'
       }
       isRequired={
         props.resource?.specifyTable.getRelationship('definitionItem')
           ?.isRequired ?? true
       }
       items={items ?? []}
-      // Select next enforced rank by default
       pickList={undefined}
-      onAdd={undefined}
     />
   );
 }
