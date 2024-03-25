@@ -68,15 +68,13 @@ export function QueryExportButtons({
         ...serialized,
         captions: fields
           .filter(({ isDisplay }) => isDisplay)
-          .map(({ mappingPath }) => {
-            const resu = generateMappingPathPreview(
+          .map(({ mappingPath }) =>
+            generateMappingPathPreview(
               baseTableName,
               mappingPath,
               isJoinHeadersWithSeparator
-            );
-            console.log(resu);
-            return resu;
-          }),
+            )
+          ),
         recordSetId,
         delimiter,
       }),
