@@ -11,8 +11,7 @@ logger = logging.getLogger(__name__)
 def pre_tree_rank_initiation_handler(sender, obj):
     if is_instance_of_tree_def_item(obj): # is it a treedefitem?
         if obj.pk is None:
-            # pre_tree_rank_init(sender, obj)
-            pre_tree_rank_init_2(sender, obj)
+            pre_tree_rank_init(sender, obj)
         else:
             # pre_tree_rank_update(sender, obj)
             pass

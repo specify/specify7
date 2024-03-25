@@ -97,6 +97,12 @@ SPECIAL_DELETION_RULES = {
     'Spappresourcedata.spappresource': models.CASCADE,
     'Spappresourcedata.spviewsetobj': models.CASCADE,
     'Spreport.appresource': models.CASCADE,
+
+    'Geographytreedefitem.parent': models.DO_NOTHING,
+    'Geologictimeperiodtreedefitem.parent': models.DO_NOTHING,
+    'Lithostrattreedefitem.parent': models.DO_NOTHING,
+    'Storagetreedefitem.parent': models.DO_NOTHING,
+    'Taxontreedefitem.parent': models.DO_NOTHING,
 }
 
 def make_relationship(modelname, rel, datamodel):
