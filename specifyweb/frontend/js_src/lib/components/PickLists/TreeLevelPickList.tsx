@@ -122,7 +122,7 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
             if (typeof resource.get('definitionItem') !== 'string')
               resource.set(
                 'definitionItem',
-                props.defaultValue ?? items?.slice(-1)[0]?.value
+                props.defaultValue ?? items?.slice(-1)[0]?.value ?? ''
               );
             return void setItems(items);
           }),
