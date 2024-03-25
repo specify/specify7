@@ -41,8 +41,8 @@ export const commonText = createDictionary({
     'en-us': 'Back',
     'ru-ru': 'Назад',
     'es-es': 'Atrás',
-    'fr-fr': 'Dos',
-    'uk-ua': 'Назад',
+    'fr-fr': 'Choisissez des fichiers ou faites-les glisser ici',
+    'uk-ua': 'Виберіть файли або перетягніть їх сюди',
     'de-ch': 'Zurück',
   },
   skip: {
@@ -145,8 +145,8 @@ export const commonText = createDictionary({
     'en-us': 'Tool',
     'ru-ru': 'Инструмент',
     'es-es': 'Herramienta',
-    'fr-fr': 'Outil',
-    'uk-ua': 'Інструмент',
+    'fr-fr': 'Chargement…',
+    'uk-ua': 'Завантаження…',
     'de-ch': 'Tool',
   },
   tools: {
@@ -425,8 +425,8 @@ export const commonText = createDictionary({
     'en-us': 'View Record',
     'ru-ru': 'Посмотреть запись',
     'es-es': 'Ver registro',
-    'fr-fr': "Afficher l'enregistrement",
-    'uk-ua': 'Переглянути запис',
+    'fr-fr': 'Pays',
+    'uk-ua': 'Країна',
     'de-ch': 'Datensatz anzeigen',
   },
   nullInline: {
@@ -490,8 +490,8 @@ export const commonText = createDictionary({
     'en-us': 'Import',
     'ru-ru': 'Импортировать',
     'es-es': 'Importar',
-    'fr-fr': 'Importer',
-    'uk-ua': 'Імпорт',
+    'fr-fr': 'Résolution groupée',
+    'uk-ua': 'Масове вирішення',
     'de-ch': 'Import',
   },
   dismiss: {
@@ -712,7 +712,7 @@ export const commonText = createDictionary({
     'es-es': 'Ilimitado',
     'fr-fr': 'Illimité',
     'ru-ru': 'Безлимитный',
-    'uk-ua': 'зразок',
+    'uk-ua': 'Необмежений',
   },
   change: {
     comment: 'Verb',

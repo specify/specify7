@@ -139,28 +139,18 @@ export const schemaText = createDictionary({
   },
   tableFormat: {
     'en-us': 'Table Format',
-    'ru-ru': 'Подкатегории',
+    'ru-ru': 'Формат таблицы',
     'es-es': 'Formato de tabla',
-    'fr-fr': 'Sous-catégories',
-    'uk-ua': 'Підкатегорії',
+    'fr-fr': 'Format du tableau',
+    'uk-ua': 'Формат таблиці',
     'de-ch': 'Tabellenformat',
   },
   tableAggregation: {
     'en-us': 'Table Aggregation',
-    'ru-ru': `
-      Этот формат будет использоваться только в том случае, если значение поля
-      условия соответствует этому условию или если ему не соответствует никакой
-      другой формат.
-    `,
+    'ru-ru': 'Агрегация таблиц',
     'es-es': 'Agregación de tablas',
-    'fr-fr': `
-      Ce format ne sera utilisé que si la valeur du champ de condition est égale
-      à cette condition ou si aucun autre format ne lui correspond.
-    `,
-    'uk-ua': `
-      Цей формат використовуватиметься, лише якщо значення поля умови дорівнює
-      цій умові або якщо жоден інший формат їй не відповідає.
-    `,
+    'fr-fr': 'Agrégation de tables',
+    'uk-ua': 'Агрегація таблиць',
     'de-ch': 'Tabellenaggregation',
   },
   oneToOne: {

@@ -394,7 +394,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Количество прямых {collectionObjectTable:string}',
     'es-es': 'Recuento directo de {collectionObjectTable:string}',
     'de-ch': 'Direkte {collectionObjectTable:string} Anzahl',
-    'fr-fr': 'Impossible de passer à un synonyme',
+    'fr-fr': 'Comptage direct {collectionObjectTable:string}',
     'uk-ua': 'Прямий підрахунок {collectionObjectTable:string}.',
   },
   indirectCollectionObjectCount: {
@@ -427,7 +427,7 @@ export const treeText = createDictionary({
     'de-ch': 'Nur Knoten mit zugehörigen Objekten anzeigen',
     'es-es': 'Mostrar solo nodos con objetos asociados',
     'fr-fr': 'Afficher uniquement les nœuds avec les objets associés',
-    'ru-ru': 'Это приведет к безвозвратному удалению следующего ресурса',
+    'ru-ru': 'Показывать только узлы со связанными объектами',
     'uk-ua': 'Показувати лише вузли з пов’язаними об’єктами',
   },
   splitView: {
@@ -460,6 +460,6 @@ export const treeText = createDictionary({
     'es-es': 'Sincronizar',
     'fr-fr': 'Synchroniser',
     'uk-ua': 'Синхронізувати',
-    'ru-ru': 'Это приведет к безвозвратному удалению следующего ресурса',
+    'ru-ru': 'Синхронизировать',
   },
 } as const);
