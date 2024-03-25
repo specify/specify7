@@ -23,6 +23,7 @@ import type { Conformations, Row, Stats } from './helpers';
 import { fetchStats } from './helpers';
 import { TreeRow } from './Row';
 import { AddRank } from './AddRank';
+import { hasTablePermission } from '../Permissions/helpers';
 
 const treeToPref = {
   Geography: 'geography',
@@ -48,7 +49,7 @@ export function Tree<SCHEMA extends AnyTree>({
   searchBoxRef,
   baseUrl,
   setLastFocusedTree,
-  handleToggleEditingRanks,
+  handleToggleEditingRanks: onToggleEditingRanks,
 }: {
   readonly treeDefinitionItems: RA<
     SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
@@ -157,12 +158,18 @@ export function Tree<SCHEMA extends AnyTree>({
                       aria-pressed={isEditingRanks}
                       icon="pencil"
                       title={treeText.editRanks()}
-                      onClick={handleToggleEditingRanks}
+                      onClick={onToggleEditingRanks}
                     />
-                    <AddRank
-                      tableName={tableName}
-                      treeDefinitionItems={treeDefinitionItems}
-                    />
+                    {isEditingRanks &&
+                    hasTablePermission(
+                      treeDefinitionItems[0]._tableName,
+                      'create'
+                    ) ? (
+                      <AddRank
+                        tableName={tableName}
+                        treeDefinitionItems={treeDefinitionItems}
+                      />
+                    ) : null}
                   </>
                 ) : null}
                 <Button.LikeLink

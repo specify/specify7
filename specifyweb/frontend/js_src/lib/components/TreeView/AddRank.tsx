@@ -11,7 +11,6 @@ import type {
   FilterTablesByEndsWith,
   SerializedResource,
 } from '../DataModel/helperTypes';
-import { getResourceApiUrl } from '../DataModel/resource';
 import { tables } from '../DataModel/tables';
 import { ResourceView } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
@@ -50,11 +49,7 @@ export function AddRank<SCHEMA extends AnyTree>({
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
               <Button.Save
                 onClick={() => {
-                  const resourceParent = getResourceApiUrl(
-                    treeDefinitionItems[0]._tableName,
-                    parentRank
-                  );
-                  treeResource.set('parent', resourceParent);
+                  treeResource.set('parent', parentRank);
                   setState('add');
                 }}
               >
@@ -75,7 +70,7 @@ export function AddRank<SCHEMA extends AnyTree>({
               }}
             >
               {treeDefinitionItems.map((rank, index) => (
-                <option key={index} value={rank.id}>
+                <option key={index} value={rank.resource_uri}>
                   {rank.name}
                 </option>
               ))}
@@ -96,7 +91,6 @@ export function AddRank<SCHEMA extends AnyTree>({
           onSaved={() => {
             globalThis.location.reload();
           }}
-          onSaving={undefined}
         />
       )}
     </>
