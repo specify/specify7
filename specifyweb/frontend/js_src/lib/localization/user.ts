@@ -146,11 +146,11 @@ export const userText = createDictionary({
   },
   helloMessage: {
     'en-us': 'Hello, {userName:string}!',
-    'ru-ru': 'Новый пароль',
+    'ru-ru': 'Привет, {userName:string}!',
     'es-es': '¡Hola, {userName:string}!',
     'fr-fr': 'Bonjour, {userName:string} !',
     'de-ch': 'Hallo, {userName:string}!',
-    'uk-ua': 'Новий пароль',
+    'uk-ua': 'Привіт, {userName:string}!',
   },
   oicWelcomeMessage: {
     'en-us': `
@@ -236,8 +236,8 @@ export const userText = createDictionary({
     'es-es': 'Generar clave maestra',
     'fr-fr': 'Générer la clé principale',
     'de-ch': 'Masterschlüssel generieren',
-    'ru-ru': 'В учреждении должен быть хотя бы один администратор учреждения.',
-    'uk-ua': 'У закладі має бути принаймні один адміністратор установи',
+    'ru-ru': 'Создать мастер-ключ',
+    'uk-ua': 'Створити головний ключ',
   },
   userPassword: {
     'en-us': 'User Password',
@@ -300,7 +300,10 @@ export const userText = createDictionary({
       Ви не маєте доступу до {collectionTable:string}, що містить цей ресурс,
       через поточний обліковий запис
     `,
-    'de-ch': 'Dieser Agent ist bereits einem anderen Benutzer zugeordnet.',
+    'de-ch': `
+      Sie haben über das aktuell angemeldete Konto keinen Zugriff auf
+      {collectionTable:string}, das diese Ressource enthält
+    `,
   },
   resourceInaccessible: {
     'en-us': `
@@ -333,7 +336,7 @@ export const userText = createDictionary({
     'es-es': 'Seleccione una de las siguientes colecciones:',
     'uk-ua': 'Виберіть одну з наступних колекцій:',
     'de-ch': 'Wählen Sie eine der folgenden Sammlungen:',
-    'fr-fr': "L'utilisateur actuel n'a pas d'agent attribué",
+    'fr-fr': "Sélectionnez l'une des collections suivantes :",
   },
   loginToProceed: {
     comment: 'Example: You can login to the Collection, to proceed:',
@@ -528,20 +531,12 @@ export const userText = createDictionary({
   },
   mustBeManager: {
     'en-us': 'User must be saved as Manager first',
-    'ru-ru': `
-      Пользовательские политики на уровне учреждения (применяются ко всем
-      назначенным коллекциям)
-    `,
+    'ru-ru': 'Сначала пользователя необходимо сохранить как менеджера.',
     'es-es': 'El usuario debe guardarse primero como administrador',
     'de-ch': 'Der Benutzer muss zuerst als Manager gespeichert werden',
-    'fr-fr': `
-      Politiques personnalisées au niveau de l'établissement (s'appliquent à
-      toutes les collections attribuées)
-    `,
-    'uk-ua': `
-      Спеціальна політика на рівні установи (застосовується до всіх призначених
-      колекцій)
-    `,
+    'fr-fr':
+      "L'utilisateur doit d'abord être enregistré en tant que gestionnaire",
+    'uk-ua': 'Спочатку користувача потрібно зберегти як менеджера',
   },
   users: {
     'en-us': 'User Accounts',
@@ -623,7 +618,7 @@ export const userText = createDictionary({
     'fr-fr': 'Sécurité et comptes',
     'uk-ua': 'Безпека та облікові записи',
     'de-ch': 'Sicherheit und Konten',
-    'ru-ru': 'Сначала пользователя необходимо сохранить как менеджера.',
+    'ru-ru': 'Безопасность и учетные записи',
   },
   userRoleLibrary: {
     'en-us': 'Institution Library of Role Templates',
@@ -655,7 +650,7 @@ export const userText = createDictionary({
     'fr-fr': 'Rôles utilisateur attribués',
     'uk-ua': 'Призначені ролі користувача',
     'de-ch': 'Zugewiesene Benutzerrollen',
-    'ru-ru': 'Переключиться на вертикальную компоновку',
+    'ru-ru': 'Назначенные роли пользователей',
   },
   rolePolicies: {
     'en-us': 'Role Permission Policies',
@@ -722,7 +717,10 @@ export const userText = createDictionary({
   outOfDateWarning: {
     'en-us':
       'Note: preview may be out of date. Save changes to update the preview',
-    'ru-ru': 'Привет, [X7X]!',
+    'ru-ru': `
+      Примечание: предварительный просмотр может быть устаревшим. Сохраните
+      изменения, чтобы обновить предварительный просмотр.
+    `,
     'es-es': `
       Nota: la vista previa puede estar desactualizada. Guarde los cambios para
       actualizar la vista previa
@@ -778,7 +776,7 @@ export const userText = createDictionary({
     'es-es': 'Todas las colecciones',
     'fr-fr': 'Toutes les collections',
     'uk-ua': 'Всі колекції',
-    'de-ch': 'Optionen zur Kontoeinrichtung',
+    'de-ch': 'Alle Sammlungen',
   },
   thisCollection: {
     'en-us': 'This collection',
@@ -905,7 +903,10 @@ export const userText = createDictionary({
       Надішліть таке посилання на {userName:string}, щоб дозволити їм увійти в
       систему вперше.
     `,
-    'de-ch': 'Ausgeschlossene institutionelle Richtlinien:',
+    'de-ch': `
+      Senden Sie den folgenden Link an {userName:string}, damit sie sich zum
+      ersten Mal anmelden können.
+    `,
   },
   noProvidersForUserInviteLink: {
     'en-us': `
@@ -991,18 +992,15 @@ export const userText = createDictionary({
     'uk-ua': 'Перш ніж продовжити, установіть такі агенти:',
     'de-ch':
       'Bitte legen Sie die folgenden Agenten fest, bevor Sie fortfahren:',
-    'fr-fr': `
-      L'utilisateur connecté n'a eu accès à aucune collection de cette base de
-      données. Vous devez vous connecter en tant qu'autre utilisateur.
-    `,
+    'fr-fr': 'Veuillez définir les agents suivants avant de continuer :',
   },
   externalIdentityProviders: {
     'en-us': 'External identity providers:',
     'es-es': 'Proveedores de identidad externos:',
     'fr-fr': "Fournisseurs d'identité externes :",
-    'de-ch': 'Wählen Sie eine der folgenden Sammlungen:',
-    'ru-ru': 'Выберите одну из следующих коллекций:',
-    'uk-ua': 'Виберіть одну з наступних колекцій:',
+    'de-ch': 'Externe Identitätsanbieter:',
+    'ru-ru': 'Внешние поставщики удостоверений:',
+    'uk-ua': 'Постачальники зовнішньої ідентифікації:',
   },
   allTables: {
     'en-us': 'All tables',
@@ -1118,11 +1116,11 @@ export const userText = createDictionary({
   },
   switchToVerticalLayout: {
     'en-us': 'Switch to vertical layout',
-    'ru-ru': 'Сначала сохраните пользователя',
+    'ru-ru': 'Переключиться на вертикальную компоновку',
     'es-es': 'Cambiar al diseño vertical',
     'fr-fr': "Passer à l'affichage vertical",
     'de-ch': 'Wechseln Sie zum vertikalen Layout',
-    'uk-ua': 'Спочатку збережіть користувача',
+    'uk-ua': 'Переключитися на вертикальне розташування',
   },
   advancedTables: {
     'en-us': 'Advanced tables',
@@ -1195,7 +1193,7 @@ export const userText = createDictionary({
     'de-ch': 'Benutzer hinzufügen',
     'es-es': 'Agregar usuario',
     'fr-fr': 'Ajouter un utilisateur',
-    'ru-ru': 'Политики разрешений ролей',
-    'uk-ua': 'Політики дозволів на роль',
+    'ru-ru': 'Добавить пользователя',
+    'uk-ua': 'Додати користувача',
   },
 } as const);
