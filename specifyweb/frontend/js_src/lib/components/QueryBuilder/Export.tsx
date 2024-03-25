@@ -51,6 +51,12 @@ export function QueryExportButtons({
     undefined
   );
 
+  const [isJoinHeadersWithSeparator] = userPreferences.use(
+    'queryBuilder',
+    'behavior',
+    'joinHeadersWithSeparator'
+  );
+
   function doQueryExport(url: string, delimiter: string | undefined): void {
     if (typeof getQueryFieldRecords === 'function')
       queryResource.set('fields', getQueryFieldRecords());
@@ -62,9 +68,15 @@ export function QueryExportButtons({
         ...serialized,
         captions: fields
           .filter(({ isDisplay }) => isDisplay)
-          .map(({ mappingPath }) =>
-            generateMappingPathPreview(baseTableName, mappingPath)
-          ),
+          .map(({ mappingPath }) => {
+            const resu = generateMappingPathPreview(
+              baseTableName,
+              mappingPath,
+              isJoinHeadersWithSeparator
+            );
+            console.log(resu);
+            return resu;
+          }),
         recordSetId,
         delimiter,
       }),
@@ -102,7 +114,11 @@ export function QueryExportButtons({
     const columnsName = fields
       .filter((field) => field.isDisplay)
       .map((field) =>
-        generateMappingPathPreview(baseTableName, field.mappingPath)
+        generateMappingPathPreview(
+          baseTableName,
+          field.mappingPath,
+          isJoinHeadersWithSeparator
+        )
       );
 
     return downloadDataSet(name, filteredResults, columnsName, separator);
