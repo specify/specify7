@@ -179,8 +179,8 @@ def add_tree_rank(new_rank, data, tree):
     # Get parameter values from data
     new_rank_name = new_rank.name or data.get('newrankname')
     parent_rank_name = new_rank.parent.name if new_rank.parent else data.get('parentrankname')
-    tree_id = new_rank.treedef.id if new_rank.treedef else data.get('treeid', 1)
-    tree_name = new_rank.treedef.name if new_rank.treedef else data.get('treename')
+    tree_id = new_rank.treedef.id if hasattr(new_rank, 'treedef') and new_rank.treedef else data.get('treeid', 1)
+    tree_name = new_rank.treedef.name if hasattr(new_rank, 'treedef') and new_rank.treedef else data.get('treename')
     new_rank_title = new_rank.title or data.get('title', new_rank_name)
     use_default_rank_ids = data.get('usedefaultrankids', True)
 
