@@ -1,7 +1,7 @@
 from functools import wraps
 from django.db import transaction
 from django.http import HttpResponse
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import require_POST
 from sqlalchemy import sql
 from sqlalchemy.orm import aliased
 
@@ -298,7 +298,6 @@ class TaxonMutationPT(PermissionTarget):
     synonymize = PermissionTargetAction()
     desynonymize = PermissionTargetAction()
     repair = PermissionTargetAction()
-    edit_ranks = PermissionTargetAction()
 
 
 class GeographyMutationPT(PermissionTarget):
@@ -308,7 +307,6 @@ class GeographyMutationPT(PermissionTarget):
     synonymize = PermissionTargetAction()
     desynonymize = PermissionTargetAction()
     repair = PermissionTargetAction()
-    edit_ranks = PermissionTargetAction()
 
 
 class StorageMutationPT(PermissionTarget):
@@ -318,7 +316,6 @@ class StorageMutationPT(PermissionTarget):
     synonymize = PermissionTargetAction()
     desynonymize = PermissionTargetAction()
     repair = PermissionTargetAction()
-    edit_ranks = PermissionTargetAction()
 
 
 class GeologictimeperiodMutationPT(PermissionTarget):
@@ -328,7 +325,6 @@ class GeologictimeperiodMutationPT(PermissionTarget):
     synonymize = PermissionTargetAction()
     desynonymize = PermissionTargetAction()
     repair = PermissionTargetAction()
-    edit_ranks = PermissionTargetAction()
 
 
 class LithostratMutationPT(PermissionTarget):
@@ -338,7 +334,6 @@ class LithostratMutationPT(PermissionTarget):
     synonymize = PermissionTargetAction()
     desynonymize = PermissionTargetAction()
     repair = PermissionTargetAction()
-    edit_ranks = PermissionTargetAction()
 
 
 def perm_target(tree):
