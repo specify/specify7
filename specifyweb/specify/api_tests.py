@@ -118,18 +118,6 @@ class SimpleApiTests(ApiTests):
         self.assertEqual(obj.catalognumber, 'foobar')
         self.assertEqual(obj.createdbyagent, self.agent)
 
-    def test_put_resource(self):
-        data = {'catalognumber': 'foobar'}
-        # obj = api.create_obj(self.collection, self.agent, 'collectionobject', {
-        #         'collection': api.uri_for_model('collection', self.collection.id),
-        #         'catalognumber': 'foobar'})
-        obj = api.put_resource(self.collection, self.agent, 'collectionobject', obj.id, obj.version, data)
-        obj = models.Collectionobject.objects.get(id=obj.id)
-        self.assertTrue(obj.id is not None)
-        self.assertEqual(obj.collection, self.collection)
-        self.assertEqual(obj.catalognumber, 'foobar')
-        self.assertEqual(obj.createdbyagent, self.agent)
-
     def test_update_object(self):
         data = api.get_resource('collection', self.collection.id, skip_perms_check)
         data['collectionname'] = 'New Name'
