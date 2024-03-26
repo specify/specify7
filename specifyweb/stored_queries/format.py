@@ -119,6 +119,10 @@ class ObjectFormatter(object):
         formatter = fieldNodeAttrib.get('formatter', None)
         aggregator = fieldNodeAttrib.get('aggregator', None)
         next_table_name = formatter_field_spec.table.name
+
+        # preserve sql table alias
+        formatter_field_spec = formatter_field_spec._replace(root_sql_table=orm_table)
+
         if formatter_field_spec.is_relationship():
             if previous_tables is not None and next_table_name in [table_name for table_name, _ in previous_tables]:
                 return (query, literal(
