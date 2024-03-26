@@ -75,15 +75,6 @@ function getGlobalAllResources(resources: AppResources): {
       scope: 'global',
     });
   /**
-   * Even though there are several global directories, for consistency, all
-   * global resources are added to the one that has userType==='Common'
-   */
-  /*
-   * Const mainDirectory =
-   *   globalDirectories.find(({ userType }) => userType === 'Common') ??
-   *   globalDirectories[0];
-   */
-  /**
    * Resources from all global directories are visually merged into a single
    * one. This is because there is currently no use case for separate
    * global resource dirs, while having them separated in the UI would

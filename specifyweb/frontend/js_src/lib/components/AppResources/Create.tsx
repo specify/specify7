@@ -172,13 +172,6 @@ export const findAppResourceDirectoryKey = (
   tree: AppResourcesTree,
   directoryId: number
 ): string | undefined =>
-  /*
-   * MappedFind(tree, ({ key, directory, subCategories }) =>
-   *   directory?.id === directoryId
-   *     ? key
-   *     : findAppResourceDirectoryKey(subCategories, directoryId)
-   * );
-   */
   mappedFind(tree, ({ key, directory, subCategories }) => {
     if (
       Array.isArray(directory) &&

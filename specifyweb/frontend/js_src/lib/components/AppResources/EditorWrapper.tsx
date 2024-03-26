@@ -98,12 +98,6 @@ export function Wrapper({
       onClone={(clonedResource, clone): void =>
         navigate(
           formatUrl(`${baseHref}/new/`, {
-            /*
-             * DirectoryKey: findAppResourceDirectoryKey(
-             *   resourcesTree,
-             *   directory.id
-             * ),
-             */
             directoryKey: Array.isArray(directory)
               ? findAppResourceDirectoryKey(
                   resourcesTree,
