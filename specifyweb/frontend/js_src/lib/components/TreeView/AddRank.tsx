@@ -28,7 +28,9 @@ export function AddRank<SCHEMA extends AnyTree>({
     'initial'
   );
 
-  const [parentRank, setParentRank] = React.useState('');
+  const [parentRank, setParentRank] = React.useState(
+    treeDefinitionItems[0].resource_uri
+  );
 
   const treeResource = React.useMemo(
     () => new tables[treeDefinitionItems[0]._tableName].Resource(),
