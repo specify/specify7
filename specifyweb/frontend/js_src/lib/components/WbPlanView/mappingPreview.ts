@@ -83,8 +83,7 @@ const mappingPathSubset = <T extends string | undefined>(
  */
 export function generateMappingPathPreview(
   baseTableName: keyof Tables,
-  mappingPath: MappingPath,
-  addSeparator: boolean = true
+  mappingPath: MappingPath
 ): string {
   if (mappingPath.length === 0) return strictGetTable(baseTableName).label;
 
@@ -177,5 +176,5 @@ export function generateMappingPathPreview(
     toManyIndexFormatted,
   ])
     .filter(Boolean)
-    .join(addSeparator ? ' · ' : ' ');
+    .join(' - ');
 }

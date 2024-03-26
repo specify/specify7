@@ -1979,7 +1979,4 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Добавить панель поиска на главную страницу',
     'uk-ua': 'Додайте рядок пошуку на головну сторінку',
   },
-  joinHeadersWithSeparator: {
-    'en-us': 'Join headers with separator',
-  },
 } as const);

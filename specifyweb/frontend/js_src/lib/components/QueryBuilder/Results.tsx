@@ -390,20 +390,13 @@ function TableHeaderCell({
   // TableName refers to the table the field is from, not the base table name of the query
   const tableName = fieldSpec?.table?.name;
 
-  const [isJoinHeadersWithSeparator] = userPreferences.use(
-    'queryBuilder',
-    'behavior',
-    'joinHeadersWithSeparator'
-  );
-
   const content =
     typeof fieldSpec === 'object' ? (
       <>
         {tableName && <TableIcon label name={tableName} />}
         {generateMappingPathPreview(
           fieldSpec.baseTable.name,
-          fieldSpec.toMappingPath(),
-          isJoinHeadersWithSeparator
+          fieldSpec.toMappingPath()
         )}
       </>
     ) : undefined;
