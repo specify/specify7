@@ -31,6 +31,26 @@ def orm_signal_handler(signal: MODEL_SIGNAL, model: Optional[str] = None, **kwar
         return receiver(getattr(signals, signal), **receiver_kwargs)(handler)
     return _dec
 
+def orm_signal_handler_with_kwargs(signal: MODEL_SIGNAL, model: Optional[str] = None, **kwargs):
+    def _dec(rule):
+        receiver_kwargs = kwargs
+        if model is not None:
+            receiver_kwargs['sender'] = getattr(models, model)
+
+            def handler(sender, **kwargs):
+                if kwargs.get('raw', False):
+                    return
+                instance = kwargs.pop('instance')
+                rule(instance, **kwargs)
+        else:
+            def handler(sender, **kwargs):
+                if kwargs.get('raw', False):
+                    return
+                instance = kwargs.pop('instance')
+                rule(sender, instance, **kwargs)
+
+        return receiver(getattr(signals, signal), **receiver_kwargs)(handler)
+    return _dec
 
 def disconnect_signal(signal: MODEL_SIGNAL, model_name: Optional[str] = None, dispatch_uid: Optional[Hashable] = None) -> bool:
     fetched_signal = getattr(signals, signal)

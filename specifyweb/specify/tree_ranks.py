@@ -118,7 +118,6 @@ def pre_tree_rank_deletion(tree_def_item_model, rank):
     tree_def = rank.treedef
 
     # Make sure no nodes are present in the rank before deleting rank
-    # rank = tree_def_item_model.objects.get(name=rank.name)
     if tree_def_item_model.objects.filter(parent=rank).count() > 1:
         message = "The Rank is not empty, cannot delete!"
         raise_tree_business_rule_exception(message, tree_def_item_model, rank.id)
@@ -148,7 +147,7 @@ def raise_tree_business_rule_exception(message, tree_def, new_rank_id):
         }
     )
 
-def pre_tree_rank_init(tree_def_item_model, new_rank):
+def pre_tree_rank_init(new_rank):
     data = {
         'newrankname': new_rank.name,
         'parentrankname': new_rank.parent.name if new_rank.parent is not None else 'root'
