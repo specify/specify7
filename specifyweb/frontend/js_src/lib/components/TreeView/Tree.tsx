@@ -49,7 +49,7 @@ export function Tree<SCHEMA extends AnyTree>({
   searchBoxRef,
   baseUrl,
   setLastFocusedTree,
-  handleToggleEditingRanks: onToggleEditingRanks,
+  onToggleEditingRanks: handleToggleEditingRanks,
 }: {
   readonly treeDefinitionItems: RA<
     SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
@@ -68,7 +68,7 @@ export function Tree<SCHEMA extends AnyTree>({
   readonly searchBoxRef: React.RefObject<HTMLInputElement | null>;
   readonly baseUrl: string;
   readonly setLastFocusedTree: () => void;
-  readonly handleToggleEditingRanks: () => void;
+  readonly onToggleEditingRanks: () => void;
 }): JSX.Element {
   const highContrast = useHighContrast();
 
@@ -158,7 +158,7 @@ export function Tree<SCHEMA extends AnyTree>({
                       aria-pressed={isEditingRanks}
                       icon="pencil"
                       title={treeText.editRanks()}
-                      onClick={onToggleEditingRanks}
+                      onClick={handleToggleEditingRanks}
                     />
                     {isEditingRanks &&
                     hasTablePermission(
