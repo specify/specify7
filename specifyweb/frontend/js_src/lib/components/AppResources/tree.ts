@@ -60,7 +60,7 @@ const sortTree = (tree: AppResourcesTree): AppResourcesTree =>
     }));
 
 function getGlobalAllResources(resources: AppResources): {
-  readonly directory: ScopedAppResourceDir;
+  readonly directory: ScopedAppResourceDir[];
   readonly appResources: RA<SerializedResource<SpAppResource>>;
   readonly viewSets: RA<SerializedResource<SpViewSetObj>>;
 } {
@@ -78,9 +78,9 @@ function getGlobalAllResources(resources: AppResources): {
    * Even though there are several global directories, for consistency, all
    * global resources are added to the one that has userType==='Common'
    */
-  const mainDirectory =
-    globalDirectories.find(({ userType }) => userType === 'Common') ??
-    globalDirectories[0];
+  // const mainDirectory =
+  //   globalDirectories.find(({ userType }) => userType === 'Common') ??
+  //   globalDirectories[0];
   /**
    * Resources from all global directories are visually merged into a single
    * one. This is because there is currently no use case for separate
@@ -92,7 +92,7 @@ function getGlobalAllResources(resources: AppResources): {
     resources
   );
   return {
-    directory: mainDirectory,
+    directory: globalDirectories,
     appResources: disambiguateGlobalPrefs(appResources, globalDirectories),
     viewSets,
   };
@@ -170,12 +170,13 @@ export const getScopedAppResources = (
         directory.scope === 'discipline' &&
         directory.discipline === discipline.resource_uri
     );
-    const directory =
+    const directory = [
       directories[0] ??
-      addMissingFields('SpAppResourceDir', {
-        discipline: discipline.resource_uri,
-        collection: undefined,
-      });
+        addMissingFields('SpAppResourceDir', {
+          discipline: discipline.resource_uri,
+          collection: undefined,
+        }),
+    ];
     return {
       label: localized(discipline.name ?? ''),
       key: `discipline_${discipline.id}`,
@@ -197,12 +198,13 @@ const getDisciplineAppResources = (
           directory.collection === collection.resource_uri &&
           directory.scope === 'collection'
       );
-      const directory =
+      const directory = [
         directories[0] ??
-        addMissingFields('SpAppResourceDir', {
-          collection: collection.resource_uri,
-          discipline: collection.discipline,
-        });
+          addMissingFields('SpAppResourceDir', {
+            collection: collection.resource_uri,
+            discipline: collection.discipline,
+          }),
+      ];
       return {
         /*
          * REFACTOR: should data coming from the database be considered
@@ -250,13 +252,14 @@ const getUserTypeResources = (
         directory.userType?.toLowerCase() === userType.toLowerCase() &&
         directory.scope === 'userType'
     );
-    const directory =
+    const directory = [
       directories[0] ??
-      addMissingFields('SpAppResourceDir', {
-        collection: collection.resource_uri,
-        discipline: collection.discipline,
-        userType: userType.toLowerCase(),
-      });
+        addMissingFields('SpAppResourceDir', {
+          collection: collection.resource_uri,
+          discipline: collection.discipline,
+          userType: userType.toLowerCase(),
+        }),
+    ];
     return {
       label: localized(userType),
       key: `collection_${collection.id}_userType_${userType}`,
@@ -277,14 +280,15 @@ const getUserResources = (
         directory.specifyUser === user.resource_uri &&
         directory.scope === 'user'
     );
-    const directory =
+    const directory = [
       directories[0] ??
-      addMissingFields('SpAppResourceDir', {
-        collection: collection.resource_uri,
-        discipline: collection.discipline,
-        specifyUser: user.resource_uri,
-        isPersonal: true,
-      });
+        addMissingFields('SpAppResourceDir', {
+          collection: collection.resource_uri,
+          discipline: collection.discipline,
+          specifyUser: user.resource_uri,
+          isPersonal: true,
+        }),
+    ];
 
     return {
       label: localized(user.name),

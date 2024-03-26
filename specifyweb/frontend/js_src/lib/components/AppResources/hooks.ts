@@ -84,7 +84,7 @@ export type AppResourcesTree = RA<{
    * directory ID).
    */
   readonly key: string;
-  readonly directory: ScopedAppResourceDir | undefined;
+  readonly directory: ScopedAppResourceDir[] | undefined;
   readonly appResources: RA<
     SerializedResource<SpAppResource> & {
       readonly label?: LocalizedString;

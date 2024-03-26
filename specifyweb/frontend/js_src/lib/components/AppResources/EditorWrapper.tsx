@@ -92,16 +92,24 @@ export function Wrapper({
     <NotFoundView container={false} />
   ) : (
     <AppResourceEditor
-      directory={directory}
+      directory={Array.isArray(directory) ? directory[0] : directory}
       initialData={initialData === false ? undefined : initialData}
       resource={record}
       onClone={(clonedResource, clone): void =>
         navigate(
           formatUrl(`${baseHref}/new/`, {
-            directoryKey: findAppResourceDirectoryKey(
-              resourcesTree,
-              directory.id
-            ),
+            // directoryKey: findAppResourceDirectoryKey(
+            //   resourcesTree,
+            //   directory.id
+            // ),
+            directoryKey: Array.isArray(directory)
+              ? findAppResourceDirectoryKey(
+                  resourcesTree,
+                  directory.find(
+                    (dir) => dir.resource_uri === record.spAppResourceDir
+                  )?.id || -1
+                )
+              : findAppResourceDirectoryKey(resourcesTree, directory.id),
             name: clonedResource.name,
             mimeType: 'mimeType' in record ? record.mimeType : undefined,
             clone,
@@ -246,7 +254,7 @@ function useDirectory(
   resourcesTree: AppResourcesTree,
   resource: SerializedResource<SpAppResource | SpViewSetObj> | undefined,
   resources: AppResources
-): ScopedAppResourceDir | undefined {
+): ScopedAppResourceDir | ScopedAppResourceDir[] | undefined {
   return React.useMemo(() => {
     const directoryUrl = resource?.spAppResourceDir;
     const directory = resources.directories.find(
