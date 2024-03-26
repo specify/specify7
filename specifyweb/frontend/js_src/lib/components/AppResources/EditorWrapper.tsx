@@ -98,10 +98,12 @@ export function Wrapper({
       onClone={(clonedResource, clone): void =>
         navigate(
           formatUrl(`${baseHref}/new/`, {
-            // directoryKey: findAppResourceDirectoryKey(
-            //   resourcesTree,
-            //   directory.id
-            // ),
+            /*
+             * DirectoryKey: findAppResourceDirectoryKey(
+             *   resourcesTree,
+             *   directory.id
+             * ),
+             */
             directoryKey: Array.isArray(directory)
               ? findAppResourceDirectoryKey(
                   resourcesTree,
@@ -254,7 +256,7 @@ function useDirectory(
   resourcesTree: AppResourcesTree,
   resource: SerializedResource<SpAppResource | SpViewSetObj> | undefined,
   resources: AppResources
-): ScopedAppResourceDir | ScopedAppResourceDir[] | undefined {
+): ScopedAppResourceDir | readonly ScopedAppResourceDir[] | undefined {
   return React.useMemo(() => {
     const directoryUrl = resource?.spAppResourceDir;
     const directory = resources.directories.find(

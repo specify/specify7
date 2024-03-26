@@ -60,7 +60,7 @@ const sortTree = (tree: AppResourcesTree): AppResourcesTree =>
     }));
 
 function getGlobalAllResources(resources: AppResources): {
-  readonly directory: ScopedAppResourceDir[];
+  readonly directory: readonly ScopedAppResourceDir[];
   readonly appResources: RA<SerializedResource<SpAppResource>>;
   readonly viewSets: RA<SerializedResource<SpViewSetObj>>;
 } {
@@ -78,9 +78,11 @@ function getGlobalAllResources(resources: AppResources): {
    * Even though there are several global directories, for consistency, all
    * global resources are added to the one that has userType==='Common'
    */
-  // const mainDirectory =
-  //   globalDirectories.find(({ userType }) => userType === 'Common') ??
-  //   globalDirectories[0];
+  /*
+   * Const mainDirectory =
+   *   globalDirectories.find(({ userType }) => userType === 'Common') ??
+   *   globalDirectories[0];
+   */
   /**
    * Resources from all global directories are visually merged into a single
    * one. This is because there is currently no use case for separate

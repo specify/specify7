@@ -160,7 +160,7 @@ export function CreateAppResource(): JSX.Element {
 export const findAppResourceDirectory = (
   tree: AppResourcesTree,
   searchKey: string
-): ScopedAppResourceDir[] | undefined =>
+): readonly ScopedAppResourceDir[] | undefined =>
   mappedFind(tree, ({ key, directory, subCategories }) =>
     key === searchKey
       ? directory
@@ -172,11 +172,13 @@ export const findAppResourceDirectoryKey = (
   tree: AppResourcesTree,
   directoryId: number
 ): string | undefined =>
-  // mappedFind(tree, ({ key, directory, subCategories }) =>
-  //   directory?.id === directoryId
-  //     ? key
-  //     : findAppResourceDirectoryKey(subCategories, directoryId)
-  // );
+  /*
+   * MappedFind(tree, ({ key, directory, subCategories }) =>
+   *   directory?.id === directoryId
+   *     ? key
+   *     : findAppResourceDirectoryKey(subCategories, directoryId)
+   * );
+   */
   mappedFind(tree, ({ key, directory, subCategories }) => {
     if (
       Array.isArray(directory) &&
