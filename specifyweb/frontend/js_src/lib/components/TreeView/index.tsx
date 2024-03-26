@@ -202,7 +202,6 @@ function TreeView<SCHEMA extends AnyTree>({
         focusPath={states[type].focusPath}
         focusRef={toolbarButtonRef}
         getRows={getRows}
-        onToggleEditingRanks={handleToggleEditingRanks}
         hideEmptyNodes={hideEmptyNodes}
         isEditingRanks={isEditingRanks}
         ranks={rankIds}
@@ -212,6 +211,7 @@ function TreeView<SCHEMA extends AnyTree>({
         setLastFocusedTree={() => setLastFocusedTree(type)}
         tableName={tableName}
         treeDefinitionItems={treeDefinitionItems}
+        onToggleEditingRanks={handleToggleEditingRanks}
       />
     );
 
