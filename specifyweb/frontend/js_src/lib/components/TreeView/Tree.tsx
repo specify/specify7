@@ -271,7 +271,7 @@ function EditTreeRank({
           resource={resource}
           onAdd={undefined}
           onClose={handleClose}
-          onDeleted={undefined}
+          onDeleted={(): void => globalThis.location.reload()}
           onSaved={(): void => globalThis.location.reload()}
         />
       ) : null}
