@@ -1,5 +1,6 @@
 from functools import wraps
 from hmac import new
+from operator import ge
 
 from specifyweb.businessrules.exceptions import TreeBusinessRuleException
 from . import tree_extras
@@ -170,24 +171,25 @@ def set_rank_id(new_rank, tree, use_default_rank_ids=True):
         new_rank.treedef = tree_def_model.objects.get(id=tree_id)
 
     # Check if the new rank already has a rank id
-    new_rank_id = new_rank.rankid if hasattr(new_rank, 'rankid') else None
-    if new_rank_id:
+    if getattr(new_rank, 'rankid', None):
+        new_rank_id = new_rank.rankid
         if type(new_rank_id) is str:
             new_rank_id = int(new_rank_id)
             new_rank.rankid = new_rank_id
         if new_rank.parent and new_rank_id <= new_rank.parent.rankid:
-            # Raising this exception causes many workbench tests to fail
-            # raise TreeBusinessRuleException(f"Rank ID {new_rank_id} must be greater than the parent rank ID {new_rank.parent.rankid}")
-            new_rank_id = None
+            raise TreeBusinessRuleException(
+                f"Rank ID {new_rank_id} must be greater than the parent rank ID {new_rank.parent.rankid}")
         child_rank = tree_def_item_model.objects.filter(treedef=new_rank.treedef, parent=new_rank.parent).exclude(id=new_rank.id)
         if child_rank.exists() and new_rank_id >= child_rank.first().rankid:
             # Raising this exception causes many workbench tests to fail
-            # raise TreeBusinessRuleException(f"Rank ID {new_rank_id} must be less than the child rank ID {child_rank.first().rankid}")
+            # raise TreeBusinessRuleException(
+            #     f"Rank ID {new_rank_id} must be less than the child rank ID {child_rank.first().rankid}")
             new_rank_id = None
         if new_rank_id:
             return
 
     # Determine the new rank id parameters
+    new_rank_id = getattr(new_rank, 'rankid', None)
     tree_def = tree_def_model.objects.get(id=tree_id)
     try:
         tree_def = tree_def_model.objects.get(name=tree_name)
