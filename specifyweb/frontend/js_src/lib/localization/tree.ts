@@ -62,7 +62,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Операция провалена',
     'es-es': 'Operación fallida',
     'fr-fr': "L'opération a échoué",
-    'uk-ua': 'Операція не вдалася',
+    'uk-ua': 'Не вдалося виконати операцію',
     'de-ch': 'Vorgang fehlgeschlagen',
   },
   actionFailedDescription: {
@@ -77,7 +77,7 @@ export const treeText = createDictionary({
     'de-ch': `
       Der Vorgang konnte aufgrund der folgenden Fehler nicht ausgeführt werden:
     `,
-    'uk-ua': 'Неможливо перейти до синоніма',
+    'uk-ua': 'Прямий підрахунок [X7X].',
   },
   moveNode: {
     'en-us': 'Move node',
@@ -323,11 +323,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Предпочтительний: {name:string}',
     'es-es': 'Preferido: {name:string}',
     'fr-fr': 'Préféré : {name:string}',
-    'uk-ua': `
-      Усі посилання на вузол [X18X] «[X42X]» буде замінено на «[X84X]», а всі
-      нащадки «[X130X]» буде переміщено до «[X167X]», а будь-які нащадки, що
-      відповідають імені та рангу, будуть самі собою об'єднані рекурсивно.
-    `,
+    'uk-ua': 'Бажано: {name:string}',
     'de-ch': 'Bevorzugt: {name:string}',
   },
   treeViewTitle: {
@@ -394,7 +390,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Количество прямых {collectionObjectTable:string}',
     'es-es': 'Recuento directo de {collectionObjectTable:string}',
     'de-ch': 'Direkte {collectionObjectTable:string} Anzahl',
-    'fr-fr': 'Comptage direct {collectionObjectTable:string}',
+    'fr-fr': 'Impossible de passer à un synonyme',
     'uk-ua': 'Прямий підрахунок {collectionObjectTable:string}.',
   },
   indirectCollectionObjectCount: {
@@ -424,7 +420,7 @@ export const treeText = createDictionary({
   },
   associatedNodesOnly: {
     'en-us': 'Show only nodes with associated objects',
-    'de-ch': 'Nur Knoten mit zugehörigen Objekten anzeigen',
+    'de-ch': 'Synchronisieren',
     'es-es': 'Mostrar solo nodos con objetos asociados',
     'fr-fr': 'Afficher uniquement les nœuds avec les objets associés',
     'ru-ru': 'Синхронизировать',
