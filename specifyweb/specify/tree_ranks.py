@@ -136,17 +136,16 @@ def post_tree_rank_deletion(rank):
     tree_extras.set_fullnames(rank.treedef, null_only=False, node_number_range=None)
 
 def pre_tree_rank_init(new_rank):
-    tree = new_rank.specify_model.name.replace("TreeDefItem", "").lower()
-    set_rank_id(new_rank, tree)
+    set_rank_id(new_rank)
 
-def set_rank_id(new_rank, tree, use_default_rank_ids=True):
+def set_rank_id(new_rank):
     """
     Sets the new rank to the specified tree when adding a new rank.
     Expects at least the name and parent of the rank to be set.
     All the other parameters are optional.
-    The use_default_rank_ids defaults to True, but can be set to false if you do not want to use the default rank ids.
     """
     # Get parameter values from data
+    tree = new_rank.specify_model.name.replace("TreeDefItem", "").lower()
     new_rank_name = getattr(new_rank, 'name', None)
     parent_rank_name = getattr(new_rank.parent, 'name', 'root') if getattr(new_rank, 'parent', None) else 'root'
     tree_name = getattr(new_rank.treedef, 'name', tree) if getattr(new_rank, 'treedef', None) else tree
@@ -216,6 +215,10 @@ def set_rank_id(new_rank, tree, use_default_rank_ids=True):
     
     # Set the default ranks and increments depending on the tree type
     default_tree_ranks, rank_increment = TREE_RANKS_MAPPING.get(tree.lower(), (None, 100))
+
+    # In the future, add this as a function parameter to allow for more flexibility.
+    # use_default_rank_ids can be set to false if you do not want to use the default rank ids.
+    use_default_rank_ids = True
 
     # Determine if the default rank ID can be used
     can_use_default_rank_id = (
