@@ -10,7 +10,7 @@ from django.conf import settings
 
 from specifyweb.businessrules.exceptions import TreeBusinessRuleException
 
-from  .auditcodes import TREE_MERGE, TREE_SYNONYMIZE, TREE_DESYNONYMIZE
+from  .auditcodes import TREE_BULK_MOVE, TREE_MERGE, TREE_SYNONYMIZE, TREE_DESYNONYMIZE
 
 @contextmanager
 def validate_node_numbers(table, revalidate_after=True):
@@ -298,6 +298,50 @@ def merge(node, into, agent):
                 related_model.objects.filter(**{field_name: node}).update(**{field_name: target})
 
     assert False, "failed to move all referrences to merged tree node"
+
+def bulk_move(node, into, agent):
+    from . import models
+    logger.info('Bulk move preparations children %s into %s', node, into)
+    model = type(node)
+    if not type(into) is model: raise AssertionError(
+        f"Unexpected type of node '{into.__class__.__name__}', during bulk move. Expected '{model.__class__.__name__}'",
+        {"node" : into.__class__.__name__,
+        "nodeModel" : model.__class__.__name__,
+        "operation" : "bulkMove",
+        "localizationKey" : "invalidNodeType"})
+    target = model.objects.select_for_update().get(id=into.id)
+    if not (node.definition_id == target.definition_id): raise AssertionError("bulk move across trees", {"localizationKey" : "bulkMoveAcrossTrees"})
+
+    target_children = target.children.select_for_update()
+    for child in node.children.select_for_update():
+        matched = [target_child for target_child in target_children
+                   if child.name == target_child.name and child.rankid == target_child.rankid]
+        if len(matched) > 0:
+            merge(child, matched[0], agent)
+        else:
+            child.preparation.storage = target
+            child.save()
+
+    for retry in range(100):
+        try:
+            id = node.id
+            node.delete()
+            node.id = id
+            mutation_log(TREE_BULK_MOVE, node, agent, node.parent,
+                         [{'field_name': model.specify_model.idFieldName, 'old_value': node.id, 'new_value': into.id}])
+            return
+        except ProtectedError as e: 
+            """ Cannot delete some instances of TREE because they are referenced 
+            through protected foreign keys: 'Table.field', Table.field', ... """
+            
+            regex_matches = re.finditer(r"'(\w+)\.(\w+)'", e.args[0])
+            for match in regex_matches:
+                related_model_name, field_name = match.groups()
+                related_model = getattr(models, related_model_name)
+                assert related_model != model or field_name != 'parent', 'children were moved during bulk move'
+                related_model.objects.filter(**{field_name: node}).update(**{field_name: target})
+
+    assert False, "failed to move all references of preparations to new storage location"
 
 def synonymize(node, into, agent):
     logger.info('synonymizing %s to %s', node, into)

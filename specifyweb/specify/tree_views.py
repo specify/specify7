@@ -276,18 +276,6 @@ def move(request, tree, id):
                 },
                 "description": "The ID of the current node that holds the preparations."
             },
-            {
-                "name": "preparations_ids",
-                "in": "query",
-                "required": True,
-                "schema": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                },
-                "description": "An array of IDs of the preparations."
-            }
         ],
         "responses": {
             "200": {
@@ -302,15 +290,11 @@ def bulkMove(request, tree, id):
     as new location storage the node indicated by the 'target'
     POST parameter.
     """
-    # get prepartions ids, can be an array, from the request
     check_permission_targets(request.specify_collection.id,
-                             request.specify_user.id, [perm_target(tree).move])
+                             request.specify_user.id, [perm_target(tree).bulkMove])
     node = get_object_or_404(tree, id=id)
     target = get_object_or_404(tree, id=request.POST['target'])
-    old_parent = node.parent
-    old_parentid = old_parent.id
-    node.parent = target
-    old_stamp = node.timestampmodified
+    tree_extras.bulk_move(node, target, request.specify_user_agent)
 
 @tree_mutation
 def synonymize(request, tree, id):
