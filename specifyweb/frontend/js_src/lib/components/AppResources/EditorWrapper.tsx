@@ -31,6 +31,7 @@ import { useResourcesTree } from './hooks';
 import type { AppResourcesOutlet } from './index';
 import type { ScopedAppResourceDir } from './types';
 import { appResourceSubTypes } from './types';
+import { globalResourceKey } from './tree';
 
 export function AppResourceView(): JSX.Element {
   return <Wrapper mode="appResources" />;
@@ -92,20 +93,16 @@ export function Wrapper({
     <NotFoundView container={false} />
   ) : (
     <AppResourceEditor
-      directory={Array.isArray(directory) ? directory[0] : directory}
+      directory={directory}
       initialData={initialData === false ? undefined : initialData}
       resource={record}
       onClone={(clonedResource, clone): void =>
         navigate(
           formatUrl(`${baseHref}/new/`, {
-            directoryKey: Array.isArray(directory)
-              ? findAppResourceDirectoryKey(
-                  resourcesTree,
-                  directory.find(
-                    (dir) => dir.resource_uri === record.spAppResourceDir
-                  )?.id || -1
-                )
-              : findAppResourceDirectoryKey(resourcesTree, directory.id),
+            directoryKey:
+              directory.scope === 'global'
+                ? globalResourceKey
+                : findAppResourceDirectoryKey(resourcesTree, directory.id),
             name: clonedResource.name,
             mimeType: 'mimeType' in record ? record.mimeType : undefined,
             clone,
@@ -250,7 +247,7 @@ function useDirectory(
   resourcesTree: AppResourcesTree,
   resource: SerializedResource<SpAppResource | SpViewSetObj> | undefined,
   resources: AppResources
-): ScopedAppResourceDir | readonly ScopedAppResourceDir[] | undefined {
+): ScopedAppResourceDir | undefined {
   return React.useMemo(() => {
     const directoryUrl = resource?.spAppResourceDir;
     const directory = resources.directories.find(

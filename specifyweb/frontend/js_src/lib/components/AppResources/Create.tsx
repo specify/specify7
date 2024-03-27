@@ -104,7 +104,7 @@ export function CreateAppResource(): JSX.Element {
               { icon, mimeType, name = '', documentationUrl, label, ...rest },
             ]) =>
               'scope' in rest &&
-              !f.includes(rest.scope, directory[0].scope) ? undefined : (
+              !f.includes(rest.scope, directory.scope) ? undefined : (
                 <tr key={key}>
                   <td>
                     {name === '' ? (
@@ -144,7 +144,7 @@ export function CreateAppResource(): JSX.Element {
     <ViewSetTemplates onSelect={setTemplateFile} />
   ) : (
     <EditAppResource
-      directory={Array.isArray(directory) ? directory[0] : directory}
+      directory={directory}
       mimeType={mimeType || undefined}
       name={name}
       templateFile={templateFile === false ? undefined : templateFile}
@@ -160,7 +160,7 @@ export function CreateAppResource(): JSX.Element {
 export const findAppResourceDirectory = (
   tree: AppResourcesTree,
   searchKey: string
-): readonly ScopedAppResourceDir[] | undefined =>
+): ScopedAppResourceDir | undefined =>
   mappedFind(tree, ({ key, directory, subCategories }) =>
     key === searchKey
       ? directory
@@ -172,15 +172,11 @@ export const findAppResourceDirectoryKey = (
   tree: AppResourcesTree,
   directoryId: number
 ): string | undefined =>
-  mappedFind(tree, ({ key, directory, subCategories }) => {
-    if (
-      Array.isArray(directory) &&
-      directory.some((dir) => dir.id === directoryId)
-    ) {
-      return key;
-    }
-    return findAppResourceDirectoryKey(subCategories, directoryId);
-  });
+  mappedFind(tree, ({ key, directory, subCategories }) =>
+    directory?.id === directoryId
+      ? key
+      : findAppResourceDirectoryKey(subCategories, directoryId)
+  );
 
 function getUrl(
   directoryKey: string,
