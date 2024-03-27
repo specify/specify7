@@ -191,7 +191,9 @@ export function FormTable<SCHEMA extends AnySchema>({
   const displayViewButton = !isDependent;
   const headerIsVisible =
     resources.length > 1 ||
-    (resources.length === 1 && isExpanded[resources[0].cid] === false);
+    (resources.length === 1 &&
+      (isExpanded[resources[0].cid] === undefined ||
+        isExpanded[resources[0].cid] === false));
 
   const headerWasVisibleRef = React.useRef(headerIsVisible);
   headerWasVisibleRef.current =
