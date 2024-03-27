@@ -120,9 +120,13 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
           .then((items) => {
             if (destructorCalled) return undefined;
             if (typeof resource.get('definitionItem') !== 'string')
-              resource.set(
-                'definitionItem',
-                props.defaultValue ?? items?.slice(-1)[0]?.value ?? ''
+              setTimeout(
+                () =>
+                  resource.set(
+                    'definitionItem',
+                    props.defaultValue ?? items?.slice(-1)[0]?.value ?? ''
+                  ),
+                1
               );
             return void setItems(items);
           }),
