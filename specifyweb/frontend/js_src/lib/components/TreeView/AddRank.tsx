@@ -32,10 +32,13 @@ export function AddRank<SCHEMA extends AnyTree>({
     treeDefinitionItems[0].resource_uri
   );
 
-  const treeResource = React.useMemo(
-    () => new tables[treeDefinitionItems[0]._tableName].Resource(),
-    [tableName]
-  );
+  const treeDef = treeDefinitionItems[0].treeDef;
+
+  const treeResource = React.useMemo(() => {
+    const resource = new tables[treeDefinitionItems[0]._tableName].Resource();
+    resource.set('treeDef', treeDef);
+    return resource;
+  }, [tableName, treeDef]);
 
   return (
     <>
