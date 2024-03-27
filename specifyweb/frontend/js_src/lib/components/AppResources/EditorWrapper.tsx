@@ -29,9 +29,9 @@ import { getAppResourceMode } from './helpers';
 import type { AppResources, AppResourcesTree } from './hooks';
 import { useResourcesTree } from './hooks';
 import type { AppResourcesOutlet } from './index';
+import { globalResourceKey } from './tree';
 import type { ScopedAppResourceDir } from './types';
 import { appResourceSubTypes } from './types';
-import { globalResourceKey } from './tree';
 
 export function AppResourceView(): JSX.Element {
   return <Wrapper mode="appResources" />;
