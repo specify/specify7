@@ -141,7 +141,7 @@ def pre_tree_rank_init(new_rank):
 def set_rank_id(new_rank):
     """
     Sets the new rank to the specified tree when adding a new rank.
-    Expects at least the name and parent of the rank to be set.
+    Expects at least the name, parent, and tree_def of the rank to be set.
     All the other parameters are optional.
     """
     # Get parameter values from data
@@ -150,12 +150,15 @@ def set_rank_id(new_rank):
     parent_rank_name = getattr(new_rank.parent, 'name', 'root') if getattr(new_rank, 'parent', None) else 'root'
     tree_name = getattr(new_rank.treedef, 'name', tree) if getattr(new_rank, 'treedef', None) else tree
     tree_id = getattr(new_rank.treedef, 'id', 1) if getattr(new_rank, 'treedef', None) else 1
+    tree_def = getattr(new_rank, 'treedef', None)
 
     # Throw exceptions if the required parameters are not given correctly
     if new_rank_name is None:
         raise TreeBusinessRuleException("Rank name is not given")
     if parent_rank_name is None:
         raise TreeBusinessRuleException("Parent rank name is not given")
+    if tree_def is None:
+        raise TreeBusinessRuleException("Tree definition is not given")
     if tree is None or tree.lower() not in TREE_RANKS_MAPPING.keys():
         raise TreeBusinessRuleException("Invalid tree type")
 
