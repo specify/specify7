@@ -458,4 +458,10 @@ export const treeText = createDictionary({
     'uk-ua': 'Синхронізувати',
     'ru-ru': 'Синхронизировать',
   },
+  addNewRank: {
+    'en-us': 'Add New Rank',
+  },
+  chooseParentRank: {
+    'en-us': 'Choose Parent Rank',
+  },
 } as const);
