@@ -277,9 +277,8 @@ export function InteractionDialog({
           <Dialog
             buttons={
               <>
-                <Button.DialogClose>{commonText.close()}</Button.DialogClose>
                 {typeof itemCollection === 'object' ? (
-                  <Button.Info
+                  <Button.Secondary
                     onClick={(): void => {
                       itemCollection?.add(
                         new itemCollection.table.specifyTable.Resource()
@@ -288,21 +287,22 @@ export function InteractionDialog({
                     }}
                   >
                     {interactionsText.addUnassociated()}
-                  </Button.Info>
+                  </Button.Secondary>
                 ) : actionTable.name === 'Loan' &&
                   !(
                     state.type === 'MissingState' && prepsData?.length === 0
                   ) ? (
-                  <Link.Info href={getResourceViewUrl('Loan')}>
+                  <Link.Secondary href={getResourceViewUrl('Loan')}>
                     {interactionsText.withoutPreparations()}
-                  </Link.Info>
+                  </Link.Secondary>
                 ) : undefined}
                 {actionTable.name === 'Gift' &&
                   itemCollection === undefined && (
-                    <Link.Info href={getResourceViewUrl('Gift')}>
+                    <Link.Secondary href={getResourceViewUrl('Gift')}>
                       {interactionsText.withoutPreparations()}
-                    </Link.Info>
+                    </Link.Secondary>
                   )}
+                <span className="-ml-2 flex-1" />
                 {state.type === 'MissingState' &&
                 prepsData?.length !== 0 &&
                 prepsData ? (
@@ -314,6 +314,7 @@ export function InteractionDialog({
                     {interactionsText.continue()}
                   </Button.Info>
                 ) : null}
+                <Button.DialogClose>{commonText.close()}</Button.DialogClose>
               </>
             }
             header={
