@@ -584,7 +584,8 @@ class ReplaceRecordTests(ApiTests):
             agent=agent_1,
             collectingevent=collecting_event
         )
-
+        self.collectionobjects[0].cataloger = agent_1
+        self.collectionobjects[0].save()
         # Assert that the api request ran successfully
         response = c.post(
             f'/api/specify/agent/replace/{agent_2.id}/',
