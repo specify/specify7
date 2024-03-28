@@ -22,8 +22,8 @@ from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, PermissionsException, check_permission_targets, table_permissions_checker
 from specifyweb.celery_tasks import app
 from specifyweb.specify.record_merging import record_merge_fx, record_merge_task, resolve_record_merge_response
+from specifyweb.specify.import_locality import localityParseErrorMessages, parse_locality_set
 from . import api, models as spmodels
-from .build_models import orderings
 from .specify_jar import specify_jar
 from celery.utils.log import get_task_logger  # type: ignore
 logger = get_task_logger(__name__)
@@ -768,3 +768,145 @@ def abort_merge_task(request, merge_id: int) -> http.HttpResponse:
 
     else:
         return http.HttpResponse(f'Task {merge.taskid} is not running and cannot be aborted.')
+
+
+@openapi(schema={
+    "post": {
+        "requestBody": {
+            "required": True,
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "columnHeaders": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "responses": {
+            "200": {
+                "description": "The Locality records were updated and GeocoordDetails uploaded successfully ",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "type": {
+                                    "enum": ["Uploaded"]
+                                },
+                                "data": {
+                                    "description": "An array of updated Locality IDs",
+                                    "type": "array",
+                                    "items": {
+                                        "type": "integer",
+                                        "minimum": 0
+                                    }
+                                }
+                            },
+                        }
+                    }
+                }
+            },
+            "422": {
+                "description": "Some values could not be successfully parsed",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "type": {
+                                    "type": "string",
+                                    "enum": ["ParseError"]
+                                },
+                                "data": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "message": {
+                                                "description": "Keys for errors which occured during parsing",
+                                                "type": "string",
+                                                "enum": localityParseErrorMessages
+                                            },
+                                            "payload": {
+                                                "type": "object"
+                                            },
+                                            "rowNumber": {
+                                                "type": "integer",
+                                                "minimum": 0
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+})
+@login_maybe_required
+@require_POST
+def upload_locality_set(request: http.HttpRequest):
+    request_data = json.loads(request.body)
+    column_headers = request_data["columnHeaders"]
+    data = request_data["data"]
+
+    to_upload, errors = parse_locality_set(
+        request.specify_collection, column_headers, data)
+
+    result = {
+        "type": None,
+        "data": []
+    }
+
+    if len(errors) > 0:
+        result["type"] = "ParseError"
+        result["data"] = [error.to_json() for error in errors]
+        return http.JsonResponse(result, safe=False)
+
+    result["type"] = "Uploaded"
+    with transaction.atomic():
+        for parse_success in to_upload:
+            uploadable = parse_success.to_upload
+            model_name = parse_success.model
+            locality_id = parse_success.locality_id
+
+            if locality_id is None:
+                raise ValueError(
+                    f"No matching Locality found on row {parse_success.row_number}")
+
+            model = getattr(spmodels, model_name)
+            locality = spmodels.Locality.objects.get(id=locality_id)
+
+            if model_name == 'Geocoorddetail':
+                locality.geocoorddetails.get_queryset().delete()
+                geoCoordDetail = model.objects.create(**uploadable)
+                geoCoordDetail.locality = locality
+                geoCoordDetail.save()
+            elif model_name == 'Locality':
+                # Queryset.update() is not used here as it does not send pre/post save signals
+                for field, value in uploadable.items():
+                    setattr(locality, field, value)
+                locality.save()
+
+            result["data"].append(locality_id)
+
+    return http.JsonResponse(result)

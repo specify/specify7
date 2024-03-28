@@ -85,6 +85,7 @@ export function PickListComboBox({
       () => ({
         value: defaultValue,
         required: rawIsRequired,
+        type: 'text',
       }),
       [defaultValue, rawIsRequired]
     )

@@ -13,6 +13,7 @@ export const Http = {
   CONFLICT: 409,
   TOO_LARGE: 413,
   MISDIRECTED: 421,
+  UNPROCESSABLE: 422,
   HUGE_HEADER: 431,
   SERVER_ERROR: 500,
   BAD_GATEWAY: 502,
@@ -84,4 +85,6 @@ export const httpCodeToErrorMessage: RR<ValueOf<typeof Http>, string> = {
   [Http.INSUFFICIENT_STORAGE]: `
     This error likely happened because the server has run out of storage space.
   `,
+  [Http.UNPROCESSABLE]:
+    'This error is likely caused by a bug in Specify. Please report it.',
 };

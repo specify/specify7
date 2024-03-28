@@ -172,21 +172,16 @@ export type UploadResult = {
   };
 };
 
-/** Back-end sends a validation key. Front-end translates it */
-export function resolveValidationMessage(
+export function resolveBackendParsingMessage(
   key: string,
   payload: IR<unknown>
-): LocalizedString {
+): LocalizedString | undefined {
   if (key === 'failedParsingBoolean')
     return backEndText.failedParsingBoolean({ value: payload.value as string });
   else if (key === 'failedParsingDecimal')
     return backEndText.failedParsingDecimal({ value: payload.value as string });
   else if (key === 'failedParsingFloat')
     return backEndText.failedParsingFloat({ value: payload.value as string });
-  else if (key === 'failedParsingPickList')
-    return backEndText.failedParsingPickList({
-      value: `"${payload.value as string}"`,
-    });
   else if (key === 'failedParsingAgentType')
     return backEndText.failedParsingAgentType({
       agentTypeField: getField(tables.Agent, 'agentType').label,
@@ -194,12 +189,6 @@ export function resolveValidationMessage(
       validTypes: formatDisjunction(
         (payload.validTypes as RA<LocalizedString>) ?? []
       ),
-    });
-  else if (key === 'pickListValueTooLong')
-    return backEndText.pickListValueTooLong({
-      pickListTable: tables.PickList.label,
-      pickList: payload.pickList as string,
-      maxLength: payload.maxLength as number,
     });
   else if (key === 'valueTooLong')
     return backEndText.valueTooLong({
@@ -225,6 +214,32 @@ export function resolveValidationMessage(
   else if (key === 'longitudeOutOfRange')
     return backEndText.longitudeOutOfRange({
       value: payload.value as string,
+    });
+  else if (key === 'formatMismatch')
+    return backEndText.formatMismatch({
+      value: payload.value as string,
+      formatter: payload.formatter as string,
+    });
+  else return undefined;
+}
+
+/** Back-end sends a validation key. Front-end translates it */
+export function resolveValidationMessage(
+  key: string,
+  payload: IR<unknown>
+): LocalizedString {
+  const baseParsedMessage = resolveBackendParsingMessage(key, payload);
+  if (baseParsedMessage !== undefined) {
+    return baseParsedMessage;
+  } else if (key === 'failedParsingPickList')
+    return backEndText.failedParsingPickList({
+      value: `"${payload.value as string}"`,
+    });
+  else if (key === 'pickListValueTooLong')
+    return backEndText.pickListValueTooLong({
+      pickListTable: tables.PickList.label,
+      pickList: payload.pickList as string,
+      maxLength: payload.maxLength as number,
     });
   else if (key === 'invalidPartialRecord')
     return backEndText.invalidPartialRecord({

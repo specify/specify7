@@ -292,4 +292,42 @@ export const localityText = createDictionary({
     'uk-ua': 'DD MM SS.SS N/S/E/W (32 45 42.84 N)',
     'de-ch': 'DD MM SS.SS N/S/O/W (32 45 42.84 N)',
   },
+  localityImportHeaderError: {
+    'en-us': 'Errors Found in Column Headers',
+  },
+  localityImportMissingHeader: {
+    'en-us': 'The following columns are required but missing in the dataset',
+  },
+  localityImportUnrecognizedHeaders: {
+    'en-us':
+      'The following columns in the dataset are not recognized and will be ignored on import',
+  },
+  localityImportedAcceptedHeaders: {
+    'en-us': 'Only the following headers are accepted',
+  },
+  localityImportErrorDialogHeader: {
+    'en-us': 'Error(s) Occured while Parsing Dataset',
+  },
+  localityImportErrorDialogDetails: {
+    'en-us':
+      'The following Errors occured at the provided Row (Line) Numbers of the file while parsing the Dataset: ',
+  },
+  localityImportErrorFileName: {
+    comment:
+      'The file name which is used when Parse Errors are exported. The .csv file extension is appended to the end of this string',
+    'en-us': 'Locality Import Errors - {date:string}',
+  },
+  guidHeaderNotProvided: {
+    'en-us': "The Dataset must contain a 'guid' header",
+  },
+  noLocalityMatchingGuid: {
+    'en-us': "No Locality with guid: '{guid:string}'",
+  },
+  multipleLocalitiesWithGuid: {
+    'en-us':
+      'More than one Locality found with guid: {guid:string}. Locality IDs: {localityIds: string}',
+  },
+  rowNumber: {
+    'en-us': 'Row Number',
+  },
 } as const);

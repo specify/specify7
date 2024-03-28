@@ -2,7 +2,7 @@ from typing import List, Dict, Any, NamedTuple, Optional, Union
 
 from typing_extensions import Literal
 
-from .parsing import ParseFailure
+from .parsing import WorkBenchParseFailure
 
 Failure = Literal["Failure"]
 
@@ -153,7 +153,7 @@ def json_to_NoMatch(json: Dict) -> NoMatch:
     return NoMatch(info=json_to_ReportInfo(r['info']))
 
 class ParseFailures(NamedTuple):
-    failures: List[ParseFailure]
+    failures: List[WorkBenchParseFailure]
 
     def get_id(self) -> Failure:
         return "Failure"
@@ -163,7 +163,7 @@ class ParseFailures(NamedTuple):
 
 def json_to_ParseFailures(json: Dict) -> ParseFailures:
     r = json['ParseFailures']
-    return ParseFailures(failures=[ParseFailure(*i) for i in r['failures']])
+    return ParseFailures(failures=[WorkBenchParseFailure(*i) for i in r['failures']])
 
 class PropagatedFailure(NamedTuple):
     def get_id(self) -> Failure:
