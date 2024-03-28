@@ -42,18 +42,21 @@ def update_feed(force=False, notify_user=None):
         if force or needs_update(path, int(item_node.attrib['days'])):
             logger.info('Generating: %s', filename)
             temp_file = os.path.join(FEED_DIR, '%s.tmp.zip' % filename)
-            collection = Collection.objects.get(id=item_node.attrib['collectionId'])
-            user = Specifyuser.objects.get(id=item_node.attrib['userId'])
+            collection_id = item_node.attrib.get('collectionid', item_node.attrib.get('collectionId'))
+            collection = Collection.objects.get(id=collection_id)
+            user_id = item_node.attrib.get('userid', item_node.attrib.get('userId'))
+            user = Specifyuser.objects.get(id=user_id)
             dwca_def, _, __ = get_app_resource(collection, user, item_node.attrib['definition'])
             eml, _, __ = get_app_resource(collection, user, item_node.attrib['metadata'])
             make_dwca(collection, user, dwca_def, temp_file, eml=eml)
             os.rename(temp_file, path)
 
             logger.info('Finished updating: %s', filename)
+            notify_user_id = item_node.attrib.get('notifyuserid', item_node.attrib.get('notifyUserId'))
             if notify_user is not None:
                 create_notification(notify_user, filename)
-            elif 'notifyUserId' in item_node.attrib:
-                user = Specifyuser.objects.get(id=item_node.attrib['notifyUserId'])
+            elif notify_user_id:
+                user = Specifyuser.objects.get(id=notify_user_id)
                 create_notification(user, filename)
 
         else:

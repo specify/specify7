@@ -109,9 +109,10 @@ export function PickAppResource({
           filters={filters}
           isEmbedded
           resources={resources}
-          onOpen={(selected): void =>
-            f.maybe(toResource(selected, 'SpAppResource'), handleSelected)
-          }
+          onOpen={(selected): void => {
+            f.maybe(toResource(selected, 'SpAppResource'), handleSelected);
+            handleClose();
+          }}
         />
       </ReadOnlyContext.Provider>
     </Dialog>
