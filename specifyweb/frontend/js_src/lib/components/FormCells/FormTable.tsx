@@ -190,8 +190,8 @@ export function FormTable<SCHEMA extends AnySchema>({
     mode !== 'view' && typeof handleDelete === 'function';
   const displayViewButton = !isDependent;
   const headerIsVisible =
-    (resources.length >= 1 && isExpanded[resources[0].cid] === undefined) ||
-    (resources.length >= 1 && isExpanded[resources[0].cid] === false);
+    (resources.length > 0 && isExpanded[resources[0].cid] === undefined) ||
+    (resources.length > 0 && isExpanded[resources[0].cid] === false);
 
   const headerWasVisibleRef = React.useRef(headerIsVisible);
   headerWasVisibleRef.current =
