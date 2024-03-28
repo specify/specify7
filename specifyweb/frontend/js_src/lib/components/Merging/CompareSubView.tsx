@@ -17,9 +17,11 @@ import {
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
+import { DependentCollection } from '../DataModel/collectionApi';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
+import { ResourceBase } from '../DataModel/resourceApi';
 import {
   useAllSaveBlockers,
   useBlockerHandler,
@@ -27,7 +29,6 @@ import {
 import { serializeResource } from '../DataModel/serializers';
 import type { Relationship } from '../DataModel/specifyField';
 import type { Collection } from '../DataModel/specifyTable';
-import type { Accession } from '../DataModel/types';
 import { SaveButton } from '../Forms/Save';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
@@ -49,17 +50,23 @@ export function MergeSubviewButton({
   readonly merged: SpecifyResource<AnySchema> | undefined;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const getCount = React.useCallback(
-    () =>
-      relationshipIsToMany(relationship)
-        ? (resource as SpecifyResource<Accession>).getDependentResource(
-            relationship.name as 'accessionAgents'
-          )?.models.length ?? 0
-        : resource.get(relationship.name) === undefined
+
+  const getCount = React.useCallback(() => {
+    const dependentResource = resource.getDependentResource(
+      relationship.name
+    ) as Collection<AnySchema> | SpecifyResource<AnySchema> | undefined;
+
+    return dependentResource === undefined
+      ? resource.get(relationship.name) === undefined
         ? 0
-        : 1,
-    [relationship, resource]
-  );
+        : 1
+      : dependentResource instanceof ResourceBase
+      ? 1
+      : dependentResource instanceof DependentCollection
+      ? (dependentResource as Collection<AnySchema>).models.length
+      : 0;
+  }, [relationship, resource]);
+
   const [count, setCount] = React.useState(getCount);
   React.useEffect(
     () =>

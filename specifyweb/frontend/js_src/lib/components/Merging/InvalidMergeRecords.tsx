@@ -96,7 +96,7 @@ export function InvalidMergeRecordsDialog({
     >
       <InvalidMergeRecords
         resources={recordsToIgnore}
-        specificText={recordMergingTableSpec[tableName]?.dialogSpecificText}
+        specificText={recordMergingTableSpec[tableName]?.unmergable?.message}
         tableName={tableName}
       />
     </Dialog>
