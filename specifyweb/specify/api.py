@@ -377,8 +377,11 @@ def cleanData(model, data: Dict[str, Any], agent) -> Dict[str, Any]:
             pass
 
     # timestampcreated should never be updated.
+    # ... well it is now ¯\_(ツ)_/¯
+    # New requirments are for timestampcreated to be overridable.
     try:
-        del cleaned['timestampcreated']
+        # del cleaned['timestampcreated']
+        pass
     except KeyError:
         pass
 
