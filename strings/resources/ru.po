@@ -49,13 +49,13 @@ msgstr "Определения форм"
 msgid "loadFile"
 msgstr "Загрузить файл"
 
-#: components/AppResources/tree.ts:39
+#: components/AppResources/tree.ts:41
 #. Used in: Components > App Resources > Tree
 #, fuzzy
 msgid "globalResources"
 msgstr "Глобальные ресурсы"
 
-#: components/AppResources/tree.ts:45
+#: components/AppResources/tree.ts:47
 #. Used in: Components > App Resources > Tree
 #, fuzzy
 msgid "disciplineResources"
@@ -69,7 +69,7 @@ msgstr "Дисциплинарные ресурсы"
 msgid "type"
 msgstr "Тип"
 
-#: components/AppResources/tree.ts:233
+#: components/AppResources/tree.ts:235
 #. Used in: Components > App Resources > Tree
 #, fuzzy
 msgid "userTypes"
@@ -300,13 +300,13 @@ msgstr "Визуальный редактор"
 msgid "selectResourceType"
 msgstr "Выберите тип ресурса"
 
-#: components/AppResources/tree.ts:118
+#: components/AppResources/tree.ts:120
 #. Used in: Components > App Resources > Tree
 #, fuzzy
 msgid "globalPreferences"
 msgstr "Глобальные настройки"
 
-#: components/AppResources/tree.ts:120
+#: components/AppResources/tree.ts:122
 #. Used in: Components > App Resources > Tree
 #, fuzzy
 msgid "remotePreferences"

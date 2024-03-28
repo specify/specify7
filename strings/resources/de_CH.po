@@ -45,12 +45,12 @@ msgstr "Formular Definitionen"
 msgid "loadFile"
 msgstr "Datei Laden"
 
-#: components/AppResources/tree.ts:39
+#: components/AppResources/tree.ts:41
 #. Used in: Components > App Resources > Tree
 msgid "globalResources"
 msgstr "Globale Ressourcen"
 
-#: components/AppResources/tree.ts:45
+#: components/AppResources/tree.ts:47
 #. Used in: Components > App Resources > Tree
 msgid "disciplineResources"
 msgstr "Disziplin-Ressourcen"
@@ -62,7 +62,7 @@ msgstr "Disziplin-Ressourcen"
 msgid "type"
 msgstr "Typ"
 
-#: components/AppResources/tree.ts:233
+#: components/AppResources/tree.ts:235
 #. Used in: Components > App Resources > Tree
 msgid "userTypes"
 msgstr "Benutzertypen"
@@ -274,12 +274,12 @@ msgstr "Visueller Editor"
 msgid "selectResourceType"
 msgstr "Ressourcentyp auswählen"
 
-#: components/AppResources/tree.ts:118
+#: components/AppResources/tree.ts:120
 #. Used in: Components > App Resources > Tree
 msgid "globalPreferences"
 msgstr "Globale Einstellungen"
 
-#: components/AppResources/tree.ts:120
+#: components/AppResources/tree.ts:122
 #. Used in: Components > App Resources > Tree
 msgid "remotePreferences"
 msgstr "Remote-Einstellungen"

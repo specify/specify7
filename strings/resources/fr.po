@@ -48,13 +48,13 @@ msgstr "Définitions de formulaire"
 msgid "loadFile"
 msgstr "Fichier de chargement"
 
-#: components/AppResources/tree.ts:39
+#: components/AppResources/tree.ts:41
 #. Used in: Components > App Resources > Tree
 #, fuzzy
 msgid "globalResources"
 msgstr "Ressources mondiales"
 
-#: components/AppResources/tree.ts:45
+#: components/AppResources/tree.ts:47
 #. Used in: Components > App Resources > Tree
 #, fuzzy
 msgid "disciplineResources"
@@ -68,7 +68,7 @@ msgstr "Ressources disciplinaires"
 msgid "type"
 msgstr "Taper"
 
-#: components/AppResources/tree.ts:233
+#: components/AppResources/tree.ts:235
 #. Used in: Components > App Resources > Tree
 #, fuzzy
 msgid "userTypes"
@@ -303,13 +303,13 @@ msgstr "Éditeur visuel"
 msgid "selectResourceType"
 msgstr "Sélectionnez le type de ressource"
 
-#: components/AppResources/tree.ts:118
+#: components/AppResources/tree.ts:120
 #. Used in: Components > App Resources > Tree
 #, fuzzy
 msgid "globalPreferences"
 msgstr "Préférences globales"
 
-#: components/AppResources/tree.ts:120
+#: components/AppResources/tree.ts:122
 #. Used in: Components > App Resources > Tree
 #, fuzzy
 msgid "remotePreferences"
