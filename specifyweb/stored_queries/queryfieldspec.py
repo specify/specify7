@@ -58,7 +58,7 @@ def make_stringid(fs, table_list):
     return table_list, fs.table.name.lower(), field_name
 
 
-class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table date_part tree_rank tree_field")):
+class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table join_path table date_part tree_rank tree_field")):
     @classmethod
     def from_path(cls, path_in, add_id=False):
         path = deque(path_in)
@@ -80,6 +80,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
             join_path.append(node.idField)
 
         return cls(root_table=root_table,
+                   root_sql_table=getattr(models, root_table.name),
                    join_path=tuple(join_path),
                    table=node,
                    date_part='Full Date' if (join_path and join_path[-1].is_temporal()) else None,
@@ -130,6 +131,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
                 date_part = "Full Date"
 
         result = cls(root_table=root_table,
+                     root_sql_table=getattr(models, root_table.name),
                      join_path=tuple(join_path),
                      table=node,
                      date_part=date_part,
@@ -178,8 +180,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
         return field is not None and field.is_temporal()
 
     def build_join(self, query, join_path):
-        model = getattr(models, self.root_table.name)
-        return query.build_join(self.root_table, model, join_path)
+        return query.build_join(self.root_table, self.root_sql_table, join_path)
 
     def is_auditlog_obj_format_field(self, formatauditobjs):
         if not formatauditobjs or self.get_field() is None:
@@ -225,7 +226,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
 
         if self.tree_rank is None and self.get_field() is None:
             return (*query.objectformatter.objformat(
-                query, getattr(models, self.root_table.name), formatter), None, self.root_table)
+                query, self.root_sql_table, formatter), None, self.root_table)
 
         if self.is_relationship():
             # will be formatting or aggregating related objects

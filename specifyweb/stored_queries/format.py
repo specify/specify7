@@ -119,11 +119,21 @@ class ObjectFormatter(object):
         formatter = fieldNodeAttrib.get('formatter', None)
         aggregator = fieldNodeAttrib.get('aggregator', None)
         next_table_name = formatter_field_spec.table.name
+
+        # preserve sql table alias
+        formatter_field_spec = formatter_field_spec._replace(root_sql_table=orm_table)
+
         if formatter_field_spec.is_relationship():
             if previous_tables is not None and next_table_name in [table_name for table_name, _ in previous_tables]:
-                return (query, literal(
-                    _text(f"<Cycle Detected.>: {'->'.join([*[str(_) for _ in previous_tables], next_table_name])}")),
-                        formatter_field_spec)
+                if query.detect_cycles:
+                    formatted_literal = literal(_text(f"<Cycle Detected>: {'->'.join([*[str(_) for _ in previous_tables], next_table_name])}"))
+                else:
+                    formatted_literal = literal(
+                        _text("<Invalid record formatter detected>") if formatter_field_spec.get_field().type == 'many-to-one' else
+                        _text("<Invalid record aggregator detected>")
+                    )
+
+                return query, formatted_literal,formatter_field_spec
             new_query, new_expr, _, __ = formatter_field_spec.add_spec_to_query(
                 query,
                 formatter,
@@ -179,7 +189,7 @@ class ObjectFormatter(object):
             logger.warn(
                 "dataobjformatter for %s contains switch clause no fields",
                 specify_model)
-            return query, literal(_("<Formatter not defined.>"))
+            return query, literal(_text("<Formatter not defined.>"))
 
         if single:
             value, expr = cases[0]
@@ -221,7 +231,8 @@ class ObjectFormatter(object):
             objectformatter=self,
             query=orm.Query([]).select_from(orm_table) \
                 .filter(join_column == getattr(rel_table, rel_table._id)) \
-                .correlate(rel_table)
+                .correlate(rel_table),
+            detect_cycles=query.detect_cycles
         )
 
         subquery, formatted = self.objformat(subquery, orm_table,
