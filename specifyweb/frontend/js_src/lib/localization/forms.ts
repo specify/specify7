@@ -142,9 +142,9 @@ export const formsText = createDictionary({
       with at least a start time or and end time populated.
     `,
     'de-ch': `
-      Das Paleo Map-Plugin erfordert, dass das {localityTable:string} über
-      geografische Koordinaten verfügt und dass der Paläo-Kontext über ein
-      geografisches Alter mit mindestens einer Start- oder Endzeit verfügt.
+      Das Paleo Map-Plugin erfordert, dass die {localityTable:string}
+      geografische Koordinaten haben und dass der Paläo-Kontext ein
+      geografisches Alter mit mindestens einer Start- oder Endzeit hat.
     `,
     'es-es': 'Seleccionar fuente de tablas',
     'fr-fr': 'Sélectionnez la source des tables',
@@ -259,10 +259,10 @@ export const formsText = createDictionary({
   },
   invalidNumericPicklistValue: {
     'en-us': 'Only numeric values are supported in this {pickListTable:string}',
-    'de-ch': `
-      In diesem {pickListTable:string} werden nur numerische Werte unterstützt.
-    `,
-    'es-es': 'Resultados adicionales omitidos',
+    'de-ch':
+      'Es werden nur numerische Werte unterstützt {pickListTable:string}',
+    'es-es':
+      'En este {pickListTable:string} solo se admiten valores numéricos.',
     'fr-fr': 'Résultats supplémentaires omis',
     'ru-ru': 'Дополнительные результаты опущены',
     'uk-ua': 'Додаткові результати пропущено',
@@ -364,7 +364,7 @@ export const formsText = createDictionary({
     'es-es': 'Guardar conflicto',
     'fr-fr': 'Enregistrer le conflit',
     'uk-ua': 'Зберегти конфлікт',
-    'de-ch': 'Konflikte speichern',
+    'de-ch': 'Konflikt speichern',
   },
   saveConflictDescription: {
     'en-us': `
@@ -527,7 +527,10 @@ export const formsText = createDictionary({
       Цей плагін не можна використовувати у формі {currentTable:string}.
       Спробуйте перемістити його до форм {supportedTables:string}.
     `,
-    'de-ch': 'Neu [X4X]',
+    'de-ch': `
+      Möglicherweise möchten Sie diesen Datensatz speichern, bevor Sie
+      fortfahren.
+    `,
   },
   wrongTableForCommand: {
     'en-us': `
@@ -599,7 +602,7 @@ export const formsText = createDictionary({
     'es-es': 'Formato requerido: {format:string}.',
     'fr-fr': 'Format requis : {format:string}.',
     'uk-ua': 'Необхідний формат: {format:string}.',
-    'de-ch': 'Felder für die Übertragung konfigurieren ([X35X])',
+    'de-ch': 'Kopieren Geben Sie 6 Einstellungen an',
   },
   inputTypeNumber: {
     'en-us': 'Value must be a number',
@@ -708,7 +711,10 @@ export const formsText = createDictionary({
       quitter.
     `,
     'uk-ua': 'Можливо, ви захочете зберегти цей запис, перш ніж перейти.',
-    'de-ch': 'Neu [X4X]',
+    'de-ch': `
+      Möglicherweise möchten Sie diesen Datensatz speichern, bevor Sie
+      fortfahren.
+    `,
   },
   creatingNewRecord: {
     'en-us': 'Creating new record',
@@ -754,7 +760,7 @@ export const formsText = createDictionary({
     comment: 'Example: Duplicate Record Set Item',
     'en-us': 'Duplicate {recordSetItemTable:string}',
     'ru-ru': 'Дополнительные результаты опущены',
-    'es-es': 'Resultados adicionales omitidos',
+    'es-es': 'En este [X42X] solo se admiten valores numéricos.',
     'uk-ua': 'Додаткові результати пропущено',
     'de-ch': 'Duplizieren {recordSetItemTable:string}',
     'fr-fr': 'Résultats supplémentaires omis',
@@ -788,7 +794,7 @@ export const formsText = createDictionary({
     'es-es': 'Quitar de {recordSetTable:string}',
     'fr-fr': 'Supprimer de {recordSetTable:string}',
     'uk-ua': 'Видалити з {recordSetTable:string}',
-    'de-ch': 'Von {recordSetTable:string} entfernen',
+    'de-ch': 'Entfernen aus {recordSetTable:string}',
   },
   nothingFound: {
     'en-us': 'Nothing found',
@@ -871,7 +877,7 @@ export const formsText = createDictionary({
     'es-es': 'Crear un nuevo registro en blanco',
     'fr-fr': 'Créer un nouvel enregistrement vierge',
     'uk-ua': 'Створіть новий порожній запис',
-    'de-ch': 'Erstellen Sie einen neuen leeren Datensatz',
+    'de-ch': 'Einen neuen leeren Datensatz erstellen',
   },
   autoNumbering: {
     'en-us': 'Auto Numbering',
@@ -983,7 +989,7 @@ export const formsText = createDictionary({
     'es-es': 'Usos de la lista de selección "{pickList:string}"',
     'fr-fr': 'Utilisations de la liste de sélection "{pickList:string}"',
     'uk-ua': 'Використання списку вибору "{pickList:string}".',
-    'de-ch': 'Verwendungsmöglichkeiten der Auswahlliste „{pickList:string}“.',
+    'de-ch': 'Verwendungen der Auswahlliste „{pickList:string}“',
   },
   subForm: {
     'en-us': 'Subform',
@@ -1023,10 +1029,7 @@ export const formsText = createDictionary({
     'es-es': 'Copiar Especificar 6 configuraciones',
     'fr-fr': 'Copier Spécifier 6 paramètres',
     'uk-ua': 'Копіювати Вкажіть 6 параметрів',
-    'de-ch': `
-      Es war wahrscheinlich in diesem Formular von Specify 6 enthalten und wird
-      möglicherweise in Zukunft unterstützt.
-    `,
+    'de-ch': 'Kopieren Geben Sie 6 Einstellungen an',
   },
   useCustomSettings: {
     'en-us': 'Use custom settings',

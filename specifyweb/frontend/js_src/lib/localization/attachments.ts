@@ -128,7 +128,10 @@ export const attachmentsText = createDictionary({
     'es-es': 'Ningún archivo',
     'fr-fr': 'Pas de fichier',
     'uk-ua': 'Немає файлу',
-    'ru-ru': 'Нет файла',
+    'ru-ru': `
+      Откат приведет к удалению вложений из базы данных Specify и сервера
+      активов.
+    `,
   },
   pleaseReselectAllFiles: {
     'en-us': 'Please reselect all files before uploading.',
@@ -196,8 +199,9 @@ export const attachmentsText = createDictionary({
     'es-es': 'Error al leer el archivo',
     'fr-fr': 'Erreur de lecture du fichier',
     'ru-ru': 'Ошибка чтения файла',
-    'de-ch': 'Fehler beim Lesen der Datei',
-    'uk-ua': 'Помилка читання файлу',
+    'de-ch':
+      'Wählen Sie Dateien aus oder ziehen Sie sie hierher, um zu beginnen.',
+    'uk-ua': 'Щоб почати, виберіть файли або перетягніть їх сюди.',
   },
   unhandledFatalResourceError: {
     'en-us': 'Unhandled fatal resource error:',
@@ -229,8 +233,8 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Neuer Anhangsdatensatz',
     'es-es': 'Nuevo conjunto de datos adjuntos',
     'uk-ua': 'Новий набір даних вкладення',
-    'fr-fr': 'Nouvel ensemble de données de pièces jointes',
-    'ru-ru': 'Новый набор данных вложения',
+    'fr-fr': 'Fichiers en double trouvés',
+    'ru-ru': 'Обнаружены повторяющиеся файлы',
   },
   uploadInterrupted: {
     'en-us': 'Upload Interrupted',
@@ -329,7 +333,7 @@ export const attachmentsText = createDictionary({
     `,
     'de-ch': `
       Durch das Hochladen der Anhänge werden Anhänge im Asset-Server und in der
-      Specify-Datenbank erstellt
+      Datenbank „Specify“ erstellt.
     `,
     'es-es': 'Interrumpido. Reintentando en [X25X]',
     'fr-fr': `
@@ -441,8 +445,10 @@ export const attachmentsText = createDictionary({
   },
   multipleMatchesClick: {
     'en-us': 'Multiple Matches. Click To Disambiguate',
-    'de-ch':
-      'Mehrere Übereinstimmungen. Klicken Sie auf „Zur Begriffsklärung“.',
+    'de-ch': `
+      Mehrere Übereinstimmungen. Klicken Sie hier, um die Mehrdeutigkeit zu
+      beseitigen.
+    `,
     'es-es': 'Múltiples coincidencias. Haga clic para eliminar la ambigüedad',
     'fr-fr': "Plusieurs correspondances. Cliquez pour lever l'ambiguïté",
     'ru-ru': 'Несколько матчей. Нажмите, чтобы устранить неоднозначность',
@@ -486,7 +492,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'En archivo',
     'ru-ru': 'В файле',
     'uk-ua': 'У файлі',
-    'fr-fr': 'Enregistré',
+    'fr-fr': 'Pas de fichier',
   },
   duplicateFilesFound: {
     'en-us': 'Duplicate Files Found',
@@ -513,13 +519,8 @@ export const attachmentsText = createDictionary({
       Следующие файлы не выбраны, поскольку они уже существуют в этом наборе
       данных.
     `,
-    'de-ch': `
-      Die folgenden Dateien werden nicht ausgewählt, da sie bereits in diesem
-      Datensatz vorhanden sind.
-    `,
-    'uk-ua': `
-      Наступні файли не вибрано, оскільки вони вже існують у цьому наборі даних.
-    `,
+    'de-ch': 'Abgesagt',
+    'uk-ua': 'Скасовано',
   },
   errorFetchingRecord: {
     'en-us': 'Error fetching record',
@@ -539,15 +540,14 @@ export const attachmentsText = createDictionary({
   },
   interruptionStopped: {
     'en-us': 'Stopped because of error uploading a previous file',
-    'de-ch':
-      'Aufgrund eines Fehlers beim Hochladen einer vorherigen Datei gestoppt',
-    'es-es': 'Detenido debido a un error al cargar un archivo anterior',
-    'fr-fr': `
-      Arrêté en raison d'une erreur lors du téléchargement d'un fichier
-      précédent
+    'de-ch': 'Suchen Sie nach weiteren Anhängen',
+    'es-es': `
+      La reversión estaba en curso cuando se produjo una interrupción. Es
+      posible que algunos archivos hayan sido eliminados.
     `,
-    'ru-ru': 'Остановлено из-за ошибки при загрузке предыдущего файла.',
-    'uk-ua': 'Зупинено через помилку завантаження попереднього файлу',
+    'fr-fr': 'Rechercher plus de pièces jointes',
+    'ru-ru': 'Ищите больше вложений',
+    'uk-ua': 'Шукайте більше вкладень',
   },
   chooseFilesToGetStarted: {
     'en-us': 'Choose files or drag them here to get started.',
@@ -573,7 +573,7 @@ export const attachmentsText = createDictionary({
     `,
     'ru-ru':
       'Выберите идентификатор, которому будет соответствовать имя файла.',
-    'uk-ua': 'Виберіть ідентифікатор, який буде відповідати назві файлів.',
+    'uk-ua': 'Виберіть ідентифікатор для відповідності імені файлу.',
   },
   progress: {
     'en-us': 'Progress',
