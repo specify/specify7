@@ -255,6 +255,46 @@ def move(request, tree, id):
                                    'old_value': old_fullname,
                                    'new_value': node.fullname}])
 
+@openapi(schema={
+    "post": {
+        "parameters": [
+            {
+                "name": "target_node",
+                "in": "query",
+                "required": True,
+                "schema": {
+                    "type": "integer"
+                },
+                "description": "The ID of the node to which the preparations should be moved."
+            },
+            {
+                "name": "current_node",
+                "in": "query",
+                "required": True,
+                "schema": {
+                    "type": "integer"
+                },
+                "description": "The ID of the current node that holds the preparations."
+            },
+        ],
+        "responses": {
+            "200": {
+                "description": "Success message indicating the bulk move operation was successful."
+            }
+        }
+    }
+})
+@tree_mutation
+def bulkMove(request, tree, id):
+    """Bulk move the preparations under the <tree> node <id> to have
+    as new location storage the node indicated by the 'target'
+    POST parameter.
+    """
+    check_permission_targets(request.specify_collection.id,
+                             request.specify_user.id, [perm_target(tree).bulkMove])
+    node = get_object_or_404(tree, id=id)
+    target = get_object_or_404(tree, id=request.POST['target'])
+    tree_extras.bulk_move(node, target, request.specify_user_agent)
 
 @tree_mutation
 def synonymize(request, tree, id):
@@ -313,6 +353,7 @@ class StorageMutationPT(PermissionTarget):
     resource = "/tree/edit/storage"
     merge = PermissionTargetAction()
     move = PermissionTargetAction()
+    bulkMove = PermissionTargetAction()
     synonymize = PermissionTargetAction()
     desynonymize = PermissionTargetAction()
     repair = PermissionTargetAction()

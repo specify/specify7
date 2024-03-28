@@ -10,7 +10,7 @@ from django.conf import settings
 
 from specifyweb.businessrules.exceptions import TreeBusinessRuleException
 
-from  .auditcodes import TREE_MERGE, TREE_SYNONYMIZE, TREE_DESYNONYMIZE
+from  .auditcodes import TREE_BULK_MOVE, TREE_MERGE, TREE_SYNONYMIZE, TREE_DESYNONYMIZE
 
 @contextmanager
 def validate_node_numbers(table, revalidate_after=True):
@@ -298,6 +298,21 @@ def merge(node, into, agent):
                 related_model.objects.filter(**{field_name: node}).update(**{field_name: target})
 
     assert False, "failed to move all referrences to merged tree node"
+
+def bulk_move(node, into, agent):
+    from . import models
+    logger.info('Bulk move preparations children %s into %s', node, into)
+    model = type(node)
+    if not type(into) is model: raise AssertionError(
+        f"Unexpected type of node '{into.__class__.__name__}', during bulk move. Expected '{model.__class__.__name__}'",
+        {"node" : into.__class__.__name__,
+        "nodeModel" : model.__class__.__name__,
+        "operation" : "bulkMove",
+        "localizationKey" : "invalidNodeType"})
+    target = model.objects.select_for_update().get(id=into.id)
+    if not (node.definition_id == target.definition_id): raise AssertionError("bulk move across trees", {"localizationKey" : "bulkMoveAcrossTrees"})
+
+    models.Preparation.objects.filter(storage = node).update(storage = into)
 
 def synonymize(node, into, agent):
     logger.info('synonymizing %s to %s', node, into)
