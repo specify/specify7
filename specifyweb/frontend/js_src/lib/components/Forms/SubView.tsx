@@ -41,7 +41,7 @@ export function SubView({
   parentResource,
   parentFormType,
   formType: initialFormType,
-  isButton,
+  isButton: rawIsButton,
   viewName = relationship.relatedTable.view,
   icon = relationship.relatedTable.name,
   sortField: initialSortField,
@@ -188,6 +188,10 @@ export function SubView({
     [relationship, formType, sortField, setFormType, setSortField]
   );
 
+  const isReadOnly = React.useContext(ReadOnlyContext);
+
+  // See https://github.com/specify/specify7/issues/3127
+  const isButton = rawIsButton || (!isReadOnly && !relationship.isDependent());
   const [isOpen, _, handleClose, handleToggle] = useBooleanState(!isButton);
 
   const [isAttachmentConfigured] = usePromise(attachmentSettingsPromise, true);
@@ -199,7 +203,6 @@ export function SubView({
   const isAttachmentMisconfigured =
     isAttachmentTable && !isAttachmentConfigured;
 
-  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <SubViewContext.Provider value={contextValue}>
       {isButton && (
@@ -238,7 +241,7 @@ export function SubView({
           value={
             isReadOnly ||
             isAttachmentMisconfigured ||
-            !relationship.isDependent()
+            (!relationship.isDependent() && !isButton)
           }
         >
           <IntegratedRecordSelector
