@@ -88,7 +88,7 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
   /**
    * Fetch preferences from back-end and update local cache with fetched values
    */
-  async fetch(): Promise<ResourceWithData> {
+  public async fetch(): Promise<ResourceWithData> {
     const entryPoint = await contextUnlockedPromise;
     if (entryPoint === 'main') {
       if (typeof this.resourcePromise === 'object') return this.resourcePromise;
@@ -117,7 +117,11 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
       this.resourcePromise = f
         .all({ valuesResource, defaultValuesResource })
         .then(({ valuesResource }) => {
-          this.setRaw(JSON.parse(valuesResource.data ?? '{}'));
+          this.setRaw(
+            JSON.parse(
+              valuesResource.data ?? '{}'
+            ) as PartialPreferences<DEFINITIONS>
+          );
           return valuesResource;
         });
 
@@ -455,7 +459,7 @@ const fetchResourceData = async (
 const fetchDefaultResourceData = async (
   fetchUrl: string,
   defaultResourceName: string
-): Promise<ResourceWithData> =>
+): Promise<Partial<ResourceWithData>> =>
   ajax(
     formatUrl(fetchUrl, {
       name: defaultResourceName,
@@ -467,7 +471,9 @@ const fetchDefaultResourceData = async (
     }
   )
     .then(({ data, status }) =>
-      status === Http.OK && data.trim().length > 0 ? JSON.parse(data) : {}
+      status === Http.OK && data.trim().length > 0
+        ? (JSON.parse(data) as ResourceWithData)
+        : {}
     )
     .catch((error) => {
       softFail(error);

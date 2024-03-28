@@ -121,7 +121,7 @@ export function MissingAgentsDialog({
                   expectedErrors: [Http.BAD_REQUEST],
                 }).then(({ data, status }) =>
                   status === Http.BAD_REQUEST
-                    ? setResponse(JSON.parse(data))
+                    ? setResponse(JSON.parse(data) as SetAgentsResponse)
                     : handleClose()
                 )
               )

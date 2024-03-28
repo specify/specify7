@@ -376,6 +376,10 @@ def choose_collection(request) -> http.HttpResponse:
             return redirect_resp
 
     context = {
+        # toJson must be called instead of default json.dumps before sending
+        # data to the front-end. Unfortunately, that means the value is doubly
+        # json encoded (because django template calls json.dumps when
+        # json_script tag is used)
         'available_collections': toJson([obj_to_data(c) for c in available_collections]),
         'initial_value': request.COOKIES.get('collection', None),
         'next': redirect_to

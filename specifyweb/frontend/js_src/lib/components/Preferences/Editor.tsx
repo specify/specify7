@@ -3,6 +3,7 @@ import React from 'react';
 import { useLiveState } from '../../hooks/useLiveState';
 import type { AppResourceTabProps } from '../AppResources/TabDefinitions';
 import { PreferencesContent } from '../Preferences';
+import type { PartialPreferences } from '../Preferences/BasePreferences';
 import { BasePreferences } from '../Preferences/BasePreferences';
 import { userPreferenceDefinitions } from '../Preferences/UserDefinitions';
 import { userPreferences } from '../Preferences/userPreferences';
@@ -24,7 +25,9 @@ export function UserPreferencesEditor({
         syncChanges: false,
       });
       userPreferences.setRaw(
-        JSON.parse(data === null || data.length === 0 ? '{}' : data)
+        JSON.parse(
+          data === null || data.length === 0 ? '{}' : data
+        ) as PartialPreferences<typeof userPreferenceDefinitions>
       );
       userPreferences.events.on('update', () =>
         handleChange(JSON.stringify(userPreferences.getRaw()))

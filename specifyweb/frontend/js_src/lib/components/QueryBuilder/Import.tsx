@@ -5,7 +5,6 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { wbPlanText } from '../../localization/wbPlan';
-import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
@@ -78,7 +77,7 @@ export function QueryImport({
             onFileSelected={(file): void =>
               loading(
                 fileToText(file)
-                  .then<SerializedRecord<SpQuery>>(f.unary(JSON.parse))
+                  .then((text) => JSON.parse(text) as SerializedRecord<SpQuery>)
                   .then((query) => ({
                     ...query,
                     specifyuser: getResourceApiUrl(

@@ -26,7 +26,11 @@ export function handleAjaxResponse<RESPONSE_TYPE = string>({
     if (response.ok || expectedErrors.includes(response.status)) {
       if (response.ok && accept === 'application/json') {
         try {
-          return { data: JSON.parse(text), response, status: response.status };
+          return {
+            data: JSON.parse(text) as RESPONSE_TYPE,
+            response,
+            status: response.status,
+          };
         } catch {
           throw {
             type: 'jsonParseFailure',

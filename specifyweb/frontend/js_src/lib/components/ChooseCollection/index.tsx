@@ -35,9 +35,12 @@ export function ChooseCollection(): JSX.Element {
         ]
           .flat()
           .filter(Boolean)}
-        availableCollections={JSON.parse(
-          parseDjangoDump('available-collections') ?? '[]'
-        )}
+        availableCollections={
+          // The value coming from the back-end is doubly JSON encoded
+          JSON.parse(parseDjangoDump('available-collections') ?? '[]') as RA<
+            SerializedRecord<Collection>
+          >
+        }
         // REFACTOR: store this on the front-end?
         initialValue={parseDjangoDump('initial-value') ?? null}
         nextUrl={parseDjangoDump<string>('next-url') ?? '/specify/'}

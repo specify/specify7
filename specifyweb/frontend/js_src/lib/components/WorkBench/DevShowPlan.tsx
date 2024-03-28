@@ -57,7 +57,7 @@ export function DevShowPlan({
                   .then((status) =>
                     status === Http.NOT_FOUND
                       ? handleDeleted()
-                      : handleChanged(plan)
+                      : handleChanged(plan as UploadPlan)
                   )
                   .finally(handleClose)
               );

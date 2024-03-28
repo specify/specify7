@@ -15,6 +15,8 @@ import { DisambiguationDialog } from './Disambiguation';
 import { getSelectedLast } from './hotHelpers';
 import type { WbView } from './WbView';
 
+export type WbRowExtra = { readonly disambiguation?: IR<number> };
+
 /* eslint-disable functional/no-this-expression */
 export class Disambiguation {
   public constructor(private readonly wbView: WbView) {}
@@ -24,7 +26,7 @@ export class Disambiguation {
     const hiddenColumn = this.wbView.data[physicalRow][cols];
     const extra =
       typeof hiddenColumn === 'string' && hiddenColumn.length > 0
-        ? JSON.parse(hiddenColumn)
+        ? (JSON.parse(hiddenColumn) as WbRowExtra)
         : {};
     return extra.disambiguation ?? {};
   }
@@ -69,8 +71,11 @@ export class Disambiguation {
     if (this.wbView.hot === undefined) return;
     const cols = this.wbView.dataset.columns.length;
     const hidden = this.wbView.data[physicalRow][cols];
-    const extra = hidden ? JSON.parse(hidden) : {};
-    extra.disambiguation = changeFunction(extra.disambiguation || {});
+    const oldExtra = hidden ? (JSON.parse(hidden) as WbRowExtra) ?? {} : {};
+    const extra: WbRowExtra = {
+      ...oldExtra,
+      disambiguation: changeFunction(oldExtra.disambiguation ?? {}),
+    };
     const visualRow = this.wbView.hot.toVisualRow(physicalRow);
     const visualCol = this.wbView.hot.toVisualColumn(cols);
     this.wbView.hot.setDataAtCell(

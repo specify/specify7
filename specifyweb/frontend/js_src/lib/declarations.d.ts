@@ -76,6 +76,19 @@ declare global {
   interface PromiseConstructor {
     all<T>(values: Iterable<PromiseLike<T> | T>): Promise<RA<Awaited<T>>>;
   }
+
+  // Make JSON.parse() return type unknown instead of any
+  interface JSON {
+    parse(
+      text: string,
+      reviver?: (this: unknown, key: string, value: unknown) => unknown
+    ): unknown;
+  }
+
+  // Make (await fetch()).json() return type unknown instead of any
+  interface Body {
+    json(): Promise<unknown>;
+  }
 }
 
 // Make router state more type safe

@@ -132,7 +132,9 @@ function mergeField(
           return resourceInParent ?? resource;
         });
 
-        return resourcesToReturn.map((resource) => JSON.parse(resource));
+        return resourcesToReturn.map(
+          (resource) => JSON.parse(resource) as SerializedResource<AnySchema>
+        );
       } else
         return autoMerge(
           field.relatedTable,

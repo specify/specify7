@@ -12,6 +12,7 @@ import { sortFunction } from '../../utils/utils';
 import { oneRem } from '../Atoms';
 import { schema } from '../DataModel/schema';
 import { hasPermission } from '../Permissions/helpers';
+import type { WbRowExtra } from './DisambiguationLogic';
 import { getHotPlugin } from './handsontable';
 import type { WbView } from './WbView';
 
@@ -577,7 +578,7 @@ export function getHotHooks(wbView: WbView) {
       const selection = wbView.hot?.getSelected() ?? [];
       const newSelection = f
         .unique(selection.map((row) => JSON.stringify(row)))
-        .map((row) => JSON.parse(row));
+        .map((row) => JSON.parse(row) as typeof selection[number]);
       if (newSelection.length !== selection.length) {
         wbView.hot?.deselectCell();
         wbView.hot?.selectCells(newSelection);
@@ -611,8 +612,8 @@ function afterUndoRedo(
   const physicalCol = wbView.hot.toPhysicalColumn(visualCol as number);
   if (physicalCol !== wbView.dataset.columns.length) return;
 
-  const newValue = JSON.parse(newData || '{}').disambiguation;
-  const oldValue = JSON.parse(oldData || '{}').disambiguation;
+  const newValue = (JSON.parse(newData || '{}') as WbRowExtra).disambiguation;
+  const oldValue = (JSON.parse(oldData || '{}') as WbRowExtra).disambiguation;
 
   /*
    * Disambiguation results are cleared when any cell in a row changes.
