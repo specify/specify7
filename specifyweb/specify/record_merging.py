@@ -203,6 +203,7 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
                     query.add(Q(**{field_name: old_model_id}), Q.OR)
                 foreign_model.objects.filter(query).update(**{field_name: new_model_id})
                 progress(1, 0) if progress is not None else None
+                continue
 
         apply_order = add_ordering_to_key(table_name.lower().title())
         # BUG: timestampmodified could be null for one record, and not the other
