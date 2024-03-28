@@ -80,7 +80,7 @@ export function QueryFieldFormatter({
         <div>
           <Select
             aria-label={queryText.chooseFormatter()}
-            className={`${customSelectElementBackground}`}
+            className={customSelectElementBackground}
             disabled={handleChange === undefined}
             id={id('list')}
             value={formatter}
@@ -89,7 +89,7 @@ export function QueryFieldFormatter({
             <option />
             {availableFormatters.map(({ name, title, isDefault }, index) => (
               <option key={index} value={name}>
-                {title} {isDefault ? resourcesText.defaultInline() : ''}
+                {`${title} ${isDefault ? resourcesText.defaultInline() : ''}`}
               </option>
             ))}
           </Select>
