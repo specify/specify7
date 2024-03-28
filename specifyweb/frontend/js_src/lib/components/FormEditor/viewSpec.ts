@@ -35,15 +35,15 @@ export const formDefinitionSpec = (table: SpecifyTable | undefined) =>
       syncers.xmlChild('enableRules', 'optional'),
       syncers.maybe(syncers.object(legacyBusinessRulesSpec()))
     ),
-    rows: rows(table),
+    definitions: definitions(table),
   });
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const rows = (table: SpecifyTable | undefined) =>
+const definitions = (table: SpecifyTable | undefined) =>
   pipe(
-    syncers.xmlChild('rows'),
-    syncers.fallback<SimpleXmlNode>(createSimpleXmlNode),
-    syncers.object(rowsSpec(table))
+    syncers.xmlChildren('rows'),
+    syncers.fallback<RA<SimpleXmlNode>>(() => [createSimpleXmlNode()]),
+    syncers.map(syncers.object(rowsSpec(table)))
   );
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -502,7 +502,7 @@ const panelSpec = (
 const veryUnsafeRows = (
   table: SpecifyTable | undefined
 ): Syncer<SimpleXmlNode, SimpleXmlNode> =>
-  rows(table) as unknown as Syncer<SimpleXmlNode, SimpleXmlNode>;
+  definitions(table) as unknown as Syncer<SimpleXmlNode, SimpleXmlNode>;
 
 const commandTables = {
   generateLabelBtn: undefined,
