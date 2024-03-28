@@ -344,7 +344,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
           synonymName: focusedRow.fullName,
         });
   let disabled: string | false = false;
-  if (type === 'move' || type === 'bulkMove') {
+  if (type === 'move') {
     if (isSameRecord) disabled = title;
     else if (
       focusedRow.rankId >= actionRow.rankId ||
@@ -352,6 +352,8 @@ function ActiveAction<SCHEMA extends AnyTree>({
     )
       disabled = treeText.cantMoveHere();
     else if (isSynonym) disabled = treeText.cantMoveToSynonym();
+  } else if (type === 'bulkMove') {
+    if (isSameRecord) disabled = title;
   } else if (type === 'merge') {
     if (isSameRecord) disabled = title;
     else if (focusedRow.rankId > actionRow.rankId)
