@@ -9,10 +9,13 @@ import { useResource } from '../../hooks/resource';
 import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
 import { formData } from '../../utils/ajax/helpers';
+import { ping } from '../../utils/ajax/ping';
+import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
+import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import type { SpecifyUser } from '../DataModel/types';
+import type { Collection, SpecifyUser } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { hasPermission } from '../Permissions/helpers';
 
@@ -20,15 +23,17 @@ export function AdminStatusPlugin({
   user: resource,
   isAdmin,
   onChange: handleChange,
+  collections,
 }: {
   readonly user: SpecifyResource<SpecifyUser>;
   readonly isAdmin: boolean;
   readonly onChange: (isAdmin: boolean) => void;
+  readonly collections: RA<SerializedResource<Collection>>;
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const [user] = useResource(resource);
   const isCurrentUser = userInformation.id === user.id;
-
+  const allCollectionIds = collections?.map((collection) => collection.id);
   return (
     <Button.Small
       className="w-fit"
@@ -60,7 +65,19 @@ export function AdminStatusPlugin({
             headers: {
               Accept: 'text/plain',
             },
-          }).then(({ data }) => handleChange(data === 'true'))
+          })
+            .then(({ data }) => {
+              handleChange(data === 'true');
+              return data;
+            })
+            .then((data) => {
+              data === 'true'
+                ? ping(`/context/user_collection_access_for_sp6/${user.id}/`, {
+                    method: 'PUT',
+                    body: allCollectionIds,
+                  })
+                : undefined;
+            })
         )
       }
     >

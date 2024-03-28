@@ -16,7 +16,7 @@ import { ReadOnlyContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { tables } from '../DataModel/tables';
-import type { SpecifyUser } from '../DataModel/types';
+import type { Collection, SpecifyUser } from '../DataModel/types';
 import { Combobox } from '../FormFields/ComboBox';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
@@ -28,6 +28,7 @@ import type { Policy } from './Policy';
 import type { Role } from './Role';
 import { UserCollections } from './UserCollections';
 import { anyResource } from './utils';
+import { SerializedResource } from '../DataModel/helperTypes';
 
 export function SetSuperAdmin({
   institutionPolicies,
@@ -224,8 +225,10 @@ export function UserIdentityProviders({
 
 export function LegacyPermissions({
   userResource,
+  collections,
 }: {
   readonly userResource: SpecifyResource<SpecifyUser>;
+  readonly collections: RA<SerializedResource<Collection>>;
 }): JSX.Element {
   const admins = useAdmins();
   const [isAdmin, setIsAdmin] = useLiveState(
@@ -244,6 +247,7 @@ export function LegacyPermissions({
             isAdmin={isAdmin}
             user={userResource}
             onChange={setIsAdmin}
+            collections={collections}
           />
           {hasPermission('/admin/user/sp6/collection_access', 'read') &&
           hasTablePermission('Collection', 'read') ? (

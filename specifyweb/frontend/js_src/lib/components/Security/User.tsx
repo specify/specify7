@@ -432,7 +432,10 @@ function UserView({
               )}
             </SetPermissionContext>
             <ErrorBoundary dismissible>
-              <LegacyPermissions userResource={userResource} />
+              <LegacyPermissions
+                userResource={userResource}
+                collections={collections}
+              />
             </ErrorBoundary>
           </>,
           '-mx-4 p-4 pt-0 flex-1 gap-8 [&_input]:max-w-[min(100%,var(--max-field-width))] overflow-auto'
