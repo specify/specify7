@@ -307,5 +307,11 @@ export const statsText = createDictionary({
     'en-us': 'Percent Imaged',
     'es-es': 'Porcentaje Capturado',
   },
+  deleteWarning: {
+    'en-us': 'Are you sure you want to delete the category?',
+  },
+  categoryToDelete: {
+    'en-us': 'This will permanently delete the following category',
+  },
 });
 /* eslint-enable @typescript-eslint/naming-convention */
