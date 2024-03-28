@@ -1,4 +1,6 @@
 import type Handsontable from 'handsontable';
+import type { Events } from 'handsontable/pluginHooks';
+import type { Action } from 'handsontable/plugins/undoRedo';
 
 import { backEndText } from '../../localization/backEnd';
 import { whitespaceSensitive } from '../../localization/utils';
@@ -21,7 +23,7 @@ export function getHotHooks(wbView: WbView) {
     | ReturnType<typeof setTimeout>
     | undefined = undefined;
 
-  return ensure<Partial<Handsontable.Hooks.Events>>()({
+  return ensure<Partial<Events>>()({
     /*
      * After cell is rendered, we need to reApply metaData classes
      * NOTE:
@@ -30,7 +32,13 @@ export function getHotHooks(wbView: WbView) {
      * cases
      *
      */
-    afterRenderer: (td, visualRow, visualCol, property, _value) => {
+    afterRenderer: (
+      td: any,
+      visualRow: number,
+      visualCol: number,
+      property: number | string,
+      _value: string
+    ) => {
       if (wbView.hot === undefined) {
         td.classList.add('text-gray-500');
         return;
@@ -73,7 +81,11 @@ export function getHotHooks(wbView: WbView) {
     },
 
     // Make HOT use defaultValues for validation if cell is empty
-    beforeValidate: (value, _visualRow, property) => {
+    beforeValidate: (
+      value: any,
+      _visualRow: number,
+      property: number | string
+    ) => {
       if (Boolean(value) || wbView.hot === undefined) return value;
 
       const visualCol = wbView.hot.propToCol(property);
@@ -155,7 +167,7 @@ export function getHotHooks(wbView: WbView) {
       if (source !== 'CopyPaste.paste') return true;
 
       const filteredChanges = unfilteredChanges.filter(
-        ([, property]) => property < wbView.dataset.columns.length
+        ([, property]) => (property as number) < wbView.dataset.columns.length
       );
       if (
         filteredChanges.length === unfilteredChanges.length ||
@@ -165,7 +177,7 @@ export function getHotHooks(wbView: WbView) {
       wbView.hot.setDataAtCell(
         filteredChanges.map(([visualRow, property, _oldValue, newValue]) => [
           visualRow,
-          wbView.hot!.propToCol(property),
+          wbView.hot!.propToCol(property as number),
           newValue,
         ]),
         'CopyPaste.paste'
@@ -196,7 +208,9 @@ export function getHotHooks(wbView: WbView) {
           physicalCol:
             typeof property === 'number'
               ? property
-              : wbView.hot!.toPhysicalColumn(wbView.hot!.propToCol(property)),
+              : wbView.hot!.toPhysicalColumn(
+                  wbView.hot!.propToCol(property as number | string)
+                ),
           oldValue,
           newValue,
         }))
@@ -368,8 +382,8 @@ export function getHotHooks(wbView: WbView) {
         return true;
 
       const findTreeColumns = (
-        sortConfig: RA<Handsontable.columnSorting.Config>,
-        deltaSearchConfig: RA<Handsontable.columnSorting.Config>
+        sortConfig: RA<Handsontable.plugins.ColumnSorting.Config>,
+        deltaSearchConfig: RA<Handsontable.plugins.ColumnSorting.Config>
       ) =>
         sortConfig
           .map(({ column: visualCol, sortOrder }) => ({
@@ -596,7 +610,7 @@ export function getHotHooks(wbView: WbView) {
 function afterUndoRedo(
   wbView: WbView,
   type: 'redo' | 'undo',
-  data: Handsontable.plugins.UndoRedoAction
+  data: Action
 ): void {
   if (
     wbView.undoRedoIsHandled ||

@@ -50,11 +50,551 @@ import { parseWbMappings } from './mapping';
 import { fetchWbPickLists } from './pickLists';
 import { WbUploaded } from './Results';
 import { wbViewTemplate } from './Template';
-import { WbActions } from './WbActions';
+import { WbActions, WbActionsReact } from './WbActions';
 import { WbUtils } from './WbUtils';
 import { WbValidation } from './WbValidation';
+import type { LocalizedString } from 'typesafe-i18n';
+import { className } from '../Atoms/className';
+import { Input } from '../Atoms/Form';
+import { DataSetName } from './DataSetMeta';
+import { WbSpreadsheet } from './WbSpreadsheet';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { WbToolkit } from './WbToolkit';
+import { getCache } from '../../utils/cache';
+import { WbAdvancedSearch } from './AdvancedSearch';
+import type { WbSearchPreferences } from './AdvancedSearch';
+import { RollbackConfirmation } from './Components';
+import { WbStatus as WbStatusComponent } from './Status';
+import type { Status } from '../WbPlanView/Wrapped';
+import { loadingBar } from '../Molecules';
+import { CreateRecordSetButton } from './RecordSet';
 
 export type WbStatus = 'unupload' | 'upload' | 'validate';
+
+function Navigation({
+  name,
+  label,
+}: {
+  readonly name: string;
+  readonly label: LocalizedString;
+}): JSX.Element {
+  return (
+    <span
+      aria-atomic
+      className="wb-navigation-section flex rounded"
+      data-navigation-type={name}
+    >
+      <Button.Small
+        className="wb-cell-navigation brightness-80 hover:brightness-70 p-2 ring-0"
+        data-navigation-direction="previous"
+        variant="bg-inherit text-gray-800 dark:text-gray-100"
+        onClick={f.never}
+      >
+        {'<'}
+      </Button.Small>
+      <Button.Small
+        className={`
+          wb-navigation-text hover:brightness-70 grid grid-cols-[auto_1fr_auto_1fr_auto]
+          items-center ring-0
+          ${className.ariaHandled}
+        `}
+        title={wbText.clickToToggle()}
+        variant="bg-inherit text-gray-800 dark:text-gray-100"
+        onClick={f.never}
+      >
+        {label} (<span className="wb-navigation-position text-center">0</span>/
+        <span className="wb-navigation-total">0</span>)
+      </Button.Small>
+      <Button.Small
+        className="wb-cell-navigation brightness-80 hover:brightness-70 p-2 ring-0"
+        data-navigation-direction="next"
+        type="button"
+        variant="bg-inherit text-gray-800 dark:text-gray-100"
+        onClick={f.never}
+      >
+        {'>'}
+      </Button.Small>
+    </span>
+  );
+}
+
+export type DialogHandlers = {
+  show: boolean;
+  open: () => void;
+  close: () => void;
+  toggle: () => void;
+};
+
+export type HandlersObject = {
+  [key: string]: DialogHandlers;
+};
+
+// Returns an object consisting of handler objects for dialog actions in the Workbench
+function useWbViewHandlers() {
+  const handlers = {
+    toolkit: useBooleanState(),
+    upload: useBooleanState(),
+    noUploadPlan: useBooleanState(),
+    unupload: useBooleanState(),
+    statusComponent: useBooleanState(),
+    revertChanges: useBooleanState(),
+    saveProgressBar: useBooleanState(),
+    operationCompleted: useBooleanState(),
+    operationAborted: useBooleanState(),
+    devPlan: useBooleanState(),
+    changeOwner: useBooleanState(),
+    geoLocate: useBooleanState(),
+    leafletMap: useBooleanState(),
+    coordinatesConversion: useBooleanState(),
+  };
+
+  // convert useBooleanState()'s resulting array to an object
+  const handlersObject: HandlersObject = {};
+  for (const [name, state] of Object.entries(handlers)) {
+    const [show, open, close, toggle] = state;
+    handlersObject[name] = { show, open, close, toggle };
+  }
+
+  return handlersObject;
+}
+
+export function WbViewReact({
+  dataset,
+  hotRef,
+  handleDatasetDelete,
+  triggerRefresh,
+}: {
+  readonly dataset: Dataset;
+  readonly hotRef: any;
+  readonly handleDatasetDelete: () => void;
+  readonly triggerRefresh: () => void;
+}): JSX.Element {
+  const data = React.useMemo<RA<RA<string | null>>>(
+    () =>
+      dataset.rows.length === 0
+        ? [Array.from(dataset.columns).fill(null)]
+        : dataset.rows,
+    [dataset.rows]
+  );
+  const isMapped = Boolean(dataset.uploadplan);
+  const isUploaded =
+    dataset.uploadresult !== null && dataset.uploadresult.success;
+  const canUpdate = hasPermission('/workbench/dataset', 'update');
+  const [canLiveValidate] = userPreferences.use(
+    'workBench',
+    'general',
+    'liveValidation'
+  );
+  const {
+    toolkit,
+    upload,
+    noUploadPlan,
+    unupload,
+    statusComponent,
+    revertChanges,
+    saveProgressBar,
+    operationCompleted,
+    operationAborted,
+    ...toolkitOptions
+  } = useWbViewHandlers();
+  const mappings = React.useMemo(
+    (): WbMapping | undefined => parseWbMappings(dataset),
+    [dataset]
+  );
+  const hot = hotRef.current ? hotRef.current.hotInstance : undefined;
+  const defaultSearchPreferences: WbSearchPreferences = {
+    navigation: {
+      direction: 'columnFirst',
+    },
+    search: {
+      fullMatch: true,
+      caseSensitive: true,
+      useRegex: false,
+      liveUpdate: true,
+    },
+    replace: {
+      replaceMode: 'replaceAll',
+    },
+  };
+  let searchPreferences =
+    getCache('workbench', 'searchProperties') ?? defaultSearchPreferences;
+  const initialNavigationDirection = searchPreferences.navigation.direction;
+  const checkDeletedFail = (statusCode: number): boolean => {
+    if (statusCode === Http.NOT_FOUND) handleDatasetDelete();
+    return statusCode === Http.NOT_FOUND;
+  };
+  const mode = React.useRef<WbStatus | undefined>(undefined);
+  const refreshInitiatorAborted = React.useRef<boolean>(false);
+
+  const actionsRef = React.useRef<WbActionsReact>(
+    new WbActionsReact(
+      data,
+      dataset,
+      mappings as WbMapping,
+      noUploadPlan,
+      upload,
+      statusComponent,
+      checkDeletedFail,
+      triggerRefresh,
+      saveProgressBar,
+      mode,
+      refreshInitiatorAborted,
+      operationCompleted,
+      operationAborted
+    )
+  );
+  React.useEffect(() => {
+    if (
+      !isUploaded &&
+      (mappings?.lines ?? []).length === 0 &&
+      hasPermission('/workbench/dataset', 'update')
+    ) {
+      noUploadPlan.open();
+    }
+  }, []);
+  return (
+    <>
+      <div
+        className="flex items-center justify-between gap-x-1 gap-y-2 whitespace-nowrap"
+        role="toolbar"
+      >
+        <div className="wb-name-container contents">
+          <DataSetName
+            dataset={dataset}
+            getRowCount={() =>
+              hot
+                ? dataset.rows.length
+                : hot.countRows() - hot.countEmptyRows(true)
+            }
+          />
+        </div>
+        <Button.Small
+          aria-haspopup="grid"
+          aria-pressed={toolkit.show}
+          className="wb-show-toolkit"
+          onClick={toolkit.toggle}
+        >
+          {commonText.tools()}
+        </Button.Small>
+        <span className="-ml-1 flex-1" />
+        {canUpdate || isMapped ? (
+          <Link.Small href={`/specify/workbench/plan/${dataset.id}/`}>
+            {wbPlanText.dataMapper()}
+          </Link.Small>
+        ) : undefined}
+        {!isUploaded && hasPermission('/workbench/dataset', 'validate') && (
+          <>
+            <Button.Small
+              className={`wb-data-check ${canLiveValidate ? '' : 'hidden'}`}
+              onClick={undefined}
+            >
+              {wbText.dataCheck()}
+            </Button.Small>
+            <Button.Small
+              aria-haspopup="dialog"
+              className="wb-validate"
+              onClick={undefined}
+              disabled={actionsRef.current.hasUnSavedChanges}
+              title={
+                actionsRef.current.hasUnSavedChanges
+                  ? wbText.unavailableWhileEditing()
+                  : ''
+              }
+            >
+              {wbText.validate()}
+            </Button.Small>
+          </>
+        )}
+        <Button.Small
+          aria-haspopup="tree"
+          className="wb-show-upload-view"
+          disabled={actionsRef.current.hasUnSavedChanges}
+          title={
+            actionsRef.current.hasUnSavedChanges
+              ? wbText.wbUploadedUnavailable()
+              : ''
+          }
+          onClick={undefined}
+        >
+          {commonText.results()}
+        </Button.Small>
+        {isUploaded ? (
+          hasPermission('/workbench/dataset', 'unupload') && (
+            <Button.Small
+              aria-haspopup="dialog"
+              aria-pressed={unupload.show}
+              className="wb-unupload"
+              onClick={unupload.open}
+            >
+              {wbText.rollback()}
+            </Button.Small>
+          )
+        ) : (
+          <>
+            {hasPermission('/workbench/dataset', 'upload') && (
+              <Button.Small
+                aria-haspopup="dialog"
+                className="wb-upload"
+                onClick={() => {
+                  mode.current = 'upload';
+                  actionsRef.current.upload(mode.current);
+                }}
+                disabled={actionsRef.current.hasUnSavedChanges}
+                title={
+                  actionsRef.current.hasUnSavedChanges
+                    ? wbText.unavailableWhileEditing()
+                    : ''
+                }
+              >
+                {wbText.upload()}
+              </Button.Small>
+            )}
+            {hasPermission('/workbench/dataset', 'update') && (
+              <>
+                <Button.Small
+                  aria-haspopup="dialog"
+                  className="wb-revert"
+                  onClick={revertChanges.open}
+                  disabled={!actionsRef.current.hasUnSavedChanges}
+                >
+                  {wbText.revert()}
+                </Button.Small>
+                <Button.Small
+                  aria-haspopup="dialog"
+                  className="wb-save"
+                  variant={className.saveButton}
+                  onClick={undefined}
+                  disabled={!actionsRef.current.hasUnSavedChanges}
+                >
+                  {commonText.save()}
+                </Button.Small>
+              </>
+            )}
+          </>
+        )}
+      </div>
+      {toolkit.show && (
+        <WbToolkit
+          dataset={dataset}
+          hotRef={hotRef}
+          toolkitOptions={toolkitOptions}
+          mappings={mappings as WbMapping}
+          data={data}
+          handleDatasetDelete={handleDatasetDelete}
+          actions={actionsRef.current}
+        />
+      )}
+      {unupload.show && (
+        <RollbackConfirmation
+          dataSetId={dataset.id}
+          onClose={unupload.close}
+          onRollback={() => actionsRef.current.openStatus('unupload')}
+        />
+      )}
+      {mode.current === 'upload' && upload.show && (
+        <Dialog
+          buttons={
+            <>
+              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+              <Button.Info
+                onClick={(): void => {
+                  actionsRef.current.startUpload(mode.current as WbStatus);
+                  upload.close();
+                }}
+              >
+                {wbText.upload()}
+              </Button.Info>
+            </>
+          }
+          header={wbText.startUpload()}
+          onClose={upload.close}
+        >
+          {wbText.startUploadDescription()}
+        </Dialog>
+      )}
+      {noUploadPlan.show && (
+        <Dialog
+          buttons={
+            <>
+              <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+              <Link.Info href={`/specify/workbench/plan/${dataset.id}/`}>
+                {commonText.create()}
+              </Link.Info>
+            </>
+          }
+          header={wbPlanText.noUploadPlan()}
+          onClose={noUploadPlan.close}
+        >
+          {wbPlanText.noUploadPlanDescription()}
+        </Dialog>
+      )}
+      {mode.current && statusComponent.show && (
+        <WbStatusComponent
+          dataset={{
+            ...dataset,
+            // Create initial status if it doesn't exist yet
+            uploaderstatus: {
+              uploaderstatus:
+                dataset.uploaderstatus ??
+                ({
+                  operation: {
+                    validate: 'validating',
+                    upload: 'uploading',
+                    unupload: 'unuploading',
+                  }[mode.current],
+                  taskid: '',
+                } as const),
+              taskstatus: 'PENDING',
+              taskinfo: 'None',
+            } as Status,
+          }}
+          onFinished={(wasAborted): void => {
+            refreshInitiatorAborted.current = wasAborted;
+            statusComponent.close();
+            triggerRefresh();
+          }}
+        />
+      )}
+      {revertChanges.show && (
+        <Dialog
+          buttons={
+            <>
+              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+              <Button.Danger onClick={triggerRefresh}>
+                {wbText.revert()}
+              </Button.Danger>
+            </>
+          }
+          header={wbText.revertChanges()}
+          onClose={revertChanges.close}
+        >
+          {wbText.revertChangesDescription()}
+        </Dialog>
+      )}
+      {saveProgressBar.show && (
+        <Dialog
+          buttons={undefined}
+          header={wbText.saving()}
+          onClose={saveProgressBar.close}
+        >
+          {loadingBar}
+        </Dialog>
+      )}
+      {operationCompleted.show && (
+        <Dialog
+          buttons={
+            <>
+              {
+                /* cellCounts.invalidCells === 0 && */
+                mode.current === 'upload' && (
+                  <CreateRecordSetButton
+                    dataSetId={dataset.id}
+                    dataSetName={dataset.name}
+                    small={false}
+                    onClose={operationCompleted.close}
+                  />
+                )
+              }
+              <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+            </>
+          }
+          // header={messages[this.wbView.refreshInitiatedBy].header}
+          onClose={operationCompleted.close}
+        >
+          {/* {messages[this.wbView.refreshInitiatedBy].message} */}
+        </Dialog>
+      )}
+      {operationAborted.show && (
+        <Dialog
+          buttons={commonText.close()}
+          header={
+            mode.current === 'validate'
+              ? wbText.validationCanceled()
+              : mode.current === 'unupload'
+              ? wbText.rollbackCanceled()
+              : wbText.uploadCanceled()
+          }
+          onClose={operationAborted.close}
+        >
+          {mode.current === 'validate'
+            ? wbText.validationCanceledDescription()
+            : mode.current === 'unupload'
+            ? wbText.rollbackCanceledDescription()
+            : wbText.uploadCanceledDescription()}
+        </Dialog>
+      )}
+      <div className="flex flex-1 gap-4 overflow-hidden">
+        <section className="wb-spreadsheet flex-1 overflow-hidden overscroll-none">
+          <WbSpreadsheet
+            dataset={dataset}
+            hotRef={hotRef}
+            isUploaded={isUploaded}
+            data={data}
+          />
+        </section>
+        <aside aria-live="polite" className="wb-uploaded-view-wrapper hidden" />
+      </div>
+      <div
+        aria-label={wbText.navigation()}
+        className="flex flex-wrap justify-end gap-x-1 gap-y-2"
+        role="toolbar"
+      >
+        <span className="contents" role="search">
+          <div className="flex">
+            <Input.Generic
+              aria-label={commonText.searchQuery()}
+              autoComplete="on"
+              className="wb-search-query"
+              placeholder={commonText.search()}
+              spellCheck
+              title={commonText.searchQuery()}
+              type="search"
+            />
+          </div>
+          {!isUploaded && hasPermission('/workbench/dataset', 'update') ? (
+            <div className="flex">
+              <Input.Text
+                aria-label={wbText.replacementValue()}
+                autoComplete="on"
+                className="wb-replace-value"
+                placeholder={wbText.replace()}
+                title={wbText.replacementValue()}
+              />
+            </div>
+          ) : undefined}
+          <span className="wb-advanced-search-wrapper">
+            <WbAdvancedSearch
+              initialSearchPreferences={searchPreferences}
+              onChange={(newSearchPreferences) => {
+                // searchPreferences = newSearchPreferences;
+                // if (
+                //   searchPreferences.navigation.direction !==
+                //   initialNavigationDirection
+                // ) {
+                //   this.wbView.cells.flushIndexedCellData = true;
+                //   initialNavigationDirection =
+                //     searchPreferences.navigation.direction;
+                // }
+                // if (searchPreferences.search.liveUpdate)
+                //   this.searchCells({
+                //     key: 'SettingsChange',
+                //   }).catch(softFail);
+              }}
+            />
+          </span>
+        </span>
+        <Navigation label={wbText.searchResults()} name="searchResults" />
+        {!isUploaded && hasPermission('/workbench/dataset', 'update') ? (
+          <Navigation label={wbText.modifiedCells()} name="modifiedCells" />
+        ) : undefined}
+        <Navigation label={wbText.newCells()} name="newCells" />
+        {!isUploaded && (
+          <Navigation label={wbText.errorCells()} name="invalidCells" />
+        )}
+      </div>
+    </>
+  );
+}
 
 // REFACTOR: when rewriting to React, add ErrorBoundaries
 
@@ -119,7 +659,7 @@ export class WbView extends Backbone.View {
     public refreshInitiatedBy: WbStatus | undefined,
     // eslint-disable-next-line functional/prefer-readonly-type
     public refreshInitiatorAborted: boolean,
-    public readonly element: HTMLElement,
+    public readonly element: HTMLElement, // shouldn't be needed in React
     public readonly options: {
       readonly onSetUnloadProtect: (unloadProtect: boolean) => void;
       readonly onDeleted: () => void;
@@ -418,8 +958,8 @@ export class WbView extends Backbone.View {
       contextMenu: {
         items: ensure<
           IR<
-            | Handsontable.contextMenu.MenuItemConfig
-            | Handsontable.contextMenu.PredefinedMenuItemKey
+            | Handsontable.plugins.ContextMenu.MenuItemConfig
+            | Handsontable.plugins.ContextMenu.PredefinedMenuItemKey
           >
         >()(
           this.isUploaded

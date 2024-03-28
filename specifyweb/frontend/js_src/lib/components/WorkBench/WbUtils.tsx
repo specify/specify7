@@ -587,7 +587,7 @@ export class WbUtils extends Backbone.View {
   // Context menu item definitions (common for fillUp and fillDown)
   fillCellsContextMenuItem(
     mode: 'down' | 'up'
-  ): Handsontable.contextMenu.MenuItemConfig {
+  ): Handsontable.plugins.ContextMenu.MenuItemConfig {
     return {
       name: mode === 'up' ? wbText.fillUp() : wbText.fillDown(),
       disabled: () =>
@@ -598,8 +598,8 @@ export class WbUtils extends Backbone.View {
           ?.getSelected()
           ?.every((selection) => selection[0] === selection[2]) ??
           false),
-      callback: (_, selections) =>
-        selections.forEach((selection) =>
+      callback: (_: any, selections: any) =>
+        selections.forEach((selection: any) =>
           Array.from(
             new Array(selection.end.col + 1 - selection.start.col).keys()
           ).forEach((index) => {
