@@ -155,6 +155,7 @@ export const Input = {
         props.onChange?.(event);
       },
       readOnly: isReadOnly,
+      disabled: isReadOnly,
     })
   ),
   Text: wrap<
