@@ -48,14 +48,21 @@ export function PartialDateUi({
 
   const isReadOnly =
     React.useContext(ReadOnlyContext) || resource === undefined;
-  const [useAccessiblePicker] =
-    userPreferences.use('form', 'ui', 'useAccessibleFullDatePicker') ||
-    userPreferences.use('form', 'ui', 'useAccessibleMonthPicker');
-
+  const [accissbleFullFDatePicker] = userPreferences.use(
+    'form',
+    'ui',
+    'useAccessibleFullDatePicker'
+  );
+  const [AccessibleMonthPicker] = userPreferences.use(
+    'form',
+    'ui',
+    'useAccessibleMonthPicker'
+  );
+  const isAccessible = accissbleFullFDatePicker || AccessibleMonthPicker;
   return (
     <div
       className={`${
-        useAccessiblePicker ? 'grid-cols-2' : 'grid-cols-[fit-content(40%)_1fr]'
+        isAccessible ? 'grid-cols-2' : 'grid-cols-[fit-content(40%)_1fr]'
       } grid w-full gap-1`}
     >
       {!isReadOnly && canChangePrecision ? (
