@@ -113,7 +113,7 @@ export const userText = createDictionary({
     'es-es': 'Establecer agentes usuarios',
     'fr-fr': 'Définir les agents utilisateurs',
     'uk-ua': 'Встановити агентів користувача',
-    'de-ch': 'Benutzeragenten festlegen',
+    'de-ch': 'Legen Sie Benutzeragenten fest',
   },
   noAgent: {
     'en-us': 'Current user does not have an agent assigned',
@@ -141,7 +141,7 @@ export const userText = createDictionary({
     `,
     'de-ch': `
       Bitte melden Sie sich als Administrator an und weisen Sie diesem Benutzer
-      einen Agenten zu
+      einen Agenten zu.
     `,
   },
   helloMessage: {
@@ -225,10 +225,10 @@ export const userText = createDictionary({
       записом {providerName:string} для майбутніх входів.
     `,
     'de-ch': `
-      Derzeit ist Ihrem {providerName:string}-Konto kein Specify-Benutzer
-      zugeordnet. Wenn Sie über einen Benutzernamen und ein Kennwort verfügen,
-      können Sie diese unten eingeben, um diesen Benutzer für zukünftige
-      Anmeldungen Ihrem {providerName:string}-Konto zuzuordnen.
+      Derzeit ist Ihrem {providerName:string}-Konto kein Benutzer vom Typ
+      „Specify“ zugeordnet. Wenn Sie einen Benutzernamen und ein Passwort vom
+      Typ „Specify“ haben, können Sie diese unten eingeben, um diesen Benutzer
+      bei zukünftigen Anmeldungen Ihrem {providerName:string}-Konto zuzuordnen.
     `,
   },
   generateMasterKey: {
@@ -426,7 +426,7 @@ export const userText = createDictionary({
     `,
     'de-ch': `
       Sie verfügen über keine Richtlinie oder Rolle, die Ihnen die Berechtigung
-      zur Ausführung der folgenden Aktion erteilt:
+      zum Ausführen der folgenden Aktion erteilt:
     `,
   },
   emptyRecordSetsReadOnly: {
@@ -500,7 +500,7 @@ export const userText = createDictionary({
     'es-es': 'Eliminar administrador',
     'fr-fr': "Supprimer l'administrateur",
     'uk-ua': 'Видалити адміністратора',
-    'de-ch': 'Admin entfernen',
+    'de-ch': 'Administrator entfernen',
   },
   canNotRemoveYourself: {
     'en-us': 'You cannot revoke your own admin status',
@@ -631,7 +631,7 @@ export const userText = createDictionary({
     'es-es': 'Biblioteca institucional de plantillas de roles',
     'fr-fr': 'Bibliothèque institutionnelle de modèles de rôles',
     'uk-ua': 'Бібліотека шаблонів ролей установи',
-    'de-ch': 'Institutionsbibliothek mit Rollenvorlagen',
+    'de-ch': 'Institutionelle Bibliothek mit Rollenvorlagen',
   },
   userRoles: {
     'en-us': 'User Roles',
@@ -837,7 +837,7 @@ export const userText = createDictionary({
     'es-es': 'Desde un rol existente:',
     'fr-fr': "À partir d'un rôle existant :",
     'uk-ua': 'З наявної ролі:',
-    'de-ch': 'Aus einer bestehenden Rolle:',
+    'de-ch': 'Aus einer vorhandenen Rolle:',
   },
   createNewRoles: {
     'en-us': 'Create new roles:',
@@ -877,7 +877,7 @@ export const userText = createDictionary({
     'es-es': 'Crear enlace de invitación',
     'fr-fr': "Créer un lien d'invitation",
     'uk-ua': 'Створити посилання для запрошення',
-    'de-ch': 'Erstellen Sie einen Einladungslink',
+    'de-ch': 'Einladungslink erstellen',
   },
   userInviteLink: {
     'en-us': 'User Invite Link',
@@ -1013,7 +1013,7 @@ export const userText = createDictionary({
     'es-es': 'Todas las tablas',
     'fr-fr': 'Tous les tableaux',
     'uk-ua': 'Всі столи',
-    'de-ch': 'Alle Tische',
+    'de-ch': 'Alle Tabellen',
   },
   loadingAdmins: {
     'en-us': 'Loading admins...',
@@ -1056,9 +1056,7 @@ export const userText = createDictionary({
     'fr-fr':
       'Les utilisateurs ne seront pas supprimés, mais ils perdront ce rôle.',
     'uk-ua': 'Користувачів не буде видалено, але вони втратять цю роль.',
-    'de-ch': `
-      Benutzer werden nicht gelöscht, sie würden jedoch diese Rolle verlieren.
-    `,
+    'de-ch': 'Benutzer werden nicht gelöscht, verlieren jedoch diese Rolle.',
   },
   institutionPolicies: {
     'en-us': `
@@ -1124,7 +1122,7 @@ export const userText = createDictionary({
     'ru-ru': 'Сначала сохраните пользователя',
     'es-es': 'Cambiar al diseño vertical',
     'fr-fr': "Passer à l'affichage vertical",
-    'de-ch': 'Wechseln Sie zum vertikalen Layout',
+    'de-ch': 'Zum vertikalen Layout wechseln',
     'uk-ua': 'Спочатку збережіть користувача',
   },
   advancedTables: {

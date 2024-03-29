@@ -126,7 +126,7 @@ export const schemaText = createDictionary({
     'ru-ru': 'Скрыть таблицу',
     'es-es': 'Ocultar tabla',
     'fr-fr': 'Masquer le tableau',
-    'uk-ua': 'Сховати таблицю',
+    'uk-ua': 'Приховати таблицю',
     'de-ch': 'Tabelle verbergen',
   },
   hideField: {
@@ -419,7 +419,7 @@ export const schemaText = createDictionary({
   },
   uniquenessDuplicatesFound: {
     'en-us': 'Duplicates found in database',
-    'de-ch': 'Duplikate in der Datenbank gefunden',
+    'de-ch': 'In der Datenbank gefundene Duplikate',
     'es-es': 'muchos a uno',
     'fr-fr': 'Doublons trouvés dans la base de données',
     'ru-ru': 'В базе данных найдены дубликаты',
@@ -431,7 +431,7 @@ export const schemaText = createDictionary({
     'es-es': 'Exportar duplicados',
     'fr-fr': 'Exporter les doublons',
     'ru-ru': 'Экспортировать дубликаты',
-    'uk-ua': 'Експорт дублікатів',
+    'uk-ua': 'Експортувати дублікати',
   },
   numberOfDuplicates: {
     'en-us': 'Number of Duplicates',

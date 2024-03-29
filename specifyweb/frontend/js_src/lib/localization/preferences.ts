@@ -503,7 +503,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Поле со списком запроса',
     'es-es': 'Cuadro combinado de consulta',
     'uk-ua': 'Поле зі списком запитів',
-    'de-ch': 'Kombinationsfeld „Abfrage“.',
+    'de-ch': 'Kombinationsfeld für Abfragen',
     'fr-fr': 'Zone de liste déroulante de requête',
   },
   searchAlgorithm: {
@@ -563,7 +563,8 @@ export const preferencesText = createDictionary({
     `,
     'uk-ua': 'Пошук значень, які починаються з заданого рядка запиту.',
     'de-ch': `
-      Suche nach Werten, die mit einer bestimmten Abfragezeichenfolge beginnen.
+      Suchen Sie nach Werten, die mit einer bestimmten Abfragezeichenfolge
+      beginnen.
     `,
   },
   containsInsensitive: {
@@ -623,7 +624,7 @@ export const preferencesText = createDictionary({
       Пошук значень, які містять заданий рядок запиту (з урахуванням регістру).
     `,
     'de-ch': `
-      Suchen Sie nach Werten, die eine bestimmte Abfragezeichenfolge enthalten
+      Suche nach Werten, die eine bestimmte Abfragezeichenfolge enthalten
       (Groß-/Kleinschreibung beachten).
     `,
   },
@@ -996,7 +997,7 @@ export const preferencesText = createDictionary({
     `,
     'de-ch': `
       Sie können sich in die entgegengesetzte Richtung bewegen, indem Sie
-      <key>Umschalt</key>+<key>Tab</key> drücken.
+      <key>Umschalttaste</key>+<key>Tabulatortaste</key> drücken.
     `,
   },
   column: {
@@ -1094,7 +1095,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Los cuadros de texto crecen automáticamente',
     'fr-fr': "Les zones de texte s'agrandissent automatiquement",
     'uk-ua': 'Текстові поля збільшуються автоматично',
-    'de-ch': 'Textfelder wachsen automatisch',
+    'de-ch': 'Textfelder werden automatisch vergrößert',
   },
   clearQueryFilters: {
     'en-us': 'Reset query filters',
@@ -1160,7 +1161,7 @@ export const preferencesText = createDictionary({
   },
   focusFirstField: {
     'en-us': 'Focus first field',
-    'de-ch': 'Fokussieren Sie das erste Feld',
+    'de-ch': 'Konzentrieren Sie sich auf das erste Feld',
     'es-es': 'Enfocar el primer campo',
     'fr-fr': 'Concentrez-vous sur le premier champ',
     'ru-ru': 'Фокус первого поля',
@@ -1228,7 +1229,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Ancho de columna de cuadrícula de subvista flexible',
     'fr-fr': 'Largeur de colonne de grille de sous-vue flexible',
     'uk-ua': 'Гнучка ширина стовпця сітки вкладеного перегляду',
-    'de-ch': 'Flexible Spaltenbreite des Unteransichtsrasters',
+    'de-ch': 'Flexible Spaltenbreite im Unteransichtsraster',
   },
   closeOnEsc: {
     'en-us': 'Close on <key>ESC</key> key press',
@@ -1260,7 +1261,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Utilice el selector de fechas completo accesible',
     'fr-fr': 'Utiliser un sélecteur de date complet accessible',
     'uk-ua': 'Використовуйте доступний повний засіб вибору дати',
-    'de-ch': 'Verwenden Sie die zugängliche vollständige Datumsauswahl',
+    'de-ch': 'Verwenden Sie eine barrierefreie Datumsauswahl',
   },
   useAccessibleMonthPicker: {
     'en-us': 'Use accessible month picker',
@@ -1292,7 +1293,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Limitar el ancho máximo del campo',
     'fr-fr': 'Limiter la largeur maximale du champ',
     'uk-ua': 'Обмеження максимальної ширини поля',
-    'de-ch': 'Begrenzen Sie die maximale Feldbreite',
+    'de-ch': 'Maximale Feldbreite begrenzen',
   },
   condenseQueryResults: {
     'en-us': 'Condense query results',
@@ -1300,7 +1301,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Condensar resultados de consultas',
     'fr-fr': 'Condenser les résultats de la requête',
     'uk-ua': 'Згорнути результати запиту',
-    'de-ch': 'Komprimieren Sie die Abfrageergebnisse',
+    'de-ch': 'Abfrageergebnisse verdichten',
   },
   blurContentBehindDialog: {
     'en-us': 'Blur content behind the dialog',
@@ -1363,9 +1364,9 @@ export const preferencesText = createDictionary({
     'fr-fr': 'Utiliser le sélecteur de mois accessible',
     'uk-ua': 'Використовуйте доступний засіб вибору місяця',
     'de-ch': `
-      <key>{altKeyName:string}</key>+<key>Klicken Sie auf</key> auf einen Link,
-      der normalerweise in einem neuen Tab geöffnet wird, um ihn im aktuellen
-      Tab zu öffnen
+      <key>{altKeyName:string}</key>+<key>Klicken</key> Sie auf einen Link, der
+      normalerweise in einem neuen Tab geöffnet wird, um ihn im aktuellen Tab zu
+      öffnen
     `,
   },
   makeFormDialogsModal: {
@@ -1375,7 +1376,7 @@ export const preferencesText = createDictionary({
       'Hacer que los cuadros de diálogo del formulario aparezcan en gris',
     'fr-fr':
       "Rendre les boîtes de dialogue de formulaire grisées sur l'arrière-plan",
-    'uk-ua': 'Зробіть діалогові вікна форми сірими',
+    'uk-ua': 'Зробіть діалогові вікна форми сірими фоном',
     'de-ch': 'Lassen Sie Formulardialoge den Hintergrund ausgrauen',
   },
   autoScrollTree: {
@@ -1416,7 +1417,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Formato del encabezado del formulario',
     'fr-fr': "Format d'en-tête de formulaire",
     'uk-ua': 'Формат заголовка форми',
-    'de-ch': 'Formularkopfformat',
+    'de-ch': 'Formularkopfzeilenformat',
   },
   iconAndTableName: {
     'en-us': 'Icon and table name',
@@ -1497,7 +1498,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Usar coma como delimitador',
     'fr-fr': 'Utiliser la virgule comme délimiteur',
     'uk-ua': 'Використовуйте кому як роздільник',
-    'de-ch': 'Verwenden Sie Komma als Trennzeichen',
+    'de-ch': 'Verwenden Sie Kommas als Trennzeichen.',
   },
   useNewLineAsDelimiter: {
     'en-us': 'Use new line as delimiter',
@@ -1725,7 +1726,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Recordar las posiciones de las ventanas de diálogo',
     'fr-fr': 'Mémoriser les positions des fenêtres de dialogue',
     'uk-ua': "Запам'ятовуйте розташування діалогового вікна",
-    'de-ch': 'Merken Sie sich die Positionen der Dialogfenster',
+    'de-ch': 'Dialogfensterpositionen merken',
   },
   autoPlayMedia: {
     'en-us': 'Automatically play media',
@@ -1853,7 +1854,7 @@ export const preferencesText = createDictionary({
   },
   showLineNumber: {
     'en-us': 'Show query result line number',
-    'de-ch': 'Farbe der Gefahrentaste',
+    'de-ch': 'Farbe der Gefahrenschaltfläche',
     'es-es': 'Mostrar número de línea de resultado de la consulta',
     'fr-fr': 'Afficher le numéro de ligne du résultat de la requête',
     'ru-ru': 'Показать номер строки результата запроса',
@@ -1885,7 +1886,7 @@ export const preferencesText = createDictionary({
   },
   dangerButtonColor: {
     'en-us': 'Danger button color',
-    'de-ch': 'Farbe der Gefahrenschaltfläche',
+    'de-ch': 'Farbe der Gefahrentaste',
     'es-es': 'Color del botón de peligro',
     'fr-fr': 'Couleur du bouton Danger',
     'ru-ru': 'Цвет кнопки опасности',
@@ -1909,7 +1910,7 @@ export const preferencesText = createDictionary({
   },
   successButtonColor: {
     'en-us': 'Success button color',
-    'de-ch': 'Farbe der Erfolgsschaltfläche',
+    'de-ch': 'Farbe der Schaltfläche „Erfolg“',
     'es-es': 'Color del botón de éxito',
     'fr-fr': 'Couleur du bouton Succès',
     'ru-ru': 'Цвет кнопки успеха',
@@ -1925,7 +1926,7 @@ export const preferencesText = createDictionary({
   },
   displayBasicView: {
     'en-us': 'Display basic view',
-    'de-ch': 'Grundansicht anzeigen',
+    'de-ch': 'Basisansicht anzeigen',
     'es-es': 'Mostrar vista básica',
     'fr-fr': 'Afficher la vue de base',
     'ru-ru': 'Отобразить базовый вид',
@@ -1933,7 +1934,7 @@ export const preferencesText = createDictionary({
   },
   basicView: {
     'en-us': 'Basic view',
-    'de-ch': 'Grundansicht',
+    'de-ch': 'Basisansicht',
     'es-es': 'Vista básica',
     'fr-fr': 'Vue de base',
     'ru-ru': 'Базовый вид',

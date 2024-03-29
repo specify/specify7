@@ -254,10 +254,10 @@ export const resourcesText = createDictionary({
       таблиц.
     `,
     'uk-ua': `
-      «Агрегація таблиць» контролює, як кілька записів таблиці об’єднуються
-      разом в один текстовий рядок. Формат таблиці, роздільник, суфікс, поле
-      сортування та ліміт попереднього перегляду запису можна налаштувати. Він
-      може відображатися в результатах запитів і у форматах таблиць.
+      «Агрегація таблиць» контролює, як кілька записів таблиці консолідуються в
+      один текстовий рядок. Формат таблиці, роздільник, суфікс, поле сортування
+      та ліміт попереднього перегляду запису можна налаштувати. Він може
+      відображатися в результатах запитів і у форматах таблиць.
     `,
   },
   formattedResource: {
@@ -549,7 +549,7 @@ export const resourcesText = createDictionary({
   },
   editorNotAvailable: {
     'en-us': 'Visual editor is not available for this resource',
-    'de-ch': 'Für diese Ressource ist kein visueller Editor verfügbar',
+    'de-ch': 'Der visuelle Editor ist für diese Ressource nicht verfügbar',
     'es-es': 'El editor visual no está disponible para este recurso.',
     'fr-fr': "L'éditeur visuel n'est pas disponible pour cette ressource",
     'ru-ru': 'Визуальный редактор недоступен для этого ресурса.',
@@ -758,7 +758,7 @@ export const resourcesText = createDictionary({
     'es-es': 'Ejecutar en colección',
     'fr-fr': 'Exécuter en collection',
     'ru-ru': 'Запустить в коллекцию',
-    'uk-ua': 'Запустити в колекції',
+    'uk-ua': 'Запустити в колекцію',
   },
   createNewForm: {
     'en-us': 'Create new form',
@@ -829,7 +829,7 @@ export const resourcesText = createDictionary({
   },
   expandConditionalField: {
     'en-us': 'Expand Conditional Field',
-    'de-ch': 'Erweitern Sie das Bedingungsfeld',
+    'de-ch': 'Bedingtes Feld erweitern',
     'es-es': 'Expandir campo condicional',
     'fr-fr': 'Développer le champ conditionnel',
     'ru-ru': 'Развернуть условное поле',
@@ -837,7 +837,7 @@ export const resourcesText = createDictionary({
   },
   collapseConditionalField: {
     'en-us': 'Collapse Conditional Field',
-    'de-ch': 'Bedingtes Feld ausblenden',
+    'de-ch': 'Bedingtes Feld reduzieren',
     'es-es': 'Contraer campo condicional',
     'fr-fr': 'Réduire le champ conditionnel',
     'ru-ru': 'Свернуть условное поле',
