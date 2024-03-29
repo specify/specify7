@@ -99,10 +99,10 @@ export const resourcesText = createDictionary({
   },
   appResource: {
     'en-us': 'App Resource',
-    'ru-ru': 'Ресурс приложения',
-    'es-es': 'Recurso de aplicación',
-    'fr-fr': "Ressource d'application",
-    'uk-ua': 'Ресурс програми',
+    'ru-ru': 'Подкатегории',
+    'es-es': 'Subcategorías',
+    'fr-fr': 'Sous-catégories',
+    'uk-ua': 'Підкатегорії',
     'de-ch': 'App Ressource',
   },
   rssExportFeed: {
@@ -155,7 +155,7 @@ export const resourcesText = createDictionary({
   },
   dataObjectFormatters: {
     'en-us': 'Record Formatters',
-    'ru-ru': 'Форматеры записей',
+    'ru-ru': 'Форматеры записи',
     'es-es': 'Formateadores de registros',
     'uk-ua': 'Форматувальники записів',
     'de-ch': 'Datensatz-Formatierer',
@@ -334,10 +334,10 @@ export const resourcesText = createDictionary({
   },
   otherXmlResource: {
     'en-us': 'Other XML Resource',
-    'ru-ru': 'Другой XML-ресурс',
-    'es-es': 'Otro recurso XML',
-    'fr-fr': 'Autre ressource XML',
-    'uk-ua': 'Інший ресурс XML',
+    'ru-ru': 'Выберите тип ресурса',
+    'es-es': 'Seleccionar tipo de recurso',
+    'fr-fr': 'Sélectionnez le type de ressource',
+    'uk-ua': 'Виберіть тип ресурсу',
     'de-ch': 'Andere XML-Ressource',
   },
   otherJsonResource: {
@@ -410,7 +410,7 @@ export const resourcesText = createDictionary({
     'es-es': 'Editor JSON',
     'fr-fr': 'Éditeur JSON',
     'uk-ua': 'Редактор JSON',
-    'de-ch': 'JSON-Editor',
+    'de-ch': 'Separator',
   },
   visualEditor: {
     'en-us': 'Visual Editor',
@@ -502,7 +502,7 @@ export const resourcesText = createDictionary({
   },
   defaultInline: {
     'en-us': '(default)',
-    'de-ch': '(Standard)',
+    'de-ch': 'Formatvorschau',
     'es-es': '(por defecto)',
     'fr-fr': '(défaut)',
     'ru-ru': '(по умолчанию)',
@@ -549,7 +549,7 @@ export const resourcesText = createDictionary({
   },
   editorNotAvailable: {
     'en-us': 'Visual editor is not available for this resource',
-    'de-ch': 'Der visuelle Editor ist für diese Ressource nicht verfügbar',
+    'de-ch': 'Für diese Ressource ist kein visueller Editor verfügbar',
     'es-es': 'El editor visual no está disponible para este recurso.',
     'fr-fr': "L'éditeur visuel n'est pas disponible pour cette ressource",
     'ru-ru': 'Визуальный редактор недоступен для этого ресурса.',
@@ -582,10 +582,10 @@ export const resourcesText = createDictionary({
   urlPart: {
     'en-us': 'URL part',
     'de-ch': 'URL-Teil',
-    'es-es': 'parte de la URL',
-    'fr-fr': 'Partie URL',
-    'ru-ru': 'часть URL',
-    'uk-ua': 'частина URL',
+    'es-es': 'Otro recurso JSON',
+    'fr-fr': 'Autre ressource JSON',
+    'ru-ru': 'Другой ресурс JSON',
+    'uk-ua': 'Інший ресурс JSON',
   },
   addField: {
     'en-us': 'Add field',
@@ -694,7 +694,7 @@ export const resourcesText = createDictionary({
       changer de collection avant de modifier cette ressource.
     `,
     'ru-ru': `
-      Этот ресурс принадлежит другой коллекции/дисциплине, отличной от той, в
+      Этот ресурс принадлежит к другой коллекции/дисциплине, отличной от той, в
       которой вы сейчас находитесь. Перед редактированием этого ресурса
       рекомендуется сменить коллекцию.
     `,
@@ -731,10 +731,10 @@ export const resourcesText = createDictionary({
   fileName: {
     'en-us': 'File name',
     'de-ch': 'Dateiname',
-    'es-es': 'Nombre del archivo',
-    'fr-fr': 'Nom de fichier',
-    'ru-ru': 'Имя файла',
-    'uk-ua': "Ім'я файлу",
+    'es-es': 'Seleccione la tabla primero',
+    'fr-fr': "Sélectionnez d'abord le tableau",
+    'ru-ru': 'Сначала выберите таблицу',
+    'uk-ua': 'Спочатку виберіть таблицю',
   },
   runAsUser: {
     'en-us': 'Run as user',
@@ -762,7 +762,7 @@ export const resourcesText = createDictionary({
   },
   createNewForm: {
     'en-us': 'Create new form',
-    'de-ch': 'Neues Formular erstellen',
+    'de-ch': 'Definition',
     'es-es': 'Crear nuevo formulario',
     'fr-fr': 'Créer un nouveau formulaire',
     'ru-ru': 'Создать новую форму',
@@ -779,10 +779,10 @@ export const resourcesText = createDictionary({
   copyDefaultForm: {
     'en-us': 'Copy default form',
     'de-ch': 'Standardformular kopieren',
-    'es-es': 'Copiar formulario predeterminado',
-    'fr-fr': 'Copier le formulaire par défaut',
-    'ru-ru': 'Копировать форму по умолчанию',
-    'uk-ua': 'Копіювати стандартну форму',
+    'es-es': 'Formateadores de registros',
+    'fr-fr': "Formateurs d'enregistrement",
+    'ru-ru': 'Форматеры записи',
+    'uk-ua': 'Форматувальники записів',
   },
   copyDefaultForms: {
     'en-us': 'Copy default forms',

@@ -113,7 +113,7 @@ export const userText = createDictionary({
     'es-es': 'Establecer agentes usuarios',
     'fr-fr': 'Définir les agents utilisateurs',
     'uk-ua': 'Встановити агентів користувача',
-    'de-ch': 'Legen Sie Benutzeragenten fest',
+    'de-ch': 'Benutzeragenten festlegen',
   },
   noAgent: {
     'en-us': 'Current user does not have an agent assigned',
@@ -146,11 +146,11 @@ export const userText = createDictionary({
   },
   helloMessage: {
     'en-us': 'Hello, {userName:string}!',
-    'ru-ru': 'Привет, {userName:string}!',
+    'ru-ru': 'Новый пароль',
     'es-es': '¡Hola, {userName:string}!',
     'fr-fr': 'Bonjour, {userName:string} !',
     'de-ch': 'Hallo, {userName:string}!',
-    'uk-ua': 'Привіт, {userName:string}!',
+    'uk-ua': 'Новий пароль',
   },
   oicWelcomeMessage: {
     'en-us': `
@@ -236,8 +236,8 @@ export const userText = createDictionary({
     'es-es': 'Generar clave maestra',
     'fr-fr': 'Générer la clé principale',
     'de-ch': 'Masterschlüssel generieren',
-    'ru-ru': 'Создать мастер-ключ',
-    'uk-ua': 'Створити головний ключ',
+    'ru-ru': 'В учреждении должен быть хотя бы один администратор учреждения.',
+    'uk-ua': 'У закладі має бути принаймні один адміністратор установи',
   },
   userPassword: {
     'en-us': 'User Password',
@@ -300,10 +300,7 @@ export const userText = createDictionary({
       Ви не маєте доступу до {collectionTable:string}, що містить цей ресурс,
       через поточний обліковий запис
     `,
-    'de-ch': `
-      Sie haben über das aktuell angemeldete Konto keinen Zugriff auf
-      {collectionTable:string}, das diese Ressource enthält
-    `,
+    'de-ch': 'Dieser Agent ist bereits einem anderen Benutzer zugeordnet.',
   },
   resourceInaccessible: {
     'en-us': `
@@ -336,7 +333,7 @@ export const userText = createDictionary({
     'es-es': 'Seleccione una de las siguientes colecciones:',
     'uk-ua': 'Виберіть одну з наступних колекцій:',
     'de-ch': 'Wählen Sie eine der folgenden Sammlungen:',
-    'fr-fr': "Sélectionnez l'une des collections suivantes :",
+    'fr-fr': "L'utilisateur actuel n'a pas d'agent attribué",
   },
   loginToProceed: {
     comment: 'Example: You can login to the Collection, to proceed:',
@@ -429,7 +426,7 @@ export const userText = createDictionary({
     `,
     'de-ch': `
       Sie verfügen über keine Richtlinie oder Rolle, die Ihnen die Berechtigung
-      zum Ausführen der folgenden Aktion erteilt:
+      zur Ausführung der folgenden Aktion erteilt:
     `,
   },
   emptyRecordSetsReadOnly: {
@@ -531,12 +528,20 @@ export const userText = createDictionary({
   },
   mustBeManager: {
     'en-us': 'User must be saved as Manager first',
-    'ru-ru': 'Сначала пользователя необходимо сохранить как менеджера.',
+    'ru-ru': `
+      Пользовательские политики на уровне учреждения (применяются ко всем
+      назначенным коллекциям)
+    `,
     'es-es': 'El usuario debe guardarse primero como administrador',
     'de-ch': 'Der Benutzer muss zuerst als Manager gespeichert werden',
-    'fr-fr':
-      "L'utilisateur doit d'abord être enregistré en tant que gestionnaire",
-    'uk-ua': 'Спочатку користувача потрібно зберегти як менеджера',
+    'fr-fr': `
+      Politiques personnalisées au niveau de l'établissement (s'appliquent à
+      toutes les collections attribuées)
+    `,
+    'uk-ua': `
+      Спеціальна політика на рівні установи (застосовується до всіх призначених
+      колекцій)
+    `,
   },
   users: {
     'en-us': 'User Accounts',
@@ -776,7 +781,7 @@ export const userText = createDictionary({
     'es-es': 'Todas las colecciones',
     'fr-fr': 'Toutes les collections',
     'uk-ua': 'Всі колекції',
-    'de-ch': 'Alle Sammlungen',
+    'de-ch': 'Optionen zur Kontoeinrichtung',
   },
   thisCollection: {
     'en-us': 'This collection',
@@ -903,10 +908,7 @@ export const userText = createDictionary({
       Надішліть таке посилання на {userName:string}, щоб дозволити їм увійти в
       систему вперше.
     `,
-    'de-ch': `
-      Senden Sie den folgenden Link an {userName:string}, damit sie sich zum
-      ersten Mal anmelden können.
-    `,
+    'de-ch': 'Ausgeschlossene institutionelle Richtlinien:',
   },
   noProvidersForUserInviteLink: {
     'en-us': `
@@ -992,15 +994,18 @@ export const userText = createDictionary({
     'uk-ua': 'Перш ніж продовжити, установіть такі агенти:',
     'de-ch':
       'Bitte legen Sie die folgenden Agenten fest, bevor Sie fortfahren:',
-    'fr-fr': 'Veuillez définir les agents suivants avant de continuer :',
+    'fr-fr': `
+      L'utilisateur connecté n'a eu accès à aucune collection de cette base de
+      données. Vous devez vous connecter en tant qu'autre utilisateur.
+    `,
   },
   externalIdentityProviders: {
     'en-us': 'External identity providers:',
     'es-es': 'Proveedores de identidad externos:',
     'fr-fr': "Fournisseurs d'identité externes :",
-    'de-ch': 'Externe Identitätsanbieter:',
-    'ru-ru': 'Внешние поставщики удостоверений:',
-    'uk-ua': 'Постачальники зовнішньої ідентифікації:',
+    'de-ch': 'Wählen Sie eine der folgenden Sammlungen:',
+    'ru-ru': 'Выберите одну из следующих коллекций:',
+    'uk-ua': 'Виберіть одну з наступних колекцій:',
   },
   allTables: {
     'en-us': 'All tables',
@@ -1116,11 +1121,11 @@ export const userText = createDictionary({
   },
   switchToVerticalLayout: {
     'en-us': 'Switch to vertical layout',
-    'ru-ru': 'Переключиться на вертикальную компоновку',
+    'ru-ru': 'Сначала сохраните пользователя',
     'es-es': 'Cambiar al diseño vertical',
     'fr-fr': "Passer à l'affichage vertical",
     'de-ch': 'Wechseln Sie zum vertikalen Layout',
-    'uk-ua': 'Переключитися на вертикальне розташування',
+    'uk-ua': 'Спочатку збережіть користувача',
   },
   advancedTables: {
     'en-us': 'Advanced tables',
@@ -1193,7 +1198,7 @@ export const userText = createDictionary({
     'de-ch': 'Benutzer hinzufügen',
     'es-es': 'Agregar usuario',
     'fr-fr': 'Ajouter un utilisateur',
-    'ru-ru': 'Добавить пользователя',
-    'uk-ua': 'Додати користувача',
+    'ru-ru': 'Политики разрешений ролей',
+    'uk-ua': 'Політики дозволів на роль',
   },
 } as const);
