@@ -189,16 +189,11 @@ export function FormTable<SCHEMA extends AnySchema>({
   const displayDeleteButton =
     mode !== 'view' && typeof handleDelete === 'function';
   const displayViewButton = !isDependent;
-  const headerIsVisible =
-    resources.length > 1 ||
-    (resources.length === 1 && isExpanded[resources[0].cid] === false);
 
-  const headerWasVisibleRef = React.useRef(headerIsVisible);
-  headerWasVisibleRef.current =
-    resources.length === 0
-      ? false
-      : headerWasVisibleRef.current || headerIsVisible;
-  const headerWasVisible = headerWasVisibleRef.current;
+  const headerMode = useHeaderMode(
+    resources.length,
+    isExpanded[resources[0]?.cid] ?? false
+  );
 
   const scrollerRef = React.useRef<HTMLDivElement | null>(null);
   const { isFetching, handleScroll } = useInfiniteScroll(
@@ -216,7 +211,7 @@ export function FormTable<SCHEMA extends AnySchema>({
     ) : (
       <div className={isCollapsed ? 'hidden' : 'overflow-x-auto'}>
         <DataEntry.Grid
-          className={`sticky w-fit ${headerWasVisible ? 'pt-0' : ''}`}
+          className={`sticky w-fit ${headerMode === 'invisible' ? 'pt-0' : ''}`}
           display="inline"
           flexibleColumnWidth={flexibleColumnWidth}
           forwardRef={scrollerRef}
@@ -237,9 +232,9 @@ export function FormTable<SCHEMA extends AnySchema>({
              * prevent needless layout shifts, but only make it invisible
              */
             className={
-              headerIsVisible
+              headerMode === 'visible'
                 ? 'contents'
-                : headerWasVisible
+                : headerMode === 'invisible'
                 ? 'invisible contents'
                 : 'sr-only'
             }
@@ -271,7 +266,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                 >
                   {isSortable && typeof fieldName === 'string' ? (
                     <Button.LikeLink
-                      tabIndex={headerIsVisible ? undefined : -1}
+                      tabIndex={headerMode === 'visible' ? undefined : -1}
                       onClick={(): void =>
                         setSortConfig({
                           sortField: fieldName,
@@ -511,6 +506,26 @@ export function FormTable<SCHEMA extends AnySchema>({
       {children}
     </Dialog>
   );
+}
+
+function useHeaderMode(
+  recordCount: number,
+  isFirstExpanded: boolean
+): 'hidden' | 'invisible' | 'visible' {
+  const hasMultipleRecords = recordCount > 1;
+  const hasSingleCollapsedRecord = recordCount === 1 && !isFirstExpanded;
+  const headerIsVisible = hasMultipleRecords || hasSingleCollapsedRecord;
+
+  const headerWasVisibleRef = React.useRef(hasMultipleRecords);
+  if (hasMultipleRecords) headerWasVisibleRef.current = true;
+  else if (recordCount === 0) headerWasVisibleRef.current = false;
+
+  const hasSingleExpandedRecord = recordCount === 1 && isFirstExpanded;
+  return headerIsVisible
+    ? 'visible'
+    : headerWasVisibleRef.current && hasSingleExpandedRecord
+    ? 'invisible'
+    : 'hidden';
 }
 
 function Attachment({
