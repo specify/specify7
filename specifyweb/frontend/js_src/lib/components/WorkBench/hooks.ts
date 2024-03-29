@@ -80,6 +80,12 @@ export function getHotHooksReact(
           visualRow,
           visualCol
         );
+      // if (workbench.cells!.getCellMetaFromArray(metaArray!, 'issues')) {
+      //   const issues = workbench.cells!.getCellMetaFromArray(metaArray!, 'issues')
+      //   td?.classList[issues.length > 0 ? 'add' : 'remove'](
+      //     'htCommentCell'
+      //   );
+      // }
       if (workbench.mappings?.mappedHeaders?.[physicalCol] === undefined)
         td.classList.add('text-gray-500');
       if (workbench.mappings?.coordinateColumns?.[physicalCol] !== undefined)
@@ -150,9 +156,9 @@ export function getHotHooksReact(
         );
     },
 
-    afterUndo: (data) => afterUndoRedo(workbench, 'undo', data),
+    afterUndo: (data) => afterUndoRedoReact(workbench, 'undo', data),
 
-    afterRedo: (data) => afterUndoRedo(workbench, 'redo', data),
+    afterRedo: (data) => afterUndoRedoReact(workbench, 'redo', data),
 
     beforePaste: () =>
       // !wbView.uploadedView &&
@@ -610,7 +616,7 @@ export function getHotHooksReact(
  * clear and similarly redoes the change twice
  *
  */
-function afterUndoRedo(
+function afterUndoRedoReact(
   workbench: Workbench,
   type: 'redo' | 'undo',
   data: Action
@@ -1243,44 +1249,44 @@ export function getHotHooks(wbView: WbView) {
  * clear and similarly redoes the change twice
  *
  */
-// function afterUndoRedo(
-//   wbView: WbView,
-//   type: 'redo' | 'undo',
-//   data: Action
-// ): void {
-//   if (
-//     wbView.undoRedoIsHandled ||
-//     data.actionType !== 'change' ||
-//     data.changes.length !== 1 ||
-//     wbView.hot === undefined
-//   )
-//     return;
+function afterUndoRedo(
+  wbView: WbView,
+  type: 'redo' | 'undo',
+  data: Action
+): void {
+  if (
+    wbView.undoRedoIsHandled ||
+    data.actionType !== 'change' ||
+    data.changes.length !== 1 ||
+    wbView.hot === undefined
+  )
+    return;
 
-//   const [visualRow, visualCol, newData, oldData] = data.changes[0];
-//   const physicalRow = wbView.hot.toPhysicalRow(visualRow);
-//   const physicalCol = wbView.hot.toPhysicalColumn(visualCol as number);
-//   if (physicalCol !== wbView.dataset.columns.length) return;
+  const [visualRow, visualCol, newData, oldData] = data.changes[0];
+  const physicalRow = wbView.hot.toPhysicalRow(visualRow);
+  const physicalCol = wbView.hot.toPhysicalColumn(visualCol as number);
+  if (physicalCol !== wbView.dataset.columns.length) return;
 
-//   const newValue = JSON.parse(newData || '{}').disambiguation;
-//   const oldValue = JSON.parse(oldData || '{}').disambiguation;
+  const newValue = JSON.parse(newData || '{}').disambiguation;
+  const oldValue = JSON.parse(oldData || '{}').disambiguation;
 
-//   /*
-//    * Disambiguation results are cleared when any cell in a row changes.
-//    * That change creates a separate point in the undo stack.
-//    * Thus, if HOT tries to undo disambiguation clearing, we need to
-//    * also need to undo the change that caused disambiguation clearing
-//    */
-//   if (
-//     type === 'undo' &&
-//     Object.keys(newValue ?? {}).length > 0 &&
-//     Object.keys(oldValue ?? {}).length === 0
-//   )
-//     // HOT doesn't seem to like calling undo from inside of afterUndo
-//     globalThis.setTimeout(() => {
-//       wbView.undoRedoIsHandled = true;
-//       wbView.hot?.undo();
-//       wbView.undoRedoIsHandled = false;
-//       wbView.disambiguation.afterChangeDisambiguation(physicalRow);
-//     }, 0);
-//   else wbView.disambiguation.afterChangeDisambiguation(physicalRow);
-// }
+  /*
+   * Disambiguation results are cleared when any cell in a row changes.
+   * That change creates a separate point in the undo stack.
+   * Thus, if HOT tries to undo disambiguation clearing, we need to
+   * also need to undo the change that caused disambiguation clearing
+   */
+  if (
+    type === 'undo' &&
+    Object.keys(newValue ?? {}).length > 0 &&
+    Object.keys(oldValue ?? {}).length === 0
+  )
+    // HOT doesn't seem to like calling undo from inside of afterUndo
+    globalThis.setTimeout(() => {
+      wbView.undoRedoIsHandled = true;
+      wbView.hot?.undo();
+      wbView.undoRedoIsHandled = false;
+      wbView.disambiguation.afterChangeDisambiguation(physicalRow);
+    }, 0);
+  else wbView.disambiguation.afterChangeDisambiguation(physicalRow);
+}
