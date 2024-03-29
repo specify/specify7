@@ -5,21 +5,20 @@ import { interactionsText } from '../../localization/interactions';
 import { treeText } from '../../localization/tree';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
-import { Label, Select } from '../Atoms/Form';
+import { Form, Label, Select } from '../Atoms/Form';
 import type {
-  AnyTree,
   FilterTablesByEndsWith,
   SerializedResource,
 } from '../DataModel/helperTypes';
 import { tables } from '../DataModel/tables';
 import { ResourceView } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
+import { Submit } from '../Atoms/Submit';
+import { useId } from '../../hooks/useId';
 
-export function AddRank<SCHEMA extends AnyTree>({
-  tableName,
+export function AddRank({
   treeDefinitionItems,
 }: {
-  readonly tableName: SCHEMA['tableName'];
   readonly treeDefinitionItems: RA<
     SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
   >;
@@ -38,7 +37,8 @@ export function AddRank<SCHEMA extends AnyTree>({
     const resource = new tables[treeDefinitionItems[0]._tableName].Resource();
     resource.set('treeDef', treeDef);
     return resource;
-  }, [tableName, treeDef]);
+  }, [treeDef]);
+  const id = useId('add-rank');
 
   return (
     <>
@@ -52,35 +52,38 @@ export function AddRank<SCHEMA extends AnyTree>({
           buttons={
             <>
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-              <Button.Save
+              <Submit.Save
                 onClick={() => {
                   treeResource.set('parent', parentRank);
                   setState('add');
                 }}
+                form={id('form')}
               >
                 {interactionsText.continue()}
-              </Button.Save>
+              </Submit.Save>
             </>
           }
           header={treeText.chooseParentRank()}
           onClose={() => setState('initial')}
         >
-          <Label.Block className="gap-2">
-            {treeText.chooseParentRank()}
-            <Select
-              className="w-full min-w-[theme(spacing.40)]"
-              value={parentRank}
-              onChange={({ target }): void => {
-                setParentRank(target.value);
-              }}
-            >
-              {treeDefinitionItems.map((rank, index) => (
-                <option key={index} value={rank.resource_uri}>
-                  {rank.name}
-                </option>
-              ))}
-            </Select>
-          </Label.Block>
+          <Form id={id('form')}>
+            <Label.Block className="gap-2">
+              {treeText.chooseParentRank()}
+              <Select
+                className="w-full min-w-[theme(spacing.40)]"
+                value={parentRank}
+                onChange={({ target }): void => {
+                  setParentRank(target.value);
+                }}
+              >
+                {treeDefinitionItems.map((rank, index) => (
+                  <option key={index} value={rank.resource_uri}>
+                    {rank.name}
+                  </option>
+                ))}
+              </Select>
+            </Label.Block>
+          </Form>
         </Dialog>
       )}
       {state === 'add' && (
