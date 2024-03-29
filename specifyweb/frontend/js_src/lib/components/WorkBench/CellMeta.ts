@@ -359,8 +359,10 @@ export class WbCellMetaReact {
       ),
     };
     
-    this.workbench.setCellCounts(this.cellCounts);
+    // below line breaks error cell highlighting
+    // this.workbench.setCellCounts(this.cellCounts);
 
+    // OLD CODE: NEEDS TO BE REMOVED AT THE END
     // Update navigation information
     // needs to be changed
     // Object.values(
