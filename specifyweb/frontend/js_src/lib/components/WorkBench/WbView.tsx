@@ -37,22 +37,22 @@ import { hasPermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { UploadPlan } from '../WbPlanView/uploadPlanParser';
 import type { Dataset } from '../WbPlanView/Wrapped';
-import { WbCellMeta } from './CellMeta';
+import { WbCellCounts, WbCellMeta, WbCellMetaReact } from './CellMeta';
 import { DataSetNameView } from './DataSetMeta';
 import { DevShowPlan } from './DevShowPlan';
-import { Disambiguation } from './DisambiguationLogic';
+import { Disambiguation, DisambiguationReact } from './DisambiguationLogic';
 import { configureHandsontable, getHotPlugin } from './handsontable';
 import { downloadDataSet } from './helpers';
-import { getHotHooks } from './hooks';
+import { getHotHooks, getHotHooksReact } from './hooks';
 import { getSelectedRegions } from './hotHelpers';
 import type { WbMapping } from './mapping';
 import { parseWbMappings } from './mapping';
 import { fetchWbPickLists } from './pickLists';
 import { WbUploaded } from './Results';
 import { wbViewTemplate } from './Template';
-import { WbActions, WbActionsReact } from './WbActions';
-import { WbUtils } from './WbUtils';
-import { WbValidation } from './WbValidation';
+import { WbActions, WbActionsComponent } from './WbActions';
+import { WbUtils, WbUtilsComponent, WbUtilsReact } from './WbUtils';
+import { WbValidation, WbValidationReact } from './WbValidation';
 import type { LocalizedString } from 'typesafe-i18n';
 import { className } from '../Atoms/className';
 import { Input } from '../Atoms/Form';
@@ -60,16 +60,33 @@ import { DataSetName } from './DataSetMeta';
 import { WbSpreadsheet } from './WbSpreadsheet';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { WbToolkit } from './WbToolkit';
-import { getCache } from '../../utils/cache';
-import { WbAdvancedSearch } from './AdvancedSearch';
+import {
+  WbAdvancedSearch,
+  getInitialSearchPreferences,
+} from './AdvancedSearch';
 import type { WbSearchPreferences } from './AdvancedSearch';
-import { RollbackConfirmation } from './Components';
-import { WbStatus as WbStatusComponent } from './Status';
-import type { Status } from '../WbPlanView/Wrapped';
 import { loadingBar } from '../Molecules';
-import { CreateRecordSetButton } from './RecordSet';
 
 export type WbStatus = 'unupload' | 'upload' | 'validate';
+
+export type Workbench = {
+  dataset: Dataset;
+  cells: WbCellMetaReact | undefined;
+  disambiguation: DisambiguationReact | undefined;
+  validation: WbValidationReact | undefined;
+  data: RA<RA<string | null>>;
+  searchPreferences: WbSearchPreferences;
+  hot: Handsontable;
+  throttleRate: number;
+  mappings: WbMapping;
+  utils: WbUtilsReact | undefined;
+  setCellCounts: (cellCounts: WbCellCounts) => void;
+};
+
+type ActionHandlers = {
+  spreadSheetChanged: () => void;
+  spreadSheetUpToDate: () => void;
+};
 
 function Navigation({
   name,
@@ -139,7 +156,6 @@ function useWbViewHandlers() {
     statusComponent: useBooleanState(),
     revertChanges: useBooleanState(),
     saveProgressBar: useBooleanState(),
-    operationCompleted: useBooleanState(),
     operationAborted: useBooleanState(),
     devPlan: useBooleanState(),
     changeOwner: useBooleanState(),
@@ -163,11 +179,13 @@ export function WbViewReact({
   hotRef,
   handleDatasetDelete,
   triggerRefresh,
+  spreadsheetContainer,
 }: {
   readonly dataset: Dataset;
   readonly hotRef: any;
   readonly handleDatasetDelete: () => void;
   readonly triggerRefresh: () => void;
+  readonly spreadsheetContainer: any;
 }): JSX.Element {
   const data = React.useMemo<RA<RA<string | null>>>(
     () =>
@@ -180,11 +198,6 @@ export function WbViewReact({
   const isUploaded =
     dataset.uploadresult !== null && dataset.uploadresult.success;
   const canUpdate = hasPermission('/workbench/dataset', 'update');
-  const [canLiveValidate] = userPreferences.use(
-    'workBench',
-    'general',
-    'liveValidation'
-  );
   const {
     toolkit,
     upload,
@@ -193,7 +206,6 @@ export function WbViewReact({
     statusComponent,
     revertChanges,
     saveProgressBar,
-    operationCompleted,
     operationAborted,
     ...toolkitOptions
   } = useWbViewHandlers();
@@ -201,57 +213,151 @@ export function WbViewReact({
     (): WbMapping | undefined => parseWbMappings(dataset),
     [dataset]
   );
-  const hot = hotRef.current ? hotRef.current.hotInstance : undefined;
-  const defaultSearchPreferences: WbSearchPreferences = {
-    navigation: {
-      direction: 'columnFirst',
-    },
-    search: {
-      fullMatch: true,
-      caseSensitive: true,
-      useRegex: false,
-      liveUpdate: true,
-    },
-    replace: {
-      replaceMode: 'replaceAll',
-    },
-  };
-  let searchPreferences =
-    getCache('workbench', 'searchProperties') ?? defaultSearchPreferences;
-  const initialNavigationDirection = searchPreferences.navigation.direction;
+
+  const searchPreferences = getInitialSearchPreferences();
+  const throttleRate = Math.ceil(clamp(10, data.length / 10, 2000));
+  const [hasUnSavedChanges, spreadSheetChanged, spreadSheetUpToDate] =
+    useBooleanState();
+
+  const [hotIsReady, setHotToReady] = useBooleanState();
+
+  React.useEffect(() => {
+    const getPickLists = async () =>
+      mappings === undefined
+        ? {}
+        : await fetchWbPickLists(
+            dataset.columns,
+            mappings.tableNames,
+            mappings.lines
+          );
+    if (hotRef.current) {
+      setHotToReady();
+      const configureHotAndPickLists = async () => {
+        const pickLists = await getPickLists(); // Await getPickLists() here
+        configureHandsontable(
+          hotRef.current.hotInstance,
+          mappings,
+          dataset,
+          pickLists
+        );
+      };
+      configureHotAndPickLists(); // Call the async function
+    }
+  }, [hotRef.current]);
+
+  const [cellCounts, setCellCounts] = React.useState<WbCellCounts>({
+    newCells: 0,
+    invalidCells: 0,
+    searchResults: 0,
+    modifiedCells: 0,
+  });
+
+  const workbench = React.useMemo<Workbench>(() => {
+    const workbench: Workbench = {
+      data,
+      dataset,
+      hot: hotRef.current?.hotInstance,
+      mappings: mappings as WbMapping,
+      searchPreferences,
+      throttleRate,
+      cells: undefined,
+      disambiguation: undefined,
+      validation: undefined,
+      utils: undefined,
+      setCellCounts
+    };
+    workbench.cells = new WbCellMetaReact(workbench);
+    workbench.disambiguation = new DisambiguationReact(workbench);
+    workbench.validation = new WbValidationReact(workbench);
+    workbench.utils = new WbUtilsReact(workbench);
+    return workbench;
+  }, [dataset, hotIsReady]);
+
+  const physicalColToMappingCol = (physicalCol: number): number | undefined =>
+    mappings?.lines.findIndex(
+      ({ headerName }) => headerName === dataset.columns[physicalCol]
+    );
+
   const checkDeletedFail = (statusCode: number): boolean => {
     if (statusCode === Http.NOT_FOUND) handleDatasetDelete();
     return statusCode === Http.NOT_FOUND;
   };
-  const mode = React.useRef<WbStatus | undefined>(undefined);
-  const refreshInitiatorAborted = React.useRef<boolean>(false);
-
-  const actionsRef = React.useRef<WbActionsReact>(
-    new WbActionsReact(
-      data,
-      dataset,
-      mappings as WbMapping,
-      noUploadPlan,
-      upload,
-      statusComponent,
-      checkDeletedFail,
-      triggerRefresh,
-      saveProgressBar,
-      mode,
-      refreshInitiatorAborted,
-      operationCompleted,
-      operationAborted
-    )
+  const hooks = getHotHooksReact(
+    workbench,
+    physicalColToMappingCol,
+    spreadSheetChanged,
+    checkDeletedFail
   );
+  const [showResults, openResults, closeResults, toggleResults] =
+    useBooleanState();
+
+  // Makes the hot changes required for upload view results
   React.useEffect(() => {
-    if (
-      !isUploaded &&
-      (mappings?.lines ?? []).length === 0 &&
-      hasPermission('/workbench/dataset', 'update')
-    ) {
-      noUploadPlan.open();
+    if (!showResults) return;
+
+    workbench.hot.updateSettings({ readOnly: true });
+    const initialHiddenRows = getHotPlugin(
+      workbench.hot,
+      'hiddenRows'
+    ).getHiddenRows();
+    const initialHiddenCols = getHotPlugin(
+      workbench.hot,
+      'hiddenColumns'
+    ).getHiddenColumns();
+    const rowsToInclude = new Set();
+    const colsToInclude = new Set();
+    Object.entries(workbench.cells!.cellMeta).forEach(
+      ([physicalRow, rowMeta]) =>
+        rowMeta.forEach((metaArray, physicalCol) => {
+          if (!workbench.cells!.getCellMetaFromArray(metaArray, 'isNew'))
+            return;
+          rowsToInclude.add((physicalRow as unknown as number) | 0);
+          colsToInclude.add(physicalCol);
+        })
+    );
+    const rowsToHide = workbench.data
+      .map((_, physicalRow) => physicalRow)
+      .filter(
+        (physicalRow) =>
+          !rowsToInclude.has(physicalRow) &&
+          !initialHiddenRows.includes(physicalRow)
+      )
+      .map(workbench.hot.toVisualRow);
+    const colsToHide = workbench.dataset.columns
+      .map((_, physicalCol) => physicalCol)
+      .filter(
+        (physicalCol) =>
+          !colsToInclude.has(physicalCol) &&
+          !initialHiddenCols.includes(physicalCol)
+      )
+      .map(workbench.hot.toVisualColumn);
+
+    getHotPlugin(workbench.hot, 'hiddenRows').hideRows(rowsToHide);
+    getHotPlugin(workbench.hot, 'hiddenColumns').hideColumns(colsToHide);
+
+    workbench.utils!.toggleCellTypes(
+      'newCells',
+      'remove',
+      spreadsheetContainer.current
+    );
+    workbench.hot.render();
+  }, [showResults]);
+
+  // Calls validation results on load if dataset has been validated before
+  React.useEffect(() => {
+    if (dataset.rowresults) {
+      workbench.validation?.getValidationResults();
+      if (workbench.validation?.validationMode === 'static' && !isUploaded)
+        workbench.utils?.toggleCellTypes(
+          'invalidCells',
+          'remove',
+          spreadsheetContainer.current
+        );
+
+      workbench.cells!.flushIndexedCellData = true;
     }
-  }, []);
+  }, [dataset.rowresults]);
+
   return (
     <>
       <div
@@ -262,9 +368,10 @@ export function WbViewReact({
           <DataSetName
             dataset={dataset}
             getRowCount={() =>
-              hot
+              hotRef.current?.hotInstance
                 ? dataset.rows.length
-                : hot.countRows() - hot.countEmptyRows(true)
+                : hotRef.current.hotInstance.countRows() -
+                  hotRef.current.hotInstance.countEmptyRows(true)
             }
           />
         </div>
@@ -282,96 +389,17 @@ export function WbViewReact({
             {wbPlanText.dataMapper()}
           </Link.Small>
         ) : undefined}
-        {!isUploaded && hasPermission('/workbench/dataset', 'validate') && (
-          <>
-            <Button.Small
-              className={`wb-data-check ${canLiveValidate ? '' : 'hidden'}`}
-              onClick={undefined}
-            >
-              {wbText.dataCheck()}
-            </Button.Small>
-            <Button.Small
-              aria-haspopup="dialog"
-              className="wb-validate"
-              onClick={undefined}
-              disabled={actionsRef.current.hasUnSavedChanges}
-              title={
-                actionsRef.current.hasUnSavedChanges
-                  ? wbText.unavailableWhileEditing()
-                  : ''
-              }
-            >
-              {wbText.validate()}
-            </Button.Small>
-          </>
-        )}
-        <Button.Small
-          aria-haspopup="tree"
-          className="wb-show-upload-view"
-          disabled={actionsRef.current.hasUnSavedChanges}
-          title={
-            actionsRef.current.hasUnSavedChanges
-              ? wbText.wbUploadedUnavailable()
-              : ''
-          }
-          onClick={undefined}
-        >
-          {commonText.results()}
-        </Button.Small>
-        {isUploaded ? (
-          hasPermission('/workbench/dataset', 'unupload') && (
-            <Button.Small
-              aria-haspopup="dialog"
-              aria-pressed={unupload.show}
-              className="wb-unupload"
-              onClick={unupload.open}
-            >
-              {wbText.rollback()}
-            </Button.Small>
-          )
-        ) : (
-          <>
-            {hasPermission('/workbench/dataset', 'upload') && (
-              <Button.Small
-                aria-haspopup="dialog"
-                className="wb-upload"
-                onClick={() => {
-                  mode.current = 'upload';
-                  actionsRef.current.upload(mode.current);
-                }}
-                disabled={actionsRef.current.hasUnSavedChanges}
-                title={
-                  actionsRef.current.hasUnSavedChanges
-                    ? wbText.unavailableWhileEditing()
-                    : ''
-                }
-              >
-                {wbText.upload()}
-              </Button.Small>
-            )}
-            {hasPermission('/workbench/dataset', 'update') && (
-              <>
-                <Button.Small
-                  aria-haspopup="dialog"
-                  className="wb-revert"
-                  onClick={revertChanges.open}
-                  disabled={!actionsRef.current.hasUnSavedChanges}
-                >
-                  {wbText.revert()}
-                </Button.Small>
-                <Button.Small
-                  aria-haspopup="dialog"
-                  className="wb-save"
-                  variant={className.saveButton}
-                  onClick={undefined}
-                  disabled={!actionsRef.current.hasUnSavedChanges}
-                >
-                  {commonText.save()}
-                </Button.Small>
-              </>
-            )}
-          </>
-        )}
+        <WbActionsComponent
+          dataset={dataset}
+          hasUnSavedChanges={hasUnSavedChanges}
+          isUploaded={isUploaded}
+          triggerRefresh={triggerRefresh}
+          mappings={mappings as WbMapping}
+          checkDeletedFail={checkDeletedFail}
+          spreadSheetUpToDate={spreadSheetUpToDate}
+          workbench={workbench}
+          toggleResults={toggleResults}
+        />
       </div>
       {toolkit.show && (
         <WbToolkit
@@ -381,147 +409,8 @@ export function WbViewReact({
           mappings={mappings as WbMapping}
           data={data}
           handleDatasetDelete={handleDatasetDelete}
-          actions={actionsRef.current}
+          hasUnSavedChanges={hasUnSavedChanges}
         />
-      )}
-      {unupload.show && (
-        <RollbackConfirmation
-          dataSetId={dataset.id}
-          onClose={unupload.close}
-          onRollback={() => actionsRef.current.openStatus('unupload')}
-        />
-      )}
-      {mode.current === 'upload' && upload.show && (
-        <Dialog
-          buttons={
-            <>
-              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-              <Button.Info
-                onClick={(): void => {
-                  actionsRef.current.startUpload(mode.current as WbStatus);
-                  upload.close();
-                }}
-              >
-                {wbText.upload()}
-              </Button.Info>
-            </>
-          }
-          header={wbText.startUpload()}
-          onClose={upload.close}
-        >
-          {wbText.startUploadDescription()}
-        </Dialog>
-      )}
-      {noUploadPlan.show && (
-        <Dialog
-          buttons={
-            <>
-              <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-              <Link.Info href={`/specify/workbench/plan/${dataset.id}/`}>
-                {commonText.create()}
-              </Link.Info>
-            </>
-          }
-          header={wbPlanText.noUploadPlan()}
-          onClose={noUploadPlan.close}
-        >
-          {wbPlanText.noUploadPlanDescription()}
-        </Dialog>
-      )}
-      {mode.current && statusComponent.show && (
-        <WbStatusComponent
-          dataset={{
-            ...dataset,
-            // Create initial status if it doesn't exist yet
-            uploaderstatus: {
-              uploaderstatus:
-                dataset.uploaderstatus ??
-                ({
-                  operation: {
-                    validate: 'validating',
-                    upload: 'uploading',
-                    unupload: 'unuploading',
-                  }[mode.current],
-                  taskid: '',
-                } as const),
-              taskstatus: 'PENDING',
-              taskinfo: 'None',
-            } as Status,
-          }}
-          onFinished={(wasAborted): void => {
-            refreshInitiatorAborted.current = wasAborted;
-            statusComponent.close();
-            triggerRefresh();
-          }}
-        />
-      )}
-      {revertChanges.show && (
-        <Dialog
-          buttons={
-            <>
-              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-              <Button.Danger onClick={triggerRefresh}>
-                {wbText.revert()}
-              </Button.Danger>
-            </>
-          }
-          header={wbText.revertChanges()}
-          onClose={revertChanges.close}
-        >
-          {wbText.revertChangesDescription()}
-        </Dialog>
-      )}
-      {saveProgressBar.show && (
-        <Dialog
-          buttons={undefined}
-          header={wbText.saving()}
-          onClose={saveProgressBar.close}
-        >
-          {loadingBar}
-        </Dialog>
-      )}
-      {operationCompleted.show && (
-        <Dialog
-          buttons={
-            <>
-              {
-                /* cellCounts.invalidCells === 0 && */
-                mode.current === 'upload' && (
-                  <CreateRecordSetButton
-                    dataSetId={dataset.id}
-                    dataSetName={dataset.name}
-                    small={false}
-                    onClose={operationCompleted.close}
-                  />
-                )
-              }
-              <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-            </>
-          }
-          // header={messages[this.wbView.refreshInitiatedBy].header}
-          onClose={operationCompleted.close}
-        >
-          {/* {messages[this.wbView.refreshInitiatedBy].message} */}
-        </Dialog>
-      )}
-      {operationAborted.show && (
-        <Dialog
-          buttons={commonText.close()}
-          header={
-            mode.current === 'validate'
-              ? wbText.validationCanceled()
-              : mode.current === 'unupload'
-              ? wbText.rollbackCanceled()
-              : wbText.uploadCanceled()
-          }
-          onClose={operationAborted.close}
-        >
-          {mode.current === 'validate'
-            ? wbText.validationCanceledDescription()
-            : mode.current === 'unupload'
-            ? wbText.rollbackCanceledDescription()
-            : wbText.uploadCanceledDescription()}
-        </Dialog>
       )}
       <div className="flex flex-1 gap-4 overflow-hidden">
         <section className="wb-spreadsheet flex-1 overflow-hidden overscroll-none">
@@ -530,68 +419,31 @@ export function WbViewReact({
             hotRef={hotRef}
             isUploaded={isUploaded}
             data={data}
+            validation={workbench.validation!}
+            cells={workbench.cells!}
+            disambiguation={workbench.disambiguation!}
+            hooks={hooks}
           />
         </section>
-        <aside aria-live="polite" className="wb-uploaded-view-wrapper hidden" />
-      </div>
-      <div
-        aria-label={wbText.navigation()}
-        className="flex flex-wrap justify-end gap-x-1 gap-y-2"
-        role="toolbar"
-      >
-        <span className="contents" role="search">
-          <div className="flex">
-            <Input.Generic
-              aria-label={commonText.searchQuery()}
-              autoComplete="on"
-              className="wb-search-query"
-              placeholder={commonText.search()}
-              spellCheck
-              title={commonText.searchQuery()}
-              type="search"
+        {showResults && (
+          <aside aria-live="polite" className="wb-uploaded-view-wrapper">
+            <WbUploaded
+              dataSetId={dataset.id}
+              dataSetName={dataset.name}
+              isUploaded={isUploaded}
+              recordCounts={workbench.validation!.uploadResults.recordCounts}
+              onClose={closeResults}
             />
-          </div>
-          {!isUploaded && hasPermission('/workbench/dataset', 'update') ? (
-            <div className="flex">
-              <Input.Text
-                aria-label={wbText.replacementValue()}
-                autoComplete="on"
-                className="wb-replace-value"
-                placeholder={wbText.replace()}
-                title={wbText.replacementValue()}
-              />
-            </div>
-          ) : undefined}
-          <span className="wb-advanced-search-wrapper">
-            <WbAdvancedSearch
-              initialSearchPreferences={searchPreferences}
-              onChange={(newSearchPreferences) => {
-                // searchPreferences = newSearchPreferences;
-                // if (
-                //   searchPreferences.navigation.direction !==
-                //   initialNavigationDirection
-                // ) {
-                //   this.wbView.cells.flushIndexedCellData = true;
-                //   initialNavigationDirection =
-                //     searchPreferences.navigation.direction;
-                // }
-                // if (searchPreferences.search.liveUpdate)
-                //   this.searchCells({
-                //     key: 'SettingsChange',
-                //   }).catch(softFail);
-              }}
-            />
-          </span>
-        </span>
-        <Navigation label={wbText.searchResults()} name="searchResults" />
-        {!isUploaded && hasPermission('/workbench/dataset', 'update') ? (
-          <Navigation label={wbText.modifiedCells()} name="modifiedCells" />
-        ) : undefined}
-        <Navigation label={wbText.newCells()} name="newCells" />
-        {!isUploaded && (
-          <Navigation label={wbText.errorCells()} name="invalidCells" />
+          </aside>
         )}
       </div>
+      <WbUtilsComponent
+        isUploaded={isUploaded}
+        searchPreferences={searchPreferences}
+        cellCounts={cellCounts}
+        utils={workbench.utils!}
+        spreadsheetContainer={spreadsheetContainer}
+      />
     </>
   );
 }
@@ -811,6 +663,8 @@ export class WbView extends Backbone.View {
           this.dataset,
           pickLists
         );
+
+        console.log(this.dataset, 'LOOK DATASET');
 
         if (this.dataset.rowresults) this.validation.getValidationResults();
 
