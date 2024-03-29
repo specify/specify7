@@ -265,7 +265,7 @@ def move(request, tree, id):
                 "schema": {
                     "type": "integer"
                 },
-                "description": "The ID of the node to which the preparations should be moved."
+                "description": "The ID of the storage tree node to which the preparations should be moved."
             },
             {
                 "name": "current_node",
@@ -274,7 +274,7 @@ def move(request, tree, id):
                 "schema": {
                     "type": "integer"
                 },
-                "description": "The ID of the current node that holds the preparations."
+                "description": "The ID of the current storage tree node that holds the preparations."
             },
         ],
         "responses": {
