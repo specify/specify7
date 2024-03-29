@@ -11,8 +11,17 @@ import { getPref } from '../InitialContext/remotePrefs';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Conformations, KeyAction, Row, Stats } from './helpers';
 import { formatTreeStats, mapKey, scrollIntoView } from './helpers';
+import { genericTables } from '../DataModel/tables';
+import { AnySchema, AnyTree } from '../DataModel/helperTypes';
+import { SpecifyTable } from '../DataModel/specifyTable';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
+import { Http } from '../../utils/ajax/definitions';
+import { unsafeTriggerNotFound } from '../Router/Router';
+import { useLiveState } from '../../hooks/useLiveState';
+import { SpecifyResource } from '../DataModel/legacyTypes';
 
-export function TreeRow({
+export function TreeRow<SCHEMA extends AnyTree>({
   row,
   getRows,
   getStats,
@@ -53,7 +62,7 @@ export function TreeRow({
   readonly onAction: (action: Exclude<KeyAction, 'child' | 'toggle'>) => void;
   readonly setFocusedRow?: (row: Row) => void;
   readonly synonymColor: string;
-  readonly treeName: string;
+  readonly treeName: SCHEMA['tableName'];
   readonly hideEmptyNodes: boolean;
 }): JSX.Element | null {
   const [rows, setRows] = React.useState<RA<Row> | undefined>(undefined);
@@ -154,6 +163,33 @@ export function TreeRow({
           const stats =
             typeof nodeStats === 'object' &&
             formatTreeStats(nodeStats, row.children === 0);
+          const table = genericTables[treeName] as SpecifyTable<AnyTree>;
+          const [resource] = useLiveState<
+            SpecifyResource<AnySchema> | undefined
+          >(
+            React.useCallback(() => {
+              const table = genericTables[treeName] as SpecifyTable<AnyTree>;
+              const parentNode = new table.Resource({ id: row.nodeId });
+              let node = parentNode;
+              return node;
+            }, [row.nodeId, treeName])
+          );
+          const [loadedResource] = useAsyncState(
+            React.useCallback(async () => {
+              if (resource === undefined) return;
+              return hijackBackboneAjax(
+                [Http.NOT_FOUND],
+                async () => resource.fetch(),
+                (status) =>
+                  status === Http.NOT_FOUND
+                    ? unsafeTriggerNotFound()
+                    : undefined
+              );
+            }, [resource]),
+            false
+          );
+          const acceptedChildren = loadedResource?.get('acceptedChildren');
+          // fetch resource name with api const acceptedChildrenName =
           return (
             <Button.LikeLink
               aria-controls={displayChildren ? id('children') : undefined}
@@ -229,6 +265,8 @@ export function TreeRow({
                       ? treeText.acceptedName({
                           name: row.acceptedName ?? row.acceptedId.toString(),
                         })
+                      : acceptedChildren !== undefined
+                      ? acceptedChildren
                       : undefined
                   }
                 >
