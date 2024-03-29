@@ -31,6 +31,16 @@ import { strictGetTable } from '../DataModel/tables';
 import { getIcon, unknownIcon } from '../InitialContext/icons';
 import { commonText } from '../../localization/common';
 import { iconClassName } from '../Atoms/Icons';
+import { getSelectedLast } from './hotHelpers';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { getTableFromMappingPath } from '../WbPlanView/navigator';
+import { hasTablePermission } from '../Permissions/helpers';
+import type { Collection } from '../DataModel/specifyTable';
+import { AnySchema } from '../DataModel/helperTypes';
+import { Dialog } from '../Molecules/Dialog';
+import { DisambiguationDialog } from './Disambiguation';
+import { mappingPathToString } from '../WbPlanView/mappingHelpers';
+import { MappingPath } from '../WbPlanView/Mapper';
 
 export function WbSpreadsheet({
   dataset,
@@ -40,6 +50,7 @@ export function WbSpreadsheet({
   validation,
   cells,
   disambiguation,
+  hooks,
 }: {
   readonly dataset: Dataset;
   readonly hotRef: any;
@@ -48,12 +59,88 @@ export function WbSpreadsheet({
   readonly validation: WbValidationReact;
   readonly cells: WbCellMetaReact;
   readonly disambiguation: DisambiguationReact;
+  readonly hooks: any;
 }): JSX.Element {
   const mappings = parseWbMappings(dataset);
   const physicalColToMappingCol = (physicalCol: number): number | undefined =>
     mappings?.lines.findIndex(
       ({ headerName }) => headerName === dataset.columns[physicalCol]
     );
+
+  const [disambiguationMatches, setMatches] = React.useState<{
+    readonly physicalCols: RA<number>;
+    readonly mappingPath: MappingPath;
+    readonly ids: RA<number>;
+    readonly key: string;
+  }>();
+  const [disambiguationPhysicalRow, setPhysicalRow] = React.useState<number>();
+  const [disambiguationResource, setResource] =
+    React.useState<Collection<AnySchema>>();
+  const [noDisambiguationDialog, openNoDisamb, closeNoDisamb] =
+    useBooleanState();
+  const [disambiguationDialog, openDisambiguation, closeDisambiguation] =
+    useBooleanState();
+
+  const openDisambiguationDialog = () => {
+    if (mappings === undefined || !hotRef.current) return;
+
+    const [visualRow, visualCol] = getSelectedLast(hotRef.current.hotInstance);
+    const physicalRow = hotRef.current.hotInstance.toPhysicalRow(visualRow);
+    const physicalCol = hotRef.current.hotInstance.toPhysicalColumn(visualCol);
+
+    const matches = validation?.uploadResults.ambiguousMatches[
+      physicalRow
+    ].find(({ physicalCols }) => physicalCols.includes(physicalCol));
+    if (matches === undefined) return;
+    const tableName = getTableFromMappingPath(
+      mappings.baseTable.name,
+      matches.mappingPath
+    );
+    const table = strictGetTable(tableName);
+    const resources = new table.LazyCollection({
+      filters: { id__in: matches.ids.join(',') },
+    }) as Collection<AnySchema>;
+
+    (hasTablePermission(table.name, 'read')
+      ? resources.fetch({ limit: 0 })
+      : Promise.resolve(resources)
+    ).then(({ models }) => {
+      if (models.length === 0) {
+        openNoDisamb();
+        return;
+      }
+
+      // Re-enable this once live validation is available again:
+      /*
+       * Disable "Apply All" if validation is still in progress.
+       * This is because we don't know all matches until validation is done
+       */
+      /*
+       *Let applyAllAvailable = true;
+       *const applyAllButton = content.find('#applyAllButton');
+       *
+       *const updateIt = () => {
+       *  const newState = this.liveValidationStack.length === 0;
+       *  if (newState !== applyAllAvailable) {
+       *    applyAllAvailable = newState;
+       *    applyAllButton.disabled = !newState;
+       *    applyAllButton[newState ? 'removeAttribute' : 'setAttribute'](
+       *      'title',
+       *      wbText.applyAllUnavailable()
+       *    );
+       *  }
+       *};
+       *
+       *const interval = globalThis.setInterval(updateIt, 100);
+       * // onClose: globalThis.clearInterval(interval);
+       */
+
+      setMatches(matches);
+      setResource(resources);
+      setPhysicalRow(physicalRow);
+      openDisambiguation();
+    });
+  };
 
   // Context menu item definitions (common for fillUp and fillDown)
   const fillCellsContextMenuItem = (
@@ -203,7 +290,7 @@ export function WbSpreadsheet({
                 // typeof this.coordinateConverterView === 'function' ||
                 !disambiguation.isAmbiguousCell() ||
                 !hasPermission('/workbench/dataset', 'update'),
-              callback: () => disambiguation.openDisambiguationDialog(),
+              callback: () => openDisambiguationDialog(),
             },
             separator_1: '---------',
             fill_down: fillCellsContextMenuItem('down'),
@@ -226,23 +313,24 @@ export function WbSpreadsheet({
   };
 
   return (
-    <HotTable
-      autoWrapCol={userPreferences.get('workBench', 'editor', 'autoWrapCol')}
-      autoWrapRow={userPreferences.get('workBench', 'editor', 'autoWrapRow')}
-      colHeaders={(physicalCol: number) => {
-        const tableIcon = mappings?.mappedHeaders?.[physicalCol];
-        const isMapped = tableIcon !== undefined;
-        const mappingCol = physicalColToMappingCol(physicalCol);
-        const tableName =
-          (typeof mappingCol === 'number'
-            ? mappings?.tableNames[mappingCol]
-            : undefined) ??
-          tableIcon?.split('/').slice(-1)?.[0]?.split('.')?.[0];
-        const tableLabel = isMapped
-          ? f.maybe(tableName, getTable)?.label ?? tableName ?? ''
-          : '';
-        // REFACTOR: use new table icons
-        return `<div class="flex gap-1 items-center pl-4">
+    <>
+      <HotTable
+        autoWrapCol={userPreferences.get('workBench', 'editor', 'autoWrapCol')}
+        autoWrapRow={userPreferences.get('workBench', 'editor', 'autoWrapRow')}
+        colHeaders={(physicalCol: number) => {
+          const tableIcon = mappings?.mappedHeaders?.[physicalCol];
+          const isMapped = tableIcon !== undefined;
+          const mappingCol = physicalColToMappingCol(physicalCol);
+          const tableName =
+            (typeof mappingCol === 'number'
+              ? mappings?.tableNames[mappingCol]
+              : undefined) ??
+            tableIcon?.split('/').slice(-1)?.[0]?.split('.')?.[0];
+          const tableLabel = isMapped
+            ? f.maybe(tableName, getTable)?.label ?? tableName ?? ''
+            : '';
+          // REFACTOR: use new table icons
+          return `<div class="flex gap-1 items-center pl-4">
                   ${
                     isMapped
                       ? `<img
@@ -260,67 +348,128 @@ export function WbSpreadsheet({
                     ${dataset.columns[physicalCol]}
                   </span>
                 </div>`;
-      }}
-      columns={Array.from(
-        // Last column is invisible and contains disambiguation metadata
-        { length: dataset.columns.length + 1 },
-        (_, physicalCol) => ({
-          // Get data from nth column for nth column
-          data: physicalCol,
-        })
+        }}
+        columns={Array.from(
+          // Last column is invisible and contains disambiguation metadata
+          { length: dataset.columns.length + 1 },
+          (_, physicalCol) => ({
+            // Get data from nth column for nth column
+            data: physicalCol,
+          })
+        )}
+        commentedCellClassName="htCommentCell"
+        comments={{
+          displayDelay: 100,
+        }}
+        data={data as (string | null)[][]}
+        enterBeginsEditing={userPreferences.get(
+          'workBench',
+          'editor',
+          'enterBeginsEditing'
+        )}
+        enterMoves={
+          userPreferences.get('workBench', 'editor', 'enterMoveDirection') ===
+          'col'
+            ? { col: 1, row: 0 }
+            : { col: 0, row: 1 }
+        }
+        hiddenColumns={{
+          // Hide the disambiguation column
+          columns: [dataset.columns.length],
+          indicators: false,
+          // Temporarily disabled as copyPasteEnabled throws an error despite having ts-expect-error
+          // Typing doesn't match for handsontable 12.1.0, fixed in 14
+          // copyPasteEnabled: false,
+        }}
+        hiddenRows={{
+          rows: [],
+          indicators: false,
+          // Temporarily disabled as copyPasteEnabled throws an error despite having ts-expect-error
+          // Typing doesn't match for handsontable 12.1.0, fixed in 14
+          // copyPasteEnabled: false,
+        }}
+        invalidCellClassName="-"
+        language={LANGUAGE}
+        licenseKey="non-commercial-and-evaluation"
+        manualColumnMove={true}
+        manualColumnResize={true}
+        minSpareRows={userPreferences.get(
+          'workBench',
+          'editor',
+          'minSpareRows'
+        )}
+        multiColumnSorting={true}
+        outsideClickDeselects={false}
+        placeholderCellClassName="htPlaceholder"
+        ref={hotRef}
+        rowHeaders={true}
+        sortIndicator={true}
+        stretchH="all"
+        tabMoves={
+          userPreferences.get('workBench', 'editor', 'tabMoveDirection') ===
+          'col'
+            ? { col: 1, row: 0 }
+            : { col: 0, row: 1 }
+        }
+        readOnly={isUploaded || !hasPermission('/workbench/dataset', 'update')}
+        contextMenu={contextMenuConfig as Settings}
+        {...hooks}
+      />
+      {noDisambiguationDialog && (
+        <Dialog
+          buttons={commonText.close()}
+          header={wbText.noDisambiguationResults()}
+          onClose={closeNoDisamb}
+        >
+          {wbText.noDisambiguationResultsDescription()}
+        </Dialog>
       )}
-      commentedCellClassName="htCommentCell"
-      comments={{
-        displayDelay: 100,
-      }}
-      data={data as (string | null)[][]}
-      enterBeginsEditing={userPreferences.get(
-        'workBench',
-        'editor',
-        'enterBeginsEditing'
+      {disambiguationDialog && (
+        <DisambiguationDialog
+          matches={disambiguationResource!.models}
+          onClose={closeDisambiguation}
+          onSelected={(selected) => {
+            disambiguation.setDisambiguation(
+              disambiguationPhysicalRow!,
+              disambiguationMatches!.mappingPath,
+              selected.id
+            );
+            validation?.startValidateRow(disambiguationPhysicalRow!);
+            hotRef.current.hotInstance?.render();
+          }}
+          onSelectedAll={(selected): void =>
+            // Loop backwards so the live validation will go from top to bottom
+            hotRef.current.hotInstance?.batch(() => {
+              for (
+                let visualRow = data.length - 1;
+                visualRow >= 0;
+                visualRow--
+              ) {
+                const physicalRow =
+                  hotRef.current.hotInstance!.toPhysicalRow(visualRow);
+                if (
+                  !validation?.uploadResults.ambiguousMatches[
+                    physicalRow
+                  ]?.find(
+                    ({ key, mappingPath }) =>
+                      key === disambiguationMatches!.key &&
+                      typeof disambiguation.getDisambiguation(physicalRow)[
+                        mappingPathToString(mappingPath)
+                      ] !== 'number'
+                  )
+                )
+                  continue;
+                disambiguation.setDisambiguation(
+                  physicalRow,
+                  disambiguationMatches!.mappingPath,
+                  selected.id
+                );
+                validation?.startValidateRow(physicalRow);
+              }
+            })
+          }
+        />
       )}
-      enterMoves={
-        userPreferences.get('workBench', 'editor', 'enterMoveDirection') ===
-        'col'
-          ? { col: 1, row: 0 }
-          : { col: 0, row: 1 }
-      }
-      hiddenColumns={{
-        // Hide the disambiguation column
-        columns: [dataset.columns.length],
-        indicators: false,
-        // Temporarily disabled as copyPasteEnabled throws an error despite having ts-expect-error
-        // Typing doesn't match for handsontable 12.1.0, fixed in 14
-        // copyPasteEnabled: false,
-      }}
-      hiddenRows={{
-        rows: [],
-        indicators: false,
-        // Temporarily disabled as copyPasteEnabled throws an error despite having ts-expect-error
-        // Typing doesn't match for handsontable 12.1.0, fixed in 14
-        // copyPasteEnabled: false,
-      }}
-      invalidCellClassName="-"
-      language={LANGUAGE}
-      licenseKey="non-commercial-and-evaluation"
-      manualColumnMove={true}
-      manualColumnResize={true}
-      minSpareRows={userPreferences.get('workBench', 'editor', 'minSpareRows')}
-      multiColumnSorting={true}
-      outsideClickDeselects={false}
-      placeholderCellClassName="htPlaceholder"
-      ref={hotRef}
-      rowHeaders={true}
-      // @ts-expect-error Incorrect type again. Possibly fixed in handsontable14
-      sortIndicator={true}
-      stretchH="all"
-      tabMoves={
-        userPreferences.get('workBench', 'editor', 'tabMoveDirection') === 'col'
-          ? { col: 1, row: 0 }
-          : { col: 0, row: 1 }
-      }
-      readOnly={isUploaded || !hasPermission('/workbench/dataset', 'update')}
-      contextMenu={contextMenuConfig as Settings}
-    />
+    </>
   );
 }
