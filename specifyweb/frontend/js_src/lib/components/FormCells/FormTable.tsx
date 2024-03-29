@@ -189,20 +189,6 @@ export function FormTable<SCHEMA extends AnySchema>({
   const displayDeleteButton =
     mode !== 'view' && typeof handleDelete === 'function';
   const displayViewButton = !isDependent;
-  /*
-   * Const headerIsVisible =
-   *   (resources.length > 0 && isExpanded[resources[0].cid] === undefined) ||
-   *   (resources.length > 0 && isExpanded[resources[0].cid] === false);
-   */
-
-  /*
-   * Const headerWasVisibleRef = React.useRef(headerIsVisible);
-   * headerWasVisibleRef.current =
-   *   resources.length === 0
-   *     ? false
-   *     : headerWasVisibleRef.current || headerIsVisible;
-   * const headerWasVisible = headerWasVisibleRef.current;
-   */
 
   const scrollerRef = React.useRef<HTMLDivElement | null>(null);
   const { isFetching, handleScroll } = useInfiniteScroll(
@@ -269,7 +255,6 @@ export function FormTable<SCHEMA extends AnySchema>({
                 >
                   {isSortable && typeof fieldName === 'string' ? (
                     <Button.LikeLink
-                      tabIndex={undefined}
                       onClick={(): void =>
                         setSortConfig({
                           sortField: fieldName,
