@@ -30,7 +30,7 @@ export function WbToolkit({
   mappings,
   data,
   handleDatasetDelete,
-  actions,
+  hasUnSavedChanges,
 }: {
   readonly dataset: Dataset;
   readonly hotRef: any;
@@ -38,7 +38,7 @@ export function WbToolkit({
   readonly mappings: WbMapping;
   readonly data: RA<RA<string | null>>;
   readonly handleDatasetDelete: () => void;
-  readonly actions: WbActionsReact;
+  readonly hasUnSavedChanges: boolean;
 }): JSX.Element {
   const hot = hotRef.current.hotInstance;
 
@@ -90,8 +90,8 @@ export function WbToolkit({
             aria-pressed={toolkitOptions.changeOwner.show}
             className="wb-change-data-set-owner"
             onClick={toolkitOptions.changeOwner.open}
-            disabled={actions.hasUnSavedChanges}
-            title={actions.hasUnSavedChanges ? wbText.unavailableWhileEditing() : ""}
+            disabled={hasUnSavedChanges}
+            title={hasUnSavedChanges ? wbText.unavailableWhileEditing() : ""}
           >
             {wbText.changeOwner()}
           </Button.Small>
@@ -108,8 +108,8 @@ export function WbToolkit({
       <Button.Small
         className="wb-export-data-set"
         onClick={handleExport}
-        disabled={actions.hasUnSavedChanges}
-        title={actions.hasUnSavedChanges ? wbText.unavailableWhileEditing() : ""}
+        disabled={hasUnSavedChanges}
+        title={hasUnSavedChanges ? wbText.unavailableWhileEditing() : ""}
       >
         {commonText.export()}
       </Button.Small>
