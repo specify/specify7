@@ -205,7 +205,6 @@ export function getHotHooksReact(
         unfilteredChanges === null
       )
         return;
-        console.log("here? afeter")
       const changes = unfilteredChanges
         .map(([visualRow, property, oldValue, newValue]) => ({
           visualRow,
