@@ -150,8 +150,8 @@ msgid "invalidNumericPicklistValue"
 msgstr "Дополнительные результаты опущены"
 
 #: components/Attachments/Plugin.tsx:88
-#: components/FormCells/FormTable.tsx:215
-#: components/FormCells/FormTable.tsx:533
+#: components/FormCells/FormTable.tsx:205
+#: components/FormCells/FormTable.tsx:516
 #: components/Forms/BaseResourceView.tsx:106
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 msgid "noData"

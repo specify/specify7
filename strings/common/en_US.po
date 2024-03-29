@@ -156,7 +156,7 @@ msgstr "Create"
 #: components/Core/VersionMismatch.tsx:18
 #: components/ExportFeed/Dwca.tsx:128
 #: components/ExportFeed/ForceUpdate.tsx:23
-#: components/FormCells/FormTable.tsx:504
+#: components/FormCells/FormTable.tsx:487
 #: components/FormCommands/ShowTransactions.tsx:116
 #: components/FormCommands/index.tsx:96
 #: components/FormCommands/index.tsx:118
@@ -387,7 +387,7 @@ msgstr "Tools"
 #: components/Core/Contexts.tsx:125
 #: components/Core/__tests__/Contexts.test.tsx:76
 #: components/Core/__tests__/Contexts.test.tsx:87
-#: components/FormCells/FormTable.tsx:213
+#: components/FormCells/FormTable.tsx:203
 #: components/FormCommands/ShowTransactions.tsx:63
 #: components/FormFields/ComboBox.tsx:131
 #: components/FormFields/Field.tsx:82
@@ -458,8 +458,8 @@ msgstr "Uploaded"
 #: components/Atoms/DataEntry.tsx:163
 #: components/ExportFeed/Editor.tsx:151
 #: components/ExportFeed/Editor.tsx:153
-#: components/FormCells/FormTable.tsx:421
-#: components/FormCells/FormTable.tsx:430
+#: components/FormCells/FormTable.tsx:404
+#: components/FormCells/FormTable.tsx:413
 #: components/FormPlugins/CollectionRelOneToMany.tsx:130
 #: components/Formatters/Fields.tsx:195
 #: components/Formatters/Fields.tsx:196
@@ -619,8 +619,8 @@ msgstr "(opens in a new tab)"
 #: components/Atoms/DataEntry.tsx:175
 #: components/Atoms/DataEntry.tsx:178
 #: components/Attachments/Viewer.tsx:209
-#: components/FormCells/FormTable.tsx:406
-#: components/FormCells/FormTable.tsx:409
+#: components/FormCells/FormTable.tsx:389
+#: components/FormCells/FormTable.tsx:392
 #. 🟥Used in a button that opens a link in a new tab. Used in: Components > Atoms > Data Entry ⬤ Components > Attachments > Viewer ⬤ Components > Form Cells > Form Table
 msgid "openInNewTab"
 msgstr "Open in New Tab"
@@ -633,7 +633,7 @@ msgstr "Open in New Tab"
 msgid "goToHomepage"
 msgstr "Go to Home Page"
 
-#: components/FormCells/FormTable.tsx:295
+#: components/FormCells/FormTable.tsx:278
 #: components/QueryBuilder/Edit.tsx:94
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Query Builder > Edit
 msgid "actions"
@@ -839,9 +839,9 @@ msgstr "Copy to clipboard"
 msgid "selected"
 msgstr "Selected"
 
-#: components/FormCells/FormTable.tsx:249
-#: components/FormCells/FormTable.tsx:338
-#: components/FormCells/FormTable.tsx:340
+#: components/FormCells/FormTable.tsx:233
+#: components/FormCells/FormTable.tsx:321
+#: components/FormCells/FormTable.tsx:323
 #: components/FormSliders/IntegratedRecordSelector.tsx:85
 #: components/Formatters/Definitions.tsx:246
 #: components/Header/index.tsx:158
@@ -855,8 +855,8 @@ msgstr "Expand"
 msgid "expandAll"
 msgstr "Expand All"
 
-#: components/FormCells/FormTable.tsx:306
-#: components/FormCells/FormTable.tsx:308
+#: components/FormCells/FormTable.tsx:289
+#: components/FormCells/FormTable.tsx:291
 #: components/FormSliders/IntegratedRecordSelector.tsx:85
 #: components/Header/index.tsx:158
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Form Sliders > Integrated Record Selector ⬤ Components > Header > Index
