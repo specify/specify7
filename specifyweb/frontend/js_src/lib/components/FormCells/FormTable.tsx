@@ -189,16 +189,16 @@ export function FormTable<SCHEMA extends AnySchema>({
   const displayDeleteButton =
     mode !== 'view' && typeof handleDelete === 'function';
   const displayViewButton = !isDependent;
-  const headerIsVisible =
-    (resources.length > 0 && isExpanded[resources[0].cid] === undefined) ||
-    (resources.length > 0 && isExpanded[resources[0].cid] === false);
+  // const headerIsVisible =
+  //   (resources.length > 0 && isExpanded[resources[0].cid] === undefined) ||
+  //   (resources.length > 0 && isExpanded[resources[0].cid] === false);
 
-  const headerWasVisibleRef = React.useRef(headerIsVisible);
-  headerWasVisibleRef.current =
-    resources.length === 0
-      ? false
-      : headerWasVisibleRef.current || headerIsVisible;
-  const headerWasVisible = headerWasVisibleRef.current;
+  // const headerWasVisibleRef = React.useRef(headerIsVisible);
+  // headerWasVisibleRef.current =
+  //   resources.length === 0
+  //     ? false
+  //     : headerWasVisibleRef.current || headerIsVisible;
+  // const headerWasVisible = headerWasVisibleRef.current;
 
   const scrollerRef = React.useRef<HTMLDivElement | null>(null);
   const { isFetching, handleScroll } = useInfiniteScroll(
@@ -216,7 +216,7 @@ export function FormTable<SCHEMA extends AnySchema>({
     ) : (
       <div className={isCollapsed ? 'hidden' : 'overflow-x-auto'}>
         <DataEntry.Grid
-          className={`sticky w-fit ${headerWasVisible ? 'pt-0' : ''}`}
+          className={`sticky w-fit`}
           display="inline"
           flexibleColumnWidth={flexibleColumnWidth}
           forwardRef={scrollerRef}
@@ -236,13 +236,7 @@ export function FormTable<SCHEMA extends AnySchema>({
              * If header was ever visible, don't hide the header row anymore to
              * prevent needless layout shifts, but only make it invisible
              */
-            className={
-              headerIsVisible
-                ? 'contents'
-                : headerWasVisible
-                ? 'invisible contents'
-                : 'sr-only'
-            }
+            className={'contents'}
             role="row"
           >
             <div className={cellClassName} role="columnheader">
@@ -271,7 +265,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                 >
                   {isSortable && typeof fieldName === 'string' ? (
                     <Button.LikeLink
-                      tabIndex={headerIsVisible ? undefined : -1}
+                      tabIndex={undefined}
                       onClick={(): void =>
                         setSortConfig({
                           sortField: fieldName,
