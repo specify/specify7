@@ -335,10 +335,18 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
             value: otherValue,
           } = otherFieldValues;
           const { id, cid, value } = fieldValues[fieldName];
+          const field = this.resource.specifyTable.getField(fieldName);
           if (otherCid !== undefined && cid !== undefined && otherCid === cid)
             return true;
           if (otherId !== undefined && id !== undefined && otherId === id)
             return true;
+          if (
+            field !== undefined &&
+            !(field.isRequired || field.localization.isrequired) &&
+            (value === undefined || value === null)
+          ) {
+            return false;
+          }
           return (
             otherId === undefined &&
             otherCid === undefined &&
