@@ -142,9 +142,9 @@ export const formsText = createDictionary({
       with at least a start time or and end time populated.
     `,
     'de-ch': `
-      Das Paleo Map-Plugin erfordert, dass die {localityTable:string}
-      geografische Koordinaten haben und dass der Paläo-Kontext ein
-      geografisches Alter mit mindestens einer Start- oder Endzeit hat.
+      Das Paleo Map-Plugin erfordert, dass das {localityTable:string} über
+      geografische Koordinaten verfügt und dass der Paläo-Kontext über ein
+      geografisches Alter mit mindestens einer Start- oder Endzeit verfügt.
     `,
     'es-es': 'Seleccionar fuente de tablas',
     'fr-fr': 'Sélectionnez la source des tables',
@@ -323,7 +323,7 @@ export const formsText = createDictionary({
     'es-es': 'Último registro',
     'fr-fr': 'Dernier enregistrement',
     'uk-ua': 'Останній запис',
-    'de-ch': 'Letzter Datensatz',
+    'de-ch': 'Letzter Eintrag',
   },
   previousRecord: {
     'en-us': 'Previous Record',
@@ -394,10 +394,10 @@ export const formsText = createDictionary({
       щоб запобігти збереженню суперечливих даних.
     `,
     'de-ch': `
-      Die auf dieser Seite angezeigten Daten wurden von einem anderen Benutzer
-      oder in einem anderen Browser-Tab geändert und sind veraltet. Um zu
-      verhindern, dass inkonsistente Daten gespeichert werden, muss die Seite
-      neu geladen werden.
+      Die auf dieser Seite angezeigten Daten wurden durch einen anderen Benutzer
+      oder in einem anderen Browsertab geändert und sind nicht mehr aktuell. Um
+      eine inkonsistente Datenspeicherung zu verhindern, muss die Seite neu
+      geladen werden.
     `,
   },
   saveBlocked: {
@@ -688,7 +688,7 @@ export const formsText = createDictionary({
     'es-es': 'Resultados adicionales omitidos',
     'fr-fr': 'Résultats supplémentaires omis',
     'uk-ua': 'Додаткові результати пропущено',
-    'de-ch': 'Weitere Ergebnisse weggelassen',
+    'de-ch': 'Weitere Ergebnisse ausgelassen',
   },
   recordSelectorUnloadProtect: {
     'en-us': 'Proceed without saving?',
@@ -794,7 +794,7 @@ export const formsText = createDictionary({
     'es-es': 'Quitar de {recordSetTable:string}',
     'fr-fr': 'Supprimer de {recordSetTable:string}',
     'uk-ua': 'Видалити з {recordSetTable:string}',
-    'de-ch': 'Entfernen aus {recordSetTable:string}',
+    'de-ch': 'Von {recordSetTable:string} entfernen',
   },
   nothingFound: {
     'en-us': 'Nothing found',
@@ -819,7 +819,7 @@ export const formsText = createDictionary({
     'es-es': 'Mostrar botón Llevar adelante',
     'fr-fr': 'Afficher le bouton Reporter',
     'uk-ua': 'Показати кнопку «Перенести вперед».',
-    'de-ch': 'Schaltfläche „Übertragen“ anzeigen',
+    'de-ch': 'Schaltfläche „Übertrag anzeigen“',
   },
   carryForwardDescription: {
     'en-us': 'Create a new record with certain fields carried over',
@@ -877,7 +877,7 @@ export const formsText = createDictionary({
     'es-es': 'Crear un nuevo registro en blanco',
     'fr-fr': 'Créer un nouvel enregistrement vierge',
     'uk-ua': 'Створіть новий порожній запис',
-    'de-ch': 'Einen neuen leeren Datensatz erstellen',
+    'de-ch': 'Erstellen Sie einen neuen leeren Datensatz',
   },
   autoNumbering: {
     'en-us': 'Auto Numbering',
@@ -901,7 +901,7 @@ export const formsText = createDictionary({
     'es-es': 'Usar formulario generado automáticamente',
     'fr-fr': 'Utiliser le formulaire généré automatiquement',
     'uk-ua': 'Використовуйте автоматично створену форму',
-    'de-ch': 'Verwenden Sie das automatisch generierte Formular',
+    'de-ch': 'Automatisch generiertes Formular verwenden',
   },
   useFieldLabels: {
     'en-us': 'Use Localized Field Labels',
@@ -909,7 +909,7 @@ export const formsText = createDictionary({
     'es-es': 'Utilice etiquetas de campo localizadas',
     'fr-fr': 'Utiliser des étiquettes de champ localisées',
     'uk-ua': 'Використовуйте локалізовані мітки полів',
-    'de-ch': 'Verwenden Sie lokalisierte Feldbezeichnungen',
+    'de-ch': 'Lokalisierte Feldbeschriftungen verwenden',
   },
   showFieldLabels: {
     'en-us': 'Show Localized Field Labels',
@@ -989,7 +989,7 @@ export const formsText = createDictionary({
     'es-es': 'Usos de la lista de selección "{pickList:string}"',
     'fr-fr': 'Utilisations de la liste de sélection "{pickList:string}"',
     'uk-ua': 'Використання списку вибору "{pickList:string}".',
-    'de-ch': 'Verwendungen der Auswahlliste „{pickList:string}“',
+    'de-ch': 'Verwendungsmöglichkeiten der Auswahlliste „{pickList:string}“.',
   },
   subForm: {
     'en-us': 'Subform',

@@ -69,7 +69,7 @@ export const wbPlanText = createDictionary({
     'es-es': 'sin mapear',
     'fr-fr': 'Non mappé',
     'uk-ua': 'Не зіставлений',
-    'de-ch': 'Nicht zugeordnet',
+    'de-ch': 'Eine Zuordnung ist erforderlich',
   },
   mapped: {
     'en-us': 'Mapped',
@@ -132,8 +132,8 @@ export const wbPlanText = createDictionary({
     'ru-ru': 'Показать скрытые поля формы',
     'es-es': 'Revelar Campos Ocultos del Formulario',
     'de-ch': 'Versteckte Formularfelder anzeigen',
-    'fr-fr': 'Révéler les champs de formulaire cachés',
-    'uk-ua': 'Відкрийте приховані поля форми',
+    'fr-fr': 'Ensemble de données vide',
+    'uk-ua': 'Порожній набір даних',
   },
   mappingOptions: {
     'en-us': 'Mapping Options',
@@ -226,8 +226,8 @@ export const wbPlanText = createDictionary({
     'ru-ru': 'Никогда не игнорировать',
     'es-es': 'Nunca Ignorar',
     'de-ch': 'Nie ignorieren',
-    'fr-fr': 'Ne jamais ignorer',
-    'uk-ua': 'Ніколи не ігноруйте',
+    'fr-fr': 'AUCUNE SÉLECTION',
+    'uk-ua': 'НЕ ВИБРАНО',
   },
   ignoreNeverDescription: {
     'en-us': `
@@ -345,7 +345,7 @@ export const wbPlanText = createDictionary({
     'es-es': 'Se requiere asignación',
     'fr-fr': 'Une cartographie est requise',
     'uk-ua': 'Потрібне відображення',
-    'de-ch': 'Eine Zuordnung ist erforderlich',
+    'de-ch': 'Zuordnung ist erforderlich',
   },
   continueEditing: {
     'en-us': 'Continue Editing',
@@ -368,8 +368,8 @@ export const wbPlanText = createDictionary({
     'ru-ru': 'Сопоставить',
     'es-es': 'Mapear',
     'de-ch': 'Datenzuordnung erstellen',
-    'fr-fr': 'Carte',
-    'uk-ua': 'Карта',
+    'fr-fr': 'Mappeur automatique',
+    'uk-ua': 'AutoMapper',
   },
   unmap: {
     'en-us': 'Unmap',
@@ -384,8 +384,17 @@ export const wbPlanText = createDictionary({
     'ru-ru': 'Сопоставить выбранное поле с выбранным столбцом',
     'es-es': 'Asignar campo seleccionado al encabezamiento seleccionado',
     'de-ch': 'Ausgewähltes Feld der ausgewählten Feldüberschrift zuordnen',
-    'fr-fr': "Mapper le champ sélectionné à l'en-tête sélectionné",
-    'uk-ua': 'Зіставити вибране поле з вибраним заголовком',
+    'fr-fr': `
+      Il manque dans ce mappage de données un ou plusieurs champs de données
+      requis pour le téléchargement par votre configuration Specify. Ajoutez les
+      mappages manquants affichés ou enregistrez ce plan de téléchargement
+      comme inachevé.
+    `,
+    'uk-ua': `
+      У цьому відображенні даних відсутнє одне або кілька полів даних, необхідні
+      для завантаження вашою конфігурацією Specify. Додайте відсутні
+      відображення або збережіть цей план завантаження як незавершений.
+    `,
   },
   relationshipWithTable: {
     'en-us': 'Relationship to the {tableName:string} table',

@@ -135,7 +135,7 @@ export const attachmentsText = createDictionary({
   },
   pleaseReselectAllFiles: {
     'en-us': 'Please reselect all files before uploading.',
-    'de-ch': 'Bitte wählen Sie alle Dateien vor dem Hochladen erneut aus.',
+    'de-ch': 'Bitte wählen Sie vor dem Hochladen alle Dateien erneut aus.',
     'es-es':
       'Por favor, vuelva a seleccionar todos los archivos antes de cargarlos.',
     'fr-fr':
@@ -250,7 +250,7 @@ export const attachmentsText = createDictionary({
       have been uploaded.
     `,
     'de-ch': `
-      Der Upload war im Gange, als eine Unterbrechung auftrat. Möglicherweise
+      Der Upload war im Gange, als es zu einer Unterbrechung kam. Möglicherweise
       wurden einige Dateien hochgeladen.
     `,
     'es-es': `
@@ -333,7 +333,7 @@ export const attachmentsText = createDictionary({
     `,
     'de-ch': `
       Durch das Hochladen der Anhänge werden Anhänge im Asset-Server und in der
-      Datenbank „Specify“ erstellt.
+      Specify-Datenbank erstellt
     `,
     'es-es': 'Interrumpido. Reintentando en [X25X]',
     'fr-fr': `
@@ -379,8 +379,8 @@ export const attachmentsText = createDictionary({
       Server
     `,
     'de-ch': `
-      Beim Rollback werden die Anhänge aus der Specify-Datenbank und dem
-      Asset-Server gelöscht
+      Rollback löscht die Anhänge aus der Datenbank „Specify“ und dem Asset
+      Server.
     `,
     'es-es': `
       La reversión eliminará los archivos adjuntos de la base de datos Specify y
@@ -445,10 +445,8 @@ export const attachmentsText = createDictionary({
   },
   multipleMatchesClick: {
     'en-us': 'Multiple Matches. Click To Disambiguate',
-    'de-ch': `
-      Mehrere Übereinstimmungen. Klicken Sie hier, um die Mehrdeutigkeit zu
-      beseitigen.
-    `,
+    'de-ch':
+      'Mehrere Übereinstimmungen. Klicken Sie auf „Zur Begriffsklärung“.',
     'es-es': 'Múltiples coincidencias. Haga clic para eliminar la ambigüedad',
     'fr-fr': "Plusieurs correspondances. Cliquez pour lever l'ambiguïté",
     'ru-ru': 'Несколько матчей. Нажмите, чтобы устранить неоднозначность',
@@ -597,8 +595,8 @@ export const attachmentsText = createDictionary({
       have been {action: string}.
     `,
     'de-ch': `
-      {success: number} der {total: number} Anhänge im Datensatz waren {action:
-      string}.
+      {success: number} von {total: number} Anhängen im Datensatz waren
+      {action: string}.
     `,
     'es-es': `
       {éxito: número} de los {total: número} archivos adjuntos en el conjunto de
@@ -624,8 +622,8 @@ export const attachmentsText = createDictionary({
     `,
     'de-ch': `
       Durch das Löschen eines Datensatzes werden dieser und sein Upload-Pfad
-      dauerhaft entfernt. Auch nach dem Löschen ist Rollback für einen
-      hochgeladenen Datensatz nicht mehr möglich.
+      dauerhaft entfernt. Außerdem ist nach dem Löschen für einen hochgeladenen
+      Datensatz kein Rollback mehr möglich.
     `,
     'es-es': `
       Al eliminar un conjunto de datos, se elimina permanentemente este y su
