@@ -10,7 +10,7 @@ MODEL_SIGNAL = Literal["pre_init", "post_init", "pre_save",
                        "post_save", "pre_delete", "post_delete", "m2m_changed"]
 
 
-def orm_signal_handler(signal: MODEL_SIGNAL, model: Optional[str] = None, **kwargs):
+def _create_dec_func(signal: MODEL_SIGNAL, model: Optional[str] = None, use_kwars_in_rule_call: bool = False, **kwargs):
     def _dec(rule):
         receiver_kwargs = kwargs
         if model is not None:
@@ -21,36 +21,29 @@ def orm_signal_handler(signal: MODEL_SIGNAL, model: Optional[str] = None, **kwar
                     return
                 # since the rule knows what model the signal comes from
                 # the sender value is redundant.
-                rule(kwargs['instance'])
+                if use_kwars_in_rule_call:
+                    instance = kwargs.pop('instance')
+                    rule(instance, **kwargs)
+                else:
+                    rule(kwargs['instance'])
         else:
             def handler(sender, **kwargs):
                 if kwargs.get('raw', False):
                     return
-                rule(sender, kwargs['instance'])
+                if use_kwars_in_rule_call:
+                    instance = kwargs.pop('instance')
+                    rule(sender, instance, **kwargs)
+                else:
+                    rule(sender, kwargs['instance'])
 
         return receiver(getattr(signals, signal), **receiver_kwargs)(handler)
     return _dec
+
+def orm_signal_handler(signal: MODEL_SIGNAL, model: Optional[str] = None, **kwargs):
+    return _create_dec_func(signal, model, False, **kwargs)
 
 def orm_signal_handler_with_kwargs(signal: MODEL_SIGNAL, model: Optional[str] = None, **kwargs):
-    def _dec(rule):
-        receiver_kwargs = kwargs
-        if model is not None:
-            receiver_kwargs['sender'] = getattr(models, model)
-
-            def handler(sender, **kwargs):
-                if kwargs.get('raw', False):
-                    return
-                instance = kwargs.pop('instance')
-                rule(instance, **kwargs)
-        else:
-            def handler(sender, **kwargs):
-                if kwargs.get('raw', False):
-                    return
-                instance = kwargs.pop('instance')
-                rule(sender, instance, **kwargs)
-
-        return receiver(getattr(signals, signal), **receiver_kwargs)(handler)
-    return _dec
+    return _create_dec_func(signal, model, True, **kwargs)
 
 def disconnect_signal(signal: MODEL_SIGNAL, model_name: Optional[str] = None, dispatch_uid: Optional[Hashable] = None) -> bool:
     fetched_signal = getattr(signals, signal)
