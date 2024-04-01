@@ -1,21 +1,62 @@
 import type Handsontable from 'handsontable';
 import React from 'react';
 
-import { commonText } from '../../localization/common';
-import { f } from '../../utils/functools';
-import type { IR, RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
-import { sortFunction } from '../../utils/utils';
-import { Button } from '../Atoms/Button';
+import { commonText } from '../../../localization/common';
+import { f } from '../../../utils/functools';
+import type { IR, RA } from '../../../utils/types';
+import { filterArray } from '../../../utils/types';
+import { sortFunction } from '../../../utils/utils';
+import { Button } from '../../Atoms/Button';
 import {
   getLocalityCoordinate,
   getSelectedLocalityColumns,
-} from '../Leaflet/wbLocalityDataExtractor';
-import type { GeoLocatePayload } from '../Molecules/GeoLocate';
-import { GenericGeoLocate } from '../Molecules/GeoLocate';
-import { getSelectedRegions, getVisualHeaders, setHotData } from './hotHelpers';
+} from '../../Leaflet/wbLocalityDataExtractor';
+import type { GeoLocatePayload } from '../../Molecules/GeoLocate';
+import { GenericGeoLocate } from '../../Molecules/GeoLocate';
+import { getSelectedRegions, getVisualHeaders, setHotData } from '../hotHelpers';
+import { useBooleanState } from '../../../hooks/useBooleanState';
+import type { Dataset } from '../../WbPlanView/Wrapped';
+import type { WbMapping } from '../mapping';
+import { wbText } from '../../../localization/workbench';
+import { localityText } from '../../../localization/locality';
 
 export function WbGeoLocate({
+  hasLocality,
+  hot,
+  dataset,
+  mappings,
+}: {
+  readonly hasLocality: boolean;
+  readonly hot: Handsontable;
+  readonly dataset: Dataset;
+  readonly mappings: WbMapping;
+}): JSX.Element {
+  const [showGeoLocate, openGeoLocate, closeGeoLocate] = useBooleanState();
+  return (
+    <>
+      <Button.Small
+        aria-haspopup="dialog"
+        aria-pressed={showGeoLocate}
+        className="wb-geolocate"
+        title={wbText.unavailableWithoutLocality()}
+        onClick={openGeoLocate}
+        disabled={!hasLocality}
+      >
+        {localityText.geoLocate()}
+      </Button.Small>
+      {showGeoLocate && mappings && (
+        <GeoLocate
+          columns={dataset.columns}
+          hot={hot}
+          localityColumns={mappings.localityColumns}
+          onClose={closeGeoLocate}
+        />
+      )}
+    </>
+  );
+}
+
+function GeoLocate({
   hot,
   columns,
   localityColumns,

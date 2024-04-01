@@ -1,20 +1,62 @@
 import React from 'react';
 
-import { commonText } from '../../localization/common';
-import { wbPlanText } from '../../localization/wbPlan';
-import { Http } from '../../utils/ajax/definitions';
-import { ping } from '../../utils/ajax/ping';
-import { Button } from '../Atoms/Button';
-import { LoadingContext } from '../Core/Contexts';
-import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
-import { Dialog } from '../Molecules/Dialog';
-import { downloadFile } from '../Molecules/FilePicker';
-import type { UploadPlan } from '../WbPlanView/uploadPlanParser';
+import { commonText } from '../../../localization/common';
+import { wbPlanText } from '../../../localization/wbPlan';
+import { Http } from '../../../utils/ajax/definitions';
+import { ping } from '../../../utils/ajax/ping';
+import { Button } from '../../Atoms/Button';
+import { LoadingContext } from '../../Core/Contexts';
+import { AutoGrowTextArea } from '../../Molecules/AutoGrowTextArea';
+import { Dialog } from '../../Molecules/Dialog';
+import { downloadFile } from '../../Molecules/FilePicker';
+import type { UploadPlan } from '../../WbPlanView/uploadPlanParser';
+import { overwriteReadOnly } from '../../../utils/types';
+import type { Dataset } from '../../WbPlanView/Wrapped';
+import { useBooleanState } from '../../../hooks/useBooleanState';
+import { wbText } from '../../../localization/workbench';
+
+
+export function WbDevPlan({
+  dataset,
+  handleDatasetDelete,
+  triggerRefresh,
+}: {
+  readonly dataset: Dataset;
+  readonly handleDatasetDelete: () => void;
+  readonly triggerRefresh: () => void;
+}): JSX.Element {
+  const [showDevPlan, openDevPlan, closeDevPlan] = useBooleanState();
+  return (
+    <>
+      <Button.Small
+        aria-haspopup="dialog"
+        aria-pressed={showDevPlan}
+        className="wb-show-plan"
+        onClick={openDevPlan}
+      >
+        {wbText.uploadPlan()}
+      </Button.Small>
+      {showDevPlan && (
+        <DevShowPlan
+          dataSetId={dataset.id}
+          dataSetName={dataset.name}
+          uploadPlan={dataset.uploadplan ?? ({} as UploadPlan)}
+          onChanged={(plan) => {
+            overwriteReadOnly(dataset, 'uploadplan', plan);
+            triggerRefresh();
+          }}
+          onClose={closeDevPlan}
+          onDeleted={handleDatasetDelete}
+        />
+      )}
+    </>
+  );
+}
 
 /**
- * Show upload plan as JSON. Available in Development only
+ * Show upload plan as JSON
  */
-export function DevShowPlan({
+function DevShowPlan({
   dataSetId,
   dataSetName: name,
   uploadPlan: rawPlan,

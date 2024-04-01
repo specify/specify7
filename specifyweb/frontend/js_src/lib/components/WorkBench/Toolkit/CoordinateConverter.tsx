@@ -1,18 +1,61 @@
 import type Handsontable from 'handsontable';
 import React from 'react';
 
-import { useCachedState } from '../../hooks/useCachedState';
-import { commonText } from '../../localization/common';
-import { localityText } from '../../localization/locality';
-import { wbText } from '../../localization/workbench';
-import type { ConversionFunction } from '../../utils/latLong';
-import { Lat, Long } from '../../utils/latLong';
-import type { RA, RR } from '../../utils/types';
-import { Ul } from '../Atoms';
-import { Button } from '../Atoms/Button';
-import { Input, Label } from '../Atoms/Form';
-import { Dialog } from '../Molecules/Dialog';
-import { getSelectedCells, getSelectedLast, setHotData } from './hotHelpers';
+import { useCachedState } from '../../../hooks/useCachedState';
+import { commonText } from '../../../localization/common';
+import { localityText } from '../../../localization/locality';
+import { wbText } from '../../../localization/workbench';
+import type { ConversionFunction } from '../../../utils/latLong';
+import { Lat, Long } from '../../../utils/latLong';
+import type { RA, RR } from '../../../utils/types';
+import { Ul } from '../../Atoms';
+import { Button } from '../../Atoms/Button';
+import { Input, Label } from '../../Atoms/Form';
+import { Dialog } from '../../Molecules/Dialog';
+import { getSelectedCells, getSelectedLast, setHotData } from '../hotHelpers';
+import { useBooleanState } from '../../../hooks/useBooleanState';
+import type { Dataset } from '../../WbPlanView/Wrapped';
+import type { WbMapping } from '../mapping';
+
+export function WbConvertCoordinates({
+  hasLocality,
+  dataset,
+  data,
+  mappings,
+  hot,
+}: {
+  readonly hasLocality: boolean;
+  readonly dataset: Dataset;
+  readonly data: RA<RA<string | null>>;
+  readonly mappings: WbMapping;
+  readonly hot: Handsontable;
+}): JSX.Element {
+  const [showConvertCoords, openConvertCoords, closeConvertCoords] =
+    useBooleanState();
+  return (
+    <>
+      <Button.Small
+        aria-haspopup="dialog"
+        aria-pressed={showConvertCoords}
+        className="wb-convert-coordinates"
+        title={wbText.unavailableWithoutLocality()}
+        onClick={openConvertCoords}
+        disabled={!hasLocality}
+      >
+        {wbText.convertCoordinates()}
+      </Button.Small>
+      {showConvertCoords && (
+        <CoordinateConverter
+          columns={dataset.columns}
+          coordinateColumns={mappings.coordinateColumns}
+          data={data}
+          hot={hot}
+          onClose={closeConvertCoords}
+        />
+      )}
+    </>
+  );
+}
 
 const options: RA<{
   readonly label: string;
@@ -51,7 +94,7 @@ const options: RA<{
   },
 ];
 
-export function CoordinateConverter({
+function CoordinateConverter({
   hot,
   data,
   columns,

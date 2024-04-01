@@ -38,8 +38,6 @@ import { userPreferences } from '../Preferences/userPreferences';
 import type { UploadPlan } from '../WbPlanView/uploadPlanParser';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { WbCellCounts, WbCellMeta, WbCellMetaReact } from './CellMeta';
-import { DataSetNameView } from './DataSetMeta';
-import { DevShowPlan } from './DevShowPlan';
 import { Disambiguation, DisambiguationReact } from './DisambiguationLogic';
 import { configureHandsontable, getHotPlugin } from './handsontable';
 import { downloadDataSet } from './helpers';
@@ -53,19 +51,12 @@ import { wbViewTemplate } from './Template';
 import { WbActions, WbActionsComponent } from './WbActions';
 import { WbUtils, WbUtilsComponent, WbUtilsReact } from './WbUtils';
 import { WbValidation, WbValidationReact } from './WbValidation';
-import type { LocalizedString } from 'typesafe-i18n';
-import { className } from '../Atoms/className';
-import { Input } from '../Atoms/Form';
 import { DataSetName } from './DataSetMeta';
 import { WbSpreadsheet } from './WbSpreadsheet';
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { WbToolkit } from './WbToolkit';
-import {
-  WbAdvancedSearch,
-  getInitialSearchPreferences,
-} from './AdvancedSearch';
+import { WbToolkit } from './Toolkit/WbToolkit';
+import { getInitialSearchPreferences } from './AdvancedSearch';
 import type { WbSearchPreferences } from './AdvancedSearch';
-import { loadingBar } from '../Molecules';
 
 export type WbStatus = 'unupload' | 'upload' | 'validate';
 
@@ -82,97 +73,6 @@ export type Workbench = {
   utils: WbUtilsReact | undefined;
   setCellCounts: (cellCounts: WbCellCounts) => void;
 };
-
-type ActionHandlers = {
-  spreadSheetChanged: () => void;
-  spreadSheetUpToDate: () => void;
-};
-
-function Navigation({
-  name,
-  label,
-}: {
-  readonly name: string;
-  readonly label: LocalizedString;
-}): JSX.Element {
-  return (
-    <span
-      aria-atomic
-      className="wb-navigation-section flex rounded"
-      data-navigation-type={name}
-    >
-      <Button.Small
-        className="wb-cell-navigation brightness-80 hover:brightness-70 p-2 ring-0"
-        data-navigation-direction="previous"
-        variant="bg-inherit text-gray-800 dark:text-gray-100"
-        onClick={f.never}
-      >
-        {'<'}
-      </Button.Small>
-      <Button.Small
-        className={`
-          wb-navigation-text hover:brightness-70 grid grid-cols-[auto_1fr_auto_1fr_auto]
-          items-center ring-0
-          ${className.ariaHandled}
-        `}
-        title={wbText.clickToToggle()}
-        variant="bg-inherit text-gray-800 dark:text-gray-100"
-        onClick={f.never}
-      >
-        {label} (<span className="wb-navigation-position text-center">0</span>/
-        <span className="wb-navigation-total">0</span>)
-      </Button.Small>
-      <Button.Small
-        className="wb-cell-navigation brightness-80 hover:brightness-70 p-2 ring-0"
-        data-navigation-direction="next"
-        type="button"
-        variant="bg-inherit text-gray-800 dark:text-gray-100"
-        onClick={f.never}
-      >
-        {'>'}
-      </Button.Small>
-    </span>
-  );
-}
-
-export type DialogHandlers = {
-  show: boolean;
-  open: () => void;
-  close: () => void;
-  toggle: () => void;
-};
-
-export type HandlersObject = {
-  [key: string]: DialogHandlers;
-};
-
-// Returns an object consisting of handler objects for dialog actions in the Workbench
-function useWbViewHandlers() {
-  const handlers = {
-    toolkit: useBooleanState(),
-    upload: useBooleanState(),
-    noUploadPlan: useBooleanState(),
-    unupload: useBooleanState(),
-    statusComponent: useBooleanState(),
-    revertChanges: useBooleanState(),
-    saveProgressBar: useBooleanState(),
-    operationAborted: useBooleanState(),
-    devPlan: useBooleanState(),
-    changeOwner: useBooleanState(),
-    geoLocate: useBooleanState(),
-    leafletMap: useBooleanState(),
-    coordinatesConversion: useBooleanState(),
-  };
-
-  // convert useBooleanState()'s resulting array to an object
-  const handlersObject: HandlersObject = {};
-  for (const [name, state] of Object.entries(handlers)) {
-    const [show, open, close, toggle] = state;
-    handlersObject[name] = { show, open, close, toggle };
-  }
-
-  return handlersObject;
-}
 
 export function WbViewReact({
   dataset,
@@ -198,17 +98,6 @@ export function WbViewReact({
   const isUploaded =
     dataset.uploadresult !== null && dataset.uploadresult.success;
   const canUpdate = hasPermission('/workbench/dataset', 'update');
-  const {
-    toolkit,
-    upload,
-    noUploadPlan,
-    unupload,
-    statusComponent,
-    revertChanges,
-    saveProgressBar,
-    operationAborted,
-    ...toolkitOptions
-  } = useWbViewHandlers();
   const mappings = React.useMemo(
     (): WbMapping | undefined => parseWbMappings(dataset),
     [dataset]
@@ -219,6 +108,8 @@ export function WbViewReact({
   const [hasUnSavedChanges, spreadSheetChanged, spreadSheetUpToDate] =
     useBooleanState();
 
+  const [showToolkit, _openToolkit, _closeToolkit, toggleToolkit] =
+    useBooleanState();
   const [hotIsReady, setHotToReady] = useBooleanState();
 
   React.useEffect(() => {
@@ -264,7 +155,7 @@ export function WbViewReact({
       disambiguation: undefined,
       validation: undefined,
       utils: undefined,
-      setCellCounts
+      setCellCounts,
     };
     workbench.cells = new WbCellMetaReact(workbench);
     workbench.disambiguation = new DisambiguationReact(workbench);
@@ -377,9 +268,9 @@ export function WbViewReact({
         </div>
         <Button.Small
           aria-haspopup="grid"
-          aria-pressed={toolkit.show}
+          aria-pressed={showToolkit}
           className="wb-show-toolkit"
-          onClick={toolkit.toggle}
+          onClick={toggleToolkit}
         >
           {commonText.tools()}
         </Button.Small>
@@ -401,15 +292,15 @@ export function WbViewReact({
           toggleResults={toggleResults}
         />
       </div>
-      {toolkit.show && (
+      {showToolkit && (
         <WbToolkit
           dataset={dataset}
           hotRef={hotRef}
-          toolkitOptions={toolkitOptions}
           mappings={mappings as WbMapping}
           data={data}
           handleDatasetDelete={handleDatasetDelete}
           hasUnSavedChanges={hasUnSavedChanges}
+          triggerRefresh={triggerRefresh}
         />
       )}
       <div className="flex flex-1 gap-4 overflow-hidden">
