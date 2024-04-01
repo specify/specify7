@@ -307,7 +307,7 @@ def bulk_move(node, into, agent):
         f"Unexpected type of node '{into.__class__.__name__}', during bulk move. Expected '{model.__class__.__name__}'",
         {"node" : into.__class__.__name__,
         "nodeModel" : model.__class__.__name__,
-        "operation" : "bulkMove",
+        "operation" : "bulk_move",
         "localizationKey" : "invalidNodeType"})
     target = model.objects.select_for_update().get(id=into.id)
     if not (node.definition_id == target.definition_id): raise AssertionError("Bulk move across trees", {"localizationKey" : "operationAcrossTrees", "operation": "bulk move"})
