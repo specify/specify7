@@ -209,7 +209,7 @@ export const wbText = createDictionary({
     'es-es': 'Pinchar para alternar visibilidad',
     'fr-fr': 'Cliquez pour basculer la visibilité',
     'uk-ua': 'Натисніть, щоб увімкнути видимість',
-    'de-ch': 'Klicken Sie, um die Sichtbarkeit umzuschalten',
+    'de-ch': 'Klicken, um die Sichtbarkeit umzuschalten',
   },
   configureSearchReplace: {
     'en-us': 'Configure Search & Replace',
@@ -372,10 +372,10 @@ export const wbText = createDictionary({
       завантаження.
     `,
     'de-ch': `
-      Durch ein Rollback werden die neuen Datensätze entfernt, die dieser
-      Datensatz zur Specify-Datenbank hinzugefügt hat. Das gesamte Rollback wird
-      abgebrochen, wenn die hochgeladenen Daten seit dem Hochladen von anderen
-      Datensätzen referenziert (wiederverwendet) wurden.
+      Durch das Zurücksetzen werden die neuen Datensätze gelöscht, die dieser
+      Datensatz zur angegebenen Datenbank hinzugefügt hat. Das gesamte
+      Zurücksetzen wird abgebrochen, wenn seit dem Hochladen auf hochgeladene
+      Daten von anderen Datensätzen verwiesen (wiederverwendet) wurde.
     `,
   },
   startUpload: {
@@ -400,8 +400,8 @@ export const wbText = createDictionary({
     `,
     'uk-ua': 'Завантаження набору даних додасть дані до бази даних Specify.',
     'de-ch': `
-      Durch das Hochladen des Datensatzes werden die Daten zur angegebenen
-      Datenbank hinzugefügt.
+      Durch das Hochladen des Datensatzes werden die Daten zur Specify-Datenbank
+      hinzugefügt.
     `,
   },
   deleteDataSet: {
@@ -587,8 +587,8 @@ export const wbText = createDictionary({
       Перевірка не виявила помилок, вона готова до завантаження в базу даних.
     `,
     'de-ch': `
-      Bei der Validierung wurden keine Fehler festgestellt. Die Datei kann nun
-      in die Datenbank hochgeladen werden.
+      Bei der Validierung wurden keine Fehler gefunden. Der Upload kann nun in
+      die Datenbank erfolgen.
     `,
   },
   validationReEditWarning: {
@@ -677,7 +677,7 @@ export const wbText = createDictionary({
     'es-es': 'Carga fallida debido a celdas de error',
     'fr-fr': "Échec du téléchargement en raison de cellules d'erreur",
     'uk-ua': 'Помилка завантаження через клітинки помилок',
-    'de-ch': 'Hochladen aufgrund fehlerhafter Zellen fehlgeschlagen',
+    'de-ch': 'Der Upload ist aufgrund fehlerhafter Zellen fehlgeschlagen',
   },
   uploadErrorsDescription: {
     'en-us': 'The upload failed due to one or more cell value errors.',
@@ -691,7 +691,8 @@ export const wbText = createDictionary({
     'uk-ua':
       'Помилка завантаження через одну або кілька помилок значення клітинки.',
     'de-ch': `
-      Der Upload ist aufgrund eines oder mehrerer Zellwertfehler fehlgeschlagen.
+      Der Upload ist aufgrund eines oder mehrerer Zellenwertfehler
+      fehlgeschlagen.
     `,
   },
   uploadErrorsSecondDescription: {
@@ -906,7 +907,7 @@ export const wbText = createDictionary({
     `,
     'uk-ua': 'Ця дія недоступна під час перегляду результатів завантаження',
     'de-ch':
-      'Diese Aktion ist beim Anzeigen der Upload-Ergebnisse nicht verfügbar',
+      'Diese Aktion ist beim Anzeigen der Upload-Ergebnisse nicht verfügbar.',
   },
   unavailableWhileValidating: {
     'en-us': 'This action is unavailable while Data Check is in progress',
@@ -954,7 +955,7 @@ export const wbText = createDictionary({
     'es-es': 'Incluir Símbolos DMS',
     'fr-fr': 'Inclure les symboles DMS',
     'uk-ua': 'Додайте символи DMS',
-    'de-ch': 'Fügen Sie DMS-Symbole hinzu',
+    'de-ch': 'DMS-Symbole einbinden',
   },
   uploadResults: {
     'en-us': 'Upload Results',
@@ -1054,7 +1055,7 @@ export const wbText = createDictionary({
     'es-es': 'Coincidir mayúsculas y minúsculas',
     'fr-fr': 'Cas de correspondance',
     'uk-ua': 'Відмінок сірника',
-    'de-ch': 'Streichholzetui',
+    'de-ch': 'Groß-/Kleinschreibung beachten',
   },
   useRegularExpression: {
     'en-us': 'Use regular expression',
@@ -1118,8 +1119,7 @@ export const wbText = createDictionary({
     'es-es': 'Importar Archivo para Crear Nuevo Conjunto de Datos',
     'fr-fr': 'Importer un fichier pour créer un nouvel ensemble de données',
     'uk-ua': 'Імпортуйте файл, щоб створити новий набір даних',
-    'de-ch':
-      'Importieren Sie eine Datei, um einen neuen Datensatz zu erstellen',
+    'de-ch': 'Importieren einer Datei zum Erstellen eines neuen Datensatzes',
   },
   previewDataSet: {
     'en-us': 'Preview Dataset',
