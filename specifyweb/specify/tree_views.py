@@ -1,4 +1,5 @@
 from functools import wraps
+from typing import Literal
 from django.db import transaction
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
@@ -19,6 +20,8 @@ from .views import login_maybe_required, openapi
 
 import logging
 logger = logging.getLogger(__name__)
+
+TREE_TABLE = Literal['Taxon', 'Storage', 'Geography', 'Geologictimeperiod', 'Lithostrat']
 
 def tree_mutation(mutation):
     @login_maybe_required
@@ -257,26 +260,42 @@ def move(request, tree, id):
 
 @openapi(schema={
     "post": {
-        "parameters": [
-            {
-                "name": "target_node",
-                "in": "query",
-                "required": True,
-                "schema": {
-                    "type": "integer"
-                },
-                "description": "The ID of the storage tree node to which the preparations should be moved."
-            },
-            {
-                "name": "current_node",
-                "in": "query",
-                "required": True,
-                "schema": {
-                    "type": "integer"
-                },
-                "description": "The ID of the current storage tree node that holds the preparations."
-            },
-        ],
+        "parameters": [{
+            "name": "tree",
+            "in": "path",
+            "required": True,
+            "schema": {
+                "enum": ['Storage']
+            }
+        },
+        {
+            "name": "id",
+            "in": "path",
+            "description": "The id of the node from which to bulk move from.",
+            "required": True,
+            "schema": {
+                "type": "integer",
+                "minimum": 0
+            }
+        }],
+        "requestBody": {
+            "required": True,
+            "content": {
+                "application/x-www-form-urlencoded": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "target": { 
+                                "type": "integer", 
+                                "description": "The ID of the storage tree node to which the preparations should be moved." 
+                            },
+                        },
+                        'required': ['target'],
+                        'additionalProperties': False
+                    }
+                }
+            }
+        },
         "responses": {
             "200": {
                 "description": "Success message indicating the bulk move operation was successful."
@@ -285,7 +304,7 @@ def move(request, tree, id):
     }
 })
 @tree_mutation
-def bulkMove(request, tree, id):
+def bulk_move(request, tree: TREE_TABLE, id: int):
     """Bulk move the preparations under the <tree> node <id> to have
     as new location storage the node indicated by the 'target'
     POST parameter.

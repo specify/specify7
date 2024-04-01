@@ -454,21 +454,8 @@ export const backEndText = createDictionary({
       Erwartet „{nodeModel:string}“
     `,
   },
-  mergeAcrossTrees: {
-    'en-us': 'Merging across trees',
-    'es-es': 'Fusionando entre árboles',
-    'fr-fr': 'Fusion entre arbres',
-    'ru-ru': 'Слияние деревьев',
-    'uk-ua': 'Комбінування дерев',
-    'de-ch': 'Über Bäume hinweg verschmelzen',
-  },
-  synonymizeAcrossTrees: {
-    'en-us': 'Synonymizing across trees',
-    'es-es': 'Sinonimizando entre árboles',
-    'fr-fr': 'Synonymiser à travers les arbres',
-    'ru-ru': 'Синонимизация деревьев',
-    'uk-ua': 'Синонімізація дерев',
-    'de-ch': 'Baumübergreifend synonymisieren',
+  operationAcrossTrees: {
+    'en-us': '{operation:string} across trees',
   },
   limitReachedDeterminingAccepted: {
     'en-us': `
