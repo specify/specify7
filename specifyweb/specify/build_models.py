@@ -65,7 +65,7 @@ def make_model(module, table, datamodel):
         except AbortSave:
             return
         
-    def avant_delete(self):
+    def pre_constraints_delete(self):
         # This function is to be called before the object is deleted, and before the pre_delete signal is sent.
         # It will manually send the pre_delete signal for the django model object.
         # The pre_delete function must contain logic that will prevent ForeignKey constraints from being violated.
@@ -75,7 +75,7 @@ def make_model(module, table, datamodel):
     attrs['save'] = save
     attrs['Meta'] = Meta
     if table.django_name in tree_def_item_tables:
-        attrs['avant_delete'] = avant_delete
+        attrs['pre_constraints_delete'] = pre_constraints_delete
 
     supercls = getattr(model_extras, table.django_name, models.Model)
     model = type(table.django_name, (supercls,), attrs)
