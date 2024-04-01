@@ -165,10 +165,7 @@ export function Tree<SCHEMA extends AnyTree>({
                       treeDefinitionItems[0]._tableName,
                       'create'
                     ) ? (
-                      <AddRank
-                        tableName={tableName}
-                        treeDefinitionItems={treeDefinitionItems}
-                      />
+                      <AddRank treeDefinitionItems={treeDefinitionItems} />
                     ) : null}
                   </>
                 ) : null}
