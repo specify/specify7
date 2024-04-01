@@ -13,7 +13,6 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { useAllSaveBlockers } from '../DataModel/saveBlockers';
 import type { Collection } from '../DataModel/specifyTable';
-import { tables } from '../DataModel/tables';
 import type {
   DisposalPreparation,
   GiftPreparation,
