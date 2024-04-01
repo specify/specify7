@@ -9,6 +9,7 @@ from django.db.models import F, Q, ProtectedError
 from django.conf import settings
 
 from specifyweb.businessrules.exceptions import TreeBusinessRuleException
+import specifyweb.specify.models as spmodels
 
 from  .auditcodes import TREE_MERGE, TREE_SYNONYMIZE, TREE_DESYNONYMIZE
 
@@ -662,18 +663,11 @@ def renumber_tree(table):
     Sptasksemaphore.objects.filter(taskname__in=tasknames).update(islocked=False)
 
 def is_instance_of_tree_def_item(obj):
-    from specifyweb.specify.models import (
-        Geographytreedefitem,
-        Geologictimeperiodtreedefitem,
-        Lithostrattreedefitem,
-        Storagetreedefitem,
-        Taxontreedefitem,
-    )
     tree_def_item_classes = [
-        Geographytreedefitem,
-        Geologictimeperiodtreedefitem,
-        Lithostrattreedefitem,
-        Storagetreedefitem,
-        Taxontreedefitem,
+        spmodels.Geographytreedefitem,
+        spmodels.Geologictimeperiodtreedefitem,
+        spmodels.Lithostrattreedefitem,
+        spmodels.Storagetreedefitem,
+        spmodels.Taxontreedefitem,
     ]
     return any(isinstance(obj, cls) for cls in tree_def_item_classes)
