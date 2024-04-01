@@ -310,7 +310,7 @@ def bulk_move(request, tree: TREE_TABLE, id: int):
     POST parameter.
     """
     check_permission_targets(request.specify_collection.id,
-                             request.specify_user.id, [perm_target(tree).bulkMove])
+                             request.specify_user.id, [perm_target(tree).bulk_move])
     node = get_object_or_404(tree, id=id)
     target = get_object_or_404(tree, id=request.POST['target'])
     tree_extras.bulk_move(node, target, request.specify_user_agent)
@@ -372,7 +372,7 @@ class StorageMutationPT(PermissionTarget):
     resource = "/tree/edit/storage"
     merge = PermissionTargetAction()
     move = PermissionTargetAction()
-    bulkMove = PermissionTargetAction()
+    bulk_move = PermissionTargetAction()
     synonymize = PermissionTargetAction()
     desynonymize = PermissionTargetAction()
     repair = PermissionTargetAction()
