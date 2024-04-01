@@ -36,6 +36,7 @@ Alternatively, please fill out the following information manually:
 - Specify 7 Version: [e.g. 7.6.1]
 - Database Name: [e.g. kufish] (you can see this in the "About Specify 7" dialog)
 - Collection name: [e.g. KU Fish Tissue]
+- User Name: [e.g. SpAdmin]
 
 **Reported By**
 Name of your institution
