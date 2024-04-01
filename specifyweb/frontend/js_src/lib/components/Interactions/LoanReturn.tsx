@@ -179,11 +179,11 @@ function PreparationReturn({
             title={commonText.clearAll()}
             onClick={(): void =>
               setState(
-                state.map(({ remarks }) => ({
+                state.map((preparation) => ({
                   resolve: 0,
                   returns: 0,
-                  unresolved: 0,
-                  remarks,
+                  unresolved: preparation.unresolved ?? 0,
+                  remarks: preparation.remarks,
                 }))
               )
             }
