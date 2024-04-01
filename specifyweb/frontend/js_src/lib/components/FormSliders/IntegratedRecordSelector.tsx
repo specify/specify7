@@ -108,7 +108,8 @@ export function IntegratedRecordSelector({
 
   const [isDialogOpen, handleOpenDialog, handleCloseDialog] = useBooleanState();
 
-  const isAttachmentTable = tables.Collection.name.includes('Attachment');
+  const isAttachmentTable =
+    collection.table.specifyTable.name.includes('Attachment');
 
   return (
     <ReadOnlyContext.Provider value={isReadOnly}>
