@@ -1,6 +1,6 @@
 import logging
 
-from specifyweb.businessrules.orm_signal_handler import orm_signal_handler, orm_signal_handler_with_kwargs
+from specifyweb.businessrules.orm_signal_handler import orm_signal_handler
 from specifyweb.businessrules.exceptions import TreeBusinessRuleException
 from specifyweb.specify.tree_extras import is_instance_of_tree_def_item
 from specifyweb.specify.tree_ranks import *
@@ -12,9 +12,8 @@ def pre_tree_rank_initiation_handler(sender, obj):
     if is_instance_of_tree_def_item(obj) and obj.pk is None: # is it a treedefitem and new object?
         pre_tree_rank_init(obj)
 
-@orm_signal_handler_with_kwargs('post_save')
-def post_tree_rank_initiation_handler(sender, obj, **kwargs):
-    created = kwargs.get('created', False) # Check if the object was just created
+@orm_signal_handler('post_save')
+def post_tree_rank_initiation_handler(sender, obj, created):
     if is_instance_of_tree_def_item(obj) and created: # is it a treedefitem?
         post_tree_rank_save(sender, obj)
 
