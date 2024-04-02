@@ -264,7 +264,7 @@ msgid "close"
 msgstr "Закрыть"
 
 #: components/DataEntryTables/Edit.tsx:47
-#: components/Interactions/LoanReturn.tsx:197
+#: components/Interactions/LoanReturn.tsx:196
 #: components/Interactions/PrepDialog.tsx:127
 #: components/Security/SetPassword.tsx:37
 #: components/WbPlanView/MapperComponents.tsx:414
@@ -995,13 +995,13 @@ msgstr "{label:string}: <wrap />"
 msgid "bulkSelect"
 msgstr "Массовый выбор"
 
-#: components/Interactions/LoanReturn.tsx:258
+#: components/Interactions/LoanReturn.tsx:257
 #. Used in: Components > Interactions > Loan Return
 #, fuzzy
 msgid "bulkReturn"
 msgstr "Массовый возврат"
 
-#: components/Interactions/LoanReturn.tsx:272
+#: components/Interactions/LoanReturn.tsx:271
 #. Used in: Components > Interactions > Loan Return
 #, fuzzy
 msgid "bulkResolve"
