@@ -284,9 +284,9 @@ export function TreeRow<SCHEMA extends AnyTree>({
                         })
                       : fetchedChildrenName === undefined
                       ? undefined
-                      : `${treeText.synonyms()} ${fetchedChildrenName.join(
-                          ','
-                        )}`
+                      : treeText.synonyms({
+                          names: fetchedChildrenName.join(', '),
+                        })
                   }
                 >
                   {doIncludeAuthorPref &&
