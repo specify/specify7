@@ -27,16 +27,15 @@ export const interactionsText = createDictionary({
   },
   recordReturn: {
     'en-us': '{table:string} Return',
-    'ru-ru': '{table:string} Возврат',
+    'ru-ru': '{table:string} записи',
     'es-es': 'Devuelve {table:string}',
     'fr-fr': '{table:string} Retour',
     'uk-ua': 'Повернення {table:string}',
-    'de-ch': '{table:string} Zurück',
+    'de-ch': '{table:string} Datensätze',
   },
   preparationsNotFoundFor: {
     'en-us': 'No preparations were found for the following records:',
-    'de-ch':
-      'Für die folgenden Datensätze wurden keine Vorbereitungen gefunden:',
+    'de-ch': 'Für folgende Datensätze wurden keine Präparate gefunden:',
     'es-es': 'No se encontraron preparativos para los siguientes registros:',
     'fr-fr':
       "Aucune préparation n'a été trouvée pour les enregistrements suivants :",
@@ -46,12 +45,12 @@ export const interactionsText = createDictionary({
   preparationsNotAvailableFor: {
     'en-us': 'No preparations are available for the following records:',
     'de-ch': 'Für folgende Datensätze liegen keine Vorbereitungen vor:',
-    'es-es': 'No hay preparativos disponibles para los siguientes registros:',
+    'es-es': 'No se encontraron preparativos para los siguientes registros:',
     'fr-fr': `
       Aucune préparation n'est disponible pour les enregistrements suivants :
     `,
     'ru-ru': 'Для следующих записей подготовка невозможна:',
-    'uk-ua': 'Немає жодної підготовки для таких записів:',
+    'uk-ua': 'Продовжити',
   },
   problemsFound: {
     'en-us': 'There are problems with the entry:',
@@ -167,7 +166,7 @@ export const interactionsText = createDictionary({
     'en-us': 'Return all preparations',
     'ru-ru': 'Вернуть все препараты',
     'es-es': 'Devolver todas las preparaciones',
-    'fr-fr': 'Retourner toutes les préparations',
+    'fr-fr': '[X0X] Retour',
     'uk-ua': 'Повернути всі препарати',
     'de-ch': 'Alle Präparate zurückgeben',
   },
@@ -354,8 +353,10 @@ export const interactionsText = createDictionary({
   noPreparationsWarning: {
     'en-us':
       'None of these objects have preparations. Would you like to continue?',
-    'de-ch':
-      'Keines dieser Objekte verfügt über Präparate. Möchten Sie fortfahren?',
+    'de-ch': `
+      Für keines dieser Objekte liegen Vorbereitungen vor. Möchten Sie
+      fortfahren?
+    `,
     'es-es': 'Ninguno de estos objetos tiene preparaciones. ¿Quiere continuar?',
     'fr-fr': "Aucun de ces objets n'a de préparation. Voulez-vous continuer?",
     'ru-ru': `
@@ -367,7 +368,7 @@ export const interactionsText = createDictionary({
     'en-us': 'Continue',
     'de-ch': 'Weitermachen',
     'es-es': 'Continuar',
-    'fr-fr': 'Continuer',
+    'fr-fr': 'Continuer sans préparation',
     'ru-ru': 'Продолжать',
     'uk-ua': 'Продовжити',
   },

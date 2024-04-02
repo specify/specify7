@@ -86,7 +86,7 @@ export const formsText = createDictionary({
     'es-es': 'Comprobando si el recurso se puede eliminar…',
     'fr-fr': 'Vérifier si la ressource peut être supprimée…',
     'uk-ua': 'Перевірка можливості видалення ресурсу…',
-    'de-ch': 'Es wird geprüft, ob die Ressource gelöscht werden kann …',
+    'de-ch': 'Überprüfen, ob die Ressource gelöscht werden kann …',
   },
   deleteBlocked: {
     'en-us': 'Delete blocked',
@@ -142,9 +142,9 @@ export const formsText = createDictionary({
       with at least a start time or and end time populated.
     `,
     'de-ch': `
-      Das Paleo Map-Plugin erfordert, dass das {localityTable:string} über
-      geografische Koordinaten verfügt und dass der Paläo-Kontext über ein
-      geografisches Alter mit mindestens einer Start- oder Endzeit verfügt.
+      Das Paleo Map-Plugin erfordert, dass die {localityTable:string}
+      geografische Koordinaten haben und dass der Paläo-Kontext ein
+      geografisches Alter mit mindestens einer Start- oder Endzeit hat.
     `,
     'es-es': 'Seleccionar fuente de tablas',
     'fr-fr': 'Sélectionnez la source des tables',
@@ -259,8 +259,9 @@ export const formsText = createDictionary({
   },
   invalidNumericPicklistValue: {
     'en-us': 'Only numeric values are supported in this {pickListTable:string}',
-    'de-ch':
-      'Es werden nur numerische Werte unterstützt {pickListTable:string}',
+    'de-ch': `
+      In diesem {pickListTable:string} werden nur numerische Werte unterstützt.
+    `,
     'es-es':
       'En este {pickListTable:string} solo se admiten valores numéricos.',
     'fr-fr': 'Résultats supplémentaires omis',
@@ -323,7 +324,7 @@ export const formsText = createDictionary({
     'es-es': 'Último registro',
     'fr-fr': 'Dernier enregistrement',
     'uk-ua': 'Останній запис',
-    'de-ch': 'Letzter Eintrag',
+    'de-ch': 'Letzter Datensatz',
   },
   previousRecord: {
     'en-us': 'Previous Record',
@@ -394,10 +395,10 @@ export const formsText = createDictionary({
       щоб запобігти збереженню суперечливих даних.
     `,
     'de-ch': `
-      Die auf dieser Seite angezeigten Daten wurden durch einen anderen Benutzer
-      oder in einem anderen Browsertab geändert und sind nicht mehr aktuell. Um
-      eine inkonsistente Datenspeicherung zu verhindern, muss die Seite neu
-      geladen werden.
+      Die auf dieser Seite angezeigten Daten wurden von einem anderen Benutzer
+      oder in einem anderen Browser-Tab geändert und sind veraltet. Um zu
+      verhindern, dass inkonsistente Daten gespeichert werden, muss die Seite
+      neu geladen werden.
     `,
   },
   saveBlocked: {
@@ -555,8 +556,9 @@ export const formsText = createDictionary({
       використовувати лише у формі {correctTable:string}.
     `,
     'de-ch': `
-      Der Befehl kann nicht im Formular {currentTable:string} verwendet werden.
-      Es kann nur auf dem Formular {correctTable:string} verwendet werden.
+      Der Befehl kann nicht auf dem Formular {currentTable:string} verwendet
+      werden. Er kann nur auf dem Formular {correctTable:string} verwendet
+      werden.
     `,
   },
   pluginName: {
@@ -713,7 +715,7 @@ export const formsText = createDictionary({
     'uk-ua': 'Можливо, ви захочете зберегти цей запис, перш ніж перейти.',
     'de-ch': `
       Möglicherweise möchten Sie diesen Datensatz speichern, bevor Sie
-      fortfahren.
+      wegnavigieren.
     `,
   },
   creatingNewRecord: {
@@ -819,7 +821,7 @@ export const formsText = createDictionary({
     'es-es': 'Mostrar botón Llevar adelante',
     'fr-fr': 'Afficher le bouton Reporter',
     'uk-ua': 'Показати кнопку «Перенести вперед».',
-    'de-ch': 'Schaltfläche „Übertrag anzeigen“',
+    'de-ch': 'Schaltfläche „Übertragen“ anzeigen',
   },
   carryForwardDescription: {
     'en-us': 'Create a new record with certain fields carried over',
@@ -828,7 +830,8 @@ export const formsText = createDictionary({
     'fr-fr': 'Créer un nouvel enregistrement avec certains champs reportés',
     'uk-ua': 'Створіть новий запис із певними перенесеними полями',
     'de-ch': `
-      Erstellen Sie einen neuen Datensatz mit übernommenen bestimmten Feldern
+      Einen neuen Datensatz erstellen, bei dem bestimmte Felder übernommen
+      werden
     `,
   },
   carryForwardSettingsDescription: {
@@ -909,7 +912,7 @@ export const formsText = createDictionary({
     'es-es': 'Utilice etiquetas de campo localizadas',
     'fr-fr': 'Utiliser des étiquettes de champ localisées',
     'uk-ua': 'Використовуйте локалізовані мітки полів',
-    'de-ch': 'Lokalisierte Feldbeschriftungen verwenden',
+    'de-ch': 'Verwenden Sie lokalisierte Feldbezeichnungen',
   },
   showFieldLabels: {
     'en-us': 'Show Localized Field Labels',

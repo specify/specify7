@@ -99,7 +99,7 @@ export const schemaText = createDictionary({
   },
   setScope: {
     'en-us': 'Set Scope',
-    'de-ch': 'Geltungsbereich festlegen',
+    'de-ch': 'Umfang festlegen',
     'es-es': 'Establecer alcance',
     'fr-fr': 'Définir la portée',
     'ru-ru': 'Установить область',
@@ -419,7 +419,7 @@ export const schemaText = createDictionary({
   },
   uniquenessDuplicatesFound: {
     'en-us': 'Duplicates found in database',
-    'de-ch': 'In der Datenbank gefundene Duplikate',
+    'de-ch': 'Duplikate in der Datenbank gefunden',
     'es-es': 'muchos a uno',
     'fr-fr': 'Doublons trouvés dans la base de données',
     'ru-ru': 'В базе данных найдены дубликаты',
@@ -431,7 +431,7 @@ export const schemaText = createDictionary({
     'es-es': 'Exportar duplicados',
     'fr-fr': 'Exporter les doublons',
     'ru-ru': 'Экспортировать дубликаты',
-    'uk-ua': 'Експортувати дублікати',
+    'uk-ua': 'Експорт дублікатів',
   },
   numberOfDuplicates: {
     'en-us': 'Number of Duplicates',

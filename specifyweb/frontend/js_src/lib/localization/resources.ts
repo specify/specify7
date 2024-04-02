@@ -148,7 +148,7 @@ export const resourcesText = createDictionary({
   uiFormatters: {
     'en-us': 'Field Formatters',
     'ru-ru': 'Форматировщики полей',
-    'es-es': 'Formateadores de campo',
+    'es-es': 'Formateadores de campos',
     'fr-fr': 'Formateurs de champs',
     'uk-ua': 'Форматувальники полів',
     'de-ch': 'Feldformatierer',
@@ -254,10 +254,10 @@ export const resourcesText = createDictionary({
       таблиц.
     `,
     'uk-ua': `
-      «Агрегація таблиць» контролює, як кілька записів таблиці консолідуються в
-      один текстовий рядок. Формат таблиці, роздільник, суфікс, поле сортування
-      та ліміт попереднього перегляду запису можна налаштувати. Він може
-      відображатися в результатах запитів і у форматах таблиць.
+      «Агрегація таблиць» контролює, як кілька записів таблиці об’єднуються
+      разом в один текстовий рядок. Формат таблиці, роздільник, суфікс, поле
+      сортування та ліміт попереднього перегляду запису можна налаштувати. Він
+      може відображатися в результатах запитів і у форматах таблиць.
     `,
   },
   formattedResource: {
@@ -310,7 +310,7 @@ export const resourcesText = createDictionary({
   },
   duplicateFormatters: {
     'en-us': 'Record formatter names must be unique',
-    'de-ch': 'Namen von Datensatzformatierern müssen eindeutig sein',
+    'de-ch': 'Datensatzformatierernamen müssen eindeutig sein',
     'es-es': 'Los nombres de los formateadores de registros deben ser únicos.',
     'fr-fr': "Les noms du formateur d'enregistrement doivent être uniques",
     'ru-ru': 'Имена средств форматирования записей должны быть уникальными.',
@@ -758,7 +758,7 @@ export const resourcesText = createDictionary({
     'es-es': 'Ejecutar en colección',
     'fr-fr': 'Exécuter en collection',
     'ru-ru': 'Запустить в коллекцию',
-    'uk-ua': 'Запустити в колекцію',
+    'uk-ua': 'Запустити в колекції',
   },
   createNewForm: {
     'en-us': 'Create new form',
@@ -821,7 +821,7 @@ export const resourcesText = createDictionary({
   },
   customizeFieldFormatters: {
     'en-us': 'Customize Field Formats',
-    'de-ch': 'Passen Sie Feldformate an',
+    'de-ch': 'Feldformate anpassen',
     'es-es': 'Personalizar formatos de campo',
     'fr-fr': 'Personnaliser les formats de champs',
     'ru-ru': 'Настройте форматы полей',
@@ -829,7 +829,7 @@ export const resourcesText = createDictionary({
   },
   expandConditionalField: {
     'en-us': 'Expand Conditional Field',
-    'de-ch': 'Bedingtes Feld erweitern',
+    'de-ch': 'Erweitern Sie das Bedingungsfeld',
     'es-es': 'Expandir campo condicional',
     'fr-fr': 'Développer le champ conditionnel',
     'ru-ru': 'Развернуть условное поле',
@@ -837,7 +837,7 @@ export const resourcesText = createDictionary({
   },
   collapseConditionalField: {
     'en-us': 'Collapse Conditional Field',
-    'de-ch': 'Bedingtes Feld reduzieren',
+    'de-ch': 'Bedingtes Feld ausblenden',
     'es-es': 'Contraer campo condicional',
     'fr-fr': 'Réduire le champ conditionnel',
     'ru-ru': 'Свернуть условное поле',

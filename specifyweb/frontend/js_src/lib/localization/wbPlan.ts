@@ -69,7 +69,7 @@ export const wbPlanText = createDictionary({
     'es-es': 'sin mapear',
     'fr-fr': 'Non mappé',
     'uk-ua': 'Не зіставлений',
-    'de-ch': 'Eine Zuordnung ist erforderlich',
+    'de-ch': 'Zuordnung ist erforderlich',
   },
   mapped: {
     'en-us': 'Mapped',
@@ -345,7 +345,7 @@ export const wbPlanText = createDictionary({
     'es-es': 'Se requiere asignación',
     'fr-fr': 'Une cartographie est requise',
     'uk-ua': 'Потрібне відображення',
-    'de-ch': 'Zuordnung ist erforderlich',
+    'de-ch': 'Eine Zuordnung ist erforderlich',
   },
   continueEditing: {
     'en-us': 'Continue Editing',
@@ -484,7 +484,7 @@ export const wbPlanText = createDictionary({
     'en-us': 'Base Table',
     'ru-ru': 'Базовая таблица',
     'es-es': 'Tabla Base',
-    'fr-fr': 'Tableau de base',
+    'fr-fr': 'Table de base',
     'uk-ua': 'Базовий стіл',
     'de-ch': 'Basistabelle',
   },

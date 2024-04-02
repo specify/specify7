@@ -113,7 +113,7 @@ export const userText = createDictionary({
     'es-es': 'Establecer agentes usuarios',
     'fr-fr': 'Définir les agents utilisateurs',
     'uk-ua': 'Встановити агентів користувача',
-    'de-ch': 'Legen Sie Benutzeragenten fest',
+    'de-ch': 'Benutzeragenten festlegen',
   },
   noAgent: {
     'en-us': 'Current user does not have an agent assigned',
@@ -121,7 +121,7 @@ export const userText = createDictionary({
     'es-es': 'El usuario actual no tiene un agente asignado',
     'fr-fr': "L'utilisateur actuel n'a pas d'agent attribué",
     'uk-ua': 'Поточний користувач не має призначеного агента',
-    'de-ch': 'Dem aktuellen Benutzer ist kein Agent zugewiesen',
+    'de-ch': 'Dem aktuellen Benutzer ist kein Agent zugewiesen.',
   },
   noAgentDescription: {
     'en-us': 'Please log in as admin and assign an agent to this user',
@@ -141,7 +141,7 @@ export const userText = createDictionary({
     `,
     'de-ch': `
       Bitte melden Sie sich als Administrator an und weisen Sie diesem Benutzer
-      einen Agenten zu.
+      einen Agenten zu
     `,
   },
   helloMessage: {
@@ -225,10 +225,10 @@ export const userText = createDictionary({
       записом {providerName:string} для майбутніх входів.
     `,
     'de-ch': `
-      Derzeit ist Ihrem {providerName:string}-Konto kein Benutzer vom Typ
-      „Specify“ zugeordnet. Wenn Sie einen Benutzernamen und ein Passwort vom
-      Typ „Specify“ haben, können Sie diese unten eingeben, um diesen Benutzer
-      bei zukünftigen Anmeldungen Ihrem {providerName:string}-Konto zuzuordnen.
+      Derzeit ist Ihrem {providerName:string}-Konto kein Specify-Benutzer
+      zugeordnet. Wenn Sie über einen Benutzernamen und ein Kennwort verfügen,
+      können Sie diese unten eingeben, um diesen Benutzer für zukünftige
+      Anmeldungen Ihrem {providerName:string}-Konto zuzuordnen.
     `,
   },
   generateMasterKey: {
@@ -500,7 +500,7 @@ export const userText = createDictionary({
     'es-es': 'Eliminar administrador',
     'fr-fr': "Supprimer l'administrateur",
     'uk-ua': 'Видалити адміністратора',
-    'de-ch': 'Administrator entfernen',
+    'de-ch': 'Admin entfernen',
   },
   canNotRemoveYourself: {
     'en-us': 'You cannot revoke your own admin status',
@@ -524,7 +524,7 @@ export const userText = createDictionary({
     'es-es': 'Guardar usuario primero',
     'fr-fr': "Enregistrez d'abord l'utilisateur",
     'uk-ua': 'Спочатку збережіть користувача',
-    'de-ch': 'Speichern Sie zuerst den Benutzer',
+    'de-ch': 'Zuerst Benutzer speichern',
   },
   mustBeManager: {
     'en-us': 'User must be saved as Manager first',
@@ -574,8 +574,7 @@ export const userText = createDictionary({
     'uk-ua': `
       Облікові записи користувачів, призначені цьому {collectionTable:string}
     `,
-    'de-ch':
-      'Benutzerkonten, die diesem {collectionTable:string} zugewiesen sind',
+    'de-ch': 'Zugewiesene Benutzerkonten {collectionTable:string}',
   },
   setPassword: {
     'en-us': 'Set Password',
@@ -615,7 +614,7 @@ export const userText = createDictionary({
     'es-es': 'Seleccionar acceso a la colección del usuario',
     'fr-fr': "Sélectionnez l'accès à la collection d'utilisateurs",
     'uk-ua': 'Виберіть доступ до колекції користувачів',
-    'de-ch': 'Wählen Sie den Zugriff auf die Benutzersammlung aus',
+    'de-ch': 'Auswählen des Benutzersammlungszugriffs',
   },
   securityPanel: {
     'en-us': 'Security and Accounts',
@@ -631,7 +630,7 @@ export const userText = createDictionary({
     'es-es': 'Biblioteca institucional de plantillas de roles',
     'fr-fr': 'Bibliothèque institutionnelle de modèles de rôles',
     'uk-ua': 'Бібліотека шаблонів ролей установи',
-    'de-ch': 'Institutionelle Bibliothek mit Rollenvorlagen',
+    'de-ch': 'Institutionsbibliothek mit Rollenvorlagen',
   },
   userRoles: {
     'en-us': 'User Roles',
@@ -837,7 +836,7 @@ export const userText = createDictionary({
     'es-es': 'Desde un rol existente:',
     'fr-fr': "À partir d'un rôle existant :",
     'uk-ua': 'З наявної ролі:',
-    'de-ch': 'Aus einer vorhandenen Rolle:',
+    'de-ch': 'Aus einer bestehenden Rolle:',
   },
   createNewRoles: {
     'en-us': 'Create new roles:',
@@ -877,7 +876,7 @@ export const userText = createDictionary({
     'es-es': 'Crear enlace de invitación',
     'fr-fr': "Créer un lien d'invitation",
     'uk-ua': 'Створити посилання для запрошення',
-    'de-ch': 'Einladungslink erstellen',
+    'de-ch': 'Erstellen Sie einen Einladungslink',
   },
   userInviteLink: {
     'en-us': 'User Invite Link',
@@ -968,7 +967,7 @@ export const userText = createDictionary({
     `,
     'de-ch': `
       Erwägen Sie, für diesen Benutzer ein Passwort festzulegen. Benutzer ohne
-      Passwort können sich nicht anmelden
+      Passwort können sich nicht anmelden.
     `,
   },
   setCollections: {
@@ -1013,7 +1012,7 @@ export const userText = createDictionary({
     'es-es': 'Todas las tablas',
     'fr-fr': 'Tous les tableaux',
     'uk-ua': 'Всі столи',
-    'de-ch': 'Alle Tabellen',
+    'de-ch': 'Alle Tische',
   },
   loadingAdmins: {
     'en-us': 'Loading admins...',
@@ -1122,7 +1121,7 @@ export const userText = createDictionary({
     'ru-ru': 'Сначала сохраните пользователя',
     'es-es': 'Cambiar al diseño vertical',
     'fr-fr': "Passer à l'affichage vertical",
-    'de-ch': 'Zum vertikalen Layout wechseln',
+    'de-ch': 'Wechseln Sie zum vertikalen Layout',
     'uk-ua': 'Спочатку збережіть користувача',
   },
   advancedTables: {
