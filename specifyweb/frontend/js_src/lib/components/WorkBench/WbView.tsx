@@ -281,10 +281,10 @@ export function WbViewReact({
           dataset={dataset}
           hasUnSavedChanges={hasUnSavedChanges}
           isUploaded={isUploaded}
-          triggerRefresh={triggerRefresh}
+          onRefresh={triggerRefresh}
           mappings={mappings as WbMapping}
           checkDeletedFail={checkDeletedFail}
-          spreadSheetUpToDate={spreadSheetUpToDate}
+          onSpreadsheetUpToDate={spreadSheetUpToDate}
           workbench={workbench}
           onToggleResults={toggleResults}
         />
