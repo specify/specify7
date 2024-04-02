@@ -842,7 +842,7 @@ msgstr "Selected"
 #: components/FormCells/FormTable.tsx:233
 #: components/FormCells/FormTable.tsx:321
 #: components/FormCells/FormTable.tsx:323
-#: components/FormSliders/IntegratedRecordSelector.tsx:85
+#: components/FormSliders/IntegratedRecordSelector.tsx:84
 #: components/Formatters/Definitions.tsx:246
 #: components/Header/index.tsx:158
 #: components/Molecules/AutoComplete.tsx:544
@@ -857,7 +857,7 @@ msgstr "Expand All"
 
 #: components/FormCells/FormTable.tsx:289
 #: components/FormCells/FormTable.tsx:291
-#: components/FormSliders/IntegratedRecordSelector.tsx:85
+#: components/FormSliders/IntegratedRecordSelector.tsx:84
 #: components/Header/index.tsx:158
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Form Sliders > Integrated Record Selector ⬤ Components > Header > Index
 msgid "collapse"
