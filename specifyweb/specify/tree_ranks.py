@@ -1,6 +1,7 @@
 from functools import wraps
 from hmac import new
 from operator import ge
+from enum import Enum
 
 from specifyweb.businessrules.exceptions import TreeBusinessRuleException
 from . import tree_extras
@@ -278,3 +279,41 @@ def set_rank_id(new_rank):
 
     # Set the new rank id
     new_rank.rankid = new_rank_id
+
+class RankOperation(Enum):
+    CREATED = 'created'
+    DELETED = 'deleted'
+    UPDATED = 'updated'
+
+def verify_rank_parent_chain_integretity(rank, rank_operation: RankOperation):
+    """
+    Verifies the parent chain integrity of the ranks.
+    """
+    tree_def_item_model_name = rank.specify_model.name.lower().title()
+    tree_def_item_model = getattr(spmodels, tree_def_item_model_name.lower().title())
+
+    # Get all the ranks and their parent ranks
+    rank_id_to_parent_dict = {item.id: item.parent.id if item.parent is not None else None
+                              for item in tree_def_item_model.objects.all()}
+
+    # Edit the rank_id_to_parent_dict with the new rank, depending on the operation.
+    if rank_operation == RankOperation.CREATED or rank_operation == RankOperation.UPDATED:
+        rank_id_to_parent_dict[rank.id] = rank.parent.id if rank.parent is not None else None
+    elif rank_operation == RankOperation.DELETED:
+        rank_id_to_parent_dict.pop(rank.id, None)
+    else:
+        raise ValueError(f"Invalid rank operation: {rank_operation}")
+
+    # Verify the parent chain integrity of the ranks.
+    # This is done by checking that each rank points to a valid parent rank, and that each parent only has one child.
+    parent_to_children_dict = {}
+    for rank_id, parent_id in rank_id_to_parent_dict.items():
+        if parent_id is not None:
+            if parent_id not in rank_id_to_parent_dict.keys():
+                raise TreeBusinessRuleException(f"Rank {rank_id} points to a non-existent parent rank {parent_id}")
+            if rank_id is not None:
+                parent_to_children_dict.setdefault(parent_id, []).append(rank_id)
+
+    for parent_id, children in parent_to_children_dict.items():
+        if len(children) > 1 and parent_id is not None:
+            raise TreeBusinessRuleException(f"Parent rank {parent_id} has more than one child rank")

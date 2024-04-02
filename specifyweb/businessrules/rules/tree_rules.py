@@ -9,8 +9,12 @@ logger = logging.getLogger(__name__)
 
 @orm_signal_handler('pre_save')
 def pre_tree_rank_initiation_handler(sender, obj):
-    if is_instance_of_tree_def_item(obj) and obj.pk is None: # is it a treedefitem and new object?
-        pre_tree_rank_init(obj)
+    if is_instance_of_tree_def_item(obj) and obj.pk is None: # is it a treedefitem? 
+        if obj.pk is None: # is it a new object?
+            pre_tree_rank_init(obj)
+            verify_rank_parent_chain_integretity(obj, RankOperation.CREATED)
+        else:
+            verify_rank_parent_chain_integretity(obj, RankOperation.UPDATED)
 
 @orm_signal_handler('post_save')
 def post_tree_rank_initiation_handler(sender, obj, created):
@@ -29,6 +33,7 @@ def cannot_delete_root_treedefitem(sender, obj):
                      "id": obj.id
                  }})
         pre_tree_rank_deletion(sender, obj)
+        verify_rank_parent_chain_integretity(obj, RankOperation.DELETED)
 
 @orm_signal_handler('post_delete')
 def post_tree_rank_deletion_handler(sender, obj):
