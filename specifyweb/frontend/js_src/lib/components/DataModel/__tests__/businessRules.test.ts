@@ -3,10 +3,12 @@ import { renderHook } from '@testing-library/react';
 import { overrideAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
 import { overwriteReadOnly } from '../../../utils/types';
+import type { SerializedResource } from '../helperTypes';
 import { getResourceApiUrl } from '../resource';
 import { useSaveBlockers } from '../saveBlockers';
 import { schema } from '../schema';
 import { tables } from '../tables';
+import type { Taxon, TaxonTreeDefItem } from '../types';
 
 mockTime();
 requireContext();
@@ -178,5 +180,62 @@ describe('uniqueness rules', () => {
     expect(result.current[0]).toStrictEqual([
       'Values of Role and Agent must be unique to Accession',
     ]);
+  });
+});
+
+describe('treeBusinessRules', () => {
+  const animaliaResponse: Partial<SerializedResource<Taxon>> = {
+    _tableName: 'Taxon',
+    id: 2,
+    fullName: 'Animalia',
+    parent: '/api/specify/taxon/1/',
+    definition: '/api/specify/taxontreedef/1/',
+    definitionItem: '/api/specify/taxontreedefitem/21/',
+    rankId: 10,
+  };
+  const zeusResponse: Partial<SerializedResource<Taxon>> = {
+    _tableName: 'Taxon',
+    id: 3,
+    name: 'Zeus',
+    rankId: 180,
+    definition: '/api/specify/taxontreedef/1/',
+    definitionItem: '/api/specify/taxontreedefitem/9/',
+    parent: '/api/specify/taxon/2/',
+  };
+
+  const genusResponse: Partial<SerializedResource<TaxonTreeDefItem>> = {
+    _tableName: 'TaxonTreeDefItem',
+    id: 9,
+    fullNameSeparator: ' ',
+    isEnforced: true,
+    isInFullName: true,
+    name: 'Genus',
+    rankId: 180,
+    title: 'Genus',
+    parent: '/api/specify/taxontreedefitem/8/',
+    treeDef: '/api/specify/taxontreedef/1/',
+    resource_uri: '/api/specify/taxontreedefitem/9/',
+  };
+
+  overrideAjax('/api/specify/taxon/2/', animaliaResponse);
+  overrideAjax('/api/specify/taxon/3/', zeusResponse);
+  overrideAjax('/api/specify/taxontreedefitem/9/', genusResponse);
+
+  test('invalid rank', async () => {
+    const taxon = new tables.Taxon.Resource({
+      name: 'Ameiurus',
+      parent: '/api/specify/taxon/2/',
+      rankid: 180,
+      definition: '/api/specify/taxontreedef/1/',
+      definitionitem: '/api/specify/taxontreedefitem/9/',
+    });
+    taxon.set('parent', '/api/specify/taxon/3/');
+
+    await taxon.businessRuleManager?.checkField('parent');
+
+    const { result } = renderHook(() =>
+      useSaveBlockers(taxon, tables.Taxon.getField('parent'))
+    );
+    expect(result.current[0]).toStrictEqual(['Bad tree structure.']);
   });
 });
