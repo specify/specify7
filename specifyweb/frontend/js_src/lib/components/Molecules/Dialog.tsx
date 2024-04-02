@@ -365,7 +365,7 @@ export function Dialog({
   React.useEffect(() => {
     const timer = setTimeout(() => {
       allowCloseRef.current = true;
-    }, 1000);
+    }, 300);
 
     return () => {
       clearTimeout(timer);
