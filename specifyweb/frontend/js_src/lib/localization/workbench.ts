@@ -19,7 +19,7 @@ export const wbText = createDictionary({
   },
   uploadPlan: {
     'en-us': 'Upload Plan',
-    'de-ch': 'Plan hochladen',
+    'de-ch': 'Upload-Plan',
     'es-es': `
       Tenga en cuenta que la validación en vivo es una función experimental y no
       sustituye a la validación regular.
@@ -142,7 +142,7 @@ export const wbText = createDictionary({
     `,
     'de-ch': `
       Beachten Sie, dass die Live-Validierung eine experimentelle Funktion ist
-      und keinen Ersatz für die reguläre Validierung darstellt.
+      und keinen Ersatz für die regelmäßige Validierung darstellt.
     `,
     'es-es': `
       Tenga en cuenta que la validación en vivo es una función experimental y no
@@ -223,7 +223,7 @@ export const wbText = createDictionary({
     'es-es': 'Configurar Consulta y Sustitución',
     'fr-fr': 'Configurer la recherche et le remplacement',
     'uk-ua': 'Налаштувати пошук і заміну',
-    'de-ch': 'Suchen und Ersetzen konfigurieren',
+    'de-ch': 'Konfigurieren Sie Suchen und Ersetzen',
   },
   modifiedCells: {
     'en-us': 'Modified Cells',
@@ -263,7 +263,7 @@ export const wbText = createDictionary({
     'es-es': 'No se puede desambiguar',
     'fr-fr': "Impossible de lever l'ambiguïté",
     'uk-ua': 'Неможливо усунути неоднозначність',
-    'de-ch': 'Keine eindeutige Eindeutigkeit möglich',
+    'de-ch': 'Kann nicht eindeutig bestimmt werden',
   },
   noDisambiguationResultsDescription: {
     'en-us': `
@@ -333,8 +333,10 @@ export const wbText = createDictionary({
     `,
     'uk-ua':
       'Функція «Застосувати все» недоступна, поки триває перевірка даних.',
-    'de-ch':
-      '„Alle anwenden“ ist nicht verfügbar, während die Datenprüfung läuft.',
+    'de-ch': `
+      „Alle anwenden“ ist nicht verfügbar, während die Datenprüfung ausgeführt
+      wird.
+    `,
   },
   beginRollback: {
     'en-us': 'Begin Data Set Roll Back?',
@@ -388,7 +390,7 @@ export const wbText = createDictionary({
     'es-es': '¿Comenzar carga de conjunto de datos?',
     'fr-fr': "Commencer le téléchargement de l'ensemble de données ?",
     'uk-ua': 'Почати завантаження набору даних?',
-    'de-ch': 'Hochladen des Datensatzes beginnen?',
+    'de-ch': 'Datensatz-Upload starten?',
   },
   startUploadDescription: {
     'en-us':
@@ -510,7 +512,7 @@ export const wbText = createDictionary({
     'es-es': 'Ahorro...',
     'fr-fr': 'Économie...',
     'uk-ua': 'Збереження...',
-    'de-ch': 'Speichern...',
+    'de-ch': 'Sparen...',
   },
   wbUnloadProtect: {
     'en-us': 'Changes to this Data Set have not been Saved.',
@@ -559,9 +561,8 @@ export const wbText = createDictionary({
       збіг необхідно усунути перед завантаженням.
     `,
     'de-ch': `
-      Dieser Wert stimmt mit zwei oder mehreren vorhandenen Datenbankeinträgen
-      überein und die Übereinstimmung muss vor dem Hochladen eindeutig geklärt
-      werden.
+      Dieser Wert stimmt mit zwei oder mehr vorhandenen Datenbankeinträgen
+      überein und die Übereinstimmung muss vor dem Hochladen eindeutig sein.
     `,
   },
   validationNoErrors: {
@@ -592,8 +593,8 @@ export const wbText = createDictionary({
       Перевірка не виявила помилок, вона готова до завантаження в базу даних.
     `,
     'de-ch': `
-      Bei der Validierung wurden keine Fehler gefunden. Der Upload kann nun in
-      die Datenbank erfolgen.
+      Bei der Validierung wurden keine Fehler festgestellt. Die Datei kann nun
+      in die Datenbank hochgeladen werden.
     `,
   },
   validationReEditWarning: {
@@ -726,8 +727,8 @@ export const wbText = createDictionary({
       завантаження.
     `,
     'de-ch': `
-      Validieren Sie den Datensatz und überprüfen Sie die Mouseover-Hinweise für
-      jede Fehlerzelle. Nehmen Sie dann die entsprechenden Korrekturen vor.
+      Validieren Sie den Datensatz, überprüfen Sie die Mouseover-Hinweise für
+      jede Fehlerzelle und nehmen Sie dann die entsprechenden Korrekturen vor.
       Speichern Sie und versuchen Sie den Upload erneut.
     `,
   },
@@ -809,7 +810,7 @@ export const wbText = createDictionary({
     'es-es': 'Carga de conjunto de datos cancelada.',
     'fr-fr': "Téléchargement de l'ensemble de données annulé.",
     'uk-ua': 'Завантаження набору даних скасовано.',
-    'de-ch': 'Der Upload des Datensatzes wurde abgebrochen.',
+    'de-ch': 'Datensatz-Upload abgebrochen.',
   },
   coordinateConverter: {
     'en-us': 'Geocoordinate Format',
@@ -912,7 +913,7 @@ export const wbText = createDictionary({
     `,
     'uk-ua': 'Ця дія недоступна під час перегляду результатів завантаження',
     'de-ch':
-      'Diese Aktion ist beim Anzeigen der Upload-Ergebnisse nicht verfügbar.',
+      'Diese Aktion ist beim Anzeigen der Upload-Ergebnisse nicht verfügbar',
   },
   unavailableWhileValidating: {
     'en-us': 'This action is unavailable while Data Check is in progress',
@@ -924,8 +925,7 @@ export const wbText = createDictionary({
     `,
     'uk-ua': 'Ця дія недоступна, поки триває перевірка даних',
     'de-ch': `
-      Diese Aktion ist nicht verfügbar, während die Datenüberprüfung ausgeführt
-      wird.
+      Diese Aktion ist nicht verfügbar, während die Datenprüfung ausgeführt wird
     `,
   },
   unavailableWithoutLocality: {
@@ -961,7 +961,7 @@ export const wbText = createDictionary({
     'es-es': 'Incluir Símbolos DMS',
     'fr-fr': 'Inclure les symboles DMS',
     'uk-ua': 'Додайте символи DMS',
-    'de-ch': 'DMS-Symbole einbinden',
+    'de-ch': 'Fügen Sie DMS-Symbole hinzu',
   },
   uploadResults: {
     'en-us': 'Upload Results',
@@ -1061,7 +1061,7 @@ export const wbText = createDictionary({
     'es-es': 'Coincidir mayúsculas y minúsculas',
     'fr-fr': 'Cas de correspondance',
     'uk-ua': 'Відмінок сірника',
-    'de-ch': 'Groß-/Kleinschreibung beachten',
+    'de-ch': 'Streichholzetui',
   },
   useRegularExpression: {
     'en-us': 'Use regular expression',
@@ -1101,7 +1101,7 @@ export const wbText = createDictionary({
     'es-es': 'Reemplazar todas las coincidencias',
     'fr-fr': 'Remplacer toutes les correspondances',
     'uk-ua': 'Замінити всі збіги',
-    'de-ch': 'Alle Übereinstimmungen ersetzen',
+    'de-ch': 'Ersetzen Sie alle Übereinstimmungen',
   },
   replaceNext: {
     'en-us': 'Replace next occurrence',
@@ -1125,7 +1125,8 @@ export const wbText = createDictionary({
     'es-es': 'Importar Archivo para Crear Nuevo Conjunto de Datos',
     'fr-fr': 'Importer un fichier pour créer un nouvel ensemble de données',
     'uk-ua': 'Імпортуйте файл, щоб створити новий набір даних',
-    'de-ch': 'Importieren einer Datei zum Erstellen eines neuen Datensatzes',
+    'de-ch':
+      'Importieren Sie eine Datei, um einen neuen Datensatz zu erstellen',
   },
   previewDataSet: {
     'en-us': 'Preview Dataset',
@@ -1292,8 +1293,8 @@ export const wbText = createDictionary({
       новий.
     `,
     'de-ch': `
-      Verwenden Sie „Datei importieren“ oder „Neu erstellen“, um eine neue zu
-      erstellen.
+      Verwenden Sie „Datei importieren“ oder „Neu erstellen“, um eine neue Datei
+      zu erstellen.
     `,
   },
   createNew: {
@@ -1366,7 +1367,7 @@ export const wbText = createDictionary({
     'es-es': 'Seleccionar nuevo propietario:',
     'fr-fr': 'Sélectionnez un nouveau propriétaire :',
     'uk-ua': 'Виберіть нового власника:',
-    'de-ch': 'Wählen Sie „Neuer Besitzer“:',
+    'de-ch': 'Neuen Besitzer auswählen:',
   },
   dataSetOwnerChanged: {
     'en-us': 'Data Set owner changed',
@@ -1374,7 +1375,7 @@ export const wbText = createDictionary({
     'es-es': 'El propietario del conjunto de datos cambió',
     'fr-fr': "Le propriétaire de l'ensemble de données a changé",
     'uk-ua': 'Змінено власника набору даних',
-    'de-ch': 'Datensatzbesitzer geändert',
+    'de-ch': 'Eigentümer des Datensatzes geändert',
   },
   dataSet: {
     'en-us': 'Data Set',
