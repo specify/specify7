@@ -180,10 +180,9 @@ function PreparationReturn({
             onClick={(): void =>
               setState(
                 state.map((preparation) => ({
+                  ...preparation,
                   resolve: 0,
                   returns: 0,
-                  unresolved: preparation.unresolved ?? 0,
-                  remarks: preparation.remarks,
                 }))
               )
             }
