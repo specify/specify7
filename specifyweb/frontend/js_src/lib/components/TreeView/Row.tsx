@@ -1,26 +1,26 @@
 import React from 'react';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { useId } from '../../hooks/useId';
+import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
+import { ajax } from '../../utils/ajax';
+import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
+import { Http } from '../../utils/ajax/definitions';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
+import type { AnySchema, AnyTree } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { genericTables } from '../DataModel/tables';
 import { getPref } from '../InitialContext/remotePrefs';
 import { userPreferences } from '../Preferences/userPreferences';
+import { unsafeTriggerNotFound } from '../Router/Router';
 import type { Conformations, KeyAction, Row, Stats } from './helpers';
 import { formatTreeStats, mapKey, scrollIntoView } from './helpers';
-import { genericTables } from '../DataModel/tables';
-import { AnySchema, AnyTree } from '../DataModel/helperTypes';
-import { SpecifyTable } from '../DataModel/specifyTable';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
-import { Http } from '../../utils/ajax/definitions';
-import { unsafeTriggerNotFound } from '../Router/Router';
-import { useLiveState } from '../../hooks/useLiveState';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { ajax } from '../../utils/ajax';
 
 export function TreeRow<SCHEMA extends AnyTree>({
   row,
@@ -160,9 +160,7 @@ export function TreeRow<SCHEMA extends AnyTree>({
   const [resource] = useLiveState<SpecifyResource<AnySchema> | undefined>(
     React.useCallback(() => {
       const table = genericTables[treeName] as SpecifyTable<AnyTree>;
-      const parentNode = new table.Resource({ id: row.nodeId });
-      let node = parentNode;
-      return node;
+      return new table.Resource({ id: row.nodeId });
     }, [row.nodeId, treeName])
   );
 
@@ -284,9 +282,11 @@ export function TreeRow<SCHEMA extends AnyTree>({
                       ? treeText.acceptedName({
                           name: row.acceptedName ?? row.acceptedId.toString(),
                         })
-                      : fetchedChildrenName !== undefined
-                      ? `${treeText.synonyms()} ${fetchedChildrenName.join()}`
-                      : undefined
+                      : fetchedChildrenName === undefined
+                      ? undefined
+                      : `${treeText.synonyms()} ${fetchedChildrenName.join(
+                          ','
+                        )}`
                   }
                 >
                   {doIncludeAuthorPref &&
