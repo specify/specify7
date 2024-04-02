@@ -113,7 +113,7 @@ export const userText = createDictionary({
     'es-es': 'Establecer agentes usuarios',
     'fr-fr': 'Définir les agents utilisateurs',
     'uk-ua': 'Встановити агентів користувача',
-    'de-ch': 'Benutzeragenten festlegen',
+    'de-ch': 'Legen Sie Benutzeragenten fest',
   },
   noAgent: {
     'en-us': 'Current user does not have an agent assigned',
@@ -121,7 +121,7 @@ export const userText = createDictionary({
     'es-es': 'El usuario actual no tiene un agente asignado',
     'fr-fr': "L'utilisateur actuel n'a pas d'agent attribué",
     'uk-ua': 'Поточний користувач не має призначеного агента',
-    'de-ch': 'Dem aktuellen Benutzer ist kein Agent zugewiesen.',
+    'de-ch': 'Dem aktuellen Benutzer ist kein Agent zugewiesen',
   },
   noAgentDescription: {
     'en-us': 'Please log in as admin and assign an agent to this user',
@@ -141,7 +141,7 @@ export const userText = createDictionary({
     `,
     'de-ch': `
       Bitte melden Sie sich als Administrator an und weisen Sie diesem Benutzer
-      einen Agenten zu
+      einen Agenten zu.
     `,
   },
   helloMessage: {
@@ -401,7 +401,7 @@ export const userText = createDictionary({
     'es-es': 'Error de permiso denegado',
     'fr-fr': "Erreur d'autorisation refusée",
     'uk-ua': 'Помилка дозволу заборонено',
-    'de-ch': 'Fehler „Berechtigung verweigert“.',
+    'de-ch': 'Fehler „Berechtigung verweigert“',
   },
   permissionDeniedDescription: {
     'en-us': `
@@ -500,7 +500,7 @@ export const userText = createDictionary({
     'es-es': 'Eliminar administrador',
     'fr-fr': "Supprimer l'administrateur",
     'uk-ua': 'Видалити адміністратора',
-    'de-ch': 'Admin entfernen',
+    'de-ch': 'Administrator entfernen',
   },
   canNotRemoveYourself: {
     'en-us': 'You cannot revoke your own admin status',
@@ -524,7 +524,7 @@ export const userText = createDictionary({
     'es-es': 'Guardar usuario primero',
     'fr-fr': "Enregistrez d'abord l'utilisateur",
     'uk-ua': 'Спочатку збережіть користувача',
-    'de-ch': 'Zuerst Benutzer speichern',
+    'de-ch': 'Speichern Sie zuerst den Benutzer',
   },
   mustBeManager: {
     'en-us': 'User must be saved as Manager first',
@@ -574,7 +574,8 @@ export const userText = createDictionary({
     'uk-ua': `
       Облікові записи користувачів, призначені цьому {collectionTable:string}
     `,
-    'de-ch': 'Zugewiesene Benutzerkonten {collectionTable:string}',
+    'de-ch':
+      'Benutzerkonten, die diesem {collectionTable:string} zugewiesen sind',
   },
   setPassword: {
     'en-us': 'Set Password',
@@ -614,7 +615,7 @@ export const userText = createDictionary({
     'es-es': 'Seleccionar acceso a la colección del usuario',
     'fr-fr': "Sélectionnez l'accès à la collection d'utilisateurs",
     'uk-ua': 'Виберіть доступ до колекції користувачів',
-    'de-ch': 'Auswählen des Benutzersammlungszugriffs',
+    'de-ch': 'Wählen Sie den Zugriff auf die Benutzersammlung aus',
   },
   securityPanel: {
     'en-us': 'Security and Accounts',
@@ -630,7 +631,7 @@ export const userText = createDictionary({
     'es-es': 'Biblioteca institucional de plantillas de roles',
     'fr-fr': 'Bibliothèque institutionnelle de modèles de rôles',
     'uk-ua': 'Бібліотека шаблонів ролей установи',
-    'de-ch': 'Institutionsbibliothek mit Rollenvorlagen',
+    'de-ch': 'Institutionelle Bibliothek mit Rollenvorlagen',
   },
   userRoles: {
     'en-us': 'User Roles',
@@ -967,7 +968,7 @@ export const userText = createDictionary({
     `,
     'de-ch': `
       Erwägen Sie, für diesen Benutzer ein Passwort festzulegen. Benutzer ohne
-      Passwort können sich nicht anmelden.
+      Passwort können sich nicht anmelden
     `,
   },
   setCollections: {
@@ -1020,7 +1021,7 @@ export const userText = createDictionary({
     'es-es': 'Cargando administradores...',
     'fr-fr': 'Chargement des administrateurs…',
     'uk-ua': 'Завантаження адміністраторів...',
-    'de-ch': 'Administratoren werden geladen...',
+    'de-ch': 'Administratoren werden geladen …',
   },
   specifyAdmin: {
     comment: 'Shown next to user name for admin users',
@@ -1038,7 +1039,7 @@ export const userText = createDictionary({
     'es-es': '(Administradores de Specify 6)',
     'fr-fr': '(Spécifiez 6 Administrateur)',
     'uk-ua': '(Вкажіть 6 адміністраторів)',
-    'de-ch': '(Geben Sie 6 Admin an)',
+    'de-ch': '(Geben Sie 6 Admins an)',
   },
   deleteRoleWithUsers: {
     'en-us': 'Delete role that has users?',
@@ -1055,7 +1056,9 @@ export const userText = createDictionary({
     'fr-fr':
       'Les utilisateurs ne seront pas supprimés, mais ils perdront ce rôle.',
     'uk-ua': 'Користувачів не буде видалено, але вони втратять цю роль.',
-    'de-ch': 'Benutzer werden nicht gelöscht, verlieren jedoch diese Rolle.',
+    'de-ch': `
+      Benutzer werden nicht gelöscht, sie würden jedoch diese Rolle verlieren.
+    `,
   },
   institutionPolicies: {
     'en-us': `

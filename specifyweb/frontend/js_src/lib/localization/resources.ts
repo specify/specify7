@@ -310,7 +310,7 @@ export const resourcesText = createDictionary({
   },
   duplicateFormatters: {
     'en-us': 'Record formatter names must be unique',
-    'de-ch': 'Datensatzformatierernamen müssen eindeutig sein',
+    'de-ch': 'Namen von Datensatzformatierern müssen eindeutig sein',
     'es-es': 'Los nombres de los formateadores de registros deben ser únicos.',
     'fr-fr': "Les noms du formateur d'enregistrement doivent être uniques",
     'ru-ru': 'Имена средств форматирования записей должны быть уникальными.',
@@ -821,7 +821,7 @@ export const resourcesText = createDictionary({
   },
   customizeFieldFormatters: {
     'en-us': 'Customize Field Formats',
-    'de-ch': 'Feldformate anpassen',
+    'de-ch': 'Passen Sie Feldformate an',
     'es-es': 'Personalizar formatos de campo',
     'fr-fr': 'Personnaliser les formats de champs',
     'ru-ru': 'Настройте форматы полей',
