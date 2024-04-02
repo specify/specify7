@@ -80,7 +80,7 @@ export const mergingText = createDictionary({
     'de-ch': 'Zusammenführen {field:string}',
     'es-es': 'Fusionar {field:string}',
     'fr-fr': 'Fusionner {field:string}',
-    'uk-ua': 'Об’єднати {field:string}',
+    'uk-ua': "Об'єднати {field:string}",
   },
   autoPopulate: {
     'en-us': 'Auto-populate',
@@ -103,7 +103,7 @@ export const mergingText = createDictionary({
     'es-es': 'Los agentes contienen miembros de grupo',
     'de-ch': 'Agenten enthalten Gruppenmitglieder',
     'fr-fr': 'Les agents contiennent des membres du groupe',
-    'ru-ru': 'Агенты содержат членов группы',
+    'ru-ru': 'Объединенная запись',
     'uk-ua': 'Агенти містять учасників групи',
   },
   recordNotBeMergedReason: {
@@ -200,7 +200,7 @@ export const mergingText = createDictionary({
   },
   mergingHasStarted: {
     'en-us': 'The merge process has started.',
-    'de-ch': 'Der Zusammenführungsprozess hat begonnen.',
+    'de-ch': 'Der Zusammenführungsprozess wurde gestartet.',
     'es-es': 'El proceso de fusión ha comenzado.',
     'fr-fr': 'Le processus de fusion a commencé.',
     'ru-ru': 'Процесс слияния начался.',
