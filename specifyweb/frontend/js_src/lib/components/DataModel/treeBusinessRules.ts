@@ -51,6 +51,7 @@ const predictFullName = async (
         parent.get('rankId') >= definitionItem.get('rankId')
       )
         return {
+          key: 'bad-tree-structure',
           isValid: false,
           reason: treeText.badStructure(),
         } as const;
@@ -72,8 +73,9 @@ const predictFullName = async (
       ).then(({ data }) => data);
     })
     .then((result) =>
-      typeof result === 'string'
+      typeof result === 'string' || result === undefined
         ? ({
+            key: 'bad-tree-structure',
             isValid: true,
             action: () =>
               resource.set(
