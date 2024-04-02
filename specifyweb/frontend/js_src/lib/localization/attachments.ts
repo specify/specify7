@@ -379,8 +379,8 @@ export const attachmentsText = createDictionary({
       Server
     `,
     'de-ch': `
-      Rollback löscht die Anhänge aus der Datenbank „Specify“ und dem Asset
-      Server.
+      Beim Rollback werden die Anhänge aus der Specify-Datenbank und dem
+      Asset-Server gelöscht
     `,
     'es-es': `
       La reversión eliminará los archivos adjuntos de la base de datos Specify y
@@ -454,7 +454,7 @@ export const attachmentsText = createDictionary({
   },
   totalFiles: {
     'en-us': 'Total files',
-    'de-ch': 'Gesamtdateien',
+    'de-ch': 'Gesamtzahl der Dateien',
     'es-es': 'Archivos totales',
     'fr-fr': 'Total des fichiers',
     'ru-ru': 'Всего файлов',
@@ -560,7 +560,8 @@ export const attachmentsText = createDictionary({
   selectIdentifier: {
     'en-us': 'Select an identifier to match the files name against.',
     'de-ch': `
-      Wählen Sie eine Kennung aus, mit der der Dateiname verglichen werden soll.
+      Wählen Sie eine Kennung aus, mit der der Dateiname abgeglichen werden
+      soll.
     `,
     'es-es': `
       Seleccione un identificador para hacer coincidir el nombre de los
@@ -571,7 +572,7 @@ export const attachmentsText = createDictionary({
     `,
     'ru-ru':
       'Выберите идентификатор, которому будет соответствовать имя файла.',
-    'uk-ua': 'Виберіть ідентифікатор для відповідності імені файлу.',
+    'uk-ua': 'Виберіть ідентифікатор, який буде відповідати назві файлів.',
   },
   progress: {
     'en-us': 'Progress',
@@ -595,8 +596,8 @@ export const attachmentsText = createDictionary({
       have been {action: string}.
     `,
     'de-ch': `
-      {success: number} von {total: number} Anhängen im Datensatz waren
-      {action: string}.
+      {success: number} der {total: number} Anhänge im Datensatz waren {action:
+      string}.
     `,
     'es-es': `
       {éxito: número} de los {total: número} archivos adjuntos en el conjunto de
@@ -622,8 +623,8 @@ export const attachmentsText = createDictionary({
     `,
     'de-ch': `
       Durch das Löschen eines Datensatzes werden dieser und sein Upload-Pfad
-      dauerhaft entfernt. Außerdem ist nach dem Löschen für einen hochgeladenen
-      Datensatz kein Rollback mehr möglich.
+      dauerhaft entfernt. Auch nach dem Löschen ist Rollback für einen
+      hochgeladenen Datensatz nicht mehr möglich.
     `,
     'es-es': `
       Al eliminar un conjunto de datos, se elimina permanentemente este y su

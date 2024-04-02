@@ -80,7 +80,7 @@ export const mergingText = createDictionary({
     'de-ch': 'Zusammenführen {field:string}',
     'es-es': 'Fusionar {field:string}',
     'fr-fr': 'Fusionner {field:string}',
-    'uk-ua': "Об'єднати {field:string}",
+    'uk-ua': 'Об’єднати {field:string}',
   },
   autoPopulate: {
     'en-us': 'Auto-populate',
@@ -101,10 +101,10 @@ export const mergingText = createDictionary({
   agentContainsGroupDescription: {
     'en-us': 'Agents contain group members',
     'es-es': 'Los agentes contienen miembros de grupo',
-    'de-ch': 'Agenten enthalten Gruppenmitglieder',
-    'fr-fr': 'Les agents contiennent des membres du groupe',
+    'de-ch': 'Zusammengeführter Datensatz',
+    'fr-fr': 'Enregistrement fusionné',
     'ru-ru': 'Объединенная запись',
-    'uk-ua': 'Агенти містять учасників групи',
+    'uk-ua': 'Об’єднаний запис',
   },
   recordNotBeMergedReason: {
     'en-us': 'The following records cannot be merged. Reason:',
@@ -119,10 +119,10 @@ export const mergingText = createDictionary({
   someCannotBeMerged: {
     'en-us': 'Some records cannot be merged',
     'es-es': 'Algunos registros no se pueden fusionar',
-    'de-ch': 'Einige Datensätze können nicht zusammengeführt werden',
-    'fr-fr': 'Certains enregistrements ne peuvent pas être fusionnés',
-    'ru-ru': 'Некоторые записи невозможно объединить',
-    'uk-ua': 'Деякі записи не можна об’єднати',
+    'de-ch': 'Beim Zusammenführen ist ein Fehler aufgetreten.',
+    'fr-fr': "Quelque chose s'est mal passé pendant le processus de fusion.",
+    'ru-ru': 'Что-то пошло не так в процессе слияния.',
+    'uk-ua': 'Щось пішло не так під час процесу об’єднання.',
   },
   mergeOthers: {
     'en-us': 'Merge others',
@@ -200,7 +200,7 @@ export const mergingText = createDictionary({
   },
   mergingHasStarted: {
     'en-us': 'The merge process has started.',
-    'de-ch': 'Der Zusammenführungsprozess wurde gestartet.',
+    'de-ch': 'Der Zusammenführungsprozess hat begonnen.',
     'es-es': 'El proceso de fusión ha comenzado.',
     'fr-fr': 'Le processus de fusion a commencé.',
     'ru-ru': 'Процесс слияния начался.',
@@ -232,7 +232,7 @@ export const mergingText = createDictionary({
   },
   retryMerge: {
     'en-us': 'Retry merge.',
-    'de-ch': 'Wiederholen Sie die Zusammenführung.',
+    'de-ch': 'Zusammenführung erneut versuchen.',
     'es-es': 'Reintentar la fusión.',
     'fr-fr': 'Réessayez la fusion.',
     'ru-ru': 'Повторите попытку объединения.',

@@ -401,8 +401,8 @@ export const commonText = createDictionary({
     'en-us': 'Language',
     'ru-ru': 'Язык',
     'es-es': 'Idioma',
-    'fr-fr': 'Langue',
-    'uk-ua': 'Мова',
+    'fr-fr': 'Interactions',
+    'uk-ua': 'Необмежений',
     'de-ch': 'Sprache',
   },
   country: {
@@ -684,7 +684,7 @@ export const commonText = createDictionary({
   },
   bulkReturn: {
     'en-us': 'Bulk Return',
-    'de-ch': 'Massenrücksendung',
+    'de-ch': 'Massenrückgabe',
     'es-es': 'Devolución masiva',
     'fr-fr': 'Retour groupé',
     'ru-ru': 'Массовый возврат',
