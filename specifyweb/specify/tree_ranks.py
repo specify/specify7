@@ -285,7 +285,7 @@ class RankOperation(Enum):
     DELETED = 'deleted'
     UPDATED = 'updated'
 
-def verify_rank_parent_chain_integretity(rank, rank_operation: RankOperation):
+def verify_rank_parent_chain_integrity(rank, rank_operation: RankOperation):
     """
     Verifies the parent chain integrity of the ranks.
     """
