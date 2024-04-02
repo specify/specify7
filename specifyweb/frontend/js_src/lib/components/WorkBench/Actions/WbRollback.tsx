@@ -22,18 +22,17 @@ export function WbRollback({
       <Button.Small
         aria-haspopup="dialog"
         aria-pressed={rollback}
-        className="wb-unupload"
         onClick={handleOpen}
       >
         {wbText.rollback()}
       </Button.Small>
-      {rollback && (
+      {rollback ? (
         <RollbackConfirmation
           dataSetId={datasetId}
           onClose={handleClose}
           onRollback={handleRollback}
         />
-      )}
+      ) : undefined}
     </>
   );
 }

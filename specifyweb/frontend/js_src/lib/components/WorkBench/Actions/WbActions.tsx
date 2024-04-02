@@ -26,18 +26,18 @@ import { WbSave } from './WbSave';
 
 export function useWbActions({
   datasetId,
-  triggerRefresh,
-  checkDeletedFail,
-  openStatus,
   workbench,
+  checkDeletedFail,
+  onRefresh: handleRefresh,
+  onOpenStatus: handleOpenStatus,
 }: {
   readonly datasetId: number;
-  readonly triggerRefresh: () => void;
-  readonly checkDeletedFail: (statusCode: number) => void;
-  readonly openStatus: () => void;
   readonly workbench: Workbench;
+  readonly checkDeletedFail: (statusCode: number) => void;
+  readonly onRefresh: () => void;
+  readonly onOpenStatus: () => void;
 }) {
-  const mode = React.useRef<WbStatus | undefined>(undefined);
+  const modeRef = React.useRef<WbStatus | undefined>(undefined);
   const refreshInitiatorAborted = React.useRef<boolean>(false);
 
   const startUpload = (newMode: WbStatus): void => {
@@ -56,8 +56,8 @@ export function useWbActions({
   };
 
   const triggerStatusComponent = (newMode: WbStatus): void => {
-    mode.current = newMode;
-    openStatus();
+    modeRef.current = newMode;
+    handleOpenStatus();
   };
 
   const checkConflictFail = (statusCode: number): boolean => {
@@ -66,12 +66,12 @@ export function useWbActions({
        * Upload/Validation/Un-Upload has been initialized by another session
        * Need to reload the page to display the new state
        */
-      triggerRefresh();
+      handleRefresh();
     return statusCode === Http.CONFLICT;
   };
 
   return {
-    mode,
+    modeRef,
     refreshInitiatorAborted,
     startUpload,
     triggerStatusComponent,
@@ -82,21 +82,21 @@ export function WbActionsComponent({
   dataset,
   hasUnSavedChanges,
   isUploaded,
-  triggerRefresh,
+  workbench,
   mappings,
   checkDeletedFail,
-  spreadSheetUpToDate,
-  workbench,
+  onRefresh: handleRefresh,
+  onSpreadsheetUpToDate: handleSpreadsheetUpToDate,
   onToggleResults,
 }: {
   readonly dataset: Dataset;
   readonly hasUnSavedChanges: boolean;
   readonly isUploaded: boolean;
-  readonly triggerRefresh: () => void;
+  readonly workbench: Workbench;
   readonly mappings: WbMapping;
   readonly checkDeletedFail: (statusCode: number) => void;
-  readonly spreadSheetUpToDate: () => void;
-  readonly workbench: Workbench;
+  readonly onRefresh: () => void;
+  readonly onSpreadsheetUpToDate: () => void;
   readonly onToggleResults: () => void;
 }): JSX.Element {
   const [canLiveValidate] = userPreferences.use(
@@ -110,11 +110,11 @@ export function WbActionsComponent({
     useBooleanState();
   const [operationCompleted, openOperationCompleted, closeOperationCompleted] =
     useBooleanState();
-  const { mode, refreshInitiatorAborted, ...actions } = useWbActions({
+  const { modeRef, refreshInitiatorAborted, ...actions } = useWbActions({
     datasetId: dataset.id,
-    triggerRefresh,
+    onRefresh: handleRefresh,
     checkDeletedFail,
-    openStatus,
+    onOpenStatus: openStatus,
     workbench,
   });
 
@@ -179,7 +179,7 @@ export function WbActionsComponent({
 
   return (
     <>
-      {noUploadPlan && (
+      {noUploadPlan ? (
         <Dialog
           buttons={
             <>
@@ -194,49 +194,49 @@ export function WbActionsComponent({
         >
           {wbPlanText.noUploadPlanDescription()}
         </Dialog>
-      )}
-      {!isUploaded && hasPermission('/workbench/dataset', 'validate') && (
+      ) : undefined}
+      {!isUploaded && hasPermission('/workbench/dataset', 'validate') ? (
         <WbValidate
           hasUnSavedChanges={hasUnSavedChanges}
           canLiveValidate={canLiveValidate}
           startUpload={actions.startUpload}
           validation={workbench.validation}
         />
-      )}
+      ) : undefined}
       <WbResults
         hasUnSavedChanges={hasUnSavedChanges}
         onToggleResults={onToggleResults}
       />
-      {isUploaded && hasPermission('/workbench/dataset', 'unupload') && (
+      {isUploaded && hasPermission('/workbench/dataset', 'unupload') ? (
         <WbRollback
           datasetId={dataset.id}
           triggerStatusComponent={actions.triggerStatusComponent}
         />
-      )}
-      {!isUploaded && hasPermission('/workbench/dataset', 'upload') && (
+      ) : undefined}
+      {!isUploaded && hasPermission('/workbench/dataset', 'upload') ? (
         <WbUpload
           hasUnSavedChanges={hasUnSavedChanges}
           mappings={mappings}
           openNoUploadPlan={openNoUploadPlan}
           startUpload={actions.startUpload}
         />
-      )}
-      {!isUploaded && hasPermission('/workbench/dataset', 'update') && (
+      ) : undefined}
+      {!isUploaded && hasPermission('/workbench/dataset', 'update') ? (
         <>
           <WbRevert
             hasUnSavedChanges={hasUnSavedChanges}
-            triggerRefresh={triggerRefresh}
-            spreadSheetUpToDate={spreadSheetUpToDate}
+            onRefresh={handleRefresh}
+            onSpreadsheetUpToDate={handleSpreadsheetUpToDate}
           />
           <WbSave
             hasUnSavedChanges={hasUnSavedChanges}
-            spreadSheetUpToDate={spreadSheetUpToDate}
+            onSpreadsheetUpToDate={handleSpreadsheetUpToDate}
             checkDeletedFail={checkDeletedFail}
             workbench={workbench}
           />
         </>
-      )}
-      {mode.current && showStatus && (
+      ) : undefined}
+      {modeRef.current && showStatus ? (
         <WbStatusComponent
           dataset={{
             ...dataset,
@@ -249,7 +249,7 @@ export function WbActionsComponent({
                     validate: 'validating',
                     upload: 'uploading',
                     unupload: 'unuploading',
-                  }[mode.current],
+                  }[modeRef.current],
                   taskid: '',
                 } as const),
               taskstatus: 'PENDING',
@@ -261,22 +261,22 @@ export function WbActionsComponent({
             closeStatus();
             if (wasAborted) openAbortedMessage();
             else openOperationCompleted();
-            triggerRefresh();
+            handleRefresh();
           }}
         />
-      )}
-      {operationCompleted && (
+      ) : undefined}
+      {operationCompleted ? (
         <Dialog
           buttons={
             <>
               {cells.cellCounts?.invalidCells === 0 &&
-                mode.current === 'upload' && (
+                modeRef.current === 'upload' && (
                   <CreateRecordSetButton
                     dataSetId={dataset.id}
                     dataSetName={dataset.name}
                     small={false}
                     onClose={() => {
-                      mode.current = undefined;
+                      modeRef.current = undefined;
                       refreshInitiatorAborted.current = false;
                       closeOperationCompleted();
                     }}
@@ -285,31 +285,31 @@ export function WbActionsComponent({
               <Button.DialogClose>{commonText.close()}</Button.DialogClose>
             </>
           }
-          header={messages[mode.current!].header}
+          header={messages[modeRef.current!].header}
           onClose={closeOperationCompleted}
         >
-          {messages[mode.current!].message}
+          {messages[modeRef.current!].message}
         </Dialog>
-      )}
-      {operationAborted && (
+      ) : undefined}
+      {operationAborted ? (
         <Dialog
           buttons={commonText.close()}
           header={
-            mode.current === 'validate'
+            modeRef.current === 'validate'
               ? wbText.validationCanceled()
-              : mode.current === 'unupload'
+              : modeRef.current === 'unupload'
               ? wbText.rollbackCanceled()
               : wbText.uploadCanceled()
           }
           onClose={closeAbortedMessage}
         >
-          {mode.current === 'validate'
+          {modeRef.current === 'validate'
             ? wbText.validationCanceledDescription()
-            : mode.current === 'unupload'
+            : modeRef.current === 'unupload'
             ? wbText.rollbackCanceledDescription()
             : wbText.uploadCanceledDescription()}
         </Dialog>
-      )}
+      ) : undefined}
     </>
   );
 }

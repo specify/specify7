@@ -16,12 +16,12 @@ export function WbSave({
   workbench,
   hasUnSavedChanges,
   checkDeletedFail,
-  spreadSheetUpToDate,
+  onSpreadsheetUpToDate: handleSpreadsheetUpToDate,
 }: {
   readonly workbench: Workbench;
   readonly hasUnSavedChanges: boolean;
   readonly checkDeletedFail: (statusCode: number) => void;
-  readonly spreadSheetUpToDate: () => void;
+  readonly onSpreadsheetUpToDate: () => void;
 }): JSX.Element {
   const [showProgressBar, openProgressBar, closeProgressBar] =
     useBooleanState();
@@ -44,7 +44,7 @@ export function WbSave({
     })
       .then((status) => checkDeletedFail(status))
       .then(() => {
-        spreadSheetUpToDate();
+        handleSpreadsheetUpToDate();
         workbench.cells.cellMeta = [];
         // TODO: Figure out how to rework searchCells for SettingsChange as input
         // workbench.utils?.searchCells({ key: 'SettingsChange' });
@@ -57,14 +57,13 @@ export function WbSave({
     <>
       <Button.Small
         aria-haspopup="dialog"
-        className="wb-save"
         variant={className.saveButton}
         onClick={handleSave}
         disabled={!hasUnSavedChanges}
       >
         {commonText.save()}
       </Button.Small>
-      {showProgressBar && (
+      {showProgressBar ? (
         <Dialog
           buttons={undefined}
           header={wbText.saving()}
@@ -72,7 +71,7 @@ export function WbSave({
         >
           {loadingBar}
         </Dialog>
-      )}
+      ) : undefined}
     </>
   );
 }

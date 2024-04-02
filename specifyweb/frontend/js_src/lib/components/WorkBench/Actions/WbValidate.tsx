@@ -23,7 +23,7 @@ export function WbValidate({
   return (
     <>
       <Button.Small
-        className={`wb-data-check ${canLiveValidate ? '' : 'hidden'}`}
+        className={`${canLiveValidate ? '' : 'hidden'}`}
         onClick={handleToggleDataCheck}
         aria-pressed={validation.validationMode === 'live'}
       >

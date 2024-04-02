@@ -38,14 +38,13 @@ export function WbUpload({
     <>
       <Button.Small
         aria-haspopup="dialog"
-        className="wb-upload"
         onClick={handleUpload}
         disabled={hasUnSavedChanges}
         title={hasUnSavedChanges ? wbText.unavailableWhileEditing() : ''}
       >
         {wbText.upload()}
       </Button.Small>
-      {showUpload && (
+      {showUpload ? (
         <Dialog
           buttons={
             <>
@@ -60,7 +59,7 @@ export function WbUpload({
         >
           {wbText.startUploadDescription()}
         </Dialog>
-      )}
+      ) : undefined}
     </>
   );
 }

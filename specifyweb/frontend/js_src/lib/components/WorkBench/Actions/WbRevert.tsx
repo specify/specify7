@@ -1,33 +1,32 @@
-import React from "react";
+import React from 'react';
 
-import { useBooleanState } from "../../../hooks/useBooleanState";
-import { Button } from "../../Atoms/Button";
-import { wbText } from "../../../localization/workbench";
-import { commonText } from "../../../localization/common";
-import { Dialog } from "../../Molecules/Dialog";
+import { useBooleanState } from '../../../hooks/useBooleanState';
+import { Button } from '../../Atoms/Button';
+import { wbText } from '../../../localization/workbench';
+import { commonText } from '../../../localization/common';
+import { Dialog } from '../../Molecules/Dialog';
 
 export function WbRevert({
   hasUnSavedChanges,
-  triggerRefresh,
-  spreadSheetUpToDate,
+  onRefresh: handleRefresh,
+  onSpreadsheetUpToDate: handleSpreadsheetUpToDate,
 }: {
   readonly hasUnSavedChanges: boolean;
-  readonly triggerRefresh: () => void;
-  readonly spreadSheetUpToDate: () => void;
+  readonly onRefresh: () => void;
+  readonly onSpreadsheetUpToDate: () => void;
 }): JSX.Element {
   const [showRevert, openRevert, closeRevert] = useBooleanState();
 
   const handleRevert = () => {
-    triggerRefresh();
+    handleRefresh();
     closeRevert();
-    spreadSheetUpToDate();
+    handleSpreadsheetUpToDate();
   };
 
   return (
     <>
       <Button.Small
         aria-haspopup="dialog"
-        className="wb-revert"
         onClick={openRevert}
         disabled={!hasUnSavedChanges}
       >

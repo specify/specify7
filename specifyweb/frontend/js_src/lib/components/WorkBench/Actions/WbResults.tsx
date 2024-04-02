@@ -15,7 +15,6 @@ export function WbResults({
     <>
       <Button.Small
         aria-haspopup="tree"
-        className="wb-show-upload-view"
         disabled={hasUnSavedChanges}
         title={hasUnSavedChanges ? wbText.wbUploadedUnavailable() : ''}
         onClick={handleToggleResults}
