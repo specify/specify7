@@ -48,7 +48,7 @@ import { parseWbMappings } from './mapping';
 import { fetchWbPickLists } from './pickLists';
 import { WbUploaded } from './Results';
 import { wbViewTemplate } from './Template';
-import { WbActions, WbActionsComponent } from './WbActions';
+import { WbActionsComponent } from './Actions/WbActions';
 import { WbUtils, WbUtilsComponent, WbUtilsReact } from './WbUtils';
 import { WbValidation, WbValidationReact } from './WbValidation';
 import { DataSetName } from './DataSetMeta';
@@ -62,15 +62,15 @@ export type WbStatus = 'unupload' | 'upload' | 'validate';
 
 export type Workbench = {
   dataset: Dataset;
-  cells: WbCellMetaReact | undefined;
-  disambiguation: DisambiguationReact | undefined;
-  validation: WbValidationReact | undefined;
+  cells: WbCellMetaReact;
+  disambiguation: DisambiguationReact;
+  validation: WbValidationReact;
   data: RA<RA<string | null>>;
   searchPreferences: WbSearchPreferences;
   hot: Handsontable;
   throttleRate: number;
   mappings: WbMapping;
-  utils: WbUtilsReact | undefined;
+  utils: WbUtilsReact;
   setCellCounts: (cellCounts: WbCellCounts) => void;
 };
 
@@ -151,10 +151,10 @@ export function WbViewReact({
       mappings: mappings as WbMapping,
       searchPreferences,
       throttleRate,
-      cells: undefined,
-      disambiguation: undefined,
-      validation: undefined,
-      utils: undefined,
+      cells: undefined!,
+      disambiguation: undefined!,
+      validation: undefined!,
+      utils: undefined!,
       setCellCounts,
     };
     workbench.cells = new WbCellMetaReact(workbench);
@@ -179,8 +179,7 @@ export function WbViewReact({
     spreadSheetChanged,
     checkDeletedFail
   );
-  const [showResults, openResults, closeResults, toggleResults] =
-    useBooleanState();
+  const [showResults, _, closeResults, toggleResults] = useBooleanState();
 
   // Makes the hot changes required for upload view results
   React.useEffect(() => {
@@ -197,14 +196,12 @@ export function WbViewReact({
     ).getHiddenColumns();
     const rowsToInclude = new Set();
     const colsToInclude = new Set();
-    Object.entries(workbench.cells!.cellMeta).forEach(
-      ([physicalRow, rowMeta]) =>
-        rowMeta.forEach((metaArray, physicalCol) => {
-          if (!workbench.cells!.getCellMetaFromArray(metaArray, 'isNew'))
-            return;
-          rowsToInclude.add((physicalRow as unknown as number) | 0);
-          colsToInclude.add(physicalCol);
-        })
+    Object.entries(workbench.cells.cellMeta).forEach(([physicalRow, rowMeta]) =>
+      rowMeta.forEach((metaArray, physicalCol) => {
+        if (!workbench.cells.getCellMetaFromArray(metaArray, 'isNew')) return;
+        rowsToInclude.add((physicalRow as unknown as number) | 0);
+        colsToInclude.add(physicalCol);
+      })
     );
     const rowsToHide = workbench.data
       .map((_, physicalRow) => physicalRow)
@@ -226,7 +223,7 @@ export function WbViewReact({
     getHotPlugin(workbench.hot, 'hiddenRows').hideRows(rowsToHide);
     getHotPlugin(workbench.hot, 'hiddenColumns').hideColumns(colsToHide);
 
-    workbench.utils!.toggleCellTypes(
+    workbench.utils.toggleCellTypes(
       'newCells',
       'remove',
       spreadsheetContainer.current
@@ -236,18 +233,18 @@ export function WbViewReact({
 
   // Calls validation results on load if dataset has been validated before
   React.useEffect(() => {
-    if (dataset.rowresults) {
-      workbench.validation?.getValidationResults();
+    if (dataset.rowresults && hotIsReady) {
+      workbench.validation.getValidationResults();
       if (workbench.validation?.validationMode === 'static' && !isUploaded)
-        workbench.utils?.toggleCellTypes(
+        workbench.utils.toggleCellTypes(
           'invalidCells',
           'remove',
           spreadsheetContainer.current
         );
 
-      workbench.cells!.flushIndexedCellData = true;
+      workbench.cells.flushIndexedCellData = true;
     }
-  }, [dataset.rowresults]);
+  }, [dataset.rowresults, hotIsReady]);
 
   return (
     <>
@@ -289,7 +286,7 @@ export function WbViewReact({
           checkDeletedFail={checkDeletedFail}
           spreadSheetUpToDate={spreadSheetUpToDate}
           workbench={workbench}
-          toggleResults={toggleResults}
+          onToggleResults={toggleResults}
         />
       </div>
       {showToolkit && (
@@ -310,9 +307,9 @@ export function WbViewReact({
             hotRef={hotRef}
             isUploaded={isUploaded}
             data={data}
-            validation={workbench.validation!}
-            cells={workbench.cells!}
-            disambiguation={workbench.disambiguation!}
+            validation={workbench.validation}
+            cells={workbench.cells}
+            disambiguation={workbench.disambiguation}
             hooks={hooks}
           />
         </section>
@@ -322,7 +319,7 @@ export function WbViewReact({
               dataSetId={dataset.id}
               dataSetName={dataset.name}
               isUploaded={isUploaded}
-              recordCounts={workbench.validation!.uploadResults.recordCounts}
+              recordCounts={workbench.validation.uploadResults.recordCounts}
               onClose={closeResults}
             />
           </aside>
@@ -332,7 +329,7 @@ export function WbViewReact({
         isUploaded={isUploaded}
         searchPreferences={searchPreferences}
         cellCounts={cellCounts}
-        utils={workbench.utils!}
+        utils={workbench.utils}
         spreadsheetContainer={spreadsheetContainer}
       />
     </>
