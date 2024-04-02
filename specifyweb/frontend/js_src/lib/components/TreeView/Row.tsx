@@ -20,6 +20,7 @@ import { Http } from '../../utils/ajax/definitions';
 import { unsafeTriggerNotFound } from '../Router/Router';
 import { useLiveState } from '../../hooks/useLiveState';
 import { SpecifyResource } from '../DataModel/legacyTypes';
+import { ajax } from '../../utils/ajax';
 
 export function TreeRow<SCHEMA extends AnyTree>({
   row,
@@ -156,6 +157,51 @@ export function TreeRow<SCHEMA extends AnyTree>({
   const hasNoChildrenNodes =
     nodeStats?.directCount === 0 && nodeStats.childCount === 0;
 
+  const [resource] = useLiveState<SpecifyResource<AnySchema> | undefined>(
+    React.useCallback(() => {
+      const table = genericTables[treeName] as SpecifyTable<AnyTree>;
+      const parentNode = new table.Resource({ id: row.nodeId });
+      let node = parentNode;
+      return node;
+    }, [row.nodeId, treeName])
+  );
+
+  const [loadedResource] = useAsyncState(
+    React.useCallback(async () => {
+      if (resource === undefined) return;
+      return hijackBackboneAjax(
+        [Http.NOT_FOUND],
+        async () => resource.fetch(),
+        (status) =>
+          status === Http.NOT_FOUND ? unsafeTriggerNotFound() : undefined
+      );
+    }, [resource]),
+    false
+  );
+
+  const acceptedChildren = loadedResource?.get('acceptedChildren') || '';
+
+  const fetchedChildren = async (): Promise<any> => {
+    if (acceptedChildren.length === 0) {
+      return;
+    }
+
+    return ajax(acceptedChildren, {
+      headers: { Accept: 'application/json' },
+      expectedErrors: [Http.NOT_FOUND],
+    });
+  };
+
+  const [fetchedChildrenName, setFetchedChildrenName] =
+    React.useState<RA<string>>();
+
+  React.useEffect(() => {
+    fetchedChildren().then(({ data: objects }) => {
+      const synonymsNames = objects.objects.map((node: Row) => node.name);
+      setFetchedChildrenName(synonymsNames);
+    });
+  }, [acceptedChildren]);
+
   return hideEmptyNodes && hasNoChildrenNodes ? null : (
     <li role="treeitem row">
       {ranks.map((rankId) => {
@@ -163,33 +209,6 @@ export function TreeRow<SCHEMA extends AnyTree>({
           const stats =
             typeof nodeStats === 'object' &&
             formatTreeStats(nodeStats, row.children === 0);
-          const table = genericTables[treeName] as SpecifyTable<AnyTree>;
-          const [resource] = useLiveState<
-            SpecifyResource<AnySchema> | undefined
-          >(
-            React.useCallback(() => {
-              const table = genericTables[treeName] as SpecifyTable<AnyTree>;
-              const parentNode = new table.Resource({ id: row.nodeId });
-              let node = parentNode;
-              return node;
-            }, [row.nodeId, treeName])
-          );
-          const [loadedResource] = useAsyncState(
-            React.useCallback(async () => {
-              if (resource === undefined) return;
-              return hijackBackboneAjax(
-                [Http.NOT_FOUND],
-                async () => resource.fetch(),
-                (status) =>
-                  status === Http.NOT_FOUND
-                    ? unsafeTriggerNotFound()
-                    : undefined
-              );
-            }, [resource]),
-            false
-          );
-          const acceptedChildren = loadedResource?.get('acceptedChildren');
-          // fetch resource name with api const acceptedChildrenName =
           return (
             <Button.LikeLink
               aria-controls={displayChildren ? id('children') : undefined}
@@ -265,8 +284,8 @@ export function TreeRow<SCHEMA extends AnyTree>({
                       ? treeText.acceptedName({
                           name: row.acceptedName ?? row.acceptedId.toString(),
                         })
-                      : acceptedChildren !== undefined
-                      ? acceptedChildren
+                      : fetchedChildrenName !== undefined
+                      ? `${treeText.synonyms()} ${fetchedChildrenName.join()}`
                       : undefined
                   }
                 >
