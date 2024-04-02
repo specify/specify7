@@ -237,9 +237,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     };
     const validResponse: BusinessRuleResult<SCHEMA> = {
       isValid: true,
-      payload: {
-        ruleId: rule.id!,
-      },
+      key: `uniqueness-${rule.id!}`,
     };
 
     const getFieldValue = async (
