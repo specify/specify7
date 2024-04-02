@@ -54,6 +54,7 @@ const predictFullName = async (
           isValid: false,
           reason: treeText.badStructure(),
         } as const;
+
       if ((resource.get('name')?.length ?? 0) === 0) return undefined;
 
       const treeName = resource.specifyTable.name.toLowerCase();
@@ -70,15 +71,16 @@ const predictFullName = async (
         }
       ).then(({ data }) => data);
     })
-    .then(
-      (fullName) =>
-        ({
-          isValid: true,
-          action: () =>
-            resource.set(
-              'fullName',
-              typeof fullName === 'string' ? fullName : null,
-              { silent: true }
-            ),
-        } as const)
+    .then((result) =>
+      typeof result === 'string'
+        ? ({
+            isValid: true,
+            action: () =>
+              resource.set(
+                'fullName',
+                typeof result === 'string' ? result : null,
+                { silent: true }
+              ),
+          } as const)
+        : result
     );
