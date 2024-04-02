@@ -375,31 +375,29 @@ export function Dialog({
   const overlayElement: Props['overlayElement'] = (
     props: React.ComponentPropsWithRef<'div'>,
     contentElement: React.ReactElement
-  ) => {
-    return (
-      <div
-        {...props}
-        onMouseDown={
-          closeOnOutsideClick
-            ? (event): void => {
-                // Outside click detection
-                if (
-                  allowCloseRef.current &&
-                  modal &&
-                  typeof handleClose === 'function' &&
-                  event.target === event.currentTarget
-                ) {
-                  event.preventDefault();
-                  handleClose();
-                } else props?.onMouseDown?.(event);
-              }
-            : undefined
-        }
-      >
-        {contentElement}
-      </div>
-    );
-  };
+  ) => (
+    <div
+      {...props}
+      onMouseDown={
+        closeOnOutsideClick
+          ? (event): void => {
+              // Outside click detection
+              if (
+                allowCloseRef.current &&
+                modal &&
+                typeof handleClose === 'function' &&
+                event.target === event.currentTarget
+              ) {
+                event.preventDefault();
+                handleClose();
+              } else props?.onMouseDown?.(event);
+            }
+          : undefined
+      }
+    >
+      {contentElement}
+    </div>
+  );
 
   const transitionDuration = useTransitionDuration();
   const highContrast = useHighContrast();
