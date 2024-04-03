@@ -164,13 +164,13 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       results.forEach((result) => {
         const saveBlockerMessage = result.isValid ? [] : [result.reason];
         const saveBlockerKey =
-          result.key === undefined
+          result.saveBlockerKey === undefined
             ? getFieldBlockerKey(field, 'business-rule')
-            : result.key;
+            : result.saveBlockerKey;
 
         setSaveBlockers(
           this.resource,
-          field,
+          result.fieldOverride === undefined ? field : result.fieldOverride,
           saveBlockerMessage,
           saveBlockerKey
         );
@@ -222,7 +222,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   ): Promise<BusinessRuleResult<SCHEMA>> {
     const invalidResponse: BusinessRuleResult<SCHEMA> = {
       isValid: false,
-      key: `uniqueness-${rule.id!}`,
+      saveBlockerKey: `uniqueness-${rule.id!}`,
       reason: getUniqueInvalidReason(
         rule.scopes.map(
           (scope) =>
@@ -237,7 +237,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     };
     const validResponse: BusinessRuleResult<SCHEMA> = {
       isValid: true,
-      key: `uniqueness-${rule.id!}`,
+      saveBlockerKey: `uniqueness-${rule.id!}`,
     };
 
     const getFieldValue = async (
@@ -463,7 +463,8 @@ export function attachBusinessRules(
 
 export type BusinessRuleResult<SCHEMA extends AnySchema = AnySchema> = {
   readonly localDuplicates?: RA<SpecifyResource<SCHEMA>>;
-  readonly key?: string;
+  readonly saveBlockerKey?: string;
+  readonly fieldOverride?: LiteralField | Relationship;
 } & (
   | {
       readonly isValid: true;
