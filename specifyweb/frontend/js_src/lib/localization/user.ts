@@ -113,7 +113,7 @@ export const userText = createDictionary({
     'es-es': 'Establecer agentes usuarios',
     'fr-fr': 'Définir les agents utilisateurs',
     'uk-ua': 'Встановити агентів користувача',
-    'de-ch': 'Legen Sie Benutzeragenten fest',
+    'de-ch': 'Benutzeragenten festlegen',
   },
   noAgent: {
     'en-us': 'Current user does not have an agent assigned',
@@ -179,9 +179,9 @@ export const userText = createDictionary({
       постачальником надалі.
     `,
     'de-ch': `
-      Sie wurden eingeladen, Ihrem Specify-Benutzerkonto ein externes Login
-      zuzuordnen. Dadurch können Sie sich künftig bei Specify bei Ihrem
-      gewählten Anbieter anmelden.
+      Sie wurden aufgefordert, Ihrem Specify-Benutzerkonto einen externen Login
+      zuzuordnen. Dadurch können Sie sich künftig mit dem von Ihnen gewählten
+      Anbieter bei Specify anmelden.
     `,
   },
   legacyLogin: {
@@ -225,10 +225,10 @@ export const userText = createDictionary({
       записом {providerName:string} для майбутніх входів.
     `,
     'de-ch': `
-      Derzeit ist Ihrem {providerName:string}-Konto kein Specify-Benutzer
-      zugeordnet. Wenn Sie über einen Benutzernamen und ein Kennwort verfügen,
-      können Sie diese unten eingeben, um diesen Benutzer für zukünftige
-      Anmeldungen Ihrem {providerName:string}-Konto zuzuordnen.
+      Derzeit ist Ihrem {providerName:string}-Konto kein Benutzer vom Typ
+      „Specify“ zugeordnet. Wenn Sie einen Benutzernamen und ein Passwort vom
+      Typ „Specify“ haben, können Sie diese unten eingeben, um diesen Benutzer
+      bei zukünftigen Anmeldungen Ihrem {providerName:string}-Konto zuzuordnen.
     `,
   },
   generateMasterKey: {
@@ -346,7 +346,7 @@ export const userText = createDictionary({
     `,
     'uk-ua': 'Ви можете увійти на {collectionTable:string}, щоб продовжити:',
     'de-ch': `
-      Sie können sich bei {collectionTable:string} anmelden, um fortzufahren:
+      Sie können sich beim {collectionTable:string} anmelden, um fortzufahren:
     `,
   },
   sessionTimeOut: {
@@ -379,7 +379,7 @@ export const userText = createDictionary({
       вийшов із системи.
     `,
     'de-ch': `
-      Für diese Aktion fehlen Ihnen ausreichende Berechtigungen oder Ihre
+      Ihnen fehlen die erforderlichen Berechtigungen für diese Aktion oder Ihre
       aktuelle Sitzung wurde abgemeldet.
     `,
   },
@@ -401,7 +401,7 @@ export const userText = createDictionary({
     'es-es': 'Error de permiso denegado',
     'fr-fr': "Erreur d'autorisation refusée",
     'uk-ua': 'Помилка дозволу заборонено',
-    'de-ch': 'Fehler „Berechtigung verweigert“',
+    'de-ch': 'Fehler „Berechtigung verweigert“.',
   },
   permissionDeniedDescription: {
     'en-us': `
@@ -615,7 +615,7 @@ export const userText = createDictionary({
     'es-es': 'Seleccionar acceso a la colección del usuario',
     'fr-fr': "Sélectionnez l'accès à la collection d'utilisateurs",
     'uk-ua': 'Виберіть доступ до колекції користувачів',
-    'de-ch': 'Wählen Sie den Zugriff auf die Benutzersammlung aus',
+    'de-ch': 'Auswählen des Benutzersammlungszugriffs',
   },
   securityPanel: {
     'en-us': 'Security and Accounts',
@@ -631,7 +631,7 @@ export const userText = createDictionary({
     'es-es': 'Biblioteca institucional de plantillas de roles',
     'fr-fr': 'Bibliothèque institutionnelle de modèles de rôles',
     'uk-ua': 'Бібліотека шаблонів ролей установи',
-    'de-ch': 'Institutionelle Bibliothek mit Rollenvorlagen',
+    'de-ch': 'Institutionsbibliothek mit Rollenvorlagen',
   },
   userRoles: {
     'en-us': 'User Roles',
@@ -845,7 +845,7 @@ export const userText = createDictionary({
     'es-es': 'Crear nuevos roles:',
     'fr-fr': 'Créez de nouveaux rôles :',
     'uk-ua': 'Створити нові ролі:',
-    'de-ch': 'Erstellen Sie neue Rollen:',
+    'de-ch': 'Neue Rollen erstellen:',
   },
   updateExistingRoles: {
     'en-us': 'Update existing roles:',
@@ -916,7 +916,7 @@ export const userText = createDictionary({
       Specify 7 server settings
     `,
     'ru-ru': `
-      Внешний поставщик удостоверений не настроен. Некоторые из них можно
+      Внешний поставщик удостоверений не настроен. Некоторые настройки можно
       настроить в разделе «Укажите 7 настроек сервера».
     `,
     'es-es': `
@@ -968,7 +968,7 @@ export const userText = createDictionary({
     `,
     'de-ch': `
       Erwägen Sie, für diesen Benutzer ein Passwort festzulegen. Benutzer ohne
-      Passwort können sich nicht anmelden
+      Passwort können sich nicht anmelden.
     `,
   },
   setCollections: {
@@ -1013,7 +1013,7 @@ export const userText = createDictionary({
     'es-es': 'Todas las tablas',
     'fr-fr': 'Tous les tableaux',
     'uk-ua': 'Всі столи',
-    'de-ch': 'Alle Tische',
+    'de-ch': 'Alle Tabellen',
   },
   loadingAdmins: {
     'en-us': 'Loading admins...',
@@ -1021,7 +1021,7 @@ export const userText = createDictionary({
     'es-es': 'Cargando administradores...',
     'fr-fr': 'Chargement des administrateurs…',
     'uk-ua': 'Завантаження адміністраторів...',
-    'de-ch': 'Administratoren werden geladen …',
+    'de-ch': 'Administratoren werden geladen...',
   },
   specifyAdmin: {
     comment: 'Shown next to user name for admin users',
@@ -1030,7 +1030,7 @@ export const userText = createDictionary({
     'es-es': '(Administradores de Specify 7)',
     'fr-fr': '(Spécifiez 7 Administrateur)',
     'uk-ua': '(Вкажіть 7 адміністраторів)',
-    'de-ch': '(Geben Sie 7 Admin an)',
+    'de-ch': '(Geben Sie 7 Admins an)',
   },
   legacyAdmin: {
     comment: 'Shown next to user name for admin users',

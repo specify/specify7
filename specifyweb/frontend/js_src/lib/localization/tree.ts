@@ -62,7 +62,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Операция провалена',
     'es-es': 'Operación fallida',
     'fr-fr': "L'opération a échoué",
-    'uk-ua': 'Не вдалося виконати операцію',
+    'uk-ua': 'Операція не вдалася',
     'de-ch': 'Vorgang fehlgeschlagen',
   },
   actionFailedDescription: {

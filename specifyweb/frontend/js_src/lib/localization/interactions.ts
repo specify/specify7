@@ -98,7 +98,7 @@ export const interactionsText = createDictionary({
   },
   continueWithoutPreparations: {
     'en-us': 'Continue without preparations',
-    'de-ch': 'Fahren Sie ohne Vorbereitungen fort',
+    'de-ch': 'Weiter ohne Vorbereitungen',
     'es-es': 'Continuar sin preparaciones',
     'fr-fr': 'Continuer sans préparation',
     'ru-ru': 'Продолжить без подготовки',
@@ -234,7 +234,7 @@ export const interactionsText = createDictionary({
     'fr-fr': 'Enregistrements {loanTable:string} résolus',
     'ru-ru': 'Решенные записи {loanTable:string}',
     'uk-ua': 'Вирішені {loanTable:string} записи',
-    'de-ch': '{loanTable:string}-Datensätze behoben',
+    'de-ch': 'Aufgelöste {loanTable:string}-Datensätze',
   },
   openLoans: {
     comment: 'Example: Open Loan records',
@@ -243,7 +243,7 @@ export const interactionsText = createDictionary({
     'fr-fr': 'Ouvrir les enregistrements {loanTable:string}',
     'ru-ru': 'Открыть записи {loanTable:string}',
     'uk-ua': 'Відкрити {loanTable:string} записи',
-    'de-ch': 'Öffnen Sie {loanTable:string}-Datensätze',
+    'de-ch': 'Offene {loanTable:string}-Datensätze',
   },
   gifts: {
     comment: 'Example: Gift records',
@@ -339,7 +339,7 @@ export const interactionsText = createDictionary({
     'fr-fr': 'Renvoyer les enregistrements {tableLoan:string}',
     'ru-ru': 'Вернуть {tableLoan:string} записей',
     'uk-ua': 'Повернути {tableLoan:string} записи',
-    'de-ch': 'Gibt {tableLoan:string} Datensätze zurück',
+    'de-ch': '{tableLoan:string} Datensätze zurückgeben',
   },
   createRecord: {
     comment: 'Example: Create a Loan',

@@ -122,7 +122,9 @@ export function Fields({
             <Label.Inline>
               <Input.Checkbox
                 checked={displayFormatter}
-                onClick={(): void => setDisplayFormatter(!displayFormatter)}
+                onValueChange={(): void =>
+                  setDisplayFormatter(!displayFormatter)
+                }
               />
               {resourcesText.customizeFieldFormatters()}
             </Label.Inline>
