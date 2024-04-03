@@ -1,10 +1,10 @@
 import React from 'react';
 
-import type { WbStatus } from '../WbView';
-import { WbValidationReact } from '../WbValidation';
-import { Button } from '../../Atoms/Button';
-import { commonText } from '../../../localization/common';
-import { wbText } from '../../../localization/workbench';
+import type { WbStatus } from '../WorkBench/WbView';
+import { WbValidationReact } from '../WorkBench/WbValidation';
+import { Button } from '../Atoms/Button';
+import { commonText } from '../../localization/common';
+import { wbText } from '../../localization/workbench';
 
 export function WbValidate({
   canLiveValidate,

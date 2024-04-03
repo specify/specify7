@@ -26,7 +26,7 @@ import {
   WbAdvancedSearch,
 } from './AdvancedSearch';
 import type { WbCellCounts } from './CellMeta';
-import { getSelectedLocalities, WbGeoLocate } from './WbToolkit/GeoLocate';
+// import { getSelectedLocalities, WbGeoLocate } from './WbToolkit/GeoLocate';
 import { getHotPlugin } from './handsontable';
 import { getSelectedLast, getVisualHeaders } from './hotHelpers';
 import type { WbView, Workbench } from './WbView';

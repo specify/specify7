@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { Button } from '../../Atoms/Button';
-import { wbText } from '../../../localization/workbench';
-import { commonText } from '../../../localization/common';
+import { Button } from '../Atoms/Button';
+import { wbText } from '../../localization/workbench';
+import { commonText } from '../../localization/common';
 
 export function WbResults({
   hasUnsavedChanges,

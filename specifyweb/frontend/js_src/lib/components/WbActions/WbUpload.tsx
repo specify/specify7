@@ -1,12 +1,12 @@
 import React from 'react';
 
-import type { WbMapping } from '../mapping';
-import type { WbStatus } from '../WbView';
-import { useBooleanState } from '../../../hooks/useBooleanState';
-import { Button } from '../../Atoms/Button';
-import { Dialog } from '../../Molecules/Dialog';
-import { wbText } from '../../../localization/workbench';
-import { commonText } from '../../../localization/common';
+import type { WbMapping } from '../WorkBench/mapping';
+import type { WbStatus } from '../WorkBench/WbView';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { Button } from '../Atoms/Button';
+import { Dialog } from '../Molecules/Dialog';
+import { wbText } from '../../localization/workbench';
+import { commonText } from '../../localization/common';
 
 export function WbUpload({
   hasUnsavedChanges,

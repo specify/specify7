@@ -1,16 +1,16 @@
 import React from 'react';
 
-import { useBooleanState } from '../../../hooks/useBooleanState';
-import { Button } from '../../Atoms/Button';
-import { className } from '../../Atoms/className';
-import { Dialog } from '../../Molecules/Dialog';
-import { commonText } from '../../../localization/common';
-import { wbText } from '../../../localization/workbench';
-import { loadingBar } from '../../Molecules';
-import { Workbench } from '../WbView';
-import { overwriteReadOnly } from '../../../utils/types';
-import { ping } from '../../../utils/ajax/ping';
-import { Http } from '../../../utils/ajax/definitions';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
+import { Dialog } from '../Molecules/Dialog';
+import { commonText } from '../../localization/common';
+import { wbText } from '../../localization/workbench';
+import { loadingBar } from '../Molecules';
+import { Workbench } from '../WorkBench/WbView';
+import { overwriteReadOnly } from '../../utils/types';
+import { ping } from '../../utils/ajax/ping';
+import { Http } from '../../utils/ajax/definitions';
 
 export function WbSave({
   workbench,

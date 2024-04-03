@@ -49,13 +49,13 @@ import { parseWbMappings } from './mapping';
 import { fetchWbPickLists } from './pickLists';
 import { WbUploaded } from './Results';
 import { wbViewTemplate } from './Template';
-import { WbActionsComponent } from './WbActions/WbActions';
+import { WbActionsComponent } from '../WbActions/WbActions';
 import { WbUtils, WbUtilsComponent, WbUtilsReact } from './WbUtils';
 import { WbValidation, WbValidationReact } from './WbValidation';
 import { DataSetName } from './DataSetMeta';
 import { WbSpreadsheet } from './WbSpreadsheet';
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { WbToolkit } from './WbToolkit/WbToolkit';
+import { WbToolkit } from '../WbToolkit/WbToolkit';
 import { getInitialSearchPreferences } from './AdvancedSearch';
 import type { WbSearchPreferences } from './AdvancedSearch';
 

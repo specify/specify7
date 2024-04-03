@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { useBooleanState } from '../../../hooks/useBooleanState';
-import { Button } from '../../Atoms/Button';
-import { wbText } from '../../../localization/workbench';
-import { commonText } from '../../../localization/common';
-import { Dialog } from '../../Molecules/Dialog';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { Button } from '../Atoms/Button';
+import { wbText } from '../../localization/workbench';
+import { commonText } from '../../localization/common';
+import { Dialog } from '../Molecules/Dialog';
 
 export function WbRevert({
   hasUnsavedChanges,

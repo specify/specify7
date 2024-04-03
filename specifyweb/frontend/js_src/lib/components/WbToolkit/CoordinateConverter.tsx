@@ -1,21 +1,21 @@
 import type Handsontable from 'handsontable';
 import React from 'react';
 
-import { useCachedState } from '../../../hooks/useCachedState';
-import { commonText } from '../../../localization/common';
-import { localityText } from '../../../localization/locality';
-import { wbText } from '../../../localization/workbench';
-import type { ConversionFunction } from '../../../utils/latLong';
-import { Lat, Long } from '../../../utils/latLong';
-import type { RA, RR } from '../../../utils/types';
-import { Ul } from '../../Atoms';
-import { Button } from '../../Atoms/Button';
-import { Input, Label } from '../../Atoms/Form';
-import { Dialog } from '../../Molecules/Dialog';
-import { getSelectedCells, getSelectedLast, setHotData } from '../hotHelpers';
-import { useBooleanState } from '../../../hooks/useBooleanState';
-import type { Dataset } from '../../WbPlanView/Wrapped';
-import type { WbMapping } from '../mapping';
+import { useCachedState } from '../../hooks/useCachedState';
+import { commonText } from '../../localization/common';
+import { localityText } from '../../localization/locality';
+import { wbText } from '../../localization/workbench';
+import type { ConversionFunction } from '../../utils/latLong';
+import { Lat, Long } from '../../utils/latLong';
+import type { RA, RR } from '../../utils/types';
+import { Ul } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { Input, Label } from '../Atoms/Form';
+import { Dialog } from '../Molecules/Dialog';
+import { getSelectedCells, getSelectedLast, setHotData } from '../WorkBench/hotHelpers';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import type { Dataset } from '../WbPlanView/Wrapped';
+import type { WbMapping } from '../WorkBench/mapping';
 
 export function WbConvertCoordinates({
   hasLocality,

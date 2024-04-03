@@ -1,18 +1,18 @@
 import React from 'react';
 import { HotTable } from '@handsontable/react';
 
-import { hasPermission, hasTablePermission } from '../../Permissions/helpers';
+import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import { WbChangeOwner } from './ChangeOwner';
 import { WbConvertCoordinates } from './CoordinateConverter';
-import { commonText } from '../../../localization/common';
-import { wbText } from '../../../localization/workbench';
-import type { RA } from '../../../utils/types';
-import { Button } from '../../Atoms/Button';
-import { raise } from '../../Errors/Crash';
-import { userPreferences } from '../../Preferences/userPreferences';
-import type { Dataset } from '../../WbPlanView/Wrapped';
-import { downloadDataSet } from '../helpers';
-import type { WbMapping } from '../mapping';
+import { commonText } from '../../localization/common';
+import { wbText } from '../../localization/workbench';
+import type { RA } from '../../utils/types';
+import { Button } from '../Atoms/Button';
+import { raise } from '../Errors/Crash';
+import { userPreferences } from '../Preferences/userPreferences';
+import type { Dataset } from '../WbPlanView/Wrapped';
+import { downloadDataSet } from '../WorkBench/helpers';
+import type { WbMapping } from '../WorkBench/mapping';
 import { WbDevPlan } from './DevShowPlan';
 import { WbGeoLocate } from './GeoLocate';
 import { WbLeafletMap } from './WbLeafletMap';

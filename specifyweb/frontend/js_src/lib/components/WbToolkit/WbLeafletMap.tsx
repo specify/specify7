@@ -2,15 +2,15 @@ import React from "react";
 import Handsontable from "handsontable";
 
 import { getSelectedLocalities } from './GeoLocate';
-import { getLocalitiesDataFromSpreadsheet } from '../../Leaflet/wbLocalityDataExtractor';
-import { getSelectedLast, getVisualHeaders } from '../hotHelpers';
-import { LeafletMap } from '../../Leaflet/Map';
-import { useBooleanState } from '../../../hooks/useBooleanState';
-import type { Dataset } from "../../WbPlanView/Wrapped";
-import type { WbMapping } from "../mapping";
-import { Button } from "../../Atoms/Button";
-import { localityText } from "../../../localization/locality";
-import { wbText } from "../../../localization/workbench";
+import { getLocalitiesDataFromSpreadsheet } from '../Leaflet/wbLocalityDataExtractor';
+import { getSelectedLast, getVisualHeaders } from '../WorkBench/hotHelpers';
+import { LeafletMap } from '../Leaflet/Map';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import type { Dataset } from "../WbPlanView/Wrapped";
+import type { WbMapping } from "../WorkBench/mapping";
+import { Button } from "../Atoms/Button";
+import { localityText } from "../../localization/locality";
+import { wbText } from "../../localization/workbench";
 
 export function WbLeafletMap({
     hasLocality,
