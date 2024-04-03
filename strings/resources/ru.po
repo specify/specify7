@@ -145,7 +145,7 @@ msgstr "Форматеры записи"
 
 #: components/Formatters/Aggregator.tsx:69
 #: components/Formatters/Element.tsx:125
-#: components/Formatters/Fields.tsx:267
+#: components/Formatters/Fields.tsx:269
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 #, fuzzy
 msgid "formatter"
@@ -341,7 +341,7 @@ msgstr "По умолчанию"
 
 #: components/Formatters/Aggregator.tsx:28
 #: components/Formatters/Fields.tsx:68
-#: components/Formatters/Fields.tsx:161
+#: components/Formatters/Fields.tsx:163
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Fields
 #, fuzzy
 msgid "separator"
@@ -561,7 +561,7 @@ msgstr "Вам необходимо сохранить эту форму, пре
 msgid "conditionalFormatter"
 msgstr "Условный формат"
 
-#: components/Formatters/Fields.tsx:127
+#: components/Formatters/Fields.tsx:129
 #. Used in: Components > Formatters > Fields
 #, fuzzy
 msgid "customizeFieldFormatters"

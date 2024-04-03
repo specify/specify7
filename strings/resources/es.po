@@ -144,7 +144,7 @@ msgstr "Formateadores de registros"
 
 #: components/Formatters/Aggregator.tsx:69
 #: components/Formatters/Element.tsx:125
-#: components/Formatters/Fields.tsx:267
+#: components/Formatters/Fields.tsx:269
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 #, fuzzy
 msgid "formatter"
@@ -342,7 +342,7 @@ msgstr "Por defecto"
 
 #: components/Formatters/Aggregator.tsx:28
 #: components/Formatters/Fields.tsx:68
-#: components/Formatters/Fields.tsx:161
+#: components/Formatters/Fields.tsx:163
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Fields
 #, fuzzy
 msgid "separator"
@@ -561,7 +561,7 @@ msgstr "Debes guardar este formulario antes de editar otro."
 msgid "conditionalFormatter"
 msgstr "Formato condicional"
 
-#: components/Formatters/Fields.tsx:127
+#: components/Formatters/Fields.tsx:129
 #. Used in: Components > Formatters > Fields
 #, fuzzy
 msgid "customizeFieldFormatters"

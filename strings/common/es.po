@@ -461,8 +461,8 @@ msgstr "Subido"
 #: components/FormCells/FormTable.tsx:404
 #: components/FormCells/FormTable.tsx:413
 #: components/FormPlugins/CollectionRelOneToMany.tsx:130
-#: components/Formatters/Fields.tsx:195
-#: components/Formatters/Fields.tsx:196
+#: components/Formatters/Fields.tsx:197
+#: components/Formatters/Fields.tsx:198
 #: components/QueryBuilder/Components.tsx:167
 #: components/QueryBuilder/Line.tsx:294
 #: components/QueryBuilder/Line.tsx:298

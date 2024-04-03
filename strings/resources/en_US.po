@@ -115,7 +115,7 @@ msgstr "Record Formatters"
 
 #: components/Formatters/Aggregator.tsx:69
 #: components/Formatters/Element.tsx:125
-#: components/Formatters/Fields.tsx:267
+#: components/Formatters/Fields.tsx:269
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 msgid "formatter"
 msgstr "Table Format"
@@ -281,7 +281,7 @@ msgstr "Default"
 
 #: components/Formatters/Aggregator.tsx:28
 #: components/Formatters/Fields.tsx:68
-#: components/Formatters/Fields.tsx:161
+#: components/Formatters/Fields.tsx:163
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Fields
 msgid "separator"
 msgstr "Separator"
@@ -465,7 +465,7 @@ msgstr "You need to save this form before you edit another one"
 msgid "conditionalFormatter"
 msgstr "Conditional Format"
 
-#: components/Formatters/Fields.tsx:127
+#: components/Formatters/Fields.tsx:129
 #. Used in: Components > Formatters > Fields
 msgid "customizeFieldFormatters"
 msgstr "Customize Field Formats"
