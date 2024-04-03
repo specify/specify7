@@ -193,14 +193,33 @@ describe('treeBusinessRules', () => {
     definitionItem: '/api/specify/taxontreedefitem/21/',
     rankId: 10,
   };
-  const zeusResponse: Partial<SerializedResource<Taxon>> = {
+  const acipenserResponse: Partial<SerializedResource<Taxon>> = {
     _tableName: 'Taxon',
     id: 3,
-    name: 'Zeus',
+    name: 'Acipenser',
     rankId: 180,
     definition: '/api/specify/taxontreedef/1/',
     definitionItem: '/api/specify/taxontreedefitem/9/',
     parent: '/api/specify/taxon/2/',
+  };
+
+  const oxyrinchusSpeciesResponse: Partial<SerializedResource<Taxon>> = {
+    _tableName: 'Taxon',
+    id: 4,
+    name: 'oxyrinchus',
+    rankId: 220,
+    definition: '/api/specify/taxontreedef/1/',
+    definitionItem: '/api/specify/taxontreedefitem/2/',
+    parent: '/api/specify/taxon/3/',
+  };
+
+  const oxyrinchusSubSpeciesResponse: Partial<SerializedResource<Taxon>> = {
+    _tableName: 'Taxon',
+    id: 5,
+    rankId: 230,
+    name: 'oxyrinchus',
+    definition: '/api/specify/taxontreedef/1/',
+    definitionItem: '/api/specify/taxontreedefitem/22/',
   };
 
   const genusResponse: Partial<SerializedResource<TaxonTreeDefItem>> = {
@@ -217,19 +236,68 @@ describe('treeBusinessRules', () => {
     resource_uri: '/api/specify/taxontreedefitem/9/',
   };
 
-  overrideAjax('/api/specify/taxon/2/', animaliaResponse);
-  overrideAjax('/api/specify/taxon/3/', zeusResponse);
-  overrideAjax('/api/specify/taxontreedefitem/9/', genusResponse);
+  const speciesResponse: Partial<SerializedResource<TaxonTreeDefItem>> = {
+    id: 2,
+    fullNameSeparator: ' ',
+    isEnforced: false,
+    isInFullName: true,
+    name: 'Species',
+    rankId: 220,
+    title: null,
+    version: 2,
+    parent: '/api/specify/taxontreedefitem/15/',
+    treeDef: '/api/specify/taxontreedef/1/',
+    resource_uri: '/api/specify/taxontreedefitem/2/',
+  };
 
-  test('invalid rank', async () => {
+  const oxyrinchusFullNameResponse = 'Acipenser oxyrinchus';
+
+  overrideAjax('/api/specify/taxon/2/', animaliaResponse);
+  overrideAjax('/api/specify/taxon/3/', acipenserResponse);
+  overrideAjax('/api/specify/taxon/4/', oxyrinchusSpeciesResponse);
+  overrideAjax('/api/specify/taxon/5/', oxyrinchusSubSpeciesResponse);
+  overrideAjax('/api/specify/taxontreedefitem/9/', genusResponse);
+  overrideAjax('/api/specify/taxontreedefitem/2/', speciesResponse);
+  overrideAjax(
+    '/api/specify_tree/taxon/3/predict_fullname/?name=oxyrinchus&treedefitemid=2',
+    oxyrinchusFullNameResponse
+  );
+
+  test('fullName being set', async () => {
+    const oxyrinchus = new tables.Taxon.Resource({
+      _tableName: 'Taxon',
+      id: 4,
+    });
+    await oxyrinchus.fetch();
+    await oxyrinchus.businessRuleManager?.checkField('parent');
+    expect(oxyrinchus.get('fullName')).toBe('Acipenser oxyrinchus');
+  });
+
+  test('definitionItem blocked invalid rank', async () => {
     const taxon = new tables.Taxon.Resource({
       name: 'Ameiurus',
-      parent: '/api/specify/taxon/2/',
+      parent: '/api/specify/taxon/3/',
       rankid: 180,
       definition: '/api/specify/taxontreedef/1/',
       definitionitem: '/api/specify/taxontreedefitem/9/',
     });
-    taxon.set('parent', '/api/specify/taxon/3/');
+
+    await taxon.businessRuleManager?.checkField('parent');
+
+    const { result } = renderHook(() =>
+      useSaveBlockers(taxon, tables.Taxon.getField('definitionItem'))
+    );
+    expect(result.current[0]).toStrictEqual(['Bad tree structure.']);
+  });
+
+  test('parent blocking on invalid parent', async () => {
+    const taxon = new tables.Taxon.Resource({
+      name: 'Ameiurus',
+      parent: '/api/specify/taxon/5/',
+      rankid: 180,
+      definition: '/api/specify/taxontreedef/1/',
+      definitionitem: '/api/specify/taxontreedefitem/9/',
+    });
 
     await taxon.businessRuleManager?.checkField('parent');
 
