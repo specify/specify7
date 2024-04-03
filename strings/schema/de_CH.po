@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-04-03 14:50+0000\n"
+"PO-Revision-Date: 2024-04-03 16:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/schema/de_CH/>\n"
@@ -315,7 +315,7 @@ msgstr "Einzigartigkeitsregeln"
 #: components/SchemaConfig/UniquenessRuleRow.tsx:247
 #, fuzzy
 msgid "uniqueFields"
-msgstr "Sortieren Sie nach ausgeblendeten Feldern"
+msgstr "Nach ausgeblendeten Feldern sortieren"
 
 #. Used in: Components > Schema Config > Table Uniqueness Rules
 #: components/SchemaConfig/TableUniquenessRules.tsx:136
@@ -341,7 +341,7 @@ msgstr "Anwendungsbereich"
 #: components/SchemaConfig/UniquenessRuleRow.tsx:173
 #, fuzzy
 msgid "uniquenessDuplicatesFound"
-msgstr "Duplikate in der Datenbank gefunden"
+msgstr "In der Datenbank gefundene Duplikate"
 
 #. Used in: Components > Schema Config > Uniqueness Rule Row
 #: components/SchemaConfig/UniquenessRuleRow.tsx:233
