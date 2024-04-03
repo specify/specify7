@@ -136,7 +136,7 @@ export function PrepDialog({
         {commonText.bulkSelect()}
         <Input.Integer
           aria-label={interactionsText.selectedAmount()}
-          className="w-[unset]"
+          className="!w-[unset]"
           max={maxPrep}
           min={0}
           title={interactionsText.selectedAmount()}
