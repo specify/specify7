@@ -21,9 +21,9 @@ import { Workbench } from './WbView';
 export function getHotHooksReact(
   workbench: Workbench,
   physicalColToMappingCol: (physicalCol: number) => number | undefined,
-  spreadSheetChanged: () => void,
-  checkDeletedFail: (statusCode: number) => boolean,
-) : Partial<Events> {
+  spreadsheetChanged: () => void,
+  checkDeletedFail: (statusCode: number) => boolean
+): Partial<Events> {
   let sortConfigIsSet: boolean = false;
   let hotCommentsContainerRepositionTimeout:
     | ReturnType<typeof setTimeout>
@@ -57,7 +57,7 @@ export function getHotHooksReact(
       if (physicalCol >= workbench.dataset.columns.length) return;
       const metaArray = workbench.cells?.cellMeta?.[physicalRow]?.[physicalCol];
       if (workbench.cells?.getCellMetaFromArray(metaArray!, 'isModified'))
-      workbench.cells.runMetaUpdateEffects(
+        workbench.cells.runMetaUpdateEffects(
           td,
           'isModified',
           true,
@@ -65,7 +65,7 @@ export function getHotHooksReact(
           visualCol
         );
       if (workbench.cells?.getCellMetaFromArray(metaArray!, 'isNew'))
-      workbench.cells?.runMetaUpdateEffects(
+        workbench.cells?.runMetaUpdateEffects(
           td,
           'isNew',
           true,
@@ -73,19 +73,13 @@ export function getHotHooksReact(
           visualCol
         );
       if (workbench.cells!.getCellMetaFromArray(metaArray!, 'isSearchResult'))
-      workbench.cells?.runMetaUpdateEffects(
+        workbench.cells?.runMetaUpdateEffects(
           td,
           'isSearchResult',
           true,
           visualRow,
           visualCol
         );
-      // if (workbench.cells!.getCellMetaFromArray(metaArray!, 'issues')) {
-      //   const issues = workbench.cells!.getCellMetaFromArray(metaArray!, 'issues')
-      //   td?.classList[issues.length > 0 ? 'add' : 'remove'](
-      //     'htCommentCell'
-      //   );
-      // }
       if (workbench.mappings?.mappedHeaders?.[physicalCol] === undefined)
         td.classList.add('text-gray-500');
       if (workbench.mappings?.coordinateColumns?.[physicalCol] !== undefined)
@@ -148,7 +142,7 @@ export function getHotHooksReact(
         ),
       ]);
       if (JSON.stringify(issues) !== JSON.stringify(newIssues))
-      workbench.cells!.updateCellMeta(
+        workbench.cells!.updateCellMeta(
           physicalRow,
           physicalCol,
           'issues',
@@ -179,7 +173,8 @@ export function getHotHooksReact(
       if (source !== 'CopyPaste.paste') return true;
 
       const filteredChanges = unfilteredChanges.filter(
-        ([, property]) => (property as number) < workbench.dataset.columns.length
+        ([, property]) =>
+          (property as number) < workbench.dataset.columns.length
       );
       if (
         filteredChanges.length === unfilteredChanges.length ||
@@ -220,7 +215,7 @@ export function getHotHooksReact(
             typeof property === 'number'
               ? property
               : workbench.hot!.toPhysicalColumn(
-                workbench.hot!.propToCol(property as number | string)
+                  workbench.hot!.propToCol(property as number | string)
                 ),
           oldValue,
           newValue,
@@ -245,8 +240,7 @@ export function getHotHooksReact(
         changes
           // Ignore changes to unmapped columns
           .filter(
-            ({ physicalCol }) =>
-              physicalColToMappingCol(physicalCol) !== -1
+            ({ physicalCol }) => physicalColToMappingCol(physicalCol) !== -1
           )
           .sort(sortFunction(({ visualRow }) => visualRow))
           .map(({ physicalRow }) => physicalRow)
@@ -284,10 +278,14 @@ export function getHotHooksReact(
               'originalValue',
               oldValue
             );
-          workbench.cells?.recalculateIsModifiedState(physicalRow, physicalCol, {
-            visualRow,
-            visualCol,
-          });
+          workbench.cells?.recalculateIsModifiedState(
+            physicalRow,
+            physicalCol,
+            {
+              visualRow,
+              visualCol,
+            }
+          );
           if (
             workbench.utils?.searchPreferences.search.liveUpdate &&
             workbench.utils?.searchQuery !== undefined
@@ -302,7 +300,7 @@ export function getHotHooksReact(
         }
       );
 
-      spreadSheetChanged();
+      spreadsheetChanged();
       workbench.cells?.updateCellInfoStats();
 
       if (workbench.dataset.uploadplan)
@@ -341,10 +339,9 @@ export function getHotHooksReact(
       addedRows
         .filter((physicalRow) => physicalRow < workbench.cells!.cellMeta.length)
         .forEach((physicalRow) =>
-        workbench.cells?.cellMeta.splice(physicalRow, 0, [])
+          workbench.cells?.cellMeta.splice(physicalRow, 0, [])
         );
-      if (workbench.hot && source !== 'auto')
-        spreadSheetChanged();
+      if (workbench.hot && source !== 'auto') spreadsheetChanged();
 
       return true;
     },
@@ -368,7 +365,7 @@ export function getHotHooksReact(
       workbench.cells!.flushIndexedCellData = true;
 
       if (workbench.hot && source !== 'auto') {
-        spreadSheetChanged();
+        spreadsheetChanged();
         workbench.cells!.updateCellInfoStats();
       }
 
@@ -404,7 +401,8 @@ export function getHotHooksReact(
           }))
           .map(({ physicalCol, ...rest }) => ({
             ...rest,
-            rankGroup: workbench.mappings!.treeRanks?.map((rankGroup, groupIndex) => ({
+            rankGroup: workbench
+              .mappings!.treeRanks?.map((rankGroup, groupIndex) => ({
                 rankId: rankGroup.find(
                   (mapping) => mapping.physicalCol === physicalCol
                 )?.rankId,
@@ -491,16 +489,12 @@ export function getHotHooksReact(
       // !wbView.uploadedView &&
       // !wbView.coordinateConverterView &&
       // An ugly fix for jQuery's dialogs conflicting with HOT
-      (dropIndex !== undefined || !workbench.hot),
+      dropIndex !== undefined || !workbench.hot,
 
     // Save new visualOrder on the back end
     afterColumnMove: (_columnIndexes, _finalIndex, dropIndex) => {
       // An ugly fix for jQuery's dialogs conflicting with HOT
-      if (
-        dropIndex === undefined ||
-        !workbench.hot
-      )
-        return;
+      if (dropIndex === undefined || !workbench.hot) return;
 
       workbench.cells!.flushIndexedCellData = true;
 
@@ -510,7 +504,9 @@ export function getHotHooksReact(
 
       if (
         workbench.dataset.visualorder === null ||
-        columnOrder.some((i, index) => i !== workbench.dataset.visualorder![index])
+        columnOrder.some(
+          (i, index) => i !== workbench.dataset.visualorder![index]
+        )
       ) {
         overwriteReadOnly(workbench.dataset, 'visualorder', columnOrder);
         ping(`/api/workbench/dataset/${workbench.dataset.id}/`, {
@@ -544,8 +540,8 @@ export function getHotHooksReact(
 
       // Make sure cell has comments
       if (
-        workbench.cells!.getCellMeta(physicalRow, physicalCol, 'issues').length ===
-        0
+        workbench.cells!.getCellMeta(physicalRow, physicalCol, 'issues')
+          .length === 0
       )
         return;
 
@@ -622,7 +618,7 @@ function afterUndoRedoReact(
   data: Action
 ): void {
   if (
-   // workbench.undoRedoIsHandled ||
+    // workbench.undoRedoIsHandled ||
     data.actionType !== 'change' ||
     data.changes.length !== 1 ||
     workbench.hot === undefined
@@ -657,7 +653,6 @@ function afterUndoRedoReact(
     }, 0);
   else workbench.disambiguation!.afterChangeDisambiguation(physicalRow);
 }
-
 
 export function getHotHooks(wbView: WbView) {
   let sortConfigIsSet: boolean = false;

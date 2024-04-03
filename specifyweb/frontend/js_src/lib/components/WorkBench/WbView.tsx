@@ -95,10 +95,12 @@ export function WbViewReact({
         : dataset.rows,
     [dataset.rows]
   );
-  const isMapped = Boolean(dataset.uploadplan);
-  const isUploaded =
-    dataset.uploadresult !== null && dataset.uploadresult.success;
-  const canUpdate = hasPermission('/workbench/dataset', 'update');
+
+  const isUploaded = React.useMemo<boolean>(
+    () => dataset.uploadresult !== null && dataset.uploadresult.success,
+    [dataset]
+  );
+
   const mappings = React.useMemo(
     (): WbMapping | undefined => parseWbMappings(dataset),
     [dataset]
@@ -106,10 +108,8 @@ export function WbViewReact({
 
   const searchPreferences = getInitialSearchPreferences();
   const throttleRate = Math.ceil(clamp(10, data.length / 10, 2000));
-  const [hasUnSavedChanges, spreadSheetChanged, spreadSheetUpToDate] =
-    useBooleanState();
 
-  const [showToolkit, _openToolkit, _closeToolkit, toggleToolkit] =
+  const [hasUnsavedChanges, spreadsheetChanged, spreadsheetUpToDate] =
     useBooleanState();
   const [hotIsReady, setHotToReady] = useBooleanState();
 
@@ -175,12 +175,23 @@ export function WbViewReact({
     if (statusCode === Http.NOT_FOUND) handleDatasetDelete();
     return statusCode === Http.NOT_FOUND;
   };
-  const hooks = getHotHooksReact(
-    workbench,
-    physicalColToMappingCol,
-    spreadSheetChanged,
-    checkDeletedFail
+  const hooks = React.useMemo(
+    () =>
+      getHotHooksReact(
+        workbench,
+        physicalColToMappingCol,
+        spreadsheetChanged,
+        checkDeletedFail
+      ),
+    [dataset]
   );
+
+  const isMapped = Boolean(dataset.uploadplan);
+  const canUpdate = hasPermission('/workbench/dataset', 'update');
+
+  const [showToolkit, _openToolkit, _closeToolkit, toggleToolkit] =
+    useBooleanState();
+
   const [showResults, _, closeResults, toggleResults] = useBooleanState();
 
   // Makes the hot changes required for upload view results
@@ -281,12 +292,12 @@ export function WbViewReact({
         ) : undefined}
         <WbActionsComponent
           dataset={dataset}
-          hasUnSavedChanges={hasUnSavedChanges}
+          hasUnsavedChanges={hasUnsavedChanges}
           isUploaded={isUploaded}
           onRefresh={triggerRefresh}
-          mappings={mappings as WbMapping}
+          mappings={mappings!}
           checkDeletedFail={checkDeletedFail}
-          onSpreadsheetUpToDate={spreadSheetUpToDate}
+          onSpreadsheetUpToDate={spreadsheetUpToDate}
           workbench={workbench}
           onToggleResults={toggleResults}
         />
@@ -298,7 +309,7 @@ export function WbViewReact({
           mappings={mappings!}
           data={data}
           handleDatasetDelete={handleDatasetDelete}
-          hasUnSavedChanges={hasUnSavedChanges}
+          hasUnsavedChanges={hasUnsavedChanges}
           triggerRefresh={triggerRefresh}
         />
       ) : undefined}

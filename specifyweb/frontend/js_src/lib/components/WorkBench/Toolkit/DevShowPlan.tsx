@@ -31,7 +31,6 @@ export function WbDevPlan({
       <Button.Small
         aria-haspopup="dialog"
         aria-pressed={showDevPlan}
-        className="wb-show-plan"
         onClick={openDevPlan}
       >
         {wbText.uploadPlan()}

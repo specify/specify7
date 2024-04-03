@@ -14,12 +14,12 @@ import { Http } from '../../../utils/ajax/definitions';
 
 export function WbSave({
   workbench,
-  hasUnSavedChanges,
+  hasUnsavedChanges,
   checkDeletedFail,
   onSpreadsheetUpToDate: handleSpreadsheetUpToDate,
 }: {
   readonly workbench: Workbench;
-  readonly hasUnSavedChanges: boolean;
+  readonly hasUnsavedChanges: boolean;
   readonly checkDeletedFail: (statusCode: number) => void;
   readonly onSpreadsheetUpToDate: () => void;
 }): JSX.Element {
@@ -59,7 +59,7 @@ export function WbSave({
         aria-haspopup="dialog"
         variant={className.saveButton}
         onClick={handleSave}
-        disabled={!hasUnSavedChanges}
+        disabled={!hasUnsavedChanges}
       >
         {commonText.save()}
       </Button.Small>

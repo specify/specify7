@@ -21,10 +21,10 @@ import { commonText } from '../../../localization/common';
 import { wbText } from "../../../localization/workbench";
 
 export function WbChangeOwner({
-  hasUnSavedChanges,
+  hasUnsavedChanges,
   dataset,
 }: {
-  readonly hasUnSavedChanges: boolean;
+  readonly hasUnsavedChanges: boolean;
   readonly dataset: Dataset;
 }): JSX.Element {
   const [showChangeOwner, openChangeOwner, closeChangeOwner] =
@@ -36,8 +36,8 @@ export function WbChangeOwner({
         aria-pressed={showChangeOwner}
         className="wb-change-data-set-owner"
         onClick={openChangeOwner}
-        disabled={hasUnSavedChanges}
-        title={hasUnSavedChanges ? wbText.unavailableWhileEditing() : ''}
+        disabled={hasUnsavedChanges}
+        title={hasUnsavedChanges ? wbText.unavailableWhileEditing() : ''}
       >
         {wbText.changeOwner()}
       </Button.Small>

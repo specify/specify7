@@ -9,12 +9,12 @@ import { wbText } from '../../../localization/workbench';
 import { commonText } from '../../../localization/common';
 
 export function WbUpload({
-  hasUnSavedChanges,
+  hasUnsavedChanges,
   mappings,
   openNoUploadPlan,
   startUpload,
 }: {
-  readonly hasUnSavedChanges: boolean;
+  readonly hasUnsavedChanges: boolean;
   readonly mappings: WbMapping;
   readonly openNoUploadPlan: () => void;
   readonly startUpload: (mode: WbStatus) => void;
@@ -39,8 +39,8 @@ export function WbUpload({
       <Button.Small
         aria-haspopup="dialog"
         onClick={handleUpload}
-        disabled={hasUnSavedChanges}
-        title={hasUnSavedChanges ? wbText.unavailableWhileEditing() : ''}
+        disabled={hasUnsavedChanges}
+        title={hasUnsavedChanges ? wbText.unavailableWhileEditing() : ''}
       >
         {wbText.upload()}
       </Button.Small>

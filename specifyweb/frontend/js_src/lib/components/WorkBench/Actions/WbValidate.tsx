@@ -8,12 +8,12 @@ import { wbText } from '../../../localization/workbench';
 
 export function WbValidate({
   canLiveValidate,
-  hasUnSavedChanges,
+  hasUnsavedChanges,
   startUpload,
   validation,
 }: {
   readonly canLiveValidate: boolean;
-  readonly hasUnSavedChanges: boolean;
+  readonly hasUnsavedChanges: boolean;
   readonly startUpload: (mode: WbStatus) => void;
   readonly validation: WbValidationReact;
 }): JSX.Element {
@@ -40,8 +40,8 @@ export function WbValidate({
         aria-haspopup="dialog"
         className="wb-validate"
         onClick={handleValidate}
-        disabled={hasUnSavedChanges}
-        title={hasUnSavedChanges ? wbText.unavailableWhileEditing() : ''}
+        disabled={hasUnsavedChanges}
+        title={hasUnsavedChanges ? wbText.unavailableWhileEditing() : ''}
       >
         {wbText.validate()}
       </Button.Small>

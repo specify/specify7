@@ -7,11 +7,11 @@ import { commonText } from '../../../localization/common';
 import { Dialog } from '../../Molecules/Dialog';
 
 export function WbRevert({
-  hasUnSavedChanges,
+  hasUnsavedChanges,
   onRefresh: handleRefresh,
   onSpreadsheetUpToDate: handleSpreadsheetUpToDate,
 }: {
-  readonly hasUnSavedChanges: boolean;
+  readonly hasUnsavedChanges: boolean;
   readonly onRefresh: () => void;
   readonly onSpreadsheetUpToDate: () => void;
 }): JSX.Element {
@@ -28,7 +28,7 @@ export function WbRevert({
       <Button.Small
         aria-haspopup="dialog"
         onClick={openRevert}
-        disabled={!hasUnSavedChanges}
+        disabled={!hasUnsavedChanges}
       >
         {wbText.revert()}
       </Button.Small>

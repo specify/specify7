@@ -5,18 +5,19 @@ import { wbText } from '../../../localization/workbench';
 import { commonText } from '../../../localization/common';
 
 export function WbResults({
-  hasUnSavedChanges,
+  hasUnsavedChanges,
   onToggleResults: handleToggleResults,
 }: {
-  readonly hasUnSavedChanges: boolean;
+  readonly hasUnsavedChanges: boolean;
   readonly onToggleResults: () => void;
 }): JSX.Element {
+
   return (
     <>
       <Button.Small
         aria-haspopup="tree"
-        disabled={hasUnSavedChanges}
-        title={hasUnSavedChanges ? wbText.wbUploadedUnavailable() : ''}
+        disabled={hasUnsavedChanges}
+        title={hasUnsavedChanges ? wbText.wbUploadedUnavailable() : ''}
         onClick={handleToggleResults}
       >
         {commonText.results()}

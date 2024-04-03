@@ -80,7 +80,7 @@ export function useWbActions({
 
 export function WbActionsComponent({
   dataset,
-  hasUnSavedChanges,
+  hasUnsavedChanges,
   isUploaded,
   workbench,
   mappings,
@@ -90,7 +90,7 @@ export function WbActionsComponent({
   onToggleResults,
 }: {
   readonly dataset: Dataset;
-  readonly hasUnSavedChanges: boolean;
+  readonly hasUnsavedChanges: boolean;
   readonly isUploaded: boolean;
   readonly workbench: Workbench;
   readonly mappings: WbMapping;
@@ -197,14 +197,14 @@ export function WbActionsComponent({
       ) : undefined}
       {!isUploaded && hasPermission('/workbench/dataset', 'validate') ? (
         <WbValidate
-          hasUnSavedChanges={hasUnSavedChanges}
+          hasUnsavedChanges={hasUnsavedChanges}
           canLiveValidate={canLiveValidate}
           startUpload={actions.startUpload}
           validation={workbench.validation}
         />
       ) : undefined}
       <WbResults
-        hasUnSavedChanges={hasUnSavedChanges}
+        hasUnsavedChanges={hasUnsavedChanges}
         onToggleResults={onToggleResults}
       />
       {isUploaded && hasPermission('/workbench/dataset', 'unupload') ? (
@@ -215,7 +215,7 @@ export function WbActionsComponent({
       ) : undefined}
       {!isUploaded && hasPermission('/workbench/dataset', 'upload') ? (
         <WbUpload
-          hasUnSavedChanges={hasUnSavedChanges}
+          hasUnsavedChanges={hasUnsavedChanges}
           mappings={mappings}
           openNoUploadPlan={openNoUploadPlan}
           startUpload={actions.startUpload}
@@ -224,12 +224,12 @@ export function WbActionsComponent({
       {!isUploaded && hasPermission('/workbench/dataset', 'update') ? (
         <>
           <WbRevert
-            hasUnSavedChanges={hasUnSavedChanges}
+            hasUnsavedChanges={hasUnsavedChanges}
             onRefresh={handleRefresh}
             onSpreadsheetUpToDate={handleSpreadsheetUpToDate}
           />
           <WbSave
-            hasUnSavedChanges={hasUnSavedChanges}
+            hasUnsavedChanges={hasUnsavedChanges}
             onSpreadsheetUpToDate={handleSpreadsheetUpToDate}
             checkDeletedFail={checkDeletedFail}
             workbench={workbench}

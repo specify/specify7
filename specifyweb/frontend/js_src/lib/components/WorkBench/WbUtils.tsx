@@ -25,7 +25,7 @@ import {
   getInitialSearchPreferences,
   WbAdvancedSearch,
 } from './AdvancedSearch';
-import type { WbCellCounts, WbCellMetaReact } from './CellMeta';
+import type { WbCellCounts } from './CellMeta';
 import { getSelectedLocalities, WbGeoLocate } from './Toolkit/GeoLocate';
 import { getHotPlugin } from './handsontable';
 import { getSelectedLast, getVisualHeaders } from './hotHelpers';
@@ -36,8 +36,7 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { commonText } from '../../localization/common';
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { Dataset } from '../WbPlanView/Wrapped';
-import { WbMapping } from './mapping';
+import { icons } from '../Atoms/Icons';
 
 function Navigation({
   name,
@@ -53,7 +52,7 @@ function Navigation({
   readonly spreadsheetContainer: any;
 }): JSX.Element {
   const [currentPosition, setCurrentPosition] = React.useState<number>(0);
-  const [buttonIsPressed, press, unpress, togglePress] = useBooleanState();
+  const [buttonIsPressed, _press, _unpress, togglePress] = useBooleanState();
   const handleTypeToggle = () => {
     togglePress();
     utils.toggleCellTypes(name, "toggle", spreadsheetContainer.current);
@@ -78,7 +77,7 @@ function Navigation({
         variant="bg-inherit text-gray-800 dark:text-gray-100"
         onClick={handlePrevious}
       >
-        {'<'}
+        {icons.chevronLeft}
       </Button.Small>
       <Button.Small
         className={`
@@ -105,7 +104,7 @@ function Navigation({
         variant="bg-inherit text-gray-800 dark:text-gray-100"
         onClick={handleNext}
       >
-        {'>'}
+        {icons.chevronRight}
       </Button.Small>
     </span>
   );
@@ -128,8 +127,7 @@ export function WbUtilsComponent({
   const replaceRef = React.useRef<HTMLInputElement | null>(null);
   
   const handleSearch = (event: KeyboardEvent) => {
-    // check if debounce is needed here
-    console.log("here?", event.key)
+    // TODO: check if debounce is needed here
     utils.searchCells(event, searchRef.current as HTMLInputElement, spreadsheetContainer.current);
   }
 
@@ -171,10 +169,11 @@ export function WbUtilsComponent({
               />
             </div>
           ) : undefined}
-          <span className="wb-advanced-search-wrapper">
+          <span>
             <WbAdvancedSearch
               initialSearchPreferences={searchPreferences}
               onChange={(newSearchPreferences) => {
+                // TODO: figure out this callback
                 // searchPreferences = newSearchPreferences;
                 // if (
                 //   searchPreferences.navigation.direction !==
@@ -195,7 +194,7 @@ export function WbUtilsComponent({
         <Navigation
           label={wbText.searchResults()}
           name="searchResults"
-          totalCount={cellCounts["searchResults"]}
+          totalCount={cellCounts.searchResults}
           utils={utils}
           spreadsheetContainer={spreadsheetContainer}
         />
@@ -203,7 +202,7 @@ export function WbUtilsComponent({
           <Navigation
             label={wbText.modifiedCells()}
             name="modifiedCells"
-            totalCount={cellCounts["modifiedCells"]}
+            totalCount={cellCounts.modifiedCells}
             utils={utils}
             spreadsheetContainer={spreadsheetContainer}
           />
@@ -211,7 +210,7 @@ export function WbUtilsComponent({
         <Navigation
           label={wbText.newCells()}
           name="newCells"
-          totalCount={cellCounts["newCells"]}
+          totalCount={cellCounts.newCells}
           utils={utils}
           spreadsheetContainer={spreadsheetContainer}
         />
@@ -219,7 +218,7 @@ export function WbUtilsComponent({
           <Navigation
             label={wbText.errorCells()}
             name="invalidCells"
-            totalCount={cellCounts["invalidCells"]}
+            totalCount={cellCounts.invalidCells}
             utils={utils}
             spreadsheetContainer={spreadsheetContainer}
           />
@@ -484,6 +483,8 @@ export class WbUtilsReact {
         if (isSearchResult) resultsCount += 1;
       }
     }
+
+    this.workbench.cells.updateCellInfoStats();
 
     // navigationTotalElement.textContent = resultsCount.toString();
 

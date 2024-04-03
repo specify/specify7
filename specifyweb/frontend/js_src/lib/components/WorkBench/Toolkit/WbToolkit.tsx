@@ -23,7 +23,7 @@ export function WbToolkit({
   mappings,
   data,
   handleDatasetDelete,
-  hasUnSavedChanges,
+  hasUnsavedChanges,
   triggerRefresh,
 }: {
   readonly dataset: Dataset;
@@ -31,7 +31,7 @@ export function WbToolkit({
   readonly mappings: WbMapping;
   readonly data: RA<RA<string | null>>;
   readonly handleDatasetDelete: () => void;
-  readonly hasUnSavedChanges: boolean;
+  readonly hasUnsavedChanges: boolean;
   readonly triggerRefresh: () => void;
 }): JSX.Element {
   const hot = React.useMemo(
@@ -57,14 +57,14 @@ export function WbToolkit({
   return (
     <div
       aria-label={commonText.tools()}
-      className="wb-toolkit flex flex-wrap gap-x-1 gap-y-2"
+      className="flex flex-wrap gap-x-1 gap-y-2"
       role="toolbar"
     >
       {hasPermission('/workbench/dataset', 'transfer') &&
       hasTablePermission('SpecifyUser', 'read') ? (
         <>
           <WbChangeOwner
-            hasUnSavedChanges={hasUnSavedChanges}
+            hasUnsavedChanges={hasUnsavedChanges}
             dataset={dataset}
           />
           <WbDevPlan
@@ -75,10 +75,9 @@ export function WbToolkit({
         </>
       ) : undefined}
       <Button.Small
-        className="wb-export-data-set"
         onClick={handleExport}
-        disabled={hasUnSavedChanges}
-        title={hasUnSavedChanges ? wbText.unavailableWhileEditing() : ''}
+        disabled={hasUnsavedChanges}
+        title={hasUnsavedChanges ? wbText.unavailableWhileEditing() : ''}
       >
         {commonText.export()}
       </Button.Small>

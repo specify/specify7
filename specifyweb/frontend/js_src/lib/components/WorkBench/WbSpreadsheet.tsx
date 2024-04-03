@@ -58,8 +58,8 @@ const fillCellsContextMenuItem = (
         ?.hotInstance!?.getSelected()
         ?.every((selection) => selection[0] === selection[2]) ??
         false),
-    callback: (_: any, selections: any) =>
-      selections.forEach((selection: any) =>
+    callback: (_, selections) =>
+      selections.forEach((selection) =>
         Array.from(
           new Array(selection.end.col + 1 - selection.start.col).keys()
         ).forEach((index) => {
@@ -83,7 +83,7 @@ const fillCellsContextMenuItem = (
   };
 };
 
-export function WbSpreadsheet({
+function WbSpreadsheetComponent({
   dataset,
   hotRef,
   isUploaded,
@@ -489,3 +489,5 @@ export function WbSpreadsheet({
     </>
   );
 }
+
+export const WbSpreadsheet = React.memo(WbSpreadsheetComponent);
