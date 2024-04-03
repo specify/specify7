@@ -149,7 +149,7 @@ function GeoLocate({
 
 // Generate Locality iterator. Able to handle multiple localities in a row
 export function getSelectedLocalities(
-  hot: Handsontable,
+  hot: Handsontable | null | undefined,
   columns: RA<string>,
   localityColumns: RA<IR<string>>,
   // If false, treat single cell selection as entire spreadsheet selection
@@ -167,6 +167,7 @@ export function getSelectedLocalities(
       };
     }
   | undefined {
+  if (!hot) return undefined;
   const selectedRegions = getSelectedRegions(hot);
 
   const selectedVirtualColumns = f.unique(

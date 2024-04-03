@@ -1,4 +1,5 @@
 import React from 'react';
+import { HotTable } from '@handsontable/react';
 
 import { hasPermission, hasTablePermission } from '../../Permissions/helpers';
 import { WbChangeOwner } from './ChangeOwner';
@@ -23,18 +24,20 @@ export function WbToolkit({
   data,
   handleDatasetDelete,
   hasUnSavedChanges,
-  triggerRefresh
+  triggerRefresh,
 }: {
   readonly dataset: Dataset;
-  readonly hotRef: any;
+  readonly hotRef: React.RefObject<HotTable>;
   readonly mappings: WbMapping;
   readonly data: RA<RA<string | null>>;
   readonly handleDatasetDelete: () => void;
   readonly hasUnSavedChanges: boolean;
   readonly triggerRefresh: () => void;
 }): JSX.Element {
-  const hot = hotRef.current.hotInstance;
-
+  const hot = React.useMemo(
+    () => hotRef.current?.hotInstance,
+    [hotRef.current]
+  );
   const handleExport = React.useCallback((): void => {
     const delimiter = userPreferences.get(
       'workBench',
@@ -86,12 +89,12 @@ export function WbToolkit({
             dataset={dataset}
             data={data}
             mappings={mappings}
-            hot={hot}
+            hot={hot!}
             hasLocality={hasLocality}
           />
           <WbGeoLocate
             hasLocality={hasLocality}
-            hot={hot}
+            hot={hot!}
             dataset={dataset}
             mappings={mappings}
           />

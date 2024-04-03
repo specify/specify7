@@ -19,7 +19,7 @@ export function WbLeafletMap({
     mappings,
   }: {
     readonly hasLocality: boolean;
-    readonly hot: Handsontable;
+    readonly hot: Handsontable | null | undefined;
     readonly dataset: Dataset;
     readonly mappings: WbMapping;
   }): JSX.Element {
@@ -37,7 +37,7 @@ export function WbLeafletMap({
       return getLocalitiesDataFromSpreadsheet(
         mappings.localityColumns,
         selection.visualRows.map((visualRow) => hot!.getDataAtRow(visualRow)),
-        getVisualHeaders(hot, dataset.columns),
+        getVisualHeaders(hot!, dataset.columns),
         selection.visualRows
       );
     }, [mappings.localityColumns]);

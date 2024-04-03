@@ -23,7 +23,7 @@ export function getHotHooksReact(
   physicalColToMappingCol: (physicalCol: number) => number | undefined,
   spreadSheetChanged: () => void,
   checkDeletedFail: (statusCode: number) => boolean,
-) {
+) : Partial<Events> {
   let sortConfigIsSet: boolean = false;
   let hotCommentsContainerRepositionTimeout:
     | ReturnType<typeof setTimeout>

@@ -11,6 +11,7 @@ import { HotTable } from '@handsontable/react';
 import Handsontable from 'handsontable';
 import React from 'react';
 import type { Settings } from 'handsontable/plugins/contextMenu';
+import type { Events } from 'handsontable/pluginHooks';
 
 import { LANGUAGE } from '../../localization/utils/config';
 import { wbPlanText } from '../../localization/wbPlan';
@@ -21,7 +22,7 @@ import { getTable } from '../DataModel/tables';
 import { hasPermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Dataset } from '../WbPlanView/Wrapped';
-import { parseWbMappings } from './mapping';
+import { parseWbMappings, WbMapping } from './mapping';
 import { getSelectedRegions } from './hotHelpers';
 import { WbValidationReact } from './WbValidation';
 import { WbCellMetaReact } from './CellMeta';
@@ -42,6 +43,46 @@ import { DisambiguationDialog } from './Disambiguation';
 import { mappingPathToString } from '../WbPlanView/mappingHelpers';
 import { MappingPath } from '../WbPlanView/Mapper';
 
+// Context menu item definitions (common for fillUp and fillDown)
+const fillCellsContextMenuItem = (
+  hotRef: React.RefObject<HotTable>,
+  mode: 'down' | 'up'
+): Handsontable.plugins.ContextMenu.MenuItemConfig => {
+  return {
+    name: mode === 'up' ? wbText.fillUp() : wbText.fillDown(),
+    disabled: () =>
+      // typeof this.wbView.uploadedView === 'function' ||
+      // typeof this.wbView.coordinateConverterView === 'function' ||
+      !hasPermission('/workbench/dataset', 'update') ||
+      (hotRef.current
+        ?.hotInstance!?.getSelected()
+        ?.every((selection) => selection[0] === selection[2]) ??
+        false),
+    callback: (_: any, selections: any) =>
+      selections.forEach((selection: any) =>
+        Array.from(
+          new Array(selection.end.col + 1 - selection.start.col).keys()
+        ).forEach((index) => {
+          const startRow =
+            mode === 'up' ? selection.start.row + 1 : selection.start.row;
+          const endRow = selection.end.row;
+          const col = selection.start.col + index;
+          const value =
+            mode === 'up'
+              ? hotRef.current?.hotInstance!.getDataAtCell(endRow, col)
+              : hotRef.current?.hotInstance!.getDataAtCell(startRow, col);
+          hotRef.current?.hotInstance!.setDataAtCell(
+            Array.from({ length: endRow - startRow }, (_, index) => [
+              startRow + index + 1,
+              col,
+              value,
+            ])
+          );
+        })
+      ),
+  };
+};
+
 export function WbSpreadsheet({
   dataset,
   hotRef,
@@ -51,23 +92,24 @@ export function WbSpreadsheet({
   cells,
   disambiguation,
   hooks,
+  mappings,
 }: {
   readonly dataset: Dataset;
-  readonly hotRef: any;
+  readonly hotRef: React.RefObject<HotTable>;
   readonly isUploaded: boolean;
   readonly data: RA<RA<string | null>>;
   readonly validation: WbValidationReact;
   readonly cells: WbCellMetaReact;
   readonly disambiguation: DisambiguationReact;
-  readonly hooks: any;
+  readonly hooks: Partial<Events>;
+  readonly mappings: WbMapping;
 }): JSX.Element {
-  const mappings = parseWbMappings(dataset);
   const physicalColToMappingCol = (physicalCol: number): number | undefined =>
     mappings?.lines.findIndex(
       ({ headerName }) => headerName === dataset.columns[physicalCol]
     );
 
-  const [disambiguationMatches, setMatches] = React.useState<{
+  const [disambiguationMatches, setDisambiguationMatches] = React.useState<{
     readonly physicalCols: RA<number>;
     readonly mappingPath: MappingPath;
     readonly ids: RA<number>;
@@ -76,17 +118,23 @@ export function WbSpreadsheet({
   const [disambiguationPhysicalRow, setPhysicalRow] = React.useState<number>();
   const [disambiguationResource, setResource] =
     React.useState<Collection<AnySchema>>();
-  const [noDisambiguationDialog, openNoDisamb, closeNoDisamb] =
-    useBooleanState();
+  const [
+    noDisambiguationDialog,
+    openNoDisambiguationDialog,
+    closeNoDisambiguationDialog,
+  ] = useBooleanState();
   const [disambiguationDialog, openDisambiguation, closeDisambiguation] =
     useBooleanState();
 
   const openDisambiguationDialog = () => {
     if (mappings === undefined || !hotRef.current) return;
 
-    const [visualRow, visualCol] = getSelectedLast(hotRef.current.hotInstance);
-    const physicalRow = hotRef.current.hotInstance.toPhysicalRow(visualRow);
-    const physicalCol = hotRef.current.hotInstance.toPhysicalColumn(visualCol);
+    const [visualRow, visualCol] = getSelectedLast(
+      hotRef.current?.hotInstance!
+    );
+    const physicalRow = hotRef.current?.hotInstance!.toPhysicalRow(visualRow);
+    const physicalCol =
+      hotRef.current?.hotInstance!.toPhysicalColumn(visualCol);
 
     const matches = validation?.uploadResults.ambiguousMatches[
       physicalRow
@@ -106,7 +154,7 @@ export function WbSpreadsheet({
       : Promise.resolve(resources)
     ).then(({ models }) => {
       if (models.length === 0) {
-        openNoDisamb();
+        openNoDisambiguationDialog();
         return;
       }
 
@@ -135,50 +183,11 @@ export function WbSpreadsheet({
        * // onClose: globalThis.clearInterval(interval);
        */
 
-      setMatches(matches);
+      setDisambiguationMatches(matches);
       setResource(resources);
       setPhysicalRow(physicalRow);
       openDisambiguation();
     });
-  };
-
-  // Context menu item definitions (common for fillUp and fillDown)
-  const fillCellsContextMenuItem = (
-    mode: 'down' | 'up'
-  ): Handsontable.plugins.ContextMenu.MenuItemConfig => {
-    return {
-      name: mode === 'up' ? wbText.fillUp() : wbText.fillDown(),
-      disabled: () =>
-        // typeof this.wbView.uploadedView === 'function' ||
-        // typeof this.wbView.coordinateConverterView === 'function' ||
-        !hasPermission('/workbench/dataset', 'update') ||
-        ((hotRef.current.hotInstance as Handsontable)
-          ?.getSelected()
-          ?.every((selection) => selection[0] === selection[2]) ??
-          false),
-      callback: (_: any, selections: any) =>
-        selections.forEach((selection: any) =>
-          Array.from(
-            new Array(selection.end.col + 1 - selection.start.col).keys()
-          ).forEach((index) => {
-            const startRow =
-              mode === 'up' ? selection.start.row + 1 : selection.start.row;
-            const endRow = selection.end.row;
-            const col = selection.start.col + index;
-            const value =
-              mode === 'up'
-                ? hotRef.current.hotInstance!.getDataAtCell(endRow, col)
-                : hotRef.current.hotInstance!.getDataAtCell(startRow, col);
-            hotRef.current.hotInstance?.setDataAtCell(
-              Array.from({ length: endRow - startRow }, (_, index) => [
-                startRow + index + 1,
-                col,
-                value,
-              ])
-            );
-          })
-        ),
-    };
   };
 
   const contextMenuConfig = {
@@ -221,7 +230,7 @@ export function WbSpreadsheet({
                 wrapper.setAttribute(
                   'class',
                   `${wrapper.getAttribute('class')} flex flex-col !m-0
-                    pb-1 wb-uploaded-view-context-menu`
+                    pb-1`
                 );
                 wrapper.innerHTML = createdRecords
                   .map(([tableName, recordId, label]) => {
@@ -254,12 +263,14 @@ export function WbSpreadsheet({
         : ({
             row_above: {
               disabled: () =>
+                // TODO: Figure out if these commented lines can be removed
                 // typeof this.uploadedView === 'function' ||
                 // typeof this.coordinateConverterView === 'function' ||
                 !hasPermission('/workbench/dataset', 'update'),
             },
             row_below: {
               disabled: () =>
+                // TODO: Figure out if these commented lines can be removed
                 // typeof this.uploadedView === 'function' ||
                 // typeof this.coordinateConverterView === 'function' ||
                 !hasPermission('/workbench/dataset', 'update'),
@@ -267,6 +278,7 @@ export function WbSpreadsheet({
             remove_row: {
               disabled: () => {
                 if (
+                  // TODO: Figure out if these commented lines can be removed
                   // typeof this.uploadedView === 'function' ||
                   // typeof this.coordinateConverterView === 'function' ||
                   !hasPermission('/workbench/dataset', 'update')
@@ -274,7 +286,7 @@ export function WbSpreadsheet({
                   return true;
                 // Or if called on the last row
                 const selectedRegions = getSelectedRegions(
-                  hotRef.current.hotInstance
+                  hotRef.current?.hotInstance!
                 );
                 return (
                   selectedRegions.length === 1 &&
@@ -286,6 +298,7 @@ export function WbSpreadsheet({
             disambiguate: {
               name: wbText.disambiguate(),
               disabled: (): boolean =>
+                // TODO: Figure out if these commented lines can be removed
                 // typeof this.uploadedView === 'function' ||
                 // typeof this.coordinateConverterView === 'function' ||
                 !disambiguation.isAmbiguousCell() ||
@@ -293,19 +306,21 @@ export function WbSpreadsheet({
               callback: () => openDisambiguationDialog(),
             },
             separator_1: '---------',
-            fill_down: fillCellsContextMenuItem('down'),
-            fill_up: fillCellsContextMenuItem('up'),
+            fill_down: fillCellsContextMenuItem(hotRef, 'down'),
+            fill_up: fillCellsContextMenuItem(hotRef, 'up'),
             separator_2: '---------',
             undo: {
               disabled: () =>
+                // TODO: Figure out if these commented lines can be removed
                 // typeof this.uploadedView === 'function' ||
-                hotRef.current.hotInstance.isUndoAvailable() !== true ||
+                hotRef.current?.hotInstance!.isUndoAvailable() !== true ||
                 !hasPermission('/workbench/dataset', 'update'),
             },
             redo: {
               disabled: () =>
+                // TODO: Figure out if these commented lines can be removed
                 // typeof this.uploadedView === 'function' ||
-                hotRef.current.hotInstance.isRedoAvailable() !== true ||
+                hotRef.current?.hotInstance!.isRedoAvailable() !== true ||
                 !hasPermission('/workbench/dataset', 'update'),
             },
           } as const)
@@ -377,14 +392,14 @@ export function WbSpreadsheet({
           // Hide the disambiguation column
           columns: [dataset.columns.length],
           indicators: false,
-          // Temporarily disabled as copyPasteEnabled throws an error despite having ts-expect-error
+          // TODO: Temporarily disabled as copyPasteEnabled throws an error despite having ts-expect-error
           // Typing doesn't match for handsontable 12.1.0, fixed in 14
           // copyPasteEnabled: false,
         }}
         hiddenRows={{
           rows: [],
           indicators: false,
-          // Temporarily disabled as copyPasteEnabled throws an error despite having ts-expect-error
+          // TODO: Temporarily disabled as copyPasteEnabled throws an error despite having ts-expect-error
           // Typing doesn't match for handsontable 12.1.0, fixed in 14
           // copyPasteEnabled: false,
         }}
@@ -403,6 +418,7 @@ export function WbSpreadsheet({
         placeholderCellClassName="htPlaceholder"
         ref={hotRef}
         rowHeaders={true}
+        // @ts-expect-error
         sortIndicator={true}
         stretchH="all"
         tabMoves={
@@ -419,7 +435,7 @@ export function WbSpreadsheet({
         <Dialog
           buttons={commonText.close()}
           header={wbText.noDisambiguationResults()}
-          onClose={closeNoDisamb}
+          onClose={closeNoDisambiguationDialog}
         >
           {wbText.noDisambiguationResultsDescription()}
         </Dialog>
@@ -435,18 +451,18 @@ export function WbSpreadsheet({
               selected.id
             );
             validation?.startValidateRow(disambiguationPhysicalRow!);
-            hotRef.current.hotInstance?.render();
+            hotRef.current?.hotInstance!.render();
           }}
           onSelectedAll={(selected): void =>
             // Loop backwards so the live validation will go from top to bottom
-            hotRef.current.hotInstance?.batch(() => {
+            hotRef.current!.hotInstance!.batch(() => {
               for (
                 let visualRow = data.length - 1;
                 visualRow >= 0;
                 visualRow--
               ) {
                 const physicalRow =
-                  hotRef.current.hotInstance!.toPhysicalRow(visualRow);
+                  hotRef.current!.hotInstance!.toPhysicalRow(visualRow);
                 if (
                   !validation?.uploadResults.ambiguousMatches[
                     physicalRow

@@ -12,8 +12,9 @@
 
 import '../../../css/workbench.css';
 
-import Handsontable from 'handsontable';
 import React from 'react';
+import Handsontable from 'handsontable';
+import { HotTable } from '@handsontable/react';
 
 import { commonText } from '../../localization/common';
 import { LANGUAGE } from '../../localization/utils/config';
@@ -82,7 +83,7 @@ export function WbViewReact({
   spreadsheetContainer,
 }: {
   readonly dataset: Dataset;
-  readonly hotRef: any;
+  readonly hotRef: React.RefObject<HotTable>;
   readonly handleDatasetDelete: () => void;
   readonly triggerRefresh: () => void;
   readonly spreadsheetContainer: any;
@@ -112,6 +113,7 @@ export function WbViewReact({
     useBooleanState();
   const [hotIsReady, setHotToReady] = useBooleanState();
 
+  // TODO: try putting a loader until hotRef loads?
   React.useEffect(() => {
     const getPickLists = async () =>
       mappings === undefined
@@ -126,7 +128,7 @@ export function WbViewReact({
       const configureHotAndPickLists = async () => {
         const pickLists = await getPickLists(); // Await getPickLists() here
         configureHandsontable(
-          hotRef.current.hotInstance,
+          hotRef.current!.hotInstance!,
           mappings,
           dataset,
           pickLists
@@ -147,7 +149,7 @@ export function WbViewReact({
     const workbench: Workbench = {
       data,
       dataset,
-      hot: hotRef.current?.hotInstance,
+      hot: hotRef.current?.hotInstance!,
       mappings: mappings as WbMapping,
       searchPreferences,
       throttleRate,
@@ -183,9 +185,9 @@ export function WbViewReact({
 
   // Makes the hot changes required for upload view results
   React.useEffect(() => {
-    if (!showResults) return;
+    if (!showResults || !workbench.hot) return;
 
-    workbench.hot.updateSettings({ readOnly: true });
+    workbench.hot?.updateSettings({ readOnly: true });
     const initialHiddenRows = getHotPlugin(
       workbench.hot,
       'hiddenRows'
@@ -258,8 +260,8 @@ export function WbViewReact({
             getRowCount={() =>
               hotRef.current?.hotInstance
                 ? dataset.rows.length
-                : hotRef.current.hotInstance.countRows() -
-                  hotRef.current.hotInstance.countEmptyRows(true)
+                : hotRef.current!.hotInstance!.countRows() -
+                  hotRef.current!.hotInstance!.countEmptyRows(true)
             }
           />
         </div>
@@ -289,17 +291,17 @@ export function WbViewReact({
           onToggleResults={toggleResults}
         />
       </div>
-      {showToolkit && (
+      {showToolkit ? (
         <WbToolkit
           dataset={dataset}
           hotRef={hotRef}
-          mappings={mappings as WbMapping}
+          mappings={mappings!}
           data={data}
           handleDatasetDelete={handleDatasetDelete}
           hasUnSavedChanges={hasUnSavedChanges}
           triggerRefresh={triggerRefresh}
         />
-      )}
+      ) : undefined}
       <div className="flex flex-1 gap-4 overflow-hidden">
         <section className="wb-spreadsheet flex-1 overflow-hidden overscroll-none">
           <WbSpreadsheet
@@ -311,9 +313,10 @@ export function WbViewReact({
             cells={workbench.cells}
             disambiguation={workbench.disambiguation}
             hooks={hooks}
+            mappings={mappings!}
           />
         </section>
-        {showResults && (
+        {showResults ? (
           <aside aria-live="polite" className="wb-uploaded-view-wrapper">
             <WbUploaded
               dataSetId={dataset.id}
@@ -323,7 +326,7 @@ export function WbViewReact({
               onClose={closeResults}
             />
           </aside>
-        )}
+        ) : undefined}
       </div>
       <WbUtilsComponent
         isUploaded={isUploaded}

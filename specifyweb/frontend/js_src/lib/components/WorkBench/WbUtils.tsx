@@ -400,7 +400,6 @@ export class WbUtilsReact {
     spreadsheetContainer: any
   ){
     if (!this.workbench.hot) return;
-    console.log("here? MATE")
     /*
      * Don't rerun search on live search if search query did not change
      * (e.x, if Ctrl/Cmd+A is clicked in the search box)
@@ -468,7 +467,6 @@ export class WbUtilsReact {
           lastVisibleColumn >= visualCol
         ) {
           cell = this.workbench.hot.getCell(visualRow, visualCol) ?? undefined;
-          console.log("CELL", cell)
           render = Boolean(cell);
         }
 
@@ -488,7 +486,6 @@ export class WbUtilsReact {
     }
 
     // navigationTotalElement.textContent = resultsCount.toString();
-    console.log("COUNT", resultsCount.toString());
 
     // Navigate to the first search result when hitting Enter
     if (event.key === 'Enter')
@@ -498,8 +495,6 @@ export class WbUtilsReact {
         event.key === 'Enter',
         event.key === 'Enter' ? [0, 0] : undefined
       );
-
-    console.log("here? MATE FINISHED", this.workbench.cells!.cellMeta)
   }
 
   parseSearchQuery(searchQueryElement: HTMLInputElement) {

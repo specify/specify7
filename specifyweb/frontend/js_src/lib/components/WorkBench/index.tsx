@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { HotTable } from '@handsontable/react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
@@ -17,7 +18,6 @@ import { Dialog } from '../Molecules/Dialog';
 import { NotFoundView } from '../Router/NotFoundView';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { WbViewReact } from './WbView';
-
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
@@ -54,7 +54,7 @@ export function WorkBenchReact(): JSX.Element | null {
   const [isDeletedConfirmation, handleDeletedConfirmation] = useBooleanState();
 
   const navigate = useNavigate();
-  const hotRef = React.useRef(null);
+  const hotRef = React.useRef<HotTable>(null);
   const spreadsheetContainer = React.useRef<HTMLElement | null>(null);
 
   // temporary null check, replace with loading screen?
