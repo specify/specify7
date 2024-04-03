@@ -76,6 +76,13 @@ const dialogIndexes = new Set<number>();
 const getNextIndex = (): number =>
   dialogIndexes.size === 0 ? initialIndex : Math.max(...dialogIndexes) + 1;
 
+/*
+ * Long enough to prevent accidental dialog close during the brief
+ * moment of dialog resize, but not long enough to falsely intercept
+ * any intentional clicks.
+ */
+const preventAutoCloseTime = 300;
+
 const supportsBackdropBlur =
   globalThis.CSS?.supports(
     '((-webkit-backdrop-filter: none) or (backdrop-filter: none))'
@@ -361,11 +368,16 @@ export function Dialog({
     );
   }, [showIcon, defaultIcon, buttons, buttonContainer]);
 
-  const allowCloseRef = React.useRef<boolean>(false);
+  /*
+   * Ref used to save the user from accidentally closing the dialog
+   * if it shrunk in size in a brief instant before the user tried
+   * to click on something.
+   */
+  const ignoreOutsideClickRef = React.useRef<boolean>(false);
   React.useEffect(() => {
     const timer = setTimeout(() => {
-      allowCloseRef.current = true;
-    }, 300);
+      ignoreOutsideClickRef.current = true;
+    }, preventAutoCloseTime);
 
     return () => {
       clearTimeout(timer);
@@ -383,7 +395,7 @@ export function Dialog({
           ? (event): void => {
               // Outside click detection
               if (
-                allowCloseRef.current &&
+                ignoreOutsideClickRef.current &&
                 modal &&
                 typeof handleClose === 'function' &&
                 event.target === event.currentTarget
