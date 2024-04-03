@@ -72,7 +72,7 @@ function ConditionalMapping({
             formatter.definition.conditionField !== undefined
           }
           isReadOnly={isReadOnly}
-          onClick={setConditionField}
+          onChange={setConditionField}
         />
         {resourcesText.conditionalFormatter()}
       </Label.Inline>
