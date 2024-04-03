@@ -52,8 +52,6 @@ export class WbCellMetaReact {
   // eslint-disable-next-line functional/prefer-readonly-type
   public cellMeta: WritableArray<WritableArray<WbMetaArray>> = [];
 
-  public cellCounts: WbCellCounts | undefined = undefined;
-
   // Meta data for each cell (indexed by visual columns)
   // eslint-disable-next-line functional/prefer-readonly-type
   private indexedCellMeta: RA<RA<WbMetaArray>> | undefined = undefined;
@@ -159,7 +157,6 @@ export class WbCellMetaReact {
      * If cell was disambiguated, it should show up as changed, even if value
      * is unchanged
      */
-    // @ts-expect-error
     return this.workbench.disambiguation?.cellWasDisambiguated(
       physicalRow,
       physicalCol
@@ -201,7 +198,7 @@ export class WbCellMetaReact {
     visualRow: number,
     visualCol: number
   ) {
-    if (this.workbench.hot === undefined) return;
+    if (!this.workbench.hot) return;
 
     if (key === 'isNew')
       cell?.classList[value === true ? 'add' : 'remove']('wb-no-match-cell');
@@ -259,7 +256,7 @@ export class WbCellMetaReact {
       readonly visualCol?: number;
     } = {}
   ) {
-    if (this.workbench.hot === undefined) return;
+    if (!this.workbench.hot) return;
     const isValueChanged = this.setCellMeta(
       physicalRow,
       physicalCol,
@@ -335,7 +332,7 @@ export class WbCellMetaReact {
   updateCellInfoStats() {
     const cellMeta = this.cellMeta.flat();
 
-    this.cellCounts = {
+    const cellCounts = {
       newCells: cellMeta.reduce(
         (count, info) =>
           count + (this.getCellMetaFromArray(info, 'isNew') ? 1 : 0),
@@ -359,48 +356,8 @@ export class WbCellMetaReact {
       ),
     };
     
-    // below line breaks error cell highlighting
-    // this.workbench.setCellCounts(this.cellCounts);
-
-    // OLD CODE: NEEDS TO BE REMOVED AT THE END
-    // Update navigation information
-    // needs to be changed
-    // Object.values(
-    //   this.wbView.el.getElementsByClassName('wb-navigation-total')
-    // ).forEach((navigationTotalElement) => {
-    //   const navigationContainer = navigationTotalElement.closest(
-    //     '.wb-navigation-section'
-    //   );
-    //   if (navigationContainer === null) return;
-    //   const navigationType = navigationContainer.getAttribute(
-    //     'data-navigation-type'
-    //   ) as keyof WbCellCounts | null;
-    //   if (navigationType === null) return;
-    //   navigationTotalElement.textContent =
-    //     cellCounts[navigationType]?.toString();
-
-    //   if (cellCounts[navigationType] === 0) {
-    //     const currentPositionElement =
-    //       navigationContainer.getElementsByClassName(
-    //         'wb-navigation-position'
-    //       )?.[0];
-    //     if (typeof currentPositionElement === 'object')
-    //       currentPositionElement.textContent = '0';
-    //   }
-    // });
-
-    // const uploadButton =
-    //   this.wbView.el.querySelector<HTMLButtonElement>('.wb-upload');
-    // if (uploadButton === null) return;
-    // const title = wbText.uploadUnavailableWhileHasErrors();
-    // if (
-    //   !uploadButton.disabled ||
-    //   uploadButton.getAttribute('title') === title
-    // ) {
-    //   const hasErrors = cellCounts.invalidCells > 0;
-    //   uploadButton.toggleAttribute('disabled', hasErrors);
-    //   uploadButton.setAttribute('title', hasErrors ? title : '');
-    // }
+    const [_, setCellCounts] = this.workbench.cellCounts;
+    setCellCounts(cellCounts);
   }
 
 public cellIsType(metaArray: WbMetaArray, type: keyof WbCellCounts): boolean {

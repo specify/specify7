@@ -7,17 +7,20 @@ import { Button } from '../Atoms/Button';
 import { Dialog } from '../Molecules/Dialog';
 import { wbText } from '../../localization/workbench';
 import { commonText } from '../../localization/common';
+import { WbCellCounts } from '../WorkBench/CellMeta';
 
 export function WbUpload({
   hasUnsavedChanges,
   mappings,
   openNoUploadPlan,
   startUpload,
+  cellCounts,
 }: {
   readonly hasUnsavedChanges: boolean;
   readonly mappings: WbMapping;
   readonly openNoUploadPlan: () => void;
   readonly startUpload: (mode: WbStatus) => void;
+  readonly cellCounts: WbCellCounts;
 }): JSX.Element {
   const [showUpload, openUpload, closeUpload] = useBooleanState();
 
@@ -39,8 +42,14 @@ export function WbUpload({
       <Button.Small
         aria-haspopup="dialog"
         onClick={handleUpload}
-        disabled={hasUnsavedChanges}
-        title={hasUnsavedChanges ? wbText.unavailableWhileEditing() : ''}
+        disabled={hasUnsavedChanges || cellCounts.invalidCells > 0}
+        title={
+          hasUnsavedChanges
+            ? wbText.unavailableWhileEditing()
+            : cellCounts.invalidCells > 0
+            ? wbText.uploadUnavailableWhileHasErrors()
+            : ''
+        }
       >
         {wbText.upload()}
       </Button.Small>

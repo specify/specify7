@@ -22,7 +22,7 @@ import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
 import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
-import type { IR, RA, WritableArray } from '../../utils/types';
+import type { GetSet, IR, RA, WritableArray } from '../../utils/types';
 import { ensure, overwriteReadOnly, writable } from '../../utils/types';
 import { clamp, throttle } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
@@ -72,7 +72,7 @@ export type Workbench = {
   throttleRate: number;
   mappings: WbMapping;
   utils: WbUtilsReact;
-  setCellCounts: (cellCounts: WbCellCounts) => void;
+  cellCounts: GetSet<WbCellCounts>;
 };
 
 export function WbViewReact({
@@ -157,7 +157,7 @@ export function WbViewReact({
       disambiguation: undefined!,
       validation: undefined!,
       utils: undefined!,
-      setCellCounts,
+      cellCounts: [cellCounts, setCellCounts],
     };
     workbench.cells = new WbCellMetaReact(workbench);
     workbench.disambiguation = new DisambiguationReact(workbench);

@@ -219,6 +219,7 @@ export function WbActionsComponent({
           mappings={mappings}
           openNoUploadPlan={openNoUploadPlan}
           startUpload={actions.startUpload}
+          cellCounts={workbench.cellCounts[0]}
         />
       ) : undefined}
       {!isUploaded && hasPermission('/workbench/dataset', 'update') ? (
