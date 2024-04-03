@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-04-03 14:50+0000\n"
+"PO-Revision-Date: 2024-04-03 16:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/common/de_CH/>\n"
@@ -997,7 +997,7 @@ msgstr "Mehrfachauswahl"
 #: components/Interactions/LoanReturn.tsx:257
 #, fuzzy
 msgid "bulkReturn"
-msgstr "Massenrücksendung"
+msgstr "Massenrückgabe"
 
 #. Used in: Components > Interactions > Loan Return
 #: components/Interactions/LoanReturn.tsx:271
