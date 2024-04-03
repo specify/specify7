@@ -104,7 +104,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Varios archivos seleccionados',
     'fr-fr': 'Plusieurs fichiers sélectionnés',
     'ru-ru': 'Выбрано несколько файлов',
-    'uk-ua': 'Вибрано декілька файлів',
+    'uk-ua': 'Вибрано кілька файлів',
   },
   fileSize: {
     'en-us': 'File Size',
@@ -135,7 +135,7 @@ export const attachmentsText = createDictionary({
   },
   pleaseReselectAllFiles: {
     'en-us': 'Please reselect all files before uploading.',
-    'de-ch': 'Bitte wählen Sie vor dem Hochladen alle Dateien erneut aus.',
+    'de-ch': 'Bitte wählen Sie alle Dateien vor dem Hochladen erneut aus.',
     'es-es':
       'Por favor, vuelva a seleccionar todos los archivos antes de cargarlos.',
     'fr-fr':
@@ -250,7 +250,7 @@ export const attachmentsText = createDictionary({
       have been uploaded.
     `,
     'de-ch': `
-      Der Upload war im Gange, als es zu einer Unterbrechung kam. Möglicherweise
+      Der Upload war im Gange, als eine Unterbrechung auftrat. Möglicherweise
       wurden einige Dateien hochgeladen.
     `,
     'es-es': `
@@ -304,7 +304,7 @@ export const attachmentsText = createDictionary({
   },
   attachmentId: {
     'en-us': 'Attachment ID',
-    'de-ch': 'Anhang-ID',
+    'de-ch': 'Anhangs-ID',
     'es-es': 'ID del archivo adjunto',
     'fr-fr': 'ID de pièce jointe',
     'ru-ru': 'Идентификатор вложения',
@@ -312,7 +312,7 @@ export const attachmentsText = createDictionary({
   },
   choosePath: {
     'en-us': 'Choose Path',
-    'de-ch': 'Wählen Sie Pfad',
+    'de-ch': 'Pfad wählen',
     'es-es': 'Seleccione la ruta',
     'fr-fr': 'Choisir le chemin',
     'ru-ru': 'Выберите путь',
@@ -379,8 +379,8 @@ export const attachmentsText = createDictionary({
       Server
     `,
     'de-ch': `
-      Beim Rollback werden die Anhänge aus der Specify-Datenbank und dem
-      Asset-Server gelöscht
+      Rollback löscht die Anhänge aus der Datenbank „Specify“ und dem Asset
+      Server.
     `,
     'es-es': `
       La reversión eliminará los archivos adjuntos de la base de datos Specify y
@@ -454,7 +454,7 @@ export const attachmentsText = createDictionary({
   },
   totalFiles: {
     'en-us': 'Total files',
-    'de-ch': 'Gesamtzahl der Dateien',
+    'de-ch': 'Gesamtdateien',
     'es-es': 'Archivos totales',
     'fr-fr': 'Total des fichiers',
     'ru-ru': 'Всего файлов',
@@ -560,8 +560,7 @@ export const attachmentsText = createDictionary({
   selectIdentifier: {
     'en-us': 'Select an identifier to match the files name against.',
     'de-ch': `
-      Wählen Sie eine Kennung aus, mit der der Dateiname abgeglichen werden
-      soll.
+      Wählen Sie eine Kennung aus, mit der der Dateiname verglichen werden soll.
     `,
     'es-es': `
       Seleccione un identificador para hacer coincidir el nombre de los
@@ -572,7 +571,7 @@ export const attachmentsText = createDictionary({
     `,
     'ru-ru':
       'Выберите идентификатор, которому будет соответствовать имя файла.',
-    'uk-ua': 'Виберіть ідентифікатор, який буде відповідати назві файлів.',
+    'uk-ua': 'Виберіть ідентифікатор для відповідності імені файлу.',
   },
   progress: {
     'en-us': 'Progress',
@@ -596,8 +595,8 @@ export const attachmentsText = createDictionary({
       have been {action: string}.
     `,
     'de-ch': `
-      {success: number} der {total: number} Anhänge im Datensatz waren {action:
-      string}.
+      {success: number} von {total: number} Anhängen im Datensatz waren
+      {action: string}.
     `,
     'es-es': `
       {éxito: número} de los {total: número} archivos adjuntos en el conjunto de

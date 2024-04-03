@@ -69,7 +69,7 @@ export const wbPlanText = createDictionary({
     'es-es': 'sin mapear',
     'fr-fr': 'Non mappé',
     'uk-ua': 'Не зіставлений',
-    'de-ch': 'Zuordnung ist erforderlich',
+    'de-ch': 'Eine Zuordnung ist erforderlich',
   },
   mapped: {
     'en-us': 'Mapped',
