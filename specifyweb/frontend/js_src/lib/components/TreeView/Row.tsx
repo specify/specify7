@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { useId } from '../../hooks/useId';
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
@@ -17,7 +18,6 @@ import { getPref } from '../InitialContext/remotePrefs';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Conformations, KeyAction, Row, Stats } from './helpers';
 import { formatTreeStats, mapKey, scrollIntoView } from './helpers';
-import { useAsyncState } from '../../hooks/useAsyncState';
 
 export function TreeRow<SCHEMA extends AnyTree>({
   row,
