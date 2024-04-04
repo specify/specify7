@@ -50,14 +50,12 @@ import { fetchWbPickLists } from './pickLists';
 import { WbUploaded } from './Results';
 import { wbViewTemplate } from './Template';
 import { WbActionsComponent } from '../WbActions/WbActions';
-import { WbUtils, WbUtilsComponent, WbUtilsReact } from './WbUtils';
+import { WbUtils, WbUtilsComponent } from './WbUtils';
 import { WbValidation, WbValidationReact } from './WbValidation';
 import { DataSetName } from './DataSetMeta';
 import { WbSpreadsheet } from './WbSpreadsheet';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { WbToolkit } from '../WbToolkit/WbToolkit';
-import { getInitialSearchPreferences } from './AdvancedSearch';
-import type { WbSearchPreferences } from './AdvancedSearch';
 
 export type WbStatus = 'unupload' | 'upload' | 'validate';
 
@@ -67,11 +65,10 @@ export type Workbench = {
   disambiguation: DisambiguationReact;
   validation: WbValidationReact;
   data: RA<RA<string | null>>;
-  searchPreferences: WbSearchPreferences;
   hot: Handsontable;
   throttleRate: number;
   mappings: WbMapping;
-  utils: WbUtilsReact;
+  utils: WbUtils;
   cellCounts: GetSet<WbCellCounts>;
 };
 
@@ -106,7 +103,6 @@ export function WbViewReact({
     [dataset]
   );
 
-  const searchPreferences = getInitialSearchPreferences();
   const throttleRate = Math.ceil(clamp(10, data.length / 10, 2000));
 
   const [hasUnsavedChanges, spreadsheetChanged, spreadsheetUpToDate] =
@@ -150,8 +146,7 @@ export function WbViewReact({
       data,
       dataset,
       hot: hotRef.current?.hotInstance!,
-      mappings: mappings as WbMapping,
-      searchPreferences,
+      mappings: mappings!,
       throttleRate,
       cells: undefined!,
       disambiguation: undefined!,
@@ -162,7 +157,7 @@ export function WbViewReact({
     workbench.cells = new WbCellMetaReact(workbench);
     workbench.disambiguation = new DisambiguationReact(workbench);
     workbench.validation = new WbValidationReact(workbench);
-    workbench.utils = new WbUtilsReact(workbench);
+    workbench.utils = new WbUtils(workbench);
     return workbench;
   }, [dataset, hotIsReady]);
 
@@ -341,7 +336,6 @@ export function WbViewReact({
       </div>
       <WbUtilsComponent
         isUploaded={isUploaded}
-        searchPreferences={searchPreferences}
         cellCounts={cellCounts}
         utils={workbench.utils}
         spreadsheetContainer={spreadsheetContainer}
