@@ -179,7 +179,7 @@ msgstr "Create"
 #: components/FormPlugins/PaleoLocation.tsx:88
 #: components/FormPlugins/index.tsx:198
 #: components/FormPlugins/index.tsx:267
-#: components/FormSliders/AttachmentsCollection.tsx:67
+#: components/FormSliders/AttachmentsCollection.tsx:71
 #: components/FormSliders/RecordSet.tsx:454
 #: components/Formatters/Element.tsx:66
 #: components/Formatters/Element.tsx:88
