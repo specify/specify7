@@ -684,7 +684,7 @@ export const commonText = createDictionary({
   },
   bulkReturn: {
     'en-us': 'Bulk Return',
-    'de-ch': 'Massenrücksendung',
+    'de-ch': 'Massenrückgabe',
     'es-es': 'Devolución masiva',
     'fr-fr': 'Retour groupé',
     'ru-ru': 'Массовый возврат',

@@ -387,7 +387,7 @@ export const schemaText = createDictionary({
   },
   uniqueFields: {
     'en-us': 'Unique Fields',
-    'de-ch': 'Sortieren Sie nach ausgeblendeten Feldern',
+    'de-ch': 'Nach ausgeblendeten Feldern sortieren',
     'es-es': 'Campos únicos',
     'fr-fr': 'Champs uniques',
     'ru-ru': 'Уникальные поля',
@@ -419,7 +419,7 @@ export const schemaText = createDictionary({
   },
   uniquenessDuplicatesFound: {
     'en-us': 'Duplicates found in database',
-    'de-ch': 'Duplikate in der Datenbank gefunden',
+    'de-ch': 'In der Datenbank gefundene Duplikate',
     'es-es': 'muchos a uno',
     'fr-fr': 'Doublons trouvés dans la base de données',
     'ru-ru': 'В базе данных найдены дубликаты',
