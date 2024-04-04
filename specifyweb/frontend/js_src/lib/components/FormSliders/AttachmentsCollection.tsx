@@ -32,19 +32,23 @@ export function AttachmentsCollection({
     'scale'
   );
 
-  const attachments: RA<SerializedResource<Attachment>> = filterArray(
-    Array.from(collection.models, (model) => {
-      if (model.specifyTable.name.includes('Attachment')) {
-        const record = serializeResource(
-          model
-        ) as SerializedResource<CollectionObjectAttachment>;
-        // eslint-disable-next-line
-        return serializeResource(
-          record.attachment
-        ) as SerializedResource<Attachment>;
-      }
-      return undefined;
-    })
+  const attachments: RA<SerializedResource<Attachment>> = React.useMemo(
+    () =>
+      filterArray(
+        Array.from(collection.models, (model) => {
+          if (model.specifyTable.name.includes('Attachment')) {
+            const record = serializeResource(
+              model
+            ) as SerializedResource<CollectionObjectAttachment>;
+            // eslint-disable-next-line
+            return serializeResource(
+              record.attachment
+            ) as SerializedResource<Attachment>;
+          }
+          return undefined;
+        })
+      ),
+    [collection.models]
   );
 
   const isAttachmentsNotLoaded = attachments.some(
@@ -77,7 +81,6 @@ export function AttachmentsCollection({
             isComplete={attachments.length === collection.models.length}
             scale={scale}
             onChange={() => undefined}
-            onClick={undefined}
             onFetchMore={undefined}
           />
         </Dialog>

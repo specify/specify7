@@ -131,7 +131,7 @@ export const resourcesText = createDictionary({
   },
   typeSearches: {
     'en-us': 'Type Searches',
-    'de-ch': 'Geben Sie Suchen ein',
+    'de-ch': 'Typsuchen',
     'es-es': 'Tipo de búsquedas',
     'fr-fr': 'Recherches de types',
     'ru-ru': 'Тип поиска',
@@ -249,8 +249,8 @@ export const resourcesText = createDictionary({
     'ru-ru': `
       «Агрегация таблиц» управляет тем, как несколько записей таблицы
       объединяются в одну текстовую строку. Формат таблицы, разделитель,
-      суффикс, поле сортировки и предел предварительного просмотра записей можно
-      настроить. Его можно отобразить в результатах запроса и в форматах
+      суффикс, поле сортировки и ограничение предварительного просмотра записи
+      можно настроить. Его можно отобразить в результатах запроса и в форматах
       таблиц.
     `,
     'uk-ua': `
@@ -294,9 +294,8 @@ export const resourcesText = createDictionary({
   },
   selectDefaultFormatter: {
     'en-us': 'Please select a default record formatter for this table',
-    'de-ch': `
-      Bitte wählen Sie einen Standarddatensatzformatierer für diese Tabelle aus
-    `,
+    'de-ch':
+      'Bitte wählen Sie einen Standarddatensatzformatierer für diese Tabelle',
     'es-es':
       'Seleccione un formateador de registros predeterminado para esta tabla',
     'fr-fr': `
@@ -310,7 +309,7 @@ export const resourcesText = createDictionary({
   },
   duplicateFormatters: {
     'en-us': 'Record formatter names must be unique',
-    'de-ch': 'Datensatzformatierernamen müssen eindeutig sein',
+    'de-ch': 'Namen von Datensatzformatierern müssen eindeutig sein',
     'es-es': 'Los nombres de los formateadores de registros deben ser únicos.',
     'fr-fr': "Les noms du formateur d'enregistrement doivent être uniques",
     'ru-ru': 'Имена средств форматирования записей должны быть уникальными.',
@@ -746,7 +745,7 @@ export const resourcesText = createDictionary({
   },
   notifyUser: {
     'en-us': 'Send completion notification to user',
-    'de-ch': 'Abschlussbenachrichtigung an den Benutzer senden',
+    'de-ch': 'Abschlussbenachrichtigung an Benutzer senden',
     'es-es': 'Enviar notificación de finalización al usuario',
     'fr-fr': "Envoyer une notification d'achèvement à l'utilisateur",
     'ru-ru': 'Отправить уведомление о завершении пользователю',
@@ -794,7 +793,7 @@ export const resourcesText = createDictionary({
   },
   saveFormFirst: {
     'en-us': 'Save form first',
-    'de-ch': 'Formular zunächst speichern',
+    'de-ch': 'Formular vorher speichern',
     'es-es': 'Guarde el formulario primero',
     'fr-fr': "Enregistrez d'abord le formulaire",
     'ru-ru': 'Сначала сохраните форму',
@@ -821,7 +820,7 @@ export const resourcesText = createDictionary({
   },
   customizeFieldFormatters: {
     'en-us': 'Customize Field Formats',
-    'de-ch': 'Feldformate anpassen',
+    'de-ch': 'Passen Sie Feldformate an',
     'es-es': 'Personalizar formatos de campo',
     'fr-fr': 'Personnaliser les formats de champs',
     'ru-ru': 'Настройте форматы полей',

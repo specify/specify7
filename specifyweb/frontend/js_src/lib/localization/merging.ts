@@ -12,7 +12,7 @@ export const mergingText = createDictionary({
   recordMerging: {
     'en-us': 'Record Merging',
     'ru-ru': 'Объединение записей',
-    'de-ch': 'Zusammenführen von Datensätzen',
+    'de-ch': 'Datensatzzusammenführung',
     'es-es': 'Fusión de registros',
     'fr-fr': "Fusion d'enregistrements",
     'uk-ua': "Об'єднання записів",
@@ -36,7 +36,7 @@ export const mergingText = createDictionary({
   showConflictingFieldsOnly: {
     'en-us': 'Show conflicting fields only',
     'ru-ru': 'Показывать только конфликтующие поля',
-    'de-ch': 'Nur widersprüchliche Felder anzeigen',
+    'de-ch': 'Nur in Konflikt stehende Felder anzeigen',
     'es-es': 'Mostrar solo campos en conflicto',
     'fr-fr': 'Afficher uniquement les champs en conflit',
     'uk-ua': 'Показувати лише конфліктуючі поля',
@@ -80,7 +80,7 @@ export const mergingText = createDictionary({
     'de-ch': 'Zusammenführen {field:string}',
     'es-es': 'Fusionar {field:string}',
     'fr-fr': 'Fusionner {field:string}',
-    'uk-ua': 'Об’єднати {field:string}',
+    'uk-ua': "Об'єднати {field:string}",
   },
   autoPopulate: {
     'en-us': 'Auto-populate',
@@ -141,10 +141,11 @@ export const mergingText = createDictionary({
     `,
     'de-ch': `
       Bevor Sie fortfahren, beachten Sie bitte, dass die folgende Aktion andere
-      Benutzer unterbrechen kann. Diese Aktion kann zu Verzögerungen oder zur
+      Benutzer unterbrechen kann. Diese Aktion kann zu Verzögerungen oder einer
       vorübergehenden Nichtverfügbarkeit bestimmter Funktionen für
-      Specify-Benutzer führen. Bitte bedenken Sie die Auswirkungen auf ihre
-      Erfahrung. Diese Zusammenführung kann nicht rückgängig gemacht werden
+      Specify-Benutzer führen. Bitte bedenken Sie die Auswirkungen auf deren
+      Benutzererfahrung. Diese Zusammenführung kann nicht rückgängig gemacht
+      werden.
     `,
     'es-es': `
       Antes de continuar, tenga en cuenta que la siguiente acción puede
@@ -200,7 +201,7 @@ export const mergingText = createDictionary({
   },
   mergingHasStarted: {
     'en-us': 'The merge process has started.',
-    'de-ch': 'Der Zusammenführungsprozess hat begonnen.',
+    'de-ch': 'Der Zusammenführungsprozess wurde gestartet.',
     'es-es': 'El proceso de fusión ha comenzado.',
     'fr-fr': 'Le processus de fusion a commencé.',
     'ru-ru': 'Процесс слияния начался.',
