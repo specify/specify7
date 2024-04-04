@@ -51,7 +51,7 @@ import { WbUploaded } from './Results';
 import { wbViewTemplate } from './Template';
 import { WbActionsComponent } from '../WbActions/WbActions';
 import { WbUtils, WbUtilsComponent } from './WbUtils';
-import { WbValidation, WbValidationReact } from './WbValidation';
+import { WbValidation } from './WbValidation';
 import { DataSetName } from './DataSetMeta';
 import { WbSpreadsheet } from './WbSpreadsheet';
 import { useBooleanState } from '../../hooks/useBooleanState';
@@ -63,7 +63,7 @@ export type Workbench = {
   dataset: Dataset;
   cells: WbCellMeta;
   disambiguation: DisambiguationReact;
-  validation: WbValidationReact;
+  validation: WbValidation;
   data: RA<RA<string | null>>;
   hot: Handsontable;
   throttleRate: number;
@@ -156,7 +156,7 @@ export function WbViewReact({
     };
     workbench.cells = new WbCellMeta(workbench);
     workbench.disambiguation = new DisambiguationReact(workbench);
-    workbench.validation = new WbValidationReact(workbench);
+    workbench.validation = new WbValidation(workbench);
     workbench.utils = new WbUtils(workbench);
     return workbench;
   }, [dataset, hotIsReady]);

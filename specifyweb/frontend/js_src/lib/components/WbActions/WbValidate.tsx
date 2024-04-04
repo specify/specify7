@@ -1,7 +1,7 @@
 import React from 'react';
 
 import type { WbStatus } from '../WorkBench/WbView';
-import { WbValidationReact } from '../WorkBench/WbValidation';
+import { WbValidation } from '../WorkBench/WbValidation';
 import { Button } from '../Atoms/Button';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
@@ -15,7 +15,7 @@ export function WbValidate({
   readonly canLiveValidate: boolean;
   readonly hasUnsavedChanges: boolean;
   readonly startUpload: (mode: WbStatus) => void;
-  readonly validation: WbValidationReact;
+  readonly validation: WbValidation;
 }): JSX.Element {
   const handleValidate = () => startUpload('validate');
   const handleToggleDataCheck = () => validation.toggleDataCheck();
