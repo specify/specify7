@@ -17,6 +17,7 @@ import { getPref } from '../InitialContext/remotePrefs';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Conformations, KeyAction, Row, Stats } from './helpers';
 import { formatTreeStats, mapKey, scrollIntoView } from './helpers';
+import { useAsyncState } from '../../hooks/useAsyncState';
 
 export function TreeRow<SCHEMA extends AnyTree>({
   row,
@@ -160,25 +161,19 @@ export function TreeRow<SCHEMA extends AnyTree>({
     }, [row.nodeId, treeName])
   );
 
-  const [synonymsNames, setSynonymsNames] = React.useState<RA<string>>([]);
   const accepetedChildrenKey = `accepted${treeName.toLowerCase()}`;
-
-  const fetchSynonymsNames = async (
-    resource: SpecifyResource<AnyTree>
-  ): Promise<void> =>
-    fetchCollection(resource.specifyTable.name, {
-      limit: 0,
-      [accepetedChildrenKey]: row.nodeId,
-      domainFilter: false,
-    }).then(({ records }) => {
-      const synonymsNames = records.map((record) => record.name);
-      setSynonymsNames(synonymsNames);
-    });
-
-  React.useEffect(() => {
-    if (resource === undefined) return;
-    fetchSynonymsNames(resource), [];
-  });
+  const [synonymsNames] = useAsyncState(
+    React.useCallback(async () => {
+      if (resource === undefined) return;
+      const { records } = await fetchCollection(resource.specifyTable.name, {
+        limit: 0,
+        [accepetedChildrenKey]: row.nodeId,
+        domainFilter: false,
+      });
+      return records.map((record) => record.name);
+    }, [resource, accepetedChildrenKey, row.nodeId]),
+    false
+  );
 
   return hideEmptyNodes && hasNoChildrenNodes ? null : (
     <li role="treeitem row">
