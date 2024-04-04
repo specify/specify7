@@ -234,7 +234,7 @@ export const interactionsText = createDictionary({
     'fr-fr': 'Enregistrements {loanTable:string} résolus',
     'ru-ru': 'Решенные записи {loanTable:string}',
     'uk-ua': 'Вирішені {loanTable:string} записи',
-    'de-ch': 'Aufgelöste {loanTable:string}-Datensätze',
+    'de-ch': '{loanTable:string}-Datensätze behoben',
   },
   openLoans: {
     comment: 'Example: Open Loan records',

@@ -379,7 +379,7 @@ export const schemaText = createDictionary({
   },
   uniquenessRules: {
     'en-us': 'Uniqueness Rules',
-    'de-ch': 'Einzigartigkeitsregeln',
+    'de-ch': 'Eindeutigkeitsregeln',
     'es-es': 'Reglas de unicidad',
     'fr-fr': "Règles d'unicité",
     'ru-ru': 'Правила уникальности',
@@ -419,7 +419,7 @@ export const schemaText = createDictionary({
   },
   uniquenessDuplicatesFound: {
     'en-us': 'Duplicates found in database',
-    'de-ch': 'In der Datenbank gefundene Duplikate',
+    'de-ch': 'Duplikate in der Datenbank gefunden',
     'es-es': 'muchos a uno',
     'fr-fr': 'Doublons trouvés dans la base de données',
     'ru-ru': 'В базе данных найдены дубликаты',

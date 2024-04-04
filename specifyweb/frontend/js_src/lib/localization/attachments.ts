@@ -250,7 +250,7 @@ export const attachmentsText = createDictionary({
       have been uploaded.
     `,
     'de-ch': `
-      Der Upload war im Gange, als eine Unterbrechung auftrat. Möglicherweise
+      Der Upload war im Gange, als es zu einer Unterbrechung kam. Möglicherweise
       wurden einige Dateien hochgeladen.
     `,
     'es-es': `
@@ -304,7 +304,7 @@ export const attachmentsText = createDictionary({
   },
   attachmentId: {
     'en-us': 'Attachment ID',
-    'de-ch': 'Anhangs-ID',
+    'de-ch': 'Anhang-ID',
     'es-es': 'ID del archivo adjunto',
     'fr-fr': 'ID de pièce jointe',
     'ru-ru': 'Идентификатор вложения',
@@ -312,7 +312,7 @@ export const attachmentsText = createDictionary({
   },
   choosePath: {
     'en-us': 'Choose Path',
-    'de-ch': 'Pfad wählen',
+    'de-ch': 'Wählen Sie Pfad',
     'es-es': 'Seleccione la ruta',
     'fr-fr': 'Choisir le chemin',
     'ru-ru': 'Выберите путь',
@@ -445,8 +445,10 @@ export const attachmentsText = createDictionary({
   },
   multipleMatchesClick: {
     'en-us': 'Multiple Matches. Click To Disambiguate',
-    'de-ch':
-      'Mehrere Übereinstimmungen. Klicken Sie auf „Zur Begriffsklärung“.',
+    'de-ch': `
+      Mehrere Übereinstimmungen. Klicken Sie hier, um die Mehrdeutigkeit zu
+      beseitigen.
+    `,
     'es-es': 'Múltiples coincidencias. Haga clic para eliminar la ambigüedad',
     'fr-fr': "Plusieurs correspondances. Cliquez pour lever l'ambiguïté",
     'ru-ru': 'Несколько матчей. Нажмите, чтобы устранить неоднозначность',
@@ -470,7 +472,7 @@ export const attachmentsText = createDictionary({
   },
   stoppedByUser: {
     'en-us': 'Stopped By User',
-    'de-ch': 'Vom Benutzer gestoppt',
+    'de-ch': 'Vom Benutzer angehalten',
     'es-es': 'Detenido por el usuario',
     'fr-fr': "Arrêté par l'utilisateur",
     'ru-ru': 'Остановлен пользователем',
