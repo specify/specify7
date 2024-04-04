@@ -38,7 +38,7 @@ import { hasPermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { UploadPlan } from '../WbPlanView/uploadPlanParser';
 import type { Dataset } from '../WbPlanView/Wrapped';
-import { WbCellCounts, WbCellMeta, WbCellMetaReact } from './CellMeta';
+import { WbCellCounts, WbCellMeta } from './CellMeta';
 import { Disambiguation, DisambiguationReact } from './DisambiguationLogic';
 import { configureHandsontable, getHotPlugin } from './handsontable';
 import { downloadDataSet } from './helpers';
@@ -61,7 +61,7 @@ export type WbStatus = 'unupload' | 'upload' | 'validate';
 
 export type Workbench = {
   dataset: Dataset;
-  cells: WbCellMetaReact;
+  cells: WbCellMeta;
   disambiguation: DisambiguationReact;
   validation: WbValidationReact;
   data: RA<RA<string | null>>;
@@ -154,7 +154,7 @@ export function WbViewReact({
       utils: undefined!,
       cellCounts: [cellCounts, setCellCounts],
     };
-    workbench.cells = new WbCellMetaReact(workbench);
+    workbench.cells = new WbCellMeta(workbench);
     workbench.disambiguation = new DisambiguationReact(workbench);
     workbench.validation = new WbValidationReact(workbench);
     workbench.utils = new WbUtils(workbench);
