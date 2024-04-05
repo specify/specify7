@@ -22,11 +22,11 @@ import { getTable } from '../DataModel/tables';
 import { hasPermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Dataset } from '../WbPlanView/Wrapped';
-import { parseWbMappings, WbMapping } from './mapping';
+import { WbMapping } from './mapping';
 import { getSelectedRegions } from './hotHelpers';
-import { WbValidationReact } from './WbValidation';
-import { WbCellMetaReact } from './CellMeta';
-import { DisambiguationReact } from './DisambiguationLogic';
+import { WbValidation } from './WbValidation';
+import { WbCellMeta } from './CellMeta';
+import { Disambiguation } from './DisambiguationLogic';
 import { wbText } from '../../localization/workbench';
 import { strictGetTable } from '../DataModel/tables';
 import { getIcon, unknownIcon } from '../InitialContext/icons';
@@ -98,9 +98,9 @@ function WbSpreadsheetComponent({
   readonly hotRef: React.RefObject<HotTable>;
   readonly isUploaded: boolean;
   readonly data: RA<RA<string | null>>;
-  readonly validation: WbValidationReact;
-  readonly cells: WbCellMetaReact;
-  readonly disambiguation: DisambiguationReact;
+  readonly validation: WbValidation;
+  readonly cells: WbCellMeta;
+  readonly disambiguation: Disambiguation;
   readonly hooks: Partial<Events>;
   readonly mappings: WbMapping;
 }): JSX.Element {
@@ -326,6 +326,14 @@ function WbSpreadsheetComponent({
           } as const)
     ),
   };
+
+  // Highlight validation cells
+  React.useLayoutEffect(() => {
+    // TODD: Verify if previous code does anything else after validation
+    if (dataset.rowresults && hotRef.current) {
+      validation.getValidationResults();
+    }
+  }, [dataset.rowresults, hotRef.current])
 
   return (
     <>
