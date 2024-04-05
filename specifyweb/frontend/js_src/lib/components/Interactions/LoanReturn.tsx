@@ -105,7 +105,7 @@ function PreparationReturn({
   );
   const canDeselect = state.some(({ resolve }) => resolve > 0);
   const canSelectAll = state.some(
-    ({ resolve, unresolved }) => resolve < unresolved
+    ({ resolve, unresolved }) => resolve < unresolved || Number.isNaN(resolve)
   );
 
   const [bulkReturn, setBulkReturn] = React.useState(0);
