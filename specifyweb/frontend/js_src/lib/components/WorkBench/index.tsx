@@ -12,6 +12,7 @@ import { f } from '../../utils/functools';
 import type { GetSet } from '../../utils/types';
 import { className } from '../Atoms/className';
 import { LoadingContext } from '../Core/Contexts';
+import { LoadingScreen } from '../Molecules/Dialog';
 import { useMenuItem } from '../Header/MenuContext';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
 import { Dialog } from '../Molecules/Dialog';
@@ -40,7 +41,7 @@ function useDataSet(
   );
 }
 
-export function WorkBenchReact(): JSX.Element | null {
+export function WorkBenchReact(): JSX.Element {
   useMenuItem('workBench');
 
   const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, true);
@@ -57,8 +58,7 @@ export function WorkBenchReact(): JSX.Element | null {
   const hotRef = React.useRef<HotTable>(null);
   const spreadsheetContainer = React.useRef<HTMLElement | null>(null);
 
-  // temporary null check, replace with loading screen?
-  if (!dataSet || !treeRanksLoaded) return null;
+  if (!dataSet || !treeRanksLoaded) return <LoadingScreen />;
 
   const triggerRefresh = () => {
     loading(fetchDataSet(dataSet!.id).then(setDataSet));
