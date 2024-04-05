@@ -163,8 +163,8 @@ export function FormTable<SCHEMA extends AnySchema>({
   });
   const fullViewDefinition = useViewDefinition({
     table: relationship.relatedTable,
-    viewName: relationship.relatedTable.view,
-    fallbackViewName: viewName,
+    viewName,
+    fallbackViewName: relationship.relatedTable.view,
     formType: 'form',
     mode,
   });
