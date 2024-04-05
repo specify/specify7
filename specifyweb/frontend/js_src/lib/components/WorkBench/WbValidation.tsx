@@ -16,6 +16,33 @@ import type { UploadResult } from './resultsParser';
 import { resolveValidationMessage } from './resultsParser';
 import type { Workbench } from './WbView';
 
+type UploadResults = {
+  ambiguousMatches: WritableArray<
+    WritableArray<{
+      physicalCols: RA<number>;
+      mappingPath: MappingPath;
+      ids: RA<number>;
+      key: string;
+    }>
+  >;
+  recordCounts: Partial<Record<Lowercase<keyof Tables>, number>>;
+  newRecords: Partial<
+    WritableArray<
+      WritableArray<
+        WritableArray<
+          Readonly<
+            readonly [
+              tableName: Lowercase<keyof Tables>,
+              id: number,
+              alternativeLabel: string | ''
+            ]
+          >
+        >
+      >
+    >
+  >;
+};
+
 /* eslint-disable functional/no-this-expression */
 export class WbValidation {
   // eslint-disable-next-line functional/prefer-readonly-type
@@ -28,40 +55,13 @@ export class WbValidation {
   public validationMode: 'live' | 'off' | 'static';
 
   // eslint-disable-next-line functional/prefer-readonly-type
-  public uploadResults: {
-    readonly ambiguousMatches: WritableArray<
-      WritableArray<{
-        readonly physicalCols: RA<number>;
-        readonly mappingPath: MappingPath;
-        readonly ids: RA<number>;
-        readonly key: string;
-      }>
-    >;
-    readonly recordCounts: Partial<Record<Lowercase<keyof Tables>, number>>;
-    readonly newRecords: Partial<
-      WritableArray<
-        WritableArray<
-          WritableArray<
-            Readonly<
-              readonly [
-                tableName: Lowercase<keyof Tables>,
-                id: number,
-                alternativeLabel: string | ''
-              ]
-            >
-          >
-        >
-      >
-    >;
-  } = {
+  public uploadResults: UploadResults = {
     ambiguousMatches: [],
     recordCounts: {},
     newRecords: [],
   };
 
-  public constructor(
-    private readonly workbench: Workbench
-  ) {
+  public constructor(private readonly workbench: Workbench) {
     this.stopLiveValidation();
     this.validationMode =
       this.workbench.dataset.rowresults === null ? 'off' : 'static';
@@ -177,7 +177,8 @@ export class WbValidation {
         .map(({ headerName }) => headerName);
     return (
       mappedFind(mappingPathFilter, (_, index) => {
-        const columns = this.workbench.mappings!.lines.filter(({ mappingPath }) =>
+        const columns = this.workbench
+          .mappings!.lines.filter(({ mappingPath }) =>
             pathStartsWith(
               mappingPath,
               mappingPathFilter.slice(0, index === 0 ? undefined : -1 * index)
@@ -235,7 +236,12 @@ export class WbValidation {
       if (cellMeta.issues?.length !== 0 && this.validationMode === 'live')
         cellMeta.isModified = false;
       Object.entries(cellMeta).map(([key, value]) =>
-        this.workbench.cells?.updateCellMeta(physicalRow, physicalCol, key, value)
+        this.workbench.cells?.updateCellMeta(
+          physicalRow,
+          physicalCol,
+          key,
+          value
+        )
       );
     });
   }
@@ -367,8 +373,7 @@ export class WbValidation {
   }
 
   getValidationResults(): void {
-    if (!this.workbench.mappings)
-      return;
+    if (!this.workbench.mappings) return;
 
     if (this.workbench.dataset.rowresults === null) {
       this.validationMode = 'off';
