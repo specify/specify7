@@ -310,7 +310,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
       </DataEntry.SubForm>
     ) : (
       <Container.FullGray>
-        <Container.Center className="!w-auto">
+        <Container.Center>
           <DataEntry.Header>
             <AppTitle title={customTitle ?? formatted} />
             <DataEntry.Title>{customTitle ?? jsxFormatted}</DataEntry.Title>
