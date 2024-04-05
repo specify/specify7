@@ -2,18 +2,14 @@ import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useId } from '../../hooks/useId';
-import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
-import { fetchCollection } from '../DataModel/collection';
+import { fetchRows } from '../DataModel/collection';
 import type { AnyTree } from '../DataModel/helperTypes';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import type { SpecifyTable } from '../DataModel/specifyTable';
-import { genericTables } from '../DataModel/tables';
 import { getPref } from '../InitialContext/remotePrefs';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Conformations, KeyAction, Row, Stats } from './helpers';
@@ -154,24 +150,18 @@ export function TreeRow<SCHEMA extends AnyTree>({
   const hasNoChildrenNodes =
     nodeStats?.directCount === 0 && nodeStats.childCount === 0;
 
-  const [resource] = useLiveState<SpecifyResource<AnyTree> | undefined>(
-    React.useCallback(() => {
-      const table = genericTables[treeName] as SpecifyTable<AnyTree>;
-      return new table.Resource({ id: row.nodeId });
-    }, [row.nodeId, treeName])
-  );
-
-  const accepetedChildrenKey = `accepted${treeName.toLowerCase()}`;
+  const acceptedChildrenKey = `accepted${treeName.toLowerCase()}`;
   const [synonymsNames] = useAsyncState(
-    React.useCallback(async () => {
-      if (resource === undefined) return;
-      const { records } = await fetchCollection(resource.specifyTable.name, {
-        limit: 0,
-        [accepetedChildrenKey]: row.nodeId,
-        domainFilter: false,
-      });
-      return records.map((record) => record.name);
-    }, [resource, accepetedChildrenKey, row.nodeId]),
+    React.useCallback(
+      async () =>
+        fetchRows(treeName as 'Taxon', {
+          fields: { name: ['string'] },
+          limit: 0,
+          [acceptedChildrenKey]: row.nodeId,
+          domainFilter: false,
+        }).then((rows) => rows.map(({ name }) => name)),
+      [acceptedChildrenKey, treeName, row.nodeId]
+    ),
     false
   );
 
