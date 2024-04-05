@@ -37,7 +37,6 @@ export function WbConvertCoordinates({
       <Button.Small
         aria-haspopup="dialog"
         aria-pressed={showConvertCoords}
-        className="wb-convert-coordinates"
         title={wbText.unavailableWithoutLocality()}
         onClick={openConvertCoords}
         disabled={!hasLocality}

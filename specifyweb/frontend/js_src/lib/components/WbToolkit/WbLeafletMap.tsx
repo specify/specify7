@@ -47,7 +47,6 @@ export function WbLeafletMap({
         <Button.Small
           aria-haspopup="dialog"
           aria-pressed={showLeafletMap}
-          className="wb-leafletmap"
           title={wbText.unavailableWithoutLocality()}
           onClick={openLeafletMap}
           disabled={!hasLocality}

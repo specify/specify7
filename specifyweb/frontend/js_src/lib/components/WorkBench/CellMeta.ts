@@ -166,21 +166,19 @@ export class WbCellMeta {
   public recalculateIsModifiedState(
     physicalRow: number,
     physicalCol: number,
-    {
-      // Can optionally provide this to improve performance
-      visualRow = undefined,
-      // Can optionally provide this to improve performance
-      visualCol = undefined,
-    }: {
+    visualIndexes: {
       readonly visualRow?: number;
       readonly visualCol?: number;
     } = {}
   ): void {
     const isModified = this.isCellModified(physicalRow, physicalCol);
-    this.updateCellMeta(physicalRow, physicalCol, 'isModified', isModified, {
-      visualRow,
-      visualCol,
-    });
+    this.updateCellMeta(
+      physicalRow,
+      physicalCol,
+      'isModified',
+      isModified,
+      visualIndexes
+    );
   }
 
   /**

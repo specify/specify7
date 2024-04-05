@@ -37,7 +37,6 @@ export function WbGeoLocate({
       <Button.Small
         aria-haspopup="dialog"
         aria-pressed={showGeoLocate}
-        className="wb-geolocate"
         title={wbText.unavailableWithoutLocality()}
         onClick={openGeoLocate}
         disabled={!hasLocality}

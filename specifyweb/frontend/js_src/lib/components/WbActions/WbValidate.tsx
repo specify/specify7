@@ -38,7 +38,6 @@ export function WbValidate({
       </Button.Small>
       <Button.Small
         aria-haspopup="dialog"
-        className="wb-validate"
         onClick={handleValidate}
         disabled={hasUnsavedChanges}
         title={hasUnsavedChanges ? wbText.unavailableWhileEditing() : ''}

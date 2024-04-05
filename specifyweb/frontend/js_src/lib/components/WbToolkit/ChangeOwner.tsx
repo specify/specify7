@@ -34,7 +34,6 @@ export function WbChangeOwner({
       <Button.Small
         aria-haspopup="dialog"
         aria-pressed={showChangeOwner}
-        className="wb-change-data-set-owner"
         onClick={openChangeOwner}
         disabled={hasUnsavedChanges}
         title={hasUnsavedChanges ? wbText.unavailableWhileEditing() : ''}

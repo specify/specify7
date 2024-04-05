@@ -75,7 +75,7 @@ function Navigation({
       data-navigation-type={name}
     >
       <Button.Small
-        className="wb-cell-navigation brightness-80 hover:brightness-70 p-2 ring-0"
+        className="brightness-80 hover:brightness-70 p-2 ring-0"
         data-navigation-direction="previous"
         variant="bg-inherit text-gray-800 dark:text-gray-100"
         onClick={handlePrevious}
@@ -84,7 +84,7 @@ function Navigation({
       </Button.Small>
       <Button.Small
         className={`
-          wb-navigation-text hover:brightness-70 grid grid-cols-[auto_1fr_auto_1fr_auto]
+          hover:brightness-70 grid grid-cols-[auto_1fr_auto_1fr_auto]
           items-center ring-0
           ${className.ariaHandled}
           ${buttonIsPressed ? 'brightness-50' : ''}
@@ -95,13 +95,13 @@ function Navigation({
         onClick={handleTypeToggle}
       >
         {label} (
-        <span className="wb-navigation-position text-center">
+        <span className="text-center">
           {currentPosition}
         </span>
-        /<span className="wb-navigation-total">{totalCount}</span>)
+        /<span>{totalCount}</span>)
       </Button.Small>
       <Button.Small
-        className="wb-cell-navigation brightness-80 hover:brightness-70 p-2 ring-0"
+        className="brightness-80 hover:brightness-70 p-2 ring-0"
         data-navigation-direction="next"
         type="button"
         variant="bg-inherit text-gray-800 dark:text-gray-100"
@@ -153,7 +153,6 @@ export function WbUtilsComponent({
               forwardRef={searchRef}
               aria-label={commonText.searchQuery()}
               autoComplete="on"
-              className="wb-search-query"
               placeholder={commonText.search()}
               spellCheck
               title={commonText.searchQuery()}
@@ -167,7 +166,6 @@ export function WbUtilsComponent({
                 forwardRef={replaceRef}
                 aria-label={wbText.replacementValue()}
                 autoComplete="on"
-                className="wb-replace-value"
                 placeholder={wbText.replace()}
                 title={wbText.replacementValue()}
                 onKeyDown={handleReplace}
