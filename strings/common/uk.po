@@ -163,7 +163,7 @@ msgstr "Створити"
 #: components/Core/VersionMismatch.tsx:18
 #: components/ExportFeed/Dwca.tsx:128
 #: components/ExportFeed/ForceUpdate.tsx:23
-#: components/FormCells/FormTable.tsx:487
+#: components/FormCells/FormTable.tsx:490
 #: components/FormCommands/ShowTransactions.tsx:116
 #: components/FormCommands/index.tsx:96
 #: components/FormCommands/index.tsx:118
@@ -479,8 +479,8 @@ msgstr "Завантажено"
 #: components/Atoms/DataEntry.tsx:163
 #: components/ExportFeed/Editor.tsx:151
 #: components/ExportFeed/Editor.tsx:153
-#: components/FormCells/FormTable.tsx:404
-#: components/FormCells/FormTable.tsx:413
+#: components/FormCells/FormTable.tsx:407
+#: components/FormCells/FormTable.tsx:416
 #: components/FormPlugins/CollectionRelOneToMany.tsx:130
 #: components/Formatters/Fields.tsx:197
 #: components/Formatters/Fields.tsx:198
@@ -654,8 +654,8 @@ msgstr "(відкривається в новій вкладці)"
 #: components/Atoms/DataEntry.tsx:175
 #: components/Atoms/DataEntry.tsx:178
 #: components/Attachments/Viewer.tsx:209
-#: components/FormCells/FormTable.tsx:389
 #: components/FormCells/FormTable.tsx:392
+#: components/FormCells/FormTable.tsx:395
 #. 🟥Used in a button that opens a link in a new tab. Used in: Components > Atoms > Data Entry ⬤ Components > Attachments > Viewer ⬤ Components > Form Cells > Form Table
 #, fuzzy
 msgid "openInNewTab"
