@@ -114,8 +114,8 @@ export const queryText = createDictionary({
       Запит буде збережено з новою назвою, а поточний запит залишиться без змін.
     `,
     'de-ch': `
-      Die Abfrage wird unter einem neuen Namen gespeichert, wobei die aktuelle
-      Abfrage unverändert bleibt.
+      Die Abfrage wird unter einem neuen Namen gespeichert, die aktuelle Abfrage
+      bleibt unverändert.
     `,
   },
   queryDeleteIncomplete: {
@@ -143,7 +143,7 @@ export const queryText = createDictionary({
     `,
     'uk-ua': 'У визначенні запиту є незаповнені поля. Ви хочете видалити їх?',
     'de-ch': `
-      Die Abfragedefinition enthält unvollständige Felder. Möchten Sie sie
+      Die Abfragedefinition enthält unvollständige Felder. Möchten Sie diese
       entfernen?
     `,
   },
@@ -188,7 +188,7 @@ export const queryText = createDictionary({
     'es-es': 'No se puede exportar a KML',
     'fr-fr': "Impossible d'exporter vers KML",
     'uk-ua': 'Не вдалося експортувати в KML',
-    'de-ch': 'Export nach KML nicht möglich',
+    'de-ch': 'Export in KML nicht möglich',
   },
   missingCoordinatesForKmlDescription: {
     'en-us': 'Please add latitude and longitude fields to the query.',
@@ -306,7 +306,7 @@ export const queryText = createDictionary({
     'es-es': 'Crear CSV',
     'fr-fr': 'Créer un CSV',
     'uk-ua': 'Створити CSV',
-    'de-ch': 'In Ergebnissen anzeigen',
+    'de-ch': 'In den Ergebnissen anzeigen',
   },
   createKml: {
     'en-us': 'Create KML',
@@ -322,7 +322,7 @@ export const queryText = createDictionary({
     'es-es': 'Crear {recordSetTable:string}',
     'fr-fr': 'Ajouter un nouveau champ',
     'uk-ua': 'Створити {modelName:string}',
-    'de-ch': 'Erstellen Sie {recordSetTable:string}',
+    'de-ch': 'Erstellen {recordSetTable:string}',
   },
   saveAs: {
     'en-us': 'Save As',
@@ -347,7 +347,7 @@ export const queryText = createDictionary({
     'es-es': 'Mover hacia arriba',
     'fr-fr': 'Déplacer vers le haut',
     'uk-ua': 'Рухатися вгору',
-    'de-ch': 'Nach oben bewegen',
+    'de-ch': 'Nach oben',
   },
   moveDown: {
     comment: 'As in move it down',
@@ -453,7 +453,7 @@ export const queryText = createDictionary({
     'de-ch': `
       Verwenden Sie „%“, um eine beliebige Anzahl von Zeichen abzugleichen.
 
-      Verwenden Sie „_“, um ein einzelnes Zeichen zuzuordnen
+      Verwenden Sie „_“, um ein einzelnes Zeichen abzugleichen
     `,
   },
   equal: {
@@ -494,7 +494,7 @@ export const queryText = createDictionary({
     'es-es': 'Menor o igual a',
     'fr-fr': 'Inférieur ou égal à',
     'uk-ua': 'Менше або дорівнює',
-    'de-ch': 'Kleiner oder gleich',
+    'de-ch': 'Weniger oder gleich',
   },
   true: {
     'en-us': 'True',
@@ -606,8 +606,7 @@ export const queryText = createDictionary({
     'es-es': 'No hay items sin resolver para devolver',
     'fr-fr': "Il n'y a aucun article non résolu à retourner",
     'uk-ua': 'Немає невирішених елементів для повернення',
-    'de-ch':
-      'Es gibt keine ungelösten Elemente, die zurückgegeben werden müssen',
+    'de-ch': 'Es gibt keine ungelösten Punkte, die zurückgegeben werden müssen',
   },
   itemsReturned: {
     'en-us': 'Items have been returned',
@@ -655,7 +654,7 @@ export const queryText = createDictionary({
     'es-es': 'Definir informe basado en consulta',
     'fr-fr': 'Définir un rapport basé sur une requête',
     'uk-ua': 'Визначити звіт на основі запиту',
-    'de-ch': 'Definieren Sie einen Bericht basierend auf einer Abfrage',
+    'de-ch': 'Definieren Sie den Bericht basierend auf der Abfrage',
   },
   exportQueryAsLabel: {
     'en-us': 'Define label based on query',
@@ -663,7 +662,7 @@ export const queryText = createDictionary({
     'es-es': 'Definir etiqueta basada en la consulta',
     'fr-fr': "Définir une étiquette en fonction d'une requête",
     'uk-ua': 'Визначте мітку на основі запиту',
-    'de-ch': 'Label basierend auf Abfrage definieren',
+    'de-ch': 'Definieren Sie die Beschriftung basierend auf der Abfrage',
   },
   treeMerge: {
     comment: 'Audit Log Action Type',
@@ -681,7 +680,7 @@ export const queryText = createDictionary({
     'es-es': 'Mover el árbol',
     'fr-fr': "Déplacement d'un arbre",
     'uk-ua': 'Переміщення дерева',
-    'de-ch': 'Baumbewegung',
+    'de-ch': 'Baum verschieben',
   },
   treeSynonymize: {
     comment: 'Audit Log Action Type',
@@ -819,7 +818,9 @@ export const queryText = createDictionary({
     `,
     'ru-ru': 'Следующие поля скрыты в импортированном запросе:',
     'uk-ua': 'В імпортованому вами запиті приховано такі поля:',
-    'de-ch': 'In der importierten Abfrage sind folgende Felder ausgeblendet:',
+    'de-ch': `
+      In der von Ihnen importierten Abfrage sind folgende Felder ausgeblendet:
+    `,
   },
   importNoReadPermission: {
     'en-us':
@@ -887,7 +888,7 @@ export const queryText = createDictionary({
   },
   chooseFormatter: {
     'en-us': 'Choose formatter',
-    'de-ch': 'Wählen Sie Formatierer',
+    'de-ch': 'Formatierer auswählen',
     'es-es': 'Elige el formateador',
     'fr-fr': 'Choisir le formateur',
     'ru-ru': 'Выберите форматтер',
