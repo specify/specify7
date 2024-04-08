@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-04-08 23:01+0000\n"
+"PO-Revision-Date: 2024-04-09 01:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "resources/ru/>\n"
@@ -141,7 +141,7 @@ msgstr "Форматировщики полей"
 #: components/AppResources/types.tsx:167
 #, fuzzy
 msgid "dataObjectFormatters"
-msgstr "Форматеры записей"
+msgstr "Форматеры записи"
 
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 #: components/Formatters/Aggregator.tsx:69
@@ -172,10 +172,10 @@ msgstr "Агрегация таблиц"
 #, fuzzy
 msgid "aggregatorDescription"
 msgstr ""
-"«Агрегация таблиц» управляет тем, как несколько записей таблицы "
-"объединяются в одну текстовую строку. Формат таблицы, разделитель, суффикс, "
-"поле сортировки и предел предварительного просмотра записей можно "
-"настроить. Его можно отобразить в результатах запроса и в форматах таблиц."
+"«Агрегация таблиц» управляет тем, как несколько записей таблицы объединяются "
+"в одну текстовую строку. Формат таблицы, разделитель, суффикс, поле "
+"сортировки и предел предварительного просмотра записей можно настроить. Его "
+"можно отобразить в результатах запроса и в форматах таблиц."
 
 #. Used in: Components > Web Links > Definition
 #: components/WebLinks/Definition.tsx:28
@@ -565,7 +565,7 @@ msgstr "Условный формат"
 #: components/Formatters/Fields.tsx:129
 #, fuzzy
 msgid "customizeFieldFormatters"
-msgstr "Настройте форматы полей"
+msgstr "Настройка форматов полей"
 
 #. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:265
