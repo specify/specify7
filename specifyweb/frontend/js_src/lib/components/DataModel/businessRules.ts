@@ -170,7 +170,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
 
         setSaveBlockers(
           this.resource,
-          result.fieldOverride === undefined ? field : result.fieldOverride,
+          field,
           saveBlockerMessage,
           saveBlockerKey
         );
@@ -464,7 +464,6 @@ export function attachBusinessRules(
 export type BusinessRuleResult<SCHEMA extends AnySchema = AnySchema> = {
   readonly localDuplicates?: RA<SpecifyResource<SCHEMA>>;
   readonly saveBlockerKey?: string;
-  readonly fieldOverride?: LiteralField | Relationship;
 } & (
   | {
       readonly isValid: true;

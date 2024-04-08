@@ -1,18 +1,10 @@
 import { treeText } from '../../localization/tree';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
-import type { RA } from '../../utils/types';
-import { sortFunction } from '../../utils/utils';
-import { getTreeDefinitionItems } from '../InitialContext/treeRanks';
 import { formatUrl } from '../Router/queryString';
 import type { BusinessRuleResult } from './businessRules';
-import type {
-  AnyTree,
-  FilterTablesByEndsWith,
-  SerializedResource,
-} from './helperTypes';
+import type { AnyTree, FilterTablesByEndsWith } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
-import type { Tables } from './types';
 
 // eslint-disable-next-line unicorn/prevent-abbreviations
 type TreeDefItem<TREE extends AnyTree> =
@@ -32,17 +24,6 @@ export const treeBusinessRules = async (
   getRelatedTreeTables(resource).then(async ({ parent, definitionItem }) => {
     if (parent === undefined || definitionItem === undefined) return undefined;
 
-    const lowestRankId = Array.from(
-      getTreeDefinitionItems(resource.specifyTable.name, false) ??
-        ([] as RA<
-          SerializedResource<
-            Tables[`${typeof resource.specifyTable.name}TreeDefItem`]
-          >
-        >)
-    )
-      .sort(sortFunction(({ rankId }) => rankId, true))
-      .at(0)?.rankId;
-
     if (
       fieldName === 'parent' &&
       (parent.id === resource.id ||
@@ -50,13 +31,9 @@ export const treeBusinessRules = async (
     )
       return {
         saveBlockerKey: 'bad-tree-structure',
-        fieldOverride:
-          parent.get('rankId') === lowestRankId
-            ? undefined
-            : resource.specifyTable.getField('definitionItem'),
         isValid: false,
         reason: treeText.badStructure(),
-      } as BusinessRuleResult;
+      };
 
     if ((resource.get('name')?.length ?? 0) === 0) return undefined;
 
