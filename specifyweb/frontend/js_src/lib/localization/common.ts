@@ -739,4 +739,7 @@ export const commonText = createDictionary({
     'ru-ru': 'Выберите файлы или перетащите их сюда',
     'uk-ua': 'Виберіть файли або перетягніть їх сюди',
   },
+  saveBeforeClose: {
+    'en-us': 'Save your changes before closing.',
+  },
 } as const);
