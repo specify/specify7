@@ -123,44 +123,44 @@ function Field({
     'ui',
     'rightAlignNumberFields'
   );
-  return (
-    <Input.Generic
-      forwardRef={validationRef}
-      name={name}
-      {...validationAttributes}
-      className={
-        /*
-         * Disable "text-align: right" in non webkit browsers
-         * as they don't support spinner's arrow customization
-         */
-        parser.type === 'number' &&
-        rightAlignNumberFields &&
-        globalThis.navigator.userAgent.toLowerCase().includes('webkit')
-          ? `text-right ${isReadOnly ? '' : 'pr-6'}`
-          : ''
-      }
-      id={id}
-      isReadOnly={isReadOnly}
-      required={'required' in validationAttributes && !isInSearchDialog}
-      tabIndex={isReadOnly ? -1 : undefined}
-      value={value?.toString() ?? ''}
-      onBlur={
-        isReadOnly ? undefined : ({ target }): void => updateValue(target.value)
-      }
-      onValueChange={(value): void => updateValue(value, false)}
+
+  const commonProps = {
+    forwardRef: validationRef,
+    name: name,
+    className:
       /*
-       * Update data model value before onBlur, as onBlur fires after onSubmit
-       * if form is submitted using the ENTER key
+       * Disable "text-align: right" in non webkit browsers
+       * as they don't support spinner's arrow customization
        */
-      onChange={(event): void => {
-        const input = event.target as HTMLInputElement;
-        /*
-         * Don't show validation errors on value change for input fields until
-         * field is blurred, unless user tried to paste a date (see definition
-         * of Input.Generic)
-         */
-        updateValue(input.value, event.type === 'paste');
-      }}
-    />
+      rightAlignNumberFields &&
+      globalThis.navigator.userAgent.toLowerCase().includes('webkit')
+        ? `text-right ${isReadOnly ? '' : 'pr-6'}`
+        : '',
+    id: id,
+    isReadOnly: isReadOnly,
+    required: 'required' in validationAttributes && !isInSearchDialog,
+    tabIndex: isReadOnly ? -1 : undefined,
+    value: value?.toString() ?? '',
+    onBlur: isReadOnly ? undefined : ({ target }) => updateValue(target.value),
+    onValueChange: (value) => updateValue(value, false),
+    /*
+     * Update data model value before onBlur, as onBlur fires after onSubmit
+     * if form is submitted using the ENTER key
+     */
+    onChange: (event) => {
+      const input = event.target as HTMLInputElement;
+      /*
+       * Don't show validation errors on value change for input fields until
+       * field is blurred, unless user tried to paste a date (see definition
+       * of Input.Generic)
+       */
+      updateValue(input.value, event.type === 'paste');
+    },
+  };
+
+  return validationAttributes.type === 'number' ? (
+    <Input.Float {...commonProps} {...validationAttributes} />
+  ) : (
+    <Input.Generic {...commonProps} {...validationAttributes} />
   );
 }
