@@ -171,14 +171,16 @@ export function FormTable<SCHEMA extends AnySchema>({
     mode,
   });
 
+  const notReadOnlyExpandedViewDefinition = useViewDefinition({
+    table: relationship.relatedTable,
+    viewName: relationship.relatedTable.view,
+    fallbackViewName: viewName,
+    formType: 'form',
+    mode,
+  });
+
   const validExpandedViewDefinition = viewToChange.has(viewName)
-    ? useViewDefinition({
-        table: relationship.relatedTable,
-        viewName: relationship.relatedTable.view,
-        fallbackViewName: viewName,
-        formType: 'form',
-        mode,
-      })
+    ? notReadOnlyExpandedViewDefinition
     : expandedViewDefinition;
 
   const id = useId('form-table');
