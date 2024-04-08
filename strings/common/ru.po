@@ -42,7 +42,7 @@ msgstr "Нет"
 #: components/Header/ExpressSearchTask.tsx:49
 #: components/Interactions/InteractionDialog.tsx:241
 #: components/Interactions/InteractionsDialog.tsx:64
-#: components/Interactions/LoanReturn.tsx:160
+#: components/Interactions/LoanReturn.tsx:161
 #: components/Interactions/PrepDialog.tsx:100
 #: components/Merging/Status.tsx:119
 #: components/Merging/index.tsx:267
@@ -188,8 +188,8 @@ msgstr "Создать"
 #: components/Forms/DeleteButton.tsx:161
 #: components/Forms/ResourceView.tsx:208
 #: components/Forms/ResourceView.tsx:346
-#: components/Forms/Save.tsx:255
-#: components/Forms/Save.tsx:290
+#: components/Forms/Save.tsx:254
+#: components/Forms/Save.tsx:289
 #: components/Header/UserTools.tsx:75
 #: components/HomePage/AboutSpecify.tsx:60
 #: components/Interactions/InteractionDialog.tsx:217
@@ -264,7 +264,7 @@ msgid "close"
 msgstr "Закрыть"
 
 #: components/DataEntryTables/Edit.tsx:47
-#: components/Interactions/LoanReturn.tsx:196
+#: components/Interactions/LoanReturn.tsx:197
 #: components/Interactions/PrepDialog.tsx:127
 #: components/Security/SetPassword.tsx:37
 #: components/WbPlanView/MapperComponents.tsx:414
@@ -280,7 +280,7 @@ msgstr "Применить"
 msgid "applyAll"
 msgstr "Применить все"
 
-#: components/Interactions/LoanReturn.tsx:179
+#: components/Interactions/LoanReturn.tsx:180
 #: components/Interactions/PrepDialog.tsx:112
 #: components/Notifications/Notifications.tsx:85
 #. Used in: Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Notifications > Notifications
@@ -314,7 +314,7 @@ msgstr "Сохранить"
 #: components/ExportFeed/Editor.tsx:133
 #: components/FormSliders/RecordSelectorFromIds.tsx:176
 #: components/Formatters/List.tsx:138
-#: components/Forms/Save.tsx:233
+#: components/Forms/Save.tsx:232
 #: components/Merging/CompareSubView.tsx:167
 #: components/Molecules/AutoComplete.tsx:525
 #: components/PickLists/index.tsx:279
@@ -950,7 +950,7 @@ msgstr "{header:string}:"
 #: components/Formatters/Element.tsx:92
 #: components/Formatters/Formatter.tsx:126
 #: components/Forms/BaseResourceView.tsx:132
-#: components/Forms/Save.tsx:296
+#: components/Forms/Save.tsx:295
 #: components/Leaflet/index.ts:171
 #: components/Merging/Header.tsx:213
 #: components/Molecules/FilePicker.tsx:105
@@ -995,13 +995,13 @@ msgstr "{label:string}: <wrap />"
 msgid "bulkSelect"
 msgstr "Массовый выбор"
 
-#: components/Interactions/LoanReturn.tsx:257
+#: components/Interactions/LoanReturn.tsx:258
 #. Used in: Components > Interactions > Loan Return
 #, fuzzy
 msgid "bulkReturn"
 msgstr "Массовый возврат"
 
-#: components/Interactions/LoanReturn.tsx:271
+#: components/Interactions/LoanReturn.tsx:272
 #. Used in: Components > Interactions > Loan Return
 #, fuzzy
 msgid "bulkResolve"

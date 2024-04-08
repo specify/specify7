@@ -17,13 +17,13 @@ msgid "forms"
 msgstr "Résultats supplémentaires omis"
 
 #: components/Atoms/DataEntry.tsx:153
-#: components/Forms/Save.tsx:221
+#: components/Forms/Save.tsx:220
 #: components/Statistics/ResultsDialog.tsx:68
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Components > Statistics > Results Dialog
 msgid "clone"
 msgstr "Cloner"
 
-#: components/Forms/Save.tsx:222
+#: components/Forms/Save.tsx:221
 #. Used in: Components > Forms > Save
 msgid "cloneDescription"
 msgstr "Créer une copie complète de l'enregistrement actuel"
@@ -208,12 +208,12 @@ msgid "unsavedFormUnloadProtect"
 msgstr "Ce formulaire n'a pas été enregistré."
 
 #: components/AttachmentsBulkImport/utils.ts:482
-#: components/Forms/Save.tsx:258
+#: components/Forms/Save.tsx:257
 #. 🟥Meaning a conflict occurred when saving. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Forms > Save
 msgid "saveConflict"
 msgstr "Enregistrer le conflit"
 
-#: components/Forms/Save.tsx:261
+#: components/Forms/Save.tsx:260
 #. Used in: Components > Forms > Save
 msgid "saveConflictDescription"
 msgstr ""
@@ -222,12 +222,12 @@ msgstr ""
 "page doit être rechargée pour éviter que des données incohérentes soient "
 "enregistrées."
 
-#: components/Forms/Save.tsx:291
+#: components/Forms/Save.tsx:290
 #. Used in: Components > Forms > Save
 msgid "saveBlocked"
 msgstr "Enregistrer des informations"
 
-#: components/Forms/Save.tsx:294
+#: components/Forms/Save.tsx:293
 #. Used in: Components > Forms > Save
 msgid "saveBlockedDescription"
 msgstr "Le formulaire ne peut pas être enregistré en raison de l'erreur suivante :"
@@ -451,7 +451,7 @@ msgstr "Supprimer de {recordSetTable:string}"
 msgid "nothingFound"
 msgstr "Rien n'a été trouvé"
 
-#: components/Forms/Save.tsx:227
+#: components/Forms/Save.tsx:226
 #. 🟥Verb. Button label. Used in: Components > Forms > Save
 msgid "carryForward"
 msgstr "Reporter"
@@ -461,7 +461,7 @@ msgstr "Reporter"
 msgid "carryForwardEnabled"
 msgstr "Afficher le bouton Reporter"
 
-#: components/Forms/Save.tsx:228
+#: components/Forms/Save.tsx:227
 #. Used in: Components > Forms > Save
 msgid "carryForwardDescription"
 msgstr "Créer un nouvel enregistrement avec certains champs reportés"
@@ -492,7 +492,7 @@ msgstr "Afficher le bouton Cloner"
 msgid "addButtonEnabled"
 msgstr "Afficher le bouton Ajouter"
 
-#: components/Forms/Save.tsx:234
+#: components/Forms/Save.tsx:233
 #. Used in: Components > Forms > Save
 msgid "addButtonDescription"
 msgstr "Créer un nouvel enregistrement vierge"

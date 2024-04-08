@@ -18,14 +18,14 @@ msgid "forms"
 msgstr "Formularios"
 
 #: components/Atoms/DataEntry.tsx:153
-#: components/Forms/Save.tsx:221
+#: components/Forms/Save.tsx:220
 #: components/Statistics/ResultsDialog.tsx:68
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Components > Statistics > Results Dialog
 #, fuzzy
 msgid "clone"
 msgstr "Clon"
 
-#: components/Forms/Save.tsx:222
+#: components/Forms/Save.tsx:221
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "cloneDescription"
@@ -243,13 +243,13 @@ msgid "unsavedFormUnloadProtect"
 msgstr "Este formulario no ha sido guardado."
 
 #: components/AttachmentsBulkImport/utils.ts:482
-#: components/Forms/Save.tsx:258
+#: components/Forms/Save.tsx:257
 #. 🟥Meaning a conflict occurred when saving. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Forms > Save
 #, fuzzy
 msgid "saveConflict"
 msgstr "Guardar conflicto"
 
-#: components/Forms/Save.tsx:261
+#: components/Forms/Save.tsx:260
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "saveConflictDescription"
@@ -258,13 +258,13 @@ msgstr ""
 "en otra pestaña del navegador y están desactualizados. La página debe "
 "recargarse para evitar que se guarden datos inconsistentes."
 
-#: components/Forms/Save.tsx:291
+#: components/Forms/Save.tsx:290
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "saveBlocked"
 msgstr "Información de registro"
 
-#: components/Forms/Save.tsx:294
+#: components/Forms/Save.tsx:293
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "saveBlockedDescription"
@@ -526,7 +526,7 @@ msgstr "Quitar de {recordSetTable:string}"
 msgid "nothingFound"
 msgstr "Nada Encontrado"
 
-#: components/Forms/Save.tsx:227
+#: components/Forms/Save.tsx:226
 #. 🟥Verb. Button label. Used in: Components > Forms > Save
 #, fuzzy
 msgid "carryForward"
@@ -538,7 +538,7 @@ msgstr "Llevar adelante"
 msgid "carryForwardEnabled"
 msgstr "Mostrar botón Llevar adelante"
 
-#: components/Forms/Save.tsx:228
+#: components/Forms/Save.tsx:227
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "carryForwardDescription"
@@ -575,7 +575,7 @@ msgstr "Mostrar botón Clonar"
 msgid "addButtonEnabled"
 msgstr "Mostrar botón Agregar"
 
-#: components/Forms/Save.tsx:234
+#: components/Forms/Save.tsx:233
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "addButtonDescription"

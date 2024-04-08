@@ -17,13 +17,13 @@ msgid "forms"
 msgstr "Forms"
 
 #: components/Atoms/DataEntry.tsx:153
-#: components/Forms/Save.tsx:221
+#: components/Forms/Save.tsx:220
 #: components/Statistics/ResultsDialog.tsx:68
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Components > Statistics > Results Dialog
 msgid "clone"
 msgstr "Clone"
 
-#: components/Forms/Save.tsx:222
+#: components/Forms/Save.tsx:221
 #. Used in: Components > Forms > Save
 msgid "cloneDescription"
 msgstr "Create a full copy of current record"
@@ -217,12 +217,12 @@ msgid "unsavedFormUnloadProtect"
 msgstr "This form has not been saved."
 
 #: components/AttachmentsBulkImport/utils.ts:482
-#: components/Forms/Save.tsx:258
+#: components/Forms/Save.tsx:257
 #. 🟥Meaning a conflict occurred when saving. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Forms > Save
 msgid "saveConflict"
 msgstr "Save conflict"
 
-#: components/Forms/Save.tsx:261
+#: components/Forms/Save.tsx:260
 #. Used in: Components > Forms > Save
 msgid "saveConflictDescription"
 msgstr ""
@@ -230,12 +230,12 @@ msgstr ""
 "browser tab and is out of date. The page must be reloaded to prevent "
 "inconsistent data from being saved."
 
-#: components/Forms/Save.tsx:291
+#: components/Forms/Save.tsx:290
 #. Used in: Components > Forms > Save
 msgid "saveBlocked"
 msgstr "Save blocked"
 
-#: components/Forms/Save.tsx:294
+#: components/Forms/Save.tsx:293
 #. Used in: Components > Forms > Save
 msgid "saveBlockedDescription"
 msgstr "Form cannot be saved because of the following error:"
@@ -458,7 +458,7 @@ msgstr "Remove from {recordSetTable:string}"
 msgid "nothingFound"
 msgstr "Nothing found"
 
-#: components/Forms/Save.tsx:227
+#: components/Forms/Save.tsx:226
 #. 🟥Verb. Button label. Used in: Components > Forms > Save
 msgid "carryForward"
 msgstr "Carry Forward"
@@ -468,7 +468,7 @@ msgstr "Carry Forward"
 msgid "carryForwardEnabled"
 msgstr "Show Carry Forward button"
 
-#: components/Forms/Save.tsx:228
+#: components/Forms/Save.tsx:227
 #. Used in: Components > Forms > Save
 msgid "carryForwardDescription"
 msgstr "Create a new record with certain fields carried over"
@@ -499,7 +499,7 @@ msgstr "Show Clone button"
 msgid "addButtonEnabled"
 msgstr "Show Add button"
 
-#: components/Forms/Save.tsx:234
+#: components/Forms/Save.tsx:233
 #. Used in: Components > Forms > Save
 msgid "addButtonDescription"
 msgstr "Create a new blank record"
