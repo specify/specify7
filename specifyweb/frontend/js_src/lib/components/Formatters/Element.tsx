@@ -39,6 +39,7 @@ export function XmlEditorShell<
   readonly children: (props: {
     readonly items: GetSet<RA<ITEM>>;
     readonly item: GetSet<ITEM>;
+    readonly setHasUnmappedField: (value: boolean) => void;
   }) => JSX.Element;
 }): JSX.Element {
   const { index: rawIndex } = useParams();
@@ -59,6 +60,8 @@ export function XmlEditorShell<
   const isReadOnly = React.useContext(ReadOnlyContext);
   const navigate = useNavigate();
   const handleClose = (): void => navigate(resolveRelative('../'));
+
+  const [hasUnmappedField, setHasUnmappedField] = React.useState(false);
 
   const id = useId('item');
   return item === undefined ? (
@@ -84,7 +87,15 @@ export function XmlEditorShell<
             </Button.Danger>
           )}
           <span className="-ml-2 flex-1" />
-          <Submit.Secondary form={id('form')}>
+          <Submit.Secondary
+            form={id('form')}
+            disabled={hasUnmappedField}
+            title={
+              hasUnmappedField
+                ? commonText.hasUnmappedFields()
+                : commonText.close()
+            }
+          >
             {commonText.close()}
           </Submit.Secondary>
         </>
@@ -109,7 +120,11 @@ export function XmlEditorShell<
             onValueChange={(name): void => setItem({ ...item, name })}
           />
         </Label.Block>
-        {children({ items: allItems, item: getSet })}
+        {children({
+          items: allItems,
+          item: getSet,
+          setHasUnmappedField: setHasUnmappedField,
+        })}
       </Form>
     </Dialog>
   );
@@ -126,7 +141,11 @@ export function FormatterWrapper(): JSX.Element {
           : resourcesText.aggregator()
       }
     >
-      {({ item: getSet, items: [items, setItems] }): JSX.Element => (
+      {({
+        item: getSet,
+        items: [items, setItems],
+        setHasUnmappedField: setHasUnmappedField,
+      }): JSX.Element => (
         <>
           <Label.Block>
             {resourcesText.title()}
@@ -158,7 +177,10 @@ export function FormatterWrapper(): JSX.Element {
             {resourcesText.default()}
           </Label.Inline>
           {type === 'formatter' ? (
-            <FormatterElement item={getSet as GetSet<Formatter>} />
+            <FormatterElement
+              item={getSet as GetSet<Formatter>}
+              setHasUnmappedField={setHasUnmappedField}
+            />
           ) : (
             <AggregatorElement item={getSet as GetSet<Aggregator>} />
           )}

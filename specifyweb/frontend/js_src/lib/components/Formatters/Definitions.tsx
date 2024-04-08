@@ -16,8 +16,10 @@ import type { Formatter } from './spec';
 
 export function Definitions({
   item: [formatter, setFormatter],
+  setHasUnmappedField: setHasUnmappedField,
 }: {
   readonly item: GetSet<Formatter>;
+  readonly setHasUnmappedField: (value: boolean) => void;
 }): JSX.Element | null {
   const isReadOnly = React.useContext(ReadOnlyContext);
 
@@ -51,6 +53,19 @@ export function Definitions({
     trimmedFields.length === 0
       ? [{ value: undefined, fields: [] }]
       : trimmedFields;
+
+  React.useEffect(() => {
+    let isFieldUndefined = false;
+
+    formatter.definition.fields.map((item) =>
+      item.fields.map((field) => {
+        if (field.field === undefined) {
+          isFieldUndefined = true;
+        }
+      })
+    );
+    setHasUnmappedField(isFieldUndefined);
+  }, [formatter.definition.fields]);
 
   return table === undefined ? null : (
     <div className="flex flex-col content-center divide-y divide-gray-500">
