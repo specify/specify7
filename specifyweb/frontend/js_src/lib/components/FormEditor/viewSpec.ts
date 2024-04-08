@@ -347,7 +347,7 @@ const borderSpec = f.store(() =>
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const subViewSpec = (
-  _cell: SpecToJson<ReturnType<typeof cellSpec>>,
+  cell: SpecToJson<ReturnType<typeof cellSpec>>,
   table: SpecifyTable | undefined
 ) =>
   createXmlSpec({
@@ -405,7 +405,7 @@ const subViewSpec = (
       syncers.maybe(
         syncer(
           (raw: string) => {
-            const cellName = _cell.rest.node.attributes.name;
+            const cellName = cell.rest.node.attributes.name;
             const cellRelationship = table?.fields
               .filter((field) => field.isRelationship)
               .find((table) => table.name === cellName) as
