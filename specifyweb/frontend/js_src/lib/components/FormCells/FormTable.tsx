@@ -36,7 +36,7 @@ import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormCell } from './index';
 
-const viewToChange = ['Collectors'];
+const viewToChange = new Set(['Collectors']);
 
 const cellToLabel = (
   table: SpecifyTable,
@@ -171,7 +171,7 @@ export function FormTable<SCHEMA extends AnySchema>({
     mode,
   });
 
-  const validExpandedViewDefinition = viewToChange.includes(viewName)
+  const validExpandedViewDefinition = viewToChange.has(viewName)
     ? useViewDefinition({
         table: relationship.relatedTable,
         viewName: relationship.relatedTable.view,
