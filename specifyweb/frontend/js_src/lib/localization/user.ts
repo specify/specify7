@@ -141,7 +141,7 @@ export const userText = createDictionary({
     `,
     'de-ch': `
       Bitte melden Sie sich als Administrator an und weisen Sie diesem Benutzer
-      einen Agenten zu
+      einen Agenten zu.
     `,
   },
   helloMessage: {
@@ -179,9 +179,9 @@ export const userText = createDictionary({
       постачальником надалі.
     `,
     'de-ch': `
-      Sie wurden eingeladen, Ihrem Specify-Benutzerkonto ein externes Login
-      zuzuordnen. Dadurch können Sie sich künftig bei Specify bei Ihrem
-      gewählten Anbieter anmelden.
+      Sie wurden aufgefordert, Ihrem Specify-Benutzerkonto einen externen Login
+      zuzuordnen. Dadurch können Sie sich künftig mit dem von Ihnen gewählten
+      Anbieter bei Specify anmelden.
     `,
   },
   legacyLogin: {
@@ -220,9 +220,9 @@ export const userText = createDictionary({
     `,
     'uk-ua': `
       Наразі немає жодного користувача, пов’язаного з вашим обліковим записом
-      {providerName:string}. Якщо у вас є вказане ім’я користувача та пароль,
-      ви можете ввести їх нижче, щоб пов’язати цього користувача з вашим
-      обліковим записом {providerName:string} для майбутніх входів.
+      {providerName:string}. Якщо у вас є вказати ім’я користувача та пароль,
+      ви можете ввести їх нижче, щоб пов’язати цього користувача з обліковим
+      записом {providerName:string} для майбутніх входів.
     `,
     'de-ch': `
       Derzeit ist Ihrem {providerName:string}-Konto kein Benutzer vom Typ
@@ -346,7 +346,7 @@ export const userText = createDictionary({
     `,
     'uk-ua': 'Ви можете увійти на {collectionTable:string}, щоб продовжити:',
     'de-ch': `
-      Sie können sich bei {collectionTable:string} anmelden, um fortzufahren:
+      Sie können sich beim {collectionTable:string} anmelden, um fortzufahren:
     `,
   },
   sessionTimeOut: {
@@ -426,7 +426,7 @@ export const userText = createDictionary({
     `,
     'de-ch': `
       Sie verfügen über keine Richtlinie oder Rolle, die Ihnen die Berechtigung
-      zum Ausführen der folgenden Aktion erteilt:
+      zur Ausführung der folgenden Aktion erteilt:
     `,
   },
   emptyRecordSetsReadOnly: {
@@ -500,7 +500,7 @@ export const userText = createDictionary({
     'es-es': 'Eliminar administrador',
     'fr-fr': "Supprimer l'administrateur",
     'uk-ua': 'Видалити адміністратора',
-    'de-ch': 'Admin entfernen',
+    'de-ch': 'Administrator entfernen',
   },
   canNotRemoveYourself: {
     'en-us': 'You cannot revoke your own admin status',
@@ -524,7 +524,7 @@ export const userText = createDictionary({
     'es-es': 'Guardar usuario primero',
     'fr-fr': "Enregistrez d'abord l'utilisateur",
     'uk-ua': 'Спочатку збережіть користувача',
-    'de-ch': 'Speichern Sie zuerst den Benutzer',
+    'de-ch': 'Zuerst Benutzer speichern',
   },
   mustBeManager: {
     'en-us': 'User must be saved as Manager first',
@@ -574,8 +574,7 @@ export const userText = createDictionary({
     'uk-ua': `
       Облікові записи користувачів, призначені цьому {collectionTable:string}
     `,
-    'de-ch':
-      'Benutzerkonten, die diesem {collectionTable:string} zugewiesen sind',
+    'de-ch': 'Zugewiesene Benutzerkonten {collectionTable:string}',
   },
   setPassword: {
     'en-us': 'Set Password',
@@ -615,7 +614,7 @@ export const userText = createDictionary({
     'es-es': 'Seleccionar acceso a la colección del usuario',
     'fr-fr': "Sélectionnez l'accès à la collection d'utilisateurs",
     'uk-ua': 'Виберіть доступ до колекції користувачів',
-    'de-ch': 'Wählen Sie den Zugriff auf die Benutzersammlung aus',
+    'de-ch': 'Auswählen des Benutzersammlungszugriffs',
   },
   securityPanel: {
     'en-us': 'Security and Accounts',
@@ -837,7 +836,7 @@ export const userText = createDictionary({
     'es-es': 'Desde un rol existente:',
     'fr-fr': "À partir d'un rôle existant :",
     'uk-ua': 'З наявної ролі:',
-    'de-ch': 'Aus einer bestehenden Rolle:',
+    'de-ch': 'Aus einer vorhandenen Rolle:',
   },
   createNewRoles: {
     'en-us': 'Create new roles:',
@@ -845,7 +844,7 @@ export const userText = createDictionary({
     'es-es': 'Crear nuevos roles:',
     'fr-fr': 'Créez de nouveaux rôles :',
     'uk-ua': 'Створити нові ролі:',
-    'de-ch': 'Erstellen Sie neue Rollen:',
+    'de-ch': 'Neue Rollen erstellen:',
   },
   updateExistingRoles: {
     'en-us': 'Update existing roles:',
@@ -932,9 +931,8 @@ export const userText = createDictionary({
       налаштовано. Ви можете налаштувати деякі параметри сервера Specify 7
     `,
     'de-ch': `
-      Es ist kein externer Identitätsanbieter konfiguriert. Einige davon können
-      Sie unter „Specify 7 Server Settings“ (Servereinstellungen angeben)
-      konfigurieren
+      Es ist kein externer Identitätsanbieter konfiguriert. Sie können einige in
+      den 7 Servereinstellungen konfigurieren.
     `,
   },
   legacyPermissions: {
@@ -1003,7 +1001,7 @@ export const userText = createDictionary({
     'en-us': 'External identity providers:',
     'es-es': 'Proveedores de identidad externos:',
     'fr-fr': "Fournisseurs d'identité externes :",
-    'de-ch': 'Wählen Sie eine der folgenden Sammlungen:',
+    'de-ch': 'Wählen Sie eine der folgenden Sammlungen aus:',
     'ru-ru': 'Выберите одну из следующих коллекций:',
     'uk-ua': 'Виберіть одну з наступних колекцій:',
   },
@@ -1013,7 +1011,7 @@ export const userText = createDictionary({
     'es-es': 'Todas las tablas',
     'fr-fr': 'Tous les tableaux',
     'uk-ua': 'Всі столи',
-    'de-ch': 'Alle Tische',
+    'de-ch': 'Alle Tabellen',
   },
   loadingAdmins: {
     'en-us': 'Loading admins...',
@@ -1056,9 +1054,7 @@ export const userText = createDictionary({
     'fr-fr':
       'Les utilisateurs ne seront pas supprimés, mais ils perdront ce rôle.',
     'uk-ua': 'Користувачів не буде видалено, але вони втратять цю роль.',
-    'de-ch': `
-      Benutzer werden nicht gelöscht, sie würden jedoch diese Rolle verlieren.
-    `,
+    'de-ch': 'Benutzer werden nicht gelöscht, verlieren jedoch diese Rolle.',
   },
   institutionPolicies: {
     'en-us': `
@@ -1117,14 +1113,14 @@ export const userText = createDictionary({
     'es-es': 'Cambiar a diseño horizontal',
     'fr-fr': "Passer à l'affichage horizontal",
     'uk-ua': 'Перейти до горизонтального розташування',
-    'de-ch': 'Wechseln Sie zum horizontalen Layout',
+    'de-ch': 'Zum horizontalen Layout wechseln',
   },
   switchToVerticalLayout: {
     'en-us': 'Switch to vertical layout',
     'ru-ru': 'Сначала сохраните пользователя',
     'es-es': 'Cambiar al diseño vertical',
     'fr-fr': "Passer à l'affichage vertical",
-    'de-ch': 'Wechseln Sie zum vertikalen Layout',
+    'de-ch': 'Zum vertikalen Layout wechseln',
     'uk-ua': 'Спочатку збережіть користувача',
   },
   advancedTables: {
