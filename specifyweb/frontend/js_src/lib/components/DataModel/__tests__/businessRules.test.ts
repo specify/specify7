@@ -273,7 +273,7 @@ describe('treeBusinessRules', () => {
     expect(oxyrinchus.get('fullName')).toBe('Acipenser oxyrinchus');
   });
 
-  test('definitionItem blocked invalid rank', async () => {
+  test('parent blocking on invalid rank', async () => {
     const taxon = new tables.Taxon.Resource({
       name: 'Ameiurus',
       parent: '/api/specify/taxon/3/',
@@ -285,7 +285,7 @@ describe('treeBusinessRules', () => {
     await taxon.businessRuleManager?.checkField('parent');
 
     const { result } = renderHook(() =>
-      useSaveBlockers(taxon, tables.Taxon.getField('definitionItem'))
+      useSaveBlockers(taxon, tables.Taxon.getField('parent'))
     );
     expect(result.current[0]).toStrictEqual(['Bad tree structure.']);
   });
