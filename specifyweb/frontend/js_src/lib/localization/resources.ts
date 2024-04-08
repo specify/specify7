@@ -148,14 +148,14 @@ export const resourcesText = createDictionary({
   uiFormatters: {
     'en-us': 'Field Formatters',
     'ru-ru': 'Форматировщики полей',
-    'es-es': 'Formateadores de campo',
+    'es-es': 'Formateadores de campos',
     'fr-fr': 'Formateurs de champs',
     'uk-ua': 'Форматувальники полів',
     'de-ch': 'Feldformatierer',
   },
   dataObjectFormatters: {
     'en-us': 'Record Formatters',
-    'ru-ru': 'Форматеры записи',
+    'ru-ru': 'Форматеры записей',
     'es-es': 'Formateadores de registros',
     'uk-ua': 'Форматувальники записів',
     'de-ch': 'Datensatz-Formatierer',
@@ -448,7 +448,7 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Не удалось разобрать XML',
     'de-ch': 'XML konnte nicht analysiert werden',
     'es-es': 'No se pudo analizar XML',
-    'fr-fr': "Échec de l'analyse XML",
+    'fr-fr': "Échec de l'analyse du XML",
     'uk-ua': 'Не вдалося проаналізувати XML',
   },
   name: {
@@ -668,7 +668,7 @@ export const resourcesText = createDictionary({
     `,
     'uk-ua': `
       Цей формат використовуватиметься, лише якщо значення поля умови дорівнює
-      цій умові або якщо жоден інший формат їй не відповідає.
+      цій умові або якщо жоден інший формат йому не відповідає.
     `,
   },
   wrongScopeWarning: {
@@ -693,13 +693,13 @@ export const resourcesText = createDictionary({
       changer de collection avant de modifier cette ressource.
     `,
     'ru-ru': `
-      Этот ресурс принадлежит к другой коллекции/дисциплине, отличной от той, в
+      Этот ресурс принадлежит другой коллекции/дисциплине, отличной от той, в
       которой вы сейчас находитесь. Перед редактированием этого ресурса
       рекомендуется сменить коллекцию.
     `,
     'uk-ua': `
       Цей ресурс належить до іншої колекції/дисципліни, ніж та, у якій ви зараз
-      перебуваєте. Рекомендовано змінити колекцію перед редагуванням цього
+      перебуваєте. Рекомендується змінити колекцію перед редагуванням цього
       ресурсу
     `,
   },
