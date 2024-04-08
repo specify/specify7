@@ -88,8 +88,8 @@ export function XmlEditorShell<
           )}
           <span className="-ml-2 flex-1" />
           <Submit.Secondary
-            form={id('form')}
             disabled={hasUnmappedField}
+            form={id('form')}
             title={
               hasUnmappedField
                 ? commonText.hasUnmappedFields()
@@ -123,7 +123,7 @@ export function XmlEditorShell<
         {children({
           items: allItems,
           item: getSet,
-          setHasUnmappedField: setHasUnmappedField,
+          setHasUnmappedField,
         })}
       </Form>
     </Dialog>
@@ -144,7 +144,7 @@ export function FormatterWrapper(): JSX.Element {
       {({
         item: getSet,
         items: [items, setItems],
-        setHasUnmappedField: setHasUnmappedField,
+        setHasUnmappedField,
       }): JSX.Element => (
         <>
           <Label.Block>

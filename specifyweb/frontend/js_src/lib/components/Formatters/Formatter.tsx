@@ -19,7 +19,7 @@ import type { Formatter } from './spec';
 
 export function FormatterElement({
   item: [formatter, setFormatter],
-  setHasUnmappedField: setHasUnmappedField,
+  setHasUnmappedField,
 }: {
   readonly item: GetSet<Formatter>;
   readonly setHasUnmappedField: (value: boolean) => void;
