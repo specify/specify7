@@ -199,7 +199,7 @@ export const Input = {
       ...props,
       ...withHandleBlur(props.onBlur),
       onChange(event): void {
-        onValueChange?.(localized((event.target as HTMLInputElement).value));
+        onValueChange?.((event.target as HTMLInputElement).value);
         props.onChange?.(event);
       },
       onDoubleClick(event): void {
