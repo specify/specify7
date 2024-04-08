@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-04-08 23:01+0000\n"
+"PO-Revision-Date: 2024-04-09 01:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "resources/uk/>\n"
@@ -156,10 +156,10 @@ msgstr "Формат таблиці"
 #, fuzzy
 msgid "formatterDescription"
 msgstr ""
-"«Формат таблиці» керує тим, як дані з певної таблиці відображаються в "
-"результатах запитів, експорті та комбінованих полях запитів. Він визначає "
-"поля для відображення та їх порядок. Умовне форматування можна налаштувати "
-"на основі значення в записі."
+"«Формат таблиці» визначає, як дані з певної таблиці відображаються в "
+"результатах запиту, експорті та комбінованих полях запиту. Він визначає поля "
+"для відображення та їх порядок. Умовне форматування можна налаштувати на "
+"основі значення в записі."
 
 #. Used in: Components > Formatters > Element
 #: components/Formatters/Element.tsx:126
@@ -465,7 +465,7 @@ msgstr ""
 msgid "elseConditionDescription"
 msgstr ""
 "Цей формат використовуватиметься, лише якщо значення поля умови дорівнює цій "
-"умові або якщо жоден інший формат йому не відповідає."
+"умові або якщо жоден інший формат їй не відповідає."
 
 #. Used in: Components > App Resources > Tabs
 #: components/AppResources/Tabs.tsx:164
