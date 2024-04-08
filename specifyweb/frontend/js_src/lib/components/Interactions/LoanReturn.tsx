@@ -103,9 +103,10 @@ function PreparationReturn({
       remarks: '',
     }))
   );
+
   const canDeselect = state.some(({ resolve }) => resolve > 0);
   const canSelectAll = state.some(
-    ({ resolve, unresolved }) => resolve < unresolved || Number.isNaN(resolve)
+    ({ resolve, unresolved }) => resolve < unresolved
   );
 
   const [bulkReturn, setBulkReturn] = React.useState(0);
@@ -133,12 +134,12 @@ function PreparationReturn({
           type === 'resolve'
             ? updateResolvedChanged({
                 returns,
-                resolve: resolvedCount,
+                resolve: Number.isNaN(resolvedCount) ? 0 : resolvedCount,
                 unresolved,
                 remarks: returnItem.remarks,
               })
             : updateReturnChanged({
-                returns: resolvedCount,
+                returns: Number.isNaN(resolvedCount) ? 0 : resolvedCount,
                 resolve,
                 unresolved,
                 remarks: returnItem.remarks,
