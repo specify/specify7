@@ -119,15 +119,6 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
           )
           .then((items) => {
             if (destructorCalled) return undefined;
-            if (typeof resource.get('definitionItem') !== 'string')
-              setTimeout(
-                () =>
-                  resource.set(
-                    'definitionItem',
-                    props.defaultValue ?? items?.slice(-1)[0]?.value ?? ''
-                  ),
-                1
-              );
             return void setItems(items);
           }),
       true
@@ -138,6 +129,38 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
       destructor();
     };
   }, [props.resource, props.defaultValue]);
+
+  React.useEffect(() => {
+    if (props.resource === undefined) return undefined;
+    const resource = toTreeTable(props.resource);
+    let destructorCalled = false;
+
+    const destructor = resourceOn(
+      props.resource,
+      'change:parent',
+      (): void => {
+        if (destructorCalled) return undefined;
+        const definitionItem = resource?.get('definitionItem');
+
+        if (
+          (items !== undefined ||
+            typeof resource?.get('parent') !== 'string') &&
+          (typeof definitionItem !== 'string' ||
+            !items?.map(({ value }) => value).includes(definitionItem))
+        )
+          resource?.set(
+            'definitionItem',
+            props.defaultValue ?? items?.slice(-1)[0]?.value ?? ''
+          );
+      },
+      true
+    );
+
+    return (): void => {
+      destructorCalled = true;
+      destructor();
+    };
+  }, [props.defaultValue, props.resource, items]);
 
   return (
     <PickListComboBox
