@@ -1219,7 +1219,7 @@ export const wbText = createDictionary({
     'ru-ru': 'Определить автоматически',
     'es-es': 'Determinar automáticamente',
     'uk-ua': 'Регістр сірників',
-    'de-ch': 'Streichholzetui',
+    'de-ch': 'Groß-/Kleinschreibung beachten',
     'fr-fr': 'Déterminer automatiquement',
   },
   chooseDataSetName: {
@@ -1312,7 +1312,7 @@ export const wbText = createDictionary({
     'es-es': 'Propiedades del conjunto de datos',
     'fr-fr': "Propriétés de l'ensemble de données",
     'uk-ua': 'Властивості набору даних',
-    'de-ch': 'Datensatzeigenschaften',
+    'de-ch': 'Dataset-Eigenschaften',
   },
   dataSetName: {
     'en-us': 'Data Set Name',
@@ -1416,7 +1416,7 @@ export const wbText = createDictionary({
     'es-es': 'Estado de carga del conjunto de datos',
     'fr-fr': "Une erreur s'est produite pendant [X22X]",
     'uk-ua': 'Під час [X22X] сталася помилка',
-    'de-ch': 'Status des Datensatz-Uploads',
+    'de-ch': 'Upload-Status des Datensatzes',
   },
   wbStatusValidation: {
     'en-us': 'Data Set Validation Status',
