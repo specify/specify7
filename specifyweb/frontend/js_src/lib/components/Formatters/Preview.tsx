@@ -106,6 +106,7 @@ export function useResourcePreview(table: SpecifyTable): {
             table={table}
             onClose={handleClose}
             onSelected={setResources}
+            onlyUseQueryBuilder={true}
           />
         )}
       </div>
