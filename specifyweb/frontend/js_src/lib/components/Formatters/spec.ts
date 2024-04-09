@@ -22,6 +22,12 @@ export const formattersSpec = f.store(() =>
               ...formatter,
               definition: {
                 ...definition,
+                fields: definition.fields.map((fieldGroup) => ({
+                  ...fieldGroup,
+                  fields: fieldGroup.fields.filter(
+                    (field) => field.field !== undefined
+                  ),
+                })),
                 isSingle: definition.fields.length <= 1,
               },
             })

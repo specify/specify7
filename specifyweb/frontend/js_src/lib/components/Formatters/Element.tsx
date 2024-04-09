@@ -39,7 +39,6 @@ export function XmlEditorShell<
   readonly children: (props: {
     readonly items: GetSet<RA<ITEM>>;
     readonly item: GetSet<ITEM>;
-    readonly setHasUnmappedField: (value: boolean) => void;
   }) => JSX.Element;
 }): JSX.Element {
   const { index: rawIndex } = useParams();
@@ -60,8 +59,6 @@ export function XmlEditorShell<
   const isReadOnly = React.useContext(ReadOnlyContext);
   const navigate = useNavigate();
   const handleClose = (): void => navigate(resolveRelative('../'));
-
-  const [hasUnmappedField, setHasUnmappedField] = React.useState(false);
 
   const id = useId('item');
   return item === undefined ? (
@@ -87,15 +84,7 @@ export function XmlEditorShell<
             </Button.Danger>
           )}
           <span className="-ml-2 flex-1" />
-          <Submit.Secondary
-            disabled={hasUnmappedField}
-            form={id('form')}
-            title={
-              hasUnmappedField
-                ? commonText.hasUnmappedFields()
-                : commonText.close()
-            }
-          >
+          <Submit.Secondary form={id('form')}>
             {commonText.close()}
           </Submit.Secondary>
         </>
@@ -123,7 +112,6 @@ export function XmlEditorShell<
         {children({
           items: allItems,
           item: getSet,
-          setHasUnmappedField,
         })}
       </Form>
     </Dialog>
@@ -141,11 +129,7 @@ export function FormatterWrapper(): JSX.Element {
           : resourcesText.aggregator()
       }
     >
-      {({
-        item: getSet,
-        items: [items, setItems],
-        setHasUnmappedField,
-      }): JSX.Element => (
+      {({ item: getSet, items: [items, setItems] }): JSX.Element => (
         <>
           <Label.Block>
             {resourcesText.title()}
@@ -177,10 +161,7 @@ export function FormatterWrapper(): JSX.Element {
             {resourcesText.default()}
           </Label.Inline>
           {type === 'formatter' ? (
-            <FormatterElement
-              item={getSet as GetSet<Formatter>}
-              setHasUnmappedField={setHasUnmappedField}
-            />
+            <FormatterElement item={getSet as GetSet<Formatter>} />
           ) : (
             <AggregatorElement item={getSet as GetSet<Aggregator>} />
           )}

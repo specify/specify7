@@ -19,10 +19,8 @@ import type { Formatter } from './spec';
 
 export function FormatterElement({
   item: [formatter, setFormatter],
-  setHasUnmappedField,
 }: {
   readonly item: GetSet<Formatter>;
-  readonly setHasUnmappedField: (value: boolean) => void;
 }): JSX.Element {
   return (
     <>
@@ -30,10 +28,7 @@ export function FormatterElement({
         <ConditionalMapping item={[formatter, setFormatter]} />
       )}
       {formatter.definition.external === undefined ? (
-        <Definitions
-          item={[formatter, setFormatter]}
-          setHasUnmappedField={setHasUnmappedField}
-        />
+        <Definitions item={[formatter, setFormatter]} />
       ) : (
         <ErrorMessage>{resourcesText.editorNotAvailable()}</ErrorMessage>
       )}
