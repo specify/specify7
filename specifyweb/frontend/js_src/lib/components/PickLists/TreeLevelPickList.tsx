@@ -168,6 +168,7 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
       isDisabled={
         props.isDisabled ||
         props.resource === undefined ||
+        items?.length === 0 ||
         !isTreeResource(props.resource) ||
         typeof props.resource.get('parent') !== 'string'
       }

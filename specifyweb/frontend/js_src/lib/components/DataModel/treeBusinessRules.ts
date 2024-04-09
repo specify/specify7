@@ -22,20 +22,31 @@ export const treeBusinessRules = async (
   fieldName: string
 ): Promise<BusinessRuleResult | undefined> =>
   getRelatedTreeTables(resource).then(async ({ parent, definitionItem }) => {
-    if (parent === undefined || definitionItem === undefined) return undefined;
+    if (parent === undefined) return undefined;
 
-    if (
-      fieldName === 'parent' &&
-      (parent.id === resource.id ||
-        parent.get('rankId') >= definitionItem.get('rankId'))
-    )
+    const hasBadTreeStrcuture =
+      parent.id === resource.id ||
+      definitionItem === undefined ||
+      parent.get('rankId') >= definitionItem.get('rankId');
+
+    if (!hasBadTreeStrcuture && (resource.get('name').length ?? 0) === 0)
+      return {
+        saveBlockerKey: 'bad-tree-structure',
+        isValid: true,
+      };
+
+    if (fieldName === 'parent' && hasBadTreeStrcuture)
       return {
         saveBlockerKey: 'bad-tree-structure',
         isValid: false,
         reason: treeText.badStructure(),
       };
 
-    if ((resource.get('name')?.length ?? 0) === 0) return undefined;
+    if (
+      (resource.get('name')?.length ?? 0) === 0 ||
+      definitionItem === undefined
+    )
+      return undefined;
 
     return predictFullName(resource, parent, definitionItem).then(
       (fullName) => ({
