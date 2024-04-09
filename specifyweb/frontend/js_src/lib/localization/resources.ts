@@ -155,7 +155,7 @@ export const resourcesText = createDictionary({
   },
   dataObjectFormatters: {
     'en-us': 'Record Formatters',
-    'ru-ru': 'Форматеры записей',
+    'ru-ru': 'Форматеры записи',
     'es-es': 'Formateadores de registros',
     'uk-ua': 'Форматувальники записів',
     'de-ch': 'Datensatz-Formatierer',
@@ -204,8 +204,8 @@ export const resourcesText = createDictionary({
       можно настроить на основе значения в записи.
     `,
     'uk-ua': `
-      «Формат таблиці» керує тим, як дані з певної таблиці відображаються в
-      результатах запитів, експорті та комбінованих полях запитів. Він визначає
+      «Формат таблиці» визначає, як дані з певної таблиці відображаються в
+      результатах запиту, експорті та комбінованих полях запиту. Він визначає
       поля для відображення та їх порядок. Умовне форматування можна налаштувати
       на основі значення в записі.
     `,
@@ -668,7 +668,7 @@ export const resourcesText = createDictionary({
     `,
     'uk-ua': `
       Цей формат використовуватиметься, лише якщо значення поля умови дорівнює
-      цій умові або якщо жоден інший формат йому не відповідає.
+      цій умові або якщо жоден інший формат їй не відповідає.
     `,
   },
   wrongScopeWarning: {
@@ -823,7 +823,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Feldformate anpassen',
     'es-es': 'Personalizar formatos de campo',
     'fr-fr': 'Personnaliser les formats de champs',
-    'ru-ru': 'Настройте форматы полей',
+    'ru-ru': 'Настройка форматов полей',
     'uk-ua': 'Налаштувати формати полів',
   },
   expandConditionalField: {
