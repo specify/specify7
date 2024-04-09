@@ -34,6 +34,9 @@ def strict_to_optional(f: Callable[[U], T], lookup: U, strict: bool) -> Optional
 class Datamodel(object):
     tables: List['Table']
 
+    def __init__(self, tables: List['Table'] = []):
+        self.tables = tables
+
     def get_table(self, tablename: str, strict: bool=False) -> Optional['Table']:
         return strict_to_optional(self.get_table_strict, tablename, strict)
 
@@ -74,6 +77,25 @@ class Table(object):
     relationships: List['Relationship']
     fieldAliases: List[Dict[str, str]]
 
+    def __init__(self, classname: Optional[str] = None, table: Optional[str] = None, tableId: Optional[int] = None, 
+                 idColumn: Optional[str] = None, idFieldName: Optional[str] = None, idField: Optional['Field'] = None, 
+                 view: Optional[str] = None, searchDialog: Optional[str] = None, fields: Optional[List['Field']] = None,
+                 indexes: Optional[List['Index']] = None, relationships: Optional[List['Relationship']] = None, 
+                 fieldAliases: Optional[List[Dict[str, str]]] = None, system: bool = False):
+        self.system = system
+        self.classname = classname
+        self.table = table
+        self.tableId = tableId
+        self.idColumn = idColumn
+        self.idFieldName = idFieldName
+        self.idField = idField
+        self.view = view
+        self.searchDialog = searchDialog
+        self.fields = fields if fields is not None else []
+        self.indexes = indexes if indexes is not None else []
+        self.relationships = relationships if relationships is not None else []
+        self.fieldAliases = fieldAliases if fieldAliases is not None else []
+
     @property
     def name(self) -> str:
         return self.classname.split('.')[-1]
@@ -110,6 +132,15 @@ class Table(object):
         if not isinstance(field, Relationship):
             raise FieldDoesNotExistError(f"Field {name} in table {self.name} is not a relationship.")
         return field
+    
+    def get_index(self, indexname: str, strict: bool=False) -> 'Index':
+        for index in self.indexes:
+            if indexname in index.name:
+                return index
+        if strict:
+            raise FieldDoesNotExistError(_("Index %(index_name)s not in table %(table_name)s. ") % {'index_name':indexname, 'table_name':self.name} +
+                                         _("Indexes: %(indexes)s") % {'indexes':[i.name for i in self.indexes]})
+        return None
 
     @property
     def attachments_field(self) -> Optional['Relationship']:
@@ -139,6 +170,18 @@ class Field(object):
     type: str
     length: int
 
+    def __init__(self, name: Optional[str] = None, column: Optional[str] = None, indexed: Optional[bool] = None, 
+                 unique: Optional[bool] = None, required: Optional[bool] = None, type: Optional[str] = None, 
+                 length: Optional[int] = None, is_relationship: bool = False):
+        self.is_relationship = is_relationship
+        self.name = name
+        self.column = column
+        self.indexed = indexed
+        self.unique = unique
+        self.required = required
+        self.type = type
+        self.length = length
+
     def __repr__(self) -> str:
         return "<SpecifyField: %s>" % self.name
 
@@ -149,6 +192,10 @@ class Index(object):
     name: str
     column_names: List[str] = []
 
+    def __init__(self, name: Optional[str] = None, column_names: Optional[List[str]] = None):
+        self.name = name
+        self.column_names = column_names if column_names is not None else []
+
     def __repr__(self) -> str:
         return "<SpecifyIndex: %s>" % self.name
 
@@ -157,6 +204,10 @@ class IdField(Field):
     column: str
     type: str
     required: bool = True
+
+    def __init__(self, name: Optional[str] = None, column: Optional[str] = None, 
+                 type: Optional[str] = None, required: bool = True):
+        super().__init__(name, column, indexed=False, unique=False, required=required, type=type, length=0)
 
     def __repr__(self) -> str:
         return "<SpecifyIdField: %s>" % self.name
@@ -171,6 +222,17 @@ class Relationship(Field):
     column: str
     otherSideName: str
     is_to_many: bool = lambda self: 'to_many' in self.type
+
+    def __init__(self, name: Optional[str] = None, type: Optional[str] = None, required: Optional[bool] = None, 
+                 relatedModelName: Optional[str] = None, column: Optional[str] = None,
+                 otherSideName: Optional[str] = None, dependent: bool = False, is_relationship: bool = True,
+                 is_to_many: Optional[bool] = None):
+        super().__init__(name, column, indexed=False, unique=False, required=required, 
+                         type=type, length=0, is_relationship=is_relationship)
+        self.dependent = dependent
+        self.relatedModelName = relatedModelName
+        self.otherSideName = otherSideName
+        # self.is_to_many = is_to_many if is_to_many is not None else 'to_many' in self.type
 
 def make_table(tabledef: ElementTree.Element) -> Table:
     table = Table()
@@ -236,7 +298,10 @@ def make_field_alias(aliasdef: ElementTree.Element) -> Dict[str, str]:
     return alias
 
 def load_datamodel() -> Datamodel:
-    datamodeldef = ElementTree.parse(os.path.join(settings.SPECIFY_CONFIG_DIR, 'specify_datamodel.xml'))
+    try:
+        datamodeldef = ElementTree.parse(os.path.join(settings.SPECIFY_CONFIG_DIR, 'specify_datamodel.xml'))
+    except FileNotFoundError:
+        return None
     datamodel = Datamodel()
     datamodel.tables = [make_table(tabledef) for tabledef in datamodeldef.findall('table')]
     add_collectingevents_to_locality(datamodel)
