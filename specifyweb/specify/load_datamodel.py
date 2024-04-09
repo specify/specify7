@@ -1,4 +1,4 @@
-
+from operator import index
 from typing import List, Dict, Union, Optional, Iterable, TypeVar, Callable
 from xml.etree import ElementTree
 import os
@@ -70,6 +70,7 @@ class Table(object):
     view: Optional[str]
     searchDialog: Optional[str]
     fields: List['Field']
+    indexes: List['Index']
     relationships: List['Relationship']
     fieldAliases: List[Dict[str, str]]
 
@@ -144,6 +145,13 @@ class Field(object):
     def is_temporal(self) -> bool:
         return self.type in ('java.util.Date', 'java.util.Calendar', 'java.sql.Timestamp')
 
+class Index(object):
+    name: str
+    column_names: List[str] = []
+
+    def __repr__(self) -> str:
+        return "<SpecifyIndex: %s>" % self.name
+
 class IdField(Field):
     name: str
     column: str
@@ -162,6 +170,7 @@ class Relationship(Field):
     relatedModelName: str
     column: str
     otherSideName: str
+    is_to_many: bool = lambda self: 'to_many' in self.type
 
 def make_table(tabledef: ElementTree.Element) -> Table:
     table = Table()
@@ -180,6 +189,7 @@ def make_table(tabledef: ElementTree.Element) -> Table:
         table.searchDialog = display.attrib.get('searchdlg', None)
 
     table.fields = [make_field(fielddef) for fielddef in tabledef.findall('field')]
+    table.indexes = [make_index(indexdef) for indexdef in tabledef.findall('tableindex')]
     table.relationships = [make_relationship(reldef) for reldef in tabledef.findall('relationship')]
     table.fieldAliases = [make_field_alias(aliasdef) for aliasdef in tabledef.findall('fieldalias')]
     return table
@@ -202,6 +212,12 @@ def make_field(fielddef: ElementTree.Element) -> Field:
     if 'length' in fielddef.attrib:
         field.length = int(fielddef.attrib['length'])
     return field
+
+def make_index(indexdef: ElementTree.Element) -> Index:
+    index = Index()
+    index.name = indexdef.attrib['indexName']
+    index.column_names = indexdef.attrib['columnNames'].split(',')
+    return index
 
 def make_relationship(reldef: ElementTree.Element) -> Relationship:
     rel = Relationship()
