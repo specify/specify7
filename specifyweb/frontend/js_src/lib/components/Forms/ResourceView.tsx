@@ -337,17 +337,13 @@ export function ResourceView<SCHEMA extends AnySchema>({
           <>
             {deleteButton}
             {extraButtons ?? <span className="-ml-2 flex-1" />}
-            <Button.Info
-              disabled={resource?.needsSaved}
-              title={
-                resource?.needsSaved
-                  ? commonText.saveBeforeClose()
-                  : commonText.close()
-              }
-              onClick={handleClose}
-            >
-              {commonText.close()}
-            </Button.Info>
+            {isModified && !isDependent ? (
+              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+            ) : (
+              <Button.Info onClick={handleClose}>
+                {commonText.close()}
+              </Button.Info>
+            )}
             {saveButtonElement}
           </>
         )
