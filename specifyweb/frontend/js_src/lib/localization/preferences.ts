@@ -521,7 +521,7 @@ export const preferencesText = createDictionary({
     'fr-fr': `
       Algorithme de recherche (pour les relations avec les tables arborescentes)
     `,
-    'uk-ua': "Алгоритм пошуку (для зв'язків із деревоподібними таблицями)",
+    'uk-ua': 'Алгоритм пошуку (для зв’язків із деревоподібними таблицями)',
     'de-ch': 'Suchalgorithmus (für Beziehungen mit Baumtabellen)',
   },
   startsWithInsensitive: {
@@ -1164,7 +1164,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Enfocar el primer campo',
     'fr-fr': 'Concentrez-vous sur le premier champ',
     'ru-ru': 'Фокус первого поля',
-    'uk-ua': 'Перейти до першого поля',
+    'uk-ua': 'Сфокусувати перше поле',
   },
   doubleClickZoom: {
     'en-us': 'Double click to zoom',
@@ -1432,7 +1432,7 @@ export const preferencesText = createDictionary({
   tableIcon: {
     'en-us': 'Table icon',
     'ru-ru': 'Значок таблицы',
-    'es-es': 'Icono de mesa',
+    'es-es': 'Icono de tabla',
     'fr-fr': 'Icône de tableau',
     'uk-ua': 'Значок таблиці',
     'de-ch': 'Tabellensymbol',
@@ -1474,7 +1474,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Campo de búsqueda',
     'fr-fr': 'Champ de recherche',
     'uk-ua': 'Поле пошуку',
-    'de-ch': 'Textfelder wachsen automatisch',
+    'de-ch': 'Textfelder werden automatisch vergrößert',
   },
   createInteractions: {
     'en-us': 'Creating an interaction',
@@ -1483,7 +1483,7 @@ export const preferencesText = createDictionary({
     'fr-fr': 'Créer une interaction',
     'uk-ua': 'Створення взаємодії',
     'de-ch': `
-      Eine URL zu einer Seite, die in die Startseite eingebettet werden würde:
+      Eine URL zu einer Seite, die auf der Startseite eingebettet werden würde:
     `,
   },
   useSpaceAsDelimiter: {
@@ -1857,7 +1857,7 @@ export const preferencesText = createDictionary({
   },
   showLineNumber: {
     'en-us': 'Show query result line number',
-    'de-ch': 'Farbe der Gefahrentaste',
+    'de-ch': 'Farbe der Gefahrenschaltfläche',
     'es-es': 'Mostrar número de línea de resultado de la consulta',
     'fr-fr': 'Afficher le numéro de ligne du résultat de la requête',
     'ru-ru': 'Показать номер строки результата запроса',
