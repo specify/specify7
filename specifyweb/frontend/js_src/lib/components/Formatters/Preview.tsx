@@ -103,10 +103,10 @@ export function useResourcePreview(table: SpecifyTable): {
             extraFilters={undefined}
             forceCollection={undefined}
             multiple
+            onlyUseQueryBuilder
             table={table}
             onClose={handleClose}
             onSelected={setResources}
-            onlyUseQueryBuilder={true}
           />
         )}
       </div>
