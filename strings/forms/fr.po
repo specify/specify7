@@ -201,7 +201,7 @@ msgstr "Enregistrement suivant"
 msgid "currentRecord"
 msgstr "Objet actuel (sur {total:number|formatted})"
 
-#: components/Forms/ResourceView.tsx:386
+#: components/Forms/ResourceView.tsx:384
 #: components/Forms/Save.tsx:35
 #. Used in: Components > Forms > Resource View ⬤ Components > Forms > Save
 msgid "unsavedFormUnloadProtect"

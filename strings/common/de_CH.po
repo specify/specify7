@@ -37,7 +37,7 @@ msgstr "Nein"
 #: components/FormSliders/RecordSelectorFromIds.tsx:257
 #: components/Forms/DeleteButton.tsx:107
 #: components/Forms/DeleteButton.tsx:131
-#: components/Forms/ResourceView.tsx:342
+#: components/Forms/ResourceView.tsx:341
 #: components/Header/ChooseCollection.tsx:26
 #: components/Header/ExpressSearchTask.tsx:49
 #: components/Interactions/InteractionDialog.tsx:241
@@ -187,7 +187,7 @@ msgstr "Erstellen"
 #: components/Forms/DataTask.tsx:134
 #: components/Forms/DeleteButton.tsx:161
 #: components/Forms/ResourceView.tsx:208
-#: components/Forms/ResourceView.tsx:346
+#: components/Forms/ResourceView.tsx:344
 #: components/Forms/Save.tsx:254
 #: components/Forms/Save.tsx:289
 #: components/Header/UserTools.tsx:75
