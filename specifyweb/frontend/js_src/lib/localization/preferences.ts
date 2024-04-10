@@ -649,8 +649,8 @@ export const preferencesText = createDictionary({
       для відповідності будь-якій кількості символів
     `,
     'de-ch': `
-      Kann _ für jedes einzelne Zeichen oder % für jede beliebige Anzahl von
-      Zeichen verwenden
+      Kann _ für jedes einzelne Zeichen oder % für jede Anzahl von Zeichen
+      verwenden
     `,
   },
   highlightMatch: {
