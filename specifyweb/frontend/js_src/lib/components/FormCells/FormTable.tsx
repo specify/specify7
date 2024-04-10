@@ -36,7 +36,17 @@ import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormCell } from './index';
 
-const viewToChange = new Set(['Collectors']);
+const viewToChange = new Set([
+  'Authors',
+  'Collectors',
+  'CollectionObjectSubTable',
+  'ContainerBriefTable',
+  'Determiners',
+  'Extractors',
+  'FundingAgents',
+  'PcrPersons',
+  'GroupPersons',
+]);
 
 const cellToLabel = (
   table: SpecifyTable,
