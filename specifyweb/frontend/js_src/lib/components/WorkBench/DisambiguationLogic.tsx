@@ -202,15 +202,13 @@ export class Disambiguation {
                 const ambiguousMatchToDisambiguate =
                   this.wbView.validation.uploadResults.ambiguousMatches[
                     physicalRow
-                  ]
-                    ?.filter(
-                      ({ key, mappingPath }) =>
-                        key === matches.key &&
-                        typeof this.getDisambiguation(physicalRow)[
-                          mappingPathToString(mappingPath)
-                        ] !== 'number'
-                    )
-                    .at(0);
+                  ]?.find(
+                    ({ key, mappingPath }) =>
+                      key === matches.key &&
+                      typeof this.getDisambiguation(physicalRow)[
+                        mappingPathToString(mappingPath)
+                      ] !== 'number'
+                  );
 
                 if (ambiguousMatchToDisambiguate === undefined) continue;
                 this.setDisambiguation(
