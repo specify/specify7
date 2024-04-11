@@ -33,8 +33,7 @@ export function AttachmentsCollection({
   );
 
   const attachmentHasChanged =
-    collection.models.length > 0 &&
-    collection.models[collection.models.length - 1].needsSaved;
+    collection.models.length > 0 && collection.models.at(-1).needsSaved;
 
   const attachments: RA<SerializedResource<Attachment>> = React.useMemo(
     () =>
