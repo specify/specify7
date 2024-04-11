@@ -36,18 +36,6 @@ import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormCell } from './index';
 
-const viewToChange = new Set([
-  'Authors',
-  'Collectors',
-  'CollectionObjectSubTable',
-  'ContainerBriefTable',
-  'Determiners',
-  'Extractors',
-  'FundingAgents',
-  'PcrPersons',
-  'GroupPersons',
-]);
-
 const cellToLabel = (
   table: SpecifyTable,
   cell: FormCellDefinition
@@ -180,18 +168,6 @@ export function FormTable<SCHEMA extends AnySchema>({
     formType: 'form',
     mode,
   });
-
-  const notReadOnlyExpandedViewDefinition = useViewDefinition({
-    table: relationship.relatedTable,
-    viewName: relationship.relatedTable.view,
-    fallbackViewName: viewName,
-    formType: 'form',
-    mode,
-  });
-
-  const validExpandedViewDefinition = viewToChange.has(viewName)
-    ? notReadOnlyExpandedViewDefinition
-    : expandedViewDefinition;
 
   const id = useId('form-table');
   const [isExpanded, setExpandedRecords] = React.useState<
@@ -334,7 +310,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                         <SpecifyForm
                           display="inline"
                           resource={resource}
-                          viewDefinition={validExpandedViewDefinition}
+                          viewDefinition={expandedViewDefinition}
                         />
                       </DataEntry.Cell>
                     </>
@@ -447,7 +423,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                       <FormMeta
                         className="flex-1"
                         resource={resource}
-                        viewDescription={validExpandedViewDefinition}
+                        viewDescription={expandedViewDefinition}
                       />
                     )}
                   </div>
