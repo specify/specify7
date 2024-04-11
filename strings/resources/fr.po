@@ -143,7 +143,7 @@ msgid "dataObjectFormatters"
 msgstr "Formateurs d'enregistrement"
 
 #: components/Formatters/Aggregator.tsx:69
-#: components/Formatters/Element.tsx:125
+#: components/Formatters/Element.tsx:128
 #: components/Formatters/Fields.tsx:269
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 #, fuzzy
@@ -161,7 +161,7 @@ msgstr ""
 "leur ordre. La mise en forme conditionnelle peut être configurée en "
 "fonction d'une valeur dans l'enregistrement."
 
-#: components/Formatters/Element.tsx:126
+#: components/Formatters/Element.tsx:129
 #. Used in: Components > Formatters > Element
 #, fuzzy
 msgid "aggregator"
@@ -329,13 +329,13 @@ msgstr "Nom"
 
 #: components/ExportFeed/Editor.tsx:46
 #: components/ExportFeed/Editor.tsx:160
-#: components/Formatters/Element.tsx:132
+#: components/Formatters/Element.tsx:135
 #. Used in: Components > Export Feed > Editor ⬤ Components > Formatters > Element
 #, fuzzy
 msgid "title"
 msgstr "Titre"
 
-#: components/Formatters/Element.tsx:158
+#: components/Formatters/Element.tsx:161
 #: components/Formatters/List.tsx:117
 #. Used in: Components > Formatters > Element ⬤ Components > Formatters > List
 #, fuzzy

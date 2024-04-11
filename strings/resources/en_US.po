@@ -114,7 +114,7 @@ msgid "dataObjectFormatters"
 msgstr "Record Formatters"
 
 #: components/Formatters/Aggregator.tsx:69
-#: components/Formatters/Element.tsx:125
+#: components/Formatters/Element.tsx:128
 #: components/Formatters/Fields.tsx:269
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 msgid "formatter"
@@ -129,7 +129,7 @@ msgstr ""
 "display and their order. Conditional formatting can be configured based on "
 "a value in the record."
 
-#: components/Formatters/Element.tsx:126
+#: components/Formatters/Element.tsx:129
 #. Used in: Components > Formatters > Element
 msgid "aggregator"
 msgstr "Table Aggregation"
@@ -268,12 +268,12 @@ msgstr "Name"
 
 #: components/ExportFeed/Editor.tsx:46
 #: components/ExportFeed/Editor.tsx:160
-#: components/Formatters/Element.tsx:132
+#: components/Formatters/Element.tsx:135
 #. Used in: Components > Export Feed > Editor ⬤ Components > Formatters > Element
 msgid "title"
 msgstr "Title"
 
-#: components/Formatters/Element.tsx:158
+#: components/Formatters/Element.tsx:161
 #: components/Formatters/List.tsx:117
 #. Used in: Components > Formatters > Element ⬤ Components > Formatters > List
 msgid "default"

@@ -143,7 +143,7 @@ msgid "dataObjectFormatters"
 msgstr "Formateadores de registros"
 
 #: components/Formatters/Aggregator.tsx:69
-#: components/Formatters/Element.tsx:125
+#: components/Formatters/Element.tsx:128
 #: components/Formatters/Fields.tsx:269
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 #, fuzzy
@@ -161,7 +161,7 @@ msgstr ""
 "orden. El formato condicional se puede configurar en función de un valor en "
 "el registro."
 
-#: components/Formatters/Element.tsx:126
+#: components/Formatters/Element.tsx:129
 #. Used in: Components > Formatters > Element
 #, fuzzy
 msgid "aggregator"
@@ -327,13 +327,13 @@ msgstr "Nombre"
 
 #: components/ExportFeed/Editor.tsx:46
 #: components/ExportFeed/Editor.tsx:160
-#: components/Formatters/Element.tsx:132
+#: components/Formatters/Element.tsx:135
 #. Used in: Components > Export Feed > Editor ⬤ Components > Formatters > Element
 #, fuzzy
 msgid "title"
 msgstr "Título"
 
-#: components/Formatters/Element.tsx:158
+#: components/Formatters/Element.tsx:161
 #: components/Formatters/List.tsx:117
 #. Used in: Components > Formatters > Element ⬤ Components > Formatters > List
 #, fuzzy

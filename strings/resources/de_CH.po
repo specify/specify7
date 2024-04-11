@@ -128,7 +128,7 @@ msgid "dataObjectFormatters"
 msgstr "Datensatz-Formatierer"
 
 #: components/Formatters/Aggregator.tsx:69
-#: components/Formatters/Element.tsx:125
+#: components/Formatters/Element.tsx:128
 #: components/Formatters/Fields.tsx:269
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 #, fuzzy
@@ -146,7 +146,7 @@ msgstr ""
 "bedingte Formatierung kann basierend auf einem Wert im Datensatz "
 "konfiguriert werden."
 
-#: components/Formatters/Element.tsx:126
+#: components/Formatters/Element.tsx:129
 #. Used in: Components > Formatters > Element
 #, fuzzy
 msgid "aggregator"
@@ -298,13 +298,13 @@ msgstr "Name"
 
 #: components/ExportFeed/Editor.tsx:46
 #: components/ExportFeed/Editor.tsx:160
-#: components/Formatters/Element.tsx:132
+#: components/Formatters/Element.tsx:135
 #. Used in: Components > Export Feed > Editor ⬤ Components > Formatters > Element
 #, fuzzy
 msgid "title"
 msgstr "Titel"
 
-#: components/Formatters/Element.tsx:158
+#: components/Formatters/Element.tsx:161
 #: components/Formatters/List.tsx:117
 #. Used in: Components > Formatters > Element ⬤ Components > Formatters > List
 #, fuzzy
