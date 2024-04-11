@@ -52,15 +52,16 @@ export function WorkBenchReact(): JSX.Element {
   useErrorContext('dataSet', dataSet);
   const loading = React.useContext(LoadingContext);
   const [isDeleted, handleDeleted] = useBooleanState();
+  // TODO: figure out how handleDeletedConfirmation was being used in Backbone. possibly not used at all
   const [isDeletedConfirmation, handleDeletedConfirmation] = useBooleanState();
 
   const navigate = useNavigate();
-  const hotRef = React.useRef<HotTable>(null);
+  // TODO: consider adding this to workbench variable
   const spreadsheetContainer = React.useRef<HTMLElement | null>(null);
 
   if (!dataSet || !treeRanksLoaded) return <LoadingScreen />;
 
-  const triggerRefresh = () => {
+  const triggerDatasetRefresh = () => {
     loading(fetchDataSet(dataSet!.id).then(setDataSet));
   };
 
@@ -82,9 +83,8 @@ export function WorkBenchReact(): JSX.Element {
         <section className={`wbs-form ${className.containerFull}`} ref={spreadsheetContainer}>
           <WbViewReact
             dataset={dataSet}
-            hotRef={hotRef}
             handleDatasetDelete={handleDeleted}
-            triggerRefresh={triggerRefresh}
+            triggerDatasetRefresh={triggerDatasetRefresh}
             spreadsheetContainer={spreadsheetContainer}
           />
         </section>

@@ -34,7 +34,7 @@ export function getHotHooks(
      *
      */
     afterRenderer: (
-      td: any,
+      td: HTMLTableCellElement,
       visualRow: number,
       visualCol: number,
       property: number | string,
