@@ -32,6 +32,10 @@ export function AttachmentsCollection({
     'scale'
   );
 
+  const attachmentHasChanged =
+    collection.models.length > 0 &&
+    collection.models[collection.models.length - 1].needsSaved;
+
   const attachments: RA<SerializedResource<Attachment>> = React.useMemo(
     () =>
       filterArray(
@@ -48,11 +52,7 @@ export function AttachmentsCollection({
           return undefined;
         })
       ),
-    [
-      collection.models,
-      collection.models.length > 0 &&
-        collection.models[collection.models.length - 1].needsSaved,
-    ]
+    [collection.models, attachmentHasChanged]
   );
 
   const isAttachmentsNotLoaded = attachments.some(
