@@ -48,7 +48,11 @@ export function AttachmentsCollection({
           return undefined;
         })
       ),
-    [collection.models]
+    [
+      collection.models,
+      collection.models.length > 0 &&
+        collection.models[collection.models.length - 1].needsSaved,
+    ]
   );
 
   const isAttachmentsNotLoaded = attachments.some(
