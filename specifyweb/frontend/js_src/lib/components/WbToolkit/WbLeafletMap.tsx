@@ -1,49 +1,51 @@
-import React from "react";
-import Handsontable from "handsontable";
+import React from 'react';
+import Handsontable from 'handsontable';
 
 import { getSelectedLocalities } from './GeoLocate';
 import { getLocalitiesDataFromSpreadsheet } from '../Leaflet/wbLocalityDataExtractor';
 import { getSelectedLast, getVisualHeaders } from '../WorkBench/hotHelpers';
 import { LeafletMap } from '../Leaflet/Map';
 import { useBooleanState } from '../../hooks/useBooleanState';
-import type { Dataset } from "../WbPlanView/Wrapped";
-import type { WbMapping } from "../WorkBench/mapping";
-import { Button } from "../Atoms/Button";
-import { localityText } from "../../localization/locality";
-import { wbText } from "../../localization/workbench";
+import type { Dataset } from '../WbPlanView/Wrapped';
+import type { WbMapping } from '../WorkBench/mapping';
+import { Button } from '../Atoms/Button';
+import { localityText } from '../../localization/locality';
+import { wbText } from '../../localization/workbench';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
 
 export function WbLeafletMap({
-    hasLocality,
-    hot,
-    dataset,
-    mappings,
-  }: {
-    readonly hasLocality: boolean;
-    readonly hot: Handsontable | null | undefined;
-    readonly dataset: Dataset;
-    readonly mappings: WbMapping;
-  }): JSX.Element {
-    const [showLeafletMap, openLeafletMap, closeLeafletMap] = useBooleanState();
-    const localityPoints = React.useMemo(() => {
-      const selection = getSelectedLocalities(
-        hot,
-        dataset.columns,
-        mappings.localityColumns,
-        false
-      );
-  
-      if (!selection) return undefined;
-  
-      return getLocalitiesDataFromSpreadsheet(
-        mappings.localityColumns,
-        selection.visualRows.map((visualRow) => hot!.getDataAtRow(visualRow)),
-        getVisualHeaders(hot!, dataset.columns),
-        selection.visualRows
-      );
-    }, [mappings.localityColumns]);
-  
-    return (
-      <>
+  hasLocality,
+  hot,
+  dataset,
+  mappings,
+}: {
+  readonly hasLocality: boolean;
+  readonly hot: Handsontable | null | undefined;
+  readonly dataset: Dataset;
+  readonly mappings: WbMapping;
+}): JSX.Element {
+  const [showLeafletMap, openLeafletMap, closeLeafletMap] = useBooleanState();
+  const localityPoints = React.useMemo(() => {
+    const selection = getSelectedLocalities(
+      hot,
+      dataset.columns,
+      mappings.localityColumns,
+      false
+    );
+
+    if (!selection) return undefined;
+
+    return getLocalitiesDataFromSpreadsheet(
+      mappings.localityColumns,
+      selection.visualRows.map((visualRow) => hot!.getDataAtRow(visualRow)),
+      getVisualHeaders(hot!, dataset.columns),
+      selection.visualRows
+    );
+  }, [mappings.localityColumns]);
+
+  return (
+    <>
+      <ErrorBoundary dismissible>
         <Button.Small
           aria-haspopup="dialog"
           aria-pressed={showLeafletMap}
@@ -69,6 +71,7 @@ export function WbLeafletMap({
             }}
           />
         )}
-      </>
-    );
-  }
+      </ErrorBoundary>
+    </>
+  );
+}

@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { formData } from '../../utils/ajax/helpers';
@@ -9,8 +9,8 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import { userInformation } from '../InitialContext/userInformation';
 import type { SpecifyUser } from '../DataModel/types';
 import { useId } from '../../hooks/useId';
-import type { Dataset } from "../WbPlanView/Wrapped";
-import { useBooleanState } from "../../hooks/useBooleanState";
+import type { Dataset } from '../WbPlanView/Wrapped';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { ping } from '../../utils/ajax/ping';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
@@ -18,7 +18,8 @@ import { Dialog } from '../Molecules/Dialog';
 import { unsafeNavigate } from '../Router/Router';
 import { Button } from '../Atoms/Button';
 import { commonText } from '../../localization/common';
-import { wbText } from "../../localization/workbench";
+import { wbText } from '../../localization/workbench';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
 
 export function WbChangeOwner({
   hasUnsavedChanges,
@@ -31,18 +32,20 @@ export function WbChangeOwner({
     useBooleanState();
   return (
     <>
-      <Button.Small
-        aria-haspopup="dialog"
-        aria-pressed={showChangeOwner}
-        onClick={openChangeOwner}
-        disabled={hasUnsavedChanges}
-        title={hasUnsavedChanges ? wbText.unavailableWhileEditing() : ''}
-      >
-        {wbText.changeOwner()}
-      </Button.Small>
-      {showChangeOwner && (
-        <ChangeOwner dataset={dataset} onClose={closeChangeOwner} />
-      )}
+      <ErrorBoundary dismissible>
+        <Button.Small
+          aria-haspopup="dialog"
+          aria-pressed={showChangeOwner}
+          onClick={openChangeOwner}
+          disabled={hasUnsavedChanges}
+          title={hasUnsavedChanges ? wbText.unavailableWhileEditing() : ''}
+        >
+          {wbText.changeOwner()}
+        </Button.Small>
+        {showChangeOwner && (
+          <ChangeOwner dataset={dataset} onClose={closeChangeOwner} />
+        )}
+      </ErrorBoundary>
     </>
   );
 }

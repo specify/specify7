@@ -1,5 +1,5 @@
 import React from 'react';
-import { HotTable } from '@handsontable/react';
+import Handsontable from 'handsontable';
 
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import { WbChangeOwner } from './ChangeOwner';
@@ -19,7 +19,7 @@ import { WbLeafletMap } from './WbLeafletMap';
 
 export function WbToolkit({
   dataset,
-  hotRef,
+  hot,
   mappings,
   data,
   handleDatasetDelete,
@@ -27,17 +27,13 @@ export function WbToolkit({
   triggerRefresh,
 }: {
   readonly dataset: Dataset;
-  readonly hotRef: React.RefObject<HotTable>;
+  readonly hot: Handsontable | undefined;
   readonly mappings: WbMapping;
   readonly data: RA<RA<string | null>>;
   readonly handleDatasetDelete: () => void;
   readonly hasUnsavedChanges: boolean;
   readonly triggerRefresh: () => void;
 }): JSX.Element {
-  const hot = React.useMemo(
-    () => hotRef.current?.hotInstance,
-    [hotRef.current]
-  );
   const handleExport = React.useCallback((): void => {
     const delimiter = userPreferences.get(
       'workBench',

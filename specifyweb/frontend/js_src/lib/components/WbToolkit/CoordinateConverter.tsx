@@ -12,10 +12,15 @@ import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Dialog } from '../Molecules/Dialog';
-import { getSelectedCells, getSelectedLast, setHotData } from '../WorkBench/hotHelpers';
+import {
+  getSelectedCells,
+  getSelectedLast,
+  setHotData,
+} from '../WorkBench/hotHelpers';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import type { WbMapping } from '../WorkBench/mapping';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
 
 export function WbConvertCoordinates({
   hasLocality,
@@ -34,24 +39,26 @@ export function WbConvertCoordinates({
     useBooleanState();
   return (
     <>
-      <Button.Small
-        aria-haspopup="dialog"
-        aria-pressed={showConvertCoords}
-        title={wbText.unavailableWithoutLocality()}
-        onClick={openConvertCoords}
-        disabled={!hasLocality}
-      >
-        {wbText.convertCoordinates()}
-      </Button.Small>
-      {showConvertCoords && (
-        <CoordinateConverter
-          columns={dataset.columns}
-          coordinateColumns={mappings.coordinateColumns}
-          data={data}
-          hot={hot}
-          onClose={closeConvertCoords}
-        />
-      )}
+      <ErrorBoundary dismissible>
+        <Button.Small
+          aria-haspopup="dialog"
+          aria-pressed={showConvertCoords}
+          title={wbText.unavailableWithoutLocality()}
+          onClick={openConvertCoords}
+          disabled={!hasLocality}
+        >
+          {wbText.convertCoordinates()}
+        </Button.Small>
+        {showConvertCoords && (
+          <CoordinateConverter
+            columns={dataset.columns}
+            coordinateColumns={mappings.coordinateColumns}
+            data={data}
+            hot={hot}
+            onClose={closeConvertCoords}
+          />
+        )}
+      </ErrorBoundary>
     </>
   );
 }

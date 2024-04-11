@@ -13,12 +13,17 @@ import {
 } from '../Leaflet/wbLocalityDataExtractor';
 import type { GeoLocatePayload } from '../Molecules/GeoLocate';
 import { GenericGeoLocate } from '../Molecules/GeoLocate';
-import { getSelectedRegions, getVisualHeaders, setHotData } from '../WorkBench/hotHelpers';
+import {
+  getSelectedRegions,
+  getVisualHeaders,
+  setHotData,
+} from '../WorkBench/hotHelpers';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import type { WbMapping } from '../WorkBench/mapping';
 import { wbText } from '../../localization/workbench';
 import { localityText } from '../../localization/locality';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
 
 export function WbGeoLocate({
   hasLocality,
@@ -34,23 +39,25 @@ export function WbGeoLocate({
   const [showGeoLocate, openGeoLocate, closeGeoLocate] = useBooleanState();
   return (
     <>
-      <Button.Small
-        aria-haspopup="dialog"
-        aria-pressed={showGeoLocate}
-        title={wbText.unavailableWithoutLocality()}
-        onClick={openGeoLocate}
-        disabled={!hasLocality}
-      >
-        {localityText.geoLocate()}
-      </Button.Small>
-      {showGeoLocate && mappings && (
-        <GeoLocate
-          columns={dataset.columns}
-          hot={hot}
-          localityColumns={mappings.localityColumns}
-          onClose={closeGeoLocate}
-        />
-      )}
+      <ErrorBoundary dismissible>
+        <Button.Small
+          aria-haspopup="dialog"
+          aria-pressed={showGeoLocate}
+          title={wbText.unavailableWithoutLocality()}
+          onClick={openGeoLocate}
+          disabled={!hasLocality}
+        >
+          {localityText.geoLocate()}
+        </Button.Small>
+        {showGeoLocate && mappings && (
+          <GeoLocate
+            columns={dataset.columns}
+            hot={hot}
+            localityColumns={mappings.localityColumns}
+            onClose={closeGeoLocate}
+          />
+        )}
+      </ErrorBoundary>
     </>
   );
 }

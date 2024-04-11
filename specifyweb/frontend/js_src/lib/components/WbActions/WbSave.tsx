@@ -11,6 +11,7 @@ import { Workbench } from '../WorkBench/WbView';
 import { overwriteReadOnly } from '../../utils/types';
 import { ping } from '../../utils/ajax/ping';
 import { Http } from '../../utils/ajax/definitions';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
 
 export function WbSave({
   workbench,
@@ -55,23 +56,25 @@ export function WbSave({
 
   return (
     <>
-      <Button.Small
-        aria-haspopup="dialog"
-        variant={className.saveButton}
-        onClick={handleSave}
-        disabled={!hasUnsavedChanges}
-      >
-        {commonText.save()}
-      </Button.Small>
-      {showProgressBar ? (
-        <Dialog
-          buttons={undefined}
-          header={wbText.saving()}
-          onClose={closeProgressBar}
+      <ErrorBoundary dismissible>
+        <Button.Small
+          aria-haspopup="dialog"
+          variant={className.saveButton}
+          onClick={handleSave}
+          disabled={!hasUnsavedChanges}
         >
-          {loadingBar}
-        </Dialog>
-      ) : undefined}
+          {commonText.save()}
+        </Button.Small>
+        {showProgressBar ? (
+          <Dialog
+            buttons={undefined}
+            header={wbText.saving()}
+            onClose={closeProgressBar}
+          >
+            {loadingBar}
+          </Dialog>
+        ) : undefined}
+      </ErrorBoundary>
     </>
   );
 }

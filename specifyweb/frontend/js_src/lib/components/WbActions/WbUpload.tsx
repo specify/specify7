@@ -8,6 +8,7 @@ import { Dialog } from '../Molecules/Dialog';
 import { wbText } from '../../localization/workbench';
 import { commonText } from '../../localization/common';
 import { WbCellCounts } from '../WorkBench/CellMeta';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
 
 export function WbUpload({
   hasUnsavedChanges,
@@ -39,36 +40,38 @@ export function WbUpload({
 
   return (
     <>
-      <Button.Small
-        aria-haspopup="dialog"
-        onClick={handleUpload}
-        disabled={hasUnsavedChanges || cellCounts.invalidCells > 0}
-        title={
-          hasUnsavedChanges
-            ? wbText.unavailableWhileEditing()
-            : cellCounts.invalidCells > 0
-            ? wbText.uploadUnavailableWhileHasErrors()
-            : ''
-        }
-      >
-        {wbText.upload()}
-      </Button.Small>
-      {showUpload ? (
-        <Dialog
-          buttons={
-            <>
-              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-              <Button.Info onClick={handleConfirmUpload}>
-                {wbText.upload()}
-              </Button.Info>
-            </>
+      <ErrorBoundary dismissible>
+        <Button.Small
+          aria-haspopup="dialog"
+          onClick={handleUpload}
+          disabled={hasUnsavedChanges || cellCounts.invalidCells > 0}
+          title={
+            hasUnsavedChanges
+              ? wbText.unavailableWhileEditing()
+              : cellCounts.invalidCells > 0
+              ? wbText.uploadUnavailableWhileHasErrors()
+              : ''
           }
-          header={wbText.startUpload()}
-          onClose={closeUpload}
         >
-          {wbText.startUploadDescription()}
-        </Dialog>
-      ) : undefined}
+          {wbText.upload()}
+        </Button.Small>
+        {showUpload ? (
+          <Dialog
+            buttons={
+              <>
+                <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+                <Button.Info onClick={handleConfirmUpload}>
+                  {wbText.upload()}
+                </Button.Info>
+              </>
+            }
+            header={wbText.startUpload()}
+            onClose={closeUpload}
+          >
+            {wbText.startUploadDescription()}
+          </Dialog>
+        ) : undefined}
+      </ErrorBoundary>
     </>
   );
 }

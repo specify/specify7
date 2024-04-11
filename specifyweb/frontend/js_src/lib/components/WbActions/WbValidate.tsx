@@ -5,6 +5,7 @@ import { WbValidation } from '../WorkBench/WbValidation';
 import { Button } from '../Atoms/Button';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
 
 export function WbValidate({
   canLiveValidate,
@@ -22,28 +23,30 @@ export function WbValidate({
 
   return (
     <>
-      <Button.Small
-        className={`${canLiveValidate ? '' : 'hidden'}`}
-        onClick={handleToggleDataCheck}
-        aria-pressed={validation.validationMode === 'live'}
-      >
-        {validation.validationMode === 'live'
-          ? validation.liveValidationStack.length > 0
-            ? commonText.countLine({
-                resource: wbText.dataCheckOn(),
-                count: validation.liveValidationStack.length,
-              })
-            : wbText.dataCheckOn()
-          : wbText.dataCheck()}
-      </Button.Small>
-      <Button.Small
-        aria-haspopup="dialog"
-        onClick={handleValidate}
-        disabled={hasUnsavedChanges}
-        title={hasUnsavedChanges ? wbText.unavailableWhileEditing() : ''}
-      >
-        {wbText.validate()}
-      </Button.Small>
+      <ErrorBoundary dismissible>
+        <Button.Small
+          className={`${canLiveValidate ? '' : 'hidden'}`}
+          onClick={handleToggleDataCheck}
+          aria-pressed={validation.validationMode === 'live'}
+        >
+          {validation.validationMode === 'live'
+            ? validation.liveValidationStack.length > 0
+              ? commonText.countLine({
+                  resource: wbText.dataCheckOn(),
+                  count: validation.liveValidationStack.length,
+                })
+              : wbText.dataCheckOn()
+            : wbText.dataCheck()}
+        </Button.Small>
+        <Button.Small
+          aria-haspopup="dialog"
+          onClick={handleValidate}
+          disabled={hasUnsavedChanges}
+          title={hasUnsavedChanges ? wbText.unavailableWhileEditing() : ''}
+        >
+          {wbText.validate()}
+        </Button.Small>
+      </ErrorBoundary>
     </>
   );
 }

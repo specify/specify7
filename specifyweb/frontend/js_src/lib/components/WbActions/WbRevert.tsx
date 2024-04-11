@@ -5,6 +5,7 @@ import { Button } from '../Atoms/Button';
 import { wbText } from '../../localization/workbench';
 import { commonText } from '../../localization/common';
 import { Dialog } from '../Molecules/Dialog';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
 
 export function WbRevert({
   hasUnsavedChanges,
@@ -25,29 +26,31 @@ export function WbRevert({
 
   return (
     <>
-      <Button.Small
-        aria-haspopup="dialog"
-        onClick={openRevert}
-        disabled={!hasUnsavedChanges}
-      >
-        {wbText.revert()}
-      </Button.Small>
-      {showRevert && (
-        <Dialog
-          buttons={
-            <>
-              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-              <Button.Danger onClick={handleRevert}>
-                {wbText.revert()}
-              </Button.Danger>
-            </>
-          }
-          header={wbText.revertChanges()}
-          onClose={closeRevert}
+      <ErrorBoundary dismissible>
+        <Button.Small
+          aria-haspopup="dialog"
+          onClick={openRevert}
+          disabled={!hasUnsavedChanges}
         >
-          {wbText.revertChangesDescription()}
-        </Dialog>
-      )}
+          {wbText.revert()}
+        </Button.Small>
+        {showRevert && (
+          <Dialog
+            buttons={
+              <>
+                <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+                <Button.Danger onClick={handleRevert}>
+                  {wbText.revert()}
+                </Button.Danger>
+              </>
+            }
+            header={wbText.revertChanges()}
+            onClose={closeRevert}
+          >
+            {wbText.revertChangesDescription()}
+          </Dialog>
+        )}
+      </ErrorBoundary>
     </>
   );
 }

@@ -5,6 +5,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { Button } from '../Atoms/Button';
 import { wbText } from '../../localization/workbench';
 import { RollbackConfirmation } from '../WorkBench/Components';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
 
 export function WbRollback({
   datasetId,
@@ -19,20 +20,22 @@ export function WbRollback({
 
   return (
     <>
-      <Button.Small
-        aria-haspopup="dialog"
-        aria-pressed={rollback}
-        onClick={handleOpen}
-      >
-        {wbText.rollback()}
-      </Button.Small>
-      {rollback ? (
-        <RollbackConfirmation
-          dataSetId={datasetId}
-          onClose={handleClose}
-          onRollback={handleRollback}
-        />
-      ) : undefined}
+      <ErrorBoundary dismissible>
+        <Button.Small
+          aria-haspopup="dialog"
+          aria-pressed={rollback}
+          onClick={handleOpen}
+        >
+          {wbText.rollback()}
+        </Button.Small>
+        {rollback ? (
+          <RollbackConfirmation
+            dataSetId={datasetId}
+            onClose={handleClose}
+            onRollback={handleRollback}
+          />
+        ) : undefined}
+      </ErrorBoundary>
     </>
   );
 }
