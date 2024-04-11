@@ -17,6 +17,7 @@ import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { TableIcon } from '../Molecules/TableIcon';
 import { CreateRecordSetButton } from './RecordSet';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
 
 export function WbUploaded({
   recordCounts,
@@ -32,46 +33,50 @@ export function WbUploaded({
   readonly onClose: () => void;
 }): JSX.Element {
   return (
-    <div className="flex h-full w-60 flex-col gap-4">
-      <div>
-        <H2>
-          {isUploaded
-            ? wbText.uploadResults()
-            : wbText.potentialUploadResults()}
-        </H2>
-        <p>
-          {isUploaded
-            ? wbText.wbUploadedDescription()
-            : wbText.wbUploadedPotentialDescription()}
-        </p>
-      </div>
-      <Ul className="flex flex-1 flex-col gap-2">
-        {Object.entries(recordCounts)
-          .sort(sortFunction(([_tableName, recordCount]) => recordCount, false))
-          .map(([tableName, recordCount], index) =>
-            typeof recordCount === 'number' ? (
-              <TableResults
-                key={index}
-                recordCount={recordCount}
-                tableName={tableName}
-              />
-            ) : null
+    <ErrorBoundary dismissible>
+      <div className="flex h-full w-60 flex-col gap-4">
+        <div>
+          <H2>
+            {isUploaded
+              ? wbText.uploadResults()
+              : wbText.potentialUploadResults()}
+          </H2>
+          <p>
+            {isUploaded
+              ? wbText.wbUploadedDescription()
+              : wbText.wbUploadedPotentialDescription()}
+          </p>
+        </div>
+        <Ul className="flex flex-1 flex-col gap-2">
+          {Object.entries(recordCounts)
+            .sort(
+              sortFunction(([_tableName, recordCount]) => recordCount, false)
+            )
+            .map(([tableName, recordCount], index) =>
+              typeof recordCount === 'number' ? (
+                <TableResults
+                  key={index}
+                  recordCount={recordCount}
+                  tableName={tableName}
+                />
+              ) : null
+            )}
+        </Ul>
+        <div className="flex flex-wrap gap-2">
+          {isUploaded && (
+            <CreateRecordSetButton
+              dataSetId={dataSetId}
+              dataSetName={dataSetName}
+              small
+              onClose={f.void}
+            />
           )}
-      </Ul>
-      <div className="flex flex-wrap gap-2">
-        {isUploaded && (
-          <CreateRecordSetButton
-            dataSetId={dataSetId}
-            dataSetName={dataSetName}
-            small
-            onClose={f.void}
-          />
-        )}
-        <Button.Small className="flex-1" onClick={handleClose}>
-          {commonText.close()}
-        </Button.Small>
+          <Button.Small className="flex-1" onClick={handleClose}>
+            {commonText.close()}
+          </Button.Small>
+        </div>
       </div>
-    </div>
+    </ErrorBoundary>
   );
 }
 
