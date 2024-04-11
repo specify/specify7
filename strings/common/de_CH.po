@@ -60,7 +60,7 @@ msgstr "Nein"
 #: components/Reports/Report.tsx:312
 #: components/Reports/index.tsx:141
 #: components/Router/UnloadProtect.tsx:26
-#: components/SearchDialog/index.tsx:173
+#: components/SearchDialog/index.tsx:174
 #: components/Security/ImportExport.tsx:81
 #: components/Security/MissingAgentsDialog.tsx:91
 #: components/Security/Role.tsx:195
@@ -221,7 +221,7 @@ msgstr "Erstellen"
 #: components/SchemaConfig/Languages.tsx:33
 #: components/SchemaConfig/TableUniquenessRules.tsx:139
 #: components/SchemaConfig/UniquenessRuleRow.tsx:236
-#: components/SearchDialog/index.tsx:296
+#: components/SearchDialog/index.tsx:297
 #: components/Security/Role.tsx:198
 #: components/Security/SetPassword.tsx:36
 #: components/Security/User.tsx:453
@@ -395,7 +395,7 @@ msgstr "Tools"
 #: components/FormPlugins/CollectionRelOneToMany.tsx:152
 #: components/FormPlugins/CollectionRelOneToOne.tsx:35
 #: components/Formatters/Preview.tsx:99
-#: components/Formatters/Preview.tsx:137
+#: components/Formatters/Preview.tsx:138
 #: components/Forms/BaseResourceView.tsx:61
 #: components/Forms/DeleteButton.tsx:109
 #: components/Forms/SubView.tsx:232
@@ -422,7 +422,7 @@ msgstr "Tools"
 #: components/SchemaConfig/Fields.tsx:62
 #: components/SchemaConfig/index.tsx:165
 #: components/SchemaConfig/index.tsx:166
-#: components/SearchDialog/index.tsx:230
+#: components/SearchDialog/index.tsx:231
 #: components/Security/Collection.tsx:225
 #: components/Security/CollectionComponents.tsx:141
 #: components/Security/CollectionRole.tsx:232
@@ -488,9 +488,9 @@ msgstr "Entfernen"
 #: components/Header/ExpressSearchTask.tsx:127
 #: components/Header/index.tsx:138
 #: components/HomePage/index.tsx:33
-#: components/SearchDialog/index.tsx:180
-#: components/SearchDialog/index.tsx:185
-#: components/SearchDialog/index.tsx:284
+#: components/SearchDialog/index.tsx:181
+#: components/SearchDialog/index.tsx:186
+#: components/SearchDialog/index.tsx:285
 #: components/WorkBench/Template.tsx:259
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Formatters > Preview ⬤ Components > Header > Express Search Task ⬤ Components > Header > Index ⬤ Components > Home Page > Index ⬤ Components > Search Dialog > Index ⬤ Components > Work Bench > Template
 msgid "search"
@@ -498,7 +498,7 @@ msgstr "Suche"
 
 #: components/FormCommands/ShowTransactions.tsx:46
 #: components/Reports/index.tsx:200
-#: components/SearchDialog/index.tsx:232
+#: components/SearchDialog/index.tsx:233
 #. Used in: Components > Form Commands > Show Transactions ⬤ Components > Reports > Index ⬤ Components > Search Dialog > Index
 msgid "noResults"
 msgstr "Keine Resultate"
@@ -879,7 +879,7 @@ msgid "reset"
 msgstr "Zurücksetzen"
 
 #: components/FormEditor/Create.tsx:205
-#: components/SearchDialog/index.tsx:305
+#: components/SearchDialog/index.tsx:306
 #. Used in: Components > Form Editor > Create ⬤ Components > Search Dialog > Index
 msgid "select"
 msgstr "Auswählen"
