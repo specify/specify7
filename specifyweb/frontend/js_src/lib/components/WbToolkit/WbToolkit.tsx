@@ -24,7 +24,7 @@ export function WbToolkit({
   data,
   handleDatasetDelete,
   hasUnsavedChanges,
-  triggerRefresh,
+  triggerDatasetRefresh,
 }: {
   readonly dataset: Dataset;
   readonly hot: Handsontable | undefined;
@@ -32,7 +32,7 @@ export function WbToolkit({
   readonly data: RA<RA<string | null>>;
   readonly handleDatasetDelete: () => void;
   readonly hasUnsavedChanges: boolean;
-  readonly triggerRefresh: () => void;
+  readonly triggerDatasetRefresh: () => void;
 }): JSX.Element {
   const handleExport = React.useCallback((): void => {
     const delimiter = userPreferences.get(
@@ -66,7 +66,7 @@ export function WbToolkit({
           <WbDevPlan
             dataset={dataset}
             handleDatasetDelete={handleDatasetDelete}
-            triggerRefresh={triggerRefresh}
+            triggerDatasetRefresh={triggerDatasetRefresh}
           />
         </>
       ) : undefined}

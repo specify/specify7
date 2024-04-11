@@ -85,7 +85,7 @@ export function WbActionsComponent({
   workbench,
   mappings,
   checkDeletedFail,
-  onRefresh: handleRefresh,
+  onDatasetRefresh: handleRefresh,
   onSpreadsheetUpToDate: handleSpreadsheetUpToDate,
   onToggleResults,
 }: {
@@ -95,7 +95,7 @@ export function WbActionsComponent({
   readonly workbench: Workbench;
   readonly mappings: WbMapping;
   readonly checkDeletedFail: (statusCode: number) => void;
-  readonly onRefresh: () => void;
+  readonly onDatasetRefresh: () => void;
   readonly onSpreadsheetUpToDate: () => void;
   readonly onToggleResults: () => void;
 }): JSX.Element {

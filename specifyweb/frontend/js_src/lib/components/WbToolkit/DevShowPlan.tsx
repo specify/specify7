@@ -19,11 +19,11 @@ import { ErrorBoundary } from '../Errors/ErrorBoundary';
 export function WbDevPlan({
   dataset,
   handleDatasetDelete,
-  triggerRefresh,
+  triggerDatasetRefresh,
 }: {
   readonly dataset: Dataset;
   readonly handleDatasetDelete: () => void;
-  readonly triggerRefresh: () => void;
+  readonly triggerDatasetRefresh: () => void;
 }): JSX.Element {
   const [showDevPlan, openDevPlan, closeDevPlan] = useBooleanState();
   return (
@@ -43,7 +43,7 @@ export function WbDevPlan({
             uploadPlan={dataset.uploadplan ?? ({} as UploadPlan)}
             onChanged={(plan) => {
               overwriteReadOnly(dataset, 'uploadplan', plan);
-              triggerRefresh();
+              triggerDatasetRefresh();
             }}
             onClose={closeDevPlan}
             onDeleted={handleDatasetDelete}
