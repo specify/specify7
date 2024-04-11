@@ -30,7 +30,7 @@ msgid "downloadInformation"
 msgstr "Descargar información"
 
 #: components/HomePage/TaxonTiles.tsx:80
-#: components/Preferences/Renderers.tsx:248
+#: components/Preferences/Renderers.tsx:246
 #. Used in: Components > Home Page > Taxon Tiles ⬤ Components > Preferences > Renderers
 msgid "taxonTiles"
 msgstr "Título Táxones"

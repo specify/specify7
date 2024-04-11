@@ -650,13 +650,13 @@ msgid "chooseCollection"
 msgstr "Choose Collection"
 
 #: components/Molecules/Sorting.tsx:30
-#: components/Preferences/Renderers.tsx:161
+#: components/Preferences/Renderers.tsx:159
 #. 🟥As in "Ascending sort". Used in: Components > Molecules > Sorting ⬤ Components > Preferences > Renderers
 msgid "ascending"
 msgstr "Ascending"
 
 #: components/Molecules/Sorting.tsx:31
-#: components/Preferences/Renderers.tsx:176
+#: components/Preferences/Renderers.tsx:174
 #. 🟥As in "Descending sort". Used in: Components > Molecules > Sorting ⬤ Components > Preferences > Renderers
 msgid "descending"
 msgstr "Descending"
@@ -883,7 +883,7 @@ msgid "select"
 msgstr "Select"
 
 #: components/PickLists/definitions.ts:50
-#: components/Preferences/Renderers.tsx:160
+#: components/Preferences/Renderers.tsx:158
 #: components/SchemaConfig/Components.tsx:77
 #: components/SchemaConfig/Format.tsx:58
 #: components/Security/Collection.tsx:157

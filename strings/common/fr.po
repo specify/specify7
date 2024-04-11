@@ -688,14 +688,14 @@ msgid "chooseCollection"
 msgstr "Choisir une collection"
 
 #: components/Molecules/Sorting.tsx:30
-#: components/Preferences/Renderers.tsx:161
+#: components/Preferences/Renderers.tsx:159
 #. 🟥As in "Ascending sort". Used in: Components > Molecules > Sorting ⬤ Components > Preferences > Renderers
 #, fuzzy
 msgid "ascending"
 msgstr "Ascendant"
 
 #: components/Molecules/Sorting.tsx:31
-#: components/Preferences/Renderers.tsx:176
+#: components/Preferences/Renderers.tsx:174
 #. 🟥As in "Descending sort". Used in: Components > Molecules > Sorting ⬤ Components > Preferences > Renderers
 #, fuzzy
 msgid "descending"
@@ -956,7 +956,7 @@ msgid "select"
 msgstr "Sélectionner"
 
 #: components/PickLists/definitions.ts:50
-#: components/Preferences/Renderers.tsx:160
+#: components/Preferences/Renderers.tsx:158
 #: components/SchemaConfig/Components.tsx:77
 #: components/SchemaConfig/Format.tsx:58
 #: components/Security/Collection.tsx:157

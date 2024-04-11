@@ -174,9 +174,9 @@ msgstr ""
 "comas, donde se usaría la segunda fuente si la primera no está disponible, "
 "etc."
 
+#: components/Preferences/Renderers.tsx:197
 #: components/Preferences/Renderers.tsx:199
-#: components/Preferences/Renderers.tsx:201
-#: components/Preferences/Renderers.tsx:223
+#: components/Preferences/Renderers.tsx:221
 #. Used in: Components > Preferences > Renderers
 #, fuzzy
 msgid "defaultFont"
@@ -496,32 +496,32 @@ msgid "welcomePage"
 msgstr "Página de inicio"
 
 #: components/Errors/JsonError.tsx:65
-#: components/Preferences/Renderers.tsx:237
+#: components/Preferences/Renderers.tsx:235
 #: components/Preferences/UserDefinitions.tsx:537
 #. Used in: Components > Errors > Json Error ⬤ Components > Preferences > Renderers ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "content"
 msgstr "Contenido"
 
-#: components/Preferences/Renderers.tsx:244
+#: components/Preferences/Renderers.tsx:242
 #. Used in: Components > Preferences > Renderers
 #, fuzzy
 msgid "defaultImage"
 msgstr "Especificar logotipo"
 
-#: components/Preferences/Renderers.tsx:252
+#: components/Preferences/Renderers.tsx:250
 #. Used in: Components > Preferences > Renderers
 #, fuzzy
 msgid "customImage"
 msgstr "Imagen personalizada"
 
-#: components/Preferences/Renderers.tsx:258
+#: components/Preferences/Renderers.tsx:256
 #. Used in: Components > Preferences > Renderers
 #, fuzzy
 msgid "embeddedWebpage"
 msgstr "Página web integrada"
 
-#: components/Preferences/Renderers.tsx:259
+#: components/Preferences/Renderers.tsx:257
 #. Used in: Components > Preferences > Renderers
 #, fuzzy
 msgid "embeddedWebpageDescription"

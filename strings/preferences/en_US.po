@@ -150,9 +150,9 @@ msgstr ""
 "list. A comma separated list of fonts is also supported, where second font "
 "would be used if first one is not available and so on"
 
+#: components/Preferences/Renderers.tsx:197
 #: components/Preferences/Renderers.tsx:199
-#: components/Preferences/Renderers.tsx:201
-#: components/Preferences/Renderers.tsx:223
+#: components/Preferences/Renderers.tsx:221
 #. Used in: Components > Preferences > Renderers
 msgid "defaultFont"
 msgstr "(default font)"
@@ -417,28 +417,28 @@ msgid "welcomePage"
 msgstr "Home Page"
 
 #: components/Errors/JsonError.tsx:65
-#: components/Preferences/Renderers.tsx:237
+#: components/Preferences/Renderers.tsx:235
 #: components/Preferences/UserDefinitions.tsx:537
 #. Used in: Components > Errors > Json Error ⬤ Components > Preferences > Renderers ⬤ Components > Preferences > User Definitions
 msgid "content"
 msgstr "Content"
 
-#: components/Preferences/Renderers.tsx:244
+#: components/Preferences/Renderers.tsx:242
 #. Used in: Components > Preferences > Renderers
 msgid "defaultImage"
 msgstr "Specify Logo"
 
-#: components/Preferences/Renderers.tsx:252
+#: components/Preferences/Renderers.tsx:250
 #. Used in: Components > Preferences > Renderers
 msgid "customImage"
 msgstr "Custom Image"
 
-#: components/Preferences/Renderers.tsx:258
+#: components/Preferences/Renderers.tsx:256
 #. Used in: Components > Preferences > Renderers
 msgid "embeddedWebpage"
 msgstr "Embedded web page"
 
-#: components/Preferences/Renderers.tsx:259
+#: components/Preferences/Renderers.tsx:257
 #. Used in: Components > Preferences > Renderers
 msgid "embeddedWebpageDescription"
 msgstr "A URL to a page that would be embedded on the home page:"

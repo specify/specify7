@@ -175,9 +175,9 @@ msgstr ""
 "запятыми, где будет использоваться второй шрифт, если первый недоступен и "
 "т. д."
 
+#: components/Preferences/Renderers.tsx:197
 #: components/Preferences/Renderers.tsx:199
-#: components/Preferences/Renderers.tsx:201
-#: components/Preferences/Renderers.tsx:223
+#: components/Preferences/Renderers.tsx:221
 #. Used in: Components > Preferences > Renderers
 #, fuzzy
 msgid "defaultFont"
@@ -491,32 +491,32 @@ msgid "welcomePage"
 msgstr "Домашняя страница"
 
 #: components/Errors/JsonError.tsx:65
-#: components/Preferences/Renderers.tsx:237
+#: components/Preferences/Renderers.tsx:235
 #: components/Preferences/UserDefinitions.tsx:537
 #. Used in: Components > Errors > Json Error ⬤ Components > Preferences > Renderers ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "content"
 msgstr "Содержание"
 
-#: components/Preferences/Renderers.tsx:244
+#: components/Preferences/Renderers.tsx:242
 #. Used in: Components > Preferences > Renderers
 #, fuzzy
 msgid "defaultImage"
 msgstr "Укажите логотип"
 
-#: components/Preferences/Renderers.tsx:252
+#: components/Preferences/Renderers.tsx:250
 #. Used in: Components > Preferences > Renderers
 #, fuzzy
 msgid "customImage"
 msgstr "Пользовательское изображение"
 
-#: components/Preferences/Renderers.tsx:258
+#: components/Preferences/Renderers.tsx:256
 #. Used in: Components > Preferences > Renderers
 #, fuzzy
 msgid "embeddedWebpage"
 msgstr "Встроенная веб-страница"
 
-#: components/Preferences/Renderers.tsx:259
+#: components/Preferences/Renderers.tsx:257
 #. Used in: Components > Preferences > Renderers
 #, fuzzy
 msgid "embeddedWebpageDescription"
