@@ -157,7 +157,7 @@ export const wbText = createDictionary({
       которая не заменяет обычную проверку.
     `,
     'uk-ua': `
-      Зауважте, що перевірка в реальному часі є експериментальною функцією і не
+      Зауважте, перевірка в реальному часі є експериментальною функцією і не
       замінює звичайну перевірку.
     `,
   },
@@ -559,7 +559,7 @@ export const wbText = createDictionary({
       збіг необхідно усунути перед завантаженням.
     `,
     'de-ch': `
-      Dieser Wert stimmt mit zwei oder mehr vorhandenen Datenbankeinträgen
+      Dieser Wert stimmt mit zwei oder mehreren vorhandenen Datenbankeinträgen
       überein und die Übereinstimmung muss vor dem Hochladen eindeutig geklärt
       werden.
     `,
@@ -1416,7 +1416,7 @@ export const wbText = createDictionary({
     'es-es': 'Estado de carga del conjunto de datos',
     'fr-fr': "Une erreur s'est produite pendant [X22X]",
     'uk-ua': 'Під час [X22X] сталася помилка',
-    'de-ch': 'Upload-Status des Datensatzes',
+    'de-ch': 'Status des Datensatz-Uploads',
   },
   wbStatusValidation: {
     'en-us': 'Data Set Validation Status',

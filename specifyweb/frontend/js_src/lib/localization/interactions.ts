@@ -44,7 +44,7 @@ export const interactionsText = createDictionary({
   },
   preparationsNotAvailableFor: {
     'en-us': 'No preparations are available for the following records:',
-    'de-ch': 'Für folgende Datensätze liegen keine Vorbereitungen vor:',
+    'de-ch': 'Für folgende Datensätze sind keine Vorbereitungen verfügbar:',
     'es-es': 'No se encontraron preparativos para los siguientes registros:',
     'fr-fr': `
       Aucune préparation n'est disponible pour les enregistrements suivants :
@@ -234,7 +234,7 @@ export const interactionsText = createDictionary({
     'fr-fr': 'Enregistrements {loanTable:string} résolus',
     'ru-ru': 'Решенные записи {loanTable:string}',
     'uk-ua': 'Вирішені {loanTable:string} записи',
-    'de-ch': '{loanTable:string}-Datensätze behoben',
+    'de-ch': 'Aufgelöste {loanTable:string}-Datensätze',
   },
   openLoans: {
     comment: 'Example: Open Loan records',
