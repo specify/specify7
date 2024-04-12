@@ -6,7 +6,7 @@
  *
  */
 
-import React from 'react';
+import React, { KeyboardEventHandler } from 'react';
 import _ from 'underscore';
 
 import { wbText } from '../../localization/workbench';
@@ -30,6 +30,7 @@ import { className } from '../Atoms/className';
 import { commonText } from '../../localization/common';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { icons } from '../Atoms/Icons';
+import { ReadOnlyContext } from '../Core/Contexts';
 
 function Navigation({
   name,
@@ -44,6 +45,7 @@ function Navigation({
   readonly utils: WbUtils;
   readonly spreadsheetContainer: any;
 }): JSX.Element {
+  const isReadOnly = React.useContext(ReadOnlyContext);
   const [currentPosition, setCurrentPosition] = React.useState<number>(0);
   const [buttonIsPressed, _press, _unpress, togglePress] = useBooleanState();
   const handleTypeToggle = () => {
@@ -79,6 +81,7 @@ function Navigation({
         data-navigation-direction="previous"
         variant="bg-inherit text-gray-800 dark:text-gray-100"
         onClick={handlePrevious}
+        disabled={name !== 'newCells' && isReadOnly}
       >
         {icons.chevronLeft}
       </Button.Small>
@@ -94,11 +97,8 @@ function Navigation({
         variant="bg-inherit text-gray-800 dark:text-gray-100"
         onClick={handleTypeToggle}
       >
-        {label} (
-        <span className="text-center">
-          {currentPosition}
-        </span>
-        /<span>{totalCount}</span>)
+        {label} (<span className="text-center">{currentPosition}</span>/
+        <span>{totalCount}</span>)
       </Button.Small>
       <Button.Small
         className="brightness-80 hover:brightness-70 p-2 ring-0"
@@ -106,6 +106,7 @@ function Navigation({
         type="button"
         variant="bg-inherit text-gray-800 dark:text-gray-100"
         onClick={handleNext}
+        disabled={name !== 'newCells' && isReadOnly}
       >
         {icons.chevronRight}
       </Button.Small>
@@ -124,6 +125,7 @@ export function WbUtilsComponent({
   readonly utils: WbUtils;
   readonly spreadsheetContainer: any;
 }): JSX.Element {
+  const isReadOnly = React.useContext(ReadOnlyContext);
   const searchRef = React.useRef<HTMLInputElement | null>(null);
   const replaceRef = React.useRef<HTMLInputElement | null>(null);
 
@@ -169,6 +171,7 @@ export function WbUtilsComponent({
                 placeholder={wbText.replace()}
                 title={wbText.replacementValue()}
                 onKeyDown={handleReplace}
+                disabled={isReadOnly}
               />
             </div>
           ) : undefined}

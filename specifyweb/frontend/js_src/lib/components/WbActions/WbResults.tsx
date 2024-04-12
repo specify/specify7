@@ -18,7 +18,7 @@ export function WbResults({
         <Button.Small
           aria-haspopup="tree"
           disabled={hasUnsavedChanges}
-          title={hasUnsavedChanges ? wbText.wbUploadedUnavailable() : ''}
+          title={wbText.wbUploadedUnavailable()}
           onClick={handleToggleResults}
         >
           {commonText.results()}

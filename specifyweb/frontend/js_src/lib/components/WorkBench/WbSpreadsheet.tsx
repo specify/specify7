@@ -42,6 +42,7 @@ import { mappingPathToString } from '../WbPlanView/mappingHelpers';
 import { MappingPath } from '../WbPlanView/Mapper';
 import { registerAllModules } from 'handsontable/registry';
 import { Workbench } from './WbView';
+import { ReadOnlyContext } from '../Core/Contexts';
 
 registerAllModules();
 
@@ -104,6 +105,7 @@ function WbSpreadsheetComponent({
   readonly checkDeletedFail: any;
   readonly spreadsheetChanged: any;
 }): JSX.Element {
+  const isReadOnly = React.useContext(ReadOnlyContext);
   const physicalColToMappingCol = (physicalCol: number): number | undefined =>
     mappings?.lines.findIndex(
       ({ headerName }) => headerName === dataset.columns[physicalCol]
@@ -260,28 +262,14 @@ function WbSpreadsheetComponent({
           } as const)
         : ({
             row_above: {
-              disabled: () =>
-                // TODO: Figure out if these commented lines can be removed
-                // typeof this.uploadedView === 'function' ||
-                // typeof this.coordinateConverterView === 'function' ||
-                !hasPermission('/workbench/dataset', 'update'),
+              disabled: () => isReadOnly,
             },
             row_below: {
-              disabled: () =>
-                // TODO: Figure out if these commented lines can be removed
-                // typeof this.uploadedView === 'function' ||
-                // typeof this.coordinateConverterView === 'function' ||
-                !hasPermission('/workbench/dataset', 'update'),
+              disabled: () => isReadOnly,
             },
             remove_row: {
               disabled: () => {
-                if (
-                  // TODO: Figure out if these commented lines can be removed
-                  // typeof this.uploadedView === 'function' ||
-                  // typeof this.coordinateConverterView === 'function' ||
-                  !hasPermission('/workbench/dataset', 'update')
-                )
-                  return true;
+                if (isReadOnly) return true;
                 // Or if called on the last row
                 const selectedRegions = getSelectedRegions(hot!);
                 return (
@@ -294,11 +282,7 @@ function WbSpreadsheetComponent({
             disambiguate: {
               name: wbText.disambiguate(),
               disabled: (): boolean =>
-                // TODO: Figure out if these commented lines can be removed
-                // typeof this.uploadedView === 'function' ||
-                // typeof this.coordinateConverterView === 'function' ||
-                !disambiguation.isAmbiguousCell() ||
-                !hasPermission('/workbench/dataset', 'update'),
+                !disambiguation.isAmbiguousCell() || isReadOnly,
               callback: () => openDisambiguationDialog(),
             },
             separator_1: '---------',
@@ -306,18 +290,10 @@ function WbSpreadsheetComponent({
             fill_up: fillCellsContextMenuItem(hot!, 'up'),
             separator_2: '---------',
             undo: {
-              disabled: () =>
-                // TODO: Figure out if these commented lines can be removed
-                // typeof this.uploadedView === 'function' ||
-                hot?.isUndoAvailable() !== true ||
-                !hasPermission('/workbench/dataset', 'update'),
+              disabled: () => hot?.isUndoAvailable() !== true || isReadOnly,
             },
             redo: {
-              disabled: () =>
-                // TODO: Figure out if these commented lines can be removed
-                // typeof this.uploadedView === 'function' ||
-                hot?.isRedoAvailable() !== true ||
-                !hasPermission('/workbench/dataset', 'update'),
+              disabled: () => hot?.isRedoAvailable() !== true || isReadOnly,
             },
           } as const)
     ),
@@ -421,9 +397,8 @@ function WbSpreadsheetComponent({
       // Hide the disambiguation column
       columns: [dataset.columns.length],
       indicators: false,
-      // TODO: Temporarily disabled as copyPasteEnabled throws an error despite having ts-expect-error
-      // Typing doesn't match for handsontable 12.1.0, fixed in 14
-      // copyPasteEnabled: false,
+      // TODO: Typing possibly doesn't match for handsontable 12.1.0, fixed in 14
+      copyPasteEnabled: false,
     };
   }, []);
 
@@ -431,9 +406,8 @@ function WbSpreadsheetComponent({
     return {
       rows: [],
       indicators: false,
-      // TODO: Temporarily disabled as copyPasteEnabled throws an error despite having ts-expect-error
-      // Typing doesn't match for handsontable 12.1.0, fixed in 14
-      // copyPasteEnabled: false,
+      // TODO: Typing possibly doesn't match for handsontable 12.1.0, fixed in 14
+      copyPasteEnabled: false,
     };
   }, []);
 
@@ -494,7 +468,7 @@ function WbSpreadsheetComponent({
         sortIndicator={true}
         stretchH="all"
         tabMoves={tabMoves}
-        readOnly={isUploaded || !hasPermission('/workbench/dataset', 'update')}
+        readOnly={isReadOnly}
         contextMenu={contextMenuConfig as Settings}
         {...hooks}
       />

@@ -38,6 +38,7 @@ import { DataSetName } from './DataSetMeta';
 import { WbSpreadsheet } from './WbSpreadsheet';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { WbToolkit } from '../WbToolkit/WbToolkit';
+import { ReadOnlyContext } from '../Core/Contexts';
 
 export type WbStatus = 'unupload' | 'upload' | 'validate';
 
@@ -179,7 +180,6 @@ export function WbViewReact({
       .map(workbench.hot.toVisualColumn);
 
     if (showResults) {
-      workbench.hot?.updateSettings({ readOnly: true });
       getHotPlugin(workbench.hot, 'hiddenRows').hideRows(rowsToHide);
       getHotPlugin(workbench.hot, 'hiddenColumns').hideColumns(colsToHide);
 
@@ -202,88 +202,90 @@ export function WbViewReact({
 
   return (
     <>
-      <div
-        className="flex items-center justify-between gap-x-1 gap-y-2 whitespace-nowrap"
-        role="toolbar"
-      >
-        <div className="contents">
-          <DataSetName
-            dataset={dataset}
-            getRowCount={() =>
-              hot === undefined
-                ? dataset.rows.length
-                : hot.countRows() - hot.countEmptyRows(true)
-            }
-          />
-        </div>
-        <Button.Small
-          aria-haspopup="grid"
-          aria-pressed={showToolkit}
-          onClick={toggleToolkit}
+      <ReadOnlyContext.Provider value={isUploaded || showResults || !canUpdate}>
+        <div
+          className="flex items-center justify-between gap-x-1 gap-y-2 whitespace-nowrap"
+          role="toolbar"
         >
-          {commonText.tools()}
-        </Button.Small>
-        <span className="-ml-1 flex-1" />
-        {canUpdate || isMapped ? (
-          <Link.Small href={`/specify/workbench/plan/${dataset.id}/`}>
-            {wbPlanText.dataMapper()}
-          </Link.Small>
-        ) : undefined}
-        <WbActionsComponent
-          dataset={dataset}
-          hasUnsavedChanges={hasUnsavedChanges}
-          isUploaded={isUploaded}
-          onDatasetRefresh={triggerDatasetRefresh}
-          mappings={mappings!}
-          checkDeletedFail={checkDeletedFail}
-          onSpreadsheetUpToDate={spreadsheetUpToDate}
-          workbench={workbench}
-          onToggleResults={toggleResults}
-        />
-      </div>
-      {showToolkit ? (
-        <WbToolkit
-          dataset={dataset}
-          hot={hot}
-          mappings={mappings!}
-          data={data}
-          handleDatasetDelete={handleDatasetDelete}
-          hasUnsavedChanges={hasUnsavedChanges}
-          triggerDatasetRefresh={triggerDatasetRefresh}
-        />
-      ) : undefined}
-      <div className="flex flex-1 gap-4 overflow-hidden">
-        <section className="flex-1 overflow-hidden overscroll-none">
-          <WbSpreadsheet
+          <div className="contents">
+            <DataSetName
+              dataset={dataset}
+              getRowCount={() =>
+                hot === undefined
+                  ? dataset.rows.length
+                  : hot.countRows() - hot.countEmptyRows(true)
+              }
+            />
+          </div>
+          <Button.Small
+            aria-haspopup="grid"
+            aria-pressed={showToolkit}
+            onClick={toggleToolkit}
+          >
+            {commonText.tools()}
+          </Button.Small>
+          <span className="-ml-1 flex-1" />
+          {canUpdate || isMapped ? (
+            <Link.Small href={`/specify/workbench/plan/${dataset.id}/`}>
+              {wbPlanText.dataMapper()}
+            </Link.Small>
+          ) : undefined}
+          <WbActionsComponent
             dataset={dataset}
-            setHotTable={setHotTable as React.Ref<HotTable>}
-            hot={hot}
+            hasUnsavedChanges={hasUnsavedChanges}
             isUploaded={isUploaded}
-            data={data}
-            workbench={workbench}
+            onDatasetRefresh={triggerDatasetRefresh}
             mappings={mappings!}
             checkDeletedFail={checkDeletedFail}
-            spreadsheetChanged={spreadsheetChanged}
+            onSpreadsheetUpToDate={spreadsheetUpToDate}
+            workbench={workbench}
+            onToggleResults={toggleResults}
           />
-        </section>
-        {showResults ? (
-          <aside aria-live="polite">
-            <WbUploaded
-              dataSetId={dataset.id}
-              dataSetName={dataset.name}
-              isUploaded={isUploaded}
-              recordCounts={workbench.validation.uploadResults.recordCounts}
-              onClose={closeResults}
-            />
-          </aside>
+        </div>
+        {showToolkit ? (
+          <WbToolkit
+            dataset={dataset}
+            hot={hot}
+            mappings={mappings!}
+            data={data}
+            handleDatasetDelete={handleDatasetDelete}
+            hasUnsavedChanges={hasUnsavedChanges}
+            triggerDatasetRefresh={triggerDatasetRefresh}
+          />
         ) : undefined}
-      </div>
-      <WbUtilsComponent
-        isUploaded={isUploaded}
-        cellCounts={cellCounts}
-        utils={workbench.utils}
-        spreadsheetContainer={spreadsheetContainer}
-      />
+        <div className="flex flex-1 gap-4 overflow-hidden">
+          <section className="flex-1 overflow-hidden overscroll-none">
+            <WbSpreadsheet
+              dataset={dataset}
+              setHotTable={setHotTable as React.Ref<HotTable>}
+              hot={hot}
+              isUploaded={isUploaded}
+              data={data}
+              workbench={workbench}
+              mappings={mappings!}
+              checkDeletedFail={checkDeletedFail}
+              spreadsheetChanged={spreadsheetChanged}
+            />
+          </section>
+          {showResults ? (
+            <aside aria-live="polite">
+              <WbUploaded
+                dataSetId={dataset.id}
+                dataSetName={dataset.name}
+                isUploaded={isUploaded}
+                recordCounts={workbench.validation.uploadResults.recordCounts}
+                onClose={closeResults}
+              />
+            </aside>
+          ) : undefined}
+        </div>
+        <WbUtilsComponent
+          isUploaded={isUploaded}
+          cellCounts={cellCounts}
+          utils={workbench.utils}
+          spreadsheetContainer={spreadsheetContainer}
+        />
+      </ReadOnlyContext.Provider>
     </>
   );
 }
