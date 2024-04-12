@@ -200,7 +200,6 @@ async function correctDefaultViewDefinition(
         };
         overwriteReadOnly(view, 'altviews', newAltViews);
         overwriteReadOnly(view, 'viewdefs', newViewDefs);
-
         return view;
       }
     );

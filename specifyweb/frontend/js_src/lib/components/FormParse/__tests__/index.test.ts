@@ -228,7 +228,14 @@ const viewDefinition: ViewDefinition = {
 };
 
 describe('fetchView', () => {
-  const viewDefinition = {} as unknown as ViewDefinition;
+  const baseViewDefinition: Partial<ViewDefinition> = {
+    altviews: {},
+    viewdefs: {
+      CollectionObject: tinyFormView,
+    },
+  };
+
+  const viewDefinition = baseViewDefinition as ViewDefinition;
 
   const viewName = 'abc';
   overrideAjax(
@@ -241,7 +248,7 @@ describe('fetchView', () => {
   });
 
   const secondViewName = 'abc2';
-  const secondViewDefinition = {} as unknown as ViewDefinition;
+  const secondViewDefinition = baseViewDefinition as ViewDefinition;
   test('retries cached view', async () => {
     views[secondViewName] = secondViewDefinition;
     await expect(fetchView(secondViewName)).resolves.toEqual(viewDefinition);
