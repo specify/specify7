@@ -435,7 +435,7 @@ export const schemaText = createDictionary({
   },
   numberOfDuplicates: {
     'en-us': 'Number of Duplicates',
-    'de-ch': 'Anzahl Duplikate',
+    'de-ch': 'Anzahl der Duplikate',
     'es-es': 'Número de duplicados',
     'fr-fr': 'Nombre de champs',
     'ru-ru': 'Количество полей',
