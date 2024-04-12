@@ -169,7 +169,8 @@ def generate_sp_relationship_field_code(modelname, rel, datamodel) -> str:
 
         foreign_table_name = related_model_name
         return (
-            f"{TAB}{rel.name} = {field_type_name}("
+            # f"{TAB}{rel.name} = {field_type_name}("
+            f"{TAB}{rel.name.lower()} = {field_type_name}("
             f"'{foreign_table_name}'{NEXT}"
             f"db_column='{rel.column}'{NEXT}"
             f"related_name='{related_name}'{NEXT}"
@@ -186,13 +187,15 @@ def generate_id_field_code(column) -> str:
     return f"{TAB}id = models.AutoField(primary_key=True, db_column='{column.column.lower()}')\n"
 
 def generate_model_class_code(table, datamodel) -> str:
+    code = ''
     supercls = 'models.Model'
     if hasattr(table, 'sp7_only') and table.sp7_only != 'specify':
         return
     if hasattr(model_extras, table.django_name):
         supercls = getattr(model_extras, table.django_name).__name__
-    
-    code = f"class {table.django_name}(model_extras.{supercls}):\n"
+        code = f"class {table.django_name}(model_extras.{supercls}):\n"
+    else:
+        code = f"class {table.django_name}({supercls}):\n"
 
     # Add code for ID field
     code += f"{TAB}# ID Field\n"
@@ -226,7 +229,11 @@ def generate_model_class_code(table, datamodel) -> str:
     code += meta_class_code(table, table.fields, table.indexes) + "\n"
 
     # Add code for save method, if needed
-    code += save_method_code()
+    if table.table not in ['specifyuser']:
+        code += save_method_code()
+
+    # code += f"{TAB}specify_model = '{table.table}'\n"
+    code += f"{TAB}specify_model = datamodel.get_table('{table.table}')\n"
 
     code += '\n'
     return code

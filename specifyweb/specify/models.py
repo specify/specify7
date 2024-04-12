@@ -21,7 +21,9 @@ def custom_save(self, *args, **kwargs):
         # Handle AbortSave exception as needed
         logger.error("Save operation aborted: %s", e)
         return
-class Accession(model_extras.models.Model):
+class Accession(models.Model):
+    specify_model = datamodel.get_table('Accession')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='accessionid')
 
@@ -53,11 +55,11 @@ class Accession(model_extras.models.Model):
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
     # Relationships: Many-to-One
-    addressOfRecord = models.ForeignKey('AddressOfRecord', db_column='AddressOfRecordID', related_name='accessions', null=True, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    addressofrecord = models.ForeignKey('AddressOfRecord', db_column='AddressOfRecordID', related_name='accessions', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     division = models.ForeignKey('Division', db_column='DivisionID', related_name='+', null=False, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    repositoryAgreement = models.ForeignKey('RepositoryAgreement', db_column='RepositoryAgreementID', related_name='accessions', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    repositoryagreement = models.ForeignKey('RepositoryAgreement', db_column='RepositoryAgreementID', related_name='accessions', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'accession'
@@ -69,7 +71,9 @@ class Accession(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Accessionagent(model_extras.models.Model):
+class Accessionagent(models.Model):
+    specify_model = datamodel.get_table('Accessionagent')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='accessionagentid')
 
@@ -83,9 +87,9 @@ class Accessionagent(model_extras.models.Model):
     # Relationships: Many-to-One
     accession = models.ForeignKey('Accession', db_column='AccessionID', related_name='accessionagents', null=True, on_delete=models.CASCADE)
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='+', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    repositoryAgreement = models.ForeignKey('RepositoryAgreement', db_column='RepositoryAgreementID', related_name='repositoryagreementagents', null=True, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    repositoryagreement = models.ForeignKey('RepositoryAgreement', db_column='RepositoryAgreementID', related_name='repositoryagreementagents', null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'accessionagent'
@@ -93,7 +97,9 @@ class Accessionagent(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Accessionattachment(model_extras.models.Model):
+class Accessionattachment(models.Model):
+    specify_model = datamodel.get_table('Accessionattachment')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='accessionattachmentid')
 
@@ -107,8 +113,8 @@ class Accessionattachment(model_extras.models.Model):
     # Relationships: Many-to-One
     accession = models.ForeignKey('Accession', db_column='AccessionID', related_name='accessionattachments', null=False, on_delete=models.CASCADE)
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='accessionattachments', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'accessionattachment'
@@ -116,7 +122,9 @@ class Accessionattachment(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Accessionauthorization(model_extras.models.Model):
+class Accessionauthorization(models.Model):
+    specify_model = datamodel.get_table('Accessionauthorization')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='accessionauthorizationid')
 
@@ -128,10 +136,10 @@ class Accessionauthorization(model_extras.models.Model):
 
     # Relationships: Many-to-One
     accession = models.ForeignKey('Accession', db_column='AccessionID', related_name='accessionauthorizations', null=True, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     permit = models.ForeignKey('Permit', db_column='PermitID', related_name='accessionauthorizations', null=False, on_delete=protect_with_blockers)
-    repositoryAgreement = models.ForeignKey('RepositoryAgreement', db_column='RepositoryAgreementID', related_name='repositoryagreementauthorizations', null=True, on_delete=models.CASCADE)
+    repositoryagreement = models.ForeignKey('RepositoryAgreement', db_column='RepositoryAgreementID', related_name='repositoryagreementauthorizations', null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'accessionauthorization'
@@ -139,7 +147,9 @@ class Accessionauthorization(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Accessioncitation(model_extras.models.Model):
+class Accessioncitation(models.Model):
+    specify_model = datamodel.get_table('Accessioncitation')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='accessioncitationid')
 
@@ -155,9 +165,9 @@ class Accessioncitation(model_extras.models.Model):
 
     # Relationships: Many-to-One
     accession = models.ForeignKey('Accession', db_column='AccessionID', related_name='accessioncitations', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    referenceWork = models.ForeignKey('ReferenceWork', db_column='ReferenceWorkID', related_name='+', null=False, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    referencework = models.ForeignKey('ReferenceWork', db_column='ReferenceWorkID', related_name='+', null=False, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'accessioncitation'
@@ -165,7 +175,9 @@ class Accessioncitation(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Address(model_extras.models.Model):
+class Address(models.Model):
+    specify_model = datamodel.get_table('Address')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='addressid')
 
@@ -198,8 +210,8 @@ class Address(model_extras.models.Model):
 
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='addresses', null=True, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'address'
@@ -207,7 +219,9 @@ class Address(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Addressofrecord(model_extras.models.Model):
+class Addressofrecord(models.Model):
+    specify_model = datamodel.get_table('Addressofrecord')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='addressofrecordid')
 
@@ -225,8 +239,8 @@ class Addressofrecord(model_extras.models.Model):
 
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'addressofrecord'
@@ -234,7 +248,9 @@ class Addressofrecord(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Agent(model_extras.models.Model):
+class Agent(models.Model):
+    specify_model = datamodel.get_table('Agent')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='agentid')
 
@@ -276,15 +292,15 @@ class Agent(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    collContentContact = models.ForeignKey('Collection', db_column='CollectionCCID', related_name='contentcontacts', null=True, on_delete=protect_with_blockers)
-    collTechContact = models.ForeignKey('Collection', db_column='CollectionTCID', related_name='technicalcontacts', null=True, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    collcontentcontact = models.ForeignKey('Collection', db_column='CollectionCCID', related_name='contentcontacts', null=True, on_delete=protect_with_blockers)
+    colltechcontact = models.ForeignKey('Collection', db_column='CollectionTCID', related_name='technicalcontacts', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     division = models.ForeignKey('Division', db_column='DivisionID', related_name='members', null=True, on_delete=protect_with_blockers)
-    instContentContact = models.ForeignKey('Institution', db_column='InstitutionCCID', related_name='contentcontacts', null=True, on_delete=protect_with_blockers)
-    instTechContact = models.ForeignKey('Institution', db_column='InstitutionTCID', related_name='technicalcontacts', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    instcontentcontact = models.ForeignKey('Institution', db_column='InstitutionCCID', related_name='contentcontacts', null=True, on_delete=protect_with_blockers)
+    insttechcontact = models.ForeignKey('Institution', db_column='InstitutionTCID', related_name='technicalcontacts', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     organization = models.ForeignKey('Agent', db_column='ParentOrganizationID', related_name='orgmembers', null=True, on_delete=protect_with_blockers)
-    specifyUser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', related_name='agents', null=True, on_delete=models.SET_NULL)
+    specifyuser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', related_name='agents', null=True, on_delete=models.SET_NULL)
 
     class Meta:
         db_table = 'agent'
@@ -299,7 +315,9 @@ class Agent(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Agentattachment(model_extras.models.Model):
+class Agentattachment(models.Model):
+    specify_model = datamodel.get_table('Agentattachment')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='agentattachmentid')
 
@@ -313,8 +331,8 @@ class Agentattachment(model_extras.models.Model):
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='agentattachments', null=False, on_delete=models.CASCADE)
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='agentattachments', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'agentattachment'
@@ -322,7 +340,9 @@ class Agentattachment(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Agentgeography(model_extras.models.Model):
+class Agentgeography(models.Model):
+    specify_model = datamodel.get_table('Agentgeography')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='agentgeographyid')
 
@@ -335,9 +355,9 @@ class Agentgeography(model_extras.models.Model):
 
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='agentgeographies', null=False, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     geography = models.ForeignKey('Geography', db_column='GeographyID', related_name='+', null=False, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'agentgeography'
@@ -345,7 +365,9 @@ class Agentgeography(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Agentidentifier(model_extras.models.Model):
+class Agentidentifier(models.Model):
+    specify_model = datamodel.get_table('Agentidentifier')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='agentidentifierid')
 
@@ -373,8 +395,8 @@ class Agentidentifier(model_extras.models.Model):
 
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='identifiers', null=False, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'agentidentifier'
@@ -382,7 +404,9 @@ class Agentidentifier(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Agentspecialty(model_extras.models.Model):
+class Agentspecialty(models.Model):
+    specify_model = datamodel.get_table('Agentspecialty')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='agentspecialtyid')
 
@@ -395,8 +419,8 @@ class Agentspecialty(model_extras.models.Model):
 
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='agentspecialties', null=False, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'agentspecialty'
@@ -404,7 +428,9 @@ class Agentspecialty(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Agentvariant(model_extras.models.Model):
+class Agentvariant(models.Model):
+    specify_model = datamodel.get_table('Agentvariant')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='agentvariantid')
 
@@ -420,8 +446,8 @@ class Agentvariant(model_extras.models.Model):
 
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='variants', null=False, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'agentvariant'
@@ -429,7 +455,9 @@ class Agentvariant(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Appraisal(model_extras.models.Model):
+class Appraisal(models.Model):
+    specify_model = datamodel.get_table('Appraisal')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='appraisalid')
 
@@ -446,8 +474,8 @@ class Appraisal(model_extras.models.Model):
     # Relationships: Many-to-One
     accession = models.ForeignKey('Accession', db_column='AccessionID', related_name='appraisals', null=True, on_delete=protect_with_blockers)
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='+', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'appraisal'
@@ -459,7 +487,9 @@ class Appraisal(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Attachment(model_extras.models.Model):
+class Attachment(models.Model):
+    specify_model = datamodel.get_table('Attachment')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='attachmentid')
 
@@ -493,11 +523,11 @@ class Attachment(model_extras.models.Model):
     visibility = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='Visibility', db_index=False)
 
     # Relationships: Many-to-One
-    attachmentImageAttribute = models.ForeignKey('AttachmentImageAttribute', db_column='AttachmentImageAttributeID', related_name='attachments', null=True, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    attachmentimageattribute = models.ForeignKey('AttachmentImageAttribute', db_column='AttachmentImageAttributeID', related_name='attachments', null=True, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     creator = models.ForeignKey('Agent', db_column='CreatorID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    visibilitySetBy = models.ForeignKey('SpecifyUser', db_column='VisibilitySetByID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    visibilitysetby = models.ForeignKey('SpecifyUser', db_column='VisibilitySetByID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'attachment'
@@ -512,7 +542,9 @@ class Attachment(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Attachmentimageattribute(model_extras.models.Model):
+class Attachmentimageattribute(models.Model):
+    specify_model = datamodel.get_table('Attachmentimageattribute')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='attachmentimageattributeid')
 
@@ -539,9 +571,9 @@ class Attachmentimageattribute(model_extras.models.Model):
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    morphBankView = models.ForeignKey('MorphBankView', db_column='MorphBankViewID', related_name='attachmentimageattributes', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    morphbankview = models.ForeignKey('MorphBankView', db_column='MorphBankViewID', related_name='attachmentimageattributes', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'attachmentimageattribute'
@@ -549,7 +581,9 @@ class Attachmentimageattribute(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Attachmentmetadata(model_extras.models.Model):
+class Attachmentmetadata(models.Model):
+    specify_model = datamodel.get_table('Attachmentmetadata')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='attachmentmetadataid')
 
@@ -562,8 +596,8 @@ class Attachmentmetadata(model_extras.models.Model):
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='metadata', null=True, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'attachmentmetadata'
@@ -571,7 +605,9 @@ class Attachmentmetadata(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Attachmenttag(model_extras.models.Model):
+class Attachmenttag(models.Model):
+    specify_model = datamodel.get_table('Attachmenttag')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='attachmenttagid')
 
@@ -583,8 +619,8 @@ class Attachmenttag(model_extras.models.Model):
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='tags', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'attachmenttag'
@@ -592,7 +628,9 @@ class Attachmenttag(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Attributedef(model_extras.models.Model):
+class Attributedef(models.Model):
+    specify_model = datamodel.get_table('Attributedef')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='attributedefid')
 
@@ -605,10 +643,10 @@ class Attributedef(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='attributedefs', null=False, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    prepType = models.ForeignKey('PrepType', db_column='PrepTypeID', related_name='attributedefs', null=True, on_delete=models.CASCADE)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    preptype = models.ForeignKey('PrepType', db_column='PrepTypeID', related_name='attributedefs', null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'attributedef'
@@ -616,7 +654,9 @@ class Attributedef(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Author(model_extras.models.Model):
+class Author(models.Model):
+    specify_model = datamodel.get_table('Author')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='authorid')
 
@@ -629,9 +669,9 @@ class Author(model_extras.models.Model):
 
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='+', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    referenceWork = models.ForeignKey('ReferenceWork', db_column='ReferenceWorkID', related_name='authors', null=False, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    referencework = models.ForeignKey('ReferenceWork', db_column='ReferenceWorkID', related_name='authors', null=False, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'author'
@@ -639,7 +679,9 @@ class Author(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Autonumberingscheme(model_extras.models.Model):
+class Autonumberingscheme(models.Model):
+    specify_model = datamodel.get_table('Autonumberingscheme')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='autonumberingschemeid')
 
@@ -654,8 +696,8 @@ class Autonumberingscheme(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'autonumberingscheme'
@@ -666,7 +708,9 @@ class Autonumberingscheme(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Borrow(model_extras.models.Model):
+class Borrow(models.Model):
+    specify_model = datamodel.get_table('Borrow')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='borrowid')
 
@@ -695,9 +739,9 @@ class Borrow(model_extras.models.Model):
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
     # Relationships: Many-to-One
-    addressOfRecord = models.ForeignKey('AddressOfRecord', db_column='AddressOfRecordID', related_name='+', null=True, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    addressofrecord = models.ForeignKey('AddressOfRecord', db_column='AddressOfRecordID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'borrow'
@@ -710,7 +754,9 @@ class Borrow(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Borrowagent(model_extras.models.Model):
+class Borrowagent(models.Model):
+    specify_model = datamodel.get_table('Borrowagent')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='borrowagentid')
 
@@ -725,8 +771,8 @@ class Borrowagent(model_extras.models.Model):
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='+', null=False, on_delete=protect_with_blockers)
     borrow = models.ForeignKey('Borrow', db_column='BorrowID', related_name='borrowagents', null=False, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'borrowagent'
@@ -737,7 +783,9 @@ class Borrowagent(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Borrowattachment(model_extras.models.Model):
+class Borrowattachment(models.Model):
+    specify_model = datamodel.get_table('Borrowattachment')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='borrowattachmentid')
 
@@ -751,8 +799,8 @@ class Borrowattachment(model_extras.models.Model):
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='borrowattachments', null=False, on_delete=protect_with_blockers)
     borrow = models.ForeignKey('Borrow', db_column='BorrowID', related_name='borrowattachments', null=False, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'borrowattachment'
@@ -760,7 +808,9 @@ class Borrowattachment(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Borrowmaterial(model_extras.models.Model):
+class Borrowmaterial(models.Model):
+    specify_model = datamodel.get_table('Borrowmaterial')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='borrowmaterialid')
 
@@ -781,8 +831,8 @@ class Borrowmaterial(model_extras.models.Model):
 
     # Relationships: Many-to-One
     borrow = models.ForeignKey('Borrow', db_column='BorrowID', related_name='borrowmaterials', null=False, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'borrowmaterial'
@@ -795,7 +845,9 @@ class Borrowmaterial(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Borrowreturnmaterial(model_extras.models.Model):
+class Borrowreturnmaterial(models.Model):
+    specify_model = datamodel.get_table('Borrowreturnmaterial')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='borrowreturnmaterialid')
 
@@ -810,9 +862,9 @@ class Borrowreturnmaterial(model_extras.models.Model):
 
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='ReturnedByID', related_name='+', null=True, on_delete=protect_with_blockers)
-    borrowMaterial = models.ForeignKey('BorrowMaterial', db_column='BorrowMaterialID', related_name='borrowreturnmaterials', null=False, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    borrowmaterial = models.ForeignKey('BorrowMaterial', db_column='BorrowMaterialID', related_name='borrowreturnmaterials', null=False, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'borrowreturnmaterial'
@@ -824,7 +876,9 @@ class Borrowreturnmaterial(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Collectingevent(model_extras.models.Model):
+class Collectingevent(models.Model):
+    specify_model = datamodel.get_table('Collectingevent')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='collectingeventid')
 
@@ -868,14 +922,14 @@ class Collectingevent(model_extras.models.Model):
     visibility = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='Visibility', db_index=False)
 
     # Relationships: Many-to-One
-    collectingEventAttribute = models.ForeignKey('CollectingEventAttribute', db_column='CollectingEventAttributeID', related_name='collectingevents', null=True, on_delete=protect_with_blockers)
-    collectingTrip = models.ForeignKey('CollectingTrip', db_column='CollectingTripID', related_name='collectingevents', null=True, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    collectingeventattribute = models.ForeignKey('CollectingEventAttribute', db_column='CollectingEventAttributeID', related_name='collectingevents', null=True, on_delete=protect_with_blockers)
+    collectingtrip = models.ForeignKey('CollectingTrip', db_column='CollectingTripID', related_name='collectingevents', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=False, on_delete=protect_with_blockers)
     locality = models.ForeignKey('Locality', db_column='LocalityID', related_name='collectingevents', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    paleoContext = models.ForeignKey('PaleoContext', db_column='PaleoContextID', related_name='collectingevents', null=True, on_delete=protect_with_blockers)
-    visibilitySetBy = models.ForeignKey('SpecifyUser', db_column='VisibilitySetByID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    paleocontext = models.ForeignKey('PaleoContext', db_column='PaleoContextID', related_name='collectingevents', null=True, on_delete=protect_with_blockers)
+    visibilitysetby = models.ForeignKey('SpecifyUser', db_column='VisibilitySetByID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'collectingevent'
@@ -890,7 +944,9 @@ class Collectingevent(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Collectingeventattachment(model_extras.models.Model):
+class Collectingeventattachment(models.Model):
+    specify_model = datamodel.get_table('Collectingeventattachment')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='collectingeventattachmentid')
 
@@ -904,9 +960,9 @@ class Collectingeventattachment(model_extras.models.Model):
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='collectingeventattachments', null=False, on_delete=protect_with_blockers)
-    collectingEvent = models.ForeignKey('CollectingEvent', db_column='CollectingEventID', related_name='collectingeventattachments', null=False, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    collectingevent = models.ForeignKey('CollectingEvent', db_column='CollectingEventID', related_name='collectingeventattachments', null=False, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'collectingeventattachment'
@@ -917,7 +973,9 @@ class Collectingeventattachment(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Collectingeventattr(model_extras.models.Model):
+class Collectingeventattr(models.Model):
+    specify_model = datamodel.get_table('Collectingeventattr')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='attrid')
 
@@ -930,10 +988,10 @@ class Collectingeventattr(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    collectingEvent = models.ForeignKey('CollectingEvent', db_column='CollectingEventID', related_name='collectingeventattrs', null=False, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    collectingevent = models.ForeignKey('CollectingEvent', db_column='CollectingEventID', related_name='collectingeventattrs', null=False, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     definition = models.ForeignKey('AttributeDef', db_column='AttributeDefID', related_name='collectingeventattrs', null=False, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'collectingeventattr'
@@ -944,7 +1002,9 @@ class Collectingeventattr(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Collectingeventattribute(model_extras.models.Model):
+class Collectingeventattribute(models.Model):
+    specify_model = datamodel.get_table('Collectingeventattribute')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='collectingeventattributeid')
 
@@ -1000,10 +1060,10 @@ class Collectingeventattribute(model_extras.models.Model):
     yesno5 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo5', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=False, on_delete=protect_with_blockers)
-    hostTaxon = models.ForeignKey('Taxon', db_column='HostTaxonID', related_name='collectingeventattributes', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    hosttaxon = models.ForeignKey('Taxon', db_column='HostTaxonID', related_name='collectingeventattributes', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'collectingeventattribute'
@@ -1014,7 +1074,9 @@ class Collectingeventattribute(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Collectingeventauthorization(model_extras.models.Model):
+class Collectingeventauthorization(models.Model):
+    specify_model = datamodel.get_table('Collectingeventauthorization')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='collectingeventauthorizationid')
 
@@ -1025,9 +1087,9 @@ class Collectingeventauthorization(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    collectingEvent = models.ForeignKey('CollectingEvent', db_column='CollectingEventID', related_name='collectingeventauthorizations', null=True, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    collectingevent = models.ForeignKey('CollectingEvent', db_column='CollectingEventID', related_name='collectingeventauthorizations', null=True, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     permit = models.ForeignKey('Permit', db_column='PermitID', related_name='collectingeventauthorizations', null=False, on_delete=protect_with_blockers)
 
     class Meta:
@@ -1036,7 +1098,9 @@ class Collectingeventauthorization(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Collectingtrip(model_extras.models.Model):
+class Collectingtrip(models.Model):
+    specify_model = datamodel.get_table('Collectingtrip')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='collectingtripid')
 
@@ -1079,10 +1143,10 @@ class Collectingtrip(model_extras.models.Model):
     # Relationships: Many-to-One
     agent1 = models.ForeignKey('Agent', db_column='Agent1ID', related_name='+', null=True, on_delete=protect_with_blockers)
     agent2 = models.ForeignKey('Agent', db_column='Agent2ID', related_name='+', null=True, on_delete=protect_with_blockers)
-    collectingTripAttribute = models.ForeignKey('CollectingTripAttribute', db_column='CollectingTripAttributeID', related_name='collectingtrips', null=True, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    collectingtripattribute = models.ForeignKey('CollectingTripAttribute', db_column='CollectingTripAttributeID', related_name='collectingtrips', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=False, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'collectingtrip'
@@ -1094,7 +1158,9 @@ class Collectingtrip(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Collectingtripattachment(model_extras.models.Model):
+class Collectingtripattachment(models.Model):
+    specify_model = datamodel.get_table('Collectingtripattachment')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='collectingtripattachmentid')
 
@@ -1108,9 +1174,9 @@ class Collectingtripattachment(model_extras.models.Model):
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='collectingtripattachments', null=False, on_delete=protect_with_blockers)
-    collectingTrip = models.ForeignKey('CollectingTrip', db_column='CollectingTripID', related_name='collectingtripattachments', null=False, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    collectingtrip = models.ForeignKey('CollectingTrip', db_column='CollectingTripID', related_name='collectingtripattachments', null=False, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'collectingtripattachment'
@@ -1121,7 +1187,9 @@ class Collectingtripattachment(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Collectingtripattribute(model_extras.models.Model):
+class Collectingtripattribute(models.Model):
+    specify_model = datamodel.get_table('Collectingtripattribute')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='collectingtripattributeid')
 
@@ -1177,9 +1245,9 @@ class Collectingtripattribute(model_extras.models.Model):
     yesno5 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo5', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=False, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'collectingtripattribute'
@@ -1190,7 +1258,9 @@ class Collectingtripattribute(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Collectingtripauthorization(model_extras.models.Model):
+class Collectingtripauthorization(models.Model):
+    specify_model = datamodel.get_table('Collectingtripauthorization')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='collectingtripauthorizationid')
 
@@ -1201,9 +1271,9 @@ class Collectingtripauthorization(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    collectingTrip = models.ForeignKey('CollectingTrip', db_column='CollectingTripID', related_name='collectingtripauthorizations', null=True, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    collectingtrip = models.ForeignKey('CollectingTrip', db_column='CollectingTripID', related_name='collectingtripauthorizations', null=True, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     permit = models.ForeignKey('Permit', db_column='PermitID', related_name='collectingtripauthorizations', null=False, on_delete=protect_with_blockers)
 
     class Meta:
@@ -1212,7 +1282,9 @@ class Collectingtripauthorization(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Collection(model_extras.models.Model):
+class Collection(models.Model):
+    specify_model = datamodel.get_table('Collection')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='usergroupscopeid')
 
@@ -1243,11 +1315,11 @@ class Collection(model_extras.models.Model):
     websiteuri = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='WebSiteURI', db_index=False)
 
     # Relationships: Many-to-One
-    adminContact = models.ForeignKey('Agent', db_column='AdminContactID', related_name='+', null=True, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    admincontact = models.ForeignKey('Agent', db_column='AdminContactID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='collections', null=False, on_delete=protect_with_blockers)
-    institutionNetwork = models.ForeignKey('Institution', db_column='InstitutionNetworkID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    institutionnetwork = models.ForeignKey('Institution', db_column='InstitutionNetworkID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'collection'
@@ -1259,7 +1331,9 @@ class Collection(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Collectionobject(model_extras.models.Model):
+class Collectionobject(models.Model):
+    specify_model = datamodel.get_table('Collectionobject')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='collectionobjectid')
 
@@ -1330,18 +1404,18 @@ class Collectionobject(model_extras.models.Model):
     agent1 = models.ForeignKey('Agent', db_column='Agent1ID', related_name='+', null=True, on_delete=protect_with_blockers)
     appraisal = models.ForeignKey('Appraisal', db_column='AppraisalID', related_name='collectionobjects', null=True, on_delete=protect_with_blockers)
     cataloger = models.ForeignKey('Agent', db_column='CatalogerID', related_name='+', null=True, on_delete=protect_with_blockers)
-    collectingEvent = models.ForeignKey('CollectingEvent', db_column='CollectingEventID', related_name='collectionobjects', null=True, on_delete=protect_with_blockers)
+    collectingevent = models.ForeignKey('CollectingEvent', db_column='CollectingEventID', related_name='collectionobjects', null=True, on_delete=protect_with_blockers)
     collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='+', null=False, on_delete=protect_with_blockers)
-    collectionObjectAttribute = models.ForeignKey('CollectionObjectAttribute', db_column='CollectionObjectAttributeID', related_name='collectionobjects', null=True, on_delete=protect_with_blockers)
+    collectionobjectattribute = models.ForeignKey('CollectionObjectAttribute', db_column='CollectionObjectAttributeID', related_name='collectionobjects', null=True, on_delete=protect_with_blockers)
     container = models.ForeignKey('Container', db_column='ContainerID', related_name='collectionobjects', null=True, on_delete=protect_with_blockers)
-    containerOwner = models.ForeignKey('Container', db_column='ContainerOwnerID', related_name='collectionobjectkids', null=True, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    embargoAuthority = models.ForeignKey('Agent', db_column='EmbargoAuthorityID', related_name='+', null=True, on_delete=protect_with_blockers)
-    fieldNotebookPage = models.ForeignKey('FieldNotebookPage', db_column='FieldNotebookPageID', related_name='collectionobjects', null=True, on_delete=protect_with_blockers)
-    inventorizedBy = models.ForeignKey('Agent', db_column='InventorizedByID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    paleoContext = models.ForeignKey('PaleoContext', db_column='PaleoContextID', related_name='collectionobjects', null=True, on_delete=protect_with_blockers)
-    visibilitySetBy = models.ForeignKey('SpecifyUser', db_column='VisibilitySetByID', related_name='+', null=True, on_delete=protect_with_blockers)
+    containerowner = models.ForeignKey('Container', db_column='ContainerOwnerID', related_name='collectionobjectkids', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    embargoauthority = models.ForeignKey('Agent', db_column='EmbargoAuthorityID', related_name='+', null=True, on_delete=protect_with_blockers)
+    fieldnotebookpage = models.ForeignKey('FieldNotebookPage', db_column='FieldNotebookPageID', related_name='collectionobjects', null=True, on_delete=protect_with_blockers)
+    inventorizedby = models.ForeignKey('Agent', db_column='InventorizedByID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    paleocontext = models.ForeignKey('PaleoContext', db_column='PaleoContextID', related_name='collectionobjects', null=True, on_delete=protect_with_blockers)
+    visibilitysetby = models.ForeignKey('SpecifyUser', db_column='VisibilitySetByID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'collectionobject'
@@ -1358,7 +1432,9 @@ class Collectionobject(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Collectionobjectattachment(model_extras.models.Model):
+class Collectionobjectattachment(models.Model):
+    specify_model = datamodel.get_table('Collectionobjectattachment')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='collectionobjectattachmentid')
 
@@ -1372,9 +1448,9 @@ class Collectionobjectattachment(model_extras.models.Model):
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='collectionobjectattachments', null=False, on_delete=protect_with_blockers)
-    collectionObject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='collectionobjectattachments', null=False, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='collectionobjectattachments', null=False, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'collectionobjectattachment'
@@ -1385,7 +1461,9 @@ class Collectionobjectattachment(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Collectionobjectattr(model_extras.models.Model):
+class Collectionobjectattr(models.Model):
+    specify_model = datamodel.get_table('Collectionobjectattr')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='attrid')
 
@@ -1398,10 +1476,10 @@ class Collectionobjectattr(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    collectionObject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='collectionobjectattrs', null=False, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='collectionobjectattrs', null=False, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     definition = models.ForeignKey('AttributeDef', db_column='AttributeDefID', related_name='collectionobjectattrs', null=False, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'collectionobjectattr'
@@ -1412,7 +1490,9 @@ class Collectionobjectattr(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Collectionobjectattribute(model_extras.models.Model):
+class Collectionobjectattribute(models.Model):
+    specify_model = datamodel.get_table('Collectionobjectattribute')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='collectionobjectattributeid')
 
@@ -1544,8 +1624,8 @@ class Collectionobjectattribute(model_extras.models.Model):
 
     # Relationships: Many-to-One
     agent1 = models.ForeignKey('Agent', db_column='Agent1ID', related_name='+', null=True, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'collectionobjectattribute'
@@ -1556,7 +1636,9 @@ class Collectionobjectattribute(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Collectionobjectcitation(model_extras.models.Model):
+class Collectionobjectcitation(models.Model):
+    specify_model = datamodel.get_table('Collectionobjectcitation')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='collectionobjectcitationid')
 
@@ -1572,10 +1654,10 @@ class Collectionobjectcitation(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    collectionObject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='collectionobjectcitations', null=False, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    referenceWork = models.ForeignKey('ReferenceWork', db_column='ReferenceWorkID', related_name='collectionobjectcitations', null=False, on_delete=protect_with_blockers)
+    collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='collectionobjectcitations', null=False, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    referencework = models.ForeignKey('ReferenceWork', db_column='ReferenceWorkID', related_name='collectionobjectcitations', null=False, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'collectionobjectcitation'
@@ -1586,7 +1668,9 @@ class Collectionobjectcitation(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Collectionobjectproperty(model_extras.models.Model):
+class Collectionobjectproperty(models.Model):
+    specify_model = datamodel.get_table('Collectionobjectproperty')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='collectionobjectpropertyid')
 
@@ -1759,9 +1843,9 @@ class Collectionobjectproperty(model_extras.models.Model):
     agent7 = models.ForeignKey('Agent', db_column='Agent7ID', related_name='+', null=True, on_delete=protect_with_blockers)
     agent8 = models.ForeignKey('Agent', db_column='Agent8D', related_name='+', null=True, on_delete=protect_with_blockers)
     agent9 = models.ForeignKey('Agent', db_column='Agent9ID', related_name='+', null=True, on_delete=protect_with_blockers)
-    collectionObject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='collectionobjectproperties', null=False, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='collectionobjectproperties', null=False, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'collectionobjectproperty'
@@ -1772,7 +1856,9 @@ class Collectionobjectproperty(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Collectionreltype(model_extras.models.Model):
+class Collectionreltype(models.Model):
+    specify_model = datamodel.get_table('Collectionreltype')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='collectionreltypeid')
 
@@ -1784,10 +1870,10 @@ class Collectionreltype(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    leftSideCollection = models.ForeignKey('Collection', db_column='LeftSideCollectionID', related_name='leftsidereltypes', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    rightSideCollection = models.ForeignKey('Collection', db_column='RightSideCollectionID', related_name='rightsidereltypes', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    leftsidecollection = models.ForeignKey('Collection', db_column='LeftSideCollectionID', related_name='leftsidereltypes', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    rightsidecollection = models.ForeignKey('Collection', db_column='RightSideCollectionID', related_name='rightsidereltypes', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'collectionreltype'
@@ -1795,7 +1881,9 @@ class Collectionreltype(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Collectionrelationship(model_extras.models.Model):
+class Collectionrelationship(models.Model):
+    specify_model = datamodel.get_table('Collectionrelationship')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='collectionrelationshipid')
 
@@ -1807,11 +1895,11 @@ class Collectionrelationship(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    collectionRelType = models.ForeignKey('CollectionRelType', db_column='CollectionRelTypeID', related_name='+', null=True, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    leftSide = models.ForeignKey('CollectionObject', db_column='LeftSideCollectionID', related_name='leftsiderels', null=False, on_delete=models.CASCADE)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    rightSide = models.ForeignKey('CollectionObject', db_column='RightSideCollectionID', related_name='rightsiderels', null=False, on_delete=models.CASCADE)
+    collectionreltype = models.ForeignKey('CollectionRelType', db_column='CollectionRelTypeID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    leftside = models.ForeignKey('CollectionObject', db_column='LeftSideCollectionID', related_name='leftsiderels', null=False, on_delete=models.CASCADE)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    rightside = models.ForeignKey('CollectionObject', db_column='RightSideCollectionID', related_name='rightsiderels', null=False, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'collectionrelationship'
@@ -1819,7 +1907,9 @@ class Collectionrelationship(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Collector(model_extras.models.Model):
+class Collector(models.Model):
+    specify_model = datamodel.get_table('Collector')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='collectorid')
 
@@ -1837,10 +1927,10 @@ class Collector(model_extras.models.Model):
 
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='collectors', null=False, on_delete=protect_with_blockers)
-    collectingEvent = models.ForeignKey('CollectingEvent', db_column='CollectingEventID', related_name='collectors', null=False, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    collectingevent = models.ForeignKey('CollectingEvent', db_column='CollectingEventID', related_name='collectors', null=False, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     division = models.ForeignKey('Division', db_column='DivisionID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'collector'
@@ -1851,7 +1941,9 @@ class Collector(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Commonnametx(model_extras.models.Model):
+class Commonnametx(models.Model):
+    specify_model = datamodel.get_table('Commonnametx')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='commonnametxid')
 
@@ -1866,8 +1958,8 @@ class Commonnametx(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     taxon = models.ForeignKey('Taxon', db_column='TaxonID', related_name='commonnames', null=False, on_delete=models.CASCADE)
 
     class Meta:
@@ -1880,7 +1972,9 @@ class Commonnametx(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Commonnametxcitation(model_extras.models.Model):
+class Commonnametxcitation(models.Model):
+    specify_model = datamodel.get_table('Commonnametxcitation')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='commonnametxcitationid')
 
@@ -1901,10 +1995,10 @@ class Commonnametxcitation(model_extras.models.Model):
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
     # Relationships: Many-to-One
-    commonNameTx = models.ForeignKey('CommonNameTx', db_column='CommonNameTxID', related_name='citations', null=False, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    referenceWork = models.ForeignKey('ReferenceWork', db_column='ReferenceWorkID', related_name='+', null=False, on_delete=protect_with_blockers)
+    commonnametx = models.ForeignKey('CommonNameTx', db_column='CommonNameTxID', related_name='citations', null=False, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    referencework = models.ForeignKey('ReferenceWork', db_column='ReferenceWorkID', related_name='+', null=False, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'commonnametxcitation'
@@ -1912,7 +2006,9 @@ class Commonnametxcitation(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Conservdescription(model_extras.models.Model):
+class Conservdescription(models.Model):
+    specify_model = datamodel.get_table('Conservdescription')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='conservdescriptionid')
 
@@ -1966,10 +2062,10 @@ class Conservdescription(model_extras.models.Model):
     yesno5 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo5', db_index=False)
 
     # Relationships: Many-to-One
-    collectionObject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='conservdescriptions', null=True, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='conservdescriptions', null=True, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     division = models.ForeignKey('Division', db_column='DivisionID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     preparation = models.ForeignKey('Preparation', db_column='PreparationID', related_name='conservdescriptions', null=True, on_delete=protect_with_blockers)
 
     class Meta:
@@ -1981,7 +2077,9 @@ class Conservdescription(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Conservdescriptionattachment(model_extras.models.Model):
+class Conservdescriptionattachment(models.Model):
+    specify_model = datamodel.get_table('Conservdescriptionattachment')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='conservdescriptionattachmentid')
 
@@ -1994,9 +2092,9 @@ class Conservdescriptionattachment(model_extras.models.Model):
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='conservdescriptionattachments', null=False, on_delete=protect_with_blockers)
-    conservDescription = models.ForeignKey('ConservDescription', db_column='ConservDescriptionID', related_name='conservdescriptionattachments', null=False, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    conservdescription = models.ForeignKey('ConservDescription', db_column='ConservDescriptionID', related_name='conservdescriptionattachments', null=False, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'conservdescriptionattachment'
@@ -2004,7 +2102,9 @@ class Conservdescriptionattachment(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Conservevent(model_extras.models.Model):
+class Conservevent(models.Model):
+    specify_model = datamodel.get_table('Conservevent')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='conserveventid')
 
@@ -2035,12 +2135,12 @@ class Conservevent(model_extras.models.Model):
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
     # Relationships: Many-to-One
-    conservDescription = models.ForeignKey('ConservDescription', db_column='ConservDescriptionID', related_name='events', null=False, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    conservdescription = models.ForeignKey('ConservDescription', db_column='ConservDescriptionID', related_name='events', null=False, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     curator = models.ForeignKey('Agent', db_column='CuratorID', related_name='+', null=True, on_delete=protect_with_blockers)
-    examinedByAgent = models.ForeignKey('Agent', db_column='ExaminedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    treatedByAgent = models.ForeignKey('Agent', db_column='TreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    examinedbyagent = models.ForeignKey('Agent', db_column='ExaminedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    treatedbyagent = models.ForeignKey('Agent', db_column='TreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'conservevent'
@@ -2052,7 +2152,9 @@ class Conservevent(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Conserveventattachment(model_extras.models.Model):
+class Conserveventattachment(models.Model):
+    specify_model = datamodel.get_table('Conserveventattachment')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='conserveventattachmentid')
 
@@ -2065,9 +2167,9 @@ class Conserveventattachment(model_extras.models.Model):
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='conserveventattachments', null=False, on_delete=protect_with_blockers)
-    conservEvent = models.ForeignKey('ConservEvent', db_column='ConservEventID', related_name='conserveventattachments', null=False, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    conservevent = models.ForeignKey('ConservEvent', db_column='ConservEventID', related_name='conserveventattachments', null=False, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'conserveventattachment'
@@ -2075,7 +2177,9 @@ class Conserveventattachment(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Container(model_extras.models.Model):
+class Container(models.Model):
+    specify_model = datamodel.get_table('Container')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='containerid')
 
@@ -2090,8 +2194,8 @@ class Container(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     parent = models.ForeignKey('Container', db_column='ParentID', related_name='children', null=True, on_delete=protect_with_blockers)
     storage = models.ForeignKey('Storage', db_column='StorageID', related_name='containers', null=True, on_delete=protect_with_blockers)
 
@@ -2105,7 +2209,9 @@ class Container(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Dnaprimer(model_extras.models.Model):
+class Dnaprimer(models.Model):
+    specify_model = datamodel.get_table('Dnaprimer')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='dnaprimerid')
 
@@ -2140,8 +2246,8 @@ class Dnaprimer(model_extras.models.Model):
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'dnaprimer'
@@ -2152,7 +2258,9 @@ class Dnaprimer(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Dnasequence(model_extras.models.Model):
+class Dnasequence(models.Model):
+    specify_model = datamodel.get_table('Dnasequence')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='dnasequenceid')
 
@@ -2191,11 +2299,11 @@ class Dnasequence(model_extras.models.Model):
     yesno3 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo3', db_index=False)
 
     # Relationships: Many-to-One
-    collectionObject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='dnasequences', null=True, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='dnasequences', null=True, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     extractor = models.ForeignKey('Agent', db_column='ExtractorID', related_name='+', null=True, on_delete=protect_with_blockers)
-    materialSample = models.ForeignKey('MaterialSample', db_column='MaterialSampleID', related_name='dnasequences', null=True, on_delete=models.CASCADE)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    materialsample = models.ForeignKey('MaterialSample', db_column='MaterialSampleID', related_name='dnasequences', null=True, on_delete=models.CASCADE)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     sequencer = models.ForeignKey('Agent', db_column='AgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
@@ -2209,7 +2317,9 @@ class Dnasequence(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Dnasequenceattachment(model_extras.models.Model):
+class Dnasequenceattachment(models.Model):
+    specify_model = datamodel.get_table('Dnasequenceattachment')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='dnasequenceattachmentid')
 
@@ -2222,9 +2332,9 @@ class Dnasequenceattachment(model_extras.models.Model):
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='dnasequenceattachments', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    dnaSequence = models.ForeignKey('DNASequence', db_column='DnaSequenceID', related_name='attachments', null=False, on_delete=models.CASCADE)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    dnasequence = models.ForeignKey('DNASequence', db_column='DnaSequenceID', related_name='attachments', null=False, on_delete=models.CASCADE)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'dnasequenceattachment'
@@ -2232,7 +2342,9 @@ class Dnasequenceattachment(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Dnasequencingrun(model_extras.models.Model):
+class Dnasequencingrun(models.Model):
+    specify_model = datamodel.get_table('Dnasequencingrun')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='dnasequencingrunid')
 
@@ -2272,12 +2384,12 @@ class Dnasequencingrun(model_extras.models.Model):
     yesno3 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo3', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    dnaPrimer = models.ForeignKey('DNAPrimer', db_column='DNAPrimerID', related_name='dnasequencingruns', null=True, on_delete=protect_with_blockers)
-    dnaSequence = models.ForeignKey('DNASequence', db_column='DNASequenceID', related_name='dnasequencingruns', null=False, on_delete=models.CASCADE)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    preparedByAgent = models.ForeignKey('Agent', db_column='PreparedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    runByAgent = models.ForeignKey('Agent', db_column='RunByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    dnaprimer = models.ForeignKey('DNAPrimer', db_column='DNAPrimerID', related_name='dnasequencingruns', null=True, on_delete=protect_with_blockers)
+    dnasequence = models.ForeignKey('DNASequence', db_column='DNASequenceID', related_name='dnasequencingruns', null=False, on_delete=models.CASCADE)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    preparedbyagent = models.ForeignKey('Agent', db_column='PreparedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    runbyagent = models.ForeignKey('Agent', db_column='RunByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'dnasequencingrun'
@@ -2285,7 +2397,9 @@ class Dnasequencingrun(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Dnasequencingrunattachment(model_extras.models.Model):
+class Dnasequencingrunattachment(models.Model):
+    specify_model = datamodel.get_table('Dnasequencingrunattachment')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='dnasequencingrunattachmentid')
 
@@ -2298,9 +2412,9 @@ class Dnasequencingrunattachment(model_extras.models.Model):
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='dnasequencingrunattachments', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    dnaSequencingRun = models.ForeignKey('DNASequencingRun', db_column='DnaSequencingRunID', related_name='attachments', null=False, on_delete=models.CASCADE)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    dnasequencingrun = models.ForeignKey('DNASequencingRun', db_column='DnaSequencingRunID', related_name='attachments', null=False, on_delete=models.CASCADE)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'dnasequencerunattachment'
@@ -2308,7 +2422,9 @@ class Dnasequencingrunattachment(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Dnasequencingruncitation(model_extras.models.Model):
+class Dnasequencingruncitation(models.Model):
+    specify_model = datamodel.get_table('Dnasequencingruncitation')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='dnasequencingruncitationid')
 
@@ -2329,10 +2445,10 @@ class Dnasequencingruncitation(model_extras.models.Model):
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    referenceWork = models.ForeignKey('ReferenceWork', db_column='ReferenceWorkID', related_name='+', null=False, on_delete=protect_with_blockers)
-    sequencingRun = models.ForeignKey('DNASequencingRun', db_column='DNASequencingRunID', related_name='citations', null=False, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    referencework = models.ForeignKey('ReferenceWork', db_column='ReferenceWorkID', related_name='+', null=False, on_delete=protect_with_blockers)
+    sequencingrun = models.ForeignKey('DNASequencingRun', db_column='DNASequencingRunID', related_name='citations', null=False, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'dnasequencingruncitation'
@@ -2340,7 +2456,9 @@ class Dnasequencingruncitation(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Datatype(model_extras.models.Model):
+class Datatype(models.Model):
+    specify_model = datamodel.get_table('Datatype')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='datatypeid')
 
@@ -2351,8 +2469,8 @@ class Datatype(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'datatype'
@@ -2360,7 +2478,9 @@ class Datatype(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Deaccession(model_extras.models.Model):
+class Deaccession(models.Model):
+    specify_model = datamodel.get_table('Deaccession')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='deaccessionid')
 
@@ -2399,8 +2519,8 @@ class Deaccession(model_extras.models.Model):
     # Relationships: Many-to-One
     agent1 = models.ForeignKey('Agent', db_column='Agent1ID', related_name='+', null=True, on_delete=protect_with_blockers)
     agent2 = models.ForeignKey('Agent', db_column='Agent2ID', related_name='+', null=True, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'deaccession'
@@ -2412,7 +2532,9 @@ class Deaccession(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Deaccessionagent(model_extras.models.Model):
+class Deaccessionagent(models.Model):
+    specify_model = datamodel.get_table('Deaccessionagent')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='deaccessionagentid')
 
@@ -2425,9 +2547,9 @@ class Deaccessionagent(model_extras.models.Model):
 
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='+', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     deaccession = models.ForeignKey('Deaccession', db_column='DeaccessionID', related_name='deaccessionagents', null=False, on_delete=models.CASCADE)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'deaccessionagent'
@@ -2435,7 +2557,9 @@ class Deaccessionagent(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Deaccessionattachment(model_extras.models.Model):
+class Deaccessionattachment(models.Model):
+    specify_model = datamodel.get_table('Deaccessionattachment')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='deaccessionattachmentid')
 
@@ -2448,9 +2572,9 @@ class Deaccessionattachment(model_extras.models.Model):
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='deaccessionattachments', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     deaccession = models.ForeignKey('Deaccession', db_column='DeaccessionID', related_name='deaccessionattachments', null=False, on_delete=models.CASCADE)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'deaccessionattachment'
@@ -2458,7 +2582,9 @@ class Deaccessionattachment(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Determination(model_extras.models.Model):
+class Determination(models.Model):
+    specify_model = datamodel.get_table('Determination')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='determinationid')
 
@@ -2507,11 +2633,11 @@ class Determination(model_extras.models.Model):
     yesno5 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo5', db_index=False)
 
     # Relationships: Many-to-One
-    collectionObject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='determinations', null=False, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='determinations', null=False, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     determiner = models.ForeignKey('Agent', db_column='DeterminerID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    preferredTaxon = models.ForeignKey('Taxon', db_column='PreferredTaxonID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    preferredtaxon = models.ForeignKey('Taxon', db_column='PreferredTaxonID', related_name='+', null=True, on_delete=protect_with_blockers)
     taxon = models.ForeignKey('Taxon', db_column='TaxonID', related_name='determinations', null=True, on_delete=protect_with_blockers)
 
     class Meta:
@@ -2527,7 +2653,9 @@ class Determination(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Determinationcitation(model_extras.models.Model):
+class Determinationcitation(models.Model):
+    specify_model = datamodel.get_table('Determinationcitation')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='determinationcitationid')
 
@@ -2543,10 +2671,10 @@ class Determinationcitation(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     determination = models.ForeignKey('Determination', db_column='DeterminationID', related_name='determinationcitations', null=False, on_delete=models.CASCADE)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    referenceWork = models.ForeignKey('ReferenceWork', db_column='ReferenceWorkID', related_name='determinationcitations', null=False, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    referencework = models.ForeignKey('ReferenceWork', db_column='ReferenceWorkID', related_name='determinationcitations', null=False, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'determinationcitation'
@@ -2557,7 +2685,9 @@ class Determinationcitation(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Determiner(model_extras.models.Model):
+class Determiner(models.Model):
+    specify_model = datamodel.get_table('Determiner')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='determinerid')
 
@@ -2575,9 +2705,9 @@ class Determiner(model_extras.models.Model):
 
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='+', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     determination = models.ForeignKey('Determination', db_column='DeterminationID', related_name='determiners', null=False, on_delete=models.CASCADE)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'determiner'
@@ -2585,7 +2715,9 @@ class Determiner(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Discipline(model_extras.models.Model):
+class Discipline(models.Model):
+    specify_model = datamodel.get_table('Discipline')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='usergroupscopeid')
 
@@ -2603,13 +2735,13 @@ class Discipline(model_extras.models.Model):
     taxonTreeDef = models.OneToOneField('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='discipline', null=True, on_delete=protect_with_blockers)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    dataType = models.ForeignKey('DataType', db_column='DataTypeID', related_name='+', null=False, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    datatype = models.ForeignKey('DataType', db_column='DataTypeID', related_name='+', null=False, on_delete=protect_with_blockers)
     division = models.ForeignKey('Division', db_column='DivisionID', related_name='disciplines', null=False, on_delete=protect_with_blockers)
-    geographyTreeDef = models.ForeignKey('GeographyTreeDef', db_column='GeographyTreeDefID', related_name='disciplines', null=False, on_delete=protect_with_blockers)
-    geologicTimePeriodTreeDef = models.ForeignKey('GeologicTimePeriodTreeDef', db_column='GeologicTimePeriodTreeDefID', related_name='disciplines', null=False, on_delete=protect_with_blockers)
-    lithoStratTreeDef = models.ForeignKey('LithoStratTreeDef', db_column='LithoStratTreeDefID', related_name='disciplines', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    geographytreedef = models.ForeignKey('GeographyTreeDef', db_column='GeographyTreeDefID', related_name='disciplines', null=False, on_delete=protect_with_blockers)
+    geologictimeperiodtreedef = models.ForeignKey('GeologicTimePeriodTreeDef', db_column='GeologicTimePeriodTreeDefID', related_name='disciplines', null=False, on_delete=protect_with_blockers)
+    lithostrattreedef = models.ForeignKey('LithoStratTreeDef', db_column='LithoStratTreeDefID', related_name='disciplines', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'discipline'
@@ -2620,7 +2752,9 @@ class Discipline(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Disposal(model_extras.models.Model):
+class Disposal(models.Model):
+    specify_model = datamodel.get_table('Disposal')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='disposalid')
 
@@ -2641,9 +2775,9 @@ class Disposal(model_extras.models.Model):
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     deaccession = models.ForeignKey('Deaccession', db_column='DeaccessionID', related_name='disposals', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'disposal'
@@ -2655,7 +2789,9 @@ class Disposal(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Disposalagent(model_extras.models.Model):
+class Disposalagent(models.Model):
+    specify_model = datamodel.get_table('Disposalagent')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='disposalagentid')
 
@@ -2668,9 +2804,9 @@ class Disposalagent(model_extras.models.Model):
 
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='+', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     disposal = models.ForeignKey('Disposal', db_column='DisposalID', related_name='disposalagents', null=False, on_delete=models.CASCADE)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'disposalagent'
@@ -2678,7 +2814,9 @@ class Disposalagent(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Disposalattachment(model_extras.models.Model):
+class Disposalattachment(models.Model):
+    specify_model = datamodel.get_table('Disposalattachment')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='disposalattachmentid')
 
@@ -2691,9 +2829,9 @@ class Disposalattachment(model_extras.models.Model):
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='disposalattachments', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     disposal = models.ForeignKey('Disposal', db_column='DisposalID', related_name='disposalattachments', null=False, on_delete=models.CASCADE)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'disposalattachment'
@@ -2701,7 +2839,9 @@ class Disposalattachment(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Disposalpreparation(model_extras.models.Model):
+class Disposalpreparation(models.Model):
+    specify_model = datamodel.get_table('Disposalpreparation')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='disposalpreparationid')
 
@@ -2713,10 +2853,10 @@ class Disposalpreparation(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     disposal = models.ForeignKey('Disposal', db_column='DisposalID', related_name='disposalpreparations', null=False, on_delete=models.CASCADE)
-    loanReturnPreparation = models.ForeignKey('LoanReturnPreparation', db_column='LoanReturnPreparationID', related_name='disposalpreparations', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    loanreturnpreparation = models.ForeignKey('LoanReturnPreparation', db_column='LoanReturnPreparationID', related_name='disposalpreparations', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     preparation = models.ForeignKey('Preparation', db_column='PreparationID', related_name='disposalpreparations', null=True, on_delete=protect_with_blockers)
 
     class Meta:
@@ -2725,7 +2865,9 @@ class Disposalpreparation(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Division(model_extras.models.Model):
+class Division(models.Model):
+    specify_model = datamodel.get_table('Division')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='usergroupscopeid')
 
@@ -2745,9 +2887,9 @@ class Division(model_extras.models.Model):
 
     # Relationships: Many-to-One
     address = models.ForeignKey('Address', db_column='AddressID', related_name='divisions', null=True, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     institution = models.ForeignKey('Institution', db_column='InstitutionID', related_name='divisions', null=False, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'division'
@@ -2758,7 +2900,9 @@ class Division(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Exchangein(model_extras.models.Model):
+class Exchangein(models.Model):
+    specify_model = datamodel.get_table('Exchangein')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='exchangeinid')
 
@@ -2782,12 +2926,12 @@ class Exchangein(model_extras.models.Model):
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
     # Relationships: Many-to-One
-    addressOfRecord = models.ForeignKey('AddressOfRecord', db_column='AddressOfRecordID', related_name='exchangeins', null=True, on_delete=protect_with_blockers)
-    agentCatalogedBy = models.ForeignKey('Agent', db_column='CatalogedByID', related_name='+', null=False, on_delete=protect_with_blockers)
-    agentReceivedFrom = models.ForeignKey('Agent', db_column='ReceivedFromOrganizationID', related_name='+', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    addressofrecord = models.ForeignKey('AddressOfRecord', db_column='AddressOfRecordID', related_name='exchangeins', null=True, on_delete=protect_with_blockers)
+    agentcatalogedby = models.ForeignKey('Agent', db_column='CatalogedByID', related_name='+', null=False, on_delete=protect_with_blockers)
+    agentreceivedfrom = models.ForeignKey('Agent', db_column='ReceivedFromOrganizationID', related_name='+', null=False, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     division = models.ForeignKey('Division', db_column='DivisionID', related_name='+', null=False, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'exchangein'
@@ -2799,7 +2943,9 @@ class Exchangein(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Exchangeinattachment(model_extras.models.Model):
+class Exchangeinattachment(models.Model):
+    specify_model = datamodel.get_table('Exchangeinattachment')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='exchangeinattachmentid')
 
@@ -2812,9 +2958,9 @@ class Exchangeinattachment(model_extras.models.Model):
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='exchangeinattachments', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    exchangeIn = models.ForeignKey('ExchangeIn', db_column='ExchangeInID', related_name='exchangeinattachments', null=False, on_delete=models.CASCADE)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    exchangein = models.ForeignKey('ExchangeIn', db_column='ExchangeInID', related_name='exchangeinattachments', null=False, on_delete=models.CASCADE)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'exchangeinattachment'
@@ -2822,7 +2968,9 @@ class Exchangeinattachment(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Exchangeinprep(model_extras.models.Model):
+class Exchangeinprep(models.Model):
+    specify_model = datamodel.get_table('Exchangeinprep')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='exchangeinprepid')
 
@@ -2838,10 +2986,10 @@ class Exchangeinprep(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=False, on_delete=protect_with_blockers)
-    exchangeIn = models.ForeignKey('ExchangeIn', db_column='ExchangeInID', related_name='exchangeinpreps', null=True, on_delete=models.CASCADE)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    exchangein = models.ForeignKey('ExchangeIn', db_column='ExchangeInID', related_name='exchangeinpreps', null=True, on_delete=models.CASCADE)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     preparation = models.ForeignKey('Preparation', db_column='PreparationID', related_name='exchangeinpreps', null=True, on_delete=protect_with_blockers)
 
     class Meta:
@@ -2853,7 +3001,9 @@ class Exchangeinprep(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Exchangeout(model_extras.models.Model):
+class Exchangeout(models.Model):
+    specify_model = datamodel.get_table('Exchangeout')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='exchangeoutid')
 
@@ -2877,13 +3027,13 @@ class Exchangeout(model_extras.models.Model):
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
     # Relationships: Many-to-One
-    addressOfRecord = models.ForeignKey('AddressOfRecord', db_column='AddressOfRecordID', related_name='exchangeouts', null=True, on_delete=protect_with_blockers)
-    agentCatalogedBy = models.ForeignKey('Agent', db_column='CatalogedByID', related_name='+', null=False, on_delete=protect_with_blockers)
-    agentSentTo = models.ForeignKey('Agent', db_column='SentToOrganizationID', related_name='+', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    addressofrecord = models.ForeignKey('AddressOfRecord', db_column='AddressOfRecordID', related_name='exchangeouts', null=True, on_delete=protect_with_blockers)
+    agentcatalogedby = models.ForeignKey('Agent', db_column='CatalogedByID', related_name='+', null=False, on_delete=protect_with_blockers)
+    agentsentto = models.ForeignKey('Agent', db_column='SentToOrganizationID', related_name='+', null=False, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     deaccession = models.ForeignKey('Deaccession', db_column='DeaccessionID', related_name='exchangeouts', null=True, on_delete=protect_with_blockers)
     division = models.ForeignKey('Division', db_column='DivisionID', related_name='+', null=False, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'exchangeout'
@@ -2896,7 +3046,9 @@ class Exchangeout(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Exchangeoutattachment(model_extras.models.Model):
+class Exchangeoutattachment(models.Model):
+    specify_model = datamodel.get_table('Exchangeoutattachment')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='exchangeoutattachmentid')
 
@@ -2909,9 +3061,9 @@ class Exchangeoutattachment(model_extras.models.Model):
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='exchangeoutattachments', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    exchangeOut = models.ForeignKey('ExchangeOut', db_column='ExchangeOutID', related_name='exchangeoutattachments', null=False, on_delete=models.CASCADE)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    exchangeout = models.ForeignKey('ExchangeOut', db_column='ExchangeOutID', related_name='exchangeoutattachments', null=False, on_delete=models.CASCADE)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'exchangeoutattachment'
@@ -2919,7 +3071,9 @@ class Exchangeoutattachment(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Exchangeoutprep(model_extras.models.Model):
+class Exchangeoutprep(models.Model):
+    specify_model = datamodel.get_table('Exchangeoutprep')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='exchangeoutprepid')
 
@@ -2935,10 +3089,10 @@ class Exchangeoutprep(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=False, on_delete=protect_with_blockers)
-    exchangeOut = models.ForeignKey('ExchangeOut', db_column='ExchangeOutID', related_name='exchangeoutpreps', null=True, on_delete=models.CASCADE)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    exchangeout = models.ForeignKey('ExchangeOut', db_column='ExchangeOutID', related_name='exchangeoutpreps', null=True, on_delete=models.CASCADE)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     preparation = models.ForeignKey('Preparation', db_column='PreparationID', related_name='exchangeoutpreps', null=True, on_delete=protect_with_blockers)
 
     class Meta:
@@ -2950,7 +3104,9 @@ class Exchangeoutprep(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Exsiccata(model_extras.models.Model):
+class Exsiccata(models.Model):
+    specify_model = datamodel.get_table('Exsiccata')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='exsiccataid')
 
@@ -2963,9 +3119,9 @@ class Exsiccata(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    referenceWork = models.ForeignKey('ReferenceWork', db_column='ReferenceWorkID', related_name='exsiccatae', null=False, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    referencework = models.ForeignKey('ReferenceWork', db_column='ReferenceWorkID', related_name='exsiccatae', null=False, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'exsiccata'
@@ -2973,7 +3129,9 @@ class Exsiccata(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Exsiccataitem(model_extras.models.Model):
+class Exsiccataitem(models.Model):
+    specify_model = datamodel.get_table('Exsiccataitem')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='exsiccataitemid')
 
@@ -2985,10 +3143,10 @@ class Exsiccataitem(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    collectionObject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='exsiccataitems', null=False, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='exsiccataitems', null=False, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     exsiccata = models.ForeignKey('Exsiccata', db_column='ExsiccataID', related_name='exsiccataitems', null=False, on_delete=models.CASCADE)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'exsiccataitem'
@@ -2996,7 +3154,9 @@ class Exsiccataitem(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Extractor(model_extras.models.Model):
+class Extractor(models.Model):
+    specify_model = datamodel.get_table('Extractor')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='extractorid')
 
@@ -3013,9 +3173,9 @@ class Extractor(model_extras.models.Model):
 
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='+', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    dnaSequence = models.ForeignKey('DNASequence', db_column='DNASequenceID', related_name='extractors', null=False, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    dnasequence = models.ForeignKey('DNASequence', db_column='DNASequenceID', related_name='extractors', null=False, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'extractor'
@@ -3023,7 +3183,9 @@ class Extractor(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Fieldnotebook(model_extras.models.Model):
+class Fieldnotebook(models.Model):
+    specify_model = datamodel.get_table('Fieldnotebook')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='fieldnotebookid')
 
@@ -3039,10 +3201,10 @@ class Fieldnotebook(model_extras.models.Model):
 
     # Relationships: Many-to-One
     collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='+', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=False, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    ownerAgent = models.ForeignKey('Agent', db_column='AgentID', related_name='+', null=False, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    owneragent = models.ForeignKey('Agent', db_column='AgentID', related_name='+', null=False, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'fieldnotebook'
@@ -3055,7 +3217,9 @@ class Fieldnotebook(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Fieldnotebookattachment(model_extras.models.Model):
+class Fieldnotebookattachment(models.Model):
+    specify_model = datamodel.get_table('Fieldnotebookattachment')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='fieldnotebookattachmentid')
 
@@ -3068,9 +3232,9 @@ class Fieldnotebookattachment(model_extras.models.Model):
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='fieldnotebookattachments', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    fieldNotebook = models.ForeignKey('FieldNotebook', db_column='FieldNotebookID', related_name='attachments', null=False, on_delete=models.CASCADE)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    fieldnotebook = models.ForeignKey('FieldNotebook', db_column='FieldNotebookID', related_name='attachments', null=False, on_delete=models.CASCADE)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'fieldnotebookattachment'
@@ -3078,7 +3242,9 @@ class Fieldnotebookattachment(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Fieldnotebookpage(model_extras.models.Model):
+class Fieldnotebookpage(models.Model):
+    specify_model = datamodel.get_table('Fieldnotebookpage')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='fieldnotebookpageid')
 
@@ -3091,10 +3257,10 @@ class Fieldnotebookpage(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=False, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    pageSet = models.ForeignKey('FieldNotebookPageSet', db_column='FieldNotebookPageSetID', related_name='pages', null=True, on_delete=models.CASCADE)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    pageset = models.ForeignKey('FieldNotebookPageSet', db_column='FieldNotebookPageSetID', related_name='pages', null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'fieldnotebookpage'
@@ -3106,7 +3272,9 @@ class Fieldnotebookpage(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Fieldnotebookpageattachment(model_extras.models.Model):
+class Fieldnotebookpageattachment(models.Model):
+    specify_model = datamodel.get_table('Fieldnotebookpageattachment')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='fieldnotebookpageattachmentid')
 
@@ -3119,9 +3287,9 @@ class Fieldnotebookpageattachment(model_extras.models.Model):
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='fieldnotebookpageattachments', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    fieldNotebookPage = models.ForeignKey('FieldNotebookPage', db_column='FieldNotebookPageID', related_name='attachments', null=False, on_delete=models.CASCADE)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    fieldnotebookpage = models.ForeignKey('FieldNotebookPage', db_column='FieldNotebookPageID', related_name='attachments', null=False, on_delete=models.CASCADE)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'fieldnotebookpageattachment'
@@ -3129,7 +3297,9 @@ class Fieldnotebookpageattachment(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Fieldnotebookpageset(model_extras.models.Model):
+class Fieldnotebookpageset(models.Model):
+    specify_model = datamodel.get_table('Fieldnotebookpageset')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='fieldnotebookpagesetid')
 
@@ -3144,11 +3314,11 @@ class Fieldnotebookpageset(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=False, on_delete=protect_with_blockers)
-    fieldNotebook = models.ForeignKey('FieldNotebook', db_column='FieldNotebookID', related_name='pagesets', null=True, on_delete=models.CASCADE)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    sourceAgent = models.ForeignKey('Agent', db_column='AgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    fieldnotebook = models.ForeignKey('FieldNotebook', db_column='FieldNotebookID', related_name='pagesets', null=True, on_delete=models.CASCADE)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    sourceagent = models.ForeignKey('Agent', db_column='AgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'fieldnotebookpageset'
@@ -3160,7 +3330,9 @@ class Fieldnotebookpageset(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Fieldnotebookpagesetattachment(model_extras.models.Model):
+class Fieldnotebookpagesetattachment(models.Model):
+    specify_model = datamodel.get_table('Fieldnotebookpagesetattachment')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='fieldnotebookpagesetattachmentid')
 
@@ -3173,9 +3345,9 @@ class Fieldnotebookpagesetattachment(model_extras.models.Model):
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='fieldnotebookpagesetattachments', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    fieldNotebookPageSet = models.ForeignKey('FieldNotebookPageSet', db_column='FieldNotebookPageSetID', related_name='attachments', null=False, on_delete=models.CASCADE)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    fieldnotebookpageset = models.ForeignKey('FieldNotebookPageSet', db_column='FieldNotebookPageSetID', related_name='attachments', null=False, on_delete=models.CASCADE)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'fieldnotebookpagesetattachment'
@@ -3183,7 +3355,9 @@ class Fieldnotebookpagesetattachment(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Fundingagent(model_extras.models.Model):
+class Fundingagent(models.Model):
+    specify_model = datamodel.get_table('Fundingagent')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='fundingagentid')
 
@@ -3198,10 +3372,10 @@ class Fundingagent(model_extras.models.Model):
 
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='+', null=False, on_delete=protect_with_blockers)
-    collectingTrip = models.ForeignKey('CollectingTrip', db_column='CollectingTripID', related_name='fundingagents', null=False, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    collectingtrip = models.ForeignKey('CollectingTrip', db_column='CollectingTripID', related_name='fundingagents', null=False, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     division = models.ForeignKey('Division', db_column='DivisionID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'fundingagent'
@@ -3212,7 +3386,9 @@ class Fundingagent(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Geocoorddetail(model_extras.models.Model):
+class Geocoorddetail(models.Model):
+    specify_model = datamodel.get_table('Geocoorddetail')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='geocoorddetailid')
 
@@ -3259,11 +3435,11 @@ class Geocoorddetail(model_extras.models.Model):
     yesno5 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo5', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    geoRefCompiledBy = models.ForeignKey('Agent', db_column='CompiledByID', related_name='+', null=True, on_delete=protect_with_blockers)
-    geoRefDetBy = models.ForeignKey('Agent', db_column='AgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    georefcompiledby = models.ForeignKey('Agent', db_column='CompiledByID', related_name='+', null=True, on_delete=protect_with_blockers)
+    georefdetby = models.ForeignKey('Agent', db_column='AgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     locality = models.ForeignKey('Locality', db_column='LocalityID', related_name='geocoorddetails', null=True, on_delete=models.CASCADE)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'geocoorddetail'
@@ -3272,6 +3448,8 @@ class Geocoorddetail(model_extras.models.Model):
     save = partialmethod(custom_save)
 
 class Geography(model_extras.Geography):
+    specify_model = datamodel.get_table('Geography')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='geographyid')
 
@@ -3301,11 +3479,11 @@ class Geography(model_extras.Geography):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    acceptedGeography = models.ForeignKey('Geography', db_column='AcceptedID', related_name='acceptedchildren', null=True, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    acceptedgeography = models.ForeignKey('Geography', db_column='AcceptedID', related_name='acceptedchildren', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     definition = models.ForeignKey('GeographyTreeDef', db_column='GeographyTreeDefID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
-    definitionItem = models.ForeignKey('GeographyTreeDefItem', db_column='GeographyTreeDefItemID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    definitionitem = models.ForeignKey('GeographyTreeDefItem', db_column='GeographyTreeDefItemID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     parent = models.ForeignKey('Geography', db_column='ParentID', related_name='children', null=True, on_delete=protect_with_blockers)
 
     class Meta:
@@ -3318,7 +3496,9 @@ class Geography(model_extras.Geography):
 
     save = partialmethod(custom_save)
 
-class Geographytreedef(model_extras.models.Model):
+class Geographytreedef(models.Model):
+    specify_model = datamodel.get_table('Geographytreedef')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='geographytreedefid')
 
@@ -3331,8 +3511,8 @@ class Geographytreedef(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'geographytreedef'
@@ -3340,7 +3520,9 @@ class Geographytreedef(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Geographytreedefitem(model_extras.models.Model):
+class Geographytreedefitem(models.Model):
+    specify_model = datamodel.get_table('Geographytreedefitem')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='geographytreedefitemid')
 
@@ -3359,10 +3541,10 @@ class Geographytreedefitem(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     parent = models.ForeignKey('GeographyTreeDefItem', db_column='ParentItemID', related_name='children', null=True, on_delete=protect_with_blockers)
-    treeDef = models.ForeignKey('GeographyTreeDef', db_column='GeographyTreeDefID', related_name='treedefitems', null=False, on_delete=protect_with_blockers)
+    treedef = models.ForeignKey('GeographyTreeDef', db_column='GeographyTreeDefID', related_name='treedefitems', null=False, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'geographytreedefitem'
@@ -3371,6 +3553,8 @@ class Geographytreedefitem(model_extras.models.Model):
     save = partialmethod(custom_save)
 
 class Geologictimeperiod(model_extras.Geologictimeperiod):
+    specify_model = datamodel.get_table('Geologictimeperiod')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='geologictimeperiodid')
 
@@ -3396,11 +3580,11 @@ class Geologictimeperiod(model_extras.Geologictimeperiod):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    acceptedGeologicTimePeriod = models.ForeignKey('GeologicTimePeriod', db_column='AcceptedID', related_name='acceptedchildren', null=True, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    acceptedgeologictimeperiod = models.ForeignKey('GeologicTimePeriod', db_column='AcceptedID', related_name='acceptedchildren', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     definition = models.ForeignKey('GeologicTimePeriodTreeDef', db_column='GeologicTimePeriodTreeDefID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
-    definitionItem = models.ForeignKey('GeologicTimePeriodTreeDefItem', db_column='GeologicTimePeriodTreeDefItemID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    definitionitem = models.ForeignKey('GeologicTimePeriodTreeDefItem', db_column='GeologicTimePeriodTreeDefItemID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     parent = models.ForeignKey('GeologicTimePeriod', db_column='ParentID', related_name='children', null=True, on_delete=protect_with_blockers)
 
     class Meta:
@@ -3414,7 +3598,9 @@ class Geologictimeperiod(model_extras.Geologictimeperiod):
 
     save = partialmethod(custom_save)
 
-class Geologictimeperiodtreedef(model_extras.models.Model):
+class Geologictimeperiodtreedef(models.Model):
+    specify_model = datamodel.get_table('Geologictimeperiodtreedef')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='geologictimeperiodtreedefid')
 
@@ -3427,8 +3613,8 @@ class Geologictimeperiodtreedef(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'geologictimeperiodtreedef'
@@ -3436,7 +3622,9 @@ class Geologictimeperiodtreedef(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Geologictimeperiodtreedefitem(model_extras.models.Model):
+class Geologictimeperiodtreedefitem(models.Model):
+    specify_model = datamodel.get_table('Geologictimeperiodtreedefitem')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='geologictimeperiodtreedefitemid')
 
@@ -3455,10 +3643,10 @@ class Geologictimeperiodtreedefitem(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     parent = models.ForeignKey('GeologicTimePeriodTreeDefItem', db_column='ParentItemID', related_name='children', null=True, on_delete=protect_with_blockers)
-    treeDef = models.ForeignKey('GeologicTimePeriodTreeDef', db_column='GeologicTimePeriodTreeDefID', related_name='treedefitems', null=False, on_delete=protect_with_blockers)
+    treedef = models.ForeignKey('GeologicTimePeriodTreeDef', db_column='GeologicTimePeriodTreeDefID', related_name='treedefitems', null=False, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'geologictimeperiodtreedefitem'
@@ -3466,7 +3654,9 @@ class Geologictimeperiodtreedefitem(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Gift(model_extras.models.Model):
+class Gift(models.Model):
+    specify_model = datamodel.get_table('Gift')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='giftid')
 
@@ -3502,12 +3692,12 @@ class Gift(model_extras.models.Model):
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
     # Relationships: Many-to-One
-    addressOfRecord = models.ForeignKey('AddressOfRecord', db_column='AddressOfRecordID', related_name='+', null=True, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    addressofrecord = models.ForeignKey('AddressOfRecord', db_column='AddressOfRecordID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     deaccession = models.ForeignKey('Deaccession', db_column='DeaccessionID', related_name='gifts', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=False, on_delete=protect_with_blockers)
     division = models.ForeignKey('Division', db_column='DivisionID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'gift'
@@ -3519,7 +3709,9 @@ class Gift(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Giftagent(model_extras.models.Model):
+class Giftagent(models.Model):
+    specify_model = datamodel.get_table('Giftagent')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='giftagentid')
 
@@ -3533,10 +3725,10 @@ class Giftagent(model_extras.models.Model):
 
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='+', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=False, on_delete=protect_with_blockers)
     gift = models.ForeignKey('Gift', db_column='GiftID', related_name='giftagents', null=False, on_delete=models.CASCADE)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'giftagent'
@@ -3547,7 +3739,9 @@ class Giftagent(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Giftattachment(model_extras.models.Model):
+class Giftattachment(models.Model):
+    specify_model = datamodel.get_table('Giftattachment')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='giftattachmentid')
 
@@ -3560,9 +3754,9 @@ class Giftattachment(model_extras.models.Model):
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='giftattachments', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     gift = models.ForeignKey('Gift', db_column='GiftID', related_name='giftattachments', null=False, on_delete=models.CASCADE)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'giftattachment'
@@ -3570,7 +3764,9 @@ class Giftattachment(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Giftpreparation(model_extras.models.Model):
+class Giftpreparation(models.Model):
+    specify_model = datamodel.get_table('Giftpreparation')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='giftpreparationid')
 
@@ -3590,10 +3786,10 @@ class Giftpreparation(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=False, on_delete=protect_with_blockers)
     gift = models.ForeignKey('Gift', db_column='GiftID', related_name='giftpreparations', null=True, on_delete=models.CASCADE)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     preparation = models.ForeignKey('Preparation', db_column='PreparationID', related_name='giftpreparations', null=True, on_delete=protect_with_blockers)
 
     class Meta:
@@ -3605,7 +3801,9 @@ class Giftpreparation(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Groupperson(model_extras.models.Model):
+class Groupperson(models.Model):
+    specify_model = datamodel.get_table('Groupperson')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='grouppersonid')
 
@@ -3617,11 +3815,11 @@ class Groupperson(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     division = models.ForeignKey('Division', db_column='DivisionID', related_name='+', null=False, on_delete=protect_with_blockers)
     group = models.ForeignKey('Agent', db_column='GroupID', related_name='groups', null=False, on_delete=models.CASCADE)
     member = models.ForeignKey('Agent', db_column='MemberID', related_name='members', null=False, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'groupperson'
@@ -3629,7 +3827,9 @@ class Groupperson(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Inforequest(model_extras.models.Model):
+class Inforequest(models.Model):
+    specify_model = datamodel.get_table('Inforequest')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='inforequestid')
 
@@ -3649,8 +3849,8 @@ class Inforequest(model_extras.models.Model):
 
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'inforequest'
@@ -3661,7 +3861,9 @@ class Inforequest(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Institution(model_extras.models.Model):
+class Institution(models.Model):
+    specify_model = datamodel.get_table('Institution')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='usergroupscopeid')
 
@@ -3698,9 +3900,9 @@ class Institution(model_extras.models.Model):
 
     # Relationships: Many-to-One
     address = models.ForeignKey('Address', db_column='AddressID', related_name='insitutions', null=True, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    storageTreeDef = models.ForeignKey('StorageTreeDef', db_column='StorageTreeDefID', related_name='institutions', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    storagetreedef = models.ForeignKey('StorageTreeDef', db_column='StorageTreeDefID', related_name='institutions', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'institution'
@@ -3712,7 +3914,9 @@ class Institution(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Institutionnetwork(model_extras.models.Model):
+class Institutionnetwork(models.Model):
+    specify_model = datamodel.get_table('Institutionnetwork')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='institutionnetworkid')
 
@@ -3735,8 +3939,8 @@ class Institutionnetwork(model_extras.models.Model):
 
     # Relationships: Many-to-One
     address = models.ForeignKey('Address', db_column='AddressID', related_name='+', null=True, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'institutionnetwork'
@@ -3747,7 +3951,9 @@ class Institutionnetwork(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Journal(model_extras.models.Model):
+class Journal(models.Model):
+    specify_model = datamodel.get_table('Journal')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='journalid')
 
@@ -3763,9 +3969,9 @@ class Journal(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     institution = models.ForeignKey('Institution', db_column='InstitutionID', related_name='+', null=False, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'journal'
@@ -3777,7 +3983,9 @@ class Journal(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Latlonpolygon(model_extras.models.Model):
+class Latlonpolygon(models.Model):
+    specify_model = datamodel.get_table('Latlonpolygon')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='latlonpolygonid')
 
@@ -3790,10 +3998,10 @@ class Latlonpolygon(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     locality = models.ForeignKey('Locality', db_column='LocalityID', related_name='latlonpolygons', null=True, on_delete=models.CASCADE)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    visualQuery = models.ForeignKey('SpVisualQuery', db_column='SpVisualQueryID', related_name='polygons', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    visualquery = models.ForeignKey('SpVisualQuery', db_column='SpVisualQueryID', related_name='polygons', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'latlonpolygon'
@@ -3801,7 +4009,9 @@ class Latlonpolygon(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Latlonpolygonpnt(model_extras.models.Model):
+class Latlonpolygonpnt(models.Model):
+    specify_model = datamodel.get_table('Latlonpolygonpnt')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='latlonpolygonpntid')
 
@@ -3812,7 +4022,7 @@ class Latlonpolygonpnt(model_extras.models.Model):
     ordinal = models.IntegerField(blank=False, null=False, unique=False, db_column='Ordinal', db_index=False)
 
     # Relationships: Many-to-One
-    latLonPolygon = models.ForeignKey('LatLonPolygon', db_column='LatLonPolygonID', related_name='points', null=False, on_delete=models.CASCADE)
+    latlonpolygon = models.ForeignKey('LatLonPolygon', db_column='LatLonPolygonID', related_name='points', null=False, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'latlonpolygonpnt'
@@ -3821,6 +4031,8 @@ class Latlonpolygonpnt(model_extras.models.Model):
     save = partialmethod(custom_save)
 
 class Lithostrat(model_extras.Lithostrat):
+    specify_model = datamodel.get_table('Lithostrat')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='lithostratid')
 
@@ -3844,11 +4056,11 @@ class Lithostrat(model_extras.Lithostrat):
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
     # Relationships: Many-to-One
-    acceptedLithoStrat = models.ForeignKey('LithoStrat', db_column='AcceptedID', related_name='acceptedchildren', null=True, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    acceptedlithostrat = models.ForeignKey('LithoStrat', db_column='AcceptedID', related_name='acceptedchildren', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     definition = models.ForeignKey('LithoStratTreeDef', db_column='LithoStratTreeDefID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
-    definitionItem = models.ForeignKey('LithoStratTreeDefItem', db_column='LithoStratTreeDefItemID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    definitionitem = models.ForeignKey('LithoStratTreeDefItem', db_column='LithoStratTreeDefItemID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     parent = models.ForeignKey('LithoStrat', db_column='ParentID', related_name='children', null=True, on_delete=protect_with_blockers)
 
     class Meta:
@@ -3862,7 +4074,9 @@ class Lithostrat(model_extras.Lithostrat):
 
     save = partialmethod(custom_save)
 
-class Lithostrattreedef(model_extras.models.Model):
+class Lithostrattreedef(models.Model):
+    specify_model = datamodel.get_table('Lithostrattreedef')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='lithostrattreedefid')
 
@@ -3875,8 +4089,8 @@ class Lithostrattreedef(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'lithostrattreedef'
@@ -3884,7 +4098,9 @@ class Lithostrattreedef(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Lithostrattreedefitem(model_extras.models.Model):
+class Lithostrattreedefitem(models.Model):
+    specify_model = datamodel.get_table('Lithostrattreedefitem')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='lithostrattreedefitemid')
 
@@ -3903,10 +4119,10 @@ class Lithostrattreedefitem(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     parent = models.ForeignKey('LithoStratTreeDefItem', db_column='ParentItemID', related_name='children', null=True, on_delete=protect_with_blockers)
-    treeDef = models.ForeignKey('LithoStratTreeDef', db_column='LithoStratTreeDefID', related_name='treedefitems', null=False, on_delete=protect_with_blockers)
+    treedef = models.ForeignKey('LithoStratTreeDef', db_column='LithoStratTreeDefID', related_name='treedefitems', null=False, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'lithostrattreedefitem'
@@ -3914,7 +4130,9 @@ class Lithostrattreedefitem(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Loan(model_extras.models.Model):
+class Loan(models.Model):
+    specify_model = datamodel.get_table('Loan')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='loanid')
 
@@ -3953,11 +4171,11 @@ class Loan(model_extras.models.Model):
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
     # Relationships: Many-to-One
-    addressOfRecord = models.ForeignKey('AddressOfRecord', db_column='AddressOfRecordID', related_name='loans', null=True, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    addressofrecord = models.ForeignKey('AddressOfRecord', db_column='AddressOfRecordID', related_name='loans', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=False, on_delete=protect_with_blockers)
     division = models.ForeignKey('Division', db_column='DivisionID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'loan'
@@ -3970,7 +4188,9 @@ class Loan(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Loanagent(model_extras.models.Model):
+class Loanagent(models.Model):
+    specify_model = datamodel.get_table('Loanagent')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='loanagentid')
 
@@ -3983,10 +4203,10 @@ class Loanagent(model_extras.models.Model):
 
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='+', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=False, on_delete=protect_with_blockers)
     loan = models.ForeignKey('Loan', db_column='LoanID', related_name='loanagents', null=False, on_delete=models.CASCADE)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'loanagent'
@@ -3997,7 +4217,9 @@ class Loanagent(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Loanattachment(model_extras.models.Model):
+class Loanattachment(models.Model):
+    specify_model = datamodel.get_table('Loanattachment')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='loanattachmentid')
 
@@ -4010,9 +4232,9 @@ class Loanattachment(model_extras.models.Model):
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='loanattachments', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     loan = models.ForeignKey('Loan', db_column='LoanID', related_name='loanattachments', null=False, on_delete=models.CASCADE)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'loanattachment'
@@ -4020,7 +4242,9 @@ class Loanattachment(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Loanpreparation(model_extras.models.Model):
+class Loanpreparation(models.Model):
+    specify_model = datamodel.get_table('Loanpreparation')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='loanpreparationid')
 
@@ -4043,10 +4267,10 @@ class Loanpreparation(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=False, on_delete=protect_with_blockers)
     loan = models.ForeignKey('Loan', db_column='LoanID', related_name='loanpreparations', null=False, on_delete=models.CASCADE)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     preparation = models.ForeignKey('Preparation', db_column='PreparationID', related_name='loanpreparations', null=True, on_delete=protect_with_blockers)
 
     class Meta:
@@ -4058,7 +4282,9 @@ class Loanpreparation(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Loanreturnpreparation(model_extras.models.Model):
+class Loanreturnpreparation(models.Model):
+    specify_model = datamodel.get_table('Loanreturnpreparation')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='loanreturnpreparationid')
 
@@ -4072,11 +4298,11 @@ class Loanreturnpreparation(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=False, on_delete=protect_with_blockers)
-    loanPreparation = models.ForeignKey('LoanPreparation', db_column='LoanPreparationID', related_name='loanreturnpreparations', null=False, on_delete=models.CASCADE)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    receivedBy = models.ForeignKey('Agent', db_column='ReceivedByID', related_name='+', null=True, on_delete=protect_with_blockers)
+    loanpreparation = models.ForeignKey('LoanPreparation', db_column='LoanPreparationID', related_name='loanreturnpreparations', null=False, on_delete=models.CASCADE)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    receivedby = models.ForeignKey('Agent', db_column='ReceivedByID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'loanreturnpreparation'
@@ -4088,7 +4314,9 @@ class Loanreturnpreparation(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Locality(model_extras.models.Model):
+class Locality(models.Model):
+    specify_model = datamodel.get_table('Locality')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='localityid')
 
@@ -4140,12 +4368,12 @@ class Locality(model_extras.models.Model):
     yesno5 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo5', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=False, on_delete=protect_with_blockers)
     geography = models.ForeignKey('Geography', db_column='GeographyID', related_name='localities', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    paleoContext = models.ForeignKey('PaleoContext', db_column='PaleoContextID', related_name='localities', null=True, on_delete=protect_with_blockers)
-    visibilitySetBy = models.ForeignKey('SpecifyUser', db_column='VisibilitySetByID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    paleocontext = models.ForeignKey('PaleoContext', db_column='PaleoContextID', related_name='localities', null=True, on_delete=protect_with_blockers)
+    visibilitysetby = models.ForeignKey('SpecifyUser', db_column='VisibilitySetByID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'locality'
@@ -4160,7 +4388,9 @@ class Locality(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Localityattachment(model_extras.models.Model):
+class Localityattachment(models.Model):
+    specify_model = datamodel.get_table('Localityattachment')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='localityattachmentid')
 
@@ -4173,9 +4403,9 @@ class Localityattachment(model_extras.models.Model):
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='localityattachments', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     locality = models.ForeignKey('Locality', db_column='LocalityID', related_name='localityattachments', null=False, on_delete=models.CASCADE)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'localityattachment'
@@ -4183,7 +4413,9 @@ class Localityattachment(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Localitycitation(model_extras.models.Model):
+class Localitycitation(models.Model):
+    specify_model = datamodel.get_table('Localitycitation')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='localitycitationid')
 
@@ -4198,11 +4430,11 @@ class Localitycitation(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=False, on_delete=protect_with_blockers)
     locality = models.ForeignKey('Locality', db_column='LocalityID', related_name='localitycitations', null=False, on_delete=models.CASCADE)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    referenceWork = models.ForeignKey('ReferenceWork', db_column='ReferenceWorkID', related_name='localitycitations', null=False, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    referencework = models.ForeignKey('ReferenceWork', db_column='ReferenceWorkID', related_name='localitycitations', null=False, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'localitycitation'
@@ -4213,7 +4445,9 @@ class Localitycitation(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Localitydetail(model_extras.models.Model):
+class Localitydetail(models.Model):
+    specify_model = datamodel.get_table('Localitydetail')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='localitydetailid')
 
@@ -4270,9 +4504,9 @@ class Localitydetail(model_extras.models.Model):
     yesno5 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo5', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     locality = models.ForeignKey('Locality', db_column='LocalityID', related_name='localitydetails', null=True, on_delete=models.CASCADE)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'localitydetail'
@@ -4280,7 +4514,9 @@ class Localitydetail(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Localitynamealias(model_extras.models.Model):
+class Localitynamealias(models.Model):
+    specify_model = datamodel.get_table('Localitynamealias')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='localitynamealiasid')
 
@@ -4292,10 +4528,10 @@ class Localitynamealias(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=False, on_delete=protect_with_blockers)
     locality = models.ForeignKey('Locality', db_column='LocalityID', related_name='localitynamealiass', null=False, on_delete=models.CASCADE)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'localitynamealias'
@@ -4306,7 +4542,9 @@ class Localitynamealias(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Materialsample(model_extras.models.Model):
+class Materialsample(models.Model):
+    specify_model = datamodel.get_table('Materialsample')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='materialsampleid')
 
@@ -4356,9 +4594,9 @@ class Materialsample(model_extras.models.Model):
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     extractor = models.ForeignKey('Agent', db_column='ExtractorID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     preparation = models.ForeignKey('Preparation', db_column='PreparationID', related_name='materialsamples', null=False, on_delete=models.CASCADE)
 
     class Meta:
@@ -4370,7 +4608,9 @@ class Materialsample(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Morphbankview(model_extras.models.Model):
+class Morphbankview(models.Model):
+    specify_model = datamodel.get_table('Morphbankview')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='morphbankviewid')
 
@@ -4389,8 +4629,8 @@ class Morphbankview(model_extras.models.Model):
     viewname = models.CharField(blank=True, max_length=128, null=True, unique=False, db_column='ViewName', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'morphbankview'
@@ -4398,7 +4638,9 @@ class Morphbankview(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Otheridentifier(model_extras.models.Model):
+class Otheridentifier(models.Model):
+    specify_model = datamodel.get_table('Otheridentifier')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='otheridentifierid')
 
@@ -4428,9 +4670,9 @@ class Otheridentifier(model_extras.models.Model):
     # Relationships: Many-to-One
     agent1 = models.ForeignKey('Agent', db_column='Agent1ID', related_name='+', null=True, on_delete=protect_with_blockers)
     agent2 = models.ForeignKey('Agent', db_column='Agent2ID', related_name='+', null=True, on_delete=protect_with_blockers)
-    collectionObject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='otheridentifiers', null=False, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='otheridentifiers', null=False, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'otheridentifier'
@@ -4441,7 +4683,9 @@ class Otheridentifier(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Paleocontext(model_extras.models.Model):
+class Paleocontext(models.Model):
+    specify_model = datamodel.get_table('Paleocontext')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='paleocontextid')
 
@@ -4468,13 +4712,13 @@ class Paleocontext(model_extras.models.Model):
     yesno5 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo5', db_index=False)
 
     # Relationships: Many-to-One
-    bioStrat = models.ForeignKey('GeologicTimePeriod', db_column='BioStratID', related_name='biostratspaleocontext', null=True, on_delete=protect_with_blockers)
-    chronosStrat = models.ForeignKey('GeologicTimePeriod', db_column='ChronosStratID', related_name='chronosstratspaleocontext', null=True, on_delete=protect_with_blockers)
-    chronosStratEnd = models.ForeignKey('GeologicTimePeriod', db_column='ChronosStratEndID', related_name='+', null=True, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    biostrat = models.ForeignKey('GeologicTimePeriod', db_column='BioStratID', related_name='biostratspaleocontext', null=True, on_delete=protect_with_blockers)
+    chronosstrat = models.ForeignKey('GeologicTimePeriod', db_column='ChronosStratID', related_name='chronosstratspaleocontext', null=True, on_delete=protect_with_blockers)
+    chronosstratend = models.ForeignKey('GeologicTimePeriod', db_column='ChronosStratEndID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=False, on_delete=protect_with_blockers)
-    lithoStrat = models.ForeignKey('LithoStrat', db_column='LithoStratID', related_name='paleocontexts', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    lithostrat = models.ForeignKey('LithoStrat', db_column='LithoStratID', related_name='paleocontexts', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'paleocontext'
@@ -4486,7 +4730,9 @@ class Paleocontext(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Pcrperson(model_extras.models.Model):
+class Pcrperson(models.Model):
+    specify_model = datamodel.get_table('Pcrperson')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='pcrpersonid')
 
@@ -4503,9 +4749,9 @@ class Pcrperson(model_extras.models.Model):
 
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='+', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    dnaSequence = models.ForeignKey('DNASequence', db_column='DNASequenceID', related_name='pcrpersons', null=False, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    dnasequence = models.ForeignKey('DNASequence', db_column='DNASequenceID', related_name='pcrpersons', null=False, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'pcrperson'
@@ -4513,7 +4759,9 @@ class Pcrperson(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Permit(model_extras.models.Model):
+class Permit(models.Model):
+    specify_model = datamodel.get_table('Permit')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='permitid')
 
@@ -4546,11 +4794,11 @@ class Permit(model_extras.models.Model):
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     institution = models.ForeignKey('Institution', db_column='InstitutionID', related_name='+', null=False, on_delete=protect_with_blockers)
-    issuedBy = models.ForeignKey('Agent', db_column='IssuedByID', related_name='+', null=True, on_delete=protect_with_blockers)
-    issuedTo = models.ForeignKey('Agent', db_column='IssuedToID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    issuedby = models.ForeignKey('Agent', db_column='IssuedByID', related_name='+', null=True, on_delete=protect_with_blockers)
+    issuedto = models.ForeignKey('Agent', db_column='IssuedToID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'permit'
@@ -4562,7 +4810,9 @@ class Permit(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Permitattachment(model_extras.models.Model):
+class Permitattachment(models.Model):
+    specify_model = datamodel.get_table('Permitattachment')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='permitattachmentid')
 
@@ -4575,8 +4825,8 @@ class Permitattachment(model_extras.models.Model):
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='permitattachments', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     permit = models.ForeignKey('Permit', db_column='PermitID', related_name='permitattachments', null=False, on_delete=models.CASCADE)
 
     class Meta:
@@ -4585,7 +4835,9 @@ class Permitattachment(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Picklist(model_extras.models.Model):
+class Picklist(models.Model):
+    specify_model = datamodel.get_table('Picklist')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='picklistid')
 
@@ -4607,8 +4859,8 @@ class Picklist(model_extras.models.Model):
 
     # Relationships: Many-to-One
     collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='picklists', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'picklist'
@@ -4619,7 +4871,9 @@ class Picklist(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Picklistitem(model_extras.models.Model):
+class Picklistitem(models.Model):
+    specify_model = datamodel.get_table('Picklistitem')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='picklistitemid')
 
@@ -4632,9 +4886,9 @@ class Picklistitem(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    pickList = models.ForeignKey('PickList', db_column='PickListID', related_name='picklistitems', null=False, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    picklist = models.ForeignKey('PickList', db_column='PickListID', related_name='picklistitems', null=False, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'picklistitem'
@@ -4642,7 +4896,9 @@ class Picklistitem(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Preptype(model_extras.models.Model):
+class Preptype(models.Model):
+    specify_model = datamodel.get_table('Preptype')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='preptypeid')
 
@@ -4655,8 +4911,8 @@ class Preptype(model_extras.models.Model):
 
     # Relationships: Many-to-One
     collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='preptypes', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'preptype'
@@ -4665,6 +4921,8 @@ class Preptype(model_extras.models.Model):
     save = partialmethod(custom_save)
 
 class Preparation(model_extras.Preparation):
+    specify_model = datamodel.get_table('Preparation')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='preparationid')
 
@@ -4715,13 +4973,13 @@ class Preparation(model_extras.Preparation):
     yesno3 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo3', db_index=False)
 
     # Relationships: Many-to-One
-    alternateStorage = models.ForeignKey('Storage', db_column='AlternateStorageID', related_name='+', null=True, on_delete=protect_with_blockers)
-    collectionObject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='preparations', null=False, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    prepType = models.ForeignKey('PrepType', db_column='PrepTypeID', related_name='+', null=False, on_delete=protect_with_blockers)
-    preparationAttribute = models.ForeignKey('PreparationAttribute', db_column='PreparationAttributeID', related_name='preparations', null=True, on_delete=protect_with_blockers)
-    preparedByAgent = models.ForeignKey('Agent', db_column='PreparedByID', related_name='+', null=True, on_delete=protect_with_blockers)
+    alternatestorage = models.ForeignKey('Storage', db_column='AlternateStorageID', related_name='+', null=True, on_delete=protect_with_blockers)
+    collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='preparations', null=False, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    preptype = models.ForeignKey('PrepType', db_column='PrepTypeID', related_name='+', null=False, on_delete=protect_with_blockers)
+    preparationattribute = models.ForeignKey('PreparationAttribute', db_column='PreparationAttributeID', related_name='preparations', null=True, on_delete=protect_with_blockers)
+    preparedbyagent = models.ForeignKey('Agent', db_column='PreparedByID', related_name='+', null=True, on_delete=protect_with_blockers)
     storage = models.ForeignKey('Storage', db_column='StorageID', related_name='preparations', null=True, on_delete=protect_with_blockers)
 
     class Meta:
@@ -4737,7 +4995,9 @@ class Preparation(model_extras.Preparation):
 
     save = partialmethod(custom_save)
 
-class Preparationattachment(model_extras.models.Model):
+class Preparationattachment(models.Model):
+    specify_model = datamodel.get_table('Preparationattachment')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='preparationattachmentid')
 
@@ -4751,8 +5011,8 @@ class Preparationattachment(model_extras.models.Model):
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='preparationattachments', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     preparation = models.ForeignKey('Preparation', db_column='PreparationID', related_name='preparationattachments', null=False, on_delete=models.CASCADE)
 
     class Meta:
@@ -4764,7 +5024,9 @@ class Preparationattachment(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Preparationattr(model_extras.models.Model):
+class Preparationattr(models.Model):
+    specify_model = datamodel.get_table('Preparationattr')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='attrid')
 
@@ -4777,9 +5039,9 @@ class Preparationattr(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     definition = models.ForeignKey('AttributeDef', db_column='AttributeDefID', related_name='preparationattrs', null=False, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     preparation = models.ForeignKey('Preparation', db_column='PreparationId', related_name='preparationattrs', null=False, on_delete=models.CASCADE)
 
     class Meta:
@@ -4791,7 +5053,9 @@ class Preparationattr(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Preparationattribute(model_extras.models.Model):
+class Preparationattribute(models.Model):
+    specify_model = datamodel.get_table('Preparationattribute')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='preparationattributeid')
 
@@ -4843,8 +5107,8 @@ class Preparationattribute(model_extras.models.Model):
     yesno4 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo4', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'preparationattribute'
@@ -4855,7 +5119,9 @@ class Preparationattribute(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Preparationproperty(model_extras.models.Model):
+class Preparationproperty(models.Model):
+    specify_model = datamodel.get_table('Preparationproperty')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='preparationpropertyid')
 
@@ -5028,8 +5294,8 @@ class Preparationproperty(model_extras.models.Model):
     agent7 = models.ForeignKey('Agent', db_column='Agent7ID', related_name='+', null=True, on_delete=protect_with_blockers)
     agent8 = models.ForeignKey('Agent', db_column='Agent8D', related_name='+', null=True, on_delete=protect_with_blockers)
     agent9 = models.ForeignKey('Agent', db_column='Agent9ID', related_name='+', null=True, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     preparation = models.ForeignKey('Preparation', db_column='PreparationID', related_name='preparationproperties', null=False, on_delete=models.CASCADE)
 
     class Meta:
@@ -5041,7 +5307,9 @@ class Preparationproperty(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Project(model_extras.models.Model):
+class Project(models.Model):
+    specify_model = datamodel.get_table('Project')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='projectid')
 
@@ -5068,8 +5336,8 @@ class Project(model_extras.models.Model):
 
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='ProjectAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'project'
@@ -5081,7 +5349,9 @@ class Project(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Recordset(model_extras.models.Model):
+class Recordset(models.Model):
+    specify_model = datamodel.get_table('Recordset')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='recordsetid')
 
@@ -5099,11 +5369,11 @@ class Recordset(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     group = models.ForeignKey('SpPrincipal', db_column='SpPrincipalID', related_name='+', null=True, on_delete=protect_with_blockers)
-    infoRequest = models.ForeignKey('InfoRequest', db_column='InfoRequestID', related_name='recordsets', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    specifyUser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', related_name='+', null=False, on_delete=protect_with_blockers)
+    inforequest = models.ForeignKey('InfoRequest', db_column='InfoRequestID', related_name='recordsets', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    specifyuser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', related_name='+', null=False, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'recordset'
@@ -5114,7 +5384,9 @@ class Recordset(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Recordsetitem(model_extras.models.Model):
+class Recordsetitem(models.Model):
+    specify_model = datamodel.get_table('Recordsetitem')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='recordsetitemid')
 
@@ -5123,7 +5395,7 @@ class Recordsetitem(model_extras.models.Model):
     recordid = models.IntegerField(blank=False, null=False, unique=False, db_column='RecordId', db_index=False)
 
     # Relationships: Many-to-One
-    recordSet = models.ForeignKey('RecordSet', db_column='RecordSetID', related_name='recordsetitems', null=False, on_delete=models.CASCADE)
+    recordset = models.ForeignKey('RecordSet', db_column='RecordSetID', related_name='recordsetitems', null=False, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'recordsetitem'
@@ -5131,7 +5403,9 @@ class Recordsetitem(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Referencework(model_extras.models.Model):
+class Referencework(models.Model):
+    specify_model = datamodel.get_table('Referencework')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='referenceworkid')
 
@@ -5162,11 +5436,11 @@ class Referencework(model_extras.models.Model):
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
     # Relationships: Many-to-One
-    containedRFParent = models.ForeignKey('ReferenceWork', db_column='ContainedRFParentID', related_name='containedreferenceworks', null=True, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    containedrfparent = models.ForeignKey('ReferenceWork', db_column='ContainedRFParentID', related_name='containedreferenceworks', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     institution = models.ForeignKey('Institution', db_column='InstitutionID', related_name='+', null=False, on_delete=protect_with_blockers)
     journal = models.ForeignKey('Journal', db_column='JournalID', related_name='referenceworks', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'referencework'
@@ -5180,7 +5454,9 @@ class Referencework(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Referenceworkattachment(model_extras.models.Model):
+class Referenceworkattachment(models.Model):
+    specify_model = datamodel.get_table('Referenceworkattachment')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='referenceworkattachmentid')
 
@@ -5193,9 +5469,9 @@ class Referenceworkattachment(model_extras.models.Model):
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='referenceworkattachments', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    referenceWork = models.ForeignKey('ReferenceWork', db_column='ReferenceWorkID', related_name='referenceworkattachments', null=False, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    referencework = models.ForeignKey('ReferenceWork', db_column='ReferenceWorkID', related_name='referenceworkattachments', null=False, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'referenceworkattachment'
@@ -5203,7 +5479,9 @@ class Referenceworkattachment(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Repositoryagreement(model_extras.models.Model):
+class Repositoryagreement(models.Model):
+    specify_model = datamodel.get_table('Repositoryagreement')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='repositoryagreementid')
 
@@ -5226,10 +5504,10 @@ class Repositoryagreement(model_extras.models.Model):
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
     # Relationships: Many-to-One
-    addressOfRecord = models.ForeignKey('AddressOfRecord', db_column='AddressOfRecordID', related_name='repositoryagreements', null=True, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    addressofrecord = models.ForeignKey('AddressOfRecord', db_column='AddressOfRecordID', related_name='repositoryagreements', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     division = models.ForeignKey('Division', db_column='DivisionID', related_name='+', null=False, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     originator = models.ForeignKey('Agent', db_column='AgentID', related_name='+', null=False, on_delete=protect_with_blockers)
 
     class Meta:
@@ -5242,7 +5520,9 @@ class Repositoryagreement(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Repositoryagreementattachment(model_extras.models.Model):
+class Repositoryagreementattachment(models.Model):
+    specify_model = datamodel.get_table('Repositoryagreementattachment')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='repositoryagreementattachmentid')
 
@@ -5255,9 +5535,9 @@ class Repositoryagreementattachment(model_extras.models.Model):
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='repositoryagreementattachments', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    repositoryAgreement = models.ForeignKey('RepositoryAgreement', db_column='RepositoryAgreementID', related_name='repositoryagreementattachments', null=False, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    repositoryagreement = models.ForeignKey('RepositoryAgreement', db_column='RepositoryAgreementID', related_name='repositoryagreementattachments', null=False, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'repositoryagreementattachment'
@@ -5265,7 +5545,9 @@ class Repositoryagreementattachment(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Shipment(model_extras.models.Model):
+class Shipment(models.Model):
+    specify_model = datamodel.get_table('Shipment')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='shipmentid')
 
@@ -5289,14 +5571,14 @@ class Shipment(model_extras.models.Model):
 
     # Relationships: Many-to-One
     borrow = models.ForeignKey('Borrow', db_column='BorrowID', related_name='shipments', null=True, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=False, on_delete=protect_with_blockers)
-    exchangeOut = models.ForeignKey('ExchangeOut', db_column='ExchangeOutID', related_name='shipments', null=True, on_delete=protect_with_blockers)
+    exchangeout = models.ForeignKey('ExchangeOut', db_column='ExchangeOutID', related_name='shipments', null=True, on_delete=protect_with_blockers)
     gift = models.ForeignKey('Gift', db_column='GiftID', related_name='shipments', null=True, on_delete=models.CASCADE)
     loan = models.ForeignKey('Loan', db_column='LoanID', related_name='shipments', null=True, on_delete=models.CASCADE)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    shippedBy = models.ForeignKey('Agent', db_column='ShippedByID', related_name='+', null=True, on_delete=protect_with_blockers)
-    shippedTo = models.ForeignKey('Agent', db_column='ShippedToID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    shippedby = models.ForeignKey('Agent', db_column='ShippedByID', related_name='+', null=True, on_delete=protect_with_blockers)
+    shippedto = models.ForeignKey('Agent', db_column='ShippedToID', related_name='+', null=True, on_delete=protect_with_blockers)
     shipper = models.ForeignKey('Agent', db_column='ShipperID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
@@ -5311,7 +5593,9 @@ class Shipment(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Spappresource(model_extras.models.Model):
+class Spappresource(models.Model):
+    specify_model = datamodel.get_table('Spappresource')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spappresourceid')
 
@@ -5328,11 +5612,11 @@ class Spappresource(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     group = models.ForeignKey('SpPrincipal', db_column='SpPrincipalID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    spAppResourceDir = models.ForeignKey('SpAppResourceDir', db_column='SpAppResourceDirID', related_name='sppersistedappresources', null=False, on_delete=models.CASCADE)
-    specifyUser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', related_name='spappresources', null=False, on_delete=models.CASCADE)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    spappresourcedir = models.ForeignKey('SpAppResourceDir', db_column='SpAppResourceDirID', related_name='sppersistedappresources', null=False, on_delete=models.CASCADE)
+    specifyuser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', related_name='spappresources', null=False, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'spappresource'
@@ -5344,7 +5628,9 @@ class Spappresource(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Spappresourcedata(model_extras.models.Model):
+class Spappresourcedata(models.Model):
+    specify_model = datamodel.get_table('Spappresourcedata')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spappresourcedataid')
 
@@ -5355,10 +5641,10 @@ class Spappresourcedata(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    spAppResource = models.ForeignKey('SpAppResource', db_column='SpAppResourceID', related_name='spappresourcedatas', null=True, on_delete=models.CASCADE)
-    spViewSetObj = models.ForeignKey('SpViewSetObj', db_column='SpViewSetObjID', related_name='spappresourcedatas', null=True, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    spappresource = models.ForeignKey('SpAppResource', db_column='SpAppResourceID', related_name='spappresourcedatas', null=True, on_delete=models.CASCADE)
+    spviewsetobj = models.ForeignKey('SpViewSetObj', db_column='SpViewSetObjID', related_name='spappresourcedatas', null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'spappresourcedata'
@@ -5366,7 +5652,9 @@ class Spappresourcedata(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Spappresourcedir(model_extras.models.Model):
+class Spappresourcedir(models.Model):
+    specify_model = datamodel.get_table('Spappresourcedir')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spappresourcedirid')
 
@@ -5380,10 +5668,10 @@ class Spappresourcedir(model_extras.models.Model):
 
     # Relationships: Many-to-One
     collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='+', null=True, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    specifyUser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', related_name='spappresourcedirs', null=True, on_delete=models.CASCADE)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    specifyuser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', related_name='spappresourcedirs', null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'spappresourcedir'
@@ -5394,7 +5682,9 @@ class Spappresourcedir(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Spauditlog(model_extras.models.Model):
+class Spauditlog(models.Model):
+    specify_model = datamodel.get_table('Spauditlog')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spauditlogid')
 
@@ -5410,8 +5700,8 @@ class Spauditlog(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'spauditlog'
@@ -5419,7 +5709,9 @@ class Spauditlog(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Spauditlogfield(model_extras.models.Model):
+class Spauditlogfield(models.Model):
+    specify_model = datamodel.get_table('Spauditlogfield')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spauditlogfieldid')
 
@@ -5432,9 +5724,9 @@ class Spauditlogfield(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    spAuditLog = models.ForeignKey('SpAuditLog', db_column='SpAuditLogID', related_name='fields', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    spauditlog = models.ForeignKey('SpAuditLog', db_column='SpAuditLogID', related_name='fields', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'spauditlogfield'
@@ -5442,7 +5734,9 @@ class Spauditlogfield(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Spexportschema(model_extras.models.Model):
+class Spexportschema(models.Model):
+    specify_model = datamodel.get_table('Spexportschema')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spexportschemaid')
 
@@ -5455,9 +5749,9 @@ class Spexportschema(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='spexportschemas', null=False, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'spexportschema'
@@ -5465,7 +5759,9 @@ class Spexportschema(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Spexportschemaitem(model_extras.models.Model):
+class Spexportschemaitem(models.Model):
+    specify_model = datamodel.get_table('Spexportschemaitem')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spexportschemaitemid')
 
@@ -5479,10 +5775,10 @@ class Spexportschemaitem(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    spExportSchema = models.ForeignKey('SpExportSchema', db_column='SpExportSchemaID', related_name='spexportschemaitems', null=False, on_delete=protect_with_blockers)
-    spLocaleContainerItem = models.ForeignKey('SpLocaleContainerItem', db_column='SpLocaleContainerItemID', related_name='spexportschemaitems', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    spexportschema = models.ForeignKey('SpExportSchema', db_column='SpExportSchemaID', related_name='spexportschemaitems', null=False, on_delete=protect_with_blockers)
+    splocalecontaineritem = models.ForeignKey('SpLocaleContainerItem', db_column='SpLocaleContainerItemID', related_name='spexportschemaitems', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'spexportschemaitem'
@@ -5490,7 +5786,9 @@ class Spexportschemaitem(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Spexportschemaitemmapping(model_extras.models.Model):
+class Spexportschemaitemmapping(models.Model):
+    specify_model = datamodel.get_table('Spexportschemaitemmapping')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spexportschemaitemmappingid')
 
@@ -5504,11 +5802,11 @@ class Spexportschemaitemmapping(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    exportSchemaItem = models.ForeignKey('SpExportSchemaItem', db_column='ExportSchemaItemID', related_name='+', null=True, on_delete=protect_with_blockers)
-    exportSchemaMapping = models.ForeignKey('SpExportSchemaMapping', db_column='SpExportSchemaMappingID', related_name='mappings', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    queryField = models.ForeignKey('SpQueryField', db_column='SpQueryFieldID', related_name='mappings', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    exportschemaitem = models.ForeignKey('SpExportSchemaItem', db_column='ExportSchemaItemID', related_name='+', null=True, on_delete=protect_with_blockers)
+    exportschemamapping = models.ForeignKey('SpExportSchemaMapping', db_column='SpExportSchemaMappingID', related_name='mappings', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    queryfield = models.ForeignKey('SpQueryField', db_column='SpQueryFieldID', related_name='mappings', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'spexportschemaitemmapping'
@@ -5516,7 +5814,9 @@ class Spexportschemaitemmapping(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Spexportschemamapping(model_extras.models.Model):
+class Spexportschemamapping(models.Model):
+    specify_model = datamodel.get_table('Spexportschemamapping')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spexportschemamappingid')
 
@@ -5530,8 +5830,8 @@ class Spexportschemamapping(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'spexportschemamapping'
@@ -5542,7 +5842,9 @@ class Spexportschemamapping(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Spfieldvaluedefault(model_extras.models.Model):
+class Spfieldvaluedefault(models.Model):
+    specify_model = datamodel.get_table('Spfieldvaluedefault')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spfieldvaluedefaultid')
 
@@ -5557,8 +5859,8 @@ class Spfieldvaluedefault(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'spfieldvaluedefault'
@@ -5569,7 +5871,9 @@ class Spfieldvaluedefault(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Splocalecontainer(model_extras.models.Model):
+class Splocalecontainer(models.Model):
+    specify_model = datamodel.get_table('Splocalecontainer')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='splocalecontainerid')
 
@@ -5589,9 +5893,9 @@ class Splocalecontainer(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='splocalecontainers', null=False, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'splocalecontainer'
@@ -5602,7 +5906,9 @@ class Splocalecontainer(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Splocalecontaineritem(model_extras.models.Model):
+class Splocalecontaineritem(models.Model):
+    specify_model = datamodel.get_table('Splocalecontaineritem')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='splocalecontaineritemid')
 
@@ -5622,8 +5928,8 @@ class Splocalecontaineritem(model_extras.models.Model):
 
     # Relationships: Many-to-One
     container = models.ForeignKey('SpLocaleContainer', db_column='SpLocaleContainerID', related_name='items', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'splocalecontaineritem'
@@ -5634,7 +5940,9 @@ class Splocalecontaineritem(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Splocaleitemstr(model_extras.models.Model):
+class Splocaleitemstr(models.Model):
+    specify_model = datamodel.get_table('Splocaleitemstr')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='splocaleitemstrid')
 
@@ -5648,12 +5956,12 @@ class Splocaleitemstr(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    containerDesc = models.ForeignKey('SpLocaleContainer', db_column='SpLocaleContainerDescID', related_name='descs', null=True, on_delete=protect_with_blockers)
-    containerName = models.ForeignKey('SpLocaleContainer', db_column='SpLocaleContainerNameID', related_name='names', null=True, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    itemDesc = models.ForeignKey('SpLocaleContainerItem', db_column='SpLocaleContainerItemDescID', related_name='descs', null=True, on_delete=protect_with_blockers)
-    itemName = models.ForeignKey('SpLocaleContainerItem', db_column='SpLocaleContainerItemNameID', related_name='names', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    containerdesc = models.ForeignKey('SpLocaleContainer', db_column='SpLocaleContainerDescID', related_name='descs', null=True, on_delete=protect_with_blockers)
+    containername = models.ForeignKey('SpLocaleContainer', db_column='SpLocaleContainerNameID', related_name='names', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    itemdesc = models.ForeignKey('SpLocaleContainerItem', db_column='SpLocaleContainerItemDescID', related_name='descs', null=True, on_delete=protect_with_blockers)
+    itemname = models.ForeignKey('SpLocaleContainerItem', db_column='SpLocaleContainerItemNameID', related_name='names', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'splocaleitemstr'
@@ -5665,7 +5973,9 @@ class Splocaleitemstr(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Sppermission(model_extras.models.Model):
+class Sppermission(models.Model):
+    specify_model = datamodel.get_table('Sppermission')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='sppermissionid')
 
@@ -5681,7 +5991,9 @@ class Sppermission(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Spprincipal(model_extras.models.Model):
+class Spprincipal(models.Model):
+    specify_model = datamodel.get_table('Spprincipal')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spprincipalid')
 
@@ -5696,8 +6008,8 @@ class Spprincipal(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     userGroupScopeID = models.IntegerField(blank=True, null=True, db_column='userGroupScopeID')
 
     class Meta:
@@ -5706,7 +6018,9 @@ class Spprincipal(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Spquery(model_extras.models.Model):
+class Spquery(models.Model):
+    specify_model = datamodel.get_table('Spquery')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spqueryid')
 
@@ -5728,9 +6042,9 @@ class Spquery(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    specifyUser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', related_name='spquerys', null=False, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    specifyuser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', related_name='spquerys', null=False, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'spquery'
@@ -5741,7 +6055,9 @@ class Spquery(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Spqueryfield(model_extras.models.Model):
+class Spqueryfield(models.Model):
+    specify_model = datamodel.get_table('Spqueryfield')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spqueryfieldid')
 
@@ -5769,8 +6085,8 @@ class Spqueryfield(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     query = models.ForeignKey('SpQuery', db_column='SpQueryID', related_name='fields', null=True, on_delete=models.CASCADE)
 
     class Meta:
@@ -5779,7 +6095,9 @@ class Spqueryfield(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Spreport(model_extras.models.Model):
+class Spreport(models.Model):
+    specify_model = datamodel.get_table('Spreport')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spreportid')
 
@@ -5796,11 +6114,11 @@ class Spreport(model_extras.models.Model):
     workbenchTemplate = models.OneToOneField('WorkbenchTemplate', db_column='WorkbenchTemplateID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     # Relationships: Many-to-One
-    appResource = models.ForeignKey('SpAppResource', db_column='AppResourceID', related_name='spreports', null=False, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    appresource = models.ForeignKey('SpAppResource', db_column='AppResourceID', related_name='spreports', null=False, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     query = models.ForeignKey('SpQuery', db_column='SpQueryID', related_name='reports', null=True, on_delete=protect_with_blockers)
-    specifyUser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', related_name='+', null=False, on_delete=protect_with_blockers)
+    specifyuser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', related_name='+', null=False, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'spreport'
@@ -5811,7 +6129,9 @@ class Spreport(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Spsymbiotainstance(model_extras.models.Model):
+class Spsymbiotainstance(models.Model):
+    specify_model = datamodel.get_table('Spsymbiotainstance')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spsymbiotainstanceid')
 
@@ -5829,9 +6149,9 @@ class Spsymbiotainstance(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    schemaMapping = models.ForeignKey('SpExportSchemaMapping', db_column='SchemaMappingID', related_name='symbiotainstances', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    schemamapping = models.ForeignKey('SpExportSchemaMapping', db_column='SchemaMappingID', related_name='symbiotainstances', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'spsymbiotainstance'
@@ -5842,7 +6162,9 @@ class Spsymbiotainstance(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Sptasksemaphore(model_extras.models.Model):
+class Sptasksemaphore(models.Model):
+    specify_model = datamodel.get_table('Sptasksemaphore')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='tasksemaphoreid')
 
@@ -5860,9 +6182,9 @@ class Sptasksemaphore(model_extras.models.Model):
 
     # Relationships: Many-to-One
     collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='+', null=True, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     owner = models.ForeignKey('SpecifyUser', db_column='OwnerID', related_name='tasksemaphores', null=True, on_delete=protect_with_blockers)
 
     class Meta:
@@ -5871,7 +6193,9 @@ class Sptasksemaphore(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Spversion(model_extras.models.Model):
+class Spversion(models.Model):
+    specify_model = datamodel.get_table('Spversion')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spversionid')
 
@@ -5887,8 +6211,8 @@ class Spversion(model_extras.models.Model):
     workbenchschemaversion = models.CharField(blank=True, max_length=16, null=True, unique=False, db_column='WorkbenchSchemaVersion', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'spversion'
@@ -5896,7 +6220,9 @@ class Spversion(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Spviewsetobj(model_extras.models.Model):
+class Spviewsetobj(models.Model):
+    specify_model = datamodel.get_table('Spviewsetobj')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spviewsetobjid')
 
@@ -5911,9 +6237,9 @@ class Spviewsetobj(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    spAppResourceDir = models.ForeignKey('SpAppResourceDir', db_column='SpAppResourceDirID', related_name='sppersistedviewsets', null=False, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    spappresourcedir = models.ForeignKey('SpAppResourceDir', db_column='SpAppResourceDirID', related_name='sppersistedviewsets', null=False, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'spviewsetobj'
@@ -5924,7 +6250,9 @@ class Spviewsetobj(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Spvisualquery(model_extras.models.Model):
+class Spvisualquery(models.Model):
+    specify_model = datamodel.get_table('Spvisualquery')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='spvisualqueryid')
 
@@ -5936,9 +6264,9 @@ class Spvisualquery(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    specifyUser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', related_name='+', null=False, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    specifyuser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', related_name='+', null=False, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'spvisualquery'
@@ -5950,6 +6278,8 @@ class Spvisualquery(model_extras.models.Model):
     save = partialmethod(custom_save)
 
 class Specifyuser(model_extras.Specifyuser):
+    specify_model = datamodel.get_table('Specifyuser')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='specifyuserid')
 
@@ -5969,16 +6299,18 @@ class Specifyuser(model_extras.Specifyuser):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'specifyuser'
         ordering = ()
 
-    save = partialmethod(custom_save)
+    # save = partialmethod(custom_save)
 
 class Storage(model_extras.Storage):
+    specify_model = datamodel.get_table('Storage')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='storageid')
 
@@ -6001,11 +6333,11 @@ class Storage(model_extras.Storage):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    acceptedStorage = models.ForeignKey('Storage', db_column='AcceptedID', related_name='acceptedchildren', null=True, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    acceptedstorage = models.ForeignKey('Storage', db_column='AcceptedID', related_name='acceptedchildren', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     definition = models.ForeignKey('StorageTreeDef', db_column='StorageTreeDefID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
-    definitionItem = models.ForeignKey('StorageTreeDefItem', db_column='StorageTreeDefItemID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    definitionitem = models.ForeignKey('StorageTreeDefItem', db_column='StorageTreeDefItemID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     parent = models.ForeignKey('Storage', db_column='ParentID', related_name='children', null=True, on_delete=protect_with_blockers)
 
     class Meta:
@@ -6018,7 +6350,9 @@ class Storage(model_extras.Storage):
 
     save = partialmethod(custom_save)
 
-class Storageattachment(model_extras.models.Model):
+class Storageattachment(models.Model):
+    specify_model = datamodel.get_table('Storageattachment')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='storageattachmentid')
 
@@ -6031,8 +6365,8 @@ class Storageattachment(model_extras.models.Model):
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='storageattachments', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     storage = models.ForeignKey('Storage', db_column='StorageID', related_name='storageattachments', null=False, on_delete=models.CASCADE)
 
     class Meta:
@@ -6041,7 +6375,9 @@ class Storageattachment(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Storagetreedef(model_extras.models.Model):
+class Storagetreedef(models.Model):
+    specify_model = datamodel.get_table('Storagetreedef')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='storagetreedefid')
 
@@ -6054,8 +6390,8 @@ class Storagetreedef(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'storagetreedef'
@@ -6063,7 +6399,9 @@ class Storagetreedef(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Storagetreedefitem(model_extras.models.Model):
+class Storagetreedefitem(models.Model):
+    specify_model = datamodel.get_table('Storagetreedefitem')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='storagetreedefitemid')
 
@@ -6082,10 +6420,10 @@ class Storagetreedefitem(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     parent = models.ForeignKey('StorageTreeDefItem', db_column='ParentItemID', related_name='children', null=True, on_delete=protect_with_blockers)
-    treeDef = models.ForeignKey('StorageTreeDef', db_column='StorageTreeDefID', related_name='treedefitems', null=False, on_delete=protect_with_blockers)
+    treedef = models.ForeignKey('StorageTreeDef', db_column='StorageTreeDefID', related_name='treedefitems', null=False, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'storagetreedefitem'
@@ -6094,6 +6432,8 @@ class Storagetreedefitem(model_extras.models.Model):
     save = partialmethod(custom_save)
 
 class Taxon(model_extras.Taxon):
+    specify_model = datamodel.get_table('Taxon')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='taxonid')
 
@@ -6185,16 +6525,16 @@ class Taxon(model_extras.Taxon):
     yesno9 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo9', db_index=False)
 
     # Relationships: Many-to-One
-    acceptedTaxon = models.ForeignKey('Taxon', db_column='AcceptedID', related_name='acceptedchildren', null=True, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    acceptedtaxon = models.ForeignKey('Taxon', db_column='AcceptedID', related_name='acceptedchildren', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     definition = models.ForeignKey('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
-    definitionItem = models.ForeignKey('TaxonTreeDefItem', db_column='TaxonTreeDefItemID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
-    hybridParent1 = models.ForeignKey('Taxon', db_column='HybridParent1ID', related_name='hybridchildren1', null=True, on_delete=protect_with_blockers)
-    hybridParent2 = models.ForeignKey('Taxon', db_column='HybridParent2ID', related_name='hybridchildren2', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    definitionitem = models.ForeignKey('TaxonTreeDefItem', db_column='TaxonTreeDefItemID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
+    hybridparent1 = models.ForeignKey('Taxon', db_column='HybridParent1ID', related_name='hybridchildren1', null=True, on_delete=protect_with_blockers)
+    hybridparent2 = models.ForeignKey('Taxon', db_column='HybridParent2ID', related_name='hybridchildren2', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     parent = models.ForeignKey('Taxon', db_column='ParentID', related_name='children', null=True, on_delete=protect_with_blockers)
-    taxonAttribute = models.ForeignKey('TaxonAttribute', db_column='TaxonAttributeID', related_name='taxons', null=True, on_delete=protect_with_blockers)
-    visibilitySetBy = models.ForeignKey('SpecifyUser', db_column='VisibilitySetByID', related_name='+', null=True, on_delete=protect_with_blockers)
+    taxonattribute = models.ForeignKey('TaxonAttribute', db_column='TaxonAttributeID', related_name='taxons', null=True, on_delete=protect_with_blockers)
+    visibilitysetby = models.ForeignKey('SpecifyUser', db_column='VisibilitySetByID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'taxon'
@@ -6210,7 +6550,9 @@ class Taxon(model_extras.Taxon):
 
     save = partialmethod(custom_save)
 
-class Taxonattachment(model_extras.models.Model):
+class Taxonattachment(models.Model):
+    specify_model = datamodel.get_table('Taxonattachment')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='taxonattachmentid')
 
@@ -6223,8 +6565,8 @@ class Taxonattachment(model_extras.models.Model):
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='taxonattachments', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     taxon = models.ForeignKey('Taxon', db_column='TaxonID', related_name='taxonattachments', null=False, on_delete=models.CASCADE)
 
     class Meta:
@@ -6233,7 +6575,9 @@ class Taxonattachment(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Taxonattribute(model_extras.models.Model):
+class Taxonattribute(models.Model):
+    specify_model = datamodel.get_table('Taxonattribute')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='taxonattributeid')
 
@@ -6407,8 +6751,8 @@ class Taxonattribute(model_extras.models.Model):
 
     # Relationships: Many-to-One
     agent1 = models.ForeignKey('Agent', db_column='Agent1ID', related_name='+', null=True, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'taxonattribute'
@@ -6416,7 +6760,9 @@ class Taxonattribute(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Taxoncitation(model_extras.models.Model):
+class Taxoncitation(models.Model):
+    specify_model = datamodel.get_table('Taxoncitation')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='taxoncitationid')
 
@@ -6437,9 +6783,9 @@ class Taxoncitation(model_extras.models.Model):
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    referenceWork = models.ForeignKey('ReferenceWork', db_column='ReferenceWorkID', related_name='taxoncitations', null=False, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    referencework = models.ForeignKey('ReferenceWork', db_column='ReferenceWorkID', related_name='taxoncitations', null=False, on_delete=protect_with_blockers)
     taxon = models.ForeignKey('Taxon', db_column='TaxonID', related_name='taxoncitations', null=False, on_delete=models.CASCADE)
 
     class Meta:
@@ -6448,7 +6794,9 @@ class Taxoncitation(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Taxontreedef(model_extras.models.Model):
+class Taxontreedef(models.Model):
+    specify_model = datamodel.get_table('Taxontreedef')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='taxontreedefid')
 
@@ -6463,8 +6811,8 @@ class Taxontreedef(model_extras.models.Model):
     # Relationships: One-to-One
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'taxontreedef'
@@ -6472,7 +6820,9 @@ class Taxontreedef(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Taxontreedefitem(model_extras.models.Model):
+class Taxontreedefitem(models.Model):
+    specify_model = datamodel.get_table('Taxontreedefitem')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='taxontreedefitemid')
 
@@ -6492,10 +6842,10 @@ class Taxontreedefitem(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     parent = models.ForeignKey('TaxonTreeDefItem', db_column='ParentItemID', related_name='children', null=True, on_delete=protect_with_blockers)
-    treeDef = models.ForeignKey('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='treedefitems', null=False, on_delete=protect_with_blockers)
+    treedef = models.ForeignKey('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='treedefitems', null=False, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'taxontreedefitem'
@@ -6503,7 +6853,9 @@ class Taxontreedefitem(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Treatmentevent(model_extras.models.Model):
+class Treatmentevent(models.Model):
+    specify_model = datamodel.get_table('Treatmentevent')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='treatmenteventid')
 
@@ -6539,12 +6891,12 @@ class Treatmentevent(model_extras.models.Model):
 
     # Relationships: Many-to-One
     accession = models.ForeignKey('Accession', db_column='AccessionID', related_name='treatmentevents', null=True, on_delete=protect_with_blockers)
-    authorizedBy = models.ForeignKey('Agent', db_column='AuthorizedByID', related_name='+', null=True, on_delete=protect_with_blockers)
-    collectionObject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='treatmentevents', null=True, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    authorizedby = models.ForeignKey('Agent', db_column='AuthorizedByID', related_name='+', null=True, on_delete=protect_with_blockers)
+    collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='treatmentevents', null=True, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     division = models.ForeignKey('Division', db_column='DivisionID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    performedBy = models.ForeignKey('Agent', db_column='PerformedByID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    performedby = models.ForeignKey('Agent', db_column='PerformedByID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'treatmentevent'
@@ -6558,7 +6910,9 @@ class Treatmentevent(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Treatmenteventattachment(model_extras.models.Model):
+class Treatmenteventattachment(models.Model):
+    specify_model = datamodel.get_table('Treatmenteventattachment')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='treatmenteventattachmentid')
 
@@ -6571,9 +6925,9 @@ class Treatmenteventattachment(model_extras.models.Model):
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='treatmenteventattachments', null=False, on_delete=protect_with_blockers)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    treatmentEvent = models.ForeignKey('TreatmentEvent', db_column='TreatmentEventID', related_name='treatmenteventattachments', null=False, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    treatmentevent = models.ForeignKey('TreatmentEvent', db_column='TreatmentEventID', related_name='treatmenteventattachments', null=False, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'treatmenteventattachment'
@@ -6581,7 +6935,9 @@ class Treatmenteventattachment(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Voucherrelationship(model_extras.models.Model):
+class Voucherrelationship(models.Model):
+    specify_model = datamodel.get_table('Voucherrelationship')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='voucherrelationshipid')
 
@@ -6609,9 +6965,9 @@ class Voucherrelationship(model_extras.models.Model):
     yesno3 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo3', db_index=False)
 
     # Relationships: Many-to-One
-    collectionObject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='voucherrelationships', null=False, on_delete=models.CASCADE)
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='voucherrelationships', null=False, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'voucherrelationship'
@@ -6622,7 +6978,9 @@ class Voucherrelationship(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Workbench(model_extras.models.Model):
+class Workbench(models.Model):
+    specify_model = datamodel.get_table('Workbench')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='workbenchid')
 
@@ -6643,11 +7001,11 @@ class Workbench(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     group = models.ForeignKey('SpPrincipal', db_column='SpPrincipalID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    specifyUser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', related_name='workbenches', null=False, on_delete=protect_with_blockers)
-    workbenchTemplate = models.ForeignKey('WorkbenchTemplate', db_column='WorkbenchTemplateID', related_name='workbenches', null=False, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    specifyuser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', related_name='workbenches', null=False, on_delete=protect_with_blockers)
+    workbenchtemplate = models.ForeignKey('WorkbenchTemplate', db_column='WorkbenchTemplateID', related_name='workbenches', null=False, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'workbench'
@@ -6658,7 +7016,9 @@ class Workbench(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Workbenchdataitem(model_extras.models.Model):
+class Workbenchdataitem(models.Model):
+    specify_model = datamodel.get_table('Workbenchdataitem')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='workbenchdataitemid')
 
@@ -6668,8 +7028,8 @@ class Workbenchdataitem(model_extras.models.Model):
     validationstatus = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='ValidationStatus', db_index=False)
 
     # Relationships: Many-to-One
-    workbenchRow = models.ForeignKey('WorkbenchRow', db_column='WorkbenchRowID', related_name='workbenchdataitems', null=False, on_delete=models.DO_NOTHING)
-    workbenchTemplateMappingItem = models.ForeignKey('WorkbenchTemplateMappingItem', db_column='WorkbenchTemplateMappingItemID', related_name='workbenchdataitems', null=False, on_delete=protect_with_blockers)
+    workbenchrow = models.ForeignKey('WorkbenchRow', db_column='WorkbenchRowID', related_name='workbenchdataitems', null=False, on_delete=models.DO_NOTHING)
+    workbenchtemplatemappingitem = models.ForeignKey('WorkbenchTemplateMappingItem', db_column='WorkbenchTemplateMappingItemID', related_name='workbenchdataitems', null=False, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'workbenchdataitem'
@@ -6680,7 +7040,9 @@ class Workbenchdataitem(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Workbenchrow(model_extras.models.Model):
+class Workbenchrow(models.Model):
+    specify_model = datamodel.get_table('Workbenchrow')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='workbenchrowid')
 
@@ -6711,7 +7073,9 @@ class Workbenchrow(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Workbenchrowexportedrelationship(model_extras.models.Model):
+class Workbenchrowexportedrelationship(models.Model):
+    specify_model = datamodel.get_table('Workbenchrowexportedrelationship')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='workbenchrowexportedrelationshipid')
 
@@ -6725,9 +7089,9 @@ class Workbenchrowexportedrelationship(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    workbenchRow = models.ForeignKey('WorkbenchRow', db_column='WorkbenchRowID', related_name='workbenchrowexportedrelationships', null=False, on_delete=models.DO_NOTHING)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    workbenchrow = models.ForeignKey('WorkbenchRow', db_column='WorkbenchRowID', related_name='workbenchrowexportedrelationships', null=False, on_delete=models.DO_NOTHING)
 
     class Meta:
         db_table = 'workbenchrowexportedrelationship'
@@ -6735,7 +7099,9 @@ class Workbenchrowexportedrelationship(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Workbenchrowimage(model_extras.models.Model):
+class Workbenchrowimage(models.Model):
+    specify_model = datamodel.get_table('Workbenchrowimage')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='workbenchrowimageid')
 
@@ -6746,7 +7112,7 @@ class Workbenchrowimage(model_extras.models.Model):
     imageorder = models.IntegerField(blank=True, null=True, unique=False, db_column='ImageOrder', db_index=False)
 
     # Relationships: Many-to-One
-    workbenchRow = models.ForeignKey('WorkbenchRow', db_column='WorkbenchRowID', related_name='workbenchrowimages', null=False, on_delete=models.DO_NOTHING)
+    workbenchrow = models.ForeignKey('WorkbenchRow', db_column='WorkbenchRowID', related_name='workbenchrowimages', null=False, on_delete=models.DO_NOTHING)
 
     class Meta:
         db_table = 'workbenchrowimage'
@@ -6754,7 +7120,9 @@ class Workbenchrowimage(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Workbenchtemplate(model_extras.models.Model):
+class Workbenchtemplate(models.Model):
+    specify_model = datamodel.get_table('Workbenchtemplate')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='workbenchtemplateid')
 
@@ -6767,9 +7135,9 @@ class Workbenchtemplate(model_extras.models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    specifyUser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', related_name='workbenchtemplates', null=False, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    specifyuser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', related_name='workbenchtemplates', null=False, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'workbenchtemplate'
@@ -6777,7 +7145,9 @@ class Workbenchtemplate(model_extras.models.Model):
 
     save = partialmethod(custom_save)
 
-class Workbenchtemplatemappingitem(model_extras.models.Model):
+class Workbenchtemplatemappingitem(models.Model):
+    specify_model = datamodel.get_table('Workbenchtemplatemappingitem')
+    
     # ID Field
     id = models.AutoField(primary_key=True, db_column='workbenchtemplatemappingitemid')
 
@@ -6804,9 +7174,9 @@ class Workbenchtemplatemappingitem(model_extras.models.Model):
     ycoord = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='YCoord', db_index=False)
 
     # Relationships: Many-to-One
-    createdByAgent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedByAgent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    workbenchTemplate = models.ForeignKey('WorkbenchTemplate', db_column='WorkbenchTemplateID', related_name='workbenchtemplatemappingitems', null=False, on_delete=models.CASCADE)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    workbenchtemplate = models.ForeignKey('WorkbenchTemplate', db_column='WorkbenchTemplateID', related_name='workbenchtemplatemappingitems', null=False, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'workbenchtemplatemappingitem'
