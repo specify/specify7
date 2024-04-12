@@ -1,5 +1,5 @@
 from .load_datamodel import Table, Field, Relationship, IdField, Datamodel, Index, add_collectingevents_to_locality, \
-    flag_dependent_fields, flag_system_tables
+    flag_dependent_fields, flag_system_tables, DoesNotExistError, TableDoesNotExistError, FieldDoesNotExistError
 
 datamodel = Datamodel(tables=[
     Table(
@@ -7743,6 +7743,348 @@ datamodel = Datamodel(tables=[
             Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(is_relationship=True, name='workbenchDataItems', type='one-to-many',required=False, relatedModelName='WorkbenchDataItem', otherSideName='workbenchTemplateMappingItem'),
             Relationship(is_relationship=True, name='workbenchTemplate', type='many-to-one',required=True, relatedModelName='WorkbenchTemplate', column='WorkbenchTemplateID', otherSideName='workbenchTemplateMappingItems')
+        ],
+        fieldAliases=[
+
+        ]
+    ),
+    ####################################################################################################################
+    # Tables not from Specify 6
+    ####################################################################################################################
+    Table(
+        sp7_only=True,
+        django_app='accounts',
+        classname='edu.ku.brc.specify.datamodel.Spuserexternalid',
+        tableId=1000, # TODO: figure out a good tableId
+        idColumn='SpUserExternalIdID',
+        idFieldName='spUserExternalIdId',
+        idField=IdField(name='spUserExternalIdId', column='SpUserExternalIdID', type='java.lang.Integer'),
+        fields=[
+            Field(name='provider', column='Provider', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+            Field(name='providerid', column='ProviderId', indexed=False, unique=False, required=True, type='java.lang.String', length=4094),
+            Field(name='enabled', column='Enabled', indexed=False, unique=False, required=True, type='java.lang.Boolean'),
+            Field(name='idtoken', column='IdToken', indexed=False, unique=False, required=False, type='java.lang.String', length=4094) # longtext 
+        ],
+        indexes=[
+
+        ],
+        relationships=[
+            Relationship(is_relationship=True, name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpUserId')
+        ],
+        fieldAliases=[
+
+        ]
+    ),
+    Table( # Spattachmentdataset
+        sp7_only=True,
+        django_app='attachment_gw',
+        classname='edu.ku.brc.specify.datamodel.Spattachmentdataset',
+        table='spattachmentdataset',
+        tableId=1001, # TODO: figure out a good tableId
+        idColumn='SpAttachmentDataSetID',
+        idFieldName='spAttachmentDataSetId',
+        idField=IdField(name='spAttachmentDataSetId', column='SpAttachmentDataSetID', type='java.lang.Integer'),
+        fields=[
+            Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+            Field(name='columns', column='Columns', indexed=False, unique=False, required=True, type='json'), # longtext
+            Field(name='data', column='Data', indexed=False, unique=False, required=False, type='json'), # longtext
+            Field(name='uploadplan', column='UploadPlan', indexed=False, unique=False, required=False, type='text'),  # longtext
+            Field(name='uploadresult', column='UploadResult', indexed=False, unique=False, required=False, type='json'),  # longtext
+            Field(name='rowresults', column='RowResults', indexed=False, unique=False, required=False, type='java.lang.String', length=255), # longtext
+            Field(name='visualorder', column='VisualOrder', indexed=False, unique=False, required=False, type='json'), # longtext
+            Field(name='importedfilename', column='ImportedFileName', indexed=False, unique=False, required=False, type='text'), # longtext
+            Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'), # longtext
+            Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp')
+        ],
+        indexes=[
+
+        ],
+        relationships=[
+            Relationship(is_relationship=True, name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID'),
+            Relationship(is_relationship=True, name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUserID'),
+            Relationship(is_relationship=True, name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(is_relationship=True, name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+        ],
+        fieldAliases=[
+
+        ]
+    ),
+    Table( # UniquenessRule
+        sp7_only=True,
+        django_app='business_rules',
+        classname='edu.ku.brc.specify.datamodel.UniquenessRule',
+        table='uniquenessrule',
+        tableId=1002, # TODO: figure out a good tableId
+        idColumn='UniquenessRuleID',
+        idFieldName='uniquenessRuleId',
+        idField=IdField(name='uniquenessRuleId', column='UniquenessRuleID', type='java.lang.Integer'),
+        fields=[
+            Field(name='id', column='UniquenessRuleID', indexed=True, unique=True, required=True, type='java.lang.Integer'),
+            Field(name='isdatabaseconstraint', column='IsDatabaseConstraint', indexed=False, unique=False, required=True, type='java.lang.Boolean'),
+            Field(name='modelname', column='ModelName', indexed=True, unique=False, required=True, type='java.lang.String', length=255)
+        ],
+        indexes=[
+
+        ],
+        relationships=[
+            Relationship(is_relationship=True, name='discipline', type='many-to-one', required=False, relatedModelName='Discipline', column='DisciplineID'),
+        ],
+        fieldAliases=[
+
+        ]
+    ),
+    Table( # UniquenessRuleField
+        sp7_only=True,
+        django_app='business_rules',
+        classname='edu.ku.brc.specify.datamodel.UniquenessRuleField',
+        table='uniquenessrulefield',
+        tableId=1003, # TODO: figure out a good tableId
+        idColumn='UniquenessRuleFieldID',
+        idFieldName='uniquenessRuleFieldId',
+        idField=IdField(name='uniquenessRuleFieldId', column='UniquenessRuleFieldID', type='java.lang.Integer'),
+        fields=[
+            Field(name='id', column='UniquenessRule_FieldID', indexed=True, unique=True, required=True, type='java.lang.Integer'),
+            Field(name='fieldpath', column='FieldPath', indexed=True, unique=False, required=True, type='text'),
+            Field(name='isscope', column='IsScope', indexed=False, unique=False, required=True, type='java.lang.Boolean')
+        ],
+        indexes=[
+
+        ],
+        relationships=[
+            Relationship(is_relationship=True, name='uniquenessrule', type='many-to-one', required=True, relatedModelName='UniquenessRule', column='UniquenessRuleID'),
+        ],
+        fieldAliases=[
+
+        ]
+    ),
+    Table( # Message
+        sp7_only=True,
+        django_app='notifications',
+        classname='edu.ku.brc.specify.datamodel.Message',
+        table='notifications_message',
+        tableId=1004, # TODO: figure out a good tableId
+        idColumn='MessageID',
+        idFieldName='messageId',
+        idField=IdField(name='messageId', column='MessageID', type='java.lang.Integer'),
+        fields=[
+            Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='content', column='Content', indexed=False, unique=False, required=False, type='text'),
+            Field(name='read', column='Read', indexed=False, unique=False, required=True, type='java.lang.Boolean')
+        ],
+        indexes=[
+
+        ],
+        relationships=[
+            Relationship(is_relationship=True, name='user', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUserID'),
+        ],
+        fieldAliases=[
+
+        ]
+    ),
+    Table( # Spmerging
+        sp7_only=True,
+        django_app='specify',
+        classname='edu.ku.brc.specify.datamodel.Spmerging',
+        table='spmerging',
+        tableId=1005, # TODO: figure out a good tableId
+        idColumn='SpMergingID',
+        idFieldName='spMergingId',
+        idField=IdField(name='spMergingId', column='SpMergingID', type='java.lang.Integer'),
+        fields=[
+            Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+            Field(name='taskid', column='TaskID', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+            Field(name='mergingstatus', column='MergingStatus', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+            Field(name='resonses', column='Resonses', indexed=False, unique=False, required=False, type='text'),
+            Field(name='table', column='Table', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+            Field(name='newrecordid', column='NewRecordID', indexed=False, unique=False, required=True, type='java.lang.Integer'),
+            Field(name='newrecordata', column='NewRecordData', indexed=False, unique=False, required=False, type='json'),
+            Field(name='oldrecordids', column='OldRecordIDs', indexed=False, unique=False, required=False, type='json'),
+            Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp')            
+        ],
+        indexes=[
+
+        ],
+        relationships=[
+            Relationship(is_relationship=True, name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID'),
+            Relationship(is_relationship=True, name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUserID'),
+            Relationship(is_relationship=True, name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(is_relationship=True, name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+        ],
+        fieldAliases=[
+
+        ]
+    ),
+    Table( # UserPolicy
+        sp7_only=True,
+        django_app='permissions',
+        classname='edu.ku.brc.specify.datamodel.UserPolicy',
+        table='spuserpolicy',
+        tableId=1006, # TODO: figure out a good tableId
+        idColumn='UserPolicyID',
+        idFieldName='userPolicyId',
+        idField=IdField(name='userPolicyId', column='UserPolicyID', type='java.lang.Integer'),
+        fields=[
+            Field(name='resource', column='Resource', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+            Field(name='action', column='Action', indexed=False, unique=False, required=True, type='java.lang.String', length=255)
+        ],
+        indexes=[
+
+        ],
+        relationships=[
+            Relationship(is_relationship=True, name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID'),
+            Relationship(is_relationship=True, name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUserID')
+        ],
+        fieldAliases=[
+
+        ]
+    ),
+    Table( # Role
+        sp7_only=True,
+        django_app='permissions',
+        classname='edu.ku.brc.specify.datamodel.Role',
+        table='sprole',
+        tableId=1007, # TODO: figure out a good tableId
+        idColumn='RoleID',
+        idFieldName='roleId',
+        idField=IdField(name='roleId', column='RoleID', type='java.lang.Integer'),
+        fields=[
+            Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+            Field(name='description', column='Description', indexed=False, unique=False, required=False, type='text')
+        ],
+        indexes=[
+
+        ],
+        relationships=[
+            Relationship(is_relationship=True, name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID')
+        ],
+        fieldAliases=[
+
+        ]
+    ),
+    Table( # LibraryRole
+        sp7_only=True,
+        django_app='permissions',
+        classname='edu.ku.brc.specify.datamodel.LibraryRole',
+        table='splibraryrole',
+        tableId=1008, # TODO: figure out a good tableId
+        idColumn='LibraryRoleID',
+        idFieldName='libraryRoleId',
+        idField=IdField(name='libraryRoleId', column='LibraryRoleID', type='java.lang.Integer'),
+        fields=[
+            Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+            Field(name='descr1iption', column='Description', indexed=False, unique=False, required=False, type='text')
+        ],
+        indexes=[
+
+        ],
+        relationships=[
+
+        ],
+        fieldAliases=[
+
+        ]
+    ),
+    Table( # UserRole
+        sp7_only=True,
+        django_app='permissions',
+        classname='edu.ku.brc.specify.datamodel.UserRole',
+        table='spuserrole',
+        tableId=1009, # TODO: figure out a good tableId
+        idColumn='UserRoleID',
+        idFieldName='userRoleId',
+        idField=IdField(name='userRoleId', column='UserRoleID', type='java.lang.Integer'),
+        fields=[
+
+        ],
+        indexes=[
+
+        ],
+        relationships=[
+            Relationship(is_relationship=True, name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUserID'),
+            Relationship(is_relationship=True, name='role', type='many-to-one', required=True, relatedModelName='Role', column='RoleID')
+        ],
+        fieldAliases=[
+
+        ]
+    ),
+    Table( # RolePolicy
+        sp7_only=True,
+        django_app='permissions',
+        classname='edu.ku.brc.specify.datamodel.RolePolicy',
+        table='sprolepolicy',
+        tableId=1010, # TODO: figure out a good tableId
+        idColumn='RolePolicyID',
+        idFieldName='rolePolicyId',
+        idField=IdField(name='rolePolicyId', column='RolePolicyID', type='java.lang.Integer'),
+        fields=[
+            Field(name='resource', column='Resource', indexed=False, unique=False, required=True, type='java.lang.String', length=1023),
+            Field(name='action', column='Action', indexed=False, unique=False, required=True, type='java.lang.String', length=1023)
+        ],
+        indexes=[
+            
+        ],
+        relationships=[
+            Relationship(is_relationship=True, name='role', type='many-to-one', required=True, relatedModelName='Role', column='RoleID')
+        ],
+        fieldAliases=[
+            
+        ]
+    ),
+    Table( # LibraryRolePolicy
+        sp7_only=True,
+        django_app='permissions',
+        classname='edu.ku.brc.specify.datamodel.LibraryRolePolicy',
+        table='splibraryrolepolicy',
+        tableId=1011, # TODO: figure out a good tableId
+        idColumn='LibraryRolePolicyID',
+        idFieldName='libraryRolePolicyId',
+        idField=IdField(name='libraryRolePolicyId', column='LibraryRolePolicyID', type='java.lang.Integer'),
+        fields=[
+            Field(name='resource', column='Resource', indexed=False, unique=False, required=True, type='java.lang.String', length=1023),
+            Field(name='action', column='Action', indexed=False, unique=False, required=True, type='java.lang.String', length=1023)
+        ],
+        indexes=[
+            
+        ],
+        relationships=[
+            Relationship(is_relationship=True, name='libraryrole', type='many-to-one', required=True, relatedModelName='LibraryRole', column='LibraryRoleID')
+        ],
+        fieldAliases=[
+
+        ]
+    ),
+    Table( # Spdataset
+        sp7_only=True,
+        django_app='specify',
+        classname='edu.ku.brc.specify.datamodel.Spdataset',
+        table='spdataset',
+        tableId=1012, # TODO: figure out a good tableId
+        idColumn='SpDataSetID',
+        idFieldName='spDataSetId',
+        idField=IdField(name='spDataSetId', column='SpDataSetID', type='java.lang.Integer'),
+        fields=[
+            Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+            Field(name='columns', column='Columns', indexed=False, unique=False, required=True, type='json'), # longtext
+            Field(name='data', column='Data', indexed=False, unique=False, required=False, type='json'), # longtext
+            Field(name='uploadplan', column='UploadPlan', indexed=False, unique=False, required=False, type='text'),  # longtext
+            Field(name='uploadresult', column='UploadResult', indexed=False, unique=False, required=False, type='json'),  # longtext
+            Field(name='rowresults', column='RowResults', indexed=False, unique=False, required=False, type='java.lang.String', length=255), # longtext
+            Field(name='visualorder', column='VisualOrder', indexed=False, unique=False, required=False, type='json'), # longtext
+            Field(name='importedfilename', column='ImportedFileName', indexed=False, unique=False, required=False, type='text'), # longtext
+            Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'), # longtext
+            Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp')
+        ],
+        indexes=[
+
+        ],
+        relationships=[
+            Relationship(is_relationship=True, name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID'),
+            Relationship(is_relationship=True, name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUserID'),
+            Relationship(is_relationship=True, name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(is_relationship=True, name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 

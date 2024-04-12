@@ -76,12 +76,15 @@ class Table(object):
     indexes: List['Index']
     relationships: List['Relationship']
     fieldAliases: List[Dict[str, str]]
+    sp7_only: bool = False
+    django_app: str = 'specify'
 
     def __init__(self, classname: Optional[str] = None, table: Optional[str] = None, tableId: Optional[int] = None, 
                  idColumn: Optional[str] = None, idFieldName: Optional[str] = None, idField: Optional['Field'] = None, 
                  view: Optional[str] = None, searchDialog: Optional[str] = None, fields: Optional[List['Field']] = None,
                  indexes: Optional[List['Index']] = None, relationships: Optional[List['Relationship']] = None, 
-                 fieldAliases: Optional[List[Dict[str, str]]] = None, system: bool = False):
+                 fieldAliases: Optional[List[Dict[str, str]]] = None, system: bool = False,
+                 sp7_only: Optional[bool] = False, django_app: Optional[str] = 'specify'):
         self.system = system
         self.classname = classname
         self.table = table
@@ -95,6 +98,8 @@ class Table(object):
         self.indexes = indexes if indexes is not None else []
         self.relationships = relationships if relationships is not None else []
         self.fieldAliases = fieldAliases if fieldAliases is not None else []
+        self.sp7_only = sp7_only
+        self.django_app = django_app
 
     @property
     def name(self) -> str:

@@ -38,7 +38,20 @@ FIELD_TYPE_CODE_MAP = {
     'java.math.BigDecimal': 'models.DecimalField',
     'java.lang.Double': 'models.FloatField', # This mapping wasn't in the original code
     'java.lang.Boolean': 'models.BooleanField',
-    'text': 'models.TextField'
+    'text': 'models.TextField',
+    'json': 'models.JSONField'
+}
+
+DJANGO_TO_MARIADB_MAP = {
+    'models.CharField': 'VARCHAR',
+    'models.TextField': 'TEXT',
+    'models.DateTimeField': 'DATETIME',
+    'models.IntegerField': 'INT',
+    'models.BigIntegerField': 'BIGINT',
+    'models.SmallIntegerField': 'SMALLINT',
+    'models.DecimalField': 'DECIMAL',
+    'models.FloatField': 'FLOAT',
+    'models.BooleanField': 'TINYINT(1)',
 }
 
 ORDERINGS = {
@@ -73,8 +86,9 @@ def meta_class_code(table, attrs, indexes=[]):
     if indexes:
         code += f"{TAB}{TAB}indexes = [\n"
         for index in indexes:
-            fields = ', '.join(f"'{field}'" for field in index.column_names)
-            code += f"{TAB}{TAB}{TAB}models.Index(fields=[{fields}], name='{index.name}'),\n"
+            fields = ', '.join(f"'{field.lower()}'" for field in index.column_names)
+            # code += f"{TAB}{TAB}{TAB}# models.Index(fields=[{fields}], name='{index.name}'),\n"
+            code += f"{TAB}{TAB}{TAB}# models.Index(fields=[{fields}]),\n"
         code = code[:-2] + code[-1] # remove trailing comma
         code += f"{TAB}{TAB}]\n"
     return code
@@ -110,7 +124,7 @@ def generate_sp_field_code(field) -> str:
         f"null={not field.required}",
         f"unique={field.unique}",
         f"db_column='{field.column}'",
-        f"db_index='{field.column.lower()}'",
+        f"db_index={field.indexed}",
     ]
 
     if field.type == 'java.lang.String':
@@ -173,6 +187,8 @@ def generate_id_field_code(column) -> str:
 
 def generate_model_class_code(table, datamodel) -> str:
     supercls = 'models.Model'
+    if hasattr(table, 'sp7_only') and table.sp7_only != 'specify':
+        return
     if hasattr(model_extras, table.django_name):
         supercls = getattr(model_extras, table.django_name).__name__
     

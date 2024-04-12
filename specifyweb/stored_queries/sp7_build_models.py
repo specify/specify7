@@ -68,7 +68,7 @@ def gen_column_code(flddef):
     column_code = (
         "Column("
         f"'{flddef.column}', "
-        f"type={FIELD_TYPE_CODE_MAP.get(flddef.type, flddef.type)}, "
+        f"{FIELD_TYPE_CODE_MAP.get(flddef.type, flddef.type)}, "
         f"index={flddef.indexed}, "
         f"unique={flddef.unique}, "
         f"nullable={not flddef.required}"
@@ -86,8 +86,8 @@ def gen_foreign_key_code(datamodel, reldef):
     column_code = (
         "Column("
         f"'{reldef.column}', "
-        "type=types.Integer, " # check this, maybe make dynamic
-        f"ForeignKey='{fk_target}', "
+        "types.Integer, " # check this, maybe make dynamic
+        f"ForeignKey('{fk_target}'), "
         f"nullable={not reldef.required}, "
         f"unique={reldef.type == 'one_to_one'}"
         ")"
@@ -163,16 +163,19 @@ def gen_class_code(tabledef):
 
 def gen_sqlalchemy_table_classes_code(datamodel):
     code = (
-        "from sqlalchemy import Column, types, orm\n"
+        "from sqlalchemy import Column, ForeignKey, types, orm\n"
         "from sqlalchemy.ext.declarative import declarative_base\n"
         "from sqlalchemy.dialects.mysql import BIT as mysql_bit_type\n\n"
         "Base = declarative_base()\n\n"
     )
     for table in datamodel.tables:
+        if hasattr(table, 'sp7_only') and table.sp7_only != 'specify':
+            continue
         code += f"class {table.name}(Base):\n"
         code += f"{TAB1}tableid = '{table.tableId}'\n"
         code += f"{TAB1}_id = '{table.idFieldName}'\n"
         code += f"{TAB1}__tablename__ = '{table.table}'\n\n"
+        code += "id = Column('id', types.Integer, primary_key=True)\n"
         for field in table.fields:
             code += f"{TAB1}{field.name} = {gen_column_code(field)}\n"
         code += '\n'
