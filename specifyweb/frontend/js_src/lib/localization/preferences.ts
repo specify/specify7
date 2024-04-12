@@ -691,7 +691,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Масштабный интерфейс',
     'es-es': 'Interfaz de báscula',
     'fr-fr': 'Interface de balance',
-    'uk-ua': 'Інтерфейс масштабу',
+    'uk-ua': 'Інтерфейс масштабування',
     'de-ch': 'Waagenschnittstelle',
   },
   scaleInterfaceDescription: {
@@ -792,7 +792,7 @@ export const preferencesText = createDictionary({
     `,
     'uk-ua': 'Дозволяє запитувати дані з будь-якого поля будь-якої таблиці.',
     'de-ch':
-      'Ermöglicht das Abfragen von Daten aus jedem Feld in jeder Tabelle.',
+      'Ermöglicht die Abfrage von Daten aus jedem Feld in jeder Tabelle.',
   },
   noRestrictionsModeWarning: {
     'en-us': `
@@ -1375,7 +1375,7 @@ export const preferencesText = createDictionary({
       'Hacer que los cuadros de diálogo del formulario aparezcan en gris',
     'fr-fr':
       "Rendre les boîtes de dialogue de formulaire grisées sur l'arrière-plan",
-    'uk-ua': 'Зробіть діалогові вікна форми сірими фоном',
+    'uk-ua': 'Зробіть діалогові вікна форми сірими',
     'de-ch': 'Den Hintergrund von Formulardialogen ausgrauen',
   },
   autoScrollTree: {
@@ -1536,8 +1536,8 @@ export const preferencesText = createDictionary({
       Mettez un délimiteur par ligne
     `,
     'uk-ua': `
-      Список розділювачів для використання на додаток до визначених вище.
-      Поставте один роздільник на рядок
+      Список роздільників, які слід використовувати на додаток до визначених
+      вище. Поставте один роздільник на рядок
     `,
     'de-ch': `
       Eine Liste der zu verwendenden Trennzeichen zusätzlich zu den oben
@@ -1719,7 +1719,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Помните о размерах диалогового окна',
     'es-es': 'Recuerde los tamaños de las ventanas de diálogo',
     'fr-fr': 'Mémoriser les tailles des fenêtres de dialogue',
-    'uk-ua': "Запам'ятайте розміри діалогових вікон",
+    'uk-ua': "Пам'ятайте про розміри діалогових вікон",
     'de-ch': 'Dialogfenstergrößen merken',
   },
   rememberDialogPositions: {
@@ -1727,7 +1727,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Запомнить позиции диалоговых окон',
     'es-es': 'Recordar las posiciones de las ventanas de diálogo',
     'fr-fr': 'Mémoriser les positions des fenêtres de dialogue',
-    'uk-ua': "Запам'ятовуйте положення діалогового вікна",
+    'uk-ua': "Запам'ятовуйте розташування діалогового вікна",
     'de-ch': 'Dialogfensterpositionen merken',
   },
   autoPlayMedia: {
