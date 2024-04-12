@@ -76,7 +76,7 @@ export function WbView({
 
   const [hotTable, setHotTable] = React.useState<HotTable>();
   const hot = React.useMemo(
-    () => (hotTable?.hotInstance ?? undefined),
+    () => hotTable?.hotInstance ?? undefined,
     [hotTable]
   );
 
@@ -208,10 +208,7 @@ export function WbView({
           role="toolbar"
         >
           <div className="contents">
-            <DataSetName
-              dataset={dataset}
-              hot={hot}
-            />
+            <DataSetName dataset={dataset} hot={hot} />
           </div>
           <Button.Small
             aria-haspopup="grid"

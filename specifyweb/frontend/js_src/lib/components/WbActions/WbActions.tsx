@@ -272,19 +272,18 @@ export function WbActionsComponent({
         <Dialog
           buttons={
             <>
-              {cellCounts.invalidCells === 0 &&
-                modeRef.current === 'upload' && (
-                  <CreateRecordSetButton
-                    dataSetId={dataset.id}
-                    dataSetName={dataset.name}
-                    small={false}
-                    onClose={() => {
-                      modeRef.current = undefined;
-                      refreshInitiatorAborted.current = false;
-                      closeOperationCompleted();
-                    }}
-                  />
-                )}
+              {cellCounts.invalidCells === 0 && modeRef.current === 'upload' && (
+                <CreateRecordSetButton
+                  dataSetId={dataset.id}
+                  dataSetName={dataset.name}
+                  small={false}
+                  onClose={() => {
+                    modeRef.current = undefined;
+                    refreshInitiatorAborted.current = false;
+                    closeOperationCompleted();
+                  }}
+                />
+              )}
               <Button.DialogClose>{commonText.close()}</Button.DialogClose>
             </>
           }

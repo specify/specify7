@@ -260,14 +260,10 @@ export function getHotHooks(
               'originalValue',
               oldValue
             );
-          workbench.cells.recalculateIsModifiedState(
-            physicalRow,
-            physicalCol,
-            {
-              visualRow,
-              visualCol,
-            }
-          );
+          workbench.cells.recalculateIsModifiedState(physicalRow, physicalCol, {
+            visualRow,
+            visualCol,
+          });
           if (
             workbench.utils.searchPreferences.search.liveUpdate &&
             workbench.utils.searchQuery !== undefined

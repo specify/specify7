@@ -79,7 +79,10 @@ export function WorkBench(): JSX.Element {
   ) : (
     <>
       <div className="contents">
-        <section className={`wbs-form ${className.containerFull}`} ref={spreadsheetContainerRef}>
+        <section
+          className={`wbs-form ${className.containerFull}`}
+          ref={spreadsheetContainerRef}
+        >
           <WbView
             dataset={dataSet}
             onDatasetDeleted={handleDeleted}
