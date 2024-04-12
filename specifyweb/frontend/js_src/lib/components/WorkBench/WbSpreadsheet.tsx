@@ -49,14 +49,13 @@ registerAllModules();
 // Context menu item definitions (common for fillUp and fillDown)
 const fillCellsContextMenuItem = (
   hot: Handsontable,
-  mode: 'down' | 'up'
+  mode: 'down' | 'up',
+  isReadOnly: boolean
 ): Handsontable.plugins.ContextMenu.MenuItemConfig => {
   return {
     name: mode === 'up' ? wbText.fillUp() : wbText.fillDown(),
     disabled: () =>
-      // typeof this.wbView.uploadedView === 'function' ||
-      // typeof this.wbView.coordinateConverterView === 'function' ||
-      !hasPermission('/workbench/dataset', 'update') ||
+      isReadOnly ||
       (hot.getSelected()?.every((selection) => selection[0] === selection[2]) ??
         false),
     callback: (_, selections) =>
@@ -286,8 +285,8 @@ function WbSpreadsheetComponent({
               callback: () => openDisambiguationDialog(),
             },
             separator_1: '---------',
-            fill_down: fillCellsContextMenuItem(hot!, 'down'),
-            fill_up: fillCellsContextMenuItem(hot!, 'up'),
+            fill_down: fillCellsContextMenuItem(hot!, 'down', isReadOnly),
+            fill_up: fillCellsContextMenuItem(hot!, 'up', isReadOnly),
             separator_2: '---------',
             undo: {
               disabled: () => hot?.isUndoAvailable() !== true || isReadOnly,
