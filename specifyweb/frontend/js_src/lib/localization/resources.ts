@@ -621,27 +621,7 @@ export const resourcesText = createDictionary({
   conditionDescription: {
     'en-us': `
       This format will be used only if the condition field value equals this
-      condition.
-    `,
-    'de-ch': `
-      Dieses Format wird nur verwendet, wenn der Wert des Bedingungsfelds dieser
-      Bedingung entspricht.
-    `,
-    'es-es': `
-      Este formato se utilizará sólo si el valor del campo de condición es igual
-      a esta condición.
-    `,
-    'fr-fr': `
-      Ce format ne sera utilisé que si la valeur du champ de condition est égale
-      à cette condition.
-    `,
-    'ru-ru': `
-      Этот формат будет использоваться только в том случае, если значение поля
-      условия соответствует этому условию.
-    `,
-    'uk-ua': `
-      Цей формат використовуватиметься, лише якщо значення поля умови дорівнює
-      цій умові.
+      condition and is not null.
     `,
   },
   elseConditionDescription: {
