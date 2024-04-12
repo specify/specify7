@@ -158,6 +158,7 @@ export function WbUtilsComponent({
             spellCheck
             title={commonText.searchQuery()}
             type="search"
+            // @ts-expect-error KeyboardEvent type does not match?
             onKeyDown={handleSearch}
           />
         </div>
@@ -169,6 +170,7 @@ export function WbUtilsComponent({
               autoComplete="on"
               placeholder={wbText.replace()}
               title={wbText.replacementValue()}
+              // @ts-expect-error KeyboardEvent type does not match?
               onKeyDown={handleReplace}
               disabled={isReadOnly}
             />

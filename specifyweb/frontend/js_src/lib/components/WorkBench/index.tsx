@@ -52,6 +52,7 @@ export function WorkBench(): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const [isDeleted, handleDeleted] = useBooleanState();
   // TODO: figure out how handleDeletedConfirmation was being used in Backbone. possibly not used at all
+  // @ts-ignore
   const [isDeletedConfirmation, handleDeletedConfirmation] = useBooleanState();
 
   const navigate = useNavigate();
