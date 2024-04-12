@@ -14,8 +14,8 @@ msgstr ""
 #: components/Attachments/RecordSetAttachment.tsx:121
 #: components/Attachments/RecordSetAttachment.tsx:123
 #: components/Attachments/index.tsx:161
-#: components/FormSliders/AttachmentsCollection.tsx:62
-#: components/FormSliders/AttachmentsCollection.tsx:74
+#: components/FormSliders/AttachmentsCollection.tsx:65
+#: components/FormSliders/AttachmentsCollection.tsx:77
 #: components/Header/menuItemDefinitions.ts:98
 #: components/Molecules/SyncAttachmentPicker.tsx:101
 #: components/Molecules/SyncAttachmentPicker.tsx:110
