@@ -20,7 +20,7 @@ export function WbLeafletMap({
   mappings,
 }: {
   readonly hasLocality: boolean;
-  readonly hot: Handsontable | null | undefined;
+  readonly hot: Handsontable;
   readonly dataset: Dataset;
   readonly mappings: WbMapping;
 }): JSX.Element {
@@ -33,7 +33,7 @@ export function WbLeafletMap({
       false
     );
 
-    if (!selection) return undefined;
+    if (selection === undefined) return undefined;
 
     return getLocalitiesDataFromSpreadsheet(
       mappings.localityColumns,

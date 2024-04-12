@@ -55,16 +55,16 @@ export type Workbench = {
   cellCounts: GetSet<WbCellCounts>;
 };
 
-export function WbViewReact({
+export function WbView({
   dataset,
-  handleDatasetDelete,
+  onDatasetDeleted: handleDatasetDeleted,
   triggerDatasetRefresh,
-  spreadsheetContainer,
+  spreadsheetContainerRef,
 }: {
   readonly dataset: Dataset;
-  readonly handleDatasetDelete: () => void;
+  readonly onDatasetDeleted: () => void;
   readonly triggerDatasetRefresh: () => void;
-  readonly spreadsheetContainer: any;
+  readonly spreadsheetContainerRef: React.RefObject<HTMLElement>;
 }): JSX.Element {
   const data = React.useMemo<RA<RA<string | null>>>(
     () =>
@@ -76,7 +76,7 @@ export function WbViewReact({
 
   const [hotTable, setHotTable] = React.useState<HotTable>();
   const hot = React.useMemo(
-    () => (hotTable?.hotInstance ? hotTable?.hotInstance : undefined),
+    () => (hotTable?.hotInstance ?? undefined),
     [hotTable]
   );
 
@@ -123,7 +123,7 @@ export function WbViewReact({
   }, [dataset, hot]);
 
   const checkDeletedFail = React.useCallback((statusCode: number): boolean => {
-    if (statusCode === Http.NOT_FOUND) handleDatasetDelete();
+    if (statusCode === Http.NOT_FOUND) handleDatasetDeleted();
     return statusCode === Http.NOT_FOUND;
   }, []);
 
@@ -186,7 +186,7 @@ export function WbViewReact({
       workbench.utils.toggleCellTypes(
         'newCells',
         'remove',
-        spreadsheetContainer.current
+        spreadsheetContainerRef?.current
       );
     } else {
       getHotPlugin(workbench.hot, 'hiddenRows').showRows(
@@ -210,11 +210,7 @@ export function WbViewReact({
           <div className="contents">
             <DataSetName
               dataset={dataset}
-              getRowCount={() =>
-                hot === undefined
-                  ? dataset.rows.length
-                  : hot.countRows() - hot.countEmptyRows(true)
-              }
+              hot={hot}
             />
           </div>
           <Button.Small
@@ -248,7 +244,7 @@ export function WbViewReact({
             hot={hot}
             mappings={mappings!}
             data={data}
-            handleDatasetDelete={handleDatasetDelete}
+            onDatasetDeleted={handleDatasetDeleted}
             hasUnsavedChanges={hasUnsavedChanges}
             triggerDatasetRefresh={triggerDatasetRefresh}
           />
@@ -283,7 +279,7 @@ export function WbViewReact({
           isUploaded={isUploaded}
           cellCounts={cellCounts}
           utils={workbench.utils}
-          spreadsheetContainer={spreadsheetContainer}
+          spreadsheetContainerRef={spreadsheetContainerRef}
         />
       </ReadOnlyContext.Provider>
     </>

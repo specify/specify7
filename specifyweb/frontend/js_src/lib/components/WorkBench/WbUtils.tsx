@@ -6,7 +6,7 @@
  *
  */
 
-import React, { KeyboardEventHandler } from 'react';
+import React from 'react';
 import _ from 'underscore';
 
 import { wbText } from '../../localization/workbench';
@@ -37,20 +37,20 @@ function Navigation({
   label,
   totalCount,
   utils,
-  spreadsheetContainer,
+  spreadsheetContainerRef,
 }: {
   readonly name: keyof WbCellCounts;
   readonly label: LocalizedString;
   readonly totalCount: number;
   readonly utils: WbUtils;
-  readonly spreadsheetContainer: any;
+  readonly spreadsheetContainerRef: React.RefObject<HTMLElement>;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
   const [currentPosition, setCurrentPosition] = React.useState<number>(0);
   const [buttonIsPressed, _press, _unpress, togglePress] = useBooleanState();
   const handleTypeToggle = () => {
     togglePress();
-    utils.toggleCellTypes(name, 'toggle', spreadsheetContainer.current);
+    utils.toggleCellTypes(name, 'toggle', spreadsheetContainerRef.current);
   };
   const handlePrevious = () => {
     const [_, position] = utils.navigateCells({
@@ -118,12 +118,12 @@ export function WbUtilsComponent({
   isUploaded,
   cellCounts,
   utils,
-  spreadsheetContainer,
+  spreadsheetContainerRef,
 }: {
   readonly isUploaded: boolean;
   readonly cellCounts: WbCellCounts;
   readonly utils: WbUtils;
-  readonly spreadsheetContainer: any;
+  readonly spreadsheetContainerRef: React.RefObject<HTMLElement>;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
   const searchRef = React.useRef<HTMLInputElement | null>(null);
@@ -134,102 +134,100 @@ export function WbUtilsComponent({
     utils.searchCells(
       event,
       searchRef.current as HTMLInputElement,
-      spreadsheetContainer.current
+      spreadsheetContainerRef?.current
     );
   };
 
   const handleReplace = (event: KeyboardEvent) => {
-    utils.replaceCells(event, replaceRef.current as HTMLInputElement);
+    utils.replaceCells(event, replaceRef.current!);
   };
 
   return (
-    <>
-      <div
-        aria-label={wbText.navigation()}
-        className="flex flex-wrap justify-end gap-x-1 gap-y-2"
-        role="toolbar"
-      >
-        <span className="contents" role="search">
+    <div
+      aria-label={wbText.navigation()}
+      className="flex flex-wrap justify-end gap-x-1 gap-y-2"
+      role="toolbar"
+    >
+      <span className="contents" role="search">
+        <div className="flex">
+          <Input.Generic
+            forwardRef={searchRef}
+            aria-label={commonText.searchQuery()}
+            autoComplete="on"
+            placeholder={commonText.search()}
+            spellCheck
+            title={commonText.searchQuery()}
+            type="search"
+            onKeyDown={handleSearch}
+          />
+        </div>
+        {!isUploaded && hasPermission('/workbench/dataset', 'update') ? (
           <div className="flex">
-            <Input.Generic
-              forwardRef={searchRef}
-              aria-label={commonText.searchQuery()}
+            <Input.Text
+              forwardRef={replaceRef}
+              aria-label={wbText.replacementValue()}
               autoComplete="on"
-              placeholder={commonText.search()}
-              spellCheck
-              title={commonText.searchQuery()}
-              type="search"
-              onKeyDown={handleSearch}
+              placeholder={wbText.replace()}
+              title={wbText.replacementValue()}
+              onKeyDown={handleReplace}
+              disabled={isReadOnly}
             />
           </div>
-          {!isUploaded && hasPermission('/workbench/dataset', 'update') ? (
-            <div className="flex">
-              <Input.Text
-                forwardRef={replaceRef}
-                aria-label={wbText.replacementValue()}
-                autoComplete="on"
-                placeholder={wbText.replace()}
-                title={wbText.replacementValue()}
-                onKeyDown={handleReplace}
-                disabled={isReadOnly}
-              />
-            </div>
-          ) : undefined}
-          <span>
-            <WbAdvancedSearch
-              initialSearchPreferences={utils.searchPreferences}
-              onChange={(newSearchPreferences) => {
-                if (
-                  newSearchPreferences.navigation.direction !==
-                  utils.searchPreferences.navigation.direction
-                ) {
-                  // TODO: add workbench or cells to parent component
-                  // cells.flushIndexedCellData = true;
-                }
-                utils.searchPreferences = newSearchPreferences;
-                // TODO: figure out what searchCells with SettingsChange does
-                // if (utils.searchPreferences.search.liveUpdate)
-                //   utils.searchCells({
-                //     key: 'SettingsChange',
-                //   }).catch(softFail);
-              }}
-            />
-          </span>
-        </span>
-        <Navigation
-          label={wbText.searchResults()}
-          name="searchResults"
-          totalCount={cellCounts.searchResults}
-          utils={utils}
-          spreadsheetContainer={spreadsheetContainer}
-        />
-        {!isUploaded && hasPermission('/workbench/dataset', 'update') ? (
-          <Navigation
-            label={wbText.modifiedCells()}
-            name="modifiedCells"
-            totalCount={cellCounts.modifiedCells}
-            utils={utils}
-            spreadsheetContainer={spreadsheetContainer}
-          />
         ) : undefined}
-        <Navigation
-          label={wbText.newCells()}
-          name="newCells"
-          totalCount={cellCounts.newCells}
-          utils={utils}
-          spreadsheetContainer={spreadsheetContainer}
-        />
-        {!isUploaded && (
-          <Navigation
-            label={wbText.errorCells()}
-            name="invalidCells"
-            totalCount={cellCounts.invalidCells}
-            utils={utils}
-            spreadsheetContainer={spreadsheetContainer}
+        <span>
+          <WbAdvancedSearch
+            initialSearchPreferences={utils.searchPreferences}
+            onChange={(newSearchPreferences) => {
+              if (
+                newSearchPreferences.navigation.direction !==
+                utils.searchPreferences.navigation.direction
+              ) {
+                // TODO: add workbench or cells to parent component
+                // cells.flushIndexedCellData = true;
+              }
+              utils.searchPreferences = newSearchPreferences;
+              // TODO: figure out what searchCells with SettingsChange does
+              // if (utils.searchPreferences.search.liveUpdate)
+              //   utils.searchCells({
+              //     key: 'SettingsChange',
+              //   }).catch(softFail);
+            }}
           />
-        )}
-      </div>
-    </>
+        </span>
+      </span>
+      <Navigation
+        label={wbText.searchResults()}
+        name="searchResults"
+        totalCount={cellCounts.searchResults}
+        utils={utils}
+        spreadsheetContainerRef={spreadsheetContainerRef}
+      />
+      {!isUploaded && hasPermission('/workbench/dataset', 'update') ? (
+        <Navigation
+          label={wbText.modifiedCells()}
+          name="modifiedCells"
+          totalCount={cellCounts.modifiedCells}
+          utils={utils}
+          spreadsheetContainerRef={spreadsheetContainerRef}
+        />
+      ) : undefined}
+      <Navigation
+        label={wbText.newCells()}
+        name="newCells"
+        totalCount={cellCounts.newCells}
+        utils={utils}
+        spreadsheetContainerRef={spreadsheetContainerRef}
+      />
+      {!isUploaded && (
+        <Navigation
+          label={wbText.errorCells()}
+          name="invalidCells"
+          totalCount={cellCounts.invalidCells}
+          utils={utils}
+          spreadsheetContainerRef={spreadsheetContainerRef}
+        />
+      )}
+    </div>
   );
 }
 
@@ -292,7 +290,7 @@ export class WbUtils {
         : visualCol;
 
     const [currentRow, currentCol] =
-      currentCell ?? getSelectedLast(this.workbench.hot);
+      currentCell ?? getSelectedLast(this.workbench.hot!);
 
     const [currentTransposedRow, currentTransposedCol] = [
       resolveIndex(currentRow, currentCol, true),
@@ -376,7 +374,10 @@ export class WbUtils {
 
     if (matchedCell === undefined) return [undefined, finalCellPosition];
 
-    this.workbench.hot.selectCell(matchedCell.visualRow, matchedCell.visualCol);
+    this.workbench.hot?.selectCell(
+      matchedCell.visualRow,
+      matchedCell.visualCol
+    );
 
     // Turn on the respective cell type if it was hidden
     // TODO: figure out if this is needed
@@ -388,9 +389,9 @@ export class WbUtils {
   searchCells(
     event: KeyboardEvent | { readonly key: 'SettingsChange' },
     searchQueryElement: HTMLInputElement,
-    spreadsheetContainer: any
+    spreadsheetContainer: HTMLElement | null
   ) {
-    if (!this.workbench.hot) return;
+    if (this.workbench.hot === undefined) return;
     /*
      * Don't rerun search on live search if search query did not change
      * (e.x, if Ctrl/Cmd+A is clicked in the search box)
@@ -412,7 +413,6 @@ export class WbUtils {
     }
     this.toggleCellTypes('searchResults', 'remove', spreadsheetContainer);
 
-    let resultsCount = 0;
     const data = this.workbench.dataset.rows;
     const firstVisibleRow =
       getHotPlugin(this.workbench.hot, 'autoRowSize').getFirstVisibleRow() - 3;
@@ -473,13 +473,10 @@ export class WbUtils {
             visualCol,
           }
         );
-        if (isSearchResult) resultsCount += 1;
       }
     }
 
     this.workbench.cells.updateCellInfoStats();
-
-    // navigationTotalElement.textContent = resultsCount.toString();
 
     // Navigate to the first search result when hitting Enter
     if (event.key === 'Enter')
@@ -536,7 +533,7 @@ export class WbUtils {
   toggleCellTypes(
     navigationType: keyof WbCellCounts,
     action: 'add' | 'remove' | 'toggle' = 'toggle',
-    spreadsheetContainer?: any
+    spreadsheetContainer?: HTMLElement | null
   ): void {
     const groupName = camelToKebab(navigationType);
     const cssClassName = `wb-hide-${groupName}`;

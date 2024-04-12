@@ -49,7 +49,7 @@ export function WbSave({
         workbench.cells.cellMeta = [];
         // TODO: Figure out how to rework searchCells for SettingsChange as input
         // workbench.utils?.searchCells({ key: 'SettingsChange' });
-        workbench.hot.render();
+        workbench.hot?.render();
         closeProgressBar();
       });
   };

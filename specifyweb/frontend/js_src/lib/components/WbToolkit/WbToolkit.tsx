@@ -13,7 +13,7 @@ import { userPreferences } from '../Preferences/userPreferences';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { downloadDataSet } from '../WorkBench/helpers';
 import type { WbMapping } from '../WorkBench/mapping';
-import { WbDevPlan } from './DevShowPlan';
+import { WbRawPlan } from './DevShowPlan';
 import { WbGeoLocate } from './GeoLocate';
 import { WbLeafletMap } from './WbLeafletMap';
 
@@ -22,7 +22,7 @@ export function WbToolkit({
   hot,
   mappings,
   data,
-  handleDatasetDelete,
+  onDatasetDeleted: handleDatasetDeleted,
   hasUnsavedChanges,
   triggerDatasetRefresh,
 }: {
@@ -30,11 +30,11 @@ export function WbToolkit({
   readonly hot: Handsontable | undefined;
   readonly mappings: WbMapping;
   readonly data: RA<RA<string | null>>;
-  readonly handleDatasetDelete: () => void;
+  readonly onDatasetDeleted: () => void;
   readonly hasUnsavedChanges: boolean;
   readonly triggerDatasetRefresh: () => void;
 }): JSX.Element {
-  const handleExport = React.useCallback((): void => {
+  const handleExport = (): void => {
     const delimiter = userPreferences.get(
       'workBench',
       'editor',
@@ -47,9 +47,11 @@ export function WbToolkit({
       dataset.columns,
       delimiter
     ).catch(raise);
-  }, [dataset]);
+  };
 
   const hasLocality = mappings ? mappings.localityColumns.length > 0 : false;
+
+  // TODO: Render certain elements only after hot has loaded
   return (
     <div
       aria-label={commonText.tools()}
@@ -63,13 +65,13 @@ export function WbToolkit({
             hasUnsavedChanges={hasUnsavedChanges}
             dataset={dataset}
           />
-          <WbDevPlan
-            dataset={dataset}
-            handleDatasetDelete={handleDatasetDelete}
-            triggerDatasetRefresh={triggerDatasetRefresh}
-          />
         </>
       ) : undefined}
+      <WbRawPlan
+        dataset={dataset}
+        onDatasetDeleted={handleDatasetDeleted}
+        triggerDatasetRefresh={triggerDatasetRefresh}
+      />
       <Button.Small
         onClick={handleExport}
         disabled={hasUnsavedChanges}
@@ -97,7 +99,7 @@ export function WbToolkit({
       )}
       <WbLeafletMap
         hasLocality={hasLocality}
-        hot={hot}
+        hot={hot!}
         dataset={dataset}
         mappings={mappings}
       />

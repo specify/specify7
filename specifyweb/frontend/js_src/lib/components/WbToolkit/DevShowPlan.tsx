@@ -1,3 +1,7 @@
+/**
+ * Show upload plan as JSON
+ */
+
 import React from 'react';
 
 import { commonText } from '../../localization/common';
@@ -16,28 +20,28 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { wbText } from '../../localization/workbench';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 
-export function WbDevPlan({
+export function WbRawPlan({
   dataset,
-  handleDatasetDelete,
+  onDatasetDeleted: handleDatasetDeleted,
   triggerDatasetRefresh,
 }: {
   readonly dataset: Dataset;
-  readonly handleDatasetDelete: () => void;
+  readonly onDatasetDeleted: () => void;
   readonly triggerDatasetRefresh: () => void;
 }): JSX.Element {
-  const [showDevPlan, openDevPlan, closeDevPlan] = useBooleanState();
+  const [showRawPlan, openRawPlan, closeRawPlan] = useBooleanState();
   return (
     <>
       <ErrorBoundary dismissible>
         <Button.Small
           aria-haspopup="dialog"
-          aria-pressed={showDevPlan}
-          onClick={openDevPlan}
+          aria-pressed={showRawPlan}
+          onClick={openRawPlan}
         >
           {wbText.uploadPlan()}
         </Button.Small>
-        {showDevPlan && (
-          <DevShowPlan
+        {showRawPlan && (
+          <RawUploadPlan
             dataSetId={dataset.id}
             dataSetName={dataset.name}
             uploadPlan={dataset.uploadplan ?? ({} as UploadPlan)}
@@ -45,8 +49,8 @@ export function WbDevPlan({
               overwriteReadOnly(dataset, 'uploadplan', plan);
               triggerDatasetRefresh();
             }}
-            onClose={closeDevPlan}
-            onDeleted={handleDatasetDelete}
+            onClose={closeRawPlan}
+            onDeleted={handleDatasetDeleted}
           />
         )}
       </ErrorBoundary>
@@ -54,10 +58,7 @@ export function WbDevPlan({
   );
 }
 
-/**
- * Show upload plan as JSON
- */
-function DevShowPlan({
+function RawUploadPlan({
   dataSetId,
   dataSetName: name,
   uploadPlan: rawPlan,

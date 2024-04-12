@@ -23,6 +23,7 @@ import { WbRollback } from './WbRollback';
 import { WbUpload } from './WbUpload';
 import { WbRevert } from './WbRevert';
 import { WbSave } from './WbSave';
+import { GET } from '../../utils/utils';
 
 export function useWbActions({
   datasetId,
@@ -118,10 +119,11 @@ export function WbActionsComponent({
     workbench,
   });
 
-  const cells = workbench.cells;
+  // TODO: put the message rendering logic in a utility function?
+  const cellCounts = workbench.cellCounts[GET];
   const messages = {
     validate:
-      cells.cellCounts?.invalidCells === 0
+      cellCounts.invalidCells === 0
         ? {
             header: wbText.validationNoErrors(),
             message: (
@@ -145,7 +147,7 @@ export function WbActionsComponent({
             ),
           },
     upload:
-      cells.cellCounts?.invalidCells === 0
+      cellCounts.invalidCells === 0
         ? {
             header: wbText.uploadSuccessful(),
             message: wbText.uploadSuccessfulDescription(),
@@ -237,7 +239,7 @@ export function WbActionsComponent({
           />
         </>
       ) : undefined}
-      {modeRef.current && showStatus ? (
+      {typeof modeRef.current === 'string' && showStatus ? (
         <WbStatusComponent
           dataset={{
             ...dataset,
@@ -270,7 +272,7 @@ export function WbActionsComponent({
         <Dialog
           buttons={
             <>
-              {cells.cellCounts?.invalidCells === 0 &&
+              {cellCounts.invalidCells === 0 &&
                 modeRef.current === 'upload' && (
                   <CreateRecordSetButton
                     dataSetId={dataset.id}

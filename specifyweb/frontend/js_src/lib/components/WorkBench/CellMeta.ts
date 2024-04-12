@@ -1,6 +1,6 @@
 import { backEndText } from '../../localization/backEnd';
 import type { RA, WritableArray } from '../../utils/types';
-import { throttle } from '../../utils/utils';
+import { SET, throttle } from '../../utils/utils';
 import { getHotPlugin } from './handsontable';
 import type { Workbench } from './WbView';
 
@@ -193,7 +193,7 @@ export class WbCellMeta {
     visualRow: number,
     visualCol: number
   ) {
-    if (!this.workbench.hot) return;
+    if (this.workbench.hot === undefined) return;
 
     if (key === 'isNew')
       cell?.classList[value === true ? 'add' : 'remove']('wb-no-match-cell');
@@ -251,7 +251,7 @@ export class WbCellMeta {
       readonly visualCol?: number;
     } = {}
   ) {
-    if (!this.workbench.hot) return;
+    if (this.workbench.hot === undefined) return;
     const isValueChanged = this.setCellMeta(
       physicalRow,
       physicalCol,
@@ -328,7 +328,7 @@ export class WbCellMeta {
   updateCellInfoStats() {
     const cellMeta = this.cellMeta.flat();
 
-    const cellCounts = {
+    this.workbench.cellCounts[SET]({
       newCells: cellMeta.reduce(
         (count, info) =>
           count + (this.getCellMetaFromArray(info, 'isNew') ? 1 : 0),
@@ -350,10 +350,7 @@ export class WbCellMeta {
           count + (this.getCellMetaFromArray(info, 'isModified') ? 1 : 0),
         0
       ),
-    };
-
-    const [_, setCellCounts] = this.workbench.cellCounts;
-    setCellCounts(cellCounts);
+    });
   }
 
   public cellIsType(metaArray: WbMetaArray, type: keyof WbCellCounts): boolean {

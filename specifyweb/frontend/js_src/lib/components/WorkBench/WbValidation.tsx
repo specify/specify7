@@ -17,7 +17,7 @@ import { resolveValidationMessage } from './resultsParser';
 import type { Workbench } from './WbView';
 
 type UploadResults = {
-  ambiguousMatches: WritableArray<
+  readonly ambiguousMatches: WritableArray<
     WritableArray<{
       physicalCols: RA<number>;
       mappingPath: MappingPath;
@@ -25,8 +25,8 @@ type UploadResults = {
       key: string;
     }>
   >;
-  recordCounts: Partial<Record<Lowercase<keyof Tables>, number>>;
-  newRecords: Partial<
+  readonly recordCounts: Partial<Record<Lowercase<keyof Tables>, number>>;
+  readonly newRecords: Partial<
     WritableArray<
       WritableArray<
         WritableArray<

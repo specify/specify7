@@ -1,5 +1,6 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
+import Handsontable from 'handsontable';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
@@ -344,13 +345,18 @@ export function DataSetMeta({
 
 export function DataSetName({
   dataset,
-  getRowCount,
+  hot,
 }: {
   readonly dataset: Dataset;
-  readonly getRowCount: () => number;
+  readonly hot: Handsontable | undefined;
 }): JSX.Element {
   const [showMeta, handleOpen, handleClose] = useBooleanState();
   const [name, setName] = React.useState(dataset.name);
+
+  const getRowCount = () =>
+    hot === undefined
+      ? dataset.rows.length
+      : hot.countRows() - hot.countEmptyRows(true);
 
   useTitle(name);
 

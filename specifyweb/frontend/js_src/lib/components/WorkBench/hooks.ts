@@ -12,7 +12,6 @@ import type { RA } from '../../utils/types';
 import { ensure, overwriteReadOnly } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { schema } from '../DataModel/schema';
-import { hasPermission } from '../Permissions/helpers';
 import { getHotPlugin } from './handsontable';
 import { Workbench } from './WbView';
 
@@ -20,7 +19,8 @@ export function getHotHooks(
   workbench: Workbench,
   physicalColToMappingCol: (physicalCol: number) => number | undefined,
   spreadsheetChanged: () => void,
-  checkDeletedFail: (statusCode: number) => boolean
+  checkDeletedFail: (statusCode: number) => boolean,
+  isReadOnly: boolean
 ): Partial<Events> {
   let sortConfigIsSet: boolean = false;
 
@@ -33,13 +33,7 @@ export function getHotHooks(
      * cases
      *
      */
-    afterRenderer: (
-      td: HTMLTableCellElement,
-      visualRow: number,
-      visualCol: number,
-      property: number | string,
-      _value: string
-    ) => {
+    afterRenderer: (td, visualRow, visualCol, property, _value) => {
       if (workbench.hot === undefined) {
         td.classList.add('text-gray-500');
         return;
@@ -50,8 +44,8 @@ export function getHotHooks(
           ? property
           : workbench.hot.toPhysicalColumn(visualCol);
       if (physicalCol >= workbench.dataset.columns.length) return;
-      const metaArray = workbench.cells?.cellMeta?.[physicalRow]?.[physicalCol];
-      if (workbench.cells?.getCellMetaFromArray(metaArray!, 'isModified'))
+      const metaArray = workbench.cells.cellMeta?.[physicalRow]?.[physicalCol];
+      if (workbench.cells.getCellMetaFromArray(metaArray!, 'isModified'))
         workbench.cells.runMetaUpdateEffects(
           td,
           'isModified',
@@ -59,40 +53,36 @@ export function getHotHooks(
           visualRow,
           visualCol
         );
-      if (workbench.cells?.getCellMetaFromArray(metaArray!, 'isNew'))
-        workbench.cells?.runMetaUpdateEffects(
+      if (workbench.cells.getCellMetaFromArray(metaArray!, 'isNew'))
+        workbench.cells.runMetaUpdateEffects(
           td,
           'isNew',
           true,
           visualRow,
           visualCol
         );
-      if (workbench.cells!.getCellMetaFromArray(metaArray!, 'isSearchResult'))
-        workbench.cells?.runMetaUpdateEffects(
+      if (workbench.cells.getCellMetaFromArray(metaArray!, 'isSearchResult'))
+        workbench.cells.runMetaUpdateEffects(
           td,
           'isSearchResult',
           true,
           visualRow,
           visualCol
         );
-      if (workbench.mappings?.mappedHeaders?.[physicalCol] === undefined)
+      if (workbench.mappings.mappedHeaders?.[physicalCol] === undefined)
         td.classList.add('text-gray-500');
-      if (workbench.mappings?.coordinateColumns?.[physicalCol] !== undefined)
+      if (workbench.mappings.coordinateColumns?.[physicalCol] !== undefined)
         td.classList.add('wb-coordinate-cell');
     },
 
     // Make HOT use defaultValues for validation if cell is empty
-    beforeValidate: (
-      value: any,
-      _visualRow: number,
-      property: number | string
-    ) => {
+    beforeValidate: (value, _visualRow, property) => {
       if (Boolean(value) || workbench.hot === undefined) return value;
 
       const visualCol = workbench.hot.propToCol(property);
       const physicalCol = workbench.hot.toPhysicalColumn(visualCol);
 
-      return workbench.mappings?.defaultValues[physicalCol] ?? value;
+      return workbench.mappings.defaultValues[physicalCol] ?? value;
     },
 
     afterValidate: (
@@ -106,7 +96,7 @@ export function getHotHooks(
 
       const physicalRow = workbench.hot.toPhysicalRow(visualRow);
       const physicalCol = workbench.hot.toPhysicalColumn(visualCol);
-      const issues = workbench.cells?.getCellMeta(
+      const issues = workbench.cells.getCellMeta(
         physicalRow,
         physicalCol,
         'issues'
@@ -137,7 +127,7 @@ export function getHotHooks(
         ),
       ]);
       if (JSON.stringify(issues) !== JSON.stringify(newIssues))
-        workbench.cells!.updateCellMeta(
+        workbench.cells.updateCellMeta(
           physicalRow,
           physicalCol,
           'issues',
@@ -149,10 +139,7 @@ export function getHotHooks(
 
     afterRedo: (data) => afterUndoRedo(workbench, 'redo', data),
 
-    beforePaste: () =>
-      // !wbView.uploadedView &&
-      // !wbView.isUploaded &&
-      hasPermission('/workbench/dataset', 'update'),
+    beforePaste: () => !isReadOnly,
 
     /*
      * If copying values from a 1x3 area and pasting into the last cell, HOT
@@ -261,19 +248,19 @@ export function getHotHooks(
           newValue,
         }) => {
           if (
-            workbench.cells?.getCellMeta(
+            workbench.cells.getCellMeta(
               physicalRow,
               physicalCol,
               'originalValue'
             ) === undefined
           )
-            workbench.cells?.setCellMeta(
+            workbench.cells.setCellMeta(
               physicalRow,
               physicalCol,
               'originalValue',
               oldValue
             );
-          workbench.cells?.recalculateIsModifiedState(
+          workbench.cells.recalculateIsModifiedState(
             physicalRow,
             physicalCol,
             {
@@ -282,25 +269,25 @@ export function getHotHooks(
             }
           );
           if (
-            workbench.utils?.searchPreferences.search.liveUpdate &&
-            workbench.utils?.searchQuery !== undefined
+            workbench.utils.searchPreferences.search.liveUpdate &&
+            workbench.utils.searchQuery !== undefined
           )
-            workbench.cells?.updateCellMeta(
+            workbench.cells.updateCellMeta(
               physicalRow,
               physicalCol,
               'isSearchResult',
-              workbench.utils?.searchFunction(newValue),
+              workbench.utils.searchFunction(newValue),
               { visualRow, visualCol }
             );
         }
       );
 
       spreadsheetChanged();
-      workbench.cells?.updateCellInfoStats();
+      workbench.cells.updateCellInfoStats();
 
       if (workbench.dataset.uploadplan)
         changedRows.forEach((physicalRow) =>
-          workbench.validation?.startValidateRow(physicalRow)
+          workbench.validation.startValidateRow(physicalRow)
         );
     },
 
@@ -330,7 +317,7 @@ export function getHotHooks(
         // REFACTOR: use sortFunction here
       ).sort();
 
-      workbench.cells!.flushIndexedCellData = true;
+      workbench.cells.flushIndexedCellData = true;
       addedRows
         .filter((physicalRow) => physicalRow < workbench.cells!.cellMeta.length)
         .forEach((physicalRow) =>
@@ -353,15 +340,15 @@ export function getHotHooks(
         .reverse();
 
       removedRows.forEach((physicalRow) => {
-        workbench.cells!.cellMeta.splice(physicalRow, 1);
-        workbench.validation!.liveValidationStack.splice(physicalRow, 1);
+        workbench.cells.cellMeta.splice(physicalRow, 1);
+        workbench.validation.liveValidationStack.splice(physicalRow, 1);
       });
 
-      workbench.cells!.flushIndexedCellData = true;
+      workbench.cells.flushIndexedCellData = true;
 
       if (workbench.hot && source !== 'auto') {
         spreadsheetChanged();
-        workbench.cells!.updateCellInfoStats();
+        workbench.cells.updateCellInfoStats();
       }
 
       return true;
@@ -373,7 +360,7 @@ export function getHotHooks(
      * and sorting them in the same direction
      */
     beforeColumnSort: (currentSortConfig, newSortConfig) => {
-      workbench.cells!.flushIndexedCellData = true;
+      workbench.cells.flushIndexedCellData = true;
 
       // if (wbView.coordinateConverterView) return false;
 
@@ -585,7 +572,7 @@ function afterUndoRedo(
       // wbView.undoRedoIsHandled = true;
       workbench.hot?.undo();
       // wbView.undoRedoIsHandled = false;
-      workbench.disambiguation!.afterChangeDisambiguation(physicalRow);
+      workbench.disambiguation.afterChangeDisambiguation(physicalRow);
     }, 0);
-  else workbench.disambiguation!.afterChangeDisambiguation(physicalRow);
+  else workbench.disambiguation.afterChangeDisambiguation(physicalRow);
 }

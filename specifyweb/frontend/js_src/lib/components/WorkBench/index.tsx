@@ -1,6 +1,5 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { HotTable } from '@handsontable/react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
@@ -18,7 +17,7 @@ import { treeRanksPromise } from '../InitialContext/treeRanks';
 import { Dialog } from '../Molecules/Dialog';
 import { NotFoundView } from '../Router/NotFoundView';
 import type { Dataset } from '../WbPlanView/Wrapped';
-import { WbViewReact } from './WbView';
+import { WbView } from './WbView';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
@@ -41,7 +40,7 @@ function useDataSet(
   );
 }
 
-export function WorkBenchReact(): JSX.Element {
+export function WorkBench(): JSX.Element {
   useMenuItem('workBench');
 
   const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, true);
@@ -57,7 +56,7 @@ export function WorkBenchReact(): JSX.Element {
 
   const navigate = useNavigate();
   // TODO: consider adding this to workbench variable
-  const spreadsheetContainer = React.useRef<HTMLElement | null>(null);
+  const spreadsheetContainerRef = React.useRef<HTMLElement>(null);
 
   if (!dataSet || !treeRanksLoaded) return <LoadingScreen />;
 
@@ -80,12 +79,12 @@ export function WorkBenchReact(): JSX.Element {
   ) : (
     <>
       <div className="contents">
-        <section className={`wbs-form ${className.containerFull}`} ref={spreadsheetContainer}>
-          <WbViewReact
+        <section className={`wbs-form ${className.containerFull}`} ref={spreadsheetContainerRef}>
+          <WbView
             dataset={dataSet}
-            handleDatasetDelete={handleDeleted}
+            onDatasetDeleted={handleDeleted}
             triggerDatasetRefresh={triggerDatasetRefresh}
-            spreadsheetContainer={spreadsheetContainer}
+            spreadsheetContainerRef={spreadsheetContainerRef}
           />
         </section>
       </div>

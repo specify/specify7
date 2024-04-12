@@ -17,7 +17,6 @@ import { f } from '../../utils/functools';
 import { ensure, type IR, type RA } from '../../utils/types';
 import { legacyNonJsxIcons } from '../Atoms/Icons';
 import { getTable } from '../DataModel/tables';
-import { hasPermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { WbMapping } from './mapping';
@@ -60,9 +59,9 @@ const fillCellsContextMenuItem = (
         false),
     callback: (_, selections) =>
       selections.forEach((selection) =>
-        Array.from(
-          new Array(selection.end.col + 1 - selection.start.col).keys()
-        ).forEach((index) => {
+        Array.from({
+          length: selection.end.col + 1 - selection.start.col,
+        }).forEach((_, index) => {
           const startRow =
             mode === 'up' ? selection.start.row + 1 : selection.start.row;
           const endRow = selection.end.row;
@@ -202,11 +201,11 @@ function WbSpreadsheetComponent({
             upload_results: {
               disableSelection: true,
               isCommand: false,
-              renderer: (_hot, wrapper) => {
+              renderer: (hot, wrapper) => {
                 const { endRow: visualRow, endCol: visualCol } =
-                  getSelectedRegions(_hot).at(-1) ?? {};
-                const physicalRow = _hot.toPhysicalRow(visualRow ?? 0);
-                const physicalCol = _hot.toPhysicalColumn(visualCol ?? 0);
+                  getSelectedRegions(hot).at(-1) ?? {};
+                const physicalRow = hot.toPhysicalRow(visualRow ?? 0);
+                const physicalCol = hot.toPhysicalColumn(visualCol ?? 0);
 
                 const createdRecords =
                   validation.uploadResults.newRecords[physicalRow]?.[
@@ -427,15 +426,12 @@ function WbSpreadsheetComponent({
     return { displayDelay: 100 };
   }, []);
 
-  const hooks = React.useMemo(
-    () =>
-      getHotHooks(
-        workbench,
-        physicalColToMappingCol,
-        spreadsheetChanged,
-        checkDeletedFail
-      ),
-    [hot]
+  const hooks = getHotHooks(
+    workbench,
+    physicalColToMappingCol,
+    spreadsheetChanged,
+    checkDeletedFail,
+    isReadOnly
   );
 
   return (

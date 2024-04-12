@@ -200,7 +200,7 @@ export const routes: RA<EnhancedRoute> = [
       {
         path: ':id',
         element: () =>
-          import('../WorkBench/index').then(({ WorkBenchReact }) => WorkBenchReact),
+          import('../WorkBench/index').then(({ WorkBench }) => WorkBench),
       },
       {
         path: 'import',

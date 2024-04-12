@@ -77,14 +77,16 @@ function GeoLocate({
   const [localityIndex, setLocalityIndex] = React.useState<number>(0);
 
   const selection = React.useMemo(
-    () => getSelectedLocalities(hot, columns, localityColumns, true),
+    () =>
+      hot === undefined
+        ? undefined
+        : getSelectedLocalities(hot, columns, localityColumns, true),
     [hot, columns, localityColumns]
   );
 
   function handleMove(newLocalityIndex: number): void {
-    if (selection === undefined) return;
     const { localityColumns, visualRow } =
-      selection.parseLocalityIndex(newLocalityIndex);
+      selection!.parseLocalityIndex(newLocalityIndex);
     setData(getGeoLocateData(hot, columns, { localityColumns, visualRow }));
     hot.selectRows(visualRow);
     setLocalityIndex(newLocalityIndex);
@@ -96,7 +98,8 @@ function GeoLocate({
   );
 
   React.useEffect(() => {
-    handleMove(0);
+    if (selection === undefined || hot === undefined) return;
+    else handleMove(0);
   }, [hot, columns, localityColumns]);
 
   const handleResult = React.useCallback(
@@ -155,7 +158,7 @@ function GeoLocate({
 
 // Generate Locality iterator. Able to handle multiple localities in a row
 export function getSelectedLocalities(
-  hot: Handsontable | null | undefined,
+  hot: Handsontable,
   columns: RA<string>,
   localityColumns: RA<IR<string>>,
   // If false, treat single cell selection as entire spreadsheet selection
@@ -173,7 +176,7 @@ export function getSelectedLocalities(
       };
     }
   | undefined {
-  if (!hot) return undefined;
+  if (hot === undefined) return undefined;
   const selectedRegions = getSelectedRegions(hot);
 
   const selectedVirtualColumns = f.unique(
