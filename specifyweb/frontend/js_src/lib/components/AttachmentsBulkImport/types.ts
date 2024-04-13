@@ -9,6 +9,7 @@ import type { DatasetBase, DatasetBriefBase } from '../WbPlanView/Wrapped';
 import type { PartialAttachmentUploadSpec } from './Import';
 import type { staticAttachmentImportPaths } from './importPaths';
 import type { keyLocalizationMapAttachment } from './utils';
+import { Optional } from 'typedoc/dist/lib/utils/validation';
 
 export type UploadAttachmentSpec = {
   readonly token: string;
@@ -57,7 +58,8 @@ type UploadableFileSpec = {
  * Forcing keys to be primitive because objects would be
  * ignored during syncing to backend.
  */
-export type BoundFile = Pick<File, 'name' | 'size' | 'type'>;
+export type BoundFile = Pick<File, 'name'> &
+  Partial<Pick<File, 'size' | 'type'>>;
 
 export type UnBoundFile = {
   readonly file: BoundFile | File;

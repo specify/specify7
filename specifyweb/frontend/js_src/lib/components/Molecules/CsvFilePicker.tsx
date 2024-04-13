@@ -25,11 +25,13 @@ export function CsvFilePicker({
     hasHeader,
     encoding,
     getSetDelimiter,
+    fileName,
   }: {
     readonly data: RA<RA<string>>;
     readonly hasHeader: boolean;
     readonly encoding: string;
     readonly getSetDelimiter: GetOrSet<string | undefined>;
+    readonly fileName: string;
   }) => void;
 }): JSX.Element {
   const [file, setFile] = React.useState<File | undefined>();
@@ -69,11 +71,13 @@ export function CsvFilePreview({
     hasHeader,
     encoding,
     getSetDelimiter,
+    fileName,
   }: {
     readonly data: RA<RA<string>>;
     readonly hasHeader: boolean;
     readonly encoding: string;
     readonly getSetDelimiter: GetOrSet<string | undefined>;
+    readonly fileName: string;
   }) => void;
 }): JSX.Element {
   const [encoding, setEncoding] = React.useState<string>('utf-8');
@@ -94,6 +98,7 @@ export function CsvFilePreview({
           hasHeader,
           encoding,
           getSetDelimiter,
+          fileName: file.name,
         });
       }}
     >
