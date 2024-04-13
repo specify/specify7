@@ -9,7 +9,6 @@ import type { DatasetBase, DatasetBriefBase } from '../WbPlanView/Wrapped';
 import type { PartialAttachmentUploadSpec } from './Import';
 import type { staticAttachmentImportPaths } from './importPaths';
 import type { keyLocalizationMapAttachment } from './utils';
-import { Optional } from 'typedoc/dist/lib/utils/validation';
 
 export type UploadAttachmentSpec = {
   readonly token: string;
