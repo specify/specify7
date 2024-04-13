@@ -848,4 +848,7 @@ export const attachmentsText = createDictionary({
     'hr-hr':
       'Ovo kontrolira hoće li se novi privitci dodani u ovu kolekciju prema zadanim postavkama označavati kao "Javni". Javni privitci automatski će biti vidljivi na Navedite web portalu. Ova se postavka može poništiti za svaki pojedinačni privitak i ne utječe na postojeće privitke.',
   },
+  importFromMappingFile: {
+    'en-us': 'Import from Mapping File',
+  },
 } as const);
