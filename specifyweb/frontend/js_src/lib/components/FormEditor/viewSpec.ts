@@ -408,9 +408,12 @@ const subViewSpec = (
             const cellName = cell.rest.node.attributes.name;
             const cellRelationship =
               typeof cellName === 'string'
-                ? table?.getRelationship(cellName)
+                ? syncers.field(table?.name).serializer(cellName)?.at(-1)
                 : undefined;
-            const cellRelatedTableName = cellRelationship?.relatedTable.name;
+            const cellRelatedTableName =
+              cellRelationship?.isRelationship === true
+                ? cellRelationship.relatedTable.name
+                : undefined;
             const parsed = toLargeSortConfig(raw);
             const fieldNames = syncers
               .field(cellRelatedTableName)
