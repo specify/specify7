@@ -773,11 +773,8 @@ const textSpec = f.store(() =>
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const textAreaSpec = (
   _field: SpecToJson<ReturnType<typeof rawFieldSpec>>,
-  {
-    rawType,
-  }: {
-    readonly rawType: string;
-  }
+  _: unknown,
+  rawType: string
 ) =>
   createXmlSpec({
     rows: pipe(
