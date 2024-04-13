@@ -132,12 +132,15 @@ function AttachmentsImport({
     );
 
   const applyFileNames = React.useCallback(
-    (file: UnBoundFile): PartialUploadableFileSpec => {
+    (
+      file: UnBoundFile,
+      preserveParseName = true
+    ): PartialUploadableFileSpec => {
       if (eagerDataSet.uploadplan.staticPathKey === undefined)
         return { uploadFile: file };
       let parsedName = undefined;
 
-      if (file.parsedName !== undefined)
+      if (file.parsedName !== undefined && preserveParseName)
         // Maybe we are being too nice. Users should correctly format this?
         // This wil also correctly handle the case where formatter is no longer valid
         // because it was changed.
@@ -169,10 +172,15 @@ function AttachmentsImport({
   React.useEffect(() => {
     // Reset all parsed names if matching path is changed
     if (previousKeyRef.current !== eagerDataSet.uploadplan.staticPathKey) {
-      previousKeyRef.current = eagerDataSet.uploadplan.staticPathKey;
       commitFileChange((files) =>
-        files.map(({ uploadFile }) => applyFileNames(uploadFile))
+        files.map(({ uploadFile }) =>
+          // Do not preserve parsed name if previous static key was not undefined.
+          // Otherwise, a numeric formatter can be applied after a text formatter and we will match
+          // records incorrectly
+          applyFileNames(uploadFile, previousKeyRef.current === undefined)
+        )
       );
+      previousKeyRef.current = eagerDataSet.uploadplan.staticPathKey;
     }
   }, [applyFileNames, commitFileChange]);
 
