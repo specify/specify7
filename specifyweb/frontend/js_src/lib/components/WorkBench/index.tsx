@@ -78,20 +78,18 @@ export function WorkBench(): JSX.Element {
       {wbText.dataSetDeletedDescription()}
     </Dialog>
   ) : (
-    <>
-      <div className="contents">
-        <section
-          className={`wbs-form ${className.containerFull}`}
-          ref={spreadsheetContainerRef}
-        >
-          <WbView
-            dataset={dataSet}
-            onDatasetDeleted={handleDeleted}
-            triggerDatasetRefresh={triggerDatasetRefresh}
-            spreadsheetContainerRef={spreadsheetContainerRef}
-          />
-        </section>
-      </div>
-    </>
+    <div className="contents">
+      <section
+        className={`wbs-form ${className.containerFull}`}
+        ref={spreadsheetContainerRef}
+      >
+        <WbView
+          dataset={dataSet}
+          onDatasetDeleted={handleDeleted}
+          triggerDatasetRefresh={triggerDatasetRefresh}
+          spreadsheetContainerRef={spreadsheetContainerRef}
+        />
+      </section>
+    </div>
   );
 }

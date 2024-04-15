@@ -11,7 +11,6 @@ import type { WbMapping } from '../WorkBench/mapping';
 import { Button } from '../Atoms/Button';
 import { localityText } from '../../localization/locality';
 import { wbText } from '../../localization/workbench';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
 
 export function WbLeafletMap({
   hasLocality,
@@ -45,33 +44,31 @@ export function WbLeafletMap({
 
   return (
     <>
-      <ErrorBoundary dismissible>
-        <Button.Small
-          aria-haspopup="dialog"
-          aria-pressed={showLeafletMap}
-          title={wbText.unavailableWithoutLocality()}
-          onClick={openLeafletMap}
-          disabled={!hasLocality}
-        >
-          {localityText.geoMap()}
-        </Button.Small>
-        {showLeafletMap && (
-          <LeafletMap
-            localityPoints={localityPoints}
-            onClose={closeLeafletMap}
-            onMarkerClick={(localityPoint: any): void => {
-              if (localityPoints === undefined) return;
-              const rowNumber = localityPoints[localityPoint].rowNumber.value;
-              if (typeof rowNumber !== 'number')
-                throw new Error('rowNumber must be a number');
-              const [_currentRow, currentCol] = getSelectedLast(hot!);
-              hot?.scrollViewportTo(rowNumber, currentCol);
-              // Select entire row
-              hot?.selectRows(rowNumber);
-            }}
-          />
-        )}
-      </ErrorBoundary>
+      <Button.Small
+        aria-haspopup="dialog"
+        aria-pressed={showLeafletMap}
+        title={wbText.unavailableWithoutLocality()}
+        onClick={openLeafletMap}
+        disabled={!hasLocality}
+      >
+        {localityText.geoMap()}
+      </Button.Small>
+      {showLeafletMap && (
+        <LeafletMap
+          localityPoints={localityPoints}
+          onClose={closeLeafletMap}
+          onMarkerClick={(localityPoint: any): void => {
+            if (localityPoints === undefined) return;
+            const rowNumber = localityPoints[localityPoint].rowNumber.value;
+            if (typeof rowNumber !== 'number')
+              throw new Error('rowNumber must be a number');
+            const [_currentRow, currentCol] = getSelectedLast(hot!);
+            hot?.scrollViewportTo(rowNumber, currentCol);
+            // Select entire row
+            hot?.selectRows(rowNumber);
+          }}
+        />
+      )}
     </>
   );
 }

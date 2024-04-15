@@ -9,12 +9,12 @@
 import { HotTable } from '@handsontable/react';
 import Handsontable from 'handsontable';
 import React from 'react';
-import type { Settings } from 'handsontable/plugins/contextMenu';
+import type { DetailedSettings } from 'handsontable/plugins/contextMenu';
 
 import { LANGUAGE } from '../../localization/utils/config';
 import { wbPlanText } from '../../localization/wbPlan';
 import { f } from '../../utils/functools';
-import { ensure, type IR, type RA } from '../../utils/types';
+import { type RA } from '../../utils/types';
 import { legacyNonJsxIcons } from '../Atoms/Icons';
 import { getTable } from '../DataModel/tables';
 import { userPreferences } from '../Preferences/userPreferences';
@@ -94,14 +94,14 @@ function WbSpreadsheetComponent({
   spreadsheetChanged,
 }: {
   readonly dataset: Dataset;
-  readonly setHotTable: React.Ref<HotTable>;
+  readonly setHotTable: React.RefObject<HotTable>;
   readonly hot: Handsontable | undefined;
   readonly isUploaded: boolean;
   readonly data: RA<RA<string | null>>;
   readonly workbench: Workbench;
   readonly mappings: WbMapping;
-  readonly checkDeletedFail: any;
-  readonly spreadsheetChanged: any;
+  readonly checkDeletedFail: (_: number) => boolean;
+  readonly spreadsheetChanged: () => void;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
   const physicalColToMappingCol = (physicalCol: number): number | undefined =>
@@ -155,32 +155,6 @@ function WbSpreadsheetComponent({
         openNoDisambiguationDialog();
         return;
       }
-
-      // Re-enable this once live validation is available again:
-      /*
-       * Disable "Apply All" if validation is still in progress.
-       * This is because we don't know all matches until validation is done
-       */
-      /*
-       *Let applyAllAvailable = true;
-       *const applyAllButton = content.find('#applyAllButton');
-       *
-       *const updateIt = () => {
-       *  const newState = this.liveValidationStack.length === 0;
-       *  if (newState !== applyAllAvailable) {
-       *    applyAllAvailable = newState;
-       *    applyAllButton.disabled = !newState;
-       *    applyAllButton[newState ? 'removeAttribute' : 'setAttribute'](
-       *      'title',
-       *      wbText.applyAllUnavailable()
-       *    );
-       *  }
-       *};
-       *
-       *const interval = globalThis.setInterval(updateIt, 100);
-       * // onClose: globalThis.clearInterval(interval);
-       */
-
       setDisambiguationMatches(matches);
       setResource(resources);
       setPhysicalRow(physicalRow);
@@ -188,56 +162,55 @@ function WbSpreadsheetComponent({
     });
   };
 
-  const contextMenuConfig = {
-    items: ensure<
-      IR<
-        | Handsontable.plugins.ContextMenu.MenuItemConfig
-        | Handsontable.plugins.ContextMenu.PredefinedMenuItemKey
-      >
-    >()(
-      isUploaded
-        ? ({
-            // Display uploaded record
-            upload_results: {
-              disableSelection: true,
-              isCommand: false,
-              renderer: (hot, wrapper) => {
-                const { endRow: visualRow, endCol: visualCol } =
-                  getSelectedRegions(hot).at(-1) ?? {};
-                const physicalRow = hot.toPhysicalRow(visualRow ?? 0);
-                const physicalCol = hot.toPhysicalColumn(visualCol ?? 0);
+  const contextMenuConfig: DetailedSettings | undefined =
+    hot === undefined
+      ? undefined
+      : {
+          items: isUploaded
+            ? ({
+                // Display uploaded record
+                upload_results: {
+                  disableSelection: true,
+                  isCommand: false,
+                  renderer: (hot, wrapper) => {
+                    const { endRow: visualRow, endCol: visualCol } =
+                      getSelectedRegions(hot).at(-1) ?? {};
+                    const physicalRow = hot.toPhysicalRow(visualRow ?? 0);
+                    const physicalCol = hot.toPhysicalColumn(visualCol ?? 0);
 
-                const createdRecords =
-                  validation.uploadResults.newRecords[physicalRow]?.[
-                    physicalCol
-                  ];
+                    const createdRecords =
+                      validation.uploadResults.newRecords[physicalRow]?.[
+                        physicalCol
+                      ];
 
-                if (
-                  visualRow === undefined ||
-                  visualCol === undefined ||
-                  createdRecords === undefined ||
-                  !cells.getCellMeta(physicalRow, physicalCol, 'isNew')
-                ) {
-                  wrapper.textContent = wbText.noUploadResultsAvailable();
-                  wrapper.parentElement?.classList.add('htDisabled');
-                  const span = document.createElement('span');
-                  span.style.display = 'none';
-                  return span;
-                }
+                    if (
+                      visualRow === undefined ||
+                      visualCol === undefined ||
+                      createdRecords === undefined ||
+                      !cells.getCellMeta(physicalRow, physicalCol, 'isNew')
+                    ) {
+                      wrapper.textContent = wbText.noUploadResultsAvailable();
+                      wrapper.parentElement?.classList.add('htDisabled');
+                      const span = document.createElement('span');
+                      span.style.display = 'none';
+                      return span;
+                    }
 
-                wrapper.setAttribute(
-                  'class',
-                  `${wrapper.getAttribute('class')} flex flex-col !m-0
+                    wrapper.setAttribute(
+                      'class',
+                      `${wrapper.getAttribute('class')} flex flex-col !m-0
                     pb-1`
-                );
-                wrapper.innerHTML = createdRecords
-                  .map(([tableName, recordId, label]) => {
-                    const tableLabel =
-                      label === '' ? strictGetTable(tableName).label : label;
-                    // REFACTOR: use new table icons
-                    const tableIcon = getIcon(tableName) ?? unknownIcon;
+                    );
+                    wrapper.innerHTML = createdRecords
+                      .map(([tableName, recordId, label]) => {
+                        const tableLabel =
+                          label === ''
+                            ? strictGetTable(tableName).label
+                            : label;
+                        // REFACTOR: use new table icons
+                        const tableIcon = getIcon(tableName) ?? unknownIcon;
 
-                    return `<a
+                        return `<a
                         class="link"
                         href="/specify/view/${tableName}/${recordId}/"
                         target="_blank"
@@ -249,70 +222,61 @@ function WbSpreadsheetComponent({
                           aria-label="${commonText.opensInNewTab()}"
                         >${legacyNonJsxIcons.link}</span>
                       </a>`;
-                  })
-                  .join('');
+                      })
+                      .join('');
 
-                const div = document.createElement('div');
-                div.style.display = 'none';
-                return div;
-              },
-            },
-          } as const)
-        : ({
-            row_above: {
-              disabled: () => isReadOnly,
-            },
-            row_below: {
-              disabled: () => isReadOnly,
-            },
-            remove_row: {
-              disabled: () => {
-                if (isReadOnly) return true;
-                // Or if called on the last row
-                const selectedRegions = getSelectedRegions(hot!);
-                return (
-                  selectedRegions.length === 1 &&
-                  selectedRegions[0].startRow === data.length - 1 &&
-                  selectedRegions[0].startRow === selectedRegions[0].endRow
-                );
-              },
-            },
-            disambiguate: {
-              name: wbText.disambiguate(),
-              disabled: (): boolean =>
-                !disambiguation.isAmbiguousCell() || isReadOnly,
-              callback: () => openDisambiguationDialog(),
-            },
-            separator_1: '---------',
-            fill_down: fillCellsContextMenuItem(hot!, 'down', isReadOnly),
-            fill_up: fillCellsContextMenuItem(hot!, 'up', isReadOnly),
-            separator_2: '---------',
-            undo: {
-              disabled: () => hot?.isUndoAvailable() !== true || isReadOnly,
-            },
-            redo: {
-              disabled: () => hot?.isRedoAvailable() !== true || isReadOnly,
-            },
-          } as const)
-    ),
-  };
+                    const div = document.createElement('div');
+                    div.style.display = 'none';
+                    return div;
+                  },
+                },
+              } as const)
+            : ({
+                row_above: {
+                  disabled: () => isReadOnly,
+                },
+                row_below: {
+                  disabled: () => isReadOnly,
+                },
+                remove_row: {
+                  disabled: () => {
+                    if (isReadOnly) return true;
+                    // Or if called on the last row
+                    const selectedRegions = getSelectedRegions(hot!);
+                    return (
+                      selectedRegions.length === 1 &&
+                      selectedRegions[0].startRow === data.length - 1 &&
+                      selectedRegions[0].startRow === selectedRegions[0].endRow
+                    );
+                  },
+                },
+                disambiguate: {
+                  name: wbText.disambiguate(),
+                  disabled: (): boolean =>
+                    !disambiguation.isAmbiguousCell() || isReadOnly,
+                  callback: () => openDisambiguationDialog(),
+                },
+                separator_1: '---------',
+                fill_down: fillCellsContextMenuItem(hot!, 'down', isReadOnly),
+                fill_up: fillCellsContextMenuItem(hot!, 'up', isReadOnly),
+                separator_2: '---------',
+                undo: {
+                  disabled: () => hot?.isUndoAvailable() !== true || isReadOnly,
+                },
+                redo: {
+                  disabled: () => hot?.isRedoAvailable() !== true || isReadOnly,
+                },
+              } as const),
+        };
 
   React.useEffect(() => {
-    const getPickLists = async () =>
-      mappings === undefined
-        ? {}
-        : await fetchWbPickLists(
-            dataset.columns,
-            mappings.tableNames,
-            mappings.lines
-          );
-    if (hot) {
-      const configureHotAndPickLists = async () => {
-        const pickLists = await getPickLists();
-        configureHandsontable(hot, mappings, dataset, pickLists);
-      };
-      configureHotAndPickLists();
-    }
+    if (hot === undefined) return;
+    (mappings === undefined
+      ? Promise.resolve({})
+      : fetchWbPickLists(dataset.columns, mappings.tableNames, mappings.lines)
+    ).then((pickLists) =>
+      configureHandsontable(hot, mappings, dataset, pickLists)
+    );
   }, [hot]);
 
   // Highlight validation cells
@@ -435,7 +399,7 @@ function WbSpreadsheetComponent({
   );
 
   return (
-    <>
+    <section className="flex-1 overflow-hidden overscroll-none">
       <HotTable
         autoWrapCol={autoWrapCol}
         autoWrapRow={autoWrapRow}
@@ -464,7 +428,7 @@ function WbSpreadsheetComponent({
         stretchH="all"
         tabMoves={tabMoves}
         readOnly={isReadOnly}
-        contextMenu={contextMenuConfig as Settings}
+        contextMenu={contextMenuConfig}
         {...hooks}
       />
       {noDisambiguationDialog && (
@@ -479,6 +443,7 @@ function WbSpreadsheetComponent({
       {disambiguationDialog && (
         <DisambiguationDialog
           matches={disambiguationResource!.models}
+          liveValidationStack={workbench.validation.liveValidationStack}
           onClose={closeDisambiguation}
           onSelected={(selected) => {
             disambiguation.setDisambiguation(
@@ -521,7 +486,7 @@ function WbSpreadsheetComponent({
           }
         />
       )}
-    </>
+    </section>
   );
 }
 

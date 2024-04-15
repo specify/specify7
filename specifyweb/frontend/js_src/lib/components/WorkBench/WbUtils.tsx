@@ -133,7 +133,7 @@ export function WbUtilsComponent({
     // TODO: check if debounce is needed here
     utils.searchCells(
       event,
-      searchRef.current as HTMLInputElement,
+      searchRef.current!,
       spreadsheetContainerRef?.current
     );
   };
@@ -164,38 +164,37 @@ export function WbUtilsComponent({
         </div>
         {!isUploaded && hasPermission('/workbench/dataset', 'update') ? (
           <div className="flex">
-            <Input.Text
+            <Input.Generic
               forwardRef={replaceRef}
               aria-label={wbText.replacementValue()}
               autoComplete="on"
               placeholder={wbText.replace()}
               title={wbText.replacementValue()}
+              type="search"
               // @ts-expect-error KeyboardEvent type does not match?
               onKeyDown={handleReplace}
               disabled={isReadOnly}
             />
           </div>
         ) : undefined}
-        <span>
-          <WbAdvancedSearch
-            initialSearchPreferences={utils.searchPreferences}
-            onChange={(newSearchPreferences) => {
-              if (
-                newSearchPreferences.navigation.direction !==
-                utils.searchPreferences.navigation.direction
-              ) {
-                // TODO: add workbench or cells to parent component
-                // cells.flushIndexedCellData = true;
-              }
-              utils.searchPreferences = newSearchPreferences;
-              // TODO: figure out what searchCells with SettingsChange does
-              // if (utils.searchPreferences.search.liveUpdate)
-              //   utils.searchCells({
-              //     key: 'SettingsChange',
-              //   }).catch(softFail);
-            }}
-          />
-        </span>
+        <WbAdvancedSearch
+          initialSearchPreferences={utils.searchPreferences}
+          onChange={(newSearchPreferences) => {
+            if (
+              newSearchPreferences.navigation.direction !==
+              utils.searchPreferences.navigation.direction
+            ) {
+              // TODO: add workbench or cells to parent component
+              // cells.flushIndexedCellData = true;
+            }
+            utils.searchPreferences = newSearchPreferences;
+            // TODO: figure out what searchCells with SettingsChange does
+            // if (utils.searchPreferences.search.liveUpdate)
+            //   utils.searchCells({
+            //     key: 'SettingsChange',
+            //   }).catch(softFail);
+          }}
+        />
       </span>
       <Navigation
         label={wbText.searchResults()}
@@ -409,7 +408,6 @@ export class WbUtils {
       return;
 
     if (this.parseSearchQuery(searchQueryElement) === undefined) {
-      // navigationTotalElement.textContent = '0';
       this.toggleCellTypes('searchResults', 'add', spreadsheetContainer);
       return;
     }

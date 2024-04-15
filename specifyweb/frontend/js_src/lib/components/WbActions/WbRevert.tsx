@@ -26,31 +26,29 @@ export function WbRevert({
 
   return (
     <>
-      <ErrorBoundary dismissible>
-        <Button.Small
-          aria-haspopup="dialog"
-          onClick={openRevert}
-          disabled={!hasUnsavedChanges}
+      <Button.Small
+        aria-haspopup="dialog"
+        onClick={openRevert}
+        disabled={!hasUnsavedChanges}
+      >
+        {wbText.revert()}
+      </Button.Small>
+      {showRevert && (
+        <Dialog
+          buttons={
+            <>
+              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+              <Button.Danger onClick={handleRevert}>
+                {wbText.revert()}
+              </Button.Danger>
+            </>
+          }
+          header={wbText.revertChanges()}
+          onClose={closeRevert}
         >
-          {wbText.revert()}
-        </Button.Small>
-        {showRevert && (
-          <Dialog
-            buttons={
-              <>
-                <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-                <Button.Danger onClick={handleRevert}>
-                  {wbText.revert()}
-                </Button.Danger>
-              </>
-            }
-            header={wbText.revertChanges()}
-            onClose={closeRevert}
-          >
-            {wbText.revertChangesDescription()}
-          </Dialog>
-        )}
-      </ErrorBoundary>
+          {wbText.revertChangesDescription()}
+        </Dialog>
+      )}
     </>
   );
 }

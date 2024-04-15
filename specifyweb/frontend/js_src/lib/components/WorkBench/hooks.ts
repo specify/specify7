@@ -9,7 +9,7 @@ import { ping } from '../../utils/ajax/ping';
 import { setCache } from '../../utils/cache';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { ensure, overwriteReadOnly } from '../../utils/types';
+import { overwriteReadOnly } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { schema } from '../DataModel/schema';
 import { getHotPlugin } from './handsontable';
@@ -24,7 +24,7 @@ export function getHotHooks(
 ): Partial<Events> {
   let sortConfigIsSet: boolean = false;
 
-  return ensure<Partial<Events>>()({
+  return {
     /*
      * After cell is rendered, we need to reApply metaData classes
      * NOTE:
@@ -474,7 +474,7 @@ export function getHotHooks(
       // An ugly fix for jQuery's dialogs conflicting with HOT
       if (dropIndex === undefined || !workbench.hot) return;
 
-      workbench.cells!.flushIndexedCellData = true;
+      workbench.cells.flushIndexedCellData = true;
 
       const columnOrder = workbench.dataset.columns.map((_, visualCol) =>
         workbench.hot!.toPhysicalColumn(visualCol)
@@ -520,7 +520,7 @@ export function getHotHooks(
         workbench.hot?.selectCells(newSelection);
       }
     },
-  });
+  };
 }
 
 /**

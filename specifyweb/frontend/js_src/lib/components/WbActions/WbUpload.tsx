@@ -8,7 +8,6 @@ import { Dialog } from '../Molecules/Dialog';
 import { wbText } from '../../localization/workbench';
 import { commonText } from '../../localization/common';
 import { WbCellCounts } from '../WorkBench/CellMeta';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
 
 export function WbUpload({
   hasUnsavedChanges,
@@ -18,7 +17,7 @@ export function WbUpload({
   cellCounts,
 }: {
   readonly hasUnsavedChanges: boolean;
-  readonly mappings: WbMapping;
+  readonly mappings: WbMapping | undefined;
   readonly openNoUploadPlan: () => void;
   readonly startUpload: (mode: WbStatus) => void;
   readonly cellCounts: WbCellCounts;
@@ -40,38 +39,36 @@ export function WbUpload({
 
   return (
     <>
-      <ErrorBoundary dismissible>
-        <Button.Small
-          aria-haspopup="dialog"
-          onClick={handleUpload}
-          disabled={hasUnsavedChanges || cellCounts.invalidCells > 0}
-          title={
-            hasUnsavedChanges
-              ? wbText.unavailableWhileEditing()
-              : cellCounts.invalidCells > 0
-              ? wbText.uploadUnavailableWhileHasErrors()
-              : ''
+      <Button.Small
+        aria-haspopup="dialog"
+        onClick={handleUpload}
+        disabled={hasUnsavedChanges || cellCounts.invalidCells > 0}
+        title={
+          hasUnsavedChanges
+            ? wbText.unavailableWhileEditing()
+            : cellCounts.invalidCells > 0
+            ? wbText.uploadUnavailableWhileHasErrors()
+            : ''
+        }
+      >
+        {wbText.upload()}
+      </Button.Small>
+      {showUpload ? (
+        <Dialog
+          buttons={
+            <>
+              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+              <Button.Info onClick={handleConfirmUpload}>
+                {wbText.upload()}
+              </Button.Info>
+            </>
           }
+          header={wbText.startUpload()}
+          onClose={closeUpload}
         >
-          {wbText.upload()}
-        </Button.Small>
-        {showUpload ? (
-          <Dialog
-            buttons={
-              <>
-                <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-                <Button.Info onClick={handleConfirmUpload}>
-                  {wbText.upload()}
-                </Button.Info>
-              </>
-            }
-            header={wbText.startUpload()}
-            onClose={closeUpload}
-          >
-            {wbText.startUploadDescription()}
-          </Dialog>
-        ) : undefined}
-      </ErrorBoundary>
+          {wbText.startUploadDescription()}
+        </Dialog>
+      ) : undefined}
     </>
   );
 }

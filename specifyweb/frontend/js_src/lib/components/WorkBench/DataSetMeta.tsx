@@ -361,7 +361,7 @@ export function DataSetName({
   useTitle(name);
 
   return (
-    <>
+    <div className="contents">
       {' '}
       <h2 className="flex gap-1 overflow-y-auto">
         {dataset.uploadplan !== null && (
@@ -392,6 +392,6 @@ export function DataSetName({
           onDeleted={() => unsafeNavigate('/specify/', { replace: true })}
         />
       )}
-    </>
+    </div>
   );
 }

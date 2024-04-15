@@ -19,7 +19,6 @@ import { unsafeNavigate } from '../Router/Router';
 import { Button } from '../Atoms/Button';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
 
 export function WbChangeOwner({
   hasUnsavedChanges,
@@ -32,20 +31,18 @@ export function WbChangeOwner({
     useBooleanState();
   return (
     <>
-      <ErrorBoundary dismissible>
-        <Button.Small
-          aria-haspopup="dialog"
-          aria-pressed={showChangeOwner}
-          onClick={openChangeOwner}
-          disabled={hasUnsavedChanges}
-          title={hasUnsavedChanges ? wbText.unavailableWhileEditing() : ''}
-        >
-          {wbText.changeOwner()}
-        </Button.Small>
-        {showChangeOwner && (
-          <ChangeOwner dataset={dataset} onClose={closeChangeOwner} />
-        )}
-      </ErrorBoundary>
+      <Button.Small
+        aria-haspopup="dialog"
+        aria-pressed={showChangeOwner}
+        onClick={openChangeOwner}
+        disabled={hasUnsavedChanges}
+        title={hasUnsavedChanges ? wbText.unavailableWhileEditing() : ''}
+      >
+        {wbText.changeOwner()}
+      </Button.Small>
+      {showChangeOwner && (
+        <ChangeOwner dataset={dataset} onClose={closeChangeOwner} />
+      )}
     </>
   );
 }

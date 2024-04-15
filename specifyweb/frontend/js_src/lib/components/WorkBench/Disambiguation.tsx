@@ -13,15 +13,18 @@ import { isTreeTable } from '../InitialContext/treeRanks';
 import { Dialog } from '../Molecules/Dialog';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { hasTablePermission } from '../Permissions/helpers';
+import { WritableArray } from '../../utils/types';
 
 export function DisambiguationDialog({
   matches,
+  liveValidationStack,
   defaultResource,
   onSelected: handleSelected,
   onSelectedAll: handleSelectedAll,
   onClose: handleClose,
 }: {
   readonly matches: RA<SpecifyResource<AnySchema>>;
+  readonly liveValidationStack: WritableArray<number>;
   readonly defaultResource?: SpecifyResource<AnySchema>;
   readonly onSelected: (resource: SpecifyResource<AnySchema>) => void;
   readonly onSelectedAll: (resource: SpecifyResource<AnySchema>) => void;
@@ -46,7 +49,8 @@ export function DisambiguationDialog({
             {commonText.apply()}
           </Button.Info>
           <Button.Info
-            disabled={selected === undefined}
+            disabled={selected === undefined || liveValidationStack.length !== 0}
+            title={liveValidationStack.length !== 0 ? wbText.applyAllUnavailable() : undefined}
             onClick={(): void => {
               handleSelectedAll(selected!);
               handleClose();

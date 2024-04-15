@@ -16,6 +16,7 @@ import type { WbMapping } from '../WorkBench/mapping';
 import { WbRawPlan } from './DevShowPlan';
 import { WbGeoLocate } from './GeoLocate';
 import { WbLeafletMap } from './WbLeafletMap';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
 
 export function WbToolkit({
   dataset,
@@ -28,7 +29,7 @@ export function WbToolkit({
 }: {
   readonly dataset: Dataset;
   readonly hot: Handsontable | undefined;
-  readonly mappings: WbMapping;
+  readonly mappings: WbMapping | undefined;
   readonly data: RA<RA<string | null>>;
   readonly onDatasetDeleted: () => void;
   readonly hasUnsavedChanges: boolean;
@@ -61,17 +62,21 @@ export function WbToolkit({
       {hasPermission('/workbench/dataset', 'transfer') &&
       hasTablePermission('SpecifyUser', 'read') ? (
         <>
-          <WbChangeOwner
-            hasUnsavedChanges={hasUnsavedChanges}
-            dataset={dataset}
-          />
+          <ErrorBoundary dismissible>
+            <WbChangeOwner
+              hasUnsavedChanges={hasUnsavedChanges}
+              dataset={dataset}
+            />
+          </ErrorBoundary>
         </>
       ) : undefined}
-      <WbRawPlan
-        dataset={dataset}
-        onDatasetDeleted={handleDatasetDeleted}
-        triggerDatasetRefresh={triggerDatasetRefresh}
-      />
+      <ErrorBoundary dismissible>
+        <WbRawPlan
+          dataset={dataset}
+          onDatasetDeleted={handleDatasetDeleted}
+          triggerDatasetRefresh={triggerDatasetRefresh}
+        />
+      </ErrorBoundary>
       <Button.Small
         onClick={handleExport}
         disabled={hasUnsavedChanges}
@@ -82,27 +87,33 @@ export function WbToolkit({
       <span className="-ml-1 flex-1" />
       {hasPermission('/workbench/dataset', 'update') && (
         <>
-          <WbConvertCoordinates
-            dataset={dataset}
-            data={data}
-            mappings={mappings}
-            hot={hot!}
-            hasLocality={hasLocality}
-          />
-          <WbGeoLocate
-            hasLocality={hasLocality}
-            hot={hot!}
-            dataset={dataset}
-            mappings={mappings}
-          />
+          <ErrorBoundary dismissible>
+            <WbConvertCoordinates
+              dataset={dataset}
+              data={data}
+              mappings={mappings}
+              hot={hot!}
+              hasLocality={hasLocality}
+            />
+          </ErrorBoundary>
+          <ErrorBoundary dismissible>
+            <WbGeoLocate
+              hasLocality={hasLocality}
+              hot={hot!}
+              dataset={dataset}
+              mappings={mappings}
+            />
+          </ErrorBoundary>
         </>
       )}
-      <WbLeafletMap
-        hasLocality={hasLocality}
-        hot={hot!}
-        dataset={dataset}
-        mappings={mappings}
-      />
+      <ErrorBoundary dismissible>
+        <WbLeafletMap
+          hasLocality={hasLocality}
+          hot={hot!}
+          dataset={dataset}
+          mappings={mappings}
+        />
+      </ErrorBoundary>
     </div>
   );
 }

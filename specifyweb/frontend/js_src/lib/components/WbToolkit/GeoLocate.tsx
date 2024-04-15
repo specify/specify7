@@ -23,7 +23,6 @@ import type { Dataset } from '../WbPlanView/Wrapped';
 import type { WbMapping } from '../WorkBench/mapping';
 import { wbText } from '../../localization/workbench';
 import { localityText } from '../../localization/locality';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
 
 export function WbGeoLocate({
   hasLocality,
@@ -39,25 +38,23 @@ export function WbGeoLocate({
   const [showGeoLocate, openGeoLocate, closeGeoLocate] = useBooleanState();
   return (
     <>
-      <ErrorBoundary dismissible>
-        <Button.Small
-          aria-haspopup="dialog"
-          aria-pressed={showGeoLocate}
-          title={wbText.unavailableWithoutLocality()}
-          onClick={openGeoLocate}
-          disabled={!hasLocality}
-        >
-          {localityText.geoLocate()}
-        </Button.Small>
-        {showGeoLocate && mappings && (
-          <GeoLocate
-            columns={dataset.columns}
-            hot={hot}
-            localityColumns={mappings.localityColumns}
-            onClose={closeGeoLocate}
-          />
-        )}
-      </ErrorBoundary>
+      <Button.Small
+        aria-haspopup="dialog"
+        aria-pressed={showGeoLocate}
+        title={wbText.unavailableWithoutLocality()}
+        onClick={openGeoLocate}
+        disabled={!hasLocality}
+      >
+        {localityText.geoLocate()}
+      </Button.Small>
+      {showGeoLocate && mappings && (
+        <GeoLocate
+          columns={dataset.columns}
+          hot={hot}
+          localityColumns={mappings.localityColumns}
+          onClose={closeGeoLocate}
+        />
+      )}
     </>
   );
 }
@@ -77,11 +74,8 @@ function GeoLocate({
   const [localityIndex, setLocalityIndex] = React.useState<number>(0);
 
   const selection = React.useMemo(
-    () =>
-      hot === undefined
-        ? undefined
-        : getSelectedLocalities(hot, columns, localityColumns, true),
-    [hot, columns, localityColumns]
+    () => getSelectedLocalities(hot, columns, localityColumns, true),
+    [columns, localityColumns]
   );
 
   function handleMove(newLocalityIndex: number): void {
@@ -98,9 +92,9 @@ function GeoLocate({
   );
 
   React.useEffect(() => {
-    if (selection === undefined || hot === undefined) return;
+    if (selection === undefined) return;
     else handleMove(0);
-  }, [hot, columns, localityColumns]);
+  }, [columns, localityColumns]);
 
   const handleResult = React.useCallback(
     ({ latitude, longitude, uncertainty }: GeoLocatePayload) => {
@@ -176,7 +170,6 @@ export function getSelectedLocalities(
       };
     }
   | undefined {
-  if (hot === undefined) return undefined;
   const selectedRegions = getSelectedRegions(hot);
 
   const selectedVirtualColumns = f.unique(

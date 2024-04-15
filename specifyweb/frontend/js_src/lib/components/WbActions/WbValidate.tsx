@@ -23,30 +23,28 @@ export function WbValidate({
 
   return (
     <>
-      <ErrorBoundary dismissible>
-        <Button.Small
-          className={canLiveValidate ? undefined : 'hidden'}
-          onClick={handleToggleDataCheck}
-          aria-pressed={validation.validationMode === 'live'}
-        >
-          {validation.validationMode === 'live'
-            ? validation.liveValidationStack.length > 0
-              ? commonText.countLine({
-                  resource: wbText.dataCheckOn(),
-                  count: validation.liveValidationStack.length,
-                })
-              : wbText.dataCheckOn()
-            : wbText.dataCheck()}
-        </Button.Small>
-        <Button.Small
-          aria-haspopup="dialog"
-          onClick={handleValidate}
-          disabled={hasUnsavedChanges}
-          title={hasUnsavedChanges ? wbText.unavailableWhileEditing() : ''}
-        >
-          {wbText.validate()}
-        </Button.Small>
-      </ErrorBoundary>
+      <Button.Small
+        className={canLiveValidate ? undefined : 'hidden'}
+        onClick={handleToggleDataCheck}
+        aria-pressed={validation.validationMode === 'live'}
+      >
+        {validation.validationMode === 'live'
+          ? validation.liveValidationStack.length > 0
+            ? commonText.countLine({
+                resource: wbText.dataCheckOn(),
+                count: validation.liveValidationStack.length,
+              })
+            : wbText.dataCheckOn()
+          : wbText.dataCheck()}
+      </Button.Small>
+      <Button.Small
+        aria-haspopup="dialog"
+        onClick={handleValidate}
+        disabled={hasUnsavedChanges}
+        title={hasUnsavedChanges ? wbText.unavailableWhileEditing() : ''}
+      >
+        {wbText.validate()}
+      </Button.Small>
     </>
   );
 }

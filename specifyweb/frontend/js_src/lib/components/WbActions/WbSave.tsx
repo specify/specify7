@@ -11,7 +11,7 @@ import { Workbench } from '../WorkBench/WbView';
 import { overwriteReadOnly } from '../../utils/types';
 import { ping } from '../../utils/ajax/ping';
 import { Http } from '../../utils/ajax/definitions';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { LoadingContext } from '../Core/Contexts';
 
 export function WbSave({
   workbench,
@@ -26,6 +26,7 @@ export function WbSave({
 }): JSX.Element {
   const [showProgressBar, openProgressBar, closeProgressBar] =
     useBooleanState();
+  const loading = React.useContext(LoadingContext);
 
   const handleSave = () => {
     // Clear validation
@@ -38,43 +39,43 @@ export function WbSave({
     openProgressBar();
 
     // Send data
-    ping(`/api/workbench/rows/${workbench.dataset.id}/`, {
-      method: 'PUT',
-      body: workbench.data,
-      expectedErrors: [Http.NO_CONTENT, Http.NOT_FOUND],
-    })
-      .then((status) => checkDeletedFail(status))
-      .then(() => {
-        handleSpreadsheetUpToDate();
-        workbench.cells.cellMeta = [];
-        // TODO: Figure out how to rework searchCells for SettingsChange as input
-        // workbench.utils?.searchCells({ key: 'SettingsChange' });
-        workbench.hot?.render();
-        closeProgressBar();
-      });
+    loading(
+      ping(`/api/workbench/rows/${workbench.dataset.id}/`, {
+        method: 'PUT',
+        body: workbench.data,
+        expectedErrors: [Http.NO_CONTENT, Http.NOT_FOUND],
+      })
+        .then((status) => checkDeletedFail(status))
+        .then(() => {
+          handleSpreadsheetUpToDate();
+          workbench.cells.cellMeta = [];
+          // TODO: Figure out how to rework searchCells for SettingsChange as input
+          // workbench.utils?.searchCells({ key: 'SettingsChange' });
+          workbench.hot?.render();
+          closeProgressBar();
+        })
+    );
   };
 
   return (
     <>
-      <ErrorBoundary dismissible>
-        <Button.Small
-          aria-haspopup="dialog"
-          variant={className.saveButton}
-          onClick={handleSave}
-          disabled={!hasUnsavedChanges}
+      <Button.Small
+        aria-haspopup="dialog"
+        variant={className.saveButton}
+        onClick={handleSave}
+        disabled={!hasUnsavedChanges}
+      >
+        {commonText.save()}
+      </Button.Small>
+      {showProgressBar ? (
+        <Dialog
+          buttons={undefined}
+          header={wbText.saving()}
+          onClose={closeProgressBar}
         >
-          {commonText.save()}
-        </Button.Small>
-        {showProgressBar ? (
-          <Dialog
-            buttons={undefined}
-            header={wbText.saving()}
-            onClose={closeProgressBar}
-          >
-            {loadingBar}
-          </Dialog>
-        ) : undefined}
-      </ErrorBoundary>
+          {loadingBar}
+        </Dialog>
+      ) : undefined}
     </>
   );
 }

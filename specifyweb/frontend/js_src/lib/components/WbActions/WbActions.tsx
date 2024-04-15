@@ -24,6 +24,8 @@ import { WbUpload } from './WbUpload';
 import { WbRevert } from './WbRevert';
 import { WbSave } from './WbSave';
 import { GET } from '../../utils/utils';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { LoadingContext } from '../Core/Contexts';
 
 export function useWbActions({
   datasetId,
@@ -40,20 +42,23 @@ export function useWbActions({
 }) {
   const modeRef = React.useRef<WbStatus | undefined>(undefined);
   const refreshInitiatorAborted = React.useRef<boolean>(false);
+  const loading = React.useContext(LoadingContext);
 
   const startUpload = (newMode: WbStatus): void => {
     workbench.validation.stopLiveValidation();
     // TODO: figure out what to do in updateValidationButton();
     workbench.validation.updateValidationButton();
-    ping(`/api/workbench/${newMode}/${datasetId}/`, {
-      method: 'POST',
-      expectedErrors: [Http.CONFLICT],
-    })
-      .then((statusCode): void => {
-        checkDeletedFail(statusCode);
-        checkConflictFail(statusCode);
+    loading(
+      ping(`/api/workbench/${newMode}/${datasetId}/`, {
+        method: 'POST',
+        expectedErrors: [Http.CONFLICT],
       })
-      .then(() => triggerStatusComponent(newMode));
+        .then((statusCode): void => {
+          checkDeletedFail(statusCode);
+          checkConflictFail(statusCode);
+        })
+        .then(() => triggerStatusComponent(newMode))
+    );
   };
 
   const triggerStatusComponent = (newMode: WbStatus): void => {
@@ -79,10 +84,11 @@ export function useWbActions({
   };
 }
 
-export function WbActionsComponent({
+export function WbActions({
   dataset,
   hasUnsavedChanges,
   isUploaded,
+  isResultsOpen,
   workbench,
   mappings,
   checkDeletedFail,
@@ -93,8 +99,9 @@ export function WbActionsComponent({
   readonly dataset: Dataset;
   readonly hasUnsavedChanges: boolean;
   readonly isUploaded: boolean;
+  readonly isResultsOpen: boolean;
   readonly workbench: Workbench;
-  readonly mappings: WbMapping;
+  readonly mappings: WbMapping | undefined;
   readonly checkDeletedFail: (statusCode: number) => void;
   readonly onDatasetRefresh: () => void;
   readonly onSpreadsheetUpToDate: () => void;
@@ -198,45 +205,58 @@ export function WbActionsComponent({
         </Dialog>
       ) : undefined}
       {!isUploaded && hasPermission('/workbench/dataset', 'validate') ? (
-        <WbValidate
-          hasUnsavedChanges={hasUnsavedChanges}
-          canLiveValidate={canLiveValidate}
-          startUpload={actions.startUpload}
-          validation={workbench.validation}
-        />
+        <ErrorBoundary dismissible>
+          <WbValidate
+            hasUnsavedChanges={hasUnsavedChanges}
+            canLiveValidate={canLiveValidate}
+            startUpload={actions.startUpload}
+            validation={workbench.validation}
+          />
+        </ErrorBoundary>
       ) : undefined}
-      <WbResults
-        hasUnsavedChanges={hasUnsavedChanges}
-        onToggleResults={onToggleResults}
-      />
-      {isUploaded && hasPermission('/workbench/dataset', 'unupload') ? (
-        <WbRollback
-          datasetId={dataset.id}
-          triggerStatusComponent={actions.triggerStatusComponent}
+      <ErrorBoundary dismissible>
+        <WbResults
+          hasUnsavedChanges={hasUnsavedChanges}
+          onToggleResults={onToggleResults}
+          isResultsOpen={isResultsOpen}
         />
+      </ErrorBoundary>
+      {isUploaded && hasPermission('/workbench/dataset', 'unupload') ? (
+        <ErrorBoundary dismissible>
+          <WbRollback
+            datasetId={dataset.id}
+            triggerStatusComponent={actions.triggerStatusComponent}
+          />
+        </ErrorBoundary>
       ) : undefined}
       {!isUploaded && hasPermission('/workbench/dataset', 'upload') ? (
-        <WbUpload
-          hasUnsavedChanges={hasUnsavedChanges}
-          mappings={mappings}
-          openNoUploadPlan={openNoUploadPlan}
-          startUpload={actions.startUpload}
-          cellCounts={workbench.cellCounts[0]}
-        />
+        <ErrorBoundary dismissible>
+          <WbUpload
+            hasUnsavedChanges={hasUnsavedChanges}
+            mappings={mappings}
+            openNoUploadPlan={openNoUploadPlan}
+            startUpload={actions.startUpload}
+            cellCounts={workbench.cellCounts[0]}
+          />
+        </ErrorBoundary>
       ) : undefined}
       {!isUploaded && hasPermission('/workbench/dataset', 'update') ? (
         <>
-          <WbRevert
-            hasUnsavedChanges={hasUnsavedChanges}
-            onRefresh={handleRefresh}
-            onSpreadsheetUpToDate={handleSpreadsheetUpToDate}
-          />
-          <WbSave
-            hasUnsavedChanges={hasUnsavedChanges}
-            onSpreadsheetUpToDate={handleSpreadsheetUpToDate}
-            checkDeletedFail={checkDeletedFail}
-            workbench={workbench}
-          />
+          <ErrorBoundary dismissible>
+            <WbRevert
+              hasUnsavedChanges={hasUnsavedChanges}
+              onRefresh={handleRefresh}
+              onSpreadsheetUpToDate={handleSpreadsheetUpToDate}
+            />
+          </ErrorBoundary>
+          <ErrorBoundary dismissible>
+            <WbSave
+              hasUnsavedChanges={hasUnsavedChanges}
+              onSpreadsheetUpToDate={handleSpreadsheetUpToDate}
+              checkDeletedFail={checkDeletedFail}
+              workbench={workbench}
+            />
+          </ErrorBoundary>
         </>
       ) : undefined}
       {typeof modeRef.current === 'string' && showStatus ? (

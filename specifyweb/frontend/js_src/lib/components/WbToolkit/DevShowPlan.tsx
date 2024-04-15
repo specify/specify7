@@ -18,7 +18,6 @@ import { overwriteReadOnly } from '../../utils/types';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { wbText } from '../../localization/workbench';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
 
 export function WbRawPlan({
   dataset,
@@ -32,28 +31,26 @@ export function WbRawPlan({
   const [showRawPlan, openRawPlan, closeRawPlan] = useBooleanState();
   return (
     <>
-      <ErrorBoundary dismissible>
-        <Button.Small
-          aria-haspopup="dialog"
-          aria-pressed={showRawPlan}
-          onClick={openRawPlan}
-        >
-          {wbText.uploadPlan()}
-        </Button.Small>
-        {showRawPlan && (
-          <RawUploadPlan
-            dataSetId={dataset.id}
-            dataSetName={dataset.name}
-            uploadPlan={dataset.uploadplan ?? ({} as UploadPlan)}
-            onChanged={(plan) => {
-              overwriteReadOnly(dataset, 'uploadplan', plan);
-              triggerDatasetRefresh();
-            }}
-            onClose={closeRawPlan}
-            onDeleted={handleDatasetDeleted}
-          />
-        )}
-      </ErrorBoundary>
+      <Button.Small
+        aria-haspopup="dialog"
+        aria-pressed={showRawPlan}
+        onClick={openRawPlan}
+      >
+        {wbText.uploadPlan()}
+      </Button.Small>
+      {showRawPlan && (
+        <RawUploadPlan
+          dataSetId={dataset.id}
+          dataSetName={dataset.name}
+          uploadPlan={dataset.uploadplan ?? ({} as UploadPlan)}
+          onChanged={(plan) => {
+            overwriteReadOnly(dataset, 'uploadplan', plan);
+            triggerDatasetRefresh();
+          }}
+          onClose={closeRawPlan}
+          onDeleted={handleDatasetDeleted}
+        />
+      )}
     </>
   );
 }

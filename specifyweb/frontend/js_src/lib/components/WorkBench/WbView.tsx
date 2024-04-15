@@ -31,7 +31,7 @@ import { getHotPlugin } from './handsontable';
 import type { WbMapping } from './mapping';
 import { parseWbMappings } from './mapping';
 import { WbUploaded } from './Results';
-import { WbActionsComponent } from '../WbActions/WbActions';
+import { WbActions } from '../WbActions/WbActions';
 import { WbUtils, WbUtilsComponent } from './WbUtils';
 import { WbValidation } from './WbValidation';
 import { DataSetName } from './DataSetMeta';
@@ -75,10 +75,7 @@ export function WbView({
   );
 
   const [hotTable, setHotTable] = React.useState<HotTable>();
-  const hot = React.useMemo(
-    () => hotTable?.hotInstance ?? undefined,
-    [hotTable]
-  );
+  const hot = hotTable?.hotInstance ?? undefined;
 
   const isUploaded = React.useMemo<boolean>(
     () => dataset.uploadresult !== null && dataset.uploadresult.success,
@@ -201,84 +198,79 @@ export function WbView({
   }, [showResults]);
 
   return (
-    <>
-      <ReadOnlyContext.Provider value={isUploaded || showResults || !canUpdate}>
-        <div
-          className="flex items-center justify-between gap-x-1 gap-y-2 whitespace-nowrap"
-          role="toolbar"
+    <ReadOnlyContext.Provider value={isUploaded || showResults || !canUpdate}>
+      <div
+        className="flex items-center justify-between gap-x-1 gap-y-2 whitespace-nowrap"
+        role="toolbar"
+      >
+        <DataSetName dataset={dataset} hot={hot} />
+        <Button.Small
+          aria-haspopup="grid"
+          aria-pressed={showToolkit}
+          onClick={toggleToolkit}
         >
-          <div className="contents">
-            <DataSetName dataset={dataset} hot={hot} />
-          </div>
-          <Button.Small
-            aria-haspopup="grid"
-            aria-pressed={showToolkit}
-            onClick={toggleToolkit}
-          >
-            {commonText.tools()}
-          </Button.Small>
-          <span className="-ml-1 flex-1" />
-          {canUpdate || isMapped ? (
-            <Link.Small href={`/specify/workbench/plan/${dataset.id}/`}>
-              {wbPlanText.dataMapper()}
-            </Link.Small>
-          ) : undefined}
-          <WbActionsComponent
-            dataset={dataset}
-            hasUnsavedChanges={hasUnsavedChanges}
-            isUploaded={isUploaded}
-            onDatasetRefresh={triggerDatasetRefresh}
-            mappings={mappings!}
-            checkDeletedFail={checkDeletedFail}
-            onSpreadsheetUpToDate={spreadsheetUpToDate}
-            workbench={workbench}
-            onToggleResults={toggleResults}
-          />
-        </div>
-        {showToolkit ? (
-          <WbToolkit
-            dataset={dataset}
-            hot={hot}
-            mappings={mappings!}
-            data={data}
-            onDatasetDeleted={handleDatasetDeleted}
-            hasUnsavedChanges={hasUnsavedChanges}
-            triggerDatasetRefresh={triggerDatasetRefresh}
-          />
+          {commonText.tools()}
+        </Button.Small>
+        <span className="-ml-1 flex-1" />
+        {canUpdate || isMapped ? (
+          <Link.Small href={`/specify/workbench/plan/${dataset.id}/`}>
+            {wbPlanText.dataMapper()}
+          </Link.Small>
         ) : undefined}
-        <div className="flex flex-1 gap-4 overflow-hidden">
-          <section className="flex-1 overflow-hidden overscroll-none">
-            <WbSpreadsheet
-              dataset={dataset}
-              setHotTable={setHotTable as React.Ref<HotTable>}
-              hot={hot}
-              isUploaded={isUploaded}
-              data={data}
-              workbench={workbench}
-              mappings={mappings!}
-              checkDeletedFail={checkDeletedFail}
-              spreadsheetChanged={spreadsheetChanged}
-            />
-          </section>
-          {showResults ? (
-            <aside aria-live="polite">
-              <WbUploaded
-                dataSetId={dataset.id}
-                dataSetName={dataset.name}
-                isUploaded={isUploaded}
-                recordCounts={workbench.validation.uploadResults.recordCounts}
-                onClose={closeResults}
-              />
-            </aside>
-          ) : undefined}
-        </div>
-        <WbUtilsComponent
+        <WbActions
+          dataset={dataset}
+          hasUnsavedChanges={hasUnsavedChanges}
           isUploaded={isUploaded}
-          cellCounts={cellCounts}
-          utils={workbench.utils}
-          spreadsheetContainerRef={spreadsheetContainerRef}
+          isResultsOpen={showResults}
+          onDatasetRefresh={triggerDatasetRefresh}
+          mappings={mappings}
+          checkDeletedFail={checkDeletedFail}
+          onSpreadsheetUpToDate={spreadsheetUpToDate}
+          workbench={workbench}
+          onToggleResults={toggleResults}
         />
-      </ReadOnlyContext.Provider>
-    </>
+      </div>
+      {showToolkit && typeof hot === 'object' ? (
+        <WbToolkit
+          dataset={dataset}
+          hot={hot}
+          mappings={mappings}
+          data={data}
+          onDatasetDeleted={handleDatasetDeleted}
+          hasUnsavedChanges={hasUnsavedChanges}
+          triggerDatasetRefresh={triggerDatasetRefresh}
+        />
+      ) : undefined}
+      <div className="flex flex-1 gap-4 overflow-hidden">
+        <WbSpreadsheet
+          dataset={dataset}
+          setHotTable={setHotTable}
+          hot={hot}
+          isUploaded={isUploaded}
+          data={data}
+          workbench={workbench}
+          mappings={mappings!}
+          checkDeletedFail={checkDeletedFail}
+          spreadsheetChanged={spreadsheetChanged}
+        />
+        {showResults ? (
+          <aside aria-live="polite">
+            <WbUploaded
+              dataSetId={dataset.id}
+              dataSetName={dataset.name}
+              isUploaded={isUploaded}
+              recordCounts={workbench.validation.uploadResults.recordCounts}
+              onClose={closeResults}
+            />
+          </aside>
+        ) : undefined}
+      </div>
+      <WbUtilsComponent
+        isUploaded={isUploaded}
+        cellCounts={cellCounts}
+        utils={workbench.utils}
+        spreadsheetContainerRef={spreadsheetContainerRef}
+      />
+    </ReadOnlyContext.Provider>
   );
 }

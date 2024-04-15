@@ -20,22 +20,20 @@ export function WbRollback({
 
   return (
     <>
-      <ErrorBoundary dismissible>
-        <Button.Small
-          aria-haspopup="dialog"
-          aria-pressed={rollback}
-          onClick={handleOpen}
-        >
-          {wbText.rollback()}
-        </Button.Small>
-        {rollback ? (
-          <RollbackConfirmation
-            dataSetId={datasetId}
-            onClose={handleClose}
-            onRollback={handleRollback}
-          />
-        ) : undefined}
-      </ErrorBoundary>
+      <Button.Small
+        aria-haspopup="dialog"
+        aria-pressed={rollback}
+        onClick={handleOpen}
+      >
+        {wbText.rollback()}
+      </Button.Small>
+      {rollback ? (
+        <RollbackConfirmation
+          dataSetId={datasetId}
+          onClose={handleClose}
+          onRollback={handleRollback}
+        />
+      ) : undefined}
     </>
   );
 }
