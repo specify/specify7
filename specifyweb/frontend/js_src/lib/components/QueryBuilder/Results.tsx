@@ -25,7 +25,8 @@ import {
 import { fetchPickList } from '../PickLists/fetch';
 import { userPreferences } from '../Preferences/userPreferences';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
-import { CreateRecordSetFromQuery } from './CreateRecordSet';
+import { recordSetFromQueryLoading } from './Components';
+import { CreateRecordSet } from './CreateRecordSet';
 import type { QueryFieldSpec } from './fieldSpec';
 import type { QueryField } from './helpers';
 import { sortTypes } from './helpers';
@@ -225,21 +226,26 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
               )}
             {hasToolPermission('recordSets', 'create') && totalCount !== 0 ? (
               selectedRows.size > 0 && !isDistinct ? (
-                <CreateRecordSetFromQuery
+                <CreateRecordSet
                   /*
                    * This is needed so that IDs are in the same order as they
                    * are in query results (selectedRows set may be out of order
                    * if records were selected out of order)
                    */
                   baseTableName={fieldSpecs[0].baseTable.name}
-                  getIds={(): RA<number> =>
+                  defaultRecordSetName={
+                    queryResource?.isNew() ?? true
+                      ? undefined
+                      : queryResource?.get('name')
+                  }
+                  recordIds={(): RA<number> =>
                     loadedResults
                       .filter((result) =>
                         selectedRows.has(result[queryIdField] as number)
                       )
                       .map((result) => result[queryIdField] as number)
                   }
-                  queryResource={queryResource}
+                  saveComponent={recordSetFromQueryLoading}
                 />
               ) : (
                 createRecordSet

@@ -12,13 +12,17 @@ import {
   serializeResource,
 } from '../DataModel/serializers';
 import { strictGetTable, tables } from '../DataModel/tables';
-import type { RecordSet, SpQuery, Tables } from '../DataModel/types';
+import type { RecordSet, Tables } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { recordSetView } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
 import { LoadingScreen } from '../Molecules/Dialog';
-import { RecordSetCreated, recordSetFromQueryLoading } from './Components';
+import { RecordSetCreated } from './Components';
 
+/**
+ * Renders a button to creates a record set from a group of records.
+ * See also `MakeRecordSetButton`
+ */
 export function CreateRecordSet({
   recordIds,
   baseTableName,
@@ -113,32 +117,5 @@ export function CreateRecordSet({
         />
       )}
     </>
-  );
-}
-
-/**
- * Create a record set from selected records.
- * See also `MakeRecordSetButton`
- */
-export function CreateRecordSetFromQuery({
-  getIds,
-  baseTableName,
-  queryResource,
-}: {
-  readonly getIds: () => RA<number>;
-  readonly baseTableName: keyof Tables;
-  readonly queryResource: SpecifyResource<SpQuery> | undefined;
-}): JSX.Element {
-  const recordSetName =
-    queryResource === undefined || queryResource.isNew()
-      ? undefined
-      : queryResource.get('name');
-  return (
-    <CreateRecordSet
-      baseTableName={baseTableName}
-      defaultRecordSetName={recordSetName}
-      recordIds={getIds}
-      saveComponent={recordSetFromQueryLoading}
-    />
   );
 }
