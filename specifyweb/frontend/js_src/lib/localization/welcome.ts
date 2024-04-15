@@ -30,8 +30,8 @@ export const welcomeText = createDictionary({
     'ru-ru': 'Скачать информацию',
     'es-es': 'Descargar información',
     'de-ch': 'Download Information',
-    'fr-fr': "Télécharger l'information",
-    'uk-ua': 'Завантажити інформацію',
+    'fr-fr': 'À propos de Spécifier 7',
+    'uk-ua': 'Про Specify 7',
   },
   taxonTiles: {
     'en-us': 'Taxon Tiles',
@@ -186,7 +186,7 @@ export const welcomeText = createDictionary({
     'uk-ua': `
       Програмне забезпечення Specify є продуктом консорціуму Specify Collections
       Consortium, яким керують і фінансують установи-члени. Члени-засновники
-      Консорціуму включають: Організацію наукових і промислових досліджень
+      консорціуму включають: Науково-промислову дослідницьку організацію
       Співдружності (CSIRO), Consejo Superior de Investigaciones Sientíficas,
       Датський консорціум музеїв, Muséum d'Histoire Naturelle Geneva,
       Університет Флориди, Університет Канзасу та Університет Мічигану.

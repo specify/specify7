@@ -29,6 +29,7 @@ import { getAppResourceMode } from './helpers';
 import type { AppResources, AppResourcesTree } from './hooks';
 import { useResourcesTree } from './hooks';
 import type { AppResourcesOutlet } from './index';
+import { globalResourceKey } from './tree';
 import type { ScopedAppResourceDir } from './types';
 import { appResourceSubTypes } from './types';
 
@@ -98,10 +99,10 @@ export function Wrapper({
       onClone={(clonedResource, clone): void =>
         navigate(
           formatUrl(`${baseHref}/new/`, {
-            directoryKey: findAppResourceDirectoryKey(
-              resourcesTree,
-              directory.id
-            ),
+            directoryKey:
+              directory.scope === 'global'
+                ? globalResourceKey
+                : findAppResourceDirectoryKey(resourcesTree, directory.id),
             name: clonedResource.name,
             mimeType: 'mimeType' in record ? record.mimeType : undefined,
             clone,

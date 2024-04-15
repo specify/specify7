@@ -65,7 +65,7 @@ export function PickListComboBox({
     const defaultItem =
       items.find(({ value }) => value === rawDefaultValue) ??
       items.find(({ title }) => title === rawDefaultValue);
-    if (typeof defaultItem === 'object')
+    if (defaultItem !== undefined && typeof defaultItem !== 'object')
       console.warn(
         'default value for picklist is not a member of the picklist',
         { items }
