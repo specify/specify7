@@ -21,12 +21,14 @@ export function DateInput({
   parser,
   id,
   isRequired,
+  canChangePrecision,
 }: {
   readonly moment: GetSet<ReturnType<typeof dayjs> | undefined>;
   readonly precision: PartialDatePrecision;
   readonly parser: Parser;
   readonly id?: string;
   readonly isRequired?: boolean;
+  readonly canChangePrecision?: boolean;
 }): JSX.Element {
   const {
     dateType,
@@ -88,6 +90,9 @@ export function DateInput({
   return (
     <>
       <Input.Generic
+        className={
+          !dateSupported && canChangePrecision ? '' : '!w-[unset] grow'
+        }
         forwardRef={validationRef}
         id={id}
         isReadOnly={isReadOnly}

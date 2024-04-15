@@ -61,6 +61,7 @@ export function PartialDateUi({
             moment={moment}
             parser={parser}
             precision={precision}
+            canChangePrecision={canChangePrecision}
           />
         </div>
       </ReadOnlyContext.Provider>
