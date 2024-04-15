@@ -7751,11 +7751,11 @@ datamodel = Datamodel(tables=[
     ####################################################################################################################
     # Tables not from Specify 6
     ####################################################################################################################
-    Table(
+    Table( # Spuserexternalid
         sp7_only=True,
         django_app='accounts',
         classname='edu.ku.brc.specify.datamodel.Spuserexternalid',
-        tableId=1000, # TODO: figure out a good tableId
+        tableId=1000,
         idColumn='SpUserExternalIdID',
         idFieldName='spUserExternalIdId',
         idField=IdField(name='spUserExternalIdId', column='SpUserExternalIdID', type='java.lang.Integer'),
@@ -7780,7 +7780,7 @@ datamodel = Datamodel(tables=[
         django_app='attachment_gw',
         classname='edu.ku.brc.specify.datamodel.Spattachmentdataset',
         table='spattachmentdataset',
-        tableId=1001, # TODO: figure out a good tableId
+        tableId=1001,
         idColumn='SpAttachmentDataSetID',
         idFieldName='spAttachmentDataSetId',
         idField=IdField(name='spAttachmentDataSetId', column='SpAttachmentDataSetID', type='java.lang.Integer'),
@@ -7812,10 +7812,10 @@ datamodel = Datamodel(tables=[
     ),
     Table( # UniquenessRule
         sp7_only=True,
-        django_app='business_rules',
+        django_app='businessrules',
         classname='edu.ku.brc.specify.datamodel.UniquenessRule',
         table='uniquenessrule',
-        tableId=1002, # TODO: figure out a good tableId
+        tableId=1002,
         idColumn='UniquenessRuleID',
         idFieldName='uniquenessRuleId',
         idField=IdField(name='uniquenessRuleId', column='UniquenessRuleID', type='java.lang.Integer'),
@@ -7834,12 +7834,12 @@ datamodel = Datamodel(tables=[
 
         ]
     ),
-    Table( # UniquenessRuleField
+    Table( # UniquenessRule_Field
         sp7_only=True,
-        django_app='business_rules',
+        django_app='businessrules',
         classname='edu.ku.brc.specify.datamodel.UniquenessRuleField',
-        table='uniquenessrulefield',
-        tableId=1003, # TODO: figure out a good tableId
+        table='uniquenessrule_field',
+        tableId=1003,
         idColumn='UniquenessRuleFieldID',
         idFieldName='uniquenessRuleFieldId',
         idField=IdField(name='uniquenessRuleFieldId', column='UniquenessRuleFieldID', type='java.lang.Integer'),
@@ -7863,7 +7863,7 @@ datamodel = Datamodel(tables=[
         django_app='notifications',
         classname='edu.ku.brc.specify.datamodel.Message',
         table='notifications_message',
-        tableId=1004, # TODO: figure out a good tableId
+        tableId=1004,
         idColumn='MessageID',
         idFieldName='messageId',
         idField=IdField(name='messageId', column='MessageID', type='java.lang.Integer'),
@@ -7887,7 +7887,7 @@ datamodel = Datamodel(tables=[
         django_app='specify',
         classname='edu.ku.brc.specify.datamodel.Spmerging',
         table='spmerging',
-        tableId=1005, # TODO: figure out a good tableId
+        tableId=1005,
         idColumn='SpMergingID',
         idFieldName='spMergingId',
         idField=IdField(name='spMergingId', column='SpMergingID', type='java.lang.Integer'),
@@ -7921,7 +7921,7 @@ datamodel = Datamodel(tables=[
         django_app='permissions',
         classname='edu.ku.brc.specify.datamodel.UserPolicy',
         table='spuserpolicy',
-        tableId=1006, # TODO: figure out a good tableId
+        tableId=1006,
         idColumn='UserPolicyID',
         idFieldName='userPolicyId',
         idField=IdField(name='userPolicyId', column='UserPolicyID', type='java.lang.Integer'),
@@ -7945,7 +7945,7 @@ datamodel = Datamodel(tables=[
         django_app='permissions',
         classname='edu.ku.brc.specify.datamodel.Role',
         table='sprole',
-        tableId=1007, # TODO: figure out a good tableId
+        tableId=1007,
         idColumn='RoleID',
         idFieldName='roleId',
         idField=IdField(name='roleId', column='RoleID', type='java.lang.Integer'),
@@ -7968,7 +7968,7 @@ datamodel = Datamodel(tables=[
         django_app='permissions',
         classname='edu.ku.brc.specify.datamodel.LibraryRole',
         table='splibraryrole',
-        tableId=1008, # TODO: figure out a good tableId
+        tableId=1008,
         idColumn='LibraryRoleID',
         idFieldName='libraryRoleId',
         idField=IdField(name='libraryRoleId', column='LibraryRoleID', type='java.lang.Integer'),
@@ -7991,7 +7991,7 @@ datamodel = Datamodel(tables=[
         django_app='permissions',
         classname='edu.ku.brc.specify.datamodel.UserRole',
         table='spuserrole',
-        tableId=1009, # TODO: figure out a good tableId
+        tableId=1009,
         idColumn='UserRoleID',
         idFieldName='userRoleId',
         idField=IdField(name='userRoleId', column='UserRoleID', type='java.lang.Integer'),
@@ -8014,7 +8014,7 @@ datamodel = Datamodel(tables=[
         django_app='permissions',
         classname='edu.ku.brc.specify.datamodel.RolePolicy',
         table='sprolepolicy',
-        tableId=1010, # TODO: figure out a good tableId
+        tableId=1010,
         idColumn='RolePolicyID',
         idFieldName='rolePolicyId',
         idField=IdField(name='rolePolicyId', column='RolePolicyID', type='java.lang.Integer'),
@@ -8037,7 +8037,7 @@ datamodel = Datamodel(tables=[
         django_app='permissions',
         classname='edu.ku.brc.specify.datamodel.LibraryRolePolicy',
         table='splibraryrolepolicy',
-        tableId=1011, # TODO: figure out a good tableId
+        tableId=1011,
         idColumn='LibraryRolePolicyID',
         idFieldName='libraryRolePolicyId',
         idField=IdField(name='libraryRolePolicyId', column='LibraryRolePolicyID', type='java.lang.Integer'),
@@ -8057,10 +8057,10 @@ datamodel = Datamodel(tables=[
     ),
     Table( # Spdataset
         sp7_only=True,
-        django_app='specify',
+        django_app='workbench',
         classname='edu.ku.brc.specify.datamodel.Spdataset',
         table='spdataset',
-        tableId=1012, # TODO: figure out a good tableId
+        tableId=1012,
         idColumn='SpDataSetID',
         idFieldName='spDataSetId',
         idField=IdField(name='spDataSetId', column='SpDataSetID', type='java.lang.Integer'),

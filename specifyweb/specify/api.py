@@ -21,6 +21,7 @@ from django.core.exceptions import ObjectDoesNotExist, FieldError, FieldDoesNotE
 from django.db.models.fields import DateTimeField, FloatField, DecimalField
 
 from specifyweb.permissions.permissions import enforce, check_table_permissions, check_field_permissions, table_permissions_checker
+from specifyweb.specify.models_by_table_id import models_by_tableid
 
 from . import models
 from .autonumbering import autonumber_and_save
@@ -315,7 +316,7 @@ def post_resource(collection, agent, name: str, data, recordsetid: Optional[int]
             # the resource is not of the right kind to go in the recordset
             raise RecordSetException(
                 "expected %s, got %s when adding object to recordset",
-                (models.models_by_tableid[recordset.dbtableid], obj.__class__))
+                (models_by_tableid[recordset.dbtableid], obj.__class__))
 
         recordset.recordsetitems.create(recordid=obj.id)
     return obj

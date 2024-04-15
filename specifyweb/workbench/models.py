@@ -111,3 +111,7 @@ class Spdataset(Dataset):
 
     def was_uploaded(self) -> bool:
         return self.uploadresult and self.uploadresult['success']
+
+# spmodels.models_by_tableid.update({
+#     1012: Spdataset
+# })

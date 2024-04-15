@@ -14,6 +14,7 @@ from sqlalchemy import sql, orm, func, select
 from sqlalchemy.sql.expression import asc, desc, insert, literal
 
 from specifyweb.stored_queries.group_concat import group_by_displayed_fields
+from specifyweb.specify.models_by_table_id import models_by_tableid
 
 from . import models
 from .format import ObjectFormatter
@@ -241,7 +242,7 @@ def query_to_kml(session, collection, user, tableid, field_specs, path, captions
     documentElement = kmlElement.appendChild(documentElement)
 
     if not strip_id:
-        model = models.models_by_tableid[tableid]
+        model = models_by_tableid[tableid]
         table = str(getattr(model, model._id)).split('.')[0].lower() #wtfiw
     else:
         table = None
@@ -412,7 +413,7 @@ def augment_field_specs(field_specs, formatauditobjs=False):
         print(fs)
         print(fs.fieldspec.table.tableId)
         field = fs.fieldspec.join_path[-1]
-        model = models.models_by_tableid[fs.fieldspec.table.tableId]
+        model = models_by_tableid[fs.fieldspec.table.tableId]
         if field.type == 'java.util.Calendar':
             precision_field = field.name + "Precision"
             has_precision = hasattr(model, precision_field)
@@ -420,7 +421,7 @@ def augment_field_specs(field_specs, formatauditobjs=False):
                 new_field_specs.append(make_augmented_field_spec(fs, model, precision_field))
         elif formatauditobjs and model.name.lower.startswith('spauditlog'):
             if field.name.lower() in 'newvalue, oldvalue':
-                log_model = models.models_by_tableid[530];
+                log_model = models_by_tableid[530];
                 new_field_specs.append(make_augmented_field_spec(fs, log_model, 'TableNum'))
                 new_field_specs.append(make_augmented_field_spec(fs, model, 'FieldName'))
             elif field.name.lower() == 'recordid':
@@ -451,7 +452,7 @@ def recordset(collection, user, user_agent, recordset_info):
         session.flush()
         new_rs_id = recordset.recordSetId
 
-        model = models.models_by_tableid[tableid]
+        model = models_by_tableid[tableid]
         id_field = getattr(model, model._id)
 
         field_specs = field_specs_from_json(spquery['fields'])
@@ -476,7 +477,7 @@ def return_loan_preps(collection, user, agent, data):
          "localizationKey" : "unexpectedTableId"})
 
     with models.session_context() as session:
-        model = models.models_by_tableid[tableid]
+        model = models_by_tableid[tableid]
         id_field = getattr(model, model._id)
 
         field_specs = field_specs_from_json(spquery['fields'])
@@ -576,7 +577,7 @@ def build_query(session, collection, user, tableid, field_specs,
 
     distinct = if True, group by all display fields, and return all record IDs associated with a row
     """
-    model = models.models_by_tableid[tableid]
+    model = models_by_tableid[tableid]
     id_field = getattr(model, model._id)
 
     field_specs = [apply_absolute_date(field_spec) for field_spec in field_specs]
