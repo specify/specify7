@@ -340,7 +340,7 @@ msgstr "Add definition"
 
 #: components/FormEditor/Editor.tsx:133
 #: components/Formatters/Definitions.tsx:172
-#: components/Formatters/Definitions.tsx:256
+#: components/Formatters/Definitions.tsx:252
 #. Used in: Components > Form Editor > Editor ⬤ Components > Formatters > Definitions
 msgid "deleteDefinition"
 msgstr "Delete definition"
@@ -350,7 +350,7 @@ msgstr "Delete definition"
 msgid "urlPart"
 msgstr "URL part"
 
-#: components/Formatters/Definitions.tsx:216
+#: components/Formatters/Definitions.tsx:212
 #: components/Formatters/Fields.tsx:118
 #. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Fields
 msgid "addField"
@@ -373,19 +373,12 @@ msgstr "Select table first"
 msgid "conditionFieldValue"
 msgstr "Condition Field Value"
 
-#: components/Formatters/Definitions.tsx:187
+#: components/Formatters/Definitions.tsx:184
 #. Used in: Components > Formatters > Definitions
 msgid "conditionDescription"
 msgstr ""
 "This format will be used only if the condition field value equals this "
-"condition."
-
-#: components/Formatters/Definitions.tsx:186
-#. Used in: Components > Formatters > Definitions
-msgid "elseConditionDescription"
-msgstr ""
-"This format will be used only if the condition field value equals this "
-"condition or if no other format matches it."
+"condition and is not null."
 
 #: components/AppResources/Tabs.tsx:164
 #. Used in: Components > App Resources > Tabs
@@ -470,7 +463,7 @@ msgstr "Conditional Format"
 msgid "customizeFieldFormatters"
 msgstr "Customize Field Formats"
 
-#: components/Formatters/Definitions.tsx:265
+#: components/Formatters/Definitions.tsx:261
 #. Used in: Components > Formatters > Definitions
 msgid "expandConditionalField"
 msgstr "Expand Conditional Field"
@@ -485,7 +478,7 @@ msgstr "Collapse Conditional Field"
 msgid "conditionalFieldValue"
 msgstr "Conditional Field Value"
 
-#: components/Formatters/Definitions.tsx:222
+#: components/Formatters/Definitions.tsx:218
 #. Used in: Components > Formatters > Definitions
 msgid "formatPreview"
 msgstr "Format Preview"

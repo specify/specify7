@@ -384,7 +384,7 @@ msgstr "Definition hinzufügen"
 
 #: components/FormEditor/Editor.tsx:133
 #: components/Formatters/Definitions.tsx:172
-#: components/Formatters/Definitions.tsx:256
+#: components/Formatters/Definitions.tsx:252
 #. Used in: Components > Form Editor > Editor ⬤ Components > Formatters > Definitions
 #, fuzzy
 msgid "deleteDefinition"
@@ -396,7 +396,7 @@ msgstr "Definition löschen"
 msgid "urlPart"
 msgstr "URL-Teil"
 
-#: components/Formatters/Definitions.tsx:216
+#: components/Formatters/Definitions.tsx:212
 #: components/Formatters/Fields.tsx:118
 #. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Fields
 #, fuzzy
@@ -423,21 +423,11 @@ msgstr "Zuerst Tabelle auswählen"
 msgid "conditionFieldValue"
 msgstr "Bedingungsfeldwert"
 
-#: components/Formatters/Definitions.tsx:187
+#: components/Formatters/Definitions.tsx:184
 #. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "conditionDescription"
 msgstr ""
-"Dieses Format wird nur verwendet, wenn der Wert des Bedingungsfelds dieser "
-"Bedingung entspricht."
-
-#: components/Formatters/Definitions.tsx:186
-#. Used in: Components > Formatters > Definitions
-#, fuzzy
-msgid "elseConditionDescription"
-msgstr ""
-"Dieses Format wird nur verwendet, wenn der Wert des Bedingungsfelds dieser "
-"Bedingung entspricht oder wenn kein anderes Format damit übereinstimmt."
 
 #: components/AppResources/Tabs.tsx:164
 #. Used in: Components > App Resources > Tabs
@@ -538,7 +528,7 @@ msgstr "Bedingtes Format"
 msgid "customizeFieldFormatters"
 msgstr "Feldformate anpassen"
 
-#: components/Formatters/Definitions.tsx:265
+#: components/Formatters/Definitions.tsx:261
 #. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "expandConditionalField"
@@ -556,7 +546,7 @@ msgstr "Bedingtes Feld reduzieren"
 msgid "conditionalFieldValue"
 msgstr "Bedingter Feldwert"
 
-#: components/Formatters/Definitions.tsx:222
+#: components/Formatters/Definitions.tsx:218
 #. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "formatPreview"

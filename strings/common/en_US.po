@@ -843,7 +843,7 @@ msgstr "Selected"
 #: components/FormCells/FormTable.tsx:321
 #: components/FormCells/FormTable.tsx:323
 #: components/FormSliders/IntegratedRecordSelector.tsx:84
-#: components/Formatters/Definitions.tsx:246
+#: components/Formatters/Definitions.tsx:242
 #: components/Header/index.tsx:158
 #: components/Molecules/AutoComplete.tsx:544
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Form Sliders > Integrated Record Selector ⬤ Components > Formatters > Definitions ⬤ Components > Header > Index ⬤ Components > Molecules > Auto Complete

@@ -415,7 +415,7 @@ msgstr "Ajouter une définition"
 
 #: components/FormEditor/Editor.tsx:133
 #: components/Formatters/Definitions.tsx:172
-#: components/Formatters/Definitions.tsx:256
+#: components/Formatters/Definitions.tsx:252
 #. Used in: Components > Form Editor > Editor ⬤ Components > Formatters > Definitions
 #, fuzzy
 msgid "deleteDefinition"
@@ -427,7 +427,7 @@ msgstr "Supprimer la définition"
 msgid "urlPart"
 msgstr "Autre ressource JSON"
 
-#: components/Formatters/Definitions.tsx:216
+#: components/Formatters/Definitions.tsx:212
 #: components/Formatters/Fields.tsx:118
 #. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Fields
 #, fuzzy
@@ -454,21 +454,11 @@ msgstr "Sélectionnez d'abord le tableau"
 msgid "conditionFieldValue"
 msgstr "Valeur du champ de condition"
 
-#: components/Formatters/Definitions.tsx:187
+#: components/Formatters/Definitions.tsx:184
 #. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "conditionDescription"
 msgstr ""
-"Ce format ne sera utilisé que si la valeur du champ de condition est égale "
-"à cette condition."
-
-#: components/Formatters/Definitions.tsx:186
-#. Used in: Components > Formatters > Definitions
-#, fuzzy
-msgid "elseConditionDescription"
-msgstr ""
-"Ce format ne sera utilisé que si la valeur du champ de condition est égale "
-"à cette condition ou si aucun autre format ne lui correspond."
 
 #: components/AppResources/Tabs.tsx:164
 #. Used in: Components > App Resources > Tabs
@@ -569,7 +559,7 @@ msgstr "Format conditionnel"
 msgid "customizeFieldFormatters"
 msgstr "Personnaliser les formats de champs"
 
-#: components/Formatters/Definitions.tsx:265
+#: components/Formatters/Definitions.tsx:261
 #. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "expandConditionalField"
@@ -587,7 +577,7 @@ msgstr "Réduire le champ conditionnel"
 msgid "conditionalFieldValue"
 msgstr "Valeur du champ conditionnel"
 
-#: components/Formatters/Definitions.tsx:222
+#: components/Formatters/Definitions.tsx:218
 #. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "formatPreview"
