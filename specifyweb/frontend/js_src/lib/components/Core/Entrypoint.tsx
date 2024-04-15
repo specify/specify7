@@ -45,6 +45,7 @@ function entrypoint(): void {
       'class',
       'text-neutral-900 dark:text-neutral-200 list-none'
     );
+
     const reactRoot = createRoot(root);
     reactRoot.render(
       <React.StrictMode>
