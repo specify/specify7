@@ -27,7 +27,6 @@ import { hasPermission } from '../Permissions/helpers';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { WbCellCounts, WbCellMeta } from './CellMeta';
 import { Disambiguation } from './DisambiguationLogic';
-import { getHotPlugin } from './handsontable';
 import type { WbMapping } from './mapping';
 import { parseWbMappings } from './mapping';
 import { WbUploaded } from './Results';
@@ -39,6 +38,7 @@ import { WbSpreadsheet } from './WbSpreadsheet';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { WbToolkit } from '../WbToolkit/WbToolkit';
 import { ReadOnlyContext } from '../Core/Contexts';
+import { useResults } from '../WbActions/useResults';
 
 export type WbStatus = 'unupload' | 'upload' | 'validate';
 
@@ -130,72 +130,11 @@ export function WbView({
   const [showToolkit, _openToolkit, _closeToolkit, toggleToolkit] =
     useBooleanState();
 
-  // TODO: move all states and logic for Results into a hook
-  const [showResults, _, closeResults, toggleResults] = useBooleanState();
-
-  const initialHiddenRows = React.useMemo(
-    () =>
-      hot === undefined ? [] : getHotPlugin(hot, 'hiddenRows').getHiddenRows(),
-    [hot]
-  );
-  const initialHiddenCols = React.useMemo(
-    () =>
-      hot === undefined
-        ? []
-        : getHotPlugin(hot, 'hiddenColumns').getHiddenColumns(),
-    [hot]
-  );
-
-  // Makes the hot changes required for upload view results
-  React.useEffect(() => {
-    if (!workbench.hot) return;
-
-    const rowsToInclude = new Set();
-    const colsToInclude = new Set();
-    Object.entries(workbench.cells.cellMeta).forEach(([physicalRow, rowMeta]) =>
-      rowMeta.forEach((metaArray, physicalCol) => {
-        if (!workbench.cells.getCellMetaFromArray(metaArray, 'isNew')) return;
-        rowsToInclude.add((physicalRow as unknown as number) | 0);
-        colsToInclude.add(physicalCol);
-      })
-    );
-    const rowsToHide = workbench.data
-      .map((_, physicalRow) => physicalRow)
-      .filter(
-        (physicalRow) =>
-          !rowsToInclude.has(physicalRow) &&
-          !initialHiddenRows.includes(physicalRow)
-      )
-      .map(workbench.hot.toVisualRow);
-    const colsToHide = workbench.dataset.columns
-      .map((_, physicalCol) => physicalCol)
-      .filter(
-        (physicalCol) =>
-          !colsToInclude.has(physicalCol) &&
-          !initialHiddenCols.includes(physicalCol)
-      )
-      .map(workbench.hot.toVisualColumn);
-
-    if (showResults) {
-      getHotPlugin(workbench.hot, 'hiddenRows').hideRows(rowsToHide);
-      getHotPlugin(workbench.hot, 'hiddenColumns').hideColumns(colsToHide);
-
-      workbench.utils.toggleCellTypes(
-        'newCells',
-        'remove',
-        spreadsheetContainerRef?.current
-      );
-    } else {
-      getHotPlugin(workbench.hot, 'hiddenRows').showRows(
-        rowsToHide.filter((visualRow) => !initialHiddenRows.includes(visualRow))
-      );
-      getHotPlugin(workbench.hot, 'hiddenColumns').showColumns(
-        colsToHide.filter((visualCol) => !initialHiddenCols.includes(visualCol))
-      );
-    }
-
-    workbench.hot.render();
-  }, [showResults]);
+  const { showResults, closeResults, toggleResults } = useResults({
+    hot,
+    workbench,
+    spreadsheetContainerRef,
+  });
 
   return (
     <ReadOnlyContext.Provider value={isUploaded || showResults || !canUpdate}>
