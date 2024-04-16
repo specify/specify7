@@ -170,7 +170,7 @@ msgstr "Crear"
 #: components/FormMeta/PickListUsages.tsx:44
 #: components/FormMeta/index.tsx:109
 #: components/FormMeta/index.tsx:132
-#: components/FormPlugins/CollectionRelOneToMany.tsx:174
+#: components/FormPlugins/CollectionRelOneToMany.tsx:180
 #: components/FormPlugins/GeoLocate.tsx:112
 #: components/FormPlugins/GeoLocate.tsx:126
 #: components/FormPlugins/Leaflet.tsx:40
@@ -391,8 +391,8 @@ msgstr "Herramientas"
 #: components/FormCommands/ShowTransactions.tsx:63
 #: components/FormFields/ComboBox.tsx:131
 #: components/FormFields/Field.tsx:82
-#: components/FormPlugins/CollectionRelOneToMany.tsx:152
-#: components/FormPlugins/CollectionRelOneToOne.tsx:35
+#: components/FormPlugins/CollectionRelOneToMany.tsx:158
+#: components/FormPlugins/CollectionRelOneToOne.tsx:43
 #: components/Formatters/Preview.tsx:99
 #: components/Formatters/Preview.tsx:138
 #: components/Forms/BaseResourceView.tsx:61
@@ -460,7 +460,7 @@ msgstr "Subido"
 #: components/ExportFeed/Editor.tsx:153
 #: components/FormCells/FormTable.tsx:407
 #: components/FormCells/FormTable.tsx:416
-#: components/FormPlugins/CollectionRelOneToMany.tsx:130
+#: components/FormPlugins/CollectionRelOneToMany.tsx:136
 #: components/Formatters/Fields.tsx:197
 #: components/Formatters/Fields.tsx:198
 #: components/QueryBuilder/Components.tsx:167
