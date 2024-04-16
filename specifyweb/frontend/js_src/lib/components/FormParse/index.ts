@@ -10,7 +10,12 @@ import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
 import type { IR, R, RA } from '../../utils/types';
-import { defined, filterArray, localized } from '../../utils/types';
+import {
+  defined,
+  filterArray,
+  localized,
+  overwriteReadOnly,
+} from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { parseXml } from '../AppResources/parseXml';
 import { formatDisjunction } from '../Atoms/Internationalization';
@@ -33,7 +38,7 @@ import { getPref } from '../InitialContext/remotePrefs';
 import { formatUrl } from '../Router/queryString';
 import type { SimpleXmlNode } from '../Syncer/xmlToJson';
 import { toSimpleXmlNode, xmlToJson } from '../Syncer/xmlToJson';
-import { getParsedAttribute } from '../Syncer/xmlUtils';
+import { getAttribute, getParsedAttribute } from '../Syncer/xmlUtils';
 import type { FormCellDefinition } from './cells';
 import { parseFormCell, processColumnDefinition } from './cells';
 import { postProcessFormDef } from './postProcessFormDef';
@@ -106,18 +111,101 @@ export const fetchView = async (
           headers: { Accept: 'text/plain' },
           expectedErrors: [Http.NOT_FOUND],
         }
-      ).then(({ data, status }) => {
-        // FEATURE: add an easy way to cache ajax responses:
-        views[name] =
-          status === Http.NOT_FOUND || status === Http.NO_CONTENT
+      )
+        .then(async ({ data, status }) => {
+          if (status === Http.NOT_FOUND)
+            console.error(
+              `Unable to find a view definition for the "${name}" view`
+            );
+
+          return status === Http.NOT_FOUND || status === Http.NO_CONTENT
             ? undefined
-            : (JSON.parse(data) as ViewDefinition);
-        if (status === Http.NOT_FOUND)
-          console.error(
-            `Unable to find a view definition for the "${name}" view`
-          );
-        return views[name];
-      });
+            : correctDefaultViewDefinition(JSON.parse(data) as ViewDefinition);
+        })
+        .then((viewDefinition) => {
+          // FEATURE: add an easy way to cache ajax responses:
+          views[name] = viewDefinition;
+
+          return views[name];
+        });
+
+// REFACTOR: Remove the need for this once Specify 7 has its own default forms
+async function correctDefaultViewDefinition(
+  view: ViewDefinition
+): Promise<ViewDefinition> {
+  const viewDefinitions = parseViewDefinitions(view.viewdefs);
+  if (Object.keys(viewDefinitions).length === 0) {
+    console.error(`No view definitions found for the ${view.name} view`);
+    return view;
+  }
+
+  /**
+   * In the default forms for Specify 6, there are multiple ways to represent
+   * FormTables for SubViews.
+   * One problematic way to represent the Expanded and Collapsed
+   * states of the SubView is to separate the states into entirely
+   * separate views. If the Collapsed view needs to be expanded, it is assumed
+   * to use the view definition for the Expanded view
+   * (which is usually the default view as stated in the datamodel xml file,
+   * i.e. the table.view)
+   * See:
+   *  https://github.com/specify/specify7/issues/2412#issuecomment-1327967090
+   *  https://github.com/specify/specify7/pull/4760#issuecomment-2046022176
+   */
+  const useDefaultExpanded =
+    new Set(Object.values(view.altviews).map((altView) => altView.viewdef))
+      .size === 1 &&
+    getAttribute(
+      xmlToJson(viewDefinitions[Object.values(view.altviews)[0].viewdef]),
+      'type'
+    ) === 'formtable';
+
+  if (useDefaultExpanded) {
+    /**
+     * To correctly resolve this case, the non-formtable altviews and viewdefs
+     * of the table's default View are merged into the definition of the
+     * view which is supposed to represent the Collapsed/Grid view for the
+     * table
+     */
+    return fetchView(strictGetTable(view.class).view).then(
+      (defaultExpandedDefinition) => {
+        if (defaultExpandedDefinition === undefined) return view;
+
+        const defaultViewDefs = parseViewDefinitions(
+          defaultExpandedDefinition.viewdefs
+        );
+
+        const newAltViews = {
+          ...view.altviews,
+          ...Object.fromEntries(
+            Object.entries(defaultExpandedDefinition.altviews).filter(
+              ([_, { viewdef }]) =>
+                getAttribute(xmlToJson(defaultViewDefs[viewdef]), 'type') !==
+                'formtable'
+            )
+          ),
+        };
+        const newViewDefs = {
+          ...view.viewdefs,
+          ...Object.fromEntries(
+            Object.entries(defaultExpandedDefinition.viewdefs).filter(
+              // eslint-disable-next-line unicorn/prevent-abbreviations
+              ([viewDefName, _]) =>
+                getAttribute(
+                  xmlToJson(defaultViewDefs[viewDefName]),
+                  'type'
+                ) !== 'formtable'
+            )
+          ),
+        };
+        overwriteReadOnly(view, 'altviews', newAltViews);
+        overwriteReadOnly(view, 'viewdefs', newViewDefs);
+        return view;
+      }
+    );
+  }
+  return view;
+}
 
 export function parseViewDefinition(
   view: ViewDefinition,

@@ -89,32 +89,35 @@ test('Can edit form definition', () => {
     formDefinitionSpec(tables.Accession)
   );
   const parsed = serializer(simpleXmlNode);
+  const parsedRows = parsed.definitions[0];
   const updated = deserializer({
     ...parsed,
     columnDefinitions: [
       parsed.columnDefinitions[0],
       ...parsed.columnDefinitions,
     ],
-    rows: {
-      ...parsed.rows,
-      rows: [
-        parsed.rows.rows[0],
-        [
-          ...parsed.rows.rows[0],
-          {
-            ...parsed.rows.rows[0][1],
-            definition:
-              parsed.rows.rows[0][1].definition.type === 'Label'
-                ? {
-                    ...parsed.rows.rows[0][1].definition,
-                    label: localized('New Label'),
-                  }
-                : error('Expected a label cell at this position'),
-          },
+    definitions: [
+      {
+        ...parsedRows,
+        rows: [
+          parsedRows.rows[0],
+          [
+            ...parsedRows.rows[0],
+            {
+              ...parsedRows.rows[0][1],
+              definition:
+                parsedRows.rows[0][1].definition.type === 'Label'
+                  ? {
+                      ...parsedRows.rows[0][1].definition,
+                      label: localized('New Label'),
+                    }
+                  : error('Expected a label cell at this position'),
+            },
+          ],
+          ...parsedRows.rows,
         ],
-        ...parsed.rows.rows,
-      ],
-    },
+      },
+    ],
   });
   const updatedXml = formatXmlForTests(updateXml(updated));
   expect(updatedXml).toMatchSnapshot();
