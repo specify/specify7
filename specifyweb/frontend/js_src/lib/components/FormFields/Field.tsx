@@ -143,6 +143,11 @@ function Field({
       id={id}
       isReadOnly={isReadOnly}
       required={'required' in validationAttributes && !isInSearchDialog}
+      step={
+        validationAttributes.step === undefined
+          ? 'any'
+          : validationAttributes.step
+      }
       tabIndex={isReadOnly ? -1 : undefined}
       value={value?.toString() ?? ''}
       onBlur={
@@ -162,11 +167,6 @@ function Field({
          */
         updateValue(input.value, event.type === 'paste');
       }}
-      step={
-        validationAttributes.step === undefined
-          ? 'any'
-          : validationAttributes.step
-      }
     />
   );
 }
