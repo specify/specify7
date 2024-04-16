@@ -21,10 +21,11 @@ export function WbLeafletMap({
   readonly hasLocality: boolean;
   readonly hot: Handsontable;
   readonly dataset: Dataset;
-  readonly mappings: WbMapping;
+  readonly mappings: WbMapping | undefined;
 }): JSX.Element {
   const [showLeafletMap, openLeafletMap, closeLeafletMap] = useBooleanState();
   const localityPoints = React.useMemo(() => {
+    if (mappings === undefined) return undefined;
     const selection = getSelectedLocalities(
       hot,
       dataset.columns,
@@ -36,11 +37,11 @@ export function WbLeafletMap({
 
     return getLocalitiesDataFromSpreadsheet(
       mappings.localityColumns,
-      selection.visualRows.map((visualRow) => hot!.getDataAtRow(visualRow)),
-      getVisualHeaders(hot!, dataset.columns),
+      selection.visualRows.map((visualRow) => hot.getDataAtRow(visualRow)),
+      getVisualHeaders(hot, dataset.columns),
       selection.visualRows
     );
-  }, [mappings.localityColumns]);
+  }, [mappings?.localityColumns]);
 
   return (
     <>
@@ -62,10 +63,10 @@ export function WbLeafletMap({
             const rowNumber = localityPoints[localityPoint].rowNumber.value;
             if (typeof rowNumber !== 'number')
               throw new Error('rowNumber must be a number');
-            const [_currentRow, currentCol] = getSelectedLast(hot!);
-            hot?.scrollViewportTo(rowNumber, currentCol);
+            const [_currentRow, currentCol] = getSelectedLast(hot);
+            hot.scrollViewportTo(rowNumber, currentCol);
             // Select entire row
-            hot?.selectRows(rowNumber);
+            hot.selectRows(rowNumber);
           }}
         />
       )}

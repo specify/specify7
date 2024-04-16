@@ -69,9 +69,9 @@ export function getHotHooks(
           visualRow,
           visualCol
         );
-      if (workbench.mappings.mappedHeaders?.[physicalCol] === undefined)
+      if (workbench.mappings?.mappedHeaders?.[physicalCol] === undefined)
         td.classList.add('text-gray-500');
-      if (workbench.mappings.coordinateColumns?.[physicalCol] !== undefined)
+      if (workbench.mappings?.coordinateColumns?.[physicalCol] !== undefined)
         td.classList.add('wb-coordinate-cell');
     },
 

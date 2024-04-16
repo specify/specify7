@@ -74,7 +74,7 @@ export function WbView({
     [dataset]
   );
 
-  const [hotTable, setHotTable] = React.useState<HotTable>();
+  const [hotTable, setHotTable] = React.useState<HotTable | null>(null);
   const hot = hotTable?.hotInstance ?? undefined;
 
   const isUploaded = React.useMemo<boolean>(
@@ -249,7 +249,7 @@ export function WbView({
           isUploaded={isUploaded}
           data={data}
           workbench={workbench}
-          mappings={mappings!}
+          mappings={mappings}
           checkDeletedFail={checkDeletedFail}
           spreadsheetChanged={spreadsheetChanged}
         />

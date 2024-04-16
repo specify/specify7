@@ -31,7 +31,7 @@ export function WbConvertCoordinates({
   readonly hasLocality: boolean;
   readonly dataset: Dataset;
   readonly data: RA<RA<string | null>>;
-  readonly mappings: WbMapping;
+  readonly mappings: WbMapping | undefined;
   readonly hot: Handsontable;
 }): JSX.Element {
   const [showConvertCoords, openConvertCoords, closeConvertCoords] =
@@ -47,7 +47,7 @@ export function WbConvertCoordinates({
       >
         {wbText.convertCoordinates()}
       </Button.Small>
-      {showConvertCoords && (
+      {showConvertCoords && mappings !== undefined ? (
         <CoordinateConverter
           columns={dataset.columns}
           coordinateColumns={mappings.coordinateColumns}
@@ -55,7 +55,7 @@ export function WbConvertCoordinates({
           hot={hot}
           onClose={closeConvertCoords}
         />
-      )}
+      ): undefined}
     </>
   );
 }

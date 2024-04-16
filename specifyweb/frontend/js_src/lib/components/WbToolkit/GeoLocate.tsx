@@ -33,7 +33,7 @@ export function WbGeoLocate({
   readonly hasLocality: boolean;
   readonly hot: Handsontable;
   readonly dataset: Dataset;
-  readonly mappings: WbMapping;
+  readonly mappings: WbMapping | undefined;
 }): JSX.Element {
   const [showGeoLocate, openGeoLocate, closeGeoLocate] = useBooleanState();
   return (
@@ -47,14 +47,14 @@ export function WbGeoLocate({
       >
         {localityText.geoLocate()}
       </Button.Small>
-      {showGeoLocate && mappings && (
+      {showGeoLocate && mappings !== undefined ? (
         <GeoLocate
           columns={dataset.columns}
           hot={hot}
           localityColumns={mappings.localityColumns}
           onClose={closeGeoLocate}
         />
-      )}
+      ) : undefined}
     </>
   );
 }

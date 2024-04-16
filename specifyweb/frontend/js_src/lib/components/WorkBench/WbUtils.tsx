@@ -138,10 +138,6 @@ export function WbUtilsComponent({
     );
   };
 
-  const handleReplace = (event: KeyboardEvent) => {
-    utils.replaceCells(event, replaceRef.current!);
-  };
-
   return (
     <div
       aria-label={wbText.navigation()}
@@ -172,7 +168,7 @@ export function WbUtilsComponent({
               title={wbText.replacementValue()}
               type="search"
               // @ts-expect-error KeyboardEvent type does not match?
-              onKeyDown={handleReplace}
+              onKeyDown={(event) => utils.replaceCells(event, replaceRef.current!)}
               disabled={isReadOnly}
             />
           </div>

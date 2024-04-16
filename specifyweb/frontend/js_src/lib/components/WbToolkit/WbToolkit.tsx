@@ -28,7 +28,7 @@ export function WbToolkit({
   triggerDatasetRefresh,
 }: {
   readonly dataset: Dataset;
-  readonly hot: Handsontable | undefined;
+  readonly hot: Handsontable;
   readonly mappings: WbMapping | undefined;
   readonly data: RA<RA<string | null>>;
   readonly onDatasetDeleted: () => void;
@@ -50,7 +50,7 @@ export function WbToolkit({
     ).catch(raise);
   };
 
-  const hasLocality = mappings ? mappings.localityColumns.length > 0 : false;
+  const hasLocality = mappings !== undefined ? mappings.localityColumns.length > 0 : false;
 
   // TODO: Render certain elements only after hot has loaded
   return (
@@ -92,14 +92,14 @@ export function WbToolkit({
               dataset={dataset}
               data={data}
               mappings={mappings}
-              hot={hot!}
+              hot={hot}
               hasLocality={hasLocality}
             />
           </ErrorBoundary>
           <ErrorBoundary dismissible>
             <WbGeoLocate
               hasLocality={hasLocality}
-              hot={hot!}
+              hot={hot}
               dataset={dataset}
               mappings={mappings}
             />
@@ -109,7 +109,7 @@ export function WbToolkit({
       <ErrorBoundary dismissible>
         <WbLeafletMap
           hasLocality={hasLocality}
-          hot={hot!}
+          hot={hot}
           dataset={dataset}
           mappings={mappings}
         />

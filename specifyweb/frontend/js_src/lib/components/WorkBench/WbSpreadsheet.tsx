@@ -94,12 +94,12 @@ function WbSpreadsheetComponent({
   spreadsheetChanged,
 }: {
   readonly dataset: Dataset;
-  readonly setHotTable: React.RefObject<HotTable>;
+  readonly setHotTable: React.RefCallback<HotTable>;
   readonly hot: Handsontable | undefined;
   readonly isUploaded: boolean;
   readonly data: RA<RA<string | null>>;
   readonly workbench: Workbench;
-  readonly mappings: WbMapping;
+  readonly mappings: WbMapping | undefined;
   readonly checkDeletedFail: (_: number) => boolean;
   readonly spreadsheetChanged: () => void;
 }): JSX.Element {
@@ -162,6 +162,7 @@ function WbSpreadsheetComponent({
     });
   };
 
+  // @ts-expect-error Typing error for separators as DetailedSettings only allows one separator
   const contextMenuConfig: DetailedSettings | undefined =
     hot === undefined
       ? undefined
@@ -257,14 +258,14 @@ function WbSpreadsheetComponent({
                   callback: () => openDisambiguationDialog(),
                 },
                 separator_1: '---------',
-                fill_down: fillCellsContextMenuItem(hot!, 'down', isReadOnly),
-                fill_up: fillCellsContextMenuItem(hot!, 'up', isReadOnly),
+                fill_down: fillCellsContextMenuItem(hot, 'down', isReadOnly),
+                fill_up: fillCellsContextMenuItem(hot, 'up', isReadOnly),
                 separator_2: '---------',
                 undo: {
-                  disabled: () => hot?.isUndoAvailable() !== true || isReadOnly,
+                  disabled: () => hot.isUndoAvailable() !== true || isReadOnly,
                 },
                 redo: {
-                  disabled: () => hot?.isRedoAvailable() !== true || isReadOnly,
+                  disabled: () => hot.isRedoAvailable() !== true || isReadOnly,
                 },
               } as const),
         };
