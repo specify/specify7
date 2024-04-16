@@ -162,11 +162,6 @@ function Field({
          */
         updateValue(input.value, event.type === 'paste');
       }}
-      step={
-        validationAttributes.step === undefined
-          ? 'any'
-          : validationAttributes.step
-      }
     />
   );
 }
