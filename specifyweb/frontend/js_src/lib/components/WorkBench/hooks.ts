@@ -466,7 +466,7 @@ export function getHotHooks(
       // Don't allow moving columns when isReadOnly
       !isReadOnly &&
       // An ugly fix for jQuery's dialogs conflicting with HOT
-      dropIndex !== undefined || !workbench.hot,
+      (dropIndex !== undefined || workbench.hot !== undefined),
 
     // Save new visualOrder on the back end
     afterColumnMove: (_columnIndexes, _finalIndex, dropIndex) => {
