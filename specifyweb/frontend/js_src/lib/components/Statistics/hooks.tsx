@@ -123,7 +123,7 @@ function dynamicEphermeralPromiseGenerator(
               }
             ).then(({ data }) =>
               filterArray(
-                data.results.map(([distinctGroup]) =>
+                data.results.map(([_id, distinctGroup]) =>
                   distinctGroup === null ? undefined : distinctGroup.toString()
                 )
               )
