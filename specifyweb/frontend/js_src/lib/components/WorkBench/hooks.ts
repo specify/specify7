@@ -464,8 +464,7 @@ export function getHotHooks(
 
     beforeColumnMove: (_columnIndexes, _finalIndex, dropIndex) =>
       // Don't allow moving columns when isReadOnly
-      // !wbView.uploadedView &&
-      // !wbView.coordinateConverterView &&
+      !isReadOnly &&
       // An ugly fix for jQuery's dialogs conflicting with HOT
       dropIndex !== undefined || !workbench.hot,
 
