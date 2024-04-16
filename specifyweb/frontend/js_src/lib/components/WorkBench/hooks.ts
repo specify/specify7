@@ -230,13 +230,13 @@ export function getHotHooks(
 
       /*
        * Don't clear disambiguation when afterChange is triggered by
-       * wbView.hot.undo() from inside of wbView.afterUndoRedo()
+       * hot.undo() from inside of afterUndoRedo()
        * FEATURE: consider not clearing disambiguation at all
        */
-      // if (!wbView.undoRedoIsHandled)
-      //   changedRows.forEach((physicalRow) =>
-      //     workbench.disambiguation?.clearDisambiguation(physicalRow)
-      //   );
+      if (!workbench.undoRedoIsHandled)
+        changedRows.forEach((physicalRow) =>
+          workbench.disambiguation.clearDisambiguation(physicalRow)
+        );
 
       changes.forEach(
         ({
@@ -536,8 +536,7 @@ function afterUndoRedo(
   data: Action
 ): void {
   if (
-    // TODO: add this variable to workbench?
-    // workbench.undoRedoIsHandled ||
+    workbench.undoRedoIsHandled ||
     data.actionType !== 'change' ||
     data.changes.length !== 1 ||
     workbench.hot === undefined
@@ -565,9 +564,9 @@ function afterUndoRedo(
   )
     // HOT doesn't seem to like calling undo from inside of afterUndo
     globalThis.setTimeout(() => {
-      // wbView.undoRedoIsHandled = true;
+      workbench.undoRedoIsHandled = true;
       workbench.hot?.undo();
-      // wbView.undoRedoIsHandled = false;
+      workbench.undoRedoIsHandled = false;
       workbench.disambiguation.afterChangeDisambiguation(physicalRow);
     }, 0);
   else workbench.disambiguation.afterChangeDisambiguation(physicalRow);

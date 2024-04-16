@@ -19,124 +19,31 @@ import {
   getInitialSearchPreferences,
   WbAdvancedSearch,
 } from './AdvancedSearch';
-import type { WbCellCounts } from './CellMeta';
+import type { WbCellCounts, WbCellMeta } from './CellMeta';
 import { getHotPlugin } from './handsontable';
 import { getSelectedLast } from './hotHelpers';
 import type { Workbench } from './WbView';
 import { Input } from '../Atoms/Form';
-import { LocalizedString } from 'typesafe-i18n';
-import { Button } from '../Atoms/Button';
-import { className } from '../Atoms/className';
 import { commonText } from '../../localization/common';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
-
-function Navigation({
-  name,
-  label,
-  totalCount,
-  utils,
-  spreadsheetContainerRef,
-}: {
-  readonly name: keyof WbCellCounts;
-  readonly label: LocalizedString;
-  readonly totalCount: number;
-  readonly utils: WbUtils;
-  readonly spreadsheetContainerRef: React.RefObject<HTMLElement>;
-}): JSX.Element {
-  const isReadOnly = React.useContext(ReadOnlyContext);
-  const [currentPosition, setCurrentPosition] = React.useState<number>(0);
-  const [buttonIsPressed, _press, _unpress, togglePress] = useBooleanState();
-  const handleTypeToggle = () => {
-    togglePress();
-    utils.toggleCellTypes(name, 'toggle', spreadsheetContainerRef.current);
-  };
-  const handlePrevious = () => {
-    const [_, position] = utils.navigateCells({
-      type: name,
-      direction: 'previous',
-      currentCellPosition: currentPosition,
-      totalCount,
-    });
-    setCurrentPosition(position);
-  };
-  const handleNext = () => {
-    const [_, position] = utils.navigateCells({
-      type: name,
-      direction: 'next',
-      currentCellPosition: currentPosition,
-      totalCount,
-    });
-    setCurrentPosition(position);
-  };
-  return (
-    <span
-      aria-atomic
-      className="wb-navigation-section flex rounded"
-      data-navigation-type={name}
-    >
-      <Button.Small
-        className="brightness-80 hover:brightness-70 p-2 ring-0"
-        data-navigation-direction="previous"
-        variant="bg-inherit text-gray-800 dark:text-gray-100"
-        onClick={handlePrevious}
-        disabled={name !== 'newCells' && isReadOnly}
-      >
-        {icons.chevronLeft}
-      </Button.Small>
-      <Button.Small
-        className={`
-          hover:brightness-70 grid grid-cols-[auto_1fr_auto_1fr_auto]
-          items-center ring-0
-          ${className.ariaHandled}
-          ${buttonIsPressed ? 'brightness-50' : ''}
-        `}
-        aria-pressed={buttonIsPressed}
-        title={wbText.clickToToggle()}
-        variant="bg-inherit text-gray-800 dark:text-gray-100"
-        onClick={handleTypeToggle}
-      >
-        {label} (<span className="text-center">{currentPosition}</span>/
-        <span>{totalCount}</span>)
-      </Button.Small>
-      <Button.Small
-        className="brightness-80 hover:brightness-70 p-2 ring-0"
-        data-navigation-direction="next"
-        type="button"
-        variant="bg-inherit text-gray-800 dark:text-gray-100"
-        onClick={handleNext}
-        disabled={name !== 'newCells' && isReadOnly}
-      >
-        {icons.chevronRight}
-      </Button.Small>
-    </span>
-  );
-}
+import { Navigation } from './Navigation';
 
 export function WbUtilsComponent({
   isUploaded,
   cellCounts,
   utils,
-  spreadsheetContainerRef,
+  cells,
+  debounceRate
 }: {
   readonly isUploaded: boolean;
   readonly cellCounts: WbCellCounts;
   readonly utils: WbUtils;
-  readonly spreadsheetContainerRef: React.RefObject<HTMLElement>;
+  readonly cells: WbCellMeta;
+  readonly debounceRate: number
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
   const searchRef = React.useRef<HTMLInputElement | null>(null);
   const replaceRef = React.useRef<HTMLInputElement | null>(null);
-
-  const handleSearch = (event: KeyboardEvent) => {
-    // TODO: check if debounce is needed here
-    utils.searchCells(
-      event,
-      searchRef.current!,
-      spreadsheetContainerRef?.current
-    );
-  };
 
   return (
     <div
@@ -154,8 +61,15 @@ export function WbUtilsComponent({
             spellCheck
             title={commonText.searchQuery()}
             type="search"
-            // @ts-expect-error KeyboardEvent type does not match?
-            onKeyDown={handleSearch}
+            onKeyDown={_.debounce(
+              (event: React.KeyboardEvent<HTMLInputElement>) =>
+                utils.searchCells(
+                  event,
+                  searchRef.current!
+                ),
+              debounceRate,
+              true
+            )}
           />
         </div>
         {!isUploaded && hasPermission('/workbench/dataset', 'update') ? (
@@ -167,8 +81,9 @@ export function WbUtilsComponent({
               placeholder={wbText.replace()}
               title={wbText.replacementValue()}
               type="search"
-              // @ts-expect-error KeyboardEvent type does not match?
-              onKeyDown={(event) => utils.replaceCells(event, replaceRef.current!)}
+              onKeyDown={(event) =>
+                utils.replaceCells(event, replaceRef.current!)
+              }
               disabled={isReadOnly}
             />
           </div>
@@ -180,8 +95,7 @@ export function WbUtilsComponent({
               newSearchPreferences.navigation.direction !==
               utils.searchPreferences.navigation.direction
             ) {
-              // TODO: add workbench or cells to parent component
-              // cells.flushIndexedCellData = true;
+              cells.flushIndexedCellData = true;
             }
             utils.searchPreferences = newSearchPreferences;
             // TODO: figure out what searchCells with SettingsChange does
@@ -197,7 +111,6 @@ export function WbUtilsComponent({
         name="searchResults"
         totalCount={cellCounts.searchResults}
         utils={utils}
-        spreadsheetContainerRef={spreadsheetContainerRef}
       />
       {!isUploaded && hasPermission('/workbench/dataset', 'update') ? (
         <Navigation
@@ -205,7 +118,6 @@ export function WbUtilsComponent({
           name="modifiedCells"
           totalCount={cellCounts.modifiedCells}
           utils={utils}
-          spreadsheetContainerRef={spreadsheetContainerRef}
         />
       ) : undefined}
       <Navigation
@@ -213,7 +125,6 @@ export function WbUtilsComponent({
         name="newCells"
         totalCount={cellCounts.newCells}
         utils={utils}
-        spreadsheetContainerRef={spreadsheetContainerRef}
       />
       {!isUploaded && (
         <Navigation
@@ -221,7 +132,6 @@ export function WbUtilsComponent({
           name="invalidCells"
           totalCount={cellCounts.invalidCells}
           utils={utils}
-          spreadsheetContainerRef={spreadsheetContainerRef}
         />
       )}
     </div>
@@ -377,16 +287,14 @@ export class WbUtils {
     );
 
     // Turn on the respective cell type if it was hidden
-    // TODO: figure out if this is needed
-    // this.toggleCellTypes(event, 'remove');
+    this.toggleCellTypes(type, 'remove');
 
     return [matchedCell, finalCellPosition];
   }
 
   searchCells(
-    event: KeyboardEvent | { readonly key: 'SettingsChange' },
-    searchQueryElement: HTMLInputElement,
-    spreadsheetContainer: HTMLElement | null
+    event: React.KeyboardEvent<HTMLInputElement> | { readonly key: 'SettingsChange' },
+    searchQueryElement: HTMLInputElement
   ) {
     if (this.workbench.hot === undefined) return;
     /*
@@ -404,10 +312,10 @@ export class WbUtils {
       return;
 
     if (this.parseSearchQuery(searchQueryElement) === undefined) {
-      this.toggleCellTypes('searchResults', 'add', spreadsheetContainer);
+      this.toggleCellTypes('searchResults', 'add');
       return;
     }
-    this.toggleCellTypes('searchResults', 'remove', spreadsheetContainer);
+    this.toggleCellTypes('searchResults', 'remove');
 
     const data = this.workbench.dataset.rows;
     const firstVisibleRow =
@@ -443,7 +351,7 @@ export class WbUtils {
         let render = false;
 
         /*
-         * Calling this.wbView.hot.getCell only if cell is within the render
+         * Calling hot.getCell only if cell is within the render
          * bounds.
          * While hot.getCell is supposed to check for this too, doing it this
          * way makes search about 25% faster
@@ -529,10 +437,10 @@ export class WbUtils {
   toggleCellTypes(
     navigationType: keyof WbCellCounts,
     action: 'add' | 'remove' | 'toggle' = 'toggle',
-    spreadsheetContainer?: HTMLElement | null
   ): void {
     const groupName = camelToKebab(navigationType);
     const cssClassName = `wb-hide-${groupName}`;
+    const { current: spreadsheetContainer } = this.workbench.spreadsheetContainerRef;
     if (spreadsheetContainer)
       spreadsheetContainer.classList[action](cssClassName);
   }
@@ -554,7 +462,7 @@ export class WbUtils {
   }
 
   replaceCells(
-    event: KeyboardEvent,
+    event: React.KeyboardEvent<HTMLInputElement>,
     replacementValueElement: HTMLInputElement
   ) {
     if (

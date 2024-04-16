@@ -32,8 +32,6 @@ export function WbSave({
     // Clear validation
     overwriteReadOnly(workbench.dataset, 'rowresults', null);
     workbench.validation.stopLiveValidation();
-    // TODO: figure out what to do in updateValidationButton
-    workbench.validation.updateValidationButton();
 
     // Show saving progress bar
     openProgressBar();

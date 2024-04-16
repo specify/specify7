@@ -89,9 +89,8 @@ export class WbValidation {
           (_, visualRow) => this.workbench.hot!.toPhysicalRow(visualRow)
         ).reverse();
         this.triggerLiveValidation();
-        // TODO: toggleCells needs refactor
-        // this.workbench.utils?.toggleCellTypes('newCells', 'remove');
-        // this.workbench.utils?.toggleCellTypes('invalidCells', 'remove');
+        this.workbench.utils?.toggleCellTypes('newCells', 'remove');
+        this.workbench.utils?.toggleCellTypes('invalidCells', 'remove');
         break;
       }
       case 'off': {
@@ -102,7 +101,6 @@ export class WbValidation {
     }
 
     this.workbench.hot.render();
-    this.updateValidationButton();
   }
 
   public startValidateRow(physicalRow: number): void {
@@ -115,7 +113,6 @@ export class WbValidation {
 
   triggerLiveValidation() {
     const pumpValidation = (): void => {
-      this.updateValidationButton();
       if (this.liveValidationStack.length === 0) {
         this.liveValidationActive = false;
         return;
@@ -142,12 +139,6 @@ export class WbValidation {
     if (!this.liveValidationActive) {
       pumpValidation();
     }
-  }
-
-  updateValidationButton(): void {
-    // TODO: figure out this function
-    // if (!this.setCount) return;
-    // this.setCount(this.liveValidationStack.length);
   }
 
   gotRowValidationResult(physicalRow: number, result: UploadResult): void {
@@ -377,7 +368,6 @@ export class WbValidation {
 
     if (this.workbench.dataset.rowresults === null) {
       this.validationMode = 'off';
-      this.updateValidationButton();
       return;
     }
 

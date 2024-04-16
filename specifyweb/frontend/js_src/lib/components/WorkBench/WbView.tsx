@@ -53,6 +53,9 @@ export type Workbench = {
   mappings: WbMapping;
   utils: WbUtils;
   cellCounts: GetSet<WbCellCounts>;
+  spreadsheetContainerRef: React.RefObject<HTMLElement>;
+  undoRedoIsHandled: boolean;
+  spreadsheetChanged: () => void;
 };
 
 export function WbView({
@@ -111,6 +114,9 @@ export function WbView({
       validation: undefined!,
       utils: undefined!,
       cellCounts: [cellCounts, setCellCounts],
+      spreadsheetContainerRef,
+      undoRedoIsHandled: false,
+      spreadsheetChanged
     };
     workbench.cells = new WbCellMeta(workbench);
     workbench.disambiguation = new Disambiguation(workbench);
@@ -208,7 +214,8 @@ export function WbView({
         isUploaded={isUploaded}
         cellCounts={cellCounts}
         utils={workbench.utils}
-        spreadsheetContainerRef={spreadsheetContainerRef}
+        cells={workbench.cells}
+        debounceRate={Math.ceil(clamp(10, data.length / 20, 200))}
       />
     </ReadOnlyContext.Provider>
   );

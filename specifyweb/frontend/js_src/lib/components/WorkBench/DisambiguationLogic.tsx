@@ -74,8 +74,7 @@ export class Disambiguation {
       JSON.stringify(extra),
       source
     );
-    // TODO: need to add spreadsheetChanged to workbench
-    // this.workbench.spreadSheetChanged();
+    this.workbench.spreadsheetChanged();
     this.afterChangeDisambiguation(physicalRow);
   }
 

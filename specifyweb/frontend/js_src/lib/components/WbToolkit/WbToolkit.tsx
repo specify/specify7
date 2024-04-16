@@ -52,7 +52,6 @@ export function WbToolkit({
 
   const hasLocality = mappings !== undefined ? mappings.localityColumns.length > 0 : false;
 
-  // TODO: Render certain elements only after hot has loaded
   return (
     <div
       aria-label={commonText.tools()}

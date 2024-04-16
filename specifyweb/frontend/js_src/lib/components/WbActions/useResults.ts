@@ -65,8 +65,7 @@ export function useResults({
 
       workbench.utils.toggleCellTypes(
         'newCells',
-        'remove',
-        spreadsheetContainerRef?.current
+        'remove'
       );
     } else {
       getHotPlugin(hot, 'hiddenRows').showRows(

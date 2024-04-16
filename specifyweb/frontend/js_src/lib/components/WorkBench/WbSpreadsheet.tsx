@@ -279,9 +279,10 @@ function WbSpreadsheetComponent({
 
   // Highlight validation cells
   React.useEffect(() => {
-    // TODO: Verify if previous code does anything else after validation
-    if (dataset.rowresults && hot) {
+    if (dataset.rowresults !== null && hot !== undefined) {
       validation.getValidationResults();
+      if (validation.validationMode === 'static' && !isUploaded)
+        workbench.utils.toggleCellTypes('invalidCells', 'remove');
       workbench.cells.flushIndexedCellData = true;
     }
   }, [dataset.rowresults, hot]);

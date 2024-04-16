@@ -56,7 +56,6 @@ export function WorkBench(): JSX.Element {
   const [isDeletedConfirmation, handleDeletedConfirmation] = useBooleanState();
 
   const navigate = useNavigate();
-  // TODO: consider adding this to workbench variable
   const spreadsheetContainerRef = React.useRef<HTMLElement>(null);
 
   if (!dataSet || !treeRanksLoaded) return <LoadingScreen />;

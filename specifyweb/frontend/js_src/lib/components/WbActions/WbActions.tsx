@@ -1,12 +1,10 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
-import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
 import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import { Button } from '../Atoms/Button';
-import { Link } from '../Atoms/Link';
 import { Dialog } from '../Molecules/Dialog';
 import type { Status } from '../WbPlanView/Wrapped';
 import { CreateRecordSetButton } from '../WorkBench/RecordSet';
@@ -26,6 +24,8 @@ import { WbSave } from './WbSave';
 import { GET } from '../../utils/utils';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { LoadingContext } from '../Core/Contexts';
+import { WbNoUploadPlan } from './WbNoUploadPlan';
+import { WbCellCounts } from '../WorkBench/CellMeta';
 
 export function useWbActions({
   datasetId,
@@ -46,8 +46,6 @@ export function useWbActions({
 
   const startUpload = (newMode: WbStatus): void => {
     workbench.validation.stopLiveValidation();
-    // TODO: figure out what to do in updateValidationButton();
-    workbench.validation.updateValidationButton();
     loading(
       ping(`/api/workbench/${newMode}/${datasetId}/`, {
         method: 'POST',
@@ -84,50 +82,7 @@ export function useWbActions({
   };
 }
 
-export function WbActions({
-  dataset,
-  hasUnsavedChanges,
-  isUploaded,
-  isResultsOpen,
-  workbench,
-  mappings,
-  checkDeletedFail,
-  onDatasetRefresh: handleRefresh,
-  onSpreadsheetUpToDate: handleSpreadsheetUpToDate,
-  onToggleResults,
-}: {
-  readonly dataset: Dataset;
-  readonly hasUnsavedChanges: boolean;
-  readonly isUploaded: boolean;
-  readonly isResultsOpen: boolean;
-  readonly workbench: Workbench;
-  readonly mappings: WbMapping | undefined;
-  readonly checkDeletedFail: (statusCode: number) => void;
-  readonly onDatasetRefresh: () => void;
-  readonly onSpreadsheetUpToDate: () => void;
-  readonly onToggleResults: () => void;
-}): JSX.Element {
-  const [canLiveValidate] = userPreferences.use(
-    'workBench',
-    'general',
-    'liveValidation'
-  );
-  const [noUploadPlan, openNoUploadPlan, closeNoUploadPlan] = useBooleanState();
-  const [showStatus, openStatus, closeStatus] = useBooleanState();
-  const [operationAborted, openAbortedMessage, closeAbortedMessage] =
-    useBooleanState();
-  const [operationCompleted, openOperationCompleted, closeOperationCompleted] =
-    useBooleanState();
-  const { modeRef, refreshInitiatorAborted, ...actions } = useWbActions({
-    datasetId: dataset.id,
-    onRefresh: handleRefresh,
-    checkDeletedFail,
-    onOpenStatus: openStatus,
-    workbench,
-  });
-
-  // TODO: put the message rendering logic in a utility function?
-  const cellCounts = workbench.cellCounts[GET];
+function getMessage(cellCounts: WbCellCounts, mode: WbStatus) {
   const messages = {
     validate:
       cellCounts.invalidCells === 0
@@ -176,34 +131,67 @@ export function WbActions({
     },
   };
 
-  React.useEffect(() => {
-    if (
-      !isUploaded &&
-      (mappings?.lines ?? []).length === 0 &&
-      hasPermission('/workbench/dataset', 'upload')
-    ) {
-      openNoUploadPlan();
-    }
-  }, []);
+  return messages[mode];
+}
+
+export function WbActions({
+  dataset,
+  hasUnsavedChanges,
+  isUploaded,
+  isResultsOpen,
+  workbench,
+  mappings,
+  checkDeletedFail,
+  onDatasetRefresh: handleRefresh,
+  onSpreadsheetUpToDate: handleSpreadsheetUpToDate,
+  onToggleResults,
+}: {
+  readonly dataset: Dataset;
+  readonly hasUnsavedChanges: boolean;
+  readonly isUploaded: boolean;
+  readonly isResultsOpen: boolean;
+  readonly workbench: Workbench;
+  readonly mappings: WbMapping | undefined;
+  readonly checkDeletedFail: (statusCode: number) => void;
+  readonly onDatasetRefresh: () => void;
+  readonly onSpreadsheetUpToDate: () => void;
+  readonly onToggleResults: () => void;
+}): JSX.Element {
+  const [canLiveValidate] = userPreferences.use(
+    'workBench',
+    'general',
+    'liveValidation'
+  );
+  const [noUploadPlan, openNoUploadPlan, closeNoUploadPlan] = useBooleanState();
+  const [showStatus, openStatus, closeStatus] = useBooleanState();
+  const [operationAborted, openAbortedMessage, closeAbortedMessage] =
+    useBooleanState();
+  const [operationCompleted, openOperationCompleted, closeOperationCompleted] =
+    useBooleanState();
+  const { modeRef, refreshInitiatorAborted, ...actions } = useWbActions({
+    datasetId: dataset.id,
+    onRefresh: handleRefresh,
+    checkDeletedFail,
+    onOpenStatus: openStatus,
+    workbench,
+  });
+
+  const cellCounts = workbench.cellCounts[GET];
+  const message =
+    modeRef.current === undefined
+      ? undefined
+      : getMessage(cellCounts, modeRef.current);
 
   return (
     <>
-      {noUploadPlan ? (
-        <Dialog
-          buttons={
-            <>
-              <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-              <Link.Info href={`/specify/workbench/plan/${dataset.id}/`}>
-                {commonText.create()}
-              </Link.Info>
-            </>
-          }
-          header={wbPlanText.noUploadPlan()}
-          onClose={closeNoUploadPlan}
-        >
-          {wbPlanText.noUploadPlanDescription()}
-        </Dialog>
-      ) : undefined}
+      <WbNoUploadPlan
+        isUploaded={isUploaded}
+        mappings={mappings}
+        datasetId={dataset.id}
+        noUploadPlan={noUploadPlan}
+        onCloseNoUploadPlan={closeNoUploadPlan}
+        onOpenNoUploadPlan={openNoUploadPlan}
+      />
       {!isUploaded && hasPermission('/workbench/dataset', 'validate') ? (
         <ErrorBoundary dismissible>
           <WbValidate
@@ -307,10 +295,10 @@ export function WbActions({
               <Button.DialogClose>{commonText.close()}</Button.DialogClose>
             </>
           }
-          header={messages[modeRef.current!].header}
+          header={message!.header}
           onClose={closeOperationCompleted}
         >
-          {messages[modeRef.current!].message}
+          {message?.message}
         </Dialog>
       ) : undefined}
       {operationAborted ? (
