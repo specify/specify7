@@ -39,6 +39,16 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { WbToolkit } from '../WbToolkit/WbToolkit';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { useResults } from '../WbActions/useResults';
+import { getSelectedLast } from './hotHelpers';
+import { getTableFromMappingPath } from '../WbPlanView/navigator';
+import { hasTablePermission } from '../Permissions/helpers';
+import type { Collection } from '../DataModel/specifyTable';
+import { AnySchema } from '../DataModel/helperTypes';
+import { Dialog } from '../Molecules/Dialog';
+import { DisambiguationDialog } from './Disambiguation';
+import { mappingPathToString } from '../WbPlanView/mappingHelpers';
+import { MappingPath } from '../WbPlanView/Mapper';
+import { strictGetTable } from '../DataModel/tables';
 
 export type WbStatus = 'unupload' | 'upload' | 'validate';
 
@@ -116,7 +126,7 @@ export function WbView({
       cellCounts: [cellCounts, setCellCounts],
       spreadsheetContainerRef,
       undoRedoIsHandled: false,
-      spreadsheetChanged
+      spreadsheetChanged,
     };
     workbench.cells = new WbCellMeta(workbench);
     workbench.disambiguation = new Disambiguation(workbench);
@@ -141,6 +151,58 @@ export function WbView({
     workbench,
     spreadsheetContainerRef,
   });
+
+  const [disambiguationMatches, setDisambiguationMatches] = React.useState<{
+    readonly physicalCols: RA<number>;
+    readonly mappingPath: MappingPath;
+    readonly ids: RA<number>;
+    readonly key: string;
+  }>();
+  const [disambiguationPhysicalRow, setPhysicalRow] = React.useState<number>();
+  const [disambiguationResource, setResource] =
+    React.useState<Collection<AnySchema>>();
+  const [
+    noDisambiguationDialog,
+    openNoDisambiguationDialog,
+    closeNoDisambiguationDialog,
+  ] = useBooleanState();
+  const [disambiguationDialog, openDisambiguation, closeDisambiguation] =
+    useBooleanState();
+
+  const openDisambiguationDialog = React.useCallback(() => {
+    if (mappings === undefined || hot === undefined) return;
+
+    const [visualRow, visualCol] = getSelectedLast(hot);
+    const physicalRow = hot.toPhysicalRow(visualRow);
+    const physicalCol = hot.toPhysicalColumn(visualCol);
+
+    const matches = workbench.validation.uploadResults.ambiguousMatches[
+      physicalRow
+    ].find(({ physicalCols }) => physicalCols.includes(physicalCol));
+    if (matches === undefined) return;
+    const tableName = getTableFromMappingPath(
+      mappings.baseTable.name,
+      matches.mappingPath
+    );
+    const table = strictGetTable(tableName);
+    const resources = new table.LazyCollection({
+      filters: { id__in: matches.ids.join(',') },
+    }) as Collection<AnySchema>;
+
+    (hasTablePermission(table.name, 'read')
+      ? resources.fetch({ limit: 0 })
+      : Promise.resolve(resources)
+    ).then(({ models }) => {
+      if (models.length === 0) {
+        openNoDisambiguationDialog();
+        return;
+      }
+      setDisambiguationMatches(matches);
+      setResource(resources);
+      setPhysicalRow(physicalRow);
+      openDisambiguation();
+    });
+  }, [mappings, hot]);
 
   return (
     <ReadOnlyContext.Provider value={isUploaded || showResults || !canUpdate}>
@@ -197,6 +259,7 @@ export function WbView({
           mappings={mappings}
           checkDeletedFail={checkDeletedFail}
           spreadsheetChanged={spreadsheetChanged}
+          onClickDisambiguate={openDisambiguationDialog}
         />
         {showResults ? (
           <aside aria-live="polite">
@@ -210,6 +273,61 @@ export function WbView({
           </aside>
         ) : undefined}
       </div>
+      {noDisambiguationDialog && (
+        <Dialog
+          buttons={commonText.close()}
+          header={wbText.noDisambiguationResults()}
+          onClose={closeNoDisambiguationDialog}
+        >
+          {wbText.noDisambiguationResultsDescription()}
+        </Dialog>
+      )}
+      {disambiguationDialog && (
+        <DisambiguationDialog
+          matches={disambiguationResource!.models}
+          liveValidationStack={workbench.validation.liveValidationStack}
+          onClose={closeDisambiguation}
+          onSelected={(selected) => {
+            workbench.disambiguation.setDisambiguation(
+              disambiguationPhysicalRow!,
+              disambiguationMatches!.mappingPath,
+              selected.id
+            );
+            workbench.validation.startValidateRow(disambiguationPhysicalRow!);
+            hot?.render();
+          }}
+          onSelectedAll={(selected): void =>
+            // Loop backwards so the live validation will go from top to bottom
+            hot?.batch(() => {
+              for (
+                let visualRow = data.length - 1;
+                visualRow >= 0;
+                visualRow--
+              ) {
+                const physicalRow = hot?.toPhysicalRow(visualRow);
+                if (
+                  !workbench.validation.uploadResults.ambiguousMatches[
+                    physicalRow
+                  ]?.find(
+                    ({ key, mappingPath }) =>
+                      key === disambiguationMatches!.key &&
+                      typeof workbench.disambiguation.getDisambiguation(physicalRow)[
+                        mappingPathToString(mappingPath)
+                      ] !== 'number'
+                  )
+                )
+                  continue;
+                  workbench.disambiguation.setDisambiguation(
+                  physicalRow,
+                  disambiguationMatches!.mappingPath,
+                  selected.id
+                );
+                workbench.validation.startValidateRow(physicalRow);
+              }
+            })
+          }
+        />
+      )}
       <WbUtilsComponent
         isUploaded={isUploaded}
         cellCounts={cellCounts}

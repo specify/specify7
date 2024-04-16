@@ -25,16 +25,6 @@ import { strictGetTable } from '../DataModel/tables';
 import { getIcon, unknownIcon } from '../InitialContext/icons';
 import { commonText } from '../../localization/common';
 import { iconClassName } from '../Atoms/Icons';
-import { getSelectedLast } from './hotHelpers';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { getTableFromMappingPath } from '../WbPlanView/navigator';
-import { hasTablePermission } from '../Permissions/helpers';
-import type { Collection } from '../DataModel/specifyTable';
-import { AnySchema } from '../DataModel/helperTypes';
-import { Dialog } from '../Molecules/Dialog';
-import { DisambiguationDialog } from './Disambiguation';
-import { mappingPathToString } from '../WbPlanView/mappingHelpers';
-import { MappingPath } from '../WbPlanView/Mapper';
 import { registerAllModules } from 'handsontable/registry';
 import { Workbench } from './WbView';
 import { ReadOnlyContext } from '../Core/Contexts';
@@ -89,6 +79,7 @@ function WbSpreadsheetComponent({
   mappings,
   checkDeletedFail,
   spreadsheetChanged,
+  onClickDisambiguate: handleClickDisambiguate
 }: {
   readonly dataset: Dataset;
   readonly setHotTable: React.RefCallback<HotTable>;
@@ -99,6 +90,7 @@ function WbSpreadsheetComponent({
   readonly mappings: WbMapping | undefined;
   readonly checkDeletedFail: (_: number) => boolean;
   readonly spreadsheetChanged: () => void;
+  readonly onClickDisambiguate: () => void;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
   const physicalColToMappingCol = (physicalCol: number): number | undefined =>
@@ -107,57 +99,6 @@ function WbSpreadsheetComponent({
     );
 
   const { validation, cells, disambiguation } = workbench;
-  const [disambiguationMatches, setDisambiguationMatches] = React.useState<{
-    readonly physicalCols: RA<number>;
-    readonly mappingPath: MappingPath;
-    readonly ids: RA<number>;
-    readonly key: string;
-  }>();
-  const [disambiguationPhysicalRow, setPhysicalRow] = React.useState<number>();
-  const [disambiguationResource, setResource] =
-    React.useState<Collection<AnySchema>>();
-  const [
-    noDisambiguationDialog,
-    openNoDisambiguationDialog,
-    closeNoDisambiguationDialog,
-  ] = useBooleanState();
-  const [disambiguationDialog, openDisambiguation, closeDisambiguation] =
-    useBooleanState();
-
-  const openDisambiguationDialog = () => {
-    if (mappings === undefined || hot === undefined) return;
-
-    const [visualRow, visualCol] = getSelectedLast(hot);
-    const physicalRow = hot.toPhysicalRow(visualRow);
-    const physicalCol = hot.toPhysicalColumn(visualCol);
-
-    const matches = validation?.uploadResults.ambiguousMatches[
-      physicalRow
-    ].find(({ physicalCols }) => physicalCols.includes(physicalCol));
-    if (matches === undefined) return;
-    const tableName = getTableFromMappingPath(
-      mappings.baseTable.name,
-      matches.mappingPath
-    );
-    const table = strictGetTable(tableName);
-    const resources = new table.LazyCollection({
-      filters: { id__in: matches.ids.join(',') },
-    }) as Collection<AnySchema>;
-
-    (hasTablePermission(table.name, 'read')
-      ? resources.fetch({ limit: 0 })
-      : Promise.resolve(resources)
-    ).then(({ models }) => {
-      if (models.length === 0) {
-        openNoDisambiguationDialog();
-        return;
-      }
-      setDisambiguationMatches(matches);
-      setResource(resources);
-      setPhysicalRow(physicalRow);
-      openDisambiguation();
-    });
-  };
 
   // @ts-expect-error Typing error for separators as DetailedSettings only allows one separator
   const contextMenuConfig: DetailedSettings | undefined =
@@ -252,7 +193,7 @@ function WbSpreadsheetComponent({
                   name: wbText.disambiguate(),
                   disabled: (): boolean =>
                     !disambiguation.isAmbiguousCell() || isReadOnly,
-                  callback: () => openDisambiguationDialog(),
+                  callback: () => handleClickDisambiguate(),
                 },
                 separator_1: '---------',
                 fill_down: fillCellsContextMenuItem(hot, 'down', isReadOnly),
@@ -342,61 +283,6 @@ function WbSpreadsheetComponent({
         contextMenu={contextMenuConfig}
         {...hooks}
       />
-      {noDisambiguationDialog && (
-        <Dialog
-          buttons={commonText.close()}
-          header={wbText.noDisambiguationResults()}
-          onClose={closeNoDisambiguationDialog}
-        >
-          {wbText.noDisambiguationResultsDescription()}
-        </Dialog>
-      )}
-      {disambiguationDialog && (
-        <DisambiguationDialog
-          matches={disambiguationResource!.models}
-          liveValidationStack={workbench.validation.liveValidationStack}
-          onClose={closeDisambiguation}
-          onSelected={(selected) => {
-            disambiguation.setDisambiguation(
-              disambiguationPhysicalRow!,
-              disambiguationMatches!.mappingPath,
-              selected.id
-            );
-            validation?.startValidateRow(disambiguationPhysicalRow!);
-            hot?.render();
-          }}
-          onSelectedAll={(selected): void =>
-            // Loop backwards so the live validation will go from top to bottom
-            hot?.batch(() => {
-              for (
-                let visualRow = data.length - 1;
-                visualRow >= 0;
-                visualRow--
-              ) {
-                const physicalRow = hot?.toPhysicalRow(visualRow);
-                if (
-                  !validation?.uploadResults.ambiguousMatches[
-                    physicalRow
-                  ]?.find(
-                    ({ key, mappingPath }) =>
-                      key === disambiguationMatches!.key &&
-                      typeof disambiguation.getDisambiguation(physicalRow)[
-                        mappingPathToString(mappingPath)
-                      ] !== 'number'
-                  )
-                )
-                  continue;
-                disambiguation.setDisambiguation(
-                  physicalRow,
-                  disambiguationMatches!.mappingPath,
-                  selected.id
-                );
-                validation?.startValidateRow(physicalRow);
-              }
-            })
-          }
-        />
-      )}
     </section>
   );
 }
