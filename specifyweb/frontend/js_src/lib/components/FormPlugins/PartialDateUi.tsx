@@ -10,6 +10,7 @@ import { getDateParser } from './dateUtils';
 import type { PartialDatePrecision } from './useDatePrecision';
 import { useDatePrecision } from './useDatePrecision';
 import { useMoment } from './useMoment';
+import { useDatePreferences } from './useDatePreferences';
 
 /** A date picker with precision selection (full, month-year, year) */
 export function PartialDateUi({
@@ -49,7 +50,11 @@ export function PartialDateUi({
     React.useContext(ReadOnlyContext) || resource === undefined;
 
   return (
-    <div className="grid w-full grid-cols-[fit-content(40%)_1fr] gap-1">
+    <div
+      className={`${
+        canChangePrecision ? 'grid grid-cols-[fit-content(40%)_1fr]' : ''
+      } w-full gap-1`}
+    >
       {!isReadOnly && canChangePrecision ? (
         <DatePrecisionPicker moment={moment} {...precisionProps} />
       ) : undefined}

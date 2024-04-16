@@ -90,9 +90,6 @@ export function DateInput({
   return (
     <>
       <Input.Generic
-        className={
-          !dateSupported && canChangePrecision ? '' : '!w-[unset] grow'
-        }
         forwardRef={validationRef}
         id={id}
         isReadOnly={isReadOnly}
