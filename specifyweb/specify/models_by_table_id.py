@@ -36,7 +36,8 @@
 #     Treatmentevent, Treatmenteventattachment, Voucherrelationship, Workbench, Workbenchdataitem, Workbenchrow, \
 #     Workbenchrowexportedrelationship, Workbenchrowimage, Workbenchtemplate, Workbenchtemplatemappingitem
 
-# from django.apps import apps
+from django.apps import apps
+from django.core.exceptions import AppRegistryNotReady
 
 # def get_app_label(model_name):
 #     try:
@@ -51,15 +52,48 @@
 #         raise ValueError(f"Model {model_name} not found in any app")
 #     return lambda: __import__(f"specifyweb.{model_app}.models").__dict__[model_name]
 
+# def import_model(model_name):
+#     for app_name, model_names in model_names_by_app.items():
+#             if model_name in model_names:
+#                 module = import_module(f"specifyweb.{app}.models")
+#                 return getattr(module, model)
+
+# def import_model(model_name):
+#     try:
+#         for app in apps.get_app_configs():
+#             if model_name in [m.__name__ for m in app.get_models()]:
+#                 return apps.get_model(app.name, model_name)
+#     except AppRegistryNotReady:
+#         for app_name, model_names in model_names_by_app.items():
+#             if model_name in model_names:
+#                 module = import_module(f"specifyweb.{app_name}.models")
+#                 return getattr(module, model_name)
+#     raise ValueError(f"Model {model_name} not found in any app")
+
 def import_model(model_name):
-    model_app = None
-    for app, models in model_names_by_app.items():
-        if model_name in models:
-            model_app = app
-            break
-    if model_app is None:
-        raise ValueError(f"Model {model_name} not found in any app")
-    return lambda: __import__(f"specifyweb.{model_app}.models").__dict__[model_name]
+    try:
+        for app in apps.get_app_configs():
+            if model_name in [m.__name__ for m in app.get_models()]:
+                return apps.get_model(app.name, model_name)
+    except AppRegistryNotReady:
+        for app_name, model_names in model_names_by_app.items():
+            if model_name in model_names:
+                def get_model():
+                    from importlib import import_module
+                    module = import_module(f"specifyweb.{app_name}.models")
+                    return getattr(module, model_name)
+                return get_model
+    raise ValueError(f"Model {model_name} not found in any app")
+
+# def import_model(model_name):
+#     model_app = None
+#     for app, models in model_names_by_app.items():
+#         if model_name in models:
+#             model_app = app
+#             break
+#     if model_app is None:
+#         raise ValueError(f"Model {model_name} not found in any app")
+#     return lambda: __import__(f"specifyweb.{model_app}.models").__dict__[model_name]
 
 model_names_by_app = {
     'accounts': {
