@@ -8,8 +8,8 @@ from sqlalchemy.orm import sessionmaker
 
 from django.conf import settings
 
-from specifyweb.specify.models import datamodel
-from . import build_models
+# from specifyweb.specify.models import datamodel
+# from . import build_models
 
 engine = create_engine(settings.SA_DATABASE_URL, pool_recycle=settings.SA_POOL_RECYCLE,
                        connect_args={'cursorclass': SSCursor})

@@ -65,8 +65,3 @@ class UniquenessRule_Field(models.Model):
 
     class Meta:
         db_table = "uniquenessrule_fields"
-
-# spmodels.models_by_tableid.update({
-#     1002: UniquenessRule,
-#     1003: UniquenessRule_Field
-# })

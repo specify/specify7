@@ -4,7 +4,7 @@ from specifyweb.specify.datamodel import datamodel as sp7_datamodel
 from specifyweb.specify.load_datamodel import load_datamodel
 from specifyweb.specify.sp7_build_datamodel import build_datamodel_code_from_xml
 from specifyweb.specify.sp7_build_models import build_model_code, generate_build_model_functions_code, \
-    generate_build_model_imports_code, models_by_tableid as sp7_models_by_tableid
+    generate_build_model_imports_code, get_model_by_table_id as sp7_get_model_by_table_id
 
 class DatamodelTests(TestCase):
     
@@ -43,9 +43,9 @@ class DatamodelTests(TestCase):
         if self.sp6_datamodel is not None:
             datamodel = self.sp6_datamodel
         sp6_models_by_tableid = build_sp6_models(datamodel)
-        for sp6_table_id, sp6_model_class in sp6_models_by_tableid.items():
+        for sp6_table_id, sp6_model_class in sp6_models_by_tableid.items(): # check this
             dynamic_model = sp6_model_class
-            static_model = sp7_models_by_tableid[sp6_table_id]
+            static_model = sp7_get_model_by_table_id(sp6_table_id)
             compare_models(dynamic_model, static_model)
             self.assertTrue(compare_models(dynamic_model, static_model))
 
@@ -175,5 +175,5 @@ def compare_models(dynamic_model, static_model):
     return True
 
 def build_sp6_models(datamodel):
-    models_by_tableid = build_models(__name__, datamodel)
-    return models_by_tableid
+    model_by_tableid = build_models(__name__, datamodel)
+    return model_by_tableid
