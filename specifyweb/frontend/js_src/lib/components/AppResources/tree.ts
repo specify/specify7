@@ -17,6 +17,8 @@ import { userTypes } from '../PickLists/definitions';
 import type { AppResources, AppResourcesTree } from './hooks';
 import type { AppResourceScope, ScopedAppResourceDir } from './types';
 
+export const globalResourceKey = 'globalResource';
+
 export const getScope = (
   directory: SerializedResource<SpAppResourceDir>
 ): AppResourceScope => {
@@ -37,7 +39,7 @@ export const getAppResourceTree = (
 ): AppResourcesTree => [
   {
     label: resourcesText.globalResources(),
-    key: 'globalResources',
+    key: globalResourceKey,
     ...getGlobalAllResources(resources),
     subCategories: [],
   },
@@ -285,7 +287,6 @@ const getUserResources = (
         specifyUser: user.resource_uri,
         isPersonal: true,
       });
-
     return {
       label: localized(user.name),
       key: `collection_${collection.id}_user_${user.id}`,
