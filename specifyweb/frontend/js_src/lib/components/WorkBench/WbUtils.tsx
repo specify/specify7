@@ -92,7 +92,7 @@ export function WbUtilsComponent({
               newSearchPreferences.navigation.direction !==
               utils.searchPreferences.navigation.direction
             ) {
-              cells.flushIndexedCellData = true;
+              cells.indexedCellMeta = undefined;
             }
             utils.searchPreferences = newSearchPreferences;
             // TODO: figure out what searchCells with SettingsChange does

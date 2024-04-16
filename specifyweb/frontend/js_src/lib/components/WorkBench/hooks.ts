@@ -313,7 +313,7 @@ export function getHotHooks(
         // REFACTOR: use sortFunction here
       ).sort();
 
-      workbench.cells.flushIndexedCellData = true;
+      workbench.cells.indexedCellMeta = undefined;
       addedRows
         .filter((physicalRow) => physicalRow < workbench.cells!.cellMeta.length)
         .forEach((physicalRow) =>

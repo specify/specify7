@@ -53,10 +53,7 @@ export class WbCellMeta {
 
   // Meta data for each cell (indexed by visual columns)
   // eslint-disable-next-line functional/prefer-readonly-type
-  private indexedCellMeta: RA<RA<WbMetaArray>> | undefined = undefined;
-
-  // eslint-disable-next-line functional/prefer-readonly-type
-  public flushIndexedCellData: boolean = true;
+  public indexedCellMeta: RA<RA<WbMetaArray>> | undefined = undefined;
 
   public constructor(private readonly workbench: Workbench) {
     this.updateCellInfoStats = throttle(
@@ -114,7 +111,7 @@ export class WbCellMeta {
     ) as unknown as WbMetaArray;
     this.cellMeta[physicalRow][physicalCol][index] = value;
 
-    this.flushIndexedCellData = true;
+    this.indexedCellMeta = undefined;
 
     return true;
   }
@@ -286,11 +283,11 @@ export class WbCellMeta {
    * Also, if navigation direction is set to ColByCol, the resulting array
    * is transposed.
    *
-   * this.flushIndexedCellData is set to true whenever visual indexes change
+   * this.indexedCellMeta is set to undefined whenever visual indexes change
    *
    */
   public getCellMetaObject(): RA<RA<WbMetaArray>> {
-    if (this.flushIndexedCellData || this.indexedCellMeta === undefined) {
+    if (this.indexedCellMeta === undefined) {
       if (this.workbench.hot === undefined) return [];
       const resolveIndex = (
         visualRow: number,
@@ -320,7 +317,6 @@ export class WbCellMeta {
       );
       this.indexedCellMeta = indexedCellMeta;
     }
-    this.flushIndexedCellData = false;
     return this.indexedCellMeta;
   }
 

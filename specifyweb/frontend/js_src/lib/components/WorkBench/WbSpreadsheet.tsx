@@ -224,7 +224,7 @@ function WbSpreadsheetComponent({
       validation.getValidationResults();
       if (validation.validationMode === 'static' && !isUploaded)
         workbench.utils.toggleCellTypes('invalidCells', 'remove');
-      workbench.cells.flushIndexedCellData = true;
+      workbench.cells.indexedCellMeta = undefined;
     }
   }, [dataset.rowresults, hot]);
 
