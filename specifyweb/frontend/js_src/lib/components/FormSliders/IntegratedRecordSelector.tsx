@@ -13,7 +13,6 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { useAllSaveBlockers } from '../DataModel/saveBlockers';
 import type { Collection } from '../DataModel/specifyTable';
-import { tables } from '../DataModel/tables';
 import type {
   DisposalPreparation,
   GiftPreparation,
@@ -108,7 +107,8 @@ export function IntegratedRecordSelector({
 
   const [isDialogOpen, handleOpenDialog, handleCloseDialog] = useBooleanState();
 
-  const isAttachmentTable = tables.Collection.name.includes('Attachment');
+  const isAttachmentTable =
+    collection.table.specifyTable.name.includes('Attachment');
 
   return (
     <ReadOnlyContext.Provider value={isReadOnly}>

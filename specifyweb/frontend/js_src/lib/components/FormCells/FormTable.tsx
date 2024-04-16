@@ -154,17 +154,17 @@ export function FormTable<SCHEMA extends AnySchema>({
   const isReadOnly = React.useContext(ReadOnlyContext);
   const isInSearchDialog = React.useContext(SearchDialogContext);
   const mode = propsToFormMode(isReadOnly, isInSearchDialog);
-  const viewDefinition = useViewDefinition({
+  const collapsedViewDefinition = useViewDefinition({
     table: relationship.relatedTable,
     viewName,
     fallbackViewName: relationship.relatedTable.view,
     formType: 'formTable',
     mode,
   });
-  const fullViewDefinition = useViewDefinition({
+  const expandedViewDefinition = useViewDefinition({
     table: relationship.relatedTable,
-    viewName: relationship.relatedTable.view,
-    fallbackViewName: viewName,
+    viewName,
+    fallbackViewName: relationship.relatedTable.view,
     formType: 'form',
     mode,
   });
@@ -189,16 +189,6 @@ export function FormTable<SCHEMA extends AnySchema>({
   const displayDeleteButton =
     mode !== 'view' && typeof handleDelete === 'function';
   const displayViewButton = !isDependent;
-  const headerIsVisible =
-    resources.length > 1 ||
-    (resources.length === 1 && isExpanded[resources[0].cid] === false);
-
-  const headerWasVisibleRef = React.useRef(headerIsVisible);
-  headerWasVisibleRef.current =
-    resources.length === 0
-      ? false
-      : headerWasVisibleRef.current || headerIsVisible;
-  const headerWasVisible = headerWasVisibleRef.current;
 
   const scrollerRef = React.useRef<HTMLDivElement | null>(null);
   const { isFetching, handleScroll } = useInfiniteScroll(
@@ -209,26 +199,26 @@ export function FormTable<SCHEMA extends AnySchema>({
   const [maxHeight] = userPreferences.use('form', 'formTable', 'maxHeight');
 
   const children =
-    viewDefinition === undefined ? (
+    collapsedViewDefinition === undefined ? (
       commonText.loading()
     ) : resources.length === 0 ? (
       <p>{formsText.noData()}</p>
     ) : (
       <div className={isCollapsed ? 'hidden' : 'overflow-x-auto'}>
         <DataEntry.Grid
-          className={`sticky w-fit ${headerWasVisible ? 'pt-0' : ''}`}
+          className="sticky w-fit"
           display="inline"
           flexibleColumnWidth={flexibleColumnWidth}
           forwardRef={scrollerRef}
           role="table"
           style={{
             gridTemplateColumns: `min-content ${columnDefinitionsToCss(
-              viewDefinition.columns,
+              collapsedViewDefinition.columns,
               flexibleSubGridColumnWidth
             )} min-content`,
             maxHeight: `${maxHeight}px`,
           }}
-          viewDefinition={viewDefinition}
+          viewDefinition={collapsedViewDefinition}
           onScroll={handleScroll}
         >
           <div
@@ -236,19 +226,13 @@ export function FormTable<SCHEMA extends AnySchema>({
              * If header was ever visible, don't hide the header row anymore to
              * prevent needless layout shifts, but only make it invisible
              */
-            className={
-              headerIsVisible
-                ? 'contents'
-                : headerWasVisible
-                ? 'invisible contents'
-                : 'sr-only'
-            }
+            className="contents"
             role="row"
           >
             <div className={cellClassName} role="columnheader">
               <span className="sr-only">{commonText.expand()}</span>
             </div>
-            {viewDefinition.rows[0].map((cell, index) => {
+            {collapsedViewDefinition.rows[0].map((cell, index) => {
               const { text, title } = cellToLabel(
                 relationship.relatedTable,
                 cell
@@ -271,7 +255,6 @@ export function FormTable<SCHEMA extends AnySchema>({
                 >
                   {isSortable && typeof fieldName === 'string' ? (
                     <Button.LikeLink
-                      tabIndex={headerIsVisible ? undefined : -1}
                       onClick={(): void =>
                         setSortConfig({
                           sortField: fieldName,
@@ -318,7 +301,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                       </div>
                       <DataEntry.Cell
                         align="left"
-                        colSpan={viewDefinition.columns.length}
+                        colSpan={collapsedViewDefinition.columns.length}
                         role="cell"
                         tabIndex={-1}
                         verticalAlign="stretch"
@@ -327,7 +310,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                         <SpecifyForm
                           display="inline"
                           resource={resource}
-                          viewDefinition={fullViewDefinition}
+                          viewDefinition={expandedViewDefinition}
                         />
                       </DataEntry.Cell>
                     </>
@@ -349,19 +332,22 @@ export function FormTable<SCHEMA extends AnySchema>({
                         </Button.Small>
                       </div>
                       <ReadOnlyContext.Provider
-                        value={isReadOnly || viewDefinition.mode === 'view'}
+                        value={
+                          isReadOnly || collapsedViewDefinition.mode === 'view'
+                        }
                       >
                         <SearchDialogContext.Provider
                           value={
-                            isInSearchDialog || viewDefinition.mode === 'search'
+                            isInSearchDialog ||
+                            collapsedViewDefinition.mode === 'search'
                           }
                         >
-                          {viewDefinition.name === attachmentView ? (
+                          {collapsedViewDefinition.name === attachmentView ? (
                             <div className="flex gap-8" role="cell">
                               <Attachment resource={resource} />
                             </div>
                           ) : (
-                            viewDefinition.rows[0].map(
+                            collapsedViewDefinition.rows[0].map(
                               (
                                 {
                                   colSpan,
@@ -437,7 +423,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                       <FormMeta
                         className="flex-1"
                         resource={resource}
-                        viewDescription={fullViewDefinition}
+                        viewDescription={expandedViewDefinition}
                       />
                     )}
                   </div>
