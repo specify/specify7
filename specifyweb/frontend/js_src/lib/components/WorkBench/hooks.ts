@@ -340,7 +340,7 @@ export function getHotHooks(
         workbench.validation.liveValidationStack.splice(physicalRow, 1);
       });
 
-      workbench.cells.flushIndexedCellData = true;
+      workbench.cells.indexedCellMeta = undefined;
 
       if (workbench.hot && source !== 'auto') {
         spreadsheetChanged();
@@ -356,7 +356,7 @@ export function getHotHooks(
      * and sorting them in the same direction
      */
     beforeColumnSort: (currentSortConfig, newSortConfig) => {
-      workbench.cells.flushIndexedCellData = true;
+      workbench.cells.indexedCellMeta = undefined;
 
       // if (wbView.coordinateConverterView) return false;
 
@@ -474,7 +474,7 @@ export function getHotHooks(
       // An ugly fix for jQuery's dialogs conflicting with HOT
       if (dropIndex === undefined || !workbench.hot) return;
 
-      workbench.cells.flushIndexedCellData = true;
+      workbench.cells.indexedCellMeta = undefined;
 
       const columnOrder = workbench.dataset.columns.map((_, visualCol) =>
         workbench.hot!.toPhysicalColumn(visualCol)
