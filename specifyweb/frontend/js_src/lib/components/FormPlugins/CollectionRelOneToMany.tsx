@@ -37,6 +37,7 @@ export function CollectionOneToManyPlugin({
   readonly formatting: string | undefined;
 }): JSX.Element | null {
   const isInFormEditor = React.useContext(InFormEditorContext);
+  const muteWrongCollectionError = isInFormEditor;
   const [data, setData] = useAsyncState<CollectionRelData | false>(
     React.useCallback(
       async () =>
@@ -44,12 +45,12 @@ export function CollectionOneToManyPlugin({
           resource,
           relationship,
           formatting,
-          isInFormEditor
+          muteWrongCollectionError
         ).catch((error) => {
           softFail(error);
           return false;
         }),
-      [resource, relationship, isInFormEditor]
+      [resource, relationship, muteWrongCollectionError]
     ),
     false
   );

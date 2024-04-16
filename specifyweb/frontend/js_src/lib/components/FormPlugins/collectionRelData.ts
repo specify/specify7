@@ -60,7 +60,7 @@ export async function fetchOtherCollectionData(
   resource: SpecifyResource<CollectionObject>,
   relationship: string,
   formatting: string | undefined,
-  isInFormEditor: boolean
+  muteWrongCollectionError = false
 ): Promise<CollectionRelData | undefined> {
   const { relationshipType, left, right } = await fetchCollection(
     'CollectionRelType',
@@ -87,7 +87,7 @@ export async function fetchOtherCollectionData(
     otherSide = 'left';
     relatedCollection = left;
   } else {
-    if (!isInFormEditor)
+    if (!muteWrongCollectionError)
       softFail(
         new Error(
           "Related collection plugin used with relation that doesn't match current collection"
