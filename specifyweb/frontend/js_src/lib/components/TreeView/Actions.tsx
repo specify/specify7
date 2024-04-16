@@ -286,6 +286,14 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
   );
 }
 
+const frontendToBackendMappingActions = {
+  bulkMove: 'bulk_move',
+  desynonymize: 'desynonymize',
+  merge: 'merge',
+  move: 'move',
+  synonymize: 'synonymize',
+};
+
 function ActiveAction<SCHEMA extends AnyTree>({
   tableName,
   actionRow,
@@ -317,9 +325,9 @@ function ActiveAction<SCHEMA extends AnyTree>({
 
   const action = async (): Promise<number> =>
     ping(
-      `/api/specify_tree/${tableName.toLowerCase()}/${
-        actionRow.nodeId
-      }/${type}/`,
+      `/api/specify_tree/${tableName.toLowerCase()}/${actionRow.nodeId}/${
+        frontendToBackendMappingActions[type]
+      }/`,
       {
         method: 'POST',
         body:
