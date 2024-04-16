@@ -8,11 +8,11 @@ import { LoadingContext } from '../Core/Contexts';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 
 export function RollbackConfirmation({
-  dataSetId,
+  datasetId,
   onClose: handleClose,
   onRollback: handleRollback,
 }: {
-  readonly dataSetId: number;
+  readonly datasetId: number;
   readonly onClose: () => void;
   readonly onRollback: () => void;
 }): JSX.Element {
@@ -25,7 +25,7 @@ export function RollbackConfirmation({
           <Button.Danger
             onClick={() =>
               loading(
-                ping(`/api/workbench/unupload/${dataSetId}/`, {
+                ping(`/api/workbench/unupload/${datasetId}/`, {
                   method: 'POST',
                 })
                   .then(handleRollback)

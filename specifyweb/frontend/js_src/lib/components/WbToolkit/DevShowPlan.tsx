@@ -40,8 +40,8 @@ export function WbRawPlan({
       </Button.Small>
       {showRawPlan && (
         <RawUploadPlan
-          dataSetId={dataset.id}
-          dataSetName={dataset.name}
+          datasetId={dataset.id}
+          datasetName={dataset.name}
           uploadPlan={dataset.uploadplan ?? ({} as UploadPlan)}
           onChanged={(plan) => {
             overwriteReadOnly(dataset, 'uploadplan', plan);
@@ -56,15 +56,15 @@ export function WbRawPlan({
 }
 
 function RawUploadPlan({
-  dataSetId,
-  dataSetName: name,
+  datasetId,
+  datasetName: name,
   uploadPlan: rawPlan,
   onClose: handleClose,
   onChanged: handleChanged,
   onDeleted: handleDeleted,
 }: {
-  readonly dataSetId: number;
-  readonly dataSetName: string;
+  readonly datasetId: number;
+  readonly datasetName: string;
   readonly uploadPlan: UploadPlan;
   readonly onClose: () => void;
   readonly onChanged: (plan: UploadPlan) => void;
@@ -90,7 +90,7 @@ function RawUploadPlan({
               const plan =
                 uploadPlan.length === 0 ? null : JSON.parse(uploadPlan);
               loading(
-                ping(`/api/workbench/dataset/${dataSetId}/`, {
+                ping(`/api/workbench/dataset/${datasetId}/`, {
                   method: 'PUT',
                   body: { uploadplan: plan },
                   expectedErrors: [Http.NOT_FOUND],

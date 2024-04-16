@@ -282,8 +282,8 @@ export function WbActions({
             <>
               {cellCounts.invalidCells === 0 && modeRef.current === 'upload' && (
                 <CreateRecordSetButton
-                  dataSetId={dataset.id}
-                  dataSetName={dataset.name}
+                  datasetId={dataset.id}
+                  datasetName={dataset.name}
                   small={false}
                   onClose={() => {
                     modeRef.current = undefined;

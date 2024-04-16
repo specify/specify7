@@ -264,8 +264,8 @@ export function WbView({
         {showResults ? (
           <aside aria-live="polite">
             <WbUploaded
-              dataSetId={dataset.id}
-              dataSetName={dataset.name}
+              datasetId={dataset.id}
+              datasetName={dataset.name}
               isUploaded={isUploaded}
               recordCounts={workbench.validation.uploadResults.recordCounts}
               onClose={closeResults}

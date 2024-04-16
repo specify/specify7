@@ -29,7 +29,7 @@ export function WbRollback({
       </Button.Small>
       {rollback ? (
         <RollbackConfirmation
-          dataSetId={datasetId}
+          datasetId={datasetId}
           onClose={handleClose}
           onRollback={handleRollback}
         />

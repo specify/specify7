@@ -193,7 +193,7 @@ function WbSpreadsheetComponent({
                   name: wbText.disambiguate(),
                   disabled: (): boolean =>
                     !disambiguation.isAmbiguousCell() || isReadOnly,
-                  callback: () => handleClickDisambiguate(),
+                  callback: handleClickDisambiguate,
                 },
                 separator_1: '---------',
                 fill_down: fillCellsContextMenuItem(hot, 'down', isReadOnly),

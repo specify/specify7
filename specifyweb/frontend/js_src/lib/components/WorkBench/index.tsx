@@ -22,20 +22,20 @@ import { WbView } from './WbView';
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
 const fetchDataSet = async (
-  dataSetId: number | undefined
+  datasetId: number | undefined
 ): Promise<Dataset | undefined> =>
-  typeof dataSetId === 'number'
-    ? ajax<Dataset>(`/api/workbench/dataset/${dataSetId}/`, {
+  typeof datasetId === 'number'
+    ? ajax<Dataset>(`/api/workbench/dataset/${datasetId}/`, {
         headers: { Accept: 'application/json' },
       }).then(({ data }) => data)
     : undefined;
 
 // BUG: intercept 403 (if dataset has been transferred to another user)
 function useDataSet(
-  dataSetId: number | undefined
+  datasetId: number | undefined
 ): GetSet<Dataset | undefined> {
   return useAsyncState(
-    React.useCallback(async () => fetchDataSet(dataSetId), [dataSetId]),
+    React.useCallback(async () => fetchDataSet(datasetId), [datasetId]),
     true
   );
 }
@@ -45,10 +45,10 @@ export function WorkBench(): JSX.Element {
 
   const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, true);
   const { id } = useParams();
-  const dataSetId = f.parseInt(id);
+  const datasetId = f.parseInt(id);
 
-  const [dataSet, setDataSet] = useDataSet(dataSetId);
-  useErrorContext('dataSet', dataSet);
+  const [dataset, setDataSet] = useDataSet(datasetId);
+  useErrorContext('dataSet', dataset);
   const loading = React.useContext(LoadingContext);
   const [isDeleted, handleDeleted] = useBooleanState();
   // TODO: figure out how handleDeletedConfirmation was being used in Backbone. possibly not used at all
@@ -58,13 +58,13 @@ export function WorkBench(): JSX.Element {
   const navigate = useNavigate();
   const spreadsheetContainerRef = React.useRef<HTMLElement>(null);
 
-  if (!dataSet || !treeRanksLoaded) return <LoadingScreen />;
+  if (!dataset || !treeRanksLoaded) return <LoadingScreen />;
 
   const triggerDatasetRefresh = () => {
-    loading(fetchDataSet(dataSet!.id).then(setDataSet));
+    loading(fetchDataSet(dataset!.id).then(setDataSet));
   };
 
-  return dataSetId === undefined ? (
+  return datasetId === undefined ? (
     <NotFoundView />
   ) : isDeleted ? (
     <>{wbText.dataSetDeletedOrNotFound()}</>
@@ -83,7 +83,7 @@ export function WorkBench(): JSX.Element {
         ref={spreadsheetContainerRef}
       >
         <WbView
-          dataset={dataSet}
+          dataset={dataset}
           onDatasetDeleted={handleDeleted}
           triggerDatasetRefresh={triggerDatasetRefresh}
           spreadsheetContainerRef={spreadsheetContainerRef}

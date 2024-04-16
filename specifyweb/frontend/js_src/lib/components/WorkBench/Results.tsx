@@ -21,14 +21,14 @@ import { ErrorBoundary } from '../Errors/ErrorBoundary';
 
 export function WbUploaded({
   recordCounts,
-  dataSetId,
-  dataSetName,
+  datasetId,
+  datasetName,
   isUploaded,
   onClose: handleClose,
 }: {
   readonly recordCounts: Partial<Record<Lowercase<keyof Tables>, number>>;
-  readonly dataSetId: number;
-  readonly dataSetName: string;
+  readonly datasetId: number;
+  readonly datasetName: string;
   readonly isUploaded: boolean;
   readonly onClose: () => void;
 }): JSX.Element {
@@ -65,8 +65,8 @@ export function WbUploaded({
         <div className="flex flex-wrap gap-2">
           {isUploaded && (
             <CreateRecordSetButton
-              dataSetId={dataSetId}
-              dataSetName={dataSetName}
+              datasetId={datasetId}
+              datasetName={datasetName}
               small
               onClose={f.void}
             />
