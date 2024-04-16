@@ -99,10 +99,10 @@ export const resourcesText = createDictionary({
   },
   appResource: {
     'en-us': 'App Resource',
-    'ru-ru': 'Ресурс приложения',
-    'es-es': 'Recurso de aplicación',
-    'fr-fr': "Ressource d'application",
-    'uk-ua': 'Ресурс програми',
+    'ru-ru': 'Подкатегории',
+    'es-es': 'Subcategorías',
+    'fr-fr': 'Sous-catégories',
+    'uk-ua': 'Підкатегорії',
     'de-ch': 'App Ressource',
   },
   rssExportFeed: {
@@ -131,7 +131,7 @@ export const resourcesText = createDictionary({
   },
   typeSearches: {
     'en-us': 'Type Searches',
-    'de-ch': 'Geben Sie Suchen ein',
+    'de-ch': 'Typsuchen',
     'es-es': 'Tipo de búsquedas',
     'fr-fr': 'Recherches de types',
     'ru-ru': 'Тип поиска',
@@ -155,7 +155,7 @@ export const resourcesText = createDictionary({
   },
   dataObjectFormatters: {
     'en-us': 'Record Formatters',
-    'ru-ru': 'Форматеры записей',
+    'ru-ru': 'Форматеры записи',
     'es-es': 'Formateadores de registros',
     'uk-ua': 'Форматувальники записів',
     'de-ch': 'Datensatz-Formatierer',
@@ -227,10 +227,10 @@ export const resourcesText = createDictionary({
     `,
     'de-ch': `
       Die „Tabellenaggregation“ steuert, wie mehrere Tabellendatensätze zu einer
-      einzigen Textzeichenfolge zusammengefasst werden. Das Tabellenformat, das
-      Trennzeichen, das Suffix, das Sortierfeld und das Limit für die
-      Datensatzvorschau sind anpassbar. Es kann in Abfrageergebnissen und
-      Tabellenformaten angezeigt werden.
+      einzigen Textzeichenfolge zusammengefasst werden. Tabellenformat,
+      Trennzeichen, Suffix, Sortierfeld und Datensatzvorschaulimit sind
+      anpassbar. Es kann in Abfrageergebnissen und Tabellenformaten angezeigt
+      werden.
     `,
     'es-es': `
       La "Agregación de tablas" controla cómo se consolidan varios registros de
@@ -249,15 +249,15 @@ export const resourcesText = createDictionary({
     'ru-ru': `
       «Агрегация таблиц» управляет тем, как несколько записей таблицы
       объединяются в одну текстовую строку. Формат таблицы, разделитель,
-      суффикс, поле сортировки и предел предварительного просмотра записей можно
-      настроить. Его можно отобразить в результатах запроса и в форматах
+      суффикс, поле сортировки и ограничение предварительного просмотра записи
+      можно настроить. Его можно отобразить в результатах запроса и в форматах
       таблиц.
     `,
     'uk-ua': `
-      «Агрегація таблиць» контролює, як кілька записів таблиці об’єднуються
-      разом в один текстовий рядок. Формат таблиці, роздільник, суфікс, поле
-      сортування та ліміт попереднього перегляду запису можна налаштувати. Він
-      може відображатися в результатах запитів і у форматах таблиць.
+      «Агрегація таблиць» контролює, як кілька записів таблиці консолідуються в
+      один текстовий рядок. Формат таблиці, роздільник, суфікс, поле сортування
+      та ліміт попереднього перегляду запису можна налаштувати. Він може
+      відображатися в результатах запитів і у форматах таблиць.
     `,
   },
   formattedResource: {
@@ -294,9 +294,8 @@ export const resourcesText = createDictionary({
   },
   selectDefaultFormatter: {
     'en-us': 'Please select a default record formatter for this table',
-    'de-ch': `
-      Bitte wählen Sie einen Standarddatensatzformatierer für diese Tabelle aus
-    `,
+    'de-ch':
+      'Bitte wählen Sie einen Standarddatensatzformatierer für diese Tabelle',
     'es-es':
       'Seleccione un formateador de registros predeterminado para esta tabla',
     'fr-fr': `
@@ -310,7 +309,7 @@ export const resourcesText = createDictionary({
   },
   duplicateFormatters: {
     'en-us': 'Record formatter names must be unique',
-    'de-ch': 'Namen von Datensatzformatierern müssen eindeutig sein',
+    'de-ch': 'Datensatzformatierernamen müssen eindeutig sein',
     'es-es': 'Los nombres de los formateadores de registros deben ser únicos.',
     'fr-fr': "Les noms du formateur d'enregistrement doivent être uniques",
     'ru-ru': 'Имена средств форматирования записей должны быть уникальными.',
@@ -334,10 +333,10 @@ export const resourcesText = createDictionary({
   },
   otherXmlResource: {
     'en-us': 'Other XML Resource',
-    'ru-ru': 'Другой XML-ресурс',
-    'es-es': 'Otro recurso XML',
-    'fr-fr': 'Autre ressource XML',
-    'uk-ua': 'Інший ресурс XML',
+    'ru-ru': 'Выберите тип ресурса',
+    'es-es': 'Seleccionar tipo de recurso',
+    'fr-fr': 'Sélectionnez le type de ressource',
+    'uk-ua': 'Виберіть тип ресурсу',
     'de-ch': 'Andere XML-Ressource',
   },
   otherJsonResource: {
@@ -410,7 +409,7 @@ export const resourcesText = createDictionary({
     'es-es': 'Editor JSON',
     'fr-fr': 'Éditeur JSON',
     'uk-ua': 'Редактор JSON',
-    'de-ch': 'JSON-Editor',
+    'de-ch': 'Separator',
   },
   visualEditor: {
     'en-us': 'Visual Editor',
@@ -502,7 +501,7 @@ export const resourcesText = createDictionary({
   },
   defaultInline: {
     'en-us': '(default)',
-    'de-ch': '(Standard)',
+    'de-ch': 'Formatvorschau',
     'es-es': '(por defecto)',
     'fr-fr': '(défaut)',
     'ru-ru': '(по умолчанию)',
@@ -549,7 +548,7 @@ export const resourcesText = createDictionary({
   },
   editorNotAvailable: {
     'en-us': 'Visual editor is not available for this resource',
-    'de-ch': 'Der visuelle Editor ist für diese Ressource nicht verfügbar',
+    'de-ch': 'Für diese Ressource ist kein visueller Editor verfügbar',
     'es-es': 'El editor visual no está disponible para este recurso.',
     'fr-fr': "L'éditeur visuel n'est pas disponible pour cette ressource",
     'ru-ru': 'Визуальный редактор недоступен для этого ресурса.',
@@ -582,10 +581,10 @@ export const resourcesText = createDictionary({
   urlPart: {
     'en-us': 'URL part',
     'de-ch': 'URL-Teil',
-    'es-es': 'parte de la URL',
-    'fr-fr': 'Partie URL',
-    'ru-ru': 'часть URL',
-    'uk-ua': 'частина URL',
+    'es-es': 'Otro recurso JSON',
+    'fr-fr': 'Autre ressource JSON',
+    'ru-ru': 'Другой ресурс JSON',
+    'uk-ua': 'Інший ресурс JSON',
   },
   addField: {
     'en-us': 'Add field',
@@ -605,7 +604,7 @@ export const resourcesText = createDictionary({
   },
   selectTableFirst: {
     'en-us': 'Select table first',
-    'de-ch': 'Wählen Sie zuerst die Tabelle aus',
+    'de-ch': 'Zuerst Tabelle auswählen',
     'es-es': 'Seleccione la tabla primero',
     'fr-fr': "Sélectionnez d'abord le tableau",
     'ru-ru': 'Сначала выберите таблицу',
@@ -622,54 +621,27 @@ export const resourcesText = createDictionary({
   conditionDescription: {
     'en-us': `
       This format will be used only if the condition field value equals this
-      condition.
-    `,
-    'de-ch': `
-      Dieses Format wird nur verwendet, wenn der Bedingungsfeldwert dieser
-      Bedingung entspricht.
-    `,
-    'es-es': `
-      Este formato se utilizará sólo si el valor del campo de condición es igual
-      a esta condición.
-    `,
-    'fr-fr': `
-      Ce format ne sera utilisé que si la valeur du champ de condition est égale
-      à cette condition.
-    `,
-    'ru-ru': `
-      Этот формат будет использоваться только в том случае, если значение поля
-      условия соответствует этому условию.
-    `,
-    'uk-ua': `
-      Цей формат використовуватиметься, лише якщо значення поля умови дорівнює
-      цій умові.
-    `,
-  },
-  elseConditionDescription: {
-    'en-us': `
-      This format will be used only if the condition field value equals this
-      condition or if no other format matches it.
+      condition and is not null.
     `,
     'de-ch': `
       Dieses Format wird nur verwendet, wenn der Wert des Bedingungsfelds dieser
-      Bedingung entspricht oder wenn kein anderes Format damit übereinstimmt.
+      Bedingung entspricht und nicht null ist.
     `,
     'es-es': `
-      Este formato se utilizará sólo si el valor del campo de condición es igual
-      a esta condición o si ningún otro formato coincide con ella.
+      Este formato se utilizará solo si el valor del campo de condición es igual
+      a esta condición y no es nulo.
     `,
     'fr-fr': `
-      Ce format ne sera utilisé que si la valeur du champ de condition est égale
-      à cette condition ou si aucun autre format ne lui correspond.
+      Ce format sera utilisé uniquement si la valeur du champ de condition est
+      égale à cette condition et n'est pas nulle.
     `,
     'ru-ru': `
       Этот формат будет использоваться только в том случае, если значение поля
-      условия соответствует этому условию или если ему не соответствует никакой
-      другой формат.
+      условия равно этому условию и не равно нулю.
     `,
     'uk-ua': `
       Цей формат використовуватиметься, лише якщо значення поля умови дорівнює
-      цій умові або якщо жоден інший формат їй не відповідає.
+      цій умові й не є нульовим.
     `,
   },
   wrongScopeWarning: {
@@ -694,7 +666,7 @@ export const resourcesText = createDictionary({
       changer de collection avant de modifier cette ressource.
     `,
     'ru-ru': `
-      Этот ресурс принадлежит другой коллекции/дисциплине, отличной от той, в
+      Этот ресурс принадлежит к другой коллекции/дисциплине, отличной от той, в
       которой вы сейчас находитесь. Перед редактированием этого ресурса
       рекомендуется сменить коллекцию.
     `,
@@ -731,10 +703,10 @@ export const resourcesText = createDictionary({
   fileName: {
     'en-us': 'File name',
     'de-ch': 'Dateiname',
-    'es-es': 'Nombre del archivo',
-    'fr-fr': 'Nom de fichier',
-    'ru-ru': 'Имя файла',
-    'uk-ua': "Ім'я файлу",
+    'es-es': 'Seleccione la tabla primero',
+    'fr-fr': "Sélectionnez d'abord le tableau",
+    'ru-ru': 'Сначала выберите таблицу',
+    'uk-ua': 'Спочатку виберіть таблицю',
   },
   runAsUser: {
     'en-us': 'Run as user',
@@ -746,7 +718,7 @@ export const resourcesText = createDictionary({
   },
   notifyUser: {
     'en-us': 'Send completion notification to user',
-    'de-ch': 'Abschlussbenachrichtigung an den Benutzer senden',
+    'de-ch': 'Abschlussbenachrichtigung an Benutzer senden',
     'es-es': 'Enviar notificación de finalización al usuario',
     'fr-fr': "Envoyer une notification d'achèvement à l'utilisateur",
     'ru-ru': 'Отправить уведомление о завершении пользователю',
@@ -762,7 +734,7 @@ export const resourcesText = createDictionary({
   },
   createNewForm: {
     'en-us': 'Create new form',
-    'de-ch': 'Neues Formular erstellen',
+    'de-ch': 'Definition',
     'es-es': 'Crear nuevo formulario',
     'fr-fr': 'Créer un nouveau formulaire',
     'ru-ru': 'Создать новую форму',
@@ -779,10 +751,10 @@ export const resourcesText = createDictionary({
   copyDefaultForm: {
     'en-us': 'Copy default form',
     'de-ch': 'Standardformular kopieren',
-    'es-es': 'Copiar formulario predeterminado',
-    'fr-fr': 'Copier le formulaire par défaut',
-    'ru-ru': 'Копировать форму по умолчанию',
-    'uk-ua': 'Копіювати стандартну форму',
+    'es-es': 'Formateadores de registros',
+    'fr-fr': "Formateurs d'enregistrement",
+    'ru-ru': 'Форматеры записи',
+    'uk-ua': 'Форматувальники записів',
   },
   copyDefaultForms: {
     'en-us': 'Copy default forms',
@@ -794,7 +766,7 @@ export const resourcesText = createDictionary({
   },
   saveFormFirst: {
     'en-us': 'Save form first',
-    'de-ch': 'Formular zunächst speichern',
+    'de-ch': 'Formular vorher speichern',
     'es-es': 'Guarde el formulario primero',
     'fr-fr': "Enregistrez d'abord le formulaire",
     'ru-ru': 'Сначала сохраните форму',
@@ -821,7 +793,7 @@ export const resourcesText = createDictionary({
   },
   customizeFieldFormatters: {
     'en-us': 'Customize Field Formats',
-    'de-ch': 'Passen Sie Feldformate an',
+    'de-ch': 'Feldformate anpassen',
     'es-es': 'Personalizar formatos de campo',
     'fr-fr': 'Personnaliser les formats de champs',
     'ru-ru': 'Настройте форматы полей',
@@ -829,7 +801,7 @@ export const resourcesText = createDictionary({
   },
   expandConditionalField: {
     'en-us': 'Expand Conditional Field',
-    'de-ch': 'Erweitern Sie das Bedingungsfeld',
+    'de-ch': 'Bedingtes Feld erweitern',
     'es-es': 'Expandir campo condicional',
     'fr-fr': 'Développer le champ conditionnel',
     'ru-ru': 'Развернуть условное поле',
@@ -837,7 +809,7 @@ export const resourcesText = createDictionary({
   },
   collapseConditionalField: {
     'en-us': 'Collapse Conditional Field',
-    'de-ch': 'Bedingtes Feld ausblenden',
+    'de-ch': 'Bedingtes Feld reduzieren',
     'es-es': 'Contraer campo condicional',
     'fr-fr': 'Réduire le champ conditionnel',
     'ru-ru': 'Свернуть условное поле',

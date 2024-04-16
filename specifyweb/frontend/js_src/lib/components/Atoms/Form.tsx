@@ -136,6 +136,7 @@ export const Input = {
     'input',
     {
       readonly onValueChange?: (isChecked: boolean) => void;
+      readonly onClick?: 'Use onValueChange instead';
       readonly readOnly?: 'Use isReadOnly instead';
       readonly isReadOnly?: boolean;
       readonly type?: 'If you need to specify type, use Input.Generic';

@@ -181,11 +181,7 @@ function ConditionalFormatter({
               ) : null}
             </div>
             {isExpanded ? (
-              <span>
-                {index === 0
-                  ? resourcesText.elseConditionDescription()
-                  : resourcesText.conditionDescription()}
-              </span>
+              <span>{resourcesText.conditionDescription()}</span>
             ) : null}
           </Label.Block>
         </div>

@@ -104,7 +104,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Varios archivos seleccionados',
     'fr-fr': 'Plusieurs fichiers sélectionnés',
     'ru-ru': 'Выбрано несколько файлов',
-    'uk-ua': 'Вибрано декілька файлів',
+    'uk-ua': 'Вибрано кілька файлів',
   },
   fileSize: {
     'en-us': 'File Size',
@@ -128,11 +128,14 @@ export const attachmentsText = createDictionary({
     'es-es': 'Ningún archivo',
     'fr-fr': 'Pas de fichier',
     'uk-ua': 'Немає файлу',
-    'ru-ru': 'Нет файла',
+    'ru-ru': `
+      Откат приведет к удалению вложений из базы данных Specify и сервера
+      активов.
+    `,
   },
   pleaseReselectAllFiles: {
     'en-us': 'Please reselect all files before uploading.',
-    'de-ch': 'Bitte wählen Sie alle Dateien vor dem Hochladen erneut aus.',
+    'de-ch': 'Bitte wählen Sie vor dem Hochladen alle Dateien erneut aus.',
     'es-es':
       'Por favor, vuelva a seleccionar todos los archivos antes de cargarlos.',
     'fr-fr':
@@ -174,8 +177,7 @@ export const attachmentsText = createDictionary({
   },
   frontEndInterruption: {
     'en-us': '{action:string} was in progress when interruption occurred',
-    'de-ch':
-      '{action:string} war in Bearbeitung, als die Unterbrechung auftrat',
+    'de-ch': '{action:string} war im Gange, als die Unterbrechung auftrat',
     'es-es':
       '{action:string} estaba en curso cuando se produjo la interrupción',
     'fr-fr':
@@ -196,8 +198,9 @@ export const attachmentsText = createDictionary({
     'es-es': 'Error al leer el archivo',
     'fr-fr': 'Erreur de lecture du fichier',
     'ru-ru': 'Ошибка чтения файла',
-    'de-ch': 'Fehler beim Lesen der Datei',
-    'uk-ua': 'Помилка читання файлу',
+    'de-ch':
+      'Wählen Sie Dateien aus oder ziehen Sie sie hierher, um zu beginnen.',
+    'uk-ua': 'Щоб почати, виберіть файли або перетягніть їх сюди.',
   },
   unhandledFatalResourceError: {
     'en-us': 'Unhandled fatal resource error:',
@@ -209,7 +212,7 @@ export const attachmentsText = createDictionary({
   },
   attachmentImportDatasetsCount: {
     'en-us': 'Attachment Import Data Sets ({count:number})',
-    'de-ch': 'Anhang-Importdatensätze ({count:number})',
+    'de-ch': 'Anhänge zum Importieren von Datensätzen ({count:number})',
     'es-es': 'Adjuntar el conjuntos de datos de importación ({count:number})',
     'fr-fr':
       "Ensembles de données d'importation de pièces jointes ({count:number})",
@@ -229,8 +232,8 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Neuer Anhangsdatensatz',
     'es-es': 'Nuevo conjunto de datos adjuntos',
     'uk-ua': 'Новий набір даних вкладення',
-    'fr-fr': 'Nouvel ensemble de données de pièces jointes',
-    'ru-ru': 'Новый набор данных вложения',
+    'fr-fr': 'Fichiers en double trouvés',
+    'ru-ru': 'Обнаружены повторяющиеся файлы',
   },
   uploadInterrupted: {
     'en-us': 'Upload Interrupted',
@@ -246,7 +249,7 @@ export const attachmentsText = createDictionary({
       have been uploaded.
     `,
     'de-ch': `
-      Der Upload war im Gange, als eine Unterbrechung auftrat. Möglicherweise
+      Der Upload war im Gange, als es zu einer Unterbrechung kam. Möglicherweise
       wurden einige Dateien hochgeladen.
     `,
     'es-es': `
@@ -280,8 +283,8 @@ export const attachmentsText = createDictionary({
       have been deleted
     `,
     'de-ch': `
-      Das Rollback war im Gange, als eine Unterbrechung auftrat. Möglicherweise
-      wurden einige Dateien gelöscht
+      Das Rollback war im Gange, als eine Unterbrechung auftrat. Einige Dateien
+      wurden möglicherweise gelöscht
     `,
     'fr-fr': `
       La restauration était en cours lorsqu'une interruption s'est produite.
@@ -300,7 +303,7 @@ export const attachmentsText = createDictionary({
   },
   attachmentId: {
     'en-us': 'Attachment ID',
-    'de-ch': 'Anhang-ID',
+    'de-ch': 'Anhangs-ID',
     'es-es': 'ID del archivo adjunto',
     'fr-fr': 'ID de pièce jointe',
     'ru-ru': 'Идентификатор вложения',
@@ -308,7 +311,7 @@ export const attachmentsText = createDictionary({
   },
   choosePath: {
     'en-us': 'Choose Path',
-    'de-ch': 'Wählen Sie Pfad',
+    'de-ch': 'Pfad wählen',
     'es-es': 'Seleccione la ruta',
     'fr-fr': 'Choisir le chemin',
     'ru-ru': 'Выберите путь',
@@ -329,7 +332,7 @@ export const attachmentsText = createDictionary({
     `,
     'de-ch': `
       Durch das Hochladen der Anhänge werden Anhänge im Asset-Server und in der
-      Specify-Datenbank erstellt
+      Datenbank „Specify“ erstellt.
     `,
     'es-es': 'Interrumpido. Reintentando en [X25X]',
     'fr-fr': `
@@ -375,8 +378,8 @@ export const attachmentsText = createDictionary({
       Server
     `,
     'de-ch': `
-      Beim Rollback werden die Anhänge aus der Specify-Datenbank und dem
-      Asset-Server gelöscht
+      Rollback löscht die Anhänge aus der Datenbank „Specify“ und dem Asset
+      Server.
     `,
     'es-es': `
       La reversión eliminará los archivos adjuntos de la base de datos Specify y
@@ -441,8 +444,10 @@ export const attachmentsText = createDictionary({
   },
   multipleMatchesClick: {
     'en-us': 'Multiple Matches. Click To Disambiguate',
-    'de-ch':
-      'Mehrere Übereinstimmungen. Klicken Sie auf „Zur Begriffsklärung“.',
+    'de-ch': `
+      Mehrere Übereinstimmungen. Klicken Sie hier, um die Mehrdeutigkeit zu
+      beseitigen.
+    `,
     'es-es': 'Múltiples coincidencias. Haga clic para eliminar la ambigüedad',
     'fr-fr': "Plusieurs correspondances. Cliquez pour lever l'ambiguïté",
     'ru-ru': 'Несколько матчей. Нажмите, чтобы устранить неоднозначность',
@@ -450,7 +455,7 @@ export const attachmentsText = createDictionary({
   },
   totalFiles: {
     'en-us': 'Total files',
-    'de-ch': 'Gesamtdateien',
+    'de-ch': 'Gesamtzahl der Dateien',
     'es-es': 'Archivos totales',
     'fr-fr': 'Total des fichiers',
     'ru-ru': 'Всего файлов',
@@ -466,7 +471,7 @@ export const attachmentsText = createDictionary({
   },
   stoppedByUser: {
     'en-us': 'Stopped By User',
-    'de-ch': 'Vom Benutzer gestoppt',
+    'de-ch': 'Vom Benutzer angehalten',
     'es-es': 'Detenido por el usuario',
     'fr-fr': "Arrêté par l'utilisateur",
     'ru-ru': 'Остановлен пользователем',
@@ -486,7 +491,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'En archivo',
     'ru-ru': 'В файле',
     'uk-ua': 'У файлі',
-    'fr-fr': 'Enregistré',
+    'fr-fr': 'Pas de fichier',
   },
   duplicateFilesFound: {
     'en-us': 'Duplicate Files Found',
@@ -513,13 +518,8 @@ export const attachmentsText = createDictionary({
       Следующие файлы не выбраны, поскольку они уже существуют в этом наборе
       данных.
     `,
-    'de-ch': `
-      Die folgenden Dateien werden nicht ausgewählt, da sie bereits in diesem
-      Datensatz vorhanden sind.
-    `,
-    'uk-ua': `
-      Наступні файли не вибрано, оскільки вони вже існують у цьому наборі даних.
-    `,
+    'de-ch': 'Abgesagt',
+    'uk-ua': 'Скасовано',
   },
   errorFetchingRecord: {
     'en-us': 'Error fetching record',
@@ -539,15 +539,14 @@ export const attachmentsText = createDictionary({
   },
   interruptionStopped: {
     'en-us': 'Stopped because of error uploading a previous file',
-    'de-ch':
-      'Aufgrund eines Fehlers beim Hochladen einer vorherigen Datei gestoppt',
-    'es-es': 'Detenido debido a un error al cargar un archivo anterior',
-    'fr-fr': `
-      Arrêté en raison d'une erreur lors du téléchargement d'un fichier
-      précédent
+    'de-ch': 'Suchen Sie nach weiteren Anhängen',
+    'es-es': `
+      La reversión estaba en curso cuando se produjo una interrupción. Es
+      posible que algunos archivos hayan sido eliminados.
     `,
-    'ru-ru': 'Остановлено из-за ошибки при загрузке предыдущего файла.',
-    'uk-ua': 'Зупинено через помилку завантаження попереднього файлу',
+    'fr-fr': 'Rechercher plus de pièces jointes',
+    'ru-ru': 'Ищите больше вложений',
+    'uk-ua': 'Шукайте більше вкладень',
   },
   chooseFilesToGetStarted: {
     'en-us': 'Choose files or drag them here to get started.',
@@ -562,7 +561,8 @@ export const attachmentsText = createDictionary({
   selectIdentifier: {
     'en-us': 'Select an identifier to match the files name against.',
     'de-ch': `
-      Wählen Sie eine Kennung aus, mit der der Dateiname verglichen werden soll.
+      Wählen Sie eine Kennung aus, mit der der Dateiname abgeglichen werden
+      soll.
     `,
     'es-es': `
       Seleccione un identificador para hacer coincidir el nombre de los
@@ -573,7 +573,7 @@ export const attachmentsText = createDictionary({
     `,
     'ru-ru':
       'Выберите идентификатор, которому будет соответствовать имя файла.',
-    'uk-ua': 'Виберіть ідентифікатор, який буде відповідати назві файлів.',
+    'uk-ua': 'Виберіть ідентифікатор для відповідності імені файлу.',
   },
   progress: {
     'en-us': 'Progress',
@@ -597,8 +597,8 @@ export const attachmentsText = createDictionary({
       have been {action: string}.
     `,
     'de-ch': `
-      {success: number} der {total: number} Anhänge im Datensatz waren {action:
-      string}.
+      {success: number} von {total: number} Anhängen im Datensatz waren
+      {action: string}.
     `,
     'es-es': `
       {éxito: número} de los {total: número} archivos adjuntos en el conjunto de
@@ -624,8 +624,8 @@ export const attachmentsText = createDictionary({
     `,
     'de-ch': `
       Durch das Löschen eines Datensatzes werden dieser und sein Upload-Pfad
-      dauerhaft entfernt. Auch nach dem Löschen ist Rollback für einen
-      hochgeladenen Datensatz nicht mehr möglich.
+      dauerhaft entfernt. Außerdem ist nach dem Löschen für einen hochgeladenen
+      Datensatz kein Rollback mehr möglich.
     `,
     'es-es': `
       Al eliminar un conjunto de datos, se elimina permanentemente este y su
@@ -655,8 +655,8 @@ export const attachmentsText = createDictionary({
       was an error reading the file.
     `,
     'de-ch': `
-      Fehler beim Hochladen des Anhangs. Der Anhangserver ist möglicherweise
-      nicht verfügbar oder es ist ein Fehler beim Lesen der Datei aufgetreten.
+      Fehler beim Hochladen des Anhangs. Der Anhangsserver ist möglicherweise
+      nicht verfügbar oder beim Lesen der Datei ist ein Fehler aufgetreten.
     `,
     'es-es': `
       Error al cargar el archivo adjunto. Es posible que el servidor de archivos
