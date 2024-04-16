@@ -12,12 +12,8 @@ import React from 'react';
 import type { DetailedSettings } from 'handsontable/plugins/contextMenu';
 
 import { LANGUAGE } from '../../localization/utils/config';
-import { wbPlanText } from '../../localization/wbPlan';
-import { f } from '../../utils/functools';
 import { type RA } from '../../utils/types';
 import { legacyNonJsxIcons } from '../Atoms/Icons';
-import { getTable } from '../DataModel/tables';
-import { userPreferences } from '../Preferences/userPreferences';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { WbMapping } from './mapping';
 import { getSelectedRegions } from './hotHelpers';
@@ -42,6 +38,7 @@ import { MappingPath } from '../WbPlanView/Mapper';
 import { registerAllModules } from 'handsontable/registry';
 import { Workbench } from './WbView';
 import { ReadOnlyContext } from '../Core/Contexts';
+import { getHotProps } from './hotProps';
 
 registerAllModules();
 
@@ -289,107 +286,19 @@ function WbSpreadsheetComponent({
     }
   }, [dataset.rowresults, hot]);
 
-  // TODO: Move hottable props to a different file?
-  const autoWrapCol = React.useMemo(
-    () => userPreferences.get('workBench', 'editor', 'autoWrapCol'),
-    []
-  );
-  const autoWrapRow = React.useMemo(
-    () => userPreferences.get('workBench', 'editor', 'autoWrapRow'),
-    []
-  );
-  const columns = React.useMemo(
-    () =>
-      Array.from(
-        // Last column is invisible and contains disambiguation metadata
-        { length: dataset.columns.length + 1 },
-        (_, physicalCol) => ({
-          // Get data from nth column for nth column
-          data: physicalCol,
-        })
-      ),
-    []
-  );
-  const enterMoves = React.useMemo(
-    () =>
-      userPreferences.get('workBench', 'editor', 'enterMoveDirection') === 'col'
-        ? { col: 1, row: 0 }
-        : { col: 0, row: 1 },
-    []
-  );
-
-  const colHeaders = React.useCallback((physicalCol: number) => {
-    const tableIcon = mappings?.mappedHeaders?.[physicalCol];
-    const isMapped = tableIcon !== undefined;
-    const mappingCol = physicalColToMappingCol(physicalCol);
-    const tableName =
-      (typeof mappingCol === 'number'
-        ? mappings?.tableNames[mappingCol]
-        : undefined) ?? tableIcon?.split('/').slice(-1)?.[0]?.split('.')?.[0];
-    const tableLabel = isMapped
-      ? f.maybe(tableName, getTable)?.label ?? tableName ?? ''
-      : '';
-    // REFACTOR: use new table icons
-    return `<div class="flex gap-1 items-center pl-4">
-            ${
-              isMapped
-                ? `<img
-              class="w-table-icon h-table-icon"
-              alt="${tableLabel}"
-              src="${tableIcon}"
-            >`
-                : `<span
-              class="text-red-600"
-              aria-label="${wbPlanText.unmappedColumn()}"
-              title="${wbPlanText.unmappedColumn()}"
-            >${legacyNonJsxIcons.ban}</span>`
-            }
-            <span class="wb-header-name columnSorting">
-              ${dataset.columns[physicalCol]}
-            </span>
-          </div>`;
-  }, []);
-
-  const enterBeginsEditing = React.useMemo(
-    () => userPreferences.get('workBench', 'editor', 'enterBeginsEditing'),
-    []
-  );
-
-  const hiddenColumns = React.useMemo(() => {
-    return {
-      // Hide the disambiguation column
-      columns: [dataset.columns.length],
-      indicators: false,
-      // TODO: Typing possibly doesn't match for handsontable 12.1.0, fixed in 14
-      copyPasteEnabled: false,
-    };
-  }, []);
-
-  const hiddenRows = React.useMemo(() => {
-    return {
-      rows: [],
-      indicators: false,
-      // TODO: Typing possibly doesn't match for handsontable 12.1.0, fixed in 14
-      copyPasteEnabled: false,
-    };
-  }, []);
-
-  const minSpareRows = React.useMemo(
-    () => userPreferences.get('workBench', 'editor', 'minSpareRows'),
-    []
-  );
-
-  const tabMoves = React.useMemo(
-    () =>
-      userPreferences.get('workBench', 'editor', 'tabMoveDirection') === 'col'
-        ? { col: 1, row: 0 }
-        : { col: 0, row: 1 },
-    []
-  );
-
-  const comments = React.useMemo(() => {
-    return { displayDelay: 100 };
-  }, []);
+  const {
+    autoWrapCol,
+    autoWrapRow,
+    columns,
+    enterMoves,
+    colHeaders,
+    enterBeginsEditing,
+    hiddenRows,
+    hiddenColumns,
+    minSpareRows,
+    tabMoves,
+    comments,
+  } = getHotProps({ dataset, mappings, physicalColToMappingCol });
 
   const hooks = getHotHooks(
     workbench,
