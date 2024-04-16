@@ -49,7 +49,11 @@ export function PartialDateUi({
     React.useContext(ReadOnlyContext) || resource === undefined;
 
   return (
-    <div className="grid w-full grid-cols-[fit-content(40%)_1fr] gap-1">
+    <div
+      className={`${
+        canChangePrecision ? 'grid grid-cols-[fit-content(40%)_1fr]' : ''
+      } w-full gap-1`}
+    >
       {!isReadOnly && canChangePrecision ? (
         <DatePrecisionPicker moment={moment} {...precisionProps} />
       ) : undefined}
