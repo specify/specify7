@@ -1,10 +1,13 @@
 from django.test import TestCase
+import sqlalchemy
 from specifyweb.specify.build_models import build_models
 from specifyweb.specify.datamodel import datamodel as sp7_datamodel
 from specifyweb.specify.load_datamodel import load_datamodel
 from specifyweb.specify.sp7_build_datamodel import build_datamodel_code_from_xml
 from specifyweb.specify.sp7_build_models import build_model_code, generate_build_model_functions_code, \
-    generate_build_model_imports_code, get_model_by_table_id as sp7_get_model_by_table_id
+    generate_build_model_imports_code
+from specifyweb.specify.models_by_table_id import get_model_by_table_id as sp7_get_model_by_table_id
+from specifyweb.stored_queries.sp7_build_models import gen_sqlalchemy_table_classes_code
 
 class DatamodelTests(TestCase):
     
@@ -26,7 +29,7 @@ class DatamodelTests(TestCase):
         # with open('./specifyweb/specify/specify_models.py', 'w') as f:
         #     f.write(model_code)
 
-    def test_specify_models_code(self):
+    def test_specify_gen_models_code(self):
         if self.sp6_datamodel is None:
             return
         model_code = generate_build_model_imports_code()
@@ -54,6 +57,16 @@ class DatamodelTests(TestCase):
         # Uncomment this code if you want to generate the datamodel code
         # with open('./specifyweb/specify/specify_datamodel.py', 'w') as f:
         #     f.write(datamodel_code)
+
+    def test_specify_gen_sqlalchemy_table_classes_code(self):
+        datamodel = sp7_datamodel
+        # # if self.sp6_datamodel is not None:
+        # #     datamodel = self.sp6_datamodel
+        # datamodel = self.sp6_datamodel
+        # Uncomment this code if you want generate the sqlalchemy models code
+        sqlalchemy_code = gen_sqlalchemy_table_classes_code(datamodel)
+        with open('/opt/specify7/specifyweb/stored_queries/specify_models.py', 'w') as f:
+            f.write(sqlalchemy_code)
 
     def test_datamodel_equivalence(self):
         # sp7_datamodel = build_datamodel_code_from_xml()

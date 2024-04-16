@@ -30,6 +30,7 @@ def make_column(flddef):
 
 FIELD_TYPE_MAP = {
     'text'                 : types.Text,
+    'json'                 : types.JSON,
     'java.lang.String'     : types.String,
     'java.lang.Integer'    : types.Integer,
     'java.lang.Long'       : types.Integer,
@@ -46,6 +47,7 @@ FIELD_TYPE_MAP = {
 
 FIELD_TYPE_CODE_MAP = {
     'text': 'types.Text',
+    'json': 'types.JSON',
     'java.lang.String': 'types.String',
     'java.lang.Integer': 'types.Integer',
     'java.lang.Long': 'types.Integer',
@@ -124,7 +126,9 @@ def gen_relationship_code(datamodel, tabledef, reldef):
         return None
     backref = ''
     if hasattr(reldef, 'otherSideName'):
-        backref = f"backref=orm.backref('{reldef.otherSideName}', uselist={reldef.type != 'one-to-one'})"  
+        backref = f"backref=orm.backref('{reldef.otherSideName}', uselist={reldef.type != 'one-to-one'})"
+    if reldef.column is None:
+        return None
     code = (
         f"{reldef.column} = orm.relationship("
         f"'{reldef.relatedModelName}', "
@@ -169,13 +173,13 @@ def gen_sqlalchemy_table_classes_code(datamodel):
         "Base = declarative_base()\n\n"
     )
     for table in datamodel.tables:
-        if hasattr(table, 'sp7_only') and table.sp7_only != 'specify':
-            continue
+        # if hasattr(table, 'sp7_only') and table.sp7_only and table.sp7_only != 'specify':
+        #     continue
         code += f"class {table.name}(Base):\n"
-        code += f"{TAB1}tableid = '{table.tableId}'\n"
+        code += f"{TAB1}tableid = {table.tableId}\n"
         code += f"{TAB1}_id = '{table.idFieldName}'\n"
         code += f"{TAB1}__tablename__ = '{table.table}'\n\n"
-        code += "id = Column('id', types.Integer, primary_key=True)\n"
+        code += f"{TAB1}id = Column('id', types.Integer, primary_key=True)\n"
         for field in table.fields:
             code += f"{TAB1}{field.name} = {gen_column_code(field)}\n"
         code += '\n'

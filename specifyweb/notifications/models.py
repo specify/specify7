@@ -32,8 +32,3 @@ class Spmerging(models.Model):
     class Meta:
         db_table = 'spmerging'
         # managed = False
-
-# spmodels.models_by_tableid.update({
-#     1004: Message,
-#     1005: Spmerging,
-# })

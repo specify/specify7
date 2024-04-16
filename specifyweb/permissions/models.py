@@ -55,12 +55,3 @@ class LibraryRolePolicy(models.Model):
 
     class Meta:
         db_table = 'splibraryrolepolicy'
-
-# spmodels.models_by_tableid.update({
-#     1006: UserPolicy,
-#     1007: Role,
-#     1008: LibraryRole,
-#     1009: UserRole,
-#     1010: RolePolicy,
-#     1011: LibraryRolePolicy,
-# })

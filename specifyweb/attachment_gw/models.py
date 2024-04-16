@@ -19,7 +19,3 @@ class Spattachmentdataset(Dataset):
 #         super(Spattachmentdataset, self).__init__(*args, **kwargs)
 
 # Create your models here.
-
-# spmodels.models_by_tableid.update({
-#     1001: Spattachmentdataset,
-# })

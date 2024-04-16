@@ -34,7 +34,7 @@ session_context = make_session_context(Session)
 Base = declarative_base()
 
 class Accession(Base):
-    tableid = '7'
+    tableid = 7
     _id = 'accessionId'
     __tablename__ = 'accession'
 
@@ -78,7 +78,7 @@ class Accession(Base):
     RepositoryAgreementID = orm.relationship('RepositoryAgreement', foreign_keys='Accession.RepositoryAgreementID', remote_side='RepositoryAgreement.RepositoryAgreementID', backref=orm.backref('accessions', uselist=True))
 
 class AccessionAgent(Base):
-    tableid = '12'
+    tableid = 12
     _id = 'accessionAgentId'
     __tablename__ = 'accessionagent'
 
@@ -102,7 +102,7 @@ class AccessionAgent(Base):
     RepositoryAgreementID = orm.relationship('RepositoryAgreement', foreign_keys='AccessionAgent.RepositoryAgreementID', remote_side='RepositoryAgreement.RepositoryAgreementID', backref=orm.backref('repositoryAgreementAgents', uselist=True))
 
 class AccessionAttachment(Base):
-    tableid = '108'
+    tableid = 108
     _id = 'accessionAttachmentId'
     __tablename__ = 'accessionattachment'
 
@@ -124,7 +124,7 @@ class AccessionAttachment(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='AccessionAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class AccessionAuthorization(Base):
-    tableid = '13'
+    tableid = 13
     _id = 'accessionAuthorizationId'
     __tablename__ = 'accessionauthorization'
 
@@ -147,7 +147,7 @@ class AccessionAuthorization(Base):
     RepositoryAgreementID = orm.relationship('RepositoryAgreement', foreign_keys='AccessionAuthorization.RepositoryAgreementID', remote_side='RepositoryAgreement.RepositoryAgreementID', backref=orm.backref('repositoryAgreementAuthorizations', uselist=True))
 
 class AccessionCitation(Base):
-    tableid = '159'
+    tableid = 159
     _id = 'accessionCitationId'
     __tablename__ = 'accessioncitation'
 
@@ -172,7 +172,7 @@ class AccessionCitation(Base):
     ReferenceWorkID = orm.relationship('ReferenceWork', foreign_keys='AccessionCitation.ReferenceWorkID', remote_side='ReferenceWork.ReferenceWorkID')
 
 class Address(Base):
-    tableid = '8'
+    tableid = 8
     _id = 'addressId'
     __tablename__ = 'address'
 
@@ -212,7 +212,7 @@ class Address(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Address.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class AddressOfRecord(Base):
-    tableid = '125'
+    tableid = 125
     _id = 'addressOfRecordId'
     __tablename__ = 'addressofrecord'
 
@@ -237,7 +237,7 @@ class AddressOfRecord(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='AddressOfRecord.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class Agent(Base):
-    tableid = '5'
+    tableid = 5
     _id = 'agentId'
     __tablename__ = 'agent'
 
@@ -299,7 +299,7 @@ class Agent(Base):
     SpecifyUserID = orm.relationship('SpecifyUser', foreign_keys='Agent.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('agents', uselist=True))
 
 class AgentAttachment(Base):
-    tableid = '109'
+    tableid = 109
     _id = 'agentAttachmentId'
     __tablename__ = 'agentattachment'
 
@@ -321,7 +321,7 @@ class AgentAttachment(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='AgentAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class AgentGeography(Base):
-    tableid = '78'
+    tableid = 78
     _id = 'agentGeographyId'
     __tablename__ = 'agentgeography'
 
@@ -343,7 +343,7 @@ class AgentGeography(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='AgentGeography.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class AgentIdentifier(Base):
-    tableid = '168'
+    tableid = 168
     _id = 'agentIdentifierId'
     __tablename__ = 'agentidentifier'
 
@@ -378,7 +378,7 @@ class AgentIdentifier(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='AgentIdentifier.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class AgentSpecialty(Base):
-    tableid = '86'
+    tableid = 86
     _id = 'agentSpecialtyId'
     __tablename__ = 'agentspecialty'
 
@@ -398,7 +398,7 @@ class AgentSpecialty(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='AgentSpecialty.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class AgentVariant(Base):
-    tableid = '107'
+    tableid = 107
     _id = 'agentVariantId'
     __tablename__ = 'agentvariant'
 
@@ -421,7 +421,7 @@ class AgentVariant(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='AgentVariant.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class Appraisal(Base):
-    tableid = '67'
+    tableid = 67
     _id = 'appraisalId'
     __tablename__ = 'appraisal'
 
@@ -446,7 +446,7 @@ class Appraisal(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Appraisal.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class Attachment(Base):
-    tableid = '41'
+    tableid = 41
     _id = 'attachmentId'
     __tablename__ = 'attachment'
 
@@ -492,7 +492,7 @@ class Attachment(Base):
     VisibilitySetByID = orm.relationship('SpecifyUser', foreign_keys='Attachment.VisibilitySetByID', remote_side='SpecifyUser.SpecifyUserID')
 
 class AttachmentImageAttribute(Base):
-    tableid = '139'
+    tableid = 139
     _id = 'attachmentImageAttributeId'
     __tablename__ = 'attachmentimageattribute'
 
@@ -527,7 +527,7 @@ class AttachmentImageAttribute(Base):
     MorphBankViewID = orm.relationship('MorphBankView', foreign_keys='AttachmentImageAttribute.MorphBankViewID', remote_side='MorphBankView.MorphBankViewID', backref=orm.backref('attachmentImageAttributes', uselist=True))
 
 class AttachmentMetadata(Base):
-    tableid = '42'
+    tableid = 42
     _id = 'attachmentMetadataID'
     __tablename__ = 'attachmentmetadata'
 
@@ -547,7 +547,7 @@ class AttachmentMetadata(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='AttachmentMetadata.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class AttachmentTag(Base):
-    tableid = '130'
+    tableid = 130
     _id = 'attachmentTagID'
     __tablename__ = 'attachmenttag'
 
@@ -566,7 +566,7 @@ class AttachmentTag(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='AttachmentTag.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class AttributeDef(Base):
-    tableid = '16'
+    tableid = 16
     _id = 'attributeDefId'
     __tablename__ = 'attributedef'
 
@@ -589,7 +589,7 @@ class AttributeDef(Base):
     PrepTypeID = orm.relationship('PrepType', foreign_keys='AttributeDef.PrepTypeID', remote_side='PrepType.PrepTypeID', backref=orm.backref('attributeDefs', uselist=True))
 
 class Author(Base):
-    tableid = '17'
+    tableid = 17
     _id = 'authorId'
     __tablename__ = 'author'
 
@@ -611,7 +611,7 @@ class Author(Base):
     ReferenceWorkID = orm.relationship('ReferenceWork', foreign_keys='Author.ReferenceWorkID', remote_side='ReferenceWork.ReferenceWorkID', backref=orm.backref('authors', uselist=True))
 
 class AutoNumberingScheme(Base):
-    tableid = '97'
+    tableid = 97
     _id = 'autoNumberingSchemeId'
     __tablename__ = 'autonumberingscheme'
 
@@ -632,7 +632,7 @@ class AutoNumberingScheme(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='AutoNumberingScheme.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class Borrow(Base):
-    tableid = '18'
+    tableid = 18
     _id = 'borrowId'
     __tablename__ = 'borrow'
 
@@ -669,7 +669,7 @@ class Borrow(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Borrow.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class BorrowAgent(Base):
-    tableid = '19'
+    tableid = 19
     _id = 'borrowAgentId'
     __tablename__ = 'borrowagent'
 
@@ -692,7 +692,7 @@ class BorrowAgent(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='BorrowAgent.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class BorrowAttachment(Base):
-    tableid = '145'
+    tableid = 145
     _id = 'borrowAttachmentId'
     __tablename__ = 'borrowattachment'
 
@@ -714,7 +714,7 @@ class BorrowAttachment(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='BorrowAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class BorrowMaterial(Base):
-    tableid = '20'
+    tableid = 20
     _id = 'borrowMaterialId'
     __tablename__ = 'borrowmaterial'
 
@@ -742,7 +742,7 @@ class BorrowMaterial(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='BorrowMaterial.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class BorrowReturnMaterial(Base):
-    tableid = '21'
+    tableid = 21
     _id = 'borrowReturnMaterialId'
     __tablename__ = 'borrowreturnmaterial'
 
@@ -766,7 +766,7 @@ class BorrowReturnMaterial(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='BorrowReturnMaterial.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class CollectingEvent(Base):
-    tableid = '10'
+    tableid = 10
     _id = 'collectingEventId'
     __tablename__ = 'collectingevent'
 
@@ -828,7 +828,7 @@ class CollectingEvent(Base):
     VisibilitySetByID = orm.relationship('SpecifyUser', foreign_keys='CollectingEvent.VisibilitySetByID', remote_side='SpecifyUser.SpecifyUserID')
 
 class CollectingEventAttachment(Base):
-    tableid = '110'
+    tableid = 110
     _id = 'collectingEventAttachmentId'
     __tablename__ = 'collectingeventattachment'
 
@@ -851,7 +851,7 @@ class CollectingEventAttachment(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='CollectingEventAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class CollectingEventAttr(Base):
-    tableid = '25'
+    tableid = 25
     _id = 'attrId'
     __tablename__ = 'collectingeventattr'
 
@@ -874,7 +874,7 @@ class CollectingEventAttr(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='CollectingEventAttr.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class CollectingEventAttribute(Base):
-    tableid = '92'
+    tableid = 92
     _id = 'collectingEventAttributeId'
     __tablename__ = 'collectingeventattribute'
 
@@ -940,7 +940,7 @@ class CollectingEventAttribute(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='CollectingEventAttribute.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class CollectingEventAuthorization(Base):
-    tableid = '152'
+    tableid = 152
     _id = 'collectingEventAuthorizationId'
     __tablename__ = 'collectingeventauthorization'
 
@@ -961,7 +961,7 @@ class CollectingEventAuthorization(Base):
     PermitID = orm.relationship('Permit', foreign_keys='CollectingEventAuthorization.PermitID', remote_side='Permit.PermitID', backref=orm.backref('collectingEventAuthorizations', uselist=True))
 
 class CollectingTrip(Base):
-    tableid = '87'
+    tableid = 87
     _id = 'collectingTripId'
     __tablename__ = 'collectingtrip'
 
@@ -1016,7 +1016,7 @@ class CollectingTrip(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='CollectingTrip.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class CollectingTripAttachment(Base):
-    tableid = '156'
+    tableid = 156
     _id = 'collectingTripAttachmentId'
     __tablename__ = 'collectingtripattachment'
 
@@ -1039,7 +1039,7 @@ class CollectingTripAttachment(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='CollectingTripAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class CollectingTripAttribute(Base):
-    tableid = '157'
+    tableid = 157
     _id = 'collectingTripAttributeId'
     __tablename__ = 'collectingtripattribute'
 
@@ -1103,7 +1103,7 @@ class CollectingTripAttribute(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='CollectingTripAttribute.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class CollectingTripAuthorization(Base):
-    tableid = '158'
+    tableid = 158
     _id = 'collectingTripAuthorizationId'
     __tablename__ = 'collectingtripauthorization'
 
@@ -1124,7 +1124,7 @@ class CollectingTripAuthorization(Base):
     PermitID = orm.relationship('Permit', foreign_keys='CollectingTripAuthorization.PermitID', remote_side='Permit.PermitID', backref=orm.backref('collectingTripAuthorizations', uselist=True))
 
 class Collection(Base):
-    tableid = '23'
+    tableid = 23
     _id = 'userGroupScopeId'
     __tablename__ = 'collection'
 
@@ -1167,7 +1167,7 @@ class Collection(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Collection.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class CollectionObject(Base):
-    tableid = '1'
+    tableid = 1
     _id = 'collectionObjectId'
     __tablename__ = 'collectionobject'
 
@@ -1268,7 +1268,7 @@ class CollectionObject(Base):
     VisibilitySetByID = orm.relationship('SpecifyUser', foreign_keys='CollectionObject.VisibilitySetByID', remote_side='SpecifyUser.SpecifyUserID')
 
 class CollectionObjectAttachment(Base):
-    tableid = '111'
+    tableid = 111
     _id = 'collectionObjectAttachmentId'
     __tablename__ = 'collectionobjectattachment'
 
@@ -1291,7 +1291,7 @@ class CollectionObjectAttachment(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='CollectionObjectAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class CollectionObjectAttr(Base):
-    tableid = '28'
+    tableid = 28
     _id = 'attrId'
     __tablename__ = 'collectionobjectattr'
 
@@ -1314,7 +1314,7 @@ class CollectionObjectAttr(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='CollectionObjectAttr.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class CollectionObjectAttribute(Base):
-    tableid = '93'
+    tableid = 93
     _id = 'collectionObjectAttributeId'
     __tablename__ = 'collectionobjectattribute'
 
@@ -1453,7 +1453,7 @@ class CollectionObjectAttribute(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='CollectionObjectAttribute.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class CollectionObjectCitation(Base):
-    tableid = '29'
+    tableid = 29
     _id = 'collectionObjectCitationId'
     __tablename__ = 'collectionobjectcitation'
 
@@ -1479,7 +1479,7 @@ class CollectionObjectCitation(Base):
     ReferenceWorkID = orm.relationship('ReferenceWork', foreign_keys='CollectionObjectCitation.ReferenceWorkID', remote_side='ReferenceWork.ReferenceWorkID', backref=orm.backref('collectionObjectCitations', uselist=True))
 
 class CollectionObjectProperty(Base):
-    tableid = '153'
+    tableid = 153
     _id = 'collectionObjectPropertyId'
     __tablename__ = 'collectionobjectproperty'
 
@@ -1680,7 +1680,7 @@ class CollectionObjectProperty(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class CollectionRelType(Base):
-    tableid = '98'
+    tableid = 98
     _id = 'collectionRelTypeId'
     __tablename__ = 'collectionreltype'
 
@@ -1702,7 +1702,7 @@ class CollectionRelType(Base):
     RightSideCollectionID = orm.relationship('Collection', foreign_keys='CollectionRelType.RightSideCollectionID', remote_side='Collection.UserGroupScopeId', backref=orm.backref('rightSideRelTypes', uselist=True))
 
 class CollectionRelationship(Base):
-    tableid = '99'
+    tableid = 99
     _id = 'collectionRelationshipId'
     __tablename__ = 'collectionrelationship'
 
@@ -1726,7 +1726,7 @@ class CollectionRelationship(Base):
     RightSideCollectionID = orm.relationship('CollectionObject', foreign_keys='CollectionRelationship.RightSideCollectionID', remote_side='CollectionObject.CollectionObjectID', backref=orm.backref('rightSideRels', uselist=True))
 
 class Collector(Base):
-    tableid = '30'
+    tableid = 30
     _id = 'collectorId'
     __tablename__ = 'collector'
 
@@ -1755,7 +1755,7 @@ class Collector(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Collector.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class CommonNameTx(Base):
-    tableid = '106'
+    tableid = 106
     _id = 'commonNameTxId'
     __tablename__ = 'commonnametx'
 
@@ -1778,7 +1778,7 @@ class CommonNameTx(Base):
     TaxonID = orm.relationship('Taxon', foreign_keys='CommonNameTx.TaxonID', remote_side='Taxon.TaxonID', backref=orm.backref('commonNames', uselist=True))
 
 class CommonNameTxCitation(Base):
-    tableid = '134'
+    tableid = 134
     _id = 'commonNameTxCitationId'
     __tablename__ = 'commonnametxcitation'
 
@@ -1809,7 +1809,7 @@ class CommonNameTxCitation(Base):
     ReferenceWorkID = orm.relationship('ReferenceWork', foreign_keys='CommonNameTxCitation.ReferenceWorkID', remote_side='ReferenceWork.ReferenceWorkID')
 
 class ConservDescription(Base):
-    tableid = '103'
+    tableid = 103
     _id = 'conservDescriptionId'
     __tablename__ = 'conservdescription'
 
@@ -1875,7 +1875,7 @@ class ConservDescription(Base):
     PreparationID = orm.relationship('Preparation', foreign_keys='ConservDescription.PreparationID', remote_side='Preparation.PreparationID', backref=orm.backref('conservDescriptions', uselist=True))
 
 class ConservDescriptionAttachment(Base):
-    tableid = '112'
+    tableid = 112
     _id = 'conservDescriptionAttachmentId'
     __tablename__ = 'conservdescriptionattachment'
 
@@ -1897,7 +1897,7 @@ class ConservDescriptionAttachment(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='ConservDescriptionAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class ConservEvent(Base):
-    tableid = '73'
+    tableid = 73
     _id = 'conservEventId'
     __tablename__ = 'conservevent'
 
@@ -1942,7 +1942,7 @@ class ConservEvent(Base):
     TreatedByAgentID = orm.relationship('Agent', foreign_keys='ConservEvent.TreatedByAgentID', remote_side='Agent.AgentID')
 
 class ConservEventAttachment(Base):
-    tableid = '113'
+    tableid = 113
     _id = 'conservEventAttachmentId'
     __tablename__ = 'conserveventattachment'
 
@@ -1964,7 +1964,7 @@ class ConservEventAttachment(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='ConservEventAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class Container(Base):
-    tableid = '31'
+    tableid = 31
     _id = 'containerId'
     __tablename__ = 'container'
 
@@ -1989,7 +1989,7 @@ class Container(Base):
     StorageID = orm.relationship('Storage', foreign_keys='Container.StorageID', remote_side='Storage.StorageID', backref=orm.backref('containers', uselist=True))
 
 class DNAPrimer(Base):
-    tableid = '150'
+    tableid = 150
     _id = 'dnaPrimerId'
     __tablename__ = 'dnaprimer'
 
@@ -2030,7 +2030,7 @@ class DNAPrimer(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='DNAPrimer.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class DNASequence(Base):
-    tableid = '121'
+    tableid = 121
     _id = 'dnaSequenceId'
     __tablename__ = 'dnasequence'
 
@@ -2083,7 +2083,7 @@ class DNASequence(Base):
     AgentID = orm.relationship('Agent', foreign_keys='DNASequence.AgentID', remote_side='Agent.AgentID')
 
 class DNASequenceAttachment(Base):
-    tableid = '147'
+    tableid = 147
     _id = 'dnaSequenceAttachmentId'
     __tablename__ = 'dnasequenceattachment'
 
@@ -2105,7 +2105,7 @@ class DNASequenceAttachment(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='DNASequenceAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class DNASequencingRun(Base):
-    tableid = '88'
+    tableid = 88
     _id = 'dnaSequencingRunId'
     __tablename__ = 'dnasequencingrun'
 
@@ -2159,7 +2159,7 @@ class DNASequencingRun(Base):
     RunByAgentID = orm.relationship('Agent', foreign_keys='DNASequencingRun.RunByAgentID', remote_side='Agent.AgentID')
 
 class DNASequencingRunAttachment(Base):
-    tableid = '135'
+    tableid = 135
     _id = 'dnaSequencingRunAttachmentId'
     __tablename__ = 'dnasequencerunattachment'
 
@@ -2181,7 +2181,7 @@ class DNASequencingRunAttachment(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='DNASequencingRunAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class DNASequencingRunCitation(Base):
-    tableid = '105'
+    tableid = 105
     _id = 'dnaSequencingRunCitationId'
     __tablename__ = 'dnasequencingruncitation'
 
@@ -2212,7 +2212,7 @@ class DNASequencingRunCitation(Base):
     DNASequencingRunID = orm.relationship('DNASequencingRun', foreign_keys='DNASequencingRunCitation.DNASequencingRunID', remote_side='DNASequencingRun.DNASequencingRunID', backref=orm.backref('citations', uselist=True))
 
 class DataType(Base):
-    tableid = '33'
+    tableid = 33
     _id = 'dataTypeId'
     __tablename__ = 'datatype'
 
@@ -2229,7 +2229,7 @@ class DataType(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='DataType.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class Deaccession(Base):
-    tableid = '163'
+    tableid = 163
     _id = 'deaccessionId'
     __tablename__ = 'deaccession'
 
@@ -2276,7 +2276,7 @@ class Deaccession(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Deaccession.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class DeaccessionAgent(Base):
-    tableid = '164'
+    tableid = 164
     _id = 'deaccessionAgentId'
     __tablename__ = 'deaccessionagent'
 
@@ -2298,7 +2298,7 @@ class DeaccessionAgent(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='DeaccessionAgent.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class DeaccessionAttachment(Base):
-    tableid = '165'
+    tableid = 165
     _id = 'deaccessionAttachmentId'
     __tablename__ = 'deaccessionattachment'
 
@@ -2320,7 +2320,7 @@ class DeaccessionAttachment(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='DeaccessionAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class Determination(Base):
-    tableid = '9'
+    tableid = 9
     _id = 'determinationId'
     __tablename__ = 'determination'
 
@@ -2383,7 +2383,7 @@ class Determination(Base):
     TaxonID = orm.relationship('Taxon', foreign_keys='Determination.TaxonID', remote_side='Taxon.TaxonID', backref=orm.backref('determinations', uselist=True))
 
 class DeterminationCitation(Base):
-    tableid = '38'
+    tableid = 38
     _id = 'determinationCitationId'
     __tablename__ = 'determinationcitation'
 
@@ -2409,7 +2409,7 @@ class DeterminationCitation(Base):
     ReferenceWorkID = orm.relationship('ReferenceWork', foreign_keys='DeterminationCitation.ReferenceWorkID', remote_side='ReferenceWork.ReferenceWorkID', backref=orm.backref('determinationCitations', uselist=True))
 
 class Determiner(Base):
-    tableid = '167'
+    tableid = 167
     _id = 'determinerId'
     __tablename__ = 'determiner'
 
@@ -2436,7 +2436,7 @@ class Determiner(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Determiner.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class Discipline(Base):
-    tableid = '26'
+    tableid = 26
     _id = 'userGroupScopeId'
     __tablename__ = 'discipline'
 
@@ -2469,7 +2469,7 @@ class Discipline(Base):
     TaxonTreeDefID = orm.relationship('TaxonTreeDef', foreign_keys='Discipline.TaxonTreeDefID', remote_side='TaxonTreeDef.TaxonTreeDefID', backref=orm.backref('discipline', uselist=False))
 
 class Disposal(Base):
-    tableid = '34'
+    tableid = 34
     _id = 'disposalId'
     __tablename__ = 'disposal'
 
@@ -2498,7 +2498,7 @@ class Disposal(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Disposal.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class DisposalAgent(Base):
-    tableid = '35'
+    tableid = 35
     _id = 'disposalAgentId'
     __tablename__ = 'disposalagent'
 
@@ -2520,7 +2520,7 @@ class DisposalAgent(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='DisposalAgent.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class DisposalAttachment(Base):
-    tableid = '166'
+    tableid = 166
     _id = 'disposalAttachmentId'
     __tablename__ = 'disposalattachment'
 
@@ -2542,7 +2542,7 @@ class DisposalAttachment(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='DisposalAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class DisposalPreparation(Base):
-    tableid = '36'
+    tableid = 36
     _id = 'disposalPreparationId'
     __tablename__ = 'disposalpreparation'
 
@@ -2566,7 +2566,7 @@ class DisposalPreparation(Base):
     PreparationID = orm.relationship('Preparation', foreign_keys='DisposalPreparation.PreparationID', remote_side='Preparation.PreparationID', backref=orm.backref('disposalPreparations', uselist=True))
 
 class Division(Base):
-    tableid = '96'
+    tableid = 96
     _id = 'userGroupScopeId'
     __tablename__ = 'division'
 
@@ -2595,7 +2595,7 @@ class Division(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Division.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class ExchangeIn(Base):
-    tableid = '39'
+    tableid = 39
     _id = 'exchangeInId'
     __tablename__ = 'exchangein'
 
@@ -2633,7 +2633,7 @@ class ExchangeIn(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='ExchangeIn.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class ExchangeInAttachment(Base):
-    tableid = '169'
+    tableid = 169
     _id = 'exchangeInAttachmentId'
     __tablename__ = 'exchangeinattachment'
 
@@ -2655,7 +2655,7 @@ class ExchangeInAttachment(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='ExchangeInAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class ExchangeInPrep(Base):
-    tableid = '140'
+    tableid = 140
     _id = 'exchangeInPrepId'
     __tablename__ = 'exchangeinprep'
 
@@ -2683,7 +2683,7 @@ class ExchangeInPrep(Base):
     PreparationID = orm.relationship('Preparation', foreign_keys='ExchangeInPrep.PreparationID', remote_side='Preparation.PreparationID', backref=orm.backref('exchangeInPreps', uselist=True))
 
 class ExchangeOut(Base):
-    tableid = '40'
+    tableid = 40
     _id = 'exchangeOutId'
     __tablename__ = 'exchangeout'
 
@@ -2723,7 +2723,7 @@ class ExchangeOut(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='ExchangeOut.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class ExchangeOutAttachment(Base):
-    tableid = '170'
+    tableid = 170
     _id = 'exchangeOutAttachmentId'
     __tablename__ = 'exchangeoutattachment'
 
@@ -2745,7 +2745,7 @@ class ExchangeOutAttachment(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='ExchangeOutAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class ExchangeOutPrep(Base):
-    tableid = '141'
+    tableid = 141
     _id = 'exchangeOutPrepId'
     __tablename__ = 'exchangeoutprep'
 
@@ -2773,7 +2773,7 @@ class ExchangeOutPrep(Base):
     PreparationID = orm.relationship('Preparation', foreign_keys='ExchangeOutPrep.PreparationID', remote_side='Preparation.PreparationID', backref=orm.backref('exchangeOutPreps', uselist=True))
 
 class Exsiccata(Base):
-    tableid = '89'
+    tableid = 89
     _id = 'exsiccataId'
     __tablename__ = 'exsiccata'
 
@@ -2794,7 +2794,7 @@ class Exsiccata(Base):
     ReferenceWorkID = orm.relationship('ReferenceWork', foreign_keys='Exsiccata.ReferenceWorkID', remote_side='ReferenceWork.ReferenceWorkID', backref=orm.backref('exsiccatae', uselist=True))
 
 class ExsiccataItem(Base):
-    tableid = '104'
+    tableid = 104
     _id = 'exsiccataItemId'
     __tablename__ = 'exsiccataitem'
 
@@ -2816,7 +2816,7 @@ class ExsiccataItem(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='ExsiccataItem.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class Extractor(Base):
-    tableid = '160'
+    tableid = 160
     _id = 'extractorId'
     __tablename__ = 'extractor'
 
@@ -2842,7 +2842,7 @@ class Extractor(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Extractor.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class FieldNotebook(Base):
-    tableid = '83'
+    tableid = 83
     _id = 'fieldNotebookId'
     __tablename__ = 'fieldnotebook'
 
@@ -2869,7 +2869,7 @@ class FieldNotebook(Base):
     AgentID = orm.relationship('Agent', foreign_keys='FieldNotebook.AgentID', remote_side='Agent.AgentID')
 
 class FieldNotebookAttachment(Base):
-    tableid = '127'
+    tableid = 127
     _id = 'fieldNotebookAttachmentId'
     __tablename__ = 'fieldnotebookattachment'
 
@@ -2891,7 +2891,7 @@ class FieldNotebookAttachment(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='FieldNotebookAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class FieldNotebookPage(Base):
-    tableid = '85'
+    tableid = 85
     _id = 'fieldNotebookPageId'
     __tablename__ = 'fieldnotebookpage'
 
@@ -2914,7 +2914,7 @@ class FieldNotebookPage(Base):
     FieldNotebookPageSetID = orm.relationship('FieldNotebookPageSet', foreign_keys='FieldNotebookPage.FieldNotebookPageSetID', remote_side='FieldNotebookPageSet.FieldNotebookPageSetID', backref=orm.backref('pages', uselist=True))
 
 class FieldNotebookPageAttachment(Base):
-    tableid = '129'
+    tableid = 129
     _id = 'fieldNotebookPageAttachmentId'
     __tablename__ = 'fieldnotebookpageattachment'
 
@@ -2936,7 +2936,7 @@ class FieldNotebookPageAttachment(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='FieldNotebookPageAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class FieldNotebookPageSet(Base):
-    tableid = '84'
+    tableid = 84
     _id = 'fieldNotebookPageSetId'
     __tablename__ = 'fieldnotebookpageset'
 
@@ -2963,7 +2963,7 @@ class FieldNotebookPageSet(Base):
     AgentID = orm.relationship('Agent', foreign_keys='FieldNotebookPageSet.AgentID', remote_side='Agent.AgentID')
 
 class FieldNotebookPageSetAttachment(Base):
-    tableid = '128'
+    tableid = 128
     _id = 'fieldNotebookPageSetAttachmentId'
     __tablename__ = 'fieldnotebookpagesetattachment'
 
@@ -2985,7 +2985,7 @@ class FieldNotebookPageSetAttachment(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='FieldNotebookPageSetAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class FundingAgent(Base):
-    tableid = '146'
+    tableid = 146
     _id = 'fundingAgentId'
     __tablename__ = 'fundingagent'
 
@@ -3011,7 +3011,7 @@ class FundingAgent(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='FundingAgent.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class GeoCoordDetail(Base):
-    tableid = '123'
+    tableid = 123
     _id = 'geoCoordDetailId'
     __tablename__ = 'geocoorddetail'
 
@@ -3070,7 +3070,7 @@ class GeoCoordDetail(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='GeoCoordDetail.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class Geography(Base):
-    tableid = '3'
+    tableid = 3
     _id = 'geographyId'
     __tablename__ = 'geography'
 
@@ -3114,7 +3114,7 @@ class Geography(Base):
     ParentID = orm.relationship('Geography', foreign_keys='Geography.ParentID', remote_side='Geography.GeographyID', backref=orm.backref('children', uselist=True))
 
 class GeographyTreeDef(Base):
-    tableid = '44'
+    tableid = 44
     _id = 'geographyTreeDefId'
     __tablename__ = 'geographytreedef'
 
@@ -3133,7 +3133,7 @@ class GeographyTreeDef(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='GeographyTreeDef.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class GeographyTreeDefItem(Base):
-    tableid = '45'
+    tableid = 45
     _id = 'geographyTreeDefItemId'
     __tablename__ = 'geographytreedefitem'
 
@@ -3162,7 +3162,7 @@ class GeographyTreeDefItem(Base):
     GeographyTreeDefID = orm.relationship('GeographyTreeDef', foreign_keys='GeographyTreeDefItem.GeographyTreeDefID', remote_side='GeographyTreeDef.GeographyTreeDefID', backref=orm.backref('treeDefItems', uselist=True))
 
 class GeologicTimePeriod(Base):
-    tableid = '46'
+    tableid = 46
     _id = 'geologicTimePeriodId'
     __tablename__ = 'geologictimeperiod'
 
@@ -3202,7 +3202,7 @@ class GeologicTimePeriod(Base):
     ParentID = orm.relationship('GeologicTimePeriod', foreign_keys='GeologicTimePeriod.ParentID', remote_side='GeologicTimePeriod.GeologicTimePeriodID', backref=orm.backref('children', uselist=True))
 
 class GeologicTimePeriodTreeDef(Base):
-    tableid = '47'
+    tableid = 47
     _id = 'geologicTimePeriodTreeDefId'
     __tablename__ = 'geologictimeperiodtreedef'
 
@@ -3221,7 +3221,7 @@ class GeologicTimePeriodTreeDef(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='GeologicTimePeriodTreeDef.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class GeologicTimePeriodTreeDefItem(Base):
-    tableid = '48'
+    tableid = 48
     _id = 'geologicTimePeriodTreeDefItemId'
     __tablename__ = 'geologictimeperiodtreedefitem'
 
@@ -3250,7 +3250,7 @@ class GeologicTimePeriodTreeDefItem(Base):
     GeologicTimePeriodTreeDefID = orm.relationship('GeologicTimePeriodTreeDef', foreign_keys='GeologicTimePeriodTreeDefItem.GeologicTimePeriodTreeDefID', remote_side='GeologicTimePeriodTreeDef.GeologicTimePeriodTreeDefID', backref=orm.backref('treeDefItems', uselist=True))
 
 class Gift(Base):
-    tableid = '131'
+    tableid = 131
     _id = 'giftId'
     __tablename__ = 'gift'
 
@@ -3300,7 +3300,7 @@ class Gift(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Gift.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class GiftAgent(Base):
-    tableid = '133'
+    tableid = 133
     _id = 'giftAgentId'
     __tablename__ = 'giftagent'
 
@@ -3325,7 +3325,7 @@ class GiftAgent(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='GiftAgent.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class GiftAttachment(Base):
-    tableid = '144'
+    tableid = 144
     _id = 'giftAttachmentId'
     __tablename__ = 'giftattachment'
 
@@ -3347,7 +3347,7 @@ class GiftAttachment(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='GiftAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class GiftPreparation(Base):
-    tableid = '132'
+    tableid = 132
     _id = 'giftPreparationId'
     __tablename__ = 'giftpreparation'
 
@@ -3379,7 +3379,7 @@ class GiftPreparation(Base):
     PreparationID = orm.relationship('Preparation', foreign_keys='GiftPreparation.PreparationID', remote_side='Preparation.PreparationID', backref=orm.backref('giftPreparations', uselist=True))
 
 class GroupPerson(Base):
-    tableid = '49'
+    tableid = 49
     _id = 'groupPersonId'
     __tablename__ = 'groupperson'
 
@@ -3403,7 +3403,7 @@ class GroupPerson(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='GroupPerson.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class InfoRequest(Base):
-    tableid = '50'
+    tableid = 50
     _id = 'infoRequestID'
     __tablename__ = 'inforequest'
 
@@ -3430,7 +3430,7 @@ class InfoRequest(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='InfoRequest.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class Institution(Base):
-    tableid = '94'
+    tableid = 94
     _id = 'userGroupScopeId'
     __tablename__ = 'institution'
 
@@ -3476,7 +3476,7 @@ class Institution(Base):
     StorageTreeDefID = orm.relationship('StorageTreeDef', foreign_keys='Institution.StorageTreeDefID', remote_side='StorageTreeDef.StorageTreeDefID', backref=orm.backref('institutions', uselist=True))
 
 class InstitutionNetwork(Base):
-    tableid = '142'
+    tableid = 142
     _id = 'institutionNetworkId'
     __tablename__ = 'institutionnetwork'
 
@@ -3506,7 +3506,7 @@ class InstitutionNetwork(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='InstitutionNetwork.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class Journal(Base):
-    tableid = '51'
+    tableid = 51
     _id = 'journalId'
     __tablename__ = 'journal'
 
@@ -3530,7 +3530,7 @@ class Journal(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Journal.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class LatLonPolygon(Base):
-    tableid = '136'
+    tableid = 136
     _id = 'latLonPolygonId'
     __tablename__ = 'latlonpolygon'
 
@@ -3553,7 +3553,7 @@ class LatLonPolygon(Base):
     SpVisualQueryID = orm.relationship('SpVisualQuery', foreign_keys='LatLonPolygon.SpVisualQueryID', remote_side='SpVisualQuery.SpVisualQueryID', backref=orm.backref('polygons', uselist=True))
 
 class LatLonPolygonPnt(Base):
-    tableid = '137'
+    tableid = 137
     _id = 'latLonPolygonPntId'
     __tablename__ = 'latlonpolygonpnt'
 
@@ -3568,7 +3568,7 @@ class LatLonPolygonPnt(Base):
     LatLonPolygonID = orm.relationship('LatLonPolygon', foreign_keys='LatLonPolygonPnt.LatLonPolygonID', remote_side='LatLonPolygon.LatLonPolygonID', backref=orm.backref('points', uselist=True))
 
 class LithoStrat(Base):
-    tableid = '100'
+    tableid = 100
     _id = 'lithoStratId'
     __tablename__ = 'lithostrat'
 
@@ -3606,7 +3606,7 @@ class LithoStrat(Base):
     ParentID = orm.relationship('LithoStrat', foreign_keys='LithoStrat.ParentID', remote_side='LithoStrat.LithoStratID', backref=orm.backref('children', uselist=True))
 
 class LithoStratTreeDef(Base):
-    tableid = '101'
+    tableid = 101
     _id = 'lithoStratTreeDefId'
     __tablename__ = 'lithostrattreedef'
 
@@ -3625,7 +3625,7 @@ class LithoStratTreeDef(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='LithoStratTreeDef.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class LithoStratTreeDefItem(Base):
-    tableid = '102'
+    tableid = 102
     _id = 'lithoStratTreeDefItemId'
     __tablename__ = 'lithostrattreedefitem'
 
@@ -3654,7 +3654,7 @@ class LithoStratTreeDefItem(Base):
     LithoStratTreeDefID = orm.relationship('LithoStratTreeDef', foreign_keys='LithoStratTreeDefItem.LithoStratTreeDefID', remote_side='LithoStratTreeDef.LithoStratTreeDefID', backref=orm.backref('treeDefItems', uselist=True))
 
 class Loan(Base):
-    tableid = '52'
+    tableid = 52
     _id = 'loanId'
     __tablename__ = 'loan'
 
@@ -3705,7 +3705,7 @@ class Loan(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Loan.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class LoanAgent(Base):
-    tableid = '53'
+    tableid = 53
     _id = 'loanAgentId'
     __tablename__ = 'loanagent'
 
@@ -3729,7 +3729,7 @@ class LoanAgent(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='LoanAgent.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class LoanAttachment(Base):
-    tableid = '114'
+    tableid = 114
     _id = 'loanAttachmentId'
     __tablename__ = 'loanattachment'
 
@@ -3751,7 +3751,7 @@ class LoanAttachment(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='LoanAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class LoanPreparation(Base):
-    tableid = '54'
+    tableid = 54
     _id = 'loanPreparationId'
     __tablename__ = 'loanpreparation'
 
@@ -3786,7 +3786,7 @@ class LoanPreparation(Base):
     PreparationID = orm.relationship('Preparation', foreign_keys='LoanPreparation.PreparationID', remote_side='Preparation.PreparationID', backref=orm.backref('loanPreparations', uselist=True))
 
 class LoanReturnPreparation(Base):
-    tableid = '55'
+    tableid = 55
     _id = 'loanReturnPreparationId'
     __tablename__ = 'loanreturnpreparation'
 
@@ -3812,7 +3812,7 @@ class LoanReturnPreparation(Base):
     ReceivedByID = orm.relationship('Agent', foreign_keys='LoanReturnPreparation.ReceivedByID', remote_side='Agent.AgentID')
 
 class Locality(Base):
-    tableid = '2'
+    tableid = 2
     _id = 'localityId'
     __tablename__ = 'locality'
 
@@ -3878,7 +3878,7 @@ class Locality(Base):
     VisibilitySetByID = orm.relationship('SpecifyUser', foreign_keys='Locality.VisibilitySetByID', remote_side='SpecifyUser.SpecifyUserID')
 
 class LocalityAttachment(Base):
-    tableid = '115'
+    tableid = 115
     _id = 'localityAttachmentId'
     __tablename__ = 'localityattachment'
 
@@ -3900,7 +3900,7 @@ class LocalityAttachment(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='LocalityAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class LocalityCitation(Base):
-    tableid = '57'
+    tableid = 57
     _id = 'localityCitationId'
     __tablename__ = 'localitycitation'
 
@@ -3927,7 +3927,7 @@ class LocalityCitation(Base):
     ReferenceWorkID = orm.relationship('ReferenceWork', foreign_keys='LocalityCitation.ReferenceWorkID', remote_side='ReferenceWork.ReferenceWorkID', backref=orm.backref('localityCitations', uselist=True))
 
 class LocalityDetail(Base):
-    tableid = '124'
+    tableid = 124
     _id = 'localityDetailId'
     __tablename__ = 'localitydetail'
 
@@ -3992,7 +3992,7 @@ class LocalityDetail(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='LocalityDetail.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class LocalityNameAlias(Base):
-    tableid = '120'
+    tableid = 120
     _id = 'localityNameAliasId'
     __tablename__ = 'localitynamealias'
 
@@ -4014,7 +4014,7 @@ class LocalityNameAlias(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='LocalityNameAlias.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class MaterialSample(Base):
-    tableid = '151'
+    tableid = 151
     _id = 'materialSampleId'
     __tablename__ = 'materialsample'
 
@@ -4074,7 +4074,7 @@ class MaterialSample(Base):
     PreparationID = orm.relationship('Preparation', foreign_keys='MaterialSample.PreparationID', remote_side='Preparation.PreparationID', backref=orm.backref('materialSamples', uselist=True))
 
 class MorphBankView(Base):
-    tableid = '138'
+    tableid = 138
     _id = 'morphBankViewId'
     __tablename__ = 'morphbankview'
 
@@ -4099,7 +4099,7 @@ class MorphBankView(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='MorphBankView.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class OtherIdentifier(Base):
-    tableid = '61'
+    tableid = 61
     _id = 'otherIdentifierId'
     __tablename__ = 'otheridentifier'
 
@@ -4139,7 +4139,7 @@ class OtherIdentifier(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='OtherIdentifier.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class PaleoContext(Base):
-    tableid = '32'
+    tableid = 32
     _id = 'paleoContextId'
     __tablename__ = 'paleocontext'
 
@@ -4182,7 +4182,7 @@ class PaleoContext(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='PaleoContext.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class PcrPerson(Base):
-    tableid = '161'
+    tableid = 161
     _id = 'pcrPersonId'
     __tablename__ = 'pcrperson'
 
@@ -4208,7 +4208,7 @@ class PcrPerson(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='PcrPerson.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class Permit(Base):
-    tableid = '6'
+    tableid = 6
     _id = 'permitId'
     __tablename__ = 'permit'
 
@@ -4253,7 +4253,7 @@ class Permit(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Permit.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class PermitAttachment(Base):
-    tableid = '116'
+    tableid = 116
     _id = 'permitAttachmentId'
     __tablename__ = 'permitattachment'
 
@@ -4275,7 +4275,7 @@ class PermitAttachment(Base):
     PermitID = orm.relationship('Permit', foreign_keys='PermitAttachment.PermitID', remote_side='Permit.PermitID', backref=orm.backref('permitAttachments', uselist=True))
 
 class PickList(Base):
-    tableid = '500'
+    tableid = 500
     _id = 'pickListId'
     __tablename__ = 'picklist'
 
@@ -4304,7 +4304,7 @@ class PickList(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='PickList.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class PickListItem(Base):
-    tableid = '501'
+    tableid = 501
     _id = 'pickListItemId'
     __tablename__ = 'picklistitem'
 
@@ -4325,7 +4325,7 @@ class PickListItem(Base):
     PickListID = orm.relationship('PickList', foreign_keys='PickListItem.PickListID', remote_side='PickList.PickListID', backref=orm.backref('pickListItems', uselist=True))
 
 class PrepType(Base):
-    tableid = '65'
+    tableid = 65
     _id = 'prepTypeId'
     __tablename__ = 'preptype'
 
@@ -4345,7 +4345,7 @@ class PrepType(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='PrepType.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class Preparation(Base):
-    tableid = '63'
+    tableid = 63
     _id = 'preparationId'
     __tablename__ = 'preparation'
 
@@ -4414,7 +4414,7 @@ class Preparation(Base):
     StorageID = orm.relationship('Storage', foreign_keys='Preparation.StorageID', remote_side='Storage.StorageID', backref=orm.backref('preparations', uselist=True))
 
 class PreparationAttachment(Base):
-    tableid = '117'
+    tableid = 117
     _id = 'preparationAttachmentId'
     __tablename__ = 'preparationattachment'
 
@@ -4437,7 +4437,7 @@ class PreparationAttachment(Base):
     PreparationID = orm.relationship('Preparation', foreign_keys='PreparationAttachment.PreparationID', remote_side='Preparation.PreparationID', backref=orm.backref('preparationAttachments', uselist=True))
 
 class PreparationAttr(Base):
-    tableid = '64'
+    tableid = 64
     _id = 'attrId'
     __tablename__ = 'preparationattr'
 
@@ -4460,7 +4460,7 @@ class PreparationAttr(Base):
     PreparationId = orm.relationship('Preparation', foreign_keys='PreparationAttr.PreparationId', remote_side='Preparation.PreparationID', backref=orm.backref('preparationAttrs', uselist=True))
 
 class PreparationAttribute(Base):
-    tableid = '91'
+    tableid = 91
     _id = 'preparationAttributeId'
     __tablename__ = 'preparationattribute'
 
@@ -4518,7 +4518,7 @@ class PreparationAttribute(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='PreparationAttribute.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class PreparationProperty(Base):
-    tableid = '154'
+    tableid = 154
     _id = 'preparationPropertyId'
     __tablename__ = 'preparationproperty'
 
@@ -4719,7 +4719,7 @@ class PreparationProperty(Base):
     PreparationID = orm.relationship('Preparation', foreign_keys='PreparationProperty.PreparationID', remote_side='Preparation.PreparationID', backref=orm.backref('preparationProperties', uselist=True))
 
 class Project(Base):
-    tableid = '66'
+    tableid = 66
     _id = 'projectId'
     __tablename__ = 'project'
 
@@ -4753,7 +4753,7 @@ class Project(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Project.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class RecordSet(Base):
-    tableid = '68'
+    tableid = 68
     _id = 'recordSetId'
     __tablename__ = 'recordset'
 
@@ -4783,7 +4783,7 @@ class RecordSet(Base):
     SpecifyUserID = orm.relationship('SpecifyUser', foreign_keys='RecordSet.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID')
 
 class RecordSetItem(Base):
-    tableid = '502'
+    tableid = 502
     _id = 'recordSetItemId'
     __tablename__ = 'recordsetitem'
 
@@ -4796,7 +4796,7 @@ class RecordSetItem(Base):
     RecordSetID = orm.relationship('RecordSet', foreign_keys='RecordSetItem.RecordSetID', remote_side='RecordSet.RecordSetID', backref=orm.backref('recordSetItems', uselist=True))
 
 class ReferenceWork(Base):
-    tableid = '69'
+    tableid = 69
     _id = 'referenceWorkId'
     __tablename__ = 'referencework'
 
@@ -4839,7 +4839,7 @@ class ReferenceWork(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='ReferenceWork.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class ReferenceWorkAttachment(Base):
-    tableid = '143'
+    tableid = 143
     _id = 'referenceWorkAttachmentId'
     __tablename__ = 'referenceworkattachment'
 
@@ -4861,7 +4861,7 @@ class ReferenceWorkAttachment(Base):
     ReferenceWorkID = orm.relationship('ReferenceWork', foreign_keys='ReferenceWorkAttachment.ReferenceWorkID', remote_side='ReferenceWork.ReferenceWorkID', backref=orm.backref('referenceWorkAttachments', uselist=True))
 
 class RepositoryAgreement(Base):
-    tableid = '70'
+    tableid = 70
     _id = 'repositoryAgreementId'
     __tablename__ = 'repositoryagreement'
 
@@ -4896,7 +4896,7 @@ class RepositoryAgreement(Base):
     AgentID = orm.relationship('Agent', foreign_keys='RepositoryAgreement.AgentID', remote_side='Agent.AgentID')
 
 class RepositoryAgreementAttachment(Base):
-    tableid = '118'
+    tableid = 118
     _id = 'repositoryAgreementAttachmentId'
     __tablename__ = 'repositoryagreementattachment'
 
@@ -4918,7 +4918,7 @@ class RepositoryAgreementAttachment(Base):
     RepositoryAgreementID = orm.relationship('RepositoryAgreement', foreign_keys='RepositoryAgreementAttachment.RepositoryAgreementID', remote_side='RepositoryAgreement.RepositoryAgreementID', backref=orm.backref('repositoryAgreementAttachments', uselist=True))
 
 class Shipment(Base):
-    tableid = '71'
+    tableid = 71
     _id = 'shipmentId'
     __tablename__ = 'shipment'
 
@@ -4963,7 +4963,7 @@ class Shipment(Base):
     ShipperID = orm.relationship('Agent', foreign_keys='Shipment.ShipperID', remote_side='Agent.AgentID')
 
 class SpAppResource(Base):
-    tableid = '514'
+    tableid = 514
     _id = 'spAppResourceId'
     __tablename__ = 'spappresource'
 
@@ -4992,7 +4992,7 @@ class SpAppResource(Base):
     SpecifyUserID = orm.relationship('SpecifyUser', foreign_keys='SpAppResource.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('spAppResources', uselist=True))
 
 class SpAppResourceData(Base):
-    tableid = '515'
+    tableid = 515
     _id = 'spAppResourceDataId'
     __tablename__ = 'spappresourcedata'
 
@@ -5013,7 +5013,7 @@ class SpAppResourceData(Base):
     SpViewSetObjID = orm.relationship('SpViewSetObj', foreign_keys='SpAppResourceData.SpViewSetObjID', remote_side='SpViewSetObj.SpViewSetObjID', backref=orm.backref('spAppResourceDatas', uselist=True))
 
 class SpAppResourceDir(Base):
-    tableid = '516'
+    tableid = 516
     _id = 'spAppResourceDirId'
     __tablename__ = 'spappresourcedir'
 
@@ -5038,7 +5038,7 @@ class SpAppResourceDir(Base):
     SpecifyUserID = orm.relationship('SpecifyUser', foreign_keys='SpAppResourceDir.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('spAppResourceDirs', uselist=True))
 
 class SpAuditLog(Base):
-    tableid = '530'
+    tableid = 530
     _id = 'spAuditLogId'
     __tablename__ = 'spauditlog'
 
@@ -5060,7 +5060,7 @@ class SpAuditLog(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='SpAuditLog.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class SpAuditLogField(Base):
-    tableid = '531'
+    tableid = 531
     _id = 'spAuditLogFieldId'
     __tablename__ = 'spauditlogfield'
 
@@ -5081,7 +5081,7 @@ class SpAuditLogField(Base):
     SpAuditLogID = orm.relationship('SpAuditLog', foreign_keys='SpAuditLogField.SpAuditLogID', remote_side='SpAuditLog.SpAuditLogID', backref=orm.backref('fields', uselist=True))
 
 class SpExportSchema(Base):
-    tableid = '524'
+    tableid = 524
     _id = 'spExportSchemaId'
     __tablename__ = 'spexportschema'
 
@@ -5102,7 +5102,7 @@ class SpExportSchema(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='SpExportSchema.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class SpExportSchemaItem(Base):
-    tableid = '525'
+    tableid = 525
     _id = 'spExportSchemaItemId'
     __tablename__ = 'spexportschemaitem'
 
@@ -5126,7 +5126,7 @@ class SpExportSchemaItem(Base):
     SpLocaleContainerItemID = orm.relationship('SpLocaleContainerItem', foreign_keys='SpExportSchemaItem.SpLocaleContainerItemID', remote_side='SpLocaleContainerItem.SpLocaleContainerItemID', backref=orm.backref('spExportSchemaItems', uselist=True))
 
 class SpExportSchemaItemMapping(Base):
-    tableid = '527'
+    tableid = 527
     _id = 'spExportSchemaItemMappingId'
     __tablename__ = 'spexportschemaitemmapping'
 
@@ -5152,7 +5152,7 @@ class SpExportSchemaItemMapping(Base):
     SpQueryFieldID = orm.relationship('SpQueryField', foreign_keys='SpExportSchemaItemMapping.SpQueryFieldID', remote_side='SpQueryField.SpQueryFieldID', backref=orm.backref('mappings', uselist=True))
 
 class SpExportSchemaMapping(Base):
-    tableid = '528'
+    tableid = 528
     _id = 'spExportSchemaMappingId'
     __tablename__ = 'spexportschemamapping'
 
@@ -5172,7 +5172,7 @@ class SpExportSchemaMapping(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='SpExportSchemaMapping.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class SpFieldValueDefault(Base):
-    tableid = '520'
+    tableid = 520
     _id = 'spFieldValueDefaultId'
     __tablename__ = 'spfieldvaluedefault'
 
@@ -5193,7 +5193,7 @@ class SpFieldValueDefault(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='SpFieldValueDefault.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class SpLocaleContainer(Base):
-    tableid = '503'
+    tableid = 503
     _id = 'spLocaleContainerId'
     __tablename__ = 'splocalecontainer'
 
@@ -5221,7 +5221,7 @@ class SpLocaleContainer(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='SpLocaleContainer.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class SpLocaleContainerItem(Base):
-    tableid = '504'
+    tableid = 504
     _id = 'spLocaleContainerItemId'
     __tablename__ = 'splocalecontaineritem'
 
@@ -5248,7 +5248,7 @@ class SpLocaleContainerItem(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='SpLocaleContainerItem.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class SpLocaleItemStr(Base):
-    tableid = '505'
+    tableid = 505
     _id = 'spLocaleItemStrId'
     __tablename__ = 'splocaleitemstr'
 
@@ -5276,7 +5276,7 @@ class SpLocaleItemStr(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='SpLocaleItemStr.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class SpPermission(Base):
-    tableid = '521'
+    tableid = 521
     _id = 'permissionId'
     __tablename__ = 'sppermission'
 
@@ -5289,7 +5289,7 @@ class SpPermission(Base):
 
 
 class SpPrincipal(Base):
-    tableid = '522'
+    tableid = 522
     _id = 'userGroupId'
     __tablename__ = 'spprincipal'
 
@@ -5310,7 +5310,7 @@ class SpPrincipal(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='SpPrincipal.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class SpQuery(Base):
-    tableid = '517'
+    tableid = 517
     _id = 'spQueryId'
     __tablename__ = 'spquery'
 
@@ -5340,7 +5340,7 @@ class SpQuery(Base):
     SpecifyUserID = orm.relationship('SpecifyUser', foreign_keys='SpQuery.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('spQuerys', uselist=True))
 
 class SpQueryField(Base):
-    tableid = '518'
+    tableid = 518
     _id = 'spQueryFieldId'
     __tablename__ = 'spqueryfield'
 
@@ -5376,7 +5376,7 @@ class SpQueryField(Base):
     SpQueryID = orm.relationship('SpQuery', foreign_keys='SpQueryField.SpQueryID', remote_side='SpQuery.SpQueryID', backref=orm.backref('fields', uselist=True))
 
 class SpReport(Base):
-    tableid = '519'
+    tableid = 519
     _id = 'spReportId'
     __tablename__ = 'spreport'
 
@@ -5404,7 +5404,7 @@ class SpReport(Base):
     WorkbenchTemplateID = orm.relationship('WorkbenchTemplate', foreign_keys='SpReport.WorkbenchTemplateID', remote_side='WorkbenchTemplate.WorkbenchTemplateID')
 
 class SpSymbiotaInstance(Base):
-    tableid = '533'
+    tableid = 533
     _id = 'spSymbiotaInstanceId'
     __tablename__ = 'spsymbiotainstance'
 
@@ -5430,7 +5430,7 @@ class SpSymbiotaInstance(Base):
     SchemaMappingID = orm.relationship('SpExportSchemaMapping', foreign_keys='SpSymbiotaInstance.SchemaMappingID', remote_side='SpExportSchemaMapping.SpExportSchemaMappingID', backref=orm.backref('symbiotaInstances', uselist=True))
 
 class SpTaskSemaphore(Base):
-    tableid = '526'
+    tableid = 526
     _id = 'spTaskSemaphoreId'
     __tablename__ = 'sptasksemaphore'
 
@@ -5459,7 +5459,7 @@ class SpTaskSemaphore(Base):
     OwnerID = orm.relationship('SpecifyUser', foreign_keys='SpTaskSemaphore.OwnerID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('taskSemaphores', uselist=True))
 
 class SpVersion(Base):
-    tableid = '529'
+    tableid = 529
     _id = 'spVersionId'
     __tablename__ = 'spversion'
 
@@ -5481,7 +5481,7 @@ class SpVersion(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='SpVersion.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class SpViewSetObj(Base):
-    tableid = '513'
+    tableid = 513
     _id = 'spViewSetObjId'
     __tablename__ = 'spviewsetobj'
 
@@ -5504,7 +5504,7 @@ class SpViewSetObj(Base):
     SpAppResourceDirID = orm.relationship('SpAppResourceDir', foreign_keys='SpViewSetObj.SpAppResourceDirID', remote_side='SpAppResourceDir.SpAppResourceDirID', backref=orm.backref('spPersistedViewSets', uselist=True))
 
 class SpVisualQuery(Base):
-    tableid = '532'
+    tableid = 532
     _id = 'spVisualQueryId'
     __tablename__ = 'spvisualquery'
 
@@ -5524,7 +5524,7 @@ class SpVisualQuery(Base):
     SpecifyUserID = orm.relationship('SpecifyUser', foreign_keys='SpVisualQuery.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID')
 
 class SpecifyUser(Base):
-    tableid = '72'
+    tableid = 72
     _id = 'specifyUserId'
     __tablename__ = 'specifyuser'
 
@@ -5550,7 +5550,7 @@ class SpecifyUser(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='SpecifyUser.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class Storage(Base):
-    tableid = '58'
+    tableid = 58
     _id = 'storageId'
     __tablename__ = 'storage'
 
@@ -5587,7 +5587,7 @@ class Storage(Base):
     ParentID = orm.relationship('Storage', foreign_keys='Storage.ParentID', remote_side='Storage.StorageID', backref=orm.backref('children', uselist=True))
 
 class StorageAttachment(Base):
-    tableid = '148'
+    tableid = 148
     _id = 'storageAttachmentId'
     __tablename__ = 'storageattachment'
 
@@ -5609,7 +5609,7 @@ class StorageAttachment(Base):
     StorageID = orm.relationship('Storage', foreign_keys='StorageAttachment.StorageID', remote_side='Storage.StorageID', backref=orm.backref('storageAttachments', uselist=True))
 
 class StorageTreeDef(Base):
-    tableid = '59'
+    tableid = 59
     _id = 'storageTreeDefId'
     __tablename__ = 'storagetreedef'
 
@@ -5628,7 +5628,7 @@ class StorageTreeDef(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='StorageTreeDef.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class StorageTreeDefItem(Base):
-    tableid = '60'
+    tableid = 60
     _id = 'storageTreeDefItemId'
     __tablename__ = 'storagetreedefitem'
 
@@ -5657,7 +5657,7 @@ class StorageTreeDefItem(Base):
     StorageTreeDefID = orm.relationship('StorageTreeDef', foreign_keys='StorageTreeDefItem.StorageTreeDefID', remote_side='StorageTreeDef.StorageTreeDefID', backref=orm.backref('treeDefItems', uselist=True))
 
 class Taxon(Base):
-    tableid = '4'
+    tableid = 4
     _id = 'taxonId'
     __tablename__ = 'taxon'
 
@@ -5771,7 +5771,7 @@ class Taxon(Base):
     VisibilitySetByID = orm.relationship('SpecifyUser', foreign_keys='Taxon.VisibilitySetByID', remote_side='SpecifyUser.SpecifyUserID')
 
 class TaxonAttachment(Base):
-    tableid = '119'
+    tableid = 119
     _id = 'taxonAttachmentId'
     __tablename__ = 'taxonattachment'
 
@@ -5793,7 +5793,7 @@ class TaxonAttachment(Base):
     TaxonID = orm.relationship('Taxon', foreign_keys='TaxonAttachment.TaxonID', remote_side='Taxon.TaxonID', backref=orm.backref('taxonAttachments', uselist=True))
 
 class TaxonAttribute(Base):
-    tableid = '162'
+    tableid = 162
     _id = 'taxonAttributeId'
     __tablename__ = 'taxonattribute'
 
@@ -5974,7 +5974,7 @@ class TaxonAttribute(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='TaxonAttribute.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class TaxonCitation(Base):
-    tableid = '75'
+    tableid = 75
     _id = 'taxonCitationId'
     __tablename__ = 'taxoncitation'
 
@@ -6005,7 +6005,7 @@ class TaxonCitation(Base):
     TaxonID = orm.relationship('Taxon', foreign_keys='TaxonCitation.TaxonID', remote_side='Taxon.TaxonID', backref=orm.backref('taxonCitations', uselist=True))
 
 class TaxonTreeDef(Base):
-    tableid = '76'
+    tableid = 76
     _id = 'taxonTreeDefId'
     __tablename__ = 'taxontreedef'
 
@@ -6024,7 +6024,7 @@ class TaxonTreeDef(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='TaxonTreeDef.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class TaxonTreeDefItem(Base):
-    tableid = '77'
+    tableid = 77
     _id = 'taxonTreeDefItemId'
     __tablename__ = 'taxontreedefitem'
 
@@ -6054,7 +6054,7 @@ class TaxonTreeDefItem(Base):
     TaxonTreeDefID = orm.relationship('TaxonTreeDef', foreign_keys='TaxonTreeDefItem.TaxonTreeDefID', remote_side='TaxonTreeDef.TaxonTreeDefID', backref=orm.backref('treeDefItems', uselist=True))
 
 class TreatmentEvent(Base):
-    tableid = '122'
+    tableid = 122
     _id = 'treatmentEventId'
     __tablename__ = 'treatmentevent'
 
@@ -6105,7 +6105,7 @@ class TreatmentEvent(Base):
     PerformedByID = orm.relationship('Agent', foreign_keys='TreatmentEvent.PerformedByID', remote_side='Agent.AgentID')
 
 class TreatmentEventAttachment(Base):
-    tableid = '149'
+    tableid = 149
     _id = 'treatmentEventAttachmentId'
     __tablename__ = 'treatmenteventattachment'
 
@@ -6127,7 +6127,7 @@ class TreatmentEventAttachment(Base):
     TreatmentEventID = orm.relationship('TreatmentEvent', foreign_keys='TreatmentEventAttachment.TreatmentEventID', remote_side='TreatmentEvent.TreatmentEventID', backref=orm.backref('treatmentEventAttachments', uselist=True))
 
 class VoucherRelationship(Base):
-    tableid = '155'
+    tableid = 155
     _id = 'voucherRelationshipId'
     __tablename__ = 'voucherrelationship'
 
@@ -6163,7 +6163,7 @@ class VoucherRelationship(Base):
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='VoucherRelationship.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class Workbench(Base):
-    tableid = '79'
+    tableid = 79
     _id = 'workbenchId'
     __tablename__ = 'workbench'
 
@@ -6196,7 +6196,7 @@ class Workbench(Base):
     WorkbenchTemplateID = orm.relationship('WorkbenchTemplate', foreign_keys='Workbench.WorkbenchTemplateID', remote_side='WorkbenchTemplate.WorkbenchTemplateID', backref=orm.backref('workbenches', uselist=True))
 
 class WorkbenchDataItem(Base):
-    tableid = '80'
+    tableid = 80
     _id = 'workbenchDataItemId'
     __tablename__ = 'workbenchdataitem'
 
@@ -6212,7 +6212,7 @@ class WorkbenchDataItem(Base):
     WorkbenchTemplateMappingItemID = orm.relationship('WorkbenchTemplateMappingItem', foreign_keys='WorkbenchDataItem.WorkbenchTemplateMappingItemID', remote_side='WorkbenchTemplateMappingItem.WorkbenchTemplateMappingItemID', backref=orm.backref('workbenchDataItems', uselist=True))
 
 class WorkbenchRow(Base):
-    tableid = '90'
+    tableid = 90
     _id = 'workbenchRowId'
     __tablename__ = 'workbenchrow'
 
@@ -6236,7 +6236,7 @@ class WorkbenchRow(Base):
     WorkbenchID = orm.relationship('Workbench', foreign_keys='WorkbenchRow.WorkbenchID', remote_side='Workbench.WorkbenchID', backref=orm.backref('workbenchRows', uselist=True))
 
 class WorkbenchRowExportedRelationship(Base):
-    tableid = '126'
+    tableid = 126
     _id = 'workbenchRowExportedRelationshipId'
     __tablename__ = 'workbenchrowexportedrelationship'
 
@@ -6258,7 +6258,7 @@ class WorkbenchRowExportedRelationship(Base):
     WorkbenchRowID = orm.relationship('WorkbenchRow', foreign_keys='WorkbenchRowExportedRelationship.WorkbenchRowID', remote_side='WorkbenchRow.WorkbenchRowID', backref=orm.backref('workbenchRowExportedRelationships', uselist=True))
 
 class WorkbenchRowImage(Base):
-    tableid = '95'
+    tableid = 95
     _id = 'workbenchRowImageId'
     __tablename__ = 'workbenchrowimage'
 
@@ -6273,7 +6273,7 @@ class WorkbenchRowImage(Base):
     WorkbenchRowID = orm.relationship('WorkbenchRow', foreign_keys='WorkbenchRowImage.WorkbenchRowID', remote_side='WorkbenchRow.WorkbenchRowID', backref=orm.backref('workbenchRowImages', uselist=True))
 
 class WorkbenchTemplate(Base):
-    tableid = '81'
+    tableid = 81
     _id = 'workbenchTemplateId'
     __tablename__ = 'workbenchtemplate'
 
@@ -6294,7 +6294,7 @@ class WorkbenchTemplate(Base):
     SpecifyUserID = orm.relationship('SpecifyUser', foreign_keys='WorkbenchTemplate.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('workbenchTemplates', uselist=True))
 
 class WorkbenchTemplateMappingItem(Base):
-    tableid = '82'
+    tableid = 82
     _id = 'workbenchTemplateMappingItemId'
     __tablename__ = 'workbenchtemplatemappingitem'
 
@@ -6327,6 +6327,222 @@ class WorkbenchTemplateMappingItem(Base):
     CreatedByAgentID = orm.relationship('Agent', foreign_keys='WorkbenchTemplateMappingItem.CreatedByAgentID', remote_side='Agent.AgentID')
     ModifiedByAgentID = orm.relationship('Agent', foreign_keys='WorkbenchTemplateMappingItem.ModifiedByAgentID', remote_side='Agent.AgentID')
     WorkbenchTemplateID = orm.relationship('WorkbenchTemplate', foreign_keys='WorkbenchTemplateMappingItem.WorkbenchTemplateID', remote_side='WorkbenchTemplate.WorkbenchTemplateID', backref=orm.backref('workbenchTemplateMappingItems', uselist=True))
+
+class Spuserexternalid(Base):
+    tableid = 1000
+    _id = 'spUserExternalIdId'
+    __tablename__ = 'spuserexternalid'
+
+    id = Column('id', types.Integer, primary_key=True)
+    provider = Column('Provider', types.String, index=False, unique=False, nullable=False)
+    providerid = Column('ProviderId', types.String, index=False, unique=False, nullable=False)
+    enabled = Column('Enabled', mysql_bit_type, index=False, unique=False, nullable=False)
+    idtoken = Column('IdToken', types.String, index=False, unique=False, nullable=True)
+
+    specifyuser = Column('SpUserId', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
+
+    SpUserId = orm.relationship('SpecifyUser', foreign_keys='Spuserexternalid.SpUserId', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('None', uselist=True))
+
+class Spattachmentdataset(Base):
+    tableid = 1001
+    _id = 'spAttachmentDataSetId'
+    __tablename__ = 'spattachmentdataset'
+
+    id = Column('id', types.Integer, primary_key=True)
+    name = Column('Name', types.String, index=False, unique=False, nullable=False)
+    columns = Column('Columns', types.JSON, index=False, unique=False, nullable=False)
+    data = Column('Data', types.JSON, index=False, unique=False, nullable=True)
+    uploadplan = Column('UploadPlan', types.Text, index=False, unique=False, nullable=True)
+    uploadresult = Column('UploadResult', types.JSON, index=False, unique=False, nullable=True)
+    rowresults = Column('RowResults', types.String, index=False, unique=False, nullable=True)
+    visualorder = Column('VisualOrder', types.JSON, index=False, unique=False, nullable=True)
+    importedfilename = Column('ImportedFileName', types.Text, index=False, unique=False, nullable=True)
+    remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
+    timestampcreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
+    timestampmodified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
+
+    collection = Column('CollectionID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=True, unique=False)
+    specifyuser = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
+    createdbyagent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedbyagent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+
+    CollectionID = orm.relationship('Collection', foreign_keys='Spattachmentdataset.CollectionID', remote_side='Collection.UserGroupScopeId', backref=orm.backref('None', uselist=True))
+    SpecifyUserID = orm.relationship('SpecifyUser', foreign_keys='Spattachmentdataset.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('None', uselist=True))
+    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Spattachmentdataset.CreatedByAgentID', remote_side='Agent.AgentID', backref=orm.backref('None', uselist=True))
+    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Spattachmentdataset.ModifiedByAgentID', remote_side='Agent.AgentID', backref=orm.backref('None', uselist=True))
+
+class UniquenessRule(Base):
+    tableid = 1002
+    _id = 'uniquenessRuleId'
+    __tablename__ = 'uniquenessrule'
+
+    id = Column('UniquenessRuleID', types.Integer, primary_key=True)
+    isdatabaseconstraint = Column('IsDatabaseConstraint', mysql_bit_type, index=False, unique=False, nullable=False)
+    modelname = Column('ModelName', types.String, index=True, unique=False, nullable=False)
+
+    discipline = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=True, unique=False)
+
+    DisciplineID = orm.relationship('Discipline', foreign_keys='UniquenessRule.DisciplineID', remote_side='Discipline.UserGroupScopeId', backref=orm.backref('None', uselist=True))
+
+class UniquenessRuleField(Base):
+    tableid = 1003
+    _id = 'uniquenessRuleFieldId'
+    __tablename__ = 'uniquenessrule_field'
+
+    id = Column('UniquenessRule_FieldID', types.Integer, primary_key=True)
+    fieldpath = Column('FieldPath', types.Text, index=True, unique=False, nullable=False)
+    isscope = Column('IsScope', mysql_bit_type, index=False, unique=False, nullable=False)
+
+    uniquenessrule = Column('UniquenessRuleID', types.Integer, ForeignKey('UniquenessRule.UniquenessRuleID'), nullable=False, unique=False)
+
+    UniquenessRuleID = orm.relationship('UniquenessRule', foreign_keys='UniquenessRuleField.UniquenessRuleID', remote_side='UniquenessRule.UniquenessRuleID', backref=orm.backref('None', uselist=True))
+
+class Message(Base):
+    tableid = 1004
+    _id = 'messageId'
+    __tablename__ = 'notifications_message'
+
+    id = Column('id', types.Integer, primary_key=True)
+    timestampcreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
+    content = Column('Content', types.Text, index=False, unique=False, nullable=True)
+    read = Column('Read', mysql_bit_type, index=False, unique=False, nullable=False)
+
+    user = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
+
+    SpecifyUserID = orm.relationship('SpecifyUser', foreign_keys='Message.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('None', uselist=True))
+
+class Spmerging(Base):
+    tableid = 1005
+    _id = 'spMergingId'
+    __tablename__ = 'spmerging'
+
+    id = Column('id', types.Integer, primary_key=True)
+    name = Column('Name', types.String, index=False, unique=False, nullable=False)
+    taskid = Column('TaskID', types.String, index=False, unique=False, nullable=False)
+    mergingstatus = Column('MergingStatus', types.String, index=False, unique=False, nullable=False)
+    resonses = Column('Resonses', types.Text, index=False, unique=False, nullable=True)
+    table = Column('Table', types.String, index=False, unique=False, nullable=False)
+    newrecordid = Column('NewRecordID', types.Integer, index=False, unique=False, nullable=False)
+    newrecordata = Column('NewRecordData', types.JSON, index=False, unique=False, nullable=True)
+    oldrecordids = Column('OldRecordIDs', types.JSON, index=False, unique=False, nullable=True)
+    timestampcreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
+    timestampmodified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
+
+    collection = Column('CollectionID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=True, unique=False)
+    specifyuser = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
+    createdbyagent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedbyagent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+
+    CollectionID = orm.relationship('Collection', foreign_keys='Spmerging.CollectionID', remote_side='Collection.UserGroupScopeId', backref=orm.backref('None', uselist=True))
+    SpecifyUserID = orm.relationship('SpecifyUser', foreign_keys='Spmerging.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('None', uselist=True))
+    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Spmerging.CreatedByAgentID', remote_side='Agent.AgentID', backref=orm.backref('None', uselist=True))
+    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Spmerging.ModifiedByAgentID', remote_side='Agent.AgentID', backref=orm.backref('None', uselist=True))
+
+class UserPolicy(Base):
+    tableid = 1006
+    _id = 'userPolicyId'
+    __tablename__ = 'spuserpolicy'
+
+    id = Column('id', types.Integer, primary_key=True)
+    resource = Column('Resource', types.String, index=False, unique=False, nullable=False)
+    action = Column('Action', types.String, index=False, unique=False, nullable=False)
+
+    collection = Column('CollectionID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=True, unique=False)
+    specifyuser = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
+
+    CollectionID = orm.relationship('Collection', foreign_keys='UserPolicy.CollectionID', remote_side='Collection.UserGroupScopeId', backref=orm.backref('None', uselist=True))
+    SpecifyUserID = orm.relationship('SpecifyUser', foreign_keys='UserPolicy.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('None', uselist=True))
+
+class Role(Base):
+    tableid = 1007
+    _id = 'roleId'
+    __tablename__ = 'sprole'
+
+    id = Column('id', types.Integer, primary_key=True)
+    name = Column('Name', types.String, index=False, unique=False, nullable=False)
+    description = Column('Description', types.Text, index=False, unique=False, nullable=True)
+
+    collection = Column('CollectionID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=True, unique=False)
+
+    CollectionID = orm.relationship('Collection', foreign_keys='Role.CollectionID', remote_side='Collection.UserGroupScopeId', backref=orm.backref('None', uselist=True))
+
+class LibraryRole(Base):
+    tableid = 1008
+    _id = 'libraryRoleId'
+    __tablename__ = 'splibraryrole'
+
+    id = Column('id', types.Integer, primary_key=True)
+    name = Column('Name', types.String, index=False, unique=False, nullable=False)
+    descr1iption = Column('Description', types.Text, index=False, unique=False, nullable=True)
+
+
+
+class UserRole(Base):
+    tableid = 1009
+    _id = 'userRoleId'
+    __tablename__ = 'spuserrole'
+
+    id = Column('id', types.Integer, primary_key=True)
+
+    specifyuser = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
+    role = Column('RoleID', types.Integer, ForeignKey('Role.RoleID'), nullable=False, unique=False)
+
+    SpecifyUserID = orm.relationship('SpecifyUser', foreign_keys='UserRole.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('None', uselist=True))
+    RoleID = orm.relationship('Role', foreign_keys='UserRole.RoleID', remote_side='Role.RoleID', backref=orm.backref('None', uselist=True))
+
+class RolePolicy(Base):
+    tableid = 1010
+    _id = 'rolePolicyId'
+    __tablename__ = 'sprolepolicy'
+
+    id = Column('id', types.Integer, primary_key=True)
+    resource = Column('Resource', types.String, index=False, unique=False, nullable=False)
+    action = Column('Action', types.String, index=False, unique=False, nullable=False)
+
+    role = Column('RoleID', types.Integer, ForeignKey('Role.RoleID'), nullable=False, unique=False)
+
+    RoleID = orm.relationship('Role', foreign_keys='RolePolicy.RoleID', remote_side='Role.RoleID', backref=orm.backref('None', uselist=True))
+
+class LibraryRolePolicy(Base):
+    tableid = 1011
+    _id = 'libraryRolePolicyId'
+    __tablename__ = 'splibraryrolepolicy'
+
+    id = Column('id', types.Integer, primary_key=True)
+    resource = Column('Resource', types.String, index=False, unique=False, nullable=False)
+    action = Column('Action', types.String, index=False, unique=False, nullable=False)
+
+    libraryrole = Column('LibraryRoleID', types.Integer, ForeignKey('LibraryRole.LibraryRoleID'), nullable=False, unique=False)
+
+    LibraryRoleID = orm.relationship('LibraryRole', foreign_keys='LibraryRolePolicy.LibraryRoleID', remote_side='LibraryRole.LibraryRoleID', backref=orm.backref('None', uselist=True))
+
+class Spdataset(Base):
+    tableid = 1012
+    _id = 'spDataSetId'
+    __tablename__ = 'spdataset'
+
+    id = Column('id', types.Integer, primary_key=True)
+    name = Column('Name', types.String, index=False, unique=False, nullable=False)
+    columns = Column('Columns', types.JSON, index=False, unique=False, nullable=False)
+    data = Column('Data', types.JSON, index=False, unique=False, nullable=True)
+    uploadplan = Column('UploadPlan', types.Text, index=False, unique=False, nullable=True)
+    uploadresult = Column('UploadResult', types.JSON, index=False, unique=False, nullable=True)
+    rowresults = Column('RowResults', types.String, index=False, unique=False, nullable=True)
+    visualorder = Column('VisualOrder', types.JSON, index=False, unique=False, nullable=True)
+    importedfilename = Column('ImportedFileName', types.Text, index=False, unique=False, nullable=True)
+    remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
+    timestampcreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
+    timestampmodified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
+
+    collection = Column('CollectionID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=True, unique=False)
+    specifyuser = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
+    createdbyagent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedbyagent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+
+    CollectionID = orm.relationship('Collection', foreign_keys='Spdataset.CollectionID', remote_side='Collection.UserGroupScopeId', backref=orm.backref('None', uselist=True))
+    SpecifyUserID = orm.relationship('SpecifyUser', foreign_keys='Spdataset.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('None', uselist=True))
+    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Spdataset.CreatedByAgentID', remote_side='Agent.AgentID', backref=orm.backref('None', uselist=True))
+    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Spdataset.ModifiedByAgentID', remote_side='Agent.AgentID', backref=orm.backref('None', uselist=True))
 
 classes = {
     'Accession': Accession,
@@ -6514,6 +6730,19 @@ classes = {
     'WorkbenchRowImage': WorkbenchRowImage,
     'WorkbenchTemplate': WorkbenchTemplate,
     'WorkbenchTemplateMappingItem': WorkbenchTemplateMappingItem,
+    'Spuserexternalid': Spuserexternalid,
+    'Spattachmentdataset': Spattachmentdataset,
+    'UniquenessRule': UniquenessRule,
+    'UniquenessRuleField': UniquenessRuleField,
+    'Message': Message,
+    'Spmerging': Spmerging,
+    'UserPolicy': UserPolicy,
+    'Role': Role,
+    'LibraryRole': LibraryRole,
+    'UserRole': UserRole,
+    'RolePolicy': RolePolicy,
+    'LibraryRolePolicy': LibraryRolePolicy,
+    'Spdataset': Spdataset,
 }
 
 models_by_tableid = dict((cls.tableid, cls) for cls in list(classes.values()))
