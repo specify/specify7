@@ -521,7 +521,7 @@ export const preferencesText = createDictionary({
     'fr-fr': `
       Algorithme de recherche (pour les relations avec les tables arborescentes)
     `,
-    'uk-ua': "Алгоритм пошуку (для зв'язків із деревоподібними таблицями)",
+    'uk-ua': 'Алгоритм пошуку (для зв’язків із деревоподібними таблицями)',
     'de-ch': 'Suchalgorithmus (für Beziehungen mit Baumtabellen)',
   },
   startsWithInsensitive: {
@@ -775,7 +775,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Позволяет загружать данные в любое поле любой таблицы.',
     'es-es': 'Permite cargar datos en cualquier campo de cualquier tabla.',
     'fr-fr': `
-      Permet de télécharger des données vers n’importe quel champ de n’importe
+      Permet de télécharger des données dans n'importe quel champ de n'importe
       quelle table.
     `,
     'uk-ua': 'Дозволяє завантажувати дані в будь-яке поле будь-якої таблиці.',
@@ -937,7 +937,7 @@ export const preferencesText = createDictionary({
   },
   autoWrapCols: {
     'en-us': 'Navigate to the other side when reaching the edge column',
-    'ru-ru': 'Перейдите на другую сторону, достигнув краевого столбца.',
+    'ru-ru': 'Перейдите на другую сторону, когда достигнете краевого столбца.',
     'es-es': 'Navega hacia el otro lado al llegar a la columna del borde',
     'fr-fr':
       'Naviguez de l’autre côté lorsque vous atteignez la colonne de bord',
@@ -1164,7 +1164,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Enfocar el primer campo',
     'fr-fr': 'Concentrez-vous sur le premier champ',
     'ru-ru': 'Фокус первого поля',
-    'uk-ua': 'Сфокусувати перше поле',
+    'uk-ua': 'Перейти до першого поля',
   },
   doubleClickZoom: {
     'en-us': 'Double click to zoom',
@@ -1419,7 +1419,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Formato del encabezado del formulario',
     'fr-fr': "Format d'en-tête de formulaire",
     'uk-ua': 'Формат заголовка форми',
-    'de-ch': 'Format der Formularkopfzeile',
+    'de-ch': 'Formularkopfzeilenformat',
   },
   iconAndTableName: {
     'en-us': 'Icon and table name',
@@ -1727,7 +1727,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Запомнить позиции диалоговых окон',
     'es-es': 'Recordar las posiciones de las ventanas de diálogo',
     'fr-fr': 'Mémoriser les positions des fenêtres de dialogue',
-    'uk-ua': "Запам'ятовуйте розташування діалогового вікна",
+    'uk-ua': "Запам'ятовуйте положення діалогового вікна",
     'de-ch': 'Dialogfensterpositionen merken',
   },
   autoPlayMedia: {

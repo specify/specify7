@@ -249,8 +249,8 @@ export const resourcesText = createDictionary({
     'ru-ru': `
       «Агрегация таблиц» управляет тем, как несколько записей таблицы
       объединяются в одну текстовую строку. Формат таблицы, разделитель,
-      суффикс, поле сортировки и ограничение предварительного просмотра записи
-      можно настроить. Его можно отобразить в результатах запроса и в форматах
+      суффикс, поле сортировки и предел предварительного просмотра записей можно
+      настроить. Его можно отобразить в результатах запроса и в форматах
       таблиц.
     `,
     'uk-ua': `
@@ -281,7 +281,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Verfügbare Tabellenaggregationen',
     'es-es': 'Agregaciones de tablas disponibles',
     'fr-fr': 'Agrégations de tables disponibles',
-    'ru-ru': 'Доступные агрегаты таблиц',
+    'ru-ru': 'Доступные агрегации таблиц',
     'uk-ua': 'Доступні агрегації таблиць',
   },
   availableWebLink: {
@@ -796,7 +796,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Feldformate anpassen',
     'es-es': 'Personalizar formatos de campo',
     'fr-fr': 'Personnaliser les formats de champs',
-    'ru-ru': 'Настройте форматы полей',
+    'ru-ru': 'Настройка форматов полей',
     'uk-ua': 'Налаштувати формати полів',
   },
   expandConditionalField: {

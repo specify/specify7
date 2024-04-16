@@ -338,7 +338,7 @@ export const commonText = createDictionary({
     'ru-ru': 'По убыванию',
     'es-es': 'Descendente',
     'fr-fr': 'Descendant',
-    'uk-ua': 'Спадання',
+    'uk-ua': 'Спускається',
     'de-ch': 'Absteigend',
   },
   recordSets: {
