@@ -31,6 +31,7 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { FormContext } from './BaseResourceView';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
+import { Input, Label } from '../Atoms/Form';
 
 export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 
@@ -211,10 +212,24 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     </ButtonComponent>
   );
 
+  const [carryForwardAmount, setCarryForwardAmount] = React.useState<number>(1);
+
   return (
     <>
       {typeof handleAdd === 'function' && canCreate ? (
         <>
+          <Label.Inline>
+            {commonText.bulkSelect()}
+            <Input.Generic
+              type="number"
+              value={carryForwardAmount}
+              onValueChange={(value): void =>
+                carryForwardAmount === undefined
+                  ? setCarryForwardAmount(1)
+                  : setCarryForwardAmount(Number.parseInt(value))
+              }
+            />
+          </Label.Inline>
           {showClone &&
             copyButton(
               formsText.clone(),
@@ -225,7 +240,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
             copyButton(
               formsText.carryForward(),
               formsText.carryForwardDescription(),
-              async () => resource.clone(false)
+              async () => resource.clone(false, carryForwardAmount)
             )}
           {showAdd &&
             copyButton(

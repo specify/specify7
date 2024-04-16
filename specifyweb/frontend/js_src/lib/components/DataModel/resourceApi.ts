@@ -134,8 +134,9 @@ export const ResourceBase = Backbone.Model.extend({
   handleChanged() {
     this.needsSaved = true;
   },
-  async clone(cloneAll = false) {
+  async clone(cloneAll = false, bulkAmount = 1) {
     const self = this;
+    console.log(bulkAmount);
 
     const exemptFields = getFieldsToNotClone(this.specifyTable, cloneAll).map(
       (fieldName) => fieldName.toLowerCase()
