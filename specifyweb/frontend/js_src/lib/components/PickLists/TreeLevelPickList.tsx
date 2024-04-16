@@ -20,6 +20,23 @@ import {
 import { hasTreeAccess } from '../Permissions/helpers';
 import { PickListComboBox } from './index';
 
+const fetchTreeRoot = async (
+  treeName: AnyTree['tableName']
+): Promise<RA<PickListItemSimple>> =>
+  treeRanksPromise
+    .then(
+      () =>
+        strictGetTreeDefinitionItems(treeName as 'Geography', true).find(
+          ({ rankId }) => rankId === 0
+        )!
+    )
+    .then((rank) => [
+      {
+        value: rank.resource_uri,
+        title: (rank.title?.length ?? 0) === 0 ? rank.name : rank.title!,
+      },
+    ]);
+
 const fetchPossibleRanks = async (
   lowestChildRank: number,
   parentRankId: number,
@@ -95,6 +112,9 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
                     resource.specifyTable.name
                   )
                 )
+              : typeof resource.get('definitionItem') === 'string' &&
+                !resource.isNew()
+              ? fetchTreeRoot(resource.specifyTable.name)
               : undefined
           )
           .then((items) => {
@@ -110,23 +130,54 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
     };
   }, [props.resource, props.defaultValue]);
 
+  React.useEffect(() => {
+    if (props.resource === undefined) return undefined;
+    const resource = toTreeTable(props.resource);
+    let destructorCalled = false;
+
+    const destructor = resourceOn(
+      props.resource,
+      'change:parent',
+      (): void => {
+        if (destructorCalled) return undefined;
+        const definitionItem = resource?.get('definitionItem');
+
+        if (
+          (items !== undefined ||
+            typeof resource?.get('parent') !== 'string') &&
+          (typeof definitionItem !== 'string' ||
+            !items?.map(({ value }) => value).includes(definitionItem))
+        )
+          resource?.set(
+            'definitionItem',
+            props.defaultValue ?? items?.slice(-1)[0]?.value ?? ''
+          );
+      },
+      true
+    );
+
+    return (): void => {
+      destructorCalled = true;
+      destructor();
+    };
+  }, [props.defaultValue, props.resource, items]);
+
   return (
     <PickListComboBox
       {...props}
       isDisabled={
         props.isDisabled ||
         props.resource === undefined ||
+        items?.length === 0 ||
         !isTreeResource(props.resource) ||
-        props.resource.get('parent') === null
+        typeof props.resource.get('parent') !== 'string'
       }
       isRequired={
         props.resource?.specifyTable.getRelationship('definitionItem')
           ?.isRequired ?? true
       }
       items={items ?? []}
-      // Select next enforced rank by default
       pickList={undefined}
-      onAdd={undefined}
     />
   );
 }

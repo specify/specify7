@@ -277,5 +277,6 @@ export const findUnclaimedBlocker = (
           },
         ]) !== undefined
       );
+    else if (currentListeners.length === 0) return true;
     else return false;
   });
