@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-04-16 16:25+0000\n"
+"PO-Revision-Date: 2024-04-16 18:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "schema/uk/>\n"
@@ -138,7 +138,7 @@ msgstr "опис"
 #: components/SchemaConfig/Table.tsx:104
 #, fuzzy
 msgid "hideTable"
-msgstr "Сховати таблицю"
+msgstr "Приховати таблицю"
 
 #. Used in: Components > Schema Config > Field
 #: components/SchemaConfig/Field.tsx:88
@@ -390,7 +390,7 @@ msgstr "У базі даних знайдено дублікати"
 #: components/SchemaConfig/UniquenessRuleRow.tsx:233
 #, fuzzy
 msgid "exportDuplicates"
-msgstr "Експорт дублікатів"
+msgstr "Експортувати дублікати"
 
 #. Used in: Components > Schema Config > Uniqueness Rule Row
 #: components/SchemaConfig/UniquenessRuleRow.tsx:208
