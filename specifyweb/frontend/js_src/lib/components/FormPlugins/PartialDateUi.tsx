@@ -10,7 +10,6 @@ import { getDateParser } from './dateUtils';
 import type { PartialDatePrecision } from './useDatePrecision';
 import { useDatePrecision } from './useDatePrecision';
 import { useMoment } from './useMoment';
-import { useDatePreferences } from './useDatePreferences';
 
 /** A date picker with precision selection (full, month-year, year) */
 export function PartialDateUi({
@@ -66,7 +65,6 @@ export function PartialDateUi({
             moment={moment}
             parser={parser}
             precision={precision}
-            canChangePrecision={canChangePrecision}
           />
         </div>
       </ReadOnlyContext.Provider>

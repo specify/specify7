@@ -3,7 +3,7 @@
 exports[`PartialDateUi renders without errors 1`] = `
 <DocumentFragment>
   <div
-    class="grid w-full grid-cols-[fit-content(40%)_1fr] gap-1"
+    class="grid grid-cols-[fit-content(40%)_1fr] w-full gap-1"
   >
     <label
       class="print:hidden"
@@ -37,7 +37,7 @@ exports[`PartialDateUi renders without errors 1`] = `
       class="flex"
     >
       <input
-        class="not-touched w-full !w-[unset] grow"
+        class="not-touched w-full"
         max="9999-12-31"
         placeholder="MM/DD/YYYY"
         type="date"
@@ -51,13 +51,13 @@ exports[`PartialDateUi renders without errors 1`] = `
 exports[`PartialDateUi renders without errors 2`] = `
 <DocumentFragment>
   <div
-    class="grid w-full grid-cols-[fit-content(40%)_1fr] gap-1"
+    class=" w-full gap-1"
   >
     <div
       class="flex"
     >
       <input
-        class="not-touched w-full !w-[unset] grow"
+        class="not-touched w-full"
         placeholder="MM/YYYY"
         type="month"
         value=""
@@ -70,13 +70,13 @@ exports[`PartialDateUi renders without errors 2`] = `
 exports[`PartialDateUi renders without errors 3`] = `
 <DocumentFragment>
   <div
-    class="grid w-full grid-cols-[fit-content(40%)_1fr] gap-1"
+    class=" w-full gap-1"
   >
     <div
       class="flex"
     >
       <input
-        class="not-touched w-full !w-[unset] grow"
+        class="not-touched w-full"
         max="9999"
         min="1"
         placeholder="YYYY"

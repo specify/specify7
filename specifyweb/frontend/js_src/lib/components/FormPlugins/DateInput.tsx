@@ -21,14 +21,12 @@ export function DateInput({
   parser,
   id,
   isRequired,
-  canChangePrecision,
 }: {
   readonly moment: GetSet<ReturnType<typeof dayjs> | undefined>;
   readonly precision: PartialDatePrecision;
   readonly parser: Parser;
   readonly id?: string;
   readonly isRequired?: boolean;
-  readonly canChangePrecision?: boolean;
 }): JSX.Element {
   const {
     dateType,
