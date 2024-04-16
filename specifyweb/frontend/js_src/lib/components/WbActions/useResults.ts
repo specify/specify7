@@ -8,11 +8,9 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 export function useResults({
   hot,
   workbench,
-  spreadsheetContainerRef,
 }: {
   readonly hot: Handsontable | undefined;
   readonly workbench: Workbench;
-  readonly spreadsheetContainerRef: React.RefObject<HTMLElement>;
 }) {
   const [showResults, _, closeResults, toggleResults] = useBooleanState();
 

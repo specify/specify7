@@ -5,7 +5,6 @@ import { WbValidation } from '../WorkBench/WbValidation';
 import { Button } from '../Atoms/Button';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
 
 export function WbValidate({
   canLiveValidate,

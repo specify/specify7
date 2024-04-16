@@ -24,7 +24,7 @@ export function DisambiguationDialog({
   onClose: handleClose,
 }: {
   readonly matches: RA<SpecifyResource<AnySchema>>;
-  readonly liveValidationStack: WritableArray<number>;
+  readonly liveValidationStack?: WritableArray<number>;
   readonly defaultResource?: SpecifyResource<AnySchema>;
   readonly onSelected: (resource: SpecifyResource<AnySchema>) => void;
   readonly onSelectedAll: (resource: SpecifyResource<AnySchema>) => void;
@@ -50,10 +50,10 @@ export function DisambiguationDialog({
           </Button.Info>
           <Button.Info
             disabled={
-              selected === undefined || liveValidationStack.length !== 0
+              selected === undefined || liveValidationStack?.length !== 0
             }
             title={
-              liveValidationStack.length !== 0
+              liveValidationStack?.length !== 0
                 ? wbText.applyAllUnavailable()
                 : undefined
             }

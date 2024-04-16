@@ -5,7 +5,6 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { Button } from '../Atoms/Button';
 import { wbText } from '../../localization/workbench';
 import { RollbackConfirmation } from '../WorkBench/Components';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
 
 export function WbRollback({
   datasetId,

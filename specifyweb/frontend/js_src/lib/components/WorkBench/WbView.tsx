@@ -49,6 +49,7 @@ import { DisambiguationDialog } from './Disambiguation';
 import { mappingPathToString } from '../WbPlanView/mappingHelpers';
 import { MappingPath } from '../WbPlanView/Mapper';
 import { strictGetTable } from '../DataModel/tables';
+import { wbText } from '../../localization/workbench';
 
 export type WbStatus = 'unupload' | 'upload' | 'validate';
 
@@ -149,7 +150,6 @@ export function WbView({
   const { showResults, closeResults, toggleResults } = useResults({
     hot,
     workbench,
-    spreadsheetContainerRef,
   });
 
   const [disambiguationMatches, setDisambiguationMatches] = React.useState<{

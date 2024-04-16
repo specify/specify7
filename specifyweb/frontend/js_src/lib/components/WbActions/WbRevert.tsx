@@ -5,7 +5,6 @@ import { Button } from '../Atoms/Button';
 import { wbText } from '../../localization/workbench';
 import { commonText } from '../../localization/common';
 import { Dialog } from '../Molecules/Dialog';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
 
 export function WbRevert({
   hasUnsavedChanges,
