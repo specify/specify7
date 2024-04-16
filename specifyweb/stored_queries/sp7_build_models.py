@@ -1,10 +1,11 @@
 from sqlalchemy import Column, ForeignKey, types
 from sqlalchemy.dialects.mysql import BIT as mysql_bit_type
+from specifyweb.specify.load_datamodel import Datamodel, Table, Column, Index, Field, IdField, Relationship
 
 TAB1 = '    '
 TAB2 = TAB1 + TAB1
 
-def make_foreign_key(datamodel, reldef):
+def make_foreign_key(datamodel: Datamodel, reldef: Relationship):
     remote_tabledef = datamodel.get_table(reldef.relatedModelName) # TODO: this could be a method of relationship
     if remote_tabledef is None:
         return
@@ -16,7 +17,7 @@ def make_foreign_key(datamodel, reldef):
                   nullable = not reldef.required,
                   unique = reldef.type == 'one_to_one')
 
-def make_column(flddef):
+def make_column(flddef: Field):
     field_type = FIELD_TYPE_MAP[ flddef.type ]
 
     if hasattr(flddef, 'length') and field_type in (types.Text, types.String):
@@ -62,7 +63,7 @@ FIELD_TYPE_CODE_MAP = {
     'java.lang.Boolean': 'mysql_bit_type'
 }
 
-def gen_column_code(flddef):
+def gen_column_code(flddef: Field):
     field_type = FIELD_TYPE_MAP[flddef.type]
     if hasattr(flddef, 'length') and field_type in (types.Text, types.String):
         field_type = field_type(flddef.length)
@@ -78,12 +79,12 @@ def gen_column_code(flddef):
     )
     return column_code
 
-def gen_foreign_key_code(datamodel, reldef):
+def gen_foreign_key_code(datamodel: Datamodel, reldef: Relationship):
     remote_tabledef = datamodel.get_table(reldef.relatedModelName) # TODO: this could be a method of relationship
     if remote_tabledef is None:
         return
 
-    fk_target = '.'.join((remote_tabledef.name, remote_tabledef.idColumn))
+    fk_target = '.'.join((untitle(remote_tabledef.name), remote_tabledef.idColumn))
 
     column_code = (
         "Column("
@@ -96,7 +97,7 @@ def gen_foreign_key_code(datamodel, reldef):
     )
     return column_code
 
-def gen_table_code(datamodel, tabledef):
+def gen_table_code(datamodel: Datamodel, tabledef: Table):
     columns = [ Column(tabledef.idColumn, types.Integer, primary_key=True) ]
 
     columns.extend(make_column(field) for field in tabledef.fields)
@@ -118,7 +119,7 @@ def gen_table_code(datamodel, tabledef):
                 table_code += f"    {fk_code}," + '\n'
     return table_code
 
-def gen_relationship_code(datamodel, tabledef, reldef):
+def gen_relationship_code(datamodel: Datamodel, tabledef: Table, reldef: Relationship):
     if not hasattr(reldef, 'column'):
         return None
     foreign_tabledef = datamodel.get_table(reldef.relatedModelName)
@@ -126,10 +127,11 @@ def gen_relationship_code(datamodel, tabledef, reldef):
         return None
     backref = ''
     if hasattr(reldef, 'otherSideName'):
-        backref = f"backref=orm.backref('{reldef.otherSideName}', uselist={reldef.type != 'one-to-one'})"
+        backref = f"backref=backref('{reldef.otherSideName}', uselist={reldef.type != 'one-to-one'})"
     rel_name = reldef.column[:-2]
+    rel_name = untitle(rel_name)
     code = (
-        f"{rel_name} = orm.relationship("
+        f"{rel_name} = relationship("
         f"'{reldef.relatedModelName}', "
         f"foreign_keys='{tabledef.name}.{reldef.column}', "
         f"remote_side='{foreign_tabledef.name}.{foreign_tabledef.idColumn}', "
@@ -140,13 +142,13 @@ def gen_relationship_code(datamodel, tabledef, reldef):
     code += ")"
     return code
 
-def gen_tables_code(datamodel):
+def gen_tables_code(datamodel: Datamodel):
     tables_code = "tables = {\n"
     for table in datamodel.tables:
         tables_code += f"{TAB1}'{table.table}': {gen_table_code(datamodel, table)},\n"
     tables_code += "}\n"
 
-def gen_class_code(tabledef):
+def gen_class_code(tabledef: Table):
     cls_code = (
         "type("
         f"{tabledef.name}, "
@@ -164,11 +166,33 @@ def gen_class_code(tabledef):
     )
     return cls_code
 
-def gen_sqlalchemy_table_classes_code(datamodel):
+def gen_sqlalchemy_table_classes_code(datamodel: Datamodel):
     code = (
-        "from sqlalchemy import Column, ForeignKey, types, orm\n"
+        "from contextlib import contextmanager\n"
+        "from MySQLdb.cursors import SSCursor\n"
+        "from django.conf import settings\n"
+        "from sqlalchemy import create_engine, ForeignKey, PrimaryKeyConstraint, Table, Column, MetaData\n"
+        "from sqlalchemy.types import Integer, Numeric, Float, String, DateTime, Date, Text, JSON\n"
+        "from sqlalchemy.import relationship, backref\n"
         "from sqlalchemy.ext.declarative import declarative_base\n"
         "from sqlalchemy.dialects.mysql import BIT as mysql_bit_type\n\n"
+        "engine = create_engine(settings.SA_DATABASE_URL, pool_recycle=settings.SA_POOL_RECYCLE,\n"
+        "               connect_args={'cursorclass': SSCursor})\n"
+        "Session = sessionmaker(bind=engine)\n\n"
+        "def make_session_context(session_maker):\n"
+        "    @contextmanager\n"
+        "    def _session_context():\n"
+        "        session = session_maker()\n"
+        "        try:\n"
+        "            yield session\n"
+        "            session.commit()\n"
+        "        except:\n"
+        "            session.rollback()\n"
+        "            raise\n"
+        "        finally:\n"
+        "            session.close()\n"
+        "    return _session_context\n\n"
+        "session_context = make_session_context(Session)\n\n"
         "Base = declarative_base()\n\n"
     )
     for table in datamodel.tables:
@@ -186,7 +210,7 @@ def gen_sqlalchemy_table_classes_code(datamodel):
             if rel.type in ('many-to-one', 'one-to-one') and hasattr(rel, 'column'):
                 fk_code = gen_foreign_key_code(datamodel, rel)
                 if fk_code is not None:
-                    code += f"{TAB1}{rel.name}ID = {gen_foreign_key_code(datamodel, rel)}\n"
+                    code += f"{TAB1}{rel.name.title()}ID = {gen_foreign_key_code(datamodel, rel)}\n"
                     # code += f"{TAB1}" # TODO: fix this
         code += '\n'
         for rel in table.relationships:
@@ -204,3 +228,6 @@ def gen_sqlalchemy_table_classes_code(datamodel):
     code += "}\n\n"
     code += "models_by_tableid = dict((cls.tableid, cls) for cls in list(classes.values()))\n"
     return code
+
+def untitle(s):
+    return s[0].lower() + s[1:] if s else ''
