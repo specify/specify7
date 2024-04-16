@@ -38,7 +38,7 @@ class Accession(Base):
     _id = 'accessionId'
     __tablename__ = 'accession'
 
-    id = Column('id', types.Integer, primary_key=True)
+    accessionId = Column('Accessionid', types.Integer, primary_key=True)
     accessionCondition = Column('AccessionCondition', types.String, index=False, unique=False, nullable=True)
     accessionNumber = Column('AccessionNumber', types.String, index=True, unique=False, nullable=False)
     dateAccessioned = Column('DateAccessioned', types.Date, index=True, unique=False, nullable=True)
@@ -65,93 +65,93 @@ class Accession(Base):
     yesNo1 = Column('YesNo1', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo2 = Column('YesNo2', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    addressOfRecord = Column('AddressOfRecordID', types.Integer, ForeignKey('AddressOfRecord.AddressOfRecordID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    division = Column('DivisionID', types.Integer, ForeignKey('Division.UserGroupScopeId'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    repositoryAgreement = Column('RepositoryAgreementID', types.Integer, ForeignKey('RepositoryAgreement.RepositoryAgreementID'), nullable=True, unique=False)
+    addressOfRecordID = Column('AddressOfRecordID', types.Integer, ForeignKey('AddressOfRecord.AddressOfRecordID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    divisionID = Column('DivisionID', types.Integer, ForeignKey('Division.UserGroupScopeId'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    repositoryAgreementID = Column('RepositoryAgreementID', types.Integer, ForeignKey('RepositoryAgreement.RepositoryAgreementID'), nullable=True, unique=False)
 
-    AddressOfRecordID = orm.relationship('AddressOfRecord', foreign_keys='Accession.AddressOfRecordID', remote_side='AddressOfRecord.AddressOfRecordID', backref=orm.backref('accessions', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Accession.CreatedByAgentID', remote_side='Agent.AgentID')
-    DivisionID = orm.relationship('Division', foreign_keys='Accession.DivisionID', remote_side='Division.UserGroupScopeId')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Accession.ModifiedByAgentID', remote_side='Agent.AgentID')
-    RepositoryAgreementID = orm.relationship('RepositoryAgreement', foreign_keys='Accession.RepositoryAgreementID', remote_side='RepositoryAgreement.RepositoryAgreementID', backref=orm.backref('accessions', uselist=True))
+    AddressOfRecord = orm.relationship('AddressOfRecord', foreign_keys='Accession.AddressOfRecordID', remote_side='AddressOfRecord.AddressOfRecordID', backref=orm.backref('accessions', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='Accession.CreatedByAgentID', remote_side='Agent.AgentID')
+    Division = orm.relationship('Division', foreign_keys='Accession.DivisionID', remote_side='Division.UserGroupScopeId')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='Accession.ModifiedByAgentID', remote_side='Agent.AgentID')
+    RepositoryAgreement = orm.relationship('RepositoryAgreement', foreign_keys='Accession.RepositoryAgreementID', remote_side='RepositoryAgreement.RepositoryAgreementID', backref=orm.backref('accessions', uselist=True))
 
 class AccessionAgent(Base):
     tableid = 12
     _id = 'accessionAgentId'
     __tablename__ = 'accessionagent'
 
-    id = Column('id', types.Integer, primary_key=True)
+    accessionAgentId = Column('Accessionagentid', types.Integer, primary_key=True)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     role = Column('Role', types.String, index=False, unique=False, nullable=False)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    accession = Column('AccessionID', types.Integer, ForeignKey('Accession.AccessionID'), nullable=True, unique=False)
-    agent = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    repositoryAgreement = Column('RepositoryAgreementID', types.Integer, ForeignKey('RepositoryAgreement.RepositoryAgreementID'), nullable=True, unique=False)
+    accessionID = Column('AccessionID', types.Integer, ForeignKey('Accession.AccessionID'), nullable=True, unique=False)
+    agentID = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    repositoryAgreementID = Column('RepositoryAgreementID', types.Integer, ForeignKey('RepositoryAgreement.RepositoryAgreementID'), nullable=True, unique=False)
 
-    AccessionID = orm.relationship('Accession', foreign_keys='AccessionAgent.AccessionID', remote_side='Accession.AccessionID', backref=orm.backref('accessionAgents', uselist=True))
-    AgentID = orm.relationship('Agent', foreign_keys='AccessionAgent.AgentID', remote_side='Agent.AgentID')
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='AccessionAgent.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='AccessionAgent.ModifiedByAgentID', remote_side='Agent.AgentID')
-    RepositoryAgreementID = orm.relationship('RepositoryAgreement', foreign_keys='AccessionAgent.RepositoryAgreementID', remote_side='RepositoryAgreement.RepositoryAgreementID', backref=orm.backref('repositoryAgreementAgents', uselist=True))
+    Accession = orm.relationship('Accession', foreign_keys='AccessionAgent.AccessionID', remote_side='Accession.AccessionID', backref=orm.backref('accessionAgents', uselist=True))
+    Agent = orm.relationship('Agent', foreign_keys='AccessionAgent.AgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='AccessionAgent.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='AccessionAgent.ModifiedByAgentID', remote_side='Agent.AgentID')
+    RepositoryAgreement = orm.relationship('RepositoryAgreement', foreign_keys='AccessionAgent.RepositoryAgreementID', remote_side='RepositoryAgreement.RepositoryAgreementID', backref=orm.backref('repositoryAgreementAgents', uselist=True))
 
 class AccessionAttachment(Base):
     tableid = 108
     _id = 'accessionAttachmentId'
     __tablename__ = 'accessionattachment'
 
-    id = Column('id', types.Integer, primary_key=True)
+    accessionAttachmentId = Column('Accessionattachmentid', types.Integer, primary_key=True)
     ordinal = Column('Ordinal', types.Integer, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    accession = Column('AccessionID', types.Integer, ForeignKey('Accession.AccessionID'), nullable=False, unique=False)
-    attachment = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    accessionID = Column('AccessionID', types.Integer, ForeignKey('Accession.AccessionID'), nullable=False, unique=False)
+    attachmentID = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AccessionID = orm.relationship('Accession', foreign_keys='AccessionAttachment.AccessionID', remote_side='Accession.AccessionID', backref=orm.backref('accessionAttachments', uselist=True))
-    AttachmentID = orm.relationship('Attachment', foreign_keys='AccessionAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('accessionAttachments', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='AccessionAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='AccessionAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Accession = orm.relationship('Accession', foreign_keys='AccessionAttachment.AccessionID', remote_side='Accession.AccessionID', backref=orm.backref('accessionAttachments', uselist=True))
+    Attachment = orm.relationship('Attachment', foreign_keys='AccessionAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('accessionAttachments', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='AccessionAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='AccessionAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class AccessionAuthorization(Base):
     tableid = 13
     _id = 'accessionAuthorizationId'
     __tablename__ = 'accessionauthorization'
 
-    id = Column('id', types.Integer, primary_key=True)
+    accessionAuthorizationId = Column('Accessionauthorizationid', types.Integer, primary_key=True)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    accession = Column('AccessionID', types.Integer, ForeignKey('Accession.AccessionID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    permit = Column('PermitID', types.Integer, ForeignKey('Permit.PermitID'), nullable=False, unique=False)
-    repositoryAgreement = Column('RepositoryAgreementID', types.Integer, ForeignKey('RepositoryAgreement.RepositoryAgreementID'), nullable=True, unique=False)
+    accessionID = Column('AccessionID', types.Integer, ForeignKey('Accession.AccessionID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    permitID = Column('PermitID', types.Integer, ForeignKey('Permit.PermitID'), nullable=False, unique=False)
+    repositoryAgreementID = Column('RepositoryAgreementID', types.Integer, ForeignKey('RepositoryAgreement.RepositoryAgreementID'), nullable=True, unique=False)
 
-    AccessionID = orm.relationship('Accession', foreign_keys='AccessionAuthorization.AccessionID', remote_side='Accession.AccessionID', backref=orm.backref('accessionAuthorizations', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='AccessionAuthorization.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='AccessionAuthorization.ModifiedByAgentID', remote_side='Agent.AgentID')
-    PermitID = orm.relationship('Permit', foreign_keys='AccessionAuthorization.PermitID', remote_side='Permit.PermitID', backref=orm.backref('accessionAuthorizations', uselist=True))
-    RepositoryAgreementID = orm.relationship('RepositoryAgreement', foreign_keys='AccessionAuthorization.RepositoryAgreementID', remote_side='RepositoryAgreement.RepositoryAgreementID', backref=orm.backref('repositoryAgreementAuthorizations', uselist=True))
+    Accession = orm.relationship('Accession', foreign_keys='AccessionAuthorization.AccessionID', remote_side='Accession.AccessionID', backref=orm.backref('accessionAuthorizations', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='AccessionAuthorization.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='AccessionAuthorization.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Permit = orm.relationship('Permit', foreign_keys='AccessionAuthorization.PermitID', remote_side='Permit.PermitID', backref=orm.backref('accessionAuthorizations', uselist=True))
+    RepositoryAgreement = orm.relationship('RepositoryAgreement', foreign_keys='AccessionAuthorization.RepositoryAgreementID', remote_side='RepositoryAgreement.RepositoryAgreementID', backref=orm.backref('repositoryAgreementAuthorizations', uselist=True))
 
 class AccessionCitation(Base):
     tableid = 159
     _id = 'accessionCitationId'
     __tablename__ = 'accessioncitation'
 
-    id = Column('id', types.Integer, primary_key=True)
+    accessionCitationId = Column('Accessioncitationid', types.Integer, primary_key=True)
     figureNumber = Column('FigureNumber', types.String, index=False, unique=False, nullable=True)
     isFigured = Column('IsFigured', mysql_bit_type, index=False, unique=False, nullable=True)
     pageNumber = Column('PageNumber', types.String, index=False, unique=False, nullable=True)
@@ -161,22 +161,22 @@ class AccessionCitation(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    accession = Column('AccessionID', types.Integer, ForeignKey('Accession.AccessionID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    referenceWork = Column('ReferenceWorkID', types.Integer, ForeignKey('ReferenceWork.ReferenceWorkID'), nullable=False, unique=False)
+    accessionID = Column('AccessionID', types.Integer, ForeignKey('Accession.AccessionID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    referenceWorkID = Column('ReferenceWorkID', types.Integer, ForeignKey('ReferenceWork.ReferenceWorkID'), nullable=False, unique=False)
 
-    AccessionID = orm.relationship('Accession', foreign_keys='AccessionCitation.AccessionID', remote_side='Accession.AccessionID', backref=orm.backref('accessionCitations', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='AccessionCitation.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='AccessionCitation.ModifiedByAgentID', remote_side='Agent.AgentID')
-    ReferenceWorkID = orm.relationship('ReferenceWork', foreign_keys='AccessionCitation.ReferenceWorkID', remote_side='ReferenceWork.ReferenceWorkID')
+    Accession = orm.relationship('Accession', foreign_keys='AccessionCitation.AccessionID', remote_side='Accession.AccessionID', backref=orm.backref('accessionCitations', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='AccessionCitation.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='AccessionCitation.ModifiedByAgentID', remote_side='Agent.AgentID')
+    ReferenceWork = orm.relationship('ReferenceWork', foreign_keys='AccessionCitation.ReferenceWorkID', remote_side='ReferenceWork.ReferenceWorkID')
 
 class Address(Base):
     tableid = 8
     _id = 'addressId'
     __tablename__ = 'address'
 
-    id = Column('id', types.Integer, primary_key=True)
+    addressId = Column('Addressid', types.Integer, primary_key=True)
     address = Column('Address', types.String, index=False, unique=False, nullable=True)
     address2 = Column('Address2', types.String, index=False, unique=False, nullable=True)
     address3 = Column('Address3', types.String, index=False, unique=False, nullable=True)
@@ -203,20 +203,20 @@ class Address(Base):
     typeOfAddr = Column('TypeOfAddr', types.String, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    agent = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agentID = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AgentID = orm.relationship('Agent', foreign_keys='Address.AgentID', remote_side='Agent.AgentID', backref=orm.backref('addresses', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Address.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Address.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Agent = orm.relationship('Agent', foreign_keys='Address.AgentID', remote_side='Agent.AgentID', backref=orm.backref('addresses', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='Address.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='Address.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class AddressOfRecord(Base):
     tableid = 125
     _id = 'addressOfRecordId'
     __tablename__ = 'addressofrecord'
 
-    id = Column('id', types.Integer, primary_key=True)
+    addressOfRecordId = Column('Addressofrecordid', types.Integer, primary_key=True)
     address = Column('Address', types.String, index=False, unique=False, nullable=True)
     address2 = Column('Address2', types.String, index=False, unique=False, nullable=True)
     city = Column('City', types.String, index=False, unique=False, nullable=True)
@@ -228,20 +228,20 @@ class AddressOfRecord(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    agent = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agentID = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AgentID = orm.relationship('Agent', foreign_keys='AddressOfRecord.AgentID', remote_side='Agent.AgentID')
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='AddressOfRecord.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='AddressOfRecord.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Agent = orm.relationship('Agent', foreign_keys='AddressOfRecord.AgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='AddressOfRecord.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='AddressOfRecord.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class Agent(Base):
     tableid = 5
     _id = 'agentId'
     __tablename__ = 'agent'
 
-    id = Column('id', types.Integer, primary_key=True)
+    agentId = Column('Agentid', types.Integer, primary_key=True)
     abbreviation = Column('Abbreviation', types.String, index=True, unique=False, nullable=True)
     agentType = Column('AgentType', types.Integer, index=True, unique=False, nullable=False)
     date1 = Column('Date1', types.Date, index=False, unique=False, nullable=True)
@@ -278,76 +278,76 @@ class Agent(Base):
     verbatimDate2 = Column('VerbatimDate2', types.String, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    collContentContact = Column('CollectionCCID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=True, unique=False)
-    collTechContact = Column('CollectionTCID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    division = Column('DivisionID', types.Integer, ForeignKey('Division.UserGroupScopeId'), nullable=True, unique=False)
-    instContentContact = Column('InstitutionCCID', types.Integer, ForeignKey('Institution.UserGroupScopeId'), nullable=True, unique=False)
-    instTechContact = Column('InstitutionTCID', types.Integer, ForeignKey('Institution.UserGroupScopeId'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    organization = Column('ParentOrganizationID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    specifyUser = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=True, unique=False)
+    collContentContactID = Column('CollectionCCID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=True, unique=False)
+    collTechContactID = Column('CollectionTCID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    divisionID = Column('DivisionID', types.Integer, ForeignKey('Division.UserGroupScopeId'), nullable=True, unique=False)
+    instContentContactID = Column('InstitutionCCID', types.Integer, ForeignKey('Institution.UserGroupScopeId'), nullable=True, unique=False)
+    instTechContactID = Column('InstitutionTCID', types.Integer, ForeignKey('Institution.UserGroupScopeId'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    organizationID = Column('ParentOrganizationID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    specifyUserID = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=True, unique=False)
 
-    CollectionCCID = orm.relationship('Collection', foreign_keys='Agent.CollectionCCID', remote_side='Collection.UserGroupScopeId', backref=orm.backref('contentContacts', uselist=True))
-    CollectionTCID = orm.relationship('Collection', foreign_keys='Agent.CollectionTCID', remote_side='Collection.UserGroupScopeId', backref=orm.backref('technicalContacts', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Agent.CreatedByAgentID', remote_side='Agent.AgentID')
-    DivisionID = orm.relationship('Division', foreign_keys='Agent.DivisionID', remote_side='Division.UserGroupScopeId', backref=orm.backref('members', uselist=True))
-    InstitutionCCID = orm.relationship('Institution', foreign_keys='Agent.InstitutionCCID', remote_side='Institution.UserGroupScopeId', backref=orm.backref('contentContacts', uselist=True))
-    InstitutionTCID = orm.relationship('Institution', foreign_keys='Agent.InstitutionTCID', remote_side='Institution.UserGroupScopeId', backref=orm.backref('technicalContacts', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Agent.ModifiedByAgentID', remote_side='Agent.AgentID')
-    ParentOrganizationID = orm.relationship('Agent', foreign_keys='Agent.ParentOrganizationID', remote_side='Agent.AgentID', backref=orm.backref('orgMembers', uselist=True))
-    SpecifyUserID = orm.relationship('SpecifyUser', foreign_keys='Agent.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('agents', uselist=True))
+    CollectionCC = orm.relationship('Collection', foreign_keys='Agent.CollectionCCID', remote_side='Collection.UserGroupScopeId', backref=orm.backref('contentContacts', uselist=True))
+    CollectionTC = orm.relationship('Collection', foreign_keys='Agent.CollectionTCID', remote_side='Collection.UserGroupScopeId', backref=orm.backref('technicalContacts', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='Agent.CreatedByAgentID', remote_side='Agent.AgentID')
+    Division = orm.relationship('Division', foreign_keys='Agent.DivisionID', remote_side='Division.UserGroupScopeId', backref=orm.backref('members', uselist=True))
+    InstitutionCC = orm.relationship('Institution', foreign_keys='Agent.InstitutionCCID', remote_side='Institution.UserGroupScopeId', backref=orm.backref('contentContacts', uselist=True))
+    InstitutionTC = orm.relationship('Institution', foreign_keys='Agent.InstitutionTCID', remote_side='Institution.UserGroupScopeId', backref=orm.backref('technicalContacts', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='Agent.ModifiedByAgentID', remote_side='Agent.AgentID')
+    ParentOrganization = orm.relationship('Agent', foreign_keys='Agent.ParentOrganizationID', remote_side='Agent.AgentID', backref=orm.backref('orgMembers', uselist=True))
+    SpecifyUser = orm.relationship('SpecifyUser', foreign_keys='Agent.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('agents', uselist=True))
 
 class AgentAttachment(Base):
     tableid = 109
     _id = 'agentAttachmentId'
     __tablename__ = 'agentattachment'
 
-    id = Column('id', types.Integer, primary_key=True)
+    agentAttachmentId = Column('Agentattachmentid', types.Integer, primary_key=True)
     ordinal = Column('Ordinal', types.Integer, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    agent = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
-    attachment = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agentID = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
+    attachmentID = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AgentID = orm.relationship('Agent', foreign_keys='AgentAttachment.AgentID', remote_side='Agent.AgentID', backref=orm.backref('agentAttachments', uselist=True))
-    AttachmentID = orm.relationship('Attachment', foreign_keys='AgentAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('agentAttachments', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='AgentAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='AgentAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Agent = orm.relationship('Agent', foreign_keys='AgentAttachment.AgentID', remote_side='Agent.AgentID', backref=orm.backref('agentAttachments', uselist=True))
+    Attachment = orm.relationship('Attachment', foreign_keys='AgentAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('agentAttachments', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='AgentAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='AgentAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class AgentGeography(Base):
     tableid = 78
     _id = 'agentGeographyId'
     __tablename__ = 'agentgeography'
 
-    id = Column('id', types.Integer, primary_key=True)
+    agentGeographyId = Column('Agentgeographyid', types.Integer, primary_key=True)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     role = Column('Role', types.String, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    agent = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    geography = Column('GeographyID', types.Integer, ForeignKey('Geography.GeographyID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agentID = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    geographyID = Column('GeographyID', types.Integer, ForeignKey('Geography.GeographyID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AgentID = orm.relationship('Agent', foreign_keys='AgentGeography.AgentID', remote_side='Agent.AgentID', backref=orm.backref('agentGeographies', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='AgentGeography.CreatedByAgentID', remote_side='Agent.AgentID')
-    GeographyID = orm.relationship('Geography', foreign_keys='AgentGeography.GeographyID', remote_side='Geography.GeographyID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='AgentGeography.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Agent = orm.relationship('Agent', foreign_keys='AgentGeography.AgentID', remote_side='Agent.AgentID', backref=orm.backref('agentGeographies', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='AgentGeography.CreatedByAgentID', remote_side='Agent.AgentID')
+    Geography = orm.relationship('Geography', foreign_keys='AgentGeography.GeographyID', remote_side='Geography.GeographyID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='AgentGeography.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class AgentIdentifier(Base):
     tableid = 168
     _id = 'agentIdentifierId'
     __tablename__ = 'agentidentifier'
 
-    id = Column('id', types.Integer, primary_key=True)
+    agentIdentifierId = Column('Agentidentifierid', types.Integer, primary_key=True)
     date1 = Column('Date1', types.Date, index=False, unique=False, nullable=True)
     date1Precision = Column('Date1Precision', types.Integer, index=False, unique=False, nullable=True)
     date2 = Column('Date2', types.Date, index=False, unique=False, nullable=True)
@@ -369,40 +369,40 @@ class AgentIdentifier(Base):
     yesNo4 = Column('YesNo4', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo5 = Column('YesNo5', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    agent = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agentID = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AgentID = orm.relationship('Agent', foreign_keys='AgentIdentifier.AgentID', remote_side='Agent.AgentID', backref=orm.backref('identifiers', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='AgentIdentifier.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='AgentIdentifier.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Agent = orm.relationship('Agent', foreign_keys='AgentIdentifier.AgentID', remote_side='Agent.AgentID', backref=orm.backref('identifiers', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='AgentIdentifier.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='AgentIdentifier.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class AgentSpecialty(Base):
     tableid = 86
     _id = 'agentSpecialtyId'
     __tablename__ = 'agentspecialty'
 
-    id = Column('id', types.Integer, primary_key=True)
+    agentSpecialtyId = Column('Agentspecialtyid', types.Integer, primary_key=True)
     orderNumber = Column('OrderNumber', types.Integer, index=False, unique=False, nullable=False)
     specialtyName = Column('SpecialtyName', types.String, index=False, unique=False, nullable=False)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    agent = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agentID = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AgentID = orm.relationship('Agent', foreign_keys='AgentSpecialty.AgentID', remote_side='Agent.AgentID', backref=orm.backref('agentSpecialties', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='AgentSpecialty.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='AgentSpecialty.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Agent = orm.relationship('Agent', foreign_keys='AgentSpecialty.AgentID', remote_side='Agent.AgentID', backref=orm.backref('agentSpecialties', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='AgentSpecialty.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='AgentSpecialty.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class AgentVariant(Base):
     tableid = 107
     _id = 'agentVariantId'
     __tablename__ = 'agentvariant'
 
-    id = Column('id', types.Integer, primary_key=True)
+    agentVariantId = Column('Agentvariantid', types.Integer, primary_key=True)
     country = Column('Country', types.String, index=False, unique=False, nullable=True)
     language = Column('Language', types.String, index=False, unique=False, nullable=True)
     name = Column('Name', types.String, index=False, unique=False, nullable=True)
@@ -412,20 +412,20 @@ class AgentVariant(Base):
     variant = Column('Variant', types.String, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    agent = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agentID = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AgentID = orm.relationship('Agent', foreign_keys='AgentVariant.AgentID', remote_side='Agent.AgentID', backref=orm.backref('variants', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='AgentVariant.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='AgentVariant.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Agent = orm.relationship('Agent', foreign_keys='AgentVariant.AgentID', remote_side='Agent.AgentID', backref=orm.backref('variants', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='AgentVariant.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='AgentVariant.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class Appraisal(Base):
     tableid = 67
     _id = 'appraisalId'
     __tablename__ = 'appraisal'
 
-    id = Column('id', types.Integer, primary_key=True)
+    appraisalId = Column('Appraisalid', types.Integer, primary_key=True)
     appraisalDate = Column('AppraisalDate', types.Date, index=True, unique=False, nullable=False)
     appraisalNumber = Column('AppraisalNumber', types.String, index=True, unique=True, nullable=False)
     appraisalValue = Column('AppraisalValue', types.Numeric, index=False, unique=False, nullable=True)
@@ -435,22 +435,22 @@ class Appraisal(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    accession = Column('AccessionID', types.Integer, ForeignKey('Accession.AccessionID'), nullable=True, unique=False)
-    agent = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    accessionID = Column('AccessionID', types.Integer, ForeignKey('Accession.AccessionID'), nullable=True, unique=False)
+    agentID = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AccessionID = orm.relationship('Accession', foreign_keys='Appraisal.AccessionID', remote_side='Accession.AccessionID', backref=orm.backref('appraisals', uselist=True))
-    AgentID = orm.relationship('Agent', foreign_keys='Appraisal.AgentID', remote_side='Agent.AgentID')
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Appraisal.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Appraisal.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Accession = orm.relationship('Accession', foreign_keys='Appraisal.AccessionID', remote_side='Accession.AccessionID', backref=orm.backref('appraisals', uselist=True))
+    Agent = orm.relationship('Agent', foreign_keys='Appraisal.AgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='Appraisal.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='Appraisal.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class Attachment(Base):
     tableid = 41
     _id = 'attachmentId'
     __tablename__ = 'attachment'
 
-    id = Column('id', types.Integer, primary_key=True)
+    attachmentId = Column('Attachmentid', types.Integer, primary_key=True)
     attachmentLocation = Column('AttachmentLocation', types.String, index=False, unique=False, nullable=True)
     attachmentStorageConfig = Column('AttachmentStorageConfig', types.Text, index=False, unique=False, nullable=True)
     captureDevice = Column('CaptureDevice', types.String, index=False, unique=False, nullable=True)
@@ -479,24 +479,24 @@ class Attachment(Base):
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
     visibility = Column('Visibility', types.Integer, index=False, unique=False, nullable=True)
 
-    attachmentImageAttribute = Column('AttachmentImageAttributeID', types.Integer, ForeignKey('AttachmentImageAttribute.AttachmentImageAttributeID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    creator = Column('CreatorID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    visibilitySetBy = Column('VisibilitySetByID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=True, unique=False)
+    attachmentImageAttributeID = Column('AttachmentImageAttributeID', types.Integer, ForeignKey('AttachmentImageAttribute.AttachmentImageAttributeID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    creatorID = Column('CreatorID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    visibilitySetByID = Column('VisibilitySetByID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=True, unique=False)
 
-    AttachmentImageAttributeID = orm.relationship('AttachmentImageAttribute', foreign_keys='Attachment.AttachmentImageAttributeID', remote_side='AttachmentImageAttribute.AttachmentImageAttributeID', backref=orm.backref('attachments', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Attachment.CreatedByAgentID', remote_side='Agent.AgentID')
-    CreatorID = orm.relationship('Agent', foreign_keys='Attachment.CreatorID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Attachment.ModifiedByAgentID', remote_side='Agent.AgentID')
-    VisibilitySetByID = orm.relationship('SpecifyUser', foreign_keys='Attachment.VisibilitySetByID', remote_side='SpecifyUser.SpecifyUserID')
+    AttachmentImageAttribute = orm.relationship('AttachmentImageAttribute', foreign_keys='Attachment.AttachmentImageAttributeID', remote_side='AttachmentImageAttribute.AttachmentImageAttributeID', backref=orm.backref('attachments', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='Attachment.CreatedByAgentID', remote_side='Agent.AgentID')
+    Creator = orm.relationship('Agent', foreign_keys='Attachment.CreatorID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='Attachment.ModifiedByAgentID', remote_side='Agent.AgentID')
+    VisibilitySetBy = orm.relationship('SpecifyUser', foreign_keys='Attachment.VisibilitySetByID', remote_side='SpecifyUser.SpecifyUserID')
 
 class AttachmentImageAttribute(Base):
     tableid = 139
     _id = 'attachmentImageAttributeId'
     __tablename__ = 'attachmentimageattribute'
 
-    id = Column('id', types.Integer, primary_key=True)
+    attachmentImageAttributeId = Column('Attachmentimageattributeid', types.Integer, primary_key=True)
     creativeCommons = Column('CreativeCommons', types.String, index=False, unique=False, nullable=True)
     height = Column('Height', types.Integer, index=False, unique=False, nullable=True)
     imageType = Column('ImageType', types.String, index=False, unique=False, nullable=True)
@@ -518,59 +518,59 @@ class AttachmentImageAttribute(Base):
     yesNo1 = Column('YesNo1', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo2 = Column('YesNo2', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    morphBankView = Column('MorphBankViewID', types.Integer, ForeignKey('MorphBankView.MorphBankViewID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    morphBankViewID = Column('MorphBankViewID', types.Integer, ForeignKey('MorphBankView.MorphBankViewID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='AttachmentImageAttribute.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='AttachmentImageAttribute.ModifiedByAgentID', remote_side='Agent.AgentID')
-    MorphBankViewID = orm.relationship('MorphBankView', foreign_keys='AttachmentImageAttribute.MorphBankViewID', remote_side='MorphBankView.MorphBankViewID', backref=orm.backref('attachmentImageAttributes', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='AttachmentImageAttribute.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='AttachmentImageAttribute.ModifiedByAgentID', remote_side='Agent.AgentID')
+    MorphBankView = orm.relationship('MorphBankView', foreign_keys='AttachmentImageAttribute.MorphBankViewID', remote_side='MorphBankView.MorphBankViewID', backref=orm.backref('attachmentImageAttributes', uselist=True))
 
 class AttachmentMetadata(Base):
     tableid = 42
     _id = 'attachmentMetadataID'
     __tablename__ = 'attachmentmetadata'
 
-    id = Column('id', types.Integer, primary_key=True)
+    attachmentMetadataID = Column('Attachmentmetadataid', types.Integer, primary_key=True)
     name = Column('Name', types.String, index=False, unique=False, nullable=False)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     value = Column('Value', types.String, index=False, unique=False, nullable=False)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    attachment = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    attachmentID = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AttachmentID = orm.relationship('Attachment', foreign_keys='AttachmentMetadata.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('metadata', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='AttachmentMetadata.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='AttachmentMetadata.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Attachment = orm.relationship('Attachment', foreign_keys='AttachmentMetadata.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('metadata', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='AttachmentMetadata.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='AttachmentMetadata.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class AttachmentTag(Base):
     tableid = 130
     _id = 'attachmentTagID'
     __tablename__ = 'attachmenttag'
 
-    id = Column('id', types.Integer, primary_key=True)
+    attachmentTagID = Column('Attachmenttagid', types.Integer, primary_key=True)
     tag = Column('Tag', types.String, index=False, unique=False, nullable=False)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    attachment = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    attachmentID = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AttachmentID = orm.relationship('Attachment', foreign_keys='AttachmentTag.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('tags', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='AttachmentTag.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='AttachmentTag.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Attachment = orm.relationship('Attachment', foreign_keys='AttachmentTag.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('tags', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='AttachmentTag.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='AttachmentTag.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class AttributeDef(Base):
     tableid = 16
     _id = 'attributeDefId'
     __tablename__ = 'attributedef'
 
-    id = Column('id', types.Integer, primary_key=True)
+    attributeDefId = Column('Attributedefid', types.Integer, primary_key=True)
     dataType = Column('DataType', types.Integer, index=False, unique=False, nullable=True)
     fieldName = Column('FieldName', types.String, index=False, unique=False, nullable=True)
     tableType = Column('TableType', types.Integer, index=False, unique=False, nullable=True)
@@ -578,44 +578,44 @@ class AttributeDef(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    discipline = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    prepType = Column('PrepTypeID', types.Integer, ForeignKey('PrepType.PrepTypeID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    disciplineID = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    prepTypeID = Column('PrepTypeID', types.Integer, ForeignKey('PrepType.PrepTypeID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='AttributeDef.CreatedByAgentID', remote_side='Agent.AgentID')
-    DisciplineID = orm.relationship('Discipline', foreign_keys='AttributeDef.DisciplineID', remote_side='Discipline.UserGroupScopeId', backref=orm.backref('attributeDefs', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='AttributeDef.ModifiedByAgentID', remote_side='Agent.AgentID')
-    PrepTypeID = orm.relationship('PrepType', foreign_keys='AttributeDef.PrepTypeID', remote_side='PrepType.PrepTypeID', backref=orm.backref('attributeDefs', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='AttributeDef.CreatedByAgentID', remote_side='Agent.AgentID')
+    Discipline = orm.relationship('Discipline', foreign_keys='AttributeDef.DisciplineID', remote_side='Discipline.UserGroupScopeId', backref=orm.backref('attributeDefs', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='AttributeDef.ModifiedByAgentID', remote_side='Agent.AgentID')
+    PrepType = orm.relationship('PrepType', foreign_keys='AttributeDef.PrepTypeID', remote_side='PrepType.PrepTypeID', backref=orm.backref('attributeDefs', uselist=True))
 
 class Author(Base):
     tableid = 17
     _id = 'authorId'
     __tablename__ = 'author'
 
-    id = Column('id', types.Integer, primary_key=True)
+    authorId = Column('Authorid', types.Integer, primary_key=True)
     orderNumber = Column('OrderNumber', types.Integer, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    agent = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    referenceWork = Column('ReferenceWorkID', types.Integer, ForeignKey('ReferenceWork.ReferenceWorkID'), nullable=False, unique=False)
+    agentID = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    referenceWorkID = Column('ReferenceWorkID', types.Integer, ForeignKey('ReferenceWork.ReferenceWorkID'), nullable=False, unique=False)
 
-    AgentID = orm.relationship('Agent', foreign_keys='Author.AgentID', remote_side='Agent.AgentID')
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Author.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Author.ModifiedByAgentID', remote_side='Agent.AgentID')
-    ReferenceWorkID = orm.relationship('ReferenceWork', foreign_keys='Author.ReferenceWorkID', remote_side='ReferenceWork.ReferenceWorkID', backref=orm.backref('authors', uselist=True))
+    Agent = orm.relationship('Agent', foreign_keys='Author.AgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='Author.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='Author.ModifiedByAgentID', remote_side='Agent.AgentID')
+    ReferenceWork = orm.relationship('ReferenceWork', foreign_keys='Author.ReferenceWorkID', remote_side='ReferenceWork.ReferenceWorkID', backref=orm.backref('authors', uselist=True))
 
 class AutoNumberingScheme(Base):
     tableid = 97
     _id = 'autoNumberingSchemeId'
     __tablename__ = 'autonumberingscheme'
 
-    id = Column('id', types.Integer, primary_key=True)
+    autoNumberingSchemeId = Column('Autonumberingschemeid', types.Integer, primary_key=True)
     formatName = Column('FormatName', types.String, index=False, unique=False, nullable=True)
     isNumericOnly = Column('IsNumericOnly', mysql_bit_type, index=False, unique=False, nullable=False)
     schemeClassName = Column('SchemeClassName', types.String, index=False, unique=False, nullable=True)
@@ -625,18 +625,18 @@ class AutoNumberingScheme(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='AutoNumberingScheme.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='AutoNumberingScheme.ModifiedByAgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='AutoNumberingScheme.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='AutoNumberingScheme.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class Borrow(Base):
     tableid = 18
     _id = 'borrowId'
     __tablename__ = 'borrow'
 
-    id = Column('id', types.Integer, primary_key=True)
+    borrowId = Column('Borrowid', types.Integer, primary_key=True)
     borrowDate = Column('BorrowDate', types.Date, index=False, unique=False, nullable=True)
     borrowDatePrecision = Column('BorrowDatePrecision', types.Integer, index=False, unique=False, nullable=True)
     collectionMemberId = Column('CollectionMemberID', types.Integer, index=True, unique=False, nullable=False)
@@ -660,20 +660,20 @@ class Borrow(Base):
     yesNo1 = Column('YesNo1', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo2 = Column('YesNo2', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    addressOfRecord = Column('AddressOfRecordID', types.Integer, ForeignKey('AddressOfRecord.AddressOfRecordID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    addressOfRecordID = Column('AddressOfRecordID', types.Integer, ForeignKey('AddressOfRecord.AddressOfRecordID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AddressOfRecordID = orm.relationship('AddressOfRecord', foreign_keys='Borrow.AddressOfRecordID', remote_side='AddressOfRecord.AddressOfRecordID')
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Borrow.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Borrow.ModifiedByAgentID', remote_side='Agent.AgentID')
+    AddressOfRecord = orm.relationship('AddressOfRecord', foreign_keys='Borrow.AddressOfRecordID', remote_side='AddressOfRecord.AddressOfRecordID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='Borrow.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='Borrow.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class BorrowAgent(Base):
     tableid = 19
     _id = 'borrowAgentId'
     __tablename__ = 'borrowagent'
 
-    id = Column('id', types.Integer, primary_key=True)
+    borrowAgentId = Column('Borrowagentid', types.Integer, primary_key=True)
     collectionMemberId = Column('CollectionMemberID', types.Integer, index=True, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     role = Column('Role', types.String, index=False, unique=False, nullable=False)
@@ -681,44 +681,44 @@ class BorrowAgent(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    agent = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
-    borrow = Column('BorrowID', types.Integer, ForeignKey('Borrow.BorrowID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agentID = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
+    borrowID = Column('BorrowID', types.Integer, ForeignKey('Borrow.BorrowID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AgentID = orm.relationship('Agent', foreign_keys='BorrowAgent.AgentID', remote_side='Agent.AgentID')
-    BorrowID = orm.relationship('Borrow', foreign_keys='BorrowAgent.BorrowID', remote_side='Borrow.BorrowID', backref=orm.backref('borrowAgents', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='BorrowAgent.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='BorrowAgent.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Agent = orm.relationship('Agent', foreign_keys='BorrowAgent.AgentID', remote_side='Agent.AgentID')
+    Borrow = orm.relationship('Borrow', foreign_keys='BorrowAgent.BorrowID', remote_side='Borrow.BorrowID', backref=orm.backref('borrowAgents', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='BorrowAgent.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='BorrowAgent.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class BorrowAttachment(Base):
     tableid = 145
     _id = 'borrowAttachmentId'
     __tablename__ = 'borrowattachment'
 
-    id = Column('id', types.Integer, primary_key=True)
+    borrowAttachmentId = Column('Borrowattachmentid', types.Integer, primary_key=True)
     ordinal = Column('Ordinal', types.Integer, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    attachment = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
-    borrow = Column('BorrowID', types.Integer, ForeignKey('Borrow.BorrowID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    attachmentID = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
+    borrowID = Column('BorrowID', types.Integer, ForeignKey('Borrow.BorrowID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AttachmentID = orm.relationship('Attachment', foreign_keys='BorrowAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('borrowAttachments', uselist=True))
-    BorrowID = orm.relationship('Borrow', foreign_keys='BorrowAttachment.BorrowID', remote_side='Borrow.BorrowID', backref=orm.backref('borrowAttachments', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='BorrowAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='BorrowAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Attachment = orm.relationship('Attachment', foreign_keys='BorrowAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('borrowAttachments', uselist=True))
+    Borrow = orm.relationship('Borrow', foreign_keys='BorrowAttachment.BorrowID', remote_side='Borrow.BorrowID', backref=orm.backref('borrowAttachments', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='BorrowAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='BorrowAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class BorrowMaterial(Base):
     tableid = 20
     _id = 'borrowMaterialId'
     __tablename__ = 'borrowmaterial'
 
-    id = Column('id', types.Integer, primary_key=True)
+    borrowMaterialId = Column('Borrowmaterialid', types.Integer, primary_key=True)
     collectionMemberId = Column('CollectionMemberID', types.Integer, index=True, unique=False, nullable=False)
     description = Column('Description', types.String, index=True, unique=False, nullable=True)
     inComments = Column('InComments', types.Text, index=False, unique=False, nullable=True)
@@ -733,20 +733,20 @@ class BorrowMaterial(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    borrow = Column('BorrowID', types.Integer, ForeignKey('Borrow.BorrowID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    borrowID = Column('BorrowID', types.Integer, ForeignKey('Borrow.BorrowID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    BorrowID = orm.relationship('Borrow', foreign_keys='BorrowMaterial.BorrowID', remote_side='Borrow.BorrowID', backref=orm.backref('borrowMaterials', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='BorrowMaterial.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='BorrowMaterial.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Borrow = orm.relationship('Borrow', foreign_keys='BorrowMaterial.BorrowID', remote_side='Borrow.BorrowID', backref=orm.backref('borrowMaterials', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='BorrowMaterial.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='BorrowMaterial.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class BorrowReturnMaterial(Base):
     tableid = 21
     _id = 'borrowReturnMaterialId'
     __tablename__ = 'borrowreturnmaterial'
 
-    id = Column('id', types.Integer, primary_key=True)
+    borrowReturnMaterialId = Column('Borrowreturnmaterialid', types.Integer, primary_key=True)
     collectionMemberId = Column('CollectionMemberID', types.Integer, index=True, unique=False, nullable=False)
     quantity = Column('Quantity', types.Integer, index=False, unique=False, nullable=True)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
@@ -755,22 +755,22 @@ class BorrowReturnMaterial(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    agent = Column('ReturnedByID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    borrowMaterial = Column('BorrowMaterialID', types.Integer, ForeignKey('BorrowMaterial.BorrowMaterialID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agentID = Column('ReturnedByID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    borrowMaterialID = Column('BorrowMaterialID', types.Integer, ForeignKey('BorrowMaterial.BorrowMaterialID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    ReturnedByID = orm.relationship('Agent', foreign_keys='BorrowReturnMaterial.ReturnedByID', remote_side='Agent.AgentID')
-    BorrowMaterialID = orm.relationship('BorrowMaterial', foreign_keys='BorrowReturnMaterial.BorrowMaterialID', remote_side='BorrowMaterial.BorrowMaterialID', backref=orm.backref('borrowReturnMaterials', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='BorrowReturnMaterial.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='BorrowReturnMaterial.ModifiedByAgentID', remote_side='Agent.AgentID')
+    ReturnedBy = orm.relationship('Agent', foreign_keys='BorrowReturnMaterial.ReturnedByID', remote_side='Agent.AgentID')
+    BorrowMaterial = orm.relationship('BorrowMaterial', foreign_keys='BorrowReturnMaterial.BorrowMaterialID', remote_side='BorrowMaterial.BorrowMaterialID', backref=orm.backref('borrowReturnMaterials', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='BorrowReturnMaterial.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='BorrowReturnMaterial.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class CollectingEvent(Base):
     tableid = 10
     _id = 'collectingEventId'
     __tablename__ = 'collectingevent'
 
-    id = Column('id', types.Integer, primary_key=True)
+    collectingEventId = Column('Collectingeventid', types.Integer, primary_key=True)
     endDate = Column('EndDate', types.Date, index=True, unique=False, nullable=True)
     endDatePrecision = Column('EndDatePrecision', types.Integer, index=False, unique=False, nullable=True)
     endDateVerbatim = Column('EndDateVerbatim', types.String, index=False, unique=False, nullable=True)
@@ -809,30 +809,30 @@ class CollectingEvent(Base):
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
     visibility = Column('Visibility', types.Integer, index=False, unique=False, nullable=True)
 
-    collectingEventAttribute = Column('CollectingEventAttributeID', types.Integer, ForeignKey('CollectingEventAttribute.CollectingEventAttributeID'), nullable=True, unique=False)
-    collectingTrip = Column('CollectingTripID', types.Integer, ForeignKey('CollectingTrip.CollectingTripID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    discipline = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
-    locality = Column('LocalityID', types.Integer, ForeignKey('Locality.LocalityID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    paleoContext = Column('PaleoContextID', types.Integer, ForeignKey('PaleoContext.PaleoContextID'), nullable=True, unique=False)
-    visibilitySetBy = Column('VisibilitySetByID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=True, unique=False)
+    collectingEventAttributeID = Column('CollectingEventAttributeID', types.Integer, ForeignKey('CollectingEventAttribute.CollectingEventAttributeID'), nullable=True, unique=False)
+    collectingTripID = Column('CollectingTripID', types.Integer, ForeignKey('CollectingTrip.CollectingTripID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    disciplineID = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
+    localityID = Column('LocalityID', types.Integer, ForeignKey('Locality.LocalityID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    paleoContextID = Column('PaleoContextID', types.Integer, ForeignKey('PaleoContext.PaleoContextID'), nullable=True, unique=False)
+    visibilitySetByID = Column('VisibilitySetByID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=True, unique=False)
 
-    CollectingEventAttributeID = orm.relationship('CollectingEventAttribute', foreign_keys='CollectingEvent.CollectingEventAttributeID', remote_side='CollectingEventAttribute.CollectingEventAttributeID', backref=orm.backref('collectingEvents', uselist=True))
-    CollectingTripID = orm.relationship('CollectingTrip', foreign_keys='CollectingEvent.CollectingTripID', remote_side='CollectingTrip.CollectingTripID', backref=orm.backref('collectingEvents', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='CollectingEvent.CreatedByAgentID', remote_side='Agent.AgentID')
-    DisciplineID = orm.relationship('Discipline', foreign_keys='CollectingEvent.DisciplineID', remote_side='Discipline.UserGroupScopeId')
-    LocalityID = orm.relationship('Locality', foreign_keys='CollectingEvent.LocalityID', remote_side='Locality.LocalityID', backref=orm.backref('collectingEvents', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='CollectingEvent.ModifiedByAgentID', remote_side='Agent.AgentID')
-    PaleoContextID = orm.relationship('PaleoContext', foreign_keys='CollectingEvent.PaleoContextID', remote_side='PaleoContext.PaleoContextID', backref=orm.backref('collectingEvents', uselist=True))
-    VisibilitySetByID = orm.relationship('SpecifyUser', foreign_keys='CollectingEvent.VisibilitySetByID', remote_side='SpecifyUser.SpecifyUserID')
+    CollectingEventAttribute = orm.relationship('CollectingEventAttribute', foreign_keys='CollectingEvent.CollectingEventAttributeID', remote_side='CollectingEventAttribute.CollectingEventAttributeID', backref=orm.backref('collectingEvents', uselist=True))
+    CollectingTrip = orm.relationship('CollectingTrip', foreign_keys='CollectingEvent.CollectingTripID', remote_side='CollectingTrip.CollectingTripID', backref=orm.backref('collectingEvents', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='CollectingEvent.CreatedByAgentID', remote_side='Agent.AgentID')
+    Discipline = orm.relationship('Discipline', foreign_keys='CollectingEvent.DisciplineID', remote_side='Discipline.UserGroupScopeId')
+    Locality = orm.relationship('Locality', foreign_keys='CollectingEvent.LocalityID', remote_side='Locality.LocalityID', backref=orm.backref('collectingEvents', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='CollectingEvent.ModifiedByAgentID', remote_side='Agent.AgentID')
+    PaleoContext = orm.relationship('PaleoContext', foreign_keys='CollectingEvent.PaleoContextID', remote_side='PaleoContext.PaleoContextID', backref=orm.backref('collectingEvents', uselist=True))
+    VisibilitySetBy = orm.relationship('SpecifyUser', foreign_keys='CollectingEvent.VisibilitySetByID', remote_side='SpecifyUser.SpecifyUserID')
 
 class CollectingEventAttachment(Base):
     tableid = 110
     _id = 'collectingEventAttachmentId'
     __tablename__ = 'collectingeventattachment'
 
-    id = Column('id', types.Integer, primary_key=True)
+    collectingEventAttachmentId = Column('Collectingeventattachmentid', types.Integer, primary_key=True)
     collectionMemberId = Column('CollectionMemberID', types.Integer, index=True, unique=False, nullable=False)
     ordinal = Column('Ordinal', types.Integer, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
@@ -840,22 +840,22 @@ class CollectingEventAttachment(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    attachment = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
-    collectingEvent = Column('CollectingEventID', types.Integer, ForeignKey('CollectingEvent.CollectingEventID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    attachmentID = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
+    collectingEventID = Column('CollectingEventID', types.Integer, ForeignKey('CollectingEvent.CollectingEventID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AttachmentID = orm.relationship('Attachment', foreign_keys='CollectingEventAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('collectingEventAttachments', uselist=True))
-    CollectingEventID = orm.relationship('CollectingEvent', foreign_keys='CollectingEventAttachment.CollectingEventID', remote_side='CollectingEvent.CollectingEventID', backref=orm.backref('collectingEventAttachments', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='CollectingEventAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='CollectingEventAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Attachment = orm.relationship('Attachment', foreign_keys='CollectingEventAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('collectingEventAttachments', uselist=True))
+    CollectingEvent = orm.relationship('CollectingEvent', foreign_keys='CollectingEventAttachment.CollectingEventID', remote_side='CollectingEvent.CollectingEventID', backref=orm.backref('collectingEventAttachments', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='CollectingEventAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='CollectingEventAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class CollectingEventAttr(Base):
     tableid = 25
     _id = 'attrId'
     __tablename__ = 'collectingeventattr'
 
-    id = Column('id', types.Integer, primary_key=True)
+    attrId = Column('Attrid', types.Integer, primary_key=True)
     collectionMemberId = Column('CollectionMemberID', types.Integer, index=True, unique=False, nullable=False)
     dblValue = Column('DoubleValue', types.Float, index=False, unique=False, nullable=True)
     strValue = Column('StrValue', types.String, index=False, unique=False, nullable=True)
@@ -863,22 +863,22 @@ class CollectingEventAttr(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    collectingEvent = Column('CollectingEventID', types.Integer, ForeignKey('CollectingEvent.CollectingEventID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    definition = Column('AttributeDefID', types.Integer, ForeignKey('AttributeDef.AttributeDefID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    collectingEventID = Column('CollectingEventID', types.Integer, ForeignKey('CollectingEvent.CollectingEventID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    definitionID = Column('AttributeDefID', types.Integer, ForeignKey('AttributeDef.AttributeDefID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CollectingEventID = orm.relationship('CollectingEvent', foreign_keys='CollectingEventAttr.CollectingEventID', remote_side='CollectingEvent.CollectingEventID', backref=orm.backref('collectingEventAttrs', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='CollectingEventAttr.CreatedByAgentID', remote_side='Agent.AgentID')
-    AttributeDefID = orm.relationship('AttributeDef', foreign_keys='CollectingEventAttr.AttributeDefID', remote_side='AttributeDef.AttributeDefID', backref=orm.backref('collectingEventAttrs', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='CollectingEventAttr.ModifiedByAgentID', remote_side='Agent.AgentID')
+    CollectingEvent = orm.relationship('CollectingEvent', foreign_keys='CollectingEventAttr.CollectingEventID', remote_side='CollectingEvent.CollectingEventID', backref=orm.backref('collectingEventAttrs', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='CollectingEventAttr.CreatedByAgentID', remote_side='Agent.AgentID')
+    AttributeDef = orm.relationship('AttributeDef', foreign_keys='CollectingEventAttr.AttributeDefID', remote_side='AttributeDef.AttributeDefID', backref=orm.backref('collectingEventAttrs', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='CollectingEventAttr.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class CollectingEventAttribute(Base):
     tableid = 92
     _id = 'collectingEventAttributeId'
     __tablename__ = 'collectingeventattribute'
 
-    id = Column('id', types.Integer, primary_key=True)
+    collectingEventAttributeId = Column('Collectingeventattributeid', types.Integer, primary_key=True)
     integer1 = Column('Integer1', types.Integer, index=False, unique=False, nullable=True)
     integer10 = Column('Integer10', types.Integer, index=False, unique=False, nullable=True)
     integer2 = Column('Integer2', types.Integer, index=False, unique=False, nullable=True)
@@ -929,43 +929,43 @@ class CollectingEventAttribute(Base):
     yesNo4 = Column('YesNo4', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo5 = Column('YesNo5', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    discipline = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
-    hostTaxon = Column('HostTaxonID', types.Integer, ForeignKey('Taxon.TaxonID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    disciplineID = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
+    hostTaxonID = Column('HostTaxonID', types.Integer, ForeignKey('Taxon.TaxonID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='CollectingEventAttribute.CreatedByAgentID', remote_side='Agent.AgentID')
-    DisciplineID = orm.relationship('Discipline', foreign_keys='CollectingEventAttribute.DisciplineID', remote_side='Discipline.UserGroupScopeId')
-    HostTaxonID = orm.relationship('Taxon', foreign_keys='CollectingEventAttribute.HostTaxonID', remote_side='Taxon.TaxonID', backref=orm.backref('collectingEventAttributes', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='CollectingEventAttribute.ModifiedByAgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='CollectingEventAttribute.CreatedByAgentID', remote_side='Agent.AgentID')
+    Discipline = orm.relationship('Discipline', foreign_keys='CollectingEventAttribute.DisciplineID', remote_side='Discipline.UserGroupScopeId')
+    HostTaxon = orm.relationship('Taxon', foreign_keys='CollectingEventAttribute.HostTaxonID', remote_side='Taxon.TaxonID', backref=orm.backref('collectingEventAttributes', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='CollectingEventAttribute.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class CollectingEventAuthorization(Base):
     tableid = 152
     _id = 'collectingEventAuthorizationId'
     __tablename__ = 'collectingeventauthorization'
 
-    id = Column('id', types.Integer, primary_key=True)
+    collectingEventAuthorizationId = Column('Collectingeventauthorizationid', types.Integer, primary_key=True)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    collectingEvent = Column('CollectingEventID', types.Integer, ForeignKey('CollectingEvent.CollectingEventID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    permit = Column('PermitID', types.Integer, ForeignKey('Permit.PermitID'), nullable=False, unique=False)
+    collectingEventID = Column('CollectingEventID', types.Integer, ForeignKey('CollectingEvent.CollectingEventID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    permitID = Column('PermitID', types.Integer, ForeignKey('Permit.PermitID'), nullable=False, unique=False)
 
-    CollectingEventID = orm.relationship('CollectingEvent', foreign_keys='CollectingEventAuthorization.CollectingEventID', remote_side='CollectingEvent.CollectingEventID', backref=orm.backref('collectingEventAuthorizations', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='CollectingEventAuthorization.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='CollectingEventAuthorization.ModifiedByAgentID', remote_side='Agent.AgentID')
-    PermitID = orm.relationship('Permit', foreign_keys='CollectingEventAuthorization.PermitID', remote_side='Permit.PermitID', backref=orm.backref('collectingEventAuthorizations', uselist=True))
+    CollectingEvent = orm.relationship('CollectingEvent', foreign_keys='CollectingEventAuthorization.CollectingEventID', remote_side='CollectingEvent.CollectingEventID', backref=orm.backref('collectingEventAuthorizations', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='CollectingEventAuthorization.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='CollectingEventAuthorization.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Permit = orm.relationship('Permit', foreign_keys='CollectingEventAuthorization.PermitID', remote_side='Permit.PermitID', backref=orm.backref('collectingEventAuthorizations', uselist=True))
 
 class CollectingTrip(Base):
     tableid = 87
     _id = 'collectingTripId'
     __tablename__ = 'collectingtrip'
 
-    id = Column('id', types.Integer, primary_key=True)
+    collectingTripId = Column('Collectingtripid', types.Integer, primary_key=True)
     collectingTripName = Column('CollectingTripName', types.String, index=True, unique=False, nullable=True)
     cruise = Column('Cruise', types.String, index=False, unique=False, nullable=True)
     date1 = Column('Date1', types.Date, index=False, unique=False, nullable=True)
@@ -1001,26 +1001,26 @@ class CollectingTrip(Base):
     yesNo1 = Column('YesNo1', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo2 = Column('YesNo2', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    agent1 = Column('Agent1ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent2 = Column('Agent2ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    collectingTripAttribute = Column('CollectingTripAttributeID', types.Integer, ForeignKey('CollectingTripAttribute.CollectingTripAttributeID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    discipline = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent1ID = Column('Agent1ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent2ID = Column('Agent2ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    collectingTripAttributeID = Column('CollectingTripAttributeID', types.Integer, ForeignKey('CollectingTripAttribute.CollectingTripAttributeID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    disciplineID = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    Agent1ID = orm.relationship('Agent', foreign_keys='CollectingTrip.Agent1ID', remote_side='Agent.AgentID')
-    Agent2ID = orm.relationship('Agent', foreign_keys='CollectingTrip.Agent2ID', remote_side='Agent.AgentID')
-    CollectingTripAttributeID = orm.relationship('CollectingTripAttribute', foreign_keys='CollectingTrip.CollectingTripAttributeID', remote_side='CollectingTripAttribute.CollectingTripAttributeID', backref=orm.backref('collectingTrips', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='CollectingTrip.CreatedByAgentID', remote_side='Agent.AgentID')
-    DisciplineID = orm.relationship('Discipline', foreign_keys='CollectingTrip.DisciplineID', remote_side='Discipline.UserGroupScopeId')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='CollectingTrip.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Agent1 = orm.relationship('Agent', foreign_keys='CollectingTrip.Agent1ID', remote_side='Agent.AgentID')
+    Agent2 = orm.relationship('Agent', foreign_keys='CollectingTrip.Agent2ID', remote_side='Agent.AgentID')
+    CollectingTripAttribute = orm.relationship('CollectingTripAttribute', foreign_keys='CollectingTrip.CollectingTripAttributeID', remote_side='CollectingTripAttribute.CollectingTripAttributeID', backref=orm.backref('collectingTrips', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='CollectingTrip.CreatedByAgentID', remote_side='Agent.AgentID')
+    Discipline = orm.relationship('Discipline', foreign_keys='CollectingTrip.DisciplineID', remote_side='Discipline.UserGroupScopeId')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='CollectingTrip.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class CollectingTripAttachment(Base):
     tableid = 156
     _id = 'collectingTripAttachmentId'
     __tablename__ = 'collectingtripattachment'
 
-    id = Column('id', types.Integer, primary_key=True)
+    collectingTripAttachmentId = Column('Collectingtripattachmentid', types.Integer, primary_key=True)
     collectionMemberId = Column('CollectionMemberID', types.Integer, index=True, unique=False, nullable=False)
     ordinal = Column('Ordinal', types.Integer, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
@@ -1028,22 +1028,22 @@ class CollectingTripAttachment(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    attachment = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
-    collectingTrip = Column('CollectingTripID', types.Integer, ForeignKey('CollectingTrip.CollectingTripID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    attachmentID = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
+    collectingTripID = Column('CollectingTripID', types.Integer, ForeignKey('CollectingTrip.CollectingTripID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AttachmentID = orm.relationship('Attachment', foreign_keys='CollectingTripAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('collectingTripAttachments', uselist=True))
-    CollectingTripID = orm.relationship('CollectingTrip', foreign_keys='CollectingTripAttachment.CollectingTripID', remote_side='CollectingTrip.CollectingTripID', backref=orm.backref('collectingTripAttachments', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='CollectingTripAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='CollectingTripAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Attachment = orm.relationship('Attachment', foreign_keys='CollectingTripAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('collectingTripAttachments', uselist=True))
+    CollectingTrip = orm.relationship('CollectingTrip', foreign_keys='CollectingTripAttachment.CollectingTripID', remote_side='CollectingTrip.CollectingTripID', backref=orm.backref('collectingTripAttachments', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='CollectingTripAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='CollectingTripAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class CollectingTripAttribute(Base):
     tableid = 157
     _id = 'collectingTripAttributeId'
     __tablename__ = 'collectingtripattribute'
 
-    id = Column('id', types.Integer, primary_key=True)
+    collectingTripAttributeId = Column('Collectingtripattributeid', types.Integer, primary_key=True)
     integer1 = Column('Integer1', types.Integer, index=False, unique=False, nullable=True)
     integer10 = Column('Integer10', types.Integer, index=False, unique=False, nullable=True)
     integer2 = Column('Integer2', types.Integer, index=False, unique=False, nullable=True)
@@ -1094,41 +1094,41 @@ class CollectingTripAttribute(Base):
     yesNo4 = Column('YesNo4', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo5 = Column('YesNo5', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    discipline = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    disciplineID = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='CollectingTripAttribute.CreatedByAgentID', remote_side='Agent.AgentID')
-    DisciplineID = orm.relationship('Discipline', foreign_keys='CollectingTripAttribute.DisciplineID', remote_side='Discipline.UserGroupScopeId')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='CollectingTripAttribute.ModifiedByAgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='CollectingTripAttribute.CreatedByAgentID', remote_side='Agent.AgentID')
+    Discipline = orm.relationship('Discipline', foreign_keys='CollectingTripAttribute.DisciplineID', remote_side='Discipline.UserGroupScopeId')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='CollectingTripAttribute.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class CollectingTripAuthorization(Base):
     tableid = 158
     _id = 'collectingTripAuthorizationId'
     __tablename__ = 'collectingtripauthorization'
 
-    id = Column('id', types.Integer, primary_key=True)
+    collectingTripAuthorizationId = Column('Collectingtripauthorizationid', types.Integer, primary_key=True)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    collectingTrip = Column('CollectingTripID', types.Integer, ForeignKey('CollectingTrip.CollectingTripID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    permit = Column('PermitID', types.Integer, ForeignKey('Permit.PermitID'), nullable=False, unique=False)
+    collectingTripID = Column('CollectingTripID', types.Integer, ForeignKey('CollectingTrip.CollectingTripID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    permitID = Column('PermitID', types.Integer, ForeignKey('Permit.PermitID'), nullable=False, unique=False)
 
-    CollectingTripID = orm.relationship('CollectingTrip', foreign_keys='CollectingTripAuthorization.CollectingTripID', remote_side='CollectingTrip.CollectingTripID', backref=orm.backref('collectingTripAuthorizations', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='CollectingTripAuthorization.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='CollectingTripAuthorization.ModifiedByAgentID', remote_side='Agent.AgentID')
-    PermitID = orm.relationship('Permit', foreign_keys='CollectingTripAuthorization.PermitID', remote_side='Permit.PermitID', backref=orm.backref('collectingTripAuthorizations', uselist=True))
+    CollectingTrip = orm.relationship('CollectingTrip', foreign_keys='CollectingTripAuthorization.CollectingTripID', remote_side='CollectingTrip.CollectingTripID', backref=orm.backref('collectingTripAuthorizations', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='CollectingTripAuthorization.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='CollectingTripAuthorization.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Permit = orm.relationship('Permit', foreign_keys='CollectingTripAuthorization.PermitID', remote_side='Permit.PermitID', backref=orm.backref('collectingTripAuthorizations', uselist=True))
 
 class Collection(Base):
     tableid = 23
     _id = 'userGroupScopeId'
     __tablename__ = 'collection'
 
-    id = Column('id', types.Integer, primary_key=True)
+    userGroupScopeId = Column('Usergroupscopeid', types.Integer, primary_key=True)
     catalogNumFormatName = Column('CatalogFormatNumName', types.String, index=False, unique=False, nullable=False)
     code = Column('Code', types.String, index=False, unique=False, nullable=True)
     collectionName = Column('CollectionName', types.String, index=True, unique=False, nullable=True)
@@ -1154,24 +1154,24 @@ class Collection(Base):
     webPortalURI = Column('WebPortalURI', types.String, index=False, unique=False, nullable=True)
     webSiteURI = Column('WebSiteURI', types.String, index=False, unique=False, nullable=True)
 
-    adminContact = Column('AdminContactID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    discipline = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
-    institutionNetwork = Column('InstitutionNetworkID', types.Integer, ForeignKey('Institution.UserGroupScopeId'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    adminContactID = Column('AdminContactID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    disciplineID = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
+    institutionNetworkID = Column('InstitutionNetworkID', types.Integer, ForeignKey('Institution.UserGroupScopeId'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AdminContactID = orm.relationship('Agent', foreign_keys='Collection.AdminContactID', remote_side='Agent.AgentID')
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Collection.CreatedByAgentID', remote_side='Agent.AgentID')
-    DisciplineID = orm.relationship('Discipline', foreign_keys='Collection.DisciplineID', remote_side='Discipline.UserGroupScopeId', backref=orm.backref('collections', uselist=True))
-    InstitutionNetworkID = orm.relationship('Institution', foreign_keys='Collection.InstitutionNetworkID', remote_side='Institution.UserGroupScopeId')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Collection.ModifiedByAgentID', remote_side='Agent.AgentID')
+    AdminContact = orm.relationship('Agent', foreign_keys='Collection.AdminContactID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='Collection.CreatedByAgentID', remote_side='Agent.AgentID')
+    Discipline = orm.relationship('Discipline', foreign_keys='Collection.DisciplineID', remote_side='Discipline.UserGroupScopeId', backref=orm.backref('collections', uselist=True))
+    InstitutionNetwork = orm.relationship('Institution', foreign_keys='Collection.InstitutionNetworkID', remote_side='Institution.UserGroupScopeId')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='Collection.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class CollectionObject(Base):
     tableid = 1
     _id = 'collectionObjectId'
     __tablename__ = 'collectionobject'
 
-    id = Column('id', types.Integer, primary_key=True)
+    collectionObjectId = Column('Collectionobjectid', types.Integer, primary_key=True)
     altCatalogNumber = Column('AltCatalogNumber', types.String, index=True, unique=False, nullable=True)
     availability = Column('Availability', types.String, index=False, unique=False, nullable=True)
     catalogNumber = Column('CatalogNumber', types.String, index=True, unique=False, nullable=True)
@@ -1233,46 +1233,46 @@ class CollectionObject(Base):
     yesNo5 = Column('YesNo5', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo6 = Column('YesNo6', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    accession = Column('AccessionID', types.Integer, ForeignKey('Accession.AccessionID'), nullable=True, unique=False)
-    agent1 = Column('Agent1ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    appraisal = Column('AppraisalID', types.Integer, ForeignKey('Appraisal.AppraisalID'), nullable=True, unique=False)
-    cataloger = Column('CatalogerID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    collectingEvent = Column('CollectingEventID', types.Integer, ForeignKey('CollectingEvent.CollectingEventID'), nullable=True, unique=False)
-    collection = Column('CollectionID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=False, unique=False)
-    collectionObjectAttribute = Column('CollectionObjectAttributeID', types.Integer, ForeignKey('CollectionObjectAttribute.CollectionObjectAttributeID'), nullable=True, unique=False)
-    container = Column('ContainerID', types.Integer, ForeignKey('Container.ContainerID'), nullable=True, unique=False)
-    containerOwner = Column('ContainerOwnerID', types.Integer, ForeignKey('Container.ContainerID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    embargoAuthority = Column('EmbargoAuthorityID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    fieldNotebookPage = Column('FieldNotebookPageID', types.Integer, ForeignKey('FieldNotebookPage.FieldNotebookPageID'), nullable=True, unique=False)
-    inventorizedBy = Column('InventorizedByID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    paleoContext = Column('PaleoContextID', types.Integer, ForeignKey('PaleoContext.PaleoContextID'), nullable=True, unique=False)
-    visibilitySetBy = Column('VisibilitySetByID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=True, unique=False)
+    accessionID = Column('AccessionID', types.Integer, ForeignKey('Accession.AccessionID'), nullable=True, unique=False)
+    agent1ID = Column('Agent1ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    appraisalID = Column('AppraisalID', types.Integer, ForeignKey('Appraisal.AppraisalID'), nullable=True, unique=False)
+    catalogerID = Column('CatalogerID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    collectingEventID = Column('CollectingEventID', types.Integer, ForeignKey('CollectingEvent.CollectingEventID'), nullable=True, unique=False)
+    collectionID = Column('CollectionID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=False, unique=False)
+    collectionObjectAttributeID = Column('CollectionObjectAttributeID', types.Integer, ForeignKey('CollectionObjectAttribute.CollectionObjectAttributeID'), nullable=True, unique=False)
+    containerID = Column('ContainerID', types.Integer, ForeignKey('Container.ContainerID'), nullable=True, unique=False)
+    containerOwnerID = Column('ContainerOwnerID', types.Integer, ForeignKey('Container.ContainerID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    embargoAuthorityID = Column('EmbargoAuthorityID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    fieldNotebookPageID = Column('FieldNotebookPageID', types.Integer, ForeignKey('FieldNotebookPage.FieldNotebookPageID'), nullable=True, unique=False)
+    inventorizedByID = Column('InventorizedByID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    paleoContextID = Column('PaleoContextID', types.Integer, ForeignKey('PaleoContext.PaleoContextID'), nullable=True, unique=False)
+    visibilitySetByID = Column('VisibilitySetByID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=True, unique=False)
 
-    AccessionID = orm.relationship('Accession', foreign_keys='CollectionObject.AccessionID', remote_side='Accession.AccessionID', backref=orm.backref('collectionObjects', uselist=True))
-    Agent1ID = orm.relationship('Agent', foreign_keys='CollectionObject.Agent1ID', remote_side='Agent.AgentID')
-    AppraisalID = orm.relationship('Appraisal', foreign_keys='CollectionObject.AppraisalID', remote_side='Appraisal.AppraisalID', backref=orm.backref('collectionObjects', uselist=True))
-    CatalogerID = orm.relationship('Agent', foreign_keys='CollectionObject.CatalogerID', remote_side='Agent.AgentID')
-    CollectingEventID = orm.relationship('CollectingEvent', foreign_keys='CollectionObject.CollectingEventID', remote_side='CollectingEvent.CollectingEventID', backref=orm.backref('collectionObjects', uselist=True))
-    CollectionID = orm.relationship('Collection', foreign_keys='CollectionObject.CollectionID', remote_side='Collection.UserGroupScopeId')
-    CollectionObjectAttributeID = orm.relationship('CollectionObjectAttribute', foreign_keys='CollectionObject.CollectionObjectAttributeID', remote_side='CollectionObjectAttribute.CollectionObjectAttributeID', backref=orm.backref('collectionObjects', uselist=True))
-    ContainerID = orm.relationship('Container', foreign_keys='CollectionObject.ContainerID', remote_side='Container.ContainerID', backref=orm.backref('collectionObjects', uselist=True))
-    ContainerOwnerID = orm.relationship('Container', foreign_keys='CollectionObject.ContainerOwnerID', remote_side='Container.ContainerID', backref=orm.backref('collectionObjectKids', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='CollectionObject.CreatedByAgentID', remote_side='Agent.AgentID')
-    EmbargoAuthorityID = orm.relationship('Agent', foreign_keys='CollectionObject.EmbargoAuthorityID', remote_side='Agent.AgentID')
-    FieldNotebookPageID = orm.relationship('FieldNotebookPage', foreign_keys='CollectionObject.FieldNotebookPageID', remote_side='FieldNotebookPage.FieldNotebookPageID', backref=orm.backref('collectionObjects', uselist=True))
-    InventorizedByID = orm.relationship('Agent', foreign_keys='CollectionObject.InventorizedByID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='CollectionObject.ModifiedByAgentID', remote_side='Agent.AgentID')
-    PaleoContextID = orm.relationship('PaleoContext', foreign_keys='CollectionObject.PaleoContextID', remote_side='PaleoContext.PaleoContextID', backref=orm.backref('collectionObjects', uselist=True))
-    VisibilitySetByID = orm.relationship('SpecifyUser', foreign_keys='CollectionObject.VisibilitySetByID', remote_side='SpecifyUser.SpecifyUserID')
+    Accession = orm.relationship('Accession', foreign_keys='CollectionObject.AccessionID', remote_side='Accession.AccessionID', backref=orm.backref('collectionObjects', uselist=True))
+    Agent1 = orm.relationship('Agent', foreign_keys='CollectionObject.Agent1ID', remote_side='Agent.AgentID')
+    Appraisal = orm.relationship('Appraisal', foreign_keys='CollectionObject.AppraisalID', remote_side='Appraisal.AppraisalID', backref=orm.backref('collectionObjects', uselist=True))
+    Cataloger = orm.relationship('Agent', foreign_keys='CollectionObject.CatalogerID', remote_side='Agent.AgentID')
+    CollectingEvent = orm.relationship('CollectingEvent', foreign_keys='CollectionObject.CollectingEventID', remote_side='CollectingEvent.CollectingEventID', backref=orm.backref('collectionObjects', uselist=True))
+    Collection = orm.relationship('Collection', foreign_keys='CollectionObject.CollectionID', remote_side='Collection.UserGroupScopeId')
+    CollectionObjectAttribute = orm.relationship('CollectionObjectAttribute', foreign_keys='CollectionObject.CollectionObjectAttributeID', remote_side='CollectionObjectAttribute.CollectionObjectAttributeID', backref=orm.backref('collectionObjects', uselist=True))
+    Container = orm.relationship('Container', foreign_keys='CollectionObject.ContainerID', remote_side='Container.ContainerID', backref=orm.backref('collectionObjects', uselist=True))
+    ContainerOwner = orm.relationship('Container', foreign_keys='CollectionObject.ContainerOwnerID', remote_side='Container.ContainerID', backref=orm.backref('collectionObjectKids', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='CollectionObject.CreatedByAgentID', remote_side='Agent.AgentID')
+    EmbargoAuthority = orm.relationship('Agent', foreign_keys='CollectionObject.EmbargoAuthorityID', remote_side='Agent.AgentID')
+    FieldNotebookPage = orm.relationship('FieldNotebookPage', foreign_keys='CollectionObject.FieldNotebookPageID', remote_side='FieldNotebookPage.FieldNotebookPageID', backref=orm.backref('collectionObjects', uselist=True))
+    InventorizedBy = orm.relationship('Agent', foreign_keys='CollectionObject.InventorizedByID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='CollectionObject.ModifiedByAgentID', remote_side='Agent.AgentID')
+    PaleoContext = orm.relationship('PaleoContext', foreign_keys='CollectionObject.PaleoContextID', remote_side='PaleoContext.PaleoContextID', backref=orm.backref('collectionObjects', uselist=True))
+    VisibilitySetBy = orm.relationship('SpecifyUser', foreign_keys='CollectionObject.VisibilitySetByID', remote_side='SpecifyUser.SpecifyUserID')
 
 class CollectionObjectAttachment(Base):
     tableid = 111
     _id = 'collectionObjectAttachmentId'
     __tablename__ = 'collectionobjectattachment'
 
-    id = Column('id', types.Integer, primary_key=True)
+    collectionObjectAttachmentId = Column('Collectionobjectattachmentid', types.Integer, primary_key=True)
     collectionMemberId = Column('CollectionMemberID', types.Integer, index=True, unique=False, nullable=False)
     ordinal = Column('Ordinal', types.Integer, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
@@ -1280,22 +1280,22 @@ class CollectionObjectAttachment(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    attachment = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
-    collectionObject = Column('CollectionObjectID', types.Integer, ForeignKey('CollectionObject.CollectionObjectID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    attachmentID = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
+    collectionObjectID = Column('CollectionObjectID', types.Integer, ForeignKey('CollectionObject.CollectionObjectID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AttachmentID = orm.relationship('Attachment', foreign_keys='CollectionObjectAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('collectionObjectAttachments', uselist=True))
-    CollectionObjectID = orm.relationship('CollectionObject', foreign_keys='CollectionObjectAttachment.CollectionObjectID', remote_side='CollectionObject.CollectionObjectID', backref=orm.backref('collectionObjectAttachments', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='CollectionObjectAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='CollectionObjectAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Attachment = orm.relationship('Attachment', foreign_keys='CollectionObjectAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('collectionObjectAttachments', uselist=True))
+    CollectionObject = orm.relationship('CollectionObject', foreign_keys='CollectionObjectAttachment.CollectionObjectID', remote_side='CollectionObject.CollectionObjectID', backref=orm.backref('collectionObjectAttachments', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='CollectionObjectAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='CollectionObjectAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class CollectionObjectAttr(Base):
     tableid = 28
     _id = 'attrId'
     __tablename__ = 'collectionobjectattr'
 
-    id = Column('id', types.Integer, primary_key=True)
+    attrId = Column('Attrid', types.Integer, primary_key=True)
     collectionMemberId = Column('CollectionMemberID', types.Integer, index=True, unique=False, nullable=False)
     dblValue = Column('DoubleValue', types.Float, index=False, unique=False, nullable=True)
     strValue = Column('StrValue', types.String, index=False, unique=False, nullable=True)
@@ -1303,22 +1303,22 @@ class CollectionObjectAttr(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    collectionObject = Column('CollectionObjectID', types.Integer, ForeignKey('CollectionObject.CollectionObjectID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    definition = Column('AttributeDefID', types.Integer, ForeignKey('AttributeDef.AttributeDefID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    collectionObjectID = Column('CollectionObjectID', types.Integer, ForeignKey('CollectionObject.CollectionObjectID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    definitionID = Column('AttributeDefID', types.Integer, ForeignKey('AttributeDef.AttributeDefID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CollectionObjectID = orm.relationship('CollectionObject', foreign_keys='CollectionObjectAttr.CollectionObjectID', remote_side='CollectionObject.CollectionObjectID', backref=orm.backref('collectionObjectAttrs', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='CollectionObjectAttr.CreatedByAgentID', remote_side='Agent.AgentID')
-    AttributeDefID = orm.relationship('AttributeDef', foreign_keys='CollectionObjectAttr.AttributeDefID', remote_side='AttributeDef.AttributeDefID', backref=orm.backref('collectionObjectAttrs', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='CollectionObjectAttr.ModifiedByAgentID', remote_side='Agent.AgentID')
+    CollectionObject = orm.relationship('CollectionObject', foreign_keys='CollectionObjectAttr.CollectionObjectID', remote_side='CollectionObject.CollectionObjectID', backref=orm.backref('collectionObjectAttrs', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='CollectionObjectAttr.CreatedByAgentID', remote_side='Agent.AgentID')
+    AttributeDef = orm.relationship('AttributeDef', foreign_keys='CollectionObjectAttr.AttributeDefID', remote_side='AttributeDef.AttributeDefID', backref=orm.backref('collectionObjectAttrs', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='CollectionObjectAttr.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class CollectionObjectAttribute(Base):
     tableid = 93
     _id = 'collectionObjectAttributeId'
     __tablename__ = 'collectionobjectattribute'
 
-    id = Column('id', types.Integer, primary_key=True)
+    collectionObjectAttributeId = Column('Collectionobjectattributeid', types.Integer, primary_key=True)
     bottomDistance = Column('BottomDistance', types.Numeric, index=False, unique=False, nullable=True)
     collectionMemberId = Column('CollectionMemberID', types.Integer, index=True, unique=False, nullable=False)
     date1 = Column('Date1', types.Date, index=False, unique=False, nullable=True)
@@ -1444,20 +1444,20 @@ class CollectionObjectAttribute(Base):
     yesNo8 = Column('YesNo8', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo9 = Column('YesNo9', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    agent1 = Column('Agent1ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent1ID = Column('Agent1ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    Agent1ID = orm.relationship('Agent', foreign_keys='CollectionObjectAttribute.Agent1ID', remote_side='Agent.AgentID')
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='CollectionObjectAttribute.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='CollectionObjectAttribute.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Agent1 = orm.relationship('Agent', foreign_keys='CollectionObjectAttribute.Agent1ID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='CollectionObjectAttribute.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='CollectionObjectAttribute.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class CollectionObjectCitation(Base):
     tableid = 29
     _id = 'collectionObjectCitationId'
     __tablename__ = 'collectionobjectcitation'
 
-    id = Column('id', types.Integer, primary_key=True)
+    collectionObjectCitationId = Column('Collectionobjectcitationid', types.Integer, primary_key=True)
     collectionMemberId = Column('CollectionMemberID', types.Integer, index=True, unique=False, nullable=False)
     figureNumber = Column('FigureNumber', types.String, index=False, unique=False, nullable=True)
     isFigured = Column('IsFigured', mysql_bit_type, index=False, unique=False, nullable=True)
@@ -1468,22 +1468,22 @@ class CollectionObjectCitation(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    collectionObject = Column('CollectionObjectID', types.Integer, ForeignKey('CollectionObject.CollectionObjectID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    referenceWork = Column('ReferenceWorkID', types.Integer, ForeignKey('ReferenceWork.ReferenceWorkID'), nullable=False, unique=False)
+    collectionObjectID = Column('CollectionObjectID', types.Integer, ForeignKey('CollectionObject.CollectionObjectID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    referenceWorkID = Column('ReferenceWorkID', types.Integer, ForeignKey('ReferenceWork.ReferenceWorkID'), nullable=False, unique=False)
 
-    CollectionObjectID = orm.relationship('CollectionObject', foreign_keys='CollectionObjectCitation.CollectionObjectID', remote_side='CollectionObject.CollectionObjectID', backref=orm.backref('collectionObjectCitations', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='CollectionObjectCitation.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='CollectionObjectCitation.ModifiedByAgentID', remote_side='Agent.AgentID')
-    ReferenceWorkID = orm.relationship('ReferenceWork', foreign_keys='CollectionObjectCitation.ReferenceWorkID', remote_side='ReferenceWork.ReferenceWorkID', backref=orm.backref('collectionObjectCitations', uselist=True))
+    CollectionObject = orm.relationship('CollectionObject', foreign_keys='CollectionObjectCitation.CollectionObjectID', remote_side='CollectionObject.CollectionObjectID', backref=orm.backref('collectionObjectCitations', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='CollectionObjectCitation.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='CollectionObjectCitation.ModifiedByAgentID', remote_side='Agent.AgentID')
+    ReferenceWork = orm.relationship('ReferenceWork', foreign_keys='CollectionObjectCitation.ReferenceWorkID', remote_side='ReferenceWork.ReferenceWorkID', backref=orm.backref('collectionObjectCitations', uselist=True))
 
 class CollectionObjectProperty(Base):
     tableid = 153
     _id = 'collectionObjectPropertyId'
     __tablename__ = 'collectionobjectproperty'
 
-    id = Column('id', types.Integer, primary_key=True)
+    collectionObjectPropertyId = Column('Collectionobjectpropertyid', types.Integer, primary_key=True)
     collectionMemberId = Column('CollectionMemberID', types.Integer, index=True, unique=False, nullable=False)
     date1 = Column('Date1', types.Date, index=False, unique=False, nullable=True)
     date10 = Column('Date10', types.Date, index=False, unique=False, nullable=True)
@@ -1631,106 +1631,106 @@ class CollectionObjectProperty(Base):
     yesNo8 = Column('YesNo8', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo9 = Column('YesNo9', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    agent1 = Column('Agent1ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent10 = Column('Agent10ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent11 = Column('Agent11ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent12 = Column('Agent12ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent13 = Column('Agent13ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent14 = Column('Agent14ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent15 = Column('Agent15ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent16 = Column('Agent16ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent17 = Column('Agent17ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent18 = Column('Agent18ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent19 = Column('Agent19ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent2 = Column('Agent2ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent20 = Column('Agent20ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent3 = Column('Agent3ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent4 = Column('Agent4ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent5 = Column('Agent5ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent6 = Column('Agent6ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent7 = Column('Agent7ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent1ID = Column('Agent1ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent10ID = Column('Agent10ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent11ID = Column('Agent11ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent12ID = Column('Agent12ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent13ID = Column('Agent13ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent14ID = Column('Agent14ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent15ID = Column('Agent15ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent16ID = Column('Agent16ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent17ID = Column('Agent17ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent18ID = Column('Agent18ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent19ID = Column('Agent19ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent2ID = Column('Agent2ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent20ID = Column('Agent20ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent3ID = Column('Agent3ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent4ID = Column('Agent4ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent5ID = Column('Agent5ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent6ID = Column('Agent6ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent7ID = Column('Agent7ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
     agent8 = Column('Agent8D', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent9 = Column('Agent9ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    collectionObject = Column('CollectionObjectID', types.Integer, ForeignKey('CollectionObject.CollectionObjectID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent9ID = Column('Agent9ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    collectionObjectID = Column('CollectionObjectID', types.Integer, ForeignKey('CollectionObject.CollectionObjectID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    Agent1ID = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent1ID', remote_side='Agent.AgentID')
-    Agent10ID = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent10ID', remote_side='Agent.AgentID')
-    Agent11ID = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent11ID', remote_side='Agent.AgentID')
-    Agent12ID = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent12ID', remote_side='Agent.AgentID')
-    Agent13ID = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent13ID', remote_side='Agent.AgentID')
-    Agent14ID = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent14ID', remote_side='Agent.AgentID')
-    Agent15ID = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent15ID', remote_side='Agent.AgentID')
-    Agent16ID = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent16ID', remote_side='Agent.AgentID')
-    Agent17ID = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent17ID', remote_side='Agent.AgentID')
-    Agent18ID = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent18ID', remote_side='Agent.AgentID')
-    Agent19ID = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent19ID', remote_side='Agent.AgentID')
-    Agent2ID = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent2ID', remote_side='Agent.AgentID')
-    Agent20ID = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent20ID', remote_side='Agent.AgentID')
-    Agent3ID = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent3ID', remote_side='Agent.AgentID')
-    Agent4ID = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent4ID', remote_side='Agent.AgentID')
-    Agent5ID = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent5ID', remote_side='Agent.AgentID')
-    Agent6ID = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent6ID', remote_side='Agent.AgentID')
-    Agent7ID = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent7ID', remote_side='Agent.AgentID')
+    Agent1 = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent1ID', remote_side='Agent.AgentID')
+    Agent10 = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent10ID', remote_side='Agent.AgentID')
+    Agent11 = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent11ID', remote_side='Agent.AgentID')
+    Agent12 = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent12ID', remote_side='Agent.AgentID')
+    Agent13 = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent13ID', remote_side='Agent.AgentID')
+    Agent14 = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent14ID', remote_side='Agent.AgentID')
+    Agent15 = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent15ID', remote_side='Agent.AgentID')
+    Agent16 = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent16ID', remote_side='Agent.AgentID')
+    Agent17 = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent17ID', remote_side='Agent.AgentID')
+    Agent18 = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent18ID', remote_side='Agent.AgentID')
+    Agent19 = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent19ID', remote_side='Agent.AgentID')
+    Agent2 = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent2ID', remote_side='Agent.AgentID')
+    Agent20 = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent20ID', remote_side='Agent.AgentID')
+    Agent3 = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent3ID', remote_side='Agent.AgentID')
+    Agent4 = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent4ID', remote_side='Agent.AgentID')
+    Agent5 = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent5ID', remote_side='Agent.AgentID')
+    Agent6 = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent6ID', remote_side='Agent.AgentID')
+    Agent7 = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent7ID', remote_side='Agent.AgentID')
     Agent8D = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent8D', remote_side='Agent.AgentID')
-    Agent9ID = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent9ID', remote_side='Agent.AgentID')
-    CollectionObjectID = orm.relationship('CollectionObject', foreign_keys='CollectionObjectProperty.CollectionObjectID', remote_side='CollectionObject.CollectionObjectID', backref=orm.backref('collectionObjectProperties', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Agent9 = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.Agent9ID', remote_side='Agent.AgentID')
+    CollectionObject = orm.relationship('CollectionObject', foreign_keys='CollectionObjectProperty.CollectionObjectID', remote_side='CollectionObject.CollectionObjectID', backref=orm.backref('collectionObjectProperties', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='CollectionObjectProperty.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class CollectionRelType(Base):
     tableid = 98
     _id = 'collectionRelTypeId'
     __tablename__ = 'collectionreltype'
 
-    id = Column('id', types.Integer, primary_key=True)
+    collectionRelTypeId = Column('Collectionreltypeid', types.Integer, primary_key=True)
     name = Column('Name', types.String, index=False, unique=False, nullable=True)
     remarks = Column('Remarks', types.String, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    leftSideCollection = Column('LeftSideCollectionID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    rightSideCollection = Column('RightSideCollectionID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    leftSideCollectionID = Column('LeftSideCollectionID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    rightSideCollectionID = Column('RightSideCollectionID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='CollectionRelType.CreatedByAgentID', remote_side='Agent.AgentID')
-    LeftSideCollectionID = orm.relationship('Collection', foreign_keys='CollectionRelType.LeftSideCollectionID', remote_side='Collection.UserGroupScopeId', backref=orm.backref('leftSideRelTypes', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='CollectionRelType.ModifiedByAgentID', remote_side='Agent.AgentID')
-    RightSideCollectionID = orm.relationship('Collection', foreign_keys='CollectionRelType.RightSideCollectionID', remote_side='Collection.UserGroupScopeId', backref=orm.backref('rightSideRelTypes', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='CollectionRelType.CreatedByAgentID', remote_side='Agent.AgentID')
+    LeftSideCollection = orm.relationship('Collection', foreign_keys='CollectionRelType.LeftSideCollectionID', remote_side='Collection.UserGroupScopeId', backref=orm.backref('leftSideRelTypes', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='CollectionRelType.ModifiedByAgentID', remote_side='Agent.AgentID')
+    RightSideCollection = orm.relationship('Collection', foreign_keys='CollectionRelType.RightSideCollectionID', remote_side='Collection.UserGroupScopeId', backref=orm.backref('rightSideRelTypes', uselist=True))
 
 class CollectionRelationship(Base):
     tableid = 99
     _id = 'collectionRelationshipId'
     __tablename__ = 'collectionrelationship'
 
-    id = Column('id', types.Integer, primary_key=True)
+    collectionRelationshipId = Column('Collectionrelationshipid', types.Integer, primary_key=True)
     text1 = Column('Text1', types.String, index=False, unique=False, nullable=True)
     text2 = Column('Text2', types.String, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    collectionRelType = Column('CollectionRelTypeID', types.Integer, ForeignKey('CollectionRelType.CollectionRelTypeID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    leftSide = Column('LeftSideCollectionID', types.Integer, ForeignKey('CollectionObject.CollectionObjectID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    rightSide = Column('RightSideCollectionID', types.Integer, ForeignKey('CollectionObject.CollectionObjectID'), nullable=False, unique=False)
+    collectionRelTypeID = Column('CollectionRelTypeID', types.Integer, ForeignKey('CollectionRelType.CollectionRelTypeID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    leftSideID = Column('LeftSideCollectionID', types.Integer, ForeignKey('CollectionObject.CollectionObjectID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    rightSideID = Column('RightSideCollectionID', types.Integer, ForeignKey('CollectionObject.CollectionObjectID'), nullable=False, unique=False)
 
-    CollectionRelTypeID = orm.relationship('CollectionRelType', foreign_keys='CollectionRelationship.CollectionRelTypeID', remote_side='CollectionRelType.CollectionRelTypeID')
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='CollectionRelationship.CreatedByAgentID', remote_side='Agent.AgentID')
-    LeftSideCollectionID = orm.relationship('CollectionObject', foreign_keys='CollectionRelationship.LeftSideCollectionID', remote_side='CollectionObject.CollectionObjectID', backref=orm.backref('leftSideRels', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='CollectionRelationship.ModifiedByAgentID', remote_side='Agent.AgentID')
-    RightSideCollectionID = orm.relationship('CollectionObject', foreign_keys='CollectionRelationship.RightSideCollectionID', remote_side='CollectionObject.CollectionObjectID', backref=orm.backref('rightSideRels', uselist=True))
+    CollectionRelType = orm.relationship('CollectionRelType', foreign_keys='CollectionRelationship.CollectionRelTypeID', remote_side='CollectionRelType.CollectionRelTypeID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='CollectionRelationship.CreatedByAgentID', remote_side='Agent.AgentID')
+    LeftSideCollection = orm.relationship('CollectionObject', foreign_keys='CollectionRelationship.LeftSideCollectionID', remote_side='CollectionObject.CollectionObjectID', backref=orm.backref('leftSideRels', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='CollectionRelationship.ModifiedByAgentID', remote_side='Agent.AgentID')
+    RightSideCollection = orm.relationship('CollectionObject', foreign_keys='CollectionRelationship.RightSideCollectionID', remote_side='CollectionObject.CollectionObjectID', backref=orm.backref('rightSideRels', uselist=True))
 
 class Collector(Base):
     tableid = 30
     _id = 'collectorId'
     __tablename__ = 'collector'
 
-    id = Column('id', types.Integer, primary_key=True)
+    collectorId = Column('Collectorid', types.Integer, primary_key=True)
     isPrimary = Column('IsPrimary', mysql_bit_type, index=False, unique=False, nullable=False)
     orderNumber = Column('OrderNumber', types.Integer, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
@@ -1742,24 +1742,24 @@ class Collector(Base):
     yesNo1 = Column('YesNo1', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo2 = Column('YesNo2', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    agent = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
-    collectingEvent = Column('CollectingEventID', types.Integer, ForeignKey('CollectingEvent.CollectingEventID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    division = Column('DivisionID', types.Integer, ForeignKey('Division.UserGroupScopeId'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agentID = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
+    collectingEventID = Column('CollectingEventID', types.Integer, ForeignKey('CollectingEvent.CollectingEventID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    divisionID = Column('DivisionID', types.Integer, ForeignKey('Division.UserGroupScopeId'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AgentID = orm.relationship('Agent', foreign_keys='Collector.AgentID', remote_side='Agent.AgentID', backref=orm.backref('collectors', uselist=True))
-    CollectingEventID = orm.relationship('CollectingEvent', foreign_keys='Collector.CollectingEventID', remote_side='CollectingEvent.CollectingEventID', backref=orm.backref('collectors', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Collector.CreatedByAgentID', remote_side='Agent.AgentID')
-    DivisionID = orm.relationship('Division', foreign_keys='Collector.DivisionID', remote_side='Division.UserGroupScopeId')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Collector.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Agent = orm.relationship('Agent', foreign_keys='Collector.AgentID', remote_side='Agent.AgentID', backref=orm.backref('collectors', uselist=True))
+    CollectingEvent = orm.relationship('CollectingEvent', foreign_keys='Collector.CollectingEventID', remote_side='CollectingEvent.CollectingEventID', backref=orm.backref('collectors', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='Collector.CreatedByAgentID', remote_side='Agent.AgentID')
+    Division = orm.relationship('Division', foreign_keys='Collector.DivisionID', remote_side='Division.UserGroupScopeId')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='Collector.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class CommonNameTx(Base):
     tableid = 106
     _id = 'commonNameTxId'
     __tablename__ = 'commonnametx'
 
-    id = Column('id', types.Integer, primary_key=True)
+    commonNameTxId = Column('Commonnametxid', types.Integer, primary_key=True)
     author = Column('Author', types.String, index=False, unique=False, nullable=True)
     country = Column('Country', types.String, index=True, unique=False, nullable=True)
     language = Column('Language', types.String, index=False, unique=False, nullable=True)
@@ -1769,20 +1769,20 @@ class CommonNameTx(Base):
     variant = Column('Variant', types.String, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    taxon = Column('TaxonID', types.Integer, ForeignKey('Taxon.TaxonID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    taxonID = Column('TaxonID', types.Integer, ForeignKey('Taxon.TaxonID'), nullable=False, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='CommonNameTx.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='CommonNameTx.ModifiedByAgentID', remote_side='Agent.AgentID')
-    TaxonID = orm.relationship('Taxon', foreign_keys='CommonNameTx.TaxonID', remote_side='Taxon.TaxonID', backref=orm.backref('commonNames', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='CommonNameTx.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='CommonNameTx.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Taxon = orm.relationship('Taxon', foreign_keys='CommonNameTx.TaxonID', remote_side='Taxon.TaxonID', backref=orm.backref('commonNames', uselist=True))
 
 class CommonNameTxCitation(Base):
     tableid = 134
     _id = 'commonNameTxCitationId'
     __tablename__ = 'commonnametxcitation'
 
-    id = Column('id', types.Integer, primary_key=True)
+    commonNameTxCitationId = Column('Commonnametxcitationid', types.Integer, primary_key=True)
     figureNumber = Column('FigureNumber', types.String, index=False, unique=False, nullable=True)
     isFigured = Column('IsFigured', mysql_bit_type, index=False, unique=False, nullable=True)
     number1 = Column('Number1', types.Numeric, index=False, unique=False, nullable=True)
@@ -1798,22 +1798,22 @@ class CommonNameTxCitation(Base):
     yesNo1 = Column('YesNo1', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo2 = Column('YesNo2', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    commonNameTx = Column('CommonNameTxID', types.Integer, ForeignKey('CommonNameTx.CommonNameTxID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    referenceWork = Column('ReferenceWorkID', types.Integer, ForeignKey('ReferenceWork.ReferenceWorkID'), nullable=False, unique=False)
+    commonNameTxID = Column('CommonNameTxID', types.Integer, ForeignKey('CommonNameTx.CommonNameTxID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    referenceWorkID = Column('ReferenceWorkID', types.Integer, ForeignKey('ReferenceWork.ReferenceWorkID'), nullable=False, unique=False)
 
-    CommonNameTxID = orm.relationship('CommonNameTx', foreign_keys='CommonNameTxCitation.CommonNameTxID', remote_side='CommonNameTx.CommonNameTxID', backref=orm.backref('citations', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='CommonNameTxCitation.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='CommonNameTxCitation.ModifiedByAgentID', remote_side='Agent.AgentID')
-    ReferenceWorkID = orm.relationship('ReferenceWork', foreign_keys='CommonNameTxCitation.ReferenceWorkID', remote_side='ReferenceWork.ReferenceWorkID')
+    CommonNameTx = orm.relationship('CommonNameTx', foreign_keys='CommonNameTxCitation.CommonNameTxID', remote_side='CommonNameTx.CommonNameTxID', backref=orm.backref('citations', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='CommonNameTxCitation.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='CommonNameTxCitation.ModifiedByAgentID', remote_side='Agent.AgentID')
+    ReferenceWork = orm.relationship('ReferenceWork', foreign_keys='CommonNameTxCitation.ReferenceWorkID', remote_side='ReferenceWork.ReferenceWorkID')
 
 class ConservDescription(Base):
     tableid = 103
     _id = 'conservDescriptionId'
     __tablename__ = 'conservdescription'
 
-    id = Column('id', types.Integer, primary_key=True)
+    conservDescriptionId = Column('Conservdescriptionid', types.Integer, primary_key=True)
     backgroundInfo = Column('BackgroundInfo', types.Text, index=False, unique=False, nullable=True)
     composition = Column('Composition', types.Text, index=False, unique=False, nullable=True)
     date1 = Column('Date1', types.Date, index=False, unique=False, nullable=True)
@@ -1862,46 +1862,46 @@ class ConservDescription(Base):
     yesNo4 = Column('YesNo4', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo5 = Column('YesNo5', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    collectionObject = Column('CollectionObjectID', types.Integer, ForeignKey('CollectionObject.CollectionObjectID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    division = Column('DivisionID', types.Integer, ForeignKey('Division.UserGroupScopeId'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    preparation = Column('PreparationID', types.Integer, ForeignKey('Preparation.PreparationID'), nullable=True, unique=False)
+    collectionObjectID = Column('CollectionObjectID', types.Integer, ForeignKey('CollectionObject.CollectionObjectID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    divisionID = Column('DivisionID', types.Integer, ForeignKey('Division.UserGroupScopeId'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    preparationID = Column('PreparationID', types.Integer, ForeignKey('Preparation.PreparationID'), nullable=True, unique=False)
 
-    CollectionObjectID = orm.relationship('CollectionObject', foreign_keys='ConservDescription.CollectionObjectID', remote_side='CollectionObject.CollectionObjectID', backref=orm.backref('conservDescriptions', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='ConservDescription.CreatedByAgentID', remote_side='Agent.AgentID')
-    DivisionID = orm.relationship('Division', foreign_keys='ConservDescription.DivisionID', remote_side='Division.UserGroupScopeId')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='ConservDescription.ModifiedByAgentID', remote_side='Agent.AgentID')
-    PreparationID = orm.relationship('Preparation', foreign_keys='ConservDescription.PreparationID', remote_side='Preparation.PreparationID', backref=orm.backref('conservDescriptions', uselist=True))
+    CollectionObject = orm.relationship('CollectionObject', foreign_keys='ConservDescription.CollectionObjectID', remote_side='CollectionObject.CollectionObjectID', backref=orm.backref('conservDescriptions', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='ConservDescription.CreatedByAgentID', remote_side='Agent.AgentID')
+    Division = orm.relationship('Division', foreign_keys='ConservDescription.DivisionID', remote_side='Division.UserGroupScopeId')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='ConservDescription.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Preparation = orm.relationship('Preparation', foreign_keys='ConservDescription.PreparationID', remote_side='Preparation.PreparationID', backref=orm.backref('conservDescriptions', uselist=True))
 
 class ConservDescriptionAttachment(Base):
     tableid = 112
     _id = 'conservDescriptionAttachmentId'
     __tablename__ = 'conservdescriptionattachment'
 
-    id = Column('id', types.Integer, primary_key=True)
+    conservDescriptionAttachmentId = Column('Conservdescriptionattachmentid', types.Integer, primary_key=True)
     ordinal = Column('Ordinal', types.Integer, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    attachment = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
-    conservDescription = Column('ConservDescriptionID', types.Integer, ForeignKey('ConservDescription.ConservDescriptionID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    attachmentID = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
+    conservDescriptionID = Column('ConservDescriptionID', types.Integer, ForeignKey('ConservDescription.ConservDescriptionID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AttachmentID = orm.relationship('Attachment', foreign_keys='ConservDescriptionAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('conservDescriptionAttachments', uselist=True))
-    ConservDescriptionID = orm.relationship('ConservDescription', foreign_keys='ConservDescriptionAttachment.ConservDescriptionID', remote_side='ConservDescription.ConservDescriptionID', backref=orm.backref('conservDescriptionAttachments', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='ConservDescriptionAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='ConservDescriptionAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Attachment = orm.relationship('Attachment', foreign_keys='ConservDescriptionAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('conservDescriptionAttachments', uselist=True))
+    ConservDescription = orm.relationship('ConservDescription', foreign_keys='ConservDescriptionAttachment.ConservDescriptionID', remote_side='ConservDescription.ConservDescriptionID', backref=orm.backref('conservDescriptionAttachments', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='ConservDescriptionAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='ConservDescriptionAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class ConservEvent(Base):
     tableid = 73
     _id = 'conservEventId'
     __tablename__ = 'conservevent'
 
-    id = Column('id', types.Integer, primary_key=True)
+    conservEventId = Column('Conserveventid', types.Integer, primary_key=True)
     advTestingExam = Column('AdvTestingExam', types.Text, index=False, unique=False, nullable=True)
     advTestingExamResults = Column('AdvTestingExamResults', types.Text, index=False, unique=False, nullable=True)
     completedComments = Column('CompletedComments', types.Text, index=False, unique=False, nullable=True)
@@ -1927,48 +1927,48 @@ class ConservEvent(Base):
     yesNo1 = Column('YesNo1', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo2 = Column('YesNo2', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    conservDescription = Column('ConservDescriptionID', types.Integer, ForeignKey('ConservDescription.ConservDescriptionID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    curator = Column('CuratorID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    examinedByAgent = Column('ExaminedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    treatedByAgent = Column('TreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    conservDescriptionID = Column('ConservDescriptionID', types.Integer, ForeignKey('ConservDescription.ConservDescriptionID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    curatorID = Column('CuratorID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    examinedByAgentID = Column('ExaminedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    treatedByAgentID = Column('TreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    ConservDescriptionID = orm.relationship('ConservDescription', foreign_keys='ConservEvent.ConservDescriptionID', remote_side='ConservDescription.ConservDescriptionID', backref=orm.backref('events', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='ConservEvent.CreatedByAgentID', remote_side='Agent.AgentID')
-    CuratorID = orm.relationship('Agent', foreign_keys='ConservEvent.CuratorID', remote_side='Agent.AgentID')
-    ExaminedByAgentID = orm.relationship('Agent', foreign_keys='ConservEvent.ExaminedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='ConservEvent.ModifiedByAgentID', remote_side='Agent.AgentID')
-    TreatedByAgentID = orm.relationship('Agent', foreign_keys='ConservEvent.TreatedByAgentID', remote_side='Agent.AgentID')
+    ConservDescription = orm.relationship('ConservDescription', foreign_keys='ConservEvent.ConservDescriptionID', remote_side='ConservDescription.ConservDescriptionID', backref=orm.backref('events', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='ConservEvent.CreatedByAgentID', remote_side='Agent.AgentID')
+    Curator = orm.relationship('Agent', foreign_keys='ConservEvent.CuratorID', remote_side='Agent.AgentID')
+    ExaminedByAgent = orm.relationship('Agent', foreign_keys='ConservEvent.ExaminedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='ConservEvent.ModifiedByAgentID', remote_side='Agent.AgentID')
+    TreatedByAgent = orm.relationship('Agent', foreign_keys='ConservEvent.TreatedByAgentID', remote_side='Agent.AgentID')
 
 class ConservEventAttachment(Base):
     tableid = 113
     _id = 'conservEventAttachmentId'
     __tablename__ = 'conserveventattachment'
 
-    id = Column('id', types.Integer, primary_key=True)
+    conservEventAttachmentId = Column('Conserveventattachmentid', types.Integer, primary_key=True)
     ordinal = Column('Ordinal', types.Integer, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    attachment = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
-    conservEvent = Column('ConservEventID', types.Integer, ForeignKey('ConservEvent.ConservEventID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    attachmentID = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
+    conservEventID = Column('ConservEventID', types.Integer, ForeignKey('ConservEvent.ConservEventID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AttachmentID = orm.relationship('Attachment', foreign_keys='ConservEventAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('conservEventAttachments', uselist=True))
-    ConservEventID = orm.relationship('ConservEvent', foreign_keys='ConservEventAttachment.ConservEventID', remote_side='ConservEvent.ConservEventID', backref=orm.backref('conservEventAttachments', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='ConservEventAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='ConservEventAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Attachment = orm.relationship('Attachment', foreign_keys='ConservEventAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('conservEventAttachments', uselist=True))
+    ConservEvent = orm.relationship('ConservEvent', foreign_keys='ConservEventAttachment.ConservEventID', remote_side='ConservEvent.ConservEventID', backref=orm.backref('conservEventAttachments', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='ConservEventAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='ConservEventAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class Container(Base):
     tableid = 31
     _id = 'containerId'
     __tablename__ = 'container'
 
-    id = Column('id', types.Integer, primary_key=True)
+    containerId = Column('Containerid', types.Integer, primary_key=True)
     collectionMemberId = Column('CollectionMemberID', types.Integer, index=True, unique=False, nullable=False)
     description = Column('Description', types.Text, index=False, unique=False, nullable=True)
     name = Column('Name', types.String, index=True, unique=False, nullable=True)
@@ -1978,22 +1978,22 @@ class Container(Base):
     type = Column('Type', types.Integer, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    parent = Column('ParentID', types.Integer, ForeignKey('Container.ContainerID'), nullable=True, unique=False)
-    storage = Column('StorageID', types.Integer, ForeignKey('Storage.StorageID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    parentID = Column('ParentID', types.Integer, ForeignKey('Container.ContainerID'), nullable=True, unique=False)
+    storageID = Column('StorageID', types.Integer, ForeignKey('Storage.StorageID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Container.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Container.ModifiedByAgentID', remote_side='Agent.AgentID')
-    ParentID = orm.relationship('Container', foreign_keys='Container.ParentID', remote_side='Container.ContainerID', backref=orm.backref('children', uselist=True))
-    StorageID = orm.relationship('Storage', foreign_keys='Container.StorageID', remote_side='Storage.StorageID', backref=orm.backref('containers', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='Container.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='Container.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Parent = orm.relationship('Container', foreign_keys='Container.ParentID', remote_side='Container.ContainerID', backref=orm.backref('children', uselist=True))
+    Storage = orm.relationship('Storage', foreign_keys='Container.StorageID', remote_side='Storage.StorageID', backref=orm.backref('containers', uselist=True))
 
 class DNAPrimer(Base):
     tableid = 150
     _id = 'dnaPrimerId'
     __tablename__ = 'dnaprimer'
 
-    id = Column('id', types.Integer, primary_key=True)
+    dnaPrimerId = Column('Dnaprimerid', types.Integer, primary_key=True)
     integer1 = Column('Integer1', types.Integer, index=False, unique=False, nullable=True)
     integer2 = Column('Integer2', types.Integer, index=False, unique=False, nullable=True)
     number1 = Column('Number1', types.Numeric, index=False, unique=False, nullable=True)
@@ -2023,18 +2023,18 @@ class DNAPrimer(Base):
     yesNo1 = Column('YesNo1', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo2 = Column('YesNo2', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='DNAPrimer.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='DNAPrimer.ModifiedByAgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='DNAPrimer.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='DNAPrimer.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class DNASequence(Base):
     tableid = 121
     _id = 'dnaSequenceId'
     __tablename__ = 'dnasequence'
 
-    id = Column('id', types.Integer, primary_key=True)
+    dnaSequenceId = Column('Dnasequenceid', types.Integer, primary_key=True)
     ambiguousResidues = Column('AmbiguousResidues', types.Integer, index=False, unique=False, nullable=True)
     boldBarcodeId = Column('BOLDBarcodeID', types.String, index=True, unique=False, nullable=True)
     boldLastUpdateDate = Column('BOLDLastUpdateDate', types.Date, index=False, unique=False, nullable=True)
@@ -2068,48 +2068,48 @@ class DNASequence(Base):
     yesNo2 = Column('YesNo2', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo3 = Column('YesNo3', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    collectionObject = Column('CollectionObjectID', types.Integer, ForeignKey('CollectionObject.CollectionObjectID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    extractor = Column('ExtractorID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    materialSample = Column('MaterialSampleID', types.Integer, ForeignKey('MaterialSample.MaterialSampleID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    sequencer = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    collectionObjectID = Column('CollectionObjectID', types.Integer, ForeignKey('CollectionObject.CollectionObjectID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    extractorID = Column('ExtractorID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    materialSampleID = Column('MaterialSampleID', types.Integer, ForeignKey('MaterialSample.MaterialSampleID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    sequencerID = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CollectionObjectID = orm.relationship('CollectionObject', foreign_keys='DNASequence.CollectionObjectID', remote_side='CollectionObject.CollectionObjectID', backref=orm.backref('dnaSequences', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='DNASequence.CreatedByAgentID', remote_side='Agent.AgentID')
-    ExtractorID = orm.relationship('Agent', foreign_keys='DNASequence.ExtractorID', remote_side='Agent.AgentID')
-    MaterialSampleID = orm.relationship('MaterialSample', foreign_keys='DNASequence.MaterialSampleID', remote_side='MaterialSample.MaterialSampleID', backref=orm.backref('dnaSequences', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='DNASequence.ModifiedByAgentID', remote_side='Agent.AgentID')
-    AgentID = orm.relationship('Agent', foreign_keys='DNASequence.AgentID', remote_side='Agent.AgentID')
+    CollectionObject = orm.relationship('CollectionObject', foreign_keys='DNASequence.CollectionObjectID', remote_side='CollectionObject.CollectionObjectID', backref=orm.backref('dnaSequences', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='DNASequence.CreatedByAgentID', remote_side='Agent.AgentID')
+    Extractor = orm.relationship('Agent', foreign_keys='DNASequence.ExtractorID', remote_side='Agent.AgentID')
+    MaterialSample = orm.relationship('MaterialSample', foreign_keys='DNASequence.MaterialSampleID', remote_side='MaterialSample.MaterialSampleID', backref=orm.backref('dnaSequences', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='DNASequence.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Agent = orm.relationship('Agent', foreign_keys='DNASequence.AgentID', remote_side='Agent.AgentID')
 
 class DNASequenceAttachment(Base):
     tableid = 147
     _id = 'dnaSequenceAttachmentId'
     __tablename__ = 'dnasequenceattachment'
 
-    id = Column('id', types.Integer, primary_key=True)
+    dnaSequenceAttachmentId = Column('Dnasequenceattachmentid', types.Integer, primary_key=True)
     ordinal = Column('Ordinal', types.Integer, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    attachment = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    dnaSequence = Column('DnaSequenceID', types.Integer, ForeignKey('DNASequence.DnaSequenceID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    attachmentID = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    dnaSequenceID = Column('DnaSequenceID', types.Integer, ForeignKey('DNASequence.DnaSequenceID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AttachmentID = orm.relationship('Attachment', foreign_keys='DNASequenceAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('dnaSequenceAttachments', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='DNASequenceAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
-    DnaSequenceID = orm.relationship('DNASequence', foreign_keys='DNASequenceAttachment.DnaSequenceID', remote_side='DNASequence.DnaSequenceID', backref=orm.backref('attachments', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='DNASequenceAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Attachment = orm.relationship('Attachment', foreign_keys='DNASequenceAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('dnaSequenceAttachments', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='DNASequenceAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
+    DnaSequence = orm.relationship('DNASequence', foreign_keys='DNASequenceAttachment.DnaSequenceID', remote_side='DNASequence.DnaSequenceID', backref=orm.backref('attachments', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='DNASequenceAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class DNASequencingRun(Base):
     tableid = 88
     _id = 'dnaSequencingRunId'
     __tablename__ = 'dnasequencingrun'
 
-    id = Column('id', types.Integer, primary_key=True)
+    dnaSequencingRunId = Column('Dnasequencingrunid', types.Integer, primary_key=True)
     collectionMemberId = Column('CollectionMemberID', types.Integer, index=False, unique=False, nullable=False)
     dryadDOI = Column('DryadDOI', types.String, index=False, unique=False, nullable=True)
     geneSequence = Column('GeneSequence', types.Text, index=False, unique=False, nullable=True)
@@ -2144,48 +2144,48 @@ class DNASequencingRun(Base):
     yesNo2 = Column('YesNo2', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo3 = Column('YesNo3', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    dnaPrimer = Column('DNAPrimerID', types.Integer, ForeignKey('DNAPrimer.DNAPrimerID'), nullable=True, unique=False)
-    dnaSequence = Column('DNASequenceID', types.Integer, ForeignKey('DNASequence.DnaSequenceID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    preparedByAgent = Column('PreparedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    runByAgent = Column('RunByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    dnaPrimerID = Column('DNAPrimerID', types.Integer, ForeignKey('DNAPrimer.DNAPrimerID'), nullable=True, unique=False)
+    dnaSequenceID = Column('DNASequenceID', types.Integer, ForeignKey('DNASequence.DnaSequenceID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    preparedByAgentID = Column('PreparedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    runByAgentID = Column('RunByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='DNASequencingRun.CreatedByAgentID', remote_side='Agent.AgentID')
-    DNAPrimerID = orm.relationship('DNAPrimer', foreign_keys='DNASequencingRun.DNAPrimerID', remote_side='DNAPrimer.DNAPrimerID', backref=orm.backref('dnaSequencingRuns', uselist=True))
-    DNASequenceID = orm.relationship('DNASequence', foreign_keys='DNASequencingRun.DNASequenceID', remote_side='DNASequence.DnaSequenceID', backref=orm.backref('dnaSequencingRuns', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='DNASequencingRun.ModifiedByAgentID', remote_side='Agent.AgentID')
-    PreparedByAgentID = orm.relationship('Agent', foreign_keys='DNASequencingRun.PreparedByAgentID', remote_side='Agent.AgentID')
-    RunByAgentID = orm.relationship('Agent', foreign_keys='DNASequencingRun.RunByAgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='DNASequencingRun.CreatedByAgentID', remote_side='Agent.AgentID')
+    DNAPrimer = orm.relationship('DNAPrimer', foreign_keys='DNASequencingRun.DNAPrimerID', remote_side='DNAPrimer.DNAPrimerID', backref=orm.backref('dnaSequencingRuns', uselist=True))
+    DNASequence = orm.relationship('DNASequence', foreign_keys='DNASequencingRun.DNASequenceID', remote_side='DNASequence.DnaSequenceID', backref=orm.backref('dnaSequencingRuns', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='DNASequencingRun.ModifiedByAgentID', remote_side='Agent.AgentID')
+    PreparedByAgent = orm.relationship('Agent', foreign_keys='DNASequencingRun.PreparedByAgentID', remote_side='Agent.AgentID')
+    RunByAgent = orm.relationship('Agent', foreign_keys='DNASequencingRun.RunByAgentID', remote_side='Agent.AgentID')
 
 class DNASequencingRunAttachment(Base):
     tableid = 135
     _id = 'dnaSequencingRunAttachmentId'
     __tablename__ = 'dnasequencerunattachment'
 
-    id = Column('id', types.Integer, primary_key=True)
+    dnaSequencingRunAttachmentId = Column('Dnasequencingrunattachmentid', types.Integer, primary_key=True)
     ordinal = Column('Ordinal', types.Integer, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    attachment = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    dnaSequencingRun = Column('DnaSequencingRunID', types.Integer, ForeignKey('DNASequencingRun.DNASequencingRunID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    attachmentID = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    dnaSequencingRunID = Column('DnaSequencingRunID', types.Integer, ForeignKey('DNASequencingRun.DNASequencingRunID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AttachmentID = orm.relationship('Attachment', foreign_keys='DNASequencingRunAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('dnaSequencingRunAttachments', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='DNASequencingRunAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
-    DnaSequencingRunID = orm.relationship('DNASequencingRun', foreign_keys='DNASequencingRunAttachment.DnaSequencingRunID', remote_side='DNASequencingRun.DNASequencingRunID', backref=orm.backref('attachments', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='DNASequencingRunAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Attachment = orm.relationship('Attachment', foreign_keys='DNASequencingRunAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('dnaSequencingRunAttachments', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='DNASequencingRunAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
+    DnaSequencingRun = orm.relationship('DNASequencingRun', foreign_keys='DNASequencingRunAttachment.DnaSequencingRunID', remote_side='DNASequencingRun.DNASequencingRunID', backref=orm.backref('attachments', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='DNASequencingRunAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class DNASequencingRunCitation(Base):
     tableid = 105
     _id = 'dnaSequencingRunCitationId'
     __tablename__ = 'dnasequencingruncitation'
 
-    id = Column('id', types.Integer, primary_key=True)
+    dnaSequencingRunCitationId = Column('Dnasequencingruncitationid', types.Integer, primary_key=True)
     figureNumber = Column('FigureNumber', types.String, index=False, unique=False, nullable=True)
     isFigured = Column('IsFigured', mysql_bit_type, index=False, unique=False, nullable=True)
     number1 = Column('Number1', types.Numeric, index=False, unique=False, nullable=True)
@@ -2201,39 +2201,39 @@ class DNASequencingRunCitation(Base):
     yesNo1 = Column('YesNo1', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo2 = Column('YesNo2', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    referenceWork = Column('ReferenceWorkID', types.Integer, ForeignKey('ReferenceWork.ReferenceWorkID'), nullable=False, unique=False)
-    sequencingRun = Column('DNASequencingRunID', types.Integer, ForeignKey('DNASequencingRun.DNASequencingRunID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    referenceWorkID = Column('ReferenceWorkID', types.Integer, ForeignKey('ReferenceWork.ReferenceWorkID'), nullable=False, unique=False)
+    sequencingRunID = Column('DNASequencingRunID', types.Integer, ForeignKey('DNASequencingRun.DNASequencingRunID'), nullable=False, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='DNASequencingRunCitation.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='DNASequencingRunCitation.ModifiedByAgentID', remote_side='Agent.AgentID')
-    ReferenceWorkID = orm.relationship('ReferenceWork', foreign_keys='DNASequencingRunCitation.ReferenceWorkID', remote_side='ReferenceWork.ReferenceWorkID')
-    DNASequencingRunID = orm.relationship('DNASequencingRun', foreign_keys='DNASequencingRunCitation.DNASequencingRunID', remote_side='DNASequencingRun.DNASequencingRunID', backref=orm.backref('citations', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='DNASequencingRunCitation.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='DNASequencingRunCitation.ModifiedByAgentID', remote_side='Agent.AgentID')
+    ReferenceWork = orm.relationship('ReferenceWork', foreign_keys='DNASequencingRunCitation.ReferenceWorkID', remote_side='ReferenceWork.ReferenceWorkID')
+    DNASequencingRun = orm.relationship('DNASequencingRun', foreign_keys='DNASequencingRunCitation.DNASequencingRunID', remote_side='DNASequencingRun.DNASequencingRunID', backref=orm.backref('citations', uselist=True))
 
 class DataType(Base):
     tableid = 33
     _id = 'dataTypeId'
     __tablename__ = 'datatype'
 
-    id = Column('id', types.Integer, primary_key=True)
+    dataTypeId = Column('Datatypeid', types.Integer, primary_key=True)
     name = Column('Name', types.String, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='DataType.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='DataType.ModifiedByAgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='DataType.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='DataType.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class Deaccession(Base):
     tableid = 163
     _id = 'deaccessionId'
     __tablename__ = 'deaccession'
 
-    id = Column('id', types.Integer, primary_key=True)
+    deaccessionId = Column('Deaccessionid', types.Integer, primary_key=True)
     date1 = Column('Date1', types.Date, index=False, unique=False, nullable=True)
     date2 = Column('Date2', types.Date, index=False, unique=False, nullable=True)
     deaccessionDate = Column('DeaccessionDate', types.Date, index=True, unique=False, nullable=True)
@@ -2265,66 +2265,66 @@ class Deaccession(Base):
     yesNo4 = Column('YesNo4', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo5 = Column('YesNo5', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    agent1 = Column('Agent1ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent2 = Column('Agent2ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent1ID = Column('Agent1ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent2ID = Column('Agent2ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    Agent1ID = orm.relationship('Agent', foreign_keys='Deaccession.Agent1ID', remote_side='Agent.AgentID')
-    Agent2ID = orm.relationship('Agent', foreign_keys='Deaccession.Agent2ID', remote_side='Agent.AgentID')
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Deaccession.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Deaccession.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Agent1 = orm.relationship('Agent', foreign_keys='Deaccession.Agent1ID', remote_side='Agent.AgentID')
+    Agent2 = orm.relationship('Agent', foreign_keys='Deaccession.Agent2ID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='Deaccession.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='Deaccession.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class DeaccessionAgent(Base):
     tableid = 164
     _id = 'deaccessionAgentId'
     __tablename__ = 'deaccessionagent'
 
-    id = Column('id', types.Integer, primary_key=True)
+    deaccessionAgentId = Column('Deaccessionagentid', types.Integer, primary_key=True)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     role = Column('Role', types.String, index=False, unique=False, nullable=False)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    agent = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    deaccession = Column('DeaccessionID', types.Integer, ForeignKey('Deaccession.DeaccessionID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agentID = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    deaccessionID = Column('DeaccessionID', types.Integer, ForeignKey('Deaccession.DeaccessionID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AgentID = orm.relationship('Agent', foreign_keys='DeaccessionAgent.AgentID', remote_side='Agent.AgentID')
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='DeaccessionAgent.CreatedByAgentID', remote_side='Agent.AgentID')
-    DeaccessionID = orm.relationship('Deaccession', foreign_keys='DeaccessionAgent.DeaccessionID', remote_side='Deaccession.DeaccessionID', backref=orm.backref('deaccessionAgents', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='DeaccessionAgent.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Agent = orm.relationship('Agent', foreign_keys='DeaccessionAgent.AgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='DeaccessionAgent.CreatedByAgentID', remote_side='Agent.AgentID')
+    Deaccession = orm.relationship('Deaccession', foreign_keys='DeaccessionAgent.DeaccessionID', remote_side='Deaccession.DeaccessionID', backref=orm.backref('deaccessionAgents', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='DeaccessionAgent.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class DeaccessionAttachment(Base):
     tableid = 165
     _id = 'deaccessionAttachmentId'
     __tablename__ = 'deaccessionattachment'
 
-    id = Column('id', types.Integer, primary_key=True)
+    deaccessionAttachmentId = Column('Deaccessionattachmentid', types.Integer, primary_key=True)
     ordinal = Column('Ordinal', types.Integer, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    attachment = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    deaccession = Column('DeaccessionID', types.Integer, ForeignKey('Deaccession.DeaccessionID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    attachmentID = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    deaccessionID = Column('DeaccessionID', types.Integer, ForeignKey('Deaccession.DeaccessionID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AttachmentID = orm.relationship('Attachment', foreign_keys='DeaccessionAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('deaccessionAttachments', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='DeaccessionAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
-    DeaccessionID = orm.relationship('Deaccession', foreign_keys='DeaccessionAttachment.DeaccessionID', remote_side='Deaccession.DeaccessionID', backref=orm.backref('deaccessionAttachments', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='DeaccessionAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Attachment = orm.relationship('Attachment', foreign_keys='DeaccessionAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('deaccessionAttachments', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='DeaccessionAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
+    Deaccession = orm.relationship('Deaccession', foreign_keys='DeaccessionAttachment.DeaccessionID', remote_side='Deaccession.DeaccessionID', backref=orm.backref('deaccessionAttachments', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='DeaccessionAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class Determination(Base):
     tableid = 9
     _id = 'determinationId'
     __tablename__ = 'determination'
 
-    id = Column('id', types.Integer, primary_key=True)
+    determinationId = Column('Determinationid', types.Integer, primary_key=True)
     addendum = Column('Addendum', types.String, index=False, unique=False, nullable=True)
     alternateName = Column('AlternateName', types.String, index=True, unique=False, nullable=True)
     collectionMemberId = Column('CollectionMemberID', types.Integer, index=True, unique=False, nullable=False)
@@ -2368,26 +2368,26 @@ class Determination(Base):
     yesNo4 = Column('YesNo4', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo5 = Column('YesNo5', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    collectionObject = Column('CollectionObjectID', types.Integer, ForeignKey('CollectionObject.CollectionObjectID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    determiner = Column('DeterminerID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    preferredTaxon = Column('PreferredTaxonID', types.Integer, ForeignKey('Taxon.TaxonID'), nullable=True, unique=False)
-    taxon = Column('TaxonID', types.Integer, ForeignKey('Taxon.TaxonID'), nullable=True, unique=False)
+    collectionObjectID = Column('CollectionObjectID', types.Integer, ForeignKey('CollectionObject.CollectionObjectID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    determinerID = Column('DeterminerID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    preferredTaxonID = Column('PreferredTaxonID', types.Integer, ForeignKey('Taxon.TaxonID'), nullable=True, unique=False)
+    taxonID = Column('TaxonID', types.Integer, ForeignKey('Taxon.TaxonID'), nullable=True, unique=False)
 
-    CollectionObjectID = orm.relationship('CollectionObject', foreign_keys='Determination.CollectionObjectID', remote_side='CollectionObject.CollectionObjectID', backref=orm.backref('determinations', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Determination.CreatedByAgentID', remote_side='Agent.AgentID')
-    DeterminerID = orm.relationship('Agent', foreign_keys='Determination.DeterminerID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Determination.ModifiedByAgentID', remote_side='Agent.AgentID')
-    PreferredTaxonID = orm.relationship('Taxon', foreign_keys='Determination.PreferredTaxonID', remote_side='Taxon.TaxonID')
-    TaxonID = orm.relationship('Taxon', foreign_keys='Determination.TaxonID', remote_side='Taxon.TaxonID', backref=orm.backref('determinations', uselist=True))
+    CollectionObject = orm.relationship('CollectionObject', foreign_keys='Determination.CollectionObjectID', remote_side='CollectionObject.CollectionObjectID', backref=orm.backref('determinations', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='Determination.CreatedByAgentID', remote_side='Agent.AgentID')
+    Determiner = orm.relationship('Agent', foreign_keys='Determination.DeterminerID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='Determination.ModifiedByAgentID', remote_side='Agent.AgentID')
+    PreferredTaxon = orm.relationship('Taxon', foreign_keys='Determination.PreferredTaxonID', remote_side='Taxon.TaxonID')
+    Taxon = orm.relationship('Taxon', foreign_keys='Determination.TaxonID', remote_side='Taxon.TaxonID', backref=orm.backref('determinations', uselist=True))
 
 class DeterminationCitation(Base):
     tableid = 38
     _id = 'determinationCitationId'
     __tablename__ = 'determinationcitation'
 
-    id = Column('id', types.Integer, primary_key=True)
+    determinationCitationId = Column('Determinationcitationid', types.Integer, primary_key=True)
     collectionMemberId = Column('CollectionMemberID', types.Integer, index=True, unique=False, nullable=False)
     figureNumber = Column('FigureNumber', types.String, index=False, unique=False, nullable=True)
     isFigured = Column('IsFigured', mysql_bit_type, index=False, unique=False, nullable=True)
@@ -2398,22 +2398,22 @@ class DeterminationCitation(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    determination = Column('DeterminationID', types.Integer, ForeignKey('Determination.DeterminationID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    referenceWork = Column('ReferenceWorkID', types.Integer, ForeignKey('ReferenceWork.ReferenceWorkID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    determinationID = Column('DeterminationID', types.Integer, ForeignKey('Determination.DeterminationID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    referenceWorkID = Column('ReferenceWorkID', types.Integer, ForeignKey('ReferenceWork.ReferenceWorkID'), nullable=False, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='DeterminationCitation.CreatedByAgentID', remote_side='Agent.AgentID')
-    DeterminationID = orm.relationship('Determination', foreign_keys='DeterminationCitation.DeterminationID', remote_side='Determination.DeterminationID', backref=orm.backref('determinationCitations', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='DeterminationCitation.ModifiedByAgentID', remote_side='Agent.AgentID')
-    ReferenceWorkID = orm.relationship('ReferenceWork', foreign_keys='DeterminationCitation.ReferenceWorkID', remote_side='ReferenceWork.ReferenceWorkID', backref=orm.backref('determinationCitations', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='DeterminationCitation.CreatedByAgentID', remote_side='Agent.AgentID')
+    Determination = orm.relationship('Determination', foreign_keys='DeterminationCitation.DeterminationID', remote_side='Determination.DeterminationID', backref=orm.backref('determinationCitations', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='DeterminationCitation.ModifiedByAgentID', remote_side='Agent.AgentID')
+    ReferenceWork = orm.relationship('ReferenceWork', foreign_keys='DeterminationCitation.ReferenceWorkID', remote_side='ReferenceWork.ReferenceWorkID', backref=orm.backref('determinationCitations', uselist=True))
 
 class Determiner(Base):
     tableid = 167
     _id = 'determinerId'
     __tablename__ = 'determiner'
 
-    id = Column('id', types.Integer, primary_key=True)
+    determinerId = Column('Determinerid', types.Integer, primary_key=True)
     isPrimary = Column('IsPrimary', mysql_bit_type, index=False, unique=False, nullable=False)
     orderNumber = Column('OrderNumber', types.Integer, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
@@ -2425,22 +2425,22 @@ class Determiner(Base):
     yesNo1 = Column('YesNo1', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo2 = Column('YesNo2', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    agent = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    determination = Column('DeterminationID', types.Integer, ForeignKey('Determination.DeterminationID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agentID = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    determinationID = Column('DeterminationID', types.Integer, ForeignKey('Determination.DeterminationID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AgentID = orm.relationship('Agent', foreign_keys='Determiner.AgentID', remote_side='Agent.AgentID')
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Determiner.CreatedByAgentID', remote_side='Agent.AgentID')
-    DeterminationID = orm.relationship('Determination', foreign_keys='Determiner.DeterminationID', remote_side='Determination.DeterminationID', backref=orm.backref('determiners', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Determiner.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Agent = orm.relationship('Agent', foreign_keys='Determiner.AgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='Determiner.CreatedByAgentID', remote_side='Agent.AgentID')
+    Determination = orm.relationship('Determination', foreign_keys='Determiner.DeterminationID', remote_side='Determination.DeterminationID', backref=orm.backref('determiners', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='Determiner.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class Discipline(Base):
     tableid = 26
     _id = 'userGroupScopeId'
     __tablename__ = 'discipline'
 
-    id = Column('id', types.Integer, primary_key=True)
+    userGroupScopeId = Column('Usergroupscopeid', types.Integer, primary_key=True)
     isPaleoContextEmbedded = Column('IsPaleoContextEmbedded', mysql_bit_type, index=False, unique=False, nullable=False)
     name = Column('Name', types.String, index=True, unique=False, nullable=True)
     paleoContextChildTable = Column('PaleoContextChildTable', types.String, index=False, unique=False, nullable=True)
@@ -2450,30 +2450,30 @@ class Discipline(Base):
     type = Column('Type', types.String, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    dataType = Column('DataTypeID', types.Integer, ForeignKey('DataType.DataTypeID'), nullable=False, unique=False)
-    division = Column('DivisionID', types.Integer, ForeignKey('Division.UserGroupScopeId'), nullable=False, unique=False)
-    geographyTreeDef = Column('GeographyTreeDefID', types.Integer, ForeignKey('GeographyTreeDef.GeographyTreeDefID'), nullable=False, unique=False)
-    geologicTimePeriodTreeDef = Column('GeologicTimePeriodTreeDefID', types.Integer, ForeignKey('GeologicTimePeriodTreeDef.GeologicTimePeriodTreeDefID'), nullable=False, unique=False)
-    lithoStratTreeDef = Column('LithoStratTreeDefID', types.Integer, ForeignKey('LithoStratTreeDef.LithoStratTreeDefID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    taxonTreeDef = Column('TaxonTreeDefID', types.Integer, ForeignKey('TaxonTreeDef.TaxonTreeDefID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    dataTypeID = Column('DataTypeID', types.Integer, ForeignKey('DataType.DataTypeID'), nullable=False, unique=False)
+    divisionID = Column('DivisionID', types.Integer, ForeignKey('Division.UserGroupScopeId'), nullable=False, unique=False)
+    geographyTreeDefID = Column('GeographyTreeDefID', types.Integer, ForeignKey('GeographyTreeDef.GeographyTreeDefID'), nullable=False, unique=False)
+    geologicTimePeriodTreeDefID = Column('GeologicTimePeriodTreeDefID', types.Integer, ForeignKey('GeologicTimePeriodTreeDef.GeologicTimePeriodTreeDefID'), nullable=False, unique=False)
+    lithoStratTreeDefID = Column('LithoStratTreeDefID', types.Integer, ForeignKey('LithoStratTreeDef.LithoStratTreeDefID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    taxonTreeDefID = Column('TaxonTreeDefID', types.Integer, ForeignKey('TaxonTreeDef.TaxonTreeDefID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Discipline.CreatedByAgentID', remote_side='Agent.AgentID')
-    DataTypeID = orm.relationship('DataType', foreign_keys='Discipline.DataTypeID', remote_side='DataType.DataTypeID')
-    DivisionID = orm.relationship('Division', foreign_keys='Discipline.DivisionID', remote_side='Division.UserGroupScopeId', backref=orm.backref('disciplines', uselist=True))
-    GeographyTreeDefID = orm.relationship('GeographyTreeDef', foreign_keys='Discipline.GeographyTreeDefID', remote_side='GeographyTreeDef.GeographyTreeDefID', backref=orm.backref('disciplines', uselist=True))
-    GeologicTimePeriodTreeDefID = orm.relationship('GeologicTimePeriodTreeDef', foreign_keys='Discipline.GeologicTimePeriodTreeDefID', remote_side='GeologicTimePeriodTreeDef.GeologicTimePeriodTreeDefID', backref=orm.backref('disciplines', uselist=True))
-    LithoStratTreeDefID = orm.relationship('LithoStratTreeDef', foreign_keys='Discipline.LithoStratTreeDefID', remote_side='LithoStratTreeDef.LithoStratTreeDefID', backref=orm.backref('disciplines', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Discipline.ModifiedByAgentID', remote_side='Agent.AgentID')
-    TaxonTreeDefID = orm.relationship('TaxonTreeDef', foreign_keys='Discipline.TaxonTreeDefID', remote_side='TaxonTreeDef.TaxonTreeDefID', backref=orm.backref('discipline', uselist=False))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='Discipline.CreatedByAgentID', remote_side='Agent.AgentID')
+    DataType = orm.relationship('DataType', foreign_keys='Discipline.DataTypeID', remote_side='DataType.DataTypeID')
+    Division = orm.relationship('Division', foreign_keys='Discipline.DivisionID', remote_side='Division.UserGroupScopeId', backref=orm.backref('disciplines', uselist=True))
+    GeographyTreeDef = orm.relationship('GeographyTreeDef', foreign_keys='Discipline.GeographyTreeDefID', remote_side='GeographyTreeDef.GeographyTreeDefID', backref=orm.backref('disciplines', uselist=True))
+    GeologicTimePeriodTreeDef = orm.relationship('GeologicTimePeriodTreeDef', foreign_keys='Discipline.GeologicTimePeriodTreeDefID', remote_side='GeologicTimePeriodTreeDef.GeologicTimePeriodTreeDefID', backref=orm.backref('disciplines', uselist=True))
+    LithoStratTreeDef = orm.relationship('LithoStratTreeDef', foreign_keys='Discipline.LithoStratTreeDefID', remote_side='LithoStratTreeDef.LithoStratTreeDefID', backref=orm.backref('disciplines', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='Discipline.ModifiedByAgentID', remote_side='Agent.AgentID')
+    TaxonTreeDef = orm.relationship('TaxonTreeDef', foreign_keys='Discipline.TaxonTreeDefID', remote_side='TaxonTreeDef.TaxonTreeDefID', backref=orm.backref('discipline', uselist=False))
 
 class Disposal(Base):
     tableid = 34
     _id = 'disposalId'
     __tablename__ = 'disposal'
 
-    id = Column('id', types.Integer, primary_key=True)
+    disposalId = Column('Disposalid', types.Integer, primary_key=True)
     disposalDate = Column('DisposalDate', types.Date, index=True, unique=False, nullable=True)
     disposalNumber = Column('DisposalNumber', types.String, index=True, unique=False, nullable=False)
     doNotExport = Column('doNotExport', mysql_bit_type, index=False, unique=False, nullable=True)
@@ -2489,88 +2489,88 @@ class Disposal(Base):
     yesNo1 = Column('YesNo1', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo2 = Column('YesNo2', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    deaccession = Column('DeaccessionID', types.Integer, ForeignKey('Deaccession.DeaccessionID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    deaccessionID = Column('DeaccessionID', types.Integer, ForeignKey('Deaccession.DeaccessionID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Disposal.CreatedByAgentID', remote_side='Agent.AgentID')
-    DeaccessionID = orm.relationship('Deaccession', foreign_keys='Disposal.DeaccessionID', remote_side='Deaccession.DeaccessionID', backref=orm.backref('disposals', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Disposal.ModifiedByAgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='Disposal.CreatedByAgentID', remote_side='Agent.AgentID')
+    Deaccession = orm.relationship('Deaccession', foreign_keys='Disposal.DeaccessionID', remote_side='Deaccession.DeaccessionID', backref=orm.backref('disposals', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='Disposal.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class DisposalAgent(Base):
     tableid = 35
     _id = 'disposalAgentId'
     __tablename__ = 'disposalagent'
 
-    id = Column('id', types.Integer, primary_key=True)
+    disposalAgentId = Column('Disposalagentid', types.Integer, primary_key=True)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     role = Column('Role', types.String, index=False, unique=False, nullable=False)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    agent = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    disposal = Column('DisposalID', types.Integer, ForeignKey('Disposal.DisposalID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agentID = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    disposalID = Column('DisposalID', types.Integer, ForeignKey('Disposal.DisposalID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AgentID = orm.relationship('Agent', foreign_keys='DisposalAgent.AgentID', remote_side='Agent.AgentID')
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='DisposalAgent.CreatedByAgentID', remote_side='Agent.AgentID')
-    DisposalID = orm.relationship('Disposal', foreign_keys='DisposalAgent.DisposalID', remote_side='Disposal.DisposalID', backref=orm.backref('disposalAgents', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='DisposalAgent.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Agent = orm.relationship('Agent', foreign_keys='DisposalAgent.AgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='DisposalAgent.CreatedByAgentID', remote_side='Agent.AgentID')
+    Disposal = orm.relationship('Disposal', foreign_keys='DisposalAgent.DisposalID', remote_side='Disposal.DisposalID', backref=orm.backref('disposalAgents', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='DisposalAgent.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class DisposalAttachment(Base):
     tableid = 166
     _id = 'disposalAttachmentId'
     __tablename__ = 'disposalattachment'
 
-    id = Column('id', types.Integer, primary_key=True)
+    disposalAttachmentId = Column('Disposalattachmentid', types.Integer, primary_key=True)
     ordinal = Column('Ordinal', types.Integer, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    attachment = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    disposal = Column('DisposalID', types.Integer, ForeignKey('Disposal.DisposalID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    attachmentID = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    disposalID = Column('DisposalID', types.Integer, ForeignKey('Disposal.DisposalID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AttachmentID = orm.relationship('Attachment', foreign_keys='DisposalAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('disposalAttachments', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='DisposalAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
-    DisposalID = orm.relationship('Disposal', foreign_keys='DisposalAttachment.DisposalID', remote_side='Disposal.DisposalID', backref=orm.backref('disposalAttachments', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='DisposalAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Attachment = orm.relationship('Attachment', foreign_keys='DisposalAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('disposalAttachments', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='DisposalAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
+    Disposal = orm.relationship('Disposal', foreign_keys='DisposalAttachment.DisposalID', remote_side='Disposal.DisposalID', backref=orm.backref('disposalAttachments', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='DisposalAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class DisposalPreparation(Base):
     tableid = 36
     _id = 'disposalPreparationId'
     __tablename__ = 'disposalpreparation'
 
-    id = Column('id', types.Integer, primary_key=True)
+    disposalPreparationId = Column('Disposalpreparationid', types.Integer, primary_key=True)
     quantity = Column('Quantity', types.Integer, index=False, unique=False, nullable=True)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    disposal = Column('DisposalID', types.Integer, ForeignKey('Disposal.DisposalID'), nullable=False, unique=False)
-    loanReturnPreparation = Column('LoanReturnPreparationID', types.Integer, ForeignKey('LoanReturnPreparation.LoanReturnPreparationID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    preparation = Column('PreparationID', types.Integer, ForeignKey('Preparation.PreparationID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    disposalID = Column('DisposalID', types.Integer, ForeignKey('Disposal.DisposalID'), nullable=False, unique=False)
+    loanReturnPreparationID = Column('LoanReturnPreparationID', types.Integer, ForeignKey('LoanReturnPreparation.LoanReturnPreparationID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    preparationID = Column('PreparationID', types.Integer, ForeignKey('Preparation.PreparationID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='DisposalPreparation.CreatedByAgentID', remote_side='Agent.AgentID')
-    DisposalID = orm.relationship('Disposal', foreign_keys='DisposalPreparation.DisposalID', remote_side='Disposal.DisposalID', backref=orm.backref('disposalPreparations', uselist=True))
-    LoanReturnPreparationID = orm.relationship('LoanReturnPreparation', foreign_keys='DisposalPreparation.LoanReturnPreparationID', remote_side='LoanReturnPreparation.LoanReturnPreparationID', backref=orm.backref('disposalPreparations', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='DisposalPreparation.ModifiedByAgentID', remote_side='Agent.AgentID')
-    PreparationID = orm.relationship('Preparation', foreign_keys='DisposalPreparation.PreparationID', remote_side='Preparation.PreparationID', backref=orm.backref('disposalPreparations', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='DisposalPreparation.CreatedByAgentID', remote_side='Agent.AgentID')
+    Disposal = orm.relationship('Disposal', foreign_keys='DisposalPreparation.DisposalID', remote_side='Disposal.DisposalID', backref=orm.backref('disposalPreparations', uselist=True))
+    LoanReturnPreparation = orm.relationship('LoanReturnPreparation', foreign_keys='DisposalPreparation.LoanReturnPreparationID', remote_side='LoanReturnPreparation.LoanReturnPreparationID', backref=orm.backref('disposalPreparations', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='DisposalPreparation.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Preparation = orm.relationship('Preparation', foreign_keys='DisposalPreparation.PreparationID', remote_side='Preparation.PreparationID', backref=orm.backref('disposalPreparations', uselist=True))
 
 class Division(Base):
     tableid = 96
     _id = 'userGroupScopeId'
     __tablename__ = 'division'
 
-    id = Column('id', types.Integer, primary_key=True)
+    userGroupScopeId = Column('Usergroupscopeid', types.Integer, primary_key=True)
     abbrev = Column('Abbrev', types.String, index=False, unique=False, nullable=True)
     altName = Column('AltName', types.String, index=False, unique=False, nullable=True)
     description = Column('Description', types.Text, index=False, unique=False, nullable=True)
@@ -2584,22 +2584,22 @@ class Division(Base):
     uri = Column('Uri', types.String, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    address = Column('AddressID', types.Integer, ForeignKey('Address.AddressID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    institution = Column('InstitutionID', types.Integer, ForeignKey('Institution.UserGroupScopeId'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    addressID = Column('AddressID', types.Integer, ForeignKey('Address.AddressID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    institutionID = Column('InstitutionID', types.Integer, ForeignKey('Institution.UserGroupScopeId'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AddressID = orm.relationship('Address', foreign_keys='Division.AddressID', remote_side='Address.AddressID', backref=orm.backref('divisions', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Division.CreatedByAgentID', remote_side='Agent.AgentID')
-    InstitutionID = orm.relationship('Institution', foreign_keys='Division.InstitutionID', remote_side='Institution.UserGroupScopeId', backref=orm.backref('divisions', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Division.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Address = orm.relationship('Address', foreign_keys='Division.AddressID', remote_side='Address.AddressID', backref=orm.backref('divisions', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='Division.CreatedByAgentID', remote_side='Agent.AgentID')
+    Institution = orm.relationship('Institution', foreign_keys='Division.InstitutionID', remote_side='Institution.UserGroupScopeId', backref=orm.backref('divisions', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='Division.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class ExchangeIn(Base):
     tableid = 39
     _id = 'exchangeInId'
     __tablename__ = 'exchangein'
 
-    id = Column('id', types.Integer, primary_key=True)
+    exchangeInId = Column('Exchangeinid', types.Integer, primary_key=True)
     contents = Column('Contents', types.Text, index=False, unique=False, nullable=True)
     descriptionOfMaterial = Column('DescriptionOfMaterial', types.String, index=True, unique=False, nullable=True)
     exchangeDate = Column('ExchangeDate', types.Date, index=True, unique=False, nullable=True)
@@ -2618,48 +2618,48 @@ class ExchangeIn(Base):
     yesNo1 = Column('YesNo1', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo2 = Column('YesNo2', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    addressOfRecord = Column('AddressOfRecordID', types.Integer, ForeignKey('AddressOfRecord.AddressOfRecordID'), nullable=True, unique=False)
-    agentCatalogedBy = Column('CatalogedByID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
-    agentReceivedFrom = Column('ReceivedFromOrganizationID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    division = Column('DivisionID', types.Integer, ForeignKey('Division.UserGroupScopeId'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    addressOfRecordID = Column('AddressOfRecordID', types.Integer, ForeignKey('AddressOfRecord.AddressOfRecordID'), nullable=True, unique=False)
+    agentCatalogedByID = Column('CatalogedByID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
+    agentReceivedFromID = Column('ReceivedFromOrganizationID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    divisionID = Column('DivisionID', types.Integer, ForeignKey('Division.UserGroupScopeId'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AddressOfRecordID = orm.relationship('AddressOfRecord', foreign_keys='ExchangeIn.AddressOfRecordID', remote_side='AddressOfRecord.AddressOfRecordID', backref=orm.backref('exchangeIns', uselist=True))
-    CatalogedByID = orm.relationship('Agent', foreign_keys='ExchangeIn.CatalogedByID', remote_side='Agent.AgentID')
-    ReceivedFromOrganizationID = orm.relationship('Agent', foreign_keys='ExchangeIn.ReceivedFromOrganizationID', remote_side='Agent.AgentID')
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='ExchangeIn.CreatedByAgentID', remote_side='Agent.AgentID')
-    DivisionID = orm.relationship('Division', foreign_keys='ExchangeIn.DivisionID', remote_side='Division.UserGroupScopeId')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='ExchangeIn.ModifiedByAgentID', remote_side='Agent.AgentID')
+    AddressOfRecord = orm.relationship('AddressOfRecord', foreign_keys='ExchangeIn.AddressOfRecordID', remote_side='AddressOfRecord.AddressOfRecordID', backref=orm.backref('exchangeIns', uselist=True))
+    CatalogedBy = orm.relationship('Agent', foreign_keys='ExchangeIn.CatalogedByID', remote_side='Agent.AgentID')
+    ReceivedFromOrganization = orm.relationship('Agent', foreign_keys='ExchangeIn.ReceivedFromOrganizationID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='ExchangeIn.CreatedByAgentID', remote_side='Agent.AgentID')
+    Division = orm.relationship('Division', foreign_keys='ExchangeIn.DivisionID', remote_side='Division.UserGroupScopeId')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='ExchangeIn.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class ExchangeInAttachment(Base):
     tableid = 169
     _id = 'exchangeInAttachmentId'
     __tablename__ = 'exchangeinattachment'
 
-    id = Column('id', types.Integer, primary_key=True)
+    exchangeInAttachmentId = Column('Exchangeinattachmentid', types.Integer, primary_key=True)
     ordinal = Column('Ordinal', types.Integer, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    attachment = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    exchangeIn = Column('ExchangeInID', types.Integer, ForeignKey('ExchangeIn.ExchangeInID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    attachmentID = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    exchangeInID = Column('ExchangeInID', types.Integer, ForeignKey('ExchangeIn.ExchangeInID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AttachmentID = orm.relationship('Attachment', foreign_keys='ExchangeInAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('exchangeInAttachments', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='ExchangeInAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
-    ExchangeInID = orm.relationship('ExchangeIn', foreign_keys='ExchangeInAttachment.ExchangeInID', remote_side='ExchangeIn.ExchangeInID', backref=orm.backref('exchangeInAttachments', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='ExchangeInAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Attachment = orm.relationship('Attachment', foreign_keys='ExchangeInAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('exchangeInAttachments', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='ExchangeInAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
+    ExchangeIn = orm.relationship('ExchangeIn', foreign_keys='ExchangeInAttachment.ExchangeInID', remote_side='ExchangeIn.ExchangeInID', backref=orm.backref('exchangeInAttachments', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='ExchangeInAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class ExchangeInPrep(Base):
     tableid = 140
     _id = 'exchangeInPrepId'
     __tablename__ = 'exchangeinprep'
 
-    id = Column('id', types.Integer, primary_key=True)
+    exchangeInPrepId = Column('Exchangeinprepid', types.Integer, primary_key=True)
     comments = Column('Comments', types.Text, index=False, unique=False, nullable=True)
     descriptionOfMaterial = Column('DescriptionOfMaterial', types.String, index=False, unique=False, nullable=True)
     number1 = Column('Number1', types.Integer, index=False, unique=False, nullable=True)
@@ -2670,24 +2670,24 @@ class ExchangeInPrep(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    discipline = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
-    exchangeIn = Column('ExchangeInID', types.Integer, ForeignKey('ExchangeIn.ExchangeInID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    preparation = Column('PreparationID', types.Integer, ForeignKey('Preparation.PreparationID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    disciplineID = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
+    exchangeInID = Column('ExchangeInID', types.Integer, ForeignKey('ExchangeIn.ExchangeInID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    preparationID = Column('PreparationID', types.Integer, ForeignKey('Preparation.PreparationID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='ExchangeInPrep.CreatedByAgentID', remote_side='Agent.AgentID')
-    DisciplineID = orm.relationship('Discipline', foreign_keys='ExchangeInPrep.DisciplineID', remote_side='Discipline.UserGroupScopeId')
-    ExchangeInID = orm.relationship('ExchangeIn', foreign_keys='ExchangeInPrep.ExchangeInID', remote_side='ExchangeIn.ExchangeInID', backref=orm.backref('exchangeInPreps', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='ExchangeInPrep.ModifiedByAgentID', remote_side='Agent.AgentID')
-    PreparationID = orm.relationship('Preparation', foreign_keys='ExchangeInPrep.PreparationID', remote_side='Preparation.PreparationID', backref=orm.backref('exchangeInPreps', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='ExchangeInPrep.CreatedByAgentID', remote_side='Agent.AgentID')
+    Discipline = orm.relationship('Discipline', foreign_keys='ExchangeInPrep.DisciplineID', remote_side='Discipline.UserGroupScopeId')
+    ExchangeIn = orm.relationship('ExchangeIn', foreign_keys='ExchangeInPrep.ExchangeInID', remote_side='ExchangeIn.ExchangeInID', backref=orm.backref('exchangeInPreps', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='ExchangeInPrep.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Preparation = orm.relationship('Preparation', foreign_keys='ExchangeInPrep.PreparationID', remote_side='Preparation.PreparationID', backref=orm.backref('exchangeInPreps', uselist=True))
 
 class ExchangeOut(Base):
     tableid = 40
     _id = 'exchangeOutId'
     __tablename__ = 'exchangeout'
 
-    id = Column('id', types.Integer, primary_key=True)
+    exchangeOutId = Column('Exchangeoutid', types.Integer, primary_key=True)
     contents = Column('Contents', types.Text, index=False, unique=False, nullable=True)
     descriptionOfMaterial = Column('DescriptionOfMaterial', types.String, index=True, unique=False, nullable=True)
     exchangeDate = Column('ExchangeDate', types.Date, index=True, unique=False, nullable=True)
@@ -2706,50 +2706,50 @@ class ExchangeOut(Base):
     yesNo1 = Column('YesNo1', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo2 = Column('YesNo2', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    addressOfRecord = Column('AddressOfRecordID', types.Integer, ForeignKey('AddressOfRecord.AddressOfRecordID'), nullable=True, unique=False)
-    agentCatalogedBy = Column('CatalogedByID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
-    agentSentTo = Column('SentToOrganizationID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    deaccession = Column('DeaccessionID', types.Integer, ForeignKey('Deaccession.DeaccessionID'), nullable=True, unique=False)
-    division = Column('DivisionID', types.Integer, ForeignKey('Division.UserGroupScopeId'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    addressOfRecordID = Column('AddressOfRecordID', types.Integer, ForeignKey('AddressOfRecord.AddressOfRecordID'), nullable=True, unique=False)
+    agentCatalogedByID = Column('CatalogedByID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
+    agentSentToID = Column('SentToOrganizationID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    deaccessionID = Column('DeaccessionID', types.Integer, ForeignKey('Deaccession.DeaccessionID'), nullable=True, unique=False)
+    divisionID = Column('DivisionID', types.Integer, ForeignKey('Division.UserGroupScopeId'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AddressOfRecordID = orm.relationship('AddressOfRecord', foreign_keys='ExchangeOut.AddressOfRecordID', remote_side='AddressOfRecord.AddressOfRecordID', backref=orm.backref('exchangeOuts', uselist=True))
-    CatalogedByID = orm.relationship('Agent', foreign_keys='ExchangeOut.CatalogedByID', remote_side='Agent.AgentID')
-    SentToOrganizationID = orm.relationship('Agent', foreign_keys='ExchangeOut.SentToOrganizationID', remote_side='Agent.AgentID')
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='ExchangeOut.CreatedByAgentID', remote_side='Agent.AgentID')
-    DeaccessionID = orm.relationship('Deaccession', foreign_keys='ExchangeOut.DeaccessionID', remote_side='Deaccession.DeaccessionID', backref=orm.backref('exchangeOuts', uselist=True))
-    DivisionID = orm.relationship('Division', foreign_keys='ExchangeOut.DivisionID', remote_side='Division.UserGroupScopeId')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='ExchangeOut.ModifiedByAgentID', remote_side='Agent.AgentID')
+    AddressOfRecord = orm.relationship('AddressOfRecord', foreign_keys='ExchangeOut.AddressOfRecordID', remote_side='AddressOfRecord.AddressOfRecordID', backref=orm.backref('exchangeOuts', uselist=True))
+    CatalogedBy = orm.relationship('Agent', foreign_keys='ExchangeOut.CatalogedByID', remote_side='Agent.AgentID')
+    SentToOrganization = orm.relationship('Agent', foreign_keys='ExchangeOut.SentToOrganizationID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='ExchangeOut.CreatedByAgentID', remote_side='Agent.AgentID')
+    Deaccession = orm.relationship('Deaccession', foreign_keys='ExchangeOut.DeaccessionID', remote_side='Deaccession.DeaccessionID', backref=orm.backref('exchangeOuts', uselist=True))
+    Division = orm.relationship('Division', foreign_keys='ExchangeOut.DivisionID', remote_side='Division.UserGroupScopeId')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='ExchangeOut.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class ExchangeOutAttachment(Base):
     tableid = 170
     _id = 'exchangeOutAttachmentId'
     __tablename__ = 'exchangeoutattachment'
 
-    id = Column('id', types.Integer, primary_key=True)
+    exchangeOutAttachmentId = Column('Exchangeoutattachmentid', types.Integer, primary_key=True)
     ordinal = Column('Ordinal', types.Integer, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    attachment = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    exchangeOut = Column('ExchangeOutID', types.Integer, ForeignKey('ExchangeOut.ExchangeOutID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    attachmentID = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    exchangeOutID = Column('ExchangeOutID', types.Integer, ForeignKey('ExchangeOut.ExchangeOutID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AttachmentID = orm.relationship('Attachment', foreign_keys='ExchangeOutAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('exchangeOutAttachments', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='ExchangeOutAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
-    ExchangeOutID = orm.relationship('ExchangeOut', foreign_keys='ExchangeOutAttachment.ExchangeOutID', remote_side='ExchangeOut.ExchangeOutID', backref=orm.backref('exchangeOutAttachments', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='ExchangeOutAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Attachment = orm.relationship('Attachment', foreign_keys='ExchangeOutAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('exchangeOutAttachments', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='ExchangeOutAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
+    ExchangeOut = orm.relationship('ExchangeOut', foreign_keys='ExchangeOutAttachment.ExchangeOutID', remote_side='ExchangeOut.ExchangeOutID', backref=orm.backref('exchangeOutAttachments', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='ExchangeOutAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class ExchangeOutPrep(Base):
     tableid = 141
     _id = 'exchangeOutPrepId'
     __tablename__ = 'exchangeoutprep'
 
-    id = Column('id', types.Integer, primary_key=True)
+    exchangeOutPrepId = Column('Exchangeoutprepid', types.Integer, primary_key=True)
     comments = Column('Comments', types.Text, index=False, unique=False, nullable=True)
     descriptionOfMaterial = Column('DescriptionOfMaterial', types.String, index=False, unique=False, nullable=True)
     number1 = Column('Number1', types.Integer, index=False, unique=False, nullable=True)
@@ -2760,24 +2760,24 @@ class ExchangeOutPrep(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    discipline = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
-    exchangeOut = Column('ExchangeOutID', types.Integer, ForeignKey('ExchangeOut.ExchangeOutID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    preparation = Column('PreparationID', types.Integer, ForeignKey('Preparation.PreparationID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    disciplineID = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
+    exchangeOutID = Column('ExchangeOutID', types.Integer, ForeignKey('ExchangeOut.ExchangeOutID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    preparationID = Column('PreparationID', types.Integer, ForeignKey('Preparation.PreparationID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='ExchangeOutPrep.CreatedByAgentID', remote_side='Agent.AgentID')
-    DisciplineID = orm.relationship('Discipline', foreign_keys='ExchangeOutPrep.DisciplineID', remote_side='Discipline.UserGroupScopeId')
-    ExchangeOutID = orm.relationship('ExchangeOut', foreign_keys='ExchangeOutPrep.ExchangeOutID', remote_side='ExchangeOut.ExchangeOutID', backref=orm.backref('exchangeOutPreps', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='ExchangeOutPrep.ModifiedByAgentID', remote_side='Agent.AgentID')
-    PreparationID = orm.relationship('Preparation', foreign_keys='ExchangeOutPrep.PreparationID', remote_side='Preparation.PreparationID', backref=orm.backref('exchangeOutPreps', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='ExchangeOutPrep.CreatedByAgentID', remote_side='Agent.AgentID')
+    Discipline = orm.relationship('Discipline', foreign_keys='ExchangeOutPrep.DisciplineID', remote_side='Discipline.UserGroupScopeId')
+    ExchangeOut = orm.relationship('ExchangeOut', foreign_keys='ExchangeOutPrep.ExchangeOutID', remote_side='ExchangeOut.ExchangeOutID', backref=orm.backref('exchangeOutPreps', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='ExchangeOutPrep.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Preparation = orm.relationship('Preparation', foreign_keys='ExchangeOutPrep.PreparationID', remote_side='Preparation.PreparationID', backref=orm.backref('exchangeOutPreps', uselist=True))
 
 class Exsiccata(Base):
     tableid = 89
     _id = 'exsiccataId'
     __tablename__ = 'exsiccata'
 
-    id = Column('id', types.Integer, primary_key=True)
+    exsiccataId = Column('Exsiccataid', types.Integer, primary_key=True)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     schedae = Column('Schedae', types.String, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
@@ -2785,42 +2785,42 @@ class Exsiccata(Base):
     title = Column('Title', types.String, index=False, unique=False, nullable=False)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    referenceWork = Column('ReferenceWorkID', types.Integer, ForeignKey('ReferenceWork.ReferenceWorkID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    referenceWorkID = Column('ReferenceWorkID', types.Integer, ForeignKey('ReferenceWork.ReferenceWorkID'), nullable=False, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Exsiccata.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Exsiccata.ModifiedByAgentID', remote_side='Agent.AgentID')
-    ReferenceWorkID = orm.relationship('ReferenceWork', foreign_keys='Exsiccata.ReferenceWorkID', remote_side='ReferenceWork.ReferenceWorkID', backref=orm.backref('exsiccatae', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='Exsiccata.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='Exsiccata.ModifiedByAgentID', remote_side='Agent.AgentID')
+    ReferenceWork = orm.relationship('ReferenceWork', foreign_keys='Exsiccata.ReferenceWorkID', remote_side='ReferenceWork.ReferenceWorkID', backref=orm.backref('exsiccatae', uselist=True))
 
 class ExsiccataItem(Base):
     tableid = 104
     _id = 'exsiccataItemId'
     __tablename__ = 'exsiccataitem'
 
-    id = Column('id', types.Integer, primary_key=True)
+    exsiccataItemId = Column('Exsiccataitemid', types.Integer, primary_key=True)
     fascicle = Column('Fascicle', types.String, index=False, unique=False, nullable=True)
     number = Column('Number', types.String, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    collectionObject = Column('CollectionObjectID', types.Integer, ForeignKey('CollectionObject.CollectionObjectID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    exsiccata = Column('ExsiccataID', types.Integer, ForeignKey('Exsiccata.ExsiccataID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    collectionObjectID = Column('CollectionObjectID', types.Integer, ForeignKey('CollectionObject.CollectionObjectID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    exsiccataID = Column('ExsiccataID', types.Integer, ForeignKey('Exsiccata.ExsiccataID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CollectionObjectID = orm.relationship('CollectionObject', foreign_keys='ExsiccataItem.CollectionObjectID', remote_side='CollectionObject.CollectionObjectID', backref=orm.backref('exsiccataItems', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='ExsiccataItem.CreatedByAgentID', remote_side='Agent.AgentID')
-    ExsiccataID = orm.relationship('Exsiccata', foreign_keys='ExsiccataItem.ExsiccataID', remote_side='Exsiccata.ExsiccataID', backref=orm.backref('exsiccataItems', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='ExsiccataItem.ModifiedByAgentID', remote_side='Agent.AgentID')
+    CollectionObject = orm.relationship('CollectionObject', foreign_keys='ExsiccataItem.CollectionObjectID', remote_side='CollectionObject.CollectionObjectID', backref=orm.backref('exsiccataItems', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='ExsiccataItem.CreatedByAgentID', remote_side='Agent.AgentID')
+    Exsiccata = orm.relationship('Exsiccata', foreign_keys='ExsiccataItem.ExsiccataID', remote_side='Exsiccata.ExsiccataID', backref=orm.backref('exsiccataItems', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='ExsiccataItem.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class Extractor(Base):
     tableid = 160
     _id = 'extractorId'
     __tablename__ = 'extractor'
 
-    id = Column('id', types.Integer, primary_key=True)
+    extractorId = Column('Extractorid', types.Integer, primary_key=True)
     orderNumber = Column('OrderNumber', types.Integer, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     text1 = Column('Text1', types.Text, index=False, unique=False, nullable=True)
@@ -2831,22 +2831,22 @@ class Extractor(Base):
     yesNo1 = Column('YesNo1', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo2 = Column('YesNo2', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    agent = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    dnaSequence = Column('DNASequenceID', types.Integer, ForeignKey('DNASequence.DnaSequenceID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agentID = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    dnaSequenceID = Column('DNASequenceID', types.Integer, ForeignKey('DNASequence.DnaSequenceID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AgentID = orm.relationship('Agent', foreign_keys='Extractor.AgentID', remote_side='Agent.AgentID')
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Extractor.CreatedByAgentID', remote_side='Agent.AgentID')
-    DNASequenceID = orm.relationship('DNASequence', foreign_keys='Extractor.DNASequenceID', remote_side='DNASequence.DnaSequenceID', backref=orm.backref('extractors', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Extractor.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Agent = orm.relationship('Agent', foreign_keys='Extractor.AgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='Extractor.CreatedByAgentID', remote_side='Agent.AgentID')
+    DNASequence = orm.relationship('DNASequence', foreign_keys='Extractor.DNASequenceID', remote_side='DNASequence.DnaSequenceID', backref=orm.backref('extractors', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='Extractor.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class FieldNotebook(Base):
     tableid = 83
     _id = 'fieldNotebookId'
     __tablename__ = 'fieldnotebook'
 
-    id = Column('id', types.Integer, primary_key=True)
+    fieldNotebookId = Column('Fieldnotebookid', types.Integer, primary_key=True)
     description = Column('Description', types.Text, index=False, unique=False, nullable=True)
     endDate = Column('EndDate', types.Date, index=True, unique=False, nullable=True)
     location = Column('Storage', types.String, index=False, unique=False, nullable=True)
@@ -2856,46 +2856,46 @@ class FieldNotebook(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    collection = Column('CollectionID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    discipline = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    ownerAgent = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
+    collectionID = Column('CollectionID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    disciplineID = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    ownerAgentID = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
 
-    CollectionID = orm.relationship('Collection', foreign_keys='FieldNotebook.CollectionID', remote_side='Collection.UserGroupScopeId')
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='FieldNotebook.CreatedByAgentID', remote_side='Agent.AgentID')
-    DisciplineID = orm.relationship('Discipline', foreign_keys='FieldNotebook.DisciplineID', remote_side='Discipline.UserGroupScopeId')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='FieldNotebook.ModifiedByAgentID', remote_side='Agent.AgentID')
-    AgentID = orm.relationship('Agent', foreign_keys='FieldNotebook.AgentID', remote_side='Agent.AgentID')
+    Collection = orm.relationship('Collection', foreign_keys='FieldNotebook.CollectionID', remote_side='Collection.UserGroupScopeId')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='FieldNotebook.CreatedByAgentID', remote_side='Agent.AgentID')
+    Discipline = orm.relationship('Discipline', foreign_keys='FieldNotebook.DisciplineID', remote_side='Discipline.UserGroupScopeId')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='FieldNotebook.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Agent = orm.relationship('Agent', foreign_keys='FieldNotebook.AgentID', remote_side='Agent.AgentID')
 
 class FieldNotebookAttachment(Base):
     tableid = 127
     _id = 'fieldNotebookAttachmentId'
     __tablename__ = 'fieldnotebookattachment'
 
-    id = Column('id', types.Integer, primary_key=True)
+    fieldNotebookAttachmentId = Column('Fieldnotebookattachmentid', types.Integer, primary_key=True)
     ordinal = Column('Ordinal', types.Integer, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    attachment = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    fieldNotebook = Column('FieldNotebookID', types.Integer, ForeignKey('FieldNotebook.FieldNotebookID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    attachmentID = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    fieldNotebookID = Column('FieldNotebookID', types.Integer, ForeignKey('FieldNotebook.FieldNotebookID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AttachmentID = orm.relationship('Attachment', foreign_keys='FieldNotebookAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('fieldNotebookAttachments', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='FieldNotebookAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
-    FieldNotebookID = orm.relationship('FieldNotebook', foreign_keys='FieldNotebookAttachment.FieldNotebookID', remote_side='FieldNotebook.FieldNotebookID', backref=orm.backref('attachments', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='FieldNotebookAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Attachment = orm.relationship('Attachment', foreign_keys='FieldNotebookAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('fieldNotebookAttachments', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='FieldNotebookAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
+    FieldNotebook = orm.relationship('FieldNotebook', foreign_keys='FieldNotebookAttachment.FieldNotebookID', remote_side='FieldNotebook.FieldNotebookID', backref=orm.backref('attachments', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='FieldNotebookAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class FieldNotebookPage(Base):
     tableid = 85
     _id = 'fieldNotebookPageId'
     __tablename__ = 'fieldnotebookpage'
 
-    id = Column('id', types.Integer, primary_key=True)
+    fieldNotebookPageId = Column('Fieldnotebookpageid', types.Integer, primary_key=True)
     description = Column('Description', types.String, index=False, unique=False, nullable=True)
     pageNumber = Column('PageNumber', types.String, index=True, unique=False, nullable=False)
     scanDate = Column('ScanDate', types.Date, index=True, unique=False, nullable=True)
@@ -2903,44 +2903,44 @@ class FieldNotebookPage(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    discipline = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    pageSet = Column('FieldNotebookPageSetID', types.Integer, ForeignKey('FieldNotebookPageSet.FieldNotebookPageSetID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    disciplineID = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    pageSetID = Column('FieldNotebookPageSetID', types.Integer, ForeignKey('FieldNotebookPageSet.FieldNotebookPageSetID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='FieldNotebookPage.CreatedByAgentID', remote_side='Agent.AgentID')
-    DisciplineID = orm.relationship('Discipline', foreign_keys='FieldNotebookPage.DisciplineID', remote_side='Discipline.UserGroupScopeId')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='FieldNotebookPage.ModifiedByAgentID', remote_side='Agent.AgentID')
-    FieldNotebookPageSetID = orm.relationship('FieldNotebookPageSet', foreign_keys='FieldNotebookPage.FieldNotebookPageSetID', remote_side='FieldNotebookPageSet.FieldNotebookPageSetID', backref=orm.backref('pages', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='FieldNotebookPage.CreatedByAgentID', remote_side='Agent.AgentID')
+    Discipline = orm.relationship('Discipline', foreign_keys='FieldNotebookPage.DisciplineID', remote_side='Discipline.UserGroupScopeId')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='FieldNotebookPage.ModifiedByAgentID', remote_side='Agent.AgentID')
+    FieldNotebookPageSet = orm.relationship('FieldNotebookPageSet', foreign_keys='FieldNotebookPage.FieldNotebookPageSetID', remote_side='FieldNotebookPageSet.FieldNotebookPageSetID', backref=orm.backref('pages', uselist=True))
 
 class FieldNotebookPageAttachment(Base):
     tableid = 129
     _id = 'fieldNotebookPageAttachmentId'
     __tablename__ = 'fieldnotebookpageattachment'
 
-    id = Column('id', types.Integer, primary_key=True)
+    fieldNotebookPageAttachmentId = Column('Fieldnotebookpageattachmentid', types.Integer, primary_key=True)
     ordinal = Column('Ordinal', types.Integer, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    attachment = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    fieldNotebookPage = Column('FieldNotebookPageID', types.Integer, ForeignKey('FieldNotebookPage.FieldNotebookPageID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    attachmentID = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    fieldNotebookPageID = Column('FieldNotebookPageID', types.Integer, ForeignKey('FieldNotebookPage.FieldNotebookPageID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AttachmentID = orm.relationship('Attachment', foreign_keys='FieldNotebookPageAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('fieldNotebookPageAttachments', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='FieldNotebookPageAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
-    FieldNotebookPageID = orm.relationship('FieldNotebookPage', foreign_keys='FieldNotebookPageAttachment.FieldNotebookPageID', remote_side='FieldNotebookPage.FieldNotebookPageID', backref=orm.backref('attachments', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='FieldNotebookPageAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Attachment = orm.relationship('Attachment', foreign_keys='FieldNotebookPageAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('fieldNotebookPageAttachments', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='FieldNotebookPageAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
+    FieldNotebookPage = orm.relationship('FieldNotebookPage', foreign_keys='FieldNotebookPageAttachment.FieldNotebookPageID', remote_side='FieldNotebookPage.FieldNotebookPageID', backref=orm.backref('attachments', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='FieldNotebookPageAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class FieldNotebookPageSet(Base):
     tableid = 84
     _id = 'fieldNotebookPageSetId'
     __tablename__ = 'fieldnotebookpageset'
 
-    id = Column('id', types.Integer, primary_key=True)
+    fieldNotebookPageSetId = Column('Fieldnotebookpagesetid', types.Integer, primary_key=True)
     description = Column('Description', types.String, index=False, unique=False, nullable=True)
     endDate = Column('EndDate', types.Date, index=True, unique=False, nullable=True)
     method = Column('Method', types.String, index=False, unique=False, nullable=True)
@@ -2950,46 +2950,46 @@ class FieldNotebookPageSet(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    discipline = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
-    fieldNotebook = Column('FieldNotebookID', types.Integer, ForeignKey('FieldNotebook.FieldNotebookID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    sourceAgent = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    disciplineID = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
+    fieldNotebookID = Column('FieldNotebookID', types.Integer, ForeignKey('FieldNotebook.FieldNotebookID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    sourceAgentID = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='FieldNotebookPageSet.CreatedByAgentID', remote_side='Agent.AgentID')
-    DisciplineID = orm.relationship('Discipline', foreign_keys='FieldNotebookPageSet.DisciplineID', remote_side='Discipline.UserGroupScopeId')
-    FieldNotebookID = orm.relationship('FieldNotebook', foreign_keys='FieldNotebookPageSet.FieldNotebookID', remote_side='FieldNotebook.FieldNotebookID', backref=orm.backref('pageSets', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='FieldNotebookPageSet.ModifiedByAgentID', remote_side='Agent.AgentID')
-    AgentID = orm.relationship('Agent', foreign_keys='FieldNotebookPageSet.AgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='FieldNotebookPageSet.CreatedByAgentID', remote_side='Agent.AgentID')
+    Discipline = orm.relationship('Discipline', foreign_keys='FieldNotebookPageSet.DisciplineID', remote_side='Discipline.UserGroupScopeId')
+    FieldNotebook = orm.relationship('FieldNotebook', foreign_keys='FieldNotebookPageSet.FieldNotebookID', remote_side='FieldNotebook.FieldNotebookID', backref=orm.backref('pageSets', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='FieldNotebookPageSet.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Agent = orm.relationship('Agent', foreign_keys='FieldNotebookPageSet.AgentID', remote_side='Agent.AgentID')
 
 class FieldNotebookPageSetAttachment(Base):
     tableid = 128
     _id = 'fieldNotebookPageSetAttachmentId'
     __tablename__ = 'fieldnotebookpagesetattachment'
 
-    id = Column('id', types.Integer, primary_key=True)
+    fieldNotebookPageSetAttachmentId = Column('Fieldnotebookpagesetattachmentid', types.Integer, primary_key=True)
     ordinal = Column('Ordinal', types.Integer, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    attachment = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    fieldNotebookPageSet = Column('FieldNotebookPageSetID', types.Integer, ForeignKey('FieldNotebookPageSet.FieldNotebookPageSetID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    attachmentID = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    fieldNotebookPageSetID = Column('FieldNotebookPageSetID', types.Integer, ForeignKey('FieldNotebookPageSet.FieldNotebookPageSetID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AttachmentID = orm.relationship('Attachment', foreign_keys='FieldNotebookPageSetAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('fieldNotebookPageSetAttachments', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='FieldNotebookPageSetAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
-    FieldNotebookPageSetID = orm.relationship('FieldNotebookPageSet', foreign_keys='FieldNotebookPageSetAttachment.FieldNotebookPageSetID', remote_side='FieldNotebookPageSet.FieldNotebookPageSetID', backref=orm.backref('attachments', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='FieldNotebookPageSetAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Attachment = orm.relationship('Attachment', foreign_keys='FieldNotebookPageSetAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('fieldNotebookPageSetAttachments', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='FieldNotebookPageSetAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
+    FieldNotebookPageSet = orm.relationship('FieldNotebookPageSet', foreign_keys='FieldNotebookPageSetAttachment.FieldNotebookPageSetID', remote_side='FieldNotebookPageSet.FieldNotebookPageSetID', backref=orm.backref('attachments', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='FieldNotebookPageSetAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class FundingAgent(Base):
     tableid = 146
     _id = 'fundingAgentId'
     __tablename__ = 'fundingagent'
 
-    id = Column('id', types.Integer, primary_key=True)
+    fundingAgentId = Column('Fundingagentid', types.Integer, primary_key=True)
     isPrimary = Column('IsPrimary', mysql_bit_type, index=False, unique=False, nullable=False)
     orderNumber = Column('OrderNumber', types.Integer, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
@@ -2998,24 +2998,24 @@ class FundingAgent(Base):
     type = Column('Type', types.String, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    agent = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
-    collectingTrip = Column('CollectingTripID', types.Integer, ForeignKey('CollectingTrip.CollectingTripID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    division = Column('DivisionID', types.Integer, ForeignKey('Division.UserGroupScopeId'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agentID = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
+    collectingTripID = Column('CollectingTripID', types.Integer, ForeignKey('CollectingTrip.CollectingTripID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    divisionID = Column('DivisionID', types.Integer, ForeignKey('Division.UserGroupScopeId'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AgentID = orm.relationship('Agent', foreign_keys='FundingAgent.AgentID', remote_side='Agent.AgentID')
-    CollectingTripID = orm.relationship('CollectingTrip', foreign_keys='FundingAgent.CollectingTripID', remote_side='CollectingTrip.CollectingTripID', backref=orm.backref('fundingAgents', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='FundingAgent.CreatedByAgentID', remote_side='Agent.AgentID')
-    DivisionID = orm.relationship('Division', foreign_keys='FundingAgent.DivisionID', remote_side='Division.UserGroupScopeId')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='FundingAgent.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Agent = orm.relationship('Agent', foreign_keys='FundingAgent.AgentID', remote_side='Agent.AgentID')
+    CollectingTrip = orm.relationship('CollectingTrip', foreign_keys='FundingAgent.CollectingTripID', remote_side='CollectingTrip.CollectingTripID', backref=orm.backref('fundingAgents', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='FundingAgent.CreatedByAgentID', remote_side='Agent.AgentID')
+    Division = orm.relationship('Division', foreign_keys='FundingAgent.DivisionID', remote_side='Division.UserGroupScopeId')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='FundingAgent.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class GeoCoordDetail(Base):
     tableid = 123
     _id = 'geoCoordDetailId'
     __tablename__ = 'geocoorddetail'
 
-    id = Column('id', types.Integer, primary_key=True)
+    geoCoordDetailId = Column('Geocoorddetailid', types.Integer, primary_key=True)
     errorPolygon = Column('ErrorPolygon', types.Text, index=False, unique=False, nullable=True)
     geoRefAccuracy = Column('GeoRefAccuracy', types.Numeric, index=False, unique=False, nullable=True)
     geoRefAccuracyUnits = Column('GeoRefAccuracyUnits', types.String, index=False, unique=False, nullable=True)
@@ -3057,24 +3057,24 @@ class GeoCoordDetail(Base):
     yesNo4 = Column('YesNo4', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo5 = Column('YesNo5', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    geoRefCompiledBy = Column('CompiledByID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    geoRefDetBy = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    locality = Column('LocalityID', types.Integer, ForeignKey('Locality.LocalityID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    geoRefCompiledByID = Column('CompiledByID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    geoRefDetByID = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    localityID = Column('LocalityID', types.Integer, ForeignKey('Locality.LocalityID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='GeoCoordDetail.CreatedByAgentID', remote_side='Agent.AgentID')
-    CompiledByID = orm.relationship('Agent', foreign_keys='GeoCoordDetail.CompiledByID', remote_side='Agent.AgentID')
-    AgentID = orm.relationship('Agent', foreign_keys='GeoCoordDetail.AgentID', remote_side='Agent.AgentID')
-    LocalityID = orm.relationship('Locality', foreign_keys='GeoCoordDetail.LocalityID', remote_side='Locality.LocalityID', backref=orm.backref('geoCoordDetails', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='GeoCoordDetail.ModifiedByAgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='GeoCoordDetail.CreatedByAgentID', remote_side='Agent.AgentID')
+    CompiledBy = orm.relationship('Agent', foreign_keys='GeoCoordDetail.CompiledByID', remote_side='Agent.AgentID')
+    Agent = orm.relationship('Agent', foreign_keys='GeoCoordDetail.AgentID', remote_side='Agent.AgentID')
+    Locality = orm.relationship('Locality', foreign_keys='GeoCoordDetail.LocalityID', remote_side='Locality.LocalityID', backref=orm.backref('geoCoordDetails', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='GeoCoordDetail.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class Geography(Base):
     tableid = 3
     _id = 'geographyId'
     __tablename__ = 'geography'
 
-    id = Column('id', types.Integer, primary_key=True)
+    geographyId = Column('Geographyid', types.Integer, primary_key=True)
     abbrev = Column('Abbrev', types.String, index=False, unique=False, nullable=True)
     centroidLat = Column('CentroidLat', types.Numeric, index=False, unique=False, nullable=True)
     centroidLon = Column('CentroidLon', types.Numeric, index=False, unique=False, nullable=True)
@@ -3099,26 +3099,26 @@ class Geography(Base):
     timestampVersion = Column('TimestampVersion', types.Date, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    acceptedGeography = Column('AcceptedID', types.Integer, ForeignKey('Geography.GeographyID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    definition = Column('GeographyTreeDefID', types.Integer, ForeignKey('GeographyTreeDef.GeographyTreeDefID'), nullable=False, unique=False)
-    definitionItem = Column('GeographyTreeDefItemID', types.Integer, ForeignKey('GeographyTreeDefItem.GeographyTreeDefItemID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    parent = Column('ParentID', types.Integer, ForeignKey('Geography.GeographyID'), nullable=True, unique=False)
+    acceptedGeographyID = Column('AcceptedID', types.Integer, ForeignKey('Geography.GeographyID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    definitionID = Column('GeographyTreeDefID', types.Integer, ForeignKey('GeographyTreeDef.GeographyTreeDefID'), nullable=False, unique=False)
+    definitionItemID = Column('GeographyTreeDefItemID', types.Integer, ForeignKey('GeographyTreeDefItem.GeographyTreeDefItemID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    parentID = Column('ParentID', types.Integer, ForeignKey('Geography.GeographyID'), nullable=True, unique=False)
 
-    AcceptedID = orm.relationship('Geography', foreign_keys='Geography.AcceptedID', remote_side='Geography.GeographyID', backref=orm.backref('acceptedChildren', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Geography.CreatedByAgentID', remote_side='Agent.AgentID')
-    GeographyTreeDefID = orm.relationship('GeographyTreeDef', foreign_keys='Geography.GeographyTreeDefID', remote_side='GeographyTreeDef.GeographyTreeDefID', backref=orm.backref('treeEntries', uselist=True))
-    GeographyTreeDefItemID = orm.relationship('GeographyTreeDefItem', foreign_keys='Geography.GeographyTreeDefItemID', remote_side='GeographyTreeDefItem.GeographyTreeDefItemID', backref=orm.backref('treeEntries', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Geography.ModifiedByAgentID', remote_side='Agent.AgentID')
-    ParentID = orm.relationship('Geography', foreign_keys='Geography.ParentID', remote_side='Geography.GeographyID', backref=orm.backref('children', uselist=True))
+    Accepted = orm.relationship('Geography', foreign_keys='Geography.AcceptedID', remote_side='Geography.GeographyID', backref=orm.backref('acceptedChildren', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='Geography.CreatedByAgentID', remote_side='Agent.AgentID')
+    GeographyTreeDef = orm.relationship('GeographyTreeDef', foreign_keys='Geography.GeographyTreeDefID', remote_side='GeographyTreeDef.GeographyTreeDefID', backref=orm.backref('treeEntries', uselist=True))
+    GeographyTreeDefItem = orm.relationship('GeographyTreeDefItem', foreign_keys='Geography.GeographyTreeDefItemID', remote_side='GeographyTreeDefItem.GeographyTreeDefItemID', backref=orm.backref('treeEntries', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='Geography.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Parent = orm.relationship('Geography', foreign_keys='Geography.ParentID', remote_side='Geography.GeographyID', backref=orm.backref('children', uselist=True))
 
 class GeographyTreeDef(Base):
     tableid = 44
     _id = 'geographyTreeDefId'
     __tablename__ = 'geographytreedef'
 
-    id = Column('id', types.Integer, primary_key=True)
+    geographyTreeDefId = Column('Geographytreedefid', types.Integer, primary_key=True)
     fullNameDirection = Column('FullNameDirection', types.Integer, index=False, unique=False, nullable=True)
     name = Column('Name', types.String, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
@@ -3126,18 +3126,18 @@ class GeographyTreeDef(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='GeographyTreeDef.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='GeographyTreeDef.ModifiedByAgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='GeographyTreeDef.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='GeographyTreeDef.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class GeographyTreeDefItem(Base):
     tableid = 45
     _id = 'geographyTreeDefItemId'
     __tablename__ = 'geographytreedefitem'
 
-    id = Column('id', types.Integer, primary_key=True)
+    geographyTreeDefItemId = Column('Geographytreedefitemid', types.Integer, primary_key=True)
     fullNameSeparator = Column('FullNameSeparator', types.String, index=False, unique=False, nullable=True)
     isEnforced = Column('IsEnforced', mysql_bit_type, index=False, unique=False, nullable=True)
     isInFullName = Column('IsInFullName', mysql_bit_type, index=False, unique=False, nullable=True)
@@ -3151,22 +3151,22 @@ class GeographyTreeDefItem(Base):
     title = Column('Title', types.String, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    parent = Column('ParentItemID', types.Integer, ForeignKey('GeographyTreeDefItem.GeographyTreeDefItemID'), nullable=True, unique=False)
-    treeDef = Column('GeographyTreeDefID', types.Integer, ForeignKey('GeographyTreeDef.GeographyTreeDefID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    parentID = Column('ParentItemID', types.Integer, ForeignKey('GeographyTreeDefItem.GeographyTreeDefItemID'), nullable=True, unique=False)
+    treeDefID = Column('GeographyTreeDefID', types.Integer, ForeignKey('GeographyTreeDef.GeographyTreeDefID'), nullable=False, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='GeographyTreeDefItem.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='GeographyTreeDefItem.ModifiedByAgentID', remote_side='Agent.AgentID')
-    ParentItemID = orm.relationship('GeographyTreeDefItem', foreign_keys='GeographyTreeDefItem.ParentItemID', remote_side='GeographyTreeDefItem.GeographyTreeDefItemID', backref=orm.backref('children', uselist=True))
-    GeographyTreeDefID = orm.relationship('GeographyTreeDef', foreign_keys='GeographyTreeDefItem.GeographyTreeDefID', remote_side='GeographyTreeDef.GeographyTreeDefID', backref=orm.backref('treeDefItems', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='GeographyTreeDefItem.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='GeographyTreeDefItem.ModifiedByAgentID', remote_side='Agent.AgentID')
+    ParentItem = orm.relationship('GeographyTreeDefItem', foreign_keys='GeographyTreeDefItem.ParentItemID', remote_side='GeographyTreeDefItem.GeographyTreeDefItemID', backref=orm.backref('children', uselist=True))
+    GeographyTreeDef = orm.relationship('GeographyTreeDef', foreign_keys='GeographyTreeDefItem.GeographyTreeDefID', remote_side='GeographyTreeDef.GeographyTreeDefID', backref=orm.backref('treeDefItems', uselist=True))
 
 class GeologicTimePeriod(Base):
     tableid = 46
     _id = 'geologicTimePeriodId'
     __tablename__ = 'geologictimeperiod'
 
-    id = Column('id', types.Integer, primary_key=True)
+    geologicTimePeriodId = Column('Geologictimeperiodid', types.Integer, primary_key=True)
     endPeriod = Column('EndPeriod', types.Numeric, index=False, unique=False, nullable=True)
     endUncertainty = Column('EndUncertainty', types.Numeric, index=False, unique=False, nullable=True)
     fullName = Column('FullName', types.String, index=True, unique=False, nullable=True)
@@ -3187,26 +3187,26 @@ class GeologicTimePeriod(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    acceptedGeologicTimePeriod = Column('AcceptedID', types.Integer, ForeignKey('GeologicTimePeriod.GeologicTimePeriodID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    definition = Column('GeologicTimePeriodTreeDefID', types.Integer, ForeignKey('GeologicTimePeriodTreeDef.GeologicTimePeriodTreeDefID'), nullable=False, unique=False)
-    definitionItem = Column('GeologicTimePeriodTreeDefItemID', types.Integer, ForeignKey('GeologicTimePeriodTreeDefItem.GeologicTimePeriodTreeDefItemID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    parent = Column('ParentID', types.Integer, ForeignKey('GeologicTimePeriod.GeologicTimePeriodID'), nullable=True, unique=False)
+    acceptedGeologicTimePeriodID = Column('AcceptedID', types.Integer, ForeignKey('GeologicTimePeriod.GeologicTimePeriodID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    definitionID = Column('GeologicTimePeriodTreeDefID', types.Integer, ForeignKey('GeologicTimePeriodTreeDef.GeologicTimePeriodTreeDefID'), nullable=False, unique=False)
+    definitionItemID = Column('GeologicTimePeriodTreeDefItemID', types.Integer, ForeignKey('GeologicTimePeriodTreeDefItem.GeologicTimePeriodTreeDefItemID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    parentID = Column('ParentID', types.Integer, ForeignKey('GeologicTimePeriod.GeologicTimePeriodID'), nullable=True, unique=False)
 
-    AcceptedID = orm.relationship('GeologicTimePeriod', foreign_keys='GeologicTimePeriod.AcceptedID', remote_side='GeologicTimePeriod.GeologicTimePeriodID', backref=orm.backref('acceptedChildren', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='GeologicTimePeriod.CreatedByAgentID', remote_side='Agent.AgentID')
-    GeologicTimePeriodTreeDefID = orm.relationship('GeologicTimePeriodTreeDef', foreign_keys='GeologicTimePeriod.GeologicTimePeriodTreeDefID', remote_side='GeologicTimePeriodTreeDef.GeologicTimePeriodTreeDefID', backref=orm.backref('treeEntries', uselist=True))
-    GeologicTimePeriodTreeDefItemID = orm.relationship('GeologicTimePeriodTreeDefItem', foreign_keys='GeologicTimePeriod.GeologicTimePeriodTreeDefItemID', remote_side='GeologicTimePeriodTreeDefItem.GeologicTimePeriodTreeDefItemID', backref=orm.backref('treeEntries', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='GeologicTimePeriod.ModifiedByAgentID', remote_side='Agent.AgentID')
-    ParentID = orm.relationship('GeologicTimePeriod', foreign_keys='GeologicTimePeriod.ParentID', remote_side='GeologicTimePeriod.GeologicTimePeriodID', backref=orm.backref('children', uselist=True))
+    Accepted = orm.relationship('GeologicTimePeriod', foreign_keys='GeologicTimePeriod.AcceptedID', remote_side='GeologicTimePeriod.GeologicTimePeriodID', backref=orm.backref('acceptedChildren', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='GeologicTimePeriod.CreatedByAgentID', remote_side='Agent.AgentID')
+    GeologicTimePeriodTreeDef = orm.relationship('GeologicTimePeriodTreeDef', foreign_keys='GeologicTimePeriod.GeologicTimePeriodTreeDefID', remote_side='GeologicTimePeriodTreeDef.GeologicTimePeriodTreeDefID', backref=orm.backref('treeEntries', uselist=True))
+    GeologicTimePeriodTreeDefItem = orm.relationship('GeologicTimePeriodTreeDefItem', foreign_keys='GeologicTimePeriod.GeologicTimePeriodTreeDefItemID', remote_side='GeologicTimePeriodTreeDefItem.GeologicTimePeriodTreeDefItemID', backref=orm.backref('treeEntries', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='GeologicTimePeriod.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Parent = orm.relationship('GeologicTimePeriod', foreign_keys='GeologicTimePeriod.ParentID', remote_side='GeologicTimePeriod.GeologicTimePeriodID', backref=orm.backref('children', uselist=True))
 
 class GeologicTimePeriodTreeDef(Base):
     tableid = 47
     _id = 'geologicTimePeriodTreeDefId'
     __tablename__ = 'geologictimeperiodtreedef'
 
-    id = Column('id', types.Integer, primary_key=True)
+    geologicTimePeriodTreeDefId = Column('Geologictimeperiodtreedefid', types.Integer, primary_key=True)
     fullNameDirection = Column('FullNameDirection', types.Integer, index=False, unique=False, nullable=True)
     name = Column('Name', types.String, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
@@ -3214,18 +3214,18 @@ class GeologicTimePeriodTreeDef(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='GeologicTimePeriodTreeDef.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='GeologicTimePeriodTreeDef.ModifiedByAgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='GeologicTimePeriodTreeDef.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='GeologicTimePeriodTreeDef.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class GeologicTimePeriodTreeDefItem(Base):
     tableid = 48
     _id = 'geologicTimePeriodTreeDefItemId'
     __tablename__ = 'geologictimeperiodtreedefitem'
 
-    id = Column('id', types.Integer, primary_key=True)
+    geologicTimePeriodTreeDefItemId = Column('Geologictimeperiodtreedefitemid', types.Integer, primary_key=True)
     fullNameSeparator = Column('FullNameSeparator', types.String, index=False, unique=False, nullable=True)
     isEnforced = Column('IsEnforced', mysql_bit_type, index=False, unique=False, nullable=True)
     isInFullName = Column('IsInFullName', mysql_bit_type, index=False, unique=False, nullable=True)
@@ -3239,22 +3239,22 @@ class GeologicTimePeriodTreeDefItem(Base):
     title = Column('Title', types.String, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    parent = Column('ParentItemID', types.Integer, ForeignKey('GeologicTimePeriodTreeDefItem.GeologicTimePeriodTreeDefItemID'), nullable=True, unique=False)
-    treeDef = Column('GeologicTimePeriodTreeDefID', types.Integer, ForeignKey('GeologicTimePeriodTreeDef.GeologicTimePeriodTreeDefID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    parentID = Column('ParentItemID', types.Integer, ForeignKey('GeologicTimePeriodTreeDefItem.GeologicTimePeriodTreeDefItemID'), nullable=True, unique=False)
+    treeDefID = Column('GeologicTimePeriodTreeDefID', types.Integer, ForeignKey('GeologicTimePeriodTreeDef.GeologicTimePeriodTreeDefID'), nullable=False, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='GeologicTimePeriodTreeDefItem.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='GeologicTimePeriodTreeDefItem.ModifiedByAgentID', remote_side='Agent.AgentID')
-    ParentItemID = orm.relationship('GeologicTimePeriodTreeDefItem', foreign_keys='GeologicTimePeriodTreeDefItem.ParentItemID', remote_side='GeologicTimePeriodTreeDefItem.GeologicTimePeriodTreeDefItemID', backref=orm.backref('children', uselist=True))
-    GeologicTimePeriodTreeDefID = orm.relationship('GeologicTimePeriodTreeDef', foreign_keys='GeologicTimePeriodTreeDefItem.GeologicTimePeriodTreeDefID', remote_side='GeologicTimePeriodTreeDef.GeologicTimePeriodTreeDefID', backref=orm.backref('treeDefItems', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='GeologicTimePeriodTreeDefItem.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='GeologicTimePeriodTreeDefItem.ModifiedByAgentID', remote_side='Agent.AgentID')
+    ParentItem = orm.relationship('GeologicTimePeriodTreeDefItem', foreign_keys='GeologicTimePeriodTreeDefItem.ParentItemID', remote_side='GeologicTimePeriodTreeDefItem.GeologicTimePeriodTreeDefItemID', backref=orm.backref('children', uselist=True))
+    GeologicTimePeriodTreeDef = orm.relationship('GeologicTimePeriodTreeDef', foreign_keys='GeologicTimePeriodTreeDefItem.GeologicTimePeriodTreeDefID', remote_side='GeologicTimePeriodTreeDef.GeologicTimePeriodTreeDefID', backref=orm.backref('treeDefItems', uselist=True))
 
 class Gift(Base):
     tableid = 131
     _id = 'giftId'
     __tablename__ = 'gift'
 
-    id = Column('id', types.Integer, primary_key=True)
+    giftId = Column('Giftid', types.Integer, primary_key=True)
     contents = Column('Contents', types.Text, index=False, unique=False, nullable=True)
     date1 = Column('Date1', types.Date, index=False, unique=False, nullable=True)
     date1Precision = Column('Date1Precision', types.Integer, index=False, unique=False, nullable=True)
@@ -3285,26 +3285,26 @@ class Gift(Base):
     yesNo1 = Column('YesNo1', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo2 = Column('YesNo2', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    addressOfRecord = Column('AddressOfRecordID', types.Integer, ForeignKey('AddressOfRecord.AddressOfRecordID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    deaccession = Column('DeaccessionID', types.Integer, ForeignKey('Deaccession.DeaccessionID'), nullable=True, unique=False)
-    discipline = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
-    division = Column('DivisionID', types.Integer, ForeignKey('Division.UserGroupScopeId'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    addressOfRecordID = Column('AddressOfRecordID', types.Integer, ForeignKey('AddressOfRecord.AddressOfRecordID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    deaccessionID = Column('DeaccessionID', types.Integer, ForeignKey('Deaccession.DeaccessionID'), nullable=True, unique=False)
+    disciplineID = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
+    divisionID = Column('DivisionID', types.Integer, ForeignKey('Division.UserGroupScopeId'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AddressOfRecordID = orm.relationship('AddressOfRecord', foreign_keys='Gift.AddressOfRecordID', remote_side='AddressOfRecord.AddressOfRecordID')
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Gift.CreatedByAgentID', remote_side='Agent.AgentID')
-    DeaccessionID = orm.relationship('Deaccession', foreign_keys='Gift.DeaccessionID', remote_side='Deaccession.DeaccessionID', backref=orm.backref('gifts', uselist=True))
-    DisciplineID = orm.relationship('Discipline', foreign_keys='Gift.DisciplineID', remote_side='Discipline.UserGroupScopeId')
-    DivisionID = orm.relationship('Division', foreign_keys='Gift.DivisionID', remote_side='Division.UserGroupScopeId')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Gift.ModifiedByAgentID', remote_side='Agent.AgentID')
+    AddressOfRecord = orm.relationship('AddressOfRecord', foreign_keys='Gift.AddressOfRecordID', remote_side='AddressOfRecord.AddressOfRecordID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='Gift.CreatedByAgentID', remote_side='Agent.AgentID')
+    Deaccession = orm.relationship('Deaccession', foreign_keys='Gift.DeaccessionID', remote_side='Deaccession.DeaccessionID', backref=orm.backref('gifts', uselist=True))
+    Discipline = orm.relationship('Discipline', foreign_keys='Gift.DisciplineID', remote_side='Discipline.UserGroupScopeId')
+    Division = orm.relationship('Division', foreign_keys='Gift.DivisionID', remote_side='Division.UserGroupScopeId')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='Gift.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class GiftAgent(Base):
     tableid = 133
     _id = 'giftAgentId'
     __tablename__ = 'giftagent'
 
-    id = Column('id', types.Integer, primary_key=True)
+    giftAgentId = Column('Giftagentid', types.Integer, primary_key=True)
     date1 = Column('Date1', types.Date, index=False, unique=False, nullable=True)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     role = Column('Role', types.String, index=False, unique=False, nullable=False)
@@ -3312,46 +3312,46 @@ class GiftAgent(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    agent = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    discipline = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
-    gift = Column('GiftID', types.Integer, ForeignKey('Gift.GiftID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agentID = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    disciplineID = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
+    giftID = Column('GiftID', types.Integer, ForeignKey('Gift.GiftID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AgentID = orm.relationship('Agent', foreign_keys='GiftAgent.AgentID', remote_side='Agent.AgentID')
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='GiftAgent.CreatedByAgentID', remote_side='Agent.AgentID')
-    DisciplineID = orm.relationship('Discipline', foreign_keys='GiftAgent.DisciplineID', remote_side='Discipline.UserGroupScopeId')
-    GiftID = orm.relationship('Gift', foreign_keys='GiftAgent.GiftID', remote_side='Gift.GiftID', backref=orm.backref('giftAgents', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='GiftAgent.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Agent = orm.relationship('Agent', foreign_keys='GiftAgent.AgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='GiftAgent.CreatedByAgentID', remote_side='Agent.AgentID')
+    Discipline = orm.relationship('Discipline', foreign_keys='GiftAgent.DisciplineID', remote_side='Discipline.UserGroupScopeId')
+    Gift = orm.relationship('Gift', foreign_keys='GiftAgent.GiftID', remote_side='Gift.GiftID', backref=orm.backref('giftAgents', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='GiftAgent.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class GiftAttachment(Base):
     tableid = 144
     _id = 'giftAttachmentId'
     __tablename__ = 'giftattachment'
 
-    id = Column('id', types.Integer, primary_key=True)
+    giftAttachmentId = Column('Giftattachmentid', types.Integer, primary_key=True)
     ordinal = Column('Ordinal', types.Integer, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    attachment = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    gift = Column('GiftID', types.Integer, ForeignKey('Gift.GiftID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    attachmentID = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    giftID = Column('GiftID', types.Integer, ForeignKey('Gift.GiftID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AttachmentID = orm.relationship('Attachment', foreign_keys='GiftAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('giftAttachments', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='GiftAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
-    GiftID = orm.relationship('Gift', foreign_keys='GiftAttachment.GiftID', remote_side='Gift.GiftID', backref=orm.backref('giftAttachments', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='GiftAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Attachment = orm.relationship('Attachment', foreign_keys='GiftAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('giftAttachments', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='GiftAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
+    Gift = orm.relationship('Gift', foreign_keys='GiftAttachment.GiftID', remote_side='Gift.GiftID', backref=orm.backref('giftAttachments', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='GiftAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class GiftPreparation(Base):
     tableid = 132
     _id = 'giftPreparationId'
     __tablename__ = 'giftpreparation'
 
-    id = Column('id', types.Integer, primary_key=True)
+    giftPreparationId = Column('Giftpreparationid', types.Integer, primary_key=True)
     descriptionOfMaterial = Column('DescriptionOfMaterial', types.String, index=False, unique=False, nullable=True)
     inComments = Column('InComments', types.Text, index=False, unique=False, nullable=True)
     outComments = Column('OutComments', types.Text, index=False, unique=False, nullable=True)
@@ -3366,48 +3366,48 @@ class GiftPreparation(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    discipline = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
-    gift = Column('GiftID', types.Integer, ForeignKey('Gift.GiftID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    preparation = Column('PreparationID', types.Integer, ForeignKey('Preparation.PreparationID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    disciplineID = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
+    giftID = Column('GiftID', types.Integer, ForeignKey('Gift.GiftID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    preparationID = Column('PreparationID', types.Integer, ForeignKey('Preparation.PreparationID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='GiftPreparation.CreatedByAgentID', remote_side='Agent.AgentID')
-    DisciplineID = orm.relationship('Discipline', foreign_keys='GiftPreparation.DisciplineID', remote_side='Discipline.UserGroupScopeId')
-    GiftID = orm.relationship('Gift', foreign_keys='GiftPreparation.GiftID', remote_side='Gift.GiftID', backref=orm.backref('giftPreparations', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='GiftPreparation.ModifiedByAgentID', remote_side='Agent.AgentID')
-    PreparationID = orm.relationship('Preparation', foreign_keys='GiftPreparation.PreparationID', remote_side='Preparation.PreparationID', backref=orm.backref('giftPreparations', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='GiftPreparation.CreatedByAgentID', remote_side='Agent.AgentID')
+    Discipline = orm.relationship('Discipline', foreign_keys='GiftPreparation.DisciplineID', remote_side='Discipline.UserGroupScopeId')
+    Gift = orm.relationship('Gift', foreign_keys='GiftPreparation.GiftID', remote_side='Gift.GiftID', backref=orm.backref('giftPreparations', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='GiftPreparation.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Preparation = orm.relationship('Preparation', foreign_keys='GiftPreparation.PreparationID', remote_side='Preparation.PreparationID', backref=orm.backref('giftPreparations', uselist=True))
 
 class GroupPerson(Base):
     tableid = 49
     _id = 'groupPersonId'
     __tablename__ = 'groupperson'
 
-    id = Column('id', types.Integer, primary_key=True)
+    groupPersonId = Column('Grouppersonid', types.Integer, primary_key=True)
     orderNumber = Column('OrderNumber', types.Integer, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    division = Column('DivisionID', types.Integer, ForeignKey('Division.UserGroupScopeId'), nullable=False, unique=False)
-    group = Column('GroupID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
-    member = Column('MemberID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    divisionID = Column('DivisionID', types.Integer, ForeignKey('Division.UserGroupScopeId'), nullable=False, unique=False)
+    groupID = Column('GroupID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
+    memberID = Column('MemberID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='GroupPerson.CreatedByAgentID', remote_side='Agent.AgentID')
-    DivisionID = orm.relationship('Division', foreign_keys='GroupPerson.DivisionID', remote_side='Division.UserGroupScopeId')
-    GroupID = orm.relationship('Agent', foreign_keys='GroupPerson.GroupID', remote_side='Agent.AgentID', backref=orm.backref('groups', uselist=True))
-    MemberID = orm.relationship('Agent', foreign_keys='GroupPerson.MemberID', remote_side='Agent.AgentID', backref=orm.backref('members', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='GroupPerson.ModifiedByAgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='GroupPerson.CreatedByAgentID', remote_side='Agent.AgentID')
+    Division = orm.relationship('Division', foreign_keys='GroupPerson.DivisionID', remote_side='Division.UserGroupScopeId')
+    Group = orm.relationship('Agent', foreign_keys='GroupPerson.GroupID', remote_side='Agent.AgentID', backref=orm.backref('groups', uselist=True))
+    Member = orm.relationship('Agent', foreign_keys='GroupPerson.MemberID', remote_side='Agent.AgentID', backref=orm.backref('members', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='GroupPerson.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class InfoRequest(Base):
     tableid = 50
     _id = 'infoRequestID'
     __tablename__ = 'inforequest'
 
-    id = Column('id', types.Integer, primary_key=True)
+    infoRequestID = Column('Inforequestid', types.Integer, primary_key=True)
     collectionMemberId = Column('CollectionMemberID', types.Integer, index=True, unique=False, nullable=False)
     email = Column('Email', types.String, index=False, unique=False, nullable=True)
     firstName = Column('Firstname', types.String, index=False, unique=False, nullable=True)
@@ -3421,20 +3421,20 @@ class InfoRequest(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    agent = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agentID = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AgentID = orm.relationship('Agent', foreign_keys='InfoRequest.AgentID', remote_side='Agent.AgentID')
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='InfoRequest.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='InfoRequest.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Agent = orm.relationship('Agent', foreign_keys='InfoRequest.AgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='InfoRequest.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='InfoRequest.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class Institution(Base):
     tableid = 94
     _id = 'userGroupScopeId'
     __tablename__ = 'institution'
 
-    id = Column('id', types.Integer, primary_key=True)
+    userGroupScopeId = Column('Usergroupscopeid', types.Integer, primary_key=True)
     altName = Column('AltName', types.String, index=False, unique=False, nullable=True)
     code = Column('Code', types.String, index=False, unique=False, nullable=True)
     copyright = Column('Copyright', types.Text, index=False, unique=False, nullable=True)
@@ -3465,22 +3465,22 @@ class Institution(Base):
     uri = Column('Uri', types.String, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    address = Column('AddressID', types.Integer, ForeignKey('Address.AddressID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    storageTreeDef = Column('StorageTreeDefID', types.Integer, ForeignKey('StorageTreeDef.StorageTreeDefID'), nullable=True, unique=False)
+    addressID = Column('AddressID', types.Integer, ForeignKey('Address.AddressID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    storageTreeDefID = Column('StorageTreeDefID', types.Integer, ForeignKey('StorageTreeDef.StorageTreeDefID'), nullable=True, unique=False)
 
-    AddressID = orm.relationship('Address', foreign_keys='Institution.AddressID', remote_side='Address.AddressID', backref=orm.backref('insitutions', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Institution.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Institution.ModifiedByAgentID', remote_side='Agent.AgentID')
-    StorageTreeDefID = orm.relationship('StorageTreeDef', foreign_keys='Institution.StorageTreeDefID', remote_side='StorageTreeDef.StorageTreeDefID', backref=orm.backref('institutions', uselist=True))
+    Address = orm.relationship('Address', foreign_keys='Institution.AddressID', remote_side='Address.AddressID', backref=orm.backref('insitutions', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='Institution.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='Institution.ModifiedByAgentID', remote_side='Agent.AgentID')
+    StorageTreeDef = orm.relationship('StorageTreeDef', foreign_keys='Institution.StorageTreeDefID', remote_side='StorageTreeDef.StorageTreeDefID', backref=orm.backref('institutions', uselist=True))
 
 class InstitutionNetwork(Base):
     tableid = 142
     _id = 'institutionNetworkId'
     __tablename__ = 'institutionnetwork'
 
-    id = Column('id', types.Integer, primary_key=True)
+    institutionNetworkId = Column('Institutionnetworkid', types.Integer, primary_key=True)
     altName = Column('AltName', types.String, index=False, unique=False, nullable=True)
     code = Column('Code', types.String, index=False, unique=False, nullable=True)
     copyright = Column('Copyright', types.Text, index=False, unique=False, nullable=True)
@@ -3497,20 +3497,20 @@ class InstitutionNetwork(Base):
     uri = Column('Uri', types.String, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    address = Column('AddressID', types.Integer, ForeignKey('Address.AddressID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    addressID = Column('AddressID', types.Integer, ForeignKey('Address.AddressID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AddressID = orm.relationship('Address', foreign_keys='InstitutionNetwork.AddressID', remote_side='Address.AddressID')
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='InstitutionNetwork.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='InstitutionNetwork.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Address = orm.relationship('Address', foreign_keys='InstitutionNetwork.AddressID', remote_side='Address.AddressID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='InstitutionNetwork.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='InstitutionNetwork.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class Journal(Base):
     tableid = 51
     _id = 'journalId'
     __tablename__ = 'journal'
 
-    id = Column('id', types.Integer, primary_key=True)
+    journalId = Column('Journalid', types.Integer, primary_key=True)
     guid = Column('GUID', types.String, index=True, unique=False, nullable=True)
     issn = Column('ISSN', types.String, index=False, unique=False, nullable=True)
     journalAbbreviation = Column('JournalAbbreviation', types.String, index=False, unique=False, nullable=True)
@@ -3521,20 +3521,20 @@ class Journal(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    institution = Column('InstitutionID', types.Integer, ForeignKey('Institution.UserGroupScopeId'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    institutionID = Column('InstitutionID', types.Integer, ForeignKey('Institution.UserGroupScopeId'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Journal.CreatedByAgentID', remote_side='Agent.AgentID')
-    InstitutionID = orm.relationship('Institution', foreign_keys='Journal.InstitutionID', remote_side='Institution.UserGroupScopeId')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Journal.ModifiedByAgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='Journal.CreatedByAgentID', remote_side='Agent.AgentID')
+    Institution = orm.relationship('Institution', foreign_keys='Journal.InstitutionID', remote_side='Institution.UserGroupScopeId')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='Journal.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class LatLonPolygon(Base):
     tableid = 136
     _id = 'latLonPolygonId'
     __tablename__ = 'latlonpolygon'
 
-    id = Column('id', types.Integer, primary_key=True)
+    latLonPolygonId = Column('Latlonpolygonid', types.Integer, primary_key=True)
     description = Column('Description', types.Text, index=False, unique=False, nullable=True)
     isPolyline = Column('IsPolyline', mysql_bit_type, index=False, unique=False, nullable=False)
     name = Column('Name', types.String, index=False, unique=False, nullable=False)
@@ -3542,37 +3542,37 @@ class LatLonPolygon(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    locality = Column('LocalityID', types.Integer, ForeignKey('Locality.LocalityID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    visualQuery = Column('SpVisualQueryID', types.Integer, ForeignKey('SpVisualQuery.SpVisualQueryID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    localityID = Column('LocalityID', types.Integer, ForeignKey('Locality.LocalityID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    visualQueryID = Column('SpVisualQueryID', types.Integer, ForeignKey('SpVisualQuery.SpVisualQueryID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='LatLonPolygon.CreatedByAgentID', remote_side='Agent.AgentID')
-    LocalityID = orm.relationship('Locality', foreign_keys='LatLonPolygon.LocalityID', remote_side='Locality.LocalityID', backref=orm.backref('latLonpolygons', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='LatLonPolygon.ModifiedByAgentID', remote_side='Agent.AgentID')
-    SpVisualQueryID = orm.relationship('SpVisualQuery', foreign_keys='LatLonPolygon.SpVisualQueryID', remote_side='SpVisualQuery.SpVisualQueryID', backref=orm.backref('polygons', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='LatLonPolygon.CreatedByAgentID', remote_side='Agent.AgentID')
+    Locality = orm.relationship('Locality', foreign_keys='LatLonPolygon.LocalityID', remote_side='Locality.LocalityID', backref=orm.backref('latLonpolygons', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='LatLonPolygon.ModifiedByAgentID', remote_side='Agent.AgentID')
+    SpVisualQuery = orm.relationship('SpVisualQuery', foreign_keys='LatLonPolygon.SpVisualQueryID', remote_side='SpVisualQuery.SpVisualQueryID', backref=orm.backref('polygons', uselist=True))
 
 class LatLonPolygonPnt(Base):
     tableid = 137
     _id = 'latLonPolygonPntId'
     __tablename__ = 'latlonpolygonpnt'
 
-    id = Column('id', types.Integer, primary_key=True)
+    latLonPolygonPntId = Column('Latlonpolygonpntid', types.Integer, primary_key=True)
     elevation = Column('Elevation', types.Integer, index=False, unique=False, nullable=True)
     latitude = Column('Latitude', types.Numeric, index=False, unique=False, nullable=False)
     longitude = Column('Longitude', types.Numeric, index=False, unique=False, nullable=False)
     ordinal = Column('Ordinal', types.Integer, index=False, unique=False, nullable=False)
 
-    latLonPolygon = Column('LatLonPolygonID', types.Integer, ForeignKey('LatLonPolygon.LatLonPolygonID'), nullable=False, unique=False)
+    latLonPolygonID = Column('LatLonPolygonID', types.Integer, ForeignKey('LatLonPolygon.LatLonPolygonID'), nullable=False, unique=False)
 
-    LatLonPolygonID = orm.relationship('LatLonPolygon', foreign_keys='LatLonPolygonPnt.LatLonPolygonID', remote_side='LatLonPolygon.LatLonPolygonID', backref=orm.backref('points', uselist=True))
+    LatLonPolygon = orm.relationship('LatLonPolygon', foreign_keys='LatLonPolygonPnt.LatLonPolygonID', remote_side='LatLonPolygon.LatLonPolygonID', backref=orm.backref('points', uselist=True))
 
 class LithoStrat(Base):
     tableid = 100
     _id = 'lithoStratId'
     __tablename__ = 'lithostrat'
 
-    id = Column('id', types.Integer, primary_key=True)
+    lithoStratId = Column('Lithostratid', types.Integer, primary_key=True)
     fullName = Column('FullName', types.String, index=True, unique=False, nullable=True)
     guid = Column('GUID', types.String, index=True, unique=False, nullable=True)
     highestChildNodeNumber = Column('HighestChildNodeNumber', types.Integer, index=False, unique=False, nullable=True)
@@ -3591,26 +3591,26 @@ class LithoStrat(Base):
     yesNo1 = Column('YesNo1', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo2 = Column('YesNo2', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    acceptedLithoStrat = Column('AcceptedID', types.Integer, ForeignKey('LithoStrat.LithoStratID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    definition = Column('LithoStratTreeDefID', types.Integer, ForeignKey('LithoStratTreeDef.LithoStratTreeDefID'), nullable=False, unique=False)
-    definitionItem = Column('LithoStratTreeDefItemID', types.Integer, ForeignKey('LithoStratTreeDefItem.LithoStratTreeDefItemID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    parent = Column('ParentID', types.Integer, ForeignKey('LithoStrat.LithoStratID'), nullable=True, unique=False)
+    acceptedLithoStratID = Column('AcceptedID', types.Integer, ForeignKey('LithoStrat.LithoStratID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    definitionID = Column('LithoStratTreeDefID', types.Integer, ForeignKey('LithoStratTreeDef.LithoStratTreeDefID'), nullable=False, unique=False)
+    definitionItemID = Column('LithoStratTreeDefItemID', types.Integer, ForeignKey('LithoStratTreeDefItem.LithoStratTreeDefItemID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    parentID = Column('ParentID', types.Integer, ForeignKey('LithoStrat.LithoStratID'), nullable=True, unique=False)
 
-    AcceptedID = orm.relationship('LithoStrat', foreign_keys='LithoStrat.AcceptedID', remote_side='LithoStrat.LithoStratID', backref=orm.backref('acceptedChildren', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='LithoStrat.CreatedByAgentID', remote_side='Agent.AgentID')
-    LithoStratTreeDefID = orm.relationship('LithoStratTreeDef', foreign_keys='LithoStrat.LithoStratTreeDefID', remote_side='LithoStratTreeDef.LithoStratTreeDefID', backref=orm.backref('treeEntries', uselist=True))
-    LithoStratTreeDefItemID = orm.relationship('LithoStratTreeDefItem', foreign_keys='LithoStrat.LithoStratTreeDefItemID', remote_side='LithoStratTreeDefItem.LithoStratTreeDefItemID', backref=orm.backref('treeEntries', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='LithoStrat.ModifiedByAgentID', remote_side='Agent.AgentID')
-    ParentID = orm.relationship('LithoStrat', foreign_keys='LithoStrat.ParentID', remote_side='LithoStrat.LithoStratID', backref=orm.backref('children', uselist=True))
+    Accepted = orm.relationship('LithoStrat', foreign_keys='LithoStrat.AcceptedID', remote_side='LithoStrat.LithoStratID', backref=orm.backref('acceptedChildren', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='LithoStrat.CreatedByAgentID', remote_side='Agent.AgentID')
+    LithoStratTreeDef = orm.relationship('LithoStratTreeDef', foreign_keys='LithoStrat.LithoStratTreeDefID', remote_side='LithoStratTreeDef.LithoStratTreeDefID', backref=orm.backref('treeEntries', uselist=True))
+    LithoStratTreeDefItem = orm.relationship('LithoStratTreeDefItem', foreign_keys='LithoStrat.LithoStratTreeDefItemID', remote_side='LithoStratTreeDefItem.LithoStratTreeDefItemID', backref=orm.backref('treeEntries', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='LithoStrat.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Parent = orm.relationship('LithoStrat', foreign_keys='LithoStrat.ParentID', remote_side='LithoStrat.LithoStratID', backref=orm.backref('children', uselist=True))
 
 class LithoStratTreeDef(Base):
     tableid = 101
     _id = 'lithoStratTreeDefId'
     __tablename__ = 'lithostrattreedef'
 
-    id = Column('id', types.Integer, primary_key=True)
+    lithoStratTreeDefId = Column('Lithostrattreedefid', types.Integer, primary_key=True)
     fullNameDirection = Column('FullNameDirection', types.Integer, index=False, unique=False, nullable=True)
     name = Column('Name', types.String, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
@@ -3618,18 +3618,18 @@ class LithoStratTreeDef(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='LithoStratTreeDef.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='LithoStratTreeDef.ModifiedByAgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='LithoStratTreeDef.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='LithoStratTreeDef.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class LithoStratTreeDefItem(Base):
     tableid = 102
     _id = 'lithoStratTreeDefItemId'
     __tablename__ = 'lithostrattreedefitem'
 
-    id = Column('id', types.Integer, primary_key=True)
+    lithoStratTreeDefItemId = Column('Lithostrattreedefitemid', types.Integer, primary_key=True)
     fullNameSeparator = Column('FullNameSeparator', types.String, index=False, unique=False, nullable=True)
     isEnforced = Column('IsEnforced', mysql_bit_type, index=False, unique=False, nullable=True)
     isInFullName = Column('IsInFullName', mysql_bit_type, index=False, unique=False, nullable=True)
@@ -3643,22 +3643,22 @@ class LithoStratTreeDefItem(Base):
     title = Column('Title', types.String, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    parent = Column('ParentItemID', types.Integer, ForeignKey('LithoStratTreeDefItem.LithoStratTreeDefItemID'), nullable=True, unique=False)
-    treeDef = Column('LithoStratTreeDefID', types.Integer, ForeignKey('LithoStratTreeDef.LithoStratTreeDefID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    parentID = Column('ParentItemID', types.Integer, ForeignKey('LithoStratTreeDefItem.LithoStratTreeDefItemID'), nullable=True, unique=False)
+    treeDefID = Column('LithoStratTreeDefID', types.Integer, ForeignKey('LithoStratTreeDef.LithoStratTreeDefID'), nullable=False, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='LithoStratTreeDefItem.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='LithoStratTreeDefItem.ModifiedByAgentID', remote_side='Agent.AgentID')
-    ParentItemID = orm.relationship('LithoStratTreeDefItem', foreign_keys='LithoStratTreeDefItem.ParentItemID', remote_side='LithoStratTreeDefItem.LithoStratTreeDefItemID', backref=orm.backref('children', uselist=True))
-    LithoStratTreeDefID = orm.relationship('LithoStratTreeDef', foreign_keys='LithoStratTreeDefItem.LithoStratTreeDefID', remote_side='LithoStratTreeDef.LithoStratTreeDefID', backref=orm.backref('treeDefItems', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='LithoStratTreeDefItem.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='LithoStratTreeDefItem.ModifiedByAgentID', remote_side='Agent.AgentID')
+    ParentItem = orm.relationship('LithoStratTreeDefItem', foreign_keys='LithoStratTreeDefItem.ParentItemID', remote_side='LithoStratTreeDefItem.LithoStratTreeDefItemID', backref=orm.backref('children', uselist=True))
+    LithoStratTreeDef = orm.relationship('LithoStratTreeDef', foreign_keys='LithoStratTreeDefItem.LithoStratTreeDefID', remote_side='LithoStratTreeDef.LithoStratTreeDefID', backref=orm.backref('treeDefItems', uselist=True))
 
 class Loan(Base):
     tableid = 52
     _id = 'loanId'
     __tablename__ = 'loan'
 
-    id = Column('id', types.Integer, primary_key=True)
+    loanId = Column('Loanid', types.Integer, primary_key=True)
     contents = Column('Contents', types.Text, index=False, unique=False, nullable=True)
     currentDueDate = Column('CurrentDueDate', types.Date, index=True, unique=False, nullable=True)
     dateClosed = Column('DateClosed', types.Date, index=False, unique=False, nullable=True)
@@ -3692,70 +3692,70 @@ class Loan(Base):
     yesNo1 = Column('YesNo1', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo2 = Column('YesNo2', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    addressOfRecord = Column('AddressOfRecordID', types.Integer, ForeignKey('AddressOfRecord.AddressOfRecordID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    discipline = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
-    division = Column('DivisionID', types.Integer, ForeignKey('Division.UserGroupScopeId'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    addressOfRecordID = Column('AddressOfRecordID', types.Integer, ForeignKey('AddressOfRecord.AddressOfRecordID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    disciplineID = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
+    divisionID = Column('DivisionID', types.Integer, ForeignKey('Division.UserGroupScopeId'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AddressOfRecordID = orm.relationship('AddressOfRecord', foreign_keys='Loan.AddressOfRecordID', remote_side='AddressOfRecord.AddressOfRecordID', backref=orm.backref('loans', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Loan.CreatedByAgentID', remote_side='Agent.AgentID')
-    DisciplineID = orm.relationship('Discipline', foreign_keys='Loan.DisciplineID', remote_side='Discipline.UserGroupScopeId')
-    DivisionID = orm.relationship('Division', foreign_keys='Loan.DivisionID', remote_side='Division.UserGroupScopeId')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Loan.ModifiedByAgentID', remote_side='Agent.AgentID')
+    AddressOfRecord = orm.relationship('AddressOfRecord', foreign_keys='Loan.AddressOfRecordID', remote_side='AddressOfRecord.AddressOfRecordID', backref=orm.backref('loans', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='Loan.CreatedByAgentID', remote_side='Agent.AgentID')
+    Discipline = orm.relationship('Discipline', foreign_keys='Loan.DisciplineID', remote_side='Discipline.UserGroupScopeId')
+    Division = orm.relationship('Division', foreign_keys='Loan.DivisionID', remote_side='Division.UserGroupScopeId')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='Loan.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class LoanAgent(Base):
     tableid = 53
     _id = 'loanAgentId'
     __tablename__ = 'loanagent'
 
-    id = Column('id', types.Integer, primary_key=True)
+    loanAgentId = Column('Loanagentid', types.Integer, primary_key=True)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     role = Column('Role', types.String, index=False, unique=False, nullable=False)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    agent = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    discipline = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
-    loan = Column('LoanID', types.Integer, ForeignKey('Loan.LoanID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agentID = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    disciplineID = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
+    loanID = Column('LoanID', types.Integer, ForeignKey('Loan.LoanID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AgentID = orm.relationship('Agent', foreign_keys='LoanAgent.AgentID', remote_side='Agent.AgentID')
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='LoanAgent.CreatedByAgentID', remote_side='Agent.AgentID')
-    DisciplineID = orm.relationship('Discipline', foreign_keys='LoanAgent.DisciplineID', remote_side='Discipline.UserGroupScopeId')
-    LoanID = orm.relationship('Loan', foreign_keys='LoanAgent.LoanID', remote_side='Loan.LoanID', backref=orm.backref('loanAgents', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='LoanAgent.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Agent = orm.relationship('Agent', foreign_keys='LoanAgent.AgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='LoanAgent.CreatedByAgentID', remote_side='Agent.AgentID')
+    Discipline = orm.relationship('Discipline', foreign_keys='LoanAgent.DisciplineID', remote_side='Discipline.UserGroupScopeId')
+    Loan = orm.relationship('Loan', foreign_keys='LoanAgent.LoanID', remote_side='Loan.LoanID', backref=orm.backref('loanAgents', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='LoanAgent.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class LoanAttachment(Base):
     tableid = 114
     _id = 'loanAttachmentId'
     __tablename__ = 'loanattachment'
 
-    id = Column('id', types.Integer, primary_key=True)
+    loanAttachmentId = Column('Loanattachmentid', types.Integer, primary_key=True)
     ordinal = Column('Ordinal', types.Integer, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    attachment = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    loan = Column('LoanID', types.Integer, ForeignKey('Loan.LoanID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    attachmentID = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    loanID = Column('LoanID', types.Integer, ForeignKey('Loan.LoanID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AttachmentID = orm.relationship('Attachment', foreign_keys='LoanAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('loanAttachments', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='LoanAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
-    LoanID = orm.relationship('Loan', foreign_keys='LoanAttachment.LoanID', remote_side='Loan.LoanID', backref=orm.backref('loanAttachments', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='LoanAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Attachment = orm.relationship('Attachment', foreign_keys='LoanAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('loanAttachments', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='LoanAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
+    Loan = orm.relationship('Loan', foreign_keys='LoanAttachment.LoanID', remote_side='Loan.LoanID', backref=orm.backref('loanAttachments', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='LoanAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class LoanPreparation(Base):
     tableid = 54
     _id = 'loanPreparationId'
     __tablename__ = 'loanpreparation'
 
-    id = Column('id', types.Integer, primary_key=True)
+    loanPreparationId = Column('Loanpreparationid', types.Integer, primary_key=True)
     descriptionOfMaterial = Column('DescriptionOfMaterial', types.String, index=False, unique=False, nullable=True)
     inComments = Column('InComments', types.Text, index=False, unique=False, nullable=True)
     isResolved = Column('IsResolved', mysql_bit_type, index=False, unique=False, nullable=False)
@@ -3773,24 +3773,24 @@ class LoanPreparation(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    discipline = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
-    loan = Column('LoanID', types.Integer, ForeignKey('Loan.LoanID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    preparation = Column('PreparationID', types.Integer, ForeignKey('Preparation.PreparationID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    disciplineID = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
+    loanID = Column('LoanID', types.Integer, ForeignKey('Loan.LoanID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    preparationID = Column('PreparationID', types.Integer, ForeignKey('Preparation.PreparationID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='LoanPreparation.CreatedByAgentID', remote_side='Agent.AgentID')
-    DisciplineID = orm.relationship('Discipline', foreign_keys='LoanPreparation.DisciplineID', remote_side='Discipline.UserGroupScopeId')
-    LoanID = orm.relationship('Loan', foreign_keys='LoanPreparation.LoanID', remote_side='Loan.LoanID', backref=orm.backref('loanPreparations', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='LoanPreparation.ModifiedByAgentID', remote_side='Agent.AgentID')
-    PreparationID = orm.relationship('Preparation', foreign_keys='LoanPreparation.PreparationID', remote_side='Preparation.PreparationID', backref=orm.backref('loanPreparations', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='LoanPreparation.CreatedByAgentID', remote_side='Agent.AgentID')
+    Discipline = orm.relationship('Discipline', foreign_keys='LoanPreparation.DisciplineID', remote_side='Discipline.UserGroupScopeId')
+    Loan = orm.relationship('Loan', foreign_keys='LoanPreparation.LoanID', remote_side='Loan.LoanID', backref=orm.backref('loanPreparations', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='LoanPreparation.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Preparation = orm.relationship('Preparation', foreign_keys='LoanPreparation.PreparationID', remote_side='Preparation.PreparationID', backref=orm.backref('loanPreparations', uselist=True))
 
 class LoanReturnPreparation(Base):
     tableid = 55
     _id = 'loanReturnPreparationId'
     __tablename__ = 'loanreturnpreparation'
 
-    id = Column('id', types.Integer, primary_key=True)
+    loanReturnPreparationId = Column('Loanreturnpreparationid', types.Integer, primary_key=True)
     quantityResolved = Column('QuantityResolved', types.Integer, index=False, unique=False, nullable=True)
     quantityReturned = Column('QuantityReturned', types.Integer, index=False, unique=False, nullable=True)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
@@ -3799,24 +3799,24 @@ class LoanReturnPreparation(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    discipline = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
-    loanPreparation = Column('LoanPreparationID', types.Integer, ForeignKey('LoanPreparation.LoanPreparationID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    receivedBy = Column('ReceivedByID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    disciplineID = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
+    loanPreparationID = Column('LoanPreparationID', types.Integer, ForeignKey('LoanPreparation.LoanPreparationID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    receivedByID = Column('ReceivedByID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='LoanReturnPreparation.CreatedByAgentID', remote_side='Agent.AgentID')
-    DisciplineID = orm.relationship('Discipline', foreign_keys='LoanReturnPreparation.DisciplineID', remote_side='Discipline.UserGroupScopeId')
-    LoanPreparationID = orm.relationship('LoanPreparation', foreign_keys='LoanReturnPreparation.LoanPreparationID', remote_side='LoanPreparation.LoanPreparationID', backref=orm.backref('loanReturnPreparations', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='LoanReturnPreparation.ModifiedByAgentID', remote_side='Agent.AgentID')
-    ReceivedByID = orm.relationship('Agent', foreign_keys='LoanReturnPreparation.ReceivedByID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='LoanReturnPreparation.CreatedByAgentID', remote_side='Agent.AgentID')
+    Discipline = orm.relationship('Discipline', foreign_keys='LoanReturnPreparation.DisciplineID', remote_side='Discipline.UserGroupScopeId')
+    LoanPreparation = orm.relationship('LoanPreparation', foreign_keys='LoanReturnPreparation.LoanPreparationID', remote_side='LoanPreparation.LoanPreparationID', backref=orm.backref('loanReturnPreparations', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='LoanReturnPreparation.ModifiedByAgentID', remote_side='Agent.AgentID')
+    ReceivedBy = orm.relationship('Agent', foreign_keys='LoanReturnPreparation.ReceivedByID', remote_side='Agent.AgentID')
 
 class Locality(Base):
     tableid = 2
     _id = 'localityId'
     __tablename__ = 'locality'
 
-    id = Column('id', types.Integer, primary_key=True)
+    localityId = Column('Localityid', types.Integer, primary_key=True)
     datum = Column('Datum', types.String, index=False, unique=False, nullable=True)
     elevationAccuracy = Column('ElevationAccuracy', types.Numeric, index=False, unique=False, nullable=True)
     elevationMethod = Column('ElevationMethod', types.String, index=False, unique=False, nullable=True)
@@ -3863,48 +3863,48 @@ class Locality(Base):
     yesNo4 = Column('YesNo4', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo5 = Column('YesNo5', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    discipline = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
-    geography = Column('GeographyID', types.Integer, ForeignKey('Geography.GeographyID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    paleoContext = Column('PaleoContextID', types.Integer, ForeignKey('PaleoContext.PaleoContextID'), nullable=True, unique=False)
-    visibilitySetBy = Column('VisibilitySetByID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    disciplineID = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
+    geographyID = Column('GeographyID', types.Integer, ForeignKey('Geography.GeographyID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    paleoContextID = Column('PaleoContextID', types.Integer, ForeignKey('PaleoContext.PaleoContextID'), nullable=True, unique=False)
+    visibilitySetByID = Column('VisibilitySetByID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Locality.CreatedByAgentID', remote_side='Agent.AgentID')
-    DisciplineID = orm.relationship('Discipline', foreign_keys='Locality.DisciplineID', remote_side='Discipline.UserGroupScopeId')
-    GeographyID = orm.relationship('Geography', foreign_keys='Locality.GeographyID', remote_side='Geography.GeographyID', backref=orm.backref('localities', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Locality.ModifiedByAgentID', remote_side='Agent.AgentID')
-    PaleoContextID = orm.relationship('PaleoContext', foreign_keys='Locality.PaleoContextID', remote_side='PaleoContext.PaleoContextID', backref=orm.backref('localities', uselist=True))
-    VisibilitySetByID = orm.relationship('SpecifyUser', foreign_keys='Locality.VisibilitySetByID', remote_side='SpecifyUser.SpecifyUserID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='Locality.CreatedByAgentID', remote_side='Agent.AgentID')
+    Discipline = orm.relationship('Discipline', foreign_keys='Locality.DisciplineID', remote_side='Discipline.UserGroupScopeId')
+    Geography = orm.relationship('Geography', foreign_keys='Locality.GeographyID', remote_side='Geography.GeographyID', backref=orm.backref('localities', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='Locality.ModifiedByAgentID', remote_side='Agent.AgentID')
+    PaleoContext = orm.relationship('PaleoContext', foreign_keys='Locality.PaleoContextID', remote_side='PaleoContext.PaleoContextID', backref=orm.backref('localities', uselist=True))
+    VisibilitySetBy = orm.relationship('SpecifyUser', foreign_keys='Locality.VisibilitySetByID', remote_side='SpecifyUser.SpecifyUserID')
 
 class LocalityAttachment(Base):
     tableid = 115
     _id = 'localityAttachmentId'
     __tablename__ = 'localityattachment'
 
-    id = Column('id', types.Integer, primary_key=True)
+    localityAttachmentId = Column('Localityattachmentid', types.Integer, primary_key=True)
     ordinal = Column('Ordinal', types.Integer, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    attachment = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    locality = Column('LocalityID', types.Integer, ForeignKey('Locality.LocalityID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    attachmentID = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    localityID = Column('LocalityID', types.Integer, ForeignKey('Locality.LocalityID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AttachmentID = orm.relationship('Attachment', foreign_keys='LocalityAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('localityAttachments', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='LocalityAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
-    LocalityID = orm.relationship('Locality', foreign_keys='LocalityAttachment.LocalityID', remote_side='Locality.LocalityID', backref=orm.backref('localityAttachments', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='LocalityAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Attachment = orm.relationship('Attachment', foreign_keys='LocalityAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('localityAttachments', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='LocalityAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
+    Locality = orm.relationship('Locality', foreign_keys='LocalityAttachment.LocalityID', remote_side='Locality.LocalityID', backref=orm.backref('localityAttachments', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='LocalityAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class LocalityCitation(Base):
     tableid = 57
     _id = 'localityCitationId'
     __tablename__ = 'localitycitation'
 
-    id = Column('id', types.Integer, primary_key=True)
+    localityCitationId = Column('Localitycitationid', types.Integer, primary_key=True)
     figureNumber = Column('FigureNumber', types.String, index=False, unique=False, nullable=True)
     isFigured = Column('IsFigured', mysql_bit_type, index=False, unique=False, nullable=True)
     pageNumber = Column('PageNumber', types.String, index=False, unique=False, nullable=True)
@@ -3914,24 +3914,24 @@ class LocalityCitation(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    discipline = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
-    locality = Column('LocalityID', types.Integer, ForeignKey('Locality.LocalityID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    referenceWork = Column('ReferenceWorkID', types.Integer, ForeignKey('ReferenceWork.ReferenceWorkID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    disciplineID = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
+    localityID = Column('LocalityID', types.Integer, ForeignKey('Locality.LocalityID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    referenceWorkID = Column('ReferenceWorkID', types.Integer, ForeignKey('ReferenceWork.ReferenceWorkID'), nullable=False, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='LocalityCitation.CreatedByAgentID', remote_side='Agent.AgentID')
-    DisciplineID = orm.relationship('Discipline', foreign_keys='LocalityCitation.DisciplineID', remote_side='Discipline.UserGroupScopeId')
-    LocalityID = orm.relationship('Locality', foreign_keys='LocalityCitation.LocalityID', remote_side='Locality.LocalityID', backref=orm.backref('localityCitations', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='LocalityCitation.ModifiedByAgentID', remote_side='Agent.AgentID')
-    ReferenceWorkID = orm.relationship('ReferenceWork', foreign_keys='LocalityCitation.ReferenceWorkID', remote_side='ReferenceWork.ReferenceWorkID', backref=orm.backref('localityCitations', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='LocalityCitation.CreatedByAgentID', remote_side='Agent.AgentID')
+    Discipline = orm.relationship('Discipline', foreign_keys='LocalityCitation.DisciplineID', remote_side='Discipline.UserGroupScopeId')
+    Locality = orm.relationship('Locality', foreign_keys='LocalityCitation.LocalityID', remote_side='Locality.LocalityID', backref=orm.backref('localityCitations', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='LocalityCitation.ModifiedByAgentID', remote_side='Agent.AgentID')
+    ReferenceWork = orm.relationship('ReferenceWork', foreign_keys='LocalityCitation.ReferenceWorkID', remote_side='ReferenceWork.ReferenceWorkID', backref=orm.backref('localityCitations', uselist=True))
 
 class LocalityDetail(Base):
     tableid = 124
     _id = 'localityDetailId'
     __tablename__ = 'localitydetail'
 
-    id = Column('id', types.Integer, primary_key=True)
+    localityDetailId = Column('Localitydetailid', types.Integer, primary_key=True)
     baseMeridian = Column('BaseMeridian', types.String, index=False, unique=False, nullable=True)
     drainage = Column('Drainage', types.String, index=False, unique=False, nullable=True)
     endDepth = Column('EndDepth', types.Numeric, index=False, unique=False, nullable=True)
@@ -3983,42 +3983,42 @@ class LocalityDetail(Base):
     yesNo4 = Column('YesNo4', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo5 = Column('YesNo5', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    locality = Column('LocalityID', types.Integer, ForeignKey('Locality.LocalityID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    localityID = Column('LocalityID', types.Integer, ForeignKey('Locality.LocalityID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='LocalityDetail.CreatedByAgentID', remote_side='Agent.AgentID')
-    LocalityID = orm.relationship('Locality', foreign_keys='LocalityDetail.LocalityID', remote_side='Locality.LocalityID', backref=orm.backref('localityDetails', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='LocalityDetail.ModifiedByAgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='LocalityDetail.CreatedByAgentID', remote_side='Agent.AgentID')
+    Locality = orm.relationship('Locality', foreign_keys='LocalityDetail.LocalityID', remote_side='Locality.LocalityID', backref=orm.backref('localityDetails', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='LocalityDetail.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class LocalityNameAlias(Base):
     tableid = 120
     _id = 'localityNameAliasId'
     __tablename__ = 'localitynamealias'
 
-    id = Column('id', types.Integer, primary_key=True)
+    localityNameAliasId = Column('Localitynamealiasid', types.Integer, primary_key=True)
     name = Column('Name', types.String, index=True, unique=False, nullable=False)
     source = Column('Source', types.String, index=False, unique=False, nullable=False)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    discipline = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
-    locality = Column('LocalityID', types.Integer, ForeignKey('Locality.LocalityID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    disciplineID = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
+    localityID = Column('LocalityID', types.Integer, ForeignKey('Locality.LocalityID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='LocalityNameAlias.CreatedByAgentID', remote_side='Agent.AgentID')
-    DisciplineID = orm.relationship('Discipline', foreign_keys='LocalityNameAlias.DisciplineID', remote_side='Discipline.UserGroupScopeId')
-    LocalityID = orm.relationship('Locality', foreign_keys='LocalityNameAlias.LocalityID', remote_side='Locality.LocalityID', backref=orm.backref('localityNameAliass', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='LocalityNameAlias.ModifiedByAgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='LocalityNameAlias.CreatedByAgentID', remote_side='Agent.AgentID')
+    Discipline = orm.relationship('Discipline', foreign_keys='LocalityNameAlias.DisciplineID', remote_side='Discipline.UserGroupScopeId')
+    Locality = orm.relationship('Locality', foreign_keys='LocalityNameAlias.LocalityID', remote_side='Locality.LocalityID', backref=orm.backref('localityNameAliass', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='LocalityNameAlias.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class MaterialSample(Base):
     tableid = 151
     _id = 'materialSampleId'
     __tablename__ = 'materialsample'
 
-    id = Column('id', types.Integer, primary_key=True)
+    materialSampleId = Column('Materialsampleid', types.Integer, primary_key=True)
     GGBN_absorbanceRatio260_230 = Column('GGBNAbsorbanceRatio260_230', types.Numeric, index=False, unique=False, nullable=True)
     GGBN_absorbanceRatio260_280 = Column('GGBNAbsorbanceRatio260_280', types.Numeric, index=False, unique=False, nullable=True)
     GGBN_absorbanceRatioMethod = Column('GGBNRAbsorbanceRatioMethod', types.String, index=False, unique=False, nullable=True)
@@ -4063,22 +4063,22 @@ class MaterialSample(Base):
     yesNo1 = Column('YesNo1', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo2 = Column('YesNo2', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    extractor = Column('ExtractorID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    preparation = Column('PreparationID', types.Integer, ForeignKey('Preparation.PreparationID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    extractorID = Column('ExtractorID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    preparationID = Column('PreparationID', types.Integer, ForeignKey('Preparation.PreparationID'), nullable=False, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='MaterialSample.CreatedByAgentID', remote_side='Agent.AgentID')
-    ExtractorID = orm.relationship('Agent', foreign_keys='MaterialSample.ExtractorID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='MaterialSample.ModifiedByAgentID', remote_side='Agent.AgentID')
-    PreparationID = orm.relationship('Preparation', foreign_keys='MaterialSample.PreparationID', remote_side='Preparation.PreparationID', backref=orm.backref('materialSamples', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='MaterialSample.CreatedByAgentID', remote_side='Agent.AgentID')
+    Extractor = orm.relationship('Agent', foreign_keys='MaterialSample.ExtractorID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='MaterialSample.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Preparation = orm.relationship('Preparation', foreign_keys='MaterialSample.PreparationID', remote_side='Preparation.PreparationID', backref=orm.backref('materialSamples', uselist=True))
 
 class MorphBankView(Base):
     tableid = 138
     _id = 'morphBankViewId'
     __tablename__ = 'morphbankview'
 
-    id = Column('id', types.Integer, primary_key=True)
+    morphBankViewId = Column('Morphbankviewid', types.Integer, primary_key=True)
     developmentState = Column('DevelopmentState', types.String, index=False, unique=False, nullable=True)
     form = Column('Form', types.String, index=False, unique=False, nullable=True)
     imagingPreparationTechnique = Column('ImagingPreparationTechnique', types.String, index=False, unique=False, nullable=True)
@@ -4092,18 +4092,18 @@ class MorphBankView(Base):
     viewAngle = Column('ViewAngle', types.String, index=False, unique=False, nullable=True)
     viewName = Column('ViewName', types.String, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='MorphBankView.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='MorphBankView.ModifiedByAgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='MorphBankView.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='MorphBankView.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class OtherIdentifier(Base):
     tableid = 61
     _id = 'otherIdentifierId'
     __tablename__ = 'otheridentifier'
 
-    id = Column('id', types.Integer, primary_key=True)
+    otherIdentifierId = Column('Otheridentifierid', types.Integer, primary_key=True)
     collectionMemberId = Column('CollectionMemberID', types.Integer, index=True, unique=False, nullable=False)
     date1 = Column('Date1', types.Date, index=False, unique=False, nullable=True)
     date1Precision = Column('Date1Precision', types.Integer, index=False, unique=False, nullable=True)
@@ -4126,24 +4126,24 @@ class OtherIdentifier(Base):
     yesNo4 = Column('YesNo4', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo5 = Column('YesNo5', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    agent1 = Column('Agent1ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent2 = Column('Agent2ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    collectionObject = Column('CollectionObjectID', types.Integer, ForeignKey('CollectionObject.CollectionObjectID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent1ID = Column('Agent1ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent2ID = Column('Agent2ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    collectionObjectID = Column('CollectionObjectID', types.Integer, ForeignKey('CollectionObject.CollectionObjectID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    Agent1ID = orm.relationship('Agent', foreign_keys='OtherIdentifier.Agent1ID', remote_side='Agent.AgentID')
-    Agent2ID = orm.relationship('Agent', foreign_keys='OtherIdentifier.Agent2ID', remote_side='Agent.AgentID')
-    CollectionObjectID = orm.relationship('CollectionObject', foreign_keys='OtherIdentifier.CollectionObjectID', remote_side='CollectionObject.CollectionObjectID', backref=orm.backref('otherIdentifiers', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='OtherIdentifier.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='OtherIdentifier.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Agent1 = orm.relationship('Agent', foreign_keys='OtherIdentifier.Agent1ID', remote_side='Agent.AgentID')
+    Agent2 = orm.relationship('Agent', foreign_keys='OtherIdentifier.Agent2ID', remote_side='Agent.AgentID')
+    CollectionObject = orm.relationship('CollectionObject', foreign_keys='OtherIdentifier.CollectionObjectID', remote_side='CollectionObject.CollectionObjectID', backref=orm.backref('otherIdentifiers', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='OtherIdentifier.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='OtherIdentifier.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class PaleoContext(Base):
     tableid = 32
     _id = 'paleoContextId'
     __tablename__ = 'paleocontext'
 
-    id = Column('id', types.Integer, primary_key=True)
+    paleoContextId = Column('Paleocontextid', types.Integer, primary_key=True)
     number1 = Column('Number1', types.Numeric, index=False, unique=False, nullable=True)
     number2 = Column('Number2', types.Numeric, index=False, unique=False, nullable=True)
     number3 = Column('Number3', types.Numeric, index=False, unique=False, nullable=True)
@@ -4165,28 +4165,28 @@ class PaleoContext(Base):
     yesNo4 = Column('YesNo4', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo5 = Column('YesNo5', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    bioStrat = Column('BioStratID', types.Integer, ForeignKey('GeologicTimePeriod.GeologicTimePeriodID'), nullable=True, unique=False)
-    chronosStrat = Column('ChronosStratID', types.Integer, ForeignKey('GeologicTimePeriod.GeologicTimePeriodID'), nullable=True, unique=False)
-    chronosStratEnd = Column('ChronosStratEndID', types.Integer, ForeignKey('GeologicTimePeriod.GeologicTimePeriodID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    discipline = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
-    lithoStrat = Column('LithoStratID', types.Integer, ForeignKey('LithoStrat.LithoStratID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    bioStratID = Column('BioStratID', types.Integer, ForeignKey('GeologicTimePeriod.GeologicTimePeriodID'), nullable=True, unique=False)
+    chronosStratID = Column('ChronosStratID', types.Integer, ForeignKey('GeologicTimePeriod.GeologicTimePeriodID'), nullable=True, unique=False)
+    chronosStratEndID = Column('ChronosStratEndID', types.Integer, ForeignKey('GeologicTimePeriod.GeologicTimePeriodID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    disciplineID = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
+    lithoStratID = Column('LithoStratID', types.Integer, ForeignKey('LithoStrat.LithoStratID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    BioStratID = orm.relationship('GeologicTimePeriod', foreign_keys='PaleoContext.BioStratID', remote_side='GeologicTimePeriod.GeologicTimePeriodID', backref=orm.backref('bioStratsPaleoContext', uselist=True))
-    ChronosStratID = orm.relationship('GeologicTimePeriod', foreign_keys='PaleoContext.ChronosStratID', remote_side='GeologicTimePeriod.GeologicTimePeriodID', backref=orm.backref('chronosStratsPaleoContext', uselist=True))
-    ChronosStratEndID = orm.relationship('GeologicTimePeriod', foreign_keys='PaleoContext.ChronosStratEndID', remote_side='GeologicTimePeriod.GeologicTimePeriodID')
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='PaleoContext.CreatedByAgentID', remote_side='Agent.AgentID')
-    DisciplineID = orm.relationship('Discipline', foreign_keys='PaleoContext.DisciplineID', remote_side='Discipline.UserGroupScopeId')
-    LithoStratID = orm.relationship('LithoStrat', foreign_keys='PaleoContext.LithoStratID', remote_side='LithoStrat.LithoStratID', backref=orm.backref('paleoContexts', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='PaleoContext.ModifiedByAgentID', remote_side='Agent.AgentID')
+    BioStrat = orm.relationship('GeologicTimePeriod', foreign_keys='PaleoContext.BioStratID', remote_side='GeologicTimePeriod.GeologicTimePeriodID', backref=orm.backref('bioStratsPaleoContext', uselist=True))
+    ChronosStrat = orm.relationship('GeologicTimePeriod', foreign_keys='PaleoContext.ChronosStratID', remote_side='GeologicTimePeriod.GeologicTimePeriodID', backref=orm.backref('chronosStratsPaleoContext', uselist=True))
+    ChronosStratEnd = orm.relationship('GeologicTimePeriod', foreign_keys='PaleoContext.ChronosStratEndID', remote_side='GeologicTimePeriod.GeologicTimePeriodID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='PaleoContext.CreatedByAgentID', remote_side='Agent.AgentID')
+    Discipline = orm.relationship('Discipline', foreign_keys='PaleoContext.DisciplineID', remote_side='Discipline.UserGroupScopeId')
+    LithoStrat = orm.relationship('LithoStrat', foreign_keys='PaleoContext.LithoStratID', remote_side='LithoStrat.LithoStratID', backref=orm.backref('paleoContexts', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='PaleoContext.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class PcrPerson(Base):
     tableid = 161
     _id = 'pcrPersonId'
     __tablename__ = 'pcrperson'
 
-    id = Column('id', types.Integer, primary_key=True)
+    pcrPersonId = Column('Pcrpersonid', types.Integer, primary_key=True)
     orderNumber = Column('OrderNumber', types.Integer, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     text1 = Column('Text1', types.Text, index=False, unique=False, nullable=True)
@@ -4197,22 +4197,22 @@ class PcrPerson(Base):
     yesNo1 = Column('YesNo1', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo2 = Column('YesNo2', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    agent = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    dnaSequence = Column('DNASequenceID', types.Integer, ForeignKey('DNASequence.DnaSequenceID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agentID = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    dnaSequenceID = Column('DNASequenceID', types.Integer, ForeignKey('DNASequence.DnaSequenceID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AgentID = orm.relationship('Agent', foreign_keys='PcrPerson.AgentID', remote_side='Agent.AgentID')
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='PcrPerson.CreatedByAgentID', remote_side='Agent.AgentID')
-    DNASequenceID = orm.relationship('DNASequence', foreign_keys='PcrPerson.DNASequenceID', remote_side='DNASequence.DnaSequenceID', backref=orm.backref('pcrPersons', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='PcrPerson.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Agent = orm.relationship('Agent', foreign_keys='PcrPerson.AgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='PcrPerson.CreatedByAgentID', remote_side='Agent.AgentID')
+    DNASequence = orm.relationship('DNASequence', foreign_keys='PcrPerson.DNASequenceID', remote_side='DNASequence.DnaSequenceID', backref=orm.backref('pcrPersons', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='PcrPerson.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class Permit(Base):
     tableid = 6
     _id = 'permitId'
     __tablename__ = 'permit'
 
-    id = Column('id', types.Integer, primary_key=True)
+    permitId = Column('Permitid', types.Integer, primary_key=True)
     copyright = Column('Copyright', types.String, index=False, unique=False, nullable=True)
     endDate = Column('EndDate', types.Date, index=False, unique=False, nullable=True)
     isAvailable = Column('IsAvailable', mysql_bit_type, index=False, unique=False, nullable=True)
@@ -4240,46 +4240,46 @@ class Permit(Base):
     yesNo1 = Column('YesNo1', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo2 = Column('YesNo2', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    institution = Column('InstitutionID', types.Integer, ForeignKey('Institution.UserGroupScopeId'), nullable=False, unique=False)
-    issuedBy = Column('IssuedByID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    issuedTo = Column('IssuedToID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    institutionID = Column('InstitutionID', types.Integer, ForeignKey('Institution.UserGroupScopeId'), nullable=False, unique=False)
+    issuedByID = Column('IssuedByID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    issuedToID = Column('IssuedToID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Permit.CreatedByAgentID', remote_side='Agent.AgentID')
-    InstitutionID = orm.relationship('Institution', foreign_keys='Permit.InstitutionID', remote_side='Institution.UserGroupScopeId')
-    IssuedByID = orm.relationship('Agent', foreign_keys='Permit.IssuedByID', remote_side='Agent.AgentID')
-    IssuedToID = orm.relationship('Agent', foreign_keys='Permit.IssuedToID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Permit.ModifiedByAgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='Permit.CreatedByAgentID', remote_side='Agent.AgentID')
+    Institution = orm.relationship('Institution', foreign_keys='Permit.InstitutionID', remote_side='Institution.UserGroupScopeId')
+    IssuedBy = orm.relationship('Agent', foreign_keys='Permit.IssuedByID', remote_side='Agent.AgentID')
+    IssuedTo = orm.relationship('Agent', foreign_keys='Permit.IssuedToID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='Permit.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class PermitAttachment(Base):
     tableid = 116
     _id = 'permitAttachmentId'
     __tablename__ = 'permitattachment'
 
-    id = Column('id', types.Integer, primary_key=True)
+    permitAttachmentId = Column('Permitattachmentid', types.Integer, primary_key=True)
     ordinal = Column('Ordinal', types.Integer, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    attachment = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    permit = Column('PermitID', types.Integer, ForeignKey('Permit.PermitID'), nullable=False, unique=False)
+    attachmentID = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    permitID = Column('PermitID', types.Integer, ForeignKey('Permit.PermitID'), nullable=False, unique=False)
 
-    AttachmentID = orm.relationship('Attachment', foreign_keys='PermitAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('permitAttachments', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='PermitAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='PermitAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
-    PermitID = orm.relationship('Permit', foreign_keys='PermitAttachment.PermitID', remote_side='Permit.PermitID', backref=orm.backref('permitAttachments', uselist=True))
+    Attachment = orm.relationship('Attachment', foreign_keys='PermitAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('permitAttachments', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='PermitAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='PermitAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Permit = orm.relationship('Permit', foreign_keys='PermitAttachment.PermitID', remote_side='Permit.PermitID', backref=orm.backref('permitAttachments', uselist=True))
 
 class PickList(Base):
     tableid = 500
     _id = 'pickListId'
     __tablename__ = 'picklist'
 
-    id = Column('id', types.Integer, primary_key=True)
+    pickListId = Column('Picklistid', types.Integer, primary_key=True)
     fieldName = Column('FieldName', types.String, index=False, unique=False, nullable=True)
     filterFieldName = Column('FilterFieldName', types.String, index=False, unique=False, nullable=True)
     filterValue = Column('FilterValue', types.String, index=False, unique=False, nullable=True)
@@ -4295,20 +4295,20 @@ class PickList(Base):
     type = Column('Type', types.Integer, index=False, unique=False, nullable=False)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    collection = Column('CollectionID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    collectionID = Column('CollectionID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CollectionID = orm.relationship('Collection', foreign_keys='PickList.CollectionID', remote_side='Collection.UserGroupScopeId', backref=orm.backref('pickLists', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='PickList.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='PickList.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Collection = orm.relationship('Collection', foreign_keys='PickList.CollectionID', remote_side='Collection.UserGroupScopeId', backref=orm.backref('pickLists', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='PickList.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='PickList.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class PickListItem(Base):
     tableid = 501
     _id = 'pickListItemId'
     __tablename__ = 'picklistitem'
 
-    id = Column('id', types.Integer, primary_key=True)
+    pickListItemId = Column('Picklistitemid', types.Integer, primary_key=True)
     ordinal = Column('Ordinal', types.Integer, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
@@ -4316,40 +4316,40 @@ class PickListItem(Base):
     value = Column('Value', types.String, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    pickList = Column('PickListID', types.Integer, ForeignKey('PickList.PickListID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    pickListID = Column('PickListID', types.Integer, ForeignKey('PickList.PickListID'), nullable=False, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='PickListItem.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='PickListItem.ModifiedByAgentID', remote_side='Agent.AgentID')
-    PickListID = orm.relationship('PickList', foreign_keys='PickListItem.PickListID', remote_side='PickList.PickListID', backref=orm.backref('pickListItems', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='PickListItem.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='PickListItem.ModifiedByAgentID', remote_side='Agent.AgentID')
+    PickList = orm.relationship('PickList', foreign_keys='PickListItem.PickListID', remote_side='PickList.PickListID', backref=orm.backref('pickListItems', uselist=True))
 
 class PrepType(Base):
     tableid = 65
     _id = 'prepTypeId'
     __tablename__ = 'preptype'
 
-    id = Column('id', types.Integer, primary_key=True)
+    prepTypeId = Column('Preptypeid', types.Integer, primary_key=True)
     isLoanable = Column('IsLoanable', mysql_bit_type, index=False, unique=False, nullable=False)
     name = Column('Name', types.String, index=False, unique=False, nullable=False)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    collection = Column('CollectionID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    collectionID = Column('CollectionID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CollectionID = orm.relationship('Collection', foreign_keys='PrepType.CollectionID', remote_side='Collection.UserGroupScopeId', backref=orm.backref('prepTypes', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='PrepType.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='PrepType.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Collection = orm.relationship('Collection', foreign_keys='PrepType.CollectionID', remote_side='Collection.UserGroupScopeId', backref=orm.backref('prepTypes', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='PrepType.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='PrepType.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class Preparation(Base):
     tableid = 63
     _id = 'preparationId'
     __tablename__ = 'preparation'
 
-    id = Column('id', types.Integer, primary_key=True)
+    preparationId = Column('Preparationid', types.Integer, primary_key=True)
     barCode = Column('BarCode', types.String, index=True, unique=False, nullable=True)
     collectionMemberId = Column('CollectionMemberID', types.Integer, index=True, unique=False, nullable=False)
     countAmt = Column('CountAmt', types.Integer, index=False, unique=False, nullable=True)
@@ -4395,30 +4395,30 @@ class Preparation(Base):
     yesNo2 = Column('YesNo2', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo3 = Column('YesNo3', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    alternateStorage = Column('AlternateStorageID', types.Integer, ForeignKey('Storage.StorageID'), nullable=True, unique=False)
-    collectionObject = Column('CollectionObjectID', types.Integer, ForeignKey('CollectionObject.CollectionObjectID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    prepType = Column('PrepTypeID', types.Integer, ForeignKey('PrepType.PrepTypeID'), nullable=False, unique=False)
-    preparationAttribute = Column('PreparationAttributeID', types.Integer, ForeignKey('PreparationAttribute.PreparationAttributeID'), nullable=True, unique=False)
-    preparedByAgent = Column('PreparedByID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    storage = Column('StorageID', types.Integer, ForeignKey('Storage.StorageID'), nullable=True, unique=False)
+    alternateStorageID = Column('AlternateStorageID', types.Integer, ForeignKey('Storage.StorageID'), nullable=True, unique=False)
+    collectionObjectID = Column('CollectionObjectID', types.Integer, ForeignKey('CollectionObject.CollectionObjectID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    prepTypeID = Column('PrepTypeID', types.Integer, ForeignKey('PrepType.PrepTypeID'), nullable=False, unique=False)
+    preparationAttributeID = Column('PreparationAttributeID', types.Integer, ForeignKey('PreparationAttribute.PreparationAttributeID'), nullable=True, unique=False)
+    preparedByAgentID = Column('PreparedByID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    storageID = Column('StorageID', types.Integer, ForeignKey('Storage.StorageID'), nullable=True, unique=False)
 
-    AlternateStorageID = orm.relationship('Storage', foreign_keys='Preparation.AlternateStorageID', remote_side='Storage.StorageID')
-    CollectionObjectID = orm.relationship('CollectionObject', foreign_keys='Preparation.CollectionObjectID', remote_side='CollectionObject.CollectionObjectID', backref=orm.backref('preparations', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Preparation.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Preparation.ModifiedByAgentID', remote_side='Agent.AgentID')
-    PrepTypeID = orm.relationship('PrepType', foreign_keys='Preparation.PrepTypeID', remote_side='PrepType.PrepTypeID')
-    PreparationAttributeID = orm.relationship('PreparationAttribute', foreign_keys='Preparation.PreparationAttributeID', remote_side='PreparationAttribute.PreparationAttributeID', backref=orm.backref('preparations', uselist=True))
-    PreparedByID = orm.relationship('Agent', foreign_keys='Preparation.PreparedByID', remote_side='Agent.AgentID')
-    StorageID = orm.relationship('Storage', foreign_keys='Preparation.StorageID', remote_side='Storage.StorageID', backref=orm.backref('preparations', uselist=True))
+    AlternateStorage = orm.relationship('Storage', foreign_keys='Preparation.AlternateStorageID', remote_side='Storage.StorageID')
+    CollectionObject = orm.relationship('CollectionObject', foreign_keys='Preparation.CollectionObjectID', remote_side='CollectionObject.CollectionObjectID', backref=orm.backref('preparations', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='Preparation.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='Preparation.ModifiedByAgentID', remote_side='Agent.AgentID')
+    PrepType = orm.relationship('PrepType', foreign_keys='Preparation.PrepTypeID', remote_side='PrepType.PrepTypeID')
+    PreparationAttribute = orm.relationship('PreparationAttribute', foreign_keys='Preparation.PreparationAttributeID', remote_side='PreparationAttribute.PreparationAttributeID', backref=orm.backref('preparations', uselist=True))
+    PreparedBy = orm.relationship('Agent', foreign_keys='Preparation.PreparedByID', remote_side='Agent.AgentID')
+    Storage = orm.relationship('Storage', foreign_keys='Preparation.StorageID', remote_side='Storage.StorageID', backref=orm.backref('preparations', uselist=True))
 
 class PreparationAttachment(Base):
     tableid = 117
     _id = 'preparationAttachmentId'
     __tablename__ = 'preparationattachment'
 
-    id = Column('id', types.Integer, primary_key=True)
+    preparationAttachmentId = Column('Preparationattachmentid', types.Integer, primary_key=True)
     collectionMemberId = Column('CollectionMemberID', types.Integer, index=True, unique=False, nullable=False)
     ordinal = Column('Ordinal', types.Integer, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
@@ -4426,22 +4426,22 @@ class PreparationAttachment(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    attachment = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    preparation = Column('PreparationID', types.Integer, ForeignKey('Preparation.PreparationID'), nullable=False, unique=False)
+    attachmentID = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    preparationID = Column('PreparationID', types.Integer, ForeignKey('Preparation.PreparationID'), nullable=False, unique=False)
 
-    AttachmentID = orm.relationship('Attachment', foreign_keys='PreparationAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('preparationAttachments', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='PreparationAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='PreparationAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
-    PreparationID = orm.relationship('Preparation', foreign_keys='PreparationAttachment.PreparationID', remote_side='Preparation.PreparationID', backref=orm.backref('preparationAttachments', uselist=True))
+    Attachment = orm.relationship('Attachment', foreign_keys='PreparationAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('preparationAttachments', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='PreparationAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='PreparationAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Preparation = orm.relationship('Preparation', foreign_keys='PreparationAttachment.PreparationID', remote_side='Preparation.PreparationID', backref=orm.backref('preparationAttachments', uselist=True))
 
 class PreparationAttr(Base):
     tableid = 64
     _id = 'attrId'
     __tablename__ = 'preparationattr'
 
-    id = Column('id', types.Integer, primary_key=True)
+    attrId = Column('Attrid', types.Integer, primary_key=True)
     collectionMemberId = Column('CollectionMemberID', types.Integer, index=True, unique=False, nullable=False)
     dblValue = Column('DoubleValue', types.Float, index=False, unique=False, nullable=True)
     strValue = Column('StrValue', types.String, index=False, unique=False, nullable=True)
@@ -4449,22 +4449,22 @@ class PreparationAttr(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    definition = Column('AttributeDefID', types.Integer, ForeignKey('AttributeDef.AttributeDefID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    preparation = Column('PreparationId', types.Integer, ForeignKey('Preparation.PreparationID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    definitionID = Column('AttributeDefID', types.Integer, ForeignKey('AttributeDef.AttributeDefID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    preparationID = Column('PreparationId', types.Integer, ForeignKey('Preparation.PreparationID'), nullable=False, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='PreparationAttr.CreatedByAgentID', remote_side='Agent.AgentID')
-    AttributeDefID = orm.relationship('AttributeDef', foreign_keys='PreparationAttr.AttributeDefID', remote_side='AttributeDef.AttributeDefID', backref=orm.backref('preparationAttrs', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='PreparationAttr.ModifiedByAgentID', remote_side='Agent.AgentID')
-    PreparationId = orm.relationship('Preparation', foreign_keys='PreparationAttr.PreparationId', remote_side='Preparation.PreparationID', backref=orm.backref('preparationAttrs', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='PreparationAttr.CreatedByAgentID', remote_side='Agent.AgentID')
+    AttributeDef = orm.relationship('AttributeDef', foreign_keys='PreparationAttr.AttributeDefID', remote_side='AttributeDef.AttributeDefID', backref=orm.backref('preparationAttrs', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='PreparationAttr.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Preparation = orm.relationship('Preparation', foreign_keys='PreparationAttr.PreparationId', remote_side='Preparation.PreparationID', backref=orm.backref('preparationAttrs', uselist=True))
 
 class PreparationAttribute(Base):
     tableid = 91
     _id = 'preparationAttributeId'
     __tablename__ = 'preparationattribute'
 
-    id = Column('id', types.Integer, primary_key=True)
+    preparationAttributeId = Column('Preparationattributeid', types.Integer, primary_key=True)
     attrDate = Column('AttrDate', types.Date, index=False, unique=False, nullable=True)
     collectionMemberId = Column('CollectionMemberID', types.Integer, index=True, unique=False, nullable=False)
     number1 = Column('Number1', types.Numeric, index=False, unique=False, nullable=True)
@@ -4511,18 +4511,18 @@ class PreparationAttribute(Base):
     yesNo3 = Column('YesNo3', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo4 = Column('YesNo4', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='PreparationAttribute.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='PreparationAttribute.ModifiedByAgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='PreparationAttribute.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='PreparationAttribute.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class PreparationProperty(Base):
     tableid = 154
     _id = 'preparationPropertyId'
     __tablename__ = 'preparationproperty'
 
-    id = Column('id', types.Integer, primary_key=True)
+    preparationPropertyId = Column('Preparationpropertyid', types.Integer, primary_key=True)
     collectionMemberId = Column('CollectionMemberID', types.Integer, index=True, unique=False, nullable=False)
     date1 = Column('Date1', types.Date, index=False, unique=False, nullable=True)
     date10 = Column('Date10', types.Date, index=False, unique=False, nullable=True)
@@ -4670,60 +4670,60 @@ class PreparationProperty(Base):
     yesNo8 = Column('YesNo8', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo9 = Column('YesNo9', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    agent1 = Column('Agent1ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent10 = Column('Agent10ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent11 = Column('Agent11ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent12 = Column('Agent12ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent13 = Column('Agent13ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent14 = Column('Agent14ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent15 = Column('Agent15ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent16 = Column('Agent16ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent17 = Column('Agent17ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent18 = Column('Agent18ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent19 = Column('Agent19ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent2 = Column('Agent2ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent20 = Column('Agent20ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent3 = Column('Agent3ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent4 = Column('Agent4ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent5 = Column('Agent5ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent6 = Column('Agent6ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent7 = Column('Agent7ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent1ID = Column('Agent1ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent10ID = Column('Agent10ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent11ID = Column('Agent11ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent12ID = Column('Agent12ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent13ID = Column('Agent13ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent14ID = Column('Agent14ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent15ID = Column('Agent15ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent16ID = Column('Agent16ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent17ID = Column('Agent17ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent18ID = Column('Agent18ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent19ID = Column('Agent19ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent2ID = Column('Agent2ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent20ID = Column('Agent20ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent3ID = Column('Agent3ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent4ID = Column('Agent4ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent5ID = Column('Agent5ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent6ID = Column('Agent6ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent7ID = Column('Agent7ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
     agent8 = Column('Agent8D', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    agent9 = Column('Agent9ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    preparation = Column('PreparationID', types.Integer, ForeignKey('Preparation.PreparationID'), nullable=False, unique=False)
+    agent9ID = Column('Agent9ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    preparationID = Column('PreparationID', types.Integer, ForeignKey('Preparation.PreparationID'), nullable=False, unique=False)
 
-    Agent1ID = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent1ID', remote_side='Agent.AgentID')
-    Agent10ID = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent10ID', remote_side='Agent.AgentID')
-    Agent11ID = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent11ID', remote_side='Agent.AgentID')
-    Agent12ID = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent12ID', remote_side='Agent.AgentID')
-    Agent13ID = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent13ID', remote_side='Agent.AgentID')
-    Agent14ID = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent14ID', remote_side='Agent.AgentID')
-    Agent15ID = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent15ID', remote_side='Agent.AgentID')
-    Agent16ID = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent16ID', remote_side='Agent.AgentID')
-    Agent17ID = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent17ID', remote_side='Agent.AgentID')
-    Agent18ID = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent18ID', remote_side='Agent.AgentID')
-    Agent19ID = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent19ID', remote_side='Agent.AgentID')
-    Agent2ID = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent2ID', remote_side='Agent.AgentID')
-    Agent20ID = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent20ID', remote_side='Agent.AgentID')
-    Agent3ID = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent3ID', remote_side='Agent.AgentID')
-    Agent4ID = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent4ID', remote_side='Agent.AgentID')
-    Agent5ID = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent5ID', remote_side='Agent.AgentID')
-    Agent6ID = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent6ID', remote_side='Agent.AgentID')
-    Agent7ID = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent7ID', remote_side='Agent.AgentID')
+    Agent1 = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent1ID', remote_side='Agent.AgentID')
+    Agent10 = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent10ID', remote_side='Agent.AgentID')
+    Agent11 = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent11ID', remote_side='Agent.AgentID')
+    Agent12 = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent12ID', remote_side='Agent.AgentID')
+    Agent13 = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent13ID', remote_side='Agent.AgentID')
+    Agent14 = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent14ID', remote_side='Agent.AgentID')
+    Agent15 = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent15ID', remote_side='Agent.AgentID')
+    Agent16 = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent16ID', remote_side='Agent.AgentID')
+    Agent17 = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent17ID', remote_side='Agent.AgentID')
+    Agent18 = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent18ID', remote_side='Agent.AgentID')
+    Agent19 = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent19ID', remote_side='Agent.AgentID')
+    Agent2 = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent2ID', remote_side='Agent.AgentID')
+    Agent20 = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent20ID', remote_side='Agent.AgentID')
+    Agent3 = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent3ID', remote_side='Agent.AgentID')
+    Agent4 = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent4ID', remote_side='Agent.AgentID')
+    Agent5 = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent5ID', remote_side='Agent.AgentID')
+    Agent6 = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent6ID', remote_side='Agent.AgentID')
+    Agent7 = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent7ID', remote_side='Agent.AgentID')
     Agent8D = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent8D', remote_side='Agent.AgentID')
-    Agent9ID = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent9ID', remote_side='Agent.AgentID')
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='PreparationProperty.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='PreparationProperty.ModifiedByAgentID', remote_side='Agent.AgentID')
-    PreparationID = orm.relationship('Preparation', foreign_keys='PreparationProperty.PreparationID', remote_side='Preparation.PreparationID', backref=orm.backref('preparationProperties', uselist=True))
+    Agent9 = orm.relationship('Agent', foreign_keys='PreparationProperty.Agent9ID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='PreparationProperty.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='PreparationProperty.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Preparation = orm.relationship('Preparation', foreign_keys='PreparationProperty.PreparationID', remote_side='Preparation.PreparationID', backref=orm.backref('preparationProperties', uselist=True))
 
 class Project(Base):
     tableid = 66
     _id = 'projectId'
     __tablename__ = 'project'
 
-    id = Column('id', types.Integer, primary_key=True)
+    projectId = Column('Projectid', types.Integer, primary_key=True)
     collectionMemberId = Column('CollectionMemberID', types.Integer, index=False, unique=False, nullable=False)
     endDate = Column('EndDate', types.Date, index=False, unique=False, nullable=True)
     grantAgency = Column('GrantAgency', types.String, index=False, unique=False, nullable=True)
@@ -4744,20 +4744,20 @@ class Project(Base):
     yesNo1 = Column('YesNo1', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo2 = Column('YesNo2', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    agent = Column('ProjectAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agentID = Column('ProjectAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    ProjectAgentID = orm.relationship('Agent', foreign_keys='Project.ProjectAgentID', remote_side='Agent.AgentID')
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Project.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Project.ModifiedByAgentID', remote_side='Agent.AgentID')
+    ProjectAgent = orm.relationship('Agent', foreign_keys='Project.ProjectAgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='Project.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='Project.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class RecordSet(Base):
     tableid = 68
     _id = 'recordSetId'
     __tablename__ = 'recordset'
 
-    id = Column('id', types.Integer, primary_key=True)
+    recordSetId = Column('Recordsetid', types.Integer, primary_key=True)
     allPermissionLevel = Column('AllPermissionLevel', types.Integer, index=False, unique=False, nullable=True)
     collectionMemberId = Column('CollectionMemberID', types.Integer, index=False, unique=False, nullable=False)
     dbTableId = Column('TableID', types.Integer, index=False, unique=False, nullable=False)
@@ -4770,37 +4770,37 @@ class RecordSet(Base):
     type = Column('Type', types.Integer, index=False, unique=False, nullable=False)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    group = Column('SpPrincipalID', types.Integer, ForeignKey('SpPrincipal.SpPrincipalID'), nullable=True, unique=False)
-    infoRequest = Column('InfoRequestID', types.Integer, ForeignKey('InfoRequest.InfoRequestID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    specifyUser = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    groupID = Column('SpPrincipalID', types.Integer, ForeignKey('SpPrincipal.SpPrincipalID'), nullable=True, unique=False)
+    infoRequestID = Column('InfoRequestID', types.Integer, ForeignKey('InfoRequest.InfoRequestID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    specifyUserID = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='RecordSet.CreatedByAgentID', remote_side='Agent.AgentID')
-    SpPrincipalID = orm.relationship('SpPrincipal', foreign_keys='RecordSet.SpPrincipalID', remote_side='SpPrincipal.SpPrincipalID')
-    InfoRequestID = orm.relationship('InfoRequest', foreign_keys='RecordSet.InfoRequestID', remote_side='InfoRequest.InfoRequestID', backref=orm.backref('recordSets', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='RecordSet.ModifiedByAgentID', remote_side='Agent.AgentID')
-    SpecifyUserID = orm.relationship('SpecifyUser', foreign_keys='RecordSet.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='RecordSet.CreatedByAgentID', remote_side='Agent.AgentID')
+    SpPrincipal = orm.relationship('SpPrincipal', foreign_keys='RecordSet.SpPrincipalID', remote_side='SpPrincipal.SpPrincipalID')
+    InfoRequest = orm.relationship('InfoRequest', foreign_keys='RecordSet.InfoRequestID', remote_side='InfoRequest.InfoRequestID', backref=orm.backref('recordSets', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='RecordSet.ModifiedByAgentID', remote_side='Agent.AgentID')
+    SpecifyUser = orm.relationship('SpecifyUser', foreign_keys='RecordSet.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID')
 
 class RecordSetItem(Base):
     tableid = 502
     _id = 'recordSetItemId'
     __tablename__ = 'recordsetitem'
 
-    id = Column('id', types.Integer, primary_key=True)
+    recordSetItemId = Column('Recordsetitemid', types.Integer, primary_key=True)
     order = Column('OrderNumber', types.Integer, index=False, unique=False, nullable=True)
     recordId = Column('RecordId', types.Integer, index=False, unique=False, nullable=False)
 
-    recordSet = Column('RecordSetID', types.Integer, ForeignKey('RecordSet.RecordSetID'), nullable=False, unique=False)
+    recordSetID = Column('RecordSetID', types.Integer, ForeignKey('RecordSet.RecordSetID'), nullable=False, unique=False)
 
-    RecordSetID = orm.relationship('RecordSet', foreign_keys='RecordSetItem.RecordSetID', remote_side='RecordSet.RecordSetID', backref=orm.backref('recordSetItems', uselist=True))
+    RecordSet = orm.relationship('RecordSet', foreign_keys='RecordSetItem.RecordSetID', remote_side='RecordSet.RecordSetID', backref=orm.backref('recordSetItems', uselist=True))
 
 class ReferenceWork(Base):
     tableid = 69
     _id = 'referenceWorkId'
     __tablename__ = 'referencework'
 
-    id = Column('id', types.Integer, primary_key=True)
+    referenceWorkId = Column('Referenceworkid', types.Integer, primary_key=True)
     doi = Column('Doi', types.Text, index=False, unique=False, nullable=True)
     guid = Column('GUID', types.String, index=True, unique=False, nullable=True)
     isPublished = Column('IsPublished', mysql_bit_type, index=False, unique=False, nullable=True)
@@ -4826,46 +4826,46 @@ class ReferenceWork(Base):
     yesNo1 = Column('YesNo1', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo2 = Column('YesNo2', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    containedRFParent = Column('ContainedRFParentID', types.Integer, ForeignKey('ReferenceWork.ReferenceWorkID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    institution = Column('InstitutionID', types.Integer, ForeignKey('Institution.UserGroupScopeId'), nullable=False, unique=False)
-    journal = Column('JournalID', types.Integer, ForeignKey('Journal.JournalID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    containedRFParentID = Column('ContainedRFParentID', types.Integer, ForeignKey('ReferenceWork.ReferenceWorkID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    institutionID = Column('InstitutionID', types.Integer, ForeignKey('Institution.UserGroupScopeId'), nullable=False, unique=False)
+    journalID = Column('JournalID', types.Integer, ForeignKey('Journal.JournalID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    ContainedRFParentID = orm.relationship('ReferenceWork', foreign_keys='ReferenceWork.ContainedRFParentID', remote_side='ReferenceWork.ReferenceWorkID', backref=orm.backref('containedReferenceWorks', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='ReferenceWork.CreatedByAgentID', remote_side='Agent.AgentID')
-    InstitutionID = orm.relationship('Institution', foreign_keys='ReferenceWork.InstitutionID', remote_side='Institution.UserGroupScopeId')
-    JournalID = orm.relationship('Journal', foreign_keys='ReferenceWork.JournalID', remote_side='Journal.JournalID', backref=orm.backref('referenceWorks', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='ReferenceWork.ModifiedByAgentID', remote_side='Agent.AgentID')
+    ContainedRFParent = orm.relationship('ReferenceWork', foreign_keys='ReferenceWork.ContainedRFParentID', remote_side='ReferenceWork.ReferenceWorkID', backref=orm.backref('containedReferenceWorks', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='ReferenceWork.CreatedByAgentID', remote_side='Agent.AgentID')
+    Institution = orm.relationship('Institution', foreign_keys='ReferenceWork.InstitutionID', remote_side='Institution.UserGroupScopeId')
+    Journal = orm.relationship('Journal', foreign_keys='ReferenceWork.JournalID', remote_side='Journal.JournalID', backref=orm.backref('referenceWorks', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='ReferenceWork.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class ReferenceWorkAttachment(Base):
     tableid = 143
     _id = 'referenceWorkAttachmentId'
     __tablename__ = 'referenceworkattachment'
 
-    id = Column('id', types.Integer, primary_key=True)
+    referenceWorkAttachmentId = Column('Referenceworkattachmentid', types.Integer, primary_key=True)
     ordinal = Column('Ordinal', types.Integer, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    attachment = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    referenceWork = Column('ReferenceWorkID', types.Integer, ForeignKey('ReferenceWork.ReferenceWorkID'), nullable=False, unique=False)
+    attachmentID = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    referenceWorkID = Column('ReferenceWorkID', types.Integer, ForeignKey('ReferenceWork.ReferenceWorkID'), nullable=False, unique=False)
 
-    AttachmentID = orm.relationship('Attachment', foreign_keys='ReferenceWorkAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('referenceWorkAttachments', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='ReferenceWorkAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='ReferenceWorkAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
-    ReferenceWorkID = orm.relationship('ReferenceWork', foreign_keys='ReferenceWorkAttachment.ReferenceWorkID', remote_side='ReferenceWork.ReferenceWorkID', backref=orm.backref('referenceWorkAttachments', uselist=True))
+    Attachment = orm.relationship('Attachment', foreign_keys='ReferenceWorkAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('referenceWorkAttachments', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='ReferenceWorkAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='ReferenceWorkAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
+    ReferenceWork = orm.relationship('ReferenceWork', foreign_keys='ReferenceWorkAttachment.ReferenceWorkID', remote_side='ReferenceWork.ReferenceWorkID', backref=orm.backref('referenceWorkAttachments', uselist=True))
 
 class RepositoryAgreement(Base):
     tableid = 70
     _id = 'repositoryAgreementId'
     __tablename__ = 'repositoryagreement'
 
-    id = Column('id', types.Integer, primary_key=True)
+    repositoryAgreementId = Column('Repositoryagreementid', types.Integer, primary_key=True)
     dateReceived = Column('DateReceived', types.Date, index=False, unique=False, nullable=True)
     endDate = Column('EndDate', types.Date, index=False, unique=False, nullable=True)
     number1 = Column('Number1', types.Numeric, index=False, unique=False, nullable=True)
@@ -4883,46 +4883,46 @@ class RepositoryAgreement(Base):
     yesNo1 = Column('YesNo1', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo2 = Column('YesNo2', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    addressOfRecord = Column('AddressOfRecordID', types.Integer, ForeignKey('AddressOfRecord.AddressOfRecordID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    division = Column('DivisionID', types.Integer, ForeignKey('Division.UserGroupScopeId'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    originator = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
+    addressOfRecordID = Column('AddressOfRecordID', types.Integer, ForeignKey('AddressOfRecord.AddressOfRecordID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    divisionID = Column('DivisionID', types.Integer, ForeignKey('Division.UserGroupScopeId'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    originatorID = Column('AgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=False, unique=False)
 
-    AddressOfRecordID = orm.relationship('AddressOfRecord', foreign_keys='RepositoryAgreement.AddressOfRecordID', remote_side='AddressOfRecord.AddressOfRecordID', backref=orm.backref('repositoryAgreements', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='RepositoryAgreement.CreatedByAgentID', remote_side='Agent.AgentID')
-    DivisionID = orm.relationship('Division', foreign_keys='RepositoryAgreement.DivisionID', remote_side='Division.UserGroupScopeId')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='RepositoryAgreement.ModifiedByAgentID', remote_side='Agent.AgentID')
-    AgentID = orm.relationship('Agent', foreign_keys='RepositoryAgreement.AgentID', remote_side='Agent.AgentID')
+    AddressOfRecord = orm.relationship('AddressOfRecord', foreign_keys='RepositoryAgreement.AddressOfRecordID', remote_side='AddressOfRecord.AddressOfRecordID', backref=orm.backref('repositoryAgreements', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='RepositoryAgreement.CreatedByAgentID', remote_side='Agent.AgentID')
+    Division = orm.relationship('Division', foreign_keys='RepositoryAgreement.DivisionID', remote_side='Division.UserGroupScopeId')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='RepositoryAgreement.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Agent = orm.relationship('Agent', foreign_keys='RepositoryAgreement.AgentID', remote_side='Agent.AgentID')
 
 class RepositoryAgreementAttachment(Base):
     tableid = 118
     _id = 'repositoryAgreementAttachmentId'
     __tablename__ = 'repositoryagreementattachment'
 
-    id = Column('id', types.Integer, primary_key=True)
+    repositoryAgreementAttachmentId = Column('Repositoryagreementattachmentid', types.Integer, primary_key=True)
     ordinal = Column('Ordinal', types.Integer, index=False, unique=False, nullable=True)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    attachment = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    repositoryAgreement = Column('RepositoryAgreementID', types.Integer, ForeignKey('RepositoryAgreement.RepositoryAgreementID'), nullable=False, unique=False)
+    attachmentID = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    repositoryAgreementID = Column('RepositoryAgreementID', types.Integer, ForeignKey('RepositoryAgreement.RepositoryAgreementID'), nullable=False, unique=False)
 
-    AttachmentID = orm.relationship('Attachment', foreign_keys='RepositoryAgreementAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('repositoryAgreementAttachments', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='RepositoryAgreementAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='RepositoryAgreementAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
-    RepositoryAgreementID = orm.relationship('RepositoryAgreement', foreign_keys='RepositoryAgreementAttachment.RepositoryAgreementID', remote_side='RepositoryAgreement.RepositoryAgreementID', backref=orm.backref('repositoryAgreementAttachments', uselist=True))
+    Attachment = orm.relationship('Attachment', foreign_keys='RepositoryAgreementAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('repositoryAgreementAttachments', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='RepositoryAgreementAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='RepositoryAgreementAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
+    RepositoryAgreement = orm.relationship('RepositoryAgreement', foreign_keys='RepositoryAgreementAttachment.RepositoryAgreementID', remote_side='RepositoryAgreement.RepositoryAgreementID', backref=orm.backref('repositoryAgreementAttachments', uselist=True))
 
 class Shipment(Base):
     tableid = 71
     _id = 'shipmentId'
     __tablename__ = 'shipment'
 
-    id = Column('id', types.Integer, primary_key=True)
+    shipmentId = Column('Shipmentid', types.Integer, primary_key=True)
     insuredForAmount = Column('InsuredForAmount', types.String, index=False, unique=False, nullable=True)
     number1 = Column('Number1', types.Numeric, index=False, unique=False, nullable=True)
     number2 = Column('Number2', types.Numeric, index=False, unique=False, nullable=True)
@@ -4940,34 +4940,34 @@ class Shipment(Base):
     yesNo1 = Column('YesNo1', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo2 = Column('YesNo2', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    borrow = Column('BorrowID', types.Integer, ForeignKey('Borrow.BorrowID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    discipline = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
-    exchangeOut = Column('ExchangeOutID', types.Integer, ForeignKey('ExchangeOut.ExchangeOutID'), nullable=True, unique=False)
-    gift = Column('GiftID', types.Integer, ForeignKey('Gift.GiftID'), nullable=True, unique=False)
-    loan = Column('LoanID', types.Integer, ForeignKey('Loan.LoanID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    shippedBy = Column('ShippedByID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    shippedTo = Column('ShippedToID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    shipper = Column('ShipperID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    borrowID = Column('BorrowID', types.Integer, ForeignKey('Borrow.BorrowID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    disciplineID = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
+    exchangeOutID = Column('ExchangeOutID', types.Integer, ForeignKey('ExchangeOut.ExchangeOutID'), nullable=True, unique=False)
+    giftID = Column('GiftID', types.Integer, ForeignKey('Gift.GiftID'), nullable=True, unique=False)
+    loanID = Column('LoanID', types.Integer, ForeignKey('Loan.LoanID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    shippedByID = Column('ShippedByID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    shippedToID = Column('ShippedToID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    shipperID = Column('ShipperID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    BorrowID = orm.relationship('Borrow', foreign_keys='Shipment.BorrowID', remote_side='Borrow.BorrowID', backref=orm.backref('shipments', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Shipment.CreatedByAgentID', remote_side='Agent.AgentID')
-    DisciplineID = orm.relationship('Discipline', foreign_keys='Shipment.DisciplineID', remote_side='Discipline.UserGroupScopeId')
-    ExchangeOutID = orm.relationship('ExchangeOut', foreign_keys='Shipment.ExchangeOutID', remote_side='ExchangeOut.ExchangeOutID', backref=orm.backref('shipments', uselist=True))
-    GiftID = orm.relationship('Gift', foreign_keys='Shipment.GiftID', remote_side='Gift.GiftID', backref=orm.backref('shipments', uselist=True))
-    LoanID = orm.relationship('Loan', foreign_keys='Shipment.LoanID', remote_side='Loan.LoanID', backref=orm.backref('shipments', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Shipment.ModifiedByAgentID', remote_side='Agent.AgentID')
-    ShippedByID = orm.relationship('Agent', foreign_keys='Shipment.ShippedByID', remote_side='Agent.AgentID')
-    ShippedToID = orm.relationship('Agent', foreign_keys='Shipment.ShippedToID', remote_side='Agent.AgentID')
-    ShipperID = orm.relationship('Agent', foreign_keys='Shipment.ShipperID', remote_side='Agent.AgentID')
+    Borrow = orm.relationship('Borrow', foreign_keys='Shipment.BorrowID', remote_side='Borrow.BorrowID', backref=orm.backref('shipments', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='Shipment.CreatedByAgentID', remote_side='Agent.AgentID')
+    Discipline = orm.relationship('Discipline', foreign_keys='Shipment.DisciplineID', remote_side='Discipline.UserGroupScopeId')
+    ExchangeOut = orm.relationship('ExchangeOut', foreign_keys='Shipment.ExchangeOutID', remote_side='ExchangeOut.ExchangeOutID', backref=orm.backref('shipments', uselist=True))
+    Gift = orm.relationship('Gift', foreign_keys='Shipment.GiftID', remote_side='Gift.GiftID', backref=orm.backref('shipments', uselist=True))
+    Loan = orm.relationship('Loan', foreign_keys='Shipment.LoanID', remote_side='Loan.LoanID', backref=orm.backref('shipments', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='Shipment.ModifiedByAgentID', remote_side='Agent.AgentID')
+    ShippedBy = orm.relationship('Agent', foreign_keys='Shipment.ShippedByID', remote_side='Agent.AgentID')
+    ShippedTo = orm.relationship('Agent', foreign_keys='Shipment.ShippedToID', remote_side='Agent.AgentID')
+    Shipper = orm.relationship('Agent', foreign_keys='Shipment.ShipperID', remote_side='Agent.AgentID')
 
 class SpAppResource(Base):
     tableid = 514
     _id = 'spAppResourceId'
     __tablename__ = 'spappresource'
 
-    id = Column('id', types.Integer, primary_key=True)
+    spAppResourceId = Column('Spappresourceid', types.Integer, primary_key=True)
     allPermissionLevel = Column('AllPermissionLevel', types.Integer, index=False, unique=False, nullable=True)
     description = Column('Description', types.String, index=False, unique=False, nullable=True)
     groupPermissionLevel = Column('GroupPermissionLevel', types.Integer, index=False, unique=False, nullable=True)
@@ -4979,45 +4979,45 @@ class SpAppResource(Base):
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    group = Column('SpPrincipalID', types.Integer, ForeignKey('SpPrincipal.SpPrincipalID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    spAppResourceDir = Column('SpAppResourceDirID', types.Integer, ForeignKey('SpAppResourceDir.SpAppResourceDirID'), nullable=False, unique=False)
-    specifyUser = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    groupID = Column('SpPrincipalID', types.Integer, ForeignKey('SpPrincipal.SpPrincipalID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    spAppResourceDirID = Column('SpAppResourceDirID', types.Integer, ForeignKey('SpAppResourceDir.SpAppResourceDirID'), nullable=False, unique=False)
+    specifyUserID = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='SpAppResource.CreatedByAgentID', remote_side='Agent.AgentID')
-    SpPrincipalID = orm.relationship('SpPrincipal', foreign_keys='SpAppResource.SpPrincipalID', remote_side='SpPrincipal.SpPrincipalID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='SpAppResource.ModifiedByAgentID', remote_side='Agent.AgentID')
-    SpAppResourceDirID = orm.relationship('SpAppResourceDir', foreign_keys='SpAppResource.SpAppResourceDirID', remote_side='SpAppResourceDir.SpAppResourceDirID', backref=orm.backref('spPersistedAppResources', uselist=True))
-    SpecifyUserID = orm.relationship('SpecifyUser', foreign_keys='SpAppResource.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('spAppResources', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='SpAppResource.CreatedByAgentID', remote_side='Agent.AgentID')
+    SpPrincipal = orm.relationship('SpPrincipal', foreign_keys='SpAppResource.SpPrincipalID', remote_side='SpPrincipal.SpPrincipalID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='SpAppResource.ModifiedByAgentID', remote_side='Agent.AgentID')
+    SpAppResourceDir = orm.relationship('SpAppResourceDir', foreign_keys='SpAppResource.SpAppResourceDirID', remote_side='SpAppResourceDir.SpAppResourceDirID', backref=orm.backref('spPersistedAppResources', uselist=True))
+    SpecifyUser = orm.relationship('SpecifyUser', foreign_keys='SpAppResource.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('spAppResources', uselist=True))
 
 class SpAppResourceData(Base):
     tableid = 515
     _id = 'spAppResourceDataId'
     __tablename__ = 'spappresourcedata'
 
-    id = Column('id', types.Integer, primary_key=True)
+    spAppResourceDataId = Column('Spappresourcedataid', types.Integer, primary_key=True)
     data = Column('data', types.Text, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    spAppResource = Column('SpAppResourceID', types.Integer, ForeignKey('SpAppResource.SpAppResourceID'), nullable=True, unique=False)
-    spViewSetObj = Column('SpViewSetObjID', types.Integer, ForeignKey('SpViewSetObj.SpViewSetObjID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    spAppResourceID = Column('SpAppResourceID', types.Integer, ForeignKey('SpAppResource.SpAppResourceID'), nullable=True, unique=False)
+    spViewSetObjID = Column('SpViewSetObjID', types.Integer, ForeignKey('SpViewSetObj.SpViewSetObjID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='SpAppResourceData.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='SpAppResourceData.ModifiedByAgentID', remote_side='Agent.AgentID')
-    SpAppResourceID = orm.relationship('SpAppResource', foreign_keys='SpAppResourceData.SpAppResourceID', remote_side='SpAppResource.SpAppResourceID', backref=orm.backref('spAppResourceDatas', uselist=True))
-    SpViewSetObjID = orm.relationship('SpViewSetObj', foreign_keys='SpAppResourceData.SpViewSetObjID', remote_side='SpViewSetObj.SpViewSetObjID', backref=orm.backref('spAppResourceDatas', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='SpAppResourceData.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='SpAppResourceData.ModifiedByAgentID', remote_side='Agent.AgentID')
+    SpAppResource = orm.relationship('SpAppResource', foreign_keys='SpAppResourceData.SpAppResourceID', remote_side='SpAppResource.SpAppResourceID', backref=orm.backref('spAppResourceDatas', uselist=True))
+    SpViewSetObj = orm.relationship('SpViewSetObj', foreign_keys='SpAppResourceData.SpViewSetObjID', remote_side='SpViewSetObj.SpViewSetObjID', backref=orm.backref('spAppResourceDatas', uselist=True))
 
 class SpAppResourceDir(Base):
     tableid = 516
     _id = 'spAppResourceDirId'
     __tablename__ = 'spappresourcedir'
 
-    id = Column('id', types.Integer, primary_key=True)
+    spAppResourceDirId = Column('Spappresourcedirid', types.Integer, primary_key=True)
     disciplineType = Column('DisciplineType', types.String, index=True, unique=False, nullable=True)
     isPersonal = Column('IsPersonal', mysql_bit_type, index=False, unique=False, nullable=False)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
@@ -5025,24 +5025,24 @@ class SpAppResourceDir(Base):
     userType = Column('UserType', types.String, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    collection = Column('CollectionID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    discipline = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    specifyUser = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=True, unique=False)
+    collectionID = Column('CollectionID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    disciplineID = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    specifyUserID = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=True, unique=False)
 
-    CollectionID = orm.relationship('Collection', foreign_keys='SpAppResourceDir.CollectionID', remote_side='Collection.UserGroupScopeId')
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='SpAppResourceDir.CreatedByAgentID', remote_side='Agent.AgentID')
-    DisciplineID = orm.relationship('Discipline', foreign_keys='SpAppResourceDir.DisciplineID', remote_side='Discipline.UserGroupScopeId')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='SpAppResourceDir.ModifiedByAgentID', remote_side='Agent.AgentID')
-    SpecifyUserID = orm.relationship('SpecifyUser', foreign_keys='SpAppResourceDir.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('spAppResourceDirs', uselist=True))
+    Collection = orm.relationship('Collection', foreign_keys='SpAppResourceDir.CollectionID', remote_side='Collection.UserGroupScopeId')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='SpAppResourceDir.CreatedByAgentID', remote_side='Agent.AgentID')
+    Discipline = orm.relationship('Discipline', foreign_keys='SpAppResourceDir.DisciplineID', remote_side='Discipline.UserGroupScopeId')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='SpAppResourceDir.ModifiedByAgentID', remote_side='Agent.AgentID')
+    SpecifyUser = orm.relationship('SpecifyUser', foreign_keys='SpAppResourceDir.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('spAppResourceDirs', uselist=True))
 
 class SpAuditLog(Base):
     tableid = 530
     _id = 'spAuditLogId'
     __tablename__ = 'spauditlog'
 
-    id = Column('id', types.Integer, primary_key=True)
+    spAuditLogId = Column('Spauditlogid', types.Integer, primary_key=True)
     action = Column('Action', types.Integer, index=False, unique=False, nullable=False)
     parentRecordId = Column('ParentRecordId', types.Integer, index=False, unique=False, nullable=True)
     parentTableNum = Column('ParentTableNum', types.Integer, index=False, unique=False, nullable=True)
@@ -5053,18 +5053,18 @@ class SpAuditLog(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='SpAuditLog.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='SpAuditLog.ModifiedByAgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='SpAuditLog.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='SpAuditLog.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class SpAuditLogField(Base):
     tableid = 531
     _id = 'spAuditLogFieldId'
     __tablename__ = 'spauditlogfield'
 
-    id = Column('id', types.Integer, primary_key=True)
+    spAuditLogFieldId = Column('Spauditlogfieldid', types.Integer, primary_key=True)
     fieldName = Column('FieldName', types.String, index=False, unique=False, nullable=False)
     newValue = Column('NewValue', types.Text, index=False, unique=False, nullable=True)
     oldValue = Column('OldValue', types.Text, index=False, unique=False, nullable=True)
@@ -5072,20 +5072,20 @@ class SpAuditLogField(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    spAuditLog = Column('SpAuditLogID', types.Integer, ForeignKey('SpAuditLog.SpAuditLogID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    spAuditLogID = Column('SpAuditLogID', types.Integer, ForeignKey('SpAuditLog.SpAuditLogID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='SpAuditLogField.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='SpAuditLogField.ModifiedByAgentID', remote_side='Agent.AgentID')
-    SpAuditLogID = orm.relationship('SpAuditLog', foreign_keys='SpAuditLogField.SpAuditLogID', remote_side='SpAuditLog.SpAuditLogID', backref=orm.backref('fields', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='SpAuditLogField.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='SpAuditLogField.ModifiedByAgentID', remote_side='Agent.AgentID')
+    SpAuditLog = orm.relationship('SpAuditLog', foreign_keys='SpAuditLogField.SpAuditLogID', remote_side='SpAuditLog.SpAuditLogID', backref=orm.backref('fields', uselist=True))
 
 class SpExportSchema(Base):
     tableid = 524
     _id = 'spExportSchemaId'
     __tablename__ = 'spexportschema'
 
-    id = Column('id', types.Integer, primary_key=True)
+    spExportSchemaId = Column('Spexportschemaid', types.Integer, primary_key=True)
     description = Column('Description', types.String, index=False, unique=False, nullable=True)
     schemaName = Column('SchemaName', types.String, index=False, unique=False, nullable=True)
     schemaVersion = Column('SchemaVersion', types.String, index=False, unique=False, nullable=True)
@@ -5093,20 +5093,20 @@ class SpExportSchema(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    discipline = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    disciplineID = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='SpExportSchema.CreatedByAgentID', remote_side='Agent.AgentID')
-    DisciplineID = orm.relationship('Discipline', foreign_keys='SpExportSchema.DisciplineID', remote_side='Discipline.UserGroupScopeId', backref=orm.backref('spExportSchemas', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='SpExportSchema.ModifiedByAgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='SpExportSchema.CreatedByAgentID', remote_side='Agent.AgentID')
+    Discipline = orm.relationship('Discipline', foreign_keys='SpExportSchema.DisciplineID', remote_side='Discipline.UserGroupScopeId', backref=orm.backref('spExportSchemas', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='SpExportSchema.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class SpExportSchemaItem(Base):
     tableid = 525
     _id = 'spExportSchemaItemId'
     __tablename__ = 'spexportschemaitem'
 
-    id = Column('id', types.Integer, primary_key=True)
+    spExportSchemaItemId = Column('Spexportschemaitemid', types.Integer, primary_key=True)
     dataType = Column('DataType', types.String, index=False, unique=False, nullable=True)
     description = Column('Description', types.String, index=False, unique=False, nullable=True)
     fieldName = Column('FieldName', types.String, index=False, unique=False, nullable=True)
@@ -5115,22 +5115,22 @@ class SpExportSchemaItem(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    spExportSchema = Column('SpExportSchemaID', types.Integer, ForeignKey('SpExportSchema.SpExportSchemaID'), nullable=False, unique=False)
-    spLocaleContainerItem = Column('SpLocaleContainerItemID', types.Integer, ForeignKey('SpLocaleContainerItem.SpLocaleContainerItemID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    spExportSchemaID = Column('SpExportSchemaID', types.Integer, ForeignKey('SpExportSchema.SpExportSchemaID'), nullable=False, unique=False)
+    spLocaleContainerItemID = Column('SpLocaleContainerItemID', types.Integer, ForeignKey('SpLocaleContainerItem.SpLocaleContainerItemID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='SpExportSchemaItem.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='SpExportSchemaItem.ModifiedByAgentID', remote_side='Agent.AgentID')
-    SpExportSchemaID = orm.relationship('SpExportSchema', foreign_keys='SpExportSchemaItem.SpExportSchemaID', remote_side='SpExportSchema.SpExportSchemaID', backref=orm.backref('spExportSchemaItems', uselist=True))
-    SpLocaleContainerItemID = orm.relationship('SpLocaleContainerItem', foreign_keys='SpExportSchemaItem.SpLocaleContainerItemID', remote_side='SpLocaleContainerItem.SpLocaleContainerItemID', backref=orm.backref('spExportSchemaItems', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='SpExportSchemaItem.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='SpExportSchemaItem.ModifiedByAgentID', remote_side='Agent.AgentID')
+    SpExportSchema = orm.relationship('SpExportSchema', foreign_keys='SpExportSchemaItem.SpExportSchemaID', remote_side='SpExportSchema.SpExportSchemaID', backref=orm.backref('spExportSchemaItems', uselist=True))
+    SpLocaleContainerItem = orm.relationship('SpLocaleContainerItem', foreign_keys='SpExportSchemaItem.SpLocaleContainerItemID', remote_side='SpLocaleContainerItem.SpLocaleContainerItemID', backref=orm.backref('spExportSchemaItems', uselist=True))
 
 class SpExportSchemaItemMapping(Base):
     tableid = 527
     _id = 'spExportSchemaItemMappingId'
     __tablename__ = 'spexportschemaitemmapping'
 
-    id = Column('id', types.Integer, primary_key=True)
+    spExportSchemaItemMappingId = Column('Spexportschemaitemmappingid', types.Integer, primary_key=True)
     exportedFieldName = Column('ExportedFieldName', types.String, index=False, unique=False, nullable=True)
     extensionItem = Column('ExtensionItem', mysql_bit_type, index=False, unique=False, nullable=True)
     remarks = Column('Remarks', types.String, index=False, unique=False, nullable=True)
@@ -5139,24 +5139,24 @@ class SpExportSchemaItemMapping(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    exportSchemaItem = Column('ExportSchemaItemID', types.Integer, ForeignKey('SpExportSchemaItem.SpExportSchemaItemID'), nullable=True, unique=False)
-    exportSchemaMapping = Column('SpExportSchemaMappingID', types.Integer, ForeignKey('SpExportSchemaMapping.SpExportSchemaMappingID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    queryField = Column('SpQueryFieldID', types.Integer, ForeignKey('SpQueryField.SpQueryFieldID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    exportSchemaItemID = Column('ExportSchemaItemID', types.Integer, ForeignKey('SpExportSchemaItem.SpExportSchemaItemID'), nullable=True, unique=False)
+    exportSchemaMappingID = Column('SpExportSchemaMappingID', types.Integer, ForeignKey('SpExportSchemaMapping.SpExportSchemaMappingID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    queryFieldID = Column('SpQueryFieldID', types.Integer, ForeignKey('SpQueryField.SpQueryFieldID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='SpExportSchemaItemMapping.CreatedByAgentID', remote_side='Agent.AgentID')
-    ExportSchemaItemID = orm.relationship('SpExportSchemaItem', foreign_keys='SpExportSchemaItemMapping.ExportSchemaItemID', remote_side='SpExportSchemaItem.SpExportSchemaItemID')
-    SpExportSchemaMappingID = orm.relationship('SpExportSchemaMapping', foreign_keys='SpExportSchemaItemMapping.SpExportSchemaMappingID', remote_side='SpExportSchemaMapping.SpExportSchemaMappingID', backref=orm.backref('mappings', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='SpExportSchemaItemMapping.ModifiedByAgentID', remote_side='Agent.AgentID')
-    SpQueryFieldID = orm.relationship('SpQueryField', foreign_keys='SpExportSchemaItemMapping.SpQueryFieldID', remote_side='SpQueryField.SpQueryFieldID', backref=orm.backref('mappings', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='SpExportSchemaItemMapping.CreatedByAgentID', remote_side='Agent.AgentID')
+    ExportSchemaItem = orm.relationship('SpExportSchemaItem', foreign_keys='SpExportSchemaItemMapping.ExportSchemaItemID', remote_side='SpExportSchemaItem.SpExportSchemaItemID')
+    SpExportSchemaMapping = orm.relationship('SpExportSchemaMapping', foreign_keys='SpExportSchemaItemMapping.SpExportSchemaMappingID', remote_side='SpExportSchemaMapping.SpExportSchemaMappingID', backref=orm.backref('mappings', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='SpExportSchemaItemMapping.ModifiedByAgentID', remote_side='Agent.AgentID')
+    SpQueryField = orm.relationship('SpQueryField', foreign_keys='SpExportSchemaItemMapping.SpQueryFieldID', remote_side='SpQueryField.SpQueryFieldID', backref=orm.backref('mappings', uselist=True))
 
 class SpExportSchemaMapping(Base):
     tableid = 528
     _id = 'spExportSchemaMappingId'
     __tablename__ = 'spexportschemamapping'
 
-    id = Column('id', types.Integer, primary_key=True)
+    spExportSchemaMappingId = Column('Spexportschemamappingid', types.Integer, primary_key=True)
     collectionMemberId = Column('CollectionMemberID', types.Integer, index=True, unique=False, nullable=False)
     description = Column('Description', types.String, index=False, unique=False, nullable=True)
     mappingName = Column('MappingName', types.String, index=False, unique=False, nullable=True)
@@ -5165,18 +5165,18 @@ class SpExportSchemaMapping(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='SpExportSchemaMapping.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='SpExportSchemaMapping.ModifiedByAgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='SpExportSchemaMapping.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='SpExportSchemaMapping.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class SpFieldValueDefault(Base):
     tableid = 520
     _id = 'spFieldValueDefaultId'
     __tablename__ = 'spfieldvaluedefault'
 
-    id = Column('id', types.Integer, primary_key=True)
+    spFieldValueDefaultId = Column('Spfieldvaluedefaultid', types.Integer, primary_key=True)
     collectionMemberId = Column('CollectionMemberID', types.Integer, index=True, unique=False, nullable=False)
     fieldName = Column('FieldName', types.String, index=False, unique=False, nullable=True)
     idValue = Column('IdValue', types.Integer, index=False, unique=False, nullable=True)
@@ -5186,18 +5186,18 @@ class SpFieldValueDefault(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='SpFieldValueDefault.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='SpFieldValueDefault.ModifiedByAgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='SpFieldValueDefault.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='SpFieldValueDefault.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class SpLocaleContainer(Base):
     tableid = 503
     _id = 'spLocaleContainerId'
     __tablename__ = 'splocalecontainer'
 
-    id = Column('id', types.Integer, primary_key=True)
+    spLocaleContainerId = Column('Splocalecontainerid', types.Integer, primary_key=True)
     aggregator = Column('Aggregator', types.String, index=False, unique=False, nullable=True)
     defaultUI = Column('DefaultUI', types.String, index=False, unique=False, nullable=True)
     format = Column('Format', types.String, index=False, unique=False, nullable=True)
@@ -5212,20 +5212,20 @@ class SpLocaleContainer(Base):
     type = Column('Type', types.String, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    discipline = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    disciplineID = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='SpLocaleContainer.CreatedByAgentID', remote_side='Agent.AgentID')
-    DisciplineID = orm.relationship('Discipline', foreign_keys='SpLocaleContainer.DisciplineID', remote_side='Discipline.UserGroupScopeId', backref=orm.backref('spLocaleContainers', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='SpLocaleContainer.ModifiedByAgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='SpLocaleContainer.CreatedByAgentID', remote_side='Agent.AgentID')
+    Discipline = orm.relationship('Discipline', foreign_keys='SpLocaleContainer.DisciplineID', remote_side='Discipline.UserGroupScopeId', backref=orm.backref('spLocaleContainers', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='SpLocaleContainer.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class SpLocaleContainerItem(Base):
     tableid = 504
     _id = 'spLocaleContainerItemId'
     __tablename__ = 'splocalecontaineritem'
 
-    id = Column('id', types.Integer, primary_key=True)
+    spLocaleContainerItemId = Column('Splocalecontaineritemid', types.Integer, primary_key=True)
     format = Column('Format', types.String, index=False, unique=False, nullable=True)
     isHidden = Column('IsHidden', mysql_bit_type, index=False, unique=False, nullable=False)
     isRequired = Column('IsRequired', mysql_bit_type, index=False, unique=False, nullable=True)
@@ -5239,20 +5239,20 @@ class SpLocaleContainerItem(Base):
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
     webLinkName = Column('WebLinkName', types.String, index=False, unique=False, nullable=True)
 
-    container = Column('SpLocaleContainerID', types.Integer, ForeignKey('SpLocaleContainer.SpLocaleContainerID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    containerID = Column('SpLocaleContainerID', types.Integer, ForeignKey('SpLocaleContainer.SpLocaleContainerID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    SpLocaleContainerID = orm.relationship('SpLocaleContainer', foreign_keys='SpLocaleContainerItem.SpLocaleContainerID', remote_side='SpLocaleContainer.SpLocaleContainerID', backref=orm.backref('items', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='SpLocaleContainerItem.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='SpLocaleContainerItem.ModifiedByAgentID', remote_side='Agent.AgentID')
+    SpLocaleContainer = orm.relationship('SpLocaleContainer', foreign_keys='SpLocaleContainerItem.SpLocaleContainerID', remote_side='SpLocaleContainer.SpLocaleContainerID', backref=orm.backref('items', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='SpLocaleContainerItem.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='SpLocaleContainerItem.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class SpLocaleItemStr(Base):
     tableid = 505
     _id = 'spLocaleItemStrId'
     __tablename__ = 'splocaleitemstr'
 
-    id = Column('id', types.Integer, primary_key=True)
+    spLocaleItemStrId = Column('Splocaleitemstrid', types.Integer, primary_key=True)
     country = Column('Country', types.String, index=True, unique=False, nullable=True)
     language = Column('Language', types.String, index=True, unique=False, nullable=False)
     text = Column('Text', types.String, index=False, unique=False, nullable=False)
@@ -5261,26 +5261,26 @@ class SpLocaleItemStr(Base):
     variant = Column('Variant', types.String, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    containerDesc = Column('SpLocaleContainerDescID', types.Integer, ForeignKey('SpLocaleContainer.SpLocaleContainerID'), nullable=True, unique=False)
-    containerName = Column('SpLocaleContainerNameID', types.Integer, ForeignKey('SpLocaleContainer.SpLocaleContainerID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    itemDesc = Column('SpLocaleContainerItemDescID', types.Integer, ForeignKey('SpLocaleContainerItem.SpLocaleContainerItemID'), nullable=True, unique=False)
-    itemName = Column('SpLocaleContainerItemNameID', types.Integer, ForeignKey('SpLocaleContainerItem.SpLocaleContainerItemID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    containerDescID = Column('SpLocaleContainerDescID', types.Integer, ForeignKey('SpLocaleContainer.SpLocaleContainerID'), nullable=True, unique=False)
+    containerNameID = Column('SpLocaleContainerNameID', types.Integer, ForeignKey('SpLocaleContainer.SpLocaleContainerID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    itemDescID = Column('SpLocaleContainerItemDescID', types.Integer, ForeignKey('SpLocaleContainerItem.SpLocaleContainerItemID'), nullable=True, unique=False)
+    itemNameID = Column('SpLocaleContainerItemNameID', types.Integer, ForeignKey('SpLocaleContainerItem.SpLocaleContainerItemID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    SpLocaleContainerDescID = orm.relationship('SpLocaleContainer', foreign_keys='SpLocaleItemStr.SpLocaleContainerDescID', remote_side='SpLocaleContainer.SpLocaleContainerID', backref=orm.backref('descs', uselist=True))
-    SpLocaleContainerNameID = orm.relationship('SpLocaleContainer', foreign_keys='SpLocaleItemStr.SpLocaleContainerNameID', remote_side='SpLocaleContainer.SpLocaleContainerID', backref=orm.backref('names', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='SpLocaleItemStr.CreatedByAgentID', remote_side='Agent.AgentID')
-    SpLocaleContainerItemDescID = orm.relationship('SpLocaleContainerItem', foreign_keys='SpLocaleItemStr.SpLocaleContainerItemDescID', remote_side='SpLocaleContainerItem.SpLocaleContainerItemID', backref=orm.backref('descs', uselist=True))
-    SpLocaleContainerItemNameID = orm.relationship('SpLocaleContainerItem', foreign_keys='SpLocaleItemStr.SpLocaleContainerItemNameID', remote_side='SpLocaleContainerItem.SpLocaleContainerItemID', backref=orm.backref('names', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='SpLocaleItemStr.ModifiedByAgentID', remote_side='Agent.AgentID')
+    SpLocaleContainerDesc = orm.relationship('SpLocaleContainer', foreign_keys='SpLocaleItemStr.SpLocaleContainerDescID', remote_side='SpLocaleContainer.SpLocaleContainerID', backref=orm.backref('descs', uselist=True))
+    SpLocaleContainerName = orm.relationship('SpLocaleContainer', foreign_keys='SpLocaleItemStr.SpLocaleContainerNameID', remote_side='SpLocaleContainer.SpLocaleContainerID', backref=orm.backref('names', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='SpLocaleItemStr.CreatedByAgentID', remote_side='Agent.AgentID')
+    SpLocaleContainerItemDesc = orm.relationship('SpLocaleContainerItem', foreign_keys='SpLocaleItemStr.SpLocaleContainerItemDescID', remote_side='SpLocaleContainerItem.SpLocaleContainerItemID', backref=orm.backref('descs', uselist=True))
+    SpLocaleContainerItemName = orm.relationship('SpLocaleContainerItem', foreign_keys='SpLocaleItemStr.SpLocaleContainerItemNameID', remote_side='SpLocaleContainerItem.SpLocaleContainerItemID', backref=orm.backref('names', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='SpLocaleItemStr.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class SpPermission(Base):
     tableid = 521
     _id = 'permissionId'
     __tablename__ = 'sppermission'
 
-    id = Column('id', types.Integer, primary_key=True)
+    permissionId = Column('Permissionid', types.Integer, primary_key=True)
     actions = Column('Actions', types.String, index=False, unique=False, nullable=True)
     name = Column('Name', types.String, index=False, unique=False, nullable=True)
     permissionClass = Column('PermissionClass', types.String, index=False, unique=False, nullable=False)
@@ -5293,7 +5293,7 @@ class SpPrincipal(Base):
     _id = 'userGroupId'
     __tablename__ = 'spprincipal'
 
-    id = Column('id', types.Integer, primary_key=True)
+    userGroupId = Column('Usergroupid', types.Integer, primary_key=True)
     groupSubClass = Column('GroupSubClass', types.String, index=False, unique=False, nullable=False)
     groupType = Column('groupType', types.String, index=False, unique=False, nullable=True)
     name = Column('Name', types.String, index=False, unique=False, nullable=False)
@@ -5303,18 +5303,18 @@ class SpPrincipal(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='SpPrincipal.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='SpPrincipal.ModifiedByAgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='SpPrincipal.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='SpPrincipal.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class SpQuery(Base):
     tableid = 517
     _id = 'spQueryId'
     __tablename__ = 'spquery'
 
-    id = Column('id', types.Integer, primary_key=True)
+    spQueryId = Column('Spqueryid', types.Integer, primary_key=True)
     contextName = Column('ContextName', types.String, index=False, unique=False, nullable=False)
     contextTableId = Column('ContextTableId', types.Integer, index=False, unique=False, nullable=False)
     countOnly = Column('CountOnly', mysql_bit_type, index=False, unique=False, nullable=True)
@@ -5331,20 +5331,20 @@ class SpQuery(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    specifyUser = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    specifyUserID = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='SpQuery.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='SpQuery.ModifiedByAgentID', remote_side='Agent.AgentID')
-    SpecifyUserID = orm.relationship('SpecifyUser', foreign_keys='SpQuery.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('spQuerys', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='SpQuery.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='SpQuery.ModifiedByAgentID', remote_side='Agent.AgentID')
+    SpecifyUser = orm.relationship('SpecifyUser', foreign_keys='SpQuery.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('spQuerys', uselist=True))
 
 class SpQueryField(Base):
     tableid = 518
     _id = 'spQueryFieldId'
     __tablename__ = 'spqueryfield'
 
-    id = Column('id', types.Integer, primary_key=True)
+    spQueryFieldId = Column('Spqueryfieldid', types.Integer, primary_key=True)
     allowNulls = Column('AllowNulls', mysql_bit_type, index=False, unique=False, nullable=True)
     alwaysFilter = Column('AlwaysFilter', mysql_bit_type, index=False, unique=False, nullable=True)
     columnAlias = Column('ColumnAlias', types.String, index=False, unique=False, nullable=True)
@@ -5367,20 +5367,20 @@ class SpQueryField(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    query = Column('SpQueryID', types.Integer, ForeignKey('SpQuery.SpQueryID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    queryID = Column('SpQueryID', types.Integer, ForeignKey('SpQuery.SpQueryID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='SpQueryField.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='SpQueryField.ModifiedByAgentID', remote_side='Agent.AgentID')
-    SpQueryID = orm.relationship('SpQuery', foreign_keys='SpQueryField.SpQueryID', remote_side='SpQuery.SpQueryID', backref=orm.backref('fields', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='SpQueryField.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='SpQueryField.ModifiedByAgentID', remote_side='Agent.AgentID')
+    SpQuery = orm.relationship('SpQuery', foreign_keys='SpQueryField.SpQueryID', remote_side='SpQuery.SpQueryID', backref=orm.backref('fields', uselist=True))
 
 class SpReport(Base):
     tableid = 519
     _id = 'spReportId'
     __tablename__ = 'spreport'
 
-    id = Column('id', types.Integer, primary_key=True)
+    spReportId = Column('Spreportid', types.Integer, primary_key=True)
     name = Column('Name', types.String, index=True, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     repeatCount = Column('RepeatCount', types.Integer, index=False, unique=False, nullable=True)
@@ -5389,26 +5389,26 @@ class SpReport(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    appResource = Column('AppResourceID', types.Integer, ForeignKey('SpAppResource.SpAppResourceID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    query = Column('SpQueryID', types.Integer, ForeignKey('SpQuery.SpQueryID'), nullable=True, unique=False)
-    specifyUser = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
-    workbenchTemplate = Column('WorkbenchTemplateID', types.Integer, ForeignKey('WorkbenchTemplate.WorkbenchTemplateID'), nullable=True, unique=False)
+    appResourceID = Column('AppResourceID', types.Integer, ForeignKey('SpAppResource.SpAppResourceID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    queryID = Column('SpQueryID', types.Integer, ForeignKey('SpQuery.SpQueryID'), nullable=True, unique=False)
+    specifyUserID = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
+    workbenchTemplateID = Column('WorkbenchTemplateID', types.Integer, ForeignKey('WorkbenchTemplate.WorkbenchTemplateID'), nullable=True, unique=False)
 
-    AppResourceID = orm.relationship('SpAppResource', foreign_keys='SpReport.AppResourceID', remote_side='SpAppResource.SpAppResourceID', backref=orm.backref('spReports', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='SpReport.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='SpReport.ModifiedByAgentID', remote_side='Agent.AgentID')
-    SpQueryID = orm.relationship('SpQuery', foreign_keys='SpReport.SpQueryID', remote_side='SpQuery.SpQueryID', backref=orm.backref('reports', uselist=True))
-    SpecifyUserID = orm.relationship('SpecifyUser', foreign_keys='SpReport.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID')
-    WorkbenchTemplateID = orm.relationship('WorkbenchTemplate', foreign_keys='SpReport.WorkbenchTemplateID', remote_side='WorkbenchTemplate.WorkbenchTemplateID')
+    AppResource = orm.relationship('SpAppResource', foreign_keys='SpReport.AppResourceID', remote_side='SpAppResource.SpAppResourceID', backref=orm.backref('spReports', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='SpReport.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='SpReport.ModifiedByAgentID', remote_side='Agent.AgentID')
+    SpQuery = orm.relationship('SpQuery', foreign_keys='SpReport.SpQueryID', remote_side='SpQuery.SpQueryID', backref=orm.backref('reports', uselist=True))
+    SpecifyUser = orm.relationship('SpecifyUser', foreign_keys='SpReport.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID')
+    WorkbenchTemplate = orm.relationship('WorkbenchTemplate', foreign_keys='SpReport.WorkbenchTemplateID', remote_side='WorkbenchTemplate.WorkbenchTemplateID')
 
 class SpSymbiotaInstance(Base):
     tableid = 533
     _id = 'spSymbiotaInstanceId'
     __tablename__ = 'spsymbiotainstance'
 
-    id = Column('id', types.Integer, primary_key=True)
+    spSymbiotaInstanceId = Column('Spsymbiotainstanceid', types.Integer, primary_key=True)
     collectionMemberId = Column('CollectionMemberID', types.Integer, index=True, unique=False, nullable=False)
     description = Column('Description', types.String, index=False, unique=False, nullable=True)
     instanceName = Column('InstanceName', types.String, index=False, unique=False, nullable=True)
@@ -5421,20 +5421,20 @@ class SpSymbiotaInstance(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    schemaMapping = Column('SchemaMappingID', types.Integer, ForeignKey('SpExportSchemaMapping.SpExportSchemaMappingID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    schemaMappingID = Column('SchemaMappingID', types.Integer, ForeignKey('SpExportSchemaMapping.SpExportSchemaMappingID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='SpSymbiotaInstance.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='SpSymbiotaInstance.ModifiedByAgentID', remote_side='Agent.AgentID')
-    SchemaMappingID = orm.relationship('SpExportSchemaMapping', foreign_keys='SpSymbiotaInstance.SchemaMappingID', remote_side='SpExportSchemaMapping.SpExportSchemaMappingID', backref=orm.backref('symbiotaInstances', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='SpSymbiotaInstance.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='SpSymbiotaInstance.ModifiedByAgentID', remote_side='Agent.AgentID')
+    SchemaMapping = orm.relationship('SpExportSchemaMapping', foreign_keys='SpSymbiotaInstance.SchemaMappingID', remote_side='SpExportSchemaMapping.SpExportSchemaMappingID', backref=orm.backref('symbiotaInstances', uselist=True))
 
 class SpTaskSemaphore(Base):
     tableid = 526
     _id = 'spTaskSemaphoreId'
     __tablename__ = 'sptasksemaphore'
 
-    id = Column('id', types.Integer, primary_key=True)
+    spTaskSemaphoreId = Column('Sptasksemaphoreid', types.Integer, primary_key=True)
     context = Column('Context', types.String, index=False, unique=False, nullable=True)
     isLocked = Column('IsLocked', mysql_bit_type, index=False, unique=False, nullable=True)
     lockedTime = Column('LockedTime', types.DateTime, index=False, unique=False, nullable=True)
@@ -5446,24 +5446,24 @@ class SpTaskSemaphore(Base):
     usageCount = Column('UsageCount', types.Integer, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    collection = Column('CollectionID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    discipline = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    owner = Column('OwnerID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=True, unique=False)
+    collectionID = Column('CollectionID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    disciplineID = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    ownerID = Column('OwnerID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=True, unique=False)
 
-    CollectionID = orm.relationship('Collection', foreign_keys='SpTaskSemaphore.CollectionID', remote_side='Collection.UserGroupScopeId')
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='SpTaskSemaphore.CreatedByAgentID', remote_side='Agent.AgentID')
-    DisciplineID = orm.relationship('Discipline', foreign_keys='SpTaskSemaphore.DisciplineID', remote_side='Discipline.UserGroupScopeId')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='SpTaskSemaphore.ModifiedByAgentID', remote_side='Agent.AgentID')
-    OwnerID = orm.relationship('SpecifyUser', foreign_keys='SpTaskSemaphore.OwnerID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('taskSemaphores', uselist=True))
+    Collection = orm.relationship('Collection', foreign_keys='SpTaskSemaphore.CollectionID', remote_side='Collection.UserGroupScopeId')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='SpTaskSemaphore.CreatedByAgentID', remote_side='Agent.AgentID')
+    Discipline = orm.relationship('Discipline', foreign_keys='SpTaskSemaphore.DisciplineID', remote_side='Discipline.UserGroupScopeId')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='SpTaskSemaphore.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Owner = orm.relationship('SpecifyUser', foreign_keys='SpTaskSemaphore.OwnerID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('taskSemaphores', uselist=True))
 
 class SpVersion(Base):
     tableid = 529
     _id = 'spVersionId'
     __tablename__ = 'spversion'
 
-    id = Column('id', types.Integer, primary_key=True)
+    spVersionId = Column('Spversionid', types.Integer, primary_key=True)
     appName = Column('AppName', types.String, index=False, unique=False, nullable=True)
     appVersion = Column('AppVersion', types.String, index=False, unique=False, nullable=True)
     dbClosedBy = Column('DbClosedBy', types.String, index=False, unique=False, nullable=True)
@@ -5474,18 +5474,18 @@ class SpVersion(Base):
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
     workbenchSchemaVersion = Column('WorkbenchSchemaVersion', types.String, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='SpVersion.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='SpVersion.ModifiedByAgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='SpVersion.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='SpVersion.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class SpViewSetObj(Base):
     tableid = 513
     _id = 'spViewSetObjId'
     __tablename__ = 'spviewsetobj'
 
-    id = Column('id', types.Integer, primary_key=True)
+    spViewSetObjId = Column('Spviewsetobjid', types.Integer, primary_key=True)
     description = Column('Description', types.String, index=False, unique=False, nullable=True)
     fileName = Column('FileName', types.String, index=False, unique=False, nullable=True)
     level = Column('Level', types.Integer, index=False, unique=False, nullable=False)
@@ -5495,40 +5495,40 @@ class SpViewSetObj(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    spAppResourceDir = Column('SpAppResourceDirID', types.Integer, ForeignKey('SpAppResourceDir.SpAppResourceDirID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    spAppResourceDirID = Column('SpAppResourceDirID', types.Integer, ForeignKey('SpAppResourceDir.SpAppResourceDirID'), nullable=False, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='SpViewSetObj.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='SpViewSetObj.ModifiedByAgentID', remote_side='Agent.AgentID')
-    SpAppResourceDirID = orm.relationship('SpAppResourceDir', foreign_keys='SpViewSetObj.SpAppResourceDirID', remote_side='SpAppResourceDir.SpAppResourceDirID', backref=orm.backref('spPersistedViewSets', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='SpViewSetObj.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='SpViewSetObj.ModifiedByAgentID', remote_side='Agent.AgentID')
+    SpAppResourceDir = orm.relationship('SpAppResourceDir', foreign_keys='SpViewSetObj.SpAppResourceDirID', remote_side='SpAppResourceDir.SpAppResourceDirID', backref=orm.backref('spPersistedViewSets', uselist=True))
 
 class SpVisualQuery(Base):
     tableid = 532
     _id = 'spVisualQueryId'
     __tablename__ = 'spvisualquery'
 
-    id = Column('id', types.Integer, primary_key=True)
+    spVisualQueryId = Column('Spvisualqueryid', types.Integer, primary_key=True)
     description = Column('Description', types.Text, index=False, unique=False, nullable=True)
     name = Column('Name', types.String, index=True, unique=False, nullable=False)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    specifyUser = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    specifyUserID = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='SpVisualQuery.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='SpVisualQuery.ModifiedByAgentID', remote_side='Agent.AgentID')
-    SpecifyUserID = orm.relationship('SpecifyUser', foreign_keys='SpVisualQuery.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='SpVisualQuery.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='SpVisualQuery.ModifiedByAgentID', remote_side='Agent.AgentID')
+    SpecifyUser = orm.relationship('SpecifyUser', foreign_keys='SpVisualQuery.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID')
 
 class SpecifyUser(Base):
     tableid = 72
     _id = 'specifyUserId'
     __tablename__ = 'specifyuser'
 
-    id = Column('id', types.Integer, primary_key=True)
+    specifyUserId = Column('Specifyuserid', types.Integer, primary_key=True)
     accumMinLoggedIn = Column('AccumMinLoggedIn', types.Integer, index=False, unique=False, nullable=True)
     email = Column('EMail', types.String, index=False, unique=False, nullable=True)
     isLoggedIn = Column('IsLoggedIn', mysql_bit_type, index=False, unique=False, nullable=False)
@@ -5543,18 +5543,18 @@ class SpecifyUser(Base):
     userType = Column('UserType', types.String, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='SpecifyUser.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='SpecifyUser.ModifiedByAgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='SpecifyUser.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='SpecifyUser.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class Storage(Base):
     tableid = 58
     _id = 'storageId'
     __tablename__ = 'storage'
 
-    id = Column('id', types.Integer, primary_key=True)
+    storageId = Column('Storageid', types.Integer, primary_key=True)
     abbrev = Column('Abbrev', types.String, index=False, unique=False, nullable=True)
     fullName = Column('FullName', types.String, index=True, unique=False, nullable=True)
     highestChildNodeNumber = Column('HighestChildNodeNumber', types.Integer, index=False, unique=False, nullable=True)
@@ -5572,48 +5572,48 @@ class Storage(Base):
     timestampVersion = Column('TimestampVersion', types.Date, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    acceptedStorage = Column('AcceptedID', types.Integer, ForeignKey('Storage.StorageID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    definition = Column('StorageTreeDefID', types.Integer, ForeignKey('StorageTreeDef.StorageTreeDefID'), nullable=False, unique=False)
-    definitionItem = Column('StorageTreeDefItemID', types.Integer, ForeignKey('StorageTreeDefItem.StorageTreeDefItemID'), nullable=False, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    parent = Column('ParentID', types.Integer, ForeignKey('Storage.StorageID'), nullable=True, unique=False)
+    acceptedStorageID = Column('AcceptedID', types.Integer, ForeignKey('Storage.StorageID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    definitionID = Column('StorageTreeDefID', types.Integer, ForeignKey('StorageTreeDef.StorageTreeDefID'), nullable=False, unique=False)
+    definitionItemID = Column('StorageTreeDefItemID', types.Integer, ForeignKey('StorageTreeDefItem.StorageTreeDefItemID'), nullable=False, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    parentID = Column('ParentID', types.Integer, ForeignKey('Storage.StorageID'), nullable=True, unique=False)
 
-    AcceptedID = orm.relationship('Storage', foreign_keys='Storage.AcceptedID', remote_side='Storage.StorageID', backref=orm.backref('acceptedChildren', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Storage.CreatedByAgentID', remote_side='Agent.AgentID')
-    StorageTreeDefID = orm.relationship('StorageTreeDef', foreign_keys='Storage.StorageTreeDefID', remote_side='StorageTreeDef.StorageTreeDefID', backref=orm.backref('treeEntries', uselist=True))
-    StorageTreeDefItemID = orm.relationship('StorageTreeDefItem', foreign_keys='Storage.StorageTreeDefItemID', remote_side='StorageTreeDefItem.StorageTreeDefItemID', backref=orm.backref('treeEntries', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Storage.ModifiedByAgentID', remote_side='Agent.AgentID')
-    ParentID = orm.relationship('Storage', foreign_keys='Storage.ParentID', remote_side='Storage.StorageID', backref=orm.backref('children', uselist=True))
+    Accepted = orm.relationship('Storage', foreign_keys='Storage.AcceptedID', remote_side='Storage.StorageID', backref=orm.backref('acceptedChildren', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='Storage.CreatedByAgentID', remote_side='Agent.AgentID')
+    StorageTreeDef = orm.relationship('StorageTreeDef', foreign_keys='Storage.StorageTreeDefID', remote_side='StorageTreeDef.StorageTreeDefID', backref=orm.backref('treeEntries', uselist=True))
+    StorageTreeDefItem = orm.relationship('StorageTreeDefItem', foreign_keys='Storage.StorageTreeDefItemID', remote_side='StorageTreeDefItem.StorageTreeDefItemID', backref=orm.backref('treeEntries', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='Storage.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Parent = orm.relationship('Storage', foreign_keys='Storage.ParentID', remote_side='Storage.StorageID', backref=orm.backref('children', uselist=True))
 
 class StorageAttachment(Base):
     tableid = 148
     _id = 'storageAttachmentId'
     __tablename__ = 'storageattachment'
 
-    id = Column('id', types.Integer, primary_key=True)
+    storageAttachmentId = Column('Storageattachmentid', types.Integer, primary_key=True)
     ordinal = Column('Ordinal', types.Integer, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    attachment = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    storage = Column('StorageID', types.Integer, ForeignKey('Storage.StorageID'), nullable=False, unique=False)
+    attachmentID = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    storageID = Column('StorageID', types.Integer, ForeignKey('Storage.StorageID'), nullable=False, unique=False)
 
-    AttachmentID = orm.relationship('Attachment', foreign_keys='StorageAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('storageAttachments', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='StorageAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='StorageAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
-    StorageID = orm.relationship('Storage', foreign_keys='StorageAttachment.StorageID', remote_side='Storage.StorageID', backref=orm.backref('storageAttachments', uselist=True))
+    Attachment = orm.relationship('Attachment', foreign_keys='StorageAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('storageAttachments', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='StorageAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='StorageAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Storage = orm.relationship('Storage', foreign_keys='StorageAttachment.StorageID', remote_side='Storage.StorageID', backref=orm.backref('storageAttachments', uselist=True))
 
 class StorageTreeDef(Base):
     tableid = 59
     _id = 'storageTreeDefId'
     __tablename__ = 'storagetreedef'
 
-    id = Column('id', types.Integer, primary_key=True)
+    storageTreeDefId = Column('Storagetreedefid', types.Integer, primary_key=True)
     fullNameDirection = Column('FullNameDirection', types.Integer, index=False, unique=False, nullable=True)
     name = Column('Name', types.String, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
@@ -5621,18 +5621,18 @@ class StorageTreeDef(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='StorageTreeDef.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='StorageTreeDef.ModifiedByAgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='StorageTreeDef.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='StorageTreeDef.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class StorageTreeDefItem(Base):
     tableid = 60
     _id = 'storageTreeDefItemId'
     __tablename__ = 'storagetreedefitem'
 
-    id = Column('id', types.Integer, primary_key=True)
+    storageTreeDefItemId = Column('Storagetreedefitemid', types.Integer, primary_key=True)
     fullNameSeparator = Column('FullNameSeparator', types.String, index=False, unique=False, nullable=True)
     isEnforced = Column('IsEnforced', mysql_bit_type, index=False, unique=False, nullable=True)
     isInFullName = Column('IsInFullName', mysql_bit_type, index=False, unique=False, nullable=True)
@@ -5646,22 +5646,22 @@ class StorageTreeDefItem(Base):
     title = Column('Title', types.String, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    parent = Column('ParentItemID', types.Integer, ForeignKey('StorageTreeDefItem.StorageTreeDefItemID'), nullable=True, unique=False)
-    treeDef = Column('StorageTreeDefID', types.Integer, ForeignKey('StorageTreeDef.StorageTreeDefID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    parentID = Column('ParentItemID', types.Integer, ForeignKey('StorageTreeDefItem.StorageTreeDefItemID'), nullable=True, unique=False)
+    treeDefID = Column('StorageTreeDefID', types.Integer, ForeignKey('StorageTreeDef.StorageTreeDefID'), nullable=False, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='StorageTreeDefItem.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='StorageTreeDefItem.ModifiedByAgentID', remote_side='Agent.AgentID')
-    ParentItemID = orm.relationship('StorageTreeDefItem', foreign_keys='StorageTreeDefItem.ParentItemID', remote_side='StorageTreeDefItem.StorageTreeDefItemID', backref=orm.backref('children', uselist=True))
-    StorageTreeDefID = orm.relationship('StorageTreeDef', foreign_keys='StorageTreeDefItem.StorageTreeDefID', remote_side='StorageTreeDef.StorageTreeDefID', backref=orm.backref('treeDefItems', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='StorageTreeDefItem.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='StorageTreeDefItem.ModifiedByAgentID', remote_side='Agent.AgentID')
+    ParentItem = orm.relationship('StorageTreeDefItem', foreign_keys='StorageTreeDefItem.ParentItemID', remote_side='StorageTreeDefItem.StorageTreeDefItemID', backref=orm.backref('children', uselist=True))
+    StorageTreeDef = orm.relationship('StorageTreeDef', foreign_keys='StorageTreeDefItem.StorageTreeDefID', remote_side='StorageTreeDef.StorageTreeDefID', backref=orm.backref('treeDefItems', uselist=True))
 
 class Taxon(Base):
     tableid = 4
     _id = 'taxonId'
     __tablename__ = 'taxon'
 
-    id = Column('id', types.Integer, primary_key=True)
+    taxonId = Column('Taxonid', types.Integer, primary_key=True)
     author = Column('Author', types.String, index=False, unique=False, nullable=True)
     citesStatus = Column('CitesStatus', types.String, index=False, unique=False, nullable=True)
     colStatus = Column('COLStatus', types.String, index=False, unique=False, nullable=True)
@@ -5748,56 +5748,56 @@ class Taxon(Base):
     yesNo8 = Column('YesNo8', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo9 = Column('YesNo9', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    acceptedTaxon = Column('AcceptedID', types.Integer, ForeignKey('Taxon.TaxonID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    definition = Column('TaxonTreeDefID', types.Integer, ForeignKey('TaxonTreeDef.TaxonTreeDefID'), nullable=False, unique=False)
-    definitionItem = Column('TaxonTreeDefItemID', types.Integer, ForeignKey('TaxonTreeDefItem.TaxonTreeDefItemID'), nullable=False, unique=False)
-    hybridParent1 = Column('HybridParent1ID', types.Integer, ForeignKey('Taxon.TaxonID'), nullable=True, unique=False)
-    hybridParent2 = Column('HybridParent2ID', types.Integer, ForeignKey('Taxon.TaxonID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    parent = Column('ParentID', types.Integer, ForeignKey('Taxon.TaxonID'), nullable=True, unique=False)
-    taxonAttribute = Column('TaxonAttributeID', types.Integer, ForeignKey('TaxonAttribute.TaxonAttributeID'), nullable=True, unique=False)
-    visibilitySetBy = Column('VisibilitySetByID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=True, unique=False)
+    acceptedTaxonID = Column('AcceptedID', types.Integer, ForeignKey('Taxon.TaxonID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    definitionID = Column('TaxonTreeDefID', types.Integer, ForeignKey('TaxonTreeDef.TaxonTreeDefID'), nullable=False, unique=False)
+    definitionItemID = Column('TaxonTreeDefItemID', types.Integer, ForeignKey('TaxonTreeDefItem.TaxonTreeDefItemID'), nullable=False, unique=False)
+    hybridParent1ID = Column('HybridParent1ID', types.Integer, ForeignKey('Taxon.TaxonID'), nullable=True, unique=False)
+    hybridParent2ID = Column('HybridParent2ID', types.Integer, ForeignKey('Taxon.TaxonID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    parentID = Column('ParentID', types.Integer, ForeignKey('Taxon.TaxonID'), nullable=True, unique=False)
+    taxonAttributeID = Column('TaxonAttributeID', types.Integer, ForeignKey('TaxonAttribute.TaxonAttributeID'), nullable=True, unique=False)
+    visibilitySetByID = Column('VisibilitySetByID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=True, unique=False)
 
-    AcceptedID = orm.relationship('Taxon', foreign_keys='Taxon.AcceptedID', remote_side='Taxon.TaxonID', backref=orm.backref('acceptedChildren', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Taxon.CreatedByAgentID', remote_side='Agent.AgentID')
-    TaxonTreeDefID = orm.relationship('TaxonTreeDef', foreign_keys='Taxon.TaxonTreeDefID', remote_side='TaxonTreeDef.TaxonTreeDefID', backref=orm.backref('treeEntries', uselist=True))
-    TaxonTreeDefItemID = orm.relationship('TaxonTreeDefItem', foreign_keys='Taxon.TaxonTreeDefItemID', remote_side='TaxonTreeDefItem.TaxonTreeDefItemID', backref=orm.backref('treeEntries', uselist=True))
-    HybridParent1ID = orm.relationship('Taxon', foreign_keys='Taxon.HybridParent1ID', remote_side='Taxon.TaxonID', backref=orm.backref('hybridChildren1', uselist=True))
-    HybridParent2ID = orm.relationship('Taxon', foreign_keys='Taxon.HybridParent2ID', remote_side='Taxon.TaxonID', backref=orm.backref('hybridChildren2', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Taxon.ModifiedByAgentID', remote_side='Agent.AgentID')
-    ParentID = orm.relationship('Taxon', foreign_keys='Taxon.ParentID', remote_side='Taxon.TaxonID', backref=orm.backref('children', uselist=True))
-    TaxonAttributeID = orm.relationship('TaxonAttribute', foreign_keys='Taxon.TaxonAttributeID', remote_side='TaxonAttribute.TaxonAttributeID', backref=orm.backref('taxons', uselist=True))
-    VisibilitySetByID = orm.relationship('SpecifyUser', foreign_keys='Taxon.VisibilitySetByID', remote_side='SpecifyUser.SpecifyUserID')
+    Accepted = orm.relationship('Taxon', foreign_keys='Taxon.AcceptedID', remote_side='Taxon.TaxonID', backref=orm.backref('acceptedChildren', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='Taxon.CreatedByAgentID', remote_side='Agent.AgentID')
+    TaxonTreeDef = orm.relationship('TaxonTreeDef', foreign_keys='Taxon.TaxonTreeDefID', remote_side='TaxonTreeDef.TaxonTreeDefID', backref=orm.backref('treeEntries', uselist=True))
+    TaxonTreeDefItem = orm.relationship('TaxonTreeDefItem', foreign_keys='Taxon.TaxonTreeDefItemID', remote_side='TaxonTreeDefItem.TaxonTreeDefItemID', backref=orm.backref('treeEntries', uselist=True))
+    HybridParent1 = orm.relationship('Taxon', foreign_keys='Taxon.HybridParent1ID', remote_side='Taxon.TaxonID', backref=orm.backref('hybridChildren1', uselist=True))
+    HybridParent2 = orm.relationship('Taxon', foreign_keys='Taxon.HybridParent2ID', remote_side='Taxon.TaxonID', backref=orm.backref('hybridChildren2', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='Taxon.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Parent = orm.relationship('Taxon', foreign_keys='Taxon.ParentID', remote_side='Taxon.TaxonID', backref=orm.backref('children', uselist=True))
+    TaxonAttribute = orm.relationship('TaxonAttribute', foreign_keys='Taxon.TaxonAttributeID', remote_side='TaxonAttribute.TaxonAttributeID', backref=orm.backref('taxons', uselist=True))
+    VisibilitySetBy = orm.relationship('SpecifyUser', foreign_keys='Taxon.VisibilitySetByID', remote_side='SpecifyUser.SpecifyUserID')
 
 class TaxonAttachment(Base):
     tableid = 119
     _id = 'taxonAttachmentId'
     __tablename__ = 'taxonattachment'
 
-    id = Column('id', types.Integer, primary_key=True)
+    taxonAttachmentId = Column('Taxonattachmentid', types.Integer, primary_key=True)
     ordinal = Column('Ordinal', types.Integer, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    attachment = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    taxon = Column('TaxonID', types.Integer, ForeignKey('Taxon.TaxonID'), nullable=False, unique=False)
+    attachmentID = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    taxonID = Column('TaxonID', types.Integer, ForeignKey('Taxon.TaxonID'), nullable=False, unique=False)
 
-    AttachmentID = orm.relationship('Attachment', foreign_keys='TaxonAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('taxonAttachments', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='TaxonAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='TaxonAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
-    TaxonID = orm.relationship('Taxon', foreign_keys='TaxonAttachment.TaxonID', remote_side='Taxon.TaxonID', backref=orm.backref('taxonAttachments', uselist=True))
+    Attachment = orm.relationship('Attachment', foreign_keys='TaxonAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('taxonAttachments', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='TaxonAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='TaxonAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Taxon = orm.relationship('Taxon', foreign_keys='TaxonAttachment.TaxonID', remote_side='Taxon.TaxonID', backref=orm.backref('taxonAttachments', uselist=True))
 
 class TaxonAttribute(Base):
     tableid = 162
     _id = 'taxonAttributeId'
     __tablename__ = 'taxonattribute'
 
-    id = Column('id', types.Integer, primary_key=True)
+    taxonAttributeId = Column('Taxonattributeid', types.Integer, primary_key=True)
     date1 = Column('Date1', types.Date, index=False, unique=False, nullable=True)
     date1Precision = Column('Date1Precision', types.Integer, index=False, unique=False, nullable=True)
     number1 = Column('Number1', types.Numeric, index=False, unique=False, nullable=True)
@@ -5965,20 +5965,20 @@ class TaxonAttribute(Base):
     yesNo82 = Column('YesNo82', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo9 = Column('YesNo9', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    agent1 = Column('Agent1ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    agent1ID = Column('Agent1ID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    Agent1ID = orm.relationship('Agent', foreign_keys='TaxonAttribute.Agent1ID', remote_side='Agent.AgentID')
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='TaxonAttribute.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='TaxonAttribute.ModifiedByAgentID', remote_side='Agent.AgentID')
+    Agent1 = orm.relationship('Agent', foreign_keys='TaxonAttribute.Agent1ID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='TaxonAttribute.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='TaxonAttribute.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class TaxonCitation(Base):
     tableid = 75
     _id = 'taxonCitationId'
     __tablename__ = 'taxoncitation'
 
-    id = Column('id', types.Integer, primary_key=True)
+    taxonCitationId = Column('Taxoncitationid', types.Integer, primary_key=True)
     figureNumber = Column('FigureNumber', types.String, index=False, unique=False, nullable=True)
     isFigured = Column('IsFigured', mysql_bit_type, index=False, unique=False, nullable=True)
     number1 = Column('Number1', types.Numeric, index=False, unique=False, nullable=True)
@@ -5994,22 +5994,22 @@ class TaxonCitation(Base):
     yesNo1 = Column('YesNo1', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo2 = Column('YesNo2', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    referenceWork = Column('ReferenceWorkID', types.Integer, ForeignKey('ReferenceWork.ReferenceWorkID'), nullable=False, unique=False)
-    taxon = Column('TaxonID', types.Integer, ForeignKey('Taxon.TaxonID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    referenceWorkID = Column('ReferenceWorkID', types.Integer, ForeignKey('ReferenceWork.ReferenceWorkID'), nullable=False, unique=False)
+    taxonID = Column('TaxonID', types.Integer, ForeignKey('Taxon.TaxonID'), nullable=False, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='TaxonCitation.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='TaxonCitation.ModifiedByAgentID', remote_side='Agent.AgentID')
-    ReferenceWorkID = orm.relationship('ReferenceWork', foreign_keys='TaxonCitation.ReferenceWorkID', remote_side='ReferenceWork.ReferenceWorkID', backref=orm.backref('taxonCitations', uselist=True))
-    TaxonID = orm.relationship('Taxon', foreign_keys='TaxonCitation.TaxonID', remote_side='Taxon.TaxonID', backref=orm.backref('taxonCitations', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='TaxonCitation.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='TaxonCitation.ModifiedByAgentID', remote_side='Agent.AgentID')
+    ReferenceWork = orm.relationship('ReferenceWork', foreign_keys='TaxonCitation.ReferenceWorkID', remote_side='ReferenceWork.ReferenceWorkID', backref=orm.backref('taxonCitations', uselist=True))
+    Taxon = orm.relationship('Taxon', foreign_keys='TaxonCitation.TaxonID', remote_side='Taxon.TaxonID', backref=orm.backref('taxonCitations', uselist=True))
 
 class TaxonTreeDef(Base):
     tableid = 76
     _id = 'taxonTreeDefId'
     __tablename__ = 'taxontreedef'
 
-    id = Column('id', types.Integer, primary_key=True)
+    taxonTreeDefId = Column('Taxontreedefid', types.Integer, primary_key=True)
     fullNameDirection = Column('FullNameDirection', types.Integer, index=False, unique=False, nullable=True)
     name = Column('Name', types.String, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.String, index=False, unique=False, nullable=True)
@@ -6017,18 +6017,18 @@ class TaxonTreeDef(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='TaxonTreeDef.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='TaxonTreeDef.ModifiedByAgentID', remote_side='Agent.AgentID')
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='TaxonTreeDef.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='TaxonTreeDef.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class TaxonTreeDefItem(Base):
     tableid = 77
     _id = 'taxonTreeDefItemId'
     __tablename__ = 'taxontreedefitem'
 
-    id = Column('id', types.Integer, primary_key=True)
+    taxonTreeDefItemId = Column('Taxontreedefitemid', types.Integer, primary_key=True)
     formatToken = Column('FormatToken', types.String, index=False, unique=False, nullable=True)
     fullNameSeparator = Column('FullNameSeparator', types.String, index=False, unique=False, nullable=True)
     isEnforced = Column('IsEnforced', mysql_bit_type, index=False, unique=False, nullable=True)
@@ -6043,22 +6043,22 @@ class TaxonTreeDefItem(Base):
     title = Column('Title', types.String, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    parent = Column('ParentItemID', types.Integer, ForeignKey('TaxonTreeDefItem.TaxonTreeDefItemID'), nullable=True, unique=False)
-    treeDef = Column('TaxonTreeDefID', types.Integer, ForeignKey('TaxonTreeDef.TaxonTreeDefID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    parentID = Column('ParentItemID', types.Integer, ForeignKey('TaxonTreeDefItem.TaxonTreeDefItemID'), nullable=True, unique=False)
+    treeDefID = Column('TaxonTreeDefID', types.Integer, ForeignKey('TaxonTreeDef.TaxonTreeDefID'), nullable=False, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='TaxonTreeDefItem.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='TaxonTreeDefItem.ModifiedByAgentID', remote_side='Agent.AgentID')
-    ParentItemID = orm.relationship('TaxonTreeDefItem', foreign_keys='TaxonTreeDefItem.ParentItemID', remote_side='TaxonTreeDefItem.TaxonTreeDefItemID', backref=orm.backref('children', uselist=True))
-    TaxonTreeDefID = orm.relationship('TaxonTreeDef', foreign_keys='TaxonTreeDefItem.TaxonTreeDefID', remote_side='TaxonTreeDef.TaxonTreeDefID', backref=orm.backref('treeDefItems', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='TaxonTreeDefItem.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='TaxonTreeDefItem.ModifiedByAgentID', remote_side='Agent.AgentID')
+    ParentItem = orm.relationship('TaxonTreeDefItem', foreign_keys='TaxonTreeDefItem.ParentItemID', remote_side='TaxonTreeDefItem.TaxonTreeDefItemID', backref=orm.backref('children', uselist=True))
+    TaxonTreeDef = orm.relationship('TaxonTreeDef', foreign_keys='TaxonTreeDefItem.TaxonTreeDefID', remote_side='TaxonTreeDef.TaxonTreeDefID', backref=orm.backref('treeDefItems', uselist=True))
 
 class TreatmentEvent(Base):
     tableid = 122
     _id = 'treatmentEventId'
     __tablename__ = 'treatmentevent'
 
-    id = Column('id', types.Integer, primary_key=True)
+    treatmentEventId = Column('Treatmenteventid', types.Integer, primary_key=True)
     dateBoxed = Column('DateBoxed', types.Date, index=False, unique=False, nullable=True)
     dateCleaned = Column('DateCleaned', types.Date, index=False, unique=False, nullable=True)
     dateCompleted = Column('DateCompleted', types.Date, index=False, unique=False, nullable=True)
@@ -6088,50 +6088,50 @@ class TreatmentEvent(Base):
     yesNo2 = Column('YesNo2', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo3 = Column('YesNo3', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    accession = Column('AccessionID', types.Integer, ForeignKey('Accession.AccessionID'), nullable=True, unique=False)
-    authorizedBy = Column('AuthorizedByID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    collectionObject = Column('CollectionObjectID', types.Integer, ForeignKey('CollectionObject.CollectionObjectID'), nullable=True, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    division = Column('DivisionID', types.Integer, ForeignKey('Division.UserGroupScopeId'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    performedBy = Column('PerformedByID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    accessionID = Column('AccessionID', types.Integer, ForeignKey('Accession.AccessionID'), nullable=True, unique=False)
+    authorizedByID = Column('AuthorizedByID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    collectionObjectID = Column('CollectionObjectID', types.Integer, ForeignKey('CollectionObject.CollectionObjectID'), nullable=True, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    divisionID = Column('DivisionID', types.Integer, ForeignKey('Division.UserGroupScopeId'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    performedByID = Column('PerformedByID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    AccessionID = orm.relationship('Accession', foreign_keys='TreatmentEvent.AccessionID', remote_side='Accession.AccessionID', backref=orm.backref('treatmentEvents', uselist=True))
-    AuthorizedByID = orm.relationship('Agent', foreign_keys='TreatmentEvent.AuthorizedByID', remote_side='Agent.AgentID')
-    CollectionObjectID = orm.relationship('CollectionObject', foreign_keys='TreatmentEvent.CollectionObjectID', remote_side='CollectionObject.CollectionObjectID', backref=orm.backref('treatmentEvents', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='TreatmentEvent.CreatedByAgentID', remote_side='Agent.AgentID')
-    DivisionID = orm.relationship('Division', foreign_keys='TreatmentEvent.DivisionID', remote_side='Division.UserGroupScopeId')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='TreatmentEvent.ModifiedByAgentID', remote_side='Agent.AgentID')
-    PerformedByID = orm.relationship('Agent', foreign_keys='TreatmentEvent.PerformedByID', remote_side='Agent.AgentID')
+    Accession = orm.relationship('Accession', foreign_keys='TreatmentEvent.AccessionID', remote_side='Accession.AccessionID', backref=orm.backref('treatmentEvents', uselist=True))
+    AuthorizedBy = orm.relationship('Agent', foreign_keys='TreatmentEvent.AuthorizedByID', remote_side='Agent.AgentID')
+    CollectionObject = orm.relationship('CollectionObject', foreign_keys='TreatmentEvent.CollectionObjectID', remote_side='CollectionObject.CollectionObjectID', backref=orm.backref('treatmentEvents', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='TreatmentEvent.CreatedByAgentID', remote_side='Agent.AgentID')
+    Division = orm.relationship('Division', foreign_keys='TreatmentEvent.DivisionID', remote_side='Division.UserGroupScopeId')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='TreatmentEvent.ModifiedByAgentID', remote_side='Agent.AgentID')
+    PerformedBy = orm.relationship('Agent', foreign_keys='TreatmentEvent.PerformedByID', remote_side='Agent.AgentID')
 
 class TreatmentEventAttachment(Base):
     tableid = 149
     _id = 'treatmentEventAttachmentId'
     __tablename__ = 'treatmenteventattachment'
 
-    id = Column('id', types.Integer, primary_key=True)
+    treatmentEventAttachmentId = Column('Treatmenteventattachmentid', types.Integer, primary_key=True)
     ordinal = Column('Ordinal', types.Integer, index=False, unique=False, nullable=False)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     timestampCreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    attachment = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    treatmentEvent = Column('TreatmentEventID', types.Integer, ForeignKey('TreatmentEvent.TreatmentEventID'), nullable=False, unique=False)
+    attachmentID = Column('AttachmentID', types.Integer, ForeignKey('Attachment.AttachmentID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    treatmentEventID = Column('TreatmentEventID', types.Integer, ForeignKey('TreatmentEvent.TreatmentEventID'), nullable=False, unique=False)
 
-    AttachmentID = orm.relationship('Attachment', foreign_keys='TreatmentEventAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('treatmentEventAttachments', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='TreatmentEventAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='TreatmentEventAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
-    TreatmentEventID = orm.relationship('TreatmentEvent', foreign_keys='TreatmentEventAttachment.TreatmentEventID', remote_side='TreatmentEvent.TreatmentEventID', backref=orm.backref('treatmentEventAttachments', uselist=True))
+    Attachment = orm.relationship('Attachment', foreign_keys='TreatmentEventAttachment.AttachmentID', remote_side='Attachment.AttachmentID', backref=orm.backref('treatmentEventAttachments', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='TreatmentEventAttachment.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='TreatmentEventAttachment.ModifiedByAgentID', remote_side='Agent.AgentID')
+    TreatmentEvent = orm.relationship('TreatmentEvent', foreign_keys='TreatmentEventAttachment.TreatmentEventID', remote_side='TreatmentEvent.TreatmentEventID', backref=orm.backref('treatmentEventAttachments', uselist=True))
 
 class VoucherRelationship(Base):
     tableid = 155
     _id = 'voucherRelationshipId'
     __tablename__ = 'voucherrelationship'
 
-    id = Column('id', types.Integer, primary_key=True)
+    voucherRelationshipId = Column('Voucherrelationshipid', types.Integer, primary_key=True)
     collectionCode = Column('CollectionCode', types.String, index=False, unique=False, nullable=True)
     collectionMemberId = Column('CollectionMemberID', types.Integer, index=True, unique=False, nullable=False)
     institutionCode = Column('InstitutionCode', types.String, index=False, unique=False, nullable=True)
@@ -6154,20 +6154,20 @@ class VoucherRelationship(Base):
     yesNo2 = Column('YesNo2', mysql_bit_type, index=False, unique=False, nullable=True)
     yesNo3 = Column('YesNo3', mysql_bit_type, index=False, unique=False, nullable=True)
 
-    collectionObject = Column('CollectionObjectID', types.Integer, ForeignKey('CollectionObject.CollectionObjectID'), nullable=False, unique=False)
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    collectionObjectID = Column('CollectionObjectID', types.Integer, ForeignKey('CollectionObject.CollectionObjectID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CollectionObjectID = orm.relationship('CollectionObject', foreign_keys='VoucherRelationship.CollectionObjectID', remote_side='CollectionObject.CollectionObjectID', backref=orm.backref('voucherRelationships', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='VoucherRelationship.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='VoucherRelationship.ModifiedByAgentID', remote_side='Agent.AgentID')
+    CollectionObject = orm.relationship('CollectionObject', foreign_keys='VoucherRelationship.CollectionObjectID', remote_side='CollectionObject.CollectionObjectID', backref=orm.backref('voucherRelationships', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='VoucherRelationship.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='VoucherRelationship.ModifiedByAgentID', remote_side='Agent.AgentID')
 
 class Workbench(Base):
     tableid = 79
     _id = 'workbenchId'
     __tablename__ = 'workbench'
 
-    id = Column('id', types.Integer, primary_key=True)
+    workbenchId = Column('Workbenchid', types.Integer, primary_key=True)
     allPermissionLevel = Column('AllPermissionLevel', types.Integer, index=False, unique=False, nullable=True)
     dbTableId = Column('TableID', types.Integer, index=False, unique=False, nullable=True)
     exportInstitutionName = Column('ExportInstitutionName', types.String, index=False, unique=False, nullable=True)
@@ -6183,40 +6183,40 @@ class Workbench(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    group = Column('SpPrincipalID', types.Integer, ForeignKey('SpPrincipal.SpPrincipalID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    specifyUser = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
-    workbenchTemplate = Column('WorkbenchTemplateID', types.Integer, ForeignKey('WorkbenchTemplate.WorkbenchTemplateID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    groupID = Column('SpPrincipalID', types.Integer, ForeignKey('SpPrincipal.SpPrincipalID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    specifyUserID = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
+    workbenchTemplateID = Column('WorkbenchTemplateID', types.Integer, ForeignKey('WorkbenchTemplate.WorkbenchTemplateID'), nullable=False, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Workbench.CreatedByAgentID', remote_side='Agent.AgentID')
-    SpPrincipalID = orm.relationship('SpPrincipal', foreign_keys='Workbench.SpPrincipalID', remote_side='SpPrincipal.SpPrincipalID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Workbench.ModifiedByAgentID', remote_side='Agent.AgentID')
-    SpecifyUserID = orm.relationship('SpecifyUser', foreign_keys='Workbench.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('workbenches', uselist=True))
-    WorkbenchTemplateID = orm.relationship('WorkbenchTemplate', foreign_keys='Workbench.WorkbenchTemplateID', remote_side='WorkbenchTemplate.WorkbenchTemplateID', backref=orm.backref('workbenches', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='Workbench.CreatedByAgentID', remote_side='Agent.AgentID')
+    SpPrincipal = orm.relationship('SpPrincipal', foreign_keys='Workbench.SpPrincipalID', remote_side='SpPrincipal.SpPrincipalID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='Workbench.ModifiedByAgentID', remote_side='Agent.AgentID')
+    SpecifyUser = orm.relationship('SpecifyUser', foreign_keys='Workbench.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('workbenches', uselist=True))
+    WorkbenchTemplate = orm.relationship('WorkbenchTemplate', foreign_keys='Workbench.WorkbenchTemplateID', remote_side='WorkbenchTemplate.WorkbenchTemplateID', backref=orm.backref('workbenches', uselist=True))
 
 class WorkbenchDataItem(Base):
     tableid = 80
     _id = 'workbenchDataItemId'
     __tablename__ = 'workbenchdataitem'
 
-    id = Column('id', types.Integer, primary_key=True)
+    workbenchDataItemId = Column('Workbenchdataitemid', types.Integer, primary_key=True)
     cellData = Column('CellData', types.Text, index=False, unique=False, nullable=True)
     rowNumber = Column('RowNumber', types.Integer, index=False, unique=False, nullable=True)
     validationStatus = Column('ValidationStatus', types.Integer, index=False, unique=False, nullable=True)
 
-    workbenchRow = Column('WorkbenchRowID', types.Integer, ForeignKey('WorkbenchRow.WorkbenchRowID'), nullable=False, unique=False)
-    workbenchTemplateMappingItem = Column('WorkbenchTemplateMappingItemID', types.Integer, ForeignKey('WorkbenchTemplateMappingItem.WorkbenchTemplateMappingItemID'), nullable=False, unique=False)
+    workbenchRowID = Column('WorkbenchRowID', types.Integer, ForeignKey('WorkbenchRow.WorkbenchRowID'), nullable=False, unique=False)
+    workbenchTemplateMappingItemID = Column('WorkbenchTemplateMappingItemID', types.Integer, ForeignKey('WorkbenchTemplateMappingItem.WorkbenchTemplateMappingItemID'), nullable=False, unique=False)
 
-    WorkbenchRowID = orm.relationship('WorkbenchRow', foreign_keys='WorkbenchDataItem.WorkbenchRowID', remote_side='WorkbenchRow.WorkbenchRowID', backref=orm.backref('workbenchDataItems', uselist=True))
-    WorkbenchTemplateMappingItemID = orm.relationship('WorkbenchTemplateMappingItem', foreign_keys='WorkbenchDataItem.WorkbenchTemplateMappingItemID', remote_side='WorkbenchTemplateMappingItem.WorkbenchTemplateMappingItemID', backref=orm.backref('workbenchDataItems', uselist=True))
+    WorkbenchRow = orm.relationship('WorkbenchRow', foreign_keys='WorkbenchDataItem.WorkbenchRowID', remote_side='WorkbenchRow.WorkbenchRowID', backref=orm.backref('workbenchDataItems', uselist=True))
+    WorkbenchTemplateMappingItem = orm.relationship('WorkbenchTemplateMappingItem', foreign_keys='WorkbenchDataItem.WorkbenchTemplateMappingItemID', remote_side='WorkbenchTemplateMappingItem.WorkbenchTemplateMappingItemID', backref=orm.backref('workbenchDataItems', uselist=True))
 
 class WorkbenchRow(Base):
     tableid = 90
     _id = 'workbenchRowId'
     __tablename__ = 'workbenchrow'
 
-    id = Column('id', types.Integer, primary_key=True)
+    workbenchRowId = Column('Workbenchrowid', types.Integer, primary_key=True)
     bioGeomancerResults = Column('BioGeomancerResults', types.Text, index=False, unique=False, nullable=True)
     cardImageData = Column('CardImageData', types.Text, index=False, unique=False, nullable=True)
     cardImageFullPath = Column('CardImageFullPath', types.String, index=False, unique=False, nullable=True)
@@ -6231,16 +6231,16 @@ class WorkbenchRow(Base):
     sgrStatus = Column('SGRStatus', types.Integer, index=False, unique=False, nullable=True)
     uploadStatus = Column('UploadStatus', types.Integer, index=False, unique=False, nullable=True)
 
-    workbench = Column('WorkbenchID', types.Integer, ForeignKey('Workbench.WorkbenchID'), nullable=False, unique=False)
+    workbenchID = Column('WorkbenchID', types.Integer, ForeignKey('Workbench.WorkbenchID'), nullable=False, unique=False)
 
-    WorkbenchID = orm.relationship('Workbench', foreign_keys='WorkbenchRow.WorkbenchID', remote_side='Workbench.WorkbenchID', backref=orm.backref('workbenchRows', uselist=True))
+    Workbench = orm.relationship('Workbench', foreign_keys='WorkbenchRow.WorkbenchID', remote_side='Workbench.WorkbenchID', backref=orm.backref('workbenchRows', uselist=True))
 
 class WorkbenchRowExportedRelationship(Base):
     tableid = 126
     _id = 'workbenchRowExportedRelationshipId'
     __tablename__ = 'workbenchrowexportedrelationship'
 
-    id = Column('id', types.Integer, primary_key=True)
+    workbenchRowExportedRelationshipId = Column('Workbenchrowexportedrelationshipid', types.Integer, primary_key=True)
     recordId = Column('RecordID', types.Integer, index=False, unique=False, nullable=True)
     relationshipName = Column('RelationshipName', types.String, index=False, unique=False, nullable=True)
     sequence = Column('Sequence', types.Integer, index=False, unique=False, nullable=True)
@@ -6249,35 +6249,35 @@ class WorkbenchRowExportedRelationship(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    workbenchRow = Column('WorkbenchRowID', types.Integer, ForeignKey('WorkbenchRow.WorkbenchRowID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    workbenchRowID = Column('WorkbenchRowID', types.Integer, ForeignKey('WorkbenchRow.WorkbenchRowID'), nullable=False, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='WorkbenchRowExportedRelationship.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='WorkbenchRowExportedRelationship.ModifiedByAgentID', remote_side='Agent.AgentID')
-    WorkbenchRowID = orm.relationship('WorkbenchRow', foreign_keys='WorkbenchRowExportedRelationship.WorkbenchRowID', remote_side='WorkbenchRow.WorkbenchRowID', backref=orm.backref('workbenchRowExportedRelationships', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='WorkbenchRowExportedRelationship.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='WorkbenchRowExportedRelationship.ModifiedByAgentID', remote_side='Agent.AgentID')
+    WorkbenchRow = orm.relationship('WorkbenchRow', foreign_keys='WorkbenchRowExportedRelationship.WorkbenchRowID', remote_side='WorkbenchRow.WorkbenchRowID', backref=orm.backref('workbenchRowExportedRelationships', uselist=True))
 
 class WorkbenchRowImage(Base):
     tableid = 95
     _id = 'workbenchRowImageId'
     __tablename__ = 'workbenchrowimage'
 
-    id = Column('id', types.Integer, primary_key=True)
+    workbenchRowImageId = Column('Workbenchrowimageid', types.Integer, primary_key=True)
     attachToTableName = Column('AttachToTableName', types.String, index=False, unique=False, nullable=True)
     cardImageData = Column('CardImageData', types.Text, index=False, unique=False, nullable=True)
     cardImageFullPath = Column('CardImageFullPath', types.String, index=False, unique=False, nullable=True)
     imageOrder = Column('ImageOrder', types.Integer, index=False, unique=False, nullable=True)
 
-    workbenchRow = Column('WorkbenchRowID', types.Integer, ForeignKey('WorkbenchRow.WorkbenchRowID'), nullable=False, unique=False)
+    workbenchRowID = Column('WorkbenchRowID', types.Integer, ForeignKey('WorkbenchRow.WorkbenchRowID'), nullable=False, unique=False)
 
-    WorkbenchRowID = orm.relationship('WorkbenchRow', foreign_keys='WorkbenchRowImage.WorkbenchRowID', remote_side='WorkbenchRow.WorkbenchRowID', backref=orm.backref('workbenchRowImages', uselist=True))
+    WorkbenchRow = orm.relationship('WorkbenchRow', foreign_keys='WorkbenchRowImage.WorkbenchRowID', remote_side='WorkbenchRow.WorkbenchRowID', backref=orm.backref('workbenchRowImages', uselist=True))
 
 class WorkbenchTemplate(Base):
     tableid = 81
     _id = 'workbenchTemplateId'
     __tablename__ = 'workbenchtemplate'
 
-    id = Column('id', types.Integer, primary_key=True)
+    workbenchTemplateId = Column('Workbenchtemplateid', types.Integer, primary_key=True)
     name = Column('Name', types.String, index=False, unique=False, nullable=True)
     remarks = Column('Remarks', types.Text, index=False, unique=False, nullable=True)
     srcFilePath = Column('SrcFilePath', types.String, index=False, unique=False, nullable=True)
@@ -6285,20 +6285,20 @@ class WorkbenchTemplate(Base):
     timestampModified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
     version = Column('Version', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    specifyUser = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    specifyUserID = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='WorkbenchTemplate.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='WorkbenchTemplate.ModifiedByAgentID', remote_side='Agent.AgentID')
-    SpecifyUserID = orm.relationship('SpecifyUser', foreign_keys='WorkbenchTemplate.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('workbenchTemplates', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='WorkbenchTemplate.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='WorkbenchTemplate.ModifiedByAgentID', remote_side='Agent.AgentID')
+    SpecifyUser = orm.relationship('SpecifyUser', foreign_keys='WorkbenchTemplate.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('workbenchTemplates', uselist=True))
 
 class WorkbenchTemplateMappingItem(Base):
     tableid = 82
     _id = 'workbenchTemplateMappingItemId'
     __tablename__ = 'workbenchtemplatemappingitem'
 
-    id = Column('id', types.Integer, primary_key=True)
+    workbenchTemplateMappingItemId = Column('Workbenchtemplatemappingitemid', types.Integer, primary_key=True)
     caption = Column('Caption', types.String, index=False, unique=False, nullable=True)
     carryForward = Column('CarryForward', mysql_bit_type, index=False, unique=False, nullable=True)
     dataFieldLength = Column('DataFieldLength', types.Integer, index=False, unique=False, nullable=True)
@@ -6320,35 +6320,35 @@ class WorkbenchTemplateMappingItem(Base):
     xCoord = Column('XCoord', types.Integer, index=False, unique=False, nullable=True)
     yCoord = Column('YCoord', types.Integer, index=False, unique=False, nullable=True)
 
-    createdByAgent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedByAgent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    workbenchTemplate = Column('WorkbenchTemplateID', types.Integer, ForeignKey('WorkbenchTemplate.WorkbenchTemplateID'), nullable=False, unique=False)
+    createdByAgentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedByAgentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    workbenchTemplateID = Column('WorkbenchTemplateID', types.Integer, ForeignKey('WorkbenchTemplate.WorkbenchTemplateID'), nullable=False, unique=False)
 
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='WorkbenchTemplateMappingItem.CreatedByAgentID', remote_side='Agent.AgentID')
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='WorkbenchTemplateMappingItem.ModifiedByAgentID', remote_side='Agent.AgentID')
-    WorkbenchTemplateID = orm.relationship('WorkbenchTemplate', foreign_keys='WorkbenchTemplateMappingItem.WorkbenchTemplateID', remote_side='WorkbenchTemplate.WorkbenchTemplateID', backref=orm.backref('workbenchTemplateMappingItems', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='WorkbenchTemplateMappingItem.CreatedByAgentID', remote_side='Agent.AgentID')
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='WorkbenchTemplateMappingItem.ModifiedByAgentID', remote_side='Agent.AgentID')
+    WorkbenchTemplate = orm.relationship('WorkbenchTemplate', foreign_keys='WorkbenchTemplateMappingItem.WorkbenchTemplateID', remote_side='WorkbenchTemplate.WorkbenchTemplateID', backref=orm.backref('workbenchTemplateMappingItems', uselist=True))
 
 class Spuserexternalid(Base):
     tableid = 1000
     _id = 'spUserExternalIdId'
     __tablename__ = 'spuserexternalid'
 
-    id = Column('id', types.Integer, primary_key=True)
+    spUserExternalIdId = Column('Spuserexternalidid', types.Integer, primary_key=True)
     provider = Column('Provider', types.String, index=False, unique=False, nullable=False)
     providerid = Column('ProviderId', types.String, index=False, unique=False, nullable=False)
     enabled = Column('Enabled', mysql_bit_type, index=False, unique=False, nullable=False)
     idtoken = Column('IdToken', types.String, index=False, unique=False, nullable=True)
 
-    specifyuser = Column('SpUserId', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
+    specifyuserID = Column('SpUserId', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
 
-    SpUserId = orm.relationship('SpecifyUser', foreign_keys='Spuserexternalid.SpUserId', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('None', uselist=True))
+    SpUser = orm.relationship('SpecifyUser', foreign_keys='Spuserexternalid.SpUserId', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('None', uselist=True))
 
 class Spattachmentdataset(Base):
     tableid = 1001
     _id = 'spAttachmentDataSetId'
     __tablename__ = 'spattachmentdataset'
 
-    id = Column('id', types.Integer, primary_key=True)
+    spAttachmentDataSetId = Column('Spattachmentdatasetid', types.Integer, primary_key=True)
     name = Column('Name', types.String, index=False, unique=False, nullable=False)
     columns = Column('Columns', types.JSON, index=False, unique=False, nullable=False)
     data = Column('Data', types.JSON, index=False, unique=False, nullable=True)
@@ -6361,62 +6361,62 @@ class Spattachmentdataset(Base):
     timestampcreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampmodified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
 
-    collection = Column('CollectionID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=True, unique=False)
-    specifyuser = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
-    createdbyagent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedbyagent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    collectionID = Column('CollectionID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=True, unique=False)
+    specifyuserID = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
+    createdbyagentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedbyagentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CollectionID = orm.relationship('Collection', foreign_keys='Spattachmentdataset.CollectionID', remote_side='Collection.UserGroupScopeId', backref=orm.backref('None', uselist=True))
-    SpecifyUserID = orm.relationship('SpecifyUser', foreign_keys='Spattachmentdataset.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('None', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Spattachmentdataset.CreatedByAgentID', remote_side='Agent.AgentID', backref=orm.backref('None', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Spattachmentdataset.ModifiedByAgentID', remote_side='Agent.AgentID', backref=orm.backref('None', uselist=True))
+    Collection = orm.relationship('Collection', foreign_keys='Spattachmentdataset.CollectionID', remote_side='Collection.UserGroupScopeId', backref=orm.backref('None', uselist=True))
+    SpecifyUser = orm.relationship('SpecifyUser', foreign_keys='Spattachmentdataset.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('None', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='Spattachmentdataset.CreatedByAgentID', remote_side='Agent.AgentID', backref=orm.backref('None', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='Spattachmentdataset.ModifiedByAgentID', remote_side='Agent.AgentID', backref=orm.backref('None', uselist=True))
 
 class UniquenessRule(Base):
     tableid = 1002
     _id = 'uniquenessRuleId'
     __tablename__ = 'uniquenessrule'
 
-    id = Column('UniquenessRuleID', types.Integer, primary_key=True)
+    uniquenessRuleId = Column('UniquenessRuleID', types.Integer, primary_key=True)
     isdatabaseconstraint = Column('IsDatabaseConstraint', mysql_bit_type, index=False, unique=False, nullable=False)
     modelname = Column('ModelName', types.String, index=True, unique=False, nullable=False)
 
-    discipline = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=True, unique=False)
+    disciplineID = Column('DisciplineID', types.Integer, ForeignKey('Discipline.UserGroupScopeId'), nullable=True, unique=False)
 
-    DisciplineID = orm.relationship('Discipline', foreign_keys='UniquenessRule.DisciplineID', remote_side='Discipline.UserGroupScopeId', backref=orm.backref('None', uselist=True))
+    Discipline = orm.relationship('Discipline', foreign_keys='UniquenessRule.DisciplineID', remote_side='Discipline.UserGroupScopeId', backref=orm.backref('None', uselist=True))
 
 class UniquenessRuleField(Base):
     tableid = 1003
     _id = 'uniquenessRuleFieldId'
     __tablename__ = 'uniquenessrule_field'
 
-    id = Column('UniquenessRule_FieldID', types.Integer, primary_key=True)
+    uniquenessRuleFieldId = Column('UniquenessRule_FieldID', types.Integer, primary_key=True)
     fieldpath = Column('FieldPath', types.Text, index=True, unique=False, nullable=False)
     isscope = Column('IsScope', mysql_bit_type, index=False, unique=False, nullable=False)
 
-    uniquenessrule = Column('UniquenessRuleID', types.Integer, ForeignKey('UniquenessRule.UniquenessRuleID'), nullable=False, unique=False)
+    uniquenessruleID = Column('UniquenessRuleID', types.Integer, ForeignKey('UniquenessRule.UniquenessRuleID'), nullable=False, unique=False)
 
-    UniquenessRuleID = orm.relationship('UniquenessRule', foreign_keys='UniquenessRuleField.UniquenessRuleID', remote_side='UniquenessRule.UniquenessRuleID', backref=orm.backref('None', uselist=True))
+    UniquenessRule = orm.relationship('UniquenessRule', foreign_keys='UniquenessRuleField.UniquenessRuleID', remote_side='UniquenessRule.UniquenessRuleID', backref=orm.backref('None', uselist=True))
 
 class Message(Base):
     tableid = 1004
     _id = 'messageId'
     __tablename__ = 'notifications_message'
 
-    id = Column('id', types.Integer, primary_key=True)
+    messageId = Column('Messageid', types.Integer, primary_key=True)
     timestampcreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     content = Column('Content', types.Text, index=False, unique=False, nullable=True)
     read = Column('Read', mysql_bit_type, index=False, unique=False, nullable=False)
 
-    user = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
+    userID = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
 
-    SpecifyUserID = orm.relationship('SpecifyUser', foreign_keys='Message.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('None', uselist=True))
+    SpecifyUser = orm.relationship('SpecifyUser', foreign_keys='Message.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('None', uselist=True))
 
 class Spmerging(Base):
     tableid = 1005
     _id = 'spMergingId'
     __tablename__ = 'spmerging'
 
-    id = Column('id', types.Integer, primary_key=True)
+    spMergingId = Column('Spmergingid', types.Integer, primary_key=True)
     name = Column('Name', types.String, index=False, unique=False, nullable=False)
     taskid = Column('TaskID', types.String, index=False, unique=False, nullable=False)
     mergingstatus = Column('MergingStatus', types.String, index=False, unique=False, nullable=False)
@@ -6428,50 +6428,50 @@ class Spmerging(Base):
     timestampcreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampmodified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
 
-    collection = Column('CollectionID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=True, unique=False)
-    specifyuser = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
-    createdbyagent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedbyagent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    collectionID = Column('CollectionID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=True, unique=False)
+    specifyuserID = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
+    createdbyagentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedbyagentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CollectionID = orm.relationship('Collection', foreign_keys='Spmerging.CollectionID', remote_side='Collection.UserGroupScopeId', backref=orm.backref('None', uselist=True))
-    SpecifyUserID = orm.relationship('SpecifyUser', foreign_keys='Spmerging.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('None', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Spmerging.CreatedByAgentID', remote_side='Agent.AgentID', backref=orm.backref('None', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Spmerging.ModifiedByAgentID', remote_side='Agent.AgentID', backref=orm.backref('None', uselist=True))
+    Collection = orm.relationship('Collection', foreign_keys='Spmerging.CollectionID', remote_side='Collection.UserGroupScopeId', backref=orm.backref('None', uselist=True))
+    SpecifyUser = orm.relationship('SpecifyUser', foreign_keys='Spmerging.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('None', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='Spmerging.CreatedByAgentID', remote_side='Agent.AgentID', backref=orm.backref('None', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='Spmerging.ModifiedByAgentID', remote_side='Agent.AgentID', backref=orm.backref('None', uselist=True))
 
 class UserPolicy(Base):
     tableid = 1006
     _id = 'userPolicyId'
     __tablename__ = 'spuserpolicy'
 
-    id = Column('id', types.Integer, primary_key=True)
+    userPolicyId = Column('Userpolicyid', types.Integer, primary_key=True)
     resource = Column('Resource', types.String, index=False, unique=False, nullable=False)
     action = Column('Action', types.String, index=False, unique=False, nullable=False)
 
-    collection = Column('CollectionID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=True, unique=False)
-    specifyuser = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
+    collectionID = Column('CollectionID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=True, unique=False)
+    specifyuserID = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
 
-    CollectionID = orm.relationship('Collection', foreign_keys='UserPolicy.CollectionID', remote_side='Collection.UserGroupScopeId', backref=orm.backref('None', uselist=True))
-    SpecifyUserID = orm.relationship('SpecifyUser', foreign_keys='UserPolicy.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('None', uselist=True))
+    Collection = orm.relationship('Collection', foreign_keys='UserPolicy.CollectionID', remote_side='Collection.UserGroupScopeId', backref=orm.backref('None', uselist=True))
+    SpecifyUser = orm.relationship('SpecifyUser', foreign_keys='UserPolicy.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('None', uselist=True))
 
 class Role(Base):
     tableid = 1007
     _id = 'roleId'
     __tablename__ = 'sprole'
 
-    id = Column('id', types.Integer, primary_key=True)
+    roleId = Column('Roleid', types.Integer, primary_key=True)
     name = Column('Name', types.String, index=False, unique=False, nullable=False)
     description = Column('Description', types.Text, index=False, unique=False, nullable=True)
 
-    collection = Column('CollectionID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=True, unique=False)
+    collectionID = Column('CollectionID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=True, unique=False)
 
-    CollectionID = orm.relationship('Collection', foreign_keys='Role.CollectionID', remote_side='Collection.UserGroupScopeId', backref=orm.backref('None', uselist=True))
+    Collection = orm.relationship('Collection', foreign_keys='Role.CollectionID', remote_side='Collection.UserGroupScopeId', backref=orm.backref('None', uselist=True))
 
 class LibraryRole(Base):
     tableid = 1008
     _id = 'libraryRoleId'
     __tablename__ = 'splibraryrole'
 
-    id = Column('id', types.Integer, primary_key=True)
+    libraryRoleId = Column('Libraryroleid', types.Integer, primary_key=True)
     name = Column('Name', types.String, index=False, unique=False, nullable=False)
     descr1iption = Column('Description', types.Text, index=False, unique=False, nullable=True)
 
@@ -6482,43 +6482,43 @@ class UserRole(Base):
     _id = 'userRoleId'
     __tablename__ = 'spuserrole'
 
-    id = Column('id', types.Integer, primary_key=True)
+    userRoleId = Column('Userroleid', types.Integer, primary_key=True)
 
-    specifyuser = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
-    role = Column('RoleID', types.Integer, ForeignKey('Role.RoleID'), nullable=False, unique=False)
+    specifyuserID = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
+    roleID = Column('RoleID', types.Integer, ForeignKey('Role.RoleID'), nullable=False, unique=False)
 
-    SpecifyUserID = orm.relationship('SpecifyUser', foreign_keys='UserRole.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('None', uselist=True))
-    RoleID = orm.relationship('Role', foreign_keys='UserRole.RoleID', remote_side='Role.RoleID', backref=orm.backref('None', uselist=True))
+    SpecifyUser = orm.relationship('SpecifyUser', foreign_keys='UserRole.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('None', uselist=True))
+    Role = orm.relationship('Role', foreign_keys='UserRole.RoleID', remote_side='Role.RoleID', backref=orm.backref('None', uselist=True))
 
 class RolePolicy(Base):
     tableid = 1010
     _id = 'rolePolicyId'
     __tablename__ = 'sprolepolicy'
 
-    id = Column('id', types.Integer, primary_key=True)
+    rolePolicyId = Column('Rolepolicyid', types.Integer, primary_key=True)
     resource = Column('Resource', types.String, index=False, unique=False, nullable=False)
     action = Column('Action', types.String, index=False, unique=False, nullable=False)
 
-    role = Column('RoleID', types.Integer, ForeignKey('Role.RoleID'), nullable=False, unique=False)
+    roleID = Column('RoleID', types.Integer, ForeignKey('Role.RoleID'), nullable=False, unique=False)
 
-    RoleID = orm.relationship('Role', foreign_keys='RolePolicy.RoleID', remote_side='Role.RoleID', backref=orm.backref('None', uselist=True))
+    Role = orm.relationship('Role', foreign_keys='RolePolicy.RoleID', remote_side='Role.RoleID', backref=orm.backref('None', uselist=True))
 
 class LibraryRolePolicy(Base):
     tableid = 1011
     _id = 'libraryRolePolicyId'
     __tablename__ = 'splibraryrolepolicy'
 
-    id = Column('id', types.Integer, primary_key=True)
+    libraryRolePolicyId = Column('Libraryrolepolicyid', types.Integer, primary_key=True)
     resource = Column('Resource', types.String, index=False, unique=False, nullable=False)
     action = Column('Action', types.String, index=False, unique=False, nullable=False)
 
-    libraryrole = Column('LibraryRoleID', types.Integer, ForeignKey('LibraryRole.LibraryRoleID'), nullable=False, unique=False)
+    libraryroleID = Column('LibraryRoleID', types.Integer, ForeignKey('LibraryRole.LibraryRoleID'), nullable=False, unique=False)
 
-    LibraryRoleID = orm.relationship('LibraryRole', foreign_keys='LibraryRolePolicy.LibraryRoleID', remote_side='LibraryRole.LibraryRoleID', backref=orm.backref('None', uselist=True))
+    LibraryRole = orm.relationship('LibraryRole', foreign_keys='LibraryRolePolicy.LibraryRoleID', remote_side='LibraryRole.LibraryRoleID', backref=orm.backref('None', uselist=True))
 
 class Spdataset(Base):
     tableid = 1012
-    _id = 'spDataSetId'
+    _id = 'id'
     __tablename__ = 'spdataset'
 
     id = Column('id', types.Integer, primary_key=True)
@@ -6534,15 +6534,15 @@ class Spdataset(Base):
     timestampcreated = Column('TimestampCreated', types.DateTime, index=False, unique=False, nullable=False)
     timestampmodified = Column('TimestampModified', types.DateTime, index=False, unique=False, nullable=True)
 
-    collection = Column('CollectionID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=True, unique=False)
-    specifyuser = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
-    createdbyagent = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
-    modifiedbyagent = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    collectionID = Column('CollectionID', types.Integer, ForeignKey('Collection.UserGroupScopeId'), nullable=True, unique=False)
+    specifyuserID = Column('SpecifyUserID', types.Integer, ForeignKey('SpecifyUser.SpecifyUserID'), nullable=False, unique=False)
+    createdbyagentID = Column('CreatedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
+    modifiedbyagentID = Column('ModifiedByAgentID', types.Integer, ForeignKey('Agent.AgentID'), nullable=True, unique=False)
 
-    CollectionID = orm.relationship('Collection', foreign_keys='Spdataset.CollectionID', remote_side='Collection.UserGroupScopeId', backref=orm.backref('None', uselist=True))
-    SpecifyUserID = orm.relationship('SpecifyUser', foreign_keys='Spdataset.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('None', uselist=True))
-    CreatedByAgentID = orm.relationship('Agent', foreign_keys='Spdataset.CreatedByAgentID', remote_side='Agent.AgentID', backref=orm.backref('None', uselist=True))
-    ModifiedByAgentID = orm.relationship('Agent', foreign_keys='Spdataset.ModifiedByAgentID', remote_side='Agent.AgentID', backref=orm.backref('None', uselist=True))
+    Collection = orm.relationship('Collection', foreign_keys='Spdataset.CollectionID', remote_side='Collection.UserGroupScopeId', backref=orm.backref('None', uselist=True))
+    SpecifyUser = orm.relationship('SpecifyUser', foreign_keys='Spdataset.SpecifyUserID', remote_side='SpecifyUser.SpecifyUserID', backref=orm.backref('None', uselist=True))
+    CreatedByAgent = orm.relationship('Agent', foreign_keys='Spdataset.CreatedByAgentID', remote_side='Agent.AgentID', backref=orm.backref('None', uselist=True))
+    ModifiedByAgent = orm.relationship('Agent', foreign_keys='Spdataset.ModifiedByAgentID', remote_side='Agent.AgentID', backref=orm.backref('None', uselist=True))
 
 classes = {
     'Accession': Accession,

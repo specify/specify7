@@ -122,15 +122,14 @@ def gen_relationship_code(datamodel, tabledef, reldef):
     if not hasattr(reldef, 'column'):
         return None
     foreign_tabledef = datamodel.get_table(reldef.relatedModelName)
-    if foreign_tabledef is None:
+    if foreign_tabledef is None or reldef.column is None:
         return None
     backref = ''
     if hasattr(reldef, 'otherSideName'):
         backref = f"backref=orm.backref('{reldef.otherSideName}', uselist={reldef.type != 'one-to-one'})"
-    if reldef.column is None:
-        return None
+    rel_name = reldef.column[:-2]
     code = (
-        f"{reldef.column} = orm.relationship("
+        f"{rel_name} = orm.relationship("
         f"'{reldef.relatedModelName}', "
         f"foreign_keys='{tabledef.name}.{reldef.column}', "
         f"remote_side='{foreign_tabledef.name}.{foreign_tabledef.idColumn}', "
@@ -179,7 +178,7 @@ def gen_sqlalchemy_table_classes_code(datamodel):
         code += f"{TAB1}tableid = {table.tableId}\n"
         code += f"{TAB1}_id = '{table.idFieldName}'\n"
         code += f"{TAB1}__tablename__ = '{table.table}'\n\n"
-        code += f"{TAB1}id = Column('id', types.Integer, primary_key=True)\n"
+        code += f"{TAB1}{table.idFieldName} = Column('{table.idFieldName.title()}', types.Integer, primary_key=True)\n"
         for field in table.fields:
             code += f"{TAB1}{field.name} = {gen_column_code(field)}\n"
         code += '\n'
@@ -187,7 +186,7 @@ def gen_sqlalchemy_table_classes_code(datamodel):
             if rel.type in ('many-to-one', 'one-to-one') and hasattr(rel, 'column'):
                 fk_code = gen_foreign_key_code(datamodel, rel)
                 if fk_code is not None:
-                    code += f"{TAB1}{rel.name} = {gen_foreign_key_code(datamodel, rel)}\n"
+                    code += f"{TAB1}{rel.name}ID = {gen_foreign_key_code(datamodel, rel)}\n"
                     # code += f"{TAB1}" # TODO: fix this
         code += '\n'
         for rel in table.relationships:
