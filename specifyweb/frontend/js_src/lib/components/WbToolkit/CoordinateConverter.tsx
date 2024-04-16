@@ -55,7 +55,7 @@ export function WbConvertCoordinates({
           hot={hot}
           onClose={closeConvertCoords}
         />
-      ): undefined}
+      ) : undefined}
     </>
   );
 }

@@ -33,13 +33,13 @@ export function WbUtilsComponent({
   cellCounts,
   utils,
   cells,
-  debounceRate
+  debounceRate,
 }: {
   readonly isUploaded: boolean;
   readonly cellCounts: WbCellCounts;
   readonly utils: WbUtils;
   readonly cells: WbCellMeta;
-  readonly debounceRate: number
+  readonly debounceRate: number;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
   const searchRef = React.useRef<HTMLInputElement | null>(null);
@@ -63,10 +63,7 @@ export function WbUtilsComponent({
             type="search"
             onKeyDown={_.debounce(
               (event: React.KeyboardEvent<HTMLInputElement>) =>
-                utils.searchCells(
-                  event,
-                  searchRef.current!
-                ),
+                utils.searchCells(event, searchRef.current!),
               debounceRate,
               true
             )}
@@ -293,7 +290,9 @@ export class WbUtils {
   }
 
   searchCells(
-    event: React.KeyboardEvent<HTMLInputElement> | { readonly key: 'SettingsChange' },
+    event:
+      | React.KeyboardEvent<HTMLInputElement>
+      | { readonly key: 'SettingsChange' },
     searchQueryElement: HTMLInputElement
   ) {
     if (this.workbench.hot === undefined) return;
@@ -436,11 +435,12 @@ export class WbUtils {
 
   toggleCellTypes(
     navigationType: keyof WbCellCounts,
-    action: 'add' | 'remove' | 'toggle' = 'toggle',
+    action: 'add' | 'remove' | 'toggle' = 'toggle'
   ): void {
     const groupName = camelToKebab(navigationType);
     const cssClassName = `wb-hide-${groupName}`;
-    const { current: spreadsheetContainer } = this.workbench.spreadsheetContainerRef;
+    const { current: spreadsheetContainer } =
+      this.workbench.spreadsheetContainerRef;
     if (spreadsheetContainer)
       spreadsheetContainer.classList[action](cssClassName);
   }

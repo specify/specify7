@@ -79,7 +79,7 @@ function WbSpreadsheetComponent({
   mappings,
   checkDeletedFail,
   spreadsheetChanged,
-  onClickDisambiguate: handleClickDisambiguate
+  onClickDisambiguate: handleClickDisambiguate,
 }: {
   readonly dataset: Dataset;
   readonly setHotTable: React.RefCallback<HotTable>;

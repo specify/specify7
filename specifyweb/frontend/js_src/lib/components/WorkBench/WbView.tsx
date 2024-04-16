@@ -311,13 +311,13 @@ export function WbView({
                   ]?.find(
                     ({ key, mappingPath }) =>
                       key === disambiguationMatches!.key &&
-                      typeof workbench.disambiguation.getDisambiguation(physicalRow)[
-                        mappingPathToString(mappingPath)
-                      ] !== 'number'
+                      typeof workbench.disambiguation.getDisambiguation(
+                        physicalRow
+                      )[mappingPathToString(mappingPath)] !== 'number'
                   )
                 )
                   continue;
-                  workbench.disambiguation.setDisambiguation(
+                workbench.disambiguation.setDisambiguation(
                   physicalRow,
                   disambiguationMatches!.mappingPath,
                   selected.id

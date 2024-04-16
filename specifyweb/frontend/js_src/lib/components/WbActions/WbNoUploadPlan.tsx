@@ -14,8 +14,8 @@ export function WbNoUploadPlan({
   datasetId,
   noUploadPlan,
   onOpenNoUploadPlan: handleOpenNoUploadPlan,
-  onCloseNoUploadPlan: handleCloseNoUploadPlan
-} : {
+  onCloseNoUploadPlan: handleCloseNoUploadPlan,
+}: {
   readonly isUploaded: boolean;
   readonly mappings: WbMapping | undefined;
   readonly datasetId: number;

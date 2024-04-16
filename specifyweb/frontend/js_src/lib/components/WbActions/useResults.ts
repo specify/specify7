@@ -1,14 +1,14 @@
-import React from "react";
-import Handsontable from "handsontable";
+import React from 'react';
+import Handsontable from 'handsontable';
 
-import { Workbench } from "../WorkBench/WbView";
-import { getHotPlugin } from "../WorkBench/handsontable";
-import { useBooleanState } from "../../hooks/useBooleanState";
+import { Workbench } from '../WorkBench/WbView';
+import { getHotPlugin } from '../WorkBench/handsontable';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 export function useResults({
   hot,
   workbench,
-  spreadsheetContainerRef
+  spreadsheetContainerRef,
 }: {
   readonly hot: Handsontable | undefined;
   readonly workbench: Workbench;
@@ -63,10 +63,7 @@ export function useResults({
       getHotPlugin(hot, 'hiddenRows').hideRows(rowsToHide);
       getHotPlugin(hot, 'hiddenColumns').hideColumns(colsToHide);
 
-      workbench.utils.toggleCellTypes(
-        'newCells',
-        'remove'
-      );
+      workbench.utils.toggleCellTypes('newCells', 'remove');
     } else {
       getHotPlugin(hot, 'hiddenRows').showRows(
         rowsToHide.filter((visualRow) => !initialHiddenRows.includes(visualRow))
@@ -78,6 +75,6 @@ export function useResults({
 
     hot.render();
   }, [showResults]);
-  
-  return { showResults, closeResults, toggleResults }
+
+  return { showResults, closeResults, toggleResults };
 }

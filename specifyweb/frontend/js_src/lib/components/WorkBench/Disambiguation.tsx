@@ -49,8 +49,14 @@ export function DisambiguationDialog({
             {commonText.apply()}
           </Button.Info>
           <Button.Info
-            disabled={selected === undefined || liveValidationStack.length !== 0}
-            title={liveValidationStack.length !== 0 ? wbText.applyAllUnavailable() : undefined}
+            disabled={
+              selected === undefined || liveValidationStack.length !== 0
+            }
+            title={
+              liveValidationStack.length !== 0
+                ? wbText.applyAllUnavailable()
+                : undefined
+            }
             onClick={(): void => {
               handleSelectedAll(selected!);
               handleClose();

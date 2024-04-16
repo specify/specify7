@@ -50,7 +50,8 @@ export function WbToolkit({
     ).catch(raise);
   };
 
-  const hasLocality = mappings !== undefined ? mappings.localityColumns.length > 0 : false;
+  const hasLocality =
+    mappings !== undefined ? mappings.localityColumns.length > 0 : false;
 
   return (
     <div

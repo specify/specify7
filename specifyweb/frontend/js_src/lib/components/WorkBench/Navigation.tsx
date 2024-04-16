@@ -1,14 +1,14 @@
-import React from "react";
+import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { icons } from '../Atoms/Icons';
 import { LocalizedString } from 'typesafe-i18n';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
-import { WbCellCounts } from "./CellMeta";
-import { WbUtils } from "./WbUtils";
-import { ReadOnlyContext } from "../Core/Contexts";
-import { wbText } from "../../localization/workbench";
+import { WbCellCounts } from './CellMeta';
+import { WbUtils } from './WbUtils';
+import { ReadOnlyContext } from '../Core/Contexts';
+import { wbText } from '../../localization/workbench';
 
 export function Navigation({
   name,
