@@ -405,14 +405,7 @@ export const getValidationAttributes = (parser: Parser): IR<string> => ({
       .filter((attribute) => parser[attribute as keyof Parser] !== undefined)
       .map((attribute) => [
         attribute,
-        // `${parser[attribute as keyof Parser] as string}`,
-        `${
-          attribute === 'step' &&
-          parser['step'] === undefined &&
-          parser['type'] === 'number'
-            ? '1'
-            : parser[attribute as keyof Parser]
-        }`,
+        `${parser[attribute as keyof Parser] as string}`,
       ])
   ),
 });
