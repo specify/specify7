@@ -83,7 +83,6 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
 
   const blockers = useAllSaveBlockers(resource, filterBlockers);
   const saveBlocked = blockers.length > 0;
-  console.log(blockers);
 
   const [isSaving, setIsSaving] = React.useState(false);
   const [shownBlocker, setShownBlocker] = React.useState<
