@@ -84,7 +84,7 @@ export function PickList({
             .flatMap((group) =>
               Array.isArray(group)
                 ? group.map(([name]) => name)
-                : Object.values(group)
+                : Object.keys(group)
             )
             .includes(value) ? undefined : (
             <option value={value}>{`${queryText.invalidPicklistValue({
