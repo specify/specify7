@@ -283,7 +283,7 @@ export function resolveParser(
     // Don't make checkboxes required
     required: fullField.isRequired === true && parser.type !== 'checkbox',
     maxLength: fullField.length,
-    step: parser.step ?? 'any',
+    step: field.type === 'java.math.BigDecimal' ? 'any' : parser.step,
     ...(typeof formatter === 'object'
       ? formatterToParser(field, formatter)
       : {}),
