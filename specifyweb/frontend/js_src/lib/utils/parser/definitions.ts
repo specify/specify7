@@ -57,7 +57,7 @@ export type Parser = Partial<{
   readonly min: number | string;
   // Number, or a string date in yyyy-mm-dd format
   readonly max: number | string;
-  readonly step: number;
+  readonly step: number | string;
   readonly placeholder: string;
   readonly pattern: RegExp;
   // Browsers use this as an error message when value does not match the pattern
@@ -283,6 +283,7 @@ export function resolveParser(
     // Don't make checkboxes required
     required: fullField.isRequired === true && parser.type !== 'checkbox',
     maxLength: fullField.length,
+    step: parser.step ?? 'any',
     ...(typeof formatter === 'object'
       ? formatterToParser(field, formatter)
       : {}),
