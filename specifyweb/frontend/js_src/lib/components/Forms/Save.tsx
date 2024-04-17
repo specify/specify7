@@ -196,7 +196,9 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const copyButton = (
     label: LocalizedString,
     description: LocalizedString,
-    handleClick: () => Promise<SpecifyResource<SCHEMA>>
+    handleClick: () =>
+      | Promise<SpecifyResource<SCHEMA>[]>
+      | Promise<SpecifyResource<SCHEMA>>
   ): JSX.Element => (
     <ButtonComponent
       className={saveBlocked ? '!cursor-not-allowed' : undefined}
@@ -205,7 +207,18 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       onClick={(): void => {
         // Scroll to the top of the form on clone
         smoothScroll(form, 0);
-        loading(handleClick().then(handleAdd));
+        // loading(handleClick().then(handleAdd));
+        loading(
+          handleClick().then((result) => {
+            if (Array.isArray(result)) {
+              result.forEach((newResource) => {
+                if (handleAdd) handleAdd(newResource);
+              });
+            } else {
+              if (handleAdd) handleAdd(result);
+            }
+          })
+        );
       }}
     >
       {label}
@@ -240,7 +253,28 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
             copyButton(
               formsText.carryForward(),
               formsText.carryForwardDescription(),
-              async () => resource.clone(false, carryForwardAmount)
+              // async () => {
+              //   return resource.clone(false);
+              // }
+              async () => {
+                const clones = [];
+                for (let i = 0; i < carryForwardAmount; i++) {
+                  clones.push(
+                    await resource
+                      .clone(false)
+                      .then(async (resource) => {
+                        const formatter = resource.specifyTable
+                          .strictGetLiteralField('catalogNumber')
+                          .getUiFormatter()!;
+                        const wildCard = formatter.valueOrWild();
+                        await resource.set('catalogNumber', wildCard as never);
+                        return resource;
+                      })
+                      .then((resource) => resource.save())
+                  );
+                }
+                return clones;
+              }
             )}
           {showAdd &&
             copyButton(

@@ -177,10 +177,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   viewUrl(): string;
   isNew(): boolean;
   isBeingInitialized(): boolean;
-  clone(
-    cloneAll: boolean,
-    bulkAmount: number
-  ): Promise<SpecifyResource<SCHEMA>>;
+  clone(cloneAll: boolean): Promise<SpecifyResource<SCHEMA>>;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   toJSON(): SerializedRecord<AnySchema>;
   getRelatedObjectCount(
