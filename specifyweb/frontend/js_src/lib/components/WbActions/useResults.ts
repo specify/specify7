@@ -1,9 +1,9 @@
+import type Handsontable from 'handsontable';
 import React from 'react';
-import Handsontable from 'handsontable';
 
-import { Workbench } from '../WorkBench/WbView';
-import { getHotPlugin } from '../WorkBench/handsontable';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { getHotPlugin } from '../WorkBench/handsontable';
+import type { Workbench } from '../WorkBench/WbView';
 
 export function useResults({
   hot,

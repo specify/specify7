@@ -13,7 +13,7 @@ import { overwriteReadOnly } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { schema } from '../DataModel/schema';
 import { getHotPlugin } from './handsontable';
-import { Workbench } from './WbView';
+import type { Workbench } from './WbView';
 
 export function getHotHooks(
   workbench: Workbench,
@@ -45,7 +45,7 @@ export function getHotHooks(
           : workbench.hot.toPhysicalColumn(visualCol);
       if (physicalCol >= workbench.dataset.columns.length) return;
       const metaArray = workbench.cells.cellMeta?.[physicalRow]?.[physicalCol];
-      if (workbench.cells.getCellMetaFromArray(metaArray!, 'isModified'))
+      if (workbench.cells.getCellMetaFromArray(metaArray, 'isModified'))
         workbench.cells.runMetaUpdateEffects(
           td,
           'isModified',
@@ -53,7 +53,7 @@ export function getHotHooks(
           visualRow,
           visualCol
         );
-      if (workbench.cells.getCellMetaFromArray(metaArray!, 'isNew'))
+      if (workbench.cells.getCellMetaFromArray(metaArray, 'isNew'))
         workbench.cells.runMetaUpdateEffects(
           td,
           'isNew',
@@ -61,7 +61,7 @@ export function getHotHooks(
           visualRow,
           visualCol
         );
-      if (workbench.cells.getCellMetaFromArray(metaArray!, 'isSearchResult'))
+      if (workbench.cells.getCellMetaFromArray(metaArray, 'isSearchResult'))
         workbench.cells.runMetaUpdateEffects(
           td,
           'isSearchResult',
@@ -82,7 +82,7 @@ export function getHotHooks(
       const visualCol = workbench.hot.propToCol(property);
       const physicalCol = workbench.hot.toPhysicalColumn(visualCol);
 
-      return workbench.mappings.defaultValues[physicalCol] ?? value;
+      return workbench.mappings?.defaultValues[physicalCol] ?? value;
     },
 
     afterValidate: (
@@ -117,7 +117,7 @@ export function getHotHooks(
                 })
               ),
             ]),
-        ...issues!.filter(
+        ...issues.filter(
           (issue) =>
             !issue.endsWith(
               whitespaceSensitive(
@@ -315,7 +315,7 @@ export function getHotHooks(
 
       workbench.cells.indexedCellMeta = undefined;
       addedRows
-        .filter((physicalRow) => physicalRow < workbench.cells!.cellMeta.length)
+        .filter((physicalRow) => physicalRow < workbench.cells.cellMeta.length)
         .forEach((physicalRow) =>
           workbench.cells?.cellMeta.splice(physicalRow, 0, [])
         );
@@ -330,7 +330,7 @@ export function getHotHooks(
       const removedRows = Array.from({ length: amount }, (_, index) =>
         workbench.hot!.toPhysicalRow(visualRowStart + index)
       )
-        .filter((physicalRow) => physicalRow < workbench.cells!.cellMeta.length)
+        .filter((physicalRow) => physicalRow < workbench.cells.cellMeta.length)
         // REFACTOR: use sortFunction here
         .sort()
         .reverse();
@@ -357,8 +357,6 @@ export function getHotHooks(
      */
     beforeColumnSort: (currentSortConfig, newSortConfig) => {
       workbench.cells.indexedCellMeta = undefined;
-
-      // if (wbView.coordinateConverterView) return false;
 
       if (
         workbench.mappings === undefined ||

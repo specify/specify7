@@ -9,10 +9,13 @@
 import React from 'react';
 import _ from 'underscore';
 
+import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import { f } from '../../utils/functools';
 import type { RA, WritableArray } from '../../utils/types';
 import { camelToKebab } from '../../utils/utils';
+import { Input } from '../Atoms/Form';
+import { ReadOnlyContext } from '../Core/Contexts';
 import { hasPermission } from '../Permissions/helpers';
 import type { WbSearchPreferences } from './AdvancedSearch';
 import {
@@ -22,11 +25,8 @@ import {
 import type { WbCellCounts, WbCellMeta } from './CellMeta';
 import { getHotPlugin } from './handsontable';
 import { getSelectedLast } from './hotHelpers';
-import type { Workbench } from './WbView';
-import { Input } from '../Atoms/Form';
-import { commonText } from '../../localization/common';
-import { ReadOnlyContext } from '../Core/Contexts';
 import { Navigation } from './Navigation';
+import type { Workbench } from './WbView';
 
 export function WbUtilsComponent({
   isUploaded,
@@ -54,9 +54,9 @@ export function WbUtilsComponent({
       <span className="contents" role="search">
         <div className="flex">
           <Input.Generic
-            forwardRef={searchRef}
             aria-label={commonText.searchQuery()}
             autoComplete="on"
+            forwardRef={searchRef}
             placeholder={commonText.search()}
             spellCheck
             title={commonText.searchQuery()}
@@ -72,16 +72,16 @@ export function WbUtilsComponent({
         {!isUploaded && hasPermission('/workbench/dataset', 'update') ? (
           <div className="flex">
             <Input.Generic
-              forwardRef={replaceRef}
               aria-label={wbText.replacementValue()}
               autoComplete="on"
+              disabled={isReadOnly}
+              forwardRef={replaceRef}
               placeholder={wbText.replace()}
               title={wbText.replacementValue()}
               type="search"
               onKeyDown={(event) =>
                 utils.replaceCells(event, replaceRef.current!)
               }
-              disabled={isReadOnly}
             />
           </div>
         ) : undefined}
@@ -95,11 +95,13 @@ export function WbUtilsComponent({
               cells.indexedCellMeta = undefined;
             }
             utils.searchPreferences = newSearchPreferences;
-            // TODO: figure out what searchCells with SettingsChange does
-            // if (utils.searchPreferences.search.liveUpdate)
-            //   utils.searchCells({
-            //     key: 'SettingsChange',
-            //   }).catch(softFail);
+            /*
+             * TODO: figure out what searchCells with SettingsChange does
+             * if (utils.searchPreferences.search.liveUpdate)
+             *   utils.searchCells({
+             *     key: 'SettingsChange',
+             *   }).catch(softFail);
+             */
           }}
         />
       </span>
@@ -156,27 +158,27 @@ export class WbUtils {
     matchCurrentCell = false,
     currentCell = undefined,
   }: {
-    type: keyof WbCellCounts;
-    direction: 'previous' | 'next';
-    currentCellPosition?: number;
-    totalCount?: number;
+    readonly type: keyof WbCellCounts;
+    readonly direction: 'next' | 'previous';
+    readonly currentCellPosition?: number;
+    readonly totalCount?: number;
     // If true and current cell is of correct type, don't navigate away
-    matchCurrentCell?: boolean;
+    readonly matchCurrentCell?: boolean;
     /*
      * Overwrite what is considered to be a current cell
      * Setting to [0,0] and matchCurrentCell=true allows navigation to the first
      * cell of type (used on hitting "Enter" in the Search Box)
      */
-    currentCell?: readonly [number, number] | undefined;
+    readonly currentCell?: readonly [number, number] | undefined;
   }):
-    | [
+    | readonly [
         {
           readonly visualRow: number;
           readonly visualCol: number;
         },
         number
       ]
-    | [undefined, number] {
+    | readonly [undefined, number] {
     const cellMetaObject = this.workbench.cells.getCellMetaObject();
     /*
      * The cellMetaObject is transposed if navigation direction is "Column
@@ -365,7 +367,7 @@ export class WbUtils {
           render = Boolean(cell);
         }
 
-        this.workbench.cells![render ? 'updateCellMeta' : 'setCellMeta'](
+        this.workbench.cells[render ? 'updateCellMeta' : 'setCellMeta'](
           physicalRow,
           physicalCol,
           'isSearchResult',
@@ -493,11 +495,11 @@ export class WbUtils {
     if (this.searchPreferences.replace.replaceMode === 'replaceAll') {
       // eslint-disable-next-line functional/prefer-readonly-type
       const modifications: WritableArray<[number, number, string]> = [];
-      Object.entries(this.workbench.cells!.cellMeta).forEach(
+      Object.entries(this.workbench.cells.cellMeta).forEach(
         ([physicalRow, metaRow]) =>
           Object.entries(metaRow).forEach(([physicalCol, metaArray]) => {
             if (
-              !this.workbench.cells!.getCellMetaFromArray(
+              !this.workbench.cells.getCellMetaFromArray(
                 metaArray,
                 'isSearchResult'
               )
@@ -533,8 +535,8 @@ export class WbUtils {
       const physicalCol = this.workbench.hot.toPhysicalColumn(currentCol);
       let nextCell = [currentRow, currentCol] as const;
       if (
-        !this.workbench.cells!.cellIsType(
-          this.workbench.cells!.cellMeta[physicalRow]?.[physicalCol],
+        !this.workbench.cells.cellIsType(
+          this.workbench.cells.cellMeta[physicalRow]?.[physicalCol],
           'searchResults'
         )
       ) {

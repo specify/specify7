@@ -1,9 +1,9 @@
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { Button } from '../Atoms/Button';
-import { wbText } from '../../localization/workbench';
 import { commonText } from '../../localization/common';
+import { wbText } from '../../localization/workbench';
+import { Button } from '../Atoms/Button';
 import { Dialog } from '../Molecules/Dialog';
 
 export function WbRevert({
@@ -27,8 +27,8 @@ export function WbRevert({
     <>
       <Button.Small
         aria-haspopup="dialog"
-        onClick={openRevert}
         disabled={!hasUnsavedChanges}
+        onClick={openRevert}
       >
         {wbText.revert()}
       </Button.Small>

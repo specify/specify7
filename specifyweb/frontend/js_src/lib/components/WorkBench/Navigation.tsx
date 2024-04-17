@@ -1,14 +1,14 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { icons } from '../Atoms/Icons';
-import { LocalizedString } from 'typesafe-i18n';
+import { wbText } from '../../localization/workbench';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
-import { WbCellCounts } from './CellMeta';
-import { WbUtils } from './WbUtils';
+import { icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
-import { wbText } from '../../localization/workbench';
+import type { WbCellCounts } from './CellMeta';
+import type { WbUtils } from './WbUtils';
 
 export function Navigation({
   name,
@@ -55,20 +55,20 @@ export function Navigation({
       <Button.Small
         className="brightness-80 hover:brightness-70 p-2 ring-0"
         data-navigation-direction="previous"
+        disabled={name !== 'newCells' && isReadOnly}
         variant="bg-inherit text-gray-800 dark:text-gray-100"
         onClick={handlePrevious}
-        disabled={name !== 'newCells' && isReadOnly}
       >
         {icons.chevronLeft}
       </Button.Small>
       <Button.Small
-        className={`
-            hover:brightness-70 grid grid-cols-[auto_1fr_auto_1fr_auto]
-            items-center ring-0
-            ${className.ariaHandled}
-            ${buttonIsPressed ? 'brightness-50' : ''}
-          `}
         aria-pressed={buttonIsPressed}
+        className={`
+          hover:brightness-70 grid grid-cols-[auto_1fr_auto_1fr_auto]
+          items-center ring-0
+          ${className.ariaHandled}
+          ${buttonIsPressed ? 'brightness-50' : ''}
+        `}
         title={wbText.clickToToggle()}
         variant="bg-inherit text-gray-800 dark:text-gray-100"
         onClick={handleTypeToggle}
@@ -79,10 +79,10 @@ export function Navigation({
       <Button.Small
         className="brightness-80 hover:brightness-70 p-2 ring-0"
         data-navigation-direction="next"
+        disabled={name !== 'newCells' && isReadOnly}
         type="button"
         variant="bg-inherit text-gray-800 dark:text-gray-100"
         onClick={handleNext}
-        disabled={name !== 'newCells' && isReadOnly}
       >
         {icons.chevronRight}
       </Button.Small>

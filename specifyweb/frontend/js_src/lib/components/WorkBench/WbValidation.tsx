@@ -19,10 +19,10 @@ import type { Workbench } from './WbView';
 type UploadResults = {
   readonly ambiguousMatches: WritableArray<
     WritableArray<{
-      physicalCols: RA<number>;
-      mappingPath: MappingPath;
-      ids: RA<number>;
-      key: string;
+      readonly physicalCols: RA<number>;
+      readonly mappingPath: MappingPath;
+      readonly ids: RA<number>;
+      readonly key: string;
     }>
   >;
   readonly recordCounts: Partial<Record<Lowercase<keyof Tables>, number>>;
@@ -80,7 +80,7 @@ export class WbValidation {
       recordCounts: {},
       newRecords: [],
     };
-    this.workbench.cells!.cellMeta = [];
+    this.workbench.cells.cellMeta = [];
 
     switch (this.validationMode) {
       case 'live': {
@@ -364,7 +364,7 @@ export class WbValidation {
   }
 
   getValidationResults(): void {
-    if (!this.workbench.mappings) return;
+    if (this.workbench.mappings === undefined) return;
 
     if (this.workbench.dataset.rowresults === null) {
       this.validationMode = 'off';

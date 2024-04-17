@@ -4,20 +4,20 @@
 
 import React from 'react';
 
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { wbPlanText } from '../../localization/wbPlan';
+import { wbText } from '../../localization/workbench';
 import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
+import { overwriteReadOnly } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { Dialog } from '../Molecules/Dialog';
 import { downloadFile } from '../Molecules/FilePicker';
 import type { UploadPlan } from '../WbPlanView/uploadPlanParser';
-import { overwriteReadOnly } from '../../utils/types';
 import type { Dataset } from '../WbPlanView/Wrapped';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { wbText } from '../../localization/workbench';
 
 export function WbRawPlan({
   dataset,

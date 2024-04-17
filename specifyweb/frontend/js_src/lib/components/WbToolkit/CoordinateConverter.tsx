@@ -1,6 +1,7 @@
 import type Handsontable from 'handsontable';
 import React from 'react';
 
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import { localityText } from '../../localization/locality';
@@ -12,13 +13,12 @@ import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Dialog } from '../Molecules/Dialog';
+import type { Dataset } from '../WbPlanView/Wrapped';
 import {
   getSelectedCells,
   getSelectedLast,
   setHotData,
 } from '../WorkBench/hotHelpers';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import type { Dataset } from '../WbPlanView/Wrapped';
 import type { WbMapping } from '../WorkBench/mapping';
 
 export function WbConvertCoordinates({
@@ -41,9 +41,9 @@ export function WbConvertCoordinates({
       <Button.Small
         aria-haspopup="dialog"
         aria-pressed={showConvertCoords}
+        disabled={!hasLocality}
         title={wbText.unavailableWithoutLocality()}
         onClick={openConvertCoords}
-        disabled={!hasLocality}
       >
         {wbText.convertCoordinates()}
       </Button.Small>

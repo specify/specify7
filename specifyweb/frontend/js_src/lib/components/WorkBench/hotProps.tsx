@@ -1,13 +1,13 @@
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 
-import { userPreferences } from '../Preferences/userPreferences';
-import { Dataset } from '../WbPlanView/Wrapped';
-import { WbMapping } from './mapping';
-import { f } from '../../utils/functools';
-import { getTable } from '../DataModel/tables';
 import { wbPlanText } from '../../localization/wbPlan';
+import { f } from '../../utils/functools';
 import { icons } from '../Atoms/Icons';
+import { getTable } from '../DataModel/tables';
+import { userPreferences } from '../Preferences/userPreferences';
+import type { Dataset } from '../WbPlanView/Wrapped';
+import type { WbMapping } from './mapping';
 
 const comments = { displayDelay: 100 };
 
@@ -33,14 +33,14 @@ function ColumnHeader({
     <div className="flex items-center gap-1 pl-4">
       {isMapped ? (
         <img
-          className="w-table-icon h-table-icon"
           alt={tableLabel}
+          className="w-table-icon h-table-icon"
           src={tableIcon}
         />
       ) : (
         <span
-          className="text-red-600"
           aria-label={wbPlanText.unmappedColumn()}
+          className="text-red-600"
           title={wbPlanText.unmappedColumn()}
         >
           {icons.ban}
@@ -97,10 +97,10 @@ export function getHotProps({
       // REFACTOR: use new table icons
       return ReactDOMServer.renderToString(
         <ColumnHeader
-          isMapped={isMapped}
-          tableLabel={tableLabel}
-          tableIcon={tableIcon}
           columnName={dataset.columns[physicalCol]}
+          isMapped={isMapped}
+          tableIcon={tableIcon}
+          tableLabel={tableLabel}
         />
       );
     },
@@ -113,15 +113,13 @@ export function getHotProps({
     'enterBeginsEditing'
   );
 
-  const hiddenColumns = React.useMemo(() => {
-    return {
+  const hiddenColumns = React.useMemo(() => ({
       // Hide the disambiguation column
       columns: [dataset.columns.length],
       indicators: false,
       // TODO: Typing possibly doesn't match for handsontable 12.1.0, fixed in 14
       copyPasteEnabled: false,
-    };
-  }, []);
+    }), []);
 
   const minSpareRows = userPreferences.get(
     'workBench',

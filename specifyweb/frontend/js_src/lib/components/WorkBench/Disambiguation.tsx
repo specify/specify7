@@ -4,6 +4,7 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import type { RA } from '../../utils/types';
+import type { WritableArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import type { AnySchema } from '../DataModel/helperTypes';
@@ -13,7 +14,6 @@ import { isTreeTable } from '../InitialContext/treeRanks';
 import { Dialog } from '../Molecules/Dialog';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { hasTablePermission } from '../Permissions/helpers';
-import { WritableArray } from '../../utils/types';
 
 export function DisambiguationDialog({
   matches,
@@ -53,9 +53,9 @@ export function DisambiguationDialog({
               selected === undefined || liveValidationStack?.length !== 0
             }
             title={
-              liveValidationStack?.length !== 0
-                ? wbText.applyAllUnavailable()
-                : undefined
+              liveValidationStack?.length === 0
+                ? undefined
+                : wbText.applyAllUnavailable()
             }
             onClick={(): void => {
               handleSelectedAll(selected!);

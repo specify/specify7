@@ -1,16 +1,16 @@
+import type Handsontable from 'handsontable';
 import React from 'react';
-import Handsontable from 'handsontable';
 
-import { getSelectedLocalities } from './GeoLocate';
-import { getLocalitiesDataFromSpreadsheet } from '../Leaflet/wbLocalityDataExtractor';
-import { getSelectedLast, getVisualHeaders } from '../WorkBench/hotHelpers';
-import { LeafletMap } from '../Leaflet/Map';
 import { useBooleanState } from '../../hooks/useBooleanState';
-import type { Dataset } from '../WbPlanView/Wrapped';
-import type { WbMapping } from '../WorkBench/mapping';
-import { Button } from '../Atoms/Button';
 import { localityText } from '../../localization/locality';
 import { wbText } from '../../localization/workbench';
+import { Button } from '../Atoms/Button';
+import { LeafletMap } from '../Leaflet/Map';
+import { getLocalitiesDataFromSpreadsheet } from '../Leaflet/wbLocalityDataExtractor';
+import type { Dataset } from '../WbPlanView/Wrapped';
+import { getSelectedLast, getVisualHeaders } from '../WorkBench/hotHelpers';
+import type { WbMapping } from '../WorkBench/mapping';
+import { getSelectedLocalities } from './GeoLocate';
 
 export function WbLeafletMap({
   hasLocality,
@@ -48,9 +48,9 @@ export function WbLeafletMap({
       <Button.Small
         aria-haspopup="dialog"
         aria-pressed={showLeafletMap}
+        disabled={!hasLocality}
         title={wbText.unavailableWithoutLocality()}
         onClick={openLeafletMap}
-        disabled={!hasLocality}
       >
         {localityText.geoMap()}
       </Button.Small>

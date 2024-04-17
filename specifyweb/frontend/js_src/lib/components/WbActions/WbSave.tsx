@@ -1,17 +1,17 @@
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { Button } from '../Atoms/Button';
-import { className } from '../Atoms/className';
-import { Dialog } from '../Molecules/Dialog';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
-import { loadingBar } from '../Molecules';
-import { Workbench } from '../WorkBench/WbView';
-import { overwriteReadOnly } from '../../utils/types';
-import { ping } from '../../utils/ajax/ping';
 import { Http } from '../../utils/ajax/definitions';
+import { ping } from '../../utils/ajax/ping';
+import { overwriteReadOnly } from '../../utils/types';
+import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
 import { LoadingContext } from '../Core/Contexts';
+import { loadingBar } from '../Molecules';
+import { Dialog } from '../Molecules/Dialog';
+import type { Workbench } from '../WorkBench/WbView';
 
 export function WbSave({
   workbench,
@@ -47,8 +47,10 @@ export function WbSave({
         .then(() => {
           handleSpreadsheetUpToDate();
           workbench.cells.cellMeta = [];
-          // TODO: Figure out how to rework searchCells for SettingsChange as input
-          // workbench.utils?.searchCells({ key: 'SettingsChange' });
+          /*
+           * TODO: Figure out how to rework searchCells for SettingsChange as input
+           * workbench.utils?.searchCells({ key: 'SettingsChange' });
+           */
           workbench.hot?.render();
           closeProgressBar();
         })
@@ -59,9 +61,9 @@ export function WbSave({
     <>
       <Button.Small
         aria-haspopup="dialog"
+        disabled={!hasUnsavedChanges}
         variant={className.saveButton}
         onClick={handleSave}
-        disabled={!hasUnsavedChanges}
       >
         {commonText.save()}
       </Button.Small>

@@ -1,13 +1,13 @@
 import React from 'react';
 
-import type { WbMapping } from '../WorkBench/mapping';
-import type { WbStatus } from '../WorkBench/WbView';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { commonText } from '../../localization/common';
+import { wbText } from '../../localization/workbench';
 import { Button } from '../Atoms/Button';
 import { Dialog } from '../Molecules/Dialog';
-import { wbText } from '../../localization/workbench';
-import { commonText } from '../../localization/common';
-import { WbCellCounts } from '../WorkBench/CellMeta';
+import type { WbCellCounts } from '../WorkBench/CellMeta';
+import type { WbMapping } from '../WorkBench/mapping';
+import type { WbStatus } from '../WorkBench/WbView';
 
 export function WbUpload({
   hasUnsavedChanges,
@@ -41,7 +41,6 @@ export function WbUpload({
     <>
       <Button.Small
         aria-haspopup="dialog"
-        onClick={handleUpload}
         disabled={hasUnsavedChanges || cellCounts.invalidCells > 0}
         title={
           hasUnsavedChanges
@@ -50,6 +49,7 @@ export function WbUpload({
             ? wbText.uploadUnavailableWhileHasErrors()
             : ''
         }
+        onClick={handleUpload}
       >
         {wbText.upload()}
       </Button.Small>

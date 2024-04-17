@@ -1,24 +1,24 @@
 import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
-import { formData } from '../../utils/ajax/helpers';
-import type { RA } from '../../utils/types';
-import { Form, Label, Select } from '../Atoms/Form';
-import { fetchCollection } from '../DataModel/collection';
-import type { SerializedResource } from '../DataModel/helperTypes';
-import { userInformation } from '../InitialContext/userInformation';
-import type { SpecifyUser } from '../DataModel/types';
-import { useId } from '../../hooks/useId';
-import type { Dataset } from '../WbPlanView/Wrapped';
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { ping } from '../../utils/ajax/ping';
-import { Submit } from '../Atoms/Submit';
-import { LoadingContext } from '../Core/Contexts';
-import { Dialog } from '../Molecules/Dialog';
-import { unsafeNavigate } from '../Router/Router';
-import { Button } from '../Atoms/Button';
+import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
+import { formData } from '../../utils/ajax/helpers';
+import { ping } from '../../utils/ajax/ping';
+import type { RA } from '../../utils/types';
+import { Button } from '../Atoms/Button';
+import { Form, Label, Select } from '../Atoms/Form';
+import { Submit } from '../Atoms/Submit';
+import { LoadingContext } from '../Core/Contexts';
+import { fetchCollection } from '../DataModel/collection';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SpecifyUser } from '../DataModel/types';
+import { userInformation } from '../InitialContext/userInformation';
+import { Dialog } from '../Molecules/Dialog';
+import { unsafeNavigate } from '../Router/Router';
+import type { Dataset } from '../WbPlanView/Wrapped';
 
 export function WbChangeOwner({
   hasUnsavedChanges,
@@ -34,9 +34,9 @@ export function WbChangeOwner({
       <Button.Small
         aria-haspopup="dialog"
         aria-pressed={showChangeOwner}
-        onClick={openChangeOwner}
         disabled={hasUnsavedChanges}
         title={hasUnsavedChanges ? wbText.unavailableWhileEditing() : ''}
+        onClick={openChangeOwner}
       >
         {wbText.changeOwner()}
       </Button.Small>

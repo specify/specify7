@@ -11,34 +11,13 @@ import { f } from '../../utils/functools';
 import type { GetSet } from '../../utils/types';
 import { className } from '../Atoms/className';
 import { LoadingContext } from '../Core/Contexts';
-import { LoadingScreen } from '../Molecules/Dialog';
 import { useMenuItem } from '../Header/MenuContext';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
+import { LoadingScreen } from '../Molecules/Dialog';
 import { Dialog } from '../Molecules/Dialog';
 import { NotFoundView } from '../Router/NotFoundView';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { WbView } from './WbView';
-
-const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
-
-const fetchDataSet = async (
-  datasetId: number | undefined
-): Promise<Dataset | undefined> =>
-  typeof datasetId === 'number'
-    ? ajax<Dataset>(`/api/workbench/dataset/${datasetId}/`, {
-        headers: { Accept: 'application/json' },
-      }).then(({ data }) => data)
-    : undefined;
-
-// BUG: intercept 403 (if dataset has been transferred to another user)
-function useDataSet(
-  datasetId: number | undefined
-): GetSet<Dataset | undefined> {
-  return useAsyncState(
-    React.useCallback(async () => fetchDataSet(datasetId), [datasetId]),
-    true
-  );
-}
 
 export function WorkBench(): JSX.Element {
   useMenuItem('workBench');
@@ -51,17 +30,16 @@ export function WorkBench(): JSX.Element {
   useErrorContext('dataSet', dataset);
   const loading = React.useContext(LoadingContext);
   const [isDeleted, handleDeleted] = useBooleanState();
-  // TODO: figure out how handleDeletedConfirmation was being used in Backbone. possibly not used at all
-  // @ts-ignore
+  // @ts-ignore figure out how handleDeletedConfirmation was being used in Backbone. possibly not used at all
   const [isDeletedConfirmation, handleDeletedConfirmation] = useBooleanState();
 
   const navigate = useNavigate();
   const spreadsheetContainerRef = React.useRef<HTMLElement>(null);
 
-  if (!dataset || !treeRanksLoaded) return <LoadingScreen />;
+  if (dataset === undefined || !treeRanksLoaded) return <LoadingScreen />;
 
   const triggerDatasetRefresh = () => {
-    loading(fetchDataSet(dataset!.id).then(setDataSet));
+    loading(fetchDataSet(dataset.id).then(setDataSet));
   };
 
   return datasetId === undefined ? (
@@ -84,11 +62,33 @@ export function WorkBench(): JSX.Element {
       >
         <WbView
           dataset={dataset}
-          onDatasetDeleted={handleDeleted}
-          triggerDatasetRefresh={triggerDatasetRefresh}
+          key={dataset.id}
           spreadsheetContainerRef={spreadsheetContainerRef}
+          triggerDatasetRefresh={triggerDatasetRefresh}
+          onDatasetDeleted={handleDeleted}
         />
       </section>
     </div>
   );
 }
+
+const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
+
+// BUG: intercept 403 (if dataset has been transferred to another user)
+function useDataSet(
+  datasetId: number | undefined
+): GetSet<Dataset | undefined> {
+  return useAsyncState(
+    React.useCallback(async () => fetchDataSet(datasetId), [datasetId]),
+    true
+  );
+}
+
+const fetchDataSet = async (
+  datasetId: number | undefined
+): Promise<Dataset | undefined> =>
+  typeof datasetId === 'number'
+    ? ajax<Dataset>(`/api/workbench/dataset/${datasetId}/`, {
+        headers: { Accept: 'application/json' },
+      }).then(({ data }) => data)
+    : undefined;

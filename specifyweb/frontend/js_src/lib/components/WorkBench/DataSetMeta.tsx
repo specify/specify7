@@ -1,6 +1,6 @@
+import type Handsontable from 'handsontable';
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
-import Handsontable from 'handsontable';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
@@ -362,7 +362,6 @@ export function DataSetName({
 
   return (
     <div className="contents">
-      {' '}
       <h2 className="flex gap-1 overflow-y-auto">
         {dataset.uploadplan !== null && (
           <TableIcon label name={dataset.uploadplan.baseTableName} />

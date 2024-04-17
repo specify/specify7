@@ -1,24 +1,24 @@
+import type Handsontable from 'handsontable';
 import React from 'react';
-import Handsontable from 'handsontable';
 
-import { type RA } from '../../utils/types';
-import { MappingPath } from '../WbPlanView/Mapper';
-import type { Collection } from '../DataModel/specifyTable';
-import { AnySchema } from '../DataModel/helperTypes';
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { getSelectedLast } from './hotHelpers';
-import { getTableFromMappingPath } from '../WbPlanView/navigator';
-import { hasTablePermission } from '../Permissions/helpers';
-import { strictGetTable } from '../DataModel/tables';
-import { WbMapping } from './mapping';
-import { WbValidation } from './WbValidation';
-import { Dialog } from '../Molecules/Dialog';
-import { wbText } from '../../localization/workbench';
 import { commonText } from '../../localization/common';
-import { DisambiguationDialog } from './Disambiguation';
-import { Disambiguation } from './DisambiguationLogic';
-import { mappingPathToString } from '../WbPlanView/mappingHelpers';
+import { wbText } from '../../localization/workbench';
+import { type RA } from '../../utils/types';
 import { LoadingContext } from '../Core/Contexts';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { Collection } from '../DataModel/specifyTable';
+import { strictGetTable } from '../DataModel/tables';
+import { Dialog } from '../Molecules/Dialog';
+import { hasTablePermission } from '../Permissions/helpers';
+import type { MappingPath } from '../WbPlanView/Mapper';
+import { mappingPathToString } from '../WbPlanView/mappingHelpers';
+import { getTableFromMappingPath } from '../WbPlanView/navigator';
+import { DisambiguationDialog } from './Disambiguation';
+import type { Disambiguation } from './DisambiguationLogic';
+import { getSelectedLast } from './hotHelpers';
+import type { WbMapping } from './mapping';
+import type { WbValidation } from './WbValidation';
 
 type DisambiguationMatches = {
   readonly physicalCols: RA<number>;
@@ -106,8 +106,8 @@ export function useDisambiguationDialog({
       )}
       {disambiguationDialog && (
         <DisambiguationDialog
-          matches={disambiguationResource!.models}
           liveValidationStack={validation.liveValidationStack}
+          matches={disambiguationResource!.models}
           onClose={closeDisambiguation}
           onSelected={(selected) => {
             disambiguation.setDisambiguation(

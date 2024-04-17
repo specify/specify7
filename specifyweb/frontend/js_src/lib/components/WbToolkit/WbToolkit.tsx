@@ -1,22 +1,22 @@
+import type Handsontable from 'handsontable';
 import React from 'react';
-import Handsontable from 'handsontable';
 
-import { hasPermission, hasTablePermission } from '../Permissions/helpers';
-import { WbChangeOwner } from './ChangeOwner';
-import { WbConvertCoordinates } from './CoordinateConverter';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { raise } from '../Errors/Crash';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { downloadDataSet } from '../WorkBench/helpers';
 import type { WbMapping } from '../WorkBench/mapping';
+import { WbChangeOwner } from './ChangeOwner';
+import { WbConvertCoordinates } from './CoordinateConverter';
 import { WbRawPlan } from './DevShowPlan';
 import { WbGeoLocate } from './GeoLocate';
 import { WbLeafletMap } from './WbLeafletMap';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
 
 export function WbToolkit({
   dataset,
@@ -51,7 +51,7 @@ export function WbToolkit({
   };
 
   const hasLocality =
-    mappings !== undefined ? mappings.localityColumns.length > 0 : false;
+    mappings === undefined ? false : mappings.localityColumns.length > 0;
 
   return (
     <div
@@ -61,26 +61,24 @@ export function WbToolkit({
     >
       {hasPermission('/workbench/dataset', 'transfer') &&
       hasTablePermission('SpecifyUser', 'read') ? (
-        <>
-          <ErrorBoundary dismissible>
+        <ErrorBoundary dismissible>
             <WbChangeOwner
-              hasUnsavedChanges={hasUnsavedChanges}
               dataset={dataset}
+              hasUnsavedChanges={hasUnsavedChanges}
             />
           </ErrorBoundary>
-        </>
       ) : undefined}
       <ErrorBoundary dismissible>
         <WbRawPlan
           dataset={dataset}
-          onDatasetDeleted={handleDatasetDeleted}
           triggerDatasetRefresh={triggerDatasetRefresh}
+          onDatasetDeleted={handleDatasetDeleted}
         />
       </ErrorBoundary>
       <Button.Small
-        onClick={handleExport}
         disabled={hasUnsavedChanges}
         title={hasUnsavedChanges ? wbText.unavailableWhileEditing() : ''}
+        onClick={handleExport}
       >
         {commonText.export()}
       </Button.Small>
@@ -89,18 +87,18 @@ export function WbToolkit({
         <>
           <ErrorBoundary dismissible>
             <WbConvertCoordinates
-              dataset={dataset}
               data={data}
-              mappings={mappings}
-              hot={hot}
+              dataset={dataset}
               hasLocality={hasLocality}
+              hot={hot}
+              mappings={mappings}
             />
           </ErrorBoundary>
           <ErrorBoundary dismissible>
             <WbGeoLocate
+              dataset={dataset}
               hasLocality={hasLocality}
               hot={hot}
-              dataset={dataset}
               mappings={mappings}
             />
           </ErrorBoundary>
@@ -108,9 +106,9 @@ export function WbToolkit({
       )}
       <ErrorBoundary dismissible>
         <WbLeafletMap
+          dataset={dataset}
           hasLocality={hasLocality}
           hot={hot}
-          dataset={dataset}
           mappings={mappings}
         />
       </ErrorBoundary>

@@ -1,7 +1,10 @@
 import type Handsontable from 'handsontable';
 import React from 'react';
 
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
+import { localityText } from '../../localization/locality';
+import { wbText } from '../../localization/workbench';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
@@ -13,16 +16,13 @@ import {
 } from '../Leaflet/wbLocalityDataExtractor';
 import type { GeoLocatePayload } from '../Molecules/GeoLocate';
 import { GenericGeoLocate } from '../Molecules/GeoLocate';
+import type { Dataset } from '../WbPlanView/Wrapped';
 import {
   getSelectedRegions,
   getVisualHeaders,
   setHotData,
 } from '../WorkBench/hotHelpers';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import type { Dataset } from '../WbPlanView/Wrapped';
 import type { WbMapping } from '../WorkBench/mapping';
-import { wbText } from '../../localization/workbench';
-import { localityText } from '../../localization/locality';
 
 export function WbGeoLocate({
   hasLocality,
@@ -41,9 +41,9 @@ export function WbGeoLocate({
       <Button.Small
         aria-haspopup="dialog"
         aria-pressed={showGeoLocate}
+        disabled={!hasLocality}
         title={wbText.unavailableWithoutLocality()}
         onClick={openGeoLocate}
-        disabled={!hasLocality}
       >
         {localityText.geoLocate()}
       </Button.Small>

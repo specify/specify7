@@ -12,10 +12,11 @@
 
 import '../../../css/workbench.css';
 
+import type { HotTable } from '@handsontable/react';
+import type Handsontable from 'handsontable';
 import React from 'react';
-import Handsontable from 'handsontable';
-import { HotTable } from '@handsontable/react';
 
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { wbPlanText } from '../../localization/wbPlan';
 import { Http } from '../../utils/ajax/definitions';
@@ -23,40 +24,40 @@ import type { GetSet, RA } from '../../utils/types';
 import { clamp } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
+import { ReadOnlyContext } from '../Core/Contexts';
 import { hasPermission } from '../Permissions/helpers';
+import { WbActions } from '../WbActions';
+import { useResults } from '../WbActions/useResults';
 import type { Dataset } from '../WbPlanView/Wrapped';
-import { WbCellCounts, WbCellMeta } from './CellMeta';
+import { WbToolkit } from '../WbToolkit/WbToolkit';
+import type { WbCellCounts} from './CellMeta';
+import { WbCellMeta } from './CellMeta';
+import { DataSetName } from './DataSetMeta';
 import { Disambiguation } from './DisambiguationLogic';
 import type { WbMapping } from './mapping';
 import { parseWbMappings } from './mapping';
 import { WbUploaded } from './Results';
-import { WbActions } from '../WbActions/WbActions';
+import { useDisambiguationDialog } from './useDisambiguationDialog';
+import { WbSpreadsheet } from './WbSpreadsheet';
 import { WbUtils, WbUtilsComponent } from './WbUtils';
 import { WbValidation } from './WbValidation';
-import { DataSetName } from './DataSetMeta';
-import { WbSpreadsheet } from './WbSpreadsheet';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { WbToolkit } from '../WbToolkit/WbToolkit';
-import { ReadOnlyContext } from '../Core/Contexts';
-import { useResults } from '../WbActions/useResults';
-import { useDisambiguationDialog } from './useDisambiguationDialog';
 
 export type WbStatus = 'unupload' | 'upload' | 'validate';
 
 export type Workbench = {
-  dataset: Dataset;
+  readonly dataset: Dataset;
   cells: WbCellMeta;
   disambiguation: Disambiguation;
   validation: WbValidation;
-  data: RA<RA<string | null>>;
-  hot: Handsontable | undefined;
-  throttleRate: number;
-  mappings: WbMapping;
+  readonly data: RA<RA<string | null>>;
+  readonly hot: Handsontable | undefined;
+  readonly throttleRate: number;
+  readonly mappings: WbMapping | undefined;
   utils: WbUtils;
-  cellCounts: GetSet<WbCellCounts>;
-  spreadsheetContainerRef: React.RefObject<HTMLElement>;
+  readonly cellCounts: GetSet<WbCellCounts>;
+  readonly spreadsheetContainerRef: React.RefObject<HTMLElement>;
   undoRedoIsHandled: boolean;
-  spreadsheetChanged: () => void;
+  readonly spreadsheetChanged: () => void;
 };
 
 export function WbView({
@@ -81,10 +82,8 @@ export function WbView({
   const [hotTable, setHotTable] = React.useState<HotTable | null>(null);
   const hot = hotTable?.hotInstance ?? undefined;
 
-  const isUploaded = React.useMemo<boolean>(
-    () => dataset.uploadresult !== null && dataset.uploadresult.success,
-    [dataset]
-  );
+  const isUploaded = dataset.uploadresult !== null && dataset.uploadresult.success;
+  const isAlreadyReadOnly = React.useContext(ReadOnlyContext);
 
   const mappings = React.useMemo(
     (): WbMapping | undefined => parseWbMappings(dataset),
@@ -107,8 +106,8 @@ export function WbView({
     const workbench: Workbench = {
       data,
       dataset,
-      hot: hot,
-      mappings: mappings!,
+      hot,
+      mappings,
       throttleRate,
       cells: undefined!,
       disambiguation: undefined!,
@@ -131,7 +130,7 @@ export function WbView({
     return statusCode === Http.NOT_FOUND;
   }, []);
 
-  const isMapped = Boolean(dataset.uploadplan);
+  const isMapped = mappings !== undefined;
   const canUpdate = hasPermission('/workbench/dataset', 'update');
 
   const [showToolkit, _openToolkit, _closeToolkit, toggleToolkit] =
@@ -152,7 +151,7 @@ export function WbView({
     });
 
   return (
-    <ReadOnlyContext.Provider value={isUploaded || showResults || !canUpdate}>
+    <ReadOnlyContext.Provider value={isAlreadyReadOnly || isUploaded || showResults || !canUpdate}>
       <div
         className="flex items-center justify-between gap-x-1 gap-y-2 whitespace-nowrap"
         role="toolbar"
@@ -172,40 +171,40 @@ export function WbView({
           </Link.Small>
         ) : undefined}
         <WbActions
+          checkDeletedFail={checkDeletedFail}
           dataset={dataset}
           hasUnsavedChanges={hasUnsavedChanges}
-          isUploaded={isUploaded}
           isResultsOpen={showResults}
-          onDatasetRefresh={triggerDatasetRefresh}
+          isUploaded={isUploaded}
           mappings={mappings}
-          checkDeletedFail={checkDeletedFail}
-          onSpreadsheetUpToDate={spreadsheetUpToDate}
           workbench={workbench}
+          onDatasetRefresh={triggerDatasetRefresh}
+          onSpreadsheetUpToDate={spreadsheetUpToDate}
           onToggleResults={toggleResults}
         />
       </div>
       {showToolkit && typeof hot === 'object' ? (
         <WbToolkit
+          data={data}
           dataset={dataset}
+          hasUnsavedChanges={hasUnsavedChanges}
           hot={hot}
           mappings={mappings}
-          data={data}
-          onDatasetDeleted={handleDatasetDeleted}
-          hasUnsavedChanges={hasUnsavedChanges}
           triggerDatasetRefresh={triggerDatasetRefresh}
+          onDatasetDeleted={handleDatasetDeleted}
         />
       ) : undefined}
       <div className="flex flex-1 gap-4 overflow-hidden">
         <WbSpreadsheet
+          checkDeletedFail={checkDeletedFail}
+          data={data}
           dataset={dataset}
-          setHotTable={setHotTable}
           hot={hot}
           isUploaded={isUploaded}
-          data={data}
-          workbench={workbench}
           mappings={mappings}
-          checkDeletedFail={checkDeletedFail}
+          setHotTable={setHotTable}
           spreadsheetChanged={spreadsheetChanged}
+          workbench={workbench}
           onClickDisambiguate={openDisambiguationDialog}
         />
         {showResults ? (
@@ -222,11 +221,11 @@ export function WbView({
       </div>
       {disambiguationDialogs}
       <WbUtilsComponent
-        isUploaded={isUploaded}
         cellCounts={cellCounts}
-        utils={workbench.utils}
         cells={workbench.cells}
         debounceRate={throttleRate}
+        isUploaded={isUploaded}
+        utils={workbench.utils}
       />
     </ReadOnlyContext.Provider>
   );

@@ -15,9 +15,9 @@ import { Button } from '../Atoms/Button';
 import { formatNumber } from '../Atoms/Internationalization';
 import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { TableIcon } from '../Molecules/TableIcon';
 import { CreateRecordSetButton } from './RecordSet';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
 
 export function WbUploaded({
   recordCounts,

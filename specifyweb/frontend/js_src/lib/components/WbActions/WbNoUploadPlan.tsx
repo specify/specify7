@@ -1,12 +1,12 @@
 import React from 'react';
 
-import { Dialog } from '../Molecules/Dialog';
-import { Button } from '../Atoms/Button';
-import { Link } from '../Atoms/Link';
 import { commonText } from '../../localization/common';
 import { wbPlanText } from '../../localization/wbPlan';
+import { Button } from '../Atoms/Button';
+import { Link } from '../Atoms/Link';
+import { Dialog } from '../Molecules/Dialog';
 import { hasPermission } from '../Permissions/helpers';
-import { WbMapping } from '../WorkBench/mapping';
+import type { WbMapping } from '../WorkBench/mapping';
 
 export function WbNoUploadPlan({
   isUploaded,

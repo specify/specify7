@@ -7,28 +7,28 @@
  */
 
 import { HotTable } from '@handsontable/react';
-import Handsontable from 'handsontable';
-import React from 'react';
+import type Handsontable from 'handsontable';
 import type { DetailedSettings } from 'handsontable/plugins/contextMenu';
+import { registerAllModules } from 'handsontable/registry';
+import React from 'react';
 
+import { commonText } from '../../localization/common';
 import { LANGUAGE } from '../../localization/utils/config';
+import { wbText } from '../../localization/workbench';
 import { type RA } from '../../utils/types';
 import { legacyNonJsxIcons } from '../Atoms/Icons';
-import type { Dataset } from '../WbPlanView/Wrapped';
-import { WbMapping } from './mapping';
-import { getSelectedRegions } from './hotHelpers';
-import { configureHandsontable } from './handsontable';
-import { fetchWbPickLists } from './pickLists';
-import { getHotHooks } from './hooks';
-import { wbText } from '../../localization/workbench';
+import { iconClassName } from '../Atoms/Icons';
+import { ReadOnlyContext } from '../Core/Contexts';
 import { strictGetTable } from '../DataModel/tables';
 import { getIcon, unknownIcon } from '../InitialContext/icons';
-import { commonText } from '../../localization/common';
-import { iconClassName } from '../Atoms/Icons';
-import { registerAllModules } from 'handsontable/registry';
-import { Workbench } from './WbView';
-import { ReadOnlyContext } from '../Core/Contexts';
+import type { Dataset } from '../WbPlanView/Wrapped';
+import { configureHandsontable } from './handsontable';
+import { getHotHooks } from './hooks';
+import { getSelectedRegions } from './hotHelpers';
 import { getHotProps } from './hotProps';
+import type { WbMapping } from './mapping';
+import { fetchWbPickLists } from './pickLists';
+import type { Workbench } from './WbView';
 
 registerAllModules();
 
@@ -37,8 +37,7 @@ const fillCellsContextMenuItem = (
   hot: Handsontable,
   mode: 'down' | 'up',
   isReadOnly: boolean
-): Handsontable.plugins.ContextMenu.MenuItemConfig => {
-  return {
+): Handsontable.plugins.ContextMenu.MenuItemConfig => ({
     name: mode === 'up' ? wbText.fillUp() : wbText.fillDown(),
     disabled: () =>
       isReadOnly ||
@@ -66,8 +65,7 @@ const fillCellsContextMenuItem = (
           );
         })
       ),
-  };
-};
+  });
 
 function WbSpreadsheetComponent({
   dataset,
@@ -88,7 +86,7 @@ function WbSpreadsheetComponent({
   readonly data: RA<RA<string | null>>;
   readonly workbench: Workbench;
   readonly mappings: WbMapping | undefined;
-  readonly checkDeletedFail: (_: number) => boolean;
+  readonly checkDeletedFail: (statusCode: number) => boolean;
   readonly spreadsheetChanged: () => void;
   readonly onClickDisambiguate: () => void;
 }): JSX.Element {
@@ -180,7 +178,7 @@ function WbSpreadsheetComponent({
                   disabled: () => {
                     if (isReadOnly) return true;
                     // Or if called on the last row
-                    const selectedRegions = getSelectedRegions(hot!);
+                    const selectedRegions = getSelectedRegions(hot);
                     return (
                       selectedRegions.length === 1 &&
                       selectedRegions[0].startRow === data.length - 1 &&
@@ -199,10 +197,10 @@ function WbSpreadsheetComponent({
                 fill_up: fillCellsContextMenuItem(hot, 'up', isReadOnly),
                 ['separator_2' as 'redo']: '---------',
                 undo: {
-                  disabled: () => hot.isUndoAvailable() !== true || isReadOnly,
+                  disabled: () => !hot.isUndoAvailable() || isReadOnly,
                 },
                 redo: {
-                  disabled: () => hot.isRedoAvailable() !== true || isReadOnly,
+                  disabled: () => !hot.isRedoAvailable() || isReadOnly,
                 },
               } as const),
         };
@@ -258,6 +256,7 @@ function WbSpreadsheetComponent({
         columns={columns}
         commentedCellClassName="htCommentCell"
         comments={comments}
+        contextMenu={contextMenuConfig}
         data={data as (string | null)[][]}
         enterBeginsEditing={enterBeginsEditing}
         enterMoves={enterMoves}
@@ -266,20 +265,17 @@ function WbSpreadsheetComponent({
         invalidCellClassName="-"
         language={LANGUAGE}
         licenseKey="non-commercial-and-evaluation"
-        manualColumnMove={true}
-        manualColumnResize={true}
+        manualColumnMove
+        manualColumnResize
         minSpareRows={minSpareRows}
-        multiColumnSorting={true}
+        multiColumnSorting
         outsideClickDeselects={false}
         placeholderCellClassName="htPlaceholder"
+        readOnly={isReadOnly}
         ref={setHotTable}
-        rowHeaders={true}
-        // @ts-expect-error typing error, possibly fixed in v14
-        sortIndicator={true}
+        rowHeaders
         stretchH="all"
         tabMoves={tabMoves}
-        readOnly={isReadOnly}
-        contextMenu={contextMenuConfig}
         {...hooks}
       />
     </section>
