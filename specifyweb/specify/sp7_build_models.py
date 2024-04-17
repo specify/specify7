@@ -162,7 +162,7 @@ def generate_sp_relationship_field_code(modelname, rel, datamodel) -> str:
         """Setup a field of the given 'Field' type which can be either
         ForeignKey (many-to-one) or OneToOneField.
         """
-        if hasattr(rel, 'otherSideName'):
+        if hasattr(rel, 'otherSideName') and rel.otherSideName is not None:
             related_name = rel.otherSideName.lower()
         else:
             related_name = '+' # magic symbol means don't make reverse field
