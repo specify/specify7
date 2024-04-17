@@ -267,7 +267,7 @@ export const Input = {
       readonly readOnly?: never;
       readonly isReadOnly?: boolean;
       readonly children?: undefined;
-      readonly step?: number | string;
+      readonly step?: number | 'any';
     }
   >(
     'Input.Float',

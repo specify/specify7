@@ -57,7 +57,12 @@ export type Parser = Partial<{
   readonly min: number | string;
   // Number, or a string date in yyyy-mm-dd format
   readonly max: number | string;
-  readonly step: number | string | undefined;
+  /*
+   * The step attribute defaults to 1 when not explicitly defined
+   * use `any` to disable step validation for numeric inputs
+   * See https://github.com/specify/specify7/pull/4758
+   */
+  readonly step: number | 'any';
   readonly placeholder: string;
   readonly pattern: RegExp;
   // Browsers use this as an error message when value does not match the pattern
