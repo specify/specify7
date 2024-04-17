@@ -100,7 +100,6 @@ function WbSpreadsheetComponent({
 
   const { validation, cells, disambiguation } = workbench;
 
-  // @ts-expect-error Typing error for separators as DetailedSettings only allows one separator
   const contextMenuConfig: DetailedSettings | undefined =
     hot === undefined
       ? undefined
@@ -195,10 +194,10 @@ function WbSpreadsheetComponent({
                     !disambiguation.isAmbiguousCell() || isReadOnly,
                   callback: handleClickDisambiguate,
                 },
-                separator_1: '---------',
+                ['separator_1' as 'undo']: '---------',
                 fill_down: fillCellsContextMenuItem(hot, 'down', isReadOnly),
                 fill_up: fillCellsContextMenuItem(hot, 'up', isReadOnly),
-                separator_2: '---------',
+                ['separator_2' as 'redo']: '---------',
                 undo: {
                   disabled: () => hot.isUndoAvailable() !== true || isReadOnly,
                 },
