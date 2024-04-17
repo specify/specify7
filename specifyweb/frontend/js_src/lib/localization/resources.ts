@@ -254,10 +254,10 @@ export const resourcesText = createDictionary({
       таблиц.
     `,
     'uk-ua': `
-      «Агрегація таблиць» контролює, як кілька записів таблиці об’єднуються
-      разом в один текстовий рядок. Формат таблиці, роздільник, суфікс, поле
-      сортування та ліміт попереднього перегляду запису можна налаштувати. Він
-      може відображатися в результатах запитів і у форматах таблиць.
+      «Агрегація таблиць» контролює, як кілька записів таблиці консолідуються в
+      один текстовий рядок. Формат таблиці, роздільник, суфікс, поле сортування
+      та ліміт попереднього перегляду запису можна налаштувати. Він може
+      відображатися в результатах запитів і у форматах таблиць.
     `,
   },
   formattedResource: {
@@ -281,7 +281,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Verfügbare Tabellenaggregationen',
     'es-es': 'Agregaciones de tablas disponibles',
     'fr-fr': 'Agrégations de tables disponibles',
-    'ru-ru': 'Доступные агрегаты таблиц',
+    'ru-ru': 'Доступные агрегации таблиц',
     'uk-ua': 'Доступні агрегації таблиць',
   },
   availableWebLink: {
@@ -623,6 +623,26 @@ export const resourcesText = createDictionary({
       This format will be used only if the condition field value equals this
       condition and is not null.
     `,
+    'de-ch': `
+      Dieses Format wird nur verwendet, wenn der Wert des Bedingungsfelds dieser
+      Bedingung entspricht und nicht null ist.
+    `,
+    'es-es': `
+      Este formato se utilizará solo si el valor del campo de condición es igual
+      a esta condición y no es nulo.
+    `,
+    'fr-fr': `
+      Ce format sera utilisé uniquement si la valeur du champ de condition est
+      égale à cette condition et n'est pas nulle.
+    `,
+    'ru-ru': `
+      Этот формат будет использоваться только в том случае, если значение поля
+      условия равно этому условию и не равно нулю.
+    `,
+    'uk-ua': `
+      Цей формат використовуватиметься, лише якщо значення поля умови дорівнює
+      цій умові й не є нульовим.
+    `,
   },
   wrongScopeWarning: {
     'en-us': `
@@ -733,7 +753,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Standardformular kopieren',
     'es-es': 'Formateadores de registros',
     'fr-fr': "Formateurs d'enregistrement",
-    'ru-ru': 'Форматеры записей',
+    'ru-ru': 'Форматеры записи',
     'uk-ua': 'Форматувальники записів',
   },
   copyDefaultForms: {
@@ -776,7 +796,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Feldformate anpassen',
     'es-es': 'Personalizar formatos de campo',
     'fr-fr': 'Personnaliser les formats de champs',
-    'ru-ru': 'Настройте форматы полей',
+    'ru-ru': 'Настройка форматов полей',
     'uk-ua': 'Налаштувати формати полів',
   },
   expandConditionalField: {
