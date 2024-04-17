@@ -41,18 +41,18 @@ datamodel = Datamodel(tables=[
             Index(name='AccessionDateIDX', column_names=['DateAccessioned'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='accessionAgents', type='one-to-many',required=False, relatedModelName='AccessionAgent', otherSideName='accession'),
-            Relationship(is_relationship=True, name='accessionAttachments', type='one-to-many',required=False, relatedModelName='AccessionAttachment', otherSideName='accession'),
-            Relationship(is_relationship=True, name='accessionAuthorizations', type='one-to-many',required=False, relatedModelName='AccessionAuthorization', otherSideName='accession'),
-            Relationship(is_relationship=True, name='accessionCitations', type='one-to-many',required=False, relatedModelName='AccessionCitation', otherSideName='accession'),
-            Relationship(is_relationship=True, name='addressOfRecord', type='many-to-one',required=False, relatedModelName='AddressOfRecord', column='AddressOfRecordID', otherSideName='accessions'),
-            Relationship(is_relationship=True, name='appraisals', type='one-to-many',required=False, relatedModelName='Appraisal', otherSideName='accession'),
-            Relationship(is_relationship=True, name='collectionObjects', type='one-to-many',required=False, relatedModelName='CollectionObject', otherSideName='accession'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='division', type='many-to-one',required=True, relatedModelName='Division', column='DivisionID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='repositoryAgreement', type='many-to-one',required=False, relatedModelName='RepositoryAgreement', column='RepositoryAgreementID', otherSideName='accessions'),
-            Relationship(is_relationship=True, name='treatmentEvents', type='one-to-many',required=False, relatedModelName='TreatmentEvent', otherSideName='accession')
+            Relationship(name='accessionAgents', type='one-to-many',required=False, relatedModelName='AccessionAgent', otherSideName='accession'),
+            Relationship(name='accessionAttachments', type='one-to-many',required=False, relatedModelName='AccessionAttachment', otherSideName='accession'),
+            Relationship(name='accessionAuthorizations', type='one-to-many',required=False, relatedModelName='AccessionAuthorization', otherSideName='accession'),
+            Relationship(name='accessionCitations', type='one-to-many',required=False, relatedModelName='AccessionCitation', otherSideName='accession'),
+            Relationship(name='addressOfRecord', type='many-to-one',required=False, relatedModelName='AddressOfRecord', column='AddressOfRecordID', otherSideName='accessions'),
+            Relationship(name='appraisals', type='one-to-many',required=False, relatedModelName='Appraisal', otherSideName='accession'),
+            Relationship(name='collectionObjects', type='one-to-many',required=False, relatedModelName='CollectionObject', otherSideName='accession'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='division', type='many-to-one',required=True, relatedModelName='Division', column='DivisionID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='repositoryAgreement', type='many-to-one',required=False, relatedModelName='RepositoryAgreement', column='RepositoryAgreementID', otherSideName='accessions'),
+            Relationship(name='treatmentEvents', type='one-to-many',required=False, relatedModelName='TreatmentEvent', otherSideName='accession')
         ],
         fieldAliases=[
 
@@ -78,11 +78,11 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='accession', type='many-to-one',required=False, relatedModelName='Accession', column='AccessionID', otherSideName='accessionAgents'),
-            Relationship(is_relationship=True, name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='repositoryAgreement', type='many-to-one',required=False, relatedModelName='RepositoryAgreement', column='RepositoryAgreementID', otherSideName='repositoryAgreementAgents')
+            Relationship(name='accession', type='many-to-one',required=False, relatedModelName='Accession', column='AccessionID', otherSideName='accessionAgents'),
+            Relationship(name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='repositoryAgreement', type='many-to-one',required=False, relatedModelName='RepositoryAgreement', column='RepositoryAgreementID', otherSideName='repositoryAgreementAgents')
         ],
         fieldAliases=[
 
@@ -108,10 +108,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='accession', type='many-to-one',required=True, relatedModelName='Accession', column='AccessionID', otherSideName='accessionAttachments'),
-            Relationship(is_relationship=True, name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='accessionAttachments'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='accession', type='many-to-one',required=True, relatedModelName='Accession', column='AccessionID', otherSideName='accessionAttachments'),
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='accessionAttachments'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -136,11 +136,11 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='accession', type='many-to-one',required=False, relatedModelName='Accession', column='AccessionID', otherSideName='accessionAuthorizations'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='permit', type='many-to-one',required=True, relatedModelName='Permit', column='PermitID', otherSideName='accessionAuthorizations'),
-            Relationship(is_relationship=True, name='repositoryAgreement', type='many-to-one',required=False, relatedModelName='RepositoryAgreement', column='RepositoryAgreementID', otherSideName='repositoryAgreementAuthorizations')
+            Relationship(name='accession', type='many-to-one',required=False, relatedModelName='Accession', column='AccessionID', otherSideName='accessionAuthorizations'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='permit', type='many-to-one',required=True, relatedModelName='Permit', column='PermitID', otherSideName='accessionAuthorizations'),
+            Relationship(name='repositoryAgreement', type='many-to-one',required=False, relatedModelName='RepositoryAgreement', column='RepositoryAgreementID', otherSideName='repositoryAgreementAuthorizations')
         ],
         fieldAliases=[
 
@@ -169,10 +169,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='accession', type='many-to-one',required=True, relatedModelName='Accession', column='AccessionID', otherSideName='accessionCitations'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='referenceWork', type='many-to-one',required=True, relatedModelName='ReferenceWork', column='ReferenceWorkID')
+            Relationship(name='accession', type='many-to-one',required=True, relatedModelName='Accession', column='AccessionID', otherSideName='accessionCitations'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='referenceWork', type='many-to-one',required=True, relatedModelName='ReferenceWork', column='ReferenceWorkID')
         ],
         fieldAliases=[
 
@@ -216,11 +216,11 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='agent', type='many-to-one',required=False, relatedModelName='Agent', column='AgentID', otherSideName='addresses'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='divisions', type='one-to-many',required=False, relatedModelName='Division', otherSideName='address'),
-            Relationship(is_relationship=True, name='insitutions', type='one-to-many',required=False, relatedModelName='Institution', otherSideName='address'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='agent', type='many-to-one',required=False, relatedModelName='Agent', column='AgentID', otherSideName='addresses'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='divisions', type='one-to-many',required=False, relatedModelName='Division', otherSideName='address'),
+            Relationship(name='insitutions', type='one-to-many',required=False, relatedModelName='Institution', otherSideName='address'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -251,14 +251,14 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='accessions', type='one-to-many',required=False, relatedModelName='Accession', otherSideName='addressOfRecord'),
-            Relationship(is_relationship=True, name='agent', type='many-to-one',required=False, relatedModelName='Agent', column='AgentID'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='exchangeIns', type='one-to-many',required=False, relatedModelName='ExchangeIn', otherSideName='addressOfRecord'),
-            Relationship(is_relationship=True, name='exchangeOuts', type='one-to-many',required=False, relatedModelName='ExchangeOut', otherSideName='addressOfRecord'),
-            Relationship(is_relationship=True, name='loans', type='one-to-many',required=False, relatedModelName='Loan', otherSideName='addressOfRecord'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='repositoryAgreements', type='one-to-many',required=False, relatedModelName='RepositoryAgreement', otherSideName='addressOfRecord')
+            Relationship(name='accessions', type='one-to-many',required=False, relatedModelName='Accession', otherSideName='addressOfRecord'),
+            Relationship(name='agent', type='many-to-one',required=False, relatedModelName='Agent', column='AgentID'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='exchangeIns', type='one-to-many',required=False, relatedModelName='ExchangeIn', otherSideName='addressOfRecord'),
+            Relationship(name='exchangeOuts', type='one-to-many',required=False, relatedModelName='ExchangeOut', otherSideName='addressOfRecord'),
+            Relationship(name='loans', type='one-to-many',required=False, relatedModelName='Loan', otherSideName='addressOfRecord'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='repositoryAgreements', type='one-to-many',required=False, relatedModelName='RepositoryAgreement', otherSideName='addressOfRecord')
         ],
         fieldAliases=[
 
@@ -316,25 +316,25 @@ datamodel = Datamodel(tables=[
             Index(name='AbbreviationIDX', column_names=['Abbreviation'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='addresses', type='one-to-many',required=False, relatedModelName='Address', otherSideName='agent'),
-            Relationship(is_relationship=True, name='agentAttachments', type='one-to-many',required=False, relatedModelName='AgentAttachment', otherSideName='agent'),
-            Relationship(is_relationship=True, name='agentGeographies', type='one-to-many',required=False, relatedModelName='AgentGeography', otherSideName='agent'),
-            Relationship(is_relationship=True, name='agentSpecialties', type='one-to-many',required=False, relatedModelName='AgentSpecialty', otherSideName='agent'),
-            Relationship(is_relationship=True, name='collContentContact', type='many-to-one',required=False, relatedModelName='Collection', column='CollectionCCID', otherSideName='contentContacts'),
-            Relationship(is_relationship=True, name='collTechContact', type='many-to-one',required=False, relatedModelName='Collection', column='CollectionTCID', otherSideName='technicalContacts'),
-            Relationship(is_relationship=True, name='collectors', type='one-to-many',required=False, relatedModelName='Collector', otherSideName='agent'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='division', type='many-to-one',required=False, relatedModelName='Division', column='DivisionID', otherSideName='members'),
-            Relationship(is_relationship=True, name='groups', type='one-to-many',required=False, relatedModelName='GroupPerson', otherSideName='group'),
-            Relationship(is_relationship=True, name='identifiers', type='one-to-many',required=False, relatedModelName='AgentIdentifier', otherSideName='agent'),
-            Relationship(is_relationship=True, name='instContentContact', type='many-to-one',required=False, relatedModelName='Institution', column='InstitutionCCID', otherSideName='contentContacts'),
-            Relationship(is_relationship=True, name='instTechContact', type='many-to-one',required=False, relatedModelName='Institution', column='InstitutionTCID', otherSideName='technicalContacts'),
-            Relationship(is_relationship=True, name='members', type='one-to-many',required=False, relatedModelName='GroupPerson', otherSideName='member'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='orgMembers', type='one-to-many',required=False, relatedModelName='Agent', otherSideName='organization'),
-            Relationship(is_relationship=True, name='organization', type='many-to-one',required=False, relatedModelName='Agent', column='ParentOrganizationID', otherSideName='orgMembers'),
-            Relationship(is_relationship=True, name='specifyUser', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='SpecifyUserID', otherSideName='agents'),
-            Relationship(is_relationship=True, name='variants', type='one-to-many',required=False, relatedModelName='AgentVariant', otherSideName='agent')
+            Relationship(name='addresses', type='one-to-many',required=False, relatedModelName='Address', otherSideName='agent'),
+            Relationship(name='agentAttachments', type='one-to-many',required=False, relatedModelName='AgentAttachment', otherSideName='agent'),
+            Relationship(name='agentGeographies', type='one-to-many',required=False, relatedModelName='AgentGeography', otherSideName='agent'),
+            Relationship(name='agentSpecialties', type='one-to-many',required=False, relatedModelName='AgentSpecialty', otherSideName='agent'),
+            Relationship(name='collContentContact', type='many-to-one',required=False, relatedModelName='Collection', column='CollectionCCID', otherSideName='contentContacts'),
+            Relationship(name='collTechContact', type='many-to-one',required=False, relatedModelName='Collection', column='CollectionTCID', otherSideName='technicalContacts'),
+            Relationship(name='collectors', type='one-to-many',required=False, relatedModelName='Collector', otherSideName='agent'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='division', type='many-to-one',required=False, relatedModelName='Division', column='DivisionID', otherSideName='members'),
+            Relationship(name='groups', type='one-to-many',required=False, relatedModelName='GroupPerson', otherSideName='group'),
+            Relationship(name='identifiers', type='one-to-many',required=False, relatedModelName='AgentIdentifier', otherSideName='agent'),
+            Relationship(name='instContentContact', type='many-to-one',required=False, relatedModelName='Institution', column='InstitutionCCID', otherSideName='contentContacts'),
+            Relationship(name='instTechContact', type='many-to-one',required=False, relatedModelName='Institution', column='InstitutionTCID', otherSideName='technicalContacts'),
+            Relationship(name='members', type='one-to-many',required=False, relatedModelName='GroupPerson', otherSideName='member'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='orgMembers', type='one-to-many',required=False, relatedModelName='Agent', otherSideName='organization'),
+            Relationship(name='organization', type='many-to-one',required=False, relatedModelName='Agent', column='ParentOrganizationID', otherSideName='orgMembers'),
+            Relationship(name='specifyUser', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='SpecifyUserID', otherSideName='agents'),
+            Relationship(name='variants', type='one-to-many',required=False, relatedModelName='AgentVariant', otherSideName='agent')
         ],
         fieldAliases=[
 
@@ -360,10 +360,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID', otherSideName='agentAttachments'),
-            Relationship(is_relationship=True, name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='agentAttachments'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID', otherSideName='agentAttachments'),
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='agentAttachments'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -389,10 +389,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID', otherSideName='agentGeographies'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='geography', type='many-to-one',required=True, relatedModelName='Geography', column='GeographyID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID', otherSideName='agentGeographies'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='geography', type='many-to-one',required=True, relatedModelName='Geography', column='GeographyID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -431,9 +431,9 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID', otherSideName='identifiers'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID', otherSideName='identifiers'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -459,9 +459,9 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID', otherSideName='agentSpecialties'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID', otherSideName='agentSpecialties'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -488,9 +488,9 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID', otherSideName='variants'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID', otherSideName='variants'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -520,11 +520,11 @@ datamodel = Datamodel(tables=[
             Index(name='AppraisalDateIDX', column_names=['AppraisalDate'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='accession', type='many-to-one',required=False, relatedModelName='Accession', column='AccessionID', otherSideName='appraisals'),
-            Relationship(is_relationship=True, name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID'),
-            Relationship(is_relationship=True, name='collectionObjects', type='one-to-many',required=False, relatedModelName='CollectionObject', otherSideName='appraisal'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='accession', type='many-to-one',required=False, relatedModelName='Accession', column='AccessionID', otherSideName='appraisals'),
+            Relationship(name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID'),
+            Relationship(name='collectionObjects', type='one-to-many',required=False, relatedModelName='CollectionObject', otherSideName='appraisal'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -576,40 +576,40 @@ datamodel = Datamodel(tables=[
             Index(name='AttchmentGuidIDX', column_names=['GUID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='accessionAttachments', type='one-to-many',required=False, relatedModelName='AccessionAttachment', otherSideName='attachment'),
-            Relationship(is_relationship=True, name='agentAttachments', type='one-to-many',required=False, relatedModelName='AgentAttachment', otherSideName='attachment'),
-            Relationship(is_relationship=True, name='attachmentImageAttribute', type='many-to-one',required=False, relatedModelName='AttachmentImageAttribute', column='AttachmentImageAttributeID', otherSideName='attachments'),
-            Relationship(is_relationship=True, name='borrowAttachments', type='one-to-many',required=False, relatedModelName='BorrowAttachment', otherSideName='attachment'),
-            Relationship(is_relationship=True, name='collectingEventAttachments', type='one-to-many',required=False, relatedModelName='CollectingEventAttachment', otherSideName='attachment'),
-            Relationship(is_relationship=True, name='collectingTripAttachments', type='one-to-many',required=False, relatedModelName='CollectingTripAttachment', otherSideName='attachment'),
-            Relationship(is_relationship=True, name='collectionObjectAttachments', type='one-to-many',required=False, relatedModelName='CollectionObjectAttachment', otherSideName='attachment'),
-            Relationship(is_relationship=True, name='conservDescriptionAttachments', type='one-to-many',required=False, relatedModelName='ConservDescriptionAttachment', otherSideName='attachment'),
-            Relationship(is_relationship=True, name='conservEventAttachments', type='one-to-many',required=False, relatedModelName='ConservEventAttachment', otherSideName='attachment'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='creator', type='many-to-one',required=False, relatedModelName='Agent', column='CreatorID'),
-            Relationship(is_relationship=True, name='deaccessionAttachments', type='one-to-many',required=False, relatedModelName='DeaccessionAttachment', otherSideName='attachment'),
-            Relationship(is_relationship=True, name='disposalAttachments', type='one-to-many',required=False, relatedModelName='DisposalAttachment', otherSideName='attachment'),
-            Relationship(is_relationship=True, name='dnaSequenceAttachments', type='one-to-many',required=False, relatedModelName='DNASequenceAttachment', otherSideName='attachment'),
-            Relationship(is_relationship=True, name='dnaSequencingRunAttachments', type='one-to-many',required=False, relatedModelName='DNASequencingRunAttachment', otherSideName='attachment'),
-            Relationship(is_relationship=True, name='exchangeInAttachments', type='one-to-many',required=False, relatedModelName='ExchangeInAttachment', otherSideName='attachment'),
-            Relationship(is_relationship=True, name='exchangeOutAttachments', type='one-to-many',required=False, relatedModelName='ExchangeOutAttachment', otherSideName='attachment'),
-            Relationship(is_relationship=True, name='fieldNotebookAttachments', type='one-to-many',required=False, relatedModelName='FieldNotebookAttachment', otherSideName='attachment'),
-            Relationship(is_relationship=True, name='fieldNotebookPageAttachments', type='one-to-many',required=False, relatedModelName='FieldNotebookPageAttachment', otherSideName='attachment'),
-            Relationship(is_relationship=True, name='fieldNotebookPageSetAttachments', type='one-to-many',required=False, relatedModelName='FieldNotebookPageSetAttachment', otherSideName='attachment'),
-            Relationship(is_relationship=True, name='giftAttachments', type='one-to-many',required=False, relatedModelName='GiftAttachment', otherSideName='attachment'),
-            Relationship(is_relationship=True, name='loanAttachments', type='one-to-many',required=False, relatedModelName='LoanAttachment', otherSideName='attachment'),
-            Relationship(is_relationship=True, name='localityAttachments', type='one-to-many',required=False, relatedModelName='LocalityAttachment', otherSideName='attachment'),
-            Relationship(is_relationship=True, name='metadata', type='one-to-many',required=False, relatedModelName='AttachmentMetadata', otherSideName='attachment'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='permitAttachments', type='one-to-many',required=False, relatedModelName='PermitAttachment', otherSideName='attachment'),
-            Relationship(is_relationship=True, name='preparationAttachments', type='one-to-many',required=False, relatedModelName='PreparationAttachment', otherSideName='attachment'),
-            Relationship(is_relationship=True, name='referenceWorkAttachments', type='one-to-many',required=False, relatedModelName='ReferenceWorkAttachment', otherSideName='attachment'),
-            Relationship(is_relationship=True, name='repositoryAgreementAttachments', type='one-to-many',required=False, relatedModelName='RepositoryAgreementAttachment', otherSideName='attachment'),
-            Relationship(is_relationship=True, name='storageAttachments', type='one-to-many',required=False, relatedModelName='StorageAttachment', otherSideName='attachment'),
-            Relationship(is_relationship=True, name='tags', type='one-to-many',required=False, relatedModelName='AttachmentTag', otherSideName='attachment'),
-            Relationship(is_relationship=True, name='taxonAttachments', type='one-to-many',required=False, relatedModelName='TaxonAttachment', otherSideName='attachment'),
-            Relationship(is_relationship=True, name='treatmentEventAttachments', type='one-to-many',required=False, relatedModelName='TreatmentEventAttachment', otherSideName='attachment'),
-            Relationship(is_relationship=True, name='visibilitySetBy', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='VisibilitySetByID')
+            Relationship(name='accessionAttachments', type='one-to-many',required=False, relatedModelName='AccessionAttachment', otherSideName='attachment'),
+            Relationship(name='agentAttachments', type='one-to-many',required=False, relatedModelName='AgentAttachment', otherSideName='attachment'),
+            Relationship(name='attachmentImageAttribute', type='many-to-one',required=False, relatedModelName='AttachmentImageAttribute', column='AttachmentImageAttributeID', otherSideName='attachments'),
+            Relationship(name='borrowAttachments', type='one-to-many',required=False, relatedModelName='BorrowAttachment', otherSideName='attachment'),
+            Relationship(name='collectingEventAttachments', type='one-to-many',required=False, relatedModelName='CollectingEventAttachment', otherSideName='attachment'),
+            Relationship(name='collectingTripAttachments', type='one-to-many',required=False, relatedModelName='CollectingTripAttachment', otherSideName='attachment'),
+            Relationship(name='collectionObjectAttachments', type='one-to-many',required=False, relatedModelName='CollectionObjectAttachment', otherSideName='attachment'),
+            Relationship(name='conservDescriptionAttachments', type='one-to-many',required=False, relatedModelName='ConservDescriptionAttachment', otherSideName='attachment'),
+            Relationship(name='conservEventAttachments', type='one-to-many',required=False, relatedModelName='ConservEventAttachment', otherSideName='attachment'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='creator', type='many-to-one',required=False, relatedModelName='Agent', column='CreatorID'),
+            Relationship(name='deaccessionAttachments', type='one-to-many',required=False, relatedModelName='DeaccessionAttachment', otherSideName='attachment'),
+            Relationship(name='disposalAttachments', type='one-to-many',required=False, relatedModelName='DisposalAttachment', otherSideName='attachment'),
+            Relationship(name='dnaSequenceAttachments', type='one-to-many',required=False, relatedModelName='DNASequenceAttachment', otherSideName='attachment'),
+            Relationship(name='dnaSequencingRunAttachments', type='one-to-many',required=False, relatedModelName='DNASequencingRunAttachment', otherSideName='attachment'),
+            Relationship(name='exchangeInAttachments', type='one-to-many',required=False, relatedModelName='ExchangeInAttachment', otherSideName='attachment'),
+            Relationship(name='exchangeOutAttachments', type='one-to-many',required=False, relatedModelName='ExchangeOutAttachment', otherSideName='attachment'),
+            Relationship(name='fieldNotebookAttachments', type='one-to-many',required=False, relatedModelName='FieldNotebookAttachment', otherSideName='attachment'),
+            Relationship(name='fieldNotebookPageAttachments', type='one-to-many',required=False, relatedModelName='FieldNotebookPageAttachment', otherSideName='attachment'),
+            Relationship(name='fieldNotebookPageSetAttachments', type='one-to-many',required=False, relatedModelName='FieldNotebookPageSetAttachment', otherSideName='attachment'),
+            Relationship(name='giftAttachments', type='one-to-many',required=False, relatedModelName='GiftAttachment', otherSideName='attachment'),
+            Relationship(name='loanAttachments', type='one-to-many',required=False, relatedModelName='LoanAttachment', otherSideName='attachment'),
+            Relationship(name='localityAttachments', type='one-to-many',required=False, relatedModelName='LocalityAttachment', otherSideName='attachment'),
+            Relationship(name='metadata', type='one-to-many',required=False, relatedModelName='AttachmentMetadata', otherSideName='attachment'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='permitAttachments', type='one-to-many',required=False, relatedModelName='PermitAttachment', otherSideName='attachment'),
+            Relationship(name='preparationAttachments', type='one-to-many',required=False, relatedModelName='PreparationAttachment', otherSideName='attachment'),
+            Relationship(name='referenceWorkAttachments', type='one-to-many',required=False, relatedModelName='ReferenceWorkAttachment', otherSideName='attachment'),
+            Relationship(name='repositoryAgreementAttachments', type='one-to-many',required=False, relatedModelName='RepositoryAgreementAttachment', otherSideName='attachment'),
+            Relationship(name='storageAttachments', type='one-to-many',required=False, relatedModelName='StorageAttachment', otherSideName='attachment'),
+            Relationship(name='tags', type='one-to-many',required=False, relatedModelName='AttachmentTag', otherSideName='attachment'),
+            Relationship(name='taxonAttachments', type='one-to-many',required=False, relatedModelName='TaxonAttachment', otherSideName='attachment'),
+            Relationship(name='treatmentEventAttachments', type='one-to-many',required=False, relatedModelName='TreatmentEventAttachment', otherSideName='attachment'),
+            Relationship(name='visibilitySetBy', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='VisibilitySetByID')
         ],
         fieldAliases=[
 
@@ -650,10 +650,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attachments', type='one-to-many',required=False, relatedModelName='Attachment', otherSideName='attachmentImageAttribute'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='morphBankView', type='many-to-one',required=False, relatedModelName='MorphBankView', column='MorphBankViewID', otherSideName='attachmentImageAttributes')
+            Relationship(name='attachments', type='one-to-many',required=False, relatedModelName='Attachment', otherSideName='attachmentImageAttribute'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='morphBankView', type='many-to-one',required=False, relatedModelName='MorphBankView', column='MorphBankViewID', otherSideName='attachmentImageAttributes')
         ],
         fieldAliases=[
 
@@ -677,9 +677,9 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attachment', type='many-to-one',required=False, relatedModelName='Attachment', column='AttachmentID', otherSideName='metadata'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='attachment', type='many-to-one',required=False, relatedModelName='Attachment', column='AttachmentID', otherSideName='metadata'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -702,9 +702,9 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='tags'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='tags'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -729,13 +729,13 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='collectingEventAttrs', type='one-to-many',required=False, relatedModelName='CollectingEventAttr', otherSideName='definition'),
-            Relationship(is_relationship=True, name='collectionObjectAttrs', type='one-to-many',required=False, relatedModelName='CollectionObjectAttr', otherSideName='definition'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID', otherSideName='attributeDefs'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='prepType', type='many-to-one',required=False, relatedModelName='PrepType', column='PrepTypeID', otherSideName='attributeDefs'),
-            Relationship(is_relationship=True, name='preparationAttrs', type='one-to-many',required=False, relatedModelName='PreparationAttr', otherSideName='definition')
+            Relationship(name='collectingEventAttrs', type='one-to-many',required=False, relatedModelName='CollectingEventAttr', otherSideName='definition'),
+            Relationship(name='collectionObjectAttrs', type='one-to-many',required=False, relatedModelName='CollectionObjectAttr', otherSideName='definition'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID', otherSideName='attributeDefs'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='prepType', type='many-to-one',required=False, relatedModelName='PrepType', column='PrepTypeID', otherSideName='attributeDefs'),
+            Relationship(name='preparationAttrs', type='one-to-many',required=False, relatedModelName='PreparationAttr', otherSideName='definition')
         ],
         fieldAliases=[
 
@@ -759,10 +759,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='referenceWork', type='many-to-one',required=True, relatedModelName='ReferenceWork', column='ReferenceWorkID', otherSideName='authors')
+            Relationship(name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='referenceWork', type='many-to-one',required=True, relatedModelName='ReferenceWork', column='ReferenceWorkID', otherSideName='authors')
         ],
         fieldAliases=[
 
@@ -791,11 +791,11 @@ datamodel = Datamodel(tables=[
             Index(name='SchemeNameIDX', column_names=['SchemeName'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='collections', type='many-to-many',required=False, relatedModelName='Collection', otherSideName='numberingSchemes'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='disciplines', type='many-to-many',required=False, relatedModelName='Discipline', otherSideName='numberingSchemes'),
-            Relationship(is_relationship=True, name='divisions', type='many-to-many',required=False, relatedModelName='Division', otherSideName='numberingSchemes'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='collections', type='many-to-many',required=False, relatedModelName='Collection', otherSideName='numberingSchemes'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='disciplines', type='many-to-many',required=False, relatedModelName='Discipline', otherSideName='numberingSchemes'),
+            Relationship(name='divisions', type='many-to-many',required=False, relatedModelName='Division', otherSideName='numberingSchemes'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -840,13 +840,13 @@ datamodel = Datamodel(tables=[
             Index(name='BorColMemIDX', column_names=['CollectionMemberID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='addressOfRecord', type='many-to-one',required=False, relatedModelName='AddressOfRecord', column='AddressOfRecordID'),
-            Relationship(is_relationship=True, name='borrowAgents', type='one-to-many',required=False, relatedModelName='BorrowAgent', otherSideName='borrow'),
-            Relationship(is_relationship=True, name='borrowAttachments', type='one-to-many',required=False, relatedModelName='BorrowAttachment', otherSideName='borrow'),
-            Relationship(is_relationship=True, name='borrowMaterials', type='one-to-many',required=False, relatedModelName='BorrowMaterial', otherSideName='borrow'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='shipments', type='one-to-many',required=False, relatedModelName='Shipment', otherSideName='borrow')
+            Relationship(name='addressOfRecord', type='many-to-one',required=False, relatedModelName='AddressOfRecord', column='AddressOfRecordID'),
+            Relationship(name='borrowAgents', type='one-to-many',required=False, relatedModelName='BorrowAgent', otherSideName='borrow'),
+            Relationship(name='borrowAttachments', type='one-to-many',required=False, relatedModelName='BorrowAttachment', otherSideName='borrow'),
+            Relationship(name='borrowMaterials', type='one-to-many',required=False, relatedModelName='BorrowMaterial', otherSideName='borrow'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='shipments', type='one-to-many',required=False, relatedModelName='Shipment', otherSideName='borrow')
         ],
         fieldAliases=[
 
@@ -873,10 +873,10 @@ datamodel = Datamodel(tables=[
             Index(name='BorColMemIDX2', column_names=['CollectionMemberID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID'),
-            Relationship(is_relationship=True, name='borrow', type='many-to-one',required=True, relatedModelName='Borrow', column='BorrowID', otherSideName='borrowAgents'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID'),
+            Relationship(name='borrow', type='many-to-one',required=True, relatedModelName='Borrow', column='BorrowID', otherSideName='borrowAgents'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -902,10 +902,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='borrowAttachments'),
-            Relationship(is_relationship=True, name='borrow', type='many-to-one',required=True, relatedModelName='Borrow', column='BorrowID', otherSideName='borrowAttachments'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='borrowAttachments'),
+            Relationship(name='borrow', type='many-to-one',required=True, relatedModelName='Borrow', column='BorrowID', otherSideName='borrowAttachments'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -941,10 +941,10 @@ datamodel = Datamodel(tables=[
             Index(name='DescriptionIDX', column_names=['Description'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='borrow', type='many-to-one',required=True, relatedModelName='Borrow', column='BorrowID', otherSideName='borrowMaterials'),
-            Relationship(is_relationship=True, name='borrowReturnMaterials', type='one-to-many',required=False, relatedModelName='BorrowReturnMaterial', otherSideName='borrowMaterial'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='borrow', type='many-to-one',required=True, relatedModelName='Borrow', column='BorrowID', otherSideName='borrowMaterials'),
+            Relationship(name='borrowReturnMaterials', type='one-to-many',required=False, relatedModelName='BorrowReturnMaterial', otherSideName='borrowMaterial'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -973,10 +973,10 @@ datamodel = Datamodel(tables=[
             Index(name='BorrowReturnedColMemIDX', column_names=['CollectionMemberID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='agent', type='many-to-one',required=False, relatedModelName='Agent', column='ReturnedByID'),
-            Relationship(is_relationship=True, name='borrowMaterial', type='many-to-one',required=True, relatedModelName='BorrowMaterial', column='BorrowMaterialID', otherSideName='borrowReturnMaterials'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='agent', type='many-to-one',required=False, relatedModelName='Agent', column='ReturnedByID'),
+            Relationship(name='borrowMaterial', type='many-to-one',required=True, relatedModelName='BorrowMaterial', column='BorrowMaterialID', otherSideName='borrowReturnMaterials'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -1038,19 +1038,19 @@ datamodel = Datamodel(tables=[
             Index(name='CEGuidIDX', column_names=['GUID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='collectingEventAttachments', type='one-to-many',required=False, relatedModelName='CollectingEventAttachment', otherSideName='collectingEvent'),
-            Relationship(is_relationship=True, name='collectingEventAttribute', type='many-to-one',required=False, relatedModelName='CollectingEventAttribute', column='CollectingEventAttributeID', otherSideName='collectingEvents'),
-            Relationship(is_relationship=True, name='collectingEventAttrs', type='one-to-many',required=False, relatedModelName='CollectingEventAttr', otherSideName='collectingEvent'),
-            Relationship(is_relationship=True, name='collectingEventAuthorizations', type='one-to-many',required=False, relatedModelName='CollectingEventAuthorization', otherSideName='collectingEvent'),
-            Relationship(is_relationship=True, name='collectingTrip', type='many-to-one',required=False, relatedModelName='CollectingTrip', column='CollectingTripID', otherSideName='collectingEvents'),
-            Relationship(is_relationship=True, name='collectionObjects', type='one-to-many',required=False, relatedModelName='CollectionObject', otherSideName='collectingEvent'),
-            Relationship(is_relationship=True, name='collectors', type='one-to-many',required=False, relatedModelName='Collector', otherSideName='collectingEvent'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
-            Relationship(is_relationship=True, name='locality', type='many-to-one',required=False, relatedModelName='Locality', column='LocalityID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='paleoContext', type='many-to-one',required=False, relatedModelName='PaleoContext', column='PaleoContextID', otherSideName='collectingEvents'),
-            Relationship(is_relationship=True, name='visibilitySetBy', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='VisibilitySetByID')
+            Relationship(name='collectingEventAttachments', type='one-to-many',required=False, relatedModelName='CollectingEventAttachment', otherSideName='collectingEvent'),
+            Relationship(name='collectingEventAttribute', type='many-to-one',required=False, relatedModelName='CollectingEventAttribute', column='CollectingEventAttributeID', otherSideName='collectingEvents'),
+            Relationship(name='collectingEventAttrs', type='one-to-many',required=False, relatedModelName='CollectingEventAttr', otherSideName='collectingEvent'),
+            Relationship(name='collectingEventAuthorizations', type='one-to-many',required=False, relatedModelName='CollectingEventAuthorization', otherSideName='collectingEvent'),
+            Relationship(name='collectingTrip', type='many-to-one',required=False, relatedModelName='CollectingTrip', column='CollectingTripID', otherSideName='collectingEvents'),
+            Relationship(name='collectionObjects', type='one-to-many',required=False, relatedModelName='CollectionObject', otherSideName='collectingEvent'),
+            Relationship(name='collectors', type='one-to-many',required=False, relatedModelName='Collector', otherSideName='collectingEvent'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
+            Relationship(name='locality', type='many-to-one',required=False, relatedModelName='Locality', column='LocalityID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='paleoContext', type='many-to-one',required=False, relatedModelName='PaleoContext', column='PaleoContextID', otherSideName='collectingEvents'),
+            Relationship(name='visibilitySetBy', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='VisibilitySetByID')
         ],
         fieldAliases=[
 
@@ -1077,10 +1077,10 @@ datamodel = Datamodel(tables=[
             Index(name='CEAColMemIDX', column_names=['CollectionMemberID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='collectingEventAttachments'),
-            Relationship(is_relationship=True, name='collectingEvent', type='many-to-one',required=True, relatedModelName='CollectingEvent', column='CollectingEventID', otherSideName='collectingEventAttachments'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='collectingEventAttachments'),
+            Relationship(name='collectingEvent', type='many-to-one',required=True, relatedModelName='CollectingEvent', column='CollectingEventID', otherSideName='collectingEventAttachments'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -1107,10 +1107,10 @@ datamodel = Datamodel(tables=[
             Index(name='COLEVATColMemIDX', column_names=['CollectionMemberID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='collectingEvent', type='many-to-one',required=True, relatedModelName='CollectingEvent', column='CollectingEventID', otherSideName='collectingEventAttrs'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='definition', type='many-to-one',required=True, relatedModelName='AttributeDef', column='AttributeDefID', otherSideName='collectingEventAttrs'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='collectingEvent', type='many-to-one',required=True, relatedModelName='CollectingEvent', column='CollectingEventID', otherSideName='collectingEventAttrs'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='definition', type='many-to-one',required=True, relatedModelName='AttributeDef', column='AttributeDefID', otherSideName='collectingEventAttrs'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -1178,11 +1178,11 @@ datamodel = Datamodel(tables=[
             Index(name='COLEVATSDispIDX', column_names=['DisciplineID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='collectingEvents', type='one-to-many',required=False, relatedModelName='CollectingEvent', otherSideName='collectingEventAttribute'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
-            Relationship(is_relationship=True, name='hostTaxon', type='many-to-one',required=False, relatedModelName='Taxon', column='HostTaxonID', otherSideName='collectingEventAttributes'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='collectingEvents', type='one-to-many',required=False, relatedModelName='CollectingEvent', otherSideName='collectingEventAttribute'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
+            Relationship(name='hostTaxon', type='many-to-one',required=False, relatedModelName='Taxon', column='HostTaxonID', otherSideName='collectingEventAttributes'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -1205,10 +1205,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='collectingEvent', type='many-to-one',required=False, relatedModelName='CollectingEvent', column='CollectingEventID', otherSideName='collectingEventAuthorizations'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='permit', type='many-to-one',required=True, relatedModelName='Permit', column='PermitID', otherSideName='collectingEventAuthorizations')
+            Relationship(name='collectingEvent', type='many-to-one',required=False, relatedModelName='CollectingEvent', column='CollectingEventID', otherSideName='collectingEventAuthorizations'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='permit', type='many-to-one',required=True, relatedModelName='Permit', column='PermitID', otherSideName='collectingEventAuthorizations')
         ],
         fieldAliases=[
 
@@ -1264,16 +1264,16 @@ datamodel = Datamodel(tables=[
             Index(name='COLTRPStartDateIDX', column_names=['StartDate'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='agent1', type='many-to-one',required=False, relatedModelName='Agent', column='Agent1ID'),
-            Relationship(is_relationship=True, name='agent2', type='many-to-one',required=False, relatedModelName='Agent', column='Agent2ID'),
-            Relationship(is_relationship=True, name='collectingEvents', type='one-to-many',required=False, relatedModelName='CollectingEvent', otherSideName='collectingTrip'),
-            Relationship(is_relationship=True, name='collectingTripAttachments', type='one-to-many',required=False, relatedModelName='CollectingTripAttachment', otherSideName='collectingTrip'),
-            Relationship(is_relationship=True, name='collectingTripAttribute', type='many-to-one',required=False, relatedModelName='CollectingTripAttribute', column='CollectingTripAttributeID', otherSideName='collectingTrips'),
-            Relationship(is_relationship=True, name='collectingTripAuthorizations', type='one-to-many',required=False, relatedModelName='CollectingTripAuthorization', otherSideName='collectingTrip'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
-            Relationship(is_relationship=True, name='fundingAgents', type='one-to-many',required=False, relatedModelName='FundingAgent', otherSideName='collectingTrip'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='agent1', type='many-to-one',required=False, relatedModelName='Agent', column='Agent1ID'),
+            Relationship(name='agent2', type='many-to-one',required=False, relatedModelName='Agent', column='Agent2ID'),
+            Relationship(name='collectingEvents', type='one-to-many',required=False, relatedModelName='CollectingEvent', otherSideName='collectingTrip'),
+            Relationship(name='collectingTripAttachments', type='one-to-many',required=False, relatedModelName='CollectingTripAttachment', otherSideName='collectingTrip'),
+            Relationship(name='collectingTripAttribute', type='many-to-one',required=False, relatedModelName='CollectingTripAttribute', column='CollectingTripAttributeID', otherSideName='collectingTrips'),
+            Relationship(name='collectingTripAuthorizations', type='one-to-many',required=False, relatedModelName='CollectingTripAuthorization', otherSideName='collectingTrip'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
+            Relationship(name='fundingAgents', type='one-to-many',required=False, relatedModelName='FundingAgent', otherSideName='collectingTrip'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -1300,10 +1300,10 @@ datamodel = Datamodel(tables=[
             Index(name='CTAColMemIDX', column_names=['CollectionMemberID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='collectingTripAttachments'),
-            Relationship(is_relationship=True, name='collectingTrip', type='many-to-one',required=True, relatedModelName='CollectingTrip', column='CollectingTripID', otherSideName='collectingTripAttachments'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='collectingTripAttachments'),
+            Relationship(name='collectingTrip', type='many-to-one',required=True, relatedModelName='CollectingTrip', column='CollectingTripID', otherSideName='collectingTripAttachments'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -1373,10 +1373,10 @@ datamodel = Datamodel(tables=[
             Index(name='COLTRPSDispIDX', column_names=['DisciplineID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='collectingTrips', type='one-to-many',required=False, relatedModelName='CollectingTrip', otherSideName='collectingTripAttribute'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='collectingTrips', type='one-to-many',required=False, relatedModelName='CollectingTrip', otherSideName='collectingTripAttribute'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -1399,10 +1399,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='collectingTrip', type='many-to-one',required=False, relatedModelName='CollectingTrip', column='CollectingTripID', otherSideName='collectingTripAuthorizations'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='permit', type='many-to-one',required=True, relatedModelName='Permit', column='PermitID', otherSideName='collectingTripAuthorizations')
+            Relationship(name='collectingTrip', type='many-to-one',required=False, relatedModelName='CollectingTrip', column='CollectingTripID', otherSideName='collectingTripAuthorizations'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='permit', type='many-to-one',required=True, relatedModelName='Permit', column='PermitID', otherSideName='collectingTripAuthorizations')
         ],
         fieldAliases=[
 
@@ -1448,19 +1448,19 @@ datamodel = Datamodel(tables=[
             Index(name='CollectionGuidIDX', column_names=['GUID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='adminContact', type='many-to-one',required=False, relatedModelName='Agent', column='AdminContactID'),
-            Relationship(is_relationship=True, name='contentContacts', type='one-to-many',required=False, relatedModelName='Agent', otherSideName='collContentContact'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID', otherSideName='collections'),
-            Relationship(is_relationship=True, name='institutionNetwork', type='many-to-one',required=False, relatedModelName='Institution', column='InstitutionNetworkID'),
-            Relationship(is_relationship=True, name='leftSideRelTypes', type='one-to-many',required=False, relatedModelName='CollectionRelType', otherSideName='leftSideCollection'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='numberingSchemes', type='many-to-many',required=False, relatedModelName='AutoNumberingScheme', otherSideName='collections'),
-            Relationship(is_relationship=True, name='pickLists', type='one-to-many',required=False, relatedModelName='PickList', otherSideName='collection'),
-            Relationship(is_relationship=True, name='prepTypes', type='one-to-many',required=False, relatedModelName='PrepType', otherSideName='collection'),
-            Relationship(is_relationship=True, name='rightSideRelTypes', type='one-to-many',required=False, relatedModelName='CollectionRelType', otherSideName='rightSideCollection'),
-            Relationship(is_relationship=True, name='technicalContacts', type='one-to-many',required=False, relatedModelName='Agent', otherSideName='collTechContact'),
-            Relationship(is_relationship=True, name='userGroups', type='one-to-many',required=False, relatedModelName='SpPrincipal', otherSideName='scope')
+            Relationship(name='adminContact', type='many-to-one',required=False, relatedModelName='Agent', column='AdminContactID'),
+            Relationship(name='contentContacts', type='one-to-many',required=False, relatedModelName='Agent', otherSideName='collContentContact'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID', otherSideName='collections'),
+            Relationship(name='institutionNetwork', type='many-to-one',required=False, relatedModelName='Institution', column='InstitutionNetworkID'),
+            Relationship(name='leftSideRelTypes', type='one-to-many',required=False, relatedModelName='CollectionRelType', otherSideName='leftSideCollection'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='numberingSchemes', type='many-to-many',required=False, relatedModelName='AutoNumberingScheme', otherSideName='collections'),
+            Relationship(name='pickLists', type='one-to-many',required=False, relatedModelName='PickList', otherSideName='collection'),
+            Relationship(name='prepTypes', type='one-to-many',required=False, relatedModelName='PrepType', otherSideName='collection'),
+            Relationship(name='rightSideRelTypes', type='one-to-many',required=False, relatedModelName='CollectionRelType', otherSideName='rightSideCollection'),
+            Relationship(name='technicalContacts', type='one-to-many',required=False, relatedModelName='Agent', otherSideName='collTechContact'),
+            Relationship(name='userGroups', type='one-to-many',required=False, relatedModelName='SpPrincipal', otherSideName='scope')
         ],
         fieldAliases=[
 
@@ -1547,37 +1547,37 @@ datamodel = Datamodel(tables=[
             Index(name='COColMemIDX', column_names=['CollectionmemberID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='accession', type='many-to-one',required=False, relatedModelName='Accession', column='AccessionID', otherSideName='collectionObjects'),
-            Relationship(is_relationship=True, name='agent1', type='many-to-one',required=False, relatedModelName='Agent', column='Agent1ID'),
-            Relationship(is_relationship=True, name='appraisal', type='many-to-one',required=False, relatedModelName='Appraisal', column='AppraisalID', otherSideName='collectionObjects'),
-            Relationship(is_relationship=True, name='cataloger', type='many-to-one',required=False, relatedModelName='Agent', column='CatalogerID'),
-            Relationship(is_relationship=True, name='collectingEvent', type='many-to-one',required=False, relatedModelName='CollectingEvent', column='CollectingEventID', otherSideName='collectionObjects'),
-            Relationship(is_relationship=True, name='collection', type='many-to-one',required=True, relatedModelName='Collection', column='CollectionID'),
-            Relationship(is_relationship=True, name='collectionObjectAttachments', type='one-to-many',required=False, relatedModelName='CollectionObjectAttachment', otherSideName='collectionObject'),
-            Relationship(is_relationship=True, name='collectionObjectAttribute', type='many-to-one',required=False, relatedModelName='CollectionObjectAttribute', column='CollectionObjectAttributeID', otherSideName='collectionObjects'),
-            Relationship(is_relationship=True, name='collectionObjectAttrs', type='one-to-many',required=False, relatedModelName='CollectionObjectAttr', otherSideName='collectionObject'),
-            Relationship(is_relationship=True, name='collectionObjectCitations', type='one-to-many',required=False, relatedModelName='CollectionObjectCitation', otherSideName='collectionObject'),
-            Relationship(is_relationship=True, name='collectionObjectProperties', type='one-to-many',required=False, relatedModelName='CollectionObjectProperty', otherSideName='collectionObject'),
-            Relationship(is_relationship=True, name='conservDescriptions', type='one-to-many',required=False, relatedModelName='ConservDescription', otherSideName='collectionObject'),
-            Relationship(is_relationship=True, name='container', type='many-to-one',required=False, relatedModelName='Container', column='ContainerID', otherSideName='collectionObjects'),
-            Relationship(is_relationship=True, name='containerOwner', type='many-to-one',required=False, relatedModelName='Container', column='ContainerOwnerID', otherSideName='collectionObjectKids'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='determinations', type='one-to-many',required=False, relatedModelName='Determination', otherSideName='collectionObject'),
-            Relationship(is_relationship=True, name='dnaSequences', type='one-to-many',required=False, relatedModelName='DNASequence', otherSideName='collectionObject'),
-            Relationship(is_relationship=True, name='embargoAuthority', type='many-to-one',required=False, relatedModelName='Agent', column='EmbargoAuthorityID'),
-            Relationship(is_relationship=True, name='exsiccataItems', type='one-to-many',required=False, relatedModelName='ExsiccataItem', otherSideName='collectionObject'),
-            Relationship(is_relationship=True, name='fieldNotebookPage', type='many-to-one',required=False, relatedModelName='FieldNotebookPage', column='FieldNotebookPageID', otherSideName='collectionObjects'),
-            Relationship(is_relationship=True, name='inventorizedBy', type='many-to-one',required=False, relatedModelName='Agent', column='InventorizedByID'),
-            Relationship(is_relationship=True, name='leftSideRels', type='one-to-many',required=False, relatedModelName='CollectionRelationship', otherSideName='leftSide'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='otherIdentifiers', type='one-to-many',required=False, relatedModelName='OtherIdentifier', otherSideName='collectionObject'),
-            Relationship(is_relationship=True, name='paleoContext', type='many-to-one',required=False, relatedModelName='PaleoContext', column='PaleoContextID', otherSideName='collectionObjects'),
-            Relationship(is_relationship=True, name='preparations', type='one-to-many',required=False, relatedModelName='Preparation', otherSideName='collectionObject'),
-            Relationship(is_relationship=True, name='projects', type='many-to-many',required=False, relatedModelName='Project', otherSideName='collectionObjects'),
-            Relationship(is_relationship=True, name='rightSideRels', type='one-to-many',required=False, relatedModelName='CollectionRelationship', otherSideName='rightSide'),
-            Relationship(is_relationship=True, name='treatmentEvents', type='one-to-many',required=False, relatedModelName='TreatmentEvent', otherSideName='collectionObject'),
-            Relationship(is_relationship=True, name='visibilitySetBy', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='VisibilitySetByID'),
-            Relationship(is_relationship=True, name='voucherRelationships', type='one-to-many',required=False, relatedModelName='VoucherRelationship', otherSideName='collectionObject')
+            Relationship(name='accession', type='many-to-one',required=False, relatedModelName='Accession', column='AccessionID', otherSideName='collectionObjects'),
+            Relationship(name='agent1', type='many-to-one',required=False, relatedModelName='Agent', column='Agent1ID'),
+            Relationship(name='appraisal', type='many-to-one',required=False, relatedModelName='Appraisal', column='AppraisalID', otherSideName='collectionObjects'),
+            Relationship(name='cataloger', type='many-to-one',required=False, relatedModelName='Agent', column='CatalogerID'),
+            Relationship(name='collectingEvent', type='many-to-one',required=False, relatedModelName='CollectingEvent', column='CollectingEventID', otherSideName='collectionObjects'),
+            Relationship(name='collection', type='many-to-one',required=True, relatedModelName='Collection', column='CollectionID'),
+            Relationship(name='collectionObjectAttachments', type='one-to-many',required=False, relatedModelName='CollectionObjectAttachment', otherSideName='collectionObject'),
+            Relationship(name='collectionObjectAttribute', type='many-to-one',required=False, relatedModelName='CollectionObjectAttribute', column='CollectionObjectAttributeID', otherSideName='collectionObjects'),
+            Relationship(name='collectionObjectAttrs', type='one-to-many',required=False, relatedModelName='CollectionObjectAttr', otherSideName='collectionObject'),
+            Relationship(name='collectionObjectCitations', type='one-to-many',required=False, relatedModelName='CollectionObjectCitation', otherSideName='collectionObject'),
+            Relationship(name='collectionObjectProperties', type='one-to-many',required=False, relatedModelName='CollectionObjectProperty', otherSideName='collectionObject'),
+            Relationship(name='conservDescriptions', type='one-to-many',required=False, relatedModelName='ConservDescription', otherSideName='collectionObject'),
+            Relationship(name='container', type='many-to-one',required=False, relatedModelName='Container', column='ContainerID', otherSideName='collectionObjects'),
+            Relationship(name='containerOwner', type='many-to-one',required=False, relatedModelName='Container', column='ContainerOwnerID', otherSideName='collectionObjectKids'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='determinations', type='one-to-many',required=False, relatedModelName='Determination', otherSideName='collectionObject'),
+            Relationship(name='dnaSequences', type='one-to-many',required=False, relatedModelName='DNASequence', otherSideName='collectionObject'),
+            Relationship(name='embargoAuthority', type='many-to-one',required=False, relatedModelName='Agent', column='EmbargoAuthorityID'),
+            Relationship(name='exsiccataItems', type='one-to-many',required=False, relatedModelName='ExsiccataItem', otherSideName='collectionObject'),
+            Relationship(name='fieldNotebookPage', type='many-to-one',required=False, relatedModelName='FieldNotebookPage', column='FieldNotebookPageID', otherSideName='collectionObjects'),
+            Relationship(name='inventorizedBy', type='many-to-one',required=False, relatedModelName='Agent', column='InventorizedByID'),
+            Relationship(name='leftSideRels', type='one-to-many',required=False, relatedModelName='CollectionRelationship', otherSideName='leftSide'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='otherIdentifiers', type='one-to-many',required=False, relatedModelName='OtherIdentifier', otherSideName='collectionObject'),
+            Relationship(name='paleoContext', type='many-to-one',required=False, relatedModelName='PaleoContext', column='PaleoContextID', otherSideName='collectionObjects'),
+            Relationship(name='preparations', type='one-to-many',required=False, relatedModelName='Preparation', otherSideName='collectionObject'),
+            Relationship(name='projects', type='many-to-many',required=False, relatedModelName='Project', otherSideName='collectionObjects'),
+            Relationship(name='rightSideRels', type='one-to-many',required=False, relatedModelName='CollectionRelationship', otherSideName='rightSide'),
+            Relationship(name='treatmentEvents', type='one-to-many',required=False, relatedModelName='TreatmentEvent', otherSideName='collectionObject'),
+            Relationship(name='visibilitySetBy', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='VisibilitySetByID'),
+            Relationship(name='voucherRelationships', type='one-to-many',required=False, relatedModelName='VoucherRelationship', otherSideName='collectionObject')
         ],
         fieldAliases=[
 
@@ -1604,10 +1604,10 @@ datamodel = Datamodel(tables=[
             Index(name='COLOBJATTColMemIDX', column_names=['CollectionMemberID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='collectionObjectAttachments'),
-            Relationship(is_relationship=True, name='collectionObject', type='many-to-one',required=True, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='collectionObjectAttachments'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='collectionObjectAttachments'),
+            Relationship(name='collectionObject', type='many-to-one',required=True, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='collectionObjectAttachments'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -1634,10 +1634,10 @@ datamodel = Datamodel(tables=[
             Index(name='COLOBJATRSColMemIDX', column_names=['CollectionMemberID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='collectionObject', type='many-to-one',required=True, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='collectionObjectAttrs'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='definition', type='many-to-one',required=True, relatedModelName='AttributeDef', column='AttributeDefID', otherSideName='collectionObjectAttrs'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='collectionObject', type='many-to-one',required=True, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='collectionObjectAttrs'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='definition', type='many-to-one',required=True, relatedModelName='AttributeDef', column='AttributeDefID', otherSideName='collectionObjectAttrs'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -1780,10 +1780,10 @@ datamodel = Datamodel(tables=[
             Index(name='COLOBJATTRSColMemIDX', column_names=['CollectionMemberID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='agent1', type='many-to-one',required=False, relatedModelName='Agent', column='Agent1ID'),
-            Relationship(is_relationship=True, name='collectionObjects', type='one-to-many',required=False, relatedModelName='CollectionObject', otherSideName='collectionObjectAttribute'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='agent1', type='many-to-one',required=False, relatedModelName='Agent', column='Agent1ID'),
+            Relationship(name='collectionObjects', type='one-to-many',required=False, relatedModelName='CollectionObject', otherSideName='collectionObjectAttribute'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -1811,10 +1811,10 @@ datamodel = Datamodel(tables=[
             Index(name='COCITColMemIDX', column_names=['CollectionMemberID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='collectionObject', type='many-to-one',required=True, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='collectionObjectCitations'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='referenceWork', type='many-to-one',required=True, relatedModelName='ReferenceWork', column='ReferenceWorkID', otherSideName='collectionObjectCitations')
+            Relationship(name='collectionObject', type='many-to-one',required=True, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='collectionObjectCitations'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='referenceWork', type='many-to-one',required=True, relatedModelName='ReferenceWork', column='ReferenceWorkID', otherSideName='collectionObjectCitations')
         ],
         fieldAliases=[
 
@@ -1979,29 +1979,29 @@ datamodel = Datamodel(tables=[
             Index(name='COLOBJPROPColMemIDX', column_names=['CollectionMemberID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='agent1', type='many-to-one',required=False, relatedModelName='Agent', column='Agent1ID'),
-            Relationship(is_relationship=True, name='agent10', type='many-to-one',required=False, relatedModelName='Agent', column='Agent10ID'),
-            Relationship(is_relationship=True, name='agent11', type='many-to-one',required=False, relatedModelName='Agent', column='Agent11ID'),
-            Relationship(is_relationship=True, name='agent12', type='many-to-one',required=False, relatedModelName='Agent', column='Agent12ID'),
-            Relationship(is_relationship=True, name='agent13', type='many-to-one',required=False, relatedModelName='Agent', column='Agent13ID'),
-            Relationship(is_relationship=True, name='agent14', type='many-to-one',required=False, relatedModelName='Agent', column='Agent14ID'),
-            Relationship(is_relationship=True, name='agent15', type='many-to-one',required=False, relatedModelName='Agent', column='Agent15ID'),
-            Relationship(is_relationship=True, name='agent16', type='many-to-one',required=False, relatedModelName='Agent', column='Agent16ID'),
-            Relationship(is_relationship=True, name='agent17', type='many-to-one',required=False, relatedModelName='Agent', column='Agent17ID'),
-            Relationship(is_relationship=True, name='agent18', type='many-to-one',required=False, relatedModelName='Agent', column='Agent18ID'),
-            Relationship(is_relationship=True, name='agent19', type='many-to-one',required=False, relatedModelName='Agent', column='Agent19ID'),
-            Relationship(is_relationship=True, name='agent2', type='many-to-one',required=False, relatedModelName='Agent', column='Agent2ID'),
-            Relationship(is_relationship=True, name='agent20', type='many-to-one',required=False, relatedModelName='Agent', column='Agent20ID'),
-            Relationship(is_relationship=True, name='agent3', type='many-to-one',required=False, relatedModelName='Agent', column='Agent3ID'),
-            Relationship(is_relationship=True, name='agent4', type='many-to-one',required=False, relatedModelName='Agent', column='Agent4ID'),
-            Relationship(is_relationship=True, name='agent5', type='many-to-one',required=False, relatedModelName='Agent', column='Agent5ID'),
-            Relationship(is_relationship=True, name='agent6', type='many-to-one',required=False, relatedModelName='Agent', column='Agent6ID'),
-            Relationship(is_relationship=True, name='agent7', type='many-to-one',required=False, relatedModelName='Agent', column='Agent7ID'),
-            Relationship(is_relationship=True, name='agent8', type='many-to-one',required=False, relatedModelName='Agent', column='Agent8D'),
-            Relationship(is_relationship=True, name='agent9', type='many-to-one',required=False, relatedModelName='Agent', column='Agent9ID'),
-            Relationship(is_relationship=True, name='collectionObject', type='many-to-one',required=True, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='collectionObjectProperties'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='agent1', type='many-to-one',required=False, relatedModelName='Agent', column='Agent1ID'),
+            Relationship(name='agent10', type='many-to-one',required=False, relatedModelName='Agent', column='Agent10ID'),
+            Relationship(name='agent11', type='many-to-one',required=False, relatedModelName='Agent', column='Agent11ID'),
+            Relationship(name='agent12', type='many-to-one',required=False, relatedModelName='Agent', column='Agent12ID'),
+            Relationship(name='agent13', type='many-to-one',required=False, relatedModelName='Agent', column='Agent13ID'),
+            Relationship(name='agent14', type='many-to-one',required=False, relatedModelName='Agent', column='Agent14ID'),
+            Relationship(name='agent15', type='many-to-one',required=False, relatedModelName='Agent', column='Agent15ID'),
+            Relationship(name='agent16', type='many-to-one',required=False, relatedModelName='Agent', column='Agent16ID'),
+            Relationship(name='agent17', type='many-to-one',required=False, relatedModelName='Agent', column='Agent17ID'),
+            Relationship(name='agent18', type='many-to-one',required=False, relatedModelName='Agent', column='Agent18ID'),
+            Relationship(name='agent19', type='many-to-one',required=False, relatedModelName='Agent', column='Agent19ID'),
+            Relationship(name='agent2', type='many-to-one',required=False, relatedModelName='Agent', column='Agent2ID'),
+            Relationship(name='agent20', type='many-to-one',required=False, relatedModelName='Agent', column='Agent20ID'),
+            Relationship(name='agent3', type='many-to-one',required=False, relatedModelName='Agent', column='Agent3ID'),
+            Relationship(name='agent4', type='many-to-one',required=False, relatedModelName='Agent', column='Agent4ID'),
+            Relationship(name='agent5', type='many-to-one',required=False, relatedModelName='Agent', column='Agent5ID'),
+            Relationship(name='agent6', type='many-to-one',required=False, relatedModelName='Agent', column='Agent6ID'),
+            Relationship(name='agent7', type='many-to-one',required=False, relatedModelName='Agent', column='Agent7ID'),
+            Relationship(name='agent8', type='many-to-one',required=False, relatedModelName='Agent', column='Agent8D'),
+            Relationship(name='agent9', type='many-to-one',required=False, relatedModelName='Agent', column='Agent9ID'),
+            Relationship(name='collectionObject', type='many-to-one',required=True, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='collectionObjectProperties'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -2027,10 +2027,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='leftSideCollection', type='many-to-one',required=False, relatedModelName='Collection', column='LeftSideCollectionID', otherSideName='leftSideRelTypes'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='rightSideCollection', type='many-to-one',required=False, relatedModelName='Collection', column='RightSideCollectionID', otherSideName='rightSideRelTypes')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='leftSideCollection', type='many-to-one',required=False, relatedModelName='Collection', column='LeftSideCollectionID', otherSideName='leftSideRelTypes'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='rightSideCollection', type='many-to-one',required=False, relatedModelName='Collection', column='RightSideCollectionID', otherSideName='rightSideRelTypes')
         ],
         fieldAliases=[
 
@@ -2056,11 +2056,11 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='collectionRelType', type='many-to-one',required=False, relatedModelName='CollectionRelType', column='CollectionRelTypeID'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='leftSide', type='many-to-one',required=True, relatedModelName='CollectionObject', column='LeftSideCollectionID', otherSideName='leftSideRels'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='rightSide', type='many-to-one',required=True, relatedModelName='CollectionObject', column='RightSideCollectionID', otherSideName='rightSideRels')
+            Relationship(name='collectionRelType', type='many-to-one',required=False, relatedModelName='CollectionRelType', column='CollectionRelTypeID'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='leftSide', type='many-to-one',required=True, relatedModelName='CollectionObject', column='LeftSideCollectionID', otherSideName='leftSideRels'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='rightSide', type='many-to-one',required=True, relatedModelName='CollectionObject', column='RightSideCollectionID', otherSideName='rightSideRels')
         ],
         fieldAliases=[
 
@@ -2091,11 +2091,11 @@ datamodel = Datamodel(tables=[
             Index(name='COLTRDivIDX', column_names=['DivisionID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID', otherSideName='collectors'),
-            Relationship(is_relationship=True, name='collectingEvent', type='many-to-one',required=True, relatedModelName='CollectingEvent', column='CollectingEventID', otherSideName='collectors'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='division', type='many-to-one',required=False, relatedModelName='Division', column='DivisionID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID', otherSideName='collectors'),
+            Relationship(name='collectingEvent', type='many-to-one',required=True, relatedModelName='CollectingEvent', column='CollectingEventID', otherSideName='collectors'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='division', type='many-to-one',required=False, relatedModelName='Division', column='DivisionID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -2125,10 +2125,10 @@ datamodel = Datamodel(tables=[
             Index(name='CommonNameTxCountryIDX', column_names=['Country'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='citations', type='one-to-many',required=False, relatedModelName='CommonNameTxCitation', otherSideName='commonNameTx'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='taxon', type='many-to-one',required=True, relatedModelName='Taxon', column='TaxonID', otherSideName='commonNames')
+            Relationship(name='citations', type='one-to-many',required=False, relatedModelName='CommonNameTxCitation', otherSideName='commonNameTx'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='taxon', type='many-to-one',required=True, relatedModelName='Taxon', column='TaxonID', otherSideName='commonNames')
         ],
         fieldAliases=[
 
@@ -2161,10 +2161,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='commonNameTx', type='many-to-one',required=True, relatedModelName='CommonNameTx', column='CommonNameTxID', otherSideName='citations'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='referenceWork', type='many-to-one',required=True, relatedModelName='ReferenceWork', column='ReferenceWorkID')
+            Relationship(name='commonNameTx', type='many-to-one',required=True, relatedModelName='CommonNameTx', column='CommonNameTxID', otherSideName='citations'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='referenceWork', type='many-to-one',required=True, relatedModelName='ReferenceWork', column='ReferenceWorkID')
         ],
         fieldAliases=[
 
@@ -2230,13 +2230,13 @@ datamodel = Datamodel(tables=[
             Index(name='ConservDescShortDescIDX', column_names=['ShortDesc'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='collectionObject', type='many-to-one',required=False, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='conservDescriptions'),
-            Relationship(is_relationship=True, name='conservDescriptionAttachments', type='one-to-many',required=False, relatedModelName='ConservDescriptionAttachment', otherSideName='conservDescription'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='division', type='many-to-one',required=False, relatedModelName='Division', column='DivisionID'),
-            Relationship(is_relationship=True, name='events', type='one-to-many',required=False, relatedModelName='ConservEvent', otherSideName='conservDescription'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='preparation', type='many-to-one',required=False, relatedModelName='Preparation', column='PreparationID', otherSideName='conservDescriptions')
+            Relationship(name='collectionObject', type='many-to-one',required=False, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='conservDescriptions'),
+            Relationship(name='conservDescriptionAttachments', type='one-to-many',required=False, relatedModelName='ConservDescriptionAttachment', otherSideName='conservDescription'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='division', type='many-to-one',required=False, relatedModelName='Division', column='DivisionID'),
+            Relationship(name='events', type='one-to-many',required=False, relatedModelName='ConservEvent', otherSideName='conservDescription'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='preparation', type='many-to-one',required=False, relatedModelName='Preparation', column='PreparationID', otherSideName='conservDescriptions')
         ],
         fieldAliases=[
 
@@ -2260,10 +2260,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='conservDescriptionAttachments'),
-            Relationship(is_relationship=True, name='conservDescription', type='many-to-one',required=True, relatedModelName='ConservDescription', column='ConservDescriptionID', otherSideName='conservDescriptionAttachments'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='conservDescriptionAttachments'),
+            Relationship(name='conservDescription', type='many-to-one',required=True, relatedModelName='ConservDescription', column='ConservDescriptionID', otherSideName='conservDescriptionAttachments'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -2309,13 +2309,13 @@ datamodel = Datamodel(tables=[
             Index(name='ConservCompletedDateIDX', column_names=['completedDate'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='conservDescription', type='many-to-one',required=True, relatedModelName='ConservDescription', column='ConservDescriptionID', otherSideName='events'),
-            Relationship(is_relationship=True, name='conservEventAttachments', type='one-to-many',required=False, relatedModelName='ConservEventAttachment', otherSideName='conservEvent'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='curator', type='many-to-one',required=False, relatedModelName='Agent', column='CuratorID'),
-            Relationship(is_relationship=True, name='examinedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ExaminedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='treatedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='TreatedByAgentID')
+            Relationship(name='conservDescription', type='many-to-one',required=True, relatedModelName='ConservDescription', column='ConservDescriptionID', otherSideName='events'),
+            Relationship(name='conservEventAttachments', type='one-to-many',required=False, relatedModelName='ConservEventAttachment', otherSideName='conservEvent'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='curator', type='many-to-one',required=False, relatedModelName='Agent', column='CuratorID'),
+            Relationship(name='examinedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ExaminedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='treatedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='TreatedByAgentID')
         ],
         fieldAliases=[
 
@@ -2339,10 +2339,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='conservEventAttachments'),
-            Relationship(is_relationship=True, name='conservEvent', type='many-to-one',required=True, relatedModelName='ConservEvent', column='ConservEventID', otherSideName='conservEventAttachments'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='conservEventAttachments'),
+            Relationship(name='conservEvent', type='many-to-one',required=True, relatedModelName='ConservEvent', column='ConservEventID', otherSideName='conservEventAttachments'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -2372,13 +2372,13 @@ datamodel = Datamodel(tables=[
             Index(name='ContainerMemIDX', column_names=['CollectionMemberID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='children', type='one-to-many',required=False, relatedModelName='Container', otherSideName='parent'),
-            Relationship(is_relationship=True, name='collectionObjectKids', type='one-to-many',required=False, relatedModelName='CollectionObject', otherSideName='containerOwner'),
-            Relationship(is_relationship=True, name='collectionObjects', type='one-to-many',required=False, relatedModelName='CollectionObject', otherSideName='container'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='parent', type='many-to-one',required=False, relatedModelName='Container', column='ParentID', otherSideName='children'),
-            Relationship(is_relationship=True, name='storage', type='many-to-one',required=False, relatedModelName='Storage', column='StorageID', otherSideName='containers')
+            Relationship(name='children', type='one-to-many',required=False, relatedModelName='Container', otherSideName='parent'),
+            Relationship(name='collectionObjectKids', type='one-to-many',required=False, relatedModelName='CollectionObject', otherSideName='containerOwner'),
+            Relationship(name='collectionObjects', type='one-to-many',required=False, relatedModelName='CollectionObject', otherSideName='container'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='parent', type='many-to-one',required=False, relatedModelName='Container', column='ParentID', otherSideName='children'),
+            Relationship(name='storage', type='many-to-one',required=False, relatedModelName='Storage', column='StorageID', otherSideName='containers')
         ],
         fieldAliases=[
 
@@ -2427,9 +2427,9 @@ datamodel = Datamodel(tables=[
             Index(name='DesignatorIDX', column_names=['PrimerDesignator'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='dnaSequencingRuns', type='one-to-many',required=False, relatedModelName='DNASequencingRun', otherSideName='dnaPrimer'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='dnaSequencingRuns', type='one-to-many',required=False, relatedModelName='DNASequencingRun', otherSideName='dnaPrimer'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -2484,16 +2484,16 @@ datamodel = Datamodel(tables=[
             Index(name='BOLDSampleIDX', column_names=['BOLDSampleID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attachments', type='one-to-many',required=False, relatedModelName='DNASequenceAttachment', otherSideName='dnaSequence'),
-            Relationship(is_relationship=True, name='collectionObject', type='many-to-one',required=False, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='dnaSequences'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='dnaSequencingRuns', type='one-to-many',required=False, relatedModelName='DNASequencingRun', otherSideName='dnaSequence'),
-            Relationship(is_relationship=True, name='extractor', type='many-to-one',required=False, relatedModelName='Agent', column='ExtractorID'),
-            Relationship(is_relationship=True, name='extractors', type='one-to-many',required=False, relatedModelName='Extractor', otherSideName='dnaSequence'),
-            Relationship(is_relationship=True, name='materialSample', type='many-to-one',required=False, relatedModelName='MaterialSample', column='MaterialSampleID', otherSideName='dnaSequences'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='pcrPersons', type='one-to-many',required=False, relatedModelName='PcrPerson', otherSideName='dnaSequence'),
-            Relationship(is_relationship=True, name='sequencer', type='many-to-one',required=False, relatedModelName='Agent', column='AgentID')
+            Relationship(name='attachments', type='one-to-many',required=False, relatedModelName='DNASequenceAttachment', otherSideName='dnaSequence'),
+            Relationship(name='collectionObject', type='many-to-one',required=False, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='dnaSequences'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='dnaSequencingRuns', type='one-to-many',required=False, relatedModelName='DNASequencingRun', otherSideName='dnaSequence'),
+            Relationship(name='extractor', type='many-to-one',required=False, relatedModelName='Agent', column='ExtractorID'),
+            Relationship(name='extractors', type='one-to-many',required=False, relatedModelName='Extractor', otherSideName='dnaSequence'),
+            Relationship(name='materialSample', type='many-to-one',required=False, relatedModelName='MaterialSample', column='MaterialSampleID', otherSideName='dnaSequences'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='pcrPersons', type='one-to-many',required=False, relatedModelName='PcrPerson', otherSideName='dnaSequence'),
+            Relationship(name='sequencer', type='many-to-one',required=False, relatedModelName='Agent', column='AgentID')
         ],
         fieldAliases=[
 
@@ -2517,10 +2517,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='dnaSequenceAttachments'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='dnaSequence', type='many-to-one',required=True, relatedModelName='DNASequence', column='DnaSequenceID', otherSideName='attachments'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='dnaSequenceAttachments'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='dnaSequence', type='many-to-one',required=True, relatedModelName='DNASequence', column='DnaSequenceID', otherSideName='attachments'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -2574,14 +2574,14 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attachments', type='one-to-many',required=False, relatedModelName='DNASequencingRunAttachment', otherSideName='dnaSequencingRun'),
-            Relationship(is_relationship=True, name='citations', type='one-to-many',required=False, relatedModelName='DNASequencingRunCitation', otherSideName='sequencingRun'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='dnaPrimer', type='many-to-one',required=False, relatedModelName='DNAPrimer', column='DNAPrimerID', otherSideName='dnaSequencingRuns'),
-            Relationship(is_relationship=True, name='dnaSequence', type='many-to-one',required=True, relatedModelName='DNASequence', column='DNASequenceID', otherSideName='dnaSequencingRuns'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='preparedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='PreparedByAgentID'),
-            Relationship(is_relationship=True, name='runByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='RunByAgentID')
+            Relationship(name='attachments', type='one-to-many',required=False, relatedModelName='DNASequencingRunAttachment', otherSideName='dnaSequencingRun'),
+            Relationship(name='citations', type='one-to-many',required=False, relatedModelName='DNASequencingRunCitation', otherSideName='sequencingRun'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='dnaPrimer', type='many-to-one',required=False, relatedModelName='DNAPrimer', column='DNAPrimerID', otherSideName='dnaSequencingRuns'),
+            Relationship(name='dnaSequence', type='many-to-one',required=True, relatedModelName='DNASequence', column='DNASequenceID', otherSideName='dnaSequencingRuns'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='preparedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='PreparedByAgentID'),
+            Relationship(name='runByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='RunByAgentID')
         ],
         fieldAliases=[
 
@@ -2605,10 +2605,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='dnaSequencingRunAttachments'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='dnaSequencingRun', type='many-to-one',required=True, relatedModelName='DNASequencingRun', column='DnaSequencingRunID', otherSideName='attachments'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='dnaSequencingRunAttachments'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='dnaSequencingRun', type='many-to-one',required=True, relatedModelName='DNASequencingRun', column='DnaSequencingRunID', otherSideName='attachments'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -2643,10 +2643,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='referenceWork', type='many-to-one',required=True, relatedModelName='ReferenceWork', column='ReferenceWorkID'),
-            Relationship(is_relationship=True, name='sequencingRun', type='many-to-one',required=True, relatedModelName='DNASequencingRun', column='DNASequencingRunID', otherSideName='citations')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='referenceWork', type='many-to-one',required=True, relatedModelName='ReferenceWork', column='ReferenceWorkID'),
+            Relationship(name='sequencingRun', type='many-to-one',required=True, relatedModelName='DNASequencingRun', column='DNASequencingRunID', otherSideName='citations')
         ],
         fieldAliases=[
 
@@ -2669,8 +2669,8 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -2720,15 +2720,15 @@ datamodel = Datamodel(tables=[
             Index(name='DeaccessionDateIDX', column_names=['DeaccessionDate'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='agent1', type='many-to-one',required=False, relatedModelName='Agent', column='Agent1ID'),
-            Relationship(is_relationship=True, name='agent2', type='many-to-one',required=False, relatedModelName='Agent', column='Agent2ID'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='deaccessionAgents', type='one-to-many',required=False, relatedModelName='DeaccessionAgent', otherSideName='deaccession'),
-            Relationship(is_relationship=True, name='deaccessionAttachments', type='one-to-many',required=False, relatedModelName='DeaccessionAttachment', otherSideName='deaccession'),
-            Relationship(is_relationship=True, name='disposals', type='one-to-many',required=False, relatedModelName='Disposal', otherSideName='deaccession'),
-            Relationship(is_relationship=True, name='exchangeOuts', type='one-to-many',required=False, relatedModelName='ExchangeOut', otherSideName='deaccession'),
-            Relationship(is_relationship=True, name='gifts', type='one-to-many',required=False, relatedModelName='Gift', otherSideName='deaccession'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='agent1', type='many-to-one',required=False, relatedModelName='Agent', column='Agent1ID'),
+            Relationship(name='agent2', type='many-to-one',required=False, relatedModelName='Agent', column='Agent2ID'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='deaccessionAgents', type='one-to-many',required=False, relatedModelName='DeaccessionAgent', otherSideName='deaccession'),
+            Relationship(name='deaccessionAttachments', type='one-to-many',required=False, relatedModelName='DeaccessionAttachment', otherSideName='deaccession'),
+            Relationship(name='disposals', type='one-to-many',required=False, relatedModelName='Disposal', otherSideName='deaccession'),
+            Relationship(name='exchangeOuts', type='one-to-many',required=False, relatedModelName='ExchangeOut', otherSideName='deaccession'),
+            Relationship(name='gifts', type='one-to-many',required=False, relatedModelName='Gift', otherSideName='deaccession'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -2754,10 +2754,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='deaccession', type='many-to-one',required=True, relatedModelName='Deaccession', column='DeaccessionID', otherSideName='deaccessionAgents'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='deaccession', type='many-to-one',required=True, relatedModelName='Deaccession', column='DeaccessionID', otherSideName='deaccessionAgents'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -2783,10 +2783,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='deaccessionAttachments'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='deaccession', type='many-to-one',required=True, relatedModelName='Deaccession', column='DeaccessionID', otherSideName='deaccessionAttachments'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='deaccessionAttachments'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='deaccession', type='many-to-one',required=True, relatedModelName='Deaccession', column='DeaccessionID', otherSideName='deaccessionAttachments'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -2853,14 +2853,14 @@ datamodel = Datamodel(tables=[
             Index(name='TypeStatusNameIDX', column_names=['TypeStatusName'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='collectionObject', type='many-to-one',required=True, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='determinations'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='determinationCitations', type='one-to-many',required=False, relatedModelName='DeterminationCitation', otherSideName='determination'),
-            Relationship(is_relationship=True, name='determiner', type='many-to-one',required=False, relatedModelName='Agent', column='DeterminerID'),
-            Relationship(is_relationship=True, name='determiners', type='one-to-many',required=False, relatedModelName='Determiner', otherSideName='determination'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='preferredTaxon', type='many-to-one',required=False, relatedModelName='Taxon', column='PreferredTaxonID'),
-            Relationship(is_relationship=True, name='taxon', type='many-to-one',required=False, relatedModelName='Taxon', column='TaxonID', otherSideName='determinations')
+            Relationship(name='collectionObject', type='many-to-one',required=True, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='determinations'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='determinationCitations', type='one-to-many',required=False, relatedModelName='DeterminationCitation', otherSideName='determination'),
+            Relationship(name='determiner', type='many-to-one',required=False, relatedModelName='Agent', column='DeterminerID'),
+            Relationship(name='determiners', type='one-to-many',required=False, relatedModelName='Determiner', otherSideName='determination'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='preferredTaxon', type='many-to-one',required=False, relatedModelName='Taxon', column='PreferredTaxonID'),
+            Relationship(name='taxon', type='many-to-one',required=False, relatedModelName='Taxon', column='TaxonID', otherSideName='determinations')
         ],
         fieldAliases=[
 
@@ -2890,10 +2890,10 @@ datamodel = Datamodel(tables=[
             Index(name='DetCitColMemIDX', column_names=['CollectionMemberID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='determination', type='many-to-one',required=True, relatedModelName='Determination', column='DeterminationID', otherSideName='determinationCitations'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='referenceWork', type='many-to-one',required=True, relatedModelName='ReferenceWork', column='ReferenceWorkID', otherSideName='determinationCitations')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='determination', type='many-to-one',required=True, relatedModelName='Determination', column='DeterminationID', otherSideName='determinationCitations'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='referenceWork', type='many-to-one',required=True, relatedModelName='ReferenceWork', column='ReferenceWorkID', otherSideName='determinationCitations')
         ],
         fieldAliases=[
 
@@ -2922,10 +2922,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='determination', type='many-to-one',required=True, relatedModelName='Determination', column='DeterminationID', otherSideName='determiners'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='determination', type='many-to-one',required=True, relatedModelName='Determination', column='DeterminationID', otherSideName='determiners'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -2954,20 +2954,20 @@ datamodel = Datamodel(tables=[
             Index(name='DisciplineNameIDX', column_names=['Name'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attributeDefs', type='one-to-many',required=False, relatedModelName='AttributeDef', otherSideName='discipline'),
-            Relationship(is_relationship=True, name='collections', type='one-to-many',required=False, relatedModelName='Collection', otherSideName='discipline'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='dataType', type='many-to-one',required=True, relatedModelName='DataType', column='DataTypeID'),
-            Relationship(is_relationship=True, name='division', type='many-to-one',required=True, relatedModelName='Division', column='DivisionID', otherSideName='disciplines'),
-            Relationship(is_relationship=True, name='geographyTreeDef', type='many-to-one',required=True, relatedModelName='GeographyTreeDef', column='GeographyTreeDefID', otherSideName='disciplines'),
-            Relationship(is_relationship=True, name='geologicTimePeriodTreeDef', type='many-to-one',required=True, relatedModelName='GeologicTimePeriodTreeDef', column='GeologicTimePeriodTreeDefID', otherSideName='disciplines'),
-            Relationship(is_relationship=True, name='lithoStratTreeDef', type='many-to-one',required=False, relatedModelName='LithoStratTreeDef', column='LithoStratTreeDefID', otherSideName='disciplines'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='numberingSchemes', type='many-to-many',required=False, relatedModelName='AutoNumberingScheme', otherSideName='disciplines'),
-            Relationship(is_relationship=True, name='spExportSchemas', type='one-to-many',required=False, relatedModelName='SpExportSchema', otherSideName='discipline'),
-            Relationship(is_relationship=True, name='spLocaleContainers', type='one-to-many',required=False, relatedModelName='SpLocaleContainer', otherSideName='discipline'),
-            Relationship(is_relationship=True, name='taxonTreeDef', type='one-to-one',required=False, relatedModelName='TaxonTreeDef', column='TaxonTreeDefID', otherSideName='discipline'),
-            Relationship(is_relationship=True, name='userGroups', type='one-to-many',required=False, relatedModelName='SpPrincipal', otherSideName='scope')
+            Relationship(name='attributeDefs', type='one-to-many',required=False, relatedModelName='AttributeDef', otherSideName='discipline'),
+            Relationship(name='collections', type='one-to-many',required=False, relatedModelName='Collection', otherSideName='discipline'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='dataType', type='many-to-one',required=True, relatedModelName='DataType', column='DataTypeID'),
+            Relationship(name='division', type='many-to-one',required=True, relatedModelName='Division', column='DivisionID', otherSideName='disciplines'),
+            Relationship(name='geographyTreeDef', type='many-to-one',required=True, relatedModelName='GeographyTreeDef', column='GeographyTreeDefID', otherSideName='disciplines'),
+            Relationship(name='geologicTimePeriodTreeDef', type='many-to-one',required=True, relatedModelName='GeologicTimePeriodTreeDef', column='GeologicTimePeriodTreeDefID', otherSideName='disciplines'),
+            Relationship(name='lithoStratTreeDef', type='many-to-one',required=False, relatedModelName='LithoStratTreeDef', column='LithoStratTreeDefID', otherSideName='disciplines'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='numberingSchemes', type='many-to-many',required=False, relatedModelName='AutoNumberingScheme', otherSideName='disciplines'),
+            Relationship(name='spExportSchemas', type='one-to-many',required=False, relatedModelName='SpExportSchema', otherSideName='discipline'),
+            Relationship(name='spLocaleContainers', type='one-to-many',required=False, relatedModelName='SpLocaleContainer', otherSideName='discipline'),
+            Relationship(name='taxonTreeDef', type='one-to-one',required=False, relatedModelName='TaxonTreeDef', column='TaxonTreeDefID', otherSideName='discipline'),
+            Relationship(name='userGroups', type='one-to-many',required=False, relatedModelName='SpPrincipal', otherSideName='scope')
         ],
         fieldAliases=[
 
@@ -3003,12 +3003,12 @@ datamodel = Datamodel(tables=[
             Index(name='DisposalDateIDX', column_names=['DisposalDate'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='deaccession', type='many-to-one',required=False, relatedModelName='Deaccession', column='DeaccessionID', otherSideName='disposals'),
-            Relationship(is_relationship=True, name='disposalAgents', type='one-to-many',required=False, relatedModelName='DisposalAgent', otherSideName='disposal'),
-            Relationship(is_relationship=True, name='disposalAttachments', type='one-to-many',required=False, relatedModelName='DisposalAttachment', otherSideName='disposal'),
-            Relationship(is_relationship=True, name='disposalPreparations', type='one-to-many',required=False, relatedModelName='DisposalPreparation', otherSideName='disposal'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='deaccession', type='many-to-one',required=False, relatedModelName='Deaccession', column='DeaccessionID', otherSideName='disposals'),
+            Relationship(name='disposalAgents', type='one-to-many',required=False, relatedModelName='DisposalAgent', otherSideName='disposal'),
+            Relationship(name='disposalAttachments', type='one-to-many',required=False, relatedModelName='DisposalAttachment', otherSideName='disposal'),
+            Relationship(name='disposalPreparations', type='one-to-many',required=False, relatedModelName='DisposalPreparation', otherSideName='disposal'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -3034,10 +3034,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='disposal', type='many-to-one',required=True, relatedModelName='Disposal', column='DisposalID', otherSideName='disposalAgents'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='disposal', type='many-to-one',required=True, relatedModelName='Disposal', column='DisposalID', otherSideName='disposalAgents'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -3063,10 +3063,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='disposalAttachments'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='disposal', type='many-to-one',required=True, relatedModelName='Disposal', column='DisposalID', otherSideName='disposalAttachments'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='disposalAttachments'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='disposal', type='many-to-one',required=True, relatedModelName='Disposal', column='DisposalID', otherSideName='disposalAttachments'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -3092,11 +3092,11 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='disposal', type='many-to-one',required=True, relatedModelName='Disposal', column='DisposalID', otherSideName='disposalPreparations'),
-            Relationship(is_relationship=True, name='loanReturnPreparation', type='many-to-one',required=False, relatedModelName='LoanReturnPreparation', column='LoanReturnPreparationID', otherSideName='disposalPreparations'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='preparation', type='many-to-one',required=False, relatedModelName='Preparation', column='PreparationID', otherSideName='disposalPreparations')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='disposal', type='many-to-one',required=True, relatedModelName='Disposal', column='DisposalID', otherSideName='disposalPreparations'),
+            Relationship(name='loanReturnPreparation', type='many-to-one',required=False, relatedModelName='LoanReturnPreparation', column='LoanReturnPreparationID', otherSideName='disposalPreparations'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='preparation', type='many-to-one',required=False, relatedModelName='Preparation', column='PreparationID', otherSideName='disposalPreparations')
         ],
         fieldAliases=[
 
@@ -3129,14 +3129,14 @@ datamodel = Datamodel(tables=[
             Index(name='DivisionNameIDX', column_names=['Name'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='address', type='many-to-one',required=False, relatedModelName='Address', column='AddressID', otherSideName='divisions'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='disciplines', type='one-to-many',required=False, relatedModelName='Discipline', otherSideName='division'),
-            Relationship(is_relationship=True, name='institution', type='many-to-one',required=True, relatedModelName='Institution', column='InstitutionID', otherSideName='divisions'),
-            Relationship(is_relationship=True, name='members', type='one-to-many',required=False, relatedModelName='Agent', otherSideName='division'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='numberingSchemes', type='many-to-many',required=False, relatedModelName='AutoNumberingScheme', otherSideName='divisions'),
-            Relationship(is_relationship=True, name='userGroups', type='one-to-many',required=False, relatedModelName='SpPrincipal', otherSideName='scope')
+            Relationship(name='address', type='many-to-one',required=False, relatedModelName='Address', column='AddressID', otherSideName='divisions'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='disciplines', type='one-to-many',required=False, relatedModelName='Discipline', otherSideName='division'),
+            Relationship(name='institution', type='many-to-one',required=True, relatedModelName='Institution', column='InstitutionID', otherSideName='divisions'),
+            Relationship(name='members', type='one-to-many',required=False, relatedModelName='Agent', otherSideName='division'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='numberingSchemes', type='many-to-many',required=False, relatedModelName='AutoNumberingScheme', otherSideName='divisions'),
+            Relationship(name='userGroups', type='one-to-many',required=False, relatedModelName='SpPrincipal', otherSideName='scope')
         ],
         fieldAliases=[
 
@@ -3175,14 +3175,14 @@ datamodel = Datamodel(tables=[
             Index(name='DescriptionOfMaterialIDX', column_names=['DescriptionOfMaterial'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='addressOfRecord', type='many-to-one',required=False, relatedModelName='AddressOfRecord', column='AddressOfRecordID', otherSideName='exchangeIns'),
-            Relationship(is_relationship=True, name='agentCatalogedBy', type='many-to-one',required=True, relatedModelName='Agent', column='CatalogedByID'),
-            Relationship(is_relationship=True, name='agentReceivedFrom', type='many-to-one',required=True, relatedModelName='Agent', column='ReceivedFromOrganizationID'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='division', type='many-to-one',required=True, relatedModelName='Division', column='DivisionID'),
-            Relationship(is_relationship=True, name='exchangeInAttachments', type='one-to-many',required=False, relatedModelName='ExchangeInAttachment', otherSideName='exchangeIn'),
-            Relationship(is_relationship=True, name='exchangeInPreps', type='one-to-many',required=False, relatedModelName='ExchangeInPrep', otherSideName='exchangeIn'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='addressOfRecord', type='many-to-one',required=False, relatedModelName='AddressOfRecord', column='AddressOfRecordID', otherSideName='exchangeIns'),
+            Relationship(name='agentCatalogedBy', type='many-to-one',required=True, relatedModelName='Agent', column='CatalogedByID'),
+            Relationship(name='agentReceivedFrom', type='many-to-one',required=True, relatedModelName='Agent', column='ReceivedFromOrganizationID'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='division', type='many-to-one',required=True, relatedModelName='Division', column='DivisionID'),
+            Relationship(name='exchangeInAttachments', type='one-to-many',required=False, relatedModelName='ExchangeInAttachment', otherSideName='exchangeIn'),
+            Relationship(name='exchangeInPreps', type='one-to-many',required=False, relatedModelName='ExchangeInPrep', otherSideName='exchangeIn'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -3208,10 +3208,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='exchangeInAttachments'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='exchangeIn', type='many-to-one',required=True, relatedModelName='ExchangeIn', column='ExchangeInID', otherSideName='exchangeInAttachments'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='exchangeInAttachments'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='exchangeIn', type='many-to-one',required=True, relatedModelName='ExchangeIn', column='ExchangeInID', otherSideName='exchangeInAttachments'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -3241,11 +3241,11 @@ datamodel = Datamodel(tables=[
             Index(name='ExchgInPrepDspMemIDX', column_names=['DisciplineID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
-            Relationship(is_relationship=True, name='exchangeIn', type='many-to-one',required=False, relatedModelName='ExchangeIn', column='ExchangeInID', otherSideName='exchangeInPreps'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='preparation', type='many-to-one',required=False, relatedModelName='Preparation', column='PreparationID', otherSideName='exchangeInPreps')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
+            Relationship(name='exchangeIn', type='many-to-one',required=False, relatedModelName='ExchangeIn', column='ExchangeInID', otherSideName='exchangeInPreps'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='preparation', type='many-to-one',required=False, relatedModelName='Preparation', column='PreparationID', otherSideName='exchangeInPreps')
         ],
         fieldAliases=[
 
@@ -3285,16 +3285,16 @@ datamodel = Datamodel(tables=[
             Index(name='ExchangeOutNumberIDX', column_names=['ExchangeOutNumber'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='addressOfRecord', type='many-to-one',required=False, relatedModelName='AddressOfRecord', column='AddressOfRecordID', otherSideName='exchangeOuts'),
-            Relationship(is_relationship=True, name='agentCatalogedBy', type='many-to-one',required=True, relatedModelName='Agent', column='CatalogedByID'),
-            Relationship(is_relationship=True, name='agentSentTo', type='many-to-one',required=True, relatedModelName='Agent', column='SentToOrganizationID'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='deaccession', type='many-to-one',required=False, relatedModelName='Deaccession', column='DeaccessionID', otherSideName='exchangeOuts'),
-            Relationship(is_relationship=True, name='division', type='many-to-one',required=True, relatedModelName='Division', column='DivisionID'),
-            Relationship(is_relationship=True, name='exchangeOutAttachments', type='one-to-many',required=False, relatedModelName='ExchangeOutAttachment', otherSideName='exchangeOut'),
-            Relationship(is_relationship=True, name='exchangeOutPreps', type='one-to-many',required=False, relatedModelName='ExchangeOutPrep', otherSideName='exchangeOut'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='shipments', type='one-to-many',required=False, relatedModelName='Shipment', otherSideName='exchangeOut')
+            Relationship(name='addressOfRecord', type='many-to-one',required=False, relatedModelName='AddressOfRecord', column='AddressOfRecordID', otherSideName='exchangeOuts'),
+            Relationship(name='agentCatalogedBy', type='many-to-one',required=True, relatedModelName='Agent', column='CatalogedByID'),
+            Relationship(name='agentSentTo', type='many-to-one',required=True, relatedModelName='Agent', column='SentToOrganizationID'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='deaccession', type='many-to-one',required=False, relatedModelName='Deaccession', column='DeaccessionID', otherSideName='exchangeOuts'),
+            Relationship(name='division', type='many-to-one',required=True, relatedModelName='Division', column='DivisionID'),
+            Relationship(name='exchangeOutAttachments', type='one-to-many',required=False, relatedModelName='ExchangeOutAttachment', otherSideName='exchangeOut'),
+            Relationship(name='exchangeOutPreps', type='one-to-many',required=False, relatedModelName='ExchangeOutPrep', otherSideName='exchangeOut'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='shipments', type='one-to-many',required=False, relatedModelName='Shipment', otherSideName='exchangeOut')
         ],
         fieldAliases=[
 
@@ -3320,10 +3320,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='exchangeOutAttachments'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='exchangeOut', type='many-to-one',required=True, relatedModelName='ExchangeOut', column='ExchangeOutID', otherSideName='exchangeOutAttachments'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='exchangeOutAttachments'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='exchangeOut', type='many-to-one',required=True, relatedModelName='ExchangeOut', column='ExchangeOutID', otherSideName='exchangeOutAttachments'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -3353,11 +3353,11 @@ datamodel = Datamodel(tables=[
             Index(name='ExchgOutPrepDspMemIDX', column_names=['DisciplineID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
-            Relationship(is_relationship=True, name='exchangeOut', type='many-to-one',required=False, relatedModelName='ExchangeOut', column='ExchangeOutID', otherSideName='exchangeOutPreps'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='preparation', type='many-to-one',required=False, relatedModelName='Preparation', column='PreparationID', otherSideName='exchangeOutPreps')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
+            Relationship(name='exchangeOut', type='many-to-one',required=False, relatedModelName='ExchangeOut', column='ExchangeOutID', otherSideName='exchangeOutPreps'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='preparation', type='many-to-one',required=False, relatedModelName='Preparation', column='PreparationID', otherSideName='exchangeOutPreps')
         ],
         fieldAliases=[
 
@@ -3384,10 +3384,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='exsiccataItems', type='one-to-many',required=False, relatedModelName='ExsiccataItem', otherSideName='exsiccata'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='referenceWork', type='many-to-one',required=True, relatedModelName='ReferenceWork', column='ReferenceWorkID', otherSideName='exsiccatae')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='exsiccataItems', type='one-to-many',required=False, relatedModelName='ExsiccataItem', otherSideName='exsiccata'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='referenceWork', type='many-to-one',required=True, relatedModelName='ReferenceWork', column='ReferenceWorkID', otherSideName='exsiccatae')
         ],
         fieldAliases=[
 
@@ -3413,10 +3413,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='collectionObject', type='many-to-one',required=True, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='exsiccataItems'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='exsiccata', type='many-to-one',required=True, relatedModelName='Exsiccata', column='ExsiccataID', otherSideName='exsiccataItems'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='collectionObject', type='many-to-one',required=True, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='exsiccataItems'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='exsiccata', type='many-to-one',required=True, relatedModelName='Exsiccata', column='ExsiccataID', otherSideName='exsiccataItems'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -3444,10 +3444,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='dnaSequence', type='many-to-one',required=True, relatedModelName='DNASequence', column='DNASequenceID', otherSideName='extractors'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='dnaSequence', type='many-to-one',required=True, relatedModelName='DNASequence', column='DNASequenceID', otherSideName='extractors'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -3478,13 +3478,13 @@ datamodel = Datamodel(tables=[
             Index(name='FNBEndDateIDX', column_names=['EndDate'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attachments', type='one-to-many',required=False, relatedModelName='FieldNotebookAttachment', otherSideName='fieldNotebook'),
-            Relationship(is_relationship=True, name='collection', type='many-to-one',required=True, relatedModelName='Collection', column='CollectionID'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='ownerAgent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID'),
-            Relationship(is_relationship=True, name='pageSets', type='one-to-many',required=False, relatedModelName='FieldNotebookPageSet', otherSideName='fieldNotebook')
+            Relationship(name='attachments', type='one-to-many',required=False, relatedModelName='FieldNotebookAttachment', otherSideName='fieldNotebook'),
+            Relationship(name='collection', type='many-to-one',required=True, relatedModelName='Collection', column='CollectionID'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='ownerAgent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID'),
+            Relationship(name='pageSets', type='one-to-many',required=False, relatedModelName='FieldNotebookPageSet', otherSideName='fieldNotebook')
         ],
         fieldAliases=[
 
@@ -3508,10 +3508,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='fieldNotebookAttachments'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='fieldNotebook', type='many-to-one',required=True, relatedModelName='FieldNotebook', column='FieldNotebookID', otherSideName='attachments'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='fieldNotebookAttachments'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='fieldNotebook', type='many-to-one',required=True, relatedModelName='FieldNotebook', column='FieldNotebookID', otherSideName='attachments'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -3539,12 +3539,12 @@ datamodel = Datamodel(tables=[
             Index(name='FNBPScanDateIDX', column_names=['ScanDate'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attachments', type='one-to-many',required=False, relatedModelName='FieldNotebookPageAttachment', otherSideName='fieldNotebookPage'),
-            Relationship(is_relationship=True, name='collectionObjects', type='one-to-many',required=False, relatedModelName='CollectionObject', otherSideName='fieldNotebookPage'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='pageSet', type='many-to-one',required=False, relatedModelName='FieldNotebookPageSet', column='FieldNotebookPageSetID', otherSideName='pages')
+            Relationship(name='attachments', type='one-to-many',required=False, relatedModelName='FieldNotebookPageAttachment', otherSideName='fieldNotebookPage'),
+            Relationship(name='collectionObjects', type='one-to-many',required=False, relatedModelName='CollectionObject', otherSideName='fieldNotebookPage'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='pageSet', type='many-to-one',required=False, relatedModelName='FieldNotebookPageSet', column='FieldNotebookPageSetID', otherSideName='pages')
         ],
         fieldAliases=[
 
@@ -3570,10 +3570,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='fieldNotebookPageAttachments'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='fieldNotebookPage', type='many-to-one',required=True, relatedModelName='FieldNotebookPage', column='FieldNotebookPageID', otherSideName='attachments'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='fieldNotebookPageAttachments'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='fieldNotebookPage', type='many-to-one',required=True, relatedModelName='FieldNotebookPage', column='FieldNotebookPageID', otherSideName='attachments'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -3603,13 +3603,13 @@ datamodel = Datamodel(tables=[
             Index(name='FNBPSEndDateIDX', column_names=['EndDate'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attachments', type='one-to-many',required=False, relatedModelName='FieldNotebookPageSetAttachment', otherSideName='fieldNotebookPageSet'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
-            Relationship(is_relationship=True, name='fieldNotebook', type='many-to-one',required=False, relatedModelName='FieldNotebook', column='FieldNotebookID', otherSideName='pageSets'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='pages', type='one-to-many',required=False, relatedModelName='FieldNotebookPage', otherSideName='pageSet'),
-            Relationship(is_relationship=True, name='sourceAgent', type='many-to-one',required=False, relatedModelName='Agent', column='AgentID')
+            Relationship(name='attachments', type='one-to-many',required=False, relatedModelName='FieldNotebookPageSetAttachment', otherSideName='fieldNotebookPageSet'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
+            Relationship(name='fieldNotebook', type='many-to-one',required=False, relatedModelName='FieldNotebook', column='FieldNotebookID', otherSideName='pageSets'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='pages', type='one-to-many',required=False, relatedModelName='FieldNotebookPage', otherSideName='pageSet'),
+            Relationship(name='sourceAgent', type='many-to-one',required=False, relatedModelName='Agent', column='AgentID')
         ],
         fieldAliases=[
 
@@ -3633,10 +3633,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='fieldNotebookPageSetAttachments'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='fieldNotebookPageSet', type='many-to-one',required=True, relatedModelName='FieldNotebookPageSet', column='FieldNotebookPageSetID', otherSideName='attachments'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='fieldNotebookPageSetAttachments'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='fieldNotebookPageSet', type='many-to-one',required=True, relatedModelName='FieldNotebookPageSet', column='FieldNotebookPageSetID', otherSideName='attachments'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -3664,11 +3664,11 @@ datamodel = Datamodel(tables=[
             Index(name='COLTRIPDivIDX', column_names=['DivisionID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID'),
-            Relationship(is_relationship=True, name='collectingTrip', type='many-to-one',required=True, relatedModelName='CollectingTrip', column='CollectingTripID', otherSideName='fundingAgents'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='division', type='many-to-one',required=False, relatedModelName='Division', column='DivisionID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID'),
+            Relationship(name='collectingTrip', type='many-to-one',required=True, relatedModelName='CollectingTrip', column='CollectingTripID', otherSideName='fundingAgents'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='division', type='many-to-one',required=False, relatedModelName='Division', column='DivisionID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -3729,11 +3729,11 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='geoRefCompiledBy', type='many-to-one',required=False, relatedModelName='Agent', column='CompiledByID'),
-            Relationship(is_relationship=True, name='geoRefDetBy', type='many-to-one',required=False, relatedModelName='Agent', column='AgentID'),
-            Relationship(is_relationship=True, name='locality', type='many-to-one',required=False, relatedModelName='Locality', column='LocalityID', otherSideName='geoCoordDetails'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='geoRefCompiledBy', type='many-to-one',required=False, relatedModelName='Agent', column='CompiledByID'),
+            Relationship(name='geoRefDetBy', type='many-to-one',required=False, relatedModelName='Agent', column='AgentID'),
+            Relationship(name='locality', type='many-to-one',required=False, relatedModelName='Locality', column='LocalityID', otherSideName='geoCoordDetails'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -3776,15 +3776,15 @@ datamodel = Datamodel(tables=[
             Index(name='GeoFullNameIDX', column_names=['FullName'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='acceptedChildren', type='one-to-many',required=False, relatedModelName='Geography', otherSideName='acceptedGeography'),
-            Relationship(is_relationship=True, name='acceptedGeography', type='many-to-one',required=False, relatedModelName='Geography', column='AcceptedID', otherSideName='acceptedChildren'),
-            Relationship(is_relationship=True, name='children', type='one-to-many',required=False, relatedModelName='Geography', otherSideName='parent'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='definition', type='many-to-one',required=True, relatedModelName='GeographyTreeDef', column='GeographyTreeDefID', otherSideName='treeEntries'),
-            Relationship(is_relationship=True, name='definitionItem', type='many-to-one',required=True, relatedModelName='GeographyTreeDefItem', column='GeographyTreeDefItemID', otherSideName='treeEntries'),
-            Relationship(is_relationship=True, name='localities', type='one-to-many',required=False, relatedModelName='Locality', otherSideName='geography'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='parent', type='many-to-one',required=False, relatedModelName='Geography', column='ParentID', otherSideName='children')
+            Relationship(name='acceptedChildren', type='one-to-many',required=False, relatedModelName='Geography', otherSideName='acceptedGeography'),
+            Relationship(name='acceptedGeography', type='many-to-one',required=False, relatedModelName='Geography', column='AcceptedID', otherSideName='acceptedChildren'),
+            Relationship(name='children', type='one-to-many',required=False, relatedModelName='Geography', otherSideName='parent'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='definition', type='many-to-one',required=True, relatedModelName='GeographyTreeDef', column='GeographyTreeDefID', otherSideName='treeEntries'),
+            Relationship(name='definitionItem', type='many-to-one',required=True, relatedModelName='GeographyTreeDefItem', column='GeographyTreeDefItemID', otherSideName='treeEntries'),
+            Relationship(name='localities', type='one-to-many',required=False, relatedModelName='Locality', otherSideName='geography'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='parent', type='many-to-one',required=False, relatedModelName='Geography', column='ParentID', otherSideName='children')
         ],
         fieldAliases=[
             {'vname':'acceptedParent', 'aname':'acceptedGeography'}
@@ -3811,11 +3811,11 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='disciplines', type='one-to-many',required=False, relatedModelName='Discipline', otherSideName='geographyTreeDef'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='treeDefItems', type='one-to-many',required=False, relatedModelName='GeographyTreeDefItem', otherSideName='treeDef'),
-            Relationship(is_relationship=True, name='treeEntries', type='one-to-many',required=False, relatedModelName='Geography', otherSideName='definition')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='disciplines', type='one-to-many',required=False, relatedModelName='Discipline', otherSideName='geographyTreeDef'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='treeDefItems', type='one-to-many',required=False, relatedModelName='GeographyTreeDefItem', otherSideName='treeDef'),
+            Relationship(name='treeEntries', type='one-to-many',required=False, relatedModelName='Geography', otherSideName='definition')
         ],
         fieldAliases=[
 
@@ -3846,12 +3846,12 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='children', type='one-to-many',required=False, relatedModelName='GeographyTreeDefItem', otherSideName='parent'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='parent', type='many-to-one',required=False, relatedModelName='GeographyTreeDefItem', column='ParentItemID', otherSideName='children'),
-            Relationship(is_relationship=True, name='treeDef', type='many-to-one',required=True, relatedModelName='GeographyTreeDef', column='GeographyTreeDefID', otherSideName='treeDefItems'),
-            Relationship(is_relationship=True, name='treeEntries', type='one-to-many',required=False, relatedModelName='Geography', otherSideName='definitionItem')
+            Relationship(name='children', type='one-to-many',required=False, relatedModelName='GeographyTreeDefItem', otherSideName='parent'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='parent', type='many-to-one',required=False, relatedModelName='GeographyTreeDefItem', column='ParentItemID', otherSideName='children'),
+            Relationship(name='treeDef', type='many-to-one',required=True, relatedModelName='GeographyTreeDef', column='GeographyTreeDefID', otherSideName='treeDefItems'),
+            Relationship(name='treeEntries', type='one-to-many',required=False, relatedModelName='Geography', otherSideName='definitionItem')
         ],
         fieldAliases=[
 
@@ -3891,16 +3891,16 @@ datamodel = Datamodel(tables=[
             Index(name='GTPGuidIDX', column_names=['GUID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='acceptedChildren', type='one-to-many',required=False, relatedModelName='GeologicTimePeriod', otherSideName='acceptedGeologicTimePeriod'),
-            Relationship(is_relationship=True, name='acceptedGeologicTimePeriod', type='many-to-one',required=False, relatedModelName='GeologicTimePeriod', column='AcceptedID', otherSideName='acceptedChildren'),
-            Relationship(is_relationship=True, name='bioStratsPaleoContext', type='one-to-many',required=False, relatedModelName='PaleoContext', otherSideName='bioStrat'),
-            Relationship(is_relationship=True, name='children', type='one-to-many',required=False, relatedModelName='GeologicTimePeriod', otherSideName='parent'),
-            Relationship(is_relationship=True, name='chronosStratsPaleoContext', type='one-to-many',required=False, relatedModelName='PaleoContext', otherSideName='chronosStrat'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='definition', type='many-to-one',required=True, relatedModelName='GeologicTimePeriodTreeDef', column='GeologicTimePeriodTreeDefID', otherSideName='treeEntries'),
-            Relationship(is_relationship=True, name='definitionItem', type='many-to-one',required=True, relatedModelName='GeologicTimePeriodTreeDefItem', column='GeologicTimePeriodTreeDefItemID', otherSideName='treeEntries'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='parent', type='many-to-one',required=False, relatedModelName='GeologicTimePeriod', column='ParentID', otherSideName='children')
+            Relationship(name='acceptedChildren', type='one-to-many',required=False, relatedModelName='GeologicTimePeriod', otherSideName='acceptedGeologicTimePeriod'),
+            Relationship(name='acceptedGeologicTimePeriod', type='many-to-one',required=False, relatedModelName='GeologicTimePeriod', column='AcceptedID', otherSideName='acceptedChildren'),
+            Relationship(name='bioStratsPaleoContext', type='one-to-many',required=False, relatedModelName='PaleoContext', otherSideName='bioStrat'),
+            Relationship(name='children', type='one-to-many',required=False, relatedModelName='GeologicTimePeriod', otherSideName='parent'),
+            Relationship(name='chronosStratsPaleoContext', type='one-to-many',required=False, relatedModelName='PaleoContext', otherSideName='chronosStrat'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='definition', type='many-to-one',required=True, relatedModelName='GeologicTimePeriodTreeDef', column='GeologicTimePeriodTreeDefID', otherSideName='treeEntries'),
+            Relationship(name='definitionItem', type='many-to-one',required=True, relatedModelName='GeologicTimePeriodTreeDefItem', column='GeologicTimePeriodTreeDefItemID', otherSideName='treeEntries'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='parent', type='many-to-one',required=False, relatedModelName='GeologicTimePeriod', column='ParentID', otherSideName='children')
         ],
         fieldAliases=[
             {'vname':'acceptedParent', 'aname':'acceptedGeologicTimePeriod'}
@@ -3927,11 +3927,11 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='disciplines', type='one-to-many',required=False, relatedModelName='Discipline', otherSideName='geologicTimePeriodTreeDef'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='treeDefItems', type='one-to-many',required=False, relatedModelName='GeologicTimePeriodTreeDefItem', otherSideName='treeDef'),
-            Relationship(is_relationship=True, name='treeEntries', type='one-to-many',required=False, relatedModelName='GeologicTimePeriod', otherSideName='definition')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='disciplines', type='one-to-many',required=False, relatedModelName='Discipline', otherSideName='geologicTimePeriodTreeDef'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='treeDefItems', type='one-to-many',required=False, relatedModelName='GeologicTimePeriodTreeDefItem', otherSideName='treeDef'),
+            Relationship(name='treeEntries', type='one-to-many',required=False, relatedModelName='GeologicTimePeriod', otherSideName='definition')
         ],
         fieldAliases=[
 
@@ -3962,12 +3962,12 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='children', type='one-to-many',required=False, relatedModelName='GeologicTimePeriodTreeDefItem', otherSideName='parent'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='parent', type='many-to-one',required=False, relatedModelName='GeologicTimePeriodTreeDefItem', column='ParentItemID', otherSideName='children'),
-            Relationship(is_relationship=True, name='treeDef', type='many-to-one',required=True, relatedModelName='GeologicTimePeriodTreeDef', column='GeologicTimePeriodTreeDefID', otherSideName='treeDefItems'),
-            Relationship(is_relationship=True, name='treeEntries', type='one-to-many',required=False, relatedModelName='GeologicTimePeriod', otherSideName='definitionItem')
+            Relationship(name='children', type='one-to-many',required=False, relatedModelName='GeologicTimePeriodTreeDefItem', otherSideName='parent'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='parent', type='many-to-one',required=False, relatedModelName='GeologicTimePeriodTreeDefItem', column='ParentItemID', otherSideName='children'),
+            Relationship(name='treeDef', type='many-to-one',required=True, relatedModelName='GeologicTimePeriodTreeDef', column='GeologicTimePeriodTreeDefID', otherSideName='treeDefItems'),
+            Relationship(name='treeEntries', type='one-to-many',required=False, relatedModelName='GeologicTimePeriod', otherSideName='definitionItem')
         ],
         fieldAliases=[
 
@@ -4016,16 +4016,16 @@ datamodel = Datamodel(tables=[
             Index(name='GiftDateIDX', column_names=['GiftDate'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='addressOfRecord', type='many-to-one',required=False, relatedModelName='AddressOfRecord', column='AddressOfRecordID'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='deaccession', type='many-to-one',required=False, relatedModelName='Deaccession', column='DeaccessionID', otherSideName='gifts'),
-            Relationship(is_relationship=True, name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
-            Relationship(is_relationship=True, name='division', type='many-to-one',required=False, relatedModelName='Division', column='DivisionID'),
-            Relationship(is_relationship=True, name='giftAgents', type='one-to-many',required=False, relatedModelName='GiftAgent', otherSideName='gift'),
-            Relationship(is_relationship=True, name='giftAttachments', type='one-to-many',required=False, relatedModelName='GiftAttachment', otherSideName='gift'),
-            Relationship(is_relationship=True, name='giftPreparations', type='one-to-many',required=False, relatedModelName='GiftPreparation', otherSideName='gift'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='shipments', type='one-to-many',required=False, relatedModelName='Shipment', otherSideName='gift')
+            Relationship(name='addressOfRecord', type='many-to-one',required=False, relatedModelName='AddressOfRecord', column='AddressOfRecordID'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='deaccession', type='many-to-one',required=False, relatedModelName='Deaccession', column='DeaccessionID', otherSideName='gifts'),
+            Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
+            Relationship(name='division', type='many-to-one',required=False, relatedModelName='Division', column='DivisionID'),
+            Relationship(name='giftAgents', type='one-to-many',required=False, relatedModelName='GiftAgent', otherSideName='gift'),
+            Relationship(name='giftAttachments', type='one-to-many',required=False, relatedModelName='GiftAttachment', otherSideName='gift'),
+            Relationship(name='giftPreparations', type='one-to-many',required=False, relatedModelName='GiftPreparation', otherSideName='gift'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='shipments', type='one-to-many',required=False, relatedModelName='Shipment', otherSideName='gift')
         ],
         fieldAliases=[
 
@@ -4052,11 +4052,11 @@ datamodel = Datamodel(tables=[
             Index(name='GiftAgDspMemIDX', column_names=['DisciplineID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
-            Relationship(is_relationship=True, name='gift', type='many-to-one',required=True, relatedModelName='Gift', column='GiftID', otherSideName='giftAgents'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
+            Relationship(name='gift', type='many-to-one',required=True, relatedModelName='Gift', column='GiftID', otherSideName='giftAgents'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -4082,10 +4082,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='giftAttachments'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='gift', type='many-to-one',required=True, relatedModelName='Gift', column='GiftID', otherSideName='giftAttachments'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='giftAttachments'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='gift', type='many-to-one',required=True, relatedModelName='Gift', column='GiftID', otherSideName='giftAttachments'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -4119,11 +4119,11 @@ datamodel = Datamodel(tables=[
             Index(name='GiftPrepDspMemIDX', column_names=['DisciplineID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
-            Relationship(is_relationship=True, name='gift', type='many-to-one',required=False, relatedModelName='Gift', column='GiftID', otherSideName='giftPreparations'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='preparation', type='many-to-one',required=False, relatedModelName='Preparation', column='PreparationID', otherSideName='giftPreparations')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
+            Relationship(name='gift', type='many-to-one',required=False, relatedModelName='Gift', column='GiftID', otherSideName='giftPreparations'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='preparation', type='many-to-one',required=False, relatedModelName='Preparation', column='PreparationID', otherSideName='giftPreparations')
         ],
         fieldAliases=[
 
@@ -4149,11 +4149,11 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='division', type='many-to-one',required=True, relatedModelName='Division', column='DivisionID'),
-            Relationship(is_relationship=True, name='group', type='many-to-one',required=True, relatedModelName='Agent', column='GroupID', otherSideName='groups'),
-            Relationship(is_relationship=True, name='member', type='many-to-one',required=True, relatedModelName='Agent', column='MemberID', otherSideName='members'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='division', type='many-to-one',required=True, relatedModelName='Division', column='DivisionID'),
+            Relationship(name='group', type='many-to-one',required=True, relatedModelName='Agent', column='GroupID', otherSideName='groups'),
+            Relationship(name='member', type='many-to-one',required=True, relatedModelName='Agent', column='MemberID', otherSideName='members'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -4186,10 +4186,10 @@ datamodel = Datamodel(tables=[
             Index(name='IRColMemIDX', column_names=['CollectionMemberID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='agent', type='many-to-one',required=False, relatedModelName='Agent', column='AgentID'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='recordSets', type='one-to-many',required=False, relatedModelName='RecordSet', otherSideName='infoRequest')
+            Relationship(name='agent', type='many-to-one',required=False, relatedModelName='Agent', column='AgentID'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='recordSets', type='one-to-many',required=False, relatedModelName='RecordSet', otherSideName='infoRequest')
         ],
         fieldAliases=[
 
@@ -4240,14 +4240,14 @@ datamodel = Datamodel(tables=[
             Index(name='InstGuidIDX', column_names=['GUID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='address', type='many-to-one',required=False, relatedModelName='Address', column='AddressID', otherSideName='insitutions'),
-            Relationship(is_relationship=True, name='contentContacts', type='one-to-many',required=False, relatedModelName='Agent', otherSideName='instContentContact'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='divisions', type='one-to-many',required=False, relatedModelName='Division', otherSideName='institution'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='storageTreeDef', type='many-to-one',required=False, relatedModelName='StorageTreeDef', column='StorageTreeDefID', otherSideName='institutions'),
-            Relationship(is_relationship=True, name='technicalContacts', type='one-to-many',required=False, relatedModelName='Agent', otherSideName='instTechContact'),
-            Relationship(is_relationship=True, name='userGroups', type='one-to-many',required=False, relatedModelName='SpPrincipal', otherSideName='scope')
+            Relationship(name='address', type='many-to-one',required=False, relatedModelName='Address', column='AddressID', otherSideName='insitutions'),
+            Relationship(name='contentContacts', type='one-to-many',required=False, relatedModelName='Agent', otherSideName='instContentContact'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='divisions', type='one-to-many',required=False, relatedModelName='Division', otherSideName='institution'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='storageTreeDef', type='many-to-one',required=False, relatedModelName='StorageTreeDef', column='StorageTreeDefID', otherSideName='institutions'),
+            Relationship(name='technicalContacts', type='one-to-many',required=False, relatedModelName='Agent', otherSideName='instTechContact'),
+            Relationship(name='userGroups', type='one-to-many',required=False, relatedModelName='SpPrincipal', otherSideName='scope')
         ],
         fieldAliases=[
 
@@ -4283,11 +4283,11 @@ datamodel = Datamodel(tables=[
             Index(name='InstNetworkNameIDX', column_names=['Name'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='address', type='many-to-one',required=False, relatedModelName='Address', column='AddressID'),
-            Relationship(is_relationship=True, name='collections', type='one-to-many',required=False, relatedModelName='Collection', otherSideName='institutionNetwork'),
-            Relationship(is_relationship=True, name='contacts', type='one-to-many',required=False, relatedModelName='Agent', otherSideName='instTechContact'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='address', type='many-to-one',required=False, relatedModelName='Address', column='AddressID'),
+            Relationship(name='collections', type='one-to-many',required=False, relatedModelName='Collection', otherSideName='institutionNetwork'),
+            Relationship(name='contacts', type='one-to-many',required=False, relatedModelName='Agent', otherSideName='instTechContact'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -4316,10 +4316,10 @@ datamodel = Datamodel(tables=[
             Index(name='JournalGUIDIDX', column_names=['GUID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='institution', type='many-to-one',required=True, relatedModelName='Institution', column='InstitutionID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='referenceWorks', type='one-to-many',required=False, relatedModelName='ReferenceWork', otherSideName='journal')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='institution', type='many-to-one',required=True, relatedModelName='Institution', column='InstitutionID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='referenceWorks', type='one-to-many',required=False, relatedModelName='ReferenceWork', otherSideName='journal')
         ],
         fieldAliases=[
 
@@ -4346,11 +4346,11 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='locality', type='many-to-one',required=False, relatedModelName='Locality', column='LocalityID', otherSideName='latLonpolygons'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='points', type='one-to-many',required=False, relatedModelName='LatLonPolygonPnt', otherSideName='latLonPolygon'),
-            Relationship(is_relationship=True, name='visualQuery', type='many-to-one',required=False, relatedModelName='SpVisualQuery', column='SpVisualQueryID', otherSideName='polygons')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='locality', type='many-to-one',required=False, relatedModelName='Locality', column='LocalityID', otherSideName='latLonpolygons'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='points', type='one-to-many',required=False, relatedModelName='LatLonPolygonPnt', otherSideName='latLonPolygon'),
+            Relationship(name='visualQuery', type='many-to-one',required=False, relatedModelName='SpVisualQuery', column='SpVisualQueryID', otherSideName='polygons')
         ],
         fieldAliases=[
 
@@ -4373,7 +4373,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='latLonPolygon', type='many-to-one',required=True, relatedModelName='LatLonPolygon', column='LatLonPolygonID', otherSideName='points')
+            Relationship(name='latLonPolygon', type='many-to-one',required=True, relatedModelName='LatLonPolygon', column='LatLonPolygonID', otherSideName='points')
         ],
         fieldAliases=[
 
@@ -4411,15 +4411,15 @@ datamodel = Datamodel(tables=[
             Index(name='LithoGuidIDX', column_names=['GUID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='acceptedChildren', type='one-to-many',required=False, relatedModelName='LithoStrat', otherSideName='acceptedLithoStrat'),
-            Relationship(is_relationship=True, name='acceptedLithoStrat', type='many-to-one',required=False, relatedModelName='LithoStrat', column='AcceptedID', otherSideName='acceptedChildren'),
-            Relationship(is_relationship=True, name='children', type='one-to-many',required=False, relatedModelName='LithoStrat', otherSideName='parent'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='definition', type='many-to-one',required=True, relatedModelName='LithoStratTreeDef', column='LithoStratTreeDefID', otherSideName='treeEntries'),
-            Relationship(is_relationship=True, name='definitionItem', type='many-to-one',required=True, relatedModelName='LithoStratTreeDefItem', column='LithoStratTreeDefItemID', otherSideName='treeEntries'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='paleoContexts', type='one-to-many',required=False, relatedModelName='PaleoContext', otherSideName='lithoStrat'),
-            Relationship(is_relationship=True, name='parent', type='many-to-one',required=False, relatedModelName='LithoStrat', column='ParentID', otherSideName='children')
+            Relationship(name='acceptedChildren', type='one-to-many',required=False, relatedModelName='LithoStrat', otherSideName='acceptedLithoStrat'),
+            Relationship(name='acceptedLithoStrat', type='many-to-one',required=False, relatedModelName='LithoStrat', column='AcceptedID', otherSideName='acceptedChildren'),
+            Relationship(name='children', type='one-to-many',required=False, relatedModelName='LithoStrat', otherSideName='parent'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='definition', type='many-to-one',required=True, relatedModelName='LithoStratTreeDef', column='LithoStratTreeDefID', otherSideName='treeEntries'),
+            Relationship(name='definitionItem', type='many-to-one',required=True, relatedModelName='LithoStratTreeDefItem', column='LithoStratTreeDefItemID', otherSideName='treeEntries'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='paleoContexts', type='one-to-many',required=False, relatedModelName='PaleoContext', otherSideName='lithoStrat'),
+            Relationship(name='parent', type='many-to-one',required=False, relatedModelName='LithoStrat', column='ParentID', otherSideName='children')
         ],
         fieldAliases=[
             {'vname':'acceptedParent', 'aname':'acceptedLithoStrat'}
@@ -4446,11 +4446,11 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='disciplines', type='one-to-many',required=False, relatedModelName='Discipline', otherSideName='lithoStratTreeDef'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='treeDefItems', type='one-to-many',required=False, relatedModelName='LithoStratTreeDefItem', otherSideName='treeDef'),
-            Relationship(is_relationship=True, name='treeEntries', type='one-to-many',required=False, relatedModelName='LithoStrat', otherSideName='definition')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='disciplines', type='one-to-many',required=False, relatedModelName='Discipline', otherSideName='lithoStratTreeDef'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='treeDefItems', type='one-to-many',required=False, relatedModelName='LithoStratTreeDefItem', otherSideName='treeDef'),
+            Relationship(name='treeEntries', type='one-to-many',required=False, relatedModelName='LithoStrat', otherSideName='definition')
         ],
         fieldAliases=[
 
@@ -4481,12 +4481,12 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='children', type='one-to-many',required=False, relatedModelName='LithoStratTreeDefItem', otherSideName='parent'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='parent', type='many-to-one',required=False, relatedModelName='LithoStratTreeDefItem', column='ParentItemID', otherSideName='children'),
-            Relationship(is_relationship=True, name='treeDef', type='many-to-one',required=True, relatedModelName='LithoStratTreeDef', column='LithoStratTreeDefID', otherSideName='treeDefItems'),
-            Relationship(is_relationship=True, name='treeEntries', type='one-to-many',required=False, relatedModelName='LithoStrat', otherSideName='definitionItem')
+            Relationship(name='children', type='one-to-many',required=False, relatedModelName='LithoStratTreeDefItem', otherSideName='parent'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='parent', type='many-to-one',required=False, relatedModelName='LithoStratTreeDefItem', column='ParentItemID', otherSideName='children'),
+            Relationship(name='treeDef', type='many-to-one',required=True, relatedModelName='LithoStratTreeDef', column='LithoStratTreeDefID', otherSideName='treeDefItems'),
+            Relationship(name='treeEntries', type='one-to-many',required=False, relatedModelName='LithoStrat', otherSideName='definitionItem')
         ],
         fieldAliases=[
 
@@ -4539,15 +4539,15 @@ datamodel = Datamodel(tables=[
             Index(name='CurrentDueDateIDX', column_names=['CurrentDueDate'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='addressOfRecord', type='many-to-one',required=False, relatedModelName='AddressOfRecord', column='AddressOfRecordID', otherSideName='loans'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
-            Relationship(is_relationship=True, name='division', type='many-to-one',required=False, relatedModelName='Division', column='DivisionID'),
-            Relationship(is_relationship=True, name='loanAgents', type='one-to-many',required=False, relatedModelName='LoanAgent', otherSideName='loan'),
-            Relationship(is_relationship=True, name='loanAttachments', type='one-to-many',required=False, relatedModelName='LoanAttachment', otherSideName='loan'),
-            Relationship(is_relationship=True, name='loanPreparations', type='one-to-many',required=False, relatedModelName='LoanPreparation', otherSideName='loan'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='shipments', type='one-to-many',required=False, relatedModelName='Shipment', otherSideName='loan')
+            Relationship(name='addressOfRecord', type='many-to-one',required=False, relatedModelName='AddressOfRecord', column='AddressOfRecordID', otherSideName='loans'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
+            Relationship(name='division', type='many-to-one',required=False, relatedModelName='Division', column='DivisionID'),
+            Relationship(name='loanAgents', type='one-to-many',required=False, relatedModelName='LoanAgent', otherSideName='loan'),
+            Relationship(name='loanAttachments', type='one-to-many',required=False, relatedModelName='LoanAttachment', otherSideName='loan'),
+            Relationship(name='loanPreparations', type='one-to-many',required=False, relatedModelName='LoanPreparation', otherSideName='loan'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='shipments', type='one-to-many',required=False, relatedModelName='Shipment', otherSideName='loan')
         ],
         fieldAliases=[
 
@@ -4573,11 +4573,11 @@ datamodel = Datamodel(tables=[
             Index(name='LoanAgDspMemIDX', column_names=['DisciplineID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
-            Relationship(is_relationship=True, name='loan', type='many-to-one',required=True, relatedModelName='Loan', column='LoanID', otherSideName='loanAgents'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
+            Relationship(name='loan', type='many-to-one',required=True, relatedModelName='Loan', column='LoanID', otherSideName='loanAgents'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -4603,10 +4603,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='loanAttachments'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='loan', type='many-to-one',required=True, relatedModelName='Loan', column='LoanID', otherSideName='loanAttachments'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='loanAttachments'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='loan', type='many-to-one',required=True, relatedModelName='Loan', column='LoanID', otherSideName='loanAttachments'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -4643,12 +4643,12 @@ datamodel = Datamodel(tables=[
             Index(name='LoanPrepDspMemIDX', column_names=['DisciplineID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
-            Relationship(is_relationship=True, name='loan', type='many-to-one',required=True, relatedModelName='Loan', column='LoanID', otherSideName='loanPreparations'),
-            Relationship(is_relationship=True, name='loanReturnPreparations', type='one-to-many',required=False, relatedModelName='LoanReturnPreparation', otherSideName='loanPreparation'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='preparation', type='many-to-one',required=False, relatedModelName='Preparation', column='PreparationID', otherSideName='loanPreparations')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
+            Relationship(name='loan', type='many-to-one',required=True, relatedModelName='Loan', column='LoanID', otherSideName='loanPreparations'),
+            Relationship(name='loanReturnPreparations', type='one-to-many',required=False, relatedModelName='LoanReturnPreparation', otherSideName='loanPreparation'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='preparation', type='many-to-one',required=False, relatedModelName='Preparation', column='PreparationID', otherSideName='loanPreparations')
         ],
         fieldAliases=[
 
@@ -4677,12 +4677,12 @@ datamodel = Datamodel(tables=[
             Index(name='LoanRetPrepDspMemIDX', column_names=['DisciplineID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
-            Relationship(is_relationship=True, name='disposalPreparations', type='one-to-many',required=False, relatedModelName='DisposalPreparation', otherSideName='loanReturnPreparation'),
-            Relationship(is_relationship=True, name='loanPreparation', type='many-to-one',required=True, relatedModelName='LoanPreparation', column='LoanPreparationID', otherSideName='loanReturnPreparations'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='receivedBy', type='many-to-one',required=False, relatedModelName='Agent', column='ReceivedByID')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
+            Relationship(name='disposalPreparations', type='one-to-many',required=False, relatedModelName='DisposalPreparation', otherSideName='loanReturnPreparation'),
+            Relationship(name='loanPreparation', type='many-to-one',required=True, relatedModelName='LoanPreparation', column='LoanPreparationID', otherSideName='loanReturnPreparations'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='receivedBy', type='many-to-one',required=False, relatedModelName='Agent', column='ReceivedByID')
         ],
         fieldAliases=[
 
@@ -4750,18 +4750,18 @@ datamodel = Datamodel(tables=[
             Index(name='RelationToNamedPlaceIDX', column_names=['RelationToNamedPlace'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
-            Relationship(is_relationship=True, name='geoCoordDetails', type='zero-to-one',required=False, relatedModelName='GeoCoordDetail', otherSideName='locality'),
-            Relationship(is_relationship=True, name='geography', type='many-to-one',required=False, relatedModelName='Geography', column='GeographyID', otherSideName='localities'),
-            Relationship(is_relationship=True, name='latLonpolygons', type='one-to-many',required=False, relatedModelName='LatLonPolygon', otherSideName='locality'),
-            Relationship(is_relationship=True, name='localityAttachments', type='one-to-many',required=False, relatedModelName='LocalityAttachment', otherSideName='locality'),
-            Relationship(is_relationship=True, name='localityCitations', type='one-to-many',required=False, relatedModelName='LocalityCitation', otherSideName='locality'),
-            Relationship(is_relationship=True, name='localityDetails', type='zero-to-one',required=False, relatedModelName='LocalityDetail', otherSideName='locality'),
-            Relationship(is_relationship=True, name='localityNameAliass', type='one-to-many',required=False, relatedModelName='LocalityNameAlias', otherSideName='locality'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='paleoContext', type='many-to-one',required=False, relatedModelName='PaleoContext', column='PaleoContextID', otherSideName='localities'),
-            Relationship(is_relationship=True, name='visibilitySetBy', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='VisibilitySetByID')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
+            Relationship(name='geoCoordDetails', type='zero-to-one',required=False, relatedModelName='GeoCoordDetail', otherSideName='locality'),
+            Relationship(name='geography', type='many-to-one',required=False, relatedModelName='Geography', column='GeographyID', otherSideName='localities'),
+            Relationship(name='latLonpolygons', type='one-to-many',required=False, relatedModelName='LatLonPolygon', otherSideName='locality'),
+            Relationship(name='localityAttachments', type='one-to-many',required=False, relatedModelName='LocalityAttachment', otherSideName='locality'),
+            Relationship(name='localityCitations', type='one-to-many',required=False, relatedModelName='LocalityCitation', otherSideName='locality'),
+            Relationship(name='localityDetails', type='zero-to-one',required=False, relatedModelName='LocalityDetail', otherSideName='locality'),
+            Relationship(name='localityNameAliass', type='one-to-many',required=False, relatedModelName='LocalityNameAlias', otherSideName='locality'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='paleoContext', type='many-to-one',required=False, relatedModelName='PaleoContext', column='PaleoContextID', otherSideName='localities'),
+            Relationship(name='visibilitySetBy', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='VisibilitySetByID')
         ],
         fieldAliases=[
 
@@ -4787,10 +4787,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='localityAttachments'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='locality', type='many-to-one',required=True, relatedModelName='Locality', column='LocalityID', otherSideName='localityAttachments'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='localityAttachments'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='locality', type='many-to-one',required=True, relatedModelName='Locality', column='LocalityID', otherSideName='localityAttachments'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -4819,11 +4819,11 @@ datamodel = Datamodel(tables=[
             Index(name='LocCitDspMemIDX', column_names=['DisciplineID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
-            Relationship(is_relationship=True, name='locality', type='many-to-one',required=True, relatedModelName='Locality', column='LocalityID', otherSideName='localityCitations'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='referenceWork', type='many-to-one',required=True, relatedModelName='ReferenceWork', column='ReferenceWorkID', otherSideName='localityCitations')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
+            Relationship(name='locality', type='many-to-one',required=True, relatedModelName='Locality', column='LocalityID', otherSideName='localityCitations'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='referenceWork', type='many-to-one',required=True, relatedModelName='ReferenceWork', column='ReferenceWorkID', otherSideName='localityCitations')
         ],
         fieldAliases=[
 
@@ -4892,9 +4892,9 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='locality', type='many-to-one',required=False, relatedModelName='Locality', column='LocalityID', otherSideName='localityDetails'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='locality', type='many-to-one',required=False, relatedModelName='Locality', column='LocalityID', otherSideName='localityDetails'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -4918,10 +4918,10 @@ datamodel = Datamodel(tables=[
             Index(name='LocalityNameAliasIDX', column_names=['Name'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
-            Relationship(is_relationship=True, name='locality', type='many-to-one',required=True, relatedModelName='Locality', column='LocalityID', otherSideName='localityNameAliass'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
+            Relationship(name='locality', type='many-to-one',required=True, relatedModelName='Locality', column='LocalityID', otherSideName='localityNameAliass'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -4983,11 +4983,11 @@ datamodel = Datamodel(tables=[
             Index(name='DesignationIDX', column_names=['GGBNSampleDesignation'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='dnaSequences', type='one-to-many',required=False, relatedModelName='DNASequence', otherSideName='materialSample'),
-            Relationship(is_relationship=True, name='extractor', type='many-to-one',required=False, relatedModelName='Agent', column='ExtractorID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='preparation', type='many-to-one',required=True, relatedModelName='Preparation', column='PreparationID', otherSideName='materialSamples')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='dnaSequences', type='one-to-many',required=False, relatedModelName='DNASequence', otherSideName='materialSample'),
+            Relationship(name='extractor', type='many-to-one',required=False, relatedModelName='Agent', column='ExtractorID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='preparation', type='many-to-one',required=True, relatedModelName='Preparation', column='PreparationID', otherSideName='materialSamples')
         ],
         fieldAliases=[
 
@@ -5018,9 +5018,9 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attachmentImageAttributes', type='one-to-many',required=False, relatedModelName='AttachmentImageAttribute', otherSideName='morphBankView'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='attachmentImageAttributes', type='one-to-many',required=False, relatedModelName='AttachmentImageAttribute', otherSideName='morphBankView'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -5062,11 +5062,11 @@ datamodel = Datamodel(tables=[
             Index(name='OthIdColMemIDX', column_names=['CollectionMemberID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='agent1', type='many-to-one',required=False, relatedModelName='Agent', column='Agent1ID'),
-            Relationship(is_relationship=True, name='agent2', type='many-to-one',required=False, relatedModelName='Agent', column='Agent2ID'),
-            Relationship(is_relationship=True, name='collectionObject', type='many-to-one',required=True, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='otherIdentifiers'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='agent1', type='many-to-one',required=False, relatedModelName='Agent', column='Agent1ID'),
+            Relationship(name='agent2', type='many-to-one',required=False, relatedModelName='Agent', column='Agent2ID'),
+            Relationship(name='collectionObject', type='many-to-one',required=True, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='otherIdentifiers'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -5108,16 +5108,16 @@ datamodel = Datamodel(tables=[
             Index(name='PaleoCxtDisciplineIDX', column_names=['DisciplineID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='bioStrat', type='many-to-one',required=False, relatedModelName='GeologicTimePeriod', column='BioStratID', otherSideName='bioStratsPaleoContext'),
-            Relationship(is_relationship=True, name='chronosStrat', type='many-to-one',required=False, relatedModelName='GeologicTimePeriod', column='ChronosStratID', otherSideName='chronosStratsPaleoContext'),
-            Relationship(is_relationship=True, name='chronosStratEnd', type='many-to-one',required=False, relatedModelName='GeologicTimePeriod', column='ChronosStratEndID'),
-            Relationship(is_relationship=True, name='collectingEvents', type='one-to-many',required=False, relatedModelName='CollectingEvent', otherSideName='paleoContext'),
-            Relationship(is_relationship=True, name='collectionObjects', type='one-to-many',required=False, relatedModelName='CollectionObject', otherSideName='paleoContext'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
-            Relationship(is_relationship=True, name='lithoStrat', type='many-to-one',required=False, relatedModelName='LithoStrat', column='LithoStratID', otherSideName='paleoContexts'),
-            Relationship(is_relationship=True, name='localities', type='one-to-many',required=False, relatedModelName='Locality', otherSideName='paleoContext'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='bioStrat', type='many-to-one',required=False, relatedModelName='GeologicTimePeriod', column='BioStratID', otherSideName='bioStratsPaleoContext'),
+            Relationship(name='chronosStrat', type='many-to-one',required=False, relatedModelName='GeologicTimePeriod', column='ChronosStratID', otherSideName='chronosStratsPaleoContext'),
+            Relationship(name='chronosStratEnd', type='many-to-one',required=False, relatedModelName='GeologicTimePeriod', column='ChronosStratEndID'),
+            Relationship(name='collectingEvents', type='one-to-many',required=False, relatedModelName='CollectingEvent', otherSideName='paleoContext'),
+            Relationship(name='collectionObjects', type='one-to-many',required=False, relatedModelName='CollectionObject', otherSideName='paleoContext'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
+            Relationship(name='lithoStrat', type='many-to-one',required=False, relatedModelName='LithoStrat', column='LithoStratID', otherSideName='paleoContexts'),
+            Relationship(name='localities', type='one-to-many',required=False, relatedModelName='Locality', otherSideName='paleoContext'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -5147,10 +5147,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='dnaSequence', type='many-to-one',required=True, relatedModelName='DNASequence', column='DNASequenceID', otherSideName='pcrPersons'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='dnaSequence', type='many-to-one',required=True, relatedModelName='DNASequence', column='DNASequenceID', otherSideName='pcrPersons'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -5198,15 +5198,15 @@ datamodel = Datamodel(tables=[
             Index(name='IssuedDateIDX', column_names=['IssuedDate'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='accessionAuthorizations', type='one-to-many',required=False, relatedModelName='AccessionAuthorization', otherSideName='permit'),
-            Relationship(is_relationship=True, name='collectingEventAuthorizations', type='one-to-many',required=False, relatedModelName='CollectingEventAuthorization', otherSideName='permit'),
-            Relationship(is_relationship=True, name='collectingTripAuthorizations', type='one-to-many',required=False, relatedModelName='CollectingTripAuthorization', otherSideName='permit'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='institution', type='many-to-one',required=True, relatedModelName='Institution', column='InstitutionID'),
-            Relationship(is_relationship=True, name='issuedBy', type='many-to-one',required=False, relatedModelName='Agent', column='IssuedByID'),
-            Relationship(is_relationship=True, name='issuedTo', type='many-to-one',required=False, relatedModelName='Agent', column='IssuedToID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='permitAttachments', type='one-to-many',required=False, relatedModelName='PermitAttachment', otherSideName='permit')
+            Relationship(name='accessionAuthorizations', type='one-to-many',required=False, relatedModelName='AccessionAuthorization', otherSideName='permit'),
+            Relationship(name='collectingEventAuthorizations', type='one-to-many',required=False, relatedModelName='CollectingEventAuthorization', otherSideName='permit'),
+            Relationship(name='collectingTripAuthorizations', type='one-to-many',required=False, relatedModelName='CollectingTripAuthorization', otherSideName='permit'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='institution', type='many-to-one',required=True, relatedModelName='Institution', column='InstitutionID'),
+            Relationship(name='issuedBy', type='many-to-one',required=False, relatedModelName='Agent', column='IssuedByID'),
+            Relationship(name='issuedTo', type='many-to-one',required=False, relatedModelName='Agent', column='IssuedToID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='permitAttachments', type='one-to-many',required=False, relatedModelName='PermitAttachment', otherSideName='permit')
         ],
         fieldAliases=[
 
@@ -5232,10 +5232,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='permitAttachments'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='permit', type='many-to-one',required=True, relatedModelName='Permit', column='PermitID', otherSideName='permitAttachments')
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='permitAttachments'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='permit', type='many-to-one',required=True, relatedModelName='Permit', column='PermitID', otherSideName='permitAttachments')
         ],
         fieldAliases=[
 
@@ -5270,10 +5270,10 @@ datamodel = Datamodel(tables=[
             Index(name='PickListNameIDX', column_names=['Name'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='collection', type='many-to-one',required=True, relatedModelName='Collection', column='CollectionID', otherSideName='pickLists'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='pickListItems', type='one-to-many',required=False, relatedModelName='PickListItem', otherSideName='pickList')
+            Relationship(name='collection', type='many-to-one',required=True, relatedModelName='Collection', column='CollectionID', otherSideName='pickLists'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='pickListItems', type='one-to-many',required=False, relatedModelName='PickListItem', otherSideName='pickList')
         ],
         fieldAliases=[
 
@@ -5300,9 +5300,9 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='pickList', type='many-to-one',required=True, relatedModelName='PickList', column='PickListID', otherSideName='pickListItems')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='pickList', type='many-to-one',required=True, relatedModelName='PickList', column='PickListID', otherSideName='pickListItems')
         ],
         fieldAliases=[
 
@@ -5328,10 +5328,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attributeDefs', type='one-to-many',required=False, relatedModelName='AttributeDef', otherSideName='prepType'),
-            Relationship(is_relationship=True, name='collection', type='many-to-one',required=True, relatedModelName='Collection', column='CollectionID', otherSideName='prepTypes'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='attributeDefs', type='one-to-many',required=False, relatedModelName='AttributeDef', otherSideName='prepType'),
+            Relationship(name='collection', type='many-to-one',required=True, relatedModelName='Collection', column='CollectionID', otherSideName='prepTypes'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -5400,24 +5400,24 @@ datamodel = Datamodel(tables=[
             Index(name='PrepBarCodeIDX', column_names=['BarCode'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='alternateStorage', type='many-to-one',required=False, relatedModelName='Storage', column='AlternateStorageID'),
-            Relationship(is_relationship=True, name='collectionObject', type='many-to-one',required=True, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='preparations'),
-            Relationship(is_relationship=True, name='conservDescriptions', type='one-to-many',required=False, relatedModelName='ConservDescription', otherSideName='preparation'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='disposalPreparations', type='one-to-many',required=False, relatedModelName='DisposalPreparation', otherSideName='preparation'),
-            Relationship(is_relationship=True, name='exchangeInPreps', type='one-to-many',required=False, relatedModelName='ExchangeInPrep', otherSideName='preparation'),
-            Relationship(is_relationship=True, name='exchangeOutPreps', type='one-to-many',required=False, relatedModelName='ExchangeOutPrep', otherSideName='preparation'),
-            Relationship(is_relationship=True, name='giftPreparations', type='one-to-many',required=False, relatedModelName='GiftPreparation', otherSideName='preparation'),
-            Relationship(is_relationship=True, name='loanPreparations', type='one-to-many',required=False, relatedModelName='LoanPreparation', otherSideName='preparation'),
-            Relationship(is_relationship=True, name='materialSamples', type='one-to-many',required=False, relatedModelName='MaterialSample', otherSideName='preparation'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='prepType', type='many-to-one',required=True, relatedModelName='PrepType', column='PrepTypeID'),
-            Relationship(is_relationship=True, name='preparationAttachments', type='one-to-many',required=False, relatedModelName='PreparationAttachment', otherSideName='preparation'),
-            Relationship(is_relationship=True, name='preparationAttribute', type='many-to-one',required=False, relatedModelName='PreparationAttribute', column='PreparationAttributeID', otherSideName='preparations'),
-            Relationship(is_relationship=True, name='preparationAttrs', type='one-to-many',required=False, relatedModelName='PreparationAttr', otherSideName='preparation'),
-            Relationship(is_relationship=True, name='preparationProperties', type='one-to-many',required=False, relatedModelName='PreparationProperty', otherSideName='preparation'),
-            Relationship(is_relationship=True, name='preparedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='PreparedByID'),
-            Relationship(is_relationship=True, name='storage', type='many-to-one',required=False, relatedModelName='Storage', column='StorageID', otherSideName='preparations')
+            Relationship(name='alternateStorage', type='many-to-one',required=False, relatedModelName='Storage', column='AlternateStorageID'),
+            Relationship(name='collectionObject', type='many-to-one',required=True, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='preparations'),
+            Relationship(name='conservDescriptions', type='one-to-many',required=False, relatedModelName='ConservDescription', otherSideName='preparation'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='disposalPreparations', type='one-to-many',required=False, relatedModelName='DisposalPreparation', otherSideName='preparation'),
+            Relationship(name='exchangeInPreps', type='one-to-many',required=False, relatedModelName='ExchangeInPrep', otherSideName='preparation'),
+            Relationship(name='exchangeOutPreps', type='one-to-many',required=False, relatedModelName='ExchangeOutPrep', otherSideName='preparation'),
+            Relationship(name='giftPreparations', type='one-to-many',required=False, relatedModelName='GiftPreparation', otherSideName='preparation'),
+            Relationship(name='loanPreparations', type='one-to-many',required=False, relatedModelName='LoanPreparation', otherSideName='preparation'),
+            Relationship(name='materialSamples', type='one-to-many',required=False, relatedModelName='MaterialSample', otherSideName='preparation'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='prepType', type='many-to-one',required=True, relatedModelName='PrepType', column='PrepTypeID'),
+            Relationship(name='preparationAttachments', type='one-to-many',required=False, relatedModelName='PreparationAttachment', otherSideName='preparation'),
+            Relationship(name='preparationAttribute', type='many-to-one',required=False, relatedModelName='PreparationAttribute', column='PreparationAttributeID', otherSideName='preparations'),
+            Relationship(name='preparationAttrs', type='one-to-many',required=False, relatedModelName='PreparationAttr', otherSideName='preparation'),
+            Relationship(name='preparationProperties', type='one-to-many',required=False, relatedModelName='PreparationProperty', otherSideName='preparation'),
+            Relationship(name='preparedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='PreparedByID'),
+            Relationship(name='storage', type='many-to-one',required=False, relatedModelName='Storage', column='StorageID', otherSideName='preparations')
         ],
         fieldAliases=[
 
@@ -5444,10 +5444,10 @@ datamodel = Datamodel(tables=[
             Index(name='PrepAttColMemIDX', column_names=['CollectionMemberID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='preparationAttachments'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='preparation', type='many-to-one',required=True, relatedModelName='Preparation', column='PreparationID', otherSideName='preparationAttachments')
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='preparationAttachments'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='preparation', type='many-to-one',required=True, relatedModelName='Preparation', column='PreparationID', otherSideName='preparationAttachments')
         ],
         fieldAliases=[
 
@@ -5474,10 +5474,10 @@ datamodel = Datamodel(tables=[
             Index(name='PrepAttrColMemIDX', column_names=['CollectionMemberID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='definition', type='many-to-one',required=True, relatedModelName='AttributeDef', column='AttributeDefID', otherSideName='preparationAttrs'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='preparation', type='many-to-one',required=True, relatedModelName='Preparation', column='PreparationId', otherSideName='preparationAttrs')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='definition', type='many-to-one',required=True, relatedModelName='AttributeDef', column='AttributeDefID', otherSideName='preparationAttrs'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='preparation', type='many-to-one',required=True, relatedModelName='Preparation', column='PreparationId', otherSideName='preparationAttrs')
         ],
         fieldAliases=[
 
@@ -5541,9 +5541,9 @@ datamodel = Datamodel(tables=[
             Index(name='PrepAttrsColMemIDX', column_names=['CollectionMemberID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='preparations', type='one-to-many',required=False, relatedModelName='Preparation', otherSideName='preparationAttribute')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='preparations', type='one-to-many',required=False, relatedModelName='Preparation', otherSideName='preparationAttribute')
         ],
         fieldAliases=[
 
@@ -5708,29 +5708,29 @@ datamodel = Datamodel(tables=[
             Index(name='PREPPROPColMemIDX', column_names=['CollectionMemberID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='agent1', type='many-to-one',required=False, relatedModelName='Agent', column='Agent1ID'),
-            Relationship(is_relationship=True, name='agent10', type='many-to-one',required=False, relatedModelName='Agent', column='Agent10ID'),
-            Relationship(is_relationship=True, name='agent11', type='many-to-one',required=False, relatedModelName='Agent', column='Agent11ID'),
-            Relationship(is_relationship=True, name='agent12', type='many-to-one',required=False, relatedModelName='Agent', column='Agent12ID'),
-            Relationship(is_relationship=True, name='agent13', type='many-to-one',required=False, relatedModelName='Agent', column='Agent13ID'),
-            Relationship(is_relationship=True, name='agent14', type='many-to-one',required=False, relatedModelName='Agent', column='Agent14ID'),
-            Relationship(is_relationship=True, name='agent15', type='many-to-one',required=False, relatedModelName='Agent', column='Agent15ID'),
-            Relationship(is_relationship=True, name='agent16', type='many-to-one',required=False, relatedModelName='Agent', column='Agent16ID'),
-            Relationship(is_relationship=True, name='agent17', type='many-to-one',required=False, relatedModelName='Agent', column='Agent17ID'),
-            Relationship(is_relationship=True, name='agent18', type='many-to-one',required=False, relatedModelName='Agent', column='Agent18ID'),
-            Relationship(is_relationship=True, name='agent19', type='many-to-one',required=False, relatedModelName='Agent', column='Agent19ID'),
-            Relationship(is_relationship=True, name='agent2', type='many-to-one',required=False, relatedModelName='Agent', column='Agent2ID'),
-            Relationship(is_relationship=True, name='agent20', type='many-to-one',required=False, relatedModelName='Agent', column='Agent20ID'),
-            Relationship(is_relationship=True, name='agent3', type='many-to-one',required=False, relatedModelName='Agent', column='Agent3ID'),
-            Relationship(is_relationship=True, name='agent4', type='many-to-one',required=False, relatedModelName='Agent', column='Agent4ID'),
-            Relationship(is_relationship=True, name='agent5', type='many-to-one',required=False, relatedModelName='Agent', column='Agent5ID'),
-            Relationship(is_relationship=True, name='agent6', type='many-to-one',required=False, relatedModelName='Agent', column='Agent6ID'),
-            Relationship(is_relationship=True, name='agent7', type='many-to-one',required=False, relatedModelName='Agent', column='Agent7ID'),
-            Relationship(is_relationship=True, name='agent8', type='many-to-one',required=False, relatedModelName='Agent', column='Agent8D'),
-            Relationship(is_relationship=True, name='agent9', type='many-to-one',required=False, relatedModelName='Agent', column='Agent9ID'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='preparation', type='many-to-one',required=True, relatedModelName='Preparation', column='PreparationID', otherSideName='preparationProperties')
+            Relationship(name='agent1', type='many-to-one',required=False, relatedModelName='Agent', column='Agent1ID'),
+            Relationship(name='agent10', type='many-to-one',required=False, relatedModelName='Agent', column='Agent10ID'),
+            Relationship(name='agent11', type='many-to-one',required=False, relatedModelName='Agent', column='Agent11ID'),
+            Relationship(name='agent12', type='many-to-one',required=False, relatedModelName='Agent', column='Agent12ID'),
+            Relationship(name='agent13', type='many-to-one',required=False, relatedModelName='Agent', column='Agent13ID'),
+            Relationship(name='agent14', type='many-to-one',required=False, relatedModelName='Agent', column='Agent14ID'),
+            Relationship(name='agent15', type='many-to-one',required=False, relatedModelName='Agent', column='Agent15ID'),
+            Relationship(name='agent16', type='many-to-one',required=False, relatedModelName='Agent', column='Agent16ID'),
+            Relationship(name='agent17', type='many-to-one',required=False, relatedModelName='Agent', column='Agent17ID'),
+            Relationship(name='agent18', type='many-to-one',required=False, relatedModelName='Agent', column='Agent18ID'),
+            Relationship(name='agent19', type='many-to-one',required=False, relatedModelName='Agent', column='Agent19ID'),
+            Relationship(name='agent2', type='many-to-one',required=False, relatedModelName='Agent', column='Agent2ID'),
+            Relationship(name='agent20', type='many-to-one',required=False, relatedModelName='Agent', column='Agent20ID'),
+            Relationship(name='agent3', type='many-to-one',required=False, relatedModelName='Agent', column='Agent3ID'),
+            Relationship(name='agent4', type='many-to-one',required=False, relatedModelName='Agent', column='Agent4ID'),
+            Relationship(name='agent5', type='many-to-one',required=False, relatedModelName='Agent', column='Agent5ID'),
+            Relationship(name='agent6', type='many-to-one',required=False, relatedModelName='Agent', column='Agent6ID'),
+            Relationship(name='agent7', type='many-to-one',required=False, relatedModelName='Agent', column='Agent7ID'),
+            Relationship(name='agent8', type='many-to-one',required=False, relatedModelName='Agent', column='Agent8D'),
+            Relationship(name='agent9', type='many-to-one',required=False, relatedModelName='Agent', column='Agent9ID'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='preparation', type='many-to-one',required=True, relatedModelName='Preparation', column='PreparationID', otherSideName='preparationProperties')
         ],
         fieldAliases=[
 
@@ -5771,10 +5771,10 @@ datamodel = Datamodel(tables=[
             Index(name='ProjectNumberIDX', column_names=['ProjectNumber'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='agent', type='many-to-one',required=False, relatedModelName='Agent', column='ProjectAgentID'),
-            Relationship(is_relationship=True, name='collectionObjects', type='many-to-many',required=False, relatedModelName='CollectionObject', otherSideName='projects'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='agent', type='many-to-one',required=False, relatedModelName='Agent', column='ProjectAgentID'),
+            Relationship(name='collectionObjects', type='many-to-many',required=False, relatedModelName='CollectionObject', otherSideName='projects'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -5806,12 +5806,12 @@ datamodel = Datamodel(tables=[
             Index(name='RecordSetNameIDX', column_names=['name'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='group', type='many-to-one',required=False, relatedModelName='SpPrincipal', column='SpPrincipalID'),
-            Relationship(is_relationship=True, name='infoRequest', type='many-to-one',required=False, relatedModelName='InfoRequest', column='InfoRequestID', otherSideName='recordSets'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='recordSetItems', type='one-to-many',required=False, relatedModelName='RecordSetItem', otherSideName='recordSet'),
-            Relationship(is_relationship=True, name='specifyUser', type='many-to-one',required=True, relatedModelName='SpecifyUser', column='SpecifyUserID')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='group', type='many-to-one',required=False, relatedModelName='SpPrincipal', column='SpPrincipalID'),
+            Relationship(name='infoRequest', type='many-to-one',required=False, relatedModelName='InfoRequest', column='InfoRequestID', otherSideName='recordSets'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='recordSetItems', type='one-to-many',required=False, relatedModelName='RecordSetItem', otherSideName='recordSet'),
+            Relationship(name='specifyUser', type='many-to-one',required=True, relatedModelName='SpecifyUser', column='SpecifyUserID')
         ],
         fieldAliases=[
 
@@ -5832,7 +5832,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='recordSet', type='many-to-one',required=True, relatedModelName='RecordSet', column='RecordSetID', otherSideName='recordSetItems')
+            Relationship(name='recordSet', type='many-to-one',required=True, relatedModelName='RecordSet', column='RecordSetID', otherSideName='recordSetItems')
         ],
         fieldAliases=[
 
@@ -5878,19 +5878,19 @@ datamodel = Datamodel(tables=[
             Index(name='ISBNIDX', column_names=['ISBN'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='authors', type='one-to-many',required=False, relatedModelName='Author', otherSideName='referenceWork'),
-            Relationship(is_relationship=True, name='collectionObjectCitations', type='one-to-many',required=False, relatedModelName='CollectionObjectCitation', otherSideName='referenceWork'),
-            Relationship(is_relationship=True, name='containedRFParent', type='many-to-one',required=False, relatedModelName='ReferenceWork', column='ContainedRFParentID', otherSideName='containedReferenceWorks'),
-            Relationship(is_relationship=True, name='containedReferenceWorks', type='one-to-many',required=False, relatedModelName='ReferenceWork', otherSideName='containedRFParent'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='determinationCitations', type='one-to-many',required=False, relatedModelName='DeterminationCitation', otherSideName='referenceWork'),
-            Relationship(is_relationship=True, name='exsiccatae', type='one-to-many',required=False, relatedModelName='Exsiccata', otherSideName='referenceWork'),
-            Relationship(is_relationship=True, name='institution', type='many-to-one',required=True, relatedModelName='Institution', column='InstitutionID'),
-            Relationship(is_relationship=True, name='journal', type='many-to-one',required=False, relatedModelName='Journal', column='JournalID', otherSideName='referenceWorks'),
-            Relationship(is_relationship=True, name='localityCitations', type='one-to-many',required=False, relatedModelName='LocalityCitation', otherSideName='referenceWork'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='referenceWorkAttachments', type='one-to-many',required=False, relatedModelName='ReferenceWorkAttachment', otherSideName='referenceWork'),
-            Relationship(is_relationship=True, name='taxonCitations', type='one-to-many',required=False, relatedModelName='TaxonCitation', otherSideName='referenceWork')
+            Relationship(name='authors', type='one-to-many',required=False, relatedModelName='Author', otherSideName='referenceWork'),
+            Relationship(name='collectionObjectCitations', type='one-to-many',required=False, relatedModelName='CollectionObjectCitation', otherSideName='referenceWork'),
+            Relationship(name='containedRFParent', type='many-to-one',required=False, relatedModelName='ReferenceWork', column='ContainedRFParentID', otherSideName='containedReferenceWorks'),
+            Relationship(name='containedReferenceWorks', type='one-to-many',required=False, relatedModelName='ReferenceWork', otherSideName='containedRFParent'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='determinationCitations', type='one-to-many',required=False, relatedModelName='DeterminationCitation', otherSideName='referenceWork'),
+            Relationship(name='exsiccatae', type='one-to-many',required=False, relatedModelName='Exsiccata', otherSideName='referenceWork'),
+            Relationship(name='institution', type='many-to-one',required=True, relatedModelName='Institution', column='InstitutionID'),
+            Relationship(name='journal', type='many-to-one',required=False, relatedModelName='Journal', column='JournalID', otherSideName='referenceWorks'),
+            Relationship(name='localityCitations', type='one-to-many',required=False, relatedModelName='LocalityCitation', otherSideName='referenceWork'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='referenceWorkAttachments', type='one-to-many',required=False, relatedModelName='ReferenceWorkAttachment', otherSideName='referenceWork'),
+            Relationship(name='taxonCitations', type='one-to-many',required=False, relatedModelName='TaxonCitation', otherSideName='referenceWork')
         ],
         fieldAliases=[
 
@@ -5916,10 +5916,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='referenceWorkAttachments'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='referenceWork', type='many-to-one',required=True, relatedModelName='ReferenceWork', column='ReferenceWorkID', otherSideName='referenceWorkAttachments')
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='referenceWorkAttachments'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='referenceWork', type='many-to-one',required=True, relatedModelName='ReferenceWork', column='ReferenceWorkID', otherSideName='referenceWorkAttachments')
         ],
         fieldAliases=[
 
@@ -5957,15 +5957,15 @@ datamodel = Datamodel(tables=[
             Index(name='RefWrkStartDate', column_names=['StartDate'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='accessions', type='one-to-many',required=False, relatedModelName='Accession', otherSideName='repositoryAgreement'),
-            Relationship(is_relationship=True, name='addressOfRecord', type='many-to-one',required=False, relatedModelName='AddressOfRecord', column='AddressOfRecordID', otherSideName='repositoryAgreements'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='division', type='many-to-one',required=True, relatedModelName='Division', column='DivisionID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='originator', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID'),
-            Relationship(is_relationship=True, name='repositoryAgreementAgents', type='one-to-many',required=False, relatedModelName='AccessionAgent', otherSideName='repositoryAgreement'),
-            Relationship(is_relationship=True, name='repositoryAgreementAttachments', type='one-to-many',required=False, relatedModelName='RepositoryAgreementAttachment', otherSideName='repositoryAgreement'),
-            Relationship(is_relationship=True, name='repositoryAgreementAuthorizations', type='one-to-many',required=False, relatedModelName='AccessionAuthorization', otherSideName='repositoryAgreement')
+            Relationship(name='accessions', type='one-to-many',required=False, relatedModelName='Accession', otherSideName='repositoryAgreement'),
+            Relationship(name='addressOfRecord', type='many-to-one',required=False, relatedModelName='AddressOfRecord', column='AddressOfRecordID', otherSideName='repositoryAgreements'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='division', type='many-to-one',required=True, relatedModelName='Division', column='DivisionID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='originator', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID'),
+            Relationship(name='repositoryAgreementAgents', type='one-to-many',required=False, relatedModelName='AccessionAgent', otherSideName='repositoryAgreement'),
+            Relationship(name='repositoryAgreementAttachments', type='one-to-many',required=False, relatedModelName='RepositoryAgreementAttachment', otherSideName='repositoryAgreement'),
+            Relationship(name='repositoryAgreementAuthorizations', type='one-to-many',required=False, relatedModelName='AccessionAuthorization', otherSideName='repositoryAgreement')
         ],
         fieldAliases=[
 
@@ -5991,10 +5991,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='repositoryAgreementAttachments'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='repositoryAgreement', type='many-to-one',required=True, relatedModelName='RepositoryAgreement', column='RepositoryAgreementID', otherSideName='repositoryAgreementAttachments')
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='repositoryAgreementAttachments'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='repositoryAgreement', type='many-to-one',required=True, relatedModelName='RepositoryAgreement', column='RepositoryAgreementID', otherSideName='repositoryAgreementAttachments')
         ],
         fieldAliases=[
 
@@ -6034,16 +6034,16 @@ datamodel = Datamodel(tables=[
             Index(name='ShipmentMethodIDX', column_names=['ShipmentMethod'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='borrow', type='many-to-one',required=False, relatedModelName='Borrow', column='BorrowID', otherSideName='shipments'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
-            Relationship(is_relationship=True, name='exchangeOut', type='many-to-one',required=False, relatedModelName='ExchangeOut', column='ExchangeOutID', otherSideName='shipments'),
-            Relationship(is_relationship=True, name='gift', type='many-to-one',required=False, relatedModelName='Gift', column='GiftID', otherSideName='shipments'),
-            Relationship(is_relationship=True, name='loan', type='many-to-one',required=False, relatedModelName='Loan', column='LoanID', otherSideName='shipments'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='shippedBy', type='many-to-one',required=False, relatedModelName='Agent', column='ShippedByID'),
-            Relationship(is_relationship=True, name='shippedTo', type='many-to-one',required=False, relatedModelName='Agent', column='ShippedToID'),
-            Relationship(is_relationship=True, name='shipper', type='many-to-one',required=False, relatedModelName='Agent', column='ShipperID')
+            Relationship(name='borrow', type='many-to-one',required=False, relatedModelName='Borrow', column='BorrowID', otherSideName='shipments'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
+            Relationship(name='exchangeOut', type='many-to-one',required=False, relatedModelName='ExchangeOut', column='ExchangeOutID', otherSideName='shipments'),
+            Relationship(name='gift', type='many-to-one',required=False, relatedModelName='Gift', column='GiftID', otherSideName='shipments'),
+            Relationship(name='loan', type='many-to-one',required=False, relatedModelName='Loan', column='LoanID', otherSideName='shipments'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='shippedBy', type='many-to-one',required=False, relatedModelName='Agent', column='ShippedByID'),
+            Relationship(name='shippedTo', type='many-to-one',required=False, relatedModelName='Agent', column='ShippedToID'),
+            Relationship(name='shipper', type='many-to-one',required=False, relatedModelName='Agent', column='ShipperID')
         ],
         fieldAliases=[
 
@@ -6073,13 +6073,13 @@ datamodel = Datamodel(tables=[
             Index(name='SpAppResMimeTypeIDX', column_names=['MimeType'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='group', type='many-to-one',required=False, relatedModelName='SpPrincipal', column='SpPrincipalID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='spAppResourceDatas', type='one-to-many',required=False, relatedModelName='SpAppResourceData', otherSideName='spAppResource'),
-            Relationship(is_relationship=True, name='spAppResourceDir', type='many-to-one',required=True, relatedModelName='SpAppResourceDir', column='SpAppResourceDirID', otherSideName='spPersistedAppResources'),
-            Relationship(is_relationship=True, name='spReports', type='one-to-many',required=False, relatedModelName='SpReport', otherSideName='appResource'),
-            Relationship(is_relationship=True, name='specifyUser', type='many-to-one',required=True, relatedModelName='SpecifyUser', column='SpecifyUserID', otherSideName='spAppResources')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='group', type='many-to-one',required=False, relatedModelName='SpPrincipal', column='SpPrincipalID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='spAppResourceDatas', type='one-to-many',required=False, relatedModelName='SpAppResourceData', otherSideName='spAppResource'),
+            Relationship(name='spAppResourceDir', type='many-to-one',required=True, relatedModelName='SpAppResourceDir', column='SpAppResourceDirID', otherSideName='spPersistedAppResources'),
+            Relationship(name='spReports', type='one-to-many',required=False, relatedModelName='SpReport', otherSideName='appResource'),
+            Relationship(name='specifyUser', type='many-to-one',required=True, relatedModelName='SpecifyUser', column='SpecifyUserID', otherSideName='spAppResources')
         ],
         fieldAliases=[
 
@@ -6102,10 +6102,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='spAppResource', type='many-to-one',required=False, relatedModelName='SpAppResource', column='SpAppResourceID', otherSideName='spAppResourceDatas'),
-            Relationship(is_relationship=True, name='spViewSetObj', type='many-to-one',required=False, relatedModelName='SpViewSetObj', column='SpViewSetObjID', otherSideName='spAppResourceDatas')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='spAppResource', type='many-to-one',required=False, relatedModelName='SpAppResource', column='SpAppResourceID', otherSideName='spAppResourceDatas'),
+            Relationship(name='spViewSetObj', type='many-to-one',required=False, relatedModelName='SpViewSetObj', column='SpViewSetObjID', otherSideName='spAppResourceDatas')
         ],
         fieldAliases=[
 
@@ -6130,13 +6130,13 @@ datamodel = Datamodel(tables=[
             Index(name='SpAppResourceDirDispTypeIDX', column_names=['DisciplineType'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='collection', type='many-to-one',required=False, relatedModelName='Collection', column='CollectionID'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='discipline', type='many-to-one',required=False, relatedModelName='Discipline', column='DisciplineID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='spPersistedAppResources', type='one-to-many',required=False, relatedModelName='SpAppResource', otherSideName='spAppResourceDir'),
-            Relationship(is_relationship=True, name='spPersistedViewSets', type='one-to-many',required=False, relatedModelName='SpViewSetObj', otherSideName='spAppResourceDir'),
-            Relationship(is_relationship=True, name='specifyUser', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='SpecifyUserID', otherSideName='spAppResourceDirs')
+            Relationship(name='collection', type='many-to-one',required=False, relatedModelName='Collection', column='CollectionID'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='discipline', type='many-to-one',required=False, relatedModelName='Discipline', column='DisciplineID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='spPersistedAppResources', type='one-to-many',required=False, relatedModelName='SpAppResource', otherSideName='spAppResourceDir'),
+            Relationship(name='spPersistedViewSets', type='one-to-many',required=False, relatedModelName='SpViewSetObj', otherSideName='spAppResourceDir'),
+            Relationship(name='specifyUser', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='SpecifyUserID', otherSideName='spAppResourceDirs')
         ],
         fieldAliases=[
 
@@ -6164,9 +6164,9 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='fields', type='one-to-many',required=False, relatedModelName='SpAuditLogField', otherSideName='spAuditLog'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='fields', type='one-to-many',required=False, relatedModelName='SpAuditLogField', otherSideName='spAuditLog'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -6191,9 +6191,9 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='spAuditLog', type='many-to-one',required=False, relatedModelName='SpAuditLog', column='SpAuditLogID', otherSideName='fields')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='spAuditLog', type='many-to-one',required=False, relatedModelName='SpAuditLog', column='SpAuditLogID', otherSideName='fields')
         ],
         fieldAliases=[
 
@@ -6218,11 +6218,11 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID', otherSideName='spExportSchemas'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='spExportSchemaItems', type='one-to-many',required=False, relatedModelName='SpExportSchemaItem', otherSideName='spExportSchema'),
-            Relationship(is_relationship=True, name='spExportSchemaMappings', type='many-to-many',required=False, relatedModelName='SpExportSchemaMapping', otherSideName='spExportSchemas')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID', otherSideName='spExportSchemas'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='spExportSchemaItems', type='one-to-many',required=False, relatedModelName='SpExportSchemaItem', otherSideName='spExportSchema'),
+            Relationship(name='spExportSchemaMappings', type='many-to-many',required=False, relatedModelName='SpExportSchemaMapping', otherSideName='spExportSchemas')
         ],
         fieldAliases=[
 
@@ -6248,10 +6248,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='spExportSchema', type='many-to-one',required=True, relatedModelName='SpExportSchema', column='SpExportSchemaID', otherSideName='spExportSchemaItems'),
-            Relationship(is_relationship=True, name='spLocaleContainerItem', type='many-to-one',required=False, relatedModelName='SpLocaleContainerItem', column='SpLocaleContainerItemID', otherSideName='spExportSchemaItems')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='spExportSchema', type='many-to-one',required=True, relatedModelName='SpExportSchema', column='SpExportSchemaID', otherSideName='spExportSchemaItems'),
+            Relationship(name='spLocaleContainerItem', type='many-to-one',required=False, relatedModelName='SpLocaleContainerItem', column='SpLocaleContainerItemID', otherSideName='spExportSchemaItems')
         ],
         fieldAliases=[
 
@@ -6277,11 +6277,11 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='exportSchemaItem', type='many-to-one',required=False, relatedModelName='SpExportSchemaItem', column='ExportSchemaItemID'),
-            Relationship(is_relationship=True, name='exportSchemaMapping', type='many-to-one',required=False, relatedModelName='SpExportSchemaMapping', column='SpExportSchemaMappingID', otherSideName='mappings'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='queryField', type='many-to-one',required=False, relatedModelName='SpQueryField', column='SpQueryFieldID', otherSideName='mappings')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='exportSchemaItem', type='many-to-one',required=False, relatedModelName='SpExportSchemaItem', column='ExportSchemaItemID'),
+            Relationship(name='exportSchemaMapping', type='many-to-one',required=False, relatedModelName='SpExportSchemaMapping', column='SpExportSchemaMappingID', otherSideName='mappings'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='queryField', type='many-to-one',required=False, relatedModelName='SpQueryField', column='SpQueryFieldID', otherSideName='mappings')
         ],
         fieldAliases=[
 
@@ -6307,11 +6307,11 @@ datamodel = Datamodel(tables=[
             Index(name='SPEXPSCHMMAPColMemIDX', column_names=['CollectionMemberID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='mappings', type='one-to-many',required=False, relatedModelName='SpExportSchemaItemMapping', otherSideName='exportSchemaMapping'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='spExportSchemas', type='many-to-many',required=False, relatedModelName='SpExportSchema', otherSideName='spExportSchemaMappings'),
-            Relationship(is_relationship=True, name='symbiotaInstances', type='one-to-many',required=False, relatedModelName='SpSymbiotaInstance', otherSideName='schemaMapping')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='mappings', type='one-to-many',required=False, relatedModelName='SpExportSchemaItemMapping', otherSideName='exportSchemaMapping'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='spExportSchemas', type='many-to-many',required=False, relatedModelName='SpExportSchema', otherSideName='spExportSchemaMappings'),
+            Relationship(name='symbiotaInstances', type='one-to-many',required=False, relatedModelName='SpSymbiotaInstance', otherSideName='schemaMapping')
         ],
         fieldAliases=[
 
@@ -6338,8 +6338,8 @@ datamodel = Datamodel(tables=[
             Index(name='SpFieldValueDefaultColMemIDX', column_names=['CollectionMemberID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -6371,12 +6371,12 @@ datamodel = Datamodel(tables=[
             Index(name='SpLocaleContainerNameIDX', column_names=['Name'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='descs', type='one-to-many',required=False, relatedModelName='SpLocaleItemStr', otherSideName='containerDesc'),
-            Relationship(is_relationship=True, name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID', otherSideName='spLocaleContainers'),
-            Relationship(is_relationship=True, name='items', type='one-to-many',required=False, relatedModelName='SpLocaleContainerItem', otherSideName='container'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='names', type='one-to-many',required=False, relatedModelName='SpLocaleItemStr', otherSideName='containerName')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='descs', type='one-to-many',required=False, relatedModelName='SpLocaleItemStr', otherSideName='containerDesc'),
+            Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID', otherSideName='spLocaleContainers'),
+            Relationship(name='items', type='one-to-many',required=False, relatedModelName='SpLocaleContainerItem', otherSideName='container'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='names', type='one-to-many',required=False, relatedModelName='SpLocaleItemStr', otherSideName='containerName')
         ],
         fieldAliases=[
 
@@ -6407,12 +6407,12 @@ datamodel = Datamodel(tables=[
             Index(name='SpLocaleContainerItemNameIDX', column_names=['Name'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='container', type='many-to-one',required=True, relatedModelName='SpLocaleContainer', column='SpLocaleContainerID', otherSideName='items'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='descs', type='one-to-many',required=False, relatedModelName='SpLocaleItemStr', otherSideName='itemDesc'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='names', type='one-to-many',required=False, relatedModelName='SpLocaleItemStr', otherSideName='itemName'),
-            Relationship(is_relationship=True, name='spExportSchemaItems', type='one-to-many',required=False, relatedModelName='SpExportSchemaItem', otherSideName='spLocaleContainerItem')
+            Relationship(name='container', type='many-to-one',required=True, relatedModelName='SpLocaleContainer', column='SpLocaleContainerID', otherSideName='items'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='descs', type='one-to-many',required=False, relatedModelName='SpLocaleItemStr', otherSideName='itemDesc'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='names', type='one-to-many',required=False, relatedModelName='SpLocaleItemStr', otherSideName='itemName'),
+            Relationship(name='spExportSchemaItems', type='one-to-many',required=False, relatedModelName='SpExportSchemaItem', otherSideName='spLocaleContainerItem')
         ],
         fieldAliases=[
 
@@ -6439,12 +6439,12 @@ datamodel = Datamodel(tables=[
             Index(name='SpLocaleCountyIDX', column_names=['Country'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='containerDesc', type='many-to-one',required=False, relatedModelName='SpLocaleContainer', column='SpLocaleContainerDescID', otherSideName='descs'),
-            Relationship(is_relationship=True, name='containerName', type='many-to-one',required=False, relatedModelName='SpLocaleContainer', column='SpLocaleContainerNameID', otherSideName='names'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='itemDesc', type='many-to-one',required=False, relatedModelName='SpLocaleContainerItem', column='SpLocaleContainerItemDescID', otherSideName='descs'),
-            Relationship(is_relationship=True, name='itemName', type='many-to-one',required=False, relatedModelName='SpLocaleContainerItem', column='SpLocaleContainerItemNameID', otherSideName='names'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='containerDesc', type='many-to-one',required=False, relatedModelName='SpLocaleContainer', column='SpLocaleContainerDescID', otherSideName='descs'),
+            Relationship(name='containerName', type='many-to-one',required=False, relatedModelName='SpLocaleContainer', column='SpLocaleContainerNameID', otherSideName='names'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='itemDesc', type='many-to-one',required=False, relatedModelName='SpLocaleContainerItem', column='SpLocaleContainerItemDescID', otherSideName='descs'),
+            Relationship(name='itemName', type='many-to-one',required=False, relatedModelName='SpLocaleContainerItem', column='SpLocaleContainerItemNameID', otherSideName='names'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -6467,7 +6467,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='principals', type='many-to-many',required=False, relatedModelName='SpPrincipal', otherSideName='permissions')
+            Relationship(name='principals', type='many-to-many',required=False, relatedModelName='SpPrincipal', otherSideName='permissions')
         ],
         fieldAliases=[
 
@@ -6494,11 +6494,11 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='permissions', type='many-to-many',required=False, relatedModelName='SpPermission', otherSideName='principals'),
-            Relationship(is_relationship=True, name='scope', type='many-to-one',required=False, relatedModelName='UserGroupScope', column='userGroupScopeID', otherSideName='userGroups'),
-            Relationship(is_relationship=True, name='specifyUsers', type='many-to-many',required=False, relatedModelName='SpecifyUser', otherSideName='spPrincipals')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='permissions', type='many-to-many',required=False, relatedModelName='SpPermission', otherSideName='principals'),
+            Relationship(name='scope', type='many-to-one',required=False, relatedModelName='UserGroupScope', column='userGroupScopeID', otherSideName='userGroups'),
+            Relationship(name='specifyUsers', type='many-to-many',required=False, relatedModelName='SpecifyUser', otherSideName='spPrincipals')
         ],
         fieldAliases=[
 
@@ -6532,11 +6532,11 @@ datamodel = Datamodel(tables=[
             Index(name='SpQueryNameIDX', column_names=['Name'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='fields', type='one-to-many',required=False, relatedModelName='SpQueryField', otherSideName='query'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='reports', type='one-to-many',required=False, relatedModelName='SpReport', otherSideName='query'),
-            Relationship(is_relationship=True, name='specifyUser', type='many-to-one',required=True, relatedModelName='SpecifyUser', column='SpecifyUserID', otherSideName='spQuerys')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='fields', type='one-to-many',required=False, relatedModelName='SpQueryField', otherSideName='query'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='reports', type='one-to-many',required=False, relatedModelName='SpReport', otherSideName='query'),
+            Relationship(name='specifyUser', type='many-to-one',required=True, relatedModelName='SpecifyUser', column='SpecifyUserID', otherSideName='spQuerys')
         ],
         fieldAliases=[
 
@@ -6576,10 +6576,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='mappings', type='one-to-many',required=False, relatedModelName='SpExportSchemaItemMapping', otherSideName='queryField'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='query', type='many-to-one',required=False, relatedModelName='SpQuery', column='SpQueryID', otherSideName='fields')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='mappings', type='one-to-many',required=False, relatedModelName='SpExportSchemaItemMapping', otherSideName='queryField'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='query', type='many-to-one',required=False, relatedModelName='SpQuery', column='SpQueryID', otherSideName='fields')
         ],
         fieldAliases=[
 
@@ -6605,12 +6605,12 @@ datamodel = Datamodel(tables=[
             Index(name='SpReportNameIDX', column_names=['Name'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='appResource', type='many-to-one',required=True, relatedModelName='SpAppResource', column='AppResourceID', otherSideName='spReports'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='query', type='many-to-one',required=False, relatedModelName='SpQuery', column='SpQueryID', otherSideName='reports'),
-            Relationship(is_relationship=True, name='specifyUser', type='many-to-one',required=True, relatedModelName='SpecifyUser', column='SpecifyUserID'),
-            Relationship(is_relationship=True, name='workbenchTemplate', type='one-to-one',required=False, relatedModelName='WorkbenchTemplate', column='WorkbenchTemplateID')
+            Relationship(name='appResource', type='many-to-one',required=True, relatedModelName='SpAppResource', column='AppResourceID', otherSideName='spReports'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='query', type='many-to-one',required=False, relatedModelName='SpQuery', column='SpQueryID', otherSideName='reports'),
+            Relationship(name='specifyUser', type='many-to-one',required=True, relatedModelName='SpecifyUser', column='SpecifyUserID'),
+            Relationship(name='workbenchTemplate', type='one-to-one',required=False, relatedModelName='WorkbenchTemplate', column='WorkbenchTemplateID')
         ],
         fieldAliases=[
 
@@ -6640,9 +6640,9 @@ datamodel = Datamodel(tables=[
             Index(name='SPSYMINSTColMemIDX', column_names=['CollectionMemberID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='schemaMapping', type='many-to-one',required=False, relatedModelName='SpExportSchemaMapping', column='SchemaMappingID', otherSideName='symbiotaInstances')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='schemaMapping', type='many-to-one',required=False, relatedModelName='SpExportSchemaMapping', column='SchemaMappingID', otherSideName='symbiotaInstances')
         ],
         fieldAliases=[
 
@@ -6671,11 +6671,11 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='collection', type='many-to-one',required=False, relatedModelName='Collection', column='CollectionID'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='discipline', type='many-to-one',required=False, relatedModelName='Discipline', column='DisciplineID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='owner', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='OwnerID', otherSideName='taskSemaphores')
+            Relationship(name='collection', type='many-to-one',required=False, relatedModelName='Collection', column='CollectionID'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='discipline', type='many-to-one',required=False, relatedModelName='Discipline', column='DisciplineID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='owner', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='OwnerID', otherSideName='taskSemaphores')
         ],
         fieldAliases=[
 
@@ -6703,8 +6703,8 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -6731,10 +6731,10 @@ datamodel = Datamodel(tables=[
             Index(name='SpViewObjNameIDX', column_names=['Name'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='spAppResourceDatas', type='one-to-many',required=False, relatedModelName='SpAppResourceData', otherSideName='spViewSetObj'),
-            Relationship(is_relationship=True, name='spAppResourceDir', type='many-to-one',required=True, relatedModelName='SpAppResourceDir', column='SpAppResourceDirID', otherSideName='spPersistedViewSets')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='spAppResourceDatas', type='one-to-many',required=False, relatedModelName='SpAppResourceData', otherSideName='spViewSetObj'),
+            Relationship(name='spAppResourceDir', type='many-to-one',required=True, relatedModelName='SpAppResourceDir', column='SpAppResourceDirID', otherSideName='spPersistedViewSets')
         ],
         fieldAliases=[
 
@@ -6758,10 +6758,10 @@ datamodel = Datamodel(tables=[
             Index(name='SpVisualQueryNameIDX', column_names=['Name'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='polygons', type='one-to-many',required=False, relatedModelName='LatLonPolygon', otherSideName='visualQuery'),
-            Relationship(is_relationship=True, name='specifyUser', type='many-to-one',required=True, relatedModelName='SpecifyUser', column='SpecifyUserID')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='polygons', type='one-to-many',required=False, relatedModelName='LatLonPolygon', otherSideName='visualQuery'),
+            Relationship(name='specifyUser', type='many-to-one',required=True, relatedModelName='SpecifyUser', column='SpecifyUserID')
         ],
         fieldAliases=[
 
@@ -6793,16 +6793,16 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='agents', type='one-to-many',required=False, relatedModelName='Agent', otherSideName='specifyUser'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='spAppResourceDirs', type='one-to-many',required=False, relatedModelName='SpAppResourceDir', otherSideName='specifyUser'),
-            Relationship(is_relationship=True, name='spAppResources', type='one-to-many',required=False, relatedModelName='SpAppResource', otherSideName='specifyUser'),
-            Relationship(is_relationship=True, name='spPrincipals', type='many-to-many',required=False, relatedModelName='SpPrincipal', otherSideName='specifyUsers'),
-            Relationship(is_relationship=True, name='spQuerys', type='one-to-many',required=False, relatedModelName='SpQuery', otherSideName='specifyUser'),
-            Relationship(is_relationship=True, name='taskSemaphores', type='one-to-many',required=False, relatedModelName='SpTaskSemaphore', otherSideName='owner'),
-            Relationship(is_relationship=True, name='workbenchTemplates', type='one-to-many',required=False, relatedModelName='WorkbenchTemplate', otherSideName='specifyUser'),
-            Relationship(is_relationship=True, name='workbenches', type='one-to-many',required=False, relatedModelName='Workbench', otherSideName='specifyUser')
+            Relationship(name='agents', type='one-to-many',required=False, relatedModelName='Agent', otherSideName='specifyUser'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='spAppResourceDirs', type='one-to-many',required=False, relatedModelName='SpAppResourceDir', otherSideName='specifyUser'),
+            Relationship(name='spAppResources', type='one-to-many',required=False, relatedModelName='SpAppResource', otherSideName='specifyUser'),
+            Relationship(name='spPrincipals', type='many-to-many',required=False, relatedModelName='SpPrincipal', otherSideName='specifyUsers'),
+            Relationship(name='spQuerys', type='one-to-many',required=False, relatedModelName='SpQuery', otherSideName='specifyUser'),
+            Relationship(name='taskSemaphores', type='one-to-many',required=False, relatedModelName='SpTaskSemaphore', otherSideName='owner'),
+            Relationship(name='workbenchTemplates', type='one-to-many',required=False, relatedModelName='WorkbenchTemplate', otherSideName='specifyUser'),
+            Relationship(name='workbenches', type='one-to-many',required=False, relatedModelName='Workbench', otherSideName='specifyUser')
         ],
         fieldAliases=[
 
@@ -6838,17 +6838,17 @@ datamodel = Datamodel(tables=[
             Index(name='StorFullNameIDX', column_names=['FullName'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='acceptedChildren', type='one-to-many',required=False, relatedModelName='Storage', otherSideName='acceptedStorage'),
-            Relationship(is_relationship=True, name='acceptedStorage', type='many-to-one',required=False, relatedModelName='Storage', column='AcceptedID', otherSideName='acceptedChildren'),
-            Relationship(is_relationship=True, name='children', type='one-to-many',required=False, relatedModelName='Storage', otherSideName='parent'),
-            Relationship(is_relationship=True, name='containers', type='one-to-many',required=False, relatedModelName='Container', otherSideName='storage'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='definition', type='many-to-one',required=True, relatedModelName='StorageTreeDef', column='StorageTreeDefID', otherSideName='treeEntries'),
-            Relationship(is_relationship=True, name='definitionItem', type='many-to-one',required=True, relatedModelName='StorageTreeDefItem', column='StorageTreeDefItemID', otherSideName='treeEntries'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='parent', type='many-to-one',required=False, relatedModelName='Storage', column='ParentID', otherSideName='children'),
-            Relationship(is_relationship=True, name='preparations', type='one-to-many',required=False, relatedModelName='Preparation', otherSideName='storage'),
-            Relationship(is_relationship=True, name='storageAttachments', type='one-to-many',required=False, relatedModelName='StorageAttachment', otherSideName='storage')
+            Relationship(name='acceptedChildren', type='one-to-many',required=False, relatedModelName='Storage', otherSideName='acceptedStorage'),
+            Relationship(name='acceptedStorage', type='many-to-one',required=False, relatedModelName='Storage', column='AcceptedID', otherSideName='acceptedChildren'),
+            Relationship(name='children', type='one-to-many',required=False, relatedModelName='Storage', otherSideName='parent'),
+            Relationship(name='containers', type='one-to-many',required=False, relatedModelName='Container', otherSideName='storage'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='definition', type='many-to-one',required=True, relatedModelName='StorageTreeDef', column='StorageTreeDefID', otherSideName='treeEntries'),
+            Relationship(name='definitionItem', type='many-to-one',required=True, relatedModelName='StorageTreeDefItem', column='StorageTreeDefItemID', otherSideName='treeEntries'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='parent', type='many-to-one',required=False, relatedModelName='Storage', column='ParentID', otherSideName='children'),
+            Relationship(name='preparations', type='one-to-many',required=False, relatedModelName='Preparation', otherSideName='storage'),
+            Relationship(name='storageAttachments', type='one-to-many',required=False, relatedModelName='StorageAttachment', otherSideName='storage')
         ],
         fieldAliases=[
             {'vname':'acceptedParent', 'aname':'acceptedStorage'}
@@ -6874,10 +6874,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='storageAttachments'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='storage', type='many-to-one',required=True, relatedModelName='Storage', column='StorageID', otherSideName='storageAttachments')
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='storageAttachments'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='storage', type='many-to-one',required=True, relatedModelName='Storage', column='StorageID', otherSideName='storageAttachments')
         ],
         fieldAliases=[
 
@@ -6904,11 +6904,11 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='institutions', type='one-to-many',required=False, relatedModelName='Institution', otherSideName='storageTreeDef'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='treeDefItems', type='one-to-many',required=False, relatedModelName='StorageTreeDefItem', otherSideName='treeDef'),
-            Relationship(is_relationship=True, name='treeEntries', type='one-to-many',required=False, relatedModelName='Storage', otherSideName='definition')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='institutions', type='one-to-many',required=False, relatedModelName='Institution', otherSideName='storageTreeDef'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='treeDefItems', type='one-to-many',required=False, relatedModelName='StorageTreeDefItem', otherSideName='treeDef'),
+            Relationship(name='treeEntries', type='one-to-many',required=False, relatedModelName='Storage', otherSideName='definition')
         ],
         fieldAliases=[
 
@@ -6939,12 +6939,12 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='children', type='one-to-many',required=False, relatedModelName='StorageTreeDefItem', otherSideName='parent'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='parent', type='many-to-one',required=False, relatedModelName='StorageTreeDefItem', column='ParentItemID', otherSideName='children'),
-            Relationship(is_relationship=True, name='treeDef', type='many-to-one',required=True, relatedModelName='StorageTreeDef', column='StorageTreeDefID', otherSideName='treeDefItems'),
-            Relationship(is_relationship=True, name='treeEntries', type='one-to-many',required=False, relatedModelName='Storage', otherSideName='definitionItem')
+            Relationship(name='children', type='one-to-many',required=False, relatedModelName='StorageTreeDefItem', otherSideName='parent'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='parent', type='many-to-one',required=False, relatedModelName='StorageTreeDefItem', column='ParentItemID', otherSideName='children'),
+            Relationship(name='treeDef', type='many-to-one',required=True, relatedModelName='StorageTreeDef', column='StorageTreeDefID', otherSideName='treeDefItems'),
+            Relationship(name='treeEntries', type='one-to-many',required=False, relatedModelName='Storage', otherSideName='definitionItem')
         ],
         fieldAliases=[
 
@@ -7053,25 +7053,25 @@ datamodel = Datamodel(tables=[
             Index(name='EnvironmentalProtectionStatusIDX', column_names=['EnvironmentalProtectionStatus'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='acceptedChildren', type='one-to-many',required=False, relatedModelName='Taxon', otherSideName='acceptedTaxon'),
-            Relationship(is_relationship=True, name='acceptedTaxon', type='many-to-one',required=False, relatedModelName='Taxon', column='AcceptedID', otherSideName='acceptedChildren'),
-            Relationship(is_relationship=True, name='children', type='one-to-many',required=False, relatedModelName='Taxon', otherSideName='parent'),
-            Relationship(is_relationship=True, name='collectingEventAttributes', type='one-to-many',required=False, relatedModelName='CollectingEventAttribute', otherSideName='hostTaxon'),
-            Relationship(is_relationship=True, name='commonNames', type='one-to-many',required=False, relatedModelName='CommonNameTx', otherSideName='taxon'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='definition', type='many-to-one',required=True, relatedModelName='TaxonTreeDef', column='TaxonTreeDefID', otherSideName='treeEntries'),
-            Relationship(is_relationship=True, name='definitionItem', type='many-to-one',required=True, relatedModelName='TaxonTreeDefItem', column='TaxonTreeDefItemID', otherSideName='treeEntries'),
-            Relationship(is_relationship=True, name='determinations', type='one-to-many',required=False, relatedModelName='Determination', otherSideName='taxon'),
-            Relationship(is_relationship=True, name='hybridChildren1', type='one-to-many',required=False, relatedModelName='Taxon', otherSideName='hybridParent1'),
-            Relationship(is_relationship=True, name='hybridChildren2', type='one-to-many',required=False, relatedModelName='Taxon', otherSideName='hybridParent2'),
-            Relationship(is_relationship=True, name='hybridParent1', type='many-to-one',required=False, relatedModelName='Taxon', column='HybridParent1ID', otherSideName='hybridChildren1'),
-            Relationship(is_relationship=True, name='hybridParent2', type='many-to-one',required=False, relatedModelName='Taxon', column='HybridParent2ID', otherSideName='hybridChildren2'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='parent', type='many-to-one',required=False, relatedModelName='Taxon', column='ParentID', otherSideName='children'),
-            Relationship(is_relationship=True, name='taxonAttachments', type='one-to-many',required=False, relatedModelName='TaxonAttachment', otherSideName='taxon'),
-            Relationship(is_relationship=True, name='taxonAttribute', type='many-to-one',required=False, relatedModelName='TaxonAttribute', column='TaxonAttributeID', otherSideName='taxons'),
-            Relationship(is_relationship=True, name='taxonCitations', type='one-to-many',required=False, relatedModelName='TaxonCitation', otherSideName='taxon'),
-            Relationship(is_relationship=True, name='visibilitySetBy', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='VisibilitySetByID')
+            Relationship(name='acceptedChildren', type='one-to-many',required=False, relatedModelName='Taxon', otherSideName='acceptedTaxon'),
+            Relationship(name='acceptedTaxon', type='many-to-one',required=False, relatedModelName='Taxon', column='AcceptedID', otherSideName='acceptedChildren'),
+            Relationship(name='children', type='one-to-many',required=False, relatedModelName='Taxon', otherSideName='parent'),
+            Relationship(name='collectingEventAttributes', type='one-to-many',required=False, relatedModelName='CollectingEventAttribute', otherSideName='hostTaxon'),
+            Relationship(name='commonNames', type='one-to-many',required=False, relatedModelName='CommonNameTx', otherSideName='taxon'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='definition', type='many-to-one',required=True, relatedModelName='TaxonTreeDef', column='TaxonTreeDefID', otherSideName='treeEntries'),
+            Relationship(name='definitionItem', type='many-to-one',required=True, relatedModelName='TaxonTreeDefItem', column='TaxonTreeDefItemID', otherSideName='treeEntries'),
+            Relationship(name='determinations', type='one-to-many',required=False, relatedModelName='Determination', otherSideName='taxon'),
+            Relationship(name='hybridChildren1', type='one-to-many',required=False, relatedModelName='Taxon', otherSideName='hybridParent1'),
+            Relationship(name='hybridChildren2', type='one-to-many',required=False, relatedModelName='Taxon', otherSideName='hybridParent2'),
+            Relationship(name='hybridParent1', type='many-to-one',required=False, relatedModelName='Taxon', column='HybridParent1ID', otherSideName='hybridChildren1'),
+            Relationship(name='hybridParent2', type='many-to-one',required=False, relatedModelName='Taxon', column='HybridParent2ID', otherSideName='hybridChildren2'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='parent', type='many-to-one',required=False, relatedModelName='Taxon', column='ParentID', otherSideName='children'),
+            Relationship(name='taxonAttachments', type='one-to-many',required=False, relatedModelName='TaxonAttachment', otherSideName='taxon'),
+            Relationship(name='taxonAttribute', type='many-to-one',required=False, relatedModelName='TaxonAttribute', column='TaxonAttributeID', otherSideName='taxons'),
+            Relationship(name='taxonCitations', type='one-to-many',required=False, relatedModelName='TaxonCitation', otherSideName='taxon'),
+            Relationship(name='visibilitySetBy', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='VisibilitySetByID')
         ],
         fieldAliases=[
             {'vname':'acceptedParent', 'aname':'acceptedTaxon'}
@@ -7097,10 +7097,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='taxonAttachments'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='taxon', type='many-to-one',required=True, relatedModelName='Taxon', column='TaxonID', otherSideName='taxonAttachments')
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='taxonAttachments'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='taxon', type='many-to-one',required=True, relatedModelName='Taxon', column='TaxonID', otherSideName='taxonAttachments')
         ],
         fieldAliases=[
 
@@ -7287,10 +7287,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='agent1', type='many-to-one',required=False, relatedModelName='Agent', column='Agent1ID'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='taxons', type='one-to-many',required=False, relatedModelName='Taxon', otherSideName='taxonAttribute')
+            Relationship(name='agent1', type='many-to-one',required=False, relatedModelName='Agent', column='Agent1ID'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='taxons', type='one-to-many',required=False, relatedModelName='Taxon', otherSideName='taxonAttribute')
         ],
         fieldAliases=[
 
@@ -7323,10 +7323,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='referenceWork', type='many-to-one',required=True, relatedModelName='ReferenceWork', column='ReferenceWorkID', otherSideName='taxonCitations'),
-            Relationship(is_relationship=True, name='taxon', type='many-to-one',required=True, relatedModelName='Taxon', column='TaxonID', otherSideName='taxonCitations')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='referenceWork', type='many-to-one',required=True, relatedModelName='ReferenceWork', column='ReferenceWorkID', otherSideName='taxonCitations'),
+            Relationship(name='taxon', type='many-to-one',required=True, relatedModelName='Taxon', column='TaxonID', otherSideName='taxonCitations')
         ],
         fieldAliases=[
 
@@ -7351,11 +7351,11 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='discipline', type='one-to-one',required=False, relatedModelName='Discipline', otherSideName='taxonTreeDef'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='treeDefItems', type='one-to-many',required=False, relatedModelName='TaxonTreeDefItem', otherSideName='treeDef'),
-            Relationship(is_relationship=True, name='treeEntries', type='one-to-many',required=False, relatedModelName='Taxon', otherSideName='definition')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='discipline', type='one-to-one',required=False, relatedModelName='Discipline', otherSideName='taxonTreeDef'), # no column, virtual
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='treeDefItems', type='one-to-many',required=False, relatedModelName='TaxonTreeDefItem', otherSideName='treeDef'),
+            Relationship(name='treeEntries', type='one-to-many',required=False, relatedModelName='Taxon', otherSideName='definition')
         ],
         fieldAliases=[
 
@@ -7387,12 +7387,12 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='children', type='one-to-many',required=False, relatedModelName='TaxonTreeDefItem', otherSideName='parent'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='parent', type='many-to-one',required=False, relatedModelName='TaxonTreeDefItem', column='ParentItemID', otherSideName='children'),
-            Relationship(is_relationship=True, name='treeDef', type='many-to-one',required=True, relatedModelName='TaxonTreeDef', column='TaxonTreeDefID', otherSideName='treeDefItems'),
-            Relationship(is_relationship=True, name='treeEntries', type='one-to-many',required=False, relatedModelName='Taxon', otherSideName='definitionItem')
+            Relationship(name='children', type='one-to-many',required=False, relatedModelName='TaxonTreeDefItem', otherSideName='parent'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='parent', type='many-to-one',required=False, relatedModelName='TaxonTreeDefItem', column='ParentItemID', otherSideName='children'),
+            Relationship(name='treeDef', type='many-to-one',required=True, relatedModelName='TaxonTreeDef', column='TaxonTreeDefID', otherSideName='treeDefItems'),
+            Relationship(name='treeEntries', type='one-to-many',required=False, relatedModelName='Taxon', otherSideName='definitionItem')
         ],
         fieldAliases=[
 
@@ -7444,14 +7444,14 @@ datamodel = Datamodel(tables=[
             Index(name='TETreatmentNumberIDX', column_names=['TreatmentNumber'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='accession', type='many-to-one',required=False, relatedModelName='Accession', column='AccessionID', otherSideName='treatmentEvents'),
-            Relationship(is_relationship=True, name='authorizedBy', type='many-to-one',required=False, relatedModelName='Agent', column='AuthorizedByID'),
-            Relationship(is_relationship=True, name='collectionObject', type='many-to-one',required=False, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='treatmentEvents'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='division', type='many-to-one',required=False, relatedModelName='Division', column='DivisionID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='performedBy', type='many-to-one',required=False, relatedModelName='Agent', column='PerformedByID'),
-            Relationship(is_relationship=True, name='treatmentEventAttachments', type='one-to-many',required=False, relatedModelName='TreatmentEventAttachment', otherSideName='treatmentEvent')
+            Relationship(name='accession', type='many-to-one',required=False, relatedModelName='Accession', column='AccessionID', otherSideName='treatmentEvents'),
+            Relationship(name='authorizedBy', type='many-to-one',required=False, relatedModelName='Agent', column='AuthorizedByID'),
+            Relationship(name='collectionObject', type='many-to-one',required=False, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='treatmentEvents'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='division', type='many-to-one',required=False, relatedModelName='Division', column='DivisionID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='performedBy', type='many-to-one',required=False, relatedModelName='Agent', column='PerformedByID'),
+            Relationship(name='treatmentEventAttachments', type='one-to-many',required=False, relatedModelName='TreatmentEventAttachment', otherSideName='treatmentEvent')
         ],
         fieldAliases=[
 
@@ -7475,10 +7475,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='treatmentEventAttachments'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='treatmentEvent', type='many-to-one',required=True, relatedModelName='TreatmentEvent', column='TreatmentEventID', otherSideName='treatmentEventAttachments')
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='treatmentEventAttachments'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='treatmentEvent', type='many-to-one',required=True, relatedModelName='TreatmentEvent', column='TreatmentEventID', otherSideName='treatmentEventAttachments')
         ],
         fieldAliases=[
 
@@ -7520,9 +7520,9 @@ datamodel = Datamodel(tables=[
             Index(name='VRXDATColMemIDX', column_names=['CollectionMemberID'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='collectionObject', type='many-to-one',required=True, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='voucherRelationships'),
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='collectionObject', type='many-to-one',required=True, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='voucherRelationships'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
@@ -7557,12 +7557,12 @@ datamodel = Datamodel(tables=[
             Index(name='WorkbenchNameIDX', column_names=['name'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='group', type='many-to-one',required=False, relatedModelName='SpPrincipal', column='SpPrincipalID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='specifyUser', type='many-to-one',required=True, relatedModelName='SpecifyUser', column='SpecifyUserID', otherSideName='workbenches'),
-            Relationship(is_relationship=True, name='workbenchRows', type='one-to-many',required=False, relatedModelName='WorkbenchRow', otherSideName='workbench'),
-            Relationship(is_relationship=True, name='workbenchTemplate', type='many-to-one',required=True, relatedModelName='WorkbenchTemplate', column='WorkbenchTemplateID', otherSideName='workbenches')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='group', type='many-to-one',required=False, relatedModelName='SpPrincipal', column='SpPrincipalID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='specifyUser', type='many-to-one',required=True, relatedModelName='SpecifyUser', column='SpecifyUserID', otherSideName='workbenches'),
+            Relationship(name='workbenchRows', type='one-to-many',required=False, relatedModelName='WorkbenchRow', otherSideName='workbench'),
+            Relationship(name='workbenchTemplate', type='many-to-one',required=True, relatedModelName='WorkbenchTemplate', column='WorkbenchTemplateID', otherSideName='workbenches')
         ],
         fieldAliases=[
 
@@ -7584,8 +7584,8 @@ datamodel = Datamodel(tables=[
             Index(name='DataItemRowNumberIDX', column_names=['rowNumber'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='workbenchRow', type='many-to-one',required=True, relatedModelName='WorkbenchRow', column='WorkbenchRowID', otherSideName='workbenchDataItems'),
-            Relationship(is_relationship=True, name='workbenchTemplateMappingItem', type='many-to-one',required=True, relatedModelName='WorkbenchTemplateMappingItem', column='WorkbenchTemplateMappingItemID', otherSideName='workbenchDataItems')
+            Relationship(name='workbenchRow', type='many-to-one',required=True, relatedModelName='WorkbenchRow', column='WorkbenchRowID', otherSideName='workbenchDataItems'),
+            Relationship(name='workbenchTemplateMappingItem', type='many-to-one',required=True, relatedModelName='WorkbenchTemplateMappingItem', column='WorkbenchTemplateMappingItemID', otherSideName='workbenchDataItems')
         ],
         fieldAliases=[
 
@@ -7617,10 +7617,10 @@ datamodel = Datamodel(tables=[
             Index(name='RowNumberIDX', column_names=['RowNumber'])
         ],
         relationships=[
-            Relationship(is_relationship=True, name='workbench', type='many-to-one',required=True, relatedModelName='Workbench', column='WorkbenchID', otherSideName='workbenchRows'),
-            Relationship(is_relationship=True, name='workbenchDataItems', type='one-to-many',required=False, relatedModelName='WorkbenchDataItem', otherSideName='workbenchRow'),
-            Relationship(is_relationship=True, name='workbenchRowExportedRelationships', type='one-to-many',required=False, relatedModelName='WorkbenchRowExportedRelationship', otherSideName='workbenchRow'),
-            Relationship(is_relationship=True, name='workbenchRowImages', type='one-to-many',required=False, relatedModelName='WorkbenchRowImage', otherSideName='workbenchRow')
+            Relationship(name='workbench', type='many-to-one',required=True, relatedModelName='Workbench', column='WorkbenchID', otherSideName='workbenchRows'),
+            Relationship(name='workbenchDataItems', type='one-to-many',required=False, relatedModelName='WorkbenchDataItem', otherSideName='workbenchRow'),
+            Relationship(name='workbenchRowExportedRelationships', type='one-to-many',required=False, relatedModelName='WorkbenchRowExportedRelationship', otherSideName='workbenchRow'),
+            Relationship(name='workbenchRowImages', type='one-to-many',required=False, relatedModelName='WorkbenchRowImage', otherSideName='workbenchRow')
         ],
         fieldAliases=[
 
@@ -7646,9 +7646,9 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='workbenchRow', type='many-to-one',required=True, relatedModelName='WorkbenchRow', column='WorkbenchRowID', otherSideName='workbenchRowExportedRelationships')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='workbenchRow', type='many-to-one',required=True, relatedModelName='WorkbenchRow', column='WorkbenchRowID', otherSideName='workbenchRowExportedRelationships')
         ],
         fieldAliases=[
 
@@ -7671,7 +7671,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='workbenchRow', type='many-to-one',required=True, relatedModelName='WorkbenchRow', column='WorkbenchRowID', otherSideName='workbenchRowImages')
+            Relationship(name='workbenchRow', type='many-to-one',required=True, relatedModelName='WorkbenchRow', column='WorkbenchRowID', otherSideName='workbenchRowImages')
         ],
         fieldAliases=[
 
@@ -7696,11 +7696,11 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='specifyUser', type='many-to-one',required=True, relatedModelName='SpecifyUser', column='SpecifyUserID', otherSideName='workbenchTemplates'),
-            Relationship(is_relationship=True, name='workbenchTemplateMappingItems', type='one-to-many',required=False, relatedModelName='WorkbenchTemplateMappingItem', otherSideName='workbenchTemplate'),
-            Relationship(is_relationship=True, name='workbenches', type='one-to-many',required=False, relatedModelName='Workbench', otherSideName='workbenchTemplate')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='specifyUser', type='many-to-one',required=True, relatedModelName='SpecifyUser', column='SpecifyUserID', otherSideName='workbenchTemplates'),
+            Relationship(name='workbenchTemplateMappingItems', type='one-to-many',required=False, relatedModelName='WorkbenchTemplateMappingItem', otherSideName='workbenchTemplate'),
+            Relationship(name='workbenches', type='one-to-many',required=False, relatedModelName='Workbench', otherSideName='workbenchTemplate')
         ],
         fieldAliases=[
 
@@ -7739,10 +7739,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(is_relationship=True, name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(is_relationship=True, name='workbenchDataItems', type='one-to-many',required=False, relatedModelName='WorkbenchDataItem', otherSideName='workbenchTemplateMappingItem'),
-            Relationship(is_relationship=True, name='workbenchTemplate', type='many-to-one',required=True, relatedModelName='WorkbenchTemplate', column='WorkbenchTemplateID', otherSideName='workbenchTemplateMappingItems')
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='workbenchDataItems', type='one-to-many',required=False, relatedModelName='WorkbenchDataItem', otherSideName='workbenchTemplateMappingItem'),
+            Relationship(name='workbenchTemplate', type='many-to-one',required=True, relatedModelName='WorkbenchTemplate', column='WorkbenchTemplateID', otherSideName='workbenchTemplateMappingItems')
         ],
         fieldAliases=[
 
@@ -7751,345 +7751,346 @@ datamodel = Datamodel(tables=[
     ####################################################################################################################
     # Tables not from Specify 6
     ####################################################################################################################
-    Table( # Spuserexternalid
-        sp7_only=True,
-        django_app='accounts',
-        classname='edu.ku.brc.specify.datamodel.Spuserexternalid',
-        tableId=1000,
-        idColumn='SpUserExternalIdID',
-        idFieldName='spUserExternalIdId',
-        idField=IdField(name='spUserExternalIdId', column='SpUserExternalIdID', type='java.lang.Integer'),
-        fields=[
-            Field(name='provider', column='Provider', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
-            Field(name='providerid', column='ProviderId', indexed=False, unique=False, required=True, type='java.lang.String', length=4094),
-            Field(name='enabled', column='Enabled', indexed=False, unique=False, required=True, type='java.lang.Boolean'),
-            Field(name='idtoken', column='IdToken', indexed=False, unique=False, required=False, type='java.lang.String', length=4094) # longtext 
-        ],
-        indexes=[
+    # Table( # Spuserexternalid
+    #     sp7_only=True,
+    #     django_app='accounts',
+    #     classname='edu.ku.brc.specify.datamodel.Spuserexternalid',
+    #     table='spuserexternalid',
+    #     tableId=1000,
+    #     idColumn='SpUserExternalIdID',
+    #     idFieldName='spUserExternalIdId',
+    #     idField=IdField(name='spUserExternalIdId', column='SpUserExternalIdID', type='java.lang.Integer'),
+    #     fields=[
+    #         Field(name='provider', column='Provider', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+    #         Field(name='providerid', column='ProviderId', indexed=False, unique=False, required=True, type='java.lang.String', length=4094),
+    #         Field(name='enabled', column='Enabled', indexed=False, unique=False, required=True, type='java.lang.Boolean'),
+    #         Field(name='idtoken', column='IdToken', indexed=False, unique=False, required=False, type='java.lang.String', length=4094) # longtext 
+    #     ],
+    #     indexes=[
 
-        ],
-        relationships=[
-            Relationship(is_relationship=True, name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpUserId')
-        ],
-        fieldAliases=[
+    #     ],
+    #     relationships=[
+    #         Relationship(name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpUserId')
+    #     ],
+    #     fieldAliases=[
 
-        ]
-    ),
-    Table( # Spattachmentdataset
-        sp7_only=True,
-        django_app='attachment_gw',
-        classname='edu.ku.brc.specify.datamodel.Spattachmentdataset',
-        table='spattachmentdataset',
-        tableId=1001,
-        idColumn='SpAttachmentDataSetID',
-        idFieldName='spAttachmentDataSetId',
-        idField=IdField(name='spAttachmentDataSetId', column='SpAttachmentDataSetID', type='java.lang.Integer'),
-        fields=[
-            Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
-            Field(name='columns', column='Columns', indexed=False, unique=False, required=True, type='json'), # longtext
-            Field(name='data', column='Data', indexed=False, unique=False, required=False, type='json'), # longtext
-            Field(name='uploadplan', column='UploadPlan', indexed=False, unique=False, required=False, type='text'),  # longtext
-            Field(name='uploadresult', column='UploadResult', indexed=False, unique=False, required=False, type='json'),  # longtext
-            Field(name='rowresults', column='RowResults', indexed=False, unique=False, required=False, type='java.lang.String', length=255), # longtext
-            Field(name='visualorder', column='VisualOrder', indexed=False, unique=False, required=False, type='json'), # longtext
-            Field(name='importedfilename', column='ImportedFileName', indexed=False, unique=False, required=False, type='text'), # longtext
-            Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'), # longtext
-            Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
-            Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp')
-        ],
-        indexes=[
+    #     ]
+    # ),
+    # Table( # Spattachmentdataset
+    #     sp7_only=True,
+    #     django_app='attachment_gw',
+    #     classname='edu.ku.brc.specify.datamodel.Spattachmentdataset',
+    #     table='spattachmentdataset',
+    #     tableId=1001,
+    #     idColumn='SpAttachmentDataSetID',
+    #     idFieldName='spAttachmentDataSetId',
+    #     idField=IdField(name='spAttachmentDataSetId', column='SpAttachmentDataSetID', type='java.lang.Integer'),
+    #     fields=[
+    #         Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+    #         Field(name='columns', column='Columns', indexed=False, unique=False, required=True, type='json'), # longtext
+    #         Field(name='data', column='Data', indexed=False, unique=False, required=False, type='json'), # longtext
+    #         Field(name='uploadplan', column='UploadPlan', indexed=False, unique=False, required=False, type='text'),  # longtext
+    #         Field(name='uploadresult', column='UploadResult', indexed=False, unique=False, required=False, type='json'),  # longtext
+    #         Field(name='rowresults', column='RowResults', indexed=False, unique=False, required=False, type='java.lang.String', length=255), # longtext
+    #         Field(name='visualorder', column='VisualOrder', indexed=False, unique=False, required=False, type='json'), # longtext
+    #         Field(name='importedfilename', column='ImportedFileName', indexed=False, unique=False, required=False, type='text'), # longtext
+    #         Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'), # longtext
+    #         Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+    #         Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp')
+    #     ],
+    #     indexes=[
 
-        ],
-        relationships=[
-            Relationship(is_relationship=True, name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID'),
-            Relationship(is_relationship=True, name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUserID'),
-            Relationship(is_relationship=True, name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-        ],
-        fieldAliases=[
+    #     ],
+    #     relationships=[
+    #         Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID'),
+    #         Relationship(name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUserID'),
+    #         Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+    #         Relationship(name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+    #     ],
+    #     fieldAliases=[
 
-        ]
-    ),
-    Table( # UniquenessRule
-        sp7_only=True,
-        django_app='businessrules',
-        classname='edu.ku.brc.specify.datamodel.UniquenessRule',
-        table='uniquenessrule',
-        tableId=1002,
-        idColumn='UniquenessRuleID',
-        idFieldName='uniquenessRuleId',
-        idField=IdField(name='uniquenessRuleId', column='UniquenessRuleID', type='java.lang.Integer'),
-        fields=[
-            Field(name='id', column='UniquenessRuleID', indexed=True, unique=True, required=True, type='java.lang.Integer'),
-            Field(name='isdatabaseconstraint', column='IsDatabaseConstraint', indexed=False, unique=False, required=True, type='java.lang.Boolean'),
-            Field(name='modelname', column='ModelName', indexed=True, unique=False, required=True, type='java.lang.String', length=255)
-        ],
-        indexes=[
+    #     ]
+    # ),
+    # Table( # UniquenessRule
+    #     sp7_only=True,
+    #     django_app='businessrules',
+    #     classname='edu.ku.brc.specify.datamodel.UniquenessRule',
+    #     table='uniquenessrule',
+    #     tableId=1002,
+    #     idColumn='UniquenessRuleID',
+    #     idFieldName='uniquenessRuleId',
+    #     idField=IdField(name='uniquenessRuleId', column='UniquenessRuleID', type='java.lang.Integer'),
+    #     fields=[
+    #         Field(name='id', column='UniquenessRuleID', indexed=True, unique=True, required=True, type='java.lang.Integer'),
+    #         Field(name='isdatabaseconstraint', column='IsDatabaseConstraint', indexed=False, unique=False, required=True, type='java.lang.Boolean'),
+    #         Field(name='modelname', column='ModelName', indexed=True, unique=False, required=True, type='java.lang.String', length=255)
+    #     ],
+    #     indexes=[
 
-        ],
-        relationships=[
-            Relationship(is_relationship=True, name='discipline', type='many-to-one', required=False, relatedModelName='Discipline', column='DisciplineID'),
-        ],
-        fieldAliases=[
+    #     ],
+    #     relationships=[
+    #         Relationship(name='discipline', type='many-to-one', required=False, relatedModelName='Discipline', column='DisciplineID'),
+    #     ],
+    #     fieldAliases=[
 
-        ]
-    ),
-    Table( # UniquenessRule_Field
-        sp7_only=True,
-        django_app='businessrules',
-        classname='edu.ku.brc.specify.datamodel.UniquenessRuleField',
-        table='uniquenessrule_field',
-        tableId=1003,
-        idColumn='UniquenessRuleFieldID',
-        idFieldName='uniquenessRuleFieldId',
-        idField=IdField(name='uniquenessRuleFieldId', column='UniquenessRuleFieldID', type='java.lang.Integer'),
-        fields=[
-            Field(name='id', column='UniquenessRule_FieldID', indexed=True, unique=True, required=True, type='java.lang.Integer'),
-            Field(name='fieldpath', column='FieldPath', indexed=True, unique=False, required=True, type='text'),
-            Field(name='isscope', column='IsScope', indexed=False, unique=False, required=True, type='java.lang.Boolean')
-        ],
-        indexes=[
+    #     ]
+    # ),
+    # Table( # UniquenessRule_Field
+    #     sp7_only=True,
+    #     django_app='businessrules',
+    #     classname='edu.ku.brc.specify.datamodel.UniquenessRuleField',
+    #     table='uniquenessrule_field',
+    #     tableId=1003,
+    #     idColumn='UniquenessRuleFieldID',
+    #     idFieldName='uniquenessRuleFieldId',
+    #     idField=IdField(name='uniquenessRuleFieldId', column='UniquenessRuleFieldID', type='java.lang.Integer'),
+    #     fields=[
+    #         Field(name='id', column='UniquenessRule_FieldID', indexed=True, unique=True, required=True, type='java.lang.Integer'),
+    #         Field(name='fieldpath', column='FieldPath', indexed=True, unique=False, required=True, type='text'),
+    #         Field(name='isscope', column='IsScope', indexed=False, unique=False, required=True, type='java.lang.Boolean')
+    #     ],
+    #     indexes=[
 
-        ],
-        relationships=[
-            Relationship(is_relationship=True, name='uniquenessrule', type='many-to-one', required=True, relatedModelName='UniquenessRule', column='UniquenessRuleID'),
-        ],
-        fieldAliases=[
+    #     ],
+    #     relationships=[
+    #         Relationship(name='uniquenessrule', type='many-to-one', required=True, relatedModelName='UniquenessRule', column='UniquenessRuleID'),
+    #     ],
+    #     fieldAliases=[
 
-        ]
-    ),
-    Table( # Message
-        sp7_only=True,
-        django_app='notifications',
-        classname='edu.ku.brc.specify.datamodel.Message',
-        table='notifications_message',
-        tableId=1004,
-        idColumn='MessageID',
-        idFieldName='messageId',
-        idField=IdField(name='messageId', column='MessageID', type='java.lang.Integer'),
-        fields=[
-            Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
-            Field(name='content', column='Content', indexed=False, unique=False, required=False, type='text'),
-            Field(name='read', column='Read', indexed=False, unique=False, required=True, type='java.lang.Boolean')
-        ],
-        indexes=[
+    #     ]
+    # ),
+    # Table( # Message
+    #     sp7_only=True,
+    #     django_app='notifications',
+    #     classname='edu.ku.brc.specify.datamodel.Message',
+    #     table='notifications_message',
+    #     tableId=1004,
+    #     idColumn='MessageID',
+    #     idFieldName='messageId',
+    #     idField=IdField(name='messageId', column='MessageID', type='java.lang.Integer'),
+    #     fields=[
+    #         Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+    #         Field(name='content', column='Content', indexed=False, unique=False, required=False, type='text'),
+    #         Field(name='read', column='Read', indexed=False, unique=False, required=True, type='java.lang.Boolean')
+    #     ],
+    #     indexes=[
 
-        ],
-        relationships=[
-            Relationship(is_relationship=True, name='user', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUserID'),
-        ],
-        fieldAliases=[
+    #     ],
+    #     relationships=[
+    #         Relationship(name='user', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUserID'),
+    #     ],
+    #     fieldAliases=[
 
-        ]
-    ),
-    Table( # Spmerging
-        sp7_only=True,
-        django_app='specify',
-        classname='edu.ku.brc.specify.datamodel.Spmerging',
-        table='spmerging',
-        tableId=1005,
-        idColumn='SpMergingID',
-        idFieldName='spMergingId',
-        idField=IdField(name='spMergingId', column='SpMergingID', type='java.lang.Integer'),
-        fields=[
-            Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
-            Field(name='taskid', column='TaskID', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
-            Field(name='mergingstatus', column='MergingStatus', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
-            Field(name='resonses', column='Resonses', indexed=False, unique=False, required=False, type='text'),
-            Field(name='table', column='Table', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
-            Field(name='newrecordid', column='NewRecordID', indexed=False, unique=False, required=True, type='java.lang.Integer'),
-            Field(name='newrecordata', column='NewRecordData', indexed=False, unique=False, required=False, type='json'),
-            Field(name='oldrecordids', column='OldRecordIDs', indexed=False, unique=False, required=False, type='json'),
-            Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
-            Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp')            
-        ],
-        indexes=[
+    #     ]
+    # ),
+    # Table( # Spmerging
+    #     sp7_only=True,
+    #     django_app='specify',
+    #     classname='edu.ku.brc.specify.datamodel.Spmerging',
+    #     table='spmerging',
+    #     tableId=1005,
+    #     idColumn='SpMergingID',
+    #     idFieldName='spMergingId',
+    #     idField=IdField(name='spMergingId', column='SpMergingID', type='java.lang.Integer'),
+    #     fields=[
+    #         Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+    #         Field(name='taskid', column='TaskID', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+    #         Field(name='mergingstatus', column='MergingStatus', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+    #         Field(name='resonses', column='Resonses', indexed=False, unique=False, required=False, type='text'),
+    #         Field(name='table', column='Table', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+    #         Field(name='newrecordid', column='NewRecordID', indexed=False, unique=False, required=True, type='java.lang.Integer'),
+    #         Field(name='newrecordata', column='NewRecordData', indexed=False, unique=False, required=False, type='json'),
+    #         Field(name='oldrecordids', column='OldRecordIDs', indexed=False, unique=False, required=False, type='json'),
+    #         Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+    #         Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp')            
+    #     ],
+    #     indexes=[
 
-        ],
-        relationships=[
-            Relationship(is_relationship=True, name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID'),
-            Relationship(is_relationship=True, name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUserID'),
-            Relationship(is_relationship=True, name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID')
-        ],
-        fieldAliases=[
+    #     ],
+    #     relationships=[
+    #         Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID'),
+    #         Relationship(name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUserID'),
+    #         Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+    #         Relationship(name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+    #     ],
+    #     fieldAliases=[
 
-        ]
-    ),
-    Table( # UserPolicy
-        sp7_only=True,
-        django_app='permissions',
-        classname='edu.ku.brc.specify.datamodel.UserPolicy',
-        table='spuserpolicy',
-        tableId=1006,
-        idColumn='UserPolicyID',
-        idFieldName='userPolicyId',
-        idField=IdField(name='userPolicyId', column='UserPolicyID', type='java.lang.Integer'),
-        fields=[
-            Field(name='resource', column='Resource', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
-            Field(name='action', column='Action', indexed=False, unique=False, required=True, type='java.lang.String', length=255)
-        ],
-        indexes=[
+    #     ]
+    # ),
+    # Table( # UserPolicy
+    #     sp7_only=True,
+    #     django_app='permissions',
+    #     classname='edu.ku.brc.specify.datamodel.UserPolicy',
+    #     table='spuserpolicy',
+    #     tableId=1006,
+    #     idColumn='UserPolicyID',
+    #     idFieldName='userPolicyId',
+    #     idField=IdField(name='userPolicyId', column='UserPolicyID', type='java.lang.Integer'),
+    #     fields=[
+    #         Field(name='resource', column='Resource', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+    #         Field(name='action', column='Action', indexed=False, unique=False, required=True, type='java.lang.String', length=255)
+    #     ],
+    #     indexes=[
 
-        ],
-        relationships=[
-            Relationship(is_relationship=True, name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID'),
-            Relationship(is_relationship=True, name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUserID')
-        ],
-        fieldAliases=[
+    #     ],
+    #     relationships=[
+    #         Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID'),
+    #         Relationship(name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUserID')
+    #     ],
+    #     fieldAliases=[
 
-        ]
-    ),
-    Table( # Role
-        sp7_only=True,
-        django_app='permissions',
-        classname='edu.ku.brc.specify.datamodel.Role',
-        table='sprole',
-        tableId=1007,
-        idColumn='RoleID',
-        idFieldName='roleId',
-        idField=IdField(name='roleId', column='RoleID', type='java.lang.Integer'),
-        fields=[
-            Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
-            Field(name='description', column='Description', indexed=False, unique=False, required=False, type='text')
-        ],
-        indexes=[
+    #     ]
+    # ),
+    # Table( # Role
+    #     sp7_only=True,
+    #     django_app='permissions',
+    #     classname='edu.ku.brc.specify.datamodel.Role',
+    #     table='sprole',
+    #     tableId=1007,
+    #     idColumn='RoleID',
+    #     idFieldName='roleId',
+    #     idField=IdField(name='roleId', column='RoleID', type='java.lang.Integer'),
+    #     fields=[
+    #         Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+    #         Field(name='description', column='Description', indexed=False, unique=False, required=False, type='text')
+    #     ],
+    #     indexes=[
 
-        ],
-        relationships=[
-            Relationship(is_relationship=True, name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID')
-        ],
-        fieldAliases=[
+    #     ],
+    #     relationships=[
+    #         Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID')
+    #     ],
+    #     fieldAliases=[
 
-        ]
-    ),
-    Table( # LibraryRole
-        sp7_only=True,
-        django_app='permissions',
-        classname='edu.ku.brc.specify.datamodel.LibraryRole',
-        table='splibraryrole',
-        tableId=1008,
-        idColumn='LibraryRoleID',
-        idFieldName='libraryRoleId',
-        idField=IdField(name='libraryRoleId', column='LibraryRoleID', type='java.lang.Integer'),
-        fields=[
-            Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
-            Field(name='descr1iption', column='Description', indexed=False, unique=False, required=False, type='text')
-        ],
-        indexes=[
+    #     ]
+    # ),
+    # Table( # LibraryRole
+    #     sp7_only=True,
+    #     django_app='permissions',
+    #     classname='edu.ku.brc.specify.datamodel.LibraryRole',
+    #     table='splibraryrole',
+    #     tableId=1008,
+    #     idColumn='LibraryRoleID',
+    #     idFieldName='libraryRoleId',
+    #     idField=IdField(name='libraryRoleId', column='LibraryRoleID', type='java.lang.Integer'),
+    #     fields=[
+    #         Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+    #         Field(name='descr1iption', column='Description', indexed=False, unique=False, required=False, type='text')
+    #     ],
+    #     indexes=[
 
-        ],
-        relationships=[
+    #     ],
+    #     relationships=[
 
-        ],
-        fieldAliases=[
+    #     ],
+    #     fieldAliases=[
 
-        ]
-    ),
-    Table( # UserRole
-        sp7_only=True,
-        django_app='permissions',
-        classname='edu.ku.brc.specify.datamodel.UserRole',
-        table='spuserrole',
-        tableId=1009,
-        idColumn='UserRoleID',
-        idFieldName='userRoleId',
-        idField=IdField(name='userRoleId', column='UserRoleID', type='java.lang.Integer'),
-        fields=[
+    #     ]
+    # ),
+    # Table( # UserRole
+    #     sp7_only=True,
+    #     django_app='permissions',
+    #     classname='edu.ku.brc.specify.datamodel.UserRole',
+    #     table='spuserrole',
+    #     tableId=1009,
+    #     idColumn='UserRoleID',
+    #     idFieldName='userRoleId',
+    #     idField=IdField(name='userRoleId', column='UserRoleID', type='java.lang.Integer'),
+    #     fields=[
 
-        ],
-        indexes=[
+    #     ],
+    #     indexes=[
 
-        ],
-        relationships=[
-            Relationship(is_relationship=True, name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUserID'),
-            Relationship(is_relationship=True, name='role', type='many-to-one', required=True, relatedModelName='Role', column='RoleID')
-        ],
-        fieldAliases=[
+    #     ],
+    #     relationships=[
+    #         Relationship(name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUserID'),
+    #         Relationship(name='role', type='many-to-one', required=True, relatedModelName='Role', column='RoleID')
+    #     ],
+    #     fieldAliases=[
 
-        ]
-    ),
-    Table( # RolePolicy
-        sp7_only=True,
-        django_app='permissions',
-        classname='edu.ku.brc.specify.datamodel.RolePolicy',
-        table='sprolepolicy',
-        tableId=1010,
-        idColumn='RolePolicyID',
-        idFieldName='rolePolicyId',
-        idField=IdField(name='rolePolicyId', column='RolePolicyID', type='java.lang.Integer'),
-        fields=[
-            Field(name='resource', column='Resource', indexed=False, unique=False, required=True, type='java.lang.String', length=1023),
-            Field(name='action', column='Action', indexed=False, unique=False, required=True, type='java.lang.String', length=1023)
-        ],
-        indexes=[
+    #     ]
+    # ),
+    # Table( # RolePolicy
+    #     sp7_only=True,
+    #     django_app='permissions',
+    #     classname='edu.ku.brc.specify.datamodel.RolePolicy',
+    #     table='sprolepolicy',
+    #     tableId=1010,
+    #     idColumn='RolePolicyID',
+    #     idFieldName='rolePolicyId',
+    #     idField=IdField(name='rolePolicyId', column='RolePolicyID', type='java.lang.Integer'),
+    #     fields=[
+    #         Field(name='resource', column='Resource', indexed=False, unique=False, required=True, type='java.lang.String', length=1023),
+    #         Field(name='action', column='Action', indexed=False, unique=False, required=True, type='java.lang.String', length=1023)
+    #     ],
+    #     indexes=[
             
-        ],
-        relationships=[
-            Relationship(is_relationship=True, name='role', type='many-to-one', required=True, relatedModelName='Role', column='RoleID')
-        ],
-        fieldAliases=[
+    #     ],
+    #     relationships=[
+    #         Relationship(name='role', type='many-to-one', required=True, relatedModelName='Role', column='RoleID')
+    #     ],
+    #     fieldAliases=[
             
-        ]
-    ),
-    Table( # LibraryRolePolicy
-        sp7_only=True,
-        django_app='permissions',
-        classname='edu.ku.brc.specify.datamodel.LibraryRolePolicy',
-        table='splibraryrolepolicy',
-        tableId=1011,
-        idColumn='LibraryRolePolicyID',
-        idFieldName='libraryRolePolicyId',
-        idField=IdField(name='libraryRolePolicyId', column='LibraryRolePolicyID', type='java.lang.Integer'),
-        fields=[
-            Field(name='resource', column='Resource', indexed=False, unique=False, required=True, type='java.lang.String', length=1023),
-            Field(name='action', column='Action', indexed=False, unique=False, required=True, type='java.lang.String', length=1023)
-        ],
-        indexes=[
+    #     ]
+    # ),
+    # Table( # LibraryRolePolicy
+    #     sp7_only=True,
+    #     django_app='permissions',
+    #     classname='edu.ku.brc.specify.datamodel.LibraryRolePolicy',
+    #     table='splibraryrolepolicy',
+    #     tableId=1011,
+    #     idColumn='LibraryRolePolicyID',
+    #     idFieldName='libraryRolePolicyId',
+    #     idField=IdField(name='libraryRolePolicyId', column='LibraryRolePolicyID', type='java.lang.Integer'),
+    #     fields=[
+    #         Field(name='resource', column='Resource', indexed=False, unique=False, required=True, type='java.lang.String', length=1023),
+    #         Field(name='action', column='Action', indexed=False, unique=False, required=True, type='java.lang.String', length=1023)
+    #     ],
+    #     indexes=[
             
-        ],
-        relationships=[
-            Relationship(is_relationship=True, name='libraryrole', type='many-to-one', required=True, relatedModelName='LibraryRole', column='LibraryRoleID')
-        ],
-        fieldAliases=[
+    #     ],
+    #     relationships=[
+    #         Relationship(name='libraryrole', type='many-to-one', required=True, relatedModelName='LibraryRole', column='LibraryRoleID')
+    #     ],
+    #     fieldAliases=[
 
-        ]
-    ),
-    Table( # Spdataset
-        sp7_only=True,
-        django_app='workbench',
-        classname='edu.ku.brc.specify.datamodel.Spdataset',
-        table='spdataset',
-        tableId=1012,
-        idColumn='SpDataSetID',
-        idFieldName='spDataSetId',
-        idField=IdField(name='spDataSetId', column='SpDataSetID', type='java.lang.Integer'),
-        fields=[
-            Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
-            Field(name='columns', column='Columns', indexed=False, unique=False, required=True, type='json'), # longtext
-            Field(name='data', column='Data', indexed=False, unique=False, required=False, type='json'), # longtext
-            Field(name='uploadplan', column='UploadPlan', indexed=False, unique=False, required=False, type='text'),  # longtext
-            Field(name='uploadresult', column='UploadResult', indexed=False, unique=False, required=False, type='json'),  # longtext
-            Field(name='rowresults', column='RowResults', indexed=False, unique=False, required=False, type='java.lang.String', length=255), # longtext
-            Field(name='visualorder', column='VisualOrder', indexed=False, unique=False, required=False, type='json'), # longtext
-            Field(name='importedfilename', column='ImportedFileName', indexed=False, unique=False, required=False, type='text'), # longtext
-            Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'), # longtext
-            Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
-            Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp')
-        ],
-        indexes=[
+    #     ]
+    # ),
+    # Table( # Spdataset
+    #     sp7_only=True,
+    #     django_app='workbench',
+    #     classname='edu.ku.brc.specify.datamodel.Spdataset',
+    #     table='spdataset',
+    #     tableId=1012,
+    #     idColumn='SpDataSetID',
+    #     idFieldName='spDataSetId',
+    #     idField=IdField(name='spDataSetId', column='SpDataSetID', type='java.lang.Integer'),
+    #     fields=[
+    #         Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+    #         Field(name='columns', column='Columns', indexed=False, unique=False, required=True, type='json'), # longtext
+    #         Field(name='data', column='Data', indexed=False, unique=False, required=False, type='json'), # longtext
+    #         Field(name='uploadplan', column='UploadPlan', indexed=False, unique=False, required=False, type='text'),  # longtext
+    #         Field(name='uploadresult', column='UploadResult', indexed=False, unique=False, required=False, type='json'),  # longtext
+    #         Field(name='rowresults', column='RowResults', indexed=False, unique=False, required=False, type='java.lang.String', length=255), # longtext
+    #         Field(name='visualorder', column='VisualOrder', indexed=False, unique=False, required=False, type='json'), # longtext
+    #         Field(name='importedfilename', column='ImportedFileName', indexed=False, unique=False, required=False, type='text'), # longtext
+    #         Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'), # longtext
+    #         Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+    #         Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp')
+    #     ],
+    #     indexes=[
 
-        ],
-        relationships=[
-            Relationship(is_relationship=True, name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID'),
-            Relationship(is_relationship=True, name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUserID'),
-            Relationship(is_relationship=True, name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(is_relationship=True, name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID')
-        ],
-        fieldAliases=[
+    #     ],
+    #     relationships=[
+    #         Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID'),
+    #         Relationship(name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUserID'),
+    #         Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+    #         Relationship(name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+    #     ],
+    #     fieldAliases=[
 
-        ]
-    )
+    #     ]
+    # )
 ])
 
 add_collectingevents_to_locality(datamodel)

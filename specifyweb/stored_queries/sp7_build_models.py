@@ -120,13 +120,13 @@ def gen_table_code(datamodel: Datamodel, tabledef: Table):
     return table_code
 
 def gen_relationship_code(datamodel: Datamodel, tabledef: Table, reldef: Relationship):
-    if not hasattr(reldef, 'column'):
+    if not hasattr(reldef, 'column') or reldef.column is None:
         return None
     foreign_tabledef = datamodel.get_table(reldef.relatedModelName)
     if foreign_tabledef is None or reldef.column is None:
         return None
     backref = ''
-    if hasattr(reldef, 'otherSideName'):
+    if hasattr(reldef, 'otherSideName') and reldef.otherSideName is not None:
         backref = f"backref=backref('{reldef.otherSideName}', uselist={reldef.type != 'one-to-one'})"
     rel_name = reldef.column[:-2]
     rel_name = untitle(rel_name)
