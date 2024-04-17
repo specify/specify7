@@ -12,6 +12,7 @@ import { listen } from '../../utils/events';
 import { replaceKey } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
+import { Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
@@ -31,7 +32,6 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { FormContext } from './BaseResourceView';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
-import { Input, Label } from '../Atoms/Form';
 
 export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 
@@ -197,7 +197,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     label: LocalizedString,
     description: LocalizedString,
     handleClick: () =>
-      | Promise<SpecifyResource<SCHEMA>[]>
+      | Promise<readonly SpecifyResource<SCHEMA>[]>
       | Promise<SpecifyResource<SCHEMA>>
   ): JSX.Element => (
     <ButtonComponent
@@ -207,7 +207,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       onClick={(): void => {
         // Scroll to the top of the form on clone
         smoothScroll(form, 0);
-        // loading(handleClick().then(handleAdd));
+        // Loading(handleClick().then(handleAdd));
         loading(
           handleClick().then((result) => {
             if (Array.isArray(result)) {
@@ -253,9 +253,11 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
             copyButton(
               formsText.carryForward(),
               formsText.carryForwardDescription(),
-              // async () => {
-              //   return resource.clone(false);
-              // }
+              /*
+               * Async () => {
+               *   return resource.clone(false);
+               * }
+               */
               async () => {
                 const clones = [];
                 for (let i = 0; i < carryForwardAmount; i++) {
@@ -270,7 +272,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                         await resource.set('catalogNumber', wildCard as never);
                         return resource;
                       })
-                      .then((resource) => resource.save())
+                      .then(async (resource) => resource.save())
                   );
                 }
                 return clones;
