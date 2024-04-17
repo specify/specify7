@@ -57,7 +57,7 @@ export type Parser = Partial<{
   readonly min: number | string;
   // Number, or a string date in yyyy-mm-dd format
   readonly max: number | string;
-  readonly step: number | string;
+  readonly step: number | string | undefined;
   readonly placeholder: string;
   readonly pattern: RegExp;
   // Browsers use this as an error message when value does not match the pattern
