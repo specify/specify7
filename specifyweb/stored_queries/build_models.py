@@ -13,28 +13,7 @@ def make_table(datamodel: Datamodel, tabledef: Table):
             fk = make_foreign_key(datamodel, reldef)
             if fk is not None: columns.append(fk)
 
-    try:
-        return Table_Sqlalchemy(tabledef.table, metadata, *columns)
-    except Exception as e:
-        # log error
-        print("==============================================================")
-        print(f"Error creating table {tabledef.table}: {e}")
-        print("==============================================================")
-        print(columns)
-        for column in columns:
-            print(column)
-        print("==============================================================")
-        # x = tabledef.get_field('discipline')
-        for field in tabledef.fields:
-            print(field)
-        print('==============================================================')
-        for reldef in tabledef.relationships:
-            print(reldef)
-        print('==============================================================')
-        discipline = tabledef.get_relationship('discipline')
-        print(discipline.column)
-        print(discipline.name)
-        print('==============================================================')
+    return Table_Sqlalchemy(tabledef.table, metadata, *columns)
 
 def make_foreign_key(datamodel: Datamodel, reldef: Relationship):
     remote_tabledef = datamodel.get_table(reldef.relatedModelName) # TODO: this could be a method of relationship
@@ -97,12 +76,7 @@ def map_classes(datamodel: Datamodel, tables: List[Table], classes):
                 return
 
             remote_class = classes[ reldef.relatedModelName ]
-            try:
-                column = getattr(table.c, reldef.column)
-            except Exception as e:
-                print(f"Error mapping relationship {reldef.name} for table {tabledef.name}: {e}")
-                print(f"table.c: {table.c}")
-                print(f"reldef.column: {reldef.column}") # looks like reldef.column is None sometimes
+            column = getattr(table.c, reldef.column)
 
             relationship_args = {'foreign_keys': column}
             if remote_class is cls:
