@@ -350,9 +350,9 @@ msgstr ""
 msgid "pluginName"
 msgstr "Nombre del complemento"
 
-#: utils/parser/definitions.ts:104
-#: utils/parser/__tests__/definitions.test.ts:177
-#: utils/parser/__tests__/definitions.test.ts:179
+#: utils/parser/definitions.ts:109
+#: utils/parser/__tests__/definitions.test.ts:184
+#: utils/parser/__tests__/definitions.test.ts:186
 #. 🟥Yes/No probably shouldn't be translated as Specify 7 does not support changing which values are recognized as Yes/No in a given language. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions
 #, fuzzy
 msgid "illegalBool"
@@ -369,10 +369,10 @@ msgid "requiredField"
 msgstr "Se requiere campo."
 
 #: components/FormPlugins/LatLongUi.tsx:89
-#: utils/parser/__tests__/definitions.test.ts:196
-#: utils/parser/__tests__/definitions.test.ts:198
-#: utils/parser/__tests__/definitions.test.ts:214
-#: utils/parser/__tests__/definitions.test.ts:216
+#: utils/parser/__tests__/definitions.test.ts:203
+#: utils/parser/__tests__/definitions.test.ts:205
+#: utils/parser/__tests__/definitions.test.ts:221
+#: utils/parser/__tests__/definitions.test.ts:223
 #. Used in: Components > Form Plugins > Lat Long Ui ⬤ Parser > __tests__ > Definitions
 #, fuzzy
 msgid "invalidValue"
@@ -380,9 +380,9 @@ msgstr "valor no válido"
 
 #: components/FormPlugins/DateInput.tsx:82
 #: components/FormPlugins/DateInput.tsx:84
-#: utils/parser/definitions.ts:197
-#: utils/parser/definitions.ts:199
-#: utils/parser/definitions.ts:342
+#: utils/parser/definitions.ts:203
+#: utils/parser/definitions.ts:205
+#: utils/parser/definitions.ts:360
 #: utils/parser/__tests__/definitions.test.ts:78
 #: utils/parser/__tests__/parse.test.ts:210
 #. 🟥Used in field validation messages on the form. Used in: Components > Form Plugins > Date Input ⬤ Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions ⬤ Parser > __tests__ > Parse

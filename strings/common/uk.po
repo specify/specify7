@@ -20,7 +20,7 @@ msgstr "Вкажіть 7"
 
 #: components/Preferences/UserDefinitions.tsx:1734
 #: components/WorkBench/DataSetMeta.tsx:289
-#: utils/parser/definitions.ts:112
+#: utils/parser/definitions.ts:117
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Data Set Meta ⬤ Utils > Parser > Definitions
 #, fuzzy
 msgid "no"
