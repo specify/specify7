@@ -130,6 +130,7 @@ export const parsers = f.store(
       validators: [validators.number],
       value: 0,
       printFormatter: numberPrintFormatter,
+      step: 'any',
     },
 
     'java.lang.Float': 'java.lang.Double',
@@ -283,7 +284,6 @@ export function resolveParser(
     // Don't make checkboxes required
     required: fullField.isRequired === true && parser.type !== 'checkbox',
     maxLength: fullField.length,
-    step: field.type === 'java.math.BigDecimal' ? 'any' : parser.step,
     ...(typeof formatter === 'object'
       ? formatterToParser(field, formatter)
       : {}),
