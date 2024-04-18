@@ -8062,9 +8062,9 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.Spdataset',
         table='spdataset',
         tableId=1012,
-        idColumn='SpDataSetID',
+        idColumn='id',
         idFieldName='spDataSetId',
-        idField=IdField(name='spDataSetId', column='SpDataSetID', type='java.lang.Integer'),
+        idField=IdField(name='spDataSetId', column='id', type='java.lang.Integer'),
         fields=[
             Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
             Field(name='columns', column='Columns', indexed=False, unique=False, required=True, type='json'), # longtext
@@ -8082,10 +8082,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID'),
-            Relationship(name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUserID'),
-            Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='Collection_ID'),
+            Relationship(name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUser_ID'),
+            Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgent_ID'),
+            Relationship(name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgent_ID')
         ],
         fieldAliases=[
 
