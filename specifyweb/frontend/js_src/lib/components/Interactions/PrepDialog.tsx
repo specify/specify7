@@ -40,9 +40,9 @@ export function PrepDialog({
 }: {
   readonly onClose: () => void;
   readonly preparations: RA<PreparationData>;
-  readonly table: SpecifyTable<Disposal | Gift | Loan | ExchangeOut>;
+  readonly table: SpecifyTable<Disposal | ExchangeOut | Gift | Loan>;
   readonly itemCollection?: Collection<
-    DisposalPreparation | GiftPreparation | LoanPreparation | ExchangeOutPrep
+    DisposalPreparation | ExchangeOutPrep | GiftPreparation | LoanPreparation
   >;
 }): JSX.Element {
   const preparations = React.useMemo(() => {
@@ -160,9 +160,9 @@ export function PrepDialog({
               : `${table.name}Preparation`;
           const itemTable = strictGetTable(tableName) as SpecifyTable<
             | DisposalPreparation
+            | ExchangeOutPrep
             | GiftPreparation
             | LoanPreparation
-            | ExchangeOutPrep
           >;
           const items = filterArray(
             preparations.map((preparation, index) => {

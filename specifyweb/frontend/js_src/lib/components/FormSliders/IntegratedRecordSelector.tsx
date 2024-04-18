@@ -153,9 +153,9 @@ export function IntegratedRecordSelector({
                 itemCollection={
                   collection as Collection<
                     | DisposalPreparation
+                    | ExchangeOutPrep
                     | GiftPreparation
                     | LoanPreparation
-                    | ExchangeOutPrep
                   >
                 }
                 onClose={handleCloseDialog}

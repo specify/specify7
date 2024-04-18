@@ -59,7 +59,7 @@ export function InteractionDialog({
   readonly actionTable: SpecifyTable;
   readonly isLoanReturn?: boolean;
   readonly itemCollection?: Collection<
-    DisposalPreparation | GiftPreparation | LoanPreparation | ExchangeOutPrep
+    DisposalPreparation | ExchangeOutPrep | GiftPreparation | LoanPreparation
   >;
 }): JSX.Element {
   const itemTable = isLoanReturn ? tables.Loan : tables.CollectionObject;
