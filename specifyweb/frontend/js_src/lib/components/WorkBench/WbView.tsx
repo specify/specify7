@@ -29,7 +29,7 @@ import { hasPermission } from '../Permissions/helpers';
 import { WbActions } from '../WbActions';
 import { useResults } from '../WbActions/useResults';
 import type { Dataset } from '../WbPlanView/Wrapped';
-import { WbToolkit } from '../WbToolkit/WbToolkit';
+import { WbToolkit } from '../WbToolkit';
 import type { WbCellCounts} from './CellMeta';
 import { WbCellMeta } from './CellMeta';
 import { DataSetName } from './DataSetMeta';
