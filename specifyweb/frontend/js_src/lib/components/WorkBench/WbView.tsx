@@ -39,7 +39,8 @@ import { parseWbMappings } from './mapping';
 import { WbUploaded } from './Results';
 import { useDisambiguationDialog } from './useDisambiguationDialog';
 import { WbSpreadsheet } from './WbSpreadsheet';
-import { WbUtils, WbUtilsComponent } from './WbUtils';
+import { WbUtils } from '../WbUtils/Utils';
+import { WbUtilsComponent } from '../WbUtils';
 import { WbValidation } from './WbValidation';
 
 export type WbStatus = 'unupload' | 'upload' | 'validate';

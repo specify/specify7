@@ -7,8 +7,8 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
-import type { WbCellCounts } from './CellMeta';
-import type { WbUtils } from './WbUtils';
+import type { WbCellCounts } from '../WorkBench/CellMeta';
+import type { WbUtils } from './Utils';
 
 export function Navigation({
   name,
