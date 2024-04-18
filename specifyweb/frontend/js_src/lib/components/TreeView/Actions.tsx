@@ -24,14 +24,17 @@ import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import type { Row } from './helpers';
 import { checkMoveViolatesEnforced } from './helpers';
 
-type Action =
-  | 'add'
-  | 'bulkMove'
-  | 'desynonymize'
-  | 'edit'
-  | 'merge'
-  | 'move'
-  | 'synonymize';
+const treeActions = [
+  'add',
+  'bulkMove',
+  'desynonymize',
+  'edit',
+  'merge',
+  'move',
+  'synonymize',
+];
+
+type Action = typeof treeActions[number];
 
 export function TreeViewActions<SCHEMA extends AnyTree>({
   tableName,
@@ -286,12 +289,9 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
   );
 }
 
-const frontendToBackendMappingActions = {
+const frontendToBackendMappingActions: Readonly<Record<Action, string>> = {
+  ...Object.fromEntries(treeActions.map((action) => [action, action])),
   bulkMove: 'bulk_move',
-  desynonymize: 'desynonymize',
-  merge: 'merge',
-  move: 'move',
-  synonymize: 'synonymize',
 };
 
 function ActiveAction<SCHEMA extends AnyTree>({
@@ -311,10 +311,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
   readonly onCancelAction: () => void;
   readonly onCompleteAction: () => void;
 }): JSX.Element {
-  if (
-    !['move', 'merge', 'synonymize', 'desynonymize', 'bulkMove'].includes(type)
-  )
-    throw new Error('Invalid action type');
+  if (!treeActions.includes(type)) throw new Error('Invalid action type');
 
   const table = genericTables[tableName] as SpecifyTable<AnyTree>;
   const treeName = table.label;
