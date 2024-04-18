@@ -21,6 +21,8 @@ import { strictGetTable, tables } from '../DataModel/tables';
 import type {
   Disposal,
   DisposalPreparation,
+  ExchangeOut,
+  ExchangeOutPrep,
   Gift,
   GiftPreparation,
   Loan,
@@ -38,9 +40,9 @@ export function PrepDialog({
 }: {
   readonly onClose: () => void;
   readonly preparations: RA<PreparationData>;
-  readonly table: SpecifyTable<Disposal | Gift | Loan>;
+  readonly table: SpecifyTable<Disposal | Gift | Loan | ExchangeOut>;
   readonly itemCollection?: Collection<
-    DisposalPreparation | GiftPreparation | LoanPreparation
+    DisposalPreparation | GiftPreparation | LoanPreparation | ExchangeOutPrep
   >;
 }): JSX.Element {
   const preparations = React.useMemo(() => {
@@ -152,10 +154,15 @@ export function PrepDialog({
       <Form
         id={id('form')}
         onSubmit={(): void => {
-          const itemTable = strictGetTable(
-            `${table.name}Preparation`
-          ) as SpecifyTable<
-            DisposalPreparation | GiftPreparation | LoanPreparation
+          const tableName =
+            table.name === 'ExchangeOut'
+              ? `${table.name}Prep`
+              : `${table.name}Preparation`;
+          const itemTable = strictGetTable(tableName) as SpecifyTable<
+            | DisposalPreparation
+            | GiftPreparation
+            | LoanPreparation
+            | ExchangeOutPrep
           >;
           const items = filterArray(
             preparations.map((preparation, index) => {
@@ -191,6 +198,10 @@ export function PrepDialog({
             toTable(interaction, 'Disposal')?.set(
               'disposalPreparations',
               items as RA<SpecifyResource<DisposalPreparation>>
+            );
+            toTable(interaction, 'ExchangeOut')?.set(
+              'exchangeOutPreps',
+              items as RA<SpecifyResource<ExchangeOutPrep>>
             );
             navigate(getResourceViewUrl(table.name, undefined), {
               state: {

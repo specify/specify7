@@ -15,6 +15,7 @@ import { useAllSaveBlockers } from '../DataModel/saveBlockers';
 import type { Collection } from '../DataModel/specifyTable';
 import type {
   DisposalPreparation,
+  ExchangeOutPrep,
   GiftPreparation,
   LoanPreparation,
 } from '../DataModel/types';
@@ -101,9 +102,12 @@ export function IntegratedRecordSelector({
     typeof relationship === 'object' &&
     relationshipIsToMany(relationship) &&
     typeof collection.related === 'object' &&
-    ['LoanPreparation', 'GiftPreparation', 'DisposalPreparation'].includes(
-      relationship.relatedTable.name
-    );
+    [
+      'LoanPreparation',
+      'GiftPreparation',
+      'DisposalPreparation',
+      'ExchangeOutPrep',
+    ].includes(relationship.relatedTable.name);
 
   const [isDialogOpen, handleOpenDialog, handleCloseDialog] = useBooleanState();
 
@@ -148,7 +152,10 @@ export function IntegratedRecordSelector({
                 actionTable={collection.related.specifyTable}
                 itemCollection={
                   collection as Collection<
-                    DisposalPreparation | GiftPreparation | LoanPreparation
+                    | DisposalPreparation
+                    | GiftPreparation
+                    | LoanPreparation
+                    | ExchangeOutPrep
                   >
                 }
                 onClose={handleCloseDialog}

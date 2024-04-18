@@ -34,8 +34,8 @@ export const interactionWorkflowTables: Partial<
   Loan: 'CollectionObject',
   Gift: 'CollectionObject',
   Disposal: 'CollectionObject',
+  ExchangeOut: 'Preparation',
   /*
-   * ExchangeOut: 'Preparation',
    * InfoRequest: 'CollectionObject',
    */
 };

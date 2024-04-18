@@ -32,6 +32,7 @@ import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import type {
   DisposalPreparation,
+  ExchangeOutPrep,
   Gift,
   GiftPreparation,
   LoanPreparation,
@@ -58,7 +59,7 @@ export function InteractionDialog({
   readonly actionTable: SpecifyTable;
   readonly isLoanReturn?: boolean;
   readonly itemCollection?: Collection<
-    DisposalPreparation | GiftPreparation | LoanPreparation
+    DisposalPreparation | GiftPreparation | LoanPreparation | ExchangeOutPrep
   >;
 }): JSX.Element {
   const itemTable = isLoanReturn ? tables.Loan : tables.CollectionObject;
