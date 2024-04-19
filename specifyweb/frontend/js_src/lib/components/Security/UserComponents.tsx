@@ -261,7 +261,7 @@ export function LegacyPermissions({
       >
         {userType.label}
         <Combobox
-          defaultValue={undefined}
+          defaultValue={userResource.get('userType')}
           field={userType}
           id={undefined}
           isDisabled={false}
