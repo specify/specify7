@@ -29,7 +29,7 @@ export const operationPolicies = {
     'synonymize',
     'desynonymize',
     'repair',
-    'bulkMove',
+    'bulk_move',
   ],
   '/tree/edit/geography': [
     'merge',
@@ -37,7 +37,7 @@ export const operationPolicies = {
     'synonymize',
     'desynonymize',
     'repair',
-    'bulkMove',
+    'bulk_move',
   ],
   '/tree/edit/storage': [
     'merge',
@@ -45,7 +45,7 @@ export const operationPolicies = {
     'synonymize',
     'desynonymize',
     'repair',
-    'bulkMove',
+    'bulk_move',
   ],
   '/tree/edit/geologictimeperiod': [
     'merge',
@@ -53,7 +53,7 @@ export const operationPolicies = {
     'synonymize',
     'desynonymize',
     'repair',
-    'bulkMove',
+    'bulk_move',
   ],
   '/tree/edit/lithostrat': [
     'merge',
@@ -61,7 +61,7 @@ export const operationPolicies = {
     'synonymize',
     'desynonymize',
     'repair',
-    'bulkMove',
+    'bulk_move',
   ],
   '/querybuilder/query': [
     'execute',
