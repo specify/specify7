@@ -142,11 +142,14 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
         if (destructorCalled) return undefined;
         const definitionItem = resource?.get('definitionItem');
 
+        const invalidDefinitionItem =
+          typeof definitionItem !== 'string' ||
+          !(items?.map(({ value }) => value).includes(definitionItem) ?? true);
+
         if (
           (items !== undefined ||
             typeof resource?.get('parent') !== 'string') &&
-          (typeof definitionItem !== 'string' ||
-            !items?.map(({ value }) => value).includes(definitionItem))
+          invalidDefinitionItem
         )
           resource?.set(
             'definitionItem',
