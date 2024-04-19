@@ -7,13 +7,10 @@
  */
 
 import React from 'react';
-import _ from 'underscore';
-
 
 import { f } from '../../utils/functools';
 import type { RA, WritableArray } from '../../utils/types';
 import { camelToKebab } from '../../utils/utils';
-
 import type { WbSearchPreferences } from '../WorkBench/AdvancedSearch';
 import {
   getInitialSearchPreferences,
