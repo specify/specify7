@@ -23,21 +23,13 @@ export const operationPolicies = {
     'copy_from_library',
   ],
   '/permissions/library/roles': ['read', 'create', 'update', 'delete'],
-  '/tree/edit/taxon': [
-    'merge',
-    'move',
-    'synonymize',
-    'desynonymize',
-    'repair',
-    'bulk_move',
-  ],
+  '/tree/edit/taxon': ['merge', 'move', 'synonymize', 'desynonymize', 'repair'],
   '/tree/edit/geography': [
     'merge',
     'move',
     'synonymize',
     'desynonymize',
     'repair',
-    'bulk_move',
   ],
   '/tree/edit/storage': [
     'merge',
@@ -53,7 +45,6 @@ export const operationPolicies = {
     'synonymize',
     'desynonymize',
     'repair',
-    'bulk_move',
   ],
   '/tree/edit/lithostrat': [
     'merge',
@@ -61,7 +52,6 @@ export const operationPolicies = {
     'synonymize',
     'desynonymize',
     'repair',
-    'bulk_move',
   ],
   '/querybuilder/query': [
     'execute',
