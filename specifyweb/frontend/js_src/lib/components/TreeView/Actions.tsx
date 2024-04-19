@@ -289,11 +289,10 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
   );
 }
 
-const frontendToBackendMappingActions: Readonly<Record<Action, string>> = {
+const frontendToBackendMappingActions: RR<Action, string> = {
   ...Object.fromEntries(treeActions.map((action) => [action, action])),
   bulkMove: 'bulk_move',
 };
-
 function ActiveAction<SCHEMA extends AnyTree>({
   tableName,
   actionRow,
