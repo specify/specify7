@@ -32,7 +32,7 @@ const treeActions = [
   'merge',
   'move',
   'synonymize',
-];
+] as const;
 
 type Action = typeof treeActions[number];
 
