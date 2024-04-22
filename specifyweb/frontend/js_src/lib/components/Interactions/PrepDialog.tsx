@@ -6,30 +6,27 @@ import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
 import type { RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import { defined, filterArray } from '../../utils/types';
 import { group, replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { getField, toTable } from '../DataModel/helpers';
+import type { AnyInteractionPreparation } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceApiUrl, getResourceViewUrl } from '../DataModel/resource';
 import { serializeResource } from '../DataModel/serializers';
 import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
-import { strictGetTable, tables } from '../DataModel/tables';
+import { tables } from '../DataModel/tables';
 import type {
-  Disposal,
-  DisposalPreparation,
   ExchangeOut,
   ExchangeOutPrep,
-  Gift,
-  GiftPreparation,
-  Loan,
   LoanPreparation,
 } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
-import type { PreparationData } from './helpers';
+import type { InteractionWithPreps, PreparationData } from './helpers';
+import { interactionPrepTables } from './helpers';
 import { PrepDialogRow } from './PrepDialogRow';
 
 export function PrepDialog({
@@ -40,10 +37,8 @@ export function PrepDialog({
 }: {
   readonly onClose: () => void;
   readonly preparations: RA<PreparationData>;
-  readonly table: SpecifyTable<Disposal | ExchangeOut | Gift | Loan>;
-  readonly itemCollection?: Collection<
-    DisposalPreparation | ExchangeOutPrep | GiftPreparation | LoanPreparation
-  >;
+  readonly table: SpecifyTable<InteractionWithPreps>;
+  readonly itemCollection?: Collection<AnyInteractionPreparation>;
 }): JSX.Element {
   const preparations = React.useMemo(() => {
     if (itemCollection === undefined) return rawPreparations;
@@ -154,16 +149,16 @@ export function PrepDialog({
       <Form
         id={id('form')}
         onSubmit={(): void => {
-          const tableName =
-            table.name === 'ExchangeOut'
-              ? `${table.name}Prep`
-              : `${table.name}Preparation`;
-          const itemTable = strictGetTable(tableName) as SpecifyTable<
-            | DisposalPreparation
-            | ExchangeOutPrep
-            | GiftPreparation
-            | LoanPreparation
-          >;
+          const itemTable = defined(
+            table.relationships.find((relationship) =>
+              interactionPrepTables.includes(
+                (
+                  relationship.relatedTable as SpecifyTable<AnyInteractionPreparation>
+                ).name
+              )
+            )?.table
+          ) as SpecifyTable<AnyInteractionPreparation>;
+
           const items = filterArray(
             preparations.map((preparation, index) => {
               if (selected[index] === 0) return undefined;
@@ -185,24 +180,14 @@ export function PrepDialog({
             handleClose();
           } else {
             const interaction = new table.Resource();
+            setPreparationItems(interaction, items);
+
             const loan = toTable(interaction, 'Loan');
             loan?.set(
               'loanPreparations',
               items as RA<SpecifyResource<LoanPreparation>>
             );
             loan?.set('isClosed', false);
-            toTable(interaction, 'Gift')?.set(
-              'giftPreparations',
-              items as RA<SpecifyResource<GiftPreparation>>
-            );
-            toTable(interaction, 'Disposal')?.set(
-              'disposalPreparations',
-              items as RA<SpecifyResource<DisposalPreparation>>
-            );
-            toTable(interaction, 'ExchangeOut')?.set(
-              'exchangeOutPreps',
-              items as RA<SpecifyResource<ExchangeOutPrep>>
-            );
             navigate(getResourceViewUrl(table.name, undefined), {
               state: {
                 type: 'RecordSet',
@@ -247,5 +232,25 @@ export function PrepDialog({
         </table>
       </Form>
     </Dialog>
+  );
+}
+
+function setPreparationItems(
+  interaction: SpecifyResource<InteractionWithPreps>,
+  items: RA<SpecifyResource<AnyInteractionPreparation>>
+): void {
+  const preparationRelationship = defined(
+    interaction.specifyTable.relationships.find((relationship) =>
+      interactionPrepTables.includes(
+        (relationship.relatedTable as SpecifyTable<AnyInteractionPreparation>)
+          .name
+      )
+    )
+  );
+
+  // Typecast as a single case because the relatiships do not exist in the union type.
+  (interaction as SpecifyResource<ExchangeOut>).set(
+    preparationRelationship.name as 'exchangeOutPreps',
+    items as RA<SpecifyResource<ExchangeOutPrep>>
   );
 }

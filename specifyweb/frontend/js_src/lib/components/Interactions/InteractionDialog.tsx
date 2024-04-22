@@ -25,24 +25,24 @@ import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
-import type { SerializedResource } from '../DataModel/helperTypes';
+import type {
+  AnyInteractionPreparation,
+  SerializedResource,
+} from '../DataModel/helperTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
 import type { LiteralField } from '../DataModel/specifyField';
 import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
-import type {
-  DisposalPreparation,
-  ExchangeOutPrep,
-  Gift,
-  GiftPreparation,
-  LoanPreparation,
-  RecordSet,
-} from '../DataModel/types';
+import type { RecordSet } from '../DataModel/types';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { Dialog } from '../Molecules/Dialog';
 import { userPreferences } from '../Preferences/userPreferences';
 import { RecordSetsDialog } from '../Toolbar/RecordSets';
-import type { PreparationData, PreparationRow } from './helpers';
+import type {
+  InteractionWithPreps,
+  PreparationData,
+  PreparationRow,
+} from './helpers';
 import {
   getPrepsAvailableForLoanCoIds,
   getPrepsAvailableForLoanRs,
@@ -56,11 +56,9 @@ export function InteractionDialog({
   itemCollection,
 }: {
   readonly onClose: () => void;
-  readonly actionTable: SpecifyTable;
+  readonly actionTable: SpecifyTable<InteractionWithPreps>;
   readonly isLoanReturn?: boolean;
-  readonly itemCollection?: Collection<
-    DisposalPreparation | ExchangeOutPrep | GiftPreparation | LoanPreparation
-  >;
+  readonly itemCollection?: Collection<AnyInteractionPreparation>;
 }): JSX.Element {
   const itemTable = isLoanReturn ? tables.Loan : tables.CollectionObject;
   const searchField = itemTable.strictGetLiteralField(
@@ -232,7 +230,7 @@ export function InteractionDialog({
         // BUG: make this readOnly if don't have necessary permissions
         itemCollection={itemCollection}
         preparations={state.entries}
-        table={actionTable as SpecifyTable<Gift>}
+        table={actionTable}
         onClose={handleClose}
       />
     ) : (
