@@ -5,7 +5,6 @@ import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
-import { GET } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';

@@ -3,7 +3,7 @@ import { stringify } from 'csv-stringify/browser/esm';
 import type { RA } from '../../utils/types';
 import { downloadFile } from '../Molecules/FilePicker';
 
-export const downloadDataset = async (
+export const downloadDataSet = async (
   name: string,
   rows: RA<RA<string>>,
   columns: RA<string>,
