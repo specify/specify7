@@ -137,7 +137,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly isCollapsed?: boolean;
   readonly preHeaderButtons?: JSX.Element | undefined;
   readonly containerRef?: React.RefObject<HTMLDivElement>;
-  readonly onCarryBulk?: (ids: number[]) => void;
+  readonly onCarryBulk?: (ids: readonly number[]) => void;
 }): JSX.Element {
   const [isDeleted, setDeleted, setNotDeleted] = useBooleanState();
   // Remove isDeleted status when resource changes
@@ -229,6 +229,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         form={formElement}
         resource={resource}
         onAdd={handleAdd}
+        onCarryBulk={handleCarryBulk}
         onSaved={(): void => {
           const printOnSave = userPreferences.get(
             'form',
@@ -240,7 +241,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
           handleSaved();
         }}
         onSaving={handleSaving}
-        onCarryBulk={handleCarryBulk}
       />
     )
   ) : undefined;

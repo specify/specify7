@@ -75,7 +75,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   readonly onAdd?: (newResource: SpecifyResource<SCHEMA>) => void;
   // Only display save blockers for a given field
   readonly filterBlockers?: LiteralField | Relationship;
-  readonly onCarryBulk?: (ids: number[]) => void;
+  readonly onCarryBulk?: (ids: readonly number[]) => void;
 }): JSX.Element {
   const id = useId('save-button');
   const saveRequired = useIsModified(resource);
@@ -211,7 +211,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         // Scroll to the top of the form on clone
         smoothScroll(form, 0);
         // Loading(handleClick().then(handleAdd));
-        const ids: number[] = [originalResourceId ?? 1];
+        const ids: readonly number[] = [originalResourceId ?? 1];
         loading(
           handleClick()
             .then((result) => {
