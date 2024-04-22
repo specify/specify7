@@ -183,14 +183,13 @@ const resolvedViewSpec = () =>
         ...node,
         table: { parsed: table, bad: legacyTable },
         businessRules: localized(
-          typeof table === 'object' &&
-            tableWithNoBusRulesIn6.includes(table.name) &&
-            !businessRules[table.name]
-            ? ''
-            : typeof table === 'object'
+          typeof table === 'object'
             ? `edu.ku.brc.specify.datamodel.busrules.${
-                businessRules[table.name] ?? table.name
-              }BusRules`
+                businessRules[table.name] ||
+                !tableWithNoBusRulesIn6.includes(table.name)
+                  ? `${table.name}BusRules`
+                  : ''
+              }`
             : ''
         ),
       })
