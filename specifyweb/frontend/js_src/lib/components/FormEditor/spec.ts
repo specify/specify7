@@ -48,7 +48,7 @@ export type ViewSets = Omit<RawViewSets, 'viewDefs'> & {
   >;
 };
 
-const tablesWithNoBusRulesIn6 = [
+const tablesWithNoBusRulesIn6 = new Set([
   'AccessionAttachment',
   'AccessionCitation',
   'AddressOfRecord',
@@ -167,7 +167,7 @@ const tablesWithNoBusRulesIn6 = [
   'WorkbenchRowImage',
   'WorkbenchTemplate',
   'WorkbenchTemplateMappingItem',
-];
+]);
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const resolvedViewSpec = () =>
@@ -186,7 +186,7 @@ const resolvedViewSpec = () =>
           typeof table === 'object'
             ? `edu.ku.brc.specify.datamodel.busrules.${
                 businessRules[table.name] ||
-                !tablesWithNoBusRulesIn6.includes(table.name)
+                !tablesWithNoBusRulesIn6.has(table.name)
                   ? `${table.name}BusRules`
                   : ''
               }`
