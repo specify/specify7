@@ -35,7 +35,6 @@ export function WorkBench(): JSX.Element {
   const [isDeletedConfirmation, handleDeletedConfirmation] = useBooleanState();
 
   const navigate = useNavigate();
-  const spreadsheetContainerRef = React.useRef<HTMLElement>(null);
 
   if (dataset === undefined || !treeRanksLoaded) return <LoadingScreen />;
 
@@ -56,20 +55,12 @@ export function WorkBench(): JSX.Element {
       {wbText.dataSetDeletedDescription()}
     </Dialog>
   ) : (
-    <div className="contents">
-      <section
-        className={`wbs-form ${className.containerFull}`}
-        ref={spreadsheetContainerRef}
-      >
-        <WbView
-          dataset={dataset}
-          key={dataset.id}
-          spreadsheetContainerRef={spreadsheetContainerRef}
-          triggerDatasetRefresh={triggerDatasetRefresh}
-          onDatasetDeleted={handleDeleted}
-        />
-      </section>
-    </div>
+    <WbView
+      dataset={dataset}
+      key={dataset.id}
+      triggerDatasetRefresh={triggerDatasetRefresh}
+      onDatasetDeleted={handleDeleted}
+    />
   );
 }
 

@@ -12,9 +12,7 @@ import { f } from '../../utils/functools';
 import type { RA, WritableArray } from '../../utils/types';
 import { camelToKebab } from '../../utils/utils';
 import type { WbSearchPreferences } from '../WorkBench/AdvancedSearch';
-import {
-  getInitialSearchPreferences,
-} from '../WorkBench/AdvancedSearch';
+import { getInitialSearchPreferences } from '../WorkBench/AdvancedSearch';
 import type { WbCellCounts } from '../WorkBench/CellMeta';
 import { getHotPlugin } from '../WorkBench/handsontable';
 import { getSelectedLast } from '../WorkBench/hotHelpers';
@@ -31,7 +29,10 @@ export class WbUtils {
   // eslint-disable-next-line functional/prefer-readonly-type
   public searchPreferences: WbSearchPreferences = getInitialSearchPreferences();
 
-  constructor(private readonly workbench: Workbench) {}
+  constructor(
+    private readonly workbench: Workbench,
+    private readonly spreadsheetContainerRef: React.RefObject<HTMLElement>
+  ) {}
 
   navigateCells({
     type,
@@ -111,7 +112,7 @@ export class WbUtils {
     const orderIt =
       direction === 'next'
         ? f.id
-        : <T,>(array: RA<T>): RA<T> => Array.from(array).reverse();
+        : <T>(array: RA<T>): RA<T> => Array.from(array).reverse();
 
     orderIt(Object.entries(cellMetaObject)).find(([visualRowString, metaRow]) =>
       typeof metaRow === 'object'
@@ -325,7 +326,7 @@ export class WbUtils {
     const groupName = camelToKebab(navigationType);
     const cssClassName = `wb-hide-${groupName}`;
     const { current: spreadsheetContainer } =
-      this.workbench.spreadsheetContainerRef;
+      this.spreadsheetContainerRef;
     if (spreadsheetContainer)
       spreadsheetContainer.classList[action](cssClassName);
   }

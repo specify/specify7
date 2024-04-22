@@ -30,7 +30,7 @@ import { WbActions } from '../WbActions';
 import { useResults } from '../WbActions/useResults';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { WbToolkit } from '../WbToolkit';
-import type { WbCellCounts} from './CellMeta';
+import type { WbCellCounts } from './CellMeta';
 import { WbCellMeta } from './CellMeta';
 import { DataSetName } from './DataSetMeta';
 import { Disambiguation } from './DisambiguationLogic';
@@ -42,6 +42,7 @@ import { WbSpreadsheet } from './WbSpreadsheet';
 import { WbUtils } from '../WbUtils/Utils';
 import { WbUtilsComponent } from '../WbUtils';
 import { WbValidation } from './WbValidation';
+import { className } from '../Atoms/className';
 
 export type WbStatus = 'unupload' | 'upload' | 'validate';
 
@@ -56,7 +57,6 @@ export type Workbench = {
   readonly mappings: WbMapping | undefined;
   utils: WbUtils;
   readonly cellCounts: GetSet<WbCellCounts>;
-  readonly spreadsheetContainerRef: React.RefObject<HTMLElement>;
   undoRedoIsHandled: boolean;
   readonly spreadsheetChanged: () => void;
 };
@@ -65,12 +65,10 @@ export function WbView({
   dataset,
   onDatasetDeleted: handleDatasetDeleted,
   triggerDatasetRefresh,
-  spreadsheetContainerRef,
 }: {
   readonly dataset: Dataset;
   readonly onDatasetDeleted: () => void;
   readonly triggerDatasetRefresh: () => void;
-  readonly spreadsheetContainerRef: React.RefObject<HTMLElement>;
 }): JSX.Element {
   const data = React.useMemo<RA<RA<string | null>>>(
     () =>
@@ -80,10 +78,12 @@ export function WbView({
     [dataset]
   );
 
+  const spreadsheetContainerRef = React.useRef<HTMLElement>(null);
   const [hotTable, setHotTable] = React.useState<HotTable | null>(null);
   const hot = hotTable?.hotInstance ?? undefined;
 
-  const isUploaded = dataset.uploadresult !== null && dataset.uploadresult.success;
+  const isUploaded =
+    dataset.uploadresult !== null && dataset.uploadresult.success;
   const isAlreadyReadOnly = React.useContext(ReadOnlyContext);
 
   const mappings = React.useMemo(
@@ -115,14 +115,13 @@ export function WbView({
       validation: undefined!,
       utils: undefined!,
       cellCounts: [cellCounts, setCellCounts],
-      spreadsheetContainerRef,
       undoRedoIsHandled: false,
       spreadsheetChanged,
     };
     workbench.cells = new WbCellMeta(workbench);
     workbench.disambiguation = new Disambiguation(workbench);
     workbench.validation = new WbValidation(workbench);
-    workbench.utils = new WbUtils(workbench);
+    workbench.utils = new WbUtils(workbench, spreadsheetContainerRef);
     return workbench;
   }, [dataset, hot]);
 
@@ -152,83 +151,90 @@ export function WbView({
     });
 
   return (
-    <ReadOnlyContext.Provider value={isAlreadyReadOnly || isUploaded || showResults || !canUpdate}>
-      <div
-        className="flex items-center justify-between gap-x-1 gap-y-2 whitespace-nowrap"
-        role="toolbar"
+    <ReadOnlyContext.Provider
+      value={isAlreadyReadOnly || isUploaded || showResults || !canUpdate}
+    >
+      <section
+        className={`wbs-form ${className.containerFull}`}
+        ref={spreadsheetContainerRef}
       >
-        <DataSetName dataset={dataset} hot={hot} />
-        <Button.Small
-          aria-haspopup="grid"
-          aria-pressed={showToolkit}
-          onClick={toggleToolkit}
+        <div
+          className="flex items-center justify-between gap-x-1 gap-y-2 whitespace-nowrap"
+          role="toolbar"
         >
-          {commonText.tools()}
-        </Button.Small>
-        <span className="-ml-1 flex-1" />
-        {canUpdate || isMapped ? (
-          <Link.Small href={`/specify/workbench/plan/${dataset.id}/`}>
-            {wbPlanText.dataMapper()}
-          </Link.Small>
+          <DataSetName dataset={dataset} hot={hot} />
+          <Button.Small
+            aria-haspopup="grid"
+            aria-pressed={showToolkit}
+            onClick={toggleToolkit}
+          >
+            {commonText.tools()}
+          </Button.Small>
+          <span className="-ml-1 flex-1" />
+          {canUpdate || isMapped ? (
+            <Link.Small href={`/specify/workbench/plan/${dataset.id}/`}>
+              {wbPlanText.dataMapper()}
+            </Link.Small>
+          ) : undefined}
+          <WbActions
+            checkDeletedFail={checkDeletedFail}
+            dataset={dataset}
+            hasUnsavedChanges={hasUnsavedChanges}
+            isResultsOpen={showResults}
+            isUploaded={isUploaded}
+            mappings={mappings}
+            workbench={workbench}
+            cellCounts={cellCounts}
+            onDatasetRefresh={triggerDatasetRefresh}
+            onSpreadsheetUpToDate={spreadsheetUpToDate}
+            onToggleResults={toggleResults}
+          />
+        </div>
+        {showToolkit && typeof hot === 'object' ? (
+          <WbToolkit
+            data={data}
+            dataset={dataset}
+            hasUnsavedChanges={hasUnsavedChanges}
+            hot={hot}
+            mappings={mappings}
+            triggerDatasetRefresh={triggerDatasetRefresh}
+            onDatasetDeleted={handleDatasetDeleted}
+          />
         ) : undefined}
-        <WbActions
-          checkDeletedFail={checkDeletedFail}
-          dataset={dataset}
-          hasUnsavedChanges={hasUnsavedChanges}
-          isResultsOpen={showResults}
-          isUploaded={isUploaded}
-          mappings={mappings}
-          workbench={workbench}
+        <div className="flex flex-1 gap-4 overflow-hidden">
+          <WbSpreadsheet
+            checkDeletedFail={checkDeletedFail}
+            data={data}
+            dataset={dataset}
+            hot={hot}
+            isUploaded={isUploaded}
+            mappings={mappings}
+            setHotTable={setHotTable}
+            spreadsheetChanged={spreadsheetChanged}
+            workbench={workbench}
+            onClickDisambiguate={openDisambiguationDialog}
+          />
+          {showResults ? (
+            <aside aria-live="polite">
+              <WbUploaded
+                datasetId={dataset.id}
+                datasetName={dataset.name}
+                isUploaded={isUploaded}
+                recordCounts={workbench.validation.uploadResults.recordCounts}
+                onClose={closeResults}
+              />
+            </aside>
+          ) : undefined}
+        </div>
+        {disambiguationDialogs}
+        <WbUtilsComponent
           cellCounts={cellCounts}
-          onDatasetRefresh={triggerDatasetRefresh}
-          onSpreadsheetUpToDate={spreadsheetUpToDate}
-          onToggleResults={toggleResults}
-        />
-      </div>
-      {showToolkit && typeof hot === 'object' ? (
-        <WbToolkit
-          data={data}
-          dataset={dataset}
-          hasUnsavedChanges={hasUnsavedChanges}
-          hot={hot}
-          mappings={mappings}
-          triggerDatasetRefresh={triggerDatasetRefresh}
-          onDatasetDeleted={handleDatasetDeleted}
-        />
-      ) : undefined}
-      <div className="flex flex-1 gap-4 overflow-hidden">
-        <WbSpreadsheet
-          checkDeletedFail={checkDeletedFail}
-          data={data}
-          dataset={dataset}
-          hot={hot}
+          cells={workbench.cells}
+          debounceRate={throttleRate}
           isUploaded={isUploaded}
-          mappings={mappings}
-          setHotTable={setHotTable}
-          spreadsheetChanged={spreadsheetChanged}
-          workbench={workbench}
-          onClickDisambiguate={openDisambiguationDialog}
+          utils={workbench.utils}
         />
-        {showResults ? (
-          <aside aria-live="polite">
-            <WbUploaded
-              datasetId={dataset.id}
-              datasetName={dataset.name}
-              isUploaded={isUploaded}
-              recordCounts={workbench.validation.uploadResults.recordCounts}
-              onClose={closeResults}
-            />
-          </aside>
-        ) : undefined}
-      </div>
-      {disambiguationDialogs}
-      <WbUtilsComponent
-        cellCounts={cellCounts}
-        cells={workbench.cells}
-        debounceRate={throttleRate}
-        isUploaded={isUploaded}
-        utils={workbench.utils}
-      />
+      </section>
     </ReadOnlyContext.Provider>
   );
 }
