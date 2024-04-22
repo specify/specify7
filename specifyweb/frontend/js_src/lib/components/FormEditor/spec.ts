@@ -48,7 +48,7 @@ export type ViewSets = Omit<RawViewSets, 'viewDefs'> & {
   >;
 };
 
-const tableWithNoBusRulesIn6 = [
+const tablesWithNoBusRulesIn6 = [
   'AccessionAttachment',
   'AccessionCitation',
   'AddressOfRecord',
@@ -186,7 +186,7 @@ const resolvedViewSpec = () =>
           typeof table === 'object'
             ? `edu.ku.brc.specify.datamodel.busrules.${
                 businessRules[table.name] ||
-                !tableWithNoBusRulesIn6.includes(table.name)
+                !tablesWithNoBusRulesIn6.includes(table.name)
                   ? `${table.name}BusRules`
                   : ''
               }`
