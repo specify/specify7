@@ -25,7 +25,7 @@ export function WorkBench(): JSX.Element {
   const { id } = useParams();
   const datasetId = f.parseInt(id);
 
-  const [dataset, setDataSet] = useDataSet(datasetId);
+  const [dataset, setDataset] = useDataset(datasetId);
   useErrorContext('dataSet', dataset);
   const loading = React.useContext(LoadingContext);
 
@@ -38,7 +38,7 @@ export function WorkBench(): JSX.Element {
   if (dataset === undefined || !treeRanksLoaded) return <LoadingScreen />;
 
   const triggerDatasetRefresh = () => {
-    loading(fetchDataSet(dataset.id).then(setDataSet));
+    loading(fetchDataset(dataset.id).then(setDataset));
   };
 
   return datasetId === undefined ? (
@@ -66,20 +66,20 @@ export function WorkBench(): JSX.Element {
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
 // BUG: intercept 403 (if dataset has been transferred to another user)
-function useDataSet(
+function useDataset(
   datasetId: number | undefined
 ): GetSet<Dataset | undefined> {
   return useAsyncState(
     React.useCallback(
       async () =>
-        typeof datasetId === 'number' ? fetchDataSet(datasetId) : undefined,
+        typeof datasetId === 'number' ? fetchDataset(datasetId) : undefined,
       [datasetId]
     ),
     true
   );
 }
 
-const fetchDataSet = async (datasetId: number): Promise<Dataset> =>
+const fetchDataset = async (datasetId: number): Promise<Dataset> =>
   ajax<Dataset>(`/api/workbench/dataset/${datasetId}/`, {
     headers: { Accept: 'application/json' },
   }).then(({ data }) => data);

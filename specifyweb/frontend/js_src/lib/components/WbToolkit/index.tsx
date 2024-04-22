@@ -10,7 +10,7 @@ import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Dataset } from '../WbPlanView/Wrapped';
-import { downloadDataSet } from '../WorkBench/helpers';
+import { downloadDataset } from '../WorkBench/helpers';
 import type { WbMapping } from '../WorkBench/mapping';
 import { WbChangeOwner } from './ChangeOwner';
 import { WbConvertCoordinates } from './CoordinateConverter';
@@ -42,7 +42,7 @@ export function WbToolkit({
       'exportFileDelimiter'
     );
 
-    downloadDataSet(
+    downloadDataset(
       dataset.name,
       dataset.rows,
       dataset.columns,
