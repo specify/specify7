@@ -27,9 +27,17 @@ export function getHotProps({
   readonly mappings: WbMapping | undefined;
   readonly physicalColToMappingCol: (physicalCol: number) => number | undefined;
 }) {
-  const autoWrapCol = userPreferences.get('workBench', 'editor', 'autoWrapCol');
+  const [autoWrapCol] = userPreferences.use(
+    'workBench',
+    'editor',
+    'autoWrapCol'
+  );
 
-  const autoWrapRow = userPreferences.get('workBench', 'editor', 'autoWrapRow');
+  const [autoWrapRow] = userPreferences.use(
+    'workBench',
+    'editor',
+    'autoWrapRow'
+  );
 
   const columns = React.useMemo(
     () =>
@@ -44,10 +52,13 @@ export function getHotProps({
     [dataset.columns.length]
   );
 
+  const [enterMovesPref] = userPreferences.use(
+    'workBench',
+    'editor',
+    'enterMoveDirection'
+  );
   const enterMoves =
-    userPreferences.get('workBench', 'editor', 'enterMoveDirection') === 'col'
-      ? { col: 1, row: 0 }
-      : { col: 0, row: 1 };
+    enterMovesPref === 'col' ? { col: 1, row: 0 } : { col: 0, row: 1 };
 
   const colHeaders = React.useCallback(
     (physicalCol: number) => {
@@ -74,7 +85,7 @@ export function getHotProps({
     [mappings]
   );
 
-  const enterBeginsEditing = userPreferences.get(
+  const [enterBeginsEditing] = userPreferences.use(
     'workBench',
     'editor',
     'enterBeginsEditing'
@@ -91,16 +102,19 @@ export function getHotProps({
     []
   );
 
-  const minSpareRows = userPreferences.get(
+  const [minSpareRows] = userPreferences.use(
     'workBench',
     'editor',
     'minSpareRows'
   );
 
+  const [tabMovesPref] = userPreferences.use(
+    'workBench',
+    'editor',
+    'tabMoveDirection'
+  );
   const tabMoves =
-    userPreferences.get('workBench', 'editor', 'tabMoveDirection') === 'col'
-      ? { col: 1, row: 0 }
-      : { col: 0, row: 1 };
+    tabMovesPref === 'col' ? { col: 1, row: 0 } : { col: 0, row: 1 };
 
   return {
     autoWrapCol,
