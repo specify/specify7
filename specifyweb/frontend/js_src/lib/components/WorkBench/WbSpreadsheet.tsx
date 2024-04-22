@@ -29,6 +29,7 @@ import { getHotProps } from './hotProps';
 import type { WbMapping } from './mapping';
 import { fetchWbPickLists } from './pickLists';
 import type { Workbench } from './WbView';
+import { writable } from '../../utils/types';
 
 registerAllModules();
 
@@ -175,9 +176,14 @@ function WbSpreadsheetComponent({
     (mappings === undefined
       ? Promise.resolve({})
       : fetchWbPickLists(dataset.columns, mappings.tableNames, mappings.lines)
-    ).then((pickLists) =>
-      configureHandsontable(hot, mappings, dataset, pickLists)
-    );
+    ).then((pickLists) => {
+      configureHandsontable(hot, mappings, dataset, pickLists);
+      // check for reordered columns
+      if (dataset.visualorder?.some((column, index) => column !== index))
+        hot.updateSettings({
+          manualColumnMove: writable(dataset.visualorder),
+        });
+    });
   }, [hot]);
 
   // Highlight validation cells

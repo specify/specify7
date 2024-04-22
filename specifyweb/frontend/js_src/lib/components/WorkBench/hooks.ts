@@ -1,3 +1,4 @@
+import React from 'react';
 import type Handsontable from 'handsontable';
 import type { Events } from 'handsontable/pluginHooks';
 import type { Action } from 'handsontable/plugins/undoRedo';
@@ -14,6 +15,7 @@ import { sortFunction } from '../../utils/utils';
 import { schema } from '../DataModel/schema';
 import { getHotPlugin } from './handsontable';
 import type { Workbench } from './WbView';
+import { LoadingContext } from '../Core/Contexts';
 
 export function getHotHooks(
   workbench: Workbench,
@@ -23,6 +25,7 @@ export function getHotHooks(
   isReadOnly: boolean
 ): Partial<Events> {
   let sortConfigIsSet: boolean = false;
+  const loading = React.useContext(LoadingContext);
 
   return {
     /*
@@ -469,8 +472,7 @@ export function getHotHooks(
     // Save new visualOrder on the back end
     afterColumnMove: (_columnIndexes, _finalIndex, dropIndex) => {
       // An ugly fix for jQuery's dialogs conflicting with HOT
-      if (dropIndex === undefined || !workbench.hot) return;
-
+      if (dropIndex === undefined || workbench.hot == undefined) return;
       workbench.cells.indexedCellMeta = undefined;
 
       const columnOrder = workbench.dataset.columns.map((_, visualCol) =>
@@ -484,11 +486,13 @@ export function getHotHooks(
         )
       ) {
         overwriteReadOnly(workbench.dataset, 'visualorder', columnOrder);
-        ping(`/api/workbench/dataset/${workbench.dataset.id}/`, {
-          method: 'PUT',
-          body: { visualorder: columnOrder },
-          expectedErrors: [Http.NOT_FOUND],
-        }).then((status) => checkDeletedFail(status));
+        loading(
+          ping(`/api/workbench/dataset/${workbench.dataset.id}/`, {
+            method: 'PUT',
+            body: { visualorder: columnOrder },
+            expectedErrors: [Http.NOT_FOUND],
+          }).then(checkDeletedFail)
+        );
       }
     },
 

@@ -18,39 +18,6 @@ const hiddenRows = {
   copyPasteEnabled: false,
 };
 
-function ColumnHeader({
-  isMapped,
-  tableLabel,
-  tableIcon,
-  columnName,
-}: {
-  readonly isMapped: boolean;
-  readonly tableLabel: string;
-  readonly tableIcon: string | undefined;
-  readonly columnName: string;
-}): JSX.Element {
-  return (
-    <div className="flex items-center gap-1 pl-4">
-      {isMapped ? (
-        <img
-          alt={tableLabel}
-          className="w-table-icon h-table-icon"
-          src={tableIcon}
-        />
-      ) : (
-        <span
-          aria-label={wbPlanText.unmappedColumn()}
-          className="text-red-600"
-          title={wbPlanText.unmappedColumn()}
-        >
-          {icons.ban}
-        </span>
-      )}
-      <span className="wb-header-name columnSorting">{columnName}</span>
-    </div>
-  );
-}
-
 export function getHotProps({
   dataset,
   mappings,
@@ -145,4 +112,37 @@ export function getHotProps({
     tabMoves,
     comments,
   };
+}
+
+function ColumnHeader({
+  isMapped,
+  tableLabel,
+  tableIcon,
+  columnName,
+}: {
+  readonly isMapped: boolean;
+  readonly tableLabel: string;
+  readonly tableIcon: string | undefined;
+  readonly columnName: string;
+}): JSX.Element {
+  return (
+    <div className="flex items-center gap-1 pl-4">
+      {isMapped ? (
+        <img
+          alt={tableLabel}
+          className="w-table-icon h-table-icon"
+          src={tableIcon}
+        />
+      ) : (
+        <span
+          aria-label={wbPlanText.unmappedColumn()}
+          className="text-red-600"
+          title={wbPlanText.unmappedColumn()}
+        >
+          {icons.ban}
+        </span>
+      )}
+      <span className="wb-header-name columnSorting">{columnName}</span>
+    </div>
+  );
 }
