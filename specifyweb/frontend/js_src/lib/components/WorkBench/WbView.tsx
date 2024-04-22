@@ -43,6 +43,8 @@ import { WbUtils } from '../WbUtils/Utils';
 import { WbUtilsComponent } from '../WbUtils';
 import { WbValidation } from './WbValidation';
 import { className } from '../Atoms/className';
+import { useUnloadProtect } from '../../hooks/navigation';
+import { wbText } from '../../localization/workbench';
 
 export type WbStatus = 'unupload' | 'upload' | 'validate';
 
@@ -95,6 +97,7 @@ export function WbView({
 
   const [hasUnsavedChanges, spreadsheetChanged, spreadsheetUpToDate] =
     useBooleanState();
+  useUnloadProtect(hasUnsavedChanges, wbText.wbUnloadProtect());
 
   const [cellCounts, setCellCounts] = React.useState<WbCellCounts>({
     newCells: 0,

@@ -9,7 +9,6 @@ import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import type { GetSet } from '../../utils/types';
-import { className } from '../Atoms/className';
 import { LoadingContext } from '../Core/Contexts';
 import { useMenuItem } from '../Header/MenuContext';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
@@ -71,16 +70,16 @@ function useDataSet(
   datasetId: number | undefined
 ): GetSet<Dataset | undefined> {
   return useAsyncState(
-    React.useCallback(async () => fetchDataSet(datasetId), [datasetId]),
+    React.useCallback(
+      async () =>
+        typeof datasetId === 'number' ? fetchDataSet(datasetId) : undefined,
+      [datasetId]
+    ),
     true
   );
 }
 
-const fetchDataSet = async (
-  datasetId: number | undefined
-): Promise<Dataset | undefined> =>
-  typeof datasetId === 'number'
-    ? ajax<Dataset>(`/api/workbench/dataset/${datasetId}/`, {
-        headers: { Accept: 'application/json' },
-      }).then(({ data }) => data)
-    : undefined;
+const fetchDataSet = async (datasetId: number): Promise<Dataset> =>
+  ajax<Dataset>(`/api/workbench/dataset/${datasetId}/`, {
+    headers: { Accept: 'application/json' },
+  }).then(({ data }) => data);
