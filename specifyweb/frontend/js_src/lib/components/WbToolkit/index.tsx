@@ -62,11 +62,11 @@ export function WbToolkit({
       {hasPermission('/workbench/dataset', 'transfer') &&
       hasTablePermission('SpecifyUser', 'read') ? (
         <ErrorBoundary dismissible>
-            <WbChangeOwner
-              dataset={dataset}
-              hasUnsavedChanges={hasUnsavedChanges}
-            />
-          </ErrorBoundary>
+          <WbChangeOwner
+            dataset={dataset}
+            hasUnsavedChanges={hasUnsavedChanges}
+          />
+        </ErrorBoundary>
       ) : undefined}
       <ErrorBoundary dismissible>
         <WbRawPlan

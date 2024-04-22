@@ -80,13 +80,16 @@ export function getHotProps({
     'enterBeginsEditing'
   );
 
-  const hiddenColumns = React.useMemo(() => ({
+  const hiddenColumns = React.useMemo(
+    () => ({
       // Hide the disambiguation column
       columns: [dataset.columns.length],
       indicators: false,
       // TODO: Typing possibly doesn't match for handsontable 12.1.0, fixed in 14
       copyPasteEnabled: false,
-    }), []);
+    }),
+    []
+  );
 
   const minSpareRows = userPreferences.get(
     'workBench',

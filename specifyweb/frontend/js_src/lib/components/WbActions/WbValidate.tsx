@@ -27,7 +27,7 @@ export function WbValidate({
   const handleToggleDataCheck = () => {
     validation.toggleDataCheck();
     toggleLiveValidate();
-  }
+  };
 
   return (
     <>
