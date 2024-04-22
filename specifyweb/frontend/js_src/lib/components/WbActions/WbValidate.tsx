@@ -1,12 +1,12 @@
 import React from 'react';
 
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import { Button } from '../Atoms/Button';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { WbValidation } from '../WorkBench/WbValidation';
 import type { WbStatus } from '../WorkBench/WbView';
-import { useBooleanState } from '../../hooks/useBooleanState';
 
 export function WbValidate({
   hasUnsavedChanges,

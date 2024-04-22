@@ -16,13 +16,16 @@ import type { HotTable } from '@handsontable/react';
 import type Handsontable from 'handsontable';
 import React from 'react';
 
+import { useUnloadProtect } from '../../hooks/navigation';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { wbPlanText } from '../../localization/wbPlan';
+import { wbText } from '../../localization/workbench';
 import { Http } from '../../utils/ajax/definitions';
 import type { GetSet, RA } from '../../utils/types';
 import { clamp } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
 import { Link } from '../Atoms/Link';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { hasPermission } from '../Permissions/helpers';
@@ -30,6 +33,8 @@ import { WbActions } from '../WbActions';
 import { useResults } from '../WbActions/useResults';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { WbToolkit } from '../WbToolkit';
+import { WbUtilsComponent } from '../WbUtils';
+import { WbUtils } from '../WbUtils/Utils';
 import type { WbCellCounts } from './CellMeta';
 import { WbCellMeta } from './CellMeta';
 import { DataSetName } from './DataSetMeta';
@@ -39,27 +44,24 @@ import { parseWbMappings } from './mapping';
 import { WbUploaded } from './Results';
 import { useDisambiguationDialog } from './useDisambiguationDialog';
 import { WbSpreadsheet } from './WbSpreadsheet';
-import { WbUtils } from '../WbUtils/Utils';
-import { WbUtilsComponent } from '../WbUtils';
 import { WbValidation } from './WbValidation';
-import { className } from '../Atoms/className';
-import { useUnloadProtect } from '../../hooks/navigation';
-import { wbText } from '../../localization/workbench';
 
 export type WbStatus = 'unupload' | 'upload' | 'validate';
 
 export type Workbench = {
-  readonly dataset: Dataset;
+  /* eslint-disable functional/prefer-readonly-type */
   cells: WbCellMeta;
   disambiguation: Disambiguation;
   validation: WbValidation;
+  utils: WbUtils;
+  undoRedoIsHandled: boolean;
+  /* eslint-enable functional/prefer-readonly-type */
+  readonly dataset: Dataset;
   readonly data: RA<RA<string | null>>;
   readonly hot: Handsontable | undefined;
   readonly throttleRate: number;
   readonly mappings: WbMapping | undefined;
-  utils: WbUtils;
   readonly cellCounts: GetSet<WbCellCounts>;
-  undoRedoIsHandled: boolean;
   readonly spreadsheetChanged: () => void;
 };
 
@@ -180,6 +182,7 @@ export function WbView({
             </Link.Small>
           ) : undefined}
           <WbActions
+            cellCounts={cellCounts}
             checkDeletedFail={checkDeletedFail}
             dataset={dataset}
             hasUnsavedChanges={hasUnsavedChanges}
@@ -187,7 +190,6 @@ export function WbView({
             isUploaded={isUploaded}
             mappings={mappings}
             workbench={workbench}
-            cellCounts={cellCounts}
             onDatasetRefresh={triggerDatasetRefresh}
             onSpreadsheetUpToDate={spreadsheetUpToDate}
             onToggleResults={toggleResults}

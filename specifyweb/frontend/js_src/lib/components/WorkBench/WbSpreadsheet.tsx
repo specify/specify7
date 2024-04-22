@@ -16,6 +16,7 @@ import { commonText } from '../../localization/common';
 import { LANGUAGE } from '../../localization/utils/config';
 import { wbText } from '../../localization/workbench';
 import { type RA } from '../../utils/types';
+import { writable } from '../../utils/types';
 import { legacyNonJsxIcons } from '../Atoms/Icons';
 import { iconClassName } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
@@ -29,7 +30,6 @@ import { getHotProps } from './hotProps';
 import type { WbMapping } from './mapping';
 import { fetchWbPickLists } from './pickLists';
 import type { Workbench } from './WbView';
-import { writable } from '../../utils/types';
 
 registerAllModules();
 
@@ -178,7 +178,7 @@ function WbSpreadsheetComponent({
       : fetchWbPickLists(dataset.columns, mappings.tableNames, mappings.lines)
     ).then((pickLists) => {
       configureHandsontable(hot, mappings, dataset, pickLists);
-      // check for reordered columns
+      // Check for reordered columns
       if (dataset.visualorder?.some((column, index) => column !== index))
         hot.updateSettings({
           manualColumnMove: writable(dataset.visualorder),
@@ -228,7 +228,8 @@ function WbSpreadsheetComponent({
         commentedCellClassName="htCommentCell"
         comments={comments}
         contextMenu={contextMenuConfig}
-        data={data as (string | null)[][]}
+        // @ts-expect-error data throws error for readonly input
+        data={data as readonly (readonly (string | null)[])[]}
         enterBeginsEditing={enterBeginsEditing}
         enterMoves={enterMoves}
         hiddenColumns={hiddenColumns}

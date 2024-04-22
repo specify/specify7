@@ -1,7 +1,7 @@
-import React from 'react';
 import type Handsontable from 'handsontable';
 import type { Events } from 'handsontable/pluginHooks';
 import type { Action } from 'handsontable/plugins/undoRedo';
+import React from 'react';
 
 import { backEndText } from '../../localization/backEnd';
 import { whitespaceSensitive } from '../../localization/utils';
@@ -12,10 +12,10 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { overwriteReadOnly } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
+import { LoadingContext } from '../Core/Contexts';
 import { schema } from '../DataModel/schema';
 import { getHotPlugin } from './handsontable';
 import type { Workbench } from './WbView';
-import { LoadingContext } from '../Core/Contexts';
 
 export function getHotHooks(
   workbench: Workbench,
