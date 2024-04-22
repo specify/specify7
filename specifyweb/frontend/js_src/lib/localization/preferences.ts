@@ -503,7 +503,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Поле со списком запроса',
     'es-es': 'Cuadro combinado de consulta',
     'uk-ua': 'Поле зі списком запитів',
-    'de-ch': 'Kombinationsfeld für Abfragen',
+    'de-ch': 'Abfrage-Kombinationsfeld',
     'fr-fr': 'Zone de liste déroulante de requête',
   },
   searchAlgorithm: {
@@ -1334,7 +1334,7 @@ export const preferencesText = createDictionary({
       '<key>{altKeyName:string}</key>+<key>Click</key> to suppress new tab',
     'ru-ru': `
       <key>{altKeyName:string}</key>+<key>Нажмите </key>, чтобы отключить новую
-      вкладку
+      вкладку.
     `,
     'es-es': `
       <key>{altKeyName:string}</key>+<key>Haga clic en </key> para suprimir la
@@ -1419,7 +1419,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Formato del encabezado del formulario',
     'fr-fr': "Format d'en-tête de formulaire",
     'uk-ua': 'Формат заголовка форми',
-    'de-ch': 'Format der Formularkopfzeile',
+    'de-ch': 'Formularkopfzeilenformat',
   },
   iconAndTableName: {
     'en-us': 'Icon and table name',
@@ -1432,7 +1432,7 @@ export const preferencesText = createDictionary({
   tableIcon: {
     'en-us': 'Table icon',
     'ru-ru': 'Значок таблицы',
-    'es-es': 'Icono de mesa',
+    'es-es': 'Icono de tabla',
     'fr-fr': 'Icône de tableau',
     'uk-ua': 'Значок таблиці',
     'de-ch': 'Tabellensymbol',

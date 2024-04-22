@@ -3,7 +3,7 @@
 exports[`PartialDateUi renders without errors 1`] = `
 <DocumentFragment>
   <div
-    class="grid w-full grid-cols-[fit-content(40%)_1fr] gap-1"
+    class="grid grid-cols-[fit-content(40%)_1fr] w-full gap-1"
   >
     <label
       class="print:hidden"
@@ -51,7 +51,7 @@ exports[`PartialDateUi renders without errors 1`] = `
 exports[`PartialDateUi renders without errors 2`] = `
 <DocumentFragment>
   <div
-    class="grid w-full grid-cols-[fit-content(40%)_1fr] gap-1"
+    class=" w-full gap-1"
   >
     <div
       class="flex"
@@ -70,7 +70,7 @@ exports[`PartialDateUi renders without errors 2`] = `
 exports[`PartialDateUi renders without errors 3`] = `
 <DocumentFragment>
   <div
-    class="grid w-full grid-cols-[fit-content(40%)_1fr] gap-1"
+    class=" w-full gap-1"
   >
     <div
       class="flex"
