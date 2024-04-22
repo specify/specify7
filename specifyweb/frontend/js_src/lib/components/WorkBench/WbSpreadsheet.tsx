@@ -32,41 +32,6 @@ import type { Workbench } from './WbView';
 
 registerAllModules();
 
-// Context menu item definitions (common for fillUp and fillDown)
-const fillCellsContextMenuItem = (
-  hot: Handsontable,
-  mode: 'down' | 'up',
-  isReadOnly: boolean
-): Handsontable.plugins.ContextMenu.MenuItemConfig => ({
-    name: mode === 'up' ? wbText.fillUp() : wbText.fillDown(),
-    disabled: () =>
-      isReadOnly ||
-      (hot.getSelected()?.every((selection) => selection[0] === selection[2]) ??
-        false),
-    callback: (_, selections) =>
-      selections.forEach((selection) =>
-        Array.from({
-          length: selection.end.col + 1 - selection.start.col,
-        }).forEach((_, index) => {
-          const startRow =
-            mode === 'up' ? selection.start.row + 1 : selection.start.row;
-          const endRow = selection.end.row;
-          const col = selection.start.col + index;
-          const value =
-            mode === 'up'
-              ? hot.getDataAtCell(endRow, col)
-              : hot.getDataAtCell(startRow, col);
-          hot.setDataAtCell(
-            Array.from({ length: endRow - startRow }, (_, index) => [
-              startRow + index + 1,
-              col,
-              value,
-            ])
-          );
-        })
-      ),
-  });
-
 function WbSpreadsheetComponent({
   dataset,
   setHotTable,
@@ -283,3 +248,38 @@ function WbSpreadsheetComponent({
 }
 
 export const WbSpreadsheet = React.memo(WbSpreadsheetComponent);
+
+// Context menu item definitions (common for fillUp and fillDown)
+const fillCellsContextMenuItem = (
+  hot: Handsontable,
+  mode: 'down' | 'up',
+  isReadOnly: boolean
+): Handsontable.plugins.ContextMenu.MenuItemConfig => ({
+  name: mode === 'up' ? wbText.fillUp() : wbText.fillDown(),
+  disabled: () =>
+    isReadOnly ||
+    (hot.getSelected()?.every((selection) => selection[0] === selection[2]) ??
+      false),
+  callback: (_, selections) =>
+    selections.forEach((selection) =>
+      Array.from({
+        length: selection.end.col + 1 - selection.start.col,
+      }).forEach((_, index) => {
+        const startRow =
+          mode === 'up' ? selection.start.row + 1 : selection.start.row;
+        const endRow = selection.end.row;
+        const col = selection.start.col + index;
+        const value =
+          mode === 'up'
+            ? hot.getDataAtCell(endRow, col)
+            : hot.getDataAtCell(startRow, col);
+        hot.setDataAtCell(
+          Array.from({ length: endRow - startRow }, (_, index) => [
+            startRow + index + 1,
+            col,
+            value,
+          ])
+        );
+      })
+    ),
+});

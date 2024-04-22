@@ -31,6 +31,7 @@ export function WbActions({
   isUploaded,
   isResultsOpen,
   workbench,
+  cellCounts,
   mappings,
   checkDeletedFail,
   onDatasetRefresh: handleRefresh,
@@ -42,6 +43,7 @@ export function WbActions({
   readonly isUploaded: boolean;
   readonly isResultsOpen: boolean;
   readonly workbench: Workbench;
+  readonly cellCounts: WbCellCounts;
   readonly mappings: WbMapping | undefined;
   readonly checkDeletedFail: (statusCode: number) => void;
   readonly onDatasetRefresh: () => void;
@@ -54,7 +56,7 @@ export function WbActions({
     useBooleanState();
   const [operationCompleted, openOperationCompleted, closeOperationCompleted] =
     useBooleanState();
-  const { modeRef, refreshInitiatorAborted, ...actions } = useWbActions({
+  const { mode, refreshInitiatorAborted, ...actions } = useWbActions({
     datasetId: dataset.id,
     onRefresh: handleRefresh,
     checkDeletedFail,
@@ -62,11 +64,7 @@ export function WbActions({
     workbench,
   });
 
-  const cellCounts = workbench.cellCounts[GET];
-  const message =
-    modeRef.current === undefined
-      ? undefined
-      : getMessage(cellCounts, modeRef.current);
+  const message = mode === undefined ? undefined : getMessage(cellCounts, mode);
 
   return (
     <>
@@ -109,7 +107,7 @@ export function WbActions({
       {!isUploaded && hasPermission('/workbench/dataset', 'upload') ? (
         <ErrorBoundary dismissible>
           <WbUpload
-            cellCounts={workbench.cellCounts[0]}
+            cellCounts={cellCounts}
             hasUnsavedChanges={hasUnsavedChanges}
             mappings={mappings}
             openNoUploadPlan={openNoUploadPlan}
@@ -136,7 +134,7 @@ export function WbActions({
           </ErrorBoundary>
         </>
       ) : undefined}
-      {typeof modeRef.current === 'string' && showStatus ? (
+      {typeof mode === 'string' && showStatus ? (
         <WbStatusComponent
           dataset={{
             ...dataset,
@@ -149,7 +147,7 @@ export function WbActions({
                     validate: 'validating',
                     upload: 'uploading',
                     unupload: 'unuploading',
-                  }[modeRef.current],
+                  }[mode],
                   taskid: '',
                 } as const),
               taskstatus: 'PENDING',
@@ -169,13 +167,12 @@ export function WbActions({
         <Dialog
           buttons={
             <>
-              {cellCounts.invalidCells === 0 && modeRef.current === 'upload' && (
+              {cellCounts.invalidCells === 0 && mode === 'upload' && (
                 <CreateRecordSetButton
                   datasetId={dataset.id}
                   datasetName={dataset.name}
                   small={false}
                   onClose={() => {
-                    modeRef.current = undefined;
                     refreshInitiatorAborted.current = false;
                     closeOperationCompleted();
                   }}
@@ -194,17 +191,17 @@ export function WbActions({
         <Dialog
           buttons={commonText.close()}
           header={
-            modeRef.current === 'validate'
+            mode === 'validate'
               ? wbText.validationCanceled()
-              : modeRef.current === 'unupload'
+              : mode === 'unupload'
               ? wbText.rollbackCanceled()
               : wbText.uploadCanceled()
           }
           onClose={closeAbortedMessage}
         >
-          {modeRef.current === 'validate'
+          {mode === 'validate'
             ? wbText.validationCanceledDescription()
-            : modeRef.current === 'unupload'
+            : mode === 'unupload'
             ? wbText.rollbackCanceledDescription()
             : wbText.uploadCanceledDescription()}
         </Dialog>
@@ -226,7 +223,7 @@ function useWbActions({
   readonly onRefresh: () => void;
   readonly onOpenStatus: () => void;
 }) {
-  const modeRef = React.useRef<WbStatus | undefined>(undefined);
+  const [mode, setMode] = React.useState<WbStatus | undefined>(undefined);
   const refreshInitiatorAborted = React.useRef<boolean>(false);
   const loading = React.useContext(LoadingContext);
 
@@ -246,7 +243,7 @@ function useWbActions({
   };
 
   const triggerStatusComponent = (newMode: WbStatus): void => {
-    modeRef.current = newMode;
+    setMode(newMode);
     handleOpenStatus();
   };
 
@@ -261,7 +258,7 @@ function useWbActions({
   };
 
   return {
-    modeRef,
+    mode,
     refreshInitiatorAborted,
     startUpload,
     triggerStatusComponent,

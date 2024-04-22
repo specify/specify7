@@ -30,7 +30,6 @@ export function WorkBench(): JSX.Element {
   useErrorContext('dataSet', dataset);
   const loading = React.useContext(LoadingContext);
 
-  const [refreshKey, setRefreshKey] = React.useState<number>(0);
   const [isDeleted, handleDeleted] = useBooleanState();
   // @ts-ignore figure out how handleDeletedConfirmation was being used in Backbone. possibly not used at all
   const [isDeletedConfirmation, handleDeletedConfirmation] = useBooleanState();
@@ -42,7 +41,6 @@ export function WorkBench(): JSX.Element {
 
   const triggerDatasetRefresh = () => {
     loading(fetchDataSet(dataset.id).then(setDataSet));
-    setRefreshKey(refreshKey + 1);
   };
 
   return datasetId === undefined ? (
@@ -65,7 +63,7 @@ export function WorkBench(): JSX.Element {
       >
         <WbView
           dataset={dataset}
-          key={refreshKey}
+          key={dataset.id}
           spreadsheetContainerRef={spreadsheetContainerRef}
           triggerDatasetRefresh={triggerDatasetRefresh}
           onDatasetDeleted={handleDeleted}

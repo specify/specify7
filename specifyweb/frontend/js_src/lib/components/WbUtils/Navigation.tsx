@@ -24,10 +24,12 @@ export function Navigation({
   const isReadOnly = React.useContext(ReadOnlyContext);
   const [currentPosition, setCurrentPosition] = React.useState<number>(0);
   const [buttonIsPressed, _press, _unpress, togglePress] = useBooleanState();
+  
   const handleTypeToggle = () => {
     togglePress();
     utils.toggleCellTypes(name, 'toggle');
   };
+
   const handlePrevious = () => {
     const [_, position] = utils.navigateCells({
       type: name,
@@ -46,6 +48,12 @@ export function Navigation({
     });
     setCurrentPosition(position);
   };
+
+  // reset current position when total count resets
+  React.useEffect(() => {
+    if (totalCount == 0) setCurrentPosition(0);
+  }, [totalCount])
+
   return (
     <span
       aria-atomic
@@ -55,7 +63,7 @@ export function Navigation({
       <Button.Small
         className="brightness-80 hover:brightness-70 p-2 ring-0"
         data-navigation-direction="previous"
-        disabled={name !== 'newCells' && isReadOnly}
+        disabled={!["newCells", "searchResults"].includes(name) && isReadOnly}
         variant="bg-inherit text-gray-800 dark:text-gray-100"
         onClick={handlePrevious}
       >
@@ -79,7 +87,7 @@ export function Navigation({
       <Button.Small
         className="brightness-80 hover:brightness-70 p-2 ring-0"
         data-navigation-direction="next"
-        disabled={name !== 'newCells' && isReadOnly}
+        disabled={!["newCells", "searchResults"].includes(name) && isReadOnly}
         type="button"
         variant="bg-inherit text-gray-800 dark:text-gray-100"
         onClick={handleNext}

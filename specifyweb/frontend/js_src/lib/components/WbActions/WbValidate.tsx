@@ -6,6 +6,7 @@ import { Button } from '../Atoms/Button';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { WbValidation } from '../WorkBench/WbValidation';
 import type { WbStatus } from '../WorkBench/WbView';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 export function WbValidate({
   hasUnsavedChanges,
@@ -21,8 +22,12 @@ export function WbValidate({
     'general',
     'liveValidation'
   );
+  const [isLiveValidateOn, _, __, toggleLiveValidate] = useBooleanState();
   const handleValidate = () => startUpload('validate');
-  const handleToggleDataCheck = () => validation.toggleDataCheck();
+  const handleToggleDataCheck = () => {
+    validation.toggleDataCheck();
+    toggleLiveValidate();
+  }
 
   return (
     <>
@@ -31,7 +36,7 @@ export function WbValidate({
           aria-pressed={validation.validationMode === 'live'}
           onClick={handleToggleDataCheck}
         >
-          {validation.validationMode === 'live'
+          {isLiveValidateOn && validation.validationMode === 'live'
             ? validation.liveValidationStack.length > 0
               ? commonText.countLine({
                   resource: wbText.dataCheckOn(),

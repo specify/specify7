@@ -179,6 +179,7 @@ export function WbView({
           isUploaded={isUploaded}
           mappings={mappings}
           workbench={workbench}
+          cellCounts={cellCounts}
           onDatasetRefresh={triggerDatasetRefresh}
           onSpreadsheetUpToDate={spreadsheetUpToDate}
           onToggleResults={toggleResults}
