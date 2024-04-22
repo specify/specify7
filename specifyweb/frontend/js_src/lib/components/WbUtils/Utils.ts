@@ -6,7 +6,7 @@
  *
  */
 
-import React from 'react';
+import type React from 'react';
 
 import { f } from '../../utils/functools';
 import type { RA, WritableArray } from '../../utils/types';
@@ -325,8 +325,7 @@ export class WbUtils {
   ): void {
     const groupName = camelToKebab(navigationType);
     const cssClassName = `wb-hide-${groupName}`;
-    const { current: spreadsheetContainer } =
-      this.spreadsheetContainerRef;
+    const { current: spreadsheetContainer } = this.spreadsheetContainerRef;
     if (spreadsheetContainer)
       spreadsheetContainer.classList[action](cssClassName);
   }
