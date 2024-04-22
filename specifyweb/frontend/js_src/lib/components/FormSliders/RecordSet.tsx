@@ -306,8 +306,11 @@ function RecordSet<SCHEMA extends AnySchema>({
   }
 
   async function createNewRecordSet(
-    ids: RA<number | undefined>
+    ids: RA<number | undefined>,
+    fromBulkCarry: boolean = false
   ): Promise<void> {
+    if (fromBulkCarry)
+      await recordSet.set('name', `Batch ${ids[0]} - ${ids[ids.length - 1]}`);
     await recordSet.save();
     await addIdsToRecordSet(ids);
     navigate(`/specify/record-set/${recordSet.id}/`);
@@ -398,8 +401,7 @@ function RecordSet<SCHEMA extends AnySchema>({
             : undefined
         }
         onCarryBulk={(ids) => {
-          setOpenDialogForTitle();
-          loading(createNewRecordSet(ids));
+          loading(createNewRecordSet(ids, true));
         }}
         onClone={(newResource): void => go(totalCount, 'new', newResource)}
         onClose={handleClose}

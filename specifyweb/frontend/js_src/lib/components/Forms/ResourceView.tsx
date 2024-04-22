@@ -113,6 +113,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   preHeaderButtons,
   containerRef,
   onCarryBulk: handleCarryBulk,
+  isInRecordSet,
 }: {
   readonly isLoading?: boolean;
   readonly resource: SpecifyResource<SCHEMA> | undefined;
@@ -138,6 +139,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly preHeaderButtons?: JSX.Element | undefined;
   readonly containerRef?: React.RefObject<HTMLDivElement>;
   readonly onCarryBulk?: (ids: readonly number[]) => void;
+  readonly isInRecordSet?: boolean;
 }): JSX.Element {
   const [isDeleted, setDeleted, setNotDeleted] = useBooleanState();
   // Remove isDeleted status when resource changes
@@ -241,6 +243,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
           handleSaved();
         }}
         onSaving={handleSaving}
+        isInRecordSet={isInRecordSet}
       />
     )
   ) : undefined;

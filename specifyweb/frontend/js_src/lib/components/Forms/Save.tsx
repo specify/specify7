@@ -57,6 +57,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   onSaved: handleSaved,
   onAdd: handleAdd,
   onCarryBulk: handleCarryBulk,
+  isInRecordSet,
 }: {
   readonly resource: SpecifyResource<SCHEMA>;
   readonly form: HTMLFormElement;
@@ -76,6 +77,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   // Only display save blockers for a given field
   readonly filterBlockers?: LiteralField | Relationship;
   readonly onCarryBulk?: (ids: readonly number[]) => void;
+  readonly isInRecordSet?: boolean;
 }): JSX.Element {
   const id = useId('save-button');
   const saveRequired = useIsModified(resource);
@@ -211,7 +213,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         // Scroll to the top of the form on clone
         smoothScroll(form, 0);
         // Loading(handleClick().then(handleAdd));
-        const ids: readonly number[] = [originalResourceId ?? 1];
+        const ids: number[] = [originalResourceId ?? 1];
         loading(
           handleClick()
             .then((result) => {
@@ -225,7 +227,9 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
               }
             })
             .then(() => {
-              if (handleCarryBulk && ids.length > 1) handleCarryBulk(ids);
+              if (handleCarryBulk && ids.length > 1) {
+                handleCarryBulk(ids);
+              }
             })
         );
       }}
@@ -240,18 +244,21 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     <>
       {typeof handleAdd === 'function' && canCreate ? (
         <>
-          <Label.Inline>
-            {commonText.bulkSelect()}
-            <Input.Generic
-              type="number"
-              value={carryForwardAmount}
-              onValueChange={(value): void =>
-                carryForwardAmount === undefined
-                  ? setCarryForwardAmount(1)
-                  : setCarryForwardAmount(Number.parseInt(value))
-              }
-            />
-          </Label.Inline>
+          {resource.specifyTable.name === 'CollectionObject' &&
+          !isInRecordSet ? (
+            <Label.Inline>
+              {commonText.bulkCarry()}
+              <Input.Generic
+                type="number"
+                value={carryForwardAmount}
+                onValueChange={(value): void =>
+                  carryForwardAmount === undefined
+                    ? setCarryForwardAmount(1)
+                    : setCarryForwardAmount(Number.parseInt(value))
+                }
+              />
+            </Label.Inline>
+          ) : null}
           {showClone &&
             copyButton(
               formsText.clone(),

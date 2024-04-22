@@ -682,6 +682,7 @@ export const commonText = createDictionary({
     'ru-ru': 'Массовый выбор',
     'uk-ua': 'Масовий вибір',
   },
+  bulkCarry: { 'en-us': 'Bulk Carry' },
   bulkReturn: {
     'en-us': 'Bulk Return',
     'de-ch': 'Massenrücksendung',
