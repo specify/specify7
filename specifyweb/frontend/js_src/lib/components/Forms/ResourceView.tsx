@@ -112,7 +112,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   isCollapsed,
   preHeaderButtons,
   containerRef,
-  onCarryBulk,
+  onCarryBulk: handleCarryBulk,
 }: {
   readonly isLoading?: boolean;
   readonly resource: SpecifyResource<SCHEMA> | undefined;
@@ -137,7 +137,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly isCollapsed?: boolean;
   readonly preHeaderButtons?: JSX.Element | undefined;
   readonly containerRef?: React.RefObject<HTMLDivElement>;
-  readonly onCarryBulk: ((ids: number[]) => void) | undefined;
+  readonly onCarryBulk?: (ids: number[]) => void;
 }): JSX.Element {
   const [isDeleted, setDeleted, setNotDeleted] = useBooleanState();
   // Remove isDeleted status when resource changes
@@ -240,7 +240,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
           handleSaved();
         }}
         onSaving={handleSaving}
-        onCarryBulk={onCarryBulk}
+        onCarryBulk={handleCarryBulk}
       />
     )
   ) : undefined;

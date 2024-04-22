@@ -477,7 +477,6 @@ function RecordSet<SCHEMA extends AnySchema>({
           onClose={(): void => setOpenDialogForTitle()}
           onDeleted={f.never}
           onSaved={(): void => loading(createNewRecordSet(ids))}
-          onCarryBulk={undefined}
         />
       ) : null}
     </>

@@ -56,7 +56,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   onSaving: handleSaving,
   onSaved: handleSaved,
   onAdd: handleAdd,
-  onCarryBulk,
+  onCarryBulk: handleCarryBulk,
 }: {
   readonly resource: SpecifyResource<SCHEMA>;
   readonly form: HTMLFormElement;
@@ -75,7 +75,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   readonly onAdd?: (newResource: SpecifyResource<SCHEMA>) => void;
   // Only display save blockers for a given field
   readonly filterBlockers?: LiteralField | Relationship;
-  readonly onCarryBulk: ((ids: number[]) => void) | undefined;
+  readonly onCarryBulk?: (ids: number[]) => void;
 }): JSX.Element {
   const id = useId('save-button');
   const saveRequired = useIsModified(resource);
@@ -225,7 +225,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
               }
             })
             .then(() => {
-              if (onCarryBulk && ids.length > 1) onCarryBulk(ids);
+              if (handleCarryBulk && ids.length > 1) handleCarryBulk(ids);
             })
         );
       }}
