@@ -48,6 +48,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   onClone: handleClone,
   onDelete: handleDelete,
   onFetch: handleFetch,
+  onCarryBulk,
   ...rest
 }: Omit<RecordSelectorProps<SCHEMA>, 'index' | 'records'> & {
   /*
@@ -74,6 +75,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   readonly onFetch?: (
     index: number
   ) => Promise<RA<number | undefined> | undefined>;
+  readonly onCarryBulk: (ids: number[]) => void;
 }): JSX.Element | null {
   const [records, setRecords] = React.useState<
     RA<SpecifyResource<SCHEMA> | undefined>
@@ -246,6 +248,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
             : undefined
         }
         onSaved={(): void => handleSaved(resource!)}
+        onCarryBulk={onCarryBulk}
       />
 
       {dialogs}

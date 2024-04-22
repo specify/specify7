@@ -56,6 +56,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   onSaving: handleSaving,
   onSaved: handleSaved,
   onAdd: handleAdd,
+  onCarryBulk,
 }: {
   readonly resource: SpecifyResource<SCHEMA>;
   readonly form: HTMLFormElement;
@@ -74,6 +75,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   readonly onAdd?: (newResource: SpecifyResource<SCHEMA>) => void;
   // Only display save blockers for a given field
   readonly filterBlockers?: LiteralField | Relationship;
+  readonly onCarryBulk: ((ids: number[]) => void) | undefined;
 }): JSX.Element {
   const id = useId('save-button');
   const saveRequired = useIsModified(resource);
@@ -198,7 +200,8 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     description: LocalizedString,
     handleClick: () =>
       | Promise<readonly SpecifyResource<SCHEMA>[]>
-      | Promise<SpecifyResource<SCHEMA>>
+      | Promise<SpecifyResource<SCHEMA>>,
+    originalResourceId?: number
   ): JSX.Element => (
     <ButtonComponent
       className={saveBlocked ? '!cursor-not-allowed' : undefined}
@@ -208,16 +211,22 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         // Scroll to the top of the form on clone
         smoothScroll(form, 0);
         // Loading(handleClick().then(handleAdd));
+        const ids: number[] = [originalResourceId ?? 1];
         loading(
-          handleClick().then((result) => {
-            if (Array.isArray(result)) {
-              result.forEach((newResource) => {
-                if (handleAdd) handleAdd(newResource);
-              });
-            } else {
-              if (handleAdd) handleAdd(result);
-            }
-          })
+          handleClick()
+            .then((result) => {
+              if (Array.isArray(result)) {
+                result.forEach((newResource) => {
+                  if (handleAdd) handleAdd(newResource);
+                  ids.push(newResource.id);
+                });
+              } else {
+                if (handleAdd) handleAdd(result);
+              }
+            })
+            .then(() => {
+              if (onCarryBulk && ids.length > 1) onCarryBulk(ids);
+            })
         );
       }}
     >
@@ -276,7 +285,8 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                   );
                 }
                 return clones;
-              }
+              },
+              resource.id
             )}
           {showAdd &&
             copyButton(

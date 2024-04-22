@@ -448,6 +448,10 @@ function RecordSet<SCHEMA extends AnySchema>({
         onSlide={(index, replace): void =>
           go(index, ids[index], undefined, replace)
         }
+        onCarryBulk={(ids) => {
+          setOpenDialogForTitle();
+          loading(createNewRecordSet(ids));
+        }}
       />
       {hasDuplicate && (
         <Dialog
@@ -473,6 +477,7 @@ function RecordSet<SCHEMA extends AnySchema>({
           onClose={(): void => setOpenDialogForTitle()}
           onDeleted={f.never}
           onSaved={(): void => loading(createNewRecordSet(ids))}
+          onCarryBulk={undefined}
         />
       ) : null}
     </>
