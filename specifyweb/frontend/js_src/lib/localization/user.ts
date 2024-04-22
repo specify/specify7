@@ -179,9 +179,9 @@ export const userText = createDictionary({
       постачальником надалі.
     `,
     'de-ch': `
-      Sie wurden aufgefordert, Ihrem Specify-Benutzerkonto einen externen Login
-      zuzuordnen. Dadurch können Sie sich künftig mit dem von Ihnen gewählten
-      Anbieter bei Specify anmelden.
+      Sie wurden aufgefordert, Ihrem Benutzerkonto bei Specify einen externen
+      Login zuzuordnen. Damit können Sie sich künftig mit dem von Ihnen
+      gewählten Anbieter bei Specify anmelden.
     `,
   },
   legacyLogin: {
@@ -220,9 +220,9 @@ export const userText = createDictionary({
     `,
     'uk-ua': `
       Наразі немає жодного користувача, пов’язаного з вашим обліковим записом
-      {providerName:string}. Якщо у вас є вказати ім’я користувача та пароль,
-      ви можете ввести їх нижче, щоб пов’язати цього користувача з обліковим
-      записом {providerName:string} для майбутніх входів.
+      {providerName:string}. Якщо у вас є вказане ім’я користувача та пароль,
+      ви можете ввести їх нижче, щоб пов’язати цього користувача з вашим
+      обліковим записом {providerName:string} для майбутніх входів.
     `,
     'de-ch': `
       Derzeit ist Ihrem {providerName:string}-Konto kein Benutzer vom Typ
@@ -285,7 +285,7 @@ export const userText = createDictionary({
       resource through the currently logged in account
     `,
     'ru-ru': `
-      У вас нет доступа ни к одному {collectionTable:string}, содержащему этот
+      У вас нет доступа к любому {collectionTable:string}, содержащему этот
       ресурс, через текущую учетную запись.
     `,
     'es-es': `
@@ -915,7 +915,7 @@ export const userText = createDictionary({
       Specify 7 server settings
     `,
     'ru-ru': `
-      Внешний поставщик удостоверений не настроен. Некоторые настройки можно
+      Внешний поставщик удостоверений не настроен. Некоторые из них можно
       настроить в разделе «Укажите 7 настроек сервера».
     `,
     'es-es': `
@@ -1024,7 +1024,7 @@ export const userText = createDictionary({
   specifyAdmin: {
     comment: 'Shown next to user name for admin users',
     'en-us': '(Specify 7 Admin)',
-    'ru-ru': '(Укажите 7 Администратора)',
+    'ru-ru': '(Указать 7 Админ)',
     'es-es': '(Administradores de Specify 7)',
     'fr-fr': '(Spécifiez 7 Administrateur)',
     'uk-ua': '(Вкажіть 7 адміністраторів)',
