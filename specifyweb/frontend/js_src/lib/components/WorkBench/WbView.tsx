@@ -45,6 +45,7 @@ import { WbUploaded } from './Results';
 import { useDisambiguationDialog } from './useDisambiguationDialog';
 import { WbSpreadsheet } from './WbSpreadsheet';
 import { WbValidation } from './WbValidation';
+import { useErrorContext } from '../../hooks/useErrorContext';
 
 export type WbStatus = 'unupload' | 'upload' | 'validate';
 
@@ -94,6 +95,7 @@ export function WbView({
     (): WbMapping | undefined => parseWbMappings(dataset),
     [dataset]
   );
+  useErrorContext('mappings', mappings)
 
   const throttleRate = Math.ceil(clamp(10, data.length / 10, 2000));
 
@@ -129,6 +131,11 @@ export function WbView({
     workbench.utils = new WbUtils(workbench, spreadsheetContainerRef);
     return workbench;
   }, [dataset, hot]);
+
+  useErrorContext('cells', workbench.cells);
+  useErrorContext('disambiguation', workbench.disambiguation);
+  useErrorContext('validation', workbench.validation);
+  useErrorContext('utils', workbench.utils);
 
   const checkDeletedFail = React.useCallback((statusCode: number): boolean => {
     if (statusCode === Http.NOT_FOUND) handleDatasetDeleted();
