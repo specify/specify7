@@ -133,37 +133,21 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
   React.useEffect(() => {
     if (props.resource === undefined) return undefined;
     const resource = toTreeTable(props.resource);
-    let destructorCalled = false;
+    const definitionItem = resource?.get('definitionItem');
 
-    const destructor = resourceOn(
-      props.resource,
-      'change:parent',
-      (): void => {
-        if (destructorCalled) return undefined;
-        const definitionItem = resource?.get('definitionItem');
+    const invalidDefinitionItem =
+      typeof definitionItem !== 'string' ||
+      !(items?.map(({ value }) => value).includes(definitionItem) ?? true);
 
-        const invalidDefinitionItem =
-          typeof definitionItem !== 'string' ||
-          !(items?.map(({ value }) => value).includes(definitionItem) ?? true);
-
-        if (
-          (items !== undefined ||
-            typeof resource?.get('parent') !== 'string') &&
-          invalidDefinitionItem
-        )
-          resource?.set(
-            'definitionItem',
-            props.defaultValue ?? items?.slice(-1)[0]?.value ?? ''
-          );
-      },
-      true
-    );
-
-    return (): void => {
-      destructorCalled = true;
-      destructor();
-    };
-  }, [props.defaultValue, props.resource, items]);
+    if (
+      (items !== undefined || typeof resource?.get('parent') !== 'string') &&
+      invalidDefinitionItem
+    )
+      resource?.set(
+        'definitionItem',
+        props.defaultValue ?? items?.slice(-1)[0]?.value ?? ''
+      );
+  }, [items]);
 
   return (
     <PickListComboBox
