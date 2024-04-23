@@ -215,7 +215,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         loading(
           handleClick()
             .then((result) => {
-              let ids: number[] = [];
+              const ids: readonly number[] = [];
               if (originalResourceId !== undefined) {
                 ids.push(originalResourceId);
               }
@@ -306,9 +306,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                     );
                     return Promise.all(clones);
                   }
-                : async () => {
-                    return resource.clone(false);
-                  },
+                : async () => resource.clone(false),
               resource.id
             )}
           {showAdd &&

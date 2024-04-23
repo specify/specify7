@@ -229,6 +229,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
     ) : (
       <SaveButton
         form={formElement}
+        isInRecordSet={isInRecordSet}
         resource={resource}
         onAdd={handleAdd}
         onCarryBulk={handleCarryBulk}
@@ -243,7 +244,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
           handleSaved();
         }}
         onSaving={handleSaving}
-        isInRecordSet={isInRecordSet}
       />
     )
   ) : undefined;

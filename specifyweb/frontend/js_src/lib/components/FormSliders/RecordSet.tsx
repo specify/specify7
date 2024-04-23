@@ -310,7 +310,7 @@ function RecordSet<SCHEMA extends AnySchema>({
     fromBulkCarry: boolean = false
   ): Promise<void> {
     if (fromBulkCarry)
-      await recordSet.set('name', `Batch ${ids[0]} - ${ids[ids.length - 1]}`);
+      await recordSet.set('name', `Batch ${ids[0]} - ${ids.at(-1)}`);
     await recordSet.save();
     await addIdsToRecordSet(ids);
     navigate(`/specify/record-set/${recordSet.id}/`);
