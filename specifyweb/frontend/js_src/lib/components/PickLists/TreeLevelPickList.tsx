@@ -146,7 +146,7 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
       );
     }
 
-    void resource?.businessRuleManager?.checkField('parent');
+    return void resource?.businessRuleManager?.checkField('parent');
   }, [items]);
 
   return (
@@ -172,4 +172,5 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
 export const exportsForTests = {
   fetchPossibleRanks,
   fetchLowestChildRank,
+  ranksToPicklistItems,
 };
