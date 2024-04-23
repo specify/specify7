@@ -1,10 +1,9 @@
 import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useErrorContext } from '../../hooks/useErrorContext';
-import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
@@ -13,7 +12,6 @@ import { LoadingContext } from '../Core/Contexts';
 import { useMenuItem } from '../Header/MenuContext';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
 import { LoadingScreen } from '../Molecules/Dialog';
-import { Dialog } from '../Molecules/Dialog';
 import { NotFoundView } from '../Router/NotFoundView';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { WbView } from './WbView';
@@ -27,15 +25,12 @@ export function WorkBench(): JSX.Element {
 
   const [dataset, setDataset] = useDataset(datasetId);
   useErrorContext('dataSet', dataset);
+
   const loading = React.useContext(LoadingContext);
-
   const [isDeleted, handleDeleted] = useBooleanState();
-  // @ts-expect-error figure out how handleDeletedConfirmation was being used in Backbone. possibly not used at all
-  const [isDeletedConfirmation, handleDeletedConfirmation] = useBooleanState();
 
-  const navigate = useNavigate();
-
-  if (dataset === undefined || !treeRanksLoaded) return <LoadingScreen />;
+  if (dataset === undefined || !treeRanksLoaded || dataset.id !== datasetId)
+    return <LoadingScreen />;
 
   const triggerDatasetRefresh = () => {
     loading(fetchDataset(dataset.id).then(setDataset));
@@ -45,14 +40,6 @@ export function WorkBench(): JSX.Element {
     <NotFoundView />
   ) : isDeleted ? (
     <>{wbText.dataSetDeletedOrNotFound()}</>
-  ) : isDeletedConfirmation ? (
-    <Dialog
-      buttons={commonText.close()}
-      header={wbText.dataSetDeleted()}
-      onClose={(): void => navigate('/specify/', { replace: true })}
-    >
-      {wbText.dataSetDeletedDescription()}
-    </Dialog>
   ) : (
     <WbView
       dataset={dataset}
