@@ -148,7 +148,7 @@ export const resourcesText = createDictionary({
   uiFormatters: {
     'en-us': 'Field Formatters',
     'ru-ru': 'Форматировщики полей',
-    'es-es': 'Formateadores de campo',
+    'es-es': 'Formateadores de campos',
     'fr-fr': 'Formateurs de champs',
     'uk-ua': 'Форматувальники полів',
     'de-ch': 'Feldformatierer',
@@ -204,8 +204,8 @@ export const resourcesText = createDictionary({
       можно настроить на основе значения в записи.
     `,
     'uk-ua': `
-      «Формат таблиці» керує тим, як дані з певної таблиці відображаються в
-      результатах запитів, експорті та комбінованих полях запитів. Він визначає
+      «Формат таблиці» визначає, як дані з певної таблиці відображаються в
+      результатах запиту, експорті та комбінованих полях запиту. Він визначає
       поля для відображення та їх порядок. Умовне форматування можна налаштувати
       на основі значення в записі.
     `,
@@ -445,10 +445,10 @@ export const resourcesText = createDictionary({
   },
   failedParsingXml: {
     'en-us': 'Failed to parse XML',
-    'ru-ru': 'Не удалось разобрать XML',
+    'ru-ru': 'Не удалось проанализировать XML',
     'de-ch': 'XML konnte nicht analysiert werden',
     'es-es': 'No se pudo analizar XML',
-    'fr-fr': "Échec de l'analyse du XML",
+    'fr-fr': "Échec de l'analyse XML",
     'uk-ua': 'Не вдалося проаналізувати XML',
   },
   name: {
@@ -568,7 +568,7 @@ export const resourcesText = createDictionary({
     'es-es': 'Agregar definición',
     'fr-fr': 'Ajouter une définition',
     'ru-ru': 'Добавить определение',
-    'uk-ua': 'Додати визначення',
+    'uk-ua': 'Додайте визначення',
   },
   deleteDefinition: {
     'en-us': 'Delete definition',
@@ -672,7 +672,7 @@ export const resourcesText = createDictionary({
     `,
     'uk-ua': `
       Цей ресурс належить до іншої колекції/дисципліни, ніж та, у якій ви зараз
-      перебуваєте. Рекомендовано змінити колекцію перед редагуванням цього
+      перебуваєте. Рекомендується змінити колекцію перед редагуванням цього
       ресурсу
     `,
   },
