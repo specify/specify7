@@ -18,6 +18,7 @@ import React from 'react';
 
 import { useUnloadProtect } from '../../hooks/navigation';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
 import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
@@ -45,7 +46,6 @@ import { WbUploaded } from './Results';
 import { useDisambiguationDialog } from './useDisambiguationDialog';
 import { WbSpreadsheet } from './WbSpreadsheet';
 import { WbValidation } from './WbValidation';
-import { useErrorContext } from '../../hooks/useErrorContext';
 
 export type WbStatus = 'unupload' | 'upload' | 'validate';
 
@@ -95,7 +95,7 @@ export function WbView({
     (): WbMapping | undefined => parseWbMappings(dataset),
     [dataset]
   );
-  useErrorContext('mappings', mappings)
+  useErrorContext('mappings', mappings);
 
   const throttleRate = Math.ceil(clamp(10, data.length / 10, 2000));
 
