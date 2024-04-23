@@ -212,11 +212,13 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       onClick={(): void => {
         // Scroll to the top of the form on clone
         smoothScroll(form, 0);
-        // Loading(handleClick().then(handleAdd));
-        const ids: number[] = [originalResourceId ?? 1];
         loading(
           handleClick()
             .then((result) => {
+              let ids: number[] = [];
+              if (originalResourceId !== undefined) {
+                ids.push(originalResourceId);
+              }
               if (Array.isArray(result)) {
                 result.forEach((newResource) => {
                   if (handleAdd) handleAdd(newResource);
@@ -225,9 +227,10 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
               } else {
                 if (handleAdd) handleAdd(result);
               }
+              return ids;
             })
-            .then(() => {
-              if (handleCarryBulk && ids.length > 1) {
+            .then((ids) => {
+              if (handleCarryBulk && ids.length > 2) {
                 handleCarryBulk(ids);
               }
             })
@@ -238,14 +241,27 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     </ButtonComponent>
   );
 
-  const [carryForwardAmount, setCarryForwardAmount] = React.useState<number>(1);
+  const [carryForwardAmount, setCarryForwardAmount] = React.useState<number>(2);
+  const [showBulkCarryInput, setBulkCarryInput] = React.useState(false);
 
   return (
     <>
       {typeof handleAdd === 'function' && canCreate ? (
         <>
           {resource.specifyTable.name === 'CollectionObject' &&
-          !isInRecordSet ? (
+          !isInRecordSet &&
+          !showBulkCarryInput &&
+          !resource.needsSaved ? (
+            <Button.Save
+              title={commonText.bulkCarry()}
+              onClick={() => setBulkCarryInput(true)}
+            >
+              {commonText.bulkCarry()}
+            </Button.Save>
+          ) : null}
+          {resource.specifyTable.name === 'CollectionObject' &&
+          !isInRecordSet &&
+          showBulkCarryInput ? (
             <Label.Inline>
               {commonText.bulkCarry()}
               <Input.Generic
@@ -253,7 +269,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                 value={carryForwardAmount}
                 onValueChange={(value): void =>
                   carryForwardAmount === undefined
-                    ? setCarryForwardAmount(1)
+                    ? setCarryForwardAmount(2)
                     : setCarryForwardAmount(Number.parseInt(value))
                 }
               />
@@ -269,30 +285,30 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
             copyButton(
               formsText.carryForward(),
               formsText.carryForwardDescription(),
-              /*
-               * Async () => {
-               *   return resource.clone(false);
-               * }
-               */
-              async () => {
-                const clones = [];
-                for (let i = 0; i < carryForwardAmount; i++) {
-                  clones.push(
-                    await resource
-                      .clone(false)
-                      .then(async (resource) => {
-                        const formatter = resource.specifyTable
+              resource.specifyTable.name === 'CollectionObject' &&
+                carryForwardAmount > 2
+                ? async () => {
+                    const clones = Array.from(
+                      { length: carryForwardAmount },
+                      async () => {
+                        const clonedResource = await resource.clone(false);
+                        const formatter = clonedResource.specifyTable
                           .strictGetLiteralField('catalogNumber')
                           .getUiFormatter()!;
                         const wildCard = formatter.valueOrWild();
-                        await resource.set('catalogNumber', wildCard as never);
-                        return resource;
-                      })
-                      .then(async (resource) => resource.save())
-                  );
-                }
-                return clones;
-              },
+                        await clonedResource.set(
+                          'catalogNumber',
+                          wildCard as never
+                        );
+                        await clonedResource.save();
+                        return clonedResource;
+                      }
+                    );
+                    return Promise.all(clones);
+                  }
+                : async () => {
+                    return resource.clone(false);
+                  },
               resource.id
             )}
           {showAdd &&
