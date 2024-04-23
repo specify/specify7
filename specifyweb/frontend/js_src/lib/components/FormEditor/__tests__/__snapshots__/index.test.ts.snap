@@ -45,7 +45,7 @@ exports[`Can edit a form definition 2`] = `
 "<?xml version=\\"1.0\\" encoding=\\"UTF-8\\"?>
 <viewset name=\\"Fish Views\\" xmlns:xsi=\\"http://www.w3.org/2001/XMLSchema-instance\\">
 	<views>
-		<view name=\\"Accession\\" class=\\"edu.ku.brc.specify.datamodel.Accession\\" busrules=\\"edu.ku.brc.specify.datamodel.busrules.AccessionBusRules\\" resourcelabels=\\"false\\">
+		<view name=\\"Accession\\" class=\\"edu.ku.brc.specify.datamodel.Accession\\" busrules=\\"edu.ku.brc.specify.datamodel.busrules.\\" resourcelabels=\\"false\\">
 			<desc>The Accession form.</desc>
 			<!-- Some comment -->
 			<altviews>
