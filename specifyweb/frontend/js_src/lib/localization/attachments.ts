@@ -104,7 +104,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Varios archivos seleccionados',
     'fr-fr': 'Plusieurs fichiers sélectionnés',
     'ru-ru': 'Выбрано несколько файлов',
-    'uk-ua': 'Вибрано декілька файлів',
+    'uk-ua': 'Вибрано кілька файлів',
   },
   fileSize: {
     'en-us': 'File Size',
@@ -191,7 +191,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Error de coincidencia',
     'fr-fr': 'Erreur de correspondance',
     'ru-ru': 'Ошибка совпадения',
-    'uk-ua': 'Помилка відповідності',
+    'uk-ua': 'Помилка збігу',
   },
   errorReadingFile: {
     'en-us': 'Error reading file',
@@ -353,7 +353,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Unterbrochen',
     'es-es': 'interrumpido',
     'fr-fr': 'Interrompu',
-    'ru-ru': 'Прервано',
+    'ru-ru': 'Прерванный',
     'uk-ua': 'Перерваний',
   },
   tryNow: {
@@ -556,7 +556,7 @@ export const attachmentsText = createDictionary({
     'fr-fr':
       'Choisissez des fichiers ou faites-les glisser ici pour commencer.',
     'ru-ru': 'Выберите файлы или перетащите их сюда, чтобы начать.',
-    'uk-ua': 'Виберіть файли або перетягніть їх сюди, щоб почати.',
+    'uk-ua': 'Щоб почати, виберіть файли або перетягніть їх сюди.',
   },
   selectIdentifier: {
     'en-us': 'Select an identifier to match the files name against.',

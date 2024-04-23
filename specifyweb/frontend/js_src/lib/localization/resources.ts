@@ -148,7 +148,7 @@ export const resourcesText = createDictionary({
   uiFormatters: {
     'en-us': 'Field Formatters',
     'ru-ru': 'Форматировщики полей',
-    'es-es': 'Formateadores de campo',
+    'es-es': 'Formateadores de campos',
     'fr-fr': 'Formateurs de champs',
     'uk-ua': 'Форматувальники полів',
     'de-ch': 'Feldformatierer',
@@ -204,8 +204,8 @@ export const resourcesText = createDictionary({
       можно настроить на основе значения в записи.
     `,
     'uk-ua': `
-      «Формат таблиці» керує тим, як дані з певної таблиці відображаються в
-      результатах запитів, експорті та комбінованих полях запитів. Він визначає
+      «Формат таблиці» визначає, як дані з певної таблиці відображаються в
+      результатах запиту, експорті та комбінованих полях запиту. Він визначає
       поля для відображення та їх порядок. Умовне форматування можна налаштувати
       на основі значення в записі.
     `,
@@ -249,8 +249,8 @@ export const resourcesText = createDictionary({
     'ru-ru': `
       «Агрегация таблиц» управляет тем, как несколько записей таблицы
       объединяются в одну текстовую строку. Формат таблицы, разделитель,
-      суффикс, поле сортировки и ограничение предварительного просмотра записи
-      можно настроить. Его можно отобразить в результатах запроса и в форматах
+      суффикс, поле сортировки и предел предварительного просмотра записей можно
+      настроить. Его можно отобразить в результатах запроса и в форматах
       таблиц.
     `,
     'uk-ua': `
@@ -445,10 +445,10 @@ export const resourcesText = createDictionary({
   },
   failedParsingXml: {
     'en-us': 'Failed to parse XML',
-    'ru-ru': 'Не удалось разобрать XML',
+    'ru-ru': 'Не удалось проанализировать XML',
     'de-ch': 'XML konnte nicht analysiert werden',
     'es-es': 'No se pudo analizar XML',
-    'fr-fr': "Échec de l'analyse du XML",
+    'fr-fr': "Échec de l'analyse XML",
     'uk-ua': 'Не вдалося проаналізувати XML',
   },
   name: {
@@ -568,7 +568,7 @@ export const resourcesText = createDictionary({
     'es-es': 'Agregar definición',
     'fr-fr': 'Ajouter une définition',
     'ru-ru': 'Добавить определение',
-    'uk-ua': 'Додати визначення',
+    'uk-ua': 'Додайте визначення',
   },
   deleteDefinition: {
     'en-us': 'Delete definition',
@@ -621,54 +621,27 @@ export const resourcesText = createDictionary({
   conditionDescription: {
     'en-us': `
       This format will be used only if the condition field value equals this
-      condition.
+      condition and is not null.
     `,
     'de-ch': `
       Dieses Format wird nur verwendet, wenn der Wert des Bedingungsfelds dieser
-      Bedingung entspricht.
+      Bedingung entspricht und nicht null ist.
     `,
     'es-es': `
-      Este formato se utilizará sólo si el valor del campo de condición es igual
-      a esta condición.
+      Este formato se utilizará solo si el valor del campo de condición es igual
+      a esta condición y no es nulo.
     `,
     'fr-fr': `
-      Ce format ne sera utilisé que si la valeur du champ de condition est égale
-      à cette condition.
+      Ce format sera utilisé uniquement si la valeur du champ de condition est
+      égale à cette condition et n'est pas nulle.
     `,
     'ru-ru': `
       Этот формат будет использоваться только в том случае, если значение поля
-      условия соответствует этому условию.
+      условия равно этому условию и не равно нулю.
     `,
     'uk-ua': `
       Цей формат використовуватиметься, лише якщо значення поля умови дорівнює
-      цій умові.
-    `,
-  },
-  elseConditionDescription: {
-    'en-us': `
-      This format will be used only if the condition field value equals this
-      condition or if no other format matches it.
-    `,
-    'de-ch': `
-      Dieses Format wird nur verwendet, wenn der Wert des Bedingungsfelds dieser
-      Bedingung entspricht oder wenn kein anderes Format damit übereinstimmt.
-    `,
-    'es-es': `
-      Este formato se utilizará sólo si el valor del campo de condición es igual
-      a esta condición o si ningún otro formato coincide con ella.
-    `,
-    'fr-fr': `
-      Ce format ne sera utilisé que si la valeur du champ de condition est égale
-      à cette condition ou si aucun autre format ne lui correspond.
-    `,
-    'ru-ru': `
-      Этот формат будет использоваться только в том случае, если значение поля
-      условия соответствует этому условию или если ему не соответствует никакой
-      другой формат.
-    `,
-    'uk-ua': `
-      Цей формат використовуватиметься, лише якщо значення поля умови дорівнює
-      цій умові або якщо жоден інший формат їй не відповідає.
+      цій умові й не є нульовим.
     `,
   },
   wrongScopeWarning: {
@@ -693,7 +666,7 @@ export const resourcesText = createDictionary({
       changer de collection avant de modifier cette ressource.
     `,
     'ru-ru': `
-      Этот ресурс принадлежит к другой коллекции/дисциплине, отличной от той, в
+      Этот ресурс принадлежит другой коллекции/дисциплине, отличной от той, в
       которой вы сейчас находитесь. Перед редактированием этого ресурса
       рекомендуется сменить коллекцию.
     `,
@@ -757,7 +730,7 @@ export const resourcesText = createDictionary({
     'es-es': 'Ejecutar en colección',
     'fr-fr': 'Exécuter en collection',
     'ru-ru': 'Запустить в коллекцию',
-    'uk-ua': 'Запустити в колекцію',
+    'uk-ua': 'Запустити в колекції',
   },
   createNewForm: {
     'en-us': 'Create new form',
