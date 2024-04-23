@@ -228,8 +228,8 @@ function WbSpreadsheetComponent({
         commentedCellClassName="htCommentCell"
         comments={comments}
         contextMenu={contextMenuConfig}
-        // @ts-expect-error data throws error for readonly input
-        data={data as readonly (readonly (string | null)[])[]}
+        // eslint-disable-next-line functional/prefer-readonly-type
+        data={data as (string | null)[][]}
         enterBeginsEditing={enterBeginsEditing}
         enterMoves={enterMoves}
         hiddenColumns={hiddenColumns}
