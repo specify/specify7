@@ -1,9 +1,5 @@
 /**
  * Component for the Handsontable React wrapper
- *
- * TODO:
- * - Upgrade to handsontable14 to fix copyPasteEnabled error
- * - Fix font size and color in the table
  */
 
 import { HotTable } from '@handsontable/react';
