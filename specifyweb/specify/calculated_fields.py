@@ -45,7 +45,8 @@ def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
             exchangeoutprep_quantity = prep.exchangeoutpreps.aggregate(total=Sum("quantity"))["total"] or 0
             disposalpreparation_quantity = prep.disposalpreparations.aggregate(total=Sum("quantity"))["total"] or 0
 
-            available = max(0, prep.countamt - giftpreparation_quantity - exchangeoutprep_quantity - disposalpreparation_quantity)
+            countamt = obj.countamt or 0
+            available = max(0, countamt - giftpreparation_quantity - exchangeoutprep_quantity - disposalpreparation_quantity)
             actualTotalCountAmt += available
 
         extra["actualTotalCountAmt"] = int(actualTotalCountAmt)
@@ -93,7 +94,8 @@ def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
             exchangeoutprep_quantity = prep.exchangeoutpreps.aggregate(total=Sum("quantity"))["total"] or 0
             disposalpreparation_quantity = prep.disposalpreparations.aggregate(total=Sum("quantity"))["total"] or 0
 
-            available = max(0, prep.countamt - giftpreparation_quantity - exchangeoutprep_quantity - disposalpreparation_quantity)
+            countamt = obj.countamt or 0
+            available = max(0, countamt - giftpreparation_quantity - exchangeoutprep_quantity - disposalpreparation_quantity)
             actualTotalCountAmt += available
 
         extra["actualTotalCountAmt"] = int(actualTotalCountAmt)
