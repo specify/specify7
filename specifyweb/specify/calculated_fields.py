@@ -111,7 +111,7 @@ def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
 
     elif isinstance(obj, get_model("ExchangeOut")):
         extra["totalPreps"] = obj.exchangeoutpreps.count()
-        extra["totalItems"] = obj.exchangeoutpreps.aggregate(total=Sum("quantity"))["total"]
+        extra["totalItems"] = obj.exchangeoutpreps.aggregate(total=Sum("quantity"))["total"] or 0
 
     elif isinstance(obj, get_model("Deaccession")):
         disposals = data["disposals"]
