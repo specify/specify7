@@ -116,9 +116,12 @@ def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
         extra["totalItems"] = obj.exchangeoutpreps.aggregate(total=Sum("quantity"))["total"] or 0
 
     elif isinstance(obj, get_model("Deaccession")):
-        disposals = data["disposals"]
-        exchangeouts = data["exchangeouts"]
-        gifts = data["gifts"]
+        Disposal = get_model("Disposal")
+        Exchangeout = get_model("ExchangeOut")
+        Gift = get_model("Gift")
+        disposals = Disposal.objects.filter(deaccession=obj)
+        gifts = Gift.objects.filter(deaccession=obj)
+        exchangeouts = Exchangeout.objects.filter(deaccession=obj)
         # sum up all totalPreps of disposals, exchangeouts and gifts
         extra["totalPreps"] = sum(obj["totalPreps"] for obj in disposals) + \
             sum(obj["totalPreps"] for obj in exchangeouts) + \
