@@ -78,13 +78,16 @@ export function WbUtilsComponent({
               cells.indexedCellMeta = undefined;
             }
             utils.searchPreferences = newSearchPreferences;
-            /*
-             * TODO: figure out what searchCells with SettingsChange does
-             * if (utils.searchPreferences.search.liveUpdate)
-             *   utils.searchCells({
-             *     key: 'SettingsChange',
-             *   }).catch(softFail);
-             */
+            if (
+              utils.searchPreferences.search.liveUpdate &&
+              searchRef.current !== null
+            )
+              utils.searchCells(
+                {
+                  key: 'SettingsChange',
+                },
+                searchRef.current
+              );
           }}
         />
       </span>
