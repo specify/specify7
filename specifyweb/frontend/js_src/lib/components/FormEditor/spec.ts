@@ -147,9 +147,9 @@ const resolvedViewSpec = () =>
           typeof table === 'object' &&
             tablesWithBusRulesIn6.has(`${table.name}BusRules`)
             ? `edu.ku.brc.specify.datamodel.busrules.${table.name}BusRules`
-            : businessRules[table!.name]
+            : table && businessRules[table.name]
             ? `edu.ku.brc.specify.datamodel.busrules.${
-                businessRules[table!.name]
+                businessRules[table.name]
               }BusRules`
             : ''
         ),
