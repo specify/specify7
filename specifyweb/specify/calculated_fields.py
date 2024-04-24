@@ -121,4 +121,8 @@ def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
         extra["preparationCount"] = preparationCount
         extra.update(obj.collectionobjects.aggregate(collectionObjectCount=Count("id")))
 
+    elif isinstance(obj, get_model("Disposal")):
+        extra["totalPreps"] = obj.disposalpreparations.count()
+        extra["totalItems"] = obj.disposalpreparations.aggregate(total=Sum("quantity"))["total"] # TODO: check correctness
+
     return extra
