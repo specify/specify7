@@ -145,7 +145,7 @@ const resolvedViewSpec = () =>
         table: { parsed: table, bad: legacyTable },
         businessRules: localized(
           typeof table === 'object' &&
-            !tablesWithBusRulesIn6.has(table.name) &&
+            tablesWithBusRulesIn6.has(`${table.name}BusRules`) &&
             businessRules[table.name]
             ? `edu.ku.brc.specify.datamodel.busrules.${
                 businessRules[table.name]
