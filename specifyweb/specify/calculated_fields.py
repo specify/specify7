@@ -24,7 +24,8 @@ def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
         exchangeoutprep_quantity = obj.exchangeoutpreps.aggregate(total=Sum("quantity"))["total"] or 0
         disposalpreparation_quantity = obj.disposalpreparations.aggregate(total=Sum("quantity"))["total"] or 0
 
-        actualCountAmt = obj.countamt - giftpreparation_quantity - exchangeoutprep_quantity - disposalpreparation_quantity
+        countamt = obj.countamt or 0
+        actualCountAmt = countamt - giftpreparation_quantity - exchangeoutprep_quantity - disposalpreparation_quantity
 
         extra["actualCountAmt"] = int(actualCountAmt)
         extra["isonloan"] = obj.isonloan()
