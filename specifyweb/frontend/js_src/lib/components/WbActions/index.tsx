@@ -129,8 +129,8 @@ export function WbActions({
             <WbSave
               checkDeletedFail={checkDeletedFail}
               hasUnsavedChanges={hasUnsavedChanges}
-              workbench={workbench}
               searchRef={searchRef}
+              workbench={workbench}
               onSpreadsheetUpToDate={handleSpreadsheetUpToDate}
             />
           </ErrorBoundary>

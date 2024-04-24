@@ -198,8 +198,8 @@ export function WbView({
             isResultsOpen={showResults}
             isUploaded={isUploaded}
             mappings={mappings}
-            workbench={workbench}
             searchRef={searchRef}
+            workbench={workbench}
             onDatasetRefresh={triggerDatasetRefresh}
             onSpreadsheetUpToDate={spreadsheetUpToDate}
             onToggleResults={toggleResults}
@@ -247,8 +247,8 @@ export function WbView({
           cells={workbench.cells}
           debounceRate={throttleRate}
           isUploaded={isUploaded}
-          utils={workbench.utils}
           searchRef={searchRef}
+          utils={workbench.utils}
         />
       </section>
     </ReadOnlyContext.Provider>

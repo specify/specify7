@@ -49,7 +49,10 @@ export function WbSave({
         .then(() => {
           handleSpreadsheetUpToDate();
           workbench.cells.cellMeta = [];
-          workbench.utils?.searchCells({ key: 'SettingsChange' }, searchRef.current);
+          workbench.utils?.searchCells(
+            { key: 'SettingsChange' },
+            searchRef.current
+          );
           workbench.hot?.render();
           closeProgressBar();
         })

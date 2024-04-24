@@ -354,10 +354,11 @@ export class WbUtils {
       event.key !== 'Enter' ||
       (this.searchPreferences.search.useRegex &&
         this.searchQuery === undefined) ||
-      this.workbench.hot === undefined || replacementValueElement === null
+      this.workbench.hot === undefined ||
+      replacementValueElement === null
     )
       return;
-      
+
     const replacementValue = this.searchPreferences.search.useRegex
       ? replacementValueElement.value
       : replacementValueElement.value.trim();

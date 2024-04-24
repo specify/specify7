@@ -26,7 +26,6 @@ export function WbUtilsComponent({
   readonly debounceRate: number;
   readonly searchRef: React.MutableRefObject<HTMLInputElement | null>;
 }): JSX.Element {
-  
   const isReadOnly = React.useContext(ReadOnlyContext);
   const replaceRef = React.useRef<HTMLInputElement | null>(null);
 
