@@ -162,6 +162,8 @@ export function WbView({
       disambiguation: workbench.disambiguation,
     });
 
+  const searchRef = React.useRef<HTMLInputElement | null>(null);
+
   return (
     <ReadOnlyContext.Provider
       value={isAlreadyReadOnly || isUploaded || showResults || !canUpdate}
@@ -197,6 +199,7 @@ export function WbView({
             isUploaded={isUploaded}
             mappings={mappings}
             workbench={workbench}
+            searchRef={searchRef}
             onDatasetRefresh={triggerDatasetRefresh}
             onSpreadsheetUpToDate={spreadsheetUpToDate}
             onToggleResults={toggleResults}
@@ -245,6 +248,7 @@ export function WbView({
           debounceRate={throttleRate}
           isUploaded={isUploaded}
           utils={workbench.utils}
+          searchRef={searchRef}
         />
       </section>
     </ReadOnlyContext.Provider>

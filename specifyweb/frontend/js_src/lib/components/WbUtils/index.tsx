@@ -17,15 +17,17 @@ export function WbUtilsComponent({
   utils,
   cells,
   debounceRate,
+  searchRef,
 }: {
   readonly isUploaded: boolean;
   readonly cellCounts: WbCellCounts;
   readonly utils: WbUtils;
   readonly cells: WbCellMeta;
   readonly debounceRate: number;
+  readonly searchRef: React.MutableRefObject<HTMLInputElement | null>;
 }): JSX.Element {
+  
   const isReadOnly = React.useContext(ReadOnlyContext);
-  const searchRef = React.useRef<HTMLInputElement | null>(null);
   const replaceRef = React.useRef<HTMLInputElement | null>(null);
 
   return (
@@ -46,7 +48,7 @@ export function WbUtilsComponent({
             type="search"
             onKeyDown={_.debounce(
               (event: React.KeyboardEvent<HTMLInputElement>) =>
-                utils.searchCells(event, searchRef.current!),
+                utils.searchCells(event, searchRef.current),
               debounceRate,
               true
             )}
@@ -63,7 +65,7 @@ export function WbUtilsComponent({
               title={wbText.replacementValue()}
               type="search"
               onKeyDown={(event) =>
-                utils.replaceCells(event, replaceRef.current!)
+                utils.replaceCells(event, replaceRef.current)
               }
             />
           </div>

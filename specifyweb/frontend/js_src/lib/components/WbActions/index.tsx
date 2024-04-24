@@ -33,6 +33,7 @@ export function WbActions({
   cellCounts,
   mappings,
   checkDeletedFail,
+  searchRef,
   onDatasetRefresh: handleRefresh,
   onSpreadsheetUpToDate: handleSpreadsheetUpToDate,
   onToggleResults: handleToggleResults,
@@ -44,6 +45,7 @@ export function WbActions({
   readonly workbench: Workbench;
   readonly cellCounts: WbCellCounts;
   readonly mappings: WbMapping | undefined;
+  readonly searchRef: React.MutableRefObject<HTMLInputElement | null>;
   readonly checkDeletedFail: (statusCode: number) => void;
   readonly onDatasetRefresh: () => void;
   readonly onSpreadsheetUpToDate: () => void;
@@ -128,6 +130,7 @@ export function WbActions({
               checkDeletedFail={checkDeletedFail}
               hasUnsavedChanges={hasUnsavedChanges}
               workbench={workbench}
+              searchRef={searchRef}
               onSpreadsheetUpToDate={handleSpreadsheetUpToDate}
             />
           </ErrorBoundary>

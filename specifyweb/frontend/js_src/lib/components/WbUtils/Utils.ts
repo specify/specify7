@@ -179,9 +179,9 @@ export class WbUtils {
     event:
       | React.KeyboardEvent<HTMLInputElement>
       | { readonly key: 'SettingsChange' },
-    searchQueryElement: HTMLInputElement
+    searchQueryElement: HTMLInputElement | null
   ) {
-    if (this.workbench.hot === undefined) return;
+    if (this.workbench.hot === undefined || searchQueryElement === null) return;
     /*
      * Don't rerun search on live search if search query did not change
      * (e.x, if Ctrl/Cmd+A is clicked in the search box)
@@ -348,17 +348,16 @@ export class WbUtils {
 
   replaceCells(
     event: React.KeyboardEvent<HTMLInputElement>,
-    replacementValueElement: HTMLInputElement
+    replacementValueElement: HTMLInputElement | null
   ) {
     if (
       event.key !== 'Enter' ||
       (this.searchPreferences.search.useRegex &&
         this.searchQuery === undefined) ||
-      this.workbench.hot === undefined
+      this.workbench.hot === undefined || replacementValueElement === null
     )
       return;
-
-    if (replacementValueElement === undefined) return;
+      
     const replacementValue = this.searchPreferences.search.useRegex
       ? replacementValueElement.value
       : replacementValueElement.value.trim();
