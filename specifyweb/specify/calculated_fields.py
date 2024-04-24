@@ -20,19 +20,11 @@ def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
     cursor = connection.cursor()
 
     if isinstance(obj, get_model("Preparation")):
-        cursor.execute("""
-            select coalesce(
-                p.countamt
-                - (select coalesce(sum(gp.quantity), 0) from giftpreparation gp where gp.preparationid = p.preparationid and gp.quantity is not null)
-                - (select coalesce(sum(ep.quantity), 0) from exchangeoutprep ep where ep.preparationid = p.preparationid and ep.quantity is not null)
-                - (select coalesce(sum(dp.quantity), 0) from disposalpreparation dp where dp.preparationid = p.preparationid and dp.quantity is not null),
-                0) as ActualCountAmt
-            from preparation p
-            where preparationid = %s
-            """,
-            [obj.id],
-        )
-        (actualCountAmt,) = cursor.fetchone()
+        giftpreparation_quantity = obj.giftpreparations.aggregate(total=Sum("quantity"))["total"] or 0
+        exchangeoutprep_quantity = obj.exchangeoutpreps.aggregate(total=Sum("quantity"))["total"] or 0
+        disposalpreparation_quantity = obj.disposalpreparations.aggregate(total=Sum("quantity"))["total"] or 0
+
+        actualCountAmt = obj.countamt - giftpreparation_quantity - exchangeoutprep_quantity - disposalpreparation_quantity
 
         extra["actualCountAmt"] = int(actualCountAmt)
         extra["isonloan"] = obj.isonloan()
@@ -43,24 +35,18 @@ def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
         ).exists()
 
     elif isinstance(obj, get_model("Collectionobject")):
-        cursor.execute("""
-            select coalesce(sum(countamt), 0) as TotalCountAmt, coalesce(sum(available), 0) as ActualTotalCountAmt from (
-            select
-            coalesce(p.countamt, 0) as countamt, -- assume countamt >= 0
-            greatest(0, coalesce(  -- the greatest function ensures that if the available amount for some prep goes < 0 it doesn't count againts others
-                p.countamt
-                - (select coalesce(sum(gp.quantity), 0) from giftpreparation gp where gp.preparationid = p.preparationid and gp.quantity is not null)
-                - (select coalesce(sum(ep.quantity), 0) from exchangeoutprep ep where ep.preparationid = p.preparationid and ep.quantity is not null)
-                - (select coalesce(sum(dp.quantity), 0) from disposalpreparation dp where dp.preparationid = p.preparationid and dp.quantity is not null),
-                0
-            )) as available
-            from preparation p
-            where collectionobjectid = %s
-            ) available_by_prep
-            """,
-            [obj.id],
-        )
-        totalCountAmt, actualTotalCountAmt = cursor.fetchone()
+        preparations = obj.preparations.all()
+        totalCountAmt = preparations.aggregate(total=Sum("countamt"))["total"] or 0
+
+        actualTotalCountAmt = 0
+        for prep in preparations:
+            giftpreparation_quantity = prep.giftpreparations.aggregate(total=Sum("quantity"))["total"] or 0
+            exchangeoutprep_quantity = prep.exchangeoutpreps.aggregate(total=Sum("quantity"))["total"] or 0
+            disposalpreparation_quantity = prep.disposalpreparations.aggregate(total=Sum("quantity"))["total"] or 0
+
+            available = max(0, prep.countamt - giftpreparation_quantity - exchangeoutprep_quantity - disposalpreparation_quantity)
+            actualTotalCountAmt += available
+
         extra["actualTotalCountAmt"] = int(actualTotalCountAmt)
         extra["totalCountAmt"] = int(totalCountAmt)
 
@@ -95,27 +81,20 @@ def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
         extra["resolvedItems"] = quantities - unresolvedQuantities
 
     elif isinstance(obj, get_model("Accession")):
-        cursor.execute("""
-            select count(id) as PreparationCount, coalesce(sum(countamt), 0) as TotalCountAmt, coalesce(sum(available), 0) as ActualTotalCountAmt from (
-            select
-            p.preparationid as id,
-            coalesce(p.countamt, 0) as countamt, -- assume countamt >= 0
-            greatest(0, coalesce(  -- the greatest function ensures that if the available amount for some prep goes < 0 it doesn't count againts others
-                p.countamt
-                - (select coalesce(sum(gp.quantity), 0) from giftpreparation gp where gp.preparationid = p.preparationid and gp.quantity is not null)
-                - (select coalesce(sum(ep.quantity), 0) from exchangeoutprep ep where ep.preparationid = p.preparationid and ep.quantity is not null)
-                - (select coalesce(sum(dp.quantity), 0) from disposalpreparation dp where dp.preparationid = p.preparationid and dp.quantity is not null),
-                0
-            )) as available
-            from preparation p
-            join collectionobject using (collectionobjectid)
-            where accessionid = %s
-            ) available_by_prep
-            """,
-            [obj.id],
-        )
+        Preparation = get_model("Preparation")
+        preparations = Preparation.objects.filter(collectionobject__accession=obj)
+        preparationCount = preparations.count()
+        totalCountAmt = preparations.aggregate(total=Sum("countamt"))["total"] or 0
 
-        preparationCount, totalCountAmt, actualTotalCountAmt = cursor.fetchone()
+        actualTotalCountAmt = 0
+        for prep in preparations:
+            giftpreparation_quantity = prep.giftpreparations.aggregate(total=Sum("quantity"))["total"] or 0
+            exchangeoutprep_quantity = prep.exchangeoutpreps.aggregate(total=Sum("quantity"))["total"] or 0
+            disposalpreparation_quantity = prep.disposalpreparations.aggregate(total=Sum("quantity"))["total"] or 0
+
+            available = max(0, prep.countamt - giftpreparation_quantity - exchangeoutprep_quantity - disposalpreparation_quantity)
+            actualTotalCountAmt += available
+
         extra["actualTotalCountAmt"] = int(actualTotalCountAmt)
         extra["totalCountAmt"] = int(totalCountAmt)
         extra["preparationCount"] = preparationCount
@@ -123,11 +102,11 @@ def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
 
     elif isinstance(obj, get_model("Disposal")):
         extra["totalPreps"] = obj.disposalpreparations.count()
-        extra["totalItems"] = obj.disposalpreparations.aggregate(total=Sum("quantity"))["total"] # TODO: check correctness
+        extra["totalItems"] = obj.disposalpreparations.aggregate(total=Sum("quantity"))["total"] or 0
 
     elif isinstance(obj, get_model("Gift")):
         extra["totalPreps"] = obj.giftpreparations.count()
-        extra["totalItems"] = obj.giftpreparations.aggregate(total=Sum("quantity"))["total"] # TODO: check correctness
+        extra["totalItems"] = obj.giftpreparations.aggregate(total=Sum("quantity"))["total"] or 0
 
     elif isinstance(obj, get_model("ExchangeOut")):
         extra["totalPreps"] = obj.exchangeoutpreps.count()
