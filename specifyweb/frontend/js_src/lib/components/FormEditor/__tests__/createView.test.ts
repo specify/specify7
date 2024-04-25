@@ -419,7 +419,6 @@ test('Create new view definition', () =>
           ],
         },
         description: '',
-        // FIXME: add this logic
         businessRules:
           'edu.ku.brc.specify.datamodel.busrules.AttachmentBusRules',
         legacyUseBusinessRules: true,
