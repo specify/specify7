@@ -119,17 +119,20 @@ def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
         Disposal = get_model("Disposal")
         Exchangeout = get_model("ExchangeOut")
         Gift = get_model("Gift")
-        disposals = Disposal.objects.filter(deaccession=obj)
-        gifts = Gift.objects.filter(deaccession=obj)
-        exchangeouts = Exchangeout.objects.filter(deaccession=obj)
-        # sum up all totalPreps of disposals, exchangeouts and gifts
-        extra["totalPreps"] = sum(obj["totalPreps"] for obj in disposals) + \
-            sum(obj["totalPreps"] for obj in exchangeouts) + \
-                sum(obj["totalPreps"] for obj in gifts)
+
+        totalPreps_disposals = Disposal.objects.filter(deaccession=obj).count()
+        totalPreps_exchangeouts = Exchangeout.objects.filter(deaccession=obj).count()
+        totalPreps_gifts = Gift.objects.filter(deaccession=obj).count()
+        
+        totalItems_disposals = Disposal.objects.filter(deaccession=obj).aggregate(
+            total=Sum("totalItems"))["total"] or 0
+        totalItems_exchangeouts = Exchangeout.objects.filter(deaccession=obj).aggregate(
+            total=Sum("totalItems"))["total"] or 0
+        totalItems_gifts = Gift.objects.filter(deaccession=obj).aggregate(
+            total=Sum("totalItems"))["total"] or 0
 
         # sum up all totalItems of disposals, exchangeouts and gifts
-        extra["totalItems"] = sum(obj["totalItems"] for obj in disposals if obj["totalItems"] is not None) + \
-            sum(obj["totalItems"] for obj in exchangeouts if obj["totalItems"] is not None) + \
-                sum(obj["totalItems"] for obj in gifts if obj["totalItems"] is not None)
+        extra["totalPreps"] = totalPreps_disposals + totalPreps_exchangeouts + totalPreps_gifts
+        extra["totalItems"] = totalItems_disposals + totalItems_exchangeouts + totalItems_gifts
 
     return extra
