@@ -135,24 +135,27 @@ const resolvedViewSpec = () =>
   pipe(
     syncers.object(viewSpec()),
     syncer(
-      ({ businessRules: _, table, ...node }) => ({
+      ({ table, ...node }) => ({
         ...node,
         table: table.parsed,
         legacyTable: table.bad,
       }),
-      ({ table, legacyTable, ...node }) => ({
+      ({ table, legacyTable, businessRules, ...node }) => ({
         ...node,
         table: { parsed: table, bad: legacyTable },
-        businessRules: localized(
-          typeof table === 'object' &&
-            tablesWithBusRulesIn6.has(`${table.name}BusRules`)
-            ? `edu.ku.brc.specify.datamodel.busrules.${table.name}BusRules`
-            : table && businessRules[table.name]
-            ? `edu.ku.brc.specify.datamodel.busrules.${
-                businessRules[table.name]
-              }BusRules`
-            : ''
-        ),
+        businessRules:
+          businessRules !== undefined
+            ? businessRules
+            : localized(
+                typeof table === 'object' &&
+                  tablesWithBusRulesIn6.has(`${table.name}BusRules`)
+                  ? `edu.ku.brc.specify.datamodel.busrules.${table.name}BusRules`
+                  : table && businessRulesFrontEnd[table.name]
+                  ? `edu.ku.brc.specify.datamodel.busrules.${
+                      businessRulesFrontEnd[table.name]
+                    }BusRules`
+                  : ''
+              ),
       })
     )
   );
@@ -188,7 +191,7 @@ export function parseFormView(definition: ViewDefinition) {
  * Most of the time business rules class name can be inferred from table name.
  * Exceptions:
  */
-const businessRules: Partial<RR<keyof Tables, string>> = {
+const businessRulesFrontEnd: Partial<RR<keyof Tables, string>> = {
   Shipment: 'LoanGiftShipment',
 };
 
