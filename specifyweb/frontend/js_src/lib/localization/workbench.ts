@@ -835,29 +835,6 @@ export const wbText = createDictionary({
     'uk-ua': 'Набір даних має бути перевірений або завантажений',
     'de-ch': 'Der Datensatz muss validiert oder hochgeladen werden',
   },
-  wbValidateUnavailable: {
-    'en-us':
-      'An Upload Plan needs to defined before this Data Set can be Validated',
-    'ru-ru': `
-      План загрузки должен быть определен до того, как этот набор данных может
-      быть проверен
-    `,
-    'es-es': `
-      Se necesita definir un Plan de Carga antes de poder Validar este Conjunto
-      de Datos
-    `,
-    'fr-fr': `
-      Un plan de téléchargement doit être défini avant que cet ensemble de
-      données puisse être validé
-    `,
-    'uk-ua': `
-      Перед перевіркою цього набору даних необхідно визначити план завантаження
-    `,
-    'de-ch': `
-      Bevor dieser Datensatz validiert werden kann, muss ein Upload-Plan
-      definiert werden
-    `,
-  },
   unavailableWhileEditing: {
     'en-us': 'This action requires all changes to be saved',
     'ru-ru': 'Это действие требует сохранения всех изменений',
@@ -888,33 +865,6 @@ export const wbText = createDictionary({
       aufweisen
     `,
   },
-  unavailableWhileViewingResults: {
-    'en-us': 'This action is unavailable while viewing the upload results',
-    'ru-ru': 'Это действие недоступно при просмотре результатов загрузки',
-    'es-es': `
-      Acción no disponible cuando se visualizan resultados de la carga de datos
-    `,
-    'fr-fr': `
-      Cette action n'est pas disponible lors de l'affichage des résultats du
-      téléchargement
-    `,
-    'uk-ua': 'Ця дія недоступна під час перегляду результатів завантаження',
-    'de-ch':
-      'Diese Aktion ist beim Anzeigen der Upload-Ergebnisse nicht verfügbar',
-  },
-  unavailableWhileValidating: {
-    'en-us': 'This action is unavailable while Data Check is in progress',
-    'ru-ru': 'Это действие недоступно, пока выполняется проверка данных',
-    'es-es': 'Acción no disponible durante la Comprobación de Datos',
-    'fr-fr': `
-      Cette action n'est pas disponible lorsque la vérification des données est
-      en cours
-    `,
-    'uk-ua': 'Ця дія недоступна, поки триває перевірка даних',
-    'de-ch': `
-      Diese Aktion ist nicht verfügbar, während die Datenprüfung ausgeführt wird
-    `,
-  },
   unavailableWithoutLocality: {
     'en-us': 'This tool requires locality columns to be mapped',
     'ru-ru':
@@ -924,15 +874,6 @@ export const wbText = createDictionary({
     'fr-fr': 'Cet outil nécessite que les colonnes de localité soient mappées',
     'uk-ua': 'Цей інструмент вимагає відображення стовпців місцевості',
     'de-ch': 'Für dieses Tool müssen Ortsspalten zugeordnet werden',
-  },
-  unavailableWhenUploaded: {
-    'en-us': 'This tool does not work with uploaded Data Sets',
-    'ru-ru': 'Этот инструмент не работает с загруженными наборами данных',
-    'es-es': 'Esta herramienta no funciona con Conjuntos de Datos cargados',
-    'fr-fr':
-      'Cet outil ne fonctionne pas avec les ensembles de données téléchargés',
-    'uk-ua': 'Цей інструмент не працює із завантаженими наборами даних',
-    'de-ch': 'Dieses Tool funktioniert nicht mit hochgeladenen Datensätzen',
   },
   dataSetDeletedOrNotFound: {
     'en-us': 'Data Set was deleted by another session.',
