@@ -1,9 +1,8 @@
 import { f } from '../../utils/functools';
-import type { RA, RR } from '../../utils/types';
+import type { RA } from '../../utils/types';
 import { defined, localized } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
 import { strictParseXml } from '../AppResources/parseXml';
-import type { Tables } from '../DataModel/types';
 import type { ViewDefinition } from '../FormParse';
 import type { SpecToJson } from '../Syncer';
 import { pipe, syncer } from '../Syncer';
@@ -19,6 +18,7 @@ import {
   getOriginalSyncerInput,
   setOriginalSyncerInput,
 } from '../Syncer/xmlUtils';
+import { getBusinessRuleClassFromTable } from './helpers';
 
 export const viewSetsSpec = f.store(() =>
   createXmlSpec({
@@ -48,88 +48,6 @@ export type ViewSets = Omit<RawViewSets, 'viewDefs'> & {
   >;
 };
 
-const tablesWithBusRulesIn6 = new Set([
-  'AccessionAgentBusRules',
-  'AccessionAuthorizationBusRules',
-  'AccessionBusRules',
-  'AddressBusRules',
-  'AgentBusRules',
-  'AppraisalBusRules',
-  'AttachmentBusRules',
-  'AttachmentOwnerBaseBusRules',
-  'AttachmentReferenceBaseBusRules',
-  'AuthorBusRules',
-  'BaseTreeBusRules',
-  'BioStratBusRules',
-  'BorrowBusRules',
-  'CatalogNumberingSchemeBusRules',
-  'CatAutoNumberingSchemeBusRules',
-  'CollectingEventAttributeBusRules',
-  'CollectingEventAuthorizationBusRules',
-  'CollectingEventBusRules',
-  'CollectingTripAuthorizationBusRules',
-  'CollectingTripBusRules',
-  'CollectionBusRules',
-  'CollectionObjectBusRules',
-  'CollectionSetupBusRules',
-  'CollectorBusRules',
-  'ConservDescriptionBusRules',
-  'ConservEventBusRules',
-  'ContainerBusRules',
-  'DataTypeBusRules',
-  'DeaccessionAgentBusRules',
-  'DeaccessionBusRules',
-  'DeterminationBusRules',
-  'DeterminerBusRules',
-  'DisciplineBusRules',
-  'DisposalAgentBusRules',
-  'DisposalBusRules',
-  'DisposalPreparationBusRules',
-  'DivisionBusRules',
-  'DNASequenceBusRules',
-  'DNASequencingRunBusRules',
-  'ExchangeInBusRules',
-  'ExchangeOutBusRules',
-  'ExchangeOutPrepBusRules',
-  'ExtractorBusRules',
-  'FieldNotebookBusRules',
-  'FieldNotebookPageBusRules',
-  'FieldNotebookPageSetBusRules',
-  'FundingAgentBusRules',
-  'GeoCoordDetailBusRules',
-  'GeographyBusRules',
-  'GeologicTimePeriodBusRules',
-  'GiftBusRules',
-  'GiftPreparationBusRules',
-  'GroupPersonBusRules',
-  'InfoRequestBusRules',
-  'InstitutionBusRules',
-  'JournalBusRules',
-  'LithoStratBusRules',
-  'LoanBusRules',
-  'LoanGiftShipmentBusRules',
-  'LoanPreparationBusRules',
-  'LoanReturnPreparationBusRules',
-  'LocalityBusRules',
-  'LocalityDetailBusRules',
-  'PaleoContextBusRules',
-  'PcrPersonBusRules',
-  'PermitBusRules',
-  'PickListBusRules',
-  'PreparationBusRules',
-  'PrepTypeBusRules',
-  'ReferenceWorkBusRules',
-  'RepositoryAgreementBusRules',
-  'ShipmentBusRules',
-  'SpecifyUserBusRules',
-  'StorageBusRules',
-  'TableSearchResults',
-  'TaxonBusRules',
-  'TreatmentEventBusRules',
-  'TreeableSearchQueryBuilder',
-  'TreeDefBusRules',
-]);
-
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const resolvedViewSpec = () =>
   pipe(
@@ -146,14 +64,8 @@ const resolvedViewSpec = () =>
         businessRules:
           f.trim(businessRules ?? '') === ''
             ? localized(
-                typeof table === 'object' &&
-                  businessRulesOverride[table.name] !== undefined
-                  ? `edu.ku.brc.specify.datamodel.busrules.${businessRulesOverride[
-                      table.name
-                    ]!}BusRules`
-                  : typeof table === 'object' &&
-                    tablesWithBusRulesIn6.has(`${table.name}BusRules`)
-                  ? `edu.ku.brc.specify.datamodel.busrules.${table.name}BusRules`
+                typeof table === 'object'
+                  ? getBusinessRuleClassFromTable(table.name)
                   : ''
               )
             : businessRules,
@@ -187,14 +99,6 @@ export function parseFormView(definition: ViewDefinition) {
       ),
   };
 }
-
-/**
- * Most of the time business rules class name can be inferred from table name.
- * Exceptions:
- */
-const businessRulesOverride: Partial<RR<keyof Tables, string>> = {
-  Shipment: 'LoanGiftShipment',
-};
 
 const viewSpec = f.store(() =>
   createXmlSpec({
