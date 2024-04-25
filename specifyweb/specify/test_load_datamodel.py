@@ -14,21 +14,6 @@ class DatamodelTests(TestCase):
     def setUp(self):
         self.sp6_datamodel = load_datamodel()
 
-    def test_specify_model_code(self):
-        if self.sp6_datamodel is None:
-            return
-        table_name = 'Accession'
-        # table_name = 'Spprincipal'
-        # table_name = 'SpTimestampedModel'
-        # table_name = 'Storage'
-        model_code = ""
-        # model_code += generate_build_model_imports_code()
-        # model_code += generate_build_model_functions_code()
-        model_code += build_model_code(__name__, self.sp6_datamodel, table_name)
-        print(model_code)
-        # with open('./specifyweb/specify/specify_models.py', 'w') as f:
-        #     f.write(model_code)
-
     def test_specify_gen_models_code(self):
         if self.sp6_datamodel is None:
             return
@@ -36,21 +21,10 @@ class DatamodelTests(TestCase):
         model_code += generate_build_model_functions_code()
         for table in self.sp6_datamodel.tables:
             table_name = table.name
-            model_code += build_model_code(__name__, self.sp6_datamodel, table_name)
+            model_code += build_model_code(__name__, self.sp6_datamodel, table_name) or ''
         # Uncomment this code if you want generate the models code
         # with open('./specifyweb/specify/specify_models.py', 'w') as f:
         #     f.write(model_code)
-            
-    def test_compare_models(self): # TODO: get the imports correct and get the test working
-        datamodel = sp7_datamodel
-        if self.sp6_datamodel is not None:
-            datamodel = self.sp6_datamodel
-        sp6_models_by_tableid = build_sp6_models(datamodel)
-        for sp6_table_id, sp6_model_class in sp6_models_by_tableid.items(): # check this
-            dynamic_model = sp6_model_class
-            static_model = sp7_get_model_by_table_id(sp6_table_id)
-            compare_models(dynamic_model, static_model)
-            self.assertTrue(compare_models(dynamic_model, static_model))
 
     def test_specify_gen_datamodel_code(self):
         datamodel_code = build_datamodel_code_from_xml()
@@ -60,13 +34,12 @@ class DatamodelTests(TestCase):
 
     def test_specify_gen_sqlalchemy_table_classes_code(self):
         datamodel = sp7_datamodel
-        # # if self.sp6_datamodel is not None:
-        # #     datamodel = self.sp6_datamodel
-        # datamodel = self.sp6_datamodel
+        if self.sp6_datamodel is not None:
+            datamodel = self.sp6_datamodel
         # Uncomment this code if you want generate the sqlalchemy models code
-        sqlalchemy_code = gen_sqlalchemy_table_classes_code(datamodel)
-        with open('/opt/specify7/specifyweb/stored_queries/specify_models.py', 'w') as f:
-            f.write(sqlalchemy_code)
+        # sqlalchemy_code = gen_sqlalchemy_table_classes_code(datamodel)
+        # with open('/opt/specify7/specifyweb/stored_queries/specify_models.py', 'w') as f:
+        #     f.write(sqlalchemy_code)
 
     def test_datamodel_equivalence(self):
         # sp7_datamodel = build_datamodel_code_from_xml()

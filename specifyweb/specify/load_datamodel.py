@@ -1,4 +1,3 @@
-from operator import index
 from typing import List, Dict, Union, Optional, Iterable, TypeVar, Callable
 from xml.etree import ElementTree
 import os
