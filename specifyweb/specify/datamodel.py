@@ -7757,9 +7757,9 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.Spuserexternalid',
         table='spuserexternalid',
         tableId=1000,
-        idColumn='SpUserExternalIdID',
+        idColumn='id',
         idFieldName='spUserExternalIdId',
-        idField=IdField(name='spUserExternalIdId', column='SpUserExternalIdID', type='java.lang.Integer'),
+        idField=IdField(name='spUserExternalIdId', column='id', type='java.lang.Integer'),
         fields=[
             Field(name='provider', column='Provider', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
             Field(name='providerid', column='ProviderId', indexed=False, unique=False, required=True, type='java.lang.String', length=4094),
@@ -7770,21 +7770,21 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpUserId')
+            Relationship(name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='specifyuser_id')
         ],
         fieldAliases=[
 
         ]
     ),
-    Table( # Spattachmentdataset
+    Table( # Spattachmentdataset TODO: check json field errors
         sp7_only=True,
         django_app='attachment_gw',
         classname='edu.ku.brc.specify.datamodel.Spattachmentdataset',
         table='spattachmentdataset',
         tableId=1001,
-        idColumn='SpAttachmentDataSetID',
+        idColumn='id',
         idFieldName='spAttachmentDataSetId',
-        idField=IdField(name='spAttachmentDataSetId', column='SpAttachmentDataSetID', type='java.lang.Integer'),
+        idField=IdField(name='spAttachmentDataSetId', column='id', type='java.lang.Integer'),
         fields=[
             Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
             Field(name='columns', column='Columns', indexed=False, unique=False, required=True, type='json'), # longtext
@@ -7802,10 +7802,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID'),
-            Relationship(name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUserID'),
-            Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='Collection_ID'),
+            Relationship(name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUser_ID'),
+            Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgent_ID'),
+            Relationship(name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgent_ID'),
         ],
         fieldAliases=[
 
@@ -7838,14 +7838,13 @@ datamodel = Datamodel(tables=[
     Table( # UniquenessRule_Field
         sp7_only=True,
         django_app='businessrules',
-        classname='edu.ku.brc.specify.datamodel.UniquenessRuleField',
-        table='uniquenessrule_field',
+        classname='edu.ku.brc.specify.datamodel.UniquenessRuleField', # NOTE: the classname is what is used in the QB api
+        table='uniquenessrule_fields',
         tableId=1003,
-        idColumn='UniquenessRuleFieldID',
+        idColumn='uniquenessrule_fieldid',
         idFieldName='uniquenessRuleFieldId',
-        idField=IdField(name='uniquenessRuleFieldId', column='UniquenessRuleFieldID', type='java.lang.Integer'),
+        idField=IdField(name='uniquenessRuleFieldId', column='uniquenessrule_fieldid', type='java.lang.Integer'),
         fields=[
-            # Field(name='id', column='UniquenessRule_FieldID', indexed=True, unique=True, required=True, type='java.lang.Integer'),
             Field(name='fieldpath', column='FieldPath', indexed=True, unique=False, required=True, type='text'),
             Field(name='isscope', column='IsScope', indexed=False, unique=False, required=True, type='java.lang.Boolean')
         ],
@@ -7853,7 +7852,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='uniquenessrule', type='many-to-one', required=True, relatedModelName='UniquenessRule', column='UniquenessRuleID'),
+            Relationship(name='uniquenessrule', type='many-to-one', required=True, relatedModelName='UniquenessRule', column='uniquenessruleid'),
         ],
         fieldAliases=[
 
@@ -7862,12 +7861,12 @@ datamodel = Datamodel(tables=[
     Table( # Message
         sp7_only=True,
         django_app='notifications',
-        classname='edu.ku.brc.specify.datamodel.Message',
+        classname='edu.ku.brc.specify.datamodel.Message', # NOTE: the classname is what is used in the QB api
         table='notifications_message',
         tableId=1004,
-        idColumn='MessageID',
+        idColumn='id',
         idFieldName='messageId',
-        idField=IdField(name='messageId', column='MessageID', type='java.lang.Integer'),
+        idField=IdField(name='messageId', column='id', type='java.lang.Integer'),
         fields=[
             Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='content', column='Content', indexed=False, unique=False, required=False, type='text'),
@@ -7877,7 +7876,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='user', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUserID'),
+            Relationship(name='user', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='user_id'),
         ],
         fieldAliases=[
 
@@ -7889,17 +7888,17 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.Spmerging',
         table='spmerging',
         tableId=1005,
-        idColumn='SpMergingID',
+        idColumn='id',
         idFieldName='spMergingId',
-        idField=IdField(name='spMergingId', column='SpMergingID', type='java.lang.Integer'),
+        idField=IdField(name='spMergingId', column='id', type='java.lang.Integer'),
         fields=[
             Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
             Field(name='taskid', column='TaskID', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
             Field(name='mergingstatus', column='MergingStatus', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
-            Field(name='resonses', column='Resonses', indexed=False, unique=False, required=False, type='text'),
+            Field(name='response', column='Response', indexed=False, unique=False, required=False, type='text'),
             Field(name='table', column='Table', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
             Field(name='newrecordid', column='NewRecordID', indexed=False, unique=False, required=True, type='java.lang.Integer'),
-            Field(name='newrecordata', column='NewRecordData', indexed=False, unique=False, required=False, type='json'),
+            Field(name='newrecorddata', column='NewRecorData', indexed=False, unique=False, required=False, type='json'),
             Field(name='oldrecordids', column='OldRecordIDs', indexed=False, unique=False, required=False, type='json'),
             Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp')            
@@ -7908,10 +7907,10 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID'),
-            Relationship(name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUserID'),
-            Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='Collection_ID'),
+            Relationship(name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUser_ID'),
+            Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgent_ID'),
+            Relationship(name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgent_ID')
         ],
         fieldAliases=[
 
@@ -7923,9 +7922,9 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.UserPolicy',
         table='spuserpolicy',
         tableId=1006,
-        idColumn='UserPolicyID',
+        idColumn='id',
         idFieldName='userPolicyId',
-        idField=IdField(name='userPolicyId', column='UserPolicyID', type='java.lang.Integer'),
+        idField=IdField(name='userPolicyId', column='id', type='java.lang.Integer'),
         fields=[
             Field(name='resource', column='Resource', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
             Field(name='action', column='Action', indexed=False, unique=False, required=True, type='java.lang.String', length=255)
@@ -7934,8 +7933,8 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID'),
-            Relationship(name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUserID')
+            Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='Collection_ID'),
+            Relationship(name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUser_ID')
         ],
         fieldAliases=[
 
@@ -7947,9 +7946,9 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.Role',
         table='sprole',
         tableId=1007,
-        idColumn='RoleID',
+        idColumn='id',
         idFieldName='roleId',
-        idField=IdField(name='roleId', column='RoleID', type='java.lang.Integer'),
+        idField=IdField(name='roleId', column='id', type='java.lang.Integer'),
         fields=[
             Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
             Field(name='description', column='Description', indexed=False, unique=False, required=False, type='text')
@@ -7958,7 +7957,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID')
+            Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='Collection_ID')
         ],
         fieldAliases=[
 
@@ -7970,9 +7969,9 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.LibraryRole',
         table='splibraryrole',
         tableId=1008,
-        idColumn='LibraryRoleID',
+        idColumn='id',
         idFieldName='libraryRoleId',
-        idField=IdField(name='libraryRoleId', column='LibraryRoleID', type='java.lang.Integer'),
+        idField=IdField(name='libraryRoleId', column='id', type='java.lang.Integer'),
         fields=[
             Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
             Field(name='descr1iption', column='Description', indexed=False, unique=False, required=False, type='text')
@@ -7993,9 +7992,9 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.UserRole',
         table='spuserrole',
         tableId=1009,
-        idColumn='UserRoleID',
+        idColumn='id',
         idFieldName='userRoleId',
-        idField=IdField(name='userRoleId', column='UserRoleID', type='java.lang.Integer'),
+        idField=IdField(name='userRoleId', column='id', type='java.lang.Integer'),
         fields=[
 
         ],
@@ -8003,8 +8002,8 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUserID'),
-            Relationship(name='role', type='many-to-one', required=True, relatedModelName='Role', column='RoleID')
+            Relationship(name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUser_ID'),
+            Relationship(name='role', type='many-to-one', required=True, relatedModelName='Role', column='Role_ID')
         ],
         fieldAliases=[
 
@@ -8016,9 +8015,9 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.RolePolicy',
         table='sprolepolicy',
         tableId=1010,
-        idColumn='RolePolicyID',
+        idColumn='id',
         idFieldName='rolePolicyId',
-        idField=IdField(name='rolePolicyId', column='RolePolicyID', type='java.lang.Integer'),
+        idField=IdField(name='rolePolicyId', column='id', type='java.lang.Integer'),
         fields=[
             Field(name='resource', column='Resource', indexed=False, unique=False, required=True, type='java.lang.String', length=1023),
             Field(name='action', column='Action', indexed=False, unique=False, required=True, type='java.lang.String', length=1023)
@@ -8027,7 +8026,7 @@ datamodel = Datamodel(tables=[
             
         ],
         relationships=[
-            Relationship(name='role', type='many-to-one', required=True, relatedModelName='Role', column='RoleID')
+            Relationship(name='role', type='many-to-one', required=True, relatedModelName='Role', column='Role_ID')
         ],
         fieldAliases=[
             
@@ -8039,9 +8038,9 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.LibraryRolePolicy',
         table='splibraryrolepolicy',
         tableId=1011,
-        idColumn='LibraryRolePolicyID',
+        idColumn='id',
         idFieldName='libraryRolePolicyId',
-        idField=IdField(name='libraryRolePolicyId', column='LibraryRolePolicyID', type='java.lang.Integer'),
+        idField=IdField(name='libraryRolePolicyId', column='id', type='java.lang.Integer'),
         fields=[
             Field(name='resource', column='Resource', indexed=False, unique=False, required=True, type='java.lang.String', length=1023),
             Field(name='action', column='Action', indexed=False, unique=False, required=True, type='java.lang.String', length=1023)
@@ -8050,7 +8049,7 @@ datamodel = Datamodel(tables=[
             
         ],
         relationships=[
-            Relationship(name='libraryrole', type='many-to-one', required=True, relatedModelName='LibraryRole', column='LibraryRoleID')
+            Relationship(name='libraryrole', type='many-to-one', required=True, relatedModelName='LibraryRole', column='Role_ID')
         ],
         fieldAliases=[
 
