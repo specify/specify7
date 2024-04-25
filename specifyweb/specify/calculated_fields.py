@@ -29,10 +29,11 @@ def calculate_actual_count(obj, preparations):
         actualTotalCountAmt += available
     return actualTotalCountAmt
 
-def calculate_totals(obj, model_name):
-    model = get_model(model_name)
-    totalPreps = model.objects.filter(deaccession=obj).count()
-    totalItems = model.objects.filter(deaccession=obj).aggregate(total=Sum("totalItems"))["total"] or 0
+def calculate_totals_deaccession(obj, model_name, related_field_name):
+    Model = get_model(model_name)
+    totalPreps = Model.objects.filter(deaccession=obj).count()
+    totalItems = Model.objects.filter(deaccession=obj).aggregate(
+        total=Sum(f"{related_field_name}__quantity"))["total"] or 0
     return totalPreps, totalItems
 
 def calc_prep_item_count(obj, model_name, extra):
@@ -115,9 +116,9 @@ def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
         extra = calc_prep_item_count(obj, "exchangeout", extra)
 
     elif isinstance(obj, get_model("Deaccession")):
-        totalPreps_disposals, totalItems_disposals = calculate_totals(obj, "Disposal")
-        totalPreps_exchangeouts, totalItems_exchangeouts = calculate_totals(obj, "ExchangeOut")
-        totalPreps_gifts, totalItems_gifts = calculate_totals(obj, "Gift")
+        totalPreps_disposals, totalItems_disposals = calculate_totals_deaccession(obj, "Disposal", "disposalpreparations")
+        totalPreps_exchangeouts, totalItems_exchangeouts = calculate_totals_deaccession(obj, "ExchangeOut", "exchangeoutpreps")
+        totalPreps_gifts, totalItems_gifts = calculate_totals_deaccession(obj, "Gift", "giftpreparations")
 
         # sum up all totalItems of disposals, exchangeouts and gifts
         extra["totalPreps"] = totalPreps_disposals + totalPreps_exchangeouts + totalPreps_gifts
