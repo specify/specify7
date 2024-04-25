@@ -20,7 +20,7 @@ msgstr ""
 msgid "trees"
 msgstr "дерева"
 
-#: components/DataModel/treeBusinessRules.ts:42
+#: components/DataModel/treeBusinessRules.ts:59
 #. Used in: Components > Data Model > Tree Business Rules
 #, fuzzy
 msgid "badStructure"
