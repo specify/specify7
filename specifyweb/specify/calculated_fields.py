@@ -36,8 +36,8 @@ def calculate_totals_deaccession(obj, model_name, related_field_name):
         total=Sum(f"{related_field_name}__quantity"))["total"] or 0
     return totalPreps, totalItems
 
-def calc_prep_item_count(obj, model_name, extra):
-    model_preparations = getattr(obj, f"{model_name.lower()}preparations")
+def calc_prep_item_count(obj, prep_field_name, extra):
+    model_preparations = getattr(obj, prep_field_name)
     extra["totalPreps"] = model_preparations.count()
     extra["totalItems"] = model_preparations.aggregate(total=Sum("quantity"))["total"] or 0
     return extra
@@ -107,13 +107,13 @@ def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
         extra.update(obj.collectionobjects.aggregate(collectionObjectCount=Count("id")))
 
     elif isinstance(obj, get_model("Disposal")):
-        extra = calc_prep_item_count(obj, "disposal", extra)
+        extra = calc_prep_item_count(obj, "disposalpreparations", extra)
 
     elif isinstance(obj, get_model("Gift")):
-        extra = calc_prep_item_count(obj, "gift", extra)
+        extra = calc_prep_item_count(obj, "giftpreparations", extra)
 
     elif isinstance(obj, get_model("ExchangeOut")):
-        extra = calc_prep_item_count(obj, "exchangeout", extra)
+        extra = calc_prep_item_count(obj, "exchangeoutpreps", extra)
 
     elif isinstance(obj, get_model("Deaccession")):
         totalPreps_disposals, totalItems_disposals = calculate_totals_deaccession(obj, "Disposal", "disposalpreparations")
