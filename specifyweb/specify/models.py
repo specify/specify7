@@ -2377,7 +2377,7 @@ class Dnasequencingrun(models.Model):
     text3 = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='Text3', db_index=False)
     timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    tracefilename = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='TraceFileName', db_index=False)
+    tracefilename = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='TraceFileName', db_index=False)
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
