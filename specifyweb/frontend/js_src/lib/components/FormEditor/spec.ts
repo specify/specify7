@@ -144,18 +144,19 @@ const resolvedViewSpec = () =>
         ...node,
         table: { parsed: table, bad: legacyTable },
         businessRules:
-          businessRules !== undefined
-            ? businessRules
-            : localized(
+          f.trim(businessRules ?? '') === ''
+            ? localized(
                 typeof table === 'object' &&
-                  tablesWithBusRulesIn6.has(`${table.name}BusRules`)
+                  businessRulesOverride[table.name] !== undefined
+                  ? `edu.ku.brc.specify.datamodel.busrules.${businessRulesOverride[
+                      table.name
+                    ]!}BusRules`
+                  : typeof table === 'object' &&
+                    tablesWithBusRulesIn6.has(`${table.name}BusRules`)
                   ? `edu.ku.brc.specify.datamodel.busrules.${table.name}BusRules`
-                  : table && businessRulesFrontEnd[table.name]
-                  ? `edu.ku.brc.specify.datamodel.busrules.${
-                      businessRulesFrontEnd[table.name]
-                    }BusRules`
                   : ''
-              ),
+              )
+            : businessRules,
       })
     )
   );
@@ -191,7 +192,7 @@ export function parseFormView(definition: ViewDefinition) {
  * Most of the time business rules class name can be inferred from table name.
  * Exceptions:
  */
-const businessRulesFrontEnd: Partial<RR<keyof Tables, string>> = {
+const businessRulesOverride: Partial<RR<keyof Tables, string>> = {
   Shipment: 'LoanGiftShipment',
 };
 

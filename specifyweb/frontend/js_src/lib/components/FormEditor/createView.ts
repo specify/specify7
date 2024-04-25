@@ -91,6 +91,7 @@ function createNewView(
     title: localized(table.name),
     description: '',
     table,
+    businessRules: localized(''),
     legacyTable: undefined,
     altViews,
     legacyIsInternal: undefined,
