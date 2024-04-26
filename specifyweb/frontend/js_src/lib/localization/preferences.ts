@@ -521,7 +521,7 @@ export const preferencesText = createDictionary({
     'fr-fr': `
       Algorithme de recherche (pour les relations avec les tables arborescentes)
     `,
-    'uk-ua': "Алгоритм пошуку (для зв'язків із деревоподібними таблицями)",
+    'uk-ua': 'Алгоритм пошуку (для зв’язків із деревоподібними таблицями)',
     'de-ch': 'Suchalgorithmus (für Beziehungen mit Baumtabellen)',
   },
   startsWithInsensitive: {
@@ -649,7 +649,7 @@ export const preferencesText = createDictionary({
       для відповідності будь-якій кількості символів
     `,
     'de-ch': `
-      Kann _ für jedes einzelne Zeichen oder % für eine beliebige Anzahl von
+      Kann _ für jedes einzelne Zeichen oder % für jede beliebige Anzahl von
       Zeichen verwenden
     `,
   },
@@ -688,7 +688,7 @@ export const preferencesText = createDictionary({
   },
   scaleInterface: {
     'en-us': 'Scale Interface',
-    'ru-ru': 'Интерфейс масштабирования',
+    'ru-ru': 'Масштабный интерфейс',
     'es-es': 'Interfaz de báscula',
     'fr-fr': 'Interface de balance',
     'uk-ua': 'Інтерфейс масштабування',
@@ -1375,7 +1375,7 @@ export const preferencesText = createDictionary({
       'Hacer que los cuadros de diálogo del formulario aparezcan en gris',
     'fr-fr':
       "Rendre les boîtes de dialogue de formulaire grisées sur l'arrière-plan",
-    'uk-ua': 'Зробіть діалогові вікна форми сірими',
+    'uk-ua': 'Зробіть діалогові вікна форми сірими фоном',
     'de-ch': 'Den Hintergrund von Formulardialogen ausgrauen',
   },
   autoScrollTree: {
@@ -1419,7 +1419,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Formato del encabezado del formulario',
     'fr-fr': "Format d'en-tête de formulaire",
     'uk-ua': 'Формат заголовка форми',
-    'de-ch': 'Formularkopfzeilenformat',
+    'de-ch': 'Format der Formularkopfzeile',
   },
   iconAndTableName: {
     'en-us': 'Icon and table name',
@@ -1536,8 +1536,8 @@ export const preferencesText = createDictionary({
       Mettez un délimiteur par ligne
     `,
     'uk-ua': `
-      Список роздільників, які слід використовувати на додаток до визначених
-      вище. Поставте один роздільник на рядок
+      Список розділювачів для використання на додаток до визначених вище.
+      Поставте один роздільник на рядок
     `,
     'de-ch': `
       Eine Liste der zu verwendenden Trennzeichen zusätzlich zu den oben
@@ -1727,7 +1727,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Запомнить позиции диалоговых окон',
     'es-es': 'Recordar las posiciones de las ventanas de diálogo',
     'fr-fr': 'Mémoriser les positions des fenêtres de dialogue',
-    'uk-ua': "Запам'ятовуйте положення діалогового вікна",
+    'uk-ua': "Запам'ятовуйте розташування діалогового вікна",
     'de-ch': 'Dialogfensterpositionen merken',
   },
   autoPlayMedia: {

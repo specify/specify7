@@ -148,14 +148,14 @@ export const resourcesText = createDictionary({
   uiFormatters: {
     'en-us': 'Field Formatters',
     'ru-ru': 'Форматировщики полей',
-    'es-es': 'Formateadores de campo',
+    'es-es': 'Formateadores de campos',
     'fr-fr': 'Formateurs de champs',
     'uk-ua': 'Форматувальники полів',
     'de-ch': 'Feldformatierer',
   },
   dataObjectFormatters: {
     'en-us': 'Record Formatters',
-    'ru-ru': 'Форматеры записи',
+    'ru-ru': 'Форматеры записей',
     'es-es': 'Formateadores de registros',
     'uk-ua': 'Форматувальники записів',
     'de-ch': 'Datensatz-Formatierer',
@@ -254,10 +254,10 @@ export const resourcesText = createDictionary({
       таблиц.
     `,
     'uk-ua': `
-      «Агрегація таблиць» контролює, як кілька записів таблиці консолідуються в
-      один текстовий рядок. Формат таблиці, роздільник, суфікс, поле сортування
-      та ліміт попереднього перегляду запису можна налаштувати. Він може
-      відображатися в результатах запитів і у форматах таблиць.
+      «Агрегація таблиць» контролює, як кілька записів таблиці об’єднуються
+      разом в один текстовий рядок. Формат таблиці, роздільник, суфікс, поле
+      сортування та ліміт попереднього перегляду запису можна налаштувати. Він
+      може відображатися в результатах запитів і у форматах таблиць.
     `,
   },
   formattedResource: {
@@ -666,7 +666,7 @@ export const resourcesText = createDictionary({
       changer de collection avant de modifier cette ressource.
     `,
     'ru-ru': `
-      Этот ресурс принадлежит к другой коллекции/дисциплине, отличной от той, в
+      Этот ресурс принадлежит другой коллекции/дисциплине, отличной от той, в
       которой вы сейчас находитесь. Перед редактированием этого ресурса
       рекомендуется сменить коллекцию.
     `,
