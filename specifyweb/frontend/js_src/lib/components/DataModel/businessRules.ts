@@ -8,7 +8,12 @@ import { isTreeResource } from '../InitialContext/treeRanks';
 import type { BusinessRuleDefs } from './businessRuleDefs';
 import { businessRuleDefs } from './businessRuleDefs';
 import { backboneFieldSeparator, djangoLookupSeparator } from './helpers';
-import type { AnySchema, AnyTree, CommonFields } from './helperTypes';
+import type {
+  AnySchema,
+  AnyTree,
+  CommonFields,
+  TableFields,
+} from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import {
   getFieldBlockerKey,
@@ -77,7 +82,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       isTreeResource(this.resource as SpecifyResource<AnySchema>)
         ? treeBusinessRules(
             this.resource as SpecifyResource<AnyTree>,
-            processedFieldName
+            processedFieldName as TableFields<AnyTree>
           )
         : Promise.resolve({ isValid: true }),
     ];

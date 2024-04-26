@@ -503,7 +503,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Поле со списком запроса',
     'es-es': 'Cuadro combinado de consulta',
     'uk-ua': 'Поле зі списком запитів',
-    'de-ch': 'Abfrage-Kombinationsfeld',
+    'de-ch': 'Kombinationsfeld für Abfragen',
     'fr-fr': 'Zone de liste déroulante de requête',
   },
   searchAlgorithm: {
@@ -649,8 +649,8 @@ export const preferencesText = createDictionary({
       для відповідності будь-якій кількості символів
     `,
     'de-ch': `
-      Kann _ für jedes einzelne Zeichen oder % für jede Anzahl von Zeichen
-      verwenden
+      Kann _ für jedes einzelne Zeichen oder % für eine beliebige Anzahl von
+      Zeichen verwenden
     `,
   },
   highlightMatch: {
@@ -688,7 +688,7 @@ export const preferencesText = createDictionary({
   },
   scaleInterface: {
     'en-us': 'Scale Interface',
-    'ru-ru': 'Масштабный интерфейс',
+    'ru-ru': 'Интерфейс масштабирования',
     'es-es': 'Interfaz de báscula',
     'fr-fr': 'Interface de balance',
     'uk-ua': 'Інтерфейс масштабування',
@@ -1334,7 +1334,7 @@ export const preferencesText = createDictionary({
       '<key>{altKeyName:string}</key>+<key>Click</key> to suppress new tab',
     'ru-ru': `
       <key>{altKeyName:string}</key>+<key>Нажмите </key>, чтобы отключить новую
-      вкладку.
+      вкладку
     `,
     'es-es': `
       <key>{altKeyName:string}</key>+<key>Haga clic en </key> para suprimir la
@@ -1432,7 +1432,7 @@ export const preferencesText = createDictionary({
   tableIcon: {
     'en-us': 'Table icon',
     'ru-ru': 'Значок таблицы',
-    'es-es': 'Icono de tabla',
+    'es-es': 'Icono de mesa',
     'fr-fr': 'Icône de tableau',
     'uk-ua': 'Значок таблиці',
     'de-ch': 'Tabellensymbol',
@@ -1536,8 +1536,8 @@ export const preferencesText = createDictionary({
       Mettez un délimiteur par ligne
     `,
     'uk-ua': `
-      Список розділювачів для використання на додаток до визначених вище.
-      Поставте один роздільник на рядок
+      Список роздільників, які слід використовувати на додаток до визначених
+      вище. Поставте один роздільник на рядок
     `,
     'de-ch': `
       Eine Liste der zu verwendenden Trennzeichen zusätzlich zu den oben
@@ -1719,7 +1719,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Помните о размерах диалогового окна',
     'es-es': 'Recuerde los tamaños de las ventanas de diálogo',
     'fr-fr': 'Mémoriser les tailles des fenêtres de dialogue',
-    'uk-ua': "Пам'ятайте про розміри діалогових вікон",
+    'uk-ua': "Запам'ятайте розміри діалогових вікон",
     'de-ch': 'Dialogfenstergrößen merken',
   },
   rememberDialogPositions: {
@@ -1727,7 +1727,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Запомнить позиции диалоговых окон',
     'es-es': 'Recordar las posiciones de las ventanas de diálogo',
     'fr-fr': 'Mémoriser les positions des fenêtres de dialogue',
-    'uk-ua': "Запам'ятовуйте розташування діалогового вікна",
+    'uk-ua': "Запам'ятовуйте положення діалогового вікна",
     'de-ch': 'Dialogfensterpositionen merken',
   },
   autoPlayMedia: {
