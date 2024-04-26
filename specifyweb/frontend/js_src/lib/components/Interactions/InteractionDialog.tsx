@@ -251,7 +251,7 @@ export function InteractionDialog({
                 {interactionsText.continueWithoutPreparations()}
               </Button.Info>
             ) : (
-              <Link.Info href={getResourceViewUrl('Loan')}>
+              <Link.Info href={getResourceViewUrl(actionTable.name)}>
                 {interactionsText.continueWithoutPreparations()}
               </Link.Info>
             )}

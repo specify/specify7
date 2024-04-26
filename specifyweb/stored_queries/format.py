@@ -182,7 +182,7 @@ class ObjectFormatter(object):
             logger.warn(
                 "dataobjformatter for %s contains switch clause no fields",
                 specify_model)
-            return query, literal(_("<Formatter not defined.>"))
+            return query, literal(_text("<Formatter not defined.>"))
 
         if single:
             value, expr = cases[0]
