@@ -233,7 +233,7 @@ export const queryText = createDictionary({
   invalidPicklistValue: {
     comment: 'Used when selected pick list value is not one of allowed values',
     'en-us': '{value:string} (current, invalid value)',
-    'ru-ru': '{value:string} (текущее, недопустимое значение)',
+    'ru-ru': '{value:string} (текущее, неверное значение)',
     'es-es': '{value:string} (valor actual no válido)',
     'fr-fr': '{value:string} (valeur actuelle non valide)',
     'uk-ua': '{value:string} (поточне, недійсне значення)',
@@ -819,7 +819,9 @@ export const queryText = createDictionary({
     `,
     'ru-ru': 'Следующие поля скрыты в импортированном запросе:',
     'uk-ua': 'В імпортованому вами запиті приховано такі поля:',
-    'de-ch': 'In der importierten Abfrage sind folgende Felder ausgeblendet:',
+    'de-ch': `
+      In der von Ihnen importierten Abfrage sind folgende Felder ausgeblendet:
+    `,
   },
   importNoReadPermission: {
     'en-us':
