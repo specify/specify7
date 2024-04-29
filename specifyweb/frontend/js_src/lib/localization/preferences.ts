@@ -109,7 +109,7 @@ export const preferencesText = createDictionary({
   },
   reduceMotionDescription: {
     'en-us': 'Disable non-essential animations and transitions',
-    'ru-ru': 'Отключите несущественные анимации и переходы.',
+    'ru-ru': 'Отключите ненужную анимацию и переходы.',
     'es-es': 'Deshabilitar animaciones y transiciones no esenciales',
     'fr-fr': 'Désactivez les animations et les transitions non essentielles',
     'uk-ua': "Вимкніть необов'язкову анімацію та переходи",
@@ -775,7 +775,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Позволяет загружать данные в любое поле любой таблицы.',
     'es-es': 'Permite cargar datos en cualquier campo de cualquier tabla.',
     'fr-fr': `
-      Permet de télécharger des données dans n'importe quel champ de n'importe
+      Permet de télécharger des données vers n’importe quel champ de n’importe
       quelle table.
     `,
     'uk-ua': 'Дозволяє завантажувати дані в будь-яке поле будь-якої таблиці.',
@@ -947,7 +947,7 @@ export const preferencesText = createDictionary({
   },
   autoWrapRows: {
     'en-us': 'Navigate to the other side when reaching the edge row',
-    'ru-ru': 'Перейдите на другую сторону, когда достигнете краевого ряда.',
+    'ru-ru': 'Перейдите на другую сторону, достигнув краевого ряда.',
     'es-es': 'Navegue hacia el otro lado cuando llegue a la fila del borde',
     'fr-fr':
       'Naviguez de l’autre côté lorsque vous atteignez la rangée de bord',
@@ -1727,7 +1727,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Запомнить позиции диалоговых окон',
     'es-es': 'Recordar las posiciones de las ventanas de diálogo',
     'fr-fr': 'Mémoriser les positions des fenêtres de dialogue',
-    'uk-ua': "Запам'ятовуйте положення діалогового вікна",
+    'uk-ua': "Запам'ятовуйте розташування діалогового вікна",
     'de-ch': 'Dialogfensterpositionen merken',
   },
   autoPlayMedia: {
