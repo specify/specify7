@@ -15,12 +15,30 @@ from django.db.models.deletion import ProtectedError
 
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.celery_tasks import LogErrorsTask, app
+from specifyweb.accounts import models as acccounts_models
+from specifyweb.attachment_gw import models as attachment_gw_models
+from specifyweb.businessrules import models as businessrules_models
+from specifyweb.context import models as context_models
+from specifyweb.notifications import models as notifications_models
+from specifyweb.permissions import models as permissions_models
+from specifyweb.interactions import models as interactions_models
+from specifyweb.workbench import models as workbench_models
 from . import api, models as spmodels
 from .api import uri_for_model
 from .build_models import orderings
 from .load_datamodel import Table, FieldDoesNotExistError
 from celery.utils.log import get_task_logger # type: ignore
 logger = get_task_logger(__name__)
+
+
+APP_MODELS = [spmodels, acccounts_models, attachment_gw_models, businessrules_models, context_models,
+              notifications_models, permissions_models, interactions_models, workbench_models]
+
+def get_app_model(model_name: str):
+    for app in APP_MODELS:
+        if hasattr(app, model_name):
+            return getattr(app, model_name)
+    return None
 
 # Returns QuerySet which selects and locks entries when evaluated
 def filter_and_lock_target_objects(model, ids, name):
@@ -155,7 +173,7 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
     """
     # Confirm the target model table exists
     model_name = model_name.lower().title()
-    target_model = getattr(spmodels, model_name)
+    target_model = get_app_model(model_name)
     if target_model is None:
         raise FailedMergingException(http.HttpResponseNotFound("model_name: " + model_name + "does not exist."))
 
@@ -188,7 +206,7 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
         if foreign_table is None:
             continue
         try:
-            foreign_model = getattr(spmodels, table_name.lower().title())
+            foreign_model = get_app_model(table_name.lower().title())
         except ValueError:
             continue
 

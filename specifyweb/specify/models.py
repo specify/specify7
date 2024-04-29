@@ -1,5 +1,6 @@
 from functools import partialmethod
 from django.db import models
+from django.utils import timezone
 from specifyweb.businessrules.exceptions import AbortSave
 from . import model_extras
 from .datamodel import datamodel
@@ -21,6 +22,7 @@ def custom_save(self, *args, **kwargs):
         # Handle AbortSave exception as needed
         logger.error("Save operation aborted: %s", e)
         return
+
 class Accession(models.Model):
     specify_model = datamodel.get_table('accession')
 
@@ -45,12 +47,12 @@ class Accession(models.Model):
     text3 = models.TextField(blank=True, null=True, unique=False, db_column='Text3', db_index=False)
     text4 = models.TextField(blank=True, null=True, unique=False, db_column='Text4', db_index=False)
     text5 = models.TextField(blank=True, null=True, unique=False, db_column='Text5', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     totalvalue = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='TotalValue', db_index=False)
     type = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='Type', db_index=False)
     verbatimdate = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='VerbatimDate', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
@@ -80,9 +82,9 @@ class Accessionagent(models.Model):
     # Fields
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     role = models.CharField(blank=False, max_length=50, null=False, unique=False, db_column='Role', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     accession = models.ForeignKey('Accession', db_column='AccessionID', related_name='accessionagents', null=True, on_delete=models.CASCADE)
@@ -106,9 +108,9 @@ class Accessionattachment(models.Model):
     # Fields
     ordinal = models.IntegerField(blank=False, null=False, unique=False, db_column='Ordinal', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     accession = models.ForeignKey('Accession', db_column='AccessionID', related_name='accessionattachments', null=False, on_delete=models.CASCADE)
@@ -130,9 +132,9 @@ class Accessionauthorization(models.Model):
 
     # Fields
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     accession = models.ForeignKey('Accession', db_column='AccessionID', related_name='accessionauthorizations', null=True, on_delete=models.CASCADE)
@@ -159,9 +161,9 @@ class Accessioncitation(models.Model):
     pagenumber = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='PageNumber', db_index=False)
     platenumber = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='PlateNumber', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     accession = models.ForeignKey('Accession', db_column='AccessionID', related_name='accessioncitations', null=False, on_delete=protect_with_blockers)
@@ -203,10 +205,10 @@ class Address(models.Model):
     roomorbuilding = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='RoomOrBuilding', db_index=False)
     startdate = models.DateTimeField(blank=True, null=True, unique=False, db_column='StartDate', db_index=False)
     state = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='State', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     typeofaddr = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='TypeOfAddr', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='addresses', null=True, on_delete=models.CASCADE)
@@ -233,9 +235,9 @@ class Addressofrecord(models.Model):
     postalcode = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='PostalCode', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     state = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='State', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -283,13 +285,13 @@ class Agent(models.Model):
     text3 = models.TextField(blank=True, null=True, unique=False, db_column='Text3', db_index=False)
     text4 = models.TextField(blank=True, null=True, unique=False, db_column='Text4', db_index=False)
     text5 = models.TextField(blank=True, null=True, unique=False, db_column='Text5', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     title = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='Title', db_index=False)
     url = models.CharField(blank=True, max_length=1024, null=True, unique=False, db_column='URL', db_index=False)
     verbatimdate1 = models.CharField(blank=True, max_length=128, null=True, unique=False, db_column='VerbatimDate1', db_index=False)
     verbatimdate2 = models.CharField(blank=True, max_length=128, null=True, unique=False, db_column='VerbatimDate2', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     collcontentcontact = models.ForeignKey('Collection', db_column='CollectionCCID', related_name='contentcontacts', null=True, on_delete=protect_with_blockers)
@@ -324,9 +326,9 @@ class Agentattachment(models.Model):
     # Fields
     ordinal = models.IntegerField(blank=False, null=False, unique=False, db_column='Ordinal', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='agentattachments', null=False, on_delete=models.CASCADE)
@@ -349,9 +351,9 @@ class Agentgeography(models.Model):
     # Fields
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     role = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='Role', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='agentgeographies', null=False, on_delete=models.CASCADE)
@@ -384,9 +386,9 @@ class Agentidentifier(models.Model):
     text3 = models.TextField(blank=True, null=True, unique=False, db_column='Text3', db_index=False)
     text4 = models.TextField(blank=True, null=True, unique=False, db_column='Text4', db_index=False)
     text5 = models.TextField(blank=True, null=True, unique=False, db_column='Text5', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
     yesno3 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo3', db_index=False)
@@ -413,9 +415,9 @@ class Agentspecialty(models.Model):
     # Fields
     ordernumber = models.IntegerField(blank=False, null=False, unique=False, db_column='OrderNumber', db_index=False)
     specialtyname = models.CharField(blank=False, max_length=64, null=False, unique=False, db_column='SpecialtyName', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='agentspecialties', null=False, on_delete=models.CASCADE)
@@ -438,11 +440,11 @@ class Agentvariant(models.Model):
     country = models.CharField(blank=True, max_length=2, null=True, unique=False, db_column='Country', db_index=False)
     language = models.CharField(blank=True, max_length=2, null=True, unique=False, db_column='Language', db_index=False)
     name = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='Name', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     vartype = models.SmallIntegerField(blank=False, null=False, unique=False, db_column='VarType', db_index=False)
     variant = models.CharField(blank=True, max_length=2, null=True, unique=False, db_column='Variant', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='variants', null=False, on_delete=models.CASCADE)
@@ -467,9 +469,9 @@ class Appraisal(models.Model):
     appraisalvalue = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='AppraisalValue', db_index=False)
     monetaryunittype = models.CharField(blank=True, max_length=8, null=True, unique=False, db_column='MonetaryUnitType', db_index=False)
     notes = models.TextField(blank=True, null=True, unique=False, db_column='Notes', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     accession = models.ForeignKey('Accession', db_column='AccessionID', related_name='appraisals', null=True, on_delete=protect_with_blockers)
@@ -515,11 +517,11 @@ class Attachment(models.Model):
     subjectorientation = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='SubjectOrientation', db_index=False)
     subtype = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='Subtype', db_index=False)
     tableid = models.SmallIntegerField(blank=False, null=False, unique=False, db_column='TableID', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     title = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='Title', db_index=False)
     type = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='Type', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     visibility = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='Visibility', db_index=False)
 
     # Relationships: Many-to-One
@@ -560,11 +562,11 @@ class Attachmentimageattribute(models.Model):
     resolution = models.FloatField(blank=True, null=True, unique=False, db_column='Resolution', db_index=False)
     text1 = models.CharField(blank=True, max_length=200, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.CharField(blank=True, max_length=200, null=True, unique=False, db_column='Text2', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
     timestamplastsend = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampLastSend', db_index=False)
     timestamplastupdatecheck = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampLastUpdateCheck', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     viewdescription = models.CharField(blank=True, max_length=80, null=True, unique=False, db_column='ViewDescription', db_index=False)
     width = models.IntegerField(blank=True, null=True, unique=False, db_column='Width', db_index=False)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
@@ -589,10 +591,10 @@ class Attachmentmetadata(models.Model):
 
     # Fields
     name = models.CharField(blank=False, max_length=64, null=False, unique=False, db_column='Name', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     value = models.CharField(blank=False, max_length=128, null=False, unique=False, db_column='Value', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='metadata', null=True, on_delete=protect_with_blockers)
@@ -613,9 +615,9 @@ class Attachmenttag(models.Model):
 
     # Fields
     tag = models.CharField(blank=False, max_length=64, null=False, unique=False, db_column='Tag', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='tags', null=False, on_delete=protect_with_blockers)
@@ -638,9 +640,9 @@ class Attributedef(models.Model):
     datatype = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='DataType', db_index=False)
     fieldname = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='FieldName', db_index=False)
     tabletype = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='TableType', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -663,9 +665,9 @@ class Author(models.Model):
     # Fields
     ordernumber = models.SmallIntegerField(blank=False, null=False, unique=False, db_column='OrderNumber', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='+', null=False, on_delete=protect_with_blockers)
@@ -691,9 +693,9 @@ class Autonumberingscheme(models.Model):
     schemeclassname = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='SchemeClassName', db_index=False)
     schemename = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='SchemeName', db_index=False)
     tablenumber = models.IntegerField(blank=False, null=False, unique=False, db_column='TableNumber', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -732,9 +734,9 @@ class Borrow(models.Model):
     status = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='Status', db_index=False)
     text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
@@ -764,9 +766,9 @@ class Borrowagent(models.Model):
     collectionmemberid = models.IntegerField(blank=False, null=False, unique=False, db_column='CollectionMemberID', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     role = models.CharField(blank=False, max_length=32, null=False, unique=False, db_column='Role', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='+', null=False, on_delete=protect_with_blockers)
@@ -792,9 +794,9 @@ class Borrowattachment(models.Model):
     # Fields
     ordinal = models.IntegerField(blank=False, null=False, unique=False, db_column='Ordinal', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='borrowattachments', null=False, on_delete=protect_with_blockers)
@@ -825,9 +827,9 @@ class Borrowmaterial(models.Model):
     quantityreturned = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='QuantityReturned', db_index=False)
     text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     borrow = models.ForeignKey('Borrow', db_column='BorrowID', related_name='borrowmaterials', null=False, on_delete=models.CASCADE)
@@ -856,9 +858,9 @@ class Borrowreturnmaterial(models.Model):
     quantity = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='Quantity', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     returneddate = models.DateTimeField(blank=True, null=True, unique=False, db_column='ReturnedDate', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='ReturnedByID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -913,12 +915,12 @@ class Collectingevent(models.Model):
     text6 = models.TextField(blank=True, null=True, unique=False, db_column='Text6', db_index=False)
     text7 = models.TextField(blank=True, null=True, unique=False, db_column='Text7', db_index=False)
     text8 = models.TextField(blank=True, null=True, unique=False, db_column='Text8', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     uniqueidentifier = models.CharField(blank=True, max_length=128, null=True, unique=False, db_column='UniqueIdentifier', db_index=False)
     verbatimdate = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='VerbatimDate', db_index=False)
     verbatimlocality = models.TextField(blank=True, null=True, unique=False, db_column='VerbatimLocality', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     visibility = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='Visibility', db_index=False)
 
     # Relationships: Many-to-One
@@ -954,9 +956,9 @@ class Collectingeventattachment(models.Model):
     collectionmemberid = models.IntegerField(blank=False, null=False, unique=False, db_column='CollectionMemberID', db_index=False)
     ordinal = models.IntegerField(blank=False, null=False, unique=False, db_column='Ordinal', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='collectingeventattachments', null=False, on_delete=protect_with_blockers)
@@ -983,9 +985,9 @@ class Collectingeventattr(models.Model):
     collectionmemberid = models.IntegerField(blank=False, null=False, unique=False, db_column='CollectionMemberID', db_index=False)
     dblvalue = models.FloatField(blank=True, null=True, unique=False, db_column='DoubleValue', db_index=False)
     strvalue = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='StrValue', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     collectingevent = models.ForeignKey('CollectingEvent', db_column='CollectingEventID', related_name='collectingeventattrs', null=False, on_delete=models.CASCADE)
@@ -1050,9 +1052,9 @@ class Collectingeventattribute(models.Model):
     text7 = models.TextField(blank=True, null=True, unique=False, db_column='Text7', db_index=False)
     text8 = models.TextField(blank=True, null=True, unique=False, db_column='Text8', db_index=False)
     text9 = models.TextField(blank=True, null=True, unique=False, db_column='Text9', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
     yesno3 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo3', db_index=False)
@@ -1082,9 +1084,9 @@ class Collectingeventauthorization(models.Model):
 
     # Fields
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     collectingevent = models.ForeignKey('CollectingEvent', db_column='CollectingEventID', related_name='collectingeventauthorizations', null=True, on_delete=models.CASCADE)
@@ -1133,9 +1135,9 @@ class Collectingtrip(models.Model):
     text7 = models.TextField(blank=True, null=True, unique=False, db_column='Text7', db_index=False)
     text8 = models.TextField(blank=True, null=True, unique=False, db_column='Text8', db_index=False)
     text9 = models.TextField(blank=True, null=True, unique=False, db_column='Text9', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     vessel = models.CharField(blank=True, max_length=250, null=True, unique=False, db_column='Vessel', db_index=False)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
@@ -1168,9 +1170,9 @@ class Collectingtripattachment(models.Model):
     collectionmemberid = models.IntegerField(blank=False, null=False, unique=False, db_column='CollectionMemberID', db_index=False)
     ordinal = models.IntegerField(blank=False, null=False, unique=False, db_column='Ordinal', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='collectingtripattachments', null=False, on_delete=protect_with_blockers)
@@ -1235,9 +1237,9 @@ class Collectingtripattribute(models.Model):
     text7 = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='Text7', db_index=False)
     text8 = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='Text8', db_index=False)
     text9 = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='Text9', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
     yesno3 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo3', db_index=False)
@@ -1266,9 +1268,9 @@ class Collectingtripauthorization(models.Model):
 
     # Fields
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     collectingtrip = models.ForeignKey('CollectingTrip', db_column='CollectingTripID', related_name='collectingtripauthorizations', null=True, on_delete=models.CASCADE)
@@ -1308,9 +1310,9 @@ class Collection(models.Model):
     regnumber = models.CharField(blank=True, max_length=24, null=True, unique=False, db_column='RegNumber', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     scope = models.TextField(blank=True, null=True, unique=False, db_column='Scope', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     webportaluri = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='WebPortalURI', db_index=False)
     websiteuri = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='WebSiteURI', db_index=False)
 
@@ -1386,11 +1388,11 @@ class Collectionobject(models.Model):
     text6 = models.TextField(blank=True, null=True, unique=False, db_column='Text6', db_index=False)
     text7 = models.TextField(blank=True, null=True, unique=False, db_column='Text7', db_index=False)
     text8 = models.TextField(blank=True, null=True, unique=False, db_column='Text8', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     totalvalue = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='TotalValue', db_index=False)
     uniqueidentifier = models.CharField(blank=True, max_length=128, null=True, unique=False, db_column='UniqueIdentifier', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     visibility = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='Visibility', db_index=False)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
@@ -1442,9 +1444,9 @@ class Collectionobjectattachment(models.Model):
     collectionmemberid = models.IntegerField(blank=False, null=False, unique=False, db_column='CollectionMemberID', db_index=False)
     ordinal = models.IntegerField(blank=False, null=False, unique=False, db_column='Ordinal', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='collectionobjectattachments', null=False, on_delete=protect_with_blockers)
@@ -1471,9 +1473,9 @@ class Collectionobjectattr(models.Model):
     collectionmemberid = models.IntegerField(blank=False, null=False, unique=False, db_column='CollectionMemberID', db_index=False)
     dblvalue = models.FloatField(blank=True, null=True, unique=False, db_column='DoubleValue', db_index=False)
     strvalue = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='StrValue', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='collectionobjectattrs', null=False, on_delete=models.CASCADE)
@@ -1597,10 +1599,10 @@ class Collectionobjectattribute(models.Model):
     text7 = models.CharField(blank=True, max_length=100, null=True, unique=False, db_column='Text7', db_index=False)
     text8 = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='Text8', db_index=False)
     text9 = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='Text9', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     topdistance = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='TopDistance', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno10 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo10', db_index=False)
     yesno11 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo11', db_index=False)
@@ -1649,9 +1651,9 @@ class Collectionobjectcitation(models.Model):
     pagenumber = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='PageNumber', db_index=False)
     platenumber = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='PlateNumber', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='collectionobjectcitations', null=False, on_delete=models.CASCADE)
@@ -1798,9 +1800,9 @@ class Collectionobjectproperty(models.Model):
     text7 = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='Text7', db_index=False)
     text8 = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='Text8', db_index=False)
     text9 = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='Text9', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno10 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo10', db_index=False)
     yesno11 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo11', db_index=False)
@@ -1865,9 +1867,9 @@ class Collectionreltype(models.Model):
     # Fields
     name = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='Name', db_index=False)
     remarks = models.CharField(blank=True, max_length=4096, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -1890,9 +1892,9 @@ class Collectionrelationship(models.Model):
     # Fields
     text1 = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='Text2', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     collectionreltype = models.ForeignKey('CollectionRelType', db_column='CollectionRelTypeID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -1919,9 +1921,9 @@ class Collector(models.Model):
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
@@ -1952,10 +1954,10 @@ class Commonnametx(models.Model):
     country = models.CharField(blank=True, max_length=2, null=True, unique=False, db_column='Country', db_index=False)
     language = models.CharField(blank=True, max_length=2, null=True, unique=False, db_column='Language', db_index=False)
     name = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='Name', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     variant = models.CharField(blank=True, max_length=2, null=True, unique=False, db_column='Variant', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -1988,9 +1990,9 @@ class Commonnametxcitation(models.Model):
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
@@ -2050,10 +2052,10 @@ class Conservdescription(models.Model):
     text3 = models.TextField(blank=True, null=True, unique=False, db_column='Text3', db_index=False)
     text4 = models.TextField(blank=True, null=True, unique=False, db_column='Text4', db_index=False)
     text5 = models.TextField(blank=True, null=True, unique=False, db_column='Text5', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     units = models.CharField(blank=True, max_length=16, null=True, unique=False, db_column='Units', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     width = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Width', db_index=False)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
@@ -2086,9 +2088,9 @@ class Conservdescriptionattachment(models.Model):
     # Fields
     ordinal = models.IntegerField(blank=False, null=False, unique=False, db_column='Ordinal', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='conservdescriptionattachments', null=False, on_delete=protect_with_blockers)
@@ -2125,12 +2127,12 @@ class Conservevent(models.Model):
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     text1 = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='Text2', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     treatmentcompdate = models.DateTimeField(blank=True, null=True, unique=False, db_column='TreatmentCompDate', db_index=False)
     treatmentcompdateprecision = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='TreatmentCompDatePrecision', db_index=False)
     treatmentreport = models.TextField(blank=True, null=True, unique=False, db_column='TreatmentReport', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
@@ -2161,9 +2163,9 @@ class Conserveventattachment(models.Model):
     # Fields
     ordinal = models.IntegerField(blank=False, null=False, unique=False, db_column='Ordinal', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='conserveventattachments', null=False, on_delete=protect_with_blockers)
@@ -2188,10 +2190,10 @@ class Container(models.Model):
     description = models.TextField(blank=True, null=True, unique=False, db_column='Description', db_index=False)
     name = models.CharField(blank=True, max_length=1024, null=True, unique=False, db_column='Name', db_index=False)
     number = models.IntegerField(blank=True, null=True, unique=False, db_column='Number', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     type = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='Type', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -2239,9 +2241,9 @@ class Dnaprimer(models.Model):
     reservedtext4 = models.TextField(blank=True, null=True, unique=False, db_column='ReservedText4', db_index=False)
     text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
@@ -2290,10 +2292,10 @@ class Dnasequence(models.Model):
     text1 = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='Text2', db_index=False)
     text3 = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='Text3', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     totalresidues = models.IntegerField(blank=True, null=True, unique=False, db_column='TotalResidues', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
     yesno3 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo3', db_index=False)
@@ -2326,9 +2328,9 @@ class Dnasequenceattachment(models.Model):
     # Fields
     ordinal = models.IntegerField(blank=False, null=False, unique=False, db_column='Ordinal', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='dnasequenceattachments', null=False, on_delete=protect_with_blockers)
@@ -2375,10 +2377,10 @@ class Dnasequencingrun(models.Model):
     text1 = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='Text2', db_index=False)
     text3 = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='Text3', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     tracefilename = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='TraceFileName', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
     yesno3 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo3', db_index=False)
@@ -2406,9 +2408,9 @@ class Dnasequencingrunattachment(models.Model):
     # Fields
     ordinal = models.IntegerField(blank=False, null=False, unique=False, db_column='Ordinal', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='dnasequencingrunattachments', null=False, on_delete=protect_with_blockers)
@@ -2438,9 +2440,9 @@ class Dnasequencingruncitation(models.Model):
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
@@ -2464,9 +2466,9 @@ class Datatype(models.Model):
 
     # Fields
     name = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='Name', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -2506,10 +2508,10 @@ class Deaccession(models.Model):
     text3 = models.TextField(blank=True, null=True, unique=False, db_column='Text3', db_index=False)
     text4 = models.TextField(blank=True, null=True, unique=False, db_column='Text4', db_index=False)
     text5 = models.TextField(blank=True, null=True, unique=False, db_column='Text5', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     type = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='Type', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
     yesno3 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo3', db_index=False)
@@ -2541,9 +2543,9 @@ class Deaccessionagent(models.Model):
     # Fields
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     role = models.CharField(blank=False, max_length=50, null=False, unique=False, db_column='Role', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='+', null=False, on_delete=protect_with_blockers)
@@ -2566,9 +2568,9 @@ class Deaccessionattachment(models.Model):
     # Fields
     ordinal = models.IntegerField(blank=False, null=False, unique=False, db_column='Ordinal', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='deaccessionattachments', null=False, on_delete=protect_with_blockers)
@@ -2621,11 +2623,11 @@ class Determination(models.Model):
     text6 = models.CharField(blank=True, max_length=128, null=True, unique=False, db_column='Text6', db_index=False)
     text7 = models.CharField(blank=True, max_length=128, null=True, unique=False, db_column='Text7', db_index=False)
     text8 = models.CharField(blank=True, max_length=128, null=True, unique=False, db_column='Text8', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     typestatusname = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='TypeStatusName', db_index=False)
     varqualifier = models.CharField(blank=True, max_length=16, null=True, unique=False, db_column='VarQualifier', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
     yesno3 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo3', db_index=False)
@@ -2666,9 +2668,9 @@ class Determinationcitation(models.Model):
     pagenumber = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='PageNumber', db_index=False)
     platenumber = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='PlateNumber', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -2697,9 +2699,9 @@ class Determiner(models.Model):
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
@@ -2726,13 +2728,13 @@ class Discipline(models.Model):
     name = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='Name', db_index=False)
     paleocontextchildtable = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='PaleoContextChildTable', db_index=False)
     regnumber = models.CharField(blank=True, max_length=24, null=True, unique=False, db_column='RegNumber', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     type = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='Type', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: One-to-One
-    taxonTreeDef = models.OneToOneField('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='discipline', null=True, on_delete=protect_with_blockers)
+    taxontreedef = models.OneToOneField('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='discipline', null=True, on_delete=protect_with_blockers)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -2767,10 +2769,10 @@ class Disposal(models.Model):
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     type = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='Type', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
@@ -2798,9 +2800,9 @@ class Disposalagent(models.Model):
     # Fields
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     role = models.CharField(blank=False, max_length=50, null=False, unique=False, db_column='Role', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='+', null=False, on_delete=protect_with_blockers)
@@ -2823,9 +2825,9 @@ class Disposalattachment(models.Model):
     # Fields
     ordinal = models.IntegerField(blank=False, null=False, unique=False, db_column='Ordinal', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='disposalattachments', null=False, on_delete=protect_with_blockers)
@@ -2848,9 +2850,9 @@ class Disposalpreparation(models.Model):
     # Fields
     quantity = models.IntegerField(blank=True, null=True, unique=False, db_column='Quantity', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -2880,10 +2882,10 @@ class Division(models.Model):
     name = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='Name', db_index=False)
     regnumber = models.CharField(blank=True, max_length=24, null=True, unique=False, db_column='RegNumber', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     uri = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='Uri', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     address = models.ForeignKey('Address', db_column='AddressID', related_name='divisions', null=True, on_delete=protect_with_blockers)
@@ -2919,9 +2921,9 @@ class Exchangein(models.Model):
     srctaxonomy = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='SrcTaxonomy', db_index=False)
     text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
@@ -2952,9 +2954,9 @@ class Exchangeinattachment(models.Model):
     # Fields
     ordinal = models.IntegerField(blank=False, null=False, unique=False, db_column='Ordinal', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='exchangeinattachments', null=False, on_delete=protect_with_blockers)
@@ -2981,9 +2983,9 @@ class Exchangeinprep(models.Model):
     quantity = models.IntegerField(blank=True, null=True, unique=False, db_column='Quantity', db_index=False)
     text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -3020,9 +3022,9 @@ class Exchangeout(models.Model):
     srctaxonomy = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='SrcTaxonomy', db_index=False)
     text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
@@ -3055,9 +3057,9 @@ class Exchangeoutattachment(models.Model):
     # Fields
     ordinal = models.IntegerField(blank=False, null=False, unique=False, db_column='Ordinal', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='exchangeoutattachments', null=False, on_delete=protect_with_blockers)
@@ -3084,9 +3086,9 @@ class Exchangeoutprep(models.Model):
     quantity = models.IntegerField(blank=True, null=True, unique=False, db_column='Quantity', db_index=False)
     text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -3113,10 +3115,10 @@ class Exsiccata(models.Model):
     # Fields
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     schedae = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='Schedae', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     title = models.CharField(blank=False, max_length=255, null=False, unique=False, db_column='Title', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -3138,9 +3140,9 @@ class Exsiccataitem(models.Model):
     # Fields
     fascicle = models.CharField(blank=True, max_length=16, null=True, unique=False, db_column='Fascicle', db_index=False)
     number = models.CharField(blank=True, max_length=16, null=True, unique=False, db_column='Number', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='exsiccataitems', null=False, on_delete=models.CASCADE)
@@ -3165,9 +3167,9 @@ class Extractor(models.Model):
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
@@ -3195,9 +3197,9 @@ class Fieldnotebook(models.Model):
     location = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='Storage', db_index=False)
     name = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='Name', db_index=False)
     startdate = models.DateTimeField(blank=True, null=True, unique=False, db_column='StartDate', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='+', null=False, on_delete=protect_with_blockers)
@@ -3226,9 +3228,9 @@ class Fieldnotebookattachment(models.Model):
     # Fields
     ordinal = models.IntegerField(blank=False, null=False, unique=False, db_column='Ordinal', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='fieldnotebookattachments', null=False, on_delete=protect_with_blockers)
@@ -3252,9 +3254,9 @@ class Fieldnotebookpage(models.Model):
     description = models.CharField(blank=True, max_length=128, null=True, unique=False, db_column='Description', db_index=False)
     pagenumber = models.CharField(blank=False, max_length=32, null=False, unique=False, db_column='PageNumber', db_index=False)
     scandate = models.DateTimeField(blank=True, null=True, unique=False, db_column='ScanDate', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -3281,9 +3283,9 @@ class Fieldnotebookpageattachment(models.Model):
     # Fields
     ordinal = models.IntegerField(blank=False, null=False, unique=False, db_column='Ordinal', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='fieldnotebookpageattachments', null=False, on_delete=protect_with_blockers)
@@ -3309,9 +3311,9 @@ class Fieldnotebookpageset(models.Model):
     method = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='Method', db_index=False)
     ordernumber = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='OrderNumber', db_index=False)
     startdate = models.DateTimeField(blank=True, null=True, unique=False, db_column='StartDate', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -3339,9 +3341,9 @@ class Fieldnotebookpagesetattachment(models.Model):
     # Fields
     ordinal = models.IntegerField(blank=False, null=False, unique=False, db_column='Ordinal', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='fieldnotebookpagesetattachments', null=False, on_delete=protect_with_blockers)
@@ -3365,10 +3367,10 @@ class Fundingagent(models.Model):
     isprimary = models.BooleanField(blank=False, default=False, null=False, unique=False, db_column='IsPrimary', db_index=False)
     ordernumber = models.IntegerField(blank=False, null=False, unique=False, db_column='OrderNumber', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     type = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='Type', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='+', null=False, on_delete=protect_with_blockers)
@@ -3423,11 +3425,11 @@ class Geocoorddetail(models.Model):
     text3 = models.TextField(blank=True, null=True, unique=False, db_column='Text3', db_index=False)
     text4 = models.TextField(blank=True, null=True, unique=False, db_column='Text4', db_index=False)
     text5 = models.TextField(blank=True, null=True, unique=False, db_column='Text5', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     uncertaintypolygon = models.TextField(blank=True, null=True, unique=False, db_column='UncertaintyPolygon', db_index=False)
     validation = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='Validation', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
     yesno3 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo3', db_index=False)
@@ -3473,10 +3475,10 @@ class Geography(model_extras.Geography):
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     text1 = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='Text2', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     timestampversion = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampVersion', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     acceptedgeography = models.ForeignKey('Geography', db_column='AcceptedID', related_name='acceptedchildren', null=True, on_delete=protect_with_blockers)
@@ -3506,9 +3508,9 @@ class Geographytreedef(models.Model):
     fullnamedirection = models.IntegerField(blank=True, null=True, unique=False, db_column='FullNameDirection', db_index=False)
     name = models.CharField(blank=False, max_length=64, null=False, unique=False, db_column='Name', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -3535,10 +3537,10 @@ class Geographytreedefitem(models.Model):
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     textafter = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='TextAfter', db_index=False)
     textbefore = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='TextBefore', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     title = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='Title', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -3575,9 +3577,9 @@ class Geologictimeperiod(model_extras.Geologictimeperiod):
     startuncertainty = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='StartUncertainty', db_index=False)
     text1 = models.CharField(blank=True, max_length=128, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.CharField(blank=True, max_length=128, null=True, unique=False, db_column='Text2', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     acceptedgeologictimeperiod = models.ForeignKey('GeologicTimePeriod', db_column='AcceptedID', related_name='acceptedchildren', null=True, on_delete=protect_with_blockers)
@@ -3608,9 +3610,9 @@ class Geologictimeperiodtreedef(models.Model):
     fullnamedirection = models.IntegerField(blank=True, null=True, unique=False, db_column='FullNameDirection', db_index=False)
     name = models.CharField(blank=False, max_length=64, null=False, unique=False, db_column='Name', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -3637,10 +3639,10 @@ class Geologictimeperiodtreedefitem(models.Model):
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     textafter = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='TextAfter', db_index=False)
     textbefore = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='TextBefore', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     title = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='Title', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -3685,9 +3687,9 @@ class Gift(models.Model):
     text3 = models.TextField(blank=True, null=True, unique=False, db_column='Text3', db_index=False)
     text4 = models.TextField(blank=True, null=True, unique=False, db_column='Text4', db_index=False)
     text5 = models.CharField(blank=True, max_length=128, null=True, unique=False, db_column='Text5', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
@@ -3719,9 +3721,9 @@ class Giftagent(models.Model):
     date1 = models.DateTimeField(blank=True, null=True, unique=False, db_column='Date1', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     role = models.CharField(blank=False, max_length=50, null=False, unique=False, db_column='Role', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='+', null=False, on_delete=protect_with_blockers)
@@ -3748,9 +3750,9 @@ class Giftattachment(models.Model):
     # Fields
     ordinal = models.IntegerField(blank=False, null=False, unique=False, db_column='Ordinal', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='giftattachments', null=False, on_delete=protect_with_blockers)
@@ -3781,9 +3783,9 @@ class Giftpreparation(models.Model):
     text3 = models.TextField(blank=True, null=True, unique=False, db_column='Text3', db_index=False)
     text4 = models.TextField(blank=True, null=True, unique=False, db_column='Text4', db_index=False)
     text5 = models.TextField(blank=True, null=True, unique=False, db_column='Text5', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -3810,9 +3812,9 @@ class Groupperson(models.Model):
     # Fields
     ordernumber = models.SmallIntegerField(blank=False, null=False, unique=False, db_column='OrderNumber', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -3843,9 +3845,9 @@ class Inforequest(models.Model):
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     replydate = models.DateTimeField(blank=True, null=True, unique=False, db_column='ReplyDate', db_index=False)
     requestdate = models.DateTimeField(blank=True, null=True, unique=False, db_column='RequestDate', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -3893,10 +3895,10 @@ class Institution(models.Model):
     regnumber = models.CharField(blank=True, max_length=24, null=True, unique=False, db_column='RegNumber', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     termsofuse = models.TextField(blank=True, null=True, unique=False, db_column='TermsOfUse', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     uri = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='Uri', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     address = models.ForeignKey('Address', db_column='AddressID', related_name='insitutions', null=True, on_delete=protect_with_blockers)
@@ -3932,10 +3934,10 @@ class Institutionnetwork(models.Model):
     name = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='Name', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     termsofuse = models.TextField(blank=True, null=True, unique=False, db_column='TermsOfUse', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     uri = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='Uri', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     address = models.ForeignKey('Address', db_column='AddressID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -3964,9 +3966,9 @@ class Journal(models.Model):
     journalname = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='JournalName', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     text1 = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='Text1', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -3993,9 +3995,9 @@ class Latlonpolygon(models.Model):
     description = models.TextField(blank=True, null=True, unique=False, db_column='Description', db_index=False)
     ispolyline = models.BooleanField(blank=False, default=False, null=False, unique=False, db_column='IsPolyline', db_index=False)
     name = models.CharField(blank=False, max_length=64, null=False, unique=False, db_column='Name', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -4049,9 +4051,9 @@ class Lithostrat(model_extras.Lithostrat):
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
@@ -4084,9 +4086,9 @@ class Lithostrattreedef(models.Model):
     fullnamedirection = models.IntegerField(blank=True, null=True, unique=False, db_column='FullNameDirection', db_index=False)
     name = models.CharField(blank=False, max_length=64, null=False, unique=False, db_column='Name', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -4113,10 +4115,10 @@ class Lithostrattreedefitem(models.Model):
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     textafter = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='TextAfter', db_index=False)
     textbefore = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='TextBefore', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     title = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='Title', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -4164,9 +4166,9 @@ class Loan(models.Model):
     text3 = models.TextField(blank=True, null=True, unique=False, db_column='Text3', db_index=False)
     text4 = models.TextField(blank=True, null=True, unique=False, db_column='Text4', db_index=False)
     text5 = models.TextField(blank=True, null=True, unique=False, db_column='Text5', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
@@ -4197,9 +4199,9 @@ class Loanagent(models.Model):
     # Fields
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     role = models.CharField(blank=False, max_length=50, null=False, unique=False, db_column='Role', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     agent = models.ForeignKey('Agent', db_column='AgentID', related_name='+', null=False, on_delete=protect_with_blockers)
@@ -4226,9 +4228,9 @@ class Loanattachment(models.Model):
     # Fields
     ordinal = models.IntegerField(blank=False, null=False, unique=False, db_column='Ordinal', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='loanattachments', null=False, on_delete=protect_with_blockers)
@@ -4262,9 +4264,9 @@ class Loanpreparation(models.Model):
     text3 = models.TextField(blank=True, null=True, unique=False, db_column='Text3', db_index=False)
     text4 = models.TextField(blank=True, null=True, unique=False, db_column='Text4', db_index=False)
     text5 = models.TextField(blank=True, null=True, unique=False, db_column='Text5', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -4293,9 +4295,9 @@ class Loanreturnpreparation(models.Model):
     quantityreturned = models.IntegerField(blank=True, null=True, unique=False, db_column='QuantityReturned', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     returneddate = models.DateTimeField(blank=True, null=True, unique=False, db_column='ReturnedDate', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -4353,13 +4355,13 @@ class Locality(models.Model):
     text3 = models.TextField(blank=True, null=True, unique=False, db_column='Text3', db_index=False)
     text4 = models.TextField(blank=True, null=True, unique=False, db_column='Text4', db_index=False)
     text5 = models.TextField(blank=True, null=True, unique=False, db_column='Text5', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     uniqueidentifier = models.CharField(blank=True, max_length=128, null=True, unique=False, db_column='UniqueIdentifier', db_index=False)
     verbatimelevation = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='VerbatimElevation', db_index=False)
     verbatimlatitude = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='VerbatimLatitude', db_index=False)
     verbatimlongitude = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='VerbatimLongitude', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     visibility = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='Visibility', db_index=False)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
@@ -4397,9 +4399,9 @@ class Localityattachment(models.Model):
     # Fields
     ordinal = models.IntegerField(blank=False, null=False, unique=False, db_column='Ordinal', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='localityattachments', null=False, on_delete=protect_with_blockers)
@@ -4425,9 +4427,9 @@ class Localitycitation(models.Model):
     pagenumber = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='PageNumber', db_index=False)
     platenumber = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='PlateNumber', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -4482,8 +4484,8 @@ class Localitydetail(models.Model):
     text3 = models.TextField(blank=True, null=True, unique=False, db_column='Text3', db_index=False)
     text4 = models.TextField(blank=True, null=True, unique=False, db_column='Text4', db_index=False)
     text5 = models.TextField(blank=True, null=True, unique=False, db_column='Text5', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     township = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='Township', db_index=False)
     townshipdirection = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='TownshipDirection', db_index=False)
     utmdatum = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='UtmDatum', db_index=False)
@@ -4495,7 +4497,7 @@ class Localitydetail(models.Model):
     utmoriglongitude = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='UtmOrigLongitude', db_index=False)
     utmscale = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='UtmScale', db_index=False)
     utmzone = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='UtmZone', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     waterbody = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='WaterBody', db_index=False)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
@@ -4523,9 +4525,9 @@ class Localitynamealias(models.Model):
     # Fields
     name = models.CharField(blank=False, max_length=255, null=False, unique=False, db_column='Name', db_index=False)
     source = models.CharField(blank=False, max_length=64, null=False, unique=False, db_column='Source', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -4587,9 +4589,9 @@ class Materialsample(models.Model):
     srasampleid = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='SRASampleID', db_index=False)
     text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
@@ -4622,9 +4624,9 @@ class Morphbankview(models.Model):
     morphbankexternalviewid = models.IntegerField(blank=True, null=True, unique=False, db_column='MorphBankExternalViewID', db_index=False)
     sex = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='Sex', db_index=False)
     specimenpart = models.CharField(blank=True, max_length=128, null=True, unique=False, db_column='SpecimenPart', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     viewangle = models.CharField(blank=True, max_length=128, null=True, unique=False, db_column='ViewAngle', db_index=False)
     viewname = models.CharField(blank=True, max_length=128, null=True, unique=False, db_column='ViewName', db_index=False)
 
@@ -4658,9 +4660,9 @@ class Otheridentifier(models.Model):
     text3 = models.TextField(blank=True, null=True, unique=False, db_column='Text3', db_index=False)
     text4 = models.TextField(blank=True, null=True, unique=False, db_column='Text4', db_index=False)
     text5 = models.TextField(blank=True, null=True, unique=False, db_column='Text5', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
     yesno3 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo3', db_index=False)
@@ -4702,9 +4704,9 @@ class Paleocontext(models.Model):
     text3 = models.CharField(blank=True, max_length=500, null=True, unique=False, db_column='Text3', db_index=False)
     text4 = models.CharField(blank=True, max_length=500, null=True, unique=False, db_column='Text4', db_index=False)
     text5 = models.CharField(blank=True, max_length=500, null=True, unique=False, db_column='Text5', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
     yesno3 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo3', db_index=False)
@@ -4741,9 +4743,9 @@ class Pcrperson(models.Model):
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
@@ -4786,10 +4788,10 @@ class Permit(models.Model):
     statusqualifier = models.CharField(blank=True, max_length=128, null=True, unique=False, db_column='StatusQualifier', db_index=False)
     text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     type = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='Type', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
@@ -4819,9 +4821,9 @@ class Permitattachment(models.Model):
     # Fields
     ordinal = models.IntegerField(blank=False, null=False, unique=False, db_column='Ordinal', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='permitattachments', null=False, on_delete=protect_with_blockers)
@@ -4852,10 +4854,10 @@ class Picklist(models.Model):
     sizelimit = models.IntegerField(blank=True, null=True, unique=False, db_column='SizeLimit', db_index=False)
     sorttype = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='SortType', db_index=False)
     tablename = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='TableName', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     type = models.SmallIntegerField(blank=False, null=False, unique=False, db_column='Type', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='picklists', null=False, on_delete=protect_with_blockers)
@@ -4879,11 +4881,11 @@ class Picklistitem(models.Model):
 
     # Fields
     ordinal = models.IntegerField(blank=True, null=True, unique=False, db_column='Ordinal', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     title = models.CharField(blank=False, max_length=1024, null=False, unique=False, db_column='Title', db_index=False)
     value = models.CharField(blank=True, max_length=1024, null=True, unique=False, db_column='Value', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -4905,9 +4907,9 @@ class Preptype(models.Model):
     # Fields
     isloanable = models.BooleanField(blank=False, default=False, null=False, unique=False, db_column='IsLoanable', db_index=False)
     name = models.CharField(blank=False, max_length=64, null=False, unique=False, db_column='Name', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='preptypes', null=False, on_delete=protect_with_blockers)
@@ -4965,9 +4967,9 @@ class Preparation(model_extras.Preparation):
     text7 = models.TextField(blank=True, null=True, unique=False, db_column='Text7', db_index=False)
     text8 = models.TextField(blank=True, null=True, unique=False, db_column='Text8', db_index=False)
     text9 = models.TextField(blank=True, null=True, unique=False, db_column='Text9', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
     yesno3 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo3', db_index=False)
@@ -5005,9 +5007,9 @@ class Preparationattachment(models.Model):
     collectionmemberid = models.IntegerField(blank=False, null=False, unique=False, db_column='CollectionMemberID', db_index=False)
     ordinal = models.IntegerField(blank=False, null=False, unique=False, db_column='Ordinal', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='preparationattachments', null=False, on_delete=protect_with_blockers)
@@ -5034,9 +5036,9 @@ class Preparationattr(models.Model):
     collectionmemberid = models.IntegerField(blank=False, null=False, unique=False, db_column='CollectionMemberID', db_index=False)
     dblvalue = models.FloatField(blank=True, null=True, unique=False, db_column='DoubleValue', db_index=False)
     strvalue = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='StrValue', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -5098,9 +5100,9 @@ class Preparationattribute(models.Model):
     text7 = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='Text7', db_index=False)
     text8 = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='Text8', db_index=False)
     text9 = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='Text9', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
     yesno3 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo3', db_index=False)
@@ -5249,9 +5251,9 @@ class Preparationproperty(models.Model):
     text7 = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='Text7', db_index=False)
     text8 = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='Text8', db_index=False)
     text9 = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='Text9', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno10 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo10', db_index=False)
     yesno11 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo11', db_index=False)
@@ -5327,10 +5329,10 @@ class Project(models.Model):
     startdate = models.DateTimeField(blank=True, null=True, unique=False, db_column='StartDate', db_index=False)
     text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     url = models.CharField(blank=True, max_length=1024, null=True, unique=False, db_column='URL', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
@@ -5363,10 +5365,10 @@ class Recordset(models.Model):
     name = models.CharField(blank=False, max_length=280, null=False, unique=False, db_column='Name', db_index=False)
     ownerpermissionlevel = models.IntegerField(blank=True, null=True, unique=False, db_column='OwnerPermissionLevel', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     type = models.SmallIntegerField(blank=False, null=False, unique=False, db_column='Type', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -5424,12 +5426,12 @@ class Referencework(models.Model):
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     title = models.CharField(blank=False, max_length=500, null=False, unique=False, db_column='Title', db_index=False)
     uri = models.TextField(blank=True, null=True, unique=False, db_column='Uri', db_index=False)
     url = models.CharField(blank=True, max_length=1024, null=True, unique=False, db_column='URL', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     volume = models.CharField(blank=True, max_length=25, null=True, unique=False, db_column='Volume', db_index=False)
     workdate = models.CharField(blank=True, max_length=25, null=True, unique=False, db_column='WorkDate', db_index=False)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
@@ -5463,9 +5465,9 @@ class Referenceworkattachment(models.Model):
     # Fields
     ordinal = models.IntegerField(blank=False, null=False, unique=False, db_column='Ordinal', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='referenceworkattachments', null=False, on_delete=protect_with_blockers)
@@ -5497,9 +5499,9 @@ class Repositoryagreement(models.Model):
     text1 = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='Text2', db_index=False)
     text3 = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='Text3', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
@@ -5529,9 +5531,9 @@ class Repositoryagreementattachment(models.Model):
     # Fields
     ordinal = models.IntegerField(blank=True, null=True, unique=False, db_column='Ordinal', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='repositoryagreementattachments', null=False, on_delete=protect_with_blockers)
@@ -5562,9 +5564,9 @@ class Shipment(models.Model):
     shipmentnumber = models.CharField(blank=False, max_length=50, null=False, unique=False, db_column='ShipmentNumber', db_index=False)
     text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     weight = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='Weight', db_index=False)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
@@ -5608,8 +5610,8 @@ class Spappresource(models.Model):
     mimetype = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='MimeType', db_index=False)
     name = models.CharField(blank=False, max_length=64, null=False, unique=False, db_column='Name', db_index=False)
     ownerpermissionlevel = models.IntegerField(blank=True, null=True, unique=False, db_column='OwnerPermissionLevel', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -5636,9 +5638,9 @@ class Spappresourcedata(models.Model):
 
     # Fields
     data = models.TextField(blank=True, null=True, unique=False, db_column='data', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -5661,10 +5663,10 @@ class Spappresourcedir(models.Model):
     # Fields
     disciplinetype = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='DisciplineType', db_index=False)
     ispersonal = models.BooleanField(blank=False, default=False, null=False, unique=False, db_column='IsPersonal', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     usertype = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='UserType', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -5693,11 +5695,11 @@ class Spauditlog(models.Model):
     parentrecordid = models.IntegerField(blank=True, null=True, unique=False, db_column='ParentRecordId', db_index=False)
     parenttablenum = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='ParentTableNum', db_index=False)
     recordid = models.IntegerField(blank=True, null=True, unique=False, db_column='RecordId', db_index=False)
-    recordversion = models.IntegerField(blank=False, null=False, unique=False, db_column='RecordVersion', db_index=False)
+    recordversion = models.IntegerField(blank=False, null=False, unique=False, db_column='RecordVersion', db_index=False, default=0)
     tablenum = models.SmallIntegerField(blank=False, null=False, unique=False, db_column='TableNum', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -5707,7 +5709,12 @@ class Spauditlog(models.Model):
         db_table = 'spauditlog'
         ordering = ()
 
-    save = partialmethod(custom_save)
+    def save_spauditlog(self, *args, **kwargs):
+        if self.recordversion is None:
+            self.recordversion = 0  # or some other default value
+        custom_save(self, *args, **kwargs)
+
+    save = partialmethod(save_spauditlog)
 
 class Spauditlogfield(models.Model):
     specify_model = datamodel.get_table('spauditlogfield')
@@ -5719,9 +5726,9 @@ class Spauditlogfield(models.Model):
     fieldname = models.CharField(blank=False, max_length=128, null=False, unique=False, db_column='FieldName', db_index=False)
     newvalue = models.TextField(blank=True, null=True, unique=False, db_column='NewValue', db_index=False)
     oldvalue = models.TextField(blank=True, null=True, unique=False, db_column='OldValue', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -5744,9 +5751,9 @@ class Spexportschema(models.Model):
     description = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='Description', db_index=False)
     schemaname = models.CharField(blank=True, max_length=80, null=True, unique=False, db_column='SchemaName', db_index=False)
     schemaversion = models.CharField(blank=True, max_length=80, null=True, unique=False, db_column='SchemaVersion', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -5770,9 +5777,9 @@ class Spexportschemaitem(models.Model):
     description = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='Description', db_index=False)
     fieldname = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='FieldName', db_index=False)
     formatter = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='Formatter', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -5797,9 +5804,9 @@ class Spexportschemaitemmapping(models.Model):
     extensionitem = models.BooleanField(blank=True, null=True, unique=False, db_column='ExtensionItem', db_index=False)
     remarks = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='Remarks', db_index=False)
     rowtype = models.CharField(blank=True, max_length=500, null=True, unique=False, db_column='RowType', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -5824,10 +5831,10 @@ class Spexportschemamapping(models.Model):
     collectionmemberid = models.IntegerField(blank=False, null=False, unique=False, db_column='CollectionMemberID', db_index=False)
     description = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='Description', db_index=False)
     mappingname = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='MappingName', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
     timestampexported = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimeStampExported', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -5854,9 +5861,9 @@ class Spfieldvaluedefault(models.Model):
     idvalue = models.IntegerField(blank=True, null=True, unique=False, db_column='IdValue', db_index=False)
     strvalue = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='StrValue', db_index=False)
     tablename = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='TableName', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -5887,10 +5894,10 @@ class Splocalecontainer(models.Model):
     name = models.CharField(blank=False, max_length=64, null=False, unique=False, db_column='Name', db_index=False)
     picklistname = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='PickListName', db_index=False)
     schematype = models.SmallIntegerField(blank=False, null=False, unique=False, db_column='SchemaType', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     type = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='Type', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -5920,10 +5927,10 @@ class Splocalecontaineritem(models.Model):
     isuiformatter = models.BooleanField(blank=True, null=True, unique=False, db_column='IsUIFormatter', db_index=False)
     name = models.CharField(blank=False, max_length=64, null=False, unique=False, db_column='Name', db_index=False)
     picklistname = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='PickListName', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     type = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='Type', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     weblinkname = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='WebLinkName', db_index=False)
 
     # Relationships: Many-to-One
@@ -5950,10 +5957,10 @@ class Splocaleitemstr(models.Model):
     country = models.CharField(blank=True, max_length=2, null=True, unique=False, db_column='Country', db_index=False)
     language = models.CharField(blank=False, max_length=2, null=False, unique=False, db_column='Language', db_index=False)
     text = models.CharField(blank=False, max_length=2048, null=False, unique=False, db_column='Text', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     variant = models.CharField(blank=True, max_length=2, null=True, unique=False, db_column='Variant', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     containerdesc = models.ForeignKey('SpLocaleContainer', db_column='SpLocaleContainerDescID', related_name='descs', null=True, on_delete=protect_with_blockers)
@@ -6003,9 +6010,9 @@ class Spprincipal(models.Model):
     name = models.CharField(blank=False, max_length=64, null=False, unique=False, db_column='Name', db_index=False)
     priority = models.SmallIntegerField(blank=False, null=False, unique=False, db_column='Priority', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -6037,9 +6044,9 @@ class Spquery(models.Model):
     selectdistinct = models.BooleanField(blank=True, null=True, unique=False, db_column='SelectDistinct', db_index=False)
     smushed = models.BooleanField(blank=True, null=True, unique=False, db_column='Smushed', db_index=False)
     sqlstr = models.TextField(blank=True, null=True, unique=False, db_column='SqlStr', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -6080,9 +6087,9 @@ class Spqueryfield(models.Model):
     startvalue = models.TextField(blank=False, null=False, unique=False, db_column='StartValue', db_index=False)
     stringid = models.CharField(blank=False, max_length=500, null=False, unique=False, db_column='StringId', db_index=False)
     tablelist = models.CharField(blank=False, max_length=500, null=False, unique=False, db_column='TableList', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -6106,9 +6113,9 @@ class Spreport(models.Model):
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     repeatcount = models.IntegerField(blank=True, null=True, unique=False, db_column='RepeatCount', db_index=False)
     repeatfield = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='RepeatField', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: One-to-One
     workbenchTemplate = models.OneToOneField('WorkbenchTemplate', db_column='WorkbenchTemplateID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -6144,9 +6151,9 @@ class Spsymbiotainstance(models.Model):
     lastpush = models.DateTimeField(blank=True, null=True, unique=False, db_column='LastPush', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     symbiotakey = models.CharField(blank=True, max_length=128, null=True, unique=False, db_column='SymbiotaKey', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -6175,10 +6182,10 @@ class Sptasksemaphore(models.Model):
     machinename = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='MachineName', db_index=False)
     scope = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='Scope', db_index=False)
     taskname = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='TaskName', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     usagecount = models.IntegerField(blank=True, null=True, unique=False, db_column='UsageCount', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -6205,9 +6212,9 @@ class Spversion(models.Model):
     dbclosedby = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='DbClosedBy', db_index=False)
     isdbclosed = models.BooleanField(blank=True, null=True, unique=False, db_column='IsDBClosed', db_index=False)
     schemaversion = models.CharField(blank=True, max_length=16, null=True, unique=False, db_column='SchemaVersion', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     workbenchschemaversion = models.CharField(blank=True, max_length=16, null=True, unique=False, db_column='WorkbenchSchemaVersion', db_index=False)
 
     # Relationships: Many-to-One
@@ -6232,9 +6239,9 @@ class Spviewsetobj(models.Model):
     level = models.SmallIntegerField(blank=False, null=False, unique=False, db_column='Level', db_index=False)
     metadata = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='MetaData', db_index=False)
     name = models.CharField(blank=False, max_length=64, null=False, unique=False, db_column='Name', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -6259,9 +6266,9 @@ class Spvisualquery(models.Model):
     # Fields
     description = models.TextField(blank=True, null=True, unique=False, db_column='Description', db_index=False)
     name = models.CharField(blank=False, max_length=64, null=False, unique=False, db_column='Name', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -6293,10 +6300,10 @@ class Specifyuser(model_extras.Specifyuser):
     loginouttime = models.DateTimeField(blank=True, null=True, unique=False, db_column='LoginOutTime', db_index=False)
     name = models.CharField(blank=False, max_length=64, null=False, unique=True, db_column='Name', db_index=False)
     password = models.CharField(blank=False, max_length=255, null=False, unique=False, db_column='Password', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     usertype = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='UserType', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -6327,10 +6334,10 @@ class Storage(model_extras.Storage):
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     text1 = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='Text2', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     timestampversion = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampVersion', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     acceptedstorage = models.ForeignKey('Storage', db_column='AcceptedID', related_name='acceptedchildren', null=True, on_delete=protect_with_blockers)
@@ -6359,9 +6366,9 @@ class Storageattachment(models.Model):
     # Fields
     ordinal = models.IntegerField(blank=False, null=False, unique=False, db_column='Ordinal', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='storageattachments', null=False, on_delete=protect_with_blockers)
@@ -6385,9 +6392,9 @@ class Storagetreedef(models.Model):
     fullnamedirection = models.IntegerField(blank=True, null=True, unique=False, db_column='FullNameDirection', db_index=False)
     name = models.CharField(blank=False, max_length=64, null=False, unique=False, db_column='Name', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -6414,10 +6421,10 @@ class Storagetreedefitem(models.Model):
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     textafter = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='TextAfter', db_index=False)
     textbefore = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='TextBefore', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     title = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='Title', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -6491,8 +6498,8 @@ class Taxon(model_extras.Taxon):
     text7 = models.TextField(blank=True, null=True, unique=False, db_column='Text7', db_index=False)
     text8 = models.TextField(blank=True, null=True, unique=False, db_column='Text8', db_index=False)
     text9 = models.TextField(blank=True, null=True, unique=False, db_column='Text9', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     unitind1 = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='UnitInd1', db_index=False)
     unitind2 = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='UnitInd2', db_index=False)
     unitind3 = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='UnitInd3', db_index=False)
@@ -6502,7 +6509,7 @@ class Taxon(model_extras.Taxon):
     unitname3 = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='UnitName3', db_index=False)
     unitname4 = models.CharField(blank=True, max_length=50, null=True, unique=False, db_column='UnitName4', db_index=False)
     usfwscode = models.CharField(blank=True, max_length=16, null=True, unique=False, db_column='UsfwsCode', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     visibility = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='Visibility', db_index=False)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno10 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo10', db_index=False)
@@ -6559,9 +6566,9 @@ class Taxonattachment(models.Model):
     # Fields
     ordinal = models.IntegerField(blank=False, null=False, unique=False, db_column='Ordinal', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='taxonattachments', null=False, on_delete=protect_with_blockers)
@@ -6663,9 +6670,9 @@ class Taxonattribute(models.Model):
     text7 = models.CharField(blank=True, max_length=128, null=True, unique=False, db_column='Text7', db_index=False)
     text8 = models.CharField(blank=True, max_length=128, null=True, unique=False, db_column='Text8', db_index=False)
     text9 = models.CharField(blank=True, max_length=128, null=True, unique=False, db_column='Text9', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno10 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo10', db_index=False)
     yesno11 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo11', db_index=False)
@@ -6776,9 +6783,9 @@ class Taxoncitation(models.Model):
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
 
@@ -6804,9 +6811,9 @@ class Taxontreedef(models.Model):
     fullnamedirection = models.IntegerField(blank=True, null=True, unique=False, db_column='FullNameDirection', db_index=False)
     name = models.CharField(blank=False, max_length=64, null=False, unique=False, db_column='Name', db_index=False)
     remarks = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: One-to-One
 
@@ -6836,10 +6843,10 @@ class Taxontreedefitem(models.Model):
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     textafter = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='TextAfter', db_index=False)
     textbefore = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='TextBefore', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     title = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='Title', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -6880,11 +6887,11 @@ class Treatmentevent(models.Model):
     text3 = models.TextField(blank=True, null=True, unique=False, db_column='Text3', db_index=False)
     text4 = models.TextField(blank=True, null=True, unique=False, db_column='Text4', db_index=False)
     text5 = models.TextField(blank=True, null=True, unique=False, db_column='Text5', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     treatmentnumber = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='TreatmentNumber', db_index=False)
     type = models.CharField(blank=True, max_length=128, null=True, unique=False, db_column='Type', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
     yesno3 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo3', db_index=False)
@@ -6919,9 +6926,9 @@ class Treatmenteventattachment(models.Model):
     # Fields
     ordinal = models.IntegerField(blank=False, null=False, unique=False, db_column='Ordinal', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='treatmenteventattachments', null=False, on_delete=protect_with_blockers)
@@ -6955,10 +6962,10 @@ class Voucherrelationship(models.Model):
     text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
     text3 = models.TextField(blank=True, null=True, unique=False, db_column='Text3', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
     urllink = models.CharField(blank=True, max_length=1024, null=True, unique=False, db_column='UrlLink', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     vouchernumber = models.CharField(blank=True, max_length=256, null=True, unique=False, db_column='VoucherNumber', db_index=False)
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
@@ -6996,9 +7003,9 @@ class Workbench(models.Model):
     ownerpermissionlevel = models.IntegerField(blank=True, null=True, unique=False, db_column='OwnerPermissionLevel', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     srcfilepath = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='SrcFilePath', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -7084,9 +7091,9 @@ class Workbenchrowexportedrelationship(models.Model):
     relationshipname = models.CharField(blank=True, max_length=120, null=True, unique=False, db_column='RelationshipName', db_index=False)
     sequence = models.IntegerField(blank=True, null=True, unique=False, db_column='Sequence', db_index=False)
     tablename = models.CharField(blank=True, max_length=120, null=True, unique=False, db_column='TableName', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -7130,9 +7137,9 @@ class Workbenchtemplate(models.Model):
     name = models.CharField(blank=True, max_length=256, null=True, unique=False, db_column='Name', db_index=False)
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     srcfilepath = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='SrcFilePath', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -7166,9 +7173,9 @@ class Workbenchtemplatemappingitem(models.Model):
     origimportcolumnindex = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='DataColumnIndex', db_index=False)
     srctableid = models.IntegerField(blank=True, null=True, unique=False, db_column='TableId', db_index=False)
     tablename = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='TableName', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, auto_now=True)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     vieworder = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='ViewOrder', db_index=False)
     xcoord = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='XCoord', db_index=False)
     ycoord = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='YCoord', db_index=False)

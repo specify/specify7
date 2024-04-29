@@ -785,6 +785,9 @@ def field_to_schema(field: Field) -> Dict:
     elif field.type == "java.lang.Boolean":
         return required_to_schema(field, "boolean")
 
+    elif field.type == "json":
+        return required_to_schema(field, "string")
+
     else:
         raise Exception(f"unexpected field type: {field.type}")
 
