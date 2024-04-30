@@ -191,7 +191,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Error de coincidencia',
     'fr-fr': 'Erreur de correspondance',
     'ru-ru': 'Ошибка совпадения',
-    'uk-ua': 'Помилка збігу',
+    'uk-ua': 'Помилка відповідності',
   },
   errorReadingFile: {
     'en-us': 'Error reading file',
@@ -294,8 +294,9 @@ export const attachmentsText = createDictionary({
       Откат выполнялся, когда произошло прерывание. Некоторые файлы могли быть
       удалены
     `,
-    'uk-ua':
-      'Тривав відкат, коли сталася перерва. Деякі файли могли бути видалені',
+    'uk-ua': `
+      Тривав відкат, коли сталася перерва. Можливо, деякі файли було видалено
+    `,
     'es-es': `
       La reversión estaba en curso cuando se produjo una interrupción. Es
       posible que algunos archivos hayan sido eliminados.
@@ -573,7 +574,7 @@ export const attachmentsText = createDictionary({
     `,
     'ru-ru':
       'Выберите идентификатор, которому будет соответствовать имя файла.',
-    'uk-ua': 'Виберіть ідентифікатор для відповідності імені файлу.',
+    'uk-ua': 'Виберіть ідентифікатор, який буде відповідати назві файлів.',
   },
   progress: {
     'en-us': 'Progress',
