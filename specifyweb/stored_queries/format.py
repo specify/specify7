@@ -162,10 +162,17 @@ class ObjectFormatter(object):
         cycle_with_self = [*cycle_detector, (inspect(orm_table).class_.__name__, 'formatting')] if (
                 cycle_detector is not None) else None
 
-        def make_case(query: QueryConstruct, caseNode: Element) -> Tuple[QueryConstruct, Optional[str], blank_nulls]:
-            field_exprs = [self.make_expr(query, node.text, node.attrib, orm_table, specify_model, cycle_with_self)[1] 
-                        for node in caseNode.findall('field')]
-            expr = concat(*field_exprs) if field_exprs else ""
+        def make_case(query: QueryConstruct, caseNode: Element) -> Tuple[
+            QueryConstruct, Optional[str], blank_nulls]:
+            field_exprs = []
+            for node in caseNode.findall('field'):
+                query, expr, _ = self.make_expr(query, node.text, node.attrib, orm_table, specify_model, cycle_with_self)
+                field_exprs.append(expr)
+            
+            expr = ""
+            if field_exprs:
+                expr = concat(*field_exprs) if len(field_exprs) > 1 else field_exprs[0]
+
             return query, caseNode.attrib.get('value', None), expr
 
         switchNode = formatterNode.find('switch')
