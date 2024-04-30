@@ -701,6 +701,10 @@ export const queryText = createDictionary({
     'uk-ua': 'Десинонімізація дерева',
     'de-ch': 'Baum Desynonymisieren',
   },
+  treeBulkMove: {
+    comment: 'Audit Log Action Type',
+    'en-us': 'Tree Bulk Move',
+  },
   tooLongErrorMessage: {
     'en-us': `
       Field value is too long. Max allowed length is

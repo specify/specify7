@@ -171,7 +171,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
       hasPermission(resourceName as '/tree/edit/storage', 'bulk_move') ? (
         <li className="contents">
           <Button.Icon
-            disabled={disableButtons || isRoot}
+            disabled={disableButtons}
             icon="truck"
             title={treeText.moveItems()}
             onClick={(): void => setAction('bulkMove')}
