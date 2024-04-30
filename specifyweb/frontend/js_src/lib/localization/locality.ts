@@ -292,6 +292,9 @@ export const localityText = createDictionary({
     'uk-ua': 'DD MM SS.SS N/S/E/W (32 45 42.84 N)',
     'de-ch': 'DD MM SS.SS N/S/O/W (32 45 42.84 N)',
   },
+  localityimportHeader: {
+    'en-us': 'Import Locality Set',
+  },
   localityImportHeaderError: {
     'en-us': 'Errors Found in Column Headers',
   },

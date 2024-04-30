@@ -75,6 +75,16 @@ export function ImportLocalitySet(): JSX.Element {
 
   const loading = React.useContext(LoadingContext);
 
+  function resetContext(): void {
+    setHeaderErrors({
+      missingRequiredHeaders: [] as RA<Header>,
+      unrecognizedHeaders: [] as RA<string>,
+    });
+    setHeaders([]);
+    setData([]);
+    setResults(undefined);
+  }
+
   return (
     <>
       <CsvFilePicker
@@ -106,7 +116,7 @@ export function ImportLocalitySet(): JSX.Element {
           setData(data.slice(1));
         }}
       />
-      {Object.values(headerErrors).some((errors) => errors.length > 0) && (
+      {Object.values(headerErrors).some((errors) => errors.length > 0) ? (
         <Dialog
           buttons={
             <>
@@ -140,12 +150,7 @@ export function ImportLocalitySet(): JSX.Element {
               ? 'warning'
               : 'error'
           }
-          onClose={(): void =>
-            setHeaderErrors({
-              missingRequiredHeaders: [],
-              unrecognizedHeaders: [],
-            })
-          }
+          onClose={resetContext}
         >
           <>
             {headerErrors.missingRequiredHeaders.length > 0 && (
@@ -176,12 +181,38 @@ export function ImportLocalitySet(): JSX.Element {
             </p>
           </>
         </Dialog>
-      )}
+      ) : data.length > 0 &&
+        !Object.values(headerErrors).some((errors) => errors.length > 0) ? (
+        <Dialog
+          buttons={
+            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+          }
+          header={localityText.localityimportHeader()}
+          onClose={resetContext}
+        >
+          <Button.Small
+            onClick={(): void =>
+              loading(
+                ajax<LocalityUploadResponse>('/api/import/locality_set/', {
+                  headers: { Accept: 'application/json' },
+                  body: {
+                    columnHeaders: headers,
+                    data,
+                  },
+                  method: 'POST',
+                }).then(({ data }) => {
+                  setData([]);
+                  setResults(data);
+                })
+              )
+            }
+          >
+            {commonText.import()}
+          </Button.Small>
+        </Dialog>
+      ) : null}
       {results === undefined ? null : (
-        <LocalityImportResults
-          results={results}
-          onClose={(): void => setResults(undefined)}
-        />
+        <LocalityImportResults results={results} onClose={resetContext} />
       )}
     </>
   );
@@ -276,7 +307,7 @@ function LocalityImportErrors({
       icon="error"
       onClose={handleClose}
     >
-      <table className="grid-cols-2">
+      <table className="grid-table grid-cols-[1fr_auto] gap-1 gap-y-3 overflow-auto">
         <thead>
           <tr>
             <td>{localityText.rowNumber()}</td>
