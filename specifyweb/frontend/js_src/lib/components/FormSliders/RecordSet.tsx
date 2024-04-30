@@ -23,6 +23,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
   createResource,
   deleteResource,
+  fetchResource,
   getResourceViewUrl,
 } from '../DataModel/resource';
 import { serializeResource } from '../DataModel/serializers';
@@ -309,8 +310,23 @@ function RecordSet<SCHEMA extends AnySchema>({
     ids: RA<number | undefined>,
     fromBulkCarry: boolean = false
   ): Promise<void> {
-    if (fromBulkCarry)
-      await recordSet.set('name', `Batch ${ids[0]} - ${ids.at(-1)}`);
+    if (
+      fromBulkCarry &&
+      typeof ids[0] === 'number' &&
+      typeof ids.at(-1) === 'number'
+    ) {
+      const startingResource = fetchResource('CollectionObject', ids[0]);
+      const endingResource = fetchResource(
+        'CollectionObject',
+        ids.at(-1) as number
+      );
+      const startingResourceCatNumber = (await startingResource).catalogNumber;
+      const endingResourceCatNumber = (await endingResource).catalogNumber;
+      await recordSet.set(
+        'name',
+        `Batch #${startingResourceCatNumber} - #${endingResourceCatNumber}`
+      );
+    }
     await recordSet.save();
     await addIdsToRecordSet(ids);
     navigate(`/specify/record-set/${recordSet.id}/`);
