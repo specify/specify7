@@ -131,22 +131,25 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
     const resource = toTreeTable(props.resource);
     const definitionItem = resource?.get('definitionItem');
 
+    const newDefinitionItem =
+      props.defaultValue ?? items?.slice(-1)[0]?.value ?? '';
+
+    const isDifferentDefinitionItem =
+      newDefinitionItem !== (definitionItem ?? '');
+
     const invalidDefinitionItem =
       typeof definitionItem !== 'string' ||
       (!(items?.map(({ value }) => value).includes(definitionItem) ?? true) &&
         !Object.keys(resource?.changed ?? {}).includes('definitionitem'));
 
     if (
+      isDifferentDefinitionItem &&
       (items !== undefined || typeof resource?.get('parent') !== 'string') &&
       invalidDefinitionItem
     ) {
-      resource?.set(
-        'definitionItem',
-        props.defaultValue ?? items?.slice(-1)[0]?.value ?? ''
-      );
+      resource?.set('definitionItem', newDefinitionItem);
+      return void resource?.businessRuleManager?.checkField('parent');
     }
-
-    return void resource?.businessRuleManager?.checkField('parent');
   }, [items]);
 
   return (
