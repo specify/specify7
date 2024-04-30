@@ -150,6 +150,7 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
       resource?.set('definitionItem', newDefinitionItem);
       return void resource?.businessRuleManager?.checkField('parent');
     }
+    return undefined;
   }, [items]);
 
   return (
