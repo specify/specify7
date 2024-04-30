@@ -32,6 +32,7 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { FormContext } from './BaseResourceView';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
+import { WritableArray } from '../../utils/types';
 
 export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 
@@ -215,7 +216,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         loading(
           handleClick()
             .then((result) => {
-              const ids: readonly number[] = [];
+              const ids: WritableArray<number> = [];
               if (originalResourceId !== undefined) {
                 ids.push(originalResourceId);
               }
