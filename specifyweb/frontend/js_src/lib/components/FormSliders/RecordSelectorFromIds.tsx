@@ -75,7 +75,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   readonly onFetch?: (
     index: number
   ) => Promise<RA<number | undefined> | undefined>;
-  readonly onCarryBulk?: (ids: readonly number[]) => void;
+  readonly onCarryBulk?: (ids: RA<number>) => void;
 }): JSX.Element | null {
   const [records, setRecords] = React.useState<
     RA<SpecifyResource<SCHEMA> | undefined>

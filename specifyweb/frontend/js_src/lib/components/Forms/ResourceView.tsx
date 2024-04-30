@@ -28,6 +28,7 @@ import { useResourceView } from './BaseResourceView';
 import { DeleteButton } from './DeleteButton';
 import { SaveButton } from './Save';
 import { propsToFormMode } from './useViewDefinition';
+import { RA } from '../../utils/types';
 
 /**
  * There is special behavior required when creating one of these resources,
@@ -138,7 +139,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly isCollapsed?: boolean;
   readonly preHeaderButtons?: JSX.Element | undefined;
   readonly containerRef?: React.RefObject<HTMLDivElement>;
-  readonly onCarryBulk?: (ids: readonly number[]) => void;
+  readonly onCarryBulk?: (ids: RA<number>) => void;
   readonly isInRecordSet?: boolean;
 }): JSX.Element {
   const [isDeleted, setDeleted, setNotDeleted] = useBooleanState();

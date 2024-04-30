@@ -9,7 +9,7 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { smoothScroll } from '../../utils/dom';
 import { listen } from '../../utils/events';
-import type { WritableArray } from '../../utils/types';
+import type { RA, WritableArray } from '../../utils/types';
 import { replaceKey } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -77,7 +77,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   readonly onAdd?: (newResource: SpecifyResource<SCHEMA>) => void;
   // Only display save blockers for a given field
   readonly filterBlockers?: LiteralField | Relationship;
-  readonly onCarryBulk?: (ids: readonly number[]) => void;
+  readonly onCarryBulk?: (ids: RA<number>) => void;
   readonly isInRecordSet?: boolean;
 }): JSX.Element {
   const id = useId('save-button');
