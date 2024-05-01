@@ -316,10 +316,7 @@ function RecordSet<SCHEMA extends AnySchema>({
       typeof ids.at(-1) === 'number'
     ) {
       const startingResource = fetchResource('CollectionObject', ids[0]);
-      const endingResource = fetchResource(
-        'CollectionObject',
-        ids.at(-1) as number
-      );
+      const endingResource = fetchResource('CollectionObject', ids.at(-1)!);
       const startingResourceCatNumber = (await startingResource).catalogNumber;
       const endingResourceCatNumber = (await endingResource).catalogNumber;
       recordSet.set(

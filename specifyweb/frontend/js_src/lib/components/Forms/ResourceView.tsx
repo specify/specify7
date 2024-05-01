@@ -7,6 +7,7 @@ import { useIsModified } from '../../hooks/useIsModified';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import type { RA } from '../../utils/types';
 import { Container } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -28,7 +29,6 @@ import { useResourceView } from './BaseResourceView';
 import { DeleteButton } from './DeleteButton';
 import { SaveButton } from './Save';
 import { propsToFormMode } from './useViewDefinition';
-import { RA } from '../../utils/types';
 
 /**
  * There is special behavior required when creating one of these resources,
