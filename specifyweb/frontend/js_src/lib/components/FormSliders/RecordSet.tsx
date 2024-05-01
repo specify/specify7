@@ -322,7 +322,7 @@ function RecordSet<SCHEMA extends AnySchema>({
       );
       const startingResourceCatNumber = (await startingResource).catalogNumber;
       const endingResourceCatNumber = (await endingResource).catalogNumber;
-      await recordSet.set(
+      recordSet.set(
         'name',
         `Batch #${startingResourceCatNumber} - #${endingResourceCatNumber}`
       );
