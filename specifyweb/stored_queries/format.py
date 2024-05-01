@@ -169,9 +169,7 @@ class ObjectFormatter(object):
                 query, expr, _ = self.make_expr(query, node.text, node.attrib, orm_table, specify_model, cycle_with_self)
                 field_exprs.append(expr)
             
-            expr = ""
-            if field_exprs:
-                expr = concat(*field_exprs) if len(field_exprs) > 1 else field_exprs[0]
+            expr = field_exprs[0] if len(field_exprs) == 1 else concat(*field_exprs)
 
             return query, caseNode.attrib.get('value', None), expr
 
