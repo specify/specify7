@@ -104,7 +104,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Varios archivos seleccionados',
     'fr-fr': 'Plusieurs fichiers sélectionnés',
     'ru-ru': 'Выбрано несколько файлов',
-    'uk-ua': 'Вибрано кілька файлів',
+    'uk-ua': 'Вибрано декілька файлів',
   },
   fileSize: {
     'en-us': 'File Size',
@@ -191,7 +191,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Error de coincidencia',
     'fr-fr': 'Erreur de correspondance',
     'ru-ru': 'Ошибка совпадения',
-    'uk-ua': 'Помилка відповідності',
+    'uk-ua': 'Помилка збігу',
   },
   errorReadingFile: {
     'en-us': 'Error reading file',
@@ -574,7 +574,7 @@ export const attachmentsText = createDictionary({
     `,
     'ru-ru':
       'Выберите идентификатор, которому будет соответствовать имя файла.',
-    'uk-ua': 'Виберіть ідентифікатор, який буде відповідати назві файлів.',
+    'uk-ua': 'Виберіть ідентифікатор для відповідності імені файлу.',
   },
   progress: {
     'en-us': 'Progress',

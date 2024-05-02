@@ -1063,7 +1063,7 @@ export const formsText = createDictionary({
     'es-es': 'Configurar tablas de entrada de datos',
     'fr-fr': 'Configurer les tables de saisie de données',
     'uk-ua': 'Налаштувати таблиці введення даних',
-    'de-ch': 'Konfigurieren von Dateneingabetabellen',
+    'de-ch': 'Dateneingabetabellen konfigurieren',
   },
   configureInteractionTables: {
     'en-us': 'Configure interaction tables',
