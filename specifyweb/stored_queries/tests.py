@@ -792,8 +792,11 @@ def test_sqlalchemy_model(datamodel_table):
         remote_datamodel_table = field.relatedModelName.lower()
 
         if remote_sql_table.lower() != remote_datamodel_table:
-            table_errors['incorrect_table'][field.name] = [remote_sql_table, remote_datamodel_table]
-            print(f"Incorrect table: {field.name} {remote_sql_table} {remote_datamodel_table}")
+            # Check case where the relation model's name is different from the DB table name
+            remote_sql_table = sa_relationship.mapper._log_desc.split('(')[1].split('|')[0].lower()
+            if remote_sql_table.lower() != remote_datamodel_table:
+                table_errors['incorrect_table'][field.name] = [remote_sql_table, remote_datamodel_table]
+                print(f"Incorrect table: {field.name} {remote_sql_table} {remote_datamodel_table}")
 
         sa_column = list(sa_relationship.local_columns)[0].name
         if sa_column.lower() != (
