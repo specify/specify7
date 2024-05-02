@@ -42,7 +42,7 @@ export const treeBusinessRules = async (
       `sp7.allow_adding_child_to_synonymized_parent.${resource.specifyTable.name}`
     );
     const cannotAddToSynonym =
-      parent.get('isAccepted') === false && !doExpandSynonymActionsPref;
+      !parent.get('isAccepted') && !doExpandSynonymActionsPref;
 
     const hasBadTreeStrcuture =
       parent.id === resource.id ||
