@@ -1,6 +1,7 @@
 import { treeText } from '../../localization/tree';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
+import { getPref } from '../InitialContext/remotePrefs';
 import { fetchPossibleRanks } from '../PickLists/TreeLevelPickList';
 import { formatUrl } from '../Router/queryString';
 import type { BusinessRuleResult } from './businessRules';
@@ -37,8 +38,15 @@ export const treeBusinessRules = async (
         ? undefined
         : await fetchPossibleRanks(resource, parentDefItem.get('rankId'));
 
+    const doExpandSynonymActionsPref = getPref(
+      `sp7.allow_adding_child_to_synonymized_parent.${resource.specifyTable.name}`
+    );
+    const cannotAddToSynonym =
+      parent.get('isAccepted') === false && doExpandSynonymActionsPref;
+
     const hasBadTreeStrcuture =
       parent.id === resource.id ||
+      cannotAddToSynonym ||
       definitionItem === undefined ||
       parent.get('rankId') >= definitionItem.get('rankId') ||
       (possibleRanks !== undefined &&
