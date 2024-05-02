@@ -26,7 +26,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Formular Definition',
   },
   formDefinitions: {
-    'en-us': 'Form Definitions',
+    'en-us': 'Form Definition',
     'ru-ru': 'Определения форм',
     'es-es': 'Definiciones de formulario',
     'fr-fr': 'Définitions de formulaire',
