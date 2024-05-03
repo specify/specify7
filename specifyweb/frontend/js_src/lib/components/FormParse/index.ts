@@ -83,7 +83,7 @@ export type ViewDefinition = {
    *
    * See https://github.com/specify/specify7/issues/4878
    */
-  readonly defaultSubviewFormType: FormType | undefined;
+  readonly defaultSubviewFormType?: FormType;
 };
 
 export const formTypes = ['form', 'formTable'] as const;
