@@ -411,8 +411,8 @@ msgstr "Outils"
 #: components/FormFields/Field.tsx:82
 #: components/FormPlugins/CollectionRelOneToMany.tsx:158
 #: components/FormPlugins/CollectionRelOneToOne.tsx:43
-#: components/Formatters/Preview.tsx:99
-#: components/Formatters/Preview.tsx:138
+#: components/Formatters/Preview.tsx:102
+#: components/Formatters/Preview.tsx:143
 #: components/Forms/BaseResourceView.tsx:61
 #: components/Forms/DeleteButton.tsx:109
 #: components/Forms/SubView.tsx:232
@@ -501,7 +501,7 @@ msgid "remove"
 msgstr "Retirer"
 
 #: components/Atoms/DataEntry.tsx:158
-#: components/Formatters/Preview.tsx:69
+#: components/Formatters/Preview.tsx:74
 #: components/Header/ExpressSearchTask.tsx:50
 #: components/Header/ExpressSearchTask.tsx:90
 #: components/Header/ExpressSearchTask.tsx:95

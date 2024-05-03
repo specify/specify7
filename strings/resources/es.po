@@ -375,14 +375,14 @@ msgid "sortField"
 msgstr "Ordenar campo"
 
 #: components/FormEditor/Create.tsx:209
-#: components/Formatters/Preview.tsx:65
+#: components/Formatters/Preview.tsx:70
 #: components/Merging/Header.tsx:164
 #. Used in: Components > Form Editor > Create ⬤ Components > Formatters > Preview ⬤ Components > Merging > Header
 #, fuzzy
 msgid "preview"
 msgstr "Avance"
 
-#: components/Formatters/Preview.tsx:66
+#: components/Formatters/Preview.tsx:71
 #. Used in: Components > Formatters > Preview
 #, fuzzy
 msgid "previewExplainer"
