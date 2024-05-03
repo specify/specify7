@@ -73,6 +73,17 @@ export type ViewDefinition = {
   readonly viewsetSource: string;
   readonly viewsetId: number | null;
   readonly viewsetFile: string | null;
+
+  // REFACTOR: remove this once Specify 7 gets default forms
+  /**
+   * If `defaulttype` is not specified on a subview cell, Specify assumes the
+   * subview should be rendered in 'Form' mode. However there are many default
+   * `to-many` subviews which do not specify a `defaulttype` and should be
+   * rendered as a table by default
+   *
+   * See https://github.com/specify/specify7/issues/4878
+   */
+  readonly defaultSubviewFormType: FormType | undefined;
 };
 
 export const formTypes = ['form', 'formTable'] as const;
@@ -198,6 +209,7 @@ async function correctDefaultViewDefinition(
             )
           ),
         };
+        overwriteReadOnly(view, 'defaultSubviewFormType', 'formTable');
         overwriteReadOnly(view, 'altviews', newAltViews);
         overwriteReadOnly(view, 'viewdefs', newViewDefs);
         return view;
