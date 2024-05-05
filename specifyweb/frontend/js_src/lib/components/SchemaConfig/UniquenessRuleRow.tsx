@@ -57,7 +57,7 @@ export function UniquenessRuleRow({
   const { validationRef } = useValidation(
     !isModifyingRule && hasDuplicates
       ? schemaText.uniquenessDuplicatesFound()
-      : undefined,
+      : '',
     false
   );
 

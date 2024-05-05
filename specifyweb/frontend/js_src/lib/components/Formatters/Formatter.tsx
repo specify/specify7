@@ -53,14 +53,14 @@ function ConditionalMapping({
 
   function setConditionField(): void {
     setIsConditionFieldDisplayed(!isConditionFieldDisplayed);
-    if (isConditionFieldDisplayed)
-      setFormatter({
-        ...formatter,
-        definition: {
-          ...formatter.definition,
-          conditionField: undefined,
-        },
-      });
+    setFormatter({
+      ...formatter,
+      definition: {
+        ...formatter.definition,
+        conditionField: undefined,
+        fields: [],
+      },
+    });
   }
 
   return (
@@ -72,7 +72,7 @@ function ConditionalMapping({
             formatter.definition.conditionField !== undefined
           }
           isReadOnly={isReadOnly}
-          onClick={setConditionField}
+          onChange={setConditionField}
         />
         {resourcesText.conditionalFormatter()}
       </Label.Inline>
