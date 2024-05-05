@@ -294,9 +294,8 @@ export const attachmentsText = createDictionary({
       Откат выполнялся, когда произошло прерывание. Некоторые файлы могли быть
       удалены
     `,
-    'uk-ua': `
-      Тривав відкат, коли сталася перерва. Можливо, деякі файли було видалено
-    `,
+    'uk-ua':
+      'Тривав відкат, коли сталася перерва. Деякі файли могли бути видалені',
     'es-es': `
       La reversión estaba en curso cuando se produjo una interrupción. Es
       posible que algunos archivos hayan sido eliminados.
