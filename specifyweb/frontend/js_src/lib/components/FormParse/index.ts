@@ -219,12 +219,12 @@ async function correctDefaultViewDefinition(
   return view;
 }
 
-export function parseViewDefinition(
+export async function parseViewDefinition(
   view: ViewDefinition,
   defaultType: FormType,
   originalMode: FormMode,
   currentTable: SpecifyTable
-): ViewDescription | undefined {
+): Promise<ViewDescription | undefined> {
   const logContext = getLogContext();
   addContext({ view, defaultType, originalMode });
 
@@ -236,13 +236,15 @@ export function parseViewDefinition(
   const parser =
     formType === 'formTable'
       ? parseFormTableDefinition
-      : (
+      : async (
           viewDefinition: SimpleXmlNode,
           table: SpecifyTable
-        ): ParsedFormDefinition =>
-          parseFormDefinition(viewDefinition, table)[0].definition;
+        ): Promise<ParsedFormDefinition> =>
+          parseFormDefinition(viewDefinition, table).then(
+            (definition) => definition[0].definition
+          );
 
-  const [errors, parsed] = captureLogOutput(() =>
+  const [errors, parsed] = captureLogOutput(async () =>
     parser(viewDefinition, table)
   );
   setLogContext(logContext);
@@ -254,7 +256,7 @@ export function parseViewDefinition(
     viewSetId: view.viewsetId ?? undefined,
     errors,
     name: view.name,
-    ...parsed,
+    ...(await parsed),
   };
 }
 
@@ -383,11 +385,14 @@ export type ParsedFormDefinition = {
   readonly rows: RA<RA<FormCellDefinition>>;
 };
 
-function parseFormTableDefinition(
+async function parseFormTableDefinition(
   viewDefinition: SimpleXmlNode,
   table: SpecifyTable
-): ParsedFormDefinition {
-  const { rows } = parseFormDefinition(viewDefinition, table)[0].definition;
+): Promise<ParsedFormDefinition> {
+  const definition = await parseFormDefinition(viewDefinition, table);
+
+  const { rows } = definition[0].definition;
+
   const labelsForCells = Object.fromEntries(
     filterArray(
       rows
@@ -467,77 +472,82 @@ export type ConditionalFormDefinition = RA<{
   readonly definition: ParsedFormDefinition;
 }>;
 
-export function parseFormDefinition(
+export async function parseFormDefinition(
   viewDefinition: SimpleXmlNode,
   table: SpecifyTable
-): ConditionalFormDefinition {
+): Promise<ConditionalFormDefinition> {
   const rowsContainers = viewDefinition?.children?.rows ?? [];
   const context = getLogContext();
-  const definition = rowsContainers.map((rowsContainer, definitionIndex) => {
-    const context = getLogContext();
-    pushContext({
-      type: 'Root',
-      node: rowsContainer,
-      extras: { definitionIndex },
-    });
-    const directColumnDefinitions = getColumnDefinitions(rowsContainer);
-    const rows = rowsContainer?.children?.row ?? [];
-    const definition = postProcessFormDef(
-      processColumnDefinition(
-        directColumnDefinitions.length === 0
-          ? getColumnDefinitions(viewDefinition)
-          : directColumnDefinitions
-      ),
-      rows.map((row, index) => {
-        const context = getLogContext();
-        pushContext({
-          type: 'Child',
-          tagName: 'row',
-          extras: { row: index + 1 },
-        });
+  const definition = await Promise.all(
+    rowsContainers.map(async (rowsContainer, definitionIndex) => {
+      const context = getLogContext();
+      pushContext({
+        type: 'Root',
+        node: rowsContainer,
+        extras: { definitionIndex },
+      });
+      const directColumnDefinitions = getColumnDefinitions(rowsContainer);
+      const rows = rowsContainer?.children?.row ?? [];
+      const definition = postProcessFormDef(
+        processColumnDefinition(
+          directColumnDefinitions.length === 0
+            ? getColumnDefinitions(viewDefinition)
+            : directColumnDefinitions
+        ),
+        await Promise.all(
+          rows.map(async (row, index) => {
+            const context = getLogContext();
+            pushContext({
+              type: 'Child',
+              tagName: 'row',
+              extras: { row: index + 1 },
+            });
 
-        const data = row.children.cell?.map((cell, index) => {
-          const context = getLogContext();
-          pushContext({
-            type: 'Child',
-            tagName: 'cell',
-            extras: { cell: index + 1 },
-          });
+            const data = await Promise.all(
+              row.children.cell?.map(async (cell, index) => {
+                const context = getLogContext();
+                pushContext({
+                  type: 'Child',
+                  tagName: 'cell',
+                  extras: { cell: index + 1 },
+                });
+                const data = await parseFormCell(table, cell);
 
-          const data = parseFormCell(table, cell);
+                setLogContext(context);
+                return data;
+              })
+            );
+            setLogContext(context);
+            return data ?? [];
+          })
+        ),
+        table
+      );
 
-          setLogContext(context);
-          return data;
-        });
-        setLogContext(context);
-        return data ?? [];
-      }),
-      table
-    );
-
-    const condition = getParsedAttribute(rowsContainer, 'condition')?.split(
-      '='
-    );
-    if (typeof condition === 'object') {
-      if (condition.length === 1 && condition[0] === 'always')
-        return { condition: { type: 'Always' }, definition } as const;
-      const value = condition.slice(1).join('=');
-      const parsedField = table.getFields(condition[0]);
-      if (Array.isArray(parsedField)) {
-        return {
-          condition: {
-            type: 'Value',
-            field: parsedField,
-            value,
-          },
-          definition,
-        } as const;
+      const condition = getParsedAttribute(rowsContainer, 'condition')?.split(
+        '='
+      );
+      if (typeof condition === 'object') {
+        if (condition.length === 1 && condition[0] === 'always')
+          return { condition: { type: 'Always' }, definition } as const;
+        const value = condition.slice(1).join('=');
+        const parsedField = table.getFields(condition[0]);
+        if (Array.isArray(parsedField)) {
+          return {
+            condition: {
+              type: 'Value',
+              field: parsedField,
+              value,
+            },
+            definition,
+          } as const;
+        }
       }
-    }
 
-    setLogContext(context);
-    return { condition: undefined, definition };
-  });
+      setLogContext(context);
+      return { condition: undefined, definition };
+    })
+  );
 
   setLogContext(context);
   return definition;

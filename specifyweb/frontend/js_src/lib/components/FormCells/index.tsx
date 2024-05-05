@@ -154,7 +154,7 @@ const cellRenderers: {
                   typeof viewDefinition === 'object'
                     ? resolveViewDefinition(
                         viewDefinition,
-                        viewDefinition.defaultSubviewFormType ?? formType,
+                        formType,
                         propsToFormMode(isReadOnly, isInSearchDialog)
                       )
                     : undefined
