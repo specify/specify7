@@ -22,7 +22,7 @@ export const notificationsText = createDictionary({
     'en-us': 'Notifications: {count:number|formatted}',
     'ru-ru': 'Уведомлений: {count:number|formatted}',
     'es-es': 'Notificaciones: {count:number|formatted}',
-    'fr-fr': 'Notifications : {count:number|formatted}',
+    'fr-fr': 'Notifications : {count:number|formatted}',
     'uk-ua': 'Сповіщення: {count:number|formatted}',
     'de-ch': 'Mitteilungen: {count:number|formatted}',
   },
@@ -33,7 +33,7 @@ export const notificationsText = createDictionary({
     'en-us': 'Notifications: …',
     'ru-ru': 'Уведомлений: …',
     'es-es': 'Notificaciones: …',
-    'fr-fr': 'Notifications : …',
+    'fr-fr': 'Notifications : …',
     'uk-ua': 'Сповіщення: …',
     'de-ch': 'Mitteilungen: …',
   },
@@ -41,7 +41,7 @@ export const notificationsText = createDictionary({
     'en-us': '(Ordered from most recent to the oldest.)',
     'ru-ru': '(В порядке от самого последнего к самому старому.)',
     'es-es': '(Ordenados del más reciente al más antiguo.)',
-    'fr-fr': '(De la plus récente à la plus ancienne.)',
+    'fr-fr': '(Classé du plus récent au plus ancien.)',
     'uk-ua': '(У порядку від останнього до найстарішого.)',
     'de-ch': '(Geordnet von neu zu alt)',
   },
@@ -66,7 +66,7 @@ export const notificationsText = createDictionary({
     'en-us': 'RSS Export feed has been updated.',
     'ru-ru': 'Элемент фида экспорта обновлен.',
     'es-es': 'Elemento de fuente de datos para exportación actualizado.',
-    'fr-fr': "Le flux d'export RSS a été mis à jour.",
+    'fr-fr': 'Le flux RSS Export a été mis à jour.',
     'uk-ua': 'Стрічку експорту RSS оновлено.',
     'de-ch': 'Der RSS-Export-Feed wurde aktualisiert.',
   },
@@ -74,7 +74,7 @@ export const notificationsText = createDictionary({
     'en-us': 'Export feed update failed.',
     'ru-ru': 'Не удалось обновить экспортный канал.',
     'es-es': 'Actualización de fuente de datos para exportación fallida.',
-    'fr-fr': "la mise à jour du flux d'export a échoué",
+    'fr-fr': "Échec de la mise à jour du flux d'exportation.",
     'uk-ua': 'Не вдалося експортувати оновлення каналу.',
     'de-ch': 'Die Aktualisierung des Export-Feeds ist fehlgeschlagen.',
   },
@@ -124,8 +124,8 @@ export const notificationsText = createDictionary({
       />.
     `,
     'fr-fr': `
-      <userName /> vous a transféré la propriété du jeu de données <dataSetName
-      />.
+      <userName /> vous a transféré la propriété de l'ensemble de données
+      <dataSetName />.
     `,
     'uk-ua': `
       <userName /> передав вам право власності на набір даних <dataSetName />.

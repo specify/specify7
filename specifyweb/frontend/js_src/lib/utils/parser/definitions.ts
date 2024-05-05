@@ -57,7 +57,12 @@ export type Parser = Partial<{
   readonly min: number | string;
   // Number, or a string date in yyyy-mm-dd format
   readonly max: number | string;
-  readonly step: number;
+  /*
+   * The step attribute defaults to 1 when not explicitly defined
+   * use `any` to disable step validation for numeric inputs
+   * See https://github.com/specify/specify7/pull/4758
+   */
+  readonly step: number | 'any';
   readonly placeholder: string;
   readonly pattern: RegExp;
   // Browsers use this as an error message when value does not match the pattern
@@ -130,6 +135,7 @@ export const parsers = f.store(
       validators: [validators.number],
       value: 0,
       printFormatter: numberPrintFormatter,
+      step: 'any',
     },
 
     'java.lang.Float': 'java.lang.Double',
@@ -170,6 +176,10 @@ export const parsers = f.store(
     'java.lang.String': {
       type: 'text',
       maxLength: 2 ** 31 - 1,
+      /*
+       * Note, despite empty string being default value, empty strings
+       * are cast to null in parseValue
+       */
       value: '',
     },
 
@@ -287,7 +297,7 @@ export function resolveParser(
 
 export function mergeParsers(base: Parser, extra: Parser): Parser {
   const uniqueConcat = ['formatters', 'validators'] as const;
-  const takeMin = ['max', 'step', 'maxLength'] as const;
+  const takeMin = ['max', 'maxLength'] as const;
   const takeMax = ['min', 'minLength'] as const;
 
   return Object.fromEntries(
@@ -304,12 +314,24 @@ export function mergeParsers(base: Parser, extra: Parser): Parser {
           f.unique([...(base[key] ?? []), ...(extra[key] ?? [])]),
         ])
         .filter(([_key, value]) => value.length > 0),
+      ['step', resolveStep(base.step, extra.step)],
       ...takeMin.map((key) => [key, resolveDate(base[key], extra[key], true)]),
       ...takeMax
         .map((key) => [key, resolveDate(base[key], extra[key], false)])
         .filter(([_key, value]) => Number.isFinite(value)),
     ].filter(([_key, value]) => value !== undefined)
   );
+}
+
+function resolveStep(
+  left: Parser['step'],
+  right: Parser['step']
+): Parser['step'] {
+  if (left === right) return left;
+  const values = filterArray([left, right]);
+  if (values.length === 1) return values[0];
+  if (values.includes('any')) return values.find((step) => step !== 'any');
+  return f.min(...(values as RA<number>));
 }
 
 function resolveDate(

@@ -19,6 +19,7 @@ import type { PickList, PickListItem, Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { format } from '../Formatters/formatters';
 import type { PickListItemSimple } from '../FormFields/ComboBox';
+import { getCollectionPref } from '../InitialContext/remotePrefs';
 import { hasTablePermission, hasToolPermission } from '../Permissions/helpers';
 import {
   createPickListItem,
@@ -114,11 +115,16 @@ async function fetchFromTable(
 ): Promise<RA<PickListItemSimple>> {
   const tableName = strictGetTable(pickList.get('tableName')).name;
   if (!hasTablePermission(tableName, 'read')) return [];
+
+  const scopeTablePicklist = getCollectionPref(
+    'sp7_scope_table_picklists',
+    schema.domainLevelIds.collection
+  );
+
   const { records } = await fetchCollection(tableName, {
-    domainFilter: !f.includes(
-      Object.keys(schema.domainLevelIds),
-      toLowerCase(tableName)
-    ),
+    domainFilter: scopeTablePicklist
+      ? true
+      : !f.includes(Object.keys(schema.domainLevelIds), toLowerCase(tableName)),
     limit,
   });
   return Promise.all(
@@ -152,6 +158,7 @@ async function fetchFromField(
     limit,
     fields: { [fieldName]: ['string', 'number', 'boolean', 'null'] },
     distinct: true,
+    domainFilter: true,
   }).then((rows) =>
     rows
       .map((row) => row[fieldName] ?? '')

@@ -59,11 +59,12 @@ export const processColRelationships = async (
 export async function fetchOtherCollectionData(
   resource: SpecifyResource<CollectionObject>,
   relationship: string,
-  formatting: string | undefined
+  formatting: string | undefined,
+  muteWrongCollectionError = false
 ): Promise<CollectionRelData | undefined> {
   const { relationshipType, left, right } = await fetchCollection(
     'CollectionRelType',
-    { name: relationship, limit: 1 }
+    { name: relationship, limit: 1, domainFilter: false }
   )
     // BUG: this does not handle the not found case
     .then(({ records }) => deserializeResource(records[0]))
@@ -86,11 +87,12 @@ export async function fetchOtherCollectionData(
     otherSide = 'left';
     relatedCollection = left;
   } else {
-    softFail(
-      new Error(
-        "Related collection plugin used with relation that doesn't match current collection"
-      )
-    );
+    if (!muteWrongCollectionError)
+      softFail(
+        new Error(
+          "Related collection plugin used with relation that doesn't match current collection"
+        )
+      );
     return undefined;
   }
   if (relatedCollection === null) {
@@ -107,7 +109,7 @@ export async function fetchOtherCollectionData(
       typeof resource.id === 'number'
         ? await fetchCollection(
             'CollectionRelationship',
-            { limit: DEFAULT_FETCH_LIMIT },
+            { limit: DEFAULT_FETCH_LIMIT, domainFilter: false },
             side === 'left'
               ? {
                   leftside_id: resource.id,

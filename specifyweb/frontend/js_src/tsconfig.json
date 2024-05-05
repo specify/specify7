@@ -44,8 +44,7 @@
     "noEmit": true,
     "sourceMap": true,
     "target": "esnext",
-    "allowJs": true,
-    "checkJs": false,
+    "allowJs": false,
     /**/
     /* Strict Checks */
     "strict": true,

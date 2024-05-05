@@ -29,12 +29,14 @@ If applicable, add screenshots to help explain your problem.
 If the bug resulted in an error message, please click on "Download Error
 Message" and attach it here
 
-Alternatively, please fill out the following information manually:
+Please, also fill out the following information manually:
 
 - OS: [e.g. Windows 10]
 - Browser: [e.g. Chrome, Safari]
 - Specify 7 Version: [e.g. 7.6.1]
 - Database Name: [e.g. kufish] (you can see this in the "About Specify 7" dialog)
+- Collection name: [e.g. KU Fish Tissue]
+- User Name: [e.g. SpAdmin]
 
 **Reported By**
 Name of your institution

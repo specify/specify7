@@ -1,18 +1,25 @@
-import type { LocalizedString } from 'typesafe-i18n';
-
 import type { ResolvablePromise } from '../../utils/promise';
 import { flippedPromise } from '../../utils/promise';
 import type { IR, RA } from '../../utils/types';
 import { filterArray, overwriteReadOnly } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
-import { formatConjunction } from '../Atoms/Internationalization';
+import { softFail } from '../Errors/Crash';
 import { isTreeResource } from '../InitialContext/treeRanks';
 import type { BusinessRuleDefs } from './businessRuleDefs';
 import { businessRuleDefs } from './businessRuleDefs';
 import { backboneFieldSeparator, djangoLookupSeparator } from './helpers';
-import type { AnySchema, AnyTree, CommonFields } from './helperTypes';
+import type {
+  AnySchema,
+  AnyTree,
+  CommonFields,
+  TableFields,
+} from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
-import { setSaveBlockers } from './saveBlockers';
+import {
+  getFieldBlockerKey,
+  propagateBlockerEvents,
+  setSaveBlockers,
+} from './saveBlockers';
 import { specialFields } from './serializers';
 import type { LiteralField, Relationship } from './specifyField';
 import type { Collection, SpecifyTable } from './specifyTable';
@@ -51,11 +58,16 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     this.resource.on('change', this.changed, this);
     this.resource.on('add', this.added, this);
     this.resource.on('remove', this.removed, this);
+    this.resource.on('destroy', () => propagateBlockerEvents(this.resource));
   }
 
   public async checkField(
-    fieldName: keyof SCHEMA['fields'] | keyof SCHEMA['toOneIndependent']
+    fieldName: string &
+      (keyof SCHEMA['fields'] | keyof SCHEMA['toOneIndependent'])
   ): Promise<RA<BusinessRuleResult<SCHEMA>>> {
+    const field = this.resource.specifyTable.getField(fieldName);
+    if (field === undefined) return [];
+
     const processedFieldName = fieldName.toString().toLowerCase();
     const thisCheck: ResolvablePromise<string> = flippedPromise();
     this.addPromise(thisCheck);
@@ -65,12 +77,12 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     this.fieldChangePromises[processedFieldName] = thisCheck;
 
     const checks: RA<Promise<BusinessRuleResult<SCHEMA> | undefined>> = [
+      ...this.checkUnique(processedFieldName),
       this.invokeRule('fieldChecks', processedFieldName, [this.resource]),
-      this.checkUnique(processedFieldName),
       isTreeResource(this.resource as SpecifyResource<AnySchema>)
         ? treeBusinessRules(
             this.resource as SpecifyResource<AnyTree>,
-            processedFieldName
+            processedFieldName as TableFields<AnyTree>
           )
         : Promise.resolve({ isValid: true }),
     ];
@@ -98,7 +110,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   ): void {
     this.pendingPromise = Promise.allSettled([
       this.pendingPromise,
-      promise,
+      promise.catch(softFail),
     ]).then(() => undefined);
   }
 
@@ -140,6 +152,8 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     resource: SpecifyResource<SCHEMA>,
     collection: Collection<SCHEMA>
   ): void {
+    // TODO: optimize because it will recalculate everything
+    propagateBlockerEvents(this.resource);
     this.addPromise(
       this.invokeRule('onRemoved', undefined, [resource, collection])
     );
@@ -151,22 +165,30 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   ): RA<BusinessRuleResult<SCHEMA>> {
     if (!specialFields.has(fieldName)) {
       const field = this.resource.specifyTable.strictGetField(fieldName);
-      const saveBlockerMessages = filterArray(
-        results.map((result) => (result.isValid ? undefined : result.reason))
-      );
-      setSaveBlockers(this.resource, field, saveBlockerMessages);
+
+      results.forEach((result) => {
+        const saveBlockerMessage = result.isValid ? [] : [result.reason];
+        const saveBlockerKey =
+          result.saveBlockerKey === undefined
+            ? getFieldBlockerKey(field, 'business-rule')
+            : result.saveBlockerKey;
+
+        setSaveBlockers(
+          this.resource,
+          field,
+          saveBlockerMessage,
+          saveBlockerKey
+        );
+
+        if (result.isValid) result.action?.();
+      });
     }
-
-    results.forEach((result) => {
-      if (result.isValid) result.action?.();
-    });
-
     return results;
   }
 
-  private async checkUnique(
+  private checkUnique(
     fieldName: string & keyof SCHEMA['fields']
-  ): Promise<BusinessRuleResult<SCHEMA>> {
+  ): RA<Promise<BusinessRuleResult<SCHEMA>>> {
     const rules = getUniquenessRules(this.resource.specifyTable.name) ?? [];
     const rulesToCheck = rules.filter(({ rule }) =>
       rule.fields.some(
@@ -175,7 +197,9 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       )
     );
 
-    const results = rulesToCheck.map(async ({ rule }) => this.uniqueIn(rule));
+    const results: RA<Promise<BusinessRuleResult<SCHEMA>>> = rulesToCheck.map(
+      async ({ rule }) => this.uniqueIn(rule)
+    );
     void Promise.all(results).then((results) =>
       results
         .flatMap((result: BusinessRuleResult<SCHEMA>) => result.localDuplicates)
@@ -187,7 +211,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
             this.watchers[event] = (): void =>
               duplicate.on(
                 `change:${fieldName}`,
-                () => void this.checkField(fieldName)
+                () => void this.checkField(fieldName).catch(softFail)
               );
             duplicate.once('remove', () => {
               this.watchers = removeKey(this.watchers, event);
@@ -195,22 +219,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
           }
         })
     );
-    return Promise.all(results).then((results) => {
-      const invalids = results.filter((result) => !result.isValid);
-      return invalids.length === 0
-        ? { isValid: true }
-        : {
-            isValid: false,
-            reason: formatConjunction(
-              invalids.map(
-                (invalid) =>
-                  invalid[
-                    'reason' as keyof BusinessRuleResult
-                  ] as unknown as LocalizedString
-              )
-            ),
-          };
-    });
+    return results;
   }
 
   private async uniqueIn(
@@ -218,6 +227,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   ): Promise<BusinessRuleResult<SCHEMA>> {
     const invalidResponse: BusinessRuleResult<SCHEMA> = {
       isValid: false,
+      saveBlockerKey: `uniqueness-${rule.id!}`,
       reason: getUniqueInvalidReason(
         rule.scopes.map(
           (scope) =>
@@ -229,6 +239,10 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
           this.resource.specifyTable.strictGetField(field)
         )
       ),
+    };
+    const validResponse: BusinessRuleResult<SCHEMA> = {
+      isValid: true,
+      saveBlockerKey: `uniqueness-${rule.id!}`,
     };
 
     const getFieldValue = async (
@@ -242,6 +256,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       const localCollection = resource.collection ?? {
         models: [],
         field: undefined,
+        related: undefined,
       };
 
       const collectionField = localCollection.field;
@@ -320,10 +335,18 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
             value: otherValue,
           } = otherFieldValues;
           const { id, cid, value } = fieldValues[fieldName];
+          const field = this.resource.specifyTable.getField(fieldName);
           if (otherCid !== undefined && cid !== undefined && otherCid === cid)
             return true;
           if (otherId !== undefined && id !== undefined && otherId === id)
             return true;
+          if (
+            field !== undefined &&
+            !(field.isRequired || field.localization.isrequired) &&
+            (value === undefined || value === null)
+          ) {
+            return false;
+          }
           return (
             otherId === undefined &&
             otherCid === undefined &&
@@ -363,8 +386,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       ])
     );
 
-    if (Object.values(partialFilters).includes(undefined))
-      return { isValid: true };
+    if (Object.values(partialFilters).includes(undefined)) return validResponse;
 
     return new this.resource.specifyTable.LazyCollection({
       filters: partialFilters as Partial<
@@ -382,7 +404,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         )
       )
       .then((foundDuplicates) =>
-        foundDuplicates.includes(true) ? invalidResponse : { isValid: true }
+        foundDuplicates.includes(true) ? invalidResponse : validResponse
       );
   }
 
@@ -446,6 +468,7 @@ export function attachBusinessRules(
 
 export type BusinessRuleResult<SCHEMA extends AnySchema = AnySchema> = {
   readonly localDuplicates?: RA<SpecifyResource<SCHEMA>>;
+  readonly saveBlockerKey?: string;
 } & (
   | {
       readonly isValid: true;

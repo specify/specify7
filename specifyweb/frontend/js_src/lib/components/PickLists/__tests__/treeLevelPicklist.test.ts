@@ -5,7 +5,8 @@ import { tables } from '../../DataModel/tables';
 import type { Taxon } from '../../DataModel/types';
 import { exportsForTests } from '../TreeLevelPickList';
 
-const { fetchPossibleRanks, fetchLowestChildRank } = exportsForTests;
+const { fetchPossibleRanks, fetchLowestChildRank, ranksToPicklistItems } =
+  exportsForTests;
 
 requireContext();
 
@@ -70,10 +71,8 @@ describe('fetchPossibleRanks', () => {
     );
     await animalia.fetch();
 
-    const lowestChildRank = await fetchLowestChildRank(animalia);
-
     await expect(
-      fetchPossibleRanks(lowestChildRank, animalia.id, 'Taxon')
+      fetchPossibleRanks(animalia, animalia.id).then(ranksToPicklistItems)
     ).resolves.toEqual([
       {
         title: 'Kingdom',
@@ -97,10 +96,8 @@ describe('fetchPossibleRanks', () => {
     );
     await chordata.fetch();
 
-    const lowestChildRank = await fetchLowestChildRank(chordata);
-
     await expect(
-      fetchPossibleRanks(lowestChildRank, chordata.id, 'Taxon')
+      fetchPossibleRanks(chordata, chordata.id).then(ranksToPicklistItems)
     ).resolves.toEqual([
       {
         title: 'Kingdom',

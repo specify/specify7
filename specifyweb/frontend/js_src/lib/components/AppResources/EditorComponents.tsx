@@ -23,7 +23,7 @@ import { LoadingContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { useSaveBlockers } from '../DataModel/saveBlockers';
+import { getFieldBlockerKey, useSaveBlockers } from '../DataModel/saveBlockers';
 import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
 import { DeleteButton } from '../Forms/DeleteButton';
 import { Dialog } from '../Molecules/Dialog';
@@ -213,28 +213,32 @@ export function useCodeMirrorExtensions(
     () => getAppResourceExtension(resource),
     [resource]
   );
-  const [extensions, setExtensions] = React.useState<RA<Extension>>([]);
-  const [_blockers, setBlockers] = useSaveBlockers(
-    appResource,
-    React.useMemo(
-      () => getField(appResource.specifyTable, 'spAppResourceDatas'),
-      [appResource.specifyTable]
-    )
+  const field = React.useMemo(
+    () => getField(appResource.specifyTable, 'spAppResourceDatas'),
+    [appResource.specifyTable]
   );
+
+  const [extensions, setExtensions] = React.useState<RA<Extension>>([]);
+  const [_blockers, setBlockers] = useSaveBlockers(appResource, field);
 
   React.useEffect(() => {
     let isFirstLint = true;
     function handleLinted(results: RA<Diagnostic>, view: EditorView): void {
       if (isFirstLint && results.length > 0) {
         isFirstLint = false;
-        setTimeout(() => openLintPanel(view), 0);
+        setTimeout(() => {
+          const currentFocus = document.activeElement as HTMLElement | null;
+          openLintPanel(view);
+          currentFocus?.focus();
+        }, 0);
       }
       setBlockers(
         filterArray(
           results.map(({ message, severity }) =>
             severity === 'error' ? message : undefined
           )
-        )
+        ),
+        getFieldBlockerKey(field, 'appResourceError')
       );
     }
 
@@ -255,7 +259,8 @@ export function useCodeMirrorExtensions(
       search(),
     ]);
 
-    return (): void => setBlockers([]);
+    return (): void =>
+      setBlockers([], getFieldBlockerKey(field, 'appResourceError'));
   }, [
     appResource,
     mode,

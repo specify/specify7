@@ -94,6 +94,8 @@ export const Key = wrap(
   'bg-gray-200 border-1 dark:border-none dark:bg-neutral-700 rounded-sm mx-1 p-0.5'
 );
 
+const defaultOneRem = 16;
 export const oneRem = Number.parseFloat(
-  getComputedStyle(document.documentElement).fontSize
+  globalThis.getComputedStyle?.(document.documentElement).fontSize ??
+    defaultOneRem
 );

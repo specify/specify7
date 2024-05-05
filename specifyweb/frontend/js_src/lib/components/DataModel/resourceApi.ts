@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import _ from 'underscore';
 
 import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
@@ -17,6 +19,8 @@ import {
 } from './resource';
 import { initializeResource } from './scoping';
 import { specialFields } from './serializers';
+
+// REFACTOR: remove @ts-nocheck
 
 function eventHandlerForToOne(related, field) {
   return function (event) {

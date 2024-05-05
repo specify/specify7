@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
+import { reportsText } from '../../localization/report';
 import { schemaText } from '../../localization/schema';
 import { f } from '../../utils/functools';
 import { booleanFormatter } from '../../utils/parser/parse';
@@ -21,7 +22,7 @@ export function SchemaViewerFields({
   readonly table: SpecifyTable;
 }): JSX.Element {
   const data = React.useMemo(() => getFields(table), [table]);
-  const scope = table.getDirectScope()?.relatedTable.name;
+  const scope = table.getScopingRelationship()?.relatedTable.name;
 
   return (
     <>
@@ -54,7 +55,7 @@ const fieldColumns = f.store(
   () =>
     ({
       name: getField(tables.SpLocaleContainerItem, 'name').label,
-      label: schemaText.fieldLabel(),
+      label: reportsText.labels(),
       description: schemaText.description(),
       isHidden: getField(tables.SpLocaleContainerItem, 'isHidden').label,
       isReadOnly: schemaText.readOnly(),

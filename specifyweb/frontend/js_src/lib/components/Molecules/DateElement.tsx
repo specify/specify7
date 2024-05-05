@@ -2,7 +2,7 @@ import React from 'react';
 
 import { LANGUAGE } from '../../localization/utils/config';
 import { getRelativeDate } from '../Atoms/Internationalization';
-import { HOUR, MILLISECONDS, MINUTE, SECOND } from '../Atoms/timeUnits';
+import { HOUR, MINUTE, SECOND } from '../Atoms/timeUnits';
 
 const longDate = new Intl.DateTimeFormat(LANGUAGE, {
   dateStyle: 'full',
@@ -40,12 +40,10 @@ function DateElementSafe({
   React.useEffect(() => {
     let timeout: NodeJS.Timeout | undefined;
 
-    function updateRelativeDate() {
+    function updateRelativeDate(): void {
       if (date) {
         const now = new Date();
-        const timeDifference = Math.abs(
-          (now.getTime() - dateObject.getTime()) / MILLISECONDS
-        );
+        const timeDifference = Math.abs(now.getTime() - dateObject.getTime());
 
         let timeoutValue = 0;
 

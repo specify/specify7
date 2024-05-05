@@ -104,6 +104,12 @@ export type AttachmentDatasetBrief = DatasetBriefBase & {
     | 'validating';
 };
 
+export type AttachmentDataSetPlan = AttachmentDatasetBrief & {
+  readonly uploadplan: {
+    readonly staticPathKey: string;
+  };
+};
+
 export type AttachmentDataSet = AttachmentDatasetBrief &
   DatasetBase & {
     readonly rows: RA<PartialUploadableFileSpec>;

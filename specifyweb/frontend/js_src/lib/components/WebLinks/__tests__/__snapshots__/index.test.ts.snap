@@ -43,16 +43,16 @@ exports[`weblinks are fetched and parsed correctly 1`] = `
         "value": "http://www.fishbase.org/Summary/",
       },
       {
-        "label": "Genus",
-        "type": "PromptField",
+        "type": "UrlPart",
+        "value": "",
       },
       {
         "type": "UrlPart",
         "value": "-",
       },
       {
-        "label": "Species",
-        "type": "PromptField",
+        "type": "UrlPart",
+        "value": "",
       },
       {
         "type": "UrlPart",
@@ -121,8 +121,8 @@ exports[`weblinks are fetched and parsed correctly 1`] = `
         "value": "https://ichthyology.specify.ku.edu/specify/bycatalog/KUI/",
       },
       {
-        "label": "catalogNumber",
-        "type": "PromptField",
+        "type": "UrlPart",
+        "value": "",
       },
       {
         "type": "UrlPart",
