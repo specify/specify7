@@ -61,7 +61,11 @@ export function WbUtilsComponent({
               disabled={isReadOnly}
               forwardRef={replaceRef}
               placeholder={wbText.replace()}
-              title={wbText.replacementValue()}
+              title={
+                isReadOnly
+                  ? wbText.unavailableWhileViewingResults()
+                  : wbText.replacementValue()
+              }
               type="search"
               onKeyDown={(event) =>
                 utils.replaceCells(event, replaceRef.current)

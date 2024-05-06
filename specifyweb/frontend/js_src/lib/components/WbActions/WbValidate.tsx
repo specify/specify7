@@ -12,10 +12,14 @@ export function WbValidate({
   hasUnsavedChanges,
   startUpload,
   validation,
+  isMapped,
+  isResultsOpen,
 }: {
   readonly hasUnsavedChanges: boolean;
   readonly startUpload: (mode: WbStatus) => void;
   readonly validation: WbValidation;
+  readonly isMapped: boolean;
+  readonly isResultsOpen: boolean;
 }): JSX.Element {
   const [canLiveValidate] = userPreferences.use(
     'workBench',
@@ -35,6 +39,14 @@ export function WbValidate({
         <Button.Small
           aria-pressed={validation.validationMode === 'live'}
           onClick={handleToggleDataCheck}
+          disabled={!isMapped || isResultsOpen}
+          title={
+            !isMapped
+              ? wbText.wbValidateUnavailable()
+              : isResultsOpen
+              ? wbText.unavailableWhileViewingResults()
+              : undefined
+          }
         >
           {isLiveValidateOn && validation.validationMode === 'live'
             ? validation.liveValidationStack.length > 0
@@ -48,8 +60,14 @@ export function WbValidate({
       ) : undefined}
       <Button.Small
         aria-haspopup="dialog"
-        disabled={hasUnsavedChanges}
-        title={hasUnsavedChanges ? wbText.unavailableWhileEditing() : ''}
+        disabled={hasUnsavedChanges || !isMapped}
+        title={
+          hasUnsavedChanges
+            ? wbText.unavailableWhileEditing()
+            : !isMapped
+            ? wbText.wbValidateUnavailable()
+            : undefined
+        }
         onClick={handleValidate}
       >
         {wbText.validate()}

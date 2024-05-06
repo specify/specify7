@@ -847,6 +847,29 @@ export const wbText = createDictionary({
     'uk-ua': 'Набір даних має бути перевірений або завантажений',
     'de-ch': 'Der Datensatz muss validiert oder hochgeladen werden',
   },
+  wbValidateUnavailable: {
+    'en-us':
+      'An Upload Plan needs to defined before this Data Set can be Validated',
+    'ru-ru': `
+      План загрузки должен быть определен до того, как этот набор данных может
+      быть проверен
+    `,
+    'es-es': `
+      Se necesita definir un Plan de Carga antes de poder Validar este Conjunto
+      de Datos
+    `,
+    'fr-fr': `
+      Un plan de téléchargement doit être défini avant que cet ensemble de
+      données puisse être validé
+    `,
+    'uk-ua': `
+      Перед перевіркою цього набору даних необхідно визначити план завантаження
+    `,
+    'de-ch': `
+      Bevor dieser Datensatz validiert werden kann, muss ein Upload-Plan
+      definiert werden
+    `,
+  },
   unavailableWhileEditing: {
     'en-us': 'This action requires all changes to be saved',
     'ru-ru': 'Это действие требует сохранения всех изменений',
@@ -914,6 +937,15 @@ export const wbText = createDictionary({
     'fr-fr': 'Cet outil nécessite que les colonnes de localité soient mappées',
     'uk-ua': 'Цей інструмент вимагає відображення стовпців місцевості',
     'de-ch': 'Für dieses Tool müssen Ortsspalten zugeordnet werden',
+  },
+  unavailableWhenUploaded: {
+    'en-us': 'This tool does not work with uploaded Data Sets',
+    'ru-ru': 'Этот инструмент не работает с загруженными наборами данных',
+    'es-es': 'Esta herramienta no funciona con Conjuntos de Datos cargados',
+    'fr-fr':
+      'Cet outil ne fonctionne pas avec les ensembles de données téléchargés',
+    'uk-ua': 'Цей інструмент не працює із завантаженими наборами даних',
+    'de-ch': 'Dieses Tool funktioniert nicht mit hochgeladenen Datensätzen',
   },
   dataSetDeletedOrNotFound: {
     'en-us': 'Data Set was deleted by another session.',

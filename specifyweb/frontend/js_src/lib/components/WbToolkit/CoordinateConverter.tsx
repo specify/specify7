@@ -27,12 +27,16 @@ export function WbConvertCoordinates({
   data,
   mappings,
   hot,
+  isUploaded,
+  isResultsOpen,
 }: {
   readonly hasLocality: boolean;
   readonly dataset: Dataset;
   readonly data: RA<RA<string | null>>;
   readonly mappings: WbMapping | undefined;
   readonly hot: Handsontable;
+  readonly isUploaded: boolean;
+  readonly isResultsOpen: boolean;
 }): JSX.Element {
   const [showConvertCoords, openConvertCoords, closeConvertCoords] =
     useBooleanState();
@@ -41,8 +45,16 @@ export function WbConvertCoordinates({
       <Button.Small
         aria-haspopup="dialog"
         aria-pressed={showConvertCoords}
-        disabled={!hasLocality}
-        title={wbText.unavailableWithoutLocality()}
+        disabled={!hasLocality || isResultsOpen || isUploaded}
+        title={
+          !hasLocality
+            ? wbText.unavailableWithoutLocality()
+            : isUploaded
+            ? wbText.unavailableWhenUploaded()
+            : isResultsOpen
+            ? wbText.unavailableWhileViewingResults()
+            : undefined
+        }
         onClick={openConvertCoords}
       >
         {wbText.convertCoordinates()}

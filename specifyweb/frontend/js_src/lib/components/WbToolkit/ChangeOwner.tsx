@@ -35,7 +35,7 @@ export function WbChangeOwner({
         aria-haspopup="dialog"
         aria-pressed={showChangeOwner}
         disabled={hasUnsavedChanges}
-        title={hasUnsavedChanges ? wbText.unavailableWhileEditing() : ''}
+        title={hasUnsavedChanges ? wbText.unavailableWhileEditing() : undefined}
         onClick={openChangeOwner}
       >
         {wbText.changeOwner()}

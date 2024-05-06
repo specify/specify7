@@ -29,11 +29,15 @@ export function WbGeoLocate({
   hot,
   dataset,
   mappings,
+  isUploaded,
+  isResultsOpen,
 }: {
   readonly hasLocality: boolean;
   readonly hot: Handsontable;
   readonly dataset: Dataset;
   readonly mappings: WbMapping | undefined;
+  readonly isUploaded: boolean;
+  readonly isResultsOpen: boolean;
 }): JSX.Element {
   const [showGeoLocate, openGeoLocate, closeGeoLocate] = useBooleanState();
   return (
@@ -41,8 +45,16 @@ export function WbGeoLocate({
       <Button.Small
         aria-haspopup="dialog"
         aria-pressed={showGeoLocate}
-        disabled={!hasLocality}
-        title={wbText.unavailableWithoutLocality()}
+        disabled={!hasLocality || isResultsOpen || isUploaded}
+        title={
+          !hasLocality
+            ? wbText.unavailableWithoutLocality()
+            : isUploaded
+            ? wbText.unavailableWhenUploaded()
+            : isResultsOpen
+            ? wbText.unavailableWhileViewingResults()
+            : undefined
+        }
         onClick={openGeoLocate}
       >
         {localityText.geoLocate()}

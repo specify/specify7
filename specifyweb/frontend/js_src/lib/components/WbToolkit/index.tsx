@@ -22,6 +22,8 @@ export function WbToolkit({
   dataset,
   hot,
   mappings,
+  isUploaded,
+  isResultsOpen,
   data,
   onDatasetDeleted: handleDatasetDeleted,
   hasUnsavedChanges,
@@ -31,6 +33,8 @@ export function WbToolkit({
   readonly hot: Handsontable;
   readonly mappings: WbMapping | undefined;
   readonly data: RA<RA<string | null>>;
+  readonly isUploaded: boolean;
+  readonly isResultsOpen: boolean;
   readonly onDatasetDeleted: () => void;
   readonly hasUnsavedChanges: boolean;
   readonly triggerDatasetRefresh: () => void;
@@ -77,7 +81,7 @@ export function WbToolkit({
       </ErrorBoundary>
       <Button.Small
         disabled={hasUnsavedChanges}
-        title={hasUnsavedChanges ? wbText.unavailableWhileEditing() : ''}
+        title={hasUnsavedChanges ? wbText.unavailableWhileEditing() : undefined}
         onClick={handleExport}
       >
         {commonText.export()}
@@ -92,6 +96,8 @@ export function WbToolkit({
               hasLocality={hasLocality}
               hot={hot}
               mappings={mappings}
+              isResultsOpen={isResultsOpen}
+              isUploaded={isUploaded}
             />
           </ErrorBoundary>
           <ErrorBoundary dismissible>
@@ -100,6 +106,8 @@ export function WbToolkit({
               hasLocality={hasLocality}
               hot={hot}
               mappings={mappings}
+              isResultsOpen={isResultsOpen}
+              isUploaded={isUploaded}
             />
           </ErrorBoundary>
         </>

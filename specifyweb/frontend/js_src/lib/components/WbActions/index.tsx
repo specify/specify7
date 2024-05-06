@@ -67,6 +67,13 @@ export function WbActions({
 
   const message = mode === undefined ? undefined : getMessage(cellCounts, mode);
 
+  const isMapped = mappings !== undefined;
+
+  const dataCheckInProgress = React.useMemo(
+    () => workbench.validation.liveValidationStack.length > 0,
+    [workbench.validation.liveValidationStack.length]
+  );
+
   return (
     <>
       <WbNoUploadPlan
@@ -83,6 +90,8 @@ export function WbActions({
             hasUnsavedChanges={hasUnsavedChanges}
             startUpload={actions.startUpload}
             validation={workbench.validation}
+            isMapped={isMapped}
+            isResultsOpen={isResultsOpen}
           />
         </ErrorBoundary>
       ) : undefined}
@@ -90,8 +99,14 @@ export function WbActions({
         <Button.Small
           aria-haspopup="tree"
           aria-pressed={isResultsOpen}
-          disabled={hasUnsavedChanges}
-          title={wbText.wbUploadedUnavailable()}
+          disabled={hasUnsavedChanges || !isMapped || dataCheckInProgress}
+          title={
+            dataCheckInProgress
+              ? wbText.unavailableWhileValidating()
+              : !isUploaded
+              ? wbText.wbUploadedUnavailable()
+              : undefined
+          }
           onClick={handleToggleResults}
         >
           {commonText.results()}
