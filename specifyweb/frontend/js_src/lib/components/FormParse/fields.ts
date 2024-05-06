@@ -70,7 +70,13 @@ export type FieldTypes = {
       readonly min: number | string | undefined;
       readonly max: number | string | undefined;
       // These are used by numeric field only
-      readonly step: number | undefined;
+
+      /*
+       * 'any' is not a valid step attribute on the form, and not validated
+       * by the Syncer, but is required for the default step for floating
+       * point fields
+       */
+      readonly step: number | 'any' | undefined;
       readonly minLength: number | undefined;
       readonly maxLength: number | undefined;
     }
