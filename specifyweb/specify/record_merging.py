@@ -4,6 +4,7 @@ A few non-business data resource end points
 
 import json
 from itertools import groupby
+import re
 from typing import Any, Callable, Dict, List, Optional
 import traceback
 
@@ -220,7 +221,10 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
             field_name = col.lower()
             field_name_id = f'{field_name}_id'
             if not hasattr(foreign_model, field_name_id):
-                continue
+                if field_name.endswith('s') and hasattr(foreign_model, field_name):
+                    field_name_id = field_name
+                else:
+                    continue
 
             # Filter the objects in the foreign model that references the old target model
             foreign_objects = filter_and_lock_target_objects(foreign_model, old_model_ids, field_name_id)
@@ -241,11 +245,35 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
                         # EXAMPLE: ProtectedError: ("Cannot delete some instances of model 'Address' because they are 
                         # referenced through protected foreign keys:
                         # 'Division.address'.", {<Division: Division object (2)>})
-                        raise
+                        # 'Collectingevent.collectingeventattribute'", <QuerySet [<Collectingevent: Collectingevent object (2)>]>)
+                        match = re.search(r"'(\w+)\.(\w+)'", str(e))
+                        if match:
+                            protected_table, protected_field = match.groups()
+                            protected_model = getattr(spmodels, protected_table)
+                            # Check if this field is not required before updating it to None
+                            protected_dm_table = spmodels.datamodel.get_table(protected_table)
+                            protected_dm_field = protected_dm_table.get_field(protected_field) \
+                                if protected_dm_table else None
+                            if not protected_dm_table or not protected_dm_field or protected_dm_field.required:
+                                continue
+                            protected_model.objects.filter(**{protected_field: obj}).update(**{protected_field: None})
+                            try:
+                                obj.delete()
+                            except ProtectedError as e:
+                                raise
+                        else:
+                            raise
+
                     continue
 
-                # Set new value for the field
-                setattr(obj, field_name_id, new_model_id)
+                try:
+                    # Set new value for the field
+                    setattr(obj, field_name_id, new_model_id)
+                except TypeError as e:
+                    if "Direct assignment to the reverse side of a related set is prohibited" in str(e):
+                        continue
+                    else:
+                        raise
 
                 def record_merge_recur(row_to_lock=None):
                     """ Recursively run another merge process to resolve uniqueness constraints.
