@@ -119,11 +119,14 @@ class ObjectFormatter(object):
         formatter = fieldNodeAttrib.get('formatter', None)
         aggregator = fieldNodeAttrib.get('aggregator', None)
         next_table_name = formatter_field_spec.table.name
+
+        # preserve sql table alias
+        formatter_field_spec = formatter_field_spec._replace(root_sql_table=orm_table)
+
         if formatter_field_spec.is_relationship():
             if previous_tables is not None and next_table_name in [table_name for table_name, _ in previous_tables]:
-                return (query, literal(
-                    _text(f"<Cycle Detected.>: {'->'.join([*[str(_) for _ in previous_tables], next_table_name])}")),
-                        formatter_field_spec)
+                return query, literal(_text('')), formatter_field_spec
+
             new_query, new_expr, _, __ = formatter_field_spec.add_spec_to_query(
                 query,
                 formatter,
@@ -165,7 +168,13 @@ class ObjectFormatter(object):
             for node in caseNode.findall('field'):
                 query, expr, _ = self.make_expr(query, node.text, node.attrib, orm_table, specify_model, cycle_with_self)
                 field_exprs.append(expr)
-            expr = concat(*field_exprs) if len(field_exprs) > 1 else field_exprs[0]
+            if field_exprs:
+                if len(field_exprs) > 1:
+                    expr = concat(*field_exprs)
+                else:    
+                    expr = field_exprs[0]
+            else:
+                expr = None
             return query, caseNode.attrib.get('value', None), expr
 
         switchNode = formatterNode.find('switch')
@@ -179,7 +188,7 @@ class ObjectFormatter(object):
             logger.warn(
                 "dataobjformatter for %s contains switch clause no fields",
                 specify_model)
-            return query, literal(_("<Formatter not defined.>"))
+            return query, literal(_text("<Formatter not defined.>"))
 
         if single:
             value, expr = cases[0]
