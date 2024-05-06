@@ -69,7 +69,7 @@ export const wbPlanText = createDictionary({
     'es-es': 'sin mapear',
     'fr-fr': 'Non mappé',
     'uk-ua': 'Не зіставлений',
-    'de-ch': 'Eine Zuordnung ist erforderlich',
+    'de-ch': 'Zuordnung ist erforderlich',
   },
   mapped: {
     'en-us': 'Mapped',
@@ -213,7 +213,7 @@ export const wbPlanText = createDictionary({
       uniquement pour le téléchargement.
     `,
     'uk-ua': `
-      Якщо встановлено значення «Ігнорувати завжди», значення в цьому стовпці
+      Якщо встановлено значення «Завжди ігнорувати», значення в цьому стовпці
       ніколи не розглядатиметься для цілей зіставлення, лише для завантаження.
     `,
     'de-ch': `
@@ -345,7 +345,7 @@ export const wbPlanText = createDictionary({
     'es-es': 'Se requiere asignación',
     'fr-fr': 'Une cartographie est requise',
     'uk-ua': 'Потрібне відображення',
-    'de-ch': 'Eine Zuordnung ist erforderlich',
+    'de-ch': 'Zuordnung ist erforderlich',
   },
   continueEditing: {
     'en-us': 'Continue Editing',
@@ -484,7 +484,7 @@ export const wbPlanText = createDictionary({
     'en-us': 'Base Table',
     'ru-ru': 'Базовая таблица',
     'es-es': 'Tabla Base',
-    'fr-fr': 'Tableau de base',
+    'fr-fr': 'Table de base',
     'uk-ua': 'Базовий стіл',
     'de-ch': 'Basistabelle',
   },
@@ -531,8 +531,8 @@ export const wbPlanText = createDictionary({
     'uk-ua': `
       Вибір іншої базової таблиці для завантаження набору даних зробить цю
       таблицю новою відправною точкою для зіставлення стовпців і полів даних і
-      видалить існуючі зіставлення. AutoMapper спробує зіставити стовпці з
-      новими полями базової таблиці.
+      зітре існуючі зіставлення. AutoMapper спробує зіставити стовпці з новими
+      полями базової таблиці.
     `,
     'de-ch': `
       Durch Auswahl einer anderen Basistabelle für einen Datensatz-Upload wird

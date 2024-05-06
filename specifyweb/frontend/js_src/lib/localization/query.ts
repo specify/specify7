@@ -273,7 +273,7 @@ export const queryText = createDictionary({
     'es-es': '{tableName:string} usando "{nodeFullName:string}"',
     'fr-fr': '{tableName:string} en utilisant "{nodeFullName:string}"',
     'uk-ua': '{tableName:string} за допомогою "{nodeFullName:string}"',
-    'de-ch': '{tableName:string} mit „{nodeFullName:string}“',
+    'de-ch': '{tableName:string} mit "{nodeFullName:string}"',
   },
   newButtonDescription: {
     'en-us': 'Add New Field',
@@ -328,7 +328,7 @@ export const queryText = createDictionary({
     'en-us': 'Save As',
     'es-es': 'Guardar como',
     'uk-ua': 'Зберегти як',
-    'de-ch': 'Export nach KML nicht möglich',
+    'de-ch': 'Export in KML nicht möglich',
     'fr-fr': "Impossible d'exporter vers KML",
     'ru-ru': 'Невозможно экспортировать в KML.',
   },
@@ -494,7 +494,7 @@ export const queryText = createDictionary({
     'es-es': 'Menor o igual a',
     'fr-fr': 'Inférieur ou égal à',
     'uk-ua': 'Менше або дорівнює',
-    'de-ch': 'Weniger oder gleich',
+    'de-ch': 'Kleiner oder gleich',
   },
   true: {
     'en-us': 'True',
@@ -606,7 +606,8 @@ export const queryText = createDictionary({
     'es-es': 'No hay items sin resolver para devolver',
     'fr-fr': "Il n'y a aucun article non résolu à retourner",
     'uk-ua': 'Немає невирішених елементів для повернення',
-    'de-ch': 'Es gibt keine ungelösten Punkte, die zurückgegeben werden müssen',
+    'de-ch':
+      'Es gibt keine ungelösten Elemente, die zurückgegeben werden müssen',
   },
   itemsReturned: {
     'en-us': 'Items have been returned',
@@ -638,7 +639,7 @@ export const queryText = createDictionary({
     'es-es': 'Configurar tablas de consulta visibles',
     'fr-fr': 'Configurer les tables de requêtes visibles',
     'uk-ua': 'Налаштувати видимі таблиці запитів',
-    'de-ch': 'Konfigurieren Sie sichtbare Abfragetabellen',
+    'de-ch': 'Konfigurieren sichtbarer Abfragetabellen',
   },
   exportQueryForDwca: {
     'en-us': 'Export query for DwCA definition',
@@ -662,7 +663,7 @@ export const queryText = createDictionary({
     'es-es': 'Definir etiqueta basada en la consulta',
     'fr-fr': "Définir une étiquette en fonction d'une requête",
     'uk-ua': 'Визначте мітку на основі запиту',
-    'de-ch': 'Definieren Sie die Beschriftung basierend auf der Abfrage',
+    'de-ch': 'Label basierend auf Abfrage definieren',
   },
   treeMerge: {
     comment: 'Audit Log Action Type',
@@ -856,7 +857,7 @@ export const queryText = createDictionary({
   },
   switchToRelative: {
     'en-us': 'Switch to relative',
-    'de-ch': 'Wechseln Sie zu relativ',
+    'de-ch': 'Wechseln zu relativ',
     'es-es': 'Cambiar a relativo',
     'fr-fr': 'Passer au relatif',
     'ru-ru': 'Переключиться на относительный',
@@ -864,7 +865,7 @@ export const queryText = createDictionary({
   },
   switchToAbsolute: {
     'en-us': 'Switch to absolute',
-    'de-ch': 'Wechseln Sie zu absolut',
+    'de-ch': 'Wechseln zu absolut',
     'es-es': 'Cambiar a absoluto',
     'fr-fr': "Passer à l'absolu",
     'ru-ru': 'Переключиться на абсолют',

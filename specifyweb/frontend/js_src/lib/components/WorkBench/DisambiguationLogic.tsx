@@ -199,8 +199,8 @@ export class Disambiguation {
                 visualRow--
               ) {
                 const physicalRow = this.wbView.hot!.toPhysicalRow(visualRow);
-                if (
-                  !this.wbView.validation.uploadResults.ambiguousMatches[
+                const ambiguousMatchToDisambiguate =
+                  this.wbView.validation.uploadResults.ambiguousMatches[
                     physicalRow
                   ]?.find(
                     ({ key, mappingPath }) =>
@@ -208,12 +208,12 @@ export class Disambiguation {
                       typeof this.getDisambiguation(physicalRow)[
                         mappingPathToString(mappingPath)
                       ] !== 'number'
-                  )
-                )
-                  continue;
+                  );
+
+                if (ambiguousMatchToDisambiguate === undefined) continue;
                 this.setDisambiguation(
                   physicalRow,
-                  matches.mappingPath,
+                  ambiguousMatchToDisambiguate.mappingPath,
                   selected.id
                 );
                 this.wbView.validation.startValidateRow(physicalRow);

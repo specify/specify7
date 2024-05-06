@@ -19,7 +19,7 @@ export const wbText = createDictionary({
   },
   uploadPlan: {
     'en-us': 'Upload Plan',
-    'de-ch': 'Plan hochladen',
+    'de-ch': 'Upload-Plan',
     'es-es': `
       Tenga en cuenta que la validación en vivo es una función experimental y no
       sustituye a la validación regular.
@@ -37,7 +37,7 @@ export const wbText = createDictionary({
     'es-es': 'Retroceder',
     'fr-fr': 'Retour en arriere',
     'uk-ua': 'Відкат',
-    'de-ch': 'Zurückrollen',
+    'de-ch': 'Rollback',
   },
   validate: {
     'en-us': 'Validate',
@@ -223,7 +223,7 @@ export const wbText = createDictionary({
     'es-es': 'Configurar Consulta y Sustitución',
     'fr-fr': 'Configurer la recherche et le remplacement',
     'uk-ua': 'Налаштувати пошук і заміну',
-    'de-ch': 'Konfigurieren Sie Suchen und Ersetzen',
+    'de-ch': 'Suchen und Ersetzen konfigurieren',
   },
   modifiedCells: {
     'en-us': 'Modified Cells',
@@ -333,10 +333,8 @@ export const wbText = createDictionary({
     `,
     'uk-ua':
       'Функція «Застосувати все» недоступна, поки триває перевірка даних.',
-    'de-ch': `
-      „Alle anwenden“ ist nicht verfügbar, während die Datenprüfung ausgeführt
-      wird.
-    `,
+    'de-ch':
+      '„Alle anwenden“ ist nicht verfügbar, während die Datenprüfung läuft.',
   },
   beginRollback: {
     'en-us': 'Begin Data Set Roll Back?',
@@ -378,10 +376,10 @@ export const wbText = createDictionary({
       завантаження.
     `,
     'de-ch': `
-      Durch ein Rollback werden die neuen Datensätze entfernt, die dieser
-      Datensatz zur Specify-Datenbank hinzugefügt hat. Das gesamte Rollback wird
-      abgebrochen, wenn die hochgeladenen Daten seit dem Hochladen von anderen
-      Datensätzen referenziert (wiederverwendet) wurden.
+      Durch das Zurücksetzen werden die neuen Datensätze gelöscht, die dieser
+      Datensatz zur angegebenen Datenbank hinzugefügt hat. Das gesamte
+      Zurücksetzen wird abgebrochen, wenn seit dem Hochladen auf hochgeladene
+      Daten von anderen Datensätzen verwiesen (wiederverwendet) wurde.
     `,
   },
   startUpload: {
@@ -390,7 +388,7 @@ export const wbText = createDictionary({
     'es-es': '¿Comenzar carga de conjunto de datos?',
     'fr-fr': "Commencer le téléchargement de l'ensemble de données ?",
     'uk-ua': 'Почати завантаження набору даних?',
-    'de-ch': 'Datensatz-Upload starten?',
+    'de-ch': 'Hochladen des Datensatzes beginnen?',
   },
   startUploadDescription: {
     'en-us':
@@ -512,7 +510,7 @@ export const wbText = createDictionary({
     'es-es': 'Ahorro...',
     'fr-fr': 'Économie...',
     'uk-ua': 'Збереження...',
-    'de-ch': 'Sparen...',
+    'de-ch': 'Speichern...',
   },
   wbUnloadProtect: {
     'en-us': 'Changes to this Data Set have not been Saved.',
@@ -650,7 +648,7 @@ export const wbText = createDictionary({
     'es-es': 'Carga completada sin errores',
     'fr-fr': 'Téléchargement terminé sans erreur',
     'uk-ua': 'Завантаження завершено без помилок',
-    'de-ch': 'Hochladen ohne Fehler abgeschlossen',
+    'de-ch': 'Upload ohne Fehler abgeschlossen',
   },
   uploadSuccessfulDescription: {
     'en-us': `
@@ -684,7 +682,7 @@ export const wbText = createDictionary({
     'es-es': 'Carga fallida debido a celdas de error',
     'fr-fr': "Échec du téléchargement en raison de cellules d'erreur",
     'uk-ua': 'Помилка завантаження через клітинки помилок',
-    'de-ch': 'Hochladen aufgrund fehlerhafter Zellen fehlgeschlagen',
+    'de-ch': 'Der Upload ist aufgrund fehlerhafter Zellen fehlgeschlagen',
   },
   uploadErrorsDescription: {
     'en-us': 'The upload failed due to one or more cell value errors.',
@@ -761,8 +759,8 @@ export const wbText = createDictionary({
       повторно завантажений.
     `,
     'de-ch': `
-      Dieser Rollback-Datensatz wird gespeichert und kann bearbeitet oder erneut
-      hochgeladen werden.
+      Dieser zurückgesetzte Datensatz wird gespeichert und kann bearbeitet oder
+      erneut hochgeladen werden.
     `,
   },
   validationCanceled: {
@@ -880,7 +878,7 @@ export const wbText = createDictionary({
       Cette action nécessite que toutes les modifications soient enregistrées
     `,
     'uk-ua': 'Ця дія вимагає збереження всіх змін',
-    'de-ch': 'Für diese Aktion müssen alle Änderungen gespeichert werden',
+    'de-ch': 'Diese Aktion erfordert das Speichern aller Änderungen',
   },
   uploadUnavailableWhileHasErrors: {
     'en-us': 'Upload is unavailable while some cells have validation errors',
@@ -914,7 +912,7 @@ export const wbText = createDictionary({
     `,
     'uk-ua': 'Ця дія недоступна під час перегляду результатів завантаження',
     'de-ch':
-      'Diese Aktion ist beim Anzeigen der Upload-Ergebnisse nicht verfügbar',
+      'Diese Aktion ist beim Anzeigen der Upload-Ergebnisse nicht verfügbar.',
   },
   unavailableWhileValidating: {
     'en-us': 'This action is unavailable while Data Check is in progress',
@@ -1065,7 +1063,7 @@ export const wbText = createDictionary({
     'es-es': 'Coincidir mayúsculas y minúsculas',
     'fr-fr': 'Cas de correspondance',
     'uk-ua': 'Відмінок сірника',
-    'de-ch': 'Streichholzetui',
+    'de-ch': 'Groß-/Kleinschreibung beachten',
   },
   useRegularExpression: {
     'en-us': 'Use regular expression',
@@ -1089,7 +1087,7 @@ export const wbText = createDictionary({
     'es-es': 'Opciones de reemplazo',
     'fr-fr': 'Options de remplacement',
     'uk-ua': 'Параметри заміни',
-    'de-ch': 'Optionen ersetzen',
+    'de-ch': 'Ersetzungsoptionen',
   },
   replaceMode: {
     'en-us': 'Replace Mode',
@@ -1129,8 +1127,7 @@ export const wbText = createDictionary({
     'es-es': 'Importar Archivo para Crear Nuevo Conjunto de Datos',
     'fr-fr': 'Importer un fichier pour créer un nouvel ensemble de données',
     'uk-ua': 'Імпортуйте файл, щоб створити новий набір даних',
-    'de-ch':
-      'Importieren Sie eine Datei, um einen neuen Datensatz zu erstellen',
+    'de-ch': 'Importieren einer Datei zum Erstellen eines neuen Datensatzes',
   },
   previewDataSet: {
     'en-us': 'Preview Dataset',
@@ -1138,7 +1135,7 @@ export const wbText = createDictionary({
     'es-es': 'Vista previa de Conjunto de Datos',
     'fr-fr': "Aperçu de l'ensemble de données",
     'uk-ua': 'Попередній перегляд набору даних',
-    'de-ch': 'Vorschau des Datensatzes',
+    'de-ch': 'Datensatzvorschau',
   },
   errorImporting: {
     'en-us': 'The following error(s) occurred while importing the file:',
@@ -1222,7 +1219,7 @@ export const wbText = createDictionary({
     'ru-ru': 'Определить автоматически',
     'es-es': 'Determinar automáticamente',
     'uk-ua': 'Регістр сірників',
-    'de-ch': 'Streichholzetui',
+    'de-ch': 'Groß-/Kleinschreibung beachten',
     'fr-fr': 'Déterminer automatiquement',
   },
   chooseDataSetName: {
@@ -1371,7 +1368,7 @@ export const wbText = createDictionary({
     'es-es': 'Seleccionar nuevo propietario:',
     'fr-fr': 'Sélectionnez un nouveau propriétaire :',
     'uk-ua': 'Виберіть нового власника:',
-    'de-ch': 'Wählen Sie „Neuer Besitzer“:',
+    'de-ch': 'Neuen Besitzer auswählen:',
   },
   dataSetOwnerChanged: {
     'en-us': 'Data Set owner changed',
@@ -1435,7 +1432,7 @@ export const wbText = createDictionary({
     'es-es': 'Abortando...',
     'fr-fr': 'Abandonner...',
     'uk-ua': 'Переривання...',
-    'de-ch': 'Abbruch...',
+    'de-ch': 'Abbrechen...',
   },
   wbStatusAbortFailed: {
     'en-us': 'Failed aborting {operationName:string}. Please try again later',
@@ -1453,8 +1450,8 @@ export const wbText = createDictionary({
       Не вдалося перервати {operationName:string}. Будь-ласка спробуйте пізніше
     `,
     'de-ch': `
-      Abbruch {operationName:string} fehlgeschlagen. Bitte versuchen Sie es
-      später noch einmal
+      Abbruch fehlgeschlagen {operationName:string}. Bitte versuchen Sie es
+      später erneut
     `,
   },
   wbStatusOperationNoProgress: {
@@ -1539,9 +1536,9 @@ export const wbText = createDictionary({
       пізніше.
     `,
     'de-ch': `
-      Wenn diese Meldung länger als 30 Sekunden anhält, ist der
-      {operationName:string}-Prozess mit einem anderen Datensatz beschäftigt.
-      Bitte versuchen Sie es später noch einmal.
+      Wenn diese Meldung länger als 30 Sekunden angezeigt wird, ist der Prozess
+      {operationName:string} mit einem anderen Datensatz beschäftigt. Bitte
+      versuchen Sie es später erneut.
     `,
   },
   stop: {
@@ -1558,7 +1555,7 @@ export const wbText = createDictionary({
     'es-es': 'Ocurrió un error durante {operationName:string}',
     'fr-fr': "Une erreur s'est produite pendant {operationName:string}",
     'uk-ua': 'Під час {operationName:string} сталася помилка',
-    'de-ch': 'Beim {operationName:string} ist ein Fehler aufgetreten',
+    'de-ch': 'Fehler aufgetreten während {operationName:string}',
   },
   updatingTrees: {
     'en-us': 'Updating trees...',
