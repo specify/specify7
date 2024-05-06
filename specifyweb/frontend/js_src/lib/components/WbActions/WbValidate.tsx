@@ -38,15 +38,15 @@ export function WbValidate({
       {canLiveValidate ? (
         <Button.Small
           aria-pressed={validation.validationMode === 'live'}
-          onClick={handleToggleDataCheck}
           disabled={!isMapped || isResultsOpen}
           title={
-            !isMapped
-              ? wbText.wbValidateUnavailable()
-              : isResultsOpen
+            isMapped
+              ? isResultsOpen
               ? wbText.unavailableWhileViewingResults()
               : undefined
+              : wbText.wbValidateUnavailable()
           }
+          onClick={handleToggleDataCheck}
         >
           {isLiveValidateOn && validation.validationMode === 'live'
             ? validation.liveValidationStack.length > 0
@@ -64,9 +64,9 @@ export function WbValidate({
         title={
           hasUnsavedChanges
             ? wbText.unavailableWhileEditing()
-            : !isMapped
-            ? wbText.wbValidateUnavailable()
-            : undefined
+            : isMapped
+            ? undefined
+            : wbText.wbValidateUnavailable()
         }
         onClick={handleValidate}
       >

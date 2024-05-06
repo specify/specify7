@@ -211,9 +211,9 @@ export function WbView({
             dataset={dataset}
             hasUnsavedChanges={hasUnsavedChanges}
             hot={hot}
-            mappings={mappings}
             isResultsOpen={showResults}
             isUploaded={isUploaded}
+            mappings={mappings}
             triggerDatasetRefresh={triggerDatasetRefresh}
             onDatasetDeleted={handleDatasetDeleted}
           />

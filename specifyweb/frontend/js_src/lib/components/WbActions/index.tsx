@@ -88,10 +88,10 @@ export function WbActions({
         <ErrorBoundary dismissible>
           <WbValidate
             hasUnsavedChanges={hasUnsavedChanges}
-            startUpload={actions.startUpload}
-            validation={workbench.validation}
             isMapped={isMapped}
             isResultsOpen={isResultsOpen}
+            startUpload={actions.startUpload}
+            validation={workbench.validation}
           />
         </ErrorBoundary>
       ) : undefined}
@@ -103,9 +103,9 @@ export function WbActions({
           title={
             dataCheckInProgress
               ? wbText.unavailableWhileValidating()
-              : !isUploaded
-              ? wbText.wbUploadedUnavailable()
-              : undefined
+              : isUploaded
+              ? undefined
+              : wbText.wbUploadedUnavailable()
           }
           onClick={handleToggleResults}
         >

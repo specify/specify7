@@ -47,13 +47,13 @@ export function WbConvertCoordinates({
         aria-pressed={showConvertCoords}
         disabled={!hasLocality || isResultsOpen || isUploaded}
         title={
-          !hasLocality
-            ? wbText.unavailableWithoutLocality()
-            : isUploaded
+          hasLocality
+            ? isUploaded
             ? wbText.unavailableWhenUploaded()
             : isResultsOpen
             ? wbText.unavailableWhileViewingResults()
             : undefined
+            : wbText.unavailableWithoutLocality()
         }
         onClick={openConvertCoords}
       >

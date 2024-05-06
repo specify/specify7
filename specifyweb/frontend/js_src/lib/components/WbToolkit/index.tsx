@@ -95,9 +95,9 @@ export function WbToolkit({
               dataset={dataset}
               hasLocality={hasLocality}
               hot={hot}
-              mappings={mappings}
               isResultsOpen={isResultsOpen}
               isUploaded={isUploaded}
+              mappings={mappings}
             />
           </ErrorBoundary>
           <ErrorBoundary dismissible>
@@ -105,9 +105,9 @@ export function WbToolkit({
               dataset={dataset}
               hasLocality={hasLocality}
               hot={hot}
-              mappings={mappings}
               isResultsOpen={isResultsOpen}
               isUploaded={isUploaded}
+              mappings={mappings}
             />
           </ErrorBoundary>
         </>

@@ -47,13 +47,13 @@ export function WbGeoLocate({
         aria-pressed={showGeoLocate}
         disabled={!hasLocality || isResultsOpen || isUploaded}
         title={
-          !hasLocality
-            ? wbText.unavailableWithoutLocality()
-            : isUploaded
+          hasLocality
+            ? isUploaded
             ? wbText.unavailableWhenUploaded()
             : isResultsOpen
             ? wbText.unavailableWhileViewingResults()
             : undefined
+            : wbText.unavailableWithoutLocality()
         }
         onClick={openGeoLocate}
       >
