@@ -127,19 +127,20 @@ export function useDisambiguationDialog({
                 visualRow--
               ) {
                 const physicalRow = hot.toPhysicalRow(visualRow);
-                if (
-                  !validation.uploadResults.ambiguousMatches[physicalRow]?.find(
+                const ambiguousMatchToDisambiguate =
+                  validation.uploadResults.ambiguousMatches[physicalRow]?.find(
                     ({ key, mappingPath }) =>
                       key === disambiguationMatches!.key &&
                       typeof disambiguation.getDisambiguation(physicalRow)[
                         mappingPathToString(mappingPath)
                       ] !== 'number'
-                  )
-                )
-                  continue;
+                  );
+
+                if (ambiguousMatchToDisambiguate === undefined) continue;
+
                 disambiguation.setDisambiguation(
                   physicalRow,
-                  disambiguationMatches!.mappingPath,
+                  ambiguousMatchToDisambiguate.mappingPath,
                   selected.id
                 );
                 validation.startValidateRow(physicalRow);
