@@ -136,6 +136,7 @@ export const Input = {
     'input',
     {
       readonly onValueChange?: (isChecked: boolean) => void;
+      readonly onClick?: 'Use onValueChange instead';
       readonly readOnly?: 'Use isReadOnly instead';
       readonly isReadOnly?: boolean;
       readonly type?: 'If you need to specify type, use Input.Generic';
@@ -243,7 +244,7 @@ export const Input = {
     ({ onValueChange, isReadOnly, ...props }) =>
       process.env.NODE_ENV === 'development' &&
       typeof props.step === 'number' &&
-      props.step < 0
+      props.step !== Math.floor(props.step)
         ? error('If step <1 is needed, use Input.Float instead')
         : {
             ...props,
@@ -266,6 +267,7 @@ export const Input = {
       readonly readOnly?: never;
       readonly isReadOnly?: boolean;
       readonly children?: undefined;
+      readonly step?: number | 'any';
     }
   >(
     'Input.Float',
@@ -281,6 +283,7 @@ export const Input = {
         );
         props.onChange?.(event);
       },
+      step: props.step ?? 'any',
       ...withPreventWheel(props.onWheel),
       readOnly: isReadOnly,
     })
