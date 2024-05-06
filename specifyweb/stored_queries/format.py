@@ -168,7 +168,13 @@ class ObjectFormatter(object):
             for node in caseNode.findall('field'):
                 query, expr, _ = self.make_expr(query, node.text, node.attrib, orm_table, specify_model, cycle_with_self)
                 field_exprs.append(expr)
-            expr = concat(*field_exprs) if len(field_exprs) > 1 else field_exprs[0]
+            if field_exprs:
+                if len(field_exprs) > 1:
+                    expr = concat(*field_exprs)
+                else:    
+                    expr = field_exprs[0]
+            else:
+                expr = None
             return query, caseNode.attrib.get('value', None), expr
 
         switchNode = formatterNode.find('switch')
@@ -182,7 +188,7 @@ class ObjectFormatter(object):
             logger.warn(
                 "dataobjformatter for %s contains switch clause no fields",
                 specify_model)
-            return query, literal(_("<Formatter not defined.>"))
+            return query, literal(_text("<Formatter not defined.>"))
 
         if single:
             value, expr = cases[0]

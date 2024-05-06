@@ -250,6 +250,20 @@ describe('treeBusinessRules', () => {
     resource_uri: '/api/specify/taxontreedefitem/2/',
   };
 
+  const subSpeciesResponse: Partial<SerializedResource<TaxonTreeDefItem>> = {
+    id: 22,
+    fullNameSeparator: ' ',
+    isEnforced: false,
+    isInFullName: true,
+    name: 'Subspecies',
+    rankId: 230,
+    title: null,
+    version: 0,
+    parent: '/api/specify/taxontreedefitem/2/',
+    treeDef: '/api/specify/taxontreedef/1/',
+    resource_uri: '/api/specify/taxontreedefitem/22/',
+  };
+
   const oxyrinchusFullNameResponse = 'Acipenser oxyrinchus';
 
   overrideAjax('/api/specify/taxon/2/', animaliaResponse);
@@ -258,10 +272,19 @@ describe('treeBusinessRules', () => {
   overrideAjax('/api/specify/taxon/5/', oxyrinchusSubSpeciesResponse);
   overrideAjax('/api/specify/taxontreedefitem/9/', genusResponse);
   overrideAjax('/api/specify/taxontreedefitem/2/', speciesResponse);
+  overrideAjax('/api/specify/taxontreedefitem/22/', subSpeciesResponse);
   overrideAjax(
     '/api/specify_tree/taxon/3/predict_fullname/?name=oxyrinchus&treedefitemid=2',
     oxyrinchusFullNameResponse
   );
+  overrideAjax('/api/specify/taxon/?limit=1&parent=4&orderby=rankid', {
+    objects: [oxyrinchusSubSpeciesResponse],
+    meta: {
+      limit: 1,
+      offset: 0,
+      total_count: 1,
+    },
+  });
 
   test('fullName being set', async () => {
     const oxyrinchus = new tables.Taxon.Resource({

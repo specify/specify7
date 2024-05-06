@@ -243,7 +243,7 @@ export const commonText = createDictionary({
     'ru-ru': 'Начало',
     'es-es': 'Empezar',
     'fr-fr': 'Commencer',
-    'uk-ua': 'Почніть',
+    'uk-ua': 'старт',
     'de-ch': 'Start',
   },
   end: {

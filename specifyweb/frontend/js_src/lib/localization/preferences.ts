@@ -649,8 +649,8 @@ export const preferencesText = createDictionary({
       для відповідності будь-якій кількості символів
     `,
     'de-ch': `
-      Kann _ für jedes einzelne Zeichen oder % für jede Anzahl von Zeichen
-      verwenden
+      Kann _ für jedes einzelne Zeichen oder % für eine beliebige Anzahl von
+      Zeichen verwenden
     `,
   },
   highlightMatch: {
@@ -775,7 +775,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Позволяет загружать данные в любое поле любой таблицы.',
     'es-es': 'Permite cargar datos en cualquier campo de cualquier tabla.',
     'fr-fr': `
-      Permet de télécharger des données dans n'importe quel champ de n'importe
+      Permet de télécharger des données vers n’importe quel champ de n’importe
       quelle table.
     `,
     'uk-ua': 'Дозволяє завантажувати дані в будь-яке поле будь-якої таблиці.',
@@ -937,7 +937,7 @@ export const preferencesText = createDictionary({
   },
   autoWrapCols: {
     'en-us': 'Navigate to the other side when reaching the edge column',
-    'ru-ru': 'Перейдите на другую сторону, когда достигнете краевого столбца.',
+    'ru-ru': 'Перейдите на другую сторону, достигнув краевого столбца.',
     'es-es': 'Navega hacia el otro lado al llegar a la columna del borde',
     'fr-fr':
       'Naviguez de l’autre côté lorsque vous atteignez la colonne de bord',
@@ -1164,7 +1164,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Enfocar el primer campo',
     'fr-fr': 'Concentrez-vous sur le premier champ',
     'ru-ru': 'Фокус первого поля',
-    'uk-ua': 'Перейти до першого поля',
+    'uk-ua': 'Сфокусувати перше поле',
   },
   doubleClickZoom: {
     'en-us': 'Double click to zoom',
@@ -1375,7 +1375,7 @@ export const preferencesText = createDictionary({
       'Hacer que los cuadros de diálogo del formulario aparezcan en gris',
     'fr-fr':
       "Rendre les boîtes de dialogue de formulaire grisées sur l'arrière-plan",
-    'uk-ua': 'Зробіть діалогові вікна форми сірими',
+    'uk-ua': 'Зробіть діалогові вікна форми сірими фоном',
     'de-ch': 'Den Hintergrund von Formulardialogen ausgrauen',
   },
   autoScrollTree: {
@@ -1727,7 +1727,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Запомнить позиции диалоговых окон',
     'es-es': 'Recordar las posiciones de las ventanas de diálogo',
     'fr-fr': 'Mémoriser les positions des fenêtres de dialogue',
-    'uk-ua': "Запам'ятовуйте положення діалогового вікна",
+    'uk-ua': "Запам'ятовуйте розташування діалогового вікна",
     'de-ch': 'Dialogfensterpositionen merken',
   },
   autoPlayMedia: {

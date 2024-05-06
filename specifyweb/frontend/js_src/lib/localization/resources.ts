@@ -148,14 +148,14 @@ export const resourcesText = createDictionary({
   uiFormatters: {
     'en-us': 'Field Formatters',
     'ru-ru': 'Форматировщики полей',
-    'es-es': 'Formateadores de campo',
+    'es-es': 'Formateadores de campos',
     'fr-fr': 'Formateurs de champs',
     'uk-ua': 'Форматувальники полів',
     'de-ch': 'Feldformatierer',
   },
   dataObjectFormatters: {
     'en-us': 'Record Formatters',
-    'ru-ru': 'Форматеры записи',
+    'ru-ru': 'Форматеры записей',
     'es-es': 'Formateadores de registros',
     'uk-ua': 'Форматувальники записів',
     'de-ch': 'Datensatz-Formatierer',
@@ -281,7 +281,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Verfügbare Tabellenaggregationen',
     'es-es': 'Agregaciones de tablas disponibles',
     'fr-fr': 'Agrégations de tables disponibles',
-    'ru-ru': 'Доступные агрегации таблиц',
+    'ru-ru': 'Доступные агрегаты таблиц',
     'uk-ua': 'Доступні агрегації таблиць',
   },
   availableWebLink: {
@@ -753,7 +753,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Standardformular kopieren',
     'es-es': 'Formateadores de registros',
     'fr-fr': "Formateurs d'enregistrement",
-    'ru-ru': 'Форматеры записи',
+    'ru-ru': 'Форматеры записей',
     'uk-ua': 'Форматувальники записів',
   },
   copyDefaultForms: {
@@ -796,7 +796,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Feldformate anpassen',
     'es-es': 'Personalizar formatos de campo',
     'fr-fr': 'Personnaliser les formats de champs',
-    'ru-ru': 'Настройка форматов полей',
+    'ru-ru': 'Настройте форматы полей',
     'uk-ua': 'Налаштувати формати полів',
   },
   expandConditionalField: {

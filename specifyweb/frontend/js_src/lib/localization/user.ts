@@ -285,7 +285,7 @@ export const userText = createDictionary({
       resource through the currently logged in account
     `,
     'ru-ru': `
-      У вас нет доступа ни к одному {collectionTable:string}, содержащему этот
+      У вас нет доступа к любому {collectionTable:string}, содержащему этот
       ресурс, через текущую учетную запись.
     `,
     'es-es': `
@@ -1024,7 +1024,7 @@ export const userText = createDictionary({
   specifyAdmin: {
     comment: 'Shown next to user name for admin users',
     'en-us': '(Specify 7 Admin)',
-    'ru-ru': '(Укажите 7 Администратора)',
+    'ru-ru': '(Указать 7 Админ)',
     'es-es': '(Administradores de Specify 7)',
     'fr-fr': '(Spécifiez 7 Administrateur)',
     'uk-ua': '(Вкажіть 7 адміністраторів)',
