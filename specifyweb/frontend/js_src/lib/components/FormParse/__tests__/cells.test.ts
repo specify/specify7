@@ -363,6 +363,33 @@ describe('parseFormCell', () => {
       })
     ));
 
+  test('Subview with table defaulttype', async () =>
+    expect(
+      parseFormCell(
+        tables.CollectingEvent,
+        xml(
+          '<cell type="subview" viewname="Collectors" id="5" name="collectors" colspan="13" rows="3"/>'
+        )
+      )
+    ).resolves.toEqual(
+      cell({
+        align: 'left',
+        ariaLabel: undefined,
+        colSpan: 7,
+        fieldNames: ['collectors'],
+        formType: 'formTable',
+        icon: undefined,
+        id: '5',
+        isButton: false,
+        isCollapsed: false,
+        sortField: undefined,
+        type: 'SubView',
+        verticalAlign: 'stretch',
+        viewName: 'Collectors',
+        visible: true,
+      })
+    ));
+
   test('Panel with conditional rendering', async () =>
     expect(
       parseFormCell(
