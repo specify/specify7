@@ -391,10 +391,10 @@ theories(resolveAltView, [
   },
 ]);
 
-test('parseFormTableDefinition', () =>
+test('parseFormTableDefinition', async () =>
   expect(
     parseFormTableDefinition(simpleFormView, tables.CollectionObject)
-  ).toEqual(parsedFormView));
+  ).resolves.toEqual(parsedFormView));
 
 const formTableColumns = [
   { colSpan: 1 },
@@ -417,14 +417,14 @@ theories(parseFormTableColumns, {
 });
 
 describe('parseFormDefinition', () => {
-  test('single view definition', () => {
+  test('single view definition', async () => {
     jest.spyOn(console, 'warn').mockImplementation();
-    expect(
+    await expect(
       parseFormDefinition(
         toSimpleXmlNode(xmlToJson(strictParseXml(tinyFormView))),
         tables.CollectionObject
       )
-    ).toEqual([
+    ).resolves.toEqual([
       {
         condition: undefined,
         definition: parsedTinyView,
