@@ -148,7 +148,7 @@ export const resourcesText = createDictionary({
   uiFormatters: {
     'en-us': 'Field Formatters',
     'ru-ru': 'Форматировщики полей',
-    'es-es': 'Formateadores de campo',
+    'es-es': 'Formateadores de campos',
     'fr-fr': 'Formateurs de champs',
     'uk-ua': 'Форматувальники полів',
     'de-ch': 'Feldformatierer',
@@ -204,8 +204,8 @@ export const resourcesText = createDictionary({
       можно настроить на основе значения в записи.
     `,
     'uk-ua': `
-      «Формат таблиці» визначає, як дані з певної таблиці відображаються в
-      результатах запиту, експорті та комбінованих полях запиту. Він визначає
+      «Формат таблиці» керує тим, як дані з певної таблиці відображаються в
+      результатах запитів, експорті та комбінованих полях запитів. Він визначає
       поля для відображення та їх порядок. Умовне форматування можна налаштувати
       на основі значення в записі.
     `,
@@ -448,7 +448,7 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Не удалось разобрать XML',
     'de-ch': 'XML konnte nicht analysiert werden',
     'es-es': 'No se pudo analizar XML',
-    'fr-fr': "Échec de l'analyse XML",
+    'fr-fr': "Échec de l'analyse du XML",
     'uk-ua': 'Не вдалося проаналізувати XML',
   },
   name: {
@@ -542,7 +542,7 @@ export const resourcesText = createDictionary({
       форматирования записей.
     `,
     'uk-ua': `
-      Виконайте пошук у своїх записах колекції, щоб переглянути інструмент
+      Виконайте пошук у записах колекції, щоб переглянути інструмент
       форматування записів
     `,
   },
@@ -666,7 +666,7 @@ export const resourcesText = createDictionary({
       changer de collection avant de modifier cette ressource.
     `,
     'ru-ru': `
-      Этот ресурс принадлежит другой коллекции/дисциплине, отличной от той, в
+      Этот ресурс принадлежит к другой коллекции/дисциплине, отличной от той, в
       которой вы сейчас находитесь. Перед редактированием этого ресурса
       рекомендуется сменить коллекцию.
     `,
@@ -753,7 +753,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Standardformular kopieren',
     'es-es': 'Formateadores de registros',
     'fr-fr': "Formateurs d'enregistrement",
-    'ru-ru': 'Форматеры записи',
+    'ru-ru': 'Форматеры записей',
     'uk-ua': 'Форматувальники записів',
   },
   copyDefaultForms: {

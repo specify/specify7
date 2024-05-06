@@ -142,7 +142,7 @@ export const wbText = createDictionary({
     `,
     'de-ch': `
       Beachten Sie, dass die Live-Validierung eine experimentelle Funktion ist
-      und kein Ersatz für die regelmäßige Validierung darstellt.
+      und keinen Ersatz für die regelmäßige Validierung darstellt.
     `,
     'es-es': `
       Tenga en cuenta que la validación en vivo es una función experimental y no
