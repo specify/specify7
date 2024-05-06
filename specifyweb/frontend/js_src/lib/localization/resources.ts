@@ -148,14 +148,14 @@ export const resourcesText = createDictionary({
   uiFormatters: {
     'en-us': 'Field Formatters',
     'ru-ru': 'Форматировщики полей',
-    'es-es': 'Formateadores de campo',
+    'es-es': 'Formateadores de campos',
     'fr-fr': 'Formateurs de champs',
     'uk-ua': 'Форматувальники полів',
     'de-ch': 'Feldformatierer',
   },
   dataObjectFormatters: {
     'en-us': 'Record Formatters',
-    'ru-ru': 'Форматеры записи',
+    'ru-ru': 'Форматеры записей',
     'es-es': 'Formateadores de registros',
     'uk-ua': 'Форматувальники записів',
     'de-ch': 'Datensatz-Formatierer',
@@ -249,8 +249,8 @@ export const resourcesText = createDictionary({
     'ru-ru': `
       «Агрегация таблиц» управляет тем, как несколько записей таблицы
       объединяются в одну текстовую строку. Формат таблицы, разделитель,
-      суффикс, поле сортировки и ограничение предварительного просмотра записи
-      можно настроить. Его можно отобразить в результатах запроса и в форматах
+      суффикс, поле сортировки и предел предварительного просмотра записей можно
+      настроить. Его можно отобразить в результатах запроса и в форматах
       таблиц.
     `,
     'uk-ua': `
@@ -666,7 +666,7 @@ export const resourcesText = createDictionary({
       changer de collection avant de modifier cette ressource.
     `,
     'ru-ru': `
-      Этот ресурс принадлежит другой коллекции/дисциплине, отличной от той, в
+      Этот ресурс принадлежит к другой коллекции/дисциплине, отличной от той, в
       которой вы сейчас находитесь. Перед редактированием этого ресурса
       рекомендуется сменить коллекцию.
     `,
@@ -730,7 +730,7 @@ export const resourcesText = createDictionary({
     'es-es': 'Ejecutar en colección',
     'fr-fr': 'Exécuter en collection',
     'ru-ru': 'Запустить в коллекцию',
-    'uk-ua': 'Запустити в колекцію',
+    'uk-ua': 'Запустити в колекції',
   },
   createNewForm: {
     'en-us': 'Create new form',
