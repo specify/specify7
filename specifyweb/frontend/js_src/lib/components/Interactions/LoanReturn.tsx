@@ -103,6 +103,7 @@ function PreparationReturn({
       remarks: '',
     }))
   );
+
   const canDeselect = state.some(({ resolve }) => resolve > 0);
   const canSelectAll = state.some(
     ({ resolve, unresolved }) => resolve < unresolved
@@ -133,12 +134,12 @@ function PreparationReturn({
           type === 'resolve'
             ? updateResolvedChanged({
                 returns,
-                resolve: resolvedCount,
+                resolve: Number.isNaN(resolvedCount) ? 0 : resolvedCount,
                 unresolved,
                 remarks: returnItem.remarks,
               })
             : updateReturnChanged({
-                returns: resolvedCount,
+                returns: Number.isNaN(resolvedCount) ? 0 : resolvedCount,
                 resolve,
                 unresolved,
                 remarks: returnItem.remarks,
@@ -179,11 +180,10 @@ function PreparationReturn({
             title={commonText.clearAll()}
             onClick={(): void =>
               setState(
-                state.map(({ remarks }) => ({
+                state.map((preparation) => ({
+                  ...preparation,
                   resolve: 0,
                   returns: 0,
-                  unresolved: 0,
-                  remarks,
                 }))
               )
             }

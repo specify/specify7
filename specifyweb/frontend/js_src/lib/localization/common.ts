@@ -401,8 +401,8 @@ export const commonText = createDictionary({
     'en-us': 'Language',
     'ru-ru': 'Язык',
     'es-es': 'Idioma',
-    'fr-fr': 'Langue',
-    'uk-ua': 'Мова',
+    'fr-fr': 'Interactions',
+    'uk-ua': 'Необмежений',
     'de-ch': 'Sprache',
   },
   country: {

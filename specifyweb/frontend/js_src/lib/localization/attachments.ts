@@ -177,8 +177,7 @@ export const attachmentsText = createDictionary({
   },
   frontEndInterruption: {
     'en-us': '{action:string} was in progress when interruption occurred',
-    'de-ch':
-      '{action:string} war in Bearbeitung, als die Unterbrechung auftrat',
+    'de-ch': '{action:string} war im Gange, als die Unterbrechung auftrat',
     'es-es':
       '{action:string} estaba en curso cuando se produjo la interrupción',
     'fr-fr':
@@ -213,7 +212,7 @@ export const attachmentsText = createDictionary({
   },
   attachmentImportDatasetsCount: {
     'en-us': 'Attachment Import Data Sets ({count:number})',
-    'de-ch': 'Anhang-Importdatensätze ({count:number})',
+    'de-ch': 'Anhänge zum Importieren von Datensätzen ({count:number})',
     'es-es': 'Adjuntar el conjuntos de datos de importación ({count:number})',
     'fr-fr':
       "Ensembles de données d'importation de pièces jointes ({count:number})",
@@ -284,8 +283,8 @@ export const attachmentsText = createDictionary({
       have been deleted
     `,
     'de-ch': `
-      Das Rollback war im Gange, als eine Unterbrechung auftrat. Möglicherweise
-      wurden einige Dateien gelöscht
+      Das Rollback war im Gange, als eine Unterbrechung auftrat. Einige Dateien
+      wurden möglicherweise gelöscht
     `,
     'fr-fr': `
       La restauration était en cours lorsqu'une interruption s'est produite.
@@ -304,7 +303,7 @@ export const attachmentsText = createDictionary({
   },
   attachmentId: {
     'en-us': 'Attachment ID',
-    'de-ch': 'Anhang-ID',
+    'de-ch': 'Anhangs-ID',
     'es-es': 'ID del archivo adjunto',
     'fr-fr': 'ID de pièce jointe',
     'ru-ru': 'Идентификатор вложения',
@@ -312,7 +311,7 @@ export const attachmentsText = createDictionary({
   },
   choosePath: {
     'en-us': 'Choose Path',
-    'de-ch': 'Wählen Sie Pfad',
+    'de-ch': 'Pfad wählen',
     'es-es': 'Seleccione la ruta',
     'fr-fr': 'Choisir le chemin',
     'ru-ru': 'Выберите путь',
@@ -333,7 +332,7 @@ export const attachmentsText = createDictionary({
     `,
     'de-ch': `
       Durch das Hochladen der Anhänge werden Anhänge im Asset-Server und in der
-      Specify-Datenbank erstellt
+      Datenbank „Specify“ erstellt.
     `,
     'es-es': 'Interrumpido. Reintentando en [X25X]',
     'fr-fr': `
@@ -445,8 +444,10 @@ export const attachmentsText = createDictionary({
   },
   multipleMatchesClick: {
     'en-us': 'Multiple Matches. Click To Disambiguate',
-    'de-ch':
-      'Mehrere Übereinstimmungen. Klicken Sie auf „Zur Begriffsklärung“.',
+    'de-ch': `
+      Mehrere Übereinstimmungen. Klicken Sie hier, um die Mehrdeutigkeit zu
+      beseitigen.
+    `,
     'es-es': 'Múltiples coincidencias. Haga clic para eliminar la ambigüedad',
     'fr-fr': "Plusieurs correspondances. Cliquez pour lever l'ambiguïté",
     'ru-ru': 'Несколько матчей. Нажмите, чтобы устранить неоднозначность',
@@ -454,7 +455,7 @@ export const attachmentsText = createDictionary({
   },
   totalFiles: {
     'en-us': 'Total files',
-    'de-ch': 'Gesamtdateien',
+    'de-ch': 'Gesamtzahl der Dateien',
     'es-es': 'Archivos totales',
     'fr-fr': 'Total des fichiers',
     'ru-ru': 'Всего файлов',
@@ -470,7 +471,7 @@ export const attachmentsText = createDictionary({
   },
   stoppedByUser: {
     'en-us': 'Stopped By User',
-    'de-ch': 'Vom Benutzer gestoppt',
+    'de-ch': 'Vom Benutzer angehalten',
     'es-es': 'Detenido por el usuario',
     'fr-fr': "Arrêté par l'utilisateur",
     'ru-ru': 'Остановлен пользователем',
@@ -560,7 +561,8 @@ export const attachmentsText = createDictionary({
   selectIdentifier: {
     'en-us': 'Select an identifier to match the files name against.',
     'de-ch': `
-      Wählen Sie eine Kennung aus, mit der der Dateiname verglichen werden soll.
+      Wählen Sie eine Kennung aus, mit der der Dateiname abgeglichen werden
+      soll.
     `,
     'es-es': `
       Seleccione un identificador para hacer coincidir el nombre de los
@@ -653,8 +655,8 @@ export const attachmentsText = createDictionary({
       was an error reading the file.
     `,
     'de-ch': `
-      Fehler beim Hochladen des Anhangs. Der Anhangserver ist möglicherweise
-      nicht verfügbar oder es ist ein Fehler beim Lesen der Datei aufgetreten.
+      Fehler beim Hochladen des Anhangs. Der Anhangsserver ist möglicherweise
+      nicht verfügbar oder beim Lesen der Datei ist ein Fehler aufgetreten.
     `,
     'es-es': `
       Error al cargar el archivo adjunto. Es posible que el servidor de archivos

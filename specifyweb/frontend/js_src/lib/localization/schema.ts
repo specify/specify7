@@ -99,7 +99,7 @@ export const schemaText = createDictionary({
   },
   setScope: {
     'en-us': 'Set Scope',
-    'de-ch': 'Geltungsbereich festlegen',
+    'de-ch': 'Umfang festlegen',
     'es-es': 'Establecer alcance',
     'fr-fr': 'Définir la portée',
     'ru-ru': 'Установить область',
@@ -379,7 +379,7 @@ export const schemaText = createDictionary({
   },
   uniquenessRules: {
     'en-us': 'Uniqueness Rules',
-    'de-ch': 'Einzigartigkeitsregeln',
+    'de-ch': 'Eindeutigkeitsregeln',
     'es-es': 'Reglas de unicidad',
     'fr-fr': "Règles d'unicité",
     'ru-ru': 'Правила уникальности',
@@ -387,7 +387,7 @@ export const schemaText = createDictionary({
   },
   uniqueFields: {
     'en-us': 'Unique Fields',
-    'de-ch': 'Sortieren Sie nach ausgeblendeten Feldern',
+    'de-ch': 'Nach ausgeblendeten Feldern sortieren',
     'es-es': 'Campos únicos',
     'fr-fr': 'Champs uniques',
     'ru-ru': 'Уникальные поля',
@@ -431,11 +431,11 @@ export const schemaText = createDictionary({
     'es-es': 'Exportar duplicados',
     'fr-fr': 'Exporter les doublons',
     'ru-ru': 'Экспортировать дубликаты',
-    'uk-ua': 'Експортувати дублікати',
+    'uk-ua': 'Експорт дублікатів',
   },
   numberOfDuplicates: {
     'en-us': 'Number of Duplicates',
-    'de-ch': 'Anzahl der Duplikate',
+    'de-ch': 'Anzahl Duplikate',
     'es-es': 'Número de duplicados',
     'fr-fr': 'Nombre de champs',
     'ru-ru': 'Количество полей',
@@ -459,7 +459,7 @@ export const schemaText = createDictionary({
   },
   sortByHiddenFields: {
     'en-us': 'Sort by hidden fields',
-    'de-ch': 'Sortieren Sie nach ausgeblendeten Feldern',
+    'de-ch': 'Nach ausgeblendeten Feldern sortieren',
     'es-es': 'Ordenar por campos ocultos',
     'fr-fr': 'Trier par champs masqués',
     'ru-ru': 'Сортировка по скрытым полям',
