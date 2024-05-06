@@ -62,7 +62,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Операция провалена',
     'es-es': 'Operación fallida',
     'fr-fr': "L'opération a échoué",
-    'uk-ua': 'Не вдалося виконати операцію',
+    'uk-ua': 'Операція не вдалася',
     'de-ch': 'Vorgang fehlgeschlagen',
   },
   actionFailedDescription: {
@@ -77,7 +77,7 @@ export const treeText = createDictionary({
     'de-ch': `
       Der Vorgang konnte aufgrund der folgenden Fehler nicht ausgeführt werden:
     `,
-    'uk-ua': 'Неможливо перейти до синоніма',
+    'uk-ua': 'Прямий підрахунок [X7X].',
   },
   moveNode: {
     'en-us': 'Move node',
@@ -160,7 +160,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Невозможно объединить в синонимы',
     'es-es': 'No se puede fusionar en sinónimos',
     'fr-fr': 'Impossible de fusionner avec des synonymes',
-    'uk-ua': 'Неможливо злити в синоніми',
+    'uk-ua': 'Не можна об’єднувати в синоніми',
     'de-ch': 'Kann nicht zu Synonymen zusammenführen',
   },
   cantSynonymizeSynonym: {
@@ -255,7 +255,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Сделайте {nodeName:string} синонимом {synonymName:string}',
     'es-es': 'Hacer de {nodeName:string} un sinónimo de {synonymName:string}',
     'fr-fr': 'Faire de {nodeName:string} un synonyme de {synonymName:string}',
-    'uk-ua': 'Зробити {nodeName:string} синонімом {synonymName:string}',
+    'uk-ua': 'Зробіть {nodeName:string} синонімом {synonymName:string}',
     'de-ch':
       'Aus {nodeName:string} ein Synonym von {synonymName:string} machen',
   },
@@ -289,7 +289,10 @@ export const treeText = createDictionary({
       Der {treeName:string}-Knoten "{nodeName:string}" wird zu einem Synonym von
       "{synonymName:string}".
     `,
-    'uk-ua': 'ЗАЧИНЕНО',
+    'uk-ua': `
+      Вузол {treeName:string} "{nodeName:string}" стане синонімом
+      "{synonymName:string}".
+    `,
   },
   desynonymizeNode: {
     'en-us': 'Desynonymize node',
@@ -320,11 +323,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Предпочтительний: {name:string}',
     'es-es': 'Preferido: {name:string}',
     'fr-fr': 'Préféré : {name:string}',
-    'uk-ua': `
-      Усі посилання на вузол [X18X] «[X42X]» буде замінено на «[X84X]», а всі
-      нащадки «[X130X]» буде переміщено до «[X167X]», а будь-які нащадки, що
-      відповідають імені та рангу, будуть самі собою об'єднані рекурсивно.
-    `,
+    'uk-ua': 'Бажано: {name:string}',
     'de-ch': 'Bevorzugt: {name:string}',
   },
   treeViewTitle: {
@@ -392,7 +391,7 @@ export const treeText = createDictionary({
     'es-es': 'Recuento directo de {collectionObjectTable:string}',
     'de-ch': 'Direkte {collectionObjectTable:string} Anzahl',
     'fr-fr': 'Impossible de passer à un synonyme',
-    'uk-ua': 'Неможливо перейти до синоніма',
+    'uk-ua': 'Прямий підрахунок {collectionObjectTable:string}.',
   },
   indirectCollectionObjectCount: {
     comment: 'Example: Indirect Collection Object count',
@@ -421,10 +420,10 @@ export const treeText = createDictionary({
   },
   associatedNodesOnly: {
     'en-us': 'Show only nodes with associated objects',
-    'de-ch': 'Nur Knoten mit zugehörigen Objekten anzeigen',
+    'de-ch': 'Synchronisieren',
     'es-es': 'Mostrar solo nodos con objetos asociados',
     'fr-fr': 'Afficher uniquement les nœuds avec les objets associés',
-    'ru-ru': 'Это приведет к безвозвратному удалению следующего ресурса',
+    'ru-ru': 'Синхронизировать',
     'uk-ua': 'Показувати лише вузли з пов’язаними об’єктами',
   },
   splitView: {
@@ -457,6 +456,6 @@ export const treeText = createDictionary({
     'es-es': 'Sincronizar',
     'fr-fr': 'Synchroniser',
     'uk-ua': 'Синхронізувати',
-    'ru-ru': 'Это приведет к безвозвратному удалению следующего ресурса',
+    'ru-ru': 'Синхронизировать',
   },
 } as const);
