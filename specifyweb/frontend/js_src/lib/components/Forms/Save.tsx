@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useUnloadProtect } from '../../hooks/navigation';
@@ -31,7 +32,6 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { FormContext } from './BaseResourceView';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
-import { useLocation } from 'react-router-dom';
 
 export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 
