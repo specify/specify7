@@ -43,14 +43,8 @@ export const interactionsText = createDictionary({
     'uk-ua': 'Не знайдено жодних препаратів для таких записів:',
   },
   preparationsNotAvailableFor: {
-    'en-us': 'No preparations are available for the following records:',
-    'de-ch': 'Für folgende Datensätze sind keine Vorbereitungen verfügbar:',
-    'es-es': 'No se encontraron preparativos para los siguientes registros:',
-    'fr-fr': `
-      Aucune préparation n'est disponible pour les enregistrements suivants :
-    `,
-    'ru-ru': 'Для следующих записей подготовка невозможна:',
-    'uk-ua': 'Продовжити',
+    'en-us':
+      'No preparations are available for at least one type of preparation in the following records:',
   },
   problemsFound: {
     'en-us': 'There are problems with the entry:',
