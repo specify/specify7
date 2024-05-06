@@ -23,7 +23,7 @@ msgid "appResources"
 msgstr "App Ressourcen"
 
 #: components/AppResources/Create.tsx:284
-#: components/FormEditor/Create.tsx:260
+#: components/FormEditor/Create.tsx:265
 #: components/FormMeta/Definition.tsx:29
 #: components/FormMeta/Definition.tsx:54
 #: components/Preferences/UserDefinitions.tsx:803
@@ -345,7 +345,7 @@ msgstr "Formatvorschau"
 msgid "sortField"
 msgstr "Sortierfeld"
 
-#: components/FormEditor/Create.tsx:209
+#: components/FormEditor/Create.tsx:214
 #: components/Formatters/Preview.tsx:70
 #: components/Merging/Header.tsx:164
 #. Used in: Components > Form Editor > Create ⬤ Components > Formatters > Preview ⬤ Components > Merging > Header
@@ -482,19 +482,19 @@ msgstr "Abschlussbenachrichtigung an Benutzer senden"
 msgid "runInCollection"
 msgstr "In Sammlung ausführen"
 
-#: components/FormEditor/Create.tsx:72
+#: components/FormEditor/Create.tsx:73
 #. Used in: Components > Form Editor > Create
 #, fuzzy
 msgid "createNewForm"
 msgstr "Definition"
 
-#: components/FormEditor/Create.tsx:77
+#: components/FormEditor/Create.tsx:78
 #. Used in: Components > Form Editor > Create
 #, fuzzy
 msgid "copyFromExistingForm"
 msgstr "Aus vorhandenem Formular kopieren"
 
-#: components/FormEditor/Create.tsx:83
+#: components/FormEditor/Create.tsx:84
 #. Used in: Components > Form Editor > Create
 #, fuzzy
 msgid "copyDefaultForm"

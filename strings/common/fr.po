@@ -33,8 +33,8 @@ msgstr "Non"
 #: components/DataEntryTables/Edit.tsx:46
 #: components/DataEntryTables/index.tsx:42
 #: components/ExportFeed/ForceUpdate.tsx:33
-#: components/FormEditor/Create.tsx:66
-#: components/FormEditor/Create.tsx:256
+#: components/FormEditor/Create.tsx:67
+#: components/FormEditor/Create.tsx:261
 #: components/FormSliders/RecordSelectorFromIds.tsx:257
 #: components/Forms/DeleteButton.tsx:107
 #: components/Forms/DeleteButton.tsx:131
@@ -110,8 +110,8 @@ msgstr "Choisissez des fichiers ou faites-les glisser ici"
 msgid "skip"
 msgstr "Sauter"
 
-#: components/FormEditor/Create.tsx:59
-#: components/FormEditor/Create.tsx:257
+#: components/FormEditor/Create.tsx:60
+#: components/FormEditor/Create.tsx:262
 #: components/PickLists/definitions.ts:40
 #: components/QueryBuilder/Edit.tsx:176
 #: components/Security/Institution.tsx:104
@@ -167,7 +167,7 @@ msgstr "Créer"
 #: components/FormCommands/index.tsx:96
 #: components/FormCommands/index.tsx:118
 #: components/FormCommands/index.tsx:145
-#: components/FormEditor/Create.tsx:203
+#: components/FormEditor/Create.tsx:208
 #: components/FormEditor/Table.tsx:82
 #: components/FormMeta/AutoNumbering.tsx:91
 #: components/FormMeta/CarryForward.tsx:256
@@ -540,7 +540,7 @@ msgstr "N / A"
 
 #: components/AppResources/Create.tsx:227
 #: components/AttachmentsBulkImport/Datasets.tsx:259
-#: components/FormEditor/Create.tsx:68
+#: components/FormEditor/Create.tsx:69
 #: components/Security/RoleTemplate.tsx:89
 #: components/Statistics/AddStatDialog.tsx:73
 #: components/Toolbar/Query.tsx:213
@@ -554,7 +554,7 @@ msgstr "Nouveau"
 #: components/AttachmentsBulkImport/Datasets.tsx:222
 #: components/AttachmentsBulkImport/Datasets.tsx:225
 #: components/AttachmentsBulkImport/Import.tsx:253
-#: components/FormEditor/Create.tsx:159
+#: components/FormEditor/Create.tsx:160
 #: components/FormMeta/index.tsx:96
 #: components/FormMeta/index.tsx:98
 #: components/Forms/ResourceView.tsx:218
@@ -948,7 +948,7 @@ msgstr "Réduire tout"
 msgid "reset"
 msgstr "Réinitialiser"
 
-#: components/FormEditor/Create.tsx:205
+#: components/FormEditor/Create.tsx:210
 #: components/SearchDialog/index.tsx:306
 #. Used in: Components > Form Editor > Create ⬤ Components > Search Dialog > Index
 #, fuzzy
