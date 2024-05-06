@@ -155,7 +155,7 @@ export const resourcesText = createDictionary({
   },
   dataObjectFormatters: {
     'en-us': 'Record Formatters',
-    'ru-ru': 'Форматеры записи',
+    'ru-ru': 'Форматеры записей',
     'es-es': 'Formateadores de registros',
     'uk-ua': 'Форматувальники записів',
     'de-ch': 'Datensatz-Formatierer',
@@ -204,8 +204,8 @@ export const resourcesText = createDictionary({
       можно настроить на основе значения в записи.
     `,
     'uk-ua': `
-      «Формат таблиці» визначає, як дані з певної таблиці відображаються в
-      результатах запиту, експорті та комбінованих полях запиту. Він визначає
+      «Формат таблиці» керує тим, як дані з певної таблиці відображаються в
+      результатах запитів, експорті та комбінованих полях запитів. Він визначає
       поля для відображення та їх порядок. Умовне форматування можна налаштувати
       на основі значення в записі.
     `,
@@ -254,10 +254,10 @@ export const resourcesText = createDictionary({
       таблиц.
     `,
     'uk-ua': `
-      «Агрегація таблиць» контролює, як кілька записів таблиці об’єднуються
-      разом в один текстовий рядок. Формат таблиці, роздільник, суфікс, поле
-      сортування та ліміт попереднього перегляду запису можна налаштувати. Він
-      може відображатися в результатах запитів і у форматах таблиць.
+      «Агрегація таблиць» контролює, як кілька записів таблиці консолідуються в
+      один текстовий рядок. Формат таблиці, роздільник, суфікс, поле сортування
+      та ліміт попереднього перегляду запису можна налаштувати. Він може
+      відображатися в результатах запитів і у форматах таблиць.
     `,
   },
   formattedResource: {
@@ -445,10 +445,10 @@ export const resourcesText = createDictionary({
   },
   failedParsingXml: {
     'en-us': 'Failed to parse XML',
-    'ru-ru': 'Не удалось проанализировать XML',
+    'ru-ru': 'Не удалось разобрать XML',
     'de-ch': 'XML konnte nicht analysiert werden',
     'es-es': 'No se pudo analizar XML',
-    'fr-fr': "Échec de l'analyse XML",
+    'fr-fr': "Échec de l'analyse du XML",
     'uk-ua': 'Не вдалося проаналізувати XML',
   },
   name: {
@@ -505,7 +505,7 @@ export const resourcesText = createDictionary({
     'es-es': '(por defecto)',
     'fr-fr': '(défaut)',
     'ru-ru': '(по умолчанию)',
-    'uk-ua': '(за замовчуванням)',
+    'uk-ua': '(за умовчанням)',
   },
   sortField: {
     'en-us': 'Sort Field',
@@ -568,7 +568,7 @@ export const resourcesText = createDictionary({
     'es-es': 'Agregar definición',
     'fr-fr': 'Ajouter une définition',
     'ru-ru': 'Добавить определение',
-    'uk-ua': 'Додайте визначення',
+    'uk-ua': 'Додати визначення',
   },
   deleteDefinition: {
     'en-us': 'Delete definition',
@@ -666,13 +666,13 @@ export const resourcesText = createDictionary({
       changer de collection avant de modifier cette ressource.
     `,
     'ru-ru': `
-      Этот ресурс принадлежит другой коллекции/дисциплине, отличной от той, в
+      Этот ресурс принадлежит к другой коллекции/дисциплине, отличной от той, в
       которой вы сейчас находитесь. Перед редактированием этого ресурса
       рекомендуется сменить коллекцию.
     `,
     'uk-ua': `
       Цей ресурс належить до іншої колекції/дисципліни, ніж та, у якій ви зараз
-      перебуваєте. Рекомендується змінити колекцію перед редагуванням цього
+      перебуваєте. Рекомендовано змінити колекцію перед редагуванням цього
       ресурсу
     `,
   },
@@ -753,7 +753,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Standardformular kopieren',
     'es-es': 'Formateadores de registros',
     'fr-fr': "Formateurs d'enregistrement",
-    'ru-ru': 'Форматеры записи',
+    'ru-ru': 'Форматеры записей',
     'uk-ua': 'Форматувальники записів',
   },
   copyDefaultForms: {
