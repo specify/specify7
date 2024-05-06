@@ -284,6 +284,7 @@ describe('fetchView', () => {
   const expectedCollectorsView = {
     name: localized('Collectors'),
     class: 'edu.ku.brc.specify.datamodel.Collector',
+    defaultSubviewFormType: 'formTable',
     busrules: 'edu.ku.brc.specify.datamodel.busrules.CollectorBusRules',
     altviews: {
       'Collectors Table View': {
@@ -331,9 +332,9 @@ describe('fetchView', () => {
     ));
 });
 
-test('parseViewDefinition', () => {
+test('parseViewDefinition', async () => {
   jest.spyOn(console, 'warn').mockImplementation();
-  const result = parseViewDefinition(
+  const result = await parseViewDefinition(
     {
       ...viewDefinition,
       viewdefs: {
@@ -345,8 +346,8 @@ test('parseViewDefinition', () => {
     tables.CollectionObject
   )!;
   expect(result).toBeDefined();
-  expect(result.table?.name).toBe(tables.CollectionObject.name);
-  expect(removeKey(result, 'table')).toEqual({
+  expect(result!.table?.name).toBe(tables.CollectionObject.name);
+  expect(removeKey(result!, 'table')).toEqual({
     ...parsedTinyView,
     errors: [],
     name: '',
@@ -431,23 +432,25 @@ describe('parseFormDefinition', () => {
     ]);
   });
 
-  test('conditional view definitions', () => {
+  test('conditional view definitions', async () => {
     jest.spyOn(console, 'warn').mockImplementation();
-    expect(
+    await expect(
       parseFormDefinition(
         toSimpleXmlNode(xmlToJson(conditionalTinyFormView)),
         tables.CollectionObject
-      ).map(({ condition, ...rest }) => ({
-        ...rest,
-        condition:
-          condition === undefined || condition.type !== 'Value'
-            ? condition
-            : {
-                ...condition,
-                field: condition.field.map((field) => field.name),
-              },
-      }))
-    ).toEqual([
+      ).then((formDefinition) =>
+        formDefinition.map(({ condition, ...rest }) => ({
+          ...rest,
+          condition:
+            condition === undefined || condition.type !== 'Value'
+              ? condition
+              : {
+                  ...condition,
+                  field: condition.field.map((field) => field.name),
+                },
+        }))
+      )
+    ).resolves.toEqual([
       {
         condition: undefined,
         definition: parsedTinyView,
