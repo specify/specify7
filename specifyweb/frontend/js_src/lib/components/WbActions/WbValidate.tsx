@@ -42,8 +42,8 @@ export function WbValidate({
           title={
             isMapped
               ? isResultsOpen
-              ? wbText.unavailableWhileViewingResults()
-              : undefined
+                ? wbText.unavailableWhileViewingResults()
+                : undefined
               : wbText.wbValidateUnavailable()
           }
           onClick={handleToggleDataCheck}

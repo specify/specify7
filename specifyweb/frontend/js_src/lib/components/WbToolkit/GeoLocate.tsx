@@ -49,10 +49,10 @@ export function WbGeoLocate({
         title={
           hasLocality
             ? isUploaded
-            ? wbText.unavailableWhenUploaded()
-            : isResultsOpen
-            ? wbText.unavailableWhileViewingResults()
-            : undefined
+              ? wbText.unavailableWhenUploaded()
+              : isResultsOpen
+              ? wbText.unavailableWhileViewingResults()
+              : undefined
             : wbText.unavailableWithoutLocality()
         }
         onClick={openGeoLocate}

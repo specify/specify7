@@ -49,10 +49,10 @@ export function WbConvertCoordinates({
         title={
           hasLocality
             ? isUploaded
-            ? wbText.unavailableWhenUploaded()
-            : isResultsOpen
-            ? wbText.unavailableWhileViewingResults()
-            : undefined
+              ? wbText.unavailableWhenUploaded()
+              : isResultsOpen
+              ? wbText.unavailableWhileViewingResults()
+              : undefined
             : wbText.unavailableWithoutLocality()
         }
         onClick={openConvertCoords}
