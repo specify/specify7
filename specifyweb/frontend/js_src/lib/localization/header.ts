@@ -13,7 +13,7 @@ export const headerText = createDictionary({
     comment: 'For accessibility purposes. Allows jumping to page content',
     'en-us': 'Skip to Content',
     'ru-ru': 'Перейти к содержанию',
-    'es-es': 'Saltar al contenido',
+    'es-es': 'Ir al contenido',
     'fr-fr': 'Aller au contenu',
     'uk-ua': 'Перейти до вмісту',
     'de-ch': 'Weiter zum Inhalt',
@@ -47,7 +47,7 @@ export const headerText = createDictionary({
   makeDwca: {
     'en-us': 'Create DwC Archive',
     'ru-ru': 'Создать архив DwC',
-    'es-es': 'Crear archivo DwC',
+    'es-es': 'Crear un archivo DwC',
     'fr-fr': 'Créer une archive DwC',
     'uk-ua': 'Створити архів DwC',
     'de-ch': 'DwC-Archiv erstellen',
@@ -55,7 +55,7 @@ export const headerText = createDictionary({
   updateExportFeed: {
     'en-us': 'Update RSS Feed',
     'ru-ru': 'Обновить RSS-канал',
-    'es-es': 'Actualizar fuente RSS',
+    'es-es': 'Actualizar feed RSS',
     'fr-fr': 'Mettre à jour le flux RSS',
     'uk-ua': 'Оновити RSS-канал',
     'de-ch': 'RSS-Feed aktualisieren',
@@ -81,7 +81,7 @@ export const headerText = createDictionary({
   feedExportStarted: {
     'en-us': 'Export feed update started',
     'ru-ru': 'Начато обновление фида экспорта',
-    'es-es': 'Se inició la actualización del feed de exportación',
+    'es-es': 'Iniciada la actualización del feed de exportación',
     'fr-fr': "La mise à jour du flux d'exportation a commencé",
     'uk-ua': 'Оновлення каналу експорту розпочато',
     'de-ch': 'Aktualisierung des Export-Feeds gestartet',
@@ -96,8 +96,8 @@ export const headerText = createDictionary({
       элемента фида.
     `,
     'es-es': `
-      Actualización iniciada. Recibirá una notificación por cada elemento del
-      feed actualizado.
+      Actualización iniciada. Recibirá una notificación por cada elemento
+      actualizado.
     `,
     'fr-fr': `
       La mise à jour a commencé. Vous recevrez une notification pour chaque
@@ -115,7 +115,7 @@ export const headerText = createDictionary({
   dwcaExportStarted: {
     'en-us': 'DwCA export started',
     'ru-ru': 'Начат экспорт DwCA',
-    'es-es': 'Se inició la exportación de DwCA',
+    'es-es': 'Exportación DwCA iniciada',
     'fr-fr': "L'exportation DwCA a démarré",
     'uk-ua': 'Розпочато експорт DwCA',
     'de-ch': 'DwCA-Export gestartet',
@@ -129,7 +129,7 @@ export const headerText = createDictionary({
       Экспорт запущен. Вы получите уведомление, когда экспорт будет завершен.
     `,
     'es-es': `
-      Se inició la exportación. Recibirá una notificación cuando se complete la
+      Exportación iniciada. Recibirá una notificación cuando finalice la
       exportación.
     `,
     'fr-fr': `
@@ -186,10 +186,7 @@ export const headerText = createDictionary({
   treeRepairComplete: {
     'en-us': 'Tree repair is complete.',
     'ru-ru': 'Ремонт дерева завершен.',
-    'es-es': `
-      Se inició la exportación. Recibirá una notificación cuando se complete la
-      exportación.
-    `,
+    'es-es': 'La reparación del árbol está completa.',
     'fr-fr': `
       L'exportation a commencé. Vous recevrez une notification lorsque
       l'exportation sera terminée.
@@ -224,7 +221,7 @@ export const headerText = createDictionary({
   chooseMetadataResource: {
     'en-us': 'Choose Metadata resource',
     'ru-ru': 'Выберите ресурс метаданных',
-    'es-es': 'Localización incompleta',
+    'es-es': 'Elija recurso de metadatos',
     'fr-fr': 'Localisation incomplète',
     'uk-ua': 'Виберіть ресурс метаданих',
     'de-ch': 'Metadaten-Ressource auswählen',

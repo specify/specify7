@@ -31,7 +31,7 @@ const commonSettings = (name: string): IR<unknown> => ({
   allow_translation_propagation: true,
   auto_lock_error: true,
   branch: weblateBranch,
-  commit_pending_age: 3,
+  commit_pending_age: 1,
   edit_template: true,
   file_format: 'po-mono',
   filemask: `strings/${name}/*${gettextExtension}`,

@@ -232,10 +232,14 @@ export const mainText = createDictionary({
   },
   leavePageConfirmationDescription: {
     'en-us': 'Unsaved changes will be lost if you leave this page.',
-    'ru-ru': 'Нажмите, чтобы увидеть подробности',
+    'ru-ru':
+      'Несохраненные изменения будут потеряны, если вы покинете эту страницу.',
     'es-es': 'Los cambios no guardados se perderán si abandona esta página.',
-    'fr-fr': 'Cliquez pour voir les détails',
-    'uk-ua': 'Натисніть, щоб переглянути деталі',
+    'fr-fr': `
+      Les modifications non enregistrées seront perdues si vous quittez cette
+      page.
+    `,
+    'uk-ua': 'Незбережені зміни буде втрачено, якщо ви залишите цю сторінку.',
     'de-ch': `
       Nicht gespeicherte Änderungen gehen verloren, wenn Sie diese Seite
       verlassen.
@@ -329,9 +333,6 @@ export const mainText = createDictionary({
     'fr-fr': 'hors ligne',
     'ru-ru': 'не в сети',
     'uk-ua': 'офлайн',
-    'de-ch': `
-      Nicht gespeicherte Änderungen gehen verloren, wenn Sie diese Seite
-      verlassen.
-    `,
+    'de-ch': 'offline',
   },
 } as const);
