@@ -80,10 +80,19 @@ class ObjectFormatter(object):
 
             return formatter_name and lookup_name(formatter_name)
 
-        return (formatter_name and lookup_name(formatter_name)) \
-               or lookup_default('class', specify_model.classname) \
-               or getFormatterFromSchema() \
-               or lookup('class', specify_model.classname)
+        result = formatter_name and lookup_name(formatter_name)
+        if result is not None:
+            return result
+
+        result = lookup_default('class', specify_model.classname)
+        if result is not None:
+            return result
+
+        result = getFormatterFromSchema()
+        if result is not None:
+            return result
+
+        return lookup('class', specify_model.classname)
 
     def hasFormatterDef(self, specify_model: Table, formatter_name) -> bool:
         if formatter_name is None:
@@ -105,8 +114,8 @@ class ObjectFormatter(object):
                     return element
             return None
 
-        return (aggregator_name and lookup('name', aggregator_name)) \
-               or lookup_default('class', specify_model.classname)
+        result = aggregator_name and lookup('name', aggregator_name)
+        return result if result is not None else lookup_default('class', specify_model.classname)
 
     def catalog_number_is_numeric(self):
         return self.collection.catalognumformatname == 'CatalogNumberNumeric'
