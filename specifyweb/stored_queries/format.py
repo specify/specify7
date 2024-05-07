@@ -54,6 +54,13 @@ class ObjectFormatter(object):
         def lookup(attr: str, val: str) -> Optional[Element]:
             return self.formattersDom.find(
                 'format[@%s=%s]' % (attr, quoteattr(val)))
+
+        def lookup_default(attr: str, val: str) -> Optional[Element]:
+            elements = self.formattersDom.findall('format[@%s=%s]' % (attr, quoteattr(val)))
+            for element in elements:
+                if element.get('default') == 'true':
+                    return element
+            return None
         
         def lookup_name(name: str) -> Optional[Element]:
             elements = self.formattersDom.findall('format[@name=%s]' % quoteattr(name))
@@ -75,6 +82,7 @@ class ObjectFormatter(object):
             return formatter_name and lookup_name(formatter_name)
 
         return (formatter_name and lookup_name(formatter_name)) \
+               or lookup_default('class', specify_model.classname) \
                or getFormatterFromSchema() \
                or lookup('class', specify_model.classname)
 
@@ -87,8 +95,7 @@ class ObjectFormatter(object):
                 return True
         return False
 
-    def getAggregatorDef(self, specify_model: Table, aggregator_name) -> \
-    Optional[Element]:
+    def getAggregatorDef(self, specify_model: Table, aggregator_name) -> Optional[Element]:
         def lookup(attr: str, val: str) -> Optional[Element]:
             return self.formattersDom.find('aggregators/aggregator[@%s=%s]' % (attr, quoteattr(val)))
 
