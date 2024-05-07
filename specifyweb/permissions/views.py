@@ -1,6 +1,6 @@
 import json
 from collections import defaultdict
-from typing import Dict, Union, Optional, List
+from typing import Dict, Union, Optional, List, Tuple
 
 from django import http
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -14,7 +14,7 @@ from . import models
 from .permissions import PermissionTarget, PermissionTargetAction, \
     NoAdminUsersException, check_permission_targets, registry, query
 
-def dependent_resources_from_resource(resource: str) -> List[str]:
+def dependent_resources_from_resource(resource: str) -> Tuple[str, ...]:
     table = resource.split("/")[-1]
     model = datamodel.get_table_strict(table)
     dependent_relationships = tuple(filter(lambda rel: rel.dependent, model.relationships))
@@ -260,7 +260,7 @@ class UserPolicies(LoginRequiredMixin, View):
 
         return http.HttpResponse('', status=204)
     
-    def assign_dependent_access(self, resource: str, collectionid: int, specifyuserid: int):
+    def assign_dependent_access(self, resource: str, collectionid: Optional[int], specifyuserid: int):
         for dependent_resource in dependent_resources_from_resource(resource):
             if models.UserPolicy.objects.filter(resource=dependent_resource, specifyuser_id=specifyuserid).exists():
                 continue
