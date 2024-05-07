@@ -42,7 +42,8 @@ def update_feed(force=False, notify_user=None):
         if force or needs_update(path, int(item_node.attrib['days'])):
             logger.info('Generating: %s', filename)
             temp_file = os.path.join(FEED_DIR, '%s.tmp.zip' % filename)
-            collection_id = item_node.attrib.get('collectionid', item_node.attrib.get('collectionId'))
+            collection_id_key = 'collectionid' if 'collectionid' in item_node.attrib else 'collectionId'
+            collection_id = item_node.attrib.get(collection_id_key)
             collection = Collection.objects.get(id=collection_id)
             user_id = item_node.attrib.get('userid', item_node.attrib.get('userId'))
             user = Specifyuser.objects.get(id=user_id)
