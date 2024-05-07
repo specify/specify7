@@ -183,10 +183,6 @@ export function PrepDialog({
             setPreparationItems(interaction, items);
 
             const loan = toTable(interaction, 'Loan');
-            loan?.set(
-              'loanPreparations',
-              items as RA<SpecifyResource<LoanPreparation>>
-            );
             loan?.set('isClosed', false);
             navigate(getResourceViewUrl(table.name, undefined), {
               state: {
