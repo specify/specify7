@@ -44,8 +44,8 @@ export const treeBusinessRules = async (
     const isSynonym = parent.get('isAccepted');
 
     const canAddToSynonym =
-      (doExpandSynonymActionsPref === false && isSynonym === true) ||
-      (doExpandSynonymActionsPref === true && isSynonym === false) ||
+      (!doExpandSynonymActionsPref && isSynonym) ||
+      (doExpandSynonymActionsPref && !isSynonym) ||
       isSynonym === undefined;
 
     const hasBadTreeStrcuture =
