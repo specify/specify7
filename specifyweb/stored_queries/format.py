@@ -49,8 +49,7 @@ class ObjectFormatter(object):
         self.replace_nulls = replace_nulls
         self.aggregator_count = 0
 
-    def getFormatterDef(self, specify_model: Table, formatter_name) -> Optional[
-        Element]:
+    def getFormatterDef(self, specify_model: Table, formatter_name) -> Optional[Element]:
         def lookup(attr: str, val: str) -> Optional[Element]:
             return self.formattersDom.find(
                 'format[@%s=%s]' % (attr, quoteattr(val)))
