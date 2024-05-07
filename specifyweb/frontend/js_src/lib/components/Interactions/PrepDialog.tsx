@@ -19,11 +19,7 @@ import { getResourceApiUrl, getResourceViewUrl } from '../DataModel/resource';
 import { serializeResource } from '../DataModel/serializers';
 import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
-import type {
-  ExchangeOut,
-  ExchangeOutPrep,
-  LoanPreparation,
-} from '../DataModel/types';
+import type { ExchangeOut, ExchangeOutPrep } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import type { InteractionWithPreps, PreparationData } from './helpers';
 import { interactionPrepTables } from './helpers';
