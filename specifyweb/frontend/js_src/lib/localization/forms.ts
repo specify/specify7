@@ -143,8 +143,8 @@ export const formsText = createDictionary({
     'de-ch': `
       Das Paleo Map-Plugin erfordert, dass {localityTable:string} über
       geografische Koordinaten verfügt und dass im Paläokontext ein
-      geografisches Alter mit mindestens einer Start- oder Endzeit angegeben
-      ist.
+      geografisches Alter mit mindestens einer ausgefüllten Start- oder Endzeit
+      angegeben ist.
     `,
     'es-es': 'Seleccionar fuente de tablas',
     'fr-fr': 'Sélectionnez la source des tables',
