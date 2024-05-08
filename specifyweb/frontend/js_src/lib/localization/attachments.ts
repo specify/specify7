@@ -676,4 +676,7 @@ export const attachmentsText = createDictionary({
       під час читання файлу сталася помилка.
     `,
   },
+  importFromMappingFile: {
+    'en-us': 'Import from Mapping File',
+  },
 } as const);

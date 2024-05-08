@@ -22,13 +22,13 @@ import { CsvFilePreview } from '../Molecules/CsvFilePicker';
 import { FilePicker, Layout } from '../Molecules/FilePicker';
 import {
   createDataSet,
-  extractFileName,
   getMaxDataSetLength,
   inferDataSetType,
   parseCsv,
   parseXls,
   wbImportPreviewSize,
 } from './helpers';
+import { stripFileExtension } from '../../utils/utils';
 
 export function WbImportView(): JSX.Element {
   useMenuItem('workBench');
@@ -50,7 +50,7 @@ export function WbImportView(): JSX.Element {
 
 function FilePicked({ file }: { readonly file: File }): JSX.Element {
   const fileType = inferDataSetType(file);
-  const getSetDataSetName = useTriggerState(extractFileName(file.name));
+  const getSetDataSetName = useTriggerState(stripFileExtension(file.name));
   const [hasHeader = true, setHasHeader] = useCachedState(
     'wbImport',
     'hasHeader'

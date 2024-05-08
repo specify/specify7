@@ -57,7 +57,8 @@ type UploadableFileSpec = {
  * Forcing keys to be primitive because objects would be
  * ignored during syncing to backend.
  */
-export type BoundFile = Pick<File, 'name' | 'size' | 'type'>;
+export type BoundFile = Pick<File, 'name'> &
+  Partial<Pick<File, 'size' | 'type'>>;
 
 export type UnBoundFile = {
   readonly file: BoundFile | File;

@@ -62,7 +62,10 @@ const resolveAttachmentDatasetData = (
             {uploadFile.file.name}
           </div>,
         ],
-        fileSize: formatFileSize(uploadFile.file.size),
+        fileSize:
+          uploadFile.file.size === undefined
+            ? ''
+            : formatFileSize(uploadFile.file.size),
         record: [
           resolvedRecord?.type === 'matched'
             ? resolvedRecord.id
