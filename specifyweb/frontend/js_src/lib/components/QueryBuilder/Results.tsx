@@ -109,6 +109,10 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     table.name === 'PaleoContext' && !isEmbeddedPaleoContext && canMerge;
   const canMergeCollectingEvent =
     table.name === 'CollectingEvent' && !isEmbeddedCollectingEvent && canMerge;
+  const canMergeOtherTables =
+    table.name !== 'PaleoContext' &&
+    table.name !== 'CollectingEvent' &&
+    canMerge;
 
   const visibleFieldSpecs = fieldSpecs.filter(({ isPhantom }) => !isPhantom);
   if (resultsRef !== undefined) resultsRef.current = results;
@@ -227,7 +231,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
           <>
             {(table.name === 'PaleoContext' && canMergePaleoContext) ||
             (table.name === 'CollectingEvent' && canMergeCollectingEvent) ||
-            canMerge ? (
+            canMergeOtherTables ? (
               <RecordMergingLink
                 selectedRows={selectedRows}
                 table={table}
