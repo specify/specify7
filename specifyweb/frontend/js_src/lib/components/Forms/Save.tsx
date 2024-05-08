@@ -32,6 +32,7 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { FormContext } from './BaseResourceView';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
+import { InFormEditorContext } from '../FormEditor/Context';
 
 export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 
@@ -108,14 +109,11 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const canUpdate = hasTablePermission(resource.specifyTable.name, 'update');
   const canSave = resource.isNew() ? canCreate : canUpdate;
 
-  const location = useLocation();
-  const currentUrl = location.pathname;
-  const isInViewSet = currentUrl.includes('view-set');
-  const saveNotAllowed = isInViewSet && handleAdd === undefined;
+  const isInFormEditor = React.useContext(InFormEditorContext);
 
   const isSaveDisabled =
     disabled ||
-    saveNotAllowed ||
+    isInFormEditor ||
     isSaving ||
     !canSave ||
     (!saveRequired &&
