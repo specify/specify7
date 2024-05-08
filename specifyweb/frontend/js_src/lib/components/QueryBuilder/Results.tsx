@@ -33,6 +33,7 @@ import { useFetchQueryResults } from './hooks';
 import { QueryResultsTable } from './ResultsTable';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
+import { schema } from '../DataModel/schema';
 
 export type QueryResultRow = RA<number | string | null>;
 
@@ -98,6 +99,16 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     totalCount: [totalCount, setTotalCount],
     canFetchMore,
   } = useFetchQueryResults(props);
+
+  const isEmbeddedCollectingEvent = schema.embeddedCollectingEvent;
+  const isEmbeddedPaleoContext = schema.embeddedPaleoContext;
+  const canMerge =
+    hasPermission('/record/merge', 'update') &&
+    hasTablePermission(table.name, 'update');
+  const canMergePaleoContext =
+    table.name === 'PaleoContext' && !isEmbeddedPaleoContext && canMerge;
+  const canMergeCollectingEvent =
+    table.name === 'CollectingEvent' && !isEmbeddedCollectingEvent && canMerge;
 
   const visibleFieldSpecs = fieldSpecs.filter(({ isPhantom }) => !isPhantom);
   if (resultsRef !== undefined) resultsRef.current = results;
@@ -214,15 +225,16 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
         typeof fetchResults === 'function' &&
         visibleFieldSpecs.length > 0 ? (
           <>
-            {hasPermission('/record/merge', 'update') &&
-              hasTablePermission(table.name, 'update') && (
-                <RecordMergingLink
-                  selectedRows={selectedRows}
-                  table={table}
-                  onDeleted={handleDelete}
-                  onMerged={handleReRun}
-                />
-              )}
+            {(table.name === 'PaleoContext' && canMergePaleoContext) ||
+            (table.name === 'CollectingEvent' && canMergeCollectingEvent) ||
+            canMerge ? (
+              <RecordMergingLink
+                selectedRows={selectedRows}
+                table={table}
+                onDeleted={handleDelete}
+                onMerged={handleReRun}
+              />
+            ) : undefined}
             {hasToolPermission('recordSets', 'create') && totalCount !== 0 ? (
               selectedRows.size > 0 && !isDistinct ? (
                 <CreateRecordSet
