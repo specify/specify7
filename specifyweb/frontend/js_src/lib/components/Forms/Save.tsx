@@ -25,13 +25,13 @@ import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { errorHandledBy } from '../Errors/FormatError';
+import { InFormEditorContext } from '../FormEditor/Context';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { FormContext } from './BaseResourceView';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
-import { InFormEditorContext } from '../FormEditor/Context';
 
 export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 
