@@ -41,17 +41,12 @@ export const treeBusinessRules = async (
     const doExpandSynonymActionsPref = getPref(
       `sp7.allow_adding_child_to_synonymized_parent.${resource.specifyTable.name}`
     );
-    const isSynonym = parent.get('isAccepted');
-
-    const canAddToSynonym =
-      (!doExpandSynonymActionsPref && isSynonym) ||
-      (doExpandSynonymActionsPref && !isSynonym) ||
-      isSynonym === undefined;
+    const isParentSynonym = !parent.get('isAccepted');
 
     const hasBadTreeStrcuture =
       parent.id === resource.id ||
-      !canAddToSynonym ||
       definitionItem === undefined ||
+      (isParentSynonym && !doExpandSynonymActionsPref) ||
       parent.get('rankId') >= definitionItem.get('rankId') ||
       (possibleRanks !== undefined &&
         !possibleRanks
@@ -72,6 +67,7 @@ export const treeBusinessRules = async (
       };
 
     if (
+      hasBadTreeStrcuture ||
       (resource.get('name')?.length ?? 0) === 0 ||
       definitionItem === undefined
     )
