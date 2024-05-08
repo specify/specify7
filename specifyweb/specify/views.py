@@ -880,7 +880,7 @@ def upload_locality_set(request: http.HttpRequest):
     if len(errors) > 0:
         result["type"] = "ParseError"
         result["data"] = [error.to_json() for error in errors]
-        return http.JsonResponse(result, safe=False)
+        return http.JsonResponse(result, status=422, safe=False)
 
     result["type"] = "Uploaded"
     with transaction.atomic():
@@ -909,4 +909,4 @@ def upload_locality_set(request: http.HttpRequest):
 
             result["data"].append(locality_id)
 
-    return http.JsonResponse(result)
+    return http.JsonResponse(result, safe=False)

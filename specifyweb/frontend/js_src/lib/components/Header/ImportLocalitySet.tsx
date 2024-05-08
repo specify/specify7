@@ -7,6 +7,7 @@ import { localityText } from '../../localization/locality';
 import { mainText } from '../../localization/main';
 import { notificationsText } from '../../localization/notifications';
 import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { H2 } from '../Atoms';
@@ -195,12 +196,17 @@ export function ImportLocalitySet(): JSX.Element {
               loading(
                 ajax<LocalityUploadResponse>('/api/import/locality_set/', {
                   headers: { Accept: 'application/json' },
+                  expectedErrors: [Http.UNPROCESSABLE],
+                  method: 'POST',
                   body: {
                     columnHeaders: headers,
                     data,
                   },
-                  method: 'POST',
-                }).then(({ data }) => {
+                }).then(({ data: rawData, status }) => {
+                  const data =
+                    status === 422 && typeof rawData === 'string'
+                      ? (JSON.parse(rawData) as LocalityUploadResponse)
+                      : rawData;
                   setData([]);
                   setResults(data);
                 })
