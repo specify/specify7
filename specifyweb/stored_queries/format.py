@@ -78,9 +78,15 @@ class ObjectFormatter(object):
             except Splocalecontainer.DoesNotExist:
                 return None
 
-            return formatter_name and lookup_name(formatter_name)
+            if formatter_name:
+                return lookup_name(formatter_name)
+            else:
+                return None
 
-        result = formatter_name and lookup_name(formatter_name)
+        result = None
+        if formatter_name:
+            result = lookup_name(formatter_name)
+
         if result is not None:
             return result
 
@@ -114,7 +120,9 @@ class ObjectFormatter(object):
                     return element
             return None
 
-        result = aggregator_name and lookup('name', aggregator_name)
+        result = None
+        if aggregator_name:
+            result = lookup('name', aggregator_name)
         return result if result is not None else lookup_default('class', specify_model.classname)
 
     def catalog_number_is_numeric(self):
