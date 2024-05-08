@@ -6,7 +6,7 @@ import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import { formData } from '../../utils/ajax/helpers';
 import { Button } from '../Atoms/Button';
-import { LoadingContext } from '../Core/Contexts';
+import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { tables } from '../DataModel/tables';
 import {
   ProtectedAction,
@@ -70,21 +70,26 @@ function CreateRecordSetDialog({
 
   const loading = React.useContext(LoadingContext);
   return (
-    <EditRecordSet
-      recordSet={recordSet}
-      onClose={handleClose}
-      onSaving={(unsetUnloadProtect): false => {
-        unsetUnloadProtect();
-        loading(
-          ajax<number>(`/api/workbench/create_recordset/${datasetId}/`, {
-            method: 'POST',
-            headers: { Accept: 'application/json' },
-            body: formData({ name: recordSet.get('name') }),
-            errorMode: 'dismissible',
-          }).then(({ data }) => unsafeNavigate(`/specify/record-set/${data}/`))
-        );
-        return false;
-      }}
-    />
+    // Override readonly context set by workbench after upload so recordset meta can be edited
+    <ReadOnlyContext.Provider value={false}>
+      <EditRecordSet
+        recordSet={recordSet}
+        onClose={handleClose}
+        onSaving={(unsetUnloadProtect): false => {
+          unsetUnloadProtect();
+          loading(
+            ajax<number>(`/api/workbench/create_recordset/${datasetId}/`, {
+              method: 'POST',
+              headers: { Accept: 'application/json' },
+              body: formData({ name: recordSet.get('name') }),
+              errorMode: 'dismissible',
+            }).then(({ data }) =>
+              unsafeNavigate(`/specify/record-set/${data}/`)
+            )
+          );
+          return false;
+        }}
+      />
+    </ReadOnlyContext.Provider>
   );
 }
