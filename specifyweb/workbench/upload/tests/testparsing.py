@@ -432,7 +432,7 @@ class ParsingTests(UploadTestsBase):
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Uploaded)
-        self.assertEqual(results[2].record_result, ParseFailures(failures=[WorkBenchParseFailure(message='valueTooLong', payload={'maxLength': 128}, column='Species Author')]))
+        self.assertEqual(results[2].record_result, ParseFailures(failures=[WorkBenchParseFailure(message='valueTooLong', payload={'field': 'author', 'maxLength': 128}, column='Species Author')]))
 
 
 class MatchingBehaviorTests(UploadTestsBase):
