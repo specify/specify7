@@ -180,7 +180,9 @@ export function IntegratedRecordSelector({
                         }
                         onClick={(): void => {
                           focusFirstField();
-                          handleAdd();
+                          const resource =
+                            new collection.table.specifyTable.Resource();
+                          handleAdd([resource]);
                         }}
                       />
                     ) : undefined}
@@ -243,7 +245,7 @@ export function IntegratedRecordSelector({
                 viewName={viewName}
                 onAdd={(resources): void => {
                   if (!isInteraction) collection.add(resources);
-                  if (typeof handleAdd === 'function') handleAdd();
+                  if (typeof handleAdd === 'function') handleAdd(resources);
                 }}
                 onClose={handleClose}
                 onDelete={(_resource, index): void => {
