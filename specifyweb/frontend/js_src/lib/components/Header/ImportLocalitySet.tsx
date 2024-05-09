@@ -87,6 +87,30 @@ export function ImportLocalitySet(): JSX.Element {
     setResults(undefined);
   }
 
+  const handleImport = (
+    columnHeaders: RA<string>,
+    data: RA<RA<string>>
+  ): void => {
+    loading(
+      ajax<LocalityUploadResponse>('/api/import/locality_set/', {
+        headers: { Accept: 'application/json' },
+        expectedErrors: [Http.UNPROCESSABLE],
+        method: 'POST',
+        body: {
+          columnHeaders,
+          data,
+        },
+      }).then(({ data: rawData, status }) => {
+        const data =
+          status === 422 && typeof rawData === 'string'
+            ? (JSON.parse(rawData) as LocalityUploadResponse)
+            : rawData;
+        setData([]);
+        setResults(data);
+      })
+    );
+  };
+
   return (
     <>
       <CsvFilePicker
@@ -116,31 +140,22 @@ export function ImportLocalitySet(): JSX.Element {
           setHeaderErrors(foundHeaderErrors);
           setHeaders(headers);
           setData(data.slice(1));
+
+          if (
+            !Object.values(foundHeaderErrors).some(
+              (errors) => errors.length > 0
+            )
+          )
+            handleImport(headers, data.slice(1));
         }}
       />
-      {Object.values(headerErrors).some((errors) => errors.length > 0) ? (
+      {Object.values(headerErrors).some((errors) => errors.length > 0) && (
         <Dialog
           buttons={
             <>
               <Button.DialogClose>{commonText.close()}</Button.DialogClose>
               {headerErrors.missingRequiredHeaders.length === 0 && (
-                <Button.Small
-                  onClick={(): void =>
-                    loading(
-                      ajax<LocalityUploadResponse>(
-                        '/api/import/locality_set/',
-                        {
-                          headers: { Accept: 'application/json' },
-                          body: {
-                            columnHeaders: headers,
-                            data,
-                          },
-                          method: 'POST',
-                        }
-                      ).then(({ data }) => setResults(data))
-                    )
-                  }
-                >
+                <Button.Small onClick={(): void => handleImport(headers, data)}>
                   {commonText.import()}
                 </Button.Small>
               )}
@@ -183,41 +198,7 @@ export function ImportLocalitySet(): JSX.Element {
             </p>
           </>
         </Dialog>
-      ) : data.length > 0 &&
-        !Object.values(headerErrors).some((errors) => errors.length > 0) ? (
-        <Dialog
-          buttons={
-            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          }
-          header={localityText.localityimportHeader()}
-          onClose={resetContext}
-        >
-          <Button.Small
-            onClick={(): void =>
-              loading(
-                ajax<LocalityUploadResponse>('/api/import/locality_set/', {
-                  headers: { Accept: 'application/json' },
-                  expectedErrors: [Http.UNPROCESSABLE],
-                  method: 'POST',
-                  body: {
-                    columnHeaders: headers,
-                    data,
-                  },
-                }).then(({ data: rawData, status }) => {
-                  const data =
-                    status === 422 && typeof rawData === 'string'
-                      ? (JSON.parse(rawData) as LocalityUploadResponse)
-                      : rawData;
-                  setData([]);
-                  setResults(data);
-                })
-              )
-            }
-          >
-            {commonText.import()}
-          </Button.Small>
-        </Dialog>
-      ) : null}
+      )}
       {results === undefined ? null : (
         <LocalityImportResults results={results} onClose={resetContext} />
       )}
