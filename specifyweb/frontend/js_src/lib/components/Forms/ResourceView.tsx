@@ -28,6 +28,7 @@ import { useResourceView } from './BaseResourceView';
 import { DeleteButton } from './DeleteButton';
 import { SaveButton } from './Save';
 import { propsToFormMode } from './useViewDefinition';
+import { InFormEditorContext } from '../FormEditor/Context';
 
 /**
  * There is special behavior required when creating one of these resources,
@@ -162,6 +163,8 @@ export function ResourceView<SCHEMA extends AnySchema>({
     resource?.specifyTable.name
   );
   const isInSearchDialog = React.useContext(SearchDialogContext);
+  const isInFormEditor = React.useContext(InFormEditorContext);
+
   const {
     formElement,
     formPreferences,
@@ -247,7 +250,8 @@ export function ResourceView<SCHEMA extends AnySchema>({
     !isSubForm &&
     typeof resource === 'object' &&
     !resource.isNew() &&
-    hasTablePermission(resource.specifyTable.name, 'delete') ? (
+    hasTablePermission(resource.specifyTable.name, 'delete') &&
+    !isInFormEditor ? (
       <ErrorBoundary dismissible>
         <DeleteButton
           deletionMessage={deletionMessage}
