@@ -26,13 +26,13 @@ import { RecordSetCreated } from './Components';
 export function CreateRecordSet({
   recordIds,
   baseTableName,
-  saveComponent,
   defaultRecordSetName,
+  saveComponent,
 }: {
   readonly recordIds: RA<number> | (() => RA<number>);
   readonly baseTableName: keyof Tables;
-  readonly saveComponent?: () => JSX.Element;
   readonly defaultRecordSetName?: string;
+  readonly saveComponent?: () => JSX.Element;
 }): JSX.Element {
   const [state, setState] = React.useState<
     | State<'Editing', { readonly recordSet: SpecifyResource<RecordSet> }>

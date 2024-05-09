@@ -333,4 +333,8 @@ export const localityText = createDictionary({
   rowNumber: {
     'en-us': 'Row Number',
   },
+  localityUploadedDescription: {
+    'en-us':
+      'The following number of {localityTabelLabel: string} records were updated and {geoCoordDetailTableLabel: string} records were created:',
+  },
 } as const);

@@ -6,9 +6,9 @@ import { headerText } from '../../localization/header';
 import { localityText } from '../../localization/locality';
 import { mainText } from '../../localization/main';
 import { notificationsText } from '../../localization/notifications';
+import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
-import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -17,12 +17,12 @@ import { LoadingContext } from '../Core/Contexts';
 import { tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
-import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
 import { CsvFilePicker } from '../Molecules/CsvFilePicker';
 import { Dialog } from '../Molecules/Dialog';
 import { ProtectedTool } from '../Permissions/PermissionDenied';
 import { CreateRecordSet } from '../QueryBuilder/CreateRecordSet';
 import { downloadDataSet } from '../WorkBench/helpers';
+import { TableRecordCounts } from '../WorkBench/Results';
 import { resolveBackendParsingMessage } from '../WorkBench/resultsParser';
 
 type Header = Exclude<
@@ -59,7 +59,8 @@ type LocalityUploadResponse =
     }
   | {
       readonly type: 'Uploaded';
-      readonly data: RA<number>;
+      readonly localities: RA<number>;
+      readonly geocoorddetails: RA<number>;
     };
 
 export function ImportLocalitySet(): JSX.Element {
@@ -236,30 +237,36 @@ function LocalityImportResults({
       {results.type === 'ParseError' ? (
         <LocalityImportErrors results={results} onClose={handleClose} />
       ) : results.type === 'Uploaded' ? (
-        <RecordSelectorFromIds
-          defaultIndex={0}
-          dialog="nonModal"
-          headerButtons={
+        <Dialog
+          buttons={
+            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+          }
+          header={wbText.uploadResults()}
+          modal={false}
+          onClose={handleClose}
+        >
+          <div className="flex flex-col gap-4">
+            <p>
+              {localityText.localityUploadedDescription({
+                localityTabelLabel: tables.Locality.label,
+                geoCoordDetailTableLabel: tables.GeoCoordDetail.label,
+              })}
+            </p>
+            <span className="gap-3" />
+            <TableRecordCounts
+              recordCounts={{
+                locality: results.localities.length,
+                geocoorddetail: results.geocoorddetails.length,
+              }}
+            />
             <ProtectedTool action="create" tool="recordSets">
               <CreateRecordSet
                 baseTableName="Locality"
-                recordIds={results.data}
+                recordIds={results.localities}
               />
             </ProtectedTool>
-          }
-          ids={results.data}
-          isDependent={false}
-          newResource={undefined}
-          table={tables.Locality}
-          title={undefined}
-          totalCount={results.data.length}
-          onAdd={undefined}
-          onClone={undefined}
-          onClose={handleClose}
-          onDelete={undefined}
-          onSaved={f.void}
-          onSlide={undefined}
-        />
+          </div>
+        </Dialog>
       ) : null}
     </>
   );

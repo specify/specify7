@@ -9,6 +9,7 @@ import React from 'react';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import { f } from '../../utils/functools';
+import type { RR, ValueOf } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { H2, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -25,7 +26,7 @@ export function WbUploaded({
   isUploaded,
   onClose: handleClose,
 }: {
-  readonly recordCounts: Partial<Record<Lowercase<keyof Tables>, number>>;
+  readonly recordCounts: Partial<RR<Lowercase<keyof Tables>, number>>;
   readonly dataSetId: number;
   readonly dataSetName: string;
   readonly isUploaded: boolean;
@@ -45,19 +46,10 @@ export function WbUploaded({
             : wbText.wbUploadedPotentialDescription()}
         </p>
       </div>
-      <Ul className="flex flex-1 flex-col gap-2">
-        {Object.entries(recordCounts)
-          .sort(sortFunction(([_tableName, recordCount]) => recordCount, false))
-          .map(([tableName, recordCount], index) =>
-            typeof recordCount === 'number' ? (
-              <TableResults
-                key={index}
-                recordCount={recordCount}
-                tableName={tableName}
-              />
-            ) : null
-          )}
-      </Ul>
+      <TableRecordCounts
+        recordCounts={recordCounts}
+        sortFunction={([_tableName, recordCount]) => recordCount}
+      />
       <div className="flex flex-wrap gap-2">
         {isUploaded && (
           <CreateRecordSetButton
@@ -72,6 +64,38 @@ export function WbUploaded({
         </Button.Small>
       </div>
     </div>
+  );
+}
+
+export function TableRecordCounts({
+  recordCounts,
+  sortFunction: rawSortFunction,
+}: {
+  readonly recordCounts: Partial<RR<Lowercase<keyof Tables>, number>>;
+  readonly sortFunction?: (
+    value: readonly [
+      Lowercase<keyof Tables>,
+      ValueOf<Partial<Record<Lowercase<keyof Tables>, number>>>
+    ]
+  ) => ValueOf<Partial<Record<Lowercase<keyof Tables>, number>>>;
+}): JSX.Element {
+  const resolvedRecords =
+    typeof rawSortFunction === 'function'
+      ? Object.entries(recordCounts).sort(sortFunction(rawSortFunction))
+      : Object.entries(recordCounts);
+
+  return (
+    <Ul className="flex flex-1 flex-col gap-2">
+      {resolvedRecords.map(([tableName, recordCount], index) =>
+        typeof recordCount === 'number' ? (
+          <TableResults
+            key={index}
+            recordCount={recordCount}
+            tableName={tableName}
+          />
+        ) : null
+      )}
+    </Ul>
   );
 }
 
