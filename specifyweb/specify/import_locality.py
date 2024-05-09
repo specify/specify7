@@ -17,7 +17,7 @@ localityParseErrorMessages: List[LocalityParseErrorMessageKey] = list(
 
 updatable_locality_fields = ['latitude1', 'longitude1', 'datum']
 updatable_geocoorddetail_fields = [
-    field.name for field in datamodel.get_table_strict('Geocoorddetail').fields]
+    field.name.lower() for field in datamodel.get_table_strict('Geocoorddetail').fields]
 
 ImportModel = Literal['Locality', 'Geocoorddetail']
 
@@ -50,10 +50,11 @@ def parse_locality_set(collection, raw_headers: List[str], data: List[List[str]]
     errors: List[ParseError] = []
     to_upload: List[ParseSuccess] = []
 
-    headers = [header.strip() for header in raw_headers]
+    headers = [header.strip().lower() for header in raw_headers]
 
     if 'guid' not in headers:
-        errors.append(ParseError('guidHeaderNotProvided'))
+        errors.append(ParseError('guidHeaderNotProvided', None, None))
+        return to_upload, errors
 
     guid_index = headers.index('guid')
     updatable_locality_fields_index = [{'field': field, 'index': headers.index(
@@ -83,10 +84,10 @@ def parse_locality_set(collection, raw_headers: List[str], data: List[List[str]]
             locality_query) != 1 else locality_query[0].id
 
         parsed_locality_fields = [parse_field(
-            collection, 'Locality', dict['field'], dict['value'], locality_id, row_mumber) for dict in locality_values]
+            collection, 'Locality', dict['field'], dict['value'], locality_id, row_mumber) for dict in locality_values if dict['value'].strip() != ""]
 
         parsed_geocoorddetail_fields = [parse_field(
-            collection, 'Geocoorddetail', dict["field"], dict['value'], locality_id, row_mumber) for dict in geocoorddetail_values]
+            collection, 'Geocoorddetail', dict["field"], dict['value'], locality_id, row_mumber) for dict in geocoorddetail_values if dict['value'].strip() != ""]
         
         merged_locality_result, locality_errors = merge_parse_results('Locality', parsed_locality_fields, locality_id, row_mumber)
         
