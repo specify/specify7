@@ -87,13 +87,19 @@ def parse_locality_set(collection, raw_headers: List[str], data: List[List[str]]
 
         parsed_geocoorddetail_fields = [parse_field(
             collection, 'Geocoorddetail', dict["field"], dict['value'], locality_id, row_mumber) for dict in geocoorddetail_values]
+        
+        merged_locality_result, locality_errors = merge_parse_results('Locality', parsed_locality_fields, locality_id, row_mumber)
+        
+        merged_geocoorddetail_result, geocoord_errors = merge_parse_results('Geocoorddetail', parsed_geocoorddetail_fields, locality_id, row_mumber)
 
-        for parsed in [*parsed_locality_fields, *parsed_geocoorddetail_fields]:
-            if isinstance(parsed, ParseError):
-                errors.append(parsed)
-            else:
-                to_upload.append(parsed)
+        errors.extend([*locality_errors, *geocoord_errors])
 
+        if merged_locality_result is not None:
+            to_upload.append(merged_locality_result)
+        
+        if merged_geocoorddetail_result is not None:
+            to_upload.append(merged_geocoorddetail_result)
+        
     return to_upload, errors
 
 
@@ -104,3 +110,13 @@ def parse_field(collection, table_name: ImportModel, field_name: str, field_valu
         return ParseError.from_parse_failure(parsed, row_number)
     else:
         return ParseSuccess.from_base_parse_success(parsed, table_name, locality_id, row_number)
+
+def merge_parse_results(table_name: ImportModel, results: List[Union[ParseSuccess, ParseError]], locality_id: int, row_number: int) -> Tuple[Optional[ParseSuccess], List[ParseError]]:
+    to_upload = {}
+    errors = []
+    for result in results:
+        if isinstance(result, ParseError):
+            errors.append(result)
+        else:
+            to_upload.update(result.to_upload)
+    return None if len(to_upload) == 0 else ParseSuccess(to_upload, table_name, locality_id, row_number), errors

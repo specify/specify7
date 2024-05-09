@@ -810,8 +810,16 @@ def abort_merge_task(request, merge_id: int) -> http.HttpResponse:
                                 "type": {
                                     "enum": ["Uploaded"]
                                 },
-                                "data": {
+                                "localities": {
                                     "description": "An array of updated Locality IDs",
+                                    "type": "array",
+                                    "items": {
+                                        "type": "integer",
+                                        "minimum": 0
+                                    }
+                                },
+                                "geocoorddetails": {
+                                    "description": "An array of created geocoorddetail IDs",
                                     "type": "array",
                                     "items": {
                                         "type": "integer",
@@ -883,6 +891,9 @@ def upload_locality_set(request: http.HttpRequest):
         return http.JsonResponse(result, status=422, safe=False)
 
     result["type"] = "Uploaded"
+    result["localities"] = []
+    result["geocoorddetails"] = []
+
     with transaction.atomic():
         for parse_success in to_upload:
             uploadable = parse_success.to_upload
@@ -901,12 +912,12 @@ def upload_locality_set(request: http.HttpRequest):
                 geoCoordDetail = model.objects.create(**uploadable)
                 geoCoordDetail.locality = locality
                 geoCoordDetail.save()
+                result["geocoorddetails"].append(geoCoordDetail.id)
             elif model_name == 'Locality':
                 # Queryset.update() is not used here as it does not send pre/post save signals
                 for field, value in uploadable.items():
                     setattr(locality, field, value)
                 locality.save()
-
-            result["data"].append(locality_id)
+                result["localities"].append(locality_id)
 
     return http.JsonResponse(result, safe=False)
