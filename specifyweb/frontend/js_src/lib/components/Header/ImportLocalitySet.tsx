@@ -70,7 +70,7 @@ export function ImportLocalitySet(): JSX.Element {
   });
 
   const [headers, setHeaders] = React.useState<RA<string>>([]);
-  const [data, setData] = React.useState<RA<RA<string>>>([]);
+  const [data, setData] = React.useState<RA<RA<number | string>>>([]);
   const [results, setResults] = React.useState<
     LocalityUploadResponse | undefined
   >(undefined);
@@ -88,8 +88,8 @@ export function ImportLocalitySet(): JSX.Element {
   }
 
   const handleImport = (
-    columnHeaders: RA<string>,
-    data: RA<RA<string>>
+    columnHeaders: typeof headers,
+    rows: typeof data
   ): void => {
     loading(
       ajax<LocalityUploadResponse>('/api/import/locality_set/', {
@@ -98,7 +98,7 @@ export function ImportLocalitySet(): JSX.Element {
         method: 'POST',
         body: {
           columnHeaders,
-          data,
+          data: rows,
         },
       }).then(({ data: rawData, status }) => {
         const data =
@@ -115,8 +115,7 @@ export function ImportLocalitySet(): JSX.Element {
     <>
       <CsvFilePicker
         header={headerText.coGeImportDataset()}
-        onFileImport={({ data }): void => {
-          const headers = data[0];
+        onFileImport={(headers, data): void => {
           const foundHeaderErrors = headers.reduce(
             (accumulator, currentHeader) => {
               const parsedHeader = currentHeader.toLowerCase().trim() as Header;
@@ -139,14 +138,14 @@ export function ImportLocalitySet(): JSX.Element {
           );
           setHeaderErrors(foundHeaderErrors);
           setHeaders(headers);
-          setData(data.slice(1));
+          setData(data);
 
           if (
             !Object.values(foundHeaderErrors).some(
               (errors) => errors.length > 0
             )
           )
-            handleImport(headers, data.slice(1));
+            handleImport(headers, data);
         }}
       />
       {Object.values(headerErrors).some((errors) => errors.length > 0) && (

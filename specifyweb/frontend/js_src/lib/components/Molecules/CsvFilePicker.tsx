@@ -9,7 +9,12 @@ import type { GetOrSet, GetSet, RA } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { Container, H2 } from '../Atoms';
 import { Select } from '../Atoms/Form';
-import { parseCsv, wbImportPreviewSize } from '../WbImport/helpers';
+import { LoadingContext } from '../Core/Contexts';
+import {
+  extractHeader,
+  parseCsv,
+  wbImportPreviewSize,
+} from '../WbImport/helpers';
 import { encodings } from '../WorkBench/encodings';
 import type { AutoCompleteItem } from './AutoComplete';
 import { AutoComplete } from './AutoComplete';
@@ -20,20 +25,15 @@ export function CsvFilePicker({
   onFileImport: handleFileImport,
 }: {
   readonly header: LocalizedString;
-  readonly onFileImport: ({
-    data,
-    hasHeader,
-    encoding,
-    getSetDelimiter,
-  }: {
-    readonly data: RA<RA<string>>;
-    readonly hasHeader: boolean;
-    readonly encoding: string;
-    readonly getSetDelimiter: GetOrSet<string | undefined>;
-  }) => void;
+  readonly onFileImport: (
+    headers: RA<string>,
+    data: RA<RA<number | string>>
+  ) => void;
 }): JSX.Element {
   const [file, setFile] = React.useState<File | undefined>();
   const getSetHasHeader = useStateForContext<boolean | undefined>(true);
+
+  const loading = React.useContext(LoadingContext);
 
   return (
     <Container.Full>
@@ -48,7 +48,15 @@ export function CsvFilePicker({
         <CsvFilePreview
           file={file}
           getSetHasHeader={getSetHasHeader}
-          onFileImport={handleFileImport}
+          onFileImport={({ encoding, getSetDelimiter, hasHeader }): void => {
+            loading(
+              parseCsv(file, encoding, getSetDelimiter).then((data) => {
+                const { header, rows } = extractHeader(data, hasHeader);
+
+                handleFileImport(header, rows);
+              })
+            );
+          }}
         />
       )}
     </Container.Full>
