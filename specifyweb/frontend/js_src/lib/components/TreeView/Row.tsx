@@ -247,7 +247,8 @@ export function TreeRow<SCHEMA extends AnyTree>({
                       ? treeText.acceptedName({
                           name: row.acceptedName ?? row.acceptedId.toString(),
                         })
-                      : synonymsNames === undefined
+                      : synonymsNames === undefined ||
+                        synonymsNames.length === 0
                       ? undefined
                       : treeText.synonyms({
                           names: synonymsNames.join(', '),
