@@ -16,7 +16,8 @@ import type { RecordSet, Tables } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { recordSetView } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
-import { LoadingScreen } from '../Molecules/Dialog';
+import { loadingBar } from '../Molecules';
+import { Dialog } from '../Molecules/Dialog';
 import { RecordSetCreated } from './Components';
 
 /**
@@ -107,9 +108,11 @@ export function CreateRecordSet({
           }}
         />
       )}
-      {state.type === 'Saving' && typeof saveComponent === 'function'
-        ? saveComponent()
-        : LoadingScreen()}
+      {state.type === 'Saving'
+        ? typeof saveComponent === 'function'
+          ? saveComponent()
+          : LoadingDialog()
+        : null}
       {state.type === 'Saved' && (
         <RecordSetCreated
           recordSet={state.recordSet}
@@ -117,5 +120,19 @@ export function CreateRecordSet({
         />
       )}
     </>
+  );
+}
+
+function LoadingDialog(): JSX.Element {
+  return (
+    <Dialog
+      buttons={undefined}
+      header={queryText.recordSetToQueryDescription({
+        recordSetTable: tables.RecordSet.label,
+      })}
+      onClose={undefined}
+    >
+      {loadingBar}
+    </Dialog>
   );
 }
