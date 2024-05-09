@@ -3,10 +3,7 @@ import { renderHook } from '@testing-library/react';
 import { overrideAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
 import { overwriteReadOnly } from '../../../utils/types';
-import {
-  getPref,
-  remotePrefsDefinitions,
-} from '../../InitialContext/remotePrefs';
+import { getPref } from '../../InitialContext/remotePrefs';
 import type { SerializedResource } from '../helperTypes';
 import { getResourceApiUrl } from '../resource';
 import { useSaveBlockers } from '../saveBlockers';
