@@ -17,6 +17,7 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Tables } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { InFormEditorContext } from '../FormEditor/Context';
 import { AppTitle } from '../Molecules/AppTitle';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { IsNotReadOnly } from '../Molecules/ResourceLink';
@@ -28,7 +29,6 @@ import { useResourceView } from './BaseResourceView';
 import { DeleteButton } from './DeleteButton';
 import { SaveButton } from './Save';
 import { propsToFormMode } from './useViewDefinition';
-import { InFormEditorContext } from '../FormEditor/Context';
 
 /**
  * There is special behavior required when creating one of these resources,
