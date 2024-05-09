@@ -197,6 +197,7 @@ describe('treeBusinessRules', () => {
     _tableName: 'Taxon',
     id: 3,
     name: 'Acipenser',
+    isAccepted: true,
     rankId: 180,
     definition: '/api/specify/taxontreedef/1/',
     definitionItem: '/api/specify/taxontreedefitem/9/',
@@ -207,6 +208,7 @@ describe('treeBusinessRules', () => {
     _tableName: 'Taxon',
     id: 4,
     name: 'oxyrinchus',
+    isAccepted: true,
     rankId: 220,
     definition: '/api/specify/taxontreedef/1/',
     definitionItem: '/api/specify/taxontreedefitem/2/',
@@ -218,6 +220,7 @@ describe('treeBusinessRules', () => {
     id: 5,
     rankId: 230,
     name: 'oxyrinchus',
+    isAccepted: true,
     definition: '/api/specify/taxontreedef/1/',
     definitionItem: '/api/specify/taxontreedefitem/22/',
   };
