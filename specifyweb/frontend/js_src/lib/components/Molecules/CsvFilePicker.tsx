@@ -53,7 +53,7 @@ export function CsvFilePicker({
               parseCsv(file, encoding, getSetDelimiter).then((data) => {
                 const { header, rows } = extractHeader(data, hasHeader);
 
-                handleFileImport(header, rows);
+                return void handleFileImport(header, rows);
               })
             );
           }}
