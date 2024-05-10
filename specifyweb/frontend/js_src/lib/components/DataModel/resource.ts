@@ -240,7 +240,7 @@ const interactionTablesPrepsFieldName: RR<InteractionTable, string> = {
   Gift: 'giftPreparations',
   ExchangeOut: 'exchangeOutPreps',
   ExchangeIn: 'exchangeInPreps',
-  Borrow: 'BorrowPreparations',
+  Borrow: 'borrowPreparations',
 };
 export function getFieldsToNotClone(
   table: SpecifyTable,
