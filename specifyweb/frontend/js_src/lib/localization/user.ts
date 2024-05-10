@@ -308,7 +308,7 @@ export const userText = createDictionary({
       collection.
     `,
     'ru-ru': `
-      Доступ к запрошенному ресурсу недоступен при входе в текущую коллекцию.
+      Доступ к запрошенному ресурсу невозможен при входе в текущую коллекцию.
     `,
     'es-es': `
       No se puede acceder al recurso solicitado mientras se está conectado a la
@@ -915,7 +915,7 @@ export const userText = createDictionary({
       Specify 7 server settings
     `,
     'ru-ru': `
-      Внешний поставщик удостоверений не настроен. Некоторые настройки можно
+      Внешний поставщик удостоверений не настроен. Некоторые из них можно
       настроить в разделе «Укажите 7 настроек сервера».
     `,
     'es-es': `
@@ -1024,7 +1024,7 @@ export const userText = createDictionary({
   specifyAdmin: {
     comment: 'Shown next to user name for admin users',
     'en-us': '(Specify 7 Admin)',
-    'ru-ru': '(Указать 7 Админ)',
+    'ru-ru': '(Укажите 7 Администратора)',
     'es-es': '(Administradores de Specify 7)',
     'fr-fr': '(Spécifiez 7 Administrateur)',
     'uk-ua': '(Вкажіть 7 адміністраторів)',
