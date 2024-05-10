@@ -31,7 +31,7 @@ export const resourcesText = createDictionary({
     'es-es': 'Definición de formulario',
     'fr-fr': 'Définition du formulaire',
     'uk-ua': 'Визначення форми',
-    'de-ch': 'Formular Definitionen',
+    'de-ch': 'Formulardefinition',
   },
   loadFile: {
     'en-us': 'Load File',
@@ -734,7 +734,7 @@ export const resourcesText = createDictionary({
   },
   createNewForm: {
     'en-us': 'Create a new view definition',
-    'de-ch': '',
+    'de-ch': 'Erstellen einer neuen Ansichtsdefinition',
     'es-es': 'Crear una nueva definición de vista',
     'fr-fr': 'Créer une nouvelle définition de vue',
     'ru-ru': 'Создайте новое определение представления',
@@ -742,7 +742,7 @@ export const resourcesText = createDictionary({
   },
   copyFromExistingForm: {
     'en-us': 'Copy existing view definition',
-    'de-ch': '',
+    'de-ch': 'Vorhandene Ansichtsdefinition kopieren',
     'es-es': 'Copiar la definición de vista existente',
     'fr-fr': 'Copier la définition de vue existante',
     'ru-ru': 'Копировать существующее определение представления',
@@ -750,7 +750,7 @@ export const resourcesText = createDictionary({
   },
   copyDefaultForm: {
     'en-us': 'Copy default view definition',
-    'de-ch': '',
+    'de-ch': 'Standardansichtsdefinition kopieren',
     'es-es': 'Copiar definición de vista predeterminada',
     'fr-fr': 'Copier la définition de vue par défaut',
     'ru-ru': 'Скопировать определение представления по умолчанию',
