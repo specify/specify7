@@ -225,12 +225,37 @@ export function resourceOn(
 export const parseJavaClassName = (className: string): string =>
   className.split('.').at(-1) ?? '';
 
+const interactionTablesWithPreps = [
+  'Disposal',
+  'Loan',
+  'Gift',
+  'ExchangeIn',
+  'ExchangeOut',
+  'Borrow',
+] as const;
+type InteractionTable = typeof interactionTablesWithPreps[number];
+const interactionTablesPrepsFieldName: RR<InteractionTable, string> = {
+  Disposal: 'disposalPreparations',
+  Loan: 'loanPreparations',
+  Gift: 'giftPreparations',
+  ExchangeOut: 'exchangeOutPreps',
+  ExchangeIn: 'exchangeInPreps',
+  Borrow: 'BorrowPreparations',
+};
 export function getFieldsToNotClone(
   table: SpecifyTable,
   cloneAll: boolean
 ): RA<string> {
-  const fieldsToClone = getCarryOverPreference(table, cloneAll);
+  let fieldsToClone = getCarryOverPreference(table, cloneAll);
   const uniqueFields = getUniqueFields(table);
+  if (
+    interactionTablesWithPreps.includes(table.name as InteractionTable) &&
+    cloneAll
+  ) {
+    const fieldName =
+      interactionTablesPrepsFieldName[table.name as InteractionTable];
+    fieldsToClone = fieldsToClone.filter((field) => field !== fieldName);
+  }
   return table.fields
     .map(({ name }) => name)
     .filter(
