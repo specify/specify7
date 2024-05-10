@@ -212,18 +212,23 @@ const processFieldType: {
       maxLength: f.parseInt(getProperty('maxLength')),
     };
   },
-  QueryComboBox({ getProperty, fields }) {
+  QueryComboBox({ getProperty, fields, table, cell }) {
     if (fields === undefined) {
       console.error('Trying to render a query combobox without a field name');
       return { type: 'Blank' };
     } else if (fields.at(-1)?.isRelationship === true) {
+      const isParentTaxon =
+        table.name === 'Taxon' && cell.attributes.name === 'parent';
       return {
         type: 'QueryComboBox',
         hasCloneButton: getProperty('cloneBtn')?.toLowerCase() === 'true',
         hasNewButton: getProperty('newBtn')?.toLowerCase() !== 'false',
         hasSearchButton: getProperty('searchBtn')?.toLowerCase() !== 'false',
         hasEditButton: getProperty('editBtn')?.toLowerCase() !== 'false',
-        hasViewButton: getProperty('viewBtn')?.toLowerCase() === 'true',
+        hasViewButton:
+          getProperty('viewBtn') === undefined && isParentTaxon
+            ? true
+            : getProperty('viewBtn')?.toLowerCase() === 'true',
         typeSearch: getProperty('name'),
         searchView: getProperty('searchView'),
       };
