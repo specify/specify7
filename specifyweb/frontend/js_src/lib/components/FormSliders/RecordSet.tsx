@@ -348,6 +348,7 @@ function RecordSet<SCHEMA extends AnySchema>({
         {...rest}
         defaultIndex={currentIndex}
         dialog={dialog}
+        hasSeveralResourceType={hasSeveralResourceType}
         headerButtons={
           recordSet.isNew() ? (
             ids.length > 1 &&
@@ -363,7 +364,6 @@ function RecordSet<SCHEMA extends AnySchema>({
             <EditRecordSetButton recordSet={recordSet} />
           )
         }
-        hasSeveralResourceType={hasSeveralResourceType}
         ids={ids}
         isDependent={false}
         isInRecordSet
