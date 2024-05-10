@@ -371,8 +371,10 @@ export class WbValidation {
       return;
     }
 
-    this.workbench.dataset.rowresults.forEach((result, physicalRow) => {
-      this.applyRowValidationResults(physicalRow, result);
+    this.workbench.hot?.batch(() => {
+      this.workbench.dataset.rowresults?.forEach((result, physicalRow) => {
+        this.applyRowValidationResults(physicalRow, result);
+      });
     });
 
     this.workbench.cells?.updateCellInfoStats();
