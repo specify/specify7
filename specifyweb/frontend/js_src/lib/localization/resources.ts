@@ -831,4 +831,7 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Предварительный просмотр формата',
     'uk-ua': 'Попередній перегляд формату',
   },
+  currentDeterminationRequired: {
+    'en-us': 'A current determination is required.',
+  },
 } as const);

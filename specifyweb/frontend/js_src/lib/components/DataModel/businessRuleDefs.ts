@@ -1,3 +1,4 @@
+import { resourcesText } from '../../localization/resources';
 import type { BusinessRuleResult } from './businessRules';
 import type { AnySchema, TableFields } from './helperTypes';
 import {
@@ -9,6 +10,7 @@ import {
   updateLoanPrep,
 } from './interactionBusinessRules';
 import type { SpecifyResource } from './legacyTypes';
+import { setSaveBlockers } from './saveBlockers';
 import type { Collection } from './specifyTable';
 import { tables } from './tables';
 import type {
@@ -217,6 +219,15 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         }
         return { isValid: true };
       },
+    },
+    onRemoved: (determination: SpecifyResource<Determination>): void => {
+      if (determination.get('isCurrent') === true)
+        setSaveBlockers(
+          determination,
+          determination.specifyTable.field.isCurrent,
+          [resourcesText.currentDeterminationRequired()],
+          'Determination-isCurrent'
+        );
     },
   },
   DisposalPreparation: {
