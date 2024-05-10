@@ -26,7 +26,7 @@ msgstr "Form Definition"
 #: components/AppResources/types.tsx:35
 #. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Types
 msgid "formDefinitions"
-msgstr "Form Definitions"
+msgstr "Form Definition"
 
 #: components/AppResources/EditorComponents.tsx:114
 #: components/AppResources/EditorComponents.tsx:119
@@ -426,17 +426,17 @@ msgstr "Run in collection"
 #: components/FormEditor/Create.tsx:73
 #. Used in: Components > Form Editor > Create
 msgid "createNewForm"
-msgstr "Create new form"
+msgstr "Create a new view definition"
 
 #: components/FormEditor/Create.tsx:78
 #. Used in: Components > Form Editor > Create
 msgid "copyFromExistingForm"
-msgstr "Copy from existing form"
+msgstr "Copy existing view definition"
 
 #: components/FormEditor/Create.tsx:84
 #. Used in: Components > Form Editor > Create
 msgid "copyDefaultForm"
-msgstr "Copy default form"
+msgstr "Copy default view definition"
 
 #: components/AppResources/Create.tsx:228
 #. Used in: Components > App Resources > Create

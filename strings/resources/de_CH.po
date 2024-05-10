@@ -486,19 +486,19 @@ msgstr "In Sammlung ausführen"
 #. Used in: Components > Form Editor > Create
 #, fuzzy
 msgid "createNewForm"
-msgstr "Definition"
+msgstr ""
 
 #: components/FormEditor/Create.tsx:78
 #. Used in: Components > Form Editor > Create
 #, fuzzy
 msgid "copyFromExistingForm"
-msgstr "Aus vorhandenem Formular kopieren"
+msgstr ""
 
 #: components/FormEditor/Create.tsx:84
 #. Used in: Components > Form Editor > Create
 #, fuzzy
 msgid "copyDefaultForm"
-msgstr "Standardformular kopieren"
+msgstr ""
 
 #: components/AppResources/Create.tsx:228
 #. Used in: Components > App Resources > Create
