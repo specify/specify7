@@ -800,7 +800,7 @@ def test_sqlalchemy_model(datamodel_table):
 
         sa_column = list(sa_relationship.local_columns)[0].name
         if sa_column.lower() != (
-        datamodel_table.idColumn.lower() if getattr(field, 'column', None) is None else field.column.lower()):
+        datamodel_table.idColumn.lower() if not getattr(field, 'column', None) else field.column.lower()):
             table_errors['incorrect_columns'][field.name] = [sa_column, datamodel_table.idColumn.lower(),
                                                              getattr(field, 'column', None)]
             print(f"Incorrect columns: {field.name} {sa_column} {datamodel_table.idColumn.lower()} {getattr(field, 'column', None)}")

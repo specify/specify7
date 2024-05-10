@@ -337,7 +337,7 @@ def load_datamodel() -> Optional[Datamodel]:
 
 def add_collectingevents_to_locality(datamodel: Datamodel) -> None:
     rel = Relationship(
-        name='collectinEvents',
+        name='collectingEvents',
         type='one-to-many',
         required=False,
         relatedModelName='collectingEvent',
