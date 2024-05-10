@@ -9,7 +9,7 @@ def make_table(datamodel: Datamodel, tabledef: Table):
 
     columns.extend(make_column(field) for field in tabledef.fields)
     for reldef in tabledef.relationships:
-        if reldef.type in ('many-to-one', 'one-to-one') and hasattr(reldef, 'column') and reldef.column is not None:
+        if reldef.type in ('many-to-one', 'one-to-one') and hasattr(reldef, 'column') and reldef.column:
             fk = make_foreign_key(datamodel, reldef)
             if fk is not None: columns.append(fk)
 
@@ -30,7 +30,7 @@ def make_foreign_key(datamodel: Datamodel, reldef: Relationship):
 def make_column(flddef: Field):
     field_type = field_type_map[ flddef.type ]
 
-    if hasattr(flddef, 'length') and flddef.length is not None and field_type in (types.Text, types.String):
+    if hasattr(flddef, 'length') and flddef.length and field_type in (types.Text, types.String):
         field_type = field_type(flddef.length)
 
     return Column(flddef.column,
@@ -72,7 +72,7 @@ def map_classes(datamodel: Datamodel, tables: List[Table], classes):
         table = tables[ tabledef.table ]
 
         def make_relationship(reldef):
-            if not hasattr(reldef, 'column') or reldef.column is None or reldef.relatedModelName not in classes:
+            if not hasattr(reldef, 'column') or not reldef.column or reldef.relatedModelName not in classes:
                 return
 
             remote_class = classes[ reldef.relatedModelName ]
@@ -82,7 +82,7 @@ def map_classes(datamodel: Datamodel, tables: List[Table], classes):
             if remote_class is cls:
                 relationship_args['remote_side'] = table.c[ tabledef.idColumn ]
 
-            if hasattr(reldef, 'otherSideName') and reldef.otherSideName is not None:
+            if hasattr(reldef, 'otherSideName') and reldef.otherSideName:
                 backref_args = {'uselist': reldef.type != 'one-to-one'}
 
                 relationship_args['backref'] = orm.backref(reldef.otherSideName, **backref_args)
@@ -97,7 +97,7 @@ def map_classes(datamodel: Datamodel, tables: List[Table], classes):
         properties.update(relationship
                           for relationship in [ make_relationship(reldef)
                                                 for reldef in tabledef.relationships ]
-                          if relationship is not None)
+                          if relationship)
 
         orm.mapper(cls, table, properties=properties)
 
