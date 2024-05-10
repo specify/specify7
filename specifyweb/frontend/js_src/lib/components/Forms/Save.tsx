@@ -34,6 +34,21 @@ import { FORBID_ADDING, NO_CLONE } from './ResourceView';
 
 export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 
+const resourcesToNotClone = new Set([
+  'TypeSearches',
+  'WebLinks',
+  'DataObjFormatters',
+  'UIFormatters',
+  'QueryFreqList',
+  'QueryExtraList',
+  'DataEntryTaskInit',
+  'InteractionsTaskInit',
+  'UserPreferences',
+  'CollectionPreferences',
+  'ExpressSearchConfig',
+  'leaflet-layers',
+]);
+
 /*
  * REFACTOR: move this logic into ResourceView, so that <form> and button is
  *   defined in the same place
@@ -192,6 +207,8 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   // Don't allow cloning the resource if it changed
   const isChanged = saveRequired || externalSaveRequired;
 
+  const cannotClone = resourcesToNotClone.has(resource.get('name') || '');
+
   const copyButton = (
     label: LocalizedString,
     description: LocalizedString,
@@ -215,12 +232,13 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     <>
       {typeof handleAdd === 'function' && canCreate ? (
         <>
-          {showClone &&
-            copyButton(
-              formsText.clone(),
-              formsText.cloneDescription(),
-              async () => resource.clone(true)
-            )}
+          {showClone && !cannotClone
+            ? copyButton(
+                formsText.clone(),
+                formsText.cloneDescription(),
+                async () => resource.clone(true)
+              )
+            : undefined}
           {showCarry &&
             copyButton(
               formsText.carryForward(),
