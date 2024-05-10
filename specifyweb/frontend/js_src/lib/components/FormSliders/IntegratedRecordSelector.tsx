@@ -77,6 +77,9 @@ export function IntegratedRecordSelector({
     if (hasBlockers && isCollapsed) handleExpand();
   }, [hasBlockers, isCollapsed, handleExpand]);
 
+  const [interactionResource, setInteractionResource] =
+    React.useState<SpecifyResource<AnySchema>>();
+
   const collapsibleButton = (
     <Button.Icon
       disabled={hasBlockers}
@@ -116,11 +119,14 @@ export function IntegratedRecordSelector({
         collection={collection}
         defaultIndex={isToOne ? 0 : index}
         relationship={relationship}
-        onAdd={(resource) => {
-          if (isInteraction) handleOpenDialog();
+        onAdd={(resources) => {
+          if (isInteraction) {
+            setInteractionResource(resources[0]);
+            handleOpenDialog();
+          }
           if (!isInteraction && formType !== 'formTable')
-            collection.add(resource);
-          handleAdding(resource);
+            collection.add(resources);
+          handleAdding(resources);
         }}
         onDelete={(...args): void => {
           if (isCollapsed) handleExpand();
@@ -146,6 +152,7 @@ export function IntegratedRecordSelector({
             isDialogOpen ? (
               <InteractionDialog
                 actionTable={collection.related.specifyTable}
+                interactionResource={interactionResource}
                 itemCollection={
                   collection as Collection<
                     DisposalPreparation | GiftPreparation | LoanPreparation
