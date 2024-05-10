@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-05-10 16:18+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2024-05-10 17:24+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/resources/de_CH/>\n"
 "Language: de_CH\n"
@@ -38,7 +38,7 @@ msgstr "Formular Definition"
 #: components/AppResources/types.tsx:35
 #, fuzzy
 msgid "formDefinitions"
-msgstr "Formular Definitionen"
+msgstr "Formulardefinition"
 
 #. Used in: Components > App Resources > Editor Components
 #: components/AppResources/EditorComponents.tsx:114
@@ -487,19 +487,19 @@ msgstr "In Sammlung ausführen"
 #: components/FormEditor/Create.tsx:73
 #, fuzzy
 msgid "createNewForm"
-msgstr ""
+msgstr "Erstellen einer neuen Ansichtsdefinition"
 
 #. Used in: Components > Form Editor > Create
 #: components/FormEditor/Create.tsx:78
 #, fuzzy
 msgid "copyFromExistingForm"
-msgstr ""
+msgstr "Vorhandene Ansichtsdefinition kopieren"
 
 #. Used in: Components > Form Editor > Create
 #: components/FormEditor/Create.tsx:84
 #, fuzzy
 msgid "copyDefaultForm"
-msgstr ""
+msgstr "Standardansichtsdefinition kopieren"
 
 #. Used in: Components > App Resources > Create
 #: components/AppResources/Create.tsx:228
