@@ -15,7 +15,7 @@ from specifyweb.middleware.general import require_GET, require_http_methods
 from specifyweb.specify.api import create_obj, get_object_or_404, obj_to_data, \
     toJson, uri_for_model
 from specifyweb.specify.views import login_maybe_required, openapi
-from specifyweb.specify import models as specify_models
+from specifyweb.specify.models import Recordset
 from specifyweb.notifications.models import Message
 from specifyweb.permissions.permissions import PermissionTarget, PermissionTargetAction, \
     check_permission_targets, check_table_permissions
@@ -945,7 +945,7 @@ def transfer(request, ds_id: int) -> http.HttpResponse:
     if ds.specifyuser != request.specify_user:
         return http.HttpResponseForbidden()
 
-    Specifyuser = getattr(specify_models, 'Specifyuser')
+    Specifyuser = Specifyuser
 
     try:
         ds.specifyuser = Specifyuser.objects.get(id=request.POST['specifyuserid'])
@@ -1002,8 +1002,6 @@ def transfer(request, ds_id: int) -> http.HttpResponse:
 @require_POST
 @models.Spdataset.validate_dataset_request(raise_404=True, lock_object=False)
 def create_recordset(request, ds) -> http.HttpResponse:
-    Recordset = getattr(specify_models, 'Recordset')
-
     if ds.uploadplan is None:
         return http.HttpResponseBadRequest("data set is missing upload plan")
 

@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-from specifyweb.specify import models as spmodels
+from specifyweb.specify.models import Collection, Specifyuser, Agent
 from ..specify.models import Specifyuser
 
 class Message(models.Model):
@@ -8,10 +8,6 @@ class Message(models.Model):
     timestampcreated = models.DateTimeField(auto_now_add=True)
     content = models.TextField()
     read = models.BooleanField(default=False)
-
-Collection = getattr(spmodels, 'Collection')
-Specifyuser = getattr(spmodels, 'Specifyuser')
-Agent = getattr(spmodels, 'Agent')
 
 class Spmerging(models.Model):
     name = models.CharField(max_length=256) 

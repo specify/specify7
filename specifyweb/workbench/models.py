@@ -6,13 +6,8 @@ from django.db import models, transaction
 from django.http import Http404
 from django.utils import timezone
 
-from specifyweb.specify import models as spmodels
+from specifyweb.specify.models import Collection, Specifyuser, Agent
 from specifyweb.specify.api import uri_for_model
-
-Collection = getattr(spmodels, 'Collection')
-Specifyuser = getattr(spmodels, 'Specifyuser')
-Agent = getattr(spmodels, 'Agent')
-
 
 class Dataset(models.Model):
     # All these attributes are meta-data.

@@ -94,7 +94,7 @@ def unupload_record(upload_result: UploadResult, agent) -> None:
                 ) from e
 
         for addition in reversed(upload_result.record_result.picklistAdditions):
-            pli_q = getattr(models, 'Picklistitem').objects.select_for_update().filter(id=addition.id)
+            pli_q = models.Picklistitem.objects.select_for_update().filter(id=addition.id)
             try:
                 pli = pli_q[0]
             except IndexError:
@@ -158,16 +158,15 @@ def create_recordset(ds: Spdataset, name: str):
     assert ds.rowresults is not None
     results = json.loads(ds.rowresults)
 
-    rs = getattr(models, 'Recordset').objects.create(
+    rs = models.Recordset.objects.create(
         collectionmemberid=ds.collection.id,
         dbtableid=table.tableId,
         name=name,
         specifyuser=ds.specifyuser,
         type=0,
     )
-    Rsi = getattr(models, 'Recordsetitem')
-    Rsi.objects.bulk_create([
-        Rsi(order=i, recordid=r.get_id(), recordset=rs)
+    models.Recordsetitem.objects.bulk_create([
+        models.Recordsetitem(order=i, recordid=r.get_id(), recordset=rs)
         for i, r in enumerate(map(json_to_UploadResult, results))
         if isinstance(r.record_result, Uploaded)
     ])
@@ -204,7 +203,7 @@ def apply_deferred_scopes(upload_plan: ScopedUploadable, rows: Rows) -> ScopedUp
         if related_table is not None:
             related = getattr(models, related_table.django_name).objects.get(**filter_search)
             collection_id = getattr(related, deferred_upload_plan.relationship_name).id
-            collection = getattr(models, "Collection").objects.get(id=collection_id)
+            collection = models.Collection.objects.get(id=collection_id)
             return collection
 
     if hasattr(upload_plan, 'toOne'):

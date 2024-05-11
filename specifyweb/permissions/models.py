@@ -1,10 +1,6 @@
 from django.db import models
 
-from specifyweb.specify import models as spmodels
-
-Collection = getattr(spmodels, 'Collection')
-Specifyuser = getattr(spmodels, 'Specifyuser')
-
+from specifyweb.specify.models import Collection, Specifyuser
 
 class UserPolicy(models.Model):
     collection = models.ForeignKey(Collection, on_delete=models.CASCADE, null=True)

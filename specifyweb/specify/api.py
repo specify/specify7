@@ -23,7 +23,7 @@ from django.db.models.fields import DateTimeField, FloatField, DecimalField
 from specifyweb.permissions.permissions import enforce, check_table_permissions, check_field_permissions, table_permissions_checker
 from specifyweb.specify.models_by_table_id import get_model_by_table_id
 
-from . import models
+from .models import Recordset
 from .autonumbering import autonumber_and_save
 from .uiformatters import AutonumberOverflowException
 from .filter_by_col import filter_by_collection
@@ -565,7 +565,7 @@ def handle_to_many(collection, agent, obj, data: Dict[str, Any]) -> None:
         if not field.is_relation or (field.many_to_one or field.one_to_one): continue # Skip *-to-one fields.
 
         if isinstance(val, list):
-            assert isinstance(obj, getattr(models, 'Recordset')) or obj.specify_model.get_field(field_name).dependent, \
+            assert isinstance(obj, Recordset) or obj.specify_model.get_field(field_name).dependent, \
                    "got inline data for non dependent field %s in %s: %r" % (field_name, obj, val)
         else:
             # The field contains something other than nested data.

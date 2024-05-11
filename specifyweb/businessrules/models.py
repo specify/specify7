@@ -1,9 +1,6 @@
 from django.db import models
 
-from specifyweb.specify import models as spmodels
-
-Discipline = getattr(spmodels, 'Discipline')
-
+from specifyweb.specify.models import Discipline
 
 class PsuedoManyToManyManager(models.Manager):
     def __init__(self, base_instance, through_model, through_field) -> None:
