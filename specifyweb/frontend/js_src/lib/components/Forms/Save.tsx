@@ -31,23 +31,9 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { FormContext } from './BaseResourceView';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
+import { appResourceSubTypes } from '../AppResources/types';
 
 export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
-
-const resourcesToNotClone = new Set([
-  'TypeSearches',
-  'WebLinks',
-  'DataObjFormatters',
-  'UIFormatters',
-  'QueryFreqList',
-  'QueryExtraList',
-  'DataEntryTaskInit',
-  'InteractionsTaskInit',
-  'UserPreferences',
-  'CollectionPreferences',
-  'ExpressSearchConfig',
-  'leaflet-layers',
-]);
 
 /*
  * REFACTOR: move this logic into ResourceView, so that <form> and button is
@@ -114,8 +100,10 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const loading = React.useContext(LoadingContext);
   const [_, setFormContext] = React.useContext(FormContext);
 
+  const resourceName = resource.get('name');
   const { showClone, showCarry, showAdd } = useEnabledButtons(
-    resource.specifyTable.name
+    resource.specifyTable.name,
+    resourceName
   );
 
   const canCreate = hasTablePermission(resource.specifyTable.name, 'create');
@@ -207,8 +195,6 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   // Don't allow cloning the resource if it changed
   const isChanged = saveRequired || externalSaveRequired;
 
-  const cannotClone = resourcesToNotClone.has(resource.get('name') || '');
-
   const copyButton = (
     label: LocalizedString,
     description: LocalizedString,
@@ -232,13 +218,12 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     <>
       {typeof handleAdd === 'function' && canCreate ? (
         <>
-          {showClone && !cannotClone
-            ? copyButton(
-                formsText.clone(),
-                formsText.cloneDescription(),
-                async () => resource.clone(true)
-              )
-            : undefined}
+          {showClone &&
+            copyButton(
+              formsText.clone(),
+              formsText.cloneDescription(),
+              async () => resource.clone(true)
+            )}
           {showCarry &&
             copyButton(
               formsText.carryForward(),
@@ -322,7 +307,10 @@ function SaveBlockedDialog({
 /**
  * Decide which of the "new resource" buttons to show
  */
-function useEnabledButtons(tableName: keyof Tables): {
+function useEnabledButtons(
+  tableName: keyof Tables,
+  resourceName: string | null
+): {
   readonly showClone: boolean;
   readonly showCarry: boolean;
   readonly showAdd: boolean;
@@ -338,10 +326,20 @@ function useEnabledButtons(tableName: keyof Tables): {
     'disableClone'
   );
   const [disableAdd] = userPreferences.use('form', 'preferences', 'disableAdd');
+
+  const tablesToNotClone = Object.keys(appResourceSubTypes)
+    .filter((key) => appResourceSubTypes[key].name !== undefined)
+    .map((key) => appResourceSubTypes[key]?.name!.toLowerCase());
+
+  const cannotClone = tablesToNotClone.includes(
+    (resourceName ?? '').toLowerCase()
+  );
+
   const showCarry =
     enableCarryForward.includes(tableName) && !NO_CLONE.has(tableName);
-  const showClone =
-    !disableClone.includes(tableName) && !NO_CLONE.has(tableName);
+  const showClone = cannotClone
+    ? false
+    : !disableClone.includes(tableName) && !NO_CLONE.has(tableName);
   const showAdd =
     !disableAdd.includes(tableName) && !FORBID_ADDING.has(tableName);
 
