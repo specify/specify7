@@ -10,6 +10,7 @@ import { formsText } from '../../localization/forms';
 import { smoothScroll } from '../../utils/dom';
 import { listen } from '../../utils/events';
 import { replaceKey } from '../../utils/utils';
+import { appResourceSubTypes } from '../AppResources/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Submit } from '../Atoms/Submit';
@@ -31,7 +32,6 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { FormContext } from './BaseResourceView';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
-import { appResourceSubTypes } from '../AppResources/types';
 
 export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 
