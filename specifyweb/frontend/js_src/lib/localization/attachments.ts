@@ -104,7 +104,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Varios archivos seleccionados',
     'fr-fr': 'Plusieurs fichiers sélectionnés',
     'ru-ru': 'Выбрано несколько файлов',
-    'uk-ua': 'Вибрано декілька файлів',
+    'uk-ua': 'Вибрано кілька файлів',
   },
   fileSize: {
     'en-us': 'File Size',
@@ -200,7 +200,7 @@ export const attachmentsText = createDictionary({
     'ru-ru': 'Ошибка чтения файла',
     'de-ch':
       'Wählen Sie Dateien aus oder ziehen Sie sie hierher, um zu beginnen.',
-    'uk-ua': 'Щоб почати, виберіть файли або перетягніть їх сюди.',
+    'uk-ua': 'Виберіть файли або перетягніть їх сюди, щоб почати.',
   },
   unhandledFatalResourceError: {
     'en-us': 'Unhandled fatal resource error:',
@@ -294,8 +294,9 @@ export const attachmentsText = createDictionary({
       Откат выполнялся, когда произошло прерывание. Некоторые файлы могли быть
       удалены
     `,
-    'uk-ua':
-      'Тривав відкат, коли сталася перерва. Деякі файли могли бути видалені',
+    'uk-ua': `
+      Тривав відкат, коли сталася перерва. Можливо, деякі файли було видалено
+    `,
     'es-es': `
       La reversión estaba en curso cuando se produjo una interrupción. Es
       posible que algunos archivos hayan sido eliminados.
@@ -344,7 +345,7 @@ export const attachmentsText = createDictionary({
       данных Specify.
     `,
     'uk-ua': `
-      Завантаження вкладень призведе до створення вкладень на сервері активів і
+      Завантаження вкладень призведе до створення вкладень на сервері ресурсів і
       в базі даних Specify
     `,
   },
