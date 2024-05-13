@@ -32,6 +32,14 @@ def cannot_delete_root_treedefitem(sender, obj):
                  "node": {
                      "id": obj.id
                  }})
+        elif is_tree_rank_empty(sender, obj):
+            raise TreeBusinessRuleException(
+                "cannot delete tree rank containing items",
+                {"tree": obj.__class__.__name__,
+                 "localizationKey": 'deletingNonEmptyTreeRank',
+                 "node": {
+                     "id": obj.id
+                 }})
         pre_tree_rank_deletion(sender, obj)
         verify_rank_parent_chain_integrity(obj, RankOperation.DELETED)
 

@@ -93,6 +93,32 @@ TREE_RANKS_MAPPING = {
     'lithostrat': (LITHO_STRAT_RANKS, LITHO_STRAT_INCREMENT),
 }
 
+TREE_RANK_TO_ITEM_MAP = {
+    'Taxontreedefitem': 'Taxon',
+    'Geographytreedefitem': 'Geography',
+    'Storagetreedefitem': 'Storage',
+    'Geologictimeperiodtreedefitem': 'Geologictimeperiod',
+    'Lithostrattreedefitem': 'Lithostrat'
+}
+
+def get_tree_item_model(tree_rank_model_name):
+    tree_item_model_name = TREE_RANK_TO_ITEM_MAP.get(tree_rank_model_name.title(), None)
+    if not tree_item_model_name:
+        return None
+    return getattr(spmodels, tree_item_model_name, None)
+
+def tree_rank_count(tree_rank_model_name, tree_rank_id) -> int:
+    tree_item_model = get_tree_item_model(tree_rank_model_name)
+    if not tree_item_model:
+        return 0
+    return tree_item_model.objects.filter(definitionitem_id=tree_rank_id).count()
+
+def is_tree_rank_empty(tree_rank_model, tree_rank) -> bool:
+    tree_item_model = get_tree_item_model(tree_rank_model.__name__)
+    if not tree_item_model:
+        return False
+    return tree_item_model.objects.filter(definitionitem=tree_rank).count() == 0
+
 def post_tree_rank_save(tree_def_item_model, new_rank):
     tree_def = new_rank.treedef
     parent_rank = new_rank.parent
