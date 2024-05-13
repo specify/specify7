@@ -401,7 +401,7 @@ export const wbPlanText = createDictionary({
     'ru-ru': 'Связь с таблицей {tableName:string}',
     'es-es': 'Relación con la tabla {tableName:string}',
     'fr-fr': 'Relation avec la table {tableName:string}',
-    'uk-ua': 'Відношення до таблиці {tableName:string}.',
+    'uk-ua': "Зв'язок із таблицею {tableName:string}.",
     'de-ch': 'Beziehung zur Tabelle {tableName:string}',
   },
   selectBaseTable: {
@@ -484,7 +484,7 @@ export const wbPlanText = createDictionary({
     'en-us': 'Base Table',
     'ru-ru': 'Базовая таблица',
     'es-es': 'Tabla Base',
-    'fr-fr': 'Table de base',
+    'fr-fr': 'Tableau de base',
     'uk-ua': 'Базовий стіл',
     'de-ch': 'Basistabelle',
   },
@@ -531,8 +531,8 @@ export const wbPlanText = createDictionary({
     'uk-ua': `
       Вибір іншої базової таблиці для завантаження набору даних зробить цю
       таблицю новою відправною точкою для зіставлення стовпців і полів даних і
-      зітре існуючі зіставлення. AutoMapper спробує зіставити стовпці з новими
-      полями базової таблиці.
+      видалить існуючі зіставлення. AutoMapper спробує зіставити стовпці з
+      новими полями базової таблиці.
     `,
     'de-ch': `
       Durch Auswahl einer anderen Basistabelle für einen Datensatz-Upload wird
