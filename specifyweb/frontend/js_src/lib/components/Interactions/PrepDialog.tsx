@@ -152,7 +152,7 @@ export function PrepDialog({
                   relationship.relatedTable as SpecifyTable<AnyInteractionPreparation>
                 ).name
               )
-            )?.table
+            )?.relatedTable
           ) as SpecifyTable<AnyInteractionPreparation>;
 
           const items = filterArray(
