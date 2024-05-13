@@ -82,7 +82,7 @@
  * See: https://github.com/handsontable/handsontable/pull/8681
  */
 .handsontable {
-  @apply text-black dark:text-white;
+  @apply text-inherit;
   font-family: inherit;
   font-size: inherit;
 }
