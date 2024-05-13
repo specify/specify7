@@ -494,33 +494,7 @@ export async function parseFormDefinition(
             ? getColumnDefinitions(viewDefinition)
             : directColumnDefinitions
         ),
-        await Promise.all(
-          rows.map(async (row, index) => {
-            const context = getLogContext();
-            pushContext({
-              type: 'Child',
-              tagName: 'row',
-              extras: { row: index + 1 },
-            });
-
-            const data = await Promise.all(
-              row.children.cell?.map(async (cell, index) => {
-                const context = getLogContext();
-                pushContext({
-                  type: 'Child',
-                  tagName: 'cell',
-                  extras: { cell: index + 1 },
-                });
-                const data = await parseFormCell(table, cell);
-
-                setLogContext(context);
-                return data;
-              })
-            );
-            setLogContext(context);
-            return data ?? [];
-          })
-        ),
+        await parseRows(rows, table),
         table
       );
 
@@ -571,6 +545,38 @@ const getColumnDefinition = (
     typeof os === 'string' ? getParsedAttribute(child, 'os') === os : true
   )?.text;
 
+const parseRows = async (
+  rawRows: RA<SimpleXmlNode>,
+  table: SpecifyTable
+): Promise<RA<RA<FormCellDefinition>>> =>
+  Promise.all(
+    rawRows.map(async (row, index) => {
+      const context = getLogContext();
+      pushContext({
+        type: 'Child',
+        tagName: 'row',
+        extras: { row: index + 1 },
+      });
+
+      const data = await Promise.all(
+        (row.children.cell ?? []).map(async (cell, index) => {
+          const context = getLogContext();
+          pushContext({
+            type: 'Child',
+            tagName: 'cell',
+            extras: { cell: index + 1 },
+          });
+          const data = await parseFormCell(table, cell);
+
+          setLogContext(context);
+          return data;
+        })
+      );
+      setLogContext(context);
+      return data ?? [];
+    })
+  );
+
 export const exportsForTests = {
   views,
   parseViewDefinitions,
@@ -579,4 +585,5 @@ export const exportsForTests = {
   parseFormTableColumns,
   getColumnDefinitions,
   getColumnDefinition,
+  parseRows,
 };
