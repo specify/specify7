@@ -181,12 +181,19 @@ function Row({
                 rel="noreferrer"
               />
             ) : (
-              <Button.Icon
+              // <Button.Icon
+              //   className="print:hidden"
+              //   icon="viewList"
+              //   title={queryText.viewRecords()}
+              //   onClick={() => toggleIsListOfRecordsOpen(true)}
+              // />
+              <Link.Default
                 className="print:hidden"
-                icon="viewList"
                 title={queryText.viewRecords()}
                 onClick={() => toggleIsListOfRecordsOpen(true)}
-              />
+              >
+                {`${splitRecords[0]} - ${splitRecords.at(-1)}`}
+              </Link.Default>
             )}
             {isListOfRecordsOpen && splitRecords !== undefined ? (
               <RecordSelectorFromIds
