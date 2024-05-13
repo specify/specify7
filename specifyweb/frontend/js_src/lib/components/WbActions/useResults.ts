@@ -2,15 +2,17 @@ import type Handsontable from 'handsontable';
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { getHotPlugin } from '../WorkBench/handsontable';
+import { getHotPlugin, identifyDefaultValues } from '../WorkBench/handsontable';
 import type { Workbench } from '../WorkBench/WbView';
 
 export function useResults({
   hot,
   workbench,
+  triggerDatasetRefresh,
 }: {
   readonly hot: Handsontable | undefined;
   readonly workbench: Workbench;
+  readonly triggerDatasetRefresh: () => void;
 }) {
   const [showResults, _, closeResults, toggleResults] = useBooleanState();
 
@@ -57,21 +59,27 @@ export function useResults({
       )
       .map(hot.toVisualColumn);
 
-    if (showResults) {
-      getHotPlugin(hot, 'hiddenRows').hideRows(rowsToHide);
-      getHotPlugin(hot, 'hiddenColumns').hideColumns(colsToHide);
+    hot.batch(() => {
+      if (showResults) {
+        identifyDefaultValues(hot, workbench.mappings);
+        getHotPlugin(hot, 'hiddenRows').hideRows(rowsToHide);
+        getHotPlugin(hot, 'hiddenColumns').hideColumns(colsToHide);
 
-      workbench.utils.toggleCellTypes('newCells', 'remove');
-    } else {
-      getHotPlugin(hot, 'hiddenRows').showRows(
-        rowsToHide.filter((visualRow) => !initialHiddenRows.includes(visualRow))
-      );
-      getHotPlugin(hot, 'hiddenColumns').showColumns(
-        colsToHide.filter((visualCol) => !initialHiddenCols.includes(visualCol))
-      );
-    }
-
-    hot.render();
+        workbench.utils.toggleCellTypes('newCells', 'remove');
+      } else {
+        getHotPlugin(hot, 'hiddenRows').showRows(
+          rowsToHide.filter(
+            (visualRow) => !initialHiddenRows.includes(visualRow)
+          )
+        );
+        getHotPlugin(hot, 'hiddenColumns').showColumns(
+          colsToHide.filter(
+            (visualCol) => !initialHiddenCols.includes(visualCol)
+          )
+        );
+        triggerDatasetRefresh();
+      }
+    });
   }, [showResults]);
 
   return { showResults, closeResults, toggleResults };

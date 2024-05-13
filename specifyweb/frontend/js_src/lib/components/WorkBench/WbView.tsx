@@ -151,6 +151,7 @@ export function WbView({
   const { showResults, closeResults, toggleResults } = useResults({
     hot,
     workbench,
+    triggerDatasetRefresh,
   });
 
   const { openDisambiguationDialog, disambiguationDialogs } =

@@ -20,7 +20,7 @@ export function configureHandsontable(
   setSort(hot, dataset);
 }
 
-function identifyDefaultValues(
+export function identifyDefaultValues(
   hot: Handsontable,
   mappings: WbMapping | undefined
 ): void {
