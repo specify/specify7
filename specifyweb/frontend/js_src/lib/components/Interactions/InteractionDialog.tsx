@@ -38,12 +38,12 @@ import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { Dialog } from '../Molecules/Dialog';
 import { userPreferences } from '../Preferences/userPreferences';
 import { RecordSetsDialog } from '../Toolbar/RecordSets';
-import {
-  interactionsWithPrepTables,
+import type {
   InteractionWithPreps,
   PreparationData,
   PreparationRow,
 } from './helpers';
+import { interactionsWithPrepTables } from './helpers';
 import {
   getPrepsAvailableForLoanCoIds,
   getPrepsAvailableForLoanRs,
