@@ -585,4 +585,5 @@ export const exportsForTests = {
   parseFormTableColumns,
   getColumnDefinitions,
   getColumnDefinition,
+  parseRows,
 };
