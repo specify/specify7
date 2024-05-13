@@ -169,28 +169,27 @@ function WbSpreadsheetComponent({
 
   React.useEffect(() => {
     if (hot === undefined) return;
-    (mappings === undefined
-      ? Promise.resolve({})
-      : fetchWbPickLists(dataset.columns, mappings.tableNames, mappings.lines)
-    ).then((pickLists) => {
-      configureHandsontable(hot, mappings, dataset, pickLists);
-      // Check for reordered columns
-      if (dataset.visualorder?.some((column, index) => column !== index))
-        hot.updateSettings({
-          manualColumnMove: writable(dataset.visualorder),
-        });
+    hot.batch(() => {
+      (mappings === undefined
+        ? Promise.resolve({})
+        : fetchWbPickLists(dataset.columns, mappings.tableNames, mappings.lines)
+      ).then((pickLists) => {
+        configureHandsontable(hot, mappings, dataset, pickLists);
+        // Check for reordered columns
+        if (dataset.visualorder?.some((column, index) => column !== index))
+          hot.updateSettings({
+            manualColumnMove: writable(dataset.visualorder),
+          });
+        // Highlight validation cells
+        if (dataset.rowresults) {
+          validation.getValidationResults();
+          if (validation.validationMode === 'static' && !isUploaded)
+            workbench.utils.toggleCellTypes('invalidCells', 'remove');
+          workbench.cells.indexedCellMeta = undefined;
+        }
+      });
     });
-  }, [hot]);
-
-  // Highlight validation cells
-  React.useEffect(() => {
-    if (dataset.rowresults !== null && hot !== undefined) {
-      validation.getValidationResults();
-      if (validation.validationMode === 'static' && !isUploaded)
-        workbench.utils.toggleCellTypes('invalidCells', 'remove');
-      workbench.cells.indexedCellMeta = undefined;
-    }
-  }, [dataset.rowresults, hot]);
+  }, [hot, dataset.rowresults]);
 
   const {
     autoWrapCol,
