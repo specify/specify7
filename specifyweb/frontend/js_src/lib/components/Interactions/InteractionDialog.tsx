@@ -38,7 +38,8 @@ import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { Dialog } from '../Molecules/Dialog';
 import { userPreferences } from '../Preferences/userPreferences';
 import { RecordSetsDialog } from '../Toolbar/RecordSets';
-import type {
+import {
+  interactionsWithPrepTables,
   InteractionWithPreps,
   PreparationData,
   PreparationRow,
@@ -288,20 +289,11 @@ export function InteractionDialog({
                   >
                     {interactionsText.addUnassociated()}
                   </Button.Info>
-                ) : actionTable.name === 'Loan' &&
-                  !(
-                    state.type === 'MissingState' && prepsData?.length === 0
-                  ) ? (
-                  <Link.Info href={getResourceViewUrl('Loan')}>
+                ) : interactionsWithPrepTables.includes(actionTable.name) ? (
+                  <Link.Info href={getResourceViewUrl(actionTable.name)}>
                     {interactionsText.withoutPreparations()}
                   </Link.Info>
                 ) : undefined}
-                {actionTable.name === 'Gift' &&
-                  itemCollection === undefined && (
-                    <Link.Info href={getResourceViewUrl('Gift')}>
-                      {interactionsText.withoutPreparations()}
-                    </Link.Info>
-                  )}
                 {state.type === 'MissingState' &&
                 prepsData?.length !== 0 &&
                 prepsData ? (
