@@ -128,6 +128,8 @@ function Wrapped({
 
   const [saveRequired, setSaveRequired] = React.useState(false);
 
+  const [isSeries, setIsSeries] = React.useState(false);
+
   React.useEffect(() => {
     const initialState = buildInitialState();
     dispatch({
@@ -158,7 +160,7 @@ function Wrapped({
       fields: unParseQueryFields(state.baseTableName, state.fields),
       isDistinct: query.selectDistinct,
     });
-  }, [state, query.selectDistinct]);
+  }, [state, query.selectDistinct, isSeries]);
 
   /**
    * If tried to save a query, enforce the field length limit for the
@@ -556,6 +558,7 @@ function Wrapped({
               />
               <QueryToolbar
                 isDistinct={query.selectDistinct ?? false}
+                isSeries={isSeries}
                 showHiddenFields={showHiddenFields}
                 tableName={table.name}
                 onRunCountOnly={(): void => runQuery('count')}
@@ -570,6 +573,7 @@ function Wrapped({
                     selectDistinct: !(query.selectDistinct ?? false),
                   })
                 }
+                onToggleSeries={(): void => setIsSeries(!isSeries)}
                 onToggleHidden={setShowHiddenFields}
               />
             </div>
@@ -621,6 +625,7 @@ function Wrapped({
                   });
                   runQuery('regular', fields);
                 }}
+                isSeries={isSeries}
               />
             )}
           </Form>

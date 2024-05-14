@@ -26,6 +26,7 @@ export function QueryResultsTable({
   results,
   selectedRows,
   onSelected: handleSelected,
+  isSeries,
 }: {
   readonly table: SpecifyTable;
   readonly fieldSpecs: RA<QueryFieldSpec>;
@@ -36,6 +37,7 @@ export function QueryResultsTable({
     isSelected: boolean,
     isShiftClick: boolean
   ) => void;
+  readonly isSeries: boolean;
 }): JSX.Element {
   const recordFormatter = React.useMemo(
     () => getAuditRecordFormatter(fieldSpecs),
@@ -61,6 +63,7 @@ export function QueryResultsTable({
           onSelected={(isSelected, isShiftClick): void =>
             handleSelected(index, isSelected, isShiftClick)
           }
+          isSeries={isSeries}
         />
       ))}
     </>
@@ -76,6 +79,7 @@ function Row({
   isSelected,
   isLast,
   onSelected: handleSelected,
+  isSeries,
 }: {
   readonly table: SpecifyTable;
   readonly fieldSpecs: RA<QueryFieldSpec>;
@@ -87,6 +91,7 @@ function Row({
   readonly isSelected: boolean;
   readonly isLast: boolean;
   readonly onSelected?: (isSelected: boolean, isShiftClick: boolean) => void;
+  readonly isSeries: boolean;
 }): JSX.Element {
   // REFACTOR: replace this with getResourceViewUrl()
   const [resource] = useLiveState<
@@ -121,6 +126,32 @@ function Row({
         : undefined,
     [result]
   );
+
+  const resultB = result.slice(1);
+  const ranges: (number | null | string)[][] = [];
+  if (splitRecords) {
+    let currentRange: number[] = [splitRecords[0]];
+
+    for (let i = 1; i < splitRecords.length; i++) {
+      if (splitRecords[i] === splitRecords[i - 1] + 1) {
+        currentRange.push(splitRecords[i]);
+      } else {
+        ranges.push([...currentRange]);
+        currentRange = [splitRecords[i]];
+      }
+    }
+
+    ranges.push([...currentRange]);
+  }
+
+  const resultVariables = ranges.map((range, index) => {
+    const resultVarName = `result${index + 1}`;
+    return { [resultVarName]: [...range, ...resultB] };
+  });
+
+  const results2 = Object.assign({}, ...resultVariables);
+
+  console.log(results2);
 
   const [isListOfRecordsOpen, toggleIsListOfRecordsOpen] =
     React.useState(false);
@@ -180,6 +211,14 @@ function Row({
                 href={viewUrl}
                 rel="noreferrer"
               />
+            ) : isSeries ? (
+              <Link.Default
+                className="print:hidden"
+                title={queryText.viewRecords()}
+                onClick={() => toggleIsListOfRecordsOpen(true)}
+              >
+                {splitRecords.length}
+              </Link.Default>
             ) : (
               <Button.Icon
                 className="print:hidden"
@@ -187,13 +226,6 @@ function Row({
                 title={queryText.viewRecords()}
                 onClick={() => toggleIsListOfRecordsOpen(true)}
               />
-              // <Link.Default
-              //   className="print:hidden"
-              //   title={queryText.viewRecords()}
-              //   onClick={() => toggleIsListOfRecordsOpen(true)}
-              // >
-              //   {`${splitRecords[0]} - ${splitRecords.at(-1)}`}
-              // </Link.Default>
             )}
             {isListOfRecordsOpen && splitRecords !== undefined ? (
               <RecordSelectorFromIds
@@ -221,7 +253,23 @@ function Row({
           </div>
         </div>
       )}
-      {result
+      {/* {result
+        .filter((_, index) => index !== queryIdField)
+        .map((value, index) =>
+          fieldSpecs[index].isPhantom ? undefined : (
+            <Cell
+              condenseQueryResults={condenseQueryResults}
+              fieldSpec={
+                formattedValues?.[index] === undefined
+                  ? fieldSpecs[index]
+                  : undefined
+              }
+              key={index}
+              value={formattedValues?.[index] ?? value}
+            />
+          )
+        )} */}
+      {Object.entries(results2)
         .filter((_, index) => index !== queryIdField)
         .map((value, index) =>
           fieldSpecs[index].isPhantom ? undefined : (

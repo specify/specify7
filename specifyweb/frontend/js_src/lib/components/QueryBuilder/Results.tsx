@@ -69,6 +69,7 @@ export type QueryResultsProps = {
   readonly resultsRef?: React.MutableRefObject<
     RA<QueryResultRow | undefined> | undefined
   >;
+  readonly isSeries?: boolean;
 };
 
 export function QueryResults(props: QueryResultsProps): JSX.Element {
@@ -365,6 +366,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
 
                 lastSelectedRow.current = rowIndex;
               }}
+              isSeries={props.isSeries}
             />
           ) : undefined}
           {isFetching || (!showResults && Array.isArray(results)) ? (
