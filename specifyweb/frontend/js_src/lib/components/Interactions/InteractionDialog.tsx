@@ -221,7 +221,7 @@ export function InteractionDialog({
         DisposalPreparation | GiftPreparation | LoanPreparation
       >) ?? new itemCollection.table.specifyTable.Resource()
     );
-  }
+  };
 
   return state.type === 'LoanReturnDoneState' ? (
     <Dialog
