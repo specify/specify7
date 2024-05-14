@@ -181,19 +181,19 @@ function Row({
                 rel="noreferrer"
               />
             ) : (
-              // <Button.Icon
-              //   className="print:hidden"
-              //   icon="viewList"
-              //   title={queryText.viewRecords()}
-              //   onClick={() => toggleIsListOfRecordsOpen(true)}
-              // />
-              <Link.Default
+              <Button.Icon
                 className="print:hidden"
+                icon="viewList"
                 title={queryText.viewRecords()}
                 onClick={() => toggleIsListOfRecordsOpen(true)}
-              >
-                {`${splitRecords[0]} - ${splitRecords.at(-1)}`}
-              </Link.Default>
+              />
+              // <Link.Default
+              //   className="print:hidden"
+              //   title={queryText.viewRecords()}
+              //   onClick={() => toggleIsListOfRecordsOpen(true)}
+              // >
+              //   {`${splitRecords[0]} - ${splitRecords.at(-1)}`}
+              // </Link.Default>
             )}
             {isListOfRecordsOpen && splitRecords !== undefined ? (
               <RecordSelectorFromIds
