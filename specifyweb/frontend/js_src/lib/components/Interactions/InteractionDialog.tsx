@@ -215,6 +215,14 @@ export function InteractionDialog({
     return parsed;
   }
 
+  const addInteractionResource = (): void => {
+    itemCollection?.add(
+      (interactionResource as SpecifyResource<
+        DisposalPreparation | GiftPreparation | LoanPreparation
+      >) ?? new itemCollection.table.specifyTable.Resource()
+    );
+  }
+
   return state.type === 'LoanReturnDoneState' ? (
     <Dialog
       buttons={commonText.close()}
@@ -245,11 +253,7 @@ export function InteractionDialog({
             {typeof itemCollection === 'object' ? (
               <Button.Info
                 onClick={(): void => {
-                  itemCollection?.add(
-                    (interactionResource as SpecifyResource<
-                      DisposalPreparation | GiftPreparation | LoanPreparation
-                    >) ?? new itemCollection.table.specifyTable.Resource()
-                  );
+                  addInteractionResource();
                   handleClose();
                 }}
               >
@@ -286,13 +290,7 @@ export function InteractionDialog({
                 {typeof itemCollection === 'object' ? (
                   <Button.Info
                     onClick={(): void => {
-                      itemCollection?.add(
-                        (interactionResource as SpecifyResource<
-                          | DisposalPreparation
-                          | GiftPreparation
-                          | LoanPreparation
-                        >) ?? new itemCollection.table.specifyTable.Resource()
-                      );
+                      addInteractionResource();
                       handleClose();
                     }}
                   >
