@@ -22,7 +22,7 @@ from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, PermissionsException, check_permission_targets, table_permissions_checker
 from specifyweb.celery_tasks import app
 from specifyweb.specify.record_merging import record_merge_fx, record_merge_task, resolve_record_merge_response
-from specifyweb.specify.import_locality import localityParseErrorMessages, parse_locality_set
+from specifyweb.specify.import_locality import localityParseErrorMessages, parse_locality_set as _parse_locality_set
 from . import api, models as spmodels
 from .specify_jar import specify_jar
 from celery.utils.log import get_task_logger  # type: ignore
@@ -770,14 +770,12 @@ def abort_merge_task(request, merge_id: int) -> http.HttpResponse:
         return http.HttpResponse(f'Task {merge.taskid} is not running and cannot be aborted.')
 
 
-@openapi(schema={
-    "post": {
-        "requestBody": {
-            "required": True,
-            "content": {
-                "application/json": {
-                    "schema": {
-                        "type": "object",
+locality_set_body = {
+    "required": True,
+    "content": {
+        "application/json": {
+            "schema": {
+                "type": "object",
                         "properties": {
                             "columnHeaders": {
                                 "type": "array",
@@ -795,10 +793,36 @@ def abort_merge_task(request, merge_id: int) -> http.HttpResponse:
                                 }
                             }
                         }
-                    }
+            }
+        }
+    }
+}
+
+locality_set_parse_error_data = {
+    "type": "array",
+    "items": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "description": "Keys for errors which occured during parsing",
+                    "type": "string",
+                    "enum": localityParseErrorMessages
+                },
+                "payload": {
+                    "type": "object"
+                },
+                "rowNumber": {
+                    "type": "integer",
+                    "minimum": 0
                 }
             }
-        },
+    }
+}
+
+
+@openapi(schema={
+    "post": {
+        "requestBody": locality_set_body,
         "responses": {
             "200": {
                 "description": "The Locality records were updated and GeocoordDetails uploaded successfully ",
@@ -842,26 +866,7 @@ def abort_merge_task(request, merge_id: int) -> http.HttpResponse:
                                     "type": "string",
                                     "enum": ["ParseError"]
                                 },
-                                "data": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "object",
-                                        "properties": {
-                                            "message": {
-                                                "description": "Keys for errors which occured during parsing",
-                                                "type": "string",
-                                                "enum": localityParseErrorMessages
-                                            },
-                                            "payload": {
-                                                "type": "object"
-                                            },
-                                            "rowNumber": {
-                                                "type": "integer",
-                                                "minimum": 0
-                                            }
-                                        }
-                                    }
-                                }
+                                "data": locality_set_parse_error_data
                             }
                         }
                     }
@@ -873,11 +878,13 @@ def abort_merge_task(request, merge_id: int) -> http.HttpResponse:
 @login_maybe_required
 @require_POST
 def upload_locality_set(request: http.HttpRequest):
+    """Parse and upload a locality set
+    """
     request_data = json.loads(request.body)
     column_headers = request_data["columnHeaders"]
     data = request_data["data"]
 
-    to_upload, errors = parse_locality_set(
+    to_upload, errors = _parse_locality_set(
         request.specify_collection, column_headers, data)
 
     result = {
@@ -919,5 +926,55 @@ def upload_locality_set(request: http.HttpRequest):
                     setattr(locality, field, value)
                 locality.save()
                 result["localities"].append(locality_id)
+
+    return http.JsonResponse(result, safe=False)
+
+
+@openapi(schema={
+    "post": {
+        "requestBody": locality_set_body,
+        "responses": {
+            "200": {
+                "description": "Locality Import Set parsed successfully",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer",
+                                        "minimum": 0
+                            }
+                        }
+                    }
+                }
+            },
+            "422": {
+                "description": "Locality Import Set not parsed successfully",
+                "content": {
+                    "application/json": {
+                        "schema": locality_set_parse_error_data
+                    }
+                }
+            }
+        }
+    }
+})
+@login_maybe_required
+@require_POST
+def parse_locality_set(request: http.HttpRequest):
+    """Parse a locality set without making any database changes and return the results 
+    """
+    request_data = json.loads(request.body)
+    column_headers = request_data["columnHeaders"]
+    data = request_data["data"]
+
+    parsed, errors = _parse_locality_set(
+        request.specify_collection, column_headers, data)
+
+    if len(errors) > 0:
+        result = [error.to_json() for error in errors]
+        return http.JsonResponse(result, status=422, safe=False)
+
+    result = [ps.locality_id for ps in parsed]
 
     return http.JsonResponse(result, safe=False)
