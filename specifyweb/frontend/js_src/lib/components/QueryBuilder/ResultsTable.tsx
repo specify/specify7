@@ -55,24 +55,8 @@ export function QueryResultsTable({
       : undefined
   );
 
-  return (
+  return isSeries ? (
     <>
-      {/* {results.map((result, index, { length }) => (
-        <Row
-          fieldSpecs={fieldSpecs}
-          isLast={index + 1 === length}
-          isSelected={selectedRows.has(results[index][queryIdField] as number)}
-          key={index}
-          lineIndex={showLineNumber ? index : undefined}
-          recordFormatter={recordFormatter}
-          result={result}
-          table={table}
-          onSelected={(isSelected, isShiftClick): void =>
-            handleSelected(index, isSelected, isShiftClick)
-          }
-          isSeries={isSeries}
-        />
-      ))} */}
       {results.map((result, index, { length }) => {
         const splitRecords = splitRecordsList[index];
 
@@ -120,6 +104,25 @@ export function QueryResultsTable({
           />
         ));
       })}
+    </>
+  ) : (
+    <>
+      {results.map((result, index, { length }) => (
+        <Row
+          fieldSpecs={fieldSpecs}
+          isLast={index + 1 === length}
+          isSelected={selectedRows.has(results[index][queryIdField] as number)}
+          key={index}
+          lineIndex={showLineNumber ? index : undefined}
+          recordFormatter={recordFormatter}
+          result={result}
+          table={table}
+          onSelected={(isSelected, isShiftClick): void =>
+            handleSelected(index, isSelected, isShiftClick)
+          }
+          isSeries={isSeries}
+        />
+      ))}
     </>
   );
 }
@@ -239,13 +242,7 @@ function Row({
                 href={viewUrl}
                 rel="noreferrer"
               />
-            ) : (
-              // <Button.Icon
-              //   className="print:hidden"
-              //   icon="viewList"
-              //   title={queryText.viewRecords()}
-              //   onClick={() => toggleIsListOfRecordsOpen(true)}
-              // />
+            ) : isSeries ? (
               <Link.Default
                 className="print:hidden"
                 title={queryText.viewRecords()}
@@ -255,6 +252,13 @@ function Row({
                   splitRecords.length
                 }`}
               </Link.Default>
+            ) : (
+              <Button.Icon
+                className="print:hidden"
+                icon="viewList"
+                title={queryText.viewRecords()}
+                onClick={() => toggleIsListOfRecordsOpen(true)}
+              />
             )}
             {isListOfRecordsOpen && splitRecords !== undefined ? (
               <RecordSelectorFromIds
