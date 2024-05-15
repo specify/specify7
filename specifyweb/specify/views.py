@@ -126,7 +126,7 @@ def delete_blockers(request, model, id):
             }
         ] for field, sub_objs in collector.delete_blockers
     ])
-    filter_rank_deletion_exception(obj, result)
+    # filter_rank_deletion_exception(obj, result)
     return http.HttpResponse(api.toJson(result), content_type='application/json')
 
 
