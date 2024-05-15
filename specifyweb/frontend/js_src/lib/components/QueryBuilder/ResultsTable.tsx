@@ -48,9 +48,16 @@ export function QueryResultsTable({
     'appearance',
     'showLineNumber'
   );
+
+  const splitRecordsList = results.map((result) =>
+    typeof result[0] === 'string' && result[0].includes(',')
+      ? result[0].split(',').map(Number)
+      : undefined
+  );
+
   return (
     <>
-      {results.map((result, index, { length }) => (
+      {/* {results.map((result, index, { length }) => (
         <Row
           fieldSpecs={fieldSpecs}
           isLast={index + 1 === length}
@@ -65,7 +72,54 @@ export function QueryResultsTable({
           }
           isSeries={isSeries}
         />
-      ))}
+      ))} */}
+      {results.map((result, index, { length }) => {
+        const splitRecords = splitRecordsList[index];
+
+        const resultFields = result.slice(1);
+        const ranges: (number | null | string)[][] = [];
+        if (splitRecords) {
+          let currentRange: number[] = [splitRecords[0]];
+
+          for (let i = 1; i < splitRecords.length; i++) {
+            if (splitRecords[i] === splitRecords[i - 1] + 1) {
+              currentRange.push(splitRecords[i]);
+            } else {
+              ranges.push([...currentRange]);
+              currentRange = [splitRecords[i]];
+            }
+          }
+
+          ranges.push([...currentRange]);
+        }
+
+        const resultVariables = ranges.map((range, index) => {
+          const resultVarName = `result${index + 1}`;
+          const modifiedRange = range.join(',');
+          return { [resultVarName]: [modifiedRange, ...resultFields] };
+        });
+
+        const resultsSplitted = Object.assign({}, ...resultVariables);
+
+        return Object.keys(resultsSplitted).map((key) => (
+          <Row
+            fieldSpecs={fieldSpecs}
+            isLast={index + 1 === length}
+            isSelected={selectedRows.has(
+              results[index][queryIdField] as number
+            )}
+            key={`${index}-${key}`}
+            lineIndex={showLineNumber ? index : undefined}
+            recordFormatter={recordFormatter}
+            result={resultsSplitted[key]}
+            table={table}
+            onSelected={(isSelected, isShiftClick): void =>
+              handleSelected(index, isSelected, isShiftClick)
+            }
+            isSeries={isSeries}
+          />
+        ));
+      })}
     </>
   );
 }
@@ -127,32 +181,6 @@ function Row({
     [result]
   );
 
-  const resultB = result.slice(1);
-  const ranges: (number | null | string)[][] = [];
-  if (splitRecords) {
-    let currentRange: number[] = [splitRecords[0]];
-
-    for (let i = 1; i < splitRecords.length; i++) {
-      if (splitRecords[i] === splitRecords[i - 1] + 1) {
-        currentRange.push(splitRecords[i]);
-      } else {
-        ranges.push([...currentRange]);
-        currentRange = [splitRecords[i]];
-      }
-    }
-
-    ranges.push([...currentRange]);
-  }
-
-  const resultVariables = ranges.map((range, index) => {
-    const resultVarName = `result${index + 1}`;
-    return { [resultVarName]: [...range, ...resultB] };
-  });
-
-  const results2 = Object.assign({}, ...resultVariables);
-
-  console.log(results2);
-
   const [isListOfRecordsOpen, toggleIsListOfRecordsOpen] =
     React.useState(false);
 
@@ -211,21 +239,22 @@ function Row({
                 href={viewUrl}
                 rel="noreferrer"
               />
-            ) : isSeries ? (
+            ) : (
+              // <Button.Icon
+              //   className="print:hidden"
+              //   icon="viewList"
+              //   title={queryText.viewRecords()}
+              //   onClick={() => toggleIsListOfRecordsOpen(true)}
+              // />
               <Link.Default
                 className="print:hidden"
                 title={queryText.viewRecords()}
                 onClick={() => toggleIsListOfRecordsOpen(true)}
               >
-                {splitRecords.length}
+                {`${splitRecords[0]} - ${splitRecords.at(-1)} | ${
+                  splitRecords.length
+                }`}
               </Link.Default>
-            ) : (
-              <Button.Icon
-                className="print:hidden"
-                icon="viewList"
-                title={queryText.viewRecords()}
-                onClick={() => toggleIsListOfRecordsOpen(true)}
-              />
             )}
             {isListOfRecordsOpen && splitRecords !== undefined ? (
               <RecordSelectorFromIds
@@ -253,23 +282,7 @@ function Row({
           </div>
         </div>
       )}
-      {/* {result
-        .filter((_, index) => index !== queryIdField)
-        .map((value, index) =>
-          fieldSpecs[index].isPhantom ? undefined : (
-            <Cell
-              condenseQueryResults={condenseQueryResults}
-              fieldSpec={
-                formattedValues?.[index] === undefined
-                  ? fieldSpecs[index]
-                  : undefined
-              }
-              key={index}
-              value={formattedValues?.[index] ?? value}
-            />
-          )
-        )} */}
-      {Object.entries(results2)
+      {result
         .filter((_, index) => index !== queryIdField)
         .map((value, index) =>
           fieldSpecs[index].isPhantom ? undefined : (
