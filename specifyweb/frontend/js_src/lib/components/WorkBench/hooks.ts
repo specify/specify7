@@ -17,13 +17,21 @@ import { schema } from '../DataModel/schema';
 import { getHotPlugin } from './handsontable';
 import type { Workbench } from './WbView';
 
-export function useHotHooks(
-  workbench: Workbench,
-  physicalColToMappingCol: (physicalCol: number) => number | undefined,
-  spreadsheetChanged: () => void,
-  checkDeletedFail: (statusCode: number) => boolean,
-  isReadOnly: boolean
-): Partial<Events> {
+export function useHotHooks({
+  workbench,
+  physicalColToMappingCol,
+  spreadsheetChanged,
+  checkDeletedFail,
+  isReadOnly,
+  isResultsOpen,
+}: {
+  readonly workbench: Workbench;
+  readonly physicalColToMappingCol: (physicalCol: number) => number | undefined;
+  readonly spreadsheetChanged: () => void;
+  readonly checkDeletedFail: (statusCode: number) => boolean;
+  readonly isReadOnly: boolean;
+  readonly isResultsOpen: boolean;
+}): Partial<Events> {
   let sortConfigIsSet: boolean = false;
   const loading = React.useContext(LoadingContext);
 
@@ -464,10 +472,7 @@ export function useHotHooks(
     },
 
     beforeColumnMove: (_columnIndexes, _finalIndex, dropIndex) =>
-      // Don't allow moving columns when isReadOnly
-      !isReadOnly &&
-      // An ugly fix for jQuery's dialogs conflicting with HOT
-      (dropIndex !== undefined || workbench.hot !== undefined),
+      dropIndex !== undefined || workbench.hot !== undefined,
 
     // Save new visualOrder on the back end
     afterColumnMove: (_columnIndexes, _finalIndex, dropIndex) => {
