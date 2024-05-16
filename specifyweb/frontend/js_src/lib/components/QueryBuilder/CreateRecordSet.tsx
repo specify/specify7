@@ -1,9 +1,10 @@
 import React from 'react';
+import { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
-import type { RA } from '../../utils/types';
+import type { RA, ValueOf } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { createResource } from '../DataModel/resource';
@@ -28,11 +29,13 @@ export function CreateRecordSet({
   recordIds,
   baseTableName,
   defaultRecordSetName,
+  buttonType = 'Small',
   saveComponent,
 }: {
   readonly recordIds: RA<number> | (() => RA<number>);
   readonly baseTableName: keyof Tables;
   readonly defaultRecordSetName?: string;
+  readonly buttonType: Exclude<keyof typeof Button, 'Icon'>;
   readonly saveComponent?: () => JSX.Element;
 }): JSX.Element {
   const [state, setState] = React.useState<
@@ -47,9 +50,11 @@ export function CreateRecordSet({
     [recordIds]
   );
 
+  const ResolvedButton = Button[buttonType];
+
   return (
     <>
-      <Button.Small
+      <ResolvedButton
         aria-haspopup="dialog"
         onClick={(): void => {
           const recordSet = new tables.RecordSet.Resource();
@@ -64,7 +69,7 @@ export function CreateRecordSet({
         {queryText.createRecordSet({
           recordSetTable: tables.RecordSet.label,
         })}
-      </Button.Small>
+      </ResolvedButton>
       {state.type === 'Editing' && (
         <ResourceView
           dialog="modal"

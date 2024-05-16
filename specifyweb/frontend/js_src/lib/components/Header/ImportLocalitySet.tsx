@@ -220,7 +220,17 @@ function LocalityImportResults({
       ) : results.type === 'Uploaded' ? (
         <Dialog
           buttons={
-            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+            <>
+              {hasToolPermission('recordSets', 'create') && (
+                <CreateRecordSet
+                  baseTableName="Locality"
+                  buttonType="Info"
+                  recordIds={results.localities}
+                />
+              )}
+              <span className="-ml-2 flex-1" />
+              <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+            </>
           }
           header={wbText.uploadResults()}
           modal={false}
@@ -240,12 +250,6 @@ function LocalityImportResults({
                 geocoorddetail: results.geocoorddetails.length,
               }}
             />
-            {hasToolPermission('recordSets', 'create') && (
-              <CreateRecordSet
-                baseTableName="Locality"
-                recordIds={results.localities}
-              />
-            )}
           </div>
         </Dialog>
       ) : null}
