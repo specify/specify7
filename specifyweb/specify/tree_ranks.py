@@ -125,7 +125,7 @@ def post_tree_rank_save(tree_def_item_model, new_rank):
     new_rank_id = new_rank.rankid
 
     # Set the parent rank, that previously pointed to the target, to the new rank
-    child_ranks = tree_def_item_model.objects.filter(parent=parent_rank).exclude(rankid=new_rank_id).update(parent=new_rank)
+    child_ranks = tree_def_item_model.objects.filter(parent=parent_rank).exclude(id=new_rank.id).update(parent=new_rank)
 
     # Regenerate full names
     tree_extras.set_fullnames(tree_def, null_only=False, node_number_range=None)
