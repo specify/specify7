@@ -13,20 +13,24 @@ export function useResults({
   readonly hot: Handsontable | undefined;
   readonly workbench: Workbench;
   readonly triggerDatasetRefresh: () => void;
-}) {
+}): {
+  readonly showResults: boolean;
+  readonly closeResults: () => void;
+  readonly toggleResults: () => void;
+} {
   const [showResults, _, closeResults, toggleResults] = useBooleanState();
 
   const initialHiddenRows = React.useMemo(
     () =>
       hot === undefined ? [] : getHotPlugin(hot, 'hiddenRows').getHiddenRows(),
-    [hot]
+    [hot, workbench.dataset.columns]
   );
   const initialHiddenCols = React.useMemo(
     () =>
       hot === undefined
         ? []
         : getHotPlugin(hot, 'hiddenColumns').getHiddenColumns(),
-    [hot]
+    [hot, workbench.dataset.columns]
   );
 
   // Makes the hot changes required for upload view results
