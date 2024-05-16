@@ -250,12 +250,11 @@ function useWbActions({
       ping(`/api/workbench/${newMode}/${datasetId}/`, {
         method: 'POST',
         expectedErrors: [Http.CONFLICT],
+      }).then((statusCode): void => {
+        checkDeletedFail(statusCode);
+        checkConflictFail(statusCode);
+        triggerStatusComponent(newMode);
       })
-        .then((statusCode): void => {
-          checkDeletedFail(statusCode);
-          checkConflictFail(statusCode);
-        })
-        .then(() => triggerStatusComponent(newMode))
     );
   };
 
