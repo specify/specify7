@@ -125,12 +125,7 @@ def post_tree_rank_save(tree_def_item_model, new_rank):
     new_rank_id = new_rank.rankid
 
     # Set the parent rank, that previously pointed to the target, to the new rank
-    child_ranks = tree_def_item_model.objects.filter(treedef=tree_def, parent=parent_rank).exclude(rankid=new_rank_id)
-    if child_ranks.exists():
-        # Iterate through the child ranks, but there should only ever be 0 or 1 child ranks to update
-        for child_rank in child_ranks:
-            child_rank.parent = new_rank
-            child_rank.save()
+    child_ranks = tree_def_item_model.objects.filter(parent=parent_rank).exclude(rankid=new_rank_id).update(parent=new_rank)
 
     # Update the old root rank to point to the new root rank if the new rank is the new root rank
     if new_rank.parent is None:
@@ -150,13 +145,7 @@ def pre_tree_rank_deletion(tree_def_item_model, rank):
         raise TreeBusinessRuleException("The Rank {rank.name} is not empty, cannot delete!")
 
     # Set the parent rank, that previously pointed to the old rank, to the target rank
-    child_ranks = tree_def_item_model.objects.filter(treedef=tree_def, parent=rank)
-    if child_ranks.exists():
-        # Iterate through the child ranks, but there should only ever be 0 or 1 child ranks to update
-        for child_rank in child_ranks:
-            child_rank.parent = rank.parent
-            child_rank.save()
-            print(child_rank.name)
+    child_ranks = tree_def_item_model.objects.filter(parent=rank).update(parent=rank.parent)
 
 def post_tree_rank_deletion(rank):
     # Regenerate full names
