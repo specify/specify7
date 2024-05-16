@@ -57,7 +57,7 @@ export function Navigation({
 
   // Reset current position when total count resets
   React.useEffect(() => {
-    if (totalCount == 0) setCurrentPosition(0);
+    if (totalCount === 0) setCurrentPosition(0);
   }, [totalCount]);
 
   return (
