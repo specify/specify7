@@ -8,7 +8,6 @@ import { ping } from '../../utils/ajax/ping';
 import { overwriteReadOnly } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
-import { LoadingContext } from '../Core/Contexts';
 import { loadingBar } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
 import type { Workbench } from '../WorkBench/WbView';
@@ -28,7 +27,6 @@ export function WbSave({
 }): JSX.Element {
   const [showProgressBar, openProgressBar, closeProgressBar] =
     useBooleanState();
-  const loading = React.useContext(LoadingContext);
 
   const handleSave = () => {
     // Clear validation
@@ -39,24 +37,22 @@ export function WbSave({
     openProgressBar();
 
     // Send data
-    loading(
-      ping(`/api/workbench/rows/${workbench.dataset.id}/`, {
-        method: 'PUT',
-        body: workbench.data,
-        expectedErrors: [Http.NO_CONTENT, Http.NOT_FOUND],
-      })
-        .then((status) => checkDeletedFail(status))
-        .then(() => {
-          handleSpreadsheetUpToDate();
-          workbench.cells.cellMeta = [];
-          workbench.utils?.searchCells(
-            { key: 'SettingsChange' },
-            searchRef.current
-          );
-          workbench.hot?.render();
-          closeProgressBar();
-        })
-    );
+    ping(`/api/workbench/rows/${workbench.dataset.id}/`, {
+      method: 'PUT',
+      body: workbench.data,
+      expectedErrors: [Http.NO_CONTENT, Http.NOT_FOUND],
+    })
+      .then((status) => checkDeletedFail(status))
+      .then(() => {
+        handleSpreadsheetUpToDate();
+        workbench.cells.cellMeta = [];
+        workbench.utils?.searchCells(
+          { key: 'SettingsChange' },
+          searchRef.current
+        );
+        workbench.hot?.render();
+        closeProgressBar();
+      });
   };
 
   return (
