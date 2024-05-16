@@ -35,7 +35,7 @@ export function WbNoUploadPlan({
 
   return (
     <>
-      {noUploadPlan ? (
+      {noUploadPlan && (
         <Dialog
           buttons={
             <>
@@ -50,7 +50,7 @@ export function WbNoUploadPlan({
         >
           {wbPlanText.noUploadPlanDescription()}
         </Dialog>
-      ) : undefined}
+      )}
     </>
   );
 }
