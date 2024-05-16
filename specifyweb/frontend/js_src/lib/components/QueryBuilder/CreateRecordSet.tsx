@@ -1,10 +1,9 @@
 import React from 'react';
-import { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
-import type { RA, ValueOf } from '../../utils/types';
+import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { createResource } from '../DataModel/resource';
