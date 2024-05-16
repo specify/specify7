@@ -37,8 +37,8 @@ export function useResults({
   React.useEffect(() => {
     if (hot === undefined) return;
 
-    const rowsToInclude = new Set();
-    const colsToInclude = new Set();
+    const rowsToInclude = new Set<number>();
+    const colsToInclude = new Set<number>();
     Object.entries(workbench.cells.cellMeta).forEach(([physicalRow, rowMeta]) =>
       rowMeta.forEach((metaArray, physicalCol) => {
         if (!workbench.cells.getCellMetaFromArray(metaArray, 'isNew')) return;
