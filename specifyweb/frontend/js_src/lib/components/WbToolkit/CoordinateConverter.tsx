@@ -135,7 +135,7 @@ function CoordinateConverter({
   >(undefined);
   const [showDirection, setShowDirection] = React.useState<boolean>(false);
 
-  const changeCount = React.useRef<number>(0);
+  const changeCountRef = React.useRef<number>(0);
 
   // List of coordinate columns
   const columnsToWorkWith = React.useMemo(
@@ -205,7 +205,7 @@ function CoordinateConverter({
         return value !== data[physicalRow][physicalCol];
       });
     if (changes.length > 0) {
-      changeCount.current += 1;
+      changeCountRef.current += 1;
       setHotData(hot, changes);
     }
   }, [
@@ -231,7 +231,7 @@ function CoordinateConverter({
       modal={false}
       onClose={(): void => {
         hot.batch(() =>
-          Array.from({ length: changeCount.current }).forEach(() => hot.undo())
+          Array.from({ length: changeCountRef.current }).forEach(() => hot.undo())
         );
         handleClose();
       }}
