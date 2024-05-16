@@ -9,6 +9,8 @@ import { icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { WbCellCounts } from '../WorkBench/CellMeta';
 import type { WbUtils } from './Utils';
+import { StringToJsx } from '../../localization/utils';
+import { localized } from '../../utils/types';
 
 export function Navigation({
   name,
@@ -87,8 +89,15 @@ export function Navigation({
         variant="bg-inherit text-gray-800 dark:text-gray-100"
         onClick={handleTypeToggle}
       >
-        {label} (<span className="text-center">{currentPosition}</span>/
-        <span>{totalCount}</span>)
+        <StringToJsx
+          components={{
+            currentPosition: (
+              <span className="text-center">{currentPosition}</span>
+            ),
+            totalCount: <span>{totalCount}</span>,
+          }}
+          string={localized(`${label} (<currentPosition/>/<totalCount/>)`)}
+        />
       </Button.Small>
       <Button.Small
         className="brightness-80 hover:brightness-70 p-2 ring-0"
