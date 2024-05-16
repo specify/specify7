@@ -39,7 +39,10 @@ export function useDisambiguationDialog({
   readonly disambiguation: Disambiguation;
   readonly mappings: WbMapping | undefined;
   readonly hot: Handsontable | undefined;
-}) {
+}): {
+  readonly openDisambiguationDialog: () => void;
+  readonly disambiguationDialogs: JSX.Element;
+} {
   const [disambiguationMatches, setDisambiguationMatches] =
     React.useState<DisambiguationMatches>();
   const [disambiguationPhysicalRow, setPhysicalRow] = React.useState<number>();
