@@ -206,9 +206,11 @@ export class WbUtils {
 
     const data = this.workbench.dataset.rows;
     const firstVisibleRow =
-      getHotPlugin(this.workbench.hot, 'autoRowSize').getFirstVisibleRow() - HOT_OFFSET;
+      getHotPlugin(this.workbench.hot, 'autoRowSize').getFirstVisibleRow() -
+      HOT_OFFSET;
     const lastVisibleRow =
-      getHotPlugin(this.workbench.hot, 'autoRowSize').getLastVisibleRow() + HOT_OFFSET;
+      getHotPlugin(this.workbench.hot, 'autoRowSize').getLastVisibleRow() +
+      HOT_OFFSET;
     const firstVisibleColumn =
       getHotPlugin(
         this.workbench.hot,
@@ -253,7 +255,10 @@ export class WbUtils {
           render = Boolean(cell);
         }
 
-        this.workbench.cells[render ? 'updateCellMeta' : 'setCellMeta'](
+        const updateWorkbenchCells =
+          this.workbench.cells[render ? 'updateCellMeta' : 'setCellMeta'];
+
+        updateWorkbenchCells(
           physicalRow,
           physicalCol,
           'isSearchResult',
