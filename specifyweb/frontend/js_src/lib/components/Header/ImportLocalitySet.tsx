@@ -19,6 +19,7 @@ import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { CsvFilePicker } from '../Molecules/CsvFilePicker';
 import { Dialog } from '../Molecules/Dialog';
+import { hasPermission, hasToolPermission } from '../Permissions/helpers';
 import { ProtectedTool } from '../Permissions/PermissionDenied';
 import { CreateRecordSet } from '../QueryBuilder/CreateRecordSet';
 import { downloadDataSet } from '../WorkBench/helpers';
@@ -239,12 +240,12 @@ function LocalityImportResults({
                 geocoorddetail: results.geocoorddetails.length,
               }}
             />
-            <ProtectedTool action="create" tool="recordSets">
+            {hasToolPermission('recordSets', 'create') && (
               <CreateRecordSet
                 baseTableName="Locality"
                 recordIds={results.localities}
               />
-            </ProtectedTool>
+            )}
           </div>
         </Dialog>
       ) : null}
