@@ -12,69 +12,69 @@ import logging
 logger = logging.getLogger(__name__)
 
 TAXON_RANKS = {
-    'TAXONOMY_ROOT': 0,
-    'TAXONOMY ROOT': 0,
-    'LIFE': 0,
-    'KINGDOM': 10,
-    'SUBKINGDOM': 20,
-    'DIVISION': 30,
-    'PHYLUM': 30,
-    'SUBDIVISION': 40,
-    'SUBPHYLUM': 40,
-    'SUPERCLASS': 50,
-    'CLASS': 60,
-    'SUBCLASS': 70,
-    'INFRACLASS': 80,
-    'SUPERORDER': 90,
-    'ORDER': 100,
-    'SUBORDER': 110,
-    'INFRAORDER': 120,
-    'PARVORDER': 125,
-    'SUPERFAMILY': 130,
-    'FAMILY': 140,
-    'SUBFAMILY': 150,
-    'TRIBE': 160,
-    'SUBTRIBE': 170,
-    'GENUS': 180,
-    'SUBGENUS': 190,
-    'SECTION': 200,
-    'SUBSECTION': 210,
-    'SPECIES': 220,
-    'SUBSPECIES': 230,
-    'VARIETY': 240,
-    'SUBVARIETY': 250,
-    'FORMA': 260,
-    'SUBFORMA': 270
+    'taxonomy_root': 0,
+    'taxonomy root':0,
+    'life': 0,
+    'kingdom': 10,
+    'subkingdom': 20,
+    'division': 30,
+    'phylum': 30,
+    'subdivision': 40,
+    'subphylum': 40,
+    'superclass': 50,
+    'class': 60,
+    'subclass': 70,
+    'infraclass': 80,
+    'superorder': 90,
+    'order': 100,
+    'suborder': 110,
+    'infraorder': 120,
+    'parvorder': 125,
+    'superfamilly': 130,
+    'family': 140,
+    'subfamily': 150,
+    'tribe': 160,
+    'subtribe': 170,
+    'genus': 180,
+    'subgenus': 190,
+    'section': 200,
+    'subsection': 210,
+    'species': 220,
+    'subspecies': 230,
+    'variety': 240,
+    'subvariety': 250,
+    'forma': 260,
+    'subforma': 270
 }
 GEOGRAPHY_RANKS = {
-    'CONTINENT': 100,
-    'COUNTRY': 200,
-    'STATE': 300,
-    'COUNTY': 400
+    'continent': 100,
+    'country': 200,
+    'state': 300,
+    'county': 400
 }
 STORAGE_RANKS = {
-    'BUILDING': 100,
-    'COLLECTION': 150,
-    'ROOM': 200,
-    'AISLE': 250,
-    'CABINET': 300,
-    'SHELF': 350,
-    'BOX': 400,
-    'RACK': 450,
-    'VIAL': 500
+    'building': 100,
+    'collection': 150,
+    'room': 200,
+    'aisle': 250,
+    'cabinet': 300,
+    'shelf': 350,
+    'box': 400,
+    'rack': 450,
+    'vial': 500
 }
 GEOLOGIC_TIME_PERIOD_RANKS = {
-    'ERA': 100,
-    'PERIOD': 200,
-    'EPOCH': 300,
-    'AGE': 400
+    'era': 100,
+    'period': 200,
+    'epoch': 300,
+    'age': 400
 }
 LITHO_STRAT_RANKS = {
-    'SUPERGROUP': 100,
-    'GROUP': 200,
-    'FORMATION': 300,
-    'MEMBER': 400,
-    'BED': 500
+    'supergroup': 100,
+    'group': 200,
+    'formation': 300,
+    'member': 400,
+    'bed': 500
 }
 
 DEFAULT_RANK_INCREMENT = 100
@@ -254,7 +254,7 @@ def set_rank_id(new_rank):
     can_use_default_rank_id = (
         use_default_rank_ids 
         and default_tree_ranks is not None 
-        and new_rank_name.upper() in default_tree_ranks
+        and new_rank_name.lower() in default_tree_ranks
     )
     
     # Only use the the default rank id if the fhe following criteria is met: 
@@ -263,7 +263,7 @@ def set_rank_id(new_rank):
     # - the default rank is greater than the target rank
     # - the default rank is less than the current next rank from the target rank
     if can_use_default_rank_id:
-        default_rank_id = default_tree_ranks[new_rank_name.upper()]
+        default_rank_id = default_tree_ranks[new_rank_name.lower()]
 
         # Check if the default rank ID is not already used
         is_default_rank_id_unused = default_rank_id not in rank_ids
