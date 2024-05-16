@@ -225,9 +225,9 @@ export function WbView({
             data={data}
             dataset={dataset}
             hot={hot}
+            isResultsOpen={showResults}
             isUploaded={isUploaded}
             mappings={mappings}
-            isResultsOpen={showResults}
             setHotTable={setHotTable}
             spreadsheetChanged={spreadsheetChanged}
             workbench={workbench}
