@@ -53,7 +53,7 @@ export function WbUpload({
       >
         {wbText.upload()}
       </Button.Small>
-      {showUpload ? (
+      {showUpload && (
         <Dialog
           buttons={
             <>
@@ -68,7 +68,7 @@ export function WbUpload({
         >
           {wbText.startUploadDescription()}
         </Dialog>
-      ) : undefined}
+      )}
     </>
   );
 }
