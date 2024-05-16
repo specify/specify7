@@ -208,7 +208,9 @@ def set_rank_id(new_rank):
         raise TreeBusinessRuleException("Can't create rank ID less than 0")
     
     # Set conditions for rank ID creation
-    is_tree_def_items_empty = rank_ids is None or len(rank_ids) < 1
+    if rank_ids is None:
+        raise ValueError("rank_ids should never be None.")
+    is_tree_def_items_empty = len(rank_ids) < 1
     is_new_rank_first = parent_rank_id == -1
     is_new_rank_last = parent_rank_idx == len(rank_ids) - 1 if rank_ids is not None else True
     
