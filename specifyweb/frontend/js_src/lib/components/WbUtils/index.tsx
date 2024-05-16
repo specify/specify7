@@ -1,6 +1,7 @@
 import React from 'react';
 import _ from 'underscore';
 
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import { Input } from '../Atoms/Form';
@@ -29,6 +30,9 @@ export function WbUtilsComponent({
   const isReadOnly = React.useContext(ReadOnlyContext);
   const replaceRef = React.useRef<HTMLInputElement | null>(null);
 
+  const [isSearchClicked, clickSearch, unclickSearch, toggleSearch] =
+    useBooleanState(true);
+
   return (
     <div
       aria-label={wbText.navigation()}
@@ -46,8 +50,12 @@ export function WbUtilsComponent({
             title={commonText.searchQuery()}
             type="search"
             onKeyDown={_.debounce(
-              (event: React.KeyboardEvent<HTMLInputElement>) =>
-                utils.searchCells(event, searchRef.current),
+              (event: React.KeyboardEvent<HTMLInputElement>) => {
+                if (searchRef.current && searchRef.current?.value.length > 0)
+                  unclickSearch();
+                else clickSearch();
+                utils.searchCells(event, searchRef.current);
+              },
               debounceRate,
               true
             )}
@@ -97,10 +105,12 @@ export function WbUtilsComponent({
         />
       </span>
       <Navigation
+        isPressed={isSearchClicked}
         label={wbText.searchResults()}
         name="searchResults"
         totalCount={cellCounts.searchResults}
         utils={utils}
+        onToggle={toggleSearch}
       />
       {!isUploaded && hasPermission('/workbench/dataset', 'update') ? (
         <Navigation

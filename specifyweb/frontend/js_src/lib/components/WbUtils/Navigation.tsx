@@ -15,18 +15,24 @@ export function Navigation({
   label,
   totalCount,
   utils,
+  isPressed = false,
+  onToggle: handleToggle,
 }: {
   readonly name: keyof WbCellCounts;
   readonly label: LocalizedString;
   readonly totalCount: number;
   readonly utils: WbUtils;
+  readonly isPressed?: boolean;
+  readonly onToggle?: () => void;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
   const [currentPosition, setCurrentPosition] = React.useState<number>(0);
-  const [buttonIsPressed, _press, _unpress, togglePress] = useBooleanState();
+  const [buttonIsPressed, _press, _unpress, togglePress] =
+    useBooleanState(isPressed);
 
   const handleTypeToggle = () => {
-    togglePress();
+    if (typeof handleToggle === 'function') handleToggle();
+    else togglePress();
     utils.toggleCellTypes(name, 'toggle');
   };
 
