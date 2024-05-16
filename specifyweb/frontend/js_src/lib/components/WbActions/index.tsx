@@ -239,7 +239,12 @@ function useWbActions({
   readonly checkDeletedFail: (statusCode: number) => void;
   readonly onRefresh: () => void;
   readonly onOpenStatus: () => void;
-}) {
+}): {
+  readonly mode: WbStatus | undefined;
+  readonly refreshInitiatorAborted: React.MutableRefObject<boolean>;
+  readonly startUpload: (newMode: WbStatus) => void;
+  readonly triggerStatusComponent: (newMode: WbStatus) => void;
+} {
   const [mode, setMode] = React.useState<WbStatus | undefined>(undefined);
   const refreshInitiatorAborted = React.useRef<boolean>(false);
   const loading = React.useContext(LoadingContext);
