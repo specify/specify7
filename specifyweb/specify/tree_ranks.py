@@ -176,10 +176,6 @@ def set_rank_id(new_rank):
     tree_def_model = getattr(spmodels, tree_def_model_name.lower().title())
     tree_def_item_model = getattr(spmodels, tree_def_item_model_name.lower().title())
 
-    # Make sure the new rank has a tree definition set
-    if not hasattr(new_rank, 'treedef'):
-        new_rank.treedef = tree_def_model.objects.get(id=tree_id)
-
     # Check if the new rank already has a rank id
     if getattr(new_rank, 'rankid', None):
         new_rank_id = new_rank.rankid
