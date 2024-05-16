@@ -184,9 +184,6 @@ def set_rank_id(new_rank):
     # Check if the new rank already has a rank id
     if getattr(new_rank, 'rankid', None):
         new_rank_id = new_rank.rankid
-        if type(new_rank_id) is str:
-            new_rank_id = int(new_rank_id)
-            new_rank.rankid = new_rank_id
         if new_rank.parent and new_rank_id <= new_rank.parent.rankid:
             raise TreeBusinessRuleException(
                 f"Rank ID {new_rank_id} must be greater than the parent rank ID {new_rank.parent.rankid}")
