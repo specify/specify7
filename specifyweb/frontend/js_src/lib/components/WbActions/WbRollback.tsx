@@ -29,13 +29,13 @@ export function WbRollback({
       >
         {wbText.rollback()}
       </Button.Small>
-      {confirmRollback ? (
+      {confirmRollback && (
         <RollbackConfirmation
           datasetId={datasetId}
           onClose={handleClose}
           onRollback={handleRollback}
         />
-      ) : undefined}
+      )}
     </>
   );
 }
