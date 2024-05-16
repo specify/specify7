@@ -32,9 +32,8 @@ export function WorkBench(): JSX.Element {
   if (dataset === undefined || !treeRanksLoaded || dataset.id !== datasetId)
     return <LoadingScreen />;
 
-  const triggerDatasetRefresh = () => {
+  const triggerDatasetRefresh = () =>
     loading(fetchDataset(dataset.id).then(setDataset));
-  };
 
   return datasetId === undefined ? (
     <NotFoundView />
