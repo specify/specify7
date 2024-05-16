@@ -22,6 +22,7 @@ import { WbRollback } from './WbRollback';
 import { WbSave } from './WbSave';
 import { WbUpload } from './WbUpload';
 import { WbValidate } from './WbValidate';
+import { LocalizedString } from 'typesafe-i18n';
 
 export function WbActions({
   dataset,
@@ -286,7 +287,13 @@ function useWbActions({
   };
 }
 
-function getMessage(cellCounts: WbCellCounts, mode: WbStatus) {
+function getMessage(
+  cellCounts: WbCellCounts,
+  mode: WbStatus
+): {
+  readonly header: LocalizedString;
+  readonly message: JSX.Element | LocalizedString;
+} {
   const messages = {
     validate:
       cellCounts.invalidCells === 0
