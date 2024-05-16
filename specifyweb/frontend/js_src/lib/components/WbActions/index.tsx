@@ -56,13 +56,14 @@ export function WbActions({
     useBooleanState();
   const [operationCompleted, openOperationCompleted, closeOperationCompleted] =
     useBooleanState();
-  const { mode, refreshInitiatorAborted, ...actions } = useWbActions({
-    datasetId: dataset.id,
-    onRefresh: handleRefresh,
-    checkDeletedFail,
-    onOpenStatus: openStatus,
-    workbench,
-  });
+  const { mode, refreshInitiatorAborted, startUpload, triggerStatusComponent } =
+    useWbActions({
+      datasetId: dataset.id,
+      onRefresh: handleRefresh,
+      checkDeletedFail,
+      onOpenStatus: openStatus,
+      workbench,
+    });
 
   const message = mode === undefined ? undefined : getMessage(cellCounts, mode);
 
@@ -89,7 +90,7 @@ export function WbActions({
             hasUnsavedChanges={hasUnsavedChanges}
             isMapped={isMapped}
             isResultsOpen={isResultsOpen}
-            startUpload={actions.startUpload}
+            startUpload={startUpload}
             validation={workbench.validation}
           />
         </ErrorBoundary>
@@ -115,7 +116,7 @@ export function WbActions({
         <ErrorBoundary dismissible>
           <WbRollback
             datasetId={dataset.id}
-            triggerStatusComponent={actions.triggerStatusComponent}
+            triggerStatusComponent={triggerStatusComponent}
           />
         </ErrorBoundary>
       ) : undefined}
@@ -126,7 +127,7 @@ export function WbActions({
             hasUnsavedChanges={hasUnsavedChanges}
             mappings={mappings}
             openNoUploadPlan={openNoUploadPlan}
-            startUpload={actions.startUpload}
+            startUpload={startUpload}
           />
         </ErrorBoundary>
       ) : undefined}
