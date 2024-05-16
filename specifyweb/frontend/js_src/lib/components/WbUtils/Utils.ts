@@ -29,7 +29,7 @@ export class WbUtils {
   // eslint-disable-next-line functional/prefer-readonly-type
   public searchPreferences: WbSearchPreferences = getInitialSearchPreferences();
 
-  constructor(
+  public constructor(
     private readonly workbench: Workbench,
     private readonly spreadsheetContainerRef: React.RefObject<HTMLElement>
   ) {}
