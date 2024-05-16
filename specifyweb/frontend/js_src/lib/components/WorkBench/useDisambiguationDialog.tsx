@@ -136,14 +136,14 @@ export function useDisambiguationDialog({
                       ] !== 'number'
                   );
 
-                if (ambiguousMatchToDisambiguate === undefined) continue;
-
-                disambiguation.setDisambiguation(
-                  physicalRow,
-                  ambiguousMatchToDisambiguate.mappingPath,
-                  selected.id
-                );
-                validation.startValidateRow(physicalRow);
+                if (ambiguousMatchToDisambiguate !== undefined) {
+                  disambiguation.setDisambiguation(
+                    physicalRow,
+                    ambiguousMatchToDisambiguate.mappingPath,
+                    selected.id
+                  );
+                  validation.startValidateRow(physicalRow);
+                }
               }
             })
           }
