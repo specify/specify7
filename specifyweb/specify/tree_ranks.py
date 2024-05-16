@@ -187,7 +187,7 @@ def set_rank_id(new_rank):
         if new_rank.parent and new_rank_id <= new_rank.parent.rankid:
             raise TreeBusinessRuleException(
                 f"Rank ID {new_rank_id} must be greater than the parent rank ID {new_rank.parent.rankid}")
-        child_rank = tree_def_item_model.objects.filter(treedef=new_rank.treedef, parent=new_rank.parent).exclude(id=new_rank.id)
+        child_rank = tree_def_item_model.objects.filter( parent=new_rank.parent).exclude(id=new_rank.id)
         if child_rank.exists() and new_rank_id >= child_rank.first().rankid:
             # Raising this exception causes many workbench tests to fail
             # raise TreeBusinessRuleException(
