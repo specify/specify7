@@ -65,7 +65,7 @@ export function WbSave({
       >
         {commonText.save()}
       </Button.Small>
-      {showProgressBar ? (
+      {showProgressBar && (
         <Dialog
           buttons={undefined}
           header={wbText.saving()}
@@ -73,7 +73,7 @@ export function WbSave({
         >
           {loadingBar}
         </Dialog>
-      ) : undefined}
+      )}
     </>
   );
 }
