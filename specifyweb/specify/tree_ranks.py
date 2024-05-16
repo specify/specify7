@@ -158,7 +158,8 @@ def set_rank_id(new_rank):
     new_rank_name = getattr(new_rank, 'name', None)
     parent_rank_name = getattr(new_rank.parent, 'name', 'root') if getattr(new_rank, 'parent', None) else 'root'
     tree_name = getattr(new_rank.treedef, 'name', tree) if getattr(new_rank, 'treedef', None) else tree
-    tree_id = getattr(new_rank.treedef, 'id', 1) if getattr(new_rank, 'treedef', None) else 1
+    if getattr(new_rank, 'treedef', None):
+        raise ValueError("new_rank.treedef is None")
     tree_def = getattr(new_rank, 'treedef', None)
 
     # Throw exceptions if the required parameters are not given correctly
