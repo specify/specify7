@@ -35,7 +35,7 @@ export function WbValidate({
 
   return (
     <>
-      {canLiveValidate ? (
+      {canLiveValidate && (
         <Button.Small
           aria-pressed={validation.validationMode === 'live'}
           disabled={!isMapped || isResultsOpen}
@@ -57,7 +57,7 @@ export function WbValidate({
               : wbText.dataCheckOn()
             : wbText.dataCheck()}
         </Button.Small>
-      ) : undefined}
+      )}
       <Button.Small
         aria-haspopup="dialog"
         disabled={hasUnsavedChanges || !isMapped}
