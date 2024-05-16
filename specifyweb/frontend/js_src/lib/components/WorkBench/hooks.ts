@@ -17,7 +17,7 @@ import { schema } from '../DataModel/schema';
 import { getHotPlugin } from './handsontable';
 import type { Workbench } from './WbView';
 
-export function getHotHooks(
+export function useHotHooks(
   workbench: Workbench,
   physicalColToMappingCol: (physicalCol: number) => number | undefined,
   spreadsheetChanged: () => void,

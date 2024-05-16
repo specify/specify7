@@ -20,7 +20,7 @@ import { strictGetTable } from '../DataModel/tables';
 import { getIcon, unknownIcon } from '../InitialContext/icons';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { configureHandsontable } from './handsontable';
-import { getHotHooks } from './hooks';
+import { useHotHooks } from './hooks';
 import { getSelectedRegions } from './hotHelpers';
 import { useHotProps } from './hotProps';
 import type { WbMapping } from './mapping';
@@ -205,7 +205,7 @@ function WbSpreadsheetComponent({
     comments,
   } = useHotProps({ dataset, mappings, physicalColToMappingCol });
 
-  const hooks = getHotHooks(
+  const hooks = useHotHooks(
     workbench,
     physicalColToMappingCol,
     spreadsheetChanged,
