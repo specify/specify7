@@ -218,7 +218,7 @@ def set_rank_id(new_rank):
     is_new_rank_last = parent_rank_idx == len(rank_ids) - 1 if rank_ids is not None else True
     
     # Set the default ranks and increments depending on the tree type
-    default_tree_ranks, rank_increment = TREE_RANKS_MAPPING.get(tree.lower(), (None, 100))
+    default_tree_ranks, rank_increment = TREE_RANKS_MAPPING.get(tree.lower())
 
     # In the future, add this as a function parameter to allow for more flexibility.
     # use_default_rank_ids can be set to false if you do not want to use the default rank ids.
