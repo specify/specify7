@@ -22,7 +22,7 @@ import type { Dataset } from '../WbPlanView/Wrapped';
 import { configureHandsontable } from './handsontable';
 import { getHotHooks } from './hooks';
 import { getSelectedRegions } from './hotHelpers';
-import { getHotProps } from './hotProps';
+import { useHotProps } from './hotProps';
 import type { WbMapping } from './mapping';
 import { fetchWbPickLists } from './pickLists';
 import type { Workbench } from './WbView';
@@ -203,7 +203,7 @@ function WbSpreadsheetComponent({
     minSpareRows,
     tabMoves,
     comments,
-  } = getHotProps({ dataset, mappings, physicalColToMappingCol });
+  } = useHotProps({ dataset, mappings, physicalColToMappingCol });
 
   const hooks = getHotHooks(
     workbench,

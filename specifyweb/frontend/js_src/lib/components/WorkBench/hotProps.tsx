@@ -18,7 +18,7 @@ const hiddenRows = {
   copyPasteEnabled: false,
 };
 
-export function getHotProps({
+export function useHotProps({
   dataset,
   mappings,
   physicalColToMappingCol,
