@@ -158,7 +158,7 @@ def set_rank_id(new_rank):
     new_rank_name = getattr(new_rank, 'name', None)
     parent_rank_name = getattr(new_rank.parent, 'name', 'root') if getattr(new_rank, 'parent', None) else 'root'
     tree_name = getattr(new_rank.treedef, 'name', tree) if getattr(new_rank, 'treedef', None) else tree
-    if getattr(new_rank, 'treedef', None):
+    if getattr(new_rank, 'treedef', None) is not None:
         raise ValueError("Expected tree definition, got None.")
     tree_def = getattr(new_rank, 'treedef', None)
 
