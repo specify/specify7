@@ -34,7 +34,7 @@ export function CreateRecordSet({
   readonly recordIds: RA<number> | (() => RA<number>);
   readonly baseTableName: keyof Tables;
   readonly defaultRecordSetName?: string;
-  readonly buttonType: Exclude<keyof typeof Button, 'Icon'>;
+  readonly buttonType?: Exclude<keyof typeof Button, 'Icon'>;
   readonly saveComponent?: () => JSX.Element;
 }): JSX.Element {
   const [state, setState] = React.useState<
