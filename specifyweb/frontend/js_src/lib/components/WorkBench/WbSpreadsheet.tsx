@@ -21,7 +21,7 @@ import { getIcon, unknownIcon } from '../InitialContext/icons';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { configureHandsontable } from './handsontable';
 import { useHotHooks } from './hooks';
-import { getSelectedRegions } from './hotHelpers';
+import { getSelectedRegions, setHotData } from './hotHelpers';
 import { useHotProps } from './hotProps';
 import type { WbMapping } from './mapping';
 import { fetchWbPickLists } from './pickLists';
@@ -275,7 +275,8 @@ const fillCellsContextMenuItem = (
           mode === 'up'
             ? hot.getDataAtCell(endRow, col)
             : hot.getDataAtCell(startRow, col);
-        hot.setDataAtCell(
+        setHotData(
+          hot,
           Array.from({ length: endRow - startRow }, (_, index) => [
             startRow + index + 1,
             col,
