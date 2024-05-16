@@ -34,7 +34,7 @@ export class WbUtils {
     private readonly spreadsheetContainerRef: React.RefObject<HTMLElement>
   ) {}
 
-  navigateCells({
+  public navigateCells({
     type,
     direction,
     currentCellPosition = 0,
@@ -175,12 +175,12 @@ export class WbUtils {
     return [matchedCell, finalCellPosition];
   }
 
-  searchCells(
+  public searchCells(
     event:
       | React.KeyboardEvent<HTMLInputElement>
       | { readonly key: 'SettingsChange' },
     searchQueryElement: HTMLInputElement | null
-  ) {
+  ): void {
     if (this.workbench.hot === undefined || searchQueryElement === null) return;
     /*
      * Don't rerun search on live search if search query did not change
@@ -277,7 +277,7 @@ export class WbUtils {
       });
   }
 
-  parseSearchQuery(searchQueryElement: HTMLInputElement) {
+  private parseSearchQuery(searchQueryElement: HTMLInputElement) {
     if (searchQueryElement === null) return;
 
     this.rawSearchQuery = searchQueryElement.value;
@@ -319,7 +319,7 @@ export class WbUtils {
     return this.searchQuery;
   }
 
-  toggleCellTypes(
+  public toggleCellTypes(
     navigationType: keyof WbCellCounts,
     action: 'add' | 'remove' | 'toggle' = 'toggle'
   ): void {
@@ -330,7 +330,7 @@ export class WbUtils {
       spreadsheetContainer.classList[action](cssClassName);
   }
 
-  searchFunction(initialCellValue = '') {
+  public searchFunction(initialCellValue = ''): boolean {
     let cellValue = initialCellValue;
 
     if (this.searchQuery === undefined) return false;
@@ -346,10 +346,10 @@ export class WbUtils {
       : cellValue.includes(this.searchQuery as string);
   }
 
-  replaceCells(
+  public replaceCells(
     event: React.KeyboardEvent<HTMLInputElement>,
     replacementValueElement: HTMLInputElement | null
-  ) {
+  ): void {
     if (
       event.key !== 'Enter' ||
       (this.searchPreferences.search.useRegex &&
