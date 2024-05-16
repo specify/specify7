@@ -472,7 +472,7 @@ export function useHotHooks({
     },
 
     beforeColumnMove: (_columnIndexes, _finalIndex, dropIndex) =>
-      dropIndex !== undefined || workbench.hot !== undefined,
+      !isResultsOpen && (dropIndex !== undefined || workbench.hot !== undefined),
 
     // Save new visualOrder on the back end
     afterColumnMove: (_columnIndexes, _finalIndex, dropIndex) => {

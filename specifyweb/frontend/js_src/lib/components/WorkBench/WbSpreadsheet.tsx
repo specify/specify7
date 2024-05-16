@@ -37,6 +37,7 @@ function WbSpreadsheetComponent({
   data,
   workbench,
   mappings,
+  isResultsOpen,
   checkDeletedFail,
   spreadsheetChanged,
   onClickDisambiguate: handleClickDisambiguate,
@@ -48,6 +49,7 @@ function WbSpreadsheetComponent({
   readonly data: RA<RA<string | null>>;
   readonly workbench: Workbench;
   readonly mappings: WbMapping | undefined;
+  readonly isResultsOpen: boolean;
   readonly checkDeletedFail: (statusCode: number) => boolean;
   readonly spreadsheetChanged: () => void;
   readonly onClickDisambiguate: () => void;
@@ -205,13 +207,14 @@ function WbSpreadsheetComponent({
     comments,
   } = useHotProps({ dataset, mappings, physicalColToMappingCol });
 
-  const hooks = useHotHooks(
+  const hooks = useHotHooks({
     workbench,
     physicalColToMappingCol,
     spreadsheetChanged,
     checkDeletedFail,
-    isReadOnly
-  );
+    isReadOnly,
+    isResultsOpen,
+  });
 
   return (
     <section className="flex-1 overflow-hidden overscroll-none">
