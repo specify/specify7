@@ -16,7 +16,7 @@ export function WbRollback({
   readonly datasetId: number;
   readonly triggerStatusComponent: (mode: WbStatus) => void;
 }): JSX.Element {
-  const [rollback, handleOpen, handleClose] = useBooleanState();
+  const [confirmRollback, handleOpen, handleClose] = useBooleanState();
 
   const handleRollback = () => triggerStatusComponent('unupload');
 
@@ -24,12 +24,12 @@ export function WbRollback({
     <>
       <Button.Small
         aria-haspopup="dialog"
-        aria-pressed={rollback}
+        aria-pressed={confirmRollback}
         onClick={handleOpen}
       >
         {wbText.rollback()}
       </Button.Small>
-      {rollback ? (
+      {confirmRollback ? (
         <RollbackConfirmation
           datasetId={datasetId}
           onClose={handleClose}
