@@ -18,6 +18,8 @@ import { getHotPlugin } from '../WorkBench/handsontable';
 import { getSelectedLast } from '../WorkBench/hotHelpers';
 import type { Workbench } from '../WorkBench/WbView';
 
+const HOT_OFFSET = 3;
+
 /* eslint-disable functional/no-this-expression */
 export class WbUtils {
   // eslint-disable-next-line functional/prefer-readonly-type
@@ -204,19 +206,19 @@ export class WbUtils {
 
     const data = this.workbench.dataset.rows;
     const firstVisibleRow =
-      getHotPlugin(this.workbench.hot, 'autoRowSize').getFirstVisibleRow() - 3;
+      getHotPlugin(this.workbench.hot, 'autoRowSize').getFirstVisibleRow() - HOT_OFFSET;
     const lastVisibleRow =
-      getHotPlugin(this.workbench.hot, 'autoRowSize').getLastVisibleRow() + 3;
+      getHotPlugin(this.workbench.hot, 'autoRowSize').getLastVisibleRow() + HOT_OFFSET;
     const firstVisibleColumn =
       getHotPlugin(
         this.workbench.hot,
         'autoColumnSize'
-      ).getFirstVisibleColumn() - 3;
+      ).getFirstVisibleColumn() - HOT_OFFSET;
     const lastVisibleColumn =
       getHotPlugin(
         this.workbench.hot,
         'autoColumnSize'
-      ).getLastVisibleColumn() + 3;
+      ).getLastVisibleColumn() + HOT_OFFSET;
 
     for (let visualRow = 0; visualRow < data.length; visualRow++) {
       const physicalRow = this.workbench.hot.toPhysicalRow(visualRow);
