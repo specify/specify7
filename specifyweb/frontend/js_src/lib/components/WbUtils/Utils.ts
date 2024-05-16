@@ -332,9 +332,7 @@ export class WbUtils {
   ): void {
     const groupName = camelToKebab(navigationType);
     const cssClassName = `wb-hide-${groupName}`;
-    const { current: spreadsheetContainer } = this.spreadsheetContainerRef;
-    if (spreadsheetContainer)
-      spreadsheetContainer.classList[action](cssClassName);
+    this.spreadsheetContainerRef?.current?.classList[action](cssClassName);
   }
 
   public searchFunction(initialCellValue = ''): boolean {
