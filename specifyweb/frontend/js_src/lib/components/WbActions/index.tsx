@@ -181,7 +181,7 @@ export function WbActions({
           }}
         />
       ) : undefined}
-      {operationCompleted ? (
+      {operationCompleted && (
         <Dialog
           buttons={
             <>
@@ -204,8 +204,8 @@ export function WbActions({
         >
           {message?.message}
         </Dialog>
-      ) : undefined}
-      {operationAborted ? (
+      )}
+      {operationAborted && (
         <Dialog
           buttons={commonText.close()}
           header={
@@ -223,7 +223,7 @@ export function WbActions({
             ? wbText.rollbackCanceledDescription()
             : wbText.uploadCanceledDescription()}
         </Dialog>
-      ) : undefined}
+      )}
     </>
   );
 }
