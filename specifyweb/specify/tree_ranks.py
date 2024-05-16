@@ -198,11 +198,6 @@ def set_rank_id(new_rank):
 
     # Determine the new rank id parameters
     new_rank_id = getattr(new_rank, 'rankid', None)
-    tree_def = tree_def_model.objects.get(id=tree_id)
-    try:
-        tree_def = tree_def_model.objects.get(name=tree_name)
-    except tree_def_model.DoesNotExist:
-        pass
     parent_rank = tree_def_item_model.objects.filter(treedef=tree_def, name=parent_rank_name).first()
     if parent_rank is None and parent_rank_name != 'root':
         raise TreeBusinessRuleException("Target rank name does not exist")
