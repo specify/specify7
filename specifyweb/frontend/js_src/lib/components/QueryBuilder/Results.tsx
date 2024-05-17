@@ -34,6 +34,7 @@ import { useFetchQueryResults } from './hooks';
 import { QueryResultsTable } from './ResultsTable';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
+import { AnySchema } from '../DataModel/helperTypes';
 
 export type QueryResultRow = RA<number | string | null>;
 
@@ -100,19 +101,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     canFetchMore,
   } = useFetchQueryResults(props);
 
-  const isEmbeddedCollectingEvent = schema.embeddedCollectingEvent;
-  const isEmbeddedPaleoContext = schema.embeddedPaleoContext;
-  const canMerge =
-    hasPermission('/record/merge', 'update') &&
-    hasTablePermission(table.name, 'update');
-  const canMergePaleoContext =
-    table.name === 'PaleoContext' && !isEmbeddedPaleoContext && canMerge;
-  const canMergeCollectingEvent =
-    table.name === 'CollectingEvent' && !isEmbeddedCollectingEvent && canMerge;
-  const canMergeOtherTables =
-    table.name !== 'PaleoContext' &&
-    table.name !== 'CollectingEvent' &&
-    canMerge;
+  const canMergeTable = canMerge(table);
 
   const visibleFieldSpecs = fieldSpecs.filter(({ isPhantom }) => !isPhantom);
   if (resultsRef !== undefined) resultsRef.current = results;
@@ -229,9 +218,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
         typeof fetchResults === 'function' &&
         visibleFieldSpecs.length > 0 ? (
           <>
-            {(table.name === 'PaleoContext' && canMergePaleoContext) ||
-            (table.name === 'CollectingEvent' && canMergeCollectingEvent) ||
-            canMergeOtherTables ? (
+            {canMergeTable ? (
               <RecordMergingLink
                 selectedRows={selectedRows}
                 table={table}
@@ -453,3 +440,20 @@ const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
 /** Record ID column index in Query Results when not in distinct mode */
 export const queryIdField = 0;
+
+function canMerge(table: SpecifyTable<AnySchema>): boolean {
+  const isEmbeddedCollectingEvent = schema.embeddedCollectingEvent;
+  const isEmbeddedPaleoContext = schema.embeddedPaleoContext;
+  const canMerge =
+    hasPermission('/record/merge', 'update') &&
+    hasTablePermission(table.name, 'update');
+  const canMergePaleoContext =
+    table.name === 'PaleoContext' && !isEmbeddedPaleoContext && canMerge;
+  const canMergeCollectingEvent =
+    table.name === 'CollectingEvent' && !isEmbeddedCollectingEvent && canMerge;
+  const canMergeOtherTables =
+    table.name !== 'PaleoContext' &&
+    table.name !== 'CollectingEvent' &&
+    canMerge;
+  return canMergeOtherTables || canMergePaleoContext || canMergeCollectingEvent;
+}
