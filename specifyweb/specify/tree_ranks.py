@@ -170,7 +170,6 @@ def set_rank_id(new_rank):
         raise TreeBusinessRuleException("Invalid tree type")
 
     # Get tree def item model
-    tree_def_model_name = (tree + 'treedef').lower().title()
     tree_def_item_model_name = (tree + 'treedefitem').lower().title()
     tree_def_item_model = getattr(spmodels, tree_def_item_model_name.lower().title())
 
@@ -191,7 +190,7 @@ def set_rank_id(new_rank):
 
     # Determine the new rank id parameters
     new_rank_id = getattr(new_rank, 'rankid', None)
-    parent_rank = tree_def_item_model.objects.filter(treedef=tree_def, name=parent_rank_name).first()
+    parent_rank = new_rank.parent
     if parent_rank is None and parent_rank_name != 'root':
         raise TreeBusinessRuleException("Target rank name does not exist")
     parent_rank_id = parent_rank.rankid if parent_rank_name != 'root' else -1
@@ -208,7 +207,7 @@ def set_rank_id(new_rank):
     # Set conditions for rank ID creation
     is_tree_def_items_empty = len(rank_ids) < 1
     is_new_rank_first = parent_rank_id == -1
-    is_new_rank_last = parent_rank_idx == len(rank_ids) - 1 if rank_ids is not None else True
+    is_new_rank_last = parent_rank_idx == len(rank_ids) - 1
     
     # Set the default ranks and increments depending on the tree type
     default_tree_ranks, rank_increment = TREE_RANKS_MAPPING.get(tree.lower())
