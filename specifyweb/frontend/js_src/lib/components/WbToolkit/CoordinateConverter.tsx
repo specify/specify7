@@ -6,6 +6,7 @@ import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import { localityText } from '../../localization/locality';
 import { wbText } from '../../localization/workbench';
+import { f } from '../../utils/functools';
 import type { ConversionFunction } from '../../utils/latLong';
 import { Lat, Long } from '../../utils/latLong';
 import type { RA, RR } from '../../utils/types';
@@ -141,7 +142,7 @@ function CoordinateConverter({
   const columnsToWorkWith = React.useMemo(
     () =>
       Object.keys(coordinateColumns).map((physicalCol) =>
-        hot.toVisualColumn(Number.parseInt(physicalCol))
+        hot.toVisualColumn(f.fastParseInt(physicalCol))
       ),
     []
   );

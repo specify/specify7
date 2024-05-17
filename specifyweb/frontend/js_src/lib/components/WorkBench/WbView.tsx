@@ -97,6 +97,7 @@ export function WbView({
   );
   useErrorContext('mappings', mappings);
 
+  // Throttle cell count update depending on the DS size (between 10ms and 2s)
   const throttleRate = Math.ceil(clamp(10, data.length / 10, 2000));
 
   const [hasUnsavedChanges, spreadsheetChanged, spreadsheetUpToDate] =
