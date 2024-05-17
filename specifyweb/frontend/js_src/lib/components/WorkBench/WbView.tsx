@@ -233,7 +233,7 @@ export function WbView({
             workbench={workbench}
             onClickDisambiguate={openDisambiguationDialog}
           />
-          {showResults ? (
+          {showResults && (
             <aside aria-live="polite">
               <WbUploaded
                 datasetId={dataset.id}
@@ -243,7 +243,7 @@ export function WbView({
                 onClose={closeResults}
               />
             </aside>
-          ) : undefined}
+          )}
         </div>
         {disambiguationDialogs}
         <WbUtilsComponent
