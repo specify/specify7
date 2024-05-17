@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
@@ -22,7 +23,6 @@ import { WbRollback } from './WbRollback';
 import { WbSave } from './WbSave';
 import { WbUpload } from './WbUpload';
 import { WbValidate } from './WbValidate';
-import { LocalizedString } from 'typesafe-i18n';
 
 export function WbActions({
   dataset,
