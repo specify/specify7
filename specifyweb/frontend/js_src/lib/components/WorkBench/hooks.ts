@@ -195,7 +195,7 @@ export function useHotHooks({
           'UndoRedo.undo',
           'UndoRedo.redo',
         ].includes(source) ||
-        workbench.hot !== undefined ||
+        workbench.hot === undefined ||
         unfilteredChanges === null
       )
         return;
