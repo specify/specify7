@@ -195,7 +195,7 @@ export function useHotHooks({
           'UndoRedo.undo',
           'UndoRedo.redo',
         ].includes(source) ||
-        !workbench.hot ||
+        workbench.hot !== undefined ||
         unfilteredChanges === null
       )
         return;
@@ -330,7 +330,7 @@ export function useHotHooks({
         .forEach((physicalRow) =>
           workbench.cells?.cellMeta.splice(physicalRow, 0, [])
         );
-      if (workbench.hot && source !== 'auto') spreadsheetChanged();
+      if (workbench.hot !== undefined && source !== 'auto') spreadsheetChanged();
 
       return true;
     },
@@ -353,7 +353,7 @@ export function useHotHooks({
 
       workbench.cells.indexedCellMeta = undefined;
 
-      if (workbench.hot && source !== 'auto') {
+      if (source !== 'auto') {
         spreadsheetChanged();
         workbench.cells.updateCellInfoStats();
       }
