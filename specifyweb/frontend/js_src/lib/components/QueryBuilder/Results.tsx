@@ -9,6 +9,7 @@ import { f } from '../../utils/functools';
 import { type GetSet, type RA } from '../../utils/types';
 import { Container, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
+import { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { SpecifyTable } from '../DataModel/specifyTable';
@@ -34,7 +35,6 @@ import { useFetchQueryResults } from './hooks';
 import { QueryResultsTable } from './ResultsTable';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
-import { AnySchema } from '../DataModel/helperTypes';
 
 export type QueryResultRow = RA<number | string | null>;
 
@@ -441,7 +441,7 @@ const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 /** Record ID column index in Query Results when not in distinct mode */
 export const queryIdField = 0;
 
-function canMerge(table: SpecifyTable<AnySchema>): boolean {
+function canMerge(table: SpecifyTable): boolean {
   const isEmbeddedCollectingEvent = schema.embeddedCollectingEvent;
   const isEmbeddedPaleoContext = schema.embeddedPaleoContext;
   const canMerge =
