@@ -67,7 +67,7 @@ export class WbValidation {
       this.workbench.dataset.rowresults === null ? 'off' : 'static';
   }
 
-  toggleDataCheck(): void {
+  public toggleDataCheck(): void {
     if (!this.workbench?.hot) return;
     this.validationMode =
       this.validationMode === 'live' ||
@@ -111,8 +111,8 @@ export class WbValidation {
     this.triggerLiveValidation();
   }
 
-  triggerLiveValidation() {
-    const pumpValidation = (): void => {
+  private async triggerLiveValidation(): Promise<void> {
+    const pumpValidation = async (): Promise<void> => {
       if (this.liveValidationStack.length === 0) {
         this.liveValidationActive = false;
         return;
@@ -121,7 +121,7 @@ export class WbValidation {
       const physicalRow = this.liveValidationStack.pop();
       if (physicalRow === undefined || this.workbench.hot === undefined) return;
       const rowData = this.workbench.hot.getSourceDataAtRow(physicalRow);
-      ajax<{
+      await ajax<{
         readonly result: UploadResult;
       } | null>(`/api/workbench/validate_row/${this.workbench.dataset.id}/`, {
         method: 'POST',
@@ -137,11 +137,14 @@ export class WbValidation {
     };
 
     if (!this.liveValidationActive) {
-      pumpValidation();
+      return pumpValidation();
     }
   }
 
-  gotRowValidationResult(physicalRow: number, result: UploadResult): void {
+  private gotRowValidationResult(
+    physicalRow: number,
+    result: UploadResult
+  ): void {
     if (
       this.validationMode !== 'live' ||
       this.workbench.hot?.isDestroyed !== false
@@ -154,7 +157,7 @@ export class WbValidation {
     this.workbench.cells?.updateCellInfoStats();
   }
 
-  getHeadersFromMappingPath(
+  private getHeadersFromMappingPath(
     mappingPathFilter: RA<string>,
     tryBest = true
   ): RA<string> {
@@ -181,10 +184,10 @@ export class WbValidation {
     );
   }
 
-  resolveValidationColumns(
+  private resolveValidationColumns(
     initialColumns: RA<string>,
     inferColumnsCallback: (() => RA<string>) | undefined = undefined
-  ) {
+  ): RA<number> {
     // See https://github.com/specify/specify7/issues/810
     let columns: RA<string> = initialColumns.filter(Boolean);
     if (typeof inferColumnsCallback === 'function') {
@@ -197,7 +200,10 @@ export class WbValidation {
       .filter((physicalCol) => physicalCol !== -1);
   }
 
-  applyRowValidationResults(physicalRow: number, result: UploadResult) {
+  private applyRowValidationResults(
+    physicalRow: number,
+    result: UploadResult
+  ): void {
     const rowMeta: WritableArray<Partial<Writable<WbMeta>>> =
       this.workbench.dataset.columns.map(() => ({
         isNew: false,
@@ -237,27 +243,18 @@ export class WbValidation {
     });
   }
 
-  parseRowValidationResults(
-    result: UploadResult,
+  private resolveUploadStatus(
+    uploadStatus: keyof UploadResult['UploadResult']['record_result'],
+    recordResult: UploadResult['UploadResult']['record_result'],
+    physicalRow: number,
+    mappingPath: MappingPath,
     setMetaCallback: <KEY extends keyof WbMeta>(
       key: KEY,
       value: KEY extends 'issues' ? string : WbMeta[KEY],
       columns: RA<string>,
       inferColumnsCallback: (() => RA<string>) | undefined
-    ) => void,
-    physicalRow: number,
-    initialMappingPath: MappingPath | undefined = []
-  ) {
-    const uploadResult = result.UploadResult;
-    const uploadStatus = Object.keys(uploadResult.record_result)[0];
-    const statusData = uploadResult.record_result[uploadStatus];
-    const data = uploadResult.record_result;
-
-    const isTree = 'info' in statusData && statusData.info?.treeInfo !== null;
-    const mappingPath = isTree
-      ? [...initialMappingPath, formatTreeRank(statusData.info.treeInfo.rank)]
-      : initialMappingPath;
-
+    ) => void
+  ): void {
     const resolveColumns = this.getHeadersFromMappingPath.bind(
       this,
       mappingPath
@@ -266,7 +263,7 @@ export class WbValidation {
     // Ignore these statuses
     if (['NullRecord', 'PropagatedFailure', 'Matched'].includes(uploadStatus)) {
     } else if (uploadStatus === 'ParseFailures')
-      data.ParseFailures.failures.forEach((line) => {
+      recordResult.ParseFailures.failures.forEach((line) => {
         const [issueMessage, payload, column] =
           line.length === 2 ? [line[0], {}, line[1]] : line;
         setMetaCallback(
@@ -282,7 +279,7 @@ export class WbValidation {
       setMetaCallback(
         'issues',
         wbText.noMatchErrorMessage(),
-        data.NoMatch.info.columns,
+        recordResult.NoMatch.info.columns,
         resolveColumns
       );
     else if (uploadStatus === 'FailedBusinessRule')
@@ -290,48 +287,54 @@ export class WbValidation {
         'issues',
         whitespaceSensitive(
           resolveValidationMessage(
-            data.FailedBusinessRule.message,
-            data.FailedBusinessRule.payload ?? {}
+            recordResult.FailedBusinessRule.message,
+            recordResult.FailedBusinessRule.payload ?? {}
           )
         ),
-        data.FailedBusinessRule.info.columns,
+        recordResult.FailedBusinessRule.info.columns,
         resolveColumns
       );
     else if (uploadStatus === 'MatchedMultiple') {
       this.uploadResults.ambiguousMatches[physicalRow] ??= [];
       this.uploadResults.ambiguousMatches[physicalRow].push({
         physicalCols: this.resolveValidationColumns(
-          data.MatchedMultiple.info.columns,
+          recordResult.MatchedMultiple.info.columns,
           resolveColumns
         ),
         mappingPath,
-        ids: data.MatchedMultiple.ids,
-        key: data.MatchedMultiple.key,
+        ids: recordResult.MatchedMultiple.ids,
+        key: recordResult.MatchedMultiple.key,
       });
       setMetaCallback(
         'issues',
         whitespaceSensitive(wbText.matchedMultipleErrorMessage()),
-        data.MatchedMultiple.info.columns,
+        recordResult.MatchedMultiple.info.columns,
         resolveColumns
       );
     } else if (uploadStatus === 'Uploaded') {
-      setMetaCallback('isNew', true, data.Uploaded.info.columns, undefined);
-      const tableName = toLowerCase(data.Uploaded.info.tableName);
+      setMetaCallback(
+        'isNew',
+        true,
+        recordResult.Uploaded.info.columns,
+        undefined
+      );
+      const tableName = toLowerCase(recordResult.Uploaded.info.tableName);
       this.uploadResults.recordCounts[tableName] ??= 0;
       this.uploadResults.recordCounts[tableName]! += 1;
       this.uploadResults.newRecords[physicalRow] ??= [];
-      this.resolveValidationColumns(data.Uploaded.info.columns, undefined).map(
-        (physicalCol) => {
-          this.uploadResults.newRecords[physicalRow]![physicalCol] ??= [];
-          this.uploadResults.newRecords[physicalRow]![physicalCol].push([
-            tableName,
-            data.Uploaded.id,
-            data.Uploaded.info?.treeInfo
-              ? `${data.Uploaded.info.treeInfo.name} (${data.Uploaded.info.treeInfo.rank})`
-              : '',
-          ]);
-        }
-      );
+      this.resolveValidationColumns(
+        recordResult.Uploaded.info.columns,
+        undefined
+      ).forEach((physicalCol) => {
+        this.uploadResults.newRecords[physicalRow]![physicalCol] ??= [];
+        this.uploadResults.newRecords[physicalRow]![physicalCol].push([
+          tableName,
+          recordResult.Uploaded.id,
+          recordResult.Uploaded.info?.treeInfo
+            ? `${recordResult.Uploaded.info.treeInfo.name} (${recordResult.Uploaded.info.treeInfo.rank})`
+            : '',
+        ]);
+      });
     } else
       raise(
         new Error(
@@ -339,6 +342,35 @@ export class WbValidation {
         row ${this.workbench.hot?.toVisualRow(physicalRow) ?? ''}`
         )
       );
+  }
+
+  private parseRowValidationResults(
+    result: UploadResult,
+    setMetaCallback: <KEY extends keyof WbMeta>(
+      key: KEY,
+      value: KEY extends 'issues' ? string : WbMeta[KEY],
+      columns: RA<string>,
+      inferColumnsCallback: (() => RA<string>) | undefined
+    ) => void,
+    physicalRow: number,
+    initialMappingPath: MappingPath | undefined = []
+  ): void {
+    const uploadResult = result.UploadResult;
+    const uploadStatus = Object.keys(uploadResult.record_result)[0];
+    const statusData = uploadResult.record_result[uploadStatus];
+
+    const isTree = 'info' in statusData && statusData.info?.treeInfo !== null;
+    const mappingPath = isTree
+      ? [...initialMappingPath, formatTreeRank(statusData.info.treeInfo.rank)]
+      : initialMappingPath;
+
+    this.resolveUploadStatus(
+      uploadStatus,
+      uploadResult.record_result,
+      physicalRow,
+      mappingPath,
+      setMetaCallback
+    );
 
     Object.entries(uploadResult.toOne).forEach(([fieldName, uploadResult]) =>
       this.parseRowValidationResults(
@@ -363,7 +395,7 @@ export class WbValidation {
     );
   }
 
-  getValidationResults(): void {
+  public getValidationResults(): void {
     if (this.workbench.mappings === undefined) return;
 
     if (this.workbench.dataset.rowresults === null) {
@@ -380,7 +412,7 @@ export class WbValidation {
     this.workbench.cells?.updateCellInfoStats();
   }
 
-  stopLiveValidation(): void {
+  public stopLiveValidation(): void {
     this.liveValidationStack = [];
     this.liveValidationActive = false;
     this.validationMode = 'off';

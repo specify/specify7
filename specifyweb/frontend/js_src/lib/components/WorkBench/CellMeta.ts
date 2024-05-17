@@ -322,7 +322,7 @@ export class WbCellMeta {
   }
 
   // MetaData
-  updateCellInfoStats() {
+  public updateCellInfoStats() {
     const cellMeta = this.cellMeta.flat();
 
     this.workbench.cellCounts[SET]({

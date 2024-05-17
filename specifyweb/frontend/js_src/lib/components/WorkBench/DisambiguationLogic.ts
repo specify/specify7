@@ -93,7 +93,7 @@ export class Disambiguation {
     this.workbench.cells?.updateCellInfoStats();
   }
 
-  clearDisambiguation(physicalRow: number): void {
+  public clearDisambiguation(physicalRow: number): void {
     const disambiguation = this.getDisambiguation(physicalRow);
     if (Object.keys(disambiguation).length === 0)
       // Nothing to clear
