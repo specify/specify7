@@ -232,7 +232,9 @@ function CoordinateConverter({
       modal={false}
       onClose={(): void => {
         hot.batch(() =>
-          Array.from({ length: changeCountRef.current }).forEach(() => hot.undo())
+          Array.from({ length: changeCountRef.current }).forEach(() =>
+            hot.undo()
+          )
         );
         handleClose();
       }}
