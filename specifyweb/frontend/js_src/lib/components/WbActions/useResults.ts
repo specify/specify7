@@ -2,9 +2,9 @@ import type Handsontable from 'handsontable';
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { f } from '../../utils/functools';
 import { getHotPlugin, identifyDefaultValues } from '../WorkBench/handsontable';
 import type { Workbench } from '../WorkBench/WbView';
-import { f } from '../../utils/functools';
 
 export function useResults({
   hot,
