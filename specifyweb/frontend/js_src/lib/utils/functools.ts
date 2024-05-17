@@ -157,6 +157,7 @@ export const f = {
    * ```
    */
   fastParseInt(value: string): number {
+    // TODO: update babel config to not polyfil Number.parseInt and then replace fastParseInt usages with Number.parseInt
     // eslint-disable-next-line unicorn/prefer-math-trunc, no-bitwise
     return (value as unknown as number) | 0;
   },
