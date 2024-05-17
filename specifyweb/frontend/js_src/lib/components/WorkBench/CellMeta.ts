@@ -31,11 +31,11 @@ export type WbCellCounts = {
 // REFACTOR: replace usages of WbMetaArray with WbMeta and test performance/memory
 // eslint-disable-next-line functional/prefer-readonly-type
 export type WbMetaArray = [
-  boolean,
-  boolean,
-  boolean,
-  RA<string>,
-  string | undefined
+  isNew: boolean,
+  isModified: boolean,
+  isSearchResult: boolean,
+  issues: RA<string>,
+  originalValue: string | undefined
 ];
 
 const defaultMetaValues = Object.freeze([
@@ -63,7 +63,7 @@ export class WbCellMeta {
     );
   }
 
-  getCellMeta<KEY extends keyof WbMeta>(
+  public getCellMeta<KEY extends keyof WbMeta>(
     physicalRow: number,
     physicalCol: number,
     key: KEY
@@ -73,7 +73,7 @@ export class WbCellMeta {
       defaultMetaValues[index]) as unknown as WbMeta[KEY];
   }
 
-  getCellMetaFromArray<KEY extends keyof WbMeta>(
+  public getCellMetaFromArray<KEY extends keyof WbMeta>(
     metaCell: WbMetaArray,
     key: KEY
   ): WbMeta[KEY] {
@@ -85,7 +85,7 @@ export class WbCellMeta {
    * This does not run visual side effects
    * For changing meta with side effects, use this.updateCellMeta
    */
-  setCellMeta<KEY extends keyof WbMeta>(
+  public setCellMeta<KEY extends keyof WbMeta>(
     physicalRow: number,
     physicalCol: number,
     key: KEY,
@@ -184,7 +184,7 @@ export class WbCellMeta {
    * This is the case when rendering off-screen issues (which don't require a cell
    * reference)
    */
-  runMetaUpdateEffects<KEY extends keyof WbMeta>(
+  public runMetaUpdateEffects<KEY extends keyof WbMeta>(
     cell: HTMLTableCellElement | undefined,
     key: KEY,
     value: WbMeta[KEY],
@@ -231,7 +231,7 @@ export class WbCellMeta {
       );
   }
 
-  updateCellMeta<KEY extends keyof WbMeta>(
+  public updateCellMeta<KEY extends keyof WbMeta>(
     physicalRow: number,
     physicalCol: number,
     key: KEY,
