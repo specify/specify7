@@ -23,7 +23,6 @@ import {
   useAllSaveBlockers,
 } from '../DataModel/saveBlockers';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { errorHandledBy } from '../Errors/FormatError';
 import { Dialog } from '../Molecules/Dialog';
@@ -32,6 +31,7 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { FormContext } from './BaseResourceView';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
+import { filterArray } from '../../utils/types';
 
 export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 
@@ -100,11 +100,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const loading = React.useContext(LoadingContext);
   const [_, setFormContext] = React.useContext(FormContext);
 
-  const resourceName = resource.get('name');
-  const { showClone, showCarry, showAdd } = useEnabledButtons(
-    resource.specifyTable.name,
-    resourceName
-  );
+  const { showClone, showCarry, showAdd } = useEnabledButtons(resource);
 
   const canCreate = hasTablePermission(resource.specifyTable.name, 'create');
   const canUpdate = hasTablePermission(resource.specifyTable.name, 'update');
@@ -307,9 +303,8 @@ function SaveBlockedDialog({
 /**
  * Decide which of the "new resource" buttons to show
  */
-function useEnabledButtons(
-  tableName: keyof Tables,
-  resourceName: string | null
+function useEnabledButtons<SCHEMA extends AnySchema = AnySchema>(
+  resource: SpecifyResource<SCHEMA>
 ): {
   readonly showClone: boolean;
   readonly showCarry: boolean;
@@ -327,21 +322,30 @@ function useEnabledButtons(
   );
   const [disableAdd] = userPreferences.use('form', 'preferences', 'disableAdd');
 
-  const tablesToNotClone = Object.keys(appResourceSubTypes)
-    .filter((key) => appResourceSubTypes[key].name !== undefined)
-    .map((key) => appResourceSubTypes[key]?.name!.toLowerCase());
+  const tableName = resource.specifyTable.name;
+  const appResourceName =
+    resource.specifyTable.name === 'SpAppResource'
+      ? resource.get('name')
+      : undefined;
 
-  const cannotClone = tablesToNotClone.includes(
-    (resourceName ?? '').toLowerCase()
+  const isDisabledCloneAppResource = appResourcesToNotClone.includes(
+    (appResourceName ?? '').toLowerCase()
   );
 
   const showCarry =
     enableCarryForward.includes(tableName) && !NO_CLONE.has(tableName);
-  const showClone = cannotClone
-    ? false
-    : !disableClone.includes(tableName) && !NO_CLONE.has(tableName);
+  const showClone =
+    !disableClone.includes(tableName) &&
+    !NO_CLONE.has(tableName) &&
+    !isDisabledCloneAppResource;
   const showAdd =
     !disableAdd.includes(tableName) && !FORBID_ADDING.has(tableName);
 
   return { showClone, showCarry, showAdd };
 }
+
+const appResourcesToNotClone = filterArray(
+  Object.keys(appResourceSubTypes).map((key) =>
+    appResourceSubTypes[key]?.name?.toLowerCase()
+  )
+);
