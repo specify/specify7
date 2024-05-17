@@ -92,19 +92,6 @@ def raise_error(request):
     raise Exception('This error is a test. You may now return to your regularly '
                     'scheduled hacking.')
 
-def filter_rank_deletion_exception(obj, delete_blockers):
-    # Check if the object is a tree rank
-    if not is_instance_of_tree_def_item(obj):
-        return
-    # Filter out blocker that is the child tree rank of tree rank being deleted.
-    # This is handled by the business rules when deleting a tree rank, the parent is set to the grandparent.
-    delete_blockers[:] = list(
-        filter(
-            lambda db: db['field'] != 'parent' and db['table'] == type(obj).__name__, 
-            delete_blockers
-        )
-    )
-
 @login_maybe_required
 @require_http_methods(['GET', 'HEAD'])
 def delete_blockers(request, model, id):
@@ -126,7 +113,6 @@ def delete_blockers(request, model, id):
             }
         ] for field, sub_objs in collector.delete_blockers
     ])
-    # filter_rank_deletion_exception(obj, result)
     return http.HttpResponse(api.toJson(result), content_type='application/json')
 
 

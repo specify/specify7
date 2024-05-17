@@ -155,9 +155,8 @@ def set_rank_id(new_rank):
     """
     # Get parameter values from data
     tree = new_rank.specify_model.name.replace("TreeDefItem", "").lower()
-    new_rank_name = getattr(new_rank, 'name', None)
-    parent_rank_name = getattr(new_rank.parent, 'name', 'root') if getattr(new_rank, 'parent', None) else 'root'
-    tree_name = getattr(new_rank.treedef, 'name', tree) if getattr(new_rank, 'treedef', None) else tree
+    new_rank_name = new_rank.name
+    parent_rank_name = new_rank.parent.name if new_rank.parent else 'root'
     tree_def = getattr(new_rank, 'treedef', None)
 
     # Throw exceptions if the required parameters are not given correctly
@@ -173,7 +172,6 @@ def set_rank_id(new_rank):
     # Get tree def item model
     tree_def_model_name = (tree + 'treedef').lower().title()
     tree_def_item_model_name = (tree + 'treedefitem').lower().title()
-    tree_def_model = getattr(spmodels, tree_def_model_name.lower().title())
     tree_def_item_model = getattr(spmodels, tree_def_item_model_name.lower().title())
 
     # Check if the new rank already has a rank id
@@ -198,8 +196,8 @@ def set_rank_id(new_rank):
         raise TreeBusinessRuleException("Target rank name does not exist")
     parent_rank_id = parent_rank.rankid if parent_rank_name != 'root' else -1
     rank_ids = sorted(list(tree_def_item_model.objects.filter(treedef=tree_def).values_list('rankid', flat=True)))
-    parent_rank_idx = rank_ids.index(parent_rank_id) if rank_ids is not None and parent_rank_name != 'root' else -1
-    next_rank_id = rank_ids[parent_rank_idx + 1] if rank_ids is not None and  parent_rank_idx + 1 < len(rank_ids) else None
+    parent_rank_idx = rank_ids.index(parent_rank_id) if parent_rank_name != 'root' else -1
+    next_rank_id = rank_ids[parent_rank_idx + 1] if  parent_rank_idx + 1 < len(rank_ids) else None
     if next_rank_id is None and parent_rank_name != 'root':
         next_rank_id = maxsize
 
@@ -222,7 +220,6 @@ def set_rank_id(new_rank):
     # Determine if the default rank ID can be used
     can_use_default_rank_id = (
         use_default_rank_ids 
-        and default_tree_ranks is not None 
         and new_rank_name.lower() in default_tree_ranks
     )
     
