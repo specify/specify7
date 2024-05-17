@@ -330,7 +330,8 @@ export function useHotHooks({
         .forEach((physicalRow) =>
           workbench.cells?.cellMeta.splice(physicalRow, 0, [])
         );
-      if (workbench.hot !== undefined && source !== 'auto') spreadsheetChanged();
+      if (workbench.hot !== undefined && source !== 'auto')
+        spreadsheetChanged();
 
       return true;
     },
