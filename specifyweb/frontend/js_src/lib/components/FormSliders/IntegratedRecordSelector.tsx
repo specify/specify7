@@ -252,7 +252,7 @@ export function IntegratedRecordSelector({
                 viewName={viewName}
                 onAdd={(resources): void => {
                   if (!isInteraction) collection.add(resources);
-                  if (typeof handleAdd === 'function') handleAdd(resources);
+                  handleAdd?.(resources);
                 }}
                 onClose={handleClose}
                 onDelete={(_resource, index): void => {
