@@ -1,4 +1,5 @@
 import { backEndText } from '../../localization/backEnd';
+import { f } from '../../utils/functools';
 import type { RA, WritableArray } from '../../utils/types';
 import { SET, throttle } from '../../utils/utils';
 import { getHotPlugin } from './handsontable';
@@ -304,10 +305,10 @@ export class WbCellMeta {
       Object.entries(this.cellMeta).forEach(([physicalRow, metaRow]) =>
         Object.entries(metaRow).forEach(([physicalCol, cellMeta]) => {
           const visualRow = this.workbench.hot!.toVisualRow(
-            (physicalRow as unknown as number) | 0
+            f.fastParseInt(physicalRow)
           );
           const visualCol = this.workbench.hot!.toVisualColumn(
-            (physicalCol as unknown as number) | 0
+            f.fastParseInt(physicalCol)
           );
           indexedCellMeta[resolveIndex(visualRow, visualCol, true)] ??= [];
           indexedCellMeta[resolveIndex(visualRow, visualCol, true)][

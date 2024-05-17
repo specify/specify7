@@ -4,6 +4,7 @@ import React from 'react';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { getHotPlugin, identifyDefaultValues } from '../WorkBench/handsontable';
 import type { Workbench } from '../WorkBench/WbView';
+import { f } from '../../utils/functools';
 
 export function useResults({
   hot,
@@ -42,7 +43,7 @@ export function useResults({
     Object.entries(workbench.cells.cellMeta).forEach(([physicalRow, rowMeta]) =>
       rowMeta.forEach((metaArray, physicalCol) => {
         if (!workbench.cells.getCellMetaFromArray(metaArray, 'isNew')) return;
-        rowsToInclude.add((physicalRow as unknown as number) | 0);
+        rowsToInclude.add(f.fastParseInt(physicalRow));
         colsToInclude.add(physicalCol);
       })
     );

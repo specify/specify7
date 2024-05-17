@@ -124,8 +124,8 @@ export class WbUtils {
                * This is 10 times faster then Number.parseInt because of a slow
                * Babel polyfill
                */
-              const visualRow = (visualRowString as unknown as number) | 0;
-              const visualCol = (visualColString as unknown as number) | 0;
+              const visualRow = f.fastParseInt(visualRowString);
+              const visualCol = f.fastParseInt(visualColString);
 
               const cellTypeMatches = this.workbench.cells?.cellIsType(
                 metaArray,
@@ -394,10 +394,10 @@ export class WbUtils {
             )
               return;
             const visualRow = this.workbench.hot!.toVisualRow(
-              (physicalRow as unknown as number) | 0
+              f.fastParseInt(physicalRow)
             );
             const visualCol = this.workbench.hot!.toVisualColumn(
-              (physicalCol as unknown as number) | 0
+              f.fastParseInt(physicalCol)
             );
             const cellValue =
               this.workbench.hot!.getDataAtCell(visualRow, visualCol) || '';
