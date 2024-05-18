@@ -1,4 +1,4 @@
-from typing import Dict, Any, Optional, Tuple, Callable, Union
+from typing import Dict, Any, Optional, Tuple, Callable, Union, List
 
 from specifyweb.specify.datamodel import datamodel, Table, Relationship
 from specifyweb.specify.load_datamodel import DoesNotExistError
@@ -162,7 +162,7 @@ def apply_scoping_to_uploadtable(ut: UploadTable, collection, row=None) -> Tuple
         collection = getattr(models, "Collection").objects.filter(id=ut.overrideScope['collection']).get()
 
     can_cache_to_one, to_ones = apply_scoping_to_one(ut, collection, row, table)
-    to_many_results = [
+    to_many_results: List[Tuple[str, Tuple[bool, List[ScopedToManyRecord]]]] = [
         (f, reduce(_apply_scoping_to_uploadtable(table, row, collection, ut), [(f, r) for r in rs], (True, []))) for ( f, rs) in ut.toMany.items()
     ]
 
