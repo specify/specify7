@@ -11,11 +11,9 @@ from django.db.utils import OperationalError, IntegrityError
 from jsonschema import validate  # type: ignore
 
 from specifyweb.specify import models
-from specifyweb.specify.datamodel import datamodel
 from specifyweb.specify.auditlog import auditlog
 from specifyweb.specify.datamodel import Table
 from specifyweb.specify.tree_extras import renumber_tree, set_fullnames
-from specifyweb.workbench.upload.upload_table import DeferredScopeUploadTable, ScopedUploadTable, UploadTable
 
 from . import disambiguation
 from .upload_plan_schema import schema, parse_plan_with_basetable
@@ -193,38 +191,6 @@ def get_raw_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, Uploadable
 def get_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, ScopedUploadable]:
     base_table, plan = get_raw_ds_upload_plan(collection, ds)
     return base_table, plan.apply_scoping(collection)
-
-def apply_deferred_scopes(upload_plan: ScopedUploadable, rows: Rows) -> ScopedUploadable:
-
-    def collection_override_function(deferred_upload_plan: DeferredScopeUploadTable, row_index: int): # -> models.Collection
-        # to call this function, we always know upload_plan is either a DeferredScopeUploadTable or ScopedUploadTable
-        related_uploadable: Union[ScopedUploadTable, DeferredScopeUploadTable] = upload_plan.toOne[deferred_upload_plan.related_key] # type: ignore
-        related_column_name = related_uploadable.wbcols['name'][0]
-        filter_value = rows[row_index][related_column_name] # type: ignore
-        
-        filter_search = {deferred_upload_plan.filter_field : filter_value}
-
-        related_table = datamodel.get_table(deferred_upload_plan.related_key)
-        if related_table is not None:
-            related = getattr(models, related_table.django_name).objects.get(**filter_search)
-            collection_id = getattr(related, deferred_upload_plan.relationship_name).id
-            collection = getattr(models, "Collection").objects.get(id=collection_id)
-            return collection
-
-    if hasattr(upload_plan, 'toOne'):
-        # Without type ignores, MyPy throws the following error: "ScopedUploadable" has no attribute "toOne"
-        # MyPy expects upload_plan to be of type ScopedUploadable (from the paramater type)
-        # but within this if-statement we know that upload_plan is always an UploadTable 
-        # (or more specifically, one if its derivatives: DeferredScopeUploadTable or ScopedUploadTable)
-
-        for key, uploadable in upload_plan.toOne.items(): # type: ignore
-            _uploadable = uploadable
-            if hasattr(_uploadable, 'toOne'): _uploadable = apply_deferred_scopes(_uploadable, rows)
-            if isinstance(_uploadable, DeferredScopeUploadTable):
-                _uploadable = _uploadable.add_colleciton_override(collection_override_function)
-            upload_plan.toOne[key] = _uploadable # type: ignore
-
-    return upload_plan
 
 
 def do_upload(

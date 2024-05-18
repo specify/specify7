@@ -1,5 +1,5 @@
 from ..upload_plan_schema import schema, parse_plan
-from ..upload_table import UploadTable, OneToOneTable, ScopedUploadTable, ScopedOneToOneTable, DeferredScopeUploadTable, ColumnOptions, ExtendedColumnOptions
+from ..upload_table import UploadTable, OneToOneTable, ScopedUploadTable, ScopedOneToOneTable, ColumnOptions, ExtendedColumnOptions
 from ..upload import do_upload
 
 from specifyweb.specify import models
@@ -118,26 +118,20 @@ class ScopingTests(UploadTestsBase):
             wbcols={}, 
             static={}, 
             toOne={
-                'leftside': DeferredScopeUploadTable(
+                'leftside': UploadTable(
                     name='Collectionobject', 
                     wbcols={'catalognumber': ColumnOptions(column='Cat #', matchBehavior='ignoreNever', nullAllowed=True, default=None)}, 
                     static={}, 
                     toOne={}, 
-                    toMany={}, 
-                    related_key='collectionreltype', 
-                    relationship_name='leftsidecollection', 
-                    filter_field='name', 
+                    toMany={},
                     overrideScope=None
                     ), 
-                'rightside': DeferredScopeUploadTable(
+                'rightside': UploadTable(
                     name='Collectionobject', 
                     wbcols={'catalognumber': ColumnOptions(column='Cat # (2)', matchBehavior='ignoreNever', nullAllowed=True, default=None)}, 
                     static={}, 
                     toOne={}, 
-                    toMany={}, 
-                    related_key='collectionreltype', 
-                    relationship_name='rightsidecollection', 
-                    filter_field='name', 
+                    toMany={},
                     overrideScope=None
                     ), 
                 'collectionreltype': UploadTable(
@@ -154,6 +148,7 @@ class ScopingTests(UploadTestsBase):
         
         self.assertEqual(parsed_plan, expected_plan)
 
+    """
     def deferred_scope_table_ignored_when_scoping_applied(self):
         scoped_upload_plan = parse_plan(self.collection_rel_plan).apply_scoping(self.collection)
 
@@ -162,15 +157,12 @@ class ScopingTests(UploadTestsBase):
             wbcols={}, 
             static={}, 
             toOne={
-            'leftside': DeferredScopeUploadTable(
+            'leftside': UploadTable(
                 name='Collectionobject', 
                 wbcols={'catalognumber': ColumnOptions(column='Cat #', matchBehavior='ignoreNever', nullAllowed=True, default=None)}, 
                 static={}, 
                 toOne={}, 
                 toMany={}, 
-                related_key='collectionreltype', 
-                relationship_name='leftsidecollection', 
-                filter_field='name', 
                 overrideScope=None), 
             'rightside': DeferredScopeUploadTable(
                 name='Collectionobject', 
@@ -204,7 +196,7 @@ class ScopingTests(UploadTestsBase):
             disambiguation=None)
         
         self.assertEqual(scoped_upload_plan, expected_scoping)
-
+        """
     def collection_rel_uploaded_in_correct_collection(self):
         scoped_plan = parse_plan(self.collection_rel_plan).apply_scoping(self.collection)
         rows = [
