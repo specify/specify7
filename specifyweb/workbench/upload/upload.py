@@ -4,7 +4,7 @@ import logging
 import time
 from contextlib import contextmanager
 from datetime import datetime, timezone
-from typing import List, Dict, Union, Callable, Optional, Sized, Tuple, Any
+from typing import List, Dict, Union, Callable, Optional, Sized, Tuple, Any, cast
 
 from django.db import transaction
 from django.db.utils import OperationalError, IntegrityError
@@ -15,13 +15,13 @@ from specifyweb.specify.datamodel import datamodel
 from specifyweb.specify.auditlog import auditlog
 from specifyweb.specify.datamodel import Table
 from specifyweb.specify.tree_extras import renumber_tree, set_fullnames
-from specifyweb.workbench.upload.upload_table import DeferredScopeUploadTable, ScopedUploadTable
+from specifyweb.workbench.upload.upload_table import DeferredScopeUploadTable, ScopedUploadTable, UploadTable
 
 from . import disambiguation
 from .upload_plan_schema import schema, parse_plan_with_basetable
 from .upload_result import Uploaded, UploadResult, ParseFailures, \
     json_to_UploadResult
-from .uploadable import ScopedUploadable, Row, Disambiguation, Auditor
+from .uploadable import ScopedUploadable, Row, Disambiguation, Auditor, Uploadable
 from ..models import Spdataset
 
 Rows = Union[List[Row], csv.DictReader]
@@ -123,7 +123,7 @@ def do_upload_dataset(
     ncols = len(ds.columns)
     rows = [dict(zip(ds.columns, row)) for row in ds.data]
     disambiguation = [get_disambiguation_from_row(ncols, row) for row in ds.data]
-    base_table, upload_plan = get_ds_upload_plan(collection, ds)
+    base_table, upload_plan = get_raw_ds_upload_plan(collection, ds)
 
     results = do_upload(collection, rows, upload_plan, uploading_agent_id, disambiguation, no_commit, allow_partial, progress)
     success = not any(r.contains_failure() for r in results)
@@ -177,7 +177,7 @@ def get_disambiguation_from_row(ncols: int, row: List) -> Disambiguation:
     extra = json.loads(row[ncols]) if row[ncols] else None
     return disambiguation.from_json(extra['disambiguation']) if extra and 'disambiguation' in extra else None
 
-def get_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, ScopedUploadable]:
+def get_raw_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, Uploadable]:
     if ds.uploadplan is None:
         raise Exception("no upload plan defined for dataset")
 
@@ -188,6 +188,10 @@ def get_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, ScopedUploadab
 
     validate(plan, schema)
     base_table, plan = parse_plan_with_basetable(collection, plan)
+    return base_table, plan
+
+def get_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, ScopedUploadable]:
+    base_table, plan = get_raw_ds_upload_plan(collection, ds)
     return base_table, plan.apply_scoping(collection)
 
 def apply_deferred_scopes(upload_plan: ScopedUploadable, rows: Rows) -> ScopedUploadable:
@@ -226,7 +230,7 @@ def apply_deferred_scopes(upload_plan: ScopedUploadable, rows: Rows) -> ScopedUp
 def do_upload(
         collection,
         rows: Rows,
-        upload_plan: ScopedUploadable,
+        upload_plan: Uploadable,
         uploading_agent_id: int,
         disambiguations: Optional[List[Disambiguation]]=None,
         no_commit: bool=False,
@@ -239,7 +243,7 @@ def do_upload(
                        # during validation
                        skip_create_permission_check=no_commit)
     total = len(rows) if isinstance(rows, Sized) else None
-    deffered_upload_plan = apply_deferred_scopes(upload_plan, rows)
+    cached_scope_table = None
     with savepoint("main upload"):
         tic = time.perf_counter()
         results: List[UploadResult] = []
@@ -247,7 +251,16 @@ def do_upload(
             _cache = cache.copy() if cache is not None and allow_partial else cache
             da = disambiguations[i] if disambiguations else None
             with savepoint("row upload") if allow_partial else no_savepoint():
-                bind_result = deffered_upload_plan.disambiguate(da).bind(collection, row, uploading_agent_id, _auditor, cache, i)
+                # the fact that upload plan is cachable, is invariant across rows.
+                # so, we just apply scoping once.
+                if cached_scope_table is None:
+                    can_cache, scoped_table = upload_plan.apply_scoping(collection, row)
+                    if can_cache:
+                        cached_scope_table = scoped_table
+                else:
+                    scoped_table = cached_scope_table
+
+                bind_result = scoped_table.disambiguate(da).bind(collection, row, uploading_agent_id, _auditor, cache, i)
                 result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.process_row()
                 results.append(result)
                 if progress is not None:
@@ -263,7 +276,7 @@ def do_upload(
         if no_commit:
             raise Rollback("no_commit option")
         else:
-            fixup_trees(deffered_upload_plan, results)
+            fixup_trees(scoped_table, results)
 
     return results
 

@@ -5,7 +5,7 @@ from .upload_result import UploadResult, ParseFailures
 from .auditor import Auditor
 
 class Uploadable(Protocol):
-    def apply_scoping(self, collection) -> "ScopedUploadable":
+    def apply_scoping(self, collection, row) -> "ScopedUploadable":
         ...
 
     def get_cols(self) -> Set[str]:

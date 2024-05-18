@@ -64,7 +64,7 @@ class DisambiguationTests(UploadTestsBase):
                         toMany={}
                     )}),
             ]}
-        ).apply_scoping(self.collection)
+        )
 
         data = [
             {'title': "A Natural History of Mung Beans 1", 'author1': "Philomungus", 'author2': "Mungophilius"},

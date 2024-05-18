@@ -11,6 +11,7 @@ from .upload_table import UploadTable, DeferredScopeUploadTable, ScopedUploadTab
 from .tomany import ToManyRecord, ScopedToManyRecord
 from .treerecord import TreeRecord, ScopedTreeRecord
 from .column_options import ColumnOptions, ExtendedColumnOptions
+from functools import reduce
 
 """ There are cases in which the scoping of records should be dependent on another record/column in a WorkBench dataset.
 
@@ -115,21 +116,62 @@ def extend_columnoptions(colopts: ColumnOptions, collection, tablename: str, fie
         dateformat=get_date_format(),
     )
 
-def apply_scoping_to_uploadtable(ut: Union[UploadTable, DeferredScopeUploadTable], collection) -> ScopedUploadTable:
+def get_deferred_scoping(key, table_name, uploadable, row):
+    deferred_key  = (table_name, key)
+    deferred_scoping = DEFERRED_SCOPING.get(deferred_key, None)
+
+    if deferred_scoping is None or row is None:
+        return True, uploadable
+
+    related_key, filter_field, relationship_name = deferred_scoping
+    related_column_name = uploadable.wbcols['name'][0] #?????? why 'name'? seems like a hack in original implementation
+    filter_value = row[related_column_name][related_column_name]
+    filter_search = {filter_field: filter_value}
+    related_table = datamodel.get_table_strict(related_key)
+
+    related = getattr(models, related_table.django_name).objects.get(**filter_search)
+    collection_id = getattr(related, relationship_name).id
+
+    # don't cache anymore, since values can be dependent on rows.
+    return False, uploadable._replace(overrideScope = {'collection': collection_id})
+
+def _apply_scoping_to_uploadtable(table, row, collection, callback):
+    def _update_to_one_upload(previous_pack, current):
+        can_cache, previous_to_ones = previous_pack
+        field, uploadable = current
+        can_cache_this, uploadable = get_deferred_scoping(field, table.django_name, uploadable, row)
+        return can_cache and can_cache_this, [*previous_to_ones, callback(uploadable.apply_scoping(collection))]
+    return _update_to_one_upload
+
+def _combine_to_many(previous, current):
+    return current[0] and previous[0], {**previous[1], **current[1]}
+
+# also returns if the scope returned can be cached or not.
+def apply_scoping_to_uploadtable(ut: UploadTable, collection, row=None) -> Tuple[bool, ScopedUploadTable]:
     table = datamodel.get_table_strict(ut.name)
 
-    adjust_to_ones = to_one_adjustments(collection, table)
-    
     if ut.overrideScope is not None and isinstance(ut.overrideScope['collection'], int):
         collection = getattr(models, "Collection").objects.filter(id=ut.overrideScope['collection']).get()
-    
 
-    return ScopedUploadTable(
+    adjust_to_ones = to_one_adjustments(collection, table)
+    can_cache_to_one, to_one_uploadables = reduce(
+        lambda previous_pack, current: _apply_scoping_to_uploadtable(table, row, collection, lambda u: adjust_to_ones(u, current[0]))(previous_pack, current), list(ut.toOne.items()), (True, []))
+
+    to_many_can_cache, to_many_uploadables = reduce(
+          lambda previous, _current:
+              _combine_to_many(previous, reduce(
+                    lambda previous_pack, current: _apply_scoping_to_uploadtable(table, row, collection, lambda u: set_order_number(current[0], u))(previous_pack, current),
+                    enumerate(_current[1]),
+                    (False, [])
+                )), list(ut.toMany.items()), (True, {}))
+
+
+    return to_many_can_cache and can_cache_to_one, ScopedUploadTable(
         name=ut.name,
         wbcols={f: extend_columnoptions(colopts, collection, table.name, f) for f, colopts in ut.wbcols.items()},
         static=static_adjustments(table, ut.wbcols, ut.static),
-        toOne={f: adjust_to_ones(u.apply_scoping(collection), f) for f, u in ut.toOne.items()},
-        toMany={f: [set_order_number(i, r.apply_scoping(collection)) for i, r in enumerate(rs)] for f, rs in ut.toMany.items()},
+        toOne={f: u for f, u in to_one_uploadables},
+        toMany=to_many_uploadables,
         scopingAttrs=scoping_relationships(collection, table),
         disambiguation=None,
     )

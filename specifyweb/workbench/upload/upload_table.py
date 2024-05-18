@@ -1,7 +1,7 @@
 
 import logging
 from functools import reduce
-from typing import List, Dict, Any, NamedTuple, Union, Optional, Set, Callable, Literal, cast
+from typing import List, Dict, Any, NamedTuple, Union, Optional, Set, Callable, Literal, cast, Tuple
 
 from django.db import transaction, IntegrityError
 
@@ -28,9 +28,9 @@ class UploadTable(NamedTuple):
 
     overrideScope: Optional[Dict[Literal['collection'], Optional[int]]] = None
 
-    def apply_scoping(self, collection) -> "ScopedUploadTable":
+    def apply_scoping(self, collection, row=None) -> Tuple[bool, "ScopedUploadTable"]:
         from .scoping import apply_scoping_to_uploadtable
-        return apply_scoping_to_uploadtable(self, collection)
+        return apply_scoping_to_uploadtable(self, collection, row)
 
     def get_cols(self) -> Set[str]:
         return set(cd.column for cd in self.wbcols.values()) \
@@ -278,8 +278,8 @@ class ScopedUploadTable(NamedTuple):
         )
 
 class OneToOneTable(UploadTable):
-    def apply_scoping(self, collection) -> "ScopedOneToOneTable":
-        s = super().apply_scoping(collection)
+    def apply_scoping(self, collection, row=None) -> Tuple[bool, "ScopedOneToOneTable"]:
+        s = super().apply_scoping(collection, row)
         return ScopedOneToOneTable(*s)
 
     def to_json(self) -> Dict:
@@ -292,8 +292,8 @@ class ScopedOneToOneTable(ScopedUploadTable):
         return BoundOneToOneTable(*b) if isinstance(b, BoundUploadTable) else b
 
 class MustMatchTable(UploadTable):
-    def apply_scoping(self, collection) -> "ScopedMustMatchTable":
-        s = super().apply_scoping(collection)
+    def apply_scoping(self, collection, row=None) -> Tuple[bool, "ScopedMustMatchTable"]:
+        s = super().apply_scoping(collection, row)
         return ScopedMustMatchTable(*s)
 
     def to_json(self) -> Dict:
