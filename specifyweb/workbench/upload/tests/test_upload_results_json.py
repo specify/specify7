@@ -49,7 +49,6 @@ class UploadResultsTests(unittest.TestCase):
     @settings(suppress_health_check=[HealthCheck.too_slow])
     @given(record_result=infer, toOne=infer, toMany=infer)
     def testUploadResult(self, record_result: RecordResult, toOne: Dict[str, RecordResult], toMany: Dict[str, List[RecordResult]]):
-        return
         uploadResult = UploadResult(
             record_result=record_result,
             toOne={k: UploadResult(v, {}, {}) for k, v in toOne.items()},

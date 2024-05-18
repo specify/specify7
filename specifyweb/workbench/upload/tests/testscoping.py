@@ -109,46 +109,17 @@ class ScopingTests(UploadTestsBase):
 
         self.assertIsInstance(plan.toOne['paleocontext'], ScopedOneToOneTable)
 
-    def collection_rel_type_being_deferred(self) -> None:
+    def test_caching_scoped_false(self) -> None:
 
-        parsed_plan = parse_plan(self.collection, self.collection_rel_plan)
+        plan = parse_plan(self.collection, self.collection_rel_plan).apply_scoping(self.collection)
 
-        expected_plan = UploadTable(
-            name='Collectionrelationship', 
-            wbcols={}, 
-            static={}, 
-            toOne={
-                'leftside': UploadTable(
-                    name='Collectionobject', 
-                    wbcols={'catalognumber': ColumnOptions(column='Cat #', matchBehavior='ignoreNever', nullAllowed=True, default=None)}, 
-                    static={}, 
-                    toOne={}, 
-                    toMany={},
-                    overrideScope=None
-                    ), 
-                'rightside': UploadTable(
-                    name='Collectionobject', 
-                    wbcols={'catalognumber': ColumnOptions(column='Cat # (2)', matchBehavior='ignoreNever', nullAllowed=True, default=None)}, 
-                    static={}, 
-                    toOne={}, 
-                    toMany={},
-                    overrideScope=None
-                    ), 
-                'collectionreltype': UploadTable(
-                    name='Collectionreltype', 
-                    wbcols={'name': ColumnOptions(column='Collection Rel Type', matchBehavior='ignoreNever', nullAllowed=True, default=None)}, 
-                    static={}, 
-                    toOne={}, 
-                    toMany={}, 
-                    overrideScope=None
-                    )
-                }, 
-                toMany={}, 
-                overrideScope=None)
-        
-        self.assertEqual(parsed_plan, expected_plan)
+        self.assertFalse(plan[0], 'contains collection relationship, should never be cached')
 
-    """
+    def test_caching_true(self):
+        plan = self.example_plan.apply_scoping(self.collection)
+        self.assertTrue(plan[0], 'caching is possible here, since no dynamic scope is being used')
+
+    # TODO: Refactor this one too
     def deferred_scope_table_ignored_when_scoping_applied(self):
         scoped_upload_plan = parse_plan(self.collection_rel_plan).apply_scoping(self.collection)
 
@@ -196,17 +167,16 @@ class ScopingTests(UploadTestsBase):
             disambiguation=None)
         
         self.assertEqual(scoped_upload_plan, expected_scoping)
-        """
-    def collection_rel_uploaded_in_correct_collection(self):
-        scoped_plan = parse_plan(self.collection_rel_plan)
+
+    def test_collection_rel_uploaded_in_correct_collection(self):
+        scoped_plan = parse_plan(self.collection, self.collection_rel_plan)
         rows = [
             {'Collection Rel Type': self.rel_type_name, 'Cat # (2)': '999', 'Cat #': '23'}, 
             {'Collection Rel Type': self.rel_type_name, 'Cat # (2)': '888', 'Cat #': '32'}
         ]
-        do_upload(self.collection, rows, scoped_plan, self.agent.id)
+        result = do_upload(self.collection, rows, scoped_plan, self.agent.id)
         left_side_cat_nums = [n.zfill(9) for n in '32 23'.split()]
-        right_side_cat_nums = [n.zfill(9) for n in '999 888'.split()]
-
+        right_side_cat_nums = '999 888'.split()
         left_side_query = models.Collectionobject.objects.filter(collection_id=self.collection.id, catalognumber__in=left_side_cat_nums)
         right_side_query = models.Collectionobject.objects.filter(collection_id=self.right_side_collection.id, catalognumber__in=right_side_cat_nums)
 

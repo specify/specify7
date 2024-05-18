@@ -116,30 +116,33 @@ def extend_columnoptions(colopts: ColumnOptions, collection, tablename: str, fie
         dateformat=get_date_format(),
     )
 
-def get_deferred_scoping(key, table_name, uploadable, row):
+def get_deferred_scoping(key, table_name, uploadable, row, base_ut):
     deferred_key  = (table_name, key)
     deferred_scoping = DEFERRED_SCOPING.get(deferred_key, None)
 
-    if deferred_scoping is None or row is None:
+    if deferred_scoping is None:
         return True, uploadable
 
-    related_key, filter_field, relationship_name = deferred_scoping
-    related_column_name = uploadable.wbcols['name'][0] #?????? why 'name'? seems like a hack in original implementation
-    filter_value = row[related_column_name][related_column_name]
-    filter_search = {filter_field: filter_value}
-    related_table = datamodel.get_table_strict(related_key)
-
-    related = getattr(models, related_table.django_name).objects.get(**filter_search)
-    collection_id = getattr(related, relationship_name).id
+    if row:
+        related_key, filter_field, relationship_name = deferred_scoping
+        related_column_name = base_ut.toOne[related_key].wbcols[filter_field].column
+        filter_value = row[related_column_name]
+        filter_search = {filter_field: filter_value}
+        related_table = datamodel.get_table_strict(related_key)
+        related = getattr(models, related_table.django_name).objects.get(**filter_search)
+        collection_id = getattr(related, relationship_name).id
+    else:
+        # meh, would just go to the original collection
+        collection_id = None
 
     # don't cache anymore, since values can be dependent on rows.
     return False, uploadable._replace(overrideScope = {'collection': collection_id})
 
-def _apply_scoping_to_uploadtable(table, row, collection):
+def _apply_scoping_to_uploadtable(table, row, collection, base_ut):
     def _update_uploadtable(previous_pack, current):
         can_cache, previous_to_ones = previous_pack
         field, uploadable = current
-        can_cache_this, uploadable = get_deferred_scoping(field, table.django_name, uploadable, row)
+        can_cache_this, uploadable = get_deferred_scoping(field, table.django_name, uploadable, row, base_ut)
         can_cache_sub, scoped = uploadable.apply_scoping(collection, row)
         return can_cache and can_cache_this and can_cache_sub, [*previous_to_ones, scoped]
     return _update_uploadtable
@@ -148,21 +151,19 @@ def apply_scoping_to_one(ut, collection, row, table):
     adjust_to_ones = to_one_adjustments(collection, table)
     to_ones_items = list(ut.toOne.items())
     can_cache_to_one, to_one_uploadables = reduce(
-        _apply_scoping_to_uploadtable(table, row, collection), to_ones_items, (True, [])
+        _apply_scoping_to_uploadtable(table, row, collection, ut), to_ones_items, (True, [])
     )
     to_ones = {f[0]: adjust_to_ones(u, f[0]) for f, u in zip(to_ones_items, to_one_uploadables)}
     return can_cache_to_one, to_ones
 
 def apply_scoping_to_uploadtable(ut: UploadTable, collection, row=None) -> Tuple[bool, ScopedUploadTable]:
     table = datamodel.get_table_strict(ut.name)
-
     if ut.overrideScope is not None and isinstance(ut.overrideScope['collection'], int):
         collection = getattr(models, "Collection").objects.filter(id=ut.overrideScope['collection']).get()
 
     can_cache_to_one, to_ones = apply_scoping_to_one(ut, collection, row, table)
-
     to_many_results = [
-        (f, reduce(_apply_scoping_to_uploadtable(table, row, collection), [(f, r) for r in rs], (True, []))) for ( f, rs) in ut.toMany.items()
+        (f, reduce(_apply_scoping_to_uploadtable(table, row, collection, ut), [(f, r) for r in rs], (True, []))) for ( f, rs) in ut.toMany.items()
     ]
 
     can_cache_to_many = all(tmr[1][0] for tmr in to_many_results)

@@ -190,7 +190,7 @@ def get_raw_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, Uploadable
 
 def get_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, ScopedUploadable]:
     base_table, plan = get_raw_ds_upload_plan(collection, ds)
-    return base_table, plan.apply_scoping(collection)
+    return base_table, plan.apply_scoping(collection)[1]
 
 
 def do_upload(
