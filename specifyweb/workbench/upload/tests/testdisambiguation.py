@@ -120,12 +120,12 @@ class DisambiguationTests(UploadTestsBase):
         cols = ["Cat #", "Genus", "Species"]
         row = ["123", "Fundulus", "olivaceus"]
 
-        up = parse_plan(self.collection, plan).apply_scoping(self.collection)
+        up = parse_plan(self.collection, plan).apply_scoping(self.collection)[1]
 
         result = validate_row(self.collection, up, self.agent.id, dict(zip(cols, row)), None)
         taxon_result = result.toMany['determinations'][0].toOne['taxon'].record_result
         assert isinstance(taxon_result, MatchedMultiple)
-        self.assertEqual(set(taxon_result.ids), set([fundulus1.id, fundulus2.id]))
+        self.assertEqual(set(taxon_result.ids), {fundulus1.id, fundulus2.id})
 
         da_row = ["123", "Fundulus", "olivaceus", "{\"disambiguation\":{\"determinations.#1.taxon.$Genus\":%d}}" % fundulus1.id]
         da = get_disambiguation_from_row(len(cols), da_row)
@@ -163,12 +163,12 @@ class DisambiguationTests(UploadTestsBase):
         cols = ["Cat #", "Genus", "Species"]
         row = ["123", "Fundulus", "olivaceus"]
 
-        up = parse_plan(self.collection, plan).apply_scoping(self.collection)
+        up = parse_plan(self.collection, plan).apply_scoping(self.collection)[1]
 
         result = validate_row(self.collection, up, self.agent.id, dict(zip(cols, row)), None)
         taxon_result = result.toMany['determinations'][0].toOne['taxon'].record_result
         assert isinstance(taxon_result, MatchedMultiple)
-        self.assertEqual(set(taxon_result.ids), set([fundulus1.id, fundulus2.id]))
+        self.assertEqual(set(taxon_result.ids), {fundulus1.id, fundulus2.id})
 
         da_row = ["123", "Fundulus", "olivaceus", "{\"disambiguation\":{\"determinations.#1.taxon.$Genus\":%d}}" % fundulus1.id]
 
@@ -204,12 +204,12 @@ class DisambiguationTests(UploadTestsBase):
         cols = ["Cat #", "Cat last"]
         row = ["123", "Bentley"]
 
-        up = parse_plan(self.collection, plan).apply_scoping(self.collection)
+        up = parse_plan(self.collection, plan).apply_scoping(self.collection)[1]
 
         result = validate_row(self.collection, up, self.agent.id, dict(zip(cols, row)), None)
         agent_result = result.toOne['cataloger'].record_result
         assert isinstance(agent_result, MatchedMultiple)
-        self.assertEqual(set(agent_result.ids), set([andy.id, bogus.id]))
+        self.assertEqual(set(agent_result.ids), {andy.id, bogus.id})
 
         da_row = ["123", "Bentley", "{\"disambiguation\":{\"cataloger\":%d}}" % bogus.id]
 

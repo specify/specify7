@@ -1,6 +1,6 @@
 import logging
 
-from typing import Dict, Any, NamedTuple, List, Union, Set, Optional
+from typing import Dict, Any, NamedTuple, List, Union, Set, Optional, Tuple
 
 from .uploadable import Row, FilterPack, Exclude, Uploadable, ScopedUploadable, BoundUploadable, Disambiguation, Auditor
 from .upload_result import ParseFailures
@@ -15,9 +15,9 @@ class ToManyRecord(NamedTuple):
     static: Dict[str, Any]
     toOne: Dict[str, Uploadable]
 
-    def apply_scoping(self, collection) -> "ScopedToManyRecord":
+    def apply_scoping(self, collection, row=None) -> Tuple[bool, "ScopedToManyRecord"]:
         from .scoping import apply_scoping_to_tomanyrecord as apply_scoping
-        return apply_scoping(self, collection)
+        return apply_scoping(self, collection, row)
 
     def get_cols(self) -> Set[str]:
         return set(cd.column for cd in self.wbcols.values()) \

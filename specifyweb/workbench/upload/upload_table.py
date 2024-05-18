@@ -136,8 +136,8 @@ class ScopedUploadTable(NamedTuple):
 
 class OneToOneTable(UploadTable):
     def apply_scoping(self, collection, row=None) -> Tuple[bool, "ScopedOneToOneTable"]:
-        s = super().apply_scoping(collection, row)
-        return ScopedOneToOneTable(*s)
+        cache, s = super().apply_scoping(collection, row)
+        return cache, ScopedOneToOneTable(*s)
 
     def to_json(self) -> Dict:
         return { 'oneToOneTable': self._to_json() }
@@ -150,8 +150,8 @@ class ScopedOneToOneTable(ScopedUploadTable):
 
 class MustMatchTable(UploadTable):
     def apply_scoping(self, collection, row=None) -> Tuple[bool, "ScopedMustMatchTable"]:
-        s = super().apply_scoping(collection, row)
-        return ScopedMustMatchTable(*s)
+        cache, s = super().apply_scoping(collection, row)
+        return cache, ScopedMustMatchTable(*s)
 
     def to_json(self) -> Dict:
         return { 'mustMatchTable': self._to_json() }

@@ -80,7 +80,7 @@ class ScopingTests(UploadTestsBase):
 
         self.assertNotIsInstance(ce_rel, OneToOneTable)
 
-        scoped = plan.apply_scoping(self.collection)
+        scoped = plan.apply_scoping(self.collection)[1]
 
         assert isinstance(scoped, ScopedUploadTable)
         scoped_ce_rel = scoped.toOne['collectingevent']
@@ -105,7 +105,7 @@ class ScopingTests(UploadTestsBase):
             wbcols={},
             static={},
             toMany={},
-        ).apply_scoping(self.collection)
+        ).apply_scoping(self.collection)[1]
 
         self.assertIsInstance(plan.toOne['paleocontext'], ScopedOneToOneTable)
 
@@ -198,7 +198,7 @@ class ScopingTests(UploadTestsBase):
         self.assertEqual(scoped_upload_plan, expected_scoping)
         """
     def collection_rel_uploaded_in_correct_collection(self):
-        scoped_plan = parse_plan(self.collection_rel_plan).apply_scoping(self.collection)
+        scoped_plan = parse_plan(self.collection_rel_plan)
         rows = [
             {'Collection Rel Type': self.rel_type_name, 'Cat # (2)': '999', 'Cat #': '23'}, 
             {'Collection Rel Type': self.rel_type_name, 'Cat # (2)': '888', 'Cat #': '32'}

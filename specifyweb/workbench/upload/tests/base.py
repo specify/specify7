@@ -19,4 +19,5 @@ class UploadTestsBase(TestTreeSetup):
         self.discipline.taxontreedef = self.taxontreedef
         self.discipline.save()
 
-        self.example_plan = example_plan.with_scoping(self.collection)
+        self.example_plan_scoped = example_plan.with_scoping(self.collection)
+        self.example_plan = example_plan.upload_plan

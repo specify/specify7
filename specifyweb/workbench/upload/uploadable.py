@@ -5,7 +5,11 @@ from .upload_result import UploadResult, ParseFailures
 from .auditor import Auditor
 
 class Uploadable(Protocol):
-    def apply_scoping(self, collection, row) -> "ScopedUploadable":
+    # also returns if the scoped table returned can be cached or not.
+    # depends on whether scope depends on other columns. if any definition is found,
+    # we cannot cache. well, we can make this more complicated by recursviely caching
+    # static parts of even a non-entirely-cachable uploadable.
+    def apply_scoping(self, collection, row=None) -> Tuple[bool, "ScopedUploadable"]:
         ...
 
     def get_cols(self) -> Set[str]:

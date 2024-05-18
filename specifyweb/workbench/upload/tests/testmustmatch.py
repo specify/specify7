@@ -34,12 +34,12 @@ class MustMatchTests(UploadTestsBase):
             )}
         )
         validate(plan_json, schema)
-        scoped_plan = parse_plan(self.collection, plan_json).apply_scoping(self.collection)
+        plan = parse_plan(self.collection, plan_json)
         data = [
             dict(name="Douglas Co. KS", Continent="North America", Country="USA", State="Kansas", County="Douglas"),
             dict(name="Greene Co. MO", Continent="North America", Country="USA", State="Missouri", County="Greene")
         ]
-        results = do_upload(self.collection, data, scoped_plan, self.agent.id)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         for r in results:
             assert isinstance(r.record_result, Uploaded)
 
@@ -97,13 +97,12 @@ class MustMatchTests(UploadTestsBase):
         assert isinstance(plan.toOne['geography'], TreeRecord)
         assert isinstance(plan.toOne['geography'], MustMatchTreeRecord)
 
-        scoped_plan = plan.apply_scoping(self.collection)
 
         data = [
             dict(name="Douglas Co. KS", Continent="North America", Country="USA", State="Kansas", County="Douglas"),
             dict(name="Emerald City", Continent="North America", Country="USA", State="Kansas", County="Oz"),
         ]
-        results = do_upload(self.collection, data, scoped_plan, self.agent.id)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertNotIsInstance(results[1].record_result, Uploaded)
         self.assertIsInstance(results[1].toOne['geography'].record_result, NoMatch)
@@ -117,7 +116,7 @@ class MustMatchTests(UploadTestsBase):
         self.assertIsInstance(plan.toOne['collectingevent'], MustMatchTable)
 
     def test_mustmatch_uploading(self) -> None:
-        plan = parse_plan(self.collection, self.plan(must_match=True)).apply_scoping(self.collection)
+        plan = parse_plan(self.collection, self.plan(must_match=True))
 
         data = [
             dict(catno='0', sfn='1'),
@@ -140,7 +139,7 @@ class MustMatchTests(UploadTestsBase):
                          "there are an equal number of collecting events before and after the upload")
 
     def test_mustmatch_with_null(self) -> None:
-        plan = parse_plan(self.collection, self.plan(must_match=True)).apply_scoping(self.collection)
+        plan = parse_plan(self.collection, self.plan(must_match=True))
 
         data = [
             dict(catno='0', sfn='1'),

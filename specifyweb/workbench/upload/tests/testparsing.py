@@ -147,7 +147,7 @@ class ParsingTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'catno': '1', 'habitat': 'River'},
             {'catno': '2', 'habitat': 'Lake'},
@@ -190,7 +190,7 @@ class ParsingTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'catno': '123'},
             {'catno': '234'},
@@ -216,7 +216,7 @@ class ParsingTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'catno': '1', 'bool': 'true', 'integer': '10', 'float': '24.5', 'decimal': '10.23'},
             {'catno': '2', 'bool': 'bogus', 'integer': '10', 'float': '24.5', 'decimal': '10.23'},
@@ -238,7 +238,7 @@ class ParsingTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'catno': '1', 'habitat': 'River'},
             {'catno': '', 'habitat': 'River'},
@@ -261,7 +261,7 @@ class ParsingTests(UploadTestsBase):
             static={'agenttype': 1},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'title': "Mr.", 'lastname': 'Doe'},
             {'title': "Dr.", 'lastname': 'Zoidberg'},
@@ -367,7 +367,7 @@ class ParsingTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'agenttype': "Person", 'lastname': 'Doe'},
             {'agenttype': "Organization", 'lastname': 'Ministry of Silly Walks'},
@@ -404,7 +404,7 @@ class ParsingTests(UploadTestsBase):
                 Genus=dict(name=parse_column_options('Genus')),
                 Species=dict(name=parse_column_options('Species'), author=parse_column_options('Species Author'))
             )
-        ).apply_scoping(self.collection)
+        )
         data  = [
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Michx.'},
             {'Genus': 'Eupatorium', 'Species': '', 'Species Author': 'L.'},
@@ -421,7 +421,7 @@ class ParsingTests(UploadTestsBase):
                 Genus=dict(name=parse_column_options('Genus')),
                 Species=dict(name=parse_column_options('Species'), author=parse_column_options('Species Author'))
             )
-        ).apply_scoping(self.collection)
+        )
         data  = [
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Michx.'},
             {'Genus': 'Eupatorium', 'Species': 'barelyfits', 'Species Author': 'x'*128},
@@ -444,7 +444,7 @@ class MatchingBehaviorTests(UploadTestsBase):
                 Species=dict(name=parse_column_options('Species'),
                              author=ColumnOptions(column='Species Author', matchBehavior="ignoreWhenBlank", nullAllowed=True, default=None))
             )
-        ).apply_scoping(self.collection)
+        )
         data  = [
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Michx.'},
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': ''},
@@ -467,7 +467,7 @@ class MatchingBehaviorTests(UploadTestsBase):
                              author=ColumnOptions(column='Species Author', matchBehavior="ignoreWhenBlank", nullAllowed=True, default=None)),
                 Subspecies=dict(name=parse_column_options('Subspecies')),
             )
-        ).apply_scoping(self.collection)
+        )
         data  = [
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Michx.', 'Subspecies': 'a'},
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': '', 'Subspecies': 'a'},
@@ -488,7 +488,7 @@ class MatchingBehaviorTests(UploadTestsBase):
                 Species=dict(name=parse_column_options('Species'),
                              author=ColumnOptions(column='Species Author', matchBehavior="ignoreNever", nullAllowed=True, default=None))
             )
-        ).apply_scoping(self.collection)
+        )
         data  = [
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Michx.'},
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': ''},
@@ -508,7 +508,7 @@ class MatchingBehaviorTests(UploadTestsBase):
                 Species=dict(name=parse_column_options('Species'),
                              author=ColumnOptions(column='Species Author', matchBehavior="ignoreNever", nullAllowed=False, default=None))
             )
-        ).apply_scoping(self.collection)
+        )
         data  = [
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Michx.'},
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': ''},
@@ -530,7 +530,7 @@ class MatchingBehaviorTests(UploadTestsBase):
                 Species=dict(name=parse_column_options('Species'),
                              author=ColumnOptions(column='Species Author', matchBehavior="ignoreAlways", nullAllowed=True, default=None))
             )
-        ).apply_scoping(self.collection)
+        )
         data  = [
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Michx.'},
             {'Genus': 'Eupatorium', 'Species': 'serotinum', 'Species Author': 'Bogus'},
@@ -555,7 +555,7 @@ class MatchingBehaviorTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'lastname': 'Doe', 'firstname': 'River'},
             {'lastname': 'Doe', 'firstname': ''},
@@ -581,7 +581,7 @@ class MatchingBehaviorTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'lastname': 'Doe', 'firstname': 'River'},
             {'lastname': 'Doe', 'firstname': ''},
@@ -613,7 +613,7 @@ class MatchingBehaviorTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'lastname': 'Doe', 'firstname': 'River'},
             {'lastname': 'Doe', 'firstname': ''},
@@ -638,7 +638,7 @@ class MatchingBehaviorTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'lastname': 'Doe', 'firstname': 'River'},
             {'lastname': 'Doe', 'firstname': ''},
@@ -666,7 +666,7 @@ class DefaultTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'lastname': 'Doe', 'firstname': 'River'},
             {'lastname': 'Doe', 'firstname': ''},
@@ -694,7 +694,7 @@ class DefaultTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'lastname': 'Doe', 'firstname': 'John'},
             {'lastname': 'Doe', 'firstname': 'River'},
@@ -725,7 +725,7 @@ class DefaultTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'lastname': 'Doe', 'firstname': 'River'},
             {'lastname': 'Doe', 'firstname': ''},
@@ -754,7 +754,7 @@ class DefaultTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'lastname': 'Doe', 'firstname': 'River'},
             {'lastname': 'Doe', 'firstname': ''},
@@ -784,7 +784,7 @@ class NullAllowedTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'lastname': 'Doe', 'firstname': 'River'},
             {'lastname': 'Doe', 'firstname': ''},
@@ -809,7 +809,7 @@ class NullAllowedTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'lastname': 'Doe1', 'firstname': 'River'},
             {'lastname': 'Doe2', 'firstname': ''},
@@ -838,7 +838,7 @@ class NullAllowedTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'lastname': 'Doe1', 'firstname': 'River'},
             {'lastname': 'Doe2', 'firstname': ''},

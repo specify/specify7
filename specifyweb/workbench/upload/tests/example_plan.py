@@ -134,8 +134,7 @@ json = dict(
     )}
 )
 
-def with_scoping(collection) -> ScopedUploadTable:
-    return UploadTable(
+upload_plan = UploadTable(
         name = 'Collectionobject',
         wbcols = {
             'catalognumber' : parse_column_options("BMSM No."),
@@ -262,4 +261,7 @@ def with_scoping(collection) -> ScopedUploadTable:
                 }
             ),
         },
-    ).apply_scoping(collection)
+    )
+
+def with_scoping(collection) -> ScopedUploadTable:
+    return upload_plan.apply_scoping(collection)[1]

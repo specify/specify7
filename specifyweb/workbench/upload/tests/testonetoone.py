@@ -1,11 +1,10 @@
-import json
 from jsonschema import validate # type: ignore
-from typing import List, Dict, Any, NamedTuple, Union
+from typing import Dict
 from specifyweb.specify.api_tests import get_table
 from .base import UploadTestsBase
-from ..upload_result import Uploaded, Matched, NullRecord, ParseFailures, FailedBusinessRule
-from ..upload import do_upload, do_upload_csv
-from ..upload_table import UploadTable, OneToOneTable, ScopedUploadTable, ScopedOneToOneTable
+from ..upload_result import Uploaded, Matched, NullRecord
+from ..upload import do_upload
+from ..upload_table import UploadTable, OneToOneTable
 from ..upload_plan_schema import schema, parse_plan
 
 class OneToOneTests(UploadTestsBase):
@@ -53,7 +52,7 @@ class OneToOneTests(UploadTestsBase):
         self.assertNotIsInstance(plan.toOne['collectingevent'], OneToOneTable)
 
     def test_onetoone_uploading(self) -> None:
-        plan = parse_plan(self.collection, self.plan(one_to_one=True)).apply_scoping(self.collection)
+        plan = parse_plan(self.collection, self.plan(one_to_one=True))
 
         data = [
             dict(catno='0', sfn='1'),
@@ -74,7 +73,7 @@ class OneToOneTests(UploadTestsBase):
         self.assertEqual(4, len(ces))
 
     def test_manytoone_uploading(self) -> None:
-        plan = parse_plan(self.collection, self.plan(one_to_one=False)).apply_scoping(self.collection)
+        plan = parse_plan(self.collection, self.plan(one_to_one=False))
 
         data = [
             dict(catno='0', sfn='1'),
@@ -94,7 +93,7 @@ class OneToOneTests(UploadTestsBase):
         self.assertEqual(2, len(ces))
 
     def test_onetoone_with_null(self) -> None:
-        plan = parse_plan(self.collection, self.plan(one_to_one=True)).apply_scoping(self.collection)
+        plan = parse_plan(self.collection, self.plan(one_to_one=True))
 
         data = [
             dict(catno='0', sfn='1'),

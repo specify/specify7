@@ -46,12 +46,12 @@ class TreeMatchingTests(UploadTreeSetup):
             )}
         )
         validate(plan_json, schema)
-        scoped_plan = parse_plan(self.collection, plan_json).apply_scoping(self.collection)
+        plan = parse_plan(self.collection, plan_json)
         data = [
             {'County': 'Johnson', 'City': 'Olathe'},
             {'County': 'Johnson', 'City': 'Olathe'},
         ]
-        results = do_upload(self.collection, data, scoped_plan, self.agent.id)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Matched)
         self.assertEqual(results[0].get_id(), results[1].get_id())
@@ -76,12 +76,12 @@ class TreeMatchingTests(UploadTreeSetup):
             )}
         )
         validate(plan_json, schema)
-        scoped_plan = parse_plan(self.collection, plan_json).apply_scoping(self.collection)
+        plan = parse_plan(self.collection, plan_json)
         data = [
             {'State': 'Texas', 'City': 'Austin'},
             {'State': 'Missouri', 'City': 'Columbia'},
         ]
-        results = do_upload(self.collection, data, scoped_plan, self.agent.id)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         self.assertEqual(
             results[0].record_result,
             FailedBusinessRule(
@@ -110,12 +110,12 @@ class TreeMatchingTests(UploadTreeSetup):
             )}
         )
         validate(plan_json, schema)
-        scoped_plan = parse_plan(self.collection, plan_json).apply_scoping(self.collection)
+        plan = parse_plan(self.collection, plan_json)
         data = [
             {'State': 'Missouri', 'City': 'Springfield'},
             {'State': 'Illinois', 'City': 'Springfield'},
         ]
-        results = do_upload(self.collection, data, scoped_plan, self.agent.id)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         for r in results:
             self.assertIsInstance(r.record_result, Matched)
         self.assertEqual(self.springmo.id, results[0].record_result.get_id())
@@ -131,12 +131,12 @@ class TreeMatchingTests(UploadTreeSetup):
             )}
         )
         validate(plan_json, schema)
-        scoped_plan = parse_plan(self.collection, plan_json).apply_scoping(self.collection)
+        plan = parse_plan(self.collection, plan_json)
         data = [
             {'City': 'Springfield'},
             {'City': 'Springfield'},
         ]
-        results = do_upload(self.collection, data, scoped_plan, self.agent.id)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         for r in results:
             assert isinstance(r.record_result, MatchedMultiple)
             self.assertEqual(set([self.springmo.id, self.springill.id]), set(r.record_result.ids))
@@ -153,11 +153,11 @@ class TreeMatchingTests(UploadTreeSetup):
             )}
         )
         validate(plan_json, schema)
-        scoped_plan = parse_plan(self.collection, plan_json).apply_scoping(self.collection)
+        plan = parse_plan(self.collection, plan_json)
         data = [
             {'State': 'Missouri', 'County': 'Greene', 'City': 'Springfield'},
         ]
-        results = do_upload(self.collection, data, scoped_plan, self.agent.id)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         for r in results:
             assert isinstance(r.record_result, Matched)
             self.assertEqual(self.springmo.id, r.record_result.id)
@@ -173,12 +173,12 @@ class TreeMatchingTests(UploadTreeSetup):
             )}
         )
         validate(plan_json, schema)
-        scoped_plan = parse_plan(self.collection, plan_json).apply_scoping(self.collection)
+        plan = parse_plan(self.collection, plan_json)
         data = [
             {'County': 'Johnson', 'City': 'Olathe'},
             {'County': 'Johnson', 'City': 'Olathe'},
         ]
-        results = do_upload(self.collection, data, scoped_plan, self.agent.id)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Matched)
         self.assertEqual(results[0].get_id(), results[1].get_id())
@@ -199,12 +199,12 @@ class TreeMatchingTests(UploadTreeSetup):
             )}
         )
         validate(plan_json, schema)
-        scoped_plan = parse_plan(self.collection, plan_json).apply_scoping(self.collection)
+        plan = parse_plan(self.collection, plan_json)
         data = [
             {'County': 'Johnson', 'City': 'Olathe'},
             {'County': 'Shawnee', 'City': 'Topeka'},
         ]
-        results = do_upload(self.collection, data, scoped_plan, self.agent.id)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Uploaded)
 
@@ -227,11 +227,11 @@ class TreeMatchingTests(UploadTreeSetup):
             )}
         )
         validate(plan_json, schema)
-        scoped_plan = parse_plan(self.collection, plan_json).apply_scoping(self.collection)
+        plan = parse_plan(self.collection, plan_json)
         data = [
             {'State': 'Missouri', 'County': 'Greene', 'City': 'Rogersville'},
         ]
-        results = do_upload(self.collection, data, scoped_plan, self.agent.id)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertEqual(self.greene.id, get_table('Geography').objects.get(id=results[0].get_id()).parent_id)
 
@@ -252,7 +252,7 @@ class OneToOneAttributeTests(UploadTestsBase):
                 toOne={},
                 toMany={}
             )}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'guid': str(uuid4()), 'height': "100"},
             {'guid': str(uuid4()), 'height': "100"},
@@ -280,7 +280,7 @@ class OneToOneAttributeTests(UploadTestsBase):
                 toOne={},
                 toMany={}
             )}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'guid': str(uuid4()), 'integer': "100"},
             {'guid': str(uuid4()), 'integer': "100"},
@@ -326,7 +326,7 @@ class OneToOneAttributeTests(UploadTestsBase):
                     toMany={}
                 )
             }
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'guid': str(uuid4()), 'integer': "100", 'catno': '1', 'preptype': 'tissue'},
             {'guid': str(uuid4()), 'integer': "100", 'catno': '1', 'preptype': 'tissue'},
@@ -357,7 +357,7 @@ class OneToOneAttributeTests(UploadTestsBase):
                 toOne={},
                 toMany={}
             )}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'catno': "1", 'number': "100"},
             {'catno': "2", 'number': "100"},
@@ -387,7 +387,7 @@ class OneToOneAttributeTests(UploadTestsBase):
                 toOne={},
                 toMany={}
             )}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'sfn': "1", 'number': "100"},
             {'sfn': "2", 'number': "100"},
@@ -430,7 +430,7 @@ class OneToOneAttributeTests(UploadTestsBase):
                 toOne={},
                 toMany={}
             )}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'sfn': "", 'number': "100"},
         ]
@@ -469,7 +469,7 @@ class OneToOneAttributeTests(UploadTestsBase):
                 toOne={},
                 toMany={}
             )}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'sfn': "1", 'number': "100"},
         ]
@@ -493,7 +493,7 @@ class OneToOneAttributeTests(UploadTestsBase):
                 toOne={},
                 toMany={}
             )}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'catno': "1", 'number': "100"},
             {'catno': "2", 'number': "100"},
@@ -539,13 +539,13 @@ class UploadTests(UploadTestsBase):
         }
 
         validate(plan_json, schema)
-        scoped_plan = parse_plan(self.collection, plan_json).apply_scoping(self.collection)
+        plan = parse_plan(self.collection, plan_json)
         data = [
             {'Catno': '1', 'Genus': 'Foo', 'Species': 'Bar'},
             {'Catno': '2', 'Genus': 'Foo', 'Species': 'Bar'},
             {'Catno': '3', 'Genus': 'Foo', 'Species': 'Bar'},
         ]
-        results = do_upload(self.collection, data, scoped_plan, self.agent.id)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         dets = [get_table('Collectionobject').objects.get(id=r.get_id()).determinations.get() for r in results]
         self.assertTrue(all(d.iscurrent for d in dets), "created determinations have iscurrent = true by default")
 
@@ -581,13 +581,13 @@ class UploadTests(UploadTestsBase):
         }
 
         validate(plan_json, schema)
-        scoped_plan = parse_plan(self.collection, plan_json).apply_scoping(self.collection)
+        plan = parse_plan(self.collection, plan_json)
         data = [
             {'Catno': '1', 'Genus': 'Foo', 'Species': 'Bar', 'iscurrent': 'false'},
             {'Catno': '2', 'Genus': 'Foo', 'Species': 'Bar', 'iscurrent': 'false'},
             {'Catno': '3', 'Genus': 'Foo', 'Species': 'Bar', 'iscurrent': 'false'},
         ]
-        results = do_upload(self.collection, data, scoped_plan, self.agent.id)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         dets = [get_table('Collectionobject').objects.get(id=r.get_id()).determinations.get() for r in results]
         self.assertFalse(any(d.iscurrent for d in dets), "created determinations have iscurrent = false by override")
 
@@ -624,7 +624,7 @@ class UploadTests(UploadTestsBase):
                         toMany={}
                     )}),
             ]}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'title': "A Natural History of Mung Beans", 'author1': "Philomungus", 'author2': "Mungophilius"},
             {'title': "A Natural History of Mung Beans", 'author1': "Mungophilius", 'author2': "Philomungus"},
@@ -667,7 +667,7 @@ class UploadTests(UploadTestsBase):
                         toMany={}
                     )}),
             ]}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'title': "A Natural History of Mung Beans", 'author1': "Philomungus", 'on1': '0', 'author2': "Mungophilius", 'on2': '1'},
             {'title': "A Natural History of Mung Beans", 'author1': "Mungophilius", 'on1': '1', 'author2': "Philomungus", 'on2': '0'},
@@ -685,8 +685,8 @@ class UploadTests(UploadTestsBase):
 5033,Gastropoda,Stromboidea,Strombidae,Lobatus,,leidyi,,"(Heilprin, 1887)",,,,,,, , ,,USA,FLORIDA,Hendry Co.,"Cochran Pit, N of Rt. 80, W of LaBelle",,North America,8/9/1973,8/9/1973,,,,8,0,0,Dry; shell,Dry,,,,,,1,"Caloosahatchee,Pinecrest Unit #4",U/Juv,,241,,,LWD,MJP,12/11/1997,26° 44.099' N,,81° 29.027' W,,Point,,,12/08/2016,0,Marine,0,M. Buffington,,M.,,Buffington,,,,,,,,,,,,
 '''))
         row = next(reader)
-        assert isinstance(self.example_plan.toOne['collectingevent'], ScopedUploadTable)
-        uploadable = self.example_plan.toOne['collectingevent'].bind(self.collection, row, self.agent.id, Auditor(self.collection, auditlog))
+        assert isinstance(self.example_plan_scoped.toOne['collectingevent'], ScopedUploadTable)
+        uploadable = self.example_plan_scoped.toOne['collectingevent'].bind(self.collection, row, self.agent.id, Auditor(self.collection, auditlog))
         assert isinstance(uploadable, BoundUploadTable)
         filters, excludes = _to_many_filters_and_excludes(uploadable.toMany)
         self.assertEqual([{
@@ -710,8 +710,8 @@ class UploadTests(UploadTestsBase):
 1378,Gastropoda,Rissooidea,Rissoinidae,Rissoina,,delicatissima,,"Raines, 2002",,B. Raines,,B.,,Raines,Nov 2003,11/2003,,CHILE,,Easter Island [= Isla de Pascua],"Off Punta Rosalia, E of Anakena",,SE Pacific O.,Apr 1998,04/1998,,,,2,0,0,Dry; shell,Dry,,,In sand at base of cliffs,10,20,0,,,Paratype,512,," PARATYPES.  In pouch no. 1, paratypes 4 & 5.  Raines, B.K. 2002.  La Conchiglia 34 ( no. 304) : 16 (holotype LACM 2934, Fig. 9).",JSG,MJP,07/01/2004,"27° 04' 18"" S",,109° 19' 45' W,,Point,,JSG,23/12/2014,0,Marine,0,B. Raines and M. Taylor,,B.,,Raines,,M.,,Taylor,,,,,,,,
 '''))
         row = next(reader)
-        assert isinstance(self.example_plan.toOne['collectingevent'], ScopedUploadTable)
-        uploadable = self.example_plan.toOne['collectingevent'].bind(self.collection, row, self.agent.id, Auditor(self.collection, auditlog))
+        assert isinstance(self.example_plan_scoped.toOne['collectingevent'], ScopedUploadTable)
+        uploadable = self.example_plan_scoped.toOne['collectingevent'].bind(self.collection, row, self.agent.id, Auditor(self.collection, auditlog))
         assert isinstance(uploadable, BoundUploadTable)
         filters, excludes = _to_many_filters_and_excludes(uploadable.toMany)
         self.assertEqual([
@@ -911,7 +911,7 @@ class UploadTests(UploadTestsBase):
                 'State': {'name': parse_column_options('State/Prov/Pref')},
                 'County': {'name': parse_column_options('Region')},
             }
-        ).apply_scoping(self.collection)
+        ).apply_scoping(self.collection)[1]
         row = next(reader)
         bt = tree_record.bind(self.collection, row, None, Auditor(self.collection, auditlog))
         assert isinstance(bt, BoundTreeRecord)

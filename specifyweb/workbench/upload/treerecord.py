@@ -24,7 +24,7 @@ class TreeRecord(NamedTuple):
     name: str
     ranks: Dict[str, Dict[str, ColumnOptions]]
 
-    def apply_scoping(self, collection) -> "ScopedTreeRecord":
+    def apply_scoping(self, collection, row=None) -> Tuple[bool, "ScopedTreeRecord"]:
         from .scoping import apply_scoping_to_treerecord as apply_scoping
         return apply_scoping(self, collection)
 
@@ -55,7 +55,7 @@ class ScopedTreeRecord(NamedTuple):
         return self._replace(disambiguation=disambiguation.disambiguate_tree()) if disambiguation is not None else self
 
     def get_treedefs(self) -> Set:
-        return set([self.treedef])
+        return {self.treedef}
 
     def bind(self, collection, row: Row, uploadingAgentId: Optional[int], auditor: Auditor, cache: Optional[Dict]=None, row_index: Optional[int] = None) -> Union["BoundTreeRecord", ParseFailures]:
         parsedFields: Dict[str, List[ParseResult]] = {}
@@ -89,9 +89,9 @@ class ScopedTreeRecord(NamedTuple):
         )
 
 class MustMatchTreeRecord(TreeRecord):
-    def apply_scoping(self, collection) -> "ScopedMustMatchTreeRecord":
-        s = super().apply_scoping(collection)
-        return ScopedMustMatchTreeRecord(*s)
+    def apply_scoping(self, collection, row=None) -> Tuple[bool, "ScopedMustMatchTreeRecord"]:
+        _can_cache, s = super().apply_scoping(collection)
+        return _can_cache, ScopedMustMatchTreeRecord(*s)
 
 class ScopedMustMatchTreeRecord(ScopedTreeRecord):
     def bind(self, collection, row: Row, uploadingAgentId: Optional[int], auditor: Auditor, cache: Optional[Dict]=None, row_index: Optional[int] = None) -> Union["BoundMustMatchTreeRecord", ParseFailures]:

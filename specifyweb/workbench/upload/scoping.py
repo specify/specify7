@@ -135,43 +135,48 @@ def get_deferred_scoping(key, table_name, uploadable, row):
     # don't cache anymore, since values can be dependent on rows.
     return False, uploadable._replace(overrideScope = {'collection': collection_id})
 
-def _apply_scoping_to_uploadtable(table, row, collection, callback):
-    def _update_to_one_upload(previous_pack, current):
+def _apply_scoping_to_uploadtable(table, row, collection):
+    def _update_uploadtable(previous_pack, current):
         can_cache, previous_to_ones = previous_pack
         field, uploadable = current
         can_cache_this, uploadable = get_deferred_scoping(field, table.django_name, uploadable, row)
-        return can_cache and can_cache_this, [*previous_to_ones, callback(uploadable.apply_scoping(collection))]
-    return _update_to_one_upload
+        can_cache_sub, scoped = uploadable.apply_scoping(collection, row)
+        return can_cache and can_cache_this and can_cache_sub, [*previous_to_ones, scoped]
+    return _update_uploadtable
 
-def _combine_to_many(previous, current):
-    return current[0] and previous[0], {**previous[1], **current[1]}
+def apply_scoping_to_one(ut, collection, row, table):
+    adjust_to_ones = to_one_adjustments(collection, table)
+    to_ones_items = list(ut.toOne.items())
+    can_cache_to_one, to_one_uploadables = reduce(
+        _apply_scoping_to_uploadtable(table, row, collection), to_ones_items, (True, [])
+    )
+    to_ones = {f[0]: adjust_to_ones(u, f[0]) for f, u in zip(to_ones_items, to_one_uploadables)}
+    return can_cache_to_one, to_ones
 
-# also returns if the scope returned can be cached or not.
 def apply_scoping_to_uploadtable(ut: UploadTable, collection, row=None) -> Tuple[bool, ScopedUploadTable]:
     table = datamodel.get_table_strict(ut.name)
 
     if ut.overrideScope is not None and isinstance(ut.overrideScope['collection'], int):
         collection = getattr(models, "Collection").objects.filter(id=ut.overrideScope['collection']).get()
 
-    adjust_to_ones = to_one_adjustments(collection, table)
-    can_cache_to_one, to_one_uploadables = reduce(
-        lambda previous_pack, current: _apply_scoping_to_uploadtable(table, row, collection, lambda u: adjust_to_ones(u, current[0]))(previous_pack, current), list(ut.toOne.items()), (True, []))
+    can_cache_to_one, to_ones = apply_scoping_to_one(ut, collection, row, table)
 
-    to_many_can_cache, to_many_uploadables = reduce(
-          lambda previous, _current:
-              _combine_to_many(previous, reduce(
-                    lambda previous_pack, current: _apply_scoping_to_uploadtable(table, row, collection, lambda u: set_order_number(current[0], u))(previous_pack, current),
-                    enumerate(_current[1]),
-                    (False, [])
-                )), list(ut.toMany.items()), (True, {}))
+    to_many_results = [
+        (f, reduce(_apply_scoping_to_uploadtable(table, row, collection), [(f, r) for r in rs], (True, []))) for ( f, rs) in ut.toMany.items()
+    ]
 
+    can_cache_to_many = all(tmr[1][0] for tmr in to_many_results)
+    to_many = {
+        f: [set_order_number(i, tmr) for i, tmr in enumerate(scoped_tmrs)]
+        for f, (_, scoped_tmrs) in to_many_results
+    }
 
-    return to_many_can_cache and can_cache_to_one, ScopedUploadTable(
+    return can_cache_to_many and can_cache_to_one, ScopedUploadTable(
         name=ut.name,
         wbcols={f: extend_columnoptions(colopts, collection, table.name, f) for f, colopts in ut.wbcols.items()},
         static=static_adjustments(table, ut.wbcols, ut.static),
-        toOne={f: u for f, u in to_one_uploadables},
-        toMany=to_many_uploadables,
+        toOne=to_ones,
+        toMany=to_many,
         scopingAttrs=scoping_relationships(collection, table),
         disambiguation=None,
     )
@@ -213,20 +218,20 @@ def set_order_number(i: int, tmr: ScopedToManyRecord) -> ScopedToManyRecord:
         return tmr._replace(scopingAttrs={**tmr.scopingAttrs, 'ordernumber': i})
     return tmr
 
-def apply_scoping_to_tomanyrecord(tmr: ToManyRecord, collection) -> ScopedToManyRecord:
+def apply_scoping_to_tomanyrecord(tmr: ToManyRecord, collection, row) -> Tuple[bool, ScopedToManyRecord]:
     table = datamodel.get_table_strict(tmr.name)
 
-    adjust_to_ones = to_one_adjustments(collection, table)
+    can_cache_to_one, to_ones = apply_scoping_to_one(tmr, collection, row, table)
 
-    return ScopedToManyRecord(
+    return can_cache_to_one, ScopedToManyRecord(
         name=tmr.name,
         wbcols={f: extend_columnoptions(colopts, collection, table.name, f) for f, colopts in tmr.wbcols.items()},
         static=static_adjustments(table, tmr.wbcols, tmr.static),
-        toOne={f: adjust_to_ones(u.apply_scoping(collection), f) for f, u in tmr.toOne.items()},
+        toOne=to_ones,
         scopingAttrs=scoping_relationships(collection, table),
     )
 
-def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
+def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> Tuple[bool, ScopedTreeRecord]:
     table = datamodel.get_table_strict(tr.name)
 
     if table.name == 'Taxon':
@@ -255,7 +260,8 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
 
     root = list(getattr(models, table.name.capitalize()).objects.filter(definitionitem=treedefitems[0])[:1]) # assume there is only one
 
-    return ScopedTreeRecord(
+    # don't imagine a use-case for making it non-cachable
+    return True, ScopedTreeRecord(
         name=tr.name,
         ranks={r: {f: extend_columnoptions(colopts, collection, table.name, f) for f, colopts in cols.items()} for r, cols in tr.ranks.items()},
         treedef=treedef,

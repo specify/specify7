@@ -45,7 +45,7 @@ class BugTests(UploadTestsBase):
 
         row = ["", "Fundulus", "olivaceus"]
 
-        up = parse_plan(self.collection, plan).apply_scoping(self.collection)
+        up = parse_plan(self.collection, plan).apply_scoping(self.collection)[1]
 
         result = validate_row(self.collection, up, self.agent.id, dict(zip(cols, row)), None)
         self.assertNotIsInstance(result.record_result, NullRecord, "The CO should be created b/c it has determinations.")

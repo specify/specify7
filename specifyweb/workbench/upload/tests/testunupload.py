@@ -49,7 +49,7 @@ class UnUploadTests(UploadTestsBase):
             static={},
             toOne={},
             toMany={}
-        ).apply_scoping(self.collection)
+        )
         data = [
             {'catno': '1', 'habitat': 'River'},
             {'catno': '2', 'habitat': 'Lake'},
@@ -107,7 +107,7 @@ class UnUploadTests(UploadTestsBase):
                 'State': {'name': parse_column_options('State/Prov/Pref')},
                 'County': {'name': parse_column_options('Co')},
             }
-        ).apply_scoping(self.collection)
+        )
 
         data = [
             { 'Continent/Ocean': 'North America' , 'Country': 'United States' , 'State/Prov/Pref': 'Kansas', 'Co': 'Douglass'},
@@ -211,7 +211,7 @@ class UnUploadTests(UploadTestsBase):
                 )
             },
             toMany={}
-        ).apply_scoping(self.collection)
+        )
 
         data = [
             {'catno': '1', 'cataloger': 'Doe', 'collector': 'Doe'},
