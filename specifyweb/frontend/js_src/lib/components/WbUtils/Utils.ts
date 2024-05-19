@@ -255,10 +255,7 @@ export class WbUtils {
           render = Boolean(cell);
         }
 
-        const updateWorkbenchCells =
-          this.workbench.cells[render ? 'updateCellMeta' : 'setCellMeta'];
-
-        updateWorkbenchCells(
+        this.workbench.cells[render ? 'updateCellMeta' : 'setCellMeta'](
           physicalRow,
           physicalCol,
           'isSearchResult',
