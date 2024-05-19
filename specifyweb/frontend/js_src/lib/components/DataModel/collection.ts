@@ -10,7 +10,7 @@ import type {
 } from './helperTypes';
 import { parseResourceUrl } from './resource';
 import { serializeResource } from './serializers';
-import { genericTables, tables } from './tables';
+import { genericTables } from './tables';
 import type { Tables } from './types';
 
 export type CollectionFetchFilters<SCHEMA extends AnySchema> = Partial<
@@ -104,7 +104,7 @@ function mapValue(
   if (key === 'orderBy') return (value as string).toString().toLowerCase();
   else if (key === 'domainFilter') {
     // GetScope() returns undefined for tables with only collectionmemberid.
-    const scopingField = tables[tableName].getScope();
+    const scopingField = genericTables[tableName].getScope();
     return value === true &&
       (tableName === 'Attachment' || typeof scopingField === 'object')
       ? 'true'
