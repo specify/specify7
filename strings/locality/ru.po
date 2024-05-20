@@ -11,8 +11,8 @@ msgstr "Открыть карту"
 #: components/Preferences/UserDefinitions.tsx:1888
 #: components/QueryBuilder/ToMap.tsx:68
 #: components/QueryBuilder/ToMap.tsx:261
-#: components/WorkBench/Template.tsx:241
-#. Used in: Components > Leaflet > Map ⬤ Components > Preferences > User Definitions ⬤ Components > Query Builder > To Map ⬤ Components > Work Bench > Template
+#: components/WbToolkit/WbLeafletMap.tsx:55
+#. Used in: Components > Leaflet > Map ⬤ Components > Preferences > User Definitions ⬤ Components > Query Builder > To Map ⬤ Components > Wb Toolkit > Wb Leaflet Map
 msgid "geoMap"
 msgstr "Карта"
 
@@ -68,8 +68,8 @@ msgstr "Полигоны"
 #: components/FormPlugins/GeoLocate.tsx:33
 #: components/Molecules/GeoLocate.tsx:70
 #: components/Molecules/GeoLocate.tsx:74
-#: components/WorkBench/Template.tsx:231
-#. Used in: Components > Form Plugins > Geo Locate ⬤ Components > Molecules > Geo Locate ⬤ Components > Work Bench > Template
+#: components/WbToolkit/GeoLocate.tsx:60
+#. Used in: Components > Form Plugins > Geo Locate ⬤ Components > Molecules > Geo Locate ⬤ Components > Wb Toolkit > Geo Locate
 msgid "geoLocate"
 msgstr "GEOLocate"
 
@@ -143,32 +143,32 @@ msgstr "Долгота"
 msgid "toggleFullScreen"
 msgstr "Включить полноэкранный режим"
 
-#: components/WorkBench/CoordinateConverter.tsx:23
-#. Used in: Components > Work Bench > Coordinate Converter
+#: components/WbToolkit/CoordinateConverter.tsx:82
+#. Used in: Components > Wb Toolkit > Coordinate Converter
 msgid "degrees"
 msgstr "DD.DDDD (32.7619)"
 
-#: components/WorkBench/CoordinateConverter.tsx:28
-#. Used in: Components > Work Bench > Coordinate Converter
+#: components/WbToolkit/CoordinateConverter.tsx:87
+#. Used in: Components > Wb Toolkit > Coordinate Converter
 msgid "degreesMinutes"
 msgstr "DD MMMM (32. 45.714)"
 
-#: components/WorkBench/CoordinateConverter.tsx:33
-#. Used in: Components > Work Bench > Coordinate Converter
+#: components/WbToolkit/CoordinateConverter.tsx:92
+#. Used in: Components > Wb Toolkit > Coordinate Converter
 msgid "degreesMinutesSeconds"
 msgstr "DD MM SS.SS (32 45 42.84)"
 
-#: components/WorkBench/CoordinateConverter.tsx:38
-#. Used in: Components > Work Bench > Coordinate Converter
+#: components/WbToolkit/CoordinateConverter.tsx:97
+#. Used in: Components > Wb Toolkit > Coordinate Converter
 msgid "degreesWithDirection"
 msgstr "DD.DDDD N/S/E/W (32.7619 N)"
 
-#: components/WorkBench/CoordinateConverter.tsx:43
-#. Used in: Components > Work Bench > Coordinate Converter
+#: components/WbToolkit/CoordinateConverter.tsx:102
+#. Used in: Components > Wb Toolkit > Coordinate Converter
 msgid "degreesMinutesWithDirection"
 msgstr "DD MM.MM N/S/E/W (32 45.714 N)"
 
-#: components/WorkBench/CoordinateConverter.tsx:48
-#. Used in: Components > Work Bench > Coordinate Converter
+#: components/WbToolkit/CoordinateConverter.tsx:107
+#. Used in: Components > Wb Toolkit > Coordinate Converter
 msgid "degreesMinutesSecondsWithDirection"
 msgstr "DD MM SS.SS N/S/E/W (32 45 42.84 N)"

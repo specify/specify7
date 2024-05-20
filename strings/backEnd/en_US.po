@@ -26,9 +26,9 @@ msgstr "value \"{value:string}\" is not a valid decimal value"
 msgid "failedParsingFloat"
 msgstr "value \"{value:string}\" is not a valid floating point value"
 
-#: components/WorkBench/CellMeta.ts:134
-#: components/WorkBench/hooks.ts:112
-#: components/WorkBench/hooks.ts:121
+#: components/WorkBench/CellMeta.ts:130
+#: components/WorkBench/hooks.ts:126
+#: components/WorkBench/hooks.ts:135
 #: components/WorkBench/resultsParser.ts:187
 #. Used in: Components > Work Bench > Cell Meta ⬤ Components > Work Bench > Hooks ⬤ Components > Work Bench > Results Parser
 msgid "failedParsingPickList"

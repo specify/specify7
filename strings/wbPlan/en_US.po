@@ -2,28 +2,26 @@ msgid ""
 msgstr "Content-Type: text/plain\n"
 
 #: components/Preferences/UserDefinitions.tsx:1777
-#: components/WorkBench/DevShowPlan.tsx:70
-#: components/WorkBench/Template.tsx:119
-#. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Dev Show Plan ⬤ Components > Work Bench > Template
+#: components/WbToolkit/DevShowPlan.tsx:111
+#: components/WorkBench/WbView.tsx:192
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Work Bench > Wb View
 msgid "dataMapper"
 msgstr "Data Mapper"
 
+#: components/WbActions/WbNoUploadPlan.tsx:48
 #: components/WbPlanView/State.tsx:35
-#: components/WorkBench/WbActions.tsx:89
-#: components/WorkBench/WbView.tsx:248
-#. Used in: Components > Wb Plan View > State ⬤ Components > Work Bench > Wb Actions ⬤ Components > Work Bench > Wb View
+#. Used in: Components > Wb Actions > Wb No Upload Plan ⬤ Components > Wb Plan View > State
 msgid "noUploadPlan"
 msgstr "No Upload Plan is Defined"
 
-#: components/WorkBench/WbActions.tsx:92
-#: components/WorkBench/WbView.tsx:251
-#. Used in: Components > Work Bench > Wb Actions ⬤ Components > Work Bench > Wb View
+#: components/WbActions/WbNoUploadPlan.tsx:51
+#. Used in: Components > Wb Actions > Wb No Upload Plan
 msgid "noUploadPlanDescription"
 msgstr "No Upload Plan has been defined for this Data Set. Create one now?"
 
-#: components/WorkBench/WbView.tsx:349
-#: components/WorkBench/WbView.tsx:350
-#. Used in: Components > Work Bench > Wb View
+#: components/WorkBench/hotProps.tsx:155
+#: components/WorkBench/hotProps.tsx:157
+#. Used in: Components > Work Bench > Hot Props
 msgid "unmappedColumn"
 msgstr "Unmapped Column"
 
