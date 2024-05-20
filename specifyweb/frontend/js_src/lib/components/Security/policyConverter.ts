@@ -167,12 +167,24 @@ export function compressPermissionQuery(
       filterArray(Object.values(actions)).map((item) => ({
         ...item,
         // Remove duplicate matching rules and policies
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         matching_role_policies: f
           .unique(item.matching_role_policies.map(f.unary(JSON.stringify)))
-          .map(f.unary(JSON.parse)),
+          .map(
+            (string) =>
+              JSON.parse(
+                string
+              ) as PermissionsQueryItem['matching_role_policies'][number]
+          ),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         matching_user_policies: f
           .unique(item.matching_user_policies.map(f.unary(JSON.stringify)))
-          .map(f.unary(JSON.parse)),
+          .map(
+            (string) =>
+              JSON.parse(
+                string
+              ) as PermissionsQueryItem['matching_user_policies'][number]
+          ),
       }))
     ),
   ];

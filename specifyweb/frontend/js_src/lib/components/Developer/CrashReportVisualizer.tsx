@@ -53,7 +53,7 @@ export function CrashReportVisualizer(): JSX.Element {
 function JsonParser({ string }: { readonly string: string }): JSX.Element {
   const parsed = React.useMemo(() => {
     try {
-      return JSON.parse(string) as unknown;
+      return JSON.parse(string);
     } catch (error) {
       return (error as Error).toString();
     }

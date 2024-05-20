@@ -244,7 +244,7 @@ const processViewSet = (viewSet: ViewSets): IR<unknown> =>
         ),
       })),
     })
-  );
+  ) as IR<unknown>;
 
 test('Create new view definition', () =>
   expect(
