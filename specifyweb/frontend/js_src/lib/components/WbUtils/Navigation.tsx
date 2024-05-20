@@ -2,15 +2,15 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { StringToJsx } from '../../localization/utils';
 import { wbText } from '../../localization/workbench';
+import { localized } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { WbCellCounts } from '../WorkBench/CellMeta';
 import type { WbUtils } from './Utils';
-import { StringToJsx } from '../../localization/utils';
-import { localized } from '../../utils/types';
 
 export function Navigation({
   name,
