@@ -12,6 +12,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import { tables } from '../DataModel/tables';
 import type { Locality } from '../DataModel/types';
+import { useSaveBlockers } from '../DataModel/saveBlockers';
 
 export const coordinateType = ['Point', 'Line', 'Rectangle'] as const;
 export type CoordinateType = typeof coordinateType[number];
@@ -74,6 +75,11 @@ function Coordinate({
     [resource, coordinateField, updateValue, step, fieldType]
   );
 
+  const [_blockers, setBlockers] = useSaveBlockers(
+    resource,
+    resource.specifyTable.fields.find((field) => field.name === coordinateField)
+  );
+
   const isLoading = React.useRef<boolean>(true);
   React.useEffect(() => {
     if (isLoading.current && value === undefined) return;
@@ -96,6 +102,19 @@ function Coordinate({
     );
 
     isChanging.current = true;
+
+    if (isValid === false) {
+      setBlockers(
+        [
+          fieldType === 'Lat'
+            ? localityText.validLatitude()
+            : localityText.validLongitude(),
+        ],
+        fieldType
+      );
+    } else {
+      setBlockers([], fieldType);
+    }
 
     /**
      * Do not set unload protect because very precise coodinateFields
