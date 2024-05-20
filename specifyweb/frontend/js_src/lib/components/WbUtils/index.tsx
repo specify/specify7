@@ -33,6 +33,20 @@ export function WbUtilsComponent({
   const [isSearchClicked, clickSearch, unclickSearch, toggleSearch] =
     useBooleanState(true);
 
+  const handleSearch = React.useCallback(
+    _.debounce(
+      (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (searchRef.current && searchRef.current?.value.length > 0)
+          unclickSearch();
+        else clickSearch();
+        utils.searchCells(event, searchRef.current);
+      },
+      debounceRate,
+      false
+    ),
+    [debounceRate]
+  );
+
   return (
     <div
       aria-label={wbText.navigation()}
@@ -49,16 +63,7 @@ export function WbUtilsComponent({
             spellCheck
             title={commonText.searchQuery()}
             type="search"
-            onKeyDown={_.debounce(
-              (event: React.KeyboardEvent<HTMLInputElement>) => {
-                if (searchRef.current && searchRef.current?.value.length > 0)
-                  unclickSearch();
-                else clickSearch();
-                utils.searchCells(event, searchRef.current);
-              },
-              debounceRate,
-              true
-            )}
+            onKeyDown={handleSearch}
           />
         </div>
         {!isUploaded && hasPermission('/workbench/dataset', 'update') ? (
