@@ -10,9 +10,9 @@ import { Input, Select } from '../Atoms/Form';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
+import { useSaveBlockers } from '../DataModel/saveBlockers';
 import { tables } from '../DataModel/tables';
 import type { Locality } from '../DataModel/types';
-import { useSaveBlockers } from '../DataModel/saveBlockers';
 
 export const coordinateType = ['Point', 'Line', 'Rectangle'] as const;
 export type CoordinateType = typeof coordinateType[number];
@@ -103,7 +103,9 @@ function Coordinate({
 
     isChanging.current = true;
 
-    if (isValid === false) {
+    if (isValid) {
+      setBlockers([], fieldType);
+    } else {
       setBlockers(
         [
           fieldType === 'Lat'
@@ -112,8 +114,6 @@ function Coordinate({
         ],
         fieldType
       );
-    } else {
-      setBlockers([], fieldType);
     }
 
     /**
