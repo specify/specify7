@@ -521,7 +521,7 @@ export const preferencesText = createDictionary({
     'fr-fr': `
       Algorithme de recherche (pour les relations avec les tables arborescentes)
     `,
-    'uk-ua': 'Алгоритм пошуку (для зв’язків із деревоподібними таблицями)',
+    'uk-ua': "Алгоритм пошуку (для зв'язків із деревоподібними таблицями)",
     'de-ch': 'Suchalgorithmus (für Beziehungen mit Baumtabellen)',
   },
   startsWithInsensitive: {
@@ -649,7 +649,7 @@ export const preferencesText = createDictionary({
       для відповідності будь-якій кількості символів
     `,
     'de-ch': `
-      Kann _ für jedes einzelne Zeichen oder % für eine beliebige Anzahl von
+      Kann _ für jedes einzelne Zeichen oder % für jede beliebige Anzahl von
       Zeichen verwenden
     `,
   },
@@ -1227,7 +1227,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Гибкая ширина столбца сетки подпредставления',
     'es-es': 'Ancho de columna de cuadrícula de subvista flexible',
     'fr-fr': 'Largeur de colonne de grille de sous-vue flexible',
-    'uk-ua': 'Гнучка ширина стовпця сітки вкладеного перегляду',
+    'uk-ua': 'Гнучка ширина стовпця сітки підперегляду',
     'de-ch': 'Flexible Spaltenbreite des Unteransichtsrasters',
   },
   closeOnEsc: {
@@ -1375,7 +1375,7 @@ export const preferencesText = createDictionary({
       'Hacer que los cuadros de diálogo del formulario aparezcan en gris',
     'fr-fr':
       "Rendre les boîtes de dialogue de formulaire grisées sur l'arrière-plan",
-    'uk-ua': 'Зробіть діалогові вікна форми сірими фоном',
+    'uk-ua': 'Зробіть діалогові вікна форми сірими',
     'de-ch': 'Den Hintergrund von Formulardialogen ausgrauen',
   },
   autoScrollTree: {
@@ -1940,7 +1940,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Basisansicht',
     'es-es': 'Vista básica',
     'fr-fr': 'Vue de base',
-    'ru-ru': 'Базовый вид',
+    'ru-ru': 'Основной вид',
     'uk-ua': 'Основний вигляд',
   },
   detailedView: {
