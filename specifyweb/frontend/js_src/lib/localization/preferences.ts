@@ -314,7 +314,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Гибкая ширина столбца сетки подпредставления',
     'es-es': 'Ancho de columna de cuadrícula de subvista flexible',
     'fr-fr': 'Largeur de colonne de grille de sous-vue flexible',
-    'uk-ua': 'Гнучка ширина стовпця сітки вкладеного перегляду',
+    'uk-ua': 'Гнучка ширина стовпця сітки підперегляду',
     'de-ch': 'Ungültiger Feldhintergrund (Dunkles Thema)',
   },
   darkRequiredFieldBackground: {
@@ -521,7 +521,7 @@ export const preferencesText = createDictionary({
     'fr-fr': `
       Algorithme de recherche (pour les relations avec les tables arborescentes)
     `,
-    'uk-ua': "Алгоритм пошуку (для зв'язків із деревоподібними таблицями)",
+    'uk-ua': 'Алгоритм пошуку (для зв’язків із деревоподібними таблицями)',
     'de-ch': 'Suchalgorithmus (für Beziehungen mit Baumtabellen)',
   },
   startsWithInsensitive: {
@@ -1164,7 +1164,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Enfocar el primer campo',
     'fr-fr': 'Concentrez-vous sur le premier champ',
     'ru-ru': 'Фокус первого поля',
-    'uk-ua': 'Сфокусувати перше поле',
+    'uk-ua': 'Перейти до першого поля',
   },
   doubleClickZoom: {
     'en-us': 'Double click to zoom',
@@ -1227,7 +1227,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Гибкая ширина столбца сетки подпредставления',
     'es-es': 'Ancho de columna de cuadrícula de subvista flexible',
     'fr-fr': 'Largeur de colonne de grille de sous-vue flexible',
-    'uk-ua': 'Гнучка ширина стовпця сітки підперегляду',
+    'uk-ua': 'Гнучка ширина стовпця сітки вкладеного перегляду',
     'de-ch': 'Flexible Spaltenbreite des Unteransichtsrasters',
   },
   closeOnEsc: {
