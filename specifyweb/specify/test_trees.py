@@ -213,9 +213,6 @@ class TreeStatsTest(SqlTreeSetup):
         ]
 
 class AddDeleteRankResourcesTest(ApiTests):
-    def setUp(self) -> None:
-        super().setUp()
-    
     def test_add_ranks_without_defaults(self):
         c = Client()
         c.force_login(self.specifyuser)
