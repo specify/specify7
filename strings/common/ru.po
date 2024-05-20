@@ -488,7 +488,7 @@ msgstr "Удалить"
 #: components/SearchDialog/index.tsx:181
 #: components/SearchDialog/index.tsx:186
 #: components/SearchDialog/index.tsx:285
-#: components/WbUtils/index.tsx:62
+#: components/WbUtils/index.tsx:58
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Formatters > Preview ⬤ Components > Header > Express Search Task ⬤ Components > Header > Index ⬤ Components > Home Page > Index ⬤ Components > Search Dialog > Index ⬤ Components > Wb Utils > Index
 msgid "search"
 msgstr "Искать"
@@ -691,8 +691,8 @@ msgstr "(список сокращен)"
 
 #: components/QueryBuilder/FieldFilter.tsx:74
 #: components/QueryBuilder/FieldFilter.tsx:239
-#: components/WbUtils/index.tsx:59
-#: components/WbUtils/index.tsx:64
+#: components/WbUtils/index.tsx:55
+#: components/WbUtils/index.tsx:60
 #. Used in: Components > Query Builder > Field Filter ⬤ Components > Wb Utils > Index
 msgid "searchQuery"
 msgstr "Поисковый запрос"

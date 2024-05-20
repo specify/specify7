@@ -130,24 +130,24 @@ msgstr "Cambiar Propietario"
 msgid "convertCoordinates"
 msgstr "Convertir Coordenadas"
 
-#: components/WbUtils/index.tsx:52
+#: components/WbUtils/index.tsx:48
 #. Used in: Components > Wb Utils > Index
 msgid "navigation"
 msgstr "Navegación"
 
-#: components/WbUtils/index.tsx:76
+#: components/WbUtils/index.tsx:72
 #. Used in: Components > Wb Utils > Index
 msgid "replace"
 msgstr "Sustituir"
 
-#: components/WbUtils/index.tsx:72
-#: components/WbUtils/index.tsx:80
+#: components/WbUtils/index.tsx:68
+#: components/WbUtils/index.tsx:76
 #. Used in: Components > Wb Utils > Index
 msgid "replacementValue"
 msgstr "Valor a sustituir"
 
 #: components/SpecifyNetworkCollection/Setup.tsx:69
-#: components/WbUtils/index.tsx:114
+#: components/WbUtils/index.tsx:110
 #. Used in: Components > Specify Network Collection > Setup ⬤ Components > Wb Utils > Index
 msgid "searchResults"
 msgstr "Buscar resultados"
@@ -164,17 +164,17 @@ msgstr "Pinchar para alternar visibilidad"
 msgid "configureSearchReplace"
 msgstr "Configurar Consulta y Sustitución"
 
-#: components/WbUtils/index.tsx:122
+#: components/WbUtils/index.tsx:118
 #. Used in: Components > Wb Utils > Index
 msgid "modifiedCells"
 msgstr "Celdas Modificadas"
 
-#: components/WbUtils/index.tsx:129
+#: components/WbUtils/index.tsx:125
 #. Used in: Components > Wb Utils > Index
 msgid "newCells"
 msgstr "Celdas Nuevas"
 
-#: components/WbUtils/index.tsx:136
+#: components/WbUtils/index.tsx:132
 #. Used in: Components > Wb Utils > Index
 msgid "errorCells"
 msgstr "Celdas con Error"
@@ -446,7 +446,7 @@ msgstr "Carga de datos no disponible si hay celdas con error de validación"
 #: components/WbActions/WbValidate.tsx:45
 #: components/WbToolkit/CoordinateConverter.tsx:55
 #: components/WbToolkit/GeoLocate.tsx:54
-#: components/WbUtils/index.tsx:79
+#: components/WbUtils/index.tsx:75
 #. Used in: Components > Wb Actions > Wb Validate ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Wb Utils > Index
 msgid "unavailableWhileViewingResults"
 msgstr "Acción no disponible cuando se visualizan resultados de la carga de datos"

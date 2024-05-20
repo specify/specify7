@@ -116,24 +116,24 @@ msgstr "Change Owner"
 msgid "convertCoordinates"
 msgstr "Convert Coordinates"
 
-#: components/WbUtils/index.tsx:52
+#: components/WbUtils/index.tsx:48
 #. Used in: Components > Wb Utils > Index
 msgid "navigation"
 msgstr "Navigation"
 
-#: components/WbUtils/index.tsx:76
+#: components/WbUtils/index.tsx:72
 #. Used in: Components > Wb Utils > Index
 msgid "replace"
 msgstr "Replace"
 
-#: components/WbUtils/index.tsx:72
-#: components/WbUtils/index.tsx:80
+#: components/WbUtils/index.tsx:68
+#: components/WbUtils/index.tsx:76
 #. Used in: Components > Wb Utils > Index
 msgid "replacementValue"
 msgstr "Replacement value"
 
 #: components/SpecifyNetworkCollection/Setup.tsx:69
-#: components/WbUtils/index.tsx:114
+#: components/WbUtils/index.tsx:110
 #. Used in: Components > Specify Network Collection > Setup ⬤ Components > Wb Utils > Index
 msgid "searchResults"
 msgstr "Search Results"
@@ -150,17 +150,17 @@ msgstr "Click to toggle visibility"
 msgid "configureSearchReplace"
 msgstr "Configure Search & Replace"
 
-#: components/WbUtils/index.tsx:122
+#: components/WbUtils/index.tsx:118
 #. Used in: Components > Wb Utils > Index
 msgid "modifiedCells"
 msgstr "Modified Cells"
 
-#: components/WbUtils/index.tsx:129
+#: components/WbUtils/index.tsx:125
 #. Used in: Components > Wb Utils > Index
 msgid "newCells"
 msgstr "New Cells"
 
-#: components/WbUtils/index.tsx:136
+#: components/WbUtils/index.tsx:132
 #. Used in: Components > Wb Utils > Index
 msgid "errorCells"
 msgstr "Error Cells"
@@ -421,7 +421,7 @@ msgstr "Upload is unavailable while some cells have validation errors"
 #: components/WbActions/WbValidate.tsx:45
 #: components/WbToolkit/CoordinateConverter.tsx:55
 #: components/WbToolkit/GeoLocate.tsx:54
-#: components/WbUtils/index.tsx:79
+#: components/WbUtils/index.tsx:75
 #. Used in: Components > Wb Actions > Wb Validate ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Wb Utils > Index
 msgid "unavailableWhileViewingResults"
 msgstr "This action is unavailable while viewing the upload results"

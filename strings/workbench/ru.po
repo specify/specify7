@@ -131,24 +131,24 @@ msgstr "Сменить владельца"
 msgid "convertCoordinates"
 msgstr "Преобразовать координаты"
 
-#: components/WbUtils/index.tsx:52
+#: components/WbUtils/index.tsx:48
 #. Used in: Components > Wb Utils > Index
 msgid "navigation"
 msgstr "Навигация"
 
-#: components/WbUtils/index.tsx:76
+#: components/WbUtils/index.tsx:72
 #. Used in: Components > Wb Utils > Index
 msgid "replace"
 msgstr "Заменять"
 
-#: components/WbUtils/index.tsx:72
-#: components/WbUtils/index.tsx:80
+#: components/WbUtils/index.tsx:68
+#: components/WbUtils/index.tsx:76
 #. Used in: Components > Wb Utils > Index
 msgid "replacementValue"
 msgstr "Замена"
 
 #: components/SpecifyNetworkCollection/Setup.tsx:69
-#: components/WbUtils/index.tsx:114
+#: components/WbUtils/index.tsx:110
 #. Used in: Components > Specify Network Collection > Setup ⬤ Components > Wb Utils > Index
 msgid "searchResults"
 msgstr "Результаты Поиска"
@@ -165,17 +165,17 @@ msgstr "Нажмите, чтобы переключить видимость"
 msgid "configureSearchReplace"
 msgstr "Настроить поиск и замену"
 
-#: components/WbUtils/index.tsx:122
+#: components/WbUtils/index.tsx:118
 #. Used in: Components > Wb Utils > Index
 msgid "modifiedCells"
 msgstr "Модифицированные клетки"
 
-#: components/WbUtils/index.tsx:129
+#: components/WbUtils/index.tsx:125
 #. Used in: Components > Wb Utils > Index
 msgid "newCells"
 msgstr "Новые клетки"
 
-#: components/WbUtils/index.tsx:136
+#: components/WbUtils/index.tsx:132
 #. Used in: Components > Wb Utils > Index
 msgid "errorCells"
 msgstr "Ячейки с ошибками"
@@ -441,7 +441,7 @@ msgstr "Загрузка недоступна, в то время как в не
 #: components/WbActions/WbValidate.tsx:45
 #: components/WbToolkit/CoordinateConverter.tsx:55
 #: components/WbToolkit/GeoLocate.tsx:54
-#: components/WbUtils/index.tsx:79
+#: components/WbUtils/index.tsx:75
 #. Used in: Components > Wb Actions > Wb Validate ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Wb Utils > Index
 msgid "unavailableWhileViewingResults"
 msgstr "Это действие недоступно при просмотре результатов загрузки"
