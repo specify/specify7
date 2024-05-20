@@ -90,11 +90,9 @@ export type CacheDefinitions = {
      * WorkBench column sort setting in a given dataset
      * {Collection ID}_{Dataset ID}
      */
-    [key in `${number}_${number}`]: RA<
-      hot.columnSorting.Config & {
-        readonly physicalCol: number;
-      }
-    >;
+    [key in `${number}_${number}`]: RA<Pick<hot.plugins.ColumnSorting.Config,'column'|'sortOrder'> & {
+      readonly physicalCol: number;
+    }>;
   };
   readonly sortConfig: {
     readonly [KEY in keyof SortConfigs]: SortConfig<SortConfigs[KEY]>;
