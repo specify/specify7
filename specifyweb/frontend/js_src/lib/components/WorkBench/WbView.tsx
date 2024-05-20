@@ -98,10 +98,7 @@ export function WbView({
   useErrorContext('mappings', mappings);
 
   // Throttle cell count update depending on the DS size (between 10ms and 2s)
-  const throttleRate = React.useMemo(
-    () => Math.ceil(clamp(10, data.length / 10, 2000)),
-    [data.length]
-  );
+  const throttleRate = Math.ceil(clamp(10, data.length / 10, 2000));
 
   const [hasUnsavedChanges, spreadsheetChanged, spreadsheetUpToDate] =
     useBooleanState();
