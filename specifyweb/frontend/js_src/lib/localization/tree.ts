@@ -74,10 +74,10 @@ export const treeText = createDictionary({
     'fr-fr': `
       L'opération n'a pas pu être effectuée en raison des erreurs suivantes :
     `,
-    'uk-ua': 'Неможливо перейти до синоніма',
     'de-ch': `
       Der Vorgang konnte aufgrund der folgenden Fehler nicht ausgeführt werden:
     `,
+    'uk-ua': 'Прямий підрахунок [X7X].',
   },
   moveNode: {
     'en-us': 'Move node',
@@ -102,6 +102,9 @@ export const treeText = createDictionary({
     'fr-fr': 'Déplacer « {nodeName:string} » ici',
     'uk-ua': 'Перемістіть сюди "{nodeName:string}".',
     'de-ch': 'Verschiebe "{nodeName:string}" hierhin',
+  },
+  moveNodePreparationsHere: {
+    'en-us': 'Move all "{nodeName:string}" preparations here',
   },
   nodeMoveMessage: {
     'en-us': `
@@ -129,6 +132,11 @@ export const treeText = createDictionary({
       Der {treeName:string} Knoten "{nodeName:string}" wird zusammen mit allen
       seinen Unterknoten unter den neuen übergeordneten Knoten
       "{parentName:string}" platziert.
+    `,
+  },
+  nodeBulkMoveMessage: {
+    'en-us': `
+      The {treeName:string} node "{nodeName:string}" preparations will be placed under the new location "{parentName:string}".
     `,
   },
   cantMoveHere: {
@@ -207,6 +215,10 @@ export const treeText = createDictionary({
       'Виберіть нову ціль для «{nodeName:string}», у яку потрібно об’єднати',
     'de-ch': 'Wähle ein neues Ziel um "{nodeName:string}" zusammenzuführen',
   },
+  bulkMoveNodeHintMessage: {
+    'en-us':
+      'Select a new target for "{nodeName:string}" preparations to be moved into',
+  },
   mergeNodeMessage: {
     'en-us': `
       All references to {treeName:string} node "{nodeName:string}" will be
@@ -234,12 +246,7 @@ export const treeText = createDictionary({
       descendants correspondant en termes de nom et de rang étant eux-mêmes.
       fusionnés de manière récursive.
     `,
-    'uk-ua': `
-      Усі посилання на вузол {treeName:string} «{nodeName:string}» буде замінено
-      на «{parentName:string}», а всі нащадки «{nodeName:string}» буде
-      переміщено до «{parentName:string}», а будь-які нащадки, що відповідають
-      імені та рангу, будуть самі собою об'єднані рекурсивно.
-    `,
+    'uk-ua': 'Непрямий підрахунок [X9X].',
     'de-ch': `
       Alle Referenzen zu {treeName:string} "{nodeName:string}" werden mit
       "{parentName:string}" ersetzt. Alle Nachkommen von "{nodeName:string}"
@@ -290,9 +297,12 @@ export const treeText = createDictionary({
       Le nœud {treeName:string} "{nodeName:string}" deviendra synonyme de
       "{synonymName:string}".
     `,
-    'uk-ua': 'ЗАЧИНЕНО',
     'de-ch': `
       Der {treeName:string}-Knoten "{nodeName:string}" wird zu einem Synonym von
+      "{synonymName:string}".
+    `,
+    'uk-ua': `
+      Вузол {treeName:string} "{nodeName:string}" стане синонімом
       "{synonymName:string}".
     `,
   },
@@ -314,23 +324,27 @@ export const treeText = createDictionary({
       '"{nodeName:string}" ya no será sinónimo de "{synonymName:string}".',
     'fr-fr':
       '"{nodeName:string}" ne sera plus synonyme de "{synonymName:string}".',
-    'uk-ua': 'Це призведе до остаточного видалення наступного ресурсу',
     'de-ch': `
       "{nodeName:string}" wird nicht mehr ein Synonym von
       "{synonymName:string}" sein.
     `,
+    'uk-ua': 'Це призведе до остаточного видалення наступного ресурсу',
   },
   acceptedName: {
     'en-us': 'Preferred: {name:string}',
     'ru-ru': 'Предпочтительний: {name:string}',
     'es-es': 'Preferido: {name:string}',
     'fr-fr': 'Préféré : {name:string}',
-    'uk-ua': `
-      Усі посилання на вузол [X18X] «[X42X]» буде замінено на «[X84X]», а всі
-      нащадки «[X130X]» буде переміщено до «[X167X]», а будь-які нащадки, що
-      відповідають імені та рангу, будуть самі собою об'єднані рекурсивно.
-    `,
+    'uk-ua': 'Бажано: {name:string}',
     'de-ch': 'Bevorzugt: {name:string}',
+  },
+  synonyms: {
+    'en-us': 'Synonyms: {names:string}',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   treeViewTitle: {
     'en-us': '{treeName:string} Tree',
@@ -395,9 +409,9 @@ export const treeText = createDictionary({
     'en-us': 'Direct {collectionObjectTable:string} Count',
     'ru-ru': 'Количество прямых {collectionObjectTable:string}',
     'es-es': 'Recuento directo de {collectionObjectTable:string}',
-    'fr-fr': 'Impossible de passer à un synonyme',
-    'uk-ua': 'Неможливо перейти до синоніма',
     'de-ch': 'Direkte {collectionObjectTable:string} Anzahl',
+    'fr-fr': 'Impossible de passer à un synonyme',
+    'uk-ua': 'Прямий підрахунок {collectionObjectTable:string}.',
   },
   indirectCollectionObjectCount: {
     comment: 'Example: Indirect Collection Object count',
@@ -423,6 +437,14 @@ export const treeText = createDictionary({
     'ru-ru': 'Это приведет к безвозвратному удалению следующего ресурса',
     'uk-ua': 'Це призведе до остаточного видалення наступного ресурсу',
     'de-ch': 'Dadurch wird die folgende Ressource dauerhaft gelöscht',
+  },
+  associatedNodesOnly: {
+    'en-us': 'Show only nodes with associated objects',
+    'de-ch': 'Synchronisieren',
+    'es-es': 'Mostrar solo nodos con objetos asociados',
+    'fr-fr': 'Afficher uniquement les nœuds avec les objets associés',
+    'ru-ru': 'Синхронизировать',
+    'uk-ua': 'Показувати лише вузли з пов’язаними об’єктами',
   },
   splitView: {
     'en-us': 'Split View',
@@ -453,7 +475,10 @@ export const treeText = createDictionary({
     'de-ch': 'Synchronisieren',
     'es-es': 'Sincronizar',
     'fr-fr': 'Synchroniser',
-    'ru-ru': 'Это приведет к безвозвратному удалению следующего ресурса',
     'uk-ua': 'Синхронізувати',
+    'ru-ru': 'Синхронизировать',
+  },
+  moveItems: {
+    'en-us': 'Move Items',
   },
 } as const);

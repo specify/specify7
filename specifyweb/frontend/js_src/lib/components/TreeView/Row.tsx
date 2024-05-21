@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
@@ -7,12 +8,14 @@ import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
+import { fetchRows } from '../DataModel/collection';
+import type { AnyTree } from '../DataModel/helperTypes';
 import { getPref } from '../InitialContext/remotePrefs';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Conformations, KeyAction, Row, Stats } from './helpers';
 import { formatTreeStats, mapKey, scrollIntoView } from './helpers';
 
-export function TreeRow({
+export function TreeRow<SCHEMA extends AnyTree>({
   row,
   getRows,
   getStats,
@@ -30,6 +33,7 @@ export function TreeRow({
   setFocusedRow,
   synonymColor,
   treeName,
+  hideEmptyNodes,
 }: {
   readonly row: Row;
   readonly getRows: (parentId: number | 'null') => Promise<RA<Row>>;
@@ -52,8 +56,9 @@ export function TreeRow({
   readonly onAction: (action: Exclude<KeyAction, 'child' | 'toggle'>) => void;
   readonly setFocusedRow?: (row: Row) => void;
   readonly synonymColor: string;
-  readonly treeName: string;
-}): JSX.Element {
+  readonly treeName: SCHEMA['tableName'];
+  readonly hideEmptyNodes: boolean;
+}): JSX.Element | null {
   const [rows, setRows] = React.useState<RA<Row> | undefined>(undefined);
   const [childStats, setChildStats] = React.useState<Stats | undefined>(
     undefined
@@ -142,7 +147,25 @@ export function TreeRow({
     []
   );
 
-  return (
+  const hasNoChildrenNodes =
+    nodeStats?.directCount === 0 && nodeStats.childCount === 0;
+
+  const acceptedChildrenKey = `accepted${treeName.toLowerCase()}`;
+  const [synonymsNames] = useAsyncState(
+    React.useCallback(
+      async () =>
+        fetchRows(treeName as 'Taxon', {
+          fields: { name: ['string'] },
+          limit: 0,
+          [acceptedChildrenKey]: row.nodeId,
+          domainFilter: false,
+        }).then((rows) => rows.map(({ name }) => name)),
+      [acceptedChildrenKey, treeName, row.nodeId]
+    ),
+    false
+  );
+
+  return hideEmptyNodes && hasNoChildrenNodes ? null : (
     <li role="treeitem row">
       {ranks.map((rankId) => {
         if (row.rankId === rankId) {
@@ -169,6 +192,7 @@ export function TreeRow({
                     ? 'outline outline-1 outline-blue-500'
                     : ''
                 }
+                ${hideEmptyNodes && isLoadingStats ? 'opacity-50' : ''}
               `}
               forwardRef={isFocused ? handleRef : undefined}
               key={rankId}
@@ -223,7 +247,12 @@ export function TreeRow({
                       ? treeText.acceptedName({
                           name: row.acceptedName ?? row.acceptedId.toString(),
                         })
-                      : undefined
+                      : synonymsNames === undefined ||
+                        synonymsNames.length === 0
+                      ? undefined
+                      : treeText.synonyms({
+                          names: synonymsNames.join(', '),
+                        })
                   }
                 >
                   {doIncludeAuthorPref &&
@@ -299,6 +328,7 @@ export function TreeRow({
               }
               getRows={getRows}
               getStats={getStats}
+              hideEmptyNodes={hideEmptyNodes}
               key={childRow.nodeId}
               nodeStats={childStats?.[childRow.nodeId]}
               path={[...path, row]}

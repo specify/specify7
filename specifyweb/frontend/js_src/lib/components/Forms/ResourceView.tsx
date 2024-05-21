@@ -17,6 +17,7 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Tables } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { InFormEditorContext } from '../FormEditor/Context';
 import { AppTitle } from '../Molecules/AppTitle';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { IsNotReadOnly } from '../Molecules/ResourceLink';
@@ -162,6 +163,8 @@ export function ResourceView<SCHEMA extends AnySchema>({
     resource?.specifyTable.name
   );
   const isInSearchDialog = React.useContext(SearchDialogContext);
+  const isInFormEditor = React.useContext(InFormEditorContext);
+
   const {
     formElement,
     formPreferences,
@@ -247,7 +250,8 @@ export function ResourceView<SCHEMA extends AnySchema>({
     !isSubForm &&
     typeof resource === 'object' &&
     !resource.isNew() &&
-    hasTablePermission(resource.specifyTable.name, 'delete') ? (
+    hasTablePermission(resource.specifyTable.name, 'delete') &&
+    !isInFormEditor ? (
       <ErrorBoundary dismissible>
         <DeleteButton
           deletionMessage={deletionMessage}
@@ -338,9 +342,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
             {deleteButton}
             {extraButtons ?? <span className="-ml-2 flex-1" />}
             {isModified && !isDependent ? (
-              <Button.Danger onClick={handleClose}>
-                {commonText.cancel()}
-              </Button.Danger>
+              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
             ) : (
               <Button.Info onClick={handleClose}>
                 {commonText.close()}

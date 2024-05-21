@@ -92,7 +92,11 @@ export function useValidation<T extends Input = Input>(
 
       validationMessageRef.current = joined;
       const input = inputRef.current;
-      if (!input || isInFormEditor) return;
+      if (!input) return;
+
+      // Do not steal focus when form rendering the form in the form editor
+      if (isInFormEditor) return;
+
       // Empty string clears validation error
       input.setCustomValidity(joined);
 
@@ -116,7 +120,10 @@ export function useValidation<T extends Input = Input>(
     validationRef: React.useCallback(
       (input): void => {
         inputRef.current = input;
-        setValidation(validationMessageRef.current, 'auto');
+        setValidation(
+          validationMessageRef.current,
+          clearOnTyping ? 'auto' : 'focus'
+        );
       },
       [setValidation]
     ),

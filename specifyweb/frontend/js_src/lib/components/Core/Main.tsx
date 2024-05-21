@@ -52,7 +52,7 @@ export function Main({
     <MenuContext.Provider value={menuContext}>
       <SetMenuContext.Provider value={setMenuContext}>
         <Button.Small
-          className="sr-only !absolute top-0 left-0 z-10 !p-2 focus:not-sr-only"
+          className="sr-only !absolute left-0 top-0 z-10 !p-2 focus:not-sr-only"
           onClick={(): void => {
             if (!mainRef.current) return;
             mainRef.current.setAttribute('tabindex', '-1');

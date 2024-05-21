@@ -60,6 +60,7 @@ export function SearchDialog<SCHEMA extends AnySchema>(props: {
   readonly onClose: () => void;
   readonly searchView?: string;
   readonly onSelected: (resources: RA<SpecifyResource<SCHEMA>>) => void;
+  readonly onlyUseQueryBuilder?: boolean;
 }): JSX.Element | null {
   const [alwaysUseQueryBuilder] = userPreferences.use(
     'form',
@@ -67,7 +68,7 @@ export function SearchDialog<SCHEMA extends AnySchema>(props: {
     'alwaysUseQueryBuilder'
   );
   const [useQueryBuilder, handleUseQueryBuilder] = useBooleanState(
-    alwaysUseQueryBuilder
+    props.onlyUseQueryBuilder ? true : alwaysUseQueryBuilder
   );
   return useQueryBuilder ? (
     <QueryBuilderSearch
@@ -222,7 +223,7 @@ function SearchForm<SCHEMA extends AnySchema>({
         </SearchDialogContext.Provider>
         <Ul
           className={`
-            min-w-96 h-40 overflow-auto rounded
+            h-40 min-w-96 overflow-auto rounded
             border bg-white p-2 ring-1 ring-gray-500 dark:bg-neutral-700 dark:ring-0
           `}
         >

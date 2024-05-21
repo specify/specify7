@@ -86,10 +86,8 @@ describe('parseFormField', () => {
     }));
 
   test('Localized checkbox', () =>
-    expect(
-      parse('<cell uiType="checkbox" default="true" label="FINDNEXT" />', {})
-    ).toEqual({
-      defaultValue: true,
+    expect(parse('<cell uiType="checkbox" label="FINDNEXT" />', {})).toEqual({
+      defaultValue: undefined,
       isReadOnly: false,
       type: 'Checkbox',
       printOnSave: false,
@@ -98,13 +96,22 @@ describe('parseFormField', () => {
 
   test('Raw Localized checkbox', () =>
     expect(
-      parse('<cell uiType="checkbox" default="true" label="some label" />', {})
+      parse('<cell uiType="checkbox" default="false" label="some label" />', {})
     ).toEqual({
-      defaultValue: true,
+      defaultValue: false,
       isReadOnly: false,
       type: 'Checkbox',
       printOnSave: false,
       label: localized('some label'),
+    }));
+
+  test('Can set default value to false', () =>
+    expect(parse('<cell uiType="checkbox" default="false" />', {})).toEqual({
+      defaultValue: false,
+      isReadOnly: false,
+      type: 'Checkbox',
+      printOnSave: false,
+      label: undefined,
     }));
 
   test('Print on Save checkbox', () =>
@@ -128,7 +135,7 @@ describe('parseFormField', () => {
         {}
       )
     ).toEqual({
-      defaultValue: false,
+      defaultValue: undefined,
       isReadOnly: false,
       type: 'Checkbox',
       printOnSave: true,

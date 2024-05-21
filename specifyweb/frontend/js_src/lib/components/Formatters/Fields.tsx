@@ -29,6 +29,8 @@ export function Fields({
   readonly table: SpecifyTable;
   readonly fields: GetSet<Formatter['definition']['fields'][number]['fields']>;
 }): JSX.Element {
+  const isReadOnly = React.useContext(ReadOnlyContext);
+
   const [displayFormatter, setDisplayFormatter] = React.useState(false);
 
   function moveField(index: number, direction: 'down' | 'up'): void {
@@ -52,7 +54,7 @@ export function Fields({
            *   table layout with list layout
            */
           className={`
-            grid-table min-w-[35rem] gap-y-4 gap-x-4
+            grid-table min-w-[35rem] gap-x-2 gap-y-2
             [&_td]:!items-stretch
             ${
               displayFormatter
@@ -97,34 +99,38 @@ export function Fields({
           </tbody>
         </table>
       )}
-      <div className="flex gap-2">
-        <Button.Secondary
-          onClick={(): void =>
-            setFields([
-              ...fields,
-              {
-                separator: localized(' '),
-                aggregator: undefined,
-                formatter: undefined,
-                fieldFormatter: undefined,
-                field: undefined,
-              },
-            ])
-          }
-        >
-          {resourcesText.addField()}
-        </Button.Secondary>
-        <span className="-ml-2 flex-1" />
-        {fields.length > 0 && (
-          <Label.Inline>
-            <Input.Checkbox
-              checked={displayFormatter}
-              onClick={(): void => setDisplayFormatter(!displayFormatter)}
-            />
-            {resourcesText.customizeFieldFormatters()}
-          </Label.Inline>
-        )}
-      </div>
+      {isReadOnly ? null : (
+        <div className="flex gap-2 pt-2">
+          <Button.Secondary
+            onClick={(): void =>
+              setFields([
+                ...fields,
+                {
+                  separator: localized(' '),
+                  aggregator: undefined,
+                  formatter: undefined,
+                  fieldFormatter: undefined,
+                  field: undefined,
+                },
+              ])
+            }
+          >
+            {resourcesText.addField()}
+          </Button.Secondary>
+          <span className="-ml-2 flex-1" />
+          {fields.length > 0 && (
+            <Label.Inline>
+              <Input.Checkbox
+                checked={displayFormatter}
+                onValueChange={(): void =>
+                  setDisplayFormatter(!displayFormatter)
+                }
+              />
+              {resourcesText.customizeFieldFormatters()}
+            </Label.Inline>
+          )}
+        </div>
+      )}
     </>
   );
 }
@@ -185,28 +191,32 @@ function Field({
         </td>
       )}
       <td>
-        <Button.Small
-          aria-label={commonText.remove()}
-          title={commonText.remove()}
-          variant={className.dangerButton}
-          onClick={handleRemove}
-        >
-          {icons.trash}
-        </Button.Small>
-        <Button.Small
-          aria-label={queryText.moveUp()}
-          title={queryText.moveUp()}
-          onClick={moveFieldUp}
-        >
-          {icons.chevronUp}
-        </Button.Small>
-        <Button.Small
-          aria-label={queryText.moveDown()}
-          title={queryText.moveDown()}
-          onClick={moveFieldDown}
-        >
-          {icons.chevronDown}
-        </Button.Small>
+        {isReadOnly ? null : (
+          <>
+            <Button.Small
+              aria-label={commonText.remove()}
+              title={commonText.remove()}
+              variant={className.dangerButton}
+              onClick={handleRemove}
+            >
+              {icons.trash}
+            </Button.Small>
+            <Button.Small
+              aria-label={queryText.moveUp()}
+              title={queryText.moveUp()}
+              onClick={moveFieldUp}
+            >
+              {icons.chevronUp}
+            </Button.Small>
+            <Button.Small
+              aria-label={queryText.moveDown()}
+              title={queryText.moveDown()}
+              onClick={moveFieldDown}
+            >
+              {icons.chevronDown}
+            </Button.Small>
+          </>
+        )}
       </td>
     </tr>
   );

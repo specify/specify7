@@ -61,7 +61,7 @@ export const wbPlanText = createDictionary({
     'es-es': 'NO ASIGNADO/MAPEADO',
     'fr-fr': 'AUCUNE SÉLECTION',
     'uk-ua': 'НЕ ВИБРАНО',
-    'de-ch': 'NICHT KARTIERT',
+    'de-ch': 'Nicht kartiert',
   },
   unmapped: {
     'en-us': 'Unmapped',
@@ -69,7 +69,7 @@ export const wbPlanText = createDictionary({
     'es-es': 'sin mapear',
     'fr-fr': 'Non mappé',
     'uk-ua': 'Не зіставлений',
-    'de-ch': 'Nicht kartiert',
+    'de-ch': 'Zuordnung ist erforderlich',
   },
   mapped: {
     'en-us': 'Mapped',
@@ -131,9 +131,9 @@ export const wbPlanText = createDictionary({
     'en-us': 'Reveal Hidden Form Fields',
     'ru-ru': 'Показать скрытые поля формы',
     'es-es': 'Revelar Campos Ocultos del Formulario',
+    'de-ch': 'Versteckte Formularfelder anzeigen',
     'fr-fr': 'Ensemble de données vide',
     'uk-ua': 'Порожній набір даних',
-    'de-ch': 'Versteckte Formularfelder anzeigen',
   },
   mappingOptions: {
     'en-us': 'Mapping Options',
@@ -225,9 +225,9 @@ export const wbPlanText = createDictionary({
     'en-us': 'Never Ignore',
     'ru-ru': 'Никогда не игнорировать',
     'es-es': 'Nunca Ignorar',
+    'de-ch': 'Nie ignorieren',
     'fr-fr': 'AUCUNE SÉLECTION',
     'uk-ua': 'НЕ ВИБРАНО',
-    'de-ch': 'Nie ignorieren',
   },
   ignoreNeverDescription: {
     'en-us': `
@@ -291,8 +291,8 @@ export const wbPlanText = createDictionary({
     'en-us': 'Add New Column',
     'ru-ru': 'Добавить новую колонку',
     'es-es': 'Agregar una columna nueva',
-    'fr-fr': 'Relation avec la table [X20X]',
-    'uk-ua': 'Відношення до таблиці [X20X].',
+    'fr-fr': 'Ajouter une nouvelle colonne',
+    'uk-ua': 'Додати новий стовпець',
     'de-ch': 'Neue Spalte hinzufügen',
   },
   validationFailed: {
@@ -345,7 +345,7 @@ export const wbPlanText = createDictionary({
     'es-es': 'Se requiere asignación',
     'fr-fr': 'Une cartographie est requise',
     'uk-ua': 'Потрібне відображення',
-    'de-ch': 'Eine Zuordnung ist erforderlich',
+    'de-ch': 'Zuordnung ist erforderlich',
   },
   continueEditing: {
     'en-us': 'Continue Editing',
@@ -367,9 +367,9 @@ export const wbPlanText = createDictionary({
     'en-us': 'Map',
     'ru-ru': 'Сопоставить',
     'es-es': 'Mapear',
+    'de-ch': 'Datenzuordnung erstellen',
     'fr-fr': 'Mappeur automatique',
     'uk-ua': 'AutoMapper',
-    'de-ch': 'Datenzuordnung erstellen',
   },
   unmap: {
     'en-us': 'Unmap',
@@ -383,6 +383,7 @@ export const wbPlanText = createDictionary({
     'en-us': 'Map selected field to selected header',
     'ru-ru': 'Сопоставить выбранное поле с выбранным столбцом',
     'es-es': 'Asignar campo seleccionado al encabezamiento seleccionado',
+    'de-ch': 'Ausgewähltes Feld der ausgewählten Feldüberschrift zuordnen',
     'fr-fr': `
       Il manque dans ce mappage de données un ou plusieurs champs de données
       requis pour le téléchargement par votre configuration Specify. Ajoutez les
@@ -394,7 +395,6 @@ export const wbPlanText = createDictionary({
       для завантаження вашою конфігурацією Specify. Додайте відсутні
       відображення або збережіть цей план завантаження як незавершений.
     `,
-    'de-ch': 'Ausgewähltes Feld der ausgewählten Feldüberschrift zuordnen',
   },
   relationshipWithTable: {
     'en-us': 'Relationship to the {tableName:string} table',
@@ -484,7 +484,7 @@ export const wbPlanText = createDictionary({
     'en-us': 'Base Table',
     'ru-ru': 'Базовая таблица',
     'es-es': 'Tabla Base',
-    'fr-fr': 'Table de base',
+    'fr-fr': 'Tableau de base',
     'uk-ua': 'Базовий стіл',
     'de-ch': 'Basistabelle',
   },
@@ -494,8 +494,11 @@ export const wbPlanText = createDictionary({
       'Изменить базовую таблицу для сопоставления столбцов набора данных?',
     'es-es':
       '¿Cambiar la tabla base para mapear columnas de conjuntos de datos?',
-    'fr-fr': "Mapper le champ sélectionné à l'en-tête sélectionné",
-    'uk-ua': 'Зіставити вибране поле з вибраним заголовком',
+    'fr-fr': `
+      Modifier la table de base pour le mappage des colonnes de l'ensemble de
+      données ?
+    `,
+    'uk-ua': 'Змінити базову таблицю для зіставлення стовпців набору даних?',
     'de-ch': 'Die Basistabelle für die Zuordnung von Datensatzspalten ändern?',
   },
   goToBaseTableDescription: {
@@ -542,7 +545,7 @@ export const wbPlanText = createDictionary({
   clearMapping: {
     'en-us': 'Clear Mapping',
     'ru-ru': 'Очистить сопоставление',
-    'es-es': 'Borrar Asignaciones',
+    'es-es': 'Borrar Asignacione',
     'fr-fr': 'Effacer le mappage',
     'uk-ua': 'Очистити відображення',
     'de-ch': 'Datenzuordnung zurücksetzen',
@@ -649,9 +652,10 @@ export const wbPlanText = createDictionary({
     'en-us': 'Automap to start a new Upload Plan?',
     'ru-ru': 'Автоматически сопоставить?',
     'es-es': '¿Automap para iniciar un nuevo plan de carga?',
-    'fr-fr': 'Ensemble de données vide',
-    'uk-ua': 'Порожній набір даних',
     'de-ch': 'Automap, um einen neuen Upload-Plan zu starten?',
+    'fr-fr':
+      'Mappage automatique pour démarrer un nouveau plan de téléchargement ?',
+    'uk-ua': 'Автоматична карта, щоб почати новий план завантаження?',
   },
   reRunAutoMapperConfirmationDescription: {
     'en-us': 'This will erase existing data field mappings.',

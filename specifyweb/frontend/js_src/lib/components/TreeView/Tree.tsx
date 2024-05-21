@@ -35,6 +35,7 @@ export function Tree<SCHEMA extends AnyTree>({
   treeDefinitionItems,
   tableName,
   isEditingRanks,
+  hideEmptyNodes,
   focusPath: [focusPath, setFocusPath],
   rows,
   actionRow,
@@ -53,6 +54,7 @@ export function Tree<SCHEMA extends AnyTree>({
   >;
   readonly tableName: SCHEMA['tableName'];
   readonly isEditingRanks: boolean;
+  readonly hideEmptyNodes: boolean;
   readonly focusPath: GetSet<RA<number>>;
   readonly rows: RA<Row>;
   readonly actionRow: Row | undefined;
@@ -102,7 +104,7 @@ export function Tree<SCHEMA extends AnyTree>({
     <div
       className={`
         grid-table h-full flex-1 grid-cols-[repeat(var(--cols),auto)] 
-        content-start overflow-auto rounded border-2 border
+        content-start overflow-auto rounded border border-2
         border-[var(--edge-color)] from-[var(--edge-color)] via-[var(--middle-color)] to-[var(--edge-color)]
         p-1 pt-0 outline-none
         ${highContrast ? 'border dark:border-white' : 'bg-gradient-to-bl'}
@@ -196,6 +198,7 @@ export function Tree<SCHEMA extends AnyTree>({
             }
             getRows={getRows}
             getStats={getStats}
+            hideEmptyNodes={hideEmptyNodes}
             key={row.nodeId}
             nodeStats={undefined}
             path={[]}

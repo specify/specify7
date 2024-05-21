@@ -10,7 +10,7 @@ import { parseValue } from '../../utils/parser/parse';
 import type { GetOrSet, RA } from '../../utils/types';
 import { filterArray, setDevelopmentGlobal } from '../../utils/types';
 import { keysToLowerCase, replaceKey } from '../../utils/utils';
-import { MILLISECONDS } from '../Atoms/timeUnits';
+import { SECOND } from '../Atoms/timeUnits';
 import { softFail } from '../Errors/Crash';
 import {
   cachableUrl,
@@ -419,7 +419,7 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
 /* eslint-enable functional/no-this-expression */
 
 // Sync with back-end at most every 5s
-const syncTimeout = 5 * MILLISECONDS;
+const syncTimeout = 5 * SECOND;
 const mimeType = 'application/json';
 
 /**
