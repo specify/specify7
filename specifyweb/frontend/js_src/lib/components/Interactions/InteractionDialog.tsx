@@ -25,10 +25,9 @@ import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
-import type {
-  AnyInteractionPreparation,
-  SerializedResource,
-} from '../DataModel/helperTypes';
+import type { AnySchema, SerializedResource, AnyInteractionPreparation,
+  SerializedResource, } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
 import type { LiteralField } from '../DataModel/specifyField';
 import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
@@ -55,11 +54,13 @@ export function InteractionDialog({
   actionTable,
   isLoanReturn = false,
   itemCollection,
+  interactionResource,
 }: {
   readonly onClose: () => void;
   readonly actionTable: SpecifyTable<InteractionWithPreps>;
   readonly isLoanReturn?: boolean;
   readonly itemCollection?: Collection<AnyInteractionPreparation>;
+  readonly interactionResource?: SpecifyResource<AnySchema>;
 }): JSX.Element {
   const itemTable = isLoanReturn ? tables.Loan : tables.CollectionObject;
   const searchField = itemTable.strictGetLiteralField(
@@ -215,6 +216,14 @@ export function InteractionDialog({
     return parsed;
   }
 
+  const addInteractionResource = (): void => {
+    itemCollection?.add(
+      (interactionResource as SpecifyResource<
+        DisposalPreparation | GiftPreparation | LoanPreparation
+      >) ?? new itemCollection.table.specifyTable.Resource()
+    );
+  };
+
   return state.type === 'LoanReturnDoneState' ? (
     <Dialog
       buttons={commonText.close()}
@@ -245,9 +254,7 @@ export function InteractionDialog({
             {typeof itemCollection === 'object' ? (
               <Button.Info
                 onClick={(): void => {
-                  itemCollection?.add(
-                    new itemCollection.table.specifyTable.Resource()
-                  );
+                  addInteractionResource();
                   handleClose();
                 }}
               >
@@ -284,9 +291,7 @@ export function InteractionDialog({
                 {typeof itemCollection === 'object' ? (
                   <Button.Info
                     onClick={(): void => {
-                      itemCollection?.add(
-                        new itemCollection.table.specifyTable.Resource()
-                      );
+                      addInteractionResource();
                       handleClose();
                     }}
                   >

@@ -77,6 +77,9 @@ export function IntegratedRecordSelector({
     if (hasBlockers && isCollapsed) handleExpand();
   }, [hasBlockers, isCollapsed, handleExpand]);
 
+  const [interactionResource, setInteractionResource] =
+    React.useState<SpecifyResource<AnySchema>>();
+
   const collapsibleButton = (
     <Button.Icon
       disabled={hasBlockers}
@@ -117,11 +120,14 @@ export function IntegratedRecordSelector({
         collection={collection}
         defaultIndex={isToOne ? 0 : index}
         relationship={relationship}
-        onAdd={(resource) => {
-          if (isInteraction) handleOpenDialog();
+        onAdd={(resources) => {
+          if (isInteraction) {
+            setInteractionResource(resources[0]);
+            handleOpenDialog();
+          }
           if (!isInteraction && formType !== 'formTable')
-            collection.add(resource);
-          handleAdding(resource);
+            collection.add(resources);
+          handleAdding(resources);
         }}
         onDelete={(...args): void => {
           if (isCollapsed) handleExpand();
@@ -146,10 +152,8 @@ export function IntegratedRecordSelector({
             typeof collection.related === 'object' &&
             isDialogOpen ? (
               <InteractionDialog
-                actionTable={
-                  collection.related
-                    .specifyTable as SpecifyTable<InteractionWithPreps>
-                }
+                actionTable={collection.related.specifyTable}
+                interactionResource={interactionResource}
                 itemCollection={
                   collection as Collection<AnyInteractionPreparation>
                 }
@@ -182,7 +186,9 @@ export function IntegratedRecordSelector({
                         }
                         onClick={(): void => {
                           focusFirstField();
-                          handleAdd();
+                          const resource =
+                            new collection.table.specifyTable.Resource();
+                          handleAdd([resource]);
                         }}
                       />
                     ) : undefined}
@@ -245,7 +251,7 @@ export function IntegratedRecordSelector({
                 viewName={viewName}
                 onAdd={(resources): void => {
                   if (!isInteraction) collection.add(resources);
-                  if (typeof handleAdd === 'function') handleAdd();
+                  handleAdd?.(resources);
                 }}
                 onClose={handleClose}
                 onDelete={(_resource, index): void => {

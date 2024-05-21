@@ -459,7 +459,7 @@ export const commonText = createDictionary({
     'ru-ru': 'Все',
     'es-es': 'Todo',
     'fr-fr': 'Tous',
-    'uk-ua': 'все',
+    'uk-ua': 'всі',
     'de-ch': 'Alle',
   },
   unused: {
