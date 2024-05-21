@@ -409,12 +409,12 @@ msgstr "Створення нового запису"
 msgid "createNewRecordSet"
 msgstr "Створіть новий набір записів"
 
-#: components/PickLists/definitions.ts:144
+#: components/PickLists/definitions.ts:145
 #. Used in: Components > Pick Lists > Definitions
 msgid "forward"
 msgstr "вперед"
 
-#: components/PickLists/definitions.ts:143
+#: components/PickLists/definitions.ts:144
 #. Used in: Components > Pick Lists > Definitions
 msgid "reverse"
 msgstr "Зворотний"

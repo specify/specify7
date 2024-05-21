@@ -196,15 +196,8 @@ msgstr ""
 
 #: components/Errors/JsonError.tsx:181
 #. Used in: Components > Errors > Json Error
-#, fuzzy
-msgid "mergeAcrossTrees"
-msgstr "Fusion entre arbres"
-
-#: components/Errors/JsonError.tsx:183
-#. Used in: Components > Errors > Json Error
-#, fuzzy
-msgid "synonymizeAcrossTrees"
-msgstr "Synonymiser à travers les arbres"
+msgid "operationAcrossTrees"
+msgstr ""
 
 #: components/Errors/JsonError.tsx:185
 #. Used in: Components > Errors > Json Error

@@ -477,13 +477,13 @@ msgstr "Creando nuevo registro"
 msgid "createNewRecordSet"
 msgstr "Crear un nuevo conjunto de registros"
 
-#: components/PickLists/definitions.ts:144
+#: components/PickLists/definitions.ts:145
 #. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "forward"
 msgstr "Adelante"
 
-#: components/PickLists/definitions.ts:143
+#: components/PickLists/definitions.ts:144
 #. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "reverse"

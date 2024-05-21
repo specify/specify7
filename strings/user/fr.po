@@ -206,9 +206,9 @@ msgstr ""
 #: components/Formatters/formatters.ts:196
 #: components/Forms/dataObjFormatters.ts:290
 #: components/QueryComboBox/index.tsx:198
-#: components/Statistics/Categories.tsx:75
-#: components/Statistics/StatItems.tsx:189
-#: components/Statistics/StatItems.tsx:273
+#: components/Statistics/Categories.tsx:76
+#: components/Statistics/StatItems.tsx:186
+#: components/Statistics/StatItems.tsx:269
 #. 🟥Used in field formatter if user doesn't have read access to the related table. Used in: Components > Formatters > Formatters ⬤ Components > Forms > Data Obj Formatters ⬤ Components > Query Combo Box > Index ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stat Items
 #, fuzzy
 msgid "noPermission"

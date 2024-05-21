@@ -16,9 +16,9 @@ msgstr ""
 #: components/QueryBuilder/Toolbar.tsx:58
 #: components/Reports/RecordSets.tsx:95
 #: components/Toolbar/RecordSetEdit.tsx:52
-#: components/TreeView/Actions.tsx:81
-#: components/TreeView/Actions.tsx:92
-#: components/TreeView/Actions.tsx:98
+#: components/TreeView/Actions.tsx:91
+#: components/TreeView/Actions.tsx:102
+#: components/TreeView/Actions.tsx:108
 #. Used in: Components > Query Builder > Header ⬤ Components > Query Builder > Toolbar ⬤ Components > Reports > Record Sets ⬤ Components > Toolbar > Record Set Edit ⬤ Components > Tree View > Actions
 #, fuzzy
 msgid "query"
@@ -500,6 +500,11 @@ msgstr "Синонимизировать дерево"
 #, fuzzy
 msgid "treeDesynonymize"
 msgstr "Десинонимизация дерева"
+
+#: components/PickLists/definitions.ts:47
+#. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
+msgid "treeBulkMove"
+msgstr ""
 
 #: components/QueryBuilder/FieldFilter.tsx:118
 #. Used in: Components > Query Builder > Field Filter

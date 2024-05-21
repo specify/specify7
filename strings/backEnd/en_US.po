@@ -165,13 +165,8 @@ msgstr ""
 
 #: components/Errors/JsonError.tsx:181
 #. Used in: Components > Errors > Json Error
-msgid "mergeAcrossTrees"
-msgstr "Merging across trees"
-
-#: components/Errors/JsonError.tsx:183
-#. Used in: Components > Errors > Json Error
-msgid "synonymizeAcrossTrees"
-msgstr "Synonymizing across trees"
+msgid "operationAcrossTrees"
+msgstr "{operation:string} across trees"
 
 #: components/Errors/JsonError.tsx:185
 #. Used in: Components > Errors > Json Error
