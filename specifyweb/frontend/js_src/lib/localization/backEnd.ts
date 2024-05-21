@@ -449,6 +449,9 @@ export const backEndText = createDictionary({
       Erwartet „{nodeModel:string}“
     `,
   },
+  operationAcrossTrees: {
+    'en-us': '{operation:string} across trees',
+  },
   mergeAcrossTrees: {
     'en-us': 'Merging across trees',
     'es-es': 'Fusionando entre árboles',
