@@ -18,7 +18,7 @@ msgstr ""
 msgid "trees"
 msgstr "Árboles"
 
-#: components/DataModel/treeBusinessRules.ts:59
+#: components/DataModel/treeBusinessRules.ts:66
 #. Used in: Components > Data Model > Tree Business Rules
 msgid "badStructure"
 msgstr "Mala estructura de árbol."
