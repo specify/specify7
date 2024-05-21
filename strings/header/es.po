@@ -68,12 +68,12 @@ msgstr ""
 "Actualización iniciada. Recibirá una notificación por cada elemento "
 "actualizado."
 
-#: components/ExportFeed/Dwca.tsx:129
+#: components/ExportFeed/Dwca.tsx:130
 #. Used in: Components > Export Feed > Dwca
 msgid "dwcaExportStarted"
 msgstr "Exportación DwCA iniciada"
 
-#: components/ExportFeed/Dwca.tsx:132
+#: components/ExportFeed/Dwca.tsx:133
 #. Used in: Components > Export Feed > Dwca
 msgid "dwcaExportStartedDescription"
 msgstr ""

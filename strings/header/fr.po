@@ -78,13 +78,13 @@ msgstr ""
 "La mise à jour a commencé. Vous recevrez une notification pour chaque "
 "élément de flux mis à jour."
 
-#: components/ExportFeed/Dwca.tsx:129
+#: components/ExportFeed/Dwca.tsx:130
 #. Used in: Components > Export Feed > Dwca
 #, fuzzy
 msgid "dwcaExportStarted"
 msgstr "L'exportation DwCA a démarré"
 
-#: components/ExportFeed/Dwca.tsx:132
+#: components/ExportFeed/Dwca.tsx:133
 #. Used in: Components > Export Feed > Dwca
 #, fuzzy
 msgid "dwcaExportStartedDescription"

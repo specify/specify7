@@ -70,12 +70,12 @@ msgstr ""
 "Обновление запущено. Вы будете получать уведомление о каждом обновлении "
 "элемента фида."
 
-#: components/ExportFeed/Dwca.tsx:129
+#: components/ExportFeed/Dwca.tsx:130
 #. Used in: Components > Export Feed > Dwca
 msgid "dwcaExportStarted"
 msgstr "Начат экспорт DwCA"
 
-#: components/ExportFeed/Dwca.tsx:132
+#: components/ExportFeed/Dwca.tsx:133
 #. Used in: Components > Export Feed > Dwca
 msgid "dwcaExportStartedDescription"
 msgstr "Экспорт запущен. Вы получите уведомление, когда экспорт будет завершен."

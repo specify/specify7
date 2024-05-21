@@ -69,12 +69,12 @@ msgstr ""
 "Оновлення розпочато. Ви отримаєте сповіщення про кожен оновлений елемент "
 "каналу."
 
-#: components/ExportFeed/Dwca.tsx:129
+#: components/ExportFeed/Dwca.tsx:130
 #. Used in: Components > Export Feed > Dwca
 msgid "dwcaExportStarted"
 msgstr "Розпочато експорт DwCA"
 
-#: components/ExportFeed/Dwca.tsx:132
+#: components/ExportFeed/Dwca.tsx:133
 #. Used in: Components > Export Feed > Dwca
 msgid "dwcaExportStartedDescription"
 msgstr "Експорт розпочато. Коли експорт завершиться, ви отримаєте сповіщення."

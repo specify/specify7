@@ -383,7 +383,7 @@ msgstr "Алгоритм пошуку"
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "treeSearchAlgorithm"
-msgstr "Алгоритм пошуку (для зв’язків із деревоподібними таблицями)"
+msgstr "Алгоритм пошуку (для зв'язків із деревоподібними таблицями)"
 
 #: components/Preferences/UserDefinitions.tsx:1016
 #: components/Preferences/UserDefinitions.tsx:1064
@@ -780,7 +780,7 @@ msgstr "Включіть назву таблиці в заголовок сто�
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "focusFirstField"
-msgstr "Сфокусувати перше поле"
+msgstr "Перейти до першого поля"
 
 #: components/Preferences/UserDefinitions.tsx:1894
 #. Used in: Components > Preferences > User Definitions
@@ -846,7 +846,7 @@ msgstr "Закрийте зовнішнім клацанням"
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "specifyNetworkBadge"
-msgstr "Укажіть позначку мережі"
+msgstr "Укажіть значок мережі"
 
 #: components/Preferences/UserDefinitions.tsx:872
 #. Used in: Components > Preferences > User Definitions
@@ -920,7 +920,7 @@ msgstr "Використовуйте доступний засіб вибору 
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "makeFormDialogsModal"
-msgstr "Зробіть діалогові вікна форми сірими фоном"
+msgstr "Зробіть діалогові вікна форми сірими"
 
 #: components/Preferences/UserDefinitions.tsx:1309
 #. Used in: Components > Preferences > User Definitions

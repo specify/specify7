@@ -154,7 +154,7 @@ msgstr "Создать"
 #: components/AttachmentsBulkImport/Upload.tsx:248
 #: components/AttachmentsBulkImport/Upload.tsx:263
 #: components/Core/VersionMismatch.tsx:18
-#: components/ExportFeed/Dwca.tsx:128
+#: components/ExportFeed/Dwca.tsx:129
 #: components/ExportFeed/ForceUpdate.tsx:23
 #: components/FormCells/FormTable.tsx:490
 #: components/FormCommands/ShowTransactions.tsx:116
