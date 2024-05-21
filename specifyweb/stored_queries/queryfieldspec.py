@@ -132,7 +132,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
             tree_id_match = TREE_ID_FIELD_RE.match(extracted_fieldname)
             if tree_id_match:
                 tree_rank_name = tree_id_match.group(1)
-                field = 'ID'
+                field = node.idFieldName
             else:
                 tree_field_match = TAXON_FIELD_RE.match(extracted_fieldname) \
                                    if node is datamodel.get_table('Taxon') else None
@@ -146,6 +146,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
                 # doesn't make sense to query across ranks of trees. no, it doesn't block a theoretical query like family -> continent
                 tree_rank.relatedModelName = node.name
                 tree_rank.name = tree_rank_name
+                tree_rank.type = 'many-to-one'
                 join_path.append(tree_rank)
                 field = node.get_field(field or 'name') # to replicate 6 for now.
 
