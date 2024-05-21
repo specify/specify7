@@ -25,8 +25,8 @@ msgstr "No Upload Plan has been defined for this Data Set. Create one now?"
 msgid "unmappedColumn"
 msgstr "Unmapped Column"
 
-#: components/WbPlanView/CustomSelectElement.tsx:618
-#: components/WbPlanView/CustomSelectElement.tsx:647
+#: components/WbPlanView/CustomSelectElement.tsx:617
+#: components/WbPlanView/CustomSelectElement.tsx:646
 #. 🟥Show in pick list in Data Mapper when column is not mapped. Used in: Components > Wb Plan View > Custom Select Element
 msgid "notSelected"
 msgstr "NONE SELECTED"
@@ -51,7 +51,7 @@ msgstr "Match Behavior:"
 msgid "columnMapping"
 msgstr "Column Mapping"
 
-#: components/WbPlanView/CustomSelectElement.tsx:891
+#: components/WbPlanView/CustomSelectElement.tsx:890
 #: components/WbPlanView/LineComponents.tsx:210
 #. Used in: Components > Wb Plan View > Custom Select Element ⬤ Components > Wb Plan View > Line Components
 msgid "suggestedMappings"

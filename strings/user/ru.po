@@ -190,7 +190,7 @@ msgstr ""
 #. Used in: Components > Forms > Other Collection View
 #, fuzzy
 msgid "resourceInaccessible"
-msgstr "Доступ к запрошенному ресурсу невозможен при входе в текущую коллекцию."
+msgstr "Доступ к запрошенному ресурсу недоступен при входе в текущую коллекцию."
 
 #: components/Forms/OtherCollectionView.tsx:74
 #. Used in: Components > Forms > Other Collection View

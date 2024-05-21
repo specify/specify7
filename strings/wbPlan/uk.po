@@ -40,8 +40,8 @@ msgstr "Для цього набору даних не визначено пла
 msgid "unmappedColumn"
 msgstr "Невідповідний стовпець"
 
-#: components/WbPlanView/CustomSelectElement.tsx:618
-#: components/WbPlanView/CustomSelectElement.tsx:647
+#: components/WbPlanView/CustomSelectElement.tsx:617
+#: components/WbPlanView/CustomSelectElement.tsx:646
 #. 🟥Show in pick list in Data Mapper when column is not mapped. Used in: Components > Wb Plan View > Custom Select Element
 #, fuzzy
 msgid "notSelected"
@@ -71,7 +71,7 @@ msgstr "Поведінка відповідності:"
 msgid "columnMapping"
 msgstr "Відображення стовпців"
 
-#: components/WbPlanView/CustomSelectElement.tsx:891
+#: components/WbPlanView/CustomSelectElement.tsx:890
 #: components/WbPlanView/LineComponents.tsx:210
 #. Used in: Components > Wb Plan View > Custom Select Element ⬤ Components > Wb Plan View > Line Components
 #, fuzzy
