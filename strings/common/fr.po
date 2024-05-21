@@ -35,13 +35,13 @@ msgstr "Non"
 #: components/ExportFeed/ForceUpdate.tsx:33
 #: components/FormEditor/Create.tsx:67
 #: components/FormEditor/Create.tsx:261
-#: components/FormSliders/RecordSelectorFromIds.tsx:257
+#: components/FormSliders/RecordSelectorFromIds.tsx:260
 #: components/Forms/DeleteButton.tsx:107
 #: components/Forms/DeleteButton.tsx:131
 #: components/Forms/ResourceView.tsx:345
 #: components/Header/ChooseCollection.tsx:26
 #: components/Header/ExpressSearchTask.tsx:49
-#: components/Interactions/InteractionDialog.tsx:244
+#: components/Interactions/InteractionDialog.tsx:255
 #: components/Interactions/InteractionsDialog.tsx:64
 #: components/Interactions/LoanReturn.tsx:161
 #: components/Interactions/PrepDialog.tsx:100
@@ -196,8 +196,8 @@ msgstr "Créer"
 #: components/Forms/Save.tsx:292
 #: components/Header/UserTools.tsx:75
 #: components/HomePage/AboutSpecify.tsx:60
-#: components/Interactions/InteractionDialog.tsx:220
-#: components/Interactions/InteractionDialog.tsx:283
+#: components/Interactions/InteractionDialog.tsx:231
+#: components/Interactions/InteractionDialog.tsx:292
 #: components/Interactions/LoanReturn.tsx:71
 #: components/Interactions/PrepDialog.tsx:97
 #: components/Leaflet/Map.tsx:103
@@ -370,7 +370,7 @@ msgid "delete"
 msgstr "Supprimer"
 
 #: components/Attachments/Dialog.tsx:113
-#: components/Interactions/InteractionDialog.tsx:358
+#: components/Interactions/InteractionDialog.tsx:365
 #: components/WbToolkit/GeoLocate.tsx:154
 #. Used in: Components > Attachments > Dialog ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Wb Toolkit > Geo Locate
 #, fuzzy
@@ -580,7 +580,7 @@ msgstr "Modifier"
 msgid "ignore"
 msgstr "Ignorer"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:266
+#: components/FormSliders/RecordSelectorFromIds.tsx:269
 #: components/Merging/index.tsx:392
 #: components/Toolbar/Language.tsx:108
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Merging > Index ⬤ Components > Toolbar > Language
@@ -601,7 +601,7 @@ msgid "end"
 msgstr "Fin"
 
 #: components/ExportFeed/ForceUpdate.tsx:46
-#: components/Interactions/InteractionDialog.tsx:357
+#: components/Interactions/InteractionDialog.tsx:364
 #: components/PickLists/definitions.ts:41
 #: components/Security/PreviewTables.tsx:67
 #. 🟥Verb. Used in: Components > Export Feed > Force Update ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Pick Lists > Definitions ⬤ Components > Security > Preview Tables
@@ -904,7 +904,7 @@ msgstr "Choisi"
 #: components/FormCells/FormTable.tsx:233
 #: components/FormCells/FormTable.tsx:321
 #: components/FormCells/FormTable.tsx:323
-#: components/FormSliders/IntegratedRecordSelector.tsx:84
+#: components/FormSliders/IntegratedRecordSelector.tsx:87
 #: components/Formatters/Definitions.tsx:242
 #: components/Header/index.tsx:158
 #: components/Molecules/AutoComplete.tsx:544
@@ -921,7 +921,7 @@ msgstr "Développer tout"
 
 #: components/FormCells/FormTable.tsx:289
 #: components/FormCells/FormTable.tsx:291
-#: components/FormSliders/IntegratedRecordSelector.tsx:84
+#: components/FormSliders/IntegratedRecordSelector.tsx:87
 #: components/Header/index.tsx:158
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Form Sliders > Integrated Record Selector ⬤ Components > Header > Index
 #, fuzzy
