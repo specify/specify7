@@ -912,7 +912,7 @@ msgstr "Запись, открываемая по умолчанию"
 msgid "altClickToSupressNewTab"
 msgstr ""
 "<key>{altKeyName:string}</key>+<key>Нажмите </key>, чтобы отключить новую "
-"вкладку."
+"вкладку"
 
 #: components/Preferences/UserDefinitions.tsx:503
 #. Used in: Components > Preferences > User Definitions
