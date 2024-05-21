@@ -1,13 +1,15 @@
 import logging
 import re
-from collections import namedtuple, deque
+from collections import deque, namedtuple
+from typing import NamedTuple, Tuple, Union, Optional
 
-from sqlalchemy import sql
+from sqlalchemy import sql, Table as SQLTable
 
 from specifyweb.specify.models import datamodel
 from specifyweb.specify.uiformatters import get_uiformatter
 from . import models
 from .query_ops import QueryOps
+from ..specify.load_datamodel import Table, Field, Relationship
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +39,7 @@ def extract_date_part(fieldname):
     return fieldname, date_part
 
 def make_table_list(fs):
-    path = fs.join_path if fs.tree_rank or not fs.join_path or fs.is_relationship() else fs.join_path[:-1]
+    path = fs.join_path if not fs.join_path or fs.is_relationship() else fs.join_path[:-1]
     first = [str(fs.root_table.tableId)]
 
     def field_to_elem(field):
@@ -48,17 +50,33 @@ def make_table_list(fs):
             return "%d-%s" % (related_model.tableId, field.name.lower())
 
 
-    rest = [field_to_elem(f) for f in path]
+    rest = [field_to_elem(f) for f in path if not isinstance(f, TreeRankQuery)]
     return ','.join(first + rest)
 
 def make_stringid(fs, table_list):
-    field_name = fs.tree_rank or (fs.join_path[-1].name if fs.join_path else '')
+    tree_ranks = [f.name for f in fs.join_path if isinstance(f, TreeRankQuery)]
+    if tree_ranks:
+        # FUTURE: Just having this for backwards compatibility;
+        field_name = tree_ranks[0]
+    else:
+        # BUG: Malformed previous stringids are rejected. they desrve it.
+        field_name = (fs.join_path[-1].name if fs.join_path else '')
     if fs.date_part is not None and fs.date_part != "Full Date":
         field_name += 'Numeric' + fs.date_part
     return table_list, fs.table.name.lower(), field_name
 
+class TreeRankQuery(Relationship):
+    # FUTURE: used to remember what the previous value was. Useless after 6 retires
+    original_field: str
+    pass
 
-class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table join_path table date_part tree_rank tree_field")):
+class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table join_path table date_part")):
+    root_table: Table
+    root_sql_table: SQLTable
+    join_path: Tuple[Union[Field, Relationship, TreeRankQuery]]
+    table: Table
+    date_part: Optional[str]
+
     @classmethod
     def from_path(cls, path_in, add_id=False):
         path = deque(path_in)
@@ -83,9 +101,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
                    root_sql_table=getattr(models, root_table.name),
                    join_path=tuple(join_path),
                    table=node,
-                   date_part='Full Date' if (join_path and join_path[-1].is_temporal()) else None,
-                   tree_rank=None,
-                   tree_field=None)
+                   date_part='Full Date' if (join_path and join_path[-1].is_temporal()) else None)
 
 
     @classmethod
@@ -111,21 +127,30 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
 
         extracted_fieldname, date_part = extract_date_part(field_name)
         field = node.get_field(extracted_fieldname, strict=False)
-        tree_rank = tree_field = None
-        if field is None:
+
+        if field is None: # try finding tree
             tree_id_match = TREE_ID_FIELD_RE.match(extracted_fieldname)
             if tree_id_match:
-                tree_rank = tree_id_match.group(1)
-                tree_field = 'ID'
+                tree_rank_name = tree_id_match.group(1)
+                field = 'ID'
             else:
                 tree_field_match = TAXON_FIELD_RE.match(extracted_fieldname) \
                                    if node is datamodel.get_table('Taxon') else None
                 if tree_field_match:
-                    tree_rank = tree_field_match.group(1)
-                    tree_field = tree_field_match.group(2)
+                    tree_rank_name = tree_field_match.group(1)
+                    field = (tree_field_match.group(2))
                 else:
-                    tree_rank = extracted_fieldname if extracted_fieldname else None
-        else:
+                    tree_rank_name = extracted_fieldname if extracted_fieldname else None
+                    field = ''
+            if tree_rank_name is not None:
+                tree_rank = TreeRankQuery()
+                # doesn't make sense to query across ranks of trees. no, it doesn't block a theoretical query like family -> continent
+                tree_rank.relatedModelName = node.name
+                tree_rank.name = tree_rank_name
+                join_path.append(tree_rank)
+                field = node.get_field('name' if field == '' else field)
+
+        if field is not None:
             join_path.append(field)
             if field.is_temporal() and date_part is None:
                 date_part = "Full Date"
@@ -134,9 +159,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
                      root_sql_table=getattr(models, root_table.name),
                      join_path=tuple(join_path),
                      table=node,
-                     date_part=date_part,
-                     tree_rank=tree_rank,
-                     tree_field=tree_field)
+                     date_part=date_part)
 
         logger.debug('parsed %s (is_relation %s) to %s. extracted_fieldname = %s',
                      stringid, is_relation, result, extracted_fieldname)
@@ -173,7 +196,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
             return None
 
     def is_relationship(self):
-        return self.tree_rank is None and self.get_field() is not None and self.get_field().is_relationship
+        return self.get_field() is not None and self.get_field().is_relationship
 
     def is_temporal(self):
         field = self.get_field()
@@ -189,10 +212,12 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
             return self.get_field().name.lower() in ['oldvalue','newvalue']
 
     def is_specify_username_end(self):
-       return len(self.join_path) > 2 and self.join_path[-1].name == 'name' and self.join_path[-2].is_relationship and self.join_path[-2].relatedModelName == 'SpecifyUser'
+        # TODO: Add unit tests.
+        return self.join_path and self.table.name.lower() == 'specifyuser'
+
 
     def apply_filter(self, query, orm_field, field, table, value=None, op_num=None, negate=False):
-        no_filter = op_num is None or (self.tree_rank is None and self.get_field() is None)
+        no_filter = op_num is None or (self.get_field() is None)
         if not no_filter:
             if isinstance(value, QueryFieldSpec):
                 _, other_field, _ = value.add_to_query(query.reset_joinpoint())
@@ -224,7 +249,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
 
     def add_spec_to_query(self, query, formatter=None, aggregator=None, cycle_detector=[]):
 
-        if self.tree_rank is None and self.get_field() is None:
+        if self.get_field() is None:
             return (*query.objectformatter.objformat(
                 query, self.root_sql_table, formatter), None, self.root_table)
 
@@ -238,11 +263,11 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
                 orm_field = query.objectformatter.aggregate(query, self.get_field(), orm_model, aggregator or formatter, cycle_detector)
         else:
             query, orm_model, table, field = self.build_join(query, self.join_path)
-            if self.tree_rank is not None:
-                query, orm_field = query.handle_tree_field(orm_model, table, self.tree_rank, self.tree_field)
+            if isinstance(field, TreeRankQuery):
+                tree_rank_idx = self.join_path.index(field)
+                query, orm_field, field, table = query.handle_tree_field(orm_model, table, field.name, self.join_path[tree_rank_idx+1:], self)
             else:
                 orm_field = getattr(orm_model, self.get_field().name)
-
                 if field.type == "java.sql.Timestamp":
                     # Only consider the date portion of timestamp fields.
                     # This is to replicate the behavior of Sp6. It might
