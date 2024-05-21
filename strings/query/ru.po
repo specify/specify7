@@ -274,8 +274,8 @@ msgstr "Сортировка по возрастанию"
 msgid "descendingSort"
 msgstr "Сортировка по убыванию"
 
-#: components/QueryBuilder/Line.tsx:472
-#: components/QueryBuilder/Line.tsx:476
+#: components/QueryBuilder/Line.tsx:471
+#: components/QueryBuilder/Line.tsx:475
 #. 🟥as in negate query condition. Used in: Components > Query Builder > Line
 #, fuzzy
 msgid "negate"
@@ -412,9 +412,9 @@ msgstr "и"
 msgid "startsWith"
 msgstr "Начинается с"
 
-#: components/QueryBuilder/Line.tsx:418
-#: components/QueryBuilder/Line.tsx:426
-#: components/QueryBuilder/Line.tsx:453
+#: components/QueryBuilder/Line.tsx:417
+#: components/QueryBuilder/Line.tsx:425
+#: components/QueryBuilder/Line.tsx:452
 #. Used in: Components > Query Builder > Line
 #, fuzzy
 msgid "or"

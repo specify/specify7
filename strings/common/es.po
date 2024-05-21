@@ -460,10 +460,10 @@ msgstr "Subido"
 #: components/Formatters/Fields.tsx:197
 #: components/Formatters/Fields.tsx:198
 #: components/QueryBuilder/Components.tsx:167
-#: components/QueryBuilder/Line.tsx:294
-#: components/QueryBuilder/Line.tsx:298
-#: components/QueryBuilder/Line.tsx:457
-#: components/QueryBuilder/Line.tsx:460
+#: components/QueryBuilder/Line.tsx:293
+#: components/QueryBuilder/Line.tsx:297
+#: components/QueryBuilder/Line.tsx:456
+#: components/QueryBuilder/Line.tsx:459
 #: components/SchemaConfig/UniquenessRuleRow.tsx:273
 #: components/Security/Policy.tsx:94
 #: components/Security/Policy.tsx:96
@@ -800,8 +800,8 @@ msgid "id"
 msgstr "ID"
 
 #: components/Attachments/index.tsx:163
-#: components/QueryBuilder/Line.tsx:496
-#: components/QueryBuilder/Line.tsx:504
+#: components/QueryBuilder/Line.tsx:495
+#: components/QueryBuilder/Line.tsx:503
 #. Used in: Components > Attachments > Index ⬤ Components > Query Builder > Line
 msgid "filter"
 msgstr "Filtrar"
