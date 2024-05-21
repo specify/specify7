@@ -26,8 +26,8 @@ import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import type {
-  AnySchema,
   AnyInteractionPreparation,
+  AnySchema,
   SerializedResource,
 } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
