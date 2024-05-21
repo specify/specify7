@@ -146,10 +146,10 @@ export const headerText = createDictionary({
   labelName: {
     'en-us': 'Label Name',
     'ru-ru': 'Название ярлыка',
-    'es-es': 'Herramientas administrativas',
+    'es-es': 'Nombre de etiqueta',
     'uk-ua': 'Назва бірки',
     'de-ch': 'Etikett Name',
-    'fr-fr': 'Outils administratifs',
+    'fr-fr': "Nom de l'étiquette",
   },
   reportName: {
     'en-us': 'Report Name',
@@ -187,20 +187,17 @@ export const headerText = createDictionary({
     'en-us': 'Tree repair is complete.',
     'ru-ru': 'Ремонт дерева завершен.',
     'es-es': 'La reparación del árbol está completa.',
-    'fr-fr': `
-      L'exportation a commencé. Vous recevrez une notification lorsque
-      l'exportation sera terminée.
-    `,
+    'fr-fr': 'La réparation des arbres est terminée.',
     'uk-ua': 'Ремонт дерева завершено.',
     'de-ch': 'Die Baumreparatur ist abgeschlossen.',
   },
   choose: {
     'en-us': 'Choose',
-    'de-ch': 'DwCA-Ressource',
+    'de-ch': 'Wählen',
     'es-es': 'Elegir',
     'fr-fr': 'Choisir',
-    'ru-ru': 'Основной',
-    'uk-ua': 'Ресурс DwCA',
+    'ru-ru': 'Выбирать',
+    'uk-ua': 'Виберіть',
   },
   chooseDwca: {
     'en-us': 'Choose DwCA',
@@ -222,7 +219,7 @@ export const headerText = createDictionary({
     'en-us': 'Choose Metadata resource',
     'ru-ru': 'Выберите ресурс метаданных',
     'es-es': 'Elija recurso de metadatos',
-    'fr-fr': 'Localisation incomplète',
+    'fr-fr': 'Choisissez la ressource de métadonnées',
     'uk-ua': 'Виберіть ресурс метаданих',
     'de-ch': 'Metadaten-Ressource auswählen',
   },
