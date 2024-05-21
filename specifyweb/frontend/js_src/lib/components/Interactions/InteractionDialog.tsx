@@ -303,18 +303,12 @@ export function InteractionDialog({
                     }}
                   >
                     {interactionsText.addUnassociated()}
-                  </Button.Info>
+                  </Button.Secondary>
                 ) : interactionsWithPrepTables.includes(actionTable.name) ? (
-                  <Link.Info href={getResourceViewUrl(actionTable.name)}>
+                  <Link.Secondary href={getResourceViewUrl(actionTable.name)}>
                     {interactionsText.withoutPreparations()}
                   </Link.Secondary>
                 ) : undefined}
-                {actionTable.name === 'Gift' &&
-                  itemCollection === undefined && (
-                    <Link.Secondary href={getResourceViewUrl('Gift')}>
-                      {interactionsText.withoutPreparations()}
-                    </Link.Secondary>
-                  )}
                 <span className="-ml-2 flex-1" />
                 {state.type === 'MissingState' &&
                 prepsData?.length !== 0 &&
