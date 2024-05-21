@@ -18,13 +18,13 @@ msgid "forms"
 msgstr "Форми"
 
 #: components/Atoms/DataEntry.tsx:153
-#: components/Forms/Save.tsx:219
+#: components/Forms/Save.tsx:223
 #: components/Statistics/ResultsDialog.tsx:68
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Components > Statistics > Results Dialog
 msgid "clone"
 msgstr "Клон"
 
-#: components/Forms/Save.tsx:220
+#: components/Forms/Save.tsx:224
 #. Used in: Components > Forms > Save
 msgid "cloneDescription"
 msgstr "Створіть повну копію поточного запису"
@@ -202,19 +202,19 @@ msgstr "Наступний запис"
 msgid "currentRecord"
 msgstr "Поточний об'єкт (з {total:number|formatted})"
 
-#: components/Forms/ResourceView.tsx:384
-#: components/Forms/Save.tsx:36
+#: components/Forms/ResourceView.tsx:388
+#: components/Forms/Save.tsx:37
 #. Used in: Components > Forms > Resource View ⬤ Components > Forms > Save
 msgid "unsavedFormUnloadProtect"
 msgstr "Ця форма не збережена."
 
 #: components/AttachmentsBulkImport/utils.ts:482
-#: components/Forms/Save.tsx:256
+#: components/Forms/Save.tsx:260
 #. 🟥Meaning a conflict occurred when saving. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Forms > Save
 msgid "saveConflict"
 msgstr "Зберегти конфлікт"
 
-#: components/Forms/Save.tsx:259
+#: components/Forms/Save.tsx:263
 #. Used in: Components > Forms > Save
 msgid "saveConflictDescription"
 msgstr ""
@@ -222,12 +222,12 @@ msgstr ""
 "іншій вкладці браузера та застаріли. Сторінку потрібно перезавантажити, щоб "
 "запобігти збереженню суперечливих даних."
 
-#: components/Forms/Save.tsx:289
+#: components/Forms/Save.tsx:293
 #. Used in: Components > Forms > Save
 msgid "saveBlocked"
 msgstr "Запис інформації"
 
-#: components/Forms/Save.tsx:292
+#: components/Forms/Save.tsx:296
 #. Used in: Components > Forms > Save
 msgid "saveBlockedDescription"
 msgstr "Форму неможливо зберегти через таку помилку:"
@@ -450,7 +450,7 @@ msgstr "Видалити з {recordSetTable:string}"
 msgid "nothingFound"
 msgstr "Нічого не знайдено"
 
-#: components/Forms/Save.tsx:225
+#: components/Forms/Save.tsx:229
 #. 🟥Verb. Button label. Used in: Components > Forms > Save
 msgid "carryForward"
 msgstr "Переносити"
@@ -460,7 +460,7 @@ msgstr "Переносити"
 msgid "carryForwardEnabled"
 msgstr "Показати кнопку «Перенести вперед»."
 
-#: components/Forms/Save.tsx:226
+#: components/Forms/Save.tsx:230
 #. Used in: Components > Forms > Save
 msgid "carryForwardDescription"
 msgstr "Створіть новий запис із певними перенесеними полями"
@@ -491,7 +491,7 @@ msgstr "Показати кнопку клонування"
 msgid "addButtonEnabled"
 msgstr "Показати кнопку «Додати»."
 
-#: components/Forms/Save.tsx:232
+#: components/Forms/Save.tsx:236
 #. Used in: Components > Forms > Save
 msgid "addButtonDescription"
 msgstr "Створіть новий порожній запис"
@@ -642,12 +642,12 @@ msgstr "Нове {tableName:string}"
 msgid "resourceFormatter"
 msgstr "{tableName:string} #{id:number}"
 
-#: components/Forms/ResourceView.tsx:209
+#: components/Forms/ResourceView.tsx:212
 #. Used in: Components > Forms > Resource View
 msgid "resourceDeleted"
 msgstr "Ресурс видалено"
 
-#: components/Forms/ResourceView.tsx:212
+#: components/Forms/ResourceView.tsx:215
 #. Used in: Components > Forms > Resource View
 msgid "resourceDeletedDescription"
 msgstr "Елемент успішно видалено."

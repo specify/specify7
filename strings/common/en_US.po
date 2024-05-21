@@ -36,7 +36,7 @@ msgstr "No"
 #: components/FormSliders/RecordSelectorFromIds.tsx:257
 #: components/Forms/DeleteButton.tsx:107
 #: components/Forms/DeleteButton.tsx:131
-#: components/Forms/ResourceView.tsx:341
+#: components/Forms/ResourceView.tsx:345
 #: components/Header/ChooseCollection.tsx:26
 #: components/Header/ExpressSearchTask.tsx:49
 #: components/Interactions/InteractionDialog.tsx:244
@@ -184,10 +184,10 @@ msgstr "Create"
 #: components/Formatters/Element.tsx:88
 #: components/Forms/DataTask.tsx:134
 #: components/Forms/DeleteButton.tsx:161
-#: components/Forms/ResourceView.tsx:208
-#: components/Forms/ResourceView.tsx:344
-#: components/Forms/Save.tsx:253
-#: components/Forms/Save.tsx:288
+#: components/Forms/ResourceView.tsx:211
+#: components/Forms/ResourceView.tsx:348
+#: components/Forms/Save.tsx:257
+#: components/Forms/Save.tsx:292
 #: components/Header/UserTools.tsx:75
 #: components/HomePage/AboutSpecify.tsx:60
 #: components/Interactions/InteractionDialog.tsx:220
@@ -284,7 +284,7 @@ msgstr "Clear all"
 
 #: components/AttachmentsBulkImport/Datasets.tsx:266
 #: components/AttachmentsBulkImport/Import.tsx:298
-#: components/Forms/Save.tsx:52
+#: components/Forms/Save.tsx:53
 #: components/Preferences/index.tsx:100
 #: components/QueryBuilder/FromMap.tsx:74
 #: components/QueryBuilder/Save.tsx:67
@@ -309,7 +309,7 @@ msgstr "Save"
 #: components/ExportFeed/Editor.tsx:133
 #: components/FormSliders/RecordSelectorFromIds.tsx:176
 #: components/Formatters/List.tsx:138
-#: components/Forms/Save.tsx:231
+#: components/Forms/Save.tsx:235
 #: components/Merging/CompareSubView.tsx:167
 #: components/Molecules/AutoComplete.tsx:525
 #: components/PickLists/index.tsx:279
@@ -528,7 +528,7 @@ msgstr "New"
 #: components/FormEditor/Create.tsx:160
 #: components/FormMeta/index.tsx:96
 #: components/FormMeta/index.tsx:98
-#: components/Forms/ResourceView.tsx:218
+#: components/Forms/ResourceView.tsx:221
 #: components/Molecules/ResourceLink.tsx:111
 #: components/Reports/index.tsx:255
 #: components/Reports/index.tsx:259
@@ -942,7 +942,7 @@ msgstr "{header:string}:"
 #: components/Formatters/Element.tsx:92
 #: components/Formatters/Formatter.tsx:126
 #: components/Forms/BaseResourceView.tsx:132
-#: components/Forms/Save.tsx:294
+#: components/Forms/Save.tsx:298
 #: components/Leaflet/index.ts:171
 #: components/Merging/Header.tsx:213
 #: components/Molecules/FilePicker.tsx:105

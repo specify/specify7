@@ -17,13 +17,13 @@ msgid "forms"
 msgstr "Forms"
 
 #: components/Atoms/DataEntry.tsx:153
-#: components/Forms/Save.tsx:219
+#: components/Forms/Save.tsx:223
 #: components/Statistics/ResultsDialog.tsx:68
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Components > Statistics > Results Dialog
 msgid "clone"
 msgstr "Clone"
 
-#: components/Forms/Save.tsx:220
+#: components/Forms/Save.tsx:224
 #. Used in: Components > Forms > Save
 msgid "cloneDescription"
 msgstr "Create a full copy of current record"
@@ -210,19 +210,19 @@ msgstr "Next Record"
 msgid "currentRecord"
 msgstr "Current object (out of {total:number|formatted})"
 
-#: components/Forms/ResourceView.tsx:384
-#: components/Forms/Save.tsx:36
+#: components/Forms/ResourceView.tsx:388
+#: components/Forms/Save.tsx:37
 #. Used in: Components > Forms > Resource View ⬤ Components > Forms > Save
 msgid "unsavedFormUnloadProtect"
 msgstr "This form has not been saved."
 
 #: components/AttachmentsBulkImport/utils.ts:482
-#: components/Forms/Save.tsx:256
+#: components/Forms/Save.tsx:260
 #. 🟥Meaning a conflict occurred when saving. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Forms > Save
 msgid "saveConflict"
 msgstr "Save conflict"
 
-#: components/Forms/Save.tsx:259
+#: components/Forms/Save.tsx:263
 #. Used in: Components > Forms > Save
 msgid "saveConflictDescription"
 msgstr ""
@@ -230,12 +230,12 @@ msgstr ""
 "browser tab and is out of date. The page must be reloaded to prevent "
 "inconsistent data from being saved."
 
-#: components/Forms/Save.tsx:289
+#: components/Forms/Save.tsx:293
 #. Used in: Components > Forms > Save
 msgid "saveBlocked"
 msgstr "Save blocked"
 
-#: components/Forms/Save.tsx:292
+#: components/Forms/Save.tsx:296
 #. Used in: Components > Forms > Save
 msgid "saveBlockedDescription"
 msgstr "Form cannot be saved because of the following error:"
@@ -458,7 +458,7 @@ msgstr "Remove from {recordSetTable:string}"
 msgid "nothingFound"
 msgstr "Nothing found"
 
-#: components/Forms/Save.tsx:225
+#: components/Forms/Save.tsx:229
 #. 🟥Verb. Button label. Used in: Components > Forms > Save
 msgid "carryForward"
 msgstr "Carry Forward"
@@ -468,7 +468,7 @@ msgstr "Carry Forward"
 msgid "carryForwardEnabled"
 msgstr "Show Carry Forward button"
 
-#: components/Forms/Save.tsx:226
+#: components/Forms/Save.tsx:230
 #. Used in: Components > Forms > Save
 msgid "carryForwardDescription"
 msgstr "Create a new record with certain fields carried over"
@@ -499,7 +499,7 @@ msgstr "Show Clone button"
 msgid "addButtonEnabled"
 msgstr "Show Add button"
 
-#: components/Forms/Save.tsx:232
+#: components/Forms/Save.tsx:236
 #. Used in: Components > Forms > Save
 msgid "addButtonDescription"
 msgstr "Create a new blank record"
@@ -650,12 +650,12 @@ msgstr "New {tableName:string}"
 msgid "resourceFormatter"
 msgstr "{tableName:string} #{id:number}"
 
-#: components/Forms/ResourceView.tsx:209
+#: components/Forms/ResourceView.tsx:212
 #. Used in: Components > Forms > Resource View
 msgid "resourceDeleted"
 msgstr "Resource deleted"
 
-#: components/Forms/ResourceView.tsx:212
+#: components/Forms/ResourceView.tsx:215
 #. Used in: Components > Forms > Resource View
 msgid "resourceDeletedDescription"
 msgstr "Item was deleted successfully."
