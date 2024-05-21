@@ -521,7 +521,7 @@ export const preferencesText = createDictionary({
     'fr-fr': `
       Algorithme de recherche (pour les relations avec les tables arborescentes)
     `,
-    'uk-ua': "Алгоритм пошуку (для зв'язків із деревоподібними таблицями)",
+    'uk-ua': 'Алгоритм пошуку (для зв’язків із деревоподібними таблицями)',
     'de-ch': 'Suchalgorithmus (für Beziehungen mit Baumtabellen)',
   },
   startsWithInsensitive: {
@@ -969,7 +969,8 @@ export const preferencesText = createDictionary({
     'es-es':
       'Dirección de movimiento cuando se presiona la tecla <key>Tab</key>',
     'fr-fr': `
-      Sens de déplacement lorsque la touche <key>Tabulation</key> est enfoncée
+      Direction du mouvement lorsque la touche <key>Tabulation</key> est
+      enfoncée
     `,
     'uk-ua': 'Напрямок руху при натисканні клавіші <key>Tab</key>.',
     'de-ch': 'Bewegungsrichtung, wenn die Taste <key>Tab</key> gedrückt wird',
@@ -1227,7 +1228,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Гибкая ширина столбца сетки подпредставления',
     'es-es': 'Ancho de columna de cuadrícula de subvista flexible',
     'fr-fr': 'Largeur de colonne de grille de sous-vue flexible',
-    'uk-ua': 'Гнучка ширина стовпця сітки підперегляду',
+    'uk-ua': 'Гнучка ширина стовпця сітки вкладеного перегляду',
     'de-ch': 'Flexible Spaltenbreite des Unteransichtsrasters',
   },
   closeOnEsc: {
@@ -1251,7 +1252,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Укажите значок сети',
     'es-es': 'Especificar insignia de red',
     'fr-fr': 'Spécifier le badge réseau',
-    'uk-ua': 'Укажіть позначку мережі',
+    'uk-ua': 'Укажіть значок мережі',
     'de-ch': 'Netzwerk-Badge angeben',
   },
   useAccessibleFullDatePicker: {
@@ -1536,8 +1537,8 @@ export const preferencesText = createDictionary({
       Mettez un délimiteur par ligne
     `,
     'uk-ua': `
-      Список розділювачів для використання на додаток до визначених вище.
-      Поставте один роздільник на рядок
+      Список роздільників, які слід використовувати на додаток до визначених
+      вище. Поставте один роздільник на рядок
     `,
     'de-ch': `
       Eine Liste der zu verwendenden Trennzeichen zusätzlich zu den oben
@@ -1719,7 +1720,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Помните о размерах диалогового окна',
     'es-es': 'Recuerde los tamaños de las ventanas de diálogo',
     'fr-fr': 'Mémoriser les tailles des fenêtres de dialogue',
-    'uk-ua': "Пам'ятайте про розміри діалогових вікон",
+    'uk-ua': "Запам'ятайте розміри діалогових вікон",
     'de-ch': 'Dialogfenstergrößen merken',
   },
   rememberDialogPositions: {
@@ -1940,7 +1941,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Basisansicht',
     'es-es': 'Vista básica',
     'fr-fr': 'Vue de base',
-    'ru-ru': 'Основной вид',
+    'ru-ru': 'Базовый вид',
     'uk-ua': 'Основний вигляд',
   },
   detailedView: {

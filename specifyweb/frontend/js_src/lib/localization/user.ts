@@ -308,7 +308,7 @@ export const userText = createDictionary({
       collection.
     `,
     'ru-ru': `
-      Доступ к запрошенному ресурсу невозможен при входе в текущую коллекцию.
+      Доступ к запрошенному ресурсу недоступен при входе в текущую коллекцию.
     `,
     'es-es': `
       No se puede acceder al recurso solicitado mientras se está conectado a la
@@ -932,7 +932,7 @@ export const userText = createDictionary({
     `,
     'de-ch': `
       Es ist kein externer Identitätsanbieter konfiguriert. Sie können einige in
-      den 7 Servereinstellungen konfigurieren.
+      den Servereinstellungen festlegen.
     `,
   },
   legacyPermissions: {

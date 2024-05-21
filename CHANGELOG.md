@@ -9,6 +9,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.9.5](https://github.com/specify/specify7/compare/v7.9.4...v7.9.5) (20 May 2024)
+
+This release has for objective to migrated Workbench to React to align it with the rest of the application to ensure consistency and modernising the codebase.
+Workbench functionalities remain unchanged but this release helps improve internal development and maintenance of the workbench going forward. 
+[Workbench Conversion](https://github.com/specify/specify7/pull/4637)
+
+### Added
+
+- **Live Search feature in Workbench**
+
 ## [7.9.4](https://github.com/specify/specify7/compare/v7.9.3.1...v7.9.4) (13 May 2024)
 
 ### Added

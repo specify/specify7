@@ -34,17 +34,13 @@ export function WbUtilsComponent({
     useBooleanState(true);
 
   const handleSearch = React.useCallback(
-    _.debounce(
-      (event: React.KeyboardEvent<HTMLInputElement>) => {
-        if (searchRef.current && searchRef.current?.value.length > 0)
-          unclickSearch();
-        else clickSearch();
-        utils.searchCells(event, searchRef.current);
-      },
-      debounceRate,
-      false
-    ),
-    [debounceRate]
+    _.debounce((event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (searchRef.current && searchRef.current?.value.length > 0)
+        unclickSearch();
+      else clickSearch();
+      utils.searchCells(event, searchRef.current);
+    }, debounceRate),
+    [debounceRate, utils]
   );
 
   return (
