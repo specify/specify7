@@ -756,6 +756,7 @@ class ReplaceRecordTests(ApiTests):
         # Create collecting events
         collecting_event_1 = models.Collectingevent.objects.create(discipline=self.discipline)
         collecting_event_2 = models.Collectingevent.objects.create(discipline=self.discipline)
+        collecting_event_3 = models.Collectingevent.objects.create(discipline=self.discipline)
         collecting_event_attribute = models.Collectingeventattribute.objects.create(discipline=self.discipline)
         collecting_trip = models.Collectingtrip.objects.create(discipline=self.discipline)
         locality = models.Locality.objects.create(discipline=self.discipline)
@@ -767,12 +768,22 @@ class ReplaceRecordTests(ApiTests):
         collecting_event_1.collectingtrip = collecting_trip
         collecting_event_1.paleocontext = paleo_context
         collecting_event_1.save()
+        collecting_event_3.collectingeventattribute = collecting_event_attribute
+        collecting_event_3.collectingtrip = collecting_trip
+        collecting_event_3.paleocontext = paleo_context
+        collecting_event_3.save()
+        collector_1 = models.Collector.objects.create(
+            isprimary=True, ordernumber=1, agent=self.agent, collectingevent=collecting_event_1)
+        collector_2 = models.Collector.objects.create(
+            isprimary=True, ordernumber=1, agent=self.agent, collectingevent=collecting_event_2)
+        collector_3 = models.Collector.objects.create(
+            isprimary=True, ordernumber=1, agent=self.agent, collectingevent=collecting_event_3)
 
         # Assert that the api request ran successfully
         response = c.post(
             f'/api/specify/collectingevent/replace/{collecting_event_2.id}/',
             data=json.dumps({
-                'old_record_ids': [collecting_event_1.id],
+                'old_record_ids': [collecting_event_1.id, collecting_event_3.id],
                 'background': False
             }),
             content_type='application/json'
@@ -806,6 +817,13 @@ class ReplaceRecordTests(ApiTests):
         # Assert that the collecting event's independent relationships, without a corresponding real database column,
         # were not deleted. (collectingobjects)
         self.assertTrue(models.Collectionobject.objects.filter(id=collection_object.id).exists())
+
+        # Assert that the collectors were updated correctly to the new collecting event.
+        # Also, assert that remove duplicate collector records with the same agent were deleted.
+        self.assertEqual(models.Collector.objects.filter(agent=self.agent).count(), 1)
+        self.assertEqual(models.Collector.objects.filter(id=collector_1.id).count(), 0)
+        self.assertEqual(models.Collector.objects.filter(id=collector_2.id).count(), 1)
+        self.assertEqual(models.Collector.objects.filter(id=collector_3.id).count(), 0)
 
         # Assert that a new api request will not find the old collection event
         response = c.post(
