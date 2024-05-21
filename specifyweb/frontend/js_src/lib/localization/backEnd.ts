@@ -452,22 +452,6 @@ export const backEndText = createDictionary({
   operationAcrossTrees: {
     'en-us': '{operation:string} across trees',
   },
-  mergeAcrossTrees: {
-    'en-us': 'Merging across trees',
-    'es-es': 'Fusionando entre árboles',
-    'fr-fr': 'Fusion entre arbres',
-    'ru-ru': 'Слияние деревьев',
-    'uk-ua': 'Комбінування дерев',
-    'de-ch': 'Zusammenführen über Bäume hinweg',
-  },
-  synonymizeAcrossTrees: {
-    'en-us': 'Synonymizing across trees',
-    'es-es': 'Sinonimizando entre árboles',
-    'fr-fr': 'Synonymiser à travers les arbres',
-    'ru-ru': 'Синонимизация деревьев',
-    'uk-ua': 'Синонімізація дерев',
-    'de-ch': 'Synonymisierung über Bäume hinweg',
-  },
   limitReachedDeterminingAccepted: {
     'en-us': `
       Could not find accepted taxon for synonymized taxon with ID of
