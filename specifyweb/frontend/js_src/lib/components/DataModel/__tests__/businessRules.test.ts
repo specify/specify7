@@ -3,6 +3,7 @@ import { renderHook } from '@testing-library/react';
 import { overrideAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
 import { overwriteReadOnly } from '../../../utils/types';
+import { getPref } from '../../InitialContext/remotePrefs';
 import type { SerializedResource } from '../helperTypes';
 import { getResourceApiUrl } from '../resource';
 import { useSaveBlockers } from '../saveBlockers';
@@ -197,6 +198,18 @@ describe('treeBusinessRules', () => {
     _tableName: 'Taxon',
     id: 3,
     name: 'Acipenser',
+    isAccepted: true,
+    rankId: 180,
+    definition: '/api/specify/taxontreedef/1/',
+    definitionItem: '/api/specify/taxontreedefitem/9/',
+    parent: '/api/specify/taxon/2/',
+  };
+
+  const husoResponse: Partial<SerializedResource<Taxon>> = {
+    _tableName: 'Taxon',
+    id: 6,
+    name: 'Huso',
+    isAccepted: false,
     rankId: 180,
     definition: '/api/specify/taxontreedef/1/',
     definitionItem: '/api/specify/taxontreedefitem/9/',
@@ -207,6 +220,7 @@ describe('treeBusinessRules', () => {
     _tableName: 'Taxon',
     id: 4,
     name: 'oxyrinchus',
+    isAccepted: true,
     rankId: 220,
     definition: '/api/specify/taxontreedef/1/',
     definitionItem: '/api/specify/taxontreedefitem/2/',
@@ -218,6 +232,7 @@ describe('treeBusinessRules', () => {
     id: 5,
     rankId: 230,
     name: 'oxyrinchus',
+    isAccepted: true,
     definition: '/api/specify/taxontreedef/1/',
     definitionItem: '/api/specify/taxontreedefitem/22/',
   };
@@ -250,18 +265,47 @@ describe('treeBusinessRules', () => {
     resource_uri: '/api/specify/taxontreedefitem/2/',
   };
 
+  const subSpeciesResponse: Partial<SerializedResource<TaxonTreeDefItem>> = {
+    id: 22,
+    fullNameSeparator: ' ',
+    isEnforced: false,
+    isInFullName: true,
+    name: 'Subspecies',
+    rankId: 230,
+    title: null,
+    version: 0,
+    parent: '/api/specify/taxontreedefitem/2/',
+    treeDef: '/api/specify/taxontreedef/1/',
+    resource_uri: '/api/specify/taxontreedefitem/22/',
+  };
+
   const oxyrinchusFullNameResponse = 'Acipenser oxyrinchus';
+  const dauricusFullNameResponse = 'Huso dauricus';
 
   overrideAjax('/api/specify/taxon/2/', animaliaResponse);
   overrideAjax('/api/specify/taxon/3/', acipenserResponse);
+  overrideAjax('/api/specify/taxon/6/', husoResponse);
   overrideAjax('/api/specify/taxon/4/', oxyrinchusSpeciesResponse);
   overrideAjax('/api/specify/taxon/5/', oxyrinchusSubSpeciesResponse);
   overrideAjax('/api/specify/taxontreedefitem/9/', genusResponse);
   overrideAjax('/api/specify/taxontreedefitem/2/', speciesResponse);
+  overrideAjax('/api/specify/taxontreedefitem/22/', subSpeciesResponse);
   overrideAjax(
     '/api/specify_tree/taxon/3/predict_fullname/?name=oxyrinchus&treedefitemid=2',
     oxyrinchusFullNameResponse
   );
+  overrideAjax(
+    '/api/specify_tree/taxon/6/predict_fullname/?name=dauricus&treedefitemid=2',
+    dauricusFullNameResponse
+  );
+  overrideAjax('/api/specify/taxon/?limit=1&parent=4&orderby=rankid', {
+    objects: [oxyrinchusSubSpeciesResponse],
+    meta: {
+      limit: 1,
+      offset: 0,
+      total_count: 1,
+    },
+  });
 
   test('fullName being set', async () => {
     const oxyrinchus = new tables.Taxon.Resource({
@@ -305,5 +349,53 @@ describe('treeBusinessRules', () => {
       useSaveBlockers(taxon, tables.Taxon.getField('parent'))
     );
     expect(result.current[0]).toStrictEqual(['Bad tree structure.']);
+  });
+  test('saveBlocker on synonymized parent', async () => {
+    const taxon = new tables.Taxon.Resource({
+      name: 'dauricus',
+      parent: '/api/specify/taxon/6/',
+      rankId: 220,
+      definition: '/api/specify/taxontreedef/1/',
+      definitionItem: '/api/specify/taxontreedefitem/2/',
+    });
+
+    await taxon.businessRuleManager?.checkField('parent');
+
+    const { result } = renderHook(() =>
+      useSaveBlockers(taxon, tables.Taxon.getField('parent'))
+    );
+    expect(result.current[0]).toStrictEqual(['Bad tree structure.']);
+
+    await taxon.businessRuleManager?.checkField('integer1');
+
+    const { result: fieldChangeResult } = renderHook(() =>
+      useSaveBlockers(taxon, tables.Taxon.getField('parent'))
+    );
+    expect(fieldChangeResult.current[0]).toStrictEqual(['Bad tree structure.']);
+  });
+  test('saveBlocker not on synonymized parent w/preference', async () => {
+    const remotePrefs = await import('../../InitialContext/remotePrefs');
+    jest
+      .spyOn(remotePrefs, 'getPref')
+      .mockImplementation((key) =>
+        key === 'sp7.allow_adding_child_to_synonymized_parent.Taxon'
+          ? true
+          : getPref(key)
+      );
+
+    const taxon = new tables.Taxon.Resource({
+      name: 'dauricus',
+      parent: '/api/specify/taxon/6/',
+      rankId: 220,
+      definition: '/api/specify/taxontreedef/1/',
+      definitionItem: '/api/specify/taxontreedefitem/2/',
+    });
+
+    await taxon.businessRuleManager?.checkField('parent');
+
+    const { result } = renderHook(() =>
+      useSaveBlockers(taxon, tables.Taxon.getField('parent'))
+    );
+    expect(result.current[0]).toStrictEqual([]);
   });
 });

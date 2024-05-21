@@ -503,7 +503,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Поле со списком запроса',
     'es-es': 'Cuadro combinado de consulta',
     'uk-ua': 'Поле зі списком запитів',
-    'de-ch': 'Abfrage-Kombinationsfeld',
+    'de-ch': 'Kombinationsfeld für Abfragen',
     'fr-fr': 'Zone de liste déroulante de requête',
   },
   searchAlgorithm: {
@@ -521,7 +521,7 @@ export const preferencesText = createDictionary({
     'fr-fr': `
       Algorithme de recherche (pour les relations avec les tables arborescentes)
     `,
-    'uk-ua': "Алгоритм пошуку (для зв'язків із деревоподібними таблицями)",
+    'uk-ua': 'Алгоритм пошуку (для зв’язків із деревоподібними таблицями)',
     'de-ch': 'Suchalgorithmus (für Beziehungen mit Baumtabellen)',
   },
   startsWithInsensitive: {
@@ -649,8 +649,8 @@ export const preferencesText = createDictionary({
       для відповідності будь-якій кількості символів
     `,
     'de-ch': `
-      Kann _ für jedes einzelne Zeichen oder % für jede Anzahl von Zeichen
-      verwenden
+      Kann _ für jedes einzelne Zeichen oder % für jede beliebige Anzahl von
+      Zeichen verwenden
     `,
   },
   highlightMatch: {
@@ -969,7 +969,8 @@ export const preferencesText = createDictionary({
     'es-es':
       'Dirección de movimiento cuando se presiona la tecla <key>Tab</key>',
     'fr-fr': `
-      Sens de déplacement lorsque la touche <key>Tabulation</key> est enfoncée
+      Direction du mouvement lorsque la touche <key>Tabulation</key> est
+      enfoncée
     `,
     'uk-ua': 'Напрямок руху при натисканні клавіші <key>Tab</key>.',
     'de-ch': 'Bewegungsrichtung, wenn die Taste <key>Tab</key> gedrückt wird',
@@ -1251,7 +1252,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Укажите значок сети',
     'es-es': 'Especificar insignia de red',
     'fr-fr': 'Spécifier le badge réseau',
-    'uk-ua': 'Укажіть позначку мережі',
+    'uk-ua': 'Укажіть значок мережі',
     'de-ch': 'Netzwerk-Badge angeben',
   },
   useAccessibleFullDatePicker: {
@@ -1334,7 +1335,7 @@ export const preferencesText = createDictionary({
       '<key>{altKeyName:string}</key>+<key>Click</key> to suppress new tab',
     'ru-ru': `
       <key>{altKeyName:string}</key>+<key>Нажмите </key>, чтобы отключить новую
-      вкладку.
+      вкладку
     `,
     'es-es': `
       <key>{altKeyName:string}</key>+<key>Haga clic en </key> para suprimir la
@@ -1432,7 +1433,7 @@ export const preferencesText = createDictionary({
   tableIcon: {
     'en-us': 'Table icon',
     'ru-ru': 'Значок таблицы',
-    'es-es': 'Icono de tabla',
+    'es-es': 'Icono de mesa',
     'fr-fr': 'Icône de tableau',
     'uk-ua': 'Значок таблиці',
     'de-ch': 'Tabellensymbol',
@@ -1536,8 +1537,8 @@ export const preferencesText = createDictionary({
       Mettez un délimiteur par ligne
     `,
     'uk-ua': `
-      Список розділювачів для використання на додаток до визначених вище.
-      Поставте один роздільник на рядок
+      Список роздільників, які слід використовувати на додаток до визначених
+      вище. Поставте один роздільник на рядок
     `,
     'de-ch': `
       Eine Liste der zu verwendenden Trennzeichen zusätzlich zu den oben
@@ -1719,7 +1720,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Помните о размерах диалогового окна',
     'es-es': 'Recuerde los tamaños de las ventanas de diálogo',
     'fr-fr': 'Mémoriser les tailles des fenêtres de dialogue',
-    'uk-ua': "Пам'ятайте про розміри діалогових вікон",
+    'uk-ua': "Запам'ятайте розміри діалогових вікон",
     'de-ch': 'Dialogfenstergrößen merken',
   },
   rememberDialogPositions: {

@@ -179,9 +179,9 @@ export const userText = createDictionary({
       постачальником надалі.
     `,
     'de-ch': `
-      Sie wurden aufgefordert, Ihrem Benutzerkonto bei Specify einen externen
-      Login zuzuordnen. Damit können Sie sich künftig mit dem von Ihnen
-      gewählten Anbieter bei Specify anmelden.
+      Sie wurden aufgefordert, Ihrem Specify-Benutzerkonto einen externen Login
+      zuzuordnen. Dadurch können Sie sich künftig mit dem von Ihnen gewählten
+      Anbieter bei Specify anmelden.
     `,
   },
   legacyLogin: {
@@ -220,9 +220,9 @@ export const userText = createDictionary({
     `,
     'uk-ua': `
       Наразі немає жодного користувача, пов’язаного з вашим обліковим записом
-      {providerName:string}. Якщо у вас є вказане ім’я користувача та пароль,
-      ви можете ввести їх нижче, щоб пов’язати цього користувача з вашим
-      обліковим записом {providerName:string} для майбутніх входів.
+      {providerName:string}. Якщо у вас є вказати ім’я користувача та пароль,
+      ви можете ввести їх нижче, щоб пов’язати цього користувача з обліковим
+      записом {providerName:string} для майбутніх входів.
     `,
     'de-ch': `
       Derzeit ist Ihrem {providerName:string}-Konto kein Benutzer vom Typ
@@ -915,7 +915,7 @@ export const userText = createDictionary({
       Specify 7 server settings
     `,
     'ru-ru': `
-      Внешний поставщик удостоверений не настроен. Некоторые из них можно
+      Внешний поставщик удостоверений не настроен. Некоторые настройки можно
       настроить в разделе «Укажите 7 настроек сервера».
     `,
     'es-es': `
@@ -932,7 +932,7 @@ export const userText = createDictionary({
     `,
     'de-ch': `
       Es ist kein externer Identitätsanbieter konfiguriert. Sie können einige in
-      den 7 Servereinstellungen konfigurieren.
+      den Servereinstellungen festlegen.
     `,
   },
   legacyPermissions: {

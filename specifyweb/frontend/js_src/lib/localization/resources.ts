@@ -26,12 +26,12 @@ export const resourcesText = createDictionary({
     'de-ch': 'Formular Definition',
   },
   formDefinitions: {
-    'en-us': 'Form Definitions',
-    'ru-ru': 'Определения форм',
-    'es-es': 'Definiciones de formulario',
-    'fr-fr': 'Définitions de formulaire',
-    'uk-ua': 'Визначення форм',
-    'de-ch': 'Formular Definitionen',
+    'en-us': 'Form Definition',
+    'ru-ru': 'Определение формы',
+    'es-es': 'Definición de formulario',
+    'fr-fr': 'Définition du formulaire',
+    'uk-ua': 'Визначення форми',
+    'de-ch': 'Formulardefinition',
   },
   loadFile: {
     'en-us': 'Load File',
@@ -148,7 +148,7 @@ export const resourcesText = createDictionary({
   uiFormatters: {
     'en-us': 'Field Formatters',
     'ru-ru': 'Форматировщики полей',
-    'es-es': 'Formateadores de campos',
+    'es-es': 'Formateadores de campo',
     'fr-fr': 'Formateurs de champs',
     'uk-ua': 'Форматувальники полів',
     'de-ch': 'Feldformatierer',
@@ -204,8 +204,8 @@ export const resourcesText = createDictionary({
       можно настроить на основе значения в записи.
     `,
     'uk-ua': `
-      «Формат таблиці» визначає, як дані з певної таблиці відображаються в
-      результатах запиту, експорті та комбінованих полях запиту. Він визначає
+      «Формат таблиці» керує тим, як дані з певної таблиці відображаються в
+      результатах запитів, експорті та комбінованих полях запитів. Він визначає
       поля для відображення та їх порядок. Умовне форматування можна налаштувати
       на основі значення в записі.
     `,
@@ -249,8 +249,8 @@ export const resourcesText = createDictionary({
     'ru-ru': `
       «Агрегация таблиц» управляет тем, как несколько записей таблицы
       объединяются в одну текстовую строку. Формат таблицы, разделитель,
-      суффикс, поле сортировки и предел предварительного просмотра записей можно
-      настроить. Его можно отобразить в результатах запроса и в форматах
+      суффикс, поле сортировки и ограничение предварительного просмотра записи
+      можно настроить. Его можно отобразить в результатах запроса и в форматах
       таблиц.
     `,
     'uk-ua': `
@@ -445,10 +445,10 @@ export const resourcesText = createDictionary({
   },
   failedParsingXml: {
     'en-us': 'Failed to parse XML',
-    'ru-ru': 'Не удалось проанализировать XML',
+    'ru-ru': 'Не удалось разобрать XML',
     'de-ch': 'XML konnte nicht analysiert werden',
     'es-es': 'No se pudo analizar XML',
-    'fr-fr': "Échec de l'analyse XML",
+    'fr-fr': "Échec de l'analyse du XML",
     'uk-ua': 'Не вдалося проаналізувати XML',
   },
   name: {
@@ -505,7 +505,7 @@ export const resourcesText = createDictionary({
     'es-es': '(por defecto)',
     'fr-fr': '(défaut)',
     'ru-ru': '(по умолчанию)',
-    'uk-ua': '(за замовчуванням)',
+    'uk-ua': '(за умовчанням)',
   },
   sortField: {
     'en-us': 'Sort Field',
@@ -568,7 +568,7 @@ export const resourcesText = createDictionary({
     'es-es': 'Agregar definición',
     'fr-fr': 'Ajouter une définition',
     'ru-ru': 'Добавить определение',
-    'uk-ua': 'Додайте визначення',
+    'uk-ua': 'Додати визначення',
   },
   deleteDefinition: {
     'en-us': 'Delete definition',
@@ -666,7 +666,7 @@ export const resourcesText = createDictionary({
       changer de collection avant de modifier cette ressource.
     `,
     'ru-ru': `
-      Этот ресурс принадлежит другой коллекции/дисциплине, отличной от той, в
+      Этот ресурс принадлежит к другой коллекции/дисциплине, отличной от той, в
       которой вы сейчас находитесь. Перед редактированием этого ресурса
       рекомендуется сменить коллекцию.
     `,
@@ -733,24 +733,24 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Запустити в колекції',
   },
   createNewForm: {
-    'en-us': 'Create new form',
+    'en-us': 'Create a new view definition',
     'de-ch': 'Definition',
-    'es-es': 'Crear nuevo formulario',
-    'fr-fr': 'Créer un nouveau formulaire',
-    'ru-ru': 'Создать новую форму',
-    'uk-ua': 'Створити нову форму',
+    'es-es': 'Crear una nueva definición de vista',
+    'fr-fr': 'Créer une nouvelle définition de vue',
+    'ru-ru': 'Создайте новое определение представления',
+    'uk-ua': 'Створіть нове визначення подання',
   },
   copyFromExistingForm: {
-    'en-us': 'Copy from existing form',
-    'de-ch': 'Aus vorhandenem Formular kopieren',
-    'es-es': 'Copiar del formulario existente',
-    'fr-fr': "Copier à partir d'un formulaire existant",
-    'ru-ru': 'Копировать из существующей формы',
-    'uk-ua': 'Копіювати з існуючої форми',
+    'en-us': 'Copy existing view definition',
+    'de-ch': 'Vorhandene Ansichtsdefinition kopieren',
+    'es-es': 'Copiar la definición de vista existente',
+    'fr-fr': 'Copier la définition de vue existante',
+    'ru-ru': 'Копировать существующее определение представления',
+    'uk-ua': 'Копіювати існуюче визначення перегляду',
   },
   copyDefaultForm: {
-    'en-us': 'Copy default form',
-    'de-ch': 'Standardformular kopieren',
+    'en-us': 'Copy default view definition',
+    'de-ch': 'Standardansichtsdefinition kopieren',
     'es-es': 'Formateadores de registros',
     'fr-fr': "Formateurs d'enregistrement",
     'ru-ru': 'Форматеры записи',
@@ -825,7 +825,7 @@ export const resourcesText = createDictionary({
   },
   formatPreview: {
     'en-us': 'Format Preview',
-    'de-ch': 'Formatvorschau',
+    'de-ch': 'Feldformate anpassen',
     'es-es': 'Vista previa de formato',
     'fr-fr': 'Aperçu du format',
     'ru-ru': 'Предварительный просмотр формата',
