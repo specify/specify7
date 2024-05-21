@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-03-26 18:01+0000\n"
+"PO-Revision-Date: 2024-05-21 19:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/tree/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.5-dev\n"
+"X-Generator: Weblate 5.6-dev\n"
 
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
 #: components/Header/menuItemDefinitions.ts:53
@@ -75,8 +75,9 @@ msgstr "Verschiebe \"{nodeName:string}\" hierhin"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:387
+#, fuzzy
 msgid "moveNodePreparationsHere"
-msgstr ""
+msgstr "Verschieben Sie alle \"{nodeName:string}\"-Vorbereitungen hierher"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:450 components/TreeView/Actions.tsx:416
@@ -88,8 +89,11 @@ msgstr ""
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:456
+#, fuzzy
 msgid "nodeBulkMoveMessage"
 msgstr ""
+"Die Vorbereitungen für den {treeName:string}-Knoten „{nodeName:string}“ "
+"werden unter dem neuen Standort „{parentName:string}“ platziert."
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:358 components/TreeView/Actions.tsx:332
@@ -139,8 +143,11 @@ msgstr "Wähle ein neues Ziel um \"{nodeName:string}\" zusammenzuführen"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:344
+#, fuzzy
 msgid "bulkMoveNodeHintMessage"
 msgstr ""
+"Wählen Sie ein neues Ziel für die \"{nodeName:string}\"-Vorbereitungen, in "
+"die sie verschoben werden sollen"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:462 components/TreeView/Actions.tsx:422
@@ -286,5 +293,6 @@ msgstr "Synchronisieren"
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:176 components/TreeView/Actions.tsx:427
 #: components/TreeView/Actions.tsx:440
+#, fuzzy
 msgid "moveItems"
-msgstr ""
+msgstr "Elemente verschieben"
