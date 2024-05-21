@@ -173,11 +173,16 @@ msgstr "Отменить синонимизацию"
 msgid "desynonymizeNodeMessage"
 msgstr "«{nodeName:string}» больше не будет синонимом «{synonymName:string}»."
 
-#: components/TreeView/Row.tsx:229
-#: components/TreeView/Row.tsx:243
+#: components/TreeView/Row.tsx:247
+#: components/TreeView/Row.tsx:266
 #. Used in: Components > Tree View > Row
 msgid "acceptedName"
 msgstr "Предпочтительний: {name:string}"
+
+#: components/TreeView/Row.tsx:253
+#. Used in: Components > Tree View > Row
+msgid "synonyms"
+msgstr ""
 
 #: components/TreeView/index.tsx:123
 #. Used in: Components > Tree View > Index
@@ -191,17 +196,17 @@ msgstr "{treeName:string} Дерево"
 msgid "searchTreePlaceholder"
 msgstr "Поиск"
 
-#: components/TreeView/Row.tsx:209
+#: components/TreeView/Row.tsx:227
 #. Used in: Components > Tree View > Row
 msgid "opened"
 msgstr "Открыт"
 
-#: components/TreeView/Row.tsx:210
+#: components/TreeView/Row.tsx:228
 #. Used in: Components > Tree View > Row
 msgid "closed"
 msgstr "Закрыт"
 
-#: components/TreeView/Row.tsx:207
+#: components/TreeView/Row.tsx:225
 #. Used in: Components > Tree View > Row
 msgid "leafNode"
 msgstr "Угловой узел"

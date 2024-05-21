@@ -846,7 +846,7 @@ msgstr "Закрийте зовнішнім клацанням"
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "specifyNetworkBadge"
-msgstr "Укажіть позначку мережі"
+msgstr "Укажіть значок мережі"
 
 #: components/Preferences/UserDefinitions.tsx:872
 #. Used in: Components > Preferences > User Definitions

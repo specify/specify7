@@ -164,11 +164,16 @@ msgstr ""
 "\"{nodeName:string}\" will no longer be a synonym of "
 "\"{synonymName:string}\"."
 
-#: components/TreeView/Row.tsx:229
-#: components/TreeView/Row.tsx:243
+#: components/TreeView/Row.tsx:247
+#: components/TreeView/Row.tsx:266
 #. Used in: Components > Tree View > Row
 msgid "acceptedName"
 msgstr "Preferred: {name:string}"
+
+#: components/TreeView/Row.tsx:253
+#. Used in: Components > Tree View > Row
+msgid "synonyms"
+msgstr "Synonyms: {names:string}"
 
 #: components/TreeView/index.tsx:123
 #. Used in: Components > Tree View > Index
@@ -182,17 +187,17 @@ msgstr "{treeName:string} Tree"
 msgid "searchTreePlaceholder"
 msgstr "Search Tree"
 
-#: components/TreeView/Row.tsx:209
+#: components/TreeView/Row.tsx:227
 #. Used in: Components > Tree View > Row
 msgid "opened"
 msgstr "Opened"
 
-#: components/TreeView/Row.tsx:210
+#: components/TreeView/Row.tsx:228
 #. Used in: Components > Tree View > Row
 msgid "closed"
 msgstr "Closed"
 
-#: components/TreeView/Row.tsx:207
+#: components/TreeView/Row.tsx:225
 #. Used in: Components > Tree View > Row
 msgid "leafNode"
 msgstr "Leaf Node"
