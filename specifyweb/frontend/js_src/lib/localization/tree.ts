@@ -105,6 +105,11 @@ export const treeText = createDictionary({
   },
   moveNodePreparationsHere: {
     'en-us': 'Move all "{nodeName:string}" preparations here',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   nodeMoveMessage: {
     'en-us': `
@@ -136,8 +141,14 @@ export const treeText = createDictionary({
   },
   nodeBulkMoveMessage: {
     'en-us': `
-      The {treeName:string} node "{nodeName:string}" preparations will be placed under the new location "{parentName:string}".
+      The {treeName:string} node "{nodeName:string}" preparations will be placed
+      under the new location "{parentName:string}".
     `,
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   cantMoveHere: {
     'en-us': "Can't move this tree node here",
@@ -216,8 +227,14 @@ export const treeText = createDictionary({
     'de-ch': 'Wähle ein neues Ziel um "{nodeName:string}" zusammenzuführen',
   },
   bulkMoveNodeHintMessage: {
-    'en-us':
-      'Select a new target for "{nodeName:string}" preparations to be moved into',
+    'en-us': `
+      Select a new target for "{nodeName:string}" preparations to be moved into
+    `,
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   mergeNodeMessage: {
     'en-us': `
@@ -480,5 +497,10 @@ export const treeText = createDictionary({
   },
   moveItems: {
     'en-us': 'Move Items',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
 } as const);

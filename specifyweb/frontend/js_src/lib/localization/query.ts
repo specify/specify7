@@ -704,6 +704,11 @@ export const queryText = createDictionary({
   treeBulkMove: {
     comment: 'Audit Log Action Type',
     'en-us': 'Tree Bulk Move',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   tooLongErrorMessage: {
     'en-us': `

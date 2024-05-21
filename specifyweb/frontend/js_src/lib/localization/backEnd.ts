@@ -451,6 +451,11 @@ export const backEndText = createDictionary({
   },
   operationAcrossTrees: {
     'en-us': '{operation:string} across trees',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   limitReachedDeterminingAccepted: {
     'en-us': `
