@@ -25,14 +25,22 @@ import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
-import type { AnySchema, SerializedResource, AnyInteractionPreparation,
-  SerializedResource, } from '../DataModel/helperTypes';
+import type {
+  AnySchema,
+  AnyInteractionPreparation,
+  SerializedResource,
+} from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
 import type { LiteralField } from '../DataModel/specifyField';
 import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
-import type { RecordSet } from '../DataModel/types';
+import type {
+  DisposalPreparation,
+  GiftPreparation,
+  LoanPreparation,
+  RecordSet,
+} from '../DataModel/types';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { Dialog } from '../Molecules/Dialog';
 import { userPreferences } from '../Preferences/userPreferences';

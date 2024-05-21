@@ -21,8 +21,10 @@ import type { FormType } from '../FormParse';
 import type { SubViewSortField } from '../FormParse/cells';
 import { augmentMode, ResourceView } from '../Forms/ResourceView';
 import { useFirstFocus } from '../Forms/SpecifyForm';
-import type { InteractionWithPreps } from '../Interactions/helpers';
-import { interactionPrepTables } from '../Interactions/helpers';
+import {
+  interactionPrepTables,
+  InteractionWithPreps,
+} from '../Interactions/helpers';
 import { InteractionDialog } from '../Interactions/InteractionDialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
@@ -152,7 +154,10 @@ export function IntegratedRecordSelector({
             typeof collection.related === 'object' &&
             isDialogOpen ? (
               <InteractionDialog
-                actionTable={collection.related.specifyTable}
+                actionTable={
+                  collection.related
+                    .specifyTable as SpecifyTable<InteractionWithPreps>
+                }
                 interactionResource={interactionResource}
                 itemCollection={
                   collection as Collection<AnyInteractionPreparation>
