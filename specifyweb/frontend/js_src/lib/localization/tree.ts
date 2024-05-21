@@ -103,6 +103,14 @@ export const treeText = createDictionary({
     'uk-ua': 'Перемістіть сюди "{nodeName:string}".',
     'de-ch': 'Verschiebe "{nodeName:string}" hierhin',
   },
+  moveNodePreparationsHere: {
+    'en-us': 'Move all "{nodeName:string}" preparations here',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
+  },
   nodeMoveMessage: {
     'en-us': `
       The {treeName:string} node "{nodeName:string}" will be placed, along with
@@ -130,6 +138,17 @@ export const treeText = createDictionary({
       seinen Unterknoten unter den neuen übergeordneten Knoten
       "{parentName:string}" platziert.
     `,
+  },
+  nodeBulkMoveMessage: {
+    'en-us': `
+      The {treeName:string} node "{nodeName:string}" preparations will be placed
+      under the new location "{parentName:string}".
+    `,
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   cantMoveHere: {
     'en-us': "Can't move this tree node here",
@@ -206,6 +225,16 @@ export const treeText = createDictionary({
     'uk-ua':
       'Виберіть нову ціль для «{nodeName:string}», у яку потрібно об’єднати',
     'de-ch': 'Wähle ein neues Ziel um "{nodeName:string}" zusammenzuführen',
+  },
+  bulkMoveNodeHintMessage: {
+    'en-us': `
+      Select a new target for "{nodeName:string}" preparations to be moved into
+    `,
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   mergeNodeMessage: {
     'en-us': `
@@ -471,5 +500,13 @@ export const treeText = createDictionary({
   },
   chooseParentRank: {
     'en-us': 'Choose Parent Rank',
+  },
+  moveItems: {
+    'en-us': 'Move Items',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
 } as const);

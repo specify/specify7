@@ -30,6 +30,7 @@ urlpatterns = [
         url(r'^(?P<id>\d+)/path/$', tree_views.path),
         url(r'^(?P<id>\d+)/merge/$', tree_views.merge),
         url(r'^(?P<id>\d+)/move/$', tree_views.move),
+        url(r'^(?P<id>\d+)/bulk_move/$', tree_views.bulk_move),
         url(r'^(?P<id>\d+)/synonymize/$', tree_views.synonymize),
         url(r'^(?P<id>\d+)/desynonymize/$', tree_views.desynonymize),
         url(r'^(?P<rankid>\d+)/tree_rank_item_count/$', tree_views.tree_rank_item_count),

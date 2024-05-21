@@ -14,7 +14,7 @@ from django.conf import settings
 from specifyweb.businessrules.exceptions import TreeBusinessRuleException
 import specifyweb.specify.models as spmodels
 
-from  .auditcodes import TREE_MERGE, TREE_SYNONYMIZE, TREE_DESYNONYMIZE
+from  .auditcodes import TREE_BULK_MOVE, TREE_MERGE, TREE_SYNONYMIZE, TREE_DESYNONYMIZE
 
 @contextmanager
 def validate_node_numbers(table, revalidate_after=True):
@@ -251,7 +251,7 @@ def merge(node, into, agent):
         "operation" : "merge",
         "localizationKey" : "invalidNodeType"})
     target = model.objects.select_for_update().get(id=into.id)
-    if not (node.definition_id == target.definition_id): raise AssertionError("merging across trees", {"localizationKey" : "mergeAcrossTrees"})
+    if not (node.definition_id == target.definition_id): raise AssertionError("merging across trees", {"localizationKey" : "operationAcrossTrees", "operation": "merge"})
     if into.accepted_id is not None:
         raise TreeBusinessRuleException(
             'Merging node "{node.fullname}" with synonymized node "{into.fullname}"'.format(node=node, into=into),
@@ -303,6 +303,24 @@ def merge(node, into, agent):
 
     assert False, "failed to move all referrences to merged tree node"
 
+def bulk_move(node, into, agent):
+    from . import models
+    logger.info('Bulk move preparations from %s to %s', node, into)
+    model = type(node)
+    if not type(into) is model: raise AssertionError(
+        f"Unexpected type of node '{into.__class__.__name__}', during bulk move. Expected '{model.__class__.__name__}'",
+        {"node" : into.__class__.__name__,
+        "nodeModel" : model.__class__.__name__,
+        "operation" : "bulk_move",
+        "localizationKey" : "invalidNodeType"})
+    target = model.objects.select_for_update().get(id=into.id)
+    if not (node.definition_id == target.definition_id): raise AssertionError("Bulk move across trees", {"localizationKey" : "operationAcrossTrees", "operation": "bulk move"})
+
+    models.Preparation.objects.filter(storage = node).update(storage = into)
+
+    mutation_log(TREE_BULK_MOVE, node, agent, node.parent,
+                        [{'field_name': model.specify_model.idFieldName, 'old_value': node.id, 'new_value': into.id}])
+
 def synonymize(node, into, agent):
     logger.info('synonymizing %s to %s', node, into)
     model = type(node)
@@ -313,7 +331,7 @@ def synonymize(node, into, agent):
         "operation" : "synonymize",
         "localizationKey" : "invalidNodeType"})
     target = model.objects.select_for_update().get(id=into.id)
-    if not (node.definition_id == target.definition_id): raise AssertionError("synonymizing across trees", {"localizationKey" : "synonymizeAcrossTrees"})
+    if not (node.definition_id == target.definition_id): raise AssertionError("synonymizing across trees", {"localizationKey" : "operationAcrossTrees", "operation": "synonymize"})
     if target.accepted_id is not None:
         raise TreeBusinessRuleException(
             'Synonymizing "{node.fullname}" to synonymized node "{into.fullname}"'.format(node=node, into=into),
