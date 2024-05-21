@@ -20,38 +20,38 @@ msgstr ""
 msgid "interactions"
 msgstr "Interactions"
 
-#: components/Interactions/InteractionDialog.tsx:321
+#: components/Interactions/InteractionDialog.tsx:323
 #: components/Interactions/PrepDialog.tsx:121
 #. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
 #, fuzzy
 msgid "addItems"
 msgstr "Ajouter des articles"
 
-#: components/Interactions/InteractionDialog.tsx:323
+#: components/Interactions/InteractionDialog.tsx:325
 #. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "recordReturn"
 msgstr "{table:string} Retour"
 
-#: components/Interactions/InteractionDialog.tsx:371
+#: components/Interactions/InteractionDialog.tsx:373
 #. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "preparationsNotFoundFor"
 msgstr "Aucune préparation n'a été trouvée pour les enregistrements suivants :"
 
-#: components/Interactions/InteractionDialog.tsx:380
+#: components/Interactions/InteractionDialog.tsx:382
 #. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "preparationsNotAvailableFor"
-msgstr "Aucune préparation n'est disponible pour les enregistrements suivants :"
+msgstr ""
 
-#: components/Interactions/InteractionDialog.tsx:361
+#: components/Interactions/InteractionDialog.tsx:363
 #. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "problemsFound"
 msgstr "Il y a des problèmes avec l'entrée :"
 
-#: components/Interactions/InteractionDialog.tsx:330
+#: components/Interactions/InteractionDialog.tsx:332
 #. 🟥See documentation for syntax for plural rules. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "byChoosingRecordSet"
@@ -59,27 +59,27 @@ msgstr ""
 "En choisissant un jeu d'enregistrements ({{count:none | one | ??}} "
 "disponible)"
 
-#: components/Interactions/InteractionDialog.tsx:336
+#: components/Interactions/InteractionDialog.tsx:338
 #. 🟥Field name is localized. Coming from Schema Configuration. I.e, By entering Catalog Numbers. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "byEnteringNumbers"
 msgstr "En saisissant les {fieldName:string}"
 
-#: components/Interactions/InteractionDialog.tsx:297
-#: components/Interactions/InteractionDialog.tsx:303
+#: components/Interactions/InteractionDialog.tsx:299
+#: components/Interactions/InteractionDialog.tsx:305
 #. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "withoutPreparations"
 msgstr "Sans préparations"
 
-#: components/Interactions/InteractionDialog.tsx:251
-#: components/Interactions/InteractionDialog.tsx:255
+#: components/Interactions/InteractionDialog.tsx:254
+#: components/Interactions/InteractionDialog.tsx:258
 #. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "continueWithoutPreparations"
 msgstr "Continuer sans préparation"
 
-#: components/Interactions/InteractionDialog.tsx:290
+#: components/Interactions/InteractionDialog.tsx:293
 #. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "addUnassociated"
@@ -217,14 +217,14 @@ msgstr "Enregistrements {exhangeInTable:string} / {exhangeOutTable:string}"
 msgid "unCataloged"
 msgstr "non catalogué"
 
-#: components/Interactions/InteractionDialog.tsx:218
-#: components/Interactions/InteractionDialog.tsx:261
+#: components/Interactions/InteractionDialog.tsx:221
+#: components/Interactions/InteractionDialog.tsx:264
 #. 🟥Example: Preparation records. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "returnedPreparations"
 msgstr "Enregistrements {tablePreparation:string} renvoyés"
 
-#: components/Interactions/InteractionDialog.tsx:223
+#: components/Interactions/InteractionDialog.tsx:226
 #. 🟥Example: 2 Preparation records have been returned and saved. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "returnedAndSaved"
@@ -260,20 +260,20 @@ msgstr "Indisponible"
 msgid "returnLoan"
 msgstr "Renvoyer les enregistrements {tableLoan:string}"
 
-#: components/Interactions/InteractionDialog.tsx:324
+#: components/Interactions/InteractionDialog.tsx:326
 #: components/Interactions/PrepDialog.tsx:122
 #. 🟥Example: Create a Loan. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
 #, fuzzy
 msgid "createRecord"
 msgstr "Ajouter un nouveau champ"
 
-#: components/Interactions/InteractionDialog.tsx:266
+#: components/Interactions/InteractionDialog.tsx:269
 #. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "noPreparationsWarning"
 msgstr "Aucun de ces objets n'a de préparation. Voulez-vous continuer?"
 
-#: components/Interactions/InteractionDialog.tsx:314
+#: components/Interactions/InteractionDialog.tsx:316
 #. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "continue"
