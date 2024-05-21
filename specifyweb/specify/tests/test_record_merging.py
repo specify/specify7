@@ -768,7 +768,6 @@ class ReplaceRecordTests(ApiTests):
         collecting_event_1.collectingtrip = collecting_trip
         collecting_event_1.paleocontext = paleo_context
         collecting_event_1.save()
-        collecting_event_3.collectingeventattribute = collecting_event_attribute
         collecting_event_3.collectingtrip = collecting_trip
         collecting_event_3.paleocontext = paleo_context
         collecting_event_3.save()
@@ -788,6 +787,7 @@ class ReplaceRecordTests(ApiTests):
             }),
             content_type='application/json'
         )
+        print(response.content.decode())
         self.assertEqual(response.status_code, 204)
 
         # Assert that the old collecting event was deleted
