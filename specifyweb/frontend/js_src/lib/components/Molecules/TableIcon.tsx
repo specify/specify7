@@ -95,7 +95,7 @@ export const tableIconUndefined = (
   <span
     aria-label={wbPlanText.unmapped()}
     className={`
-      flex h-table-icon w-table-icon items-center justify-center font-bold
+      h-table-icon w-table-icon flex items-center justify-center font-bold
       text-red-600
     `}
     role="img"
@@ -108,7 +108,7 @@ export const tableIconSelected = (
   <span
     aria-label={wbPlanText.mapped()}
     className={`
-      flex h-table-icon w-table-icon items-center justify-center font-bold
+      h-table-icon w-table-icon flex items-center justify-center font-bold
       text-green-500
     `}
     role="img"

@@ -285,7 +285,7 @@ function Option({
   if (isDefault)
     classes.push(
       'custom-select-option-selected cursor-auto dark:text-white',
-      'bg-[color:var(--custom-select-accent)]'
+      '!bg-[color:var(--custom-select-accent)]'
     );
 
   const tableLabel = getTable(tableName ?? '')?.label;
@@ -545,7 +545,7 @@ export function CustomSelectElement({
     header = (
       <header
         className={`
-          flex items-center gap-y-2 gap-x-1 rounded rounded-b-none border border-brand-300 bg-brand-100 p-2 dark:bg-brand-500
+          border-brand-300 bg-brand-100 dark:bg-brand-500 flex items-center gap-x-1 gap-y-2 rounded rounded-b-none border p-2
         `}
       >
         {has('icon') && (
@@ -575,7 +575,7 @@ export function CustomSelectElement({
         className={`
           flex min-h-[theme(spacing.8)] min-w-max cursor-pointer
           items-center gap-1 rounded px-1 text-left
-          dark:border-none md:min-w-[unset]
+          md:min-w-[unset] dark:border-none
           ${
             defaultOption?.isRequired === true
               ? 'custom-select-input-required bg-[color:var(--custom-select-b2)]'
@@ -590,7 +590,6 @@ export function CustomSelectElement({
           ${isOpen ? 'z-[3] rounded-b-none' : ''}
           ${handleClick === undefined ? '' : 'border border-gray-500'}
         `}
-        disabled={handleClick === undefined}
         type="button"
         onClick={handleClick}
       >
@@ -697,8 +696,8 @@ export function CustomSelectElement({
       aria-orientation="vertical"
       aria-readonly={!has('interactive') || typeof handleChange !== 'function'}
       className={`
-        h-fit flex-1 cursor-pointer overflow-x-hidden
-        rounded-b border border-brand-300 bg-[color:var(--custom-select-b1)]
+        border-brand-300 h-fit flex-1 cursor-pointer
+        overflow-x-hidden rounded-b border bg-[color:var(--custom-select-b1)]
         ${has('preview') ? 'z-[2]' : ''}
         ${has('scroll') ? 'overflow-y-scroll' : 'overflow-y-auto'}
         ${has('shadow') ? 'max-h-[theme(spacing.64)] shadow-md' : ''}

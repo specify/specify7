@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { MILLISECONDS } from '../Atoms/timeUnits';
+import { SECOND } from '../Atoms/timeUnits';
 import {
   useDarkMode,
   useHighContrast,
@@ -16,7 +16,7 @@ export function SetCssVariables(): null {
     () =>
       document.body.style.setProperty(
         '--transition-duration',
-        `${transitionDuration / MILLISECONDS}s`
+        `${transitionDuration / SECOND}s`
       ),
     [transitionDuration]
   );

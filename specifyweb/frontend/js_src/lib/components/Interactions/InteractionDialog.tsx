@@ -25,23 +25,24 @@ import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
-import type { SerializedResource } from '../DataModel/helperTypes';
+import type { AnySchema, SerializedResource, AnyInteractionPreparation,
+  SerializedResource, } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
 import type { LiteralField } from '../DataModel/specifyField';
 import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
-import type {
-  DisposalPreparation,
-  Gift,
-  GiftPreparation,
-  LoanPreparation,
-  RecordSet,
-} from '../DataModel/types';
+import type { RecordSet } from '../DataModel/types';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { Dialog } from '../Molecules/Dialog';
 import { userPreferences } from '../Preferences/userPreferences';
 import { RecordSetsDialog } from '../Toolbar/RecordSets';
-import type { PreparationData, PreparationRow } from './helpers';
+import type {
+  InteractionWithPreps,
+  PreparationData,
+  PreparationRow,
+} from './helpers';
+import { interactionsWithPrepTables } from './helpers';
 import {
   getPrepsAvailableForLoanCoIds,
   getPrepsAvailableForLoanRs,
@@ -53,13 +54,13 @@ export function InteractionDialog({
   actionTable,
   isLoanReturn = false,
   itemCollection,
+  interactionResource,
 }: {
   readonly onClose: () => void;
-  readonly actionTable: SpecifyTable;
+  readonly actionTable: SpecifyTable<InteractionWithPreps>;
   readonly isLoanReturn?: boolean;
-  readonly itemCollection?: Collection<
-    DisposalPreparation | GiftPreparation | LoanPreparation
-  >;
+  readonly itemCollection?: Collection<AnyInteractionPreparation>;
+  readonly interactionResource?: SpecifyResource<AnySchema>;
 }): JSX.Element {
   const itemTable = isLoanReturn ? tables.Loan : tables.CollectionObject;
   const searchField = itemTable.strictGetLiteralField(
@@ -153,6 +154,9 @@ export function InteractionDialog({
     const unavailablePrep = prepsData.filter(
       (prepData) => Number.parseInt(prepData[10]) === 0
     );
+    const availablePrep = prepsData.filter(
+      (prepData) => Number.parseInt(prepData[10]) > 0
+    );
     const unavailable =
       typeof entries === 'object'
         ? entries.filter((entry) =>
@@ -162,8 +166,8 @@ export function InteractionDialog({
 
     if (missing.length > 0 || unavailable.length > 0) {
       setState({ type: 'MissingState', missing, unavailableBis: unavailable });
-      setPrepsData(prepsData);
-    } else showPrepSelectDlg(prepsData);
+      setPrepsData(availablePrep);
+    } else showPrepSelectDlg(availablePrep);
   }
 
   const showPrepSelectDlg = (prepsData: RA<PreparationRow>): void =>
@@ -212,6 +216,14 @@ export function InteractionDialog({
     return parsed;
   }
 
+  const addInteractionResource = (): void => {
+    itemCollection?.add(
+      (interactionResource as SpecifyResource<
+        DisposalPreparation | GiftPreparation | LoanPreparation
+      >) ?? new itemCollection.table.specifyTable.Resource()
+    );
+  };
+
   return state.type === 'LoanReturnDoneState' ? (
     <Dialog
       buttons={commonText.close()}
@@ -231,7 +243,7 @@ export function InteractionDialog({
         // BUG: make this readOnly if don't have necessary permissions
         itemCollection={itemCollection}
         preparations={state.entries}
-        table={actionTable as SpecifyTable<Gift>}
+        table={actionTable}
         onClose={handleClose}
       />
     ) : (
@@ -242,16 +254,14 @@ export function InteractionDialog({
             {typeof itemCollection === 'object' ? (
               <Button.Info
                 onClick={(): void => {
-                  itemCollection?.add(
-                    new itemCollection.table.specifyTable.Resource()
-                  );
+                  addInteractionResource();
                   handleClose();
                 }}
               >
                 {interactionsText.continueWithoutPreparations()}
               </Button.Info>
             ) : (
-              <Link.Info href={getResourceViewUrl('Loan')}>
+              <Link.Info href={getResourceViewUrl(actionTable.name)}>
                 {interactionsText.continueWithoutPreparations()}
               </Link.Info>
             )}
@@ -281,28 +291,17 @@ export function InteractionDialog({
                 {typeof itemCollection === 'object' ? (
                   <Button.Info
                     onClick={(): void => {
-                      itemCollection?.add(
-                        new itemCollection.table.specifyTable.Resource()
-                      );
+                      addInteractionResource();
                       handleClose();
                     }}
                   >
                     {interactionsText.addUnassociated()}
                   </Button.Info>
-                ) : actionTable.name === 'Loan' &&
-                  !(
-                    state.type === 'MissingState' && prepsData?.length === 0
-                  ) ? (
-                  <Link.Info href={getResourceViewUrl('Loan')}>
+                ) : interactionsWithPrepTables.includes(actionTable.name) ? (
+                  <Link.Info href={getResourceViewUrl(actionTable.name)}>
                     {interactionsText.withoutPreparations()}
                   </Link.Info>
                 ) : undefined}
-                {actionTable.name === 'Gift' &&
-                  itemCollection === undefined && (
-                    <Link.Info href={getResourceViewUrl('Gift')}>
-                      {interactionsText.withoutPreparations()}
-                    </Link.Info>
-                  )}
                 {state.type === 'MissingState' &&
                 prepsData?.length !== 0 &&
                 prepsData ? (

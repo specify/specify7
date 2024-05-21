@@ -14,6 +14,7 @@ import type { GetSet, RA } from '../../utils/types';
 import { caseInsensitiveHash } from '../../utils/utils';
 import { Container, H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
+import { Input, Label } from '../Atoms/Form';
 import type {
   AnySchema,
   AnyTree,
@@ -176,6 +177,10 @@ function TreeView<SCHEMA extends AnyTree>({
     'isHorizontal'
   );
 
+  const [hideEmptyNodes = false, setHideEmptyNodes] = useCachedState(
+    'tree',
+    'hideEmptyNodes'
+  );
   React.useEffect(() => {
     const handleResize = () => {
       window.innerWidth < SMALL_SCREEN_WIDTH
@@ -198,6 +203,7 @@ function TreeView<SCHEMA extends AnyTree>({
         focusRef={toolbarButtonRef}
         getRows={getRows}
         handleToggleEditingRanks={handleToggleEditingRanks}
+        hideEmptyNodes={hideEmptyNodes}
         isEditingRanks={isEditingRanks}
         ranks={rankIds}
         rows={rows}
@@ -309,6 +315,13 @@ function TreeView<SCHEMA extends AnyTree>({
       ) : (
         treeContainer('first')
       )}
+      <Label.Inline>
+        <Input.Checkbox
+          checked={hideEmptyNodes}
+          onValueChange={setHideEmptyNodes}
+        />
+        {treeText.associatedNodesOnly()}
+      </Label.Inline>
     </Container.Full>
   );
 }

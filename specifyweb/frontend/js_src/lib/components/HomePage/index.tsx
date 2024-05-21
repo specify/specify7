@@ -27,7 +27,7 @@ export function WelcomeView(): JSX.Element {
   return (
     <div className="flex h-full flex-col">
       {displaySearchBar && (
-        <div className="flex justify-end gap-2 pt-4 pr-4">
+        <div className="flex justify-end gap-2 pr-4 pt-4">
           <SearchForm formId={formId} />
           <Submit.Secondary form={formId}>
             {commonText.search()}
@@ -83,7 +83,7 @@ function DefaultSplashScreen(): JSX.Element {
       />
       {/* The two following gradients in the divs are here to apply a fade out effect on the image */}
       <div className="absolute top-0 h-full w-[20%] bg-[linear-gradient(to_right,var(--background),transparent)]" />
-      <div className="absolute top-0 right-0 h-full w-[20%] bg-[linear-gradient(to_left,var(--background),transparent)]" />
+      <div className="absolute right-0 top-0 h-full w-[20%] bg-[linear-gradient(to_left,var(--background),transparent)]" />
     </div>
   );
 }
