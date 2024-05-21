@@ -507,7 +507,7 @@ msgstr "Надіслати сповіщення про завершення ко
 #. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "runInCollection"
-msgstr "Запустити в колекцію"
+msgstr "Запустити в колекції"
 
 #: components/FormEditor/Create.tsx:73
 #. Used in: Components > Form Editor > Create
