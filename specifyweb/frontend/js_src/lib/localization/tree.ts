@@ -326,6 +326,9 @@ export const treeText = createDictionary({
     'uk-ua': 'Бажано: {name:string}',
     'de-ch': 'Bevorzugt: {name:string}',
   },
+  synonyms: {
+    'en-us': 'Synonyms: {names:string}',
+  },
   treeViewTitle: {
     'en-us': '{treeName:string} Tree',
     'ru-ru': '{treeName:string} Дерево',
