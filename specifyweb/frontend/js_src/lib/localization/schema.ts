@@ -126,7 +126,7 @@ export const schemaText = createDictionary({
     'ru-ru': 'Скрыть таблицу',
     'es-es': 'Ocultar tabla',
     'fr-fr': 'Masquer le tableau',
-    'uk-ua': 'Сховати таблицю',
+    'uk-ua': 'Приховати таблицю',
     'de-ch': 'Tabelle verbergen',
   },
   hideField: {

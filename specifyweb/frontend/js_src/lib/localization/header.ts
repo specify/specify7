@@ -146,10 +146,10 @@ export const headerText = createDictionary({
   labelName: {
     'en-us': 'Label Name',
     'ru-ru': 'Название ярлыка',
-    'es-es': 'Nombre de etiqueta',
+    'es-es': 'Herramientas administrativas',
     'uk-ua': 'Назва бірки',
     'de-ch': 'Etikett Name',
-    'fr-fr': "Nom de l'étiquette",
+    'fr-fr': 'Outils administratifs',
   },
   reportName: {
     'en-us': 'Report Name',
@@ -178,7 +178,7 @@ export const headerText = createDictionary({
   repairTree: {
     'en-us': 'Repair Tree',
     'ru-ru': 'Ремонтное дерево',
-    'es-es': 'árbol de reparación',
+    'es-es': 'Se ha borrado la caché. Por favor recarga la página.',
     'fr-fr': 'Arbre de réparation',
     'uk-ua': 'Ремонтувати дерево',
     'de-ch': 'Baum reparieren',
@@ -187,17 +187,20 @@ export const headerText = createDictionary({
     'en-us': 'Tree repair is complete.',
     'ru-ru': 'Ремонт дерева завершен.',
     'es-es': 'La reparación del árbol está completa.',
-    'fr-fr': 'La réparation des arbres est terminée.',
+    'fr-fr': `
+      L'exportation a commencé. Vous recevrez une notification lorsque
+      l'exportation sera terminée.
+    `,
     'uk-ua': 'Ремонт дерева завершено.',
     'de-ch': 'Die Baumreparatur ist abgeschlossen.',
   },
   choose: {
     'en-us': 'Choose',
-    'de-ch': 'Wählen',
+    'de-ch': 'DwCA-Ressource',
     'es-es': 'Elegir',
     'fr-fr': 'Choisir',
-    'ru-ru': 'Выбирать',
-    'uk-ua': 'Виберіть',
+    'ru-ru': 'Основной',
+    'uk-ua': 'Ресурс DwCA',
   },
   chooseDwca: {
     'en-us': 'Choose DwCA',
@@ -219,7 +222,7 @@ export const headerText = createDictionary({
     'en-us': 'Choose Metadata resource',
     'ru-ru': 'Выберите ресурс метаданных',
     'es-es': 'Elija recurso de metadatos',
-    'fr-fr': 'Choisissez la ressource de métadonnées',
+    'fr-fr': 'Localisation incomplète',
     'uk-ua': 'Виберіть ресурс метаданих',
     'de-ch': 'Metadaten-Ressource auswählen',
   },

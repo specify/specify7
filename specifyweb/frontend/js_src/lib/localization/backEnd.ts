@@ -158,7 +158,7 @@ export const backEndText = createDictionary({
     `,
     'uk-ua': 'дата має містити чотири цифри року: {value:string}',
     'de-ch':
-      'Datumswert muss vierstellige Jahreszahl enthalten: {value:string}',
+      'Datumswert muss vierstellige Jahreszahlen enthalten: {value:string}',
   },
   badDateFormat: {
     'en-us': 'bad date value: {value:string}. expected: {format:string}',
@@ -451,11 +451,11 @@ export const backEndText = createDictionary({
   },
   operationAcrossTrees: {
     'en-us': '{operation:string} across trees',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch': '{operation:string} über Bäume',
+    'es-es': '{operation:string} a través de árboles',
+    'fr-fr': '{operation:string} à travers les arbres',
+    'ru-ru': '{operation:string} среди деревьев',
+    'uk-ua': '{operation:string} через дерева',
   },
   limitReachedDeterminingAccepted: {
     'en-us': `
