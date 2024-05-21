@@ -9,7 +9,6 @@ import { f } from '../../utils/functools';
 import { type GetSet, type RA } from '../../utils/types';
 import { Container, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { SpecifyTable } from '../DataModel/specifyTable';
