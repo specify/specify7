@@ -224,28 +224,28 @@ msgstr ""
 msgid "userAccount"
 msgstr "User Account"
 
-#: components/Security/AdminStatusPlugin.tsx:67
+#: components/Security/AdminStatusPlugin.tsx:84
 #. Used in: Components > Security > Admin Status Plugin
 msgid "removeAdmin"
 msgstr "Remove Admin"
 
-#: components/Security/AdminStatusPlugin.tsx:47
+#: components/Security/AdminStatusPlugin.tsx:52
 #. Used in: Components > Security > Admin Status Plugin
 msgid "canNotRemoveYourself"
 msgstr "You cannot revoke your own admin status"
 
-#: components/Security/AdminStatusPlugin.tsx:67
+#: components/Security/AdminStatusPlugin.tsx:84
 #. Used in: Components > Security > Admin Status Plugin
 msgid "makeAdmin"
 msgstr "Make Admin"
 
-#: components/Security/AdminStatusPlugin.tsx:45
+#: components/Security/AdminStatusPlugin.tsx:50
 #: components/Security/UserCollections.tsx:128
 #. Used in: Components > Security > Admin Status Plugin ⬤ Components > Security > User Collections
 msgid "saveUserFirst"
 msgstr "Save user first"
 
-#: components/Security/AdminStatusPlugin.tsx:50
+#: components/Security/AdminStatusPlugin.tsx:55
 #. Used in: Components > Security > Admin Status Plugin
 msgid "mustBeManager"
 msgstr "User must be saved as Manager first"
@@ -268,8 +268,8 @@ msgstr "User Accounts Assigned to this {collectionTable:string}"
 
 #: components/Security/SetPassword.tsx:40
 #: components/Security/SetPassword.tsx:92
-#: components/Security/UserComponents.tsx:190
-#: components/Security/UserComponents.tsx:194
+#: components/Security/UserComponents.tsx:191
+#: components/Security/UserComponents.tsx:195
 #. Used in: Components > Security > Set Password ⬤ Components > Security > User Components
 msgid "setPassword"
 msgstr "Set Password"
@@ -318,7 +318,7 @@ msgstr "User Roles"
 msgid "collectionUserRoles"
 msgstr "{collectionTable:string} User Roles"
 
-#: components/Security/UserComponents.tsx:108
+#: components/Security/UserComponents.tsx:109
 #. Used in: Components > Security > User Components
 msgid "assignedUserRoles"
 msgstr "Assigned User Roles"
@@ -440,7 +440,7 @@ msgstr "Update existing roles:"
 msgid "unchangedRoles"
 msgstr "Unchanged roles:"
 
-#: components/Security/UserComponents.tsx:85
+#: components/Security/UserComponents.tsx:86
 #. Used in: Components > Security > User Components
 msgid "institutionAdmin"
 msgstr "Institution Admin"
@@ -469,12 +469,12 @@ msgstr ""
 "No external identity provider is configured. You can configure some in "
 "Specify 7 server settings"
 
-#: components/Security/UserComponents.tsx:240
+#: components/Security/UserComponents.tsx:243
 #. Used in: Components > Security > User Components
 msgid "legacyPermissions"
 msgstr "Specify 6 Permissions"
 
-#: components/Security/UserComponents.tsx:197
+#: components/Security/UserComponents.tsx:198
 #. Used in: Components > Security > User Components
 msgid "setPasswordBeforeSavePrompt"
 msgstr ""
@@ -496,7 +496,7 @@ msgstr "This agent is already associated with a different user."
 msgid "setAgentsBeforeProceeding"
 msgstr "Please set the following agents before proceeding:"
 
-#: components/Security/UserComponents.tsx:210
+#: components/Security/UserComponents.tsx:211
 #. Used in: Components > Security > User Components
 msgid "externalIdentityProviders"
 msgstr "External identity providers:"
@@ -536,12 +536,12 @@ msgstr "Users will not be deleted, but they would lose this role."
 msgid "institutionPolicies"
 msgstr "Custom Institution-level Policies (applies to all assigned collections)"
 
-#: components/Security/User.tsx:662
+#: components/Security/User.tsx:665
 #. Used in: Components > Security > User
 msgid "cantRemoveLastAdmin"
 msgstr "Can't remove Institution Admin status"
 
-#: components/Security/User.tsx:665
+#: components/Security/User.tsx:668
 #. Used in: Components > Security > User
 msgid "cantRemoveLastAdminDescription"
 msgstr "There must be at least one Institution Admin in institution"

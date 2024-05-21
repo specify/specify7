@@ -236,28 +236,28 @@ msgstr ""
 msgid "userAccount"
 msgstr "Cuenta de usuario"
 
-#: components/Security/AdminStatusPlugin.tsx:67
+#: components/Security/AdminStatusPlugin.tsx:84
 #. Used in: Components > Security > Admin Status Plugin
 msgid "removeAdmin"
 msgstr "Eliminar administrador"
 
-#: components/Security/AdminStatusPlugin.tsx:47
+#: components/Security/AdminStatusPlugin.tsx:52
 #. Used in: Components > Security > Admin Status Plugin
 msgid "canNotRemoveYourself"
 msgstr "No puede revocar su propio estatus de administrador"
 
-#: components/Security/AdminStatusPlugin.tsx:67
+#: components/Security/AdminStatusPlugin.tsx:84
 #. Used in: Components > Security > Admin Status Plugin
 msgid "makeAdmin"
 msgstr "Hacer administrador"
 
-#: components/Security/AdminStatusPlugin.tsx:45
+#: components/Security/AdminStatusPlugin.tsx:50
 #: components/Security/UserCollections.tsx:128
 #. Used in: Components > Security > Admin Status Plugin ⬤ Components > Security > User Collections
 msgid "saveUserFirst"
 msgstr "Guardar usuario primero"
 
-#: components/Security/AdminStatusPlugin.tsx:50
+#: components/Security/AdminStatusPlugin.tsx:55
 #. Used in: Components > Security > Admin Status Plugin
 msgid "mustBeManager"
 msgstr "El usuario debe guardarse primero como administrador"
@@ -280,8 +280,8 @@ msgstr "Cuentas de usuario asignadas a este {collectionTable:string}"
 
 #: components/Security/SetPassword.tsx:40
 #: components/Security/SetPassword.tsx:92
-#: components/Security/UserComponents.tsx:190
-#: components/Security/UserComponents.tsx:194
+#: components/Security/UserComponents.tsx:191
+#: components/Security/UserComponents.tsx:195
 #. Used in: Components > Security > Set Password ⬤ Components > Security > User Components
 msgid "setPassword"
 msgstr "Establecer contraseña"
@@ -330,7 +330,7 @@ msgstr "Roles del usuario"
 msgid "collectionUserRoles"
 msgstr "Roles de usuario de {collectionTable:string}"
 
-#: components/Security/UserComponents.tsx:108
+#: components/Security/UserComponents.tsx:109
 #. Used in: Components > Security > User Components
 msgid "assignedUserRoles"
 msgstr "Roles de usuario asignados"
@@ -456,7 +456,7 @@ msgstr "Actualizar roles existentes:"
 msgid "unchangedRoles"
 msgstr "Roles sin cambios:"
 
-#: components/Security/UserComponents.tsx:85
+#: components/Security/UserComponents.tsx:86
 #. Used in: Components > Security > User Components
 msgid "institutionAdmin"
 msgstr "Administrador de la institución"
@@ -485,12 +485,12 @@ msgstr ""
 "No hay configurado ningún proveedor de identidad externo. Puede configurar "
 "algunos en configuraciones de servidor de Specify 7"
 
-#: components/Security/UserComponents.tsx:240
+#: components/Security/UserComponents.tsx:243
 #. Used in: Components > Security > User Components
 msgid "legacyPermissions"
 msgstr "Permisos de Specify 6"
 
-#: components/Security/UserComponents.tsx:197
+#: components/Security/UserComponents.tsx:198
 #. Used in: Components > Security > User Components
 msgid "setPasswordBeforeSavePrompt"
 msgstr ""
@@ -512,7 +512,7 @@ msgstr "Este agente ya está asociado con un usuario diferente."
 msgid "setAgentsBeforeProceeding"
 msgstr "Configure los siguientes agentes antes de continuar:"
 
-#: components/Security/UserComponents.tsx:210
+#: components/Security/UserComponents.tsx:211
 #. Used in: Components > Security > User Components
 msgid "externalIdentityProviders"
 msgstr "Proveedores de identidad externos:"
@@ -554,12 +554,12 @@ msgstr ""
 "Políticas personalizadas a nivel de Institución (se aplican a todas las "
 "colecciones asignadas)"
 
-#: components/Security/User.tsx:662
+#: components/Security/User.tsx:665
 #. Used in: Components > Security > User
 msgid "cantRemoveLastAdmin"
 msgstr "No se puede eliminar el estatus de Administrador de la Institución"
 
-#: components/Security/User.tsx:665
+#: components/Security/User.tsx:668
 #. Used in: Components > Security > User
 msgid "cantRemoveLastAdminDescription"
 msgstr "En la Institución debe haber al menos un Administrador de la Institución"

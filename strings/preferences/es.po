@@ -1227,7 +1227,7 @@ msgstr ""
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "showLineNumber"
-msgstr "Mostrar número de línea de resultado de la consulta"
+msgstr "Mostrar el número de línea del resultado de la consulta"
 
 #: components/Preferences/UserDefinitions.tsx:305
 #: components/Preferences/UserDefinitions.tsx:366

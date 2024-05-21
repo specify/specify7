@@ -66,7 +66,7 @@ msgstr "Нет"
 #: components/Security/Role.tsx:195
 #: components/Security/Role.tsx:221
 #: components/Security/RoleTemplate.tsx:93
-#: components/Security/User.tsx:449
+#: components/Security/User.tsx:452
 #: components/Statistics/index.tsx:596
 #: components/Toolbar/Language.tsx:101
 #: components/Toolbar/MasterKey.tsx:39
@@ -223,8 +223,8 @@ msgstr "Создать"
 #: components/SearchDialog/index.tsx:297
 #: components/Security/Role.tsx:198
 #: components/Security/SetPassword.tsx:36
-#: components/Security/User.tsx:453
-#: components/Security/User.tsx:661
+#: components/Security/User.tsx:456
+#: components/Security/User.tsx:664
 #: components/Security/UserCollections.tsx:70
 #: components/Security/UserInviteLink.tsx:55
 #: components/SpecifyNetwork/Overlay.tsx:118
@@ -431,8 +431,8 @@ msgstr "Инструменты"
 #: components/Security/RoleTemplate.tsx:208
 #: components/Security/UserCollections.tsx:126
 #: components/Security/UserCollections.tsx:278
-#: components/Security/UserComponents.tsx:88
-#: components/Security/UserComponents.tsx:164
+#: components/Security/UserComponents.tsx:89
+#: components/Security/UserComponents.tsx:165
 #: components/SkeletonLoaders/Skeleton.tsx:8
 #: components/Statistics/Categories.tsx:76
 #: components/Statistics/StatsResult.tsx:57
@@ -537,8 +537,8 @@ msgstr "Новый"
 #: components/SchemaConfig/Format.tsx:237
 #: components/SchemaConfig/Format.tsx:293
 #: components/SchemaConfig/Table.tsx:165
-#: components/Security/UserComponents.tsx:153
-#: components/Security/UserComponents.tsx:157
+#: components/Security/UserComponents.tsx:154
+#: components/Security/UserComponents.tsx:158
 #: components/Statistics/Buttons.tsx:33
 #: components/Statistics/index.tsx:613
 #: components/Toolbar/RecordSets.tsx:281
@@ -550,7 +550,7 @@ msgid "edit"
 msgstr "Редактировать"
 
 #: components/Reports/Report.tsx:202
-#: components/Security/UserComponents.tsx:187
+#: components/Security/UserComponents.tsx:188
 #. Used in: Components > Reports > Report ⬤ Components > Security > User Components
 msgid "ignore"
 msgstr "Игнорировать"
