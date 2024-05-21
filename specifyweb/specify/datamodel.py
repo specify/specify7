@@ -41,11 +41,11 @@ datamodel = Datamodel(tables=[
             Index(name='AccessionDateIDX', column_names=['DateAccessioned'])
         ],
         relationships=[
-            Relationship(name='accessionAgents', type='one-to-many',required=False, relatedModelName='AccessionAgent', otherSideName='accession'),
-            Relationship(name='accessionAttachments', type='one-to-many',required=False, relatedModelName='AccessionAttachment', otherSideName='accession'),
-            Relationship(name='accessionAuthorizations', type='one-to-many',required=False, relatedModelName='AccessionAuthorization', otherSideName='accession'),
+            Relationship(name='accessionAgents', type='one-to-many',required=False, relatedModelName='AccessionAgent', otherSideName='accession', dependent=True),
+            Relationship(name='accessionAttachments', type='one-to-many',required=False, relatedModelName='AccessionAttachment', otherSideName='accession', dependent=True),
+            Relationship(name='accessionAuthorizations', type='one-to-many',required=False, relatedModelName='AccessionAuthorization', otherSideName='accession', dependent=True),
             Relationship(name='accessionCitations', type='one-to-many',required=False, relatedModelName='AccessionCitation', otherSideName='accession'),
-            Relationship(name='addressOfRecord', type='many-to-one',required=False, relatedModelName='AddressOfRecord', column='AddressOfRecordID', otherSideName='accessions'),
+            Relationship(name='addressOfRecord', type='many-to-one',required=False, relatedModelName='AddressOfRecord', column='AddressOfRecordID', otherSideName='accessions', dependent=True),
             Relationship(name='appraisals', type='one-to-many',required=False, relatedModelName='Appraisal', otherSideName='accession'),
             Relationship(name='collectionObjects', type='one-to-many',required=False, relatedModelName='CollectionObject', otherSideName='accession'),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
@@ -109,7 +109,7 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='accession', type='many-to-one',required=True, relatedModelName='Accession', column='AccessionID', otherSideName='accessionAttachments'),
-            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='accessionAttachments'),
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='accessionAttachments', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
@@ -316,17 +316,17 @@ datamodel = Datamodel(tables=[
             Index(name='AbbreviationIDX', column_names=['Abbreviation'])
         ],
         relationships=[
-            Relationship(name='addresses', type='one-to-many',required=False, relatedModelName='Address', otherSideName='agent'),
-            Relationship(name='agentAttachments', type='one-to-many',required=False, relatedModelName='AgentAttachment', otherSideName='agent'),
-            Relationship(name='agentGeographies', type='one-to-many',required=False, relatedModelName='AgentGeography', otherSideName='agent'),
-            Relationship(name='agentSpecialties', type='one-to-many',required=False, relatedModelName='AgentSpecialty', otherSideName='agent'),
+            Relationship(name='addresses', type='one-to-many',required=False, relatedModelName='Address', otherSideName='agent', dependent=True),
+            Relationship(name='agentAttachments', type='one-to-many',required=False, relatedModelName='AgentAttachment', otherSideName='agent', dependent=True),
+            Relationship(name='agentGeographies', type='one-to-many',required=False, relatedModelName='AgentGeography', otherSideName='agent', dependent=True),
+            Relationship(name='agentSpecialties', type='one-to-many',required=False, relatedModelName='AgentSpecialty', otherSideName='agent', dependent=True),
             Relationship(name='collContentContact', type='many-to-one',required=False, relatedModelName='Collection', column='CollectionCCID', otherSideName='contentContacts'),
             Relationship(name='collTechContact', type='many-to-one',required=False, relatedModelName='Collection', column='CollectionTCID', otherSideName='technicalContacts'),
             Relationship(name='collectors', type='one-to-many',required=False, relatedModelName='Collector', otherSideName='agent'),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='division', type='many-to-one',required=False, relatedModelName='Division', column='DivisionID', otherSideName='members'),
-            Relationship(name='groups', type='one-to-many',required=False, relatedModelName='GroupPerson', otherSideName='group'),
-            Relationship(name='identifiers', type='one-to-many',required=False, relatedModelName='AgentIdentifier', otherSideName='agent'),
+            Relationship(name='groups', type='one-to-many',required=False, relatedModelName='GroupPerson', otherSideName='group', dependent=True),
+            Relationship(name='identifiers', type='one-to-many',required=False, relatedModelName='AgentIdentifier', otherSideName='agent', dependent=True),
             Relationship(name='instContentContact', type='many-to-one',required=False, relatedModelName='Institution', column='InstitutionCCID', otherSideName='contentContacts'),
             Relationship(name='instTechContact', type='many-to-one',required=False, relatedModelName='Institution', column='InstitutionTCID', otherSideName='technicalContacts'),
             Relationship(name='members', type='one-to-many',required=False, relatedModelName='GroupPerson', otherSideName='member'),
@@ -361,7 +361,7 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID', otherSideName='agentAttachments'),
-            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='agentAttachments'),
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='agentAttachments', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
@@ -536,6 +536,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.Attachment',
         table='attachment',
         tableId=41,
+        system=True,
         idColumn='AttachmentID',
         idFieldName='attachmentId',
         idField=IdField(name='attachmentId', column='AttachmentID', type='java.lang.Integer'),
@@ -621,6 +622,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.AttachmentImageAttribute',
         table='attachmentimageattribute',
         tableId=139,
+        system=True,
         idColumn='AttachmentImageAttributeID',
         idFieldName='attachmentImageAttributeId',
         idField=IdField(name='attachmentImageAttributeId', column='AttachmentImageAttributeID', type='java.lang.Integer'),
@@ -663,6 +665,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.AttachmentMetadata',
         table='attachmentmetadata',
         tableId=42,
+        system=True,
         idColumn='AttachmentMetadataID',
         idFieldName='attachmentMetadataID',
         idField=IdField(name='attachmentMetadataID', column='AttachmentMetadataID', type='java.lang.Integer'),
@@ -677,7 +680,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='attachment', type='many-to-one',required=False, relatedModelName='Attachment', column='AttachmentID', otherSideName='metadata'),
+            Relationship(name='attachment', type='many-to-one',required=False, relatedModelName='Attachment', column='AttachmentID', otherSideName='metadata', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
@@ -689,6 +692,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.AttachmentTag',
         table='attachmenttag',
         tableId=130,
+        system=True,
         idColumn='AttachmentTagID',
         idFieldName='attachmentTagID',
         idField=IdField(name='attachmentTagID', column='AttachmentTagID', type='java.lang.Integer'),
@@ -702,7 +706,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='tags'),
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='tags', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
@@ -714,6 +718,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.AttributeDef',
         table='attributedef',
         tableId=16,
+        system=True,
         idColumn='AttributeDefID',
         idFieldName='attributeDefId',
         idField=IdField(name='attributeDefId', column='AttributeDefID', type='java.lang.Integer'),
@@ -774,6 +779,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.AutoNumberingScheme',
         table='autonumberingscheme',
         tableId=97,
+        system=True,
         idColumn='AutoNumberingSchemeID',
         idFieldName='autoNumberingSchemeId',
         idField=IdField(name='autoNumberingSchemeId', column='AutoNumberingSchemeID', type='java.lang.Integer'),
@@ -840,13 +846,13 @@ datamodel = Datamodel(tables=[
             Index(name='BorColMemIDX', column_names=['CollectionMemberID'])
         ],
         relationships=[
-            Relationship(name='addressOfRecord', type='many-to-one',required=False, relatedModelName='AddressOfRecord', column='AddressOfRecordID'),
-            Relationship(name='borrowAgents', type='one-to-many',required=False, relatedModelName='BorrowAgent', otherSideName='borrow'),
-            Relationship(name='borrowAttachments', type='one-to-many',required=False, relatedModelName='BorrowAttachment', otherSideName='borrow'),
-            Relationship(name='borrowMaterials', type='one-to-many',required=False, relatedModelName='BorrowMaterial', otherSideName='borrow'),
+            Relationship(name='addressOfRecord', type='many-to-one',required=False, relatedModelName='AddressOfRecord', column='AddressOfRecordID', dependent=True),
+            Relationship(name='borrowAgents', type='one-to-many',required=False, relatedModelName='BorrowAgent', otherSideName='borrow', dependent=True),
+            Relationship(name='borrowAttachments', type='one-to-many',required=False, relatedModelName='BorrowAttachment', otherSideName='borrow', dependent=True),
+            Relationship(name='borrowMaterials', type='one-to-many',required=False, relatedModelName='BorrowMaterial', otherSideName='borrow', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(name='shipments', type='one-to-many',required=False, relatedModelName='Shipment', otherSideName='borrow')
+            Relationship(name='shipments', type='one-to-many',required=False, relatedModelName='Shipment', otherSideName='borrow', dependent=True)
         ],
         fieldAliases=[
 
@@ -902,7 +908,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='borrowAttachments'),
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='borrowAttachments', dependent=True),
             Relationship(name='borrow', type='many-to-one',required=True, relatedModelName='Borrow', column='BorrowID', otherSideName='borrowAttachments'),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
@@ -942,7 +948,7 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='borrow', type='many-to-one',required=True, relatedModelName='Borrow', column='BorrowID', otherSideName='borrowMaterials'),
-            Relationship(name='borrowReturnMaterials', type='one-to-many',required=False, relatedModelName='BorrowReturnMaterial', otherSideName='borrowMaterial'),
+            Relationship(name='borrowReturnMaterials', type='one-to-many',required=False, relatedModelName='BorrowReturnMaterial', otherSideName='borrowMaterial', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
@@ -1038,16 +1044,16 @@ datamodel = Datamodel(tables=[
             Index(name='CEGuidIDX', column_names=['GUID'])
         ],
         relationships=[
-            Relationship(name='collectingEventAttachments', type='one-to-many',required=False, relatedModelName='CollectingEventAttachment', otherSideName='collectingEvent'),
-            Relationship(name='collectingEventAttribute', type='many-to-one',required=False, relatedModelName='CollectingEventAttribute', column='CollectingEventAttributeID', otherSideName='collectingEvents'),
-            Relationship(name='collectingEventAttrs', type='one-to-many',required=False, relatedModelName='CollectingEventAttr', otherSideName='collectingEvent'),
-            Relationship(name='collectingEventAuthorizations', type='one-to-many',required=False, relatedModelName='CollectingEventAuthorization', otherSideName='collectingEvent'),
+            Relationship(name='collectingEventAttachments', type='one-to-many',required=False, relatedModelName='CollectingEventAttachment', otherSideName='collectingEvent', dependent=True),
+            Relationship(name='collectingEventAttribute', type='many-to-one',required=False, relatedModelName='CollectingEventAttribute', column='CollectingEventAttributeID', otherSideName='collectingEvents', dependent=True),
+            Relationship(name='collectingEventAttrs', type='one-to-many',required=False, relatedModelName='CollectingEventAttr', otherSideName='collectingEvent', dependent=True),
+            Relationship(name='collectingEventAuthorizations', type='one-to-many',required=False, relatedModelName='CollectingEventAuthorization', otherSideName='collectingEvent', dependent=True),
             Relationship(name='collectingTrip', type='many-to-one',required=False, relatedModelName='CollectingTrip', column='CollectingTripID', otherSideName='collectingEvents'),
             Relationship(name='collectionObjects', type='one-to-many',required=False, relatedModelName='CollectionObject', otherSideName='collectingEvent'),
-            Relationship(name='collectors', type='one-to-many',required=False, relatedModelName='Collector', otherSideName='collectingEvent'),
+            Relationship(name='collectors', type='one-to-many',required=False, relatedModelName='Collector', otherSideName='collectingEvent', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
-            Relationship(name='locality', type='many-to-one',required=False, relatedModelName='Locality', column='LocalityID'),
+            Relationship(name='locality', type='many-to-one',required=False, relatedModelName='Locality', column='LocalityID', otherSideName='collectingEvents'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='paleoContext', type='many-to-one',required=False, relatedModelName='PaleoContext', column='PaleoContextID', otherSideName='collectingEvents'),
             Relationship(name='visibilitySetBy', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='VisibilitySetByID')
@@ -1077,7 +1083,7 @@ datamodel = Datamodel(tables=[
             Index(name='CEAColMemIDX', column_names=['CollectionMemberID'])
         ],
         relationships=[
-            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='collectingEventAttachments'),
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='collectingEventAttachments', dependent=True),
             Relationship(name='collectingEvent', type='many-to-one',required=True, relatedModelName='CollectingEvent', column='CollectingEventID', otherSideName='collectingEventAttachments'),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
@@ -1267,12 +1273,12 @@ datamodel = Datamodel(tables=[
             Relationship(name='agent1', type='many-to-one',required=False, relatedModelName='Agent', column='Agent1ID'),
             Relationship(name='agent2', type='many-to-one',required=False, relatedModelName='Agent', column='Agent2ID'),
             Relationship(name='collectingEvents', type='one-to-many',required=False, relatedModelName='CollectingEvent', otherSideName='collectingTrip'),
-            Relationship(name='collectingTripAttachments', type='one-to-many',required=False, relatedModelName='CollectingTripAttachment', otherSideName='collectingTrip'),
-            Relationship(name='collectingTripAttribute', type='many-to-one',required=False, relatedModelName='CollectingTripAttribute', column='CollectingTripAttributeID', otherSideName='collectingTrips'),
-            Relationship(name='collectingTripAuthorizations', type='one-to-many',required=False, relatedModelName='CollectingTripAuthorization', otherSideName='collectingTrip'),
+            Relationship(name='collectingTripAttachments', type='one-to-many',required=False, relatedModelName='CollectingTripAttachment', otherSideName='collectingTrip', dependent=True),
+            Relationship(name='collectingTripAttribute', type='many-to-one',required=False, relatedModelName='CollectingTripAttribute', column='CollectingTripAttributeID', otherSideName='collectingTrips', dependent=True),
+            Relationship(name='collectingTripAuthorizations', type='one-to-many',required=False, relatedModelName='CollectingTripAuthorization', otherSideName='collectingTrip', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
-            Relationship(name='fundingAgents', type='one-to-many',required=False, relatedModelName='FundingAgent', otherSideName='collectingTrip'),
+            Relationship(name='fundingAgents', type='one-to-many',required=False, relatedModelName='FundingAgent', otherSideName='collectingTrip', dependent=True),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
@@ -1300,7 +1306,7 @@ datamodel = Datamodel(tables=[
             Index(name='CTAColMemIDX', column_names=['CollectionMemberID'])
         ],
         relationships=[
-            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='collectingTripAttachments'),
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='collectingTripAttachments', dependent=True),
             Relationship(name='collectingTrip', type='many-to-one',required=True, relatedModelName='CollectingTrip', column='CollectingTripID', otherSideName='collectingTripAttachments'),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
@@ -1553,31 +1559,31 @@ datamodel = Datamodel(tables=[
             Relationship(name='cataloger', type='many-to-one',required=False, relatedModelName='Agent', column='CatalogerID'),
             Relationship(name='collectingEvent', type='many-to-one',required=False, relatedModelName='CollectingEvent', column='CollectingEventID', otherSideName='collectionObjects'),
             Relationship(name='collection', type='many-to-one',required=True, relatedModelName='Collection', column='CollectionID'),
-            Relationship(name='collectionObjectAttachments', type='one-to-many',required=False, relatedModelName='CollectionObjectAttachment', otherSideName='collectionObject'),
-            Relationship(name='collectionObjectAttribute', type='many-to-one',required=False, relatedModelName='CollectionObjectAttribute', column='CollectionObjectAttributeID', otherSideName='collectionObjects'),
-            Relationship(name='collectionObjectAttrs', type='one-to-many',required=False, relatedModelName='CollectionObjectAttr', otherSideName='collectionObject'),
-            Relationship(name='collectionObjectCitations', type='one-to-many',required=False, relatedModelName='CollectionObjectCitation', otherSideName='collectionObject'),
-            Relationship(name='collectionObjectProperties', type='one-to-many',required=False, relatedModelName='CollectionObjectProperty', otherSideName='collectionObject'),
-            Relationship(name='conservDescriptions', type='one-to-many',required=False, relatedModelName='ConservDescription', otherSideName='collectionObject'),
+            Relationship(name='collectionObjectAttachments', type='one-to-many',required=False, relatedModelName='CollectionObjectAttachment', otherSideName='collectionObject', dependent=True),
+            Relationship(name='collectionObjectAttribute', type='many-to-one',required=False, relatedModelName='CollectionObjectAttribute', column='CollectionObjectAttributeID', otherSideName='collectionObjects', dependent=True),
+            Relationship(name='collectionObjectAttrs', type='one-to-many',required=False, relatedModelName='CollectionObjectAttr', otherSideName='collectionObject', dependent=True),
+            Relationship(name='collectionObjectCitations', type='one-to-many',required=False, relatedModelName='CollectionObjectCitation', otherSideName='collectionObject', dependent=True),
+            Relationship(name='collectionObjectProperties', type='one-to-many',required=False, relatedModelName='CollectionObjectProperty', otherSideName='collectionObject', dependent=True),
+            Relationship(name='conservDescriptions', type='one-to-many',required=False, relatedModelName='ConservDescription', otherSideName='collectionObject', dependent=True),
             Relationship(name='container', type='many-to-one',required=False, relatedModelName='Container', column='ContainerID', otherSideName='collectionObjects'),
             Relationship(name='containerOwner', type='many-to-one',required=False, relatedModelName='Container', column='ContainerOwnerID', otherSideName='collectionObjectKids'),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(name='determinations', type='one-to-many',required=False, relatedModelName='Determination', otherSideName='collectionObject'),
-            Relationship(name='dnaSequences', type='one-to-many',required=False, relatedModelName='DNASequence', otherSideName='collectionObject'),
+            Relationship(name='determinations', type='one-to-many',required=False, relatedModelName='Determination', otherSideName='collectionObject', dependent=True),
+            Relationship(name='dnaSequences', type='one-to-many',required=False, relatedModelName='DNASequence', otherSideName='collectionObject', dependent=True),
             Relationship(name='embargoAuthority', type='many-to-one',required=False, relatedModelName='Agent', column='EmbargoAuthorityID'),
-            Relationship(name='exsiccataItems', type='one-to-many',required=False, relatedModelName='ExsiccataItem', otherSideName='collectionObject'),
+            Relationship(name='exsiccataItems', type='one-to-many',required=False, relatedModelName='ExsiccataItem', otherSideName='collectionObject', dependent=True),
             Relationship(name='fieldNotebookPage', type='many-to-one',required=False, relatedModelName='FieldNotebookPage', column='FieldNotebookPageID', otherSideName='collectionObjects'),
             Relationship(name='inventorizedBy', type='many-to-one',required=False, relatedModelName='Agent', column='InventorizedByID'),
-            Relationship(name='leftSideRels', type='one-to-many',required=False, relatedModelName='CollectionRelationship', otherSideName='leftSide'),
+            Relationship(name='leftSideRels', type='one-to-many',required=False, relatedModelName='CollectionRelationship', otherSideName='leftSide', dependent=True),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(name='otherIdentifiers', type='one-to-many',required=False, relatedModelName='OtherIdentifier', otherSideName='collectionObject'),
+            Relationship(name='otherIdentifiers', type='one-to-many',required=False, relatedModelName='OtherIdentifier', otherSideName='collectionObject', dependent=True),
             Relationship(name='paleoContext', type='many-to-one',required=False, relatedModelName='PaleoContext', column='PaleoContextID', otherSideName='collectionObjects'),
-            Relationship(name='preparations', type='one-to-many',required=False, relatedModelName='Preparation', otherSideName='collectionObject'),
+            Relationship(name='preparations', type='one-to-many',required=False, relatedModelName='Preparation', otherSideName='collectionObject', dependent=True),
             Relationship(name='projects', type='many-to-many',required=False, relatedModelName='Project', otherSideName='collectionObjects'),
-            Relationship(name='rightSideRels', type='one-to-many',required=False, relatedModelName='CollectionRelationship', otherSideName='rightSide'),
-            Relationship(name='treatmentEvents', type='one-to-many',required=False, relatedModelName='TreatmentEvent', otherSideName='collectionObject'),
+            Relationship(name='rightSideRels', type='one-to-many',required=False, relatedModelName='CollectionRelationship', otherSideName='rightSide', dependent=True),
+            Relationship(name='treatmentEvents', type='one-to-many',required=False, relatedModelName='TreatmentEvent', otherSideName='collectionObject', dependent=True),
             Relationship(name='visibilitySetBy', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='VisibilitySetByID'),
-            Relationship(name='voucherRelationships', type='one-to-many',required=False, relatedModelName='VoucherRelationship', otherSideName='collectionObject')
+            Relationship(name='voucherRelationships', type='one-to-many',required=False, relatedModelName='VoucherRelationship', otherSideName='collectionObject', dependent=True)
         ],
         fieldAliases=[
 
@@ -1604,7 +1610,7 @@ datamodel = Datamodel(tables=[
             Index(name='COLOBJATTColMemIDX', column_names=['CollectionMemberID'])
         ],
         relationships=[
-            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='collectionObjectAttachments'),
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='collectionObjectAttachments', dependent=True),
             Relationship(name='collectionObject', type='many-to-one',required=True, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='collectionObjectAttachments'),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
@@ -2125,7 +2131,7 @@ datamodel = Datamodel(tables=[
             Index(name='CommonNameTxCountryIDX', column_names=['Country'])
         ],
         relationships=[
-            Relationship(name='citations', type='one-to-many',required=False, relatedModelName='CommonNameTxCitation', otherSideName='commonNameTx'),
+            Relationship(name='citations', type='one-to-many',required=False, relatedModelName='CommonNameTxCitation', otherSideName='commonNameTx', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='taxon', type='many-to-one',required=True, relatedModelName='Taxon', column='TaxonID', otherSideName='commonNames')
@@ -2231,10 +2237,10 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='collectionObject', type='many-to-one',required=False, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='conservDescriptions'),
-            Relationship(name='conservDescriptionAttachments', type='one-to-many',required=False, relatedModelName='ConservDescriptionAttachment', otherSideName='conservDescription'),
+            Relationship(name='conservDescriptionAttachments', type='one-to-many',required=False, relatedModelName='ConservDescriptionAttachment', otherSideName='conservDescription', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='division', type='many-to-one',required=False, relatedModelName='Division', column='DivisionID'),
-            Relationship(name='events', type='one-to-many',required=False, relatedModelName='ConservEvent', otherSideName='conservDescription'),
+            Relationship(name='events', type='one-to-many',required=False, relatedModelName='ConservEvent', otherSideName='conservDescription', dependent=True),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='preparation', type='many-to-one',required=False, relatedModelName='Preparation', column='PreparationID', otherSideName='conservDescriptions')
         ],
@@ -2260,7 +2266,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='conservDescriptionAttachments'),
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='conservDescriptionAttachments', dependent=True),
             Relationship(name='conservDescription', type='many-to-one',required=True, relatedModelName='ConservDescription', column='ConservDescriptionID', otherSideName='conservDescriptionAttachments'),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
@@ -2310,7 +2316,7 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='conservDescription', type='many-to-one',required=True, relatedModelName='ConservDescription', column='ConservDescriptionID', otherSideName='events'),
-            Relationship(name='conservEventAttachments', type='one-to-many',required=False, relatedModelName='ConservEventAttachment', otherSideName='conservEvent'),
+            Relationship(name='conservEventAttachments', type='one-to-many',required=False, relatedModelName='ConservEventAttachment', otherSideName='conservEvent', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='curator', type='many-to-one',required=False, relatedModelName='Agent', column='CuratorID'),
             Relationship(name='examinedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ExaminedByAgentID'),
@@ -2339,7 +2345,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='conservEventAttachments'),
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='conservEventAttachments', dependent=True),
             Relationship(name='conservEvent', type='many-to-one',required=True, relatedModelName='ConservEvent', column='ConservEventID', otherSideName='conservEventAttachments'),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
@@ -2484,10 +2490,10 @@ datamodel = Datamodel(tables=[
             Index(name='BOLDSampleIDX', column_names=['BOLDSampleID'])
         ],
         relationships=[
-            Relationship(name='attachments', type='one-to-many',required=False, relatedModelName='DNASequenceAttachment', otherSideName='dnaSequence'),
+            Relationship(name='attachments', type='one-to-many',required=False, relatedModelName='DNASequenceAttachment', otherSideName='dnaSequence', dependent=True),
             Relationship(name='collectionObject', type='many-to-one',required=False, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='dnaSequences'),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(name='dnaSequencingRuns', type='one-to-many',required=False, relatedModelName='DNASequencingRun', otherSideName='dnaSequence'),
+            Relationship(name='dnaSequencingRuns', type='one-to-many',required=False, relatedModelName='DNASequencingRun', otherSideName='dnaSequence', dependent=True),
             Relationship(name='extractor', type='many-to-one',required=False, relatedModelName='Agent', column='ExtractorID'),
             Relationship(name='extractors', type='one-to-many',required=False, relatedModelName='Extractor', otherSideName='dnaSequence'),
             Relationship(name='materialSample', type='many-to-one',required=False, relatedModelName='MaterialSample', column='MaterialSampleID', otherSideName='dnaSequences'),
@@ -2517,7 +2523,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='dnaSequenceAttachments'),
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='dnaSequenceAttachments', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='dnaSequence', type='many-to-one',required=True, relatedModelName='DNASequence', column='DnaSequenceID', otherSideName='attachments'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
@@ -2574,8 +2580,8 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='attachments', type='one-to-many',required=False, relatedModelName='DNASequencingRunAttachment', otherSideName='dnaSequencingRun'),
-            Relationship(name='citations', type='one-to-many',required=False, relatedModelName='DNASequencingRunCitation', otherSideName='sequencingRun'),
+            Relationship(name='attachments', type='one-to-many',required=False, relatedModelName='DNASequencingRunAttachment', otherSideName='dnaSequencingRun', dependent=True),
+            Relationship(name='citations', type='one-to-many',required=False, relatedModelName='DNASequencingRunCitation', otherSideName='sequencingRun', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='dnaPrimer', type='many-to-one',required=False, relatedModelName='DNAPrimer', column='DNAPrimerID', otherSideName='dnaSequencingRuns'),
             Relationship(name='dnaSequence', type='many-to-one',required=True, relatedModelName='DNASequence', column='DNASequenceID', otherSideName='dnaSequencingRuns'),
@@ -2605,7 +2611,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='dnaSequencingRunAttachments'),
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='dnaSequencingRunAttachments', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='dnaSequencingRun', type='many-to-one',required=True, relatedModelName='DNASequencingRun', column='DnaSequencingRunID', otherSideName='attachments'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
@@ -2656,6 +2662,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.DataType',
         table='datatype',
         tableId=33,
+        system=True,
         idColumn='DataTypeID',
         idFieldName='dataTypeId',
         idField=IdField(name='dataTypeId', column='DataTypeID', type='java.lang.Integer'),
@@ -2723,8 +2730,8 @@ datamodel = Datamodel(tables=[
             Relationship(name='agent1', type='many-to-one',required=False, relatedModelName='Agent', column='Agent1ID'),
             Relationship(name='agent2', type='many-to-one',required=False, relatedModelName='Agent', column='Agent2ID'),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(name='deaccessionAgents', type='one-to-many',required=False, relatedModelName='DeaccessionAgent', otherSideName='deaccession'),
-            Relationship(name='deaccessionAttachments', type='one-to-many',required=False, relatedModelName='DeaccessionAttachment', otherSideName='deaccession'),
+            Relationship(name='deaccessionAgents', type='one-to-many',required=False, relatedModelName='DeaccessionAgent', otherSideName='deaccession', dependent=True),
+            Relationship(name='deaccessionAttachments', type='one-to-many',required=False, relatedModelName='DeaccessionAttachment', otherSideName='deaccession', dependent=True),
             Relationship(name='disposals', type='one-to-many',required=False, relatedModelName='Disposal', otherSideName='deaccession'),
             Relationship(name='exchangeOuts', type='one-to-many',required=False, relatedModelName='ExchangeOut', otherSideName='deaccession'),
             Relationship(name='gifts', type='one-to-many',required=False, relatedModelName='Gift', otherSideName='deaccession'),
@@ -2783,7 +2790,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='deaccessionAttachments'),
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='deaccessionAttachments', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='deaccession', type='many-to-one',required=True, relatedModelName='Deaccession', column='DeaccessionID', otherSideName='deaccessionAttachments'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
@@ -2855,9 +2862,9 @@ datamodel = Datamodel(tables=[
         relationships=[
             Relationship(name='collectionObject', type='many-to-one',required=True, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='determinations'),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(name='determinationCitations', type='one-to-many',required=False, relatedModelName='DeterminationCitation', otherSideName='determination'),
+            Relationship(name='determinationCitations', type='one-to-many',required=False, relatedModelName='DeterminationCitation', otherSideName='determination', dependent=True),
             Relationship(name='determiner', type='many-to-one',required=False, relatedModelName='Agent', column='DeterminerID'),
-            Relationship(name='determiners', type='one-to-many',required=False, relatedModelName='Determiner', otherSideName='determination'),
+            Relationship(name='determiners', type='one-to-many',required=False, relatedModelName='Determiner', otherSideName='determination', dependent=True),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='preferredTaxon', type='many-to-one',required=False, relatedModelName='Taxon', column='PreferredTaxonID'),
             Relationship(name='taxon', type='many-to-one',required=False, relatedModelName='Taxon', column='TaxonID', otherSideName='determinations')
@@ -3005,9 +3012,9 @@ datamodel = Datamodel(tables=[
         relationships=[
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='deaccession', type='many-to-one',required=False, relatedModelName='Deaccession', column='DeaccessionID', otherSideName='disposals'),
-            Relationship(name='disposalAgents', type='one-to-many',required=False, relatedModelName='DisposalAgent', otherSideName='disposal'),
-            Relationship(name='disposalAttachments', type='one-to-many',required=False, relatedModelName='DisposalAttachment', otherSideName='disposal'),
-            Relationship(name='disposalPreparations', type='one-to-many',required=False, relatedModelName='DisposalPreparation', otherSideName='disposal'),
+            Relationship(name='disposalAgents', type='one-to-many',required=False, relatedModelName='DisposalAgent', otherSideName='disposal', dependent=True),
+            Relationship(name='disposalAttachments', type='one-to-many',required=False, relatedModelName='DisposalAttachment', otherSideName='disposal', dependent=True),
+            Relationship(name='disposalPreparations', type='one-to-many',required=False, relatedModelName='DisposalPreparation', otherSideName='disposal', dependent=True),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
@@ -3063,7 +3070,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='disposalAttachments'),
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='disposalAttachments', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='disposal', type='many-to-one',required=True, relatedModelName='Disposal', column='DisposalID', otherSideName='disposalAttachments'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
@@ -3175,13 +3182,13 @@ datamodel = Datamodel(tables=[
             Index(name='DescriptionOfMaterialIDX', column_names=['DescriptionOfMaterial'])
         ],
         relationships=[
-            Relationship(name='addressOfRecord', type='many-to-one',required=False, relatedModelName='AddressOfRecord', column='AddressOfRecordID', otherSideName='exchangeIns'),
+            Relationship(name='addressOfRecord', type='many-to-one',required=False, relatedModelName='AddressOfRecord', column='AddressOfRecordID', otherSideName='exchangeIns', dependent=True),
             Relationship(name='agentCatalogedBy', type='many-to-one',required=True, relatedModelName='Agent', column='CatalogedByID'),
             Relationship(name='agentReceivedFrom', type='many-to-one',required=True, relatedModelName='Agent', column='ReceivedFromOrganizationID'),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='division', type='many-to-one',required=True, relatedModelName='Division', column='DivisionID'),
-            Relationship(name='exchangeInAttachments', type='one-to-many',required=False, relatedModelName='ExchangeInAttachment', otherSideName='exchangeIn'),
-            Relationship(name='exchangeInPreps', type='one-to-many',required=False, relatedModelName='ExchangeInPrep', otherSideName='exchangeIn'),
+            Relationship(name='exchangeInAttachments', type='one-to-many',required=False, relatedModelName='ExchangeInAttachment', otherSideName='exchangeIn', dependent=True),
+            Relationship(name='exchangeInPreps', type='one-to-many',required=False, relatedModelName='ExchangeInPrep', otherSideName='exchangeIn', dependent=True),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
@@ -3208,7 +3215,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='exchangeInAttachments'),
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='exchangeInAttachments', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='exchangeIn', type='many-to-one',required=True, relatedModelName='ExchangeIn', column='ExchangeInID', otherSideName='exchangeInAttachments'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
@@ -3285,14 +3292,14 @@ datamodel = Datamodel(tables=[
             Index(name='ExchangeOutNumberIDX', column_names=['ExchangeOutNumber'])
         ],
         relationships=[
-            Relationship(name='addressOfRecord', type='many-to-one',required=False, relatedModelName='AddressOfRecord', column='AddressOfRecordID', otherSideName='exchangeOuts'),
+            Relationship(name='addressOfRecord', type='many-to-one',required=False, relatedModelName='AddressOfRecord', column='AddressOfRecordID', otherSideName='exchangeOuts', dependent=True),
             Relationship(name='agentCatalogedBy', type='many-to-one',required=True, relatedModelName='Agent', column='CatalogedByID'),
             Relationship(name='agentSentTo', type='many-to-one',required=True, relatedModelName='Agent', column='SentToOrganizationID'),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='deaccession', type='many-to-one',required=False, relatedModelName='Deaccession', column='DeaccessionID', otherSideName='exchangeOuts'),
             Relationship(name='division', type='many-to-one',required=True, relatedModelName='Division', column='DivisionID'),
-            Relationship(name='exchangeOutAttachments', type='one-to-many',required=False, relatedModelName='ExchangeOutAttachment', otherSideName='exchangeOut'),
-            Relationship(name='exchangeOutPreps', type='one-to-many',required=False, relatedModelName='ExchangeOutPrep', otherSideName='exchangeOut'),
+            Relationship(name='exchangeOutAttachments', type='one-to-many',required=False, relatedModelName='ExchangeOutAttachment', otherSideName='exchangeOut', dependent=True),
+            Relationship(name='exchangeOutPreps', type='one-to-many',required=False, relatedModelName='ExchangeOutPrep', otherSideName='exchangeOut', dependent=True),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='shipments', type='one-to-many',required=False, relatedModelName='Shipment', otherSideName='exchangeOut')
         ],
@@ -3320,7 +3327,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='exchangeOutAttachments'),
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='exchangeOutAttachments', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='exchangeOut', type='many-to-one',required=True, relatedModelName='ExchangeOut', column='ExchangeOutID', otherSideName='exchangeOutAttachments'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
@@ -3385,7 +3392,7 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(name='exsiccataItems', type='one-to-many',required=False, relatedModelName='ExsiccataItem', otherSideName='exsiccata'),
+            Relationship(name='exsiccataItems', type='one-to-many',required=False, relatedModelName='ExsiccataItem', otherSideName='exsiccata', dependent=True),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='referenceWork', type='many-to-one',required=True, relatedModelName='ReferenceWork', column='ReferenceWorkID', otherSideName='exsiccatae')
         ],
@@ -3478,13 +3485,13 @@ datamodel = Datamodel(tables=[
             Index(name='FNBEndDateIDX', column_names=['EndDate'])
         ],
         relationships=[
-            Relationship(name='attachments', type='one-to-many',required=False, relatedModelName='FieldNotebookAttachment', otherSideName='fieldNotebook'),
+            Relationship(name='attachments', type='one-to-many',required=False, relatedModelName='FieldNotebookAttachment', otherSideName='fieldNotebook', dependent=True),
             Relationship(name='collection', type='many-to-one',required=True, relatedModelName='Collection', column='CollectionID'),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='ownerAgent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID'),
-            Relationship(name='pageSets', type='one-to-many',required=False, relatedModelName='FieldNotebookPageSet', otherSideName='fieldNotebook')
+            Relationship(name='pageSets', type='one-to-many',required=False, relatedModelName='FieldNotebookPageSet', otherSideName='fieldNotebook', dependent=True)
         ],
         fieldAliases=[
 
@@ -3508,7 +3515,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='fieldNotebookAttachments'),
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='fieldNotebookAttachments', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='fieldNotebook', type='many-to-one',required=True, relatedModelName='FieldNotebook', column='FieldNotebookID', otherSideName='attachments'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
@@ -3539,7 +3546,7 @@ datamodel = Datamodel(tables=[
             Index(name='FNBPScanDateIDX', column_names=['ScanDate'])
         ],
         relationships=[
-            Relationship(name='attachments', type='one-to-many',required=False, relatedModelName='FieldNotebookPageAttachment', otherSideName='fieldNotebookPage'),
+            Relationship(name='attachments', type='one-to-many',required=False, relatedModelName='FieldNotebookPageAttachment', otherSideName='fieldNotebookPage', dependent=True),
             Relationship(name='collectionObjects', type='one-to-many',required=False, relatedModelName='CollectionObject', otherSideName='fieldNotebookPage'),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
@@ -3570,7 +3577,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='fieldNotebookPageAttachments'),
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='fieldNotebookPageAttachments', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='fieldNotebookPage', type='many-to-one',required=True, relatedModelName='FieldNotebookPage', column='FieldNotebookPageID', otherSideName='attachments'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
@@ -3603,12 +3610,12 @@ datamodel = Datamodel(tables=[
             Index(name='FNBPSEndDateIDX', column_names=['EndDate'])
         ],
         relationships=[
-            Relationship(name='attachments', type='one-to-many',required=False, relatedModelName='FieldNotebookPageSetAttachment', otherSideName='fieldNotebookPageSet'),
+            Relationship(name='attachments', type='one-to-many',required=False, relatedModelName='FieldNotebookPageSetAttachment', otherSideName='fieldNotebookPageSet', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
             Relationship(name='fieldNotebook', type='many-to-one',required=False, relatedModelName='FieldNotebook', column='FieldNotebookID', otherSideName='pageSets'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(name='pages', type='one-to-many',required=False, relatedModelName='FieldNotebookPage', otherSideName='pageSet'),
+            Relationship(name='pages', type='one-to-many',required=False, relatedModelName='FieldNotebookPage', otherSideName='pageSet', dependent=True),
             Relationship(name='sourceAgent', type='many-to-one',required=False, relatedModelName='Agent', column='AgentID')
         ],
         fieldAliases=[
@@ -3633,7 +3640,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='fieldNotebookPageSetAttachments'),
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='fieldNotebookPageSetAttachments', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='fieldNotebookPageSet', type='many-to-one',required=True, relatedModelName='FieldNotebookPageSet', column='FieldNotebookPageSetID', otherSideName='attachments'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
@@ -3796,6 +3803,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.GeographyTreeDef',
         table='geographytreedef',
         tableId=44,
+        system=True,
         idColumn='GeographyTreeDefID',
         idFieldName='geographyTreeDefId',
         idField=IdField(name='geographyTreeDefId', column='GeographyTreeDefID', type='java.lang.Integer'),
@@ -3825,6 +3833,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.GeographyTreeDefItem',
         table='geographytreedefitem',
         tableId=45,
+        system=True,
         idColumn='GeographyTreeDefItemID',
         idFieldName='geographyTreeDefItemId',
         idField=IdField(name='geographyTreeDefItemId', column='GeographyTreeDefItemID', type='java.lang.Integer'),
@@ -3912,6 +3921,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.GeologicTimePeriodTreeDef',
         table='geologictimeperiodtreedef',
         tableId=47,
+        system=True,
         idColumn='GeologicTimePeriodTreeDefID',
         idFieldName='geologicTimePeriodTreeDefId',
         idField=IdField(name='geologicTimePeriodTreeDefId', column='GeologicTimePeriodTreeDefID', type='java.lang.Integer'),
@@ -3941,6 +3951,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.GeologicTimePeriodTreeDefItem',
         table='geologictimeperiodtreedefitem',
         tableId=48,
+        system=True,
         idColumn='GeologicTimePeriodTreeDefItemID',
         idFieldName='geologicTimePeriodTreeDefItemId',
         idField=IdField(name='geologicTimePeriodTreeDefItemId', column='GeologicTimePeriodTreeDefItemID', type='java.lang.Integer'),
@@ -4016,16 +4027,16 @@ datamodel = Datamodel(tables=[
             Index(name='GiftDateIDX', column_names=['GiftDate'])
         ],
         relationships=[
-            Relationship(name='addressOfRecord', type='many-to-one',required=False, relatedModelName='AddressOfRecord', column='AddressOfRecordID'),
+            Relationship(name='addressOfRecord', type='many-to-one',required=False, relatedModelName='AddressOfRecord', column='AddressOfRecordID', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='deaccession', type='many-to-one',required=False, relatedModelName='Deaccession', column='DeaccessionID', otherSideName='gifts'),
             Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
             Relationship(name='division', type='many-to-one',required=False, relatedModelName='Division', column='DivisionID'),
             Relationship(name='giftAgents', type='one-to-many',required=False, relatedModelName='GiftAgent', otherSideName='gift'),
-            Relationship(name='giftAttachments', type='one-to-many',required=False, relatedModelName='GiftAttachment', otherSideName='gift'),
-            Relationship(name='giftPreparations', type='one-to-many',required=False, relatedModelName='GiftPreparation', otherSideName='gift'),
+            Relationship(name='giftAttachments', type='one-to-many',required=False, relatedModelName='GiftAttachment', otherSideName='gift', dependent=True),
+            Relationship(name='giftPreparations', type='one-to-many',required=False, relatedModelName='GiftPreparation', otherSideName='gift', dependent=True),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(name='shipments', type='one-to-many',required=False, relatedModelName='Shipment', otherSideName='gift')
+            Relationship(name='shipments', type='one-to-many',required=False, relatedModelName='Shipment', otherSideName='gift', dependent=True)
         ],
         fieldAliases=[
 
@@ -4082,7 +4093,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='giftAttachments'),
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='giftAttachments', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='gift', type='many-to-one',required=True, relatedModelName='Gift', column='GiftID', otherSideName='giftAttachments'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
@@ -4349,7 +4360,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='locality', type='many-to-one',required=False, relatedModelName='Locality', column='LocalityID', otherSideName='latLonpolygons'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(name='points', type='one-to-many',required=False, relatedModelName='LatLonPolygonPnt', otherSideName='latLonPolygon'),
+            Relationship(name='points', type='one-to-many',required=False, relatedModelName='LatLonPolygonPnt', otherSideName='latLonPolygon', dependent=True),
             Relationship(name='visualQuery', type='many-to-one',required=False, relatedModelName='SpVisualQuery', column='SpVisualQueryID', otherSideName='polygons')
         ],
         fieldAliases=[
@@ -4431,6 +4442,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.LithoStratTreeDef',
         table='lithostrattreedef',
         tableId=101,
+        system=True,
         idColumn='LithoStratTreeDefID',
         idFieldName='lithoStratTreeDefId',
         idField=IdField(name='lithoStratTreeDefId', column='LithoStratTreeDefID', type='java.lang.Integer'),
@@ -4460,6 +4472,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.LithoStratTreeDefItem',
         table='lithostrattreedefitem',
         tableId=102,
+        system=True,
         idColumn='LithoStratTreeDefItemID',
         idFieldName='lithoStratTreeDefItemId',
         idField=IdField(name='lithoStratTreeDefItemId', column='LithoStratTreeDefItemID', type='java.lang.Integer'),
@@ -4539,15 +4552,15 @@ datamodel = Datamodel(tables=[
             Index(name='CurrentDueDateIDX', column_names=['CurrentDueDate'])
         ],
         relationships=[
-            Relationship(name='addressOfRecord', type='many-to-one',required=False, relatedModelName='AddressOfRecord', column='AddressOfRecordID', otherSideName='loans'),
+            Relationship(name='addressOfRecord', type='many-to-one',required=False, relatedModelName='AddressOfRecord', column='AddressOfRecordID', otherSideName='loans', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
             Relationship(name='division', type='many-to-one',required=False, relatedModelName='Division', column='DivisionID'),
-            Relationship(name='loanAgents', type='one-to-many',required=False, relatedModelName='LoanAgent', otherSideName='loan'),
-            Relationship(name='loanAttachments', type='one-to-many',required=False, relatedModelName='LoanAttachment', otherSideName='loan'),
-            Relationship(name='loanPreparations', type='one-to-many',required=False, relatedModelName='LoanPreparation', otherSideName='loan'),
+            Relationship(name='loanAgents', type='one-to-many',required=False, relatedModelName='LoanAgent', otherSideName='loan', dependent=True),
+            Relationship(name='loanAttachments', type='one-to-many',required=False, relatedModelName='LoanAttachment', otherSideName='loan', dependent=True),
+            Relationship(name='loanPreparations', type='one-to-many',required=False, relatedModelName='LoanPreparation', otherSideName='loan', dependent=True),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(name='shipments', type='one-to-many',required=False, relatedModelName='Shipment', otherSideName='loan')
+            Relationship(name='shipments', type='one-to-many',required=False, relatedModelName='Shipment', otherSideName='loan', dependent=True)
         ],
         fieldAliases=[
 
@@ -4603,7 +4616,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='loanAttachments'),
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='loanAttachments', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='loan', type='many-to-one',required=True, relatedModelName='Loan', column='LoanID', otherSideName='loanAttachments'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
@@ -4646,7 +4659,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
             Relationship(name='loan', type='many-to-one',required=True, relatedModelName='Loan', column='LoanID', otherSideName='loanPreparations'),
-            Relationship(name='loanReturnPreparations', type='one-to-many',required=False, relatedModelName='LoanReturnPreparation', otherSideName='loanPreparation'),
+            Relationship(name='loanReturnPreparations', type='one-to-many',required=False, relatedModelName='LoanReturnPreparation', otherSideName='loanPreparation', dependent=True),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='preparation', type='many-to-one',required=False, relatedModelName='Preparation', column='PreparationID', otherSideName='loanPreparations')
         ],
@@ -4752,16 +4765,17 @@ datamodel = Datamodel(tables=[
         relationships=[
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
-            Relationship(name='geoCoordDetails', type='zero-to-one',required=False, relatedModelName='GeoCoordDetail', otherSideName='locality'),
+            Relationship(name='geoCoordDetails', type='zero-to-one',required=False, relatedModelName='GeoCoordDetail', otherSideName='locality', dependent=True),
             Relationship(name='geography', type='many-to-one',required=False, relatedModelName='Geography', column='GeographyID', otherSideName='localities'),
-            Relationship(name='latLonpolygons', type='one-to-many',required=False, relatedModelName='LatLonPolygon', otherSideName='locality'),
-            Relationship(name='localityAttachments', type='one-to-many',required=False, relatedModelName='LocalityAttachment', otherSideName='locality'),
-            Relationship(name='localityCitations', type='one-to-many',required=False, relatedModelName='LocalityCitation', otherSideName='locality'),
-            Relationship(name='localityDetails', type='zero-to-one',required=False, relatedModelName='LocalityDetail', otherSideName='locality'),
-            Relationship(name='localityNameAliass', type='one-to-many',required=False, relatedModelName='LocalityNameAlias', otherSideName='locality'),
+            Relationship(name='latLonpolygons', type='one-to-many',required=False, relatedModelName='LatLonPolygon', otherSideName='locality', dependent=True),
+            Relationship(name='localityAttachments', type='one-to-many',required=False, relatedModelName='LocalityAttachment', otherSideName='locality', dependent=True),
+            Relationship(name='localityCitations', type='one-to-many',required=False, relatedModelName='LocalityCitation', otherSideName='locality', dependent=True),
+            Relationship(name='localityDetails', type='zero-to-one',required=False, relatedModelName='LocalityDetail', otherSideName='locality', dependent=True),
+            Relationship(name='localityNameAliass', type='one-to-many',required=False, relatedModelName='LocalityNameAlias', otherSideName='locality', dependent=True),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='paleoContext', type='many-to-one',required=False, relatedModelName='PaleoContext', column='PaleoContextID', otherSideName='localities'),
-            Relationship(name='visibilitySetBy', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='VisibilitySetByID')
+            Relationship(name='visibilitySetBy', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='VisibilitySetByID'),
+            Relationship(name='collectingEvents', type='one-to-many', required=False, relatedModelName='collectingEvent', otherSideName='locality')
         ],
         fieldAliases=[
 
@@ -4787,7 +4801,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='localityAttachments'),
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='localityAttachments', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='locality', type='many-to-one',required=True, relatedModelName='Locality', column='LocalityID', otherSideName='localityAttachments'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
@@ -4984,7 +4998,7 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(name='dnaSequences', type='one-to-many',required=False, relatedModelName='DNASequence', otherSideName='materialSample'),
+            Relationship(name='dnaSequences', type='one-to-many',required=False, relatedModelName='DNASequence', otherSideName='materialSample', dependent=True),
             Relationship(name='extractor', type='many-to-one',required=False, relatedModelName='Agent', column='ExtractorID'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='preparation', type='many-to-one',required=True, relatedModelName='Preparation', column='PreparationID', otherSideName='materialSamples')
@@ -4997,6 +5011,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.MorphBankView',
         table='morphbankview',
         tableId=138,
+        system=True,
         idColumn='MorphBankViewID',
         idFieldName='morphBankViewId',
         idField=IdField(name='morphBankViewId', column='MorphBankViewID', type='java.lang.Integer'),
@@ -5206,7 +5221,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='issuedBy', type='many-to-one',required=False, relatedModelName='Agent', column='IssuedByID'),
             Relationship(name='issuedTo', type='many-to-one',required=False, relatedModelName='Agent', column='IssuedToID'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(name='permitAttachments', type='one-to-many',required=False, relatedModelName='PermitAttachment', otherSideName='permit')
+            Relationship(name='permitAttachments', type='one-to-many',required=False, relatedModelName='PermitAttachment', otherSideName='permit', dependent=True)
         ],
         fieldAliases=[
 
@@ -5232,7 +5247,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='permitAttachments'),
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='permitAttachments', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='permit', type='many-to-one',required=True, relatedModelName='Permit', column='PermitID', otherSideName='permitAttachments')
@@ -5247,6 +5262,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.PickList',
         table='picklist',
         tableId=500,
+        system=True,
         idColumn='PickListID',
         idFieldName='pickListId',
         idField=IdField(name='pickListId', column='PickListID', type='java.lang.Integer'),
@@ -5273,7 +5289,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='collection', type='many-to-one',required=True, relatedModelName='Collection', column='CollectionID', otherSideName='pickLists'),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(name='pickListItems', type='one-to-many',required=False, relatedModelName='PickListItem', otherSideName='pickList')
+            Relationship(name='pickListItems', type='one-to-many',required=False, relatedModelName='PickListItem', otherSideName='pickList', dependent=True)
         ],
         fieldAliases=[
 
@@ -5285,6 +5301,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.PickListItem',
         table='picklistitem',
         tableId=501,
+        system=True,
         idColumn='PickListItemID',
         idFieldName='pickListItemId',
         idField=IdField(name='pickListItemId', column='PickListItemID', type='java.lang.Integer'),
@@ -5328,7 +5345,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='attributeDefs', type='one-to-many',required=False, relatedModelName='AttributeDef', otherSideName='prepType'),
+            Relationship(name='attributeDefs', type='one-to-many',required=False, relatedModelName='AttributeDef', otherSideName='prepType', dependent=True),
             Relationship(name='collection', type='many-to-one',required=True, relatedModelName='Collection', column='CollectionID', otherSideName='prepTypes'),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
@@ -5409,13 +5426,13 @@ datamodel = Datamodel(tables=[
             Relationship(name='exchangeOutPreps', type='one-to-many',required=False, relatedModelName='ExchangeOutPrep', otherSideName='preparation'),
             Relationship(name='giftPreparations', type='one-to-many',required=False, relatedModelName='GiftPreparation', otherSideName='preparation'),
             Relationship(name='loanPreparations', type='one-to-many',required=False, relatedModelName='LoanPreparation', otherSideName='preparation'),
-            Relationship(name='materialSamples', type='one-to-many',required=False, relatedModelName='MaterialSample', otherSideName='preparation'),
+            Relationship(name='materialSamples', type='one-to-many',required=False, relatedModelName='MaterialSample', otherSideName='preparation', dependent=True),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='prepType', type='many-to-one',required=True, relatedModelName='PrepType', column='PrepTypeID'),
-            Relationship(name='preparationAttachments', type='one-to-many',required=False, relatedModelName='PreparationAttachment', otherSideName='preparation'),
-            Relationship(name='preparationAttribute', type='many-to-one',required=False, relatedModelName='PreparationAttribute', column='PreparationAttributeID', otherSideName='preparations'),
-            Relationship(name='preparationAttrs', type='one-to-many',required=False, relatedModelName='PreparationAttr', otherSideName='preparation'),
-            Relationship(name='preparationProperties', type='one-to-many',required=False, relatedModelName='PreparationProperty', otherSideName='preparation'),
+            Relationship(name='preparationAttachments', type='one-to-many',required=False, relatedModelName='PreparationAttachment', otherSideName='preparation', dependent=True),
+            Relationship(name='preparationAttribute', type='many-to-one',required=False, relatedModelName='PreparationAttribute', column='PreparationAttributeID', otherSideName='preparations', dependent=True),
+            Relationship(name='preparationAttrs', type='one-to-many',required=False, relatedModelName='PreparationAttr', otherSideName='preparation', dependent=True),
+            Relationship(name='preparationProperties', type='one-to-many',required=False, relatedModelName='PreparationProperty', otherSideName='preparation', dependent=True),
             Relationship(name='preparedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='PreparedByID'),
             Relationship(name='storage', type='many-to-one',required=False, relatedModelName='Storage', column='StorageID', otherSideName='preparations')
         ],
@@ -5444,7 +5461,7 @@ datamodel = Datamodel(tables=[
             Index(name='PrepAttColMemIDX', column_names=['CollectionMemberID'])
         ],
         relationships=[
-            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='preparationAttachments'),
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='preparationAttachments', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='preparation', type='many-to-one',required=True, relatedModelName='Preparation', column='PreparationID', otherSideName='preparationAttachments')
@@ -5786,6 +5803,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.RecordSet',
         table='recordset',
         tableId=68,
+        system=True,
         idColumn='RecordSetID',
         idFieldName='recordSetId',
         idField=IdField(name='recordSetId', column='RecordSetID', type='java.lang.Integer'),
@@ -5821,6 +5839,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.RecordSetItem',
         table='recordsetitem',
         tableId=502,
+        system=True,
         idColumn='RecordSetItemID',
         idFieldName='recordSetItemId',
         idField=IdField(name='recordSetItemId', column='RecordSetItemID', type='java.lang.Integer'),
@@ -5878,7 +5897,7 @@ datamodel = Datamodel(tables=[
             Index(name='ISBNIDX', column_names=['ISBN'])
         ],
         relationships=[
-            Relationship(name='authors', type='one-to-many',required=False, relatedModelName='Author', otherSideName='referenceWork'),
+            Relationship(name='authors', type='one-to-many',required=False, relatedModelName='Author', otherSideName='referenceWork', dependent=True),
             Relationship(name='collectionObjectCitations', type='one-to-many',required=False, relatedModelName='CollectionObjectCitation', otherSideName='referenceWork'),
             Relationship(name='containedRFParent', type='many-to-one',required=False, relatedModelName='ReferenceWork', column='ContainedRFParentID', otherSideName='containedReferenceWorks'),
             Relationship(name='containedReferenceWorks', type='one-to-many',required=False, relatedModelName='ReferenceWork', otherSideName='containedRFParent'),
@@ -5889,7 +5908,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='journal', type='many-to-one',required=False, relatedModelName='Journal', column='JournalID', otherSideName='referenceWorks'),
             Relationship(name='localityCitations', type='one-to-many',required=False, relatedModelName='LocalityCitation', otherSideName='referenceWork'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(name='referenceWorkAttachments', type='one-to-many',required=False, relatedModelName='ReferenceWorkAttachment', otherSideName='referenceWork'),
+            Relationship(name='referenceWorkAttachments', type='one-to-many',required=False, relatedModelName='ReferenceWorkAttachment', otherSideName='referenceWork', dependent=True),
             Relationship(name='taxonCitations', type='one-to-many',required=False, relatedModelName='TaxonCitation', otherSideName='referenceWork')
         ],
         fieldAliases=[
@@ -5916,7 +5935,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='referenceWorkAttachments'),
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='referenceWorkAttachments', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='referenceWork', type='many-to-one',required=True, relatedModelName='ReferenceWork', column='ReferenceWorkID', otherSideName='referenceWorkAttachments')
@@ -5958,14 +5977,14 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='accessions', type='one-to-many',required=False, relatedModelName='Accession', otherSideName='repositoryAgreement'),
-            Relationship(name='addressOfRecord', type='many-to-one',required=False, relatedModelName='AddressOfRecord', column='AddressOfRecordID', otherSideName='repositoryAgreements'),
+            Relationship(name='addressOfRecord', type='many-to-one',required=False, relatedModelName='AddressOfRecord', column='AddressOfRecordID', otherSideName='repositoryAgreements', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='division', type='many-to-one',required=True, relatedModelName='Division', column='DivisionID'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='originator', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID'),
-            Relationship(name='repositoryAgreementAgents', type='one-to-many',required=False, relatedModelName='AccessionAgent', otherSideName='repositoryAgreement'),
-            Relationship(name='repositoryAgreementAttachments', type='one-to-many',required=False, relatedModelName='RepositoryAgreementAttachment', otherSideName='repositoryAgreement'),
-            Relationship(name='repositoryAgreementAuthorizations', type='one-to-many',required=False, relatedModelName='AccessionAuthorization', otherSideName='repositoryAgreement')
+            Relationship(name='repositoryAgreementAgents', type='one-to-many',required=False, relatedModelName='AccessionAgent', otherSideName='repositoryAgreement', dependent=True),
+            Relationship(name='repositoryAgreementAttachments', type='one-to-many',required=False, relatedModelName='RepositoryAgreementAttachment', otherSideName='repositoryAgreement', dependent=True),
+            Relationship(name='repositoryAgreementAuthorizations', type='one-to-many',required=False, relatedModelName='AccessionAuthorization', otherSideName='repositoryAgreement', dependent=True)
         ],
         fieldAliases=[
 
@@ -5991,7 +6010,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='repositoryAgreementAttachments'),
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='repositoryAgreementAttachments', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='repositoryAgreement', type='many-to-one',required=True, relatedModelName='RepositoryAgreement', column='RepositoryAgreementID', otherSideName='repositoryAgreementAttachments')
@@ -6053,6 +6072,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.SpAppResource',
         table='spappresource',
         tableId=514,
+        system=True,
         idColumn='SpAppResourceID',
         idFieldName='spAppResourceId',
         idField=IdField(name='spAppResourceId', column='SpAppResourceID', type='java.lang.Integer'),
@@ -6089,6 +6109,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.SpAppResourceData',
         table='spappresourcedata',
         tableId=515,
+        system=True,
         idColumn='SpAppResourceDataID',
         idFieldName='spAppResourceDataId',
         idField=IdField(name='spAppResourceDataId', column='SpAppResourceDataID', type='java.lang.Integer'),
@@ -6115,6 +6136,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.SpAppResourceDir',
         table='spappresourcedir',
         tableId=516,
+        system=True,
         idColumn='SpAppResourceDirID',
         idFieldName='spAppResourceDirId',
         idField=IdField(name='spAppResourceDirId', column='SpAppResourceDirID', type='java.lang.Integer'),
@@ -6146,6 +6168,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.SpAuditLog',
         table='spauditlog',
         tableId=530,
+        system=True,
         idColumn='SpAuditLogID',
         idFieldName='spAuditLogId',
         idField=IdField(name='spAuditLogId', column='SpAuditLogID', type='java.lang.Integer'),
@@ -6176,6 +6199,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.SpAuditLogField',
         table='spauditlogfield',
         tableId=531,
+        system=True,
         idColumn='SpAuditLogFieldID',
         idFieldName='spAuditLogFieldId',
         idField=IdField(name='spAuditLogFieldId', column='SpAuditLogFieldID', type='java.lang.Integer'),
@@ -6203,6 +6227,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.SpExportSchema',
         table='spexportschema',
         tableId=524,
+        system=True,
         idColumn='SpExportSchemaID',
         idFieldName='spExportSchemaId',
         idField=IdField(name='spExportSchemaId', column='SpExportSchemaID', type='java.lang.Integer'),
@@ -6232,6 +6257,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.SpExportSchemaItem',
         table='spexportschemaitem',
         tableId=525,
+        system=True,
         idColumn='SpExportSchemaItemID',
         idFieldName='spExportSchemaItemId',
         idField=IdField(name='spExportSchemaItemId', column='SpExportSchemaItemID', type='java.lang.Integer'),
@@ -6261,6 +6287,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.SpExportSchemaItemMapping',
         table='spexportschemaitemmapping',
         tableId=527,
+        system=True,
         idColumn='SpExportSchemaItemMappingID',
         idFieldName='spExportSchemaItemMappingId',
         idField=IdField(name='spExportSchemaItemMappingId', column='SpExportSchemaItemMappingID', type='java.lang.Integer'),
@@ -6291,6 +6318,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.SpExportSchemaMapping',
         table='spexportschemamapping',
         tableId=528,
+        system=True,
         idColumn='SpExportSchemaMappingID',
         idFieldName='spExportSchemaMappingId',
         idField=IdField(name='spExportSchemaMappingId', column='SpExportSchemaMappingID', type='java.lang.Integer'),
@@ -6321,6 +6349,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.SpFieldValueDefault',
         table='spfieldvaluedefault',
         tableId=520,
+        system=True,
         idColumn='SpFieldValueDefaultID',
         idFieldName='spFieldValueDefaultId',
         idField=IdField(name='spFieldValueDefaultId', column='SpFieldValueDefaultID', type='java.lang.Integer'),
@@ -6349,6 +6378,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.SpLocaleContainer',
         table='splocalecontainer',
         tableId=503,
+        system=True,
         idColumn='SpLocaleContainerID',
         idFieldName='spLocaleContainerId',
         idField=IdField(name='spLocaleContainerId', column='SpLocaleContainerID', type='java.lang.Integer'),
@@ -6386,6 +6416,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.SpLocaleContainerItem',
         table='splocalecontaineritem',
         tableId=504,
+        system=True,
         idColumn='SpLocaleContainerItemID',
         idFieldName='spLocaleContainerItemId',
         idField=IdField(name='spLocaleContainerItemId', column='SpLocaleContainerItemID', type='java.lang.Integer'),
@@ -6422,6 +6453,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.SpLocaleItemStr',
         table='splocaleitemstr',
         tableId=505,
+        system=True,
         idColumn='SpLocaleItemStrID',
         idFieldName='spLocaleItemStrId',
         idField=IdField(name='spLocaleItemStrId', column='SpLocaleItemStrID', type='java.lang.Integer'),
@@ -6454,6 +6486,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.SpPermission',
         table='sppermission',
         tableId=521,
+        system=True,
         idColumn='SpPermissionID',
         idFieldName='permissionId',
         idField=IdField(name='permissionId', column='SpPermissionID', type='java.lang.Integer'),
@@ -6477,6 +6510,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.SpPrincipal',
         table='spprincipal',
         tableId=522,
+        system=True,
         idColumn='SpPrincipalID',
         idFieldName='userGroupId',
         idField=IdField(name='userGroupId', column='SpPrincipalID', type='java.lang.Integer'),
@@ -6508,6 +6542,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.SpQuery',
         table='spquery',
         tableId=517,
+        system=True,
         idColumn='SpQueryID',
         idFieldName='spQueryId',
         idField=IdField(name='spQueryId', column='SpQueryID', type='java.lang.Integer'),
@@ -6533,7 +6568,7 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(name='fields', type='one-to-many',required=False, relatedModelName='SpQueryField', otherSideName='query'),
+            Relationship(name='fields', type='one-to-many',required=False, relatedModelName='SpQueryField', otherSideName='query', dependent=True),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='reports', type='one-to-many',required=False, relatedModelName='SpReport', otherSideName='query'),
             Relationship(name='specifyUser', type='many-to-one',required=True, relatedModelName='SpecifyUser', column='SpecifyUserID', otherSideName='spQuerys')
@@ -6546,6 +6581,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.SpQueryField',
         table='spqueryfield',
         tableId=518,
+        system=True,
         idColumn='SpQueryFieldID',
         idFieldName='spQueryFieldId',
         idField=IdField(name='spQueryFieldId', column='SpQueryFieldID', type='java.lang.Integer'),
@@ -6589,6 +6625,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.SpReport',
         table='spreport',
         tableId=519,
+        system=True,
         idColumn='SpReportId',
         idFieldName='spReportId',
         idField=IdField(name='spReportId', column='SpReportId', type='java.lang.Integer'),
@@ -6652,6 +6689,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.SpTaskSemaphore',
         table='sptasksemaphore',
         tableId=526,
+        system=True,
         idColumn='TaskSemaphoreID',
         idFieldName='spTaskSemaphoreId',
         idField=IdField(name='spTaskSemaphoreId', column='TaskSemaphoreID', type='java.lang.Integer'),
@@ -6685,6 +6723,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.SpVersion',
         table='spversion',
         tableId=529,
+        system=True,
         idColumn='SpVersionID',
         idFieldName='spVersionId',
         idField=IdField(name='spVersionId', column='SpVersionID', type='java.lang.Integer'),
@@ -6714,6 +6753,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.SpViewSetObj',
         table='spviewsetobj',
         tableId=513,
+        system=True,
         idColumn='SpViewSetObjID',
         idFieldName='spViewSetObjId',
         idField=IdField(name='spViewSetObjId', column='SpViewSetObjID', type='java.lang.Integer'),
@@ -6744,6 +6784,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.SpVisualQuery',
         table='spvisualquery',
         tableId=532,
+        system=True,
         idColumn='SpVisualQueryID',
         idFieldName='spVisualQueryId',
         idField=IdField(name='spVisualQueryId', column='SpVisualQueryID', type='java.lang.Integer'),
@@ -6771,6 +6812,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.SpecifyUser',
         table='specifyuser',
         tableId=72,
+        system=True,
         idColumn='SpecifyUserID',
         idFieldName='specifyUserId',
         idField=IdField(name='specifyUserId', column='SpecifyUserID', type='java.lang.Integer'),
@@ -6848,7 +6890,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='parent', type='many-to-one',required=False, relatedModelName='Storage', column='ParentID', otherSideName='children'),
             Relationship(name='preparations', type='one-to-many',required=False, relatedModelName='Preparation', otherSideName='storage'),
-            Relationship(name='storageAttachments', type='one-to-many',required=False, relatedModelName='StorageAttachment', otherSideName='storage')
+            Relationship(name='storageAttachments', type='one-to-many',required=False, relatedModelName='StorageAttachment', otherSideName='storage', dependent=True)
         ],
         fieldAliases=[
             {'vname':'acceptedParent', 'aname':'acceptedStorage'}
@@ -6874,7 +6916,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='storageAttachments'),
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='storageAttachments', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='storage', type='many-to-one',required=True, relatedModelName='Storage', column='StorageID', otherSideName='storageAttachments')
@@ -6889,6 +6931,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.StorageTreeDef',
         table='storagetreedef',
         tableId=59,
+        system=True,
         idColumn='StorageTreeDefID',
         idFieldName='storageTreeDefId',
         idField=IdField(name='storageTreeDefId', column='StorageTreeDefID', type='java.lang.Integer'),
@@ -6918,6 +6961,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.StorageTreeDefItem',
         table='storagetreedefitem',
         tableId=60,
+        system=True,
         idColumn='StorageTreeDefItemID',
         idFieldName='storageTreeDefItemId',
         idField=IdField(name='storageTreeDefItemId', column='StorageTreeDefItemID', type='java.lang.Integer'),
@@ -7057,7 +7101,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='acceptedTaxon', type='many-to-one',required=False, relatedModelName='Taxon', column='AcceptedID', otherSideName='acceptedChildren'),
             Relationship(name='children', type='one-to-many',required=False, relatedModelName='Taxon', otherSideName='parent'),
             Relationship(name='collectingEventAttributes', type='one-to-many',required=False, relatedModelName='CollectingEventAttribute', otherSideName='hostTaxon'),
-            Relationship(name='commonNames', type='one-to-many',required=False, relatedModelName='CommonNameTx', otherSideName='taxon'),
+            Relationship(name='commonNames', type='one-to-many',required=False, relatedModelName='CommonNameTx', otherSideName='taxon', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='definition', type='many-to-one',required=True, relatedModelName='TaxonTreeDef', column='TaxonTreeDefID', otherSideName='treeEntries'),
             Relationship(name='definitionItem', type='many-to-one',required=True, relatedModelName='TaxonTreeDefItem', column='TaxonTreeDefItemID', otherSideName='treeEntries'),
@@ -7068,9 +7112,9 @@ datamodel = Datamodel(tables=[
             Relationship(name='hybridParent2', type='many-to-one',required=False, relatedModelName='Taxon', column='HybridParent2ID', otherSideName='hybridChildren2'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='parent', type='many-to-one',required=False, relatedModelName='Taxon', column='ParentID', otherSideName='children'),
-            Relationship(name='taxonAttachments', type='one-to-many',required=False, relatedModelName='TaxonAttachment', otherSideName='taxon'),
-            Relationship(name='taxonAttribute', type='many-to-one',required=False, relatedModelName='TaxonAttribute', column='TaxonAttributeID', otherSideName='taxons'),
-            Relationship(name='taxonCitations', type='one-to-many',required=False, relatedModelName='TaxonCitation', otherSideName='taxon'),
+            Relationship(name='taxonAttachments', type='one-to-many',required=False, relatedModelName='TaxonAttachment', otherSideName='taxon', dependent=True),
+            Relationship(name='taxonAttribute', type='many-to-one',required=False, relatedModelName='TaxonAttribute', column='TaxonAttributeID', otherSideName='taxons', dependent=True),
+            Relationship(name='taxonCitations', type='one-to-many',required=False, relatedModelName='TaxonCitation', otherSideName='taxon', dependent=True),
             Relationship(name='visibilitySetBy', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='VisibilitySetByID')
         ],
         fieldAliases=[
@@ -7097,7 +7141,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='taxonAttachments'),
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='taxonAttachments', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='taxon', type='many-to-one',required=True, relatedModelName='Taxon', column='TaxonID', otherSideName='taxonAttachments')
@@ -7336,6 +7380,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.TaxonTreeDef',
         table='taxontreedef',
         tableId=76,
+        system=True,
         idColumn='TaxonTreeDefID',
         idFieldName='taxonTreeDefId',
         idField=IdField(name='taxonTreeDefId', column='TaxonTreeDefID', type='java.lang.Integer'),
@@ -7365,6 +7410,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.TaxonTreeDefItem',
         table='taxontreedefitem',
         tableId=77,
+        system=True,
         idColumn='TaxonTreeDefItemID',
         idFieldName='taxonTreeDefItemId',
         idField=IdField(name='taxonTreeDefItemId', column='TaxonTreeDefItemID', type='java.lang.Integer'),
@@ -7451,7 +7497,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='division', type='many-to-one',required=False, relatedModelName='Division', column='DivisionID'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='performedBy', type='many-to-one',required=False, relatedModelName='Agent', column='PerformedByID'),
-            Relationship(name='treatmentEventAttachments', type='one-to-many',required=False, relatedModelName='TreatmentEventAttachment', otherSideName='treatmentEvent')
+            Relationship(name='treatmentEventAttachments', type='one-to-many',required=False, relatedModelName='TreatmentEventAttachment', otherSideName='treatmentEvent', dependent=True)
         ],
         fieldAliases=[
 
@@ -7475,7 +7521,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='treatmentEventAttachments'),
+            Relationship(name='attachment', type='many-to-one',required=True, relatedModelName='Attachment', column='AttachmentID', otherSideName='treatmentEventAttachments', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='treatmentEvent', type='many-to-one',required=True, relatedModelName='TreatmentEvent', column='TreatmentEventID', otherSideName='treatmentEventAttachments')
@@ -7534,6 +7580,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.Workbench',
         table='workbench',
         tableId=79,
+        system=True,
         idColumn='WorkbenchID',
         idFieldName='workbenchId',
         idField=IdField(name='workbenchId', column='WorkbenchID', type='java.lang.Integer'),
@@ -7562,7 +7609,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='specifyUser', type='many-to-one',required=True, relatedModelName='SpecifyUser', column='SpecifyUserID', otherSideName='workbenches'),
             Relationship(name='workbenchRows', type='one-to-many',required=False, relatedModelName='WorkbenchRow', otherSideName='workbench'),
-            Relationship(name='workbenchTemplate', type='many-to-one',required=True, relatedModelName='WorkbenchTemplate', column='WorkbenchTemplateID', otherSideName='workbenches')
+            Relationship(name='workbenchTemplate', type='many-to-one',required=True, relatedModelName='WorkbenchTemplate', column='WorkbenchTemplateID', otherSideName='workbenches', dependent=True)
         ],
         fieldAliases=[
 
@@ -7572,6 +7619,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.WorkbenchDataItem',
         table='workbenchdataitem',
         tableId=80,
+        system=True,
         idColumn='WorkbenchDataItemID',
         idFieldName='workbenchDataItemId',
         idField=IdField(name='workbenchDataItemId', column='WorkbenchDataItemID', type='java.lang.Integer'),
@@ -7595,6 +7643,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.WorkbenchRow',
         table='workbenchrow',
         tableId=90,
+        system=True,
         idColumn='WorkbenchRowID',
         idFieldName='workbenchRowId',
         idField=IdField(name='workbenchRowId', column='WorkbenchRowID', type='java.lang.Integer'),
@@ -7630,6 +7679,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.WorkbenchRowExportedRelationship',
         table='workbenchrowexportedrelationship',
         tableId=126,
+        system=True,
         idColumn='WorkbenchRowExportedRelationshipID',
         idFieldName='workbenchRowExportedRelationshipId',
         idField=IdField(name='workbenchRowExportedRelationshipId', column='WorkbenchRowExportedRelationshipID', type='java.lang.Integer'),
@@ -7658,6 +7708,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.WorkbenchRowImage',
         table='workbenchrowimage',
         tableId=95,
+        system=True,
         idColumn='WorkbenchRowImageID',
         idFieldName='workbenchRowImageId',
         idField=IdField(name='workbenchRowImageId', column='WorkbenchRowImageID', type='java.lang.Integer'),
@@ -7681,6 +7732,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.WorkbenchTemplate',
         table='workbenchtemplate',
         tableId=81,
+        system=True,
         idColumn='WorkbenchTemplateID',
         idFieldName='workbenchTemplateId',
         idField=IdField(name='workbenchTemplateId', column='WorkbenchTemplateID', type='java.lang.Integer'),
@@ -7699,7 +7751,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='specifyUser', type='many-to-one',required=True, relatedModelName='SpecifyUser', column='SpecifyUserID', otherSideName='workbenchTemplates'),
-            Relationship(name='workbenchTemplateMappingItems', type='one-to-many',required=False, relatedModelName='WorkbenchTemplateMappingItem', otherSideName='workbenchTemplate'),
+            Relationship(name='workbenchTemplateMappingItems', type='one-to-many',required=False, relatedModelName='WorkbenchTemplateMappingItem', otherSideName='workbenchTemplate', dependent=True),
             Relationship(name='workbenches', type='one-to-many',required=False, relatedModelName='Workbench', otherSideName='workbenchTemplate')
         ],
         fieldAliases=[
@@ -7710,6 +7762,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.WorkbenchTemplateMappingItem',
         table='workbenchtemplatemappingitem',
         tableId=82,
+        system=True,
         idColumn='WorkbenchTemplateMappingItemID',
         idFieldName='workbenchTemplateMappingItemId',
         idField=IdField(name='workbenchTemplateMappingItemId', column='WorkbenchTemplateMappingItemID', type='java.lang.Integer'),
@@ -8092,6 +8145,6 @@ datamodel = Datamodel(tables=[
     )
 ])
 
-add_collectingevents_to_locality(datamodel)
-flag_dependent_fields(datamodel)
-flag_system_tables(datamodel)
+# add_collectingevents_to_locality(datamodel) # added statically to datamodel definitions
+# flag_dependent_fields(datamodel) # added statically to datamodel definitions
+# flag_system_tables(datamodel) # added statically to datamodel definitions
