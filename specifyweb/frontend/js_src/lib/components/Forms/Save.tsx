@@ -26,6 +26,7 @@ import {
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import { error } from '../Errors/assert';
 import { errorHandledBy } from '../Errors/FormatError';
+import { InFormEditorContext } from '../FormEditor/Context';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
@@ -106,8 +107,11 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const canUpdate = hasTablePermission(resource.specifyTable.name, 'update');
   const canSave = resource.isNew() ? canCreate : canUpdate;
 
+  const isInFormEditor = React.useContext(InFormEditorContext);
+
   const isSaveDisabled =
     disabled ||
+    isInFormEditor ||
     isSaving ||
     !canSave ||
     (!saveRequired &&

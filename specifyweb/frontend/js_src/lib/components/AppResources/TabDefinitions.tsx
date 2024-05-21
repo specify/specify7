@@ -19,6 +19,7 @@ import type {
   SpAppResourceDir,
   SpViewSetObj,
 } from '../DataModel/types';
+import { RssExportFeedEditor } from '../ExportFeed';
 import { exportFeedSpec } from '../ExportFeed/spec';
 import { DataObjectFormatter } from '../Formatters';
 import { formattersSpec } from '../Formatters/spec';
@@ -158,12 +159,7 @@ export const visualAppResourceEditors = f.store<
   },
   leafletLayers: undefined,
   rssExportFeed: {
-    /**
-     ** Disabled in https://github.com/specify/specify7/issues/4653
-     * needs to be enabled when fixing https://github.com/specify/specify7/issues/4650
-     * **
-     */
-    // Visual: RssExportFeedEditor,
+    visual: RssExportFeedEditor,
     xml: generateXmlEditor(exportFeedSpec),
   },
   expressSearchConfig: undefined,
