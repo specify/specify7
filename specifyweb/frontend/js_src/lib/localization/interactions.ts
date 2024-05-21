@@ -47,25 +47,11 @@ export const interactionsText = createDictionary({
       No preparations are available for at least one type of preparation in the
       following records:
     `,
-    'de-ch': `
-      Für mindestens eine Präparationsart sind in folgenden Datensätzen keine
-      Präparate vorhanden:
-    `,
-    'es-es': `
-      No hay preparados disponibles para al menos un tipo de preparado en los
-      siguientes registros:
-    `,
-    'fr-fr': `
-      Aucune préparation n'est disponible pour au moins un type de préparation
-      dans les enregistrements suivants :
-    `,
-    'ru-ru': `
-      В следующих записях отсутствуют препараты хотя бы для одного типа
-      препаратов:
-    `,
-    'uk-ua': `
-      У таких записах відсутні препарати принаймні для одного типу препарату:
-    `,
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   problemsFound: {
     'en-us': 'There are problems with the entry:',
