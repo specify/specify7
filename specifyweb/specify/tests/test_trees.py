@@ -1,5 +1,5 @@
 from specifyweb.specify import models
-from specifyweb.specify.api_tests import ApiTests, get_table
+from specifyweb.specify.tests.test_api import ApiTests, get_table
 from specifyweb.specify.tree_stats import get_tree_stats
 from specifyweb.stored_queries.tests import SQLAlchemySetup
 

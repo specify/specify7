@@ -3,7 +3,7 @@ from unittest import skip, expectedFailure
 
 from django.test import TestCase
 import specifyweb.specify.models as spmodels
-from specifyweb.specify.api_tests import ApiTests
+from specifyweb.specify.tests.test_api import ApiTests
 from .format import ObjectFormatter
 from .query_construct import QueryConstruct
 from .queryfieldspec import QueryFieldSpec
@@ -12,10 +12,9 @@ from django.conf import settings
 import sqlalchemy
 from sqlalchemy.dialects import mysql
 from django.db import connection
-from sqlalchemy import event, select, func
+from sqlalchemy import event
 from . import models
 from xml.etree import ElementTree
-from datetime import datetime
 # Used for pretty-formatting sql code for testing
 import sqlparse
 
@@ -86,15 +85,6 @@ class SQLAlchemySetup(ApiTests):
             final_query = str(unioned.compile(compile_kwargs={"literal_binds": True, }, dialect=mysql.dialect()))
             return final_query, ()
 
-
-
-    def setUp(self):
-        print("""
-            #BUG: If a test which compares the final sql query is added, then it could randomly fail
-            #in multithreaded tests because of usage of .label(None) in aggregate() 
-            #function in stored_queries/format.py 
-              """)
-        super().setUp()
 
 
 class SQLAlchemySetupTest(SQLAlchemySetup):
