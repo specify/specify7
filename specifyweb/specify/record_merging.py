@@ -315,26 +315,13 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
         # EXAMPLE: ProtectedError: ("Cannot delete some instances of model 'Address' because they are
         # referenced through protected foreign keys:
         # 'Division.address'.", {<Division: Division object (2)>})
-        delete_obj(target_model.objects.get(id=old_model_id))
+        delete_obj(target_model.objects.get(id=old_model_id), clean_predelete=clean_fields_pre_delete)
 
     # Update new record with json info, if given
     has_new_record_info = new_record_info is not None
     if has_new_record_info and 'new_record_data' in new_record_info and \
             new_record_info['new_record_data'] is not None:
         try:
-            for table_name, _field_name in dependant_relationships:
-                # minor optimization to not fetch unnecessary dependent resources
-                if not table_name.lower().endswith('attachment'):
-                    continue
-                field_name = _field_name.lower()
-                # put_resource will drop existing dependent resources.
-                # this will trigger deletion from asset server.
-                # so, cleaning fields here. It does this for all
-                # attachments, which is fine since we just use
-                # whatever front-end sends as the final data
-                [clean_fields_pre_delete(dependent_object)
-                 for dependent_object in getattr(target_object, field_name).all()
-                 ]
             new_record_data = new_record_info['new_record_data']
             target_table = spmodels.datamodel.get_table(model_name.lower())
             fix_orderings(target_table, new_record_data)

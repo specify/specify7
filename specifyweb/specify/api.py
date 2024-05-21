@@ -604,7 +604,7 @@ def delete_resource(collection, agent, name, id, version) -> None:
     obj = get_object_or_404(name, id=int(id))
     return delete_obj(obj, version, collection=collection, agent=agent)
 
-def delete_obj(obj, version=None, parent_obj=None, collection=None, agent=None) -> None:
+def delete_obj(obj, version=None, parent_obj=None, collection=None, agent=None, clean_predelete=None) -> None:
     # need to delete dependent -to-one records
     # e.g. delete CollectionObjectAttribute when CollectionObject is deleted
     # but have to delete the referring record first
@@ -619,10 +619,12 @@ def delete_obj(obj, version=None, parent_obj=None, collection=None, agent=None) 
         auditlog.remove(obj, agent, parent_obj)
     if version is not None:
         bump_version(obj, version)
+    if clean_predelete:
+        clean_predelete(obj)
     obj.delete()
 
     for dep in dependents_to_delete:
-      delete_obj(dep, version, parent_obj=obj, collection=collection, agent=agent)
+      delete_obj(dep, version, parent_obj=obj, collection=collection, agent=agent, clean_predelete=clean_predelete)
 
 
 @transaction.atomic
