@@ -386,7 +386,7 @@ export const treeText = createDictionary({
   },
   synonyms: {
     'en-us': 'Synonyms: {names:string}',
-    'de-ch': 'Synonyme: {names:string}',
+    'de-ch': 'Elemente verschieben',
     'es-es': 'Sinónimos: {names:string}',
     'fr-fr': 'Synonymes : {names:string}',
     'ru-ru': 'Синонимы: {names:string}',
