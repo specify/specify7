@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-05-21 16:01+0000\n"
+"PO-Revision-Date: 2024-05-21 16:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian "
 "<https://hosted.weblate.org/projects/specify-7/resources/uk/>\n"
@@ -507,7 +507,7 @@ msgstr "Надіслати сповіщення про завершення ко
 #. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "runInCollection"
-msgstr "Запустити в колекції"
+msgstr "Запустити в колекцію"
 
 #: components/FormEditor/Create.tsx:73
 #. Used in: Components > Form Editor > Create
