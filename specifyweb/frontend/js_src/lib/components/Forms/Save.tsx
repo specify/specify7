@@ -202,7 +202,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     label: LocalizedString,
     description: LocalizedString,
     handleClick: () =>
-      | Promise<readonly SpecifyResource<SCHEMA>[]>
+      | Promise<RA<SpecifyResource<SCHEMA>>>
       | Promise<SpecifyResource<SCHEMA>>,
     originalResourceId?: number
   ): JSX.Element => (
@@ -222,11 +222,11 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
               }
               if (Array.isArray(result)) {
                 result.forEach((newResource) => {
-                  if (handleAdd) handleAdd(newResource);
+                  handleAdd?.(newResource);
                   ids.push(newResource.id);
                 });
               } else {
-                if (handleAdd) handleAdd(result);
+                handleAdd?.(result);
               }
               return ids;
             })
