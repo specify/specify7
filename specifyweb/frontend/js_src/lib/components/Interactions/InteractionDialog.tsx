@@ -153,6 +153,9 @@ export function InteractionDialog({
     const unavailablePrep = prepsData.filter(
       (prepData) => Number.parseInt(prepData[10]) === 0
     );
+    const availablePrep = prepsData.filter(
+      (prepData) => Number.parseInt(prepData[10]) > 0
+    );
     const unavailable =
       typeof entries === 'object'
         ? entries.filter((entry) =>
@@ -162,8 +165,8 @@ export function InteractionDialog({
 
     if (missing.length > 0 || unavailable.length > 0) {
       setState({ type: 'MissingState', missing, unavailableBis: unavailable });
-      setPrepsData(prepsData);
-    } else showPrepSelectDlg(prepsData);
+      setPrepsData(availablePrep);
+    } else showPrepSelectDlg(availablePrep);
   }
 
   const showPrepSelectDlg = (prepsData: RA<PreparationRow>): void =>
@@ -290,9 +293,8 @@ export function InteractionDialog({
                     {interactionsText.addUnassociated()}
                   </Button.Info>
                 ) : actionTable.name === 'Loan' &&
-                  !(
-                    state.type === 'MissingState' && prepsData?.length === 0
-                  ) ? (
+                  state.type === 'MissingState' &&
+                  prepsData?.length === 0 ? (
                   <Link.Info href={getResourceViewUrl('Loan')}>
                     {interactionsText.withoutPreparations()}
                   </Link.Info>

@@ -590,7 +590,6 @@ export function CustomSelectElement({
           ${isOpen ? 'z-[3] rounded-b-none' : ''}
           ${handleClick === undefined ? '' : 'border border-gray-500'}
         `}
-        disabled={handleClick === undefined}
         type="button"
         onClick={handleClick}
       >

@@ -649,7 +649,7 @@ export const preferencesText = createDictionary({
       для відповідності будь-якій кількості символів
     `,
     'de-ch': `
-      Kann _ für jedes einzelne Zeichen oder % für eine beliebige Anzahl von
+      Kann _ für jedes einzelne Zeichen oder % für jede beliebige Anzahl von
       Zeichen verwenden
     `,
   },
@@ -1251,7 +1251,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Укажите значок сети',
     'es-es': 'Especificar insignia de red',
     'fr-fr': 'Spécifier le badge réseau',
-    'uk-ua': 'Укажіть позначку мережі',
+    'uk-ua': 'Укажіть значок мережі',
     'de-ch': 'Netzwerk-Badge angeben',
   },
   useAccessibleFullDatePicker: {
