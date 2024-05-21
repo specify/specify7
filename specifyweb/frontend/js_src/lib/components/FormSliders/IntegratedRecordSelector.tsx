@@ -9,20 +9,20 @@ import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { DependentCollection } from '../DataModel/collectionApi';
-import type { AnySchema } from '../DataModel/helperTypes';
+import type {
+  AnyInteractionPreparation,
+  AnySchema,
+} from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { useAllSaveBlockers } from '../DataModel/saveBlockers';
-import type { Collection } from '../DataModel/specifyTable';
-import type {
-  DisposalPreparation,
-  GiftPreparation,
-  LoanPreparation,
-} from '../DataModel/types';
+import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import { FormTableCollection } from '../FormCells/FormTableCollection';
 import type { FormType } from '../FormParse';
 import type { SubViewSortField } from '../FormParse/cells';
 import { augmentMode, ResourceView } from '../Forms/ResourceView';
 import { useFirstFocus } from '../Forms/SpecifyForm';
+import type { InteractionWithPreps } from '../Interactions/helpers';
+import { interactionPrepTables } from '../Interactions/helpers';
 import { InteractionDialog } from '../Interactions/InteractionDialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
@@ -104,8 +104,9 @@ export function IntegratedRecordSelector({
     typeof relationship === 'object' &&
     relationshipIsToMany(relationship) &&
     typeof collection.related === 'object' &&
-    ['LoanPreparation', 'GiftPreparation', 'DisposalPreparation'].includes(
-      relationship.relatedTable.name
+    interactionPrepTables.includes(
+      (relationship.relatedTable as SpecifyTable<AnyInteractionPreparation>)
+        .name
     );
 
   const [isDialogOpen, handleOpenDialog, handleCloseDialog] = useBooleanState();
@@ -154,9 +155,7 @@ export function IntegratedRecordSelector({
                 actionTable={collection.related.specifyTable}
                 interactionResource={interactionResource}
                 itemCollection={
-                  collection as Collection<
-                    DisposalPreparation | GiftPreparation | LoanPreparation
-                  >
+                  collection as Collection<AnyInteractionPreparation>
                 }
                 onClose={handleCloseDialog}
               />

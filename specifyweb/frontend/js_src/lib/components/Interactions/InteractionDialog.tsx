@@ -25,24 +25,24 @@ import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
-import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
+import type { AnySchema, SerializedResource, AnyInteractionPreparation,
+  SerializedResource, } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
 import type { LiteralField } from '../DataModel/specifyField';
 import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
-import type {
-  DisposalPreparation,
-  Gift,
-  GiftPreparation,
-  LoanPreparation,
-  RecordSet,
-} from '../DataModel/types';
+import type { RecordSet } from '../DataModel/types';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { Dialog } from '../Molecules/Dialog';
 import { userPreferences } from '../Preferences/userPreferences';
 import { RecordSetsDialog } from '../Toolbar/RecordSets';
-import type { PreparationData, PreparationRow } from './helpers';
+import type {
+  InteractionWithPreps,
+  PreparationData,
+  PreparationRow,
+} from './helpers';
+import { interactionsWithPrepTables } from './helpers';
 import {
   getPrepsAvailableForLoanCoIds,
   getPrepsAvailableForLoanRs,
@@ -57,11 +57,9 @@ export function InteractionDialog({
   interactionResource,
 }: {
   readonly onClose: () => void;
-  readonly actionTable: SpecifyTable;
+  readonly actionTable: SpecifyTable<InteractionWithPreps>;
   readonly isLoanReturn?: boolean;
-  readonly itemCollection?: Collection<
-    DisposalPreparation | GiftPreparation | LoanPreparation
-  >;
+  readonly itemCollection?: Collection<AnyInteractionPreparation>;
   readonly interactionResource?: SpecifyResource<AnySchema>;
 }): JSX.Element {
   const itemTable = isLoanReturn ? tables.Loan : tables.CollectionObject;
@@ -245,7 +243,7 @@ export function InteractionDialog({
         // BUG: make this readOnly if don't have necessary permissions
         itemCollection={itemCollection}
         preparations={state.entries}
-        table={actionTable as SpecifyTable<Gift>}
+        table={actionTable}
         onClose={handleClose}
       />
     ) : (
@@ -299,19 +297,11 @@ export function InteractionDialog({
                   >
                     {interactionsText.addUnassociated()}
                   </Button.Info>
-                ) : actionTable.name === 'Loan' &&
-                  state.type === 'MissingState' &&
-                  prepsData?.length === 0 ? (
-                  <Link.Info href={getResourceViewUrl('Loan')}>
+                ) : interactionsWithPrepTables.includes(actionTable.name) ? (
+                  <Link.Info href={getResourceViewUrl(actionTable.name)}>
                     {interactionsText.withoutPreparations()}
                   </Link.Info>
                 ) : undefined}
-                {actionTable.name === 'Gift' &&
-                  itemCollection === undefined && (
-                    <Link.Info href={getResourceViewUrl('Gift')}>
-                      {interactionsText.withoutPreparations()}
-                    </Link.Info>
-                  )}
                 {state.type === 'MissingState' &&
                 prepsData?.length !== 0 &&
                 prepsData ? (
