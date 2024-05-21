@@ -285,7 +285,7 @@ export const userText = createDictionary({
       resource through the currently logged in account
     `,
     'ru-ru': `
-      У вас нет доступа к любому {collectionTable:string}, содержащему этот
+      У вас нет доступа ни к одному {collectionTable:string}, содержащему этот
       ресурс, через текущую учетную запись.
     `,
     'es-es': `
@@ -699,7 +699,7 @@ export const userText = createDictionary({
     'ru-ru': 'Роль',
     'es-es': 'Rol',
     'fr-fr': 'Rôle',
-    'uk-ua': 'Роль',
+    'uk-ua': 'роль',
     'de-ch': 'Rolle',
   },
   read: {
