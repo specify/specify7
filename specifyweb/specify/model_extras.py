@@ -4,7 +4,7 @@ from django.db import models
 from django.contrib.auth.base_user import BaseUserManager
 from django.conf import settings
 
-from .tree_extras import Tree
+from .tree_extras import Tree, TreeRank
 
 if settings.AUTH_LDAP_SERVER_URI is not None:
     from . import ldap_extras
@@ -155,5 +155,25 @@ class Geologictimeperiod(Tree):
         abstract = True
 
 class Lithostrat(Tree):
+    class Meta:
+        abstract = True
+
+class Geographytreedefitem(TreeRank):
+    class Meta:
+        abstract = True
+
+class Geologictimeperiodtreedefitem(TreeRank):
+    class Meta:
+        abstract = True
+
+class Lithostrattreedefitem(TreeRank):
+    class Meta:
+        abstract = True
+
+class Storagetreedefitem(TreeRank):
+    class Meta:
+        abstract = True
+
+class Taxontreedefitem(TreeRank):
     class Meta:
         abstract = True

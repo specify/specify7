@@ -74,7 +74,7 @@ def make_model(module, table, datamodel):
 
     attrs['save'] = save
     attrs['Meta'] = Meta
-    if table.django_name in tree_def_item_tables:
+    if table.django_name in tables_with_pre_constraints_delete:
         attrs['pre_constraints_delete'] = pre_constraints_delete
 
     supercls = getattr(model_extras, table.django_name, models.Model)
@@ -289,12 +289,12 @@ field_type_map = {
     'java.lang.Boolean': make_boolean_field,
     }
 
-tree_def_item_tables = [
-    'Geographytreedefitem',
-    'Geologictimeperiodtreedefitem',
-    'Lithostrattreedefitem',
-    'Storagetreedefitem',
-    'Taxontreedefitem',
+tables_with_pre_constraints_delete = [
+    # 'Geographytreedefitem',
+    # 'Geologictimeperiodtreedefitem',
+    # 'Lithostrattreedefitem',
+    # 'Storagetreedefitem',
+    # 'Taxontreedefitem',
 ]
 
 def build_models(module, datamodel):

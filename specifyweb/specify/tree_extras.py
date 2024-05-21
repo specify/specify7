@@ -1,6 +1,9 @@
 import re
 from contextlib import contextmanager
 import logging
+
+from specifyweb.specify.tree_ranks import RankOperation, post_tree_rank_save, pre_tree_rank_deletion, \
+    verify_rank_parent_chain_integrity, pre_tree_rank_init, post_tree_rank_deletion
 logger = logging.getLogger(__name__)
 
 
@@ -671,3 +674,42 @@ def is_instance_of_tree_def_item(obj):
         spmodels.Taxontreedefitem,
     ]
     return any(isinstance(obj, cls) for cls in tree_def_item_classes)
+
+class TreeRank(models.Model):
+    class Meta:
+            abstract = True
+
+    def save(self, *args, **kwargs):
+        # pre_save
+        if hasattr(self, 'isaccepted'):
+            self.isaccepted = self.accepted_id == None
+        if self.pk is None: # is it a new object?
+            pre_tree_rank_init(self)
+            verify_rank_parent_chain_integrity(self, RankOperation.CREATED)
+        else:
+            verify_rank_parent_chain_integrity(self, RankOperation.UPDATED)
+        
+        # save
+        super(TreeRank, self).save(*args, **kwargs)
+
+        # post_save
+        post_tree_rank_save(self.__class__, self)
+
+    def delete(self, *args, **kwargs):
+        # pre_delete
+        if self.__class__.objects.get(id=self.id).parent is None:
+            raise TreeBusinessRuleException(
+                "cannot delete root level tree definition item",
+                {"tree": self.__class__.__name__,
+                 "localizationKey": 'deletingTreeRoot',
+                 "node": {
+                     "id": self.id
+                 }})
+        pre_tree_rank_deletion(self.__class__, self)
+        verify_rank_parent_chain_integrity(self, RankOperation.DELETED)
+
+        # delete
+        super(TreeRank, self).delete(*args, **kwargs)
+
+        # post_delete
+        post_tree_rank_deletion(self)
