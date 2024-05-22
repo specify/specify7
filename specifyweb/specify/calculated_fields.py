@@ -24,7 +24,7 @@ def calculate_actual_count(obj, preparations):
         exchangeoutprep_quantity = calculate_quantity(prep.exchangeoutpreps, "quantity")
         disposalpreparation_quantity = calculate_quantity(prep.disposalpreparations, "quantity")
 
-        countamt = obj.countamt or 0
+        countamt = getattr(obj, 'countamt', 0) or 0
         available = max(0, countamt - giftpreparation_quantity - exchangeoutprep_quantity - disposalpreparation_quantity)
         actualTotalCountAmt += available
     return actualTotalCountAmt
