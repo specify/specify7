@@ -76,12 +76,20 @@ const dialogIndexes = new Set<number>();
 const getNextIndex = (): number =>
   dialogIndexes.size === 0 ? initialIndex : Math.max(...dialogIndexes) + 1;
 
-const supportsBackdropBlur = globalThis.CSS.supports(
-  '((-webkit-backdrop-filter: none) or (backdrop-filter: none))'
-);
+/*
+ * Long enough to prevent accidental dialog close during the brief
+ * moment of dialog resize, but not long enough to falsely intercept
+ * any intentional clicks.
+ */
+const preventAutoCloseTime = 300;
+
+const supportsBackdropBlur =
+  globalThis.CSS?.supports(
+    '((-webkit-backdrop-filter: none) or (backdrop-filter: none))'
+  ) ?? false;
 
 // Used for 'inert' attribute addition
-const root = document.getElementById('root');
+const root = globalThis.document?.getElementById('root');
 
 /**
  * Modal or non-modal dialog. Highly customizable. Used all over the place
@@ -315,26 +323,24 @@ export function Dialog({
     [positionKey]
   );
 
-  useFreezeDialogSize(container, dimensionsKey);
-
   const isFullScreen = containerClassName.includes(dialogClassNames.fullScreen);
 
   const draggableContainer: Props['contentElement'] = React.useCallback(
     (props: React.ComponentPropsWithRef<'div'>, children: React.ReactNode) => (
       <Draggable
         // Don't allow moving the dialog past the window bounds
+        bounds="parent"
+        // Don't allow moving when in full-screen
+        cancel={`#${id('full-screen')}`}
+        defaultClassName=""
+        // Don't need any extra classNames
+        defaultClassNameDragged=""
+        defaultClassNameDragging=""
+        defaultPosition={initialPosition}
+        // Allow moving the dialog when hovering over the header line
         handle={`#${id('handle')}`}
         nodeRef={containerRef}
         onStop={handleDragged}
-        bounds="parent"
-        // Allow moving the dialog when hovering over the header line
-        cancel={`#${id('full-screen')}`}
-        defaultClassName=""
-        // Don't allow moving when in full-screen
-        defaultClassNameDragging=""
-        defaultPosition={initialPosition}
-        // Don't need any extra classNames
-        defaultClassNameDragged=""
       >
         <div {...props}>{children}</div>
       </Draggable>
@@ -362,33 +368,47 @@ export function Dialog({
     );
   }, [showIcon, defaultIcon, buttons, buttonContainer]);
 
-  const overlayElement: Props['overlayElement'] = React.useCallback(
-    (
-      props: React.ComponentPropsWithRef<'div'>,
-      contentElement: React.ReactElement
-    ) => (
-      <div
-        {...props}
-        onMouseDown={
-          closeOnOutsideClick
-            ? (event): void => {
-                // Outside click detection
-                if (
-                  modal &&
-                  typeof handleClose === 'function' &&
-                  event.target === event.currentTarget
-                ) {
-                  event.preventDefault();
-                  handleClose();
-                } else props?.onMouseDown?.(event);
-              }
-            : undefined
-        }
-      >
-        {contentElement}
-      </div>
-    ),
-    [modal, handleClose, closeOnOutsideClick]
+  /*
+   * Ref used to save the user from accidentally closing the dialog
+   * if it shrunk in size in a brief instant before the user tried
+   * to click on something.
+   */
+  const ignoreOutsideClickRef = React.useRef<boolean>(false);
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      ignoreOutsideClickRef.current = true;
+    }, preventAutoCloseTime);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
+
+  const overlayElement: Props['overlayElement'] = (
+    props: React.ComponentPropsWithRef<'div'>,
+    contentElement: React.ReactElement
+  ) => (
+    <div
+      {...props}
+      onMouseDown={
+        closeOnOutsideClick
+          ? (event): void => {
+              // Outside click detection
+              if (
+                ignoreOutsideClickRef.current &&
+                modal &&
+                typeof handleClose === 'function' &&
+                event.target === event.currentTarget
+              ) {
+                event.preventDefault();
+                handleClose();
+              } else props?.onMouseDown?.(event);
+            }
+          : undefined
+      }
+    >
+      {contentElement}
+    </div>
   );
 
   const transitionDuration = useTransitionDuration();
@@ -500,7 +520,7 @@ export function Dialog({
         {headerButtons}
       </div>
       {specialMode === 'orangeBar' && (
-        <div className="w-full border-b-2 border-brand-300" />
+        <div className="border-brand-300 w-full border-b-2" />
       )}
       <DialogContext.Provider value={handleClose}>
         {/*
@@ -512,8 +532,8 @@ export function Dialog({
          */}
         <div
           className={`
-            -mx-1 flex-1 overflow-y-auto px-1 py-4 text-gray-700
-            dark:text-neutral-350 ${contentClassName}
+            dark:text-neutral-350 -mx-1 flex-1 overflow-y-auto px-1 py-4
+            text-gray-700 ${contentClassName}
           `}
           id={id('content')}
           ref={contentRef}
@@ -553,13 +573,15 @@ function useDialogSize(
   );
   const sizeKey = rememberSize ? dimensionsKey : undefined;
   const [dialogSizes = {}, setDialogSizes] = useCachedState('dialogs', 'sizes');
+  const dialogSizesRef = React.useRef(dialogSizes);
+  dialogSizesRef.current = dialogSizes;
+
   /*
    * If two dialogs with the same dimensionsKey are rendered, changing one dialog's
    * dimensions shouldn't affect the other
    */
-
   const initialSize = React.useMemo(() => {
-    const sizes = dialogSizes[sizeKey ?? ''];
+    const sizes = dialogSizesRef.current[sizeKey ?? ''];
     return typeof sizes === 'object'
       ? {
           width: sizes[0],
@@ -573,14 +595,18 @@ function useDialogSize(
     if (
       !isOpen ||
       container === null ||
-      (handleResize === undefined && sizeKey === undefined) ||
-      globalThis.ResizeObserver === undefined
+      (handleResize === undefined && sizeKey === undefined)
     )
       return undefined;
 
-    const observer = new globalThis.ResizeObserver(() => {
+    const observer = new ResizeObserver(() => {
       handleResize?.(container);
       if (typeof sizeKey === 'string') {
+        /*
+         * Looking at the style attributes rather than actual element size to
+         * record whether the user resized the dialog (rather than dialog
+         * resized due to browser window change)
+         */
         const width = f.parseInt(container.style.width);
         const height = f.parseInt(container.style.height);
         if (typeof width === 'number' && typeof height === 'number')
@@ -593,7 +619,7 @@ function useDialogSize(
     observer.observe(container);
 
     return (): void => observer.disconnect();
-  }, [isOpen, container, handleResize, sizeKey]);
+  }, [isOpen, container, handleResize, sizeKey, setDialogSizes]);
 
   return initialSize;
 }
@@ -608,46 +634,4 @@ function useTitleChangeNotice(dimensionKey: string | undefined): void {
         'Dialog title changes too much. Please add a dimensionsKey="..." prop to the dialog'
       );
   }, [dimensionKey]);
-}
-
-function useFreezeDialogSize(
-  containerSizeRef: HTMLDivElement | null,
-  dimensionKey: string | undefined
-): void {
-  React.useEffect(() => {
-    if (dimensionKey === undefined) return;
-    if (containerSizeRef === null) return undefined;
-    let oldHeight = containerSizeRef.offsetHeight;
-    let oldWidth = containerSizeRef.offsetWidth;
-    const resizeObserver = new ResizeObserver(() => {
-      const newHeight = containerSizeRef.offsetHeight;
-      const newWidth = containerSizeRef.offsetWidth;
-
-      const width = f.parseInt(containerSizeRef.style.width);
-      const height = f.parseInt(containerSizeRef.style.height);
-      const hasBeenChanged =
-        typeof width === 'number' && typeof height === 'number';
-
-      if (oldHeight !== undefined && newHeight < oldHeight && !hasBeenChanged) {
-        containerSizeRef.style.minHeight = `${oldHeight}px`;
-      } else oldHeight = newHeight;
-
-      if (oldWidth !== undefined && newWidth < oldWidth && !hasBeenChanged) {
-        containerSizeRef.style.minWidth = `${oldWidth}px`;
-      } else oldWidth = newWidth;
-
-      if (hasBeenChanged) {
-        containerSizeRef.style.minHeight = '';
-        containerSizeRef.style.minWidth = '';
-      }
-    });
-
-    resizeObserver.observe(containerSizeRef);
-
-    return () => {
-      resizeObserver.disconnect();
-      containerSizeRef.style.minHeight = '';
-      containerSizeRef.style.minWidth = '';
-    };
-  }, [containerSizeRef, dimensionKey]);
 }

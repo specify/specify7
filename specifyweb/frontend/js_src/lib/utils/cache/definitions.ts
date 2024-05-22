@@ -81,6 +81,7 @@ export type CacheDefinitions = {
     readonly /** Open nodes in a given tree */
     [key in `conformations${AnyTree['tableName']}`]: Conformations;
   } & {
+    readonly hideEmptyNodes: boolean;
     readonly isSplit: boolean;
     readonly isHorizontal: boolean;
   };
@@ -90,7 +91,7 @@ export type CacheDefinitions = {
      * {Collection ID}_{Dataset ID}
      */
     [key in `${number}_${number}`]: RA<
-      hot.columnSorting.Config & {
+      Pick<hot.plugins.ColumnSorting.Config, 'column' | 'sortOrder'> & {
         readonly physicalCol: number;
       }
     >;

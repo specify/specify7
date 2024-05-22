@@ -48,7 +48,7 @@ export function usePaginator(
           )}
           <div className="flex flex-1 justify-end">
             <Select
-              className={pageSize === infinity ? 'w-auto' : 'w-16'}
+              className={pageSize === infinity ? '!w-auto' : '!w-16'}
               value={pageSize}
               onValueChange={(rawNewPageSize): void => {
                 const newPageSize = Number.parseInt(rawNewPageSize);

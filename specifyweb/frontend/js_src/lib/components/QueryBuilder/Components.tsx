@@ -204,7 +204,6 @@ export function MakeRecordSetButton({
   const [recordSet, setRecordSet] = React.useState<
     SpecifyResource<RecordSet> | undefined
   >(undefined);
-
   return (
     <>
       <QueryButton

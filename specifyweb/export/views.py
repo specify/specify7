@@ -12,7 +12,7 @@ from zipfile import ZipFile
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from django.views.decorators.cache import never_cache
-from django.views.decorators.http import require_POST, require_GET
+from django.views.decorators.http import require_POST
 
 from .dwca import make_dwca, prettify
 from .extract_query import extract_query as extract
@@ -23,6 +23,7 @@ from ..permissions.permissions import PermissionTarget, PermissionTargetAction, 
     check_permission_targets
 from ..specify.models import Spquery
 from ..specify.views import login_maybe_required
+from specifyweb.middleware.general import require_GET
 
 logger = logging.getLogger(__name__)
 

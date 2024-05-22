@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
-import { resourcesText } from '../../localization/resources';
+import { schemaText } from '../../localization/schema';
 import type { GetOrSet, RA } from '../../utils/types';
 import { Tabs } from '../AppResources/Tabs';
 import { NotFoundView } from '../Router/NotFoundView';
@@ -53,11 +53,11 @@ export function FormatterTypes(): JSX.Element {
       index={[indexType, (index): void => setType(types[index])]}
       tabs={{
         [commonText.countLine({
-          resource: resourcesText.formatters(),
+          resource: schemaText.tableFormat(),
           count: parsed.formatters.length,
         })]: child,
         [commonText.countLine({
-          resource: resourcesText.aggregators(),
+          resource: schemaText.tableAggregation(),
           count: parsed.aggregators.length,
         })]: child,
       }}

@@ -9,7 +9,7 @@ import { createDictionary } from './utils';
 export const specifyNetworkText = createDictionary({
   specifyNetwork: {
     'en-us': 'Specify Network',
-    'ru-ru': 'Specify Network',
+    'ru-ru': 'Укажите сеть',
     'es-es': 'Specify red',
     'fr-fr': 'Réseau Specify',
     'uk-ua': 'Specify Network',
@@ -73,14 +73,6 @@ export const specifyNetworkText = createDictionary({
     'ru-ru': 'Дата сбора',
     'uk-ua': 'Дата збору',
   },
-  mapDetails: {
-    'en-us': 'Details',
-    'de-ch': 'Einzelheiten',
-    'es-es': 'Detalles',
-    'fr-fr': 'Détails',
-    'ru-ru': 'Подробности',
-    'uk-ua': 'Подробиці',
-  },
   mapDescription: {
     'en-us': `
       This map shows occurrences of this taxon from the iDigBio and GBIF
@@ -99,8 +91,8 @@ export const specifyNetworkText = createDictionary({
       iDigBio et GBIF.
     `,
     'ru-ru': `
-      На этой карте показаны встречаемости этого таксона по данным агрегаторов
-      iDigBio и GBIF.
+      На этой карте показано появление этого таксона в агрегаторах iDigBio и
+      GBIF.
     `,
     'uk-ua': `
       Ця карта показує випадки появи цього таксону з агрегаторів iDigBio та
@@ -143,10 +135,10 @@ export const specifyNetworkText = createDictionary({
       collectée à partir de cet emplacement.
     `,
     'ru-ru': `
-      Вхождения, записанные в iDigBio, отображаются круглыми зелеными точками,
-      за исключением событий из текущей коллекции, записанных в iDigBio, которые
-      имеют круглые красные точки. При увеличении красных точек появляется
-      синяя каплевидная булавка, щелчок по ней вызывает запрос местоположения в
+      Вхождения, записанные в iDigBio, показаны круглыми зелеными точками, за
+      исключением событий из текущей коллекции, записанных в iDigBio, которые
+      имеют круглые красные точки. При увеличении красных точек появляется синяя
+      каплевидная булавка, щелчок по ней вызывает запрос местоположения в
       Specify, который показывает все виды в текущей базе данных Specify,
       собранные из этого местоположения.
     `,
@@ -154,9 +146,9 @@ export const specifyNetworkText = createDictionary({
       Випадки, записані в iDigBio, відображаються круглими зеленими точками, за
       винятком випадків із поточної колекції, записаної в iDigBio, які мають
       круглі червоні точки. Якщо збільшити масштаб червоних точок, з’явиться
-      блакитна краплеподібна шпилька, натиснувши на шпильку, буде виконано запит
-      місцевості в Specify, який покаже всі види в поточній базі даних
-      Specify, зібрані з цього місця.
+      блакитна краплевидна шпилька, натиснувши на шпильку, буде виконано запит
+      місцевості в Specify, який покаже всі види в поточній базі даних Specify,
+      зібрані з цього місця.
     `,
   },
   gbifDescription: {
@@ -192,8 +184,8 @@ export const specifyNetworkText = createDictionary({
       распространению собранных экземпляров этого вида.
     `,
     'uk-ua': `
-      Для даних GBIF окремі точки та кластери точок відображаються як
-      шестикутники різних кольорів від жовтого до оранжевого та червоного.
+      Для даних GBIF окремі точки та кластери точок відображаються у вигляді
+      шестикутників різних кольорів від жовтого до оранжевого та червоного.
       Темно-червоні шестикутники відповідають найщільнішому розподілу зібраних
       зразків цього виду.
     `,
@@ -208,11 +200,11 @@ export const specifyNetworkText = createDictionary({
   },
   searchForInstitution: {
     'en-us': 'Search for your institution:',
-    'de-ch': 'Stellen Sie eine Verbindung zu GBIF her',
+    'de-ch': 'Suchen Sie nach Ihrer Institution:',
     'es-es': 'Busque su institución:',
-    'fr-fr': 'Connectez-vous au GBIF',
-    'ru-ru': 'Подключиться к ГБИФ',
-    'uk-ua': 'Підключіться до GBIF',
+    'fr-fr': 'Recherchez votre établissement :',
+    'ru-ru': 'Найдите свое учреждение:',
+    'uk-ua': 'Шукайте свій заклад:',
   },
   institutionDistributionMap: {
     'en-us': `

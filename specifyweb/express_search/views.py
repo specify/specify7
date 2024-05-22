@@ -8,9 +8,9 @@ from xml.etree import ElementTree
 
 from django import forms
 from django.http import HttpResponse, HttpResponseBadRequest
-from django.views.decorators.http import require_GET
 from sqlalchemy.sql.expression import or_, and_
 
+from specifyweb.middleware.general import require_GET
 from .search_terms import parse_search_str
 from ..context.app_resource import get_app_resource
 from ..permissions.permissions import check_table_permissions

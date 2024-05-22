@@ -71,7 +71,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   onClose: handleClose,
   sortField,
   onFetchMore: handleFetchMore,
-  isCollapsed,
+  isCollapsed = false,
   preHeaderButtons,
 }: {
   readonly relationship: Relationship;
@@ -154,23 +154,25 @@ export function FormTable<SCHEMA extends AnySchema>({
   const isReadOnly = React.useContext(ReadOnlyContext);
   const isInSearchDialog = React.useContext(SearchDialogContext);
   const mode = propsToFormMode(isReadOnly, isInSearchDialog);
-  const viewDefinition = useViewDefinition({
+  const collapsedViewDefinition = useViewDefinition({
     table: relationship.relatedTable,
     viewName,
     fallbackViewName: relationship.relatedTable.view,
     formType: 'formTable',
     mode,
   });
-  const fullViewDefinition = useViewDefinition({
+  const expandedViewDefinition = useViewDefinition({
     table: relationship.relatedTable,
-    viewName: relationship.relatedTable.view,
-    fallbackViewName: viewName,
+    viewName,
+    fallbackViewName: relationship.relatedTable.view,
     formType: 'form',
     mode,
   });
 
   const id = useId('form-table');
-  const [isExpanded, setExpandedRecords] = React.useState<IR<boolean>>({});
+  const [isExpanded, setExpandedRecords] = React.useState<
+    IR<boolean | undefined>
+  >({});
   const [state, setState] = React.useState<
     State<'MainState'> | State<'SearchState'>
   >({ type: 'MainState' });
@@ -187,8 +189,6 @@ export function FormTable<SCHEMA extends AnySchema>({
   const displayDeleteButton =
     mode !== 'view' && typeof handleDelete === 'function';
   const displayViewButton = !isDependent;
-  const headerIsVisible =
-    resources.length !== 1 || !isExpanded[resources[0].cid];
 
   const scrollerRef = React.useRef<HTMLDivElement | null>(null);
   const { isFetching, handleScroll } = useInfiniteScroll(
@@ -199,33 +199,40 @@ export function FormTable<SCHEMA extends AnySchema>({
   const [maxHeight] = userPreferences.use('form', 'formTable', 'maxHeight');
 
   const children =
-    viewDefinition === undefined ? (
+    collapsedViewDefinition === undefined ? (
       commonText.loading()
     ) : resources.length === 0 ? (
       <p>{formsText.noData()}</p>
     ) : (
       <div className={isCollapsed ? 'hidden' : 'overflow-x-auto'}>
         <DataEntry.Grid
-          className={`sticky w-fit ${headerIsVisible ? 'pt-0' : ''}`}
+          className="sticky w-fit"
           display="inline"
           flexibleColumnWidth={flexibleColumnWidth}
           forwardRef={scrollerRef}
           role="table"
           style={{
             gridTemplateColumns: `min-content ${columnDefinitionsToCss(
-              viewDefinition.columns,
+              collapsedViewDefinition.columns,
               flexibleSubGridColumnWidth
             )} min-content`,
             maxHeight: `${maxHeight}px`,
           }}
-          viewDefinition={viewDefinition}
+          viewDefinition={collapsedViewDefinition}
           onScroll={handleScroll}
         >
-          <div className={headerIsVisible ? 'contents' : 'sr-only'} role="row">
+          <div
+            /*
+             * If header was ever visible, don't hide the header row anymore to
+             * prevent needless layout shifts, but only make it invisible
+             */
+            className="contents"
+            role="row"
+          >
             <div className={cellClassName} role="columnheader">
               <span className="sr-only">{commonText.expand()}</span>
             </div>
-            {viewDefinition.rows[0].map((cell, index) => {
+            {collapsedViewDefinition.rows[0].map((cell, index) => {
               const { text, title } = cellToLabel(
                 relationship.relatedTable,
                 cell
@@ -248,7 +255,6 @@ export function FormTable<SCHEMA extends AnySchema>({
                 >
                   {isSortable && typeof fieldName === 'string' ? (
                     <Button.LikeLink
-                      tabIndex={headerIsVisible ? undefined : -1}
                       onClick={(): void =>
                         setSortConfig({
                           sortField: fieldName,
@@ -276,7 +282,7 @@ export function FormTable<SCHEMA extends AnySchema>({
             {resources.map((resource) => (
               <React.Fragment key={resource.cid}>
                 <div className="contents" role="row">
-                  {isExpanded[resource.cid] ? (
+                  {isExpanded[resource.cid] === true ? (
                     <>
                       <div className="h-full" role="cell">
                         <Button.Small
@@ -295,7 +301,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                       </div>
                       <DataEntry.Cell
                         align="left"
-                        colSpan={viewDefinition.columns.length}
+                        colSpan={collapsedViewDefinition.columns.length}
                         role="cell"
                         tabIndex={-1}
                         verticalAlign="stretch"
@@ -304,7 +310,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                         <SpecifyForm
                           display="inline"
                           resource={resource}
-                          viewDefinition={fullViewDefinition}
+                          viewDefinition={expandedViewDefinition}
                         />
                       </DataEntry.Cell>
                     </>
@@ -326,19 +332,22 @@ export function FormTable<SCHEMA extends AnySchema>({
                         </Button.Small>
                       </div>
                       <ReadOnlyContext.Provider
-                        value={isReadOnly || viewDefinition.mode === 'view'}
+                        value={
+                          isReadOnly || collapsedViewDefinition.mode === 'view'
+                        }
                       >
                         <SearchDialogContext.Provider
                           value={
-                            isInSearchDialog || viewDefinition.mode === 'search'
+                            isInSearchDialog ||
+                            collapsedViewDefinition.mode === 'search'
                           }
                         >
-                          {viewDefinition.name === attachmentView ? (
+                          {collapsedViewDefinition.name === attachmentView ? (
                             <div className="flex gap-8" role="cell">
                               <Attachment resource={resource} />
                             </div>
                           ) : (
-                            viewDefinition.rows[0].map(
+                            collapsedViewDefinition.rows[0].map(
                               (
                                 {
                                   colSpan,
@@ -378,7 +387,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                     </>
                   )}
                   <div className="flex h-full flex-col gap-2" role="cell">
-                    {displayViewButton && isExpanded[resource.cid] ? (
+                    {displayViewButton && isExpanded[resource.cid] === true ? (
                       <Link.Small
                         aria-label={commonText.openInNewTab()}
                         className="flex-1"
@@ -410,11 +419,11 @@ export function FormTable<SCHEMA extends AnySchema>({
                         {icons.trash}
                       </Button.Small>
                     ) : undefined}
-                    {isExpanded[resource.cid] && (
+                    {isExpanded[resource.cid] === true && (
                       <FormMeta
                         className="flex-1"
                         resource={resource}
-                        viewDescription={fullViewDefinition}
+                        viewDescription={expandedViewDefinition}
                       />
                     )}
                   </div>

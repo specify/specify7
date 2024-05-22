@@ -12,7 +12,7 @@ from django.conf import settings
 import sqlalchemy
 from sqlalchemy.dialects import mysql
 from django.db import connection
-from sqlalchemy import event
+from sqlalchemy import event, select, func
 from . import models
 from xml.etree import ElementTree
 from datetime import datetime
@@ -86,10 +86,6 @@ class SQLAlchemySetup(ApiTests):
             final_query = str(unioned.compile(compile_kwargs={"literal_binds": True, }, dialect=mysql.dialect()))
             return final_query, ()
 
-
-
-    def setUp(self):
-        super().setUp()
 
 
 class SQLAlchemySetupTest(SQLAlchemySetup):
@@ -241,7 +237,7 @@ class FormatterAggregatorTests(SQLAlchemySetup):
                              '\n                                                       WHEN :param_2 THEN concat(IFNULL(agent_1."LastName", \'\'), IFNULL(concat(:concat_1, agent_1."FirstName"), \'\'), IFNULL(concat(:concat_2, agent_1."MiddleInitial"), \'\'))'
                              '\n                                                       WHEN :param_3 THEN IFNULL(agent_1."LastName", \'\')'
                              '\n                                                       WHEN :param_4 THEN IFNULL(agent_1."LastName", \'\')'
-                             '\n                                                   END, \'\'), IFNULL(concat(:concat_3, accessionagent."Role"), \'\')), \'\') SEPARATOR :group_concat_1), \'\') AS blank_nulls_1'
+                             '\n                                                   END, \'\'), IFNULL(concat(:concat_3, accessionagent."Role"), \'\')), \'\') SEPARATOR :sep), \'\') AS blank_nulls_1'
                              '\n   FROM accession,'
                              '\n        accessionagent'
                              '\n   LEFT OUTER JOIN agent AS agent_1 ON agent_1."AgentID" = accessionagent."AgentID"'
@@ -332,7 +328,7 @@ class FormatterAggregatorTests(SQLAlchemySetup):
             self.assertEqual(sqlparse.format(str(expr), reindent=True),
                              'IFNULL('
                              '\n         (SELECT IFNULL(GROUP_CONCAT(IFNULL(accessionagent."Role", \'\')'
-                             '\n                                     ORDER BY accessionagent."TimestampCreated" SEPARATOR :group_concat_1), \'\') AS blank_nulls_1'
+                             '\n                                     ORDER BY accessionagent."TimestampCreated" SEPARATOR :sep), \'\') AS blank_nulls_1'
                              '\n          FROM accessionagent, accession'
                              '\n          WHERE accessionagent."AccessionID" = accession."AccessionID"), \'\')'
                              )
@@ -362,7 +358,9 @@ class FormatterAggregatorTests(SQLAlchemySetup):
           >
             <switch single="true">
               <fields>
+                <field>role</field>
                 <field>accession</field>
+                <field>accession.accessionnumber</field>
               </fields>
             </switch>
           </format>
@@ -383,11 +381,11 @@ class FormatterAggregatorTests(SQLAlchemySetup):
         """
         object_formatter = self.get_formatter(formatter_def)
         accession_1 = spmodels.Accession.objects.create(
-            accessionnumber='a',
+            accessionnumber='Some_number',
             division=self.division)
         accession_agent_1 = spmodels.Accessionagent.objects.create(
             agent=self.agent,
-            role='role',
+            role='roleA',
             accession=accession_1,
         )
         with FormatterAggregatorTests.test_session_context() as session:
@@ -400,7 +398,7 @@ class FormatterAggregatorTests(SQLAlchemySetup):
             query = query.query.add_column(expr)
             self.assertCountEqual(list(query),
                                   [(
-                                   "<Cycle Detected.>: ('Accession', 'formatting')->('AccessionAgent', 'aggregating')->('AccessionAgent', 'formatting')->Accession",)]
+                                   "roleASome_number",)]
                                   )
 
     def test_relationships_in_switch_fields(self):

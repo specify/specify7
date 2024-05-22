@@ -1,7 +1,7 @@
 /**
  * Jest currently has two solutions for running TypeScript files:
  *   - babel-jest
- *   - ts-ject
+ *   - ts-jest
  *
  * ts-jest has great source map support and does TypeChecking
  * It would have been a preferered option, except for the fact that
