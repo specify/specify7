@@ -1,7 +1,11 @@
 from django.db import models
 
+from model_utils import FieldTracker
+from requests import get
+
 from specifyweb.businessrules.exceptions import AbortSave
 from . import model_extras
+from .model_timestamp import pre_save_auto_timestamp_field_with_override
 
 appname = __name__.split('.')[-2]
 
@@ -36,10 +40,9 @@ def make_model(module, table, datamodel):
         fldname = field.name.lower()
         maker = field_type_map[field.type]
         fldargs = {}
-        if fldname == 'timestampcreated':
-            fldargs['auto_now_add'] = True
-        if fldname == 'timestampmodified':
-            fldargs['auto_now'] = True
+        # NOTE: setting fldargs['auto_now_add'] = True and fldargs['auto_now'] = True not needed for 
+        # 'if fldname == 'timestampcreated'' or `if fldname == 'timestampmodified'` 
+        # as we are using pre_save_auto_timestamp_field_with_override
         if fldname == 'version':
             fldargs['default'] = 0
         attrs[fldname] = maker(field, fldargs)
@@ -64,12 +67,39 @@ def make_model(module, table, datamodel):
         except AbortSave:
             return
 
-    attrs['save'] = save
+    def save_timestamped(self, *args, **kwargs):
+        timestamp_override = kwargs.pop('timestamp_override', False)
+        pre_save_auto_timestamp_field_with_override(self, timestamp_override)
+        try:
+            super(model, self).save(*args, **kwargs)
+        except AbortSave:
+            return
+
+    field_names = [field.name.lower() for field in table.fields]
+    timestamp_fields = ['timestampcreated', 'timestampmodified']
+    has_timestamp_fields = any(field in field_names for field in timestamp_fields)
+
+    if has_timestamp_fields:
+        tracked_fields = [field for field in timestamp_fields if field in field_names]
+        attrs['tracker'] = FieldTracker(fields=tracked_fields)
+        for field in tracked_fields:
+            attrs[field] = models.DateTimeField(db_column=field) # default=timezone.now is handled in pre_save_auto_timestamp_field_with_override
+
     attrs['Meta'] = Meta
 
-    supercls = getattr(model_extras, table.django_name, models.Model)
-    model = type(table.django_name, (supercls,), attrs)
+    if has_timestamp_fields:
+        attrs['save'] = save_timestamped
+    else:
+        attrs['save'] = save
 
+    supercls = models.Model
+    if hasattr(model_extras, table.django_name):
+        supercls = getattr(model_extras, table.django_name)
+    elif has_timestamp_fields:
+        # FUTURE: supercls = SpTimestampedModel
+        pass
+
+    model = type(table.django_name, (supercls,), attrs)
     return model
 
 def make_id_field(column):
