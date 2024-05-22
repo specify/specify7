@@ -87,7 +87,7 @@ export const mainText = createDictionary({
     'es-es': 'Lo sentimos, algo ha ido mal',
     'fr-fr': "Nous sommes désolés, quelque chose s'est mal passé",
     'uk-ua': 'Вибачте, щось пішло не так',
-    'de-ch': 'Es tut uns leid, es ist etwas schief gelaufen',
+    'de-ch': 'Es tut uns leid, da ist etwas schiefgelaufen',
   },
   clickToSeeDetails: {
     'en-us': 'Click to see details',

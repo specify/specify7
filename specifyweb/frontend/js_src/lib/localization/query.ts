@@ -277,9 +277,9 @@ export const queryText = createDictionary({
   },
   newButtonDescription: {
     'en-us': 'Add New Field',
-    'ru-ru': 'Добавить новое поле',
+    'ru-ru': 'Настройка видимых таблиц запросов',
     'es-es': 'Agregar nuevo campo',
-    'fr-fr': 'Ajouter un nouveau champ',
+    'fr-fr': 'Configurer les tables de requêtes visibles',
     'uk-ua': 'Додати нове поле',
     'de-ch': 'Neues Feld hinzufügen',
   },
@@ -343,9 +343,9 @@ export const queryText = createDictionary({
   moveUp: {
     comment: 'As in move it up',
     'en-us': 'Move Up',
-    'ru-ru': 'Двигаться вверх',
+    'ru-ru': 'Выберите форматтер',
     'es-es': 'Mover hacia arriba',
-    'fr-fr': 'Déplacer vers le haut',
+    'fr-fr': 'Choisir le formateur',
     'uk-ua': 'Рухатися вгору',
     'de-ch': 'Nach oben',
   },
@@ -395,7 +395,7 @@ export const queryText = createDictionary({
     'en-us': 'Show in results',
     'es-es': 'Mostrar en resultados',
     'uk-ua': 'Показати в результатах',
-    'de-ch': 'In den Ergebnissen anzeigen',
+    'de-ch': '(formatiert)',
     'fr-fr': 'Afficher dans les résultats',
     'ru-ru': 'Показать в результатах',
   },
@@ -458,9 +458,9 @@ export const queryText = createDictionary({
   },
   equal: {
     'en-us': 'Equal',
-    'ru-ru': 'Равный',
+    'ru-ru': 'Результаты запроса',
     'es-es': 'Igual',
-    'fr-fr': 'Égal',
+    'fr-fr': 'Résultats de la requête',
     'uk-ua': 'Рівні',
     'de-ch': 'Gleich',
   },
@@ -526,13 +526,13 @@ export const queryText = createDictionary({
     'es-es': 'Falso o vacío',
     'fr-fr': 'Déplacer vers le haut',
     'uk-ua': 'False або Empty',
-    'de-ch': 'Falsch oder leer',
+    'de-ch': 'Nach oben',
   },
   between: {
     'en-us': 'Between',
-    'ru-ru': 'Между',
+    'ru-ru': 'Десинонимизация дерева',
     'es-es': 'Entre',
-    'fr-fr': 'Entre',
+    'fr-fr': 'Désynonymisation des arbres',
     'uk-ua': 'Між',
     'de-ch': 'Zwischen',
   },
@@ -550,7 +550,7 @@ export const queryText = createDictionary({
     'es-es': 'Una lista de valores separados por comas',
     'fr-fr': 'Une liste de valeurs séparées par des virgules',
     'uk-ua': 'Список значень, розділених комами',
-    'de-ch': 'Eine durch Kommas getrennte Liste von Werten',
+    'de-ch': 'Datensätze anzeigen',
   },
   contains: {
     'en-us': 'Contains',
@@ -701,6 +701,15 @@ export const queryText = createDictionary({
     'uk-ua': 'Десинонімізація дерева',
     'de-ch': 'Baum Desynonymisieren',
   },
+  treeBulkMove: {
+    comment: 'Audit Log Action Type',
+    'en-us': 'Tree Bulk Move',
+    'de-ch': 'Massenverschiebung von Bäumen',
+    'es-es': 'Movimiento masivo de árboles',
+    'fr-fr': "Déplacement groupé d'arbres",
+    'ru-ru': 'Массовое перемещение дерева',
+    'uk-ua': 'Масове переміщення дерева',
+  },
   tooLongErrorMessage: {
     'en-us': `
       Field value is too long. Max allowed length is
@@ -729,7 +738,7 @@ export const queryText = createDictionary({
   },
   future: {
     'en-us': 'in the future',
-    'de-ch': 'in der Zukunft',
+    'de-ch': 'Exportdatei wird erstellt',
     'es-es': 'en el futuro',
     'fr-fr': "à l'avenir",
     'ru-ru': 'в будущем',
@@ -819,7 +828,9 @@ export const queryText = createDictionary({
     `,
     'ru-ru': 'Следующие поля скрыты в импортированном запросе:',
     'uk-ua': 'В імпортованому вами запиті приховано такі поля:',
-    'de-ch': 'In der importierten Abfrage sind folgende Felder ausgeblendet:',
+    'de-ch': `
+      In der von Ihnen importierten Abfrage sind folgende Felder ausgeblendet:
+    `,
   },
   importNoReadPermission: {
     'en-us':

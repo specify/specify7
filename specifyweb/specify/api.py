@@ -378,8 +378,11 @@ def cleanData(model, data: Dict[str, Any], agent) -> Dict[str, Any]:
             pass
 
     # timestampcreated should never be updated.
+    # ... well it is now ¯\_(ツ)_/¯
+    # New requirments are for timestampcreated to be overridable.
     try:
-        del cleaned['timestampcreated']
+        # del cleaned['timestampcreated']
+        pass
     except KeyError:
         pass
 
@@ -619,6 +622,8 @@ def delete_obj(collection, agent, obj, version=None, parent_obj=None) -> None:
     auditlog.remove(obj, agent, parent_obj)
     if version is not None:
         bump_version(obj, version)
+    if hasattr(obj, 'pre_constraints_delete'):
+        obj.pre_constraints_delete()
     obj.delete()
 
     for dep in dependents_to_delete:

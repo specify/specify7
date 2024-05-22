@@ -19,7 +19,10 @@ import { SearchDialog } from '../SearchDialog';
 
 const defaultPreviewSize = 4;
 
-export function useResourcePreview(table: SpecifyTable): {
+export function useResourcePreview(
+  table: SpecifyTable,
+  isAggregator: boolean = false
+): {
   readonly resources: GetOrSet<RA<SpecifyResource<AnySchema>> | undefined>;
   readonly children: (
     callback: (
@@ -60,7 +63,9 @@ export function useResourcePreview(table: SpecifyTable): {
     children: (children) => (
       <div
         // Setting width prevents dialog resizing when output is loaded
-        className="flex flex-col gap-2"
+        className={`flex ${
+          isAggregator ? 'w-[min(40rem,50vw)] break-all' : undefined
+        } flex-col gap-2`}
       >
         <span className="font-bold">{resourcesText.preview()}</span>
         {resourcesText.previewExplainer()}
@@ -78,19 +83,17 @@ export function useResourcePreview(table: SpecifyTable): {
                 className="flex gap-2 rounded bg-[color:var(--form-background)] p-2"
                 key={index}
               >
-                {output !== undefined && (
-                  <ResourceLink
-                    component={Link.Icon}
-                    props={{
-                      icon: 'eye',
-                    }}
-                    resource={resource}
-                    resourceView={{
-                      onDeleted: (): void =>
-                        setResources(removeItem(resources, index)),
-                    }}
-                  />
-                )}
+                <ResourceLink
+                  component={Link.Icon}
+                  props={{
+                    icon: 'eye',
+                  }}
+                  resource={resource}
+                  resourceView={{
+                    onDeleted: (): void =>
+                      setResources(removeItem(resources, index)),
+                  }}
+                />
                 <output className="whitespace-pre-wrap">{output}</output>
               </div>
             );
@@ -103,6 +106,7 @@ export function useResourcePreview(table: SpecifyTable): {
             extraFilters={undefined}
             forceCollection={undefined}
             multiple
+            onlyUseQueryBuilder
             table={table}
             onClose={handleClose}
             onSelected={setResources}
@@ -116,16 +120,18 @@ export function useResourcePreview(table: SpecifyTable): {
 export function ResourcePreview({
   table,
   doFormatting,
+  isAggregator,
 }: {
   readonly table: SpecifyTable;
   readonly doFormatting: (
     resources: RA<SpecifyResource<AnySchema>>
   ) => Promise<RA<React.ReactNode>>;
+  readonly isAggregator?: boolean;
 }): JSX.Element | null {
   const {
     resources: [resources],
     children,
-  } = useResourcePreview(table);
+  } = useResourcePreview(table, isAggregator);
   const [formatted] = useAsyncState(
     React.useCallback(
       async () => f.maybe(resources, doFormatting),

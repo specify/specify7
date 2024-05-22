@@ -97,15 +97,6 @@ class SQLAlchemySetup(ApiTests):
 
 
 
-    def setUp(self):
-        print("""
-            #BUG: If a test which compares the final sql query is added, then it could randomly fail
-            #in multithreaded tests because of usage of .label(None) in aggregate() 
-            #function in stored_queries/format.py 
-              """)
-        super().setUp()
-
-
 class SQLAlchemySetupTest(SQLAlchemySetup):
 
     def test_collection_object_count(self):
@@ -376,7 +367,9 @@ class FormatterAggregatorTests(SQLAlchemySetup):
           >
             <switch single="true">
               <fields>
+                <field>role</field>
                 <field>accession</field>
+                <field>accession.accessionnumber</field>
               </fields>
             </switch>
           </format>
@@ -397,11 +390,11 @@ class FormatterAggregatorTests(SQLAlchemySetup):
         """
         object_formatter = self.get_formatter(formatter_def)
         accession_1 = spmodels.Accession.objects.create(
-            accessionnumber='a',
+            accessionnumber='Some_number',
             division=self.division)
         accession_agent_1 = spmodels.Accessionagent.objects.create(
             agent=self.agent,
-            role='role',
+            role='roleA',
             accession=accession_1,
         )
         with FormatterAggregatorTests.test_session_context() as session:
@@ -414,7 +407,7 @@ class FormatterAggregatorTests(SQLAlchemySetup):
             query = query.query.add_column(expr)
             self.assertCountEqual(list(query),
                                   [(
-                                   "<Cycle Detected.>: ('Accession', 'formatting')->('AccessionAgent', 'aggregating')->('AccessionAgent', 'formatting')->Accession",)]
+                                   "roleASome_number",)]
                                   )
 
     def test_relationships_in_switch_fields(self):
