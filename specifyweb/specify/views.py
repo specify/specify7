@@ -25,6 +25,7 @@ from specifyweb.specify.record_merging import record_merge_fx, record_merge_task
 from . import api, models as spmodels
 from .build_models import orderings
 from .specify_jar import specify_jar
+
 from celery.utils.log import get_task_logger  # type: ignore
 logger = get_task_logger(__name__)
 
@@ -100,24 +101,8 @@ def delete_blockers(request, model, id):
     deleted.
     """
     obj = api.get_object_or_404(model, id=int(id))
-    using = router.db_for_write(obj.__class__, instance=obj)
-    collector = Collector(using=using)
-    collector.delete_blockers = []
-    collector.collect([obj])
-    result = flatten([
-        [
-            {
-                'table': sub_objs[0].__class__.__name__,
-                'field': field.name,
-                'ids': [sub_obj.id for sub_obj in sub_objs]
-            }
-        ] for field, sub_objs in collector.delete_blockers
-    ])
+    result = api.get_delete_blockers(obj)
     return http.HttpResponse(api.toJson(result), content_type='application/json')
-
-
-def flatten(l):
-    return [item for sublist in l for item in sublist]
 
 
 @login_maybe_required

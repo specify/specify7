@@ -40,4 +40,4 @@ def agent_types_other_and_group_do_not_have_addresses(agent):
     # This Business Rule (Agents of type Other/Group can not have Addresses) was removed
     # See https://github.com/specify/specify7/issues/2518 for more information
     # if agent_types[agent.agenttype] in ('Other', 'Group'):
-        # agent.addresses.all().delete()
+    #     agent.addresses.all().delete()
