@@ -233,7 +233,7 @@ export const queryText = createDictionary({
   invalidPicklistValue: {
     comment: 'Used when selected pick list value is not one of allowed values',
     'en-us': '{value:string} (current, invalid value)',
-    'ru-ru': '{value:string} (текущее, неверное значение)',
+    'ru-ru': '{value:string} (текущее, недопустимое значение)',
     'es-es': '{value:string} (valor actual no válido)',
     'fr-fr': '{value:string} (valeur actuelle non valide)',
     'uk-ua': '{value:string} (поточне, недійсне значення)',
@@ -700,6 +700,15 @@ export const queryText = createDictionary({
     'fr-fr': 'Désynonymisation des arbres',
     'uk-ua': 'Десинонімізація дерева',
     'de-ch': 'Baum Desynonymisieren',
+  },
+  treeBulkMove: {
+    comment: 'Audit Log Action Type',
+    'en-us': 'Tree Bulk Move',
+    'de-ch': 'Massenverschiebung von Bäumen',
+    'es-es': 'Movimiento masivo de árboles',
+    'fr-fr': "Déplacement groupé d'arbres",
+    'ru-ru': 'Массовое перемещение дерева',
+    'uk-ua': 'Масове переміщення дерева',
   },
   tooLongErrorMessage: {
     'en-us': `

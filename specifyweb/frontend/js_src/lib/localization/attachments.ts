@@ -104,7 +104,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Varios archivos seleccionados',
     'fr-fr': 'Plusieurs fichiers sélectionnés',
     'ru-ru': 'Выбрано несколько файлов',
-    'uk-ua': 'Вибрано декілька файлів',
+    'uk-ua': 'Вибрано кілька файлів',
   },
   fileSize: {
     'en-us': 'File Size',

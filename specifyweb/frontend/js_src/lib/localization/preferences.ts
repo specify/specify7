@@ -416,7 +416,7 @@ export const preferencesText = createDictionary({
   showNewDataSetWarningDescription: {
     'en-us': 'Show an informational message when creating a new Data Set',
     'ru-ru':
-      'Показывать информационное сообщение при создании нового набора данных.',
+      'Показывать информационное сообщение при создании нового набора данных',
     'es-es':
       'Mostrar un mensaje informativo al crear un nuevo conjunto de datos',
     'fr-fr': `
@@ -688,7 +688,7 @@ export const preferencesText = createDictionary({
   },
   scaleInterface: {
     'en-us': 'Scale Interface',
-    'ru-ru': 'Масштабный интерфейс',
+    'ru-ru': 'Интерфейс масштабирования',
     'es-es': 'Interfaz de báscula',
     'fr-fr': 'Interface de balance',
     'uk-ua': 'Інтерфейс масштабування',
@@ -1168,7 +1168,7 @@ export const preferencesText = createDictionary({
   },
   doubleClickZoom: {
     'en-us': 'Double click to zoom',
-    'ru-ru': 'Дважды щелкните, чтобы увеличить',
+    'ru-ru': 'Дважды щелкните, чтобы увеличить масштаб',
     'es-es': 'Doble clic para ampliar',
     'fr-fr': 'Double-cliquez pour zoomer',
     'uk-ua': 'Двічі клацніть, щоб збільшити',
@@ -1375,7 +1375,7 @@ export const preferencesText = createDictionary({
       'Hacer que los cuadros de diálogo del formulario aparezcan en gris',
     'fr-fr':
       "Rendre les boîtes de dialogue de formulaire grisées sur l'arrière-plan",
-    'uk-ua': 'Зробіть діалогові вікна форми сірими фоном',
+    'uk-ua': 'Зробіть діалогові вікна форми сірими',
     'de-ch': 'Den Hintergrund von Formulardialogen ausgrauen',
   },
   autoScrollTree: {
