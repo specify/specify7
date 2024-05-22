@@ -174,6 +174,86 @@ export const schemaExtras: {
       getField(table, 'division').otherSideName = 'accessions';
     },
   ],
+  Deaccession: (table) => [
+    [
+      new LiteralField(table, {
+        name: 'totalPreps',
+        required: false,
+        readOnly: true,
+        type: 'java.lang.Integer',
+        indexed: false,
+        unique: false,
+      }),
+      new LiteralField(table, {
+        name: 'totalItems',
+        required: false,
+        readOnly: true,
+        type: 'java.lang.Integer',
+        indexed: false,
+        unique: false,
+      })
+    ],
+  ],
+  Disposal: (table) => [
+    [
+      new LiteralField(table, {
+        name: 'totalPreps',
+        required: false,
+        readOnly: true,
+        type: 'java.lang.Integer',
+        indexed: false,
+        unique: false,
+      }),
+      new LiteralField(table, {
+        name: 'totalItems',
+        required: false,
+        readOnly: true,
+        type: 'java.lang.Integer',
+        indexed: false,
+        unique: false,
+      })
+    ],
+  ],
+  ExchangeOut: (table) => [
+    [
+      new LiteralField(table, {
+        name: 'totalPreps',
+        required: false,
+        readOnly: true,
+        type: 'java.lang.Integer',
+        indexed: false,
+        unique: false,
+      }),
+      new LiteralField(table, {
+        name: 'totalItems',
+        required: false,
+        readOnly: true,
+        type: 'java.lang.Integer',
+        indexed: false,
+        unique: false,
+      })
+    ],
+  ],
+  Gift: (table) => [
+    [
+      new LiteralField(table, {
+        name: 'totalPreps',
+        required: false,
+        readOnly: true,
+        type: 'java.lang.Integer',
+        indexed: false,
+        unique: false,
+      }),
+      new LiteralField(table, {
+        name: 'totalItems',
+        required: false,
+        readOnly: true,
+        type: 'java.lang.Integer',
+        indexed: false,
+        unique: false,
+      })
+    ],
+  ],
   Loan: (table) => [
     [
       new LiteralField(table, {
