@@ -191,7 +191,7 @@ export const schemaExtras: {
         type: 'java.lang.Integer',
         indexed: false,
         unique: false,
-      })
+      }),
     ],
   ],
   Disposal: (table) => [
@@ -211,7 +211,7 @@ export const schemaExtras: {
         type: 'java.lang.Integer',
         indexed: false,
         unique: false,
-      })
+      }),
     ],
   ],
   ExchangeOut: (table) => [
@@ -231,7 +231,7 @@ export const schemaExtras: {
         type: 'java.lang.Integer',
         indexed: false,
         unique: false,
-      })
+      }),
     ],
   ],
   Gift: (table) => [
@@ -251,7 +251,7 @@ export const schemaExtras: {
         type: 'java.lang.Integer',
         indexed: false,
         unique: false,
-      })
+      }),
     ],
   ],
   Loan: (table) => [
