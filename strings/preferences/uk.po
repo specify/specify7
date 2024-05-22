@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-05-22 19:48+0000\n"
+"PO-Revision-Date: 2024-05-22 21:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "preferences/uk/>\n"
@@ -118,7 +118,7 @@ msgstr "Зменшити прозорість"
 #, fuzzy
 msgid "reduceTransparencyDescription"
 msgstr ""
-"Чи вимикати напівпрозорі фони для компонентів інтерфейсу користувача, коли "
+"Чи вимикати напівпрозорий фон для компонентів інтерфейсу користувача, коли "
 "це можливо (наприклад, заголовки таблиць у перегляді дерева)"
 
 #. Used in: Components > Preferences > User Definitions
@@ -472,7 +472,7 @@ msgstr "Показати значок у заголовку"
 #: components/Preferences/UserDefinitions.tsx:208
 #, fuzzy
 msgid "scaleInterface"
-msgstr "Інтерфейс масштабу"
+msgstr "Інтерфейс масштабування"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:209
@@ -1127,7 +1127,7 @@ msgstr "Налаштування"
 #: components/Preferences/UserDefinitions.tsx:490
 #, fuzzy
 msgid "rememberDialogSizes"
-msgstr "Запам'ятайте розміри діалогових вікон"
+msgstr "Пам'ятайте про розміри діалогових вікон"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:483
