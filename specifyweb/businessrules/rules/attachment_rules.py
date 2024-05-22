@@ -3,6 +3,7 @@ import re
 from specifyweb.businessrules.orm_signal_handler import orm_signal_handler
 from specifyweb.specify.scoping import Scoping
 from specifyweb.specify import models
+from django.db import transaction
 
 from specifyweb.businessrules.exceptions import AbortSave
 
@@ -48,7 +49,7 @@ def attachment_save(attachment):
 def attachment_deletion(attachment):
     from specifyweb.attachment_gw.views import delete_attachment_file
     if attachment.attachmentlocation is not None:
-        delete_attachment_file(attachment.attachmentlocation)
+        transaction.on_commit(lambda: delete_attachment_file(attachment.attachmentlocation))
 
 
 def get_attachee(jointable_inst):

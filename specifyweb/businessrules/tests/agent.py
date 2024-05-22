@@ -1,10 +1,8 @@
 
 import unittest
 
-from django.db import transaction
-
 from specifyweb.specify import models
-from specifyweb.specify.api_tests import ApiTests
+from specifyweb.specify.tests.test_api import ApiTests
 from ..exceptions import BusinessRuleException
 
 class AgentTests(ApiTests):

@@ -17,7 +17,7 @@ from django.db.models.deletion import ProtectedError
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.celery_tasks import LogErrorsTask, app
 from . import api, models as spmodels
-from .api import uri_for_model
+from .api import uri_for_model, delete_obj
 from .build_models import orderings
 from .load_datamodel import Table, FieldDoesNotExistError
 from celery.utils.log import get_task_logger # type: ignore
@@ -233,37 +233,8 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
             # Locking foreign objects in the beginning because another transaction could update records, and we will 
             # then either overwrite or delete that change if we iterate to it much later.
             for obj in foreign_objects:
-                # If it is a dependent field, delete the object instead of updating it.
-                # This is done in order to avoid duplicates
+                # If it is a dependent field, continue
                 if table_name in dependant_table_names:
-                    # Note: need to handle case where deletion throws error because it is referenced my other records
-                    try:
-                        clean_fields_pre_delete(obj)
-                        obj.delete()
-                    except ProtectedError as e:
-                        # NOTE: Handle ProtectedError in the future.
-                        # EXAMPLE: ProtectedError: ("Cannot delete some instances of model 'Address' because they are 
-                        # referenced through protected foreign keys:
-                        # 'Division.address'.", {<Division: Division object (2)>})
-                        # 'Collectingevent.collectingeventattribute'", <QuerySet [<Collectingevent: Collectingevent object (2)>]>)
-                        match = re.search(r"'(\w+)\.(\w+)'", str(e))
-                        if match:
-                            protected_table, protected_field = match.groups()
-                            protected_model = getattr(spmodels, protected_table)
-                            # Check if this field is not required before updating it to None
-                            protected_dm_table = spmodels.datamodel.get_table(protected_table)
-                            protected_dm_field = protected_dm_table.get_field(protected_field) \
-                                if protected_dm_table else None
-                            if not protected_dm_table or not protected_dm_field or protected_dm_field.required:
-                                continue
-                            protected_model.objects.filter(**{protected_field: obj}).update(**{protected_field: None})
-                            try:
-                                obj.delete()
-                            except ProtectedError as e:
-                                raise
-                        else:
-                            raise
-
                     continue
 
                 try:
@@ -340,26 +311,17 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
 
     # Dedupe by deleting the record that is being replaced and updating the old model ID to the new one
     for old_model_id in old_model_ids:
-        target_model.objects.get(id=old_model_id).delete()
+        # NOTE: Handle ProtectedError in the future.
+        # EXAMPLE: ProtectedError: ("Cannot delete some instances of model 'Address' because they are
+        # referenced through protected foreign keys:
+        # 'Division.address'.", {<Division: Division object (2)>})
+        delete_obj(target_model.objects.get(id=old_model_id), clean_predelete=clean_fields_pre_delete)
 
     # Update new record with json info, if given
     has_new_record_info = new_record_info is not None
     if has_new_record_info and 'new_record_data' in new_record_info and \
             new_record_info['new_record_data'] is not None:
         try:
-            for table_name, _field_name in dependant_relationships:
-                # minor optimization to not fetch unnecessary dependent resources
-                if not table_name.lower().endswith('attachment'):
-                    continue
-                field_name = _field_name.lower()
-                # put_resource will drop existing dependent resources.
-                # this will trigger deletion from asset server.
-                # so, cleaning fields here. It does this for all
-                # attachments, which is fine since we just use
-                # whatever front-end sends as the final data
-                [clean_fields_pre_delete(dependent_object)
-                 for dependent_object in getattr(target_object, field_name).all()
-                 ]
             new_record_data = new_record_info['new_record_data']
             target_table = spmodels.datamodel.get_table(model_name.lower())
             fix_orderings(target_table, new_record_data)
