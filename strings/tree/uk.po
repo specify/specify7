@@ -288,7 +288,7 @@ msgstr "Прямий підрахунок {collectionObjectTable:string}."
 msgid "indirectCollectionObjectCount"
 msgstr "Непрямий підрахунок {collectionObjectTable:string}."
 
-#: components/TreeView/Tree.tsx:157
+#: components/TreeView/Tree.tsx:160
 #. Used in: Components > Tree View > Tree
 #, fuzzy
 msgid "editRanks"
@@ -329,6 +329,18 @@ msgstr "Вертикальний"
 #, fuzzy
 msgid "synchronize"
 msgstr "Синхронізувати"
+
+#: components/TreeView/AddRank.tsx:47
+#: components/TreeView/AddRank.tsx:95
+#. Used in: Components > Tree View > Add Rank
+msgid "addNewRank"
+msgstr ""
+
+#: components/TreeView/AddRank.tsx:66
+#: components/TreeView/AddRank.tsx:71
+#. Used in: Components > Tree View > Add Rank
+msgid "chooseParentRank"
+msgstr ""
 
 #: components/TreeView/Actions.tsx:176
 #: components/TreeView/Actions.tsx:427

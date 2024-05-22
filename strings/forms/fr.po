@@ -201,7 +201,7 @@ msgstr "Enregistrement suivant"
 msgid "currentRecord"
 msgstr "Objet actuel (sur {total:number|formatted})"
 
-#: components/Forms/ResourceView.tsx:388
+#: components/Forms/ResourceView.tsx:384
 #: components/Forms/Save.tsx:37
 #. Used in: Components > Forms > Resource View ⬤ Components > Forms > Save
 msgid "unsavedFormUnloadProtect"
@@ -643,12 +643,12 @@ msgstr "Nouveau {tableName:string}"
 msgid "resourceFormatter"
 msgstr "{tableName:string} #{id:number}"
 
-#: components/Forms/ResourceView.tsx:212
+#: components/Forms/ResourceView.tsx:208
 #. Used in: Components > Forms > Resource View
 msgid "resourceDeleted"
 msgstr "Ressource supprimée"
 
-#: components/Forms/ResourceView.tsx:215
+#: components/Forms/ResourceView.tsx:211
 #. Used in: Components > Forms > Resource View
 msgid "resourceDeletedDescription"
 msgstr "L'élément a été supprimé avec succès."

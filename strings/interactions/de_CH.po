@@ -253,7 +253,8 @@ msgid "noPreparationsWarning"
 msgstr "Für keines dieser Objekte liegen Vorbereitungen vor. Möchten Sie fortfahren?"
 
 #: components/Interactions/InteractionDialog.tsx:321
-#. Used in: Components > Interactions > Interaction Dialog
+#: components/TreeView/AddRank.tsx:62
+#. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Tree View > Add Rank
 #, fuzzy
 msgid "continue"
 msgstr "Weitermachen"

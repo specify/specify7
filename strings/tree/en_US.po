@@ -239,7 +239,7 @@ msgstr "Direct {collectionObjectTable:string} Count"
 msgid "indirectCollectionObjectCount"
 msgstr "Indirect {collectionObjectTable:string} Count"
 
-#: components/TreeView/Tree.tsx:157
+#: components/TreeView/Tree.tsx:160
 #. Used in: Components > Tree View > Tree
 msgid "editRanks"
 msgstr "Edit Ranks"
@@ -273,6 +273,18 @@ msgstr "Vertical"
 #. Used in: Components > Tree View > Index
 msgid "synchronize"
 msgstr "Synchronize"
+
+#: components/TreeView/AddRank.tsx:47
+#: components/TreeView/AddRank.tsx:95
+#. Used in: Components > Tree View > Add Rank
+msgid "addNewRank"
+msgstr "Add New Rank"
+
+#: components/TreeView/AddRank.tsx:66
+#: components/TreeView/AddRank.tsx:71
+#. Used in: Components > Tree View > Add Rank
+msgid "chooseParentRank"
+msgstr "Choose Parent Rank"
 
 #: components/TreeView/Actions.tsx:176
 #: components/TreeView/Actions.tsx:427

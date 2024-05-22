@@ -292,7 +292,7 @@ msgstr "Прямой счет {collectionObjectTable:string}"
 msgid "indirectCollectionObjectCount"
 msgstr "Косвенный счет {collectionObjectTable:string}"
 
-#: components/TreeView/Tree.tsx:157
+#: components/TreeView/Tree.tsx:160
 #. Used in: Components > Tree View > Tree
 #, fuzzy
 msgid "editRanks"
@@ -333,6 +333,18 @@ msgstr "Вертикальный"
 #, fuzzy
 msgid "synchronize"
 msgstr "Синхронизировать"
+
+#: components/TreeView/AddRank.tsx:47
+#: components/TreeView/AddRank.tsx:95
+#. Used in: Components > Tree View > Add Rank
+msgid "addNewRank"
+msgstr ""
+
+#: components/TreeView/AddRank.tsx:66
+#: components/TreeView/AddRank.tsx:71
+#. Used in: Components > Tree View > Add Rank
+msgid "chooseParentRank"
+msgstr ""
 
 #: components/TreeView/Actions.tsx:176
 #: components/TreeView/Actions.tsx:427
