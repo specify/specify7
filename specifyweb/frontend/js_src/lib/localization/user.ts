@@ -932,7 +932,7 @@ export const userText = createDictionary({
     `,
     'de-ch': `
       Es ist kein externer Identitätsanbieter konfiguriert. Sie können einige in
-      den Servereinstellungen festlegen.
+      den 7 Servereinstellungen konfigurieren.
     `,
   },
   legacyPermissions: {

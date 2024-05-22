@@ -404,7 +404,7 @@ export const schemaText = createDictionary({
   configureUniquenessRule: {
     'en-us': 'Configure Uniqueness Rule',
     'de-ch': 'Eindeutigkeitsregel konfigurieren',
-    'es-es': 'Configurar regla de unicidad',
+    'es-es': 'Configurar la regla de unicidad',
     'fr-fr': "Configurer la règle d'unicité",
     'ru-ru': 'Настройка правила уникальности',
     'uk-ua': 'Налаштувати правило унікальності',
