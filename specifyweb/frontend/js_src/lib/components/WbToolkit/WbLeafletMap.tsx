@@ -39,7 +39,8 @@ export function WbLeafletMap({
             hot,
             dataset.columns,
             mappings.localityColumns,
-            false
+            true,
+            true
           );
     const localityPoints =
       selection === undefined || mappings === undefined
