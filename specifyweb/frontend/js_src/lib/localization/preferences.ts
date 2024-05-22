@@ -144,7 +144,7 @@ export const preferencesText = createDictionary({
       en-têtes de tableau dans l'arborescence)
     `,
     'uk-ua': `
-      Чи вимикати напівпрозорий фон для компонентів інтерфейсу користувача, коли
+      Чи вимикати напівпрозорі фони для компонентів інтерфейсу користувача, коли
       це можливо (наприклад, заголовки таблиць у перегляді дерева)
     `,
     'de-ch': `
@@ -416,7 +416,7 @@ export const preferencesText = createDictionary({
   showNewDataSetWarningDescription: {
     'en-us': 'Show an informational message when creating a new Data Set',
     'ru-ru':
-      'Показывать информационное сообщение при создании нового набора данных',
+      'Показывать информационное сообщение при создании нового набора данных.',
     'es-es':
       'Mostrar un mensaje informativo al crear un nuevo conjunto de datos',
     'fr-fr': `
@@ -649,7 +649,7 @@ export const preferencesText = createDictionary({
       для відповідності будь-якій кількості символів
     `,
     'de-ch': `
-      Kann _ für jedes einzelne Zeichen oder % für jede beliebige Anzahl von
+      Kann _ für jedes einzelne Zeichen oder % für eine beliebige Anzahl von
       Zeichen verwenden
     `,
   },
@@ -688,10 +688,10 @@ export const preferencesText = createDictionary({
   },
   scaleInterface: {
     'en-us': 'Scale Interface',
-    'ru-ru': 'Интерфейс масштабирования',
+    'ru-ru': 'Масштабный интерфейс',
     'es-es': 'Interfaz de báscula',
     'fr-fr': 'Interface de balance',
-    'uk-ua': 'Інтерфейс масштабування',
+    'uk-ua': 'Інтерфейс масштабу',
     'de-ch': 'Waagenschnittstelle',
   },
   scaleInterfaceDescription: {
@@ -957,7 +957,7 @@ export const preferencesText = createDictionary({
   },
   enterBeginsEditing: {
     'en-us': 'Enter key begins editing cell',
-    'ru-ru': 'Клавиша Enter начинает редактирование ячейки.',
+    'ru-ru': 'Клавиша Enter начинает редактирование ячейки',
     'es-es': 'La tecla Intro comienza a editar la celda',
     'fr-fr': 'La touche Entrée commence à modifier la cellule',
     'uk-ua': 'Клавіша Enter починає редагування клітинки',
@@ -1719,7 +1719,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Помните о размерах диалогового окна',
     'es-es': 'Recuerde los tamaños de las ventanas de diálogo',
     'fr-fr': 'Mémoriser les tailles des fenêtres de dialogue',
-    'uk-ua': "Пам'ятайте про розміри діалогових вікон",
+    'uk-ua': "Запам'ятайте розміри діалогових вікон",
     'de-ch': 'Dialogfenstergrößen merken',
   },
   rememberDialogPositions: {
@@ -1858,7 +1858,7 @@ export const preferencesText = createDictionary({
   showLineNumber: {
     'en-us': 'Show query result line number',
     'de-ch': 'Farbe der Gefahrenschaltfläche',
-    'es-es': 'Mostrar número de línea de resultado de la consulta',
+    'es-es': 'Mostrar el número de línea del resultado de la consulta',
     'fr-fr': 'Afficher le numéro de ligne du résultat de la requête',
     'ru-ru': 'Показать номер строки результата запроса',
     'uk-ua': 'Показати номер рядка результату запиту',
