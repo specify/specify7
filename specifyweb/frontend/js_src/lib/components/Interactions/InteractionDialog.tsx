@@ -295,21 +295,21 @@ export function InteractionDialog({
           <Dialog
             buttons={
               <>
-                <Button.DialogClose>{commonText.close()}</Button.DialogClose>
                 {typeof itemCollection === 'object' ? (
-                  <Button.Info
+                  <Button.Secondary
                     onClick={(): void => {
                       addInteractionResource();
                       handleClose();
                     }}
                   >
                     {interactionsText.addUnassociated()}
-                  </Button.Info>
+                  </Button.Secondary>
                 ) : interactionsWithPrepTables.includes(actionTable.name) ? (
-                  <Link.Info href={getResourceViewUrl(actionTable.name)}>
+                  <Link.Secondary href={getResourceViewUrl(actionTable.name)}>
                     {interactionsText.withoutPreparations()}
-                  </Link.Info>
+                  </Link.Secondary>
                 ) : undefined}
+                <span className="-ml-2 flex-1" />
                 {state.type === 'MissingState' &&
                 prepsData?.length !== 0 &&
                 prepsData ? (
@@ -321,6 +321,7 @@ export function InteractionDialog({
                     {interactionsText.continue()}
                   </Button.Info>
                 ) : null}
+                <Button.DialogClose>{commonText.close()}</Button.DialogClose>
               </>
             }
             header={

@@ -416,7 +416,7 @@ export const preferencesText = createDictionary({
   showNewDataSetWarningDescription: {
     'en-us': 'Show an informational message when creating a new Data Set',
     'ru-ru':
-      'Показывать информационное сообщение при создании нового набора данных.',
+      'Показывать информационное сообщение при создании нового набора данных',
     'es-es':
       'Mostrar un mensaje informativo al crear un nuevo conjunto de datos',
     'fr-fr': `
@@ -688,7 +688,7 @@ export const preferencesText = createDictionary({
   },
   scaleInterface: {
     'en-us': 'Scale Interface',
-    'ru-ru': 'Масштабный интерфейс',
+    'ru-ru': 'Интерфейс масштабирования',
     'es-es': 'Interfaz de báscula',
     'fr-fr': 'Interface de balance',
     'uk-ua': 'Інтерфейс масштабування',
@@ -969,8 +969,7 @@ export const preferencesText = createDictionary({
     'es-es':
       'Dirección de movimiento cuando se presiona la tecla <key>Tab</key>',
     'fr-fr': `
-      Direction du mouvement lorsque la touche <key>Tabulation</key> est
-      enfoncée
+      Sens de déplacement lorsque la touche <key>Tabulation</key> est enfoncée
     `,
     'uk-ua': 'Напрямок руху при натисканні клавіші <key>Tab</key>.',
     'de-ch': 'Bewegungsrichtung, wenn die Taste <key>Tab</key> gedrückt wird',
@@ -1252,7 +1251,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Укажите значок сети',
     'es-es': 'Especificar insignia de red',
     'fr-fr': 'Spécifier le badge réseau',
-    'uk-ua': 'Укажіть значок мережі',
+    'uk-ua': 'Укажіть позначку мережі',
     'de-ch': 'Netzwerk-Badge angeben',
   },
   useAccessibleFullDatePicker: {
@@ -1537,8 +1536,8 @@ export const preferencesText = createDictionary({
       Mettez un délimiteur par ligne
     `,
     'uk-ua': `
-      Список роздільників, які слід використовувати на додаток до визначених
-      вище. Поставте один роздільник на рядок
+      Список розділювачів для використання на додаток до визначених вище.
+      Поставте один роздільник на рядок
     `,
     'de-ch': `
       Eine Liste der zu verwendenden Trennzeichen zusätzlich zu den oben
@@ -1720,7 +1719,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Помните о размерах диалогового окна',
     'es-es': 'Recuerde los tamaños de las ventanas de diálogo',
     'fr-fr': 'Mémoriser les tailles des fenêtres de dialogue',
-    'uk-ua': "Запам'ятайте розміри діалогових вікон",
+    'uk-ua': "Пам'ятайте про розміри діалогових вікон",
     'de-ch': 'Dialogfenstergrößen merken',
   },
   rememberDialogPositions: {
