@@ -4,6 +4,7 @@ import logging
 
 from specifyweb.specify.tree_ranks import RankOperation, post_tree_rank_save, pre_tree_rank_deletion, \
     verify_rank_parent_chain_integrity, pre_tree_rank_init, post_tree_rank_deletion
+from specifyweb.specify.model_timestamp import pre_save_auto_timestamp_field_with_override
 logger = logging.getLogger(__name__)
 
 
@@ -26,12 +27,13 @@ def validate_node_numbers(table, revalidate_after=True):
     if revalidate_after:
         validate_tree_numbering(table)
 
-class Tree(models.Model):
+class Tree(models.Model): # FUTURE: class Tree(SpTimestampedModel):
     class Meta:
         abstract = True
 
     def save(self, *args, skip_tree_extras=False, **kwargs):
         def save():
+            pre_save_auto_timestamp_field_with_override(self)
             super(Tree, self).save(*args, **kwargs)
 
         if skip_tree_extras:
