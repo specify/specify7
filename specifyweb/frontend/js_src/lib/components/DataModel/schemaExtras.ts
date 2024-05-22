@@ -3,9 +3,8 @@
  */
 
 import type { IR, RA, RR } from '../../utils/types';
-import { filterArray } from '../../utils/types';
 import { getField } from './helpers';
-import type { FilterTablesByEndsWith, TableFields } from './helperTypes';
+import type { TableFields } from './helperTypes';
 import { schema } from './schema';
 import { LiteralField, Relationship } from './specifyField';
 import type { SpecifyTable } from './specifyTable';
@@ -24,30 +23,6 @@ export const schemaAliases: RR<'', IR<string>> & {
     typesCBX: 'type',
   },
 };
-
-const treeDefinitionFields = [
-  'fullNameSeparator',
-  'isEnforced',
-  'isInFullName',
-  'textAfter',
-  'textBefore',
-];
-
-const treeDefItem = (
-  table: SpecifyTable<FilterTablesByEndsWith<'TreeDefItem'>>
-) =>
-  [
-    [],
-    (): void =>
-      filterArray(
-        treeDefinitionFields.map((fieldName) =>
-          table.getLiteralField(fieldName)
-        )
-      ).forEach((field) => {
-        field.isReadOnly = true;
-        field.overrides.isReadOnly = true;
-      }),
-  ] as const;
 
 export const schemaExtras: {
   readonly [TABLE_NAME in keyof Tables]?: (
@@ -384,9 +359,4 @@ export const schemaExtras: {
       }),
     ],
   ],
-  GeographyTreeDefItem: treeDefItem,
-  StorageTreeDefItem: treeDefItem,
-  TaxonTreeDefItem: treeDefItem,
-  GeologicTimePeriodTreeDefItem: treeDefItem,
-  LithoStratTreeDefItem: treeDefItem,
 };

@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.signals import pre_delete
 
 from model_utils import FieldTracker
 from requests import get
@@ -66,6 +67,13 @@ def make_model(module, table, datamodel):
             return super(model, self).save(*args, **kwargs)
         except AbortSave:
             return
+        
+    def pre_constraints_delete(self):
+        # This function is to be called before the object is deleted, and before the pre_delete signal is sent.
+        # It will manually send the pre_delete signal for the django model object.
+        # The pre_delete function must contain logic that will prevent ForeignKey constraints from being violated.
+        # This is needed because database constraints are checked before pre_delete signals are sent.
+        pre_delete.send(sender=self.__class__, instance=self)
 
     def save_timestamped(self, *args, **kwargs):
         timestamp_override = kwargs.pop('timestamp_override', False)
@@ -86,6 +94,8 @@ def make_model(module, table, datamodel):
             attrs[field] = models.DateTimeField(db_column=field) # default=timezone.now is handled in pre_save_auto_timestamp_field_with_override
 
     attrs['Meta'] = Meta
+    if table.django_name in tables_with_pre_constraints_delete:
+        attrs['pre_constraints_delete'] = pre_constraints_delete
 
     if has_timestamp_fields:
         attrs['save'] = save_timestamped
@@ -127,6 +137,12 @@ SPECIAL_DELETION_RULES = {
     'Spappresourcedata.spappresource': models.CASCADE,
     'Spappresourcedata.spviewsetobj': models.CASCADE,
     'Spreport.appresource': models.CASCADE,
+
+    'Geographytreedefitem.parent': models.DO_NOTHING,
+    'Geologictimeperiodtreedefitem.parent': models.DO_NOTHING,
+    'Lithostrattreedefitem.parent': models.DO_NOTHING,
+    'Storagetreedefitem.parent': models.DO_NOTHING,
+    'Taxontreedefitem.parent': models.DO_NOTHING,
 }
 
 def make_relationship(modelname, rel, datamodel):
@@ -302,6 +318,14 @@ field_type_map = {
     'java.math.BigDecimal': make_decimal_field,
     'java.lang.Boolean': make_boolean_field,
     }
+
+tables_with_pre_constraints_delete = [
+    # 'Geographytreedefitem',
+    # 'Geologictimeperiodtreedefitem',
+    # 'Lithostrattreedefitem',
+    # 'Storagetreedefitem',
+    # 'Taxontreedefitem',
+]
 
 def build_models(module, datamodel):
     return { model.specify_model.tableId: model

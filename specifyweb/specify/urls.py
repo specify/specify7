@@ -33,6 +33,7 @@ urlpatterns = [
         url(r'^(?P<id>\d+)/bulk_move/$', tree_views.bulk_move),
         url(r'^(?P<id>\d+)/synonymize/$', tree_views.synonymize),
         url(r'^(?P<id>\d+)/desynonymize/$', tree_views.desynonymize),
+        url(r'^(?P<rankid>\d+)/tree_rank_item_count/$', tree_views.tree_rank_item_count),
         url(r'^(?P<parentid>\d+)/predict_fullname/$', tree_views.predict_fullname),
         url(r'^(?P<treedef>\d+)/(?P<parentid>\w+)/stats/$', tree_views.tree_stats),
         url(r'^(?P<treedef>\d+)/(?P<parentid>\w+)/(?P<sortfield>\w+)/$', tree_views.tree_view),
