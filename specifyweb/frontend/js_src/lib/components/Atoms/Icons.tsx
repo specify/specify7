@@ -144,7 +144,7 @@ export const dialogIcons: RR<
     </span>
   ),
   success: <span className="text-green-500">{icons.checkCircle}</span>,
-  info: <span>{icons.informationCircle}</span>,
+  info: icons.informationCircle,
 };
 
 export type IconProps = {
