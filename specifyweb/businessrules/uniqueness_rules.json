@@ -11,8 +11,18 @@
             "isDatabaseConstraint": true
         },
         {
-            "rule": [["role", "agent"], ["repositoryagreement"]],
+            "rule": [["role", "agent"], ["repositoryAgreement"]],
             "isDatabaseConstraint": true
+        }
+    ],
+    "Accessionauthorization" : [
+        {
+            "rule": [["permit"], ["accession"]],
+            "isDatabaseConstraint": false
+        },
+        {
+            "rule": [["permit"], ["repositoryAgreement"]],
+            "isDatabaseConstraint": false
         }
     ],
     "Appraisal": [
@@ -53,6 +63,18 @@
             "isDatabaseConstraint": true
         }
     ],
+    "Collectingeventauthorization" : [
+        {
+            "rule": [["permit"], ["collectingEvent"]],
+            "isDatabaseConstraint":false
+        }
+    ],
+    "Collectingtripauthorization" : [
+        {
+            "rule" : [["permit"], ["collectingTrip"]],
+            "isDatabaseConstraint": false
+        }
+    ],
     "Collectionobject": [
         {
             "rule": [["catalogNumber"], ["collection"]],
@@ -73,6 +95,12 @@
             "isDatabaseConstraint": true
         }
     ],
+    "Deaccession" : [
+        {
+            "rule": [["deaccessionNumber"], []],
+            "isDatabaseConstraint": false
+        }
+    ],
     "Determiner": [
         {
             "rule": [["agent"], ["determination"]],
@@ -82,6 +110,12 @@
     "Discipline": [
         {
             "rule": [["name"], ["division"]],
+            "isDatabaseConstraint": false
+        }
+    ],
+    "Disposal": [
+        {
+            "rule": [["disposalNumber"], []],
             "isDatabaseConstraint": false
         }
     ],
