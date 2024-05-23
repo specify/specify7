@@ -3,7 +3,6 @@ import logging
 from typing import Dict, Any
 
 from django.db.models import Count, Sum
-from django.db import connection
 
 from . import models
 
@@ -15,98 +14,114 @@ def get_model(name: str):
     """
     return getattr(models, name.capitalize())
 
+def calculate_quantity(obj, field_name: str) -> int:
+    return obj.aggregate(total=Sum(field_name))["total"] or 0
+
+def calculate_actual_count(obj, preparations):
+    actualTotalCountAmt = 0
+    for prep in preparations:
+        giftpreparation_quantity = calculate_quantity(prep.giftpreparations, "quantity")
+        exchangeoutprep_quantity = calculate_quantity(prep.exchangeoutpreps, "quantity")
+        disposalpreparation_quantity = calculate_quantity(prep.disposalpreparations, "quantity")
+
+        countamt = obj.countamt or 0
+        available = max(0, countamt - giftpreparation_quantity - exchangeoutprep_quantity - disposalpreparation_quantity)
+        actualTotalCountAmt += available
+    return actualTotalCountAmt
+
+def calculate_totals_deaccession(obj, model_name, related_field_name):
+    Model = get_model(model_name)
+    totalPreps = Model.objects.filter(deaccession=obj).count()
+    totalItems = Model.objects.filter(deaccession=obj).aggregate(
+        total=Sum(f"{related_field_name}__quantity"))["total"] or 0
+    return totalPreps, totalItems
+
+def calc_prep_item_count(obj, prep_field_name, extra):
+    model_preparations = getattr(obj, prep_field_name)
+    extra["totalPreps"] = model_preparations.count()
+    extra["totalItems"] = model_preparations.aggregate(total=Sum("quantity"))["total"] or 0
+    return extra
+
 def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
     extra: Dict[str, Any] = {}
-    cursor = connection.cursor()
 
-    if isinstance(obj, get_model('Preparation')):
-        cursor.execute("""
-   select coalesce(
-      p.countamt
-      - (select coalesce(sum(gp.quantity), 0) from giftpreparation gp where gp.preparationid = p.preparationid and gp.quantity is not null)
-      - (select coalesce(sum(ep.quantity), 0) from exchangeoutprep ep where ep.preparationid = p.preparationid and ep.quantity is not null)
-      - (select coalesce(sum(dp.quantity), 0) from disposalpreparation dp where dp.preparationid = p.preparationid and dp.quantity is not null),
-      0) as ActualCountAmt
-   from preparation p
-   where preparationid = %s
-""", [obj.id])
-        actualCountAmt, = cursor.fetchone()
+    if isinstance(obj, get_model("Preparation")):
+        preparations = [obj]
+        actualCountAmt = calculate_actual_count(obj, preparations)
+        extra["actualCountAmt"] = int(actualCountAmt)
+        extra["isonloan"] = obj.isonloan()
 
-        extra['actualCountAmt'] = int(actualCountAmt)
-        extra['isonloan'] = obj.isonloan()
+    elif isinstance(obj, get_model("Specifyuser")):
+        extra["isadmin"] = obj.userpolicy_set.filter(
+            collection=None, resource="%", action="%"
+        ).exists()
 
-    elif isinstance(obj, get_model('Specifyuser')):
-        extra['isadmin'] = obj.userpolicy_set.filter(collection=None, resource='%', action='%').exists()
+    elif isinstance(obj, get_model("Collectionobject")):
+        preparations = obj.preparations.all()
+        totalCountAmt = calculate_quantity(preparations, "countamt")
 
-    elif isinstance(obj, get_model('Collectionobject')):
-        cursor.execute("""
-select coalesce(sum(countamt), 0) as TotalCountAmt, coalesce(sum(available), 0) as ActualTotalCountAmt from (
-   select
-   coalesce(p.countamt, 0) as countamt, -- assume countamt >= 0
-   greatest(0, coalesce(  -- the greatest function ensures that if the available amount for some prep goes < 0 it doesn't count againts others
-      p.countamt
-      - (select coalesce(sum(gp.quantity), 0) from giftpreparation gp where gp.preparationid = p.preparationid and gp.quantity is not null)
-      - (select coalesce(sum(ep.quantity), 0) from exchangeoutprep ep where ep.preparationid = p.preparationid and ep.quantity is not null)
-      - (select coalesce(sum(dp.quantity), 0) from disposalpreparation dp where dp.preparationid = p.preparationid and dp.quantity is not null),
-      0
-   )) as available
-   from preparation p
-   where collectionobjectid = %s
-) available_by_prep
-""", [obj.id])
-        totalCountAmt, actualTotalCountAmt = cursor.fetchone()
+        actualTotalCountAmt = calculate_actual_count(obj, preparations)
         extra["actualTotalCountAmt"] = int(actualTotalCountAmt)
         extra["totalCountAmt"] = int(totalCountAmt)
 
-        dets = data['determinations'] or []
-        extra['currentdetermination'] = next((det['resource_uri'] for det in dets if det['iscurrent']), None)
+        dets = data["determinations"] or []
+        extra["currentdetermination"] = next(
+            (det["resource_uri"] for det in dets if det["iscurrent"]), None
+        )
 
-    elif isinstance(obj, get_model('Loan')):
-        preps = data['loanpreparations']
+    elif isinstance(obj, get_model("Loan")):
+        preps = data["loanpreparations"]
         items = 0
         quantities = 0
         unresolvedItems = 0
         unresolvedQuantities = 0
         for prep in preps:
-            items = items + 1;
-            prep_quantity = prep['quantity'] if prep['quantity'] is not None else 0
-            prep_quantityresolved = prep['quantityresolved'] if prep['quantityresolved'] is not None else 0
+            items = items + 1
+            prep_quantity = prep["quantity"] if prep["quantity"] is not None else 0
+            prep_quantityresolved = (
+                prep["quantityresolved"] if prep["quantityresolved"] is not None else 0
+            )
             quantities = quantities + prep_quantity
-            if not prep['isresolved']:
-                unresolvedItems = unresolvedItems + 1;
-                unresolvedQuantities = unresolvedQuantities + (prep_quantity - prep_quantityresolved)
-        extra['totalPreps'] = items
-        extra['totalItems'] = quantities
-        extra['unresolvedPreps'] = unresolvedItems
-        extra['unresolvedItems'] = unresolvedQuantities
-        extra['resolvedPreps'] = items - unresolvedItems
-        extra['resolvedItems'] = quantities - unresolvedQuantities
+            if not prep["isresolved"]:
+                unresolvedItems = unresolvedItems + 1
+                unresolvedQuantities = unresolvedQuantities + (
+                    prep_quantity - prep_quantityresolved
+                )
+        extra["totalPreps"] = items
+        extra["totalItems"] = quantities
+        extra["unresolvedPreps"] = unresolvedItems
+        extra["unresolvedItems"] = unresolvedQuantities
+        extra["resolvedPreps"] = items - unresolvedItems
+        extra["resolvedItems"] = quantities - unresolvedQuantities
 
-    elif isinstance(obj, get_model('Accession')):
-        cursor.execute("""
-select count(id) as PreparationCount, coalesce(sum(countamt), 0) as TotalCountAmt, coalesce(sum(available), 0) as ActualTotalCountAmt from (
-   select
-   p.preparationid as id,
-   coalesce(p.countamt, 0) as countamt, -- assume countamt >= 0
-   greatest(0, coalesce(  -- the greatest function ensures that if the available amount for some prep goes < 0 it doesn't count againts others
-      p.countamt
-      - (select coalesce(sum(gp.quantity), 0) from giftpreparation gp where gp.preparationid = p.preparationid and gp.quantity is not null)
-      - (select coalesce(sum(ep.quantity), 0) from exchangeoutprep ep where ep.preparationid = p.preparationid and ep.quantity is not null)
-      - (select coalesce(sum(dp.quantity), 0) from disposalpreparation dp where dp.preparationid = p.preparationid and dp.quantity is not null),
-      0
-   )) as available
-   from preparation p
-   join collectionobject using (collectionobjectid)
-   where accessionid = %s
-) available_by_prep
-""", [obj.id])
+    elif isinstance(obj, get_model("Accession")):
+        Preparation = get_model("Preparation")
+        preparations = Preparation.objects.filter(collectionobject__accession=obj)
+        preparationCount = preparations.count()
+        totalCountAmt = calculate_quantity(preparations, "countamt")
 
-        preparationCount, totalCountAmt, actualTotalCountAmt = cursor.fetchone()
+        actualTotalCountAmt = calculate_actual_count(obj, preparations)
         extra["actualTotalCountAmt"] = int(actualTotalCountAmt)
         extra["totalCountAmt"] = int(totalCountAmt)
         extra["preparationCount"] = preparationCount
-        extra.update(obj.collectionobjects.aggregate(collectionObjectCount=Count('id')))
+        extra.update(obj.collectionobjects.aggregate(collectionObjectCount=Count("id")))
+
+    elif isinstance(obj, get_model("Disposal")):
+        extra = calc_prep_item_count(obj, "disposalpreparations", extra)
+
+    elif isinstance(obj, get_model("Gift")):
+        extra = calc_prep_item_count(obj, "giftpreparations", extra)
+
+    elif isinstance(obj, get_model("ExchangeOut")):
+        extra = calc_prep_item_count(obj, "exchangeoutpreps", extra)
+
+    elif isinstance(obj, get_model("Deaccession")):
+        totalPreps_disposals, totalItems_disposals = calculate_totals_deaccession(obj, "Disposal", "disposalpreparations")
+        totalPreps_exchangeouts, totalItems_exchangeouts = calculate_totals_deaccession(obj, "ExchangeOut", "exchangeoutpreps")
+        totalPreps_gifts, totalItems_gifts = calculate_totals_deaccession(obj, "Gift", "giftpreparations")
+
+        # sum up all totalItems of disposals, exchangeouts and gifts
+        extra["totalPreps"] = totalPreps_disposals + totalPreps_exchangeouts + totalPreps_gifts
+        extra["totalItems"] = totalItems_disposals + totalItems_exchangeouts + totalItems_gifts
 
     return extra
-
-

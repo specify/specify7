@@ -2361,6 +2361,8 @@ export type Deaccession = {
     readonly yesNo3: boolean | null;
     readonly yesNo4: boolean | null;
     readonly yesNo5: boolean | null;
+    readonly totalPreps: number | null;
+    readonly totalItems: number | null;
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
@@ -2574,6 +2576,8 @@ export type Disposal = {
     readonly version: number | null;
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
+    readonly totalPreps: number | null;
+    readonly totalItems: number | null;
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
@@ -2774,6 +2778,8 @@ export type ExchangeOut = {
     readonly version: number | null;
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
+    readonly totalPreps: number | null;
+    readonly totalItems: number | null;
   };
   readonly toOneDependent: { readonly addressOfRecord: AddressOfRecord | null };
   readonly toOneIndependent: {
@@ -3317,6 +3323,8 @@ export type Gift = {
     readonly version: number | null;
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
+    readonly totalPreps: number | null;
+    readonly totalItems: number | null;
   };
   readonly toOneDependent: { readonly addressOfRecord: AddressOfRecord | null };
   readonly toOneIndependent: {

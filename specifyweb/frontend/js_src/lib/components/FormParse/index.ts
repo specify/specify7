@@ -457,18 +457,19 @@ function parseFormTableColumns(
     }).fill(undefined),
   ];
 }
+export type FormCondition =
+  | State<
+      'Value',
+      {
+        readonly field: RA<LiteralField | Relationship>;
+        readonly value: string;
+      }
+    >
+  | State<'Always'>
+  | undefined;
 
 export type ConditionalFormDefinition = RA<{
-  readonly condition:
-    | State<
-        'Value',
-        {
-          readonly field: RA<LiteralField | Relationship>;
-          readonly value: string;
-        }
-      >
-    | State<'Always'>
-    | undefined;
+  readonly condition: FormCondition;
   readonly definition: ParsedFormDefinition;
 }>;
 
