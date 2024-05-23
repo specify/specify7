@@ -35,7 +35,6 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   };
   readonly collection: Collection<SCHEMA> | undefined;
   readonly businessRuleManager?: BusinessRuleManager<SCHEMA>;
-  readonly independentResources: IR<Collection<AnySchema>>;
   /*
    * Shorthand method signature is used to prevent
    * https://github.com/microsoft/TypeScript/issues/48339
