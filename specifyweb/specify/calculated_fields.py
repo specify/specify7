@@ -48,7 +48,13 @@ def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
             preparation_id=obj.id).aggregate(total=Coalesce(Sum('quantity'), Value(0)))['total']
 
         # Calculate the actual count
-        actualCountAmt = max(0, obj.countamt - giftpreparation_sum - exchangeoutprep_sum - disposalpreparation_sum)
+        actualCountAmt = max(
+            0,
+            (obj.countamt or 0)
+            - giftpreparation_sum
+            - exchangeoutprep_sum
+            - disposalpreparation_sum,
+        )
 
         extra["actualCountAmt"] = int(actualCountAmt)
         extra["isonloan"] = obj.isonloan()
