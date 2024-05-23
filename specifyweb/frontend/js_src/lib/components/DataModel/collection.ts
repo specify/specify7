@@ -68,53 +68,40 @@ export const fetchCollection = async <
     };
     readonly objects: RA<SerializedRecord<SCHEMA>>;
   }>(
-    buildUrl(
+    formatUrl(
       `/api/specify/${tableName.toLowerCase()}/`,
-      tableName,
-      filters,
-      advancedFilters
+      Object.fromEntries(
+        filterArray(
+          Array.from(
+            Object.entries({
+              ...filters,
+              ...advancedFilters,
+            }).map(([key, value]) => {
+              const mapped =
+                value === undefined
+                  ? undefined
+                  : mapValue(key, value, tableName);
+              return mapped === undefined
+                ? undefined
+                : ([key.toLowerCase(), mapped] as const);
+            })
+          )
+        )
+      )
     ),
+
     { headers: { Accept: 'application/json' } }
   ).then(({ data: { meta, objects } }) => ({
     records: objects.map(serializeResource),
     totalCount: meta.total_count,
   }));
 
-const buildUrl = <
-  TABLE_NAME extends keyof Tables,
-  SCHEMA extends Tables[TABLE_NAME]
->(
-  baseUrl: string,
-  tableName: TABLE_NAME,
-  filters: CollectionFetchFilters<SCHEMA>,
-  advancedFilters: IR<boolean | number | string> = {}
-): string =>
-  formatUrl(
-    baseUrl,
-    Object.fromEntries(
-      filterArray(
-        Object.entries({
-          ...filters,
-          ...advancedFilters,
-        }).map(([key, value]) => {
-          const mapped =
-            value === undefined
-              ? undefined
-              : mapQueryParameter(key, value, tableName);
-          return mapped === undefined
-            ? undefined
-            : ([key.toLowerCase(), mapped] as const);
-        })
-      )
-    )
-  );
-
-function mapQueryParameter(
+function mapValue(
   key: string,
   value: unknown,
   tableName: keyof Tables
 ): string | undefined {
-  if (key === 'orderBy') return String(value).toLowerCase();
+  if (key === 'orderBy') return (value as string).toString().toLowerCase();
   else if (key === 'domainFilter') {
     // GetScope() returns undefined for tables with only collectionmemberid.
     const scopingField = tables[tableName].getScope();
@@ -122,9 +109,8 @@ function mapQueryParameter(
       (tableName === 'Attachment' || typeof scopingField === 'object')
       ? 'true'
       : undefined;
-  } else if (key === 'distinct') return value === true ? 'true' : undefined;
-  else if (typeof value === 'boolean') return value ? 'True' : 'False';
-  else return String(value);
+  } else if (typeof value === 'boolean') return value ? 'True' : 'False';
+  else return (value as string).toString();
 }
 
 /**
@@ -203,6 +189,7 @@ export const fetchRows = async <
   }: Omit<CollectionFetchFilters<SCHEMA>, 'fields'> & {
     readonly fields: FIELDS;
     readonly distinct?: boolean;
+    readonly limit?: number;
   },
   /**
    * Advanced filters, not type-safe.
@@ -214,15 +201,29 @@ export const fetchRows = async <
   advancedFilters: IR<number | string> = {}
 ): Promise<RA<FieldsToTypes<FIELDS>>> => {
   const { data } = await ajax<RA<RA<boolean | number | string | null>>>(
-    buildUrl(
+    formatUrl(
       `/api/specify_rows/${tableName.toLowerCase()}/`,
-      tableName,
-      filters as CollectionFetchFilters<SCHEMA>,
-      {
-        ...advancedFilters,
-        distinct,
-        fields: Object.keys(fields).join(',').toLowerCase(),
-      }
+      Object.fromEntries(
+        filterArray(
+          Array.from(
+            Object.entries({
+              ...filters,
+              ...advancedFilters,
+              ...(distinct ? { distinct: 'true' } : {}),
+              fields: Object.keys(fields).join(',').toLowerCase(),
+            }).map(([key, value]) =>
+              value === undefined
+                ? undefined
+                : [
+                    key.toLowerCase(),
+                    key === 'orderBy'
+                      ? value.toString().toLowerCase()
+                      : value.toString(),
+                  ]
+            )
+          )
+        )
+      )
     ),
     { headers: { Accept: 'application/json' } }
   );
@@ -233,9 +234,4 @@ export const fetchRows = async <
         keys.map((key, index) => [key, row[index]])
       ) as FieldsToTypes<FIELDS>
   );
-};
-
-export const exportsForTests = {
-  buildUrl,
-  mapQueryParameter,
 };
