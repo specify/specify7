@@ -651,7 +651,7 @@ export const commonText = createDictionary({
     'en-us': '{label:string}: {value:string}',
     'ru-ru': '{label:string}: {value:string}',
     'es-es': '{label:string}: {value:string}',
-    'fr-fr': '{label:string} : {value:string}',
+    'fr-fr': '{label:string} : <wrap />',
     'uk-ua': '{label:string}: {value:string}',
     'de-ch': '{label:string}: {value:string}',
   },
@@ -718,7 +718,7 @@ export const commonText = createDictionary({
   dontShowAgain: {
     'en-us': "Don't show this again",
     'es-es': 'No volver a mostrar esto',
-    'fr-fr': 'Ne plus montrer',
+    'fr-fr': 'Ne montre plus ça',
     'ru-ru': 'Больше не показывать это',
     'uk-ua': 'Не показувати це знову',
     'de-ch': 'Transaktionen',
