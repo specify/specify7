@@ -721,7 +721,7 @@ export const commonText = createDictionary({
     'fr-fr': 'Ne montre plus ça',
     'ru-ru': 'Больше не показывать это',
     'uk-ua': 'Не показувати це знову',
-    'de-ch': 'Transaktionen',
+    'de-ch': 'Wählen Sie Dateien aus oder ziehen Sie sie hierher',
   },
   multipleFilePickerMessage: {
     'en-us': 'Choose files or drag them here',
