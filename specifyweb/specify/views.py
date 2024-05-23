@@ -22,6 +22,7 @@ from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, PermissionsException, check_permission_targets, table_permissions_checker
 from specifyweb.celery_tasks import app
 from specifyweb.specify.record_merging import record_merge_fx, record_merge_task, resolve_record_merge_response
+from specifyweb.specify.tree_extras import is_instance_of_tree_def_item
 from . import api, models as spmodels
 from .build_models import orderings
 from .specify_jar import specify_jar
@@ -90,7 +91,6 @@ def raise_error(request):
     """
     raise Exception('This error is a test. You may now return to your regularly '
                     'scheduled hacking.')
-
 
 @login_maybe_required
 @require_http_methods(['GET', 'HEAD'])

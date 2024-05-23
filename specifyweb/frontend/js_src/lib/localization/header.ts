@@ -178,7 +178,7 @@ export const headerText = createDictionary({
   repairTree: {
     'en-us': 'Repair Tree',
     'ru-ru': 'Ремонтное дерево',
-    'es-es': 'árbol de reparación',
+    'es-es': 'Se ha borrado la caché. Por favor recarga la página.',
     'fr-fr': 'Arbre de réparation',
     'uk-ua': 'Ремонтувати дерево',
     'de-ch': 'Baum reparieren',

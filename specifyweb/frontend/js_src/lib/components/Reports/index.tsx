@@ -140,7 +140,7 @@ export function ReportsView({
       <Dialog
         buttons={commonText.cancel()}
         header={reportsText.reports()}
-        icon={<span className="text-blue-500">{icons.documentReport}</span>}
+        icon={icons.documentReport}
         onClose={handleClose}
       >
         <div className="flex flex-col gap-4">
