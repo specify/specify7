@@ -1,3 +1,4 @@
+from inspect import getfullargspec
 from typing import Callable, Literal, Optional, Hashable
 
 from django.db.models import signals
@@ -26,7 +27,16 @@ def orm_signal_handler(signal: MODEL_SIGNAL, model: Optional[str] = None, **kwar
             def handler(sender, **kwargs):
                 if kwargs.get('raw', False):
                     return
-                rule(sender, kwargs['instance'])
+                
+                instance = kwargs['instance']
+                created = kwargs.get('created', None)
+                argspec = getfullargspec(rule)
+                rule_has_created = 'created' in argspec.args
+                
+                if created is not None and rule_has_created:
+                    rule(sender, instance, created)
+                else:
+                    rule(sender, instance)
 
         return receiver(getattr(signals, signal), **receiver_kwargs)(handler)
     return _dec

@@ -100,7 +100,7 @@ export function Fields({
         </table>
       )}
       {isReadOnly ? null : (
-        <div className="flex gap-2">
+        <div className="flex gap-2 pt-2">
           <Button.Secondary
             onClick={(): void =>
               setFields([
@@ -122,7 +122,9 @@ export function Fields({
             <Label.Inline>
               <Input.Checkbox
                 checked={displayFormatter}
-                onClick={(): void => setDisplayFormatter(!displayFormatter)}
+                onValueChange={(): void =>
+                  setDisplayFormatter(!displayFormatter)
+                }
               />
               {resourcesText.customizeFieldFormatters()}
             </Label.Inline>

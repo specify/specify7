@@ -160,8 +160,15 @@ describe('mergeParsers', () => {
         { formatters: [formatter.trim] }
       )
     ).toEqual({ formatters: [formatter.toLowerCase, formatter.trim] }));
+  test('step case', () => {
+    expect(mergeParsers({ step: 'any' }, { step: undefined })).toEqual({
+      step: 'any',
+    });
+    expect(mergeParsers({ step: 'any' }, { step: 0.5 })).toEqual({ step: 0.5 });
+    expect(mergeParsers({ step: 1 }, { step: 0.25 })).toEqual({ step: 0.25 });
+  });
   test('takeMin case', () =>
-    expect(mergeParsers({ step: 1 }, { step: 4 })).toEqual({ step: 1 }));
+    expect(mergeParsers({ max: 1 }, { max: 4 })).toEqual({ max: 1 }));
   test('takeMax case', () =>
     expect(mergeParsers({ minLength: 1 }, { minLength: 4 })).toEqual({
       minLength: 4,

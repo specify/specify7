@@ -99,7 +99,7 @@ export const schemaText = createDictionary({
   },
   setScope: {
     'en-us': 'Set Scope',
-    'de-ch': 'Geltungsbereich festlegen',
+    'de-ch': 'Umfang festlegen',
     'es-es': 'Establecer alcance',
     'fr-fr': 'Définir la portée',
     'ru-ru': 'Установить область',
@@ -139,28 +139,18 @@ export const schemaText = createDictionary({
   },
   tableFormat: {
     'en-us': 'Table Format',
-    'ru-ru': 'Подкатегории',
+    'ru-ru': 'Формат таблицы',
     'es-es': 'Formato de tabla',
-    'fr-fr': 'Sous-catégories',
-    'uk-ua': 'Підкатегорії',
+    'fr-fr': 'Format du tableau',
+    'uk-ua': 'Формат таблиці',
     'de-ch': 'Tabellenformat',
   },
   tableAggregation: {
     'en-us': 'Table Aggregation',
-    'ru-ru': `
-      Этот формат будет использоваться только в том случае, если значение поля
-      условия соответствует этому условию или если ему не соответствует никакой
-      другой формат.
-    `,
+    'ru-ru': 'Агрегация таблиц',
     'es-es': 'Agregación de tablas',
-    'fr-fr': `
-      Ce format ne sera utilisé que si la valeur du champ de condition est égale
-      à cette condition ou si aucun autre format ne lui correspond.
-    `,
-    'uk-ua': `
-      Цей формат використовуватиметься, лише якщо значення поля умови дорівнює
-      цій умові або якщо жоден інший формат їй не відповідає.
-    `,
+    'fr-fr': 'Agrégation de tables',
+    'uk-ua': 'Агрегація таблиць',
     'de-ch': 'Tabellenaggregation',
   },
   oneToOne: {
@@ -325,10 +315,10 @@ export const schemaText = createDictionary({
   },
   fieldCount: {
     'en-us': 'Field count',
-    'ru-ru': 'Агрегация таблиц',
+    'ru-ru': 'Количество полей',
     'es-es': 'Recuento de campos',
-    'fr-fr': 'Agrégation de tables',
-    'uk-ua': 'Агрегація таблиць',
+    'fr-fr': 'Nombre de champs',
+    'uk-ua': 'Підрахунок полів',
     'de-ch': 'Anzahl Felder',
   },
   relationshipCount: {
@@ -389,7 +379,7 @@ export const schemaText = createDictionary({
   },
   uniquenessRules: {
     'en-us': 'Uniqueness Rules',
-    'de-ch': 'Einzigartigkeitsregeln',
+    'de-ch': 'Eindeutigkeitsregeln',
     'es-es': 'Reglas de unicidad',
     'fr-fr': "Règles d'unicité",
     'ru-ru': 'Правила уникальности',
@@ -397,7 +387,7 @@ export const schemaText = createDictionary({
   },
   uniqueFields: {
     'en-us': 'Unique Fields',
-    'de-ch': 'Sortieren Sie nach ausgeblendeten Feldern',
+    'de-ch': 'Nach ausgeblendeten Feldern sortieren',
     'es-es': 'Campos únicos',
     'fr-fr': 'Champs uniques',
     'ru-ru': 'Уникальные поля',
@@ -429,7 +419,7 @@ export const schemaText = createDictionary({
   },
   uniquenessDuplicatesFound: {
     'en-us': 'Duplicates found in database',
-    'de-ch': 'Duplikate in der Datenbank gefunden',
+    'de-ch': 'In der Datenbank gefundene Duplikate',
     'es-es': 'muchos a uno',
     'fr-fr': 'Doublons trouvés dans la base de données',
     'ru-ru': 'В базе данных найдены дубликаты',
@@ -441,15 +431,15 @@ export const schemaText = createDictionary({
     'es-es': 'Exportar duplicados',
     'fr-fr': 'Exporter les doublons',
     'ru-ru': 'Экспортировать дубликаты',
-    'uk-ua': 'Експорт дублікатів',
+    'uk-ua': 'Експортувати дублікати',
   },
   numberOfDuplicates: {
     'en-us': 'Number of Duplicates',
-    'de-ch': 'Anzahl der Duplikate',
+    'de-ch': 'Anzahl Duplikate',
     'es-es': 'Número de duplicados',
-    'fr-fr': 'ID de table',
-    'ru-ru': 'Идентификатор таблицы',
-    'uk-ua': 'Ідентифікатор таблиці',
+    'fr-fr': 'Nombre de champs',
+    'ru-ru': 'Количество полей',
+    'uk-ua': 'Підрахунок полів',
   },
   schemaViewTitle: {
     'en-us': 'Schema Config: {tableName:string}',
@@ -469,7 +459,7 @@ export const schemaText = createDictionary({
   },
   sortByHiddenFields: {
     'en-us': 'Sort by hidden fields',
-    'de-ch': 'Sortieren Sie nach ausgeblendeten Feldern',
+    'de-ch': 'Nach ausgeblendeten Feldern sortieren',
     'es-es': 'Ordenar por campos ocultos',
     'fr-fr': 'Trier par champs masqués',
     'ru-ru': 'Сортировка по скрытым полям',

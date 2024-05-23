@@ -16,7 +16,7 @@ export function SvgIcon({
   readonly label: string | undefined;
   readonly className: string;
   readonly autoGenerate?: boolean;
-}) {
+}): JSX.Element {
   const shortName = nameMapper()[name] ?? getShortName(name);
   const autoName = name.startsWith(shortName[0]) ? name : shortName;
   const [from, to] = colorMapper()[name] ?? [
