@@ -144,7 +144,7 @@ export const headerText = createDictionary({
     `,
   },
   coGeImportDataset: {
-    'en-us': 'Import CoGe Dataset'
+    'en-us': 'Import Locality Repatriation Dataset',
   },
   labelName: {
     'en-us': 'Label Name',

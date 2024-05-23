@@ -3,6 +3,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
+import { queryText } from '../../localization/query';
 import { localityText } from '../../localization/locality';
 import { mainText } from '../../localization/main';
 import { notificationsText } from '../../localization/notifications';
@@ -10,17 +11,21 @@ import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import type { IR, RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { formatConjunction } from '../Atoms/Internationalization';
+import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import { createResource } from '../DataModel/resource';
 import { tables } from '../DataModel/tables';
-import type { Tables } from '../DataModel/types';
+import type { RecordSet, Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { CsvFilePicker } from '../Molecules/CsvFilePicker';
 import { Dialog } from '../Molecules/Dialog';
+import { TableIcon } from '../Molecules/TableIcon';
 import { hasToolPermission } from '../Permissions/helpers';
-import { CreateRecordSet } from '../QueryBuilder/CreateRecordSet';
 import { downloadDataSet } from '../WorkBench/helpers';
 import { TableRecordCounts } from '../WorkBench/Results';
 import { resolveBackendParsingMessage } from '../WorkBench/resultsParser';
@@ -74,6 +79,9 @@ export function ImportLocalitySet(): JSX.Element {
   const [results, setResults] = React.useState<
     LocalityUploadResponse | undefined
   >(undefined);
+  const [recordSet, setRecordSet] = React.useState<
+    SerializedResource<RecordSet> | undefined
+  >(undefined);
 
   const loading = React.useContext(LoadingContext);
 
@@ -100,14 +108,34 @@ export function ImportLocalitySet(): JSX.Element {
           columnHeaders,
           data: rows,
         },
-      }).then(({ data: rawData, status }) => {
-        const data =
-          status === 422 && typeof rawData === 'string'
-            ? (JSON.parse(rawData) as LocalityUploadResponse)
-            : rawData;
-        setData([]);
-        setResults(data);
       })
+        .then(async ({ data: rawData, status }) => {
+          const data =
+            status === 422 && typeof rawData === 'string'
+              ? (JSON.parse(rawData) as LocalityUploadResponse)
+              : rawData;
+
+          return data.type === 'Uploaded'
+            ? ([
+                data,
+                await createResource('RecordSet', {
+                  name: `${new Date().toDateString()} Locality Repatriation Import`,
+                  version: 1,
+                  type: 0,
+                  dbTableId: tables.Locality.tableId,
+                  // @ts-expect-error
+                  recordSetItems: data.localities.map((id) => ({
+                    recordId: id,
+                  })),
+                }),
+              ] as const)
+            : ([data, undefined] as const);
+        })
+        .then(([data, recordSet]) => {
+          setData([]);
+          setResults(data);
+          setRecordSet(recordSet);
+        })
     );
   };
 
@@ -199,7 +227,11 @@ export function ImportLocalitySet(): JSX.Element {
         </Dialog>
       )}
       {results === undefined ? null : (
-        <LocalityImportResults results={results} onClose={resetContext} />
+        <LocalityImportResults
+          results={results}
+          recordSet={recordSet}
+          onClose={resetContext}
+        />
       )}
     </>
   );
@@ -207,9 +239,11 @@ export function ImportLocalitySet(): JSX.Element {
 
 function LocalityImportResults({
   results,
+  recordSet,
   onClose: handleClose,
 }: {
   readonly results: LocalityUploadResponse;
+  readonly recordSet: SerializedResource<RecordSet> | undefined;
   readonly onClose: () => void;
 }): JSX.Element {
   return (
@@ -219,17 +253,7 @@ function LocalityImportResults({
       ) : results.type === 'Uploaded' ? (
         <Dialog
           buttons={
-            <>
-              {hasToolPermission('recordSets', 'create') && (
-                <CreateRecordSet
-                  baseTableName="Locality"
-                  buttonType="Info"
-                  recordIds={results.localities}
-                />
-              )}
-              <span className="-ml-2 flex-1" />
-              <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-            </>
+            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
           }
           header={wbText.uploadResults()}
           modal={false}
@@ -250,6 +274,18 @@ function LocalityImportResults({
               }}
             />
           </div>
+          <span className="gap-y-2"></span>
+          <H2>{queryText.viewRecords()}</H2>
+          {recordSet !== undefined &&
+            hasToolPermission('recordSets', 'create') && (
+              <Link.NewTab
+                className="w-fit"
+                href={`/specify/record-set/${recordSet.id}/`}
+              >
+                <TableIcon label name={tables.Locality.name} />
+                {localized(recordSet.name)}
+              </Link.NewTab>
+            )}
         </Dialog>
       ) : null}
     </>
