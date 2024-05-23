@@ -3,7 +3,7 @@ import React from 'react';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
-import type { RA } from '../../utils/types';
+import type { RA, WritableArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import type { AnySchema } from '../DataModel/helperTypes';
@@ -16,12 +16,14 @@ import { hasTablePermission } from '../Permissions/helpers';
 
 export function DisambiguationDialog({
   matches,
+  liveValidationStack,
   defaultResource,
   onSelected: handleSelected,
   onSelectedAll: handleSelectedAll,
   onClose: handleClose,
 }: {
   readonly matches: RA<SpecifyResource<AnySchema>>;
+  readonly liveValidationStack?: WritableArray<number>;
   readonly defaultResource?: SpecifyResource<AnySchema>;
   readonly onSelected: (resource: SpecifyResource<AnySchema>) => void;
   readonly onSelectedAll: (resource: SpecifyResource<AnySchema>) => void;
@@ -46,7 +48,14 @@ export function DisambiguationDialog({
             {commonText.apply()}
           </Button.Info>
           <Button.Info
-            disabled={selected === undefined}
+            disabled={
+              selected === undefined || liveValidationStack?.length !== 0
+            }
+            title={
+              liveValidationStack?.length === 0
+                ? undefined
+                : wbText.applyAllUnavailable()
+            }
             onClick={(): void => {
               handleSelectedAll(selected!);
               handleClose();

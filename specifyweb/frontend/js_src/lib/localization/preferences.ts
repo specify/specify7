@@ -649,8 +649,8 @@ export const preferencesText = createDictionary({
       для відповідності будь-якій кількості символів
     `,
     'de-ch': `
-      Kann _ für jedes einzelne Zeichen oder % für jede Anzahl von Zeichen
-      verwenden
+      Kann _ für jedes einzelne Zeichen oder % für eine beliebige Anzahl von
+      Zeichen verwenden
     `,
   },
   highlightMatch: {
@@ -691,7 +691,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Масштабный интерфейс',
     'es-es': 'Interfaz de báscula',
     'fr-fr': 'Interface de balance',
-    'uk-ua': 'Інтерфейс масштабу',
+    'uk-ua': 'Інтерфейс масштабування',
     'de-ch': 'Waagenschnittstelle',
   },
   scaleInterfaceDescription: {
@@ -937,7 +937,7 @@ export const preferencesText = createDictionary({
   },
   autoWrapCols: {
     'en-us': 'Navigate to the other side when reaching the edge column',
-    'ru-ru': 'Перейдите на другую сторону, достигнув краевого столбца.',
+    'ru-ru': 'Перейдите на другую сторону, когда достигнете краевого столбца.',
     'es-es': 'Navega hacia el otro lado al llegar a la columna del borde',
     'fr-fr':
       'Naviguez de l’autre côté lorsque vous atteignez la colonne de bord',
@@ -957,7 +957,7 @@ export const preferencesText = createDictionary({
   },
   enterBeginsEditing: {
     'en-us': 'Enter key begins editing cell',
-    'ru-ru': 'Клавиша Enter начинает редактирование ячейки.',
+    'ru-ru': 'Клавиша Enter начинает редактирование ячейки',
     'es-es': 'La tecla Intro comienza a editar la celda',
     'fr-fr': 'La touche Entrée commence à modifier la cellule',
     'uk-ua': 'Клавіша Enter починає редагування клітинки',
@@ -1168,7 +1168,7 @@ export const preferencesText = createDictionary({
   },
   doubleClickZoom: {
     'en-us': 'Double click to zoom',
-    'ru-ru': 'Дважды щелкните, чтобы увеличить масштаб',
+    'ru-ru': 'Дважды щелкните, чтобы увеличить',
     'es-es': 'Doble clic para ampliar',
     'fr-fr': 'Double-cliquez pour zoomer',
     'uk-ua': 'Двічі клацніть, щоб збільшити',
@@ -1375,7 +1375,7 @@ export const preferencesText = createDictionary({
       'Hacer que los cuadros de diálogo del formulario aparezcan en gris',
     'fr-fr':
       "Rendre les boîtes de dialogue de formulaire grisées sur l'arrière-plan",
-    'uk-ua': 'Зробіть діалогові вікна форми сірими фоном',
+    'uk-ua': 'Зробіть діалогові вікна форми сірими',
     'de-ch': 'Den Hintergrund von Formulardialogen ausgrauen',
   },
   autoScrollTree: {
@@ -1432,7 +1432,7 @@ export const preferencesText = createDictionary({
   tableIcon: {
     'en-us': 'Table icon',
     'ru-ru': 'Значок таблицы',
-    'es-es': 'Icono de tabla',
+    'es-es': 'Icono de mesa',
     'fr-fr': 'Icône de tableau',
     'uk-ua': 'Значок таблиці',
     'de-ch': 'Tabellensymbol',
@@ -1719,7 +1719,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Помните о размерах диалогового окна',
     'es-es': 'Recuerde los tamaños de las ventanas de diálogo',
     'fr-fr': 'Mémoriser les tailles des fenêtres de dialogue',
-    'uk-ua': "Запам'ятайте розміри діалогових вікон",
+    'uk-ua': "Пам'ятайте про розміри діалогових вікон",
     'de-ch': 'Dialogfenstergrößen merken',
   },
   rememberDialogPositions: {
@@ -1727,7 +1727,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Запомнить позиции диалоговых окон',
     'es-es': 'Recordar las posiciones de las ventanas de diálogo',
     'fr-fr': 'Mémoriser les positions des fenêtres de dialogue',
-    'uk-ua': "Запам'ятовуйте положення діалогового вікна",
+    'uk-ua': "Запам'ятовуйте розташування діалогового вікна",
     'de-ch': 'Dialogfensterpositionen merken',
   },
   autoPlayMedia: {

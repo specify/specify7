@@ -1,4 +1,5 @@
 from functools import wraps
+from typing import Literal
 from django.db import transaction
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
@@ -9,6 +10,7 @@ from specifyweb.middleware.general import require_GET
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, check_permission_targets
+from specifyweb.specify.tree_ranks import tree_rank_count
 from specifyweb.stored_queries import models
 from . import tree_extras
 from .api import get_object_or_404, obj_to_data, toJson
@@ -19,6 +21,8 @@ from .views import login_maybe_required, openapi
 
 import logging
 logger = logging.getLogger(__name__)
+
+TREE_TABLE = Literal['Taxon', 'Storage', 'Geography', 'Geologictimeperiod', 'Lithostrat']
 
 def tree_mutation(mutation):
     @login_maybe_required
@@ -255,6 +259,62 @@ def move(request, tree, id):
                                    'old_value': old_fullname,
                                    'new_value': node.fullname}])
 
+@openapi(schema={
+    "post": {
+        "parameters": [{
+            "name": "tree",
+            "in": "path",
+            "required": True,
+            "schema": {
+                "enum": ['Storage']
+            }
+        },
+        {
+            "name": "id",
+            "in": "path",
+            "description": "The id of the node from which to bulk move from.",
+            "required": True,
+            "schema": {
+                "type": "integer",
+                "minimum": 0
+            }
+        }],
+        "requestBody": {
+            "required": True,
+            "content": {
+                "application/x-www-form-urlencoded": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "target": { 
+                                "type": "integer", 
+                                "description": "The ID of the storage tree node to which the preparations should be moved." 
+                            },
+                        },
+                        'required': ['target'],
+                        'additionalProperties': False
+                    }
+                }
+            }
+        },
+        "responses": {
+            "200": {
+                "description": "Success message indicating the bulk move operation was successful."
+            }
+        }
+    }
+})
+@tree_mutation
+def bulk_move(request, tree: TREE_TABLE, id: int):
+    """Bulk move the preparations under the <tree> node <id> to have
+    as new location storage the node indicated by the 'target'
+    POST parameter.
+    """
+    check_permission_targets(request.specify_collection.id,
+                             request.specify_user.id, [perm_target(tree).bulk_move])
+    node = get_object_or_404(tree, id=id)
+    target = get_object_or_404(tree, id=request.POST['target'])
+    tree_extras.bulk_move(node, target, request.specify_user_agent)
 
 @tree_mutation
 def synonymize(request, tree, id):
@@ -290,6 +350,14 @@ def repair_tree(request, tree):
     tree_extras.renumber_tree(table)
     tree_extras.validate_tree_numbering(table)
 
+@login_maybe_required
+@require_GET
+def tree_rank_item_count(request, tree, rankid):
+    """Returns the number of items in the tree rank with id <rank_id>."""
+    tree_rank_model_name = tree if tree.endswith('treedefitem') else tree + 'treedefitem'
+    rank = get_object_or_404(tree_rank_model_name, id=rankid)
+    count = tree_rank_count(tree, rank.id)
+    return HttpResponse(toJson(count), content_type='application/json')
 
 class TaxonMutationPT(PermissionTarget):
     resource = "/tree/edit/taxon"
@@ -313,6 +381,7 @@ class StorageMutationPT(PermissionTarget):
     resource = "/tree/edit/storage"
     merge = PermissionTargetAction()
     move = PermissionTargetAction()
+    bulk_move = PermissionTargetAction()
     synonymize = PermissionTargetAction()
     desynonymize = PermissionTargetAction()
     repair = PermissionTargetAction()
