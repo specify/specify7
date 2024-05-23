@@ -2,7 +2,8 @@ import logging
 
 from typing import Dict, Any
 
-from django.db.models import Count, Sum
+from django.db.models import Count, Sum, Value
+from django.db.models.functions import Coalesce
 
 from . import models
 
@@ -94,16 +95,36 @@ def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
         extra["resolvedPreps"] = items - unresolvedItems
         extra["resolvedItems"] = quantities - unresolvedQuantities
 
-    elif isinstance(obj, get_model("Accession")):
-        Preparation = get_model("Preparation")
-        preparations = Preparation.objects.filter(collectionobject__accession=obj)
-        preparationCount = preparations.count()
-        totalCountAmt = calculate_quantity(preparations, "countamt")
+    elif isinstance(obj, get_model('Accession')):
+        GiftPreparation = get_model('GiftPreparation')
+        ExchangeOutPrep = get_model('ExchangeOutPrep')
+        DisposalPreparation = get_model('DisposalPreparation')
+        Preparation = get_model('Preparation')
 
-        actualTotalCountAmt = calculate_actual_count(obj, preparations)
-        extra["actualTotalCountAmt"] = int(actualTotalCountAmt)
-        extra["totalCountAmt"] = int(totalCountAmt)
-        extra["preparationCount"] = preparationCount
+        # Calculate the quantities for giftpreparation, exchangeoutprep, and disposalpreparation
+        gp_quantity = calculate_quantity(
+            GiftPreparation.objects.filter(preparation__collectionobject__accession__id=obj.id),
+            "quantity",
+        )
+        ep_quantity = calculate_quantity(
+            ExchangeOutPrep.objects.filter(preparation__collectionobject__accession__id=obj.id),
+            "quantity",
+        )
+        dp_quantity = calculate_quantity(
+            DisposalPreparation.objects.filter(preparation__collectionobject__accession__id=obj.id),
+            "quantity",
+        )
+
+        # Calculate the quantities for preparation
+        preparations = Preparation.objects.filter(collectionobject__accession__id=obj.id).aggregate(
+            PreparationCount=Count('id'),
+            TotalCountAmt=Coalesce(Sum('countamt'), Value(0)),
+            ActualTotalCountAmt=Coalesce(Sum('countamt'), Value(0)) - gp_quantity - ep_quantity - dp_quantity
+        )
+
+        extra["actualTotalCountAmt"] = int(preparations['ActualTotalCountAmt'])
+        extra["totalCountAmt"] = int(preparations['TotalCountAmt'])
+        extra["preparationCount"] = preparations['PreparationCount']
         extra.update(obj.collectionobjects.aggregate(collectionObjectCount=Count("id")))
 
     elif isinstance(obj, get_model("Disposal")):
