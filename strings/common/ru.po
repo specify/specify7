@@ -159,7 +159,7 @@ msgstr "Создать"
 #: components/ExportFeed/Dwca.tsx:129
 #: components/ExportFeed/ForceUpdate.tsx:23
 #: components/FormCells/FormTable.tsx:490
-#: components/FormCommands/ShowTransactions.tsx:116
+#: components/FormCommands/ShowTransactions.tsx:118
 #: components/FormCommands/index.tsx:96
 #: components/FormCommands/index.tsx:118
 #: components/FormCommands/index.tsx:145
@@ -389,7 +389,7 @@ msgstr "Инструменты"
 #: components/Core/__tests__/Contexts.test.tsx:76
 #: components/Core/__tests__/Contexts.test.tsx:87
 #: components/FormCells/FormTable.tsx:203
-#: components/FormCommands/ShowTransactions.tsx:63
+#: components/FormCommands/ShowTransactions.tsx:65
 #: components/FormFields/ComboBox.tsx:131
 #: components/FormFields/Field.tsx:82
 #: components/FormPlugins/CollectionRelOneToMany.tsx:158
@@ -496,7 +496,7 @@ msgstr "Удалить"
 msgid "search"
 msgstr "Искать"
 
-#: components/FormCommands/ShowTransactions.tsx:46
+#: components/FormCommands/ShowTransactions.tsx:48
 #: components/Reports/index.tsx:200
 #: components/SearchDialog/index.tsx:233
 #. Used in: Components > Form Commands > Show Transactions ⬤ Components > Reports > Index ⬤ Components > Search Dialog > Index
@@ -721,11 +721,6 @@ msgstr "Язык"
 #. Used in: Components > Schema Config > Languages
 msgid "country"
 msgstr "Страна"
-
-#: components/FormCommands/ShowTransactions.tsx:117
-#. Used in: Components > Form Commands > Show Transactions
-msgid "transactions"
-msgstr "Транзакции"
 
 #: components/Leaflet/index.ts:186
 #. Used in: Components > Leaflet > Index

@@ -12,11 +12,12 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.6-dev\n"
 
+#: components/FormCommands/ShowTransactions.tsx:119
 #: components/Header/menuItemDefinitions.ts:60
 #: components/Interactions/InteractionsDialog.tsx:60
 #: components/Preferences/UserDefinitions.tsx:611
 #: components/Router/OverlayRoutes.tsx:86
-#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
+#. Used in: Components > Form Commands > Show Transactions ⬤ Components > Header > Menu Item Definitions ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 #, fuzzy
 msgid "interactions"
 msgstr "Interaktionen"
@@ -167,25 +168,25 @@ msgstr "Gelöste Anzahl"
 msgid "prepReturnFormatter"
 msgstr "{tableName:string}: {resource:string}"
 
-#: components/FormCommands/ShowTransactions.tsx:131
+#: components/FormCommands/ShowTransactions.tsx:136
 #. 🟥Example: Resolved Loan records. Used in: Components > Form Commands > Show Transactions
 #, fuzzy
 msgid "resolvedLoans"
 msgstr "Aufgelöste {loanTable:string}-Datensätze"
 
-#: components/FormCommands/ShowTransactions.tsx:121
+#: components/FormCommands/ShowTransactions.tsx:125
 #. 🟥Example: Open Loan records. Used in: Components > Form Commands > Show Transactions
 #, fuzzy
 msgid "openLoans"
 msgstr "Offene {loanTable:string}-Datensätze"
 
-#: components/FormCommands/ShowTransactions.tsx:141
+#: components/FormCommands/ShowTransactions.tsx:147
 #. 🟥Example: Gift records. Used in: Components > Form Commands > Show Transactions
 #, fuzzy
 msgid "gifts"
 msgstr "{giftTable:string} Datensätze"
 
-#: components/FormCommands/ShowTransactions.tsx:153
+#: components/FormCommands/ShowTransactions.tsx:159
 #. 🟥Example: Exchange In / Exchnage Out records. Used in: Components > Form Commands > Show Transactions
 #, fuzzy
 msgid "exchanges"
