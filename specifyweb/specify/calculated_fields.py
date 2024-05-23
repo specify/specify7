@@ -93,7 +93,13 @@ def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
             exchangeoutprep_sum = exchangeoutprep_sums.get(prep.id, 0)
             disposalpreparation_sum = disposalpreparation_sums.get(prep.id, 0)
 
-            available = max(0, prep.countamt - giftpreparation_sum - exchangeoutprep_sum - disposalpreparation_sum)
+            available = max(
+                0,
+                (prep.countamt or 0)
+                - giftpreparation_sum
+                - exchangeoutprep_sum
+                - disposalpreparation_sum,
+            )
             actualTotalCountAmt += available
 
         extra["actualTotalCountAmt"] = int(actualTotalCountAmt)
