@@ -259,7 +259,7 @@ def get_recordset_info(obj, recordsetid: int) -> Optional[RecordSetInfo]:
     """
     # Queryset of record set items in the given record set with
     # the additional condition that they match the resource's table.
-    Recordsetitem = get_model('Recordsetitem')
+    Recordsetitem = models.Recordsetitem
     rsis = Recordsetitem.objects.filter(
         recordset__id=recordsetid, recordset__dbtableid=obj.specify_model.tableId)
 
@@ -306,7 +306,7 @@ def post_resource(collection, agent, name: str, data, recordsetid: Optional[int]
 
     if recordsetid is not None:
         # add the resource to the record set
-        Recordset = get_model('Recordset')
+        Recordset = models.Recordset
         try:
             recordset = Recordset.objects.get(id=recordsetid)
         except Recordset.DoesNotExist as e:
@@ -363,7 +363,7 @@ def cleanData(model, data: Dict[str, Any], agent) -> Dict[str, Any]:
                 elif not has_date and has_precision:
                     cleaned[precision_field_name] = None
         
-    if model is get_model('Agent'):
+    if model is models.Agent:
         # setting user agents is part of the user management system.
         try:
             del cleaned['specifyuser']
@@ -371,7 +371,7 @@ def cleanData(model, data: Dict[str, Any], agent) -> Dict[str, Any]:
             pass
 
     # guid should only be updatable for taxon and geography
-    if model not in (get_model('Taxon'), get_model('Geography')):
+    if model not in (models.Taxon, models.Geography):
         try:
             del cleaned['guid']
         except KeyError:
@@ -387,7 +387,7 @@ def cleanData(model, data: Dict[str, Any], agent) -> Dict[str, Any]:
         pass
 
     # Password should be set though the /api/set_password/<id>/ endpoint
-    if model is get_model('Specifyuser') and 'password' in cleaned:
+    if model is models.Specifyuser and 'password' in cleaned:
         del cleaned['password']
 
     return cleaned
@@ -444,21 +444,21 @@ def is_dependent_field(obj, field_name: str) -> bool:
     return (
         obj.specify_model.get_field(field_name).dependent
 
-        or (obj.__class__ is get_model('Collectionobject') and
+        or (obj.__class__ is models.Collectionobject and
             field_name == 'collectingevent' and
             obj.collection.isembeddedcollectingevent)
 
         or (field_name == 'paleocontext' and (
 
-            (obj.__class__ is get_model('Collectionobject') and
+            (obj.__class__ is models.Collectionobject and
              obj.collection.discipline.paleocontextchildtable == "collectionobject" and
              obj.collection.discipline.ispaleocontextembedded)
 
-            or (obj.__class__ is get_model('Collectingevent') and
+            or (obj.__class__ is models.Collectingevent and
                 obj.discipline.paleocontextchildtable == "collectingevent" and
                 obj.discipline.ispaleocontextembedded)
 
-            or (obj.__class__ is get_model('Locality') and
+            or (obj.__class__ is models.Locality and
                 obj.discipline.paleocontextchildtable == "locality" and
                 obj.discipline.ispaleocontextembedded))))
 
@@ -474,9 +474,9 @@ def reorder_fields_for_embedding(cls, data: Dict[str, Any]) -> Iterable[Tuple[st
     first so that is_dependent_field will work.
     """
     put_first = {
-        get_model('Collectionobject'): 'collection',
-        get_model('Collectingevent'): 'discipline',
-        get_model('Locality'): 'discipline',
+        models.Collectionobject: 'collection',
+        models.Collectingevent: 'discipline',
+        models.Locality: 'discipline',
     }.get(cls, None)
 
     if put_first in data:
@@ -716,7 +716,7 @@ def _obj_to_data(obj, perm_checker: ReadPermChecker) -> Dict[str, Any]:
 
     # Get regular and *-to-one fields.
     fields = obj._meta.get_fields()
-    if isinstance(obj, get_model('Specifyuser')):
+    if isinstance(obj, models.Specifyuser):
         # block out password field from users table
         fields = [f for f in fields if f.name != 'password']
 
