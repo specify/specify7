@@ -52,7 +52,6 @@ import { getInitialState, reducer } from './reducer';
 import type { QueryResultRow } from './Results';
 import { QueryResultsWrapper } from './ResultsWrapper';
 import { QueryToolbar } from './Toolbar';
-import { Fields } from '../Formatters/Fields';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
