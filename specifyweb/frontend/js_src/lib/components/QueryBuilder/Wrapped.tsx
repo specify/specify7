@@ -301,7 +301,7 @@ function Wrapped({
 
   const showSeries =
     table.name === 'CollectionObject' &&
-    state.fields.find((field) => field.mappingPath[0] === 'catalogNumber');
+    state.fields.some((field) => field.mappingPath[0] === 'catalogNumber');
 
   return treeRanksLoaded ? (
     <ReadOnlyContext.Provider value={isReadOnly}>
