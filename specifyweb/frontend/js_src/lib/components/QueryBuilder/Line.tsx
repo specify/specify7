@@ -43,7 +43,6 @@ import {
   filtersWithDefaultValue,
   queryFieldFilters,
   QueryLineFilter,
-  useQueryFilterTypes,
 } from './FieldFilter';
 import type { DatePart } from './fieldSpec';
 import { QueryFieldSpec } from './fieldSpec';
@@ -122,8 +121,6 @@ export function QueryLine({
     tableName: undefined,
   });
 
-  const queryFieldFilterTypes = useQueryFilterTypes();
-
   React.useEffect(
     () => {
       const isFormatted =
@@ -177,7 +174,7 @@ export function QueryLine({
         ? field.filters.map((filter) => {
             const resetFilter =
               fieldType === undefined ||
-              !queryFieldFilterTypes[filter.type].includes(fieldType);
+              !queryFieldFilters[filter.type].types?.includes(fieldType);
             return resetFilter
               ? ({
                   type: 'any',
@@ -249,8 +246,8 @@ export function QueryLine({
 
   const isFieldComplete = mappingPathIsComplete(field.mappingPath);
 
-  const availableFilters = Object.entries(queryFieldFilterTypes).filter(
-    ([filterName, types]) =>
+  const availableFilters = Object.entries(queryFieldFilters).filter(
+    ([filterName, { types }]) =>
       typeof fieldMeta.fieldType === 'string'
         ? !Array.isArray(types) || types.includes(fieldMeta.fieldType)
         : filterName === 'any'
@@ -539,9 +536,9 @@ export function QueryLine({
                           });
                         }}
                       >
-                        {availableFilters.map(([filterName]) => (
+                        {availableFilters.map(([filterName, { label }]) => (
                           <option key={filterName} value={filterName}>
-                            {queryFieldFilters[filterName].label}
+                            {label}
                           </option>
                         ))}
                       </Select>
