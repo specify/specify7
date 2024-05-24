@@ -17,7 +17,7 @@ import type {
   ValidParseResult,
 } from '../../utils/parser/parse';
 import { parseValue } from '../../utils/parser/parse';
-import { filterArray, type RA, type RR } from '../../utils/types';
+import { type RA, type RR, filterArray } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { Input, Select, selectMultipleSize } from '../Atoms/Form';
 import { getField } from '../DataModel/helpers';
@@ -26,12 +26,12 @@ import { tables } from '../DataModel/tables';
 import type { PickListItemSimple } from '../FormFields/ComboBox';
 import { hasNativeErrors } from '../Forms/validationHelpers';
 import { fetchPickList, getPickListItems } from '../PickLists/fetch';
+import { userPreferences } from '../Preferences/userPreferences';
 import { mappingElementDivider } from '../WbPlanView/LineComponents';
 import { IsQueryBasicContext } from './Context';
 import type { QueryField } from './helpers';
 import { DateQueryInputField } from './RelativeDate';
 import { SpecifyUserAutoComplete } from './SpecifyUserAutoComplete';
-import { userPreferences } from '../Preferences/userPreferences';
 
 /**
  * Formatters and aggregators don't yet support any filtering options.
