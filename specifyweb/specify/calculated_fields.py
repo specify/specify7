@@ -22,10 +22,10 @@ Preparation = get_model('Preparation')
 
 def calculate_totals_deaccession(obj, model_name, related_field_name):
     Model = get_model(model_name)
-    totalPreps = Model.objects.filter(deaccession=obj).count()
-    totalItems = Model.objects.filter(deaccession=obj).aggregate(
+    total_preps = Model.objects.filter(deaccession=obj).count()
+    total_items = Model.objects.filter(deaccession=obj).aggregate(
         total=Sum(f"{related_field_name}__quantity"))["total"] or 0
-    return totalPreps, totalItems
+    return total_preps, total_items
 
 def calc_prep_item_count(obj, prep_field_name, extra):
     model_preparations = getattr(obj, prep_field_name)
@@ -37,18 +37,13 @@ def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
     extra: Dict[str, Any] = {}
 
     if isinstance(obj, get_model("Preparation")):
-        # Calculate the sums
-        giftpreparation_sum = GiftPreparation.objects.filter(
-            preparation_id=obj.id).aggregate(total=Coalesce(Sum('quantity'), Value(0)))['total']
-
-        exchangeoutprep_sum = ExchangeOutPrep.objects.filter(
-            preparation_id=obj.id).aggregate(total=Coalesce(Sum('quantity'), Value(0)))['total']
-
-        disposalpreparation_sum = DisposalPreparation.objects.filter(
-            preparation_id=obj.id).aggregate(total=Coalesce(Sum('quantity'), Value(0)))['total']
+        # Calculate the preperation sums
+        giftpreparation_sum = obj.giftpreparations.aggregate(total=Coalesce(Sum('quantity'), Value(0)))['total']
+        exchangeoutprep_sum = obj.exchangeoutpreps.aggregate(total=Coalesce(Sum('quantity'), Value(0)))['total']
+        disposalpreparation_sum = obj.disposalpreparations.aggregate(total=Coalesce(Sum('quantity'), Value(0)))['total']
 
         # Calculate the actual count
-        actualCountAmt = max(
+        actual_count_amount = max(
             0,
             (obj.countamt or 0)
             - giftpreparation_sum
@@ -56,7 +51,7 @@ def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
             - disposalpreparation_sum,
         )
 
-        extra["actualCountAmt"] = int(actualCountAmt)
+        extra["actualCountAmt"] = actual_count_amount
         extra["isonloan"] = obj.isonloan()
 
     elif isinstance(obj, get_model("Specifyuser")):
@@ -65,8 +60,8 @@ def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
         ).exists()
 
     elif isinstance(obj, get_model("Collectionobject")):
-        preparations = Preparation.objects.filter(collectionobject_id=obj.id)
-        totalCountAmt = preparations.aggregate(total=Coalesce(Sum('countamt'), Value(0)))['total']
+        preparations = obj.preparations.all()
+        total_count_amount = preparations.aggregate(total=Coalesce(Sum('countamt'), Value(0)))['total']
 
         # Calculate the sums for all preparations at once
         giftpreparation_sums = GiftPreparation.objects.filter(
@@ -87,23 +82,17 @@ def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
         disposalpreparation_sums = {item['preparation']: item['total'] for item in disposalpreparation_sums}
 
         # Calculate the available count and the total available count
-        actualTotalCountAmt = 0
-        for prep in preparations:
-            giftpreparation_sum = giftpreparation_sums.get(prep.id, 0)
-            exchangeoutprep_sum = exchangeoutprep_sums.get(prep.id, 0)
-            disposalpreparation_sum = disposalpreparation_sums.get(prep.id, 0)
-
-            available = max(
+        extra["actualTotalCountAmt"] = sum(
+            max(
                 0,
                 (prep.countamt or 0)
-                - giftpreparation_sum
-                - exchangeoutprep_sum
-                - disposalpreparation_sum,
+                - giftpreparation_sums.get(prep.id, 0)
+                - exchangeoutprep_sums.get(prep.id, 0)
+                - disposalpreparation_sums.get(prep.id, 0),
             )
-            actualTotalCountAmt += available
-
-        extra["actualTotalCountAmt"] = int(actualTotalCountAmt)
-        extra["totalCountAmt"] = int(totalCountAmt)
+            for prep in preparations
+        )
+        extra["totalCountAmt"] = total_count_amount
 
         dets = data["determinations"] or []
         extra["currentdetermination"] = next(
@@ -112,20 +101,20 @@ def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
 
     elif isinstance(obj, get_model("Loan")):
         preps = data["loanpreparations"]
-        items = len(preps)
-        quantities = sum(prep.get("quantity", 0) for prep in preps)
-        unresolved_preps = [prep for prep in preps if not prep.get("isresolved", False)]
-        unresolvedItems = len(unresolved_preps)
-        unresolvedQuantities = sum(
-            prep.get("quantity", 0) - prep.get("quantityresolved", 0)
-            for prep in unresolved_preps
+        prep_count = len(preps)
+        quantities = sum(prep['quantity'] for prep in preps)
+        unresolved_prep_count = sum(not prep["isresolved"] for prep in preps)
+        unresolved_quantities = sum(
+            (prep["quantity"] - prep["quantityresolved"])
+            * (not prep["isresolved"])
+            for prep in preps
         )
-        extra["totalPreps"] = items
+        extra["totalPreps"] = prep_count
         extra["totalItems"] = quantities
-        extra["unresolvedPreps"] = unresolvedItems
-        extra["unresolvedItems"] = unresolvedQuantities
-        extra["resolvedPreps"] = items - unresolvedItems
-        extra["resolvedItems"] = quantities - unresolvedQuantities
+        extra["unresolvedPreps"] = unresolved_prep_count
+        extra["unresolvedItems"] = unresolved_quantities
+        extra["resolvedPreps"] = prep_count - unresolved_prep_count
+        extra["resolvedItems"] = quantities - unresolved_quantities
 
     elif isinstance(obj, get_model('Accession')):
         # Calculate the quantities for giftpreparation, exchangeoutprep, and disposalpreparation
@@ -170,18 +159,18 @@ def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
         extra = calc_prep_item_count(obj, "exchangeoutpreps", extra)
 
     elif isinstance(obj, get_model("Deaccession")):
-        totalPreps_disposals, totalItems_disposals = calculate_totals_deaccession(
+        total_preps_disposals, total_items_disposals = calculate_totals_deaccession(
             obj, "Disposal", "disposalpreparations"
         )
-        totalPreps_exchangeouts, totalItems_exchangeouts = calculate_totals_deaccession(
+        total_preps_exchangeouts, total_items_exchangeouts = calculate_totals_deaccession(
             obj, "ExchangeOut", "exchangeoutpreps"
         )
-        totalPreps_gifts, totalItems_gifts = calculate_totals_deaccession(
+        total_preps_gifts, total_items_gifts = calculate_totals_deaccession(
             obj, "Gift", "giftpreparations"
         )
 
         # sum up all totalItems of disposals, exchangeouts and gifts
-        extra["totalPreps"] = totalPreps_disposals + totalPreps_exchangeouts + totalPreps_gifts
-        extra["totalItems"] = totalItems_disposals + totalItems_exchangeouts + totalItems_gifts
+        extra["totalPreps"] = total_preps_disposals + total_preps_exchangeouts + total_preps_gifts
+        extra["totalItems"] = total_items_disposals + total_items_exchangeouts + total_items_gifts
 
     return extra
