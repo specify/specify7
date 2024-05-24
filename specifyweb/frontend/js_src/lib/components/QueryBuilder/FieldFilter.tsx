@@ -17,7 +17,7 @@ import type {
   ValidParseResult,
 } from '../../utils/parser/parse';
 import { parseValue } from '../../utils/parser/parse';
-import type { RA, RR } from '../../utils/types';
+import { filterArray, type RA, type RR } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { Input, Select, selectMultipleSize } from '../Atoms/Form';
 import { getField } from '../DataModel/helpers';
@@ -31,6 +31,7 @@ import { IsQueryBasicContext } from './Context';
 import type { QueryField } from './helpers';
 import { DateQueryInputField } from './RelativeDate';
 import { SpecifyUserAutoComplete } from './SpecifyUserAutoComplete';
+import { userPreferences } from '../Preferences/userPreferences';
 
 /**
  * Formatters and aggregators don't yet support any filtering options.
@@ -404,7 +405,7 @@ export const queryFieldFilters: RR<
     readonly description: LocalizedString | undefined;
     // If true, show pick list item titles. Else, show free input
     readonly renderPickList: boolean;
-    readonly types: RA<QueryFieldType>;
+    readonly types: () => RA<QueryFieldType>;
     readonly component?: typeof SingleField;
     // Whether to do front-end validation
     readonly hasParser: boolean;
@@ -416,7 +417,7 @@ export const queryFieldFilters: RR<
     description: undefined,
     renderPickList: false,
     hasParser: false,
-    types: [
+    types: () => [
       'checkbox',
       'date',
       'id',
@@ -431,7 +432,7 @@ export const queryFieldFilters: RR<
     label: queryText.like(),
     description: queryText.likeDescription(),
     renderPickList: false,
-    types: ['text', 'number', 'date', 'id'],
+    types: () => ['text', 'number', 'date', 'id'],
     component: SingleField,
     hasParser: false,
   },
@@ -442,14 +443,26 @@ export const queryFieldFilters: RR<
     renderPickList: true,
     component: SingleField,
     hasParser: true,
-    types: ['text', 'number', 'date', 'id'],
+    types: () => ['text', 'number', 'date', 'id'],
   },
   greater: {
     id: 2,
     label: queryText.greaterThan(),
     description: undefined,
     renderPickList: false,
-    types: ['text', 'number', 'date', 'id'],
+    types: () => {
+      const [showComparisonOperatorsForString] = userPreferences.use(
+        'queryBuilder',
+        'behavior',
+        'showComparisonOperatorsForString'
+      );
+      return filterArray([
+        showComparisonOperatorsForString ? 'text' : undefined,
+        'number',
+        'date',
+        'id',
+      ]);
+    },
     component: SingleField,
     hasParser: true,
   },
@@ -458,7 +471,19 @@ export const queryFieldFilters: RR<
     label: queryText.lessThan(),
     description: undefined,
     renderPickList: false,
-    types: ['text', 'number', 'date', 'id'],
+    types: () => {
+      const [showComparisonOperatorsForString] = userPreferences.use(
+        'queryBuilder',
+        'behavior',
+        'showComparisonOperatorsForString'
+      );
+      return filterArray([
+        showComparisonOperatorsForString ? 'text' : undefined,
+        'number',
+        'date',
+        'id',
+      ]);
+    },
     component: SingleField,
     hasParser: true,
   },
@@ -467,7 +492,19 @@ export const queryFieldFilters: RR<
     label: queryText.greaterOrEqualTo(),
     description: undefined,
     renderPickList: false,
-    types: ['text', 'number', 'date', 'id'],
+    types: () => {
+      const [showComparisonOperatorsForString] = userPreferences.use(
+        'queryBuilder',
+        'behavior',
+        'showComparisonOperatorsForString'
+      );
+      return filterArray([
+        showComparisonOperatorsForString ? 'text' : undefined,
+        'number',
+        'date',
+        'id',
+      ]);
+    },
     component: SingleField,
     hasParser: true,
   },
@@ -476,7 +513,19 @@ export const queryFieldFilters: RR<
     label: queryText.lessOrEqualTo(),
     description: undefined,
     renderPickList: false,
-    types: ['text', 'number', 'date', 'id'],
+    types: () => {
+      const [showComparisonOperatorsForString] = userPreferences.use(
+        'queryBuilder',
+        'behavior',
+        'showComparisonOperatorsForString'
+      );
+      return filterArray([
+        showComparisonOperatorsForString ? 'text' : undefined,
+        'number',
+        'date',
+        'id',
+      ]);
+    },
     component: SingleField,
     hasParser: true,
   },
@@ -485,7 +534,7 @@ export const queryFieldFilters: RR<
     label: queryText.true(),
     description: undefined,
     renderPickList: false,
-    types: ['checkbox'],
+    types: () => ['checkbox'],
     hasParser: true,
   },
   false: {
@@ -493,7 +542,7 @@ export const queryFieldFilters: RR<
     label: queryText.false(),
     description: undefined,
     renderPickList: false,
-    types: ['checkbox'],
+    types: () => ['checkbox'],
     hasParser: true,
   },
   between: {
@@ -501,7 +550,7 @@ export const queryFieldFilters: RR<
     label: queryText.between(),
     description: undefined,
     renderPickList: false,
-    types: ['text', 'number', 'date', 'id'],
+    types: () => ['text', 'number', 'date', 'id'],
     component: Between,
     hasParser: true,
   },
@@ -514,7 +563,7 @@ export const queryFieldFilters: RR<
      * Can't use "date" for IN because date picker does not allow separating
      * multiple values with a comma. Instead, OR filters should be used
      */
-    types: ['text', 'number', 'id'],
+    types: () => ['text', 'number', 'id'],
     component: In,
     hasParser: true,
   },
@@ -524,7 +573,7 @@ export const queryFieldFilters: RR<
     description: undefined,
     renderPickList: false,
     component: SingleField,
-    types: ['text', 'number', 'date', 'id'],
+    types: () => ['text', 'number', 'date', 'id'],
     hasParser: false,
   },
   startsWith: {
@@ -533,7 +582,7 @@ export const queryFieldFilters: RR<
     description: undefined,
     renderPickList: false,
     component: SingleField,
-    types: ['text', 'number', 'date', 'id'],
+    types: () => ['text', 'number', 'date', 'id'],
     hasParser: false,
   },
   empty: {
@@ -541,7 +590,7 @@ export const queryFieldFilters: RR<
     label: queryText.empty(),
     description: undefined,
     renderPickList: false,
-    types: ['checkbox', 'date', 'id', 'number', 'text'],
+    types: () => ['checkbox', 'date', 'id', 'number', 'text'],
     hasParser: false,
   },
   trueOrNull: {
@@ -549,7 +598,7 @@ export const queryFieldFilters: RR<
     label: queryText.trueOrNull(),
     description: undefined,
     renderPickList: false,
-    types: ['checkbox'],
+    types: () => ['checkbox'],
     hasParser: true,
   },
   falseOrNull: {
@@ -557,7 +606,7 @@ export const queryFieldFilters: RR<
     label: queryText.falseOrNull(),
     description: undefined,
     renderPickList: false,
-    types: ['checkbox'],
+    types: () => ['checkbox'],
     hasParser: true,
   },
 };

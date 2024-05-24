@@ -174,7 +174,7 @@ export function QueryLine({
         ? field.filters.map((filter) => {
             const resetFilter =
               fieldType === undefined ||
-              !queryFieldFilters[filter.type].types?.includes(fieldType);
+              !queryFieldFilters[filter.type].types().includes(fieldType);
             return resetFilter
               ? ({
                   type: 'any',
@@ -249,7 +249,7 @@ export function QueryLine({
   const availableFilters = Object.entries(queryFieldFilters).filter(
     ([filterName, { types }]) =>
       typeof fieldMeta.fieldType === 'string'
-        ? !Array.isArray(types) || types.includes(fieldMeta.fieldType)
+        ? !Array.isArray(types()) || types().includes(fieldMeta.fieldType)
         : filterName === 'any'
   );
   const filtersVisible =
