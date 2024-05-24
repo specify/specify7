@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
-import type { RA, RR } from '../../utils/types';
+import type { RA } from '../../utils/types';
 import { Ul } from '../Atoms';
 import { DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
@@ -14,7 +14,6 @@ import { useDataEntryTables } from '../DataEntryTables/fetchTables';
 import { getResourceViewUrl } from '../DataModel/resource';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getTable, tables } from '../DataModel/tables';
-import type { Tables } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
@@ -22,23 +21,16 @@ import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { Redirect } from '../Router/Redirect';
 import { OverlayContext } from '../Router/Router';
 import { fetchLegacyInteractions } from './fetch';
+import type { InteractionWithPreps } from './helpers';
+import { interactionsWithPrepTables } from './helpers';
 import { InteractionDialog } from './InteractionDialog';
 
-export const interactionWorkflowTables: Partial<
-  RR<keyof Tables, 'CollectionObject' | 'Preparation'>
-> = {
-  /*
-   * Accession: 'CollectionObject',
-   * Appraisal: 'CollectionObject',
-   */
-  Loan: 'CollectionObject',
-  Gift: 'CollectionObject',
-  Disposal: 'CollectionObject',
-  /*
-   * ExchangeOut: 'Preparation',
-   * InfoRequest: 'CollectionObject',
-   */
-};
+/**
+ * FEATURE: If needed, implement a dialog for:
+ * Accession    -> CollectionObjects
+ * Appraisal    -> CollectionObjects
+ * InfoRequest  -> CollectionObjects
+ */
 
 export function InteractionsOverlay(): JSX.Element | null {
   const tables = useDataEntryTables('interactions');
@@ -67,7 +59,7 @@ function Interactions({
       }}
       header={interactionsText.interactions()}
       headerButtons={<DataEntry.Edit onClick={handleEditing} />}
-      icon={<span className="text-blue-500">{icons.chat}</span>}
+      icon={icons.chat}
       onClose={handleClose}
     >
       <Ul>
@@ -79,7 +71,9 @@ function Interactions({
                 href={
                   table.name === 'LoanReturnPreparation'
                     ? `/specify/overlay/interactions/return-loan/`
-                    : table.name in interactionWorkflowTables
+                    : interactionsWithPrepTables.includes(
+                        (table as SpecifyTable<InteractionWithPreps>).name
+                      )
                     ? `/specify/overlay/interactions/create/${table.name}/`
                     : getResourceViewUrl(table.name)
                 }
@@ -103,8 +97,11 @@ export function InteractionAction(): JSX.Element | null {
   const { tableName = '' } = useParams();
   const rawTable = React.useMemo(() => getTable(tableName), [tableName]);
   const table =
-    typeof rawTable === 'object' && rawTable.name in interactionWorkflowTables
-      ? rawTable
+    typeof rawTable === 'object' &&
+    interactionsWithPrepTables.includes(
+      (rawTable as SpecifyTable<InteractionWithPreps>).name
+    )
+      ? (rawTable as SpecifyTable<InteractionWithPreps>)
       : undefined;
   return table === undefined ? (
     <Redirect to="/specify/overlay/interactions/" />

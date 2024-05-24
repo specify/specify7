@@ -1,7 +1,10 @@
 import type Handsontable from 'handsontable';
 import React from 'react';
 
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
+import { localityText } from '../../localization/locality';
+import { wbText } from '../../localization/workbench';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
@@ -13,9 +16,62 @@ import {
 } from '../Leaflet/wbLocalityDataExtractor';
 import type { GeoLocatePayload } from '../Molecules/GeoLocate';
 import { GenericGeoLocate } from '../Molecules/GeoLocate';
-import { getSelectedRegions, getVisualHeaders, setHotData } from './hotHelpers';
+import type { Dataset } from '../WbPlanView/Wrapped';
+import {
+  getSelectedRegions,
+  getVisualHeaders,
+  setHotData,
+} from '../WorkBench/hotHelpers';
+import type { WbMapping } from '../WorkBench/mapping';
 
 export function WbGeoLocate({
+  hasLocality,
+  hot,
+  dataset,
+  mappings,
+  isUploaded,
+  isResultsOpen,
+}: {
+  readonly hasLocality: boolean;
+  readonly hot: Handsontable;
+  readonly dataset: Dataset;
+  readonly mappings: WbMapping | undefined;
+  readonly isUploaded: boolean;
+  readonly isResultsOpen: boolean;
+}): JSX.Element {
+  const [showGeoLocate, openGeoLocate, closeGeoLocate] = useBooleanState();
+  return (
+    <>
+      <Button.Small
+        aria-haspopup="dialog"
+        aria-pressed={showGeoLocate}
+        disabled={!hasLocality || isResultsOpen || isUploaded}
+        title={
+          hasLocality
+            ? isUploaded
+              ? wbText.unavailableWhenUploaded()
+              : isResultsOpen
+              ? wbText.unavailableWhileViewingResults()
+              : undefined
+            : wbText.unavailableWithoutLocality()
+        }
+        onClick={openGeoLocate}
+      >
+        {localityText.geoLocate()}
+      </Button.Small>
+      {showGeoLocate && mappings !== undefined ? (
+        <GeoLocate
+          columns={dataset.columns}
+          hot={hot}
+          localityColumns={mappings.localityColumns}
+          onClose={closeGeoLocate}
+        />
+      ) : undefined}
+    </>
+  );
+}
+
+function GeoLocate({
   hot,
   columns,
   localityColumns,
@@ -31,13 +87,12 @@ export function WbGeoLocate({
 
   const selection = React.useMemo(
     () => getSelectedLocalities(hot, columns, localityColumns, true),
-    [hot, columns, localityColumns]
+    [columns, localityColumns]
   );
 
   function handleMove(newLocalityIndex: number): void {
-    if (selection === undefined) return;
     const { localityColumns, visualRow } =
-      selection.parseLocalityIndex(newLocalityIndex);
+      selection!.parseLocalityIndex(newLocalityIndex);
     setData(getGeoLocateData(hot, columns, { localityColumns, visualRow }));
     hot.selectRows(visualRow);
     setLocalityIndex(newLocalityIndex);
@@ -49,8 +104,9 @@ export function WbGeoLocate({
   );
 
   React.useEffect(() => {
-    handleMove(0);
-  }, [hot, columns, localityColumns]);
+    if (selection === undefined) return;
+    else handleMove(0);
+  }, [columns, localityColumns]);
 
   const handleResult = React.useCallback(
     ({ latitude, longitude, uncertainty }: GeoLocatePayload) => {
@@ -112,7 +168,9 @@ export function getSelectedLocalities(
   columns: RA<string>,
   localityColumns: RA<IR<string>>,
   // If false, treat single cell selection as entire spreadsheet selection
-  allowSingleCell: boolean
+  allowSingleCell: boolean,
+  // Default behavior when no cell is selected
+  defaultSelectAll: boolean = false
 ):
   | {
       readonly length: number;
@@ -152,10 +210,13 @@ export function getSelectedLocalities(
     )
   ).sort(sortFunction(f.id));
 
+  const noneSelected = hot.getSelected() === undefined;
+
   const selectAll =
-    !allowSingleCell &&
-    selectedHeaders.length === 1 &&
-    selectedRows.length === 1;
+    (noneSelected && defaultSelectAll) ||
+    (!allowSingleCell &&
+      selectedHeaders.length === 1 &&
+      selectedRows.length === 1);
 
   const localityColumnGroups = selectAll
     ? localityColumns

@@ -200,7 +200,7 @@ export const attachmentsText = createDictionary({
     'ru-ru': 'Ошибка чтения файла',
     'de-ch':
       'Wählen Sie Dateien aus oder ziehen Sie sie hierher, um zu beginnen.',
-    'uk-ua': 'Виберіть файли або перетягніть їх сюди, щоб почати.',
+    'uk-ua': 'Щоб почати, виберіть файли або перетягніть їх сюди.',
   },
   unhandledFatalResourceError: {
     'en-us': 'Unhandled fatal resource error:',
@@ -294,9 +294,8 @@ export const attachmentsText = createDictionary({
       Откат выполнялся, когда произошло прерывание. Некоторые файлы могли быть
       удалены
     `,
-    'uk-ua': `
-      Тривав відкат, коли сталася перерва. Можливо, деякі файли було видалено
-    `,
+    'uk-ua':
+      'Тривав відкат, коли сталася перерва. Деякі файли могли бути видалені',
     'es-es': `
       La reversión estaba en curso cuando se produjo una interrupción. Es
       posible que algunos archivos hayan sido eliminados.
@@ -345,7 +344,7 @@ export const attachmentsText = createDictionary({
       данных Specify.
     `,
     'uk-ua': `
-      Завантаження вкладень призведе до створення вкладень на сервері ресурсів і
+      Завантаження вкладень призведе до створення вкладень на сервері активів і
       в базі даних Specify
     `,
   },
@@ -625,8 +624,8 @@ export const attachmentsText = createDictionary({
     `,
     'de-ch': `
       Durch das Löschen eines Datensatzes werden dieser und sein Upload-Pfad
-      dauerhaft entfernt. Außerdem ist nach dem Löschen für einen hochgeladenen
-      Datensatz kein Rollback mehr möglich.
+      dauerhaft entfernt. Nach dem Löschen ist für einen hochgeladenen Datensatz
+      auch kein Rollback mehr möglich.
     `,
     'es-es': `
       Al eliminar un conjunto de datos, se elimina permanentemente este y su
