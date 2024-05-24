@@ -144,7 +144,7 @@ export const preferencesText = createDictionary({
       en-têtes de tableau dans l'arborescence)
     `,
     'uk-ua': `
-      Чи вимикати напівпрозорі фони для компонентів інтерфейсу користувача, коли
+      Чи вимикати напівпрозорий фон для компонентів інтерфейсу користувача, коли
       це можливо (наприклад, заголовки таблиць у перегляді дерева)
     `,
     'de-ch': `
@@ -691,7 +691,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Масштабный интерфейс',
     'es-es': 'Interfaz de báscula',
     'fr-fr': 'Interface de balance',
-    'uk-ua': 'Інтерфейс масштабу',
+    'uk-ua': 'Інтерфейс масштабування',
     'de-ch': 'Waagenschnittstelle',
   },
   scaleInterfaceDescription: {
@@ -957,7 +957,7 @@ export const preferencesText = createDictionary({
   },
   enterBeginsEditing: {
     'en-us': 'Enter key begins editing cell',
-    'ru-ru': 'Клавиша Enter начинает редактирование ячейки',
+    'ru-ru': 'Клавиша Enter начинает редактирование ячейки.',
     'es-es': 'La tecla Intro comienza a editar la celda',
     'fr-fr': 'La touche Entrée commence à modifier la cellule',
     'uk-ua': 'Клавіша Enter починає редагування клітинки',
@@ -1168,7 +1168,7 @@ export const preferencesText = createDictionary({
   },
   doubleClickZoom: {
     'en-us': 'Double click to zoom',
-    'ru-ru': 'Дважды щелкните, чтобы увеличить масштаб',
+    'ru-ru': 'Дважды щелкните, чтобы увеличить',
     'es-es': 'Doble clic para ampliar',
     'fr-fr': 'Double-cliquez pour zoomer',
     'uk-ua': 'Двічі клацніть, щоб збільшити',
@@ -1432,7 +1432,7 @@ export const preferencesText = createDictionary({
   tableIcon: {
     'en-us': 'Table icon',
     'ru-ru': 'Значок таблицы',
-    'es-es': 'Icono de mesa',
+    'es-es': 'Icono de tabla',
     'fr-fr': 'Icône de tableau',
     'uk-ua': 'Значок таблиці',
     'de-ch': 'Tabellensymbol',
@@ -1858,7 +1858,7 @@ export const preferencesText = createDictionary({
   showLineNumber: {
     'en-us': 'Show query result line number',
     'de-ch': 'Farbe der Gefahrenschaltfläche',
-    'es-es': 'Mostrar el número de línea del resultado de la consulta',
+    'es-es': 'Mostrar número de línea de resultado de la consulta',
     'fr-fr': 'Afficher le numéro de ligne du résultat de la requête',
     'ru-ru': 'Показать номер строки результата запроса',
     'uk-ua': 'Показати номер рядка результату запиту',

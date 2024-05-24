@@ -168,7 +168,9 @@ export function getSelectedLocalities(
   columns: RA<string>,
   localityColumns: RA<IR<string>>,
   // If false, treat single cell selection as entire spreadsheet selection
-  allowSingleCell: boolean
+  allowSingleCell: boolean,
+  // Default behavior when no cell is selected
+  defaultSelectAll: boolean = false
 ):
   | {
       readonly length: number;
@@ -208,10 +210,13 @@ export function getSelectedLocalities(
     )
   ).sort(sortFunction(f.id));
 
+  const noneSelected = hot.getSelected() === undefined;
+
   const selectAll =
-    !allowSingleCell &&
-    selectedHeaders.length === 1 &&
-    selectedRows.length === 1;
+    (noneSelected && defaultSelectAll) ||
+    (!allowSingleCell &&
+      selectedHeaders.length === 1 &&
+      selectedRows.length === 1);
 
   const localityColumnGroups = selectAll
     ? localityColumns

@@ -68,11 +68,9 @@ export const treeText = createDictionary({
   actionFailedDescription: {
     'en-us':
       'The operation could not be completed due to the following errors:',
-    'ru-ru': 'Операцию не удалось завершить из-за следующих ошибок:',
-    'es-es':
-      'La operación no se pudo completar debido a los siguientes errores:',
-    'fr-fr':
-      "L'opération n'a pas pu être terminée en raison des erreurs suivantes :",
+    'ru-ru': 'Прямой счет [X7X]',
+    'es-es': 'Conteo directo [X7X]',
+    'fr-fr': 'Synonymes : [X10X]',
     'de-ch': `
       Der Vorgang konnte aufgrund der folgenden Fehler nicht ausgeführt werden:
     `,
@@ -146,22 +144,10 @@ export const treeText = createDictionary({
       Die Vorbereitungen für den {treeName:string}-Knoten „{nodeName:string}“
       werden unter dem neuen Standort „{parentName:string}“ platziert.
     `,
-    'es-es': `
-      Los preparativos del nodo {treeName:string} "{nodeName:string}" se
-      colocarán en la nueva ubicación "{parentName:string}".
-    `,
-    'fr-fr': `
-      Les préparations du nœud {treeName:string} "{nodeName:string}" seront
-      placées sous le nouvel emplacement "{parentName:string}".
-    `,
-    'ru-ru': `
-      Подготовленные узлы {treeName:string} «{nodeName:string}» будут размещены
-      в новом месте «{parentName:string}».
-    `,
-    'uk-ua': `
-      Підготовка вузла {treeName:string} "{nodeName:string}" буде розміщено в
-      новому місці "{parentName:string}".
-    `,
+    'es-es': 'Deshacer sinonimia',
+    'fr-fr': 'Annuler la synonymie',
+    'ru-ru': 'Отменить синонимию',
+    'uk-ua': 'Скасувати синонімію',
   },
   cantMoveHere: {
     'en-us': "Can't move this tree node here",
@@ -302,10 +288,10 @@ export const treeText = createDictionary({
   },
   synonymizeNode: {
     'en-us': 'Synonymize node',
-    'ru-ru': 'Синонимизировать узел',
-    'es-es': 'Sinonimizar nodo',
-    'fr-fr': 'Synonymiser le nœud',
-    'uk-ua': 'Синонімізувати вузол',
+    'ru-ru': 'Узел [X4X] «[X28X]» станет синонимом «[X74X]».',
+    'es-es': 'El nodo [X4X] "[X28X]" se convertirá en sinónimo de "[X74X]".',
+    'fr-fr': 'Le nœud [X4X] "[X28X]" deviendra synonyme de "[X74X]".',
+    'uk-ua': 'Вузол [X4X] "[X28X]" стане синонімом "[X74X]".',
     'de-ch': 'Knoten synonymisieren',
   },
   makeSynonym: {
@@ -453,7 +439,7 @@ export const treeText = createDictionary({
   directCollectionObjectCount: {
     comment: 'Example: Direct Collection Object count',
     'en-us': 'Direct {collectionObjectTable:string} Count',
-    'ru-ru': 'Прямой счет {collectionObjectTable:string}',
+    'ru-ru': 'Прямой {collectionObjectTable:string} счет',
     'es-es': 'Conteo directo {collectionObjectTable:string}',
     'de-ch': 'Direkte {collectionObjectTable:string} Anzahl',
     'fr-fr': 'Synonymes : [X10X]',
@@ -526,11 +512,19 @@ export const treeText = createDictionary({
   },
   addNewRank: {
     'en-us': 'Add New Rank',
-    'de-ch': '',
+    'de-ch': 'Neuen Rang hinzufügen',
+    'es-es': 'Agregar nuevo rango',
+    'fr-fr': 'Ajouter un nouveau classement',
+    'ru-ru': 'Добавить новый ранг',
+    'uk-ua': 'Додати новий ранг',
   },
   chooseParentRank: {
     'en-us': 'Choose Parent Rank',
-    'de-ch': '',
+    'de-ch': 'Übergeordneten Rang auswählen',
+    'es-es': 'Elija el rango de padres',
+    'fr-fr': 'Choisissez le rang des parents',
+    'ru-ru': 'Выберите родительский ранг',
+    'uk-ua': 'Виберіть батьківський рейтинг',
   },
   moveItems: {
     'en-us': 'Move Items',
