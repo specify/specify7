@@ -52,6 +52,7 @@ import { getInitialState, reducer } from './reducer';
 import type { QueryResultRow } from './Results';
 import { QueryResultsWrapper } from './ResultsWrapper';
 import { QueryToolbar } from './Toolbar';
+import { Fields } from '../Formatters/Fields';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
@@ -297,6 +298,10 @@ function Wrapped({
   const resultsRef = React.useRef<RA<QueryResultRow | undefined> | undefined>(
     undefined
   );
+
+  const showSeries =
+    table.name === 'CollectionObject' &&
+    state.fields.find((field) => field.mappingPath[0] === 'catalogNumber');
 
   return treeRanksLoaded ? (
     <ReadOnlyContext.Provider value={isReadOnly}>
@@ -559,6 +564,7 @@ function Wrapped({
               <QueryToolbar
                 isDistinct={query.selectDistinct ?? false}
                 isSeries={query.selectSeries ?? false}
+                showSeries={showSeries}
                 showHiddenFields={showHiddenFields}
                 tableName={table.name}
                 onRunCountOnly={(): void => runQuery('count')}

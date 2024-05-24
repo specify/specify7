@@ -14,6 +14,7 @@ export function QueryToolbar({
   tableName,
   isDistinct,
   isSeries,
+  showSeries,
   onToggleHidden: handleToggleHidden,
   onToggleDistinct: handleToggleDistinct,
   onToggleSeries: handleToggleSeries,
@@ -24,6 +25,7 @@ export function QueryToolbar({
   readonly tableName: keyof Tables;
   readonly isDistinct: boolean;
   readonly isSeries: boolean;
+  readonly showSeries: boolean;
   readonly onToggleHidden: (value: boolean) => void;
   readonly onToggleDistinct: () => void;
   readonly onToggleSeries: () => void;
@@ -42,7 +44,7 @@ export function QueryToolbar({
       <span className="-ml-2 flex-1" />
       {hasPermission('/querybuilder/query', 'execute') && (
         <>
-          {tableName === 'CollectionObject' && (
+          {showSeries && (
             <Label.Inline>
               <Input.Checkbox
                 checked={isSeries}
