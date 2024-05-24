@@ -26,7 +26,6 @@ export function QueryResultsTable({
   results,
   selectedRows,
   onSelected: handleSelected,
-  isSeries,
 }: {
   readonly table: SpecifyTable;
   readonly fieldSpecs: RA<QueryFieldSpec>;
@@ -37,7 +36,6 @@ export function QueryResultsTable({
     isSelected: boolean,
     isShiftClick: boolean
   ) => void;
-  readonly isSeries: boolean;
 }): JSX.Element {
   const recordFormatter = React.useMemo(
     () => getAuditRecordFormatter(fieldSpecs),
@@ -48,89 +46,7 @@ export function QueryResultsTable({
     'appearance',
     'showLineNumber'
   );
-
-  const splitRecordsList = results.map((result) =>
-    typeof result[0] === 'string' && result[0].includes(',')
-      ? result[0].split(',').map(Number)
-      : undefined
-  );
-
-  return isSeries ? (
-    <>
-      {results.map((result, index, { length }) => {
-        const splitRecords = splitRecordsList[index];
-
-        const resultFields = result.slice(1);
-        // const ranges: (number | null | string)[][] = [];
-        // if (splitRecords) {
-        //   let currentRange: number[] = [splitRecords[0]];
-
-        //   for (let i = 1; i < splitRecords.length; i++) {
-        //     if (splitRecords[i] === splitRecords[i - 1] + 1) {
-        //       currentRange.push(splitRecords[i]);
-        //     } else {
-        //       ranges.push([...currentRange]);
-        //       currentRange = [splitRecords[i]];
-        //     }
-        //   }
-
-        //   ranges.push([...currentRange]);
-        // }
-
-        // const resultVariables = ranges.map((range, index) => {
-        //   const resultVarName = `result${index + 1}`;
-        //   const modifiedRange = range.join(',');
-        //   return { [resultVarName]: [modifiedRange, ...resultFields] };
-        // });
-
-        // const resultsSplitted = Object.assign({}, ...resultVariables);
-
-        const ranges1 = splitRecords
-          ? splitRecords.reduce(
-              (accumulator: number[][], currentValue, index) => {
-                if (
-                  index === 0 ||
-                  currentValue !== splitRecords[index - 1] + 1
-                ) {
-                  accumulator.push([]);
-                }
-                accumulator[accumulator.length - 1].push(currentValue);
-                return accumulator;
-              },
-              []
-            )
-          : [];
-
-        const resultsSplitted1 = ranges1.reduce((accumulator, range, index) => {
-          const resultVarName = `result${index + 1}`;
-          const modifiedRange = range.join(',');
-          return {
-            ...accumulator,
-            [resultVarName]: [modifiedRange, ...resultFields],
-          };
-        }, {});
-
-        return Object.keys(resultsSplitted1).map((key) => (
-          <Row
-            fieldSpecs={fieldSpecs}
-            isLast={index + 1 === length}
-            isSelected={selectedRows.has(
-              results[index][queryIdField] as number
-            )}
-            key={`${index}-${key}`}
-            lineIndex={showLineNumber ? index : undefined}
-            recordFormatter={recordFormatter}
-            result={resultsSplitted1[key]}
-            table={table}
-            onSelected={(isSelected, isShiftClick): void =>
-              handleSelected(index, isSelected, isShiftClick)
-            }
-            isSeries={isSeries}
-          />
-        ));
-      })}
-    </>
-  ) : (
+  return (
     <>
       {results.map((result, index, { length }) => (
         <Row
@@ -145,7 +61,6 @@ export function QueryResultsTable({
           onSelected={(isSelected, isShiftClick): void =>
             handleSelected(index, isSelected, isShiftClick)
           }
-          isSeries={isSeries}
         />
       ))}
     </>
@@ -161,7 +76,6 @@ function Row({
   isSelected,
   isLast,
   onSelected: handleSelected,
-  isSeries,
 }: {
   readonly table: SpecifyTable;
   readonly fieldSpecs: RA<QueryFieldSpec>;
@@ -173,7 +87,6 @@ function Row({
   readonly isSelected: boolean;
   readonly isLast: boolean;
   readonly onSelected?: (isSelected: boolean, isShiftClick: boolean) => void;
-  readonly isSeries: boolean;
 }): JSX.Element {
   // REFACTOR: replace this with getResourceViewUrl()
   const [resource] = useLiveState<
@@ -267,16 +180,6 @@ function Row({
                 href={viewUrl}
                 rel="noreferrer"
               />
-            ) : isSeries ? (
-              <Link.Default
-                className="print:hidden"
-                title={queryText.viewRecords()}
-                onClick={() => toggleIsListOfRecordsOpen(true)}
-              >
-                {`${splitRecords[0]} - ${splitRecords.at(-1)} | ${
-                  splitRecords.length
-                }`}
-              </Link.Default>
             ) : (
               <Button.Icon
                 className="print:hidden"

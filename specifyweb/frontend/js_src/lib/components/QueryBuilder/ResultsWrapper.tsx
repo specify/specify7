@@ -33,14 +33,12 @@ export function QueryResultsWrapper({
   extraButtons,
   onSelected: handleSelected,
   onReRun: handleReRun,
-  isSeries,
   ...props
 }: ResultsProps & {
   readonly createRecordSet: JSX.Element | undefined;
   readonly extraButtons: JSX.Element | undefined;
   readonly onSelected?: (selected: RA<number>) => void;
   readonly onReRun: () => void;
-  readonly isSeries: boolean;
 }): JSX.Element | null {
   const newProps = useQueryResultsWrapper(props);
 
@@ -57,7 +55,6 @@ export function QueryResultsWrapper({
           extraButtons={extraButtons}
           onReRun={handleReRun}
           onSelected={handleSelected}
-          isSeries={isSeries}
         />
       </ErrorBoundary>
     </div>
