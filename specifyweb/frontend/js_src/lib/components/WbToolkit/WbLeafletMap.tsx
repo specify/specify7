@@ -3,7 +3,7 @@ import React from 'react';
 
 import { localityText } from '../../localization/locality';
 import { wbText } from '../../localization/workbench';
-import type { RA, IR } from '../../utils/types';
+import type { IR, RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import type { Field } from '../Leaflet/helpers';
 import { LeafletMap } from '../Leaflet/Map';
