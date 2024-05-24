@@ -723,7 +723,8 @@ export const formsText = createDictionary({
     'ru-ru': 'Возможно, вы захотите сохранить эту запись, прежде чем уйти.',
     'es-es': 'Es posible que desee guardar este registro antes de navegar.',
     'fr-fr': `
-      Vous devriez enregistrer cet enregistrement avant de quitter cette page.
+      Vous souhaiterez peut-être enregistrer cet enregistrement avant de
+      quitter.
     `,
     'uk-ua': 'Можливо, ви захочете зберегти цей запис, перш ніж перейти.',
     'de-ch': `
