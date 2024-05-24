@@ -575,7 +575,7 @@ def build_query(session, collection, user, tableid, field_specs,
 
     distinct = if True, group by all display fields, and return all record IDs associated with a row
 
-    series = (only for CO) if True, group by all catalog number in a same range, and return all record IDs associated with a row
+    series = (only for CO) if True, group by all display fields. Group catalog numbers that fall within the same range together. Return all record IDs associated with a row.
     """
     model = models.models_by_tableid[tableid]
     id_field = getattr(model, model._id)
