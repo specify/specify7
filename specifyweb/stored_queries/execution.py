@@ -531,7 +531,7 @@ def execute(session, collection, user, tableid, distinct, series, count_only, fi
     "Build and execute a query, returning the results as a data structure for json serialization"
 
     set_group_concat_max_len(session)
-    query, order_by_exprs = build_query(session, collection, user, tableid, field_specs, recordsetid=recordsetid, formatauditobjs=formatauditobjs, distinct=distinct)
+    query, order_by_exprs = build_query(session, collection, user, tableid, field_specs, recordsetid=recordsetid, formatauditobjs=formatauditobjs, distinct=distinct, series=series)
 
     if count_only:
         return {'count': query.count()}
@@ -549,7 +549,7 @@ def execute(session, collection, user, tableid, distinct, series, count_only, fi
         return {'results': list(query)}
 
 def build_query(session, collection, user, tableid, field_specs,
-                recordsetid=None, replace_nulls=False, formatauditobjs=False, distinct=False, implicit_or=True):
+                recordsetid=None, replace_nulls=False, formatauditobjs=False, distinct=False, series=False, implicit_or=True):
     """Build a sqlalchemy query using the QueryField objects given by
     field_specs.
 
@@ -587,7 +587,7 @@ def build_query(session, collection, user, tableid, field_specs,
     query = QueryConstruct(
         collection=collection,
         objectformatter=ObjectFormatter(collection, user, replace_nulls),
-        query=session.query(func.group_concat(id_field.distinct(), separator=',')) if distinct else session.query(id_field),
+        query=session.query(func.group_concat(id_field.distinct(), separator=',')) if distinct or series else session.query(id_field),
     )
 
     tables_to_read = set([
@@ -646,6 +646,9 @@ def build_query(session, collection, user, tableid, field_specs,
         query = query.filter(where)
 
     if distinct:
+        query = group_by_displayed_fields(query, selected_fields)
+
+    if series: 
         query = group_by_displayed_fields(query, selected_fields)
 
     logger.debug("query: %s", query.query)
