@@ -433,7 +433,7 @@ msgstr "This action is unavailable while Data Check is in progress"
 
 #: components/WbToolkit/CoordinateConverter.tsx:57
 #: components/WbToolkit/GeoLocate.tsx:56
-#: components/WbToolkit/WbLeafletMap.tsx:52
+#: components/WbToolkit/WbLeafletMap.tsx:62
 #. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Wb Toolkit > Wb Leaflet Map
 msgid "unavailableWithoutLocality"
 msgstr "This tool requires locality columns to be mapped"

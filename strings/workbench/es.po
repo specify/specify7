@@ -458,7 +458,7 @@ msgstr "Acción no disponible durante la Comprobación de Datos"
 
 #: components/WbToolkit/CoordinateConverter.tsx:57
 #: components/WbToolkit/GeoLocate.tsx:56
-#: components/WbToolkit/WbLeafletMap.tsx:52
+#: components/WbToolkit/WbLeafletMap.tsx:62
 #. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Wb Toolkit > Wb Leaflet Map
 msgid "unavailableWithoutLocality"
 msgstr "Esta herramienta requiere Columnas de Localidad mapeadas/asignadas"

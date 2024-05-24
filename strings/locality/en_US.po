@@ -11,7 +11,7 @@ msgstr "Open Map"
 #: components/Preferences/UserDefinitions.tsx:1888
 #: components/QueryBuilder/ToMap.tsx:68
 #: components/QueryBuilder/ToMap.tsx:261
-#: components/WbToolkit/WbLeafletMap.tsx:55
+#: components/WbToolkit/WbLeafletMap.tsx:65
 #. Used in: Components > Leaflet > Map ⬤ Components > Preferences > User Definitions ⬤ Components > Query Builder > To Map ⬤ Components > Wb Toolkit > Wb Leaflet Map
 msgid "geoMap"
 msgstr "GeoMap"
