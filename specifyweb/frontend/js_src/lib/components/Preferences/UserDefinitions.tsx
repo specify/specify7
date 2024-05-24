@@ -1553,6 +1553,7 @@ export const userPreferenceDefinitions = {
           }),
           showComparisonOperatorsForString: definePref<boolean>({
             title: preferencesText.showComparisonOperatorsForString(),
+            description: preferencesText.showComparisonOperatorsDescription(),
             requiresReload: false,
             visible: true,
             defaultValue: false,

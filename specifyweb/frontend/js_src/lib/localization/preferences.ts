@@ -1938,6 +1938,10 @@ export const preferencesText = createDictionary({
   showComparisonOperatorsForString: {
     'en-us': 'Show comparison operators for string',
   },
+  showComparisonOperatorsDescription: {
+    'en-us':
+      'Allows the following filters to be used for text fields: Greater than, Less than, Greater or Equal to, and Less or Equal to.',
+  },
   basicView: {
     'en-us': 'Basic view',
     'de-ch': 'Basisansicht',
