@@ -539,7 +539,7 @@ def execute(session, collection, user, tableid, distinct, count_only, field_spec
         query = query.order_by(*order_by_exprs).offset(offset)
         if limit:
             query = query.limit(limit)
-
+# query.groupBy('catalogNumber')
         return {'results': list(query)}
 
 def build_query(session, collection, user, tableid, field_specs,
