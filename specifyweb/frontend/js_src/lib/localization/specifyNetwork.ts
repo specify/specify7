@@ -31,7 +31,7 @@ export const specifyNetworkText = createDictionary({
       Для отображения этой страницы необходимо указать название вида или GUID.
     `,
     'uk-ua':
-      'Щоб відобразити цю сторінку, потрібно вказати назву виду або GUID',
+      'Щоб відобразити цю сторінку, необхідно вказати назву виду або GUID',
   },
   noDataError: {
     'en-us': 'Unable to find any data for this request',
@@ -184,8 +184,8 @@ export const specifyNetworkText = createDictionary({
       распространению собранных экземпляров этого вида.
     `,
     'uk-ua': `
-      Для даних GBIF окремі точки та кластери точок відображаються як
-      шестикутники різних кольорів від жовтого до оранжевого та червоного.
+      Для даних GBIF окремі точки та кластери точок відображаються у вигляді
+      шестикутників різних кольорів від жовтого до оранжевого та червоного.
       Темно-червоні шестикутники відповідають найщільнішому розподілу зібраних
       зразків цього виду.
     `,
@@ -195,7 +195,7 @@ export const specifyNetworkText = createDictionary({
     'de-ch': 'Mit GBIF verbinden',
     'es-es': 'Conectarse a GBIF',
     'fr-fr': 'Connectez-vous au GBIF',
-    'ru-ru': 'Подключиться к ГБИФ',
+    'ru-ru': 'Подключиться к GBIF',
     'uk-ua': 'Підключіться до GBIF',
   },
   searchForInstitution: {
