@@ -616,6 +616,7 @@ def build_query(session, collection, user, tableid, field_specs,
     selected_fields = []
     predicates_by_field = defaultdict(list)
     #augment_field_specs(field_specs, formatauditobjs)
+    catalog_number_field = None
     for fs in field_specs:
         sort_type = SORT_TYPES[fs.sort_type]
 
@@ -624,6 +625,9 @@ def build_query(session, collection, user, tableid, field_specs,
             formatted_field = query.objectformatter.fieldformat(fs, field)
             query = query.add_columns(formatted_field)
             selected_fields.append(formatted_field)
+        
+        if hasattr(field, 'key') and field.key == 'CatalogNumber':
+                catalog_number_field = formatted_field
 
         if sort_type is not None:
             order_by_exprs.append(sort_type(field))
@@ -645,11 +649,23 @@ def build_query(session, collection, user, tableid, field_specs,
         where = reduce(sql.and_, (p for ps in predicates_by_field.values() for p in ps))
         query = query.filter(where)
 
+    if series:
+        selected_fields_without_cat_number = []
+        for field in selected_fields:
+            if hasattr(field, 'clause') and hasattr(field.clause, 'key') and field.clause.key == 'CatalogNumber':
+                continue
+            selected_fields_without_cat_number.append(field)
+        # need to group concat only cat number that follow each other
+        if catalog_number_field is not None:
+            query = query.add_columns(
+                func.group_concat(catalog_number_field, separator=',')
+            )
+
     if distinct:
         query = group_by_displayed_fields(query, selected_fields)
 
     if series: 
-        query = group_by_displayed_fields(query, selected_fields)
+        query = group_by_displayed_fields(query, selected_fields_without_cat_number)
 
     logger.debug("query: %s", query.query)
     return query.query, order_by_exprs
