@@ -35,6 +35,7 @@ export function makeComboBoxQuery({
   query.set('contextName', table.name);
   query.set('contextTableId', table.tableId);
   query.set('selectDistinct', false);
+  query.set('selectSeries', false);
   query.set('countOnly', false);
   query.set('specifyUser', userInformation.resource_uri);
   query.set('isFavorite', false);

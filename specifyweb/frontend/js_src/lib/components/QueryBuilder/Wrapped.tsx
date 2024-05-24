@@ -94,6 +94,7 @@ function Wrapped({
   readonly onChange?: (props: {
     readonly fields: RA<SerializedResource<SpQueryField>>;
     readonly isDistinct: boolean | null;
+    readonly isSeries: boolean | null;
   }) => void;
 }): JSX.Element {
   const [query, setQuery] = useResource(queryResource);
@@ -157,8 +158,9 @@ function Wrapped({
     handleChange?.({
       fields: unParseQueryFields(state.baseTableName, state.fields),
       isDistinct: query.selectDistinct,
+      isSeries: query.selectSeries,
     });
-  }, [state, query.selectDistinct]);
+  }, [state, query.selectDistinct, query.selectSeries]);
 
   /**
    * If tried to save a query, enforce the field length limit for the
@@ -556,6 +558,7 @@ function Wrapped({
               />
               <QueryToolbar
                 isDistinct={query.selectDistinct ?? false}
+                isSeries={query.selectSeries ?? false}
                 showHiddenFields={showHiddenFields}
                 tableName={table.name}
                 onRunCountOnly={(): void => runQuery('count')}
@@ -568,6 +571,12 @@ function Wrapped({
                   setQuery({
                     ...query,
                     selectDistinct: !(query.selectDistinct ?? false),
+                  })
+                }
+                onToggleSeries={(): void =>
+                  setQuery({
+                    ...query,
+                    selectSeries: !(query.selectSeries ?? false),
                   })
                 }
                 onToggleHidden={setShowHiddenFields}
