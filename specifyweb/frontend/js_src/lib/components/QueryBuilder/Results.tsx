@@ -1,34 +1,17 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
-import type { State } from 'typesafe-reducer';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
-import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
-import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
-import {
-  type GetOrSet,
-  type GetSet,
-  type IR,
-  type R,
-  type RA,
-  filterArray,
-} from '../../utils/types';
-import { removeKey } from '../../utils/utils';
+import { type GetSet, type RA } from '../../utils/types';
 import { Container, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { createResource } from '../DataModel/resource';
-import { schema, strictGetModel } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
-import type { RecordSet, SpQuery, Tables } from '../DataModel/types';
-import { raise, softFail } from '../Errors/Crash';
-import { recordSetView } from '../FormParse/webOnlyViews';
-import { ResourceView } from '../Forms/ResourceView';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import type { SpQuery } from '../DataModel/types';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
 import { RecordMergingLink } from '../Merging';
 import { loadingGif } from '../Molecules';
@@ -40,21 +23,22 @@ import {
   hasToolPermission,
 } from '../Permissions/helpers';
 import { fetchPickList } from '../PickLists/fetch';
+import { userPreferences } from '../Preferences/userPreferences';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
-import { RecordSetCreated, recordSetFromQueryLoading } from './Components';
+import { CreateRecordSet } from './CreateRecordSet';
 import type { QueryFieldSpec } from './fieldSpec';
 import type { QueryField } from './helpers';
 import { sortTypes } from './helpers';
+import { useFetchQueryResults } from './hooks';
 import { QueryResultsTable } from './ResultsTable';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
 
 export type QueryResultRow = RA<number | string | null>;
 
-type Props = {
-  readonly model: SpecifyModel;
+export type QueryResultsProps = {
+  readonly table: SpecifyTable;
   readonly label?: LocalizedString;
-  readonly hasIdField: boolean;
   readonly queryResource: SpecifyResource<SpQuery> | undefined;
   /**
    * A hint for how many records a fetch can return at maximum. This is used to
@@ -66,9 +50,9 @@ type Props = {
     | ((offset: number) => Promise<RA<QueryResultRow>>)
     | undefined;
   readonly totalCount: number | undefined;
+  readonly fieldSpecs: RA<QueryFieldSpec>;
   readonly displayedFields: RA<QueryField>;
   readonly allFields: RA<QueryField>;
-  readonly fieldSpecs: RA<QueryFieldSpec>;
   // This is undefined when running query in countOnly mode
   readonly initialData: RA<QueryResultRow> | undefined;
   readonly sortConfig?: RA<QueryField['sortType']>;
@@ -87,11 +71,10 @@ type Props = {
   >;
 };
 
-export function QueryResults(props: Props): JSX.Element {
+export function QueryResults(props: QueryResultsProps): JSX.Element {
   const {
-    model,
+    table,
     label = commonText.results(),
-    hasIdField,
     queryResource,
     fetchResults,
     fieldSpecs,
@@ -106,8 +89,8 @@ export function QueryResults(props: Props): JSX.Element {
     tableClassName = '',
     selectedRows: [selectedRows, setSelectedRows],
     resultsRef,
+    displayedFields,
   } = props;
-  const visibleFieldSpecs = fieldSpecs.filter(({ isPhantom }) => !isPhantom);
 
   const {
     results: [results, setResults],
@@ -116,6 +99,7 @@ export function QueryResults(props: Props): JSX.Element {
     canFetchMore,
   } = useFetchQueryResults(props);
 
+  const visibleFieldSpecs = fieldSpecs.filter(({ isPhantom }) => !isPhantom);
   if (resultsRef !== undefined) resultsRef.current = results;
 
   const [pickListsLoaded = false] = useAsyncState(
@@ -190,38 +174,57 @@ export function QueryResults(props: Props): JSX.Element {
     [setResults, setTotalCount, totalCount]
   );
 
+  const [showLineNumber] = userPreferences.use(
+    'queryBuilder',
+    'appearance',
+    'showLineNumber'
+  );
+
+  const isDistinct =
+    typeof loadedResults?.[0]?.[0] === 'string' && loadedResults !== undefined;
+  const metaColumns = (showLineNumber ? 1 : 0) + 2;
+
   return (
-    <Container.Base className="w-full bg-[color:var(--form-background)]">
+    <Container.Base className="w-full !bg-[color:var(--form-background)]">
       <div className="flex items-center items-stretch gap-2">
-        <H3>{`${label}: (${
-          selectedRows.size === 0
-            ? totalCount ?? commonText.loading()
-            : `${selectedRows.size}/${totalCount ?? commonText.loading()}`
-        })`}</H3>
+        <H3>
+          {commonText.colonLine({
+            label,
+            value: `(${
+              selectedRows.size === 0
+                ? totalCount ?? commonText.loading()
+                : `${selectedRows.size}/${totalCount ?? commonText.loading()}`
+            })`,
+          })}
+        </H3>
         {selectedRows.size > 0 && (
           <Button.Small onClick={(): void => setSelectedRows(new Set())}>
             {interactionsText.deselectAll()}
           </Button.Small>
         )}
         <div className="-ml-2 flex-1" />
-        {extraButtons}
-        {hasIdField &&
-        Array.isArray(results) &&
+        {displayedFields.length > 0 &&
+        visibleFieldSpecs.length > 0 &&
+        totalCount !== 0
+          ? extraButtons
+          : null}
+        {Array.isArray(results) &&
         Array.isArray(loadedResults) &&
         results.length > 0 &&
-        typeof fetchResults === 'function' ? (
+        typeof fetchResults === 'function' &&
+        visibleFieldSpecs.length > 0 ? (
           <>
-            {hasPermission('/record/replace', 'update') &&
-              hasTablePermission(model.name, 'update') && (
+            {hasPermission('/record/merge', 'update') &&
+              hasTablePermission(table.name, 'update') && (
                 <RecordMergingLink
                   selectedRows={selectedRows}
-                  table={model}
+                  table={table}
                   onDeleted={handleDelete}
                   onMerged={handleReRun}
                 />
               )}
-            {hasToolPermission('recordSets', 'create') ? (
-              selectedRows.size > 0 ? (
+            {hasToolPermission('recordSets', 'create') && totalCount !== 0 ? (
+              selectedRows.size > 0 && !isDistinct ? (
                 <CreateRecordSet
                   /*
                    * This is needed so that IDs are in the same order as they
@@ -245,63 +248,65 @@ export function QueryResults(props: Props): JSX.Element {
             <QueryToMap
               fields={allFields}
               fieldSpecs={fieldSpecs}
-              model={model}
               results={loadedResults}
               selectedRows={selectedRows}
+              table={table}
               totalCount={totalCount}
               onFetchMore={
                 canFetchMore && !isFetching ? handleFetchMore : undefined
               }
             />
-            <QueryToForms
-              model={model}
-              results={results}
-              selectedRows={selectedRows}
-              totalCount={totalCount}
-              onDelete={handleDelete}
-              onFetchMore={isFetching ? undefined : handleFetchMore}
-            />
+            {isDistinct ? null : (
+              <QueryToForms
+                results={results}
+                selectedRows={selectedRows}
+                table={table}
+                totalCount={totalCount}
+                onDelete={handleDelete}
+                onFetchMore={isFetching ? undefined : handleFetchMore}
+              />
+            )}
           </>
         ) : undefined}
       </div>
       <div
         // REFACTOR: turn this into a reusable table component
         className={`
-          grid-table auto-rows-min overflow-auto rounded
+          grid-table auto-rows-min
+          overflow-auto rounded
           ${tableClassName}
           ${showResults ? 'border-b border-gray-500' : ''}
-          ${
-            hasIdField
-              ? 'grid-cols-[min-content_min-content_repeat(var(--columns),auto)]'
-              : 'grid-cols-[repeat(var(--columns),auto)]'
-          }
-       `}
+        `}
         ref={scrollerRef}
         role="table"
-        style={
-          {
-            '--columns': visibleFieldSpecs.length,
-          } as React.CSSProperties
-        }
+        style={{
+          gridTemplateColumns: [
+            ...Array.from({ length: metaColumns }).fill('min-content'),
+            ...Array.from({ length: visibleFieldSpecs.length }).fill('auto'),
+          ].join(' '),
+        }}
         onScroll={showResults && !canFetchMore ? undefined : handleScroll}
       >
-        {showResults && (
+        {showResults && visibleFieldSpecs.length > 0 ? (
           <div role="rowgroup">
             <div role="row">
-              {hasIdField && (
-                <>
-                  <TableHeaderCell
-                    fieldSpec={undefined}
-                    sortConfig={undefined}
-                    onSortChange={undefined}
-                  />
-                  <TableHeaderCell
-                    fieldSpec={undefined}
-                    sortConfig={undefined}
-                    onSortChange={undefined}
-                  />
-                </>
+              {showLineNumber && (
+                <TableHeaderCell
+                  fieldSpec={undefined}
+                  sortConfig={undefined}
+                  onSortChange={undefined}
+                />
               )}
+              <TableHeaderCell
+                fieldSpec={undefined}
+                sortConfig={undefined}
+                onSortChange={undefined}
+              />
+              <TableHeaderCell
+                fieldSpec={undefined}
+                sortConfig={undefined}
+                onSortChange={undefined}
+              />
               {fieldSpecs.map((fieldSpec, index) =>
                 fieldSpec.isPhantom ? undefined : (
                   <TableHeaderCell
@@ -319,17 +324,17 @@ export function QueryResults(props: Props): JSX.Element {
               )}
             </div>
           </div>
-        )}
+        ) : null}
         <div role="rowgroup">
           {showResults &&
+          visibleFieldSpecs.length > 0 &&
           Array.isArray(loadedResults) &&
           Array.isArray(initialData) ? (
             <QueryResultsTable
               fieldSpecs={fieldSpecs}
-              hasIdField={hasIdField}
-              model={model}
               results={loadedResults}
               selectedRows={selectedRows}
+              table={table}
               onSelected={(rowIndex, isSelected, isShiftClick): void => {
                 /*
                  * If shift/ctrl/cmd key was held during click, toggle all rows
@@ -373,133 +378,6 @@ export function QueryResults(props: Props): JSX.Element {
   );
 }
 
-export function useFetchQueryResults({
-  initialData,
-  fetchResults,
-  totalCount: initialTotalCount,
-  fetchSize,
-}: Pick<Props, 'fetchResults' | 'fetchSize' | 'initialData' | 'totalCount'>): {
-  readonly results: GetSet<RA<QueryResultRow | undefined> | undefined>;
-  readonly fetchersRef: {
-    readonly current: IR<Promise<RA<QueryResultRow> | void>>;
-  };
-  readonly onFetchMore: (index?: number) => Promise<RA<QueryResultRow> | void>;
-  readonly totalCount: GetOrSet<number | undefined>;
-  readonly canFetchMore: boolean;
-} {
-  /*
-   * Warning:
-   * "results" can be a sparse array. Using sparse array to allow
-   * efficiently retrieving the last query result in a query that returns
-   * hundreds of thousands of results.
-   */
-  const getSetResults = useTriggerState<
-    RA<QueryResultRow | undefined> | undefined
-  >(initialData);
-  const [results, setResults] = getSetResults;
-  const resultsRef = React.useRef(results);
-  const handleSetResults = React.useCallback(
-    (results: RA<QueryResultRow | undefined> | undefined) => {
-      const filteredResults = f.maybe(results, filterArray);
-      setResults(filteredResults);
-      resultsRef.current = results;
-    },
-    [setResults]
-  );
-
-  // Queue for fetching
-  const fetchersRef = React.useRef<R<Promise<RA<QueryResultRow> | void>>>({});
-
-  const getSetTotalCount = useTriggerState(initialTotalCount);
-  const [totalCount] = getSetTotalCount;
-  const canFetchMore =
-    !Array.isArray(results) ||
-    totalCount === undefined ||
-    results.length < totalCount;
-
-  const handleFetchMore = React.useCallback(
-    async (index?: number): Promise<RA<QueryResultRow> | void> => {
-      const currentResults = resultsRef.current;
-      const canFetch = Array.isArray(currentResults);
-
-      if (!canFetch || fetchResults === undefined) return undefined;
-
-      const alreadyFetched =
-        currentResults.length === totalCount &&
-        !currentResults.includes(undefined);
-      if (alreadyFetched) return undefined;
-
-      /*
-       * REFACTOR: make this smarter
-       *   when going to the last record, fetch 40 before the last
-       *   when somewhere in the middle, adjust the fetch region to get the
-       *   most unhatched records fetched
-       */
-      const naiveFetchIndex = index ?? currentResults.length;
-      if (currentResults[naiveFetchIndex] !== undefined) return undefined;
-
-      const fetchIndex =
-        /* If navigating backwards, fetch the previous 40 records */
-        typeof index === 'number' &&
-        typeof currentResults[index + 1] === 'object' &&
-        currentResults[index - 1] === undefined &&
-        index > fetchSize
-          ? naiveFetchIndex - fetchSize + 1
-          : naiveFetchIndex;
-
-      // Prevent concurrent fetching in different places
-      fetchersRef.current[fetchIndex] ??= fetchResults(fetchIndex)
-        .then(async (newResults) => {
-          if (
-            process.env.NODE_ENV === 'development' &&
-            newResults.length > fetchSize
-          )
-            softFail(
-              new Error(
-                `Returned ${newResults.length} results, when expected at most ${fetchSize}`
-              )
-            );
-
-          // Results might have changed while fetching
-          const newCurrentResults = resultsRef.current ?? currentResults;
-
-          // Not using Array.from() so as not to expand the sparse array
-          const combinedResults = newCurrentResults.slice();
-          /*
-           * This extends the sparse array to fit new results. Without this,
-           * splice won't place the results in the correct place.
-           */
-          combinedResults[fetchIndex] =
-            combinedResults[fetchIndex] ?? undefined;
-          combinedResults.splice(fetchIndex, newResults.length, ...newResults);
-
-          handleSetResults(combinedResults);
-
-          fetchersRef.current = removeKey(
-            fetchersRef.current,
-            fetchIndex.toString()
-          );
-
-          if (typeof index === 'number' && index >= combinedResults.length)
-            return handleFetchMore(index);
-          return newResults;
-        })
-        .catch(raise);
-
-      return fetchersRef.current[fetchIndex];
-    },
-    [fetchResults, fetchSize, setResults, totalCount]
-  );
-
-  return {
-    fetchersRef,
-    results: [results, handleSetResults],
-    onFetchMore: handleFetchMore,
-    totalCount: getSetTotalCount,
-    canFetchMore,
-  };
-}
-
 function TableHeaderCell({
   fieldSpec,
   sortConfig,
@@ -509,7 +387,7 @@ function TableHeaderCell({
   readonly sortConfig: QueryField['sortType'];
   readonly onSortChange?: (sortType: QueryField['sortType']) => void;
 }): JSX.Element {
-  // TableName refers to the table the filed is from, not the base table name of the query
+  // TableName refers to the table the field is from, not the base table name of the query
   const tableName = fieldSpec?.table?.name;
 
   const content =
@@ -525,8 +403,8 @@ function TableHeaderCell({
 
   return (
     <div
-      className="sticky z-[2] w-full min-w-max border-b
-        border-gray-500 bg-brand-100 p-1 [inset-block-start:_0] dark:bg-brand-500"
+      className="bg-brand-100 dark:bg-brand-500 sticky z-[2] w-full
+        min-w-max border-b border-gray-500 p-1 [inset-block-start:_0]"
       role={typeof content === 'object' ? `columnheader` : 'cell'}
     >
       {typeof handleSortChange === 'function' ? (
@@ -552,99 +430,6 @@ function TableHeaderCell({
         content
       )}
     </div>
-  );
-}
-
-/**
- * Create a record set frm selected records.
- * See also `MakeRecordSetButton`
- */
-function CreateRecordSet({
-  getIds,
-  baseTableName,
-  queryResource,
-}: {
-  readonly getIds: () => RA<number>;
-  readonly baseTableName: keyof Tables;
-  readonly queryResource: SpecifyResource<SpQuery> | undefined;
-}): JSX.Element {
-  const [state, setState] = React.useState<
-    | State<'Editing', { readonly recordSet: SpecifyResource<RecordSet> }>
-    | State<'Main'>
-    | State<'Saved', { readonly recordSet: SpecifyResource<RecordSet> }>
-    | State<'Saving'>
-  >({ type: 'Main' });
-
-  return (
-    <>
-      <Button.Small
-        aria-haspopup="dialog"
-        onClick={(): void => {
-          const recordSet = new schema.models.RecordSet.Resource();
-          if (queryResource !== undefined && !queryResource.isNew())
-            recordSet.set('name', queryResource.get('name'));
-          setState({
-            type: 'Editing',
-            recordSet,
-          });
-        }}
-      >
-        {queryText.createRecordSet({
-          recordSetTable: schema.models.RecordSet.label,
-        })}
-      </Button.Small>
-      {state.type === 'Editing' && (
-        <ResourceView
-          dialog="modal"
-          isDependent={false}
-          isSubForm={false}
-          mode="edit"
-          resource={state.recordSet}
-          viewName={recordSetView}
-          onAdd={undefined}
-          onClose={(): void => setState({ type: 'Main' })}
-          onDeleted={f.never}
-          onSaved={f.never}
-          onSaving={(): false => {
-            setState({ type: 'Saving' });
-            createResource('RecordSet', {
-              ...serializeResource(state.recordSet),
-              version: 1,
-              type: 0,
-              dbTableId: strictGetModel(baseTableName).tableId,
-              /*
-               * Back-end has an exception for RecordSet table allowing passing
-               * inline data for record set items.
-               * Need to make IDs unique as query may return results with
-               * duplicate IDs (when displaying a -to-many relationship)
-               */
-              // @ts-expect-error
-              recordSetItems: f.unique(getIds()).map((id) => ({
-                recordId: id,
-              })),
-            })
-              .then((recordSet) =>
-                setState({
-                  type: 'Saved',
-                  recordSet: deserializeResource(recordSet),
-                })
-              )
-              .catch((error) => {
-                setState({ type: 'Main' });
-                raise(error);
-              });
-            return false;
-          }}
-        />
-      )}
-      {state.type === 'Saving' && recordSetFromQueryLoading()}
-      {state.type === 'Saved' && (
-        <RecordSetCreated
-          recordSet={state.recordSet}
-          onClose={(): void => setState({ type: 'Main' })}
-        />
-      )}
-    </>
   );
 }
 

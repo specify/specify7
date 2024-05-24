@@ -9,6 +9,7 @@ specifyweb/virtenv
 venv/
 ve/
 seed-database
+*.env
 
 /specifyweb/settings/local_settings.py
 /specifyweb/settings/local_specify_settings.py

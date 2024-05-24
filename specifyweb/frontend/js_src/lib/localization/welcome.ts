@@ -29,9 +29,9 @@ export const welcomeText = createDictionary({
     'en-us': 'Download Information',
     'ru-ru': 'Скачать информацию',
     'es-es': 'Descargar información',
-    'fr-fr': "Télécharger l'information",
-    'uk-ua': 'Завантажити інформацію',
     'de-ch': 'Download Information',
+    'fr-fr': 'À propos de Spécifier 7',
+    'uk-ua': 'Про Specify 7',
   },
   taxonTiles: {
     'en-us': 'Taxon Tiles',
@@ -140,64 +140,72 @@ export const welcomeText = createDictionary({
       Specify software is a product of the Specify Collections Consortium that
       is governed and funded by its member institutions. Consortium Founding
       Members include: Commonwealth Scientific and Industrial Research
-      Organisation (CSIRO), Denmark Consortium of Museums, University of
-      Florida, University of Kansas, and University of Michigan. The Consortium
-      operates under the non-profit, 501(c)3, U.S. tax status of the University
-      of Kansas Center for Research. Specify was supported from 1996 to 2018 by
-      grants from the U.S. National Science Foundation.
+      Organisation (CSIRO), Consejo Superior de Investigaciones Científicas,
+      Denmark Consortium of Museums, Muséum d'Histoire Naturelle Geneva,
+      University of Florida, University of Kansas, and University of Michigan.
+      The Consortium operates under the non-profit, 501(c)3, U.S. tax status of
+      the University of Kansas Center for Research. Specify was supported from
+      1996 to 2018 by grants from the U.S. National Science Foundation.
     `,
     'ru-ru': `
       Specify software является продуктом консорциума Specify Collections.
       который управляется и финансируется организациями-членами.
       Члены-учредители консорциума включают: Commonwealth Scientific and
-      Industrial Research Organisation (CSIRO), Denmark Consortium of Museums,
-      University of Florida, University of Kansas и University of Michigan.
-      Консорциум действует под некоммерческой организацией, 501(c)3, налоговым
-      статусом США университета University of Kansas. Specify поддерживался с
-      1996 по 2018 год грантами фонда U.S. National Science Foundation.
+      Industrial Research Organisation (CSIRO), Consejo Superior de
+      Investigaciones Científicas, Denmark Consortium of Museums, Muséum
+      d'Histoire Naturelle Geneva, University of Florida, University of Kansas,
+      и University of Michigan. Консорциум действует под некоммерческой
+      организацией, 501(c)3, налоговым статусом США университета University of
+      Kansas. Specify поддерживался с 1996 по 2018 год грантами фонда U.S.
+      National Science Foundation.
     `,
     'es-es': `
       Specify Software es un producto de Specify Collections Consortium,
       financiado por sus instituciones miembro. Los Miembros Fundadores del
       Consorcio incluyen: Commonwealth Scientific and Industrial Research
-      Organisation (CSIRO), Denmark Consortium of Museums, University of
-      Florida, University of Kansas, y University of Michigan. El Consorcio
-      opera bajo las condiciones fiscales de 501(c)3  de EE.UU. como
-      organización sin ánimo de lucro, University of Kansas Center for
-      Research.  Specify ha sido financiado por múltiples ayudas de U.S.
-      National Science Foundation.
+      Organisation (CSIRO), Consejo Superior de Investigaciones Científicas
+      (CSIC), Denmark Consortium of Museums, Muséum d'Histoire Naturelle
+      Geneva, University of Florida, University of Kansas y University of
+      Michigan. El Consorcio opera bajo las condiciones fiscales de 501(c)3 de
+      EE.UU. como organización sin ánimo de lucro, University of Kansas Center
+      for Research. Specify ha sido financiado entre 1996 y 2018 por múltiples
+      ayudas de U.S. National Science Foundation.
     `,
     'fr-fr': `
       Le logiciel Specify est un produit du Specify Collections Consortium qui
       est régi et financé par ses institutions membres. Les membres fondateurs
-      du consortium comprennent : l'Organisation de recherche scientifique et
-      industrielle du Commonwealth (CSIRO), le Consortium danois des musées,
-      l'Université de Floride, l'Université du Kansas et l'Université du
-      Michigan. Le Consortium opère sous le statut fiscal américain à but non
-      lucratif 501(c)3 du Centre de recherche de l'Université du Kansas. Specify
-      a été soutenu de 1996 à 2018 par des subventions de la National Science
-      Foundation des États-Unis.
+      du consortium comprennent : l'Organisation de recherche scientifique et
+      industrielle du Commonwealth (CSIRO), le Consejo Superior de
+      Investigaciones Científicas, le Consortium danois des musées, le Muséum
+      d'Histoire Naturelle de Genève, l'Université de Floride, l'Université du
+      Kansas et l'Université du Michigan. Le Consortium opère sous le statut
+      fiscal américain à but non lucratif 501(c)3 du Centre de recherche de
+      l'Université du Kansas. Specify a été soutenu de 1996 à 2018 par des
+      subventions de la National Science Foundation des États-Unis.
     `,
     'uk-ua': `
       Програмне забезпечення Specify є продуктом консорціуму Specify Collections
-      Consortium, яким керують і фінансують установи-члени. Члени-засновники
-      консорціуму включають: Науково-промислову дослідницьку організацію
-      Співдружності (CSIRO), Консорціум музеїв Данії, Університет Флориди,
-      Університет Канзасу та Мічиганський університет. Консорціум діє відповідно
-      до некомерційного, 501(c)3, податкового статусу США Центру досліджень
-      Канзаського університету. З 1996 по 2018 рік Specify підтримувався
-      грантами Національного наукового фонду США.
+      Consortium, яким керують і фінансують установи-члени. Серед
+      членів-засновників консорціуму: Організація наукових і промислових
+      досліджень Співдружності (CSIRO), Consejo Superior de Investigaciones
+      Sientíficas, Датський консорціум музеїв, Muséum d'Histoire Naturelle
+      Geneva, Університет Флориди, Університет Канзасу та Мічиганський
+      університет. Консорціум діє відповідно до некомерційного, 501(c)3,
+      податкового статусу США Центру досліджень Канзаського університету. З
+      1996 по 2018 рік Specify підтримувався грантами Національного наукового
+      фонду США.
     `,
     'de-ch': `
       Die Specify-Software ist ein Produkt des Specify Collections Consortiums,
       das von seinen Mitgliedsinstitutionen verwaltet und finanziert wird. Zu
       den Gründungsmitgliedern des Konsortiums gehören: Commonwealth Scientific
-      and Industrial Research Organisation (CSIRO), Denmark Consortium of
-      Museums, University of Florida, University of Kansas und University of
-      Michigan. Das Konsortium arbeitet unter dem gemeinnützigen, 501(c)3, U.S.
-      Steuerstatus des University of Kansas Center for Research. Specify wurde
-      von 1996 bis 2018 durch Zuschüsse der U.S. National Science Foundation
-      unterstützt.
+      and Industrial Research Organisation (CSIRO), Consejo Superior de
+      Investigaciones Científicas, Denmark Consortium of Museums, Muséum
+      d'Histoire Naturelle Geneva, University of Florida, University of Kansas,
+      University of Michigan. Das Konsortium arbeitet unter dem
+      gemeinnützigen, 501(c)3, U.S. Steuerstatus des University of Kansas Center
+      for Research. Specify wurde von 1996 bis 2018 durch Zuschüsse der U.S.
+      National Science Foundation unterstützt.
     `,
   },
   licence: {
@@ -247,7 +255,7 @@ export const welcomeText = createDictionary({
     'en-us': 'Specify 7 Version:',
     'ru-ru': 'Specify 7 Версия:',
     'es-es': 'Especifique la versión 7:',
-    'fr-fr': 'Spécifiez la version 7 :',
+    'fr-fr': 'Spécifiez la version 7 :',
     'uk-ua': 'Вкажіть 7 версію:',
     'de-ch': 'Specify 7 Version:',
   },
@@ -255,7 +263,7 @@ export const welcomeText = createDictionary({
     'en-us': 'Git SHA:',
     'ru-ru': 'Git SHA:',
     'es-es': 'Git SHA:',
-    'fr-fr': 'Git SHA :',
+    'fr-fr': 'Git SHA :',
     'uk-ua': 'Git SHA:',
     'de-ch': 'Git SHA:',
   },
@@ -271,7 +279,7 @@ export const welcomeText = createDictionary({
     'en-us': 'Specify 6 Version:',
     'ru-ru': 'Specify 6 Версия:',
     'es-es': 'Versión de Specify 6:',
-    'fr-fr': 'Spécifiez la version 6 :',
+    'fr-fr': 'Spécifiez la version 6 :',
     'uk-ua': 'Вкажіть 6 версію:',
     'de-ch': 'Specify 6 Version:',
   },
@@ -279,14 +287,14 @@ export const welcomeText = createDictionary({
     'en-us': 'Database Version:',
     'ru-ru': 'Версия базы данных:',
     'es-es': 'Versión de la Base de Datos:',
-    'fr-fr': 'Version de la base de données :',
+    'fr-fr': 'Version de la base de données :',
     'uk-ua': 'Версія бази даних:',
     'de-ch': 'Datenbankversion:',
   },
   schemaVersion: {
     'en-us': 'DB Schema Version',
     'ru-ru': 'Версия схемы базы данных',
-    'es-es': 'Versión de la Estructura (Schema):',
+    'es-es': 'Versión del Esquema de base de datos',
     'fr-fr': 'Version du schéma de base de données',
     'uk-ua': 'Версія схеми БД',
     'de-ch': 'Datenbankschema-Version',
@@ -304,7 +312,7 @@ export const welcomeText = createDictionary({
     'en-us': 'ISA Number:',
     'ru-ru': 'Номер ISA:',
     'es-es': 'Número ISA:',
-    'fr-fr': 'Numéro ISA :',
+    'fr-fr': 'Numéro ISA :',
     'uk-ua': 'Номер ISA:',
     'de-ch': 'ISA-Nummer:',
   },
@@ -320,7 +328,7 @@ export const welcomeText = createDictionary({
     'en-us': 'DB Creation Date:',
     'ru-ru': 'Дата создания базы данных:',
     'es-es': 'Fecha de creación de la base de datos:',
-    'fr-fr': 'Date de création de la base de données :',
+    'fr-fr': 'Date de création de la base de données :',
     'uk-ua': 'Дата створення БД:',
     'de-ch': 'Datenbank Erstelldatum:',
   },

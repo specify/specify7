@@ -1,13 +1,16 @@
 import type React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { dayjs } from '../../utils/dayJs';
 import { databaseDateFormat } from '../../utils/parser/dateConfig';
 import { fullDateFormat } from '../../utils/parser/dateFormat';
-import { parseRelativeDate } from '../../utils/relativeDate';
+import { parseDate } from '../../utils/parser/dayJsFixes';
+import { parseAnyDate } from '../../utils/relativeDate';
 import type { RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { split } from '../../utils/utils';
-import type { Input as InputType } from '../DataModel/saveBlockers';
-import { parseDate } from '../FormPlugins/PartialDateUi';
+import { error } from '../Errors/assert';
+import type { Input as InputType } from '../Forms/validationHelpers';
 import { className } from './className';
 import { wrap } from './wrapper';
 
@@ -15,6 +18,7 @@ export const Label = {
   Block: wrap('Label.Block', 'label', className.label),
   Inline: wrap('Label.Inline', 'label', className.labelForCheckbox),
 };
+
 /**
  * Forms are used throughout for accessibility and usability reasons (helps
  * screen readers describe the page, allows for submitting the form with the
@@ -50,10 +54,12 @@ export const Form = wrap(
     },
   })
 );
+
 /*
  * Don't highlight missing required and pattern mismatch fields until focus
  * loss
  */
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const withHandleBlur = <TYPE extends InputType>(
   handleBlur: ((event: React.FocusEvent<TYPE>) => void) | undefined
 ) => ({
@@ -64,13 +70,35 @@ export const withHandleBlur = <TYPE extends InputType>(
     handleBlur?.(event);
   },
 });
+
+/**
+ * Prevent scroll wheel accidentally changing input value.
+ *
+ * See https://stackoverflow.com/a/69497807/8584605
+ */
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export const withPreventWheel = <TYPE extends InputType>(
+  handleWheel: ((event: React.WheelEvent<TYPE>) => void) | undefined
+) => ({
+  onWheel(event: React.WheelEvent<TYPE>): void {
+    const target = event.target as TYPE;
+
+    if (target.type === 'number') {
+      target.blur();
+      setTimeout(() => target.focus(), 0);
+    }
+
+    handleWheel?.(event);
+  },
+});
+
 export const Input = {
   Radio: wrap<
     'input',
     {
-      readonly readOnly?: never;
+      readonly readOnly?: 'Use isReadOnly instead';
       readonly isReadOnly?: boolean;
-      readonly type?: never;
+      readonly type?: 'If you need to specify type, use Input.Generic';
       // This is used to forbid accidentally passing children
       readonly children?: undefined;
     }
@@ -108,9 +136,10 @@ export const Input = {
     'input',
     {
       readonly onValueChange?: (isChecked: boolean) => void;
-      readonly readOnly?: never;
+      readonly onClick?: 'Use onValueChange instead';
+      readonly readOnly?: 'Use isReadOnly instead';
       readonly isReadOnly?: boolean;
-      readonly type?: never;
+      readonly type?: 'If you need to specify type, use Input.Generic';
       readonly children?: undefined;
     }
   >(
@@ -132,10 +161,9 @@ export const Input = {
   Text: wrap<
     'input',
     {
-      readonly onValueChange?: (value: string) => void;
+      readonly onValueChange?: (value: LocalizedString) => void;
       readonly type?: 'If you need to specify type, use Input.Generic';
-      // Can't provide a error message here because TypeScript doesn't allow me to
-      readonly readOnly?: never;
+      readonly readOnly?: 'Use isReadOnly instead';
       readonly isReadOnly?: boolean;
       readonly children?: undefined;
     }
@@ -148,7 +176,7 @@ export const Input = {
       type: 'text',
       ...withHandleBlur(props.onBlur),
       onChange(event): void {
-        onValueChange?.((event.target as HTMLInputElement).value);
+        onValueChange?.(localized((event.target as HTMLInputElement).value));
         props.onChange?.(event);
       },
       readOnly: isReadOnly,
@@ -157,9 +185,9 @@ export const Input = {
   Generic: wrap<
     'input',
     {
-      readonly onValueChange?: (value: string) => void;
-      readonly onDatePaste?: (value: string) => void;
-      readonly readOnly?: never;
+      readonly onValueChange?: (value: LocalizedString) => void;
+      readonly onDatePaste?: (value: LocalizedString) => void;
+      readonly readOnly?: 'Use isReadOnly instead';
       readonly isReadOnly?: boolean;
       readonly children?: undefined;
     }
@@ -171,12 +199,12 @@ export const Input = {
       ...props,
       ...withHandleBlur(props.onBlur),
       onChange(event): void {
-        onValueChange?.((event.target as HTMLInputElement).value);
+        onValueChange?.(localized((event.target as HTMLInputElement).value));
         props.onChange?.(event);
       },
       onDoubleClick(event): void {
         const input = event.target as HTMLInputElement;
-        if (input.type === 'date') {
+        if (input.type === 'date' && !input.readOnly) {
           input.type = 'text';
           const parsed = parseDate('full', input.value);
           if (parsed.isValid()) input.value = parsed.format(fullDateFormat());
@@ -186,7 +214,7 @@ export const Input = {
       onBlur(event): void {
         const input = event.target as HTMLInputElement;
         if (props.type === 'date' && input.type !== 'date') {
-          const relativeDate = parseRelativeDate(input.value);
+          const relativeDate = parseAnyDate(input.value);
           if (relativeDate !== undefined) {
             const parsed = dayjs(relativeDate);
             if (parsed.isValid())
@@ -196,10 +224,42 @@ export const Input = {
         }
         withHandleBlur(props.onBlur).onBlur(event);
       },
+      ...withPreventWheel(props.onWheel),
       readOnly: isReadOnly,
     })
   ),
-  Number: wrap<
+  Integer: wrap<
+    'input',
+    {
+      readonly onValueChange?: (value: number) => void;
+      readonly type?: 'If you need to specify type, use Input.Generic';
+      readonly readOnly?: 'Use isReadOnly instead';
+      readonly isReadOnly?: boolean;
+      readonly children?: undefined;
+    }
+  >(
+    'Input.Integer',
+    'input',
+    `${className.notTouchedInput} w-full`,
+    ({ onValueChange, isReadOnly, ...props }) =>
+      process.env.NODE_ENV === 'development' &&
+      typeof props.step === 'number' &&
+      props.step !== Math.floor(props.step)
+        ? error('If step <1 is needed, use Input.Float instead')
+        : {
+            ...props,
+            type: 'number',
+            ...withHandleBlur(props.onBlur),
+            onChange(event): void {
+              onValueChange?.(
+                Number.parseInt((event.target as HTMLInputElement).value)
+              );
+              props.onChange?.(event);
+            },
+            readOnly: isReadOnly,
+          }
+  ),
+  Float: wrap<
     'input',
     {
       readonly onValueChange?: (value: number) => void;
@@ -207,9 +267,10 @@ export const Input = {
       readonly readOnly?: never;
       readonly isReadOnly?: boolean;
       readonly children?: undefined;
+      readonly step?: number | 'any';
     }
   >(
-    'Input.Number',
+    'Input.Float',
     'input',
     `${className.notTouchedInput} w-full`,
     ({ onValueChange, isReadOnly, ...props }) => ({
@@ -218,10 +279,12 @@ export const Input = {
       ...withHandleBlur(props.onBlur),
       onChange(event): void {
         onValueChange?.(
-          Number.parseInt((event.target as HTMLInputElement).value)
+          Number.parseFloat((event.target as HTMLInputElement).value)
         );
         props.onChange?.(event);
       },
+      step: props.step ?? 'any',
+      ...withPreventWheel(props.onWheel),
       readOnly: isReadOnly,
     })
   ),
@@ -230,8 +293,8 @@ export const Textarea = wrap<
   'textarea',
   {
     readonly children?: undefined;
-    readonly onValueChange?: (value: string) => void;
-    readonly readOnly?: never;
+    readonly onValueChange?: (value: LocalizedString) => void;
+    readonly readOnly?: 'Use isReadOnly instead';
     readonly isReadOnly?: boolean;
     readonly autoGrow?: boolean;
   }
@@ -242,9 +305,10 @@ export const Textarea = wrap<
   `${className.notTouchedInput} ${className.textArea}`,
   ({ onValueChange, isReadOnly, ...props }) => ({
     ...props,
+    type: undefined,
     ...withHandleBlur(props.onBlur),
     onChange(event): void {
-      onValueChange?.((event.target as HTMLTextAreaElement).value);
+      onValueChange?.(localized((event.target as HTMLTextAreaElement).value));
       props.onChange?.(event);
     },
     readOnly: isReadOnly,
@@ -254,8 +318,8 @@ export const selectMultipleSize = 4;
 export const Select = wrap<
   'select',
   {
-    readonly onValueChange?: (value: string) => void;
-    readonly onValuesChange?: (value: RA<string>) => void;
+    readonly onValueChange?: (value: LocalizedString) => void;
+    readonly onValuesChange?: (value: RA<LocalizedString>) => void;
   }
 >(
   'Select',
@@ -281,9 +345,7 @@ export const Select = wrap<
      *   are undefined
      */
     onChange(event): void {
-      const options = Array.from(
-        (event.target as HTMLSelectElement).querySelectorAll('option')
-      );
+      const options = Array.from(event.target.options);
       const [unselected, selected] = split(options, ({ selected }) => selected);
       /*
        * Selected options in an optional multiple select are clashing with
@@ -302,8 +364,8 @@ export const Select = wrap<
        * https://github.com/specify/specify7/issues/1371#issuecomment-1115156978
        */
       if (typeof props.size !== 'number' || props.size < 2 || value !== '')
-        onValueChange?.(value);
-      onValuesChange?.(selected.map(({ value }) => value));
+        onValueChange?.(localized(value));
+      onValuesChange?.(selected.map(({ value }) => localized(value)));
       props.onChange?.(event);
     },
   })

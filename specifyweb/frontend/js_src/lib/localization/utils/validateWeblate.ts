@@ -17,11 +17,11 @@ const componentsApiUrl = `https://hosted.weblate.org/api/projects/${projectName}
 const addOns = {
   'weblate.autotranslate.autotranslate': {
     mode: 'fuzzy',
-    filter_type: 'todo',
-    auto_source: 'mt',
-    component: null,
     engines: ['google-translate'],
+    component: null,
     threshold: 20,
+    auto_source: 'mt',
+    filter_type: 'todo',
   },
   'weblate.cleanup.generic': {},
 };
@@ -31,7 +31,7 @@ const commonSettings = (name: string): IR<unknown> => ({
   allow_translation_propagation: true,
   auto_lock_error: true,
   branch: weblateBranch,
-  commit_pending_age: 3,
+  commit_pending_age: 1,
   edit_template: true,
   file_format: 'po-mono',
   filemask: `strings/${name}/*${gettextExtension}`,

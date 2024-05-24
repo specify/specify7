@@ -7,22 +7,30 @@ import { useId } from '../../hooks/useId';
 import { useIsModified } from '../../hooks/useIsModified';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import { smoothScroll } from '../../utils/dom';
 import { listen } from '../../utils/events';
-import { camelToHuman, replaceKey } from '../../utils/utils';
-import { H3, Ul } from '../Atoms';
+import { filterArray } from '../../utils/types';
+import { replaceKey } from '../../utils/utils';
+import { appResourceSubTypes } from '../AppResources/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { resourceOn } from '../DataModel/resource';
-import type { Tables } from '../DataModel/types';
+import type { BlockerWithResource } from '../DataModel/saveBlockers';
+import {
+  findUnclaimedBlocker,
+  useAllSaveBlockers,
+} from '../DataModel/saveBlockers';
+import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import { error } from '../Errors/assert';
+import { errorHandledBy } from '../Errors/FormatError';
+import { InFormEditorContext } from '../FormEditor/Context';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
-import { smoothScroll } from '../QueryBuilder/helpers';
+import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { FormContext } from './BaseResourceView';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
 
@@ -42,15 +50,17 @@ export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   resource,
   form,
+  label: saveLabel = commonText.save(),
   disabled = false,
   saveRequired: externalSaveRequired = false,
+  filterBlockers,
   onSaving: handleSaving,
   onSaved: handleSaved,
   onAdd: handleAdd,
-  onIgnored: handleIgnored,
 }: {
   readonly resource: SpecifyResource<SCHEMA>;
   readonly form: HTMLFormElement;
+  readonly label?: LocalizedString;
   readonly disabled?: boolean;
   /*
    * Can enable Save button even if no save is required (i.e., when there were
@@ -63,13 +73,8 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   ) => false | undefined | void;
   readonly onSaved?: () => void;
   readonly onAdd?: (newResource: SpecifyResource<SCHEMA>) => void;
-  /**
-   * Sometimes a save button click is ignored (mostly because of a validation
-   * error). By default, this would focus the first erroring field on the form.
-   * However, if the save blocker is not caused by some field on the form,
-   * need to handle the ignored click manually.
-   */
-  readonly onIgnored?: () => void;
+  // Only display save blockers for a given field
+  readonly filterBlockers?: LiteralField | Relationship;
 }): JSX.Element {
   const id = useId('save-button');
   const saveRequired = useIsModified(resource);
@@ -78,24 +83,13 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     saveFormUnloadProtect
   );
 
-  const [saveBlocked, setSaveBlocked] = React.useState(false);
-  React.useEffect(() => {
-    setSaveBlocked(false);
-    return resourceOn(
-      resource,
-      'blockersChanged',
-      (): void => {
-        const onlyDeferredBlockers = Array.from(
-          resource.saveBlockers?.blockingResources ?? []
-        ).every((resource) => resource.saveBlockers?.hasOnlyDeferredBlockers());
-        setSaveBlocked(!onlyDeferredBlockers);
-      },
-      true
-    );
-  }, [resource]);
+  const blockers = useAllSaveBlockers(resource, filterBlockers);
+  const saveBlocked = blockers.length > 0;
 
   const [isSaving, setIsSaving] = React.useState(false);
-  const [showSaveBlockedDialog, setShowBlockedDialog] = React.useState(false);
+  const [shownBlocker, setShownBlocker] = React.useState<
+    BlockerWithResource | undefined
+  >(undefined);
   const [isSaveConflict, hasSaveConflict] = useBooleanState();
 
   const [formId, setFormId] = React.useState(id('form'));
@@ -107,16 +101,17 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const loading = React.useContext(LoadingContext);
   const [_, setFormContext] = React.useContext(FormContext);
 
-  const { showClone, showCarry, showAdd } = useEnabledButtons(
-    resource.specifyModel.name
-  );
+  const { showClone, showCarry, showAdd } = useEnabledButtons(resource);
 
-  const canCreate = hasTablePermission(resource.specifyModel.name, 'create');
-  const canUpdate = hasTablePermission(resource.specifyModel.name, 'update');
+  const canCreate = hasTablePermission(resource.specifyTable.name, 'create');
+  const canUpdate = hasTablePermission(resource.specifyTable.name, 'update');
   const canSave = resource.isNew() ? canCreate : canUpdate;
+
+  const isInFormEditor = React.useContext(InFormEditorContext);
 
   const isSaveDisabled =
     disabled ||
+    isInFormEditor ||
     isSaving ||
     !canSave ||
     (!saveRequired &&
@@ -133,43 +128,41 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
        */
       !resource.isNew());
 
-  function handleSubmit() {
+  function handleSubmit(): void {
     if (typeof setFormContext === 'function')
       setFormContext((formContext) =>
         replaceKey(formContext, 'triedToSubmit', true)
       );
 
-    if (isSaveDisabled) {
-      handleIgnored?.();
-      return;
-    }
-
     loading(
       (resource.businessRuleManager?.pendingPromise ?? Promise.resolve()).then(
         async () => {
-          const blockingResources = Array.from(
-            resource.saveBlockers?.blockingResources ?? []
-          );
-          blockingResources.forEach((resource) =>
-            resource.saveBlockers?.fireDeferredBlockers()
-          );
-          if (blockingResources.length > 0) {
-            setShowBlockedDialog(true);
-            return;
+          if (blockers.length > 0) {
+            const blocker = findUnclaimedBlocker(blockers);
+            if (blocker === undefined) return undefined;
+            console.error(
+              'Unclaimed blocker discovered (is not handled by any react component)',
+              {
+                blocker,
+                resource,
+              }
+            );
+            setShownBlocker(blocker);
+            return undefined;
           }
 
           /*
            * Save process is canceled if false was returned. This also allows to
            * implement custom save behavior
            */
-          if (handleSaving?.(unsetUnloadProtect) === false) return;
+          if (handleSaving?.(unsetUnloadProtect) === false) return undefined;
 
           setIsSaving(true);
           return resource
             .save({ onSaveConflict: hasSaveConflict })
             .catch((error_) =>
-              // FEATURE: if form save fails, should make the error message dismissable (if safe)
-              Object.getOwnPropertyDescriptor(error_ ?? {}, 'handledBy')
+              // FEATURE: if form save fails, should make the error message dismissible (if safe)
+              Object.getOwnPropertyDescriptor(error_ ?? {}, errorHandledBy)
                 ?.value === hasSaveConflict
                 ? undefined
                 : error(error_)
@@ -190,7 +183,6 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   React.useEffect(
     () =>
       listen(form, 'submit', (event) => {
-        if (!form.reportValidity()) return;
         event.preventDefault();
         event.stopPropagation();
         handleSubmitRef.current();
@@ -198,9 +190,8 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     [loading, form]
   );
 
-  // FEATURE: these buttons should use var(--brand-color), rather than orange
   const ButtonComponent = saveBlocked ? Button.Danger : Button.Save;
-  const SubmitComponent = saveBlocked ? Submit.Red : Submit.Save;
+  const SubmitComponent = saveBlocked ? Submit.Danger : Submit.Save;
   // Don't allow cloning the resource if it changed
   const isChanged = saveRequired || externalSaveRequired;
 
@@ -214,6 +205,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       disabled={resource.isNew() || isChanged || isSaving}
       title={description}
       onClick={(): void => {
+        // Scroll to the top of the form on clone
         smoothScroll(form, 0);
         loading(handleClick().then(handleAdd));
       }}
@@ -242,7 +234,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
             copyButton(
               commonText.add(),
               formsText.addButtonDescription(),
-              async () => new resource.specifyModel.Resource()
+              async () => new resource.specifyTable.Resource()
             )}
         </>
       ) : undefined}
@@ -255,7 +247,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
             form.classList.remove(className.notSubmittedForm)
           }
         >
-          {commonText.save()}
+          {saveLabel}
         </SubmitComponent>
       )}
       {isSaveConflict ? (
@@ -270,56 +262,44 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         >
           {formsText.saveConflictDescription()}
         </Dialog>
-      ) : showSaveBlockedDialog ? (
+      ) : typeof shownBlocker === 'object' ? (
         <SaveBlockedDialog
-          resource={resource}
-          onClose={() => setShowBlockedDialog(false)}
+          blocker={shownBlocker}
+          onClose={(): void => setShownBlocker(undefined)}
         />
       ) : undefined}
     </>
   );
 }
 
-export function SaveBlockedDialog<SCHEMA extends AnySchema>({
-  resource,
+function SaveBlockedDialog({
+  blocker: { field, message },
   onClose: handleClose,
 }: {
-  readonly resource: SpecifyResource<SCHEMA>;
+  readonly blocker: BlockerWithResource;
   readonly onClose: () => void;
 }): JSX.Element {
+  const pathPreview = React.useMemo(
+    () =>
+      generateMappingPathPreview(
+        field[0].table.name,
+        field.map(({ name }) => name)
+      ),
+    [field]
+  );
   return (
     <Dialog
       buttons={commonText.close()}
       header={formsText.saveBlocked()}
-      onClose={() => handleClose()}
+      onClose={handleClose}
     >
       <p>{formsText.saveBlockedDescription()}</p>
-      <Ul>
-        {Array.from(
-          resource.saveBlockers?.blockingResources ?? [],
-          (resource) => (
-            <li key={resource.cid}>
-              <H3>{resource.specifyModel.label}</H3>
-              <dl>
-                {Object.entries(resource.saveBlockers?.blockers ?? []).map(
-                  ([key, blocker]) => (
-                    <React.Fragment key={key}>
-                      <dt>
-                        {typeof blocker.fieldName === 'string'
-                          ? resource.specifyModel.strictGetField(
-                              blocker.fieldName
-                            ).label
-                          : camelToHuman(key)}
-                      </dt>
-                      <dd>{blocker.reason}</dd>
-                    </React.Fragment>
-                  )
-                )}
-              </dl>
-            </li>
-          )
-        )}
-      </Ul>
+      <p>
+        {commonText.colonLine({
+          label: pathPreview,
+          value: message,
+        })}
+      </p>
     </Dialog>
   );
 }
@@ -327,7 +307,9 @@ export function SaveBlockedDialog<SCHEMA extends AnySchema>({
 /**
  * Decide which of the "new resource" buttons to show
  */
-function useEnabledButtons(tableName: keyof Tables): {
+function useEnabledButtons<SCHEMA extends AnySchema = AnySchema>(
+  resource: SpecifyResource<SCHEMA>
+): {
   readonly showClone: boolean;
   readonly showCarry: boolean;
   readonly showAdd: boolean;
@@ -343,12 +325,31 @@ function useEnabledButtons(tableName: keyof Tables): {
     'disableClone'
   );
   const [disableAdd] = userPreferences.use('form', 'preferences', 'disableAdd');
+
+  const tableName = resource.specifyTable.name;
+  const appResourceName =
+    resource.specifyTable.name === 'SpAppResource'
+      ? resource.get('name')
+      : undefined;
+
+  const isDisabledCloneAppResource = appResourcesToNotClone.includes(
+    (appResourceName ?? '').toLowerCase()
+  );
+
   const showCarry =
     enableCarryForward.includes(tableName) && !NO_CLONE.has(tableName);
   const showClone =
-    !disableClone.includes(tableName) && !NO_CLONE.has(tableName);
+    !disableClone.includes(tableName) &&
+    !NO_CLONE.has(tableName) &&
+    !isDisabledCloneAppResource;
   const showAdd =
     !disableAdd.includes(tableName) && !FORBID_ADDING.has(tableName);
 
   return { showClone, showCarry, showAdd };
 }
+
+const appResourcesToNotClone = filterArray(
+  Object.keys(appResourceSubTypes).map((key) =>
+    appResourceSubTypes[key]?.name?.toLowerCase()
+  )
+);

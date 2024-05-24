@@ -49,7 +49,6 @@ export function QueryFields({
         line: number,
         payload: {
           readonly index: number;
-          readonly close: boolean;
           readonly newValue: string;
           readonly isRelationship: boolean;
           readonly parentTableName: keyof Tables | undefined;
@@ -139,9 +138,7 @@ export function QueryFields({
       mirror?.parentNode?.removeChild(mirror);
     });
 
-    return () => {
-      sortable.destroy();
-    };
+    return () => sortable.destroy();
   }, []);
 
   // Scroll to bottom if added a child
@@ -155,11 +152,12 @@ export function QueryFields({
         fieldsContainerRef.current.clientHeight !==
           fieldsContainerRef.current.scrollHeight &&
         fields.length > oldFieldCount.current
-      )
-        scrollIntoView(
-          fieldsContainerRef.current.lastChild as HTMLElement,
-          'nearest'
-        );
+      ) {
+        const lastElement = fieldsContainerRef.current.lastChild as HTMLElement;
+        const firstNonContentsChild =
+          lastElement.querySelector(':not(.contents)');
+        scrollIntoView(firstNonContentsChild as HTMLElement, 'nearest');
+      }
       oldFieldCount.current = fields.length;
     }, [fields.length])
   );
@@ -185,7 +183,7 @@ export function QueryFields({
           items-center overflow-y-auto sm:flex-1
           ${
             isBasic
-              ? 'grid grid-cols-[auto,auto,1fr,auto] content-start items-start gap-y-2 gap-x-2'
+              ? 'grid grid-cols-[auto,auto,1fr,auto] content-start items-start gap-x-2 gap-y-2'
               : ''
           }
         `}

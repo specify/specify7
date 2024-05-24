@@ -69,7 +69,7 @@ The Specify Collections Consortium is funded by its member
 institutions. The Consortium web site is:
 https://specifysoftware.org
 
-Specify 7 Copyright © 2022 Specify Collections Consortium. Specify
+Specify 7 Copyright © 2023 Specify Collections Consortium. Specify
 comes with ABSOLUTELY NO WARRANTY. This is free software licensed
 under GNU General Public License 2 (GPL2).
 
@@ -82,27 +82,36 @@ under GNU General Public License 2 (GPL2).
 ## Table of Contents
 
 - [Specify 7](#specify-7)
-    - [Table of Contents](#table-of-contents)
-    - [Changelog](#changelog)
-    - [Installation](#installation)
-        - [Docker installation](#docker-installation-recommended)
-          (**Recommended**)
-        - [Local installation](#local-installation)
-            - [Installing system dependencies](#installing-system-dependencies)
-            - [Installing Specify 6](#installing-specify-6)
-            - [Cloning Specify 7 source repository](#cloning-specify-7-source-repository)
-            - [Setting up Python Virtual Environment](#setting-up-python-virtual-environment)
-            - [Building](#building)
-            - [Adjusting settings files](#adjusting-settings-files)
-            - [Turning on debugging](#turning-on-debugging)
-            - [The development server](#the-development-server)
-            - [The Specify 7 worker](#the-specify-7-worker)
-            - [Installing production requirements](#installing-production-requirements)
-            - [Setting up Apache](#setting-up-apache)
-            - [Restarting Apache](#restarting-apache)
-    - [Updating Specify 7](#updating-specify-7)
-    - [Updating the database (Specify 6) version](#updating-the-database-specify-6-version)
-    - [Localizing Specify 7](#localizing-specify-7)
+  - [Table of Contents](#table-of-contents)
+  - [Changelog](#changelog)
+- [Installation](#installation)
+  - [Docker Installation (Recommended)](#docker-installation-recommended)
+    - [Specify Collections Consortium (SCC) Members:](#specify-collections-consortium-scc-members)
+    - [Non-Members:](#non-members)
+  - [Local Installation](#local-installation)
+    - [Installing system dependencies](#installing-system-dependencies)
+    - [Installing Specify 6](#installing-specify-6)
+    - [Cloning Specify 7 source repository](#cloning-specify-7-source-repository)
+    - [Adjusting settings files](#adjusting-settings-files)
+    - [Setting up Python Virtual Environment](#setting-up-python-virtual-environment)
+    - [Building](#building)
+      - [`make build`](#make-build)
+      - [`make frontend`](#make-frontend)
+      - [`make clean`](#make-clean)
+      - [`make pip_requirements`](#make-pip_requirements)
+      - [`make django_migrations`](#make-django_migrations)
+      - [`make runserver`](#make-runserver)
+      - [`make webpack_watch`](#make-webpack_watch)
+    - [Turning on debugging](#turning-on-debugging)
+    - [The development server](#the-development-server)
+    - [The Specify 7 Worker](#the-specify-7-worker)
+    - [Installing production requirements](#installing-production-requirements)
+    - [Setting up Apache](#setting-up-apache)
+    - [Restarting Apache](#restarting-apache)
+    - [Nginx configuration](#nginx-configuration)
+  - [Updating Specify 7](#updating-specify-7)
+  - [Updating the database (Specify 6) version](#updating-the-database-specify-6-version)
+  - [Localizing Specify 7](#localizing-specify-7)
 
 ## Changelog
 
@@ -132,8 +141,7 @@ released. Documentation for deploying Specify
 using Docker is available within the repository.
 
 [**📨 Click here to request
-access
-**](mailto:support@specifysoftware.org?subject=Requesting%20Docker%20Repository%20Access&body=My%20GitHub%20username%20is%3A%20%0D%0AMy%20Specify%20Member%20Institution%20is%3A%20%0D%0AAdditional%20Questions%20or%20Notes%3A%20)
+access**](mailto:support@specifysoftware.org?subject=Requesting%20Docker%20Repository%20Access&body=My%20GitHub%20username%20is%3A%20%0D%0AMy%20Specify%20Member%20Institution%20is%3A%20%0D%0AAdditional%20Questions%20or%20Notes%3A%20)
 or email  [support@specifysoftware.org](mailto:support@specifysoftware.org)
 with your GitHub username, member
 institution or collection, and any additional questions you have for us.
@@ -175,7 +183,7 @@ Ubuntu 20.04 LTS:
 
 ```shell
 sudo apt install -y curl
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt-get -y install --no-install-recommends \
   build-essential \
   git \
@@ -209,7 +217,7 @@ yum install -y \
   unzip
 ```
 
-Afterward, please make sure you have Node.js 18 installed:
+Afterward, please make sure you have Node.js 20 installed:
 
 ```
 node -v
@@ -224,7 +232,7 @@ Specify 7. It is possible to copy the Specify 6 install from another
 Linux system to avoid the need to install Java on the server.
 
 ```shell
-wget https://update.specifysoftware.org/6802/Specify_unix_64.sh
+wget https://update.specifysoftware.org/Specify_unix_64.sh
 sh Specify_unix_64.sh -q -dir ./Specify6.8.03
 sudo ln -s $(pwd)/Specify6.8.03 /opt/Specify
 ```
@@ -366,14 +374,18 @@ contenttypes, and sessions) but does not need the corresponding tables
 to be added to the database. Running `make django_migrations` will
 apply only those migrations needed for Specify 7 to operate.
 
-### The Specify 7 worker
+### The Specify 7 Worker
 
-Beginning with v7.6.0 the Specify WorkBench upload and validate
-operations are carried out by a separate worker process using a
-[Celery](https://docs.celeryproject.org/en/master/index.html) job
-queue with
-[Reddis](https://docs.celeryproject.org/en/master/getting-started/backends-and-brokers/redis.html)
-as the broker. The worker process can be started from the commandline
+Starting from version `v7.6.0`, the Specify WorkBench utilizes this 
+dedicated worker process to handle the upload and validation operations. 
+
+Starting from version `v7.9.0`, the record merging functionality employs the worker to handle all record merging activities.
+
+This worker process utilizes [Celery](https://docs.celeryproject.org/en/master/index.html), a job queue 
+management system, with [Redis](https://docs.celeryproject.org/en/master/getting-started/backends-and-brokers/redis.html) 
+serving as the broker.
+
+The worker process can be started from the commandline
 by executing:
 
 ```shell

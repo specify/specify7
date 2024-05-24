@@ -8,27 +8,25 @@ import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
 import type { GetOrSet, IR, RA } from '../../utils/types';
-import { defined } from '../../utils/types';
+import { defined, localized } from '../../utils/types';
 import { index } from '../../utils/utils';
 import { Container, Ul } from '../Atoms';
 import { formatConjunction } from '../Atoms/Internationalization';
 import { Link } from '../Atoms/Link';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import type { Collection } from '../DataModel/types';
 import { useAvailableCollections } from '../Forms/OtherCollectionView';
 import { userInformation } from '../InitialContext/userInformation';
 import { useTitle } from '../Molecules/AppTitle';
+import { RecordEdit } from '../Molecules/ResourceLink';
 import { SetPermissionContext } from '../Permissions/Context';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import { NotFoundView } from '../Router/NotFoundView';
+import { formatUrl } from '../Router/queryString';
 import { SafeOutlet } from '../Router/RouterUtils';
 import type { SecurityOutlet } from '../Toolbar/Security';
-import {
-  CollectionRoles,
-  CurrentUserLink,
-  ViewCollectionButton,
-} from './CollectionComponents';
+import { CollectionRoles, CurrentUserLink } from './CollectionComponents';
 import {
   mergeCollectionUsers,
   useCollectionUserRoles,
@@ -74,7 +72,7 @@ export function CollectionView({
 }: {
   readonly collection: SerializedResource<Collection>;
 }): JSX.Element {
-  useTitle(collection.collectionName ?? undefined);
+  useTitle(localized(collection.collectionName) ?? undefined);
 
   const getSetRoles = useAsyncState<IR<Role>>(
     React.useCallback(
@@ -131,12 +129,12 @@ export function CollectionView({
           <div className="flex gap-2">
             <h3 className="text-2xl">
               {commonText.colonLine({
-                label: schema.models.Collection.label,
+                label: tables.Collection.label,
                 value: collection.collectionName ?? '',
               })}
             </h3>
             {hasTablePermission('Collection', 'read') && (
-              <ViewCollectionButton collection={collection} />
+              <RecordEdit resource={collection} />
             )}
           </div>
           <div className="flex flex-1 flex-col gap-6 overflow-y-scroll">
@@ -151,7 +149,7 @@ export function CollectionView({
             <section className="flex flex-col gap-2">
               <h4 className="text-xl">
                 {userText.collectionUsers({
-                  collectionTable: schema.models.Collection.label,
+                  collectionTable: tables.Collection.label,
                 })}
               </h4>
               {typeof mergedUsers === 'object' ? (
@@ -184,13 +182,12 @@ export function CollectionView({
                                 onClick={(event): void => {
                                   event.preventDefault();
                                   navigate(
-                                    `/specify/security/user/${userId}/`,
-                                    {
-                                      state: {
-                                        type: 'SecurityUser',
-                                        initialCollectionId: collection.id,
-                                      },
-                                    }
+                                    formatUrl(
+                                      `/specify/security/user/${userId}/`,
+                                      {
+                                        collection: collection.id,
+                                      }
+                                    )
                                   );
                                 }}
                               >
@@ -204,20 +201,19 @@ export function CollectionView({
                       })}
                     </Ul>
                     <div>
-                      <Link.Green
+                      <Link.Success
                         href="/specify/security/user/new/"
                         onClick={(event): void => {
                           event.preventDefault();
-                          navigate('/specify/security/user/new/', {
-                            state: {
-                              type: 'SecurityUser',
-                              initialCollectionId: collection.id,
-                            },
-                          });
+                          navigate(
+                            formatUrl('/specify/security/user/new/', {
+                              collection: collection.id,
+                            })
+                          );
                         }}
                       >
-                        {commonText.create()}
-                      </Link.Green>
+                        {userText.addUser()}
+                      </Link.Success>
                     </div>
                   </>
                 )

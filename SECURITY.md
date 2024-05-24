@@ -15,9 +15,9 @@ questions you may have about configuration or deployment.
 
 | Version | Supported          |
 | ------- | ------------------ |
+| 7.9.x   | :white_check_mark: |
 | 7.8.x   | :white_check_mark: |
-| 7.7.x   | :white_check_mark: |
-| < 7.7   | :x:                |
+| < 7.8   | :x: |
 
 We support the latest version of Specify 6 only. You can report vulnerabilities
 or other issues for that application on

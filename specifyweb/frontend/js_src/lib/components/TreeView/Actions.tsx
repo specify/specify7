@@ -1,31 +1,40 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
-import { useBooleanState } from '../../hooks/useBooleanState';
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { treeText } from '../../localization/tree';
 import { formData } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
-import type { GetOrSet, RA } from '../../utils/types';
+import type { GetSet, RA, RR } from '../../utils/types';
 import { toLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema, AnyTree } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { genericTables } from '../DataModel/tables';
 import { DeleteButton } from '../Forms/DeleteButton';
-import { ResourceView } from '../Forms/ResourceView';
 import { getPref } from '../InitialContext/remotePrefs';
 import { Dialog } from '../Molecules/Dialog';
+import { ResourceLink } from '../Molecules/ResourceLink';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import type { Row } from './helpers';
 import { checkMoveViolatesEnforced } from './helpers';
 
-type Action = 'add' | 'desynonymize' | 'edit' | 'merge' | 'move' | 'synonymize';
+const treeActions = [
+  'add',
+  'bulkMove',
+  'desynonymize',
+  'edit',
+  'merge',
+  'move',
+  'synonymize',
+] as const;
+
+type Action = typeof treeActions[number];
 
 export function TreeViewActions<SCHEMA extends AnyTree>({
   tableName,
@@ -35,7 +44,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   actionRow,
   onChange: handleChange,
   onRefresh: handleRefresh,
-  setFocusPath,
+  focusPath: [focusPath, setFocusPath],
 }: {
   readonly tableName: SCHEMA['tableName'];
   readonly focusRef: React.MutableRefObject<HTMLAnchorElement | null>;
@@ -44,7 +53,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   readonly actionRow: Row | undefined;
   readonly onChange: (row: Row | undefined) => void;
   readonly onRefresh: () => void;
-  readonly setFocusPath: GetOrSet<RA<number> | undefined>[1];
+  readonly focusPath: GetSet<RA<number>>;
 }): JSX.Element {
   const isRoot = ranks[0] === focusedRow?.rankId;
 
@@ -77,22 +86,28 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
         <li className="contents">
           {typeof focusedRow === 'object' ? (
             isRoot ? (
-              <Button.Small onClick={undefined}>
-                {queryText.query()}
-              </Button.Small>
+              <Button.Icon
+                icon="search"
+                title={queryText.query()}
+                onClick={undefined}
+              />
             ) : (
-              <Link.Small
+              <Link.Icon
                 forwardRef={focusRef}
                 href={`/specify/query/fromtree/${tableName.toLowerCase()}/${
                   focusedRow.nodeId
                 }/`}
+                icon="search"
                 target="_blank"
-              >
-                {queryText.query()}
-              </Link.Small>
+                title={queryText.query()}
+              />
             )
           ) : (
-            <Button.Small onClick={undefined}>{queryText.query()}</Button.Small>
+            <Button.Icon
+              icon="search"
+              title={queryText.query()}
+              onClick={undefined}
+            />
           )}
         </li>
       )}
@@ -119,7 +134,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
             tableName={tableName}
             onDeleted={() => {
               handleRefresh();
-              setFocusPath((path) => path?.slice(0, -1));
+              setFocusPath(focusPath?.slice(0, -1));
             }}
           />
         </li>
@@ -144,22 +159,33 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
       )}
       {hasPermission(resourceName, 'move') && (
         <li className="contents">
-          <Button.Small
+          <Button.Icon
             disabled={disableButtons || isRoot}
+            icon="arrowsMove"
+            title={treeText.move()}
             onClick={(): void => setAction('move')}
-          >
-            {treeText.move()}
-          </Button.Small>
+          />
         </li>
       )}
+      {tableName === 'Storage' &&
+      hasPermission(resourceName as '/tree/edit/storage', 'bulk_move') ? (
+        <li className="contents">
+          <Button.Icon
+            disabled={disableButtons}
+            icon="truck"
+            title={treeText.moveItems()}
+            onClick={(): void => setAction('bulkMove')}
+          />
+        </li>
+      ) : null}
       {hasPermission(resourceName, 'merge') && (
         <li className="contents">
-          <Button.Small
+          <Button.Icon
             disabled={disableButtons || isRoot}
+            icon="merge"
+            title={treeText.merge()}
             onClick={(): void => setAction('merge')}
-          >
-            {treeText.merge()}
-          </Button.Small>
+          />
         </li>
       )}
       {hasPermission(
@@ -167,7 +193,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
         isSynonym ? 'desynonymize' : 'synonymize'
       ) && (
         <li className="contents">
-          <Button.Small
+          <Button.Icon
             disabled={
               disableButtons ||
               isRoot ||
@@ -175,12 +201,12 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
                 ? false
                 : !isSynonym && focusedRow.children > 0)
             }
+            icon={isSynonym ? 'undoSynonym' : 'synonym'}
+            title={isSynonym ? treeText.undoSynonymy() : treeText.synonymize()}
             onClick={(): void =>
               setAction(isSynonym ? 'desynonymize' : 'synonymize')
             }
-          >
-            {isSynonym ? treeText.undoSynonymy() : treeText.synonymize()}
-          </Button.Small>
+          />
         </li>
       )}
     </menu>
@@ -193,7 +219,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
       type={currentAction}
       onCancelAction={(): void => setAction(undefined)}
       onCompleteAction={(): void => {
-        setAction(currentAction);
+        setAction(undefined);
         handleRefresh();
       }}
     />
@@ -217,50 +243,57 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
   readonly isRoot: boolean;
   readonly onRefresh: () => void;
 }): JSX.Element | null {
-  const [isOpen, _, handleClose, handleToggle] = useBooleanState();
-
   const [resource, setResource] = useLiveState<
     SpecifyResource<AnySchema> | undefined
   >(
     React.useCallback(() => {
-      if (!isOpen) return undefined;
-      const model = schema.models[tableName] as SpecifyModel<AnyTree>;
-      const parentNode = new model.Resource({ id: nodeId });
+      const table = genericTables[tableName] as SpecifyTable<AnyTree>;
+      const parentNode = new table.Resource({ id: nodeId });
       let node = parentNode;
       if (addNew) {
-        node = new model.Resource();
+        node = new table.Resource();
         node.set('parent', parentNode.url());
       }
       return node;
-    }, [isOpen, nodeId, tableName, addNew])
+    }, [nodeId, tableName, addNew])
   );
+
+  const isViewMode = !hasTablePermission(tableName, 'update');
 
   return (
     <>
-      <Button.Small
-        aria-pressed={isOpen}
-        disabled={nodeId === undefined || disabled}
-        onClick={handleToggle}
-      >
-        {label}
-      </Button.Small>
-      {isOpen && typeof resource === 'object' && (
-        <ResourceView
-          dialog="nonModal"
-          isDependent={false}
-          isSubForm={false}
-          mode="edit"
+      {disabled ? (
+        <Button.Icon
+          icon={addNew ? 'plus' : 'pencil'}
+          title={label}
+          onClick={undefined}
+        />
+      ) : (
+        <ResourceLink
+          autoClose={false}
+          component={Link.Icon}
+          props={{
+            'aria-disabled': disabled,
+            icon: isViewMode ? 'eye' : addNew ? 'plus' : 'pencil',
+            title: label,
+          }}
           resource={resource}
-          onAdd={isRoot ? undefined : setResource}
-          onClose={handleClose}
-          onDeleted={handleRefresh}
-          onSaved={handleRefresh}
+          resourceView={{
+            dialog: 'nonModal',
+            onAdd: isRoot ? undefined : setResource,
+            onDeleted: handleRefresh,
+            onSaved: handleRefresh,
+          }}
         />
       )}
     </>
   );
 }
 
+const frontendToBackendMappingActions: RR<Action, string> = {
+  ...Object.fromEntries(treeActions.map((action) => [action, action])),
+  bulkMove: 'bulk_move',
+};
 function ActiveAction<SCHEMA extends AnyTree>({
   tableName,
   actionRow,
@@ -278,11 +311,10 @@ function ActiveAction<SCHEMA extends AnyTree>({
   readonly onCancelAction: () => void;
   readonly onCompleteAction: () => void;
 }): JSX.Element {
-  if (!['move', 'merge', 'synonymize', 'desynonymize'].includes(type))
-    throw new Error('Invalid action type');
+  if (!treeActions.includes(type)) throw new Error('Invalid action type');
 
-  const model = schema.models[tableName] as SpecifyModel<AnyTree>;
-  const treeName = model.label;
+  const table = genericTables[tableName] as SpecifyTable<AnyTree>;
+  const treeName = table.label;
 
   const [showPrompt, setShowPrompt] = React.useState(type === 'desynonymize');
   const loading = React.useContext(LoadingContext);
@@ -290,9 +322,9 @@ function ActiveAction<SCHEMA extends AnyTree>({
 
   const action = async (): Promise<number> =>
     ping(
-      `/api/specify_tree/${tableName.toLowerCase()}/${
-        actionRow.nodeId
-      }/${type}/`,
+      `/api/specify_tree/${tableName.toLowerCase()}/${actionRow.nodeId}/${
+        frontendToBackendMappingActions[type]
+      }/`,
       {
         method: 'POST',
         body:
@@ -308,6 +340,8 @@ function ActiveAction<SCHEMA extends AnyTree>({
       ? treeText.nodeMoveHintMessage({ nodeName: actionRow.fullName })
       : type === 'merge'
       ? treeText.mergeNodeHintMessage({ nodeName: actionRow.fullName })
+      : type === 'bulkMove'
+      ? treeText.bulkMoveNodeHintMessage({ nodeName: actionRow.fullName })
       : type === 'synonymize'
       ? treeText.synonymizeNodeHintMessage({ nodeName: actionRow.fullName })
       : treeText.desynonymizeNodeMessage({
@@ -323,6 +357,8 @@ function ActiveAction<SCHEMA extends AnyTree>({
     )
       disabled = treeText.cantMoveHere();
     else if (isSynonym) disabled = treeText.cantMoveToSynonym();
+  } else if (type === 'bulkMove') {
+    if (isSameRecord) disabled = title;
   } else if (type === 'merge') {
     if (isSameRecord) disabled = title;
     else if (focusedRow.rankId > actionRow.rankId)
@@ -347,6 +383,8 @@ function ActiveAction<SCHEMA extends AnyTree>({
           ? disabled
           : type === 'move'
           ? treeText.moveNodeHere({ nodeName: actionRow.fullName })
+          : type === 'bulkMove'
+          ? treeText.moveNodePreparationsHere({ nodeName: actionRow.fullName })
           : type === 'merge'
           ? treeText.mergeNodeHere({ nodeName: actionRow.fullName })
           : type === 'synonymize'
@@ -385,6 +423,8 @@ function ActiveAction<SCHEMA extends AnyTree>({
               >
                 {type === 'move'
                   ? treeText.moveNode()
+                  : type === 'bulkMove'
+                  ? treeText.moveItems()
                   : type === 'merge'
                   ? treeText.mergeNode()
                   : type === 'synonymize'
@@ -396,6 +436,8 @@ function ActiveAction<SCHEMA extends AnyTree>({
           header={
             type === 'move'
               ? treeText.moveNode()
+              : type === 'bulkMove'
+              ? treeText.moveItems()
               : type === 'merge'
               ? treeText.mergeNode()
               : type === 'synonymize'
@@ -406,6 +448,12 @@ function ActiveAction<SCHEMA extends AnyTree>({
         >
           {type === 'move'
             ? treeText.nodeMoveMessage({
+                treeName,
+                nodeName: actionRow.fullName,
+                parentName: focusedRow.fullName,
+              })
+            : type === 'bulkMove'
+            ? treeText.nodeBulkMoveMessage({
                 treeName,
                 nodeName: actionRow.fullName,
                 parentName: focusedRow.fullName,
@@ -446,17 +494,18 @@ function NodeDeleteButton({
   const resource = React.useMemo(
     () =>
       typeof nodeId === 'number'
-        ? new schema.models[tableName].Resource({ id: nodeId })
+        ? new genericTables[tableName].Resource({ id: nodeId })
         : undefined,
     [tableName, nodeId]
   );
 
   return disabled || resource === undefined ? (
-    <Button.Small onClick={undefined}>{commonText.delete()}</Button.Small>
+    <Button.Icon icon="trash" title={commonText.delete()} onClick={undefined} />
   ) : (
     <DeleteButton
       component={Button.Small}
       deferred
+      isIcon
       resource={resource}
       onDeleted={handleDeleted}
     />

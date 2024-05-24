@@ -60,7 +60,7 @@ export const reportsText = createDictionary({
   missingAttachments: {
     'en-us': 'Missing attachments',
     'ru-ru': 'Отсутствующие вложения',
-    'es-es': 'Archivos adjuntos faltantes',
+    'es-es': 'Adjuntos ausentes',
     'fr-fr': 'Pièces jointes manquantes',
     'uk-ua': 'Відсутні вкладення',
     'de-ch': 'Fehlende Anhänge',
@@ -68,7 +68,7 @@ export const reportsText = createDictionary({
   fix: {
     'en-us': 'Fix',
     'ru-ru': 'Исправить',
-    'es-es': 'Arreglar',
+    'es-es': 'Reparar',
     'fr-fr': 'Corriger',
     'uk-ua': 'Виправити',
     'de-ch': 'Korrektur',
@@ -76,7 +76,7 @@ export const reportsText = createDictionary({
   chooseFile: {
     'en-us': 'Choose file',
     'ru-ru': 'Выберите файл',
-    'es-es': 'Elija el archivo',
+    'es-es': 'Elejir archivo',
     'fr-fr': 'Sélectionner un fichier',
     'uk-ua': 'Виберіть файл',
     'de-ch': 'Datei auswählen',
@@ -92,7 +92,7 @@ export const reportsText = createDictionary({
   runReport: {
     'en-us': 'Run Report',
     'ru-ru': 'Запустить репорт',
-    'es-es': 'Sacar un reporte',
+    'es-es': 'Ejecutar el Informe',
     'fr-fr': 'Effectuer le rapport',
     'uk-ua': 'Запустити звіт',
     'de-ch': 'Bericht ausführen',
@@ -100,7 +100,7 @@ export const reportsText = createDictionary({
   missingReportQuery: {
     'en-us': 'Missing Report Query',
     'ru-ru': 'Отсутствует запрос отчета',
-    'es-es': 'Consulta de informe faltante',
+    'es-es': 'Consulta de informe ausente',
     'fr-fr': 'Requête de rapport manquante',
     'uk-ua': 'Відсутній запит звіту',
     'de-ch': 'Fehlende Berichtsabfrage',
@@ -108,7 +108,7 @@ export const reportsText = createDictionary({
   missingReportQueryDescription: {
     'en-us': 'This report does not have an associated query',
     'ru-ru': 'Этот отчет не имеет связанного запроса',
-    'es-es': 'Este informe no tiene una consulta asociada.',
+    'es-es': 'Este informe no tiene una consulta asociada',
     'fr-fr': "Ce rapport n'a pas de requête associée",
     'uk-ua': 'Цей звіт не має прив’язаного запиту',
     'de-ch': 'Dieser Bericht hat keine zugehörige Abfrage',
@@ -116,7 +116,7 @@ export const reportsText = createDictionary({
   missingReport: {
     'en-us': 'Missing report',
     'ru-ru': 'Отсутствует отчет',
-    'es-es': 'Informe faltante',
+    'es-es': 'Informe ausente',
     'fr-fr': 'Rapport manquant',
     'uk-ua': 'Відсутній звіт',
     'de-ch': 'Fehlender Bericht',

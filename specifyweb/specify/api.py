@@ -23,7 +23,8 @@ from django.db.models.fields import DateTimeField, FloatField, DecimalField
 from specifyweb.permissions.permissions import enforce, check_table_permissions, check_field_permissions, table_permissions_checker
 
 from . import models
-from .autonumbering import autonumber_and_save, AutonumberOverflowException
+from .autonumbering import autonumber_and_save
+from .uiformatters import AutonumberOverflowException
 from .filter_by_col import filter_by_collection
 from .auditlog import auditlog
 from .calculated_fields import calculate_extra_fields
@@ -336,7 +337,7 @@ def cleanData(model, data: Dict[str, Any], agent) -> Dict[str, Any]:
     metadata fields and warning on unexpected extra fields."""
     cleaned = {}
     for field_name in list(data.keys()):
-        if field_name in ('resource_uri', 'recordset_info'):
+        if field_name in ('resource_uri', 'recordset_info', '_tableName'):
             # These fields are meta data, not part of the resource.
             continue
         try:
@@ -345,8 +346,24 @@ def cleanData(model, data: Dict[str, Any], agent) -> Dict[str, Any]:
             logger.warn('field "%s" does not exist in %s', field_name, model)
         else:
             cleaned[field_name] = data[field_name]
+
+        # Unset date precision if date is not set, but precision is
+        # Set date precision if date is set, but precision is not
+        if field_name.endswith('precision'):
+            precision_field_name = field_name
+            date_field_name = field_name[:-len('precision')]
+            if date_field_name in data:
+                date = data[date_field_name]
+                has_date = date is not None and date != ''
+                has_precision = data[precision_field_name] is not None
+                if has_date and not has_precision:
+                    # Assume full precision
+                    cleaned[precision_field_name] = 1
+                elif not has_date and has_precision:
+                    cleaned[precision_field_name] = None
+        
     if model is get_model('Agent'):
-        # setting user agents is part of the user managment system.
+        # setting user agents is part of the user management system.
         try:
             del cleaned['specifyuser']
         except KeyError:
@@ -360,8 +377,11 @@ def cleanData(model, data: Dict[str, Any], agent) -> Dict[str, Any]:
             pass
 
     # timestampcreated should never be updated.
+    # ... well it is now ¯\_(ツ)_/¯
+    # New requirments are for timestampcreated to be overridable.
     try:
-        del cleaned['timestampcreated']
+        # del cleaned['timestampcreated']
+        pass
     except KeyError:
         pass
 
@@ -601,6 +621,8 @@ def delete_obj(collection, agent, obj, version=None, parent_obj=None) -> None:
     auditlog.remove(obj, agent, parent_obj)
     if version is not None:
         bump_version(obj, version)
+    if hasattr(obj, 'pre_constraints_delete'):
+        obj.pre_constraints_delete()
     obj.delete()
 
     for dep in dependents_to_delete:
@@ -787,7 +809,8 @@ def apply_filters(logged_in_collection, params, model, control_params=GetCollect
         objs = filter_by_collection(objs, logged_in_collection)
     if control_params['orderby']:
         try:
-            objs = objs.order_by(control_params['orderby'])
+            fields = control_params['orderby'].split(',')
+            objs = objs.order_by(*fields)
         except FieldError as e:
             raise OrderByError(e)
 

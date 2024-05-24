@@ -3,19 +3,19 @@
  */
 
 import React from 'react';
-import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
 import type { GetOrSet, IR, RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { index } from '../../utils/utils';
 import { Container, H2, H3 } from '../Atoms';
 import { className } from '../Atoms/className';
 import { fetchCollection } from '../DataModel/collection';
-import { serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
+import { serializeResource } from '../DataModel/serializers';
+import { tables } from '../DataModel/tables';
 import type { Institution, SpecifyUser } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useAvailableCollections } from '../Forms/OtherCollectionView';
@@ -40,9 +40,10 @@ export function SecurityPanel(): JSX.Element | null {
     React.useCallback(
       async () =>
         hasTablePermission('Institution', 'read')
-          ? fetchCollection('Institution', { limit: 1 }).then(
-              ({ records }) => records[0]
-            )
+          ? fetchCollection('Institution', {
+              limit: 1,
+              domainFilter: false,
+            }).then(({ records }) => records[0])
           : undefined,
       []
     ),
@@ -53,9 +54,10 @@ export function SecurityPanel(): JSX.Element | null {
     React.useCallback(
       async () =>
         hasTablePermission('SpecifyUser', 'read')
-          ? fetchCollection('SpecifyUser', { limit: 0 }).then(({ records }) =>
-              index(records)
-            )
+          ? fetchCollection('SpecifyUser', {
+              limit: 0,
+              domainFilter: false,
+            }).then(({ records }) => index(records))
           : {
               [userInformation.id]: serializeResource(userInformation),
             },
@@ -115,19 +117,19 @@ function Aside({
 }): JSX.Element {
   const availableCollections = useAvailableCollections();
   return (
-    <aside className={className.containerBase}>
+    <aside className={`${className.containerBase} md:max-w-[33vw]`}>
       {typeof institution === 'object' && (
         <section>
-          <H3>{schema.models.Institution.label}</H3>
+          <H3>{tables.Institution.label}</H3>
           <ActiveLink href="/specify/security/institution">
-            {institution.name as LocalizedString}
+            {localized(institution.name ?? '')}
           </ActiveLink>
         </section>
       )}
       <section>
         <H3>
           {availableCollections.length === 0
-            ? schema.models.Collection.label
+            ? tables.Collection.label
             : userText.collections()}
         </H3>
         <ul>
@@ -136,7 +138,7 @@ function Aside({
               <ActiveLink
                 href={`/specify/security/collection/${collection.id}/`}
               >
-                {collection.collectionName as LocalizedString}
+                {localized(collection.collectionName ?? '')}
               </ActiveLink>
             </li>
           ))}

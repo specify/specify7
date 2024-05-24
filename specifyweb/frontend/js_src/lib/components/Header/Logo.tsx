@@ -1,8 +1,8 @@
 import React from 'react';
 
+import { useHueDifference } from '../../hooks/useHueDifference';
 import { commonText } from '../../localization/common';
 import { userPreferences } from '../Preferences/userPreferences';
-import { useHueDifference } from '../../hooks/useHueDifference';
 
 export function Logo({
   isCollapsed,
@@ -29,7 +29,7 @@ export function Logo({
     `}
         href="/specify/"
       >
-        {/* Both logs are loaded to prevent flickering on collapse/expand */}
+        {/* Both logos are loaded to prevent flickering on collapse/expand */}
         <img
           alt=""
           className={`
@@ -54,11 +54,10 @@ export function Logo({
         ) : (
           <img
             alt=""
-            className={`max-h-[theme(spacing.24)] max-w-[theme(spacing.24)]
-        hover:animate-hue-rotate
+            className={`hover:animate-hue-rotate max-h-[theme(spacing.24)]
+        max-w-[theme(spacing.24)]
         ${isCollapsed ? 'hidden' : ''}
       `}
-            crossOrigin="anonymous"
             src={logo}
           />
         )}
@@ -67,12 +66,11 @@ export function Logo({
         ) : (
           <img
             alt=""
-            className={`max-h-[theme(spacing.16)] max-w-[theme(spacing.16)]
-      hover:animate-hue-rotate
+            className={`hover:animate-hue-rotate max-h-[theme(spacing.16)]
+      max-w-[theme(spacing.16)]
       ${isCollapsed ? '' : 'hidden'}
       ${isHorizontal ? 'w-10' : ''}
     `}
-            crossOrigin="anonymous"
             src={collapsedLogo}
           />
         )}

@@ -10,7 +10,7 @@ import { parseValue } from '../../utils/parser/parse';
 import type { GetOrSet, RA } from '../../utils/types';
 import { filterArray, setDevelopmentGlobal } from '../../utils/types';
 import { keysToLowerCase, replaceKey } from '../../utils/utils';
-import { MILLISECONDS } from '../Atoms/timeUnits';
+import { SECOND } from '../Atoms/timeUnits';
 import { softFail } from '../Errors/Crash';
 import {
   cachableUrl,
@@ -101,7 +101,7 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
       ).then(async (appResourceId) =>
         typeof appResourceId === 'number'
           ? fetchResourceData(values.fetchUrl, appResourceId)
-          : createResource(values.fetchUrl, values.resourceName)
+          : createDataResource(values.fetchUrl, values.resourceName)
       );
 
       const defaultValuesResource =
@@ -419,13 +419,13 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
 /* eslint-enable functional/no-this-expression */
 
 // Sync with back-end at most every 5s
-const syncTimeout = 5 * MILLISECONDS;
+const syncTimeout = 5 * SECOND;
 const mimeType = 'application/json';
 
 /**
  * Fetch ID of app resource containing preferences
  */
-const fetchResourceId = async (
+export const fetchResourceId = async (
   fetchUrl: string,
   resourceName: string
 ): Promise<number | undefined> =>
@@ -477,7 +477,7 @@ const fetchDefaultResourceData = async (
 /**
  * Create app resource to hold preferences if it doesn't yet exist
  */
-const createResource = async (
+export const createDataResource = async (
   fetchUrl: string,
   resourceName: string
 ): Promise<ResourceWithData> =>

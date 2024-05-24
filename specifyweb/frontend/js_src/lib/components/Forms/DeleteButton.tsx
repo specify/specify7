@@ -9,17 +9,17 @@ import { treeText } from '../../localization/tree';
 import { StringToJsx } from '../../localization/utils';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
-import { runQuery } from '../../utils/ajax/specifyApi';
 import type { RA } from '../../utils/types';
 import { overwriteReadOnly } from '../../utils/types';
 import { group } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { LoadingContext } from '../Core/Contexts';
-import { serializeResource } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { strictGetModel } from '../DataModel/schema';
+import { serializeResource } from '../DataModel/serializers';
+import type { Relationship } from '../DataModel/specifyField';
+import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { loadingBar } from '../Molecules';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
@@ -28,6 +28,7 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { createQuery } from '../QueryBuilder';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
+import { runQuery } from '../QueryBuilder/ResultsWrapper';
 import type { DeleteBlocker } from './DeleteBlocked';
 import { DeleteBlockers } from './DeleteBlocked';
 import { parentTableRelationship } from './parentTables';
@@ -44,6 +45,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
   deferred: initialDeferred = false,
   component: ButtonComponent = Button.Secondary,
   onDeleted: handleDeleted,
+  isIcon = false,
 }: {
   readonly resource: SpecifyResource<SCHEMA>;
   readonly deletionMessage?: React.ReactNode;
@@ -55,10 +57,12 @@ export function DeleteButton<SCHEMA extends AnySchema>({
   readonly deferred?: boolean;
   readonly component?: typeof Button['Secondary'];
   readonly onDeleted?: () => void;
+  readonly isIcon?: boolean;
 }): JSX.Element {
   const [deferred, setDeferred] = useLiveState<boolean>(
     React.useCallback(() => initialDeferred, [initialDeferred, resource])
   );
+
   const [blockers, setBlockers] = useAsyncState<RA<DeleteBlocker>>(
     React.useCallback(
       async () => (deferred ? undefined : fetchBlockers(resource)),
@@ -72,20 +76,31 @@ export function DeleteButton<SCHEMA extends AnySchema>({
 
   const isBlocked = Array.isArray(blockers) && blockers.length > 0;
 
-  const iconName = resource.specifyModel.name;
+  const iconName = resource.specifyTable.name;
 
   return (
     <>
-      <ButtonComponent
-        title={isBlocked ? formsText.deleteBlocked() : undefined}
-        onClick={(): void => {
-          handleOpen();
-          setDeferred(false);
-        }}
-      >
-        {isBlocked ? icons.exclamation : undefined}
-        {commonText.delete()}
-      </ButtonComponent>
+      {isIcon ? (
+        <Button.Icon
+          icon="trash"
+          title={isBlocked ? formsText.deleteBlocked() : commonText.delete()}
+          onClick={(): void => {
+            handleOpen();
+            setDeferred(false);
+          }}
+        />
+      ) : (
+        <ButtonComponent
+          title={isBlocked ? formsText.deleteBlocked() : undefined}
+          onClick={(): void => {
+            handleOpen();
+            setDeferred(false);
+          }}
+        >
+          {isBlocked ? icons.exclamation : undefined}
+          {commonText.delete()}
+        </ButtonComponent>
+      )}
       {isOpen ? (
         blockers === undefined ? (
           <Dialog
@@ -120,7 +135,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
               container: dialogClassNames.narrowContainer,
             }}
             header={formsText.deleteConfirmation({
-              tableName: resource.specifyModel.label,
+              tableName: resource.specifyTable.label,
             })}
             onClose={handleClose}
           >
@@ -162,6 +177,28 @@ export function DeleteButton<SCHEMA extends AnySchema>({
   );
 }
 
+function resolveParentViaOtherside(
+  parentRelationship: Relationship,
+  directRelationship: Relationship,
+  id: number
+) {
+  const baseTable = parentRelationship.relatedTable;
+  return createQuery('Delete blockers', baseTable).set('fields', [
+    QueryFieldSpec.fromPath(baseTable.name, [
+      baseTable.idField.name,
+    ]).toSpQueryField(),
+    QueryFieldSpec.fromPath(baseTable.name, [
+      parentRelationship.otherSideName!,
+      directRelationship.name,
+      directRelationship.relatedTable.idField.name,
+    ])
+      .toSpQueryField()
+      .set('isDisplay', false)
+      .set('operStart', queryFieldFilters.equal.id)
+      .set('startValue', id.toString()),
+  ]);
+}
+
 export async function fetchBlockers(
   resource: SpecifyResource<AnySchema>,
   expectFailure: boolean = false
@@ -173,11 +210,10 @@ export async function fetchBlockers(
       readonly ids: RA<number>;
     }>
   >(
-    `/api/delete_blockers/${resource.specifyModel.name.toLowerCase()}/${
+    `/api/delete_blockers/${resource.specifyTable.name.toLowerCase()}/${
       resource.id
     }/`,
     {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       headers: { Accept: 'application/json' },
       expectedErrors: expectFailure ? [Http.NOT_FOUND] : [],
     }
@@ -185,12 +221,12 @@ export async function fetchBlockers(
   if (status === Http.NOT_FOUND) return [];
 
   const blockersPromise = data.map(async ({ ids, field, table: tableName }) => {
-    const table = strictGetModel(tableName);
+    const table = strictGetTable(tableName);
     const directRelationship = table.strictGetRelationship(field);
     const parentRelationship =
-      parentTableRelationship()[directRelationship.model.name];
+      parentTableRelationship()[directRelationship.table.name];
     return [
-      parentRelationship?.relatedModel ?? directRelationship.model,
+      parentRelationship?.relatedTable ?? directRelationship.table,
       {
         directRelationship,
         parentRelationship,
@@ -202,22 +238,38 @@ export async function fetchBlockers(
               }))
             : await runQuery<readonly [number, number]>(
                 serializeResource(
-                  createQuery('Delete blockers', directRelationship.model).set(
-                    'fields',
-                    [
-                      QueryFieldSpec.fromPath(directRelationship.model.name, [
-                        directRelationship.model.idField.name,
+                  /*
+                   * TODO: Check if this is possible.
+                   */
+                  parentRelationship.otherSideName === undefined
+                    ? createQuery(
+                        'Delete blockers',
+                        directRelationship.table
+                      ).set('fields', [
+                        QueryFieldSpec.fromPath(directRelationship.table.name, [
+                          directRelationship.table.idField.name,
+                        ])
+                          .toSpQueryField()
+                          .set('isDisplay', false)
+                          .set('operStart', queryFieldFilters.in.id)
+                          .set('startValue', ids.join(',')),
+                        /*
+                         * TODO: ParentRelationship.model.name should always be directRelationship.model.name.
+                         * Check if that can never be the case
+                         */
+                        QueryFieldSpec.fromPath(
+                          parentRelationship.relatedTable.name,
+                          [
+                            parentRelationship.name,
+                            parentRelationship.relatedTable.idField.name,
+                          ]
+                        ).toSpQueryField(),
                       ])
-                        .toSpQueryField()
-                        .set('isDisplay', false)
-                        .set('operStart', queryFieldFilters.in.id)
-                        .set('startValue', ids.join(',')),
-                      QueryFieldSpec.fromPath(parentRelationship.model.name, [
-                        parentRelationship.name,
-                        parentRelationship.relatedModel.idField.name,
-                      ]).toSpQueryField(),
-                    ]
-                  )
+                    : resolveParentViaOtherside(
+                        parentRelationship,
+                        directRelationship,
+                        resource.id
+                      )
                 ),
                 {
                   limit: 0,

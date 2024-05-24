@@ -1,6 +1,10 @@
 import re
 from contextlib import contextmanager
 import logging
+
+from specifyweb.specify.tree_ranks import RankOperation, post_tree_rank_save, pre_tree_rank_deletion, \
+    verify_rank_parent_chain_integrity, pre_tree_rank_init, post_tree_rank_deletion
+from specifyweb.specify.model_timestamp import pre_save_auto_timestamp_field_with_override
 logger = logging.getLogger(__name__)
 
 
@@ -9,8 +13,9 @@ from django.db.models import F, Q, ProtectedError
 from django.conf import settings
 
 from specifyweb.businessrules.exceptions import TreeBusinessRuleException
+import specifyweb.specify.models as spmodels
 
-from  .auditcodes import TREE_MERGE, TREE_SYNONYMIZE, TREE_DESYNONYMIZE
+from  .auditcodes import TREE_BULK_MOVE, TREE_MERGE, TREE_SYNONYMIZE, TREE_DESYNONYMIZE
 
 @contextmanager
 def validate_node_numbers(table, revalidate_after=True):
@@ -22,12 +27,13 @@ def validate_node_numbers(table, revalidate_after=True):
     if revalidate_after:
         validate_tree_numbering(table)
 
-class Tree(models.Model):
+class Tree(models.Model): # FUTURE: class Tree(SpTimestampedModel):
     class Meta:
         abstract = True
 
     def save(self, *args, skip_tree_extras=False, **kwargs):
         def save():
+            pre_save_auto_timestamp_field_with_override(self)
             super(Tree, self).save(*args, **kwargs)
 
         if skip_tree_extras:
@@ -103,13 +109,13 @@ class Tree(models.Model):
                  }})
 
         if prev_self is None:
-             reset_fullnames(self.definition, null_only=True)
+            set_fullnames(self.definition, null_only=True, node_number_range=[self.nodenumber, self.highestchildnodenumber])
         elif (
             prev_self.name != self.name
             or prev_self.definitionitem_id != self.definitionitem_id
             or prev_self.parent_id != self.parent_id
         ):
-            reset_fullnames(self.definition)
+            set_fullnames(self.definition, node_number_range=[self.nodenumber, self.highestchildnodenumber])
 
     def accepted_id_attr(self):
         return 'accepted{}_id'.format(self._meta.db_table)
@@ -169,7 +175,7 @@ def adding_node(node):
         # This business rule can be overriden by a remote pref.
         pattern = r'^sp7\.allow_adding_child_to_synonymized_parent\.' + node.specify_model.name + '=(.+)'
         override = re.search(pattern, get_remote_prefs(), re.MULTILINE)
-        if override is None or override.group(1).lower() != "true":
+        if override is None or override.group(1).strip().lower() != "true":
             raise TreeBusinessRuleException(
                 f'Adding node "{node.fullname}" to synonymized parent "{parent.fullname}"',
                 {"tree" : "Taxon",
@@ -247,7 +253,7 @@ def merge(node, into, agent):
         "operation" : "merge",
         "localizationKey" : "invalidNodeType"})
     target = model.objects.select_for_update().get(id=into.id)
-    if not (node.definition_id == target.definition_id): raise AssertionError("merging across trees", {"localizationKey" : "mergeAcrossTrees"})
+    if not (node.definition_id == target.definition_id): raise AssertionError("merging across trees", {"localizationKey" : "operationAcrossTrees", "operation": "merge"})
     if into.accepted_id is not None:
         raise TreeBusinessRuleException(
             'Merging node "{node.fullname}" with synonymized node "{into.fullname}"'.format(node=node, into=into),
@@ -277,7 +283,7 @@ def merge(node, into, agent):
         else:
             child.parent = target
             child.save()
-
+   
     for retry in range(100):
         try:
             id = node.id
@@ -299,6 +305,24 @@ def merge(node, into, agent):
 
     assert False, "failed to move all referrences to merged tree node"
 
+def bulk_move(node, into, agent):
+    from . import models
+    logger.info('Bulk move preparations from %s to %s', node, into)
+    model = type(node)
+    if not type(into) is model: raise AssertionError(
+        f"Unexpected type of node '{into.__class__.__name__}', during bulk move. Expected '{model.__class__.__name__}'",
+        {"node" : into.__class__.__name__,
+        "nodeModel" : model.__class__.__name__,
+        "operation" : "bulk_move",
+        "localizationKey" : "invalidNodeType"})
+    target = model.objects.select_for_update().get(id=into.id)
+    if not (node.definition_id == target.definition_id): raise AssertionError("Bulk move across trees", {"localizationKey" : "operationAcrossTrees", "operation": "bulk move"})
+
+    models.Preparation.objects.filter(storage = node).update(storage = into)
+
+    mutation_log(TREE_BULK_MOVE, node, agent, node.parent,
+                        [{'field_name': model.specify_model.idFieldName, 'old_value': node.id, 'new_value': into.id}])
+
 def synonymize(node, into, agent):
     logger.info('synonymizing %s to %s', node, into)
     model = type(node)
@@ -309,7 +333,7 @@ def synonymize(node, into, agent):
         "operation" : "synonymize",
         "localizationKey" : "invalidNodeType"})
     target = model.objects.select_for_update().get(id=into.id)
-    if not (node.definition_id == target.definition_id): raise AssertionError("synonymizing across trees", {"localizationKey" : "synonymizeAcrossTrees"})
+    if not (node.definition_id == target.definition_id): raise AssertionError("synonymizing across trees", {"localizationKey" : "operationAcrossTrees", "operation": "synonymize"})
     if target.accepted_id is not None:
         raise TreeBusinessRuleException(
             'Synonymizing "{node.fullname}" to synonymized node "{into.fullname}"'.format(node=node, into=into),
@@ -337,7 +361,7 @@ def synonymize(node, into, agent):
     from specifyweb.context.remote_prefs import get_remote_prefs
     pattern = r'^sp7\.allow_adding_child_to_synonymized_parent\.' + node.specify_model.name + '=(.+)'
     override = re.search(pattern, get_remote_prefs(), re.MULTILINE)
-    if node.children.count() > 0 and (override is None or override.group(1).lower() != "true"):
+    if node.children.count() > 0 and (override is None or override.group(1).strip().lower() != "true"):
         raise TreeBusinessRuleException(
             'Synonymizing node "{node.fullname}" which has children'.format(node=node),
             {"tree" : "Taxon",
@@ -470,13 +494,11 @@ def definition_joins(table, depth):
         for j in range(depth)
     ])
 
-def reset_fullnames(treedef, null_only=False):
+def set_fullnames(treedef, null_only=False, node_number_range=None):
     table = treedef.treeentries.model._meta.db_table
     depth = treedef.treedefitems.count()
     reverse = treedef.fullnamedirection == -1
-    return set_fullnames(table, treedef.id, depth, reverse, null_only)
-
-def set_fullnames(table, treedefid, depth, reverse=False, null_only=False):
+    treedefid = treedef.id
     logger.info('set_fullnames: %s', (table, treedefid, depth, reverse))
     if depth < 1:
         return
@@ -490,6 +512,7 @@ def set_fullnames(table, treedefid, depth, reverse=False, null_only=False):
         "and t0.{table}treedefid = {treedefid}\n"
         "and t0.acceptedid is null\n"
         "{null_only}\n"
+        "{node_number_range}\n"
     ).format(
         root=depth-1,
         table=table,
@@ -498,7 +521,9 @@ def set_fullnames(table, treedefid, depth, reverse=False, null_only=False):
         parent_joins=parent_joins(table, depth),
         definition_joins=definition_joins(table, depth),
         null_only="and t0.fullname is null" if null_only else "",
+        node_number_range="and t0.nodenumber between {} and {}".format(node_number_range[0], node_number_range[1]) if not (node_number_range is None) else ''
     )
+
     logger.debug('fullname update sql:\n%s', sql)
     return cursor.execute(sql)
 
@@ -659,3 +684,52 @@ def renumber_tree(table):
     tree_model = datamodel.get_table(table)
     tasknames = [name.format(tree_model.name) for name in ("UpdateNodes{}", "BadNodes{}")]
     Sptasksemaphore.objects.filter(taskname__in=tasknames).update(islocked=False)
+
+def is_instance_of_tree_def_item(obj):
+    tree_def_item_classes = [
+        spmodels.Geographytreedefitem,
+        spmodels.Geologictimeperiodtreedefitem,
+        spmodels.Lithostrattreedefitem,
+        spmodels.Storagetreedefitem,
+        spmodels.Taxontreedefitem,
+    ]
+    return any(isinstance(obj, cls) for cls in tree_def_item_classes)
+
+class TreeRank(models.Model):
+    class Meta:
+            abstract = True
+
+    def save(self, *args, **kwargs):
+        # pre_save
+        if hasattr(self, 'isaccepted'):
+            self.isaccepted = self.accepted_id == None
+        if self.pk is None: # is it a new object?
+            pre_tree_rank_init(self)
+            verify_rank_parent_chain_integrity(self, RankOperation.CREATED)
+        else:
+            verify_rank_parent_chain_integrity(self, RankOperation.UPDATED)
+        
+        # save
+        super(TreeRank, self).save(*args, **kwargs)
+
+        # post_save
+        post_tree_rank_save(self.__class__, self)
+
+    def delete(self, *args, **kwargs):
+        # pre_delete
+        if self.__class__.objects.get(id=self.id).parent is None:
+            raise TreeBusinessRuleException(
+                "cannot delete root level tree definition item",
+                {"tree": self.__class__.__name__,
+                 "localizationKey": 'deletingTreeRoot',
+                 "node": {
+                     "id": self.id
+                 }})
+        pre_tree_rank_deletion(self.__class__, self)
+        verify_rank_parent_chain_integrity(self, RankOperation.DELETED)
+
+        # delete
+        super(TreeRank, self).delete(*args, **kwargs)
+
+        # post_delete
+        post_tree_rank_deletion(self)

@@ -5,17 +5,19 @@ import { queryText } from '../../localization/query';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
+import { genericTables } from '../DataModel/tables';
 import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
+import { softFail } from '../Errors/Crash';
 import { Dialog } from '../Molecules/Dialog';
-import { downloadFile } from '../Molecules/FilePicker';
 import { hasPermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
+import { downloadDataSet } from '../WorkBench/helpers';
 import { QueryButton } from './Components';
 import type { QueryField } from './helpers';
 import { hasLocalityColumns } from './helpers';
@@ -80,30 +82,38 @@ export function QueryExportButtons({
    *Will be only called if query is not distinct,
    *selection not enabled when distinct selected
    */
-  function handleSelectedResults(): string {
-    const selectedResults = results?.current?.filter((item) =>
-      f.has(selectedRows, item?.[0])
+  async function exportSelected(): Promise<void> {
+    const name = `${
+      queryResource.isNew()
+        ? `${queryText.newQueryName()} ${genericTables[baseTableName].label}`
+        : queryResource.get('name')
+    } - ${new Date().toDateString()}.csv`;
+
+    const selectedResults = results?.current?.map((row) =>
+      row !== undefined && f.has(selectedRows, row[0])
+        ? row?.slice(1).map((cell) => cell?.toString() ?? '')
+        : undefined
     );
 
-    const joinedSelected = selectedResults?.map((subArray) =>
-      subArray?.slice(1).join(separator)
-    );
+    if (selectedResults === undefined) return undefined;
 
-    const resultToExport = [
-      fields
-        .map((field) =>
-          generateMappingPathPreview(baseTableName, field.mappingPath)
-        )
-        .join(separator),
-      ...(joinedSelected ?? []),
-    ];
+    const filteredResults = filterArray(selectedResults);
 
-    return resultToExport.join('\n');
+    const columnsName = fields
+      .filter((field) => field.isDisplay)
+      .map((field) =>
+        generateMappingPathPreview(baseTableName, field.mappingPath)
+      );
+
+    return downloadDataSet(name, filteredResults, columnsName, separator);
   }
+
+  const containsResults = results.current?.some((row) => row !== undefined);
 
   const canUseKml =
     (baseTableName === 'Locality' ||
       fields.some(({ mappingPath }) => mappingPath.includes('locality'))) &&
+    containsResults &&
     hasPermission('/querybuilder/query', 'export_kml');
 
   return (
@@ -125,23 +135,14 @@ export function QueryExportButtons({
           {queryText.missingCoordinatesForKmlDescription()}
         </Dialog>
       ) : undefined}
-      {hasPermission('/querybuilder/query', 'export_csv') && (
+      {containsResults && hasPermission('/querybuilder/query', 'export_csv') && (
         <QueryButton
           disabled={fields.length === 0}
           showConfirmation={showConfirmation}
           onClick={(): void => {
             selectedRows.size === 0
               ? doQueryExport('/stored_query/exportcsv/', separator)
-              : downloadFile(
-                  `${
-                    queryResource.isNew()
-                      ? `${queryText.newQueryName()} ${
-                          schema.models[baseTableName].label
-                        }`
-                      : queryResource.get('name')
-                  } - ${new Date().toDateString()}.csv`,
-                  handleSelectedResults()
-                );
+              : exportSelected().catch(softFail);
           }}
         >
           {queryText.createCsv()}

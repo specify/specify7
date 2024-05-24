@@ -16,7 +16,7 @@ exports[`Container.Base renders without errors 1`] = `
 <DocumentFragment>
   <section
     class="flex flex-col gap-4 overflow-scroll
-  overflow-x-auto [overflow-y:overlay] [scrollbar-gutter:stable] bg-[color:var(--form-foreground)]
+  overflow-x-auto [overflow-y:overlay] [scrollbar-gutter:auto] bg-[color:var(--form-foreground)]
   rounded p-4 shadow-gray-400 shadow-2xl"
   >
     View
@@ -28,8 +28,8 @@ exports[`Container.Center renders without errors 1`] = `
 <DocumentFragment>
   <section
     class="flex flex-col gap-4 overflow-scroll
-  overflow-x-auto [overflow-y:overlay] [scrollbar-gutter:stable] bg-[color:var(--form-foreground)]
-  rounded p-4 shadow-gray-400 shadow-2xl max-w-[min(100%,var(--form-max-width))]
+  overflow-x-auto [overflow-y:overlay] [scrollbar-gutter:auto] bg-[color:var(--form-foreground)]
+  rounded p-4 shadow-gray-400 shadow-2xl max-w-[var(--form-max-width)]
     mx-auto w-full text-[length:var(--form-font-size)] font-[family-name:var(--form-font-family)]"
   >
     View

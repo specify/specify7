@@ -10,8 +10,10 @@ from functools import reduce
 
 from django.conf import settings
 from django.db import transaction
-from sqlalchemy import sql, orm
+from sqlalchemy import sql, orm, func, select
 from sqlalchemy.sql.expression import asc, desc, insert, literal
+
+from specifyweb.stored_queries.group_concat import group_by_displayed_fields
 
 from . import models
 from .format import ObjectFormatter
@@ -52,20 +54,40 @@ def filter_by_collection(model, query, collection):
         logger.info("filtering taxon to discipline: %s", collection.discipline.name)
         return query.filter(model.TaxonTreeDefID == collection.discipline.taxontreedef_id)
 
+    if model is models.TaxonTreeDefItem:
+        logger.info("filtering taxon rank to discipline: %s", collection.discipline.name)
+        return query.filter(model.TaxonTreeDefID == collection.discipline.taxontreedef_id)
+
     if model is models.Geography:
         logger.info("filtering geography to discipline: %s", collection.discipline.name)
+        return query.filter(model.GeographyTreeDefID == collection.discipline.geographytreedef_id)
+
+    if model is models.GeographyTreeDefItem:
+        logger.info("filtering geography rank to discipline: %s", collection.discipline.name)
         return query.filter(model.GeographyTreeDefID == collection.discipline.geographytreedef_id)
 
     if model is models.LithoStrat:
         logger.info("filtering lithostrat to discipline: %s", collection.discipline.name)
         return query.filter(model.LithoStratTreeDefID == collection.discipline.lithostrattreedef_id)
 
+    if model is models.LithoStratTreeDefItem:
+        logger.info("filtering lithostrat rank to discipline: %s", collection.discipline.name)
+        return query.filter(model.LithoStratTreeDefID == collection.discipline.lithostrattreedef_id)
+
     if model is models.GeologicTimePeriod:
         logger.info("filtering geologic time period to discipline: %s", collection.discipline.name)
         return query.filter(model.GeologicTimePeriodTreeDefID == collection.discipline.geologictimeperiodtreedef_id)
 
+    if model is models.GeologicTimePeriodTreeDefItem:
+        logger.info("filtering geologic time period rank to discipline: %s", collection.discipline.name)
+        return query.filter(model.GeologicTimePeriodTreeDefID == collection.discipline.geologictimeperiodtreedef_id)
+
     if model is models.Storage:
         logger.info("filtering storage to institution: %s", collection.discipline.division.institution.name)
+        return query.filter(model.StorageTreeDefID == collection.discipline.division.institution.storagetreedef_id)
+
+    if model is models.StorageTreeDefItem:
+        logger.info("filtering storage rank to institution: %s", collection.discipline.division.institution.name)
         return query.filter(model.StorageTreeDefID == collection.discipline.division.institution.storagetreedef_id)
 
     if model in (
@@ -185,7 +207,7 @@ def query_to_csv(session, collection, user, tableid, field_specs, path,
             if row_filter is not None and not row_filter(row): continue
             encoded = [
                 re.sub('\r|\n', ' ', str(f))
-                for f in (row[1:] if strip_id and not distinct else row)
+                for f in (row[1:] if strip_id or distinct else row)
             ]
             csv_writer.writerow(encoded)
 
@@ -237,31 +259,24 @@ def query_to_kml(session, collection, user, tableid, field_specs, path, captions
     logger.debug('query_to_kml finished')
 
 def getCoordinateColumns(field_specs, hasId):
-    lat1, lng1, lat2, lng2, lltype = (-1,-1,-1,-1,-1)
+    coords = {'longitude1': -1, 'latitude1': -1, 'longitude2': -1, 'latitude2': -1, 'latlongtype': -1}
     f = 1 if hasId else 0
     for fld in field_specs:
         if fld.fieldspec.table.name == 'Locality':
             jp = fld.fieldspec.join_path
-            f_name = jp[len(jp)-1].name.lower()
-            if f_name == 'longitude1':
-                lng1 = f
-            elif f_name == 'latitude1':
-                lat1 = f
-            elif f_name == 'longitude2':
-                lng2 = f
-            elif f_name == 'latitude2':
-                lat2 = f
-            elif f_name == 'latlongtype':
-                lltype = f
+            if not jp:
+                continue
+            f_name = jp[-1].name.lower()
+            if f_name in coords:
+                coords[f_name] = f
         if fld.display:
             f = f + 1
 
-    result = [lng1, lat1]
-    if lng2 != -1 and lat2 != -1:
-        result.append(lng2)
-        result.append(lat2)
-        if lltype != -1:
-            result.append(lltype)
+    result = [coords['longitude1'], coords['latitude1']]
+    if coords['longitude2'] != -1 and coords['latitude2'] != -1:
+        result.extend([coords['longitude2'], coords['latitude2']])
+        if coords['latlongtype'] != -1:
+            result.append(coords['latlongtype'])
 
     return result
 
@@ -361,8 +376,6 @@ def createPlacemark(kmlDoc, row, coord_cols, table, captions, host):
         placemarkElement.appendChild(multiElement)
 
     return placemarkElement
-
-
 
 def run_ephemeral_query(collection, user, spquery):
     """Execute a Specify query from deserialized json and return the results
@@ -554,7 +567,7 @@ def build_query(session, collection, user, tableid, field_specs,
 
     replace_nulls = if True, replace null values with ""
 
-    distinct = if True, do not return record IDs and query distinct rows
+    distinct = if True, group by all display fields, and return all record IDs associated with a row
     """
     model = models.models_by_tableid[tableid]
     id_field = getattr(model, model._id)
@@ -566,7 +579,7 @@ def build_query(session, collection, user, tableid, field_specs,
     query = QueryConstruct(
         collection=collection,
         objectformatter=ObjectFormatter(collection, user, replace_nulls),
-        query=session.query().distinct() if distinct else session.query(id_field),
+        query=session.query(func.group_concat(id_field.distinct(), separator=',')) if distinct else session.query(id_field),
     )
 
     tables_to_read = set([
@@ -592,6 +605,7 @@ def build_query(session, collection, user, tableid, field_specs,
                 .filter(models.RecordSetItem.recordSet == recordset)
 
     order_by_exprs = []
+    selected_fields = []
     predicates_by_field = defaultdict(list)
     #augment_field_specs(field_specs, formatauditobjs)
     for fs in field_specs:
@@ -599,7 +613,9 @@ def build_query(session, collection, user, tableid, field_specs,
 
         query, field, predicate = fs.add_to_query(query, formatauditobjs=formatauditobjs)
         if fs.display:
-            query = query.add_columns(query.objectformatter.fieldformat(fs, field))
+            formatted_field = query.objectformatter.fieldformat(fs, field)
+            query = query.add_columns(formatted_field)
+            selected_fields.append(formatted_field)
 
         if sort_type is not None:
             order_by_exprs.append(sort_type(field))
@@ -620,6 +636,9 @@ def build_query(session, collection, user, tableid, field_specs,
     else:
         where = reduce(sql.and_, (p for ps in predicates_by_field.values() for p in ps))
         query = query.filter(where)
+
+    if distinct:
+        query = group_by_displayed_fields(query, selected_fields)
 
     logger.debug("query: %s", query.query)
     return query.query, order_by_exprs

@@ -4,15 +4,15 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
-import { fieldFormat } from '../../utils/fieldFormat';
 import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
 import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import type { LoanPreparation } from '../DataModel/types';
+import { fieldFormat } from '../Formatters/fieldFormat';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
-import type { PrepReturnRowState } from './PrepReturnDialog';
+import type { PrepReturnRowState } from './LoanReturn';
 
 export function PrepReturnRow({
   preparation,
@@ -47,13 +47,12 @@ export function PrepReturnRow({
                   readonly taxon: string;
                 }>(async (collectionObject) => ({
                   catalogNumber: await fieldFormat(
-                    getField(schema.models.CollectionObject, 'catalogNumber'),
-                    undefined,
+                    getField(tables.CollectionObject, 'catalogNumber'),
                     collectionObject.get('catalogNumber')
                   ),
                   taxon: await collectionObject
                     .rgetCollection('determinations')
-                    .then(({ models }) =>
+                    .then(async ({ models }) =>
                       models
                         .find((determination) => determination.get('isCurrent'))
                         ?.rgetPromise('preferredTaxon')
@@ -71,10 +70,7 @@ export function PrepReturnRow({
   );
 
   const [showRemarks, _, __, handleToggle] = useBooleanState();
-  const remarksLabel = getField(
-    schema.models.LoanReturnPreparation,
-    'remarks'
-  ).label;
+  const remarksLabel = getField(tables.LoanReturnPreparation, 'remarks').label;
 
   return (
     <>
@@ -101,7 +97,7 @@ export function PrepReturnRow({
         </td>
         <td className="text-center">{unresolved}</td>
         <td>
-          <Input.Number
+          <Input.Integer
             aria-label={interactionsText.returnedAmount()}
             className="w-12"
             max={unresolved}
@@ -109,34 +105,34 @@ export function PrepReturnRow({
             title={interactionsText.returnedAmount()}
             value={returns}
             onValueChange={(returns): void =>
-              handleChange({
-                // Make return <= unresolved
-                returns: Math.min(returns, unresolved),
-                // Make resolved >= returned
-                resolve: Math.max(returns, resolve),
-                unresolved,
-                remarks,
-              })
+              handleChange(
+                updateReturnChanged({
+                  returns,
+                  resolve,
+                  unresolved,
+                  remarks,
+                })
+              )
             }
           />
         </td>
         <td>
-          <Input.Number
+          <Input.Integer
             aria-label={interactionsText.resolvedAmount()}
             className="w-12"
             max={unresolved}
             min={returns}
             title={interactionsText.resolvedAmount()}
             value={resolve}
-            onValueChange={(resolve): void =>
-              handleChange({
-                // Make resolve <= unresolved
-                resolve: Math.min(resolve, unresolved),
-                // Make returned <= resolved
-                returns: Math.min(resolve, returns),
-                unresolved,
-                remarks,
-              })
+            onValueChange={(resolved): void =>
+              handleChange(
+                updateResolvedChanged({
+                  returns,
+                  resolve: resolved,
+                  unresolved,
+                  remarks,
+                })
+              )
             }
           />
         </td>
@@ -178,4 +174,44 @@ export function PrepReturnRow({
       ) : undefined}
     </>
   );
+}
+
+export function updateReturnChanged({
+  returns,
+  resolve,
+  unresolved,
+  remarks,
+}: PrepReturnRowState): PrepReturnRowState {
+  // Make return <= unresolved
+  const returnedCount = Math.min(returns, unresolved);
+
+  // Make resolved >= returned
+  const newResolve = Math.max(returns, resolve);
+
+  return {
+    resolve: newResolve,
+    returns: returnedCount,
+    unresolved,
+    remarks,
+  };
+}
+
+export function updateResolvedChanged({
+  returns,
+  resolve,
+  unresolved,
+  remarks,
+}: PrepReturnRowState): PrepReturnRowState {
+  // Make return <= unresolved
+  const resolvedCount = Math.min(resolve, unresolved);
+
+  // Make resolved >= returned
+  const newReturns = Math.min(resolve, returns);
+
+  return {
+    resolve: resolvedCount,
+    returns: newReturns,
+    unresolved,
+    remarks,
+  };
 }
