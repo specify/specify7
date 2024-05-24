@@ -1,10 +1,9 @@
 import type Handsontable from 'handsontable';
 import React from 'react';
 
-import { useBooleanState } from '../../hooks/useBooleanState';
 import { localityText } from '../../localization/locality';
 import { wbText } from '../../localization/workbench';
-import type { RA } from '../../utils/types';
+import type { RA, IR } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import type { Field } from '../Leaflet/helpers';
 import { LeafletMap } from '../Leaflet/Map';
@@ -25,10 +24,8 @@ export function WbLeafletMap({
   readonly dataset: Dataset;
   readonly mappings: WbMapping | undefined;
 }): JSX.Element {
-  const [showLeafletMap, openLeafletMap, closeLeafletMap] = useBooleanState();
-
   const [localityPoints, setLocalityPoints] = React.useState<
-    RA<Readonly<Record<string, Field<number | string>>>> | undefined
+    RA<IR<Field<number | string>>> | undefined
   >(undefined);
 
   const handleOpen = () => {
@@ -54,24 +51,23 @@ export function WbLeafletMap({
             selection.visualRows
           );
     setLocalityPoints(localityPoints);
-    openLeafletMap();
   };
 
   return (
     <>
       <Button.Small
         aria-haspopup="dialog"
-        aria-pressed={showLeafletMap}
+        aria-pressed={localityPoints !== undefined}
         disabled={!hasLocality}
         title={wbText.unavailableWithoutLocality()}
         onClick={handleOpen}
       >
         {localityText.geoMap()}
       </Button.Small>
-      {showLeafletMap && (
+      {localityPoints !== undefined && (
         <LeafletMap
           localityPoints={localityPoints}
-          onClose={closeLeafletMap}
+          onClose={() => setLocalityPoints(undefined)}
           onMarkerClick={(localityPoint: any): void => {
             if (localityPoints === undefined) return;
             const rowNumber = localityPoints[localityPoint].rowNumber.value;
