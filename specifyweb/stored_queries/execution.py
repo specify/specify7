@@ -537,12 +537,15 @@ def execute(session, collection, user, tableid, distinct, series, count_only, fi
         return {'count': query.count()}
     else:
         logger.debug("order by: %s", order_by_exprs)
+
+        if series: 
+            query = query.group_by('catalognumber')
+
         query = query.order_by(*order_by_exprs).offset(offset)
+
         if limit:
             query = query.limit(limit)
-    if series:
-        return {'results': list(query.group_by('catalognumber'))}
-    else: 
+
         return {'results': list(query)}
 
 def build_query(session, collection, user, tableid, field_specs,
