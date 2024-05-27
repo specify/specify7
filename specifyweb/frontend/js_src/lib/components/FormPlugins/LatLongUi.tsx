@@ -102,8 +102,8 @@ function Coordinate({
      * may experience a change of precision during the conversion from
      * string to float
      */
-    resource.set(coordinateField, parsed?.asFloat() ?? null);
-    resource.set(coordinateTextField, trimmedValue, { silent: true });
+    resource.set(coordinateField, parsed?.asFloat() ?? null, { silent: true });
+    resource.set(coordinateTextField, trimmedValue);
     // Since these fields are no used by sp7, they shouldn't trigger unload protect
     resource.set(
       'srcLatLongUnit',
