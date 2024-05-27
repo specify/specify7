@@ -229,7 +229,7 @@ export const routes: RA<EnhancedRoute> = [
     path: 'import',
     children: [
       {
-        path: 'from-coge',
+        path: 'locality-dataset',
         element: () =>
           import('../Header/ImportLocalitySet').then(
             ({ ImportLocalitySet }) => ImportLocalitySet
