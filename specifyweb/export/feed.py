@@ -66,7 +66,7 @@ def update_feed(force=False, notify_user: Optional[Specifyuser] = None):
             if notify_user_id:
                 user = Specifyuser.objects.get(id=notify_user_id)
                 create_notification(user, filename)
-                if notify_user_id != user.id:
+                if notify_user and user.id != notify_user.id:
                     create_notification(notify_user, None)
             elif notify_user:
                 create_notification(notify_user)
