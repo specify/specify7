@@ -807,8 +807,14 @@ locality_set_parse_error_data = {
                     "type": "string",
                     "enum": localityParseErrorMessages
                 },
+                "field": {
+                    "description": "The field name which had the parsing error",
+                    "type": "string"
+                },
                 "payload": {
-                    "type": "object"
+                    "description": "An object containing data relating to the error",
+                    "type": "object",
+                    "example": {'badType': 'Preson', 'validTypes': ['Organization', 'Person', 'Other', 'Group',]}
                 },
                 "rowNumber": {
                     "type": "integer",

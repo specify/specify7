@@ -29,6 +29,7 @@ import { hasToolPermission } from '../Permissions/helpers';
 import { downloadDataSet } from '../WorkBench/helpers';
 import { TableRecordCounts } from '../WorkBench/Results';
 import { resolveBackendParsingMessage } from '../WorkBench/resultsParser';
+import { schemaText } from '../../localization/schema';
 
 type Header = Exclude<
   Lowercase<
@@ -53,6 +54,7 @@ const requiredHeaders = new Set<Header>(['guid']);
 
 type LocalityImportParseError = {
   readonly message: string;
+  readonly field: string;
   readonly payload: IR<unknown>;
   readonly rowNumber: number;
 };
@@ -317,12 +319,14 @@ function LocalityImportErrors({
 
               const columns = [
                 localityText.rowNumber(),
+                schemaText.field(),
                 mainText.errorMessage(),
               ];
 
               const data = results.data.map(
-                ({ message, payload, rowNumber }) => [
+                ({ message, payload, field, rowNumber }) => [
                   rowNumber.toString(),
+                  field,
                   resolveImportLocalityErrorMessage(message, payload),
                 ]
               );
@@ -340,16 +344,18 @@ function LocalityImportErrors({
       icon="error"
       onClose={handleClose}
     >
-      <table className="grid-table grid-cols-[1fr_auto] gap-1 gap-y-3 overflow-auto">
+      <table className="grid-table grid-cols-[1fr_auto_auto] gap-1 gap-y-3 overflow-auto">
         <thead>
           <tr>
             <td>{localityText.rowNumber()}</td>
+            <td>{schemaText.field()}</td>
             <td>{mainText.errorMessage()}</td>
           </tr>
         </thead>
-        {results.data.map(({ rowNumber, message, payload }, index) => (
+        {results.data.map(({ rowNumber, field, message, payload }, index) => (
           <tr key={index}>
             <td>{rowNumber}</td>
+            <td>{field}</td>
             <td>{resolveImportLocalityErrorMessage(message, payload)}</td>
           </tr>
         ))}

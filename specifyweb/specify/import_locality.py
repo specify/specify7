@@ -24,15 +24,16 @@ ImportModel = Literal['Locality', 'Geocoorddetail']
 
 class ParseError(NamedTuple):
     message: Union[ParseFailureKey, LocalityParseErrorMessageKey]
+    field: Optional[str]
     payload: Optional[Dict[str, Any]]
     row_number: Optional[int]
 
     @classmethod
-    def from_parse_failure(cls, parse_failure: BaseParseFailure, row_number: int):
-        return cls(parse_failure.message, parse_failure.payload, row_number)
+    def from_parse_failure(cls, parse_failure: BaseParseFailure, field: str, row_number: int):
+        return cls(message=parse_failure.message, field=field, payload=parse_failure.payload, row_number=row_number)
 
     def to_json(self):
-        return {"message": self.message, "payload": self.payload, "rowNumber": self.row_number}
+        return {"message": self.message, "field": self.field, "payload": self.payload, "rowNumber": self.row_number}
 
 
 class ParseSuccess(NamedTuple):
@@ -53,7 +54,8 @@ def parse_locality_set(collection, raw_headers: List[str], data: List[List[str]]
     headers = [header.strip().lower() for header in raw_headers]
 
     if 'guid' not in headers:
-        errors.append(ParseError('guidHeaderNotProvided', None, None))
+        errors.append(ParseError(message='guidHeaderNotProvided',
+                      field=None, payload=None, row_number=None))
         return to_upload, errors
 
     guid_index = headers.index('guid')
@@ -67,12 +69,12 @@ def parse_locality_set(collection, raw_headers: List[str], data: List[List[str]]
         guid = row[guid_index]
         locality_query = spmodels.Locality.objects.filter(guid=guid)
         if len(locality_query) == 0:
-            errors.append(ParseError('noLocalityMatchingGuid',
-                          {'guid': guid}, row_mumber))
+            errors.append(ParseError(message='noLocalityMatchingGuid', field='guid',
+                          payload={'guid': guid}, row_number=row_mumber))
 
         if len(locality_query) > 1:
-            errors.append(ParseError('multipleLocalitiesWithGuid', {'guid': guid, 'localityIds': list(
-                locality.id for locality in locality_query)}, row_mumber))
+            errors.append(ParseError(message='multipleLocalitiesWithGuid', field=None, payload={'guid': guid, 'localityIds': list(
+                locality.id for locality in locality_query)}, row_number=row_mumber))
 
         locality_values = [{'field': dict['field'], 'value': row[dict['index']].strip()}
                            for dict in updatable_locality_fields_index]
@@ -88,19 +90,21 @@ def parse_locality_set(collection, raw_headers: List[str], data: List[List[str]]
 
         parsed_geocoorddetail_fields = [parse_field(
             collection, 'Geocoorddetail', dict["field"], dict['value'], locality_id, row_mumber) for dict in geocoorddetail_values if dict['value'].strip() != ""]
-        
-        merged_locality_result, locality_errors = merge_parse_results('Locality', parsed_locality_fields, locality_id, row_mumber)
-        
-        merged_geocoorddetail_result, geocoord_errors = merge_parse_results('Geocoorddetail', parsed_geocoorddetail_fields, locality_id, row_mumber)
+
+        merged_locality_result, locality_errors = merge_parse_results(
+            'Locality', parsed_locality_fields, locality_id, row_mumber)
+
+        merged_geocoorddetail_result, geocoord_errors = merge_parse_results(
+            'Geocoorddetail', parsed_geocoorddetail_fields, locality_id, row_mumber)
 
         errors.extend([*locality_errors, *geocoord_errors])
 
         if merged_locality_result is not None:
             to_upload.append(merged_locality_result)
-        
+
         if merged_geocoorddetail_result is not None:
             to_upload.append(merged_geocoorddetail_result)
-        
+
     return to_upload, errors
 
 
@@ -108,9 +112,10 @@ def parse_field(collection, table_name: ImportModel, field_name: str, field_valu
     parsed = _parse_field(collection, table_name, field_name, field_value)
 
     if isinstance(parsed, BaseParseFailure):
-        return ParseError.from_parse_failure(parsed, row_number)
+        return ParseError.from_parse_failure(parsed, field_name, row_number)
     else:
         return ParseSuccess.from_base_parse_success(parsed, table_name, locality_id, row_number)
+
 
 def merge_parse_results(table_name: ImportModel, results: List[Union[ParseSuccess, ParseError]], locality_id: int, row_number: int) -> Tuple[Optional[ParseSuccess], List[ParseError]]:
     to_upload = {}
