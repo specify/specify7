@@ -68,8 +68,10 @@ def update_feed(force=False, notify_user: Optional[Specifyuser] = None):
                 create_notification(user, filename)
                 if notify_user and user.id != notify_user.id:
                     create_notification(notify_user, None)
-            elif notify_user:
-                create_notification(notify_user)
+            else:
+                create_notification(user, filename)
+                if notify_user: 
+                    create_notification(notify_user, None)
 
         else:
             logger.info('No update needed: %s', filename)
