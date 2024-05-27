@@ -385,7 +385,7 @@ export const commonText = createDictionary({
     'en-us': 'Search Query',
     'ru-ru': 'Поисковый запрос',
     'es-es': 'Consulta de busqueda',
-    'fr-fr': 'Requête de recherche',
+    'fr-fr': 'Sélection groupée',
     'uk-ua': 'Пошуковий запит',
     'de-ch': 'Suchabfrage',
   },
@@ -672,7 +672,7 @@ export const commonText = createDictionary({
     'de-ch': 'Mehrfachauswahl',
     'fr-fr': 'Sélection groupée',
     'ru-ru': 'Массовый выбор',
-    'uk-ua': 'Масовий вибір',
+    'uk-ua': 'Завантаження…',
   },
   bulkReturn: {
     'en-us': 'Bulk Return',
@@ -721,7 +721,7 @@ export const commonText = createDictionary({
     'fr-fr': 'Ne montre plus ça',
     'ru-ru': 'Больше не показывать это',
     'uk-ua': 'Не показувати це знову',
-    'de-ch': 'Transaktionen',
+    'de-ch': 'Wählen Sie Dateien aus oder ziehen Sie sie hierher',
   },
   multipleFilePickerMessage: {
     'en-us': 'Choose files or drag them here',
