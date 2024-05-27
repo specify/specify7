@@ -43,10 +43,10 @@ export const treeText = createDictionary({
   },
   undoSynonymy: {
     'en-us': 'Undo Synonymy',
-    'ru-ru': 'Отменить синонимию',
-    'es-es': 'Deshacer sinonimia',
-    'fr-fr': 'Annuler la synonymie',
-    'uk-ua': 'Скасувати синонімію',
+    'ru-ru': 'Листовой узел',
+    'es-es': 'Nodo hoja',
+    'fr-fr': 'Noeud feuille',
+    'uk-ua': 'Листковий вузол',
     'de-ch': 'Synonymie rückgängig machen',
   },
   synonymize: {
@@ -243,8 +243,8 @@ export const treeText = createDictionary({
       à déplacer vers
     `,
     'ru-ru': `
-      Выберите новую цель для препаратов «{nodeName:string}», в которую нужно
-      переместить
+      Выберите новую цель для препаратов «{nodeName:string}», которые будут
+      перемещены.
     `,
     'uk-ua': `
       Виберіть нову ціль для препаратів "{nodeName:string}", до якої потрібно
@@ -439,7 +439,7 @@ export const treeText = createDictionary({
   directCollectionObjectCount: {
     comment: 'Example: Direct Collection Object count',
     'en-us': 'Direct {collectionObjectTable:string} Count',
-    'ru-ru': 'Прямой {collectionObjectTable:string} счет',
+    'ru-ru': 'Прямой счет {collectionObjectTable:string}',
     'es-es': 'Conteo directo {collectionObjectTable:string}',
     'de-ch': 'Direkte {collectionObjectTable:string} Anzahl',
     'fr-fr': 'Synonymes : [X10X]',
@@ -473,10 +473,10 @@ export const treeText = createDictionary({
   associatedNodesOnly: {
     'en-us': 'Show only nodes with associated objects',
     'de-ch': 'Synchronisieren',
-    'es-es': 'Mostrar solo nodos con objetos asociados',
-    'fr-fr': 'Afficher uniquement les nœuds avec les objets associés',
-    'ru-ru': 'Синхронизировать',
-    'uk-ua': 'Показувати лише вузли з пов’язаними об’єктами',
+    'es-es': 'Vertical',
+    'fr-fr': 'Verticale',
+    'ru-ru': 'Вертикальный',
+    'uk-ua': 'Вертикальний',
   },
   splitView: {
     'en-us': 'Split View',

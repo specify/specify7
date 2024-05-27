@@ -31,7 +31,7 @@ export const specifyNetworkText = createDictionary({
       Для отображения этой страницы необходимо указать название вида или GUID.
     `,
     'uk-ua':
-      'Щоб відобразити цю сторінку, потрібно вказати назву виду або GUID',
+      'Щоб відобразити цю сторінку, необхідно вказати назву виду або GUID',
   },
   noDataError: {
     'en-us': 'Unable to find any data for this request',
@@ -91,8 +91,8 @@ export const specifyNetworkText = createDictionary({
       iDigBio et GBIF.
     `,
     'ru-ru': `
-      На этой карте показано появление этого таксона в агрегаторах iDigBio и
-      GBIF.
+      На этой карте показаны встречаемости этого таксона по данным агрегаторов
+      iDigBio и GBIF.
     `,
     'uk-ua': `
       Ця карта показує випадки появи цього таксону з агрегаторів iDigBio та
@@ -195,16 +195,16 @@ export const specifyNetworkText = createDictionary({
     'de-ch': 'Mit GBIF verbinden',
     'es-es': 'Conectarse a GBIF',
     'fr-fr': 'Connectez-vous au GBIF',
-    'ru-ru': 'Подключиться к ГБИФ',
+    'ru-ru': 'Подключиться к GBIF',
     'uk-ua': 'Підключіться до GBIF',
   },
   searchForInstitution: {
     'en-us': 'Search for your institution:',
-    'de-ch': 'Suchen Sie nach Ihrer Institution:',
+    'de-ch': 'Mit GBIF verbinden',
     'es-es': 'Busque su institución:',
-    'fr-fr': 'Recherchez votre établissement :',
-    'ru-ru': 'Найдите свое учреждение:',
-    'uk-ua': 'Шукайте свій заклад:',
+    'fr-fr': 'Connectez-vous au GBIF',
+    'ru-ru': 'Подключиться к ГБИФ',
+    'uk-ua': 'Підключіться до GBIF',
   },
   institutionDistributionMap: {
     'en-us': `
