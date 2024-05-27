@@ -5,6 +5,7 @@ import os
 import time
 
 from xml.etree import ElementTree as ET
+from typing import Optional
 from django.conf import settings
 
 from .dwca import make_dwca
@@ -26,7 +27,7 @@ def get_feed_resource():
     return None if from_db is None else from_db[0]
 
 
-def update_feed(force=False, notify_user=None):
+def update_feed(force=False, notify_user: Optional[Specifyuser] = None):
     feed_resource = get_feed_resource()
     if feed_resource is None:
         raise MissingFeedResource()
@@ -61,11 +62,13 @@ def update_feed(force=False, notify_user=None):
             logger.info('Finished updating: %s', filename)
             notify_user_id = item_node.attrib.get(
                 'notifyuserid', item_node.attrib.get('notifyUserId'))
-            if notify_user is not None:
-                create_notification(notify_user, filename)
-            elif notify_user_id:
+
+            if notify_user_id:
                 user = Specifyuser.objects.get(id=notify_user_id)
                 create_notification(user, filename)
+                create_notification(notify_user, None)
+            elif notify_user:
+                create_notification(notify_user)
 
         else:
             logger.info('No update needed: %s', filename)
@@ -85,7 +88,7 @@ def needs_update(path, days):
         return age > update_interval
 
 
-def create_notification(user, filename):
+def create_notification(user: Specifyuser, filename: Optional[str]):
     Message.objects.create(user=user, content=json.dumps({
         'type': 'feed-item-updated',
         'file': filename
