@@ -184,7 +184,14 @@ export function ImportLocalitySet(): JSX.Element {
             <>
               <Button.DialogClose>{commonText.close()}</Button.DialogClose>
               {headerErrors.missingRequiredHeaders.length === 0 && (
-                <Button.Small onClick={(): void => handleImport(headers, data)}>
+                <Button.Small
+                  onClick={(): void => {
+                    const storedHeaders = headers;
+                    const storedData = data;
+                    handleImport(storedHeaders, storedData);
+                    resetContext();
+                  }}
+                >
                   {commonText.import()}
                 </Button.Small>
               )}
