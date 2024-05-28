@@ -62,7 +62,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Операция не удалась',
     'es-es': 'Operación fallida',
     'fr-fr': "L'opération a échoué",
-    'uk-ua': 'Операція не вдалася',
+    'uk-ua': 'Не вдалося виконати операцію',
     'de-ch': 'Vorgang fehlgeschlagen',
   },
   actionFailedDescription: {
@@ -178,7 +178,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Не могу объединить в синонимы',
     'es-es': 'No se puede fusionar en sinónimos',
     'fr-fr': 'Impossible de fusionner avec des synonymes',
-    'uk-ua': 'Не можна об’єднувати в синоніми',
+    'uk-ua': 'Неможливо злити в синоніми',
     'de-ch': 'Kann nicht zu Synonymen zusammenführen',
   },
   cantSynonymizeSynonym: {
@@ -243,8 +243,8 @@ export const treeText = createDictionary({
       à déplacer vers
     `,
     'ru-ru': `
-      Выберите новую цель для препаратов «{nodeName:string}», которые будут
-      перемещены.
+      Выберите новую цель для препаратов «{nodeName:string}», в которую нужно
+      переместить
     `,
     'uk-ua': `
       Виберіть нову ціль для препаратів "{nodeName:string}", до якої потрібно
@@ -532,6 +532,6 @@ export const treeText = createDictionary({
     'es-es': 'Mover elementos',
     'fr-fr': 'Déplacer des éléments',
     'ru-ru': 'Переместить предметы',
-    'uk-ua': 'Переміщення елементів',
+    'uk-ua': 'Перемістити елементи',
   },
 } as const);
