@@ -35,7 +35,7 @@ import { parseUiCommand } from './commands';
 import type { FormFieldDefinition } from './fields';
 import { parseFormField } from './fields';
 import type { ConditionalFormDefinition, FormType } from './index';
-import { parseFormDefinition } from './index';
+import { fetchView, parseFormDefinition } from './index';
 
 /** Parse column width definitions */
 export const processColumnDefinition = (
@@ -123,9 +123,9 @@ const processCellType: {
     readonly cell: SimpleXmlNode;
     readonly table: SpecifyTable;
     readonly getProperty: (name: string) => string | undefined;
-  }) => CellTypes[KEY | 'Blank'];
+  }) => Promise<CellTypes[KEY | 'Blank']>;
 } = {
-  Field({ cell, table, getProperty }) {
+  async Field({ cell, table, getProperty }) {
     const rawFieldName = getParsedAttribute(cell, 'name');
     const fields = table?.getFields(rawFieldName ?? '');
     const fieldNames = fields?.map(({ name }) => name);
@@ -175,7 +175,7 @@ const processCellType: {
         }
       : { type: 'Blank' };
   },
-  Label: ({ cell }) => ({
+  Label: async ({ cell }) => ({
     type: 'Label',
     // This may be overwritten in postProcessRows
     text: f.maybe(getParsedAttribute(cell, 'label'), legacyLocalize),
@@ -185,7 +185,7 @@ const processCellType: {
     // This would be set in postProcessRows
     fieldNames: undefined,
   }),
-  Separator: ({ cell }) => ({
+  Separator: async ({ cell }) => ({
     type: 'Separator',
     label: f.maybe(getParsedAttribute(cell, 'label'), legacyLocalize),
     icon: getParsedAttribute(cell, 'icon'),
@@ -194,7 +194,7 @@ const processCellType: {
       (forClass) => getTable(forClass)?.name
     ),
   }),
-  SubView({ cell, table, getProperty }) {
+  async SubView({ cell, table, getProperty }) {
     const rawFieldName = getParsedAttribute(cell, 'name');
     const fields = table.getFields(rawFieldName ?? '');
     if (fields === undefined) {
@@ -225,12 +225,30 @@ const processCellType: {
     const sortFields = relationship!.relatedTable.getFields(
       parsedSort?.fieldNames.join(backboneFieldSeparator) ?? ''
     );
-    const formType = getParsedAttribute(cell, 'defaultType') ?? '';
+
+    const viewName = getParsedAttribute(cell, 'viewName');
+
+    const rawFormType = getParsedAttribute(cell, 'defaultType')?.toLowerCase();
+
+    const defaultFormType =
+      viewName === undefined
+        ? viewName
+        : await fetchView(viewName).then(
+            (view) => view?.defaultSubviewFormType
+          );
+
+    const formType =
+      rawFormType === undefined
+        ? defaultFormType ?? 'form'
+        : rawFormType === 'table'
+        ? 'formTable'
+        : 'form';
+
     return {
       type: 'SubView',
-      formType: formType?.toLowerCase() === 'table' ? 'formTable' : 'form',
+      formType,
       fieldNames: fields?.map(({ name }) => name),
-      viewName: getParsedAttribute(cell, 'viewName'),
+      viewName,
       isButton: getProperty('btn')?.toLowerCase() === 'true',
       icon: getProperty('icon'),
       sortField:
@@ -243,10 +261,10 @@ const processCellType: {
       isCollapsed: getProperty('collapse')?.toLowerCase() === 'true',
     };
   },
-  Panel: ({ cell, table }) => {
+  Panel: async ({ cell, table }) => {
     const oldContext = getLogContext();
     pushContext({ type: 'Child', tagName: 'Panel' });
-    const definitions = parseFormDefinition(cell, table);
+    const definitions = await parseFormDefinition(cell, table);
     setLogContext(oldContext);
 
     return {
@@ -258,7 +276,7 @@ const processCellType: {
           : 'block',
     };
   },
-  Command: ({ cell, table }) => ({
+  Command: async ({ cell, table }) => ({
     type: 'Command',
     commandDefinition: parseUiCommand(cell, table),
   }),
@@ -267,8 +285,8 @@ const processCellType: {
    * Blank cell type is used by postProcessRows if row definition has fewer
    * cells than defined columns
    */
-  Blank: () => ({ type: 'Blank' }),
-  Unsupported: ({ cell }) => {
+  Blank: async () => ({ type: 'Blank' }),
+  Unsupported: async ({ cell }) => {
     console.warn(
       `Unsupported cell type: ${getParsedAttribute(cell, 'type') ?? '(null)'}`
     );
@@ -303,10 +321,10 @@ const cellTypeTranslation: IR<keyof CellTypes> = {
  *
  * Does not depend on FormMode, FormType
  */
-export function parseFormCell(
+export async function parseFormCell(
   table: SpecifyTable,
   cellNode: SimpleXmlNode
-): FormCellDefinition {
+): Promise<FormCellDefinition> {
   const cellClass = getParsedAttribute(cellNode, 'type') ?? '';
   const cellType = cellTypeTranslation[cellClass.toLowerCase()];
 
@@ -359,7 +377,7 @@ export function parseFormCell(
     visible:
       getBooleanAttribute(cellNode, 'invisible') !== true ||
       parsedCell === processCellType.Unsupported,
-    ...parsedCell({ cell: cellNode, table, getProperty }),
+    ...(await parsedCell({ cell: cellNode, table, getProperty })),
     // This may get filled out in postProcessRows or parseFormTableDefinition
     ariaLabel: undefined,
   };

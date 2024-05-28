@@ -1,13 +1,19 @@
 import { treeText } from '../../localization/tree';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
+import { getPref } from '../InitialContext/remotePrefs';
+import { fetchPossibleRanks } from '../PickLists/TreeLevelPickList';
 import { formatUrl } from '../Router/queryString';
 import type { BusinessRuleResult } from './businessRules';
-import type { AnyTree, FilterTablesByEndsWith } from './helperTypes';
+import type {
+  AnyTree,
+  FilterTablesByEndsWith,
+  TableFields,
+} from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 
 // eslint-disable-next-line unicorn/prevent-abbreviations
-type TreeDefItem<TREE extends AnyTree> =
+export type TreeDefItem<TREE extends AnyTree> =
   FilterTablesByEndsWith<`${TREE['tableName']}TreeDefItem`>;
 
 export const initializeTreeRecord = (
@@ -19,15 +25,33 @@ export const initializeTreeRecord = (
 
 export const treeBusinessRules = async (
   resource: SpecifyResource<AnyTree>,
-  fieldName: string
+  fieldName: TableFields<AnyTree>
 ): Promise<BusinessRuleResult | undefined> =>
   getRelatedTreeTables(resource).then(async ({ parent, definitionItem }) => {
     if (parent === undefined) return undefined;
 
+    const parentDefItem = ((await parent.rgetPromise('definitionItem')) ??
+      undefined) as SpecifyResource<TreeDefItem<AnyTree>> | undefined;
+
+    const possibleRanks =
+      parentDefItem === undefined
+        ? undefined
+        : await fetchPossibleRanks(resource, parentDefItem.get('rankId'));
+
+    const doExpandSynonymActionsPref = getPref(
+      `sp7.allow_adding_child_to_synonymized_parent.${resource.specifyTable.name}`
+    );
+    const isParentSynonym = !parent.get('isAccepted');
+
     const hasBadTreeStrcuture =
       parent.id === resource.id ||
       definitionItem === undefined ||
-      parent.get('rankId') >= definitionItem.get('rankId');
+      (isParentSynonym && !doExpandSynonymActionsPref) ||
+      parent.get('rankId') >= definitionItem.get('rankId') ||
+      (possibleRanks !== undefined &&
+        !possibleRanks
+          .map(({ resource_uri }) => resource_uri)
+          .includes(definitionItem.get('resource_uri')));
 
     if (!hasBadTreeStrcuture && (resource.get('name').length ?? 0) === 0)
       return {
@@ -43,6 +67,7 @@ export const treeBusinessRules = async (
       };
 
     if (
+      hasBadTreeStrcuture ||
       (resource.get('name')?.length ?? 0) === 0 ||
       definitionItem === undefined
     )

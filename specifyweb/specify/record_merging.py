@@ -307,7 +307,7 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
 
                 response: http.HttpResponse = update_record(obj)
                 if response is not None and response.status_code != 204:
-                    return response
+                    raise FailedMergingException(response)
 
     # Dedupe by deleting the record that is being replaced and updating the old model ID to the new one
     for old_model_id in old_model_ids:

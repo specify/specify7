@@ -259,31 +259,24 @@ def query_to_kml(session, collection, user, tableid, field_specs, path, captions
     logger.debug('query_to_kml finished')
 
 def getCoordinateColumns(field_specs, hasId):
-    lat1, lng1, lat2, lng2, lltype = (-1,-1,-1,-1,-1)
+    coords = {'longitude1': -1, 'latitude1': -1, 'longitude2': -1, 'latitude2': -1, 'latlongtype': -1}
     f = 1 if hasId else 0
     for fld in field_specs:
         if fld.fieldspec.table.name == 'Locality':
             jp = fld.fieldspec.join_path
-            f_name = jp[len(jp)-1].name.lower()
-            if f_name == 'longitude1':
-                lng1 = f
-            elif f_name == 'latitude1':
-                lat1 = f
-            elif f_name == 'longitude2':
-                lng2 = f
-            elif f_name == 'latitude2':
-                lat2 = f
-            elif f_name == 'latlongtype':
-                lltype = f
+            if not jp:
+                continue
+            f_name = jp[-1].name.lower()
+            if f_name in coords:
+                coords[f_name] = f
         if fld.display:
             f = f + 1
 
-    result = [lng1, lat1]
-    if lng2 != -1 and lat2 != -1:
-        result.append(lng2)
-        result.append(lat2)
-        if lltype != -1:
-            result.append(lltype)
+    result = [coords['longitude1'], coords['latitude1']]
+    if coords['longitude2'] != -1 and coords['latitude2'] != -1:
+        result.extend([coords['longitude2'], coords['latitude2']])
+        if coords['latlongtype'] != -1:
+            result.append(coords['latlongtype'])
 
     return result
 
