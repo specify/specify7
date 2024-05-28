@@ -503,7 +503,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Поле со списком запроса',
     'es-es': 'Cuadro combinado de consulta',
     'uk-ua': 'Поле зі списком запитів',
-    'de-ch': 'Abfrage-Kombinationsfeld',
+    'de-ch': 'Kombinationsfeld für Abfragen',
     'fr-fr': 'Zone de liste déroulante de requête',
   },
   searchAlgorithm: {
@@ -521,7 +521,7 @@ export const preferencesText = createDictionary({
     'fr-fr': `
       Algorithme de recherche (pour les relations avec les tables arborescentes)
     `,
-    'uk-ua': 'Алгоритм пошуку (для зв’язків із деревоподібними таблицями)',
+    'uk-ua': "Алгоритм пошуку (для зв'язків із деревоподібними таблицями)",
     'de-ch': 'Suchalgorithmus (für Beziehungen mit Baumtabellen)',
   },
   startsWithInsensitive: {
@@ -688,7 +688,7 @@ export const preferencesText = createDictionary({
   },
   scaleInterface: {
     'en-us': 'Scale Interface',
-    'ru-ru': 'Масштабный интерфейс',
+    'ru-ru': 'Интерфейс масштабирования',
     'es-es': 'Interfaz de báscula',
     'fr-fr': 'Interface de balance',
     'uk-ua': 'Інтерфейс масштабування',
@@ -1164,7 +1164,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Enfocar el primer campo',
     'fr-fr': 'Concentrez-vous sur le premier champ',
     'ru-ru': 'Фокус первого поля',
-    'uk-ua': 'Сфокусувати перше поле',
+    'uk-ua': 'Перейти до першого поля',
   },
   doubleClickZoom: {
     'en-us': 'Double click to zoom',
@@ -1264,7 +1264,7 @@ export const preferencesText = createDictionary({
   },
   useAccessibleMonthPicker: {
     'en-us': 'Use accessible month picker',
-    'ru-ru': 'Используйте доступный инструмент выбора месяца',
+    'ru-ru': 'Используйте доступный выбор месяца',
     'es-es': 'Utilice el selector de meses accesible',
     'fr-fr': 'Utiliser le sélecteur de mois accessible',
     'uk-ua': 'Використовуйте доступний засіб вибору місяця',
@@ -1358,7 +1358,7 @@ export const preferencesText = createDictionary({
       <key>{altKeyName:string}</key>+<key>Click</key> on a link that normally
       opens in a new tab to open it in the current tab
     `,
-    'ru-ru': 'Используйте доступный выбор месяца',
+    'ru-ru': 'Используйте доступный инструмент выбора месяца',
     'es-es': 'Utilice el selector de meses accesible',
     'fr-fr': 'Utiliser le sélecteur de mois accessible',
     'uk-ua': 'Використовуйте доступний засіб вибору місяця',
