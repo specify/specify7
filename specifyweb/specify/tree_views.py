@@ -381,10 +381,10 @@ class StorageMutationPT(PermissionTarget):
     resource = "/tree/edit/storage"
     merge = PermissionTargetAction()
     move = PermissionTargetAction()
-    bulk_move = PermissionTargetAction()
     synonymize = PermissionTargetAction()
     desynonymize = PermissionTargetAction()
     repair = PermissionTargetAction()
+    bulk_move = PermissionTargetAction()
 
 
 class GeologictimeperiodMutationPT(PermissionTarget):
