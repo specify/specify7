@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-05-28 18:03+0000\n"
+"PO-Revision-Date: 2024-05-28 18:36+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) "
 "<https://hosted.weblate.org/projects/specify-7/preferences/de_CH/>\n"
@@ -323,7 +323,7 @@ msgstr ""
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "queryComboBox"
-msgstr "Abfrage-Kombinationsfeld"
+msgstr "Kombinationsfeld für Abfragen"
 
 #: components/Preferences/UserDefinitions.tsx:1009
 #: components/Preferences/UserDefinitions.tsx:1057
