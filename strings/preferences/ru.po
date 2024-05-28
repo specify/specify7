@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-05-24 16:09+0000\n"
+"PO-Revision-Date: 2024-05-28 18:03+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian "
 "<https://hosted.weblate.org/projects/specify-7/preferences/ru/>\n"
@@ -790,7 +790,7 @@ msgstr "Фокус первого поля"
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "doubleClickZoom"
-msgstr "Дважды щелкните, чтобы увеличить"
+msgstr "Дважды щелкните, чтобы увеличить масштаб"
 
 #: components/Preferences/UserDefinitions.tsx:1901
 #. Used in: Components > Preferences > User Definitions
@@ -862,7 +862,7 @@ msgstr "Использовать доступный полный выбор да
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "useAccessibleMonthPicker"
-msgstr "Используйте доступный выбор месяца"
+msgstr "Используйте доступный инструмент выбора месяца"
 
 #: components/Preferences/UserDefinitions.tsx:886
 #. Used in: Components > Preferences > User Definitions
