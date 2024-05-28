@@ -539,12 +539,29 @@ def execute(session, collection, user, tableid, distinct, series, count_only, fi
         logger.debug("order by: %s", order_by_exprs)
 
         if series: 
-            query = query.group_by('catalognumber')
+            query = query.order_by('catalognumber')
 
         query = query.order_by(*order_by_exprs).offset(offset)
 
         if limit:
             query = query.limit(limit)
+
+        # newListQuery = []
+        # if series: 
+        #     resultsFormList = list(query)
+        #     # do some reogranization on the rows here 
+        #     for cat, index in resultsFormList actually need to go over the string of cat num and break it it will laways be the last column  
+        #         catRange = ''
+        #         idRange = []
+        #         if index === 0: 
+        #             catRange.push(cat.cat)
+        #             idRnage.push(cat.id)
+        #         else cat === catRange.at(-1) + 1 ? catRange.push(cat) (// need catNum at idx 0 and then jst chnage the second since a rnage)  & idRnage.push(cat.id) : 
+        #         1) newListQuery.push(catRange, idRange, cat.otherfields) 
+        #         2) catRange need to be cleared as well as idRange 
+        #         3) push new cat and id to start again 
+
+        #     return resultsFormList
 
         return {'results': list(query)}
 
@@ -626,7 +643,7 @@ def build_query(session, collection, user, tableid, field_specs,
             query = query.add_columns(formatted_field)
             selected_fields.append(formatted_field)
         
-        if hasattr(field, 'key') and field.key == 'CatalogNumber':
+        if hasattr(field, 'key') and field.key.lower() == 'catalognumber':
                 catalog_number_field = formatted_field
 
         if sort_type is not None:
@@ -655,7 +672,7 @@ def build_query(session, collection, user, tableid, field_specs,
             if hasattr(field, 'clause') and hasattr(field.clause, 'key') and field.clause.key == 'CatalogNumber':
                 continue
             selected_fields_without_cat_number.append(field)
-        # need to group concat only cat number that follow each other
+
         if catalog_number_field is not None:
             query = query.add_columns(
                 func.group_concat(catalog_number_field, separator=',')
