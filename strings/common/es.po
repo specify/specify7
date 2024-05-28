@@ -94,11 +94,9 @@ msgstr "No"
 msgid "cancel"
 msgstr "Cancelar"
 
-#: components/ExportFeed/Dwca.tsx:94
-#: components/ExportFeed/Dwca.tsx:100
 #: components/SchemaConfig/Languages.tsx:73
 #: components/SchemaConfig/Tables.tsx:44
-#. Used in: Components > Export Feed > Dwca ⬤ Components > Schema Config > Languages ⬤ Components > Schema Config > Tables
+#. Used in: Components > Schema Config > Languages ⬤ Components > Schema Config > Tables
 msgid "back"
 msgstr "Atrás"
 
@@ -155,7 +153,9 @@ msgstr "Crear"
 #: components/AttachmentsBulkImport/Upload.tsx:248
 #: components/AttachmentsBulkImport/Upload.tsx:263
 #: components/Core/VersionMismatch.tsx:18
-#: components/ExportFeed/Dwca.tsx:129
+#: components/ExportFeed/Dwca.tsx:94
+#: components/ExportFeed/Dwca.tsx:100
+#: components/ExportFeed/Dwca.tsx:128
 #: components/ExportFeed/ForceUpdate.tsx:23
 #: components/FormCells/FormTable.tsx:490
 #: components/FormCommands/ShowTransactions.tsx:118

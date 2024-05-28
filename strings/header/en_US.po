@@ -56,12 +56,12 @@ msgstr "Export feed update started"
 msgid "feedExportStartedDescription"
 msgstr "Update started. You will receive a notification for each feed item updated."
 
-#: components/ExportFeed/Dwca.tsx:130
+#: components/ExportFeed/Dwca.tsx:129
 #. Used in: Components > Export Feed > Dwca
 msgid "dwcaExportStarted"
 msgstr "DwCA export started"
 
-#: components/ExportFeed/Dwca.tsx:133
+#: components/ExportFeed/Dwca.tsx:132
 #. Used in: Components > Export Feed > Dwca
 msgid "dwcaExportStartedDescription"
 msgstr "Export started. You will receive a notification when the export is complete."
