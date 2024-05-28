@@ -67,6 +67,14 @@ export const filtersWithDefaultValue = new Set<QueryFieldFilter>([
   'in',
 ]);
 
+const showComparisonOperatorsForString = f.store(() =>
+  userPreferences.get(
+    'queryBuilder',
+    'behavior',
+    'showComparisonOperatorsForString'
+  )
+);
+
 export function QueryInputField({
   currentValue,
   // Used only to help browsers with autocomplet
@@ -397,12 +405,6 @@ function In({
   );
 }
 
-const showComparisonOperatorsForString = userPreferences.get(
-  'queryBuilder',
-  'behavior',
-  'showComparisonOperatorsForString'
-);
-
 export const queryFieldFilters: RR<
   QueryFieldFilter,
   {
@@ -457,7 +459,7 @@ export const queryFieldFilters: RR<
     description: undefined,
     renderPickList: false,
     types: filterArray([
-      showComparisonOperatorsForString ? 'text' : undefined,
+      showComparisonOperatorsForString() ? 'text' : undefined,
       'number',
       'date',
       'id',
@@ -471,7 +473,7 @@ export const queryFieldFilters: RR<
     description: undefined,
     renderPickList: false,
     types: filterArray([
-      showComparisonOperatorsForString ? 'text' : undefined,
+      showComparisonOperatorsForString() ? 'text' : undefined,
       'number',
       'date',
       'id',
@@ -485,7 +487,7 @@ export const queryFieldFilters: RR<
     description: undefined,
     renderPickList: false,
     types: filterArray([
-      showComparisonOperatorsForString ? 'text' : undefined,
+      showComparisonOperatorsForString() ? 'text' : undefined,
       'number',
       'date',
       'id',
@@ -499,7 +501,7 @@ export const queryFieldFilters: RR<
     description: undefined,
     renderPickList: false,
     types: filterArray([
-      showComparisonOperatorsForString ? 'text' : undefined,
+      showComparisonOperatorsForString() ? 'text' : undefined,
       'number',
       'date',
       'id',
