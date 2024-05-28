@@ -192,7 +192,7 @@ export function SubView({
   const isReadOnly = React.useContext(ReadOnlyContext);
 
   // See https://github.com/specify/specify7/issues/3127
-  const isButton = rawIsButton || !isReadOnly;
+  const isButton = rawIsButton || (!isReadOnly && !relationship.isDependent());
   const [isOpen, _, handleClose, handleToggle] = useBooleanState(!isButton);
 
   const [isAttachmentConfigured] = usePromise(attachmentSettingsPromise, true);
