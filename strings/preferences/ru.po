@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-05-28 18:36+0000\n"
+"PO-Revision-Date: 2024-05-28 20:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "preferences/ru/>\n"
@@ -476,7 +476,7 @@ msgstr "Показывать значок в шапке"
 #: components/Preferences/UserDefinitions.tsx:208
 #, fuzzy
 msgid "scaleInterface"
-msgstr "Интерфейс масштабирования"
+msgstr "Масштабный интерфейс"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:209
@@ -918,7 +918,7 @@ msgstr ""
 #: components/Preferences/UserDefinitions.tsx:503
 #, fuzzy
 msgid "altClickToSupressNewTabDescription"
-msgstr "Используйте доступный инструмент выбора месяца"
+msgstr "Используйте доступный выбор месяца"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:787
