@@ -3,15 +3,18 @@ import type { IR, RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { mappedFind, multiSortFunction, sortFunction } from '../../utils/utils';
 import { addMissingFields } from '../DataModel/addMissingFields';
+import { DependentCollection } from '../DataModel/collectionApi';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
-import { getUniqueFields } from '../DataModel/resource';
+import { SpecifyResource } from '../DataModel/legacyTypes';
+import { getResourceApiUrl, getUniqueFields } from '../DataModel/resource';
 import {
   deserializeResource,
   resourceToTable,
+  serializeResource,
   specialFields,
 } from '../DataModel/serializers';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { SpecifyTable } from '../DataModel/specifyTable';
+import type { SpecifyTable, Collection } from '../DataModel/specifyTable';
 import type { AgentVariant, Tables } from '../DataModel/types';
 import { format } from '../Formatters/formatters';
 import { strictDependentFields } from '../FormMeta/CarryForward';
@@ -40,18 +43,39 @@ export function autoMerge(
     .filter((fieldName) => !specialFields.has(fieldName))
     .map((fieldName) => table.strictGetField(fieldName));
 
-  return addMissingFields(
-    table.name,
-    mergeDependentFields(
-      resources,
-      Object.fromEntries(
-        allKeys.map((field) => [
-          field.name,
-          mergeField(field, resources, cautious, targetId),
-        ])
+  const missing = deserializeResource(
+    addMissingFields(
+      table.name,
+      mergeDependentFields(
+        resources,
+        Object.fromEntries(
+          allKeys.map((field) => [
+            field.name,
+            mergeField(field, resources, cautious, targetId),
+          ])
+        )
       )
     )
   );
+
+  Object.values(missing.dependentResources).forEach((resource) => {
+    if (resource instanceof DependentCollection) {
+      (resource as Collection<AnySchema>).models.forEach(
+        (model: SpecifyResource<AnySchema>) => {
+          const targetIdUrl = getResourceApiUrl(
+            missing.specifyTable.name,
+            targetId
+          );
+          model.set(
+            (resource as Collection<AnySchema>)?.field?.name,
+            targetIdUrl
+          );
+        }
+      );
+    }
+  });
+
+  return serializeResource(missing);
 }
 
 /**
