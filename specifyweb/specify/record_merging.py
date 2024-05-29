@@ -394,10 +394,10 @@ def record_merge_task(self, model_name: str, old_model_ids: List[int], new_model
     merge_record = Spmerging.objects.get(id=merge_id)
     if response.status_code != 204:
         self.update_state(state='FAILED', meta={'current': current, 'total': total})
-        merge_record.mergingstatus = 'FAILED'
+        merge_record.status = 'FAILED'
     else:
         self.update_state(state='SUCCEEDED', meta={'current': total, 'total': total})
-        merge_record.mergingstatus = 'SUCCEEDED'
+        merge_record.status = 'SUCCEEDED'
     
     merge_record.response = response.content.decode()
     merge_record.save()

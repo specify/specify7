@@ -521,18 +521,18 @@ def record_merge(
 
     if background:
         # Check if another merge is still in progress
-        cur_merges = Spmerging.objects.filter(mergingstatus='MERGING')
+        cur_merges = Spmerging.objects.filter(status='MERGING')
         for cur_merge in cur_merges:
             cur_task_id = cur_merge.taskid
             cur_result = record_merge_task.AsyncResult(cur_task_id)
             if cur_result is not None:
-                cur_merge.mergingstatus = 'FAILED'
+                cur_merge.status = 'FAILED'
                 cur_merge.save()
             elif cur_result.state == 'MERGING':
                 return http.HttpResponseNotAllowed(
                     'Another merge process is still running on the system, please try again later.')
             else:
-                cur_merge.mergingstatus = cur_result.state
+                cur_merge.status = cur_result.state
                 cur_merge.save()
 
         # Create task id and a Spmerging record
@@ -540,7 +540,7 @@ def record_merge(
         merge = Spmerging.objects.create(
             name="Merge_" + model_name + "_" + new_model_id,
             taskid=task_id,
-            mergingstatus="MERGING",
+            status="MERGING",
             table=model_name.title(),
             newrecordid=new_model_id,
             newrecordata=json.dumps(new_record_data),
@@ -679,7 +679,7 @@ def merging_status(request, merge_id: int) -> http.HttpResponse:
     except Spmerging.DoesNotExist:
         return http.HttpResponseNotFound(f'The merge task id is not found: {merge_id}')
 
-    task_status = merge.mergingstatus
+    task_status = merge.status
     task_progress = None
 
     try:
@@ -695,7 +695,7 @@ def merging_status(request, merge_id: int) -> http.HttpResponse:
         pass
 
     status = {
-        'taskstatus': merge.mergingstatus,
+        'taskstatus': merge.status,
         'response': merge.response,
         'taskprogress': result.info if isinstance(result.info, dict) else repr(result.info),
         'taskid': merge.taskid
@@ -750,7 +750,7 @@ def abort_merge_task(request, merge_id: int) -> http.HttpResponse:
         app.control.revoke(merge.taskid, terminate=True)
 
         # Updating the merging status
-        merge.mergingstatus = 'ABORTED'
+        merge.status = 'ABORTED'
         merge.save()
 
         # Send notification the the megre task has been aborted
