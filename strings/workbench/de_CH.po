@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-05-28 18:36+0000\n"
+"PO-Revision-Date: 2024-05-29 07:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/workbench/de_CH/>\n"
@@ -127,8 +127,8 @@ msgstr "Live-Validierung: Ein"
 #, fuzzy
 msgid "dataCheckDescription"
 msgstr ""
-"Beachten Sie, dass die Live-Validierung eine experimentelle Funktion ist "
-"und kein Ersatz für die regelmäßige Validierung darstellt."
+"Beachten Sie, dass die Live-Validierung eine experimentelle Funktion ist und "
+"keinen Ersatz für die regelmäßige Validierung darstellt."
 
 #. Used in: Components > Wb Toolkit > Change Owner
 #: components/WbToolkit/ChangeOwner.tsx:41
@@ -341,7 +341,7 @@ msgstr ""
 #: components/WbActions/index.tsx:301
 #, fuzzy
 msgid "validationNoErrors"
-msgstr "Status des Datensatz-Uploads"
+msgstr "Upload-Status des Datensatzes"
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:304
@@ -898,7 +898,7 @@ msgstr "Datensatz-Rollbackstatus"
 #: components/WorkBench/Status.tsx:65
 #, fuzzy
 msgid "wbStatusUpload"
-msgstr "Upload-Status des Datensatzes"
+msgstr "Status des Datensatz-Uploads"
 
 #. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:64
