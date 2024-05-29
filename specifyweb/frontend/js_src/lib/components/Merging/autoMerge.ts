@@ -67,8 +67,8 @@ export function autoMerge(
             targetId
           );
           model.set(
-            (resource as Collection<AnySchema>)?.field?.name,
-            targetIdUrl
+            (resource as Collection<AnySchema>)?.field?.name as string,
+            targetIdUrl as never
           );
         }
       );
