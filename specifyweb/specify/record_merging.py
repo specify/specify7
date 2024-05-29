@@ -221,7 +221,8 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
             field_name = col.lower()
             field_name_id = f'{field_name}_id'
             if not hasattr(foreign_model, field_name_id):
-                if field_name.endswith('s') and hasattr(foreign_model, field_name):
+                if (field_name.endswith('s') and hasattr(foreign_model, field_name)) \
+                    and foreign_table.get_field(field_name).type.endswith('to-many'):
                     field_name_id = field_name
                 else:
                     continue
