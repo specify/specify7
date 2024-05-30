@@ -5,14 +5,13 @@ A few non-business data resource end points
 import json
 import mimetypes
 from functools import wraps
-from typing import Callable, Union
+from typing import Union
 from uuid import uuid4
 
 from django import http
 from django.conf import settings
 from django.db import router, transaction, connection
-from specifyweb.notifications.models import Message, Spmerging
-from django.db.models import Q
+from specifyweb.notifications.models import Message, Spmerging, LocalityImport
 from django.db.models.deletion import Collector
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_POST
@@ -22,7 +21,7 @@ from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, PermissionsException, check_permission_targets, table_permissions_checker
 from specifyweb.celery_tasks import app
 from specifyweb.specify.record_merging import record_merge_fx, record_merge_task, resolve_record_merge_response
-from specifyweb.specify.import_locality import localityParseErrorMessages, parse_locality_set as _parse_locality_set
+from specifyweb.specify.import_locality import localityParseErrorMessages, parse_locality_set as _parse_locality_set, import_locality_task, LocalityImportStatus
 from . import api, models as spmodels
 from .specify_jar import specify_jar
 from celery.utils.log import get_task_logger  # type: ignore
@@ -90,6 +89,7 @@ def raise_error(request):
     """
     raise Exception('This error is a test. You may now return to your regularly '
                     'scheduled hacking.')
+
 
 @login_maybe_required
 @require_http_methods(['GET', 'HEAD'])
@@ -826,111 +826,181 @@ locality_set_parse_error_data = {
 
 
 @openapi(schema={
-    "post": {
+    'post': {
         "requestBody": locality_set_body,
         "responses": {
             "200": {
-                "description": "The Locality records were updated and GeocoordDetails uploaded successfully ",
+                "description": "Returns a GUID (job ID)",
                 "content": {
-                    "application/json": {
+                    "text/plain": {
                         "schema": {
-                            "type": "object",
-                            "properties": {
-                                "type": {
-                                    "enum": ["Uploaded"]
-                                },
-                                "localities": {
-                                    "description": "An array of updated Locality IDs",
-                                    "type": "array",
-                                    "items": {
-                                        "type": "integer",
-                                        "minimum": 0
-                                    }
-                                },
-                                "geocoorddetails": {
-                                    "description": "An array of created geocoorddetail IDs",
-                                    "type": "array",
-                                    "items": {
-                                        "type": "integer",
-                                        "minimum": 0
-                                    }
-                                }
-                            },
+                            "type": "string",
+                            "maxLength": 36,
+                            "example": "7d34dbb2-6e57-4c4b-9546-1fe7bec1acca",
                         }
                     }
                 }
             },
-            "422": {
-                "description": "Some values could not be successfully parsed",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "type": {
-                                    "type": "string",
-                                    "enum": ["ParseError"]
-                                },
-                                "data": locality_set_parse_error_data
-                            }
-                        }
-                    }
-                }
-            }
         }
-    }
+    },
 })
 @login_maybe_required
 @require_POST
 def upload_locality_set(request: http.HttpRequest):
-    """Parse and upload a locality set
-    """
     request_data = json.loads(request.body)
     column_headers = request_data["columnHeaders"]
     data = request_data["data"]
 
-    to_upload, errors = _parse_locality_set(
-        request.specify_collection, column_headers, data)
+    task_id = str(uuid4())
+    task = import_locality_task.apply_async(
+        [request.specify_collection.id, column_headers, data], task_id=task_id)
+
+    LocalityImport.objects.create(
+        result=None,
+        taskid=task.id,
+        status=LocalityImportStatus.PENDING,
+        collection=request.specify_collection,
+        specifyuser=request.specify_user,
+        createdbyagent=request.specify_user_agent,
+        modifiedbyagent=request.specify_user_agent,
+    )
+
+    Message.objects.create(user=request.specify_user, content=json.dumps({
+        'type': 'localityimport-starting',
+        'taskid': task.id
+    }))
+
+    return http.JsonResponse(task.id, safe=False)
+
+
+@openapi(schema={
+    'get': {
+        "responses": {
+            "200": {
+                "description": "Data fetched successfully",
+                "content": {
+                    "text/plain": {
+                        "schema": {
+                            "oneOf": [
+                                {
+                                    "type": "string",
+                                    "example": "null",
+                                    "description": "Nothing to report"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "taskinfo": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current": {
+                                                    "type": "number",
+                                                    "example": 4,
+                                                },
+                                                "total": {
+                                                    "type": "number",
+                                                    "example": 20,
+                                                }
+                                            }
+                                        },
+                                        "taskstatus": {
+                                            "type": "string",
+                                            "enum": [LocalityImportStatus.PENDING, LocalityImportStatus.PROGRESS]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+        }
+    },
+})
+@require_GET
+def localityimport_status(request: http.HttpRequest, task_id: str):
+    try:
+        locality_import = LocalityImport.objects.get(taskid=task_id)
+    except LocalityImport.DoesNotExist:
+        return http.HttpResponseNotFound(f"The localityimport with task id '{task_id}' was not found")
+
+    if not (locality_import.status in [LocalityImportStatus.PENDING, LocalityImportStatus.PROGRESS]):
+        return http.JsonResponse(None, safe=False)
+
+    result = import_locality_task.AsyncResult(locality_import.taskid)
+
+    status = {
+        'taskstatus': locality_import.status,
+        'taskinfo': result.info if isinstance(result.info, dict) else repr(result.info)
+    }
+    return status
+
+
+@openapi(schema={
+    'post': {
+        'responses': {
+            '200': {
+                'description': 'The task has been successfully aborted or it is not running and cannot be aborted',
+                'content': {
+                    'application/json': {
+                        'schema': {
+                            'type': 'object',
+                            'properties': {
+                                'type': {
+                                    'type': 'string',
+                                    'enum': ["ABORTED", "NOT_RUNNING"]
+                                },
+                                'message': {
+                                    'type': 'string',
+                                    'description': 'Response message about the status of the task'
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            '404': {
+                'description': 'The localityimport with task id is not found',
+            },
+        },
+    },
+})
+@require_POST
+@login_maybe_required
+def abort_localityimport_task(request: http.HttpRequest, taskid: str):
+    "Aborts the merge task currently running and matching the given merge/task ID"
+
+    try:
+        locality_import = LocalityImport.objects.get(taskid=taskid)
+    except LocalityImport.DoesNotExist:
+        return http.HttpResponseNotFound(f"The localityimport with taskid: {taskid} is not found")
+
+    task = record_merge_task.AsyncResult(locality_import.taskid)
 
     result = {
         "type": None,
-        "data": []
+        "message": None
     }
 
-    if len(errors) > 0:
-        result["type"] = "ParseError"
-        result["data"] = [error.to_json() for error in errors]
-        return http.JsonResponse(result, status=422, safe=False)
+    if task.state in [LocalityImportStatus.PENDING, LocalityImportStatus.PROGRESS]:
+        # Revoking and terminating the task
+        app.control.revoke(locality_import.taskid, terminate=True)
 
-    result["type"] = "Uploaded"
-    result["localities"] = []
-    result["geocoorddetails"] = []
+        # Updating the merging status
+        locality_import.status = LocalityImportStatus.ABORTED
+        locality_import.save()
 
-    with transaction.atomic():
-        for parse_success in to_upload:
-            uploadable = parse_success.to_upload
-            model_name = parse_success.model
-            locality_id = parse_success.locality_id
+        # Send notification the the megre task has been aborted
+        Message.objects.create(user=request.specify_user, content=json.dumps({
+            'type': 'localityimport-aborted',
+            'task_id': taskid
+        }))
+        result["type"] = "ABORTED"
+        result["message"] = f'Task {locality_import.taskid} has been aborted.'
 
-            if locality_id is None:
-                raise ValueError(
-                    f"No matching Locality found on row {parse_success.row_number}")
-
-            model = getattr(spmodels, model_name)
-            locality = spmodels.Locality.objects.get(id=locality_id)
-
-            if model_name == 'Geocoorddetail':
-                locality.geocoorddetails.get_queryset().delete()
-                geoCoordDetail = model.objects.create(**uploadable)
-                geoCoordDetail.locality = locality
-                geoCoordDetail.save()
-                result["geocoorddetails"].append(geoCoordDetail.id)
-            elif model_name == 'Locality':
-                # Queryset.update() is not used here as it does not send pre/post save signals
-                for field, value in uploadable.items():
-                    setattr(locality, field, value)
-                locality.save()
-                result["localities"].append(locality_id)
+    else:
+        result["type"] = "NOT_RUNNING"
+        result["message"] = 'Task %s is not running and cannot be aborted' % locality_import.taskid
 
     return http.JsonResponse(result, safe=False)
 
@@ -945,6 +1015,7 @@ def upload_locality_set(request: http.HttpRequest):
                     "application/json": {
                         "schema": {
                             "type": "array",
+                            "description": "An array of matched Locality IDs",
                             "items": {
                                 "type": "integer",
                                         "minimum": 0

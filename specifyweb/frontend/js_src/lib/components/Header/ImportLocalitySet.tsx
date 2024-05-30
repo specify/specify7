@@ -3,10 +3,11 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
-import { queryText } from '../../localization/query';
 import { localityText } from '../../localization/locality';
 import { mainText } from '../../localization/main';
 import { notificationsText } from '../../localization/notifications';
+import { queryText } from '../../localization/query';
+import { schemaText } from '../../localization/schema';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
@@ -29,7 +30,6 @@ import { hasToolPermission } from '../Permissions/helpers';
 import { downloadDataSet } from '../WorkBench/helpers';
 import { TableRecordCounts } from '../WorkBench/Results';
 import { resolveBackendParsingMessage } from '../WorkBench/resultsParser';
-import { schemaText } from '../../localization/schema';
 
 type Header = Exclude<
   Lowercase<
@@ -62,7 +62,7 @@ type LocalityImportParseError = {
 type LocalityUploadResponse =
   | {
       readonly type: 'ParseError';
-      readonly data: RA<LocalityImportParseError>;
+      readonly errors: RA<LocalityImportParseError>;
     }
   | {
       readonly type: 'Uploaded';
@@ -102,7 +102,7 @@ export function ImportLocalitySet(): JSX.Element {
     rows: typeof data
   ): void => {
     loading(
-      ajax<LocalityUploadResponse>('/api/import/locality_set/', {
+      ajax<LocalityUploadResponse>('/api/locality_set/import/', {
         headers: { Accept: 'application/json' },
         expectedErrors: [Http.UNPROCESSABLE],
         method: 'POST',
@@ -330,7 +330,7 @@ function LocalityImportErrors({
                 mainText.errorMessage(),
               ];
 
-              const data = results.data.map(
+              const data = results.errors.map(
                 ({ message, payload, field, rowNumber }) => [
                   rowNumber.toString(),
                   field,
@@ -359,7 +359,7 @@ function LocalityImportErrors({
             <td>{mainText.errorMessage()}</td>
           </tr>
         </thead>
-        {results.data.map(({ rowNumber, field, message, payload }, index) => (
+        {results.errors.map(({ rowNumber, field, message, payload }, index) => (
           <tr key={index}>
             <td>{rowNumber}</td>
             <td>{field}</td>

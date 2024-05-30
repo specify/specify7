@@ -1,7 +1,14 @@
-from typing import get_args as get_typing_args, Any, Dict, List, Tuple, Literal, Optional, NamedTuple, Union
+import json
+
+from typing import get_args as get_typing_args, Any, Dict, List, Tuple, Literal, Optional, NamedTuple, Union, Callable, TypedDict
+from datetime import datetime
+from django.db import transaction
 
 import specifyweb.specify.models as spmodels
+
+from specifyweb.celery_tasks import LogErrorsTask, app
 from specifyweb.specify.datamodel import datamodel
+from specifyweb.notifications.models import LocalityImport, Message
 from specifyweb.specify.parse import ParseFailureKey, parse_field as _parse_field, ParseFailure as BaseParseFailure, ParseSucess as BaseParseSuccess
 
 LocalityParseErrorMessageKey = Literal[
@@ -20,6 +27,58 @@ updatable_geocoorddetail_fields = [
     field.name.lower() for field in datamodel.get_table_strict('Geocoorddetail').fields]
 
 ImportModel = Literal['Locality', 'Geocoorddetail']
+
+Progress = Callable[[int, Optional[int]], None]
+
+
+class LocalityImportStatus:
+    PENDING = 'PENDING'
+    PROGRESS = 'PROGRESS'
+    SUCCEEDED = 'SUCCEEDED'
+    ABORTED = 'ABORTED'
+    FAILED = 'FAILED'
+
+
+@app.task(base=LogErrorsTask, bind=True)
+def import_locality_task(self, collection_id: int, column_headers: List[str], data: List[List[str]]) -> None:
+
+    def progress(current: int, total: int):
+        if not self.request.called_directly:
+            self.update_state(state=LocalityImportStatus.PROGRESS, meta={
+                              'current': current, 'total': total})
+    collection = spmodels.Collection.objects.get(id=collection_id)
+    with transaction.atomic():
+        results = upload_locality_set(
+            collection, column_headers, data, progress)
+
+        li = LocalityImport.objects.get(taskid=self.request.id)
+
+        if results['type'] == 'ParseError':
+            self.update_state(state=LocalityImportStatus.FAILED)
+            li.status = LocalityImportStatus.FAILED
+            li.result = json.dumps(results['errors'])
+            Message.objects.create(user=li.specifyuser, content=json.dumps({
+                'type': 'localityimport-failed',
+                'taskid': li.taskid,
+                'errors': json.dumps(results['errors'])
+            }))
+        elif results['type'] == 'Uploaded':
+            li.result = json.dumps({
+                'localities': json.dumps(results['localities']),
+                'geocoorddetails': json.dumps(results['geocoorddetails'])
+            })
+            li.recordset = create_localityimport_recordset(
+                collection, li.specifyuser, results['localities'])
+            self.update_state(state=LocalityImportStatus.SUCCEEDED)
+            li.status = LocalityImportStatus.SUCCEEDED
+            Message.objects.create(user=li.specifyuser, content=json.dumps({
+                'type': 'localityimport-succeeded',
+                'taskid': li.taskid,
+                'recordset': li.recordset.pk,
+                'localities': json.dumps(results['localities'])
+            }))
+
+        li.save()
 
 
 class ParseError(NamedTuple):
@@ -126,3 +185,91 @@ def merge_parse_results(table_name: ImportModel, results: List[Union[ParseSucces
         else:
             to_upload.update(result.to_upload)
     return None if len(to_upload) == 0 else ParseSuccess(to_upload, table_name, locality_id, row_number), errors
+
+
+class UploadSuccess(TypedDict):
+    type: Literal["Uploaded"]
+    localities: List[int]
+    geocoorddetails: List[int]
+
+
+class UploadParseError(TypedDict):
+    type: Literal["ParseError"]
+    data: List[ParseError]
+
+
+def upload_locality_set(collection, column_headers: List[str], data: List[List[str]], progress: Optional[Progress] = None) -> Union[UploadSuccess, UploadParseError]:
+    to_upload, errors = parse_locality_set(collection, column_headers, data)
+    total = len(data)
+    processed = 0
+    result = {
+        "type": None,
+    }
+
+    if len(errors) > 0:
+        result["type"] = "ParseError"
+        result["errors"] = [error.to_json() for error in errors]
+        return result
+
+    result["type"] = "Uploaded"
+    result["localities"] = []
+    result["geocoorddetails"] = []
+
+    with transaction.atomic():
+        for parse_success in to_upload:
+            uploadable = parse_success.to_upload
+            model_name = parse_success.model
+            locality_id = parse_success.locality_id
+
+            if locality_id is None:
+                raise ValueError(
+                    f"No matching Locality found on row {parse_success.row_number}")
+
+            model = getattr(spmodels, model_name)
+            locality = spmodels.Locality.objects.get(id=locality_id)
+
+            if model_name == 'Geocoorddetail':
+                locality.geocoorddetails.get_queryset().delete()
+                geoCoordDetail = model.objects.create(**uploadable)
+                geoCoordDetail.locality = locality
+                geoCoordDetail.save()
+                result["geocoorddetails"].append(geoCoordDetail.id)
+            elif model_name == 'Locality':
+                # Queryset.update() is not used here as it does not send pre/post save signals
+                for field, value in uploadable.items():
+                    setattr(locality, field, value)
+                locality.save()
+                result["localities"].append(locality_id)
+            if progress is not None:
+                processed += 1
+                progress(processed, total)
+
+    return result
+
+
+# Example: Wed Jun 07 2023
+DATE_FORMAT = r"%a %b %d %Y"
+
+
+def create_localityimport_recordset(collection, specifyuser, locality_ids: List[int]):
+
+    locality_table_id = datamodel.get_table_strict('Locality').tableId
+
+    date_as_string = datetime.now().strftime(DATE_FORMAT)
+
+    with transaction.atomic():
+        rs = spmodels.Recordset.objects.create(
+            collectionmemberid=collection.id,
+            dbtableid=locality_table_id,
+            name=f"{date_as_string} Locality Import",
+            specifyuser=specifyuser,
+            type=0,
+            version=0
+        )
+        for locality_id in locality_ids:
+            spmodels.Recordsetitem.objects.create(
+                recordid=locality_id,
+                recordset=rs
+            )
+
+    return rs
