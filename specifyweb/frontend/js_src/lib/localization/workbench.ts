@@ -142,7 +142,7 @@ export const wbText = createDictionary({
     `,
     'de-ch': `
       Beachten Sie, dass die Live-Validierung eine experimentelle Funktion ist
-      und kein Ersatz für die regelmäßige Validierung darstellt.
+      und keinen Ersatz für die regelmäßige Validierung darstellt.
     `,
     'es-es': `
       Tenga en cuenta que la validación en vivo es una función experimental y no
@@ -570,7 +570,7 @@ export const wbText = createDictionary({
     'es-es': 'Validar completado sin errores',
     'fr-fr': 'Validation terminée sans erreur',
     'uk-ua': 'Перевірка завершена без помилок',
-    'de-ch': 'Status des Datensatz-Uploads',
+    'de-ch': 'Upload-Status des Datensatzes',
   },
   validationNoErrorsDescription: {
     'en-us': `
@@ -1416,7 +1416,7 @@ export const wbText = createDictionary({
     'es-es': 'Estado de carga del conjunto de datos',
     'fr-fr': "Une erreur s'est produite pendant [X22X]",
     'uk-ua': 'Під час [X22X] сталася помилка',
-    'de-ch': 'Upload-Status des Datensatzes',
+    'de-ch': 'Status des Datensatz-Uploads',
   },
   wbStatusValidation: {
     'en-us': 'Data Set Validation Status',
