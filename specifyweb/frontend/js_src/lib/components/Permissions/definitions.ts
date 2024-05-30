@@ -37,6 +37,7 @@ export const operationPolicies = {
     'synonymize',
     'desynonymize',
     'repair',
+    'bulk_move',
   ],
   '/tree/edit/geologictimeperiod': [
     'merge',

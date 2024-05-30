@@ -177,10 +177,10 @@ function resolveBackendLocalization(jsonResponseData: any): string {
       operation: jsonResponseData.operation,
       nodeModel: jsonResponseData.nodeModel,
     });
-  else if (localizationKey === 'mergeAcrossTrees')
-    return backEndText.mergeAcrossTrees();
-  else if (localizationKey === 'synonymizeAcrossTrees')
-    return backEndText.synonymizeAcrossTrees();
+  else if (localizationKey === 'operationAcrossTrees')
+    return backEndText.operationAcrossTrees({
+      operation: jsonResponseData.operation,
+    });
   else if (localizationKey === 'limitReachedDeterminingAccepted')
     return backEndText.limitReachedDeterminingAccepted({
       taxonId: jsonResponseData.taxonId,

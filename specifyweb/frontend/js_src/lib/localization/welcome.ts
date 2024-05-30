@@ -232,10 +232,10 @@ export const welcomeText = createDictionary({
       v2.
     `,
     'uk-ua': `
-      Укажіть 7, Copyright 2023, Дослідницький центр Канзаського університету.
-      Specify поставляється без АБСОЛЮТНОЇ ГАРАНТІЇ. Це безкоштовне програмне
-      забезпечення з відкритим кодом, ліцензоване згідно з GNU General Public
-      License v2.
+      Укажіть 7, авторське право 2023, Дослідницький центр Канзаського
+      університету. Specify поставляється без АБСОЛЮТНОЇ ГАРАНТІЇ. Це
+      безкоштовне програмне забезпечення з відкритим кодом, ліцензоване згідно з
+      GNU General Public License v2.
     `,
     'de-ch': `
       Specify 7, Copyright 2023, University of Kansas Center for Research.
