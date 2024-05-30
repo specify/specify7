@@ -43,39 +43,18 @@ export function autoMerge(
     .filter((fieldName) => !specialFields.has(fieldName))
     .map((fieldName) => table.strictGetField(fieldName));
 
-  const missing = deserializeResource(
-    addMissingFields(
-      table.name,
-      mergeDependentFields(
-        resources,
-        Object.fromEntries(
-          allKeys.map((field) => [
-            field.name,
-            mergeField(field, resources, cautious, targetId),
-          ])
-        )
+  return addMissingFields(
+    table.name,
+    mergeDependentFields(
+      resources,
+      Object.fromEntries(
+        allKeys.map((field) => [
+          field.name,
+          mergeField(field, resources, cautious, targetId),
+        ])
       )
     )
   );
-
-  Object.values(missing.dependentResources).forEach((resource) => {
-    if (resource instanceof DependentCollection) {
-      (resource as Collection<AnySchema>).models.forEach(
-        (model: SpecifyResource<AnySchema>) => {
-          const targetIdUrl = getResourceApiUrl(
-            missing.specifyTable.name,
-            targetId
-          );
-          model.set(
-            (resource as Collection<AnySchema>)?.field?.name as string,
-            targetIdUrl as never
-          );
-        }
-      );
-    }
-  });
-
-  return serializeResource(missing);
 }
 
 /**
@@ -119,13 +98,17 @@ function mergeField(
       if (relationshipIsToMany(field)) {
         // Remove duplicates
         const uniqueDependentsCombined = f.unique(
-          parentChildValues
-            .flatMap(([_, childResources]) =>
-              (
-                childResources as unknown as RA<SerializedResource<AnySchema>>
-              ).map((child) => resourceToGeneric(child, false))
-            )
-            .map((resource) => JSON.stringify(resource))
+          parentChildValues.flatMap(([_, childResources]) =>
+            (childResources as unknown as RA<SerializedResource<AnySchema>>)
+              .map((child) => ({
+                ...resourceToGeneric(child, false),
+                [field.otherSideName!]:
+                  targetId === undefined
+                    ? undefined
+                    : getResourceApiUrl(field.table.name, targetId),
+              }))
+              .map((resource) => JSON.stringify(resource))
+          )
         );
         const parentResources =
           /*
