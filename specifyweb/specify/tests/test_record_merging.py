@@ -36,6 +36,17 @@ class ReplaceRecordTests(ApiTests):
 
         self.collectionobjects[0].cataloger = agent_1
         self.collectionobjects[0].save()
+
+        det_1 = models.Determination.objects.create(
+            collectionobject=self.collectionobjects[0],
+            iscurrent=True,
+            determiner=agent_1
+        )
+        det_2 = models.Determination.objects.create(
+            collectionobject=self.collectionobjects[0],
+            iscurrent=False,
+            determiner=agent_1
+        )
         # Assert that the api request ran successfully
         response = c.post(
             f'/api/specify/agent/replace/{agent_2.id}/',
@@ -67,6 +78,9 @@ class ReplaceRecordTests(ApiTests):
         self.assertEqual(response.status_code, 404)
         co_fetched = models.Collectionobject.objects.get(id=self.collectionobjects[0].id)
         self.assertEqual(co_fetched.cataloger_id, agent_2.id)
+
+        self.assertTrue(models.Determination.objects.filter(iscurrent=True, id=det_1.id).exists())
+        self.assertTrue(models.Determination.objects.filter(iscurrent=False, id=det_2.id).exists())
 
     def test_record_recursive_merge(self):
         c = Client()

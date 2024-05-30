@@ -32,5 +32,7 @@ def determination_pre_save(det):
 @orm_signal_handler('pre_save', 'Determination')
 def only_one_determination_iscurrent(determination):
     if determination.iscurrent:
-        Determination.objects.filter(
-            collectionobject=determination.collectionobject_id).update(iscurrent=False)
+        all_dets = Determination.objects.filter(
+            collectionobject=determination.collectionobject_id)
+        dets_excluded = all_dets.exclude(id=determination.id) if determination.id is not None else all_dets
+        dets_excluded.update(iscurrent=False)
