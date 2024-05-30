@@ -45,7 +45,8 @@ class FailedMergingException(Exception):
 
 def resolve_record_merge_response(start_function, silent=True):
     try:
-        response = start_function()
+        start_function()
+        response = http.HttpResponse('', status=204)
     except Exception as error:
         # FEATURE: Add traceback here
         if isinstance(error, FailedMergingException):
@@ -150,7 +151,7 @@ def fix_record_data(new_record_data, current_model: Table, target_model_name: st
 @transaction.atomic
 def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int,
                     progress: Optional[Progress]=None,
-                    new_record_info: Dict[str, Any]=None) -> http.HttpResponse:
+                    new_record_info: Dict[str, Any]=None):
     """Replaces all the foreign keys referencing the old record ID
     with the new record ID, and deletes the old record.
     """
@@ -179,32 +180,14 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
     foreign_key_cols = []
     for table in spmodels.datamodel.tables:
         for relationship in table.relationships:
-            if relationship.relatedModelName.lower() == model_name.lower():
+            if relationship.relatedModelName.lower() == model_name.lower() and not relationship.type.endswith('to-many'):
                 foreign_key_cols.append((table.name, relationship.name))
     progress(0, len(foreign_key_cols)) if progress is not None else None
 
     # Build query to update all of the records with foreign keys referencing the model ID
     for table_name, column_names in groupby(foreign_key_cols, lambda x: x[0]):
         foreign_table = spmodels.datamodel.get_table(table_name)
-        if foreign_table is None:
-            continue
-        try:
-            foreign_model = getattr(spmodels, table_name.lower().title())
-        except ValueError:
-            continue
-
-        # Handle case of updating a large amount of record ids in a foreign table.
-        # Example: handle case of updating a large amount of agent ids in the audit logs.
-        # Fix by optimizing the query by consolidating it here
-        if model_name.lower() in MERGING_OPTIMIZATION_FIELDS and \
-            table_name.lower() in MERGING_OPTIMIZATION_FIELDS[model_name.lower()]:
-            for field_name in MERGING_OPTIMIZATION_FIELDS[model_name.lower()][table_name.lower()]:
-                query = Q(**{field_name: old_model_ids[0]})
-                for old_model_id in old_model_ids[1:]:
-                    query.add(Q(**{field_name: old_model_id}), Q.OR)
-                foreign_model.objects.filter(query).update(**{field_name: new_model_id})
-                progress(1, 0) if progress is not None else None
-            continue
+        foreign_model = getattr(spmodels, table_name.lower().title())
 
         apply_order = add_ordering_to_key(table_name.lower().title())
         # BUG: timestampmodified could be null for one record, and not the other
@@ -221,10 +204,20 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
             field_name = col.lower()
             field_name_id = f'{field_name}_id'
             if not hasattr(foreign_model, field_name_id):
-                if (field_name.endswith('s') and hasattr(foreign_model, field_name)) \
-                    and foreign_table.get_field(field_name).type.endswith('to-many'):
-                    field_name_id = field_name
-                else:
+                continue
+
+
+            # Handle case of updating a large amount of record ids in a foreign table.
+            # Example: handle case of updating a large amount of agent ids in the audit logs.
+            # Fix by optimizing the query by consolidating it here
+            if model_name.lower() in MERGING_OPTIMIZATION_FIELDS and \
+                table_name.lower() in MERGING_OPTIMIZATION_FIELDS[model_name.lower()]:
+                if field_name_id in MERGING_OPTIMIZATION_FIELDS[model_name.lower()][table_name.lower()]:
+                    query = Q(**{field_name_id: old_model_ids[0]})
+                    for old_model_id in old_model_ids[1:]:
+                        query.add(Q(**{field_name_id: old_model_id}), Q.OR)
+                    foreign_model.objects.filter(query).update(**{field_name_id: new_model_id})
+                    progress(1, 0) if progress is not None else None
                     continue
 
             # Filter the objects in the foreign model that references the old target model
@@ -238,14 +231,8 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
                 if table_name in dependant_table_names:
                     continue
 
-                try:
-                    # Set new value for the field
-                    setattr(obj, field_name_id, new_model_id)
-                except TypeError as e:
-                    if "Direct assignment to the reverse side of a related set is prohibited" in str(e):
-                        continue
-                    else:
-                        raise
+                # Set new value for the field
+                setattr(obj, field_name_id, new_model_id)
 
                 def record_merge_recur(row_to_lock=None):
                     """ Recursively run another merge process to resolve uniqueness constraints.
@@ -280,10 +267,9 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
                     old_record, new_record = sorted([old_record, new_record], key=key_function)
 
                     # Make a recursive call to record_merge to resolve duplication error
-                    response = record_merge_fx(table_name, [old_record.pk], new_record.pk, progress)
+                    record_merge_fx(table_name, [old_record.pk], new_record.pk, progress)
                     if old_record.pk != obj.pk:
                         update_record(new_record)
-                    return response
 
                 def update_record(record: models.Model):
                     try:
@@ -306,9 +292,7 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
                         else:
                             raise
 
-                response: http.HttpResponse = update_record(obj)
-                if response is not None and response.status_code != 204:
-                    raise FailedMergingException(response)
+                update_record(obj)
 
     # Dedupe by deleting the record that is being replaced and updating the old model ID to the new one
     for old_model_id in old_model_ids:
@@ -336,9 +320,6 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
             # NOTE: Handle IntegrityError Duplicate entry in the future.
             # EXAMPLE: IntegrityError: (1062, "Duplicate entry '1-0' for key 'AgentID'")
             raise
-
-    # Return http response
-    return http.HttpResponse('', status=204)
 
 @app.task(base=LogErrorsTask, bind=True)
 def record_merge_task(self, model_name: str, old_model_ids: List[int], new_model_id: int, merge_id: int,
