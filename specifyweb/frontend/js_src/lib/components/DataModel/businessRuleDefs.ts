@@ -10,7 +10,6 @@ import {
   updateLoanPrep,
 } from './interactionBusinessRules';
 import type { SpecifyResource } from './legacyTypes';
-import { setSaveBlockers } from './saveBlockers';
 import type { Collection } from './specifyTable';
 import { tables } from './tables';
 import type {
@@ -230,15 +229,6 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           resource: determination.collection?.related,
         };
       },
-    },
-    onRemoved: (determination: SpecifyResource<Determination>): void => {
-      if (determination.get('isCurrent'))
-        setSaveBlockers(
-          determination,
-          determination.specifyTable.field.isCurrent,
-          [resourcesText.currentDeterminationRequired()],
-          'Determination-isCurrent'
-        );
     },
   },
   DisposalPreparation: {
