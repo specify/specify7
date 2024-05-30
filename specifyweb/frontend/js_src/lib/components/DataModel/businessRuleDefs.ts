@@ -238,7 +238,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           determination.collection?.related ?? determination,
           determination.specifyTable.field.isCurrent,
           [resourcesText.currentDeterminationRequired()],
-          'Determination-isCurrent'
+          'determination-isCurrent'
         );
     },
   },
