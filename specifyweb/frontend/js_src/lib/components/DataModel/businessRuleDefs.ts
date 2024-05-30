@@ -232,9 +232,10 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       },
     },
     onRemoved: (determination: SpecifyResource<Determination>): void => {
+      // Block save when a current determination is deleted
       if (determination.get('isCurrent'))
         setSaveBlockers(
-          determination,
+          determination.collection?.related ?? determination,
           determination.specifyTable.field.isCurrent,
           [resourcesText.currentDeterminationRequired()],
           'Determination-isCurrent'
