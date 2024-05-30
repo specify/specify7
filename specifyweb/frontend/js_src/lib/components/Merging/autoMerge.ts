@@ -3,18 +3,15 @@ import type { IR, RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { mappedFind, multiSortFunction, sortFunction } from '../../utils/utils';
 import { addMissingFields } from '../DataModel/addMissingFields';
-import { DependentCollection } from '../DataModel/collectionApi';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
-import { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceApiUrl, getUniqueFields } from '../DataModel/resource';
 import {
   deserializeResource,
   resourceToTable,
-  serializeResource,
   specialFields,
 } from '../DataModel/serializers';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { SpecifyTable, Collection } from '../DataModel/specifyTable';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { AgentVariant, Tables } from '../DataModel/types';
 import { format } from '../Formatters/formatters';
 import { strictDependentFields } from '../FormMeta/CarryForward';
