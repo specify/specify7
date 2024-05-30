@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-from specifyweb.specify.models import Specifyuser, Collection, Agent
+from specifyweb.specify.models import Specifyuser, Collection, Agent, Recordset
 
 
 class Message(models.Model):
@@ -15,12 +15,12 @@ class AsyncTask(models.Model):
     status = models.CharField(max_length=256)
     timestampcreated = models.DateTimeField(default=timezone.now)
     timestampmodified = models.DateTimeField(auto_now=True)
-    specifyuser = models.ForeignKey(Specifyuser, on_delete=models.CASCADE)
-    collection = models.ForeignKey(Collection, on_delete=models.CASCADE)
+    specifyuser = models.ForeignKey(Specifyuser, db_column='SpecifyUserID', on_delete=models.CASCADE)
+    collection = models.ForeignKey(Collection, db_column="CollectionID", on_delete=models.CASCADE)
     createdbyagent = models.ForeignKey(
-        Agent, null=True, on_delete=models.SET_NULL, related_name="+")
+        Agent, null=True, db_column="CreatedByAgentID", on_delete=models.SET_NULL, related_name="+")
     modifiedbyagent = models.ForeignKey(
-        Agent, null=True, on_delete=models.SET_NULL, related_name="+")
+        Agent, null=True, db_column="ModifiedByAgentID", on_delete=models.SET_NULL, related_name="+")
 
     class Meta:
         abstract = True
