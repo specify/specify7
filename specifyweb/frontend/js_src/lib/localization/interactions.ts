@@ -40,7 +40,7 @@ export const interactionsText = createDictionary({
     'fr-fr':
       "Aucune préparation n'a été trouvée pour les enregistrements suivants :",
     'ru-ru': 'Никаких приготовлений не обнаружено для следующих записей:',
-    'uk-ua': 'Не знайдено жодних препаратів для таких записів:',
+    'uk-ua': 'Не було знайдено жодної підготовки для таких записів:',
   },
   preparationsNotAvailableFor: {
     'en-us': `
@@ -134,7 +134,7 @@ export const interactionsText = createDictionary({
     'ru-ru': 'В этом случае препараты не подлежат возврату.',
     'es-es': 'En este contexto, los preparados no se pueden devolver.',
     'fr-fr': 'Les préparatifs ne peuvent être retournés dans ce contexte.',
-    'uk-ua': 'У цьому контексті препарати не повертаються.',
+    'uk-ua': 'У цьому контексті препарати не підлягають поверненню.',
     'de-ch': 'Präparate können in diesem Kontext nicht zurückgegeben werden.',
   },
   noUnresolvedPreparations: {
@@ -168,7 +168,7 @@ export const interactionsText = createDictionary({
     'ru-ru': 'Решать',
     'es-es': 'Resolver',
     'fr-fr': 'Résoudre',
-    'uk-ua': "Розв'язати",
+    'uk-ua': 'Вирішити',
     'de-ch': 'Lösen',
   },
   returnAllPreparations: {
