@@ -105,10 +105,11 @@ def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
         quantities = sum(prep['quantity'] for prep in preps)
         unresolved_prep_count = sum(not prep["isresolved"] for prep in preps)
         unresolved_quantities = sum(
-            (prep["quantity"] - prep["quantityresolved"])
+            (prep["quantity"] - prep.get("quantityresolved", 0))
             * (not prep["isresolved"])
             for prep in preps
         )
+
         extra["totalPreps"] = prep_count
         extra["totalItems"] = quantities
         extra["unresolvedPreps"] = unresolved_prep_count
