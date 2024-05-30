@@ -197,6 +197,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       isCurrent: async (
         determination: SpecifyResource<Determination>
       ): Promise<BusinessRuleResult> => {
+        // Disallow multiple determinations being checked as current
         if (
           determination.get('isCurrent') &&
           determination.collection !== undefined
@@ -209,15 +210,25 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             }
           );
         }
+        // Flag as invalid if no determinations are checked as current
         if (
           determination.collection !== undefined &&
           !determination.collection.models.some(
             (c: SpecifyResource<Determination>) => c.get('isCurrent')
           )
         ) {
-          determination.set('isCurrent', true);
+          return {
+            isValid: false,
+            reason: resourcesText.currentDeterminationRequired(),
+            saveBlockerKey: 'determination-isCurrent',
+            resource: determination.collection.related,
+          };
         }
-        return { isValid: true };
+        return {
+          isValid: true,
+          saveBlockerKey: 'determination-isCurrent',
+          resource: determination.collection?.related,
+        };
       },
     },
     onRemoved: (determination: SpecifyResource<Determination>): void => {

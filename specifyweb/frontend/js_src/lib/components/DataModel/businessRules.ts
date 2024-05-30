@@ -174,7 +174,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
             : result.saveBlockerKey;
 
         setSaveBlockers(
-          this.resource,
+          result.resource ?? this.resource,
           field,
           saveBlockerMessage,
           saveBlockerKey
@@ -469,6 +469,7 @@ export function attachBusinessRules(
 export type BusinessRuleResult<SCHEMA extends AnySchema = AnySchema> = {
   readonly localDuplicates?: RA<SpecifyResource<SCHEMA>>;
   readonly saveBlockerKey?: string;
+  readonly resource?: SpecifyResource<SCHEMA>;
 } & (
   | {
       readonly isValid: true;
