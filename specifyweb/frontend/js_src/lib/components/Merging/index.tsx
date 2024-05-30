@@ -39,6 +39,7 @@ import { recordMergingTableSpec } from './definitions';
 import { InvalidMergeRecordsDialog } from './InvalidMergeRecords';
 import { mergingQueryParameter } from './queryString';
 import { Status } from './Status';
+import { runAllFieldChecks } from '../DataModel/businessRules';
 
 export function RecordMergingLink({
   table,
@@ -225,9 +226,13 @@ function Merging({
                 ),
                 target.id
               )
-            ).then((merged) =>
-              deserializeResource(merged as SerializedResource<AnySchema>)
-            ),
+            ).then(async (merged) => {
+              const mergedResource = deserializeResource(
+                merged as SerializedResource<AnySchema>
+              );
+              if (merged !== undefined) await runAllFieldChecks(mergedResource);
+              return mergedResource;
+            }),
       [table, records]
     ),
     true
@@ -246,9 +251,15 @@ function Merging({
                   records,
                   autoMerge(table, records, false, target.id)
                 )
-                  .then((merged) =>
-                    deserializeResource(merged as SerializedResource<AnySchema>)
-                  )
+                  .then(async (merged) => {
+                    // REFACTOR: move all this to postMergeResource?
+                    const mergedResource = deserializeResource(
+                      merged as SerializedResource<AnySchema>
+                    );
+                    if (merged !== undefined)
+                      await runAllFieldChecks(mergedResource);
+                    return mergedResource;
+                  })
                   .then(setMerged)
               )
             }
