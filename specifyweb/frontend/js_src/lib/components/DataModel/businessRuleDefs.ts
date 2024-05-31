@@ -150,23 +150,6 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
   },
 
   Determination: {
-    customInit: (determinaton: SpecifyResource<Determination>): void => {
-      if (determinaton.isNew()) {
-        const setCurrent = () => {
-          determinaton.set('isCurrent', true);
-          if (determinaton.collection !== undefined) {
-            determinaton.collection.models.forEach(
-              (other: SpecifyResource<Determination>) => {
-                if (other.cid !== determinaton.cid)
-                  other.set('isCurrent', false);
-              }
-            );
-          }
-        };
-        if (determinaton.collection !== null) setCurrent();
-        determinaton.on('add', setCurrent);
-      }
-    },
     fieldChecks: {
       taxon: async (
         determination: SpecifyResource<Determination>
@@ -244,14 +227,14 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         );
     },
     onAdded: (determination, collection): void => {
+      determination.set('isCurrent', true);
       // Clear any existing save blocker on adding a new current determination
-      if (determination.get('isCurrent'))
-        setSaveBlockers(
-          collection.related ?? determination,
-          determination.specifyTable.field.isCurrent,
-          [],
-          CURRENT_DETERMINATION_KEY
-        );
+      setSaveBlockers(
+        collection.related ?? determination,
+        determination.specifyTable.field.isCurrent,
+        [],
+        CURRENT_DETERMINATION_KEY
+      );
     },
   },
   DisposalPreparation: {
