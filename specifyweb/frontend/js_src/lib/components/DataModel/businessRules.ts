@@ -469,6 +469,7 @@ export function attachBusinessRules(
 export type BusinessRuleResult<SCHEMA extends AnySchema = AnySchema> = {
   readonly localDuplicates?: RA<SpecifyResource<SCHEMA>>;
   readonly saveBlockerKey?: string;
+  // Optionally specify the resource to block save on
   readonly resource?: SpecifyResource<SCHEMA>;
 } & (
   | {
