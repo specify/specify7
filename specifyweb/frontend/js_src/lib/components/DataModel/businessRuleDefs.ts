@@ -241,6 +241,16 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           'determination-isCurrent'
         );
     },
+    onAdded: (determination: SpecifyResource<Determination>): void => {
+      // Clear any existing save blocker on adding a new current determination
+      if (determination.get('isCurrent'))
+        setSaveBlockers(
+          determination.collection?.related ?? determination,
+          determination.specifyTable.field.isCurrent,
+          [],
+          'determination-isCurrent'
+        );
+    },
   },
   DisposalPreparation: {
     fieldChecks: {
