@@ -17,7 +17,6 @@ import {
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
-import { DependentCollection } from '../DataModel/collectionApi';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
@@ -38,6 +37,9 @@ import { CompareField, TransferButton } from './CompareField';
 import { mergeCellBackground, mergeHeaderClassName } from './Header';
 import { MergeDialogContainer, ToggleMergeView } from './index';
 
+const handleMaybeToMany = (dependent: Collection<AnySchema> | SpecifyResource<AnySchema>)=>{
+  return dependent instanceof ResourceBase ? [dependent as SpecifyResource<AnySchema>] : (dependent as Collection<AnySchema>).models
+}
 export function MergeSubviewButton({
   relationship,
   resource,
@@ -54,17 +56,13 @@ export function MergeSubviewButton({
   const getCount = React.useCallback(() => {
     const dependentResource = resource.getDependentResource(
       relationship.name
-    ) as Collection<AnySchema> | SpecifyResource<AnySchema> | undefined;
+    ) as Collection<AnySchema> | SpecifyResource<AnySchema> | undefined | nill;
 
-    return dependentResource === undefined
+    return (dependentResource === undefined || dependentResource === null)
       ? resource.get(relationship.name) === undefined
         ? 0
         : 1
-      : dependentResource instanceof ResourceBase
-      ? 1
-      : dependentResource instanceof DependentCollection
-      ? (dependentResource as Collection<AnySchema>).models.length
-      : 0;
+      : handleMaybeToMany(dependentResource).length;
   }, [relationship, resource]);
 
   const [count, setCount] = React.useState(getCount);
@@ -123,10 +121,9 @@ function getChildren(
   resource: SpecifyResource<AnySchema>,
   relationship: Relationship
 ): RA<SpecifyResource<AnySchema>> {
-  const children = resource.getDependentResource(relationship.name);
-  return relationshipIsToMany(relationship)
-    ? (children as Collection<AnySchema> | undefined)?.models ?? []
-    : filterArray([children]);
+  // move this type to getDependentResource?
+  const children = resource.getDependentResource(relationship.name) as Collection<AnySchema> | SpecifyResource<AnySchema> | undefined | null;
+  return children === null || children === undefined ? [] : handleMaybeToMany(children);
 }
 
 function MergeDialog({
