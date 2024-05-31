@@ -91,7 +91,7 @@ export type CacheDefinitions = {
      * {Collection ID}_{Dataset ID}
      */
     [key in `${number}_${number}`]: RA<
-      hot.columnSorting.Config & {
+      Pick<hot.plugins.ColumnSorting.Config, 'column' | 'sortOrder'> & {
         readonly physicalCol: number;
       }
     >;

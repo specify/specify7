@@ -7,7 +7,7 @@ import React from 'react';
 
 import { eventListener } from '../../utils/events';
 import { f } from '../../utils/functools';
-import type { GetOrSet, GetSet, IR, RA } from '../../utils/types';
+import type { GetOrSet, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { removeItem } from '../../utils/utils';
 import { softError } from '../Errors/assert';
@@ -21,14 +21,6 @@ import type { Collection } from './specifyTable';
 const saveBlockers = new WeakMap<
   SpecifyResource<AnySchema>,
   ResourceBlockers
->();
-
-type FieldValue = number | string | string | null | undefined;
-type FieldsWithValue = IR<FieldValue>;
-
-const previouslySetBlockers = new WeakMap<
-  SpecifyResource<AnySchema>,
-  FieldsWithValue
 >();
 
 type ResourceBlockers = {
@@ -46,6 +38,7 @@ const blockerEvents = eventListener<{
 }>();
 
 type Blocker = {
+  readonly key: string;
   readonly field: LiteralField | Relationship;
   readonly message: string;
 };
@@ -54,6 +47,11 @@ export type BlockerWithResource = {
   readonly resources: RA<SpecifyResource<AnySchema>>;
   readonly message: string;
 };
+
+export const getFieldBlockerKey = (
+  field: LiteralField | Relationship,
+  blockerKey: string
+): string => `${blockerKey}-${field.name}`;
 
 export const propagateBlockerEvents = (
   resource: SpecifyResource<AnySchema>
@@ -69,7 +67,7 @@ export const propagateBlockerEvents = (
 export function useSaveBlockers(
   resource: SpecifyResource<AnySchema> | undefined,
   field: LiteralField | Relationship | undefined
-): GetOrSet<RA<string>> {
+): readonly [RA<string>, (value: RA<string>, blockerKey: string) => void] {
   const [blockers, setBlockers] = React.useState<RA<string>>([]);
 
   React.useEffect(
@@ -93,7 +91,7 @@ export function useSaveBlockers(
   return [
     blockers,
     React.useCallback(
-      (errors) => {
+      (errors, blockerKey) => {
         if (resource === undefined || field === undefined) {
           softFail(
             new Error('Unable to set blockers on undefined resource or field'),
@@ -103,7 +101,7 @@ export function useSaveBlockers(
               field,
             }
           );
-        } else setSaveBlockers(resource, field, errors);
+        } else setSaveBlockers(resource, field, errors, blockerKey);
       },
       [resource, field]
     ),
@@ -113,41 +111,25 @@ export function useSaveBlockers(
 export function setSaveBlockers(
   resource: SpecifyResource<AnySchema>,
   field: LiteralField | Relationship,
-  errors: Parameters<GetOrSet<RA<string>>[1]>[0]
+  errors: Parameters<GetOrSet<RA<string>>[1]>[0],
+  blockerKey: string
 ): void {
   const resolvedErrors =
     typeof errors === 'function'
-      ? errors(getFieldBlockers(resource, field))
+      ? errors(getFieldBlockers(resource, field, blockerKey))
       : errors;
-  const blockers = f.unique(resolvedErrors).map((error) => ({
+  const blockers: RA<Blocker> = f.unique(resolvedErrors).map((error) => ({
     field,
     message: error,
+    key: blockerKey,
   }));
   const resourceBlockers = getResourceBlockers(resource)!;
   const newBlockers = [
-    ...resourceBlockers.blockers.filter((blocker) => blocker.field !== field),
+    ...resourceBlockers.blockers.filter(
+      (blocker) => blocker.key !== blockerKey
+    ),
     ...blockers,
   ];
-
-  const fieldValue = resource.get(field.name);
-  const [previouslySet, setPreviouslySetBlocker] = getSetPreviouslySetBlocker(
-    resource,
-    field
-  );
-
-  /**
-   * If a consumer of this function attempts to reset the saveBlockers but the
-   * current value of the field matches the field value which was previously
-   * set, then the case should be ignored to not override any existing blockers
-   */
-  const skipResettingBlockers =
-    newBlockers.length === 0 &&
-    fieldValue === previouslySet &&
-    (!field.isRelationship ||
-      (field.isRelationship && field.type.endsWith('to-one')));
-
-  if (skipResettingBlockers) return;
-  setPreviouslySetBlocker(fieldValue);
 
   saveBlockers.set(resource, {
     ...resourceBlockers,
@@ -158,34 +140,17 @@ export function setSaveBlockers(
 
 export function getFieldBlockers(
   resource: SpecifyResource<AnySchema>,
-  field: LiteralField | Relationship
+  field: LiteralField | Relationship,
+  blockerKey?: string
 ): RA<string> {
   const blockers = getResourceBlockers(resource).blockers;
   return blockers
-    .filter((blocker) => blocker.field === field)
+    .filter((blocker) =>
+      blockerKey === undefined
+        ? blocker.field === field
+        : blocker.field === field && blocker.key === blockerKey
+    )
     .map(({ message }) => message);
-}
-
-function getSetPreviouslySetBlocker(
-  resource: SpecifyResource<AnySchema>,
-  field: LiteralField | Relationship
-): GetSet<FieldValue> {
-  const fieldAndValue = {
-    [field.name]: resource.get(field.name),
-  };
-  if (!previouslySetBlockers.has(resource))
-    previouslySetBlockers.set(resource, fieldAndValue);
-
-  function setPreviouslySetBlocker(value: FieldValue): void {
-    previouslySetBlockers.set(resource, {
-      ...previouslySetBlockers.get(resource),
-      [field.name]: value,
-    });
-  }
-  return [
-    previouslySetBlockers.get(resource)![field.name],
-    setPreviouslySetBlocker,
-  ];
 }
 
 function getResourceBlockers(
@@ -312,5 +277,6 @@ export const findUnclaimedBlocker = (
           },
         ]) !== undefined
       );
+    else if (currentListeners.length === 0) return true;
     else return false;
   });

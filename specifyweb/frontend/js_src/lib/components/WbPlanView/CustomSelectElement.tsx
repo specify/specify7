@@ -285,7 +285,7 @@ function Option({
   if (isDefault)
     classes.push(
       'custom-select-option-selected cursor-auto dark:text-white',
-      'bg-[color:var(--custom-select-accent)]'
+      '!bg-[color:var(--custom-select-accent)]'
     );
 
   const tableLabel = getTable(tableName ?? '')?.label;
@@ -590,7 +590,6 @@ export function CustomSelectElement({
           ${isOpen ? 'z-[3] rounded-b-none' : ''}
           ${handleClick === undefined ? '' : 'border border-gray-500'}
         `}
-        disabled={handleClick === undefined}
         type="button"
         onClick={handleClick}
       >

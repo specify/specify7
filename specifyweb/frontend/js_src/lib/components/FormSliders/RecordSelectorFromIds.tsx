@@ -9,8 +9,8 @@ import type { RA } from '../../utils/types';
 import { removeItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
-import { tablesWithAttachments } from '../Attachments';
 import { RecordSetAttachments } from '../Attachments/RecordSetAttachment';
+import { tablesWithAttachments } from '../Attachments/utils';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -206,7 +206,10 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                   aria-label={addLabel}
                   disabled={isReadOnly}
                   title={addLabel}
-                  onClick={handleAdding}
+                  onClick={() => {
+                    const resource = new table.Resource();
+                    handleAdding([resource]);
+                  }}
                 />
               ) : undefined}
               {typeof handleRemove === 'function' && canRemove ? (

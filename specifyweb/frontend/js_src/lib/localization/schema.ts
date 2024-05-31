@@ -99,7 +99,7 @@ export const schemaText = createDictionary({
   },
   setScope: {
     'en-us': 'Set Scope',
-    'de-ch': 'Geltungsbereich festlegen',
+    'de-ch': 'Umfang festlegen',
     'es-es': 'Establecer alcance',
     'fr-fr': 'Définir la portée',
     'ru-ru': 'Установить область',
@@ -315,10 +315,10 @@ export const schemaText = createDictionary({
   },
   fieldCount: {
     'en-us': 'Field count',
-    'ru-ru': 'Агрегация таблиц',
+    'ru-ru': 'Количество полей',
     'es-es': 'Recuento de campos',
-    'fr-fr': 'Agrégation de tables',
-    'uk-ua': 'Агрегація таблиць',
+    'fr-fr': 'Nombre de champs',
+    'uk-ua': 'Підрахунок полів',
     'de-ch': 'Anzahl Felder',
   },
   relationshipCount: {
@@ -379,7 +379,7 @@ export const schemaText = createDictionary({
   },
   uniquenessRules: {
     'en-us': 'Uniqueness Rules',
-    'de-ch': 'Einzigartigkeitsregeln',
+    'de-ch': 'Eindeutigkeitsregeln',
     'es-es': 'Reglas de unicidad',
     'fr-fr': "Règles d'unicité",
     'ru-ru': 'Правила уникальности',
@@ -387,7 +387,7 @@ export const schemaText = createDictionary({
   },
   uniqueFields: {
     'en-us': 'Unique Fields',
-    'de-ch': 'Sortieren Sie nach ausgeblendeten Feldern',
+    'de-ch': 'Nach ausgeblendeten Feldern sortieren',
     'es-es': 'Campos únicos',
     'fr-fr': 'Champs uniques',
     'ru-ru': 'Уникальные поля',
@@ -419,7 +419,7 @@ export const schemaText = createDictionary({
   },
   uniquenessDuplicatesFound: {
     'en-us': 'Duplicates found in database',
-    'de-ch': 'Duplikate in der Datenbank gefunden',
+    'de-ch': 'In der Datenbank gefundene Duplikate',
     'es-es': 'muchos a uno',
     'fr-fr': 'Doublons trouvés dans la base de données',
     'ru-ru': 'В базе данных найдены дубликаты',
@@ -435,11 +435,11 @@ export const schemaText = createDictionary({
   },
   numberOfDuplicates: {
     'en-us': 'Number of Duplicates',
-    'de-ch': 'Anzahl der Duplikate',
+    'de-ch': 'Anzahl Duplikate',
     'es-es': 'Número de duplicados',
-    'fr-fr': 'Agrégation de tables',
-    'ru-ru': 'Агрегация таблиц',
-    'uk-ua': 'Агрегація таблиць',
+    'fr-fr': 'Nombre de champs',
+    'ru-ru': 'Количество полей',
+    'uk-ua': 'Підрахунок полів',
   },
   schemaViewTitle: {
     'en-us': 'Schema Config: {tableName:string}',
@@ -459,7 +459,7 @@ export const schemaText = createDictionary({
   },
   sortByHiddenFields: {
     'en-us': 'Sort by hidden fields',
-    'de-ch': 'Sortieren Sie nach ausgeblendeten Feldern',
+    'de-ch': 'Nach ausgeblendeten Feldern sortieren',
     'es-es': 'Ordenar por campos ocultos',
     'fr-fr': 'Trier par champs masqués',
     'ru-ru': 'Сортировка по скрытым полям',

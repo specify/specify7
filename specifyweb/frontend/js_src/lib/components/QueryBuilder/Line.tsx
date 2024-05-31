@@ -29,7 +29,6 @@ import {
   formattedEntry,
   mappingPathToString,
   parsePartialField,
-  relationshipIsToMany,
   valueIsPartialField,
 } from '../WbPlanView/mappingHelpers';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
@@ -47,6 +46,7 @@ import {
 } from './FieldFilter';
 import type { DatePart } from './fieldSpec';
 import { QueryFieldSpec } from './fieldSpec';
+import { QueryFieldFormatter } from './Formatter';
 import type { QueryField } from './helpers';
 import { QueryLineTools } from './QueryLineTools';
 
@@ -166,7 +166,7 @@ export function QueryLine({
         canOpenMap = fieldName === 'latitude1' || fieldName === 'longitude1';
       } else if (isMapped)
         fieldType =
-          dataModelField?.isRelationship && relationshipIsToMany(dataModelField)
+          isFormatted && mappingPath.at(-1) === `${schema.referenceSymbol}1`
             ? 'aggregator'
             : 'formatter';
 
@@ -372,6 +372,24 @@ export function QueryLine({
                 mappingElementDivider
               )
             )}
+            {(fieldMeta.fieldType === 'formatter' ||
+              fieldMeta.fieldType === 'aggregator') &&
+            typeof fieldMeta.tableName === 'string' ? (
+              <QueryFieldFormatter
+                formatter={field.dataObjFormatter}
+                tableName={fieldMeta.tableName}
+                type={fieldMeta.fieldType}
+                onChange={
+                  handleChange === undefined
+                    ? undefined
+                    : (dataObjectFormatter): void =>
+                        handleChange({
+                          ...field,
+                          dataObjFormatter: dataObjectFormatter,
+                        })
+                }
+              />
+            ) : undefined}
           </div>
           {filtersVisible ? (
             <div

@@ -109,7 +109,10 @@ export function XmlEditorShell<
             onValueChange={(name): void => setItem({ ...item, name })}
           />
         </Label.Block>
-        {children({ items: allItems, item: getSet })}
+        {children({
+          items: allItems,
+          item: getSet,
+        })}
       </Form>
     </Dialog>
   );
@@ -142,7 +145,7 @@ export function FormatterWrapper(): JSX.Element {
             <Input.Checkbox
               checked={getSet[0].isDefault}
               isReadOnly={isReadOnly}
-              onClick={(): void =>
+              onChange={(): void =>
                 setItems(
                   // Ensure there is only one default
                   items.map((otherItem, itemIndex) =>
@@ -155,7 +158,7 @@ export function FormatterWrapper(): JSX.Element {
                 )
               }
             />
-            {resourcesText.defaultTableFormatter()}
+            {resourcesText.default()}
           </Label.Inline>
           {type === 'formatter' ? (
             <FormatterElement item={getSet as GetSet<Formatter>} />

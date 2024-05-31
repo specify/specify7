@@ -9,7 +9,7 @@ import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Label } from '../Atoms/Form';
 import { dialogIcons } from '../Atoms/Icons';
-import { MILLISECONDS } from '../Atoms/timeUnits';
+import { SECOND } from '../Atoms/timeUnits';
 import { LoadingContext } from '../Core/Contexts';
 import { softFail } from '../Errors/Crash';
 import { produceStackTrace } from '../Errors/stackTrace';
@@ -66,7 +66,7 @@ export function Status({
               current: taskProgress.current,
             });
             if (!destructorCalled)
-              globalThis.setTimeout(fetchStatus, 2 * MILLISECONDS);
+              globalThis.setTimeout(fetchStatus, 2 * SECOND);
             if (taskStatus === 'FAILED') {
               setErrorMessage(errorMessage);
             }

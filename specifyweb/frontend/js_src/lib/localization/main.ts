@@ -87,7 +87,7 @@ export const mainText = createDictionary({
     'es-es': 'Lo sentimos, algo ha ido mal',
     'fr-fr': "Nous sommes désolés, quelque chose s'est mal passé",
     'uk-ua': 'Вибачте, щось пішло не так',
-    'de-ch': 'Es tut uns leid, es ist etwas schief gelaufen',
+    'de-ch': 'Es tut uns leid, da ist etwas schiefgelaufen',
   },
   clickToSeeDetails: {
     'en-us': 'Click to see details',
@@ -234,7 +234,10 @@ export const mainText = createDictionary({
     'en-us': 'Unsaved changes will be lost if you leave this page.',
     'ru-ru': 'Нажмите, чтобы увидеть подробности',
     'es-es': 'Los cambios no guardados se perderán si abandona esta página.',
-    'fr-fr': 'Cliquez pour voir les détails',
+    'fr-fr': `
+      Les modifications non enregistrées seront perdues si vous quittez cette
+      page.
+    `,
     'uk-ua': 'Натисніть, щоб переглянути деталі',
     'de-ch': `
       Nicht gespeicherte Änderungen gehen verloren, wenn Sie diese Seite
