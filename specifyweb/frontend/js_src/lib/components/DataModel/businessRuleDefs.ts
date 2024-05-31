@@ -46,6 +46,8 @@ type MappedBusinessRuleDefs = {
   readonly [TABLE in keyof Tables]?: BusinessRuleDefs<Tables[TABLE]>;
 };
 
+const CURRENT_DETERMINATION_KEY = 'determination-isCurrent';
+
 export const businessRuleDefs: MappedBusinessRuleDefs = {
   Address: {
     customInit: (address) => {
@@ -220,13 +222,13 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           return {
             isValid: false,
             reason: resourcesText.currentDeterminationRequired(),
-            saveBlockerKey: 'determination-isCurrent',
+            saveBlockerKey: CURRENT_DETERMINATION_KEY,
             resource: determination.collection.related,
           };
         }
         return {
           isValid: true,
-          saveBlockerKey: 'determination-isCurrent',
+          saveBlockerKey: CURRENT_DETERMINATION_KEY,
           resource: determination.collection?.related,
         };
       },
@@ -238,7 +240,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           determination.collection?.related ?? determination,
           determination.specifyTable.field.isCurrent,
           [resourcesText.currentDeterminationRequired()],
-          'determination-isCurrent'
+          CURRENT_DETERMINATION_KEY
         );
     },
     onAdded: (determination: SpecifyResource<Determination>): void => {
@@ -248,7 +250,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           determination.collection?.related ?? determination,
           determination.specifyTable.field.isCurrent,
           [],
-          'determination-isCurrent'
+          CURRENT_DETERMINATION_KEY
         );
     },
   },
