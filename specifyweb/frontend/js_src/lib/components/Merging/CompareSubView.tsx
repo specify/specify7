@@ -37,9 +37,14 @@ import { CompareField, TransferButton } from './CompareField';
 import { mergeCellBackground, mergeHeaderClassName } from './Header';
 import { MergeDialogContainer, ToggleMergeView } from './index';
 
-const handleMaybeToMany = (dependent: Collection<AnySchema> | SpecifyResource<AnySchema>)=>{
-  return dependent instanceof ResourceBase ? [dependent as SpecifyResource<AnySchema>] : (dependent as Collection<AnySchema>).models
-}
+// use this in more places?
+const handleMaybeToMany = (
+  dependent: Collection<AnySchema> | SpecifyResource<AnySchema>
+) => {
+  return dependent instanceof ResourceBase
+    ? [dependent as SpecifyResource<AnySchema>]
+    : (dependent as Collection<AnySchema>).models;
+};
 export function MergeSubviewButton({
   relationship,
   resource,
@@ -56,9 +61,9 @@ export function MergeSubviewButton({
   const getCount = React.useCallback(() => {
     const dependentResource = resource.getDependentResource(
       relationship.name
-    ) as Collection<AnySchema> | SpecifyResource<AnySchema> | undefined | nill;
+    ) as Collection<AnySchema> | SpecifyResource<AnySchema> | undefined | null;
 
-    return (dependentResource === undefined || dependentResource === null)
+    return dependentResource === undefined || dependentResource === null
       ? resource.get(relationship.name) === undefined
         ? 0
         : 1
@@ -122,8 +127,14 @@ function getChildren(
   relationship: Relationship
 ): RA<SpecifyResource<AnySchema>> {
   // move this type to getDependentResource?
-  const children = resource.getDependentResource(relationship.name) as Collection<AnySchema> | SpecifyResource<AnySchema> | undefined | null;
-  return children === null || children === undefined ? [] : handleMaybeToMany(children);
+  const children = resource.getDependentResource(relationship.name) as
+    | Collection<AnySchema>
+    | SpecifyResource<AnySchema>
+    | undefined
+    | null;
+  return children === null || children === undefined
+    ? []
+    : handleMaybeToMany(children);
 }
 
 function MergeDialog({

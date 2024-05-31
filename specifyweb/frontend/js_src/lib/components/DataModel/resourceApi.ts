@@ -75,7 +75,11 @@ function eventHandlerForToMany(_related, field) {
   };
 }
 
-const maybeMakeResource = (value, relatedTable) => value instanceof ResourceBase ? value : new relatedTable.Resource(value, {parse: true});
+// always returns a resource
+const maybeMakeResource = (value, relatedTable) =>
+  value instanceof ResourceBase
+    ? value
+    : new relatedTable.Resource(value, { parse: true });
 
 export const ResourceBase = Backbone.Model.extend({
   __name__: 'ResourceBase',
