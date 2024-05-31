@@ -103,18 +103,14 @@ function Coordinate({
 
     isChanging.current = true;
 
-    if (isValid) {
-      setBlockers([], fieldType);
-    } else {
-      setBlockers(
-        [
+    const latLongBlockers = isValid
+      ? []
+      : [
           fieldType === 'Lat'
             ? localityText.validLatitude()
             : localityText.validLongitude(),
-        ],
-        fieldType
-      );
-    }
+        ];
+    setBlockers(latLongBlockers, fieldType);
 
     /**
      * Do not set unload protect because very precise coodinateFields
