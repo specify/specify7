@@ -206,7 +206,10 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                   aria-label={addLabel}
                   disabled={isReadOnly}
                   title={addLabel}
-                  onClick={handleAdding}
+                  onClick={() => {
+                    const resource = new table.Resource();
+                    handleAdding([resource]);
+                  }}
                 />
               ) : undefined}
               {typeof handleRemove === 'function' && canRemove ? (

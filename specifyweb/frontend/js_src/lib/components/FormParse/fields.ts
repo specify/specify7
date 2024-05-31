@@ -223,7 +223,11 @@ const processFieldType: {
         hasNewButton: getProperty('newBtn')?.toLowerCase() !== 'false',
         hasSearchButton: getProperty('searchBtn')?.toLowerCase() !== 'false',
         hasEditButton: getProperty('editBtn')?.toLowerCase() !== 'false',
-        hasViewButton: getProperty('viewBtn')?.toLowerCase() === 'true',
+        hasViewButton:
+          getProperty('viewBtn') === undefined &&
+          getProperty('editBtn')?.toLowerCase() === 'false'
+            ? true
+            : getProperty('viewBtn')?.toLowerCase() === 'true',
         typeSearch: getProperty('name'),
         searchView: getProperty('searchView'),
       };

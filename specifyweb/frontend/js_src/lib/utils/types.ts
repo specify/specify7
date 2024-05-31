@@ -68,6 +68,34 @@ export type Writable<T> = {
 };
 
 /**
+ * Inspired by https://stackoverflow.com/a/69676731
+ * Constructs a tuple type which must contain exactly one of every possible
+ * type of VALUES along with the values in RESULT
+ *
+ * @remarks
+ * While the RESULT parameter can be explicitly provided, it is primarily used
+ * to recursively generate the tuple
+ *
+ * @example
+ * ```ts
+ * type Colors = RestrictedTuple<'blue' | 'green' | 'red'>;
+ * const missing: Colors = ['blue']; // Invalid
+ * const duplicates: Colors = ['blue', 'blue', 'red']; // Invalid
+ * const wrongColor: Colors = ['green', 'blue', 'yellow']; // Invalid
+ * const wrongLength: Colors = ['blue', 'red', 'green', 'green']; // Invalid
+ * const rightColors: Colors = ['blue', 'red', 'green']; // Valid
+ * ```
+ */
+export type RestrictedTuple<
+  VALUES extends string,
+  RESULT extends RA<unknown> = readonly []
+> = ValueOf<{
+  readonly [KEY in VALUES]: Exclude<VALUES, KEY> extends never
+    ? readonly [KEY, ...RESULT]
+    : RestrictedTuple<Exclude<VALUES, KEY>, readonly [KEY, ...RESULT]>;
+}>;
+
+/**
  * Cast type to writable. Equivalent to doing "as Writable<T>", except this
  * way, don't have to manually specify the generic type
  */

@@ -21,7 +21,7 @@ export const localityText = createDictionary({
     'en-us': 'GeoMap',
     'ru-ru': 'Карта',
     'es-es': 'GeoMap',
-    'fr-fr': 'GéoCarte',
+    'fr-fr': 'GeoMap',
     'uk-ua': 'Геокарта',
     'de-ch': 'Karte',
   },
@@ -40,8 +40,8 @@ export const localityText = createDictionary({
       registros
     `,
     'fr-fr': `
-      GéoCarte - Tracé {plotted:number|formatted} de {total:number|formatted}
-      enregistrements
+      GeoMap - {plotted:number|formatted} sur {total:number|formatted}
+      enregistrements placés
     `,
     'uk-ua': `
       GeoMap - нанесено {plotted:number|formatted} із {total:number|formatted}
@@ -56,7 +56,7 @@ export const localityText = createDictionary({
     'en-us': 'GeoMap - Plotted {plotted:number|formatted} records',
     'ru-ru': 'Карта - Отображено {plotted:number|formatted} записей',
     'es-es': 'GeoMap - {plotted:number|formatted} registros trazados',
-    'fr-fr': 'GéoCarte - {plotted:number|formatted} enregistrements tracés',
+    'fr-fr': 'GéoCarte - {plotted:number|formatted} enregistrements placés',
     'uk-ua': 'GeoMap - Нанесені записи {plotted:number|formatted}.',
     'de-ch': 'GeoMap hat {plotted:number|formatted} Datensätze gezeichnet',
   },
@@ -148,7 +148,7 @@ export const localityText = createDictionary({
       El complemento GeoLocate requiere que se complete el campo de geografía.
     `,
     'fr-fr':
-      'Le plug-in GeoLocate nécessite que le champ géographique soit rempli.',
+      'Le plug-in GeoLocate nécessite que le champ géographie soit rempli.',
     'uk-ua': 'Плагін GeoLocate вимагає заповнення поля географії.',
     'de-ch': `
       Das GeoLocate-Plugin erfordert, dass das Koordinaten-Feld eingegeben wird.

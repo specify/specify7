@@ -14,7 +14,7 @@ export const formsText = createDictionary({
     'en-us': 'Forms',
     'ru-ru': 'Формы',
     'es-es': 'Formularios',
-    'fr-fr': 'Résultats supplémentaires omis',
+    'fr-fr': 'Formulaires',
     'uk-ua': 'Форми',
     'de-ch': 'Formulare',
   },
@@ -83,7 +83,7 @@ export const formsText = createDictionary({
     'en-us': 'Checking if resource can be deleted…',
     'ru-ru': 'Проверка возможности удаления ресурса…',
     'es-es': 'Comprobando si el recurso se puede eliminar…',
-    'fr-fr': 'Vérifier si la ressource peut être supprimée…',
+    'fr-fr': 'Vérification de si la ressource peut être supprimée…',
     'uk-ua': 'Перевірка можливості видалення ресурсу…',
     'de-ch': 'Überprüfen, ob die Ressource gelöscht werden kann …',
   },
@@ -91,7 +91,7 @@ export const formsText = createDictionary({
     'en-us': 'Delete blocked',
     'ru-ru': 'Удалить заблокированное',
     'es-es': 'Eliminar bloqueado',
-    'fr-fr': 'Supprimer bloqué',
+    'fr-fr': 'Suppression refusée',
     'uk-ua': 'Видалити заблокований',
     'de-ch': 'Blockierte löschen',
   },
@@ -105,7 +105,10 @@ export const formsText = createDictionary({
       Ressourcen referenziert wird:
     `,
     'es-es': 'encontrar usos',
-    'fr-fr': 'Trouver des utilisations',
+    'fr-fr': `
+      Cette ressource ne peut pas être supprimée parce que les ressources
+      suivantes y font référence :
+    `,
     'ru-ru': 'Найдите способы использования',
     'uk-ua': 'Знайти використання',
   },
@@ -130,7 +133,7 @@ export const formsText = createDictionary({
     'en-us': '{geographyTable:string} Required',
     'ru-ru': '{geographyTable:string} Обязательно',
     'es-es': '{geographyTable:string} Requerido',
-    'fr-fr': '{geographyTable:string} Obligatoire',
+    'fr-fr': '{geographyTable:string} Requis',
     'uk-ua': '{geographyTable:string} Потрібний',
     'de-ch': '{geographyTable:string} Erforderlich',
   },
@@ -146,7 +149,11 @@ export const formsText = createDictionary({
       mindestens einer ausgefüllten Start- und Endzeit hat.
     `,
     'es-es': 'Seleccionar fuente de tablas',
-    'fr-fr': 'Sélectionnez la source des tables',
+    'fr-fr': `
+      Le plugin Paleo Map requiert que {localityTable:string} possèdent des
+      coordonnées géographiques et que le contexte paléo définisse un age
+      géographique avec a minima un temps de début et de fin.
+    `,
     'ru-ru': 'Выберите источник таблиц',
     'uk-ua': 'Виберіть джерело таблиць',
   },
@@ -168,7 +175,10 @@ export const formsText = createDictionary({
       löschen?
     `,
     'es-es': 'El valor debe ser exclusivo de la base de datos.',
-    'fr-fr': 'La valeur doit être unique à la base de données',
+    'fr-fr': `
+      Êtes-vous sûr de vouloir supprimer définitivement {tableName:string} de la
+      base de données ?
+    `,
     'ru-ru': 'Значение должно быть уникальным для базы данных',
     'uk-ua': 'Значення має бути унікальним для бази даних',
   },
@@ -196,7 +206,7 @@ export const formsText = createDictionary({
     'en-us': 'Mon / Year',
     'ru-ru': 'Пн/Год',
     'es-es': 'Lun / Año',
-    'fr-fr': 'Lun / Année',
+    'fr-fr': 'Mois / Année',
     'uk-ua': 'пн / рік',
     'de-ch': 'Mo / Jahr',
   },
@@ -222,7 +232,7 @@ export const formsText = createDictionary({
     'en-us': 'Set to current date',
     'ru-ru': 'Установить текущую дату',
     'es-es': 'Establecer en la fecha actual',
-    'fr-fr': 'Définir sur la date actuelle',
+    'fr-fr': 'Date du jour',
     'uk-ua': 'Встановити поточну дату',
     'de-ch': 'Auf aktuelles Datum einstellen',
   },
@@ -244,7 +254,10 @@ export const formsText = createDictionary({
       "{pickListName:string}" hinzufügen?
     `,
     'es-es': 'AAAA',
-    'fr-fr': 'AAAA',
+    'fr-fr': `
+      Ajouter la valeur "{value:string}" à {pickListTable:string} nommé
+      "{pickListName:string}"?
+    `,
     'ru-ru': 'ГГГГ',
     'uk-ua': 'РРРР',
   },
@@ -262,7 +275,10 @@ export const formsText = createDictionary({
       'Es werden nur numerische Werte unterstützt {pickListTable:string}',
     'es-es':
       'En este {pickListTable:string} solo se admiten valores numéricos.',
-    'fr-fr': 'Résultats supplémentaires omis',
+    'fr-fr': `
+      Seules les valeurs numériques sont acceptés dans cette
+      {pickListTable:string}
+    `,
     'ru-ru': 'Дополнительные результаты опущены',
     'uk-ua': 'Додаткові результати пропущено',
   },
@@ -403,7 +419,7 @@ export const formsText = createDictionary({
     'en-us': 'Save blocked',
     'de-ch': 'Informationen aufnehmen',
     'es-es': 'Información de registro',
-    'fr-fr': 'Enregistrer des informations',
+    'fr-fr': 'Enregistrement refusé',
     'ru-ru': 'Запись информации',
     'uk-ua': 'Запис інформації',
   },
@@ -441,7 +457,7 @@ export const formsText = createDictionary({
     'es-es': 'Este comando no está disponible actualmente para Specify 7.',
     'uk-ua': 'Ця команда наразі недоступна для Specify 7.',
     'de-ch': 'Dieser Befehl ist derzeit für Specify 7 nicht verfügbar.',
-    'fr-fr': 'AAAA',
+    'fr-fr': 'Cette commande est actuellement indisponible dans Specify 7.',
   },
   commandUnavailableSecondDescription: {
     'en-us': `
@@ -546,7 +562,7 @@ export const formsText = createDictionary({
     `,
     'fr-fr': `
       La commande ne peut pas être utilisée sur le formulaire
-      {currentTable:string}. Il ne peut être utilisé que sur le formulaire
+      {currentTable:string}. Elle ne peut être utilisée que sur le formulaire
       {correctTable:string}.
     `,
     'uk-ua': `
@@ -575,7 +591,7 @@ export const formsText = createDictionary({
     'en-us': 'Illegal value for a Yes/No field',
     'ru-ru': 'Недопустимое значение для поля Да/Нет.',
     'es-es': 'Valor ilegal para un campo Sí/No',
-    'fr-fr': 'Valeur illégale pour un champ Oui/Non',
+    'fr-fr': 'Valeur interdite pour un champ Oui/Non',
     'uk-ua': 'Неприпустиме значення для поля «Так/Ні».',
     'de-ch': 'Unzulässiger Wert für ein Ja/Nein-Feld',
   },
@@ -591,7 +607,7 @@ export const formsText = createDictionary({
     'en-us': 'Invalid value',
     'ru-ru': 'Неверное значение',
     'es-es': 'valor no válido',
-    'fr-fr': 'valeur invalide',
+    'fr-fr': 'Valeur invalide',
     'uk-ua': 'Недійсне значення',
     'de-ch': 'Ungültiger Wert',
   },
@@ -659,7 +675,7 @@ export const formsText = createDictionary({
     'en-us': 'Entire Table',
     'ru-ru': 'Вся таблица',
     'es-es': 'Tabla entera',
-    'fr-fr': 'Tableau entier',
+    'fr-fr': 'Table entière',
     'uk-ua': 'Ціла таблиця',
     'de-ch': 'Gesamte Tabelle',
   },
@@ -686,7 +702,7 @@ export const formsText = createDictionary({
     'en-us': 'Additional results omitted',
     'ru-ru': 'Дополнительные результаты опущены',
     'es-es': 'Resultados adicionales omitidos',
-    'fr-fr': 'Résultats supplémentaires omis',
+    'fr-fr': 'Résultats supplémentaires masqués',
     'uk-ua': 'Додаткові результати пропущено',
     'de-ch': 'Weitere Ergebnisse ausgelassen',
   },
@@ -694,7 +710,7 @@ export const formsText = createDictionary({
     'en-us': 'Proceed without saving?',
     'ru-ru': 'Продолжить без сохранения?',
     'es-es': '¿Continuar sin guardar?',
-    'fr-fr': 'Continuer sans sauvegarder?',
+    'fr-fr': 'Continuer sans sauvegarder ?',
     'uk-ua': 'Продовжити без збереження?',
     'de-ch': 'Ohne Speichern fortfahren?',
   },
@@ -763,7 +779,7 @@ export const formsText = createDictionary({
     'es-es': 'En este [X42X] solo se admiten valores numéricos.',
     'uk-ua': 'Додаткові результати пропущено',
     'de-ch': 'Duplikat {recordSetItemTable:string}',
-    'fr-fr': 'Résultats supplémentaires omis',
+    'fr-fr': 'Dupliquer {recordSetItemTable:string}',
   },
   duplicateRecordSetItemDescription: {
     'en-us':
@@ -1029,7 +1045,7 @@ export const formsText = createDictionary({
     'en-us': 'Copy Specify 6 settings',
     'ru-ru': 'Копировать Укажите 6 настроек',
     'es-es': 'Copiar Especificar 6 configuraciones',
-    'fr-fr': 'Copier Spécifier 6 paramètres',
+    'fr-fr': 'Copier les paramètres de Spécifier 6',
     'uk-ua': 'Копіювати Вкажіть 6 параметрів',
     'de-ch': 'Kopieren Geben Sie 6 Einstellungen an',
   },

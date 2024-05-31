@@ -179,9 +179,11 @@ export const backEndText = createDictionary({
     'en-us': 'bad latitude or longitude value: {value:string}',
     'ru-ru': 'неверное значение широты или долготы: {value:string}',
     'es-es': 'valor de latitud o longitud incorrecto: {value:string}',
-    'fr-fr': 'mauvaise valeur de latitude ou de longitude : {value:string}',
+    'fr-fr': 'Nœud [X0X] "[X25X]" vers le parent synonymisé "[X67X]"',
     'uk-ua': 'неправильне значення широти або довготи: {value:string}',
-    'de-ch': 'falscher Breiten- oder Längengradwert: {value:string}',
+    'de-ch': `
+      [X0X] Knoten "[X25X]" zum synonymisierten übergeordneten Knoten "[X67X]"
+    `,
   },
   latitudeOutOfRange: {
     'en-us': 'latitude must be between -90 and 90. Actual: {value:string}',
@@ -266,12 +268,12 @@ export const backEndText = createDictionary({
     'fr-fr': 'Afficher le traçage',
     'ru-ru': 'Показать обратную связь',
     'uk-ua': 'Показати помилку',
-    'de-ch': 'Traceback anzeigen',
+    'de-ch': 'Keine Sammlung in der Abfrage für Tabelle [X39X] gefunden',
   },
   fieldNotUnique: {
     'en-us': '{tableName:string} must have unique {fieldName:string}',
     'es-es': '{tableName:string} debe tener un {fieldName:string} único',
-    'fr-fr': '{tableName:string} doit avoir un {fieldName:string} unique',
+    'fr-fr': 'Type de collection inattendu "[X31X]". "[X71X]" attendu',
     'ru-ru': '{tableName:string} должен иметь уникальный {fieldName:string}',
     'uk-ua': '{tableName:string} має мати унікальний {fieldName:string}',
     'de-ch': '{tableName:string} muss eindeutig sein {fieldName:string}',
@@ -335,10 +337,7 @@ export const backEndText = createDictionary({
     `,
     'ru-ru': 'Ранг узла дерева выше, чем у некоторых его дочерних элементов.',
     'uk-ua': 'Ранг вузла дерева більший, ніж у деяких його дочірніх вузлів',
-    'de-ch': `
-      Der Rang des Baumknotens ist höher als der einiger seiner untergeordneten
-      Knoten.
-    `,
+    'de-ch': 'Keine Sammlung in der Abfrage für Tabelle [X39X] gefunden',
   },
   nodeOperationToSynonymizedParent: {
     'en-us': `
@@ -361,10 +360,7 @@ export const backEndText = createDictionary({
       {operation:string} Knoten "{nodeName:string}" zum synonymisierten
       übergeordneten Knoten "{parentName:string}"
     `,
-    'ru-ru': `
-      Узел {operation:string} "{nodeName:string}" для синонимизированного
-      родительского узла "{parentName:string}"
-    `,
+    'ru-ru': 'Набор данных уже загружен',
   },
   nodeSynonymizeToSynonymized: {
     'en-us': `
@@ -391,7 +387,7 @@ export const backEndText = createDictionary({
   nodeSynonimizeWithChildren: {
     'en-us': 'Synonymizing node "{nodeName:string}" which has children',
     'es-es': 'Sinonimizando el nodo "{nodeName:string}" que tiene hijos',
-    'fr-fr': 'Nœud synonyme "{nodeName:string}" qui a des enfants',
+    'fr-fr': 'Type de collection inattendu "[X31X]". "[X71X]" attendu',
     'ru-ru': `
       Синонимизирующий узел «{nodeName:string}», у которого есть дочерние
       элементы.
@@ -453,21 +449,13 @@ export const backEndText = createDictionary({
       Erwartet „{nodeModel:string}“
     `,
   },
-  mergeAcrossTrees: {
-    'en-us': 'Merging across trees',
-    'es-es': 'Fusionando entre árboles',
-    'fr-fr': 'Fusion entre arbres',
-    'ru-ru': 'Слияние деревьев',
-    'uk-ua': 'Комбінування дерев',
-    'de-ch': 'Zusammenführen über Bäume hinweg',
-  },
-  synonymizeAcrossTrees: {
-    'en-us': 'Synonymizing across trees',
-    'es-es': 'Sinonimizando entre árboles',
-    'fr-fr': 'Synonymiser à travers les arbres',
-    'ru-ru': 'Синонимизация деревьев',
-    'uk-ua': 'Синонімізація дерев',
-    'de-ch': 'Synonymisierung über Bäume hinweg',
+  operationAcrossTrees: {
+    'en-us': '{operation:string} across trees',
+    'de-ch': '{operation:string} über Bäume',
+    'es-es': '{operation:string} a través de árboles',
+    'fr-fr': '{operation:string} à travers les arbres',
+    'ru-ru': '{operation:string} среди деревьев',
+    'uk-ua': '{operation:string} через дерева',
   },
   limitReachedDeterminingAccepted: {
     'en-us': `
@@ -576,7 +564,7 @@ export const backEndText = createDictionary({
     'en-us': 'Field {field:string} is not a Relationship',
     'es-es': 'El campo {field:string} no es una relación',
     'fr-fr': "Le champ {field:string} n'est pas une relation",
-    'ru-ru': 'Поле {field:string} не является связью',
+    'ru-ru': '[X0X] среди деревьев',
     'uk-ua': 'Поле {field:string} не є зв’язком',
     'de-ch': 'Feld {field:string} ist keine Beziehung',
   },
@@ -594,8 +582,8 @@ export const backEndText = createDictionary({
       demande. "{expectedTableId:string}" attendu
     `,
     'ru-ru': `
-      Неожиданный идентификатор таблицы «{tableId:string}» в запросе. Ожидается
-      "{expectedTableId:string}"
+      Не удалось найти принятый таксон для синонимизированного таксона с
+      идентификатором [X63X]
     `,
     'uk-ua': `
       Неочікуваний ІД таблиці "{tableId:string}" у запиті. Очікується
