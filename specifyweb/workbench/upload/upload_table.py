@@ -168,7 +168,7 @@ class ScopedMustMatchTable(ScopedUploadTable):
         b = super().bind(row, uploadingAgentId, auditor, sql_alchemy_session, cache)
         return BoundMustMatchTable(*b) if isinstance(b, BoundUploadTable) else b
 
-
+from django.db.utils import OperationalError
 class BoundUploadTable(NamedTuple):
     name: str
     static: Dict[str, Any]

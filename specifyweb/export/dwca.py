@@ -12,8 +12,8 @@ from django.utils.translation import gettext as _
 from xml.etree import ElementTree as ET
 from xml.dom import minidom
 
-from specifyweb.stored_queries.execution import EphemeralField, query_to_csv
-from specifyweb.stored_queries.queryfield import QueryField
+from specifyweb.stored_queries.execution import query_to_csv
+from specifyweb.stored_queries.queryfield import QueryField, EphemeralField
 from specifyweb.stored_queries.models import session_context
 
 logger = logging.getLogger(__name__)

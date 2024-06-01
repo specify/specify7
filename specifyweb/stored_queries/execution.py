@@ -3,6 +3,8 @@ import json
 import logging
 import os
 import re
+
+from typing import List
 import xml.dom.minidom
 from collections import namedtuple, defaultdict
 from datetime import datetime, timedelta
@@ -12,8 +14,6 @@ from django.conf import settings
 from django.db import transaction
 from sqlalchemy import sql, orm, func, select
 from sqlalchemy.sql.expression import asc, desc, insert, literal
-
-from specifyweb.stored_queries.group_concat import group_by_displayed_fields
 
 from . import models
 from .format import ObjectFormatter
@@ -25,6 +25,9 @@ from ..notifications.models import Message
 from ..permissions.permissions import check_table_permissions
 from ..specify.auditlog import auditlog
 from ..specify.models import Loan, Loanpreparation, Loanreturnpreparation
+
+from specifyweb.stored_queries.group_concat import group_by_displayed_fields
+from specifyweb.stored_queries.queryfield import fields_from_json
 
 logger = logging.getLogger(__name__)
 
@@ -120,21 +123,6 @@ def filter_by_collection(model, query, collection):
 
 
 
-EphemeralField = namedtuple('EphemeralField', "stringId isRelFld operStart startValue isNot isDisplay sortType formatName")
-
-def field_specs_from_json(json_fields):
-    """Given deserialized json data representing an array of SpQueryField
-    records, return an array of QueryField objects that can build the
-    corresponding sqlalchemy query.
-    """
-    def ephemeral_field_from_json(json):
-        return EphemeralField(**{field: json.get(field.lower(), None) for field in EphemeralField._fields})
-
-    field_specs =  [QueryField.from_spqueryfield(ephemeral_field_from_json(data))
-            for data in sorted(json_fields, key=lambda field: field['position'])]
-
-    return field_specs
-
 def do_export(spquery, collection, user, filename, exporttype, host):
     """Executes the given deserialized query definition, sending the
     to a file, and creates "export completed" message when finished.
@@ -150,7 +138,7 @@ def do_export(spquery, collection, user, filename, exporttype, host):
     message_type = 'query-export-to-csv-complete'
 
     with models.session_context() as session:
-        field_specs = field_specs_from_json(spquery['fields'])
+        field_specs = fields_from_json(spquery['fields'])
         if exporttype == 'csv':
             query_to_csv(session, collection, user, tableid, field_specs, path,
                          recordsetid=recordsetid, 
@@ -179,7 +167,7 @@ def stored_query_to_csv(query_id, collection, user, path):
         field_specs = [QueryField.from_spqueryfield(field)
                        for field in sorted(sp_query.fields, key=lambda field: field.position)]
 
-        query_to_csv(session, collection, user, tableid, field_specs, path, distinct=spquery['selectdistinct'])
+        query_to_csv(session, collection, user, tableid, field_specs, path, distinct=spquery['selectdistinct']) # bug?
 
 def query_to_csv(session, collection, user, tableid, field_specs, path,
                  recordsetid=None, captions=False, strip_id=False, row_filter=None,
@@ -388,17 +376,14 @@ def run_ephemeral_query(collection, user, spquery):
     distinct = spquery['selectdistinct']
     tableid = spquery['contexttableid']
     count_only = spquery['countonly']
-    try:
-        format_audits = spquery['formatauditrecids']
-    except:
-        format_audits = False
+    format_audits = spquery.get('formatauditrecids', False)
 
     with models.session_context() as session:
-        field_specs = field_specs_from_json(spquery['fields'])
+        field_specs = fields_from_json(spquery['fields'])
         return execute(session, collection, user, tableid, distinct, count_only,
                        field_specs, limit, offset, recordsetid, formatauditobjs=format_audits)
 
-def augment_field_specs(field_specs, formatauditobjs=False):
+def augment_field_specs(field_specs: List[QueryField], formatauditobjs=False):
     print("augment_field_specs ######################################")
     new_field_specs = []
     for fs in field_specs:
@@ -411,7 +396,7 @@ def augment_field_specs(field_specs, formatauditobjs=False):
             has_precision = hasattr(model, precision_field)
             if has_precision:
                 new_field_specs.append(make_augmented_field_spec(fs, model, precision_field))
-        elif formatauditobjs and model.name.lower.startswith('spauditlog'):
+        elif formatauditobjs and model.name.lower().startswith('spauditlog'):
             if field.name.lower() in 'newvalue, oldvalue':
                 log_model = models.models_by_tableid[530];
                 new_field_specs.append(make_augmented_field_spec(fs, log_model, 'TableNum'))
@@ -447,7 +432,7 @@ def recordset(collection, user, user_agent, recordset_info):
         model = models.models_by_tableid[tableid]
         id_field = getattr(model, model._id)
 
-        field_specs = field_specs_from_json(spquery['fields'])
+        field_specs = fields_from_json(spquery['fields'])
 
         query, __ = build_query(session, collection, user, tableid, field_specs)
         query = query.with_entities(id_field, literal(new_rs_id)).distinct()
@@ -472,7 +457,7 @@ def return_loan_preps(collection, user, agent, data):
         model = models.models_by_tableid[tableid]
         id_field = getattr(model, model._id)
 
-        field_specs = field_specs_from_json(spquery['fields'])
+        field_specs = fields_from_json(spquery['fields'])
 
         query, __ = build_query(session, collection, user, tableid, field_specs)
         lrp = orm.aliased(models.LoanReturnPreparation)

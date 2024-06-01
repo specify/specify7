@@ -1,4 +1,5 @@
 from contextlib import contextmanager
+from typing import Dict
 
 from MySQLdb.cursors import SSCursor
 import sqlalchemy
@@ -38,7 +39,7 @@ def generate_models():
 
 tables, classes = generate_models()
 
-models_by_tableid = dict((cls.tableid, cls) for cls in list(classes.values()))
+models_by_tableid: Dict[int, build_models.Table] = dict((cls.tableid, cls) for cls in list(classes.values()))
 
 globals().update(classes)
 

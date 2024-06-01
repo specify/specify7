@@ -22,6 +22,7 @@ from specifyweb.permissions.permissions import PermissionTarget, \
 from specifyweb.celery_tasks import app, CELERY_TASK_STATE
 from specifyweb.specify.record_merging import record_merge_fx, record_merge_task, resolve_record_merge_response
 from specifyweb.specify.update_locality import localityupdate_parse_success, localityupdate_parse_error, parse_locality_set as _parse_locality_set, upload_locality_set as _upload_locality_set, create_localityupdate_recordset, update_locality_task, parse_locality_task, LocalityUpdateStatus
+from specifyweb.stored_queries.batch_edit import run_batch_edit
 from . import api, models as spmodels
 from .specify_jar import specify_jar
 
@@ -85,7 +86,8 @@ def raise_error(request):
     """This endpoint intentionally throws an error in the server for
     testing purposes.
     """
-    raise Exception('This error is a test. You may now return to your regularly '
+    run_batch_edit(None, None, None)
+    raise Exception('This error iswwww a teswwwwt. You may now return to your regularly '
                     'scheduled hacking.')
 
 

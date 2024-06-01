@@ -70,7 +70,7 @@ class ScopedTreeRecord(NamedTuple):
             parsedFields[rank] = presults
             parseFails += pfails
             filters = {k: v for result in presults for k, v in result.filter_on.items()}
-            if filters.get('name', None) is None:
+            if filters.get('name', None) is None and False:
                 parseFails += [
                     WorkBenchParseFailure('invalidPartialRecord',{'column':nameColumn.column}, result.column)
                     for result in presults

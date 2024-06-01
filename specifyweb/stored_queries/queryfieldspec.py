@@ -70,10 +70,12 @@ class TreeRankQuery(Relationship):
     original_field: str
     pass
 
+FieldSpecJoinPath = Tuple[Union[Field, Relationship, TreeRankQuery]]
+
 class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table join_path table date_part")):
     root_table: Table
     root_sql_table: SQLTable
-    join_path: Tuple[Union[Field, Relationship, TreeRankQuery]]
+    join_path: FieldSpecJoinPath
     table: Table
     date_part: Optional[str]
 
@@ -209,16 +211,15 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
         return query.build_join(self.root_table, self.root_sql_table, join_path)
 
     def is_auditlog_obj_format_field(self, formatauditobjs):
-        if not formatauditobjs or self.get_field() is None:
-            return False
-        else:
-            return self.get_field().name.lower() in ['oldvalue','newvalue']
+            return formatauditobjs and self.join_path and self.table.name.lower() == 'spauditlog' and self.get_field().name.lower() in ['oldvalue','newvalue']
 
     def is_specify_username_end(self):
         # TODO: Add unit tests.
-        return self.join_path and self.table.name.lower() == 'specifyuser'
+        return self.join_path and self.table.name.lower() == 'specifyuser' and self.join_path[-1].name == 'name'
 
-
+    def needs_formatted(self):
+        return len(self.join_path) == 0 or self.is_relationship()
+    
     def apply_filter(self, query, orm_field, field, table, value=None, op_num=None, negate=False):
         no_filter = op_num is None or (self.get_field() is None)
         if not no_filter:

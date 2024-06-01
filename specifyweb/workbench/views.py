@@ -21,6 +21,7 @@ from specifyweb.permissions.permissions import PermissionTarget, PermissionTarge
     check_permission_targets, check_table_permissions
 from . import models, tasks
 from .upload import upload as uploader, upload_plan_schema
+from .upload.upload import do_upload_dataset
 
 logger = logging.getLogger(__name__)
 
@@ -468,7 +469,7 @@ def dataset(request, ds: models.Spdataset) -> http.HttpResponse:
             if 'uploadplan' in attrs:
                 plan = attrs['uploadplan']
 
-                if ds.uploaderstatus != None:
+                if ds.uploaderstatus is not None:
                     return http.HttpResponse('dataset in use by uploader', status=409)
                 if ds.was_uploaded():
                     return http.HttpResponse('dataset has been uploaded. changing upload plan not allowed.', status=400)
@@ -495,7 +496,7 @@ def dataset(request, ds: models.Spdataset) -> http.HttpResponse:
 
         if request.method == "DELETE":
             check_permission_targets(request.specify_collection.id, request.specify_user.id, [DataSetPT.delete])
-            if ds.uploaderstatus != None:
+            if ds.uploaderstatus is not None:
                 return http.HttpResponse('dataset in use by uploader', status=409)
             ds.delete()
             return http.HttpResponse(status=204)
@@ -625,6 +626,8 @@ def upload(request, ds, no_commit: bool, allow_partial: bool) -> http.HttpRespon
             return http.HttpResponse('dataset has already been uploaded.', status=400)
 
         taskid = str(uuid4())
+        do_upload_dataset(request.specify_collection, request.specify_user_agent.id, ds, no_commit, allow_partial, None)
+        """
         async_result = tasks.upload.apply_async([
             request.specify_collection.id,
             request.specify_user_agent.id,
@@ -637,8 +640,8 @@ def upload(request, ds, no_commit: bool, allow_partial: bool) -> http.HttpRespon
             'taskid': taskid
         }
         ds.save(update_fields=['uploaderstatus'])
-
-    return http.JsonResponse(async_result.id, safe=False)
+        """
+    return http.JsonResponse('ok', safe=False)
 
 
 @openapi(schema={

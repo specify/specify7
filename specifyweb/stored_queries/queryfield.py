@@ -1,22 +1,38 @@
 import logging
 from collections import namedtuple
+from typing import Any, Dict, List, NamedTuple, Optional
 
 from .query_ops import QueryOps
 from .queryfieldspec import QueryFieldSpec
 
 logger = logging.getLogger(__name__)
 
-class QueryField(namedtuple('QueryField', [
-    'fieldspec',
-    'op_num',
-    'value',
-    'negate',
-    'display',
-    'format_name',
-    'sort_type'])):
+EphemeralField = namedtuple('EphemeralField', "stringId isRelFld operStart startValue isNot isDisplay sortType formatName")
+
+def fields_from_json(json_fields) -> List['QueryField']:
+    """Given deserialized json data representing an array of SpQueryField
+    records, return an array of QueryField objects that can build the
+    corresponding sqlalchemy query.
+    """
+    def ephemeral_field_from_json(json: Dict[str, Any]):
+        return EphemeralField(**{field: json.get(field.lower(), None) for field in EphemeralField._fields})
+
+    field_specs =  [QueryField.from_spqueryfield(ephemeral_field_from_json(data))
+            for data in sorted(json_fields, key=lambda field: field['position'])]
+
+    return field_specs
+
+class QueryField(NamedTuple):
+    fieldspec: QueryFieldSpec
+    op_num: int
+    value: Optional[str]
+    negate: bool
+    display: bool
+    format_name: Optional[str]
+    sort_type: int
 
     @classmethod
-    def from_spqueryfield(cls, field, value=None):
+    def from_spqueryfield(cls, field: EphemeralField, value=None):
         logger.info('processing field from %r', field)
         fieldspec = QueryFieldSpec.from_stringid(field.stringId, field.isRelFld)
 
@@ -47,3 +63,4 @@ class QueryField(namedtuple('QueryField', [
                                   and not self.negate)
 
         return self.fieldspec.add_to_query(query, value=self.value, op_num=None if no_filter else self.op_num, negate=self.negate, formatter=self.format_name, formatauditobjs=formatauditobjs)
+
