@@ -148,6 +148,9 @@ def fix_record_data(new_record_data, current_model: Table, target_model_name: st
         return_data[field_name] = value
 
     return return_data
+
+RESTRICT_UPDATE_FIELDS = {'spappresourcedata'}
+
 @transaction.atomic
 def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int,
                     progress: Optional[Progress]=None,
@@ -275,7 +278,9 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
                     try:
                         # TODO: Handle case where this obj has been deleted from recursive merge
                         with transaction.atomic():
-                            record.save(update_fields=[field_name_id])
+                            # TODO: Figure out all rules which update the record directly, and get rid of this dict
+                            update_fields = [field_name_id] if (table_name.lower() in RESTRICT_UPDATE_FIELDS) else None
+                            record.save(update_fields=update_fields)
                     except (IntegrityError, BusinessRuleException) as e:
                         # Catch duplicate error and recursively run record merge
                         rows_to_lock = None
