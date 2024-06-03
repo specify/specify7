@@ -305,6 +305,7 @@ def verify_rank_parent_chain_integrity(rank, rank_operation: RankOperation):
             if rank_id is not None:
                 parent_to_children_dict.setdefault(parent_id, []).append(rank_id)
 
-    for parent_id, children in parent_to_children_dict.items():
-        if len(children) > 1 and parent_id is not None:
-            raise TreeBusinessRuleException(f"Parent rank {parent_id} has more than one child rank")
+    if rank_operation == RankOperation.DELETED:
+        for parent_id, children in parent_to_children_dict.items():
+            if len(children) > 1 and parent_id is not None:
+                raise TreeBusinessRuleException(f"Parent rank {parent_id} has more than one child rank")
