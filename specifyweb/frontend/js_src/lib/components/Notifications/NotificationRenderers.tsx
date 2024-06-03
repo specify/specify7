@@ -29,13 +29,15 @@ export const notificationRenderers: IR<
     return (
       <>
         {notificationsText.feedItemUpdated()}
-        <Link.Success
-          className="w-fit normal-case"
-          download
-          href={`/static/depository/export_feed/${filename}`}
-        >
-          {filename}
-        </Link.Success>
+        {filename !== null && (
+          <Link.Success
+            className="w-fit normal-case"
+            download
+            href={`/static/depository/export_feed/${filename}`}
+          >
+            {filename}
+          </Link.Success>
+        )}
       </>
     );
   },
