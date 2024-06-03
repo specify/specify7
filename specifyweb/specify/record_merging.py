@@ -15,6 +15,7 @@ from django.db.models import Q
 from django.db.models.deletion import ProtectedError
 
 from specifyweb.businessrules.exceptions import BusinessRuleException
+from specifyweb.businessrules.rules.attachment_rules import attachment_tables
 from specifyweb.celery_tasks import LogErrorsTask, app
 from . import api, models as spmodels
 from .api import uri_for_model, delete_obj
@@ -80,12 +81,15 @@ MERGING_OPTIMIZATION_FIELDS = {
 
 # TODO: Refactor this to always use query sets.
 def clean_fields_pre_delete(obj_instance):
-    if (not obj_instance.__class__.__name__.endswith('attachment')
-            or not hasattr(obj_instance, 'attachment')) :
-        return
     # We delete this object anyways. So, don't care about
     # the value we put in here. If an error, everything is rollbacked.
-    obj_instance.attachment.attachmentlocation = None
+    
+    if (isinstance(obj_instance, spmodels.Attachment)):
+        obj_instance.attachmentlocation=None
+    # this can be indepndently be deleted
+    elif (obj_instance.__class__ in attachment_tables):
+        if obj_instance.attachment:
+            obj_instance.attachment.attachmentlocation = None
 
 ordering_tables = {
     table_name.lower(): fields for table_name, fields in orderings.items()
