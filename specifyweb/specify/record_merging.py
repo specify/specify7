@@ -15,7 +15,6 @@ from django.db.models import Q
 from django.db.models.deletion import ProtectedError
 
 from specifyweb.businessrules.exceptions import BusinessRuleException
-from specifyweb.businessrules.rules.attachment_rules import attachment_tables
 from specifyweb.celery_tasks import LogErrorsTask, app
 from . import api, models as spmodels
 from .api import uri_for_model, delete_obj
@@ -79,17 +78,24 @@ MERGING_OPTIMIZATION_FIELDS = {
     }
 }
 
+def _clear_attachment_location(obj):
+    obj.attachmentlocation = None
+    # didn't want to force a save but ohwell
+    obj.save()
+
 # TODO: Refactor this to always use query sets.
 def clean_fields_pre_delete(obj_instance):
     # We delete this object anyways. So, don't care about
     # the value we put in here. If an error, everything is rollbacked.
-    
-    if (isinstance(obj_instance, spmodels.Attachment)):
-        obj_instance.attachmentlocation=None
-    # this can be indepndently be deleted
-    elif (obj_instance.__class__ in attachment_tables):
-        if obj_instance.attachment:
-            obj_instance.attachment.attachmentlocation = None
+    table = spmodels.datamodel.get_table_strict(obj_instance.__class__.__name__)
+    attachments_to_wipe = []
+    if table.attachments_field:
+        attachments_to_wipe = [obj.attachment for obj in getattr(obj_instance, table.attachments_field.name.lower()).all()]
+    elif table.is_attachment_jointable:
+        attachments_to_wipe = [obj_instance.attachment]
+    elif (isinstance(obj_instance, spmodels.Attachment)):
+        attachments_to_wipe = [obj_instance]
+    _ = [_clear_attachment_location(obj) for obj in attachments_to_wipe if obj is not None]
 
 ordering_tables = {
     table_name.lower(): fields for table_name, fields in orderings.items()

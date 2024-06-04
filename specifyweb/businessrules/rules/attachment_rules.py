@@ -49,7 +49,7 @@ def attachment_save(attachment):
 def attachment_deletion(attachment):
     from specifyweb.attachment_gw.views import delete_attachment_file
     if attachment.attachmentlocation is not None:
-        transaction.on_commit(lambda: delete_attachment_file(attachment.attachmentlocation))
+        delete_attachment_file(attachment.attachmentlocation)
 
 
 def get_attachee(jointable_inst):

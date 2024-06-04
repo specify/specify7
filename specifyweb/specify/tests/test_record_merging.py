@@ -4,6 +4,7 @@ from .test_api import ApiTests
 from django.test import Client
 from specifyweb.specify.record_merging import fix_record_data
 from specifyweb.specify import models
+from unittest.mock import patch
 
 class ReplaceRecordTests(ApiTests):
     def test_replace_agents(self):
@@ -558,7 +559,50 @@ class ReplaceRecordTests(ApiTests):
         self.assertEqual(models.Agentspecialty.objects.filter(agent_id=6).count(), 4)
         self.assertEqual(models.Agentspecialty.objects.filter(specialtyname__in=['test_name_1', 'test_name_3']).count(),
                          2)
-
+    
+    @patch('specifyweb.attachment_gw.views.delete_attachment_file')
+    def test_attachment_preserved(self, delete_attachment_mock):
+        c = Client()
+        c.force_login(self.specifyuser)
+        agent_0 = models.Agent.objects.create(
+        agenttype=0
+        )
+        agent_1 = models.Agent.objects.create(
+            agenttype=0
+        )
+        attachment_0 = models.Attachment.objects.create(
+            attachmentlocation="place1.jpg" 
+        )
+        attachment_1 = models.Attachment.objects.create(
+            attachmentlocation="place2.jpg" 
+        )
+        agent_attachment_0 = models.Agentattachment.objects.create(
+            agent=agent_0,
+            ordinal=0,
+            attachment=attachment_0
+        )
+        agent_attachment_1 = models.Agentattachment.objects.create(
+            agent=agent_1,
+            ordinal=0,
+            attachment=attachment_1
+        )
+        response = c.post(
+            f'/api/specify/agent/replace/{agent_0.id}/',
+            data=json.dumps({
+                'old_record_ids': [
+                    agent_1.id
+                ],
+                'new_record_data': {
+                    'agentattachments': []
+                },
+                'background': False
+            }),
+            content_type='application/json'
+        )
+        # wouldnt' delete the other attachment file for now (an edge case)
+        self.assertEqual(response.status_code, 204)
+        delete_attachment_mock.assert_called_once_with(attachment_0.attachmentlocation)
+    
     def test_fix_record_data(self):
         """
             The merging endpoint requries the (JSON) serialized attributes of the "target"
