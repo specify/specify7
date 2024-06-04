@@ -241,6 +241,6 @@ export function useResourceValue<
     validationRef,
     setValidation,
     parser,
-    setBlockers
+    setBlockers,
   } as const;
 }
