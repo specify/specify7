@@ -3,6 +3,7 @@ import json
 from typing import get_args as get_typing_args, Any, Dict, List, Tuple, Literal, Optional, NamedTuple, Union, Callable, TypedDict
 from datetime import datetime
 from django.db import transaction
+from celery.exceptions import Ignore, TaskRevokedError
 
 import specifyweb.specify.models as spmodels
 
@@ -28,11 +29,12 @@ updatable_geocoorddetail_fields = [
 
 ImportModel = Literal['Locality', 'Geocoorddetail']
 
-Progress = Callable[[int, Optional[int]], None]
+Progress = Callable[[str, int, int], None]
 
 
 class LocalityImportStatus:
     PENDING = 'PENDING'
+    PARSING = 'PARSING'
     PROGRESS = 'PROGRESS'
     SUCCEEDED = 'SUCCEEDED'
     ABORTED = 'ABORTED'
@@ -40,13 +42,14 @@ class LocalityImportStatus:
 
 
 @app.task(base=LogErrorsTask, bind=True)
-def import_locality_task(self, collection_id: int, column_headers: List[str], data: List[List[str]]) -> None:
+def import_locality_task(self, collection_id: int, column_headers: List[str], data: List[List[str]], create_recordset: bool) -> None:
 
-    def progress(current: int, total: int):
+    def progress(state, current: int, total: int):
         if not self.request.called_directly:
-            self.update_state(state=LocalityImportStatus.PROGRESS, meta={
+            self.update_state(state=state, meta={
                               'current': current, 'total': total})
     collection = spmodels.Collection.objects.get(id=collection_id)
+
     with transaction.atomic():
         results = upload_locality_set(
             collection, column_headers, data, progress)
@@ -54,7 +57,7 @@ def import_locality_task(self, collection_id: int, column_headers: List[str], da
         li = LocalityImport.objects.get(taskid=self.request.id)
 
         if results['type'] == 'ParseError':
-            self.update_state(state=LocalityImportStatus.FAILED)
+            self.update_state(LocalityImportStatus.FAILED, meta={"errors": results['errors']})
             li.status = LocalityImportStatus.FAILED
             li.result = json.dumps(results['errors'])
             Message.objects.create(user=li.specifyuser, content=json.dumps({
@@ -63,22 +66,30 @@ def import_locality_task(self, collection_id: int, column_headers: List[str], da
                 'errors': json.dumps(results['errors'])
             }))
         elif results['type'] == 'Uploaded':
+            li.recordset = create_localityimport_recordset(
+                collection, li.specifyuser, results['localities']) if create_recordset else None
+
+            recordset_id = None if li.recordset is None else li.recordset.pk
+
+            self.update_state(state=LocalityImportStatus.SUCCEEDED, meta={
+                              "recordsetid": recordset_id, "localities": results['localities'], "geocoorddetails": results['geocoorddetails']})
             li.result = json.dumps({
+                'recordsetid': recordset_id,
                 'localities': json.dumps(results['localities']),
                 'geocoorddetails': json.dumps(results['geocoorddetails'])
             })
-            li.recordset = create_localityimport_recordset(
-                collection, li.specifyuser, results['localities'])
-            self.update_state(state=LocalityImportStatus.SUCCEEDED)
             li.status = LocalityImportStatus.SUCCEEDED
             Message.objects.create(user=li.specifyuser, content=json.dumps({
                 'type': 'localityimport-succeeded',
                 'taskid': li.taskid,
-                'recordset': li.recordset.pk,
+                'recordsetid': recordset_id,
                 'localities': json.dumps(results['localities'])
             }))
 
         li.save()
+
+    # prevent Celery from overriding the State of the Task
+    raise Ignore()
 
 
 class ParseError(NamedTuple):
@@ -106,7 +117,7 @@ class ParseSuccess(NamedTuple):
         return cls(parse_success.to_upload, model, locality_id, row_number)
 
 
-def parse_locality_set(collection, raw_headers: List[str], data: List[List[str]]) -> Tuple[List[ParseSuccess], List[ParseError]]:
+def parse_locality_set(collection, raw_headers: List[str], data: List[List[str]], progress: Optional[Progress] = None) -> Tuple[List[ParseSuccess], List[ParseError]]:
     errors: List[ParseError] = []
     to_upload: List[ParseSuccess] = []
 
@@ -123,6 +134,9 @@ def parse_locality_set(collection, raw_headers: List[str], data: List[List[str]]
 
     geocoorddetail_fields_index = [{'field': field, 'index': headers.index(
         field)} for field in headers if field.lower() in updatable_geocoorddetail_fields]
+
+    processed = 0
+    total = len(data)
 
     for row_mumber, row in enumerate(data):
         guid = row[guid_index]
@@ -164,6 +178,10 @@ def parse_locality_set(collection, raw_headers: List[str], data: List[List[str]]
         if merged_geocoorddetail_result is not None:
             to_upload.append(merged_geocoorddetail_result)
 
+        if progress is not None:
+            processed += 1
+            progress(LocalityImportStatus.PARSING, processed, total)
+
     return to_upload, errors
 
 
@@ -195,13 +213,11 @@ class UploadSuccess(TypedDict):
 
 class UploadParseError(TypedDict):
     type: Literal["ParseError"]
-    data: List[ParseError]
+    errors: List[ParseError]
 
 
 def upload_locality_set(collection, column_headers: List[str], data: List[List[str]], progress: Optional[Progress] = None) -> Union[UploadSuccess, UploadParseError]:
-    to_upload, errors = parse_locality_set(collection, column_headers, data)
-    total = len(data)
-    processed = 0
+    to_upload, errors = parse_locality_set(collection, column_headers, data, progress)
     result = {
         "type": None,
     }
@@ -214,6 +230,9 @@ def upload_locality_set(collection, column_headers: List[str], data: List[List[s
     result["type"] = "Uploaded"
     result["localities"] = []
     result["geocoorddetails"] = []
+
+    processed = 0
+    total = len(to_upload)
 
     with transaction.atomic():
         for parse_success in to_upload:
@@ -242,7 +261,7 @@ def upload_locality_set(collection, column_headers: List[str], data: List[List[s
                 result["localities"].append(locality_id)
             if progress is not None:
                 processed += 1
-                progress(processed, total)
+                progress(LocalityImportStatus.PROGRESS, processed, total)
 
     return result
 

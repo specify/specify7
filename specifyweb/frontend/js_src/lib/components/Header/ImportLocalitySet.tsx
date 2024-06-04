@@ -1,5 +1,6 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
+import type { State } from 'typesafe-reducer';
 
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
@@ -8,26 +9,29 @@ import { mainText } from '../../localization/main';
 import { notificationsText } from '../../localization/notifications';
 import { queryText } from '../../localization/query';
 import { schemaText } from '../../localization/schema';
-import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/definitions';
+import { ping } from '../../utils/ajax/ping';
 import type { IR, RA } from '../../utils/types';
 import { localized } from '../../utils/types';
-import { H2 } from '../Atoms';
+import { H2, Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
+import { Label } from '../Atoms/Form';
 import { formatConjunction } from '../Atoms/Internationalization';
 import { Link } from '../Atoms/Link';
+import { SECOND } from '../Atoms/timeUnits';
 import { LoadingContext } from '../Core/Contexts';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { createResource } from '../DataModel/resource';
+import { fetchResource } from '../DataModel/resource';
 import { tables } from '../DataModel/tables';
 import type { RecordSet, Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
+import { useTitle } from '../Molecules/AppTitle';
 import { CsvFilePicker } from '../Molecules/CsvFilePicker';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasToolPermission } from '../Permissions/helpers';
 import { downloadDataSet } from '../WorkBench/helpers';
+import { RemainingLoadingTime } from '../WorkBench/RemainingLoadingTime';
 import { TableRecordCounts } from '../WorkBench/Results';
 import { resolveBackendParsingMessage } from '../WorkBench/resultsParser';
 
@@ -59,17 +63,6 @@ type LocalityImportParseError = {
   readonly rowNumber: number;
 };
 
-type LocalityUploadResponse =
-  | {
-      readonly type: 'ParseError';
-      readonly errors: RA<LocalityImportParseError>;
-    }
-  | {
-      readonly type: 'Uploaded';
-      readonly localities: RA<number>;
-      readonly geocoorddetails: RA<number>;
-    };
-
 export function ImportLocalitySet(): JSX.Element {
   const [headerErrors, setHeaderErrors] = React.useState({
     missingRequiredHeaders: [] as RA<Header>,
@@ -77,13 +70,8 @@ export function ImportLocalitySet(): JSX.Element {
   });
 
   const [headers, setHeaders] = React.useState<RA<string>>([]);
+  const [taskId, setTaskId] = React.useState<string | undefined>(undefined);
   const [data, setData] = React.useState<RA<RA<number | string>>>([]);
-  const [results, setResults] = React.useState<
-    LocalityUploadResponse | undefined
-  >(undefined);
-  const [recordSet, setRecordSet] = React.useState<
-    SerializedResource<RecordSet> | undefined
-  >(undefined);
 
   const loading = React.useContext(LoadingContext);
 
@@ -93,58 +81,29 @@ export function ImportLocalitySet(): JSX.Element {
       unrecognizedHeaders: [] as RA<string>,
     });
     setHeaders([]);
-    setData([]);
-    setResults(undefined);
   }
 
-  const handleImport = (
-    columnHeaders: typeof headers,
-    rows: typeof data
-  ): void => {
+  function handleImport(
+    columnHeaders: RA<string>,
+    data: RA<RA<number | string>>
+  ): void {
     loading(
-      ajax<LocalityUploadResponse>('/api/locality_set/import/', {
-        headers: { Accept: 'application/json' },
-        expectedErrors: [Http.UNPROCESSABLE],
+      ajax('/api/localityset/import/', {
         method: 'POST',
+        headers: { Accept: 'application/json' },
         body: {
           columnHeaders,
-          data: rows,
+          data,
+          createRecordSet: true,
         },
-      })
-        .then(async ({ data: rawData, status }) => {
-          const data =
-            status === 422 && typeof rawData === 'string'
-              ? (JSON.parse(rawData) as LocalityUploadResponse)
-              : rawData;
-
-          return data.type === 'Uploaded'
-            ? ([
-                data,
-                await createResource('RecordSet', {
-                  name: `${new Date().toDateString()} Locality Repatriation Import`,
-                  version: 1,
-                  type: 0,
-                  dbTableId: tables.Locality.tableId,
-                  // @ts-expect-error
-                  recordSetItems: data.localities.map((id) => ({
-                    recordId: id,
-                  })),
-                }),
-              ] as const)
-            : ([data, undefined] as const);
-        })
-        .then(([data, recordSet]) => {
-          setData([]);
-          setResults(data);
-          setRecordSet(recordSet);
-        })
+      }).then(({ data }) => setTaskId(data))
     );
-  };
+  }
 
   return (
     <>
       <CsvFilePicker
-        header={headerText.coGeImportDataset()}
+        header={headerText.importLocalityDataset()}
         onFileImport={(headers, data): void => {
           const foundHeaderErrors = headers.reduce(
             (accumulator, currentHeader) => {
@@ -162,7 +121,7 @@ export function ImportLocalitySet(): JSX.Element {
               };
             },
             {
-              missingRequiredHeaders: Array.from(requiredHeaders) as RA<Header>,
+              missingRequiredHeaders: Array.from(requiredHeaders),
               unrecognizedHeaders: [] as RA<string>,
             }
           );
@@ -235,80 +194,290 @@ export function ImportLocalitySet(): JSX.Element {
           </>
         </Dialog>
       )}
-      {results === undefined ? null : (
-        <LocalityImportResults
-          results={results}
-          recordSet={recordSet}
-          onClose={resetContext}
+      {taskId === undefined ? undefined : (
+        <LocalityImportStatus
+          taskId={taskId}
+          onClose={() => setTaskId(undefined)}
         />
       )}
     </>
   );
 }
+type Status =
+  | 'ABORTED'
+  | 'FAILED'
+  | 'PARSING'
+  | 'PENDING'
+  | 'PROGRESS'
+  | 'SUCCEEDED';
 
-function LocalityImportResults({
-  results,
+const statusLocalization: { readonly [STATE in Status]: LocalizedString } = {
+  PENDING: localityText.localityImportStarting(),
+  PARSING: localityText.localityImportParsing(),
+  PROGRESS: localityText.localityImportProgressing(),
+  FAILED: localityText.localityImportFailed(),
+  ABORTED: localityText.localityImportCancelled(),
+  SUCCEEDED: localityText.localityImportSucceeded(),
+};
+
+type LocalityStatus =
+  | State<
+      'ABORTED',
+      { readonly taskstatus: 'ABORTED'; readonly taskinfo: string }
+    >
+  | State<
+      'FAILED',
+      {
+        readonly taskstatus: 'FAILED';
+        readonly taskinfo: {
+          readonly errors: RA<LocalityImportParseError>;
+        };
+      }
+    >
+  | State<
+      'PARSING',
+      {
+        readonly taskstatus: 'PARSING';
+        readonly taskinfo: {
+          readonly current: number;
+          readonly total: number;
+        };
+      }
+    >
+  | State<
+      'PENDING',
+      { readonly taskstatus: 'PENDING'; readonly taskinfo: 'None' }
+    >
+  | State<
+      'PROGRESS',
+      {
+        readonly taskstatus: 'PROGRESS';
+        readonly taskinfo: {
+          readonly current: number;
+          readonly total: number;
+        };
+      }
+    >
+  | State<
+      'SUCCEEDED',
+      {
+        readonly taskstatus: 'SUCCEEDED';
+        readonly taskinfo: {
+          readonly recordsetid: number;
+          readonly localities: RA<number>;
+          readonly geocoorddetails: RA<number>;
+        };
+      }
+    >;
+
+const statusDimensionKey = 'localityimport-status';
+
+function LocalityImportStatus({
+  taskId,
+  onClose: handleClose,
+}: {
+  readonly taskId: string;
+  readonly onClose: () => void;
+}): JSX.Element {
+  const [state, setState] = React.useState<LocalityStatus>({
+    taskstatus: 'PENDING',
+    type: 'PENDING',
+    taskinfo: 'None',
+  });
+
+  const [recordSet, setRecordSet] = React.useState<
+    SerializedResource<RecordSet> | undefined
+  >(undefined);
+
+  React.useEffect(() => {
+    let destructorCalled = false;
+    const fetchStatus = () =>
+      void ajax<LocalityStatus>(`/api/localityset/status/${taskId}`, {
+        headers: { Accept: 'application/json' },
+      })
+        .then(async ({ data }) => {
+          setState(data);
+          if (data.taskstatus === 'SUCCEEDED') {
+            await fetchResource('RecordSet', data.taskinfo.recordsetid).then(
+              setRecordSet
+            );
+          }
+          if (
+            !destructorCalled &&
+            (['PROGRESS', 'PARSING', 'PENDING'] as RA<Status>).includes(
+              data.taskstatus
+            )
+          )
+            globalThis.setTimeout(fetchStatus, SECOND);
+        })
+        .catch(softFail);
+
+    fetchStatus();
+    return (): void => {
+      destructorCalled = true;
+    };
+  }, [taskId]);
+
+  const loading = React.useContext(LoadingContext);
+
+  const title = statusLocalization[state.taskstatus];
+  useTitle(title);
+
+  return (['PARSING', 'PROGRESS'] as RA<Status>).includes(state.taskstatus) ? (
+    <LocalityImportProgress
+      currentProgress={state.taskinfo.current}
+      header={title}
+      taskId={taskId}
+      total={state.taskinfo.total}
+      onClose={handleClose}
+    />
+  ) : state.taskstatus === 'SUCCEEDED' ? (
+    <LocalityImportSuccess
+      geoCoordDetailIds={state.taskinfo.geocoorddetails}
+      header={title}
+      localityIds={state.taskinfo.localities}
+      recordSet={recordSet}
+      onClose={handleClose}
+    />
+  ) : state.taskstatus === 'FAILED' ? (
+    <LocalityImportErrors
+      errors={state.taskinfo.errors}
+      onClose={handleClose}
+    />
+  ) : state.taskstatus === 'PENDING' ? (
+    <Dialog
+      buttons={
+        <Button.Danger
+          onClick={(): void =>
+            loading(
+              ping(`/api/localityset/abort/${taskId}`, {
+                method: 'POST',
+              }).catch(softFail)
+            )
+          }
+        >
+          {commonText.cancel()}
+        </Button.Danger>
+      }
+      dimensionsKey={statusDimensionKey}
+      header={title}
+      modal={false}
+      onClose={handleClose}
+    />
+  ) : (
+    <Dialog
+      buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
+      dimensionsKey={statusDimensionKey}
+      header={title}
+      modal={false}
+      onClose={handleClose}
+    />
+  );
+}
+
+function LocalityImportProgress({
+  header,
+  taskId,
+  currentProgress,
+  total,
+  onClose: handleClose,
+}: {
+  readonly header: LocalizedString;
+  readonly taskId: string;
+  readonly currentProgress: number;
+  readonly total: number;
+  readonly onClose: () => void;
+}): JSX.Element {
+  const loading = React.useContext(LoadingContext);
+  const percentage = Math.round((currentProgress / total) * 100);
+  useTitle(localized(`${header} ${percentage}%`));
+  return (
+    <Dialog
+      buttons={
+        <Button.Danger
+          onClick={(): void =>
+            loading(
+              ping(`/api/localityset/abort/${taskId}`, {
+                method: 'POST',
+              }).catch(softFail)
+            )
+          }
+        >
+          {commonText.cancel()}
+        </Button.Danger>
+      }
+      dimensionsKey={statusDimensionKey}
+      header={header}
+      modal={false}
+      onClose={handleClose}
+    >
+      <Label.Block>
+        <>
+          <Progress max={total} value={currentProgress} />
+          {percentage < 100 && <p>{`${percentage}%`}</p>}
+          <RemainingLoadingTime current={currentProgress} total={total} />
+        </>
+      </Label.Block>
+    </Dialog>
+  );
+}
+
+function LocalityImportSuccess({
+  header,
+  localityIds,
+  geoCoordDetailIds,
   recordSet,
   onClose: handleClose,
 }: {
-  readonly results: LocalityUploadResponse;
+  readonly header: LocalizedString;
+  readonly localityIds: RA<number>;
+  readonly geoCoordDetailIds: RA<number>;
   readonly recordSet: SerializedResource<RecordSet> | undefined;
   readonly onClose: () => void;
 }): JSX.Element {
   return (
-    <>
-      {results.type === 'ParseError' ? (
-        <LocalityImportErrors results={results} onClose={handleClose} />
-      ) : results.type === 'Uploaded' ? (
-        <Dialog
-          buttons={
-            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          }
-          header={wbText.uploadResults()}
-          modal={false}
-          onClose={handleClose}
+    <Dialog
+      buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
+      dimensionsKey={statusDimensionKey}
+      header={header}
+      modal={false}
+      onClose={handleClose}
+    >
+      <div className="flex flex-col gap-4">
+        <p>
+          {localityText.localityUploadedDescription({
+            localityTabelLabel: tables.Locality.label,
+            geoCoordDetailTableLabel: tables.GeoCoordDetail.label,
+          })}
+        </p>
+        <span className="gap-3" />
+        <TableRecordCounts
+          recordCounts={{
+            locality: localityIds.length,
+            geocoorddetail: geoCoordDetailIds.length,
+          }}
+        />
+      </div>
+      <span className="gap-y-2" />
+      <H2>{queryText.viewRecords()}</H2>
+      {recordSet !== undefined && hasToolPermission('recordSets', 'read') && (
+        <Link.NewTab
+          className="w-fit"
+          href={`/specify/record-set/${recordSet.id}/`}
         >
-          <div className="flex flex-col gap-4">
-            <p>
-              {localityText.localityUploadedDescription({
-                localityTabelLabel: tables.Locality.label,
-                geoCoordDetailTableLabel: tables.GeoCoordDetail.label,
-              })}
-            </p>
-            <span className="gap-3" />
-            <TableRecordCounts
-              recordCounts={{
-                locality: results.localities.length,
-                geocoorddetail: results.geocoorddetails.length,
-              }}
-            />
-          </div>
-          <span className="gap-y-2"></span>
-          <H2>{queryText.viewRecords()}</H2>
-          {recordSet !== undefined &&
-            hasToolPermission('recordSets', 'create') && (
-              <Link.NewTab
-                className="w-fit"
-                href={`/specify/record-set/${recordSet.id}/`}
-              >
-                <TableIcon label name={tables.Locality.name} />
-                {localized(recordSet.name)}
-              </Link.NewTab>
-            )}
-        </Dialog>
-      ) : null}
-    </>
+          <TableIcon label name={tables.Locality.name} />
+          {localized(recordSet.name)}
+        </Link.NewTab>
+      )}
+    </Dialog>
   );
 }
 
 function LocalityImportErrors({
-  results,
+  errors,
   onClose: handleClose,
 }: {
-  readonly results: Extract<
-    LocalityUploadResponse,
-    { readonly type: 'ParseError' }
-  >;
+  readonly errors: RA<LocalityImportParseError>;
   readonly onClose: () => void;
 }): JSX.Element | null {
   const loading = React.useContext(LoadingContext);
@@ -330,7 +499,7 @@ function LocalityImportErrors({
                 mainText.errorMessage(),
               ];
 
-              const data = results.errors.map(
+              const data = errors.map(
                 ({ message, payload, field, rowNumber }) => [
                   rowNumber.toString(),
                   field,
@@ -347,6 +516,7 @@ function LocalityImportErrors({
           </Button.Info>
         </>
       }
+      dimensionsKey={statusDimensionKey}
       header={localityText.localityImportErrorDialogHeader()}
       icon="error"
       onClose={handleClose}
@@ -359,7 +529,7 @@ function LocalityImportErrors({
             <td>{mainText.errorMessage()}</td>
           </tr>
         </thead>
-        {results.errors.map(({ rowNumber, field, message, payload }, index) => (
+        {errors.map(({ rowNumber, field, message, payload }, index) => (
           <tr key={index}>
             <td>{rowNumber}</td>
             <td>{field}</td>

@@ -292,9 +292,6 @@ export const localityText = createDictionary({
     'uk-ua': 'DD MM SS.SS N/S/E/W (32 45 42.84 N)',
     'de-ch': 'DD MM SS.SS N/S/O/W (32 45 42.84 N)',
   },
-  localityimportHeader: {
-    'en-us': 'Import Locality Set',
-  },
   localityImportHeaderError: {
     'en-us': 'Errors Found in Column Headers',
   },
@@ -308,12 +305,26 @@ export const localityText = createDictionary({
   localityImportedAcceptedHeaders: {
     'en-us': 'Only the following headers are accepted',
   },
+  localityImportStarting: {
+    'en-us': 'Starting Locality Data Set Import',
+  },
+  localityImportParsing: {
+    'en-us': 'Parsing Locality Data Set',
+  },
+  localityImportProgressing: {
+    'en-us': 'Importing Locality Data Set',
+  },
+  localityImportFailed: {
+    'en-us': 'Import Locality Data Set Failed',
+  },
+  localityImportCancelled: {
+    'en-us': 'Import Locality Data Set Cancelled',
+  },
+  localityImportSucceeded: {
+    'en-us': 'Locality Data Set Import Succeeded',
+  },
   localityImportErrorDialogHeader: {
     'en-us': 'Error(s) Occured while Parsing Dataset',
-  },
-  localityImportErrorDialogDetails: {
-    'en-us':
-      'The following Errors occured at the provided Row (Line) Numbers of the file while parsing the Dataset: ',
   },
   localityImportErrorFileName: {
     comment:

@@ -41,7 +41,7 @@ urlpatterns = [
     ])),
 
     # locality set import endpoints
-    url(r'^locality_set/', include([
+    url(r'^localityset/', include([
         url(r'^parse/$', views.parse_locality_set),
         url(r'^import/$', views.upload_locality_set),
         url(r'^status/(?P<taskid>[0-9a-fA-F-]+)$', views.localityimport_status),

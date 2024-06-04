@@ -19,7 +19,7 @@ from django.views.decorators.http import require_POST
 from specifyweb.middleware.general import require_GET, require_http_methods
 from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, PermissionsException, check_permission_targets, table_permissions_checker
-from specifyweb.celery_tasks import app
+from specifyweb.celery_tasks import app, CELERY_TASK_STATE
 from specifyweb.specify.record_merging import record_merge_fx, record_merge_task, resolve_record_merge_response
 from specifyweb.specify.import_locality import localityParseErrorMessages, parse_locality_set as _parse_locality_set, import_locality_task, LocalityImportStatus
 from . import api, models as spmodels
@@ -603,17 +603,6 @@ def record_merge(
     return response
 
 
-CELERY_MERGE_STATUS_MAP = {
-    'PENDING': 'PENDING',
-    'STARTED': 'MERGING',
-    'SUCCESS': 'SUCCEEDED',
-    'FAILURE': 'FAILED',
-    'RETRY': 'MERGING',
-    'REVOKED': 'FAILED',
-    'REJECTED': 'FAILED'
-}
-
-
 @openapi(schema={
     'get': {
         "responses": {
@@ -666,6 +655,9 @@ CELERY_MERGE_STATUS_MAP = {
                     }
                 }
             },
+            '404': {
+                'description': 'The spmerging object with task id was not found',
+            },
         }
     },
 })
@@ -679,20 +671,7 @@ def merging_status(request, merge_id: int) -> http.HttpResponse:
     except Spmerging.DoesNotExist:
         return http.HttpResponseNotFound(f'The merge task id is not found: {merge_id}')
 
-    task_status = merge.status
-    task_progress = None
-
-    try:
-        result = record_merge_task.AsyncResult(merge.taskid)
-        task_progress = result.info if isinstance(
-            result.info, dict) else repr(result.info)
-
-        # Update task status if necessary
-        if result.state not in ['PENDING', 'STARTED', 'SUCCESS', 'RETRY']:
-            task_status = CELERY_MERGE_STATUS_MAP.get(
-                result.state, task_status)
-    except Exception:
-        pass
+    result = record_merge_task.AsyncResult(merge.taskid)
 
     status = {
         'taskstatus': merge.status,
@@ -769,34 +748,6 @@ def abort_merge_task(request, merge_id: int) -> http.HttpResponse:
         return http.HttpResponse(f'Task {merge.taskid} is not running and cannot be aborted.')
 
 
-locality_set_body = {
-    "required": True,
-    "content": {
-        "application/json": {
-            "schema": {
-                "type": "object",
-                        "properties": {
-                            "columnHeaders": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            "data": {
-                                "type": "array",
-                                "items": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-            }
-        }
-    }
-}
-
 locality_set_parse_error_data = {
     "type": "array",
     "items": {
@@ -814,7 +765,7 @@ locality_set_parse_error_data = {
                 "payload": {
                     "description": "An object containing data relating to the error",
                     "type": "object",
-                    "example": {'badType': 'Preson', 'validTypes': ['Organization', 'Person', 'Other', 'Group',]}
+                    "example": {'badType': 'Preson', 'validTypes': ['Organization', 'Person', 'Other', 'Group']}
                 },
                 "rowNumber": {
                     "type": "integer",
@@ -827,7 +778,38 @@ locality_set_parse_error_data = {
 
 @openapi(schema={
     'post': {
-        "requestBody": locality_set_body,
+        "requestBody": {
+            "required": True,
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "columnHeaders": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "createRecordSet": {
+                                "type": "boolean",
+                                "description": "When True, creates a recordset in the logged-in collection for the logged-in user with the matched/updated localities if the upload succeeds",
+                                "default": True
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "responses": {
             "200": {
                 "description": "Returns a GUID (job ID)",
@@ -848,12 +830,14 @@ locality_set_parse_error_data = {
 @require_POST
 def upload_locality_set(request: http.HttpRequest):
     request_data = json.loads(request.body)
+
     column_headers = request_data["columnHeaders"]
     data = request_data["data"]
+    create_recordset = request_data.get("createRecordSet", True)
 
     task_id = str(uuid4())
     task = import_locality_task.apply_async(
-        [request.specify_collection.id, column_headers, data], task_id=task_id)
+        [request.specify_collection.id, column_headers, data, create_recordset], task_id=task_id)
 
     LocalityImport.objects.create(
         result=None,
@@ -883,13 +867,24 @@ def upload_locality_set(request: http.HttpRequest):
                         "schema": {
                             "oneOf": [
                                 {
-                                    "type": "string",
-                                    "example": "null",
-                                    "description": "Nothing to report"
+                                    "type": "object",
+                                    "properties": {
+                                        "taskstatus": {
+                                            "type": "string",
+                                            "enum": [LocalityImportStatus.PENDING, LocalityImportStatus.ABORTED]
+                                        },
+                                        "taskinfo": {
+                                            "type": "string",
+                                        },
+                                    }
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
+                                        "taskstatus": {
+                                            "type": "string",
+                                            "enum": [LocalityImportStatus.PARSING, LocalityImportStatus.PROGRESS]
+                                        },
                                         "taskinfo": {
                                             "type": "object",
                                             "properties": {
@@ -903,9 +898,51 @@ def upload_locality_set(request: http.HttpRequest):
                                                 }
                                             }
                                         },
+                                    }
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
                                         "taskstatus": {
                                             "type": "string",
-                                            "enum": [LocalityImportStatus.PENDING, LocalityImportStatus.PROGRESS]
+                                            "enum": [LocalityImportStatus.SUCCEEDED]
+                                        },
+                                        "taskinfo": {
+                                            "type": "object",
+                                            "properties": {
+                                                "recordsetid": {
+                                                    "type": "number"
+                                                },
+                                                "localities": {
+                                                    "type": "array",
+                                                    "description": "An array of matched/updated Locality IDs",
+                                                    "items": {
+                                                        "type": "number"
+                                                    }
+                                                },
+                                                "geocoorddetails": {
+                                                    "type": "array",
+                                                    "description": "An array of created GeoCoordDetail IDs",
+                                                    "items": {
+                                                        "type": "number"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "taskstatus": {
+                                            "type": "string",
+                                            "enum": [LocalityImportStatus.FAILED]
+                                        },
+                                        "taskinfo": {
+                                            "type": "object",
+                                            "properties": {
+                                                "errors": locality_set_parse_error_data
+                                            }
                                         }
                                     }
                                 }
@@ -914,27 +951,42 @@ def upload_locality_set(request: http.HttpRequest):
                     }
                 }
             },
+            '404': {
+                'description': 'The localityimport object with task id was not found',
+            },
         }
     },
 })
 @require_GET
-def localityimport_status(request: http.HttpRequest, task_id: str):
+def localityimport_status(request: http.HttpRequest, taskid: str):
     try:
-        locality_import = LocalityImport.objects.get(taskid=task_id)
+        locality_import = LocalityImport.objects.get(taskid=taskid)
     except LocalityImport.DoesNotExist:
-        return http.HttpResponseNotFound(f"The localityimport with task id '{task_id}' was not found")
-
-    if not (locality_import.status in [LocalityImportStatus.PENDING, LocalityImportStatus.PROGRESS]):
-        return http.JsonResponse(None, safe=False)
+        return http.HttpResponseNotFound(f"The localityimport with task id '{taskid}' was not found")
 
     result = import_locality_task.AsyncResult(locality_import.taskid)
 
+    resolved_state = LocalityImportStatus.ABORTED if result.state == CELERY_TASK_STATE.REVOKED else result.state
+
+
     status = {
-        'taskstatus': locality_import.status,
+        'taskstatus': resolved_state,
         'taskinfo': result.info if isinstance(result.info, dict) else repr(result.info)
     }
-    return status
 
+    if locality_import.status == LocalityImportStatus.FAILED:
+        status["taskstatus"] = LocalityImportStatus.FAILED
+        status["taskinfo"] = {"errors": json.loads(locality_import.result)}
+    elif locality_import.status == LocalityImportStatus.SUCCEEDED:
+        status["taskstatus"] = LocalityImportStatus.SUCCEEDED
+        success_result = json.loads(locality_import.result)
+        status["taskinfo"] = {
+            "recordsetid": success_result["recordsetid"],
+            "localities": success_result["localities"],
+            "geocoorddetails": success_result["geocoorddetails"]
+        }
+        
+    return http.JsonResponse(status, safe=False)
 
 @openapi(schema={
     'post': {
@@ -983,14 +1035,11 @@ def abort_localityimport_task(request: http.HttpRequest, taskid: str):
     }
 
     if task.state in [LocalityImportStatus.PENDING, LocalityImportStatus.PROGRESS]:
-        # Revoking and terminating the task
         app.control.revoke(locality_import.taskid, terminate=True)
 
-        # Updating the merging status
         locality_import.status = LocalityImportStatus.ABORTED
         locality_import.save()
 
-        # Send notification the the megre task has been aborted
         Message.objects.create(user=request.specify_user, content=json.dumps({
             'type': 'localityimport-aborted',
             'task_id': taskid
@@ -1007,7 +1056,33 @@ def abort_localityimport_task(request: http.HttpRequest, taskid: str):
 
 @openapi(schema={
     "post": {
-        "requestBody": locality_set_body,
+        "requestBody": {
+            "required": True,
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "columnHeaders": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "responses": {
             "200": {
                 "description": "Locality Import Set parsed successfully",
