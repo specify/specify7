@@ -10,6 +10,7 @@ import { getLogContext, setLogContext } from '../Errors/logContext';
 import type { ViewDefinition } from '../FormParse';
 import { fromSimpleXmlNode } from '../Syncer/fromSimpleXmlNode';
 import { createSimpleXmlNode } from '../Syncer/xmlToJson';
+import { getBusinessRuleClassFromTable } from './helpers';
 import type { ViewSets } from './spec';
 import { parseFormView } from './spec';
 
@@ -91,6 +92,7 @@ function createNewView(
     title: localized(table.name),
     description: '',
     table,
+    businessRules: localized(getBusinessRuleClassFromTable(table.name)),
     legacyTable: undefined,
     altViews,
     legacyIsInternal: undefined,

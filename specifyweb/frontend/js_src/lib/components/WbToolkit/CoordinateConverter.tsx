@@ -1,10 +1,12 @@
 import type Handsontable from 'handsontable';
 import React from 'react';
 
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import { localityText } from '../../localization/locality';
 import { wbText } from '../../localization/workbench';
+import { f } from '../../utils/functools';
 import type { ConversionFunction } from '../../utils/latLong';
 import { Lat, Long } from '../../utils/latLong';
 import type { RA, RR } from '../../utils/types';
@@ -12,7 +14,64 @@ import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Dialog } from '../Molecules/Dialog';
-import { getSelectedCells, getSelectedLast, setHotData } from './hotHelpers';
+import type { Dataset } from '../WbPlanView/Wrapped';
+import {
+  getSelectedCells,
+  getSelectedLast,
+  setHotData,
+} from '../WorkBench/hotHelpers';
+import type { WbMapping } from '../WorkBench/mapping';
+
+export function WbConvertCoordinates({
+  hasLocality,
+  dataset,
+  data,
+  mappings,
+  hot,
+  isUploaded,
+  isResultsOpen,
+}: {
+  readonly hasLocality: boolean;
+  readonly dataset: Dataset;
+  readonly data: RA<RA<string | null>>;
+  readonly mappings: WbMapping | undefined;
+  readonly hot: Handsontable;
+  readonly isUploaded: boolean;
+  readonly isResultsOpen: boolean;
+}): JSX.Element {
+  const [showConvertCoords, openConvertCoords, closeConvertCoords] =
+    useBooleanState();
+  return (
+    <>
+      <Button.Small
+        aria-haspopup="dialog"
+        aria-pressed={showConvertCoords}
+        disabled={!hasLocality || isResultsOpen || isUploaded}
+        title={
+          hasLocality
+            ? isUploaded
+              ? wbText.unavailableWhenUploaded()
+              : isResultsOpen
+              ? wbText.unavailableWhileViewingResults()
+              : undefined
+            : wbText.unavailableWithoutLocality()
+        }
+        onClick={openConvertCoords}
+      >
+        {wbText.convertCoordinates()}
+      </Button.Small>
+      {showConvertCoords && mappings !== undefined ? (
+        <CoordinateConverter
+          columns={dataset.columns}
+          coordinateColumns={mappings.coordinateColumns}
+          data={data}
+          hot={hot}
+          onClose={closeConvertCoords}
+        />
+      ) : undefined}
+    </>
+  );
+}
 
 const options: RA<{
   readonly label: string;
@@ -51,7 +110,7 @@ const options: RA<{
   },
 ];
 
-export function CoordinateConverter({
+function CoordinateConverter({
   hot,
   data,
   columns,
@@ -77,13 +136,13 @@ export function CoordinateConverter({
   >(undefined);
   const [showDirection, setShowDirection] = React.useState<boolean>(false);
 
-  const changeCount = React.useRef<number>(0);
+  const changeCountRef = React.useRef<number>(0);
 
   // List of coordinate columns
   const columnsToWorkWith = React.useMemo(
     () =>
       Object.keys(coordinateColumns).map((physicalCol) =>
-        hot.toVisualColumn(Number.parseInt(physicalCol))
+        hot.toVisualColumn(f.fastParseInt(physicalCol))
       ),
     []
   );
@@ -147,7 +206,7 @@ export function CoordinateConverter({
         return value !== data[physicalRow][physicalCol];
       });
     if (changes.length > 0) {
-      changeCount.current += 1;
+      changeCountRef.current += 1;
       setHotData(hot, changes);
     }
   }, [
@@ -173,7 +232,9 @@ export function CoordinateConverter({
       modal={false}
       onClose={(): void => {
         hot.batch(() =>
-          Array.from({ length: changeCount.current }).forEach(() => hot.undo())
+          Array.from({ length: changeCountRef.current }).forEach(() =>
+            hot.undo()
+          )
         );
         handleClose();
       }}

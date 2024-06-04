@@ -104,7 +104,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Varios archivos seleccionados',
     'fr-fr': 'Plusieurs fichiers sélectionnés',
     'ru-ru': 'Выбрано несколько файлов',
-    'uk-ua': 'Вибрано кілька файлів',
+    'uk-ua': 'Вибрано декілька файлів',
   },
   fileSize: {
     'en-us': 'File Size',
@@ -135,7 +135,7 @@ export const attachmentsText = createDictionary({
   },
   pleaseReselectAllFiles: {
     'en-us': 'Please reselect all files before uploading.',
-    'de-ch': 'Bitte wählen Sie alle Dateien vor dem Hochladen erneut aus.',
+    'de-ch': 'Bitte wählen Sie vor dem Hochladen alle Dateien erneut aus.',
     'es-es':
       'Por favor, vuelva a seleccionar todos los archivos antes de cargarlos.',
     'fr-fr':
@@ -177,8 +177,7 @@ export const attachmentsText = createDictionary({
   },
   frontEndInterruption: {
     'en-us': '{action:string} was in progress when interruption occurred',
-    'de-ch':
-      '{action:string} war in Bearbeitung, als die Unterbrechung auftrat',
+    'de-ch': '{action:string} war im Gange, als die Unterbrechung auftrat',
     'es-es':
       '{action:string} estaba en curso cuando se produjo la interrupción',
     'fr-fr':
@@ -213,7 +212,7 @@ export const attachmentsText = createDictionary({
   },
   attachmentImportDatasetsCount: {
     'en-us': 'Attachment Import Data Sets ({count:number})',
-    'de-ch': 'Anhang-Importdatensätze ({count:number})',
+    'de-ch': 'Anhänge zum Importieren von Datensätzen ({count:number})',
     'es-es': 'Adjuntar el conjuntos de datos de importación ({count:number})',
     'fr-fr':
       "Ensembles de données d'importation de pièces jointes ({count:number})",
@@ -250,7 +249,7 @@ export const attachmentsText = createDictionary({
       have been uploaded.
     `,
     'de-ch': `
-      Der Upload war im Gange, als eine Unterbrechung auftrat. Möglicherweise
+      Der Upload war im Gange, als es zu einer Unterbrechung kam. Möglicherweise
       wurden einige Dateien hochgeladen.
     `,
     'es-es': `
@@ -284,8 +283,8 @@ export const attachmentsText = createDictionary({
       have been deleted
     `,
     'de-ch': `
-      Das Rollback war im Gange, als eine Unterbrechung auftrat. Möglicherweise
-      wurden einige Dateien gelöscht
+      Das Rollback war im Gange, als eine Unterbrechung auftrat. Einige Dateien
+      wurden möglicherweise gelöscht
     `,
     'fr-fr': `
       La restauration était en cours lorsqu'une interruption s'est produite.
@@ -333,7 +332,7 @@ export const attachmentsText = createDictionary({
     `,
     'de-ch': `
       Durch das Hochladen der Anhänge werden Anhänge im Asset-Server und in der
-      Specify-Datenbank erstellt
+      Datenbank „Specify“ erstellt.
     `,
     'es-es': 'Interrumpido. Reintentando en [X25X]',
     'fr-fr': `
@@ -445,8 +444,10 @@ export const attachmentsText = createDictionary({
   },
   multipleMatchesClick: {
     'en-us': 'Multiple Matches. Click To Disambiguate',
-    'de-ch':
-      'Mehrere Übereinstimmungen. Klicken Sie auf „Zur Begriffsklärung“.',
+    'de-ch': `
+      Mehrere Übereinstimmungen. Klicken Sie hier, um die Mehrdeutigkeit zu
+      beseitigen.
+    `,
     'es-es': 'Múltiples coincidencias. Haga clic para eliminar la ambigüedad',
     'fr-fr': "Plusieurs correspondances. Cliquez pour lever l'ambiguïté",
     'ru-ru': 'Несколько матчей. Нажмите, чтобы устранить неоднозначность',
@@ -454,7 +455,7 @@ export const attachmentsText = createDictionary({
   },
   totalFiles: {
     'en-us': 'Total files',
-    'de-ch': 'Gesamtdateien',
+    'de-ch': 'Gesamtzahl der Dateien',
     'es-es': 'Archivos totales',
     'fr-fr': 'Total des fichiers',
     'ru-ru': 'Всего файлов',
@@ -470,7 +471,7 @@ export const attachmentsText = createDictionary({
   },
   stoppedByUser: {
     'en-us': 'Stopped By User',
-    'de-ch': 'Vom Benutzer gestoppt',
+    'de-ch': 'Vom Benutzer angehalten',
     'es-es': 'Detenido por el usuario',
     'fr-fr': "Arrêté par l'utilisateur",
     'ru-ru': 'Остановлен пользователем',
@@ -560,7 +561,8 @@ export const attachmentsText = createDictionary({
   selectIdentifier: {
     'en-us': 'Select an identifier to match the files name against.',
     'de-ch': `
-      Wählen Sie eine Kennung aus, mit der der Dateiname verglichen werden soll.
+      Wählen Sie eine Kennung aus, mit der der Dateiname abgeglichen werden
+      soll.
     `,
     'es-es': `
       Seleccione un identificador para hacer coincidir el nombre de los
@@ -571,7 +573,7 @@ export const attachmentsText = createDictionary({
     `,
     'ru-ru':
       'Выберите идентификатор, которому будет соответствовать имя файла.',
-    'uk-ua': 'Виберіть ідентифікатор для відповідності імені файлу.',
+    'uk-ua': 'Виберіть ідентифікатор, який буде відповідати назві файлів.',
   },
   progress: {
     'en-us': 'Progress',
@@ -622,8 +624,8 @@ export const attachmentsText = createDictionary({
     `,
     'de-ch': `
       Durch das Löschen eines Datensatzes werden dieser und sein Upload-Pfad
-      dauerhaft entfernt. Auch nach dem Löschen ist Rollback für einen
-      hochgeladenen Datensatz nicht mehr möglich.
+      dauerhaft entfernt. Nach dem Löschen ist für einen hochgeladenen Datensatz
+      auch kein Rollback mehr möglich.
     `,
     'es-es': `
       Al eliminar un conjunto de datos, se elimina permanentemente este y su
@@ -653,8 +655,8 @@ export const attachmentsText = createDictionary({
       was an error reading the file.
     `,
     'de-ch': `
-      Fehler beim Hochladen des Anhangs. Der Anhangserver ist möglicherweise
-      nicht verfügbar oder es ist ein Fehler beim Lesen der Datei aufgetreten.
+      Fehler beim Hochladen des Anhangs. Der Anhangsserver ist möglicherweise
+      nicht verfügbar oder beim Lesen der Datei ist ein Fehler aufgetreten.
     `,
     'es-es': `
       Error al cargar el archivo adjunto. Es posible que el servidor de archivos

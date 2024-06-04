@@ -1,3 +1,5 @@
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { f } from '../../utils/functools';
 import type { IR, RA, RR } from '../../utils/types';
 import { filterArray, localized } from '../../utils/types';
@@ -6,6 +8,7 @@ import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { genericTables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
+import type { FormCondition } from '../FormParse';
 import { paleoPluginTables } from '../FormPlugins/PaleoLocation';
 import { toLargeSortConfig, toSmallSortConfig } from '../Molecules/Sorting';
 import type { SpecToJson, Syncer } from '../Syncer';
@@ -131,25 +134,29 @@ const rowsSpec = (table: SpecifyTable | undefined) =>
     ),
     condition: pipe(
       syncers.xmlAttribute('condition', 'skip', false),
-      syncer(
+      syncer<LocalizedString | undefined, FormCondition>(
         (rawCondition) => {
           if (rawCondition === undefined) return undefined;
+          const isAlways = rawCondition.trim() === 'always';
+          if (isAlways) return { type: 'Always' } as const;
           const [rawField, ...condition] = rawCondition.split('=');
           const field = syncers.field(table?.name).serializer(rawField);
           return field === undefined
             ? undefined
-            : {
+            : ({
+                type: 'Value',
                 field,
-                condition: condition.join('='),
-              };
+                value: condition.join('='),
+              } as const);
         },
         (props) => {
           if (props === undefined) return undefined;
-          const { field, condition } = props;
+          if (props.type === 'Always') return localized('always');
+          const { field, value } = props;
           const joined = syncers.field(table?.name).deserializer(field);
           return joined === undefined || joined.length === 0
             ? undefined
-            : localized(`${joined}=${condition}`);
+            : localized(`${joined}=${value}`);
         }
       )
     ),
@@ -347,7 +354,7 @@ const borderSpec = f.store(() =>
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const subViewSpec = (
-  _cell: SpecToJson<ReturnType<typeof cellSpec>>,
+  cell: SpecToJson<ReturnType<typeof cellSpec>>,
   table: SpecifyTable | undefined
 ) =>
   createXmlSpec({
@@ -405,9 +412,16 @@ const subViewSpec = (
       syncers.maybe(
         syncer(
           (raw: string) => {
+            const cellName = cell.rest.node.attributes.name;
+            const cellRelationship = table?.fields
+              .filter((field) => field.isRelationship)
+              .find((table) => table.name === cellName) as
+              | Relationship
+              | undefined;
+            const cellRelatedTableName = cellRelationship?.relatedTable.name;
             const parsed = toLargeSortConfig(raw);
             const fieldNames = syncers
-              .field(table?.name)
+              .field(cellRelatedTableName)
               .serializer(parsed.fieldNames.join('.'));
             return fieldNames === undefined
               ? undefined

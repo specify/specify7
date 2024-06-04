@@ -68,7 +68,7 @@ export const mergingText = createDictionary({
   subViewControls: {
     'en-us': 'Sub-view Controls',
     'ru-ru': 'Элементы управления подпредставлением',
-    'de-ch': 'Steuerelemente für Unteransichten',
+    'de-ch': 'Unteransichtssteuerung',
     'es-es': 'Controles de vista parcial',
     'fr-fr': 'Contrôles de sous-vue',
     'uk-ua': 'Елементи керування вкладеним переглядом',
@@ -92,7 +92,7 @@ export const mergingText = createDictionary({
   },
   dismissFromMerging: {
     'en-us': 'Dismiss from merging',
-    'de-ch': 'Vom Zusammenführen ablehnen',
+    'de-ch': 'Vom Zusammenführen ausschließen',
     'es-es': 'Descartar la fusión',
     'fr-fr': 'Interdire la fusion',
     'ru-ru': 'Отклонить от слияния',
@@ -213,7 +213,7 @@ export const mergingText = createDictionary({
     'es-es': 'El proceso de fusión ha sido exitoso.',
     'fr-fr': 'Le processus de fusion a réussi.',
     'ru-ru': 'Процесс слияния завершился успешно.',
-    'uk-ua': 'Процес об’єднання пройшов успішно.',
+    'uk-ua': 'Процес об’єднання завершився успішно.',
   },
   mergingHasFailed: {
     'en-us': 'The merge process has failed.',
@@ -225,7 +225,7 @@ export const mergingText = createDictionary({
   },
   mergingHasBeenCanceled: {
     'en-us': 'The merge process has been cancelled.',
-    'de-ch': 'Der Zusammenführungsvorgang wurde abgebrochen.',
+    'de-ch': 'Der Zusammenführungsprozess wurde abgebrochen.',
     'es-es': 'Se ha cancelado el proceso de fusión.',
     'fr-fr': 'Le processus de fusion a été annulé.',
     'ru-ru': 'Процесс слияния отменен.',

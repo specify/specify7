@@ -121,7 +121,7 @@ export const userText = createDictionary({
     'es-es': 'El usuario actual no tiene un agente asignado',
     'fr-fr': "L'utilisateur actuel n'a pas d'agent attribué",
     'uk-ua': 'Поточний користувач не має призначеного агента',
-    'de-ch': 'Dem aktuellen Benutzer ist kein Agent zugewiesen',
+    'de-ch': 'Dem aktuellen Benutzer ist kein Agent zugewiesen.',
   },
   noAgentDescription: {
     'en-us': 'Please log in as admin and assign an agent to this user',
@@ -190,7 +190,7 @@ export const userText = createDictionary({
     'es-es': 'Iniciar sesión con una cuenta de Specify',
     'fr-fr': 'Connectez-vous avec Spécifier le compte',
     'uk-ua': 'Увійдіть за допомогою Вказати обліковий запис',
-    'de-ch': 'Melden Sie sich mit „Konto angeben“ an',
+    'de-ch': 'Mit „Konto angeben“ anmelden',
   },
   unknownOicUser: {
     'en-us': `
@@ -285,7 +285,7 @@ export const userText = createDictionary({
       resource through the currently logged in account
     `,
     'ru-ru': `
-      У вас нет доступа к любому {collectionTable:string}, содержащему этот
+      У вас нет доступа ни к одному {collectionTable:string}, содержащему этот
       ресурс, через текущую учетную запись.
     `,
     'es-es': `
@@ -332,7 +332,7 @@ export const userText = createDictionary({
     'ru-ru': 'Выберите одну из следующих коллекций:',
     'es-es': 'Seleccione una de las siguientes colecciones:',
     'uk-ua': 'Виберіть одну з наступних колекцій:',
-    'de-ch': 'Wählen Sie eine der folgenden Sammlungen:',
+    'de-ch': 'Wählen Sie eine der folgenden Sammlungen aus:',
     'fr-fr': "L'utilisateur actuel n'a pas d'agent attribué",
   },
   loginToProceed: {
@@ -401,7 +401,7 @@ export const userText = createDictionary({
     'es-es': 'Error de permiso denegado',
     'fr-fr': "Erreur d'autorisation refusée",
     'uk-ua': 'Помилка дозволу заборонено',
-    'de-ch': 'Fehler „Berechtigung verweigert“.',
+    'de-ch': 'Fehler „Berechtigung verweigert“',
   },
   permissionDeniedDescription: {
     'en-us': `
@@ -426,7 +426,7 @@ export const userText = createDictionary({
     `,
     'de-ch': `
       Sie verfügen über keine Richtlinie oder Rolle, die Ihnen die Berechtigung
-      zum Ausführen der folgenden Aktion erteilt:
+      zur Ausführung der folgenden Aktion erteilt:
     `,
   },
   emptyRecordSetsReadOnly: {
@@ -508,7 +508,7 @@ export const userText = createDictionary({
     'es-es': 'No puede revocar su propio estatus de administrador',
     'fr-fr': "Vous ne pouvez pas révoquer votre propre statut d'administrateur",
     'uk-ua': 'Ви не можете відкликати свій статус адміністратора',
-    'de-ch': 'Sie können Ihren eigenen Admin-Status nicht widerrufen',
+    'de-ch': 'Sie können Ihren eigenen Administratorstatus nicht widerrufen',
   },
   makeAdmin: {
     'en-us': 'Make Admin',
@@ -524,7 +524,7 @@ export const userText = createDictionary({
     'es-es': 'Guardar usuario primero',
     'fr-fr': "Enregistrez d'abord l'utilisateur",
     'uk-ua': 'Спочатку збережіть користувача',
-    'de-ch': 'Speichern Sie zuerst den Benutzer',
+    'de-ch': 'Zuerst Benutzer speichern',
   },
   mustBeManager: {
     'en-us': 'User must be saved as Manager first',
@@ -574,8 +574,7 @@ export const userText = createDictionary({
     'uk-ua': `
       Облікові записи користувачів, призначені цьому {collectionTable:string}
     `,
-    'de-ch':
-      'Benutzerkonten, die diesem {collectionTable:string} zugewiesen sind',
+    'de-ch': 'Zugewiesene Benutzerkonten {collectionTable:string}',
   },
   setPassword: {
     'en-us': 'Set Password',
@@ -631,7 +630,7 @@ export const userText = createDictionary({
     'es-es': 'Biblioteca institucional de plantillas de roles',
     'fr-fr': 'Bibliothèque institutionnelle de modèles de rôles',
     'uk-ua': 'Бібліотека шаблонів ролей установи',
-    'de-ch': 'Institutionsbibliothek mit Rollenvorlagen',
+    'de-ch': 'Institutionelle Bibliothek mit Rollenvorlagen',
   },
   userRoles: {
     'en-us': 'User Roles',
@@ -671,7 +670,7 @@ export const userText = createDictionary({
     'es-es': 'Políticas de permisos de usuario',
     'fr-fr': "Politiques d'autorisation des utilisateurs",
     'uk-ua': 'Політика дозволів користувача',
-    'de-ch': 'Benutzerberechtigungsrichtlinien',
+    'de-ch': 'Richtlinien für Benutzerberechtigungen',
   },
   customUserPolices: {
     'en-us':
@@ -805,7 +804,7 @@ export const userText = createDictionary({
     'es-es': 'Habilitar acceso a la colección',
     'fr-fr': "Autoriser l'accès à la collection",
     'uk-ua': 'Увімкнути доступ до колекції',
-    'de-ch': 'Aktivieren Sie den Sammlungszugriff',
+    'de-ch': 'Sammlungszugriff aktivieren',
   },
   createRole: {
     'en-us': 'Create Role',
@@ -837,7 +836,7 @@ export const userText = createDictionary({
     'es-es': 'Desde un rol existente:',
     'fr-fr': "À partir d'un rôle existant :",
     'uk-ua': 'З наявної ролі:',
-    'de-ch': 'Aus einer bestehenden Rolle:',
+    'de-ch': 'Aus einer vorhandenen Rolle:',
   },
   createNewRoles: {
     'en-us': 'Create new roles:',
@@ -877,7 +876,7 @@ export const userText = createDictionary({
     'es-es': 'Crear enlace de invitación',
     'fr-fr': "Créer un lien d'invitation",
     'uk-ua': 'Створити посилання для запрошення',
-    'de-ch': 'Erstellen Sie einen Einladungslink',
+    'de-ch': 'Einladungslink erstellen',
   },
   userInviteLink: {
     'en-us': 'User Invite Link',
@@ -916,7 +915,7 @@ export const userText = createDictionary({
       Specify 7 server settings
     `,
     'ru-ru': `
-      Внешний поставщик удостоверений не настроен. Некоторые настройки можно
+      Внешний поставщик удостоверений не настроен. Некоторые из них можно
       настроить в разделе «Укажите 7 настроек сервера».
     `,
     'es-es': `
@@ -932,9 +931,8 @@ export const userText = createDictionary({
       налаштовано. Ви можете налаштувати деякі параметри сервера Specify 7
     `,
     'de-ch': `
-      Es ist kein externer Identitätsanbieter konfiguriert. Einige davon können
-      Sie unter „Specify 7 Server Settings“ (Servereinstellungen angeben)
-      konfigurieren
+      Es ist kein externer Identitätsanbieter konfiguriert. Sie können einige in
+      den 7 Servereinstellungen konfigurieren.
     `,
   },
   legacyPermissions: {
@@ -1003,7 +1001,7 @@ export const userText = createDictionary({
     'en-us': 'External identity providers:',
     'es-es': 'Proveedores de identidad externos:',
     'fr-fr': "Fournisseurs d'identité externes :",
-    'de-ch': 'Wählen Sie eine der folgenden Sammlungen:',
+    'de-ch': 'Wählen Sie eine der folgenden Sammlungen aus:',
     'ru-ru': 'Выберите одну из следующих коллекций:',
     'uk-ua': 'Виберіть одну з наступних колекцій:',
   },
@@ -1021,7 +1019,7 @@ export const userText = createDictionary({
     'es-es': 'Cargando administradores...',
     'fr-fr': 'Chargement des administrateurs…',
     'uk-ua': 'Завантаження адміністраторів...',
-    'de-ch': 'Administratoren werden geladen...',
+    'de-ch': 'Administratoren werden geladen …',
   },
   specifyAdmin: {
     comment: 'Shown next to user name for admin users',
@@ -1056,9 +1054,7 @@ export const userText = createDictionary({
     'fr-fr':
       'Les utilisateurs ne seront pas supprimés, mais ils perdront ce rôle.',
     'uk-ua': 'Користувачів не буде видалено, але вони втратять цю роль.',
-    'de-ch': `
-      Benutzer werden nicht gelöscht, sie würden jedoch diese Rolle verlieren.
-    `,
+    'de-ch': 'Benutzer werden nicht gelöscht, verlieren jedoch diese Rolle.',
   },
   institutionPolicies: {
     'en-us': `
@@ -1117,14 +1113,14 @@ export const userText = createDictionary({
     'es-es': 'Cambiar a diseño horizontal',
     'fr-fr': "Passer à l'affichage horizontal",
     'uk-ua': 'Перейти до горизонтального розташування',
-    'de-ch': 'Wechseln Sie zum horizontalen Layout',
+    'de-ch': 'Zum horizontalen Layout wechseln',
   },
   switchToVerticalLayout: {
     'en-us': 'Switch to vertical layout',
     'ru-ru': 'Сначала сохраните пользователя',
     'es-es': 'Cambiar al diseño vertical',
     'fr-fr': "Passer à l'affichage vertical",
-    'de-ch': 'Wechseln Sie zum vertikalen Layout',
+    'de-ch': 'Zum vertikalen Layout wechseln',
     'uk-ua': 'Спочатку збережіть користувача',
   },
   advancedTables: {
