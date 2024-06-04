@@ -61,6 +61,7 @@ export function useResourceValue<
   readonly inputRef: React.MutableRefObject<INPUT | null>;
   readonly setValidation: (message: RA<string> | string) => void;
   readonly parser: Parser;
+  readonly setBlockers: (value: RA<string>, blockerKey: string) => void;
 } {
   const parser = useParser(field, defaultParser);
 
@@ -240,5 +241,6 @@ export function useResourceValue<
     validationRef,
     setValidation,
     parser,
+    setBlockers
   } as const;
 }

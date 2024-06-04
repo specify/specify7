@@ -3,14 +3,12 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { useResourceValue } from '../../hooks/useResourceValue';
 import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
 import { localityText } from '../../localization/locality';
 import { Lat, Long, trimLatLong } from '../../utils/latLong';
 import { Input, Select } from '../Atoms/Form';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
-import { useSaveBlockers } from '../DataModel/saveBlockers';
 import { tables } from '../DataModel/tables';
 import type { Locality } from '../DataModel/types';
 
@@ -32,7 +30,7 @@ function Coordinate({
   readonly step: number | undefined;
   readonly onFormatted: (value: string | undefined) => void;
 }): JSX.Element {
-  const { value, updateValue, validationRef, setValidation, parser } =
+  const { value, updateValue, validationRef, setValidation, parser, setBlockers } =
     useResourceValue(
       resource,
       tables.Locality.strictGetField(coordinateTextField),
@@ -75,11 +73,6 @@ function Coordinate({
     [resource, coordinateField, updateValue, step, fieldType]
   );
 
-  const [_blockers, setBlockers] = useSaveBlockers(
-    resource,
-    resource.specifyTable.fields.find((field) => field.name === coordinateField)
-  );
-
   const isLoading = React.useRef<boolean>(true);
   React.useEffect(() => {
     if (isLoading.current && value === undefined) return;
@@ -92,7 +85,14 @@ function Coordinate({
       : undefined;
 
     const isValid = !hasValue || parsed !== undefined;
-    setValidation(isValid ? '' : formsText.invalidValue());
+    const latLongBlockers = isValid
+      ? []
+      : [
+          fieldType === 'Lat'
+            ? localityText.validLatitude()
+            : localityText.validLongitude(),
+        ];
+    setBlockers(latLongBlockers, fieldType);
     handleFormatted(
       isValid
         ? hasValue
@@ -102,15 +102,6 @@ function Coordinate({
     );
 
     isChanging.current = true;
-
-    const latLongBlockers = isValid
-      ? []
-      : [
-          fieldType === 'Lat'
-            ? localityText.validLatitude()
-            : localityText.validLongitude(),
-        ];
-    setBlockers(latLongBlockers, fieldType);
 
     /**
      * Do not set unload protect because very precise coodinateFields
