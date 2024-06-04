@@ -17,8 +17,9 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { downloadFile } from '../Molecules/FilePicker';
 import type { MergeStatus, StatusState } from './types';
 import { initialStatusState } from './types';
+import { RR } from '../../utils/types';
 
-const statusLocalization: { readonly [STATE in MergeStatus]: LocalizedString } =
+const statusLocalization: RR<MergeStatus, LocalizedString> =
   {
     MERGING: mergingText.merging(),
     ABORTED: mergingText.mergeFailed(),

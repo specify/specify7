@@ -36,6 +36,7 @@ import { MergeContainer, useMergeConformation } from './Compare';
 import { CompareField, TransferButton } from './CompareField';
 import { mergeCellBackground, mergeHeaderClassName } from './Header';
 import { MergeDialogContainer, ToggleMergeView } from './index';
+import { runAllFieldChecks } from '../DataModel/businessRules';
 
 // use this in more places?
 const handleMaybeToMany = (
@@ -249,8 +250,12 @@ function MergeDialog({
               }
               resources={children.map((record) => record[index])}
               onRemove={(): void => {
+                // could be called by the zero-to-one
+                const previousMerged = [...mergedRecords]
                 mergedRecords[index].destroy();
-                setMergedRecords(removeItem(mergedRecords, index));
+                setMergedRecords(removeItem(previousMerged, index))
+                // TODO: optimize this
+                runAllFieldChecks(merged);
               }}
               onSlide={(columnIndex, direction): void => {
                 if (columnIndex === 0)
