@@ -17,6 +17,7 @@ import {
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
+import { runAllFieldChecks } from '../DataModel/businessRules';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
@@ -36,16 +37,14 @@ import { MergeContainer, useMergeConformation } from './Compare';
 import { CompareField, TransferButton } from './CompareField';
 import { mergeCellBackground, mergeHeaderClassName } from './Header';
 import { MergeDialogContainer, ToggleMergeView } from './index';
-import { runAllFieldChecks } from '../DataModel/businessRules';
 
-// use this in more places?
+// Use this in more places?
 const handleMaybeToMany = (
   dependent: Collection<AnySchema> | SpecifyResource<AnySchema>
-) => {
-  return dependent instanceof ResourceBase
+) =>
+  dependent instanceof ResourceBase
     ? [dependent as SpecifyResource<AnySchema>]
     : (dependent as Collection<AnySchema>).models;
-};
 export function MergeSubviewButton({
   relationship,
   resource,
@@ -62,7 +61,7 @@ export function MergeSubviewButton({
   const getCount = React.useCallback(() => {
     const dependentResource = resource.getDependentResource(
       relationship.name
-    ) as Collection<AnySchema> | SpecifyResource<AnySchema> | undefined | null;
+    ) as Collection<AnySchema> | SpecifyResource<AnySchema> | null | undefined;
 
     return dependentResource === undefined || dependentResource === null
       ? resource.get(relationship.name) === undefined
@@ -127,12 +126,12 @@ function getChildren(
   resource: SpecifyResource<AnySchema>,
   relationship: Relationship
 ): RA<SpecifyResource<AnySchema>> {
-  // move this type to getDependentResource?
+  // Move this type to getDependentResource?
   const children = resource.getDependentResource(relationship.name) as
     | Collection<AnySchema>
     | SpecifyResource<AnySchema>
-    | undefined
-    | null;
+    | null
+    | undefined;
   return children === null || children === undefined
     ? []
     : handleMaybeToMany(children);
@@ -250,10 +249,10 @@ function MergeDialog({
               }
               resources={children.map((record) => record[index])}
               onRemove={(): void => {
-                // could be called by the zero-to-one
-                const previousMerged = [...mergedRecords]
+                // Could be called by the zero-to-one
+                const previousMerged = Array.from(mergedRecords);
                 mergedRecords[index].destroy();
-                setMergedRecords(removeItem(previousMerged, index))
+                setMergedRecords(removeItem(previousMerged, index));
                 // TODO: optimize this
                 runAllFieldChecks(merged);
               }}
