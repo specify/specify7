@@ -140,7 +140,7 @@ def parse_locality_set(collection, raw_headers: List[str], data: List[List[str]]
     processed = 0
     total = len(data)
 
-    for row_mumber, row in enumerate(data):
+    for row_mumber, row in enumerate(data, start=1):
         guid = row[guid_index]
         locality_query = spmodels.Locality.objects.filter(guid=guid)
         if len(locality_query) == 0:
