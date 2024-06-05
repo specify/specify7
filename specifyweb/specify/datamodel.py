@@ -3838,7 +3838,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='disciplines', type='one-to-many',required=False, relatedModelName='Discipline', otherSideName='geographyTreeDef'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(name='treeDefItems', type='one-to-many',required=False, relatedModelName='GeographyTreeDefItem', otherSideName='treeDef'),
+            Relationship(name='treeDefItems', type='one-to-many',required=False, relatedModelName='GeographyTreeDefItem', otherSideName='treeDef', dependent=True),
             Relationship(name='treeEntries', type='one-to-many',required=False, relatedModelName='Geography', otherSideName='definition')
         ],
         fieldAliases=[
@@ -3954,7 +3954,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='disciplines', type='one-to-many',required=False, relatedModelName='Discipline', otherSideName='geologicTimePeriodTreeDef'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(name='treeDefItems', type='one-to-many',required=False, relatedModelName='GeologicTimePeriodTreeDefItem', otherSideName='treeDef'),
+            Relationship(name='treeDefItems', type='one-to-many',required=False, relatedModelName='GeologicTimePeriodTreeDefItem', otherSideName='treeDef', dependent=True),
             Relationship(name='treeEntries', type='one-to-many',required=False, relatedModelName='GeologicTimePeriod', otherSideName='definition')
         ],
         fieldAliases=[
@@ -4474,7 +4474,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='disciplines', type='one-to-many',required=False, relatedModelName='Discipline', otherSideName='lithoStratTreeDef'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(name='treeDefItems', type='one-to-many',required=False, relatedModelName='LithoStratTreeDefItem', otherSideName='treeDef'),
+            Relationship(name='treeDefItems', type='one-to-many',required=False, relatedModelName='LithoStratTreeDefItem', otherSideName='treeDef', dependent=True),
             Relationship(name='treeEntries', type='one-to-many',required=False, relatedModelName='LithoStrat', otherSideName='definition')
         ],
         fieldAliases=[
@@ -6968,7 +6968,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='institutions', type='one-to-many',required=False, relatedModelName='Institution', otherSideName='storageTreeDef'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(name='treeDefItems', type='one-to-many',required=False, relatedModelName='StorageTreeDefItem', otherSideName='treeDef'),
+            Relationship(name='treeDefItems', type='one-to-many',required=False, relatedModelName='StorageTreeDefItem', otherSideName='treeDef', dependent=True),
             Relationship(name='treeEntries', type='one-to-many',required=False, relatedModelName='Storage', otherSideName='definition')
         ],
         fieldAliases=[
@@ -7416,7 +7416,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='discipline', type='one-to-one',required=False, relatedModelName='Discipline', otherSideName='taxonTreeDef'), # no column aka.(columnname), virtual
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(name='treeDefItems', type='one-to-many',required=False, relatedModelName='TaxonTreeDefItem', otherSideName='treeDef'),
+            Relationship(name='treeDefItems', type='one-to-many',required=False, relatedModelName='TaxonTreeDefItem', otherSideName='treeDef', dependent=True),
             Relationship(name='treeEntries', type='one-to-many',required=False, relatedModelName='Taxon', otherSideName='definition')
         ],
         fieldAliases=[

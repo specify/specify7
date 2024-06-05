@@ -1,8 +1,6 @@
 from django.db import models
 from specifyweb.specify.models import Specifyuser
 
-from specifyweb.specify import models as spmodels
-
 class Spuserexternalid(models.Model):
     """Maps external user identities to Specify user accounts."""
     provider = models.CharField(max_length=256)  # From a key in settings.OAUTH_LOGIN_PROVIDERS

@@ -5770,6 +5770,7 @@ class Spappresource(models.Model):
             # models.Index(fields=['MimeType'], name='SpAppResMimeTypeIDX')
         ]
 
+    timestamptracker = FieldTracker(fields=['timestampcreated'])
     save = partialmethod(custom_save)
 
 class Spappresourcedata(models.Model):
