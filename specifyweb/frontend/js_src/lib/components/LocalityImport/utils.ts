@@ -2,7 +2,8 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { commonText } from '../../localization/common';
 import { localityText } from '../../localization/locality';
-import type { IR, RA } from '../../utils/types';
+import { f } from '../../utils/functools';
+import type { IR, RA, RR } from '../../utils/types';
 import { tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { resolveBackendParsingMessage } from '../WorkBench/resultsParser';
@@ -12,20 +13,24 @@ export const localityImportAcceptedLocalityFields: RA<
   Lowercase<keyof Tables['Locality']['fields']>
 > = ['guid', 'datum', 'latitude1', 'longitude1'];
 
-export const localityImportAcceptedHeaders = new Set([
-  ...localityImportAcceptedLocalityFields,
-  ...tables.GeoCoordDetail.literalFields
-    .map(({ name }) => name.toLowerCase())
-    .filter((header) => header !== 'locality'),
-]);
+export const localityImportAcceptedHeaders = f.store(
+  () =>
+    new Set([
+      ...localityImportAcceptedLocalityFields,
+      ...tables.GeoCoordDetail.literalFields
+        .map(({ name }) => name.toLowerCase())
+        .filter((header) => header !== 'locality'),
+    ])
+);
 
 export const localityImportRequiredHeaders = new Set<LocalityImportHeader>([
   'guid',
 ]);
 
-export const localityImportStatusLocalization: {
-  readonly [STATE in LocalityImportTaskStatus]: LocalizedString;
-} = {
+export const localityImportStatusLocalization: RR<
+  LocalityImportTaskStatus,
+  LocalizedString
+> = {
   PENDING: localityText.localityImportStarting(),
   PARSING: localityText.localityImportParsing(),
   PROGRESS: localityText.localityImportProgressing(),

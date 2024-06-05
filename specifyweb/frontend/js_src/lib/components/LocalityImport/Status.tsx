@@ -1,6 +1,8 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { localityText } from '../../localization/locality';
 import { mainText } from '../../localization/main';
@@ -9,6 +11,7 @@ import { queryText } from '../../localization/query';
 import { schemaText } from '../../localization/schema';
 import { ajax } from '../../utils/ajax';
 import { ping } from '../../utils/ajax/ping';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { H2, Progress } from '../Atoms';
@@ -17,15 +20,15 @@ import { Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { SECOND } from '../Atoms/timeUnits';
 import { LoadingContext } from '../Core/Contexts';
-import type { SerializedResource } from '../DataModel/helperTypes';
 import { fetchResource } from '../DataModel/resource';
 import { tables } from '../DataModel/tables';
-import type { RecordSet } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
+import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
 import { useTitle } from '../Molecules/AppTitle';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasToolPermission } from '../Permissions/helpers';
+import { CreateRecordSet } from '../QueryBuilder/CreateRecordSet';
 import { downloadDataSet } from '../WorkBench/helpers';
 import { RemainingLoadingTime } from '../WorkBench/RemainingLoadingTime';
 import { TableRecordCounts } from '../WorkBench/Results';
@@ -54,23 +57,14 @@ export function LocalityImportStatus({
     taskinfo: 'None',
   });
 
-  const [recordSet, setRecordSet] = React.useState<
-    SerializedResource<RecordSet> | undefined
-  >(undefined);
-
   React.useEffect(() => {
     let destructorCalled = false;
     const fetchStatus = () =>
       void ajax<LocalityImportState>(`/api/localityset/status/${taskId}`, {
         headers: { Accept: 'application/json' },
       })
-        .then(async ({ data }) => {
+        .then(({ data }) => {
           setState(data);
-          if (data.taskstatus === 'SUCCEEDED') {
-            await fetchResource('RecordSet', data.taskinfo.recordsetid).then(
-              setRecordSet
-            );
-          }
           if (
             !destructorCalled &&
             (
@@ -87,6 +81,16 @@ export function LocalityImportStatus({
     };
   }, [taskId]);
 
+  const handleTaskCancel = React.useCallback(
+    () =>
+      loading(
+        ping(`/api/localityset/abort/${taskId}/`, {
+          method: 'POST',
+        }).catch(softFail)
+      ),
+    [taskId]
+  );
+
   const loading = React.useContext(LoadingContext);
 
   const title = localityImportStatusLocalization[state.taskstatus];
@@ -98,16 +102,15 @@ export function LocalityImportStatus({
     <LocalityImportProgress
       currentProgress={state.taskinfo.current}
       header={title}
-      taskId={taskId}
       total={state.taskinfo.total}
       onClose={handleClose}
+      onTaskCancel={handleTaskCancel}
     />
   ) : state.taskstatus === 'SUCCEEDED' ? (
     <LocalityImportSuccess
       geoCoordDetailIds={state.taskinfo.geocoorddetails}
-      header={title}
       localityIds={state.taskinfo.localities}
-      recordSet={recordSet}
+      recordSetId={state.taskinfo.recordsetid}
       onClose={handleClose}
     />
   ) : state.taskstatus === 'FAILED' ? (
@@ -118,15 +121,7 @@ export function LocalityImportStatus({
   ) : state.taskstatus === 'PENDING' ? (
     <Dialog
       buttons={
-        <Button.Danger
-          onClick={(): void =>
-            loading(
-              ping(`/api/localityset/abort/${taskId}`, {
-                method: 'POST',
-              }).catch(softFail)
-            )
-          }
-        >
+        <Button.Danger onClick={handleTaskCancel}>
           {commonText.cancel()}
         </Button.Danger>
       }
@@ -148,32 +143,23 @@ export function LocalityImportStatus({
 
 function LocalityImportProgress({
   header,
-  taskId,
   currentProgress,
   total,
   onClose: handleClose,
+  onTaskCancel: handleTaskCancel,
 }: {
   readonly header: LocalizedString;
-  readonly taskId: string;
   readonly currentProgress: number;
   readonly total: number;
   readonly onClose: () => void;
+  readonly onTaskCancel: () => void;
 }): JSX.Element {
-  const loading = React.useContext(LoadingContext);
   const percentage = Math.round((currentProgress / total) * 100);
   useTitle(localized(`${header} ${percentage}%`));
   return (
     <Dialog
       buttons={
-        <Button.Danger
-          onClick={(): void =>
-            loading(
-              ping(`/api/localityset/abort/${taskId}`, {
-                method: 'POST',
-              }).catch(softFail)
-            )
-          }
-        >
+        <Button.Danger onClick={handleTaskCancel}>
           {commonText.cancel()}
         </Button.Danger>
       }
@@ -193,24 +179,34 @@ function LocalityImportProgress({
   );
 }
 
-function LocalityImportSuccess({
-  header,
+export function LocalityImportSuccess({
   localityIds,
   geoCoordDetailIds,
-  recordSet,
+  recordSetId,
   onClose: handleClose,
 }: {
-  readonly header: LocalizedString;
   readonly localityIds: RA<number>;
   readonly geoCoordDetailIds: RA<number>;
-  readonly recordSet: SerializedResource<RecordSet> | undefined;
+  readonly recordSetId: number | undefined;
   readonly onClose: () => void;
 }): JSX.Element {
+  const [recordSet] = useAsyncState(
+    React.useCallback(
+      async () =>
+        recordSetId === undefined
+          ? undefined
+          : fetchResource('RecordSet', recordSetId, false),
+      [recordSetId]
+    ),
+    false
+  );
+
+  const [formsOpened, handleFormsOpened, handleFormsClosed] = useBooleanState();
+
   return (
     <Dialog
       buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
-      dimensionsKey={statusDimensionKey}
-      header={header}
+      header={localityImportStatusLocalization.SUCCEEDED}
       modal={false}
       onClose={handleClose}
     >
@@ -230,21 +226,56 @@ function LocalityImportSuccess({
         />
       </div>
       <span className="gap-y-2" />
-      <H2>{queryText.viewRecords()}</H2>
       {recordSet !== undefined && hasToolPermission('recordSets', 'read') && (
-        <Link.NewTab
-          className="w-fit"
-          href={`/specify/record-set/${recordSet.id}/`}
-        >
-          <TableIcon label name={tables.Locality.name} />
-          {localized(recordSet.name)}
-        </Link.NewTab>
+        <>
+          <H2>{queryText.viewRecords()}</H2>
+          <Link.NewTab
+            className="w-fit"
+            href={`/specify/record-set/${recordSet.id}/`}
+          >
+            <TableIcon label name={tables.Locality.name} />
+            {localized(recordSet.name)}
+          </Link.NewTab>
+        </>
+      )}
+      {recordSet === undefined && (
+        <div className="w-fit">
+          <Button.Small onClick={handleFormsOpened}>
+            {queryText.browseInForms()}
+          </Button.Small>
+          {formsOpened && (
+            <RecordSelectorFromIds
+              canRemove={false}
+              defaultIndex={0}
+              dialog="modal"
+              headerButtons={
+                <CreateRecordSet
+                  baseTableName="Locality"
+                  recordIds={localityIds}
+                />
+              }
+              ids={localityIds}
+              isDependent={false}
+              isInRecordSet={false}
+              newResource={undefined}
+              table={tables.Locality}
+              title={localityText.localityImportResults()}
+              totalCount={localityIds.length}
+              onAdd={undefined}
+              onClone={undefined}
+              onClose={handleFormsClosed}
+              onDelete={undefined}
+              onSaved={f.void}
+              onSlide={undefined}
+            />
+          )}
+        </div>
       )}
     </Dialog>
   );
 }
 
-function LocalityImportErrors({
+export function LocalityImportErrors({
   errors,
   onClose: handleClose,
 }: {
@@ -288,7 +319,7 @@ function LocalityImportErrors({
         </>
       }
       dimensionsKey={statusDimensionKey}
-      header={localityText.localityImportErrorDialogHeader()}
+      header={localityText.localityImportFailureResults()}
       icon="error"
       onClose={handleClose}
     >

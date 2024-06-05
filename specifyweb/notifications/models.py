@@ -42,7 +42,7 @@ class LocalityImport(AsyncTask):
     id = models.AutoField('localityimportid', primary_key=True, db_column='localityimportid')
     result = models.JSONField(null=True)
     recordset = models.ForeignKey(
-        Recordset, null=True, blank=True, db_column="RecordSetID", on_delete=models.CASCADE)
+        Recordset, null=True, blank=True, db_column="RecordSetID", on_delete=models.SET_NULL)
     
     class Meta:
         db_table = 'localityimport'

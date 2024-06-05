@@ -67,7 +67,7 @@ export function ImportLocalityDataSet(): JSX.Element {
                 .toLowerCase()
                 .trim() as LocalityImportHeader;
               const isUnknown =
-                !localityImportAcceptedHeaders.has(parsedHeader);
+                !localityImportAcceptedHeaders().has(parsedHeader);
 
               return {
                 missingRequiredHeaders:
@@ -148,7 +148,7 @@ export function ImportLocalityDataSet(): JSX.Element {
             <p>
               {formatConjunction(
                 Array.from(
-                  localityImportAcceptedHeaders
+                  localityImportAcceptedHeaders()
                 ) as unknown as RA<LocalizedString>
               )}
             </p>

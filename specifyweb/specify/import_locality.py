@@ -3,7 +3,7 @@ import json
 from typing import get_args as get_typing_args, Any, Dict, List, Tuple, Literal, Optional, NamedTuple, Union, Callable, TypedDict
 from datetime import datetime
 from django.db import transaction
-from celery.exceptions import Ignore, TaskRevokedError
+from celery.exceptions import Ignore
 
 import specifyweb.specify.models as spmodels
 
@@ -57,7 +57,8 @@ def import_locality_task(self, collection_id: int, column_headers: List[str], da
         li = LocalityImport.objects.get(taskid=self.request.id)
 
         if results['type'] == 'ParseError':
-            self.update_state(LocalityImportStatus.FAILED, meta={"errors": results['errors']})
+            self.update_state(LocalityImportStatus.FAILED, meta={
+                              "errors": results['errors']})
             li.status = LocalityImportStatus.FAILED
             li.result = json.dumps(results['errors'])
             Message.objects.create(user=li.specifyuser, content=json.dumps({
@@ -83,7 +84,8 @@ def import_locality_task(self, collection_id: int, column_headers: List[str], da
                 'type': 'localityimport-succeeded',
                 'taskid': li.taskid,
                 'recordsetid': recordset_id,
-                'localities': json.dumps(results['localities'])
+                'localities': json.dumps(results['localities']),
+                'geocoorddetails': json.dumps(results["geocoorddetails"])
             }))
 
         li.save()
@@ -217,7 +219,8 @@ class UploadParseError(TypedDict):
 
 
 def upload_locality_set(collection, column_headers: List[str], data: List[List[str]], progress: Optional[Progress] = None) -> Union[UploadSuccess, UploadParseError]:
-    to_upload, errors = parse_locality_set(collection, column_headers, data, progress)
+    to_upload, errors = parse_locality_set(
+        collection, column_headers, data, progress)
     result = {
         "type": None,
     }

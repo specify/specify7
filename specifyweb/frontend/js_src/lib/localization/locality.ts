@@ -323,9 +323,6 @@ export const localityText = createDictionary({
   localityImportSucceeded: {
     'en-us': 'Locality Data Set Import Succeeded',
   },
-  localityImportErrorDialogHeader: {
-    'en-us': 'Error(s) Occured while Parsing Dataset',
-  },
   localityImportErrorFileName: {
     comment:
       'The file name which is used when Parse Errors are exported. The .csv file extension is appended to the end of this string',
@@ -347,5 +344,17 @@ export const localityText = createDictionary({
   localityUploadedDescription: {
     'en-us':
       'The following number of {localityTabelLabel: string} records were updated and {geoCoordDetailTableLabel: string} records were created:',
+  },
+  localityImportStarted: {
+    'en-us': 'The Locality Data Set Import process has started',
+  },
+  localityImportResults: {
+    'en-us': 'Locality Data Set Upload Results',
+  },
+  localityImportFailureResults: {
+    'en-us': 'Locality Data Set Failure Results',
+  },
+  taskId: {
+    'en-us': 'Task ID',
   },
 } as const);

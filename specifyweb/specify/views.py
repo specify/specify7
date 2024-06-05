@@ -968,7 +968,6 @@ def localityimport_status(request: http.HttpRequest, taskid: str):
 
     resolved_state = LocalityImportStatus.ABORTED if result.state == CELERY_TASK_STATE.REVOKED else result.state
 
-
     status = {
         'taskstatus': resolved_state,
         'taskinfo': result.info if isinstance(result.info, dict) else repr(result.info)
@@ -985,8 +984,9 @@ def localityimport_status(request: http.HttpRequest, taskid: str):
             "localities": success_result["localities"],
             "geocoorddetails": success_result["geocoorddetails"]
         }
-        
+
     return http.JsonResponse(status, safe=False)
+
 
 @openapi(schema={
     'post': {
@@ -1042,7 +1042,7 @@ def abort_localityimport_task(request: http.HttpRequest, taskid: str):
 
         Message.objects.create(user=request.specify_user, content=json.dumps({
             'type': 'localityimport-aborted',
-            'task_id': taskid
+            'taskid': taskid
         }))
         result["type"] = "ABORTED"
         result["message"] = f'Task {locality_import.taskid} has been aborted.'

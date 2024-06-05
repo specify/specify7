@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                 ('status', models.CharField(max_length=256)),
                 ('result', models.JSONField(null=True)),
                 ('collection', models.ForeignKey(db_column='CollectionID', on_delete=django.db.models.deletion.CASCADE, to='specify.collection')),
-                ('recordset', models.ForeignKey(blank=True, db_column='RecordSetID', null=True, on_delete=django.db.models.deletion.CASCADE, to='specify.recordset')),
+                ('recordset', models.ForeignKey(blank=True, db_column='RecordSetID', null=True, on_delete=django.db.models.deletion.SET_NULL, to='specify.recordset')),
                 ('specifyuser', models.ForeignKey(db_column='SpecifyUserID', on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to='specify.agent')),

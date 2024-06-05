@@ -1,13 +1,20 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { localityText } from '../../localization/locality';
 import { mergingText } from '../../localization/merging';
 import { notificationsText } from '../../localization/notifications';
 import { StringToJsx } from '../../localization/utils';
 import type { IR } from '../../utils/types';
+import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { getTable } from '../DataModel/tables';
 import { userInformation } from '../InitialContext/userInformation';
+import {
+  LocalityImportErrors,
+  LocalityImportSuccess,
+} from '../LocalityImport/Status';
 import { mergingQueryParameter } from '../Merging/queryString';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { TableIcon } from '../Molecules/TableIcon';
@@ -200,6 +207,72 @@ export const notificationRenderers: IR<
           </div>
         </>
       )
+    );
+  },
+  'localityimport-starting'(notification) {
+    return (
+      <>
+        <p>{localityText.localityImportStarted()}</p>
+        <details>
+          <summary>{localityText.taskId()}</summary>
+          {notification.payload.taskid}
+        </details>
+      </>
+    );
+  },
+  'localityimport-failed'(notification) {
+    const [isOpen, handleOpen, handleClose] = useBooleanState();
+    return (
+      <>
+        <p>{localityText.localityImportFailed()}</p>
+        <Button.Small onClick={handleOpen}>
+          {localityText.localityImportFailureResults()}
+        </Button.Small>
+        {isOpen && (
+          <LocalityImportErrors
+            errors={JSON.parse(notification.payload.errors)}
+            onClose={handleClose}
+          />
+        )}
+        <details>
+          <summary>{localityText.taskId()}</summary>
+          {notification.payload.taskid}
+        </details>
+      </>
+    );
+  },
+  'localityimport-aborted'(notification) {
+    return (
+      <>
+        <p>{localityText.localityImportCancelled()}</p>
+        <details>
+          <summary>{localityText.taskId()}</summary>
+          {notification.payload.taskid}
+        </details>
+      </>
+    );
+  },
+  'localityimport-succeeded'(notification) {
+    const [isOpen, handleOpen, handleClose] = useBooleanState();
+    return (
+      <>
+        <p>{localityText.localityImportSucceeded()}</p>
+        <Button.Small onClick={handleOpen}>
+          {localityText.localityImportResults()}
+        </Button.Small>
+        {isOpen && (
+          <LocalityImportSuccess
+            geoCoordDetailIds={JSON.parse(notification.payload.geocoorddetails)}
+            localityIds={JSON.parse(notification.payload.localities)}
+            recordSetId={notification.payload.recordsetid as number}
+            onClose={handleClose}
+          />
+        )}
+        <details>
+          <summary>{localityText.taskId()}</summary>
+          {notification.payload.taskid}
+        </details>
+      </>
     );
   },
   default(notification) {
