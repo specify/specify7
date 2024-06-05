@@ -134,7 +134,7 @@ export const interactionsText = createDictionary({
     'ru-ru': 'В этом случае препараты не подлежат возврату.',
     'es-es': 'En este contexto, los preparados no se pueden devolver.',
     'fr-fr': 'Les préparatifs ne peuvent être retournés dans ce contexte.',
-    'uk-ua': 'У цьому контексті препарати не підлягають поверненню.',
+    'uk-ua': 'У цьому контексті препарати не повертаються.',
     'de-ch': 'Präparate können in diesem Kontext nicht zurückgegeben werden.',
   },
   noUnresolvedPreparations: {
@@ -168,7 +168,7 @@ export const interactionsText = createDictionary({
     'ru-ru': 'Решать',
     'es-es': 'Resolver',
     'fr-fr': 'Résoudre',
-    'uk-ua': 'Вирішити',
+    'uk-ua': "Розв'язати",
     'de-ch': 'Lösen',
   },
   returnAllPreparations: {
