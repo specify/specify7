@@ -144,7 +144,7 @@ export const preferencesText = createDictionary({
       en-têtes de tableau dans l'arborescence)
     `,
     'uk-ua': `
-      Чи вимикати напівпрозорий фон для компонентів інтерфейсу користувача, коли
+      Чи вимикати напівпрозорі фони для компонентів інтерфейсу користувача, коли
       це можливо (наприклад, заголовки таблиць у перегляді дерева)
     `,
     'de-ch': `
@@ -521,7 +521,7 @@ export const preferencesText = createDictionary({
     'fr-fr': `
       Algorithme de recherche (pour les relations avec les tables arborescentes)
     `,
-    'uk-ua': 'Алгоритм пошуку (для зв’язків із деревоподібними таблицями)',
+    'uk-ua': "Алгоритм пошуку (для зв'язків із деревовидними таблицями)",
     'de-ch': 'Suchalgorithmus (für Beziehungen mit Baumtabellen)',
   },
   startsWithInsensitive: {
@@ -649,7 +649,7 @@ export const preferencesText = createDictionary({
       для відповідності будь-якій кількості символів
     `,
     'de-ch': `
-      Kann _ für jedes einzelne Zeichen oder % für eine beliebige Anzahl von
+      Kann _ für jedes einzelne Zeichen oder % für jede beliebige Anzahl von
       Zeichen verwenden
     `,
   },
@@ -691,7 +691,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Масштабный интерфейс',
     'es-es': 'Interfaz de báscula',
     'fr-fr': 'Interface de balance',
-    'uk-ua': 'Інтерфейс масштабування',
+    'uk-ua': 'Інтерфейс масштабу',
     'de-ch': 'Waagenschnittstelle',
   },
   scaleInterfaceDescription: {
@@ -775,7 +775,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Позволяет загружать данные в любое поле любой таблицы.',
     'es-es': 'Permite cargar datos en cualquier campo de cualquier tabla.',
     'fr-fr': `
-      Permet de télécharger des données vers n’importe quel champ de n’importe
+      Permet de télécharger des données dans n'importe quel champ de n'importe
       quelle table.
     `,
     'uk-ua': 'Дозволяє завантажувати дані в будь-яке поле будь-якої таблиці.',
@@ -947,7 +947,7 @@ export const preferencesText = createDictionary({
   },
   autoWrapRows: {
     'en-us': 'Navigate to the other side when reaching the edge row',
-    'ru-ru': 'Перейдите на другую сторону, достигнув краевого ряда.',
+    'ru-ru': 'Перейдите на другую сторону, когда достигнете краевого ряда.',
     'es-es': 'Navegue hacia el otro lado cuando llegue a la fila del borde',
     'fr-fr':
       'Naviguez de l’autre côté lorsque vous atteignez la rangée de bord',
@@ -1164,11 +1164,11 @@ export const preferencesText = createDictionary({
     'es-es': 'Enfocar el primer campo',
     'fr-fr': 'Concentrez-vous sur le premier champ',
     'ru-ru': 'Фокус первого поля',
-    'uk-ua': 'Сфокусувати перше поле',
+    'uk-ua': 'Перейти до першого поля',
   },
   doubleClickZoom: {
     'en-us': 'Double click to zoom',
-    'ru-ru': 'Дважды щелкните, чтобы увеличить',
+    'ru-ru': 'Дважды щелкните, чтобы увеличить масштаб',
     'es-es': 'Doble clic para ampliar',
     'fr-fr': 'Double-cliquez pour zoomer',
     'uk-ua': 'Двічі клацніть, щоб збільшити',
@@ -1251,7 +1251,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Укажите значок сети',
     'es-es': 'Especificar insignia de red',
     'fr-fr': 'Spécifier le badge réseau',
-    'uk-ua': 'Укажіть позначку мережі',
+    'uk-ua': 'Укажіть значок мережі',
     'de-ch': 'Netzwerk-Badge angeben',
   },
   useAccessibleFullDatePicker: {
@@ -1375,7 +1375,7 @@ export const preferencesText = createDictionary({
       'Hacer que los cuadros de diálogo del formulario aparezcan en gris',
     'fr-fr':
       "Rendre les boîtes de dialogue de formulaire grisées sur l'arrière-plan",
-    'uk-ua': 'Зробіть діалогові вікна форми сірими',
+    'uk-ua': 'Зробіть діалогові вікна форми сірими фоном',
     'de-ch': 'Den Hintergrund von Formulardialogen ausgrauen',
   },
   autoScrollTree: {
@@ -1858,7 +1858,7 @@ export const preferencesText = createDictionary({
   showLineNumber: {
     'en-us': 'Show query result line number',
     'de-ch': 'Farbe der Gefahrenschaltfläche',
-    'es-es': 'Mostrar número de línea de resultado de la consulta',
+    'es-es': 'Mostrar el número de línea del resultado de la consulta',
     'fr-fr': 'Afficher le numéro de ligne du résultat de la requête',
     'ru-ru': 'Показать номер строки результата запроса',
     'uk-ua': 'Показати номер рядка результату запиту',

@@ -148,7 +148,7 @@ export const resourcesText = createDictionary({
   uiFormatters: {
     'en-us': 'Field Formatters',
     'ru-ru': 'Форматировщики полей',
-    'es-es': 'Formateadores de campos',
+    'es-es': 'Formateadores de campo',
     'fr-fr': 'Formateurs de champs',
     'uk-ua': 'Форматувальники полів',
     'de-ch': 'Feldformatierer',
@@ -254,10 +254,10 @@ export const resourcesText = createDictionary({
       таблиц.
     `,
     'uk-ua': `
-      «Агрегація таблиць» контролює, як кілька записів таблиці консолідуються в
-      один текстовий рядок. Формат таблиці, роздільник, суфікс, поле сортування
-      та ліміт попереднього перегляду запису можна налаштувати. Він може
-      відображатися в результатах запитів і у форматах таблиць.
+      «Агрегація таблиць» контролює, як кілька записів таблиці об’єднуються
+      разом в один текстовий рядок. Формат таблиці, роздільник, суфікс, поле
+      сортування та ліміт попереднього перегляду запису можна налаштувати. Він
+      може відображатися в результатах запитів і у форматах таблиць.
     `,
   },
   formattedResource: {
@@ -448,7 +448,7 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Не удалось разобрать XML',
     'de-ch': 'XML konnte nicht analysiert werden',
     'es-es': 'No se pudo analizar XML',
-    'fr-fr': "Échec de l'analyse du XML",
+    'fr-fr': "Échec de l'analyse XML",
     'uk-ua': 'Не вдалося проаналізувати XML',
   },
   name: {
@@ -730,7 +730,7 @@ export const resourcesText = createDictionary({
     'es-es': 'Ejecutar en colección',
     'fr-fr': 'Exécuter en collection',
     'ru-ru': 'Запустить в коллекцию',
-    'uk-ua': 'Запустити в колекції',
+    'uk-ua': 'Запустити в колекцію',
   },
   createNewForm: {
     'en-us': 'Create a new view definition',

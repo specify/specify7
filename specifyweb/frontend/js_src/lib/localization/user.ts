@@ -221,8 +221,8 @@ export const userText = createDictionary({
     'uk-ua': `
       Наразі немає жодного користувача, пов’язаного з вашим обліковим записом
       {providerName:string}. Якщо у вас є вказати ім’я користувача та пароль,
-      ви можете ввести їх нижче, щоб пов’язати цього користувача з обліковим
-      записом {providerName:string} для майбутніх входів.
+      ви можете ввести їх нижче, щоб пов’язати цього користувача з вашим
+      обліковим записом {providerName:string} для майбутніх входів.
     `,
     'de-ch': `
       Derzeit ist Ihrem {providerName:string}-Konto kein Benutzer vom Typ
@@ -285,7 +285,7 @@ export const userText = createDictionary({
       resource through the currently logged in account
     `,
     'ru-ru': `
-      У вас нет доступа ни к одному {collectionTable:string}, содержащему этот
+      У вас нет доступа к любому {collectionTable:string}, содержащему этот
       ресурс, через текущую учетную запись.
     `,
     'es-es': `
@@ -932,7 +932,7 @@ export const userText = createDictionary({
     `,
     'de-ch': `
       Es ist kein externer Identitätsanbieter konfiguriert. Sie können einige in
-      den 7 Servereinstellungen konfigurieren.
+      den Servereinstellungen festlegen.
     `,
   },
   legacyPermissions: {

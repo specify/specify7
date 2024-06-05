@@ -153,8 +153,8 @@ export const wbText = createDictionary({
       ne remplace pas la validation régulière.
     `,
     'ru-ru': `
-      Обратите внимание, что живая проверка — это экспериментальная функция,
-      которая не заменяет обычную проверку.
+      Обратите внимание: живая проверка — это экспериментальная функция, которая
+      не заменяет обычную проверку.
     `,
     'uk-ua': `
       Зауважте, що перевірка в реальному часі є експериментальною функцією і не
@@ -559,7 +559,7 @@ export const wbText = createDictionary({
       збіг необхідно усунути перед завантаженням.
     `,
     'de-ch': `
-      Dieser Wert stimmt mit zwei oder mehr vorhandenen Datenbankeinträgen
+      Dieser Wert stimmt mit zwei oder mehreren vorhandenen Datenbankeinträgen
       überein und die Übereinstimmung muss vor dem Hochladen eindeutig geklärt
       werden.
     `,

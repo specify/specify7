@@ -104,7 +104,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Varios archivos seleccionados',
     'fr-fr': 'Plusieurs fichiers sélectionnés',
     'ru-ru': 'Выбрано несколько файлов',
-    'uk-ua': 'Вибрано кілька файлів',
+    'uk-ua': 'Вибрано декілька файлів',
   },
   fileSize: {
     'en-us': 'File Size',
@@ -294,9 +294,8 @@ export const attachmentsText = createDictionary({
       Откат выполнялся, когда произошло прерывание. Некоторые файлы могли быть
       удалены
     `,
-    'uk-ua': `
-      Тривав відкат, коли сталася перерва. Можливо, деякі файли було видалено
-    `,
+    'uk-ua':
+      'Тривав відкат, коли сталася перерва. Деякі файли могли бути видалені',
     'es-es': `
       La reversión estaba en curso cuando se produjo una interrupción. Es
       posible que algunos archivos hayan sido eliminados.
@@ -337,7 +336,7 @@ export const attachmentsText = createDictionary({
     `,
     'es-es': 'Interrumpido. Reintentando en [X25X]',
     'fr-fr': `
-      Le téléchargement des pièces jointes créera des pièces jointes dans le
+      Le téléchargement des pièces jointes créera des pièces jointes sur le
       serveur d'actifs et dans la base de données Specify.
     `,
     'ru-ru': `
@@ -345,7 +344,7 @@ export const attachmentsText = createDictionary({
       данных Specify.
     `,
     'uk-ua': `
-      Завантаження вкладень призведе до створення вкладень на сервері активів і
+      Завантаження вкладень призведе до створення вкладень на сервері ресурсів і
       в базі даних Specify
     `,
   },
@@ -557,7 +556,7 @@ export const attachmentsText = createDictionary({
     'fr-fr':
       'Choisissez des fichiers ou faites-les glisser ici pour commencer.',
     'ru-ru': 'Выберите файлы или перетащите их сюда, чтобы начать.',
-    'uk-ua': 'Щоб почати, виберіть файли або перетягніть їх сюди.',
+    'uk-ua': 'Виберіть файли або перетягніть їх сюди, щоб почати.',
   },
   selectIdentifier: {
     'en-us': 'Select an identifier to match the files name against.',

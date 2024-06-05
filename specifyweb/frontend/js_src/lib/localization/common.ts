@@ -243,7 +243,7 @@ export const commonText = createDictionary({
     'ru-ru': 'Начало',
     'es-es': 'Empezar',
     'fr-fr': 'Début',
-    'uk-ua': 'старт',
+    'uk-ua': 'Почніть',
     'de-ch': 'Start',
   },
   end: {
@@ -304,7 +304,7 @@ export const commonText = createDictionary({
     'ru-ru': 'Вернуться на домашнюю страницу',
     'es-es': 'Ir a la página de inicio',
     'fr-fr': "Aller à la page d'accueil",
-    'uk-ua': 'Перейдіть на домашню сторінку',
+    'uk-ua': 'Перейти на домашню сторінку',
     'de-ch': 'Zur Startseite gehen',
   },
   actions: {
@@ -402,7 +402,7 @@ export const commonText = createDictionary({
     'ru-ru': 'Язык',
     'es-es': 'Idioma',
     'fr-fr': 'Langue',
-    'uk-ua': 'Необмежений',
+    'uk-ua': 'Мова',
     'de-ch': 'Sprache',
   },
   country: {

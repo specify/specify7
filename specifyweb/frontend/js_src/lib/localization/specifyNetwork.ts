@@ -31,7 +31,7 @@ export const specifyNetworkText = createDictionary({
       Для отображения этой страницы необходимо указать название вида или GUID.
     `,
     'uk-ua':
-      'Щоб відобразити цю сторінку, необхідно вказати назву виду або GUID',
+      'Щоб відобразити цю сторінку, потрібно вказати назву виду або GUID',
   },
   noDataError: {
     'en-us': 'Unable to find any data for this request',
@@ -159,7 +159,7 @@ export const specifyNetworkText = createDictionary({
       of that species.
     `,
     'de-ch': `
-      Bei GBIF-Daten werden einzelne Punkte und Punktcluster als Sechsecke in
+      Bei GBIF-Daten werden einzelne Punkte und Punktgruppen als Sechsecke in
       unterschiedlichen Farben von Gelb über Orange bis Rot angezeigt.
       Dunkelrote Sechsecke entsprechen der dichtesten Verteilung gesammelter
       Exemplare dieser Art.
@@ -195,7 +195,7 @@ export const specifyNetworkText = createDictionary({
     'de-ch': 'Mit GBIF verbinden',
     'es-es': 'Conectarse a GBIF',
     'fr-fr': 'Connectez-vous au GBIF',
-    'ru-ru': 'Подключиться к GBIF',
+    'ru-ru': 'Подключиться к ГБИФ',
     'uk-ua': 'Підключіться до GBIF',
   },
   searchForInstitution: {
