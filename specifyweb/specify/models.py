@@ -3,9 +3,8 @@ from django.db import models
 from django.utils import timezone
 from model_utils import FieldTracker
 from specifyweb.businessrules.exceptions import AbortSave
-from specifyweb.specify import tree_extras
 from specifyweb.specify.model_timestamp import pre_save_auto_timestamp_field_with_override
-from . import model_extras
+from specifyweb.specify import model_extras
 from .datamodel import datamodel
 import logging
 
@@ -3616,7 +3615,7 @@ class Geographytreedef(models.Model):
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     save = partialmethod(custom_save)
 
-class Geographytreedefitem(tree_extras.TreeRank):
+class Geographytreedefitem(model_extras.Geographytreedefitem):
     specify_model = datamodel.get_table('geographytreedefitem')
 
     # ID Field
@@ -3721,7 +3720,7 @@ class Geologictimeperiodtreedef(models.Model):
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     save = partialmethod(custom_save)
 
-class Geologictimeperiodtreedefitem(tree_extras.TreeRank):
+class Geologictimeperiodtreedefitem(model_extras.Geologictimeperiodtreedefitem):
     specify_model = datamodel.get_table('geologictimeperiodtreedefitem')
 
     # ID Field
@@ -4210,7 +4209,7 @@ class Lithostrattreedef(models.Model):
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     save = partialmethod(custom_save)
 
-class Lithostrattreedefitem(tree_extras.TreeRank):
+class Lithostrattreedefitem(model_extras.Lithostrattreedefitem):
     specify_model = datamodel.get_table('lithostrattreedefitem')
 
     # ID Field
@@ -6575,7 +6574,7 @@ class Storagetreedef(models.Model):
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     save = partialmethod(custom_save)
 
-class Storagetreedefitem(tree_extras.TreeRank):
+class Storagetreedefitem(model_extras.Storagetreedefitem):
     specify_model = datamodel.get_table('storagetreedefitem')
 
     # ID Field
@@ -7002,7 +7001,7 @@ class Taxontreedef(models.Model):
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     save = partialmethod(custom_save)
 
-class Taxontreedefitem(tree_extras.TreeRank):
+class Taxontreedefitem(model_extras.Taxontreedefitem):
     specify_model = datamodel.get_table('taxontreedefitem')
 
     # ID Field
