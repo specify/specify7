@@ -251,9 +251,12 @@ function MergeDialog({
               onRemove={(): void => {
                 // Could be called by the zero-to-one
                 const previousMerged = Array.from(mergedRecords);
-                // if the resource isn't new, then not destroying it is fine since it will be
-                // in the collection of another resource anyways
-                if (mergedRecords[index].isNew()) mergedRecords[index].destroy();
+                /*
+                 * If the resource isn't new, then not destroying it is fine since it will be
+                 * in the collection of another resource anyways
+                 */
+                if (mergedRecords[index].isNew())
+                  mergedRecords[index].destroy();
                 setMergedRecords(removeItem(previousMerged, index));
                 // TODO: optimize this
                 runAllFieldChecks(merged);
