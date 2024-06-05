@@ -166,6 +166,8 @@ function MergeDialog({
     if (relationshipIsToMany(relationship))
       merged.set(relationship.name, mergedRecords as never);
     else merged.set(relationship.name, mergedRecords[0] as never);
+    // TODO: optimize this
+    runAllFieldChecks(merged);
   }, [merged, relationship, mergedRecords]);
 
   const add =
@@ -255,8 +257,6 @@ function MergeDialog({
                 // in the collection of another resource anyways
                 if (mergedRecords[index].isNew()) mergedRecords[index].destroy();
                 setMergedRecords(removeItem(previousMerged, index));
-                // TODO: optimize this
-                runAllFieldChecks(merged);
               }}
               onSlide={(columnIndex, direction): void => {
                 if (columnIndex === 0)
