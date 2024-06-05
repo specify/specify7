@@ -30,19 +30,13 @@ function Coordinate({
   readonly step: number | undefined;
   readonly onFormatted: (value: string | undefined) => void;
 }): JSX.Element {
-  const {
-    value,
-    updateValue,
-    validationRef,
-    setValidation,
-    parser,
-    setBlockers,
-  } = useResourceValue(
-    resource,
-    tables.Locality.strictGetField(coordinateTextField),
-    undefined,
-    false
-  );
+  const { value, updateValue, validationRef, setValidation, parser } =
+    useResourceValue(
+      resource,
+      tables.Locality.strictGetField(coordinateTextField),
+      undefined,
+      false
+    );
   const isChanging = React.useRef<boolean>(false);
   React.useEffect(
     () =>
@@ -98,7 +92,7 @@ function Coordinate({
             ? localityText.validLatitude()
             : localityText.validLongitude(),
         ];
-    setBlockers(latLongBlockers, fieldType);
+    setValidation(latLongBlockers);
     handleFormatted(
       isValid
         ? hasValue
