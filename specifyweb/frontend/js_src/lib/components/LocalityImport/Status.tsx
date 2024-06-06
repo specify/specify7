@@ -84,15 +84,11 @@ export function LocalityImportStatus({
 
   const handleTaskCancel = React.useCallback(
     () =>
-      loading(
-        ping(`/api/localityset/abort/${taskId}/`, {
-          method: 'POST',
-        }).catch(softFail)
-      ),
+      void ping(`/api/localityset/abort/${taskId}/`, {
+        method: 'POST',
+      }).catch(softFail),
     [taskId]
   );
-
-  const loading = React.useContext(LoadingContext);
 
   const title = localityImportStatusLocalization[state.taskstatus];
   useTitle(title);
