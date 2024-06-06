@@ -82,6 +82,12 @@ function eventHandlerForToMany(_related, field) {
   };
 }
 
+// always returns a resource
+const maybeMakeResource = (value, relatedTable) =>
+  value instanceof ResourceBase
+    ? value
+    : new relatedTable.Resource(value, { parse: true });
+
 export const ResourceBase = Backbone.Model.extend({
   __name__: 'ResourceBase',
   populated: false, // Indicates if this resource has data
@@ -426,10 +432,7 @@ export const ResourceBase = Backbone.Model.extend({
           return value;
         }
 
-        const toOne =
-          value instanceof ResourceBase
-            ? value
-            : new relatedTable.Resource(value, { parse: true });
+        const toOne = maybeMakeResource(value, relatedTable);
 
         field.isDependent() && this.storeDependent(field, toOne);
         this.trigger(`change:${fieldName}`, this);
@@ -444,7 +447,7 @@ export const ResourceBase = Backbone.Model.extend({
         const oneTo = _.isArray(value)
           ? value.length === 0
             ? null
-            : new relatedTable.Resource(_.first(value), { parse: true })
+            : maybeMakeResource(_.first(value), relatedTable)
           : value || null; // In case it was undefined
 
         assert(oneTo == null || oneTo instanceof ResourceBase);

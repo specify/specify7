@@ -1,11 +1,10 @@
-import json
 from django.test import Client
 from specifyweb.businessrules.exceptions import TreeBusinessRuleException
 from specifyweb.specify import api, models
-from specifyweb.specify.api_tests import ApiTests, get_table
+from specifyweb.specify.tests.test_api import ApiTests, get_table
 from specifyweb.specify.tree_stats import get_tree_stats
+from specifyweb.specify.tree_extras import set_fullnames
 from specifyweb.stored_queries.tests import SQLAlchemySetup
-from .tree_extras import set_fullnames
 
 class TestTreeSetup(ApiTests):
     def setUp(self) -> None:
