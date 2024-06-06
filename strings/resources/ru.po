@@ -456,12 +456,12 @@ msgstr "Форматеры записи"
 msgid "copyDefaultForms"
 msgstr "Копировать формы по умолчанию"
 
-#: components/FormMeta/index.tsx:110
+#: components/FormMeta/index.tsx:113
 #. Used in: Components > Form Meta > Index
 msgid "saveFormFirst"
 msgstr "Сначала сохраните форму"
 
-#: components/FormMeta/index.tsx:113
+#: components/FormMeta/index.tsx:116
 #. Used in: Components > Form Meta > Index
 msgid "saveFormFirstDescription"
 msgstr "Вам необходимо сохранить эту форму, прежде чем редактировать другую."

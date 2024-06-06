@@ -538,17 +538,17 @@ msgstr "Історія редагування"
 msgid "editHistoryQueryName"
 msgstr "Історія редагування для \"{formattedRecord:string}\""
 
-#: components/FormMeta/index.tsx:144
+#: components/FormMeta/index.tsx:147
 #. Used in: Components > Form Meta > Index
 msgid "formConfiguration"
 msgstr "Конфігурація форми"
 
-#: components/FormMeta/index.tsx:176
+#: components/FormMeta/index.tsx:179
 #. Used in: Components > Form Meta > Index
 msgid "formState"
 msgstr "Стан форми"
 
-#: components/FormMeta/index.tsx:220
+#: components/FormMeta/index.tsx:233
 #. Used in: Components > Form Meta > Index
 msgid "recordInformation"
 msgstr "Запис інформації"
@@ -580,7 +580,7 @@ msgstr "Підформа"
 msgid "formTable"
 msgstr "Сітка"
 
-#: components/FormMeta/index.tsx:194
+#: components/FormMeta/index.tsx:197
 #. Used in: Components > Form Meta > Index
 msgid "subviewConfiguration"
 msgstr "Підвид"
@@ -621,8 +621,8 @@ msgstr "Налаштувати таблиці введення даних"
 msgid "configureInteractionTables"
 msgstr "Налаштувати таблиці взаємодії"
 
-#: components/FormMeta/index.tsx:64
-#: components/FormMeta/index.tsx:66
+#: components/FormMeta/index.tsx:67
+#: components/FormMeta/index.tsx:69
 #. Used in: Components > Form Meta > Index
 msgid "formMeta"
 msgstr "Мета форми"

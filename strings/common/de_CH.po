@@ -45,8 +45,8 @@ msgstr "Nein"
 #: components/Interactions/LoanReturn.tsx:161
 #: components/Interactions/PrepDialog.tsx:93
 #: components/Merging/Status.tsx:119
-#: components/Merging/index.tsx:267
-#: components/Merging/index.tsx:376
+#: components/Merging/index.tsx:272
+#: components/Merging/index.tsx:381
 #: components/Molecules/SyncAttachmentPicker.tsx:109
 #: components/PickLists/index.tsx:281
 #: components/QueryBuilder/Components.tsx:169
@@ -170,8 +170,8 @@ msgstr "Erstellen"
 #: components/FormMeta/Definition.tsx:53
 #: components/FormMeta/EditHistory.tsx:53
 #: components/FormMeta/PickListUsages.tsx:44
-#: components/FormMeta/index.tsx:109
-#: components/FormMeta/index.tsx:132
+#: components/FormMeta/index.tsx:112
+#: components/FormMeta/index.tsx:135
 #: components/FormPlugins/CollectionRelOneToMany.tsx:180
 #: components/FormPlugins/GeoLocate.tsx:112
 #: components/FormPlugins/GeoLocate.tsx:126
@@ -198,7 +198,7 @@ msgstr "Erstellen"
 #: components/Interactions/LoanReturn.tsx:71
 #: components/Interactions/PrepDialog.tsx:90
 #: components/Leaflet/Map.tsx:103
-#: components/Merging/CompareSubView.tsx:184
+#: components/Merging/CompareSubView.tsx:201
 #: components/Merging/InvalidMergeRecords.tsx:79
 #: components/Merging/Status.tsx:104
 #: components/Merging/Status.tsx:122
@@ -313,7 +313,7 @@ msgstr "Speichern"
 #: components/FormSliders/RecordSelectorFromIds.tsx:176
 #: components/Formatters/List.tsx:138
 #: components/Forms/Save.tsx:235
-#: components/Merging/CompareSubView.tsx:167
+#: components/Merging/CompareSubView.tsx:184
 #: components/Molecules/AutoComplete.tsx:525
 #: components/PickLists/index.tsx:279
 #: components/QueryBuilder/Wrapped.tsx:462
@@ -415,8 +415,8 @@ msgstr "Tools"
 #: components/Preferences/Renderers.tsx:114
 #: components/QueryBuilder/FieldFilter.tsx:623
 #: components/QueryBuilder/Formatter.tsx:59
-#: components/QueryBuilder/Results.tsx:195
-#: components/QueryBuilder/Results.tsx:196
+#: components/QueryBuilder/Results.tsx:198
+#: components/QueryBuilder/Results.tsx:199
 #: components/QueryComboBox/index.tsx:376
 #: components/SchemaConfig/Fields.tsx:62
 #: components/SchemaConfig/index.tsx:165
@@ -530,8 +530,8 @@ msgstr "Neu"
 #: components/AttachmentsBulkImport/Datasets.tsx:225
 #: components/AttachmentsBulkImport/Import.tsx:253
 #: components/FormEditor/Create.tsx:160
-#: components/FormMeta/index.tsx:96
-#: components/FormMeta/index.tsx:98
+#: components/FormMeta/index.tsx:99
+#: components/FormMeta/index.tsx:101
 #: components/Forms/ResourceView.tsx:217
 #: components/Molecules/ResourceLink.tsx:111
 #: components/Reports/index.tsx:255
@@ -558,7 +558,7 @@ msgid "ignore"
 msgstr "Ignorieren"
 
 #: components/FormSliders/RecordSelectorFromIds.tsx:269
-#: components/Merging/index.tsx:392
+#: components/Merging/index.tsx:397
 #: components/Toolbar/Language.tsx:108
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Merging > Index ⬤ Components > Toolbar > Language
 msgid "proceed"
@@ -805,7 +805,7 @@ msgstr "ID"
 msgid "filter"
 msgstr "Filter"
 
-#: components/QueryBuilder/Results.tsx:77
+#: components/QueryBuilder/Results.tsx:78
 #: components/WbActions/index.tsx:113
 #. Used in: Components > Query Builder > Results ⬤ Components > Wb Actions > Index
 msgid "results"
@@ -946,7 +946,7 @@ msgstr "{header:string}:"
 #: components/Merging/Header.tsx:213
 #: components/Molecules/FilePicker.tsx:105
 #: components/QueryBuilder/Header.tsx:96
-#: components/QueryBuilder/Results.tsx:191
+#: components/QueryBuilder/Results.tsx:194
 #: components/QueryBuilder/ResultsTable.tsx:201
 #: components/QueryBuilder/ToForms.tsx:55
 #: components/QueryComboBox/spec.ts:72
@@ -1016,7 +1016,7 @@ msgstr "Unbegrenzt"
 msgid "change"
 msgstr "Ändern"
 
-#: components/Merging/index.tsx:384
+#: components/Merging/index.tsx:389
 #. Used in: Components > Merging > Index
 #, fuzzy
 msgid "dontShowAgain"

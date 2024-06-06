@@ -97,24 +97,24 @@ msgstr "Informe ausente"
 msgid "missingReportDescription"
 msgstr "No se puede encontrar un registro SpReport para este recurso de aplicación"
 
-#: components/FormMeta/index.tsx:170
+#: components/FormMeta/index.tsx:173
 #. Used in: Components > Form Meta > Index
 msgid "generateLabel"
 msgstr "Generar etiqueta"
 
-#: components/FormMeta/index.tsx:188
+#: components/FormMeta/index.tsx:191
 #: components/FormParse/fields.ts:131
 #: components/FormParse/__tests__/fields.test.ts:142
 #. Used in: Components > Form Meta > Index ⬤ Components > Form Parse > Fields ⬤ Form Parse > __tests__ > Fields
 msgid "generateLabelOnSave"
 msgstr "Generar etiqueta al guardar"
 
-#: components/FormMeta/index.tsx:169
+#: components/FormMeta/index.tsx:172
 #. Used in: Components > Form Meta > Index
 msgid "generateReport"
 msgstr "Generar informe"
 
-#: components/FormMeta/index.tsx:187
+#: components/FormMeta/index.tsx:190
 #. Used in: Components > Form Meta > Index
 msgid "generateReportOnSave"
 msgstr "Generar informe al guardar"

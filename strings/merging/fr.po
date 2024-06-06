@@ -18,23 +18,23 @@ msgid "recordMerging"
 msgstr "Fusion d'enregistrements"
 
 #: components/FormMeta/MergeRecord.tsx:56
-#: components/Merging/index.tsx:88
-#: components/Merging/index.tsx:92
-#: components/Merging/index.tsx:400
-#: components/Merging/index.tsx:413
+#: components/Merging/index.tsx:89
+#: components/Merging/index.tsx:93
+#: components/Merging/index.tsx:405
+#: components/Merging/index.tsx:418
 #: components/Router/OverlayRoutes.tsx:222
 #. Used in: Components > Form Meta > Merge Record ⬤ Components > Merging > Index ⬤ Components > Router > Overlay Routes
 #, fuzzy
 msgid "mergeRecords"
 msgstr "Fusionner les enregistrements"
 
-#: components/Merging/CompareSubView.tsx:208
+#: components/Merging/CompareSubView.tsx:225
 #. Used in: Components > Merging > Compare Sub View
 #, fuzzy
 msgid "mergedRecord"
 msgstr "Enregistrement fusionné"
 
-#: components/Merging/index.tsx:446
+#: components/Merging/index.tsx:451
 #. Used in: Components > Merging > Index
 #, fuzzy
 msgid "showConflictingFieldsOnly"
@@ -46,32 +46,32 @@ msgstr "Afficher uniquement les champs en conflit"
 msgid "newMergedRecord"
 msgstr "Nouvel enregistrement fusionné"
 
-#: components/Merging/CompareSubView.tsx:213
+#: components/Merging/CompareSubView.tsx:230
 #: components/Merging/Header.tsx:191
 #. Used in: Components > Merging > Compare Sub View ⬤ Components > Merging > Header
 #, fuzzy
 msgid "duplicateRecord"
 msgstr "Aperçu {index:number|formatted}"
 
-#: components/Merging/CompareSubView.tsx:101
+#: components/Merging/CompareSubView.tsx:111
 #. Used in: Components > Merging > Compare Sub View
 #, fuzzy
 msgid "nRecords"
 msgstr "{count:number|formatted} enregistrements"
 
-#: components/Merging/CompareSubView.tsx:401
+#: components/Merging/CompareSubView.tsx:425
 #. Used in: Components > Merging > Compare Sub View
 #, fuzzy
 msgid "subViewControls"
 msgstr "Contrôles de sous-vue"
 
-#: components/Merging/CompareSubView.tsx:194
+#: components/Merging/CompareSubView.tsx:211
 #. 🟥Example: "Merge Addresses". Used in: Components > Merging > Compare Sub View
 #, fuzzy
 msgid "mergeFields"
 msgstr "Fusionner {field:string}"
 
-#: components/Merging/index.tsx:262
+#: components/Merging/index.tsx:267
 #: components/Preferences/UserDefinitions.tsx:1584
 #. Used in: Components > Merging > Index ⬤ Components > Preferences > User Definitions
 #, fuzzy
@@ -84,7 +84,7 @@ msgstr "Remplir automatiquement"
 msgid "dismissFromMerging"
 msgstr "Interdire la fusion"
 
-#: components/Merging/definitions.ts:19
+#: components/Merging/definitions.ts:23
 #. Used in: Components > Merging > Definitions
 #, fuzzy
 msgid "agentContainsGroupDescription"
@@ -108,7 +108,7 @@ msgstr "Quelque chose s'est mal passé pendant le processus de fusion."
 msgid "mergeOthers"
 msgstr "Fusionner les autres"
 
-#: components/Merging/index.tsx:403
+#: components/Merging/index.tsx:408
 #. Used in: Components > Merging > Index
 #, fuzzy
 msgid "warningMergeText"
