@@ -5,7 +5,6 @@ import { commonText } from '../../localization/common';
 import { mergingText } from '../../localization/merging';
 import { ajax } from '../../utils/ajax';
 import { ping } from '../../utils/ajax/ping';
-import { RR } from '../../utils/types';
 import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Label } from '../Atoms/Form';

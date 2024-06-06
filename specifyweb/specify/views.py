@@ -25,6 +25,7 @@ from specifyweb.specify.import_locality import localityParseErrorMessages, parse
 from . import api, models as spmodels
 from .specify_jar import specify_jar
 
+
 def login_maybe_required(view):
     @wraps(view)
     def wrapped(request, *args, **kwargs):
