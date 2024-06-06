@@ -24,9 +24,6 @@ from specifyweb.specify.record_merging import record_merge_fx, record_merge_task
 from specifyweb.specify.import_locality import localityParseErrorMessages, parse_locality_set as _parse_locality_set, import_locality_task, LocalityImportStatus
 from . import api, models as spmodels
 from .specify_jar import specify_jar
-from celery.utils.log import get_task_logger  # type: ignore
-logger = get_task_logger(__name__)
-
 
 def login_maybe_required(view):
     @wraps(view)
@@ -883,7 +880,7 @@ def upload_locality_set(request: http.HttpRequest):
                                     "properties": {
                                         "taskstatus": {
                                             "type": "string",
-                                            "enum": [LocalityImportStatus.PARSING, LocalityImportStatus.PROGRESS]
+                                            "enum": [LocalityImportStatus.PROGRESS]
                                         },
                                         "taskinfo": {
                                             "type": "object",

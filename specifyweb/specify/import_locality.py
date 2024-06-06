@@ -34,7 +34,6 @@ Progress = Callable[[str, int, int], None]
 
 class LocalityImportStatus:
     PENDING = 'PENDING'
-    PARSING = 'PARSING'
     PROGRESS = 'PROGRESS'
     SUCCEEDED = 'SUCCEEDED'
     ABORTED = 'ABORTED'
@@ -138,7 +137,7 @@ def parse_locality_set(collection, raw_headers: List[str], data: List[List[str]]
         field)} for field in headers if field.lower() in updatable_geocoorddetail_fields]
 
     processed = 0
-    total = len(data)
+    total = len(data) * 2
 
     for row_mumber, row in enumerate(data, start=1):
         guid = row[guid_index]
@@ -182,7 +181,7 @@ def parse_locality_set(collection, raw_headers: List[str], data: List[List[str]]
 
         if progress is not None:
             processed += 1
-            progress(LocalityImportStatus.PARSING, processed, total)
+            progress(LocalityImportStatus.PROGRESS, processed, total)
 
     return to_upload, errors
 
@@ -234,8 +233,8 @@ def upload_locality_set(collection, column_headers: List[str], data: List[List[s
     result["localities"] = []
     result["geocoorddetails"] = []
 
-    processed = 0
-    total = len(to_upload)
+    processed = len(to_upload)
+    total = len(to_upload) * 2
 
     with transaction.atomic():
         for parse_success in to_upload:
@@ -262,6 +261,7 @@ def upload_locality_set(collection, column_headers: List[str], data: List[List[s
                     setattr(locality, field, value)
                 locality.save()
                 result["localities"].append(locality_id)
+
             if progress is not None:
                 processed += 1
                 progress(LocalityImportStatus.PROGRESS, processed, total)
