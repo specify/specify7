@@ -316,7 +316,6 @@ export function LocalityImportErrors({
           </Button.Info>
         </>
       }
-      dimensionsKey={statusDimensionKey}
       header={localityText.localityImportFailureResults()}
       icon="error"
       onClose={handleClose}
