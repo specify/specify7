@@ -75,7 +75,7 @@ function eventHandlerForToMany(_related, field) {
   };
 }
 
-// always returns a resource
+// Always returns a resource
 const maybeMakeResource = (value, relatedTable) =>
   value instanceof ResourceBase
     ? value

@@ -485,12 +485,12 @@ export const runAllFieldChecks = async (
 ): Promise<void> => {
   const relationships = resource.specifyTable.relationships;
   await Promise.all(
-    relationships.map(({ name }) =>
+    relationships.map(async ({ name }) =>
       resource.businessRuleManager?.checkField(name)
     )
   );
   const mapResource = (
-    result?: SpecifyResource<AnySchema> | Collection<AnySchema> | null
+    result?: Collection<AnySchema> | SpecifyResource<AnySchema> | null
   ): RA<SpecifyResource<AnySchema>> =>
     (result === undefined || result === null
       ? []
@@ -499,10 +499,10 @@ export const runAllFieldChecks = async (
       : (result as Collection<AnySchema>).models) as unknown as RA<
       SpecifyResource<AnySchema>
     >;
-  // running only on dependent resources. the order shouldn't matter.....
+  // Running only on dependent resources. the order shouldn't matter.....
   await Promise.all(
     Object.values(resource.dependentResources)
       .flatMap(mapResource)
-      .map((next) => runAllFieldChecks(next))
+      .map(async (next) => runAllFieldChecks(next))
   );
 };
