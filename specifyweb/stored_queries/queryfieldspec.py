@@ -22,7 +22,7 @@ STRINGID_RE = re.compile(r'^([^\.]*)\.([^\.]*)\.(.*)$')
 DATE_PART_RE = re.compile(r'(.*)((NumericDay)|(NumericMonth)|(NumericYear))$')
 
 # Pull out author or groupnumber field from taxon query fields.
-TAXON_FIELD_RE = re.compile(r'(.*) ((Author)|(GroupNumber))$')
+TAXON_FIELD_RE = re.compile(r'(.*) ((Author)|(groupNumber))$')
 
 # Look to see if we are dealing with a tree node ID.
 TREE_ID_FIELD_RE = re.compile(r'(.*) (ID)$')

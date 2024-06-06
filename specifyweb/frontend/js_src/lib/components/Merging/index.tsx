@@ -39,6 +39,7 @@ import { recordMergingTableSpec } from './definitions';
 import { InvalidMergeRecordsDialog } from './InvalidMergeRecords';
 import { mergingQueryParameter } from './queryString';
 import { Status } from './Status';
+import { runAllFieldChecks } from '../DataModel/businessRules';
 
 export function RecordMergingLink({
   table,
@@ -138,22 +139,16 @@ function RestrictMerge({
 
   const recordsToIgnore = React.useMemo(
     () =>
-      records === undefined
-        ? undefined
-        : filterArray(
-            records.map((record) =>
-              recordMergingTableSpec[table.name]?.filterIgnore?.(
-                record as never
-              )
-            )
-          ),
+      records?.filter((record) =>
+        recordMergingTableSpec[table.name]?.unmergable?.matches(record as never)
+      ),
     [records]
   );
 
   return records === undefined ? null : recordsToIgnore !== undefined &&
     recordsToIgnore.length > 0 ? (
     <InvalidMergeRecordsDialog
-      recordsToIgnore={recordsToIgnore as RA<SerializedResource<AnySchema>>}
+      recordsToIgnore={recordsToIgnore}
       tableName={table.name}
       onDismiss={
         // Disable merging if less than 2 remaining
@@ -231,9 +226,13 @@ function Merging({
                 ),
                 target.id
               )
-            ).then((merged) =>
-              deserializeResource(merged as SerializedResource<AnySchema>)
-            ),
+            ).then(async (merged) => {
+              const mergedResource = deserializeResource(
+                merged as SerializedResource<AnySchema>
+              );
+              if (merged !== undefined) await runAllFieldChecks(mergedResource);
+              return mergedResource;
+            }),
       [table, records]
     ),
     true
@@ -252,9 +251,15 @@ function Merging({
                   records,
                   autoMerge(table, records, false, target.id)
                 )
-                  .then((merged) =>
-                    deserializeResource(merged as SerializedResource<AnySchema>)
-                  )
+                  .then(async (merged) => {
+                    // REFACTOR: move all this to postMergeResource?
+                    const mergedResource = deserializeResource(
+                      merged as SerializedResource<AnySchema>
+                    );
+                    if (merged !== undefined)
+                      await runAllFieldChecks(mergedResource);
+                    return mergedResource;
+                  })
                   .then(setMerged)
               )
             }
