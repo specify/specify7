@@ -4,7 +4,7 @@ import { filterArray } from '../../utils/types';
 import { mappedFind, multiSortFunction, sortFunction } from '../../utils/utils';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
-import { getUniqueFields } from '../DataModel/resource';
+import { getResourceApiUrl, getUniqueFields } from '../DataModel/resource';
 import {
   deserializeResource,
   resourceToTable,
@@ -95,13 +95,17 @@ function mergeField(
       if (relationshipIsToMany(field)) {
         // Remove duplicates
         const uniqueDependentsCombined = f.unique(
-          parentChildValues
-            .flatMap(([_, childResources]) =>
-              (
-                childResources as unknown as RA<SerializedResource<AnySchema>>
-              ).map((child) => resourceToGeneric(child, false))
-            )
-            .map((resource) => JSON.stringify(resource))
+          parentChildValues.flatMap(([_, childResources]) =>
+            (childResources as unknown as RA<SerializedResource<AnySchema>>)
+              .map((child) => ({
+                ...resourceToGeneric(child, false),
+                [field.otherSideName!]:
+                  targetId === undefined
+                    ? undefined
+                    : getResourceApiUrl(field.table.name, targetId),
+              }))
+              .map((resource) => JSON.stringify(resource))
+          )
         );
         const parentResources =
           /*

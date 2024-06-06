@@ -1,13 +1,12 @@
-import json
 from jsonschema import validate # type: ignore
-from typing import List, Dict, Any, NamedTuple, Union
-from specifyweb.specify.api_tests import get_table
+from typing import Dict
+from specifyweb.specify.tests.test_api import get_table
 from .base import UploadTestsBase
-from ..upload_result import Uploaded, Matched, NoMatch, NullRecord, ParseFailures, FailedBusinessRule
-from ..upload import do_upload, do_upload_csv
+from ..upload_result import Uploaded, Matched, NoMatch, NullRecord
+from ..upload import do_upload
 from ..upload_table import UploadTable, MustMatchTable
 from ..treerecord import TreeRecord, MustMatchTreeRecord
-from ..upload_plan_schema import schema, parse_plan, parse_column_options
+from ..upload_plan_schema import schema, parse_plan
 
 
 class MustMatchTests(UploadTestsBase):
