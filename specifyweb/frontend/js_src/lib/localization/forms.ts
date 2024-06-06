@@ -833,7 +833,7 @@ export const formsText = createDictionary({
   carryForwardEnabled: {
     'en-us': 'Show Carry Forward button',
     'ru-ru': 'Показать кнопку «Перенести вперед»',
-    'es-es': 'Mostrar botón de transferencia',
+    'es-es': 'Mostrar botón Llevar adelante',
     'fr-fr': 'Afficher le bouton Reporter',
     'uk-ua': 'Показати кнопку «Перенести вперед».',
     'de-ch': 'Schaltfläche „Übertrag anzeigen“',
