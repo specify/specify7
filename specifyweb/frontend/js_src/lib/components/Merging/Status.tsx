@@ -5,6 +5,7 @@ import { commonText } from '../../localization/common';
 import { mergingText } from '../../localization/merging';
 import { ajax } from '../../utils/ajax';
 import { ping } from '../../utils/ajax/ping';
+import type { RR } from '../../utils/types';
 import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Label } from '../Atoms/Form';
@@ -18,9 +19,7 @@ import { downloadFile } from '../Molecules/FilePicker';
 import type { MergingStatus, StatusState } from './types';
 import { initialStatusState } from './types';
 
-const statusLocalization: {
-  readonly [STATE in MergingStatus]: LocalizedString;
-} = {
+const statusLocalization: RR<MergingStatus, LocalizedString> = {
   MERGING: mergingText.merging(),
   ABORTED: mergingText.mergeFailed(),
   FAILED: mergingText.mergeFailed(),
@@ -136,7 +135,7 @@ export function MergeStatus({
           {state.status === 'MERGING' && (
             <>
               <Progress max={state.total} value={state.current} />
-              {percentage < 100 && <p>{percentage}%</p>}
+              {percentage < 100 && <p>{`${percentage}%`}</p>}
             </>
           )}
         </div>

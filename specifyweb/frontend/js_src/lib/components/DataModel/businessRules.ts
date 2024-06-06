@@ -15,6 +15,7 @@ import type {
   TableFields,
 } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
+import { ResourceBase } from './resourceApi';
 import {
   getFieldBlockerKey,
   propagateBlockerEvents,
@@ -476,3 +477,30 @@ export type BusinessRuleResult<SCHEMA extends AnySchema = AnySchema> = {
     }
   | { readonly isValid: false; readonly reason: string }
 );
+
+export const runAllFieldChecks = async (
+  resource: SpecifyResource<AnySchema>
+): Promise<void> => {
+  const relationships = resource.specifyTable.relationships;
+  await Promise.all(
+    relationships.map(({ name }) =>
+      resource.businessRuleManager?.checkField(name)
+    )
+  );
+  const mapResource = (
+    result?: SpecifyResource<AnySchema> | Collection<AnySchema> | null
+  ): RA<SpecifyResource<AnySchema>> =>
+    (result === undefined || result === null
+      ? []
+      : result instanceof ResourceBase
+      ? [result]
+      : (result as Collection<AnySchema>).models) as unknown as RA<
+      SpecifyResource<AnySchema>
+    >;
+  // running only on dependent resources. the order shouldn't matter.....
+  await Promise.all(
+    Object.values(resource.dependentResources)
+      .flatMap(mapResource)
+      .map((next) => runAllFieldChecks(next))
+  );
+};
