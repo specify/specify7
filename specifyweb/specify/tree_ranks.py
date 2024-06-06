@@ -321,14 +321,13 @@ def verify_rank_parent_chain_integrity(rank, rank_operation: RankOperation):
                 raise TreeBusinessRuleException(f"Rank {rank_id} points to a non-existent parent rank {parent_id}")
             parent_to_children_dict.setdefault(parent_id, []).append(rank_id)
 
-    if rank_operation == RankOperation.DELETED:
-        # Detect any parent ids that have more than one child
-        parent_ids_with_multiple_children = tree_def_item_model.objects.values('parent_id')\
-            .annotate(children_count=Count('id'))\
-            .filter(children_count__gt=1, parent_id__isnull=False)\
-            .values_list('parent_id', flat=True)
+    # Detect any parent ids that have more than one child
+    parent_ids_with_multiple_children = tree_def_item_model.objects.values('parent_id')\
+        .annotate(children_count=Count('id'))\
+        .filter(children_count__gt=1, parent_id__isnull=False)\
+        .values_list('parent_id', flat=True)
 
-        if parent_ids_with_multiple_children:
-            raise TreeBusinessRuleException(
-                f"Parent ranks {list(parent_ids_with_multiple_children)} have more than one child rank"
-            )
+    if parent_ids_with_multiple_children:
+        raise TreeBusinessRuleException(
+            f"Parent ranks {list(parent_ids_with_multiple_children)} have more than one child rank"
+        )
