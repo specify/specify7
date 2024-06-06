@@ -32,7 +32,6 @@ export const localityImportStatusLocalization: RR<
   LocalizedString
 > = {
   PENDING: localityText.localityImportStarting(),
-  PARSING: localityText.localityImportParsing(),
   PROGRESS: localityText.localityImportProgressing(),
   FAILED: localityText.localityImportFailed(),
   ABORTED: localityText.localityImportCancelled(),

@@ -308,9 +308,6 @@ export const localityText = createDictionary({
   localityImportStarting: {
     'en-us': 'Starting Locality Data Set Import',
   },
-  localityImportParsing: {
-    'en-us': 'Parsing Locality Data Set',
-  },
   localityImportProgressing: {
     'en-us': 'Importing Locality Data Set',
   },

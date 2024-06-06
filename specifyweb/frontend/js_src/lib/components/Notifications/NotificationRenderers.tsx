@@ -264,7 +264,7 @@ export const notificationRenderers: IR<
           <LocalityImportSuccess
             geoCoordDetailIds={JSON.parse(notification.payload.geocoorddetails)}
             localityIds={JSON.parse(notification.payload.localities)}
-            recordSetId={notification.payload.recordsetid as number}
+            recordSetId={notification.payload.recordsetid as unknown as number}
             onClose={handleClose}
           />
         )}

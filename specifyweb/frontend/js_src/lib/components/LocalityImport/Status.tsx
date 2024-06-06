@@ -124,6 +124,7 @@ export function LocalityImportStatus({
           {commonText.cancel()}
         </Button.Danger>
       }
+      children={null}
       dimensionsKey={statusDimensionKey}
       header={title}
       modal={false}
@@ -132,6 +133,7 @@ export function LocalityImportStatus({
   ) : (
     <Dialog
       buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
+      children={null}
       dimensionsKey={statusDimensionKey}
       header={title}
       modal={false}
