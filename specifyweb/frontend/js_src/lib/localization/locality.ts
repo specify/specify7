@@ -338,9 +338,6 @@ export const localityText = createDictionary({
     'en-us':
       'More than one Locality found with guid: {guid:string}. Locality IDs: {localityIds: string}',
   },
-  rowNumber: {
-    'en-us': 'Row Number',
-  },
   localityUploadedDescription: {
     'en-us':
       'The following number of {localityTabelLabel: string} records were updated and {geoCoordDetailTableLabel: string} records were created:',

@@ -7,6 +7,7 @@ import { commonText } from '../../localization/common';
 import { localityText } from '../../localization/locality';
 import { mainText } from '../../localization/main';
 import { notificationsText } from '../../localization/notifications';
+import { preferencesText } from '../../localization/preferences';
 import { queryText } from '../../localization/query';
 import { schemaText } from '../../localization/schema';
 import { ajax } from '../../utils/ajax';
@@ -294,7 +295,7 @@ export function LocalityImportErrors({
               })}.csv`;
 
               const columns = [
-                localityText.rowNumber(),
+                preferencesText.row(),
                 schemaText.field(),
                 mainText.errorMessage(),
               ];
@@ -320,10 +321,20 @@ export function LocalityImportErrors({
       icon="error"
       onClose={handleClose}
     >
-      <table className="grid-table grid-cols-[1fr_auto_auto] gap-1 gap-y-3 overflow-auto">
+      <table
+        className="grid-table
+          grid-cols-[1fr_minmax(12rem,1fr)_1fr]
+          overflow-auto
+          [&_:is(td,th)]:border-gray-500
+          [&_:is(th,td)]:border-b
+          [&_:is(th,td)]:p-1
+          [&_:is(th,td)]:pr-2
+          sm:[&_:is(th,td)]:pr-4
+          "
+      >
         <thead>
           <tr>
-            <td>{localityText.rowNumber()}</td>
+            <td>{preferencesText.row()}</td>
             <td>{schemaText.field()}</td>
             <td>{mainText.errorMessage()}</td>
           </tr>
