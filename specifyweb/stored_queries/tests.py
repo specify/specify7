@@ -12,7 +12,7 @@ from specifyweb.workbench import models as workbench_models
 
 from django.test import TestCase
 import specifyweb.specify.models as spmodels
-from specifyweb.specify.api_tests import ApiTests
+from specifyweb.specify.tests.test_api import ApiTests
 from .format import ObjectFormatter
 from .query_construct import QueryConstruct
 from .queryfieldspec import QueryFieldSpec
@@ -21,10 +21,9 @@ from django.conf import settings
 import sqlalchemy
 from sqlalchemy.dialects import mysql
 from django.db import connection
-from sqlalchemy import event, select, func
+from sqlalchemy import event
 from . import models
 from xml.etree import ElementTree
-from datetime import datetime
 # Used for pretty-formatting sql code for testing
 import sqlparse
 

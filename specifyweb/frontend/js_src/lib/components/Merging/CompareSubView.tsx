@@ -17,9 +17,11 @@ import {
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
+import { runAllFieldChecks } from '../DataModel/businessRules';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
+import { ResourceBase } from '../DataModel/resourceApi';
 import {
   useAllSaveBlockers,
   useBlockerHandler,
@@ -27,7 +29,6 @@ import {
 import { serializeResource } from '../DataModel/serializers';
 import type { Relationship } from '../DataModel/specifyField';
 import type { Collection } from '../DataModel/specifyTable';
-import type { Accession } from '../DataModel/types';
 import { SaveButton } from '../Forms/Save';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
@@ -37,6 +38,13 @@ import { CompareField, TransferButton } from './CompareField';
 import { mergeCellBackground, mergeHeaderClassName } from './Header';
 import { MergeDialogContainer, ToggleMergeView } from './index';
 
+// Use this in more places?
+const handleMaybeToMany = (
+  dependent: Collection<AnySchema> | SpecifyResource<AnySchema>
+) =>
+  dependent instanceof ResourceBase
+    ? [dependent as SpecifyResource<AnySchema>]
+    : (dependent as Collection<AnySchema>).models;
 export function MergeSubviewButton({
   relationship,
   resource,
@@ -49,17 +57,19 @@ export function MergeSubviewButton({
   readonly merged: SpecifyResource<AnySchema> | undefined;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const getCount = React.useCallback(
-    () =>
-      relationshipIsToMany(relationship)
-        ? (resource as SpecifyResource<Accession>).getDependentResource(
-            relationship.name as 'accessionAgents'
-          )?.models.length ?? 0
-        : resource.get(relationship.name) === undefined
+
+  const getCount = React.useCallback(() => {
+    const dependentResource = resource.getDependentResource(
+      relationship.name
+    ) as Collection<AnySchema> | SpecifyResource<AnySchema> | null | undefined;
+
+    return dependentResource === undefined || dependentResource === null
+      ? resource.get(relationship.name) === undefined
         ? 0
-        : 1,
-    [relationship, resource]
-  );
+        : 1
+      : handleMaybeToMany(dependentResource).length;
+  }, [relationship, resource]);
+
   const [count, setCount] = React.useState(getCount);
   React.useEffect(
     () =>
@@ -116,10 +126,15 @@ function getChildren(
   resource: SpecifyResource<AnySchema>,
   relationship: Relationship
 ): RA<SpecifyResource<AnySchema>> {
-  const children = resource.getDependentResource(relationship.name);
-  return relationshipIsToMany(relationship)
-    ? (children as Collection<AnySchema> | undefined)?.models ?? []
-    : filterArray([children]);
+  // Move this type to getDependentResource?
+  const children = resource.getDependentResource(relationship.name) as
+    | Collection<AnySchema>
+    | SpecifyResource<AnySchema>
+    | null
+    | undefined;
+  return children === null || children === undefined
+    ? []
+    : handleMaybeToMany(children);
 }
 
 function MergeDialog({
@@ -151,6 +166,8 @@ function MergeDialog({
     if (relationshipIsToMany(relationship))
       merged.set(relationship.name, mergedRecords as never);
     else merged.set(relationship.name, mergedRecords[0] as never);
+    // TODO: optimize this
+    runAllFieldChecks(merged);
   }, [merged, relationship, mergedRecords]);
 
   const add =
@@ -234,8 +251,15 @@ function MergeDialog({
               }
               resources={children.map((record) => record[index])}
               onRemove={(): void => {
-                mergedRecords[index].destroy();
-                setMergedRecords(removeItem(mergedRecords, index));
+                // Could be called by the zero-to-one
+                const previousMerged = Array.from(mergedRecords);
+                /*
+                 * If the resource isn't new, then not destroying it is fine since it will be
+                 * in the collection of another resource anyways
+                 */
+                if (mergedRecords[index].isNew())
+                  mergedRecords[index].destroy();
+                setMergedRecords(removeItem(previousMerged, index));
               }}
               onSlide={(columnIndex, direction): void => {
                 if (columnIndex === 0)

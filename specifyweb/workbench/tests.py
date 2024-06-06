@@ -1,10 +1,10 @@
 import json
 
-from django.test import TestCase, Client
+from django.test import Client
 
-from specifyweb.specify.api_tests import ApiTests
 from specifyweb.specify.models import Recordset
-from .models import Spdataset
+from specifyweb.workbench.models import Spdataset
+from specifyweb.specify.tests.test_api import ApiTests
 from .upload import upload as uploader
 
 class DataSetTests(ApiTests):

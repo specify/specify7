@@ -606,9 +606,9 @@ def delete_resource(collection, agent, name, id, version) -> None:
     locking 'version'.
     """
     obj = get_object_or_404(name, id=int(id))
-    return delete_obj(collection, agent, obj, version)
+    return delete_obj(obj, version, collection=collection, agent=agent)
 
-def delete_obj(collection, agent, obj, version=None, parent_obj=None) -> None:
+def delete_obj(obj, version=None, parent_obj=None, collection=None, agent=None, clean_predelete=None) -> None:
     # need to delete dependent -to-one records
     # e.g. delete CollectionObjectAttribute when CollectionObject is deleted
     # but have to delete the referring record first
@@ -618,16 +618,19 @@ def delete_obj(collection, agent, obj, version=None, parent_obj=None) -> None:
         if (field.many_to_one or field.one_to_one) and is_dependent_field(obj, field.name)
     ) if _f]
 
-    check_table_permissions(collection, agent, obj, "delete")
-    auditlog.remove(obj, agent, parent_obj)
+    if collection and agent:
+        check_table_permissions(collection, agent, obj, "delete")
+        auditlog.remove(obj, agent, parent_obj)
     if version is not None:
         bump_version(obj, version)
+    if clean_predelete:
+        clean_predelete(obj)
     if hasattr(obj, 'pre_constraints_delete'):
         obj.pre_constraints_delete()
     obj.delete()
 
     for dep in dependents_to_delete:
-      delete_obj(collection, agent, dep, parent_obj=obj)
+      delete_obj(dep, version, parent_obj=obj, collection=collection, agent=agent, clean_predelete=clean_predelete)
 
 
 @transaction.atomic
@@ -658,7 +661,7 @@ def update_obj(collection, agent, name: str, id, version, data: Dict[str, Any], 
     obj.save(force_update=True)
     auditlog.update(obj, agent, parent_obj, dirty)
     for dep in dependents_to_delete:
-        delete_obj(collection, agent, dep, parent_obj=obj)
+        delete_obj(dep, parent_obj=obj, collection=collection, agent=agent)
     handle_to_many(collection, agent, obj, data)
     return obj
 
