@@ -82,7 +82,7 @@ function eventHandlerForToMany(_related, field) {
   };
 }
 
-// always returns a resource
+// Always returns a resource
 const maybeMakeResource = (value, relatedTable) =>
   value instanceof ResourceBase
     ? value
@@ -849,7 +849,7 @@ export const ResourceBase = Backbone.Model.extend({
             },
       {
         resources: [] as RA<SpecifyResource<AnySchema>>,
-        identifiers: [] as RA<string | number>,
+        identifiers: [] as RA<number | string>,
       }
     ).resources;
     this.independentResources.toMany[fieldName].added = uniqueResources;
@@ -909,7 +909,7 @@ export const ResourceBase = Backbone.Model.extend({
             },
       {
         resources: [] as RA<SpecifyResource<AnySchema>>,
-        identifiers: [] as RA<string | number>,
+        identifiers: [] as RA<number | string>,
       }
     ).resources;
     this.independentResources.toMany[fieldName].removed = uniqueResources;
@@ -943,8 +943,8 @@ export const ResourceBase = Backbone.Model.extend({
   async handleSavingIndependent(): Promise<void> {
     const self = this;
     const toMany = this.independentResources.toMany as IR<{
-      added: RA<SpecifyResource<AnySchema>>;
-      removed: RA<SpecifyResource<AnySchema>>;
+      readonly added: RA<SpecifyResource<AnySchema>>;
+      readonly removed: RA<SpecifyResource<AnySchema>>;
     }>;
     const toOne = this.independentResources
       .toOne as IR<SpecifyResource<AnySchema> | null>;
