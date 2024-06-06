@@ -978,8 +978,8 @@ def localityimport_status(request: http.HttpRequest, taskid: str):
         success_result = json.loads(locality_import.result)
         status["taskinfo"] = {
             "recordsetid": success_result["recordsetid"],
-            "localities": success_result["localities"],
-            "geocoorddetails": success_result["geocoorddetails"]
+            "localities": json.loads(success_result["localities"]),
+            "geocoorddetails": json.loads(success_result["geocoorddetails"])
         }
 
     return http.JsonResponse(status, safe=False)
