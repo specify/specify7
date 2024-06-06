@@ -329,4 +329,6 @@ def verify_rank_parent_chain_integrity(rank, rank_operation: RankOperation):
             .values_list('parent_id', flat=True)
 
         if parent_ids_with_multiple_children:
-            raise TreeBusinessRuleException(f"Parent ranks {list(parent_ids_with_multiple_children)} have more than one child rank")
+            raise TreeBusinessRuleException(
+                f"Parent ranks {list(parent_ids_with_multiple_children)} have more than one child rank"
+            )
