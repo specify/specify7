@@ -92,54 +92,54 @@ msgstr "{geographyTable:string} має бути зіставлено"
 msgid "geographyRequiredDescription"
 msgstr "Плагін GeoLocate вимагає заповнення поля географії."
 
-#: components/FormPlugins/LatLongUi.tsx:273
+#: components/FormPlugins/LatLongUi.tsx:279
 #. Used in: Components > Form Plugins > Lat Long Ui
 msgid "coordinates"
 msgstr "Координати"
 
-#: components/FormPlugins/LatLongUi.tsx:276
+#: components/FormPlugins/LatLongUi.tsx:282
 #. 🟥Represents coordinates. Careful with translation. Used in: Components > Form Plugins > Lat Long Ui
 msgid "northWestCorner"
 msgstr "NW Кут"
 
-#: components/FormPlugins/LatLongUi.tsx:287
+#: components/FormPlugins/LatLongUi.tsx:293
 #. 🟥Represents coordinates. Careful with translation. Used in: Components > Form Plugins > Lat Long Ui
 msgid "southEastCorner"
 msgstr "SE Кут"
 
-#: components/FormPlugins/LatLongUi.tsx:246
+#: components/FormPlugins/LatLongUi.tsx:252
 #. Used in: Components > Form Plugins > Lat Long Ui
 msgid "coordinateType"
 msgstr "Тип координат"
 
-#: components/FormPlugins/LatLongUi.tsx:257
+#: components/FormPlugins/LatLongUi.tsx:263
 #. Used in: Components > Form Plugins > Lat Long Ui
 msgid "point"
 msgstr "точка"
 
-#: components/FormPlugins/LatLongUi.tsx:258
+#: components/FormPlugins/LatLongUi.tsx:264
 #. Used in: Components > Form Plugins > Lat Long Ui
 msgid "line"
 msgstr "лінія"
 
-#: components/FormPlugins/LatLongUi.tsx:259
+#: components/FormPlugins/LatLongUi.tsx:265
 #. Used in: Components > Form Plugins > Lat Long Ui
 msgid "rectangle"
 msgstr "Прямокутник"
 
-#: components/FormPlugins/LatLongUi.tsx:265
+#: components/FormPlugins/LatLongUi.tsx:271
 #. Used in: Components > Form Plugins > Lat Long Ui
 msgid "parsed"
 msgstr "Проаналізовано"
 
-#: components/FormPlugins/LatLongUi.tsx:175
-#: components/FormPlugins/LatLongUi.tsx:263
+#: components/FormPlugins/LatLongUi.tsx:181
+#: components/FormPlugins/LatLongUi.tsx:269
 #. Used in: Components > Form Plugins > Lat Long Ui
 msgid "latitude"
 msgstr "Широта"
 
-#: components/FormPlugins/LatLongUi.tsx:188
-#: components/FormPlugins/LatLongUi.tsx:264
+#: components/FormPlugins/LatLongUi.tsx:194
+#: components/FormPlugins/LatLongUi.tsx:270
 #. Used in: Components > Form Plugins > Lat Long Ui
 msgid "longitude"
 msgstr "Довгота"
@@ -181,3 +181,13 @@ msgstr "ДД ММ.ХМ Пн/Пд/В/З (32 45,714 Пн)"
 #. Used in: Components > Wb Toolkit > Coordinate Converter
 msgid "degreesMinutesSecondsWithDirection"
 msgstr "DD MM SS.SS N/S/E/W (32 45 42.84 N)"
+
+#: components/FormPlugins/LatLongUi.tsx:92
+#. Used in: Components > Form Plugins > Lat Long Ui
+msgid "validLatitude"
+msgstr ""
+
+#: components/FormPlugins/LatLongUi.tsx:93
+#. Used in: Components > Form Plugins > Lat Long Ui
+msgid "validLongitude"
+msgstr ""

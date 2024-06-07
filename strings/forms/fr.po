@@ -328,12 +328,11 @@ msgstr "Valeur interdite pour un champ Oui/Non"
 msgid "requiredField"
 msgstr "Champ requis."
 
-#: components/FormPlugins/LatLongUi.tsx:89
 #: utils/parser/__tests__/definitions.test.ts:203
 #: utils/parser/__tests__/definitions.test.ts:205
 #: utils/parser/__tests__/definitions.test.ts:221
 #: utils/parser/__tests__/definitions.test.ts:223
-#. Used in: Components > Form Plugins > Lat Long Ui ⬤ Parser > __tests__ > Definitions
+#. Used in: Parser > __tests__ > Definitions
 msgid "invalidValue"
 msgstr "Valeur invalide"
 
