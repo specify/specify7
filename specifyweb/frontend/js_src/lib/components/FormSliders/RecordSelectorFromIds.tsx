@@ -250,7 +250,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
         resource={resource}
         title={title}
         viewName={viewName}
-        onAdd={handleClone}
+        onAdd={(resources) => resources.map(r => handleClone?.(r))}
         onCarryBulk={handleCarryBulk}
         onClose={handleClose}
         onDeleted={

@@ -124,7 +124,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly dialog: 'modal' | 'nonModal' | false;
   readonly onSaving?: (unsetUnloadProtect: () => void) => false | void;
   readonly onSaved: (() => void) | undefined;
-  readonly onAdd: ((newResource: SpecifyResource<SCHEMA>) => void) | undefined;
+  readonly onAdd: ((resources: RA<SpecifyResource<SCHEMA>>) => void) | undefined; // TODO: Refactor other usages of onAdd
   readonly onDeleted: (() => void) | undefined;
   readonly onClose: () => void;
   readonly children?: JSX.Element;

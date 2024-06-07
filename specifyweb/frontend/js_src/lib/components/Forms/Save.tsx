@@ -9,7 +9,7 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { smoothScroll } from '../../utils/dom';
 import { listen } from '../../utils/events';
-import type { RA, WritableArray } from '../../utils/types';
+import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { replaceKey } from '../../utils/utils';
 import { appResourceSubTypes } from '../AppResources/types';
@@ -76,7 +76,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     unsetUnloadProtect: () => void
   ) => false | undefined | void;
   readonly onSaved?: () => void;
-  readonly onAdd?: (newResource: SpecifyResource<SCHEMA>) => void;
+  readonly onAdd?: (resources: RA<SpecifyResource<SCHEMA>>) => void;
   // Only display save blockers for a given field
   readonly filterBlockers?: LiteralField | Relationship;
   readonly onCarryBulk?: (ids: RA<number>) => void;
@@ -204,9 +204,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const copyButton = (
     label: LocalizedString,
     description: LocalizedString,
-    handleClick: () =>
-      | Promise<RA<SpecifyResource<SCHEMA>>>
-      | Promise<SpecifyResource<SCHEMA>>,
+    handleClick: () => Promise<RA<SpecifyResource<SCHEMA>>>,
     originalResourceId?: number
   ): JSX.Element => (
     <ButtonComponent
@@ -217,27 +215,16 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         // Scroll to the top of the form on clone
         smoothScroll(form, 0);
         loading(
-          handleClick()
-            .then((result) => {
-              const ids: WritableArray<number> = [];
-              if (originalResourceId !== undefined) {
-                ids.push(originalResourceId);
-              }
-              if (Array.isArray(result)) {
-                result.forEach((newResource) => {
-                  handleAdd?.(newResource);
-                  ids.push(newResource.id);
-                });
-              } else {
-                handleAdd?.(result);
-              }
-              return ids;
-            })
-            .then((ids) => {
-              if (handleCarryBulk && ids.length > 2) {
-                handleCarryBulk(ids);
-              }
-            })
+          handleClick().then((resources) => {
+            handleAdd?.(resources);
+            const newResourceIds = resources.map((r) => r.id);
+            const ids =
+              originalResourceId !== undefined
+                ? [originalResourceId].concat(newResourceIds)
+                : newResourceIds;
+            // TODO: move handleCarryBulk logic into ResourceVieweventually
+            if (ids.length > 2) handleCarryBulk?.(ids);
+          })
         );
       }}
     >
@@ -283,7 +270,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
             copyButton(
               formsText.clone(),
               formsText.cloneDescription(),
-              async () => resource.clone(true)
+              async () => [await resource.clone(true)]
             )}
           {showCarry &&
             copyButton(
@@ -310,14 +297,14 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                     );
                     return Promise.all(clones);
                   }
-                : async () => resource.clone(false),
+                : async () => [await resource.clone(false)],
               resource.id
             )}
           {showAdd &&
             copyButton(
               commonText.add(),
               formsText.addButtonDescription(),
-              async () => new resource.specifyTable.Resource()
+              async () => [new resource.specifyTable.Resource()]
             )}
         </>
       ) : undefined}
