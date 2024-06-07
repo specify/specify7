@@ -22,6 +22,7 @@ import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
+import { runAllFieldChecks } from '../DataModel/businessRules';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { fetchResource, resourceEvents } from '../DataModel/resource';
@@ -39,7 +40,6 @@ import { recordMergingTableSpec } from './definitions';
 import { InvalidMergeRecordsDialog } from './InvalidMergeRecords';
 import { mergingQueryParameter } from './queryString';
 import { Status } from './Status';
-import { runAllFieldChecks } from '../DataModel/businessRules';
 
 export function RecordMergingLink({
   table,

@@ -292,4 +292,10 @@ export const localityText = createDictionary({
     'uk-ua': 'DD MM SS.SS N/S/E/W (32 45 42.84 N)',
     'de-ch': 'DD MM SS.SS N/S/O/W (32 45 42.84 N)',
   },
+  validLatitude: {
+    'en-us': 'Latitude needs to have a value between -90° and 90°',
+  },
+  validLongitude: {
+    'en-us': 'Longitude needs to have a value between -180° and 180°',
+  },
 } as const);
