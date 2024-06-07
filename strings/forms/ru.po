@@ -388,12 +388,12 @@ msgstr "Неподдерживаемый тип ячейки"
 msgid "additionalResultsOmitted"
 msgstr "Дополнительные результаты опущены"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:273
+#: components/FormSliders/RecordSelectorFromIds.tsx:275
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtect"
 msgstr "Продолжить без сохранения?"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:276
+#: components/FormSliders/RecordSelectorFromIds.tsx:278
 #. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtectDescription"
 msgstr "Возможно, вы захотите сохранить эту запись, прежде чем уйти."
@@ -403,7 +403,7 @@ msgstr "Возможно, вы захотите сохранить эту зап
 msgid "creatingNewRecord"
 msgstr "Создание новой записи"
 
-#: components/FormSliders/RecordSet.tsx:344
+#: components/FormSliders/RecordSet.tsx:359
 #. Used in: Components > Form Sliders > Record Set
 msgid "createNewRecordSet"
 msgstr "Создать новый набор записей"
@@ -423,22 +423,22 @@ msgstr "Обеспечить регресс"
 msgid "deletedInline"
 msgstr "(удалено)"
 
-#: components/FormSliders/RecordSet.tsx:455
+#: components/FormSliders/RecordSet.tsx:470
 #. 🟥Example: Duplicate Record Set Item. Used in: Components > Form Sliders > Record Set
 msgid "duplicateRecordSetItem"
 msgstr "Дополнительные результаты опущены"
 
-#: components/FormSliders/RecordSet.tsx:460
+#: components/FormSliders/RecordSet.tsx:475
 #. Used in: Components > Form Sliders > Record Set
 msgid "duplicateRecordSetItemDescription"
 msgstr "Эта запись уже присутствует в текущем {recordSetTable:string}"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:173
+#: components/FormSliders/RecordSelectorFromIds.tsx:175
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "addToRecordSet"
 msgstr "Добавить в {recordSetTable:string}"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:178
+#: components/FormSliders/RecordSelectorFromIds.tsx:180
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "removeFromRecordSet"
 msgstr "Удалить из {recordSetTable:string}"

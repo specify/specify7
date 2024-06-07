@@ -34,7 +34,7 @@ msgstr "Нет"
 #: components/ExportFeed/ForceUpdate.tsx:33
 #: components/FormEditor/Create.tsx:67
 #: components/FormEditor/Create.tsx:261
-#: components/FormSliders/RecordSelectorFromIds.tsx:260
+#: components/FormSliders/RecordSelectorFromIds.tsx:262
 #: components/Forms/DeleteButton.tsx:107
 #: components/Forms/DeleteButton.tsx:131
 #: components/Forms/ResourceView.tsx:341
@@ -182,7 +182,7 @@ msgstr "Создать"
 #: components/FormPlugins/index.tsx:198
 #: components/FormPlugins/index.tsx:267
 #: components/FormSliders/AttachmentsCollection.tsx:74
-#: components/FormSliders/RecordSet.tsx:454
+#: components/FormSliders/RecordSet.tsx:469
 #: components/Formatters/Element.tsx:66
 #: components/Formatters/Element.tsx:88
 #: components/Forms/DataTask.tsx:134
@@ -310,7 +310,7 @@ msgstr "Сохранить"
 
 #: components/Atoms/DataEntry.tsx:148
 #: components/ExportFeed/Editor.tsx:133
-#: components/FormSliders/RecordSelectorFromIds.tsx:176
+#: components/FormSliders/RecordSelectorFromIds.tsx:178
 #: components/Formatters/List.tsx:138
 #: components/Forms/Save.tsx:235
 #: components/Merging/CompareSubView.tsx:184
@@ -340,7 +340,7 @@ msgstr "Добавить"
 msgid "open"
 msgstr "Открыть"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:181
+#: components/FormSliders/RecordSelectorFromIds.tsx:183
 #: components/Formatters/Element.tsx:83
 #: components/Forms/DeleteButton.tsx:86
 #: components/Forms/DeleteButton.tsx:101
@@ -558,7 +558,7 @@ msgstr "Редактировать"
 msgid "ignore"
 msgstr "Игнорировать"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:269
+#: components/FormSliders/RecordSelectorFromIds.tsx:271
 #: components/Merging/index.tsx:397
 #: components/Toolbar/Language.tsx:108
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Merging > Index ⬤ Components > Toolbar > Language
@@ -939,7 +939,7 @@ msgstr "{header:string}:"
 #: components/FormCells/index.tsx:314
 #: components/FormCommands/index.tsx:128
 #: components/FormPlugins/index.tsx:207
-#: components/FormSliders/RecordSet.tsx:361
+#: components/FormSliders/RecordSet.tsx:376
 #: components/Formatters/Element.tsx:92
 #: components/Formatters/Formatter.tsx:126
 #: components/Forms/BaseResourceView.tsx:132

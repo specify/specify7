@@ -452,13 +452,13 @@ msgstr "Tipo de celda no compatible"
 msgid "additionalResultsOmitted"
 msgstr "Resultados adicionales omitidos"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:273
+#: components/FormSliders/RecordSelectorFromIds.tsx:275
 #. Used in: Components > Form Sliders > Record Selector From Ids
 #, fuzzy
 msgid "recordSelectorUnloadProtect"
 msgstr "¿Continuar sin guardar?"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:276
+#: components/FormSliders/RecordSelectorFromIds.tsx:278
 #. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids
 #, fuzzy
 msgid "recordSelectorUnloadProtectDescription"
@@ -470,7 +470,7 @@ msgstr "Es posible que desee guardar este registro antes de navegar."
 msgid "creatingNewRecord"
 msgstr "Creando nuevo registro"
 
-#: components/FormSliders/RecordSet.tsx:344
+#: components/FormSliders/RecordSet.tsx:359
 #. Used in: Components > Form Sliders > Record Set
 #, fuzzy
 msgid "createNewRecordSet"
@@ -494,25 +494,25 @@ msgstr "Contrarrestar"
 msgid "deletedInline"
 msgstr "(eliminado)"
 
-#: components/FormSliders/RecordSet.tsx:455
+#: components/FormSliders/RecordSet.tsx:470
 #. 🟥Example: Duplicate Record Set Item. Used in: Components > Form Sliders > Record Set
 #, fuzzy
 msgid "duplicateRecordSetItem"
 msgstr "En este [X42X] solo se admiten valores numéricos."
 
-#: components/FormSliders/RecordSet.tsx:460
+#: components/FormSliders/RecordSet.tsx:475
 #. Used in: Components > Form Sliders > Record Set
 #, fuzzy
 msgid "duplicateRecordSetItemDescription"
 msgstr "Este registro ya está presente en el {recordSetTable:string} actual."
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:173
+#: components/FormSliders/RecordSelectorFromIds.tsx:175
 #. Used in: Components > Form Sliders > Record Selector From Ids
 #, fuzzy
 msgid "addToRecordSet"
 msgstr "Añadir a {recordSetTable:string}"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:178
+#: components/FormSliders/RecordSelectorFromIds.tsx:180
 #. Used in: Components > Form Sliders > Record Selector From Ids
 #, fuzzy
 msgid "removeFromRecordSet"
