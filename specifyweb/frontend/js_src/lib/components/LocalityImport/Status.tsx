@@ -25,6 +25,7 @@ import { fetchResource } from '../DataModel/resource';
 import { tables } from '../DataModel/tables';
 import { softFail } from '../Errors/Crash';
 import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
+import { mergeCellBackground } from '../Merging/Header';
 import { useTitle } from '../Molecules/AppTitle';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
@@ -317,6 +318,7 @@ export function LocalityImportErrors({
       }
       header={localityText.localityImportFailureResults()}
       icon="error"
+      specialMode="noGradient"
       onClose={handleClose}
     >
       <table
@@ -332,9 +334,15 @@ export function LocalityImportErrors({
       >
         <thead>
           <tr>
-            <td>{preferencesText.row()}</td>
-            <td>{schemaText.field()}</td>
-            <td>{mainText.errorMessage()}</td>
+            <td className={`sticky top-0 ${mergeCellBackground()} font-bold`}>
+              {preferencesText.row()}
+            </td>
+            <td className={`sticky top-0 ${mergeCellBackground()} font-bold`}>
+              {schemaText.field()}
+            </td>
+            <td className={`sticky top-0 ${mergeCellBackground()} font-bold`}>
+              {mainText.errorMessage()}
+            </td>
           </tr>
         </thead>
         {errors.map(({ rowNumber, field, message, payload }, index) => (
