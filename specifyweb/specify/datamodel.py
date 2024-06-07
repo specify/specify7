@@ -7850,19 +7850,19 @@ datamodel = Datamodel(tables=[
         sp7_only=True,
         django_app='attachment_gw',
         classname='edu.ku.brc.specify.datamodel.Spattachmentdataset',
-        table='spattachmentdataset',
+        table='attachmentdataset',
         tableId=1001,
         idColumn='id',
         idFieldName='spAttachmentDataSetId',
         idField=IdField(name='spAttachmentDataSetId', column='id', type='java.lang.Integer'),
         fields=[
             Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
-            Field(name='columns', column='Columns', indexed=False, unique=False, required=True, type='json'), # longtext
+            # Field(name='columns', column='Columns', indexed=False, unique=False, required=True, type='json'), # longtext
             Field(name='data', column='Data', indexed=False, unique=False, required=False, type='json'), # longtext
             Field(name='uploadplan', column='UploadPlan', indexed=False, unique=False, required=False, type='text'),  # longtext
             Field(name='uploadresult', column='UploadResult', indexed=False, unique=False, required=False, type='json'),  # longtext
-            Field(name='rowresults', column='RowResults', indexed=False, unique=False, required=False, type='java.lang.String', length=255), # longtext
-            Field(name='visualorder', column='VisualOrder', indexed=False, unique=False, required=False, type='json'), # longtext
+            # Field(name='rowresults', column='RowResults', indexed=False, unique=False, required=False, type='java.lang.String', length=255), # longtext
+            # Field(name='visualorder', column='VisualOrder', indexed=False, unique=False, required=False, type='json'), # longtext
             Field(name='importedfilename', column='ImportedFileName', indexed=False, unique=False, required=False, type='text'), # longtext
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'), # longtext
             Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
@@ -7905,7 +7905,7 @@ datamodel = Datamodel(tables=[
 
         ]
     ),
-    Table( # UniquenessRule_Field
+    Table( # UniquenessRuleField
         sp7_only=True,
         django_app='businessrules',
         classname='edu.ku.brc.specify.datamodel.UniquenessRuleField', # NOTE: the classname is what is used in the QB api

@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 from django import forms
 from django.db import transaction
+from django.apps import apps
 from django.http import (HttpResponse, HttpResponseBadRequest,
                          Http404, HttpResponseNotAllowed, QueryDict)
 from django.core.exceptions import ObjectDoesNotExist, FieldError, FieldDoesNotExist
@@ -39,7 +40,16 @@ def get_model(name: str):
     """Fetch an ORM model from the module dynamically so that
     the typechecker doesn't complain.
     """
-    return getattr(models, name.capitalize())
+    model_name = name.capitalize()
+    name = name.lower()
+    try:
+        return getattr(models, model_name)
+    except AttributeError as e:
+        for app in apps.get_app_configs():
+            for model in app.get_models():
+                if model._meta.model_name == name:
+                    return model
+        raise e
 
 class JsonEncoder(json.JSONEncoder):
     """Augmented JSON encoder that handles datetime and decimal objects."""

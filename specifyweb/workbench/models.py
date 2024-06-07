@@ -1,4 +1,5 @@
 import json
+from functools import partialmethod
 
 from django import http
 from django.core.exceptions import ObjectDoesNotExist
@@ -6,7 +7,7 @@ from django.db import models, transaction
 from django.http import Http404
 from django.utils import timezone
 
-from specifyweb.specify.models import Collection, Specifyuser, Agent
+from specifyweb.specify.models import Collection, Specifyuser, Agent, datamodel, custom_save
 from specifyweb.specify.api import uri_for_model
 
 class Dataset(models.Model):
@@ -84,8 +85,11 @@ class Dataset(models.Model):
     class Meta:
         abstract = True
 
+    save = partialmethod(custom_save)
+
 
 class Spdataset(Dataset):
+    specify_model = datamodel.get_table('spdataset')
 
     columns = models.JSONField()
     visualorder = models.JSONField(null=True)
@@ -94,6 +98,8 @@ class Spdataset(Dataset):
 
     class Meta:
         db_table = 'spdataset'
+
+    save = partialmethod(custom_save)
 
     def get_dataset_as_dict(self):
         ds_dict = super().get_dataset_as_dict()
