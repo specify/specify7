@@ -191,7 +191,7 @@ model_names_by_table_id = {
     1000:'Spuserexternalid',
     1001:'Spattachmentdataset',
     1002:'UniquenessRule',
-    1003:'UniquenessRuleField',
+    1003:'UniquenessRule_Field',
     1004:'Message',
     1005:'Spmerging',
     1006:'UserPolicy',
@@ -212,7 +212,7 @@ model_names_by_app = {
     },
     'businessrules': {
         'UniquenessRule',
-        'UniquenessRuleField'
+        'UniquenessRule_Field'
     },
     'notifications': {
         'Message',

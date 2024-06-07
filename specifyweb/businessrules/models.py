@@ -48,7 +48,7 @@ class UniquenessRule(models.Model):
 
     @property
     def fields(self):
-        return PsuedoManyToManyManager(self, UniquenessRuleField, UniquenessRuleField.fieldPath)
+        return PsuedoManyToManyManager(self, UniquenessRule_Field, UniquenessRule_Field.fieldPath)
 
     class Meta:
         db_table = 'uniquenessrule'
@@ -56,20 +56,24 @@ class UniquenessRule(models.Model):
     save = partialmethod(custom_save)
 
 
-class UniquenessRuleField(models.Model):
+class UniquenessRule_Field(models.Model):
     specify_model = datamodel.get_table('uniquenessrulefield')
 
     # uniquenessrule_fieldid = models.AutoField(
     #     'uniquenessrule_fieldsid', primary_key=True)
-    id = models.AutoField('id', primary_key=True, db_column='uniquenessrule_fieldid')
+    id = models.AutoField('uniquenessrule_fieldsid', primary_key=True, db_column='uniquenessrule_fieldid')
     uniquenessrule = models.ForeignKey(
         UniquenessRule, on_delete=models.CASCADE, db_column='uniquenessruleid')
     fieldPath = models.TextField(null=True, blank=True)
     isScope = models.BooleanField(default=False)
 
-    @property
-    def uniquenessrule_fieldid(self):
-        return self.id
+    # @property
+    # def uniquenessrule_fieldid(self):
+    #     return self.id
+
+    # @property
+    # def id(self):
+    #     return self.uniquenessrule_fieldid
 
     class Meta:
         db_table = "uniquenessrule_fields"

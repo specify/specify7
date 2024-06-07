@@ -1,5 +1,6 @@
 import json
 from functools import partialmethod
+from model_utils import FieldTracker
 
 from django import http
 from django.core.exceptions import ObjectDoesNotExist
@@ -85,7 +86,7 @@ class Dataset(models.Model):
     class Meta:
         abstract = True
 
-    save = partialmethod(custom_save)
+    # save = partialmethod(custom_save)
 
 
 class Spdataset(Dataset):
@@ -99,7 +100,8 @@ class Spdataset(Dataset):
     class Meta:
         db_table = 'spdataset'
 
-    save = partialmethod(custom_save)
+    # timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    # save = partialmethod(custom_save)
 
     def get_dataset_as_dict(self):
         ds_dict = super().get_dataset_as_dict()

@@ -15,7 +15,7 @@ def pre_save_auto_timestamp_field_with_override(obj, timestamp_override=None):
     )
     timestamp_fields = ['timestampcreated', 'timestampmodified']
     for field in timestamp_fields:
-        if hasattr(obj, field):
+        if hasattr(obj, field) and hasattr(obj, 'timestamptracker'):
             if not timestamp_override and field not in obj.timestamptracker.changed() and \
                 (not obj.id or not getattr(obj, field)):
                 setattr(obj, field, cur_time)

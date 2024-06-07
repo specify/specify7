@@ -29,9 +29,9 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='UniquenessRuleField',
+            name='UniquenessRule_Field',
             fields=[
-                ('id', models.AutoField(primary_key=True,
+                ('uniquenessrule_fieldid', models.AutoField(primary_key=True,
                  serialize=False, verbose_name='uniquenessrule_fieldsid')),
                 ('fieldPath', models.TextField(blank=True, null=True)),
                 ('isScope', models.BooleanField(default=False)),
