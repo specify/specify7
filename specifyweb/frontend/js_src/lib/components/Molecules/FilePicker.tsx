@@ -6,6 +6,7 @@ import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import type { GetOrSet, RA } from '../../utils/types';
+import { SET } from '../../utils/utils';
 import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -185,24 +186,29 @@ export const fileToText = async (
 
 export function Layout({
   preview,
-  getSetHasHeader: [hasHeader = true, setHasHeader],
+  getSetHasHeader,
   children,
   onFileImport: handleFileImport,
 }: {
   readonly preview: LocalizedString | RA<RA<string>> | undefined;
-  readonly getSetHasHeader: GetOrSet<boolean | undefined>;
+  readonly getSetHasHeader?: GetOrSet<boolean | undefined>;
   readonly children?: JSX.Element | RA<JSX.Element>;
   readonly onFileImport: (hasHeader: boolean) => void;
 }): JSX.Element {
+  const [hasHeader = true] =
+    getSetHasHeader === undefined ? [undefined] : getSetHasHeader;
+
   return (
     <>
       <div className="grid w-96 grid-cols-2 items-center gap-2">
         {children}
-        <ToggleHeader
-          hasHeader={hasHeader}
-          isDisabled={preview === undefined}
-          onChange={setHasHeader}
-        />
+        {getSetHasHeader !== undefined && (
+          <ToggleHeader
+            hasHeader={hasHeader}
+            isDisabled={preview === undefined}
+            onChange={getSetHasHeader[SET]}
+          />
+        )}
         <Button.Secondary
           className="col-span-full justify-center text-center"
           disabled={preview === undefined}

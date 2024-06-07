@@ -22,9 +22,11 @@ import { FilePicker, Layout } from './FilePicker';
 
 export function CsvFilePicker({
   header,
+  firstRowAlwaysHeader = false,
   onFileImport: handleFileImport,
 }: {
   readonly header: LocalizedString;
+  readonly firstRowAlwaysHeader?: boolean;
   readonly onFileImport: (
     headers: RA<string>,
     data: RA<RA<number | string>>
@@ -47,7 +49,7 @@ export function CsvFilePicker({
       {typeof file === 'object' && (
         <CsvFilePreview
           file={file}
-          getSetHasHeader={getSetHasHeader}
+          getSetHasHeader={firstRowAlwaysHeader ? undefined : getSetHasHeader}
           onFileImport={({ encoding, getSetDelimiter, hasHeader }): void => {
             loading(
               parseCsv(file, encoding, getSetDelimiter).then((data) => {
@@ -70,7 +72,7 @@ export function CsvFilePreview({
   onFileImport: handleFileImport,
 }: {
   readonly file: File;
-  readonly getSetHasHeader: GetOrSet<boolean | undefined>;
+  readonly getSetHasHeader?: GetOrSet<boolean | undefined>;
   readonly children?: JSX.Element | undefined;
   readonly onFileImport: ({
     data,

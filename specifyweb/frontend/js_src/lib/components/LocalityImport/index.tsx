@@ -59,6 +59,7 @@ export function ImportLocalityDataSet(): JSX.Element {
   return (
     <>
       <CsvFilePicker
+        firstRowAlwaysHeader
         header={headerText.importLocalityDataset()}
         onFileImport={(headers, data): void => {
           const foundHeaderErrors = headers.reduce(
