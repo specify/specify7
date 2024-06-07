@@ -16,30 +16,13 @@ from django.db.models.deletion import ProtectedError
 
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.celery_tasks import LogErrorsTask, app
-from specifyweb.accounts import models as acccounts_models
-from specifyweb.attachment_gw import models as attachment_gw_models
-from specifyweb.businessrules import models as businessrules_models
-from specifyweb.context import models as context_models
-from specifyweb.notifications import models as notifications_models
-from specifyweb.permissions import models as permissions_models
-from specifyweb.interactions import models as interactions_models
-from specifyweb.workbench import models as workbench_models
-from . import api, models as spmodels
-from .api import uri_for_model, delete_obj
-from .build_models import orderings
-from .load_datamodel import Table, FieldDoesNotExistError
+from specifyweb.specify import models as spmodels
+from specifyweb.specify.api import uri_for_model, delete_obj, is_dependent_field, put_resource
+from specifyweb.specify.build_models import orderings
+from specifyweb.specify.load_datamodel import Table, FieldDoesNotExistError
 from celery.utils.log import get_task_logger # type: ignore
+from specifyweb.specify.utils import get_app_model
 logger = get_task_logger(__name__)
-
-
-APP_MODELS = [spmodels, acccounts_models, attachment_gw_models, businessrules_models, context_models,
-              notifications_models, permissions_models, interactions_models, workbench_models]
-
-def get_app_model(model_name: str):
-    for app in APP_MODELS:
-        if hasattr(app, model_name):
-            return getattr(app, model_name)
-    return None
 
 # Returns QuerySet which selects and locks entries when evaluated
 def filter_and_lock_target_objects(model, ids, name):
@@ -203,7 +186,7 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
     target_object = target_model.objects.get(id=new_model_id)
     dependant_relationships = [(rel.relatedModelName, rel.name)
         for rel in target_object.specify_model.relationships
-        if api.is_dependent_field(target_object, rel.name)]
+        if is_dependent_field(target_object, rel.name)]
 
     dependant_table_names = set([rel[0] for rel in dependant_relationships])
 
@@ -343,12 +326,14 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
             new_record_data = new_record_info['new_record_data']
             target_table = spmodels.datamodel.get_table(model_name.lower())
             fix_orderings(target_table, new_record_data)
-            obj = api.put_resource(new_record_info['collection'],
-                                   new_record_info['specify_user'],
-                                   model_name,
-                                   new_model_id,
-                                   new_record_info['version'],
-                                   fix_record_data(new_record_data, target_table, target_table.name.lower(), new_model_id, old_model_ids))
+            obj = put_resource(new_record_info['collection'],
+                               new_record_info['specify_user'],
+                               model_name,
+                               new_model_id,
+                               new_record_info['version'],
+                               fix_record_data(new_record_data, target_table,
+                                               target_table.name.lower(),
+                                               new_model_id, old_model_ids))
         except IntegrityError as e:
             # NOTE: Handle IntegrityError Duplicate entry in the future.
             # EXAMPLE: IntegrityError: (1062, "Duplicate entry '1-0' for key 'AgentID'")
