@@ -40,7 +40,7 @@ export const headerText = createDictionary({
     'en-us': 'Data Entry',
     'ru-ru': 'Ввод данных',
     'es-es': 'Entrada de datos',
-    'fr-fr': 'La saisie des données',
+    'fr-fr': 'Saisie des données',
     'uk-ua': 'Введення даних',
     'de-ch': 'Datenerfassung',
   },

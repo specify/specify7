@@ -37,7 +37,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Setup your attachment server',
     'es-es': 'Configura tu servidor de adjuntos',
     'fr-fr': 'Configurez votre serveur de pièces jointes',
-    'ru-ru': 'Настройте свой сервер вложений',
+    'ru-ru': 'Настройте сервер вложений',
     'uk-ua': 'Налаштуйте сервер прикріплень',
     'de-ch': 'Richten Sie Ihren Attachment-Server ein',
   },
@@ -191,7 +191,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Error de coincidencia',
     'fr-fr': 'Erreur de correspondance',
     'ru-ru': 'Ошибка совпадения',
-    'uk-ua': 'Помилка відповідності',
+    'uk-ua': 'Помилка збігу',
   },
   errorReadingFile: {
     'en-us': 'Error reading file',
@@ -200,7 +200,7 @@ export const attachmentsText = createDictionary({
     'ru-ru': 'Ошибка чтения файла',
     'de-ch':
       'Wählen Sie Dateien aus oder ziehen Sie sie hierher, um zu beginnen.',
-    'uk-ua': 'Щоб почати, виберіть файли або перетягніть їх сюди.',
+    'uk-ua': 'Виберіть файли або перетягніть їх сюди, щоб почати.',
   },
   unhandledFatalResourceError: {
     'en-us': 'Unhandled fatal resource error:',
@@ -294,8 +294,9 @@ export const attachmentsText = createDictionary({
       Откат выполнялся, когда произошло прерывание. Некоторые файлы могли быть
       удалены
     `,
-    'uk-ua':
-      'Тривав відкат, коли сталася перерва. Деякі файли могли бути видалені',
+    'uk-ua': `
+      Тривав відкат, коли сталася перерва. Можливо, деякі файли було видалено
+    `,
     'es-es': `
       La reversión estaba en curso cuando se produjo una interrupción. Es
       posible que algunos archivos hayan sido eliminados.
@@ -336,7 +337,7 @@ export const attachmentsText = createDictionary({
     `,
     'es-es': 'Interrumpido. Reintentando en [X25X]',
     'fr-fr': `
-      Le téléchargement des pièces jointes créera des pièces jointes sur le
+      Le téléchargement des pièces jointes créera des pièces jointes dans le
       serveur d'actifs et dans la base de données Specify.
     `,
     'ru-ru': `
@@ -624,8 +625,8 @@ export const attachmentsText = createDictionary({
     `,
     'de-ch': `
       Durch das Löschen eines Datensatzes werden dieser und sein Upload-Pfad
-      dauerhaft entfernt. Nach dem Löschen ist für einen hochgeladenen Datensatz
-      auch kein Rollback mehr möglich.
+      dauerhaft entfernt. Außerdem ist nach dem Löschen für einen hochgeladenen
+      Datensatz kein Rollback mehr möglich.
     `,
     'es-es': `
       Al eliminar un conjunto de datos, se elimina permanentemente este y su
