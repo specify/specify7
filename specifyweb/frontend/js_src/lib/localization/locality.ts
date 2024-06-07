@@ -294,8 +294,18 @@ export const localityText = createDictionary({
   },
   validLatitude: {
     'en-us': 'Latitude needs to have a value between -90° and 90°',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   validLongitude: {
     'en-us': 'Longitude needs to have a value between -180° and 180°',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
 } as const);
