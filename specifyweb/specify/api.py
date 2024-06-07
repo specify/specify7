@@ -45,9 +45,6 @@ def get_model(name: str):
     try:
         return getattr(models, model_name)
     except AttributeError as e:
-        if name == 'uniquenessrulefield':
-            app = apps.get_app_config('businessrules')
-            return app.get_model('UniquenessRule_Field') # please don't use underscores in model names anymore
         for app in apps.get_app_configs():
             for model in app.get_models():
                 if model._meta.model_name == name:

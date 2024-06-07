@@ -7905,7 +7905,7 @@ datamodel = Datamodel(tables=[
 
         ]
     ),
-    Table( # UniquenessRule_Field
+    Table( # UniquenessRuleField
         sp7_only=True,
         django_app='businessrules',
         classname='edu.ku.brc.specify.datamodel.UniquenessRuleField', # NOTE: the classname is what is used in the QB api

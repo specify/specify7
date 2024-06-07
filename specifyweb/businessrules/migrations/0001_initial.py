@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='UniquenessRule_Field',
+            name='UniquenessRuleField',
             fields=[
                 ('uniquenessrule_fieldid', models.AutoField(primary_key=True,
                  serialize=False, verbose_name='uniquenessrule_fieldsid')),
