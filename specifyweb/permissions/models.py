@@ -16,7 +16,7 @@ class UserPolicy(models.Model):
     class Meta:
         db_table = 'spuserpolicy'
     
-    save = partialmethod(custom_save)
+    # save = partialmethod(custom_save)
 
 class Role(models.Model):
     specify_model = datamodel.get_table('role')
@@ -28,7 +28,7 @@ class Role(models.Model):
     class Meta:
         db_table = 'sprole'
     
-    save = partialmethod(custom_save)
+    # save = partialmethod(custom_save)
 
 class LibraryRole(models.Model):
     specify_model = datamodel.get_table('libraryrole')
@@ -39,7 +39,7 @@ class LibraryRole(models.Model):
     class Meta:
         db_table = 'splibraryrole'
     
-    save = partialmethod(custom_save)
+    # save = partialmethod(custom_save)
 
 class UserRole(models.Model):
     specify_model = datamodel.get_table('userrole')
@@ -50,7 +50,7 @@ class UserRole(models.Model):
     class Meta:
         db_table = "spuserrole"
     
-    save = partialmethod(custom_save)
+    # save = partialmethod(custom_save)
 
 class RolePolicy(models.Model):
     specify_model = datamodel.get_table('rolepolicy')
@@ -62,7 +62,7 @@ class RolePolicy(models.Model):
     class Meta:
         db_table = 'sprolepolicy'
     
-    save = partialmethod(custom_save)
+    # save = partialmethod(custom_save)
 
 class LibraryRolePolicy(models.Model):
     specify_model = datamodel.get_table('libraryrolepolicy')
@@ -74,4 +74,4 @@ class LibraryRolePolicy(models.Model):
     class Meta:
         db_table = 'splibraryrolepolicy'
     
-    save = partialmethod(custom_save)
+    # save = partialmethod(custom_save)

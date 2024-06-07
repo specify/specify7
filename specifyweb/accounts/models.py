@@ -24,4 +24,4 @@ class Spuserexternalid(models.Model):
         #     models.UniqueConstraint(fields=["provider", "providerid"], name="unique_spuser_external_id")
         # ]
 
-    save = partialmethod(custom_save)
+    # save = partialmethod(custom_save)
