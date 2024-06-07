@@ -28,7 +28,7 @@ import {
 } from '../DataModel/resource';
 import { serializeResource } from '../DataModel/serializers';
 import { tables } from '../DataModel/tables';
-import type { RecordSet as RecordSetSchema } from '../DataModel/types';
+import type { RecordSet as RecordSetSchema, Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { recordSetView } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
@@ -291,6 +291,12 @@ function RecordSet<SCHEMA extends AnySchema>({
   const [hasDuplicate, handleHasDuplicate, handleDismissDuplicate] =
     useBooleanState();
 
+  const [hasSeveralResourceType, setHasSeveralResourceType] =
+    React.useState(false);
+  const [resourceType, setResourceType] = React.useState<
+    keyof Tables | undefined
+  >(undefined);
+
   async function handleAdd(
     resources: RA<SpecifyResource<SCHEMA>>,
     wasNew: boolean
@@ -298,6 +304,12 @@ function RecordSet<SCHEMA extends AnySchema>({
     if (!recordSet.isNew())
       await addIdsToRecordSet(resources.map(({ id }) => id));
     go(totalCount, resources[0].id, undefined, wasNew);
+    if (resourceType === undefined) {
+      setResourceType(resources[0].specifyTable.name);
+    } else if (resourceType !== resources.at(-1)?.specifyTable.name) {
+      setHasSeveralResourceType(true);
+      setResourceType(resources.at(-1)?.specifyTable.name);
+    }
     setIds((oldIds = []) =>
       updateIds(
         oldIds,
@@ -352,9 +364,12 @@ function RecordSet<SCHEMA extends AnySchema>({
         {...rest}
         defaultIndex={currentIndex}
         dialog={dialog}
+        hasSeveralResourceType={hasSeveralResourceType}
         headerButtons={
           recordSet.isNew() ? (
-            ids.length > 1 && !currentRecord.isNew() ? (
+            ids.length > 1 &&
+            !currentRecord.isNew() &&
+            !hasSeveralResourceType ? (
               <Button.Icon
                 icon="collection"
                 title={formsText.createNewRecordSet()}

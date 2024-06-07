@@ -26,8 +26,8 @@ export const wbText = createDictionary({
     `,
     'fr-fr': 'Télécharger le forfait',
     'ru-ru': `
-      Обратите внимание, что живая проверка — это экспериментальная функция,
-      которая не заменяет обычную проверку.
+      Обратите внимание: живая проверка — это экспериментальная функция, которая
+      не заменяет обычную проверку.
     `,
     'uk-ua': 'План завантаження',
   },
@@ -153,8 +153,8 @@ export const wbText = createDictionary({
       ne remplace pas la validation régulière.
     `,
     'ru-ru': `
-      Обратите внимание, что живая проверка — это экспериментальная функция,
-      которая не заменяет обычную проверку.
+      Обратите внимание: живая проверка — это экспериментальная функция, которая
+      не заменяет обычную проверку.
     `,
     'uk-ua': `
       Зауважте, що перевірка в реальному часі є експериментальною функцією і не
@@ -592,8 +592,8 @@ export const wbText = createDictionary({
       Перевірка не виявила помилок, вона готова до завантаження в базу даних.
     `,
     'de-ch': `
-      Bei der Validierung wurden keine Fehler gefunden. Der Upload kann nun in
-      die Datenbank erfolgen.
+      Bei der Validierung wurden keine Fehler gefunden. Der Upload kann in die
+      Datenbank erfolgen.
     `,
   },
   validationReEditWarning: {
@@ -1312,7 +1312,7 @@ export const wbText = createDictionary({
     'es-es': 'Propiedades del conjunto de datos',
     'fr-fr': "Propriétés de l'ensemble de données",
     'uk-ua': 'Властивості набору даних',
-    'de-ch': 'Dataset-Eigenschaften',
+    'de-ch': 'Datensatzeigenschaften',
   },
   dataSetName: {
     'en-us': 'Data Set Name',

@@ -10,7 +10,9 @@ import { formsText } from '../../localization/forms';
 import { smoothScroll } from '../../utils/dom';
 import { listen } from '../../utils/events';
 import type { RA, WritableArray } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { replaceKey } from '../../utils/utils';
+import { appResourceSubTypes } from '../AppResources/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input, Label } from '../Atoms/Form';
@@ -24,9 +26,9 @@ import {
   useAllSaveBlockers,
 } from '../DataModel/saveBlockers';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { errorHandledBy } from '../Errors/FormatError';
+import { InFormEditorContext } from '../FormEditor/Context';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
@@ -105,16 +107,17 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const loading = React.useContext(LoadingContext);
   const [_, setFormContext] = React.useContext(FormContext);
 
-  const { showClone, showCarry, showAdd } = useEnabledButtons(
-    resource.specifyTable.name
-  );
+  const { showClone, showCarry, showAdd } = useEnabledButtons(resource);
 
   const canCreate = hasTablePermission(resource.specifyTable.name, 'create');
   const canUpdate = hasTablePermission(resource.specifyTable.name, 'update');
   const canSave = resource.isNew() ? canCreate : canUpdate;
 
+  const isInFormEditor = React.useContext(InFormEditorContext);
+
   const isSaveDisabled =
     disabled ||
+    isInFormEditor ||
     isSaving ||
     !canSave ||
     (!saveRequired &&
@@ -387,7 +390,9 @@ function SaveBlockedDialog({
 /**
  * Decide which of the "new resource" buttons to show
  */
-function useEnabledButtons(tableName: keyof Tables): {
+function useEnabledButtons<SCHEMA extends AnySchema = AnySchema>(
+  resource: SpecifyResource<SCHEMA>
+): {
   readonly showClone: boolean;
   readonly showCarry: boolean;
   readonly showAdd: boolean;
@@ -403,12 +408,31 @@ function useEnabledButtons(tableName: keyof Tables): {
     'disableClone'
   );
   const [disableAdd] = userPreferences.use('form', 'preferences', 'disableAdd');
+
+  const tableName = resource.specifyTable.name;
+  const appResourceName =
+    resource.specifyTable.name === 'SpAppResource'
+      ? resource.get('name')
+      : undefined;
+
+  const isDisabledCloneAppResource = appResourcesToNotClone.includes(
+    (appResourceName ?? '').toLowerCase()
+  );
+
   const showCarry =
     enableCarryForward.includes(tableName) && !NO_CLONE.has(tableName);
   const showClone =
-    !disableClone.includes(tableName) && !NO_CLONE.has(tableName);
+    !disableClone.includes(tableName) &&
+    !NO_CLONE.has(tableName) &&
+    !isDisabledCloneAppResource;
   const showAdd =
     !disableAdd.includes(tableName) && !FORBID_ADDING.has(tableName);
 
   return { showClone, showCarry, showAdd };
 }
+
+const appResourcesToNotClone = filterArray(
+  Object.keys(appResourceSubTypes).map((key) =>
+    appResourceSubTypes[key]?.name?.toLowerCase()
+  )
+);

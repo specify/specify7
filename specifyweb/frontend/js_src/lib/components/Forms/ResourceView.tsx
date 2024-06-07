@@ -18,6 +18,7 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Tables } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { InFormEditorContext } from '../FormEditor/Context';
 import { AppTitle } from '../Molecules/AppTitle';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { IsNotReadOnly } from '../Molecules/ResourceLink';
@@ -37,15 +38,11 @@ import { propsToFormMode } from './useViewDefinition';
  */
 export const FORBID_ADDING = new Set<keyof Tables>([
   'TaxonTreeDef',
-  'TaxonTreeDefItem',
   'GeographyTreeDef',
-  'GeographyTreeDefItem',
   'StorageTreeDef',
-  'StorageTreeDefItem',
   'GeologicTimePeriodTreeDef',
   'GeologicTimePeriodTreeDefItem',
   'LithoStratTreeDef',
-  'LithoStratTreeDefItem',
   'Institution',
   'Division',
   'Discipline',
@@ -167,6 +164,8 @@ export function ResourceView<SCHEMA extends AnySchema>({
     resource?.specifyTable.name
   );
   const isInSearchDialog = React.useContext(SearchDialogContext);
+  const isInFormEditor = React.useContext(InFormEditorContext);
+
   const {
     formElement,
     formPreferences,
@@ -254,7 +253,8 @@ export function ResourceView<SCHEMA extends AnySchema>({
     !isSubForm &&
     typeof resource === 'object' &&
     !resource.isNew() &&
-    hasTablePermission(resource.specifyTable.name, 'delete') ? (
+    hasTablePermission(resource.specifyTable.name, 'delete') &&
+    !isInFormEditor ? (
       <ErrorBoundary dismissible>
         <DeleteButton
           deletionMessage={deletionMessage}

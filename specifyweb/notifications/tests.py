@@ -1,12 +1,11 @@
 from datetime import datetime
 import json
 import logging
-from urllib import request
 from specifyweb.notifications.models import Message
 from django.test import Client
 logger = logging.getLogger(__name__)
 
-from specifyweb.specify.api_tests import ApiTests
+from specifyweb.specify.tests.test_api import ApiTests
 
 class NotificationsTests(ApiTests): 
     def test_get_notification_with_param_since(self): 

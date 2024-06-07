@@ -1,3 +1,4 @@
+import { resourcesText } from '../../localization/resources';
 import type { BusinessRuleResult } from './businessRules';
 import type { AnySchema, TableFields } from './helperTypes';
 import {
@@ -9,6 +10,7 @@ import {
   updateLoanPrep,
 } from './interactionBusinessRules';
 import type { SpecifyResource } from './legacyTypes';
+import { setSaveBlockers } from './saveBlockers';
 import type { Collection } from './specifyTable';
 import { tables } from './tables';
 import type {
@@ -43,6 +45,8 @@ export type BusinessRuleDefs<SCHEMA extends AnySchema> = {
 type MappedBusinessRuleDefs = {
   readonly [TABLE in keyof Tables]?: BusinessRuleDefs<Tables[TABLE]>;
 };
+
+const CURRENT_DETERMINATION_KEY = 'determination-isCurrent';
 
 export const businessRuleDefs: MappedBusinessRuleDefs = {
   Address: {
@@ -146,23 +150,6 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
   },
 
   Determination: {
-    customInit: (determinaton: SpecifyResource<Determination>): void => {
-      if (determinaton.isNew()) {
-        const setCurrent = () => {
-          determinaton.set('isCurrent', true);
-          if (determinaton.collection !== undefined) {
-            determinaton.collection.models.forEach(
-              (other: SpecifyResource<Determination>) => {
-                if (other.cid !== determinaton.cid)
-                  other.set('isCurrent', false);
-              }
-            );
-          }
-        };
-        if (determinaton.collection !== null) setCurrent();
-        determinaton.on('add', setCurrent);
-      }
-    },
     fieldChecks: {
       taxon: async (
         determination: SpecifyResource<Determination>
@@ -195,6 +182,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       isCurrent: async (
         determination: SpecifyResource<Determination>
       ): Promise<BusinessRuleResult> => {
+        // Disallow multiple determinations being checked as current
         if (
           determination.get('isCurrent') &&
           determination.collection !== undefined
@@ -207,16 +195,46 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             }
           );
         }
+        // Flag as invalid if no determinations are checked as current
         if (
           determination.collection !== undefined &&
           !determination.collection.models.some(
             (c: SpecifyResource<Determination>) => c.get('isCurrent')
           )
         ) {
-          determination.set('isCurrent', true);
+          return {
+            isValid: false,
+            reason: resourcesText.currentDeterminationRequired(),
+            saveBlockerKey: CURRENT_DETERMINATION_KEY,
+            resource: determination.collection.related,
+          };
         }
-        return { isValid: true };
+        return {
+          isValid: true,
+          saveBlockerKey: CURRENT_DETERMINATION_KEY,
+          resource: determination.collection?.related,
+        };
       },
+    },
+    onRemoved: (determination, collection): void => {
+      // Block save when a current determination is deleted
+      if (determination.get('isCurrent'))
+        setSaveBlockers(
+          collection.related ?? determination,
+          determination.specifyTable.field.isCurrent,
+          [resourcesText.currentDeterminationRequired()],
+          CURRENT_DETERMINATION_KEY
+        );
+    },
+    onAdded: (determination, collection): void => {
+      determination.set('isCurrent', true);
+      // Clear any existing save blocker on adding a new current determination
+      setSaveBlockers(
+        collection.related ?? determination,
+        determination.specifyTable.field.isCurrent,
+        [],
+        CURRENT_DETERMINATION_KEY
+      );
     },
   },
   DisposalPreparation: {

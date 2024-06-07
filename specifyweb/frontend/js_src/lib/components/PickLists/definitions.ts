@@ -44,6 +44,7 @@ const auditLogActions = [
   queryText.treeMove(),
   queryText.treeSynonymize(),
   queryText.treeDesynonymize(),
+  queryText.treeBulkMove(),
 ] as const;
 
 const pickListSortTypes = f.store(() => [

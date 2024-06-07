@@ -74,7 +74,7 @@ export function TreeSelectDialog({
         </Button.Secondary>
       }
       header={title}
-      icon={<span className="text-blue-500">{icons.tree}</span>}
+      icon={icons.tree}
       onClose={handleClose}
     >
       {isFinished ? (

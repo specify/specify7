@@ -49,6 +49,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   onDelete: handleDelete,
   onFetch: handleFetch,
   onCarryBulk: handleCarryBulk,
+  hasSeveralResourceType,
   ...rest
 }: Omit<RecordSelectorProps<SCHEMA>, 'index' | 'records'> & {
   /*
@@ -76,6 +77,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     index: number
   ) => Promise<RA<number | undefined> | undefined>;
   readonly onCarryBulk?: (ids: RA<number>) => void;
+  readonly hasSeveralResourceType?: boolean;
 }): JSX.Element | null {
   const [records, setRecords] = React.useState<
     RA<SpecifyResource<SCHEMA> | undefined>
@@ -185,8 +187,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
 
   const hasAttachments = tablesWithAttachments().includes(table);
 
-  const isNewRecordSet = isInRecordSet && title === undefined;
-
   return (
     <>
       <ResourceView
@@ -208,7 +208,10 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                   aria-label={addLabel}
                   disabled={isReadOnly}
                   title={addLabel}
-                  onClick={handleAdding}
+                  onClick={() => {
+                    const resource = new table.Resource();
+                    handleAdding([resource]);
+                  }}
                 />
               ) : undefined}
               {typeof handleRemove === 'function' && canRemove ? (
@@ -226,7 +229,9 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                   className={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
                 />
               )}
-              {hasAttachments && !isNewRecordSet ? (
+              {hasAttachments &&
+              !hasSeveralResourceType &&
+              !resource?.isNew() ? (
                 <RecordSetAttachments records={records} onFetch={handleFetch} />
               ) : undefined}
               {specifyNetworkBadge}
