@@ -240,7 +240,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
           </div>
         )}
         isDependent={isDependent}
-        isInRecordSet={!isNewRecordSet}
         isLoading={isLoading || isExternalLoading}
         isSubForm={false}
         resource={resource}
