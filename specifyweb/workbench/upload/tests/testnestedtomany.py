@@ -170,7 +170,7 @@ class NestedToManyTests(UploadTestsBase):
                 agent_2_specialty_3=''
             ),  
             dict(
-                sfn='1', # this will be uploaded
+                sfn='1', # this will be matched
                 coll_1_name='', # this should be a collecting event with just one collector
                 agent_1_specialty_1= '', 
                 agent_1_specialty_2= '', 
@@ -181,13 +181,38 @@ class NestedToManyTests(UploadTestsBase):
                 agent_2_specialty_2='speciality6',
                 agent_2_specialty_3=''
             ),
-            
+            dict(
+                sfn='1', # this will be matched
+                coll_1_name='', # this should be a collecting event with just one collector
+                agent_1_specialty_1= '', 
+                agent_1_specialty_2= '', 
+                agent_1_specialty_3= '', 
+                agent_1_specialty_4= '',
+                coll_2_name='agent 2', # this will be a matched
+                agent_2_specialty_1='speciality5',
+                agent_2_specialty_2='speciality6',
+                agent_2_specialty_3=''
+            ),
+            dict(
+                sfn='1', # this will be matched
+                coll_1_name='agent 1', # this should be a new agent with 2 specialties
+                agent_1_specialty_1= 'speciality1', 
+                agent_1_specialty_2= '', 
+                agent_1_specialty_3= 'speciality3', 
+                agent_1_specialty_4= '',
+                coll_2_name='agent 2', # this should be matched
+                agent_2_specialty_1='speciality5',
+                agent_2_specialty_2='speciality6',
+                agent_2_specialty_3='speciality7'
+            )
         ]
 
         results = do_upload(self.collection, data, plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
-
-        for r in results:
-            self.assertIsInstance(r.record_result, Uploaded, 'All collecting events must be created')
+        expected_results = [(Uploaded, -1), (Uploaded, -1), (Uploaded, -1), (Uploaded, -1), (Matched, 3), (Matched, 1)]
+        for r, (e, check) in zip(results, expected_results):
+            self.assertIsInstance(r.record_result, e)
+            if isinstance(e, Matched):
+                self.assertEqual(r.record_result.get_id(), results[check].record_result.get_id())
             
         
         agents_matching = [[(0, 1), (1, 1)], [(2, 1), (3, 1)]]
@@ -203,9 +228,9 @@ class NestedToManyTests(UploadTestsBase):
                 agents_added.add(agent.get_id())
             self.assertEqual(len(agents_added), 1, f"Match was not successful for pair {pair}")
         
-        self.assertIsInstance(results[-1].toMany['collectors'][0].record_result, NullRecord)
+        self.assertIsInstance(results[3].toMany['collectors'][0].record_result, NullRecord)
         self.assertEqual(
-            get_table('Collector').objects.filter(collectingevent_id=results[-1].record_result.get_id()).count(),
+            get_table('Collector').objects.filter(collectingevent_id=results[3].record_result.get_id()).count(),
             1
             )
         
