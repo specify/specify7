@@ -1,5 +1,5 @@
 from jsonschema import validate # type: ignore
-from typing import Dict
+from typing import Any, Dict, List, Tuple
 from specifyweb.workbench.upload.tests.base import UploadTestsBase
 from specifyweb.workbench.upload.upload import do_upload
 from specifyweb.workbench.upload.upload_result import Matched, NullRecord, Uploaded
@@ -168,7 +168,7 @@ class NestedToManyTests(UploadTestsBase):
                 agent_2_specialty_1='speciality5',
                 agent_2_specialty_2='speciality6',
                 agent_2_specialty_3=''
-            ),
+            ),  
             dict(
                 sfn='1', # this will be uploaded
                 coll_1_name='', # this should be a collecting event with just one collector
@@ -209,7 +209,7 @@ class NestedToManyTests(UploadTestsBase):
             1
             )
         
-        new_agents_created = {
+        new_agents_created: Dict[Tuple[int, int], List[Any]] = {
             (0, 0): [Uploaded]*4,
             (0, 1): [Uploaded]*3,
             (1, 0): [Uploaded, NullRecord, Uploaded, NullRecord],
