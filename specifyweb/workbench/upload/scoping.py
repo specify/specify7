@@ -7,7 +7,6 @@ from specifyweb.stored_queries.format import get_date_format
 
 from .uploadable import ScopedUploadable
 from .upload_table import UploadTable, ScopedUploadTable, ScopedOneToOneTable
-from .tomany import ToManyRecord, ScopedToManyRecord
 from .treerecord import TreeRecord, ScopedTreeRecord
 from .column_options import ColumnOptions, ExtendedColumnOptions
 
@@ -138,7 +137,7 @@ def get_deferred_scoping(key, table_name, uploadable, row, base_ut):
     return False, uploadable._replace(overrideScope = {'collection': collection_id})
 
 def _apply_scoping_to_uploadtable(table, row, collection, base_ut):
-    def _update_uploadtable(field: str, uploadable: Union[UploadTable, ToManyRecord]):
+    def _update_uploadtable(field: str, uploadable: UploadTable):
         can_cache_this, uploadable = get_deferred_scoping(field, table.django_name, uploadable, row, base_ut)
         can_cache_sub, scoped = uploadable.apply_scoping(collection, row)
         return can_cache_this and can_cache_sub, scoped
@@ -159,7 +158,7 @@ def apply_scoping_to_uploadtable(ut: UploadTable, collection, row=None) -> Tuple
     callback = _apply_scoping_to_uploadtable(table, row, collection, ut)
     can_cache_to_one, to_ones = apply_scoping_to_one(ut, collection, table, callback)
 
-    to_many_results: List[Tuple[str, List[Tuple[bool, ScopedToManyRecord]]]] = [
+    to_many_results: List[Tuple[str, List[Tuple[bool, ScopedUploadTable]]]] = [
         (f,  [(callback(f, r)) for r in rs]) for (f, rs) in ut.toMany.items()
     ]
 
@@ -174,7 +173,7 @@ def apply_scoping_to_uploadtable(ut: UploadTable, collection, row=None) -> Tuple
         wbcols={f: extend_columnoptions(colopts, collection, table.name, f) for f, colopts in ut.wbcols.items()},
         static=static_adjustments(table, ut.wbcols, ut.static),
         toOne=to_ones,
-        toMany=to_many,
+        toMany=to_many, #type: ignore
         scopingAttrs=scoping_relationships(collection, table),
         disambiguation=None,
     )
@@ -210,24 +209,11 @@ def static_adjustments(table: Table, wbcols: Dict[str, ColumnOptions], static: D
         static = static
     return static
 
-def set_order_number(i: int, tmr: ScopedToManyRecord) -> ScopedToManyRecord:
+def set_order_number(i: int, tmr: ScopedUploadTable) -> ScopedUploadTable:
     table = datamodel.get_table_strict(tmr.name)
     if table.get_field('ordernumber'):
         return tmr._replace(scopingAttrs={**tmr.scopingAttrs, 'ordernumber': i})
     return tmr
-
-def apply_scoping_to_tomanyrecord(tmr: ToManyRecord, collection, row) -> Tuple[bool, ScopedToManyRecord]:
-    table = datamodel.get_table_strict(tmr.name)
-    callback = _apply_scoping_to_uploadtable(table, row, collection, tmr)
-    can_cache_to_one, to_ones = apply_scoping_to_one(tmr, collection, table, callback)
-
-    return can_cache_to_one, ScopedToManyRecord(
-        name=tmr.name,
-        wbcols={f: extend_columnoptions(colopts, collection, table.name, f) for f, colopts in tmr.wbcols.items()},
-        static=static_adjustments(table, tmr.wbcols, tmr.static),
-        toOne=to_ones,
-        scopingAttrs=scoping_relationships(collection, table),
-    )
 
 def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> Tuple[bool, ScopedTreeRecord]:
     table = datamodel.get_table_strict(tr.name)

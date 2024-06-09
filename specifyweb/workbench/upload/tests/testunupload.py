@@ -1,12 +1,12 @@
 from specifyweb.specify import auditcodes
 from specifyweb.specify.api_tests import get_table
 from .base import UploadTestsBase
-from ..upload import do_upload, do_upload_csv, unupload_record
+from ..upload import do_upload, unupload_record
 from ..upload_table import UploadTable
 from ..treerecord import TreeRecord
-from ..tomany import ToManyRecord
 from ..upload_plan_schema import parse_column_options
 
+from django.conf import settings
 
 class UnUploadTests(UploadTestsBase):
     def setUp(self) -> None:
@@ -64,7 +64,7 @@ class UnUploadTests(UploadTestsBase):
                          ).count(),
                          "No picklistitems in audit log yet.")
 
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        results = do_upload(self.collection, data, plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
 
         self.assertEqual(3, get_table('Picklistitem').objects.filter(picklist__name='Habitat').count(),
                          "There are now three items in the picklist.")
@@ -121,7 +121,7 @@ class UnUploadTests(UploadTestsBase):
                          ).count(),
                          "No geography in audit log yet.")
 
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        results = do_upload(self.collection, data, plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
 
         self.assertEqual(9,
                          get_table('Spauditlog').objects.filter(
@@ -192,7 +192,7 @@ class UnUploadTests(UploadTestsBase):
                     static={},
                     toOne={},
                     toMany={
-                        'collectors': [ToManyRecord(
+                        'collectors': [UploadTable(
                             name='Collector',
                             wbcols={},
                             static={},
@@ -206,7 +206,10 @@ class UnUploadTests(UploadTestsBase):
                                     toOne={},
                                     toMany={},
                                 ),
-                            })]
+                            },
+                            toMany={}
+                            )
+                            ]
                     }
                 )
             },
@@ -217,6 +220,6 @@ class UnUploadTests(UploadTestsBase):
             {'catno': '1', 'cataloger': 'Doe', 'collector': 'Doe'},
         ]
 
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        results = do_upload(self.collection, data, plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
         for result in reversed(results):
             unupload_record(result, self.agent)

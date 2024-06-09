@@ -11,11 +11,14 @@ from typing_extensions import TypedDict
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify import models
 from .column_options import ColumnOptions, ExtendedColumnOptions
-from .parsing import ParseResult, ParseFailure, parse_many, filter_and_upload
+from .parsing import Filter, ParseResult, ParseFailure, parse_many, filter_and_upload
 from .upload_result import UploadResult, NullRecord, NoMatch, Matched, \
     MatchedMultiple, Uploaded, ParseFailures, FailedBusinessRule, ReportInfo, \
     TreeInfo
-from .uploadable import Row, FilterPack, Disambiguation as DA, Auditor
+from .uploadable import FilterPredicate, PredicateWithQuery, Row, Disambiguation as DA, Auditor
+
+from sqlalchemy.orm import Query # type: ignore
+from sqlalchemy import Table as SQLTable # type: ignore
 
 logger = logging.getLogger(__name__)
 
@@ -57,7 +60,7 @@ class ScopedTreeRecord(NamedTuple):
     def get_treedefs(self) -> Set:
         return {self.treedef}
 
-    def bind(self, collection, row: Row, uploadingAgentId: Optional[int], auditor: Auditor, cache: Optional[Dict]=None, row_index: Optional[int] = None) -> Union["BoundTreeRecord", ParseFailures]:
+    def bind(self, collection, row: Row, uploadingAgentId: Optional[int], auditor: Auditor, sql_alchemy_session, cache: Optional[Dict]=None) -> Union["BoundTreeRecord", ParseFailures]:
         parsedFields: Dict[str, List[ParseResult]] = {}
         parseFails: List[ParseFailure] = []
         for rank, cols in self.ranks.items():
@@ -94,8 +97,8 @@ class MustMatchTreeRecord(TreeRecord):
         return _can_cache, ScopedMustMatchTreeRecord(*s)
 
 class ScopedMustMatchTreeRecord(ScopedTreeRecord):
-    def bind(self, collection, row: Row, uploadingAgentId: Optional[int], auditor: Auditor, cache: Optional[Dict]=None, row_index: Optional[int] = None) -> Union["BoundMustMatchTreeRecord", ParseFailures]:
-        b = super().bind(collection, row, uploadingAgentId, auditor, cache, row_index)
+    def bind(self, collection, row: Row, uploadingAgentId: Optional[int], auditor: Auditor, sql_alchemy_session, cache: Optional[Dict]=None) -> Union["BoundMustMatchTreeRecord", ParseFailures]:
+        b = super().bind(collection, row, uploadingAgentId, auditor, sql_alchemy_session, cache)
         return b if isinstance(b, ParseFailures) else BoundMustMatchTreeRecord(*b)
 
 class TreeDefItemWithParseResults(NamedTuple):
@@ -126,8 +129,11 @@ class BoundTreeRecord(NamedTuple):
     def must_match(self) -> bool:
         return False
 
-    def filter_on(self, path: str) -> FilterPack:
-        return FilterPack([], [])
+    def get_predicates(self, query: Query, sql_table: SQLTable, to_one_override: Dict[str, UploadResult]={}, path: List[str] = []) -> PredicateWithQuery:
+        return query, FilterPredicate()
+    
+    def map_static_to_db(self) -> Filter:
+        raise NotImplementedError("to-many to trees not supported!")
 
     def match_row(self) -> UploadResult:
         return self._handle_row(must_match=True)

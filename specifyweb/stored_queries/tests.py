@@ -47,7 +47,37 @@ with session.context() as session:
 
 """
 
+def setup_sqlalchemy(url: str):
+  engine = sqlalchemy.create_engine(url, pool_recycle=settings.SA_POOL_RECYCLE,
+                                  connect_args={'cursorclass': SSCursor})
+  
+  # BUG: Raise 0-row exception somewhere here.
+  @event.listens_for(engine, 'before_cursor_execute', retval=True)
+  # Listen to low-level cursor execution events. Just before query is executed by SQLAlchemy, run it instead
+  # by Django, and then return a wrapped sql statement which will return the same result set.
+  def run_django_query(conn, cursor, statement, parameters, context, executemany):
+      django_cursor = connection.cursor()
+      # Get MySQL Compatible compiled query.
+      # print('##################################################################')
+      # print(statement % parameters)
+      # print('##################################################################')
+      django_cursor.execute(statement, parameters)
+      result_set = django_cursor.fetchall()
+      columns = django_cursor.description
+      # SqlAlchemy needs to find columns back in the rows, hence adding label to columns
+      selects = [sqlalchemy.select([sqlalchemy.literal(column).label(columns[idx][0]) for idx, column in enumerate(row)]) for row
+                  in result_set]
+      # union all instead of union because rows can be duplicated in the original query,
+      # but still need to preserve the duplication
+      unioned = sqlalchemy.union_all(*selects)
+      # Tests will fail when migrated to different background. TODO: Auto-detect dialects
+      final_query = str(unioned.compile(compile_kwargs={"literal_binds": True, }, dialect=mysql.dialect()))
 
+      return final_query, ()
+  
+  Session = orm.sessionmaker(bind=engine)
+  return engine, models.make_session_context(Session)
+  
 class SQLAlchemySetup(ApiTests):
 
     test_sa_url = None
@@ -58,35 +88,10 @@ class SQLAlchemySetup(ApiTests):
     def setUpClass(cls):
         # Django creates a new database for testing. SQLAlchemy needs to connect to the test database
         super().setUpClass()
-        _engine = sqlalchemy.create_engine(settings.SA_TEST_DB_URL, pool_recycle=settings.SA_POOL_RECYCLE,
-                                  connect_args={'cursorclass': SSCursor})
 
-        cls.engine = _engine
-        Session = orm.sessionmaker(bind=_engine)
-
-        cls.test_session_context = models.make_session_context(Session)
-
-        @event.listens_for(_engine, 'before_cursor_execute', retval=True)
-        # Listen to low-level cursor execution events. Just before query is executed by SQLAlchemy, run it instead
-        # by Django, and then return a wrapped sql statement which will return the same result set.
-        def run_django_query(conn, cursor, statement, parameters, context, executemany):
-            django_cursor = connection.cursor()
-            # Get MySQL Compatible compiled query.
-            django_cursor.execute(statement, parameters)
-            result_set = django_cursor.fetchall()
-            columns = django_cursor.description
-            django_cursor.close()
-            # SqlAlchemy needs to find columns back in the rows, hence adding label to columns
-            selects = [sqlalchemy.select([sqlalchemy.literal(column).label(columns[idx][0]) for idx, column in enumerate(row)]) for row
-                       in result_set]
-            # union all instead of union because rows can be duplicated in the original query,
-            # but still need to preserve the duplication
-            unioned = sqlalchemy.union_all(*selects)
-            # Tests will fail when migrated to different background. TODO: Auto-detect dialects
-            final_query = str(unioned.compile(compile_kwargs={"literal_binds": True, }, dialect=mysql.dialect()))
-            return final_query, ()
-
-
+        engine, session_context = setup_sqlalchemy(settings.SA_TEST_DB_URL)
+        cls.engine = engine
+        cls.test_session_context = session_context
 
 class SQLAlchemySetupTest(SQLAlchemySetup):
 

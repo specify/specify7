@@ -7,6 +7,7 @@ from specifyweb.specify.api_tests import get_table
 from .base import UploadTestsBase
 from . import example_plan
 
+from django.conf import settings
 
 class ScopingTests(UploadTestsBase):
 
@@ -73,7 +74,7 @@ class ScopingTests(UploadTestsBase):
         self.collection.isembeddedcollectingevent = True
         self.collection.save()
 
-        plan = parse_plan(self.collection, example_plan.json)
+        plan = parse_plan(example_plan.json)
 
         assert isinstance(plan, UploadTable)
         ce_rel = plan.toOne['collectingevent']
@@ -111,7 +112,7 @@ class ScopingTests(UploadTestsBase):
 
     def test_caching_scoped_false(self) -> None:
 
-        plan = parse_plan(self.collection, self.collection_rel_plan).apply_scoping(self.collection)
+        plan = parse_plan(self.collection_rel_plan).apply_scoping(self.collection)
 
         self.assertFalse(plan[0], 'contains collection relationship, should never be cached')
 
@@ -169,12 +170,12 @@ class ScopingTests(UploadTestsBase):
         self.assertEqual(scoped_upload_plan, expected_scoping)
 
     def test_collection_rel_uploaded_in_correct_collection(self):
-        scoped_plan = parse_plan(self.collection, self.collection_rel_plan)
+        scoped_plan = parse_plan(self.collection_rel_plan)
         rows = [
             {'Collection Rel Type': self.rel_type_name, 'Cat # (2)': '999', 'Cat #': '23'}, 
             {'Collection Rel Type': self.rel_type_name, 'Cat # (2)': '888', 'Cat #': '32'}
         ]
-        result = do_upload(self.collection, rows, scoped_plan, self.agent.id)
+        result = do_upload(self.collection, rows, scoped_plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
         left_side_cat_nums = [n.zfill(9) for n in '32 23'.split()]
         right_side_cat_nums = '999 888'.split()
         left_side_query = models.Collectionobject.objects.filter(collection_id=self.collection.id, catalognumber__in=left_side_cat_nums)

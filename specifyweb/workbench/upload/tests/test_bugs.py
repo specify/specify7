@@ -12,7 +12,7 @@ from ..upload_plan_schema import parse_plan
 
 from .base import UploadTestsBase
 from specifyweb.specify.api_tests import get_table
-
+from django.conf import settings
 class BugTests(UploadTestsBase):
 
     @expectedFailure # FIX ME
@@ -45,9 +45,9 @@ class BugTests(UploadTestsBase):
 
         row = ["", "Fundulus", "olivaceus"]
 
-        up = parse_plan(self.collection, plan).apply_scoping(self.collection)[1]
+        up = parse_plan(plan).apply_scoping(self.collection)[1]
 
-        result = validate_row(self.collection, up, self.agent.id, dict(zip(cols, row)), None)
+        result = validate_row(self.collection, up, self.agent.id, dict(zip(cols, row)), None, session_url=settings.SA_TEST_DB_URL)
         self.assertNotIsInstance(result.record_result, NullRecord, "The CO should be created b/c it has determinations.")
 
     def test_duplicate_refworks(self) -> None:
@@ -103,7 +103,7 @@ class BugTests(UploadTestsBase):
             Matched, # 7602,1,The Clupeocephala,45,635-657,2010,10.4067/S0718-19572010000400009,https://doi.org/10.4067/S0718-19572010000400009,Arratia,Gloria,,,,,,,
         ]
 
-        plan = parse_plan(self.collection, json.loads('''
+        plan = parse_plan(json.loads('''
         {
 	"baseTableName": "referencework",
 	"uploadable": {
@@ -170,6 +170,6 @@ class BugTests(UploadTestsBase):
 	}
 }
 '''))
-        upload_results = do_upload_csv(self.collection, reader, plan, self.agent.id)
+        upload_results = do_upload_csv(self.collection, reader, plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
         rr = [r.record_result.__class__ for r in upload_results]
         self.assertEqual(expected, rr)

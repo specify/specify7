@@ -14,7 +14,8 @@ from specifyweb.specify import models
 from specifyweb.specify.auditlog import auditlog
 from specifyweb.specify.datamodel import Table
 from specifyweb.specify.tree_extras import renumber_tree, set_fullnames
-
+from specifyweb.stored_queries.tests import setup_sqlalchemy
+from django.conf import settings
 from . import disambiguation
 from .upload_plan_schema import schema, parse_plan_with_basetable
 from .upload_result import Uploaded, UploadResult, ParseFailures, \
@@ -185,7 +186,7 @@ def get_raw_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, Uploadable
         raise Exception("upload plan json is invalid")
 
     validate(plan, schema)
-    base_table, plan = parse_plan_with_basetable(collection, plan)
+    base_table, plan = parse_plan_with_basetable(plan)
     return base_table, plan
 
 def get_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, ScopedUploadable]:
@@ -201,7 +202,8 @@ def do_upload(
         disambiguations: Optional[List[Disambiguation]]=None,
         no_commit: bool=False,
         allow_partial: bool=True,
-        progress: Optional[Progress]=None
+        progress: Optional[Progress]=None,
+        session_url = None,
 ) -> List[UploadResult]:
     cache: Dict = {}
     _auditor = Auditor(collection=collection, audit_log=None if no_commit else auditlog,
@@ -210,6 +212,7 @@ def do_upload(
                        skip_create_permission_check=no_commit)
     total = len(rows) if isinstance(rows, Sized) else None
     cached_scope_table = None
+    wb_session_context = setup_sqlalchemy_wb(session_url)
     with savepoint("main upload"):
         tic = time.perf_counter()
         results: List[UploadResult] = []
@@ -226,8 +229,10 @@ def do_upload(
                 else:
                     scoped_table = cached_scope_table
 
-                bind_result = scoped_table.disambiguate(da).bind(collection, row, uploading_agent_id, _auditor, cache, i)
-                result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.process_row()
+                with wb_session_context() as session:
+                    bind_result = scoped_table.disambiguate(da).bind(collection, row, uploading_agent_id, _auditor, session, cache)
+                    result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.process_row()
+                    
                 results.append(result)
                 if progress is not None:
                     progress(len(results), total)
@@ -248,13 +253,15 @@ def do_upload(
 
 do_upload_csv = do_upload
 
-def validate_row(collection, upload_plan: ScopedUploadable, uploading_agent_id: int, row: Row, da: Disambiguation) -> UploadResult:
+def validate_row(collection, upload_plan: ScopedUploadable, uploading_agent_id: int, row: Row, da: Disambiguation, session_url: Optional[str]=None) -> UploadResult:
     retries = 3
+    session_context = setup_sqlalchemy_wb(session_url)
     while True:
         try:
             with savepoint("row validation"):
-                bind_result = upload_plan.disambiguate(da).bind(collection, row, uploading_agent_id, Auditor(collection, None))
-                result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.process_row()
+                with session_context() as session:
+                    bind_result = upload_plan.disambiguate(da).bind(collection, row, uploading_agent_id, Auditor(collection, None), session)
+                    result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.process_row()
                 raise Rollback("validating only")
             break
 
@@ -296,3 +303,8 @@ def changed_tree(tree: str, result: UploadResult) -> bool:
 class NopLog(object):
     def insert(self, inserted_obj: Any, agent: Union[int, Any], parent_record: Optional[Any]) -> None:
         pass
+
+# to allow for unit tests to run
+def setup_sqlalchemy_wb(url: Optional[str]):
+    _, session_context = setup_sqlalchemy(url or settings.SA_DATABASE_URL)
+    return session_context

@@ -5,7 +5,6 @@ from specifyweb.specify.load_datamodel import DoesNotExistError
 from specifyweb.specify import models
 
 from .upload_table import UploadTable, OneToOneTable, MustMatchTable
-from .tomany import ToManyRecord
 from .treerecord import TreeRecord, MustMatchTreeRecord
 from .uploadable import Uploadable
 from .column_options import ColumnOptions
@@ -53,16 +52,14 @@ schema: Dict = {
                 'wbcols': { '$ref': '#/definitions/wbcols' },
                 'static': { '$ref': '#/definitions/static' },
                 'toOne': { '$ref': '#/definitions/toOne' },
-                'toMany': {
-                    'type': 'object',
-                    'desciption': 'Maps the names of -to-many relationships of the table to an array of upload definitions for each.',
-                    'additionalProperties': { 'type': 'array', 'items': { '$ref': '#/definitions/toManyRecord' } }
-                }
+                'toMany': { '$ref': '#/definitions/toManyRecords' }
             },
             'required': [ 'wbcols', 'static', 'toOne', 'toMany' ],
             'additionalProperties': False
         },
-
+        # this is not needed anymore?
+        # having it for legacy purposes (most backward compatiblity)
+        # TODO: Remove this entirely once front-end treats to-many as uploadables
         'toManyRecord': {
             'type': 'object',
             'description': 'The toManyRecord structure defines how to upload data for one record into a given table that stands '
@@ -71,7 +68,9 @@ schema: Dict = {
                 'wbcols': { '$ref': '#/definitions/wbcols' },
                 'static': { '$ref': '#/definitions/static' },
                 'toOne': { '$ref': '#/definitions/toOne' },
+                'toMany': {'$ref': '#/definitions/toManyRecords'}
             },
+            # not making tomany required, to not choke on legacy upload plans
             'required': [ 'wbcols', 'static', 'toOne' ],
             'additionalProperties': False
         },
@@ -209,37 +208,42 @@ this column will never be considered for matching purposes, only for uploading.'
             'default' : None,
             'oneOf' : [ {'type': 'integer'},
                         {'type': 'null'}]
+        },
+        'toManyRecords' : {
+                    'type': 'object',
+                    'desciption': 'Maps the names of -to-many relationships of the table to an array of upload definitions for each.',
+                    'additionalProperties': { 'type': 'array', 'items': { '$ref': '#/definitions/toManyRecord' } }
         }
     }
 }
 
 
-def parse_plan_with_basetable(collection, to_parse: Dict) -> Tuple[Table, Uploadable]:
+def parse_plan_with_basetable(to_parse: Dict) -> Tuple[Table, Uploadable]:
     base_table = datamodel.get_table_strict(to_parse['baseTableName'])
-    return base_table, parse_uploadable(collection, base_table, to_parse['uploadable'])
+    return base_table, parse_uploadable(base_table, to_parse['uploadable'])
 
-def parse_plan(collection, to_parse: Dict) -> Uploadable:
-    return parse_plan_with_basetable(collection, to_parse)[1]
+def parse_plan(to_parse: Dict) -> Uploadable:
+    return parse_plan_with_basetable(to_parse)[1]
 
-def parse_uploadable(collection, table: Table, to_parse: Dict) -> Uploadable:
+def parse_uploadable(table: Table, to_parse: Dict) -> Uploadable:
     if 'uploadTable' in to_parse:
-        return parse_upload_table(collection, table, to_parse['uploadTable'])
+        return parse_upload_table(table, to_parse['uploadTable'])
 
     if 'oneToOneTable' in to_parse:
-        return OneToOneTable(*parse_upload_table(collection, table, to_parse['oneToOneTable']))
+        return OneToOneTable(*parse_upload_table(table, to_parse['oneToOneTable']))
 
     if 'mustMatchTable' in to_parse:
-        return MustMatchTable(*parse_upload_table(collection, table, to_parse['mustMatchTable']))
+        return MustMatchTable(*parse_upload_table(table, to_parse['mustMatchTable']))
 
     if 'mustMatchTreeRecord' in to_parse:
-        return MustMatchTreeRecord(*parse_tree_record(collection, table, to_parse['mustMatchTreeRecord']))
+        return MustMatchTreeRecord(*parse_tree_record(table, to_parse['mustMatchTreeRecord']))
 
     if 'treeRecord' in to_parse:
-        return parse_tree_record(collection, table, to_parse['treeRecord'])
+        return parse_tree_record(table, to_parse['treeRecord'])
 
     raise ValueError('unknown uploadable type')
 
-def parse_upload_table(collection, table: Table, to_parse: Dict) -> UploadTable:
+def parse_upload_table(table: Table, to_parse: Dict) -> UploadTable:
 
     def rel_table(key: str) -> Table:
         return datamodel.get_table_strict(table.get_relationship(key).relatedModelName)
@@ -250,16 +254,23 @@ def parse_upload_table(collection, table: Table, to_parse: Dict) -> UploadTable:
         wbcols={k: parse_column_options(v) for k,v in to_parse['wbcols'].items()},
         static=to_parse['static'],
         toOne={
-            key: parse_uploadable(collection, rel_table(key), to_one)
+            key: parse_uploadable(rel_table(key), to_one)
                 for key, to_one in to_parse['toOne'].items()
         },
         toMany={
-            key: [parse_to_many_record(collection, rel_table(key), record) for record in to_manys]
-            for key, to_manys in to_parse['toMany'].items()
+            key: [parse_uploadable(rel_table(key), _hacky_augment_to_many(record)) for record in to_manys]
+            # legacy
+            for key, to_manys in to_parse.get('toMany', {}).items()
         }
     )
 
-def parse_tree_record(collection, table: Table, to_parse: Dict) -> TreeRecord:
+# TODO: Figure out a better way to do this. Django migration? Silently handle it?
+def _hacky_augment_to_many(to_parse: Dict):
+    return {
+        'uploadTable': to_parse
+    }
+
+def parse_tree_record(table: Table, to_parse: Dict) -> TreeRecord:
     ranks = {
         rank: {'name': parse_column_options(name_or_cols)} if isinstance(name_or_cols, str)
         else {k: parse_column_options(v) for k,v in name_or_cols['treeNodeCols'].items() }
@@ -271,21 +282,6 @@ def parse_tree_record(collection, table: Table, to_parse: Dict) -> TreeRecord:
     return TreeRecord(
         name=table.django_name,
         ranks=ranks,
-    )
-
-def parse_to_many_record(collection, table: Table, to_parse: Dict) -> ToManyRecord:
-
-    def rel_table(key: str) -> Table:
-        return datamodel.get_table_strict(table.get_relationship(key).relatedModelName)
-
-    return ToManyRecord(
-        name=table.django_name,
-        wbcols={k: parse_column_options(v) for k,v in to_parse['wbcols'].items()},
-        static=to_parse['static'],
-        toOne={
-            key: parse_uploadable(collection, rel_table(key), to_one)
-            for key, to_one in to_parse['toOne'].items()
-        },
     )
 
 def parse_column_options(to_parse: Union[str, Dict]) -> ColumnOptions:
