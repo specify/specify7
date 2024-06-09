@@ -10,9 +10,7 @@ from ..upload_plan_schema import schema, parse_plan
 from django.conf import settings
 
 class OneToOneTests(UploadTestsBase):
-    def setUp(self) -> None:
-        super().setUp()
-
+    
     def plan(self, one_to_one: bool) -> Dict:
         reltype = 'oneToOneTable' if one_to_one else 'uploadTable'
         return dict(
