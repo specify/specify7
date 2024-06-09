@@ -112,7 +112,8 @@ def do_upload_dataset(
         ds: Spdataset,
         no_commit: bool,
         allow_partial: bool,
-        progress: Optional[Progress]=None
+        progress: Optional[Progress]=None,
+        session_url: Optional[str] = None
 ) -> List[UploadResult]:
     if ds.was_uploaded(): raise AssertionError("Dataset already uploaded", {"localizationKey" : "datasetAlreadyUploaded"})
     ds.rowresults = None
@@ -124,7 +125,7 @@ def do_upload_dataset(
     disambiguation = [get_disambiguation_from_row(ncols, row) for row in ds.data]
     base_table, upload_plan = get_raw_ds_upload_plan(collection, ds)
 
-    results = do_upload(collection, rows, upload_plan, uploading_agent_id, disambiguation, no_commit, allow_partial, progress)
+    results = do_upload(collection, rows, upload_plan, uploading_agent_id, disambiguation, no_commit, allow_partial, progress, session_url=session_url)
     success = not any(r.contains_failure() for r in results)
     if not no_commit:
         ds.uploadresult = {
