@@ -881,7 +881,7 @@ def upload_locality_set(request: http.HttpRequest):
                                     "properties": {
                                         "taskstatus": {
                                             "type": "string",
-                                            "enum": [LocalityImportStatus.PROGRESS]
+                                            "enum": [LocalityImportStatus.PROGRESS, LocalityImportStatus.PARSING]
                                         },
                                         "taskinfo": {
                                             "type": "object",
@@ -1032,7 +1032,7 @@ def abort_localityimport_task(request: http.HttpRequest, taskid: str):
         "message": None
     }
 
-    if task.state in [LocalityImportStatus.PENDING, LocalityImportStatus.PROGRESS]:
+    if task.state in [LocalityImportStatus.PENDING, LocalityImportStatus.PARSING, LocalityImportStatus.PROGRESS]:
         app.control.revoke(locality_import.taskid, terminate=True)
 
         locality_import.status = LocalityImportStatus.ABORTED

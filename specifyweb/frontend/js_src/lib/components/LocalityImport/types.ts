@@ -21,6 +21,7 @@ export type LocalityImportParseError = {
 export type LocalityImportTaskStatus =
   | 'ABORTED'
   | 'FAILED'
+  | 'PARSING'
   | 'PENDING'
   | 'PROGRESS'
   | 'SUCCEEDED';
@@ -36,6 +37,16 @@ export type LocalityImportState =
         readonly taskstatus: 'FAILED';
         readonly taskinfo: {
           readonly errors: RA<LocalityImportParseError>;
+        };
+      }
+    >
+  | State<
+      'PARSING',
+      {
+        readonly taskstatus: 'PARSING';
+        readonly taskinfo: {
+          readonly current: number;
+          readonly total: number;
         };
       }
     >

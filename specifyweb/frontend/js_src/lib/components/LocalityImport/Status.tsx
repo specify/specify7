@@ -69,9 +69,9 @@ export function LocalityImportStatus({
           setState(data);
           if (
             !destructorCalled &&
-            (['PROGRESS', 'PENDING'] as RA<LocalityImportTaskStatus>).includes(
-              data.taskstatus
-            )
+            (
+              ['PENDING', 'PARSING', 'PROGRESS'] as RA<LocalityImportTaskStatus>
+            ).includes(data.taskstatus)
           )
             globalThis.setTimeout(fetchStatus, SECOND);
         })
@@ -94,7 +94,7 @@ export function LocalityImportStatus({
   const title = localityImportStatusLocalization[state.taskstatus];
   useTitle(title);
 
-  return state.taskstatus === 'PROGRESS' ? (
+  return state.taskstatus === 'PARSING' || state.taskstatus === 'PROGRESS' ? (
     <LocalityImportProgress
       currentProgress={state.taskinfo.current}
       header={title}
