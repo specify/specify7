@@ -175,7 +175,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
             : result.saveBlockerKey;
 
         setSaveBlockers(
-          this.resource,
+          result.resource ?? this.resource,
           field,
           saveBlockerMessage,
           saveBlockerKey
@@ -470,6 +470,8 @@ export function attachBusinessRules(
 export type BusinessRuleResult<SCHEMA extends AnySchema = AnySchema> = {
   readonly localDuplicates?: RA<SpecifyResource<SCHEMA>>;
   readonly saveBlockerKey?: string;
+  // Optionally specify the resource to block save on
+  readonly resource?: SpecifyResource<SCHEMA>;
 } & (
   | {
       readonly isValid: true;
@@ -483,12 +485,12 @@ export const runAllFieldChecks = async (
 ): Promise<void> => {
   const relationships = resource.specifyTable.relationships;
   await Promise.all(
-    relationships.map(({ name }) =>
+    relationships.map(async ({ name }) =>
       resource.businessRuleManager?.checkField(name)
     )
   );
   const mapResource = (
-    result?: SpecifyResource<AnySchema> | Collection<AnySchema> | null
+    result?: Collection<AnySchema> | SpecifyResource<AnySchema> | null
   ): RA<SpecifyResource<AnySchema>> =>
     (result === undefined || result === null
       ? []
@@ -497,10 +499,10 @@ export const runAllFieldChecks = async (
       : (result as Collection<AnySchema>).models) as unknown as RA<
       SpecifyResource<AnySchema>
     >;
-  // running only on dependent resources. the order shouldn't matter.....
+  // Running only on dependent resources. the order shouldn't matter.....
   await Promise.all(
     Object.values(resource.dependentResources)
       .flatMap(mapResource)
-      .map((next) => runAllFieldChecks(next))
+      .map(async (next) => runAllFieldChecks(next))
   );
 };

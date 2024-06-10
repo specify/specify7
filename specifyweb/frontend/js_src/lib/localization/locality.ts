@@ -351,4 +351,10 @@ export const localityText = createDictionary({
   taskId: {
     'en-us': 'Task ID',
   },
+  validLatitude: {
+    'en-us': 'Latitude needs to have a value between -90° and 90°',
+  },
+  validLongitude: {
+    'en-us': 'Longitude needs to have a value between -180° and 180°',
+  },
 } as const);

@@ -243,8 +243,8 @@ export const treeText = createDictionary({
       à déplacer vers
     `,
     'ru-ru': `
-      Выберите новую цель для препаратов «{nodeName:string}», в которую нужно
-      переместить
+      Выберите новую цель для препаратов «{nodeName:string}», которые будут
+      перемещены.
     `,
     'uk-ua': `
       Виберіть нову ціль для препаратів "{nodeName:string}", до якої потрібно
@@ -532,6 +532,6 @@ export const treeText = createDictionary({
     'es-es': 'Mover elementos',
     'fr-fr': 'Déplacer des éléments',
     'ru-ru': 'Переместить предметы',
-    'uk-ua': 'Переміщення елементів',
+    'uk-ua': 'Перемістити елементи',
   },
 } as const);
