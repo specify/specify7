@@ -26,6 +26,7 @@ import {
   useAllSaveBlockers,
 } from '../DataModel/saveBlockers';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import { tables } from '../DataModel/tables';
 import { error } from '../Errors/assert';
 import { errorHandledBy } from '../Errors/FormatError';
 import { InFormEditorContext } from '../FormEditor/Context';
@@ -279,14 +280,15 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
               resource.specifyTable.name === 'CollectionObject' &&
                 carryForwardAmount > 2
                 ? async () => {
+                    const formatter =
+                      tables.CollectionObject.strictGetLiteralField(
+                        'catalogNumber'
+                      ).getUiFormatter()!;
+                    const wildCard = formatter.valueOrWild();
                     const clones = Array.from(
                       { length: carryForwardAmount },
                       async () => {
                         const clonedResource = await resource.clone(false);
-                        const formatter = clonedResource.specifyTable
-                          .strictGetLiteralField('catalogNumber')
-                          .getUiFormatter()!;
-                        const wildCard = formatter.valueOrWild();
                         await clonedResource.set(
                           'catalogNumber',
                           wildCard as never
