@@ -220,9 +220,9 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
             handleAdd?.(resources);
             const newResourceIds = resources.map((r) => r.id);
             const ids =
-              originalResourceId !== undefined
-                ? [originalResourceId].concat(newResourceIds)
-                : newResourceIds;
+              originalResourceId === undefined
+                ? newResourceIds
+                : [originalResourceId].concat(newResourceIds);
             // TODO: move handleCarryBulk logic into ResourceVieweventually
             if (ids.length > 2) handleCarryBulk?.(ids);
           })

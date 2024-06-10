@@ -240,11 +240,13 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
           </div>
         )}
         isDependent={isDependent}
-        // TODO: Figure out what to do with this line. 
-        // ResourceView in this file was never passed a isInRecordSet prop until this PR
-        // but isNewRecordSet has been removed in https://github.com/specify/specify7/pull/4904
-        // Can possibly just pass on the isInRecordSet prop received by this component?
-        // isInRecordSet={isInRecordSet}
+        /*
+         * TODO: Figure out what to do with this line.
+         * ResourceView in this file was never passed a isInRecordSet prop until this PR
+         * but isNewRecordSet has been removed in https://github.com/specify/specify7/pull/4904
+         * Can possibly just pass on the isInRecordSet prop received by this component?
+         * isInRecordSet={isInRecordSet}
+         */
         isLoading={isLoading || isExternalLoading}
         isSubForm={false}
         resource={resource}

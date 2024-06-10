@@ -433,8 +433,8 @@ function UserView({
             </SetPermissionContext>
             <ErrorBoundary dismissible>
               <LegacyPermissions
-                userResource={userResource}
                 collections={collections}
+                userResource={userResource}
               />
             </ErrorBoundary>
           </>,
