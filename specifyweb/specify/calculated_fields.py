@@ -102,7 +102,7 @@ def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
     elif isinstance(obj, get_model("Loan")):
         preps = data["loanpreparations"]
         prep_count = len(preps)
-        quantities = sum(prep.get('quantity', 0) for prep in preps)
+        quantities = sum((prep.get('quantity') or 0) for prep in preps)
         unresolved_prep_count = sum(not prep["isresolved"] for prep in preps)
         unresolved_quantities = sum(
             max((prep.get("quantity") or 0) - (prep.get("quantityresolved") or 0), 0)
