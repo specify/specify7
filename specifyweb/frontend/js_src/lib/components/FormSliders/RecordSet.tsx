@@ -431,7 +431,7 @@ function RecordSet<SCHEMA extends AnySchema>({
         onCarryBulk={(ids) => {
           loading(createNewRecordSet(ids, true));
         }}
-        onClone={(newResource): void => go(totalCount, 'new', newResource)}
+        onClone={(resources) => resources.map(newResource => go(totalCount, 'new', newResource))}
         onClose={handleClose}
         onDelete={
           (recordSet.isNew() || hasToolPermission('recordSets', 'delete')) &&

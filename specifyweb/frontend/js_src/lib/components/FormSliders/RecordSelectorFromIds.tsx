@@ -71,7 +71,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   readonly onClose: () => void;
   readonly onSaved: (resource: SpecifyResource<SCHEMA>) => void;
   readonly onClone:
-    | ((newResource: SpecifyResource<SCHEMA>) => void)
+    | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
     | undefined;
   readonly onFetch?: (
     index: number
@@ -244,13 +244,13 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
         // ResourceView in this file was never passed a isInRecordSet prop until this PR
         // but isNewRecordSet has been removed in https://github.com/specify/specify7/pull/4904
         // Can possibly just pass on the isInRecordSet prop received by this component?
-        isInRecordSet={!isNewRecordSet}
+        // isInRecordSet={isInRecordSet}
         isLoading={isLoading || isExternalLoading}
         isSubForm={false}
         resource={resource}
         title={title}
         viewName={viewName}
-        onAdd={(resources) => resources.map(r => handleClone?.(r))}
+        onAdd={handleClone}
         onCarryBulk={handleCarryBulk}
         onClose={handleClose}
         onDeleted={
