@@ -212,9 +212,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       onClick={(): void => {
         // Scroll to the top of the form on clone
         smoothScroll(form, 0);
-        loading(
-          handleClick().then(handleAdd)
-        );
+        loading(handleClick().then(handleAdd));
       }}
     >
       {label}
