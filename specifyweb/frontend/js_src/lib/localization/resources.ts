@@ -448,7 +448,7 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Не удалось разобрать XML',
     'de-ch': 'XML konnte nicht analysiert werden',
     'es-es': 'No se pudo analizar XML',
-    'fr-fr': "Échec de l'analyse XML",
+    'fr-fr': "Échec de l'analyse du XML",
     'uk-ua': 'Не вдалося проаналізувати XML',
   },
   name: {
@@ -505,7 +505,7 @@ export const resourcesText = createDictionary({
     'es-es': '(por defecto)',
     'fr-fr': '(défaut)',
     'ru-ru': '(по умолчанию)',
-    'uk-ua': '(за замовчуванням)',
+    'uk-ua': '(за умовчанням)',
   },
   sortField: {
     'en-us': 'Sort Field',
@@ -568,7 +568,7 @@ export const resourcesText = createDictionary({
     'es-es': 'Agregar definición',
     'fr-fr': 'Ajouter une définition',
     'ru-ru': 'Добавить определение',
-    'uk-ua': 'Додайте визначення',
+    'uk-ua': 'Додати визначення',
   },
   deleteDefinition: {
     'en-us': 'Delete definition',
@@ -672,7 +672,7 @@ export const resourcesText = createDictionary({
     `,
     'uk-ua': `
       Цей ресурс належить до іншої колекції/дисципліни, ніж та, у якій ви зараз
-      перебуваєте. Рекомендується змінити колекцію перед редагуванням цього
+      перебуваєте. Рекомендовано змінити колекцію перед редагуванням цього
       ресурсу
     `,
   },
@@ -833,5 +833,10 @@ export const resourcesText = createDictionary({
   },
   currentDeterminationRequired: {
     'en-us': 'A current determination is required.',
+    'de-ch': 'Eine aktuelle Feststellung ist erforderlich.',
+    'es-es': 'Se requiere una determinación actual.',
+    'fr-fr': 'Une détermination actuelle est requise.',
+    'ru-ru': 'Требуется текущее определение.',
+    'uk-ua': 'Потрібне поточне визначення.',
   },
 } as const);

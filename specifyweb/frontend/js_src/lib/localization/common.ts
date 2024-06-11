@@ -243,7 +243,7 @@ export const commonText = createDictionary({
     'ru-ru': 'Начало',
     'es-es': 'Empezar',
     'fr-fr': 'Début',
-    'uk-ua': 'старт',
+    'uk-ua': 'Почніть',
     'de-ch': 'Start',
   },
   end: {
@@ -451,7 +451,7 @@ export const commonText = createDictionary({
     'ru-ru': 'Все',
     'es-es': 'Todo',
     'fr-fr': 'Tous',
-    'uk-ua': 'все',
+    'uk-ua': 'всі',
     'de-ch': 'Alle',
   },
   unused: {
@@ -670,7 +670,7 @@ export const commonText = createDictionary({
     'en-us': 'Bulk Select',
     'es-es': 'Selección masiva',
     'de-ch': 'Mehrfachauswahl',
-    'fr-fr': 'Sélection groupée',
+    'fr-fr': 'Voir',
     'ru-ru': 'Массовый выбор',
     'uk-ua': 'Завантаження…',
   },

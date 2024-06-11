@@ -26,8 +26,8 @@ export const wbText = createDictionary({
     `,
     'fr-fr': 'Télécharger le forfait',
     'ru-ru': `
-      Обратите внимание: живая проверка — это экспериментальная функция, которая
-      не заменяет обычную проверку.
+      Обратите внимание, что живая проверка — это экспериментальная функция,
+      которая не заменяет обычную проверку.
     `,
     'uk-ua': 'План завантаження',
   },
@@ -142,7 +142,7 @@ export const wbText = createDictionary({
     `,
     'de-ch': `
       Beachten Sie, dass die Live-Validierung eine experimentelle Funktion ist
-      und keinen Ersatz für die regelmäßige Validierung darstellt.
+      und kein Ersatz für die regelmäßige Validierung darstellt.
     `,
     'es-es': `
       Tenga en cuenta que la validación en vivo es una función experimental y no
@@ -153,11 +153,11 @@ export const wbText = createDictionary({
       ne remplace pas la validation régulière.
     `,
     'ru-ru': `
-      Обратите внимание: живая проверка — это экспериментальная функция, которая
-      не заменяет обычную проверку.
+      Обратите внимание, что живая проверка — это экспериментальная функция,
+      которая не заменяет обычную проверку.
     `,
     'uk-ua': `
-      Зауважте, що перевірка в реальному часі є експериментальною функцією і не
+      Зауважте, перевірка в реальному часі є експериментальною функцією і не
       замінює звичайну перевірку.
     `,
   },
@@ -592,8 +592,8 @@ export const wbText = createDictionary({
       Перевірка не виявила помилок, вона готова до завантаження в базу даних.
     `,
     'de-ch': `
-      Bei der Validierung wurden keine Fehler gefunden. Der Upload kann in die
-      Datenbank erfolgen.
+      Bei der Validierung wurden keine Fehler gefunden. Der Upload kann nun in
+      die Datenbank erfolgen.
     `,
   },
   validationReEditWarning: {
@@ -1312,7 +1312,7 @@ export const wbText = createDictionary({
     'es-es': 'Propiedades del conjunto de datos',
     'fr-fr': "Propriétés de l'ensemble de données",
     'uk-ua': 'Властивості набору даних',
-    'de-ch': 'Datensatzeigenschaften',
+    'de-ch': 'Dataset-Eigenschaften',
   },
   dataSetName: {
     'en-us': 'Data Set Name',
@@ -1416,7 +1416,7 @@ export const wbText = createDictionary({
     'es-es': 'Estado de carga del conjunto de datos',
     'fr-fr': "Une erreur s'est produite pendant [X22X]",
     'uk-ua': 'Під час [X22X] сталася помилка',
-    'de-ch': 'Status des Datensatz-Uploads',
+    'de-ch': 'Upload-Status des Datensatzes',
   },
   wbStatusValidation: {
     'en-us': 'Data Set Validation Status',
