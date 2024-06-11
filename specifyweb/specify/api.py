@@ -51,6 +51,31 @@ def get_model(name: str):
                     return model
         raise e
 
+def correct_field_name(model, field_name: str, ignore_properties: bool = True) -> str:
+    """Return the correct field name for a model given a case insensitive
+    field name. If the field is not found, raise FieldDoesNotExist.
+    """
+    if not ignore_properties:
+        try:
+            getattr(model, field_name) # Able to retrieve model @property
+            return field_name
+        except AttributeError as e:
+            pass
+    
+    try:
+        model._meta.get_field(field_name) # Retrieve field from model by proper name
+        return field_name
+    except FieldDoesNotExist:
+        pass
+
+    # Retrieve field from model by case insensitive name
+    field_name = field_name.lower()
+    for field in model._meta.get_fields():
+        if field.name.lower() == field_name:
+            return field.name
+    
+    raise FieldDoesNotExist(f"field '{field_name}' not found in {model}")
+
 class JsonEncoder(json.JSONEncoder):
     """Augmented JSON encoder that handles datetime and decimal objects."""
     def default(self, obj):
@@ -352,11 +377,11 @@ def cleanData(model, data: Dict[str, Any], agent) -> Dict[str, Any]:
             # These fields are meta data, not part of the resource.
             continue
         try:
-            model._meta.get_field(field_name)
+            db_field_name = correct_field_name(model, field_name)
         except FieldDoesNotExist:
             logger.warn('field "%s" does not exist in %s', field_name, model)
         else:
-            cleaned[field_name] = data[field_name]
+            cleaned[db_field_name] = data[field_name]
 
         # Unset date precision if date is not set, but precision is
         # Set date precision if date is set, but precision is not
