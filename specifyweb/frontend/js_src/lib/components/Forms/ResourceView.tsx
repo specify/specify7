@@ -125,7 +125,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly onSaved: (() => void) | undefined;
   readonly onAdd:
     | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
-    | undefined; // TODO: Refactor other usages of onAdd
+    | undefined;
   readonly onDeleted: (() => void) | undefined;
   readonly onClose: () => void;
   readonly children?: JSX.Element;
