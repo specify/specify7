@@ -8119,7 +8119,7 @@ datamodel = Datamodel(tables=[
             
         ],
         relationships=[
-            Relationship(name='libraryrole', type='many-to-one', required=True, relatedModelName='LibraryRole', column='Role_ID')
+            Relationship(name='role', type='many-to-one', required=True, relatedModelName='LibraryRole', column='Role_ID') # maybe name libraryrole instead
         ],
         fieldAliases=[
 
