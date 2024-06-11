@@ -5795,8 +5795,22 @@ class Spappresourcedata(models.Model):
         db_table = 'spappresourcedata'
         ordering = ()
 
+    def get_decoded_data(self):
+        if isinstance(self.data, bytes):
+            return self.data.decode()
+        else:
+            return self.data
+
+    def data_blob_save(self, *args, **kwargs):
+        if isinstance(self.data, str):
+            self.data = self.data.encode()
+    
+    def save_spappresourcedata(self, *args, **kwargs):
+        self.data_blob_save(*args, **kwargs)
+        custom_save(self, *args, **kwargs)
+
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
-    save = partialmethod(custom_save)
+    save = partialmethod(save_spappresourcedata)
 
 class Spappresourcedir(models.Model):
     specify_model = datamodel.get_table('spappresourcedir')
@@ -7257,7 +7271,21 @@ class Workbenchrow(models.Model):
             # models.Index(fields=['RowNumber'], name='RowNumberIDX')
         ]
 
-    save = partialmethod(custom_save)
+    def get_decoded_data(self):
+        if isinstance(self.cardimagedata, bytes):
+            return self.cardimagedata.decode()
+        else:
+            return self.cardimagedata
+
+    def data_blob_save(self, *args, **kwargs):
+        if isinstance(self.cardimagedata, str):
+            self.cardimagedata = self.cardimagedata.encode()
+    
+    def save_workbench(self, *args, **kwargs):
+        self.data_blob_save(*args, **kwargs)
+        custom_save(self, *args, **kwargs)
+
+    save = partialmethod(save_workbench)
 
 class Workbenchrowexportedrelationship(models.Model):
     specify_model = datamodel.get_table('workbenchrowexportedrelationship')
@@ -7305,7 +7333,21 @@ class Workbenchrowimage(models.Model):
         db_table = 'workbenchrowimage'
         ordering = ()
 
-    save = partialmethod(custom_save)
+    def get_decoded_data(self):
+        if isinstance(self.cardimagedata, bytes):
+            return self.cardimagedata.decode()
+        else:
+            return self.cardimagedata
+
+    def data_blob_save(self, *args, **kwargs):
+        if isinstance(self.cardimagedata, str):
+            self.cardimagedata = self.cardimagedata.encode()
+    
+    def save_Workbenchrowimage(self, *args, **kwargs):
+        self.data_blob_save(*args, **kwargs)
+        custom_save(self, *args, **kwargs)
+
+    save = partialmethod(save_Workbenchrowimage)
 
 class Workbenchtemplate(models.Model):
     specify_model = datamodel.get_table('workbenchtemplate')
