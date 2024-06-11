@@ -8044,7 +8044,7 @@ datamodel = Datamodel(tables=[
         idField=IdField(name='libraryRoleId', column='id', type='java.lang.Integer'),
         fields=[
             Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
-            Field(name='descr1iption', column='Description', indexed=False, unique=False, required=False, type='text')
+            Field(name='description', column='Description', indexed=False, unique=False, required=False, type='text')
         ],
         indexes=[
 
