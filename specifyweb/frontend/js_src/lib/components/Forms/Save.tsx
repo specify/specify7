@@ -216,16 +216,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         // Scroll to the top of the form on clone
         smoothScroll(form, 0);
         loading(
-          handleClick().then((resources) => {
-            handleAdd?.(resources);
-            const newResourceIds = resources.map((r) => r.id);
-            const ids =
-              originalResourceId !== undefined
-                ? [originalResourceId].concat(newResourceIds)
-                : newResourceIds;
-            // TODO: move handleCarryBulk logic into ResourceVieweventually
-            if (ids.length > 2) handleCarryBulk?.(ids);
-          })
+          handleClick().then(handleAdd)
         );
       }}
     >
@@ -297,7 +288,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                         return clonedResource;
                       }
                     );
-                    return Promise.all(clones);
+                    return Promise.all([resource, ...clones]);
                   }
                 : async () => [await resource.clone(false)],
               resource.id

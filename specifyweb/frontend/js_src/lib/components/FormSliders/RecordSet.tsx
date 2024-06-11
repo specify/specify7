@@ -8,7 +8,7 @@ import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
-import { clamp, split } from '../../utils/utils';
+import { clamp, sortFunction, split } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext } from '../Core/Contexts';
@@ -28,7 +28,11 @@ import {
 } from '../DataModel/resource';
 import { serializeResource } from '../DataModel/serializers';
 import { tables } from '../DataModel/tables';
-import type { RecordSet as RecordSetSchema, Tables } from '../DataModel/types';
+import type {
+  CollectionObject,
+  RecordSet as RecordSetSchema,
+  Tables,
+} from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { recordSetView } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
@@ -319,23 +323,22 @@ function RecordSet<SCHEMA extends AnySchema>({
   }
 
   async function createNewRecordSet(
-    ids: RA<number | undefined>,
-    fromBulkCarry: boolean = false
+    ids: RA<number | undefined>
   ): Promise<void> {
-    if (
-      fromBulkCarry &&
-      typeof ids[0] === 'number' &&
-      typeof ids.at(-1) === 'number'
-    ) {
-      const startingResource = fetchResource('CollectionObject', ids[0]);
-      const endingResource = fetchResource('CollectionObject', ids.at(-1)!);
-      const startingResourceCatNumber = (await startingResource).catalogNumber;
-      const endingResourceCatNumber = (await endingResource).catalogNumber;
-      recordSet.set(
-        'name',
-        `Batch #${startingResourceCatNumber} - #${endingResourceCatNumber}`
-      );
-    }
+    // if (
+    //   fromBulkCarry &&
+    //   typeof ids[0] === 'number' &&
+    //   typeof ids.at(-1) === 'number'
+    // ) {
+    //   const startingResource = fetchResource('CollectionObject', ids[0]);
+    //   const endingResource = fetchResource('CollectionObject', ids.at(-1)!);
+    //   const startingResourceCatNumber = (await startingResource).catalogNumber;
+    //   const endingResourceCatNumber = (await endingResource).catalogNumber;
+    //   recordSet.set(
+    //     'name',
+    //     `Batch #${startingResourceCatNumber} - #${endingResourceCatNumber}`
+    //   );
+    // }
     await recordSet.save();
     await addIdsToRecordSet(ids);
     navigate(`/specify/record-set/${recordSet.id}/`);
@@ -429,9 +432,30 @@ function RecordSet<SCHEMA extends AnySchema>({
             : undefined
         }
         onCarryBulk={(ids) => {
-          loading(createNewRecordSet(ids, true));
+          loading(createNewRecordSet(ids));
         }}
-        onClone={(resources) => resources.map(newResource => go(totalCount, 'new', newResource))}
+        onClone={(resources) => {
+          resources.map((newResource) => go(totalCount, 'new', newResource));
+          // Bulk carry when there are multiple resources
+          if (resources.length > 1) {
+            const sortedResources = Array.from(resources).sort(sortFunction((r) => r.id));
+            loading(
+              createNewRecordSet(sortedResources.map((r) => r.id)).then(async () => {
+                const startingResourceCatNumber = serializeResource(
+                  sortedResources[0] as SpecifyResource<CollectionObject>
+                ).catalogNumber;
+                const endingResourceCatNumber = serializeResource(
+                  sortedResources.at(-1) as SpecifyResource<CollectionObject>
+                ).catalogNumber;
+                recordSet.set(
+                  'name',
+                  `Batch #${startingResourceCatNumber} - #${endingResourceCatNumber}`
+                );
+                await recordSet.save();
+              })
+            );
+          }
+        }}
         onClose={handleClose}
         onDelete={
           (recordSet.isNew() || hasToolPermission('recordSets', 'delete')) &&
