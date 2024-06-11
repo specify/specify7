@@ -1,6 +1,6 @@
 import json
 from collections import defaultdict
-from typing import Dict, Union, Optional, List
+from typing import Dict, Union, Optional, List, Tuple
 
 from django import http
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -8,10 +8,17 @@ from django.db import transaction, connection
 from django.views import View
 
 from specifyweb.specify import models as spmodels
+from specifyweb.specify.datamodel import datamodel
 from specifyweb.specify.views import openapi, check_collection_access_against_agents
 from . import models
 from .permissions import PermissionTarget, PermissionTargetAction, \
     NoAdminUsersException, check_permission_targets, registry, query
+
+def dependent_resources_from_resource(resource: str) -> Tuple[str, ...]:
+    table = resource.split("/")[-1]
+    model = datamodel.get_table_strict(table)
+    dependent_relationships = tuple(filter(lambda rel: rel.dependent, model.relationships))
+    return tuple(map(lambda rel: f"/table/{rel.relatedModelName.lower()}", dependent_relationships))
 
 Specifyuser = getattr(spmodels, "Specifyuser")
 
@@ -243,6 +250,8 @@ class UserPolicies(LoginRequiredMixin, View):
                         specifyuser_id=userid,
                         resource=resource,
                         action=action)
+                if "/table/" in resource: 
+                        self.assign_dependent_access(resource, collectionid, userid)
 
             if not models.UserPolicy.objects.filter(collection__isnull=True, resource='%', action='%').exists():
                 raise NoAdminUsersException()
@@ -250,6 +259,18 @@ class UserPolicies(LoginRequiredMixin, View):
             check_collection_access_against_agents(userid)
 
         return http.HttpResponse('', status=204)
+    
+    def assign_dependent_access(self, resource: str, collectionid: Optional[int], specifyuserid: int):
+        for dependent_resource in dependent_resources_from_resource(resource):
+            if models.UserPolicy.objects.filter(resource=dependent_resource, specifyuser_id=specifyuserid).exists():
+                continue
+
+            models.UserPolicy.objects.create(
+                collection_id=collectionid,
+                specifyuser_id=specifyuserid,
+                resource=dependent_resource,
+                action="read"
+            )
 
 user_policies = openapi(schema={
     "get": {
@@ -575,6 +596,8 @@ class Role(LoginRequiredMixin, View):
             for resource, actions in data['policies'].items():
                 for action in actions:
                     r.policies.create(resource=resource, action=action)
+                if "/table/" in resource:
+                    self.assign_dependent_access(resource, r)
 
             affected_users = Specifyuser.objects.select_for_update().filter(roles__role=r).values_list('id', flat=True)
             for userid in affected_users:
@@ -590,6 +613,11 @@ class Role(LoginRequiredMixin, View):
         # don't need to check collection access against agents because removing a role cannot give access to more collections
         # at least without there being DENY policies
         return http.HttpResponse('', status=204)
+
+    def assign_dependent_access(self, resource: str, role: models.Role):
+        for dependent_resource in dependent_resources_from_resource(resource):
+            if role.policies.filter(resource=dependent_resource).exists(): continue
+            role.policies.create(resource=dependent_resource, action="read")
 
 
 role = openapi(schema={
@@ -963,6 +991,8 @@ class LibraryRole(LoginRequiredMixin, View):
             for resource, actions in data['policies'].items():
                 for action in actions:
                     r.policies.create(resource=resource, action=action)
+                if "/table/" in resource:
+                    self.assign_dependent_access(resource, r)
 
         return http.HttpResponse('', status=204)
 
@@ -971,6 +1001,11 @@ class LibraryRole(LoginRequiredMixin, View):
         check_permission_targets(None, request.specify_user.id, [LibraryRolePT.delete])
         r.delete()
         return http.HttpResponse('', status=204)
+    
+    def assign_dependent_access(self, resource: str, lb: models.LibraryRole):
+        for dependent_resource in dependent_resources_from_resource(resource):
+            if lb.policies.filter(resource=dependent_resource).exists(): continue
+            lb.policies.create(resource=dependent_resource, action="read")
 
 
 library_role = openapi(schema={
