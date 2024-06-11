@@ -23,7 +23,6 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
   createResource,
   deleteResource,
-  fetchResource,
   getResourceViewUrl,
 } from '../DataModel/resource';
 import { serializeResource } from '../DataModel/serializers';
@@ -325,20 +324,6 @@ function RecordSet<SCHEMA extends AnySchema>({
   async function createNewRecordSet(
     ids: RA<number | undefined>
   ): Promise<void> {
-    // if (
-    //   fromBulkCarry &&
-    //   typeof ids[0] === 'number' &&
-    //   typeof ids.at(-1) === 'number'
-    // ) {
-    //   const startingResource = fetchResource('CollectionObject', ids[0]);
-    //   const endingResource = fetchResource('CollectionObject', ids.at(-1)!);
-    //   const startingResourceCatNumber = (await startingResource).catalogNumber;
-    //   const endingResourceCatNumber = (await endingResource).catalogNumber;
-    //   recordSet.set(
-    //     'name',
-    //     `Batch #${startingResourceCatNumber} - #${endingResourceCatNumber}`
-    //   );
-    // }
     await recordSet.save();
     await addIdsToRecordSet(ids);
     navigate(`/specify/record-set/${recordSet.id}/`);
@@ -431,28 +416,29 @@ function RecordSet<SCHEMA extends AnySchema>({
                 })
             : undefined
         }
-        onCarryBulk={(ids) => {
-          loading(createNewRecordSet(ids));
-        }}
         onClone={(resources) => {
           resources.map((newResource) => go(totalCount, 'new', newResource));
           // Bulk carry when there are multiple resources
           if (resources.length > 1) {
-            const sortedResources = Array.from(resources).sort(sortFunction((r) => r.id));
+            const sortedResources = Array.from(resources).sort(
+              sortFunction((r) => r.id)
+            );
             loading(
-              createNewRecordSet(sortedResources.map((r) => r.id)).then(async () => {
-                const startingResourceCatNumber = serializeResource(
-                  sortedResources[0] as SpecifyResource<CollectionObject>
-                ).catalogNumber;
-                const endingResourceCatNumber = serializeResource(
-                  sortedResources.at(-1) as SpecifyResource<CollectionObject>
-                ).catalogNumber;
-                recordSet.set(
-                  'name',
-                  `Batch #${startingResourceCatNumber} - #${endingResourceCatNumber}`
-                );
-                await recordSet.save();
-              })
+              createNewRecordSet(sortedResources.map((r) => r.id)).then(
+                async () => {
+                  const startingResourceCatNumber = serializeResource(
+                    sortedResources[0] as SpecifyResource<CollectionObject>
+                  ).catalogNumber;
+                  const endingResourceCatNumber = serializeResource(
+                    sortedResources.at(-1) as SpecifyResource<CollectionObject>
+                  ).catalogNumber;
+                  recordSet.set(
+                    'name',
+                    `Batch #${startingResourceCatNumber} - #${endingResourceCatNumber}`
+                  );
+                  await recordSet.save();
+                }
+              )
             );
           }
         }}

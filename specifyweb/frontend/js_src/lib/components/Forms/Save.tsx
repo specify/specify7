@@ -60,7 +60,6 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   onSaving: handleSaving,
   onSaved: handleSaved,
   onAdd: handleAdd,
-  onCarryBulk: handleCarryBulk,
   isInRecordSet,
 }: {
   readonly resource: SpecifyResource<SCHEMA>;
@@ -80,7 +79,6 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   readonly onAdd?: (resources: RA<SpecifyResource<SCHEMA>>) => void;
   // Only display save blockers for a given field
   readonly filterBlockers?: LiteralField | Relationship;
-  readonly onCarryBulk?: (ids: RA<number>) => void;
   readonly isInRecordSet?: boolean;
 }): JSX.Element {
   const id = useId('save-button');
@@ -205,8 +203,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const copyButton = (
     label: LocalizedString,
     description: LocalizedString,
-    handleClick: () => Promise<RA<SpecifyResource<SCHEMA>>>,
-    originalResourceId?: number
+    handleClick: () => Promise<RA<SpecifyResource<SCHEMA>>>
   ): JSX.Element => (
     <ButtonComponent
       className={saveBlocked ? '!cursor-not-allowed' : undefined}
@@ -290,8 +287,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                     );
                     return Promise.all([resource, ...clones]);
                   }
-                : async () => [await resource.clone(false)],
-              resource.id
+                : async () => [await resource.clone(false)]
             )}
           {showAdd &&
             copyButton(

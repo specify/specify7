@@ -48,7 +48,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   onClone: handleClone,
   onDelete: handleDelete,
   onFetch: handleFetch,
-  onCarryBulk: handleCarryBulk,
   hasSeveralResourceType,
   ...rest
 }: Omit<RecordSelectorProps<SCHEMA>, 'index' | 'records'> & {
@@ -76,7 +75,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   readonly onFetch?: (
     index: number
   ) => Promise<RA<number | undefined> | undefined>;
-  readonly onCarryBulk?: (ids: RA<number>) => void;
   readonly hasSeveralResourceType?: boolean;
 }): JSX.Element | null {
   const [records, setRecords] = React.useState<
@@ -240,18 +238,19 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
           </div>
         )}
         isDependent={isDependent}
-        // TODO: Figure out what to do with this line. 
-        // ResourceView in this file was never passed a isInRecordSet prop until this PR
-        // but isNewRecordSet has been removed in https://github.com/specify/specify7/pull/4904
-        // Can possibly just pass on the isInRecordSet prop received by this component?
-        // isInRecordSet={isInRecordSet}
+        /*
+         * TODO: Figure out what to do with this line.
+         * ResourceView in this file was never passed a isInRecordSet prop until this PR
+         * but isNewRecordSet has been removed in https://github.com/specify/specify7/pull/4904
+         * Can possibly just pass on the isInRecordSet prop received by this component?
+         * isInRecordSet={isInRecordSet}
+         */
         isLoading={isLoading || isExternalLoading}
         isSubForm={false}
         resource={resource}
         title={title}
         viewName={viewName}
         onAdd={handleClone}
-        onCarryBulk={handleCarryBulk}
         onClose={handleClose}
         onDeleted={
           resource?.isNew() === true || hasTablePermission(table.name, 'delete')
