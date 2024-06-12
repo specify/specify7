@@ -356,8 +356,18 @@ export const localityText = createDictionary({
   },
   validLatitude: {
     'en-us': 'Latitude needs to have a value between -90° and 90°',
+    'de-ch': 'Der Breitengrad muss einen Wert zwischen -90° und 90° haben',
+    'es-es': 'La latitud debe tener un valor entre -90° y 90°',
+    'fr-fr': 'La latitude doit avoir une valeur comprise entre -90° et 90°',
+    'ru-ru': 'Широта должна иметь значение от -90° до 90°.',
+    'uk-ua': 'Значення широти має бути від -90° до 90°',
   },
   validLongitude: {
     'en-us': 'Longitude needs to have a value between -180° and 180°',
+    'de-ch': 'Der Längengrad muss einen Wert zwischen -180° und 180° haben',
+    'es-es': 'La longitud debe tener un valor entre -180° y 180°',
+    'fr-fr': 'La longitude doit avoir une valeur comprise entre -180° et 180°',
+    'ru-ru': 'Долгота должна иметь значение от -180° до 180°.',
+    'uk-ua': 'Довгота повинна мати значення від -180° до 180°',
   },
 } as const);

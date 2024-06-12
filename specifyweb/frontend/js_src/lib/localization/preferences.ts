@@ -109,7 +109,7 @@ export const preferencesText = createDictionary({
   },
   reduceMotionDescription: {
     'en-us': 'Disable non-essential animations and transitions',
-    'ru-ru': 'Отключите ненужную анимацию и переходы.',
+    'ru-ru': 'Отключите несущественные анимации и переходы.',
     'es-es': 'Deshabilitar animaciones y transiciones no esenciales',
     'fr-fr': 'Désactivez les animations et les transitions non essentielles',
     'uk-ua': "Вимкніть необов'язкову анімацію та переходи",
@@ -503,7 +503,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Поле со списком запроса',
     'es-es': 'Cuadro combinado de consulta',
     'uk-ua': 'Поле зі списком запитів',
-    'de-ch': 'Kombinationsfeld für Abfragen',
+    'de-ch': 'Abfrage-Kombinationsfeld',
     'fr-fr': 'Zone de liste déroulante de requête',
   },
   searchAlgorithm: {
@@ -655,7 +655,7 @@ export const preferencesText = createDictionary({
   },
   highlightMatch: {
     'en-us': 'Highlight matched substring',
-    'ru-ru': 'Выделить совпадающую подстроку',
+    'ru-ru': 'Выделить совпавшую подстроку',
     'es-es': 'Resaltar subcadena coincidente',
     'fr-fr': 'Mettre en surbrillance la sous-chaîne correspondante',
     'uk-ua': 'Виділіть відповідний підрядок',
@@ -688,7 +688,7 @@ export const preferencesText = createDictionary({
   },
   scaleInterface: {
     'en-us': 'Scale Interface',
-    'ru-ru': 'Интерфейс масштабирования',
+    'ru-ru': 'Масштабный интерфейс',
     'es-es': 'Interfaz de báscula',
     'fr-fr': 'Interface de balance',
     'uk-ua': 'Інтерфейс масштабу',
@@ -775,7 +775,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Позволяет загружать данные в любое поле любой таблицы.',
     'es-es': 'Permite cargar datos en cualquier campo de cualquier tabla.',
     'fr-fr': `
-      Permet de télécharger des données dans n'importe quel champ de n'importe
+      Permet de télécharger des données vers n’importe quel champ de n’importe
       quelle table.
     `,
     'uk-ua': 'Дозволяє завантажувати дані в будь-яке поле будь-якої таблиці.',
@@ -937,7 +937,7 @@ export const preferencesText = createDictionary({
   },
   autoWrapCols: {
     'en-us': 'Navigate to the other side when reaching the edge column',
-    'ru-ru': 'Перейдите на другую сторону, когда достигнете краевого столбца.',
+    'ru-ru': 'Перейдите на другую сторону, достигнув краевого столбца.',
     'es-es': 'Navega hacia el otro lado al llegar a la columna del borde',
     'fr-fr':
       'Naviguez de l’autre côté lorsque vous atteignez la colonne de bord',
@@ -957,7 +957,7 @@ export const preferencesText = createDictionary({
   },
   enterBeginsEditing: {
     'en-us': 'Enter key begins editing cell',
-    'ru-ru': 'Клавиша Enter начинает редактирование ячейки',
+    'ru-ru': 'Клавиша Enter начинает редактирование ячейки.',
     'es-es': 'La tecla Intro comienza a editar la celda',
     'fr-fr': 'La touche Entrée commence à modifier la cellule',
     'uk-ua': 'Клавіша Enter починає редагування клітинки',
@@ -1168,7 +1168,7 @@ export const preferencesText = createDictionary({
   },
   doubleClickZoom: {
     'en-us': 'Double click to zoom',
-    'ru-ru': 'Дважды щелкните, чтобы увеличить',
+    'ru-ru': 'Дважды щелкните, чтобы увеличить масштаб',
     'es-es': 'Doble clic para ampliar',
     'fr-fr': 'Double-cliquez pour zoomer',
     'uk-ua': 'Двічі клацніть, щоб збільшити',
@@ -1251,7 +1251,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Укажите значок сети',
     'es-es': 'Especificar insignia de red',
     'fr-fr': 'Spécifier le badge réseau',
-    'uk-ua': 'Укажіть значок мережі',
+    'uk-ua': 'Укажіть позначку мережі',
     'de-ch': 'Netzwerk-Badge angeben',
   },
   useAccessibleFullDatePicker: {
@@ -1375,7 +1375,7 @@ export const preferencesText = createDictionary({
       'Hacer que los cuadros de diálogo del formulario aparezcan en gris',
     'fr-fr':
       "Rendre les boîtes de dialogue de formulaire grisées sur l'arrière-plan",
-    'uk-ua': 'Зробіть діалогові вікна форми сірими',
+    'uk-ua': 'Зробіть діалогові вікна форми сірими фоном',
     'de-ch': 'Den Hintergrund von Formulardialogen ausgrauen',
   },
   autoScrollTree: {
@@ -1383,7 +1383,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Автоматическая прокрутка дерева до выбранного узла',
     'es-es': 'Árbol de desplazamiento automático al nodo enfocado',
     'fr-fr': 'Arbre de défilement automatique vers le nœud ciblé',
-    'uk-ua': 'Автоматичне прокручування дерева до вибраного вузла',
+    'uk-ua': 'Автоматичне прокручування дерева до виділеного вузла',
     'de-ch': `
       Automatisch durch den Baum scrollen, um zum fokussierten Knoten zu
       gelangen
@@ -1432,7 +1432,7 @@ export const preferencesText = createDictionary({
   tableIcon: {
     'en-us': 'Table icon',
     'ru-ru': 'Значок таблицы',
-    'es-es': 'Icono de tabla',
+    'es-es': 'Icono de mesa',
     'fr-fr': 'Icône de tableau',
     'uk-ua': 'Значок таблиці',
     'de-ch': 'Tabellensymbol',
@@ -1536,8 +1536,8 @@ export const preferencesText = createDictionary({
       Mettez un délimiteur par ligne
     `,
     'uk-ua': `
-      Список роздільників, які слід використовувати на додаток до визначених
-      вище. Поставте один роздільник на рядок
+      Список розділювачів для використання на додаток до визначених вище.
+      Поставте один роздільник на рядок
     `,
     'de-ch': `
       Eine Liste der zu verwendenden Trennzeichen zusätzlich zu den oben
@@ -1940,7 +1940,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Basisansicht',
     'es-es': 'Vista básica',
     'fr-fr': 'Vue de base',
-    'ru-ru': 'Базовый вид',
+    'ru-ru': 'Основной вид',
     'uk-ua': 'Основний вигляд',
   },
   detailedView: {

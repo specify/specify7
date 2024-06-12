@@ -37,7 +37,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Setup your attachment server',
     'es-es': 'Configura tu servidor de adjuntos',
     'fr-fr': 'Configurez votre serveur de pièces jointes',
-    'ru-ru': 'Настройте сервер вложений',
+    'ru-ru': 'Настройте свой сервер вложений',
     'uk-ua': 'Налаштуйте сервер прикріплень',
     'de-ch': 'Richten Sie Ihren Attachment-Server ein',
   },
@@ -191,7 +191,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Error de coincidencia',
     'fr-fr': 'Erreur de correspondance',
     'ru-ru': 'Ошибка совпадения',
-    'uk-ua': 'Помилка збігу',
+    'uk-ua': 'Помилка відповідності',
   },
   errorReadingFile: {
     'en-us': 'Error reading file',
@@ -294,9 +294,8 @@ export const attachmentsText = createDictionary({
       Откат выполнялся, когда произошло прерывание. Некоторые файлы могли быть
       удалены
     `,
-    'uk-ua': `
-      Тривав відкат, коли сталася перерва. Можливо, деякі файли було видалено
-    `,
+    'uk-ua':
+      'Тривав відкат, коли сталася перерва. Деякі файли могли бути видалені',
     'es-es': `
       La reversión estaba en curso cuando se produjo una interrupción. Es
       posible que algunos archivos hayan sido eliminados.
@@ -557,7 +556,7 @@ export const attachmentsText = createDictionary({
     'fr-fr':
       'Choisissez des fichiers ou faites-les glisser ici pour commencer.',
     'ru-ru': 'Выберите файлы или перетащите их сюда, чтобы начать.',
-    'uk-ua': 'Виберіть файли або перетягніть їх сюди, щоб почати.',
+    'uk-ua': 'Щоб почати, виберіть файли або перетягніть їх сюди.',
   },
   selectIdentifier: {
     'en-us': 'Select an identifier to match the files name against.',
@@ -574,7 +573,7 @@ export const attachmentsText = createDictionary({
     `,
     'ru-ru':
       'Выберите идентификатор, которому будет соответствовать имя файла.',
-    'uk-ua': 'Виберіть ідентифікатор для відповідності імені файлу.',
+    'uk-ua': 'Виберіть ідентифікатор, який буде відповідати назві файлів.',
   },
   progress: {
     'en-us': 'Progress',
@@ -625,8 +624,8 @@ export const attachmentsText = createDictionary({
     `,
     'de-ch': `
       Durch das Löschen eines Datensatzes werden dieser und sein Upload-Pfad
-      dauerhaft entfernt. Außerdem ist nach dem Löschen für einen hochgeladenen
-      Datensatz kein Rollback mehr möglich.
+      dauerhaft entfernt. Nach dem Löschen ist für einen hochgeladenen Datensatz
+      auch kein Rollback mehr möglich.
     `,
     'es-es': `
       Al eliminar un conjunto de datos, se elimina permanentemente este y su

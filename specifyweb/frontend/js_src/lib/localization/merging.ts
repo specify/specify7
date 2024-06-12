@@ -67,7 +67,7 @@ export const mergingText = createDictionary({
   },
   subViewControls: {
     'en-us': 'Sub-view Controls',
-    'ru-ru': 'Элементы управления дополнительным представлением',
+    'ru-ru': 'Элементы управления подпредставлением',
     'de-ch': 'Unteransichtssteuerung',
     'es-es': 'Controles de vista parcial',
     'fr-fr': 'Contrôles de sous-vue',
@@ -80,7 +80,7 @@ export const mergingText = createDictionary({
     'de-ch': 'Zusammenführen {field:string}',
     'es-es': 'Fusionar {field:string}',
     'fr-fr': 'Fusionner {field:string}',
-    'uk-ua': 'Об’єднати {field:string}',
+    'uk-ua': "Об'єднати {field:string}",
   },
   autoPopulate: {
     'en-us': 'Auto-populate',
