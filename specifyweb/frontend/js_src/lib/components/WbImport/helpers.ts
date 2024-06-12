@@ -126,6 +126,7 @@ export const parseXls = async (
   limit?: number
 ): Promise<RA<RA<string>>> =>
   new Promise((resolve, reject) => {
+    // @ts-expect-error Specify is running with target 'esnext' with type 'module'. import.meta.url should be allowed
     const worker = new Worker(new URL('xls.worker.ts', import.meta.url));
     const dateFormat =
       fullDateFormat() === databaseDateFormat ? undefined : fullDateFormat();
