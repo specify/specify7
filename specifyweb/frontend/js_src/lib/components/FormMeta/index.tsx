@@ -24,9 +24,9 @@ import { isTreeResource } from '../InitialContext/treeRanks';
 import { interactionTables } from '../Interactions/config';
 import { recordMergingTableSpec } from '../Merging/definitions';
 import { Dialog } from '../Molecules/Dialog';
+import { hasTablePermission } from '../Permissions/helpers';
 import {
   ProtectedAction,
-  ProtectedTable,
   ProtectedTool,
 } from '../Permissions/PermissionDenied';
 import { UnloadProtectsContext } from '../Router/UnloadProtect';
@@ -218,14 +218,10 @@ function MetaDialog({
             </ProtectedTool>
             <ProtectedAction action="update" resource="/record/merge">
               <ProtectedAction action="delete" resource="/record/merge">
-                <ProtectedTable
-                  action="update"
-                  tableName={resource.specifyTable.name}
-                >
-                  {resource.specifyTable.name in recordMergingTableSpec && (
-                    <MergeRecord resource={resource} />
-                  )}
-                </ProtectedTable>
+                {resource.specifyTable.name in recordMergingTableSpec &&
+                hasTablePermission(resource.specifyTable.name, 'update') ? (
+                  <MergeRecord resource={resource} />
+                ) : undefined}
               </ProtectedAction>
             </ProtectedAction>
           </>
