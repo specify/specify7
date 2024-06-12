@@ -179,6 +179,13 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
         field = self.get_field()
         return field is not None and field.is_temporal()
 
+    def is_json(self):
+        field = self.get_field()
+        is_json_field = field is not None and field.type == 'json'
+        if field.sqlalchemy_type is not None: # hasattr(field, 'sqlalchemy_type') and
+            is_json_field = field.sqlalchemy_type.lower() == 'json'
+        return is_json_field
+
     def build_join(self, query, join_path):
         return query.build_join(self.root_table, self.root_sql_table, join_path)
 

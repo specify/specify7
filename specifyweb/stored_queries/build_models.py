@@ -29,6 +29,8 @@ def make_foreign_key(datamodel: Datamodel, reldef: Relationship):
 
 def make_column(flddef: Field):
     field_type = field_type_map[ flddef.type ]
+    if flddef.sqlalchemy_type is not None:
+        field_type = field_type_map[flddef.sqlalchemy_type]
 
     if hasattr(flddef, 'length') and flddef.length and field_type in (types.Text, types.String):
         field_type = field_type(flddef.length)

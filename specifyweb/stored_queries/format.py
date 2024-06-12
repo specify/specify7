@@ -340,6 +340,9 @@ class ObjectFormatter(object):
             return cast(field,
                         types.Numeric(65))  # 65 is the mysql max precision
 
+        if isinstance(field.comparator.type, types.JSON):
+            return cast(field, types.Text)
+
         return field
 
 
