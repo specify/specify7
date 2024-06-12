@@ -42,6 +42,7 @@ def make_column(flddef: Field):
 
 field_type_map = {'text'                 : types.Text,
                   'json'                 : types.JSON,
+                  'blob'                 : types.LargeBinary, # mediumblob
                   'java.lang.String'     : types.String,
                   'java.lang.Integer'    : types.Integer,
                   'java.lang.Long'       : types.Integer,
