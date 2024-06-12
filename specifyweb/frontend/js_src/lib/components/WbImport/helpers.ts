@@ -1,6 +1,5 @@
 import { parse } from 'csv-parse/browser/esm';
 import type { LocalizedString } from 'typesafe-i18n';
-import ImportXLSWorker from 'worker-loader!./xls.worker';
 
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
@@ -127,7 +126,7 @@ export const parseXls = async (
   limit?: number
 ): Promise<RA<RA<string>>> =>
   new Promise((resolve, reject) => {
-    const worker = new ImportXLSWorker();
+    const worker = new Worker(new URL('xls.worker.ts', import.meta.url));
     const dateFormat =
       fullDateFormat() === databaseDateFormat ? undefined : fullDateFormat();
     worker.postMessage({ file, previewSize: limit, dateFormat });
