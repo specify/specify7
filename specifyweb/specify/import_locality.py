@@ -3,13 +3,14 @@ import json
 from typing import get_args as get_typing_args, Any, Dict, List, Tuple, Literal, Optional, NamedTuple, Union, Callable, TypedDict
 from datetime import datetime
 from django.db import transaction
+from django.core.serializers.json import DjangoJSONEncoder
 from celery.exceptions import Ignore
 
 import specifyweb.specify.models as spmodels
 
 from specifyweb.celery_tasks import LogErrorsTask, app
 from specifyweb.specify.datamodel import datamodel
-from specifyweb.notifications.models import LocalityImport, Message
+from specifyweb.notifications.models import LocalityImport, LocalityImportRowResult, Message
 from specifyweb.specify.parse import ParseFailureKey, parse_field as _parse_field, ParseFailure as BaseParseFailure, ParseSucess as BaseParseSuccess
 
 LocalityParseErrorMessageKey = Literal[
@@ -29,12 +30,67 @@ updatable_geocoorddetail_fields = [
 
 ImportModel = Literal['Locality', 'Geocoorddetail']
 
+localityimport_parse_success = {
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "locality": {
+                "type": "object"
+            },
+            "geocoorddetail": {
+                "type": [ "null", "string"],
+            },
+            "locality_id": {
+                "type": "number",
+                "minimum": 0
+            },
+            "row_number": {
+                "type": "number",
+                "minimum": 1
+            }
+        },
+        "required": ["locality", "geocoorddetail", "locality_id", "row_number"],
+        "additionalProperties": False
+    }
+}
+
+localityimport_parse_error = {
+    "type": "array",
+    "items": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "description": "Keys for errors which occured during parsing",
+                    "type": "string",
+                    "enum": localityParseErrorMessages
+                },
+                "field": {
+                    "description": "The field name which had the parsing error",
+                    "type": "string"
+                },
+                "payload": {
+                    "description": "An object containing data relating to the error",
+                    "type": "object",
+                    "example": {'badType': 'Preson', 'validTypes': ['Organization', 'Person', 'Other', 'Group']}
+                },
+                "rowNumber": {
+                    "type": "integer",
+                    "minimum": 1
+                }
+            },
+        "required": ["message", "field", "payload", "rowNumber"],
+        "additionalProperties": False
+    }
+}
+
 Progress = Callable[[str, int, int], None]
 
 
 class LocalityImportStatus:
     PENDING = 'PENDING'
     PARSING = 'PARSING'
+    PARSED = 'PARSED'
     PROGRESS = 'PROGRESS'
     SUCCEEDED = 'SUCCEEDED'
     ABORTED = 'ABORTED'
@@ -43,55 +99,103 @@ class LocalityImportStatus:
 
 @app.task(base=LogErrorsTask, bind=True)
 def import_locality_task(self, collection_id: int, column_headers: List[str], data: List[List[str]], create_recordset: bool) -> None:
-
     def progress(state, current: int, total: int):
-        if not self.request.called_directly:
-            self.update_state(state=state, meta={
-                              'current': current, 'total': total})
+        self.update_state(state=state, meta={
+                          'current': current, 'total': total})
+
     collection = spmodels.Collection.objects.get(id=collection_id)
 
     with transaction.atomic():
         results = upload_locality_set(
             collection, column_headers, data, progress)
 
-        li = LocalityImport.objects.get(taskid=self.request.id)
+        li = resolve_localityimport_result(
+            self.request.id, results, collection, create_recordset)
 
         if results['type'] == 'ParseError':
             self.update_state(LocalityImportStatus.FAILED, meta={
-                              "errors": results['errors']})
-            li.status = LocalityImportStatus.FAILED
-            li.result = json.dumps(results['errors'])
+                              "errors": [error.to_json() for error in results["errors"]]})
+
             Message.objects.create(user=li.specifyuser, content=json.dumps({
                 'type': 'localityimport-failed',
                 'taskid': li.taskid,
-                'errors': json.dumps(results['errors'])
+                'errors': json.dumps([error.to_json() for error in results["errors"]])
             }))
         elif results['type'] == 'Uploaded':
-            li.recordset = create_localityimport_recordset(
-                collection, li.specifyuser, results['localities']) if create_recordset else None
-
             recordset_id = None if li.recordset is None else li.recordset.pk
-
+            localitites = []
+            geocoorddetails = []
+            for row in results["results"]:
+                localitites.append(row["locality"])
+                if row["geocoorddetail"]:
+                    geocoorddetails.append(row["geocoorddetail"])
             self.update_state(state=LocalityImportStatus.SUCCEEDED, meta={
-                              "recordsetid": recordset_id, "localities": results['localities'], "geocoorddetails": results['geocoorddetails']})
-            li.result = json.dumps({
-                'recordsetid': recordset_id,
-                'localities': json.dumps(results['localities']),
-                'geocoorddetails': json.dumps(results['geocoorddetails'])
-            })
-            li.status = LocalityImportStatus.SUCCEEDED
+                              "recordsetid": recordset_id, "localities": localitites, "geocoorddetails": geocoorddetails})
+
             Message.objects.create(user=li.specifyuser, content=json.dumps({
                 'type': 'localityimport-succeeded',
                 'taskid': li.taskid,
                 'recordsetid': recordset_id,
-                'localities': json.dumps(results['localities']),
-                'geocoorddetails': json.dumps(results["geocoorddetails"])
+                "localities": localitites,
+                "geocoorddetails": geocoorddetails
             }))
-
-        li.save()
 
     # prevent Celery from overriding the State of the Task
     raise Ignore()
+
+
+@app.task(base=LogErrorsTask, bind=True)
+def parse_locality_task(self, collection_id: int, column_headers: List[str], data: List[List[str]]):
+    def progress(state, current: int, total: int):
+        self.update_state(state=state, meta={
+                          'current': current, 'total': total})
+
+    collection = spmodels.Collection.objects.get(id=collection_id)
+
+    with transaction.atomic():
+        to_upload, errors = parse_locality_set(
+            collection, column_headers, data, progress)
+
+        li = resolve_localityimport_result(
+            self.request.id, (to_upload, errors), collection)
+
+        if li.status == LocalityImportStatus.FAILED:
+            self.update_state(LocalityImportStatus.FAILED, meta={
+                              "errors": errors})
+
+            Message.objects.create(user=li.specifyuser, content=json.dumps({
+                'type': 'localityimport-failed',
+                'taskid': li.taskid,
+                'errors': json.dumps(errors)
+            }))
+
+        elif li.status == LocalityImportStatus.PARSED:
+            localitites = len(to_upload)
+            geocoorddetails = 0
+            for parsed in to_upload:
+                if parsed['geocoorddetail'] is not None:
+                    geocoorddetails += 1
+
+            self.update_state(LocalityImportStatus.PARSED, meta={
+                "localitites": localitites,
+                "geocoorddetails": geocoorddetails
+            })
+            Message.objects.create(user=li.specifyuser, content=json.dumps({
+                'type': 'localityimport-parse-succeeded',
+                'taskid': li.taskid,
+                "localitites": localitites,
+                "geocoorddetails": geocoorddetails
+            }))
+
+    # prevent Celery from overriding the State of the Task
+    raise Ignore()
+
+
+class JSONParseError(TypedDict):
+    message: str
+    field: str
+    payload: Dict[str, Any]
+    rowNumber: int
 
 
 class ParseError(NamedTuple):
@@ -104,8 +208,15 @@ class ParseError(NamedTuple):
     def from_parse_failure(cls, parse_failure: BaseParseFailure, field: str, row_number: int):
         return cls(message=parse_failure.message, field=field, payload=parse_failure.payload, row_number=row_number)
 
-    def to_json(self):
+    def to_json(self) -> JSONParseError:
         return {"message": self.message, "field": self.field, "payload": self.payload, "rowNumber": self.row_number}
+
+
+class ParsedRow(TypedDict):
+    row_number: int
+    locality: Dict[str, Any]
+    geocoorddetail: Optional[Dict[str, Any]]
+    locality_id: int
 
 
 class ParseSuccess(NamedTuple):
@@ -119,9 +230,91 @@ class ParseSuccess(NamedTuple):
         return cls(parse_success.to_upload, model, locality_id, row_number)
 
 
-def parse_locality_set(collection, raw_headers: List[str], data: List[List[str]], progress: Optional[Progress] = None) -> Tuple[List[ParseSuccess], List[ParseError]]:
+class UploadSuccessRow(TypedDict):
+    locality: int
+    geocoorddetail: Optional[int]
+
+
+class UploadSuccess(TypedDict):
+    type: Literal["Uploaded"]
+    results: List[UploadSuccessRow]
+
+
+class UploadParseError(TypedDict):
+    type: Literal["ParseError"]
+    errors: List[ParseError]
+
+
+@transaction.atomic
+def resolve_localityimport_result(taskid: str, results: Union[Tuple[List[ParsedRow], List[ParseError]], Union[UploadSuccess, UploadParseError]], collection, create_recordset: bool = False) -> LocalityImport:
+
+    li = LocalityImport.objects.get(taskid=taskid)
+
+    # the results come from parse_locality_set
+    if isinstance(results, tuple):
+        to_upload, errors = results
+        if len(errors) > 0:
+            status = LocalityImportStatus.FAILED
+            for error in errors:
+                result = error.to_json()
+                LocalityImportRowResult.objects.create(
+                    localityimport=li,
+                    rownumber=result["rowNumber"],
+                    result=json.dumps(result, cls=DjangoJSONEncoder)
+                )
+        else:
+            status = LocalityImportStatus.PARSED
+            localities = len(to_upload)
+            geocoorddetails = 0
+            for parsed in to_upload:
+                if parsed['geocoorddetail'] is not None:
+                    geocoorddetails += 1
+            LocalityImportRowResult.objects.create(
+                localityimport=li,
+                rownumber=-1,
+                result=json.dumps({
+                    "localities": localities,
+                    "geocoorddetails": geocoorddetails
+                })
+            )
+
+    # the results come from upload_locality_set
+    else:
+        if results['type'] == 'ParseError':
+            status = LocalityImportStatus.FAILED
+            for error in results['errors']:
+                result = error.to_json()
+                LocalityImportRowResult.objects.create(
+                    localityimport=li,
+                    rownumber=error.row_number,
+                    result=json.dumps(result, cls=DjangoJSONEncoder)
+                )
+
+        elif results['type'] == 'Uploaded':
+            status = LocalityImportStatus.SUCCEEDED
+            localities = []
+            for index, row in enumerate(results['results']):
+                row_number = index + 1
+                localities.append(row['locality'])
+
+                LocalityImportRowResult.objects.create(
+                    localityimport=li,
+                    rownumber=row_number,
+                    result=json.dumps(row, cls=DjangoJSONEncoder)
+                )
+
+            li.recordset = create_localityimport_recordset(
+                collection, li.specifyuser, localities) if create_recordset else None
+
+    li.status = status
+    li.save()
+
+    return li
+
+
+def parse_locality_set(collection, raw_headers: List[str], data: List[List[str]], progress: Optional[Progress] = None) -> Tuple[List[ParsedRow], List[ParseError]]:
     errors: List[ParseError] = []
-    to_upload: List[ParseSuccess] = []
+    to_upload: List[ParsedRow] = []
 
     headers = [header.strip().lower() for header in raw_headers]
 
@@ -140,16 +333,16 @@ def parse_locality_set(collection, raw_headers: List[str], data: List[List[str]]
     processed = 0
     total = len(data)
 
-    for row_mumber, row in enumerate(data, start=1):
+    for row_number, row in enumerate(data, start=1):
         guid = row[guid_index]
         locality_query = spmodels.Locality.objects.filter(guid=guid)
         if len(locality_query) == 0:
             errors.append(ParseError(message='noLocalityMatchingGuid', field='guid',
-                          payload={'guid': guid}, row_number=row_mumber))
+                          payload={'guid': guid}, row_number=row_number))
 
         if len(locality_query) > 1:
             errors.append(ParseError(message='multipleLocalitiesWithGuid', field=None, payload={'guid': guid, 'localityIds': list(
-                locality.id for locality in locality_query)}, row_number=row_mumber))
+                locality.id for locality in locality_query)}, row_number=row_number))
 
         locality_values = [{'field': dict['field'], 'value': row[dict['index']].strip()}
                            for dict in updatable_locality_fields_index]
@@ -161,24 +354,16 @@ def parse_locality_set(collection, raw_headers: List[str], data: List[List[str]]
             locality_query) != 1 else locality_query[0].id
 
         parsed_locality_fields = [parse_field(
-            collection, 'Locality', dict['field'], dict['value'], locality_id, row_mumber) for dict in locality_values if dict['value'].strip() != ""]
+            collection, 'Locality', dict['field'], dict['value'], locality_id, row_number) for dict in locality_values if dict['value'].strip() != ""]
 
         parsed_geocoorddetail_fields = [parse_field(
-            collection, 'Geocoorddetail', dict["field"], dict['value'], locality_id, row_mumber) for dict in geocoorddetail_values if dict['value'].strip() != ""]
+            collection, 'Geocoorddetail', dict["field"], dict['value'], locality_id, row_number) for dict in geocoorddetail_values if dict['value'].strip() != ""]
 
-        merged_locality_result, locality_errors = merge_parse_results(
-            'Locality', parsed_locality_fields, locality_id, row_mumber)
+        parsed_row, parsed_errors = merge_parse_results(
+            [*parsed_locality_fields, *parsed_geocoorddetail_fields], locality_id, row_number)
 
-        merged_geocoorddetail_result, geocoord_errors = merge_parse_results(
-            'Geocoorddetail', parsed_geocoorddetail_fields, locality_id, row_mumber)
-
-        errors.extend([*locality_errors, *geocoord_errors])
-
-        if merged_locality_result is not None:
-            to_upload.append(merged_locality_result)
-
-        if merged_geocoorddetail_result is not None:
-            to_upload.append(merged_geocoorddetail_result)
+        errors.extend(parsed_errors)
+        to_upload.append(parsed_row)
 
         if progress is not None:
             processed += 1
@@ -196,78 +381,83 @@ def parse_field(collection, table_name: ImportModel, field_name: str, field_valu
         return ParseSuccess.from_base_parse_success(parsed, table_name, locality_id, row_number)
 
 
-def merge_parse_results(table_name: ImportModel, results: List[Union[ParseSuccess, ParseError]], locality_id: int, row_number: int) -> Tuple[Optional[ParseSuccess], List[ParseError]]:
-    to_upload = {}
+def merge_parse_results(results: List[Union[ParseSuccess, ParseError]], locality_id: int, row_number: int) -> Tuple[ParsedRow, List[ParseError]]:
+    to_upload: ParsedRow = {
+        "locality_id": locality_id,
+        "row_number": row_number,
+        "locality": {},
+        "geocoorddetail": {}
+    }
     errors = []
     for result in results:
         if isinstance(result, ParseError):
             errors.append(result)
         else:
-            to_upload.update(result.to_upload)
-    return None if len(to_upload) == 0 else ParseSuccess(to_upload, table_name, locality_id, row_number), errors
+            to_upload[result.model.lower()].update(result.to_upload)
 
+    if len(to_upload['geocoorddetail']) == 0:
+        to_upload['geocoorddetail'] = None
 
-class UploadSuccess(TypedDict):
-    type: Literal["Uploaded"]
-    localities: List[int]
-    geocoorddetails: List[int]
-
-
-class UploadParseError(TypedDict):
-    type: Literal["ParseError"]
-    errors: List[ParseError]
+    return to_upload, errors
 
 
 def upload_locality_set(collection, column_headers: List[str], data: List[List[str]], progress: Optional[Progress] = None) -> Union[UploadSuccess, UploadParseError]:
     to_upload, errors = parse_locality_set(
         collection, column_headers, data, progress)
-    result = {
-        "type": None,
-    }
 
     if len(errors) > 0:
-        result["type"] = "ParseError"
-        result["errors"] = [error.to_json() for error in errors]
-        return result
+        return {
+            "type": "ParseError",
+            "errors": errors
+        }
 
-    result["type"] = "Uploaded"
-    result["localities"] = []
-    result["geocoorddetails"] = []
+    return upload_from_parsed(to_upload, progress)
 
+
+def upload_from_parsed(uploadables: List[ParsedRow], progress: Optional[Progress] = None) -> UploadSuccess:
     processed = 0
-    total = len(to_upload)
+    total = len(uploadables)
+
+    uploaded: List[UploadSuccessRow] = [
+        {"locality": None, "geocoorddetail": None} for _ in range(total)]
 
     with transaction.atomic():
-        for parse_success in to_upload:
-            uploadable = parse_success.to_upload
-            model_name = parse_success.model
-            locality_id = parse_success.locality_id
+        for parsed_row in uploadables:
+            locality_id = parsed_row["locality_id"]
 
             if locality_id is None:
                 raise ValueError(
-                    f"No matching Locality found on row {parse_success.row_number}")
+                    f"No matching Locality found on row {parsed_row['row_number']}")
 
-            model = getattr(spmodels, model_name)
             locality = spmodels.Locality.objects.get(id=locality_id)
 
-            if model_name == 'Geocoorddetail':
+            # Queryset.update() is not used here as it does not send pre/post save signals
+            for field, value in parsed_row['locality'].items():
+                setattr(locality, field, value)
+            locality.save()
+            try:
+                uploaded[parsed_row['row_number'] -
+                         1]["locality"] = locality_id
+            except:
+                raise KeyError(uploaded)
+
+            if parsed_row['geocoorddetail'] is not None:
                 locality.geocoorddetails.get_queryset().delete()
-                geoCoordDetail = model.objects.create(**uploadable)
+                geoCoordDetail = spmodels.Geocoorddetail.objects.create(
+                    **parsed_row['geocoorddetail'])
                 geoCoordDetail.locality = locality
                 geoCoordDetail.save()
-                result["geocoorddetails"].append(geoCoordDetail.id)
-            elif model_name == 'Locality':
-                # Queryset.update() is not used here as it does not send pre/post save signals
-                for field, value in uploadable.items():
-                    setattr(locality, field, value)
-                locality.save()
-                result["localities"].append(locality_id)
+                uploaded[parsed_row["row_number"] -
+                         1]["geocoorddetail"] = geoCoordDetail.pk
 
             if progress is not None:
                 processed += 1
                 progress(LocalityImportStatus.PROGRESS, processed, total)
 
-    return result
+    return {
+        "type": "Uploaded",
+        "results": uploaded
+    }
 
 
 # Example: Wed Jun 07 2023

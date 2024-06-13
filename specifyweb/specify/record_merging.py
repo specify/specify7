@@ -4,7 +4,6 @@ A few non-business data resource end points
 
 import json
 from itertools import groupby
-import re
 from typing import Any, Callable, Dict, List, Optional
 import traceback
 
@@ -12,7 +11,6 @@ from django import http
 from django.db import IntegrityError, transaction, models
 from specifyweb.notifications.models import Message, Spmerging
 from django.db.models import Q
-from django.db.models.deletion import ProtectedError
 
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.celery_tasks import LogErrorsTask, app

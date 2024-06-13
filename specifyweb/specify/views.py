@@ -5,7 +5,7 @@ A few non-business data resource end points
 import json
 import mimetypes
 from functools import wraps
-from typing import Union
+from typing import Union, List, Tuple, Dict, Any
 from uuid import uuid4
 
 from django import http
@@ -21,7 +21,7 @@ from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, PermissionsException, check_permission_targets, table_permissions_checker
 from specifyweb.celery_tasks import app, CELERY_TASK_STATE
 from specifyweb.specify.record_merging import record_merge_fx, record_merge_task, resolve_record_merge_response
-from specifyweb.specify.import_locality import localityParseErrorMessages, parse_locality_set as _parse_locality_set, import_locality_task, LocalityImportStatus
+from specifyweb.specify.import_locality import localityimport_parse_success, localityimport_parse_error, parse_locality_set as _parse_locality_set, upload_locality_set as _upload_locality_set, create_localityimport_recordset, import_locality_task, parse_locality_task, LocalityImportStatus
 from . import api, models as spmodels
 from .specify_jar import specify_jar
 
@@ -746,34 +746,6 @@ def abort_merge_task(request, merge_id: int) -> http.HttpResponse:
         return http.HttpResponse(f'Task {merge.taskid} is not running and cannot be aborted.')
 
 
-locality_set_parse_error_data = {
-    "type": "array",
-    "items": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "description": "Keys for errors which occured during parsing",
-                    "type": "string",
-                    "enum": localityParseErrorMessages
-                },
-                "field": {
-                    "description": "The field name which had the parsing error",
-                    "type": "string"
-                },
-                "payload": {
-                    "description": "An object containing data relating to the error",
-                    "type": "object",
-                    "example": {'badType': 'Preson', 'validTypes': ['Organization', 'Person', 'Other', 'Group']}
-                },
-                "rowNumber": {
-                    "type": "integer",
-                    "minimum": 0
-                }
-            }
-    }
-}
-
-
 @openapi(schema={
     'post': {
         "requestBody": {
@@ -802,22 +774,87 @@ locality_set_parse_error_data = {
                                 "type": "boolean",
                                 "description": "When True, creates a recordset in the logged-in collection for the logged-in user with the matched/updated localities if the upload succeeds",
                                 "default": True
+                            },
+                            "runInBackground": {
+                                "type": "boolean",
+                                "description": "Whether the task should be ran in the background. Defaults to True",
+                                "default": False
                             }
-                        }
+                        },
+                        "required": ["columnHeaders", "data"],
+                        "additionalProperties": False
                     }
                 }
             }
         },
         "responses": {
             "200": {
-                "description": "Returns a GUID (job ID)",
+                "description": "Task finished synchronously",
                 "content": {
-                    "text/plain": {
+                    "application/json": {
                         "schema": {
-                            "type": "string",
-                            "maxLength": 36,
-                            "example": "7d34dbb2-6e57-4c4b-9546-1fe7bec1acca",
+                            "oneOf": [
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "enum": ["ParseError"]
+                                        },
+                                        "errors": localityimport_parse_error
+                                    },
+                                    "required": ["type", "errors"],
+                                    "additionalProperties": False
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "enum": ["Uploaded"]
+                                        },
+                                        "recordsetid": {
+                                            "type": ["string", "null"]
+                                        },
+                                        "localities": {
+                                            "type": "array",
+                                            "description": "An array of matched/updated Locality IDs",
+                                            "items": {
+                                                "type": "number"
+                                            }
+                                        },
+                                        "geocoorddetails": {
+                                            "type": "array",
+                                            "description": "An array of created GeoCoordDetail IDs",
+                                            "items": {
+                                                "type": "number"
+                                            }
+                                        }
+                                    },
+                                    "required": ["type", "recordsetid", "localities", "geocoorddetails"],
+                                    "additionalProperties": False
+                                }
+                            ]
                         }
+                    }
+                }
+            },
+            "201": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "description": "Task started by the worker. Returns the newly created ID of the task",
+                            "content": {
+                                "text/plain": {
+                                    "schema": {
+                                        "type": "string",
+                                        "maxLength": 36,
+                                        "example": "7d34dbb2-6e57-4c4b-9546-1fe7bec1acca",
+                                    }
+                                }
+                            }
+                        }
+
                     }
                 }
             },
@@ -832,27 +869,56 @@ def upload_locality_set(request: http.HttpRequest):
     column_headers = request_data["columnHeaders"]
     data = request_data["data"]
     create_recordset = request_data.get("createRecordSet", True)
+    run_in_background = request_data.get("runInBackground", False)
 
+    resolved_upload_function = start_locality_set_background if run_in_background else upload_locality_set_foreground
+
+    result = resolved_upload_function(request.specify_collection, request.specify_user,
+                                      request.specify_user_agent, column_headers, data, create_recordset)
+
+    return http.JsonResponse(result, status=201 if run_in_background else 200, safe=False)
+
+
+def start_locality_set_background(collection, specify_user, agent, column_headers: List[str], data: List[List[str]], create_recordset: bool = False, parse_only: bool = False) -> str:
     task_id = str(uuid4())
-    task = import_locality_task.apply_async(
-        [request.specify_collection.id, column_headers, data, create_recordset], task_id=task_id)
+    args = [collection.id, column_headers, data]
+    if not parse_only:
+        args.append(create_recordset)
+    task_function = parse_locality_task.apply_async if parse_only else import_locality_task.apply_async
+
+    task = task_function(args, task_id=task_id)
 
     LocalityImport.objects.create(
-        result=None,
         taskid=task.id,
         status=LocalityImportStatus.PENDING,
-        collection=request.specify_collection,
-        specifyuser=request.specify_user,
-        createdbyagent=request.specify_user_agent,
-        modifiedbyagent=request.specify_user_agent,
+        collection=collection,
+        specifyuser=specify_user,
+        createdbyagent=agent,
+        modifiedbyagent=agent,
     )
 
-    Message.objects.create(user=request.specify_user, content=json.dumps({
+    Message.objects.create(user=specify_user, content=json.dumps({
         'type': 'localityimport-starting',
         'taskid': task.id
     }))
 
-    return http.JsonResponse(task.id, safe=False)
+    return task.id
+
+
+def upload_locality_set_foreground(collection, specify_user, agent, column_headers: List[str], data: List[List[str]], create_recordset: bool):
+    result = _upload_locality_set(collection, column_headers, data)
+
+    if result["type"] == 'ParseError':
+        return result
+    
+    localities = [row["locality"] for row in result["results"]]
+
+    recordset = create_localityimport_recordset(
+        collection, specify_user, localities) if create_recordset else None
+
+    result["recordsetid"] = None if recordset is None else recordset.pk
+
+    return result
 
 
 @openapi(schema={
@@ -861,7 +927,7 @@ def upload_locality_set(request: http.HttpRequest):
             "200": {
                 "description": "Data fetched successfully",
                 "content": {
-                    "text/plain": {
+                    "application/json": {
                         "schema": {
                             "oneOf": [
                                 {
@@ -869,12 +935,14 @@ def upload_locality_set(request: http.HttpRequest):
                                     "properties": {
                                         "taskstatus": {
                                             "type": "string",
-                                            "enum": [LocalityImportStatus.PENDING, LocalityImportStatus.ABORTED]
+                                            "enum": [LocalityImportStatus.PENDING, LocalityImportStatus.ABORTED, LocalityImportStatus.PARSED]
                                         },
                                         "taskinfo": {
                                             "type": "string",
                                         },
-                                    }
+                                    },
+                                    "required": ["taskstatus", "taskinfo"],
+                                    "additionalProperties": False
                                 },
                                 {
                                     "type": "object",
@@ -896,7 +964,9 @@ def upload_locality_set(request: http.HttpRequest):
                                                 }
                                             }
                                         },
-                                    }
+                                    },
+                                    "required": ["taskstatus", "taskinfo"],
+                                    "additionalProperties": False
                                 },
                                 {
                                     "type": "object",
@@ -909,7 +979,7 @@ def upload_locality_set(request: http.HttpRequest):
                                             "type": "object",
                                             "properties": {
                                                 "recordsetid": {
-                                                    "type": "number"
+                                                    "type": ["number", "null"]
                                                 },
                                                 "localities": {
                                                     "type": "array",
@@ -925,9 +995,13 @@ def upload_locality_set(request: http.HttpRequest):
                                                         "type": "number"
                                                     }
                                                 }
-                                            }
+                                            },
+                                            "required": ["recordsetid", "localities", "geocoorddetails"],
+                                            "additionalProperties": False
                                         }
-                                    }
+                                    },
+                                    "required": ["taskstatus", "taskinfo"],
+                                    "additionalProperties": False
                                 },
                                 {
                                     "type": "object",
@@ -939,10 +1013,12 @@ def upload_locality_set(request: http.HttpRequest):
                                         "taskinfo": {
                                             "type": "object",
                                             "properties": {
-                                                "errors": locality_set_parse_error_data
+                                                "errors": localityimport_parse_error
                                             }
                                         }
-                                    }
+                                    },
+                                    "required": ["taskstatus", "taskinfo"],
+                                    "additionalProperties": False
                                 }
                             ]
                         }
@@ -950,7 +1026,13 @@ def upload_locality_set(request: http.HttpRequest):
                 }
             },
             '404': {
-                'description': 'The localityimport object with task id was not found',
+                "description": 'The localityimport object with task id was not found',
+                "content": {
+                    "text/plain": {
+                        "type": "string",
+                        "example": "The localityimport with task id '7d34dbb2-6e57-4c4b-9546-1fe7bec1acca' was not found"
+                    }
+                }
             },
         }
     },
@@ -972,16 +1054,56 @@ def localityimport_status(request: http.HttpRequest, taskid: str):
     }
 
     if locality_import.status == LocalityImportStatus.FAILED:
+
         status["taskstatus"] = LocalityImportStatus.FAILED
-        status["taskinfo"] = {"errors": json.loads(locality_import.result)}
+
+        if isinstance(result.info, dict) and 'errors' in result.info.keys():
+            errors = result.info["errors"]
+        else:
+            results = locality_import.results.all()
+            errors = [json.loads(error.result) for error in results]
+
+        status["taskinfo"] = {"errors": errors}
+
+    elif locality_import.status == LocalityImportStatus.PARSED:
+        status["taskstatus"] = LocalityImportStatus.PARSED
+
+        if isinstance(result.info, dict) and resolved_state == LocalityImportStatus.PARSED:
+            result = {
+                "localities": result.info["localities"],
+                "geocoorddetails": result.info["geocoorddetails"]
+            }
+        else:
+            results = locality_import.results.get_queryset().get(rownumber=-1)
+            result = json.loads(results.result)
+
+        status["taskinfo"] = result
+
     elif locality_import.status == LocalityImportStatus.SUCCEEDED:
         status["taskstatus"] = LocalityImportStatus.SUCCEEDED
-        success_result = json.loads(locality_import.result)
-        status["taskinfo"] = {
-            "recordsetid": success_result["recordsetid"],
-            "localities": json.loads(success_result["localities"]),
-            "geocoorddetails": json.loads(success_result["geocoorddetails"])
-        }
+        recordset_id = locality_import.recordset.id if locality_import.recordset is not None else None
+        if isinstance(result.info, dict) and resolved_state == LocalityImportStatus.SUCCEEDED:
+            result = {
+                "recordsetid": recordset_id,
+                "localities": result.info["localities"],
+                "geocoorddetails": result.info["geocoorddetails"]
+            }
+        else:
+            results = locality_import.results.all()
+            localitites = []
+            geocoorddetails = []
+            for row in results:
+                parsed = json.loads(row.result)
+                localitites.append(parsed["locality"])
+                if parsed["geocoorddetail"] is not None:
+                    geocoorddetails.append(parsed["geocoorddetail"])
+            result = {
+                "recordsetid": recordset_id,
+                "localities": localitites,
+                "geocoorddetails": geocoorddetails
+            }
+
+        status["taskinfo"] = result
 
     return http.JsonResponse(status, safe=False)
 
@@ -1005,13 +1127,21 @@ def localityimport_status(request: http.HttpRequest, taskid: str):
                                     'description': 'Response message about the status of the task'
                                 },
                             },
+                            "required": ["type", "message"],
+                            "additionalProperties": False
                         },
                     },
                 },
             },
-            '404': {
-                'description': 'The localityimport with task id is not found',
-            },
+            "404": {
+                "description": 'The localityimport object with task id was not found',
+                "content": {
+                    "text/plain": {
+                        "type": "string",
+                        "example": "The localityimport with task id '7d34dbb2-6e57-4c4b-9546-1fe7bec1acca' was not found"
+                    }
+                }
+            }
         },
     },
 })
@@ -1075,23 +1205,41 @@ def abort_localityimport_task(request: http.HttpRequest, taskid: str):
                                         "type": "string"
                                     }
                                 }
+                            },
+                            "runInBackground": {
+                                "type": "boolean",
+                                "description": "Whether the task should be ran in the background. Defaults to True",
+                                "default": False
                             }
-                        }
+                        },
+                        "required": ["columnHeaders", "data"],
+                        "additionalProperties": False
                     }
                 }
             }
         },
         "responses": {
             "200": {
-                "description": "Locality Import Set parsed successfully",
+                "description": "Successful response returned by worker",
+                "content": {
+                    "application/json": {
+                        "schema": localityimport_parse_success
+                    }
+                }
+            },
+            "201": {
                 "content": {
                     "application/json": {
                         "schema": {
-                            "type": "array",
-                            "description": "An array of matched Locality IDs",
-                            "items": {
-                                "type": "integer",
-                                        "minimum": 0
+                            "description": "Task started by the worker. Returns the newly created ID of the task",
+                            "content": {
+                                "text/plain": {
+                                    "schema": {
+                                        "type": "string",
+                                        "maxLength": 36,
+                                        "example": "7d34dbb2-6e57-4c4b-9546-1fe7bec1acca",
+                                    }
+                                }
                             }
                         }
                     }
@@ -1101,7 +1249,7 @@ def abort_localityimport_task(request: http.HttpRequest, taskid: str):
                 "description": "Locality Import Set not parsed successfully",
                 "content": {
                     "application/json": {
-                        "schema": locality_set_parse_error_data
+                        "schema": localityimport_parse_error
                     }
                 }
             }
@@ -1116,14 +1264,21 @@ def parse_locality_set(request: http.HttpRequest):
     request_data = json.loads(request.body)
     column_headers = request_data["columnHeaders"]
     data = request_data["data"]
+    run_in_background = request_data.get("runInBackground", False)
+    if not run_in_background:
+        status, result = parse_locality_set_foreground(
+            request.specify_collection, column_headers, data)
+    else:
+        status, result = 201, start_locality_set_background(
+            request.specify_collection, request.specify_user, request.specify_user_agent, column_headers, data, False, True)
+    return http.JsonResponse(result, status=status, safe=False)
 
+
+def parse_locality_set_foreground(collection, column_headers: List[str], data: List[List[str]]) -> Tuple[int, Dict[str, Any]]:
     parsed, errors = _parse_locality_set(
-        request.specify_collection, column_headers, data)
+        collection, column_headers, data)
 
     if len(errors) > 0:
-        result = [error.to_json() for error in errors]
-        return http.JsonResponse(result, status=422, safe=False)
+        return 422, errors
 
-    result = [ps.locality_id for ps in parsed]
-
-    return http.JsonResponse(result, safe=False)
+    return 200, parsed
