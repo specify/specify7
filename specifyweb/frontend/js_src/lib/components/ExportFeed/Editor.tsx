@@ -330,11 +330,11 @@ function ResourcePicker({
             filters={dwcaAppResourceFilter}
             header={title}
             resources={resources}
-            skippable={type === 'metadata'}
             onClose={handleClose}
-            onSelected={(definition): void =>
-              setValue(localized(definition?.name ?? ''))
-            }
+            onSelected={(definition): void => {
+              setValue(localized(definition?.name ?? ''));
+              handleClose();
+            }}
           />
         )
       ) : undefined}
