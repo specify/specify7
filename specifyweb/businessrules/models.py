@@ -38,10 +38,8 @@ class PsuedoManyToManyManager(models.Manager):
 class UniquenessRule(models.Model):
     specify_model = datamodel.get_table('uniquenessrule')
 
-    id = models.AutoField('uniquenessruleid',
-                          primary_key=True, db_column='uniquenessruleid')
-    isDatabaseConstraint = models.BooleanField(
-        default=False, db_column='isDatabaseConstraint')
+    id = models.AutoField('uniquenessruleid', primary_key=True, db_column='uniquenessruleid')
+    isDatabaseConstraint = models.BooleanField(default=False, db_column='isDatabaseConstraint')
     modelName = models.CharField(max_length=256)
     discipline = models.ForeignKey(
         Discipline, null=True, blank=True, on_delete=models.PROTECT, db_column="DisciplineID")
@@ -60,8 +58,7 @@ class UniquenessRuleField(models.Model):
     specify_model = datamodel.get_table('uniquenessrulefield')
 
     id = models.AutoField('uniquenessrule_fieldsid', primary_key=True, db_column='uniquenessrule_fieldid')
-    uniquenessrule = models.ForeignKey(
-        UniquenessRule, on_delete=models.CASCADE, db_column='uniquenessruleid')
+    uniquenessrule = models.ForeignKey(UniquenessRule, on_delete=models.CASCADE, db_column='uniquenessruleid')
     fieldPath = models.TextField(null=True, blank=True)
     isScope = models.BooleanField(default=False)
 

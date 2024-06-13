@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='UniquenessRuleField',
             fields=[
-                ('uniquenessrule_fieldid', models.AutoField(primary_key=True,
+                ('id', models.AutoField(primary_key=True, db_column='uniquenessrule_fieldid',
                  serialize=False, verbose_name='uniquenessrule_fieldsid')),
                 ('fieldPath', models.TextField(blank=True, null=True)),
                 ('isScope', models.BooleanField(default=False)),
