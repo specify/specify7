@@ -125,7 +125,10 @@ export function ImportLocalityDataSet(): JSX.Element {
                 <Button.Small
                   onClick={(): void => {
                     handleParse(headers, data);
-                    resetContext();
+                    setHeaderErrors({
+                      missingRequiredHeaders: [] as RA<LocalityImportHeader>,
+                      unrecognizedHeaders: [] as RA<string>,
+                    });
                   }}
                 >
                   {commonText.import()}
