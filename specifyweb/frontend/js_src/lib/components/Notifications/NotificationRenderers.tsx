@@ -6,7 +6,7 @@ import { localityText } from '../../localization/locality';
 import { mergingText } from '../../localization/merging';
 import { notificationsText } from '../../localization/notifications';
 import { StringToJsx } from '../../localization/utils';
-import type { IR } from '../../utils/types';
+import type { IR, RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { getTable } from '../DataModel/tables';
@@ -15,6 +15,7 @@ import {
   LocalityImportErrors,
   LocalityImportSuccess,
 } from '../LocalityImport/Status';
+import type { LocalityImportParseError } from '../LocalityImport/types';
 import { mergingQueryParameter } from '../Merging/queryString';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { TableIcon } from '../Molecules/TableIcon';
@@ -230,7 +231,10 @@ export const notificationRenderers: IR<
         </Button.Small>
         {isOpen && (
           <LocalityImportErrors
-            errors={JSON.parse(notification.payload.errors)}
+            errors={
+              notification.payload
+                .errors as unknown as RA<LocalityImportParseError>
+            }
             onClose={handleClose}
           />
         )}
@@ -273,9 +277,15 @@ export const notificationRenderers: IR<
         </Button.Small>
         {isOpen && (
           <LocalityImportSuccess
-            geoCoordDetailIds={JSON.parse(notification.payload.geocoorddetails)}
-            localityIds={JSON.parse(notification.payload.localities)}
-            recordSetId={notification.payload.recordsetid as unknown as number}
+            geoCoordDetailIds={
+              notification.payload.geocoorddetails as unknown as RA<number>
+            }
+            localityIds={
+              notification.payload.localities as unknown as RA<number>
+            }
+            recordSetId={
+              notification.payload.recordsetid as unknown as number | undefined
+            }
             onClose={handleClose}
           />
         )}

@@ -126,7 +126,7 @@ def import_locality_task(self, collection_id: int, column_headers: List[str], da
             Message.objects.create(user=li.specifyuser, content=json.dumps({
                 'type': 'localityimport-failed',
                 'taskid': li.taskid,
-                'errors': json.dumps([error.to_json() for error in results["errors"]])
+                'errors': [error.to_json() for error in results["errors"]]
             }))
         elif results['type'] == 'Uploaded':
             recordset_id = None if li.recordset is None else li.recordset.pk
@@ -168,12 +168,12 @@ def parse_locality_task(self, collection_id: int, column_headers: List[str], dat
 
         if li.status == LocalityImportStatus.FAILED:
             self.update_state(LocalityImportStatus.FAILED, meta={
-                              "errors": errors})
+                              "errors": [error.to_json() for error in errors]})
 
             Message.objects.create(user=li.specifyuser, content=json.dumps({
                 'type': 'localityimport-failed',
                 'taskid': li.taskid,
-                'errors': json.dumps(errors)
+                'errors': [error.to_json() for error in errors]
             }))
 
         elif li.status == LocalityImportStatus.PARSED:
