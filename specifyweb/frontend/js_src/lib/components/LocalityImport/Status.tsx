@@ -48,9 +48,11 @@ const statusDimensionKey = 'localityimport-status';
 
 export function LocalityImportStatus({
   taskId,
+  onImport: handleImport,
   onClose: handleClose,
 }: {
   readonly taskId: string;
+  readonly onImport: () => void;
   readonly onClose: () => void;
 }): JSX.Element {
   const [state, setState] = React.useState<LocalityImportState>({
@@ -62,7 +64,7 @@ export function LocalityImportStatus({
   React.useEffect(() => {
     let destructorCalled = false;
     const fetchStatus = () =>
-      void ajax<LocalityImportState>(`/api/localityset/status/${taskId}`, {
+      void ajax<LocalityImportState>(`/api/localityset/status/${taskId}/`, {
         headers: { Accept: 'application/json' },
       })
         .then(({ data }) => {
@@ -109,6 +111,13 @@ export function LocalityImportStatus({
       recordSetId={state.taskinfo.recordsetid}
       onClose={handleClose}
     />
+  ) : state.taskstatus === 'PARSED' ? (
+    <LocalityImportParsed
+      geoCoordDetails={state.taskinfo.geocoorddetails}
+      localities={state.taskinfo.localities}
+      onClose={handleClose}
+      onImport={handleImport}
+    />
   ) : state.taskstatus === 'FAILED' ? (
     <LocalityImportErrors
       errors={state.taskinfo.errors}
@@ -153,7 +162,7 @@ function LocalityImportProgress({
   readonly onTaskCancel: () => void;
 }): JSX.Element {
   const percentage = Math.round((currentProgress / total) * 100);
-  useTitle(localized(`${header} ${percentage}%`));
+  useTitle(localized(`${percentage}% ${header}`));
   return (
     <Dialog
       buttons={
@@ -173,6 +182,55 @@ function LocalityImportProgress({
           <RemainingLoadingTime current={currentProgress} total={total} />
         </>
       </Label.Block>
+    </Dialog>
+  );
+}
+
+export function LocalityImportParsed({
+  localities,
+  geoCoordDetails,
+  onImport: handleImport,
+  onClose: handleClose,
+}: {
+  readonly localities: number;
+  readonly geoCoordDetails: number;
+  readonly onImport: () => void;
+  readonly onClose: () => void;
+}): JSX.Element {
+  return (
+    <Dialog
+      buttons={
+        <>
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+          <Button.Info
+            onClick={(): void => {
+              handleClose();
+              handleImport();
+            }}
+          >
+            {commonText.import()}
+          </Button.Info>
+        </>
+      }
+      header={localityImportStatusLocalization.PARSED}
+      modal={false}
+      onClose={handleClose}
+    >
+      <div className="flex flex-col gap-4">
+        <p>
+          {localityText.localityImportEffectCounts({
+            localityTabelLabel: tables.Locality.label,
+            geoCoordDetailTableLabel: tables.GeoCoordDetail.label,
+          })}
+        </p>
+        <span className="gap-3" />
+        <TableRecordCounts
+          recordCounts={{
+            locality: localities,
+            geocoorddetail: geoCoordDetails,
+          }}
+        />
+      </div>
     </Dialog>
   );
 }

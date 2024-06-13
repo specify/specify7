@@ -39,6 +39,24 @@ export function ImportLocalityDataSet(): JSX.Element {
     setHeaders([]);
   }
 
+  function handleParse(
+    columnHeaders: RA<string>,
+    data: RA<RA<number | string>>
+  ): void {
+    loading(
+      ajax('/api/localityset/parse/', {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: {
+          columnHeaders,
+          data,
+          createRecordSet: false,
+          runInBackground: true,
+        },
+      }).then(({ data }) => setTaskId(data))
+    );
+  }
+
   function handleImport(
     columnHeaders: RA<string>,
     data: RA<RA<number | string>>
@@ -51,6 +69,7 @@ export function ImportLocalityDataSet(): JSX.Element {
           columnHeaders,
           data,
           createRecordSet: true,
+          runInBackground: true,
         },
       }).then(({ data }) => setTaskId(data))
     );
@@ -94,7 +113,7 @@ export function ImportLocalityDataSet(): JSX.Element {
               (errors) => errors.length > 0
             )
           )
-            handleImport(headers, data);
+            handleParse(headers, data);
         }}
       />
       {Object.values(headerErrors).some((errors) => errors.length > 0) && (
@@ -105,9 +124,7 @@ export function ImportLocalityDataSet(): JSX.Element {
               {headerErrors.missingRequiredHeaders.length === 0 && (
                 <Button.Small
                   onClick={(): void => {
-                    const storedHeaders = headers;
-                    const storedData = data;
-                    handleImport(storedHeaders, storedData);
+                    handleParse(headers, data);
                     resetContext();
                   }}
                 >
@@ -160,6 +177,7 @@ export function ImportLocalityDataSet(): JSX.Element {
         <LocalityImportStatus
           taskId={taskId}
           onClose={(): void => setTaskId(undefined)}
+          onImport={(): void => handleImport(headers, data)}
         />
       )}
     </>

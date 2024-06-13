@@ -252,6 +252,17 @@ export const notificationRenderers: IR<
       </>
     );
   },
+  'localityimport-parse-succeeded'(notification) {
+    return (
+      <>
+        <p>{localityText.localityImportParsed()}</p>
+        <details>
+          <summary>{localityText.taskId()}</summary>
+          {notification.payload.taskid}
+        </details>
+      </>
+    );
+  },
   'localityimport-succeeded'(notification) {
     const [isOpen, handleOpen, handleClose] = useBooleanState();
     return (

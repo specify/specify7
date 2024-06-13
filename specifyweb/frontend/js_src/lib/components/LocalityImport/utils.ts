@@ -31,6 +31,7 @@ export const localityImportStatusLocalization: RR<
   LocalityImportTaskStatus,
   LocalizedString
 > = {
+  PARSED: localityText.localityImportParsed(),
   PARSING: localityText.localityImportParsing(),
   PENDING: localityText.localityImportStarting(),
   PROGRESS: localityText.localityImportProgressing(),
@@ -61,8 +62,7 @@ export function resolveImportLocalityErrorMessage(
   } else {
     return commonText.colonLine({
       label: key,
-      value:
-        Object.keys(payload).length === 0 ? '' : `${JSON.stringify(payload)}`,
+      value: Object.keys(payload).length === 0 ? '' : JSON.stringify(payload),
     });
   }
 }

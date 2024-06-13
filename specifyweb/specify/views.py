@@ -935,7 +935,7 @@ def upload_locality_set_foreground(collection, specify_user, agent, column_heade
                                     "properties": {
                                         "taskstatus": {
                                             "type": "string",
-                                            "enum": [LocalityImportStatus.PENDING, LocalityImportStatus.ABORTED, LocalityImportStatus.PARSED]
+                                            "enum": [LocalityImportStatus.PENDING, LocalityImportStatus.ABORTED]
                                         },
                                         "taskinfo": {
                                             "type": "string",
@@ -961,6 +961,30 @@ def upload_locality_set_foreground(collection, specify_user, agent, column_heade
                                                 "total": {
                                                     "type": "number",
                                                     "example": 20,
+                                                }
+                                            }
+                                        },
+                                    },
+                                    "required": ["taskstatus", "taskinfo"],
+                                    "additionalProperties": False
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "taskstatus": {
+                                            "type": "string",
+                                            "enum": [LocalityImportStatus.PARSED]
+                                        },
+                                        "taskinfo": {
+                                            "type": "object",
+                                            "properties": {
+                                                "localities": {
+                                                    "type": "number",
+                                                    "example": 312,
+                                                },
+                                                "geocoorddetails": {
+                                                    "type": "number",
+                                                    "example": 204,
                                                 }
                                             }
                                         },

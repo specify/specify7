@@ -314,11 +314,14 @@ export const localityText = createDictionary({
   localityImportProgressing: {
     'en-us': 'Importing Locality Data Set',
   },
+  localityImportParsed: {
+    'en-us': 'Locality Data Set Import Parsed',
+  },
   localityImportFailed: {
-    'en-us': 'Import Locality Data Set Failed',
+    'en-us': 'Locality Data Set Import Failed',
   },
   localityImportCancelled: {
-    'en-us': 'Import Locality Data Set Cancelled',
+    'en-us': 'Locality Data Set Import Cancelled',
   },
   localityImportSucceeded: {
     'en-us': 'Locality Data Set Import Succeeded',
@@ -337,6 +340,10 @@ export const localityText = createDictionary({
   multipleLocalitiesWithGuid: {
     'en-us':
       'More than one Locality found with guid: {guid:string}. Locality IDs: {localityIds: string}',
+  },
+  localityImportEffectCounts: {
+    'en-us':
+      'The following number of {localityTabelLabel: string} records will be affected by the import and {geoCoordDetailTableLabel: string} records will be created:',
   },
   localityUploadedDescription: {
     'en-us':
