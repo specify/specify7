@@ -7858,7 +7858,7 @@ datamodel = Datamodel(tables=[
         fields=[
             Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
             # Field(name='columns', column='Columns', indexed=False, unique=False, required=True, type='json'), # longtext
-            Field(name='data', column='Data', indexed=False, unique=False, required=False, type='json', sqlalchemy_type='json'), # longtext
+            Field(name='data', column='Data', indexed=False, unique=False, required=False, type='json'), # longtext
             Field(name='uploadplan', column='UploadPlan', indexed=False, unique=False, required=False, type='text'),  # longtext
             Field(name='uploadresult', column='UploadResult', indexed=False, unique=False, required=False, type='json'),  # longtext
             # Field(name='rowresults', column='RowResults', indexed=False, unique=False, required=False, type='java.lang.String', length=255), # longtext
@@ -8137,7 +8137,7 @@ datamodel = Datamodel(tables=[
         fields=[
             Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
             Field(name='columns', column='Columns', indexed=False, unique=False, required=True, type='json'), # longtext
-            Field(name='data', column='Data', indexed=False, unique=False, required=False, type='json', sqlalchemy_type='json'), # longtext
+            Field(name='data', column='Data', indexed=False, unique=False, required=False, type='json'), # longtext
             Field(name='uploadplan', column='UploadPlan', indexed=False, unique=False, required=False, type='text'),  # longtext
             Field(name='uploadresult', column='UploadResult', indexed=False, unique=False, required=False, type='json'),  # longtext
             Field(name='rowresults', column='RowResults', indexed=False, unique=False, required=False, type='java.lang.String', length=255), # longtext

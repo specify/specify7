@@ -184,12 +184,10 @@ class Field(object):
     unique: bool
     required: bool = False
     type: str
-    sqlalchemy_type: str
     length: int
 
     def __init__(self, name: str = None, column: str = None, indexed: bool = None, 
-                 unique: bool = None, required: bool = None,
-                 type: str = None, sqlalchemy_type: str = None,
+                 unique: bool = None, required: bool = None, type: str = None,
                  length: int = None, is_relationship: bool = False):
         if not name:
             raise ValueError("name is required")
@@ -202,7 +200,6 @@ class Field(object):
         self.unique = unique if unique is not None else False
         self.required = required if required is not None else False
         self.type = type if type is not None else ''
-        self.sqlalchemy_type = sqlalchemy_type #if sqlalchemy_type is not None else None
         self.length = length if length is not None else 0
 
     def __repr__(self) -> str:
@@ -254,9 +251,9 @@ class Relationship(Field):
     def __init__(self, name: str = None, type: str = None, required: bool = None, 
                  relatedModelName: str = None, column: str = None,
                  otherSideName: str = None, dependent: bool = False, is_relationship: bool = True,
-                 is_to_many: bool = None, sqlalchemy_type: str = None):
+                 is_to_many: bool = None):
         super().__init__(name, column, indexed=False, unique=False, required=required, 
-                         type=type, length=0, is_relationship=is_relationship, sqlalchemy_type=sqlalchemy_type)
+                         type=type, length=0, is_relationship=is_relationship)
         self.dependent = dependent if dependent is not None else False
         self.relatedModelName = relatedModelName or ''
         self.otherSideName = otherSideName or ''
