@@ -814,7 +814,14 @@ def abort_merge_task(request, merge_id: int) -> http.HttpResponse:
                                             "enum": ["Uploaded"]
                                         },
                                         "recordsetid": {
-                                            "type": ["string", "null"]
+                                            "oneOf": [
+                                                {
+                                                    "type": "string"
+                                                },
+                                                {
+                                                    "type": "null"
+                                                }
+                                            ]
                                         },
                                         "localities": {
                                             "type": "array",
@@ -840,21 +847,14 @@ def abort_merge_task(request, merge_id: int) -> http.HttpResponse:
                 }
             },
             "201": {
+                "description": "Task started by the worker. Returns the newly created ID of the task",
                 "content": {
-                    "application/json": {
+                    "text/plain": {
                         "schema": {
-                            "description": "Task started by the worker. Returns the newly created ID of the task",
-                            "content": {
-                                "text/plain": {
-                                    "schema": {
-                                        "type": "string",
-                                        "maxLength": 36,
-                                        "example": "7d34dbb2-6e57-4c4b-9546-1fe7bec1acca",
-                                    }
-                                }
-                            }
+                            "type": "string",
+                            "maxLength": 36,
+                            "example": "7d34dbb2-6e57-4c4b-9546-1fe7bec1acca",
                         }
-
                     }
                 }
             },
@@ -910,7 +910,7 @@ def upload_locality_set_foreground(collection, specify_user, agent, column_heade
 
     if result["type"] == 'ParseError':
         return result
-    
+
     localities = [row["locality"] for row in result["results"]]
 
     recordset = create_localityimport_recordset(
@@ -1003,7 +1003,14 @@ def upload_locality_set_foreground(collection, specify_user, agent, column_heade
                                             "type": "object",
                                             "properties": {
                                                 "recordsetid": {
-                                                    "type": ["number", "null"]
+                                                    "oneOf": [
+                                                        {
+                                                            "type": "number"
+                                                        },
+                                                        {
+                                                            "type": "null"
+                                                        }
+                                                    ]
                                                 },
                                                 "localities": {
                                                     "type": "array",
@@ -1049,15 +1056,17 @@ def upload_locality_set_foreground(collection, specify_user, agent, column_heade
                     }
                 }
             },
-            '404': {
+            "404": {
                 "description": 'The localityimport object with task id was not found',
                 "content": {
                     "text/plain": {
-                        "type": "string",
-                        "example": "The localityimport with task id '7d34dbb2-6e57-4c4b-9546-1fe7bec1acca' was not found"
+                        "schema": {
+                            "type": "string",
+                            "example": "The localityimport with task id '7d34dbb2-6e57-4c4b-9546-1fe7bec1acca' was not found"
+                        }
                     }
                 }
-            },
+            }
         }
     },
 })
@@ -1144,7 +1153,7 @@ def localityimport_status(request: http.HttpRequest, taskid: str):
                             'properties': {
                                 'type': {
                                     'type': 'string',
-                                    'enum': ["ABORTED", "NOT_RUNNING"]
+                                    "enum": ["ABORTED", "NOT_RUNNING"]
                                 },
                                 'message': {
                                     'type': 'string',
@@ -1161,8 +1170,10 @@ def localityimport_status(request: http.HttpRequest, taskid: str):
                 "description": 'The localityimport object with task id was not found',
                 "content": {
                     "text/plain": {
-                        "type": "string",
-                        "example": "The localityimport with task id '7d34dbb2-6e57-4c4b-9546-1fe7bec1acca' was not found"
+                        "schema": {
+                            "type": "string",
+                            "example": "The localityimport with task id '7d34dbb2-6e57-4c4b-9546-1fe7bec1acca' was not found"
+                        }
                     }
                 }
             }
@@ -1252,19 +1263,13 @@ def abort_localityimport_task(request: http.HttpRequest, taskid: str):
                 }
             },
             "201": {
+                "description": "Task started by the worker. Returns the newly created ID of the task",
                 "content": {
-                    "application/json": {
+                    "text/plain": {
                         "schema": {
-                            "description": "Task started by the worker. Returns the newly created ID of the task",
-                            "content": {
-                                "text/plain": {
-                                    "schema": {
-                                        "type": "string",
-                                        "maxLength": 36,
-                                        "example": "7d34dbb2-6e57-4c4b-9546-1fe7bec1acca",
-                                    }
-                                }
-                            }
+                            "type": "string",
+                            "maxLength": 36,
+                            "example": "7d34dbb2-6e57-4c4b-9546-1fe7bec1acca",
                         }
                     }
                 }

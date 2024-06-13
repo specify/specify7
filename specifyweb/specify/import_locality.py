@@ -39,7 +39,14 @@ localityimport_parse_success = {
                 "type": "object"
             },
             "geocoorddetail": {
-                "type": [ "null", "string"],
+                "oneOf": [
+                    {
+                        "type": "object"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
             },
             "locality_id": {
                 "type": "number",
