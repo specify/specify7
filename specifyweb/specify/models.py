@@ -5780,7 +5780,7 @@ class Spappresourcedata(models.Model):
     id = models.AutoField(primary_key=True, db_column='spappresourcedataid')
 
     # Fields
-    data = models.TextField(blank=True, null=True, unique=False, db_column='data', db_index=False)
+    _data = models.BinaryField(blank=True, null=True, unique=False, db_column='data', db_index=False)
     timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now) # auto_now=True
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
@@ -5794,6 +5794,20 @@ class Spappresourcedata(models.Model):
     class Meta:
         db_table = 'spappresourcedata'
         ordering = ()
+
+    @property
+    def data(self):
+        if isinstance(self._data, bytes):
+            return self._data.decode()
+        else:
+            return self._data
+
+    @data.setter
+    def data(self, value):
+        if isinstance(value, str):
+            self._data = value.encode()
+        else:
+            self._data = value
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     save = partialmethod(custom_save)
@@ -7234,7 +7248,7 @@ class Workbenchrow(models.Model):
 
     # Fields
     biogeomancerresults = models.TextField(blank=True, null=True, unique=False, db_column='BioGeomancerResults', db_index=False)
-    cardimagedata = models.TextField(blank=True, null=True, unique=False, db_column='CardImageData', db_index=False)
+    _cardimagedata = models.BinaryField(blank=True, null=True, unique=False, db_column='CardImageData', db_index=False)
     cardimagefullpath = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='CardImageFullPath', db_index=False)
     errorestimate = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='ErrorEstimate', db_index=False)
     errorpolygon = models.TextField(blank=True, null=True, unique=False, db_column='ErrorPolygon', db_index=False)
@@ -7256,6 +7270,20 @@ class Workbenchrow(models.Model):
         indexes = [
             # models.Index(fields=['RowNumber'], name='RowNumberIDX')
         ]
+
+    @property
+    def cardimagedata(self):
+        if isinstance(self._cardimagedata, bytes):
+            return self._cardimagedata.decode()
+        else:
+            return self._cardimagedata
+
+    @cardimagedata.setter
+    def cardimagedata(self, value):
+        if isinstance(value, str):
+            self._cardimagedata = value.encode()
+        else:
+            self._cardimagedata = value
 
     save = partialmethod(custom_save)
 
@@ -7294,7 +7322,7 @@ class Workbenchrowimage(models.Model):
 
     # Fields
     attachtotablename = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='AttachToTableName', db_index=False)
-    cardimagedata = models.TextField(blank=True, null=True, unique=False, db_column='CardImageData', db_index=False)
+    _cardimagedata = models.BinaryField(blank=True, null=True, unique=False, db_column='CardImageData', db_index=False)
     cardimagefullpath = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='CardImageFullPath', db_index=False)
     imageorder = models.IntegerField(blank=True, null=True, unique=False, db_column='ImageOrder', db_index=False)
 
@@ -7304,6 +7332,20 @@ class Workbenchrowimage(models.Model):
     class Meta:
         db_table = 'workbenchrowimage'
         ordering = ()
+
+    @property
+    def cardimagedata(self):
+        if isinstance(self._cardimagedata, bytes):
+            return self._cardimagedata.decode()
+        else:
+            return self._cardimagedata
+
+    @cardimagedata.setter
+    def cardimagedata(self, value):
+        if isinstance(value, str):
+            self._cardimagedata = value.encode()
+        else:
+            self._cardimagedata = value
 
     save = partialmethod(custom_save)
 

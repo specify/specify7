@@ -39,7 +39,8 @@ FIELD_TYPE_CODE_MAP = {
     'java.lang.Double': 'models.FloatField', # This mapping wasn't in the original code
     'java.lang.Boolean': 'models.BooleanField',
     'text': 'models.TextField',
-    'json': 'models.JSONField'
+    'json': 'models.JSONField',
+    'blob': 'models.BinaryField'
 }
 
 DJANGO_TO_MARIADB_MAP = {
