@@ -1,8 +1,8 @@
 import json
 
-from django.test import TestCase, Client
+from django.test import Client
 
-from specifyweb.specify.api_tests import ApiTests
+from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.specify import models as spmodels
 from . import models
 from .upload import upload as uploader

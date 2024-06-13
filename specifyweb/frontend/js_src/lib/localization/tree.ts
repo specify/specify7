@@ -178,7 +178,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Не могу объединить в синонимы',
     'es-es': 'No se puede fusionar en sinónimos',
     'fr-fr': 'Impossible de fusionner avec des synonymes',
-    'uk-ua': 'Не можна об’єднувати в синоніми',
+    'uk-ua': 'Неможливо злити в синоніми',
     'de-ch': 'Kann nicht zu Synonymen zusammenführen',
   },
   cantSynonymizeSynonym: {
@@ -243,8 +243,8 @@ export const treeText = createDictionary({
       à déplacer vers
     `,
     'ru-ru': `
-      Выберите новую цель для препаратов «{nodeName:string}», которые будут
-      перемещены.
+      Выберите новую цель для препаратов «{nodeName:string}», в которую нужно
+      переместить
     `,
     'uk-ua': `
       Виберіть нову ціль для препаратів "{nodeName:string}", до якої потрібно
@@ -299,7 +299,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Сделайте {nodeName:string} синонимом {synonymName:string}',
     'es-es': 'Hacer de {nodeName:string} un sinónimo de {synonymName:string}',
     'fr-fr': 'Faire de {nodeName:string} un synonyme de {synonymName:string}',
-    'uk-ua': 'Зробіть {nodeName:string} синонімом {synonymName:string}',
+    'uk-ua': 'Зробити {nodeName:string} синонімом {synonymName:string}',
     'de-ch':
       'Aus {nodeName:string} ein Synonym von {synonymName:string} machen',
   },
@@ -325,10 +325,7 @@ export const treeText = createDictionary({
       El nodo {treeName:string} "{nodeName:string}" se convertirá en sinónimo de
       "{synonymName:string}".
     `,
-    'fr-fr': `
-      Le nœud {treeName:string} "{nodeName:string}" deviendra synonyme de
-      "{synonymName:string}".
-    `,
+    'fr-fr': 'Verticale',
     'de-ch': `
       Der {treeName:string}-Knoten "{nodeName:string}" wird zu einem Synonym von
       "{synonymName:string}".

@@ -1,7 +1,7 @@
 
 from unittest import skip
 from specifyweb.specify import models
-from specifyweb.specify.api_tests import ApiTests
+from specifyweb.specify.tests.test_api import ApiTests
 from ..exceptions import BusinessRuleException
 
 @skip("these business rules were removed in https://github.com/specify/specify7/issues/474")
