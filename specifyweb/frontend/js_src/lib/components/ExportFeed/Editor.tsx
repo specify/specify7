@@ -318,7 +318,7 @@ function ResourcePicker({
       : headerText.chooseMetadataResource();
   return (
     <div className="flex gap-2">
-      <Input.Text value={value} required />
+      <Input.Text required value={value} />
       {!isReadOnly && (
         <Button.Info onClick={handleOpen}>{headerText.choose()}</Button.Info>
       )}
