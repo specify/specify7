@@ -5783,7 +5783,8 @@ class Spappresourcedata(models.Model):
     id = models.AutoField(primary_key=True, db_column='spappresourcedataid')
 
     # Fields
-    _data = models.BinaryField(blank=True, null=True, unique=False, db_column='data', db_index=False)
+    data = models.BinaryField(blank=True, null=True, unique=False, db_column='data', db_index=False)
+    # _data = models.BinaryField(blank=True, null=True, unique=False, db_column='data', db_index=False)
     timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now) # auto_now=True
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
@@ -5798,22 +5799,36 @@ class Spappresourcedata(models.Model):
         db_table = 'spappresourcedata'
         ordering = ()
 
-    @property
-    def data(self):
-        if isinstance(self._data, bytes):
-            return self._data.decode()
+    def get_decoded_data(self):
+        if isinstance(self.data, bytes):
+            return self.data.decode()
         else:
-            return self._data
+            return self.data
+        
+    def data_blob_save(self, *args, **kwargs):
+        if isinstance(self.data, str):
+            self.data = self.data.encode()
+    
+    def save_spappresourcedata(self, *args, **kwargs):
+        self.data_blob_save(*args, **kwargs)
+        custom_save(self, *args, **kwargs)
 
-    @data.setter
-    def data(self, value):
-        if isinstance(value, str):
-            self._data = value.encode()
-        else:
-            self._data = value
+    # @property
+    # def data(self):
+    #     if isinstance(self._data, bytes):
+    #         return self._data.decode()
+    #     else:
+    #         return self._data
+
+    # @data.setter
+    # def data(self, value):
+    #     if isinstance(value, str):
+    #         self._data = value.encode()
+    #     else:
+    #         self._data = value
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
-    save = partialmethod(custom_save)
+    save = partialmethod(save_spappresourcedata)
 
 class Spappresourcedir(models.Model):
     specify_model = datamodel.get_table('spappresourcedir')
@@ -7251,7 +7266,8 @@ class Workbenchrow(models.Model):
 
     # Fields
     biogeomancerresults = models.TextField(blank=True, null=True, unique=False, db_column='BioGeomancerResults', db_index=False)
-    _cardimagedata = models.BinaryField(blank=True, null=True, unique=False, db_column='CardImageData', db_index=False)
+    cardimagedata = models.BinaryField(blank=True, null=True, unique=False, db_column='CardImageData', db_index=False)
+    # _cardimagedata = models.BinaryField(blank=True, null=True, unique=False, db_column='CardImageData', db_index=False)
     cardimagefullpath = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='CardImageFullPath', db_index=False)
     errorestimate = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='ErrorEstimate', db_index=False)
     errorpolygon = models.TextField(blank=True, null=True, unique=False, db_column='ErrorPolygon', db_index=False)
@@ -7274,21 +7290,35 @@ class Workbenchrow(models.Model):
             # models.Index(fields=['RowNumber'], name='RowNumberIDX')
         ]
 
-    @property
-    def cardimagedata(self):
-        if isinstance(self._cardimagedata, bytes):
-            return self._cardimagedata.decode()
+    def get_decoded_data(self):
+        if isinstance(self.cardimagedata, bytes):
+            return self.cardimagedata.decode()
         else:
-            return self._cardimagedata
+            return self.cardimagedata
+        
+    def data_blob_save(self, *args, **kwargs):
+        if isinstance(self.cardimagedata, str):
+            self.cardimagedata = self.cardimagedata.encode()
+    
+    def save_workbenchrow(self, *args, **kwargs):
+        self.data_blob_save(*args, **kwargs)
+        custom_save(self, *args, **kwargs)
 
-    @cardimagedata.setter
-    def cardimagedata(self, value):
-        if isinstance(value, str):
-            self._cardimagedata = value.encode()
-        else:
-            self._cardimagedata = value
+    # @property
+    # def cardimagedata(self):
+    #     if isinstance(self._cardimagedata, bytes):
+    #         return self._cardimagedata.decode()
+    #     else:
+    #         return self._cardimagedata
 
-    save = partialmethod(custom_save)
+    # @cardimagedata.setter
+    # def cardimagedata(self, value):
+    #     if isinstance(value, str):
+    #         self._cardimagedata = value.encode()
+    #     else:
+    #         self._cardimagedata = value
+
+    save = partialmethod(save_workbenchrow)
 
 class Workbenchrowexportedrelationship(models.Model):
     specify_model = datamodel.get_table('workbenchrowexportedrelationship')
@@ -7325,7 +7355,8 @@ class Workbenchrowimage(models.Model):
 
     # Fields
     attachtotablename = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='AttachToTableName', db_index=False)
-    _cardimagedata = models.BinaryField(blank=True, null=True, unique=False, db_column='CardImageData', db_index=False)
+    cardimagedata = models.BinaryField(blank=True, null=True, unique=False, db_column='CardImageData', db_index=False)
+    # _cardimagedata = models.BinaryField(blank=True, null=True, unique=False, db_column='CardImageData', db_index=False)
     cardimagefullpath = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='CardImageFullPath', db_index=False)
     imageorder = models.IntegerField(blank=True, null=True, unique=False, db_column='ImageOrder', db_index=False)
 
@@ -7336,21 +7367,35 @@ class Workbenchrowimage(models.Model):
         db_table = 'workbenchrowimage'
         ordering = ()
 
-    @property
-    def cardimagedata(self):
-        if isinstance(self._cardimagedata, bytes):
-            return self._cardimagedata.decode()
+    def get_decoded_data(self):
+        if isinstance(self.cardimagedata, bytes):
+            return self.cardimagedata.decode()
         else:
-            return self._cardimagedata
+            return self.cardimagedata
+        
+    def data_blob_save(self, *args, **kwargs):
+        if isinstance(self.cardimagedata, str):
+            self.cardimagedata = self.cardimagedata.encode()
+    
+    def save_workbenchrowimage(self, *args, **kwargs):
+        self.data_blob_save(*args, **kwargs)
+        custom_save(self, *args, **kwargs)
 
-    @cardimagedata.setter
-    def cardimagedata(self, value):
-        if isinstance(value, str):
-            self._cardimagedata = value.encode()
-        else:
-            self._cardimagedata = value
+    # @property
+    # def cardimagedata(self):
+    #     if isinstance(self._cardimagedata, bytes):
+    #         return self._cardimagedata.decode()
+    #     else:
+    #         return self._cardimagedata
 
-    save = partialmethod(custom_save)
+    # @cardimagedata.setter
+    # def cardimagedata(self, value):
+    #     if isinstance(value, str):
+    #         self._cardimagedata = value.encode()
+    #     else:
+    #         self._cardimagedata = value
+
+    save = partialmethod(save_workbenchrowimage)
 
 class Workbenchtemplate(models.Model):
     specify_model = datamodel.get_table('workbenchtemplate')
