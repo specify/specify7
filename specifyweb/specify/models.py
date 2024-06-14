@@ -7417,3 +7417,29 @@ class Workbenchtemplatemappingitem(models.Model):
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     save = partialmethod(custom_save)
+
+class CollectionObjectType(models.Model):
+    # specify_model = datamodel.get_table('collectionobjecttype')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='CollectionObjectTypeID')
+
+    # Fields
+    name = models.CharField(blank=False, max_length=255, null=False, unique=False, db_column='Name', db_index=False)
+    isloanable = models.BooleanField(blank=True, null=True, unique=False, db_column='IsLoanable', db_index=False)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    
+    # Relationships: Many-to-One
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='collectionobjecttypes', null=False, on_delete=protect_with_blockers)
+    taxontreedef = models.ForeignKey('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='collectionobjecttypes', null=False, on_delete=protect_with_blockers)
+    
+    class Meta:
+        db_table = 'collectionobjecttype'
+        ordering = ()
+
+    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    save = partialmethod(custom_save)

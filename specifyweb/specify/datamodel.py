@@ -8162,6 +8162,35 @@ datamodel = Datamodel(tables=[
         fieldAliases=[
 
         ]
+    ),
+    Table( # CollectionObjectType
+        sp7_only=True,
+        django_app='specify',
+        classname='edu.ku.brc.specify.datamodel.CollectionObjectType',
+        table='collectionobjecttype',
+        tableId=1013,
+        idColumn='id',
+        idFieldName='collectionObjectTypeId',
+        idField=IdField(name='collectionObjectTypeId', column='id', type='java.lang.Integer'),
+        fields=[
+            Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+            Field(name='isloanable', column='IsLoanable', indexed=False, unique=False, required=True, type='java.lang.Boolean'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp')
+        ],
+        indexes=[
+
+        ],
+        relationships=[
+            Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='Collection_ID'),
+            Relationship(name='taxontreedef', type='many-to-one', required=False, relatedModelName='TaxonTreeDef', column='TaxonTreeDef_ID'),
+            Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgent_ID'),
+            Relationship(name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgent_ID')
+        ],
+        fieldAliases=[
+
+        ]
     )
 ])
 
