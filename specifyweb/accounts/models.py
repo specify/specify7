@@ -1,10 +1,11 @@
 from django.db import models
-
-from specifyweb.specify import models as spmodels
-Specifyuser = getattr(spmodels, 'Specifyuser')
+from functools import partialmethod
+from specifyweb.specify.models import Specifyuser, datamodel, custom_save
 
 class Spuserexternalid(models.Model):
     """Maps external user identities to Specify user accounts."""
+    specify_model = datamodel.get_table('spuserexternalid')
+
     provider = models.CharField(max_length=256)  # From a key in settings.OAUTH_LOGIN_PROVIDERS
     providerid = models.CharField(max_length=4095) # The user's id in the external system.
     idtoken = models.JSONField(null=True) # Place to store the JWT of the user
@@ -22,3 +23,5 @@ class Spuserexternalid(models.Model):
         # constraints = [
         #     models.UniqueConstraint(fields=["provider", "providerid"], name="unique_spuser_external_id")
         # ]
+
+    # save = partialmethod(custom_save)

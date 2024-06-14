@@ -159,7 +159,7 @@ class DeferredScopeUploadTable(NamedTuple):
         if  self.overrideScope is not None and'collection' in self.overrideScope.keys():
             if isinstance(self.overrideScope['collection'], int):
                 collection_id = self.overrideScope['collection']
-                collection = getattr(models, "Collection").objects.get(id=collection_id)
+                collection = models.Collection.objects.get(id=collection_id)
                 scoped = self.apply_scoping(collection, defer=False)
             elif callable(self.overrideScope['collection']):
                 collection = self.overrideScope['collection'](self, row_index) if row_index is not None else default_collection

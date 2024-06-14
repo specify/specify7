@@ -15,12 +15,14 @@ logger = logging.getLogger(__name__)
 
 from django import forms
 from django.db import transaction
+from django.apps import apps
 from django.http import (HttpResponse, HttpResponseBadRequest,
                          Http404, HttpResponseNotAllowed, QueryDict)
 from django.core.exceptions import ObjectDoesNotExist, FieldError, FieldDoesNotExist
 from django.db.models.fields import DateTimeField, FloatField, DecimalField
 
 from specifyweb.permissions.permissions import enforce, check_table_permissions, check_field_permissions, table_permissions_checker
+from specifyweb.specify.models_by_table_id import get_model_by_table_id
 
 from . import models
 from .autonumbering import autonumber_and_save
@@ -38,7 +40,41 @@ def get_model(name: str):
     """Fetch an ORM model from the module dynamically so that
     the typechecker doesn't complain.
     """
-    return getattr(models, name.capitalize())
+    model_name = name.capitalize()
+    name = name.lower()
+    try:
+        return getattr(models, model_name)
+    except AttributeError as e:
+        for app in apps.get_app_configs():
+            for model in app.get_models():
+                if model._meta.model_name == name:
+                    return model
+        raise e
+
+def correct_field_name(model, field_name: str, ignore_properties: bool = True) -> str:
+    """Return the correct field name for a model given a case insensitive
+    field name. If the field is not found, raise FieldDoesNotExist.
+    """
+    if not ignore_properties:
+        try:
+            getattr(model, field_name) # Able to retrieve model @property
+            return field_name
+        except AttributeError as e:
+            pass
+    
+    try:
+        model._meta.get_field(field_name) # Retrieve field from model by proper name
+        return field_name
+    except FieldDoesNotExist:
+        pass
+
+    # Retrieve field from model by case insensitive name
+    field_name = field_name.lower()
+    for field in model._meta.get_fields():
+        if field.name.lower() == field_name:
+            return field.name
+    
+    raise FieldDoesNotExist(f"field '{field_name}' not found in {model}")
 
 class JsonEncoder(json.JSONEncoder):
     """Augmented JSON encoder that handles datetime and decimal objects."""
@@ -258,7 +294,7 @@ def get_recordset_info(obj, recordsetid: int) -> Optional[RecordSetInfo]:
     """
     # Queryset of record set items in the given record set with
     # the additional condition that they match the resource's table.
-    Recordsetitem = get_model('Recordsetitem')
+    Recordsetitem = models.Recordsetitem
     rsis = Recordsetitem.objects.filter(
         recordset__id=recordsetid, recordset__dbtableid=obj.specify_model.tableId)
 
@@ -305,7 +341,7 @@ def post_resource(collection, agent, name: str, data, recordsetid: Optional[int]
 
     if recordsetid is not None:
         # add the resource to the record set
-        Recordset = get_model('Recordset')
+        Recordset = models.Recordset
         try:
             recordset = Recordset.objects.get(id=recordsetid)
         except Recordset.DoesNotExist as e:
@@ -315,7 +351,7 @@ def post_resource(collection, agent, name: str, data, recordsetid: Optional[int]
             # the resource is not of the right kind to go in the recordset
             raise RecordSetException(
                 "expected %s, got %s when adding object to recordset",
-                (models.models_by_tableid[recordset.dbtableid], obj.__class__))
+                (get_model_by_table_id(recordset.dbtableid), obj.__class__))
 
         recordset.recordsetitems.create(recordid=obj.id)
     return obj
@@ -341,11 +377,11 @@ def cleanData(model, data: Dict[str, Any], agent) -> Dict[str, Any]:
             # These fields are meta data, not part of the resource.
             continue
         try:
-            model._meta.get_field(field_name)
+            db_field_name = correct_field_name(model, field_name)
         except FieldDoesNotExist:
             logger.warn('field "%s" does not exist in %s', field_name, model)
         else:
-            cleaned[field_name] = data[field_name]
+            cleaned[db_field_name] = data[field_name]
 
         # Unset date precision if date is not set, but precision is
         # Set date precision if date is set, but precision is not
@@ -362,7 +398,7 @@ def cleanData(model, data: Dict[str, Any], agent) -> Dict[str, Any]:
                 elif not has_date and has_precision:
                     cleaned[precision_field_name] = None
         
-    if model is get_model('Agent'):
+    if model is models.Agent:
         # setting user agents is part of the user management system.
         try:
             del cleaned['specifyuser']
@@ -370,7 +406,7 @@ def cleanData(model, data: Dict[str, Any], agent) -> Dict[str, Any]:
             pass
 
     # guid should only be updatable for taxon and geography
-    if model not in (get_model('Taxon'), get_model('Geography')):
+    if model not in (models.Taxon, models.Geography):
         try:
             del cleaned['guid']
         except KeyError:
@@ -386,7 +422,7 @@ def cleanData(model, data: Dict[str, Any], agent) -> Dict[str, Any]:
         pass
 
     # Password should be set though the /api/set_password/<id>/ endpoint
-    if model is get_model('Specifyuser') and 'password' in cleaned:
+    if model is models.Specifyuser and 'password' in cleaned:
         del cleaned['password']
 
     return cleaned
@@ -443,21 +479,21 @@ def is_dependent_field(obj, field_name: str) -> bool:
     return (
         obj.specify_model.get_field(field_name).dependent
 
-        or (obj.__class__ is get_model('Collectionobject') and
+        or (obj.__class__ is models.Collectionobject and
             field_name == 'collectingevent' and
             obj.collection.isembeddedcollectingevent)
 
         or (field_name == 'paleocontext' and (
 
-            (obj.__class__ is get_model('Collectionobject') and
+            (obj.__class__ is models.Collectionobject and
              obj.collection.discipline.paleocontextchildtable == "collectionobject" and
              obj.collection.discipline.ispaleocontextembedded)
 
-            or (obj.__class__ is get_model('Collectingevent') and
+            or (obj.__class__ is models.Collectingevent and
                 obj.discipline.paleocontextchildtable == "collectingevent" and
                 obj.discipline.ispaleocontextembedded)
 
-            or (obj.__class__ is get_model('Locality') and
+            or (obj.__class__ is models.Locality and
                 obj.discipline.paleocontextchildtable == "locality" and
                 obj.discipline.ispaleocontextembedded))))
 
@@ -473,9 +509,9 @@ def reorder_fields_for_embedding(cls, data: Dict[str, Any]) -> Iterable[Tuple[st
     first so that is_dependent_field will work.
     """
     put_first = {
-        get_model('Collectionobject'): 'collection',
-        get_model('Collectingevent'): 'discipline',
-        get_model('Locality'): 'discipline',
+        models.Collectionobject: 'collection',
+        models.Collectingevent: 'discipline',
+        models.Locality: 'discipline',
     }.get(cls, None)
 
     if put_first in data:
@@ -567,7 +603,7 @@ def handle_to_many(collection, agent, obj, data: Dict[str, Any]) -> None:
         if not field.is_relation or (field.many_to_one or field.one_to_one): continue # Skip *-to-one fields.
 
         if isinstance(val, list):
-            assert isinstance(obj, getattr(models, 'Recordset')) or obj.specify_model.get_field(field_name).dependent, \
+            assert isinstance(obj, models.Recordset) or obj.specify_model.get_field(field_name).dependent, \
                    "got inline data for non dependent field %s in %s: %r" % (field_name, obj, val)
         else:
             # The field contains something other than nested data.
@@ -718,7 +754,7 @@ def _obj_to_data(obj, perm_checker: ReadPermChecker) -> Dict[str, Any]:
 
     # Get regular and *-to-one fields.
     fields = obj._meta.get_fields()
-    if isinstance(obj, get_model('Specifyuser')):
+    if isinstance(obj, models.Specifyuser):
         # block out password field from users table
         fields = [f for f in fields if f.name != 'password']
 
