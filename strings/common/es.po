@@ -502,8 +502,8 @@ msgid "noResults"
 msgstr "Sin resultados"
 
 #: components/FormPlugins/LatLongUi.tsx:100
-#: components/FormPlugins/LatLongUi.tsx:171
-#: components/FormPlugins/LatLongUi.tsx:174
+#: components/FormPlugins/LatLongUi.tsx:170
+#: components/FormPlugins/LatLongUi.tsx:173
 #: components/HomePage/AboutSpecify.tsx:136
 #: components/Merging/Header.tsx:112
 #: components/Merging/Header.tsx:122
@@ -563,12 +563,12 @@ msgstr "Ignorar"
 msgid "proceed"
 msgstr "Proceder"
 
-#: components/FormPlugins/LatLongUi.tsx:281
+#: components/FormPlugins/LatLongUi.tsx:280
 #. 🟥Noun. Used in: Components > Form Plugins > Lat Long Ui
 msgid "start"
 msgstr "Empezar"
 
-#: components/FormPlugins/LatLongUi.tsx:292
+#: components/FormPlugins/LatLongUi.tsx:291
 #. 🟥Noun. Used in: Components > Form Plugins > Lat Long Ui
 msgid "end"
 msgstr "Fin"
