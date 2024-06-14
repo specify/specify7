@@ -560,7 +560,7 @@ msgstr "Configuration du formulaire"
 msgid "formState"
 msgstr "État du formulaire"
 
-#: components/FormMeta/index.tsx:233
+#: components/FormMeta/index.tsx:227
 #. Used in: Components > Form Meta > Index
 msgid "recordInformation"
 msgstr "Enregistrer des informations"

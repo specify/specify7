@@ -649,7 +649,7 @@ msgstr "Formularkonfiguration"
 msgid "formState"
 msgstr "Formularstatus"
 
-#: components/FormMeta/index.tsx:233
+#: components/FormMeta/index.tsx:227
 #. Used in: Components > Form Meta > Index
 #, fuzzy
 msgid "recordInformation"

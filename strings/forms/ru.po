@@ -547,7 +547,7 @@ msgstr "Конфигурация формы"
 msgid "formState"
 msgstr "Форма состояния"
 
-#: components/FormMeta/index.tsx:233
+#: components/FormMeta/index.tsx:227
 #. Used in: Components > Form Meta > Index
 msgid "recordInformation"
 msgstr "Запись информации"
