@@ -12,7 +12,8 @@ import { Link } from '../Atoms/Link';
 import { getTable } from '../DataModel/tables';
 import { userInformation } from '../InitialContext/userInformation';
 import {
-  LocalityImportErrors,
+  LocalityImportFailed,
+  LocalityImportParseErrors,
   LocalityImportSuccess,
 } from '../LocalityImport/Status';
 import type { LocalityImportParseError } from '../LocalityImport/types';
@@ -221,6 +222,30 @@ export const notificationRenderers: IR<
       </>
     );
   },
+  'localityimport-parse-failed'(notification) {
+    const [isOpen, handleOpen, handleClose] = useBooleanState();
+    return (
+      <>
+        <p>{localityText.localityImportParseFailure()}</p>
+        <Button.Small onClick={handleOpen}>
+          {localityText.localityImportFailureResults()}
+        </Button.Small>
+        {isOpen && (
+          <LocalityImportParseErrors
+            errors={
+              notification.payload
+                .errors as unknown as RA<LocalityImportParseError>
+            }
+            onClose={handleClose}
+          />
+        )}
+        <details>
+          <summary>{localityText.taskId()}</summary>
+          {notification.payload.taskid}
+        </details>
+      </>
+    );
+  },
   'localityimport-failed'(notification) {
     const [isOpen, handleOpen, handleClose] = useBooleanState();
     return (
@@ -230,11 +255,9 @@ export const notificationRenderers: IR<
           {localityText.localityImportFailureResults()}
         </Button.Small>
         {isOpen && (
-          <LocalityImportErrors
-            errors={
-              notification.payload
-                .errors as unknown as RA<LocalityImportParseError>
-            }
+          <LocalityImportFailed
+            taskId={notification.payload.taskid}
+            traceback={notification.payload.traceback}
             onClose={handleClose}
           />
         )}

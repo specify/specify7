@@ -24,10 +24,12 @@ import { LoadingContext } from '../Core/Contexts';
 import { fetchResource } from '../DataModel/resource';
 import { tables } from '../DataModel/tables';
 import { softFail } from '../Errors/Crash';
+import { produceStackTrace } from '../Errors/stackTrace';
 import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
 import { mergeCellBackground } from '../Merging/Header';
 import { useTitle } from '../Molecules/AppTitle';
 import { Dialog } from '../Molecules/Dialog';
+import { downloadFile } from '../Molecules/FilePicker';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasToolPermission } from '../Permissions/helpers';
 import { CreateRecordSet } from '../QueryBuilder/CreateRecordSet';
@@ -113,14 +115,24 @@ export function LocalityImportStatus({
     />
   ) : state.taskstatus === 'PARSED' ? (
     <LocalityImportParsed
-      geoCoordDetails={state.taskinfo.geocoorddetails}
-      localities={state.taskinfo.localities}
+      geoCoordDetails={
+        state.taskinfo.rows.filter(
+          ({ geocoorddetail }) => geocoorddetail !== null
+        ).length
+      }
+      localities={state.taskinfo.rows.length}
       onClose={handleClose}
       onImport={handleImport}
     />
-  ) : state.taskstatus === 'FAILED' ? (
-    <LocalityImportErrors
+  ) : state.taskstatus === 'PARSE_FAILED' ? (
+    <LocalityImportParseErrors
       errors={state.taskinfo.errors}
+      onClose={handleClose}
+    />
+  ) : state.taskstatus === 'FAILED' ? (
+    <LocalityImportFailed
+      taskId={taskId}
+      traceback={state.taskinfo.traceback}
       onClose={handleClose}
     />
   ) : state.taskstatus === 'PENDING' ? (
@@ -136,7 +148,7 @@ export function LocalityImportStatus({
       modal={false}
       onClose={handleClose}
     />
-  ) : (
+  ) : state.taskstatus === 'ABORTED' ? (
     <Dialog
       buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
       children={null}
@@ -145,6 +157,47 @@ export function LocalityImportStatus({
       modal={false}
       onClose={handleClose}
     />
+  ) : (
+    <Dialog
+      buttons={
+        <>
+          <Button.Info
+            onClick={(): void =>
+              void downloadFile(
+                `Locality Data Set ${taskId} Report - ${new Date().toJSON()}.txt`,
+                produceStackTrace(state.taskinfo)
+              )
+            }
+          >
+            {commonText.downloadErrorMessage()}
+          </Button.Info>
+          <span className="-ml-4 flex-1" />
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+        </>
+      }
+      dimensionsKey={statusDimensionKey}
+      header={localityText.localityImportWentWrong()}
+      modal={false}
+      onClose={handleClose}
+    >
+      <Label.Block>
+        <p>{state.taskstatus}</p>
+        {typeof state.taskinfo === 'object' ? (
+          <Label.Block>
+            {Object.entries(state.taskinfo).map(([key, message], index) => (
+              <p key={index}>
+                {commonText.colonLine({
+                  label: key,
+                  value: message,
+                })}
+              </p>
+            ))}
+          </Label.Block>
+        ) : (
+          <p>{state.taskinfo}</p>
+        )}
+      </Label.Block>
+    </Dialog>
   );
 }
 
@@ -331,7 +384,43 @@ export function LocalityImportSuccess({
   );
 }
 
-export function LocalityImportErrors({
+export function LocalityImportFailed({
+  taskId,
+  traceback,
+  onClose: handleClose,
+}: {
+  readonly taskId: string;
+  readonly traceback: string;
+  readonly onClose: () => void;
+}): JSX.Element {
+  return (
+    <Dialog
+      buttons={
+        <>
+          <Button.Info
+            onClick={(): void =>
+              void downloadFile(
+                `Locality Data Set ${taskId} Crash Report - ${new Date().toJSON()}.txt`,
+                produceStackTrace(traceback)
+              )
+            }
+          >
+            {commonText.downloadErrorMessage()}
+          </Button.Info>
+          <span className="-ml-4 flex-1" />
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+        </>
+      }
+      header={localityText.localityImportFailed()}
+      icon="error"
+      onClose={handleClose}
+    >
+      <p>{localityText.localityImportWentWrong()}</p>
+    </Dialog>
+  );
+}
+
+export function LocalityImportParseErrors({
   errors,
   onClose: handleClose,
 }: {

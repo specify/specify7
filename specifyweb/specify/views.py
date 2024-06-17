@@ -978,13 +978,34 @@ def upload_locality_set_foreground(collection, specify_user, agent, column_heade
                                         "taskinfo": {
                                             "type": "object",
                                             "properties": {
-                                                "localities": {
-                                                    "type": "number",
-                                                    "example": 312,
-                                                },
-                                                "geocoorddetails": {
-                                                    "type": "number",
-                                                    "example": 204,
+                                                "rows": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "locality": {
+                                                                "type": "object"
+                                                            },
+                                                            "geocoorddetail": {
+                                                                "oneOf": [
+                                                                    {
+                                                                        "type": "null"
+                                                                    },
+                                                                    {
+                                                                        "type": "object"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "locality_id": {
+                                                                "description": "The ID of the matched Locality",
+                                                                "type": "number"
+                                                            },
+                                                            "row_number": {
+                                                                "type" : "number"
+                                                            }
+                                                        },
+                                                        "required": ["locality", "geocoorddetail"]
+                                                    }
                                                 }
                                             }
                                         },
@@ -1039,12 +1060,34 @@ def upload_locality_set_foreground(collection, specify_user, agent, column_heade
                                     "properties": {
                                         "taskstatus": {
                                             "type": "string",
-                                            "enum": [LocalityImportStatus.FAILED]
+                                            "enum": [LocalityImportStatus.PARSE_FAILED]
                                         },
                                         "taskinfo": {
                                             "type": "object",
                                             "properties": {
                                                 "errors": localityimport_parse_error
+                                            }
+                                        }
+                                    },
+                                    "required": ["taskstatus", "taskinfo"],
+                                    "additionalProperties": False
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "taskstatus": {
+                                            "type": "string",
+                                            "enum": [LocalityImportStatus.FAILED]
+                                        },
+                                        "taskinfo": {
+                                            "type": "object",
+                                            "properties": {
+                                                "error": {
+                                                    "type": "string"
+                                                },
+                                                "traceback": {
+                                                    "type": "string"
+                                                }
                                             }
                                         }
                                     },
@@ -1079,16 +1122,22 @@ def localityimport_status(request: http.HttpRequest, taskid: str):
 
     result = import_locality_task.AsyncResult(locality_import.taskid)
 
-    resolved_state = LocalityImportStatus.ABORTED if result.state == CELERY_TASK_STATE.REVOKED else result.state
+    resolved_state = LocalityImportStatus.ABORTED if result.state == CELERY_TASK_STATE.REVOKED else LocalityImportStatus.FAILED if result.state == CELERY_TASK_STATE.FAILURE else result.state
 
     status = {
         'taskstatus': resolved_state,
         'taskinfo': result.info if isinstance(result.info, dict) else repr(result.info)
     }
 
-    if locality_import.status == LocalityImportStatus.FAILED:
+    if resolved_state == LocalityImportStatus.FAILED:
+        status["taskinfo"] = {
+            'error': str(result.result),
+            'traceback': str(result.traceback)
+        }
 
-        status["taskstatus"] = LocalityImportStatus.FAILED
+    elif locality_import.status == LocalityImportStatus.PARSE_FAILED:
+
+        status["taskstatus"] = LocalityImportStatus.PARSE_FAILED
 
         if isinstance(result.info, dict) and 'errors' in result.info.keys():
             errors = result.info["errors"]
@@ -1101,16 +1150,12 @@ def localityimport_status(request: http.HttpRequest, taskid: str):
     elif locality_import.status == LocalityImportStatus.PARSED:
         status["taskstatus"] = LocalityImportStatus.PARSED
 
-        if isinstance(result.info, dict) and resolved_state == LocalityImportStatus.PARSED:
-            result = {
-                "localities": result.info["localities"],
-                "geocoorddetails": result.info["geocoorddetails"]
-            }
-        else:
-            results = locality_import.results.get_queryset().get(rownumber=-1)
-            result = json.loads(results.result)
+        results = locality_import.results.all()
+        rows = [json.loads(row.result) for row in results]
 
-        status["taskinfo"] = result
+        status["taskinfo"] = {
+            "rows": rows
+        }
 
     elif locality_import.status == LocalityImportStatus.SUCCEEDED:
         status["taskstatus"] = LocalityImportStatus.SUCCEEDED

@@ -320,11 +320,17 @@ export const localityText = createDictionary({
   localityImportFailed: {
     'en-us': 'Locality Data Set Import Failed',
   },
+  localityImportParseFailure: {
+    'en-us': 'Locality Data Set Parse Failed',
+  },
   localityImportCancelled: {
     'en-us': 'Locality Data Set Import Cancelled',
   },
   localityImportSucceeded: {
     'en-us': 'Locality Data Set Import Succeeded',
+  },
+  localityImportWentWrong: {
+    'en-us': 'Something went wrong during the Locality Import process',
   },
   localityImportErrorFileName: {
     comment:

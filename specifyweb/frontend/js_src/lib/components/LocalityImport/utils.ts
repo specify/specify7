@@ -36,6 +36,7 @@ export const localityImportStatusLocalization: RR<
   PENDING: localityText.localityImportStarting(),
   PROGRESS: localityText.localityImportProgressing(),
   FAILED: localityText.localityImportFailed(),
+  PARSE_FAILED: localityText.localityImportParseFailure(),
   ABORTED: localityText.localityImportCancelled(),
   SUCCEEDED: localityText.localityImportSucceeded(),
 };
