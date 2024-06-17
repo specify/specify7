@@ -231,6 +231,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           showBulkCarryInput ? (
             <Label.Inline>
               <Input.Generic
+                id={id('bulk-amount')}
                 type="number"
                 value={carryForwardAmount}
                 onValueChange={(value): void =>
@@ -238,7 +239,6 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                     ? setCarryForwardAmount(2)
                     : setCarryForwardAmount(Number.parseInt(value))
                 }
-                id={id('bulk-amount')}
               />
             </Label.Inline>
           ) : null}
@@ -246,9 +246,9 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           !isInRecordSet &&
           !resource.needsSaved ? (
             <Button.Save
+              aria-controls={id('bulk-amount')}
               title={commonText.bulkCarry()}
               onClick={() => setBulkCarryInput(!showBulkCarryInput)}
-              aria-controls={id('bulk-amount')}
             >
               {commonText.bulkCarry()}
             </Button.Save>
