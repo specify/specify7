@@ -25,6 +25,9 @@ class Migration(migrations.Migration):
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
                 ('taxontreedef', models.ForeignKey(db_column='TaxonTreeDefID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='collectionobjecttypes', to='specify.taxontreedef')),
+                ('text1', models.ForeignKey(db_column='Text1', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.text')),
+                ('text2', models.ForeignKey(db_column='Text2', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.text')),
+                ('text3', models.ForeignKey(db_column='Text3', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.text')),
             ],
             options={
                 'db_table': 'collectionobjecttype',

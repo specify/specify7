@@ -8177,7 +8177,10 @@ datamodel = Datamodel(tables=[
             Field(name='isloanable', column='IsLoanable', indexed=False, unique=False, required=True, type='java.lang.Boolean'),
             Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
             Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
-            Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp')
+            Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='text1', column='Text1', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='text3', column='Text3', indexed=False, unique=False, required=False, type='java.lang.String', length=255)
         ],
         indexes=[
 

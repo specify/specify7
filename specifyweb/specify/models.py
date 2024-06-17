@@ -7430,6 +7430,9 @@ class CollectionObjectType(models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
+    text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
+    text3 = models.TextField(blank=True, null=True, unique=False, db_column='Text3', db_index=False)
     
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
