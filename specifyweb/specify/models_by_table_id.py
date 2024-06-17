@@ -200,7 +200,8 @@ model_names_by_table_id = {
     1009:'UserRole',
     1010:'RolePolicy',
     1011:'LibraryRolePolicy',
-    1012:'Spdataset'
+    1012:'Spdataset',
+    1013:'CollectionObjectType',
 }
 
 model_names_by_app = {
@@ -414,7 +415,8 @@ model_names_by_app = {
         'Workbenchrowexportedrelationship',
         'Workbenchrowimage',
         'Workbenchtemplate',
-        'Workbenchtemplatemappingitem'
+        'Workbenchtemplatemappingitem',
+        'CollectionObjectType',
     }
 }
 

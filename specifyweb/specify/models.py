@@ -7419,7 +7419,7 @@ class Workbenchtemplatemappingitem(models.Model):
     save = partialmethod(custom_save)
 
 class CollectionObjectType(models.Model):
-    # specify_model = datamodel.get_table('collectionobjecttype')
+    specify_model = datamodel.get_table('collectionobjecttype')
 
     # ID Field
     id = models.AutoField(primary_key=True, db_column='CollectionObjectTypeID')
