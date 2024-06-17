@@ -184,7 +184,7 @@ class Field(object):
     unique: bool
     required: bool = False
     type: str
-    length: int
+    length: Optional[int]
 
     def __init__(self, name: str = None, column: str = None, indexed: bool = None, 
                  unique: bool = None, required: bool = None, type: str = None,
@@ -200,7 +200,7 @@ class Field(object):
         self.unique = unique if unique is not None else False
         self.required = required if required is not None else False
         self.type = type if type is not None else ''
-        self.length = length if length is not None else 0
+        self.length = length if length is not None else None
 
     def __repr__(self) -> str:
         return "<SpecifyField: %s>" % self.name
