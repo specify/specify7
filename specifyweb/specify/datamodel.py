@@ -8169,9 +8169,9 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.CollectionObjectType',
         table='collectionobjecttype',
         tableId=1013,
-        idColumn='id',
+        idColumn='CollectionObjectTypeID',
         idFieldName='collectionObjectTypeId',
-        idField=IdField(name='collectionObjectTypeId', column='id', type='java.lang.Integer'),
+        idField=IdField(name='collectionObjectTypeId', column='collectionObjectTypeID', type='java.lang.Integer'),
         fields=[
             Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
             Field(name='isloanable', column='IsLoanable', indexed=False, unique=False, required=True, type='java.lang.Boolean'),
