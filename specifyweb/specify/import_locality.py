@@ -271,19 +271,12 @@ def resolve_localityimport_result(taskid: str, results: Union[Tuple[List[ParsedR
                 )
         else:
             status = LocalityImportStatus.PARSED
-            localities = len(to_upload)
-            geocoorddetails = 0
             for parsed in to_upload:
-                if parsed['geocoorddetail'] is not None:
-                    geocoorddetails += 1
-            LocalityImportRowResult.objects.create(
-                localityimport=li,
-                rownumber=-1,
-                result=json.dumps({
-                    "localities": localities,
-                    "geocoorddetails": geocoorddetails
-                })
-            )
+                LocalityImportRowResult.objects.create(
+                    localityimport=li,
+                    rownumber=parsed["row_number"],
+                    result=json.dumps(parsed, cls=DjangoJSONEncoder)
+                )
 
     # the results come from upload_locality_set
     else:
