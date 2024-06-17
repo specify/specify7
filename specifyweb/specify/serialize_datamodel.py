@@ -8,9 +8,9 @@ def table_to_dict(table):
     data['classname'] = table.classname
     data['table'] = table.table
     data['tableId'] = table.tableId
-    if hasattr(table, 'view'):
+    if hasattr(table, 'view') and table.view is not None and table.view != '':
         data['view'] = table.view
-    if hasattr(table, 'searchDialog'):
+    if hasattr(table, 'searchDialog') and table.searchDialog is not None and table.searchDialog != '':
         data['searchDialog'] = table.searchDialog
     data['system'] = table.system
     data['idColumn'] = table.idColumn
@@ -39,9 +39,9 @@ def rel_to_dict(table, rel):
     data['required'] = rel.required
     data['dependent'] = rel.dependent
     data['relatedModelName'] = rel.relatedModelName
-    if hasattr(rel, 'column'):
+    if hasattr(rel, 'column') and rel.column is not None and rel.column != '':
         data['column'] =  rel.column
-    if hasattr(rel, 'otherSideName'):
+    if hasattr(rel, 'otherSideName') and rel.otherSideName is not None and rel.otherSideName != '':
         data['otherSideName'] = rel.otherSideName
     return data
 
