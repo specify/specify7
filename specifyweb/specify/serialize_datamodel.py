@@ -28,7 +28,7 @@ def field_to_dict(field):
     data['unique'] = field.unique
     data['required'] = field.required
     data['type'] = field.type
-    if hasattr(field, 'length'):
+    if hasattr(field, 'length') and field.length is not None:
         data['length'] = field.length
     return data
 
