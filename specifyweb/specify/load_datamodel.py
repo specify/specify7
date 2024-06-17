@@ -184,7 +184,7 @@ class Field(object):
     unique: bool
     required: bool = False
     type: str
-    length = None # int
+    length: Optional[int]
 
     def __init__(self, name: str = None, column: str = None, indexed: bool = None, 
                  unique: bool = None, required: bool = None, type: str = None,
