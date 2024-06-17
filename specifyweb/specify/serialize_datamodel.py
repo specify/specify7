@@ -8,9 +8,9 @@ def table_to_dict(table):
     data['classname'] = table.classname
     data['table'] = table.table
     data['tableId'] = table.tableId
-    if hasattr(table, 'view') and table.view is not None and table.view != '':
+    if hasattr(table, 'view') and table.view is not None:
         data['view'] = table.view
-    if hasattr(table, 'searchDialog') and table.searchDialog is not None and table.searchDialog != '':
+    if hasattr(table, 'searchDialog') and table.searchDialog is not None:
         data['searchDialog'] = table.searchDialog
     data['system'] = table.system
     data['idColumn'] = table.idColumn
