@@ -228,20 +228,8 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         <>
           {resource.specifyTable.name === 'CollectionObject' &&
           !isInRecordSet &&
-          !showBulkCarryInput &&
-          !resource.needsSaved ? (
-            <Button.Save
-              title={commonText.bulkCarry()}
-              onClick={() => setBulkCarryInput(true)}
-            >
-              {commonText.bulkCarry()}
-            </Button.Save>
-          ) : null}
-          {resource.specifyTable.name === 'CollectionObject' &&
-          !isInRecordSet &&
           showBulkCarryInput ? (
             <Label.Inline>
-              {commonText.bulkCarry()}
               <Input.Generic
                 type="number"
                 value={carryForwardAmount}
@@ -250,8 +238,20 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                     ? setCarryForwardAmount(2)
                     : setCarryForwardAmount(Number.parseInt(value))
                 }
+                id={id('bulk-amount')}
               />
             </Label.Inline>
+          ) : null}
+          {resource.specifyTable.name === 'CollectionObject' &&
+          !isInRecordSet &&
+          !resource.needsSaved ? (
+            <Button.Save
+              title={commonText.bulkCarry()}
+              onClick={() => setBulkCarryInput(!showBulkCarryInput)}
+              aria-controls={id('bulk-amount')}
+            >
+              {commonText.bulkCarry()}
+            </Button.Save>
           ) : null}
           {showClone &&
             copyButton(
