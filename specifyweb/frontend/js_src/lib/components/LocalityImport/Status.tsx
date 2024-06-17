@@ -158,46 +158,11 @@ export function LocalityImportStatus({
       onClose={handleClose}
     />
   ) : (
-    <Dialog
-      buttons={
-        <>
-          <Button.Info
-            onClick={(): void =>
-              void downloadFile(
-                `Locality Data Set ${taskId} Report - ${new Date().toJSON()}.txt`,
-                produceStackTrace(state.taskinfo)
-              )
-            }
-          >
-            {commonText.downloadErrorMessage()}
-          </Button.Info>
-          <span className="-ml-4 flex-1" />
-          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-        </>
-      }
-      dimensionsKey={statusDimensionKey}
-      header={localityText.localityImportWentWrong()}
-      modal={false}
+    <LocalityImportUnknownState
+      state={state}
+      taskId={taskId}
       onClose={handleClose}
-    >
-      <Label.Block>
-        <p>{state.taskstatus}</p>
-        {typeof state.taskinfo === 'object' ? (
-          <Label.Block>
-            {Object.entries(state.taskinfo).map(([key, message], index) => (
-              <p key={index}>
-                {commonText.colonLine({
-                  label: key,
-                  value: message,
-                })}
-              </p>
-            ))}
-          </Label.Block>
-        ) : (
-          <p>{state.taskinfo}</p>
-        )}
-      </Label.Block>
-    </Dialog>
+    />
   );
 }
 
@@ -500,6 +465,62 @@ export function LocalityImportParseErrors({
           </tr>
         ))}
       </table>
+    </Dialog>
+  );
+}
+
+function LocalityImportUnknownState({
+  taskId,
+  state: { taskstatus, taskinfo },
+  onClose: handleClose,
+}: {
+  readonly taskId: string;
+  readonly state: {
+    readonly taskstatus: string;
+    readonly taskinfo: object | string;
+  };
+  readonly onClose: () => void;
+}): JSX.Element {
+  return (
+    <Dialog
+      buttons={
+        <>
+          <Button.Info
+            onClick={(): void =>
+              void downloadFile(
+                `Locality Data Set ${taskId} Report - ${new Date().toJSON()}.txt`,
+                produceStackTrace(taskinfo)
+              )
+            }
+          >
+            {commonText.downloadErrorMessage()}
+          </Button.Info>
+          <span className="-ml-4 flex-1" />
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+        </>
+      }
+      dimensionsKey={statusDimensionKey}
+      header={localityText.localityImportWentWrong()}
+      modal={false}
+      onClose={handleClose}
+    >
+      <Label.Block>
+        <p>{taskstatus}</p>
+        {typeof taskinfo === 'object' ? (
+          <Label.Block>
+            {Object.entries(taskinfo).map(([key, message], index) => (
+              <p key={index}>
+                {commonText.colonLine({
+                  label: key,
+                  value: message,
+                })}
+              </p>
+            ))}
+          </Label.Block>
+        ) : (
+          <p>{taskinfo}</p>
+        )}
+      </Label.Block>
     </Dialog>
   );
 }
