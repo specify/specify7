@@ -214,8 +214,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Attachment Import Data Sets ({count:number})',
     'de-ch': 'Anhänge zum Importieren von Datensätzen ({count:number})',
     'es-es': 'Adjuntar el conjuntos de datos de importación ({count:number})',
-    'fr-fr':
-      "Ensembles de données d'importation de pièces jointes ({count:number})",
+    'fr-fr': "Import d'un jeu de données de pièces jointes ({count:number})",
     'ru-ru': 'Наборы данных импорта вложений ({count:number})',
     'uk-ua': 'Набори даних імпорту вкладених файлів ({count:number})',
   },
@@ -306,7 +305,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Attachment ID',
     'de-ch': 'Anhangs-ID',
     'es-es': 'ID del archivo adjunto',
-    'fr-fr': 'ID de pièce jointe',
+    'fr-fr': 'ID de la pièce jointe',
     'ru-ru': 'Идентификатор вложения',
     'uk-ua': 'ID вкладення',
   },
@@ -534,7 +533,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Error saving record',
     'de-ch': 'Fehler beim Speichern des Datensatzes',
     'es-es': 'Error al guardar el registro',
-    'fr-fr': "Erreur lors de l'enregistrement de l'enregistrement",
+    'fr-fr': "Erreur lors de la sauvegarde de l'enregistrement",
     'ru-ru': 'Ошибка сохранения записи',
     'uk-ua': 'Помилка збереження запису',
   },
@@ -634,10 +633,9 @@ export const attachmentsText = createDictionary({
       una opción para un conjunto de datos cargado.
     `,
     'fr-fr': `
-      La suppression d'un ensemble de données le supprime définitivement ainsi
-      que son chemin de téléchargement. De plus, après la suppression, la
-      restauration ne sera plus une option pour un ensemble de données
-      téléchargé.
+      Supprimer un jeu de données le retire définitivement ainsi que son chemin
+      de téléchargement. De plus, après la suppression, le retour en arrière ne
+      sera plus possible pour un jeu de données téléchargé.
     `,
     'ru-ru': `
       Удаление набора данных безвозвратно удаляет его и его путь загрузки. Кроме
