@@ -12,6 +12,7 @@ import { formatConjunction } from '../Atoms/Internationalization';
 import { LoadingContext } from '../Core/Contexts';
 import { CsvFilePicker } from '../Molecules/CsvFilePicker';
 import { Dialog } from '../Molecules/Dialog';
+import { ProtectedAction } from '../Permissions/PermissionDenied';
 import { LocalityUpdateStatus } from './Status';
 import type { LocalityUpdateHeader } from './types';
 import {
@@ -76,7 +77,7 @@ export function LocalityUpdateFromDataSet(): JSX.Element {
   }
 
   return (
-    <>
+    <ProtectedAction action="%" resource="%">
       <CsvFilePicker
         firstRowAlwaysHeader
         header={headerText.localityUpdateTool()}
@@ -183,6 +184,6 @@ export function LocalityUpdateFromDataSet(): JSX.Element {
           onImport={(): void => handleImport(headers, data)}
         />
       )}
-    </>
+    </ProtectedAction>
   );
 }

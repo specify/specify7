@@ -858,12 +858,19 @@ def abort_merge_task(request, merge_id: int) -> http.HttpResponse:
                     }
                 }
             },
+            "403": {
+                "description": "Insufficient rights to upload the Locality Data Set. Loggin in User must be an admin"
+            }
         }
     },
 })
 @login_maybe_required
 @require_POST
 def upload_locality_set(request: http.HttpRequest):
+
+    if not request.specify_user.is_admin():
+        return http.HttpResponseForbidden('Speciftuser must be an instituion admin')
+
     request_data = json.loads(request.body)
 
     column_headers = request_data["columnHeaders"]
@@ -1001,7 +1008,7 @@ def upload_locality_set_foreground(collection, specify_user, agent, column_heade
                                                                 "type": "number"
                                                             },
                                                             "row_number": {
-                                                                "type" : "number"
+                                                                "type": "number"
                                                             }
                                                         },
                                                         "required": ["locality", "geocoorddetail"]
@@ -1336,6 +1343,7 @@ def parse_locality_set(request: http.HttpRequest):
     """Parse a locality set without making any database changes and return the results 
     """
     request_data = json.loads(request.body)
+
     column_headers = request_data["columnHeaders"]
     data = request_data["data"]
     run_in_background = request_data.get("runInBackground", False)
