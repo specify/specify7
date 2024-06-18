@@ -6,6 +6,7 @@ import { f } from '../../utils/functools';
 import type { DeepPartial, RA, RR } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { keysToLowerCase, removeKey } from '../../utils/utils';
+import { interactionsWithPrepTables } from '../Interactions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { formatUrl } from '../Router/queryString';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
@@ -225,22 +226,13 @@ export function resourceOn(
 export const parseJavaClassName = (className: string): string =>
   className.split('.').at(-1) ?? '';
 
-const interactionTablesWithPreps = [
-  'Disposal',
-  'Loan',
-  'Gift',
-  'ExchangeIn',
-  'ExchangeOut',
-  'Borrow',
-] as const;
-type InteractionTable = typeof interactionTablesWithPreps[number];
+type InteractionTable = typeof interactionsWithPrepTables[number];
 const interactionTablesPrepsFieldName: RR<InteractionTable, string> = {
   Disposal: 'disposalPreparations',
   Loan: 'loanPreparations',
   Gift: 'giftPreparations',
   ExchangeOut: 'exchangeOutPreps',
   ExchangeIn: 'exchangeInPreps',
-  Borrow: 'borrowPreparations',
 };
 export function getFieldsToNotClone(
   table: SpecifyTable,
@@ -248,10 +240,7 @@ export function getFieldsToNotClone(
 ): RA<string> {
   let fieldsToClone = getCarryOverPreference(table, cloneAll);
   const uniqueFields = getUniqueFields(table);
-  if (
-    interactionTablesWithPreps.includes(table.name as InteractionTable) &&
-    cloneAll
-  ) {
+  if (interactionsWithPrepTables.includes(table.name as InteractionTable)) {
     const fieldName =
       interactionTablesPrepsFieldName[table.name as InteractionTable];
     fieldsToClone = fieldsToClone.filter((field) => field !== fieldName);
