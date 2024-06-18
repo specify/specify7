@@ -568,7 +568,7 @@ export const resourcesText = createDictionary({
     'es-es': 'Agregar definición',
     'fr-fr': 'Ajouter une définition',
     'ru-ru': 'Добавить определение',
-    'uk-ua': 'Додати визначення',
+    'uk-ua': 'Додайте визначення',
   },
   deleteDefinition: {
     'en-us': 'Delete definition',
@@ -672,7 +672,7 @@ export const resourcesText = createDictionary({
     `,
     'uk-ua': `
       Цей ресурс належить до іншої колекції/дисципліни, ніж та, у якій ви зараз
-      перебуваєте. Рекомендовано змінити колекцію перед редагуванням цього
+      перебуваєте. Рекомендується змінити колекцію перед редагуванням цього
       ресурсу
     `,
   },
@@ -730,7 +730,7 @@ export const resourcesText = createDictionary({
     'es-es': 'Ejecutar en colección',
     'fr-fr': 'Exécuter en collection',
     'ru-ru': 'Запустить в коллекцию',
-    'uk-ua': 'Запустити в колекції',
+    'uk-ua': 'Запустити в колекцію',
   },
   createNewForm: {
     'en-us': 'Create a new view definition',

@@ -171,7 +171,7 @@ export const userText = createDictionary({
     'fr-fr': `
       Vous avez été invité à associer une connexion externe à votre compte
       utilisateur Specify. Cela vous permettra de vous connecter à Specify avec
-      le fournisseur que vous avez choisi à l'avenir.
+      le fournisseur de votre choix à l'avenir.
     `,
     'uk-ua': `
       Вас запросили пов’язати зовнішній логін із вашим обліковим записом
@@ -285,7 +285,7 @@ export const userText = createDictionary({
       resource through the currently logged in account
     `,
     'ru-ru': `
-      У вас нет доступа ни к одному {collectionTable:string}, содержащему этот
+      У вас нет доступа к любому {collectionTable:string}, содержащему этот
       ресурс, через текущую учетную запись.
     `,
     'es-es': `

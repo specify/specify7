@@ -503,7 +503,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Поле со списком запроса',
     'es-es': 'Cuadro combinado de consulta',
     'uk-ua': 'Поле зі списком запитів',
-    'de-ch': 'Abfrage-Kombinationsfeld',
+    'de-ch': 'Kombinationsfeld für Abfragen',
     'fr-fr': 'Zone de liste déroulante de requête',
   },
   searchAlgorithm: {
@@ -556,8 +556,7 @@ export const preferencesText = createDictionary({
   startsWithCaseSensitiveDescription: {
     'en-us': 'Search for values that begin with a given query string.',
     'ru-ru': 'Поиск значений, которые начинаются с заданной строки запроса.',
-    'es-es':
-      'Busque valores que comiencen con una cadena de consulta determinada.',
+    'es-es': 'Utilice el selector de meses accesible',
     'fr-fr': `
       Recherchez les valeurs qui commencent par une chaîne de requête donnée.
     `,
@@ -792,7 +791,7 @@ export const preferencesText = createDictionary({
     `,
     'uk-ua': 'Дозволяє запитувати дані з будь-якого поля будь-якої таблиці.',
     'de-ch':
-      'Ermöglicht die Abfrage von Daten aus jedem Feld in jeder Tabelle.',
+      'Ermöglicht das Abfragen von Daten aus jedem Feld in jeder Tabelle.',
   },
   noRestrictionsModeWarning: {
     'en-us': `
@@ -890,7 +889,8 @@ export const preferencesText = createDictionary({
   accentColor2: {
     'en-us': 'Accent color 2',
     'ru-ru': 'Акцентный цвет 2',
-    'es-es': 'Color de acento 2',
+    'es-es':
+      'Dirección de movimiento cuando se presiona la tecla [X27X]Tab[X35X]',
     'fr-fr': "Couleur d'accent 2",
     'uk-ua': 'Акцентний колір 2',
     'de-ch': 'Akzentfarbe 2',
@@ -1044,7 +1044,7 @@ export const preferencesText = createDictionary({
   filterPickLists: {
     'en-us': 'Filter pick list items',
     'ru-ru': 'Фильтровать элементы списка выбора',
-    'es-es': 'Filtrar elementos de la lista de selección',
+    'es-es': 'Zoom con rueda de desplazamiento',
     'fr-fr': 'Filtrer les éléments de la liste de sélection',
     'uk-ua': 'Фільтр вибору елементів списку',
     'de-ch': 'Auswahllistenelemente filtern',
@@ -1076,7 +1076,7 @@ export const preferencesText = createDictionary({
   showNoReadTables: {
     'en-us': 'Show tables without "Read" access',
     'ru-ru': 'Показать таблицы без доступа «Чтение»',
-    'es-es': 'Mostrar tablas sin acceso de "Lectura"',
+    'es-es': 'Imagen personalizada',
     'fr-fr': 'Afficher les tableaux sans accès "Lecture"',
     'uk-ua': 'Показувати таблиці без доступу «Читання».',
     'de-ch': 'Benutzerdefiniertes Bild',
@@ -1164,11 +1164,11 @@ export const preferencesText = createDictionary({
     'es-es': 'Enfocar el primer campo',
     'fr-fr': 'Concentrez-vous sur le premier champ',
     'ru-ru': 'Фокус первого поля',
-    'uk-ua': 'Перейти до першого поля',
+    'uk-ua': 'Сфокусувати перше поле',
   },
   doubleClickZoom: {
     'en-us': 'Double click to zoom',
-    'ru-ru': 'Дважды щелкните, чтобы увеличить масштаб',
+    'ru-ru': 'Дважды щелкните, чтобы увеличить',
     'es-es': 'Doble clic para ampliar',
     'fr-fr': 'Double-cliquez pour zoomer',
     'uk-ua': 'Двічі клацніть, щоб збільшити',
@@ -1251,7 +1251,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Укажите значок сети',
     'es-es': 'Especificar insignia de red',
     'fr-fr': 'Spécifier le badge réseau',
-    'uk-ua': 'Укажіть позначку мережі',
+    'uk-ua': 'Укажіть значок мережі',
     'de-ch': 'Netzwerk-Badge angeben',
   },
   useAccessibleFullDatePicker: {
@@ -1375,7 +1375,7 @@ export const preferencesText = createDictionary({
       'Hacer que los cuadros de diálogo del formulario aparezcan en gris',
     'fr-fr':
       "Rendre les boîtes de dialogue de formulaire grisées sur l'arrière-plan",
-    'uk-ua': 'Зробіть діалогові вікна форми сірими фоном',
+    'uk-ua': 'Зробіть діалогові вікна форми сірими',
     'de-ch': 'Den Hintergrund von Formulardialogen ausgrauen',
   },
   autoScrollTree: {
@@ -1940,7 +1940,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Basisansicht',
     'es-es': 'Vista básica',
     'fr-fr': 'Vue de base',
-    'ru-ru': 'Основной вид',
+    'ru-ru': 'Базовый вид',
     'uk-ua': 'Основний вигляд',
   },
   detailedView: {
