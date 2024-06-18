@@ -294,83 +294,216 @@ export const localityText = createDictionary({
   },
   localityUpdateHeaderError: {
     'en-us': 'Errors Found in Column Headers',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   localityUpdateMissingHeader: {
     'en-us': 'The following columns are required but missing in the data set',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   localityUpdateUnrecognizedHeaders: {
-    'en-us':
-      'The following columns in the dataset are not recognized and will be ignored on import',
+    'en-us': `
+      The following columns in the dataset are not recognized and will be
+      ignored on import
+    `,
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   localityUpdateAcceptedHeaders: {
     'en-us': 'Only the following headers are accepted',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   localityUpdateStarting: {
     'en-us': 'Starting Locality Update',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   localityUpdateParsing: {
     'en-us': 'Parsing Locality Data Set',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   localityUpdateProgressing: {
     'en-us': 'Importing Locality Data Set',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   localityUpdateParsed: {
     'en-us': 'Locality Update Data Set Parsed',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   localityUpdateFailed: {
     'en-us': 'Locality Update Failed',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   localityUpdateParseFailure: {
     'en-us': 'Locality Update Parsing Failed',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   localityUpdateCancelled: {
     'en-us': 'Locality Update Cancelled',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   localityUpdateSucceeded: {
     'en-us': 'Locality Update Succeeded',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   localityUpdateWentWrong: {
     'en-us': 'Something went wrong during the Locality Update process',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   localityUpdateParseErrorFileName: {
-    comment:
-      'The file name which is used when Parse Errors are exported. The .csv file extension is appended to the end of this string',
+    comment: `
+      The file name which is used when Parse Errors are exported. The .csv file
+      extension is appended to the end of this string
+    `,
     'en-us': 'Locality Update Errors - {date:string}',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   localityUpdateCrashFileName: {
-    comment:
-      'The file name which is used when any Generic non-parsing errors are exported. The .txt file extension is appended to the end of this string',
+    comment: `
+      The file name which is used when any Generic non-parsing errors are
+      exported. The .txt file extension is appended to the end of this string
+    `,
     'en-us': 'Locality Update {taskId: string} Crash Report - {date: string}',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   guidHeaderNotProvided: {
     'en-us': "The Dataset must contain a 'guid' header",
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   noLocalityMatchingGuid: {
     'en-us': "No Locality with guid: '{guid:string}'",
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   multipleLocalitiesWithGuid: {
-    'en-us':
-      'More than one Locality found with guid: {guid:string}. Locality IDs: {localityIds: string}',
+    'en-us': `
+      More than one Locality found with guid: {guid:string}. Locality
+      IDs: {localityIds: string}
+    `,
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   localityUpdateEffectCounts: {
-    'en-us':
-      'The following number of {localityTabelLabel: string} records will be affected by the update and {geoCoordDetailTableLabel: string} records will be created:',
+    'en-us': `
+      The following number of {localityTabelLabel: string} records will be
+      affected by the update and {geoCoordDetailTableLabel: string} records will
+      be created:
+    `,
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   localityUploadedDescription: {
-    'en-us':
-      'The following number of {localityTabelLabel: string} records were updated and {geoCoordDetailTableLabel: string} records were created:',
+    'en-us': `
+      The following number of {localityTabelLabel: string} records were updated
+      and {geoCoordDetailTableLabel: string} records were created:
+    `,
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   localityUpdateStarted: {
     'en-us': 'The Locality Update process has started',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   localityUpdateResults: {
     'en-us': 'Locality Update Results',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   localityUpdateFailureResults: {
     'en-us': 'Locality Update Failure Results',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   taskId: {
     'en-us': 'Task ID',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   validLatitude: {
     'en-us': 'Latitude needs to have a value between -90° and 90°',

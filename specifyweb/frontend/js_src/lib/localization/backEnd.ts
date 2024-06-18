@@ -211,6 +211,11 @@ export const backEndText = createDictionary({
   },
   formatMismatch: {
     'en-us': 'value {value:string} does not match formatter {formatter:string}',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   invalidPartialRecord: {
     'en-us': 'this field must be empty if {column:string} is empty',
