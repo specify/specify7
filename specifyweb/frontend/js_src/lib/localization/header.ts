@@ -145,11 +145,11 @@ export const headerText = createDictionary({
   },
   localityUpdateTool: {
     'en-us': 'Locality Update Tool',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch': 'Tool zur Standortaktualisierung',
+    'es-es': 'Herramienta de actualización de localidad',
+    'fr-fr': 'Outil de mise à jour de localité',
+    'ru-ru': 'Инструмент обновления местоположения',
+    'uk-ua': 'Інструмент оновлення місцевості',
   },
   labelName: {
     'en-us': 'Label Name',

@@ -40,7 +40,7 @@ export const interactionsText = createDictionary({
     'fr-fr':
       "Aucune préparation n'a été trouvée pour les enregistrements suivants :",
     'ru-ru': 'Никаких приготовлений не обнаружено для следующих записей:',
-    'uk-ua': 'Не було знайдено жодної підготовки для таких записів:',
+    'uk-ua': 'Не знайдено жодних препаратів для таких записів:',
   },
   preparationsNotAvailableFor: {
     'en-us': `
@@ -131,10 +131,10 @@ export const interactionsText = createDictionary({
   },
   preparationsCanNotBeReturned: {
     'en-us': 'Preparations cannot be returned in this context.',
-    'ru-ru': 'В этом случае препараты не подлежат возврату.',
-    'es-es': 'En este contexto, los preparados no se pueden devolver.',
+    'ru-ru': 'В этом случае препараты возврату не подлежат.',
+    'es-es': 'Los preparados no se pueden devolver en este contexto.',
     'fr-fr': 'Les préparatifs ne peuvent être retournés dans ce contexte.',
-    'uk-ua': 'У цьому контексті препарати не повертаються.',
+    'uk-ua': 'У цьому контексті препарати не підлягають поверненню.',
     'de-ch': 'Präparate können in diesem Kontext nicht zurückgegeben werden.',
   },
   noUnresolvedPreparations: {
@@ -142,7 +142,7 @@ export const interactionsText = createDictionary({
     'ru-ru': 'Нет никаких нерешенных приготовлений к этому кредиту.',
     'es-es': 'No hay preparativos pendientes para este préstamo.',
     'fr-fr': 'Il n’y a pas de préparatifs non résolus pour ce prêt.',
-    'uk-ua': 'Немає жодної невирішеної підготовки щодо цієї позики.',
+    'uk-ua': 'Немає невирішених питань підготовки щодо цієї позики.',
     'de-ch': 'Für dieses Ausleihe bestehen keine ungelösten Vorbereitungen.',
   },
   unresolved: {

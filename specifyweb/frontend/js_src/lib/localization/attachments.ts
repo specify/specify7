@@ -191,7 +191,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Error de coincidencia',
     'fr-fr': 'Erreur de correspondance',
     'ru-ru': 'Ошибка совпадения',
-    'uk-ua': 'Помилка відповідності',
+    'uk-ua': 'Помилка збігу',
   },
   errorReadingFile: {
     'en-us': 'Error reading file',
@@ -200,7 +200,7 @@ export const attachmentsText = createDictionary({
     'ru-ru': 'Ошибка чтения файла',
     'de-ch':
       'Wählen Sie Dateien aus oder ziehen Sie sie hierher, um zu beginnen.',
-    'uk-ua': 'Щоб почати, виберіть файли або перетягніть їх сюди.',
+    'uk-ua': 'Виберіть файли або перетягніть їх сюди, щоб почати.',
   },
   unhandledFatalResourceError: {
     'en-us': 'Unhandled fatal resource error:',
@@ -336,7 +336,7 @@ export const attachmentsText = createDictionary({
     `,
     'es-es': 'Interrumpido. Reintentando en [X25X]',
     'fr-fr': `
-      Le téléchargement des pièces jointes créera des pièces jointes dans le
+      Le téléchargement des pièces jointes créera des pièces jointes sur le
       serveur d'actifs et dans la base de données Specify.
     `,
     'ru-ru': `
