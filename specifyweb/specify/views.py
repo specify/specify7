@@ -869,7 +869,7 @@ def abort_merge_task(request, merge_id: int) -> http.HttpResponse:
 def upload_locality_set(request: http.HttpRequest):
 
     if not request.specify_user.is_admin():
-        return http.HttpResponseForbidden('Speciftuser must be an instituion admin')
+        return http.HttpResponseForbidden('Specifyuser must be an instituion admin')
 
     request_data = json.loads(request.body)
 

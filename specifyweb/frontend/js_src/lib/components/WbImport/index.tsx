@@ -14,6 +14,7 @@ import { useTriggerState } from '../../hooks/useTriggerState';
 import { wbText } from '../../localization/workbench';
 import type { GetOrSet, RA } from '../../utils/types';
 import { localized } from '../../utils/types';
+import { stripFileExtension } from '../../utils/utils';
 import { Container, H2 } from '../Atoms';
 import { Input } from '../Atoms/Form';
 import { LoadingContext } from '../Core/Contexts';
@@ -22,7 +23,6 @@ import { CsvFilePreview } from '../Molecules/CsvFilePicker';
 import { FilePicker, Layout } from '../Molecules/FilePicker';
 import {
   createDataSet,
-  extractFileName,
   getMaxDataSetLength,
   inferDataSetType,
   parseCsv,
@@ -50,7 +50,7 @@ export function WbImportView(): JSX.Element {
 
 function FilePicked({ file }: { readonly file: File }): JSX.Element {
   const fileType = inferDataSetType(file);
-  const getSetDataSetName = useTriggerState(extractFileName(file.name));
+  const getSetDataSetName = useTriggerState(stripFileExtension(file.name));
   const [hasHeader = true, setHasHeader] = useCachedState(
     'wbImport',
     'hasHeader'

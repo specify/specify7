@@ -20,10 +20,6 @@ import type { Dataset, DatasetBrief } from '../WbPlanView/Wrapped';
  *   and update the usages in code to fix that rule
  */
 
-/** Remove the extension from the file name */
-export const extractFileName = (fileName: string): string =>
-  fileName.replace(/\.[^.]*$/u, '');
-
 export const wbImportPreviewSize = 100;
 
 const fileMimeMapper: IR<'csv' | 'xls'> = {

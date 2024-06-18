@@ -321,7 +321,7 @@ export const localityText = createDictionary({
     'en-us': 'Locality Update Failed',
   },
   localityUpdateParseFailure: {
-    'en-us': 'Locality Upadte Parsing Failed',
+    'en-us': 'Locality Update Parsing Failed',
   },
   localityUpdateCancelled: {
     'en-us': 'Locality Update Cancelled',
