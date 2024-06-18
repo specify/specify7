@@ -1,4 +1,7 @@
 import type Handsontable from 'handsontable';
+import type { Events } from 'handsontable/pluginHooks';
+import type { Action } from 'handsontable/plugins/undoRedo';
+import React from 'react';
 
 import { backEndText } from '../../localization/backEnd';
 import { whitespaceSensitive } from '../../localization/utils';
@@ -7,21 +10,32 @@ import { ping } from '../../utils/ajax/ping';
 import { setCache } from '../../utils/cache';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { ensure, overwriteReadOnly } from '../../utils/types';
+import { overwriteReadOnly } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
-import { oneRem } from '../Atoms';
+import { LoadingContext } from '../Core/Contexts';
 import { schema } from '../DataModel/schema';
-import { hasPermission } from '../Permissions/helpers';
 import { getHotPlugin } from './handsontable';
-import type { WbView } from './WbView';
+import type { Workbench } from './WbView';
 
-export function getHotHooks(wbView: WbView) {
+export function useHotHooks({
+  workbench,
+  physicalColToMappingCol,
+  spreadsheetChanged,
+  checkDeletedFail,
+  isReadOnly,
+  isResultsOpen,
+}: {
+  readonly workbench: Workbench;
+  readonly physicalColToMappingCol: (physicalCol: number) => number | undefined;
+  readonly spreadsheetChanged: () => void;
+  readonly checkDeletedFail: (statusCode: number) => boolean;
+  readonly isReadOnly: boolean;
+  readonly isResultsOpen: boolean;
+}): Partial<Events> {
   let sortConfigIsSet: boolean = false;
-  let hotCommentsContainerRepositionTimeout:
-    | ReturnType<typeof setTimeout>
-    | undefined = undefined;
+  const loading = React.useContext(LoadingContext);
 
-  return ensure<Partial<Handsontable.Hooks.Events>>()({
+  return {
     /*
      * After cell is rendered, we need to reApply metaData classes
      * NOTE:
@@ -31,55 +45,55 @@ export function getHotHooks(wbView: WbView) {
      *
      */
     afterRenderer: (td, visualRow, visualCol, property, _value) => {
-      if (wbView.hot === undefined) {
+      if (workbench.hot === undefined) {
         td.classList.add('text-gray-500');
         return;
       }
-      const physicalRow = wbView.hot.toPhysicalRow(visualRow);
+      const physicalRow = workbench.hot.toPhysicalRow(visualRow);
       const physicalCol =
         typeof property === 'number'
           ? property
-          : wbView.hot.toPhysicalColumn(visualCol);
-      if (physicalCol >= wbView.dataset.columns.length) return;
-      const metaArray = wbView.cells.cellMeta?.[physicalRow]?.[physicalCol];
-      if (wbView.cells.getCellMetaFromArray(metaArray, 'isModified'))
-        wbView.cells.runMetaUpdateEffects(
+          : workbench.hot.toPhysicalColumn(visualCol);
+      if (physicalCol >= workbench.dataset.columns.length) return;
+      const metaArray = workbench.cells.cellMeta?.[physicalRow]?.[physicalCol];
+      if (workbench.cells.getCellMetaFromArray(metaArray, 'isModified'))
+        workbench.cells.runMetaUpdateEffects(
           td,
           'isModified',
           true,
           visualRow,
           visualCol
         );
-      if (wbView.cells.getCellMetaFromArray(metaArray, 'isNew'))
-        wbView.cells.runMetaUpdateEffects(
+      if (workbench.cells.getCellMetaFromArray(metaArray, 'isNew'))
+        workbench.cells.runMetaUpdateEffects(
           td,
           'isNew',
           true,
           visualRow,
           visualCol
         );
-      if (wbView.cells.getCellMetaFromArray(metaArray, 'isSearchResult'))
-        wbView.cells.runMetaUpdateEffects(
+      if (workbench.cells.getCellMetaFromArray(metaArray, 'isSearchResult'))
+        workbench.cells.runMetaUpdateEffects(
           td,
           'isSearchResult',
           true,
           visualRow,
           visualCol
         );
-      if (wbView.mappings?.mappedHeaders?.[physicalCol] === undefined)
+      if (workbench.mappings?.mappedHeaders?.[physicalCol] === undefined)
         td.classList.add('text-gray-500');
-      if (wbView.mappings?.coordinateColumns?.[physicalCol] !== undefined)
+      if (workbench.mappings?.coordinateColumns?.[physicalCol] !== undefined)
         td.classList.add('wb-coordinate-cell');
     },
 
     // Make HOT use defaultValues for validation if cell is empty
     beforeValidate: (value, _visualRow, property) => {
-      if (Boolean(value) || wbView.hot === undefined) return value;
+      if (Boolean(value) || workbench.hot === undefined) return value;
 
-      const visualCol = wbView.hot.propToCol(property);
-      const physicalCol = wbView.hot.toPhysicalColumn(visualCol);
+      const visualCol = workbench.hot.propToCol(property);
+      const physicalCol = workbench.hot.toPhysicalColumn(visualCol);
 
-      return wbView.mappings?.defaultValues[physicalCol] ?? value;
+      return workbench.mappings?.defaultValues[physicalCol] ?? value;
     },
 
     afterValidate: (
@@ -88,12 +102,12 @@ export function getHotHooks(wbView: WbView) {
       visualRow,
       property
     ) => {
-      if (wbView.hot === undefined) return;
-      const visualCol = wbView.hot.propToCol(property);
+      if (workbench.hot === undefined) return;
+      const visualCol = workbench.hot.propToCol(property);
 
-      const physicalRow = wbView.hot.toPhysicalRow(visualRow);
-      const physicalCol = wbView.hot.toPhysicalColumn(visualCol);
-      const issues = wbView.cells.getCellMeta(
+      const physicalRow = workbench.hot.toPhysicalRow(visualRow);
+      const physicalCol = workbench.hot.toPhysicalColumn(visualCol);
+      const issues = workbench.cells.getCellMeta(
         physicalRow,
         physicalCol,
         'issues'
@@ -124,7 +138,7 @@ export function getHotHooks(wbView: WbView) {
         ),
       ]);
       if (JSON.stringify(issues) !== JSON.stringify(newIssues))
-        wbView.cells.updateCellMeta(
+        workbench.cells.updateCellMeta(
           physicalRow,
           physicalCol,
           'issues',
@@ -132,14 +146,11 @@ export function getHotHooks(wbView: WbView) {
         );
     },
 
-    afterUndo: (data) => afterUndoRedo(wbView, 'undo', data),
+    afterUndo: (data) => afterUndoRedo(workbench, 'undo', data),
 
-    afterRedo: (data) => afterUndoRedo(wbView, 'redo', data),
+    afterRedo: (data) => afterUndoRedo(workbench, 'redo', data),
 
-    beforePaste: () =>
-      !wbView.uploadedView &&
-      !wbView.isUploaded &&
-      hasPermission('/workbench/dataset', 'update'),
+    beforePaste: () => !isReadOnly,
 
     /*
      * If copying values from a 1x3 area and pasting into the last cell, HOT
@@ -155,17 +166,18 @@ export function getHotHooks(wbView: WbView) {
       if (source !== 'CopyPaste.paste') return true;
 
       const filteredChanges = unfilteredChanges.filter(
-        ([, property]) => property < wbView.dataset.columns.length
+        ([, property]) =>
+          (property as number) < workbench.dataset.columns.length
       );
       if (
         filteredChanges.length === unfilteredChanges.length ||
-        wbView.hot === undefined
+        workbench.hot === undefined
       )
         return true;
-      wbView.hot.setDataAtCell(
+      workbench.hot.setDataAtCell(
         filteredChanges.map(([visualRow, property, _oldValue, newValue]) => [
           visualRow,
-          wbView.hot!.propToCol(property),
+          workbench.hot!.propToCol(property as number),
           newValue,
         ]),
         'CopyPaste.paste'
@@ -183,20 +195,21 @@ export function getHotHooks(wbView: WbView) {
           'UndoRedo.undo',
           'UndoRedo.redo',
         ].includes(source) ||
-        wbView.hot === undefined ||
+        workbench.hot === undefined ||
         unfilteredChanges === null
       )
         return;
-
       const changes = unfilteredChanges
         .map(([visualRow, property, oldValue, newValue]) => ({
           visualRow,
-          visualCol: wbView.hot!.propToCol(property),
-          physicalRow: wbView.hot!.toPhysicalRow(visualRow),
+          visualCol: workbench.hot!.propToCol(property),
+          physicalRow: workbench.hot!.toPhysicalRow(visualRow),
           physicalCol:
             typeof property === 'number'
               ? property
-              : wbView.hot!.toPhysicalColumn(wbView.hot!.propToCol(property)),
+              : workbench.hot!.toPhysicalColumn(
+                  workbench.hot!.propToCol(property as number | string)
+                ),
           oldValue,
           newValue,
         }))
@@ -211,7 +224,7 @@ export function getHotHooks(wbView: WbView) {
             // Or where value changed from null to empty
             (oldValue !== null || newValue !== '') &&
             // Or the column does not exist (that can happen on paste)
-            visualCol < wbView.dataset.columns.length
+            visualCol < workbench.dataset.columns.length
         );
 
       if (changes.length === 0) return;
@@ -220,8 +233,7 @@ export function getHotHooks(wbView: WbView) {
         changes
           // Ignore changes to unmapped columns
           .filter(
-            ({ physicalCol }) =>
-              wbView.physicalColToMappingCol(physicalCol) !== -1
+            ({ physicalCol }) => physicalColToMappingCol(physicalCol) !== -1
           )
           .sort(sortFunction(({ visualRow }) => visualRow))
           .map(({ physicalRow }) => physicalRow)
@@ -229,12 +241,12 @@ export function getHotHooks(wbView: WbView) {
 
       /*
        * Don't clear disambiguation when afterChange is triggered by
-       * wbView.hot.undo() from inside of wbView.afterUndoRedo()
+       * hot.undo() from inside of afterUndoRedo()
        * FEATURE: consider not clearing disambiguation at all
        */
-      if (!wbView.undoRedoIsHandled)
+      if (!workbench.undoRedoIsHandled)
         changedRows.forEach((physicalRow) =>
-          wbView.disambiguation.clearDisambiguation(physicalRow)
+          workbench.disambiguation.clearDisambiguation(physicalRow)
         );
 
       changes.forEach(
@@ -247,42 +259,42 @@ export function getHotHooks(wbView: WbView) {
           newValue,
         }) => {
           if (
-            wbView.cells.getCellMeta(
+            workbench.cells.getCellMeta(
               physicalRow,
               physicalCol,
               'originalValue'
             ) === undefined
           )
-            wbView.cells.setCellMeta(
+            workbench.cells.setCellMeta(
               physicalRow,
               physicalCol,
               'originalValue',
               oldValue
             );
-          wbView.cells.recalculateIsModifiedState(physicalRow, physicalCol, {
+          workbench.cells.recalculateIsModifiedState(physicalRow, physicalCol, {
             visualRow,
             visualCol,
           });
           if (
-            wbView.wbUtils.searchPreferences.search.liveUpdate &&
-            wbView.wbUtils.searchQuery !== undefined
+            workbench.utils.searchPreferences.search.liveUpdate &&
+            workbench.utils.searchQuery !== undefined
           )
-            wbView.cells.updateCellMeta(
+            workbench.cells.updateCellMeta(
               physicalRow,
               physicalCol,
               'isSearchResult',
-              wbView.wbUtils.searchFunction(newValue),
+              workbench.utils.searchFunction(newValue),
               { visualRow, visualCol }
             );
         }
       );
 
-      wbView.actions.spreadSheetChanged();
-      wbView.cells.updateCellInfoStats();
+      spreadsheetChanged();
+      workbench.cells.updateCellInfoStats();
 
-      if (wbView.dataset.uploadplan)
+      if (workbench.dataset.uploadplan)
         changedRows.forEach((physicalRow) =>
-          wbView.validation.startValidateRow(physicalRow)
+          workbench.validation.startValidateRow(physicalRow)
         );
     },
 
@@ -307,44 +319,44 @@ export function getHotHooks(wbView: WbView) {
            * If HOT is not yet fully initialized, we can assume that physical row
            * order and visual row order is the same
            */
-          wbView.hot?.toPhysicalRow(visualRowStart + index) ??
+          workbench.hot?.toPhysicalRow(visualRowStart + index) ??
           visualRowStart + index
         // REFACTOR: use sortFunction here
       ).sort();
 
-      wbView.cells.flushIndexedCellData = true;
+      workbench.cells.indexedCellMeta = undefined;
       addedRows
-        .filter((physicalRow) => physicalRow < wbView.cells.cellMeta.length)
+        .filter((physicalRow) => physicalRow < workbench.cells.cellMeta.length)
         .forEach((physicalRow) =>
-          wbView.cells.cellMeta.splice(physicalRow, 0, [])
+          workbench.cells?.cellMeta.splice(physicalRow, 0, [])
         );
-      if (wbView.hotIsReady && source !== 'auto')
-        wbView.actions.spreadSheetChanged();
+      if (workbench.hot !== undefined && source !== 'auto')
+        spreadsheetChanged();
 
       return true;
     },
 
     beforeRemoveRow: (visualRowStart, amount, _, source) => {
-      if (wbView.hot === undefined) return;
+      if (workbench.hot === undefined) return;
       // Get indexes of removed rows in reverse order
       const removedRows = Array.from({ length: amount }, (_, index) =>
-        wbView.hot!.toPhysicalRow(visualRowStart + index)
+        workbench.hot!.toPhysicalRow(visualRowStart + index)
       )
-        .filter((physicalRow) => physicalRow < wbView.cells.cellMeta.length)
+        .filter((physicalRow) => physicalRow < workbench.cells.cellMeta.length)
         // REFACTOR: use sortFunction here
         .sort()
         .reverse();
 
       removedRows.forEach((physicalRow) => {
-        wbView.cells.cellMeta.splice(physicalRow, 1);
-        wbView.validation.liveValidationStack.splice(physicalRow, 1);
+        workbench.cells.cellMeta.splice(physicalRow, 1);
+        workbench.validation.liveValidationStack.splice(physicalRow, 1);
       });
 
-      wbView.cells.flushIndexedCellData = true;
+      workbench.cells.indexedCellMeta = undefined;
 
-      if (wbView.hotIsReady && source !== 'auto') {
-        wbView.actions.spreadSheetChanged();
-        wbView.cells.updateCellInfoStats();
+      if (source !== 'auto') {
+        spreadsheetChanged();
+        workbench.cells.updateCellInfoStats();
       }
 
       return true;
@@ -356,30 +368,28 @@ export function getHotHooks(wbView: WbView) {
      * and sorting them in the same direction
      */
     beforeColumnSort: (currentSortConfig, newSortConfig) => {
-      wbView.cells.flushIndexedCellData = true;
-
-      if (wbView.coordinateConverterView) return false;
+      workbench.cells.indexedCellMeta = undefined;
 
       if (
-        wbView.mappings === undefined ||
+        workbench.mappings === undefined ||
         sortConfigIsSet ||
-        wbView.hot === undefined
+        workbench.hot === undefined
       )
         return true;
 
       const findTreeColumns = (
-        sortConfig: RA<Handsontable.columnSorting.Config>,
-        deltaSearchConfig: RA<Handsontable.columnSorting.Config>
+        sortConfig: RA<Handsontable.plugins.ColumnSorting.Config>,
+        deltaSearchConfig: RA<Handsontable.plugins.ColumnSorting.Config>
       ) =>
         sortConfig
           .map(({ column: visualCol, sortOrder }) => ({
             sortOrder,
             visualCol,
-            physicalCol: wbView.hot!.toPhysicalColumn(visualCol),
+            physicalCol: workbench.hot!.toPhysicalColumn(visualCol),
           }))
           .map(({ physicalCol, ...rest }) => ({
             ...rest,
-            rankGroup: wbView
+            rankGroup: workbench
               .mappings!.treeRanks?.map((rankGroup, groupIndex) => ({
                 rankId: rankGroup.find(
                   (mapping) => mapping.physicalCol === physicalCol
@@ -420,11 +430,11 @@ export function getHotHooks(wbView: WbView) {
        * (lower rankId corresponds to a higher tree rank)
        *
        */
-      const columnsToSort = wbView.mappings.treeRanks[
+      const columnsToSort = workbench.mappings.treeRanks[
         changedTreeColumn.rankGroup!.groupIndex
       ]
         .filter(({ rankId }) => rankId >= changedTreeColumn!.rankGroup!.rankId!)
-        .map(({ physicalCol }) => wbView.hot!.toVisualColumn(physicalCol));
+        .map(({ physicalCol }) => workbench.hot!.toVisualColumn(physicalCol));
 
       // Filter out columns that are about to be sorted
       const partialSortConfig = newSortConfig.filter(
@@ -442,7 +452,7 @@ export function getHotHooks(wbView: WbView) {
       ];
 
       sortConfigIsSet = true;
-      getHotPlugin(wbView.hot, 'multiColumnSorting').sort(fullSortConfig);
+      getHotPlugin(workbench.hot, 'multiColumnSorting').sort(fullSortConfig);
       sortConfigIsSet = false;
 
       return false;
@@ -450,51 +460,46 @@ export function getHotHooks(wbView: WbView) {
 
     // Cache sort config to preserve column sort order across sessions
     afterColumnSort: async (_previousSortConfig, sortConfig) => {
-      if (wbView.hot === undefined) return;
+      if (workbench.hot === undefined) return;
       const physicalSortConfig = sortConfig.map((rest) => ({
         ...rest,
-        physicalCol: wbView.hot!.toPhysicalColumn(rest.column),
+        physicalCol: workbench.hot!.toPhysicalColumn(rest.column),
       }));
       setCache(
         'workBenchSortConfig',
-        `${schema.domainLevelIds.collection}_${wbView.dataset.id}`,
+        `${schema.domainLevelIds.collection}_${workbench.dataset.id}`,
         physicalSortConfig
       );
     },
 
     beforeColumnMove: (_columnIndexes, _finalIndex, dropIndex) =>
-      // Don't allow moving columns when isReadOnly
-      !wbView.uploadedView &&
-      !wbView.coordinateConverterView &&
-      // An ugly fix for jQuery's dialogs conflicting with HOT
-      (dropIndex !== undefined || !wbView.hotIsReady),
+      !isResultsOpen &&
+      (dropIndex !== undefined || workbench.hot !== undefined),
 
     // Save new visualOrder on the back end
     afterColumnMove: (_columnIndexes, _finalIndex, dropIndex) => {
       // An ugly fix for jQuery's dialogs conflicting with HOT
-      if (
-        dropIndex === undefined ||
-        !wbView.hotIsReady ||
-        wbView.hot === undefined
-      )
-        return;
+      if (dropIndex === undefined || workbench.hot == undefined) return;
+      workbench.cells.indexedCellMeta = undefined;
 
-      wbView.cells.flushIndexedCellData = true;
-
-      const columnOrder = wbView.dataset.columns.map((_, visualCol) =>
-        wbView.hot!.toPhysicalColumn(visualCol)
+      const columnOrder = workbench.dataset.columns.map((_, visualCol) =>
+        workbench.hot!.toPhysicalColumn(visualCol)
       );
 
       if (
-        wbView.dataset.visualorder === null ||
-        columnOrder.some((i, index) => i !== wbView.dataset.visualorder![index])
+        workbench.dataset.visualorder === null ||
+        columnOrder.some(
+          (i, index) => i !== workbench.dataset.visualorder![index]
+        )
       ) {
-        overwriteReadOnly(wbView.dataset, 'visualorder', columnOrder);
-        ping(`/api/workbench/dataset/${wbView.dataset.id}/`, {
-          method: 'PUT',
-          body: { visualorder: columnOrder },
-          expectedErrors: [Http.NOT_FOUND],
-        }).then(wbView.checkDeletedFail.bind(wbView));
+        overwriteReadOnly(workbench.dataset, 'visualorder', columnOrder);
+        loading(
+          ping(`/api/workbench/dataset/${workbench.dataset.id}/`, {
+            method: 'PUT',
+            body: { visualorder: columnOrder },
+            expectedErrors: [Http.NOT_FOUND],
+          }).then(checkDeletedFail)
+        );
       }
     },
 
@@ -503,87 +508,27 @@ export function getHotHooks(wbView: WbView) {
       const lastCoords = coords.at(-1);
       if (
         typeof lastCoords === 'object' &&
-        data.some((row) => row.length === wbView.dataset.columns.length) &&
-        wbView.hot !== undefined
+        data.some((row) => row.length === workbench.dataset.columns.length) &&
+        workbench.hot !== undefined
       )
-        wbView.hot.scrollViewportTo(lastCoords.endRow, lastCoords.startCol);
-    },
-
-    /*
-     * Reposition the comment box if it is overflowing
-     * See https://github.com/specify/specify7/issues/932
-     * REFACTOR: https://github.com/specify/specify7/issues/1925
-     */
-    afterOnCellMouseOver: (_event, coordinates, cell) => {
-      if (wbView.hot === undefined) return;
-      const physicalRow = wbView.hot.toPhysicalRow(coordinates.row);
-      const physicalCol = wbView.hot.toPhysicalColumn(coordinates.col);
-
-      // Make sure cell has comments
-      if (
-        wbView.cells.getCellMeta(physicalRow, physicalCol, 'issues').length ===
-        0
-      )
-        return;
-
-      const cellContainerBoundingBox = cell.getBoundingClientRect();
-
-      // Make sure box is overflowing horizontally
-      if (globalThis.innerWidth > cellContainerBoundingBox.right + oneRem * 2)
-        return;
-
-      wbView.hotCommentsContainer?.style.setProperty(
-        '--offset-right',
-        `${Math.round(globalThis.innerWidth - cellContainerBoundingBox.x)}px`
-      );
-      wbView.hotCommentsContainer?.classList.add(
-        'right-[var(--offset-right)]',
-        '!left-[unset]'
-      );
-      if (hotCommentsContainerRepositionTimeout) {
-        globalThis.clearTimeout(hotCommentsContainerRepositionTimeout);
-        hotCommentsContainerRepositionTimeout = undefined;
-      }
-    },
-
-    /*
-     * Revert comment box's position to original state if needed.
-     * The 10ms delay helps prevent visual artifacts when the mouse pointer
-     * moves between cells.
-     */
-    afterOnCellMouseOut: () => {
-      if (hotCommentsContainerRepositionTimeout)
-        globalThis.clearTimeout(hotCommentsContainerRepositionTimeout);
-      if (
-        wbView.hotCommentsContainer?.style.getPropertyValue(
-          '--offset-right'
-        ) !== ''
-      )
-        hotCommentsContainerRepositionTimeout = globalThis.setTimeout(
-          () =>
-            wbView.hotCommentsContainer?.classList.remove(
-              'right-[var(--offset-right)]',
-              '!left-[unset]'
-            ),
-          10
-        );
+        workbench.hot.scrollViewportTo(lastCoords.endRow, lastCoords.startCol);
     },
 
     /*
      * Disallow user from selecting several times the same cell
      */
     afterSelection: () => {
-      if (wbView.hot === undefined) return;
-      const selection = wbView.hot?.getSelected() ?? [];
+      if (workbench.hot === undefined) return;
+      const selection = workbench.hot?.getSelected() ?? [];
       const newSelection = f
         .unique(selection.map((row) => JSON.stringify(row)))
         .map((row) => JSON.parse(row));
       if (newSelection.length !== selection.length) {
-        wbView.hot?.deselectCell();
-        wbView.hot?.selectCells(newSelection);
+        workbench.hot?.deselectCell();
+        workbench.hot?.selectCells(newSelection);
       }
     },
-  });
+  };
 }
 
 /**
@@ -594,22 +539,22 @@ export function getHotHooks(wbView: WbView) {
  *
  */
 function afterUndoRedo(
-  wbView: WbView,
+  workbench: Workbench,
   type: 'redo' | 'undo',
-  data: Handsontable.plugins.UndoRedoAction
+  data: Action
 ): void {
   if (
-    wbView.undoRedoIsHandled ||
+    workbench.undoRedoIsHandled ||
     data.actionType !== 'change' ||
     data.changes.length !== 1 ||
-    wbView.hot === undefined
+    workbench.hot === undefined
   )
     return;
 
   const [visualRow, visualCol, newData, oldData] = data.changes[0];
-  const physicalRow = wbView.hot.toPhysicalRow(visualRow);
-  const physicalCol = wbView.hot.toPhysicalColumn(visualCol as number);
-  if (physicalCol !== wbView.dataset.columns.length) return;
+  const physicalRow = workbench.hot.toPhysicalRow(visualRow);
+  const physicalCol = workbench.hot.toPhysicalColumn(visualCol as number);
+  if (physicalCol !== workbench.dataset.columns.length) return;
 
   const newValue = JSON.parse(newData || '{}').disambiguation;
   const oldValue = JSON.parse(oldData || '{}').disambiguation;
@@ -627,10 +572,10 @@ function afterUndoRedo(
   )
     // HOT doesn't seem to like calling undo from inside of afterUndo
     globalThis.setTimeout(() => {
-      wbView.undoRedoIsHandled = true;
-      wbView.hot?.undo();
-      wbView.undoRedoIsHandled = false;
-      wbView.disambiguation.afterChangeDisambiguation(physicalRow);
+      workbench.undoRedoIsHandled = true;
+      workbench.hot?.undo();
+      workbench.undoRedoIsHandled = false;
+      workbench.disambiguation.afterChangeDisambiguation(physicalRow);
     }, 0);
-  else wbView.disambiguation.afterChangeDisambiguation(physicalRow);
+  else workbench.disambiguation.afterChangeDisambiguation(physicalRow);
 }

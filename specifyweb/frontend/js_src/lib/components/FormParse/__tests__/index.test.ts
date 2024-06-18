@@ -30,6 +30,7 @@ const {
   parseFormTableColumns,
   getColumnDefinitions,
   getColumnDefinition,
+  parseRows,
 } = exportsForTests;
 
 requireContext();
@@ -529,3 +530,105 @@ theories(getColumnDefinition, [
     out: 'B',
   },
 ]);
+
+const testRows = `
+<viewdef>
+<rows>
+  <row>
+    <cell type="label" labelFor="tt" label="test" />
+  </row> 
+  <row>
+    <cell type="field" name=" stationFieldNumber " uiType="text" colSpan="4" align="right" id="tt" />
+    <cell type="field" name="collectingTrip.text1" uiType="checkbox" label="2" colSpan="1" align="right" />
+  </row> 
+  <row>
+  </row>
+  <row>
+    <cell type="subview" id="dt" viewname="Collectors" name="collectors"/>
+  </row>
+</rows>
+</viewdef>`;
+
+test('parseRows', async () => {
+  const viewDef = xml(testRows);
+  const rowsContainer = viewDef.children.rows[0];
+  const rawRows = rowsContainer?.children?.row ?? [];
+
+  await expect(parseRows(rawRows, tables.CollectingEvent)).resolves.toEqual([
+    [
+      {
+        align: 'right',
+        ariaLabel: undefined,
+        colSpan: 1,
+        fieldNames: undefined,
+        id: undefined,
+        labelForCellId: 'tt',
+        text: 'test',
+        title: undefined,
+        type: 'Label',
+        verticalAlign: 'center',
+        visible: true,
+      },
+    ],
+    [
+      {
+        align: 'left',
+        ariaLabel: undefined,
+        colSpan: 2,
+        fieldDefinition: {
+          defaultValue: undefined,
+          isReadOnly: false,
+          max: undefined,
+          maxLength: undefined,
+          min: undefined,
+          minLength: undefined,
+          step: undefined,
+          type: 'Text',
+        },
+        fieldNames: ['stationFieldNumber'],
+        id: 'tt',
+        isRequired: false,
+        type: 'Field',
+        verticalAlign: 'center',
+        visible: true,
+      },
+      {
+        align: 'left',
+        ariaLabel: undefined,
+        colSpan: 1,
+        fieldDefinition: {
+          defaultValue: undefined,
+          isReadOnly: false,
+          label: '2',
+          printOnSave: false,
+          type: 'Checkbox',
+        },
+        fieldNames: ['collectingTrip', 'text1'],
+        id: undefined,
+        isRequired: false,
+        type: 'Field',
+        verticalAlign: 'center',
+        visible: true,
+      },
+    ],
+    [],
+    [
+      {
+        align: 'left',
+        ariaLabel: undefined,
+        colSpan: 1,
+        fieldNames: ['collectors'],
+        formType: 'formTable',
+        icon: undefined,
+        id: 'dt',
+        isButton: false,
+        isCollapsed: false,
+        sortField: undefined,
+        type: 'SubView',
+        verticalAlign: 'stretch',
+        viewName: 'Collectors',
+        visible: true,
+      },
+    ],
+  ]);
+});

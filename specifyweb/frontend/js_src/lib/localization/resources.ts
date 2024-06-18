@@ -148,7 +148,7 @@ export const resourcesText = createDictionary({
   uiFormatters: {
     'en-us': 'Field Formatters',
     'ru-ru': 'Форматировщики полей',
-    'es-es': 'Formateadores de campos',
+    'es-es': 'Formateadores de campo',
     'fr-fr': 'Formateurs de champs',
     'uk-ua': 'Форматувальники полів',
     'de-ch': 'Feldformatierer',
@@ -204,8 +204,8 @@ export const resourcesText = createDictionary({
       можно настроить на основе значения в записи.
     `,
     'uk-ua': `
-      «Формат таблиці» керує тим, як дані з певної таблиці відображаються в
-      результатах запитів, експорті та комбінованих полях запитів. Він визначає
+      «Формат таблиці» визначає, як дані з певної таблиці відображаються в
+      результатах запиту, експорті та комбінованих полях запиту. Він визначає
       поля для відображення та їх порядок. Умовне форматування можна налаштувати
       на основі значення в записі.
     `,
@@ -249,8 +249,8 @@ export const resourcesText = createDictionary({
     'ru-ru': `
       «Агрегация таблиц» управляет тем, как несколько записей таблицы
       объединяются в одну текстовую строку. Формат таблицы, разделитель,
-      суффикс, поле сортировки и предел предварительного просмотра записей можно
-      настроить. Его можно отобразить в результатах запроса и в форматах
+      суффикс, поле сортировки и ограничение предварительного просмотра записи
+      можно настроить. Его можно отобразить в результатах запроса и в форматах
       таблиц.
     `,
     'uk-ua': `
@@ -501,7 +501,7 @@ export const resourcesText = createDictionary({
   },
   defaultInline: {
     'en-us': '(default)',
-    'de-ch': 'Formatvorschau',
+    'de-ch': '(Standard)',
     'es-es': '(por defecto)',
     'fr-fr': '(défaut)',
     'ru-ru': '(по умолчанию)',
@@ -568,7 +568,7 @@ export const resourcesText = createDictionary({
     'es-es': 'Agregar definición',
     'fr-fr': 'Ajouter une définition',
     'ru-ru': 'Добавить определение',
-    'uk-ua': 'Додати визначення',
+    'uk-ua': 'Додайте визначення',
   },
   deleteDefinition: {
     'en-us': 'Delete definition',
@@ -672,7 +672,7 @@ export const resourcesText = createDictionary({
     `,
     'uk-ua': `
       Цей ресурс належить до іншої колекції/дисципліни, ніж та, у якій ви зараз
-      перебуваєте. Рекомендовано змінити колекцію перед редагуванням цього
+      перебуваєте. Рекомендується змінити колекцію перед редагуванням цього
       ресурсу
     `,
   },
@@ -730,11 +730,11 @@ export const resourcesText = createDictionary({
     'es-es': 'Ejecutar en colección',
     'fr-fr': 'Exécuter en collection',
     'ru-ru': 'Запустить в коллекцию',
-    'uk-ua': 'Запустити в колекції',
+    'uk-ua': 'Запустити в колекцію',
   },
   createNewForm: {
     'en-us': 'Create a new view definition',
-    'de-ch': 'Erstellen einer neuen Ansichtsdefinition',
+    'de-ch': 'Definition',
     'es-es': 'Crear una nueva definición de vista',
     'fr-fr': 'Créer une nouvelle définition de vue',
     'ru-ru': 'Создайте новое определение представления',
@@ -751,10 +751,10 @@ export const resourcesText = createDictionary({
   copyDefaultForm: {
     'en-us': 'Copy default view definition',
     'de-ch': 'Standardansichtsdefinition kopieren',
-    'es-es': 'Copiar definición de vista predeterminada',
-    'fr-fr': 'Copier la définition de vue par défaut',
-    'ru-ru': 'Скопировать определение представления по умолчанию',
-    'uk-ua': 'Копіювати визначення перегляду за замовчуванням',
+    'es-es': 'Formateadores de registros',
+    'fr-fr': "Formateurs d'enregistrement",
+    'ru-ru': 'Форматеры записи',
+    'uk-ua': 'Форматувальники записів',
   },
   copyDefaultForms: {
     'en-us': 'Copy default forms',
@@ -825,10 +825,18 @@ export const resourcesText = createDictionary({
   },
   formatPreview: {
     'en-us': 'Format Preview',
-    'de-ch': 'Formatvorschau',
+    'de-ch': 'Feldformate anpassen',
     'es-es': 'Vista previa de formato',
     'fr-fr': 'Aperçu du format',
     'ru-ru': 'Предварительный просмотр формата',
     'uk-ua': 'Попередній перегляд формату',
+  },
+  currentDeterminationRequired: {
+    'en-us': 'A current determination is required.',
+    'de-ch': 'Eine aktuelle Feststellung ist erforderlich.',
+    'es-es': 'Se requiere una determinación actual.',
+    'fr-fr': 'Une détermination actuelle est requise.',
+    'ru-ru': 'Требуется текущее определение.',
+    'uk-ua': 'Потрібне поточне визначення.',
   },
 } as const);

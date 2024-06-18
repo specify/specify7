@@ -3,7 +3,6 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { useResourceValue } from '../../hooks/useResourceValue';
 import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
 import { localityText } from '../../localization/locality';
 import { Lat, Long, trimLatLong } from '../../utils/latLong';
 import { Input, Select } from '../Atoms/Form';
@@ -86,7 +85,14 @@ function Coordinate({
       : undefined;
 
     const isValid = !hasValue || parsed !== undefined;
-    setValidation(isValid ? '' : formsText.invalidValue());
+    const latLongBlockers = isValid
+      ? []
+      : [
+          fieldType === 'Lat'
+            ? localityText.validLatitude()
+            : localityText.validLongitude(),
+        ];
+    setValidation(latLongBlockers);
     handleFormatted(
       isValid
         ? hasValue
@@ -135,7 +141,6 @@ function Coordinate({
     fieldType,
     step,
     handleFormatted,
-    setValidation,
     parser,
   ]);
 

@@ -1,9 +1,6 @@
 from django.db import models
-
-from specifyweb.specify import models as spmodels
-
-Discipline = getattr(spmodels, 'Discipline')
-
+from functools import partialmethod
+from specifyweb.specify.models import Discipline, datamodel, custom_save
 
 class PsuedoManyToManyManager(models.Manager):
     def __init__(self, base_instance, through_model, through_field) -> None:
@@ -39,29 +36,33 @@ class PsuedoManyToManyManager(models.Manager):
 
 
 class UniquenessRule(models.Model):
-    id = models.AutoField('uniquenessruleid',
-                          primary_key=True, db_column='uniquenessruleid')
-    isDatabaseConstraint = models.BooleanField(
-        default=False, db_column='isDatabaseConstraint')
+    specify_model = datamodel.get_table('uniquenessrule')
+
+    id = models.AutoField('uniquenessruleid', primary_key=True, db_column='uniquenessruleid')
+    isDatabaseConstraint = models.BooleanField(default=False, db_column='isDatabaseConstraint')
     modelName = models.CharField(max_length=256)
     discipline = models.ForeignKey(
         Discipline, null=True, blank=True, on_delete=models.PROTECT, db_column="DisciplineID")
 
     @property
     def fields(self):
-        return PsuedoManyToManyManager(self, UniquenessRule_Field, UniquenessRule_Field.fieldPath)
+        return PsuedoManyToManyManager(self, UniquenessRuleField, UniquenessRuleField.fieldPath)
 
     class Meta:
         db_table = 'uniquenessrule'
 
+    save = partialmethod(custom_save)
 
-class UniquenessRule_Field(models.Model):
-    uniquenessrule_fieldid = models.AutoField(
-        'uniquenessrule_fieldsid', primary_key=True)
-    uniquenessrule = models.ForeignKey(
-        UniquenessRule, on_delete=models.CASCADE, db_column='uniquenessruleid')
+
+class UniquenessRuleField(models.Model):
+    specify_model = datamodel.get_table('uniquenessrulefield')
+
+    id = models.AutoField('uniquenessrule_fieldsid', primary_key=True, db_column='uniquenessrule_fieldid')
+    uniquenessrule = models.ForeignKey(UniquenessRule, on_delete=models.CASCADE, db_column='uniquenessruleid')
     fieldPath = models.TextField(null=True, blank=True)
     isScope = models.BooleanField(default=False)
 
     class Meta:
         db_table = "uniquenessrule_fields"
+
+    save = partialmethod(custom_save)

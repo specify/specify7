@@ -16,11 +16,11 @@ import { tables } from '../DataModel/tables';
 import type { RecordSet, SpQuery, SpQueryField } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { TableIcon } from '../Molecules/TableIcon';
-import { hasToolPermission } from '../Permissions/helpers';
 import {
-  ProtectedAction,
-  ProtectedTable,
-} from '../Permissions/PermissionDenied';
+  hasPermission,
+  hasTablePermission,
+  hasToolPermission,
+} from '../Permissions/helpers';
 import { SaveQueryButtons, ToggleMappingViewButton } from './Components';
 import { useQueryViewPref } from './Context';
 import { QueryEditButton } from './Edit';
@@ -109,23 +109,19 @@ export function QueryHeader({
           />
         )}
       </div>
-      {state.baseTableName === 'LoanPreparation' && (
-        <ProtectedAction action="execute" resource="/querybuilder/query">
-          <ProtectedTable action="update" tableName="Loan">
-            <ProtectedTable action="create" tableName="LoanReturnPreparation">
-              <ProtectedTable action="read" tableName="LoanPreparation">
-                <ErrorBoundary dismissible>
-                  <QueryLoanReturn
-                    fields={state.fields}
-                    getQueryFieldRecords={getQueryFieldRecords}
-                    queryResource={queryResource}
-                  />
-                </ErrorBoundary>
-              </ProtectedTable>
-            </ProtectedTable>
-          </ProtectedTable>
-        </ProtectedAction>
-      )}
+      {state.baseTableName === 'LoanPreparation' &&
+      hasPermission('/querybuilder/query', 'execute') &&
+      hasTablePermission('Loan', 'update') &&
+      hasTablePermission('LoanReturnPreparation', 'create') &&
+      hasTablePermission('LoanPreparation', 'read') ? (
+        <ErrorBoundary dismissible>
+          <QueryLoanReturn
+            fields={state.fields}
+            getQueryFieldRecords={getQueryFieldRecords}
+            queryResource={queryResource}
+          />
+        </ErrorBoundary>
+      ) : undefined}
       <div className="flex flex-wrap justify-center gap-2">
         <Button.Small onClick={() => setIsBasic(!isBasic)}>
           {isBasic
