@@ -13,7 +13,7 @@ msgstr ""
 
 #: components/Header/userToolDefinitions.ts:47
 #: components/Preferences/index.tsx:71
-#: components/Router/Routes.tsx:352
+#: components/Router/Routes.tsx:365
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Preferences > Index ⬤ Components > Router > Routes
 #, fuzzy
 msgid "preferences"
@@ -702,9 +702,11 @@ msgstr ""
 msgid "column"
 msgstr "Colonne"
 
+#: components/LocalityUpdate/Status.tsx:373
+#: components/LocalityUpdate/Status.tsx:416
 #: components/Preferences/UserDefinitions.tsx:1696
 #: components/Preferences/UserDefinitions.tsx:1713
-#. Used in: Components > Preferences > User Definitions
+#. Used in: Components > Locality Update > Status ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "row"
 msgstr "Rangée"

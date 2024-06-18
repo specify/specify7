@@ -32,7 +32,7 @@ msgstr ""
 #: components/AttachmentsBulkImport/utils.ts:479
 #: components/WbActions/WbRollback.tsx:30
 #: components/WbActions/WbRollback.tsx:69
-#: components/WorkBench/Status.tsx:75
+#: components/WorkBench/Status.tsx:76
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Wb Actions > Wb Rollback ⬤ Components > Work Bench > Status
 msgid "rollback"
 msgstr "Retroceder"
@@ -44,7 +44,7 @@ msgstr "Retroceder"
 msgid "validate"
 msgstr "Validar"
 
-#: components/WorkBench/Status.tsx:73
+#: components/WorkBench/Status.tsx:74
 #. Used in: Components > Work Bench > Status
 msgid "validation"
 msgstr "Validación"
@@ -55,25 +55,25 @@ msgstr "Validación"
 #: components/Molecules/SyncAttachmentPicker.tsx:94
 #: components/WbActions/WbUpload.tsx:54
 #: components/WbActions/WbUpload.tsx:62
-#: components/WorkBench/Status.tsx:74
+#: components/WorkBench/Status.tsx:75
 #. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Wb Actions > Wb Upload ⬤ Components > Work Bench > Status
 msgid "upload"
 msgstr "Cargar"
 
-#: components/WorkBench/Status.tsx:81
+#: components/WorkBench/Status.tsx:82
 #. Used in: Components > Work Bench > Status
 msgid "rollingBack"
 msgstr "Retrocediendo"
 
 #: components/AttachmentsBulkImport/Upload.tsx:108
-#: components/WorkBench/Status.tsx:80
+#: components/WorkBench/Status.tsx:81
 #. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Work Bench > Status
 msgid "uploading"
 msgstr "Cargando"
 
 #: components/AttachmentsBulkImport/ValidationDialog.tsx:41
 #: components/AttachmentsBulkImport/ValidationDialog.tsx:45
-#: components/WorkBench/Status.tsx:79
+#: components/WorkBench/Status.tsx:80
 #. Used in: Components > Attachments Bulk Import > Validation Dialog ⬤ Components > Work Bench > Status
 msgid "validating"
 msgstr "Validando"
@@ -480,12 +480,12 @@ msgid "includeDmsSymbols"
 msgstr "Incluir Símbolos DMS"
 
 #: components/AttachmentsBulkImport/Upload.tsx:264
-#: components/WorkBench/Results.tsx:41
+#: components/WorkBench/Results.tsx:42
 #. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Work Bench > Results
 msgid "uploadResults"
 msgstr "Cargar Resultados"
 
-#: components/WorkBench/Results.tsx:42
+#: components/WorkBench/Results.tsx:43
 #. Used in: Components > Work Bench > Results
 msgid "potentialUploadResults"
 msgstr "Resultados potenciales de la carga"
@@ -495,12 +495,12 @@ msgstr "Resultados potenciales de la carga"
 msgid "noUploadResultsAvailable"
 msgstr "No hay resultados de carga disponibles para esta celda"
 
-#: components/WorkBench/Results.tsx:46
+#: components/WorkBench/Results.tsx:47
 #. Used in: Components > Work Bench > Results
 msgid "wbUploadedDescription"
 msgstr "Número de registros nuevos creados en cada tabla:"
 
-#: components/WorkBench/Results.tsx:47
+#: components/WorkBench/Results.tsx:48
 #. Used in: Components > Work Bench > Results
 msgid "wbUploadedPotentialDescription"
 msgstr "Número de registros nuevos que se crearían en cada tabla:"
@@ -575,97 +575,97 @@ msgstr "Reemplazar siguiente aparición"
 msgid "importDataSet"
 msgstr "Importar conjunto de datos"
 
-#: components/WbImport/index.tsx:45
+#: components/WbImport/index.tsx:39
 #. Used in: Components > Wb Import > Index
 msgid "wbImportHeader"
 msgstr "Importar Archivo para Crear Nuevo Conjunto de Datos"
 
-#: components/WbImport/index.tsx:321
-#. Used in: Components > Wb Import > Index
+#: components/Molecules/FilePicker.tsx:265
+#. Used in: Components > Molecules > File Picker
 msgid "previewDataSet"
 msgstr "Vista previa de Conjunto de Datos"
 
-#: components/WbImport/index.tsx:303
-#. Used in: Components > Wb Import > Index
+#: components/Molecules/FilePicker.tsx:305
+#. Used in: Components > Molecules > File Picker
 msgid "errorImporting"
 msgstr "Se produjeron los siguientes errores al importar el archivo:"
 
-#: components/WbImport/helpers.ts:112
-#: components/WbImport/helpers.ts:137
+#: components/WbImport/helpers.ts:107
+#: components/WbImport/helpers.ts:133
 #. Used in: Components > Wb Import > Helpers
 msgid "corruptFile"
 msgstr "¡El archivo {fileName:string} está corrupto o no contiene datos!"
 
-#: components/WbImport/index.tsx:138
-#. Used in: Components > Wb Import > Index
+#: components/Molecules/CsvFilePicker.tsx:157
+#. Used in: Components > Molecules > Csv File Picker
 msgid "characterEncoding"
 msgstr "Codificación de caracteres:"
 
-#: components/WbImport/index.tsx:179
-#. Used in: Components > Wb Import > Index
+#: components/Molecules/CsvFilePicker.tsx:198
+#. Used in: Components > Molecules > Csv File Picker
 msgid "delimiter"
 msgstr "Delimitador:"
 
+#: components/Molecules/CsvFilePicker.tsx:172
 #: components/Preferences/UserDefinitions.tsx:1527
 #: components/Preferences/UserDefinitions.tsx:1754
-#: components/WbImport/index.tsx:153
-#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
+#. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 msgid "comma"
 msgstr "Coma"
 
+#: components/Molecules/CsvFilePicker.tsx:174
 #: components/Preferences/UserDefinitions.tsx:1535
 #: components/Preferences/UserDefinitions.tsx:1762
-#: components/WbImport/index.tsx:155
-#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
+#. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 msgid "semicolon"
 msgstr "Punto y coma"
 
+#: components/Molecules/CsvFilePicker.tsx:173
 #: components/Preferences/UserDefinitions.tsx:1531
 #: components/Preferences/UserDefinitions.tsx:1758
-#: components/WbImport/index.tsx:154
-#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
+#. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 msgid "tab"
 msgstr "Pestaña"
 
+#: components/Molecules/CsvFilePicker.tsx:175
 #: components/Preferences/UserDefinitions.tsx:1539
 #: components/Preferences/UserDefinitions.tsx:1766
-#: components/WbImport/index.tsx:156
-#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
+#. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 msgid "space"
 msgstr "Espacio"
 
+#: components/Molecules/CsvFilePicker.tsx:176
 #: components/Preferences/UserDefinitions.tsx:1543
 #: components/Preferences/UserDefinitions.tsx:1770
-#: components/WbImport/index.tsx:157
-#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
+#. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 msgid "pipe"
 msgstr "Tubo"
 
+#: components/Molecules/CsvFilePicker.tsx:212
 #: components/Preferences/UserDefinitions.tsx:637
 #: components/Preferences/UserDefinitions.tsx:658
 #: components/Preferences/UserDefinitions.tsx:679
-#: components/WbImport/index.tsx:193
-#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Import > Index
+#. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 msgid "determineAutomatically"
 msgstr "Determinar automáticamente"
 
-#: components/WbImport/index.tsx:261
+#: components/WbImport/index.tsx:118
 #. Used in: Components > Wb Import > Index
 msgid "chooseDataSetName"
 msgstr "Nombre para Nuevo Conjunto de Datos:"
 
-#: components/WbImport/index.tsx:284
-#. Used in: Components > Wb Import > Index
+#: components/Molecules/FilePicker.tsx:242
+#. Used in: Components > Molecules > File Picker
 msgid "firstRowIsHeader"
 msgstr "La primera Fila es el Encabezado:"
 
+#: components/Molecules/FilePicker.tsx:217
 #: components/Toolbar/WbsDialog.tsx:184
-#: components/WbImport/index.tsx:238
-#. Used in: Components > Toolbar > Wbs Dialog ⬤ Components > Wb Import > Index
+#. Used in: Components > Molecules > File Picker ⬤ Components > Toolbar > Wbs Dialog
 msgid "importFile"
 msgstr "Importar archivo"
 
-#: components/WbImport/helpers.ts:71
+#: components/WbImport/helpers.ts:66
 #. Used in: Components > Wb Import > Helpers
 msgid "columnName"
 msgstr "Columna {columnIndex:number}"
@@ -760,51 +760,51 @@ msgstr "Marca de tiempo cargada"
 msgid "dataSetUploadedLabel"
 msgstr "(Cargado, Solo lectura)"
 
-#: components/WorkBench/Status.tsx:66
+#: components/WorkBench/Status.tsx:67
 #. Used in: Components > Work Bench > Status
 msgid "wbStatusUnupload"
 msgstr "Estado de reversión del conjunto de datos"
 
-#: components/WorkBench/Status.tsx:65
+#: components/WorkBench/Status.tsx:66
 #. Used in: Components > Work Bench > Status
 msgid "wbStatusUpload"
 msgstr "Estado de carga del conjunto de datos"
 
-#: components/WorkBench/Status.tsx:64
+#: components/WorkBench/Status.tsx:65
 #. Used in: Components > Work Bench > Status
 msgid "wbStatusValidation"
 msgstr "Estado de validación del conjunto de datos"
 
 #: components/AttachmentsBulkImport/ActionState.tsx:38
 #: components/AttachmentsBulkImport/ActionState.tsx:39
-#: components/WorkBench/Status.tsx:101
+#: components/WorkBench/Status.tsx:102
 #. Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Work Bench > Status
 msgid "aborting"
 msgstr "Abortando..."
 
-#: components/WorkBench/Status.tsx:91
+#: components/WorkBench/Status.tsx:92
 #. Used in: Components > Work Bench > Status
 msgid "wbStatusAbortFailed"
 msgstr "No se pudo abortar {operationName:string}. Por favor inténtelo más tarde"
 
-#: components/WorkBench/Status.tsx:118
+#: components/WorkBench/Status.tsx:119
 #. 🟥E.x, Validating... Used in: Components > Work Bench > Status
 msgid "wbStatusOperationNoProgress"
 msgstr "{operationName:string}..."
 
-#: components/WorkBench/Status.tsx:122
+#: components/WorkBench/Status.tsx:123
 #. 🟥E.x, Validating row 999/1,000. Used in: Components > Work Bench > Status
 msgid "wbStatusOperationProgress"
 msgstr ""
 "{operationName:string} fila "
 "{current:number|formatted}/{total:number|formatted}"
 
-#: components/WorkBench/Status.tsx:105
+#: components/WorkBench/Status.tsx:106
 #. Used in: Components > Work Bench > Status
 msgid "wbStatusPendingDescription"
 msgstr "{operationName:string} de este Conjunto de Datos debería comenzar en breve."
 
-#: components/WorkBench/Status.tsx:108
+#: components/WorkBench/Status.tsx:109
 #. Used in: Components > Work Bench > Status
 msgid "wbStatusPendingSecondDescription"
 msgstr ""
@@ -814,17 +814,17 @@ msgstr ""
 
 #: components/AttachmentsBulkImport/ActionState.tsx:24
 #: components/AttachmentsBulkImport/ActionState.tsx:53
-#: components/WorkBench/Status.tsx:161
+#: components/WorkBench/Status.tsx:162
 #. Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Work Bench > Status
 msgid "stop"
 msgstr "Deténgase"
 
-#: components/WorkBench/Status.tsx:132
+#: components/WorkBench/Status.tsx:133
 #. Used in: Components > Work Bench > Status
 msgid "wbStatusError"
 msgstr "Ocurrió un error durante {operationName:string}"
 
-#: components/WorkBench/Status.tsx:117
+#: components/WorkBench/Status.tsx:118
 #. Used in: Components > Work Bench > Status
 msgid "updatingTrees"
 msgstr "Actualizando árboles..."

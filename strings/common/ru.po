@@ -44,11 +44,13 @@ msgstr "Нет"
 #: components/Interactions/InteractionsDialog.tsx:56
 #: components/Interactions/LoanReturn.tsx:161
 #: components/Interactions/PrepDialog.tsx:93
+#: components/LocalityUpdate/Status.tsx:142
+#: components/LocalityUpdate/Status.tsx:188
 #: components/Merging/Status.tsx:119
 #: components/Merging/index.tsx:272
 #: components/Merging/index.tsx:381
 #: components/Molecules/SyncAttachmentPicker.tsx:109
-#: components/PickLists/index.tsx:281
+#: components/PickLists/index.tsx:282
 #: components/QueryBuilder/Components.tsx:169
 #: components/QueryBuilder/Edit.tsx:175
 #: components/QueryBuilder/FromMap.tsx:72
@@ -91,7 +93,7 @@ msgstr "Нет"
 #: components/WbToolkit/CoordinateConverter.tsx:227
 #: components/WorkBench/DataSetMeta.tsx:151
 #: components/WorkBench/Disambiguation.tsx:40
-#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor Components ⬤ Components > Attachments > Dialog ⬤ Components > Attachments Bulk Import > Validation Dialog ⬤ Components > Data Entry Tables > Edit ⬤ Components > Data Entry Tables > Index ⬤ Components > Export Feed > Force Update ⬤ Components > Form Editor > Create ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Resource View ⬤ Components > Header > Choose Collection ⬤ Components > Header > Express Search Task ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Merging > Status ⬤ Components > Merging > Index ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Import ⬤ Components > Query Builder > Loan Return ⬤ Components > Reports > Parameters ⬤ Components > Reports > Report ⬤ Components > Reports > Index ⬤ Components > Router > Unload Protect ⬤ Components > Search Dialog > Index ⬤ Components > Security > Import Export ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > Role Template ⬤ Components > Security > User ⬤ Components > Statistics > Delete Category ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Language ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Tree Repair ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Tree View > Actions ⬤ Components > Tree View > Add Rank ⬤ Components > Wb Actions > Wb Revert ⬤ Components > Wb Actions > Wb Rollback ⬤ Components > Wb Actions > Wb Upload ⬤ Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Wb Toolkit > Change Owner ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Disambiguation
+#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor Components ⬤ Components > Attachments > Dialog ⬤ Components > Attachments Bulk Import > Validation Dialog ⬤ Components > Data Entry Tables > Edit ⬤ Components > Data Entry Tables > Index ⬤ Components > Export Feed > Force Update ⬤ Components > Form Editor > Create ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Resource View ⬤ Components > Header > Choose Collection ⬤ Components > Header > Express Search Task ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Locality Update > Status ⬤ Components > Merging > Status ⬤ Components > Merging > Index ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Import ⬤ Components > Query Builder > Loan Return ⬤ Components > Reports > Parameters ⬤ Components > Reports > Report ⬤ Components > Reports > Index ⬤ Components > Router > Unload Protect ⬤ Components > Search Dialog > Index ⬤ Components > Security > Import Export ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > Role Template ⬤ Components > Security > User ⬤ Components > Statistics > Delete Category ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Language ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Tree Repair ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Tree View > Actions ⬤ Components > Tree View > Add Rank ⬤ Components > Wb Actions > Wb Revert ⬤ Components > Wb Actions > Wb Rollback ⬤ Components > Wb Actions > Wb Upload ⬤ Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Wb Toolkit > Change Owner ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Disambiguation
 msgid "cancel"
 msgstr "Отмена"
 
@@ -198,16 +200,23 @@ msgstr "Создать"
 #: components/Interactions/LoanReturn.tsx:71
 #: components/Interactions/PrepDialog.tsx:90
 #: components/Leaflet/Map.tsx:103
+#: components/LocalityUpdate/Status.tsx:153
+#: components/LocalityUpdate/Status.tsx:222
+#: components/LocalityUpdate/Status.tsx:282
+#: components/LocalityUpdate/Status.tsx:365
+#: components/LocalityUpdate/Status.tsx:464
+#: components/LocalityUpdate/Status.tsx:505
+#: components/LocalityUpdate/index.tsx:124
 #: components/Merging/CompareSubView.tsx:201
 #: components/Merging/InvalidMergeRecords.tsx:79
 #: components/Merging/Status.tsx:104
 #: components/Merging/Status.tsx:122
 #: components/Molecules/SyncAttachmentPicker.tsx:84
 #: components/Notifications/Notifications.tsx:89
-#: components/PickLists/index.tsx:250
+#: components/PickLists/index.tsx:251
 #: components/Preferences/index.tsx:103
 #: components/QueryBuilder/CheckReadAccess.tsx:42
-#: components/QueryBuilder/Components.tsx:289
+#: components/QueryBuilder/Components.tsx:288
 #: components/QueryBuilder/Edit.tsx:145
 #: components/QueryBuilder/Export.tsx:123
 #: components/QueryBuilder/Export.tsx:131
@@ -254,10 +263,10 @@ msgstr "Создать"
 #: components/WorkBench/AdvancedSearch.tsx:107
 #: components/WorkBench/DataSetMeta.tsx:123
 #: components/WorkBench/DataSetMeta.tsx:177
-#: components/WorkBench/Results.tsx:75
-#: components/WorkBench/Status.tsx:87
+#: components/WorkBench/Results.tsx:76
+#: components/WorkBench/Status.tsx:88
 #: components/WorkBench/useDisambiguationDialog.tsx:103
-#. Used in: Components > App Resources > Dialog Editor ⬤ Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Atoms > __tests__ > Link ⬤ Atoms > __tests__ > Submit ⬤ Components > Attachments > Cell ⬤ Components > Attachments > Dialog ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Attachments Bulk Import > Action State ⬤ Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Import ⬤ Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Upload ⬤ Components > Core > Version Mismatch ⬤ Components > Export Feed > Dwca ⬤ Components > Export Feed > Force Update ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Commands > Index ⬤ Components > Form Editor > Create ⬤ Components > Form Editor > Table ⬤ Components > Form Meta > Auto Numbering ⬤ Components > Form Meta > Carry Forward ⬤ Components > Form Meta > Definition ⬤ Components > Form Meta > Edit History ⬤ Components > Form Meta > Pick List Usages ⬤ Components > Form Meta > Index ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Form Plugins > Geo Locate ⬤ Components > Form Plugins > Leaflet ⬤ Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Form Sliders > Record Set ⬤ Components > Formatters > Element ⬤ Components > Forms > Data Task ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Resource View ⬤ Components > Forms > Save ⬤ Components > Header > User Tools ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Leaflet > Map ⬤ Components > Merging > Compare Sub View ⬤ Components > Merging > Invalid Merge Records ⬤ Components > Merging > Status ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Notifications > Notifications ⬤ Components > Pick Lists > Index ⬤ Components > Preferences > Index ⬤ Components > Query Builder > Check Read Access ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > Export ⬤ Components > Query Builder > Import ⬤ Components > Query Builder > Loan Return ⬤ Components > Query Builder > Save ⬤ Components > Query Combo Box > Index ⬤ Components > Reports > Report ⬤ Components > Router > Router Utils ⬤ Components > Schema Config > Languages ⬤ Components > Schema Config > Table Uniqueness Rules ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Search Dialog > Index ⬤ Components > Security > Role ⬤ Components > Security > Set Password ⬤ Components > Security > User ⬤ Components > Security > User Collections ⬤ Components > Security > User Invite Link ⬤ Components > Specify Network > Overlay ⬤ Components > Specify Network > Table ⬤ Components > Specify Network > Index ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Statistics > Results Dialog ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Toolbar > Language ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Query Tables Edit ⬤ Components > Toolbar > Query Tables Wrapper ⬤ Components > Toolbar > Tree Repair ⬤ Components > Tree View > Actions ⬤ Components > Wb Actions > Wb No Upload Plan ⬤ Components > Wb Actions > Index ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Wb Toolkit > Change Owner ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Work Bench > Advanced Search ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Results ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Use Disambiguation Dialog
+#. Used in: Components > App Resources > Dialog Editor ⬤ Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Atoms > __tests__ > Link ⬤ Atoms > __tests__ > Submit ⬤ Components > Attachments > Cell ⬤ Components > Attachments > Dialog ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Attachments Bulk Import > Action State ⬤ Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Import ⬤ Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Upload ⬤ Components > Core > Version Mismatch ⬤ Components > Export Feed > Dwca ⬤ Components > Export Feed > Force Update ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Commands > Index ⬤ Components > Form Editor > Create ⬤ Components > Form Editor > Table ⬤ Components > Form Meta > Auto Numbering ⬤ Components > Form Meta > Carry Forward ⬤ Components > Form Meta > Definition ⬤ Components > Form Meta > Edit History ⬤ Components > Form Meta > Pick List Usages ⬤ Components > Form Meta > Index ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Form Plugins > Geo Locate ⬤ Components > Form Plugins > Leaflet ⬤ Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Form Sliders > Record Set ⬤ Components > Formatters > Element ⬤ Components > Forms > Data Task ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Resource View ⬤ Components > Forms > Save ⬤ Components > Header > User Tools ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Leaflet > Map ⬤ Components > Locality Update > Status ⬤ Components > Locality Update > Index ⬤ Components > Merging > Compare Sub View ⬤ Components > Merging > Invalid Merge Records ⬤ Components > Merging > Status ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Notifications > Notifications ⬤ Components > Pick Lists > Index ⬤ Components > Preferences > Index ⬤ Components > Query Builder > Check Read Access ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > Export ⬤ Components > Query Builder > Import ⬤ Components > Query Builder > Loan Return ⬤ Components > Query Builder > Save ⬤ Components > Query Combo Box > Index ⬤ Components > Reports > Report ⬤ Components > Router > Router Utils ⬤ Components > Schema Config > Languages ⬤ Components > Schema Config > Table Uniqueness Rules ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Search Dialog > Index ⬤ Components > Security > Role ⬤ Components > Security > Set Password ⬤ Components > Security > User ⬤ Components > Security > User Collections ⬤ Components > Security > User Invite Link ⬤ Components > Specify Network > Overlay ⬤ Components > Specify Network > Table ⬤ Components > Specify Network > Index ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Statistics > Results Dialog ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Toolbar > Language ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Query Tables Edit ⬤ Components > Toolbar > Query Tables Wrapper ⬤ Components > Toolbar > Tree Repair ⬤ Components > Tree View > Actions ⬤ Components > Wb Actions > Wb No Upload Plan ⬤ Components > Wb Actions > Index ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Wb Toolkit > Change Owner ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Work Bench > Advanced Search ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Results ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Use Disambiguation Dialog
 msgid "close"
 msgstr "Закрыть"
 
@@ -315,7 +324,7 @@ msgstr "Сохранить"
 #: components/Forms/Save.tsx:235
 #: components/Merging/CompareSubView.tsx:184
 #: components/Molecules/AutoComplete.tsx:525
-#: components/PickLists/index.tsx:279
+#: components/PickLists/index.tsx:280
 #: components/QueryBuilder/Wrapped.tsx:462
 #: components/SchemaConfig/Format.tsx:258
 #: components/SchemaConfig/Format.tsx:306
@@ -416,8 +425,8 @@ msgstr "Инструменты"
 #: components/Preferences/Renderers.tsx:114
 #: components/QueryBuilder/FieldFilter.tsx:623
 #: components/QueryBuilder/Formatter.tsx:59
-#: components/QueryBuilder/Results.tsx:198
 #: components/QueryBuilder/Results.tsx:199
+#: components/QueryBuilder/Results.tsx:200
 #: components/QueryComboBox/index.tsx:376
 #: components/SchemaConfig/Fields.tsx:62
 #: components/SchemaConfig/index.tsx:165
@@ -735,13 +744,13 @@ msgstr "Посмотреть запись"
 msgid "nullInline"
 msgstr "(нулевой)"
 
-#: components/Molecules/FilePicker.tsx:99
+#: components/Molecules/FilePicker.tsx:107
 #. 🟥Generic. Could refer to any file. Used in: Components > Molecules > File Picker
 msgid "filePickerMessage"
 msgstr "Выберите файл или перетащите его сюда"
 
 #: components/AttachmentsBulkImport/Import.tsx:204
-#: components/Molecules/FilePicker.tsx:106
+#: components/Molecules/FilePicker.tsx:114
 #. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Molecules > File Picker
 msgid "selectedFileName"
 msgstr "Выбранный файл"
@@ -776,13 +785,16 @@ msgid "export"
 msgstr "Экспорт"
 
 #: components/Attachments/index.tsx:238
+#: components/Header/userToolDefinitions.ts:102
+#: components/LocalityUpdate/Status.tsx:229
+#: components/LocalityUpdate/index.tsx:135
 #: components/QueryBuilder/Import.tsx:70
 #: components/QueryBuilder/Import.tsx:149
 #: components/Security/ImportExport.tsx:73
 #: components/Security/ImportExport.tsx:86
 #: components/Security/ImportExport.tsx:90
 #: components/Toolbar/QueryTablesWrapper.tsx:150
-#. Used in: Components > Attachments > Index ⬤ Components > Query Builder > Import ⬤ Components > Security > Import Export ⬤ Components > Toolbar > Query Tables Wrapper
+#. Used in: Components > Attachments > Index ⬤ Components > Header > User Tool Definitions ⬤ Components > Locality Update > Status ⬤ Components > Locality Update > Index ⬤ Components > Query Builder > Import ⬤ Components > Security > Import Export ⬤ Components > Toolbar > Query Tables Wrapper
 msgid "import"
 msgstr "Импортировать"
 
@@ -807,15 +819,17 @@ msgstr "ID"
 msgid "filter"
 msgstr "Фильтр"
 
-#: components/QueryBuilder/Results.tsx:78
+#: components/QueryBuilder/Results.tsx:79
 #: components/WbActions/index.tsx:113
 #. Used in: Components > Query Builder > Results ⬤ Components > Wb Actions > Index
 msgid "results"
 msgstr "Полученные результаты"
 
 #: components/Errors/ErrorDialog.tsx:144
+#: components/LocalityUpdate/Status.tsx:461
+#: components/LocalityUpdate/Status.tsx:502
 #: components/Merging/Status.tsx:100
-#. Used in: Components > Errors > Error Dialog ⬤ Components > Merging > Status
+#. Used in: Components > Errors > Error Dialog ⬤ Components > Locality Update > Status ⬤ Components > Merging > Status
 msgid "downloadErrorMessage"
 msgstr "Загрузить сообщение об ошибке"
 
@@ -945,10 +959,12 @@ msgstr "{header:string}:"
 #: components/Forms/BaseResourceView.tsx:132
 #: components/Forms/Save.tsx:298
 #: components/Leaflet/index.ts:171
+#: components/LocalityUpdate/Status.tsx:519
+#: components/LocalityUpdate/utils.ts:64
 #: components/Merging/Header.tsx:213
-#: components/Molecules/FilePicker.tsx:105
+#: components/Molecules/FilePicker.tsx:113
 #: components/QueryBuilder/Header.tsx:96
-#: components/QueryBuilder/Results.tsx:194
+#: components/QueryBuilder/Results.tsx:195
 #: components/QueryBuilder/ResultsTable.tsx:201
 #: components/QueryBuilder/ToForms.tsx:55
 #: components/QueryComboBox/spec.ts:72
@@ -966,8 +982,8 @@ msgstr "{header:string}:"
 #: components/WorkBench/DataSetMeta.tsx:236
 #: components/WorkBench/DataSetMeta.tsx:369
 #: components/WorkBench/RemainingLoadingTime.tsx:44
-#: components/WorkBench/Results.tsx:94
-#. 🟥Example usage: "Created by: Full Name" OR "Record Set: Record Set Name". Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Form Cells > Index ⬤ Components > Form Commands > Index ⬤ Components > Form Plugins > Index ⬤ Components > Form Sliders > Record Set ⬤ Components > Formatters > Element ⬤ Components > Formatters > Formatter ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Save ⬤ Components > Leaflet > Index ⬤ Components > Merging > Header ⬤ Components > Molecules > File Picker ⬤ Components > Query Builder > Header ⬤ Components > Query Builder > Results ⬤ Components > Query Builder > Results Table ⬤ Components > Query Builder > To Forms ⬤ Components > Query Combo Box > Spec ⬤ Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Index ⬤ Components > Security > Collection ⬤ Components > Security > Institution ⬤ Components > Security > Role ⬤ Components > Tree View > Helpers ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Remaining Loading Time ⬤ Components > Work Bench > Results
+#: components/WorkBench/Results.tsx:127
+#. 🟥Example usage: "Created by: Full Name" OR "Record Set: Record Set Name". Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Form Cells > Index ⬤ Components > Form Commands > Index ⬤ Components > Form Plugins > Index ⬤ Components > Form Sliders > Record Set ⬤ Components > Formatters > Element ⬤ Components > Formatters > Formatter ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Save ⬤ Components > Leaflet > Index ⬤ Components > Locality Update > Status ⬤ Components > Locality Update > Utils ⬤ Components > Merging > Header ⬤ Components > Molecules > File Picker ⬤ Components > Query Builder > Header ⬤ Components > Query Builder > Results ⬤ Components > Query Builder > Results Table ⬤ Components > Query Builder > To Forms ⬤ Components > Query Combo Box > Spec ⬤ Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Index ⬤ Components > Security > Collection ⬤ Components > Security > Institution ⬤ Components > Security > Role ⬤ Components > Tree View > Helpers ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Remaining Loading Time ⬤ Components > Work Bench > Results
 msgid "colonLine"
 msgstr "{label:string}: {value:string}"
 
@@ -1024,7 +1040,7 @@ msgstr "Изменять"
 msgid "dontShowAgain"
 msgstr "Больше не показывать это"
 
-#: components/Molecules/FilePicker.tsx:98
+#: components/Molecules/FilePicker.tsx:106
 #. Used in: Components > Molecules > File Picker
 msgid "multipleFilePickerMessage"
 msgstr "Выберите файлы или перетащите их сюда"

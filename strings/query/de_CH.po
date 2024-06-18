@@ -119,19 +119,20 @@ msgstr ""
 msgid "queryUnloadProtect"
 msgstr "Die neue oder geänderte Abfragedefinition wurde nicht gespeichert"
 
-#: components/QueryBuilder/Components.tsx:268
+#: components/QueryBuilder/Components.tsx:267
 #. 🟥Example: Creating a Record Set from Query. Used in: Components > Query Builder > Components
 #, fuzzy
 msgid "recordSetToQuery"
 msgstr "Erstellen eines {recordSetTable:string} aus einer Abfrage"
 
-#: components/QueryBuilder/Components.tsx:273
-#. Used in: Components > Query Builder > Components
+#: components/QueryBuilder/Components.tsx:272
+#: components/QueryBuilder/CreateRecordSet.tsx:134
+#. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Create Record Set
 #, fuzzy
 msgid "recordSetToQueryDescription"
 msgstr "{recordSetTable:string} wird generiert..."
 
-#: components/QueryBuilder/Components.tsx:290
+#: components/QueryBuilder/Components.tsx:289
 #. Used in: Components > Query Builder > Components
 #, fuzzy
 msgid "recordSetCreated"
@@ -161,7 +162,7 @@ msgstr "Exportdatei wird erstellt"
 msgid "queryExportStartedDescription"
 msgstr "in der Zukunft"
 
-#: components/PickLists/index.tsx:187
+#: components/PickLists/index.tsx:188
 #: components/SchemaConfig/Components.tsx:90
 #. 🟥Used when selected pick list value is not one of allowed values. Used in: Components > Pick Lists > Index ⬤ Components > Schema Config > Components
 #, fuzzy
@@ -212,8 +213,8 @@ msgstr "In den Ergebnissen anzeigen"
 msgid "createKml"
 msgstr "KML erstellen"
 
-#: components/QueryBuilder/Components.tsx:232
-#: components/QueryBuilder/CreateRecordSet.tsx:55
+#: components/QueryBuilder/Components.tsx:231
+#: components/QueryBuilder/CreateRecordSet.tsx:68
 #: components/WorkBench/RecordSet.tsx:35
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Create Record Set ⬤ Components > Work Bench > Record Set
 #, fuzzy
@@ -445,8 +446,9 @@ msgstr "Artikel wurden zurückgegeben"
 msgid "queryResults"
 msgstr "Abfrageergebnisse"
 
+#: components/LocalityUpdate/Status.tsx:318
 #: components/QueryBuilder/ToForms.tsx:43
-#. Used in: Components > Query Builder > To Forms
+#. Used in: Components > Locality Update > Status ⬤ Components > Query Builder > To Forms
 #, fuzzy
 msgid "browseInForms"
 msgstr "In Formularen stöbern"
@@ -596,8 +598,9 @@ msgstr "Wechseln zu absolut"
 msgid "scrollToEditor"
 msgstr "Falsch oder leer"
 
+#: components/LocalityUpdate/Status.tsx:305
 #: components/QueryBuilder/ResultsTable.tsx:187
-#. Used in: Components > Query Builder > Results Table
+#. Used in: Components > Locality Update > Status ⬤ Components > Query Builder > Results Table
 #, fuzzy
 msgid "viewRecords"
 msgstr "Datensätze anzeigen"

@@ -237,7 +237,7 @@ msgstr ""
 #: components/FormMeta/CarryForward.tsx:253
 #: components/Interactions/LoanReturn.tsx:191
 #: components/Interactions/PrepDialog.tsx:108
-#: components/QueryBuilder/Results.tsx:205
+#: components/QueryBuilder/Results.tsx:206
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Query Builder > Results
 #, fuzzy
 msgid "deselectAll"

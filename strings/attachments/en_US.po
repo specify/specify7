@@ -68,7 +68,7 @@ msgstr "Unable to find a record that this attachment is related to."
 msgid "showForm"
 msgstr "Show Form"
 
-#: components/Molecules/FilePicker.tsx:43
+#: components/Molecules/FilePicker.tsx:51
 #. Used in: Components > Molecules > File Picker
 msgid "multipleFilesSelected"
 msgstr "Multiple files selected"

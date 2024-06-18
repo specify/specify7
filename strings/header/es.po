@@ -80,6 +80,12 @@ msgstr ""
 "Exportación iniciada. Recibirá una notificación cuando finalice la "
 "exportación."
 
+#: components/Header/userToolDefinitions.ts:104
+#: components/LocalityUpdate/index.tsx:83
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Locality Update > Index
+msgid "localityUpdateTool"
+msgstr ""
+
 #: components/QueryBuilder/Edit.tsx:211
 #. Used in: Components > Query Builder > Edit
 #, fuzzy
@@ -230,13 +236,13 @@ msgstr ""
 "Si está interesado en ayudarnos a completar la localización, <link>siga las "
 "instrucciones.</link>"
 
-#: components/Header/userToolDefinitions.ts:131
+#: components/Header/userToolDefinitions.ts:139
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "tableApi"
 msgstr "API de tablas"
 
-#: components/Header/userToolDefinitions.ts:136
+#: components/Header/userToolDefinitions.ts:144
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "operationsApi"
@@ -246,7 +252,7 @@ msgstr "API de operaciones"
 #: components/AppResources/Create.tsx:133
 #: components/AppResources/Filters.tsx:154
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:234
-#: components/Header/userToolDefinitions.ts:102
+#: components/Header/userToolDefinitions.ts:110
 #: components/Preferences/UserDefinitions.tsx:540
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions
 #, fuzzy
@@ -259,21 +265,21 @@ msgstr "Documentación"
 msgid "administration"
 msgstr "Herramientas administrativas"
 
-#: components/Header/userToolDefinitions.ts:119
+#: components/Header/userToolDefinitions.ts:127
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "developers"
 msgstr "Recursos para desarrolladores"
 
-#: components/Header/userToolDefinitions.ts:109
+#: components/Header/userToolDefinitions.ts:117
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "forum"
 msgstr "Foro Comunitario"
 
 #: components/Errors/ErrorDialog.tsx:152
-#: components/Header/userToolDefinitions.ts:126
-#: components/Router/Routes.tsx:422
+#: components/Header/userToolDefinitions.ts:134
+#: components/Router/Routes.tsx:435
 #: components/RouterCommands/CacheBuster.tsx:39
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
 #, fuzzy
@@ -286,7 +292,7 @@ msgstr "Borrar caché del navegador"
 msgid "cacheCleared"
 msgstr "Se ha borrado la caché. Por favor recarga la página."
 
-#: components/Header/userToolDefinitions.ts:114
+#: components/Header/userToolDefinitions.ts:122
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "technicalDocumentation"

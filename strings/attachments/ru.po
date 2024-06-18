@@ -83,7 +83,7 @@ msgstr "Не удалось найти запись, к которой отно�
 msgid "showForm"
 msgstr "Показать форму"
 
-#: components/Molecules/FilePicker.tsx:43
+#: components/Molecules/FilePicker.tsx:51
 #. Used in: Components > Molecules > File Picker
 #, fuzzy
 msgid "multipleFilesSelected"

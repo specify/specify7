@@ -66,6 +66,12 @@ msgstr "DwCA export started"
 msgid "dwcaExportStartedDescription"
 msgstr "Export started. You will receive a notification when the export is complete."
 
+#: components/Header/userToolDefinitions.ts:104
+#: components/LocalityUpdate/index.tsx:83
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Locality Update > Index
+msgid "localityUpdateTool"
+msgstr "Locality Update Tool"
+
 #: components/QueryBuilder/Edit.tsx:211
 #. Used in: Components > Query Builder > Edit
 msgid "labelName"
@@ -193,12 +199,12 @@ msgstr ""
 "in helping us complete localization, please <link>follow the "
 "instructions.</link>"
 
-#: components/Header/userToolDefinitions.ts:131
+#: components/Header/userToolDefinitions.ts:139
 #. Used in: Components > Header > User Tool Definitions
 msgid "tableApi"
 msgstr "Tables API"
 
-#: components/Header/userToolDefinitions.ts:136
+#: components/Header/userToolDefinitions.ts:144
 #. Used in: Components > Header > User Tool Definitions
 msgid "operationsApi"
 msgstr "Operations API"
@@ -207,7 +213,7 @@ msgstr "Operations API"
 #: components/AppResources/Create.tsx:133
 #: components/AppResources/Filters.tsx:154
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:234
-#: components/Header/userToolDefinitions.ts:102
+#: components/Header/userToolDefinitions.ts:110
 #: components/Preferences/UserDefinitions.tsx:540
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions
 msgid "documentation"
@@ -218,19 +224,19 @@ msgstr "Documentation"
 msgid "administration"
 msgstr "Administrative Tools"
 
-#: components/Header/userToolDefinitions.ts:119
+#: components/Header/userToolDefinitions.ts:127
 #. Used in: Components > Header > User Tool Definitions
 msgid "developers"
 msgstr "Developer Resources"
 
-#: components/Header/userToolDefinitions.ts:109
+#: components/Header/userToolDefinitions.ts:117
 #. Used in: Components > Header > User Tool Definitions
 msgid "forum"
 msgstr "Community Forum"
 
 #: components/Errors/ErrorDialog.tsx:152
-#: components/Header/userToolDefinitions.ts:126
-#: components/Router/Routes.tsx:422
+#: components/Header/userToolDefinitions.ts:134
+#: components/Router/Routes.tsx:435
 #: components/RouterCommands/CacheBuster.tsx:39
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
 msgid "clearCache"
@@ -241,7 +247,7 @@ msgstr "Clear Browser Cache"
 msgid "cacheCleared"
 msgstr "Cache has been cleared. Please reload the page."
 
-#: components/Header/userToolDefinitions.ts:114
+#: components/Header/userToolDefinitions.ts:122
 #. Used in: Components > Header > User Tool Definitions
 msgid "technicalDocumentation"
 msgstr "Technical Docs"

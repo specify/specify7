@@ -23,7 +23,7 @@ msgstr "Tableau"
 
 #: components/Attachments/index.tsx:195
 #: components/FormEditor/Table.tsx:49
-#: components/Router/Routes.tsx:386
+#: components/Router/Routes.tsx:399
 #: components/SchemaConfig/Tables.tsx:48
 #. Used in: Components > Attachments > Index ⬤ Components > Form Editor > Table ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
 #, fuzzy
@@ -45,7 +45,7 @@ msgstr "Sans tableau"
 
 #: components/Header/userToolDefinitions.ts:52
 #: components/Preferences/UserDefinitions.tsx:721
-#: components/Router/Routes.tsx:360
+#: components/Router/Routes.tsx:373
 #: components/SchemaConfig/Components.tsx:30
 #: components/SchemaConfig/Languages.tsx:36
 #: components/Security/registry.ts:206
@@ -68,9 +68,11 @@ msgid "changeBaseTable"
 msgstr "Modifier la table de base"
 
 #: components/Formatters/Fields.tsx:69
+#: components/LocalityUpdate/Status.tsx:374
+#: components/LocalityUpdate/Status.tsx:419
 #: components/SchemaConfig/Field.tsx:44
 #: components/WebLinks/Definition.tsx:25
-#. Used in: Components > Formatters > Fields ⬤ Components > Schema Config > Field ⬤ Components > Web Links > Definition
+#. Used in: Components > Formatters > Fields ⬤ Components > Locality Update > Status ⬤ Components > Schema Config > Field ⬤ Components > Web Links > Definition
 #, fuzzy
 msgid "field"
 msgstr "Champ"
@@ -225,7 +227,7 @@ msgstr "Lien Web"
 msgid "userDefined"
 msgstr "Défini par l'utilisateur"
 
-#: components/Router/Routes.tsx:375
+#: components/Router/Routes.tsx:388
 #: components/SchemaConfig/Languages.tsx:29
 #: components/SchemaConfig/Languages.tsx:78
 #. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages
@@ -306,7 +308,7 @@ msgstr "Nombre de champs"
 msgid "relationshipCount"
 msgstr "Nombre de relations"
 
-#: components/Header/userToolDefinitions.ts:121
+#: components/Header/userToolDefinitions.ts:129
 #: components/Router/Routes.tsx:45
 #: components/Router/Routes.tsx:49
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes
