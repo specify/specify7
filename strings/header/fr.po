@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-06-18 15:09+0000\n"
+"PO-Revision-Date: 2024-06-18 17:09+0000\n"
 "Last-Translator: Antoine Lesimple <antoine.lesimple@ird.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/header/"
 "fr/>\n"
@@ -44,31 +44,26 @@ msgstr "Créer une archive DwC"
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 #: components/Header/userToolDefinitions.ts:96
 #: components/Router/OverlayRoutes.tsx:189
-#, fuzzy
 msgid "updateExportFeed"
 msgstr "Mettre à jour le flux RSS"
 
 #. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:50
-#, fuzzy
 msgid "updateExportFeedConfirmation"
 msgstr "Mettre à jour le flux d'exportation ?"
 
 #. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:53
-#, fuzzy
 msgid "updateExportFeedConfirmationDescription"
 msgstr "Mettre à jour tous les éléments du flux d'exportation RSS maintenant ?"
 
 #. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:24
-#, fuzzy
 msgid "feedExportStarted"
 msgstr "La mise à jour du flux d'exportation a commencé"
 
 #. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:27
-#, fuzzy
 msgid "feedExportStartedDescription"
 msgstr ""
 "La mise à jour a commencé. Vous recevrez une notification pour chaque "
@@ -88,15 +83,13 @@ msgstr ""
 
 #. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:211
-#, fuzzy
 msgid "labelName"
-msgstr "Outils administratifs"
+msgstr "Nom de l'étiquette"
 
 #. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:211
-#, fuzzy
 msgid "reportName"
-msgstr "Nom du rapport"
+msgstr "Nom du document"
 
 #. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:179
@@ -161,19 +154,16 @@ msgstr "Ressource de métadonnées"
 #: components/Header/ExpressSearchTask.tsx:124
 #: components/Router/OverlayRoutes.tsx:50
 #: components/Router/Routes.tsx:33
-#, fuzzy
 msgid "simpleSearch"
 msgstr "Recherche simple"
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:134
-#, fuzzy
 msgid "primarySearch"
 msgstr "Recherche principale"
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:140
-#, fuzzy
 msgid "secondarySearch"
 msgstr "Recherche secondaire"
 
@@ -211,31 +201,27 @@ msgstr ""
 
 #. Used in: Components > Toolbar > Language
 #: components/Toolbar/Language.tsx:149
-#, fuzzy
 msgid "incompleteInline"
 msgstr "(incomplet)"
 
 #. Used in: Components > Toolbar > Language
 #: components/Toolbar/Language.tsx:115
-#, fuzzy
 msgid "incompleteLocalization"
-msgstr "Localisation incomplète"
+msgstr "Traduction incomplète"
 
 #. Used in: Components > Toolbar > Language
 #: components/Toolbar/Language.tsx:127
-#, fuzzy
 msgid "incompleteLocalizationDescription"
 msgstr ""
-"La traduction dans cette langue n'est pas encore terminée. Certains "
-"éléments peuvent ne pas être localisés ou avoir une localisation "
-"incorrecte. Si vous souhaitez nous aider à terminer la localisation, "
-"veuillez <link>suivre les instructions.</link>"
+"La traduction dans cette langue n'est pas encore terminée. Certains éléments "
+"peuvent ne pas avoir de traduction ou avoir une traduction incorrecte. Si "
+"vous souhaitez nous aider à terminer la traduction, veuillez <link>suivre "
+"les instructions.</link>"
 
 #. Used in: Components > Header > User Tool Definitions
 #: components/Header/userToolDefinitions.ts:131
-#, fuzzy
 msgid "tableApi"
-msgstr "API des tableaux"
+msgstr "Tables API"
 
 #. Used in: Components > Header > User Tool Definitions
 #: components/Header/userToolDefinitions.ts:136
@@ -260,7 +246,6 @@ msgstr "Outils Administrateur"
 
 #. Used in: Components > Header > User Tool Definitions
 #: components/Header/userToolDefinitions.ts:119
-#, fuzzy
 msgid "developers"
 msgstr "Ressources pour les développeurs"
 
@@ -285,6 +270,5 @@ msgstr "Le cache a été vidé. Veuillez recharger la page."
 
 #. Used in: Components > Header > User Tool Definitions
 #: components/Header/userToolDefinitions.ts:114
-#, fuzzy
 msgid "technicalDocumentation"
 msgstr "Documents techniques"
