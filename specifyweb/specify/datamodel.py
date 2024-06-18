@@ -8005,7 +8005,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp')
         ],
         relationships = [
-            Relationship(name='recordset', type='many-to-one', required=False, relatedModelName='Recordset', column='RecordSetID'),
+            Relationship(name='recordset', type='many-to-one', required=False, relatedModelName='RecordSet', column='RecordSetID'),
             Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID'),
             Relationship(name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUserID'),
             Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
