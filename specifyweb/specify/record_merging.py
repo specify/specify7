@@ -14,11 +14,12 @@ from django.db.models import Q
 
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.celery_tasks import LogErrorsTask, app
-from . import api, models as spmodels
-from .api import uri_for_model, delete_obj
-from .build_models import orderings
-from .load_datamodel import Table, FieldDoesNotExistError
+from specifyweb.specify import models as spmodels
+from specifyweb.specify.api import uri_for_model, delete_obj, is_dependent_field, put_resource
+from specifyweb.specify.build_models import orderings
+from specifyweb.specify.load_datamodel import Table, FieldDoesNotExistError
 from celery.utils.log import get_task_logger # type: ignore
+from specifyweb.specify.utils import get_app_model
 logger = get_task_logger(__name__)
 
 # Returns QuerySet which selects and locks entries when evaluated
@@ -168,7 +169,7 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
     """
     # Confirm the target model table exists
     model_name = model_name.lower().title()
-    target_model = getattr(spmodels, model_name)
+    target_model = get_app_model(model_name)
     if target_model is None:
         raise FailedMergingException(http.HttpResponseNotFound("model_name: " + model_name + "does not exist."))
 
@@ -183,7 +184,7 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
     target_object = target_model.objects.get(id=new_model_id)
     dependant_relationships = [(rel.relatedModelName, rel.name)
         for rel in target_object.specify_model.relationships
-        if api.is_dependent_field(target_object, rel.name)]
+        if is_dependent_field(target_object, rel.name)]
 
     dependant_table_names = set([rel[0] for rel in dependant_relationships])
 
@@ -198,7 +199,7 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
     # Build query to update all of the records with foreign keys referencing the model ID
     for table_name, column_names in groupby(foreign_key_cols, lambda x: x[0]):
         foreign_table = spmodels.datamodel.get_table(table_name)
-        foreign_model = getattr(spmodels, table_name.lower().title())
+        foreign_model = get_app_model(table_name.lower().title())
 
         apply_order = add_ordering_to_key(table_name.lower().title())
         # BUG: timestampmodified could be null for one record, and not the other
@@ -323,12 +324,14 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
             new_record_data = new_record_info['new_record_data']
             target_table = spmodels.datamodel.get_table(model_name.lower())
             fix_orderings(target_table, new_record_data)
-            obj = api.put_resource(new_record_info['collection'],
-                                   new_record_info['specify_user'],
-                                   model_name,
-                                   new_model_id,
-                                   new_record_info['version'],
-                                   fix_record_data(new_record_data, target_table, target_table.name.lower(), new_model_id, old_model_ids))
+            obj = put_resource(new_record_info['collection'],
+                               new_record_info['specify_user'],
+                               model_name,
+                               new_model_id,
+                               new_record_info['version'],
+                               fix_record_data(new_record_data, target_table,
+                                               target_table.name.lower(),
+                                               new_model_id, old_model_ids))
         except IntegrityError as e:
             # NOTE: Handle IntegrityError Duplicate entry in the future.
             # EXAMPLE: IntegrityError: (1062, "Duplicate entry '1-0' for key 'AgentID'")

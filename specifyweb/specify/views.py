@@ -888,7 +888,7 @@ def start_locality_set_background(collection, specify_user, agent, column_header
 
     task = task_function(args, task_id=task_id)
 
-    LocalityUpdate.objects.create(
+    lu = LocalityUpdate.objects.create(
         taskid=task.id,
         status=LocalityUpdateStatus.PENDING,
         collection=collection,
@@ -1116,11 +1116,11 @@ def upload_locality_set_foreground(collection, specify_user, agent, column_heade
 @require_GET
 def localityupdate_status(request: http.HttpRequest, taskid: str):
     try:
-        locality_import = LocalityUpdate.objects.get(taskid=taskid)
+        locality_update = LocalityUpdate.objects.get(taskid=taskid)
     except LocalityUpdate.DoesNotExist:
         return http.HttpResponseNotFound(f"The localityupdate with task id '{taskid}' was not found")
 
-    result = update_locality_task.AsyncResult(locality_import.taskid)
+    result = update_locality_task.AsyncResult(locality_update.taskid)
 
     resolved_state = LocalityUpdateStatus.ABORTED if result.state == CELERY_TASK_STATE.REVOKED else LocalityUpdateStatus.FAILED if result.state == CELERY_TASK_STATE.FAILURE else result.state
 
@@ -1135,31 +1135,31 @@ def localityupdate_status(request: http.HttpRequest, taskid: str):
             'traceback': str(result.traceback)
         }
 
-    elif locality_import.status == LocalityUpdateStatus.PARSE_FAILED:
+    elif locality_update.status == LocalityUpdateStatus.PARSE_FAILED:
 
         status["taskstatus"] = LocalityUpdateStatus.PARSE_FAILED
 
         if isinstance(result.info, dict) and 'errors' in result.info.keys():
             errors = result.info["errors"]
         else:
-            results = locality_import.results.all()
+            results = locality_update.results.all()
             errors = [json.loads(error.result) for error in results]
 
         status["taskinfo"] = {"errors": errors}
 
-    elif locality_import.status == LocalityUpdateStatus.PARSED:
+    elif locality_update.status == LocalityUpdateStatus.PARSED:
         status["taskstatus"] = LocalityUpdateStatus.PARSED
 
-        results = locality_import.results.all()
+        results = locality_update.results.all()
         rows = [json.loads(row.result) for row in results]
 
         status["taskinfo"] = {
             "rows": rows
         }
 
-    elif locality_import.status == LocalityUpdateStatus.SUCCEEDED:
+    elif locality_update.status == LocalityUpdateStatus.SUCCEEDED:
         status["taskstatus"] = LocalityUpdateStatus.SUCCEEDED
-        recordset_id = locality_import.recordset.id if locality_import.recordset is not None else None
+        recordset_id = locality_update.recordset.id if locality_update.recordset is not None else None
         if isinstance(result.info, dict) and resolved_state == LocalityUpdateStatus.SUCCEEDED:
             result = {
                 "recordsetid": recordset_id,
@@ -1167,7 +1167,7 @@ def localityupdate_status(request: http.HttpRequest, taskid: str):
                 "geocoorddetails": result.info["geocoorddetails"]
             }
         else:
-            results = locality_import.results.all()
+            results = locality_update.results.all()
             localitites = []
             geocoorddetails = []
             for row in results:
@@ -1231,11 +1231,11 @@ def abort_localityupdate_task(request: http.HttpRequest, taskid: str):
     "Aborts the merge task currently running and matching the given merge/task ID"
 
     try:
-        locality_import = LocalityUpdate.objects.get(taskid=taskid)
+        locality_update = LocalityUpdate.objects.get(taskid=taskid)
     except LocalityUpdate.DoesNotExist:
         return http.HttpResponseNotFound(f"The localityupdate with taskid: {taskid} is not found")
 
-    task = record_merge_task.AsyncResult(locality_import.taskid)
+    task = record_merge_task.AsyncResult(locality_update.taskid)
 
     result = {
         "type": None,
@@ -1243,21 +1243,21 @@ def abort_localityupdate_task(request: http.HttpRequest, taskid: str):
     }
 
     if task.state in [LocalityUpdateStatus.PENDING, LocalityUpdateStatus.PARSING, LocalityUpdateStatus.PROGRESS]:
-        app.control.revoke(locality_import.taskid, terminate=True)
+        app.control.revoke(locality_update.taskid, terminate=True)
 
-        locality_import.status = LocalityUpdateStatus.ABORTED
-        locality_import.save()
+        locality_update.status = LocalityUpdateStatus.ABORTED
+        locality_update.save()
 
         Message.objects.create(user=request.specify_user, content=json.dumps({
             'type': 'localityupdate-aborted',
             'taskid': taskid
         }))
         result["type"] = "ABORTED"
-        result["message"] = f'Task {locality_import.taskid} has been aborted.'
+        result["message"] = f'Task {locality_update.taskid} has been aborted.'
 
     else:
         result["type"] = "NOT_RUNNING"
-        result["message"] = 'Task %s is not running and cannot be aborted' % locality_import.taskid
+        result["message"] = 'Task %s is not running and cannot be aborted' % locality_update.taskid
 
     return http.JsonResponse(result, safe=False)
 

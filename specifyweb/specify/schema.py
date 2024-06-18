@@ -752,10 +752,16 @@ def field_to_schema(field: Field) -> Dict:
             }
 
     elif field.type in ("text", "java.lang.String"):
-        return {
-            **required_to_schema(field, "string"),
-            "maxLength": getattr(field, "length", 0),
-        }
+        length = getattr(field, "length", None)
+        if length is not None and length > 0:
+            return {
+                **required_to_schema(field, "string"),
+                "maxLength": length,
+            }
+        else:
+            return {
+                **required_to_schema(field, "string"),
+            }
 
     elif field.type in (
         "java.lang.Integer",
@@ -784,6 +790,9 @@ def field_to_schema(field: Field) -> Dict:
 
     elif field.type == "java.lang.Boolean":
         return required_to_schema(field, "boolean")
+
+    elif field.type == "json":
+        return required_to_schema(field, "string")
 
     else:
         raise Exception(f"unexpected field type: {field.type}")

@@ -39,7 +39,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(db_column='LocalityUpdateRowResultID', primary_key=True, serialize=False, verbose_name='localityupdaterowresultid')),
                 ('rownumber', models.IntegerField()),
                 ('result', models.JSONField()),
-                ('localityupdate', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='results', to='notifications.localityupdate')),
+                ('localityupdate', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='results', db_column='LocalityUpdateID', to='notifications.localityupdate')),
             ],
             options={
                 'db_table': 'localityupdaterowresult',

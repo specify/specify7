@@ -109,12 +109,12 @@ def _parse(collection, tablename: str, fieldname: str, colopts: ExtendedColumnOp
         result = parse_with_picklist(
             collection, colopts.picklist, fieldname, value, colopts.column)
         if result is not None:
-            if isinstance(result, ParseResult) and hasattr(field, 'length') and len(result.upload[fieldname]) > field.length:
+            if isinstance(result, ParseResult) and hasattr(field, 'length') and field.length is not None and len(result.upload[fieldname]) > field.length:
                 return WorkBenchParseFailure(
                     'pickListValueTooLong',
                     {
                         'pickList': colopts.picklist.name,
-                        'maxLength': field.length,
+                        'maxLength': field.length if field.length is not None else 0,
                     },
                     colopts.column
                 )

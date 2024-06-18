@@ -77,7 +77,7 @@ def parse_field(collection, table_name: str, field_name: str, raw_value: str) ->
     if field.type in ('java.lang.Integer', 'java.lang.Long', 'java.lang.Byte', 'java.lang.Short'):
         return parse_integer(field_name, raw_value)
 
-    if hasattr(field, 'length') and len(raw_value) > field.length:
+    if hasattr(field, 'length') and field.length is not None and len(raw_value) > field.length:
         return ParseFailure('valueTooLong', {'field': field_name, 'maxLength': field.length})
 
     return ParseSucess({field_name.lower(): raw_value})
@@ -213,10 +213,10 @@ def parse_latlong(field: Field, value: str) -> ParseResult:
         return ParseFailure('coordinateBadFormat', {'value': value})
 
     coord, unit = parsed
-    if field.name.startswith('lat') and abs(coord) >= 90:
+    if field.name.startswith('lat') and abs(coord) > 90:
         return ParseFailure("latitudeOutOfRange", {'value': value})
 
-    if field.name.startswith('long') and abs(coord) >= 180:
+    if field.name.startswith('long') and abs(coord) > 180:
         return ParseFailure('longitudeOutOfRange', {'value': value})
 
     return ParseSucess({field.name.lower(): coord,

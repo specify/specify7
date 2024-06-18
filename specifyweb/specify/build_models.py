@@ -89,7 +89,7 @@ def make_model(module, table, datamodel):
 
     if has_timestamp_fields:
         tracked_fields = [field for field in timestamp_fields if field in field_names]
-        attrs['tracker'] = FieldTracker(fields=tracked_fields)
+        attrs['timestamptracker'] = FieldTracker(fields=tracked_fields)
         for field in tracked_fields:
             attrs[field] = models.DateTimeField(db_column=field) # default=timezone.now is handled in pre_save_auto_timestamp_field_with_override
 
