@@ -7026,7 +7026,7 @@ class Taxontreedef(models.Model):
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=False, on_delete=protect_with_blockers) # should related_name 'taxontreedefs' or '+
+    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=False, on_delete=protect_with_blockers) # should related_name 'taxontreedefs' or '+`, do we need discipline.taxontreedefs?
 
     class Meta:
         db_table = 'taxontreedef'
