@@ -57,9 +57,7 @@ def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
         extra["isonloan"] = obj.isonloan()
 
     elif isinstance(obj, Specifyuser):
-        extra["isadmin"] = obj.userpolicy_set.filter(
-            collection=None, resource="%", action="%"
-        ).exists()
+        extra["isadmin"] = obj.is_admin()
 
     elif isinstance(obj, Collectionobject):
         preparations = obj.preparations.all()

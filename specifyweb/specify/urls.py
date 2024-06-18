@@ -40,6 +40,14 @@ urlpatterns = [
         url(r'^repair/$', tree_views.repair_tree),
     ])),
 
+    # locality set import endpoints
+    url(r'^localityset/', include([
+        url(r'^parse/$', views.parse_locality_set),
+        url(r'^import/$', views.upload_locality_set),
+        url(r'^status/(?P<taskid>[0-9a-fA-F-]+)/$', views.localityupdate_status),
+        url(r'^abort/(?P<taskid>[0-9a-fA-F-]+)/$', views.abort_localityupdate_task),
+    ])),
+
     # generates Sp6 master key
     url(r'^master_key/$', master_key.master_key),
 

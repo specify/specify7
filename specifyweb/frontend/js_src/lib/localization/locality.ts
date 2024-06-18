@@ -292,6 +292,86 @@ export const localityText = createDictionary({
     'uk-ua': 'DD MM SS.SS N/S/E/W (32 45 42.84 N)',
     'de-ch': 'DD MM SS.SS N/S/O/W (32 45 42.84 N)',
   },
+  localityUpdateHeaderError: {
+    'en-us': 'Errors Found in Column Headers',
+  },
+  localityUpdateMissingHeader: {
+    'en-us': 'The following columns are required but missing in the data set',
+  },
+  localityUpdateUnrecognizedHeaders: {
+    'en-us':
+      'The following columns in the dataset are not recognized and will be ignored on import',
+  },
+  localityUpdateAcceptedHeaders: {
+    'en-us': 'Only the following headers are accepted',
+  },
+  localityUpdateStarting: {
+    'en-us': 'Starting Locality Update',
+  },
+  localityUpdateParsing: {
+    'en-us': 'Parsing Locality Data Set',
+  },
+  localityUpdateProgressing: {
+    'en-us': 'Importing Locality Data Set',
+  },
+  localityUpdateParsed: {
+    'en-us': 'Locality Update Data Set Parsed',
+  },
+  localityUpdateFailed: {
+    'en-us': 'Locality Update Failed',
+  },
+  localityUpdateParseFailure: {
+    'en-us': 'Locality Update Parsing Failed',
+  },
+  localityUpdateCancelled: {
+    'en-us': 'Locality Update Cancelled',
+  },
+  localityUpdateSucceeded: {
+    'en-us': 'Locality Update Succeeded',
+  },
+  localityUpdateWentWrong: {
+    'en-us': 'Something went wrong during the Locality Update process',
+  },
+  localityUpdateParseErrorFileName: {
+    comment:
+      'The file name which is used when Parse Errors are exported. The .csv file extension is appended to the end of this string',
+    'en-us': 'Locality Update Errors - {date:string}',
+  },
+  localityUpdateCrashFileName: {
+    comment:
+      'The file name which is used when any Generic non-parsing errors are exported. The .txt file extension is appended to the end of this string',
+    'en-us': 'Locality Update {taskId: string} Crash Report - {date: string}',
+  },
+  guidHeaderNotProvided: {
+    'en-us': "The Dataset must contain a 'guid' header",
+  },
+  noLocalityMatchingGuid: {
+    'en-us': "No Locality with guid: '{guid:string}'",
+  },
+  multipleLocalitiesWithGuid: {
+    'en-us':
+      'More than one Locality found with guid: {guid:string}. Locality IDs: {localityIds: string}',
+  },
+  localityUpdateEffectCounts: {
+    'en-us':
+      'The following number of {localityTabelLabel: string} records will be affected by the update and {geoCoordDetailTableLabel: string} records will be created:',
+  },
+  localityUploadedDescription: {
+    'en-us':
+      'The following number of {localityTabelLabel: string} records were updated and {geoCoordDetailTableLabel: string} records were created:',
+  },
+  localityUpdateStarted: {
+    'en-us': 'The Locality Update process has started',
+  },
+  localityUpdateResults: {
+    'en-us': 'Locality Update Results',
+  },
+  localityUpdateFailureResults: {
+    'en-us': 'Locality Update Failure Results',
+  },
+  taskId: {
+    'en-us': 'Task ID',
+  },
   validLatitude: {
     'en-us': 'Latitude needs to have a value between -90° and 90°',
     'de-ch': 'Der Breitengrad muss einen Wert zwischen -90° und 90° haben',

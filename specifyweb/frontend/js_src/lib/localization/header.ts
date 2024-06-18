@@ -143,6 +143,9 @@ export const headerText = createDictionary({
       abgeschlossen ist.
     `,
   },
+  localityUpdateTool: {
+    'en-us': 'Locality Update Tool',
+  },
   labelName: {
     'en-us': 'Label Name',
     'ru-ru': 'Название ярлыка',
