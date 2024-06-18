@@ -5,7 +5,8 @@ import { commonText } from '../../localization/common';
 import { notificationsText } from '../../localization/notifications';
 import { f } from '../../utils/functools';
 import type { GetSet } from '../../utils/types';
-import { localized } from '../../utils/types';
+import { filterArray, localized } from '../../utils/types';
+import { multiSortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
@@ -71,18 +72,42 @@ export function AttachmentViewer({
     attachmentTable?.name
   );
   const isInSearchDialog = React.useContext(SearchDialogContext);
-  const viewDefinition = useViewDefinition({
+  const specificViewDefinition = useViewDefinition({
     table: attachmentTable,
     viewName: attachmentTable?.name,
     formType: 'form',
     mode: propsToFormMode(isReadOnly, isInSearchDialog),
   });
 
-  // If view doesn't exists, viewDefinition.name would be empty string
-  const customViewName =
-    viewDefinition?.name === attachmentTable?.name
-      ? attachmentTable?.name
-      : undefined;
+  const objectAttachmentDefinition = useViewDefinition({
+    table: attachmentTable,
+    viewName: originalAttachmentsView,
+    formType: 'form',
+    mode: propsToFormMode(isReadOnly, isInSearchDialog),
+  });
+
+  /*
+   * If view doesn't exists, viewDefinition.name would be empty string
+   */
+  /*
+   * Const customViewName =
+   *   specificViewDefinition?.name === attachmentTable?.name
+   *     ? attachmentTable?.name
+   *     : undefined;
+   */
+
+  const resolved = React.useMemo(
+    () =>
+      Array.from(
+        filterArray([objectAttachmentDefinition, specificViewDefinition])
+      ).sort(
+        multiSortFunction(
+          ({ rawDefinition }) => rawDefinition?.viewsetSource === 'disk',
+          ({ name }) => name === originalAttachmentsView
+        )
+      )[0],
+    [specificViewDefinition, objectAttachmentDefinition]
+  );
 
   /**
    * If view definition for a CollectionObjectAttachment table exists, use it
@@ -90,7 +115,7 @@ export function AttachmentViewer({
    * resource.
    */
   const showCustomForm =
-    typeof customViewName === 'string' && typeof related === 'object';
+    typeof resolved.table.name === 'string' && typeof related === 'object';
 
   const mimeType = attachment.get('mimeType') ?? undefined;
   const type = mimeType?.split('/')[0];
@@ -179,7 +204,7 @@ export function AttachmentViewer({
                * exports)
                */
               title={title}
-              viewName={customViewName ?? originalAttachmentsView}
+              viewName={resolved.table.name ?? originalAttachmentsView}
               onAdd={undefined}
               // eslint-disable-next-line react/jsx-handler-names
               onClose={f.never}

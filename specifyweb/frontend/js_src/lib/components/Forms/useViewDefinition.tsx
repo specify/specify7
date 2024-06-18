@@ -49,6 +49,7 @@ export function useViewDefinition({
   );
   const useGeneratedForm =
     Array.isArray(globalConfig) && f.includes(globalConfig, table?.name);
+  console.log(viewName);
   const [viewDefinition] = useAsyncState<ViewDescription>(
     React.useCallback(async () => {
       if (table === undefined) return undefined;
@@ -59,6 +60,7 @@ export function useViewDefinition({
           name: attachmentView,
           formType,
           mode,
+          rawDefinition: undefined,
         };
       else if (useGeneratedForm)
         return autoGenerateViewDefinition(table, formType, mode);
@@ -94,7 +96,7 @@ const fetchViewDefinition = async (
   fetchView(
     viewName === originalAttachmentsView ? 'ObjectAttachment' : viewName
   )
-    .then((viewDefinition) =>
+    .then(async (viewDefinition) =>
       typeof viewDefinition === 'object'
         ? parseViewDefinition(viewDefinition, formType, mode, table)
         : undefined
@@ -121,6 +123,7 @@ const fetchViewDefinition = async (
             formType,
             mode,
             table,
+            rawDefinition: undefined,
           })
         );
     });

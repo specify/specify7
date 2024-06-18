@@ -17,6 +17,7 @@ import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { getTable } from '../DataModel/tables';
 import type { Attachment } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { loadingBar } from '../Molecules';
@@ -91,9 +92,14 @@ function ProtectedAttachmentsPlugin({
           onUploaded={(attachment): void => {
             // Fix focus loss when <FilePicker would be removed from DOM
             filePickerContainer.current?.focus();
-            if (typeof resource === 'object')
-              attachment?.set('tableID', resource.specifyTable.tableId);
-            resource?.set('attachment', attachment as never);
+            if (typeof resource === 'object') {
+              const slicedName = resource.specifyTable.name.slice(
+                0,
+                resource.specifyTable.name.indexOf('Attachment')
+              );
+              const table = getTable(slicedName);
+              attachment?.set('tableID', table?.tableId ?? 1);
+            }
             setAttachment(attachment);
           }}
         />

@@ -274,6 +274,7 @@ const cellRenderers: {
               name: 'panel',
               formType,
               table: resource.specifyTable,
+              rawDefinition: undefined,
             },
       [definition, formType, resource.specifyTable, mode]
     );
