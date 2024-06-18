@@ -2232,7 +2232,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(db_column='workbenchrowid', primary_key=True, serialize=False)),
                 ('biogeomancerresults', models.TextField(blank=True, db_column='BioGeomancerResults', null=True)),
-                ('_cardimagedata', models.BinaryField(blank=True, db_column='CardImageData', null=True)),
+                ('cardimagedata', models.BinaryField(blank=True, db_column='CardImageData', null=True)),
                 ('cardimagefullpath', models.CharField(blank=True, db_column='CardImageFullPath', max_length=255, null=True)),
                 ('errorestimate', models.DecimalField(blank=True, db_column='ErrorEstimate', decimal_places=10, max_digits=22, null=True)),
                 ('errorpolygon', models.TextField(blank=True, db_column='ErrorPolygon', null=True)),
@@ -2308,7 +2308,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(db_column='workbenchrowimageid', primary_key=True, serialize=False)),
                 ('attachtotablename', models.CharField(blank=True, db_column='AttachToTableName', max_length=64, null=True)),
-                ('_cardimagedata', models.BinaryField(blank=True, db_column='CardImageData', null=True)),
+                ('cardimagedata', models.BinaryField(blank=True, db_column='CardImageData', null=True)),
                 ('cardimagefullpath', models.CharField(blank=True, db_column='CardImageFullPath', max_length=255, null=True)),
                 ('imageorder', models.IntegerField(blank=True, db_column='ImageOrder', null=True)),
                 ('workbenchrow', models.ForeignKey(db_column='WorkbenchRowID', on_delete=django.db.models.deletion.DO_NOTHING, related_name='workbenchrowimages', to='specify.workbenchrow')),
@@ -3028,7 +3028,7 @@ class Migration(migrations.Migration):
             name='Spappresourcedata',
             fields=[
                 ('id', models.AutoField(db_column='spappresourcedataid', primary_key=True, serialize=False)),
-                ('_data', models.BinaryField(blank=True, db_column='data', null=True)),
+                ('data', models.BinaryField(blank=True, db_column='data', null=True)),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
                 ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
