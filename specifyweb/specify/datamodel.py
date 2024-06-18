@@ -7876,9 +7876,9 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='Collection_ID'),
-            Relationship(name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUser_ID'),
-            Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgent_ID'),
-            Relationship(name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgent_ID'),
+            Relationship(name='specifyUser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUser_ID'),
+            Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgent_ID'),
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgent_ID'),
         ],
         fieldAliases=[
 
@@ -7981,9 +7981,9 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='Collection_ID'),
-            Relationship(name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUser_ID'),
-            Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgent_ID'),
-            Relationship(name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgent_ID')
+            Relationship(name='specifyUser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUser_ID'),
+            Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgent_ID'),
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgent_ID')
         ],
         fieldAliases=[
 
@@ -8007,7 +8007,7 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='Collection_ID'),
-            Relationship(name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUser_ID')
+            Relationship(name='specifyUser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUser_ID')
         ],
         fieldAliases=[
 
@@ -8075,7 +8075,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUser_ID'),
+            Relationship(name='specifyUser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUser_ID'),
             Relationship(name='role', type='many-to-one', required=True, relatedModelName='Role', column='Role_ID')
         ],
         fieldAliases=[
@@ -8155,9 +8155,9 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='Collection_ID'),
-            Relationship(name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUser_ID'),
-            Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgent_ID'),
-            Relationship(name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgent_ID')
+            Relationship(name='specifyUser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUser_ID'),
+            Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgent_ID'),
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgent_ID')
         ],
         fieldAliases=[
 
@@ -8187,9 +8187,9 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='Collection_ID'),
-            Relationship(name='taxontreedef', type='many-to-one', required=False, relatedModelName='TaxonTreeDef', column='TaxonTreeDef_ID'),
-            Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgent_ID'),
-            Relationship(name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgent_ID')
+            Relationship(name='taxonTreeDef', type='many-to-one', required=False, relatedModelName='TaxonTreeDef', column='TaxonTreeDef_ID'),
+            Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgent_ID'),
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgent_ID')
         ],
         fieldAliases=[
 
