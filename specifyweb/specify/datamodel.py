@@ -7420,7 +7420,8 @@ datamodel = Datamodel(tables=[
             Relationship(name='discipline', type='one-to-one',required=False, relatedModelName='Discipline', otherSideName='taxonTreeDef'), # no column aka.(columnname), virtual
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='treeDefItems', type='one-to-many',required=False, relatedModelName='TaxonTreeDefItem', otherSideName='treeDef', dependent=True),
-            Relationship(name='treeEntries', type='one-to-many',required=False, relatedModelName='Taxon', otherSideName='definition')
+            Relationship(name='treeEntries', type='one-to-many',required=False, relatedModelName='Taxon', otherSideName='definition'),
+            Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID')
         ],
         fieldAliases=[
 
