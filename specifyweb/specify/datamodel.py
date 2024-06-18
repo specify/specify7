@@ -7843,7 +7843,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='specifyuserid')
+            Relationship(name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='specifyuser_id')
         ],
         fieldAliases=[
 
