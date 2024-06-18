@@ -12,11 +12,11 @@ import { Link } from '../Atoms/Link';
 import { getTable } from '../DataModel/tables';
 import { userInformation } from '../InitialContext/userInformation';
 import {
-  LocalityImportFailed,
-  LocalityImportParseErrors,
-  LocalityImportSuccess,
-} from '../LocalityImport/Status';
-import type { LocalityImportParseError } from '../LocalityImport/types';
+  LocalityUpdateFailed,
+  LocalityUpdateParseErrors,
+  LocalityUpdateSuccess,
+} from '../LocalityUpdate/Status';
+import type { LocalityUpdateParseError } from '../LocalityUpdate/types';
 import { mergingQueryParameter } from '../Merging/queryString';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { TableIcon } from '../Molecules/TableIcon';
@@ -211,10 +211,10 @@ export const notificationRenderers: IR<
       )
     );
   },
-  'localityimport-starting'(notification) {
+  'localityupdate-starting'(notification) {
     return (
       <>
-        <p>{localityText.localityImportStarted()}</p>
+        <p>{localityText.localityUpdateStarted()}</p>
         <details>
           <summary>{localityText.taskId()}</summary>
           {notification.payload.taskid}
@@ -222,19 +222,19 @@ export const notificationRenderers: IR<
       </>
     );
   },
-  'localityimport-parse-failed'(notification) {
+  'localityupdate-parse-failed'(notification) {
     const [isOpen, handleOpen, handleClose] = useBooleanState();
     return (
       <>
-        <p>{localityText.localityImportParseFailure()}</p>
+        <p>{localityText.localityUpdateParseFailure()}</p>
         <Button.Small onClick={handleOpen}>
-          {localityText.localityImportFailureResults()}
+          {localityText.localityUpdateFailureResults()}
         </Button.Small>
         {isOpen && (
-          <LocalityImportParseErrors
+          <LocalityUpdateParseErrors
             errors={
               notification.payload
-                .errors as unknown as RA<LocalityImportParseError>
+                .errors as unknown as RA<LocalityUpdateParseError>
             }
             onClose={handleClose}
           />
@@ -246,16 +246,16 @@ export const notificationRenderers: IR<
       </>
     );
   },
-  'localityimport-failed'(notification) {
+  'localityupdate-failed'(notification) {
     const [isOpen, handleOpen, handleClose] = useBooleanState();
     return (
       <>
-        <p>{localityText.localityImportFailed()}</p>
+        <p>{localityText.localityUpdateFailed()}</p>
         <Button.Small onClick={handleOpen}>
-          {localityText.localityImportFailureResults()}
+          {localityText.localityUpdateFailureResults()}
         </Button.Small>
         {isOpen && (
-          <LocalityImportFailed
+          <LocalityUpdateFailed
             taskId={notification.payload.taskid}
             traceback={notification.payload.traceback}
             onClose={handleClose}
@@ -268,10 +268,10 @@ export const notificationRenderers: IR<
       </>
     );
   },
-  'localityimport-aborted'(notification) {
+  'localityupdate-aborted'(notification) {
     return (
       <>
-        <p>{localityText.localityImportCancelled()}</p>
+        <p>{localityText.localityUpdateCancelled()}</p>
         <details>
           <summary>{localityText.taskId()}</summary>
           {notification.payload.taskid}
@@ -279,10 +279,10 @@ export const notificationRenderers: IR<
       </>
     );
   },
-  'localityimport-parse-succeeded'(notification) {
+  'localityupdate-parse-succeeded'(notification) {
     return (
       <>
-        <p>{localityText.localityImportParsed()}</p>
+        <p>{localityText.localityUpdateParsed()}</p>
         <details>
           <summary>{localityText.taskId()}</summary>
           {notification.payload.taskid}
@@ -290,16 +290,16 @@ export const notificationRenderers: IR<
       </>
     );
   },
-  'localityimport-succeeded'(notification) {
+  'localityupdate-succeeded'(notification) {
     const [isOpen, handleOpen, handleClose] = useBooleanState();
     return (
       <>
-        <p>{localityText.localityImportSucceeded()}</p>
+        <p>{localityText.localityUpdateSucceeded()}</p>
         <Button.Small onClick={handleOpen}>
-          {localityText.localityImportResults()}
+          {localityText.localityUpdateResults()}
         </Button.Small>
         {isOpen && (
-          <LocalityImportSuccess
+          <LocalityUpdateSuccess
             geoCoordDetailIds={
               notification.payload.geocoorddetails as unknown as RA<number>
             }

@@ -11,7 +11,7 @@ from uuid import uuid4
 from django import http
 from django.conf import settings
 from django.db import router, transaction, connection
-from specifyweb.notifications.models import Message, Spmerging, LocalityImport
+from specifyweb.notifications.models import Message, Spmerging, LocalityUpdate
 from django.db.models.deletion import Collector
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_POST
@@ -21,7 +21,7 @@ from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, PermissionsException, check_permission_targets, table_permissions_checker
 from specifyweb.celery_tasks import app, CELERY_TASK_STATE
 from specifyweb.specify.record_merging import record_merge_fx, record_merge_task, resolve_record_merge_response
-from specifyweb.specify.import_locality import localityimport_parse_success, localityimport_parse_error, parse_locality_set as _parse_locality_set, upload_locality_set as _upload_locality_set, create_localityimport_recordset, import_locality_task, parse_locality_task, LocalityImportStatus
+from specifyweb.specify.update_locality import localityupdate_parse_success, localityupdate_parse_error, parse_locality_set as _parse_locality_set, upload_locality_set as _upload_locality_set, create_localityupdate_recordset, update_locality_task, parse_locality_task, LocalityUpdateStatus
 from . import api, models as spmodels
 from .specify_jar import specify_jar
 
@@ -801,7 +801,7 @@ def abort_merge_task(request, merge_id: int) -> http.HttpResponse:
                                             "type": "string",
                                             "enum": ["ParseError"]
                                         },
-                                        "errors": localityimport_parse_error
+                                        "errors": localityupdate_parse_error
                                     },
                                     "required": ["type", "errors"],
                                     "additionalProperties": False
@@ -884,13 +884,13 @@ def start_locality_set_background(collection, specify_user, agent, column_header
     args = [collection.id, column_headers, data]
     if not parse_only:
         args.append(create_recordset)
-    task_function = parse_locality_task.apply_async if parse_only else import_locality_task.apply_async
+    task_function = parse_locality_task.apply_async if parse_only else update_locality_task.apply_async
 
     task = task_function(args, task_id=task_id)
 
-    LocalityImport.objects.create(
+    LocalityUpdate.objects.create(
         taskid=task.id,
-        status=LocalityImportStatus.PENDING,
+        status=LocalityUpdateStatus.PENDING,
         collection=collection,
         specifyuser=specify_user,
         createdbyagent=agent,
@@ -898,7 +898,7 @@ def start_locality_set_background(collection, specify_user, agent, column_header
     )
 
     Message.objects.create(user=specify_user, content=json.dumps({
-        'type': 'localityimport-starting',
+        'type': 'localityupdate-starting',
         'taskid': task.id
     }))
 
@@ -913,7 +913,7 @@ def upload_locality_set_foreground(collection, specify_user, agent, column_heade
 
     localities = [row["locality"] for row in result["results"]]
 
-    recordset = create_localityimport_recordset(
+    recordset = create_localityupdate_recordset(
         collection, specify_user, localities) if create_recordset else None
 
     result["recordsetid"] = None if recordset is None else recordset.pk
@@ -935,7 +935,7 @@ def upload_locality_set_foreground(collection, specify_user, agent, column_heade
                                     "properties": {
                                         "taskstatus": {
                                             "type": "string",
-                                            "enum": [LocalityImportStatus.PENDING, LocalityImportStatus.ABORTED]
+                                            "enum": [LocalityUpdateStatus.PENDING, LocalityUpdateStatus.ABORTED]
                                         },
                                         "taskinfo": {
                                             "type": "string",
@@ -949,7 +949,7 @@ def upload_locality_set_foreground(collection, specify_user, agent, column_heade
                                     "properties": {
                                         "taskstatus": {
                                             "type": "string",
-                                            "enum": [LocalityImportStatus.PROGRESS, LocalityImportStatus.PARSING]
+                                            "enum": [LocalityUpdateStatus.PROGRESS, LocalityUpdateStatus.PARSING]
                                         },
                                         "taskinfo": {
                                             "type": "object",
@@ -973,7 +973,7 @@ def upload_locality_set_foreground(collection, specify_user, agent, column_heade
                                     "properties": {
                                         "taskstatus": {
                                             "type": "string",
-                                            "enum": [LocalityImportStatus.PARSED]
+                                            "enum": [LocalityUpdateStatus.PARSED]
                                         },
                                         "taskinfo": {
                                             "type": "object",
@@ -1018,7 +1018,7 @@ def upload_locality_set_foreground(collection, specify_user, agent, column_heade
                                     "properties": {
                                         "taskstatus": {
                                             "type": "string",
-                                            "enum": [LocalityImportStatus.SUCCEEDED]
+                                            "enum": [LocalityUpdateStatus.SUCCEEDED]
                                         },
                                         "taskinfo": {
                                             "type": "object",
@@ -1060,12 +1060,12 @@ def upload_locality_set_foreground(collection, specify_user, agent, column_heade
                                     "properties": {
                                         "taskstatus": {
                                             "type": "string",
-                                            "enum": [LocalityImportStatus.PARSE_FAILED]
+                                            "enum": [LocalityUpdateStatus.PARSE_FAILED]
                                         },
                                         "taskinfo": {
                                             "type": "object",
                                             "properties": {
-                                                "errors": localityimport_parse_error
+                                                "errors": localityupdate_parse_error
                                             }
                                         }
                                     },
@@ -1077,7 +1077,7 @@ def upload_locality_set_foreground(collection, specify_user, agent, column_heade
                                     "properties": {
                                         "taskstatus": {
                                             "type": "string",
-                                            "enum": [LocalityImportStatus.FAILED]
+                                            "enum": [LocalityUpdateStatus.FAILED]
                                         },
                                         "taskinfo": {
                                             "type": "object",
@@ -1100,12 +1100,12 @@ def upload_locality_set_foreground(collection, specify_user, agent, column_heade
                 }
             },
             "404": {
-                "description": 'The localityimport object with task id was not found',
+                "description": 'The localityupdate object with task id was not found',
                 "content": {
                     "text/plain": {
                         "schema": {
                             "type": "string",
-                            "example": "The localityimport with task id '7d34dbb2-6e57-4c4b-9546-1fe7bec1acca' was not found"
+                            "example": "The localityupdate with task id '7d34dbb2-6e57-4c4b-9546-1fe7bec1acca' was not found"
                         }
                     }
                 }
@@ -1114,30 +1114,30 @@ def upload_locality_set_foreground(collection, specify_user, agent, column_heade
     },
 })
 @require_GET
-def localityimport_status(request: http.HttpRequest, taskid: str):
+def localityupdate_status(request: http.HttpRequest, taskid: str):
     try:
-        locality_import = LocalityImport.objects.get(taskid=taskid)
-    except LocalityImport.DoesNotExist:
-        return http.HttpResponseNotFound(f"The localityimport with task id '{taskid}' was not found")
+        locality_import = LocalityUpdate.objects.get(taskid=taskid)
+    except LocalityUpdate.DoesNotExist:
+        return http.HttpResponseNotFound(f"The localityupdate with task id '{taskid}' was not found")
 
-    result = import_locality_task.AsyncResult(locality_import.taskid)
+    result = update_locality_task.AsyncResult(locality_import.taskid)
 
-    resolved_state = LocalityImportStatus.ABORTED if result.state == CELERY_TASK_STATE.REVOKED else LocalityImportStatus.FAILED if result.state == CELERY_TASK_STATE.FAILURE else result.state
+    resolved_state = LocalityUpdateStatus.ABORTED if result.state == CELERY_TASK_STATE.REVOKED else LocalityUpdateStatus.FAILED if result.state == CELERY_TASK_STATE.FAILURE else result.state
 
     status = {
         'taskstatus': resolved_state,
         'taskinfo': result.info if isinstance(result.info, dict) else repr(result.info)
     }
 
-    if resolved_state == LocalityImportStatus.FAILED:
+    if resolved_state == LocalityUpdateStatus.FAILED:
         status["taskinfo"] = {
             'error': str(result.result),
             'traceback': str(result.traceback)
         }
 
-    elif locality_import.status == LocalityImportStatus.PARSE_FAILED:
+    elif locality_import.status == LocalityUpdateStatus.PARSE_FAILED:
 
-        status["taskstatus"] = LocalityImportStatus.PARSE_FAILED
+        status["taskstatus"] = LocalityUpdateStatus.PARSE_FAILED
 
         if isinstance(result.info, dict) and 'errors' in result.info.keys():
             errors = result.info["errors"]
@@ -1147,8 +1147,8 @@ def localityimport_status(request: http.HttpRequest, taskid: str):
 
         status["taskinfo"] = {"errors": errors}
 
-    elif locality_import.status == LocalityImportStatus.PARSED:
-        status["taskstatus"] = LocalityImportStatus.PARSED
+    elif locality_import.status == LocalityUpdateStatus.PARSED:
+        status["taskstatus"] = LocalityUpdateStatus.PARSED
 
         results = locality_import.results.all()
         rows = [json.loads(row.result) for row in results]
@@ -1157,10 +1157,10 @@ def localityimport_status(request: http.HttpRequest, taskid: str):
             "rows": rows
         }
 
-    elif locality_import.status == LocalityImportStatus.SUCCEEDED:
-        status["taskstatus"] = LocalityImportStatus.SUCCEEDED
+    elif locality_import.status == LocalityUpdateStatus.SUCCEEDED:
+        status["taskstatus"] = LocalityUpdateStatus.SUCCEEDED
         recordset_id = locality_import.recordset.id if locality_import.recordset is not None else None
-        if isinstance(result.info, dict) and resolved_state == LocalityImportStatus.SUCCEEDED:
+        if isinstance(result.info, dict) and resolved_state == LocalityUpdateStatus.SUCCEEDED:
             result = {
                 "recordsetid": recordset_id,
                 "localities": result.info["localities"],
@@ -1212,12 +1212,12 @@ def localityimport_status(request: http.HttpRequest, taskid: str):
                 },
             },
             "404": {
-                "description": 'The localityimport object with task id was not found',
+                "description": 'The localityupdate object with task id was not found',
                 "content": {
                     "text/plain": {
                         "schema": {
                             "type": "string",
-                            "example": "The localityimport with task id '7d34dbb2-6e57-4c4b-9546-1fe7bec1acca' was not found"
+                            "example": "The localityupdate with task id '7d34dbb2-6e57-4c4b-9546-1fe7bec1acca' was not found"
                         }
                     }
                 }
@@ -1227,13 +1227,13 @@ def localityimport_status(request: http.HttpRequest, taskid: str):
 })
 @require_POST
 @login_maybe_required
-def abort_localityimport_task(request: http.HttpRequest, taskid: str):
+def abort_localityupdate_task(request: http.HttpRequest, taskid: str):
     "Aborts the merge task currently running and matching the given merge/task ID"
 
     try:
-        locality_import = LocalityImport.objects.get(taskid=taskid)
-    except LocalityImport.DoesNotExist:
-        return http.HttpResponseNotFound(f"The localityimport with taskid: {taskid} is not found")
+        locality_import = LocalityUpdate.objects.get(taskid=taskid)
+    except LocalityUpdate.DoesNotExist:
+        return http.HttpResponseNotFound(f"The localityupdate with taskid: {taskid} is not found")
 
     task = record_merge_task.AsyncResult(locality_import.taskid)
 
@@ -1242,14 +1242,14 @@ def abort_localityimport_task(request: http.HttpRequest, taskid: str):
         "message": None
     }
 
-    if task.state in [LocalityImportStatus.PENDING, LocalityImportStatus.PARSING, LocalityImportStatus.PROGRESS]:
+    if task.state in [LocalityUpdateStatus.PENDING, LocalityUpdateStatus.PARSING, LocalityUpdateStatus.PROGRESS]:
         app.control.revoke(locality_import.taskid, terminate=True)
 
-        locality_import.status = LocalityImportStatus.ABORTED
+        locality_import.status = LocalityUpdateStatus.ABORTED
         locality_import.save()
 
         Message.objects.create(user=request.specify_user, content=json.dumps({
-            'type': 'localityimport-aborted',
+            'type': 'localityupdate-aborted',
             'taskid': taskid
         }))
         result["type"] = "ABORTED"
@@ -1303,7 +1303,7 @@ def abort_localityimport_task(request: http.HttpRequest, taskid: str):
                 "description": "Successful response returned by worker",
                 "content": {
                     "application/json": {
-                        "schema": localityimport_parse_success
+                        "schema": localityupdate_parse_success
                     }
                 }
             },
@@ -1323,7 +1323,7 @@ def abort_localityimport_task(request: http.HttpRequest, taskid: str):
                 "description": "Locality Import Set not parsed successfully",
                 "content": {
                     "application/json": {
-                        "schema": localityimport_parse_error
+                        "schema": localityupdate_parse_error
                     }
                 }
             }

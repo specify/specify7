@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-from specifyweb.specify.models import Specifyuser, Collection, Agent, Recordset, Locality
+from specifyweb.specify.models import Specifyuser, Collection, Agent, Recordset
 
 
 class Message(models.Model):
@@ -41,23 +41,23 @@ class Spmerging(AsyncTask):
         # managed = False
 
 
-class LocalityImport(AsyncTask):
-    id = models.AutoField('localityimportid',
-                          primary_key=True, db_column='LocalityImportID')
+class LocalityUpdate(AsyncTask):
+    id = models.AutoField('localityupdateid',
+                          primary_key=True, db_column='LocalityUpdateID')
     recordset = models.ForeignKey(
         Recordset, null=True, blank=True, db_column="RecordSetID", on_delete=models.SET_NULL)
 
     class Meta:
-        db_table = 'localityimport'
+        db_table = 'localityupdate'
 
 
-class LocalityImportRowResult(models.Model):
-    id = models.AutoField('localityimportrowresultid',
-                          primary_key=True, db_column='LocalityImportRowResultID')
+class LocalityUpdateRowResult(models.Model):
+    id = models.AutoField('localityupdaterowresultid',
+                          primary_key=True, db_column='LocalityUpdateRowResultID')
     rownumber = models.IntegerField()
     result = models.JSONField()
-    localityimport = models.ForeignKey(
-        LocalityImport, on_delete=models.CASCADE, related_name="results")
+    localityupdate = models.ForeignKey(
+        LocalityUpdate, on_delete=models.CASCADE, related_name="results")
 
     class Meta:
-        db_table = 'localityimportrowresult'
+        db_table = 'localityupdaterowresult'

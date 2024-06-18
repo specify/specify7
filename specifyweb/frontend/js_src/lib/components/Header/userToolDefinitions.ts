@@ -101,7 +101,7 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
   },
   [commonText.import()]: {
     coGeImport: {
-      title: headerText.importLocalityDataset(),
+      title: headerText.localityUpdateTool(),
       url: '/specify/import/locality-dataset/',
       icon: icons.globe,
     },

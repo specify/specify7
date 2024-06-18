@@ -3,7 +3,7 @@ import type { State } from 'typesafe-reducer';
 import type { IR, RA } from '../../utils/types';
 import type { Tables } from '../DataModel/types';
 
-export type LocalityImportHeader = Exclude<
+export type LocalityUpdateHeader = Exclude<
   Lowercase<
     | keyof Tables['GeoCoordDetail']['fields']
     | keyof Tables['Locality']['fields']
@@ -11,14 +11,14 @@ export type LocalityImportHeader = Exclude<
   'locality'
 >;
 
-export type LocalityImportParseError = {
+export type LocalityUpdateParseError = {
   readonly message: string;
   readonly field: string;
   readonly payload: IR<unknown>;
   readonly rowNumber: number;
 };
 
-export type LocalityImportTaskStatus =
+export type LocalityUpdateTaskStatus =
   | 'ABORTED'
   | 'FAILED'
   | 'PARSE_FAILED'
@@ -28,7 +28,7 @@ export type LocalityImportTaskStatus =
   | 'PROGRESS'
   | 'SUCCEEDED';
 
-export type LocalityImportState =
+export type LocalityUpdateState =
   | State<
       'ABORTED',
       { readonly taskstatus: 'ABORTED'; readonly taskinfo: string }
@@ -48,7 +48,7 @@ export type LocalityImportState =
       {
         readonly taskstatus: 'PARSE_FAILED';
         readonly taskinfo: {
-          readonly errors: RA<LocalityImportParseError>;
+          readonly errors: RA<LocalityUpdateParseError>;
         };
       }
     >

@@ -292,50 +292,55 @@ export const localityText = createDictionary({
     'uk-ua': 'DD MM SS.SS N/S/E/W (32 45 42.84 N)',
     'de-ch': 'DD MM SS.SS N/S/O/W (32 45 42.84 N)',
   },
-  localityImportHeaderError: {
+  localityUpdateHeaderError: {
     'en-us': 'Errors Found in Column Headers',
   },
-  localityImportMissingHeader: {
-    'en-us': 'The following columns are required but missing in the dataset',
+  localityUpdateMissingHeader: {
+    'en-us': 'The following columns are required but missing in the data set',
   },
-  localityImportUnrecognizedHeaders: {
+  localityUpdateUnrecognizedHeaders: {
     'en-us':
       'The following columns in the dataset are not recognized and will be ignored on import',
   },
-  localityImportedAcceptedHeaders: {
+  localityUpdateAcceptedHeaders: {
     'en-us': 'Only the following headers are accepted',
   },
-  localityImportStarting: {
-    'en-us': 'Starting Locality Data Set Import',
+  localityUpdateStarting: {
+    'en-us': 'Starting Locality Update',
   },
-  localityImportParsing: {
+  localityUpdateParsing: {
     'en-us': 'Parsing Locality Data Set',
   },
-  localityImportProgressing: {
+  localityUpdateProgressing: {
     'en-us': 'Importing Locality Data Set',
   },
-  localityImportParsed: {
-    'en-us': 'Locality Data Set Import Parsed',
+  localityUpdateParsed: {
+    'en-us': 'Locality Update Data Set Parsed',
   },
-  localityImportFailed: {
-    'en-us': 'Locality Data Set Import Failed',
+  localityUpdateFailed: {
+    'en-us': 'Locality Update Failed',
   },
-  localityImportParseFailure: {
-    'en-us': 'Locality Data Set Parse Failed',
+  localityUpdateParseFailure: {
+    'en-us': 'Locality Upadte Parsing Failed',
   },
-  localityImportCancelled: {
-    'en-us': 'Locality Data Set Import Cancelled',
+  localityUpdateCancelled: {
+    'en-us': 'Locality Update Cancelled',
   },
-  localityImportSucceeded: {
-    'en-us': 'Locality Data Set Import Succeeded',
+  localityUpdateSucceeded: {
+    'en-us': 'Locality Update Succeeded',
   },
-  localityImportWentWrong: {
-    'en-us': 'Something went wrong during the Locality Import process',
+  localityUpdateWentWrong: {
+    'en-us': 'Something went wrong during the Locality Update process',
   },
-  localityImportErrorFileName: {
+  localityUpdateParseErrorFileName: {
     comment:
       'The file name which is used when Parse Errors are exported. The .csv file extension is appended to the end of this string',
-    'en-us': 'Locality Import Errors - {date:string}',
+    'en-us': 'Locality Update Errors - {date:string}',
+  },
+  localityUpdateCrashFileName: {
+    comment:
+      'The file name which is used when any Generic non-parsing errors are exported. The .txt file extension is appended to the end of this string',
+    'en-us': 'Locality Update {taskId: string} Crash Report - {date: string}',
   },
   guidHeaderNotProvided: {
     'en-us': "The Dataset must contain a 'guid' header",
@@ -347,22 +352,22 @@ export const localityText = createDictionary({
     'en-us':
       'More than one Locality found with guid: {guid:string}. Locality IDs: {localityIds: string}',
   },
-  localityImportEffectCounts: {
+  localityUpdateEffectCounts: {
     'en-us':
-      'The following number of {localityTabelLabel: string} records will be affected by the import and {geoCoordDetailTableLabel: string} records will be created:',
+      'The following number of {localityTabelLabel: string} records will be affected by the update and {geoCoordDetailTableLabel: string} records will be created:',
   },
   localityUploadedDescription: {
     'en-us':
       'The following number of {localityTabelLabel: string} records were updated and {geoCoordDetailTableLabel: string} records were created:',
   },
-  localityImportStarted: {
-    'en-us': 'The Locality Data Set Import process has started',
+  localityUpdateStarted: {
+    'en-us': 'The Locality Update process has started',
   },
-  localityImportResults: {
-    'en-us': 'Locality Data Set Upload Results',
+  localityUpdateResults: {
+    'en-us': 'Locality Update Results',
   },
-  localityImportFailureResults: {
-    'en-us': 'Locality Data Set Failure Results',
+  localityUpdateFailureResults: {
+    'en-us': 'Locality Update Failure Results',
   },
   taskId: {
     'en-us': 'Task ID',

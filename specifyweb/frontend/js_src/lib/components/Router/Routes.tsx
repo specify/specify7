@@ -231,8 +231,9 @@ export const routes: RA<EnhancedRoute> = [
       {
         path: 'locality-dataset',
         element: () =>
-          import('../LocalityImport').then(
-            ({ ImportLocalityDataSet: ImportLocalitySet }) => ImportLocalitySet
+          import('../LocalityUpdate').then(
+            ({ LocalityUpdateFromDataSet: ImportLocalitySet }) =>
+              ImportLocalitySet
           ),
       },
     ],

@@ -7,41 +7,41 @@ import type { IR, RA, RR } from '../../utils/types';
 import { tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { resolveBackendParsingMessage } from '../WorkBench/resultsParser';
-import type { LocalityImportHeader, LocalityImportTaskStatus } from './types';
+import type { LocalityUpdateHeader, LocalityUpdateTaskStatus } from './types';
 
-export const localityImportAcceptedLocalityFields: RA<
+const localityUpdateAcceptedLocalityFields: RA<
   Lowercase<keyof Tables['Locality']['fields']>
 > = ['guid', 'datum', 'latitude1', 'longitude1'];
 
-export const localityImportAcceptedHeaders = f.store(
+export const localityUpdateAcceptedHeaders = f.store(
   () =>
     new Set([
-      ...localityImportAcceptedLocalityFields,
+      ...localityUpdateAcceptedLocalityFields,
       ...tables.GeoCoordDetail.literalFields
         .map(({ name }) => name.toLowerCase())
         .filter((header) => header !== 'locality'),
     ])
 );
 
-export const localityImportRequiredHeaders = new Set<LocalityImportHeader>([
+export const localityUpdateRequiredHeaders = new Set<LocalityUpdateHeader>([
   'guid',
 ]);
 
-export const localityImportStatusLocalization: RR<
-  LocalityImportTaskStatus,
+export const localityUpdateStatusLocalization: RR<
+  LocalityUpdateTaskStatus,
   LocalizedString
 > = {
-  PARSED: localityText.localityImportParsed(),
-  PARSING: localityText.localityImportParsing(),
-  PENDING: localityText.localityImportStarting(),
-  PROGRESS: localityText.localityImportProgressing(),
-  FAILED: localityText.localityImportFailed(),
-  PARSE_FAILED: localityText.localityImportParseFailure(),
-  ABORTED: localityText.localityImportCancelled(),
-  SUCCEEDED: localityText.localityImportSucceeded(),
+  PARSED: localityText.localityUpdateParsed(),
+  PARSING: localityText.localityUpdateParsing(),
+  PENDING: localityText.localityUpdateStarting(),
+  PROGRESS: localityText.localityUpdateProgressing(),
+  FAILED: localityText.localityUpdateFailed(),
+  PARSE_FAILED: localityText.localityUpdateParseFailure(),
+  ABORTED: localityText.localityUpdateCancelled(),
+  SUCCEEDED: localityText.localityUpdateSucceeded(),
 };
 
-export function resolveImportLocalityErrorMessage(
+export function resolveLocalityUpdateErrorMessage(
   key: string,
   payload: IR<unknown>
 ): LocalizedString {

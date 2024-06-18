@@ -12,16 +12,16 @@ import { formatConjunction } from '../Atoms/Internationalization';
 import { LoadingContext } from '../Core/Contexts';
 import { CsvFilePicker } from '../Molecules/CsvFilePicker';
 import { Dialog } from '../Molecules/Dialog';
-import { LocalityImportStatus } from './Status';
-import type { LocalityImportHeader } from './types';
+import { LocalityUpdateStatus } from './Status';
+import type { LocalityUpdateHeader } from './types';
 import {
-  localityImportAcceptedHeaders,
-  localityImportRequiredHeaders,
+  localityUpdateAcceptedHeaders,
+  localityUpdateRequiredHeaders,
 } from './utils';
 
-export function ImportLocalityDataSet(): JSX.Element {
+export function LocalityUpdateFromDataSet(): JSX.Element {
   const [headerErrors, setHeaderErrors] = React.useState({
-    missingRequiredHeaders: [] as RA<LocalityImportHeader>,
+    missingRequiredHeaders: [] as RA<LocalityUpdateHeader>,
     unrecognizedHeaders: [] as RA<string>,
   });
 
@@ -33,7 +33,7 @@ export function ImportLocalityDataSet(): JSX.Element {
 
   function resetContext(): void {
     setHeaderErrors({
-      missingRequiredHeaders: [] as RA<LocalityImportHeader>,
+      missingRequiredHeaders: [] as RA<LocalityUpdateHeader>,
       unrecognizedHeaders: [] as RA<string>,
     });
     setHeaders([]);
@@ -79,15 +79,15 @@ export function ImportLocalityDataSet(): JSX.Element {
     <>
       <CsvFilePicker
         firstRowAlwaysHeader
-        header={headerText.importLocalityDataset()}
+        header={headerText.localityUpdateTool()}
         onFileImport={(headers, data): void => {
           const foundHeaderErrors = headers.reduce(
             (accumulator, currentHeader) => {
               const parsedHeader = currentHeader
                 .toLowerCase()
-                .trim() as LocalityImportHeader;
+                .trim() as LocalityUpdateHeader;
               const isUnknown =
-                !localityImportAcceptedHeaders().has(parsedHeader);
+                !localityUpdateAcceptedHeaders().has(parsedHeader);
 
               return {
                 missingRequiredHeaders:
@@ -100,7 +100,7 @@ export function ImportLocalityDataSet(): JSX.Element {
               };
             },
             {
-              missingRequiredHeaders: Array.from(localityImportRequiredHeaders),
+              missingRequiredHeaders: Array.from(localityUpdateRequiredHeaders),
               unrecognizedHeaders: [] as RA<string>,
             }
           );
@@ -126,7 +126,7 @@ export function ImportLocalityDataSet(): JSX.Element {
                   onClick={(): void => {
                     handleParse(headers, data);
                     setHeaderErrors({
-                      missingRequiredHeaders: [] as RA<LocalityImportHeader>,
+                      missingRequiredHeaders: [] as RA<LocalityUpdateHeader>,
                       unrecognizedHeaders: [] as RA<string>,
                     });
                   }}
@@ -136,7 +136,7 @@ export function ImportLocalityDataSet(): JSX.Element {
               )}
             </>
           }
-          header={localityText.localityImportHeaderError()}
+          header={localityText.localityUpdateHeaderError()}
           icon={
             headerErrors.missingRequiredHeaders.length === 0
               ? 'warning'
@@ -147,7 +147,7 @@ export function ImportLocalityDataSet(): JSX.Element {
           <>
             {headerErrors.missingRequiredHeaders.length > 0 && (
               <>
-                <H2>{localityText.localityImportMissingHeader()}</H2>
+                <H2>{localityText.localityUpdateMissingHeader()}</H2>
                 <p>
                   {formatConjunction(
                     headerErrors.missingRequiredHeaders as RA<LocalizedString>
@@ -157,7 +157,7 @@ export function ImportLocalityDataSet(): JSX.Element {
             )}
             {headerErrors.unrecognizedHeaders.length > 0 && (
               <>
-                <H2>{localityText.localityImportUnrecognizedHeaders()}</H2>
+                <H2>{localityText.localityUpdateUnrecognizedHeaders()}</H2>
                 <p>
                   {formatConjunction(
                     headerErrors.unrecognizedHeaders as RA<LocalizedString>
@@ -165,11 +165,11 @@ export function ImportLocalityDataSet(): JSX.Element {
                 </p>
               </>
             )}
-            <H2>{localityText.localityImportedAcceptedHeaders()}</H2>
+            <H2>{localityText.localityUpdateAcceptedHeaders()}</H2>
             <p>
               {formatConjunction(
                 Array.from(
-                  localityImportAcceptedHeaders()
+                  localityUpdateAcceptedHeaders()
                 ) as unknown as RA<LocalizedString>
               )}
             </p>
@@ -177,7 +177,7 @@ export function ImportLocalityDataSet(): JSX.Element {
         </Dialog>
       )}
       {taskId === undefined ? undefined : (
-        <LocalityImportStatus
+        <LocalityUpdateStatus
           taskId={taskId}
           onClose={(): void => setTaskId(undefined)}
           onImport={(): void => handleImport(headers, data)}

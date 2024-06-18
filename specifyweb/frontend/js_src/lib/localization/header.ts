@@ -143,8 +143,8 @@ export const headerText = createDictionary({
       abgeschlossen ist.
     `,
   },
-  importLocalityDataset: {
-    'en-us': 'Import Locality Data Set',
+  localityUpdateTool: {
+    'en-us': 'Locality Update Tool',
   },
   labelName: {
     'en-us': 'Label Name',

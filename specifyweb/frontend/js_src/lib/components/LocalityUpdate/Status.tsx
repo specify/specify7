@@ -37,18 +37,18 @@ import { downloadDataSet } from '../WorkBench/helpers';
 import { RemainingLoadingTime } from '../WorkBench/RemainingLoadingTime';
 import { TableRecordCounts } from '../WorkBench/Results';
 import type {
-  LocalityImportParseError,
-  LocalityImportState,
-  LocalityImportTaskStatus,
+  LocalityUpdateParseError,
+  LocalityUpdateState,
+  LocalityUpdateTaskStatus,
 } from './types';
 import {
-  localityImportStatusLocalization,
-  resolveImportLocalityErrorMessage,
+  localityUpdateStatusLocalization,
+  resolveLocalityUpdateErrorMessage,
 } from './utils';
 
-const statusDimensionKey = 'localityimport-status';
+const statusDimensionKey = 'localityupdate-status';
 
-export function LocalityImportStatus({
+export function LocalityUpdateStatus({
   taskId,
   onImport: handleImport,
   onClose: handleClose,
@@ -57,7 +57,7 @@ export function LocalityImportStatus({
   readonly onImport: () => void;
   readonly onClose: () => void;
 }): JSX.Element {
-  const [state, setState] = React.useState<LocalityImportState>({
+  const [state, setState] = React.useState<LocalityUpdateState>({
     taskstatus: 'PENDING',
     type: 'PENDING',
     taskinfo: 'None',
@@ -66,7 +66,7 @@ export function LocalityImportStatus({
   React.useEffect(() => {
     let destructorCalled = false;
     const fetchStatus = () =>
-      void ajax<LocalityImportState>(`/api/localityset/status/${taskId}/`, {
+      void ajax<LocalityUpdateState>(`/api/localityset/status/${taskId}/`, {
         headers: { Accept: 'application/json' },
       })
         .then(({ data }) => {
@@ -74,7 +74,7 @@ export function LocalityImportStatus({
           if (
             !destructorCalled &&
             (
-              ['PENDING', 'PARSING', 'PROGRESS'] as RA<LocalityImportTaskStatus>
+              ['PENDING', 'PARSING', 'PROGRESS'] as RA<LocalityUpdateTaskStatus>
             ).includes(data.taskstatus)
           )
             globalThis.setTimeout(fetchStatus, SECOND);
@@ -95,11 +95,11 @@ export function LocalityImportStatus({
     [taskId]
   );
 
-  const title = localityImportStatusLocalization[state.taskstatus];
+  const title = localityUpdateStatusLocalization[state.taskstatus];
   useTitle(title);
 
   return state.taskstatus === 'PARSING' || state.taskstatus === 'PROGRESS' ? (
-    <LocalityImportProgress
+    <LocalityUpdateProgress
       currentProgress={state.taskinfo.current}
       header={title}
       total={state.taskinfo.total}
@@ -107,14 +107,14 @@ export function LocalityImportStatus({
       onTaskCancel={handleTaskCancel}
     />
   ) : state.taskstatus === 'SUCCEEDED' ? (
-    <LocalityImportSuccess
+    <LocalityUpdateSuccess
       geoCoordDetailIds={state.taskinfo.geocoorddetails}
       localityIds={state.taskinfo.localities}
       recordSetId={state.taskinfo.recordsetid}
       onClose={handleClose}
     />
   ) : state.taskstatus === 'PARSED' ? (
-    <LocalityImportParsed
+    <LocalityUpdateParsed
       geoCoordDetails={
         state.taskinfo.rows.filter(
           ({ geocoorddetail }) => geocoorddetail !== null
@@ -125,12 +125,12 @@ export function LocalityImportStatus({
       onImport={handleImport}
     />
   ) : state.taskstatus === 'PARSE_FAILED' ? (
-    <LocalityImportParseErrors
+    <LocalityUpdateParseErrors
       errors={state.taskinfo.errors}
       onClose={handleClose}
     />
   ) : state.taskstatus === 'FAILED' ? (
-    <LocalityImportFailed
+    <LocalityUpdateFailed
       taskId={taskId}
       traceback={state.taskinfo.traceback}
       onClose={handleClose}
@@ -158,7 +158,7 @@ export function LocalityImportStatus({
       onClose={handleClose}
     />
   ) : (
-    <LocalityImportUnknownState
+    <LocalityUpdateUnknownState
       state={state}
       taskId={taskId}
       onClose={handleClose}
@@ -166,7 +166,7 @@ export function LocalityImportStatus({
   );
 }
 
-function LocalityImportProgress({
+function LocalityUpdateProgress({
   header,
   currentProgress,
   total,
@@ -204,7 +204,7 @@ function LocalityImportProgress({
   );
 }
 
-export function LocalityImportParsed({
+function LocalityUpdateParsed({
   localities,
   geoCoordDetails,
   onImport: handleImport,
@@ -230,13 +230,13 @@ export function LocalityImportParsed({
           </Button.Info>
         </>
       }
-      header={localityImportStatusLocalization.PARSED}
+      header={localityUpdateStatusLocalization.PARSED}
       modal={false}
       onClose={handleClose}
     >
       <div className="flex flex-col gap-4">
         <p>
-          {localityText.localityImportEffectCounts({
+          {localityText.localityUpdateEffectCounts({
             localityTabelLabel: tables.Locality.label,
             geoCoordDetailTableLabel: tables.GeoCoordDetail.label,
           })}
@@ -253,7 +253,7 @@ export function LocalityImportParsed({
   );
 }
 
-export function LocalityImportSuccess({
+export function LocalityUpdateSuccess({
   localityIds,
   geoCoordDetailIds,
   recordSetId,
@@ -280,7 +280,7 @@ export function LocalityImportSuccess({
   return (
     <Dialog
       buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
-      header={localityImportStatusLocalization.SUCCEEDED}
+      header={localityUpdateStatusLocalization.SUCCEEDED}
       modal={false}
       onClose={handleClose}
     >
@@ -333,7 +333,7 @@ export function LocalityImportSuccess({
               isInRecordSet={false}
               newResource={undefined}
               table={tables.Locality}
-              title={localityText.localityImportResults()}
+              title={localityText.localityUpdateResults()}
               totalCount={localityIds.length}
               onAdd={undefined}
               onClone={undefined}
@@ -349,47 +349,11 @@ export function LocalityImportSuccess({
   );
 }
 
-export function LocalityImportFailed({
-  taskId,
-  traceback,
-  onClose: handleClose,
-}: {
-  readonly taskId: string;
-  readonly traceback: string;
-  readonly onClose: () => void;
-}): JSX.Element {
-  return (
-    <Dialog
-      buttons={
-        <>
-          <Button.Info
-            onClick={(): void =>
-              void downloadFile(
-                `Locality Data Set ${taskId} Crash Report - ${new Date().toJSON()}.txt`,
-                produceStackTrace(traceback)
-              )
-            }
-          >
-            {commonText.downloadErrorMessage()}
-          </Button.Info>
-          <span className="-ml-4 flex-1" />
-          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-        </>
-      }
-      header={localityText.localityImportFailed()}
-      icon="error"
-      onClose={handleClose}
-    >
-      <p>{localityText.localityImportWentWrong()}</p>
-    </Dialog>
-  );
-}
-
-export function LocalityImportParseErrors({
+export function LocalityUpdateParseErrors({
   errors,
   onClose: handleClose,
 }: {
-  readonly errors: RA<LocalityImportParseError>;
+  readonly errors: RA<LocalityUpdateParseError>;
   readonly onClose: () => void;
 }): JSX.Element | null {
   const loading = React.useContext(LoadingContext);
@@ -401,9 +365,9 @@ export function LocalityImportParseErrors({
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
           <Button.Info
             onClick={(): void => {
-              const fileName = `${localityText.localityImportErrorFileName({
+              const fileName = localityText.localityUpdateParseErrorFileName({
                 date: new Date().toDateString(),
-              })}.csv`;
+              });
 
               const columns = [
                 preferencesText.row(),
@@ -415,12 +379,14 @@ export function LocalityImportParseErrors({
                 ({ message, payload, field, rowNumber }) => [
                   rowNumber.toString(),
                   field,
-                  resolveImportLocalityErrorMessage(message, payload),
+                  resolveLocalityUpdateErrorMessage(message, payload),
                 ]
               );
 
               loading(
-                downloadDataSet(fileName, data, columns, ',').catch(softFail)
+                downloadDataSet(`${fileName}.csv`, data, columns, ',').catch(
+                  softFail
+                )
               );
             }}
           >
@@ -428,7 +394,7 @@ export function LocalityImportParseErrors({
           </Button.Info>
         </>
       }
-      header={localityText.localityImportFailureResults()}
+      header={localityText.localityUpdateFailureResults()}
       icon="error"
       specialMode="noGradient"
       onClose={handleClose}
@@ -461,7 +427,7 @@ export function LocalityImportParseErrors({
           <tr key={index}>
             <td>{rowNumber}</td>
             <td>{field}</td>
-            <td>{resolveImportLocalityErrorMessage(message, payload)}</td>
+            <td>{resolveLocalityUpdateErrorMessage(message, payload)}</td>
           </tr>
         ))}
       </table>
@@ -469,7 +435,45 @@ export function LocalityImportParseErrors({
   );
 }
 
-function LocalityImportUnknownState({
+export function LocalityUpdateFailed({
+  taskId,
+  traceback,
+  onClose: handleClose,
+}: {
+  readonly taskId: string;
+  readonly traceback: string;
+  readonly onClose: () => void;
+}): JSX.Element {
+  return (
+    <Dialog
+      buttons={
+        <>
+          <Button.Info
+            onClick={(): void => {
+              const fileName = localityText.localityUpdateCrashFileName({
+                taskId,
+                date: new Date().toDateString(),
+              });
+
+              downloadFile(`${fileName}.txt`, produceStackTrace(traceback));
+            }}
+          >
+            {commonText.downloadErrorMessage()}
+          </Button.Info>
+          <span className="-ml-4 flex-1" />
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+        </>
+      }
+      header={localityText.localityUpdateFailed()}
+      icon="error"
+      onClose={handleClose}
+    >
+      <p>{localityText.localityUpdateWentWrong()}</p>
+    </Dialog>
+  );
+}
+
+function LocalityUpdateUnknownState({
   taskId,
   state: { taskstatus, taskinfo },
   onClose: handleClose,
@@ -486,12 +490,14 @@ function LocalityImportUnknownState({
       buttons={
         <>
           <Button.Info
-            onClick={(): void =>
-              void downloadFile(
-                `Locality Data Set ${taskId} Report - ${new Date().toJSON()}.txt`,
-                produceStackTrace(taskinfo)
-              )
-            }
+            onClick={(): void => {
+              const fileName = localityText.localityUpdateCrashFileName({
+                taskId,
+                date: new Date().toDateString(),
+              });
+
+              downloadFile(`${fileName}.txt`, produceStackTrace(taskinfo));
+            }}
           >
             {commonText.downloadErrorMessage()}
           </Button.Info>
@@ -500,7 +506,7 @@ function LocalityImportUnknownState({
         </>
       }
       dimensionsKey={statusDimensionKey}
-      header={localityText.localityImportWentWrong()}
+      header={localityText.localityUpdateWentWrong()}
       modal={false}
       onClose={handleClose}
     >

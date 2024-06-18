@@ -44,8 +44,8 @@ urlpatterns = [
     url(r'^localityset/', include([
         url(r'^parse/$', views.parse_locality_set),
         url(r'^import/$', views.upload_locality_set),
-        url(r'^status/(?P<taskid>[0-9a-fA-F-]+)/$', views.localityimport_status),
-        url(r'^abort/(?P<taskid>[0-9a-fA-F-]+)/$', views.abort_localityimport_task),
+        url(r'^status/(?P<taskid>[0-9a-fA-F-]+)/$', views.localityupdate_status),
+        url(r'^abort/(?P<taskid>[0-9a-fA-F-]+)/$', views.abort_localityupdate_task),
     ])),
 
     # generates Sp6 master key
