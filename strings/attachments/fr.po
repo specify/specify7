@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-06-18 23:09+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2024-06-19 11:09+0000\n"
+"Last-Translator: Antoine Lesimple <antoine.lesimple@ird.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "attachments/fr/>\n"
 "Language: fr\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.6-dev\n"
+"X-Generator: Weblate 5.6-rc\n"
 
 #. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes
 #: components/Attachments/RecordSetAttachment.tsx:121
@@ -65,15 +65,14 @@ msgstr "Il n'y a pas de pièces jointes"
 
 #. Used in: Components > Attachments > Cell
 #: components/Attachments/Cell.tsx:127
-#, fuzzy
 msgid "unableToFindRelatedRecord"
-msgstr "Impossible de trouver l'enregistrement associé"
+msgstr "Impossible de trouver l'enregistrement lié"
 
 #. Used in: Components > Attachments > Cell
 #: components/Attachments/Cell.tsx:130
-#, fuzzy
 msgid "unableToFindRelatedRecordDescription"
-msgstr "Impossible de trouver un enregistrement auquel cette pièce jointe est liée."
+msgstr ""
+"Impossible de trouver un enregistrement auquel cette pièce jointe est liée."
 
 #. Used in: Components > Attachments > Dialog
 #: components/Attachments/Dialog.tsx:87
@@ -83,7 +82,6 @@ msgstr "Afficher le formulaire"
 
 #. Used in: Components > Molecules > File Picker
 #: components/Molecules/FilePicker.tsx:51
-#, fuzzy
 msgid "multipleFilesSelected"
 msgstr "Plusieurs fichiers sélectionnés"
 
@@ -100,21 +98,18 @@ msgstr "Supprimé"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:467
-#, fuzzy
 msgid "noFile"
 msgstr "Pas de fichier"
 
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:169
-#, fuzzy
 msgid "pleaseReselectAllFiles"
 msgstr "Veuillez resélectionner tous les fichiers avant de les télécharger."
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:466
-#, fuzzy
 msgid "incorrectFormatter"
-msgstr "Mal formaté"
+msgstr "Incorrectement formaté"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:470
@@ -135,19 +130,16 @@ msgstr "Annulé"
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:475
 #: components/AttachmentsBulkImport/utils.ts:478
-#, fuzzy
 msgid "frontEndInterruption"
 msgstr "{action:string} était en cours lorsque l'interruption s'est produite"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:473
-#, fuzzy
 msgid "matchError"
 msgstr "Erreur de correspondance"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:481
-#, fuzzy
 msgid "errorReadingFile"
 msgstr "Erreur de lecture du fichier"
 
@@ -155,7 +147,7 @@ msgstr "Erreur de lecture du fichier"
 #: components/AttachmentsBulkImport/utils.ts:483
 #, fuzzy
 msgid "unhandledFatalResourceError"
-msgstr "Erreur de ressource fatale non gérée :"
+msgstr "Erreur de ressource fatale non traitée :"
 
 #. Used in: Components > Attachments Bulk Import > Datasets
 #: components/AttachmentsBulkImport/Datasets.tsx:141
@@ -164,25 +156,21 @@ msgstr "Import d'un jeu de données de pièces jointes ({count:number})"
 
 #. Used in: Components > Attachments Bulk Import > Datasets
 #: components/AttachmentsBulkImport/Datasets.tsx:240
-#, fuzzy
 msgid "newAttachmentDataset"
-msgstr "Nouvel ensemble de données de pièces jointes {date : chaîne}"
+msgstr "Nouveau jeu de données de pièces jointes {date: string}"
 
 #. Used in: Components > Attachments Bulk Import > Datasets
 #: components/AttachmentsBulkImport/Datasets.tsx:269
-#, fuzzy
 msgid "newAttachmentDatasetBase"
-msgstr "Fichiers en double trouvés"
+msgstr "Nouveau jeu de données de pièces jointes"
 
 #. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:393
-#, fuzzy
 msgid "uploadInterrupted"
 msgstr "Téléchargement interrompu"
 
 #. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:399
-#, fuzzy
 msgid "uploadInterruptedDescription"
 msgstr ""
 "Le téléchargement était en cours lorsqu'une interruption s'est produite. "
@@ -190,16 +178,14 @@ msgstr ""
 
 #. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:404
-#, fuzzy
 msgid "rollbackInterrupted"
-msgstr "Restauration interrompue"
+msgstr "Retour en arrière interrompu"
 
 #. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:410
-#, fuzzy
 msgid "rollbackInterruptedDescription"
 msgstr ""
-"La restauration était en cours lorsqu'une interruption s'est produite. "
+"Le retour en arrière était en cours lorsqu'une interruption s'est produite. "
 "Certains fichiers peuvent avoir été supprimés"
 
 #. Used in: Components > Attachments Bulk Import > Import
@@ -210,7 +196,6 @@ msgstr "ID de la pièce jointe"
 #. Used in: Components > Attachments Bulk Import > Select Upload Path
 #: components/AttachmentsBulkImport/SelectUploadPath.tsx:34
 #: components/AttachmentsBulkImport/SelectUploadPath.tsx:41
-#, fuzzy
 msgid "choosePath"
 msgstr "Choisir le chemin"
 
@@ -229,19 +214,16 @@ msgstr ""
 
 #. Used in: Components > Attachments Bulk Import > Action State
 #: components/AttachmentsBulkImport/ActionState.tsx:59
-#, fuzzy
 msgid "interrupted"
 msgstr "Interrompu"
 
 #. Used in: Components > Attachments Bulk Import > Action State
 #: components/AttachmentsBulkImport/ActionState.tsx:55
-#, fuzzy
 msgid "tryNow"
 msgstr "Essayez maintenant"
 
 #. Used in: Components > Attachments Bulk Import > Action State
 #: components/AttachmentsBulkImport/ActionState.tsx:62
-#, fuzzy
 msgid "interruptedTime"
 msgstr "Interrompu. Réessayer dans {remainingTime:string}"
 
@@ -255,9 +237,8 @@ msgstr ""
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:485
-#, fuzzy
 msgid "noMatch"
-msgstr "Aucune concordance"
+msgstr "Aucune correspondance"
 
 #. Used in: Components > Attachments > Record Set Attachment
 #: components/Attachments/RecordSetAttachment.tsx:134
@@ -268,7 +249,6 @@ msgstr ""
 
 #. Used in: Components > Attachments > Record Set Attachment
 #: components/Attachments/RecordSetAttachment.tsx:142
-#, fuzzy
 msgid "fetchNextAttachments"
 msgstr "Rechercher plus de pièces jointes"
 
@@ -280,19 +260,16 @@ msgstr "Masquer le formulaire"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:486
-#, fuzzy
 msgid "multipleMatches"
 msgstr "Plusieurs correspondances"
 
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:81
-#, fuzzy
 msgid "multipleMatchesClick"
-msgstr "Plusieurs correspondances. Cliquez pour lever l'ambiguïté"
+msgstr "Plusieurs correspondances. Cliquez pour clarifier"
 
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:159
-#, fuzzy
 msgid "totalFiles"
 msgstr "Total des fichiers"
 
@@ -303,21 +280,18 @@ msgstr "Correctement formaté"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:488
-#, fuzzy
 msgid "stoppedByUser"
 msgstr "Arrêté par l'utilisateur"
 
 #. Used in: Components > Router > Overlay Routes
 #: components/Router/OverlayRoutes.tsx:228
-#, fuzzy
 msgid "importAttachments"
 msgstr "Importer des pièces jointes"
 
 #. Used in: Components > Attachments Bulk Import > Action State
 #: components/AttachmentsBulkImport/ActionState.tsx:30
-#, fuzzy
 msgid "onFile"
-msgstr "Pas de fichier"
+msgstr "Dans le fichier"
 
 #. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:416
@@ -344,9 +318,8 @@ msgstr "Erreur lors de la sauvegarde de l'enregistrement"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:489
-#, fuzzy
 msgid "interruptionStopped"
-msgstr "Rechercher plus de pièces jointes"
+msgstr "Arrêté à cause d'une erreur de téléchargement du précédent fichier"
 
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:230
@@ -355,30 +328,27 @@ msgstr "Choisissez des fichiers ou faites-les glisser ici pour commencer."
 
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:231
-#, fuzzy
 msgid "selectIdentifier"
-msgstr "Sélectionnez un identifiant pour faire correspondre le nom des fichiers."
+msgstr ""
+"Sélectionnez un identifiant pour faire correspondre le nom des fichiers."
 
 #. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:224
-#, fuzzy
 msgid "progress"
-msgstr "Progrès"
+msgstr "En cours"
 
 #. Used in: Components > Attachments Bulk Import > Rollback
 #: components/AttachmentsBulkImport/Rollback.tsx:143
-#, fuzzy
 msgid "rollbackResults"
-msgstr "Résultats de la restauration"
+msgstr "Résultats du retour en arrière"
 
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Upload
 #: components/AttachmentsBulkImport/Rollback.tsx:146
 #: components/AttachmentsBulkImport/Upload.tsx:267
-#, fuzzy
 msgid "resultValue"
 msgstr ""
-"{success: number} sur les {total: number} pièces jointes de l'ensemble de "
-"données étaient {action: string}."
+"{success : number} sur les {total : number} pièces jointes du jeu de données "
+"étaient {action : string}."
 
 #. Used in: Components > Attachments Bulk Import > Rename Data Set
 #: components/AttachmentsBulkImport/RenameDataSet.tsx:32
