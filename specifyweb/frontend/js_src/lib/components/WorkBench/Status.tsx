@@ -12,6 +12,7 @@ import { Http } from '../../utils/ajax/definitions';
 import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Label } from '../Atoms/Form';
+import { SECOND } from '../Atoms/timeUnits';
 import { error } from '../Errors/assert';
 import { softFail } from '../Errors/Crash';
 import { useTitle } from '../Molecules/AppTitle';
@@ -20,7 +21,7 @@ import type { Dataset, Status } from '../WbPlanView/Wrapped';
 import { RemainingLoadingTime } from './RemainingLoadingTime';
 
 // How often to query back-end
-const REFRESH_RATE = 2000;
+const REFRESH_RATE = 2 * SECOND;
 
 export function WbStatus({
   dataset,
@@ -41,7 +42,6 @@ export function WbStatus({
     let destructorCalled = false;
     const fetchStatus = (): void =>
       void ajax<Status | null>(`/api/workbench/status/${dataset.id}/`, {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         headers: { Accept: 'application/json' },
       })
         .then(({ data: status }) => {

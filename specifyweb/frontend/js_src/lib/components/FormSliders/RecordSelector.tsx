@@ -7,12 +7,12 @@ import { clamp } from '../../utils/utils';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
-import { SearchDialog } from '../Forms/SearchDialog';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { SearchDialog } from '../SearchDialog';
 import { Slider } from './Slider';
 
 export type RecordSelectorProps<SCHEMA extends AnySchema> = {
-  readonly model: SpecifyModel<SCHEMA>;
+  readonly table: SpecifyTable<SCHEMA>;
   // Related field
   readonly field?: Relationship;
   // A record on which this record set is dependent
@@ -34,6 +34,7 @@ export type RecordSelectorProps<SCHEMA extends AnySchema> = {
   readonly onSlide:
     | ((newIndex: number, replace: boolean, callback?: () => void) => void)
     | undefined;
+  readonly isCollapsed?: boolean;
 };
 
 export type RecordSelectorState<SCHEMA extends AnySchema> = {
@@ -48,7 +49,9 @@ export type RecordSelectorState<SCHEMA extends AnySchema> = {
   // Use this to render <ResourceView>
   readonly resource: SpecifyResource<SCHEMA> | undefined;
   // Set this as an "Add" button event listener
-  readonly onAdd: (() => void) | undefined;
+  readonly onAdd:
+    | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
+    | undefined;
   // Set this as an "Remove" button event listener
   readonly onRemove:
     | ((source: 'deleteButton' | 'minusButton') => void)
@@ -58,7 +61,7 @@ export type RecordSelectorState<SCHEMA extends AnySchema> = {
 };
 
 export function useRecordSelector<SCHEMA extends AnySchema>({
-  model,
+  table,
   field,
   records,
   onAdd: handleAdded,
@@ -106,7 +109,8 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
           extraFilters={undefined}
           forceCollection={undefined}
           multiple
-          model={model}
+          table={table}
+          onClose={(): void => setState({ type: 'Main' })}
           onSelected={(resources): void => {
             f.maybe(field?.otherSideName, (fieldName) =>
               f.maybe(relatedResource?.url(), (url) =>
@@ -117,14 +121,13 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
             );
             handleAdded(resources);
           }}
-          onClose={(): void => setState({ type: 'Main' })}
         />
       ) : null,
     onAdd:
       typeof handleAdded === 'function'
-        ? (): void => {
+        ? (resources: RA<SpecifyResource<SCHEMA>>): void => {
             if (typeof relatedResource === 'object') {
-              const resource = new model.Resource();
+              const resource = resources[0];
               if (
                 typeof field?.otherSideName === 'string' &&
                 !relatedResource.isNew()

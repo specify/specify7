@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { commonText } from '../../localization/common';
 import { statsText } from '../../localization/stats';
@@ -11,6 +12,7 @@ import { className } from '../Atoms/className';
 import { Input } from '../Atoms/Form';
 import type { Tables } from '../DataModel/types';
 import { getNoAccessTables } from '../QueryBuilder/helpers';
+import { DeleteStatsCategory } from './DeleteCategory';
 import { generateStatUrl, makeSerializedFieldsFromPaths } from './hooks';
 import { StatItem } from './StatItems';
 import { backEndStatsSpec, dynamicStatsSpec, statsSpec } from './StatsSpec';
@@ -53,7 +55,12 @@ function ItemOverride({
   const noAccessTables: RA<keyof Tables> = React.useMemo(
     () =>
       filterArray([
-        backEndSpecResolve?.querySpec,
+        /*
+         * Dummy value to get the tables involved in the backend queries. Need this
+         * to show no permission when backend query fails due to permission denied
+         * The backend tables could be stored separately to avoid this
+         */
+        backEndSpecResolve?.querySpec?.(backEndSpecResolve.responseKey),
         dynamicSpecResolve?.dynamicQuerySpec,
       ])
         .map((querySpec) =>
@@ -107,7 +114,7 @@ export function Categories({
     | ((categoryIndex: number, itemIndex: number | undefined) => void)
     | undefined;
   readonly onCategoryRename:
-    | ((newName: string, categoryIndex: number) => void)
+    | ((newName: LocalizedString, categoryIndex: number) => void)
     | undefined;
   readonly onEdit:
     | ((categoryIndex: number, itemIndex: number, querySpec: QuerySpec) => void)
@@ -136,6 +143,7 @@ export function Categories({
     (items ?? []).some(
       (item) => item.type === 'CustomStat' || item.isVisible === undefined
     );
+
   return pageLayout === undefined ? null : (
     <>
       {pageLayout.categories.map(
@@ -155,7 +163,7 @@ export function Categories({
                 checkEmptyItems ? (
                   <h5 className="font-semibold">{label}</h5>
                 ) : (
-                  <h3 className="overflow-auto rounded-t bg-brand-300 p-3 pt-[0.1rem] pb-[0.1rem] text-lg font-semibold text-white">
+                  <h3 className="bg-brand-300 overflow-auto rounded-t p-3 pb-[0.1rem] pt-[0.1rem] text-lg font-semibold text-white">
                     {label}
                   </h3>
                 )
@@ -263,14 +271,12 @@ export function Categories({
               ) : null}
               {typeof handleAdd === 'function' ? (
                 <div className="flex gap-2">
-                  <Button.Small
-                    variant={className.secondaryButton}
-                    onClick={(): void =>
-                      handleRemove?.(categoryIndex, undefined)
-                    }
-                  >
-                    {statsText.deleteCategory()}
-                  </Button.Small>
+                  {typeof handleRemove === 'function' ? (
+                    <DeleteStatsCategory
+                      categoryLabel={label}
+                      onDelete={() => handleRemove(categoryIndex, undefined)}
+                    />
+                  ) : null}
                   <span className="-ml-2 flex-1" />
                   <Button.Small
                     variant={className.infoButton}

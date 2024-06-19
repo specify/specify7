@@ -6,20 +6,20 @@ import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
 import type { QueryResultRow } from './Results';
 import { queryIdField } from './Results';
 
 export function QueryToForms({
-  model,
+  table,
   results,
   selectedRows,
   onFetchMore: handleFetchMore,
   onDelete: handleDelete,
   totalCount,
 }: {
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly results: RA<QueryResultRow | undefined>;
   readonly selectedRows: ReadonlySet<number>;
   readonly onFetchMore: ((index: number) => void) | undefined;
@@ -37,7 +37,7 @@ export function QueryToForms({
   return (
     <>
       <Button.Small
-        disabled={results.length === 0 || totalCount === undefined}
+        disabled={totalCount === undefined || totalCount === 0}
         onClick={handleOpen}
       >
         {queryText.browseInForms()}
@@ -50,12 +50,11 @@ export function QueryToForms({
           ids={ids}
           isDependent={false}
           isInRecordSet={false}
-          mode="edit"
-          model={model}
           newResource={undefined}
+          table={table}
           title={commonText.colonLine({
             label: queryText.queryResults(),
-            value: model.label,
+            value: table.label,
           })}
           totalCount={selectedRows.size === 0 ? totalCount : selectedRows.size}
           onAdd={undefined}

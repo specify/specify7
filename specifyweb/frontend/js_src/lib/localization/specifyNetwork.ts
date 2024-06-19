@@ -9,7 +9,7 @@ import { createDictionary } from './utils';
 export const specifyNetworkText = createDictionary({
   specifyNetwork: {
     'en-us': 'Specify Network',
-    'ru-ru': 'Specify Network',
+    'ru-ru': 'Укажите сеть',
     'es-es': 'Specify red',
     'fr-fr': 'Réseau Specify',
     'uk-ua': 'Specify Network',
@@ -18,10 +18,10 @@ export const specifyNetworkText = createDictionary({
   occurrenceOrGuidRequired: {
     'en-us': 'Species Name or GUID must be provided to display this page',
     'de-ch': `
-      Um diese Seite anzuzeigen, muss der Artname oder die GUID angegeben werden
+      Zur Anzeige dieser Seite muss der Artenname oder die GUID angegeben werden
     `,
     'es-es': `
-      Se debe proporcionar el nombre de la especie o GUID para mostrar esta
+      Se debe proporcionar el nombre de especie o el GUID para mostrar esta
       página
     `,
     'fr-fr': `
@@ -35,15 +35,15 @@ export const specifyNetworkText = createDictionary({
   },
   noDataError: {
     'en-us': 'Unable to find any data for this request',
-    'de-ch': 'Für diese Anfrage konnten keine Daten gefunden werden',
-    'es-es': 'No se pueden encontrar datos para esta solicitud',
+    'de-ch': 'Zu dieser Anfrage konnten keine Daten gefunden werden',
+    'es-es': 'No se encuentran datos para esta solicitud',
     'fr-fr': 'Impossible de trouver des données pour cette demande',
-    'ru-ru': 'Не удалось найти данные для этого запроса.',
+    'ru-ru': 'Не удалось найти данные по этому запросу.',
     'uk-ua': 'Неможливо знайти дані для цього запиту',
   },
   noDataErrorDescription: {
     'en-us': 'Please try searching for a different record',
-    'de-ch': 'Versuchen Sie bitte, nach einem anderen Datensatz zu suchen',
+    'de-ch': 'Bitte versuchen Sie, nach einem anderen Datensatz zu suchen',
     'es-es': 'Intente buscar un registro diferente',
     'fr-fr': 'Veuillez essayer de rechercher un autre enregistrement',
     'ru-ru': 'Пожалуйста, попробуйте найти другую запись',
@@ -68,18 +68,10 @@ export const specifyNetworkText = createDictionary({
   collectionDate: {
     'en-us': 'Collection Date',
     'de-ch': 'Abholtermin',
-    'es-es': 'Fecha de colección',
+    'es-es': 'Fecha de colecta',
     'fr-fr': 'Date de collecte',
     'ru-ru': 'Дата сбора',
     'uk-ua': 'Дата збору',
-  },
-  mapDetails: {
-    'en-us': 'Details',
-    'de-ch': 'Einzelheiten',
-    'es-es': 'Detalles',
-    'fr-fr': 'Détails',
-    'ru-ru': 'Подробности',
-    'uk-ua': 'Подробиці',
   },
   mapDescription: {
     'en-us': `
@@ -91,7 +83,7 @@ export const specifyNetworkText = createDictionary({
       GBIF.
     `,
     'es-es': `
-      Este mapa muestra la aparición de este taxón en los agregadores iDigBio y
+      Este mapa muestra los registros de este taxón en los agregadores iDigBio y
       GBIF.
     `,
     'fr-fr': `
@@ -99,8 +91,8 @@ export const specifyNetworkText = createDictionary({
       iDigBio et GBIF.
     `,
     'ru-ru': `
-      На этой карте показаны встречаемости этого таксона по данным агрегаторов
-      iDigBio и GBIF.
+      На этой карте показано появление этого таксона в агрегаторах iDigBio и
+      GBIF.
     `,
     'uk-ua': `
       Ця карта показує випадки появи цього таксону з агрегаторів iDigBio та
@@ -117,20 +109,21 @@ export const specifyNetworkText = createDictionary({
     `,
     'de-ch': `
       In iDigBio erfasste Vorkommen werden als runde grüne Punkte angezeigt, mit
-      Ausnahme der in iDigBio erfassten Vorkommen aus der aktuellen Sammlung,
-      bei denen es sich um runde rote Punkte handelt. Wenn Sie die roten Punkte
-      vergrößern, wird eine blaue tropfenförmige Stecknadel angezeigt. Wenn Sie
-      auf die Stecknadel klicken, wird eine Standortabfrage in Specify
-      ausgeführt, die alle Arten in der aktuellen Specify-Datenbank anzeigt, die
-      an diesem Standort gesammelt wurden.
+      Ausnahme der Vorkommen aus der aktuellen in iDigBio erfassten Sammlung,
+      die runde rote Punkte sind. Wenn Sie die roten Punkte vergrößern, wird
+      eine blaue Stecknadel in Tropfenform angezeigt. Wenn Sie auf die
+      Stecknadel klicken, wird in Specify eine Standortabfrage ausgeführt, die
+      alle Arten in der aktuellen Specify-Datenbank anzeigt, die an diesem
+      Standort gesammelt wurden.
     `,
     'es-es': `
-      Las ocurrencias registradas en iDigBio se muestran como puntos verdes
-      redondos, excepto aquellas de la colección actual registrada en iDigBio
-      que son puntos rojos redondos. Al acercarse a los puntos rojos, aparece un
-      alfiler en forma de lágrima azul; al hacer clic en el alfiler, se ejecuta
-      una consulta de localidad en Especificar que muestra todas las especies
-      en la base de datos actual de Especificar recopiladas en esa ubicación.
+      Los registros recogidos en iDigBio se muestran como puntos verdes
+      redondos, excepto los de esta colección, registrados en iDigBio, que son
+      puntos rojos redondos. Al acercarse a los puntos rojos, aparece una
+      chincheta en forma de lágrima azul; al hacer clic en la chincheta, se
+      ejecuta una consulta de localidad en Specify que muestra todas las
+      especies en la base de datos actual de Specify colectadas en esa
+      localización.
     `,
     'fr-fr': `
       Les occurrences enregistrées dans iDigBio sont représentées par des points
@@ -142,20 +135,20 @@ export const specifyNetworkText = createDictionary({
       collectée à partir de cet emplacement.
     `,
     'ru-ru': `
-      Вхождения, записанные в iDigBio, отображаются круглыми зелеными точками,
-      за исключением событий из текущей коллекции, записанных в iDigBio, которые
-      имеют круглые красные точки. При увеличении красных точек появляется
-      синяя каплевидная булавка, щелчок по ней вызывает запрос местоположения в
+      Вхождения, записанные в iDigBio, показаны круглыми зелеными точками, за
+      исключением событий из текущей коллекции, записанных в iDigBio, которые
+      имеют круглые красные точки. При увеличении красных точек появляется синяя
+      каплевидная булавка, щелчок по ней вызывает запрос местоположения в
       Specify, который показывает все виды в текущей базе данных Specify,
       собранные из этого местоположения.
     `,
     'uk-ua': `
       Випадки, записані в iDigBio, відображаються круглими зеленими точками, за
       винятком випадків із поточної колекції, записаної в iDigBio, які мають
-      круглі червоні точки. Якщо збільшити масштаб червоних точок, з’явиться
-      блакитна краплевидна шпилька, натиснувши на шпильку, буде виконано запит
-      місцевості в Specify, який покаже всі види в поточній базі даних Specify,
-      зібрані з цього місця.
+      круглі червоні точки. Збільшення масштабу червоних крапок відкриває
+      блакитну шпильку-сльозинку, клацання шпильки виконує запит місцевості в
+      Specify, який показує всі види в поточній базі даних Specify, зібрані з
+      цього місця.
     `,
   },
   gbifDescription: {
@@ -167,15 +160,15 @@ export const specifyNetworkText = createDictionary({
     `,
     'de-ch': `
       Bei GBIF-Daten werden einzelne Punkte und Punktcluster als Sechsecke in
-      verschiedenen Farben von Gelb über Orange bis Rot dargestellt. Dunkelrote
-      Sechsecke, die der dichtesten Verteilung gesammelter Exemplare dieser Art
-      entsprechen.
+      unterschiedlichen Farben von Gelb über Orange bis Rot angezeigt.
+      Dunkelrote Sechsecke entsprechen der dichtesten Verteilung gesammelter
+      Exemplare dieser Art.
     `,
     'es-es': `
       Para los datos de GBIF, los puntos individuales y los grupos de puntos se
       muestran como hexágonos de diferentes colores que van del amarillo al
       naranja y al rojo. Hexágonos de color rojo oscuro que corresponden a las
-      distribuciones más densas de especímenes recolectados de esa especie.
+      distribuciones más densas de especímenes colectados de esa especie.
     `,
     'fr-fr': `
       Pour les données GBIF, les points individuels et les groupes de points
@@ -199,19 +192,19 @@ export const specifyNetworkText = createDictionary({
   },
   connectToGbif: {
     'en-us': 'Connect to GBIF',
-    'de-ch': 'Stellen Sie eine Verbindung zu GBIF her',
-    'es-es': 'Conéctate a GBIF',
+    'de-ch': 'Mit GBIF verbinden',
+    'es-es': 'Conectarse a GBIF',
     'fr-fr': 'Connectez-vous au GBIF',
-    'ru-ru': 'Подключиться к ГБИФ',
+    'ru-ru': 'Подключиться к GBIF',
     'uk-ua': 'Підключіться до GBIF',
   },
   searchForInstitution: {
     'en-us': 'Search for your institution:',
-    'de-ch': 'Suchen Sie nach Ihrer Institution:',
+    'de-ch': 'Mit GBIF verbinden',
     'es-es': 'Busque su institución:',
-    'fr-fr': 'Recherchez votre établissement :',
-    'ru-ru': 'Найдите свое учреждение:',
-    'uk-ua': 'Шукайте свій заклад:',
+    'fr-fr': 'Connectez-vous au GBIF',
+    'ru-ru': 'Подключиться к ГБИФ',
+    'uk-ua': 'Підключіться до GBIF',
   },
   institutionDistributionMap: {
     'en-us': `
@@ -219,12 +212,12 @@ export const specifyNetworkText = createDictionary({
       Institution
     `,
     'de-ch': `
-      Verbreitungskarte aller in Ihrer Institution kuratierten digitalisierten
-      Exemplare
+      Verbreitungskarte aller digitalisierten Exemplare, die in Ihrer
+      Institution kuratiert werden
     `,
     'es-es': `
-      Mapa de distribución de todos los especímenes digitalizados curados en su
-      Institución
+      Mapa de distribución de todos los ejemplares digitalizados conservados en
+      su Institución
     `,
     'fr-fr': `
       Carte de répartition de tous les spécimens numérisés conservés dans votre
@@ -235,7 +228,7 @@ export const specifyNetworkText = createDictionary({
       учреждении
     `,
     'uk-ua': `
-      Карта розповсюдження всіх оцифрованих зразків, курованих у вашій установі
+      Карта розповсюдження всіх оцифрованих зразків, збережених у вашій установі
     `,
   },
   collectionDistributionMap: {
@@ -243,13 +236,10 @@ export const specifyNetworkText = createDictionary({
       Distribution map of all of the digitized specimens curated in your
       Collection
     `,
-    'de-ch': `
-      Verbreitungskarte aller in Ihrer Sammlung kuratierten digitalisierten
-      Exemplare
-    `,
+    'de-ch': 'Verbreitungskarte aller digitalisierten Exemplare Ihrer Sammlung',
     'es-es': `
-      Mapa de distribución de todos los especímenes digitalizados seleccionados
-      en su Colección
+      Mapa de distribución de todos los ejemplares digitalizados conservados en
+      su Colección
     `,
     'fr-fr': `
       Carte de répartition de tous les spécimens numérisés conservés dans votre
@@ -259,7 +249,9 @@ export const specifyNetworkText = createDictionary({
       Карта распространения всех оцифрованных образцов, хранящихся в вашей
       коллекции.
     `,
-    'uk-ua': 'Карта розповсюдження всіх оцифрованих зразків у вашій колекції',
+    'uk-ua': `
+      Карта розповсюдження всіх оцифрованих зразків, збережених у вашій колекції
+    `,
   },
   startYear: {
     'en-us': 'Start Year',
@@ -271,7 +263,7 @@ export const specifyNetworkText = createDictionary({
   },
   endYear: {
     'en-us': 'End Year',
-    'de-ch': 'Jahresende',
+    'de-ch': 'Ende des Jahres',
     'es-es': 'Año final',
     'fr-fr': "Fin d'année",
     'ru-ru': 'Конец года',

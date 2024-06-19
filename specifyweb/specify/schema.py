@@ -3,9 +3,9 @@
 from django import http
 from django.conf import settings
 from django.utils.translation import gettext as _
-from django.views.decorators.http import require_GET
 from typing import Dict, List, Tuple
 
+from specifyweb.middleware.general import require_GET
 from .datamodel import (
     Field,
     Relationship,
@@ -162,7 +162,7 @@ def generate_openapi_for_tables():
                 "orderby": {
                     "name": "orderby",
                     "in": "query",
-                    "description": "The name of the field to order by. Prefix the field name with '-' for DESC sort order",
+                    "description": "The name of the field to order by. Prefix the field name with '-' for DESC sort order. Can specify multiple fields separated by comma",
                     "required": False,
                     "schema": {
                         "type": "string",
@@ -184,6 +184,15 @@ def generate_openapi_for_tables():
                     "description": record_version_description,
                     "required": False,
                     "schema": {"type": "number", "minimum": 0},
+                },
+                "id": {
+                    "name": "id",
+                    "in": "path",
+                    "required": True,
+                    "schema": {
+                        "type": "number",
+                        "minimum": 0,
+                    }
                 },
                 "version_in_header": {
                     "name": "HTTP_IF_MATCH",
@@ -456,6 +465,9 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
             {
                 "parameters": [
                     {
+                        "$ref": "#/components/parameters/id"
+                    },
+                    {
                         "$ref": "#/components/parameters/version_in_query"
                     },
                     {
@@ -631,14 +643,8 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                        "of that model from being deleted.",
                     "parameters": [
                         {
-                            "name": "id",
-                            "in": "path",
-                            "required": True,
-                            "schema": {
-                                "type": "number",
-                                "minimum": 0,
-                            }
-                        }
+                            "$ref": "#/components/parameters/id"
+                        },
                     ],
                     "responses": {
                         "200": {
@@ -746,10 +752,16 @@ def field_to_schema(field: Field) -> Dict:
             }
 
     elif field.type in ("text", "java.lang.String"):
-        return {
-            **required_to_schema(field, "string"),
-            "maxLength": getattr(field, "length", 0),
-        }
+        length = getattr(field, "length", None)
+        if length is not None and length > 0:
+            return {
+                **required_to_schema(field, "string"),
+                "maxLength": length,
+            }
+        else:
+            return {
+                **required_to_schema(field, "string"),
+            }
 
     elif field.type in (
         "java.lang.Integer",
@@ -778,6 +790,9 @@ def field_to_schema(field: Field) -> Dict:
 
     elif field.type == "java.lang.Boolean":
         return required_to_schema(field, "boolean")
+
+    elif field.type == "json":
+        return required_to_schema(field, "string")
 
     else:
         raise Exception(f"unexpected field type: {field.type}")

@@ -9,13 +9,14 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
-import { serializeResource } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { serializeResource } from '../DataModel/serializers';
 import type { CollectionObjectAttachment } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { defaultAttachmentScale } from '.';
 import { AttachmentGallery } from './Gallery';
+import { getAttachmentRelationship } from './utils';
 
 const haltIncrementSize = 300;
 
@@ -35,10 +36,18 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
 
   const [attachments] = useAsyncState(
     React.useCallback(async () => {
+      const attachmentField =
+        records.length > 0 && records.at(0) !== undefined
+          ? getAttachmentRelationship(records.at(0)!.specifyTable)
+          : undefined;
+      if (!showAttachments || attachmentField === undefined) {
+        return { attachments: [], related: [] };
+      }
+
       const relatedAttachmentRecords = await Promise.all(
         records.map(async (record) =>
           record
-            ?.rgetCollection(`${record.specifyModel.name}Attachments`)
+            ?.rgetCollection(attachmentField.name)
             .then(
               ({ models }) =>
                 models as RA<SpecifyResource<CollectionObjectAttachment>>
@@ -46,8 +55,8 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
         )
       );
 
-      const fetchCount = records.findIndex(
-        (record) => record?.populated !== true
+      const fetchCount = filterArray(records).findIndex(
+        (record) => !record.populated
       );
 
       fetchedCount.current = fetchCount === -1 ? records.length : fetchCount;
@@ -67,7 +76,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
         attachments: attachments.map(({ attachment }) => attachment),
         related: attachments.map(({ related }) => related),
       };
-    }, [records]),
+    }, [records, showAttachments]),
     false
   );
   const attachmentsRef = React.useRef(attachments);
@@ -88,6 +97,8 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
     'scale'
   );
 
+  const isComplete = fetchedCount.current === records.length;
+
   return (
     <>
       <Button.Icon
@@ -104,6 +115,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
           className={{
             container: dialogClassNames.wideContainer,
           }}
+          dimensionsKey={isComplete ? undefined : false}
           header={
             attachmentsRef.current?.attachments === undefined
               ? attachmentsText.attachments()
@@ -134,7 +146,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
           ) : (
             <AttachmentGallery
               attachments={attachmentsRef?.current?.attachments ?? []}
-              isComplete={fetchedCount.current === records.length}
+              isComplete={isComplete}
               scale={scale}
               onChange={(attachment, index): void =>
                 void attachments?.related[index].set(`attachment`, attachment)

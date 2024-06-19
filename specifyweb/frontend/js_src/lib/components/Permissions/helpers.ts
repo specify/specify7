@@ -5,6 +5,7 @@ import type { AnyTree } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { Tables } from '../DataModel/types';
+import { userInformation } from '../InitialContext/userInformation';
 import { toolDefinitions } from '../Security/registry';
 import { tableNameToResourceName } from '../Security/utils';
 import type { tableActions } from './definitions';
@@ -27,7 +28,7 @@ export function hasTablePermission(
   action: typeof tableActions[number],
   collectionId = schema.domainLevelIds.collection
 ): boolean {
-  const isReadOnly = getCache('forms', 'readOnlyMode');
+  const isReadOnly = getCache('forms', 'readOnlyMode') ?? false;
   if (isReadOnly && action !== 'read') return false;
   if (
     getTablePermissions()[collectionId][tableNameToResourceName(tableName)][
@@ -46,7 +47,9 @@ export const hasPermission = <
   action: keyof ReturnType<typeof getOperationPermissions>[number][RESOURCE],
   collectionId = schema.domainLevelIds.collection
 ): boolean =>
-  getOperationPermissions()[collectionId][resource][action]
+  resource === '%' && action === '%'
+    ? userInformation.isadmin
+    : getOperationPermissions()[collectionId][resource][action]
     ? true
     : f.log(`No permission to ${action.toString()} ${resource}`) ?? false;
 
@@ -87,6 +90,6 @@ export const hasPathPermission = (
 ): boolean =>
   mappingPath
     .map((field) =>
-      field.isRelationship ? field.relatedModel.name : field.model.name
+      field.isRelationship ? field.relatedTable.name : field.table.name
     )
     .every((tableName) => hasTablePermission(tableName, action, collectionId));

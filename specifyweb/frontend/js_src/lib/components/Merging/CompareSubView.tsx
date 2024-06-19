@@ -17,22 +17,34 @@ import {
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
-import { Submit } from '../Atoms/Submit';
-import { serializeResource } from '../DataModel/helpers';
+import { runAllFieldChecks } from '../DataModel/businessRules';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
+import { ResourceBase } from '../DataModel/resourceApi';
+import {
+  useAllSaveBlockers,
+  useBlockerHandler,
+} from '../DataModel/saveBlockers';
+import { serializeResource } from '../DataModel/serializers';
 import type { Relationship } from '../DataModel/specifyField';
-import type { Collection } from '../DataModel/specifyModel';
-import type { Accession } from '../DataModel/types';
+import type { Collection } from '../DataModel/specifyTable';
+import { SaveButton } from '../Forms/Save';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { resourceToGeneric } from './autoMerge';
 import { MergeContainer, useMergeConformation } from './Compare';
-import { CompareField, MergeButton } from './CompareField';
+import { CompareField, TransferButton } from './CompareField';
 import { mergeCellBackground, mergeHeaderClassName } from './Header';
 import { MergeDialogContainer, ToggleMergeView } from './index';
 
+// Use this in more places?
+const handleMaybeToMany = (
+  dependent: Collection<AnySchema> | SpecifyResource<AnySchema>
+) =>
+  dependent instanceof ResourceBase
+    ? [dependent as SpecifyResource<AnySchema>]
+    : (dependent as Collection<AnySchema>).models;
 export function MergeSubviewButton({
   relationship,
   resource,
@@ -45,17 +57,19 @@ export function MergeSubviewButton({
   readonly merged: SpecifyResource<AnySchema> | undefined;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const getCount = React.useCallback(
-    () =>
-      relationshipIsToMany(relationship)
-        ? (resource as SpecifyResource<Accession>).getDependentResource(
-            relationship.name as 'accessionAgents'
-          )?.models.length ?? 0
-        : resource.get(relationship.name) === undefined
+
+  const getCount = React.useCallback(() => {
+    const dependentResource = resource.getDependentResource(
+      relationship.name
+    ) as Collection<AnySchema> | SpecifyResource<AnySchema> | null | undefined;
+
+    return dependentResource === undefined || dependentResource === null
+      ? resource.get(relationship.name) === undefined
         ? 0
-        : 1,
-    [relationship, resource]
-  );
+        : 1
+      : handleMaybeToMany(dependentResource).length;
+  }, [relationship, resource]);
+
   const [count, setCount] = React.useState(getCount);
   React.useEffect(
     () =>
@@ -68,25 +82,24 @@ export function MergeSubviewButton({
     [resource, relationship, getCount]
   );
 
-  const [isValid, setValid] = React.useState(true);
-  React.useEffect(() => {
-    if (merged !== undefined) return;
-    const relationshipName = relationship.relatedModel.name;
-    resourceOn(
-      resource,
-      'blockersChanged',
-      () => {
-        const hasSaveBlocker = Array.from(
-          resource.saveBlockers?.blockingResources ?? [],
-          (resource) => resource.specifyModel.name
-        ).includes(relationshipName);
-        setValid(!hasSaveBlocker);
-      },
-      true
-    );
-  }, [resource]);
+  // If trying to save with invalid sub view, open the sub view
+  useBlockerHandler(
+    merged,
+    relationship,
+    React.useCallback(() => {
+      if (!isOpen) return false;
+      handleOpen();
+      return true;
+    }, [isOpen, handleOpen])
+  );
 
-  const SubviewButton = isValid ? Button.BorderedGray : Button.Danger;
+  const blockers = useAllSaveBlockers(
+    // Only get the blockers for the current resource
+    merged === undefined ? resource : undefined,
+    relationship
+  );
+  const SubviewButton =
+    blockers.length === 0 ? Button.Secondary : Button.Danger;
 
   return (
     <>
@@ -109,6 +122,21 @@ export function MergeSubviewButton({
   );
 }
 
+function getChildren(
+  resource: SpecifyResource<AnySchema>,
+  relationship: Relationship
+): RA<SpecifyResource<AnySchema>> {
+  // Move this type to getDependentResource?
+  const children = resource.getDependentResource(relationship.name) as
+    | Collection<AnySchema>
+    | SpecifyResource<AnySchema>
+    | null
+    | undefined;
+  return children === null || children === undefined
+    ? []
+    : handleMaybeToMany(children);
+}
+
 function MergeDialog({
   relationship,
   merged,
@@ -120,25 +148,12 @@ function MergeDialog({
   readonly resources: RA<SpecifyResource<AnySchema> | undefined>;
   readonly onClose: () => void;
 }): JSX.Element {
-  const id = useId('merge-dialog');
-
-  const getChildren = React.useCallback(
-    (resource: SpecifyResource<AnySchema>) => {
-      const children = resource.getDependentResource(relationship.name);
-      return relationshipIsToMany(relationship)
-        ? (children as Collection<AnySchema> | undefined)?.models ?? []
-        : filterArray([children]);
-    },
-    [relationship]
-  );
-
   const [mergedRecords, setMergedRecords] = React.useState(() =>
-    getChildren(merged)
+    getChildren(merged, relationship)
   );
 
   const [children, setChildren] = useChildren(
     mergedRecords,
-    getChildren,
     resources,
     relationship
   );
@@ -151,6 +166,8 @@ function MergeDialog({
     if (relationshipIsToMany(relationship))
       merged.set(relationship.name, mergedRecords as never);
     else merged.set(relationship.name, mergedRecords[0] as never);
+    // TODO: optimize this
+    runAllFieldChecks(merged);
   }, [merged, relationship, mergedRecords]);
 
   const add =
@@ -160,7 +177,7 @@ function MergeDialog({
         onClick={(): void =>
           setMergedRecords([
             ...mergedRecords,
-            new relationship.relatedModel.Resource(),
+            new relationship.relatedTable.Resource(),
           ])
         }
       >
@@ -168,22 +185,38 @@ function MergeDialog({
       </Button.Success>
     ) : undefined;
 
+  const [form, setForm] = React.useState<HTMLFormElement | null>(null);
+  const formId = useId('merge-dialog')('form');
+
   return (
     <MergeDialogContainer
       buttons={
         <>
           <ToggleMergeView />
           <span className="-ml-2 flex-1" />
-          <Submit.Gray form={id('form')}>{commonText.close()}</Submit.Gray>
+          {form === null ? undefined : (
+            <SaveButton
+              filterBlockers={relationship}
+              form={form}
+              label={commonText.close()}
+              resource={merged}
+              onSaving={(): false => {
+                handleClose();
+                return false;
+              }}
+            />
+          )}
         </>
       }
       header={mergingText.mergeFields({ field: relationship.label })}
       onClose={handleClose}
     >
       <MergeContainer
-        id={id('form')}
+        formRef={setForm}
+        id={formId}
         recordCount={resources.length}
-        onSubmit={handleClose}
+        // The save button will set a separate submit listener
+        onSubmit={f.void}
       >
         <thead>
           <tr>
@@ -218,8 +251,15 @@ function MergeDialog({
               }
               resources={children.map((record) => record[index])}
               onRemove={(): void => {
-                mergedRecords[index].destroy();
-                setMergedRecords(removeItem(mergedRecords, index));
+                // Could be called by the zero-to-one
+                const previousMerged = Array.from(mergedRecords);
+                /*
+                 * If the resource isn't new, then not destroying it is fine since it will be
+                 * in the collection of another resource anyways
+                 */
+                if (mergedRecords[index].isNew())
+                  mergedRecords[index].destroy();
+                setMergedRecords(removeItem(previousMerged, index));
               }}
               onSlide={(columnIndex, direction): void => {
                 if (columnIndex === 0)
@@ -271,15 +311,14 @@ function MergeDialog({
  */
 function useChildren(
   mergedRecords: RA<SpecifyResource<AnySchema>>,
-  getChildren: (
-    resource: SpecifyResource<AnySchema>
-  ) => RA<SpecifyResource<AnySchema>>,
   resources: RA<SpecifyResource<AnySchema> | undefined>,
   relationship: Relationship
 ): GetOrSet<RA<RA<SpecifyResource<AnySchema> | undefined>>> {
   return useTriggerState(
     React.useMemo<RA<RA<SpecifyResource<AnySchema> | undefined>>>(() => {
-      const children = resources.map((record) => f.maybe(record, getChildren));
+      const children = resources.map((record) =>
+        record === undefined ? undefined : getChildren(record, relationship)
+      );
       const maxCount = Math.max(
         ...[mergedRecords, ...children].map((children) => children?.length ?? 0)
       );
@@ -398,7 +437,7 @@ function SubViewHeader({
                 {icons.trash}
               </Button.Small>
             ) : merged === undefined ? undefined : (
-              <MergeButton field={undefined} from={resource} to={merged} />
+              <TransferButton field={undefined} from={resource} to={merged} />
             )}
             <Button.Info
               className="flex-1"
@@ -433,7 +472,7 @@ function SubViewBody({
   readonly resources: RA<SpecifyResource<AnySchema> | undefined>;
 }): JSX.Element {
   const conformation = useMergeConformation(
-    filterArray([merged, ...resources])[0].specifyModel,
+    filterArray([merged, ...resources])[0].specifyTable,
     React.useMemo(() => {
       const records = filterArray(resources);
       return records.length === 0 ? [merged!] : records;

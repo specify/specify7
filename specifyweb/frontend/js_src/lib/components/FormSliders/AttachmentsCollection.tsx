@@ -10,9 +10,9 @@ import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { defaultAttachmentScale } from '../Attachments';
 import { AttachmentGallery } from '../Attachments/Gallery';
-import { serializeResource } from '../DataModel/helpers';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
-import type { Collection } from '../DataModel/specifyModel';
+import { serializeResource } from '../DataModel/serializers';
+import type { Collection } from '../DataModel/specifyTable';
 import type {
   Attachment,
   CollectionObjectAttachment,
@@ -32,19 +32,26 @@ export function AttachmentsCollection({
     'scale'
   );
 
-  const attachments: RA<SerializedResource<Attachment>> = filterArray(
-    Array.from(collection.models, (model) => {
-      if (model.specifyModel.name.includes('Attachment')) {
-        const record = serializeResource(
-          model
-        ) as SerializedResource<CollectionObjectAttachment>;
-        // eslint-disable-next-line
-        return serializeResource(
-          record.attachment
-        ) as SerializedResource<Attachment>;
-      }
-      return undefined;
-    })
+  const attachmentHasChanged =
+    collection.models.length > 0 && collection.models.at(-1)?.needsSaved;
+
+  const attachments: RA<SerializedResource<Attachment>> = React.useMemo(
+    () =>
+      filterArray(
+        Array.from(collection.models, (model) => {
+          if (model.specifyTable.name.includes('Attachment')) {
+            const record = serializeResource(
+              model
+            ) as SerializedResource<CollectionObjectAttachment>;
+            // eslint-disable-next-line
+            return serializeResource(
+              record.attachment
+            ) as SerializedResource<Attachment>;
+          }
+          return undefined;
+        })
+      ),
+    [collection.models, attachmentHasChanged]
   );
 
   const isAttachmentsNotLoaded = attachments.some(
@@ -77,7 +84,6 @@ export function AttachmentsCollection({
             isComplete={attachments.length === collection.models.length}
             scale={scale}
             onChange={() => undefined}
-            onClick={undefined}
             onFetchMore={undefined}
           />
         </Dialog>

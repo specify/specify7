@@ -38,7 +38,7 @@ export function CrashReportVisualizer(): JSX.Element {
       {file === undefined ? (
         <FilePicker
           acceptedFormats={['txt', 'json']}
-          onSelected={(file): void => {
+          onFileSelected={(file): void => {
             setFileName(file.name);
             loading(fileToText(file, 'utf8').then(setFile));
           }}

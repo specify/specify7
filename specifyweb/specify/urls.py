@@ -30,12 +30,22 @@ urlpatterns = [
         url(r'^(?P<id>\d+)/path/$', tree_views.path),
         url(r'^(?P<id>\d+)/merge/$', tree_views.merge),
         url(r'^(?P<id>\d+)/move/$', tree_views.move),
+        url(r'^(?P<id>\d+)/bulk_move/$', tree_views.bulk_move),
         url(r'^(?P<id>\d+)/synonymize/$', tree_views.synonymize),
         url(r'^(?P<id>\d+)/desynonymize/$', tree_views.desynonymize),
+        url(r'^(?P<rankid>\d+)/tree_rank_item_count/$', tree_views.tree_rank_item_count),
         url(r'^(?P<parentid>\d+)/predict_fullname/$', tree_views.predict_fullname),
         url(r'^(?P<treedef>\d+)/(?P<parentid>\w+)/stats/$', tree_views.tree_stats),
         url(r'^(?P<treedef>\d+)/(?P<parentid>\w+)/(?P<sortfield>\w+)/$', tree_views.tree_view),
         url(r'^repair/$', tree_views.repair_tree),
+    ])),
+
+    # locality set import endpoints
+    url(r'^localityset/', include([
+        url(r'^parse/$', views.parse_locality_set),
+        url(r'^import/$', views.upload_locality_set),
+        url(r'^status/(?P<taskid>[0-9a-fA-F-]+)/$', views.localityupdate_status),
+        url(r'^abort/(?P<taskid>[0-9a-fA-F-]+)/$', views.abort_localityupdate_task),
     ])),
 
     # generates Sp6 master key

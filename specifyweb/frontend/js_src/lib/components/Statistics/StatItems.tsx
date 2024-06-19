@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { statsText } from '../../localization/stats';
 import { userText } from '../../localization/user';
@@ -6,11 +7,11 @@ import type { AjaxResponseObject } from '../../utils/ajax';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { throttledPromise } from '../../utils/ajax/throttledPromise';
+import { localized } from '../../utils/types';
 import { formatNumber } from '../Atoms/Internationalization';
-import { deserializeResource, serializeResource } from '../DataModel/helpers';
+import { serializeResource } from '../DataModel/serializers';
 import { getNoAccessTables } from '../QueryBuilder/helpers';
 import {
-  appendDynamicPathToValue,
   makeSerializedFieldsFromPaths,
   queryCountPromiseGenerator,
   querySpecToResource,
@@ -47,7 +48,7 @@ export function StatItem({
   readonly onRemove: (() => void) | undefined;
   readonly onClick: (() => void) | undefined;
   readonly onEdit:
-    | ((querySpec: QuerySpec, itemName: string) => void)
+    | ((querySpec: QuerySpec, itemName: LocalizedString) => void)
     | undefined;
   readonly onLoad:
     | ((
@@ -77,9 +78,7 @@ export function StatItem({
       onEdit={
         handleEdit === undefined
           ? undefined
-          : (querySpec) => {
-              handleEdit(querySpec, item.label);
-            }
+          : (querySpec): void => handleEdit(querySpec, localized(item.label))
       }
       onLoad={handleLoadItem}
       onRemove={handleRemove}
@@ -144,13 +143,7 @@ function BackEndItem({
   const [hasStatPermission, setStatPermission] =
     React.useState<boolean>(statStateRef);
   const handleLoadResolve = hasStatPermission ? handleLoad : undefined;
-  const querySpecResolved =
-    querySpec === undefined
-      ? undefined
-      : {
-          ...querySpec,
-          fields: appendDynamicPathToValue(pathToValue, querySpec.fields),
-        };
+
   const promiseGenerator = React.useCallback(
     async () =>
       throttledPromise<BackendStatsResult | undefined>(
@@ -186,9 +179,9 @@ function BackEndItem({
       hasPermission={hasPermission}
       label={label}
       query={
-        querySpecResolved === undefined
+        querySpec === undefined
           ? undefined
-          : querySpecToResource(label, querySpecResolved)
+          : querySpecToResource(label, querySpec)
       }
       value={hasStatPermission ? value : userText.noPermission()}
       onClick={handleClick}
@@ -248,7 +241,7 @@ function QueryItem({
     async () =>
       throttledPromise<AjaxResponseObject<{ readonly count: number }>>(
         'queryStats',
-        queryCountPromiseGenerator(deserializeResource(serializedQuery)),
+        queryCountPromiseGenerator(serializedQuery),
         JSON.stringify(querySpec)
       ).then((response) => {
         if (response === undefined) return undefined;
@@ -257,8 +250,7 @@ function QueryItem({
           setStatState('valid');
           return formatNumber(data.count);
         }
-        if (status === Http.FORBIDDEN) setStatState('noPermission');
-        setStatState('error');
+        setStatState(status === Http.FORBIDDEN ? 'noPermission' : 'error');
         return undefined;
       }),
 

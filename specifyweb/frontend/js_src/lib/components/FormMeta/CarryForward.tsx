@@ -17,9 +17,9 @@ import { Form, Input, Label } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Submit } from '../Atoms/Submit';
 import { getFieldsToClone, getUniqueFields } from '../DataModel/resource';
-import { schema } from '../DataModel/schema';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { genericTables } from '../DataModel/tables';
 import { NO_CLONE } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
 import { userPreferences } from '../Preferences/userPreferences';
@@ -48,7 +48,7 @@ const invisibleCarry = new Set([
 /** Search for all dependent fields using a suffix */
 const dependentFieldSeeker = (suffix: string): IR<string> =>
   Object.fromEntries(
-    Object.values(schema.models)
+    Object.values(genericTables)
       .flatMap(({ literalFields }) =>
         literalFields.filter((v) => v.name.toLowerCase().endsWith(suffix))
       )
@@ -56,7 +56,7 @@ const dependentFieldSeeker = (suffix: string): IR<string> =>
         (v) =>
           [
             v.name,
-            v.model.getField(v.name.slice(0, -suffix.length))?.name,
+            v.table.getField(v.name.slice(0, -suffix.length))?.name,
           ] as const
       )
       .filter(([_dependent, source]) => typeof source === 'string')
@@ -85,12 +85,12 @@ export const dependentFields = f.store<IR<string>>(() => ({
 }));
 
 export function CarryForwardConfig({
-  model,
-  parentModel,
+  table,
+  parentTable,
   type,
 }: {
-  readonly model: SpecifyModel;
-  readonly parentModel: SpecifyModel | undefined;
+  readonly table: SpecifyTable;
+  readonly parentTable: SpecifyTable | undefined;
   readonly type: 'button' | 'cog';
 }): JSX.Element | null {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
@@ -99,8 +99,8 @@ export function CarryForwardConfig({
     'preferences',
     'enableCarryForward'
   );
-  const isEnabled = globalEnabled.includes(model.name);
-  const canChange = !NO_CLONE.has(model.name);
+  const isEnabled = globalEnabled.includes(table.name);
+  const canChange = !NO_CLONE.has(table.name);
 
   return canChange ? (
     <>
@@ -109,7 +109,7 @@ export function CarryForwardConfig({
           <Input.Checkbox
             checked={isEnabled}
             onChange={(): void =>
-              setGlobalEnabled(toggleItem(globalEnabled, model.name))
+              setGlobalEnabled(toggleItem(globalEnabled, table.name))
             }
           />
           {formsText.carryForwardEnabled()}
@@ -130,8 +130,8 @@ export function CarryForwardConfig({
       )}
       {isOpen && (
         <CarryForwardConfigDialog
-          model={model}
-          parentModel={parentModel}
+          parentTable={parentTable}
+          table={table}
           onClose={handleClose}
         />
       )}
@@ -143,12 +143,12 @@ const normalize = (fields: RA<string>): RA<string> =>
   Array.from(fields).sort(sortFunction(f.id));
 
 function CarryForwardConfigDialog({
-  model,
-  parentModel,
+  table,
+  parentTable,
   onClose: handleClose,
 }: {
-  readonly model: SpecifyModel;
-  readonly parentModel: SpecifyModel | undefined;
+  readonly table: SpecifyTable;
+  readonly parentTable: SpecifyTable | undefined;
   readonly onClose: () => void;
 }): JSX.Element {
   const [showHiddenFields, setShowHiddenFields] = userPreferences.use(
@@ -163,8 +163,8 @@ function CarryForwardConfigDialog({
     'carryForward'
   );
 
-  const uniqueFields = getUniqueFields(model);
-  const defaultConfig = getFieldsToClone(model).filter(
+  const uniqueFields = getUniqueFields(table);
+  const defaultConfig = getFieldsToClone(table).filter(
     (fieldName) => !uniqueFields.includes(fieldName)
   );
   const isDefaultConfig = (fields: RA<string>): boolean =>
@@ -172,33 +172,33 @@ function CarryForwardConfigDialog({
     JSON.stringify(normalize(defaultConfig));
 
   const config =
-    (globalConfig[model.name] as RA<string> | undefined)?.filter(
+    (globalConfig[table.name] as RA<string> | undefined)?.filter(
       (fieldName) => !uniqueFields.includes(fieldName)
     ) ?? defaultConfig;
 
   const handleChange = (fields: RA<string>): void =>
     setGlobalConfig({
       ...globalConfig,
-      [model.name]: isDefaultConfig(fields) ? undefined : fields,
+      [table.name]: isDefaultConfig(fields) ? undefined : fields,
     });
 
   const reverseRelationships = React.useMemo(
     () =>
       filterArray(
-        parentModel?.relationships
-          .filter(({ relatedModel }) => relatedModel === model)
+        parentTable?.relationships
+          .filter(({ relatedTable }) => relatedTable === table)
           .flatMap(({ otherSideName }) => otherSideName) ?? []
       ),
-    [parentModel, model]
+    [parentTable, table]
   );
 
-  const literalFields = model.literalFields.filter(
+  const literalFields = table.literalFields.filter(
     ({ name, overrides, isVirtual }) =>
       !isVirtual &&
       (!overrides.isHidden || showHiddenFields) &&
       !invisibleCarry.has(name)
   );
-  const relationships = model.relationships.filter(
+  const relationships = table.relationships.filter(
     (field) =>
       !reverseRelationships.includes(field.name) &&
       !field.isVirtual &&
@@ -218,7 +218,7 @@ function CarryForwardConfigDialog({
               handleChange(
                 showHiddenFields
                   ? defaultConfig
-                  : model.fields
+                  : table.fields
                       .filter(
                         ({ name, isVirtual, overrides }) =>
                           !isVirtual &&
@@ -238,7 +238,7 @@ function CarryForwardConfigDialog({
                 // Don't deselect hidden fields if they are not visible
                 showHiddenFields
                   ? []
-                  : model.fields
+                  : table.fields
                       .filter(
                         ({ name, isVirtual, overrides }) =>
                           !isVirtual &&
@@ -252,13 +252,13 @@ function CarryForwardConfigDialog({
           >
             {interactionsText.deselectAll()}
           </Button.Success>
-          <Submit.Blue form={id('form')} onClick={handleClose}>
+          <Submit.Info form={id('form')} onClick={handleClose}>
             {commonText.close()}
-          </Submit.Blue>
+          </Submit.Info>
         </>
       }
       header={formsText.carryForwardTableSettingsDescription({
-        tableName: model.label,
+        tableName: table.label,
       })}
       onClose={handleClose}
     >
@@ -268,7 +268,7 @@ function CarryForwardConfigDialog({
             carryForward={config}
             fields={literalFields}
             header={schemaText.fields()}
-            model={model}
+            table={table}
             uniqueFields={uniqueFields}
             onChange={handleChange}
           />
@@ -276,7 +276,7 @@ function CarryForwardConfigDialog({
             carryForward={config}
             fields={relationships}
             header={schemaText.relationships()}
-            model={model}
+            table={table}
             uniqueFields={uniqueFields}
             onChange={handleChange}
           />
@@ -295,14 +295,14 @@ function CarryForwardConfigDialog({
 
 function CarryForwardCategory({
   header,
-  model,
+  table,
   fields,
   uniqueFields,
   carryForward,
   onChange: handleChange,
 }: {
   readonly header: string;
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly fields: RA<LiteralField | Relationship>;
   readonly uniqueFields: RA<string>;
   readonly carryForward: RA<string>;
@@ -330,7 +330,7 @@ function CarryForwardCategory({
                     const dependents = filterArray(
                       Object.entries(dependentFields())
                         .filter(([_dependent, source]) => source === field.name)
-                        .map(([dependent]) => model.getField(dependent)?.name)
+                        .map(([dependent]) => table.getField(dependent)?.name)
                     );
                     handleChange(
                       isChecked
@@ -346,8 +346,8 @@ function CarryForwardCategory({
               </Label.Inline>
               {field.isRelationship && field.isDependent() && !isUnique ? (
                 <CarryForwardConfig
-                  model={field.relatedModel}
-                  parentModel={field.model}
+                  parentTable={field.table}
+                  table={field.relatedTable}
                   type="cog"
                 />
               ) : undefined}

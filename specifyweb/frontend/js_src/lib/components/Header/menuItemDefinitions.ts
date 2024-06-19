@@ -12,6 +12,7 @@ import { statsText } from '../../localization/stats';
 import { treeText } from '../../localization/tree';
 import { wbText } from '../../localization/workbench';
 import { getCache } from '../../utils/cache';
+import { f } from '../../utils/functools';
 import type { IR } from '../../utils/types';
 import { ensure } from '../../utils/types';
 import { icons } from '../Atoms/Icons';
@@ -32,7 +33,7 @@ import {
   hasToolPermission,
   hasTreeAccess,
 } from '../Permissions/helpers';
-import { reportsAvailable } from '../Reports';
+import { reportsAvailable } from '../Reports/available';
 import { filterMenuItems } from './menuItemProcessing';
 
 const rawMenuItems = ensure<IR<Omit<MenuItem, 'name'>>>()({
@@ -115,6 +116,6 @@ export type MenuItemName = keyof typeof rawMenuItems | 'search';
 /**
  * Don't use this directly. Use useMenuItems() instead
  */
-export const rawMenuItemsPromise = fetchPermissions.then(async () =>
-  filterMenuItems(rawMenuItems)
+export const rawMenuItemsPromise = f.store(async () =>
+  fetchPermissions.then(async () => filterMenuItems(rawMenuItems))
 );

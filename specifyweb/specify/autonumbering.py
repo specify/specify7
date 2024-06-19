@@ -3,13 +3,16 @@ Autonumbering logic
 """
 
 
+from .uiformatters import UIFormatter, get_uiformatters
+from .lock_tables import lock_tables
 import logging
-from typing import List, Tuple, Sequence
+from typing import List, Tuple, Sequence, Set
+
+from specifyweb.specify.scoping import Scoping
+from specifyweb.specify.datamodel import datamodel
 
 logger = logging.getLogger(__name__)
 
-from .lock_tables import lock_tables
-from .uiformatters import UIFormatter, get_uiformatters, AutonumberOverflowException
 
 def autonumber_and_save(collection, user, obj) -> None:
     uiformatters = get_uiformatters(collection, user, obj.__class__.__name__)
@@ -27,6 +30,7 @@ def autonumber_and_save(collection, user, obj) -> None:
         logger.debug("no fields to autonumber for %s", obj)
         obj.save()
 
+
 def do_autonumbering(collection, obj, fields: List[Tuple[UIFormatter, Sequence[str]]]) -> None:
     logger.debug("autonumbering %s fields: %s", obj, fields)
 
@@ -38,8 +42,46 @@ def do_autonumbering(collection, obj, fields: List[Tuple[UIFormatter, Sequence[s
         for formatter, vals in fields
     ]
 
-    with lock_tables(obj._meta.db_table):
+    with lock_tables(*get_tables_to_lock(collection, obj, [formatter.field_name for formatter, _ in fields])):
         for apply_autonumbering_to in thunks:
             apply_autonumbering_to(obj)
 
         obj.save()
+
+
+def get_tables_to_lock(collection, obj, field_names) -> Set[str]:
+    # TODO: Include the fix for https://github.com/specify/specify7/issues/4148
+    from specifyweb.businessrules.models import UniquenessRule
+
+    obj_table = obj._meta.db_table
+    scope_table = Scoping(obj).get_scope_model()
+
+    tables = set([obj._meta.db_table, 'django_migrations',
+                  UniquenessRule._meta.db_table, 'discipline', scope_table._meta.db_table])
+
+    rules = UniquenessRule.objects.filter(
+        modelName=obj_table, discipline=collection.discipline)
+
+    for rule in rules:
+        fields = rule.fields.filter(fieldPath__in=field_names)
+        if len(fields) > 0:
+            rule_scopes = rule.fields.filter(isScope=True)
+            for scope in rule_scopes:
+                tables.update(get_tables_from_field_path(
+                    obj_table, scope.fieldPath))
+
+    return tables
+
+
+def get_tables_from_field_path(model: str, field_path: str) -> List[str]:
+    tables = []
+    table = datamodel.get_table_strict(model)
+    relationships = field_path.split('__')
+
+    for relationship in relationships:
+        other_model = table.get_relationship(
+            relationship).relatedModelName.lower()
+        tables.append(other_model)
+        table = datamodel.get_table_strict(other_model)
+
+    return tables

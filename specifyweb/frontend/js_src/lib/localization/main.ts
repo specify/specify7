@@ -87,15 +87,15 @@ export const mainText = createDictionary({
     'es-es': 'Lo sentimos, algo ha ido mal',
     'fr-fr': "Nous sommes désolés, quelque chose s'est mal passé",
     'uk-ua': 'Вибачте, щось пішло не так',
-    'de-ch': 'Es tut uns leid, es ist etwas schief gelaufen',
+    'de-ch': 'Es tut uns leid, da ist etwas schiefgelaufen',
   },
   clickToSeeDetails: {
     'en-us': 'Click to see details',
-    'de-ch': 'Klicken Sie hier, um Details anzuzeigen',
     'es-es': 'Haz clic para ver los detalles',
+    'uk-ua': 'Натисніть, щоб переглянути деталі',
+    'de-ch': 'Klicken Sie hier, um Details anzuzeigen',
     'fr-fr': 'Cliquez pour voir les détails',
     'ru-ru': 'Нажмите, чтобы увидеть подробности',
-    'uk-ua': 'Натисніть, щоб переглянути деталі',
   },
   errorOccurredDescription: {
     'en-us': `
@@ -231,15 +231,14 @@ export const mainText = createDictionary({
     'de-ch': 'Sind Sie sicher, dass Sie diese Seite verlassen wollen?',
   },
   leavePageConfirmationDescription: {
-    'en-us': 'Unsaved changes would be lost if your leave this page.',
-    'ru-ru':
-      'Несохраненные изменения будут потеряны, если вы покинете эту страницу.',
+    'en-us': 'Unsaved changes will be lost if you leave this page.',
+    'ru-ru': 'Нажмите, чтобы увидеть подробности',
     'es-es': 'Los cambios no guardados se perderán si abandona esta página.',
     'fr-fr': `
       Les modifications non enregistrées seront perdues si vous quittez cette
       page.
     `,
-    'uk-ua': 'Незбережені зміни буде втрачено, якщо ви покинете цю сторінку.',
+    'uk-ua': 'Натисніть, щоб переглянути деталі',
     'de-ch': `
       Nicht gespeicherte Änderungen gehen verloren, wenn Sie diese Seite
       verlassen.
@@ -318,5 +317,24 @@ export const mainText = createDictionary({
       "Instructions pour résoudre l'incompatibilité de schéma de Specify",
     'uk-ua': 'Інструкції щодо вирішення невідповідності версій',
     'de-ch': 'Anweisungen zur Behebung der Abweichung des Specify Schemas',
+  },
+  online: {
+    'en-us': 'online',
+    'es-es': 'conectado',
+    'fr-fr': 'en ligne',
+    'ru-ru': 'онлайн',
+    'uk-ua': 'онлайн',
+    'de-ch': 'online',
+  },
+  offline: {
+    'en-us': 'offline',
+    'es-es': 'desconectado',
+    'fr-fr': 'hors ligne',
+    'ru-ru': 'не в сети',
+    'uk-ua': 'офлайн',
+    'de-ch': `
+      Nicht gespeicherte Änderungen gehen verloren, wenn Sie diese Seite
+      verlassen.
+    `,
   },
 } as const);

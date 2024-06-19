@@ -30,10 +30,11 @@ function entrypoint(): void {
   console.log(entrypointName);
   unlockInitialContext(entrypointName);
 
-  globalThis.window.addEventListener('load', () => {
+  globalThis.addEventListener?.('load', () => {
     const root = document.getElementById('root');
     const portalRoot = document.getElementById('portal-root');
     if (root === null || portalRoot === null)
+      // eslint-disable-next-line functional/no-throw-statement
       throw new Error('Unable to find root element');
     root.setAttribute(
       'class',

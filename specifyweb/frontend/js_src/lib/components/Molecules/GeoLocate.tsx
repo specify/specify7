@@ -45,7 +45,7 @@ export function GenericGeoLocate({
       handleUpdate?.({ latitude, longitude, uncertainty, polygon });
     }
 
-    globalThis.window.addEventListener('message', listener);
+    globalThis.addEventListener('message', listener);
     return (): void => globalThis.removeEventListener('message', listener);
   }, [handleUpdate]);
 

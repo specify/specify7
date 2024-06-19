@@ -64,6 +64,7 @@ class SchemaTests(UploadTestsBase):
 
 class OtherSchemaTests(unittest.TestCase):
 
+    @settings(max_examples=100, deadline=None, suppress_health_check=(HealthCheck.too_slow,))
     @given(name=infer, wbcols=infer)
     def test_validate_upload_table_to_json(self, name: str, wbcols: Dict[str, ColumnOptions]):
         upload_table = UploadTable(name=name, wbcols=wbcols, overrideScope=None, static={}, toOne={}, toMany={})

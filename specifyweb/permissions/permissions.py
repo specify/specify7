@@ -7,12 +7,10 @@ from django.db import connection
 from django.db.models import Model
 from django.core.exceptions import ObjectDoesNotExist
 
-from specifyweb.specify import models as spmodels
+from specifyweb.specify.models import Agent
 from specifyweb.specify.datamodel import Table
 
 from . import models
-
-Agent = getattr(spmodels, 'Agent')
 
 registry: Dict[str, List[str]] = dict()
 

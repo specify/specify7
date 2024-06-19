@@ -1,8 +1,9 @@
 
 from unittest import skip
 from specifyweb.specify import models
-from specifyweb.specify.api_tests import ApiTests
+from specifyweb.specify.tests.test_api import ApiTests
 from ..exceptions import BusinessRuleException
+
 
 class AccessionAgentTests(ApiTests):
     @skip("rule was removed in 17e82c6157")

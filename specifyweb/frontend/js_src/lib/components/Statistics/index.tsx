@@ -7,6 +7,7 @@ import { statsText } from '../../localization/stats';
 import { cleanThrottledPromises } from '../../utils/ajax/throttledPromise';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
 import { removeItem, removeKey, replaceItem } from '../../utils/utils';
 import { H2, H3, Ul } from '../Atoms';
@@ -15,15 +16,13 @@ import { className } from '../Atoms/className';
 import { Form } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { softFail } from '../Errors/Crash';
-import { useMenuItem } from '../Header/useMenuItem';
-import { userInformation } from '../InitialContext/userInformation';
+import { useMenuItem } from '../Header/MenuContext';
 import { DateElement } from '../Molecules/DateElement';
 import { downloadFile } from '../Molecules/FilePicker';
 import { hasPermission } from '../Permissions/helpers';
 import { ProtectedAction } from '../Permissions/PermissionDenied';
 import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { userPreferences } from '../Preferences/userPreferences';
-import { useQueries } from '../Toolbar/Query';
 import { AddStatDialog } from './AddStatDialog';
 import { StatsAsideButton } from './Buttons';
 import { Categories } from './Categories';
@@ -149,10 +148,6 @@ function ProtectedStatsPage(): JSX.Element | null {
           readonly pageIndex: number;
           readonly categoryIndex: number;
         }
-      >
-    | State<
-        'DeletingCategoryState',
-        { readonly categoryContainsCustom: boolean }
       >
     | State<
         'PageRenameState',
@@ -354,13 +349,6 @@ function ProtectedStatsPage(): JSX.Element | null {
   );
   useDynamicCategorySetter(dynamicCategoriesResponse, handleChange);
 
-  const filters = React.useMemo(
-    () => ({
-      specifyUser: userInformation.id,
-    }),
-    []
-  );
-  const queries = useQueries(filters);
   const previousCollectionLayout = React.useRef(
     sharedLayout as unknown as RA<StatLayout>
   );
@@ -529,11 +517,11 @@ function ProtectedStatsPage(): JSX.Element | null {
             <DateElement date={pageLastUpdated} />
           </span>
         )}
-        <Button.Secondary onClick={(): void => refreshPage()}>
+        <Button.BorderedGray onClick={(): void => refreshPage()}>
           {statsText.refresh()}
-        </Button.Secondary>
+        </Button.BorderedGray>
         {Object.values(layout).every((layouts) => layouts !== undefined) && (
-          <Button.Secondary
+          <Button.BorderedGray
             onClick={(): void => {
               const date = new Date();
               const sourceIndex = activePage.isShared ? 0 : 1;
@@ -555,7 +543,7 @@ function ProtectedStatsPage(): JSX.Element | null {
             }}
           >
             {statsText.downloadAsTSV()}
-          </Button.Secondary>
+          </Button.BorderedGray>
         )}
         {isEditing ? (
           <>
@@ -573,11 +561,11 @@ function ProtectedStatsPage(): JSX.Element | null {
                   });
                 }}
               >
-                {`${commonText.reset()} [DEV]`}
+                {localized(`${commonText.reset()} [DEV]`)}
               </Button.Secondary>
             )}
 
-            <Button.Secondary
+            <Button.BorderedGray
               onClick={(): void => {
                 handleSharedLayoutChange(previousCollectionLayout.current);
                 handlePersonalLayoutChange(previousLayout.current);
@@ -602,12 +590,12 @@ function ProtectedStatsPage(): JSX.Element | null {
               }}
             >
               {commonText.cancel()}
-            </Button.Secondary>
+            </Button.BorderedGray>
             <Submit.Save>{commonText.save()}</Submit.Save>
           </>
         ) : (
           canEdit && (
-            <Button.Secondary
+            <Button.BorderedGray
               onClick={(): void => {
                 setState({
                   type: 'EditingState',
@@ -619,7 +607,7 @@ function ProtectedStatsPage(): JSX.Element | null {
               }}
             >
               {commonText.edit()}
-            </Button.Secondary>
+            </Button.BorderedGray>
           )
         )}
       </div>
@@ -643,7 +631,7 @@ function ProtectedStatsPage(): JSX.Element | null {
                         {isEditing && canEditIndex(index === 0) && (
                           <div className="flex flex-1">
                             <Button.Icon
-                              className={`max-w-fit ${className.secondaryButton}`}
+                              className="max-w-fit"
                               icon="plus"
                               title={commonText.add()}
                               onClick={(): void =>
@@ -697,8 +685,8 @@ function ProtectedStatsPage(): JSX.Element | null {
               label={
                 typeof state.pageIndex === 'number'
                   ? state.isShared
-                    ? sharedLayout[state.pageIndex].label
-                    : personalLayout?.[state.pageIndex].label
+                    ? localized(sharedLayout[state.pageIndex].label)
+                    : localized(personalLayout?.[state.pageIndex].label)
                   : undefined
               }
               onAdd={
@@ -736,7 +724,7 @@ function ProtectedStatsPage(): JSX.Element | null {
                 state.pageIndex === undefined ||
                 (getSourceLayout(state.isShared) ?? []).length <= 1
                   ? undefined
-                  : () => {
+                  : (): void => {
                       const targetSourceLayout = getSourceLayout(
                         state.isShared
                       );
@@ -768,7 +756,7 @@ function ProtectedStatsPage(): JSX.Element | null {
               onRename={
                 state.pageIndex === undefined
                   ? undefined
-                  : (value) => {
+                  : (value): void => {
                       const targetSourceLayout = getSourceLayout(
                         state.isShared
                       );
@@ -806,7 +794,7 @@ function ProtectedStatsPage(): JSX.Element | null {
                         : handleChange((oldCategory) => [
                             ...oldCategory,
                             {
-                              label: '',
+                              label: localized(''),
                               items: [],
                             },
                           ])
@@ -873,7 +861,7 @@ function ProtectedStatsPage(): JSX.Element | null {
                             itemIndex,
                             {
                               ...oldCategory[categoryIndex].items[itemIndex],
-                              label: newLabel,
+                              label: localized(newLabel),
                             }
                           ),
                         })
@@ -889,7 +877,6 @@ function ProtectedStatsPage(): JSX.Element | null {
         <AddStatDialog
           defaultStatsAddLeft={defaultStatsAddLeft}
           formatterSpec={formatterSpec}
-          queries={queries}
           onAdd={(item, itemIndex): void => {
             handleAdd(item, state.categoryIndex, itemIndex);
           }}

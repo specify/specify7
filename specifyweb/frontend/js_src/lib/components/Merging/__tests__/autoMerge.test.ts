@@ -5,7 +5,7 @@ import type {
   AnySchema,
   SerializedResource,
 } from '../../DataModel/helperTypes';
-import { schema } from '../../DataModel/schema';
+import { tables } from '../../DataModel/tables';
 import type { Agent } from '../../DataModel/types';
 import { autoMerge } from '../autoMerge';
 
@@ -124,7 +124,7 @@ describe('autoMerge', () => {
     targetId?: number
   ): SerializedResource<AnySchema> =>
     autoMerge(
-      schema.models.Agent,
+      tables.Agent,
       records.map(
         (record) =>
           addMissingFields(
@@ -149,7 +149,7 @@ describe('autoMerge', () => {
             "address3": null,
             "address4": null,
             "address5": null,
-            "agent": "/api/specify/agent/2300/",
+            "agent": null,
             "city": null,
             "country": null,
             "createdByAgent": "/api/specify/agent/1313/",
@@ -183,7 +183,7 @@ describe('autoMerge', () => {
             "address3": null,
             "address4": null,
             "address5": null,
-            "agent": "/api/specify/agent/2300/",
+            "agent": null,
             "city": null,
             "country": null,
             "createdByAgent": "/api/specify/agent/1313/",
@@ -217,7 +217,7 @@ describe('autoMerge', () => {
             "address3": null,
             "address4": null,
             "address5": null,
-            "agent": "/api/specify/agent/2300/",
+            "agent": null,
             "city": null,
             "country": null,
             "createdByAgent": "/api/specify/agent/1313/",
@@ -316,7 +316,7 @@ describe('autoMerge', () => {
             "address3": null,
             "address4": null,
             "address5": null,
-            "agent": "/api/specify/agent/2300/",
+            "agent": null,
             "city": null,
             "country": null,
             "createdByAgent": "/api/specify/agent/1313/",
@@ -350,7 +350,7 @@ describe('autoMerge', () => {
             "address3": null,
             "address4": null,
             "address5": null,
-            "agent": "/api/specify/agent/2300/",
+            "agent": null,
             "city": null,
             "country": null,
             "createdByAgent": "/api/specify/agent/1313/",
@@ -384,7 +384,7 @@ describe('autoMerge', () => {
             "address3": null,
             "address4": null,
             "address5": null,
-            "agent": "/api/specify/agent/2300/",
+            "agent": null,
             "city": null,
             "country": null,
             "createdByAgent": "/api/specify/agent/1313/",

@@ -1,9 +1,10 @@
-from ..upload_plan_schema import schema, parse_plan
+from ..upload_plan_schema import parse_plan
 from ..upload_table import UploadTable, OneToOneTable, ScopedUploadTable, ScopedOneToOneTable, DeferredScopeUploadTable, ColumnOptions, ExtendedColumnOptions
 from ..upload import do_upload
 
 from specifyweb.specify import models
-from .base import UploadTestsBase, get_table
+from specifyweb.specify.tests.test_api import get_table
+from .base import UploadTestsBase
 from . import example_plan
 
 

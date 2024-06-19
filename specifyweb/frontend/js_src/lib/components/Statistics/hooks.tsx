@@ -7,16 +7,18 @@ import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { throttledPromise } from '../../utils/ajax/throttledPromise';
 import type { IR, RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import { filterArray, localized } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
-import { MILLISECONDS } from '../Atoms/timeUnits';
+import { MINUTE } from '../Atoms/timeUnits';
 import { addMissingFields } from '../DataModel/addMissingFields';
-import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
+import { genericTables } from '../DataModel/tables';
 import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
-import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { makeQueryField } from '../QueryBuilder/fromTree';
 import { backEndStatsSpec, dynamicStatsSpec, statsSpec } from './StatsSpec';
 import type {
@@ -25,13 +27,13 @@ import type {
   CustomStat,
   DefaultStat,
   DynamicQuerySpec,
+  PartialQueryFieldWithPath,
   QueryBuilderStat,
   QuerySpec,
   StatFormatterSpec,
   StatLayout,
   StatsSpec,
 } from './types';
-import type { PartialQueryFieldWithPath } from './types';
 
 /**
  * Returns state which gets updated everytime backend stat is fetched. Used for dynamic categories since they don't
@@ -121,7 +123,7 @@ function dynamicEphermeralPromiseGenerator(
               }
             ).then(({ data }) =>
               filterArray(
-                data.results.map(([distinctGroup]) =>
+                data.results.map(([_id, distinctGroup]) =>
                   distinctGroup === null ? undefined : distinctGroup.toString()
                 )
               )
@@ -188,7 +190,7 @@ export function useDefaultStatsToAdd(
 }
 
 export function queryCountPromiseGenerator(
-  query: SpecifyResource<SpQuery>
+  query: SerializedResource<SpQuery>
 ): () => Promise<AjaxResponseObject<{ readonly count: number }>> {
   return async () =>
     ajax<{
@@ -200,7 +202,7 @@ export function queryCountPromiseGenerator(
         Accept: 'application/json',
       },
       body: keysToLowerCase({
-        ...serializeResource(query),
+        ...query,
         countOnly: true,
       }),
       expectedErrors: Object.values(Http),
@@ -228,7 +230,7 @@ export const querySpecToResource = (
     addMissingFields('SpQuery', {
       name: label,
       contextName: querySpec.tableName,
-      contextTableId: schema.models[querySpec.tableName].tableId,
+      contextTableId: genericTables[querySpec.tableName].tableId,
       countOnly: false,
       selectDistinct: querySpec.isDistinct ?? false,
       fields: makeSerializedFieldsFromPaths(
@@ -258,31 +260,27 @@ export function resolveStatsSpec(
     item.categoryName,
     item.itemName
   );
-  if (statSpecItem.spec.type === 'BackEndStat')
+  if (statSpecItem.spec.type === 'BackEndStat') {
+    const pathToValue = item.pathToValue ?? statSpecItem.spec.pathToValue;
     return {
       type: 'BackEndStat',
-      pathToValue: item.pathToValue ?? statSpecItem.spec.pathToValue,
+      pathToValue,
       fetchUrl: statUrl,
       formatter: statSpecItem.spec.formatterGenerator(formatterSpec),
-      querySpec: statSpecItem.spec.querySpec,
+      querySpec:
+        pathToValue === undefined
+          ? undefined
+          : statSpecItem.spec.querySpec?.(pathToValue.toString()),
     };
+  }
   if (
     statSpecItem.spec.type === 'DynamicStat' &&
     item.pathToValue !== undefined
   ) {
+    const querySpec = statSpecItem.spec.querySpec(item.pathToValue.toString());
     return {
       type: 'QueryStat',
-      querySpec: {
-        tableName: statSpecItem.spec.dynamicQuerySpec.tableName,
-        fields: appendDynamicPathToValue(item.pathToValue, [
-          ...statSpecItem.spec.querySpec.fields,
-          ...statSpecItem.spec.dynamicQuerySpec.fields.map((field) => ({
-            ...field,
-            isDisplay: true,
-          })),
-        ]),
-        isDistinct: statSpecItem.spec.querySpec.isDistinct,
-      },
+      querySpec,
     };
   }
   if (statSpecItem.spec.type === 'QueryStat')
@@ -467,7 +465,7 @@ export function applyStatBackendResponse(
           pageName: phantomItem.pageName,
           itemName: 'phantomItem',
           categoryName: phantomItem.categoryName,
-          label: itemName,
+          label: localized(itemName),
           itemValue: formatter(rawValue),
           itemType: 'BackEndStat',
           pathToValue: itemName,
@@ -657,7 +655,7 @@ function applyDynamicCategoryResponse(
         pageName: dynamicPhantomItem.pageName,
         itemName: 'dynamicPhantomItem',
         categoryName: dynamicPhantomItem.categoryName,
-        label: pathToValue,
+        label: localized(pathToValue),
         itemValue: undefined,
         itemType: 'QueryStat',
         pathToValue,
@@ -673,7 +671,7 @@ export function generateStatUrl(
   urlPrefix: string,
   categoryKey: string,
   itemKey: string
-) {
+): string {
   const urlSpecMapped = [urlPrefix, categoryKey, itemKey]
     .map((urlSpec) => (urlSpec === 'phantomItem' ? undefined : urlSpec))
     .filter((urlSpec) => urlSpec !== undefined);
@@ -686,9 +684,8 @@ export function generateStatUrl(
  * If user is on page 5 and deletes page 3, then go to index 4
  *
  */
-export function getOffsetOne(base: number, target: number) {
-  return Math.max(Math.min(Math.sign(target - base - 1), 0) + base, 0);
-}
+export const getOffsetOne = (base: number, target: number): number =>
+  Math.max(Math.min(Math.sign(target - base - 1), 0) + base, 0);
 
 export const setLayoutUndefined = (layout: StatLayout): StatLayout => ({
   label: layout.label,
@@ -707,31 +704,16 @@ export function applyRefreshLayout(
   refreshTimeMinutes: number
 ): RA<StatLayout> | undefined {
   return layout?.map((pageLayout) => {
-    if (pageLayout.lastUpdated == undefined) return pageLayout;
+    if (pageLayout.lastUpdated === undefined) return pageLayout;
     const lastUpdatedParsed = new Date(pageLayout.lastUpdated).valueOf();
     const currentTime = Date.now();
-    if (isNaN(lastUpdatedParsed) || isNaN(currentTime)) return pageLayout;
+    if (Number.isNaN(lastUpdatedParsed) || Number.isNaN(currentTime))
+      return pageLayout;
     const timeDiffMillSecond = Math.round(currentTime - lastUpdatedParsed);
     if (timeDiffMillSecond < 0) return pageLayout;
-    const timeDiffMinute = Math.floor(timeDiffMillSecond / (MILLISECONDS * 60));
+    const timeDiffMinute = Math.floor(timeDiffMillSecond / MINUTE);
     if (timeDiffMinute >= refreshTimeMinutes)
       return setLayoutUndefined(pageLayout);
     return pageLayout;
   });
-}
-
-export function appendDynamicPathToValue(
-  pathToValue: number | string,
-  fields: RA<PartialQueryFieldWithPath>
-): RA<PartialQueryFieldWithPath> {
-  const groupField = fields.at(-1);
-  if (groupField === undefined) return fields;
-  const startField = {
-    ...groupField,
-    operStart: queryFieldFilters.equal.id,
-    startValue: pathToValue.toString(),
-    isDisplay: true,
-    isNot: false,
-  };
-  return [...fields.slice(0, -1), startField];
 }

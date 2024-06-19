@@ -1,11 +1,10 @@
-import json
 from jsonschema import validate # type: ignore
-from typing import List, Dict, Any, NamedTuple, Union
-
-from .base import UploadTestsBase, get_table
-from ..upload_result import Uploaded, Matched, NullRecord, ParseFailures, FailedBusinessRule
-from ..upload import do_upload, do_upload_csv
-from ..upload_table import UploadTable, OneToOneTable, ScopedUploadTable, ScopedOneToOneTable
+from typing import Dict
+from specifyweb.specify.tests.test_api import get_table
+from .base import UploadTestsBase
+from ..upload_result import Uploaded, Matched, NullRecord
+from ..upload import do_upload
+from ..upload_table import UploadTable, OneToOneTable
 from ..upload_plan_schema import schema, parse_plan
 
 class OneToOneTests(UploadTestsBase):

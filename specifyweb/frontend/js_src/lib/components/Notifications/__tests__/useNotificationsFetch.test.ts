@@ -3,7 +3,8 @@ import type { MutableRefObject } from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { overrideAjax } from '../../../tests/ajax';
-import { mockTime, testTime } from '../../../tests/helpers';
+import { mockTime } from '../../../tests/helpers';
+import { testTime } from '../../../tests/testTime';
 import { formatDateForBackEnd } from '../../../utils/parser/dateFormat';
 import { formatUrl } from '../../Router/queryString';
 import { exportsForTests, useNotificationsFetch } from '../hooks';
