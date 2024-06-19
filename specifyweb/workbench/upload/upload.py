@@ -93,7 +93,7 @@ def unupload_record(upload_result: UploadResult, agent) -> None:
                 ) from e
 
         for addition in reversed(upload_result.record_result.picklistAdditions):
-            pli_q = getattr(models, 'Picklistitem').objects.select_for_update().filter(id=addition.id)
+            pli_q = models.Picklistitem.objects.select_for_update().filter(id=addition.id)
             try:
                 pli = pli_q[0]
             except IndexError:
@@ -101,7 +101,7 @@ def unupload_record(upload_result: UploadResult, agent) -> None:
             else:
                 logger.debug(f"deleting {pli}")
                 auditlog.remove(pli, agent, None)
-                pli_q._raw_delete(pli_q.db)
+                pli_q._raw_delete(obj_q.db)  # type: ignore
 
     for _, record in sorted(upload_result.toOne.items(), key=lambda kv: kv[0], reverse=True):
         unupload_record(record, agent)
@@ -158,18 +158,17 @@ def create_recordset(ds: Spdataset, name: str):
     assert ds.rowresults is not None
     results = json.loads(ds.rowresults)
 
-    rs = getattr(models, 'Recordset').objects.create(
+    rs = models.Recordset.objects.create(
         collectionmemberid=ds.collection.id,
         dbtableid=table.tableId,
         name=name,
         specifyuser=ds.specifyuser,
         type=0,
     )
-    Rsi = getattr(models, 'Recordsetitem')
-    Rsi.objects.bulk_create([
-        Rsi(order=i, recordid=r.get_id(), recordset=rs)
+    models.Recordsetitem.objects.bulk_create([
+        models.Recordsetitem(order=i, recordid=record_id, recordset=rs)
         for i, r in enumerate(map(json_to_UploadResult, results))
-        if isinstance(r.record_result, Uploaded)
+        if isinstance(r.record_result, Uploaded) and (record_id := r.get_id()) is not None and record_id != 'Failure'
     ])
     return rs
 

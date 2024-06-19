@@ -5,6 +5,7 @@ import { commonText } from '../../localization/common';
 import { mergingText } from '../../localization/merging';
 import { ajax } from '../../utils/ajax';
 import { ping } from '../../utils/ajax/ping';
+import type { RR } from '../../utils/types';
 import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Label } from '../Atoms/Form';
@@ -18,13 +19,12 @@ import { downloadFile } from '../Molecules/FilePicker';
 import type { MergeStatus, StatusState } from './types';
 import { initialStatusState } from './types';
 
-const statusLocalization: { readonly [STATE in MergeStatus]: LocalizedString } =
-  {
-    MERGING: mergingText.merging(),
-    ABORTED: mergingText.mergeFailed(),
-    FAILED: mergingText.mergeFailed(),
-    SUCCEEDED: mergingText.mergeSucceeded(),
-  };
+const statusLocalization: RR<MergeStatus, LocalizedString> = {
+  MERGING: mergingText.merging(),
+  ABORTED: mergingText.mergeFailed(),
+  FAILED: mergingText.mergeFailed(),
+  SUCCEEDED: mergingText.mergeSucceeded(),
+};
 
 export function Status({
   mergingId,

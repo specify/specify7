@@ -171,7 +171,7 @@ export const userText = createDictionary({
     'fr-fr': `
       Vous avez été invité à associer une connexion externe à votre compte
       utilisateur Specify. Cela vous permettra de vous connecter à Specify avec
-      le fournisseur que vous avez choisi à l'avenir.
+      le fournisseur de votre choix à l'avenir.
     `,
     'uk-ua': `
       Вас запросили пов’язати зовнішній логін із вашим обліковим записом

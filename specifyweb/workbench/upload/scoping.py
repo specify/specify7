@@ -85,7 +85,7 @@ def _make_one_to_one(fieldname: str, rest: AdjustToOnes) -> AdjustToOnes:
 
 
 def extend_columnoptions(colopts: ColumnOptions, collection, tablename: str, fieldname: str) -> ExtendedColumnOptions:
-    schema_items = getattr(models, 'Splocalecontaineritem').objects.filter(
+    schema_items = models.Splocalecontaineritem.objects.filter(
         container__discipline=collection.discipline,
         container__schematype=0,
         container__name=tablename.lower(),
@@ -93,12 +93,11 @@ def extend_columnoptions(colopts: ColumnOptions, collection, tablename: str, fie
 
     schemaitem = schema_items and schema_items[0]
     picklistname = schemaitem and schemaitem.picklistname
-    picklist_model = getattr(models, 'Picklist')
 
     if not isinstance(picklistname, str):
         picklist = None
     else:
-        picklists = picklist_model.objects.filter(name=picklistname)
+        picklists = models.Picklist.objects.filter(name=picklistname)
         collection_picklists = picklists.filter(collection=collection)
         
         picklist = picklists[0] if len(collection_picklists) == 0 else collection_picklists[0]
@@ -153,7 +152,8 @@ def apply_scoping_to_one(ut, collection, table, callback) -> Tuple[bool, Dict[st
 def apply_scoping_to_uploadtable(ut: UploadTable, collection, row=None) -> Tuple[bool, ScopedUploadTable]:
     table = datamodel.get_table_strict(ut.name)
     if ut.overrideScope is not None and isinstance(ut.overrideScope['collection'], int):
-        collection = getattr(models, "Collection").objects.filter(id=ut.overrideScope['collection']).get()
+        collection = models.Collection.objects.filter(id=ut.overrideScope['collection']).get()
+    
 
     callback = _apply_scoping_to_uploadtable(table, row, collection, ut)
     can_cache_to_one, to_ones = apply_scoping_to_one(ut, collection, table, callback)

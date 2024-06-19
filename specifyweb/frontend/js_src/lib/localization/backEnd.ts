@@ -158,7 +158,7 @@ export const backEndText = createDictionary({
     `,
     'uk-ua': 'дата має містити чотири цифри року: {value:string}',
     'de-ch':
-      'Datumswert muss vierstellige Jahreszahlen enthalten: {value:string}',
+      'Datumswert muss vierstellige Jahreszahl enthalten: {value:string}',
   },
   badDateFormat: {
     'en-us': 'bad date value: {value:string}. expected: {format:string}',
@@ -268,7 +268,7 @@ export const backEndText = createDictionary({
     'fr-fr': 'Afficher le traçage',
     'ru-ru': 'Показать обратную связь',
     'uk-ua': 'Показати помилку',
-    'de-ch': 'Traceback anzeigen',
+    'de-ch': 'Keine Sammlung in der Abfrage für Tabelle [X39X] gefunden',
   },
   fieldNotUnique: {
     'en-us': '{tableName:string} must have unique {fieldName:string}',
@@ -387,7 +387,7 @@ export const backEndText = createDictionary({
   nodeSynonimizeWithChildren: {
     'en-us': 'Synonymizing node "{nodeName:string}" which has children',
     'es-es': 'Sinonimizando el nodo "{nodeName:string}" que tiene hijos',
-    'fr-fr': 'Nœud synonyme "{nodeName:string}" qui a des enfants',
+    'fr-fr': 'Type de collection inattendu "[X31X]". "[X71X]" attendu',
     'ru-ru': `
       Синонимизирующий узел «{nodeName:string}», у которого есть дочерние
       элементы.
@@ -564,7 +564,7 @@ export const backEndText = createDictionary({
     'en-us': 'Field {field:string} is not a Relationship',
     'es-es': 'El campo {field:string} no es una relación',
     'fr-fr': "Le champ {field:string} n'est pas une relation",
-    'ru-ru': 'Поле {field:string} не является связью',
+    'ru-ru': '[X0X] среди деревьев',
     'uk-ua': 'Поле {field:string} не є зв’язком',
     'de-ch': 'Feld {field:string} ist keine Beziehung',
   },

@@ -104,7 +104,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Varios archivos seleccionados',
     'fr-fr': 'Plusieurs fichiers sélectionnés',
     'ru-ru': 'Выбрано несколько файлов',
-    'uk-ua': 'Вибрано кілька файлів',
+    'uk-ua': 'Вибрано декілька файлів',
   },
   fileSize: {
     'en-us': 'File Size',
@@ -191,7 +191,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Error de coincidencia',
     'fr-fr': 'Erreur de correspondance',
     'ru-ru': 'Ошибка совпадения',
-    'uk-ua': 'Помилка збігу',
+    'uk-ua': 'Помилка відповідності',
   },
   errorReadingFile: {
     'en-us': 'Error reading file',
@@ -214,8 +214,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Attachment Import Data Sets ({count:number})',
     'de-ch': 'Anhänge zum Importieren von Datensätzen ({count:number})',
     'es-es': 'Adjuntar el conjuntos de datos de importación ({count:number})',
-    'fr-fr':
-      "Ensembles de données d'importation de pièces jointes ({count:number})",
+    'fr-fr': "Import d'un jeu de données de pièces jointes ({count:number})",
     'ru-ru': 'Наборы данных импорта вложений ({count:number})',
     'uk-ua': 'Набори даних імпорту вкладених файлів ({count:number})',
   },
@@ -294,8 +293,9 @@ export const attachmentsText = createDictionary({
       Откат выполнялся, когда произошло прерывание. Некоторые файлы могли быть
       удалены
     `,
-    'uk-ua':
-      'Тривав відкат, коли сталася перерва. Деякі файли могли бути видалені',
+    'uk-ua': `
+      Тривав відкат, коли сталася перерва. Можливо, деякі файли було видалено
+    `,
     'es-es': `
       La reversión estaba en curso cuando se produjo una interrupción. Es
       posible que algunos archivos hayan sido eliminados.
@@ -305,7 +305,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Attachment ID',
     'de-ch': 'Anhangs-ID',
     'es-es': 'ID del archivo adjunto',
-    'fr-fr': 'ID de pièce jointe',
+    'fr-fr': 'ID de la pièce jointe',
     'ru-ru': 'Идентификатор вложения',
     'uk-ua': 'ID вкладення',
   },
@@ -533,7 +533,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Error saving record',
     'de-ch': 'Fehler beim Speichern des Datensatzes',
     'es-es': 'Error al guardar el registro',
-    'fr-fr': "Erreur lors de l'enregistrement de l'enregistrement",
+    'fr-fr': "Erreur lors de la sauvegarde de l'enregistrement",
     'ru-ru': 'Ошибка сохранения записи',
     'uk-ua': 'Помилка збереження запису',
   },
@@ -556,7 +556,7 @@ export const attachmentsText = createDictionary({
     'fr-fr':
       'Choisissez des fichiers ou faites-les glisser ici pour commencer.',
     'ru-ru': 'Выберите файлы или перетащите их сюда, чтобы начать.',
-    'uk-ua': 'Щоб почати, виберіть файли або перетягніть їх сюди.',
+    'uk-ua': 'Виберіть файли або перетягніть їх сюди, щоб почати.',
   },
   selectIdentifier: {
     'en-us': 'Select an identifier to match the files name against.',
@@ -573,7 +573,7 @@ export const attachmentsText = createDictionary({
     `,
     'ru-ru':
       'Выберите идентификатор, которому будет соответствовать имя файла.',
-    'uk-ua': 'Виберіть ідентифікатор для відповідності імені файлу.',
+    'uk-ua': 'Виберіть ідентифікатор, який буде відповідати назві файлів.',
   },
   progress: {
     'en-us': 'Progress',
@@ -624,8 +624,8 @@ export const attachmentsText = createDictionary({
     `,
     'de-ch': `
       Durch das Löschen eines Datensatzes werden dieser und sein Upload-Pfad
-      dauerhaft entfernt. Nach dem Löschen ist für einen hochgeladenen Datensatz
-      auch kein Rollback mehr möglich.
+      dauerhaft entfernt. Außerdem ist nach dem Löschen für einen hochgeladenen
+      Datensatz kein Rollback mehr möglich.
     `,
     'es-es': `
       Al eliminar un conjunto de datos, se elimina permanentemente este y su
@@ -633,10 +633,9 @@ export const attachmentsText = createDictionary({
       una opción para un conjunto de datos cargado.
     `,
     'fr-fr': `
-      La suppression d'un ensemble de données le supprime définitivement ainsi
-      que son chemin de téléchargement. De plus, après la suppression, la
-      restauration ne sera plus une option pour un ensemble de données
-      téléchargé.
+      Supprimer un jeu de données le retire définitivement ainsi que son chemin
+      de téléchargement. De plus, après la suppression, le retour en arrière ne
+      sera plus possible pour un jeu de données téléchargé.
     `,
     'ru-ru': `
       Удаление набора данных безвозвратно удаляет его и его путь загрузки. Кроме

@@ -1,6 +1,6 @@
 from jsonschema import validate # type: ignore
 from typing import Dict
-from specifyweb.specify.api_tests import get_table
+from specifyweb.specify.tests.test_api import get_table
 from .base import UploadTestsBase
 from ..upload_result import Uploaded, Matched, NullRecord
 from ..upload import do_upload

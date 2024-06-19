@@ -1,5 +1,5 @@
 from specifyweb.specify import auditcodes
-from specifyweb.specify.api_tests import get_table
+from specifyweb.specify.tests.test_api import get_table
 from .base import UploadTestsBase
 from ..upload import do_upload, unupload_record
 from ..upload_table import UploadTable

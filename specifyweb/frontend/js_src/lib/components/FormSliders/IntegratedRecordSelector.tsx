@@ -21,10 +21,8 @@ import type { FormType } from '../FormParse';
 import type { SubViewSortField } from '../FormParse/cells';
 import { augmentMode, ResourceView } from '../Forms/ResourceView';
 import { useFirstFocus } from '../Forms/SpecifyForm';
-import {
-  interactionPrepTables,
-  InteractionWithPreps,
-} from '../Interactions/helpers';
+import type { InteractionWithPreps } from '../Interactions/helpers';
+import { interactionPrepTables } from '../Interactions/helpers';
 import { InteractionDialog } from '../Interactions/InteractionDialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';

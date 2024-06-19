@@ -1,12 +1,12 @@
 from jsonschema import validate # type: ignore
 from typing import Dict
-from specifyweb.specify.api_tests import get_table
+from specifyweb.specify.tests.test_api import get_table
 from .base import UploadTestsBase
 from ..upload_result import Uploaded, Matched, NoMatch, NullRecord
 from ..upload import do_upload
 from ..upload_table import UploadTable, MustMatchTable
 from ..treerecord import TreeRecord, MustMatchTreeRecord
-from ..upload_plan_schema import schema, parse_plan, parse_column_options
+from ..upload_plan_schema import schema, parse_plan
 
 from django.conf import settings
 

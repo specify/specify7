@@ -3,13 +3,10 @@ from jsonschema import validate # type: ignore
 
 from django.core.management.base import BaseCommand, CommandError
 
-from specifyweb.specify import models
+from specifyweb.specify.models import Collection, Agent
 
 from specifyweb.workbench.upload.upload import do_upload_dataset
 from specifyweb.workbench.models import Spdataset
-
-Collection = getattr(models, 'Collection')
-Agent = getattr(models, 'Agent')
 
 class Command(BaseCommand):
     help = 'Upload a dataset to the database.'

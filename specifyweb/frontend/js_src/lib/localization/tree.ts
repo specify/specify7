@@ -43,10 +43,10 @@ export const treeText = createDictionary({
   },
   undoSynonymy: {
     'en-us': 'Undo Synonymy',
-    'ru-ru': 'Отменить синонимию',
-    'es-es': 'Deshacer sinonimia',
-    'fr-fr': 'Annuler la synonymie',
-    'uk-ua': 'Скасувати синонімію',
+    'ru-ru': 'Листовой узел',
+    'es-es': 'Nodo hoja',
+    'fr-fr': 'Noeud feuille',
+    'uk-ua': 'Листковий вузол',
     'de-ch': 'Synonymie rückgängig machen',
   },
   synonymize: {
@@ -62,17 +62,15 @@ export const treeText = createDictionary({
     'ru-ru': 'Операция не удалась',
     'es-es': 'Operación fallida',
     'fr-fr': "L'opération a échoué",
-    'uk-ua': 'Операція не вдалася',
+    'uk-ua': 'Не вдалося виконати операцію',
     'de-ch': 'Vorgang fehlgeschlagen',
   },
   actionFailedDescription: {
     'en-us':
       'The operation could not be completed due to the following errors:',
-    'ru-ru': 'Операцию не удалось завершить из-за следующих ошибок:',
-    'es-es':
-      'La operación no se pudo completar debido a los siguientes errores:',
-    'fr-fr':
-      "L'opération n'a pas pu être terminée en raison des erreurs suivantes :",
+    'ru-ru': 'Прямой счет [X7X]',
+    'es-es': 'Conteo directo [X7X]',
+    'fr-fr': 'Synonymes : [X10X]',
     'de-ch': `
       Der Vorgang konnte aufgrund der folgenden Fehler nicht ausgeführt werden:
     `,
@@ -146,22 +144,10 @@ export const treeText = createDictionary({
       Die Vorbereitungen für den {treeName:string}-Knoten „{nodeName:string}“
       werden unter dem neuen Standort „{parentName:string}“ platziert.
     `,
-    'es-es': `
-      Los preparativos del nodo {treeName:string} "{nodeName:string}" se
-      colocarán en la nueva ubicación "{parentName:string}".
-    `,
-    'fr-fr': `
-      Les préparations du nœud {treeName:string} "{nodeName:string}" seront
-      placées sous le nouvel emplacement "{parentName:string}".
-    `,
-    'ru-ru': `
-      Подготовленные узлы {treeName:string} «{nodeName:string}» будут размещены
-      в новом месте «{parentName:string}».
-    `,
-    'uk-ua': `
-      Підготовка вузла {treeName:string} "{nodeName:string}" буде розміщено в
-      новому місці "{parentName:string}".
-    `,
+    'es-es': 'Deshacer sinonimia',
+    'fr-fr': 'Annuler la synonymie',
+    'ru-ru': 'Отменить синонимию',
+    'uk-ua': 'Скасувати синонімію',
   },
   cantMoveHere: {
     'en-us': "Can't move this tree node here",
@@ -192,7 +178,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Не могу объединить в синонимы',
     'es-es': 'No se puede fusionar en sinónimos',
     'fr-fr': 'Impossible de fusionner avec des synonymes',
-    'uk-ua': 'Не можна об’єднувати в синоніми',
+    'uk-ua': 'Неможливо злити в синоніми',
     'de-ch': 'Kann nicht zu Synonymen zusammenführen',
   },
   cantSynonymizeSynonym: {
@@ -302,10 +288,10 @@ export const treeText = createDictionary({
   },
   synonymizeNode: {
     'en-us': 'Synonymize node',
-    'ru-ru': 'Синонимизировать узел',
-    'es-es': 'Sinonimizar nodo',
-    'fr-fr': 'Synonymiser le nœud',
-    'uk-ua': 'Синонімізувати вузол',
+    'ru-ru': 'Узел [X4X] «[X28X]» станет синонимом «[X74X]».',
+    'es-es': 'El nodo [X4X] "[X28X]" se convertirá en sinónimo de "[X74X]".',
+    'fr-fr': 'Le nœud [X4X] "[X28X]" deviendra synonyme de "[X74X]".',
+    'uk-ua': 'Вузол [X4X] "[X28X]" стане синонімом "[X74X]".',
     'de-ch': 'Knoten synonymisieren',
   },
   makeSynonym: {
@@ -339,10 +325,7 @@ export const treeText = createDictionary({
       El nodo {treeName:string} "{nodeName:string}" se convertirá en sinónimo de
       "{synonymName:string}".
     `,
-    'fr-fr': `
-      Le nœud {treeName:string} "{nodeName:string}" deviendra synonyme de
-      "{synonymName:string}".
-    `,
+    'fr-fr': 'Verticale',
     'de-ch': `
       Der {treeName:string}-Knoten "{nodeName:string}" wird zu einem Synonym von
       "{synonymName:string}".
@@ -487,10 +470,10 @@ export const treeText = createDictionary({
   associatedNodesOnly: {
     'en-us': 'Show only nodes with associated objects',
     'de-ch': 'Synchronisieren',
-    'es-es': 'Mostrar solo nodos con objetos asociados',
-    'fr-fr': 'Afficher uniquement les nœuds avec les objets associés',
-    'ru-ru': 'Синхронизировать',
-    'uk-ua': 'Показувати лише вузли з пов’язаними об’єктами',
+    'es-es': 'Vertical',
+    'fr-fr': 'Verticale',
+    'ru-ru': 'Вертикальный',
+    'uk-ua': 'Вертикальний',
   },
   splitView: {
     'en-us': 'Split View',
@@ -524,12 +507,28 @@ export const treeText = createDictionary({
     'uk-ua': 'Синхронізувати',
     'ru-ru': 'Синхронизировать',
   },
+  addNewRank: {
+    'en-us': 'Add New Rank',
+    'de-ch': 'Neuen Rang hinzufügen',
+    'es-es': 'Agregar nuevo rango',
+    'fr-fr': 'Ajouter un nouveau classement',
+    'ru-ru': 'Добавить новый ранг',
+    'uk-ua': 'Додати новий ранг',
+  },
+  chooseParentRank: {
+    'en-us': 'Choose Parent Rank',
+    'de-ch': 'Übergeordneten Rang auswählen',
+    'es-es': 'Elija el rango de padres',
+    'fr-fr': 'Choisissez le rang des parents',
+    'ru-ru': 'Выберите родительский ранг',
+    'uk-ua': 'Виберіть батьківський рейтинг',
+  },
   moveItems: {
     'en-us': 'Move Items',
     'de-ch': 'Elemente verschieben',
     'es-es': 'Mover elementos',
     'fr-fr': 'Déplacer des éléments',
     'ru-ru': 'Переместить предметы',
-    'uk-ua': 'Переміщення елементів',
+    'uk-ua': 'Перемістити елементи',
   },
 } as const);

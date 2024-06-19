@@ -8,7 +8,7 @@ from ..upload_plan_schema import parse_column_options, parse_plan
 from ..disambiguation import DisambiguationInfo
 
 from .base import UploadTestsBase
-from specifyweb.specify.api_tests import get_table
+from specifyweb.specify.tests.test_api import get_table
 
 from django.conf import settings
 

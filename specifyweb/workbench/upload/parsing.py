@@ -100,12 +100,12 @@ def _parse(collection, tablename: str, fieldname: str, colopts: ExtendedColumnOp
     if colopts.picklist:
         result = parse_with_picklist(collection, colopts.picklist, fieldname, value, colopts.column)
         if result is not None:
-            if isinstance(result, ParseResult) and hasattr(field, 'length') and len(result.upload[fieldname]) > field.length:
+            if isinstance(result, ParseResult) and hasattr(field, 'length') and field.length is not None and len(result.upload[fieldname]) > field.length:
                 return ParseFailure(
                     'pickListValueTooLong',
                     {
                         'pickList': colopts.picklist.name,
-                        'maxLength': field.length,
+                        'maxLength': field.length if field.length is not None else 0,
                     },
                     colopts.column
                 )
@@ -125,8 +125,8 @@ def _parse(collection, tablename: str, fieldname: str, colopts: ExtendedColumnOp
         else:
             canonicalized = colopts.uiformatter.canonicalize(parsed)
 
-        if hasattr(field, 'length') and len(canonicalized) > field.length:
-            return ParseFailure('valueTooLong',{'maxLength':field.length}, colopts.column)
+        if hasattr(field, 'length') and field.length is not None and len(canonicalized) > field.length:
+            return ParseFailure('valueTooLong', {'maxLength': field.length if field.length is not None else 0}, colopts.column)
 
         return filter_and_upload({fieldname: canonicalized}, colopts.column)
 
@@ -148,8 +148,8 @@ def _parse(collection, tablename: str, fieldname: str, colopts: ExtendedColumnOp
     if field.type in ('java.lang.Integer', 'java.lang.Long', 'java.lang.Byte', 'java.lang.Short'):
         return parse_integer(fieldname, value, colopts.column)
 
-    if hasattr(field, 'length') and len(value) > field.length:
-        return ParseFailure('valueTooLong', {'maxLength':field.length}, colopts.column)
+    if hasattr(field, 'length') and field.length is not None and len(value) > field.length:
+        return ParseFailure('valueTooLong', {'maxLength': field.length if field.length is not None else 0}, colopts.column)
 
     return filter_and_upload({fieldname: value}, colopts.column)
 

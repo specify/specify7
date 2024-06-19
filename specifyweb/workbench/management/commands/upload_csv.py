@@ -6,12 +6,10 @@ from optparse import make_option
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 
-from specifyweb.specify import models
+from specifyweb.specify.models import Collection
 
 from specifyweb.workbench.upload.upload import do_upload_csv
 from specifyweb.workbench.upload.upload_plan_schema import schema, parse_plan
-
-Collection = getattr(models, 'Collection')
 
 class Command(BaseCommand):
     help = 'Upload CSV to the database.'
