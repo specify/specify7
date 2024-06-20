@@ -1,11 +1,19 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
-import type { RA } from '../../utils/types';
+import { wbText } from '../../localization/workbench';
+import type { GetOrSet, RA } from '../../utils/types';
+import { SET } from '../../utils/utils';
+import { H3 } from '../Atoms';
+import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
+import { Input } from '../Atoms/Form';
 import type { TagProps } from '../Atoms/wrapper';
+import { extractHeader } from '../WbImport/helpers';
+import { loadingGif } from '.';
 import { useDragDropFiles } from './useDragDropFiles';
 
 export function FilePicker({
@@ -175,3 +183,128 @@ export const fileToText = async (
     fileReader.addEventListener('error', () => reject(fileReader.error));
     fileReader.readAsText(file, encoding);
   });
+
+export function Layout({
+  preview,
+  getSetHasHeader,
+  children,
+  onFileImport: handleFileImport,
+}: {
+  readonly preview: LocalizedString | RA<RA<string>> | undefined;
+  readonly getSetHasHeader?: GetOrSet<boolean | undefined>;
+  readonly children?: JSX.Element | RA<JSX.Element>;
+  readonly onFileImport: (hasHeader: boolean) => void;
+}): JSX.Element {
+  const [hasHeader = true] =
+    getSetHasHeader === undefined ? [undefined] : getSetHasHeader;
+
+  return (
+    <>
+      <div className="grid w-96 grid-cols-2 items-center gap-2">
+        {children}
+        {getSetHasHeader !== undefined && (
+          <ToggleHeader
+            hasHeader={hasHeader}
+            isDisabled={preview === undefined}
+            onChange={getSetHasHeader[SET]}
+          />
+        )}
+        <Button.Secondary
+          className="col-span-full justify-center text-center"
+          disabled={preview === undefined}
+          onClick={(): void => handleFileImport(hasHeader)}
+        >
+          {wbText.importFile()}
+        </Button.Secondary>
+      </div>
+      {typeof preview === 'string' ? (
+        <BadImport error={preview} />
+      ) : Array.isArray(preview) ? (
+        <Preview hasHeader={hasHeader} preview={preview} />
+      ) : (
+        loadingGif
+      )}
+    </>
+  );
+}
+
+function ToggleHeader({
+  hasHeader,
+  isDisabled,
+  onChange: handleChange,
+}: {
+  readonly hasHeader: boolean;
+  readonly isDisabled: boolean;
+  readonly onChange: (hasHeader: boolean) => void;
+}): JSX.Element {
+  return (
+    <label className="contents">
+      {wbText.firstRowIsHeader()}
+      <span>
+        <Input.Checkbox
+          checked={hasHeader}
+          disabled={isDisabled}
+          onChange={(): void => handleChange(!hasHeader)}
+        />
+      </span>
+    </label>
+  );
+}
+
+function Preview({
+  preview,
+  hasHeader,
+}: {
+  readonly preview: RA<RA<string>>;
+  readonly hasHeader: boolean;
+}): JSX.Element {
+  const { rows, header } = extractHeader(preview, hasHeader);
+
+  return (
+    <div>
+      <H3>{wbText.previewDataSet()}</H3>
+      <div className="overflow-auto">
+        <table>
+          <thead>
+            <tr className="bg-gray-200 text-center dark:bg-neutral-700">
+              {header.map((cell, index) => (
+                <th
+                  className="border border-gray-700 p-1 dark:border-gray-500"
+                  key={index}
+                  scope="col"
+                >
+                  {cell}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row, index) => (
+              <tr key={index}>
+                {row.map((cell, index) => (
+                  <td className="border border-gray-500" key={index}>
+                    {cell}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function BadImport({
+  error,
+}: {
+  readonly error: LocalizedString;
+}): JSX.Element {
+  return (
+    <p role="alert">
+      {wbText.errorImporting()}
+      <br />
+      {error}
+    </p>
+  );
+}

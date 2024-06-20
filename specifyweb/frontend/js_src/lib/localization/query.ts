@@ -828,7 +828,9 @@ export const queryText = createDictionary({
     `,
     'ru-ru': 'Следующие поля скрыты в импортированном запросе:',
     'uk-ua': 'В імпортованому вами запиті приховано такі поля:',
-    'de-ch': 'In der importierten Abfrage sind folgende Felder ausgeblendet:',
+    'de-ch': `
+      In der von Ihnen importierten Abfrage sind folgende Felder ausgeblendet:
+    `,
   },
   importNoReadPermission: {
     'en-us':

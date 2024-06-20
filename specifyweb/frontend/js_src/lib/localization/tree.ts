@@ -299,7 +299,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Сделайте {nodeName:string} синонимом {synonymName:string}',
     'es-es': 'Hacer de {nodeName:string} un sinónimo de {synonymName:string}',
     'fr-fr': 'Faire de {nodeName:string} un synonyme de {synonymName:string}',
-    'uk-ua': 'Зробити {nodeName:string} синонімом {synonymName:string}',
+    'uk-ua': 'Зробіть {nodeName:string} синонімом {synonymName:string}',
     'de-ch':
       'Aus {nodeName:string} ein Synonym von {synonymName:string} machen',
   },
@@ -529,6 +529,6 @@ export const treeText = createDictionary({
     'es-es': 'Mover elementos',
     'fr-fr': 'Déplacer des éléments',
     'ru-ru': 'Переместить предметы',
-    'uk-ua': 'Переміщення елементів',
+    'uk-ua': 'Перемістити елементи',
   },
 } as const);

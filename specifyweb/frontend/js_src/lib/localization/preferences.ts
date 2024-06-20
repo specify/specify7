@@ -144,7 +144,7 @@ export const preferencesText = createDictionary({
       en-têtes de tableau dans l'arborescence)
     `,
     'uk-ua': `
-      Чи вимикати напівпрозорий фон для компонентів інтерфейсу користувача, коли
+      Чи вимикати напівпрозорі фони для компонентів інтерфейсу користувача, коли
       це можливо (наприклад, заголовки таблиць у перегляді дерева)
     `,
     'de-ch': `
@@ -521,7 +521,7 @@ export const preferencesText = createDictionary({
     'fr-fr': `
       Algorithme de recherche (pour les relations avec les tables arborescentes)
     `,
-    'uk-ua': 'Алгоритм пошуку (для зв’язків із деревоподібними таблицями)',
+    'uk-ua': "Алгоритм пошуку (для зв'язків із деревоподібними таблицями)",
     'de-ch': 'Suchalgorithmus (für Beziehungen mit Baumtabellen)',
   },
   startsWithInsensitive: {
@@ -556,8 +556,7 @@ export const preferencesText = createDictionary({
   startsWithCaseSensitiveDescription: {
     'en-us': 'Search for values that begin with a given query string.',
     'ru-ru': 'Поиск значений, которые начинаются с заданной строки запроса.',
-    'es-es':
-      'Busque valores que comiencen con una cadena de consulta determinada.',
+    'es-es': 'Utilice el selector de meses accesible',
     'fr-fr': `
       Recherchez les valeurs qui commencent par une chaîne de requête donnée.
     `,
@@ -691,7 +690,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Масштабный интерфейс',
     'es-es': 'Interfaz de báscula',
     'fr-fr': 'Interface de balance',
-    'uk-ua': 'Інтерфейс масштабу',
+    'uk-ua': 'Інтерфейс масштабування',
     'de-ch': 'Waagenschnittstelle',
   },
   scaleInterfaceDescription: {
@@ -890,7 +889,8 @@ export const preferencesText = createDictionary({
   accentColor2: {
     'en-us': 'Accent color 2',
     'ru-ru': 'Акцентный цвет 2',
-    'es-es': 'Color de acento 2',
+    'es-es':
+      'Dirección de movimiento cuando se presiona la tecla [X27X]Tab[X35X]',
     'fr-fr': "Couleur d'accent 2",
     'uk-ua': 'Акцентний колір 2',
     'de-ch': 'Akzentfarbe 2',
@@ -937,7 +937,7 @@ export const preferencesText = createDictionary({
   },
   autoWrapCols: {
     'en-us': 'Navigate to the other side when reaching the edge column',
-    'ru-ru': 'Перейдите на другую сторону, достигнув краевого столбца.',
+    'ru-ru': 'Перейдите на другую сторону, когда достигнете краевого столбца.',
     'es-es': 'Navega hacia el otro lado al llegar a la columna del borde',
     'fr-fr':
       'Naviguez de l’autre côté lorsque vous atteignez la colonne de bord',
@@ -1044,7 +1044,7 @@ export const preferencesText = createDictionary({
   filterPickLists: {
     'en-us': 'Filter pick list items',
     'ru-ru': 'Фильтровать элементы списка выбора',
-    'es-es': 'Filtrar elementos de la lista de selección',
+    'es-es': 'Zoom con rueda de desplazamiento',
     'fr-fr': 'Filtrer les éléments de la liste de sélection',
     'uk-ua': 'Фільтр вибору елементів списку',
     'de-ch': 'Auswahllistenelemente filtern',
@@ -1076,7 +1076,7 @@ export const preferencesText = createDictionary({
   showNoReadTables: {
     'en-us': 'Show tables without "Read" access',
     'ru-ru': 'Показать таблицы без доступа «Чтение»',
-    'es-es': 'Mostrar tablas sin acceso de "Lectura"',
+    'es-es': 'Imagen personalizada',
     'fr-fr': 'Afficher les tableaux sans accès "Lecture"',
     'uk-ua': 'Показувати таблиці без доступу «Читання».',
     'de-ch': 'Benutzerdefiniertes Bild',
@@ -1251,7 +1251,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Укажите значок сети',
     'es-es': 'Especificar insignia de red',
     'fr-fr': 'Spécifier le badge réseau',
-    'uk-ua': 'Укажіть позначку мережі',
+    'uk-ua': 'Укажіть значок мережі',
     'de-ch': 'Netzwerk-Badge angeben',
   },
   useAccessibleFullDatePicker: {
@@ -1536,8 +1536,8 @@ export const preferencesText = createDictionary({
       Mettez un délimiteur par ligne
     `,
     'uk-ua': `
-      Список розділювачів для використання на додаток до визначених вище.
-      Поставте один роздільник на рядок
+      Список роздільників, які слід використовувати на додаток до визначених
+      вище. Поставте один роздільник на рядок
     `,
     'de-ch': `
       Eine Liste der zu verwendenden Trennzeichen zusätzlich zu den oben
@@ -1940,7 +1940,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Basisansicht',
     'es-es': 'Vista básica',
     'fr-fr': 'Vue de base',
-    'ru-ru': 'Основной вид',
+    'ru-ru': 'Базовый вид',
     'uk-ua': 'Основний вигляд',
   },
   detailedView: {

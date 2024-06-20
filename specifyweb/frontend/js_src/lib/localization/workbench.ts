@@ -157,7 +157,7 @@ export const wbText = createDictionary({
       которая не заменяет обычную проверку.
     `,
     'uk-ua': `
-      Зауважте, перевірка в реальному часі є експериментальною функцією і не
+      Зауважте, що перевірка в реальному часі є експериментальною функцією і не
       замінює звичайну перевірку.
     `,
   },
@@ -1312,7 +1312,7 @@ export const wbText = createDictionary({
     'es-es': 'Propiedades del conjunto de datos',
     'fr-fr': "Propriétés de l'ensemble de données",
     'uk-ua': 'Властивості набору даних',
-    'de-ch': 'Dataset-Eigenschaften',
+    'de-ch': 'Datensatzeigenschaften',
   },
   dataSetName: {
     'en-us': 'Data Set Name',
@@ -1416,7 +1416,7 @@ export const wbText = createDictionary({
     'es-es': 'Estado de carga del conjunto de datos',
     'fr-fr': "Une erreur s'est produite pendant [X22X]",
     'uk-ua': 'Під час [X22X] сталася помилка',
-    'de-ch': 'Upload-Status des Datensatzes',
+    'de-ch': 'Status des Datensatz-Uploads',
   },
   wbStatusValidation: {
     'en-us': 'Data Set Validation Status',

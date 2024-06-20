@@ -171,7 +171,7 @@ export const userText = createDictionary({
     'fr-fr': `
       Vous avez été invité à associer une connexion externe à votre compte
       utilisateur Specify. Cela vous permettra de vous connecter à Specify avec
-      le fournisseur que vous avez choisi à l'avenir.
+      le fournisseur de votre choix à l'avenir.
     `,
     'uk-ua': `
       Вас запросили пов’язати зовнішній логін із вашим обліковим записом
@@ -220,9 +220,9 @@ export const userText = createDictionary({
     `,
     'uk-ua': `
       Наразі немає жодного користувача, пов’язаного з вашим обліковим записом
-      {providerName:string}. Якщо у вас є вказати ім’я користувача та пароль,
-      ви можете ввести їх нижче, щоб пов’язати цього користувача з обліковим
-      записом {providerName:string} для майбутніх входів.
+      {providerName:string}. Якщо у вас є вказане ім’я користувача та пароль,
+      ви можете ввести їх нижче, щоб пов’язати цього користувача з вашим
+      обліковим записом {providerName:string} для майбутніх входів.
     `,
     'de-ch': `
       Derzeit ist Ihrem {providerName:string}-Konto kein Benutzer vom Typ
@@ -285,7 +285,7 @@ export const userText = createDictionary({
       resource through the currently logged in account
     `,
     'ru-ru': `
-      У вас нет доступа ни к одному {collectionTable:string}, содержащему этот
+      У вас нет доступа к любому {collectionTable:string}, содержащему этот
       ресурс, через текущую учетную запись.
     `,
     'es-es': `
@@ -308,7 +308,7 @@ export const userText = createDictionary({
       collection.
     `,
     'ru-ru': `
-      Доступ к запрошенному ресурсу недоступен при входе в текущую коллекцию.
+      Доступ к запрошенному ресурсу невозможен при входе в текущую коллекцию.
     `,
     'es-es': `
       No se puede acceder al recurso solicitado mientras se está conectado a la
@@ -417,8 +417,8 @@ export const userText = createDictionary({
       la siguiente acción:
     `,
     'fr-fr': `
-      Vous ne disposez d'aucune stratégie ou rôle qui vous autorise à effectuer
-      l'action suivante :
+      Vous ne disposez d'aucune stratégie ou d'un rôle qui vous autorise à
+      effectuer l'action suivante :
     `,
     'uk-ua': `
       У вас немає жодної політики чи ролі, які дають вам дозвіл виконувати такі

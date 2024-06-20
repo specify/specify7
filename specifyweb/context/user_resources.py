@@ -2,9 +2,7 @@ from specifyweb.context.app_resource import get_usertype
 from specifyweb.specify import models, api
 from specifyweb.specify.views import openapi
 from specifyweb.context.resources import Resource, Resources
-
-Spappresource = getattr(models, 'Spappresource')
-Spappresourcedir = getattr(models, 'Spappresourcedir')
+from specifyweb.specify.models import Spappresource, Spappresourcedir
 
 user_resource_dir_filter_gen = lambda request: {
                 'specifyuser': request.specify_user,

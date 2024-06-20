@@ -3,13 +3,14 @@ import re
 from specifyweb.businessrules.orm_signal_handler import orm_signal_handler
 from specifyweb.specify.scoping import Scoping
 from specifyweb.specify import models
+from specifyweb.specify.models_by_table_id import models_iterator
 from django.db import transaction
 
 from specifyweb.businessrules.exceptions import AbortSave
 
 JOINTABLE_NAME_RE = re.compile('(.*)attachment')
 
-attachment_tables = {model for model in list(models.models_by_tableid.values())
+attachment_tables = {model for model in models_iterator()
                      if model.__name__.endswith('attachment')}
 
 tables_with_attachments = {getattr(models, model.__name__.replace('attachment', ''))
