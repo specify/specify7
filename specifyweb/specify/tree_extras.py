@@ -701,8 +701,6 @@ class TreeRank(models.Model):
 
     def save(self, *args, **kwargs):
         # pre_save
-        if hasattr(self, 'isaccepted'):
-            self.isaccepted = self.accepted_id == None
         if self.pk is None: # is it a new object?
             pre_tree_rank_init(self)
             verify_rank_parent_chain_integrity(self, RankOperation.CREATED)
