@@ -6,7 +6,10 @@ import { f } from '../../utils/functools';
 import type { DeepPartial, RA, RR } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { keysToLowerCase, removeKey } from '../../utils/utils';
-import { interactionsWithPrepTables } from '../Interactions/helpers';
+import {
+  interactionPrepTables,
+  interactionsWithPrepTables,
+} from '../Interactions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { formatUrl } from '../Router/queryString';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
@@ -226,55 +229,12 @@ export function resourceOn(
 export const parseJavaClassName = (className: string): string =>
   className.split('.').at(-1) ?? '';
 
-type InteractionTable = typeof interactionsWithPrepTables[number];
-const interactionTablesPrepsFieldName1 = f.store(
-  () =>
-    filterArray(
-      Object.values(genericTables).map((table) => {
-        const relationshipToPreparation = table.relationships.find(
-          ({ relatedTable }) =>
-            relatedTable.relationships.some(
-              ({ name }) => name === 'preparation'
-            )
-        );
-
-        return relationshipToPreparation
-          ? [table.name, relationshipToPreparation.name]
-          : undefined;
-      })
-    ) as RA<readonly [InteractionTable, string]>
-);
-const interactionTablesPrepsFieldName: RR<InteractionTable, string> = {
-  Disposal: 'disposalPreparations',
-  Loan: 'loanPreparations',
-  Gift: 'giftPreparations',
-  ExchangeOut: 'exchangeOutPreps',
-  ExchangeIn: 'exchangeInPreps',
-};
 export function getFieldsToNotClone(
   table: SpecifyTable,
   cloneAll: boolean
 ): RA<string> {
-  let fieldsToClone = getCarryOverPreference(table, cloneAll);
+  const fieldsToClone = getCarryOverPreference(table, cloneAll);
   const uniqueFields = getUniqueFields(table);
-  /*
-   * Const interactionPrepTables = interactionTablesPrepsFieldName1();
-   * if (
-   *   interactionsWithPrepTables.some(([tableName]) => tableName === table.name)
-   * ) {
-   *   const fieldName = interactionPrepTables.find(
-   *     ([tableName]) => tableName === table.name
-   *   )?.[1];
-   *   if (fieldName !== undefined && fieldName !== null) {
-   *     fieldsToClone = fieldsToClone.filter((field) => field !== fieldName);
-   *   }
-   * }
-   */
-  if (interactionsWithPrepTables.includes(table.name as InteractionTable)) {
-    const fieldName =
-      interactionTablesPrepsFieldName[table.name as InteractionTable];
-    fieldsToClone = fieldsToClone.filter((field) => field !== fieldName);
-  }
   return table.fields
     .map(({ name }) => name)
     .filter(
@@ -336,6 +296,18 @@ export const getUniqueFields = (table: SpecifyTable): RA<string> =>
      */
     ...table.relationships
       .filter(({ relatedTable }) => relatedTable.name.endsWith('Attachment'))
+      .map(({ name }) => name),
+    /*
+     * Interaction Preparations should be considered unique for each
+     * Interaction
+     * See https://github.com/specify/specify7/issues/4012
+     */
+    ...table.relationships
+      .filter(
+        ({ relatedTable }) =>
+          interactionsWithPrepTables.includes(table.name) &&
+          interactionPrepTables.includes(relatedTable.name)
+      )
       .map(({ name }) => name),
     ...filterArray(
       uniqueFields.map((fieldName) => table.getField(fieldName)?.name)
