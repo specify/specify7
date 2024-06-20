@@ -227,23 +227,40 @@ export const parseJavaClassName = (className: string): string =>
   className.split('.').at(-1) ?? '';
 
 type InteractionTable = typeof interactionsWithPrepTables[number];
-const interactionTablesPrepsFieldName: RR<InteractionTable, string> = {
-  Disposal: 'disposalPreparations',
-  Loan: 'loanPreparations',
-  Gift: 'giftPreparations',
-  ExchangeOut: 'exchangeOutPreps',
-  ExchangeIn: 'exchangeInPreps',
-};
+const interactionTablesPrepsFieldName = f.store(
+  () =>
+    filterArray(
+      Object.values(genericTables).map((table) => {
+        const relationshipToPreparation = table.relationships.find(
+          ({ relatedTable }) =>
+            relatedTable.relationships.some(
+              ({ name }) => name === 'preparation'
+            )
+        );
+
+        return relationshipToPreparation
+          ? [table.name, relationshipToPreparation.name]
+          : undefined;
+      })
+    ) as RA<readonly [InteractionTable, string]>
+);
+
 export function getFieldsToNotClone(
   table: SpecifyTable,
   cloneAll: boolean
 ): RA<string> {
   let fieldsToClone = getCarryOverPreference(table, cloneAll);
   const uniqueFields = getUniqueFields(table);
-  if (interactionsWithPrepTables.includes(table.name as InteractionTable)) {
-    const fieldName =
-      interactionTablesPrepsFieldName[table.name as InteractionTable];
-    fieldsToClone = fieldsToClone.filter((field) => field !== fieldName);
+  const interactionPrepTables = interactionTablesPrepsFieldName();
+  if (
+    interactionsWithPrepTables.some(([tableName]) => tableName === table.name)
+  ) {
+    const fieldName = interactionPrepTables.find(
+      ([tableName]) => tableName === table.name
+    )?.[1];
+    if (fieldName !== undefined && fieldName !== null) {
+      fieldsToClone = fieldsToClone.filter((field) => field !== fieldName);
+    }
   }
   return table.fields
     .map(({ name }) => name)
