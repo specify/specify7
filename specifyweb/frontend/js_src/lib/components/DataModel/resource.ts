@@ -227,7 +227,7 @@ export const parseJavaClassName = (className: string): string =>
   className.split('.').at(-1) ?? '';
 
 type InteractionTable = typeof interactionsWithPrepTables[number];
-const interactionTablesPrepsFieldName = f.store(
+const interactionTablesPrepsFieldName1 = f.store(
   () =>
     filterArray(
       Object.values(genericTables).map((table) => {
@@ -244,23 +244,36 @@ const interactionTablesPrepsFieldName = f.store(
       })
     ) as RA<readonly [InteractionTable, string]>
 );
-
+const interactionTablesPrepsFieldName: RR<InteractionTable, string> = {
+  Disposal: 'disposalPreparations',
+  Loan: 'loanPreparations',
+  Gift: 'giftPreparations',
+  ExchangeOut: 'exchangeOutPreps',
+  ExchangeIn: 'exchangeInPreps',
+};
 export function getFieldsToNotClone(
   table: SpecifyTable,
   cloneAll: boolean
 ): RA<string> {
   let fieldsToClone = getCarryOverPreference(table, cloneAll);
   const uniqueFields = getUniqueFields(table);
-  const interactionPrepTables = interactionTablesPrepsFieldName();
-  if (
-    interactionsWithPrepTables.some(([tableName]) => tableName === table.name)
-  ) {
-    const fieldName = interactionPrepTables.find(
-      ([tableName]) => tableName === table.name
-    )?.[1];
-    if (fieldName !== undefined && fieldName !== null) {
-      fieldsToClone = fieldsToClone.filter((field) => field !== fieldName);
-    }
+  /*
+   * Const interactionPrepTables = interactionTablesPrepsFieldName1();
+   * if (
+   *   interactionsWithPrepTables.some(([tableName]) => tableName === table.name)
+   * ) {
+   *   const fieldName = interactionPrepTables.find(
+   *     ([tableName]) => tableName === table.name
+   *   )?.[1];
+   *   if (fieldName !== undefined && fieldName !== null) {
+   *     fieldsToClone = fieldsToClone.filter((field) => field !== fieldName);
+   *   }
+   * }
+   */
+  if (interactionsWithPrepTables.includes(table.name as InteractionTable)) {
+    const fieldName =
+      interactionTablesPrepsFieldName[table.name as InteractionTable];
+    fieldsToClone = fieldsToClone.filter((field) => field !== fieldName);
   }
   return table.fields
     .map(({ name }) => name)
