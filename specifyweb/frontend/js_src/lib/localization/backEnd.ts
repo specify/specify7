@@ -209,6 +209,25 @@ export const backEndText = createDictionary({
       Längengrad muss zwischen -180 und 180 liegen. Tatsächlich: {value:string}
     `,
   },
+  formatMismatch: {
+    'en-us': 'value {value:string} does not match formatter {formatter:string}',
+    'de-ch': `
+      Wert {value:string} stimmt nicht mit Formatierungsprogramm
+      {formatter:string} überein
+    `,
+    'es-es': `
+      el valor {value:string} no coincide con el formateador {formatter:string}
+    `,
+    'fr-fr': `
+      la valeur {value:string} ne correspond pas au formateur {formatter:string}
+    `,
+    'ru-ru': `
+      значение {value:string} не соответствует средству форматирования
+      {formatter:string}
+    `,
+    'uk-ua':
+      'значення {value:string} не відповідає форматеру {formatter:string}',
+  },
   invalidPartialRecord: {
     'en-us': 'this field must be empty if {column:string} is empty',
     'ru-ru': 'это поле должно быть пустым, если {column:string} пусто',
