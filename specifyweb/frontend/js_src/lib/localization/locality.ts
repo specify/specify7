@@ -386,7 +386,7 @@ export const localityText = createDictionary({
     'de-ch': 'Lokalitätsaktualisierung fehlgeschlagen',
     'es-es': 'Error al actualizar la localidad',
     'fr-fr': 'Échec de la mise à jour de la localité',
-    'ru-ru': 'Обновление местоположения не выполнено',
+    'ru-ru': 'Обновление местоположения не выполнено.',
     'uk-ua': 'Помилка оновлення місцевості',
   },
   localityUpdateParseFailure: {
@@ -460,7 +460,7 @@ export const localityText = createDictionary({
     'en-us': "The Dataset must contain a 'guid' header",
     'de-ch': 'Der Datensatz muss einen GUID-Header enthalten',
     'es-es': "El conjunto de datos debe contener un encabezado 'guid'",
-    'fr-fr': "L'ensemble de données doit contenir un en-tête « guid »",
+    'fr-fr': "L'ensemble de données doit contenir un en-tête 'guid'",
     'ru-ru': 'Набор данных должен содержать заголовок «guid».',
     'uk-ua': 'Набір даних має містити заголовок «guid».',
   },
@@ -598,10 +598,28 @@ export const localityText = createDictionary({
   },
   validLongitude: {
     'en-us': 'Longitude needs to have a value between -180° and 180°',
-    'de-ch': 'Der Breitengrad muss einen Wert zwischen -90° und 90° haben',
-    'es-es': 'La latitud debe tener un valor entre -90° y 90°',
-    'fr-fr': 'La latitude doit avoir une valeur comprise entre -90° et 90°',
-    'ru-ru': 'Широта должна иметь значение от -90° до 90°.',
-    'uk-ua': 'Значення широти має бути від -90° до 90°',
+    'de-ch': `
+      Die folgende Anzahl von {localityTabelLabel: string}-Datensätzen wird von
+      der Aktualisierung betroffen sein und es werden
+      {geoCoordDetailTableLabel: string}-Datensätze erstellt:
+    `,
+    'es-es': `
+      La siguiente cantidad de registros {localityTabelLabel: string} se verán
+      afectados por la actualización y se crearán registros
+      {geoCoordDetailTableLabel: string}:
+    `,
+    'fr-fr': `
+      Le nombre suivant d'enregistrements {localityTabelLabel: string} sera
+      affecté par la mise à jour et {geoCoordDetailTableLabel: string}
+      enregistrements seront créés :
+    `,
+    'ru-ru': `
+      Обновление затронет следующее количество записей {localityTabelLabel:
+      string}, и будут созданы записи {geoCoordDetailTableLabel: string}:
+    `,
+    'uk-ua': `
+      Оновлення вплине на таку кількість записів {localityTabelLabel: string} і
+      буде створено записи {geoCoordDetailTableLabel: string}:
+    `,
   },
 } as const);

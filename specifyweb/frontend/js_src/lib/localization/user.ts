@@ -171,7 +171,7 @@ export const userText = createDictionary({
     'fr-fr': `
       Vous avez été invité à associer une connexion externe à votre compte
       utilisateur Specify. Cela vous permettra de vous connecter à Specify avec
-      le fournisseur de votre choix à l'avenir.
+      le fournisseur que vous avez choisi à l'avenir.
     `,
     'uk-ua': `
       Вас запросили пов’язати зовнішній логін із вашим обліковим записом
@@ -179,9 +179,9 @@ export const userText = createDictionary({
       постачальником надалі.
     `,
     'de-ch': `
-      Sie wurden aufgefordert, Ihrem Specify-Benutzerkonto einen externen Login
-      zuzuordnen. Dadurch können Sie sich künftig mit dem von Ihnen gewählten
-      Anbieter bei Specify anmelden.
+      Sie wurden aufgefordert, Ihrem Benutzerkonto bei Specify einen externen
+      Login zuzuordnen. Damit können Sie sich künftig mit dem von Ihnen
+      gewählten Anbieter bei Specify anmelden.
     `,
   },
   legacyLogin: {
@@ -220,9 +220,9 @@ export const userText = createDictionary({
     `,
     'uk-ua': `
       Наразі немає жодного користувача, пов’язаного з вашим обліковим записом
-      {providerName:string}. Якщо у вас є вказане ім’я користувача та пароль,
-      ви можете ввести їх нижче, щоб пов’язати цього користувача з вашим
-      обліковим записом {providerName:string} для майбутніх входів.
+      {providerName:string}. Якщо у вас є вказати ім’я користувача та пароль,
+      ви можете ввести їх нижче, щоб пов’язати цього користувача з обліковим
+      записом {providerName:string} для майбутніх входів.
     `,
     'de-ch': `
       Derzeit ist Ihrem {providerName:string}-Konto kein Benutzer vom Typ
@@ -308,7 +308,7 @@ export const userText = createDictionary({
       collection.
     `,
     'ru-ru': `
-      Доступ к запрошенному ресурсу невозможен при входе в текущую коллекцию.
+      Доступ к запрошенному ресурсу недоступен при входе в текущую коллекцию.
     `,
     'es-es': `
       No se puede acceder al recurso solicitado mientras se está conectado a la
@@ -1024,7 +1024,7 @@ export const userText = createDictionary({
   specifyAdmin: {
     comment: 'Shown next to user name for admin users',
     'en-us': '(Specify 7 Admin)',
-    'ru-ru': '(Указать 7 Админ)',
+    'ru-ru': '(Укажите 7 Администратора)',
     'es-es': '(Administradores de Specify 7)',
     'fr-fr': '(Spécifiez 7 Administrateur)',
     'uk-ua': '(Вкажіть 7 адміністраторів)',
