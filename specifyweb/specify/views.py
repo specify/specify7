@@ -88,6 +88,7 @@ def raise_error(request):
     raise Exception('This error is a test. You may now return to your regularly '
                     'scheduled hacking.')
 
+# Maps model names to a set of related models that should not block deletion
 DELETE_BLOCKER_EXCEPTIONS = {
     'Taxontreedefitem': {'Taxontreedefitem'},
     'Geographytreedefitem': {'Geographytreedefitem'},
