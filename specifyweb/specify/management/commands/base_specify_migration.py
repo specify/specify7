@@ -19,7 +19,7 @@ class Command(BaseCommand):
                     `name` varchar(255) NOT NULL,
                     `applied` datetime NOT NULL,
                     PRIMARY KEY (`id`)
-                ) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+                );
             """)
 
             # Check if the record exists and insert it if it doesn't
