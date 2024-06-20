@@ -88,6 +88,13 @@ def raise_error(request):
     raise Exception('This error is a test. You may now return to your regularly '
                     'scheduled hacking.')
 
+DELETE_BLOCKER_EXCEPTIONS = {
+    'Taxontreedefitem': {'Taxontreedefitem'},
+    'Geographytreedefitem': {'Geographytreedefitem'},
+    'Storagetreedef': {'Storagetreedefitem'},
+    'Geologictimeperiodtreedef': {'Geologictimeperiodtreedefitem'},
+    'Lithostrattreedef': {'Lithostrattreedefitem'},
+}
 
 @login_maybe_required
 @require_http_methods(['GET', 'HEAD'])
@@ -110,6 +117,12 @@ def delete_blockers(request, model, id):
             }
         ] for field, sub_objs in collector.delete_blockers
     ])
+
+    # Filter out models that are in the DELETE_BLOCKER_EXCEPTIONS dictionary
+    model_name = obj.__class__.__name__
+    if model_name in DELETE_BLOCKER_EXCEPTIONS:
+        result = [item for item in result if item['table'] not in DELETE_BLOCKER_EXCEPTIONS[model_name]]
+
     return http.HttpResponse(api.toJson(result), content_type='application/json')
 
 
