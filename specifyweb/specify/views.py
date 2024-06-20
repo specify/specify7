@@ -121,7 +121,7 @@ def delete_blockers(request, model, id):
     # Filter out models that are in the DELETE_BLOCKER_EXCEPTIONS dictionary
     model_name = obj.__class__.__name__
     if model_name in DELETE_BLOCKER_EXCEPTIONS:
-        result = [item for item in result if item['table'] not in DELETE_BLOCKER_EXCEPTIONS[model_name]]
+        result = list(filter(lambda item: item['table'] not in DELETE_BLOCKER_EXCEPTIONS[model_name], result))
 
     return http.HttpResponse(api.toJson(result), content_type='application/json')
 
