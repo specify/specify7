@@ -88,6 +88,7 @@ def raise_error(request):
     raise Exception('This error is a test. You may now return to your regularly '
                     'scheduled hacking.')
 
+
 @login_maybe_required
 @require_http_methods(['GET', 'HEAD'])
 def delete_blockers(request, model, id):
