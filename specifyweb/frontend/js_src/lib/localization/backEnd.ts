@@ -471,10 +471,10 @@ export const backEndText = createDictionary({
   operationAcrossTrees: {
     'en-us': '{operation:string} across trees',
     'de-ch': '{operation:string} über Bäume',
-    'es-es': '{operation:string} a través de árboles',
+    'es-es': 'el valor [X6X] no coincide con el formateador [X46X]',
     'fr-fr': '{operation:string} à travers les arbres',
     'ru-ru': '{operation:string} среди деревьев',
-    'uk-ua': '{operation:string} через дерева',
+    'uk-ua': 'значення [X6X] не відповідає форматеру [X46X]',
   },
   limitReachedDeterminingAccepted: {
     'en-us': `
@@ -601,8 +601,8 @@ export const backEndText = createDictionary({
       demande. "{expectedTableId:string}" attendu
     `,
     'ru-ru': `
-      Не удалось найти принятый таксон для синонимизированного таксона с
-      идентификатором [X63X]
+      Неожиданный идентификатор таблицы «{tableId:string}» в запросе. Ожидается
+      "{expectedTableId:string}"
     `,
     'uk-ua': `
       Неочікуваний ІД таблиці "{tableId:string}" у запиті. Очікується

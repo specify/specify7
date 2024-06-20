@@ -191,7 +191,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Error de coincidencia',
     'fr-fr': 'Erreur de correspondance',
     'ru-ru': 'Ошибка совпадения',
-    'uk-ua': 'Помилка збігу',
+    'uk-ua': 'Помилка відповідності',
   },
   errorReadingFile: {
     'en-us': 'Error reading file',
@@ -206,7 +206,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Unhandled fatal resource error:',
     'de-ch': 'Unbehandelter schwerwiegender Ressourcenfehler:',
     'es-es': 'Error de recurso fatal no controlado:',
-    'fr-fr': 'Erreur de ressource fatale non traitée :',
+    'fr-fr': 'Erreur de ressource fatale non gérée :',
     'ru-ru': 'Необработанная фатальная ошибка ресурса:',
     'uk-ua': 'Необроблена критична помилка ресурсу:',
   },
@@ -336,7 +336,7 @@ export const attachmentsText = createDictionary({
     `,
     'es-es': 'Interrumpido. Reintentando en [X25X]',
     'fr-fr': `
-      Le téléchargement des pièces jointes créera des pièces jointes sur le
+      Le téléchargement des pièces jointes créera des pièces jointes dans le
       serveur d'actifs et dans la base de données Specify.
     `,
     'ru-ru': `
@@ -625,8 +625,8 @@ export const attachmentsText = createDictionary({
     `,
     'de-ch': `
       Durch das Löschen eines Datensatzes werden dieser und sein Upload-Pfad
-      dauerhaft entfernt. Außerdem ist nach dem Löschen für einen hochgeladenen
-      Datensatz kein Rollback mehr möglich.
+      dauerhaft entfernt. Nach dem Löschen ist für einen hochgeladenen Datensatz
+      auch kein Rollback mehr möglich.
     `,
     'es-es': `
       Al eliminar un conjunto de datos, se elimina permanentemente este y su
