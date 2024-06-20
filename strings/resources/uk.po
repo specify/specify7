@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-06-20 19:09+0000\n"
+"PO-Revision-Date: 2024-06-20 23:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "resources/uk/>\n"
@@ -141,7 +141,7 @@ msgstr "Форматувальники полів"
 #: components/AppResources/types.tsx:167
 #, fuzzy
 msgid "dataObjectFormatters"
-msgstr "Формати записів"
+msgstr "Форматувальники записів"
 
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 #: components/Formatters/Aggregator.tsx:69
@@ -386,8 +386,8 @@ msgstr "Попередній перегляд"
 #, fuzzy
 msgid "previewExplainer"
 msgstr ""
-"Виконайте пошук у записах колекції, щоб переглянути інструмент форматування "
-"записів"
+"Виконайте пошук у своїх записах колекції, щоб переглянути інструмент "
+"форматування записів"
 
 #. Used in: Components > Form Editor > Table ⬤ Components > Formatters > Formatter
 #: components/FormEditor/Table.tsx:86
@@ -465,8 +465,7 @@ msgstr ""
 msgid "wrongScopeWarning"
 msgstr ""
 "Цей ресурс належить до іншої колекції/дисципліни, ніж та, у якій ви зараз "
-"перебуваєте. Рекомендується змінити колекцію перед редагуванням цього "
-"ресурсу"
+"перебуваєте. Рекомендовано змінити колекцію перед редагуванням цього ресурсу"
 
 #. Used in: Components > Web Links > Element
 #: components/WebLinks/Element.tsx:82
@@ -526,7 +525,7 @@ msgstr "Копіювати існуюче визначення перегляд�
 #: components/FormEditor/Create.tsx:84
 #, fuzzy
 msgid "copyDefaultForm"
-msgstr "Форматувальники записів"
+msgstr "Формати записів"
 
 #. Used in: Components > App Resources > Create
 #: components/AppResources/Create.tsx:228
