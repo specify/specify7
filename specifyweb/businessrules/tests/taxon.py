@@ -6,6 +6,7 @@ from django.db.models import ProtectedError
 from specifyweb.specify import models
 from specifyweb.specify.tests.test_api import ApiTests
 
+
 class TaxonTests(ApiTests):
     def setUp(self):
         super(TaxonTests, self).setUp()
@@ -39,7 +40,8 @@ class TaxonTests(ApiTests):
             name="test")
 
         self.roottaxon.delete()
-        self.assertEqual(models.Commonnametx.objects.filter(id=commonname.id).count(), 0)
+        self.assertEqual(models.Commonnametx.objects.filter(
+            id=commonname.id).count(), 0)
 
     def test_delete_blocked_by_determinations(self):
         det = self.collectionobjects[0].determinations.create(
@@ -95,6 +97,28 @@ class TaxonTests(ApiTests):
         tax2.delete()
         self.roottaxon.delete()
 
+    def test_isaccepted_on_save(self):
+        kingdom = self.roottaxontreedefitem.children.create(
+            name="Kingdom",
+            treedef=self.taxontreedef,
+            rankid=self.roottaxontreedefitem.rankid+100)
+
+        animalia = self.roottaxon.children.create(
+            name="Animalia",
+            definition=self.taxontreedef,
+            definitionitem=kingdom
+        )
+
+        metazoa = self.roottaxon.children.create(
+            name="Metazoa",
+            acceptedtaxon=animalia,
+            definition=self.taxontreedef,
+            definitionitem=kingdom
+        )
+
+        self.assertTrue(animalia.isaccepted)
+        self.assertFalse(metazoa.isaccepted)
+
     @skip("not sure if rule is valid")
     def test_delete_blocked_by_taxoncitations(self):
         rw = models.Referencework.objects.create(
@@ -139,7 +163,8 @@ class TaxonTests(ApiTests):
 
         det.delete()
         self.roottaxon.delete()
-        self.assertEqual(models.Taxon.objects.filter(id__in=(animal.id, plant.id)).count(), 0)
+        self.assertEqual(models.Taxon.objects.filter(
+            id__in=(animal.id, plant.id)).count(), 0)
 
     @skip("not clear if this is correct.")
     def test_accepted_children_acceptedparent_set_to_null_on_delete(self):
