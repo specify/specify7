@@ -166,7 +166,8 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                 ?.value === hasSaveConflict
                 ? undefined
                 : error(error_)
-            ).then(handleSaved)
+            )
+            .then(handleSaved)
             .finally(() => {
               unsetUnloadProtect();
               setIsSaving(false);
