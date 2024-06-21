@@ -1549,7 +1549,9 @@ datamodel = Datamodel(tables=[
             Field(name='yesNo3', column='YesNo3', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo4', column='YesNo4', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo5', column='YesNo5', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
-            Field(name='yesNo6', column='YesNo6', indexed=False, unique=False, required=False, type='java.lang.Boolean')
+            Field(name='yesNo6', column='YesNo6', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='ismemberofcog', column='IsMemberOfCOG', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='hasreferencecatalognumber', column='HasReferenceCatalogNumber', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
         ],
         indexes=[
             Index(name='FieldNumberIDX', column_names=['FieldNumber']),
@@ -8202,7 +8204,107 @@ datamodel = Datamodel(tables=[
         fieldAliases=[
 
         ]
-    )
+    ),
+    Table( # CollectionObjectType
+        sp7_only=True,
+        django_app='sp7_models',
+        classname='edu.ku.brc.specify.datamodel.CollectionObjectType',
+        table='collectionobjecttype',
+        tableId=1015,
+        idColumn='CollectionObjectTypeID',
+        idFieldName='collectionObjectTypeId',
+        idField=IdField(name='collectionObjectTypeId', column='collectionObjectTypeID', type='java.lang.Integer'),
+        fields=[
+            Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+            Field(name='isloanable', column='IsLoanable', indexed=False, unique=False, required=True, type='java.lang.Boolean'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='text1', column='Text1', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='text3', column='Text3', indexed=False, unique=False, required=False, type='java.lang.String', length=255)
+        ],
+        indexes=[
+
+        ],
+        relationships=[
+            Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID'),
+            Relationship(name='taxonTreeDef', type='many-to-one', required=False, relatedModelName='TaxonTreeDef', column='TaxonTreeDefID'),
+            Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+        ],
+        fieldAliases=[
+
+        ]
+    ),
+    Table( # CollectionObjectGroup
+        sp7_only=True,
+        django_app='sp7_models',
+        classname='edu.ku.brc.specify.datamodel.CollectionObjectGroup',
+        table='collectionobjectgroup',
+        tableId=1016,
+        idColumn='CollectionObjectGroupID',
+        idFieldName='collectionObjectGroupId',
+        idField=IdField(name='collectionObjectGroupId', column='CollectionObjectGroupID', type='java.lang.Integer'),
+        fields=[
+            Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+            Field(name='description', column='Description', indexed=False, unique=False, required=False, type='text'),
+            Field(name='igsn', column='IGSN', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='guid', column='GUID', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='number1', column='Number1', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='text1', column='Text1', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='text3', column='Text3', indexed=False, unique=False, required=False, type='java.lang.String', length=255)
+        ],
+        indexes=[
+            Index(name='IGSN', column_names=['IGSN']),
+            Index(name='GUID', column_names=['GUID'])
+        ],
+        relationships=[
+            Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID'),
+            Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+        ],
+        fieldAliases=[
+
+        ]
+    ),
+    Table( # CollectionObjectGroupJoin
+        sp7_only=True,
+        django_app='sp7_models',
+        classname='edu.ku.brc.specify.datamodel.CollectionObjectGroupJoin',
+        table='collectionobjectgroupjoin',
+        tableId=1017,
+        idColumn='CollectionObjectGroupJoinID',
+        idFieldName='collectionObjectGroupJoinId',
+        idField=IdField(name='collectionObjectGroupJoinId', column='CollectionObjectGroupJoinID', type='java.lang.Integer'),
+        fields=[
+            Field(name='isprimary', column='IsPrimary', indexed=False, unique=False, required=True, type='java.lang.Boolean'),
+            Field(name='issubstrate', column='IsSubstrate', indexed=False, unique=False, required=True, type='java.lang.Boolean'),
+            Field(name='precedence', column='Precedence', indexed=False, unique=False, required=True, type='java.lang.Integer'),
+            Field(name='order', column='Order', indexed=False, unique=False, required=True, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='text1', column='Text1', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='text3', column='Text3', indexed=False, unique=False, required=False, type='java.lang.String', length=255)
+        ],
+        indexes=[
+
+        ],
+        relationships=[
+            Relationship(name='collectionobjectgroupparent', type='many-to-one', required=True, relatedModelName='CollectionObjectGroup', column='CollectionObjectGroupParentID'),
+            Relationship(name='collectionobjectgroupchild', type='many-to-one', required=True, relatedModelName='CollectionObjectGroup', column='CollectionObjectGroupChildID'),
+            Relationship(name='collectionobjectchild', type='many-to-one', required=True, relatedModelName='CollectionObject', column='CollectionObjectChildID'),
+        ],
+        fieldAliases=[
+
+        ]
+    ),
 ])
 
 # add_collectingevents_to_locality(datamodel) # added statically to datamodel definitions

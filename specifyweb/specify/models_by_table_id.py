@@ -202,7 +202,10 @@ model_names_by_table_id = {
     1011:'LibraryRolePolicy',
     1012:'Spdataset',
     1013: 'LocalityUpdate',
-    1014: 'LocalityUpdateRowResult'
+    1014: 'LocalityUpdateRowResult',
+    1015: 'CollectionObjectType',
+    1016: 'CollectionObjectGroup',
+    1017: 'CollectionObjectGroupJoin',
 }
 
 model_names_by_app = {
@@ -419,7 +422,12 @@ model_names_by_app = {
         'Workbenchrowimage',
         'Workbenchtemplate',
         'Workbenchtemplatemappingitem'
-    }
+    },
+    'sp7_models': {
+        'CollectionObjectType',
+        'CollectionObjectGroup',
+        'CollectionObjectGroupJoin'
+    },
 }
 
 # def import_model(model_name):
