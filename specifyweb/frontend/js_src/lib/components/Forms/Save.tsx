@@ -227,10 +227,12 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       {typeof handleAdd === 'function' && canCreate ? (
         <>
           {resource.specifyTable.name === 'CollectionObject' &&
-          !isInRecordSet &&
+          (isInRecordSet === false || isInRecordSet === undefined) &&
           showBulkCarryInput ? (
             <Label.Inline>
               <Input.Generic
+                autoFocus
+                forwardRef={(input): void => input?.focus()}
                 id={id('bulk-amount')}
                 type="number"
                 value={carryForwardAmount}
@@ -243,15 +245,15 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
             </Label.Inline>
           ) : null}
           {resource.specifyTable.name === 'CollectionObject' &&
-          !isInRecordSet &&
+          (isInRecordSet === false || isInRecordSet === undefined) &&
           !resource.needsSaved ? (
-            <Button.Save
+            <Button.Secondary
               aria-controls={id('bulk-amount')}
               title={commonText.bulkCarry()}
-              onClick={() => setBulkCarryInput(!showBulkCarryInput)}
+              onClick={(): void => setBulkCarryInput(!showBulkCarryInput)}
             >
               {commonText.bulkCarry()}
-            </Button.Save>
+            </Button.Secondary>
           ) : null}
           {showClone &&
             copyButton(

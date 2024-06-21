@@ -416,29 +416,34 @@ function RecordSet<SCHEMA extends AnySchema>({
                 })
             : undefined
         }
-        onClone={(resources) => {
-          resources.map((newResource) => go(totalCount, 'new', newResource));
-          // Bulk carry when there are multiple resources
+        onClone={(resources: RA<SpecifyResource<SCHEMA>>): void => {
+          go(totalCount, 'new', resources[0]);
+          /*
+           * );
+           * Bulk carry when there are multiple resources
+           */
           if (resources.length > 1) {
             const sortedResources = Array.from(resources).sort(
               sortFunction((r) => r.id)
             );
             loading(
-              createNewRecordSet(sortedResources.map((r) => r.id)).then(
-                async () => {
-                  const startingResourceCatNumber = serializeResource(
+              createNewRecordSet(
+                sortedResources.map((resource) => resource.id)
+              ).then(async () => {
+                const startingResourceCatNumber =
+                  serializeResource(
                     sortedResources[0] as SpecifyResource<CollectionObject>
-                  ).catalogNumber;
-                  const endingResourceCatNumber = serializeResource(
+                  ).catalogNumber ?? '0';
+                const endingResourceCatNumber =
+                  serializeResource(
                     sortedResources.at(-1) as SpecifyResource<CollectionObject>
-                  ).catalogNumber;
-                  recordSet.set(
-                    'name',
-                    `Batch #${startingResourceCatNumber} - #${endingResourceCatNumber}`
-                  );
-                  await recordSet.save();
-                }
-              )
+                  ).catalogNumber ?? '0';
+                recordSet.set(
+                  'name',
+                  `Batch #${startingResourceCatNumber} - #${endingResourceCatNumber}`
+                );
+                await recordSet.save();
+              })
             );
           }
         }}
