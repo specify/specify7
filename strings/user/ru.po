@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-06-20 19:09+0000\n"
+"PO-Revision-Date: 2024-06-21 02:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/user/"
 "ru/>\n"
@@ -183,7 +183,7 @@ msgstr "Пароль был неправильным."
 #, fuzzy
 msgid "noAccessToResource"
 msgstr ""
-"У вас нет доступа к любому {collectionTable:string}, содержащему этот "
+"У вас нет доступа ни к одному {collectionTable:string}, содержащему этот "
 "ресурс, через текущую учетную запись."
 
 #. Used in: Components > Forms > Other Collection View
@@ -624,7 +624,7 @@ msgstr "Загрузка администраторов..."
 #: components/Security/Institution.tsx:158
 #, fuzzy
 msgid "specifyAdmin"
-msgstr "(Укажите 7 Администратора)"
+msgstr "(Указать 7 Админ)"
 
 #. 🟥Shown next to user name for admin users. Used in: Components > Security > Institution
 #: components/Security/Institution.tsx:162
