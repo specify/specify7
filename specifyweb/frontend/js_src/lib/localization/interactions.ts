@@ -27,7 +27,7 @@ export const interactionsText = createDictionary({
   },
   recordReturn: {
     'en-us': '{table:string} Return',
-    'ru-ru': '{table:string} записи',
+    'ru-ru': '{table:string} Возврат',
     'es-es': '{table:string} Regresar',
     'fr-fr': '{table:string} Retour',
     'uk-ua': '{table:string} Повернення',
@@ -51,7 +51,10 @@ export const interactionsText = createDictionary({
       Für mindestens eine Präparationsart sind in folgenden Datensätzen keine
       Präparate vorhanden:
     `,
-    'es-es': 'No se encontraron preparativos para los siguientes registros:',
+    'es-es': `
+      No hay preparados disponibles para al menos un tipo de preparado en los
+      siguientes registros:
+    `,
     'fr-fr': `
       Aucune préparation n'est disponible pour au moins un type de préparation
       dans les enregistrements suivants :
@@ -60,7 +63,9 @@ export const interactionsText = createDictionary({
       В следующих записях отсутствуют препараты хотя бы для одного типа
       препаратов:
     `,
-    'uk-ua': 'Продовжити',
+    'uk-ua': `
+      У таких записах відсутні препарати принаймні для одного типу препарату:
+    `,
   },
   problemsFound: {
     'en-us': 'There are problems with the entry:',
@@ -131,10 +136,10 @@ export const interactionsText = createDictionary({
   },
   preparationsCanNotBeReturned: {
     'en-us': 'Preparations cannot be returned in this context.',
-    'ru-ru': 'В этом случае препараты возврату не подлежат.',
-    'es-es': 'Los preparados no se pueden devolver en este contexto.',
+    'ru-ru': 'В этом случае препараты не подлежат возврату.',
+    'es-es': 'En este contexto, los preparados no se pueden devolver.',
     'fr-fr': 'Les preparations ne peuvent être renvoyées dans ce contexte.',
-    'uk-ua': 'У цьому контексті препарати не підлягають поверненню.',
+    'uk-ua': 'У цьому контексті препарати не повертаються.',
     'de-ch': 'Präparate können in diesem Kontext nicht zurückgegeben werden.',
   },
   noUnresolvedPreparations: {
@@ -142,7 +147,7 @@ export const interactionsText = createDictionary({
     'ru-ru': 'Нет никаких нерешенных приготовлений к этому кредиту.',
     'es-es': 'No hay preparativos pendientes para este préstamo.',
     'fr-fr': 'Il n’y a pas de preparations non retournées pour ce prêt.',
-    'uk-ua': 'Немає невирішених питань підготовки щодо цієї позики.',
+    'uk-ua': 'Немає жодної невирішеної підготовки щодо цієї позики.',
     'de-ch': 'Für dieses Ausleihe bestehen keine ungelösten Vorbereitungen.',
   },
   unresolved: {
@@ -354,8 +359,8 @@ export const interactionsText = createDictionary({
     comment: 'Example: Create a Loan',
     'en-us': 'Create {table:string}',
     'es-es': 'Crear {table:string}',
-    'fr-fr': 'Ajouter un nouveau champ',
-    'ru-ru': 'Добавить новое поле',
+    'fr-fr': 'Créer {table:string}',
+    'ru-ru': 'Создать {table:string}',
     'uk-ua': 'Створити {table:string}',
     'de-ch': 'Erstelle {table:string}',
   },
