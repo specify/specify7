@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-06-20 19:09+0000\n"
+"PO-Revision-Date: 2024-06-21 02:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/user/de_CH/>\n"
@@ -110,8 +110,8 @@ msgstr "Hallo, {userName:string}!"
 #, fuzzy
 msgid "oicWelcomeMessage"
 msgstr ""
-"Sie wurden aufgefordert, Ihrem Benutzerkonto bei Specify einen externen "
-"Login zuzuordnen. Damit können Sie sich künftig mit dem von Ihnen gewählten "
+"Sie wurden aufgefordert, Ihrem Specify-Benutzerkonto einen externen Login "
+"zuzuordnen. Dadurch können Sie sich künftig mit dem von Ihnen gewählten "
 "Anbieter bei Specify anmelden."
 
 #. Used in: Components > Login > Oic Login
