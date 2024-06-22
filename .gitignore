@@ -1,34 +1,45 @@
-*.pyc
-*~
-.vagrant
-.emacs.desktop*
-.directory
-testing
-specifypanel/ve
-specifyweb/virtenv
-venv/
-ve/
-seed-database
+# Setup
+/seed-database/
 *.env
+.env
+docker-compose.yml
+
+# Python
+/venv/
+/ve/
+*.pyc
+
+# OS
+.DS_Store
+
+# Editors
+/.vscode/
+/.idea/
+.emacs.desktop*
+
+# Back-end
 /specifyweb/settings/local_settings.py
 /specifyweb/settings/local_specify_settings.py
 /specifyweb/settings/local_logging_settings.py
 /specifyweb/settings/debug.py
 /specifyweb/settings/secret_key.py
 /specifyweb/settings/ldap_settings.py
-/specifyweb/frontend/js_src/report
+
+# Build artifacts
 /.mypy_cache
 /specifyweb/frontend/locale/**/*.mo
 /specifyweb/settings/build_version.py
-/specifyweb/frontend/static/js
-/specifyweb/frontend/static/css
+/specifyweb/frontend/static/js/
+/specifyweb/frontend/static/css/
 /specifyweb/frontend/static/manifest.json
-node_modules
-/specifyweb/frontend/js_src/testBuild
-/specifyweb/frontend/js_src/docs
-/specifyweb/frontend/js_src/coverage
+/specifyweb/frontend/js_src/node_modules
+/specifyweb/frontend/js_src/testBuild/
+/specifyweb/frontend/js_src/docs/
+/specifyweb/frontend/js_src/coverage/
 /local_specifyweb_apache.conf
 /specifyweb/frontend/js_src/stats.json
-/specifyweb/frontend/js_src/dist
-.env
-docker-compose.yml
+/specifyweb/frontend/js_src/dist/
+
+# Misc
+*~
+testing/
