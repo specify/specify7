@@ -31,6 +31,9 @@ const allIgnore = [
   '/specifyweb/frontend/js_src/lib/tests/fixtures/**',
   '/specifyweb/frontend/js_src/lib/tests/ajax/static/**',
   '/specifyweb/frontend/js_src/lib/**/__tests__/**',
+  '/specifyweb/frontend/js_src/lib/tests/*.js',
+  '/specifyweb/**/tests/**',
+  '/specifyweb/**/tests.py',
 ].map(fixRelative);
 
 void detectClones({
@@ -39,7 +42,12 @@ void detectClones({
   ignoreCase: true,
   minLines: 8,
   minTokens: 80,
-  reporters: ['console'],
+  /*
+   * These reporters create duplication, but we need both if we want to see
+   * both the code snippets and the summary table
+   * Filed a feature request: https://github.com/kucherenko/jscpd/issues/652
+   */
+  reporters: ['console', 'consoleFull'],
   ignore: allIgnore,
   format: [
     'javascript',
