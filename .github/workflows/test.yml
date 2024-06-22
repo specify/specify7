@@ -281,7 +281,12 @@ jobs:
 
       - name: Detect possible code duplications
         working-directory: specifyweb/frontend/js_src
-        run: npx tsx lib/tests/jscpd.ts
+        run: |
+          npx tsx lib/tests/jscpd.ts
+
+          echo "If code duplications were found, you have the following options:"
+          echo "1. Refactor the code to deduplicate the code"
+          echo "2. If you believe having the duplication is better for readability/simplicity, then you can ignore the duplication. Instructions: https://github.com/kucherenko/jscpd/tree/master/apps/jscpd#ignored-blocks"
 
       - name: Commit linted files (if made any changes)
         working-directory: specifyweb/frontend/js_src
