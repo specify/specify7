@@ -37,6 +37,7 @@ class UploadTable(NamedTuple):
             | set(col for u in self.toOne.values() for col in u.get_cols()) \
             | set(col for rs in self.toMany.values() for r in rs for col in r.get_cols())
 
+    # jscpd:ignore-start
     def _to_json(self) -> Dict:
         result = dict(
             wbcols={k: v.to_json() for k,v in self.wbcols.items()},
@@ -51,6 +52,7 @@ class UploadTable(NamedTuple):
             for key, to_manys in self.toMany.items()
         }
         return result
+    # jscpd:ignore-end
 
     def to_json(self) -> Dict:
         return { 'uploadTable': self._to_json() }
@@ -103,10 +105,12 @@ class DeferredScopeUploadTable(NamedTuple):
             return apply_scoping_to_uploadtable(self, collection)
         else: return self
 
+    # jscpd:ignore-start
     def get_cols(self) -> Set[str]:
         return set(cd.column for cd in self.wbcols.values()) \
             | set(col for u in self.toOne.values() for col in u.get_cols()) \
             | set(col for rs in self.toMany.values() for r in rs for col in r.get_cols())
+    # jscpd:ignore-end
 
 
     """
@@ -238,6 +242,7 @@ class ScopedUploadTable(NamedTuple):
         )
 
 
+    # jscpd:ignore-start
     def bind(self, collection, row: Row, uploadingAgentId: int, auditor: Auditor, cache: Optional[Dict]=None, row_index: Optional[int] = None
              ) -> Union["BoundUploadTable", ParseFailures]:
         parsedFields, parseFails = parse_many(collection, self.name, self.wbcols, row)
@@ -276,6 +281,7 @@ class ScopedUploadTable(NamedTuple):
             auditor=auditor,
             cache=cache,
         )
+    # jscpd:ignore-end
 
 class OneToOneTable(UploadTable):
     def apply_scoping(self, collection) -> "ScopedOneToOneTable":
@@ -335,6 +341,7 @@ class BoundUploadTable(NamedTuple):
             for fieldname_, value in parsedField.filter_on.items()
         }
 
+        # jscpd:ignore-start
         for toOneField, toOneTable in self.toOne.items():
             fs, es = toOneTable.filter_on(path + '__' + toOneField)
             for f in fs:
@@ -347,6 +354,7 @@ class BoundUploadTable(NamedTuple):
             (path + '__' + fieldname): value
             for fieldname, value in {**self.scopingAttrs, **self.static}.items()
         })
+        # jscpd:ignore-end
 
         return FilterPack([filters], [])
 

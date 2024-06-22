@@ -2,6 +2,7 @@ from typing import List
 from specifyweb.specify.load_datamodel import Datamodel, Table, Field, Relationship
 from sqlalchemy import Table as Table_Sqlalchemy, Column, ForeignKey, types, orm, MetaData
 from sqlalchemy.dialects.mysql import BIT as mysql_bit_type
+from specifyweb.stored_queries.sp7_build_models import make_foreign_key
 metadata = MetaData()
 
 # Custom BIT type to handle both BIT(1) and TINYINT
@@ -26,18 +27,6 @@ def make_table(datamodel: Datamodel, tabledef: Table):
             if fk is not None: columns.append(fk)
 
     return Table_Sqlalchemy(tabledef.table, metadata, *columns)
-
-def make_foreign_key(datamodel: Datamodel, reldef: Relationship):
-    remote_tabledef = datamodel.get_table(reldef.relatedModelName) # TODO: this could be a method of relationship
-    if remote_tabledef is None:
-        return
-
-    fk_target = '.'.join((remote_tabledef.table, remote_tabledef.idColumn))
-
-    return Column(reldef.column,
-                  ForeignKey(fk_target),
-                  nullable = not reldef.required,
-                  unique = reldef.type == 'one_to_one')
 
 def make_column(flddef: Field):
     field_type = field_type_map[ flddef.type ]

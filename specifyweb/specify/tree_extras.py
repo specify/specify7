@@ -78,20 +78,8 @@ class Tree(models.Model):
                 "Tree node's parent has rank greater than itself",
                 {"tree" : self.__class__.__name__,
                  "localizationKey" : "nodeParentInvalidRank",
-                 "node" : {
-                    "id" : self.id,
-                    "rankid" : self.rankid,
-                    "fullName" : self.fullname,
-                    "parentid": self.parent.id,
-                    "children": list(self.children.values('id', 'fullname'))
-                 },
-                 "parent" : {
-                    "id": self.parent.id,
-                    "rankid" : self.parent.rankid,
-                    "fullName": self.parent.fullname,
-                    "parentid": self.parent.parent.id,
-                    "children": list(self.parent.children.values('id', 'fullname'))
-                 }
+                 "node" : format_tree_node(self),
+                 "parent" : format_tree_node(self.parent)
                  })
 
         if model.objects.filter(parent=self, parent__rankid__gte=F('rankid')).count() > 0:
@@ -100,10 +88,7 @@ class Tree(models.Model):
                 {"tree" : self.__class__.__name__,
                  "localizationKey" : "nodeChildrenInvalidRank",
                  "node" : {
-                    "id" : self.id,
-                    "rankid" : self.rankid,
-                    "fullName" : self.fullname,
-                    "parentid": self.parent.id,
+                    **format_tree_node(self),
                     "children": list(self.children.values('id', 'rankid', 'fullname').filter(parent=self, parent__rankid__gte=F('rankid')))
                  }})
 
@@ -216,23 +201,21 @@ def adding_node(node):
                 {"tree" : "Taxon",
                  "localizationKey" : "nodeOperationToSynonymizedParent",
                  "operaton" : "Adding",
-                 "node" : {
-                    "id" : node.id,
-                    "rankid" : node.rankid,
-                    "fullName" : node.fullname,
-                    "parentid": node.parent.id,
-                    "children": list(node.children.values('id', 'fullname'))
-                 },
-                 "parent" : {
-                    "id" : parent.id,
-                    "rankid" : parent.rankid,
-                    "fullName" : parent.fullname,
-                    "parentid": parent.parent.id,
-                    "children": list(parent.children.values('id', 'fullname'))
-                 }})
+                 "node" : format_tree_node(node),
+                 "parent" : format_tree_node(parent)
+                 })
 
     insertion_point = open_interval(model, parent.nodenumber, 1)
     node.highestchildnodenumber = node.nodenumber = insertion_point
+
+def format_tree_node(node):
+    return {
+        "id" : node.id,
+        "rankid" : node.rankid,
+        "fullName" : node.fullname,
+        "parentid": node.parent.id,
+        "children": list(node.children.values('id', 'fullname'))
+    }
 
 def moving_node(to_save):
     logger.info('moving node %s', to_save)
@@ -246,20 +229,8 @@ def moving_node(to_save):
             {"tree" : "Taxon",
              "localizationKey" : "nodeOperationToSynonymizedParent",
              "operation" : "Moving",
-             "node" : {
-                "id" : to_save.id,
-                "rankid" : to_save.rankid,
-                "fullName" : to_save.fullname,
-                "parentid": to_save.parent.id,
-                "children": list(to_save.children.values('id', 'fullname'))
-             },
-             "parent" : {
-                "id" : new_parent.id,
-                "rankid" : new_parent.rankid,
-                "fullName" : new_parent.fullname,
-                "parentid": new_parent.parent.id,
-                "children": list(new_parent.children.values('id', 'fullname'))
-             }})
+             "node" : format_tree_node(to_save),
+             "parent" : format_tree_node(new_parent)})
 
     insertion_point = open_interval(model, new_parent.nodenumber, size)
     # node interval will have moved if it is to the right of the insertion point
@@ -295,20 +266,9 @@ def merge(node, into, agent):
             {"tree" : "Taxon",
              "localizationKey" : "nodeOperationToSynonymizedParent",
              "operation" : "Merging",
-             "node" : {
-                "id" : node.id,
-                "rankid" : node.rankid,
-                "fullName" : node.fullname,
-                "parentid": node.parent.id,
-                "children": list(node.children.values('id', 'fullname'))
-             },
-             "synonymized" : {
-                "id" : into.id,
-                "rankid" : into.rankid,
-                "fullName" : into.fullname,
-                "parentid": into.parent.id,
-                "children": list(into.children.values('id', 'fullname'))
-             }})
+             "node" : format_tree_node(node),
+             "synonymized" : format_tree_node(into)
+             })
     target_children = target.children.select_for_update()
     for child in node.children.select_for_update():
         matched = [target_child for target_child in target_children
@@ -374,20 +334,8 @@ def synonymize(node, into, agent):
             'Synonymizing "{node.fullname}" to synonymized node "{into.fullname}"'.format(node=node, into=into),
             {"tree" : "Taxon",
              "localizationKey" : "nodeSynonymizeToSynonymized",
-             "node" : {
-                "id" : node.id,
-                "rankid" : node.rankid,
-                "fullName" : node.fullname,
-                "parentid": node.parent.id,
-                "children": list(node.children.values('id', 'fullname'))
-             },
-             "synonymized" : {
-                "id" : into.id,
-                "rankid" : into.rankid,
-                "fullName" : into.fullname,
-                "parentid": into.parent.id,
-                "children": list(into.children.values('id', 'fullname'))
-             }})
+             "node" : format_tree_node(to_save),
+             "parent" : format_tree_node(new_parent)})
     node.accepted_id = target.id
     node.isaccepted = False
     node.save()
@@ -401,19 +349,8 @@ def synonymize(node, into, agent):
             'Synonymizing node "{node.fullname}" which has children'.format(node=node),
             {"tree" : "Taxon",
              "localizationKey" : "nodeSynonimizeWithChildren",
-             "node" : {
-                "id" : node.id,
-                "rankid" : node.rankid,
-                "fullName" : node.fullname,
-                "children": list(node.children.values('id', 'fullname'))
-             },
-             "parent" : {
-                "id" : into.id,
-                "rankid" : into.rankid,
-                "fullName" : into.fullname,
-                "parentid": into.parent.id,
-                "children": list(into.children.values('id', 'fullname'))
-             }})
+             "node" : format_tree_node(to_save),
+             "parent" : format_tree_node(new_parent)})
     node.acceptedchildren.update(**{node.accepted_id_attr().replace('_id', ''): target})
     #assuming synonym can't be synonymized
     mutation_log(TREE_SYNONYMIZE, node, agent, node.parent,

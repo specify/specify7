@@ -16,7 +16,7 @@ from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.celery_tasks import LogErrorsTask, app
 from specifyweb.specify import models as spmodels
 from specifyweb.specify.api import uri_for_model, delete_obj, is_dependent_field, put_resource
-from specifyweb.specify.build_models import orderings
+from specifyweb.specify.config import orderings
 from specifyweb.specify.load_datamodel import Table, FieldDoesNotExistError
 from celery.utils.log import get_task_logger # type: ignore
 from specifyweb.specify.utils import get_app_model

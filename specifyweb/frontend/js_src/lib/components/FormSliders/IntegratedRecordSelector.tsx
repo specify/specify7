@@ -25,7 +25,6 @@ import type { FormType } from '../FormParse';
 import type { SubViewSortField } from '../FormParse/cells';
 import { augmentMode, ResourceView } from '../Forms/ResourceView';
 import { useFirstFocus } from '../Forms/SpecifyForm';
-import { SubViewContext } from '../Forms/SubView';
 import type { InteractionWithPreps } from '../Interactions/helpers';
 import { interactionPrepTables } from '../Interactions/helpers';
 import { InteractionDialog } from '../Interactions/InteractionDialog';
@@ -33,9 +32,9 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { AttachmentsCollection } from './AttachmentsCollection';
 import { RecordSelectorFromCollection } from './RecordSelectorFromCollection';
+import { useRenderedResourceId } from './useRenderedResourceId';
 
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
-
 export function IntegratedRecordSelector({
   urlParameter,
   viewName,
@@ -136,25 +135,7 @@ export function IntegratedRecordSelector({
   const isAttachmentTable =
     collection.table.specifyTable.name.includes('Attachment');
 
-  const subviewContext = React.useContext(SubViewContext);
-  const parentContext = React.useMemo(
-    () => subviewContext?.parentContext ?? [],
-    [subviewContext?.parentContext]
-  );
-
-  const renderedResourceId = React.useMemo(
-    () =>
-      parentContext.length === 0 || relationship.isDependent()
-        ? undefined
-        : f.maybe(
-            parentContext.find(
-              ({ relationship: parentRelationship }) =>
-                parentRelationship === relationship.getReverse()
-            ),
-            ({ parentResource: { id } }) => id
-          ),
-    [parentContext, relationship]
-  );
+  const renderedResourceId = useRenderedResourceId(relationship);
 
   const isCOJO =
     relationship.relatedTable.name === 'CollectionObjectGroupJoin' &&

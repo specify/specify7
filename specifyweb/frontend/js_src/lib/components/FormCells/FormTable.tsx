@@ -5,7 +5,6 @@ import { useId } from '../../hooks/useId';
 import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
@@ -25,8 +24,8 @@ import { FormMeta } from '../FormMeta';
 import type { FormCellDefinition, SubViewSortField } from '../FormParse/cells';
 import { attachmentView } from '../FormParse/webOnlyViews';
 import { SpecifyForm } from '../Forms/SpecifyForm';
-import { SubViewContext } from '../Forms/SubView';
 import { propsToFormMode, useViewDefinition } from '../Forms/useViewDefinition';
+import { useRenderedResourceId } from '../FormSliders/useRenderedResourceId';
 import { loadingGif } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
 import type { SortConfig } from '../Molecules/Sorting';
@@ -210,25 +209,7 @@ export function FormTable<SCHEMA extends AnySchema>({
     onSelected: handleAddResources,
   });
 
-  const subviewContext = React.useContext(SubViewContext);
-  const parentContext = React.useMemo(
-    () => subviewContext?.parentContext ?? [],
-    [subviewContext?.parentContext]
-  );
-
-  const renderedResourceId = React.useMemo(
-    () =>
-      parentContext.length === 0 || relationship.isDependent()
-        ? undefined
-        : f.maybe(
-            parentContext.find(
-              ({ relationship: parentRelationship }) =>
-                parentRelationship === relationship.getReverse()
-            ),
-            ({ parentResource: { id } }) => id
-          ),
-    [parentContext, relationship]
-  );
+  const renderedResourceId = useRenderedResourceId(relationship);
 
   const children =
     collapsedViewDefinition === undefined ? (
