@@ -3,7 +3,7 @@ import React from 'react';
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
 import type { GetOrSet, RA } from '../../utils/types';
-import { Tabs } from '../AppResources/Tabs';
+import { Tabs } from '../Molecules/Tabs';
 import { NotFoundView } from '../Router/NotFoundView';
 import { SafeOutlet } from '../Router/RouterUtils';
 import { useRoutePart } from '../Router/useRoutePart';
@@ -61,6 +61,7 @@ export function FormatterTypes(): JSX.Element {
           count: parsed.aggregators.length,
         })]: child,
       }}
+      variant="combined"
     />
   );
 }

@@ -7,6 +7,7 @@ import { detectClones } from 'jscpd';
 import { gitIgnoreToGlob } from './gitignoreToGlob';
 
 const repositoryRoot = join(
+  // @ts-expect-error REFACTOR: modify tsconfig.json to allow modern features
   fileURLToPath(import.meta.url),
   '../../../../../..'
 );

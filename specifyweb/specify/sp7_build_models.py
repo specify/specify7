@@ -1,5 +1,6 @@
 import logging
 from . import model_extras
+from specifyweb.specify.config import orderings
 
 appname = __name__.split('.')[-2]
 logger = logging.getLogger(__name__)
@@ -55,27 +56,11 @@ DJANGO_TO_MARIADB_MAP = {
     'models.BooleanField': 'TINYINT(1)',
 }
 
-ORDERINGS = {
-    'Picklistitem': ('ordinal', ),
-    'Recordsetitem': ('recordid', ),
-    'Spqueryfield': ('position', ),
-    'Determination': ('-iscurrent',),
-    'Author': ('ordernumber',),
-    'Collector': ('ordernumber',),
-    'AgentSpecialty': ('ordernumber',),
-    'Determiner': ('ordernumber',),
-    'Extractor': ('ordernumber',),
-    'FieldNotebookPageSet': ('ordernumber',),
-    'FundingAgent': ('ordernumber',),
-    'GroupPerson': ('ordernumber',),
-    'PcrPerson': ('ordernumber',),
-}
-
 def meta_class_code(table, attrs, indexes=[]):
     db_table = table.table
     ordering = tuple()
-    if table.django_name in ORDERINGS:
-        ordering += ORDERINGS[table.django_name]
+    if table.django_name in orderings:
+        ordering += orderings[table.django_name]
     if 'rankid' in attrs:
         ordering += ('rankid', )
     # _meta 

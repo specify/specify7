@@ -13,7 +13,7 @@ import type {
 } from './helperTypes';
 import type { Collection, SpecifyTable } from './specifyTable';
 
-type AllowedFields<SCHEMA extends AnySchema> =
+type SchemaFields<SCHEMA extends AnySchema> =
   | keyof CommonFields
   | keyof SCHEMA['fields']
   | keyof SCHEMA['toManyDependent']
@@ -21,13 +21,17 @@ type AllowedFields<SCHEMA extends AnySchema> =
   | keyof SCHEMA['toOneDependent']
   | keyof SCHEMA['toOneIndependent'];
 
-type AllowedValues<SCHEMA extends AnySchema> = (CommonFields &
+type SchemaFieldValue<
+  SCHEMA extends AnySchema,
+  FIELD_NAME extends SchemaFields<SCHEMA>
+> = (CommonFields &
   IR<never> &
   SCHEMA['fields'] &
   SCHEMA['toManyDependent'] &
   SCHEMA['toManyIndependent'] &
   SCHEMA['toOneDependent'] &
-  SCHEMA['toOneIndependent'])[AllowedFields<SCHEMA>];
+  SCHEMA['toOneIndependent'])[FIELD_NAME];
+
 /*
  * FEATURE: need to improve the typing to handle the following:
  *    Dynamic references
@@ -57,22 +61,8 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
    */
   /* eslint-disable @typescript-eslint/method-signature-style */
   get<
-    // FIELD_NAME extends
-    //   | keyof CommonFields
-    //   | keyof SCHEMA['fields']
-    //   | keyof SCHEMA['toManyDependent']
-    //   | keyof SCHEMA['toManyIndependent']
-    //   | keyof SCHEMA['toOneDependent']
-    //   | keyof SCHEMA['toOneIndependent'],
-    // VALUE extends (CommonFields &
-    //   IR<never> &
-    //   SCHEMA['fields'] &
-    //   SCHEMA['toManyDependent'] &
-    //   SCHEMA['toManyIndependent'] &
-    //   SCHEMA['toOneDependent'] &
-    //   SCHEMA['toOneIndependent'])[FIELD_NAME]
-    FIELD_NAME extends AllowedFields<SCHEMA>,
-    VALUE extends AllowedValues<SCHEMA>
+    FIELD_NAME extends SchemaFields<SCHEMA>,
+    VALUE extends SchemaFieldValue<SCHEMA, FIELD_NAME>
   >(
     fieldName: FIELD_NAME
     // eslint-disable-next-line functional/prefer-readonly-type
@@ -133,22 +123,8 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
     fieldName: FIELD_NAME
   ): Promise<Collection<VALUE[number]>>;
   set<
-    // FIELD_NAME extends
-    //   | keyof CommonFields
-    //   | keyof SCHEMA['fields']
-    //   | keyof SCHEMA['toManyDependent']
-    //   | keyof SCHEMA['toManyIndependent']
-    //   | keyof SCHEMA['toOneDependent']
-    //   | keyof SCHEMA['toOneIndependent'],
-    // VALUE extends (CommonFields &
-    //   IR<never> &
-    //   SCHEMA['fields'] &
-    //   SCHEMA['toManyDependent'] &
-    //   SCHEMA['toManyIndependent'] &
-    //   SCHEMA['toOneDependent'] &
-    //   SCHEMA['toOneIndependent'])[FIELD_NAME]
-    FIELD_NAME extends AllowedFields<SCHEMA>,
-    VALUE extends AllowedValues<SCHEMA>
+    FIELD_NAME extends SchemaFields<SCHEMA>,
+    VALUE extends SchemaFieldValue<SCHEMA, FIELD_NAME>
   >(
     fieldName: FIELD_NAME,
     value: readonly [VALUE] extends readonly [never]
