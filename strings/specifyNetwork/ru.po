@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-06-20 19:09+0000\n"
+"PO-Revision-Date: 2024-06-23 05:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "specifyNetwork/ru/>\n"
@@ -32,7 +32,7 @@ msgstr "Для отображения этой страницы необходи
 #: components/SpecifyNetwork/Overlay.tsx:119
 #, fuzzy
 msgid "noDataError"
-msgstr "Не удалось найти данные по этому запросу."
+msgstr "Не удалось найти данные для этого запроса."
 
 #. Used in: Components > Specify Network > Overlay
 #: components/SpecifyNetwork/Overlay.tsx:122
@@ -64,8 +64,7 @@ msgstr "Дата сбора"
 #, fuzzy
 msgid "mapDescription"
 msgstr ""
-"На этой карте показаны встречаемости этого таксона по данным агрегаторов "
-"iDigBio и GBIF."
+"На этой карте показано появление этого таксона в агрегаторах iDigBio и GBIF."
 
 #. Used in: Components > Specify Network > Overlays
 #: components/SpecifyNetwork/overlays.ts:140
@@ -93,13 +92,13 @@ msgstr ""
 #: components/SpecifyNetworkCollection/Setup.tsx:59
 #, fuzzy
 msgid "connectToGbif"
-msgstr "Подключиться к ГБИФ"
+msgstr "Подключиться к GBIF"
 
 #. Used in: Components > Specify Network Collection > Setup
 #: components/SpecifyNetworkCollection/Setup.tsx:62
 #, fuzzy
 msgid "searchForInstitution"
-msgstr "Подключиться к GBIF"
+msgstr "Подключиться к ГБИФ"
 
 #. Used in: Components > Specify Network Collection > Index
 #: components/SpecifyNetworkCollection/index.tsx:75
