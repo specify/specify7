@@ -1,4 +1,16 @@
 /lib/tests/fixtures/
 /lib/tests/ajax/static
-/lib/components/DataModel/*.js
 *.snap
+/../templates/
+/../../context/data/
+/../../../.git/
+/../../../config/
+/../static/img/
+/../../specify/fixtures/
+# Uses case sensitive markdown - incompatible with our Prettier config
+/../../../.github/ISSUE_TEMPLATE/
+# Skipping in case people don't want line wrapping in this file
+/../../../CHANGELOG.md
+/../../../release-notes/
+# Prettier fails to parse the syntax in Dockerfile
+/../../../Dockerfile
