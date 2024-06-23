@@ -33,7 +33,7 @@ import type { Dataset } from '../WbPlanView/Wrapped';
 const syncNameAndRemarks = async (
   name: LocalizedString,
   remarks: string,
-  datasetId: number
+  datasetId: number,
 ) =>
   ping(`/api/workbench/dataset/${datasetId}/`, {
     method: 'PUT',
@@ -74,7 +74,7 @@ export function WbDataSetMeta(
       readonly name: LocalizedString;
       readonly remarks: LocalizedString;
     }) => void;
-  }
+  },
 ) {
   const loading = React.useContext(LoadingContext);
   return (
@@ -88,7 +88,7 @@ export function WbDataSetMeta(
           (needsSaved
             ? syncNameAndRemarks(name, remarks, props.dataset.id)
             : Promise.resolve({ name, remarks })
-          ).then(props.onChange)
+          ).then(props.onChange),
         )
       }
     />
@@ -140,7 +140,7 @@ export function DataSetMeta({
                     expectedErrors: [Http.NOT_FOUND, Http.NO_CONTENT],
                   }).then(() => {
                     setIsDeleted(true);
-                  })
+                  }),
                 );
               }}
             >
@@ -198,7 +198,7 @@ export function DataSetMeta({
                   needsSaved: true,
                   name: uniqueName,
                   remarks: localized(remarks.trim()),
-                })
+                }),
               )
           ).then(handleChange)
         }

@@ -6,20 +6,20 @@ import { gatherSchemaLocalization } from './gatherLocalization';
 program
   .name('Schema Localization Extractor')
   .description(
-    'Extract data from schema localization files and emits *.po files for Weblate'
+    'Extract data from schema localization files and emits *.po files for Weblate',
   )
   .requiredOption(
     '-w, --weblate-directory <string>',
-    'Weblate source directory'
+    'Weblate source directory',
   )
   .requiredOption(
     '-c, --config-directory <string>',
-    'Location of the "config" directory in Specify 6 repository'
+    'Location of the "config" directory in Specify 6 repository',
   )
   .option(
     '-v, --validate',
     'Validate that current weblate config is correct',
-    false
+    false,
   );
 
 program.parse();
@@ -36,6 +36,6 @@ const {
 
 gatherSchemaLocalization(weblateDirectory, configDirectory)
   .then(async ({ dictionaries }) =>
-    validate ? checkComponents(dictionaries, 'schema') : undefined
+    validate ? checkComponents(dictionaries, 'schema') : undefined,
   )
   .catch(console.error);

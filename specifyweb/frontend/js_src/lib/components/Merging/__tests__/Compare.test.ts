@@ -26,7 +26,9 @@ describe('findDiffering', () => {
 
   test('without matching fields', () =>
     expect(
-      findDiffering(false, tables.Agent, getResources()).map(({ name }) => name)
+      findDiffering(false, tables.Agent, getResources()).map(
+        ({ name }) => name,
+      ),
     ).toMatchInlineSnapshot(`
       [
         "date1",
@@ -38,7 +40,7 @@ describe('findDiffering', () => {
 
   test('with matching fields', () =>
     expect(
-      findDiffering(true, tables.Agent, getResources()).map(({ name }) => name)
+      findDiffering(true, tables.Agent, getResources()).map(({ name }) => name),
     ).toMatchInlineSnapshot(`
       [
         "date1",

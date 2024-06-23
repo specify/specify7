@@ -24,10 +24,10 @@ export function Layout(props: {
         typeof props.onClick === 'function'
           ? (event): void =>
               (event.target as HTMLElement).closest(
-                '.custom-select-closed-list'
+                '.custom-select-closed-list',
               ) === null &&
               (event.target as HTMLElement).closest(
-                '.custom-select-options-list'
+                '.custom-select-options-list',
               ) === null
                 ? props.onClick?.()
                 : undefined

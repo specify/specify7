@@ -12,13 +12,13 @@ import { dictionaryExtension } from './scanUsages';
 import { testLogging } from './testLogging';
 
 export async function updateLocalizationFiles(
-  merged: ExtractedStrings
+  merged: ExtractedStrings,
 ): Promise<void> {
   await Promise.all(
     Object.entries(merged).map(
       async ([component, { dictionaryName, strings }]) =>
-        updateLocalFile(component, dictionaryName, strings)
-    )
+        updateLocalFile(component, dictionaryName, strings),
+    ),
   );
 }
 
@@ -33,13 +33,13 @@ const defaultPrintWidth = 80;
 async function updateLocalFile(
   component: string,
   dictionaryName: string,
-  strings: IR<LocalizationEntry>
+  strings: IR<LocalizationEntry>,
 ): Promise<void> {
   const filePath = componentToFilePath(component);
   const originalFile = (await fs.promises.readFile(filePath)).toString();
   const re = new RegExp(
     `(?<pre>${dictionaryName}\\s*=\\s*createDictionary\\(\\s*)(?<content>\\{[\\s\\S]*\\})(?<post>\\s*as const\\s*\\);)`,
-    'u'
+    'u',
   );
 
   if (re.exec(originalFile) === null)
@@ -47,7 +47,7 @@ async function updateLocalFile(
 
   const newContent = originalFile.replace(
     re,
-    `$<pre>${JSON.stringify(strings, null, 2)}$<post>`
+    `$<pre>${JSON.stringify(strings, null, 2)}$<post>`,
   );
   const config = (await resolvePrettierConfig()) ?? {};
   const formatted = prettier.format(newContent, {
@@ -62,7 +62,7 @@ const componentToFilePath = (component: string): string =>
   path.join(process.argv[1], '../..', `${component}${dictionaryExtension}`);
 
 const resolvePrettierConfig = f.store(async () =>
-  prettier.resolveConfig(process.cwd())
+  prettier.resolveConfig(process.cwd()),
 );
 
 const reLongLine =
@@ -70,7 +70,7 @@ const reLongLine =
 
 const fixLongLines = (formatted: string, printWidth: number): string =>
   formatted.replaceAll(reLongLine, (...args) =>
-    fixLine(args[0], args.at(-1)!, printWidth)
+    fixLine(args[0], args.at(-1)!, printWidth),
   );
 
 const fixLine = (
@@ -88,7 +88,7 @@ const fixLine = (
     readonly indent: string;
     readonly content: string;
   },
-  printWidth: number
+  printWidth: number,
 ): string =>
   line.length < printWidth
     ? original
@@ -97,7 +97,7 @@ const fixLine = (
         .map((part) =>
           part === ''
             ? ''
-            : `${indent}${splitContent(part, indent, printWidth)}`
+            : `${indent}${splitContent(part, indent, printWidth)}`,
         )
         .join(`\n`)}\n${smallIndent}\`,`;
 
@@ -111,19 +111,19 @@ const reBoundary = /^|$|(?<=\p{L})(?=\s)|(?<=\s)(?=\p{L})/gu;
 const splitContent = (
   content: string,
   indent: string,
-  printWidth: number
+  printWidth: number,
 ): string =>
   splitString(content, printWidth - indent.length).join(`\n${indent}`);
 const splitString = (content: string, limit: number): RA<string> =>
   filterArray(Array.from(content.matchAll(reBoundary), ({ index }) => index))
     .map((splitIndex, itemIndex, array) =>
-      content.slice(splitIndex, array[itemIndex + 1] ?? content.length)
+      content.slice(splitIndex, array[itemIndex + 1] ?? content.length),
     )
     .reduce(
       (strings, part) =>
         `${strings.at(-1)!}${part}`.length > limit
           ? [...strings, part]
           : [...strings.slice(0, -1), `${strings.at(-1)!}${part}`],
-      ['']
+      [''],
     )
     .map(f.trim);

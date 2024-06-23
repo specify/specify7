@@ -114,14 +114,14 @@ export const backendFilter = (field: string) => ({
 
 export const isResourceOfType = <TABLE_NAME extends keyof Tables>(
   resource: SpecifyResource<AnySchema>,
-  tableName: TABLE_NAME
+  tableName: TABLE_NAME,
   // @ts-expect-error
 ): resource is SpecifyResource<Tables[TABLE_NAME]> =>
   resource.specifyTable.name === tableName;
 
 export const toTable = <TABLE_NAME extends keyof Tables>(
   resource: SpecifyResource<AnySchema>,
-  tableName: TABLE_NAME
+  tableName: TABLE_NAME,
 ): SpecifyResource<Tables[TABLE_NAME]> | undefined =>
   resource.specifyTable.name === tableName
     ? (resource as SpecifyResource<Tables[TABLE_NAME]>)
@@ -129,7 +129,7 @@ export const toTable = <TABLE_NAME extends keyof Tables>(
 
 export const toResource = <TABLE_NAME extends keyof Tables>(
   resource: SerializedResource<AnySchema>,
-  tableName: TABLE_NAME
+  tableName: TABLE_NAME,
 ): SerializedResource<Tables[TABLE_NAME]> | undefined =>
   resource._tableName === tableName
     ? (resource as SerializedResource<Tables[TABLE_NAME]>)
@@ -141,23 +141,23 @@ export const toResource = <TABLE_NAME extends keyof Tables>(
  */
 export const getField = <
   SCHEMA extends ValueOf<Tables>,
-  FIELD extends TableFields<SCHEMA>
+  FIELD extends TableFields<SCHEMA>,
 >(
   table: SpecifyTable<SCHEMA>,
-  name: FIELD
+  name: FIELD,
 ): FIELD extends keyof SCHEMA['fields'] ? LiteralField : Relationship =>
   table.field[name] as FIELD extends keyof SCHEMA['fields']
     ? LiteralField
     : Relationship;
 
 export const toTreeTable = (
-  resource: SpecifyResource<AnySchema>
+  resource: SpecifyResource<AnySchema>,
 ): SpecifyResource<AnyTree> | undefined =>
   isTreeResource(resource) ? resource : undefined;
 
 export const toTables = <TABLE_NAME extends keyof Tables>(
   resource: SpecifyResource<AnySchema>,
-  tableNames: RA<TABLE_NAME>
+  tableNames: RA<TABLE_NAME>,
 ): SpecifyResource<Tables[TABLE_NAME]> | undefined =>
   f.includes(tableNames, resource.specifyTable.name)
     ? (resource as SpecifyResource<Tables[TABLE_NAME]>)
@@ -172,7 +172,7 @@ export const toTables = <TABLE_NAME extends keyof Tables>(
  */
 export async function fetchDistantRelated(
   resource: SpecifyResource<AnySchema>,
-  fields: RA<LiteralField | Relationship> | undefined
+  fields: RA<LiteralField | Relationship> | undefined,
 ): Promise<
   | {
       readonly resource: SpecifyResource<AnySchema> | undefined;
@@ -186,11 +186,11 @@ export async function fetchDistantRelated(
       (field) =>
         field.isRelationship &&
         relationshipIsToMany(field) &&
-        field !== fields.at(-1)
+        field !== fields.at(-1),
     )
   ) {
     console.error(
-      'Can not index inside of a -to-many relationship. Use an aggregator instead'
+      'Can not index inside of a -to-many relationship. Use an aggregator instead',
     );
     return undefined;
   }
@@ -199,13 +199,13 @@ export async function fetchDistantRelated(
     fields === undefined || fields.length === 0
       ? resource
       : fields.length === 1
-      ? await resource.fetch()
-      : await resource.rgetPromise(
-          fields
-            .slice(0, -1)
-            .map(({ name }) => name)
-            .join(backboneFieldSeparator)
-        );
+        ? await resource.fetch()
+        : await resource.rgetPromise(
+            fields
+              .slice(0, -1)
+              .map(({ name }) => name)
+              .join(backboneFieldSeparator),
+          );
 
   const field = fields?.at(-1);
   const relatedResource = related ?? undefined;

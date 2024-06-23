@@ -64,15 +64,15 @@ type NavigationCallbacks = {
     | undefined;
   // Handles toMany children
   readonly handleToManyChildren: (
-    callbackPayload: Readonly<NavigationCallbackPayload>
+    callbackPayload: Readonly<NavigationCallbackPayload>,
   ) => void;
   // Handles tree ranks children
   readonly handleTreeRanks: (
-    callbackPayload: Readonly<NavigationCallbackPayload>
+    callbackPayload: Readonly<NavigationCallbackPayload>,
   ) => void;
   // Handles field and relationships
   readonly handleSimpleFields: (
-    callbackPayload: Readonly<NavigationCallbackPayload>
+    callbackPayload: Readonly<NavigationCallbackPayload>,
   ) => void;
 };
 
@@ -102,7 +102,7 @@ function navigator({
 }): void {
   const {
     table = strictGetTable(
-      defined(baseTableName, 'navigator() called withouth baseTableName')
+      defined(baseTableName, 'navigator() called withouth baseTableName'),
     ),
     parentRelationship = undefined,
     parentPartName = '',
@@ -138,8 +138,8 @@ function navigator({
   const nextTable = isSpecial
     ? table
     : typeof nextField === 'object' && nextField.isRelationship
-    ? nextField.relatedTable
-    : undefined;
+      ? nextField.relatedTable
+      : undefined;
 
   if (typeof nextTable === 'object' && nextField?.isRelationship !== false)
     navigator({
@@ -155,7 +155,7 @@ function navigator({
 
 export function getTableFromMappingPath(
   baseTableName: keyof Tables,
-  mappingPath: MappingPath
+  mappingPath: MappingPath,
 ): keyof Tables {
   if (mappingPath.length === 0) return baseTableName;
   const fieldName = valueIsPartialField(mappingPath.at(-1)!)
@@ -212,7 +212,7 @@ export function getMappingLineData({
   )
     throw new Error(
       'Mapping path should not contain anyTreeRank. ' +
-        'You likely meant to use formatTreeRank(anyTreeRank) instead'
+        'You likely meant to use formatTreeRank(anyTreeRank) instead',
     );
 
   const isNoRestrictionsMode = spec.isNoRestrictions();
@@ -240,7 +240,7 @@ export function getMappingLineData({
   const isFieldVisible = (
     showHiddenFields: boolean,
     isHidden: boolean,
-    fieldName: string
+    fieldName: string,
   ): boolean =>
     showHiddenFields ||
     !isHidden ||
@@ -250,7 +250,7 @@ export function getMappingLineData({
   const commitInstanceData = (
     customSelectSubtype: CustomSelectSubtype,
     table: SpecifyTable,
-    fieldsData: RA<readonly [string, HtmlGeneratorFieldData] | undefined>
+    fieldsData: RA<readonly [string, HtmlGeneratorFieldData] | undefined>,
   ): void =>
     void internalState.mappingLineData.push({
       customSelectSubtype,
@@ -326,7 +326,7 @@ export function getMappingLineData({
                     },
                   ]
                 : undefined;
-            })
+            }),
       );
     },
 
@@ -359,7 +359,7 @@ export function getMappingLineData({
               ...(spec.includeSpecificTreeRanks
                 ? strictGetTreeDefinitionItems(
                     table.name as 'Geography',
-                    false
+                    false,
                   ).map(({ name, title }) =>
                     name === defaultValue || generateFieldData === 'all'
                       ? ([
@@ -371,10 +371,10 @@ export function getMappingLineData({
                             tableName: table.name,
                           },
                         ] as const)
-                      : undefined
+                      : undefined,
                   )
                 : []),
-            ]
+            ],
       );
     },
 
@@ -410,7 +410,7 @@ export function getMappingLineData({
 
       if (!spec.allowTransientToMany) {
         const isInToMany = internalState.mappingLineData.some(
-          ({ customSelectSubtype }) => customSelectSubtype === 'toMany'
+          ({ customSelectSubtype }) => customSelectSubtype === 'toMany',
         );
         if (isInToMany) {
           commitInstanceData('simple', table, [formatted]);
@@ -428,7 +428,7 @@ export function getMappingLineData({
           isFieldVisible(
             showHiddenFields,
             table.idField.isHidden,
-            table.idField.name
+            table.idField.name,
           ));
       const idField = showId
         ? ([
@@ -439,7 +439,7 @@ export function getMappingLineData({
               isRelationship: false,
               isDefault: internalState.defaultValue === table.idField.name,
               isEnabled: !internalState.mappedFields.includes(
-                table.idField.name
+                table.idField.name,
               ),
               isHidden: true,
             },
@@ -462,7 +462,7 @@ export function getMappingLineData({
               spec.useSchemaOverrides
                 ? field.overrides.isHidden
                 : field.isHidden,
-              field.name
+              field.name,
             );
 
             isIncluded &&=
@@ -498,7 +498,7 @@ export function getMappingLineData({
                   ? hasTreeAccess(table.name, ensurePermission)
                   : hasTablePermission(
                       field.relatedTable.name,
-                      ensurePermission
+                      ensurePermission,
                     ));
 
               isIncluded &&=
@@ -562,14 +562,14 @@ export function getMappingLineData({
                           isEnabled:
                             fieldData.isEnabled &&
                             !internalState.mappedFields.includes(
-                              formatPartialField(field.name, datePart)
+                              formatPartialField(field.name, datePart),
                             ),
                         },
-                      ] as const
+                      ] as const,
                   )
                   .filter(
                     ([_fieldName, fieldData]) =>
-                      generateFieldData === 'all' || fieldData.isDefault
+                      generateFieldData === 'all' || fieldData.isDefault,
                   )
               : ([[field.name, fieldData]] as const);
           }),
@@ -586,11 +586,11 @@ export function getMappingLineData({
   const filtered = spec.includeToManyReferenceNumbers
     ? internalState.mappingLineData
     : internalState.mappingLineData.filter(
-        ({ customSelectSubtype }) => customSelectSubtype !== 'toMany'
+        ({ customSelectSubtype }) => customSelectSubtype !== 'toMany',
       );
   return spec.includeAnyTreeRank || spec.includeSpecificTreeRanks
     ? filtered
     : filtered.filter(
-        ({ customSelectSubtype }) => customSelectSubtype !== 'tree'
+        ({ customSelectSubtype }) => customSelectSubtype !== 'tree',
       );
 }

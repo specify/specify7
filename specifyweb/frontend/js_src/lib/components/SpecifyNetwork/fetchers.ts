@@ -11,29 +11,29 @@ import {
 } from './config';
 
 export const fetchOccurrence = async (
-  guid: string
+  guid: string,
 ): Promise<RA<BrokerRecord> | undefined> =>
   fetchFromEndpoint(
     `${brokerUrl}/api/v1/occ/?occid=${guid}`,
-    occurrenceDataProviders
+    occurrenceDataProviders,
   );
 
 const fetchFromEndpoint = async (
   url: string,
-  providers: RA<string>
+  providers: RA<string>,
 ): Promise<RA<BrokerRecord>> =>
   Promise.all(
     providers.map(async (provider) =>
-      fetchFromBroker(`${url}&provider=${provider}`)
-    )
+      fetchFromBroker(`${url}&provider=${provider}`),
+    ),
   ).then((responses) =>
     Array.from(filterArray(responses)).sort(
-      sortFunction(({ provider }) => providers.indexOf(provider.code))
-    )
+      sortFunction(({ provider }) => providers.indexOf(provider.code)),
+    ),
   );
 
 const fetchFromBroker = async (
-  requestUrl: string
+  requestUrl: string,
 ): Promise<BrokerRecord | undefined> =>
   ajax<RawBrokerResponse>(requestUrl, {
     headers: {
@@ -42,7 +42,7 @@ const fetchFromBroker = async (
   }).then(({ data }) => extractResponseRecord(data));
 
 const extractResponseRecord = (
-  response: RawBrokerResponse
+  response: RawBrokerResponse,
 ): BrokerRecord | undefined =>
   !validateBrokerResponse(response) ||
   !validateBrokerResponse(response.records[0])
@@ -66,11 +66,11 @@ export function validateBrokerResponse(response: {
 }
 
 export const fetchName = async (
-  speciesName: string
+  speciesName: string,
 ): Promise<RA<BrokerRecord>> =>
   fetchFromEndpoint(
     `${brokerUrl}/api/v1/name/?namestr=${speciesName}`,
-    speciesDataProviders
+    speciesDataProviders,
   );
 
 export type BrokerRecord = {
@@ -101,15 +101,15 @@ export function extractBrokerField<T = LocalizedString>(
   responses: RA<BrokerRecord>,
   aggregator: string,
   field: string,
-  strict = false
+  strict = false,
 ): T | undefined {
   const fields = Object.fromEntries<T | undefined>(
     responses
       .map(
         (response) =>
-          [response.provider.code, response.record[field] as T] as const
+          [response.provider.code, response.record[field] as T] as const,
       )
-      .filter(([_aggregator, value]) => value)
+      .filter(([_aggregator, value]) => value),
   );
   return fields[aggregator] ?? (strict ? undefined : Object.values(fields)[0]);
 }

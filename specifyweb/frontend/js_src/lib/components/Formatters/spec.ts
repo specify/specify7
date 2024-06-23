@@ -27,15 +27,15 @@ export const formattersSpec = f.store(() =>
                   .map((fieldGroup) => ({
                     ...fieldGroup,
                     fields: fieldGroup.fields.filter(
-                      (field) => field.field !== undefined
+                      (field) => field.field !== undefined,
                     ),
                   })),
                 isSingle: definition.fields.length <= 1,
               },
-            })
-          )
-        )
-      )
+            }),
+          ),
+        ),
+      ),
     ),
     aggregators: pipe(
       syncers.xmlChild('aggregators'),
@@ -49,12 +49,12 @@ export const formattersSpec = f.store(() =>
             ({ table, sortField }) =>
               syncers.field(table?.name).serializer(sortField),
             ({ table, sortField }) =>
-              syncers.field(table?.name).deserializer(sortField)
-          )
-        )
-      )
+              syncers.field(table?.name).deserializer(sortField),
+          ),
+        ),
+      ),
     ),
-  })
+  }),
 );
 
 export type Formatter = SpecToJson<
@@ -68,24 +68,24 @@ const formatterSpec = f.store(() =>
   createXmlSpec({
     name: pipe(
       syncers.xmlAttribute('name', 'required'),
-      syncers.default<string>('')
+      syncers.default<string>(''),
     ),
     title: syncers.xmlAttribute('title', 'empty'),
     table: pipe(
       syncers.xmlAttribute('class', 'required'),
-      syncers.maybe(syncers.javaClassName())
+      syncers.maybe(syncers.javaClassName()),
     ),
     isDefault: pipe(
       syncers.xmlAttribute('default', 'empty'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
+      syncers.default<boolean>(false),
     ),
     definition: pipe(
       syncers.xmlChild('switch'),
       syncers.fallback<SimpleXmlNode>(createSimpleXmlNode),
-      syncers.captureLogContext()
+      syncers.captureLogContext(),
     ),
-  })
+  }),
 );
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -93,16 +93,16 @@ const switchSpec = ({ table }: SpecToJson<ReturnType<typeof formatterSpec>>) =>
   createXmlSpec({
     isSingle: pipe(
       syncers.xmlAttribute('single', 'skip'),
-      syncers.maybe(syncers.toBoolean)
+      syncers.maybe(syncers.toBoolean),
     ),
     conditionField: pipe(
       syncers.xmlAttribute('field', 'skip'),
-      syncers.field(table?.name)
+      syncers.field(table?.name),
     ),
     external: syncers.xmlChild('external', 'optional'),
     fields: pipe(
       syncers.xmlChildren('fields'),
-      syncers.map(syncers.object(fieldsSpec(table)))
+      syncers.map(syncers.object(fieldsSpec(table))),
     ),
   });
 
@@ -112,7 +112,7 @@ const fieldsSpec = (table: SpecifyTable | undefined) =>
     value: syncers.xmlAttribute('value', 'skip'),
     fields: pipe(
       syncers.xmlChildren('field'),
-      syncers.map(syncers.object(fieldSpec(table)))
+      syncers.map(syncers.object(fieldSpec(table))),
     ),
   });
 
@@ -121,7 +121,7 @@ const fieldSpec = (table: SpecifyTable | undefined) =>
   createXmlSpec({
     separator: pipe(
       syncers.xmlAttribute('sep', 'skip', false),
-      syncers.default(localized(''))
+      syncers.default(localized('')),
     ),
     aggregator: syncers.xmlAttribute('aggregator', 'skip'),
     formatter: syncers.xmlAttribute('formatter', 'skip'),
@@ -133,28 +133,28 @@ const aggregatorSpec = f.store(() =>
   createXmlSpec({
     name: pipe(
       syncers.xmlAttribute('name', 'required'),
-      syncers.default<string>('')
+      syncers.default<string>(''),
     ),
     title: syncers.xmlAttribute('title', 'empty'),
     table: pipe(
       syncers.xmlAttribute('class', 'required'),
-      syncers.maybe(syncers.javaClassName())
+      syncers.maybe(syncers.javaClassName()),
     ),
     isDefault: pipe(
       syncers.xmlAttribute('default', 'empty'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
+      syncers.default<boolean>(false),
     ),
     separator: pipe(
       syncers.xmlAttribute('separator', 'empty', false),
-      syncers.default(localized('; '))
+      syncers.default(localized('; ')),
     ),
     suffix: syncers.xmlAttribute('ending', 'empty', false),
     limit: pipe(
       syncers.xmlAttribute('count', 'skip'),
-      syncers.maybe(syncers.toDecimal)
+      syncers.maybe(syncers.toDecimal),
     ),
     formatter: syncers.xmlAttribute('format', 'empty'),
     sortField: syncers.xmlAttribute('orderFieldName', 'skip'),
-  })
+  }),
 );

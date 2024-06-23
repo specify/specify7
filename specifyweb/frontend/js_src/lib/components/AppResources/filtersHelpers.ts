@@ -8,7 +8,7 @@ import type { AppResources } from './hooks';
 import { appResourceSubTypes } from './types';
 
 export const allAppResources = Array.from(
-  Object.keys(appResourceSubTypes)
+  Object.keys(appResourceSubTypes),
 ).sort(sortFunction(f.id));
 
 export const defaultAppResourceFilters = {
@@ -25,14 +25,14 @@ export type AppResourceFilters = {
  * Determine if all app resource types are visible
  */
 export const isAllAppResourceTypes = (
-  appResources: RA<keyof typeof appResourceSubTypes>
+  appResources: RA<keyof typeof appResourceSubTypes>,
 ): boolean =>
   JSON.stringify(Array.from(appResources).sort(sortFunction(f.id))) ===
   JSON.stringify(allAppResources);
 
 export function countAppResources(
   resources: AppResources,
-  filters: AppResourceFilters
+  filters: AppResourceFilters,
 ): number {
   const filtered = filterAppResources(resources, filters);
   return filtered.appResources.length + filtered.viewSets.length;
@@ -40,7 +40,7 @@ export function countAppResources(
 
 export const filterAppResources = (
   resources: AppResources,
-  filters: AppResourceFilters
+  filters: AppResourceFilters,
 ): AppResources => ({
   ...resources,
   viewSets: filters.viewSets ? resources.viewSets : [],
@@ -48,25 +48,25 @@ export const filterAppResources = (
     filters.appResources.length === 0
       ? []
       : isAllAppResourceTypes(filters.appResources)
-      ? resources.appResources
-      : resources.appResources.filter((resource) =>
-          filters.appResources.includes(getAppResourceType(resource))
-        ),
+        ? resources.appResources
+        : resources.appResources.filter((resource) =>
+            filters.appResources.includes(getAppResourceType(resource)),
+          ),
 });
 
 export const getResourceType = (
-  resource: SerializedResource<SpAppResource | SpViewSetObj>
+  resource: SerializedResource<SpAppResource | SpViewSetObj>,
 ): keyof typeof appResourceSubTypes | 'viewSet' =>
   f.maybe(toResource(resource, 'SpAppResource'), getAppResourceType) ??
   'viewSet';
 
 export const getAppResourceType = (
-  resource: SerializedResource<SpAppResource>
+  resource: SerializedResource<SpAppResource>,
 ): keyof typeof appResourceSubTypes =>
   resource.name === 'preferences' && (resource.mimeType ?? '') === ''
     ? 'otherPropertiesResource'
     : Object.entries(appResourceSubTypes).find(([_key, { name, mimeType }]) =>
         name === undefined
           ? mimeType === resource.mimeType
-          : name === resource.name
+          : name === resource.name,
       )?.[KEY] ?? 'otherAppResources';

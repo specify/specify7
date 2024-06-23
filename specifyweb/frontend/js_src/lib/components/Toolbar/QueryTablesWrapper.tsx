@@ -79,12 +79,12 @@ export function useQueryTables(): GetSet<RA<SpecifyTable>> {
   const [tables, setTables] = userPreferences.use(
     'queryBuilder',
     'general',
-    'shownTables'
+    'shownTables',
   );
   const [isNoRestrictionMode] = userPreferences.use(
     'queryBuilder',
     'general',
-    'noRestrictionsMode'
+    'noRestrictionsMode',
   );
 
   const visibleTables =
@@ -93,13 +93,13 @@ export function useQueryTables(): GetSet<RA<SpecifyTable>> {
       : tables.map(getTableById);
 
   const allowedTables = visibleTables.filter((table) =>
-    tablesFilter(isNoRestrictionMode, false, true, table)
+    tablesFilter(isNoRestrictionMode, false, true, table),
   );
 
   const handleChange = React.useCallback(
     (models: RA<SpecifyTable>) =>
       setTables(models.map((model) => model.tableId)),
-    [setTables]
+    [setTables],
   );
   return [allowedTables, handleChange];
 }

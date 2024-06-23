@@ -29,7 +29,7 @@ export function MakeDwcaOverlay(): JSX.Element | null {
   const [resources] = useAppResources();
 
   const [definition, setDefinition] = React.useState<string | undefined>(
-    undefined
+    undefined,
   );
 
   const loading = React.useContext(LoadingContext);
@@ -79,7 +79,7 @@ export function PickAppResource({
   readonly skippable?: boolean;
   readonly filters: AppResourceFilters;
   readonly onSelected: (
-    appResource: SerializedResource<SpAppResource> | undefined
+    appResource: SerializedResource<SpAppResource> | undefined,
   ) => void;
   readonly onClose: () => void;
 }): JSX.Element {
@@ -136,7 +136,7 @@ function ExportStarted({
 
 const startExport = async (
   definition: string,
-  metadata: string | undefined
+  metadata: string | undefined,
 ): Promise<void> =>
   ping('/export/make_dwca/', {
     method: 'POST',

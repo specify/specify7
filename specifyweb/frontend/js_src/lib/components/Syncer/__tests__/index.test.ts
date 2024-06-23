@@ -27,7 +27,7 @@ test('Editing Data Object Formatter', () => {
       <aggregators>
         <aggregator name="AccessionAgent" title="AccessionAgent" class="edu.ku.brc.specify.datamodel.AccessionAgent" default="true" separator="; " ending="" count="" format="AccessionAgent" orderfieldname=""/>
       </aggregators>
-    </formatters>`
+    </formatters>`,
   );
   const xmlNode = xmlToJson(element);
   const simpleXmlNode = toSimpleXmlNode(xmlNode);
@@ -175,11 +175,11 @@ test(`Default value VS Fallback value`, () => {
   const spec = createXmlSpec({
     fallback: pipe(
       syncers.xmlAttribute('fallback', 'skip'),
-      syncers.fallback<string>('fallbackValue')
+      syncers.fallback<string>('fallbackValue'),
     ),
     default: pipe(
       syncers.xmlAttribute('default', 'skip'),
-      syncers.default<string>('defaultValue')
+      syncers.default<string>('defaultValue'),
     ),
   });
 
@@ -218,8 +218,8 @@ test('Unknown attributes & nested syncers', () => {
         createXmlSpec({
           attributeAa: syncers.xmlAttribute('aa', 'required'),
           removeA: syncers.xmlAttribute('aar', 'skip'),
-        })
-      )
+        }),
+      ),
     ),
     nested: syncers.object(
       createXmlSpec({
@@ -232,10 +232,10 @@ test('Unknown attributes & nested syncers', () => {
             createXmlSpec({
               removeB: syncers.xmlAttribute('bbr', 'skip'),
               attributeBb: syncers.xmlAttribute('bb', 'required'),
-            })
-          )
+            }),
+          ),
         ),
-      })
+      }),
     ),
   });
 

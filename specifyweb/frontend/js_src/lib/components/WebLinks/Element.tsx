@@ -72,7 +72,7 @@ function WebLinkFormatting({
 }): JSX.Element | null {
   const hasThis = item.parts.some(({ type }) => type === 'ThisField');
   const thisField = React.useState<RA<LiteralField | Relationship> | undefined>(
-    undefined
+    undefined,
   );
   const openIndex = React.useState<number | undefined>(undefined);
   return typeof item.table === 'object' ? (

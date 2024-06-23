@@ -32,7 +32,7 @@ function useQueryRecordSet(): SpecifyResource<RecordSet> | false | undefined {
       });
       return recordSet.fetch();
     }, [recordsetid]),
-    true
+    true,
   );
 
   return recordSet;
@@ -77,9 +77,9 @@ function QueryById({
   const [query] = useAsyncState<SpecifyResource<SpQuery>>(
     React.useCallback(
       async () => fetchResource('SpQuery', queryId).then(deserializeResource),
-      [queryId]
+      [queryId],
     ),
-    true
+    true,
   );
   const recordSet = useQueryRecordSet();
 
@@ -90,7 +90,7 @@ function QueryById({
 
 export function createQuery(
   name: string,
-  table: SpecifyTable
+  table: SpecifyTable,
 ): SpecifyResource<SpQuery> {
   const query = new tables.SpQuery.Resource();
   query.set('name', name);
@@ -126,7 +126,7 @@ function NewQuery({
 }): JSX.Element | null {
   const query = React.useMemo<SpecifyResource<SpQuery>>(
     () => createQuery(queryText.newQueryName(), table),
-    [table]
+    [table],
   );
 
   const recordSet = useQueryRecordSet();
@@ -161,9 +161,9 @@ function QueryFromTree({
   const [query] = useAsyncState<SpecifyResource<SpQuery>>(
     React.useCallback(
       async () => queryFromTree(table.name, nodeId),
-      [table.name, nodeId]
+      [table.name, nodeId],
     ),
-    true
+    true,
   );
 
   return query === undefined ? null : (

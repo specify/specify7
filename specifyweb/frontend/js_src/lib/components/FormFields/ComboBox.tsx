@@ -81,17 +81,17 @@ function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
               } else return pickList;
             })
           : undefined,
-      [props.pickListName]
+      [props.pickListName],
     ),
-    false
+    false,
   );
 
   const [items, setItems] = useLiveState<RA<PickListItemSimple> | undefined>(
     React.useCallback(
       () =>
         typeof pickList === 'object' ? getPickListItems(pickList) : undefined,
-      [pickList]
-    )
+      [pickList],
+    ),
   );
 
   /*

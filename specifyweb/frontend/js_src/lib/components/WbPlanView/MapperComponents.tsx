@@ -45,7 +45,7 @@ export function MappingsControlPanel({
         <Button.Small
           onClick={(): void => {
             handleAddNewHeader(
-              wbPlanText.newHeaderName({ index: newHeaderIdRef.current })
+              wbPlanText.newHeaderName({ index: newHeaderIdRef.current }),
             );
             newHeaderIdRef.current += 1;
           }}
@@ -95,10 +95,7 @@ export function ValidationResults(props: {
       <section className="flex flex-col gap-2">
         {props.validationResults.map((fieldPath, index) => (
           <Button.Small
-            className={`
-              flex-wrap !justify-start border-x-0
-              border-b-0 bg-transparent hover:bg-gray-300 hover:dark:bg-neutral-700
-            `}
+            className={`flex-wrap !justify-start border-x-0 border-b-0 bg-transparent hover:bg-gray-300 hover:dark:bg-neutral-700`}
             key={index}
             onClick={(): void => props.onValidationResultClick(fieldPath)}
           >
@@ -137,7 +134,7 @@ export function MappingView({
     useCachedState('wbPlanViewUi', 'mappingViewHeight');
   const initialHeight = React.useRef(mappingViewHeight);
   const [mappingView, setMappingView] = React.useState<HTMLElement | null>(
-    null
+    null,
   );
   React.useEffect(() => {
     if (globalThis.ResizeObserver === undefined || mappingView === null)
@@ -146,7 +143,7 @@ export function MappingView({
     const resizeObserver = new globalThis.ResizeObserver(() =>
       mappingView.offsetHeight > 0
         ? setMappingViewHeight(mappingView.offsetHeight)
-        : undefined
+        : undefined,
     );
 
     resizeObserver.observe(mappingView);
@@ -157,10 +154,7 @@ export function MappingView({
   return (
     <section
       aria-label={wbPlanText.mappingEditor()}
-      className={`
-        h-[var(--mapping-view-height)] max-h-[50vh]
-        min-h-[theme(spacing.40)] resize-y overflow-x-auto
-      `}
+      className={`h-[var(--mapping-view-height)] max-h-[50vh] min-h-[theme(spacing.40)] resize-y overflow-x-auto`}
       ref={setMappingView}
       style={
         {
@@ -186,10 +180,10 @@ export function EmptyDataSetDialog({
   const [dialogEnabled] = userPreferences.use(
     'workBench',
     'wbPlanView',
-    'showNewDataSetWarning'
+    'showNewDataSetWarning',
   );
   const [showDialog, _, handleClose] = useBooleanState(
-    dialogEnabled && lineCount === 0
+    dialogEnabled && lineCount === 0,
   );
 
   return (
@@ -280,7 +274,7 @@ export function mappingOptionsMenu({
               disabled={isReadOnly}
               onChange={(): void =>
                 handleChangeDefaultValue(
-                  columnOptions.default === null ? '' : null
+                  columnOptions.default === null ? '' : null,
                 )
               }
             />{' '}
@@ -475,7 +469,7 @@ export function MustMatch({
                           />
                         </td>
                       </tr>
-                    )
+                    ),
                   )}
                 </tbody>
               </table>

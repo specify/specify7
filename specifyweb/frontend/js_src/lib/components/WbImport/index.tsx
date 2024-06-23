@@ -53,7 +53,7 @@ function FilePicked({ file }: { readonly file: File }): JSX.Element {
   const getSetDataSetName = useTriggerState(stripFileExtension(file.name));
   const [hasHeader = true, setHasHeader] = useCachedState(
     'wbImport',
-    'hasHeader'
+    'hasHeader',
   );
 
   return fileType === 'csv' ? (
@@ -95,9 +95,9 @@ function CsvPicked({
                 fileName: file.name,
                 hasHeader,
                 data,
-              })
+              }),
             )
-            .then(({ id }) => navigate(`/specify/workbench/${id}/`))
+            .then(({ id }) => navigate(`/specify/workbench/${id}/`)),
         );
       }}
     >
@@ -152,9 +152,9 @@ function XlsPicked({
                 fileName: file.name,
                 hasHeader,
                 data,
-              })
+              }),
             )
-            .then(({ id }) => navigate(`/specify/workbench/${id}/`))
+            .then(({ id }) => navigate(`/specify/workbench/${id}/`)),
         )
       }
     >
@@ -164,17 +164,17 @@ function XlsPicked({
 }
 
 function useXlsPreview(
-  file: File
+  file: File,
 ): LocalizedString | RA<RA<string>> | undefined {
   const [preview] = useAsyncState<LocalizedString | RA<RA<string>>>(
     React.useCallback(
       async () =>
         parseXls(file, wbImportPreviewSize).catch((error) =>
-          localized(error.message)
+          localized(error.message),
         ),
-      [file]
+      [file],
     ),
-    false
+    false,
   );
   return preview;
 }

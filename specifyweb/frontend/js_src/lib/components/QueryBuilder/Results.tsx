@@ -61,7 +61,7 @@ export type QueryResultsProps = {
   readonly onSelected?: (selected: RA<number>) => void;
   readonly onSortChange?: (
     fieldSpec: QueryFieldSpec,
-    direction: 'ascending' | 'descending' | undefined
+    direction: 'ascending' | 'descending' | undefined,
   ) => void;
   readonly onReRun: () => void;
   readonly createRecordSet: JSX.Element | undefined;
@@ -114,17 +114,17 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
           fieldSpecs.map(async (fieldSpec) =>
             typeof fieldSpec.parser.pickListName === 'string'
               ? fetchPickList(fieldSpec.parser.pickListName)
-              : undefined
-          )
+              : undefined,
+          ),
         ).then(f.true),
-      [fieldSpecs]
+      [fieldSpecs],
     ),
     /*
      * Loading screen is disabled because it was interrupting auto-scroll to
      * query results in query builder.
      * See https://github.com/specify/specify7/issues/1354
      */
-    false
+    false,
   );
 
   const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, false);
@@ -142,7 +142,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
   const scrollerRef = React.useRef<HTMLDivElement | null>(null);
   const { isFetching, handleScroll } = useInfiniteScroll(
     canFetchMore ? handleFetchMore : undefined,
-    scrollerRef
+    scrollerRef,
   );
 
   const undefinedResult = results?.indexOf(undefined);
@@ -160,7 +160,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
       function newResults(results: RA<QueryResultRow | undefined> | undefined) {
         if (!Array.isArray(results) || totalCount === undefined) return;
         const newResults = results.filter(
-          (result) => result?.[queryIdField] !== recordId
+          (result) => result?.[queryIdField] !== recordId,
         );
         removeCount = results.length - newResults.length;
         if (resultsRef !== undefined) resultsRef.current = newResults;
@@ -169,19 +169,19 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
       setResults(newResults(results));
       if (removeCount === 0) return;
       setTotalCount((totalCount) =>
-        totalCount === undefined ? undefined : totalCount - removeCount
+        totalCount === undefined ? undefined : totalCount - removeCount,
       );
       const newSelectedRows = (selectedRows: ReadonlySet<number>) =>
         new Set(Array.from(selectedRows).filter((id) => id !== recordId));
       setSelectedRows(newSelectedRows(selectedRows));
     },
-    [setResults, setTotalCount, totalCount]
+    [setResults, setTotalCount, totalCount],
   );
 
   const [showLineNumber] = userPreferences.use(
     'queryBuilder',
     'appearance',
-    'showLineNumber'
+    'showLineNumber',
   );
 
   const isDistinct =
@@ -243,7 +243,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                   recordIds={(): RA<number> =>
                     loadedResults
                       .filter((result) =>
-                        selectedRows.has(result[queryIdField] as number)
+                        selectedRows.has(result[queryIdField] as number),
                       )
                       .map((result) => result[queryIdField] as number)
                   }
@@ -279,12 +279,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
       </div>
       <div
         // REFACTOR: turn this into a reusable table component
-        className={`
-          grid-table auto-rows-min
-          overflow-auto rounded
-          ${tableClassName}
-          ${showResults ? 'border-b border-gray-500' : ''}
-        `}
+        className={`grid-table auto-rows-min overflow-auto rounded ${tableClassName} ${showResults ? 'border-b border-gray-500' : ''} `}
         ref={scrollerRef}
         role="table"
         style={{
@@ -328,7 +323,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                         : undefined
                     }
                   />
-                )
+                ),
               )}
             </div>
           </div>
@@ -356,15 +351,15 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                             Math.abs(lastSelectedRow.current - rowIndex) + 1,
                         },
                         (_, index) =>
-                          Math.min(lastSelectedRow.current!, rowIndex) + index
+                          Math.min(lastSelectedRow.current!, rowIndex) + index,
                       )
                     : [rowIndex]
                 ).map(
-                  (rowIndex) => loadedResults[rowIndex][queryIdField] as number
+                  (rowIndex) => loadedResults[rowIndex][queryIdField] as number,
                 );
                 const newSelectedRows = [
                   ...Array.from(selectedRows).filter(
-                    (id) => isSelected || !ids.includes(id)
+                    (id) => isSelected || !ids.includes(id),
                   ),
                   ...(isSelected ? ids : []),
                 ];
@@ -404,22 +399,21 @@ function TableHeaderCell({
         {tableName && <TableIcon label name={tableName} />}
         {generateMappingPathPreview(
           fieldSpec.baseTable.name,
-          fieldSpec.toMappingPath()
+          fieldSpec.toMappingPath(),
         )}
       </>
     ) : undefined;
 
   return (
     <div
-      className="bg-brand-100 dark:bg-brand-500 sticky z-[2] w-full
-        min-w-max border-b border-gray-500 p-1 [inset-block-start:_0]"
+      className="sticky z-[2] w-full min-w-max border-b border-gray-500 bg-brand-100 p-1 [inset-block-start:_0] dark:bg-brand-500"
       role={typeof content === 'object' ? `columnheader` : 'cell'}
     >
       {typeof handleSortChange === 'function' ? (
         <Button.LikeLink
           onClick={(): void =>
             handleSortChange?.(
-              sortTypes[(sortTypes.indexOf(sortConfig) + 1) % sortTypes.length]
+              sortTypes[(sortTypes.indexOf(sortConfig) + 1) % sortTypes.length],
             )
           }
         >

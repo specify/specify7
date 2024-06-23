@@ -8,7 +8,7 @@ import type { PartialDatePrecision } from './useDatePrecision';
 export const getDateParser = (
   dateField: LiteralField | Relationship | undefined,
   precision: PartialDatePrecision,
-  defaultValue: Date | undefined
+  defaultValue: Date | undefined,
 ): Parser => ({
   ...(precision === 'month-year'
     ? undefined

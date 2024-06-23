@@ -45,7 +45,7 @@ function ConditionalMapping({
   const isReadOnly = React.useContext(ReadOnlyContext);
 
   const [openIndex, setOpenIndex] = React.useState<number | undefined>(
-    undefined
+    undefined,
   );
 
   const [isConditionFieldDisplayed, setIsConditionFieldDisplayed] =
@@ -116,7 +116,7 @@ function FormatterPreview({
                   : fetchPathAsString(
                       resource,
                       formatter.definition.conditionField,
-                      false
+                      false,
                     ),
             })
             .then(({ formatted, condition }) =>
@@ -127,11 +127,11 @@ function FormatterPreview({
                       label: resourcesText.conditionFieldValue(),
                       value: condition,
                     })
-              }`.trim()
-            )
-        )
+              }`.trim(),
+            ),
+        ),
       ),
-    [formatter]
+    [formatter],
   );
   return typeof formatter.table === 'object' &&
     hasTablePermission(formatter.table.name, 'read') ? (

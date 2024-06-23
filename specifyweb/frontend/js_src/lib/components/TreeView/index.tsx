@@ -73,7 +73,7 @@ export function TreeViewWrapper(): JSX.Element | null {
            *
            */
           key={(treeDefinition.definition as SpecifyResource<AnySchema>).get(
-            'resource_uri'
+            'resource_uri',
           )}
         />
       ) : null}
@@ -107,12 +107,12 @@ function TreeView<SCHEMA extends AnyTree>({
 
   const [conformation = defaultConformation, setConformation] = useCachedState(
     'tree',
-    `conformations${tableName}`
+    `conformations${tableName}`,
   );
 
   React.useEffect(
     () => setUrlConformation(serializeConformation(conformation)),
-    [conformation, setUrlConformation]
+    [conformation, setUrlConformation],
   );
   React.useEffect(() => {
     if (typeof urlConformation !== 'string') return;
@@ -136,14 +136,14 @@ function TreeView<SCHEMA extends AnyTree>({
       fetchRows(
         formatUrl(`${baseUrl}/${parentId}/${sortField}/`, {
           includeAuthor: includeAuthor.toString(),
-        })
+        }),
       ),
-    [baseUrl, sortField]
+    [baseUrl, sortField],
   );
 
   const [rows, setRows] = useAsyncState<RA<Row>>(
     React.useCallback(async () => getRows('null'), [getRows]),
-    true
+    true,
   );
 
   // FEATURE: synchronize focus path with the URL
@@ -156,7 +156,7 @@ function TreeView<SCHEMA extends AnyTree>({
     React.useState<TreeType>('first');
 
   const [lastFocusedRow, setLastFocusedRow] = React.useState<Row | undefined>(
-    undefined
+    undefined,
   );
 
   const currentStates = states[lastFocusedTree];
@@ -169,17 +169,17 @@ function TreeView<SCHEMA extends AnyTree>({
 
   const [rawIsSplit = false, setRawIsSplit] = useCachedState('tree', 'isSplit');
   const [canSplit, setCanSplit] = React.useState(
-    window.innerWidth >= SMALL_SCREEN_WIDTH
+    window.innerWidth >= SMALL_SCREEN_WIDTH,
   );
   const isSplit = rawIsSplit && canSplit;
   const [isHorizontal = true, setIsHorizontal] = useCachedState(
     'tree',
-    'isHorizontal'
+    'isHorizontal',
   );
 
   const [hideEmptyNodes = false, setHideEmptyNodes] = useCachedState(
     'tree',
-    'hideEmptyNodes'
+    'hideEmptyNodes',
   );
   React.useEffect(() => {
     const handleResize = () => {
@@ -327,13 +327,13 @@ function TreeView<SCHEMA extends AnyTree>({
 }
 
 function useStates<SCHEMA extends AnyTree>(
-  tableName: SCHEMA['tableName']
+  tableName: SCHEMA['tableName'],
 ): {
   readonly focusPath: GetSet<RA<number>>;
 } {
   const [cachedFocusedPath = [], setCachedFocusPath] = useCachedState(
     'tree',
-    `focusPath${tableName}`
+    `focusPath${tableName}`,
   );
 
   const [focusPath = [], setFocusPath] =
@@ -344,7 +344,7 @@ function useStates<SCHEMA extends AnyTree>(
       setFocusPath(newFocusPath);
       setCachedFocusPath(newFocusPath);
     },
-    [setFocusPath, setCachedFocusPath]
+    [setFocusPath, setCachedFocusPath],
   );
 
   return {

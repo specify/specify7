@@ -71,7 +71,7 @@ export const businessRulesOverride: Partial<RR<keyof Tables, string>> = {
 };
 
 export const getBusinessRuleClassFromTable = (
-  tableName: keyof Tables
+  tableName: keyof Tables,
 ): string =>
   businessRulesOverride[tableName] === undefined
     ? tablesWithBusRulesIn6.has(`${tableName}BusRules`)

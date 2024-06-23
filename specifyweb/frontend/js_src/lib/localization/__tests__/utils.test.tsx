@@ -37,7 +37,7 @@ test('Default language is en-us', () => expect(DEFAULT_LANGUAGE).toBe('en-us'));
 test('Can retrieve original dictionary', () =>
   expect(
     // Need to bypass the get() proxy
-    Object.getOwnPropertyDescriptor(dictionary, rawDictionary)?.value
+    Object.getOwnPropertyDescriptor(dictionary, rawDictionary)?.value,
   ).toBe(raw));
 
 test('Simple Key', () => expect(dictionary.simpleKey()).toBe('Simple Key'));
@@ -47,7 +47,7 @@ test('Key with parameters', () =>
     dictionary.parameters({
       parameter: 'a',
       count: 2,
-    })
+    }),
   ).toBe('A a 2'));
 
 describe('Key with plural parameter', () => {
@@ -85,7 +85,7 @@ test('Key with JSX', () =>
         button: (label) => <p>{label}</p>,
         br: <br />,
       },
-    })
+    }),
   ).toMatchInlineSnapshot(`
     <>
 

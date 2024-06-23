@@ -50,13 +50,13 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
             ?.rgetCollection(attachmentField.name)
             .then(
               ({ models }) =>
-                models as RA<SpecifyResource<CollectionObjectAttachment>>
-            )
-        )
+                models as RA<SpecifyResource<CollectionObjectAttachment>>,
+            ),
+        ),
       );
 
       const fetchCount = filterArray(records).findIndex(
-        (record) => !record.populated
+        (record) => !record.populated,
       );
 
       fetchedCount.current = fetchCount === -1 ? records.length : fetchCount;
@@ -68,8 +68,8 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
               .rgetPromise('attachment')
               .then((resource) => serializeResource(resource)),
             related: collectionObjectAttachment,
-          })
-        )
+          }),
+        ),
       );
 
       return {
@@ -77,7 +77,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
         related: attachments.map(({ related }) => related),
       };
     }, [records, showAttachments]),
-    false
+    false,
   );
   const attachmentsRef = React.useRef(attachments);
 
@@ -94,7 +94,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
 
   const [scale = defaultAttachmentScale] = useCachedState(
     'attachments',
-    'scale'
+    'scale',
   );
 
   const isComplete = fetchedCount.current === records.length;
@@ -135,7 +135,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
                 <Button.Warning
                   onClick={(): void =>
                     setHaltValue(
-                      Math.min(haltValue + haltIncrementSize, records.length)
+                      Math.min(haltValue + haltIncrementSize, records.length),
                     )
                   }
                 >

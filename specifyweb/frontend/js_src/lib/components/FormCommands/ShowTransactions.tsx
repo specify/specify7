@@ -32,7 +32,7 @@ function List({
   const [entries] = useAsyncState(
     React.useCallback(async () => {
       const interactions: RA<SpecifyResource<AnySchema>> = await Promise.all(
-        resources.map(async (resource) => resource.rgetPromise(fieldName))
+        resources.map(async (resource) => resource.rgetPromise(fieldName)),
       );
       return interactions
         .map((resource) => ({
@@ -41,7 +41,7 @@ function List({
         }))
         .sort(sortFunction(({ label }) => label));
     }, [resources, fieldName, displayFieldName]),
-    false
+    false,
   );
 
   return resources.length === 0 ? (
@@ -108,9 +108,9 @@ export function ShowLoansCommand({
               }).then(({ records }) => records.map(deserializeResource))
             : undefined,
         }),
-      [preparation]
+      [preparation],
     ),
-    true
+    true,
   );
 
   return typeof data === 'object' ? (

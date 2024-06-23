@@ -27,16 +27,16 @@ export function CollectionOneToOnePlugin({
           resource,
           relationship,
           formatting,
-          muteWrongCollectionError
+          muteWrongCollectionError,
         )
           .then((data) => data ?? false)
           .catch((error) => {
             softFail(error);
             return undefined;
           }),
-      [resource, relationship, muteWrongCollectionError]
+      [resource, relationship, muteWrongCollectionError],
     ),
-    false
+    false,
   );
 
   return data === undefined ? (

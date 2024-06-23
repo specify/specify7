@@ -9,7 +9,7 @@ import { icons } from './Icons';
 import { wrap } from './wrapper';
 
 export const DialogContext = React.createContext<(() => void) | undefined>(
-  undefined
+  undefined,
 );
 DialogContext.displayName = 'DialogContext';
 
@@ -88,39 +88,39 @@ export const Button = {
       className: `${classString} ${variant}`,
       disabled: disabled === true || props.onClick === undefined,
       ...props,
-    })
+    }),
   ),
   Fancy: button(
     'Button.LikeLink',
-    `${className.niceButton} ${className.fancyButton}`
+    `${className.niceButton} ${className.fancyButton}`,
   ),
   Secondary: button(
     'Button.Secondary',
-    `${className.niceButton} ${className.secondaryButton}`
+    `${className.niceButton} ${className.secondaryButton}`,
   ),
   BorderedGray: button(
     'Button.BorderedGray',
-    `${className.niceButton} ${className.borderedGrayButton}`
+    `${className.niceButton} ${className.borderedGrayButton}`,
   ),
   Danger: button(
     'Button.Danger',
-    `${className.niceButton} ${className.dangerButton}`
+    `${className.niceButton} ${className.dangerButton}`,
   ),
   Info: button(
     'Button.Info',
-    `${className.niceButton} ${className.infoButton}`
+    `${className.niceButton} ${className.infoButton}`,
   ),
   Warning: button(
     'Button.Warning',
-    `${className.niceButton} ${className.warningButton}`
+    `${className.niceButton} ${className.warningButton}`,
   ),
   Success: button(
     'Button.Success',
-    `${className.niceButton} ${className.successButton}`
+    `${className.niceButton} ${className.successButton}`,
   ),
   Save: button(
     'Button.Save',
-    `${className.niceButton} ${className.saveButton}`
+    `${className.niceButton} ${className.saveButton}`,
   ),
   DialogClose: DialogCloseButton,
   Icon: wrap<
@@ -140,6 +140,6 @@ export const Button = {
       type: 'button',
       disabled: props.disabled === true || props.onClick === undefined,
       children: icons[icon],
-    })
+    }),
   ),
 } as const;

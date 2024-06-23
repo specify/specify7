@@ -19,7 +19,7 @@ overrideAjax(
   {
     meta: { total_count: 0 },
     objects: [],
-  }
+  },
 );
 
 describe('getCollectionForResource', () => {
@@ -42,18 +42,18 @@ describe('getCollectionForResource', () => {
     const locality = new tables.Locality.Resource({
       discipline: getResourceApiUrl(
         'Discipline',
-        schema.domainLevelIds.discipline
+        schema.domainLevelIds.discipline,
       ),
     });
     expect(getCollectionForResource(locality)).toBe(
-      schema.domainLevelIds.collection
+      schema.domainLevelIds.collection,
     );
   });
   test('Locality from another discipline', () => {
     const locality = new tables.Locality.Resource({
       discipline: getResourceApiUrl(
         'Discipline',
-        schema.domainLevelIds.discipline + 1
+        schema.domainLevelIds.discipline + 1,
       ),
     });
     expect(getCollectionForResource(locality)).toBeUndefined();
@@ -89,7 +89,7 @@ describe('fetchCollectionsForResource', () => {
           id: 2,
         },
       ],
-    }
+    },
   );
   test('ExchangeIn', async () => {
     expect(schema.domainLevelIds.division).not.toBe(divisionId);
@@ -115,7 +115,7 @@ describe('Resource initialization preferences', () => {
   test('CO_CREATE_COA', () => {
     const collectionObject = new tables.CollectionObject.Resource();
     expect(collectionObject.get('collectionObjectAttribute')).toBe(
-      '/api/specify/collectionobjectattribute/'
+      '/api/specify/collectionobjectattribute/',
     );
   });
 
@@ -124,7 +124,7 @@ describe('Resource initialization preferences', () => {
     await expect(
       collectionObject
         .rgetCollection('preparations')
-        .then((collection) => collection.models.length)
+        .then((collection) => collection.models.length),
     ).resolves.toBe(1);
   });
 
@@ -133,7 +133,7 @@ describe('Resource initialization preferences', () => {
     await expect(
       collectionObject
         .rgetCollection('determinations')
-        .then((collection) => collection.models.length)
+        .then((collection) => collection.models.length),
     ).resolves.toBe(1);
   });
 
@@ -148,7 +148,7 @@ describe('Resource initialization preferences', () => {
             collectionMemberId: schema.domainLevelIds.collection,
           },
         ],
-      })
+      }),
     );
 
     /**
@@ -160,7 +160,7 @@ describe('Resource initialization preferences', () => {
     await expect(
       cloned
         .rgetCollection('preparations')
-        .then((collection) => collection.models.length)
+        .then((collection) => collection.models.length),
     ).resolves.toBe(1);
   });
 });

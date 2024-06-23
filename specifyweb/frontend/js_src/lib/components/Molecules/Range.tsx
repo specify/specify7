@@ -54,6 +54,6 @@ export function Range({
 }
 
 const isProperValue = (
-  value: number | readonly number[]
+  value: number | readonly number[],
 ): value is readonly [number, number] =>
   Array.isArray(value) && value.length === 2;

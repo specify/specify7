@@ -39,7 +39,7 @@ export function ForceUpdateFeedOverlay(): JSX.Element {
                   errorMode: 'dismissible',
                 })
                   .then(handleActivated)
-                  .catch(handleDeactivated)
+                  .catch(handleDeactivated),
               )
             }
           >

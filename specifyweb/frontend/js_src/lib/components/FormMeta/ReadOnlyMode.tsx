@@ -7,7 +7,7 @@ import { Button } from '../Atoms/Button';
 export function ReadOnlyMode(): JSX.Element {
   const [isReadOnly = false, setReadOnly] = useCachedState(
     'forms',
-    'readOnlyMode'
+    'readOnlyMode',
   );
 
   return (

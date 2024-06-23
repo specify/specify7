@@ -11,14 +11,14 @@ import { getPickListItems } from './fetch';
 import { PickListComboBox } from './index';
 
 export function TablesPickList(
-  props: DefaultComboBoxProps
+  props: DefaultComboBoxProps,
 ): JSX.Element | null {
   const getItems = React.useCallback(
     () =>
       props.resource?.get('type') === PickListTypes.ITEMS
         ? []
         : getPickListItems(pickListTablesPickList()),
-    [props.resource, props.field]
+    [props.resource, props.field],
   );
   const [items, setItems] = React.useState<RA<PickListItemSimple>>([]);
   React.useEffect(
@@ -34,9 +34,9 @@ export function TablesPickList(
                 props.resource.set('tableName', null as never);
               setItems(getItems());
             },
-            true
+            true,
           ),
-    [props.resource, getItems]
+    [props.resource, getItems],
   );
 
   return (

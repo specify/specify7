@@ -26,7 +26,7 @@ import {
 /** Returns the max index in the list of -to-many items */
 export const getMaxToManyIndex = (
   // List of -to-many indexes
-  values: RA<string>
+  values: RA<string>,
 ): number =>
   values.reduce((max, value) => {
     // Skip `add` values and other possible NaN cases
@@ -49,14 +49,14 @@ export function findRequiredMissingFields(
   // Used internally in a recursion. Previous table name
   parentRelationship: Relationship | undefined = undefined,
   // Used internally in a recursion. Current mapping path
-  path: MappingPath = []
+  path: MappingPath = [],
 ): RA<MappingPath> {
   const table = strictGetTable(tableName);
 
   if (mappings === undefined) return [];
 
   const mappingEntries = group(
-    mappings.map((line) => [line[0], line.slice(1)] as const)
+    mappings.map((line) => [line[0], line.slice(1)] as const),
   );
   const indexedMappings = Object.fromEntries(mappingEntries);
 
@@ -68,8 +68,8 @@ export function findRequiredMissingFields(
         mappings,
         mustMatchPreferences,
         parentRelationship,
-        [...path, index]
-      )
+        [...path, index],
+      ),
     );
   // Handle trees
   else if (isTreeTable(tableName) && !valueIsTreeRank(path.at(-1)))
@@ -85,10 +85,10 @@ export function findRequiredMissingFields(
                 indexedMappings[formattedRankName],
                 mustMatchPreferences,
                 parentRelationship,
-                localPath
+                localPath,
               )
             : [];
-        }
+        },
       ) ?? []
     );
 
@@ -114,7 +114,7 @@ export function findRequiredMissingFields(
             indexedMappings[relationship.name],
             mustMatchPreferences,
             relationship,
-            localPath
+            localPath,
           );
         else if (
           relationship.overrides.isRequired &&
@@ -123,7 +123,7 @@ export function findRequiredMissingFields(
         )
           return [localPath];
         else return [];
-      }
+      },
     ),
     ...filterArray(
       table.literalFields.map((field) =>
@@ -131,15 +131,15 @@ export function findRequiredMissingFields(
         field.overrides.isRequired &&
         !mustMatchPreferences[tableName]
           ? [...path, field.name]
-          : undefined
-      )
+          : undefined,
+      ),
     ),
   ];
 }
 
 export const isCircularRelationship = (
   parentRelationship: Relationship,
-  relationship: Relationship
+  relationship: Relationship,
 ): boolean =>
   (parentRelationship.relatedTable === relationship.table &&
     parentRelationship.otherSideName === relationship.name) ||

@@ -51,14 +51,14 @@ export function FormEditor(): JSX.Element {
   const viewIndex = React.useMemo(
     () =>
       viewSets.views.findIndex(
-        (view) => view.name === viewName && view.table === table
+        (view) => view.name === viewName && view.table === table,
       ),
-    [viewSets.views, viewName, table]
+    [viewSets.views, viewName, table],
   );
   const view = viewSets.views[viewIndex];
   const viewDefinitionIndex = getViewDefinitionIndexes(
     view,
-    viewSets.viewDefs
+    viewSets.viewDefs,
   )[0];
   const viewDefinition = viewSets.viewDefs[viewDefinitionIndex];
 
@@ -67,7 +67,7 @@ export function FormEditor(): JSX.Element {
   const navigate = useNavigate();
   const [layout = 'horizontal', setLayout] = useCachedState(
     'formEditor',
-    'layout'
+    'layout',
   );
   const buttonTitle =
     layout === 'vertical'
@@ -99,14 +99,14 @@ export function FormEditor(): JSX.Element {
                */
               const currentUsedViewDefinitions = new Set(
                 viewSets.views.flatMap(({ altViews }) =>
-                  altViews.altViews.map(({ viewDef }) => viewDef)
-                )
+                  altViews.altViews.map(({ viewDef }) => viewDef),
+                ),
               );
               const newViews = removeItem(viewSets.views, viewIndex);
               const updatedUsedViewDefinitions = new Set(
                 newViews.flatMap(({ altViews }) =>
-                  altViews.altViews.map(({ viewDef }) => viewDef)
-                )
+                  altViews.altViews.map(({ viewDef }) => viewDef),
+                ),
               );
               /*
                * Also, rather than deleting all unused view definitions, only
@@ -116,7 +116,7 @@ export function FormEditor(): JSX.Element {
               const newViewDefs = viewSets.viewDefs.filter(
                 (viewDefinition) =>
                   !currentUsedViewDefinitions.has(viewDefinition.name) ||
-                  updatedUsedViewDefinitions.has(viewDefinition.name)
+                  updatedUsedViewDefinitions.has(viewDefinition.name),
               );
 
               setViewSets(
@@ -125,7 +125,7 @@ export function FormEditor(): JSX.Element {
                   views: newViews,
                   viewDefs: newViewDefs,
                 },
-                [viewName]
+                [viewName],
               );
               navigate(resolveRelative(`../`));
             }}
@@ -177,7 +177,7 @@ export function FormEditor(): JSX.Element {
                   },
                 }),
               },
-              [viewName]
+              [viewName],
             ),
         ]}
       />
@@ -188,7 +188,7 @@ export function FormEditor(): JSX.Element {
 function UseLabelsSchema(): JSX.Element {
   const [useFieldLabels = true, setUseFieldLabels] = useCachedState(
     'forms',
-    'useFieldLabels'
+    'useFieldLabels',
   );
 
   const update = (): void => {
@@ -227,7 +227,7 @@ function Editor({
   readonly table: SpecifyTable;
 }): JSX.Element {
   const [xml, setXml] = React.useState(() =>
-    xmlToString(jsonToXml(formatXmlNode(definition)), false)
+    xmlToString(jsonToXml(formatXmlNode(definition)), false),
   );
 
   const updateRef = React.useRef(setDefinition);
@@ -238,13 +238,13 @@ function Editor({
         const parsed = parseXml(node);
         if (typeof parsed === 'object') updateRef.current(xmlToJson(parsed));
       }, debounceRate),
-    []
+    [],
   );
 
   // Was originally called "XmlEditor", but can't use that name due to IDE bug
   const EditXml = React.useMemo(
     () => generateXmlEditor(() => formDefinitionSpec(table)),
-    [table]
+    [table],
   );
 
   function handleChange(xml: string): void {
@@ -258,12 +258,9 @@ function Editor({
     React.useContext(FormEditorContext)!;
   return (
     <div
-      className={`
-        flex flex-1 gap-4 
-        ${
-          layout === 'horizontal' ? 'overflow-auto' : 'flex-col overflow-hidden'
-        }
-      `}
+      className={`flex flex-1 gap-4 ${
+        layout === 'horizontal' ? 'overflow-auto' : 'flex-col overflow-hidden'
+      } `}
     >
       <EditXml
         appResource={appResource}
@@ -321,7 +318,7 @@ function FormPreview({
       },
       'form',
       'edit',
-      table
+      table,
     )
       .then((definition) => setViewDefinition(definition))
       // Ignore errors, as they would already be reported by the editor
@@ -335,10 +332,7 @@ function FormPreview({
 
   return (
     <div
-      className={`
-        flex flex-col gap-2 overflow-auto
-        ${layout === 'horizontal' ? 'max-w-[50%]' : 'max-h-[50%]'}
-      `}
+      className={`flex flex-col gap-2 overflow-auto ${layout === 'horizontal' ? 'max-w-[50%]' : 'max-h-[50%]'} `}
     >
       <InFormEditorContext.Provider value>
         <LoadingContext.Provider value={loadingHandler}>

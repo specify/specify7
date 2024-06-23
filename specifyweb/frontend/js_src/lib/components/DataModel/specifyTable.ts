@@ -73,7 +73,7 @@ type CollectionConstructor<SCHEMA extends AnySchema> = new (
     >;
     readonly domainfilter?: boolean;
   },
-  tables?: RA<SpecifyResource<AnySchema>>
+  tables?: RA<SpecifyResource<AnySchema>>,
 ) => UnFetchedCollection<SCHEMA>;
 
 export type UnFetchedCollection<SCHEMA extends AnySchema> = {
@@ -165,7 +165,7 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
     >,
     options?: Partial<{
       readonly noBusinessRules: boolean;
-    }>
+    }>,
   ) => SpecifyResource<RESOURCE>;
 
   /** A Backbone collection for lazy loading a collection of items of this type. */
@@ -213,16 +213,19 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
     this.fieldAliases = Object.fromEntries(
       Object.entries({
         ...Object.fromEntries(
-          tableDefinition.fieldAliases.map(({ aname, vname }) => [vname, aname])
+          tableDefinition.fieldAliases.map(({ aname, vname }) => [
+            vname,
+            aname,
+          ]),
         ),
         ...schemaAliases[''],
         ...schemaAliases[this.name],
-      }).map(([alias, fieldName]) => [alias.toLowerCase(), fieldName])
+      }).map(([alias, fieldName]) => [alias.toLowerCase(), fieldName]),
     );
 
     this.Resource = ResourceBase.extend(
       { __name__: `${this.name}Resource` },
-      { specifyTable: this }
+      { specifyTable: this },
     );
 
     this.LazyCollection = LazyCollection.extend({
@@ -251,7 +254,7 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
           Object.entries(this.localization.items).map(([fieldName, data]) => [
             fieldName,
             { ...data, name: localized(fieldName) },
-          ])
+          ]),
         ),
       };
 
@@ -285,7 +288,7 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
           this.localization.name.length > 0
           ? unescape(this.localization.name)
           : camelToHuman(this.name)
-        : this.name
+        : this.name,
     );
 
     this.isHidden = this.localization.ishidden;
@@ -312,14 +315,14 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
    *   references
    */
   public getField(
-    unparsedName: string
+    unparsedName: string,
   ): LiteralField | Relationship | undefined {
     return this.getFields(unparsedName)?.at(-1);
   }
 
   // REFACTOR: use this where appropriate
   public getFields(
-    unparsedName: string
+    unparsedName: string,
   ): RA<LiteralField | Relationship> | undefined {
     if (unparsedName === '') return undefined;
     if (typeof unparsedName !== 'string') throw new Error('Invalid field name');
@@ -329,7 +332,7 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
       .trim()
       .split(backboneFieldSeparator);
     const exactMatch = this.fields.find(
-      (field) => field.name.toLowerCase() === splitName[0]
+      (field) => field.name.toLowerCase() === splitName[0],
     );
     let fields: RA<LiteralField | Relationship> =
       typeof exactMatch === 'object' ? [exactMatch] : [];
@@ -345,12 +348,12 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
       const alias = this.fieldAliases[splitName[0]];
       if (typeof alias === 'string') {
         const aliasFields = this.getFields(
-          [alias, ...splitName.slice(1)].join(backboneFieldSeparator)
+          [alias, ...splitName.slice(1)].join(backboneFieldSeparator),
         );
         if (Array.isArray(aliasFields)) fields = aliasFields;
         else
           console.warn(
-            `Alias ${unparsedName} was resolved to unknown field ${alias}`
+            `Alias ${unparsedName} was resolved to unknown field ${alias}`,
           );
       }
     }
@@ -365,7 +368,7 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
     else if (splitName.length === 1) return fields;
     else if (splitName.length > 1 && fields[0].isRelationship) {
       const subFields = defined(fields[0].relatedTable).getFields(
-        splitName.slice(1).join(backboneFieldSeparator)
+        splitName.slice(1).join(backboneFieldSeparator),
       );
       if (subFields === undefined) return undefined;
       return [...fields, ...subFields];
@@ -379,7 +382,7 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
     const field = this.getField(unparsedName);
     if (field === undefined)
       throw new Error(
-        `Tried to get unknown field "${unparsedName}" on table ${this.name}`
+        `Tried to get unknown field "${unparsedName}" on table ${this.name}`,
       );
     return field;
   }
@@ -398,7 +401,7 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
   public strictGetLiteralField(unparsedName: string): LiteralField {
     return defined(
       this.getLiteralField(unparsedName),
-      `Tried to get unknown literal field: ${unparsedName}`
+      `Tried to get unknown literal field: ${unparsedName}`,
     );
   }
 
@@ -412,7 +415,7 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
   public strictGetRelationship(unparsedName: string): Relationship {
     return defined(
       this.getRelationship(unparsedName),
-      `Tried to get unknown relationship field: ${unparsedName}`
+      `Tried to get unknown relationship field: ${unparsedName}`,
     );
   }
 
@@ -447,7 +450,7 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
         .map((fieldName) => this.getField(fieldName))
         .find(
           (field): field is Relationship =>
-            field?.isRelationship === true && !relationshipIsToMany(field)
+            field?.isRelationship === true && !relationshipIsToMany(field),
         ) ?? false;
     return this.scopingRelationship === false
       ? undefined
@@ -517,7 +520,7 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
           if (Array.isArray(parentScope)) return [relationship, ...parentScope];
         }
         return undefined;
-      })
+      }),
     );
 
     const sortedScopingRelationships = Array.from(scopingRelationships).sort(
@@ -525,13 +528,13 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
         // Narrower scope first
         (relationship) =>
           schema.orgHierarchy.indexOf(
-            relationship.at(-1)?.relatedTable.name as 'Collection'
+            relationship.at(-1)?.relatedTable.name as 'Collection',
           ),
         // Shorter first
         ({ length }) => length,
         // Agents last
-        (relationship) => relationship.at(-1)?.relatedTable.name === 'Agent'
-      )
+        (relationship) => relationship.at(-1)?.relatedTable.name === 'Agent',
+      ),
     );
 
     return sortedScopingRelationships[0];

@@ -5,7 +5,7 @@ export const today = 'today';
 
 export const reRelativeDate = new RegExp(
   `${today}\\s*([+-])\\s*(\\d+)\\s*(second|minute|hour|day|week|month|year)`,
-  'u'
+  'u',
 );
 
 /**

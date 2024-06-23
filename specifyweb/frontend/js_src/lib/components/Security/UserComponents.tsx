@@ -53,13 +53,13 @@ export function SetSuperAdmin({
             handleChange(
               filterArray(
                 institutionPolicies.filter(
-                  (policy) => policy.resource !== anyResource
-                )
-              )
+                  (policy) => policy.resource !== anyResource,
+                ),
+              ),
             );
           else {
             const index = institutionPolicies.findIndex(
-              ({ resource }) => resource === anyResource
+              ({ resource }) => resource === anyResource,
             );
             handleChange(
               index === -1
@@ -76,9 +76,9 @@ export function SetSuperAdmin({
                     replaceKey(
                       institutionPolicies[index],
                       'actions',
-                      allActions
-                    )
-                  )
+                      allActions,
+                    ),
+                  ),
             );
           }
         }}
@@ -115,7 +115,7 @@ export function UserRoles({
                 <Label.Inline>
                   <Input.Checkbox
                     checked={userRoles?.[collectionId]?.some(
-                      ({ roleId }) => roleId === role.id
+                      ({ roleId }) => roleId === role.id,
                     )}
                     disabled={
                       !Array.isArray(userRoles?.[collectionId]) || isReadOnly
@@ -129,7 +129,7 @@ export function UserRoles({
                             .maybe(userRoles[collectionId], (roles) =>
                               roles.some(({ roleId }) => roleId === role.id)
                                 ? roles.filter(
-                                    ({ roleId }) => roleId !== role.id
+                                    ({ roleId }) => roleId !== role.id,
                                   )
                                 : [
                                     ...roles,
@@ -137,14 +137,14 @@ export function UserRoles({
                                       roleId: role.id,
                                       roleName: role.name,
                                     },
-                                  ]
+                                  ],
                             )
                             /*
                              * Sort all roles by ID, so that can easier detect if user roles changed
                              * Since last save
                              */
-                            ?.sort(sortFunction(({ roleId }) => roleId))
-                        )
+                            ?.sort(sortFunction(({ roleId }) => roleId)),
+                        ),
                       )
                     }
                   />
@@ -234,8 +234,8 @@ export function LegacyPermissions({
   const [isAdmin, setIsAdmin] = useLiveState(
     React.useCallback(
       () => admins?.legacyAdmins.has(userResource.id) === true,
-      [admins, userResource.id]
-    )
+      [admins, userResource.id],
+    ),
   );
   const userType = getField(tables.SpecifyUser, 'userType');
   return (
@@ -268,7 +268,7 @@ export function LegacyPermissions({
           isRequired
           pickListName={defined(
             userType.getPickList(),
-            'UserType pick list not found'
+            'UserType pick list not found',
           )}
           resource={userResource}
         />

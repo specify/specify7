@@ -51,7 +51,7 @@ const fetchListOfUsers = async (): Promise<
   RA<SerializedResource<SpecifyUser>>
 > =>
   fetchCollection('SpecifyUser', { limit: 500, domainFilter: false }).then(
-    ({ records: users }) => users.filter(({ id }) => id !== userInformation.id)
+    ({ records: users }) => users.filter(({ id }) => id !== userInformation.id),
   );
 
 function ChangeOwner({
@@ -63,7 +63,7 @@ function ChangeOwner({
 }): JSX.Element | null {
   const [users] = useAsyncState<RA<SerializedResource<SpecifyUser>>>(
     fetchListOfUsers,
-    true
+    true,
   );
 
   const id = useId('change-data-set-owner');
@@ -101,7 +101,7 @@ function ChangeOwner({
               body: formData({
                 specifyuserid: newOwner!,
               }),
-            }).then(() => setIsChanged(true))
+            }).then(() => setIsChanged(true)),
           )
         }
       >

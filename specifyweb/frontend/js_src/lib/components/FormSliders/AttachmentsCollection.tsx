@@ -29,7 +29,7 @@ export function AttachmentsCollection({
 
   const [scale = defaultAttachmentScale] = useCachedState(
     'attachments',
-    'scale'
+    'scale',
   );
 
   const attachmentHasChanged =
@@ -41,21 +41,21 @@ export function AttachmentsCollection({
         Array.from(collection.models, (model) => {
           if (model.specifyTable.name.includes('Attachment')) {
             const record = serializeResource(
-              model
+              model,
             ) as SerializedResource<CollectionObjectAttachment>;
             // eslint-disable-next-line
             return serializeResource(
-              record.attachment
+              record.attachment,
             ) as SerializedResource<Attachment>;
           }
           return undefined;
-        })
+        }),
       ),
-    [collection.models, attachmentHasChanged]
+    [collection.models, attachmentHasChanged],
   );
 
   const isAttachmentsNotLoaded = attachments.some(
-    (attachment) => attachment.attachmentLocation === null
+    (attachment) => attachment.attachmentLocation === null,
   );
 
   return attachments.length > 0 ? (

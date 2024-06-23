@@ -28,16 +28,16 @@ import type {
 export type BusinessRuleDefs<SCHEMA extends AnySchema> = {
   readonly onAdded?: (
     resource: SpecifyResource<SCHEMA>,
-    collection: Collection<SCHEMA>
+    collection: Collection<SCHEMA>,
   ) => void;
   readonly onRemoved?: (
     resource: SpecifyResource<SCHEMA>,
-    collection: Collection<SCHEMA>
+    collection: Collection<SCHEMA>,
   ) => void;
   readonly customInit?: (resource: SpecifyResource<SCHEMA>) => void;
   readonly fieldChecks?: {
     readonly [FIELD_NAME in TableFields<SCHEMA>]?: (
-      resource: SpecifyResource<SCHEMA>
+      resource: SpecifyResource<SCHEMA>,
     ) => Promise<BusinessRuleResult | undefined> | void;
   };
 };
@@ -58,7 +58,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             address.collection.models.forEach(
               (other: SpecifyResource<Address>) => {
                 if (other.cid !== address.cid) other.set('isPrimary', false);
-              }
+              },
             );
           }
         };
@@ -73,13 +73,13 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
               if (other.cid !== address.cid) {
                 other.set('isPrimary', false);
               }
-            }
+            },
           );
         }
         if (
           address.collection !== undefined &&
           !address.collection?.models.some((c: SpecifyResource<Address>) =>
-            c.get('isPrimary')
+            c.get('isPrimary'),
           )
         ) {
           address.set('isPrimary', true);
@@ -91,7 +91,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
   BorrowMaterial: {
     fieldChecks: {
       quantityReturned: (
-        borrowMaterial: SpecifyResource<BorrowMaterial>
+        borrowMaterial: SpecifyResource<BorrowMaterial>,
       ): void => {
         const returned = borrowMaterial.get('quantityReturned');
         const resolved = borrowMaterial.get('quantityResolved');
@@ -104,14 +104,14 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             ? returned > quantity
               ? quantity
               : returned > resolved
-              ? resolved
-              : returned
+                ? resolved
+                : returned
             : undefined;
         if (typeof adjustedReturned === 'number')
           borrowMaterial.set('quantityReturned', adjustedReturned);
       },
       quantityResolved: (
-        borrowMaterial: SpecifyResource<BorrowMaterial>
+        borrowMaterial: SpecifyResource<BorrowMaterial>,
       ): void => {
         const resolved = borrowMaterial.get('quantityResolved');
         const quantity = borrowMaterial.get('quantity');
@@ -124,8 +124,8 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             ? resolved > quantity
               ? quantity
               : resolved < returned
-              ? returned
-              : resolved
+                ? returned
+                : resolved
             : undefined;
 
         if (typeof adjustedResolved === 'number')
@@ -143,7 +143,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       ) {
         collectionObject.set(
           'collectingEvent',
-          new tables.CollectingEvent.Resource()
+          new tables.CollectingEvent.Resource(),
         );
       }
     },
@@ -152,18 +152,18 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
   Determination: {
     fieldChecks: {
       taxon: async (
-        determination: SpecifyResource<Determination>
+        determination: SpecifyResource<Determination>,
       ): Promise<BusinessRuleResult> =>
         determination
           .rgetPromise('taxon', true)
           .then((taxon: SpecifyResource<Taxon> | null) => {
             const getLastAccepted = async (
-              taxon: SpecifyResource<Taxon>
+              taxon: SpecifyResource<Taxon>,
             ): Promise<SpecifyResource<Taxon>> =>
               taxon
                 .rgetPromise('acceptedTaxon', true)
                 .then(async (accepted) =>
-                  accepted === null ? taxon : getLastAccepted(accepted)
+                  accepted === null ? taxon : getLastAccepted(accepted),
                 );
             return taxon === null
               ? {
@@ -175,12 +175,12 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
                   action: async () =>
                     determination.set(
                       'preferredTaxon',
-                      await getLastAccepted(taxon)
+                      await getLastAccepted(taxon),
                     ),
                 };
           }),
       isCurrent: async (
-        determination: SpecifyResource<Determination>
+        determination: SpecifyResource<Determination>,
       ): Promise<BusinessRuleResult> => {
         // Disallow multiple determinations being checked as current
         if (
@@ -192,14 +192,14 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
               if (other.cid !== determination.cid) {
                 other.set('isCurrent', false);
               }
-            }
+            },
           );
         }
         // Flag as invalid if no determinations are checked as current
         if (
           determination.collection !== undefined &&
           !determination.collection.models.some(
-            (c: SpecifyResource<Determination>) => c.get('isCurrent')
+            (c: SpecifyResource<Determination>) => c.get('isCurrent'),
           )
         ) {
           return {
@@ -223,7 +223,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           collection.related ?? determination,
           determination.specifyTable.field.isCurrent,
           [resourcesText.currentDeterminationRequired()],
-          CURRENT_DETERMINATION_KEY
+          CURRENT_DETERMINATION_KEY,
         );
     },
     onAdded: (determination, collection): void => {
@@ -233,7 +233,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         collection.related ?? determination,
         determination.specifyTable.field.isCurrent,
         [],
-        CURRENT_DETERMINATION_KEY
+        CURRENT_DETERMINATION_KEY,
       );
     },
   },
@@ -285,7 +285,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             countObject.t +
             countObject.g +
             countObject.c +
-            countObject.ambiguous
+            countObject.ambiguous,
         );
       },
     },
@@ -307,7 +307,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
   LoanReturnPreparation: {
     onRemoved: (
       _loanReturnPrep: SpecifyResource<LoanReturnPreparation>,
-      collection: Collection<LoanReturnPreparation>
+      collection: Collection<LoanReturnPreparation>,
     ): void => updateLoanPrep(collection),
 
     customInit: (resource: SpecifyResource<LoanReturnPreparation>): void => {
@@ -325,7 +325,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
     },
     fieldChecks: {
       quantityReturned: (
-        loanReturnPrep: SpecifyResource<LoanReturnPreparation>
+        loanReturnPrep: SpecifyResource<LoanReturnPreparation>,
       ): void => {
         const returned = Number(loanReturnPrep.get('quantityReturned'))!;
         const previousReturned =
@@ -348,7 +348,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
               changeInReturn + previousResolved;
             loanReturnPrep.set(
               'quantityResolved',
-              changeInReturn + previousResolved
+              changeInReturn + previousResolved,
             );
           }
         }
@@ -371,7 +371,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         updateLoanPrep(loanReturnPrep.collection);
       },
       quantityResolved: (
-        loanReturnPrep: SpecifyResource<LoanReturnPreparation>
+        loanReturnPrep: SpecifyResource<LoanReturnPreparation>,
       ): void => {
         const resolved = Number(loanReturnPrep.get('quantityResolved'));
 

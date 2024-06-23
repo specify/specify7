@@ -48,7 +48,7 @@ export function parseSchemaLocalization(dom: ParsedDom): SchemaStrings {
             ? pickBetterTranslation(text, otherText, key)
             : text,
         ];
-      })
+      }),
     );
 
     structure[key].strings = {
@@ -78,7 +78,7 @@ export const trimSchemaKey = (key: string): string => key.replace(/\d+$/u, '');
 const pickBetterTranslation = (
   left: string,
   right: string,
-  untranslated: string
+  untranslated: string,
 ): string =>
   [left, right].sort(
     multiSortFunction(
@@ -89,8 +89,8 @@ const pickBetterTranslation = (
       ({ length }) => length,
       // Maximize count of non-lowercase characters. i.e., URI is better than Uri
       (text) => text.replaceAll(/^[a-z]/gu, '').length,
-      true
-    )
+      true,
+    ),
   )[0];
 
 export const exportsForTests = {

@@ -42,7 +42,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         title: headerText.userTools(),
         element: () =>
           import('../Header/UserTools').then(
-            ({ UserToolsOverlay }) => UserToolsOverlay
+            ({ UserToolsOverlay }) => UserToolsOverlay,
           ),
       },
       {
@@ -50,7 +50,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         title: headerText.simpleSearch(),
         element: () =>
           import('../Header/ExpressSearchTask').then(
-            ({ ExpressSearchOverlay }) => ExpressSearchOverlay
+            ({ ExpressSearchOverlay }) => ExpressSearchOverlay,
           ),
       },
       {
@@ -62,7 +62,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         title: commonText.chooseCollection(),
         element: () =>
           import('../Header/ChooseCollection').then(
-            ({ ChooseCollection }) => ChooseCollection
+            ({ ChooseCollection }) => ChooseCollection,
           ),
       },
       {
@@ -70,7 +70,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         title: headerText.dataEntry(),
         element: () =>
           import('../DataEntryTables').then(
-            ({ FormsDialogOverlay }) => FormsDialogOverlay
+            ({ FormsDialogOverlay }) => FormsDialogOverlay,
           ),
       },
       {
@@ -78,7 +78,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         title: treeText.trees(),
         element: () =>
           import('../Toolbar/TreeRepair').then(
-            ({ TreeSelectOverlay }) => TreeSelectOverlay
+            ({ TreeSelectOverlay }) => TreeSelectOverlay,
           ),
       },
       {
@@ -89,21 +89,21 @@ export const overlayRoutes: RA<EnhancedRoute> = [
             index: true,
             element: () =>
               import('../Interactions/InteractionsDialog').then(
-                ({ InteractionsOverlay }) => InteractionsOverlay
+                ({ InteractionsOverlay }) => InteractionsOverlay,
               ),
           },
           {
             path: 'return-loan',
             element: () =>
               import('../Interactions/InteractionsDialog').then(
-                ({ InteractionLoanReturn }) => InteractionLoanReturn
+                ({ InteractionLoanReturn }) => InteractionLoanReturn,
               ),
           },
           {
             path: 'create/:tableName',
             element: () =>
               import('../Interactions/InteractionsDialog').then(
-                ({ InteractionAction }) => InteractionAction
+                ({ InteractionAction }) => InteractionAction,
               ),
           },
         ],
@@ -113,14 +113,14 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         title: queryText.queries(),
         element: () =>
           import('../Toolbar/Query').then(
-            ({ QueriesOverlay }) => QueriesOverlay
+            ({ QueriesOverlay }) => QueriesOverlay,
           ),
         children: [
           {
             index: true,
             element: () =>
               import('../Toolbar/Query').then(
-                ({ QueryListOutlet }) => QueryListOutlet
+                ({ QueryListOutlet }) => QueryListOutlet,
               ),
           },
           {
@@ -136,7 +136,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         title: commonText.recordSets(),
         element: () =>
           import('../Toolbar/RecordSets').then(
-            ({ RecordSetsOverlay }) => RecordSetsOverlay
+            ({ RecordSetsOverlay }) => RecordSetsOverlay,
           ),
       },
       {
@@ -150,14 +150,14 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         title: wbText.workBench(),
         element: () =>
           import('../Toolbar/WbsDialog').then(
-            ({ DataSetsOverlay }) => DataSetsOverlay
+            ({ DataSetsOverlay }) => DataSetsOverlay,
           ),
       },
       {
         path: 'workbench/:dataSetId/meta',
         element: () =>
           import('../Toolbar/WbsDialog').then(
-            ({ DataSetMetaOverlay }) => DataSetMetaOverlay
+            ({ DataSetMetaOverlay }) => DataSetMetaOverlay,
           ),
       },
       {
@@ -165,7 +165,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         title: headerText.repairTree(),
         element: () =>
           import('../Toolbar/TreeRepair').then(
-            ({ TreeRepairOverlay }) => TreeRepairOverlay
+            ({ TreeRepairOverlay }) => TreeRepairOverlay,
           ),
       },
       {
@@ -173,7 +173,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         title: userText.generateMasterKey(),
         element: () =>
           import('../Toolbar/MasterKey').then(
-            ({ MasterKeyOverlay }) => MasterKeyOverlay
+            ({ MasterKeyOverlay }) => MasterKeyOverlay,
           ),
       },
       {
@@ -181,7 +181,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         title: headerText.makeDwca(),
         element: () =>
           import('../ExportFeed/Dwca').then(
-            ({ MakeDwcaOverlay }) => MakeDwcaOverlay
+            ({ MakeDwcaOverlay }) => MakeDwcaOverlay,
           ),
       },
       {
@@ -189,7 +189,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         title: headerText.updateExportFeed(),
         element: () =>
           import('../ExportFeed/ForceUpdate').then(
-            ({ ForceUpdateFeedOverlay }) => ForceUpdateFeedOverlay
+            ({ ForceUpdateFeedOverlay }) => ForceUpdateFeedOverlay,
           ),
       },
       {
@@ -197,7 +197,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         title: welcomeText.aboutSpecify(),
         element: () =>
           import('../HomePage/AboutSpecify').then(
-            ({ AboutOverlay }) => AboutOverlay
+            ({ AboutOverlay }) => AboutOverlay,
           ),
       },
 
@@ -205,7 +205,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         path: 'resources/app-resource/:id/*',
         element: () =>
           import('../AppResources/DialogEditor').then(
-            ({ DialogEditor }) => DialogEditor
+            ({ DialogEditor }) => DialogEditor,
           ),
         isSingleResource: true,
       },
@@ -214,7 +214,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         path: 'not-found',
         element: () =>
           import('../Router/RouterUtils').then(
-            ({ NotFoundDialog }) => NotFoundDialog
+            ({ NotFoundDialog }) => NotFoundDialog,
           ),
       },
       {
@@ -228,7 +228,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         title: attachmentsText.importAttachments(),
         element: () =>
           import('../AttachmentsBulkImport/Datasets').then(
-            ({ AttachmentsImportOverlay }) => AttachmentsImportOverlay
+            ({ AttachmentsImportOverlay }) => AttachmentsImportOverlay,
           ),
       },
       {
@@ -236,7 +236,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         title: schemaText.uniquenessRules(),
         element: () =>
           import('../SchemaConfig/TableUniquenessRules').then(
-            ({ TableUniquenessRules }) => TableUniquenessRules
+            ({ TableUniquenessRules }) => TableUniquenessRules,
           ),
       },
     ],

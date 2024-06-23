@@ -83,7 +83,7 @@ export function ErrorDialog({
   const [canDismiss] = userPreferences.use(
     'general',
     'application',
-    'allowDismissingErrors'
+    'allowDismissingErrors',
   );
   const isDismissible = dismissible && typeof handleClose === 'function';
   const canClose =
@@ -94,7 +94,7 @@ export function ErrorDialog({
     typeof handleClose === 'function';
   const [clearCacheOnException = false, setClearCache] = useCachedState(
     'general',
-    'clearCacheOnException'
+    'clearCacheOnException',
   );
 
   const unloadProtects = React.useContext(UnloadProtectsContext)!;
@@ -137,7 +137,7 @@ export function ErrorDialog({
                  * but that would require some giant zipping library.
                  */
                 `Specify 7 Crash Report - ${new Date().toJSON()}.txt`,
-                copiableMessage
+                copiableMessage,
               )
             }
           >
@@ -157,7 +157,7 @@ export function ErrorDialog({
                 (clearCacheOnException
                   ? clearAllCache()
                   : Promise.resolve(undefined)
-                ).then(() => globalThis.location.assign('/specify/'))
+                ).then(() => globalThis.location.assign('/specify/')),
               )
             }
           >
@@ -169,7 +169,7 @@ export function ErrorDialog({
                 setUnloadProtects?.(
                   initialUnloadProtects.current.length === 0
                     ? unloadProtects
-                    : initialUnloadProtects.current
+                    : initialUnloadProtects.current,
                 );
                 handleClose();
               }}

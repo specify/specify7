@@ -45,16 +45,16 @@ export function PreviewOperations({
               !(
                 resource in
                 getTablePermissions()[schema.domainLevelIds.collection]
-              )
+              ),
           )
-          .map(({ resource, ...rest }) => [resource, rest] as const)
+          .map(({ resource, ...rest }) => [resource, rest] as const),
       ).reduce<R<WritableTree>>((tree, [resource, actions]) => {
         const resourceParts = resourceNameToParts(resource);
         resourceParts.reduce<R<WritableTree>>(
           (place, part, index, { length }) => {
             place[part] ??= {
               label: resourceNameToLabel(
-                partsToResourceName(resourceParts.slice(0, index + 1))
+                partsToResourceName(resourceParts.slice(0, index + 1)),
               ),
               children: {},
               resource: partsToResourceName(resourceParts.slice(0, index)),
@@ -62,11 +62,11 @@ export function PreviewOperations({
             };
             return place[part].children;
           },
-          tree
+          tree,
         );
         return tree;
       }, {}),
-    [query]
+    [query],
   );
   return <TreeView getOpenRoleUrl={getOpenRoleUrl} tree={tree} />;
 }

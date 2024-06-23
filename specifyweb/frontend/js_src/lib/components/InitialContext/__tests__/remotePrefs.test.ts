@@ -18,7 +18,7 @@ describe('Parsing Remote Prefs', () => {
     expect(getPref('attachment.preview_size')).toBe(123));
   test('uses default value if pref is not set', () =>
     expect(getPref('form.definition.columnSource')).toBe(
-      remotePrefsDefinitions()['form.definition.columnSource'].defaultValue
+      remotePrefsDefinitions()['form.definition.columnSource'].defaultValue,
     ));
 });
 

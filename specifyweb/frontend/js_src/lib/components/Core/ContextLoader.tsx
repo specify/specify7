@@ -32,7 +32,7 @@ export function ContextLoader(): JSX.Element | null {
    */
   const [showLoadingScreen, setShowLoadingScreen] = useBooleanState();
   const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | undefined>(
-    undefined
+    undefined,
   );
   React.useEffect(() => {
     if (timeoutRef.current !== undefined)
@@ -40,7 +40,7 @@ export function ContextLoader(): JSX.Element | null {
     if (!isLoaded)
       timeoutRef.current = globalThis.setTimeout(
         setShowLoadingScreen,
-        LOADING_TIMEOUT
+        LOADING_TIMEOUT,
       );
   }, [isLoaded, setShowLoadingScreen]);
 

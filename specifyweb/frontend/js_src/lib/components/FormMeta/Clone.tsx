@@ -15,7 +15,7 @@ export function CloneConfig({
   const [globalDisabled, setGlobalDisabled] = userPreferences.use(
     'form',
     'preferences',
-    'disableClone'
+    'disableClone',
   );
   const isEnabled = !globalDisabled.includes(table.name);
   const canChange = !NO_CLONE.has(table.name);
@@ -41,7 +41,7 @@ export function AddButtonConfig({
   const [globalDisabled, setGlobalDisabled] = userPreferences.use(
     'form',
     'preferences',
-    'disableAdd'
+    'disableAdd',
   );
   const isEnabled = !globalDisabled.includes(table.name);
   const canChange = !NO_CLONE.has(table.name);

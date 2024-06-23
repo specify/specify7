@@ -33,7 +33,7 @@ export class WbUtils {
 
   public constructor(
     private readonly workbench: Workbench,
-    private readonly spreadsheetContainerRef: React.RefObject<HTMLElement>
+    private readonly spreadsheetContainerRef: React.RefObject<HTMLElement>,
   ) {}
 
   public navigateCells({
@@ -62,7 +62,7 @@ export class WbUtils {
           readonly visualRow: number;
           readonly visualCol: number;
         },
-        number
+        number,
       ]
     | readonly [undefined, number] {
     const cellMetaObject = this.workbench.cells.getCellMetaObject();
@@ -75,7 +75,7 @@ export class WbUtils {
     const resolveIndex = (
       visualRow: number,
       visualCol: number,
-      first: boolean
+      first: boolean,
     ): number =>
       (this.searchPreferences.navigation.direction === 'rowFirst') === first
         ? visualRow
@@ -100,8 +100,8 @@ export class WbUtils {
           ? (visualCol: number) => visualCol >= currentTransposedCol
           : (visualCol: number) => visualCol > currentTransposedCol
         : matchCurrentCell
-        ? (visualCol: number) => visualCol <= currentTransposedCol
-        : (visualCol: number) => visualCol < currentTransposedCol;
+          ? (visualCol: number) => visualCol <= currentTransposedCol
+          : (visualCol: number) => visualCol < currentTransposedCol;
 
     let matchedCell:
       | {
@@ -116,37 +116,39 @@ export class WbUtils {
         ? f.id
         : <T>(array: RA<T>): RA<T> => Array.from(array).reverse();
 
-    orderIt(Object.entries(cellMetaObject)).find(([visualRowString, metaRow]) =>
-      typeof metaRow === 'object'
-        ? orderIt(Object.entries(metaRow)).find(
-            ([visualColString, metaArray]) => {
-              /*
-               * This is 10 times faster then Number.parseInt because of a slow
-               * Babel polyfill
-               */
-              const visualRow = f.fastParseInt(visualRowString);
-              const visualCol = f.fastParseInt(visualColString);
+    orderIt(Object.entries(cellMetaObject)).find(
+      ([visualRowString, metaRow]) =>
+        typeof metaRow === 'object'
+          ? orderIt(Object.entries(metaRow)).find(
+              ([visualColString, metaArray]) => {
+                /*
+                 * This is 10 times faster then Number.parseInt because of a slow
+                 * Babel polyfill
+                 */
+                const visualRow = f.fastParseInt(visualRowString);
+                const visualCol = f.fastParseInt(visualColString);
 
-              const cellTypeMatches = this.workbench.cells?.cellIsType(
-                metaArray,
-                type
-              );
-              cellIsTypeCount += cellTypeMatches ? 1 : 0;
+                const cellTypeMatches = this.workbench.cells?.cellIsType(
+                  metaArray,
+                  type,
+                );
+                cellIsTypeCount += cellTypeMatches ? 1 : 0;
 
-              const isWithinBounds =
-                compareRows(visualRow) &&
-                (visualRow !== currentTransposedRow || compareCols(visualCol));
+                const isWithinBounds =
+                  compareRows(visualRow) &&
+                  (visualRow !== currentTransposedRow ||
+                    compareCols(visualCol));
 
-              const matches = cellTypeMatches && isWithinBounds;
-              if (matches)
-                matchedCell = {
-                  visualRow: resolveIndex(visualRow, visualCol, true),
-                  visualCol: resolveIndex(visualRow, visualCol, false),
-                };
-              return matches;
-            }
-          )
-        : undefined
+                const matches = cellTypeMatches && isWithinBounds;
+                if (matches)
+                  matchedCell = {
+                    visualRow: resolveIndex(visualRow, visualCol, true),
+                    visualCol: resolveIndex(visualRow, visualCol, false),
+                  };
+                return matches;
+              },
+            )
+          : undefined,
     );
 
     let cellRelativePosition;
@@ -168,7 +170,7 @@ export class WbUtils {
 
     this.workbench.hot?.selectCell(
       matchedCell.visualRow,
-      matchedCell.visualCol
+      matchedCell.visualCol,
     );
 
     // Turn on the respective cell type if it was hidden
@@ -181,7 +183,7 @@ export class WbUtils {
     event:
       | React.KeyboardEvent<HTMLInputElement>
       | { readonly key: 'SettingsChange' },
-    searchQueryElement: HTMLInputElement | null
+    searchQueryElement: HTMLInputElement | null,
   ): void {
     if (this.workbench.hot === undefined || searchQueryElement === null) return;
     /*
@@ -214,12 +216,12 @@ export class WbUtils {
     const firstVisibleColumn =
       getHotPlugin(
         this.workbench.hot,
-        'autoColumnSize'
+        'autoColumnSize',
       ).getFirstVisibleColumn() - HOT_OFFSET;
     const lastVisibleColumn =
       getHotPlugin(
         this.workbench.hot,
-        'autoColumnSize'
+        'autoColumnSize',
       ).getLastVisibleColumn() + HOT_OFFSET;
 
     for (let visualRow = 0; visualRow < data.length; visualRow++) {
@@ -233,7 +235,7 @@ export class WbUtils {
         const isSearchResult = this.searchFunction(
           (data[physicalRow][physicalCol] ||
             this.workbench.mappings?.defaultValues[physicalCol]) ??
-            ''
+            '',
         );
 
         let cell = undefined;
@@ -264,7 +266,7 @@ export class WbUtils {
             cell,
             visualRow,
             visualCol,
-          }
+          },
         );
       }
     }
@@ -307,7 +309,7 @@ export class WbUtils {
 
         this.searchQuery = new RegExp(
           this.searchQuery,
-          this.searchPreferences.search.caseSensitive ? '' : 'i'
+          this.searchPreferences.search.caseSensitive ? '' : 'i',
         );
       } catch (error) {
         searchQueryElement.setCustomValidity((error as SyntaxError).message);
@@ -325,7 +327,7 @@ export class WbUtils {
 
   public toggleCellTypes(
     navigationType: keyof WbCellCounts,
-    action: 'add' | 'remove' | 'toggle' = 'toggle'
+    action: 'add' | 'remove' | 'toggle' = 'toggle',
   ): void {
     const groupName = camelToKebab(navigationType);
     const cssClassName = `wb-hide-${groupName}`;
@@ -350,7 +352,7 @@ export class WbUtils {
 
   public replaceCells(
     event: React.KeyboardEvent<HTMLInputElement>,
-    replacementValueElement: HTMLInputElement | null
+    replacementValueElement: HTMLInputElement | null,
   ): void {
     if (
       event.key !== 'Enter' ||
@@ -373,7 +375,7 @@ export class WbUtils {
                 // Regex may be coming from the user, thus disable strict mode
                 // eslint-disable-next-line require-unicode-regexp
                 new RegExp(this.searchQuery!, 'g'),
-                replacementValue
+                replacementValue,
               )
             : cellValue.split(this.searchQuery ?? '').join(replacementValue);
 
@@ -386,15 +388,15 @@ export class WbUtils {
             if (
               !this.workbench.cells.getCellMetaFromArray(
                 metaArray,
-                'isSearchResult'
+                'isSearchResult',
               )
             )
               return;
             const visualRow = this.workbench.hot!.toVisualRow(
-              f.fastParseInt(physicalRow)
+              f.fastParseInt(physicalRow),
             );
             const visualCol = this.workbench.hot!.toVisualColumn(
-              f.fastParseInt(physicalCol)
+              f.fastParseInt(physicalCol),
             );
             const cellValue =
               this.workbench.hot!.getDataAtCell(visualRow, visualCol) || '';
@@ -405,7 +407,7 @@ export class WbUtils {
               visualCol,
               getNewCellValue(cellValue),
             ]);
-          })
+          }),
       );
       this.workbench.hot.setDataAtCell(modifications);
     } else {
@@ -422,7 +424,7 @@ export class WbUtils {
       if (
         !this.workbench.cells.cellIsType(
           this.workbench.cells.cellMeta[physicalRow]?.[physicalCol],
-          'searchResults'
+          'searchResults',
         )
       ) {
         const [next, _] = nextCellOfType();
@@ -436,7 +438,7 @@ export class WbUtils {
 
       this.workbench.hot.setDataAtCell(
         ...nextCell,
-        getNewCellValue(this.workbench.hot.getDataAtCell(...nextCell))
+        getNewCellValue(this.workbench.hot.getDataAtCell(...nextCell)),
       );
 
       nextCellOfType();

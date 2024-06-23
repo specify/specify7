@@ -29,7 +29,7 @@ export function CsvFilePicker({
   readonly firstRowAlwaysHeader?: boolean;
   readonly onFileImport: (
     headers: RA<string>,
-    data: RA<RA<number | string>>
+    data: RA<RA<number | string>>,
   ) => void;
 }): JSX.Element {
   const [file, setFile] = React.useState<File | undefined>();
@@ -56,7 +56,7 @@ export function CsvFilePicker({
                 const { header, rows } = extractHeader(data, hasHeader);
 
                 return void handleFileImport(header, rows);
-              })
+              }),
             );
           }}
         />
@@ -124,7 +124,7 @@ export function CsvFilePreview({
 export function useCsvPreview(
   file: File,
   encoding: string,
-  getSetDelimiter: GetSet<string | undefined>
+  getSetDelimiter: GetSet<string | undefined>,
 ): LocalizedString | RA<RA<string>> | undefined {
   const [delimiter, setDelimiter] = getSetDelimiter;
   const [preview] = useAsyncState<LocalizedString | RA<RA<string>>>(
@@ -134,11 +134,11 @@ export function useCsvPreview(
           file,
           encoding,
           [delimiter, setDelimiter],
-          wbImportPreviewSize
+          wbImportPreviewSize,
         ).catch((error) => localized(error.message)),
-      [file, encoding, delimiter, setDelimiter]
+      [file, encoding, delimiter, setDelimiter],
     ),
-    false
+    false,
   );
   return preview;
 }

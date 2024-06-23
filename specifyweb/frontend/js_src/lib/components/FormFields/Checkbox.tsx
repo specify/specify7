@@ -28,7 +28,7 @@ export function PrintOnSave({
   const [tables, setTables] = userPreferences.use(
     'form',
     'preferences',
-    'printOnSave'
+    'printOnSave',
   );
   /*
    * Need to check for object explicitly, because this cache key stored
@@ -41,7 +41,7 @@ export function PrintOnSave({
         ...(typeof tables === 'object' ? tables : {}),
         [table.name]: checked,
       }),
-    [setTables, tables, table.name]
+    [setTables, tables, table.name],
   );
   React.useEffect(() => {
     if (entry === undefined && typeof defaultValue === 'boolean')
@@ -88,12 +88,12 @@ export function SpecifyFormCheckbox({
   } = useResourceValue<boolean | string | null>(
     resource,
     field,
-    React.useMemo(() => ({ value: defaultValue }), [defaultValue])
+    React.useMemo(() => ({ value: defaultValue }), [defaultValue]),
   );
 
   const isChecked = React.useMemo(
     () => (value === null ? false : parseBoolean(value?.toString())),
-    [value]
+    [value],
   );
 
   const isReadOnly = React.useContext(ReadOnlyContext);

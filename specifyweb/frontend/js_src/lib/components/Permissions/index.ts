@@ -27,12 +27,12 @@ let operationPermissions: RR<
   number,
   RR<typeof anyResource, RR<typeof anyAction, boolean>> & {
     readonly [RESOURCE in keyof typeof frontEndPermissions]: RR<
-      typeof frontEndPermissions[RESOURCE][number],
+      (typeof frontEndPermissions)[RESOURCE][number],
       boolean
     >;
   } & {
     readonly [RESOURCE in keyof typeof operationPolicies]: RR<
-      typeof operationPolicies[RESOURCE][number],
+      (typeof operationPolicies)[RESOURCE][number],
       boolean
     >;
   }
@@ -42,7 +42,7 @@ let tablePermissions: RR<
   number,
   {
     readonly [TABLE_NAME in keyof Tables as `${typeof tablePermissionsPrefix}${Lowercase<TABLE_NAME>}`]: RR<
-      typeof tableActions[number],
+      (typeof tableActions)[number],
       boolean
     >;
   }
@@ -52,7 +52,7 @@ let derivedPermissions: RR<
   number,
   {
     readonly [RESOURCE in keyof typeof derivedPolicies]: RR<
-      typeof derivedPolicies[RESOURCE][number],
+      (typeof derivedPolicies)[RESOURCE][number],
       boolean
     >;
   }
@@ -64,8 +64,8 @@ export const getDerivedPermissions = () => derivedPermissions;
 const sortPolicies = (policy: typeof operationPolicies) =>
   JSON.stringify(
     Object.fromEntries(
-      Object.entries(policy).sort(sortFunction(([key]) => key))
-    )
+      Object.entries(policy).sort(sortFunction(([key]) => key)),
+    ),
   );
 
 /**
@@ -83,11 +83,11 @@ const checkRegistry = async (): Promise<void> =>
     ? Promise.resolve()
     : load<typeof operationPolicies>(
         '/permissions/registry/',
-        'application/json'
+        'application/json',
       ).then((policies) =>
         sortPolicies(policies) === sortPolicies(operationPolicies)
           ? undefined
-          : error('Front-end has outdated list of operation policies')
+          : error('Front-end has outdated list of operation policies'),
       );
 
 export type PermissionsQueryItem = {
@@ -110,7 +110,7 @@ export type PermissionsQueryItem = {
 
 export const queryUserPermissions = async (
   userId: number,
-  collectionId: number
+  collectionId: number,
 ): Promise<RA<PermissionsQueryItem>> =>
   import('../DataModel/tables')
     .then(async ({ fetchContext }) => fetchContext)
@@ -141,7 +141,7 @@ export const queryUserPermissions = async (
             })),
           ],
         },
-      })
+      }),
     )
     .then(({ data }) =>
       /*
@@ -161,7 +161,7 @@ export const queryUserPermissions = async (
             resource,
             matching_user_policies: institutionPermissions.has(resource)
               ? matching_user_policies.filter(
-                  ({ collectionid }) => collectionid === null
+                  ({ collectionid }) => collectionid === null,
                 )
               : matching_user_policies,
             /*
@@ -171,7 +171,7 @@ export const queryUserPermissions = async (
             matching_role_policies: institutionPermissions.has(resource)
               ? []
               : matching_role_policies,
-          })
+          }),
         )
         .map(({ resource, allowed, matching_user_policies, ...rest }) => ({
           ...rest,
@@ -181,12 +181,12 @@ export const queryUserPermissions = async (
             allowed &&
             (!institutionPermissions.has(resource) ||
               matching_user_policies.length > 0),
-        }))
+        })),
     );
 
 const calculateDerivedPermissions = (
-  items: RA<PermissionsQueryItem>
-): typeof derivedPermissions[number] =>
+  items: RA<PermissionsQueryItem>,
+): (typeof derivedPermissions)[number] =>
   Object.fromEntries(
     indexQueryItems(
       items
@@ -203,34 +203,34 @@ const calculateDerivedPermissions = (
             allowed:
               allowed &&
               matching_user_policies.some(
-                ({ collectionid }) => collectionid === null
+                ({ collectionid }) => collectionid === null,
               ),
             matching_user_policies: matching_user_policies.filter(
-              ({ collectionid }) => collectionid === null
+              ({ collectionid }) => collectionid === null,
             ),
             matching_role_policies,
-          })
-        )
-    )
-  ) as typeof derivedPermissions[number];
+          }),
+        ),
+    ),
+  ) as (typeof derivedPermissions)[number];
 
 const indexQueryItems = (
-  query: RA<PermissionsQueryItem>
+  query: RA<PermissionsQueryItem>,
 ): RA<readonly [string, IR<boolean>]> =>
   group(
     query.map((result) => [
       result.resource,
       [result.action, result.allowed] as const,
-    ])
+    ]),
   ).map(
-    ([resource, actions]) => [resource, Object.fromEntries(actions)] as const
+    ([resource, actions]) => [resource, Object.fromEntries(actions)] as const,
   );
 
 const permissionPromises: Record<number, Promise<number>> = {};
 
 /** Fetch current user permissions for a given collection */
 export const fetchUserPermissions = async (
-  collectionId?: number
+  collectionId?: number,
   /*
    * Returning a number rather than void so that React can reRender the
    * SetPermissionContext when collectionId changes
@@ -239,11 +239,11 @@ export const fetchUserPermissions = async (
   f
     .all({
       schema: import('../DataModel/schema').then(
-        async ({ fetchContext }) => fetchContext
+        async ({ fetchContext }) => fetchContext,
       ),
       userInformation: import('../InitialContext/userInformation').then(
         async ({ fetchContext, userInformation }) =>
-          fetchContext.then(() => userInformation)
+          fetchContext.then(() => userInformation),
       ),
     })
     .then(async ({ schema, userInformation }) => {
@@ -268,16 +268,16 @@ export const fetchUserPermissions = async (
                   (query) => {
                     const [operations, tables] = split(
                       indexQueryItems(query),
-                      ([key]) => key.startsWith(tablePermissionsPrefix)
+                      ([key]) => key.startsWith(tablePermissionsPrefix),
                     ).map(Object.fromEntries);
                     return {
                       operations:
-                        operations as unknown as typeof operationPermissions[number],
+                        operations as unknown as (typeof operationPermissions)[number],
                       tables:
-                        tables as unknown as typeof tablePermissions[number],
+                        tables as unknown as (typeof tablePermissions)[number],
                       derived: calculateDerivedPermissions(query),
                     };
-                  }
+                  },
                 )
           ).then(({ operations, tables, derived }) => {
             void checkRegistry();

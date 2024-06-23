@@ -18,7 +18,7 @@ export type Input =
  */
 export const hasNativeErrors = (
   field: Input,
-  exceptions = ['customError', 'valid']
+  exceptions = ['customError', 'valid'],
 ): boolean =>
   Object.keys(Object.getPrototypeOf(field.validity))
     .filter((type) => !exceptions.includes(type))

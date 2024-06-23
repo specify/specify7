@@ -15,44 +15,44 @@ test('Relationship is a relationship', () =>
 
 test('LiteralField has a type set', () =>
   expect(tables.CollectionObject.getLiteralField('catalogNumber')?.type).toBe(
-    'java.lang.String'
+    'java.lang.String',
   ));
 
 test('Relationship has a type set', () =>
   expect(tables.CollectionObject.getRelationship('accession')?.type).toBe(
-    'many-to-one'
+    'many-to-one',
   ));
 
 test('field has a table set', () =>
   expect(tables.CollectionObject.fields[0].table).toBe(
-    tables.CollectionObject
+    tables.CollectionObject,
   ));
 
 test('field has a name', () =>
   expect(tables.CollectionObject.getField('accession')?.name).toBe(
-    'accession'
+    'accession',
   ));
 
 describe('isReadOnly', () => {
   test('non-readonly field', () =>
     expect(tables.CollectionObject.getField('accession')?.isReadOnly).toBe(
-      false
+      false,
     ));
 
   test('front-end override can make field readonly', () =>
     expect(
-      tables.CollectionObject.getField('timestampCreated')?.isReadOnly
+      tables.CollectionObject.getField('timestampCreated')?.isReadOnly,
     ).toBe(true));
 });
 
 describe('isRequired', () => {
   test('not-required field', () =>
     expect(tables.CollectionObject.getField('catalogNumber')?.isRequired).toBe(
-      false
+      false,
     ));
   test('field required by schema', () =>
     expect(tables.Accession.getField('accessionNumber')?.isRequired).toBe(
-      true
+      true,
     ));
   test('field required by front-end override', () =>
     expect(tables.Taxon.getField('parent')?.isRequired).toBe(true));
@@ -65,13 +65,13 @@ describe('length', () => {
     expect(tables.Accession.getField('accessionNumber')?.length).toBe(60));
   test('field length is not set if not provided', () =>
     expect(
-      tables.Accession.getField('dateAccessioned')?.length
+      tables.Accession.getField('dateAccessioned')?.length,
     ).toBeUndefined());
 });
 
 test('databaseColumn is set correctly', () =>
   expect(tables.Accession.getField('accessionNumber')?.databaseColumn).toBe(
-    'AccessionNumber'
+    'AccessionNumber',
   ));
 
 test('field localization is retrieved correctly if exists', () =>
@@ -92,17 +92,17 @@ test('field localization is retrieved correctly if exists', () =>
 
 test('field localization is empty when does not exist', () =>
   expect(
-    tables.DNASequencingRunAttachment.getField('ordinal')?.localization
+    tables.DNASequencingRunAttachment.getField('ordinal')?.localization,
   ).toEqual({}));
 
 test('localized label is retrieved correctly', () =>
   expect(tables.CollectionObject.getField('catalogNumber')?.label).toBe(
-    'Cat #'
+    'Cat #',
   ));
 
 test('if localization label is missing, generate one on the fly', () =>
   expect(tables.DNASequencingRunAttachment.getField('ordinal')?.label).toBe(
-    'Ordinal'
+    'Ordinal',
   ));
 
 describe('isHidden', () => {
@@ -111,7 +111,7 @@ describe('isHidden', () => {
 
   test('not-hidden field is marked as non-hidden', () =>
     expect(tables.CollectionObject.getField('accession')?.isHidden).toBe(
-      false
+      false,
     ));
 
   test('front-end can make field hidden', () =>
@@ -122,7 +122,7 @@ describe('override', () => {
   describe('isRequired', () => {
     test('field required by schema is marked as required', () =>
       expect(
-        tables.Accession.getField('accessionNumber')?.overrides.isRequired
+        tables.Accession.getField('accessionNumber')?.overrides.isRequired,
       ).toBe(true));
 
     test('field with "optional" override is not required', () => {
@@ -135,7 +135,7 @@ describe('override', () => {
   describe('isHidden', () => {
     test('hidden field is marked as hidden', () =>
       expect(
-        tables.CollectionObject.getField('text1')?.overrides.isHidden
+        tables.CollectionObject.getField('text1')?.overrides.isHidden,
       ).toBe(true));
 
     test('field with "hidden" override is not required', () => {
@@ -188,85 +188,85 @@ describe('override', () => {
 describe('isVirtual', () => {
   test('virtual field', () =>
     expect(getField(tables.Accession, 'actualTotalCountAmt').isVirtual).toBe(
-      true
+      true,
     ));
   test('non virtual field', () =>
     expect(getField(tables.Accession, 'accessionNumber').isVirtual).toBe(
-      false
+      false,
     ));
 });
 
 test('getLocalizedDesc', () =>
   expect(
-    getField(tables.Deaccession, 'timestampModified').getLocalizedDesc()
+    getField(tables.Deaccession, 'timestampModified').getLocalizedDesc(),
   ).toBe('The timestamp the record was last modified.'));
 
 test('getFormat', () =>
   expect(getField(tables.CollectionObject, 'catalogNumber').getFormat()).toBe(
-    'CatalogNumberNumeric'
+    'CatalogNumberNumeric',
   ));
 
 test('getUiFormatter', () =>
   expect(
-    getField(tables.CollectionObject, 'catalogNumber').getUiFormatter()
+    getField(tables.CollectionObject, 'catalogNumber').getUiFormatter(),
   ).toBe(getUiFormatters().CatalogNumberNumeric));
 
 describe('getPickList', () => {
   test('can get schema-assigned pick-list', () =>
     expect(getField(tables.AccessionAgent, 'role').getPickList()).toBe(
-      'AccessionRole'
+      'AccessionRole',
     ));
   test('can get front-end only pick list', () =>
     expect(getField(tables.PickList, 'tableName').getPickList()).toBe(
-      '_TablesByName'
+      '_TablesByName',
     ));
 });
 
 test('getWebLinkName', () =>
   expect(
-    tables.CollectionObject.getField('reservedText')!.getWebLinkName()
+    tables.CollectionObject.getField('reservedText')!.getWebLinkName(),
   ).toBe('CTScan'));
 
 describe('isTemporal', () => {
   test('true', () =>
     expect(
-      tables.CollectionObject.getField('catalogedDate')?.isTemporal()
+      tables.CollectionObject.getField('catalogedDate')?.isTemporal(),
     ).toBe(true));
   test('false', () =>
     expect(
-      tables.CollectionObject.getField('catalogedDatePrecision')?.isTemporal()
+      tables.CollectionObject.getField('catalogedDatePrecision')?.isTemporal(),
     ).toBe(false));
 });
 
 describe('toJSON', () => {
   test('field', () =>
     expect(tables.CollectionObject.getField('catalogNumber')?.toJSON()).toBe(
-      '[literalField CollectionObject.catalogNumber]'
+      '[literalField CollectionObject.catalogNumber]',
     ));
   test('relationship', () =>
     expect(
-      tables.CollectionObject.getField('accession.division')?.toJSON()
+      tables.CollectionObject.getField('accession.division')?.toJSON(),
     ).toBe('[relationship Accession.division]'));
 });
 
 describe('fromJson', () => {
   test('CollectionObject.catalogNumber', () =>
     expect(
-      FieldBase.fromJson('[literalField CollectionObject.catalogNumber]')
+      FieldBase.fromJson('[literalField CollectionObject.catalogNumber]'),
     ).toBe(getField(tables.CollectionObject, 'catalogNumber')));
   test('Accession.createdByAgent', () =>
     expect(FieldBase.fromJson('[relationship Accession.createdByAgent]')).toBe(
-      getField(tables.Accession, 'createdByAgent')
+      getField(tables.Accession, 'createdByAgent'),
     ));
   test('Table name typo', () =>
     expect(
-      FieldBase.fromJson('[literalField Accessions.createdByAgent]')
+      FieldBase.fromJson('[literalField Accessions.createdByAgent]'),
     ).toBeUndefined());
   test('Invalid type', () =>
     expect(FieldBase.fromJson('[table Accession.text1]')).toBeUndefined());
   test('Incorrect formatting', () =>
     expect(
-      FieldBase.fromJson('table CollectionObject.catalogNumber')
+      FieldBase.fromJson('table CollectionObject.catalogNumber'),
     ).toBeUndefined());
   test('Empty container', () =>
     expect(FieldBase.fromJson('[]')).toBeUndefined());
@@ -275,12 +275,12 @@ describe('fromJson', () => {
 describe('Relationship', () => {
   test('otherSideName is set if provided', () =>
     expect(
-      tables.CollectionObject.getRelationship('accession')?.otherSideName
+      tables.CollectionObject.getRelationship('accession')?.otherSideName,
     ).toBe('collectionObjects'));
 
   test('relatedTable is set', () =>
     expect(
-      tables.CollectionObject.getRelationship('accession')?.relatedTable
+      tables.CollectionObject.getRelationship('accession')?.relatedTable,
     ).toBe(tables.Accession));
 
   test('relationship to system table is made optional', () => {
@@ -307,7 +307,7 @@ describe('Relationship', () => {
   describe('isDependent', () => {
     test('base case', () =>
       expect(
-        tables.Accession.getRelationship('accessionAgents')?.isDependent()
+        tables.Accession.getRelationship('accessionAgents')?.isDependent(),
       ).toBe(true));
 
     test('collectingEvent may be independent', () => {
@@ -325,11 +325,11 @@ describe('Relationship', () => {
   test('getReverse', () => {
     const collectingEvent = getField(
       tables.CollectionObject,
-      'collectingEvent'
+      'collectingEvent',
     );
     const collectionObject = getField(
       tables.CollectingEvent,
-      'collectionObjects'
+      'collectionObjects',
     );
     expect(collectingEvent.getReverse()).toBe(collectionObject);
   });

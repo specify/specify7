@@ -65,7 +65,7 @@ function CreateRecordSetDialog({
       new tables.RecordSet.Resource({
         name: wbText.recordSetName({ dataSet: datasetName }),
       }),
-    [datasetId]
+    [datasetId],
   );
 
   const loading = React.useContext(LoadingContext);
@@ -84,8 +84,8 @@ function CreateRecordSetDialog({
               body: formData({ name: recordSet.get('name') }),
               errorMode: 'dismissible',
             }).then(({ data }) =>
-              unsafeNavigate(`/specify/record-set/${data}/`)
-            )
+              unsafeNavigate(`/specify/record-set/${data}/`),
+            ),
           );
           return false;
         }}

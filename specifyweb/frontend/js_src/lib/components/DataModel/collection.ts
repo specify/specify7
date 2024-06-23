@@ -45,7 +45,7 @@ export type SerializedCollection<SCHEMA extends AnySchema> = {
  */
 export const fetchCollection = async <
   TABLE_NAME extends keyof Tables,
-  SCHEMA extends Tables[TABLE_NAME]
+  SCHEMA extends Tables[TABLE_NAME],
 >(
   tableName: TABLE_NAME,
   // Basic filters. Type-safe
@@ -57,7 +57,7 @@ export const fetchCollection = async <
    * Can query partial dates (e.g. catalogedDate__year=2030)
    * More info: https://docs.djangoproject.com/en/4.0/topics/db/queries/
    */
-  advancedFilters: IR<number | string> = {}
+  advancedFilters: IR<number | string> = {},
 ): Promise<SerializedCollection<SCHEMA>> =>
   ajax<{
     readonly meta: {
@@ -84,13 +84,13 @@ export const fetchCollection = async <
               return mapped === undefined
                 ? undefined
                 : ([key.toLowerCase(), mapped] as const);
-            })
-          )
-        )
-      )
+            }),
+          ),
+        ),
+      ),
     ),
 
-    { headers: { Accept: 'application/json' } }
+    { headers: { Accept: 'application/json' } },
   ).then(({ data: { meta, objects } }) => ({
     records: objects.map(serializeResource),
     totalCount: meta.total_count,
@@ -99,7 +99,7 @@ export const fetchCollection = async <
 function mapValue(
   key: string,
   value: unknown,
-  tableName: keyof Tables
+  tableName: keyof Tables,
 ): string | undefined {
   if (key === 'orderBy') return (value as string).toString().toLowerCase();
   else if (key === 'domainFilter') {
@@ -122,11 +122,11 @@ function mapValue(
  */
 export async function fetchRelated<
   SCHEMA extends AnySchema,
-  RELATIONSHIP extends string & keyof SCHEMA['toManyIndependent']
+  RELATIONSHIP extends string & keyof SCHEMA['toManyIndependent'],
 >(
   resource: SerializedResource<SCHEMA>,
   relationshipName: RELATIONSHIP,
-  limit = DEFAULT_FETCH_LIMIT
+  limit = DEFAULT_FETCH_LIMIT,
 ): Promise<{
   readonly records: RA<
     SerializedResource<SCHEMA['toManyIndependent'][RELATIONSHIP][number]>
@@ -134,13 +134,13 @@ export async function fetchRelated<
   readonly totalCount: number;
 }> {
   const [tableName, id] = parseResourceUrl(
-    (resource.resource_uri as string) ?? ''
+    (resource.resource_uri as string) ?? '',
   ) ?? [resource._tableName, resource.id];
   const relationship =
     genericTables[tableName].strictGetRelationship(relationshipName);
   const reverseName = defined(
     relationship.getReverse(),
-    `Trying to fetch related resource, but no reverse relationship exists for ${relationship.name} in ${tableName}`
+    `Trying to fetch related resource, but no reverse relationship exists for ${relationship.name} in ${tableName}`,
   ).name;
   const response = fetchCollection(relationship.relatedTable.name, {
     limit,
@@ -156,17 +156,17 @@ export async function fetchRelated<
 }
 
 type FieldsToTypes<
-  FIELDS extends IR<RA<'boolean' | 'null' | 'number' | 'string'>>
+  FIELDS extends IR<RA<'boolean' | 'null' | 'number' | 'string'>>,
 > = {
   readonly [FIELD in keyof FIELDS]: FIELDS[FIELD][number] extends 'boolean'
     ? boolean
     : FIELDS[FIELD][number] | never extends 'null'
-    ? null
-    : FIELDS[FIELD][number] | never extends 'number'
-    ? number
-    : FIELDS[FIELD][number] | never extends 'string'
-    ? string
-    : never;
+      ? null
+      : FIELDS[FIELD][number] | never extends 'number'
+        ? number
+        : FIELDS[FIELD][number] | never extends 'string'
+          ? string
+          : never;
 };
 
 /**
@@ -178,7 +178,7 @@ export const fetchRows = async <
   FIELDS extends RR<
     Exclude<keyof SCHEMA['fields'], 'fields'> | string,
     RA<'boolean' | 'null' | 'number' | 'string'>
-  >
+  >,
 >(
   tableName: TABLE_NAME,
   // Basic filters. Type-safe
@@ -198,7 +198,7 @@ export const fetchRows = async <
    * Can query partial dates (e.g. catalogedDate__year=2030)
    * More info: https://docs.djangoproject.com/en/4.0/topics/db/queries/
    */
-  advancedFilters: IR<number | string> = {}
+  advancedFilters: IR<number | string> = {},
 ): Promise<RA<FieldsToTypes<FIELDS>>> => {
   const { data } = await ajax<RA<RA<boolean | number | string | null>>>(
     formatUrl(
@@ -219,19 +219,19 @@ export const fetchRows = async <
                     key === 'orderBy'
                       ? value.toString().toLowerCase()
                       : value.toString(),
-                  ]
-            )
-          )
-        )
-      )
+                  ],
+            ),
+          ),
+        ),
+      ),
     ),
-    { headers: { Accept: 'application/json' } }
+    { headers: { Accept: 'application/json' } },
   );
   const keys = Object.keys(fields);
   return data.map(
     (row) =>
       Object.fromEntries(
-        keys.map((key, index) => [key, row[index]])
-      ) as FieldsToTypes<FIELDS>
+        keys.map((key, index) => [key, row[index]]),
+      ) as FieldsToTypes<FIELDS>,
   );
 };

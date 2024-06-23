@@ -22,12 +22,17 @@ const { directory } = program.opts<{
 }>();
 
 const reverseLanguageMapper = Object.fromEntries(
-  Object.entries(languageCodeMapper).map(([key, value]) => [value, key])
+  Object.entries(languageCodeMapper).map(([key, value]) => [value, key]),
 );
 
 extractStrings()
   .then(async (dictionaries) =>
-    weblatePull(directory, dictionaries, 'userInterface', reverseLanguageMapper)
+    weblatePull(
+      directory,
+      dictionaries,
+      'userInterface',
+      reverseLanguageMapper,
+    ),
   )
   .then(async (merged) => f.maybe(merged, updateLocalizationFiles))
   .catch(console.error);

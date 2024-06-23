@@ -15,16 +15,12 @@ export function AttachmentPreview({
 }): JSX.Element {
   const [thumbnail] = useAsyncState(
     React.useCallback(async () => fetchThumbnail(attachment), [attachment]),
-    false
+    false,
   );
 
   return (
     <div
-      className={`
-        flex items-center justify-center rounded bg-white shadow-md
-        shadow-gray-300 transition hover:shadow-md hover:shadow-gray-400
-        dark:bg-black
-      `}
+      className={`flex items-center justify-center rounded bg-white shadow-md shadow-gray-300 transition hover:shadow-md hover:shadow-gray-400 dark:bg-black`}
     >
       <button type="button" onClick={handleOpen}>
         <Thumbnail attachment={attachment} thumbnail={thumbnail} />
@@ -47,10 +43,7 @@ export function Thumbnail({
           ? attachment.title
           : thumbnail.alt
       }
-      className={`
-        max-h-full max-w-full border-2 border-white object-contain
-        dark:border-black
-      `}
+      className={`max-h-full max-w-full border-2 border-white object-contain dark:border-black`}
       src={thumbnail.src}
       style={{
         width: `${thumbnail.width}px`,

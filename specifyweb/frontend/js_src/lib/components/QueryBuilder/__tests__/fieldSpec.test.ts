@@ -1319,5 +1319,5 @@ describe('Query Field Spec', () =>
         const path = spec.toMappingPath();
         expect(path).toEqual(path);
       });
-    })
+    }),
   ));

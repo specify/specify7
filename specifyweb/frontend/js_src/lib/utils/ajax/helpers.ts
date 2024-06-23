@@ -33,7 +33,7 @@ export function toLocalUrl(url: string): string | undefined {
  * "body" to ajax()
  */
 export function formData(
-  data: IR<Blob | RA<number | string> | boolean | number | string | undefined>
+  data: IR<Blob | RA<number | string> | boolean | number | string | undefined>,
 ): FormData {
   const formData = new FormData();
   Object.entries(data).forEach(([key, value]) =>
@@ -44,11 +44,11 @@ export function formData(
           Array.isArray(value)
             ? JSON.stringify(value)
             : typeof value === 'number'
-            ? value.toString()
-            : typeof value === 'boolean'
-            ? value.toString()
-            : value
-        )
+              ? value.toString()
+              : typeof value === 'boolean'
+                ? value.toString()
+                : value,
+        ),
   );
   return formData;
 }
@@ -64,13 +64,13 @@ export function extractAppResourceId(url: string, response: Response): void {
   const parsed = new URL(url, globalThis.location.origin);
   if (parsed.pathname === '/context/app.resource')
     appResourceIds[parsed.searchParams.get('name') ?? ''] = f.parseInt(
-      response.headers.get('X-Record-ID') ?? undefined
+      response.headers.get('X-Record-ID') ?? undefined,
     );
 }
 
 export const getAppResourceUrl = (
   name: string,
-  quiet: 'quiet' | undefined = undefined
+  quiet: 'quiet' | undefined = undefined,
 ): string =>
   formatUrl('/context/app.resource', {
     name,

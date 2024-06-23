@@ -81,7 +81,7 @@ export function tablesFilter(
   showAdvancedTables: boolean,
   { name, overrides }: SpecifyTable,
   // Don't exclude a table if user already has it selected
-  selectedTables: RA<keyof Tables> | undefined = undefined
+  selectedTables: RA<keyof Tables> | undefined = undefined,
 ): boolean {
   if (selectedTables?.includes(name) === true) return true;
 
@@ -98,7 +98,7 @@ export function tablesFilter(
 
 const defaultFilter = (
   showHiddenTables: boolean,
-  table: SpecifyTable
+  table: SpecifyTable,
 ): boolean => tablesFilter(showHiddenTables, false, true, table);
 
 export function TableList({
@@ -116,7 +116,7 @@ export function TableList({
 }): JSX.Element {
   const [showHiddenTables = false, setShowHiddenTables] = useCachedState(
     cacheKey,
-    'showHiddenTables'
+    'showHiddenTables',
   );
 
   const sortedTables = React.useMemo(
@@ -124,7 +124,7 @@ export function TableList({
       Object.values(genericTables)
         .filter((table) => filter(showHiddenTables, table))
         .sort(sortFunction(({ name }) => name)),
-    [filter, showHiddenTables]
+    [filter, showHiddenTables],
   );
 
   return (

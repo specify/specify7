@@ -23,7 +23,7 @@ export function parseValue(
   parser: Parser,
   input: Input | undefined,
   value: string,
-  trim: boolean = true
+  trim: boolean = true,
 ): InvalidParseResult | ValidParseResult {
   if (trim && value.trim() === '')
     return parser.required === true
@@ -47,11 +47,11 @@ export function parseValue(
   if (errorMessage === undefined) {
     formattedValue = (parser.formatters ?? []).reduce<unknown>(
       (value, formatter) => formatter(value),
-      trim ? value.trim() : value
+      trim ? value.trim() : value,
     );
 
     errorMessage = mappedFind(parser.validators ?? [], (validator) =>
-      validator(formattedValue)
+      validator(formattedValue),
     );
   }
 
@@ -73,8 +73,8 @@ const boolParser = f.store(() =>
     {},
     {
       type: 'java.lang.Boolean',
-    }
-  )
+    },
+  ),
 );
 
 export function parseBoolean(value: string): boolean {

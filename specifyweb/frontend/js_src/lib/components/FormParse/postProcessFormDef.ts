@@ -20,17 +20,17 @@ type LabelCell = CellTypes['Label'] & FormCellDefinition;
 export function postProcessFormDef(
   rawColumns: RA<number | undefined>,
   rawRows: RA<RA<FormCellDefinition>>,
-  table: SpecifyTable | undefined
+  table: SpecifyTable | undefined,
 ): ParsedFormDefinition {
   const columns = fixColumns(rawColumns, rawRows);
   const labelsPostProcessor = createLabelsPostProcessor(rawRows, table);
   const rows = rawRows.map<RA<FormCellDefinition>>((row, rowIndex) =>
     addBlankCell(
       row.map((cell, colIndex) =>
-        labelsPostProcessor(cell, rowIndex, colIndex)
+        labelsPostProcessor(cell, rowIndex, colIndex),
       ),
-      columns.length
-    )
+      columns.length,
+    ),
   );
 
   const labelsForCells = indexLabels(rows);
@@ -42,24 +42,24 @@ export function postProcessFormDef(
         typeof cell.id === 'string' &&
         typeof labelsForCells[cell.id] === 'object'
           ? removeRedundantLabel(cell)
-          : addMissingLabel(cell, table)
-      )
+          : addMissingLabel(cell, table),
+      ),
     ),
   };
 }
 
 function createLabelsPostProcessor(
   rows: RA<RA<FormCellDefinition>>,
-  table: SpecifyTable | undefined
+  table: SpecifyTable | undefined,
 ): (
   cell: FormCellDefinition,
   rowIndex: number,
-  colIndex: number
+  colIndex: number,
 ) => FormCellDefinition {
   const initialLabelsForCells = indexLabels(rows);
   const fieldsById = indexFields(rows, table);
   const singleRows = new Set(
-    rows.map((row, rowIndex) => (isSingleColumn(row) ? rowIndex : undefined))
+    rows.map((row, rowIndex) => (isSingleColumn(row) ? rowIndex : undefined)),
   );
   return (cell, rowIndex: number, colIndex: number) => {
     if (cell.type !== 'Label') return cell;
@@ -68,7 +68,7 @@ function createLabelsPostProcessor(
       cell,
       initialLabelsForCells,
       rows[rowIndex][colIndex + 1],
-      isSingle ? rows[rowIndex + 1]?.[0] : undefined
+      isSingle ? rows[rowIndex + 1]?.[0] : undefined,
     );
     const processed = postProcessLabel(bound, isSingle, fieldsById);
     const withTitle =
@@ -90,7 +90,7 @@ type IndexedField = {
 /** Index fieldNames and labelOverride for all cells by cellId */
 const indexFields = (
   rows: RA<RA<FormCellDefinition>>,
-  table: SpecifyTable | undefined
+  table: SpecifyTable | undefined,
 ): IR<IndexedField> =>
   Object.fromEntries(
     filterArray(
@@ -98,10 +98,10 @@ const indexFields = (
         row
           .filter(
             (
-              cell
+              cell,
             ): cell is CellTypes['Field'] &
               FormCellDefinition & { readonly id: string } =>
-              cell.type === 'Field' && typeof cell.id === 'string'
+              cell.type === 'Field' && typeof cell.id === 'string',
           )
           .map((cell) =>
             typeof cell.id === 'string' && cell.type === 'Field'
@@ -124,14 +124,14 @@ const indexFields = (
                         : undefined,
                   },
                 ]
-              : undefined
-          )
-      )
-    )
+              : undefined,
+          ),
+      ),
+    ),
   );
 
 const indexLabels = (
-  rows: RA<RA<FormCellDefinition>>
+  rows: RA<RA<FormCellDefinition>>,
 ): IR<FormCellDefinition> =>
   Object.fromEntries(
     filterArray(
@@ -140,21 +140,21 @@ const indexLabels = (
         .map((cell) =>
           cell.type === 'Label' && typeof cell.labelForCellId === 'string'
             ? [cell.labelForCellId, cell]
-            : undefined
-        )
-    )
+            : undefined,
+        ),
+    ),
   );
 
 /** If some row has extra columns, add new columns to the definition */
 const fixColumns = (
   columns: RA<number | undefined>,
-  rows: RA<RA<FormCellDefinition>>
+  rows: RA<RA<FormCellDefinition>>,
 ): RA<number | undefined> => [
   ...columns,
   ...Array.from({
     length:
       Math.max(
-        ...rows.map((row) => f.sum(row.map(({ colSpan }) => colSpan ?? 1)))
+        ...rows.map((row) => f.sum(row.map(({ colSpan }) => colSpan ?? 1))),
       ) - columns.length,
   }).fill(undefined),
 ];
@@ -167,7 +167,7 @@ function bindLooseLabels(
   cell: LabelCell,
   initialLabelsForCells: IR<FormCellDefinition>,
   siblingCell: FormCellDefinition | undefined,
-  nextRowCell: FormCellDefinition | undefined
+  nextRowCell: FormCellDefinition | undefined,
 ): LabelCell {
   if (typeof cell.labelForCellId === 'string') return cell;
   const siblingId = siblingCell?.id;
@@ -214,7 +214,7 @@ const canAutoBind = (cell: FormCellDefinition): boolean =>
 const postProcessLabel = (
   cell: LabelCell,
   isSingleColumn: boolean,
-  fieldsById: IR<IndexedField>
+  fieldsById: IR<IndexedField>,
 ): LabelCell => ({
   ...cell,
   ...(typeof cell.labelForCellId === 'string'
@@ -235,7 +235,7 @@ const postProcessLabel = (
 
 function addLabelTitle(cell: LabelCell, table: SpecifyTable): LabelCell {
   const field = table.getField(
-    cell.fieldNames?.join(backboneFieldSeparator) ?? ''
+    cell.fieldNames?.join(backboneFieldSeparator) ?? '',
   );
   return {
     ...cell,
@@ -281,7 +281,7 @@ const replaceBlankLabels = (cell: LabelCell): FormCellDefinition =>
  */
 function addBlankCell(
   row: RA<FormCellDefinition>,
-  columnCount: number
+  columnCount: number,
 ): RA<FormCellDefinition> {
   const totalColumns = f.sum(row.map(({ colSpan = 1 }) => colSpan));
   const needBlankCells = columnCount - totalColumns > 0;
@@ -323,7 +323,7 @@ const removeRedundantLabel = (cell: FormCellDefinition): FormCellDefinition =>
  */
 const addMissingLabel = (
   cell: FormCellDefinition,
-  table: SpecifyTable | undefined
+  table: SpecifyTable | undefined,
 ): FormCellDefinition => ({
   ...cell,
   ...(cell.type === 'Field' && cell.fieldDefinition.type === 'Checkbox'

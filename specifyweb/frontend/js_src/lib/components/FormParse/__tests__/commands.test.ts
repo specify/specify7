@@ -27,8 +27,8 @@ describe('parseUiCommand', () => {
     expect(
       parseUiCommand(
         xml('<cell name="test" label="test2" />'),
-        tables.CollectionObject
-      )
+        tables.CollectionObject,
+      ),
     ).toEqual({
       commandDefinition: {
         type: 'Unsupported',
@@ -42,8 +42,8 @@ describe('parseUiCommand', () => {
     expect(
       parseUiCommand(
         xml('<cell name="generateLabelBtn" label="FINDNEXT" />'),
-        tables.CollectionObject
-      )
+        tables.CollectionObject,
+      ),
     ).toEqual({
       commandDefinition: {
         type: 'GenerateLabel',
@@ -55,8 +55,8 @@ describe('parseUiCommand', () => {
     expect(
       parseUiCommand(
         xml('<cell name="someName" label="ShowLoansBtn" />'),
-        tables.Preparation
-      )
+        tables.Preparation,
+      ),
     ).toEqual({
       commandDefinition: {
         type: 'ShowLoans',
@@ -68,8 +68,8 @@ describe('parseUiCommand', () => {
     expect(
       parseUiCommand(
         xml('<cell name="ReturnLoan" label="generateLabelBtn" />'),
-        tables.Loan
-      )
+        tables.Loan,
+      ),
     ).toEqual({
       commandDefinition: {
         type: 'ReturnLoan',

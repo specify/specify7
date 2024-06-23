@@ -42,7 +42,7 @@ export type SchemaLocalization = {
 
 const processFields = <FIELD_TYPE extends LiteralField | Relationship>(
   fields: RA<FIELD_TYPE>,
-  frontEndFields: RA<FIELD_TYPE>
+  frontEndFields: RA<FIELD_TYPE>,
 ): RA<FIELD_TYPE> =>
   [
     ...fields,
@@ -64,9 +64,9 @@ const fetchSchemaLocalization = f.store(async () =>
       formatUrl('/context/schema_localization.json', {
         lang: userPreferences.get('form', 'schema', 'language'),
       }),
-      'application/json'
-    )
-  )
+      'application/json',
+    ),
+  ),
 );
 export const getSchemaLocalization = (): IR<SchemaLocalization> =>
   schemaLocalization ??
@@ -86,7 +86,7 @@ export const fetchContext = f
   .all({
     dataModel: load<RA<TableDefinition>>(
       '/context/datamodel.json',
-      'application/json'
+      'application/json',
     ),
     localization: fetchSchemaLocalization(),
   })
@@ -100,7 +100,7 @@ export const fetchContext = f
       })
       .forEach(([tableDefinition, table]) => {
         const [frontEndFields, callback] = (
-          schemaExtras[table.name] as typeof schemaExtras['Agent'] | undefined
+          schemaExtras[table.name] as (typeof schemaExtras)['Agent'] | undefined
         )?.(table as SpecifyTable<Agent>) ?? [[]];
         const [literalFields, relationships] = split(
           frontEndFields.map((field) => {
@@ -108,7 +108,7 @@ export const fetchContext = f
             field.overrides.isReadOnly = true;
             return field;
           }),
-          (field) => field.isRelationship
+          (field) => field.isRelationship,
         );
 
         overwriteReadOnly(
@@ -116,10 +116,10 @@ export const fetchContext = f
           'literalFields',
           processFields(
             tableDefinition.fields.map(
-              (fieldDefinition) => new LiteralField(table, fieldDefinition)
+              (fieldDefinition) => new LiteralField(table, fieldDefinition),
             ),
-            literalFields
-          )
+            literalFields,
+          ),
         );
         overwriteReadOnly(
           table,
@@ -127,10 +127,10 @@ export const fetchContext = f
           processFields(
             tableDefinition.relationships.map(
               (relationshipDefinition) =>
-                new Relationship(table, relationshipDefinition)
+                new Relationship(table, relationshipDefinition),
             ),
-            relationships
-          )
+            relationships,
+          ),
         );
         overwriteReadOnly(table, 'fields', [
           ...table.literalFields,
@@ -139,7 +139,7 @@ export const fetchContext = f
         overwriteReadOnly(
           table,
           'field',
-          Object.fromEntries(table.fields.map((field) => [field.name, field]))
+          Object.fromEntries(table.fields.map((field) => [field.name, field])),
         );
 
         frontEndOnlyFields[table.name] = [
@@ -173,7 +173,7 @@ export function getTable(name: string): SpecifyTable | undefined {
         process.env.NODE_ENV === 'test'
           ? ' If this is part of a test, remember to include requireContext() at the top of the test file'
           : ''
-      }`
+      }`,
     );
 
   const lowerCase = name.toLowerCase();
@@ -181,10 +181,10 @@ export function getTable(name: string): SpecifyTable | undefined {
     ? undefined
     : genericTables[name as keyof Tables] ??
         Object.values(genericTables).find(
-          (table) => table.name.toLowerCase() === lowerCase
+          (table) => table.name.toLowerCase() === lowerCase,
         ) ??
         Object.values(genericTables).find(
-          (table) => table.longName.toLowerCase() === lowerCase
+          (table) => table.longName.toLowerCase() === lowerCase,
         );
 }
 
@@ -204,7 +204,7 @@ export function getTreeTable(name: string): SpecifyTable<AnyTree> | undefined {
  * tableId integer
  */
 export const getTableById = <SCHEMA extends AnySchema>(
-  tableId: number
+  tableId: number,
 ): SpecifyTable<SCHEMA> =>
   (Object.values(genericTables).find((table) => table.tableId === tableId) as
     | SpecifyTable<SCHEMA>
@@ -219,5 +219,5 @@ export const hasHierarchyField = (table: SpecifyTable): boolean =>
     'division',
     'institution',
   ].some((fieldName) =>
-    table.relationships.some(({ name }) => name === fieldName)
+    table.relationships.some(({ name }) => name === fieldName),
   );

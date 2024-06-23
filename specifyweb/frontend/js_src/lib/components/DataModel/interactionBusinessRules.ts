@@ -30,7 +30,7 @@ export const previousLoanPreparations: PreviousLoanReturnPreparations = {
  */
 
 export const getTotalLoaned = (
-  loanReturnPrep: SpecifyResource<LoanReturnPreparation>
+  loanReturnPrep: SpecifyResource<LoanReturnPreparation>,
 ): number | undefined =>
   loanReturnPrep.collection === undefined
     ? undefined
@@ -40,7 +40,7 @@ export const getTotalLoaned = (
  * Given a LoanReturnPreparation, return its LoanPreparation's quantityReturned
  */
 export const getTotalReturned = (
-  loanReturnPrep: SpecifyResource<LoanReturnPreparation>
+  loanReturnPrep: SpecifyResource<LoanReturnPreparation>,
 ) =>
   loanReturnPrep.collection === undefined
     ? loanReturnPrep.get('quantityReturned')
@@ -55,7 +55,7 @@ export const getTotalReturned = (
  * Given a LoanReturnPreparation, return its LoanPreparation's quantityResolved
  */
 export const getTotalResolved = (
-  loanReturnPrep: SpecifyResource<LoanReturnPreparation>
+  loanReturnPrep: SpecifyResource<LoanReturnPreparation>,
 ): number =>
   loanReturnPrep.collection === undefined
     ? loanReturnPrep.get('quantityResolved')
@@ -75,7 +75,7 @@ export const getTotalResolved = (
  * quantityResolved to the summed object values
  */
 export const updateLoanPrep = (
-  collection: Collection<LoanReturnPreparation> | undefined
+  collection: Collection<LoanReturnPreparation> | undefined,
 ) => {
   if (
     collection !== undefined &&
@@ -97,7 +97,7 @@ export const updateLoanPrep = (
             (f.parseInt(resolved?.toString() ?? undefined) ?? 0),
         };
       },
-      { returned: 0, resolved: 0 }
+      { returned: 0, resolved: 0 },
     );
     const loanPrep = collection.related as SpecifyResource<LoanPreparation>;
     loanPrep.set('quantityReturned', sums.returned);
@@ -112,7 +112,7 @@ export const updateLoanPrep = (
  * to the closest maxiumum of the range
  */
 const validateInteractionPrepQuantity = (
-  interactionPrep: SpecifyResource<AnyInteractionPreparation>
+  interactionPrep: SpecifyResource<AnyInteractionPreparation>,
 ) => {
   const prepUri = interactionPrep.get('preparation') ?? '';
   const prepId = idFromUrl(prepUri);
@@ -130,7 +130,7 @@ const validateInteractionPrepQuantity = (
 };
 
 export const checkPrepAvailability = (
-  interactionPrep: SpecifyResource<AnyInteractionPreparation>
+  interactionPrep: SpecifyResource<AnyInteractionPreparation>,
 ) => {
   const preparation = interactionPrep.get('preparation');
   if (
@@ -156,7 +156,7 @@ export const checkPrepAvailability = (
           ) {
             interactionPrep.set('quantity', Number(available[0]));
           }
-        }
+        },
       );
   }
 };

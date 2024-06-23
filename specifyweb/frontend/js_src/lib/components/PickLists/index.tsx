@@ -54,10 +54,10 @@ export function PickListComboBox({
                   ...item,
                   value: getResourceApiUrl(relatedTable, item.value),
                 }
-              : item
+              : item,
           )
         : rawItems,
-    [rawItems, relatedTable]
+    [rawItems, relatedTable],
   );
 
   // Set default value
@@ -68,7 +68,7 @@ export function PickListComboBox({
     if (defaultItem !== undefined && typeof defaultItem !== 'object')
       console.warn(
         'default value for picklist is not a member of the picklist',
-        { items }
+        { items },
       );
     return defaultItem?.value ?? rawDefaultValue;
   }, [rawDefaultValue, items]);
@@ -87,15 +87,15 @@ export function PickListComboBox({
         required: rawIsRequired,
         type: 'text',
       }),
-      [defaultValue, rawIsRequired]
-    )
+      [defaultValue, rawIsRequired],
+    ),
   );
   const value = React.useMemo(
     () =>
       typeof rawValue === 'object'
         ? (rawValue as unknown as SpecifyResource<AnySchema>)?.url() ?? null
         : (rawValue as number | string | undefined)?.toString() ?? null,
-    [rawValue]
+    [rawValue],
   );
 
   const updateValue = React.useCallback(
@@ -104,10 +104,10 @@ export function PickListComboBox({
         value === '' && parser.required !== true
           ? null
           : parser?.type === 'number'
-          ? f.parseInt(value) ?? null
-          : value
+            ? f.parseInt(value) ?? null
+            : value,
       ),
-    [rawUpdateValue, parser]
+    [rawUpdateValue, parser],
   );
 
   // Warn on duplicates
@@ -127,7 +127,7 @@ export function PickListComboBox({
       items.some(({ value }) => value === pendingNewValue)
         ? updateValue(pendingNewValue)
         : undefined,
-    [items, pendingNewValue, updateValue]
+    [items, pendingNewValue, updateValue],
   );
 
   function addNewValue(value: string): void {
@@ -148,7 +148,7 @@ export function PickListComboBox({
           label: item.title,
           data: item.value,
         })),
-    [items]
+    [items],
   );
 
   const handleAdd = hasToolPermission('pickLists', 'create')
@@ -173,8 +173,8 @@ export function PickListComboBox({
             newValue === ''
               ? updateValue('')
               : items.some(({ value }) => value === newValue)
-              ? updateValue(newValue)
-              : undefined
+                ? updateValue(newValue)
+                : undefined
           }
         >
           {isExistingValue ? (
@@ -273,7 +273,7 @@ function AddingToPicklist({
                     return pickList.save();
                   })
                   .then(handleClose)
-                  .then(handleAdd)
+                  .then(handleAdd),
               )
             }
           >

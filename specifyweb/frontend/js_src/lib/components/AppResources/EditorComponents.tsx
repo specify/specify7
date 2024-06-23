@@ -38,7 +38,7 @@ import { getAppResourceExtension } from './hooks';
 import { appResourceSubTypes, appResourceTypes } from './types';
 
 export const appResourceIcon = (
-  type: ReturnType<typeof getResourceType>
+  type: ReturnType<typeof getResourceType>,
 ): JSX.Element => (
   <span
     /*
@@ -125,7 +125,7 @@ export function AppResourceLoad({
               loading(
                 fileToText(file)
                   .then((data) => handleLoaded(data, file.type))
-                  .finally(handleClose)
+                  .finally(handleClose),
               )
             }
           />
@@ -151,8 +151,8 @@ export function AppResourceDownload({
         loading(
           downloadFile(
             `${resource.name}.${getAppResourceExtension(resource)}`,
-            data
-          )
+            data,
+          ),
         )
       }
     >
@@ -165,12 +165,12 @@ export function useIndent(): string {
   const [indentSize] = userPreferences.use(
     'appResources',
     'behavior',
-    'indentSize'
+    'indentSize',
   );
   const [indentWithTab] = userPreferences.use(
     'appResources',
     'behavior',
-    'indentWithTab'
+    'indentWithTab',
   );
   return indentWithTab ? '\t' : ' '.repeat(indentSize);
 }
@@ -182,12 +182,12 @@ export function getIndent(): string {
   const indentSize = userPreferences.get(
     'appResources',
     'behavior',
-    'indentSize'
+    'indentSize',
   );
   const indentWithTab = userPreferences.get(
     'appResources',
     'behavior',
-    'indentWithTab'
+    'indentWithTab',
   );
   return indentWithTab ? '\t' : ' '.repeat(indentSize);
 }
@@ -195,27 +195,27 @@ export function getIndent(): string {
 export function useCodeMirrorExtensions(
   resource: SerializedResource<SpAppResource | SpViewSetObj>,
   appResource: SpecifyResource<SpAppResource | SpViewSetObj>,
-  xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined
+  xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined,
 ): RA<Extension> {
   const [lineWrap] = userPreferences.use(
     'appResources',
     'behavior',
-    'lineWrap'
+    'lineWrap',
   );
   const [indentSize] = userPreferences.use(
     'appResources',
     'behavior',
-    'indentSize'
+    'indentSize',
   );
   const indentCharacter = useIndent();
 
   const mode = React.useMemo(
     () => getAppResourceExtension(resource),
-    [resource]
+    [resource],
   );
   const field = React.useMemo(
     () => getField(appResource.specifyTable, 'spAppResourceDatas'),
-    [appResource.specifyTable]
+    [appResource.specifyTable],
   );
 
   const [extensions, setExtensions] = React.useState<RA<Extension>>([]);
@@ -235,10 +235,10 @@ export function useCodeMirrorExtensions(
       setBlockers(
         filterArray(
           results.map(({ message, severity }) =>
-            severity === 'error' ? message : undefined
-          )
+            severity === 'error' ? message : undefined,
+          ),
         ),
-        getFieldBlockerKey(field, 'appResourceError')
+        getFieldBlockerKey(field, 'appResourceError'),
       );
     }
 
@@ -246,10 +246,10 @@ export function useCodeMirrorExtensions(
       mode === 'json'
         ? [json(), jsonLinter(handleLinted)]
         : mode === 'properties'
-        ? [StreamLanguage.define(properties)]
-        : mode === 'jrxml' || mode === 'xml'
-        ? [xml(), xmlLinter(xmlSpec?.())(handleLinted)]
-        : [];
+          ? [StreamLanguage.define(properties)]
+          : mode === 'jrxml' || mode === 'xml'
+            ? [xml(), xmlLinter(xmlSpec?.())(handleLinted)]
+            : [];
     setExtensions([
       ...language,
       ...(lineWrap ? [EditorView.lineWrapping] : []),

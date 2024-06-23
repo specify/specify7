@@ -49,14 +49,14 @@ export const fetchContext = f
   .all({
     schema: import('./schema').then(async ({ fetchContext }) => fetchContext),
     tables: import('../DataModel/tables').then(
-      async ({ fetchContext }) => fetchContext
+      async ({ fetchContext }) => fetchContext,
     ),
   })
   .then(async ({ schema }) =>
     load<UniquenessRules>(
       `/businessrules/uniqueness_rules/${schema.domainLevelIds.discipline}/`,
-      'application/json'
-    )
+      'application/json',
+    ),
   )
   .then((data) =>
     Object.fromEntries(
@@ -64,10 +64,10 @@ export const fetchContext = f
         // Convert all lowercase table names from backend to PascalCase
         const tableName = strictGetTable(lowercaseTableName).name;
         const getDuplicates = (
-          uniqueRule: UniquenessRule
+          uniqueRule: UniquenessRule,
         ): UniquenessRuleValidation =>
           uniquenessRules[tableName]?.find(
-            ({ rule }) => rule.id === uniqueRule.id
+            ({ rule }) => rule.id === uniqueRule.id,
           )?.duplicates ?? { totalDuplicates: 0, fields: [] };
 
         return [
@@ -77,8 +77,8 @@ export const fetchContext = f
             duplicates: getDuplicates(rule),
           })),
         ];
-      })
-    )
+      }),
+    ),
   )
   .then((data) => {
     uniquenessRules = data;
@@ -88,30 +88,30 @@ export const fetchContext = f
 
 export function getUniquenessRules(): UniquenessRules | undefined;
 export function getUniquenessRules<TABLE_NAME extends keyof Tables>(
-  tableName: TABLE_NAME
+  tableName: TABLE_NAME,
 ): UniquenessRules[TABLE_NAME] | undefined;
 export function getUniquenessRules<TABLE_NAME extends keyof Tables>(
-  tableName?: TABLE_NAME
+  tableName?: TABLE_NAME,
 ): UniquenessRules | UniquenessRules[TABLE_NAME] {
   return Object.keys(uniquenessRules).length === 0
     ? undefined
     : tableName === undefined
-    ? uniquenessRules
-    : uniquenessRules[tableName];
+      ? uniquenessRules
+      : uniquenessRules[tableName];
 }
 
 export function useTableUniquenessRules(
-  tableName: keyof Tables
+  tableName: keyof Tables,
 ): readonly [
   ...tableRules: GetOrSet<UniquenessRules[keyof Tables]>,
-  setCachedTableRules: (value: UniquenessRules[keyof Tables]) => void
+  setCachedTableRules: (value: UniquenessRules[keyof Tables]) => void,
 ] {
   const [rawModelRules = [], setTableUniquenessRules] = React.useState(
-    uniquenessRules[tableName]
+    uniquenessRules[tableName],
   );
 
   const setStoredUniquenessRules = (
-    value: UniquenessRules[keyof Tables]
+    value: UniquenessRules[keyof Tables],
   ): void => {
     uniquenessRules = {
       ...uniquenessRules,
@@ -124,7 +124,7 @@ export function useTableUniquenessRules(
 
 export function getUniqueInvalidReason(
   scopeFields: RA<Relationship>,
-  fields: RA<LiteralField | Relationship>
+  fields: RA<LiteralField | Relationship>,
 ): string {
   if (fields.length > 1)
     return scopeFields.length > 0
@@ -145,11 +145,11 @@ export function getUniqueInvalidReason(
 
 export async function validateUniqueness<
   TABLE_NAME extends keyof Tables,
-  SCHEMA extends Tables[TABLE_NAME]
+  SCHEMA extends Tables[TABLE_NAME],
 >(
   table: TABLE_NAME,
   fields: RA<string & keyof SCHEMA['fields']>,
-  scopes: RA<keyof SCHEMA['toOneDependent'] | keyof SCHEMA['toOneIndependent']>
+  scopes: RA<keyof SCHEMA['toOneDependent'] | keyof SCHEMA['toOneIndependent']>,
 ): Promise<UniquenessRuleValidation> {
   return ajax<UniquenessRuleValidation>(
     '/businessrules/uniqueness_rules/validate/',
@@ -164,6 +164,6 @@ export async function validateUniqueness<
           scopes,
         },
       },
-    }
+    },
   ).then(({ data }) => data);
 }

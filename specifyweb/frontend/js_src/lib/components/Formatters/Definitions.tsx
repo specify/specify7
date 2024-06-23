@@ -31,7 +31,7 @@ export function Definitions({
         },
       });
     },
-    [formatter, setFormatter]
+    [formatter, setFormatter],
   );
 
   const hasCondition = formatter.definition.conditionField !== undefined;
@@ -43,7 +43,7 @@ export function Definitions({
 
   const handleChanged = (
     field: Formatter['definition']['fields'][number],
-    index: number
+    index: number,
   ): void =>
     handleChange(replaceItem(formatter.definition.fields, index, field));
 
@@ -107,7 +107,7 @@ function ConditionalFormatter({
   readonly index: number;
   readonly onChanged: (
     field: Formatter['definition']['fields'][number],
-    index: number
+    index: number,
   ) => void;
   readonly trimmedFieldsLength: number;
   readonly formatter: GetSet<Formatter>[0];
@@ -125,19 +125,15 @@ function ConditionalFormatter({
 
   return (
     <div
-      className={`flex
-        ${isExpanded || !hasCondition ? 'flex-col' : ''}
-        ${isExpanded ? 'gap-2' : ''}
-        ${
-          fields.length === 0 &&
-          hasCondition &&
-          trimmedFieldsLength > 0 &&
-          !isExpanded &&
-          index !== 0
-            ? 'items-center'
-            : ''
-        }
-      `}
+      className={`flex ${isExpanded || !hasCondition ? 'flex-col' : ''} ${isExpanded ? 'gap-2' : ''} ${
+        fields.length === 0 &&
+        hasCondition &&
+        trimmedFieldsLength > 0 &&
+        !isExpanded &&
+        index !== 0
+          ? 'items-center'
+          : ''
+      } `}
       key={index}
     >
       {hasCondition && (
@@ -161,7 +157,7 @@ function ConditionalFormatter({
                         value: value.length === 0 ? undefined : value,
                         fields,
                       },
-                      index
+                      index,
                     )
                   }
                 />
@@ -205,7 +201,7 @@ function ConditionalFormatter({
                     },
                   ],
                 },
-                index
+                index,
               );
             }}
           >
@@ -222,7 +218,7 @@ function ConditionalFormatter({
               (field) =>
                 `${field.separator === undefined ? '' : field.separator}${
                   field.field === undefined ? '' : field.field[0].label
-                }`
+                }`,
             )
             .join('')}
         </div>

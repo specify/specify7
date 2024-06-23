@@ -6,7 +6,7 @@ const { parseClickEvent: parseEvent } = exportsForTests;
 
 const parseClickEvent = (
   link: Element | string,
-  extras?: Partial<MouseEvent>
+  extras?: Partial<MouseEvent>,
 ): ReturnType<typeof parseEvent> =>
   parseEvent({
     target: typeof link === 'string' ? htmlToElement(link.trim()) : link,

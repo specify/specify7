@@ -137,8 +137,8 @@ export function LanguageSelection<LANGUAGES extends string>({
             value === 'supportLocalization'
               ? setShowSupportDialog(true)
               : !isForInterface || f.has(completeLanguages, value)
-              ? handleChange(value as LANGUAGES)
-              : setWarningLanguage(value as LANGUAGES)
+                ? handleChange(value as LANGUAGES)
+                : setWarningLanguage(value as LANGUAGES)
           }
         >
           {Object.entries(languages).map(([code, nameLocal]) => (
@@ -173,7 +173,7 @@ export function LanguageSelection<LANGUAGES extends string>({
 const url = cachableUrl(
   formatUrl('/context/language/', {
     languages: languages.join(','),
-  })
+  }),
 );
 
 export function LanguagePreferencesItem({
@@ -197,15 +197,15 @@ export function LanguagePreferencesItem({
           Object.fromEntries(
             Object.entries(data)
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              .map(([code, { name_local }]) => [code, name_local])
-          )
+              .map(([code, { name_local }]) => [code, name_local]),
+          ),
         ),
-      []
+      [],
     ),
-    false
+    false,
   );
   const [language, setLanguage] = React.useState(
-    (devLanguage as Language) ?? LANGUAGE
+    (devLanguage as Language) ?? LANGUAGE,
   );
 
   /**
@@ -265,11 +265,11 @@ export function SchemaLanguagePreferenceItem({
 }
 
 export function useSchemaLanguages(
-  loadingScreen: boolean
+  loadingScreen: boolean,
 ): IR<LocalizedString> | undefined {
   const [languages] = useAsyncState<IR<LocalizedString>>(
     fetchSchemaLanguages,
-    loadingScreen
+    loadingScreen,
   );
   return languages;
 }
@@ -293,9 +293,9 @@ export const fetchSchemaLanguages = async (): Promise<IR<LocalizedString>> =>
               country === null || country === ''
                 ? ''
                 : `${languageSeparator}${country}`
-            }`
-        )
-      )
+            }`,
+        ),
+      ),
     )
     .then((languages) =>
       // Get translated language names
@@ -307,11 +307,11 @@ export const fetchSchemaLanguages = async (): Promise<IR<LocalizedString>> =>
                 language,
                 localized(
                   new Intl.DisplayNames(LANGUAGE, { type: 'language' }).of(
-                    language
-                  ) ?? language
+                    language,
+                  ) ?? language,
                 ),
-              ] as const
+              ] as const,
           )
-          .sort(sortFunction(([_code, localized]) => localized))
-      )
+          .sort(sortFunction(([_code, localized]) => localized)),
+      ),
     );

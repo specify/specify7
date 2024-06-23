@@ -8,36 +8,38 @@ Promise.all(
   Object.entries({
     systemInformation: import('../InitialContext/systemInfo').then(
       async ({ fetchContext, getSystemInfo }) =>
-        fetchContext.then(getSystemInfo)
+        fetchContext.then(getSystemInfo),
     ),
     tablePermissions: import('../Permissions').then(
       async ({ getTablePermissions, fetchContext }) =>
-        fetchContext.then(getTablePermissions)
+        fetchContext.then(getTablePermissions),
     ),
     operationPermissions: import('../Permissions').then(
       async ({ getOperationPermissions, fetchContext }) =>
-        fetchContext.then(getOperationPermissions)
+        fetchContext.then(getOperationPermissions),
     ),
     schema: import('../DataModel/schema').then(
-      async ({ fetchContext }) => fetchContext
+      async ({ fetchContext }) => fetchContext,
     ),
     remotePrefs: import('../InitialContext/remotePrefs').then(
-      async ({ fetchContext }) => fetchContext
+      async ({ fetchContext }) => fetchContext,
     ),
     userPreferences: import('../Preferences/userPreferences').then(
       async ({ userPreferences }) =>
-        userPreferences.fetch().then(() => userPreferences.getRaw())
+        userPreferences.fetch().then(() => userPreferences.getRaw()),
     ),
     collectionPreferences: import('../Preferences/collectionPreferences').then(
       async ({ collectionPreferences }) =>
-        collectionPreferences.fetch().then(() => collectionPreferences.getRaw())
+        collectionPreferences
+          .fetch()
+          .then(() => collectionPreferences.getRaw()),
     ),
     userInformation: import('../InitialContext/userInformation').then(
-      async ({ fetchContext }) => fetchContext
+      async ({ fetchContext }) => fetchContext,
     ),
   }).map(async ([key, promise]) => {
     resolvedStackTrace[key] = await promise;
-  })
+  }),
 )
   // Can't use softFail here because of circular dependency
   .catch(console.error);
@@ -66,9 +68,9 @@ export const produceStackTrace = (message: unknown): string =>
         sortFunction(([key]) => {
           const order = errorSorted.indexOf(key);
           return order === -1 ? Number.POSITIVE_INFINITY : order;
-        })
-      )
-    )
+        }),
+      ),
+    ),
   );
 
 const errorSorted = [

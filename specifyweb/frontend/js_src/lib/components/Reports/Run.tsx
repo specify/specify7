@@ -24,7 +24,7 @@ export function RunReport({
   const reportWindowContext = useId('report-window')('');
   React.useEffect(
     () => void globalThis.open('', reportWindowContext),
-    [reportWindowContext, handleClose]
+    [reportWindowContext, handleClose],
   );
   const [form, setForm] = React.useState<HTMLFormElement | null>(null);
   React.useEffect(() => {
@@ -65,7 +65,7 @@ export function RunReport({
             limit: 0,
             countOnly: false,
             recordSetId,
-          })
+          }),
         )}
         name="query"
         type="hidden"

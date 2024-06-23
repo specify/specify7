@@ -42,15 +42,15 @@ function ItemOverride({
       ? generateStatUrl(
           statsSpec[item.pageName].urlPrefix,
           item.categoryName,
-          item.itemName
+          item.itemName,
         )
       : undefined;
 
   const backEndSpecResolve = backEndStatsSpec.find(
-    ({ responseKey }) => responseKey === urlToFetch
+    ({ responseKey }) => responseKey === urlToFetch,
   );
   const dynamicSpecResolve = dynamicStatsSpec.find(
-    ({ responseKey }) => responseKey === urlToFetch
+    ({ responseKey }) => responseKey === urlToFetch,
   );
   const noAccessTables: RA<keyof Tables> = React.useMemo(
     () =>
@@ -64,10 +64,10 @@ function ItemOverride({
         dynamicSpecResolve?.dynamicQuerySpec,
       ])
         .map((querySpec) =>
-          makeSerializedFieldsFromPaths(querySpec.tableName, querySpec.fields)
+          makeSerializedFieldsFromPaths(querySpec.tableName, querySpec.fields),
         )
         .flatMap(getNoAccessTables),
-    [urlToFetch]
+    [urlToFetch],
   );
 
   return (
@@ -85,7 +85,7 @@ function areItemsValid(items: RA<CustomStat | DefaultStat>) {
     (item) =>
       item.type === 'DefaultStat' &&
       itemNameToSearch.has(item.itemName) &&
-      item.pathToValue === undefined
+      item.pathToValue === undefined,
   );
 }
 
@@ -108,7 +108,7 @@ export function Categories({
   readonly onClick: (
     item: CustomStat | DefaultStat,
     categoryIndex?: number,
-    itemIndex?: number
+    itemIndex?: number,
   ) => void;
   readonly onRemove:
     | ((categoryIndex: number, itemIndex: number | undefined) => void)
@@ -123,7 +123,7 @@ export function Categories({
     | ((
         categoryIndex: number,
         itemIndex: number,
-        value: number | string
+        value: number | string,
       ) => void)
     | undefined;
   readonly onRename:
@@ -137,11 +137,11 @@ export function Categories({
    * or if it contains default stats which aren't isVisible as false
    */
   const shouldShowCategory = (
-    items: RA<CustomStat | DefaultStat> | undefined
+    items: RA<CustomStat | DefaultStat> | undefined,
   ): boolean =>
     !checkEmptyItems ||
     (items ?? []).some(
-      (item) => item.type === 'CustomStat' || item.isVisible === undefined
+      (item) => item.type === 'CustomStat' || item.isVisible === undefined,
     );
 
   return pageLayout === undefined ? null : (
@@ -153,9 +153,7 @@ export function Categories({
               className={
                 checkEmptyItems
                   ? ''
-                  : `flex h-auto max-h-80 flex-col content-center rounded bg-[color:var(--form-foreground)] 
-                     shadow-lg shadow-gray-300 transition hover:shadow-md hover:shadow-gray-400 
-                     ${typeof handleAdd === 'function' ? 'gap-2 p-4' : ''}`
+                  : `flex h-auto max-h-80 flex-col content-center rounded bg-[color:var(--form-foreground)] shadow-lg shadow-gray-300 transition hover:shadow-md hover:shadow-gray-400 ${typeof handleAdd === 'function' ? 'gap-2 p-4' : ''}`
               }
               key={categoryIndex}
             >
@@ -163,7 +161,7 @@ export function Categories({
                 checkEmptyItems ? (
                   <h5 className="font-semibold">{label}</h5>
                 ) : (
-                  <h3 className="bg-brand-300 overflow-auto rounded-t p-3 pb-[0.1rem] pt-[0.1rem] text-lg font-semibold text-white">
+                  <h3 className="overflow-auto rounded-t bg-brand-300 p-3 pb-[0.1rem] pt-[0.1rem] text-lg font-semibold text-white">
                     {label}
                   </h3>
                 )
@@ -221,26 +219,26 @@ export function Categories({
                           checkEmptyItems || handleEdit === undefined
                             ? undefined
                             : item.type === 'DefaultStat'
-                            ? (querySpec, itemName): void =>
-                                handleClick(
-                                  {
-                                    type: 'CustomStat',
-                                    label: itemName,
-                                    querySpec: {
-                                      tableName: querySpec.tableName,
-                                      fields: querySpec.fields,
-                                      isDistinct: querySpec.isDistinct,
+                              ? (querySpec, itemName): void =>
+                                  handleClick(
+                                    {
+                                      type: 'CustomStat',
+                                      label: itemName,
+                                      querySpec: {
+                                        tableName: querySpec.tableName,
+                                        fields: querySpec.fields,
+                                        isDistinct: querySpec.isDistinct,
+                                      },
                                     },
-                                  },
-                                  categoryIndex,
-                                  itemIndex
-                                )
-                            : (querySpec): void =>
-                                handleEdit?.(
-                                  categoryIndex,
-                                  itemIndex,
-                                  querySpec
-                                )
+                                    categoryIndex,
+                                    itemIndex,
+                                  )
+                              : (querySpec): void =>
+                                  handleEdit?.(
+                                    categoryIndex,
+                                    itemIndex,
+                                    querySpec,
+                                  )
                         }
                         onLoad={onLoad}
                         onRemove={
@@ -254,13 +252,13 @@ export function Categories({
                                 handleRename(
                                   categoryIndex,
                                   itemIndex,
-                                  newLabel
+                                  newLabel,
                                 );
                               }
                             : undefined
                         }
                       />
-                    ) : undefined
+                    ) : undefined,
                   )
                 ) : (
                   <ItemOverride item={items[0]} />
@@ -287,7 +285,7 @@ export function Categories({
                 </div>
               ) : null}
             </li>
-          )
+          ),
       )}
 
       {handleAdd !== undefined && (

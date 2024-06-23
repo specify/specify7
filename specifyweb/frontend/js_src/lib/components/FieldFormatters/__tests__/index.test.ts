@@ -29,14 +29,14 @@ describe('parseRegExp', () => {
     expect(getFormatter()?.parseRegExp()).toBe('^(#########|\\d{0,9})$'));
   test('accession number', () =>
     expect(getSecondFormatter()?.parseRegExp()).toBe(
-      '^(YEAR|\\d{4})(-)([a-zA-Z0-9]{2})(-)(###|\\d{3})$'
+      '^(YEAR|\\d{4})(-)([a-zA-Z0-9]{2})(-)(###|\\d{3})$',
     ));
 });
 
 describe('pattern', () => {
   test('catalog number', () =>
     expect(getUiFormatters().CatalogNumberNumericRegex?.pattern()).toBe(
-      '####[-A]'
+      '####[-A]',
     ));
 });
 

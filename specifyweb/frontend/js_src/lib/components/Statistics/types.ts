@@ -80,7 +80,7 @@ export type StatFormatterSpec = {
 };
 
 export type StatFormatterGenerator = (
-  spec: StatFormatterSpec
+  spec: StatFormatterSpec,
 ) => (rawResult: any) => string | undefined;
 
 export type BackEndStat = BackEndBase & {

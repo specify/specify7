@@ -9,10 +9,10 @@ import { useBooleanState } from './useBooleanState';
 export function useIsModified(
   resource: SpecifyResource<AnySchema> | undefined,
   // Whether a new resource that hasn't been modified is treated as not modified
-  ignoreBrandNew = true
+  ignoreBrandNew = true,
 ): boolean {
   const [saveRequired, handleNeedsSaving, handleSaved] = useBooleanState(
-    resource?.needsSaved === true && (!resource?.isNew() || !ignoreBrandNew)
+    resource?.needsSaved === true && (!resource?.isNew() || !ignoreBrandNew),
   );
 
   // Recompute default value when resource changes
@@ -21,7 +21,7 @@ export function useIsModified(
       resource?.needsSaved === true && (!resource?.isNew() || !ignoreBrandNew)
         ? handleNeedsSaving()
         : handleSaved(),
-    [resource, ignoreBrandNew, handleNeedsSaving, handleSaved]
+    [resource, ignoreBrandNew, handleNeedsSaving, handleSaved],
   );
 
   // Listen for "saveRequired"
@@ -30,7 +30,7 @@ export function useIsModified(
       typeof resource === 'object'
         ? resourceOn(resource, 'saveRequired', tap(handleNeedsSaving), false)
         : undefined,
-    [resource, handleNeedsSaving]
+    [resource, handleNeedsSaving],
   );
 
   // Listen for "saved"
@@ -39,7 +39,7 @@ export function useIsModified(
       typeof resource === 'object'
         ? resourceOn(resource, 'saved', handleSaved, false)
         : undefined,
-    [resource, handleSaved]
+    [resource, handleSaved],
   );
 
   return saveRequired;

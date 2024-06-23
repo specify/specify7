@@ -18,10 +18,10 @@ import type { GetOrSet } from '../utils/types';
  */
 export function useCachedState<
   CATEGORY extends keyof CacheDefinitions,
-  KEY extends string & keyof CacheDefinitions[CATEGORY]
+  KEY extends string & keyof CacheDefinitions[CATEGORY],
 >(
   category: CATEGORY,
-  key: KEY
+  key: KEY,
 ): GetOrSet<CacheDefinitions[CATEGORY][KEY] | undefined> {
   const [state, setState] = React.useState<
     CacheDefinitions[CATEGORY][KEY] | undefined
@@ -32,7 +32,7 @@ export function useCachedState<
       newValue: Parameters<
         GetOrSet<CacheDefinitions[CATEGORY][KEY] | undefined>[1]
       >[0],
-      triggerChange?: boolean
+      triggerChange?: boolean,
     ) => void
   >(
     (newValue, triggerChange = true) => {
@@ -41,14 +41,14 @@ export function useCachedState<
         typeof newValue === 'function'
           ? (
               newValue as (
-                oldValue: CacheDefinitions[CATEGORY][KEY] | undefined
+                oldValue: CacheDefinitions[CATEGORY][KEY] | undefined,
               ) => CacheDefinitions[CATEGORY][KEY] | undefined
             )(getCache(category, key))
           : newValue;
       if (resolvedValue === undefined) return;
       setState(setCache(category, key, resolvedValue, triggerChange));
     },
-    [category, key]
+    [category, key],
   );
 
   React.useEffect(
@@ -59,7 +59,7 @@ export function useCachedState<
         if (JSON.stringify(state) === JSON.stringify(newValue)) return;
         setCachedState(newValue, false);
       }),
-    [state, category, key, setCachedState]
+    [state, category, key, setCachedState],
   );
 
   return [state, setCachedState];

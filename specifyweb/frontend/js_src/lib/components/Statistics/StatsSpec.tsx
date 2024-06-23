@@ -98,13 +98,13 @@ export const statsSpec: StatsSpec = {
                         readonly lots: number;
                         readonly total: number;
                       }
-                    | undefined
+                    | undefined,
                 ) =>
                   prep === undefined
                     ? undefined
                     : showPreparationsTotal
-                    ? `${formatNumber(prep.lots)} / ${formatNumber(prep.total)}`
-                    : formatNumber(prep.lots),
+                      ? `${formatNumber(prep.lots)} / ${formatNumber(prep.total)}`
+                      : formatNumber(prep.lots),
 
               querySpec: (dynamicResult) => ({
                 tableName: 'Preparation',
@@ -233,14 +233,14 @@ export const statsSpec: StatsSpec = {
                 fields: [
                   {
                     path: `preferredTaxon.${formatTreeRank(
-                      taxonRankName
+                      taxonRankName,
                     )}.fullName`,
                     isDisplay: true,
                     operStart: queryFieldFilters.any.id,
                   },
                   {
                     path: `preferredTaxon.${formatTreeRank(
-                      taxonRankName
+                      taxonRankName,
                     )}.taxonid`,
                     isNot: true,
                     isDisplay: true,
@@ -370,14 +370,14 @@ export const statsSpec: StatsSpec = {
                 fields: [
                   {
                     path: `collectingevent.locality.geography.${formatTreeRank(
-                      geographyRankName
+                      geographyRankName,
                     )}.fullName`,
                     isDisplay: true,
                     operStart: queryFieldFilters.any.id,
                   },
                   {
                     path: `collectingevent.locality.geography.${formatTreeRank(
-                      geographyRankName
+                      geographyRankName,
                     )}.geographyid`,
                     isNot: true,
                     isDisplay: true,
@@ -609,7 +609,7 @@ ensure<StatsSpec>()(statsSpec);
 const statSpecToItems = (
   categoryName: string,
   pageName: string,
-  items: StatCategoryReturn
+  items: StatCategoryReturn,
 ): RA<DefaultStat> =>
   Object.entries(items).map(([itemName, { label, spec }]) => ({
     type: 'DefaultStat',
@@ -632,14 +632,14 @@ function generateBackEndSpec(statsSpec: StatsSpec): RA<{
       Object.entries(items)
         .filter(
           ([_, { spec }]) =>
-            spec.type === 'BackEndStat' && spec.pathToValue === undefined
+            spec.type === 'BackEndStat' && spec.pathToValue === undefined,
         )
         .map(([itemKey, { spec }]) => ({
           responseKey: generateStatUrl(urlPrefix, categoryKey, itemKey),
           querySpec: (spec as BackEndStat).querySpec,
           formatterGenerator: (spec as BackEndStat).formatterGenerator,
-        }))
-    )
+        })),
+    ),
   );
 }
 
@@ -656,15 +656,15 @@ function generateDynamicSpec(statsSpec: StatsSpec): RA<{
                 responseKey: generateStatUrl(urlPrefix, categoryKey, itemKey),
                 dynamicQuerySpec: spec.dynamicQuerySpec,
               }
-            : undefined
-        )
-      )
-    )
+            : undefined,
+        ),
+      ),
+    ),
   );
 }
 
 export function generateDefaultLayout(
-  statsSpecBasis: StatsSpec
+  statsSpecBasis: StatsSpec,
 ): RA<StatLayout> {
   return Object.entries(statsSpecBasis).map(
     ([sourceKey, { sourceLabel, categories }]) => ({
@@ -673,10 +673,10 @@ export function generateDefaultLayout(
         ([categoryName, { label, items }]) => ({
           label,
           items: statSpecToItems(categoryName, sourceKey, items),
-        })
+        }),
       ),
       lastUpdated: undefined,
-    })
+    }),
   );
 }
 

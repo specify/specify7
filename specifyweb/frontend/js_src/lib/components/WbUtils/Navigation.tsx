@@ -69,7 +69,7 @@ export function Navigation({
       data-navigation-type={name}
     >
       <Button.Small
-        className="brightness-80 hover:brightness-70 p-2 ring-0"
+        className="p-2 ring-0 brightness-80 hover:brightness-70"
         data-navigation-direction="previous"
         disabled={!['newCells', 'searchResults'].includes(name) && isReadOnly}
         variant="bg-inherit text-gray-800 dark:text-gray-100"
@@ -79,12 +79,7 @@ export function Navigation({
       </Button.Small>
       <Button.Small
         aria-pressed={buttonIsPressed}
-        className={`
-          hover:brightness-70 grid grid-cols-[auto_1fr_auto_1fr_auto]
-          items-center ring-0
-          ${className.ariaHandled}
-          ${buttonIsPressed ? 'brightness-50' : ''}
-        `}
+        className={`grid grid-cols-[auto_1fr_auto_1fr_auto] items-center ring-0 hover:brightness-70 ${className.ariaHandled} ${buttonIsPressed ? 'brightness-50' : ''} `}
         title={wbText.clickToToggle()}
         variant="bg-inherit text-gray-800 dark:text-gray-100"
         onClick={handleTypeToggle}
@@ -100,7 +95,7 @@ export function Navigation({
         />
       </Button.Small>
       <Button.Small
-        className="brightness-80 hover:brightness-70 p-2 ring-0"
+        className="p-2 ring-0 brightness-80 hover:brightness-70"
         data-navigation-direction="next"
         disabled={!['newCells', 'searchResults'].includes(name) && isReadOnly}
         type="button"

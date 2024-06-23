@@ -43,7 +43,7 @@ export function makeComboBoxQuery({
   const searchAlgorithm = userPreferences.get(
     'form',
     'queryComboBox',
-    isTreeTable ? 'treeSearchAlgorithm' : 'searchAlgorithm'
+    isTreeTable ? 'treeSearchAlgorithm' : 'searchAlgorithm',
   );
   const searchField = QueryFieldSpec.fromPath(table.name, fieldName.split('.'))
     .toSpQueryField()
@@ -53,7 +53,7 @@ export function makeComboBoxQuery({
       'operStart',
       searchAlgorithm === 'contains'
         ? queryFieldFilters.like.id
-        : queryFieldFilters.startsWith.id
+        : queryFieldFilters.startsWith.id,
     );
 
   const displayField = QueryFieldSpec.fromPath(table.name, [])
@@ -98,8 +98,8 @@ export function getQueryComboBoxConditions({
             [
               treeResource.get('nodeNumber') ?? '',
               treeResource.get('highestChildNodeNumber') ?? '',
-            ].join(',')
-          )
+            ].join(','),
+          ),
       );
     if (fieldName === 'parent') {
       // Add rank limits
@@ -108,7 +108,7 @@ export function getQueryComboBoxConditions({
         let rankIndex =
           treeData.treeRanks.findIndex(
             // "rankId" is the original value; not updated with unsaved changes
-            ({ rankId }) => rankId === treeResource.get('rankId')
+            ({ rankId }) => rankId === treeResource.get('rankId'),
           ) + 1;
         if (rankIndex !== 0) {
           while (
@@ -124,7 +124,7 @@ export function getQueryComboBoxConditions({
       const lowestRankId = Math.min(
         lastTreeRankId,
         nextRankId || lastTreeRankId,
-        treeData?.lowestChildRank ?? lastTreeRankId
+        treeData?.lowestChildRank ?? lastTreeRankId,
       );
       if (lowestRankId !== 0)
         fields.push(
@@ -132,7 +132,7 @@ export function getQueryComboBoxConditions({
             .toSpQueryField()
             .set('isDisplay', false)
             .set('startValue', lowestRankId.toString())
-            .set('operStart', queryFieldFilters.less.id)
+            .set('operStart', queryFieldFilters.less.id),
         );
     } else if (fieldName === 'acceptedParent') {
       // Nothing to do
@@ -149,7 +149,7 @@ export function getQueryComboBoxConditions({
     fields.push(
       QueryFieldSpec.fromStringId(
         `${relatedTable.tableId}..collectionRelTypeId`,
-        true
+        true,
       )
         .toSpQueryField()
         .set('isDisplay', false)
@@ -160,8 +160,8 @@ export function getQueryComboBoxConditions({
             subViewRelationship?.name === 'leftSideRels' ? 'left' : 'right'
           ]
             .map(({ id }) => id)
-            .join(',')
-        )
+            .join(','),
+        ),
     );
   return fields;
 }
@@ -169,20 +169,20 @@ export function getQueryComboBoxConditions({
 export const getRelatedCollectionId = (
   { left, right }: CollectionRelationships,
   resource: SpecifyResource<AnySchema>,
-  fieldName: string
+  fieldName: string,
 ): number | undefined =>
   (fieldName === 'rightSide'
     ? left
     : fieldName === 'leftSide'
-    ? right
-    : undefined
+      ? right
+      : undefined
   )?.find(
     ({ id }) =>
       id ===
       idFromUrl(
         toTable(resource, 'CollectionRelationship')?.get('collectionRelType') ??
-          ''
-      )
+          '',
+      ),
   )?.collection;
 
 /**
@@ -193,7 +193,7 @@ export const getRelatedCollectionId = (
 export function pendingValueToResource(
   relationship: Relationship,
   typeSearch: TypeSearch | false | undefined,
-  pendingValue: string
+  pendingValue: string,
 ): SpecifyResource<AnySchema> {
   const mainFields = getMainTableFields(relationship.relatedTable.name);
   const typeSearchFields =
@@ -202,7 +202,7 @@ export function pendingValueToResource(
           .filter(
             ([searchField]) =>
               !searchField.isRelationship &&
-              searchField.table === relationship.relatedTable
+              searchField.table === relationship.relatedTable,
           )
           .map(([field]) => field)
       : undefined) ?? [];
@@ -211,6 +211,6 @@ export function pendingValueToResource(
     mainFields[0]
   )?.name;
   return new relationship.relatedTable.Resource(
-    typeof fieldName === 'string' ? { [fieldName]: pendingValue } : {}
+    typeof fieldName === 'string' ? { [fieldName]: pendingValue } : {},
   );
 }

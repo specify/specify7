@@ -36,13 +36,13 @@ export class Disambiguation {
     ).some(
       ({ physicalCols, mappingPath }) =>
         physicalCols.includes(physicalCol) &&
-        typeof disambiguation[mappingPathToString(mappingPath)] !== 'number'
+        typeof disambiguation[mappingPathToString(mappingPath)] !== 'number',
     );
   }
 
   public cellWasDisambiguated(
     physicalRow: number,
-    physicalCol: number
+    physicalCol: number,
   ): boolean {
     const da = this.getDisambiguation(physicalRow);
     return Boolean(
@@ -51,15 +51,15 @@ export class Disambiguation {
       ]?.find(
         ({ physicalCols, mappingPath }) =>
           physicalCols.includes(physicalCol) &&
-          typeof da[mappingPathToString(mappingPath)] === 'number'
-      )
+          typeof da[mappingPathToString(mappingPath)] === 'number',
+      ),
     );
   }
 
   private changeDisambiguation(
     physicalRow: number,
     changeFunction: (oldValue: IR<number>) => IR<number>,
-    source: 'Disambiguation.Clear' | 'Disambiguation.Set'
+    source: 'Disambiguation.Clear' | 'Disambiguation.Set',
   ): void {
     if (this.workbench.hot === undefined) return;
     const cols = this.workbench.dataset.columns.length;
@@ -72,7 +72,7 @@ export class Disambiguation {
       visualRow,
       visualCol,
       JSON.stringify(extra),
-      source
+      source,
     );
     this.workbench.spreadsheetChanged();
     this.afterChangeDisambiguation(physicalRow);
@@ -87,8 +87,8 @@ export class Disambiguation {
       .forEach((physicalCol) =>
         this.workbench.cells?.recalculateIsModifiedState(
           physicalRow,
-          physicalCol
-        )
+          physicalCol,
+        ),
       );
     this.workbench.cells?.updateCellInfoStats();
   }
@@ -104,7 +104,7 @@ export class Disambiguation {
   public setDisambiguation(
     physicalRow: number,
     mappingPath: MappingPath,
-    id: number
+    id: number,
   ): void {
     this.changeDisambiguation(
       physicalRow,
@@ -112,7 +112,7 @@ export class Disambiguation {
         ...disambiguations,
         [mappingPathToString(mappingPath)]: id,
       }),
-      'Disambiguation.Set'
+      'Disambiguation.Set',
     );
   }
 }

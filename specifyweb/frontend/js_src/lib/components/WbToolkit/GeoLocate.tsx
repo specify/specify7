@@ -51,8 +51,8 @@ export function WbGeoLocate({
             ? isUploaded
               ? wbText.unavailableWhenUploaded()
               : isResultsOpen
-              ? wbText.unavailableWhileViewingResults()
-              : undefined
+                ? wbText.unavailableWhileViewingResults()
+                : undefined
             : wbText.unavailableWithoutLocality()
         }
         onClick={openGeoLocate}
@@ -87,7 +87,7 @@ function GeoLocate({
 
   const selection = React.useMemo(
     () => getSelectedLocalities(hot, columns, localityColumns, true),
-    [columns, localityColumns]
+    [columns, localityColumns],
   );
 
   function handleMove(newLocalityIndex: number): void {
@@ -100,7 +100,7 @@ function GeoLocate({
 
   const visualHeaders = React.useMemo(
     () => getVisualHeaders(hot, columns),
-    [hot, columns]
+    [hot, columns],
   );
 
   React.useEffect(() => {
@@ -125,7 +125,7 @@ function GeoLocate({
               visualRow,
               visualHeaders.indexOf(localityColumns[fieldName]),
               data,
-            ] as const
+            ] as const,
         )
         .filter(([, visualCol]) => visualCol !== -1);
 
@@ -133,7 +133,7 @@ function GeoLocate({
 
       if (selection.length === 1) handleClose();
     },
-    [hot, visualHeaders, handleClose, localityIndex]
+    [hot, visualHeaders, handleClose, localityIndex],
   );
 
   return data === undefined ? null : (
@@ -170,7 +170,7 @@ export function getSelectedLocalities(
   // If false, treat single cell selection as entire spreadsheet selection
   allowSingleCell: boolean,
   // Default behavior when no cell is selected
-  defaultSelectAll: boolean = false
+  defaultSelectAll: boolean = false,
 ):
   | {
       readonly length: number;
@@ -190,9 +190,9 @@ export function getSelectedLocalities(
     selectedRegions.flatMap(({ startCol, endCol }) =>
       Array.from(
         { length: endCol - startCol + 1 },
-        (_, index) => startCol + index
-      )
-    )
+        (_, index) => startCol + index,
+      ),
+    ),
   );
 
   const selectedHeaders = Array.from(selectedVirtualColumns)
@@ -204,10 +204,10 @@ export function getSelectedLocalities(
       selectedRegions.flatMap(({ startRow, endRow }) =>
         Array.from(
           { length: endRow - startRow + 1 },
-          (_, index) => startRow + index
-        )
-      )
-    )
+          (_, index) => startRow + index,
+        ),
+      ),
+    ),
   ).sort(sortFunction(f.id));
 
   const noneSelected = hot.getSelected() === undefined;
@@ -253,7 +253,7 @@ function getGeoLocateData(
   }: {
     readonly localityColumns: IR<string>;
     readonly visualRow: number;
-  }
+  },
 ): IR<string> {
   const visualHeaders = getVisualHeaders(hot, columns);
 
@@ -261,7 +261,7 @@ function getGeoLocateData(
     getLocalityCoordinate(
       hot.getDataAtRow(visualRow),
       visualHeaders,
-      localityColumns
+      localityColumns,
     ) || {};
 
   const rawData = {
@@ -279,8 +279,8 @@ function getGeoLocateData(
   return Object.fromEntries(
     filterArray(
       Object.entries(rawData).map(([key, value]) =>
-        value === undefined ? undefined : [key, value.toString()]
-      )
-    )
+        value === undefined ? undefined : [key, value.toString()],
+      ),
+    ),
   );
 }

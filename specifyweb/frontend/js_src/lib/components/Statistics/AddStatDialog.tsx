@@ -43,7 +43,7 @@ export function AddStatDialog({
         pageIndex: number,
         categoryIndex: number,
         itemIndex: number,
-        value: number | string
+        value: number | string,
       ) => void)
     | undefined;
   readonly onInitialLoad: () => void;
@@ -94,7 +94,7 @@ export function AddStatDialog({
                   querySpec: queryToSpec(query),
                   itemValue: undefined,
                 },
-                -1
+                -1,
               );
               handleClose();
             }}
@@ -114,8 +114,8 @@ export function AddStatDialog({
               defaultLayoutPage.categories.every(({ items = [] }) =>
                 items.every(
                   (item) =>
-                    item.type === 'DefaultStat' && item.isVisible === false
-                )
+                    item.type === 'DefaultStat' && item.isVisible === false,
+                ),
               ) ? undefined : (
                 <AddStatPage
                   formatterSpec={formatterSpec}
@@ -129,7 +129,7 @@ export function AddStatDialog({
                   }}
                   onLoad={onLoad}
                 />
-              )
+              ),
             )}
           </Ul>
         )}
@@ -150,7 +150,7 @@ export function AddStatDialog({
             querySpec: query,
             itemValue: undefined,
           },
-          -1
+          -1,
         );
         handleClose();
       }}

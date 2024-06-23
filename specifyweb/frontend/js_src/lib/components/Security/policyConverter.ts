@@ -36,10 +36,10 @@ export const processPolicies = (policies: IR<RA<string>>): RA<Policy> =>
               allowed: true,
               matching_role_policies: [],
               matching_user_policies: [],
-            }))
-          )
-      )
-    ).map(({ resource, action }) => [resource, action])
+            })),
+          ),
+      ),
+    ).map(({ resource, action }) => [resource, action]),
   ).map(([resource, actions]) => ({ resource, actions }));
 
 /**
@@ -51,7 +51,7 @@ export const processPolicies = (policies: IR<RA<string>>): RA<Policy> =>
 export function decompressPolicies(rawPolicies: RA<Policy>): IR<RA<string>> {
   // Merge actions for duplicate resources
   const policies = group(
-    rawPolicies.map(({ resource, actions }) => [resource, actions])
+    rawPolicies.map(({ resource, actions }) => [resource, actions]),
   )
     .map(([resource, actions]) => ({ resource, actions: actions.flat() }))
     .flatMap((policy) =>
@@ -69,26 +69,26 @@ export function decompressPolicies(rawPolicies: RA<Policy>): IR<RA<string>> {
             actions: policy.actions,
           }))
         : policy.resource === anyResource &&
-          getAllActions(anyResource).every((action) =>
-            policy.actions.includes(action)
-          )
-        ? {
-            // Combine separate actions on "any" resource into one
-            resource: anyResource,
-            actions: [anyAction],
-          }
-        : policy
+            getAllActions(anyResource).every((action) =>
+              policy.actions.includes(action),
+            )
+          ? {
+              // Combine separate actions on "any" resource into one
+              resource: anyResource,
+              actions: [anyAction],
+            }
+          : policy,
     );
   return Object.fromEntries(
     // If has collection access, add other basic policies
     (policies.some(
       ({ resource, actions }) =>
-        resource === '/system/sp7/collection' && actions.includes('access')
+        resource === '/system/sp7/collection' && actions.includes('access'),
     )
       ? Object.entries(basicPermissions).reduce<RA<Policy>>(
           (policies, [resource, actions]) => {
             const policyIndex = policies.findIndex(
-              (policy) => policy.resource === resource
+              (policy) => policy.resource === resource,
             );
             return policyIndex === -1
               ? [
@@ -106,10 +106,10 @@ export function decompressPolicies(rawPolicies: RA<Policy>): IR<RA<string>> {
                   ]),
                 });
           },
-          policies
+          policies,
         )
       : policies
-    ).map(({ resource, actions }) => [resource, actions])
+    ).map(({ resource, actions }) => [resource, actions]),
   );
 }
 
@@ -118,7 +118,7 @@ export function decompressPolicies(rawPolicies: RA<Policy>): IR<RA<string>> {
  * endpoint
  */
 export function compressPermissionQuery(
-  query: RA<PermissionsQueryItem>
+  query: RA<PermissionsQueryItem>,
 ): RA<PermissionsQueryItem> {
   const { tools, policies } = query.reduce<{
     readonly tools: R<R<PermissionsQueryItem | undefined>>;
@@ -132,7 +132,7 @@ export function compressPermissionQuery(
         const table = resourceNameToTable(item.resource);
         if (f.has(toolTables(), table.name)) {
           const toolName = Object.entries(toolDefinitions()).find(
-            ([_name, { tables }]) => f.includes(tables, table.name)
+            ([_name, { tables }]) => f.includes(tables, table.name),
           )?.[KEY];
           if (typeof toolName === 'string') {
             tools[toolName] ??= {};
@@ -159,7 +159,7 @@ export function compressPermissionQuery(
     {
       tools: {},
       policies: [],
-    }
+    },
   );
   return [
     ...policies,
@@ -173,7 +173,7 @@ export function compressPermissionQuery(
         matching_user_policies: f
           .unique(item.matching_user_policies.map(f.unary(JSON.stringify)))
           .map(f.unary(JSON.parse)),
-      }))
+      })),
     ),
   ];
 }
@@ -185,7 +185,7 @@ export function compressPermissionQuery(
  * those may have
  */
 export const expandCatchAllActions = (
-  rows: RA<PermissionsQueryItem>
+  rows: RA<PermissionsQueryItem>,
 ): RA<PermissionsQueryItem> =>
   rows.flatMap((row) => {
     if (row.action !== '%') return row;

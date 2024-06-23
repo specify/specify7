@@ -38,7 +38,7 @@ import { FormCell } from './index';
 
 const cellToLabel = (
   table: SpecifyTable,
-  cell: FormCellDefinition
+  cell: FormCellDefinition,
 ): {
   readonly text: LocalizedString | undefined;
   readonly title: LocalizedString | undefined;
@@ -98,7 +98,7 @@ export function FormTable<SCHEMA extends AnySchema>({
       : {
           sortField: sortField.fieldNames.join(backboneFieldSeparator),
           ascending: sortField.direction === 'asc',
-        }
+        },
   );
 
   const resources =
@@ -109,23 +109,23 @@ export function FormTable<SCHEMA extends AnySchema>({
           sortFunction(
             // FEATURE: handle related fields
             (resource) => resource.get(sortConfig.sortField),
-            !sortConfig.ascending
-          )
+            !sortConfig.ascending,
+          ),
         );
 
   // When added a new resource, focus that row
   const addedResource = React.useRef<SpecifyResource<SCHEMA> | undefined>(
-    undefined
+    undefined,
   );
   const handleAddResources =
     typeof handleAdd === 'function'
       ? function handleAddResources(
-          resources: RA<SpecifyResource<SCHEMA>>
+          resources: RA<SpecifyResource<SCHEMA>>,
         ): void {
           const expandedRecords = {
             ...isExpanded,
             ...Object.fromEntries(
-              resources.map((resource) => [resource.cid, true] as const)
+              resources.map((resource) => [resource.cid, true] as const),
             ),
           };
           setExpandedRecords(expandedRecords);
@@ -140,7 +140,7 @@ export function FormTable<SCHEMA extends AnySchema>({
     addedResource.current = undefined;
     if (resourceIndex === -1 || rowsRef.current === null) return;
     const lastRow: HTMLElement | null = rowsRef.current.querySelector(
-      `:scope > :nth-child(${resourceIndex}) > [tabindex="-1"]`
+      `:scope > :nth-child(${resourceIndex}) > [tabindex="-1"]`,
     );
     lastRow?.focus();
   }, [resources]);
@@ -179,12 +179,12 @@ export function FormTable<SCHEMA extends AnySchema>({
   const [flexibleColumnWidth] = userPreferences.use(
     'form',
     'definition',
-    'flexibleColumnWidth'
+    'flexibleColumnWidth',
   );
   const [flexibleSubGridColumnWidth] = userPreferences.use(
     'form',
     'definition',
-    'flexibleSubGridColumnWidth'
+    'flexibleSubGridColumnWidth',
   );
   const displayDeleteButton =
     mode !== 'view' && typeof handleDelete === 'function';
@@ -193,7 +193,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   const scrollerRef = React.useRef<HTMLDivElement | null>(null);
   const { isFetching, handleScroll } = useInfiniteScroll(
     handleFetchMore,
-    scrollerRef
+    scrollerRef,
   );
 
   const [maxHeight] = userPreferences.use('form', 'formTable', 'maxHeight');
@@ -214,7 +214,7 @@ export function FormTable<SCHEMA extends AnySchema>({
           style={{
             gridTemplateColumns: `min-content ${columnDefinitionsToCss(
               collapsedViewDefinition.columns,
-              flexibleSubGridColumnWidth
+              flexibleSubGridColumnWidth,
             )} min-content`,
             maxHeight: `${maxHeight}px`,
           }}
@@ -235,7 +235,7 @@ export function FormTable<SCHEMA extends AnySchema>({
             {collapsedViewDefinition.rows[0].map((cell, index) => {
               const { text, title } = cellToLabel(
                 relationship.relatedTable,
-                cell
+                cell,
               );
               const isSortable =
                 cell.type === 'Field' || cell.type === 'SubView';
@@ -357,7 +357,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                                   id: cellId,
                                   ...cellData
                                 },
-                                index
+                                index,
                               ) => (
                                 <DataEntry.Cell
                                   align={align}
@@ -379,7 +379,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                                     verticalAlign={verticalAlign}
                                   />
                                 </DataEntry.Cell>
-                              )
+                              ),
                             )
                           )}
                         </SearchDialogContext.Provider>
@@ -401,7 +401,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                     (!resource.isNew() ||
                       hasTablePermission(
                         relationship.relatedTable.name,
-                        'delete'
+                        'delete',
                       )) ? (
                       <Button.Small
                         aria-label={commonText.remove()}
@@ -410,7 +410,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                           !resource.isNew() &&
                           !hasTablePermission(
                             resource.specifyTable.name,
-                            'delete'
+                            'delete',
                           )
                         }
                         title={commonText.remove()}
@@ -447,21 +447,21 @@ export function FormTable<SCHEMA extends AnySchema>({
     !disableAdding &&
     hasTablePermission(
       relationship.relatedTable.name,
-      isDependent ? 'create' : 'read'
+      isDependent ? 'create' : 'read',
     ) ? (
       <DataEntry.Add
         onClick={
           disableAdding
             ? undefined
             : isDependent
-            ? (): void => {
-                const resource = new relationship.relatedTable.Resource();
-                handleAddResources([resource]);
-              }
-            : (): void =>
-                setState({
-                  type: 'SearchState',
-                })
+              ? (): void => {
+                  const resource = new relationship.relatedTable.Resource();
+                  handleAddResources([resource]);
+                }
+              : (): void =>
+                  setState({
+                    type: 'SearchState',
+                  })
         }
       />
     ) : undefined;
@@ -505,7 +505,7 @@ function Attachment({
   readonly resource: SpecifyResource<AnySchema> | undefined;
 }): JSX.Element | null {
   const related = React.useState<SpecifyResource<AnySchema> | undefined>(
-    undefined
+    undefined,
   );
   const [attachment] = useAttachment(resource);
   return typeof attachment === 'object' ? (

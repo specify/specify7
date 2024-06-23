@@ -41,7 +41,7 @@ export function showLeafletMap({
   container.classList.add(
     'overflow-hidden',
     'h-full',
-    'min-h-[theme(spacing.80)]'
+    'min-h-[theme(spacing.80)]',
   );
 
   // eslint-disable-next-line functional/prefer-readonly-type
@@ -58,19 +58,19 @@ export function showLeafletMap({
   const animate = userPreferences.get(
     'leaflet',
     'behavior',
-    'animateTransitions'
+    'animateTransitions',
   );
   const map = L.map(container, {
     maxZoom: 23,
     doubleClickZoom: userPreferences.get(
       'leaflet',
       'behavior',
-      'doubleClickZoom'
+      'doubleClickZoom',
     ),
     closePopupOnClick: userPreferences.get(
       'leaflet',
       'behavior',
-      'closePopupOnClick'
+      'closePopupOnClick',
     ),
     zoomAnimation: animate,
     fadeAnimation: animate,
@@ -80,7 +80,7 @@ export function showLeafletMap({
     scrollWheelZoom: userPreferences.get(
       'leaflet',
       'behavior',
-      'scrollWheelZoom'
+      'scrollWheelZoom',
     ),
   }).setView(defaultCenter, defaultZoom);
 
@@ -94,7 +94,7 @@ export function showLeafletMap({
 
   const controlLayers = L.control.layers(
     tileLayers.baseMaps,
-    tileLayers.overlays
+    tileLayers.overlays,
   );
   controlLayers.addTo(map);
   const leafletMap = map as LeafletInstance;
@@ -118,8 +118,8 @@ export function showLeafletMap({
       getMarkersFromLocalityData({
         localityData: pointDataDict,
         onMarkerClick: handleMarkerClick?.bind(undefined, index),
-      })
-    )
+      }),
+    ),
   );
 }
 
@@ -143,7 +143,7 @@ const createLine = (
   // eslint-disable-next-line functional/prefer-readonly-type
   coordinate1: [number, number],
   // eslint-disable-next-line functional/prefer-readonly-type
-  coordinate2: [number, number]
+  coordinate2: [number, number],
 ): L.Polyline =>
   new L.Polyline([coordinate1, coordinate2], {
     weight: 3,
@@ -154,7 +154,7 @@ const createLine = (
 export const formatLocalityData = (
   localityData: LocalityData,
   viewUrl: string | undefined,
-  isLoaded: boolean
+  isLoaded: boolean,
 ): string =>
   // REFACTOR: turn this into React, or React.render_to_string
   [
@@ -163,7 +163,7 @@ export const formatLocalityData = (
       .filter(
         // eslint-disable-next-line functional/prefer-readonly-type
         (entry): entry is [string, Field<number | string>] =>
-          typeof entry[1] === 'object' && entry[1].value !== ''
+          typeof entry[1] === 'object' && entry[1].value !== '',
       )
       .map(([fieldName, field]) =>
         splitJoinedMappingPath(fieldName).includes('taxon')
@@ -171,7 +171,7 @@ export const formatLocalityData = (
           : commonText.colonLine({
               label: `<b>${field.headerName}</b>`,
               value: field.value.toString(),
-            })
+            }),
       ),
     ...(typeof viewUrl === 'string'
       ? [
@@ -258,31 +258,31 @@ export function getMarkersFromLocalityData({
           [parsedLocalityData.latitude1, parsedLocalityData.longitude1],
           {
             radius: Number.parseFloat(parsedLocalityData.latlongaccuracy),
-          }
-        )
+          },
+        ),
       );
 
     // A point
     markers.marker.push(
-      createPoint(parsedLocalityData.latitude1, parsedLocalityData.longitude1)
+      createPoint(parsedLocalityData.latitude1, parsedLocalityData.longitude1),
     );
   } else {
     markers.polygon.push(
       parsedLocalityData.latlongtype?.toLowerCase() === 'line'
         ? createLine(
             [parsedLocalityData.latitude1, parsedLocalityData.longitude1],
-            [parsedLocalityData.latitude2, parsedLocalityData.longitude2]
+            [parsedLocalityData.latitude2, parsedLocalityData.longitude2],
           )
         : L.polygon([
             [parsedLocalityData.latitude1, parsedLocalityData.longitude1],
             [parsedLocalityData.latitude2, parsedLocalityData.longitude1],
             [parsedLocalityData.latitude2, parsedLocalityData.longitude2],
             [parsedLocalityData.latitude1, parsedLocalityData.longitude2],
-          ])
+          ]),
     );
     markers.polygonBoundary.push(
       createPoint(parsedLocalityData.latitude1, parsedLocalityData.longitude1),
-      createPoint(parsedLocalityData.latitude1, parsedLocalityData.longitude2)
+      createPoint(parsedLocalityData.latitude1, parsedLocalityData.longitude2),
     );
   }
 
@@ -295,8 +295,8 @@ export function getMarkersFromLocalityData({
         formatLocalityData(
           localityData,
           undefined,
-          handleMarkerClick === undefined
-        )
+          handleMarkerClick === undefined,
+        ),
       );
     });
 

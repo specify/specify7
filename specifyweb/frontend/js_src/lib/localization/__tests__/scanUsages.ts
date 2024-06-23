@@ -11,7 +11,7 @@ import { syncStrings } from '../utils/sync';
 program
   .name('Localization Test')
   .description(
-    'Tests usages of localization strings and emits *.po files for Weblate'
+    'Tests usages of localization strings and emits *.po files for Weblate',
   )
   .option('--verbose', 'Verbose output', false)
   .option('--emit <string>', 'Directory to emit *.po files to');
@@ -36,9 +36,9 @@ scanUsages(verbose ? 'verbose' : 'normal')
             reference: ({ filePath, lineNumber }) =>
               `${trimPath(filePath)}:${lineNumber}`,
           },
-          emit
+          emit,
         )
-      : undefined
+      : undefined,
   )
   .catch(console.error);
 

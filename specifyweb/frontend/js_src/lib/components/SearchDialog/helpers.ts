@@ -12,7 +12,7 @@ import { formatUrl } from '../Router/queryString';
  */
 export const queryCbxExtendedSearch = async <SCHEMA extends AnySchema>(
   templateResource: SpecifyResource<SCHEMA>,
-  forceCollection: number | undefined
+  forceCollection: number | undefined,
 ): Promise<RA<SpecifyResource<SCHEMA>>> =>
   ajax<RA<SerializedRecord<SCHEMA>>>(
     formatUrl(
@@ -25,15 +25,15 @@ export const queryCbxExtendedSearch = async <SCHEMA extends AnySchema>(
               return field && !field.isRelationship && Boolean(value)
                 ? [key, value]
                 : undefined;
-            })
-          )
+            }),
+          ),
         ),
         forceCollection,
-      }
+      },
     ),
     {
       headers: { Accept: 'application/json' },
-    }
+    },
   ).then(({ data: results }) =>
-    results.map((result) => new templateResource.specifyTable.Resource(result))
+    results.map((result) => new templateResource.specifyTable.Resource(result)),
   );

@@ -45,7 +45,7 @@ const rawMenuItems = ensure<IR<Omit<MenuItem, 'name'>>>()({
       getCache('forms', 'readOnlyMode') !== true &&
       // Show DataEntry only if has "create" permission to at least one table
       Object.values(
-        getTablePermissions()[schema.domainLevelIds.collection]
+        getTablePermissions()[schema.domainLevelIds.collection],
       ).some(({ create }) => create),
   },
   trees: {
@@ -64,7 +64,7 @@ const rawMenuItems = ensure<IR<Omit<MenuItem, 'name'>>>()({
       hasToolPermission('recordSets', 'read') &&
       // Show DataEntry only if has "create" permission to at least one table
       Object.values(
-        getTablePermissions()[schema.domainLevelIds.collection]
+        getTablePermissions()[schema.domainLevelIds.collection],
       ).some(({ create }) => create),
   },
   queries: {
@@ -117,5 +117,5 @@ export type MenuItemName = keyof typeof rawMenuItems | 'search';
  * Don't use this directly. Use useMenuItems() instead
  */
 export const rawMenuItemsPromise = f.store(async () =>
-  fetchPermissions.then(async () => filterMenuItems(rawMenuItems))
+  fetchPermissions.then(async () => filterMenuItems(rawMenuItems)),
 );

@@ -22,7 +22,7 @@ import type { PermissionErrorSchema } from './PermissionDenied';
 
 export function formatPermissionsError(
   response: string,
-  url: string
+  url: string,
 ):
   | readonly [errorObject: JSX.Element | undefined, errorMessage: string]
   | undefined {
@@ -70,16 +70,13 @@ export function FormatPermissionError({
               tables.SpecifyUser.label,
             ].map((label, index, { length }) => (
               <th
-                className={`
-                  bg-gray-350 p-2 dark:bg-neutral-600
-                  ${
-                    index === 0
-                      ? 'rounded-l'
-                      : index + 1 === length
+                className={`bg-gray-350 p-2 dark:bg-neutral-600 ${
+                  index === 0
+                    ? 'rounded-l'
+                    : index + 1 === length
                       ? 'rounded-r'
                       : ''
-                  }
-                `}
+                } `}
                 key={index}
                 scope="column"
               >
@@ -136,13 +133,13 @@ function CollectionName({
       const collection =
         f.maybe(
           userInformation.availableCollections.find(
-            ({ id }) => id === collectionId
+            ({ id }) => id === collectionId,
           ),
-          deserializeResource
+          deserializeResource,
         ) ?? new tables.Collection.Resource({ id: collectionId });
       return format(collection, undefined, true);
     }, [collectionId]),
-    false
+    false,
   );
   return <>{formatted ?? commonText.loading()}</>;
 }
@@ -159,17 +156,17 @@ function UserName({ userId }: { readonly userId: number }): JSX.Element {
                     userInformation,
                     'availableCollections',
                     'isauthenticated',
-                    'agent'
-                  ) as SerializedRecord<SpecifyUser>
-                )
+                    'agent',
+                  ) as SerializedRecord<SpecifyUser>,
+                ),
               )
             : new tables.SpecifyUser.Resource({ id: userId }),
           undefined,
-          true
+          true,
         ),
-      [userId]
+      [userId],
     ),
-    false
+    false,
   );
   return <>{formatted ?? commonText.loading()}</>;
 }

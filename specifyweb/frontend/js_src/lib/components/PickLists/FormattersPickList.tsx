@@ -29,7 +29,7 @@ export function FormattersPickList(props: DefaultComboBoxProps): JSX.Element {
   }, [props.resource]);
   const [items, setItems] = useAsyncState<RA<PickListItemSimple>>(
     fetchItems,
-    false
+    false,
   );
   React.useEffect(
     () =>
@@ -49,9 +49,9 @@ export function FormattersPickList(props: DefaultComboBoxProps): JSX.Element {
                   raise(error);
                 });
             },
-            true
+            true,
           ),
-    [props.resource, fetchItems, setItems]
+    [props.resource, fetchItems, setItems],
   );
 
   return (

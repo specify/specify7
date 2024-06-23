@@ -39,8 +39,8 @@ const getScrollParent = (node: Element | undefined): Element =>
   node === undefined
     ? document.body
     : node.scrollHeight > node.clientHeight
-    ? node
-    : getScrollParent(node.parentElement ?? undefined);
+      ? node
+      : getScrollParent(node.parentElement ?? undefined);
 
 const optionClassName = (isActive: boolean, isSelected: boolean) => `
   p-0.5 active:bg-brand-100 dark:active:bg-brand-500
@@ -122,7 +122,7 @@ export function AutoComplete<T>({
   const [searchAlgorithm] = userPreferences.use(
     'form',
     'autoComplete',
-    'searchAlgorithm'
+    'searchAlgorithm',
   );
 
   const filterItems = React.useCallback(
@@ -130,36 +130,36 @@ export function AutoComplete<T>({
       pendingValue.length === 0
         ? newResults
         : shouldFilterItems
-        ? newResults.filter(({ label, searchValue }) => {
-            let searchString =
-              typeof label === 'string' ? label : searchValue ?? '';
-            let searchQuery = pendingValue;
+          ? newResults.filter(({ label, searchValue }) => {
+              let searchString =
+                typeof label === 'string' ? label : searchValue ?? '';
+              let searchQuery = pendingValue;
 
-            if (
-              searchAlgorithm === 'contains' ||
-              searchAlgorithm === 'startsWith'
-            ) {
-              searchString = searchString.toLowerCase();
-              searchQuery = pendingValue.toLowerCase();
-            }
+              if (
+                searchAlgorithm === 'contains' ||
+                searchAlgorithm === 'startsWith'
+              ) {
+                searchString = searchString.toLowerCase();
+                searchQuery = pendingValue.toLowerCase();
+              }
 
-            if (
-              searchAlgorithm === 'contains' ||
-              searchAlgorithm === 'containsCaseSensitive'
-            ) {
-              if (searchString.includes(searchQuery)) return true;
-            } else if (searchString.startsWith(searchQuery)) return true;
+              if (
+                searchAlgorithm === 'contains' ||
+                searchAlgorithm === 'containsCaseSensitive'
+              ) {
+                if (searchString.includes(searchQuery)) return true;
+              } else if (searchString.startsWith(searchQuery)) return true;
 
-            return (
-              typeof searchValue === 'string' &&
-              compareStrings(
-                searchValue.slice(0, pendingValue.length),
-                pendingValue
-              ) === 0
-            );
-          })
-        : newResults,
-    [shouldFilterItems, searchAlgorithm]
+              return (
+                typeof searchValue === 'string' &&
+                compareStrings(
+                  searchValue.slice(0, pendingValue.length),
+                  pendingValue,
+                ) === 0
+              );
+            })
+          : newResults,
+    [shouldFilterItems, searchAlgorithm],
   );
 
   const updateItems = React.useCallback(
@@ -168,7 +168,7 @@ export function AutoComplete<T>({
       resultsRef.current = items;
       setFilteredItems(filterItems(items, pendingValue));
     },
-    [filterItems]
+    [filterItems],
   );
 
   // Update source array on changes if statically supplied
@@ -181,7 +181,7 @@ export function AutoComplete<T>({
   const handleRefreshItems = React.useCallback(
     _.debounce(function onKeyDown(
       fetchItems: typeof source,
-      value: string
+      value: string,
     ): void {
       if (typeof fetchItems !== 'function' || previousValue.current === value)
         return;
@@ -200,9 +200,8 @@ export function AutoComplete<T>({
         .then((items) => updateItems(items, value))
         .catch(softFail)
         .finally(handleLoaded);
-    },
-    delay),
-    []
+    }, delay),
+    [],
   );
 
   const [input, setInput] = React.useState<HTMLInputElement | null>(null);
@@ -213,7 +212,7 @@ export function AutoComplete<T>({
       setDataList(dataList);
       dataListRef.current = dataList;
     },
-    []
+    [],
   );
 
   const [filteredItems, setFilteredItems] = React.useState<
@@ -227,7 +226,7 @@ export function AutoComplete<T>({
   }, [currentValue, pendingValueRef]);
   React.useEffect(
     () => setFilteredItems(filterItems(results ?? [], pendingValue)),
-    [pendingValue, filterItems, results]
+    [pendingValue, filterItems, results],
   );
 
   /*
@@ -240,7 +239,7 @@ export function AutoComplete<T>({
   const itemSource = ignoreFilter ? results ?? [] : filteredItems;
 
   const pendingItem = results?.find(
-    ({ label, searchValue }) => (searchValue ?? label) === pendingValue
+    ({ label, searchValue }) => (searchValue ?? label) === pendingValue,
   );
   const showAdd =
     !isLoading &&
@@ -262,7 +261,7 @@ export function AutoComplete<T>({
   const [autoGrowAutoComplete] = userPreferences.use(
     'form',
     'autoComplete',
-    'autoGrowAutoComplete'
+    'autoGrowAutoComplete',
   );
   /*
    * Reposition the autocomplete box as needed
@@ -338,7 +337,7 @@ export function AutoComplete<T>({
   const [highlightMatch] = userPreferences.use(
     'form',
     'autoComplete',
-    'highlightMatch'
+    'highlightMatch',
   );
 
   const inputRef = React.useRef<HTMLInputElement | null>(null);
@@ -351,7 +350,7 @@ export function AutoComplete<T>({
           forwardRef.current = input;
         else if (typeof forwardRef === 'function') forwardRef(input);
       },
-      [forwardRef]
+      [forwardRef],
     );
 
   const [currentItem, setCurrentItem] = React.useState<
@@ -359,7 +358,7 @@ export function AutoComplete<T>({
   >(undefined);
   React.useLayoutEffect(() => {
     const newCurrentItem = resultsRef.current?.find(
-      ({ label, searchValue }) => (searchValue ?? label) === currentValue
+      ({ label, searchValue }) => (searchValue ?? label) === currentValue,
     );
     setCurrentItem(
       newCurrentItem === undefined
@@ -369,7 +368,7 @@ export function AutoComplete<T>({
             typeof currentItem === 'string' ||
             newCurrentItem.data !== currentItem.data
               ? newCurrentItem
-              : currentItem
+              : currentItem,
     );
   }, [currentValue]);
 
@@ -382,7 +381,7 @@ export function AutoComplete<T>({
       value={currentItem}
       // Triggers on enter or selects new item
       onChange={(
-        value: AutoCompleteItem<T> | string | null | undefined
+        value: AutoCompleteItem<T> | string | null | undefined,
       ): void => {
         if (value === null || value === undefined) handleCleared?.();
         else if (typeof value === 'string') handleNewValue?.(value);
@@ -403,8 +402,8 @@ export function AutoComplete<T>({
           typeof item === 'string'
             ? item
             : typeof item?.label === 'string'
-            ? item.label
-            : item?.searchValue ?? ''
+              ? item.label
+              : item?.searchValue ?? ''
         }
         ref={forwardChildRef}
         onBlur={withHandleBlur(inputProps?.onBlur).onBlur}
@@ -412,11 +411,7 @@ export function AutoComplete<T>({
          * Padding for the button. Using "em" so as to match @tailwind/forms
          * styles for <select>
          */
-        className={`
-          ${className.notTouchedInput}
-          ${inputProps.className ?? ''}
-          w-full min-w-[theme(spacing.20)] pr-[1.5em] sm:min-w-[unset]
-        `}
+        className={` ${className.notTouchedInput} ${inputProps.className ?? ''} w-full min-w-[theme(spacing.20)] pr-[1.5em] sm:min-w-[unset]`}
       />
       {listHasItems && !disabled ? toggleButton : undefined}
       {/*
@@ -425,11 +420,7 @@ export function AutoComplete<T>({
        */}
       <Portal>
         <Combobox.Options<'ul'>
-          className={`
-            fixed z-[10000] max-h-[50vh] w-[inherit] cursor-pointer
-            overflow-y-auto rounded rounded bg-white shadow-lg
-            shadow-gray-400 dark:border dark:border-gray-500 dark:bg-neutral-900
-          `}
+          className={`fixed z-[10000] max-h-[50vh] w-[inherit] cursor-pointer overflow-y-auto rounded bg-white shadow-lg shadow-gray-400 dark:border dark:border-gray-500 dark:bg-neutral-900`}
           ref={dataListRefCallback}
         >
           {isLoading && (
@@ -479,7 +470,7 @@ export function AutoComplete<T>({
                             <span className="text-brand-300">
                               {stringLabel.slice(
                                 endIndex,
-                                endIndex + pendingValue.length
+                                endIndex + pendingValue.length,
                               )}
                             </span>
                           )}

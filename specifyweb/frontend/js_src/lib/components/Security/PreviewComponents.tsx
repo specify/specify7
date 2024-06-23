@@ -23,7 +23,7 @@ export function PreviewRow({
   readonly getOpenRoleUrl: (roleId: number) => string;
 }): JSX.Element {
   const [view, setView] = React.useState<
-    typeof tableActions[number] | undefined
+    (typeof tableActions)[number] | undefined
   >(undefined);
   const id = useId('preview-row');
   return (
@@ -31,10 +31,7 @@ export function PreviewRow({
       <div aria-controls={id('reason')} role="row">
         {tableActions.map((action) => (
           <div
-            className={`
-              cursor-pointer justify-center rounded p-2
-              ${view === action ? 'bg-brand-100 dark:bg-brand-500' : ''}
-            `}
+            className={`cursor-pointer justify-center rounded p-2 ${view === action ? 'bg-brand-100 dark:bg-brand-500' : ''} `}
             key={action}
             role="cell"
             onClick={(): void => setView(action === view ? undefined : action)}
@@ -92,16 +89,13 @@ export function PermissionExplanation({
             userText.resource(),
           ].map((label, index, { length }) => (
             <div
-              className={`
-                bg-gray-350 p-2 dark:bg-neutral-600
-                ${
-                  index === 0
-                    ? 'rounded-l'
-                    : index + 1 === length
+              className={`bg-gray-350 p-2 dark:bg-neutral-600 ${
+                index === 0
+                  ? 'rounded-l'
+                  : index + 1 === length
                     ? 'rounded-r'
                     : ''
-                }
-              `}
+              } `}
               key={index}
               role="columnheader"
             >
@@ -148,16 +142,13 @@ export function PermissionExplanation({
             userText.resource(),
           ].map((label, index, { length }) => (
             <div
-              className={`
-                bg-gray-350 p-2 dark:bg-neutral-600
-                ${
-                  index === 0
-                    ? 'rounded-l'
-                    : index + 1 === length
+              className={`bg-gray-350 p-2 dark:bg-neutral-600 ${
+                index === 0
+                  ? 'rounded-l'
+                  : index + 1 === length
                     ? 'rounded-r'
                     : ''
-                }
-              `}
+              } `}
               key={index}
               role="columnheader"
             >

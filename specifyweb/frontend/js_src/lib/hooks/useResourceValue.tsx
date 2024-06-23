@@ -45,14 +45,14 @@ import { useValidation } from './useValidation';
  */
 export function useResourceValue<
   T extends boolean | number | string | null,
-  INPUT extends Input = HTMLInputElement
+  INPUT extends Input = HTMLInputElement,
 >(
   resource: SpecifyResource<AnySchema> | undefined,
   // If field is undefined, this hook behaves pretty much like useValidation()
   field: LiteralField | Relationship | undefined,
   // Default parser is usually coming from the form definition
   defaultParser: Parser | undefined,
-  trim?: boolean
+  trim?: boolean,
 ): ReturnType<typeof useValidation> & {
   readonly value: T | undefined;
   readonly updateValue: (newValue: T, reportErrors?: boolean) => void;
@@ -117,7 +117,7 @@ export function useResourceValue<
         parser,
         inputRef.current ?? undefined,
         newValue?.toString() ?? '',
-        trim
+        trim,
       );
 
       const parsedValue = parseResults.isValid ? parseResults.parsed : newValue;
@@ -125,13 +125,13 @@ export function useResourceValue<
         field?.isRelationship === true && newValue === ''
           ? null
           : ['checkbox', 'date'].includes(parser.type ?? '') || reportErrors
-          ? parsedValue
-          : newValue;
+            ? parsedValue
+            : newValue;
       setValue(
         (parser.type === 'number' && reportErrors
           ? f.parseFloat(parser?.printFormatter?.(parsedValue, parser) ?? '') ??
             parsedValue
-          : formattedValue) as T
+          : formattedValue) as T,
       );
       if (field === undefined) return;
 
@@ -140,7 +140,7 @@ export function useResourceValue<
       else
         setBlockers(
           [parseResults.reason],
-          getFieldBlockerKey(field, 'parseResult')
+          getFieldBlockerKey(field, 'parseResult'),
         );
 
       ignoreChangeRef.current = true;
@@ -160,7 +160,7 @@ export function useResourceValue<
       });
       ignoreChangeRef.current = false;
     },
-    [resource, field, parser, inputRef, setValidation]
+    [resource, field, parser, inputRef, setValidation],
   );
 
   /*
@@ -170,7 +170,7 @@ export function useResourceValue<
    */
   React.useEffect(
     () => input?.classList.add(className.notTouchedInput),
-    [input, resource]
+    [input, resource],
   );
 
   // Set default value
@@ -212,10 +212,10 @@ export function useResourceValue<
         field.name,
         (parser.type === 'date'
           ? getDateInputValue(
-              parseAnyDate(parser.value?.toString() ?? '') ?? new Date()
+              parseAnyDate(parser.value?.toString() ?? '') ?? new Date(),
             ) ?? new Date()
           : parser.value) as never,
-        { silent: true }
+        { silent: true },
       );
   }, [parser, resource, field, defaultParser]);
 
@@ -227,10 +227,10 @@ export function useResourceValue<
             resource,
             `change:${field.name}`,
             (): void => updateValue(resource.get(field.name) as T),
-            true
+            true,
           )
         : undefined,
-    [field, updateValue, resource, parser]
+    [field, updateValue, resource, parser],
   );
 
   return {
@@ -244,7 +244,7 @@ export function useResourceValue<
         if (field !== undefined)
           setBlockers(blockers, getFieldBlockerKey(field, 'validation'));
       },
-      [setBlockers, field]
+      [setBlockers, field],
     ),
     parser,
   } as const;

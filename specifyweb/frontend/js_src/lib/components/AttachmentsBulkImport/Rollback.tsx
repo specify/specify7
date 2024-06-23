@@ -38,7 +38,7 @@ export function AttachmentRollback({
   readonly dataSet: EagerDataSet;
   readonly onSync: (
     generatedState: RA<PartialUploadableFileSpec> | undefined,
-    isSyncing: boolean
+    isSyncing: boolean,
   ) => void;
   readonly baseTableName: keyof Tables | undefined;
 }): JSX.Element {
@@ -48,14 +48,14 @@ export function AttachmentRollback({
       !dataSet.rows.some(canDeleteAttachment) ||
       baseTableName === undefined,
     // Uploader status is enough as a depedency
-    [dataSet.needsSaved, dataSet.uploaderstatus, baseTableName]
+    [dataSet.needsSaved, dataSet.uploaderstatus, baseTableName],
   );
   const [rollback, setTriedRollback] = React.useState<
     'confirmed' | 'main' | 'tried'
   >('main');
 
   const [deletedCount, setDeletedCount] = React.useState<number | undefined>(
-    undefined
+    undefined,
   );
 
   const handleRollbackReMap = React.useCallback(
@@ -63,17 +63,17 @@ export function AttachmentRollback({
       handleSync(uploadables, false);
       setTriedRollback('main');
       setDeletedCount(
-        uploadables?.filter(({ status }) => status?.type === 'success').length
+        uploadables?.filter(({ status }) => status?.type === 'success').length,
       );
     },
-    [handleSync]
+    [handleSync],
   );
 
   const generateDeletePromise = React.useCallback(
     async (
       deletable: PartialUploadableFileSpec,
       dryRun: boolean,
-      triggerRetry?: () => void
+      triggerRetry?: () => void,
     ) =>
       deleteFileWrapped({
         uploadableFile: deletable,
@@ -81,7 +81,7 @@ export function AttachmentRollback({
         dryRun,
         triggerRetry,
       }),
-    [baseTableName]
+    [baseTableName],
   );
   return (
     <>
@@ -121,8 +121,8 @@ export function AttachmentRollback({
                         uploadableFile: deletable,
                         baseTableName: baseTableName!,
                         dryRun: true,
-                      })
-                    )
+                      }),
+                    ),
                   ).then((files) => handleSync(files, true));
                   setTriedRollback('confirmed');
                 }}
@@ -162,7 +162,7 @@ async function deleteFileWrapped<KEY extends keyof Tables>({
 }: WrappedActionProps<KEY>): Promise<PartialUploadableFileSpec> {
   const getDeletableCommitted = (
     status: AttachmentStatus,
-    isSuccess: boolean = status.type === 'success'
+    isSuccess: boolean = status.type === 'success',
   ) => ({
     ...deletableFile,
     status,
@@ -180,7 +180,7 @@ async function deleteFileWrapped<KEY extends keyof Tables>({
   const record = resolveAttachmentRecord(
     deletableFile.matchedId,
     deletableFile.disambiguated,
-    deletableFile.uploadFile.parsedName
+    deletableFile.uploadFile.parsedName,
   );
 
   if (record.type !== 'matched')
@@ -192,7 +192,7 @@ async function deleteFileWrapped<KEY extends keyof Tables>({
   const baseResourceResponse = await fetchForAttachmentUpload(
     baseTableName,
     matchId,
-    triggerRetry
+    triggerRetry,
   );
 
   if (baseResourceResponse.type === 'invalid')
@@ -204,11 +204,11 @@ async function deleteFileWrapped<KEY extends keyof Tables>({
 
   const { key, values: oldAttachments } = getAttachmentsFromResource(
     baseResource,
-    `${baseTableName}attachments`
+    `${baseTableName}attachments`,
   );
 
   const attachmentToRemove = oldAttachments.findIndex(
-    ({ id }) => id === deletableFile.attachmentId
+    ({ id }) => id === deletableFile.attachmentId,
   );
   if (attachmentToRemove === -1) {
     // If attachment got deleted from somewhere else, mark it deleted
@@ -217,7 +217,7 @@ async function deleteFileWrapped<KEY extends keyof Tables>({
         type: 'skipped',
         reason: 'noAttachments',
       },
-      true
+      true,
     );
   }
   const newResource = {
@@ -228,11 +228,11 @@ async function deleteFileWrapped<KEY extends keyof Tables>({
   const saveResponse = await saveForAttachmentUpload(
     baseTableName,
     matchId,
-    newResource
+    newResource,
   );
   return getDeletableCommitted(
     saveResponse.type === 'invalid'
       ? { type: 'skipped', reason: saveResponse.reason }
-      : { type: 'success', successType: 'deleted' }
+      : { type: 'success', successType: 'deleted' },
   );
 }

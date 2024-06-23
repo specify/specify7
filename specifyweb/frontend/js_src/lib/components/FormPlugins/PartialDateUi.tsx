@@ -36,13 +36,13 @@ export function PartialDateUi({
   const precisionProps = useDatePrecision(
     resource,
     precisionFieldName,
-    defaultPrecision
+    defaultPrecision,
   );
 
   const [precision] = precisionProps.precision;
   const parser = React.useMemo(
     () => getDateParser(dateField, precision, defaultValue),
-    [dateField, precision, defaultValue]
+    [dateField, precision, defaultValue],
   );
 
   const isReadOnly =

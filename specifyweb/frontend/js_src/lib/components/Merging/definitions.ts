@@ -8,7 +8,7 @@ export const recordMergingTableSpec: Partial<{
   readonly [TABLE_NAME in keyof Tables]: {
     readonly unmergable?: {
       readonly matches: (
-        resource: SerializedResource<Tables[TABLE_NAME]>
+        resource: SerializedResource<Tables[TABLE_NAME]>,
       ) => boolean;
       readonly message: LocalizedString;
     };

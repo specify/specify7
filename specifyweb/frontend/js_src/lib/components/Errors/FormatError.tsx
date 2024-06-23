@@ -17,12 +17,12 @@ import { produceStackTrace } from './stackTrace';
 
 export function formatError(
   error: unknown,
-  url?: string
+  url?: string,
 ): Readonly<
   readonly [
     errorObject: JSX.Element,
     errorMessage: string,
-    copiableMessage: string
+    copiableMessage: string,
   ]
 > {
   const errorObject: WritableArray<React.ReactNode> = [
@@ -48,12 +48,12 @@ export function formatError(
               <pre>{error.stack}</pre>
             </>
           )}
-        </React.Fragment>
+        </React.Fragment>,
       );
       errorMessage.push(`Error: ${error.message}`);
       copiableMessage.push(
         `Message: ${error.message}`,
-        `Stack: ${error.stack}`
+        `Stack: ${error.stack}`,
       );
       console.error(error);
     } else if ('statusText' in error && 'responseText' in error) {
@@ -72,11 +72,11 @@ export function formatError(
               <>
                 <br />
                 <br />
-              </>
+              </>,
             )}
           </p>
           {formatErrorResponse(responseText)}
-        </React.Fragment>
+        </React.Fragment>,
       );
       errorMessage.push(...statusTextArray);
       copiableMessage.push(error);
@@ -85,7 +85,7 @@ export function formatError(
       errorObject.push(
         <p className="raw" key="raw">
           {serialized}
-        </p>
+        </p>,
       );
       errorMessage.push(serialized);
       copiableMessage.push(serialized);
@@ -95,7 +95,7 @@ export function formatError(
     errorObject.push(
       <p className="raw" key="raw">
         {message}
-      </p>
+      </p>,
     );
     errorMessage.push(message);
     copiableMessage.push(message);
@@ -135,13 +135,13 @@ function formatErrorResponse(error: string): JSX.Element {
  * reported to the user again
  */
 export const errorHandledBy: unique symbol = Symbol(
-  'Function that handled the error'
+  'Function that handled the error',
 );
 
 export function handleAjaxError(
   error: unknown,
   response: Response,
-  errorMode: AjaxErrorMode
+  errorMode: AjaxErrorMode,
 ): never {
   /*
    * If exceptions occur because user has no agent, don't display the error
@@ -170,7 +170,7 @@ export function handleAjaxError(
     if (isPermissionError) {
       const parsed = formatPermissionsError(
         permissionError.responseText,
-        response.url
+        response.url,
       );
       if (Array.isArray(parsed)) {
         const [errorObject, errorMessage] = parsed;
@@ -187,7 +187,7 @@ export function handleAjaxError(
   }
   const [errorObject, errorMessage, copiableMessage] = formatError(
     error,
-    response.url
+    response.url,
   );
   if (errorMode !== 'silent')
     displayError(({ onClose: handleClose }) => (

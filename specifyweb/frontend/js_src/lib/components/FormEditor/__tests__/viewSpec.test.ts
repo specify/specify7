@@ -68,7 +68,7 @@ const inCases = {
 describe('parseSpecifyProperties', () =>
   void Object.entries({ ...cases, ...inCases }).forEach(([input, output]) =>
     test(`parses ${input}`, () =>
-      expect(parseSpecifyProperties(input)).toEqual(output))
+      expect(parseSpecifyProperties(input)).toEqual(output)),
   ));
 
 describe('buildSpecifyProperties', () =>
@@ -76,9 +76,9 @@ describe('buildSpecifyProperties', () =>
     test(`parses ${output}`, () => {
       const trimmed = output.endsWith(';') ? output.slice(0, -1) : output;
       expect(buildSpecifyProperties(input)).toEqual(
-        trimmed.startsWith(';') ? trimmed.slice(1) : trimmed
+        trimmed.startsWith(';') ? trimmed.slice(1) : trimmed,
       );
-    })
+    }),
   ));
 
 test('Can edit form definition', () => {
@@ -86,7 +86,7 @@ test('Can edit form definition', () => {
   const xmlNode = xmlToJson(xml);
   const simpleXmlNode = toSimpleXmlNode(xmlNode);
   const { serializer, deserializer } = syncers.object(
-    formDefinitionSpec(tables.Accession)
+    formDefinitionSpec(tables.Accession),
   );
   const parsed = serializer(simpleXmlNode);
   const parsedRows = parsed.definitions[0];

@@ -25,7 +25,7 @@ export const fetchRows = async (fetchUrl: string) =>
         number | null,
         string | null,
         string,
-        number
+        number,
       ]
     >
   >(fetchUrl, {
@@ -46,7 +46,7 @@ export const fetchRows = async (fetchUrl: string) =>
           children,
         ],
         index,
-        { length }
+        { length },
       ) => ({
         nodeId,
         name,
@@ -59,8 +59,8 @@ export const fetchRows = async (fetchUrl: string) =>
         author,
         children,
         isLastChild: index + 1 === length,
-      })
-    )
+      }),
+    ),
   );
 
 export type Stats = RR<
@@ -87,8 +87,8 @@ export const fetchStats = async (url: string): Promise<Stats> =>
             directCount,
             childCount: allCount - directCount,
           },
-        ])
-      )
+        ]),
+      ),
     )
     .catch(() => ({}));
 
@@ -104,7 +104,7 @@ export interface Conformation extends Readonly<[number, ...Conformations]> {}
 /* eslint-enable @typescript-eslint/consistent-type-definitions */
 
 export function deserializeConformation(
-  conformation: string
+  conformation: string,
 ): Conformations | undefined {
   if (conformation === '') return undefined;
   const serialized = conformation
@@ -125,7 +125,7 @@ export function deserializeConformation(
  * by an open bracket by nature of the construction.
  */
 export function serializeConformation(
-  conformation: Conformations | undefined
+  conformation: Conformations | undefined,
 ): string | undefined {
   const value = JSON.stringify(conformation)
     .replaceAll('[', '~')
@@ -137,7 +137,7 @@ export function serializeConformation(
 const throttleRate = 250;
 export const scrollIntoView = throttle(function scrollIntoView(
   element: HTMLElement,
-  mode: ScrollLogicalPosition = 'center'
+  mode: ScrollLogicalPosition = 'center',
 ): void {
   try {
     element.scrollIntoView({
@@ -148,8 +148,7 @@ export const scrollIntoView = throttle(function scrollIntoView(
   } catch {
     element.scrollIntoView(mode === 'start');
   }
-},
-throttleRate);
+}, throttleRate);
 
 export type KeyAction =
   | 'child'
@@ -169,7 +168,7 @@ const keyMapper = {
 } as const;
 
 export function mapKey(
-  event: React.KeyboardEvent<HTMLButtonElement>
+  event: React.KeyboardEvent<HTMLButtonElement>,
 ): KeyAction | undefined {
   const action = keyMapper[event.key as keyof typeof keyMapper];
   if (action === undefined) return undefined;
@@ -184,7 +183,7 @@ export function mapKey(
 
 export const formatTreeStats = (
   nodeStats: Stats[number],
-  isLeaf: boolean
+  isLeaf: boolean,
 ): {
   readonly title: string;
   readonly text: string;
@@ -221,15 +220,15 @@ export const formatTreeStats = (
 export function checkMoveViolatesEnforced(
   tableName: AnyTree['tableName'],
   newParenRankId: number,
-  currentRankId: number
+  currentRankId: number,
 ): boolean {
   const treeRanks = strictGetTreeDefinitionItems(tableName, true);
   const currentRankIndex = treeRanks.findIndex(
-    ({ rankId }) => rankId === currentRankId
+    ({ rankId }) => rankId === currentRankId,
   );
   const currentParentRankIndex = currentRankIndex - 1;
   const newParentRankIndex = treeRanks.findIndex(
-    ({ rankId }) => rankId === newParenRankId
+    ({ rankId }) => rankId === newParenRankId,
   );
   /*
    * Check for enforced ranks between children of newParentRankIndex and

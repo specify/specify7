@@ -36,7 +36,7 @@ export function QueryEditButton({
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const queryResource = React.useMemo(
     () => deserializeResource(query),
-    [query]
+    [query],
   );
   return (
     <>
@@ -72,8 +72,8 @@ function EditQueryDialog({
               loading(
                 downloadFile(
                   `${queryResource.get('name')}.json`,
-                  JSON.stringify(queryResource.toJSON(), null, '\t')
-                )
+                  JSON.stringify(queryResource.toJSON(), null, '\t'),
+                ),
               );
             }}
           >
@@ -135,9 +135,9 @@ function DwcaQueryExport({
           headers: { Accept: 'text/plain' },
           errorMode: 'dismissible',
         }).then(({ data: xml }) => xml),
-      [queryResource.id]
+      [queryResource.id],
     ),
-    true
+    true,
   );
 
   return typeof exported === 'string' ? (
@@ -200,8 +200,8 @@ function QueryExport({
                 return report.rgetPromise('appResource');
               })
               .then((appResource) =>
-                navigate(`/specify/appresources/${appResource.id}/`)
-              )
+                navigate(`/specify/appresources/${appResource.id}/`),
+              ),
           )
         }
       >
@@ -222,5 +222,5 @@ function QueryExport({
 const getMaxLength = (): number | undefined =>
   f.min(
     getField(tables.SpAppResource, 'name').length,
-    getField(tables.SpReport, 'name').length
+    getField(tables.SpReport, 'name').length,
   );

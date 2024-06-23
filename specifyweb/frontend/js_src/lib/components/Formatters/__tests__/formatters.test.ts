@@ -20,8 +20,8 @@ test('Formatters are fetched and parsed correctly', async () =>
   expect(
     fetchFormatters.then((results) =>
       // Remove symbols
-      JSON.parse(JSON.stringify(results))
-    )
+      JSON.parse(JSON.stringify(results)),
+    ),
   ).resolves.toMatchSnapshot());
 
 test('getMainTableFields', () =>
@@ -30,8 +30,8 @@ test('getMainTableFields', () =>
       Object.keys(tables).map((name) => [
         name,
         getMainTableFields(name).map(({ name }) => name),
-      ])
-    )
+      ]),
+    ),
   ).toMatchSnapshot());
 
 describe('formatField', () => {
@@ -66,8 +66,8 @@ describe('formatField', () => {
           fieldFormatter: undefined,
           separator: localized(', '),
         },
-        parentResource
-      )
+        parentResource,
+      ),
     ).resolves.toEqual({
       formatted: 'Person',
       separator: ', ',
@@ -92,8 +92,8 @@ describe('formatField', () => {
           formatFieldValue: false,
           separator: localized(', '),
         },
-        parentResource
-      )
+        parentResource,
+      ),
     ).resolves.toEqual({
       formatted: '1',
       separator: ', ',
@@ -109,7 +109,7 @@ const referenceWork = {
 };
 overrideAjax(
   getResourceApiUrl('ReferenceWork', referenceWorkId),
-  referenceWork
+  referenceWork,
 );
 
 const taxonCitationId = 2;
@@ -126,7 +126,7 @@ overrideAjax(
       total_count: 1,
     },
     objects: [taxonCitation],
-  }
+  },
 );
 
 test('Circular formatting is detected and prevented', async () => {

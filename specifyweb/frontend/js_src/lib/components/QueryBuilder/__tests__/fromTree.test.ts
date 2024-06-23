@@ -30,20 +30,20 @@ allTrees.map((table, rankId) => {
       definitionItem: rankUrl,
       fullName: fullNames[table],
       resource_uri: getResourceApiUrl(table, nodeId),
-    })
+    }),
   );
   overrideAjax(rankUrl, () =>
     addMissingFields(`${table}TreeDefItem`, {
       id: rankId,
       name: rankNames[table],
       resource_uri: rankUrl,
-    })
+    }),
   );
 });
 
 test('queryFromTree', async () =>
   expect(
     Promise.all(
-      allTrees.map(async (tree, index) => queryFromTree(tree, index * 4))
-    )
+      allTrees.map(async (tree, index) => queryFromTree(tree, index * 4)),
+    ),
   ).resolves.toMatchSnapshot());

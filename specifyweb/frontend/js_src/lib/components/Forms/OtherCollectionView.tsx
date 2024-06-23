@@ -25,7 +25,7 @@ export function useAvailableCollections(): RA<SerializedResource<Collection>> {
   const [sortOrder] = userPreferences.use(
     'chooseCollection',
     'general',
-    'sortOrder'
+    'sortOrder',
   );
   const collections = React.useMemo(() => {
     const { direction, fieldNames } = toLargeSortConfig(sortOrder);
@@ -35,11 +35,11 @@ export function useAvailableCollections(): RA<SerializedResource<Collection>> {
         (collection) =>
           collection[
             fieldNames.join(
-              backboneFieldSeparator
+              backboneFieldSeparator,
             ) as keyof Collection['fields']
           ],
-        direction === 'desc'
-      )
+        direction === 'desc',
+      ),
     );
   }, [sortOrder]);
   useErrorContext('collections', collections);
@@ -56,7 +56,7 @@ export function OtherCollection({
 }): JSX.Element {
   const availableCollection = useAvailableCollections();
   const collections = filterArray(
-    availableCollection.filter(({ id }) => collectionIds.includes(id))
+    availableCollection.filter(({ id }) => collectionIds.includes(id)),
   );
   const navigate = useNavigate();
   return (

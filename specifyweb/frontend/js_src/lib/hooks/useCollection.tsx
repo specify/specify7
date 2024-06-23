@@ -11,11 +11,11 @@ import { useAsyncState } from './useAsyncState';
  * A hook for fetching a collection of resources in a paginated way
  */
 export function useCollection<SCHEMA extends AnySchema>(
-  fetch: (offset: number) => Promise<SerializedCollection<SCHEMA>>
+  fetch: (offset: number) => Promise<SerializedCollection<SCHEMA>>,
 ): readonly [
   SerializedCollection<SCHEMA> | undefined,
   GetOrSet<SerializedCollection<SCHEMA> | undefined>[1],
-  () => Promise<void>
+  () => Promise<void>,
 ] {
   const fetchRef = React.useRef<
     Promise<SerializedCollection<SCHEMA> | undefined> | undefined
@@ -34,7 +34,7 @@ export function useCollection<SCHEMA extends AnySchema>(
       (data) => {
         fetchRef.current = undefined;
         return data;
-      }
+      },
     );
     return fetchRef.current;
   }, [fetch]);
@@ -48,7 +48,7 @@ export function useCollection<SCHEMA extends AnySchema>(
       collectionRef.current = undefined;
       return callback();
     }, [callback]),
-    false
+    false,
   );
   const collectionRef = React.useRef<
     SerializedCollection<SCHEMA> | undefined
@@ -73,16 +73,16 @@ export function useCollection<SCHEMA extends AnySchema>(
                     records: [
                       ...defined(
                         collection,
-                        'Try to fetch more before collection is fetch.'
+                        'Try to fetch more before collection is fetch.',
                       ).records,
                       ...result.records,
                     ],
                     totalCount: defined(collection).totalCount,
                   }))
-                : undefined
+                : undefined,
             )
         : undefined,
-    [callback, collection]
+    [callback, collection],
   );
 
   return [collection, setCollection, fetchMore] as const;

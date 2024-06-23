@@ -52,9 +52,9 @@ function TemplateSelection({
                     uploadplan,
                     headers.length === 0 && Array.isArray(visualorder)
                       ? visualorder.map((visualCol) => columns[visualCol])
-                      : headers
-                  )
-            )
+                      : headers,
+                  ),
+            ),
           )
         }
       />
@@ -71,7 +71,7 @@ export function BaseTableSelection({
   readonly onClose: () => void;
   readonly onSelectTemplate: (
     uploadPlan: UploadPlan,
-    headers: RA<string>
+    headers: RA<string>,
   ) => void;
   readonly onSelected: (baseTableName: keyof Tables) => void;
   readonly headers: RA<string>;

@@ -48,7 +48,7 @@ export function WbSave({
         workbench.cells.cellMeta = [];
         workbench.utils?.searchCells(
           { key: 'SettingsChange' },
-          searchRef.current
+          searchRef.current,
         );
         workbench.hot?.render();
         closeProgressBar();

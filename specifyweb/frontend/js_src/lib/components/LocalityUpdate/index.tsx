@@ -42,7 +42,7 @@ export function LocalityUpdateFromDataSet(): JSX.Element {
 
   function handleParse(
     columnHeaders: RA<string>,
-    data: RA<RA<number | string>>
+    data: RA<RA<number | string>>,
   ): void {
     loading(
       ajax('/api/localityset/parse/', {
@@ -54,13 +54,13 @@ export function LocalityUpdateFromDataSet(): JSX.Element {
           createRecordSet: false,
           runInBackground: true,
         },
-      }).then(({ data }) => setTaskId(data))
+      }).then(({ data }) => setTaskId(data)),
     );
   }
 
   function handleImport(
     columnHeaders: RA<string>,
-    data: RA<RA<number | string>>
+    data: RA<RA<number | string>>,
   ): void {
     loading(
       ajax('/api/localityset/import/', {
@@ -72,7 +72,7 @@ export function LocalityUpdateFromDataSet(): JSX.Element {
           createRecordSet: true,
           runInBackground: true,
         },
-      }).then(({ data }) => setTaskId(data))
+      }).then(({ data }) => setTaskId(data)),
     );
   }
 
@@ -93,7 +93,7 @@ export function LocalityUpdateFromDataSet(): JSX.Element {
               return {
                 missingRequiredHeaders:
                   accumulator.missingRequiredHeaders.filter(
-                    (header) => header !== parsedHeader
+                    (header) => header !== parsedHeader,
                   ),
                 unrecognizedHeaders: isUnknown
                   ? [...accumulator.unrecognizedHeaders, currentHeader]
@@ -103,7 +103,7 @@ export function LocalityUpdateFromDataSet(): JSX.Element {
             {
               missingRequiredHeaders: Array.from(localityUpdateRequiredHeaders),
               unrecognizedHeaders: [] as RA<string>,
-            }
+            },
           );
           setHeaderErrors(foundHeaderErrors);
           setHeaders(headers);
@@ -111,7 +111,7 @@ export function LocalityUpdateFromDataSet(): JSX.Element {
 
           if (
             !Object.values(foundHeaderErrors).some(
-              (errors) => errors.length > 0
+              (errors) => errors.length > 0,
             )
           )
             handleParse(headers, data);
@@ -151,7 +151,7 @@ export function LocalityUpdateFromDataSet(): JSX.Element {
                 <H2>{localityText.localityUpdateMissingHeader()}</H2>
                 <p>
                   {formatConjunction(
-                    headerErrors.missingRequiredHeaders as RA<LocalizedString>
+                    headerErrors.missingRequiredHeaders as RA<LocalizedString>,
                   )}
                 </p>
               </>
@@ -161,7 +161,7 @@ export function LocalityUpdateFromDataSet(): JSX.Element {
                 <H2>{localityText.localityUpdateUnrecognizedHeaders()}</H2>
                 <p>
                   {formatConjunction(
-                    headerErrors.unrecognizedHeaders as RA<LocalizedString>
+                    headerErrors.unrecognizedHeaders as RA<LocalizedString>,
                   )}
                 </p>
               </>
@@ -170,8 +170,8 @@ export function LocalityUpdateFromDataSet(): JSX.Element {
             <p>
               {formatConjunction(
                 Array.from(
-                  localityUpdateAcceptedHeaders()
-                ) as unknown as RA<LocalizedString>
+                  localityUpdateAcceptedHeaders(),
+                ) as unknown as RA<LocalizedString>,
               )}
             </p>
           </>

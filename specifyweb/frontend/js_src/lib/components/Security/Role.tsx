@@ -86,7 +86,7 @@ export function RoleView({
   const navigate = useNavigate();
   const unsetUnloadProtect = useUnloadProtect(
     changesMade,
-    mainText.leavePageConfirmationDescription()
+    mainText.leavePageConfirmationDescription(),
   );
   const [state, setState] = useLiveState<
     | State<'MainState'>

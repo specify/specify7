@@ -68,9 +68,9 @@ function RecordSetView({
         })
           .fetch()
           .then((recordSet) => recordSet ?? false),
-      [recordSetId]
+      [recordSetId],
     ),
-    true
+    true,
   );
   // eslint-disable-next-line no-nested-ternary
   return typeof recordSet === 'object' ? (
@@ -92,7 +92,7 @@ function DisplayRecordSet({
   const [recordToOpen] = userPreferences.use(
     'form',
     'recordSet',
-    'recordToOpen'
+    'recordToOpen',
   );
   const navigate = useNavigate();
 
@@ -116,18 +116,18 @@ function DisplayRecordSet({
                 formatUrl(
                   getResourceViewUrl(
                     getTableById(recordSet.get('dbTableId')).name,
-                    records[0]?.recordId ?? 'new'
+                    records[0]?.recordId ?? 'new',
                   ),
-                  { recordSetId: recordSet.id }
+                  { recordSetId: recordSet.id },
                 ),
                 {
                   replace: true,
-                }
-              )
+                },
+              ),
         ),
-      [recordSet, resourceIndex, recordToOpen]
+      [recordSet, resourceIndex, recordToOpen],
     ),
-    true
+    true,
   );
   return readOnlyState ? (
     <Dialog
@@ -170,9 +170,9 @@ export function ViewResourceByGuid({
           limit: 1,
           domainFilter: false,
         }).then(({ records }) => records[0]?.id ?? false),
-      [table, guid]
+      [table, guid],
     ),
-    true
+    true,
   );
 
   const navigate = useNavigate();
@@ -181,7 +181,7 @@ export function ViewResourceByGuid({
       typeof id === 'number'
         ? navigate(getResourceViewUrl(table.name, id), { replace: true })
         : undefined,
-    [id]
+    [id],
   );
   return id === false ? <NotFoundView /> : null;
 }
@@ -202,13 +202,13 @@ function ViewByCatalogProtected(): JSX.Element | null {
   const [id] = useAsyncState<number | false>(
     React.useCallback(async () => {
       const collection = userInformation.availableCollections.find(
-        ({ code }) => code?.trim() === collectionCode.trim()
+        ({ code }) => code?.trim() === collectionCode.trim(),
       );
       if (collection === undefined) {
         console.error(
           `Unable to find the collection with code ${collectionCode}\n` +
             `Please make sure collection code is specified correctly and ` +
-            `the user has access to the collection.`
+            `the user has access to the collection.`,
         );
         return false;
       }
@@ -223,7 +223,7 @@ function ViewByCatalogProtected(): JSX.Element | null {
        */
       const formatted = await fieldFormat(
         getField(tables.CollectionObject, 'catalogNumber'),
-        catalogNumber
+        catalogNumber,
       );
 
       return fetchCollection('CollectionObject', {
@@ -237,7 +237,7 @@ function ViewByCatalogProtected(): JSX.Element | null {
         return false;
       });
     }, [collectionCode, catalogNumber, navigate]),
-    true
+    true,
   );
 
   React.useEffect(
@@ -247,10 +247,10 @@ function ViewByCatalogProtected(): JSX.Element | null {
             getResourceViewUrl('CollectionObject', id, f.parseInt(recordSetId)),
             {
               replace: true,
-            }
+            },
           )
         : undefined,
-    [navigate, id, recordSetId]
+    [navigate, id, recordSetId],
   );
 
   return id === false ? <NotFoundView /> : null;
@@ -307,7 +307,7 @@ export function CheckLoggedInCollection({
               : { type: 'Inaccessible', collectionIds };
           }
         })
-        .then(setOtherCollections)
+        .then(setOtherCollections),
     );
   }, [resource, isInRecordSet]);
 

@@ -41,21 +41,21 @@ export const parentTableRelationship = f.store<RR<keyof Tables, Relationship>>(
               // For some weird reason, some relationships to parent tables are -to-many. Ignore them
               !relationshipIsToMany(relationship) &&
               relationship.name !== 'createdByAgent' &&
-              relationship.name !== 'modifiedByAgent'
+              relationship.name !== 'modifiedByAgent',
           );
           if (relationships.length > 1)
             softFail(
               error('Expected at most one parent relationship', {
                 relationships,
                 potentialParentTable,
-              })
+              }),
             );
           const relationship = relationships.at(0);
           if (relationship === undefined) return undefined;
           return [name, relationship];
-        })
-      )
-    )
+        }),
+      ),
+    ),
 );
 
 /**

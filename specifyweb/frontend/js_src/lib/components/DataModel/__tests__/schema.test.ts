@@ -10,6 +10,6 @@ describe('getTable', () => {
     expect(getTable('collectionObject')).toBe(tables.CollectionObject));
   test('edu.ku.brc.specify.datamodel.Accession', () =>
     expect(getTable('edu.ku.brc.specify.datamodel.Accession')).toBe(
-      tables.Accession
+      tables.Accession,
     ));
 });

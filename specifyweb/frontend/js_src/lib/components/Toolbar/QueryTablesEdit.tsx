@@ -23,7 +23,7 @@ export function QueryTablesEdit({
   const [isNoRestrictionMode] = userPreferences.use(
     'queryBuilder',
     'general',
-    'noRestrictionsMode'
+    'noRestrictionsMode',
   );
   const [tables, setTables] = useQueryTables();
   return (
@@ -56,7 +56,7 @@ export function TablesListEdit({
   const selectedValues = selectedTables.map(({ name }) => name);
   const allTables = Object.values(genericTables)
     .filter((table) =>
-      tablesFilter(isNoRestrictionMode, false, true, table, selectedValues)
+      tablesFilter(isNoRestrictionMode, false, true, table, selectedValues),
     )
     .map(({ name, label }) => ({ name, label }));
 

@@ -1,7 +1,5 @@
 Fixes #
 
-
-
 ### Checklist
 
 - [ ] Self-review the PR after opening it to make sure the changes look good

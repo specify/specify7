@@ -31,7 +31,7 @@ export function AttachmentGallery({
   readonly isComplete: boolean;
   readonly onChange: (
     attachment: SerializedResource<Attachment>,
-    index: number
+    index: number,
   ) => void;
   readonly onClick?: (attachment: SerializedResource<Attachment>) => void;
 }): JSX.Element {
@@ -45,7 +45,7 @@ export function AttachmentGallery({
         containerRef.current.scrollHeight - containerRef.current.clientHeight
         ? handleFetchMore?.().catch(raise)
         : undefined,
-    [handleFetchMore]
+    [handleFetchMore],
   );
 
   const fillPage = handleFetchMore === undefined ? undefined : rawFillPage;
@@ -57,14 +57,14 @@ export function AttachmentGallery({
       containerRef.current?.clientHeight
         ? fillPage?.().catch(raise)
         : undefined),
-    [fillPage, attachments]
+    [fillPage, attachments],
   );
 
   const [viewRecord, setViewRecord] = React.useState<
     SpecifyResource<AnySchema> | undefined
   >(undefined);
   const [openIndex, setOpenIndex] = React.useState<number | undefined>(
-    undefined
+    undefined,
   );
 
   const [related, setRelated] = React.useState<
@@ -75,8 +75,7 @@ export function AttachmentGallery({
   return (
     <>
       <Container.Base
-        className="grid flex-1 grid-cols-[repeat(auto-fit,minmax(var(--scale),1fr))]
-          items-center gap-4 shadow-none"
+        className="grid flex-1 grid-cols-[repeat(auto-fit,minmax(var(--scale),1fr))] items-center gap-4 shadow-none"
         forwardRef={containerRef}
         style={
           {

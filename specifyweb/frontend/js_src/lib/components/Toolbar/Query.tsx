@@ -49,7 +49,7 @@ export type QueryListContextType = {
   readonly newQueryUrl: string;
   readonly onClose: () => void;
   readonly getQuerySelectCallback?: (
-    query: SerializedResource<SpQuery>
+    query: SerializedResource<SpQuery>,
   ) => string | (() => void);
   readonly children?: (props: {
     readonly totalCount: number | undefined;
@@ -95,7 +95,7 @@ export function QueryListDialog({
   const [sortConfig, handleSort] = useSortConfig(
     'listOfQueries',
     'name',
-    false
+    false,
   );
 
   const { paginator, limit, offset } = usePaginator('queryBuilder');
@@ -114,9 +114,9 @@ export function QueryListDialog({
           offset,
           orderBy,
         }),
-      [limit, offset, orderBy]
+      [limit, offset, orderBy],
     ),
-    false
+    false,
   );
 
   React.useEffect(
@@ -128,13 +128,13 @@ export function QueryListDialog({
               ? undefined
               : {
                   records: data.records.filter(
-                    (query) => query.id !== resource.id
+                    (query) => query.id !== resource.id,
                   ),
                   totalCount: data.totalCount - 1,
-                }
+                },
           );
       }),
-    [data, setData]
+    [data, setData],
   );
 
   const totalCountRef = React.useRef<number | undefined>(undefined);
@@ -238,7 +238,7 @@ export function QueryList({
 }: {
   readonly query: SerializedResource<SpQuery>;
   readonly getQuerySelectCallback?: (
-    query: SerializedResource<SpQuery>
+    query: SerializedResource<SpQuery>,
   ) => string | (() => void);
   readonly isReadOnly: boolean;
 }): JSX.Element {

@@ -29,7 +29,7 @@ export function RetrieveGbifKey(): JSX.Element | null {
 const fetchInstitution = async (): Promise<SpecifyResource<Institution>> =>
   defined(
     getDomainResource('institution'),
-    'Unable to retrieve institution'
+    'Unable to retrieve institution',
   ).fetch();
 
 function PickInstitution({
@@ -41,17 +41,17 @@ function PickInstitution({
   const [, setOrganizationKey] = collectionPreferences.use(
     'statistics',
     'specifyNetwork',
-    'publishingOrganization'
+    'publishingOrganization',
   );
   const [searchQuery, setSearchQuery] = React.useState(
-    institution.get('name') ?? ''
+    institution.get('name') ?? '',
   );
   const [results] = useAsyncState(
     React.useCallback(
       async () => fetchPossibleInstitutions(searchQuery),
-      [searchQuery]
+      [searchQuery],
     ),
-    false
+    false,
   );
   return (
     <>
@@ -84,7 +84,7 @@ function PickInstitution({
 }
 
 const fetchPossibleInstitutions = async (
-  query: string
+  query: string,
 ): Promise<
   RA<{
     readonly title: LocalizedString;
@@ -94,17 +94,17 @@ const fetchPossibleInstitutions = async (
   paginateGbif(
     formatUrl('https://api.gbif.org/v1/organization/', {
       q: query,
-    })
+    }),
   ).then((results) =>
     results.map(({ title, key }) => ({
       title: localized(title as string),
       key: key as string,
-    }))
+    })),
   );
 
 export const paginateGbif = async (
   url: string,
-  offset: number = 0
+  offset: number = 0,
 ): Promise<RA<IR<unknown>>> =>
   ajax<{
     readonly limit: number;
@@ -118,7 +118,7 @@ export const paginateGbif = async (
       headers: {
         Accept: 'application/json',
       },
-    }
+    },
   ).then(async ({ data: { results, limit, count } }) => [
     ...results,
     ...(count > limit + offset ? await paginateGbif(url, offset + limit) : []),

@@ -26,8 +26,8 @@ export function FormatterTypes(): JSX.Element {
     onChange: handleChange,
   } = React.useContext(FormattersContext)!;
 
-  const [type, setType] = useRoutePart<typeof types[number]>('type');
-  const indexType = types.indexOf(type as typeof types[number]);
+  const [type, setType] = useRoutePart<(typeof types)[number]>('type');
+  const indexType = types.indexOf(type as (typeof types)[number]);
 
   const resolvedType = type === 'formatter' ? 'formatters' : 'aggregators';
 

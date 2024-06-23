@@ -39,7 +39,7 @@ export function WbPlanViewWrapper(): JSX.Element | null {
         expectedErrors: [Http.NOT_FOUND],
       }).then(({ data, status }) => (status === Http.NOT_FOUND ? false : data));
     }, [id]),
-    true
+    true,
   );
   useErrorContext('dataSet', dataSet);
 
@@ -60,7 +60,7 @@ export function WbPlanViewWrapper(): JSX.Element | null {
           dataSet.visualorder === null
             ? dataSet.columns
             : dataSet.visualorder.map(
-                (physicalCol) => dataSet.columns[physicalCol]
+                (physicalCol) => dataSet.columns[physicalCol],
               )
         }
         uploadPlan={dataSet.uploadplan}

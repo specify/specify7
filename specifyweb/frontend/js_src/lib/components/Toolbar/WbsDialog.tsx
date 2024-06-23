@@ -40,15 +40,15 @@ const createWorkbenchDataSet = async () =>
     {
       importedfilename: '',
       columns: [],
-    }
+    },
   );
 
 export const createEmptyDataSet = async <
-  DATASET extends AttachmentDataSet | Dataset
+  DATASET extends AttachmentDataSet | Dataset,
 >(
   datasetUrl: string,
   name: LocalizedString,
-  props?: Partial<DATASET>
+  props?: Partial<DATASET>,
 ): Promise<DATASET> =>
   ajax<DATASET>(datasetUrl, {
     method: 'POST',
@@ -73,9 +73,9 @@ export function DataSetMetaOverlay(): JSX.Element | null {
         ajax<Dataset>(`/api/workbench/dataset/${dataSetId}/`, {
           headers: { Accept: 'application/json' },
         }).then(({ data }) => data),
-      [dataSetId]
+      [dataSetId],
     ),
-    true
+    true,
   );
 
   const navigate = useNavigate();
@@ -144,17 +144,17 @@ export function DataSetsDialog({
       async () =>
         ajax<RA<DatasetBriefPlan>>(
           `/api/workbench/dataset/${showTemplates ? '?with_plan' : ''}`,
-          { headers: { Accept: 'application/json' } }
+          { headers: { Accept: 'application/json' } },
         ).then(({ data }) => data),
-      [showTemplates]
+      [showTemplates],
     ),
-    true
+    true,
   );
 
   const [sortConfig, handleSort, applySortConfig] = useSortConfig(
     'listOfDataSets',
     'dateCreated',
-    false
+    false,
   );
 
   const datasets = Array.isArray(unsortedDatasets)
@@ -164,8 +164,8 @@ export function DataSetsDialog({
           sortConfig.sortField === 'name'
             ? name
             : sortConfig.sortField === 'dateCreated'
-            ? timestampcreated
-            : uploadresult?.timestamp ?? ''
+              ? timestampcreated
+              : uploadresult?.timestamp ?? '',
       )
     : undefined;
 
@@ -187,8 +187,8 @@ export function DataSetsDialog({
                 onClick={(): void =>
                   loading(
                     createWorkbenchDataSet().then(({ id }) =>
-                      navigate(`/specify/workbench/plan/${id}/`)
-                    )
+                      navigate(`/specify/workbench/plan/${id}/`),
+                    ),
                   )
                 }
               >

@@ -18,20 +18,20 @@ import { nodeParseXml, nodeUnparseXml } from './xml';
 program
   .name('Schema Localization Extractor')
   .description(
-    'Extract data from schema localization files and emits *.po files for Weblate'
+    'Extract data from schema localization files and emits *.po files for Weblate',
   )
   .requiredOption(
     '-w, --weblate-directory <string>',
-    'Weblate source directory'
+    'Weblate source directory',
   )
   .requiredOption(
     '-c, --config-directory <string>',
-    'Location of the "config" directory in Specify 6 repository'
+    'Location of the "config" directory in Specify 6 repository',
   )
   .option(
     '-v, --validate',
     'Validate that current weblate config is correct',
-    false
+    false,
   );
 
 program.parse();
@@ -47,11 +47,13 @@ gatherSchemaLocalization(undefined, configDirectory)
       weblateDirectory,
       usagesToStrings(dictionaries),
       'schema',
-      Object.fromEntries(languages.map((code) => [code, code] as const))
-    )
+      Object.fromEntries(languages.map((code) => [code, code] as const)),
+    ),
   )
   .then(async (merged) =>
-    merged === undefined ? undefined : updateLocalFiles(configDirectory, merged)
+    merged === undefined
+      ? undefined
+      : updateLocalFiles(configDirectory, merged),
   )
   .catch(console.error);
 
@@ -65,17 +67,17 @@ const usagesToStrings = (usages: DictionaryUsages): ExtractedStrings =>
             dictionaryName: categoryName,
             strings: Object.fromEntries(
               Object.entries(strings).map(
-                ([key, { strings }]) => [key, strings] as const
-              )
+                ([key, { strings }]) => [key, strings] as const,
+              ),
             ),
           },
-        ] as const
-    )
+        ] as const,
+    ),
   );
 
 const updateLocalFiles = async (
   configDirectory: string,
-  dictionary: ExtractedStrings
+  dictionary: ExtractedStrings,
 ): Promise<void> =>
   Promise.all(
     Object.values(dictionary).map(async ({ dictionaryName, strings }) => {
@@ -86,7 +88,7 @@ const updateLocalFiles = async (
       const updatedDom = updateSchemaLocalization(dom, strings);
       const updatedXmlString = nodeUnparseXml(updatedDom);
       return fs.promises.writeFile(fullPath, updatedXmlString);
-    })
+    }),
   ).then(f.void);
 
 /**
@@ -94,7 +96,7 @@ const updateLocalFiles = async (
  */
 const updateSchemaLocalization = (
   dom: ParsedDom,
-  strings: IR<LocalizationEntry>
+  strings: IR<LocalizationEntry>,
 ): ParsedDom =>
   traverseSchema(dom, (_location, oldStrings) => {
     const rawKey = oldStrings[rootSchemaLanguage];
@@ -109,11 +111,11 @@ const updateSchemaLocalization = (
       Object.entries(translation)
         .map(
           ([code, translation]) =>
-            [code, translation ?? oldStrings[code] ?? ''] as const
+            [code, translation ?? oldStrings[code] ?? ''] as const,
         )
         .filter(([, translation]) => translation !== '')
         .map(
-          ([code, translation]) => [code, `${translation}${cutPart}`] as const
-        )
+          ([code, translation]) => [code, `${translation}${cutPart}`] as const,
+        ),
     );
   });

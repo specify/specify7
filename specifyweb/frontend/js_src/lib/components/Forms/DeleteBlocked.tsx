@@ -62,11 +62,11 @@ export function DeleteBlockers({
                     ...blockers[blockerIndex].blockers[relationshipIndex],
                     ids: removeItem(
                       blockers[blockerIndex].blockers[relationshipIndex].ids,
-                      resourceIndex
+                      resourceIndex,
                     ),
-                  }
+                  },
                 ).filter(({ ids }) => ids.length > 0),
-              }).filter(({ blockers }) => blockers.length > 0)
+              }).filter(({ blockers }) => blockers.length > 0),
             )
           }
         />
@@ -84,7 +84,7 @@ function TableBlockersPreview({
   readonly parentResource: SpecifyResource<AnySchema>;
   readonly onDeleted: (
     relationshipIndex: number,
-    resourceIndex: number
+    resourceIndex: number,
   ) => void;
 }): JSX.Element {
   const label = (
@@ -149,7 +149,7 @@ function BlockerPreview({
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const resolvedIds = React.useMemo(
     () => ids.map(({ direct, parent = direct }) => parent),
-    [ids]
+    [ids],
   );
 
   const table = parentRelationship?.relatedTable ?? directRelationship.table;
@@ -167,12 +167,12 @@ function BlockerPreview({
             directRelationship.relatedTable.idField.name,
           ])
         : parentRelationship.otherSideName === undefined
-        ? undefined
-        : QueryFieldSpec.fromPath(table.name, [
-            parentRelationship.otherSideName,
-            directRelationship.name,
-            directRelationship.relatedTable.idField.name,
-          ]);
+          ? undefined
+          : QueryFieldSpec.fromPath(table.name, [
+              parentRelationship.otherSideName,
+              directRelationship.name,
+              directRelationship.relatedTable.idField.name,
+            ]);
 
     return (
       rawQueryField

@@ -30,7 +30,7 @@ export type AllTableViews = {
  */
 export const fetchAllViews = async (
   tableName: keyof Tables,
-  cache = false
+  cache = false,
 ): Promise<AllTableViews> =>
   Promise.all(
     userInformation.availableCollections.map(async ({ id }) =>
@@ -44,13 +44,13 @@ export const fetchAllViews = async (
             Accept: 'application/json',
           },
           cache: cache ? undefined : 'no-cache',
-        }
-      ).then(({ data }) => data.map((view) => ({ ...view, collectionId: id })))
-    )
+        },
+      ).then(({ data }) => data.map((view) => ({ ...view, collectionId: id }))),
+    ),
   ).then((data) => {
     const [disk, database] = split(
       data.flat(),
-      (view) => view.viewsetFile === null
+      (view) => view.viewsetFile === null,
     );
     /*
      * Note, several requests may return the same view definition
@@ -59,35 +59,38 @@ export const fetchAllViews = async (
       // Deduplicate views from database
       database: Object.values(
         Object.fromEntries(
-          database.map((view) => [`${view.viewsetId ?? ''}_${view.name}`, view])
-        )
+          database.map((view) => [
+            `${view.viewsetId ?? ''}_${view.name}`,
+            view,
+          ]),
+        ),
       ).map((view) => augmentDatabaseView(tableName, view)),
       // Deduplicate views from disk
       disk: Object.values(
         Object.fromEntries(
-          disk.map((view) => [`${view.viewsetFile ?? ''}_${view.name}`, view])
-        )
+          disk.map((view) => [`${view.viewsetFile ?? ''}_${view.name}`, view]),
+        ),
       ).map(augmentDiskView),
     };
   });
 
 const augmentDatabaseView = (
   tableName: keyof Tables,
-  view: ViewDefinition & { readonly collectionId: number }
+  view: ViewDefinition & { readonly collectionId: number },
 ): PresentableViewDefinition & { readonly collectionId: number } => ({
   ...view,
   category:
     (view.viewsetLevel === 'Collection'
       ? userInformation.availableCollections.find(
-          ({ id }) => id === view.collectionId
+          ({ id }) => id === view.collectionId,
         )?.collectionName
       : undefined) ?? camelToHuman(view.viewsetName),
   disciplineId: strictParseResourceUrl(
     defined(
       userInformation.availableCollections.find(
-        ({ id }) => id === view.collectionId
-      )?.discipline
-    )
+        ({ id }) => id === view.collectionId,
+      )?.discipline,
+    ),
   )[1],
   editUrl:
     view.viewsetId === null

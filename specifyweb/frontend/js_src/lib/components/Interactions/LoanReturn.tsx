@@ -31,7 +31,7 @@ export const loanReturnPrepForm = f.store(
     autoGenerateViewDefinition(tables.LoanReturnPreparation, 'form', 'edit', [
       'receivedBy',
       'returnedDate',
-    ])
+    ]),
 );
 
 export type PrepReturnRowState = {
@@ -57,12 +57,12 @@ export function LoanReturn({
             models.filter(
               (preparation) =>
                 (preparation.get('quantity') ?? 0) >
-                (preparation.get('quantityResolved') ?? 0)
-            )
+                (preparation.get('quantityResolved') ?? 0),
+            ),
           ),
-      [resource]
+      [resource],
     ),
-    true
+    true,
   );
 
   return Array.isArray(preparations) ? (
@@ -91,7 +91,7 @@ function PreparationReturn({
     new tables.LoanReturnPreparation.Resource({
       returneddate: getDateInputValue(new Date()),
       receivedby: userInformation.agent.resource_uri,
-    })
+    }),
   );
   const [state, setState] = React.useState<RA<PrepReturnRowState>>(() =>
     preparations.map((preparation) => ({
@@ -101,24 +101,24 @@ function PreparationReturn({
         (preparation.get('quantity') ?? 0) -
         (preparation.get('quantityResolved') ?? 0),
       remarks: '',
-    }))
+    })),
   );
 
   const canDeselect = state.some(({ resolve }) => resolve > 0);
   const canSelectAll = state.some(
-    ({ resolve, unresolved }) => resolve < unresolved
+    ({ resolve, unresolved }) => resolve < unresolved,
   );
 
   const [bulkReturn, setBulkReturn] = React.useState(0);
   const [bulkResolve, setBulkResolve] = React.useState(0);
   const quantities = preparations.map(
-    (preparation) => preparation.get('quantity') ?? 0
+    (preparation) => preparation.get('quantity') ?? 0,
   );
   const maxPrep = f.max(...quantities);
 
   const setQuantityToBulk = (
     newCount: number,
-    type: 'resolve' | 'returns'
+    type: 'resolve' | 'returns',
   ): void => {
     if (type === 'resolve') setBulkResolve(newCount);
     else setBulkReturn(newCount);
@@ -149,7 +149,7 @@ function PreparationReturn({
           ...returnItem,
           ...updatedValues,
         };
-      })
+      }),
     );
   };
 
@@ -169,7 +169,7 @@ function PreparationReturn({
                   returns: unresolved,
                   unresolved,
                   remarks,
-                }))
+                })),
               )
             }
           >
@@ -184,7 +184,7 @@ function PreparationReturn({
                   ...preparation,
                   resolve: 0,
                   returns: 0,
-                }))
+                })),
               )
             }
           >
@@ -213,16 +213,16 @@ function PreparationReturn({
             .forEach(({ preparation, resolve, returns, remarks }) => {
               preparation.set(
                 'quantityReturned',
-                (preparation.get('quantityReturned') ?? 0) + returns
+                (preparation.get('quantityReturned') ?? 0) + returns,
               );
               preparation.set(
                 'quantityResolved',
-                (preparation.get('quantityResolved') ?? 0) + resolve
+                (preparation.get('quantityResolved') ?? 0) + resolve,
               );
               preparation.set(
                 'isResolved',
                 (preparation.get('quantityResolved') ?? 0) >=
-                  (preparation.get('quantity') ?? 0)
+                  (preparation.get('quantity') ?? 0),
               );
 
               const loanReturn = new tables.LoanReturnPreparation.Resource();
@@ -232,15 +232,15 @@ function PreparationReturn({
               loanReturn.set('quantityResolved', resolve);
               loanReturn.set(
                 'receivedBy',
-                loanReturnPreparation.current.get('receivedBy')
+                loanReturnPreparation.current.get('receivedBy'),
               );
               loanReturn.set(
                 'returnedDate',
-                loanReturnPreparation.current.get('returnedDate')
+                loanReturnPreparation.current.get('returnedDate'),
               );
 
               const loanPreparations = preparation.getDependentResource(
-                'loanReturnPreparations'
+                'loanReturnPreparations',
               );
               if (typeof loanPreparations === 'object')
                 loanPreparations.add(loanReturn);

@@ -18,7 +18,7 @@ import { removeItem, removeKey } from '../utils/utils';
 
 export function useSearchParameter(
   rawName: string | undefined,
-  overrideLocation?: SafeLocation
+  overrideLocation?: SafeLocation,
 ): GetSet<string | undefined> {
   const name = rawName?.toLowerCase();
   const location = useLocation();
@@ -39,9 +39,9 @@ export function useSearchParameter(
           : {
               ...parameters,
               [name]: value,
-            }
+            },
       ),
-      { replace: true, state: location.state }
+      { replace: true, state: location.state },
     );
   });
 
@@ -54,25 +54,25 @@ export function useSearchParameter(
  * FEATURE: use this in more places
  */
 function useFunction<TYPE extends (...args: RA<never>) => unknown>(
-  callback: TYPE
+  callback: TYPE,
 ): TYPE {
   const callbackRef = React.useRef(callback);
   callbackRef.current = callback;
   return React.useCallback<TYPE>(
     ((...args) => callbackRef.current(...args)) as TYPE,
-    []
+    [],
   );
 }
 
 export function useUnloadProtect(
   isEnabled: boolean,
-  message: LocalizedString
+  message: LocalizedString,
 ): () => void {
   const setUnloadProtects = React.useContext(SetUnloadProtectsContext)!;
 
   const handleRemove = React.useCallback(
     (): void => unsetUnloadProtect(setUnloadProtects, message),
-    [setUnloadProtects, message]
+    [setUnloadProtects, message],
   );
 
   React.useEffect(() => {
@@ -83,13 +83,13 @@ export function useUnloadProtect(
 
   return React.useCallback(
     () => (isEnabled ? handleRemove() : undefined),
-    [setUnloadProtects, isEnabled]
+    [setUnloadProtects, isEnabled],
   );
 }
 
 export const unsetUnloadProtect = (
   setUnloadProtects: GetOrSet<RA<string>>[1],
-  message: LocalizedString
+  message: LocalizedString,
 ) =>
   setUnloadProtects((unloadProtects) => {
     const index = unloadProtects.indexOf(message);

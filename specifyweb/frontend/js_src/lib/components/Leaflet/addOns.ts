@@ -12,7 +12,7 @@ const mapName = 'main';
 
 export function rememberSelectedBaseLayers(
   map: L.Map,
-  layers: IR<L.TileLayer>
+  layers: IR<L.TileLayer>,
 ): void {
   const currentLayer = getCache('leafletCurrentLayer', mapName);
   const baseLayer =
@@ -28,11 +28,11 @@ export function rememberSelectedBaseLayers(
 
 function rememberSelectedOverlays(
   map: LeafletInstance,
-  defaultVisibleOverlays: IR<boolean> = {}
+  defaultVisibleOverlays: IR<boolean> = {},
 ): void {
   const handleOverlayEvent: LayersControlEventHandlerFn = ({ layer, type }) => {
     const name = map.controlLayers._layers.find(
-      (entry) => entry.layer === layer
+      (entry) => entry.layer === layer,
     )?.name;
     if (typeof name === 'string')
       setCache('leafletOverlays', name, type === 'overlayadd');
@@ -60,10 +60,10 @@ function rememberSelectedOverlays(
 
 export function addFullScreenButton(
   map: L.Map,
-  callback: (isEnabled: boolean) => void
+  callback: (isEnabled: boolean) => void,
 ): void {
   new (leafletControls.FullScreen(callback))({ position: 'topleft' }).addTo(
-    map
+    map,
   );
 }
 
@@ -77,7 +77,7 @@ const markerLayerName = [
   'polygonBoundary',
   'errorRadius',
 ] as const;
-export type MarkerLayerName = typeof markerLayerName[number];
+export type MarkerLayerName = (typeof markerLayerName)[number];
 const defaultMarkerGroupsState: RR<MarkerLayerName, boolean> = {
   marker: true,
   polygon: true,
@@ -105,7 +105,7 @@ export type LeafletInstance = L.Map & {
 export function addMarkersToMap(
   map: LeafletInstance,
   markers: RA<MarkerGroups>,
-  labels: Partial<RR<MarkerLayerName, string>> = defaultLabels
+  labels: Partial<RR<MarkerLayerName, string>> = defaultLabels,
 ): LeafletInstance {
   // Initialize layer groups
   const cluster = L.markerClusterGroup({
@@ -117,7 +117,7 @@ export function addMarkersToMap(
       const maxValue = 200;
       const hue = Math.max(
         0,
-        Math.round((childCount / maxValue) * (minHue - maxHue) + maxHue)
+        Math.round((childCount / maxValue) * (minHue - maxHue) + maxHue),
       );
 
       const iconObject = new L.DivIcon({
@@ -143,9 +143,9 @@ export function addMarkersToMap(
       (groupName) =>
         [groupName, L.featureGroup.subGroup(cluster)] as readonly [
           MarkerLayerName,
-          L.FeatureGroup
-        ]
-    )
+          L.FeatureGroup,
+        ],
+    ),
   );
 
   rememberSelectedOverlays(map, {
@@ -168,8 +168,8 @@ export function addMarkersToMap(
             labels?.[markerGroupName] ?? defaultLabels[markerGroupName];
           map.controlLayers.addOverlay(layerGroups[markerGroupName], label);
           addedGroups.add(markerGroupName);
-        })
-      )
+        }),
+      ),
     );
 
   addMarkers(markers);

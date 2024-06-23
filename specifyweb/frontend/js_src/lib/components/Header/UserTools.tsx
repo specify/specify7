@@ -67,7 +67,7 @@ export function UserToolsOverlay(): JSX.Element | null {
 
   const [isReadOnly = false, setIsReadOnly] = useCachedState(
     'forms',
-    'readOnlyMode'
+    'readOnlyMode',
   );
 
   return Array.isArray(userTools) ? (
@@ -113,7 +113,7 @@ function useProcessedUserTools(): RA<IR<RA<MenuItem>>> | undefined {
           [
             name,
             Object.values(userTools).sort(sortFunction(({ title }) => title)),
-          ] as const
+          ] as const,
       );
     /*
      * Can't split columns with CSS because break-inside:avoid is not yet
@@ -121,7 +121,7 @@ function useProcessedUserTools(): RA<IR<RA<MenuItem>>> | undefined {
      */
     return split(
       userTools,
-      (_item, index, { length }) => index >= length / 2
+      (_item, index, { length }) => index >= length / 2,
     ).map((group) => Object.fromEntries(group));
   }, [rawUserTools]);
 }

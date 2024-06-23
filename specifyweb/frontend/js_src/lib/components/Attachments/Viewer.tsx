@@ -42,11 +42,11 @@ export function AttachmentViewer({
 }): JSX.Element {
   const serialized = React.useMemo(
     () => serializeResource(attachment),
-    [attachment]
+    [attachment],
   );
   const [originalUrl] = useAsyncState(
     React.useCallback(async () => fetchOriginalUrl(serialized), [serialized]),
-    false
+    false,
   );
 
   const title = localized(attachment.get('title') ?? undefined);
@@ -54,7 +54,7 @@ export function AttachmentViewer({
   const [displayOriginal] = userPreferences.use(
     'attachments',
     'behavior',
-    'displayOriginal'
+    'displayOriginal',
   );
   const attachmentTable = React.useMemo(() => {
     const tableId = attachment.get('tableID');
@@ -68,7 +68,7 @@ export function AttachmentViewer({
   const isReadOnly = augmentMode(
     React.useContext(ReadOnlyContext),
     related?.isNew() ?? attachment.isNew(),
-    attachmentTable?.name
+    attachmentTable?.name,
   );
   const isInSearchDialog = React.useContext(SearchDialogContext);
   const viewDefinition = useViewDefinition({
@@ -97,7 +97,7 @@ export function AttachmentViewer({
 
   const [thumbnail] = useAsyncState(
     React.useCallback(async () => fetchThumbnail(serialized), [serialized]),
-    false
+    false,
   );
 
   const Component = typeof originalUrl === 'string' ? Link.Info : Button.Info;
@@ -192,7 +192,7 @@ export function AttachmentViewer({
                 <Component
                   className="flex-1 whitespace-nowrap"
                   download={new URL(originalUrl).searchParams.get(
-                    'downloadname'
+                    'downloadname',
                   )}
                   href={`/attachment_gw/proxy/${new URL(originalUrl).search}`}
                   target="_blank"

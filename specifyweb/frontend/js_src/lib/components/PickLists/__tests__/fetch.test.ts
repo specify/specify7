@@ -23,7 +23,7 @@ describe('unsafeFetchPickList', () => {
     const resource = await unsafeFetchPickList('_AgentTypeComboBox');
     const serialized = serializeResource(resource!);
     const pickList = serializeResource(
-      getFrontEndPickLists().Agent!.agentType!
+      getFrontEndPickLists().Agent!.agentType!,
     );
     expect(serialized).toEqual(pickList);
   });
@@ -39,7 +39,7 @@ describe('unsafeFetchPickList', () => {
         total_count: 1,
       },
       objects: [pickList],
-    }
+    },
   );
   test('pick list from current collection', async () => {
     const resource = await unsafeFetchPickList('currentCollection');
@@ -54,7 +54,7 @@ describe('unsafeFetchPickList', () => {
         total_count: 0,
       },
       objects: [],
-    }
+    },
   );
   const otherPickList = {
     resource_uri: getResourceApiUrl('PickList', 2),
@@ -86,7 +86,7 @@ describe('unsafeFetchPickList', () => {
         total_count: 0,
       },
       objects: [],
-    }
+    },
   );
 
   test('unknown pick list', async () =>
@@ -102,7 +102,7 @@ describe('fetchPickListItems', () => {
       addMissingFields('PickList', {
         type: PickListTypes.ITEMS,
         pickListItems,
-      })
+      }),
     );
     await expect(fetchPickListItems(pickList)).resolves.toEqual(pickListItems);
   });
@@ -122,7 +122,7 @@ describe('fetchPickListItems', () => {
           // Should ignore this pick list item
           addMissingFields('PickListItem', { title: 'a', value: 'b' }),
         ],
-      })
+      }),
     );
     const items = await fetchPickListItems(pickList);
     expect(items.map((item) => removeKey(item, 'timestampCreated'))).toEqual([
@@ -152,7 +152,7 @@ describe('fetchPickListItems', () => {
       addMissingFields('PickList', {
         type: PickListTypes.TABLE,
         tableName: 'Collection',
-      })
+      }),
     );
     const items = await fetchPickListItems(picklist);
 
@@ -171,7 +171,7 @@ describe('fetchPickListItems', () => {
       addMissingFields('PickList', {
         type: PickListTypes.TABLE,
         tableName: 'Collection',
-      })
+      }),
     );
     const items = await fetchPickListItems(picklist);
 
@@ -183,7 +183,7 @@ describe('fetchPickListItems', () => {
 
   overrideAjax(
     '/api/specify_rows/locality/?limit=0&domainfilter=true&distinct=true&fields=localityname',
-    [['abc']]
+    [['abc']],
   );
   test('entire column', async () => {
     const pickList = deserializeResource(
@@ -191,7 +191,7 @@ describe('fetchPickListItems', () => {
         type: PickListTypes.FIELDS,
         tableName: 'Locality',
         fieldName: 'localityName',
-      })
+      }),
     );
     const items = await fetchPickListItems(pickList);
     expect(items.map((item) => removeKey(item, 'timestampCreated'))).toEqual([

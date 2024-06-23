@@ -11,7 +11,7 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { ReactLazy } from '../Router/ReactLazy';
 
 const TaxonTiles = ReactLazy(async () =>
-  import('./TaxonTiles').then(({ TaxonTiles }) => TaxonTiles)
+  import('./TaxonTiles').then(({ TaxonTiles }) => TaxonTiles),
 );
 
 export function WelcomeView(): JSX.Element {
@@ -21,7 +21,7 @@ export function WelcomeView(): JSX.Element {
   const [displaySearchBar] = userPreferences.use(
     'welcomePage',
     'general',
-    'addSearchBar'
+    'addSearchBar',
   );
 
   return (
@@ -35,16 +35,11 @@ export function WelcomeView(): JSX.Element {
         </div>
       )}
       <div
-        className={`
-        mx-auto flex w-full max-w-[1000px] flex-1 flex-col justify-center gap-4 p-4
-      `}
+        className={`mx-auto flex w-full max-w-[1000px] flex-1 flex-col justify-center gap-4 p-4`}
       >
         <span className="-ml-2 flex-1" />
         <div
-          className={`
-          flex min-h-0 items-center justify-center
-          ${mode === 'embeddedWebpage' ? 'h-5/6' : ''}
-        `}
+          className={`flex min-h-0 items-center justify-center ${mode === 'embeddedWebpage' ? 'h-5/6' : ''} `}
         >
           {mode === 'taxonTiles' ? <TaxonTiles /> : <WelcomeScreenContent />}
         </div>

@@ -48,7 +48,7 @@ export function QueryExportButtons({
     fields.some(({ mappingPath }) => !mappingPathIsComplete(mappingPath));
 
   const [state, setState] = React.useState<'creating' | 'warning' | undefined>(
-    undefined
+    undefined,
   );
 
   function doQueryExport(url: string, delimiter: string | undefined): void {
@@ -63,7 +63,7 @@ export function QueryExportButtons({
         captions: fields
           .filter(({ isDisplay }) => isDisplay)
           .map(({ mappingPath }) =>
-            generateMappingPathPreview(baseTableName, mappingPath)
+            generateMappingPathPreview(baseTableName, mappingPath),
           ),
         recordSetId,
         delimiter,
@@ -75,7 +75,7 @@ export function QueryExportButtons({
   const [separator] = userPreferences.use(
     'queryBuilder',
     'behavior',
-    'exportFileDelimiter'
+    'exportFileDelimiter',
   );
 
   /*
@@ -92,7 +92,7 @@ export function QueryExportButtons({
     const selectedResults = results?.current?.map((row) =>
       row !== undefined && f.has(selectedRows, row[0])
         ? row?.slice(1).map((cell) => cell?.toString() ?? '')
-        : undefined
+        : undefined,
     );
 
     if (selectedResults === undefined) return undefined;
@@ -102,7 +102,7 @@ export function QueryExportButtons({
     const columnsName = fields
       .filter((field) => field.isDisplay)
       .map((field) =>
-        generateMappingPathPreview(baseTableName, field.mappingPath)
+        generateMappingPathPreview(baseTableName, field.mappingPath),
       );
 
     return downloadDataSet(name, filteredResults, columnsName, separator);
@@ -135,19 +135,20 @@ export function QueryExportButtons({
           {queryText.missingCoordinatesForKmlDescription()}
         </Dialog>
       ) : undefined}
-      {containsResults && hasPermission('/querybuilder/query', 'export_csv') && (
-        <QueryButton
-          disabled={fields.length === 0}
-          showConfirmation={showConfirmation}
-          onClick={(): void => {
-            selectedRows.size === 0
-              ? doQueryExport('/stored_query/exportcsv/', separator)
-              : exportSelected().catch(softFail);
-          }}
-        >
-          {queryText.createCsv()}
-        </QueryButton>
-      )}
+      {containsResults &&
+        hasPermission('/querybuilder/query', 'export_csv') && (
+          <QueryButton
+            disabled={fields.length === 0}
+            showConfirmation={showConfirmation}
+            onClick={(): void => {
+              selectedRows.size === 0
+                ? doQueryExport('/stored_query/exportcsv/', separator)
+                : exportSelected().catch(softFail);
+            }}
+          >
+            {queryText.createCsv()}
+          </QueryButton>
+        )}
       {canUseKml && (
         <QueryButton
           disabled={fields.length === 0}

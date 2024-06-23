@@ -25,7 +25,7 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { SpecifyNetworkOverlays } from './Overlay';
 
 export const displaySpecifyNetwork = (
-  resource: SpecifyResource<AnySchema> | undefined
+  resource: SpecifyResource<AnySchema> | undefined,
 ): resource is SpecifyResource<CollectionObject> | SpecifyResource<Taxon> =>
   userPreferences.get('form', 'ui', 'specifyNetworkBadge') &&
   hasTablePermission('Locality', 'read') &&
@@ -44,20 +44,20 @@ export function SpecifyNetworkBadge({
       async () =>
         Promise.resolve(
           f.maybe(toTable(resource, 'Taxon'), async (resource) =>
-            resource.fetch()
+            resource.fetch(),
           ) ??
             f.maybe(toTable(resource, 'CollectionObject'), (resource) =>
-              resource.rgetPromise('currentDetermination.taxon' as never)
+              resource.rgetPromise('currentDetermination.taxon' as never),
             ) ??
-            undefined
+            undefined,
         ).then((taxon) => taxon ?? false),
-      [resource]
+      [resource],
     ),
-    false
+    false,
   );
   const speciesName = React.useMemo(
     () => (taxon === false ? undefined : taxon?.get('fullName')) ?? undefined,
-    [taxon]
+    [taxon],
   );
   const isNoSpecies =
     taxon === false || (typeof taxon === 'object' && taxon.id === undefined);
@@ -85,7 +85,7 @@ export function SpecifyNetworkBadge({
     </Dialog>
   ) : (
     <div
-      className="border-brand-300 flex rounded-full border-2"
+      className="flex rounded-full border-2 border-brand-300"
       title={specifyNetworkText.specifyNetwork()}
       /*
        * Start loading data as soon as hovered over the badge, even before

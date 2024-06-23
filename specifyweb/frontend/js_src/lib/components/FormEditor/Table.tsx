@@ -29,7 +29,7 @@ export function FormEditorTable(): JSX.Element {
   } = useOutletContext<FormEditorOutlet>();
   const currentViewSets = React.useMemo(
     () => viewSets.views.filter((view) => view.table === table),
-    [viewSets.views, table]
+    [viewSets.views, table],
   );
   const isReadOnly = React.useContext(ReadOnlyContext);
   const navigate = useNavigate();
@@ -59,14 +59,14 @@ export function FormEditorTable(): JSX.Element {
                   // If there is only one view definition, don't even show this page to simplify things
                   const viewDefinitions = getViewDefinitionIndexes(
                     view,
-                    viewSets.viewDefs
+                    viewSets.viewDefs,
                   );
                   event.preventDefault();
                   if (viewDefinitions.length > 1)
                     console.warn(
                       'More than one view definition with type="form" ' +
                         'discovered for the same view. Only the first one is ' +
-                        'accessible in the visual editor'
+                        'accessible in the visual editor',
                     );
                   if (viewDefinitions.length === 0) setUnavailable(true);
                   else navigate(resolveRelative(`./${view.name!}`));
@@ -93,12 +93,12 @@ export function FormEditorTable(): JSX.Element {
 
 export const getViewDefinitionIndexes = (
   view: ViewSets['views'][number] | undefined,
-  viewDefs: ViewSets['viewDefs']
+  viewDefs: ViewSets['viewDefs'],
 ): RA<number> =>
   f
     .unique(view?.altViews.altViews.map(({ viewDef }) => viewDef) ?? [])
     .map((definitionName) =>
-      viewDefs.findIndex(({ name }) => name === definitionName)
+      viewDefs.findIndex(({ name }) => name === definitionName),
     )
     .filter(
       (index) =>
@@ -107,5 +107,5 @@ export const getViewDefinitionIndexes = (
          * The "formtable" and "iconview" are always empty stubs. Thus, visual
          * editor should only show "form" view definitions
          */
-        viewDefs[index]?.type === 'form'
+        viewDefs[index]?.type === 'form',
     );

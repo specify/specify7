@@ -43,6 +43,6 @@ export function useId(prefix: string): (suffix: string) => string {
   return React.useCallback(
     (suffix = ''): string =>
       `${resolvedPrefix}${id.current}${suffix ? `-${suffix}` : ''}`,
-    [resolvedPrefix]
+    [resolvedPrefix],
   );
 }

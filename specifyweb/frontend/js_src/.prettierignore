@@ -1,3 +1,9 @@
+/../../../.git/
+/../../context/data/
+# These are not complete HTML files, so Prettier fails with Syntax error
+/../templates/*.html
+/../static/
+/../locale/
 /lib/tests/fixtures/
 /lib/tests/ajax/static
 /lib/components/DataModel/*.js

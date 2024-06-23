@@ -67,7 +67,7 @@ const pendingState = {
 } as const;
 
 export function QueryBuilder(
-  props: Parameters<typeof Wrapped>[0]
+  props: Parameters<typeof Wrapped>[0],
 ): JSX.Element | null {
   useMenuItem('queries');
   const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, false);
@@ -103,7 +103,7 @@ function Wrapped({
 
   const table = getTableById(query.contextTableId);
   const [selectedRows, setSelectedRows] = React.useState<ReadonlySet<number>>(
-    new Set()
+    new Set(),
   );
 
   const buildInitialState = React.useCallback(
@@ -114,12 +114,12 @@ function Wrapped({
         table,
         autoRun,
       }),
-    [queryResource, table, autoRun]
+    [queryResource, table, autoRun],
   );
 
   const [showMappingView = true, _] = useCachedState(
     'queryBuilder',
-    'showMappingView'
+    'showMappingView',
   );
 
   const [state, dispatch] = React.useReducer(reducer, pendingState);
@@ -144,11 +144,11 @@ function Wrapped({
         () =>
           setSaveRequired(
             state !== pendingState &&
-              initialFields.current !== JSON.stringify(state.fields)
+              initialFields.current !== JSON.stringify(state.fields),
           ),
-        200
+        200,
       ),
-    [initialFields.current, state.fields]
+    [initialFields.current, state.fields],
   );
 
   React.useEffect(checkForChanges, [state.fields]);
@@ -171,14 +171,14 @@ function Wrapped({
 
   const [showHiddenFields = false, setShowHiddenFields] = useCachedState(
     'queryBuilder',
-    'showHiddenFields'
+    'showHiddenFields',
   );
 
   const promptToSave = saveRequired && !isEmbedded;
 
   const unsetUnloadProtect = useUnloadProtect(
     promptToSave,
-    queryText.queryUnloadProtect()
+    queryText.queryUnloadProtect(),
   );
 
   const handleAddField = (mappingPath = state.mappingView): void =>
@@ -209,7 +209,7 @@ function Wrapped({
    */
   const getQueryFieldRecords = saveRequired
     ? (
-        fields: typeof state.fields = state.fields
+        fields: typeof state.fields = state.fields,
       ): ReturnType<typeof unParseQueryFields> =>
         unParseQueryFields(state.baseTableName, fields)
     : undefined;
@@ -220,7 +220,7 @@ function Wrapped({
    */
   function runQuery(
     mode: 'count' | 'regular',
-    fields: typeof state.fields = state.fields
+    fields: typeof state.fields = state.fields,
   ): void {
     if (!hasPermission('/querybuilder/query', 'execute')) return;
     setQuery({
@@ -243,7 +243,7 @@ function Wrapped({
     hasPermission('/querybuilder/query', 'execute') ||
     hasToolPermission(
       'queryBuilder',
-      queryResource.isNew() ? 'create' : 'update'
+      queryResource.isNew() ? 'create' : 'update',
     );
   const isReadOnly = React.useContext(ReadOnlyContext) || !hasAccess;
   const getMappedFieldsBind = getMappedFields.bind(undefined, state.fields);
@@ -251,7 +251,7 @@ function Wrapped({
     !isReadOnly &&
     mappingPathIsComplete(state.mappingView) &&
     !getMappedFieldsBind(state.mappingView.slice(0, -1)).includes(
-      state.mappingView.at(-1)!
+      state.mappingView.at(-1)!,
     );
 
   // Scroll down to query results when pressed the "Query" button
@@ -261,7 +261,7 @@ function Wrapped({
       state.queryRunCount !== 0 && form !== null
         ? smoothScroll(form, form.scrollHeight)
         : undefined,
-    [state.queryRunCount, form]
+    [state.queryRunCount, form],
   );
 
   useTitle(localized(query.name));
@@ -280,20 +280,20 @@ function Wrapped({
     useBooleanState(true);
 
   const [mapFieldIndex, setMapFieldIndex] = React.useState<number | undefined>(
-    undefined
+    undefined,
   );
 
   const [stickyScrolling] = userPreferences.use(
     'queryBuilder',
     'behavior',
-    'stickyScrolling'
+    'stickyScrolling',
   );
   const resultsShown = state.queryRunCount !== 0;
 
   const [isBasic] = useQueryViewPref(query.id);
 
   const resultsRef = React.useRef<RA<QueryResultRow | undefined> | undefined>(
-    undefined
+    undefined,
   );
 
   return treeRanksLoaded ? (
@@ -306,10 +306,10 @@ function Wrapped({
               ? undefined
               : (event): void =>
                   (event.target as HTMLElement).closest(
-                    '.custom-select-closed-list'
+                    '.custom-select-closed-list',
                   ) === null &&
                   (event.target as HTMLElement).closest(
-                    '.custom-select-options-list'
+                    '.custom-select-options-list',
                   ) === null
                     ? dispatch({
                         type: 'ChangeOpenedElementAction',
@@ -353,11 +353,7 @@ function Wrapped({
           />
           <CheckReadAccess query={query} />
           <Form
-            className={`
-          -mx-4 grid h-full gap-4 overflow-y-auto px-4
-          ${stickyScrolling ? 'snap-y snap-proximity' : ''}
-          ${resultsShown ? 'sm:grid-rows-[100%_100%]' : 'grid-rows-[100%]'}
-        `}
+            className={`-mx-4 grid h-full gap-4 overflow-y-auto px-4 ${stickyScrolling ? 'snap-y snap-proximity' : ''} ${resultsShown ? 'sm:grid-rows-[100%_100%]' : 'grid-rows-[100%]'} `}
             forwardRef={setForm}
             onScroll={(): void =>
               /*
@@ -444,7 +440,7 @@ function Wrapped({
                         ]);
                         if (
                           !getMappedFieldsBind(
-                            newMappingPath.slice(0, -1)
+                            newMappingPath.slice(0, -1),
                           ).includes(newMappingPath.at(-1)!)
                         )
                           handleAddField(newMappingPath);
@@ -549,7 +545,7 @@ function Wrapped({
                         dispatch({
                           type: 'ChangeFieldsAction',
                           fields: state.fields.filter(
-                            (_, index) => index !== line
+                            (_, index) => index !== line,
                           ),
                         })
                 }

@@ -76,7 +76,7 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       icon: icons.checkCircle,
       enabled: () =>
         getDisciplineTrees().some((treeName) =>
-          hasPermission(`/tree/edit/${toLowerCase(treeName)}`, 'repair')
+          hasPermission(`/tree/edit/${toLowerCase(treeName)}`, 'repair'),
         ),
     },
     generateMasterKey: {
@@ -155,7 +155,7 @@ export const rawUserToolsPromise = f.store(async () =>
   Promise.all([
     userPermission,
     import('../InitialContext/userInformation').then(
-      async ({ fetchContext }) => fetchContext
+      async ({ fetchContext }) => fetchContext,
     ),
   ])
     .then(async () =>
@@ -166,12 +166,12 @@ export const rawUserToolsPromise = f.store(async () =>
               groupLabel,
               await filterMenuItems(userTools).then((items) =>
                 Object.fromEntries(
-                  items.map((item) => [item.name, item] as const)
-                )
+                  items.map((item) => [item.name, item] as const),
+                ),
               ),
-            ] as const
-        )
-      )
+            ] as const,
+        ),
+      ),
     )
-    .then((groups) => Object.fromEntries(groups))
+    .then((groups) => Object.fromEntries(groups)),
 );

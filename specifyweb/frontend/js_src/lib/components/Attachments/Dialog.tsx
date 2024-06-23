@@ -41,7 +41,7 @@ export function AttachmentDialog({
 }): JSX.Element {
   const resource = React.useMemo(
     () => deserializeResource(attachment),
-    [attachment]
+    [attachment],
   );
 
   const [form, setForm] = React.useState<HTMLFormElement | null>(null);
@@ -78,7 +78,7 @@ export function AttachmentDialog({
       }
       dimensionsKey="AttachmentViewer"
       header={localized(
-        attachment.title ?? attachment.origFilename ?? tables.Attachment.label
+        attachment.title ?? attachment.origFilename ?? tables.Attachment.label,
       )}
       headerButtons={
         <>

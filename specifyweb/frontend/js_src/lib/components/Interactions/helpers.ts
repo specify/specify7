@@ -50,7 +50,7 @@ export type PreparationRow = readonly [
   amountLoaned: string | null,
   amountedGifted: string | null,
   amountExchanged: string | null,
-  amountAvailable: string
+  amountAvailable: string,
 ];
 
 export const getPrepsAvailableForLoanRs = async (recordSetId: number) =>
@@ -58,12 +58,12 @@ export const getPrepsAvailableForLoanRs = async (recordSetId: number) =>
     `/interactions/preparations_available_rs/${recordSetId}/`,
     {
       headers: { Accept: 'application/json' },
-    }
+    },
   ).then(({ data }) => data);
 
 export const getPrepsAvailableForLoanCoIds = async (
   idField: string,
-  collectionObjectIds: RA<string>
+  collectionObjectIds: RA<string>,
 ) =>
   ajax<RA<PreparationRow>>('/interactions/preparations_available_ids/', {
     method: 'POST',
@@ -81,17 +81,17 @@ export const getInteractionsForPrepId = async (prepId: number) =>
       method: 'POST',
       headers: { Accept: 'application/json' },
       body: formData({ prepIds: prepId }),
-    }
+    },
   ).then(({ data }) => data[0]);
 
 export const getPrepAvailability = async (
   prepId: number,
   iPrepId: number | undefined,
-  iPrepName: string
+  iPrepName: string,
 ) =>
   ajax(
     `/interactions/prep_availability/${prepId}/${
       typeof iPrepId === 'number' ? `${iPrepId}/${iPrepName}/` : ''
     }`,
-    { headers: { Accept: 'application/json' } }
+    { headers: { Accept: 'application/json' } },
   ).then(({ data }) => data);

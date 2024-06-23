@@ -186,7 +186,7 @@ describe('toTables', () => {
   test('negative case', () => {
     const resource = new tables.Agent.Resource();
     expect(
-      toTables(resource, ['CollectionObject', 'Accession'])
+      toTables(resource, ['CollectionObject', 'Accession']),
     ).toBeUndefined();
   });
 });
@@ -223,7 +223,7 @@ describe('fetchDistantRelated', () => {
     expect(data.resource).toBe(resource);
     expect(data.field).toBe(field);
     expect(data.resource!.get('agent')).toBe(
-      getResourceApiUrl('Agent', agentId)
+      getResourceApiUrl('Agent', agentId),
     );
   });
 

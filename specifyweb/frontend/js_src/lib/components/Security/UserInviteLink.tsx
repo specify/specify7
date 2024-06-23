@@ -43,7 +43,7 @@ export function UserInviteLink({
             ? loading(
                 ajax(`/accounts/invite_link/${user.id}/`, {
                   headers: { Accept: 'text/plain' },
-                }).then(({ data }) => setLink(data))
+                }).then(({ data }) => setLink(data)),
               )
             : setLink('')
         }

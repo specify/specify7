@@ -6,7 +6,7 @@ const testFiles = eslintConfig.find(
   (rules) =>
     typeof rules === 'object' &&
     Array.isArray(rules.files) &&
-    rules.files.join('_').includes('test')
+    rules.files.join('_').includes('test'),
 )?.files;
 if (testFiles === undefined)
   throw new Error('Unable to find test files selector');
@@ -16,9 +16,9 @@ const abbreviationsConfig = eslintConfig
     typeof rules === 'object' && typeof rules.rules === 'object'
       ? Object.entries(rules.rules).find(
           ([name, options]) =>
-            name === 'unicorn/prevent-abbreviations' && Array.isArray(options)
+            name === 'unicorn/prevent-abbreviations' && Array.isArray(options),
         )?.[1]?.[1]
-      : undefined
+      : undefined,
   )
   .find((options) => typeof options === 'object');
 if (abbreviationsConfig === undefined)

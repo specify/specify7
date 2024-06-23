@@ -10,7 +10,7 @@ import { ping } from '../../utils/ajax/ping';
 export function TestErrorCommand(): null {
   useAsyncState(
     React.useCallback(async () => ping('/api/test_error/'), []),
-    true
+    true,
   );
   return null;
 }

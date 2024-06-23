@@ -65,7 +65,7 @@ export function PaleoLocationMapPlugin({
           {formsText.wrongTableForPlugin({
             currentTable: resource.specifyTable.name,
             supportedTables: formatDisjunction(
-              paleoPluginTables.map((name) => genericTables[name].label)
+              paleoPluginTables.map((name) => genericTables[name].label),
             ),
           })}
         </Dialog>
@@ -110,7 +110,7 @@ export const paleoPluginTables = [
 ] as const;
 
 async function fetchPaleoData(
-  anyResource: SpecifyResource<AnySchema>
+  anyResource: SpecifyResource<AnySchema>,
 ): Promise<States> {
   const resource = toTables(anyResource, paleoPluginTables);
   if (resource === undefined)
@@ -120,7 +120,7 @@ async function fetchPaleoData(
     toTable(resource, 'Locality') ??
     (await f.maybe(
       toTable(resource, 'CollectingEvent'),
-      async (collectingEvent) => collectingEvent.rgetPromise('locality')
+      async (collectingEvent) => collectingEvent.rgetPromise('locality'),
     )) ??
     (await f.maybe(
       toTable(resource, 'CollectionObject'),
@@ -128,8 +128,8 @@ async function fetchPaleoData(
         collectionObject
           .rgetPromise('collectingEvent')
           .then(async (collectingEvent) =>
-            collectingEvent?.rgetPromise('locality')
-          )
+            collectingEvent?.rgetPromise('locality'),
+          ),
     )) ??
     'InvalidTableState';
   if (locality === 'InvalidTableState') return { type: 'InvalidTableState' };

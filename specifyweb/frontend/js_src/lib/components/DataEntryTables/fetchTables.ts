@@ -13,7 +13,7 @@ import { useFormTables } from './Edit';
 import { defaultFormTablesConfig, fetchLegacyForms } from './fetch';
 
 export function useDataEntryTables(
-  type: 'form' | 'interactions'
+  type: 'form' | 'interactions',
 ): RA<SpecifyTable> | undefined {
   const [formTables] = useFormTables(type);
   const isLegacy = formTables === 'legacy';
@@ -25,12 +25,12 @@ export function useDataEntryTables(
               // Make list unique
               f
                 .unique(configuredTables.map(({ name }) => name))
-                .map((name) => genericTables[name])
+                .map((name) => genericTables[name]),
             )
           : undefined,
-      [isLegacy, type]
+      [isLegacy, type],
     ),
-    true
+    true,
   );
   return formTables === 'legacy' ? legacyForms : formTables;
 }

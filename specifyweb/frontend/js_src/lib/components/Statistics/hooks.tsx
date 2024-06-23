@@ -40,14 +40,14 @@ import type {
  * exist in the initial layout, and have to be set by stats page.
  */
 export function useBackendApi(
-  urlsToFetch: RA<string>
+  urlsToFetch: RA<string>,
 ): BackendStatsResult | undefined {
   const backEndStatPromises = React.useMemo(
     () =>
       urlsToFetch.length === 0
         ? undefined
         : backEndStatPromiseGenerator(urlsToFetch),
-    [urlsToFetch]
+    [urlsToFetch],
   );
   const [backendStat] = useMultipleAsyncState(backEndStatPromises, false);
 
@@ -55,24 +55,24 @@ export function useBackendApi(
 }
 
 export function useDynamicGroups(
-  dynamicEphemeralFieldSpecs: RA<DynamicQuerySpec>
+  dynamicEphemeralFieldSpecs: RA<DynamicQuerySpec>,
 ): IR<RA<string> | undefined> | undefined {
   const dynamicEphereralPromises = React.useMemo(
     () =>
       dynamicEphemeralFieldSpecs.length === 0
         ? undefined
         : dynamicEphermeralPromiseGenerator(dynamicEphemeralFieldSpecs),
-    [dynamicEphemeralFieldSpecs]
+    [dynamicEphemeralFieldSpecs],
   );
   const [dynamicEphemeralResults] = useMultipleAsyncState(
     dynamicEphereralPromises,
-    false
+    false,
   );
   return dynamicEphemeralResults;
 }
 
 function backEndStatPromiseGenerator(
-  urlsToFetch: RA<string>
+  urlsToFetch: RA<string>,
 ): IR<() => Promise<BackendStatsResult | undefined>> {
   return Object.fromEntries(
     urlsToFetch.map((key) => [
@@ -88,16 +88,16 @@ function backEndStatPromiseGenerator(
               },
               expectedErrors: [Http.FORBIDDEN],
             }).then(({ data, status }) =>
-              status === Http.FORBIDDEN ? undefined : data
+              status === Http.FORBIDDEN ? undefined : data,
             ),
-          key
+          key,
         ),
-    ])
+    ]),
   );
 }
 // REFACTOR: use runQuery() function once merged with xml-editor
 function dynamicEphermeralPromiseGenerator(
-  dynamicEphemeralFieldSpecs: RA<DynamicQuerySpec>
+  dynamicEphemeralFieldSpecs: RA<DynamicQuerySpec>,
 ): IR<() => Promise<RA<string> | undefined>> {
   return Object.fromEntries(
     dynamicEphemeralFieldSpecs.map(({ key, spec }) => [
@@ -115,22 +115,22 @@ function dynamicEphermeralPromiseGenerator(
                 },
                 body: keysToLowerCase({
                   ...serializeResource(
-                    querySpecToResource(statsText.statistics(), spec)
+                    querySpecToResource(statsText.statistics(), spec),
                   ),
                   limit: 0,
                 }),
                 expectedErrors: Object.values(Http),
-              }
+              },
             ).then(({ data }) =>
               filterArray(
                 data.results.map(([_id, distinctGroup]) =>
-                  distinctGroup === null ? undefined : distinctGroup.toString()
-                )
-              )
+                  distinctGroup === null ? undefined : distinctGroup.toString(),
+                ),
+              ),
             ),
-          key
+          key,
         ),
-    ])
+    ]),
   );
 }
 
@@ -143,13 +143,13 @@ function dynamicEphermeralPromiseGenerator(
 
 export function getDefaultLayoutFlagged(
   layout: StatLayout | undefined,
-  defaultLayout: RA<StatLayout> | undefined
+  defaultLayout: RA<StatLayout> | undefined,
 ): RA<StatLayout> | undefined {
   if (layout === undefined || defaultLayout === undefined) {
     return undefined;
   }
   const listToUse = layout.categories.flatMap(({ items }) =>
-    items.filter((item): item is DefaultStat => item.type === 'DefaultStat')
+    items.filter((item): item is DefaultStat => item.type === 'DefaultStat'),
   );
   let statNotFound = false;
   const defaultLayoutFlagged = defaultLayout.map((defaultLayoutPage) => ({
@@ -165,7 +165,7 @@ export function getDefaultLayoutFlagged(
               pageName === defaultItem.pageName &&
               categoryName === defaultItem.categoryName &&
               itemName === defaultItem.itemName &&
-              pathToValue === defaultItem.pathToValue
+              pathToValue === defaultItem.pathToValue,
           );
         statNotFound ||= defaultStatNotFound;
         return {
@@ -180,17 +180,17 @@ export function getDefaultLayoutFlagged(
 
 export function useDefaultStatsToAdd(
   layout: StatLayout | undefined,
-  defaultLayout: RA<StatLayout> | undefined
+  defaultLayout: RA<StatLayout> | undefined,
 ): RA<StatLayout> | undefined {
   return React.useMemo(
     (): RA<StatLayout> | undefined =>
       getDefaultLayoutFlagged(layout, defaultLayout),
-    [layout, defaultLayout]
+    [layout, defaultLayout],
   );
 }
 
 export function queryCountPromiseGenerator(
-  query: SerializedResource<SpQuery>
+  query: SerializedResource<SpQuery>,
 ): () => Promise<AjaxResponseObject<{ readonly count: number }>> {
   return async () =>
     ajax<{
@@ -211,20 +211,20 @@ export function queryCountPromiseGenerator(
 
 export const makeSerializedFieldsFromPaths = (
   tableName: keyof Tables,
-  fields: RA<PartialQueryFieldWithPath>
+  fields: RA<PartialQueryFieldWithPath>,
 ): RA<SerializedResource<SpQueryField>> =>
   fields.map(({ path, ...field }, index) =>
     serializeResource(
       makeQueryField(tableName, path, {
         ...field,
         position: index,
-      })
-    )
+      }),
+    ),
   );
 
 export const querySpecToResource = (
   label: string,
-  querySpec: QuerySpec
+  querySpec: QuerySpec,
 ): SpecifyResource<SpQuery> =>
   deserializeResource(
     addMissingFields('SpQuery', {
@@ -235,14 +235,14 @@ export const querySpecToResource = (
       selectDistinct: querySpec.isDistinct ?? false,
       fields: makeSerializedFieldsFromPaths(
         querySpec.tableName,
-        querySpec.fields
+        querySpec.fields,
       ),
-    })
+    }),
   );
 
 export function resolveStatsSpec(
   item: CustomStat | DefaultStat,
-  formatterSpec: StatFormatterSpec
+  formatterSpec: StatFormatterSpec,
 ): BackEndStatResolve | QueryBuilderStat | undefined {
   if (item.type === 'CustomStat') {
     return {
@@ -258,7 +258,7 @@ export function resolveStatsSpec(
   const statUrl = generateStatUrl(
     statsSpec[item.pageName].urlPrefix,
     item.categoryName,
-    item.itemName
+    item.itemName,
   );
   if (statSpecItem.spec.type === 'BackEndStat') {
     const pathToValue = item.pathToValue ?? statSpecItem.spec.pathToValue;
@@ -293,7 +293,7 @@ export function resolveStatsSpec(
 
 export function useResolvedStatSpec(
   item: CustomStat | DefaultStat,
-  formatterSpec: StatFormatterSpec
+  formatterSpec: StatFormatterSpec,
 ): BackEndStatResolve | QueryBuilderStat | undefined {
   return React.useMemo(() => resolveStatsSpec(item, formatterSpec), [item]);
 }
@@ -319,19 +319,19 @@ export function getBackendUrlToFetch(layout: RA<StatLayout>): RA<string> {
                 ? generateStatUrl(
                     statsSpec[item.pageName].urlPrefix,
                     item.categoryName,
-                    item.itemName
+                    item.itemName,
                   )
-                : undefined
-            )
-          )
-        )
-      )
-    )
+                : undefined,
+            ),
+          ),
+        ),
+      ),
+    ),
   );
 }
 
 export function getDynamicQuerySpecsToFetch(
-  layout: RA<StatLayout>
+  layout: RA<StatLayout>,
 ): RA<DynamicQuerySpec> {
   return layout.flatMap(({ categories }) =>
     categories.flatMap(({ items }) =>
@@ -341,10 +341,10 @@ export function getDynamicQuerySpecsToFetch(
             const itemKey = generateStatUrl(
               statsSpec[item.pageName].urlPrefix,
               item.categoryName,
-              item.itemName
+              item.itemName,
             );
             const dynamicSpec = dynamicStatsSpec.find(
-              ({ responseKey }) => responseKey === itemKey
+              ({ responseKey }) => responseKey === itemKey,
             );
             if (dynamicSpec !== undefined) {
               return {
@@ -354,9 +354,9 @@ export function getDynamicQuerySpecsToFetch(
             }
           }
           return undefined;
-        })
-      )
-    )
+        }),
+      ),
+    ),
   );
 }
 
@@ -369,7 +369,7 @@ export function getDynamicQuerySpecsToFetch(
 export function statsToTsv(
   layout: IR<RA<StatLayout> | undefined>,
   layoutPageIndex: number,
-  sourceIndex: number
+  sourceIndex: number,
 ): string {
   const headers = [
     statsText.categoryName(),
@@ -386,11 +386,11 @@ export function statsToTsv(
                 .filter((item) => item.itemValue !== undefined)
                 .map((item) =>
                   [category.label, item.label, item.itemValue?.toString()].map(
-                    (display) => display ?? ''
-                  )
-                )
-          )
-      )
+                    (display) => display ?? '',
+                  ),
+                ),
+          ),
+      ),
   );
   return [headers, ...statItems].map((line) => line.join('\t')).join('\n');
 }
@@ -400,11 +400,11 @@ export function statsToTsv(
  *
  */
 export function useStatValueLoad<
-  PROMISE_TYPE extends number | string | undefined
+  PROMISE_TYPE extends number | string | undefined,
 >(
   value: number | string | undefined,
   promiseGenerator: () => Promise<PROMISE_TYPE>,
-  handleLoad: ((value: number | string) => void) | undefined
+  handleLoad: ((value: number | string) => void) | undefined,
 ) {
   const shouldFetch = value === undefined && typeof handleLoad === 'function';
   React.useEffect(() => {
@@ -432,14 +432,14 @@ export function applyStatBackendResponse(
   items: RA<CustomStat | DefaultStat>,
   responseKey: string,
   formatter: (rawResult: any) => string | undefined,
-  statsSpec: StatsSpec
+  statsSpec: StatsSpec,
 ): RA<CustomStat | DefaultStat> {
   const phantomItem = items.find(
     (item) =>
       item.type === 'DefaultStat' &&
       item.itemName === 'phantomItem' &&
       item.itemType === 'BackEndStat' &&
-      item.pathToValue === undefined
+      item.pathToValue === undefined,
   );
 
   const phantomItemUrlPrefix =
@@ -453,7 +453,7 @@ export function applyStatBackendResponse(
       : generateStatUrl(
           phantomItemUrlPrefix,
           (phantomItem as DefaultStat).categoryName,
-          (phantomItem as DefaultStat).itemName
+          (phantomItem as DefaultStat).itemName,
         );
   const isMyResponse = phantomItemResponseKey === responseKey;
   return phantomItem !== undefined &&
@@ -469,7 +469,7 @@ export function applyStatBackendResponse(
           itemValue: formatter(rawValue),
           itemType: 'BackEndStat',
           pathToValue: itemName,
-        })
+        }),
       )
     : items;
 }
@@ -484,10 +484,10 @@ export function useDefaultBackendCategorySetter(
   defaultBackEndResponse: BackendStatsResult | undefined,
   setDefaultLayout: (
     previousGenerator: (
-      oldLayout: RA<StatLayout> | undefined
-    ) => RA<StatLayout> | undefined
+      oldLayout: RA<StatLayout> | undefined,
+    ) => RA<StatLayout> | undefined,
   ) => void,
-  statFormatterSpec: StatFormatterSpec
+  statFormatterSpec: StatFormatterSpec,
 ) {
   React.useEffect(() => {
     backEndStatsSpec.forEach(({ responseKey, formatterGenerator }) => {
@@ -507,10 +507,10 @@ export function useDefaultBackendCategorySetter(
                     oldCategory.items,
                     responseKey,
                     formatterGenerator(statFormatterSpec),
-                    statsSpec
+                    statsSpec,
                   ),
                 })),
-              }))
+              })),
         );
       }
     });
@@ -526,11 +526,11 @@ export function useBackEndCategorySetter(
   backEndResponse: BackendStatsResult | undefined,
   handleChange: (
     newCategories: (
-      oldCategory: StatLayout['categories']
-    ) => StatLayout['categories']
+      oldCategory: StatLayout['categories'],
+    ) => StatLayout['categories'],
   ) => void,
   categoriesToFetch: RA<string>,
-  formatterSpec: StatFormatterSpec
+  formatterSpec: StatFormatterSpec,
 ) {
   React.useEffect(() => {
     backEndStatsSpec.forEach(({ responseKey, formatterGenerator }) => {
@@ -547,9 +547,9 @@ export function useBackEndCategorySetter(
               unknownCategory.items,
               responseKey,
               formatterGenerator(formatterSpec),
-              statsSpec
+              statsSpec,
             ),
-          }))
+          })),
         );
       }
     });
@@ -560,9 +560,9 @@ export function useDynamicCategorySetter(
   dynamicEphemeralResponse: IR<RA<string> | undefined> | undefined,
   handleChange: (
     newCategories: (
-      oldCategory: StatLayout['categories']
-    ) => StatLayout['categories']
-  ) => void
+      oldCategory: StatLayout['categories'],
+    ) => StatLayout['categories'],
+  ) => void,
 ) {
   React.useEffect(() => {
     dynamicStatsSpec.forEach(({ responseKey }) => {
@@ -577,9 +577,9 @@ export function useDynamicCategorySetter(
               dynamicEphemeralResponse[responseKey],
               dynamicCategory.items,
               responseKey,
-              statsSpec
+              statsSpec,
             ),
-          }))
+          })),
         );
       }
     });
@@ -590,9 +590,9 @@ export function useDefaultDynamicCategorySetter(
   defaultDynamicEphemeralResponse: IR<RA<string> | undefined> | undefined,
   setDefaultLayout: (
     previousGenerator: (
-      oldLayout: RA<StatLayout> | undefined
-    ) => RA<StatLayout> | undefined
-  ) => void
+      oldLayout: RA<StatLayout> | undefined,
+    ) => RA<StatLayout> | undefined,
+  ) => void,
 ) {
   React.useEffect(() => {
     dynamicStatsSpec.forEach(({ responseKey }) => {
@@ -611,10 +611,10 @@ export function useDefaultDynamicCategorySetter(
                     defaultDynamicEphemeralResponse[responseKey],
                     oldCategory.items,
                     responseKey,
-                    statsSpec
+                    statsSpec,
                   ),
                 })),
-              }))
+              })),
         );
       }
     });
@@ -625,14 +625,14 @@ function applyDynamicCategoryResponse(
   dynamicEphemeralResponse: RA<string> | undefined,
   items: RA<CustomStat | DefaultStat>,
   responseKey: string,
-  statsSpec: StatsSpec
+  statsSpec: StatsSpec,
 ): RA<CustomStat | DefaultStat> {
   if (dynamicEphemeralResponse === undefined) return items;
   const dynamicPhantomItem = items.find(
     (item) =>
       item.type === 'DefaultStat' &&
       item.itemType === 'DynamicStat' &&
-      item.pathToValue === undefined
+      item.pathToValue === undefined,
   );
   const dynamicPhantomUrlPrefix =
     dynamicPhantomItem === undefined || dynamicPhantomItem.type === 'CustomStat'
@@ -644,7 +644,7 @@ function applyDynamicCategoryResponse(
       : generateStatUrl(
           dynamicPhantomUrlPrefix,
           (dynamicPhantomItem as DefaultStat).categoryName,
-          (dynamicPhantomItem as DefaultStat).itemName
+          (dynamicPhantomItem as DefaultStat).itemName,
         );
   const isMyResponse = dynamicPhantomItemResponseKey === responseKey;
   return dynamicPhantomItem !== undefined &&
@@ -670,7 +670,7 @@ function applyDynamicCategoryResponse(
 export function generateStatUrl(
   urlPrefix: string,
   categoryKey: string,
-  itemKey: string
+  itemKey: string,
 ): string {
   const urlSpecMapped = [urlPrefix, categoryKey, itemKey]
     .map((urlSpec) => (urlSpec === 'phantomItem' ? undefined : urlSpec))
@@ -701,7 +701,7 @@ export const setLayoutUndefined = (layout: StatLayout): StatLayout => ({
 
 export function applyRefreshLayout(
   layout: RA<StatLayout> | undefined,
-  refreshTimeMinutes: number
+  refreshTimeMinutes: number,
 ): RA<StatLayout> | undefined {
   return layout?.map((pageLayout) => {
     if (pageLayout.lastUpdated === undefined) return pageLayout;

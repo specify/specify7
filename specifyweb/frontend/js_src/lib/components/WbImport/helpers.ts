@@ -53,17 +53,17 @@ export const getMaxDataSetLength = (): number | undefined =>
      * https://github.com/specify/specify7/issues/1203
      */
     getField(tables.RecordSet, 'name').length,
-    dataSetMaxLength
+    dataSetMaxLength,
   );
 
 export function extractHeader(
   data: RA<RA<number | string>>,
-  hasHeader: boolean
+  hasHeader: boolean,
 ): { readonly rows: RA<RA<number | string>>; readonly header: RA<string> } {
   const header = hasHeader
     ? uniquifyHeaders(data[0].map((value) => f.trim(value.toString())))
     : Array.from(data[0], (_, index) =>
-        wbText.columnName({ columnIndex: index + 1 })
+        wbText.columnName({ columnIndex: index + 1 }),
       );
   const rows = hasHeader ? data.slice(1) : data;
   return { rows, header: Array.from(header) };
@@ -73,7 +73,7 @@ export const parseCsv = async (
   file: File,
   encoding: string,
   [delimiter, setDelimiter]: GetSet<string | undefined>,
-  limit?: number
+  limit?: number,
 ): Promise<RA<RA<string>>> =>
   fileToText(file, encoding).then(
     async (text) =>
@@ -110,16 +110,16 @@ export const parseCsv = async (
                 rows.map((row) => [
                   ...row,
                   ...Array.from({ length: maxWidth - row.length }).fill(''),
-                ])
+                ]),
               );
-          }
+          },
         );
-      })
+      }),
   );
 
 export const parseXls = async (
   file: File,
-  limit?: number
+  limit?: number,
 ): Promise<RA<RA<string>>> =>
   new Promise((resolve, reject) => {
     // @ts-expect-error Specify is running with target 'esnext' with type 'module'. import.meta.url should be allowed
@@ -134,7 +134,7 @@ export const parseXls = async (
       else resolve(rows);
     });
     worker.addEventListener('error', (error) =>
-      reject(new Error(error.message))
+      reject(new Error(error.message)),
     );
   });
 
@@ -151,7 +151,7 @@ function guessDelimiter(text: string): string {
     .reduce(
       ([currentDelimiter, currentMax], [delimiter, max]) =>
         max > currentMax ? [delimiter, max] : [currentDelimiter, currentMax],
-      [',', 0]
+      [',', 0],
     )[0];
 }
 
@@ -160,7 +160,7 @@ const MAX_NAME_LENGTH = 64;
 export async function uniquifyDataSetName(
   name: string,
   currentDataSetId?: number,
-  datasetsUrl = '/api/workbench/dataset/'
+  datasetsUrl = '/api/workbench/dataset/',
 ): Promise<LocalizedString> {
   return ajax<RA<DatasetBrief>>(datasetsUrl, {
     headers: { Accept: 'application/json' },
@@ -170,8 +170,8 @@ export async function uniquifyDataSetName(
       datasets
         .filter(({ id }) => id !== currentDataSetId)
         .map(({ name }) => name),
-      MAX_NAME_LENGTH
-    )
+      MAX_NAME_LENGTH,
+    ),
   );
 }
 

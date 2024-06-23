@@ -107,7 +107,7 @@ export function ImportExport({
                         .map(({ role }) => handleCreateRole(role)),
                     ])
                       .then((): void => setNewRoles(undefined))
-                      .then(handleClose)
+                      .then(handleClose),
                   )
                 : undefined
             }
@@ -136,8 +136,8 @@ export function ImportExport({
                                       replaceItem(roles, index, {
                                         role,
                                         isChecked: !isChecked,
-                                      })
-                                    )
+                                      }),
+                                    ),
                                   )
                                 }
                               />
@@ -168,18 +168,18 @@ export function ImportExport({
                                       newRole,
                                       'id',
                                       Object.values(roles ?? {})?.find(
-                                        ({ name }) => name === newRole.name
-                                      )?.id ?? undefined
-                                    )
+                                        ({ name }) => name === newRole.name,
+                                      )?.id ?? undefined,
+                                    ),
                                   )
                                   .map((newRole) => {
                                     const groupName =
                                       typeof newRole.id === 'number'
                                         ? JSON.stringify(
-                                            removeKey(roles![newRole.id], 'id')
+                                            removeKey(roles![newRole.id], 'id'),
                                           ) ===
                                           JSON.stringify(
-                                            removeKey(newRole, 'id')
+                                            removeKey(newRole, 'id'),
                                           )
                                           ? 'unchanged'
                                           : 'changed'
@@ -188,13 +188,13 @@ export function ImportExport({
                                       !hasPermission(
                                         permissionName,
                                         'update',
-                                        collectionId
+                                        collectionId,
                                       )) ||
                                       (groupName === 'created' &&
                                         !hasPermission(
                                           permissionName,
                                           'create',
-                                          collectionId
+                                          collectionId,
                                         ))
                                       ? undefined
                                       : [
@@ -204,20 +204,20 @@ export function ImportExport({
                                             isChecked: true,
                                           },
                                         ];
-                                  })
-                              )
+                                  }),
+                              ),
                             ).map(
                               ([category, roles]) =>
                                 [
                                   category,
                                   Array.from(roles).sort(
-                                    sortFunction(({ role }) => role.name)
+                                    sortFunction(({ role }) => role.name),
                                   ),
-                                ] as const
-                            )
-                          )
-                        )
-                      )
+                                ] as const,
+                            ),
+                          ),
+                        ),
+                      ),
                   )
                 }
               />
@@ -244,8 +244,8 @@ function ExportButton({
         loading(
           downloadFile(
             `${userText.userRoles()} - ${baseName} - ${new Date().toDateString()}.json`,
-            JSON.stringify(Object.values(roles!), null, '\t')
-          )
+            JSON.stringify(Object.values(roles!), null, '\t'),
+          ),
         )
       }
     >

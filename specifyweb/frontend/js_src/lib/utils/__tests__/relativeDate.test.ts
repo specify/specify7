@@ -53,6 +53,6 @@ describe('parseAnyDate', () => {
   });
   test('2022-06-09T00:04:18.232Z', () =>
     expect(parseAnyDate('2022-06-09T00:04:18.232Z')?.getTime()).toEqual(
-      new Date('2022-06-09T00:04:18.232Z').getTime()
+      new Date('2022-06-09T00:04:18.232Z').getTime(),
     ));
 });

@@ -9,7 +9,7 @@ import type {
 } from '../SchemaViewer/helpers';
 
 export function GenericSortedDataViewer<
-  DATA extends SchemaViewerRow<RR<string, SchemaViewerValue>>
+  DATA extends SchemaViewerRow<RR<string, SchemaViewerValue>>,
 >({
   headers,
   data,
@@ -26,25 +26,21 @@ export function GenericSortedDataViewer<
   readonly cellClassName?: (
     row: DATA,
     column: keyof DATA,
-    index: number
+    index: number,
   ) => string;
 }): JSX.Element {
   const indexColumn = Object.keys(headers)[0];
 
   return (
     <div
-      className={`grid-table flex-1 grid-cols-[repeat(var(--cols),auto)] 
-       rounded print:p-1 ${className}`}
+      className={`grid-table flex-1 grid-cols-[repeat(var(--cols),auto)] rounded print:p-1 ${className}`}
       role="table"
       style={{ '--cols': Object.keys(headers).length } as React.CSSProperties}
     >
       <div role="row">
         {Object.entries(headers).map(([name, element]) => (
           <div
-            className={`
-            sticky top-0 border-gray-400 bg-[color:var(--background)]
-            p-2 font-bold dark:border-neutral-500 print:p-1
-            ${headerClassName}`}
+            className={`sticky top-0 border-gray-400 bg-[color:var(--background)] p-2 font-bold dark:border-neutral-500 print:p-1 ${headerClassName}`}
             key={name}
             role="columnheader"
           >

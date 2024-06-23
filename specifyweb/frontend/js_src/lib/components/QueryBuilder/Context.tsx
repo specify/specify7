@@ -11,18 +11,18 @@ export function useQueryViewPref(queryId: number): GetSet<boolean> {
   const [isDefaultBasicViewPref] = userPreferences.use(
     'queryBuilder',
     'behavior',
-    'displayBasicView'
+    'displayBasicView',
   );
   const [viewCollectionPref, setViewCollectionPref] = collectionPreferences.use(
     'queryBuilder',
     'appearance',
-    'display'
+    'display',
   );
   const isBasic = viewCollectionPref.basicView.includes(queryId)
     ? true
     : viewCollectionPref.detailedView.includes(queryId)
-    ? false
-    : isDefaultBasicViewPref;
+      ? false
+      : isDefaultBasicViewPref;
 
   return [
     isBasic,
@@ -31,13 +31,13 @@ export function useQueryViewPref(queryId: number): GetSet<boolean> {
         ? setViewCollectionPref({
             basicView: [...viewCollectionPref.basicView, queryId],
             detailedView: viewCollectionPref.detailedView.filter(
-              (id) => id !== queryId
+              (id) => id !== queryId,
             ),
           })
         : setViewCollectionPref({
             detailedView: [...viewCollectionPref.detailedView, queryId],
             basicView: viewCollectionPref.basicView.filter(
-              (id) => id !== queryId
+              (id) => id !== queryId,
             ),
           }),
   ];

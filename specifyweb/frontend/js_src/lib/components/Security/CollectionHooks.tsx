@@ -15,7 +15,7 @@ import type { UserRoles } from './Collection';
 type User = { readonly userId: number; readonly userName: LocalizedString };
 
 export function useCollectionUsersWithPolicies(
-  collectionId: number
+  collectionId: number,
 ): RA<User> | undefined {
   const [usersWithPolicies] = useAsyncState<RA<User>>(
     React.useCallback(
@@ -26,7 +26,7 @@ export function useCollectionUsersWithPolicies(
               `/permissions/user_policies/${collectionId}/`,
               {
                 headers: { Accept: 'application/json' },
-              }
+              },
             ).then(async ({ data }) =>
               Promise.all(
                 Object.keys(data)
@@ -34,21 +34,21 @@ export function useCollectionUsersWithPolicies(
                   .map(async (userId) => ({
                     userId,
                     userName: await fetchResource('SpecifyUser', userId).then(
-                      ({ name }) => localized(name)
+                      ({ name }) => localized(name),
                     ),
-                  }))
-              )
+                  })),
+              ),
             )
           : [{ userId: userInformation.id, userName: userInformation.name }],
-      [collectionId]
+      [collectionId],
     ),
-    false
+    false,
   );
   return usersWithPolicies;
 }
 
 export function useCollectionUserRoles(
-  collectionId: number
+  collectionId: number,
 ): GetOrSet<UserRoles | undefined> {
   return useAsyncState<UserRoles>(
     React.useCallback(
@@ -58,7 +58,7 @@ export function useCollectionUserRoles(
               `/permissions/user_roles/${collectionId}/`,
               {
                 headers: { Accept: 'application/json' },
-              }
+              },
             ).then(({ data }) =>
               data.map(({ userid, username, roles }) => ({
                 userId: userid,
@@ -69,12 +69,12 @@ export function useCollectionUserRoles(
                     roleName: rolename,
                   }))
                   .sort(sortFunction(({ roleName }) => roleName)),
-              }))
+              })),
             )
           : undefined,
-      [collectionId]
+      [collectionId],
     ),
-    false
+    false,
   );
 }
 
@@ -83,7 +83,7 @@ export function useCollectionUserRoles(
  */
 export const mergeCollectionUsers = (
   userRoles: UserRoles | undefined,
-  usersWithPolicies: RA<User> | undefined = []
+  usersWithPolicies: RA<User> | undefined = [],
 ): UserRoles | undefined =>
   typeof userRoles === 'object'
     ? [
@@ -91,8 +91,8 @@ export const mergeCollectionUsers = (
         ...usersWithPolicies
           .filter(({ userId }) =>
             userRoles.every(
-              (user) => user.userId !== userId || user.roles.length === 0
-            )
+              (user) => user.userId !== userId || user.roles.length === 0,
+            ),
           )
           .map(
             ({ userId, userName }) =>
@@ -100,7 +100,7 @@ export const mergeCollectionUsers = (
                 userId,
                 userName,
                 roles: [],
-              } as const)
+              }) as const,
           ),
       ].sort(sortFunction(({ userName }) => userName))
     : undefined;

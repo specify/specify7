@@ -53,7 +53,7 @@ export function SpecifyNetworkOverlays({
 export function useBrokerData(
   localSpecies: LocalizedString | undefined,
   guid: string | undefined,
-  taxonId: number | false | undefined
+  taxonId: number | false | undefined,
 ): BrokerData {
   const occurrence = useOccurrence(guid);
   const occurrenceSpeciesName = React.useMemo(
@@ -64,7 +64,7 @@ export function useBrokerData(
         : // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           extractBrokerField(occurrence, 'gbif', 'dwc:scientificName') ||
           localSpecies,
-    [occurrence, localSpecies]
+    [occurrence, localSpecies],
   );
   const species = useSpecies(occurrenceSpeciesName);
   const speciesName = React.useMemo(
@@ -73,7 +73,7 @@ export function useBrokerData(
         ? extractBrokerField(species, 'gbif', 'dwc:scientificName') ??
           extractBrokerField(species, 'gbif', 's2n:scientific_name')
         : undefined) ?? occurrenceSpeciesName,
-    [species, occurrenceSpeciesName]
+    [species, occurrenceSpeciesName],
   );
   return React.useMemo(
     () => ({
@@ -83,13 +83,13 @@ export function useBrokerData(
       taxonId,
       guid,
     }),
-    [occurrence, species, speciesName, taxonId, guid]
+    [occurrence, species, speciesName, taxonId, guid],
   );
 }
 
 export function useMapData(
   brokerData: BrokerData | undefined,
-  taxonId: number | false | undefined
+  taxonId: number | false | undefined,
 ): BrokerData {
   const [speciesName] = useAsyncState(
     React.useCallback(
@@ -97,12 +97,12 @@ export function useMapData(
         brokerData?.speciesName ??
         (typeof taxonId === 'number'
           ? fetchResource('Taxon', taxonId).then(
-              (resource) => localized(resource?.fullName) ?? undefined
+              (resource) => localized(resource?.fullName) ?? undefined,
             )
           : undefined),
-      [brokerData?.speciesName, taxonId]
+      [brokerData?.speciesName, taxonId],
     ),
-    false
+    false,
   );
   const newBrokerData = useBrokerData(speciesName, undefined, taxonId);
   return brokerData ?? newBrokerData;

@@ -27,12 +27,12 @@ export function SchemaConfigFields({
   const id = useId('schema-fields');
   const [isHiddenFirst = true, setIsHiddenFirst] = useCachedState(
     'schemaConfig',
-    'sortByHiddenFields'
+    'sortByHiddenFields',
   );
 
   const sortedItems = React.useMemo(() => {
     const sorted = Object.values(items ?? []).sort(
-      sortFunction(({ name }) => name)
+      sortFunction(({ name }) => name),
     );
     return isHiddenFirst
       ? sorted.sort(sortFunction(({ isHidden }) => isHidden))
@@ -42,7 +42,7 @@ export function SchemaConfigFields({
   const currentId = items?.[index].id ?? 0;
   const [fields, relationships] = split(
     sortedItems,
-    (item) => table.getField(item.name)!.isRelationship
+    (item) => table.getField(item.name)!.isRelationship,
   );
 
   return (

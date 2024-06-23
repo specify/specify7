@@ -75,8 +75,8 @@ export function RouterUnloadProtect({
       ({ nextLocation, currentLocation }) =>
         unloadProtectsRef.current.length > 0 &&
         hasUnloadProtect(nextLocation, currentLocation, singleResource),
-      [singleResource]
-    )
+      [singleResource],
+    ),
   );
 
   // Remove the blocker if nothing is blocking
@@ -85,7 +85,7 @@ export function RouterUnloadProtect({
   const shouldUnset = isEmpty && isSet;
   React.useEffect(
     () => (shouldUnset ? blocker.proceed() : undefined),
-    [isEmpty, isSet, blocker]
+    [isEmpty, isSet, blocker],
   );
 
   return (
@@ -106,7 +106,7 @@ export function RouterUnloadProtect({
 const hasUnloadProtect = (
   nextLocation: SafeLocation,
   currentLocation: SafeLocation,
-  singleResource: string | undefined
+  singleResource: string | undefined,
 ): boolean =>
   // Check for navigation within overlay
   !pathIsOverlay(nextLocation.pathname) &&
@@ -117,7 +117,7 @@ const hasUnloadProtect = (
     currentLocation.state?.type === 'BackgroundLocation'
       ? currentLocation.state.location
       : undefined,
-    locationToUrl
+    locationToUrl,
   ) !== locationToUrl(nextLocation) &&
   // Check for navigation within single resource
   !isSingleResource(nextLocation, singleResource);
@@ -129,7 +129,7 @@ const isCurrentUrl = (relativeUrl: string): boolean =>
 
 const isSingleResource = (
   { pathname }: SafeLocation,
-  singleResource: string | undefined
+  singleResource: string | undefined,
 ): boolean =>
   singleResource !== undefined &&
   pathname.startsWith(singleResource) &&

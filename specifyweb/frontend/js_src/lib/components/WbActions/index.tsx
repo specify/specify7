@@ -72,7 +72,7 @@ export function WbActions({
 
   const dataCheckInProgress = React.useMemo(
     () => workbench.validation.liveValidationStack.length > 0,
-    [workbench.validation.liveValidationStack.length]
+    [workbench.validation.liveValidationStack.length],
   );
 
   return (
@@ -105,8 +105,8 @@ export function WbActions({
             dataCheckInProgress
               ? wbText.unavailableWhileValidating()
               : isUploaded
-              ? undefined
-              : wbText.wbUploadedUnavailable()
+                ? undefined
+                : wbText.wbUploadedUnavailable()
           }
           onClick={handleToggleResults}
         >
@@ -212,16 +212,16 @@ export function WbActions({
             mode === 'validate'
               ? wbText.validationCanceled()
               : mode === 'unupload'
-              ? wbText.rollbackCanceled()
-              : wbText.uploadCanceled()
+                ? wbText.rollbackCanceled()
+                : wbText.uploadCanceled()
           }
           onClose={closeAbortedMessage}
         >
           {mode === 'validate'
             ? wbText.validationCanceledDescription()
             : mode === 'unupload'
-            ? wbText.rollbackCanceledDescription()
-            : wbText.uploadCanceledDescription()}
+              ? wbText.rollbackCanceledDescription()
+              : wbText.uploadCanceledDescription()}
         </Dialog>
       )}
     </>
@@ -260,7 +260,7 @@ function useWbActions({
         checkDeletedFail(statusCode);
         checkConflictFail(statusCode);
         triggerStatusComponent(newMode);
-      })
+      }),
     );
   };
 
@@ -289,7 +289,7 @@ function useWbActions({
 
 function getMessage(
   cellCounts: WbCellCounts,
-  mode: WbStatus
+  mode: WbStatus,
 ): {
   readonly header: LocalizedString;
   readonly message: JSX.Element | LocalizedString;

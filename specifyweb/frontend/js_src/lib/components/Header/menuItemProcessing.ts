@@ -19,7 +19,7 @@ const itemsPromise = f.store(async () =>
   f.all({
     menuItems: rawMenuItemsPromise(),
     userTools: rawUserToolsPromise(),
-  })
+  }),
 );
 
 export function useMenuItems(): RA<MenuItem> | undefined {
@@ -43,13 +43,13 @@ export function useMenuItems(): RA<MenuItem> | undefined {
       });
 
     const allUserTools = Object.fromEntries(
-      Object.values(userTools).flatMap((items) => Object.entries(items))
+      Object.values(userTools).flatMap((items) => Object.entries(items)),
     );
     return filterArray(
       visible.map(
         (name) =>
-          menuItems.find((item) => item.name === name) ?? allUserTools[name]
-      )
+          menuItems.find((item) => item.name === name) ?? allUserTools[name],
+      ),
     );
   }, [preference, items]);
 }
@@ -68,7 +68,7 @@ export function useUserTools(): IR<IR<MenuItem>> | undefined {
           : Object.fromEntries(
               menuItems
                 .filter(({ name }) => !visible.includes(name))
-                .map((item) => [item.name, item])
+                .map((item) => [item.name, item]),
             ),
       ...userTools,
     };
@@ -76,7 +76,7 @@ export function useUserTools(): IR<IR<MenuItem>> | undefined {
 }
 
 export const filterMenuItems = async (
-  menuItems: IR<Omit<MenuItem, 'name'>>
+  menuItems: IR<Omit<MenuItem, 'name'>>,
 ): Promise<RA<MenuItem>> =>
   Promise.all(
     Object.entries(menuItems).map(async ([name, entry]) =>
@@ -85,6 +85,6 @@ export const filterMenuItems = async (
         : {
             ...entry,
             name,
-          }
-    )
+          },
+    ),
   ).then(filterArray);

@@ -5,7 +5,7 @@
     $,
     _,
     schema,
-    whenAll
+    whenAll,
   ) {
     return function () {
       var getCollectionObject, rejectEvent, requireEvent;
@@ -48,7 +48,7 @@
               requireEvent(
                 collectionobject,
                 'saverequired',
-                'saverequired on CO'
+                'saverequired on CO',
               ),
               rejectEvent(collectionobject, 'change', 'change on CO'),
               requireEvent(coa, 'saverequired', 'saverequired on COA'),
@@ -75,22 +75,22 @@
                 rejectEvent(
                   collectionobject,
                   'saveblocked',
-                  'saveblocked reaches CO'
+                  'saveblocked reaches CO',
                 ),
                 rejectEvent(
                   collectionobject,
                   'saverequired',
-                  'saverequired reaches CO'
+                  'saverequired reaches CO',
                 ),
                 requireEvent(
                   accession,
                   'saveblocked',
-                  'saveblocked reaches accession'
+                  'saveblocked reaches accession',
                 ),
                 requireEvent(
                   accession,
                   'saverequired',
-                  'saverequired reaches accession'
+                  'saverequired reaches accession',
                 ),
               ];
               newagent = new schema.models.AccessionAgent.Resource();
@@ -100,13 +100,13 @@
                 requireEvent(
                   newagent,
                   'saverequired',
-                  'saverequired on newagent'
+                  'saverequired on newagent',
                 ),
                 requireEvent(
                   newagent,
                   'saveblocked',
-                  'saveblocked fired on newagent'
-                )
+                  'saveblocked fired on newagent',
+                ),
               );
               whenAll(checks).done(function () {
                 ok(newagent.needsSaved, 'newagent needsSaved');
@@ -127,13 +127,13 @@
           var orig;
           ok(
             !accession.businessRuleMgr.canDelete(),
-            'starts with delete blocked'
+            'starts with delete blocked',
           );
           accession.on('candelete', function () {
             ok(true, 'candelete event triggered');
             ok(
               accession.businessRuleMgr.canDelete(),
-              'canDelete() returns true'
+              'canDelete() returns true',
             );
             return start();
           });
@@ -157,7 +157,7 @@
         return accession.rget('collectionobjects').done(function (COs) {
           ok(
             !accession.businessRuleMgr.canDelete(),
-            'starts with delete blocked'
+            'starts with delete blocked',
           );
           accession.on('candelete', function () {
             return ok(false, 'candelete event should not be triggered');
@@ -176,7 +176,7 @@
         return accession.rget('collectionobjects', true).done(function (COs) {
           ok(
             !accession.businessRuleMgr.canDelete(),
-            'starts with delete blocked'
+            'starts with delete blocked',
           );
           accession.on('candelete', function () {
             ok(true, 'candelete event triggered');
@@ -234,12 +234,12 @@
               requireEvent(
                 collectionobject,
                 'nosaveblockers:catalognumber',
-                'saveblockers cleared'
+                'saveblockers cleared',
               ),
               requireEvent(
                 collectionobject,
                 'oktosave',
-                'oktosave event triggered'
+                'oktosave event triggered',
               ),
             ];
             whenAll(checks).done(function () {
@@ -341,7 +341,7 @@
                     return requireEvent(
                       collectionobject,
                       event,
-                      message(event)
+                      message(event),
                     );
                   }),
                   _.map(reject, function (event) {
@@ -356,7 +356,7 @@
               return nextTest();
             });
           });
-        }
+        },
       );
       module('institution business rules');
       asyncTest('institution name is not unique', function () {
@@ -370,12 +370,12 @@
           requireEvent(
             institution,
             'saveblocked',
-            'saveblocked triggered'
+            'saveblocked triggered',
           ).done(checkReason),
           requireEvent(
             institution,
             'saveblocked:name',
-            'field event triggered'
+            'field event triggered',
           ).done(checkReason),
         ]).done(function () {
           return _.defer(start);
@@ -394,7 +394,7 @@
             return _.defer(function () {
               return institution.set('name', 'foobar');
             });
-          }
+          },
         );
         return institution.set('name', 'Natural History Museum');
       });
@@ -421,7 +421,7 @@
               return _.defer(function () {
                 return newcollector.set('agent', '/api/specify/agent/66/');
               });
-            }
+            },
           );
           collectors.add(newcollector);
           return newcollector.set('agent', '/api/specify/agent/634/');
@@ -517,7 +517,7 @@
               AAs.add(newagent2);
               return newagent2.set('role', 'Collector');
             });
-        }
+        },
       );
       return asyncTest(
         'accessionagent with duped role in both accession and repositoryagreement',
@@ -552,7 +552,7 @@
                     return equal(
                       blocker.reason,
                       'Value must be unique to accession, Value must be unique to repositoryagreement',
-                      'blocker reason is correct'
+                      'blocker reason is correct',
                     );
                   });
                   return start();
@@ -563,8 +563,8 @@
               RAAs.add(newagent);
               return newagent.set('role', 'Collector');
             });
-        }
+        },
       );
     };
   });
-}.call(this));
+}).call(this);

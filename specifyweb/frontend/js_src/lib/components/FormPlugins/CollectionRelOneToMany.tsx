@@ -45,14 +45,14 @@ export function CollectionOneToManyPlugin({
           resource,
           relationship,
           formatting,
-          muteWrongCollectionError
+          muteWrongCollectionError,
         ).catch((error) => {
           softFail(error);
           return false;
         }),
-      [resource, relationship, muteWrongCollectionError]
+      [resource, relationship, muteWrongCollectionError],
     ),
-    false
+    false,
   );
   useErrorContext('CollectionOneToManyPlugin', data);
 
@@ -76,10 +76,7 @@ export function CollectionOneToManyPlugin({
   const navigate = useNavigate();
   return data === false ? null : (
     <div
-      className={`
-        w-fit rounded bg-[color:var(--form-background)] p-2
-        shadow-sm ring-1 ring-gray-400 dark:ring-0
-      `}
+      className={`w-fit rounded bg-[color:var(--form-background)] p-2 shadow-sm ring-1 ring-gray-400 dark:ring-0`}
     >
       <table className="grid-table grid-cols-[repeat(3,auto)] gap-2">
         <thead>
@@ -94,7 +91,7 @@ export function CollectionOneToManyPlugin({
             data.collectionObjects.map(
               (
                 { formatted, resource: relatedResource, relationship },
-                index
+                index,
               ) => (
                 <tr key={relatedResource.cid}>
                   <td>
@@ -104,7 +101,7 @@ export function CollectionOneToManyPlugin({
                         event.preventDefault();
                         const availableCollections =
                           userInformation.availableCollections.map(
-                            ({ id }) => id
+                            ({ id }) => id,
                           );
                         if (
                           availableCollections.includes(data.otherCollection.id)
@@ -112,7 +109,7 @@ export function CollectionOneToManyPlugin({
                           switchCollection(
                             navigate,
                             data.otherCollection.id,
-                            relatedResource.viewUrl()
+                            relatedResource.viewUrl(),
                           );
                         else
                           setState({
@@ -143,7 +140,7 @@ export function CollectionOneToManyPlugin({
                             ...data,
                             collectionObjects: removeItem(
                               data.collectionObjects,
-                              index
+                              index,
                             ),
                           });
                         }}
@@ -151,7 +148,7 @@ export function CollectionOneToManyPlugin({
                     )}
                   </td>
                 </tr>
-              )
+              ),
             )
           ) : (
             <tr>
@@ -170,7 +167,7 @@ export function CollectionOneToManyPlugin({
                 ? { type: 'MainState' }
                 : {
                     type: 'SearchState',
-                  }
+                  },
             )
           }
         />
@@ -207,7 +204,7 @@ export function CollectionOneToManyPlugin({
               toAdd.set(`${data.side}Side`, resource);
               toAdd.set(
                 'collectionRelType',
-                data.relationshipType.get('resource_uri')
+                data.relationshipType.get('resource_uri'),
               );
               return toAdd;
             });
@@ -219,8 +216,8 @@ export function CollectionOneToManyPlugin({
                   processColRelationships(
                     addedRelationships,
                     data.otherSide,
-                    formatting
-                  )
+                    formatting,
+                  ),
                 )
                 .then((relationships) =>
                   setData({
@@ -229,8 +226,8 @@ export function CollectionOneToManyPlugin({
                       ...data.collectionObjects,
                       ...relationships,
                     ].sort(sortFunction(({ formatted }) => formatted)),
-                  })
-                )
+                  }),
+                ),
             );
           }}
         />

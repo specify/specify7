@@ -53,15 +53,11 @@ export function Fields({
            * REFACTOR: replace min-w-[35rem] with a container query that replaces
            *   table layout with list layout
            */
-          className={`
-            grid-table min-w-[35rem] gap-x-2 gap-y-2
-            [&_td]:!items-stretch
-            ${
-              displayFormatter
-                ? 'grid-cols-[min-content_1fr_auto_min-content]'
-                : 'grid-cols-[min-content_1fr_min-content]'
-            }
-          `}
+          className={`grid-table min-w-[35rem] gap-x-2 gap-y-2 [&_td]:!items-stretch ${
+            displayFormatter
+              ? 'grid-cols-[min-content_1fr_auto_min-content]'
+              : 'grid-cols-[min-content_1fr_min-content]'
+          } `}
         >
           <thead>
             <tr>
@@ -154,7 +150,7 @@ function Field({
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
   const [openIndex, setOpenIndex] = React.useState<number | undefined>(
-    undefined
+    undefined,
   );
   return (
     <tr>

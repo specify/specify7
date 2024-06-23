@@ -26,13 +26,13 @@ function LeafletDialog({
   const [localityData] = useAsyncState(
     React.useCallback(
       async () => fetchLocalityDataFromResource(locality, true),
-      [locality]
+      [locality],
     ),
-    true
+    true,
   );
 
   const fullLocalityData = React.useRef<LocalityData | false | undefined>(
-    undefined
+    undefined,
   );
 
   return localityData === undefined ? null : localityData === false ? (
@@ -50,14 +50,13 @@ function LeafletDialog({
       localityPoints={[localityData]}
       onClose={handleClose}
       onMarkerClick={async (_, { target: marker }): Promise<void> => {
-        fullLocalityData.current ??= await fetchLocalityDataFromResource(
-          locality
-        );
+        fullLocalityData.current ??=
+          await fetchLocalityDataFromResource(locality);
         if (fullLocalityData.current === false) return;
         (marker as Leaflet.Marker)
           .getPopup()
           ?.setContent(
-            formatLocalityData(fullLocalityData.current, undefined, true)
+            formatLocalityData(fullLocalityData.current, undefined, true),
           );
       }}
     />

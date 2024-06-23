@@ -183,14 +183,14 @@ const conditionalTinyFormView = strictParseXml(
   `<cell>
     ${Array.from(
       strictParseXml(tinyFormView).children,
-      (child) => child.outerHTML
+      (child) => child.outerHTML,
     ).join('\n')}
      <rows condition="accession.accessionNumber=42" colDef="2px,4px,1px">
       <row>
         <cell colSpan="4" />
       </row> 
     </rows>
-</cell>`
+</cell>`,
 );
 const parsedConditionalTinyView: ParsedFormDefinition = {
   columns: [2, 1],
@@ -241,7 +241,7 @@ describe('fetchView', () => {
   const viewName = 'abc';
   overrideAjax(
     formatUrl('/context/view.json', { name: viewName }),
-    JSON.stringify(viewDefinition)
+    JSON.stringify(viewDefinition),
   );
   test('caches fetched view', async () => {
     await expect(fetchView(viewName)).resolves.toEqual(viewDefinition);
@@ -262,7 +262,7 @@ describe('fetchView', () => {
     viewDefinition,
     {
       responseCode: Http.NOT_FOUND,
-    }
+    },
   );
 
   test('handles 404 errors gracefully', async () => {
@@ -276,7 +276,7 @@ describe('fetchView', () => {
     viewDefinition,
     {
       responseCode: Http.NO_CONTENT,
-    }
+    },
   );
 
   test('handles 204 response gracefully', async () =>
@@ -329,7 +329,7 @@ describe('fetchView', () => {
 
   test('corrects grid-only default forms', async () =>
     expect(fetchView('Collectors')).resolves.toStrictEqual(
-      expectedCollectorsView
+      expectedCollectorsView,
     ));
 });
 
@@ -344,7 +344,7 @@ test('parseViewDefinition', async () => {
     },
     'form',
     'view',
-    tables.CollectionObject
+    tables.CollectionObject,
   )!;
   expect(result).toBeDefined();
   expect(result!.table?.name).toBe(tables.CollectionObject.name);
@@ -371,7 +371,7 @@ test('parseViewDefinitions', () => {
   expect(
     parseViewDefinitions({
       a: `<viewdef />`,
-    }).a.outerHTML
+    }).a.outerHTML,
   ).toBe(`<viewdef/>`);
 });
 
@@ -394,7 +394,7 @@ theories(resolveAltView, [
 
 test('parseFormTableDefinition', async () =>
   expect(
-    parseFormTableDefinition(simpleFormView, tables.CollectionObject)
+    parseFormTableDefinition(simpleFormView, tables.CollectionObject),
   ).resolves.toEqual(parsedFormView));
 
 const formTableColumns = [
@@ -423,8 +423,8 @@ describe('parseFormDefinition', () => {
     await expect(
       parseFormDefinition(
         toSimpleXmlNode(xmlToJson(strictParseXml(tinyFormView))),
-        tables.CollectionObject
-      )
+        tables.CollectionObject,
+      ),
     ).resolves.toEqual([
       {
         condition: undefined,
@@ -438,7 +438,7 @@ describe('parseFormDefinition', () => {
     await expect(
       parseFormDefinition(
         toSimpleXmlNode(xmlToJson(conditionalTinyFormView)),
-        tables.CollectionObject
+        tables.CollectionObject,
       ).then((formDefinition) =>
         formDefinition.map(({ condition, ...rest }) => ({
           ...rest,
@@ -449,8 +449,8 @@ describe('parseFormDefinition', () => {
                   ...condition,
                   field: condition.field.map((field) => field.name),
                 },
-        }))
-      )
+        })),
+      ),
     ).resolves.toEqual([
       {
         condition: undefined,
@@ -479,13 +479,13 @@ describe('getColumnDefinitions', () => {
               `<viewdef>
             <columnDef os="abc">A</columnDef>
             <columnDef os="${getPref(
-              'form.definition.columnSource'
+              'form.definition.columnSource',
             )}">B</columnDef>
-          </viewdef>`
-            )
-          )
-        )
-      )
+          </viewdef>`,
+            ),
+          ),
+        ),
+      ),
     ).toBe('B'));
 
   test('fall back to first definition available', () =>
@@ -495,9 +495,9 @@ describe('getColumnDefinitions', () => {
           `<viewdef>
             <columnDef os="abc">A</columnDef>
             <columnDef os="abc2">B</columnDef>
-          </viewdef>`
-        )
-      )
+          </viewdef>`,
+        ),
+      ),
     ).toBe('A'));
 
   test('can specify column definition as an attribute', () =>
@@ -511,7 +511,7 @@ theories(getColumnDefinition, [
         `<viewdef>
           <columnDef os="mac">B</columnDef>
           <columnDef os="lnx">A</columnDef>
-        </viewdef>`
+        </viewdef>`,
       ),
       'lnx',
     ],
@@ -523,7 +523,7 @@ theories(getColumnDefinition, [
         `<viewdef>
           <columnDef os="mac">B</columnDef>
           <columnDef os="lnx">A</columnDef>
-        </viewdef>`
+        </viewdef>`,
       ),
       undefined,
     ],

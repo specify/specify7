@@ -46,17 +46,17 @@ export function SpecifyNetworkResponse({
                 [
                   key,
                   responses.map((response) => getValue(response, key)),
-                ] as const
-            )
-          )
-        )
+                ] as const,
+            ),
+          ),
+        ),
       ).map(({ label, title, originalCells, cells }) => (
         <BrokerRow
           cellClassName={
             new Set(
               originalCells
                 .filter(Boolean)
-                .map((value) => JSON.stringify(value))
+                .map((value) => JSON.stringify(value)),
             ).size === 1
               ? undefined
               : 'text-red-500'

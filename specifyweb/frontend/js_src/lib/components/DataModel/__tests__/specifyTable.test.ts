@@ -24,27 +24,27 @@ test('localization is generated on the fly when empty', () =>
 
 test('label is extracted from schema localization', () =>
   expect(tables.CollectionObject.label).toMatchInlineSnapshot(
-    `"Collection Object"`
+    `"Collection Object"`,
   ));
 
 test('table name is generated on the fly if needed', () =>
   expect(tables.DNASequencingRunAttachment.label).toBe(
-    'DNASequencing Run Attachment'
+    'DNASequencing Run Attachment',
   ));
 
 test('java name can be accessed', () =>
   expect(tables.CollectionObject.longName).toMatchInlineSnapshot(
-    `"edu.ku.brc.specify.datamodel.CollectionObject"`
+    `"edu.ku.brc.specify.datamodel.CollectionObject"`,
   ));
 
 test('name can be accessed', () =>
   expect(tables.CollectionObject.name).toMatchInlineSnapshot(
-    `"CollectionObject"`
+    `"CollectionObject"`,
   ));
 
 test('view name is extracted from data table', () =>
   expect(tables.CollectionObject.view).toMatchInlineSnapshot(
-    `"CollectionObject"`
+    `"CollectionObject"`,
   ));
 
 test('view name is added on the front-end if missing', () =>
@@ -55,12 +55,12 @@ test('view name is overwritten for attachments', () =>
 
 test('table name is used as view name if missing', () =>
   expect(tables.AccessionAuthorization.view).toBe(
-    tables.AccessionAuthorization.name
+    tables.AccessionAuthorization.name,
   ));
 
 test('search dialog name is extracted', () =>
   expect(tables.CollectionObject.searchDialog).toMatchInlineSnapshot(
-    `"CollectionObjectSearch"`
+    `"CollectionObjectSearch"`,
   ));
 
 test('table id is extracted', () =>
@@ -142,7 +142,7 @@ describe('getField', () => {
     expect(tables.CollectionObject.getField('date1')?.name).toBe('date1'));
   test('get indirect field', () =>
     expect(tables.CollectionObject.getField('accession.remarks')?.name).toBe(
-      'remarks'
+      'remarks',
     ));
 });
 
@@ -160,14 +160,14 @@ describe('getFields', () => {
     ]));
   test('get indirect field', () =>
     expect(
-      serialized(tables.CollectionObject.getFields('accession.remarks'))
+      serialized(tables.CollectionObject.getFields('accession.remarks')),
     ).toEqual([
       '[relationship CollectionObject.accession]',
       '[literalField Accession.remarks]',
     ]));
   test('get id field', () =>
     expect(
-      serialized(tables.CollectionObject.getFields('collectionObjectId'))
+      serialized(tables.CollectionObject.getFields('collectionObjectId')),
     ).toEqual(['[literalField CollectionObject.collectionObjectId]']));
   test('get id field using alias', () =>
     expect(serialized(tables.CollectionObject.getFields('id'))).toEqual([
@@ -179,7 +179,7 @@ describe('getFields', () => {
     expect(tables.CollectionObject.getFields('')).toBeUndefined());
   test('throw on invalid field name', () =>
     expect(() =>
-      tables.CollectionObject.getFields(false as unknown as string)
+      tables.CollectionObject.getFields(false as unknown as string),
     ).toThrow('Invalid field name'));
   test('can get a field using schema alias', () =>
     expect(serialized(tables.Geography.getFields('acceptedParent'))).toEqual([
@@ -195,7 +195,7 @@ describe('getFields', () => {
     ]));
   test('can get a field even if mistakenly provided table name', () =>
     expect(
-      serialized(tables.Locality.getFields('locality.localityName'))
+      serialized(tables.Locality.getFields('locality.localityName')),
     ).toEqual(['[literalField Locality.localityName]']));
   test('undefined when trying to use dot notation on a literal field', () => {
     jest.spyOn(console, 'error').mockImplementation();
@@ -206,23 +206,23 @@ describe('getFields', () => {
 describe('strictGetField', () => {
   test('can get a field', () =>
     expect(
-      tables.CollectionObject.strictGetField('accession.remarks')?.name
+      tables.CollectionObject.strictGetField('accession.remarks')?.name,
     ).toBe('remarks'));
   test('throw if field is not found', () =>
     expect(() =>
-      tables.CollectionObject.strictGetField('accessions.remarks')
+      tables.CollectionObject.strictGetField('accessions.remarks'),
     ).toThrow('Tried to get unknown field'));
 });
 
 describe('getLiteralField', () => {
   test('can get a literal field', () =>
     expect(
-      tables.CollectionObject.getLiteralField('accession.remarks')?.name
+      tables.CollectionObject.getLiteralField('accession.remarks')?.name,
     ).toBe('remarks'));
   test('throw if field is a relationship', () => {
     jest.spyOn(console, 'error').mockImplementation();
     expect(() => tables.CollectionObject.getLiteralField('accession')).toThrow(
-      'is a relationship'
+      'is a relationship',
     );
   });
 });
@@ -230,34 +230,34 @@ describe('getLiteralField', () => {
 describe('strictGetLiteralField', () => {
   test('can get a literal field', () =>
     expect(
-      tables.CollectionObject.strictGetLiteralField('accession.remarks')?.name
+      tables.CollectionObject.strictGetLiteralField('accession.remarks')?.name,
     ).toBe('remarks'));
   test('throw if field is not found', () =>
     expect(() => tables.CollectionObject.strictGetLiteralField('abc')).toThrow(
-      'Tried to get unknown literal field'
+      'Tried to get unknown literal field',
     ));
 });
 
 describe('getRelationship', () => {
   test('can get a relationship field', () =>
     expect(
-      tables.CollectionObject.getRelationship('accession.division')?.name
+      tables.CollectionObject.getRelationship('accession.division')?.name,
     ).toBe('division'));
   test('throw if field is not a relationship', () =>
     expect(() =>
-      tables.CollectionObject.getRelationship('accession.remarks')
+      tables.CollectionObject.getRelationship('accession.remarks'),
     ).toThrow('is not a relationship'));
 });
 
 describe('strictGetRelationship', () => {
   test('can get a relationship field', () =>
     expect(
-      tables.CollectionObject.strictGetRelationship('accession.division')?.name
+      tables.CollectionObject.strictGetRelationship('accession.division')?.name,
     ).toBe('division'));
   test('throw if field is not found', () => {
     jest.spyOn(console, 'error').mockImplementation();
     expect(() =>
-      tables.CollectionObject.strictGetRelationship('accessions')
+      tables.CollectionObject.strictGetRelationship('accessions'),
     ).toThrow('Tried to get unknown relationship field');
   });
 });
@@ -279,15 +279,15 @@ describe('getAggregator', () => {
 describe('getScopingRelationship', () => {
   test('can get scoping relationship when scoped to Collection Object', () =>
     expect(tables.Determination.getScopingRelationship()?.name).toBe(
-      'collectionObject'
+      'collectionObject',
     ));
   test('can get scoping relationship when scoped to Collection', () =>
     expect(tables.CollectionObject.getScopingRelationship()?.name).toBe(
-      'collection'
+      'collection',
     ));
   test('can get scoping relationship when scoped to Discipline', () =>
     expect(tables.CollectingEvent.getScopingRelationship()?.name).toBe(
-      'discipline'
+      'discipline',
     ));
   test('can get scoping relationship when scoped to Division', () =>
     expect(tables.Discipline.getScopingRelationship()?.name).toBe('division'));
@@ -336,7 +336,7 @@ test('toJSON', () =>
 describe('fromJson', () => {
   test('CollectionObject', () =>
     expect(SpecifyTable.fromJson('[table CollectionObject]')).toBe(
-      tables.CollectionObject
+      tables.CollectionObject,
     ));
   test('Accession', () =>
     expect(SpecifyTable.fromJson('[table Accession]')).toBe(tables.Accession));
@@ -359,8 +359,8 @@ test('tableScoping', () =>
           .getScope()
           ?.map(({ name }) => name)
           .join(' > '),
-      ])
-    )
+      ]),
+    ),
   ).toMatchSnapshot());
 
 test('indexed fields are loaded', () =>

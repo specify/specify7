@@ -35,15 +35,15 @@ export const fetchContext = load<
       userInfo[key as keyof UserInformation] = value;
     });
     await import('../DataModel/tables').then(
-      async ({ fetchContext }) => fetchContext
+      async ({ fetchContext }) => fetchContext,
     );
     await import('../DataModel/schema').then(
-      async ({ fetchContext }) => fetchContext
+      async ({ fetchContext }) => fetchContext,
     );
     userInfo.availableCollections = availableCollections.map(serializeResource);
     setDevelopmentGlobal('_user', userInfo);
     return userInfo;
-  }
+  },
 );
 
 export const userInformation: UserInformation = userInfo;

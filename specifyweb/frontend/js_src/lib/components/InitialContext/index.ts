@@ -34,7 +34,7 @@ let unlock: (entrypoint: typeof entrypointName) => void;
 export const contextUnlockedPromise = new Promise<typeof entrypointName>(
   (resolve) => {
     unlock = resolve;
-  }
+  },
 );
 
 const foreverPromise = new Promise<any>(() => {
@@ -78,7 +78,7 @@ export const load = async <T>(path: string, mimeType: MimeType): Promise<T> =>
             ? 'cached'
             : `${formatNumber(f.round(timePassed / SECOND, 0.01))}s`
         }]`,
-        `color: ${isCached ? '#9fa' : '#f99'}`
+        `color: ${isCached ? '#9fa' : '#f99'}`,
       );
     return data;
   });
@@ -105,5 +105,5 @@ export const initialContext = Promise.all([
   // Fetch the discipline's uniquenessRules (NOT CACHED)
   import('../DataModel/uniquenessRules'),
 ]).then(async (modules) =>
-  Promise.all(modules.map(async ({ fetchContext }) => fetchContext))
+  Promise.all(modules.map(async ({ fetchContext }) => fetchContext)),
 );

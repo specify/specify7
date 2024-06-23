@@ -55,9 +55,9 @@ function ModifyDatasetWrapped({
           headers: { Accept: 'application/json' },
           method: 'GET',
         }).then(({ data }) => data),
-      [id]
+      [id],
     ),
-    true
+    true,
   );
   return rawDataset === undefined ? null : (
     <ModifyDataset dataset={rawDataset} onClose={handleClose} />
@@ -109,7 +109,7 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
   const [unsortedDatasets] = usePromise(attachmentDataSetsPromise, true);
   const [sortConfig, handleSort, applySortConfig] = useSortConfig(
     'attachmentDatasets',
-    'timestampCreated'
+    'timestampCreated',
   );
   const sortedDatasets = React.useMemo(
     () =>
@@ -119,10 +119,10 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
             sortConfig.sortField === 'timestampCreated'
               ? dataset.timestampcreated
               : sortConfig.sortField === 'timestampModified'
-              ? dataset.timestampmodified
-              : dataset.name
+                ? dataset.timestampmodified
+                : dataset.name,
           ),
-    [unsortedDatasets, applySortConfig, sortConfig]
+    [unsortedDatasets, applySortConfig, sortConfig],
   );
   const [editing, setEditing] = React.useState<number | undefined>(undefined);
 
@@ -160,7 +160,7 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
                 >
                   {
                     strictGetTable('WorkBench').strictGetField(
-                      'timestampCreated'
+                      'timestampCreated',
                     ).label
                   }
                 </Button.LikeLink>
@@ -174,7 +174,7 @@ export function AttachmentsImportOverlay(): JSX.Element | null {
                 <Button.LikeLink onClick={() => handleSort('timestampCreated')}>
                   {
                     strictGetTable('WorkBench').strictGetField(
-                      'timestampModified'
+                      'timestampModified',
                     ).label
                   }
                 </Button.LikeLink>
@@ -241,7 +241,7 @@ const getNamePromise = async () =>
       date: new Date().toDateString(),
     }),
     undefined,
-    '/attachment_gw/dataset/'
+    '/attachment_gw/dataset/',
   );
 
 function NewDataSet(): JSX.Element | null {
@@ -250,7 +250,7 @@ function NewDataSet(): JSX.Element | null {
   const id = useId('new-data-set');
   const [pendingName, setPendingName] = useAsyncState<LocalizedString>(
     getNamePromise,
-    true
+    true,
   );
   const loading = React.useContext(LoadingContext);
   return pendingName === undefined ? null : (
@@ -275,8 +275,8 @@ function NewDataSet(): JSX.Element | null {
             onSubmit={async () => {
               loading(
                 createEmpty(pendingName).then(({ id }) =>
-                  navigate(`/specify/attachments/import/${id}`)
-                )
+                  navigate(`/specify/attachments/import/${id}`),
+                ),
               );
             }}
           >

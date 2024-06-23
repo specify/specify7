@@ -39,14 +39,14 @@ export function ListEdit<T extends string = string>({
 }): JSX.Element {
   const handleChange = (items: RA<T>): void =>
     handleRawChange(
-      JSON.stringify(items) === JSON.stringify(defaultValues) ? [] : items
+      JSON.stringify(items) === JSON.stringify(defaultValues) ? [] : items,
     );
 
   const selectedItems = filterArray(
-    selectedValues.map((name) => allItems.find((item) => item.name === name))
+    selectedValues.map((name) => allItems.find((item) => item.name === name)),
   );
   const possibleItems = allItems.filter(
-    ({ name }) => !selectedValues.includes(name)
+    ({ name }) => !selectedValues.includes(name),
   );
 
   const [selectedSubset, setSelectedSubset] = React.useState<RA<T>>([]);
@@ -68,7 +68,7 @@ export function ListEdit<T extends string = string>({
 
   function handleMove(selected: RA<T>, insertionIndex: number): void {
     const remainingTables = selectedValues.filter(
-      (name) => !selected.includes(name)
+      (name) => !selected.includes(name),
     );
     handleChange([
       ...remainingTables.slice(0, insertionIndex),
@@ -80,11 +80,11 @@ export function ListEdit<T extends string = string>({
   function handleAdd(): void {
     const [remaining, toAdd] = split(
       possibleItems.map(({ name }) => name),
-      (name) => possibleSubset.includes(name)
+      (name) => possibleSubset.includes(name),
     );
     handleChange([...selectedValues, ...toAdd]);
     const newIndex = possibleItems.findIndex(
-      ({ name }) => name === possibleSubset[0]
+      ({ name }) => name === possibleSubset[0],
     );
     setPossibleSubset(filterArray([remaining[newIndex]]));
     setSelectedSubset(possibleSubset);
@@ -92,7 +92,7 @@ export function ListEdit<T extends string = string>({
 
   function handleRemove(): void {
     const newSelectedItems = selectedValues.filter(
-      (name) => !selectedSubset.includes(name)
+      (name) => !selectedSubset.includes(name),
     );
     handleChange(newSelectedItems);
     const newIndex = selectedValues.indexOf(selectedSubset[0]);

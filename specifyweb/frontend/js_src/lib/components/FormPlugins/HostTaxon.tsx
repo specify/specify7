@@ -26,8 +26,8 @@ const hostTaxonTypeSearch = f.store<TypeSearch>(() =>
       formatter: localized('Taxon'),
       query: undefined,
     }),
-    'Unable to parse host taxon type search'
-  )
+    'Unable to parse host taxon type search',
+  ),
 );
 
 export function HostTaxon({
@@ -54,12 +54,12 @@ export function HostTaxon({
           .then(async ({ records }) =>
             f
               .maybe(records[0], deserializeResource)
-              ?.rgetPromise('rightSideCollection')
+              ?.rgetPromise('rightSideCollection'),
           )
           .then((collection) => collection?.get('id')),
-      [relationship]
+      [relationship],
     ),
-    false
+    false,
   );
   return rightSideCollection === undefined ? (
     <Input.Text isReadOnly />

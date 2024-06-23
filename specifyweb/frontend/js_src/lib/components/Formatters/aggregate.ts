@@ -11,7 +11,7 @@ import type { Aggregator } from './spec';
 export async function aggregate(
   collection: Collection<AnySchema> | RA<SpecifyResource<AnySchema>>,
   aggregator?: Aggregator | string,
-  cycleDetector: RA<SpecifyResource<AnySchema>> = []
+  cycleDetector: RA<SpecifyResource<AnySchema>> = [],
 ): Promise<string> {
   const allResources = Array.isArray(collection)
     ? collection
@@ -31,7 +31,7 @@ export async function aggregate(
       : aggregators.find(({ name }) => name === aggregator)) ??
     aggregators.find(({ name }) => name === defaultAggregator) ??
     aggregators.find(
-      ({ table, isDefault }) => table === targetTable && isDefault
+      ({ table, isDefault }) => table === targetTable && isDefault,
     ) ??
     aggregators.find(({ table }) => table === targetTable) ??
     autoGenerateAggregator(targetTable);
@@ -51,21 +51,21 @@ export async function aggregate(
           resource,
           resolvedAggregator.formatter,
           false,
-          cycleDetector
+          cycleDetector,
         ),
         sortValue:
           resolvedAggregator.sortField === undefined
             ? undefined
             : fetchPathAsString(resource, resolvedAggregator.sortField, false),
-      })
-    )
+      }),
+    ),
   ).then((entries) => {
     const resources = Array.from(
       filterArray(
         entries.map(({ formatted, sortValue }) =>
-          formatted === undefined ? undefined : { formatted, sortValue }
-        )
-      )
+          formatted === undefined ? undefined : { formatted, sortValue },
+        ),
+      ),
     )
       .sort(sortFunction(({ sortValue }) => sortValue))
       .map(({ formatted }) => formatted);

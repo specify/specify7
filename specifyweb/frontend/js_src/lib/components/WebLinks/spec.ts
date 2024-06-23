@@ -27,12 +27,12 @@ export const webLinksSpec = f.store(() =>
             ({ parts, ...webLink }) => ({
               ...webLink,
               ...reconstructWeblink(parts),
-            })
-          )
-        )
-      )
+            }),
+          ),
+        ),
+      ),
     ),
-  })
+  }),
 );
 
 export type WebLink = SpecToJson<
@@ -46,35 +46,35 @@ const webLinkSpec = f.store(() =>
     name: pipe(
       syncers.xmlChild('name'),
       syncers.maybe(syncers.xmlContent),
-      syncers.default(localized(''))
+      syncers.default(localized('')),
     ),
     table: pipe(
       syncers.xmlChild('tableName', 'optional'),
       syncers.maybe(syncers.xmlContent),
-      syncers.maybe(syncers.tableName)
+      syncers.maybe(syncers.tableName),
     ),
     description: pipe(
       syncers.xmlChild('desc', 'optional'),
       syncers.maybe(syncers.xmlContent),
-      syncers.default(localized(''))
+      syncers.default(localized('')),
     ),
     url: pipe(
       syncers.xmlChild('baseURLStr'),
-      syncers.maybe(syncers.xmlContent)
+      syncers.maybe(syncers.xmlContent),
     ),
     parameters: pipe(
       syncers.xmlChild('args'),
       syncers.fallback(createSimpleXmlNode),
       syncers.xmlChildren('weblinkdefarg'),
-      syncers.map(syncers.object(argumentSpec()))
+      syncers.map(syncers.object(argumentSpec())),
     ),
     usages: pipe(
       syncers.xmlChild('usedByList'),
       syncers.fallback(createSimpleXmlNode),
       syncers.xmlChildren('usedby'),
-      syncers.map(syncers.object(usedBySpec()))
+      syncers.map(syncers.object(usedBySpec())),
     ),
-  })
+  }),
 );
 
 const argumentSpec = f.store(() =>
@@ -82,12 +82,12 @@ const argumentSpec = f.store(() =>
     name: pipe(
       syncers.xmlChild('name'),
       syncers.maybe(syncers.xmlContent),
-      syncers.default(localized(''))
+      syncers.default(localized('')),
     ),
     title: pipe(
       syncers.xmlChild('title', 'optional'),
       syncers.maybe(syncers.xmlContent),
-      syncers.default(localized(''))
+      syncers.default(localized('')),
     ),
     /**
      * Specify 6 only. It was temporary implemented in Specify 7, but was removed
@@ -96,7 +96,7 @@ const argumentSpec = f.store(() =>
     legacyShouldPrompt: pipe(
       syncers.xmlChild('prompt', 'optional'),
       syncers.maybe(syncers.xmlContent),
-      syncers.maybe(syncers.toBoolean)
+      syncers.maybe(syncers.toBoolean),
     ),
     legacyIsEditable: pipe(
       syncers.xmlChild('isEditable', 'optional'),
@@ -106,9 +106,9 @@ const argumentSpec = f.store(() =>
        * "isEditable" appears unused in Specify 6, but is always set to
        * false
        */
-      syncer(f.id, () => false)
+      syncer(f.id, () => false),
     ),
-  })
+  }),
 );
 
 const usedBySpec = f.store(() =>
@@ -116,13 +116,13 @@ const usedBySpec = f.store(() =>
     table: pipe(
       syncers.xmlChild('tableName'),
       syncers.maybe(syncers.xmlContent),
-      syncers.maybe(syncers.tableName)
+      syncers.maybe(syncers.tableName),
     ),
     fieldName: pipe(
       syncers.xmlChild('fieldName'),
-      syncers.maybe(syncers.xmlContent)
+      syncers.maybe(syncers.xmlContent),
     ),
-  })
+  }),
 );
 
 type ParsedWebLink =
@@ -144,7 +144,7 @@ const parseDefinition = (item: RawWebLink): RA<ParsedWebLink> =>
         : {
             type: 'UrlPart',
             value: localized(part),
-          }
+          },
     );
 
 const formatter = 'formatter_';
@@ -165,7 +165,7 @@ function parseField(item: RawWebLink, part: string): ParsedWebLink {
 }
 
 function reconstructWeblink(
-  parts: RA<ParsedWebLink>
+  parts: RA<ParsedWebLink>,
 ): Pick<RawWebLink, 'parameters' | 'url'> {
   const augmented = parts
     .filter((part) => part.type !== 'Field' || part.field.length > 0)
@@ -176,21 +176,21 @@ function reconstructWeblink(
             title: parameter.field.map(({ label }) => label).join(' > '),
           }
         : parameter.type === 'ThisField'
-        ? {
-            name: 'this',
-            title: 'This',
-          }
-        : parameter.type === 'FormattedResource'
-        ? {
-            name: `${formatter}${parameter.formatter}`,
-            title: parameter.formatter,
-          }
-        : parameter.value
+          ? {
+              name: 'this',
+              title: 'This',
+            }
+          : parameter.type === 'FormattedResource'
+            ? {
+                name: `${formatter}${parameter.formatter}`,
+                title: parameter.formatter,
+              }
+            : parameter.value,
     );
   return {
     url: augmented
       .map((argument) =>
-        typeof argument === 'object' ? `<${argument.name}>` : argument
+        typeof argument === 'object' ? `<${argument.name}>` : argument,
       )
       .join(''),
     parameters: filterArray(
@@ -203,8 +203,8 @@ function reconstructWeblink(
               legacyIsEditable: false,
               legacyShouldPrompt: undefined,
             }
-          : undefined
-      )
+          : undefined,
+      ),
     ),
   };
 }

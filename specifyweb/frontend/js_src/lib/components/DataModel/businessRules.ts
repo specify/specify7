@@ -64,7 +64,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
 
   public async checkField(
     fieldName: string &
-      (keyof SCHEMA['fields'] | keyof SCHEMA['toOneIndependent'])
+      (keyof SCHEMA['fields'] | keyof SCHEMA['toOneIndependent']),
   ): Promise<RA<BusinessRuleResult<SCHEMA>>> {
     const field = this.resource.specifyTable.getField(fieldName);
     if (field === undefined) return [];
@@ -83,7 +83,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       isTreeResource(this.resource as SpecifyResource<AnySchema>)
         ? treeBusinessRules(
             this.resource as SpecifyResource<AnyTree>,
-            processedFieldName as TableFields<AnyTree>
+            processedFieldName as TableFields<AnyTree>,
           )
         : Promise.resolve({ isValid: true }),
     ];
@@ -98,7 +98,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         thisCheck === this.fieldChangePromises[processedFieldName]
           ? this.processCheckFieldResults(
               processedFieldName,
-              filterArray(results)
+              filterArray(results),
             )
           : [{ isValid: true }];
       thisCheck.resolve('finished');
@@ -107,7 +107,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   }
 
   private addPromise(
-    promise: Promise<BusinessRuleResult | string | undefined>
+    promise: Promise<BusinessRuleResult | string | undefined>,
   ): void {
     this.pendingPromise = Promise.allSettled([
       this.pendingPromise,
@@ -123,16 +123,16 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       this.addPromise(
         Promise.all(
           Object.keys(resource.changed).map(async (field) =>
-            this.checkField(field)
-          )
-        ).then(() => undefined)
+            this.checkField(field),
+          ),
+        ).then(() => undefined),
       );
     }
   }
 
   private added(
     resource: SpecifyResource<SCHEMA>,
-    collection: Collection<SCHEMA>
+    collection: Collection<SCHEMA>,
   ): void {
     /**
      * REFACTOR: remove the need for this and the orderNumber check by
@@ -142,27 +142,27 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       (resource as SpecifyResource<CollectionObjectAttachment>).set(
         'ordinal',
         collection.indexOf(resource),
-        { silent: true }
+        { silent: true },
       );
     this.addPromise(
-      this.invokeRule('onAdded', undefined, [resource, collection])
+      this.invokeRule('onAdded', undefined, [resource, collection]),
     );
   }
 
   private removed(
     resource: SpecifyResource<SCHEMA>,
-    collection: Collection<SCHEMA>
+    collection: Collection<SCHEMA>,
   ): void {
     // TODO: optimize because it will recalculate everything
     propagateBlockerEvents(this.resource);
     this.addPromise(
-      this.invokeRule('onRemoved', undefined, [resource, collection])
+      this.invokeRule('onRemoved', undefined, [resource, collection]),
     );
   }
 
   private processCheckFieldResults(
     fieldName: string & keyof SCHEMA['fields'],
-    results: RA<BusinessRuleResult<SCHEMA>>
+    results: RA<BusinessRuleResult<SCHEMA>>,
   ): RA<BusinessRuleResult<SCHEMA>> {
     if (!specialFields.has(fieldName)) {
       const field = this.resource.specifyTable.strictGetField(fieldName);
@@ -178,7 +178,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
           result.resource ?? this.resource,
           field,
           saveBlockerMessage,
-          saveBlockerKey
+          saveBlockerKey,
         );
 
         if (result.isValid) result.action?.();
@@ -188,18 +188,18 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   }
 
   private checkUnique(
-    fieldName: string & keyof SCHEMA['fields']
+    fieldName: string & keyof SCHEMA['fields'],
   ): RA<Promise<BusinessRuleResult<SCHEMA>>> {
     const rules = getUniquenessRules(this.resource.specifyTable.name) ?? [];
     const rulesToCheck = rules.filter(({ rule }) =>
       rule.fields.some(
         (ruleFieldName) =>
-          ruleFieldName.toLowerCase() === fieldName.toLowerCase()
-      )
+          ruleFieldName.toLowerCase() === fieldName.toLowerCase(),
+      ),
     );
 
     const results: RA<Promise<BusinessRuleResult<SCHEMA>>> = rulesToCheck.map(
-      async ({ rule }) => this.uniqueIn(rule)
+      async ({ rule }) => this.uniqueIn(rule),
     );
     void Promise.all(results).then((results) =>
       results
@@ -212,19 +212,19 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
             this.watchers[event] = (): void =>
               duplicate.on(
                 `change:${fieldName}`,
-                () => void this.checkField(fieldName).catch(softFail)
+                () => void this.checkField(fieldName).catch(softFail),
               );
             duplicate.once('remove', () => {
               this.watchers = removeKey(this.watchers, event);
             });
           }
-        })
+        }),
     );
     return results;
   }
 
   private async uniqueIn(
-    rule: UniquenessRule
+    rule: UniquenessRule,
   ): Promise<BusinessRuleResult<SCHEMA>> {
     const invalidResponse: BusinessRuleResult<SCHEMA> = {
       isValid: false,
@@ -233,12 +233,12 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         rule.scopes.map(
           (scope) =>
             getFieldsFromPath(this.resource.specifyTable, scope).at(
-              -1
-            ) as Relationship
+              -1,
+            ) as Relationship,
         ),
         rule.fields.map((field) =>
-          this.resource.specifyTable.strictGetField(field)
-        )
+          this.resource.specifyTable.strictGetField(field),
+        ),
       ),
     };
     const validResponse: BusinessRuleResult<SCHEMA> = {
@@ -248,7 +248,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
 
     const getFieldValue = async (
       resource: SpecifyResource<AnySchema>,
-      fieldName: string
+      fieldName: string,
     ): Promise<{
       readonly id: number | undefined;
       readonly cid: string | undefined;
@@ -275,13 +275,13 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
               fieldName
                 .split(djangoLookupSeparator)
                 .slice(1)
-                .join(djangoLookupSeparator)
+                .join(djangoLookupSeparator),
             );
       }
 
       const related: SpecifyResource<AnySchema> | number | string | null =
         await resource.getRelated(
-          fieldName.replaceAll(djangoLookupSeparator, backboneFieldSeparator)
+          fieldName.replaceAll(djangoLookupSeparator, backboneFieldSeparator),
         );
       return {
         id: related?.id,
@@ -295,7 +295,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
 
     const generateFilters = async (
       resource: SpecifyResource<AnySchema>,
-      fieldNames: RA<string>
+      fieldNames: RA<string>,
     ): Promise<
       IR<{
         readonly id: number | undefined;
@@ -308,8 +308,8 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
           fieldNames.map(async (fieldName) => [
             fieldName,
             await getFieldValue(resource, fieldName),
-          ])
-        )
+          ]),
+        ),
       );
 
     const hasSameValues = async (
@@ -318,14 +318,14 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         readonly id: number | undefined;
         readonly cid: string | undefined;
         readonly value: number | string | null | undefined;
-      }>
+      }>,
     ): Promise<boolean> => {
       if (other.id != null && other.id === this.resource.id) return false;
       if (other.cid === this.resource.cid) return false;
 
       const otherFilters = await generateFilters(
         other,
-        Object.keys(fieldValues)
+        Object.keys(fieldValues),
       );
 
       return Object.entries(otherFilters).every(
@@ -353,7 +353,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
             otherCid === undefined &&
             otherValue === value
           );
-        }
+        },
       );
     };
 
@@ -372,8 +372,8 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         localCollection.models.map(async (other) => {
           const isDuplicate = await hasSameValues(other, filters);
           return isDuplicate ? other : undefined;
-        })
-      )
+        }),
+      ),
     );
     if (duplicates.length > 0) {
       overwriteReadOnly(invalidResponse, 'localDuplicates', duplicates);
@@ -384,7 +384,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       Object.entries(filters).map(([fieldName, { value }]) => [
         fieldName,
         value,
-      ])
+      ]),
     );
 
     if (Object.values(partialFilters).includes(undefined)) return validResponse;
@@ -400,19 +400,19 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       .then(async (fetchedCollection) =>
         Promise.all(
           fetchedCollection.models.map(async (others) =>
-            hasSameValues(others, filters)
-          )
-        )
+            hasSameValues(others, filters),
+          ),
+        ),
       )
       .then((foundDuplicates) =>
-        foundDuplicates.includes(true) ? invalidResponse : validResponse
+        foundDuplicates.includes(true) ? invalidResponse : validResponse,
       );
   }
 
   private async invokeRule(
     ruleName: keyof BusinessRuleDefs<SCHEMA>,
     fieldName: keyof SCHEMA['fields'] | undefined,
-    args: RA<unknown>
+    args: RA<unknown>,
   ): Promise<BusinessRuleResult | undefined> {
     if (this.rules === undefined) {
       return undefined;
@@ -445,7 +445,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
 
 export function getFieldsFromPath(
   table: SpecifyTable,
-  fieldPath: string
+  fieldPath: string,
 ): RA<LiteralField | Relationship> {
   const fields = fieldPath.split(djangoLookupSeparator);
 
@@ -460,7 +460,7 @@ export function getFieldsFromPath(
 }
 
 export function attachBusinessRules(
-  resource: SpecifyResource<AnySchema>
+  resource: SpecifyResource<AnySchema>,
 ): void {
   const businessRuleManager = new BusinessRuleManager(resource);
   overwriteReadOnly(resource, 'businessRuleManager', businessRuleManager);
@@ -481,28 +481,28 @@ export type BusinessRuleResult<SCHEMA extends AnySchema = AnySchema> = {
 );
 
 export const runAllFieldChecks = async (
-  resource: SpecifyResource<AnySchema>
+  resource: SpecifyResource<AnySchema>,
 ): Promise<void> => {
   const relationships = resource.specifyTable.relationships;
   await Promise.all(
     relationships.map(async ({ name }) =>
-      resource.businessRuleManager?.checkField(name)
-    )
+      resource.businessRuleManager?.checkField(name),
+    ),
   );
   const mapResource = (
-    result?: Collection<AnySchema> | SpecifyResource<AnySchema> | null
+    result?: Collection<AnySchema> | SpecifyResource<AnySchema> | null,
   ): RA<SpecifyResource<AnySchema>> =>
     (result === undefined || result === null
       ? []
       : result instanceof ResourceBase
-      ? [result]
-      : (result as Collection<AnySchema>).models) as unknown as RA<
+        ? [result]
+        : (result as Collection<AnySchema>).models) as unknown as RA<
       SpecifyResource<AnySchema>
     >;
   // Running only on dependent resources. the order shouldn't matter.....
   await Promise.all(
     Object.values(resource.dependentResources)
       .flatMap(mapResource)
-      .map(async (next) => runAllFieldChecks(next))
+      .map(async (next) => runAllFieldChecks(next)),
   );
 };

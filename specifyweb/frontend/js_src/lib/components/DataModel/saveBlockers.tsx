@@ -50,11 +50,11 @@ export type BlockerWithResource = {
 
 export const getFieldBlockerKey = (
   field: LiteralField | Relationship,
-  blockerKey: string
+  blockerKey: string,
 ): string => `${blockerKey}-${field.name}`;
 
 export const propagateBlockerEvents = (
-  resource: SpecifyResource<AnySchema>
+  resource: SpecifyResource<AnySchema>,
 ) => {
   if (resource.parent) blockerEvents.trigger('change', resource.parent);
   if (
@@ -66,7 +66,7 @@ export const propagateBlockerEvents = (
 
 export function useSaveBlockers(
   resource: SpecifyResource<AnySchema> | undefined,
-  field: LiteralField | Relationship | undefined
+  field: LiteralField | Relationship | undefined,
 ): readonly [RA<string>, (value: RA<string>, blockerKey: string) => void] {
   const [blockers, setBlockers] = React.useState<RA<string>>([]);
 
@@ -83,9 +83,9 @@ export function useSaveBlockers(
             return;
           setBlockers(getFieldBlockers(resource, field));
         },
-        true
+        true,
       ),
-    [resource, field]
+    [resource, field],
   );
 
   return [
@@ -99,11 +99,11 @@ export function useSaveBlockers(
               errors,
               resource,
               field,
-            }
+            },
           );
         } else setSaveBlockers(resource, field, errors, blockerKey);
       },
-      [resource, field]
+      [resource, field],
     ),
   ];
 }
@@ -112,7 +112,7 @@ export function setSaveBlockers(
   resource: SpecifyResource<AnySchema>,
   field: LiteralField | Relationship,
   errors: Parameters<GetOrSet<RA<string>>[1]>[0],
-  blockerKey: string
+  blockerKey: string,
 ): void {
   const resolvedErrors =
     typeof errors === 'function'
@@ -126,7 +126,7 @@ export function setSaveBlockers(
   const resourceBlockers = getResourceBlockers(resource)!;
   const newBlockers = [
     ...resourceBlockers.blockers.filter(
-      (blocker) => blocker.key !== blockerKey
+      (blocker) => blocker.key !== blockerKey,
     ),
     ...blockers,
   ];
@@ -141,20 +141,20 @@ export function setSaveBlockers(
 export function getFieldBlockers(
   resource: SpecifyResource<AnySchema>,
   field: LiteralField | Relationship,
-  blockerKey?: string
+  blockerKey?: string,
 ): RA<string> {
   const blockers = getResourceBlockers(resource).blockers;
   return blockers
     .filter((blocker) =>
       blockerKey === undefined
         ? blocker.field === field
-        : blocker.field === field && blocker.key === blockerKey
+        : blocker.field === field && blocker.key === blockerKey,
     )
     .map(({ message }) => message);
 }
 
 function getResourceBlockers(
-  resource: SpecifyResource<AnySchema>
+  resource: SpecifyResource<AnySchema>,
 ): ResourceBlockers {
   if (!saveBlockers.has(resource))
     saveBlockers.set(resource, { blockers: [], listeners: new Map() });
@@ -163,7 +163,7 @@ function getResourceBlockers(
 
 export function useAllSaveBlockers(
   resource: SpecifyResource<AnySchema> | undefined,
-  filterBlockers?: LiteralField | Relationship
+  filterBlockers?: LiteralField | Relationship,
 ): RA<BlockerWithResource> {
   const [blockers, setBlockers] = React.useState<RA<BlockerWithResource>>([]);
   React.useEffect(
@@ -171,13 +171,13 @@ export function useAllSaveBlockers(
       resource === undefined
         ? undefined
         : resource.noBusinessRules
-        ? setBlockers([])
-        : blockerEvents.on(
-            'change',
-            () => setBlockers(getAllBlockers(resource, filterBlockers)),
-            true
-          ),
-    [resource]
+          ? setBlockers([])
+          : blockerEvents.on(
+              'change',
+              () => setBlockers(getAllBlockers(resource, filterBlockers)),
+              true,
+            ),
+    [resource],
   );
   return blockers;
 }
@@ -187,12 +187,12 @@ export function useAllSaveBlockers(
  */
 const getAllBlockers = (
   resource: SpecifyResource<AnySchema>,
-  filterBlockers?: LiteralField | Relationship
+  filterBlockers?: LiteralField | Relationship,
 ): RA<BlockerWithResource> => [
   ...(saveBlockers
     .get(resource)
     ?.blockers.filter(
-      ({ field }) => filterBlockers === undefined || field === filterBlockers
+      ({ field }) => filterBlockers === undefined || field === filterBlockers,
     )
     .map(({ field, message }) => ({
       field: [field],
@@ -209,10 +209,10 @@ const getAllBlockers = (
           ? undefined
           : (collectionOrResource instanceof ResourceBase
               ? getAllBlockers(
-                  collectionOrResource as SpecifyResource<AnySchema>
+                  collectionOrResource as SpecifyResource<AnySchema>,
                 )
               : (collectionOrResource as Collection<AnySchema>).models.flatMap(
-                  f.unary(getAllBlockers)
+                  f.unary(getAllBlockers),
                 )
             ).map(({ field, resources, message }) => ({
               field: [
@@ -221,8 +221,8 @@ const getAllBlockers = (
               ],
               resources: [...resources, resource],
               message,
-            }))
-    )
+            })),
+    ),
   ),
 ];
 
@@ -234,7 +234,7 @@ const getAllBlockers = (
 export function useBlockerHandler(
   resource: SpecifyResource<AnySchema> | undefined,
   field: LiteralField | Relationship | undefined,
-  callback: (blocker: BlockerWithResource) => boolean
+  callback: (blocker: BlockerWithResource) => boolean,
 ): void {
   React.useEffect(() => {
     if (resource === undefined || field === undefined) return undefined;
@@ -255,7 +255,7 @@ export function useBlockerHandler(
  * that does not have any handler function setup.
  */
 export const findUnclaimedBlocker = (
-  blockers: RA<BlockerWithResource>
+  blockers: RA<BlockerWithResource>,
 ): BlockerWithResource | undefined =>
   blockers.find((blocker) => {
     const {

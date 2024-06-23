@@ -30,7 +30,7 @@ export type BackEndRole = Omit<Role, 'policies'> & {
 };
 
 export const fetchRoles = async (
-  collectionId: number
+  collectionId: number,
 ): Promise<RA<Role> | undefined> =>
   ajax<RA<BackEndRole>>(`/permissions/roles/${collectionId}/`, {
     headers: { Accept: 'application/json' },
@@ -48,12 +48,12 @@ export const fetchRoles = async (
             ...role,
             policies: processPolicies(role.policies),
           }))
-          .sort(sortFunction(({ name }) => name))
+          .sort(sortFunction(({ name }) => name)),
   );
 
 export const fetchUserRoles = async (
   collectionId: number,
-  userId: number
+  userId: number,
 ): Promise<RA<RoleBase> | undefined> =>
   ajax<RA<{ readonly id: number; readonly name: LocalizedString }>>(
     `/permissions/user_roles/${collectionId}/${userId}`,
@@ -65,7 +65,7 @@ export const fetchUserRoles = async (
        * query anyway and silently handle the permission denied error
        */
       expectedErrors: [Http.FORBIDDEN],
-    }
+    },
   ).then(({ data, status }) =>
     status === Http.FORBIDDEN
       ? undefined
@@ -75,7 +75,7 @@ export const fetchUserRoles = async (
            * Sort all roles by ID, so that can easier detect if user roles changed
            * Since last save
            */
-          .sort(sortFunction(({ roleId }) => roleId))
+          .sort(sortFunction(({ roleId }) => roleId)),
   );
 
 /**
@@ -85,7 +85,7 @@ export function resourceNameToLongLabel(resource: string): string {
   const parts = resourceNameToParts(resource);
   return parts
     .map((_, index) =>
-      resourceNameToLabel(partsToResourceName(parts.slice(0, index + 1)))
+      resourceNameToLabel(partsToResourceName(parts.slice(0, index + 1))),
     )
     .join(' > ');
 }
@@ -129,11 +129,11 @@ export function getCollectionRegistriesFromPath(resourceParts: RA<string>) {
               ? replaceKey(
                   data,
                   'groupName',
-                  userText.excludedInstitutionalPolicies()
+                  userText.excludedInstitutionalPolicies(),
                 )
               : data,
-          ])
-        )
+          ]),
+        ),
   );
 }
 
@@ -161,7 +161,7 @@ export const partsToResourceName = (parts: RA<string>): string =>
 
 export const tablePermissionsPrefix = `${permissionSeparator}table${permissionSeparator}`;
 export const tableNameToResourceName = <TABLE_NAME extends keyof Tables>(
-  tableName: TABLE_NAME
+  tableName: TABLE_NAME,
 ): `${typeof tablePermissionsPrefix}${Lowercase<TABLE_NAME>}` =>
   `${tablePermissionsPrefix}${toLowerCase(tableName)}`;
 
@@ -191,7 +191,7 @@ export function getAllActions(rawPath: string): RA<string> {
   else {
     const parts = resourceNameToParts(rawPath);
     const path = partsToResourceName(
-      parts.at(-1) === anyResource ? parts.slice(0, -1) : parts
+      parts.at(-1) === anyResource ? parts.slice(0, -1) : parts,
     );
     return f.unique(
       [
@@ -199,11 +199,11 @@ export function getAllActions(rawPath: string): RA<string> {
         ...Object.entries(frontEndPermissions),
         ...Object.keys(tables).map(
           (tableName) =>
-            [tableNameToResourceName(tableName), tableActions] as const
+            [tableNameToResourceName(tableName), tableActions] as const,
         ),
       ]
         .filter(([key]) => key.startsWith(path))
-        .flatMap(([_key, actions]) => actions)
+        .flatMap(([_key, actions]) => actions),
     );
   }
 }

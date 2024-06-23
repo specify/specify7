@@ -26,7 +26,7 @@ export function StatsPageEditing({
 }): JSX.Element {
   const id = useId('stats');
   const [pageName, setPageName] = React.useState<LocalizedString>(
-    label ?? localized('')
+    label ?? localized(''),
   );
   return (
     <Dialog

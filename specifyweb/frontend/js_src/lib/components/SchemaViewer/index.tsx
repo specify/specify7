@@ -57,7 +57,7 @@ export function SchemaViewer(): JSX.Element {
               `${schemaText.schemaExportFileName()} - v${
                 getSystemInfo().schema_version
               }.tsv`,
-              schemaToTsv()
+              schemaToTsv(),
             ).catch(softFail)
           }
         >

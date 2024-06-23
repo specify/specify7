@@ -17,7 +17,7 @@ import { load } from './index';
 const bundleLanguages = ['en', 'ru', 'uk', 'pt'];
 const locale =
   bundleLanguages.find((language) => LANGUAGE.startsWith(language)) ?? 'en';
-const bundles = {} as Record<typeof bundleNames[number], string>;
+const bundles = {} as Record<(typeof bundleNames)[number], string>;
 
 const bundleNames = [
   'resources',
@@ -30,16 +30,16 @@ export const fetchContext = Promise.all(
   bundleNames.map(async (bundle) =>
     load<string>(
       `/properties/${bundle}_${locale}.properties`,
-      'text/plain'
+      'text/plain',
     ).then((data) => {
       bundles[bundle] = data;
-    })
-  )
+    }),
+  ),
 );
 
 export const legacyLocalize = (key: string): LocalizedString =>
   localized(
     mappedFind(Object.values(bundles), (content) =>
-      getProperty(content, key)
-    ) ?? key
+      getProperty(content, key),
+    ) ?? key,
   );

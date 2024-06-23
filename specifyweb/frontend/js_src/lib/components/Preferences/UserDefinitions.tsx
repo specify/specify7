@@ -1068,7 +1068,7 @@ export const userPreferenceDefinitions = {
                 value: 'contains',
                 title: preferencesText.containsInsensitive(),
                 description: localized(
-                  `${preferencesText.containsDescription()} ${preferencesText.containsSecondDescription()}`
+                  `${preferencesText.containsDescription()} ${preferencesText.containsSecondDescription()}`,
                 ),
               },
             ],
@@ -1088,7 +1088,7 @@ export const userPreferenceDefinitions = {
                 value: 'contains',
                 title: preferencesText.containsInsensitive(),
                 description: localized(
-                  `${preferencesText.containsDescription()} ${preferencesText.containsSecondDescription()}`
+                  `${preferencesText.containsDescription()} ${preferencesText.containsSecondDescription()}`,
                 ),
               },
             ],
@@ -1946,32 +1946,32 @@ import('../DataModel/tables')
       overwriteReadOnly(
         trees.geography,
         'title',
-        getField(tables.Geography, 'name').label
+        getField(tables.Geography, 'name').label,
       );
       overwriteReadOnly(
         trees.taxon,
         'title',
-        getField(tables.Taxon, 'name').label
+        getField(tables.Taxon, 'name').label,
       );
       overwriteReadOnly(
         trees.storage,
         'title',
-        getField(tables.Storage, 'name').label
+        getField(tables.Storage, 'name').label,
       );
       overwriteReadOnly(
         trees.geologicTimePeriod,
         'title',
-        getField(tables.Geography, 'name').label
+        getField(tables.Geography, 'name').label,
       );
       overwriteReadOnly(
         trees.lithoStrat,
         'title',
-        getField(tables.LithoStrat, 'name').label
+        getField(tables.LithoStrat, 'name').label,
       );
       overwriteReadOnly(
         userPreferenceDefinitions.form.subCategories.recordSet,
         'title',
-        getField(tables.RecordSet, 'name').label
+        getField(tables.RecordSet, 'name').label,
       );
 
       const treeSearchBehavior =
@@ -1984,24 +1984,24 @@ import('../DataModel/tables')
         }>;
         const name = defined(
           values.find(
-            (entry) => typeof entry === 'object' && entry.value === 'name'
+            (entry) => typeof entry === 'object' && entry.value === 'name',
           ),
-          'Unable to find tree name value'
+          'Unable to find tree name value',
         );
         const fullName = defined(
           values.find(
-            (entry) => typeof entry === 'object' && entry.value === 'fullName'
+            (entry) => typeof entry === 'object' && entry.value === 'fullName',
           ),
-          'Unable to find tree full name value'
+          'Unable to find tree full name value',
         );
         overwriteReadOnly(name, 'title', getField(tables.Taxon, 'name').label);
         overwriteReadOnly(
           fullName,
           'title',
-          getField(tables.Taxon, 'fullName').label
+          getField(tables.Taxon, 'fullName').label,
         );
       } else softError('Unable to replace the tree preferences item title');
-    })
+    }),
   )
   // Not using softFail here to avoid circular dependency
   .catch(console.error);

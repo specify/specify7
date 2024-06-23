@@ -7,7 +7,7 @@ requireContext();
 
 test('fetches and parses interactions dialog entries', async () =>
   expect(
-    fetchEntries().then((entries) => entries.map(({ name }) => name))
+    fetchEntries().then((entries) => entries.map(({ name }) => name)),
   ).resolves.toEqual([
     'Accession',
     'Disposal',

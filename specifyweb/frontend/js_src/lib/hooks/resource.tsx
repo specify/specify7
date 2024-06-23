@@ -29,10 +29,10 @@ import { useLiveState } from './useLiveState';
  *   React.useEffect(()=>{}, [resource.name, resource.fullname]);
  */
 export function useResource<SCHEMA extends AnySchema>(
-  table: SpecifyResource<SCHEMA>
+  table: SpecifyResource<SCHEMA>,
 ): GetOrSet<SerializedResource<SCHEMA>> {
   const [resource, setResource] = React.useState<SerializedResource<SCHEMA>>(
-    () => serializeResource(table)
+    () => serializeResource(table),
   );
 
   const isChanging = React.useRef<boolean>(false);
@@ -46,8 +46,8 @@ export function useResource<SCHEMA extends AnySchema>(
         previousResourceRef.current = newResource;
         setResource(newResource);
       },
-      false
-    )
+      false,
+    ),
   );
 
   const previousResourceRef =
@@ -63,13 +63,13 @@ export function useResource<SCHEMA extends AnySchema>(
     }
     const changes = Object.entries(resource).filter(
       ([key, newValue]) =>
-        (newValue as unknown) !== previousResourceRef.current[key]
+        (newValue as unknown) !== previousResourceRef.current[key],
     );
     if (changes.length === 0) return;
 
     isChanging.current = true;
     changes.forEach(([key, newValue]) =>
-      table.set(key as 'resource_uri', newValue as never)
+      table.set(key as 'resource_uri', newValue as never),
     );
     isChanging.current = false;
 
@@ -90,7 +90,7 @@ export function useResource<SCHEMA extends AnySchema>(
  */
 export function useDistantRelated(
   resource: SpecifyResource<AnySchema>,
-  fields: RA<LiteralField | Relationship> | undefined
+  fields: RA<LiteralField | Relationship> | undefined,
 ): Awaited<ReturnType<typeof fetchDistantRelated>> {
   const [data, setData] =
     React.useState<Awaited<ReturnType<typeof fetchDistantRelated>>>(undefined);
@@ -109,7 +109,7 @@ export function useDistantRelated(
       resource,
       `change:${fields[0].name}`,
       handleChange,
-      true
+      true,
     );
     return (): void => {
       destructor();
@@ -121,7 +121,7 @@ export function useDistantRelated(
 
 export function useParser(
   field: LiteralField | Relationship | undefined,
-  defaultParser?: Parser
+  defaultParser?: Parser,
 ): Parser {
   const isInSearchDialog = React.useContext(SearchDialogContext);
   return useLiveState<Parser>(
@@ -138,6 +138,6 @@ export function useParser(
       return typeof defaultParser === 'object'
         ? mergeParsers(parser, defaultParser)
         : parser;
-    }, [field, isInSearchDialog, defaultParser])
+    }, [field, isInSearchDialog, defaultParser]),
   )[0];
 }

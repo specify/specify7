@@ -17,7 +17,7 @@ import type { Language } from './config';
 import { DEFAULT_LANGUAGE, devLanguage, LANGUAGE } from './config';
 
 export const localizationMetaKeys = ['comment'] as const;
-type MetaKeys = typeof localizationMetaKeys[number];
+type MetaKeys = (typeof localizationMetaKeys)[number];
 export type LocalizationEntry = Partial<RR<Language | MetaKeys, string>> &
   RR<typeof DEFAULT_LANGUAGE, string>;
 export type LocalizationDictionary = IR<LocalizationEntry>;
@@ -37,7 +37,7 @@ export const rawDictionary: unique symbol = Symbol('Raw Dictionary');
  * Localization string may accept some arguments.
  */
 export function createDictionary<DICT extends LocalizationDictionary>(
-  dictionary: DICT
+  dictionary: DICT,
 ) {
   const resolver = typesafeI18nObject(
     LANGUAGE,
@@ -46,12 +46,12 @@ export function createDictionary<DICT extends LocalizationDictionary>(
           Object.entries(dictionary).map(([key, value]) => [
             key,
             value[LANGUAGE] ?? value[DEFAULT_LANGUAGE],
-          ])
+          ]),
         )
       : handleDevelopmentLanguage(dictionary)) as ExtractLanguage<
       typeof dictionary
     >,
-    formatters
+    formatters,
   );
   // @ts-expect-error This is used by ./__tests__/localization.ts
   resolver[rawDictionary] = dictionary;
@@ -62,27 +62,27 @@ export function createDictionary<DICT extends LocalizationDictionary>(
  * Generate special testing-only languages on the fly
  */
 function handleDevelopmentLanguage(
-  dictionary: LocalizationDictionary
+  dictionary: LocalizationDictionary,
 ): IR<string> {
   if (devLanguage === 'underscore')
     return Object.fromEntries(
       Object.entries(dictionary).map(([key, value]) => [
         key,
         `_${value[DEFAULT_LANGUAGE]}`,
-      ])
+      ]),
     );
   else if (devLanguage === 'double')
     return Object.fromEntries(
       Object.entries(dictionary).map(([key, value]) => [
         key,
         `${value[DEFAULT_LANGUAGE]} ${value[DEFAULT_LANGUAGE]}`,
-      ])
+      ]),
     );
   return Object.fromEntries(
     Object.entries(dictionary).map(([key, value]) => [
       key,
       `${key}${toRawString(value[DEFAULT_LANGUAGE])}`,
-    ])
+    ]),
   );
 }
 
@@ -120,7 +120,7 @@ export const whitespaceSensitive = (string: LocalizedString): string =>
         ? index + 1 === items.length || index === 0
           ? ''
           : '\n'
-        : `${index === 0 || items[index - 1] === '' ? '' : ' '}${part}`
+        : `${index === 0 || items[index - 1] === '' ? '' : ' '}${part}`,
     )
     .filter(Boolean)
     .join('');
@@ -175,7 +175,7 @@ export function StringToJsx({
   // Check for unused components. Allows to catch localization mistakes
   if (process.env.NODE_ENV === 'development') {
     const unusedGroups = Object.keys(components).filter(
-      (name) => !usedComponents.has(name)
+      (name) => !usedComponents.has(name),
     );
     if (unusedGroups.length > 0)
       error(`JSX string has unused components`, {

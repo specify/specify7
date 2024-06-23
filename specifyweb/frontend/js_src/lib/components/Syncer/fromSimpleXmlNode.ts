@@ -14,7 +14,7 @@ export const fromSimpleXmlNode = (updated: SimpleXmlNode): XmlNode =>
 
 const fromSimpleNode = (
   updated: SimpleXmlNode,
-  old = getOriginalSyncerInput(updated)
+  old = getOriginalSyncerInput(updated),
 ): XmlNode => ({
   type: 'XmlNode',
   tagName:
@@ -24,7 +24,7 @@ const fromSimpleNode = (
         'Unable to retrieve the tag name for a node. \n' +
           'This likely happened because you forgot to use spread operator when ' +
           'mutating the JSON. For example, instead of `const parsed = {webLinks};` ' +
-          'do `const parsed = {...oldParsed, webLinks};'
+          'do `const parsed = {...oldParsed, webLinks};',
       )),
   attributes: Object.fromEntries(
     filterArray(
@@ -42,15 +42,15 @@ const fromSimpleNode = (
           return undefined;
         const value = updated.attributes[key] ?? old?.attributes[key];
         return value === undefined ? undefined : [key.toLowerCase(), value];
-      })
-    )
+      }),
+    ),
   ),
   children: mergeChildren(old?.children ?? [], updated),
 });
 
 const mergeChildren = (
   oldChildren: XmlNode['children'],
-  newNode: SimpleXmlNode
+  newNode: SimpleXmlNode,
 ): XmlNode['children'] =>
   Object.keys(newNode.children).length > 0
     ? mergeNodes(oldChildren, newNode.children)
@@ -58,15 +58,15 @@ const mergeChildren = (
 
 function mergeText(
   oldChildren: XmlNode['children'],
-  string: string
+  string: string,
 ): XmlNode['children'] {
   const textNodes = filterArray(
     oldChildren.map((cell, index) =>
-      cell.type === 'Text' ? ([cell, index] as const) : undefined
-    )
+      cell.type === 'Text' ? ([cell, index] as const) : undefined,
+    ),
   );
   const nonEmptyNode = textNodes.find(
-    ([child]) => child.string.trim().length > 0
+    ([child]) => child.string.trim().length > 0,
   )?.[1];
 
   const newChild = { type: 'Text', string } as const;
@@ -74,7 +74,7 @@ function mergeText(
     ? [...oldChildren, newChild]
     : removeDuplicateText(
         replaceItem(oldChildren, nonEmptyNode, newChild),
-        nonEmptyNode
+        nonEmptyNode,
       );
 }
 
@@ -85,18 +85,18 @@ function mergeText(
  */
 const removeDuplicateText = (
   nodes: XmlNode['children'],
-  insertedNode: number
+  insertedNode: number,
 ): XmlNode['children'] =>
   nodes.filter(
     (node, index) =>
       index === insertedNode ||
       node.type !== 'Text' ||
-      node.string.trim().length === 0
+      node.string.trim().length === 0,
   );
 
 function mergeNodes(
   oldChildren: XmlNode['children'],
-  newChildren: SimpleChildren
+  newChildren: SimpleChildren,
 ): XmlNode['children'] {
   const writableChildren = Object.fromEntries(
     Object.entries(newChildren).map(
@@ -107,8 +107,8 @@ function mergeNodes(
             ...item,
             tagName,
           })),
-        ] as const
-    )
+        ] as const,
+    ),
   );
   /*
    * Try to replace as many as possible rather than removing and adding
@@ -125,11 +125,11 @@ function mergeNodes(
       return newChildren === undefined
         ? child
         : // Child was removed
-        newChild === undefined
-        ? undefined
-        : // Child was modified
-          fromSimpleXmlNode(newChild);
-    })
+          newChild === undefined
+          ? undefined
+          : // Child was modified
+            fromSimpleXmlNode(newChild);
+    }),
   );
   return Object.values(writableChildren)
     .flat()
@@ -141,7 +141,7 @@ function mergeNodes(
        */
       const insertionIndex = children.findLastIndex(
         (child) =>
-          child.type === 'XmlNode' && child.tagName === newChild.tagName
+          child.type === 'XmlNode' && child.tagName === newChild.tagName,
       );
       const newNode = fromSimpleXmlNode(newChild);
       return insertionIndex === -1

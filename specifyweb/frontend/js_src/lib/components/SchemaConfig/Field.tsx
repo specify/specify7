@@ -31,7 +31,7 @@ export function SchemaConfigField({
   readonly item: SerializedResource<SpLocaleContainerItem> & WithFetchedStrings;
   readonly onChange: (
     field: 'desc' | 'isHidden' | 'isRequired' | 'name',
-    value: boolean | string
+    value: boolean | string,
   ) => void;
   readonly onFormatted: (format: ItemType, value: string | null) => void;
 }): JSX.Element {
@@ -75,7 +75,7 @@ export function SchemaConfigField({
           isReadOnly
           value={javaTypeToHuman(
             field.type,
-            field.isRelationship ? field.relatedTable.name : undefined
+            field.isRelationship ? field.relatedTable.name : undefined,
           )}
         />
       </Label.Block>

@@ -19,7 +19,7 @@ export function DatePrecisionPicker({
 }: ReturnType<typeof useDatePrecision> & {
   readonly moment: readonly [
     ReturnType<typeof dayjs> | undefined,
-    (value: ReturnType<typeof dayjs>) => void
+    (value: ReturnType<typeof dayjs>) => void,
   ];
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
@@ -53,7 +53,7 @@ export function DatePrecisionPicker({
 
 function castMoment(
   precision: PartialDatePrecision,
-  moment: ReturnType<typeof dayjs>
+  moment: ReturnType<typeof dayjs>,
 ): ReturnType<typeof dayjs> {
   if (precision === 'full') return moment;
   let newMoment = dayjs(moment);

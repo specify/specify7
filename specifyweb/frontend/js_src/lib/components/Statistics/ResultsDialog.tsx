@@ -16,7 +16,7 @@ import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import type { QueryFieldWithPath, QuerySpec } from './types';
 
 const addPath = (
-  fields: RA<SerializedResource<SpQueryField>>
+  fields: RA<SerializedResource<SpQueryField>>,
 ): RA<QueryFieldWithPath> =>
   fields.map((field) => ({
     ...field,
@@ -48,8 +48,8 @@ export function FrontEndStatsResultDialog({
   const [query, setQuery] = useLiveState(
     React.useCallback(
       () => queryToSpec(serializeResource(originalQuery)),
-      [originalQuery]
-    )
+      [originalQuery],
+    ),
   );
   const isDisabled = query.fields.length === 0 || handleEdit === undefined;
 

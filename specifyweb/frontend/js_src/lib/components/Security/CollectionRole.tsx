@@ -29,7 +29,7 @@ import { RoleView } from './Role';
 
 export const updateCollectionRole = async (
   [roles, setRoles]: GetOrSet<IR<Role> | undefined>,
-  role: Role
+  role: Role,
 ): Promise<void> =>
   ping(`/permissions/role/${role.id}/`, {
     method: 'PUT',
@@ -38,7 +38,7 @@ export const updateCollectionRole = async (
       policies: decompressPolicies(role.policies),
     },
   }).then((): void =>
-    setRoles(replaceKey(defined(roles), role.id.toString(), role))
+    setRoles(replaceKey(defined(roles), role.id.toString(), role)),
   );
 
 export function SecurityCollectionRole(): JSX.Element {
@@ -65,10 +65,10 @@ export function SecurityCollectionRole(): JSX.Element {
     () =>
       typeof role === 'object'
         ? userRoles?.filter(({ roles }) =>
-            roles.some(({ roleId }) => roleId === role.id)
+            roles.some(({ roleId }) => roleId === role.id),
           )
         : undefined,
-    [userRoles, role]
+    [userRoles, role],
   );
 
   function handleAddUsers(users: RA<SpecifyResource<SpecifyUser>>): void {
@@ -77,10 +77,10 @@ export function SecurityCollectionRole(): JSX.Element {
       Promise.all(
         users.map(async (user) => {
           const userIndex = userRoles.findIndex(
-            ({ userId }) => userId === user.id
+            ({ userId }) => userId === user.id,
           );
           const currentUserRoles = userRoles[userIndex].roles.map(
-            ({ roleId }) => roleId
+            ({ roleId }) => roleId,
           );
           // Noop if user is already part of this role
           return currentUserRoles.includes(role.id!)
@@ -103,16 +103,16 @@ export function SecurityCollectionRole(): JSX.Element {
                   ],
                 },
               }));
-        })
+        }),
       ).then((addedUserRoles) =>
         setUserRoles(
           filterArray(addedUserRoles).reduce(
             (userRoles, { userIndex, updatedRoles }) =>
               replaceItem(userRoles, userIndex, updatedRoles),
-            userRoles
-          )
-        )
-      )
+            userRoles,
+          ),
+        ),
+      ),
     );
   }
 
@@ -142,11 +142,11 @@ export function SecurityCollectionRole(): JSX.Element {
                 .then((): void =>
                   navigate(`/specify/security/collection/${collection.id}/`, {
                     replace: true,
-                  })
+                  }),
                 )
                 .then((): void =>
-                  setRoles(removeKey(roles, role.id!.toString()))
-                )
+                  setRoles(removeKey(roles, role.id!.toString())),
+                ),
             )
           : undefined
       }
@@ -156,8 +156,8 @@ export function SecurityCollectionRole(): JSX.Element {
             ? updateCollectionRole([roles, setRoles], role as Role)
             : createCollectionRole(setRoles, collection.id, role)
           ).then((): void =>
-            navigate(`/specify/security/collection/${collection.id}/`)
-          )
+            navigate(`/specify/security/collection/${collection.id}/`),
+          ),
         )
       }
     />

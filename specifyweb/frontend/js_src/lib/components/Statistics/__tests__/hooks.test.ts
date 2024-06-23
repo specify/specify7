@@ -79,7 +79,7 @@ theories(applyStatBackendResponse, [
               readonly lots: number;
               readonly total: number;
             }
-          | undefined
+          | undefined,
       ): string | undefined =>
         prep === undefined
           ? undefined
@@ -176,7 +176,7 @@ function flagDefaultItem(
     readonly pageIndex: number;
     readonly categoryIndex: number;
     readonly itemIndex: number;
-  }>
+  }>,
 ): RA<StatLayout> {
   return defaultLayoutTest.map((page, myPageIndex) => ({
     ...page,
@@ -188,7 +188,7 @@ function flagDefaultItem(
           ({ pageIndex, categoryIndex, itemIndex }) =>
             pageIndex === myPageIndex &&
             categoryIndex === myCategoryIndex &&
-            itemIndex === myItemIndex
+            itemIndex === myItemIndex,
         )
           ? false
           : undefined,

@@ -20,9 +20,9 @@ export function FormEditorList(): JSX.Element {
           total[table.name]! += 1;
           return total;
         },
-        {}
+        {},
       ),
-    [viewSets.views]
+    [viewSets.views],
   );
   return (
     <TableList

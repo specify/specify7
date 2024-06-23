@@ -27,7 +27,7 @@ jest.mock('../../components/PickLists/fetch', () => {
     fetchPickList: jest.fn(async () =>
       definitions.definePicklist('PickList', [
         definitions.createPickListItem('Value', 'Title'),
-      ])
+      ]),
     ),
   };
 });
@@ -64,7 +64,7 @@ describe('fieldFormat', () => {
       getPickList: jest.fn(() => undefined),
     } as unknown as LiteralField;
     await expect(
-      fieldFormat(field, 'Value', { pickListName: 'PickList' })
+      fieldFormat(field, 'Value', { pickListName: 'PickList' }),
     ).resolves.toBe('Title');
     expect(fetchPickList).toHaveBeenLastCalledWith('PickList');
   });

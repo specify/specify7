@@ -38,13 +38,13 @@ declare global {
 
     // This won't be needed in TypeScript 5.0. See https://github.com/microsoft/TypeScript/issues/48829
     findLastIndex(
-      predicate: (value: T, index: number, array: T[]) => unknown
+      predicate: (value: T, index: number, array: T[]) => unknown,
     ): number;
   }
 
   interface ReadonlyArray<T> {
     findLastIndex(
-      predicate: (value: T, index: number, array: T[]) => unknown
+      predicate: (value: T, index: number, array: T[]) => unknown,
     ): number;
   }
 
@@ -55,10 +55,10 @@ declare global {
   interface ObjectConstructor {
     // Object
     entries<DICTIONARY extends IR<unknown>>(
-      object: DICTIONARY
+      object: DICTIONARY,
     ): [
       keyof DICTIONARY extends number ? string : string & keyof DICTIONARY,
-      ValueOf<DICTIONARY>
+      ValueOf<DICTIONARY>,
     ][];
 
     // Array
@@ -66,7 +66,7 @@ declare global {
 
     // Prevent Object.fromEntries() from widening the key type to string
     fromEntries<KEYS extends PropertyKey, VALUES>(
-      entries: Iterable<readonly [KEYS, VALUES]>
+      entries: Iterable<readonly [KEYS, VALUES]>,
     ): RR<KEYS, VALUES>;
 
     // Prevent Object.keys() from widening the key type to string[]
@@ -85,7 +85,7 @@ declare module 'react-router' {
     options?: {
       readonly replace?: boolean;
       readonly state?: SafeLocationState;
-    }
+    },
   ) => void;
 
   export declare function useNavigate(): (
@@ -93,7 +93,7 @@ declare module 'react-router' {
     options?: {
       readonly replace?: boolean;
       readonly state?: SafeLocationState;
-    }
+    },
   ) => void;
 
   export declare function useLocation(): H.Location<SafeLocationState>;

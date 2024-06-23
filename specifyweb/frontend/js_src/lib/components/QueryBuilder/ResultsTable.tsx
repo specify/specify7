@@ -34,17 +34,17 @@ export function QueryResultsTable({
   readonly onSelected: (
     index: number,
     isSelected: boolean,
-    isShiftClick: boolean
+    isShiftClick: boolean,
   ) => void;
 }): JSX.Element {
   const recordFormatter = React.useMemo(
     () => getAuditRecordFormatter(fieldSpecs),
-    [fieldSpecs]
+    [fieldSpecs],
   );
   const [showLineNumber] = userPreferences.use(
     'queryBuilder',
     'appearance',
-    'showLineNumber'
+    'showLineNumber',
   );
   return (
     <>
@@ -82,7 +82,7 @@ function Row({
   readonly result: QueryResultRow;
   readonly lineIndex: number | undefined;
   readonly recordFormatter?: (
-    result: QueryResultRow
+    result: QueryResultRow,
   ) => Promise<RA<JSX.Element | string>>;
   readonly isSelected: boolean;
   readonly isLast: boolean;
@@ -97,20 +97,20 @@ function Row({
         new table.Resource({
           id: result[queryIdField],
         }),
-      [table, result]
-    )
+      [table, result],
+    ),
   );
   const [formattedValues] = useAsyncState(
     React.useCallback(
       async () => recordFormatter?.(result),
-      [result, recordFormatter]
+      [result, recordFormatter],
     ),
-    false
+    false,
   );
   const [condenseQueryResults] = userPreferences.use(
     'queryBuilder',
     'appearance',
-    'condenseQueryResults'
+    'condenseQueryResults',
   );
   const viewUrl = typeof resource === 'object' ? resource.viewUrl() : undefined;
 
@@ -119,7 +119,7 @@ function Row({
       typeof result[0] === 'string' && result[0].includes(',')
         ? result[0].split(',').map(Number)
         : undefined,
-    [result]
+    [result],
   );
 
   const [isListOfRecordsOpen, toggleIsListOfRecordsOpen] =
@@ -127,11 +127,7 @@ function Row({
 
   return (
     <div
-      className={`
-        odd:[--bg:theme(colors.gray.100)] even:[--bg:transparent]
-        odd:dark:[--bg:theme(colors.neutral.700)]
-        ${condenseQueryResults ? 'text-sm' : ''}
-      `}
+      className={`odd:[--bg:theme(colors.gray.100)] even:[--bg:transparent] odd:dark:[--bg:theme(colors.neutral.700)] ${condenseQueryResults ? 'text-sm' : ''} `}
       role="row"
       onClick={
         typeof handleSelected === 'function'
@@ -152,9 +148,7 @@ function Row({
         >
           {typeof lineIndex === 'number' && (
             <div
-              className={`
-                ${getCellClassName(condenseQueryResults)} sticky content-center
-              `}
+              className={` ${getCellClassName(condenseQueryResults)} sticky content-center`}
               role="cell"
             >
               {lineIndex}
@@ -228,7 +222,7 @@ function Row({
               key={index}
               value={formattedValues?.[index] ?? value}
             />
-          )
+          ),
         )}
     </div>
   );
@@ -262,16 +256,12 @@ function Cell({
       !field.isTemporal()
         ? syncFieldFormat(field, (value ?? '').toString(), fieldSpec.parser)
         : value ?? '',
-    [field, fieldSpec, value]
+    [field, fieldSpec, value],
   );
 
   return (
     <div
-      className={`
-        ${getCellClassName(condenseQueryResults)}
-        ${value === null ? 'text-gray-700 dark:text-neutral-500' : ''}
-        ${fieldSpec?.parser.type === 'number' ? 'justify-end tabular-nums' : ''}
-      `}
+      className={` ${getCellClassName(condenseQueryResults)} ${value === null ? 'text-gray-700 dark:text-neutral-500' : ''} ${fieldSpec?.parser.type === 'number' ? 'justify-end tabular-nums' : ''} `}
       role="cell"
       title={
         (typeof value === 'string' || typeof value === 'number') &&
@@ -283,8 +273,8 @@ function Cell({
       {value === null
         ? undefined
         : fieldSpec === undefined || typeof value === 'object'
-        ? value
-        : formatted}
+          ? value
+          : formatted}
     </div>
   );
 }

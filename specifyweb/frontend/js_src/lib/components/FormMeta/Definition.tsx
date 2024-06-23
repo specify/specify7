@@ -71,7 +71,7 @@ function UseAutoForm({ table }: { readonly table: SpecifyTable }): JSX.Element {
   const [rawConfig, setGlobalConfig] = userPreferences.use(
     'form',
     'preferences',
-    'useCustomForm'
+    'useCustomForm',
   );
   // This used to be stored as an object
   const globalConfig = Array.isArray(rawConfig) ? rawConfig : [];
@@ -92,7 +92,7 @@ function UseAutoForm({ table }: { readonly table: SpecifyTable }): JSX.Element {
 function UseLabels(): JSX.Element {
   const [useFieldLabels = true, setUseFieldLabels] = useCachedState(
     'forms',
-    'useFieldLabels'
+    'useFieldLabels',
   );
 
   const initialValue = React.useRef(useFieldLabels);
@@ -107,7 +107,7 @@ function UseLabels(): JSX.Element {
         globalThis.location.reload();
       }
     },
-    []
+    [],
   );
 
   return (

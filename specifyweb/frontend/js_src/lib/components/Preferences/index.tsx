@@ -55,7 +55,7 @@ function Preferences(): JSX.Element {
         if (payload?.definition?.requiresReload === true) handleRestartNeeded();
         handleChangesMade();
       }),
-    [handleChangesMade, handleRestartNeeded]
+    [handleChangesMade, handleRestartNeeded],
   );
 
   const {
@@ -78,8 +78,8 @@ function Preferences(): JSX.Element {
               .then(() =>
                 needsRestart
                   ? globalThis.location.assign('/specify/')
-                  : navigate('/specify/')
-              )
+                  : navigate('/specify/'),
+              ),
           )
         }
       >
@@ -118,7 +118,7 @@ export function usePrefDefinitions() {
       isDarkMode,
       isRedirecting,
     }),
-    [isDarkMode, isRedirecting]
+    [isDarkMode, isRedirecting],
   );
 
   return React.useMemo(
@@ -141,17 +141,17 @@ export function usePrefDefinitions() {
                             ([_name, { visible }]) =>
                               typeof visible === 'function'
                                 ? visible(preferencesVisibilityContext)
-                                : visible !== false
+                                : visible !== false,
                           ),
                         },
-                      ] as const
+                      ] as const,
                   )
                   .filter(([_name, { items }]) => items.length > 0),
               },
-            ] as const
+            ] as const,
         )
         .filter(([_name, { subCategories }]) => subCategories.length > 0),
-    [preferencesVisibilityContext]
+    [preferencesVisibilityContext],
   );
 }
 
@@ -167,7 +167,7 @@ export function PreferencesContent({
       {definitions.map(
         (
           [category, { title, description = undefined, subCategories }],
-          index
+          index,
         ) => (
           <ErrorBoundary dismissible key={category}>
             <Container.Center
@@ -212,8 +212,8 @@ export function PreferencesContent({
                                 userPreferences.definition(
                                   category as 'general',
                                   subcategory as 'ui',
-                                  name as 'theme'
-                                ).defaultValue
+                                  name as 'theme',
+                                ).defaultValue,
                               );
                             })
                           }
@@ -248,10 +248,7 @@ export function PreferencesContent({
                         <>
                           <div className="flex flex-col items-start gap-2 md:flex-1 md:items-stretch">
                             <p
-                              className={`
-                                flex min-h-[theme(spacing.8)] flex-1 items-center
-                                justify-end md:text-right
-                              `}
+                              className={`flex min-h-[theme(spacing.8)] flex-1 items-center justify-end md:text-right`}
                             >
                               <FormatString
                                 text={
@@ -274,10 +271,7 @@ export function PreferencesContent({
                             )}
                           </div>
                           <div
-                            className={`
-                              flex min-h-[theme(spacing.8)] flex-1 flex-col justify-center
-                              gap-2
-                            `}
+                            className={`flex min-h-[theme(spacing.8)] flex-1 flex-col justify-center gap-2`}
                           >
                             <ReadOnlyContext.Provider value={!canEdit}>
                               <Item
@@ -297,11 +291,11 @@ export function PreferencesContent({
                       );
                     })}
                   </section>
-                )
+                ),
               )}
             </Container.Center>
           </ErrorBoundary>
-        )
+        ),
       )}
     </div>
   );
@@ -345,7 +339,7 @@ function Item({
     // Asserting types just to simplify typing
     category as 'general',
     subcategory as 'ui',
-    name as 'theme'
+    name as 'theme',
   );
   const children = (
     <Renderer

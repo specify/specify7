@@ -30,7 +30,7 @@ const serializeFile = ({
 });
 
 export async function resolveAttachmentDataSetSync(
-  rawResourceToSync: EagerDataSet
+  rawResourceToSync: EagerDataSet,
 ) {
   const resourceToSync: AttachmentDataSet = removeKey(
     {
@@ -44,7 +44,7 @@ export async function resolveAttachmentDataSetSync(
       })),
     },
     'needsSaved',
-    'save'
+    'save',
   ) as AttachmentDataSet;
   if ('id' in resourceToSync) {
     // If not creating new "resource", it is fine to PUT while not resolved.
@@ -74,7 +74,7 @@ export function useEagerDataSet(baseDataSet: AttachmentDataSet): {
   readonly triggerSave: () => void;
   readonly commitChange: (
     stateGenerator: (oldState: EagerDataSet) => EagerDataSet,
-    silent?: boolean
+    silent?: boolean,
   ) => void;
   readonly unsetUnloadProtect: () => void;
 } {
@@ -84,8 +84,8 @@ export function useEagerDataSet(baseDataSet: AttachmentDataSet): {
       baseDataSet.uploaderstatus === 'uploading'
         ? 'uploadInterrupted'
         : baseDataSet.uploaderstatus === 'deleting'
-        ? 'deletingInterrupted'
-        : 'main',
+          ? 'deletingInterrupted'
+          : 'main',
     needsSaved: baseDataSet.uploaderstatus !== 'main',
     rows: baseDataSet.rows ?? [],
     save: false,
@@ -98,7 +98,7 @@ export function useEagerDataSet(baseDataSet: AttachmentDataSet): {
             timestamp: baseDataSet.uploadresult.timestamp,
             // FEATURE: Add reporting partial upload
             success: baseDataSet.rows.some(
-              ({ attachmentId }) => typeof attachmentId === 'number'
+              ({ attachmentId }) => typeof attachmentId === 'number',
             ),
           },
   });
@@ -106,7 +106,7 @@ export function useEagerDataSet(baseDataSet: AttachmentDataSet): {
   const unsetUnloadProtect = useUnloadProtect(
     // Don't trigger unload protect if upload / rollback was interrupted
     eagerDataSet.needsSaved && baseDataSet.uploaderstatus === 'main',
-    mainText.leavePageConfirmationDescription()
+    mainText.leavePageConfirmationDescription(),
   );
 
   const handleSaved = () =>
@@ -129,7 +129,7 @@ export function useEagerDataSet(baseDataSet: AttachmentDataSet): {
           if (savedResource === undefined) {
             handleSaved();
           } else navigate(`/specify/attachments/import/${savedResource.id}`);
-        })
+        }),
       );
     }
     return () => {

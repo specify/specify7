@@ -5,12 +5,12 @@ export function useHueDifference(): number {
   const [userAccentColorPref] = userPreferences.use(
     'general',
     'appearance',
-    'accentColor3'
+    'accentColor3',
   );
   const brandColor = userPreferences.definition(
     'general',
     'appearance',
-    'accentColor3'
+    'accentColor3',
   ).defaultValue;
 
   const userAccentHsl = hexToHsl(userAccentColorPref);

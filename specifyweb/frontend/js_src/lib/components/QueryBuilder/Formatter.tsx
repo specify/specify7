@@ -47,7 +47,7 @@ export function QueryFieldFormatter({
           title,
           isDefault,
         })),
-    [type, formatters, tableName]
+    [type, formatters, tableName],
   );
 
   const [formatterSelectIsOpen, setFormatterSelect] = React.useState(false);
@@ -69,7 +69,7 @@ export function QueryFieldFormatter({
           formatter === undefined ||
           formatter === ''
             ? 'bg-white dark:bg-neutral-600'
-            : 'bg-yellow-250 dark:bg-yellow-900 '
+            : 'bg-yellow-250 dark:bg-yellow-900'
         }`}
         title={queryText.chooseFormatter()}
         onClick={() => setFormatterSelect(!formatterSelectIsOpen)}

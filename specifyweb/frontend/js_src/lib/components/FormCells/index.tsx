@@ -39,8 +39,8 @@ const cellRenderers: {
     readonly formatId: (id: string) => string;
     readonly resource: SpecifyResource<AnySchema>;
     readonly formType: FormType;
-    readonly align: typeof cellAlign[number];
-    readonly verticalAlign: typeof cellVerticalAlign[number];
+    readonly align: (typeof cellAlign)[number];
+    readonly verticalAlign: (typeof cellVerticalAlign)[number];
   }) => JSX.Element | null;
 } = {
   Field({
@@ -53,9 +53,9 @@ const cellRenderers: {
     const fields = React.useMemo(
       () =>
         resource.specifyTable.getFields(
-          fieldNames?.join(backboneFieldSeparator) ?? ''
+          fieldNames?.join(backboneFieldSeparator) ?? '',
         ),
-      [resource.specifyTable, fieldNames]
+      [resource.specifyTable, fieldNames],
     );
     return (
       <FormField
@@ -128,9 +128,9 @@ const cellRenderers: {
     const fields = React.useMemo(
       () =>
         rawResource.specifyTable.getFields(
-          fieldNames?.join(backboneFieldSeparator) ?? ''
+          fieldNames?.join(backboneFieldSeparator) ?? '',
         ),
-      [rawResource, fieldNames]
+      [rawResource, fieldNames],
     );
     const data = useDistantRelated(rawResource, fields);
 
@@ -155,15 +155,15 @@ const cellRenderers: {
                     ? resolveViewDefinition(
                         viewDefinition,
                         formType,
-                        propsToFormMode(isReadOnly, isInSearchDialog)
+                        propsToFormMode(isReadOnly, isInSearchDialog),
                       )
-                    : undefined
+                    : undefined,
                 )
                 .then((definition) => definition?.formType ?? 'form')
             : undefined,
-        [viewName, formType, isReadOnly, isInSearchDialog, relationship]
+        [viewName, formType, isReadOnly, isInSearchDialog, relationship],
       ),
-      false
+      false,
     );
 
     const currentResource = data?.resource;
@@ -179,11 +179,11 @@ const cellRenderers: {
               'change:type',
               () =>
                 setShowPickListForm(
-                  currentResource.get('type') !== PickListTypes.ITEMS
+                  currentResource.get('type') !== PickListTypes.ITEMS,
                 ),
-              true
+              true,
             ),
-      [currentResource]
+      [currentResource],
     );
 
     if (
@@ -221,9 +221,9 @@ const cellRenderers: {
       const watchFields = f.unique(
         filterArray(
           definitions.map(({ condition }) =>
-            condition?.type === 'Value' ? condition?.field[0].name : undefined
-          )
-        )
+            condition?.type === 'Value' ? condition?.field[0].name : undefined,
+          ),
+        ),
       );
 
       async function handleChange(): Promise<void> {
@@ -250,8 +250,8 @@ const cellRenderers: {
           resource,
           `change:${fieldName}`,
           async () => handleChange().catch(softFail),
-          false
-        )
+          false,
+        ),
       );
 
       return (): void => {
@@ -275,7 +275,7 @@ const cellRenderers: {
               formType,
               table: resource.specifyTable,
             },
-      [definition, formType, resource.specifyTable, mode]
+      [definition, formType, resource.specifyTable, mode],
     );
 
     const form =
@@ -334,10 +334,12 @@ export function FormCell({
   readonly id: string | undefined;
   readonly formatId: (id: string) => string;
   readonly formType: FormType;
-  readonly align: typeof cellAlign[number];
-  readonly verticalAlign: typeof cellVerticalAlign[number];
+  readonly align: (typeof cellAlign)[number];
+  readonly verticalAlign: (typeof cellVerticalAlign)[number];
 }): JSX.Element {
-  const Render = cellRenderers[cellData.type] as typeof cellRenderers['Field'];
+  const Render = cellRenderers[
+    cellData.type
+  ] as (typeof cellRenderers)['Field'];
   return (
     <Render
       align={align}

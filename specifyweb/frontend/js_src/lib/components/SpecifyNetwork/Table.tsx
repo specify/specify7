@@ -44,7 +44,7 @@ function IssuesTable({
   readonly occurrence: RA<BrokerRecord>;
 }): JSX.Element | null {
   const issues = occurrence.filter(
-    ({ record }) => Object.keys(record['s2n:issues'] as IR<string>).length > 0
+    ({ record }) => Object.keys(record['s2n:issues'] as IR<string>).length > 0,
   );
 
   return issues.length === 0 ? null : (
@@ -57,7 +57,7 @@ function IssuesTable({
                 {Object.entries(record['s2n:issues'] as IR<string>).map(
                   ([key, message]) => (
                     <li key={key}>{`${message} (${key})`}</li>
-                  )
+                  ),
                 )}
               </ul>,
             ]}

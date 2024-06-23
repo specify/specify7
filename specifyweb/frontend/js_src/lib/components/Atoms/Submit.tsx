@@ -24,40 +24,40 @@ const submitButton = (name: string, buttonClassName: string) =>
       type: 'submit',
       ...props,
       value: children,
-    })
+    }),
   );
 
 export const Submit = {
   Small: submitButton(
     'Submit.Small',
-    `${className.smallButton} ${className.defaultSmallButtonVariant}`
+    `${className.smallButton} ${className.defaultSmallButtonVariant}`,
   ),
   Fancy: submitButton(
     'Submit.Fancy',
-    `${className.niceButton} ${className.fancyButton} !inline`
+    `${className.niceButton} ${className.fancyButton} !inline`,
   ),
   Secondary: submitButton(
     'Submit.Secondary',
-    `${className.niceButton} ${className.secondaryButton}`
+    `${className.niceButton} ${className.secondaryButton}`,
   ),
   Danger: submitButton(
     'Submit.Danger',
-    `${className.niceButton} ${className.dangerButton}`
+    `${className.niceButton} ${className.dangerButton}`,
   ),
   Info: submitButton(
     'Submit.Info',
-    `${className.niceButton} ${className.infoButton}`
+    `${className.niceButton} ${className.infoButton}`,
   ),
   Warning: submitButton(
     'Submit.Warning',
-    `${className.niceButton} ${className.warningButton}`
+    `${className.niceButton} ${className.warningButton}`,
   ),
   Success: submitButton(
     'Submit.Success',
-    `${className.niceButton} ${className.successButton}`
+    `${className.niceButton} ${className.successButton}`,
   ),
   Save: submitButton(
     'Submit.Save',
-    `${className.niceButton} ${className.saveButton}`
+    `${className.niceButton} ${className.saveButton}`,
   ),
 } as const;

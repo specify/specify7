@@ -144,12 +144,12 @@ export const ResourceBase = Backbone.Model.extend({
     const self = this;
 
     const exemptFields = getFieldsToNotClone(this.specifyTable, cloneAll).map(
-      (fieldName) => fieldName.toLowerCase()
+      (fieldName) => fieldName.toLowerCase(),
     );
 
     const newResource = new this.constructor(
       removeKey(this.attributes, ...specialFields, ...exemptFields),
-      { createdBy: 'clone' }
+      { createdBy: 'clone' },
     );
 
     newResource.needsSaved = self.needsSaved;
@@ -175,9 +175,9 @@ export const ResourceBase = Backbone.Model.extend({
                 .then(async (newCollection) =>
                   Promise.all(
                     related.models.map(async (resource) =>
-                      newCollection.add(await resource?.clone(cloneAll))
-                    )
-                  )
+                      newCollection.add(await resource?.clone(cloneAll)),
+                    ),
+                  ),
                 );
               break;
             }
@@ -189,8 +189,8 @@ export const ResourceBase = Backbone.Model.extend({
               throw new Error('unhandled relationship type');
             }
           }
-        }
-      )
+        },
+      ),
     );
     return newResource;
   },
@@ -250,7 +250,7 @@ export const ResourceBase = Backbone.Model.extend({
       }
       default: {
         throw new Error(
-          `setDependentToOne: unhandled field type: ${field.type}`
+          `setDependentToOne: unhandled field type: ${field.type}`,
         );
       }
     }
@@ -336,13 +336,13 @@ export const ResourceBase = Backbone.Model.extend({
           ? accumulator
           : Object.assign(accumulator, { [newFieldName]: newValue });
       },
-      {}
+      {},
     );
 
     const result = Backbone.Model.prototype.set.call(
       this,
       adjustedAttributes,
-      options
+      options,
     );
     /*
      * Unlike "change", if changing multiple fields at once, this
@@ -361,7 +361,7 @@ export const ResourceBase = Backbone.Model.extend({
       console.warn(
         `Setting unknown field ${fieldName} on ${this.specifyTable.name}.\n`,
         `If this is a virtual field, define it in schemaExtras.ts`,
-        { value, resource: this }
+        { value, resource: this },
       );
       return [fieldName, value];
     }
@@ -372,12 +372,12 @@ export const ResourceBase = Backbone.Model.extend({
       value = _.isString(value)
         ? this._handleUri(value, fieldName)
         : typeof value === 'number'
-        ? this._handleUri(
-            // Back-end sends SpPrincipal.scope as a number, rather than as a URL
-            getResourceApiUrl(field.table.name, value),
-            fieldName
-          )
-        : this._handleInlineDataOrResource(value, fieldName);
+          ? this._handleUri(
+              // Back-end sends SpPrincipal.scope as a number, rather than as a URL
+              getResourceApiUrl(field.table.name, value),
+              fieldName,
+            )
+          : this._handleInlineDataOrResource(value, fieldName);
     }
     return [fieldName, value];
   },
@@ -395,13 +395,13 @@ export const ResourceBase = Backbone.Model.extend({
         if (field.isDependent()) {
           const collection = new relatedTable.DependentCollection(
             collectionOptions,
-            value
+            value,
           );
           this.storeDependent(field, collection);
         } else {
           console.warn(
             'got unexpected inline data for independent collection field',
-            { collection: this, field, value }
+            { collection: this, field, value },
           );
         }
 
@@ -464,7 +464,7 @@ export const ResourceBase = Backbone.Model.extend({
         'expected inline data for dependent field',
         fieldName,
         'in',
-        this
+        this,
       );
     }
 
@@ -525,7 +525,8 @@ export const ResourceBase = Backbone.Model.extend({
          * or collection
          */
         if (options.prePop) {
-          if (!value) return value; // Ok if the related resource doesn't exist
+          if (!value)
+            return value; // Ok if the related resource doesn't exist
           else if (typeof value.fetchIfNotPopulated === 'function')
             return value.fetchIfNotPopulated();
           else if (typeof value.fetch === 'function') return value.fetch();
@@ -545,7 +546,7 @@ export const ResourceBase = Backbone.Model.extend({
         'in',
         this.specifyTable.name,
         'value is',
-        value
+        value,
       );
 
     /*
@@ -607,7 +608,7 @@ export const ResourceBase = Backbone.Model.extend({
           } else {
             console.warn('expected dependent resource to be in cache');
             const temporaryCollection = new related.ToOneCollection(
-              collectionOptions
+              collectionOptions,
             );
             return temporaryCollection
               .fetch({ limit: 0 })
@@ -615,8 +616,8 @@ export const ResourceBase = Backbone.Model.extend({
                 () =>
                   new related.DependentCollection(
                     collectionOptions,
-                    temporaryCollection.tables
-                  )
+                    temporaryCollection.tables,
+                  ),
               )
               .then((toMany) => {
                 _this.storeDependent(field, toMany);

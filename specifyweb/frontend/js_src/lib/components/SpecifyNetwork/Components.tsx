@@ -31,16 +31,7 @@ export function BrokerTable({
 }): JSX.Element {
   return (
     <table
-      className={`
-        grid-table w-full grid-cols-[auto_repeat(var(--columns),auto)]
-        lg:grid-cols-[auto_repeat(var(--columns),1fr)]
-        [&_:is(td,th)]:p-2 [&_tbody_:is(td,th)]:border
-        [&_tbody_:is(td,th)]:border-gray-300
-        dark:[&_tbody_:is(td,th)]:border-neutral-700 [&_tbody_td]:break-words
-        [&_thead_:is(td,th)]:bg-gray-300
-        [&_thead_:is(td,th)]:dark:bg-neutral-700
-        ${className ?? ''}
-      `}
+      className={`grid-table w-full grid-cols-[auto_repeat(var(--columns),auto)] lg:grid-cols-[auto_repeat(var(--columns),1fr)] [&_:is(td,th)]:p-2 [&_tbody_:is(td,th)]:border [&_tbody_:is(td,th)]:border-gray-300 dark:[&_tbody_:is(td,th)]:border-neutral-700 [&_tbody_td]:break-words [&_thead_:is(td,th)]:bg-gray-300 [&_thead_:is(td,th)]:dark:bg-neutral-700 ${className ?? ''} `}
       style={
         {
           '--columns': columns,

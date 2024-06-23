@@ -182,11 +182,11 @@ export function QueryLine({
                   startValue: '',
                 } as const)
               : filter.type === 'any' && filter.isNot
-              ? {
-                  ...filter,
-                  isNot: false,
-                }
-              : filter;
+                ? {
+                    ...filter,
+                    isNot: false,
+                  }
+                : filter;
           })
         : [];
       const anyFilter =
@@ -197,7 +197,7 @@ export function QueryLine({
           .findIndex(({ type }) => type === 'any');
       // Make sure there is only one "any" filter at one time
       const newFilters = updatedFilters.filter(
-        ({ type }, index) => type !== 'any' || index === anyFilter
+        ({ type }, index) => type !== 'any' || index === anyFilter,
       );
 
       setFieldMeta({ parser, fieldType, canOpenMap, tableName });
@@ -214,7 +214,7 @@ export function QueryLine({
     },
     // Since handleChange changes at each render, fieldHash is used instead
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [baseTableName, field, fieldHash, enforceLengthLimit]
+    [baseTableName, field, fieldHash, enforceLengthLimit],
   );
 
   const lineData = getMappingLineData({
@@ -237,7 +237,7 @@ export function QueryLine({
 
   const handleFilterChange = (
     index: number,
-    filter: QueryField['filters'][number] | undefined
+    filter: QueryField['filters'][number] | undefined,
   ): void =>
     handleChange?.({
       ...field,
@@ -250,7 +250,7 @@ export function QueryLine({
     ([filterName, { types }]) =>
       typeof fieldMeta.fieldType === 'string'
         ? !Array.isArray(types) || types.includes(fieldMeta.fieldType)
-        : filterName === 'any'
+        : filterName === 'any',
   );
   const filtersVisible =
     availableFilters.length > 0 &&
@@ -263,7 +263,7 @@ export function QueryLine({
       mappingPathIsComplete(field.mappingPath)
         ? QueryFieldSpec.fromPath(baseTableName, field.mappingPath)
         : undefined,
-    [baseTableName, field.mappingPath]
+    [baseTableName, field.mappingPath],
   );
 
   const rowTableName = React.useMemo(
@@ -272,9 +272,9 @@ export function QueryLine({
         ? fieldName
         : generateMappingPathPreview(
             fieldSpec.baseTable.name,
-            fieldSpec.toMappingPath()
+            fieldSpec.toMappingPath(),
           ),
-    [fieldSpec]
+    [fieldSpec],
   );
 
   const isBasic = React.useContext(IsQueryBasicContext);
@@ -283,17 +283,12 @@ export function QueryLine({
     <>
       <div
         aria-current={isFocused ? 'location' : undefined}
-        className={`
-        flex flex-1 gap-2 border-t border-t-gray-500 bg-[color:var(--form-foreground)] py-2
-        ${isBasic ? 'contents' : ''}
-      `}
+        className={`flex flex-1 gap-2 border-t border-t-gray-500 bg-[color:var(--form-foreground)] py-2 ${isBasic ? 'contents' : ''} `}
       >
         {typeof handleRemove === 'function' && (
           <Button.Small
             aria-label={commonText.remove()}
-            className={`
-            ${isBasic ? 'h-full' : ''} print:hidden
-          `}
+            className={` ${isBasic ? 'h-full' : ''} print:hidden`}
             title={commonText.remove()}
             variant={className.dangerButton}
             onClick={handleRemove}
@@ -303,12 +298,7 @@ export function QueryLine({
         )}
         {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
         <div
-          className={`
-          flex flex-1 flex-wrap gap-2 overflow-auto sm:overflow-visible print:gap-1
-          ${field.filters.length > 1 ? 'items-baseline' : 'items-center'}
-          ${isFocused ? 'rounded bg-gray-300 dark:bg-neutral-700' : ''}
-          ${isBasic ? 'contents' : ''}
-        `}
+          className={`flex flex-1 flex-wrap gap-2 overflow-auto sm:overflow-visible print:gap-1 ${field.filters.length > 1 ? 'items-baseline' : 'items-center'} ${isFocused ? 'rounded bg-gray-300 dark:bg-neutral-700' : ''} ${isBasic ? 'contents' : ''} `}
           ref={lineRef}
           role="list"
           tabIndex={0}
@@ -336,14 +326,11 @@ export function QueryLine({
           }}
         >
           <div
-            className={`flex flex-wrap items-center gap-2 px-2 
-              ${
-                isFocused && isBasic
-                  ? 'rounded bg-gray-300 dark:bg-neutral-700'
-                  : ''
-              }
-              ${isBasic ? 'pb-1 pt-1' : ''}
-            `}
+            className={`flex flex-wrap items-center gap-2 px-2 ${
+              isFocused && isBasic
+                ? 'rounded bg-gray-300 dark:bg-neutral-700'
+                : ''
+            } ${isBasic ? 'pb-1 pt-1' : ''} `}
           >
             {isBasic ? (
               <div className="flex contents items-center gap-2">
@@ -369,7 +356,7 @@ export function QueryLine({
                     <MappingElement {...mappingDetails} role="listitem" />
                   </div>
                 )),
-                mappingElementDivider
+                mappingElementDivider,
               )
             )}
             {(fieldMeta.fieldType === 'formatter' ||
@@ -396,7 +383,7 @@ export function QueryLine({
               className={
                 field.filters.length > 1
                   ? 'flex flex-col gap-2'
-                  : `flex items-center gap-2 ${isBasic ? '' : ' flex-wrap'}`
+                  : `flex items-center gap-2 ${isBasic ? '' : 'flex-wrap'}`
               }
             >
               {field.filters.map((filter, index) => (
@@ -416,11 +403,7 @@ export function QueryLine({
                           <Button.Small
                             aria-label={queryText.or()}
                             aria-pressed={field.filters.length > 1}
-                            className={`
-                          print:hidden
-                          ${className.ariaHandled}
-                          ${isFieldComplete ? '' : 'invisible'}
-                        `}
+                            className={`print:hidden ${className.ariaHandled} ${isFieldComplete ? '' : 'invisible'} `}
                             disabled={handleChange === undefined}
                             title={queryText.or()}
                             variant={
@@ -444,10 +427,7 @@ export function QueryLine({
                       <>
                         <span className={mappingElementDividerClassName}>
                           <span
-                            className={`
-                          flex items-center justify-center uppercase
-                          ${iconClassName}
-                        `}
+                            className={`flex items-center justify-center uppercase ${iconClassName} `}
                           >
                             {queryText.or()}
                           </span>
@@ -494,9 +474,7 @@ export function QueryLine({
                           queryFieldFilters[field.filters[index].type]
                             .description ?? commonText.filter()
                         }
-                        className={`
-                        !w-[unset] ${customSelectElementBackground}
-                      `}
+                        className={`!w-[unset] ${customSelectElementBackground} `}
                         disabled={handleChange === undefined}
                         title={
                           queryFieldFilters[field.filters[index].type]
@@ -510,11 +488,11 @@ export function QueryLine({
                             queryFieldFilters[newFilter].component === undefined
                               ? ''
                               : filter.type === 'any' &&
-                                filtersWithDefaultValue.has(newFilter) &&
-                                filter.startValue === '' &&
-                                typeof fieldMeta.parser?.value === 'string'
-                              ? fieldMeta.parser.value
-                              : filter.startValue;
+                                  filtersWithDefaultValue.has(newFilter) &&
+                                  filter.startValue === '' &&
+                                  typeof fieldMeta.parser?.value === 'string'
+                                ? fieldMeta.parser.value
+                                : filter.startValue;
 
                           /*
                            * When going from "in" to another filter type, throw away
@@ -554,7 +532,7 @@ export function QueryLine({
                         terminatingField={
                           isFieldComplete
                             ? genericTables[baseTableName].getField(
-                                mappingPathToString(field.mappingPath)
+                                mappingPathToString(field.mappingPath),
                               )
                             : undefined
                         }

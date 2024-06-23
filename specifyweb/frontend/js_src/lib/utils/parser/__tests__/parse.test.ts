@@ -12,19 +12,19 @@ requireContext();
 
 const ensureValid = (
   parser: Parser | (() => Parser),
-  values: IR<unknown>
+  values: IR<unknown>,
 ): void =>
   Object.entries(values).forEach(([raw, parsedValue]) =>
     test(`"${raw}" is valid`, () => {
       const resolvedParser = typeof parser === 'function' ? parser() : parser;
       const parsed = parseValue(resolvedParser, undefined, raw);
       expectValid(parsed, parsedValue);
-    })
+    }),
   );
 
 function expectValid(
   result: InvalidParseResult | ValidParseResult,
-  value: unknown
+  value: unknown,
 ): void {
   expect(result.isValid).toBe(true);
   if (!result.isValid) expect(result.value).toBe(value);
@@ -32,7 +32,7 @@ function expectValid(
 
 const ensureInvalid = (
   parser: Parser | (() => Parser),
-  values: IR<string | (() => string)>
+  values: IR<string | (() => string)>,
 ): void =>
   Object.entries(values).forEach(([raw, parsedValue]) =>
     test(`"${raw}" is invalid`, () => {
@@ -41,12 +41,12 @@ const ensureInvalid = (
         typeof parsedValue === 'function' ? parsedValue() : parsedValue;
       const parsed = parseValue(resolvedParser, undefined, raw);
       expectInvalid(parsed, expectedResults);
-    })
+    }),
   );
 
 function expectInvalid(
   result: InvalidParseResult | ValidParseResult,
-  message: string
+  message: string,
 ): void {
   expect(result.isValid).toBe(false);
   expect((result as InvalidParseResult).reason).toBe(message);

@@ -21,7 +21,7 @@ describe('parseSqlQuery', () => {
     expect(colMap.fnbps).toBe('FieldNotebookPage.pageSet');
     expect(colMap.fnb).toBe('FieldNotebookPage.pageSet.fieldNotebook');
     expect(colMap.dsp).toBe(
-      'FieldNotebookPage.pageSet.fieldNotebook.discipline'
+      'FieldNotebookPage.pageSet.fieldNotebook.discipline',
     );
   });
 });
@@ -35,10 +35,10 @@ describe('columnToField', () => {
       dsp: 'CollectingEvent.discipline',
     };
     expect(columnToField(columnMap, 'loc.localityName')).toBe(
-      'locality.localityName'
+      'locality.localityName',
     );
     expect(columnToField(columnMap, 'geo.fullName')).toBe(
-      'locality.geography.fullName'
+      'locality.geography.fullName',
     );
   });
 
@@ -51,7 +51,7 @@ describe('columnToField', () => {
     };
     expect(columnToField(columnMap, 'fnbp.pageNumber')).toBe('pageNumber');
     expect(columnToField(columnMap, 'fnb.name')).toBe(
-      'pageSet.fieldNotebook.name'
+      'pageSet.fieldNotebook.name',
     );
   });
 });

@@ -91,7 +91,7 @@ export type FieldTypes = {
 };
 
 const withStringDefault = (
-  cell: SimpleXmlNode
+  cell: SimpleXmlNode,
 ): {
   readonly defaultValue: string | undefined;
 } => ({
@@ -110,13 +110,13 @@ const processFieldType: {
     const printOnSave =
       (getBooleanAttribute(cell, 'ignore') ?? false) &&
       ['printonsave', 'generateinvoice', 'generatelabelchk'].includes(
-        getParsedAttribute(cell, 'name')?.toLowerCase() ?? ''
+        getParsedAttribute(cell, 'name')?.toLowerCase() ?? '',
       );
     if (printOnSave) {
       if (!hasPermission('/report', 'execute')) return { type: 'Blank' };
     } else if (fields === undefined) {
       console.error(
-        `Trying to render a checkbox on a ${table.name} form without a field name`
+        `Trying to render a checkbox on a ${table.name} form without a field name`,
       );
       return { type: 'Blank' };
     } else if (fields.at(-1)?.isRelationship === true) {
@@ -136,7 +136,7 @@ const processFieldType: {
     const rows = f.parseInt(getParsedAttribute(cell, 'rows'));
     if (fields === undefined)
       console.error(
-        `Trying to render a text area on the ${table.name} form with unknown field name`
+        `Trying to render a text area on the ${table.name} form with unknown field name`,
       );
     return {
       type: 'TextArea',
@@ -154,7 +154,7 @@ const processFieldType: {
     const { cell, fields, table } = props;
     if (fields === undefined) {
       console.error(
-        'Trying to render a ComboBox on a form without a field name'
+        'Trying to render a ComboBox on a form without a field name',
       );
       return { type: 'Blank' };
     } else if (fields.at(-1)?.name === 'division')
@@ -193,8 +193,8 @@ const processFieldType: {
           name === 'name'
             ? 'PartialDateUI'
             : name === 'canChangePrecision'
-            ? 'false'
-            : getProperty(name),
+              ? 'false'
+              : getProperty(name),
       });
     else if (fieldType === 'checkbox') return processFieldType.Checkbox(props);
 

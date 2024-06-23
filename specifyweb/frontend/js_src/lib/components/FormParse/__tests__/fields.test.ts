@@ -16,7 +16,7 @@ const xml = (xml: string): SimpleXmlNode =>
 
 const parse = (
   xmlString: string,
-  parameters: Partial<Parameters<typeof parseFormField>[0]>
+  parameters: Partial<Parameters<typeof parseFormField>[0]>,
 ): ReturnType<typeof parseFormField> =>
   parseFormField({
     cell: xml(xmlString),
@@ -41,7 +41,7 @@ describe('parseFormField', () => {
     expect(
       parse('<cell readOnly="true" uitype="TEXT" default="a" />', {
         getProperty: generateInit({ min: '4', max: '-10', step: '3.2' }),
-      })
+      }),
     ).toEqual({
       defaultValue: 'a',
       isReadOnly: true,
@@ -55,7 +55,7 @@ describe('parseFormField', () => {
     expect(
       parse('<cell uiType="DspTextField" default="abc" />', {
         getProperty: generateInit({ min: '4', max: '-10', step: '3.2' }),
-      })
+      }),
     ).toEqual({
       defaultValue: 'abc',
       isReadOnly: true,
@@ -96,7 +96,10 @@ describe('parseFormField', () => {
 
   test('Raw Localized checkbox', () =>
     expect(
-      parse('<cell uiType="checkbox" default="false" label="some label" />', {})
+      parse(
+        '<cell uiType="checkbox" default="false" label="some label" />',
+        {},
+      ),
     ).toEqual({
       defaultValue: false,
       isReadOnly: false,
@@ -118,8 +121,8 @@ describe('parseFormField', () => {
     expect(
       parse(
         '<cell uiType="checkbox" default="true" ignore="true" name="printonsave" label="SELECTALL" />',
-        {}
-      )
+        {},
+      ),
     ).toEqual({
       defaultValue: true,
       isReadOnly: false,
@@ -132,8 +135,8 @@ describe('parseFormField', () => {
     expect(
       parse(
         '<cell uiType="checkbox" ignore="true" name="generatelabelchk" />',
-        {}
-      )
+        {},
+      ),
     ).toEqual({
       defaultValue: undefined,
       isReadOnly: false,
@@ -144,7 +147,7 @@ describe('parseFormField', () => {
 
   test('Textarea', () =>
     expect(
-      parse('<cell uiType="textarea" ignore="true" default="a" />', {})
+      parse('<cell uiType="textarea" ignore="true" default="a" />', {}),
     ).toEqual({
       defaultValue: 'a',
       isReadOnly: false,
@@ -164,8 +167,8 @@ describe('parseFormField', () => {
     expect(
       parse(
         '<cell uiType="textareabrief" rows="3" readOnly="true" ignore="true" default="ab\nc" />',
-        {}
-      )
+        {},
+      ),
     ).toEqual({
       /*
        * New lines are replaced by spaces by the XML parser
@@ -179,7 +182,7 @@ describe('parseFormField', () => {
 
   test('Combo box', () =>
     expect(
-      parse('<cell uiType="combobox" default="a" picklist="b" />', {})
+      parse('<cell uiType="combobox" default="a" picklist="b" />', {}),
     ).toEqual({
       defaultValue: 'a',
       isReadOnly: false,
@@ -212,7 +215,7 @@ describe('parseFormField', () => {
           viewBtn: 'true',
         }),
         fields: [tables.CollectionObject.strictGetField('accession')],
-      })
+      }),
     ).toEqual({
       isReadOnly: false,
       hasCloneButton: true,
@@ -231,8 +234,8 @@ describe('parseFormField', () => {
         '<cell uiType="querycbx" readOnly="true" initialize="newBtn=false"/>',
         {
           fields: [tables.CollectionObject.strictGetField('accession')],
-        }
-      )
+        },
+      ),
     ).toEqual({
       isReadOnly: true,
       hasCloneButton: false,
@@ -257,7 +260,7 @@ describe('parseFormField', () => {
     expect(
       parse('<cell uiType="plugin" default=" 2020-01-01 " />', {
         getProperty: generateInit({ name: 'PartialDateUI' }),
-      })
+      }),
     ).toEqual({
       isReadOnly: false,
       type: 'Plugin',
@@ -275,7 +278,7 @@ describe('parseFormField', () => {
     expect(
       parse('<cell uiType="text" />', {
         fields: [getField(tables.CollectionObject, 'timestampCreated')],
-      })
+      }),
     ).toEqual({
       isReadOnly: false,
       type: 'Plugin',
@@ -312,7 +315,7 @@ test('parseFormField handles fields without uiType', () => {
       getProperty: generateInit({}),
       table: tables.CollectionObject,
       fields: undefined,
-    })
+    }),
   ).toEqual({
     isReadOnly: true,
     type: 'Blank',

@@ -24,8 +24,8 @@ export const fetchContext = Promise.all(
   }).map(async ([iconGroup, fileName]) =>
     load<Element>(`/static/config/${fileName}`, 'text/xml').then((xml) => {
       iconGroups[iconGroup] = xml;
-    })
-  )
+    }),
+  ),
 );
 
 type IconGroup = keyof typeof iconDirectories;
@@ -57,14 +57,14 @@ export function getIcon(name: string): string | undefined {
 function findIconInXml(
   icon: string,
   xml: Element,
-  cycleDetect: RA<string> = []
+  cycleDetect: RA<string> = [],
 ): Element | undefined {
   if (cycleDetect.includes(icon)) {
     softFail(new Error('Circular reference in icon definitions'));
     return undefined;
   }
   const iconNode = xml.querySelector(
-    `icon[name="${icon}"],icon[file="${icon}"]`
+    `icon[name="${icon}"],icon[file="${icon}"]`,
   );
   const alias = iconNode?.getAttribute('alias');
   return typeof alias === 'string'

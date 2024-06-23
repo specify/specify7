@@ -33,7 +33,7 @@ function DateElementSafe({
   readonly flipDates?: boolean;
 }): JSX.Element {
   const [relativeDate, setRelativeDate] = React.useState<string>(
-    getRelativeDate(new Date(date))
+    getRelativeDate(new Date(date)),
   );
 
   const dateObject = new Date(date);

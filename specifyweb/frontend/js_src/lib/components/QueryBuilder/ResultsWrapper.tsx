@@ -74,7 +74,7 @@ type ResultsProps = {
      * all of the fields but still skips phantom fields because they are not displayed
      * in the results table
      */
-    newFields: RA<QueryField>
+    newFields: RA<QueryField>,
   ) => void;
   readonly selectedRows: GetSet<ReadonlySet<number>>;
   readonly resultsRef?: React.MutableRefObject<
@@ -94,7 +94,7 @@ export const runQuery = async <ROW_TYPE extends QueryResultRow>(
     readonly limit: number;
     readonly offset: number;
     readonly recordSetId: number;
-  }> = {}
+  }> = {},
 ): Promise<RA<ROW_TYPE>> =>
   ajax<{
     readonly results: RA<ROW_TYPE>;
@@ -133,7 +133,7 @@ export function useQueryResultsWrapper({
   >(undefined);
 
   const [totalCount, setTotalCount] = React.useState<number | undefined>(
-    undefined
+    undefined,
   );
 
   const previousQueryRunCount = React.useRef(0);
@@ -147,7 +147,7 @@ export function useQueryResultsWrapper({
     const allFields = augmentQueryFields(
       table.name,
       fields.filter(({ mappingPath }) => mappingPathIsComplete(mappingPath)),
-      isDistinct
+      isDistinct,
     );
 
     const fetchPayload = {
@@ -187,10 +187,10 @@ export function useQueryResultsWrapper({
       : runQuery(query, { offset: 0, ...fetchPayload });
     const fieldSpecsAndFields = queryFieldsToFieldSpecs(
       table.name,
-      displayedFields
+      displayedFields,
     );
     const fieldSpecs = fieldSpecsAndFields.map(
-      ([_field, fieldSpec]) => fieldSpec
+      ([_field, fieldSpec]) => fieldSpec,
     );
     const queryFields = fieldSpecsAndFields.map(([field]) => field);
 
@@ -227,12 +227,12 @@ export function useQueryResultsWrapper({
                       {
                         ...displayField,
                         sortType,
-                      }
-                    )
+                      },
+                    ),
                   );
                 }
               : undefined,
-        })
+        }),
       )
       .catch(raise);
   }, [

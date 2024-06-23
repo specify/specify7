@@ -40,7 +40,7 @@ function regenerate(): string {
             ({ type, name, isRequired }) =>
               `readonly ${name}:${javaTypeToTypeScript[type]}${
                 isRequired ? '' : '|null'
-              }`
+              }`,
           ),
           toOneDependent: 'RR<never, never>',
           toOneIndependent: 'RR<never, never>',
@@ -59,8 +59,8 @@ function regenerate(): string {
                         relationship.isRequired ? '' : '|null'
                       }`
                 }`,
-              ])
-            )
+              ]),
+            ),
           ),
         })
           .sort(sortFunction(([groupName]) => keyOrder.indexOf(groupName)))
@@ -68,9 +68,9 @@ function regenerate(): string {
             ([group, fields]) =>
               `readonly ${group}: ${
                 typeof fields === 'string' ? fields : `{${fields.join(';')}}`
-              }`
+              }`,
           )
-          .join(';')}}`
+          .join(';')}}`,
     )
     .join(';');
   return `${index}${tableTypes}`;

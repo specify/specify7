@@ -21,21 +21,21 @@ describe('useMoment', () => {
     resource.bulkSet({ [dateFieldName]: defaultValue });
 
     const { result } = renderHook(() =>
-      useMoment(resource, dateFieldName, undefined)
+      useMoment(resource, dateFieldName, undefined),
     );
     const [originalMoment, setMoment] = result.current;
 
     // Read default value from the resource
     await waitFor(() => {
       expect(originalMoment?.toDate().getTime()).toEqual(
-        defaultValue.getTime()
+        defaultValue.getTime(),
       );
     });
 
     // Listens to resource update and parses the value
     act(
       // Setting to invalid date
-      () => void resource.set(dateFieldName, 'abc')
+      () => void resource.set(dateFieldName, 'abc'),
     );
     await waitFor(() => expect(result.current[GET]?.isValid()).toBe(false));
 
@@ -58,7 +58,7 @@ describe('useMoment', () => {
 
     await waitFor(() => {
       expect(new Date(resource?.get(dateFieldName) ?? '').getTime()).toEqual(
-        defaultValue.getTime()
+        defaultValue.getTime(),
       );
     });
   });

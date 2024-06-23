@@ -8,7 +8,7 @@ export function strictParseXml(xml: string): Element {
 export function parseXml(string: string): Element | string {
   const parsedXml = new globalThis.DOMParser().parseFromString(
     string,
-    'text/xml'
+    'text/xml',
   ).documentElement;
 
   // Chrome, Safari

@@ -25,7 +25,7 @@ export function getSelectedRegions(hot: Handsontable): RA<{
  */
 export const getSelectedCells = (
   hot: Handsontable,
-  columnsToWorkWith: RA<number>
+  columnsToWorkWith: RA<number>,
 ): RR<number, ReadonlySet<number>> => {
   const selectedRegions = getSelectedRegions(hot);
   return (
@@ -35,8 +35,8 @@ export const getSelectedCells = (
           Array.from({ length: endCol - startCol + 1 }, (_, colIndex) => [
             startRow + rowIndex,
             startCol + colIndex,
-          ])
-        )
+          ]),
+        ),
       )
       .flat()
       // eslint-disable-next-line functional/prefer-readonly-type
@@ -47,7 +47,7 @@ export const getSelectedCells = (
           indexedCells[visualRow].add(visualCol);
           return indexedCells;
         },
-        {}
+        {},
       )
   );
 };
@@ -57,12 +57,12 @@ export const getSelectedCells = (
  */
 export const getVisualHeaders = (
   hot: Handsontable,
-  columns: RA<string>
+  columns: RA<string>,
 ): RA<string> =>
   columns.map((_, index, columns) => columns[hot.toPhysicalColumn(index)]);
 
 export function getSelectedLast(
-  hot: Handsontable
+  hot: Handsontable,
 ): readonly [row: number, col: number] {
   let [currentRow, currentCol] = hot.getSelectedLast() ?? [0, 0];
   /*
@@ -78,7 +78,7 @@ export const setHotData = (
   hot: Handsontable,
   changes: RA<
     readonly [visualCol: number, visualRow: number, value: string | null]
-  >
+  >,
 ): void =>
   // eslint-disable-next-line functional/prefer-readonly-type
   hot.setDataAtCell(changes as WritableArray<[number, number, string | null]>);

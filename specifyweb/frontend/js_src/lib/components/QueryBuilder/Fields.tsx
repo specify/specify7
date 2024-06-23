@@ -55,7 +55,7 @@ export function QueryFields({
           readonly currentTableName: keyof Tables | undefined;
           readonly newTableName: keyof Tables | undefined;
           readonly isDoubleClick: boolean;
-        }
+        },
       ) => void)
     | undefined;
   readonly onRemoveField: ((line: number) => void) | undefined;
@@ -159,7 +159,7 @@ export function QueryFields({
         scrollIntoView(firstNonContentsChild as HTMLElement, 'nearest');
       }
       oldFieldCount.current = fields.length;
-    }, [fields.length])
+    }, [fields.length]),
   );
 
   const isBasic = React.useContext(IsQueryBasicContext);
@@ -170,23 +170,20 @@ export function QueryFields({
         .map(([_, fieldSpec]) =>
           generateMappingPathPreview(
             fieldSpec.baseTable.name,
-            fieldSpec.toMappingPath()
-          )
+            fieldSpec.toMappingPath(),
+          ),
         )
         .join(' '),
-    [baseTableName, fields]
+    [baseTableName, fields],
   );
 
   return (
     <Ul
-      className={`
-          items-center overflow-y-auto sm:flex-1
-          ${
-            isBasic
-              ? 'grid grid-cols-[auto,auto,1fr,auto] content-start items-start gap-x-2 gap-y-2'
-              : ''
-          }
-        `}
+      className={`items-center overflow-y-auto sm:flex-1 ${
+        isBasic
+          ? 'grid grid-cols-[auto,auto,1fr,auto] content-start items-start gap-x-2 gap-y-2'
+          : ''
+      } `}
       forwardRef={fieldsContainerRef}
     >
       {fields.map((field, line, { length }) => (
@@ -215,8 +212,8 @@ export function QueryFields({
                       target === 'previous'
                         ? line - 1
                         : target === 'current'
-                        ? line
-                        : line + 1
+                          ? line
+                          : line + 1,
                     )
               }
               onMappingChange={handleMappingChange?.bind(undefined, line)}

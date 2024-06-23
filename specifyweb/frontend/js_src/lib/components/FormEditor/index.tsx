@@ -35,7 +35,7 @@ export function FormEditor(props: AppResourceTabProps): JSX.Element {
 export type FormEditorOutlet = {
   readonly viewSets: readonly [
     ViewSets,
-    (viewSets: ViewSets, changedViewNames: RA<string>) => void
+    (viewSets: ViewSets, changedViewNames: RA<string>) => void,
   ];
   readonly disciplines: RA<SerializedResource<Discipline>>;
 };
@@ -54,7 +54,7 @@ export function FormEditorWrapper(): JSX.Element {
     React.useCallback(() => {
       originalParsed.current = injectRawXml(initialParsed);
       return originalParsed.current;
-    }, [initialParsed])
+    }, [initialParsed]),
   );
 
   const changedRef = React.useRef<ReadonlySet<string>>(new Set());
@@ -77,10 +77,10 @@ export function FormEditorWrapper(): JSX.Element {
             Promise.all(
               Array.from(changedRef.current, async (viewName) =>
                 clearUrlCache(getViewSetApiUrl(viewName)).then(() =>
-                  clearViewLocal(viewName)
-                )
-              )
-            ).then(f.void)
+                  clearViewLocal(viewName),
+                ),
+              ),
+            ).then(f.void),
           );
         },
       ]}
@@ -96,7 +96,7 @@ export const FormEditorContext = createXmlContext(viewSetsSpec());
  * This code adds a "raw" prop for each viewDef with the XmlNode
  */
 const injectRawXml = (
-  initialParsed: SpecToJson<ReturnType<typeof viewSetsSpec>>
+  initialParsed: SpecToJson<ReturnType<typeof viewSetsSpec>>,
 ): ViewSets => ({
   ...initialParsed,
   viewDefs: initialParsed.viewDefs.map((definition) => ({
@@ -104,7 +104,7 @@ const injectRawXml = (
     // Add XmlNode
     raw: defined(
       getOriginalSyncerInput(definition),
-      'Unable to attach raw form definitions to parsed form definitions'
+      'Unable to attach raw form definitions to parsed form definitions',
     ),
   })),
 });

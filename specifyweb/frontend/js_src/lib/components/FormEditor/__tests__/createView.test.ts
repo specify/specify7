@@ -85,7 +85,7 @@ const viewSets = (): ViewSets =>
         name: localized('CollectionObjectAttachment'),
         description: 'The Collection Object-Attachment View.',
         businessRules: localized(
-          'edu.ku.brc.specify.datamodel.busrules.AttachmentBusRules'
+          'edu.ku.brc.specify.datamodel.busrules.AttachmentBusRules',
         ),
         legacyIsInternal: undefined,
         legacyIsExternal: undefined,
@@ -240,10 +240,10 @@ const processViewSet = (viewSet: ViewSets): IR<unknown> =>
       viewDefs: viewSet.viewDefs.map(({ raw, ...rest }) => ({
         ...rest,
         raw: formatXmlForTests(
-          xmlToString(jsonToXml({ ...raw, attributes: {} }), false)
+          xmlToString(jsonToXml({ ...raw, attributes: {} }), false),
         ),
       })),
-    })
+    }),
   );
 
 test('Create new view definition', () =>
@@ -253,9 +253,9 @@ test('Create new view definition', () =>
         viewSets(),
         localized('CollectionObjectAttachment_2'),
         tables.CollectionObjectAttachment,
-        'new'
-      )
-    )
+        'new',
+      ),
+    ),
   ).toEqual({
     viewDefs: [
       {
@@ -437,9 +437,9 @@ test('Add new view definition based on existing', () =>
         viewSets(),
         localized('A'),
         tables.Accession,
-        viewDefinition
-      )
-    )
+        viewDefinition,
+      ),
+    ),
   ).toEqual({
     viewDefs: [
       {

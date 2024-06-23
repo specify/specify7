@@ -51,8 +51,8 @@ export function TaxonTiles(): JSX.Element {
         .on('click', (_event, node) =>
           window.open(
             `/specify/query/fromtree/taxon/${node.data.id}/`,
-            '_blank'
-          )
+            '_blank',
+          ),
         );
     }
     render();
@@ -99,12 +99,12 @@ function useGenusRankId(): number | false | undefined {
         treeRanksPromise.then(
           () =>
             getTreeDefinitionItems('Taxon', false)!.find(
-              (item) => (item.name || item.title)?.toLowerCase() === 'genus'
-            )?.rankId ?? false
+              (item) => (item.name || item.title)?.toLowerCase() === 'genus',
+            )?.rankId ?? false,
         ),
-      []
+      [],
     ),
-    false
+    false,
   );
   return genusRankId;
 }
@@ -120,7 +120,7 @@ function useTreeData(): ReturnType<typeof mergeNodes> | undefined {
               rankId: number,
               parentId: number,
               name: string,
-              count: number
+              count: number,
             ]
           >
         >('/barvis/taxon_bar/', {
@@ -133,13 +133,13 @@ function useTreeData(): ReturnType<typeof mergeNodes> | undefined {
               parentId,
               name,
               count,
-            }))
+            })),
           )
           .then(pairNodes)
           .then(mergeNodes),
-      []
+      [],
     ),
-    false
+    false,
   );
   return treeData;
 }

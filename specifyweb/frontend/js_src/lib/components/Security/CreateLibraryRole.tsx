@@ -10,7 +10,7 @@ import type { BackEndRole } from './utils';
 
 export const createLibraryRole = async (
   handleChange: GetOrSet<IR<Role> | undefined>[1],
-  role: NewRole
+  role: NewRole,
 ): Promise<void> =>
   ajax<BackEndRole>(`/permissions/library_roles/`, {
     method: 'POST',
@@ -26,7 +26,7 @@ export const createLibraryRole = async (
         ...role,
         policies: processPolicies(role.policies),
       },
-    }))
+    })),
   );
 
 export function CreateLibraryRole(): JSX.Element {

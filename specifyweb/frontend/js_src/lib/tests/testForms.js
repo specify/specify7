@@ -30,13 +30,13 @@ define([
         if (doingFormTable) {
           ok(
             _.isUndefined(result.attr('colspan')),
-            'colspan undefined for formtable'
+            'colspan undefined for formtable',
           );
         } else {
           equal(
             result.attr('colspan'),
             Math.ceil(parseInt(cell.attr('colspan'), 10) / 2),
-            'colspan is correct'
+            'colspan is correct',
           );
         }
       }
@@ -55,7 +55,7 @@ define([
         equal(
           label.prop('for'),
           'specify-field-<%= formNumber %>-1',
-          'correct for id'
+          'correct for id',
         );
         equal(label.text(), '', 'empty label');
       });
@@ -72,7 +72,7 @@ define([
         equal(
           label.prop('for'),
           'specify-field-<%= formNumber %>-1',
-          'correct for id'
+          'correct for id',
         );
         equal(label.text(), 'Foobar', 'label text is correct');
       });
@@ -120,11 +120,11 @@ define([
           equal(
             control.prop('id'),
             'specify-field-' + formNumber + '-1',
-            'id is correct'
+            'id is correct',
           );
           ok(
             _.isUndefined(control.data('specify-initialize')),
-            'no initialize data'
+            'no initialize data',
           );
           ok(!control[0].required, 'field is not required');
         });
@@ -146,12 +146,12 @@ define([
           equal(
             control.prop('id'),
             'specify-field-' + formNumber + '-1',
-            'id is correct'
+            'id is correct',
           );
           equal(
             control.data('specify-initialize'),
             'somedata',
-            'initialize data is correct'
+            'initialize data is correct',
           );
           ok(control[0].required, 'field is required');
         });
@@ -174,13 +174,13 @@ define([
           equal(
             control.prop('disabled'),
             doingFormTable,
-            'disabled if doingFormTable'
+            'disabled if doingFormTable',
           );
           !doingFormTable &&
             equal(
               label.prop('for'),
               'specify-field-' + formNumber + '-3',
-              'for id is correct'
+              'for id is correct',
             );
           var labelOR = control.data('specify-field-label-override');
           if (_.isNull(labelStr)) {
@@ -199,7 +199,7 @@ define([
     test('checkbox without id', function () {
       var result = instProcessCell(
         false,
-        '<cell type="field" name="foo" uitype="checkbox"/>'
+        '<cell type="field" name="foo" uitype="checkbox"/>',
       );
       var label = result.children('label');
       equal(label.length, 1, 'label exists');
@@ -221,20 +221,20 @@ define([
             ok(control.is('input[type="text"]'), 'text input for form table');
             ok(
               _.isUndefined(control.attr('rows')),
-              'rows not defined for form table'
+              'rows not defined for form table',
             );
           } else {
             ok(control.is('textarea'), 'textarea if not doing form table');
             if (rowsAttr === '') {
               ok(
                 _.isUndefined(control.attr('rows')),
-                'rows not defined if not given'
+                'rows not defined if not given',
               );
             } else {
               equal(
                 control.attr('rows'),
                 rowsAttr.replace('rows="', '').replace('"', ''),
-                'rows attr is correct'
+                'rows attr is correct',
               );
             }
           }
@@ -257,7 +257,7 @@ define([
             ok(control.is('input[type="text"]'), 'text input for form table');
             ok(
               _.isUndefined(control.attr('rows')),
-              'rows not defined for form table'
+              'rows not defined for form table',
             );
           } else {
             ok(control.is('textarea'), 'textarea if not doing form table');
@@ -267,7 +267,7 @@ define([
               equal(
                 control.attr('rows'),
                 rowsAttr.replace('rows="', '').replace('"', ''),
-                'rows attr is correct'
+                'rows attr is correct',
               );
             }
           }
@@ -289,12 +289,12 @@ define([
           ok(control.is('select'), 'control is <select>');
           ok(
             control.hasClass('specify-combobox'),
-            'control has combobox class'
+            'control has combobox class',
           );
           equal(
             control.prop('disabled'),
             doingFormTable,
-            'disabled if doing form table'
+            'disabled if doing form table',
           );
           var pickList = control.data('specify-picklist');
           if (givePickList) {
@@ -319,35 +319,35 @@ define([
         equal(
           control.prop('readonly'),
           doingFormTable,
-          'readonly if doing form table'
+          'readonly if doing form table',
         );
       });
     });
 
     module('specifyform field text/dsptextfield/formattedtext/label');
     _([true, false]).each(function (doingFormTable) {
-      _(['text', 'dsptextfield', 'formattedtext', 'label']).each(function (
-        uitype
-      ) {
-        var node =
-          '<cell type="field" id="2" name="text2" uitype="' + uitype + '"/>';
-        test(node + ' doingFormTable: ' + doingFormTable, function () {
-          var result = instProcessCell(doingFormTable, node);
-          equal(result.children().length, 1, 'only one element');
-          var control = result.find('.specify-field');
-          ok(control.is('input[type="text"]'), 'control is text input');
-          if (uitype === 'formattedtext')
-            ok(
-              control.hasClass('specify-formattedtext'),
-              'has formattedtext class'
+      _(['text', 'dsptextfield', 'formattedtext', 'label']).each(
+        function (uitype) {
+          var node =
+            '<cell type="field" id="2" name="text2" uitype="' + uitype + '"/>';
+          test(node + ' doingFormTable: ' + doingFormTable, function () {
+            var result = instProcessCell(doingFormTable, node);
+            equal(result.children().length, 1, 'only one element');
+            var control = result.find('.specify-field');
+            ok(control.is('input[type="text"]'), 'control is text input');
+            if (uitype === 'formattedtext')
+              ok(
+                control.hasClass('specify-formattedtext'),
+                'has formattedtext class',
+              );
+            equal(
+              control.prop('readonly'),
+              doingFormTable || uitype === 'dsptextfield' || uitype === 'label',
+              'readonly if doing form table or dsptextfield or label',
             );
-          equal(
-            control.prop('readonly'),
-            doingFormTable || uitype === 'dsptextfield' || uitype === 'label',
-            'readonly if doing form table or dsptextfield or label'
-          );
-        });
-      });
+          });
+        },
+      );
     });
 
     module('specifyform field plugin');
@@ -363,7 +363,7 @@ define([
         equal(
           control.prop('disabled'),
           doingFormTable,
-          'plugin is disabled iff doingFormTable'
+          'plugin is disabled iff doingFormTable',
         );
       });
     });
@@ -374,7 +374,7 @@ define([
         formNumber,
         false,
         'edit',
-        '<cell type="field" id="2" name="mysql.location" cols="30" uitype="browse" colspan="3"/>'
+        '<cell type="field" id="2" name="mysql.location" cols="30" uitype="browse" colspan="3"/>',
       );
       equal(result.children().length, 1, 'only one element');
       var control = result.find('.specify-field');
@@ -401,33 +401,33 @@ define([
           equal(
             result.data('specify-field-name'),
             'authors',
-            'field name is correct'
+            'field name is correct',
           );
           equal(
             result.data('specify-viewname'),
             'Authors',
-            'viewname is correct'
+            'viewname is correct',
           );
           equal(
             result.data('specify-viewtype'),
             'table',
-            'viewtype is correct'
+            'viewtype is correct',
           );
           equal(
             result.hasClass('specify-subview-button'),
             doingButton,
-            'button class is correct'
+            'button class is correct',
           );
           if (doingButton) {
             equal(
               result.attr('id'),
               'specify-field-' + formNumber + '-10',
-              'id is correct'
+              'id is correct',
             );
             equal(
               result.data('specify-initialize'),
               init.replace('initialize="', '').replace('"', ''),
-              'has correct initialize data'
+              'has correct initialize data',
             );
             if (doingAlign) {
               ok(result.hasClass('align-left'), 'has align class');
@@ -435,21 +435,21 @@ define([
               ok(
                 !result.hasClass('align-left') &&
                   !result.hasClass('align-right'),
-                'no align class'
+                'no align class',
               );
             }
           } else {
             ok(
               _.isUndefined(result.attr('id')),
-              'id is undefined if not doing button'
+              'id is undefined if not doing button',
             );
             ok(
               _.isUndefined(result.data('initialize')),
-              'initialize is not defined'
+              'initialize is not defined',
             );
             ok(
               !result.hasClass('align-left') && !result.hasClass('align-right'),
-              'no align class'
+              'no align class',
             );
           }
         });
@@ -489,7 +489,7 @@ define([
             ['1', '2'],
             ['3', '4'],
           ],
-          'panel structure is correct'
+          'panel structure is correct',
         );
       });
     })();
@@ -522,7 +522,7 @@ define([
           _(colgroup.children()).all(function (child) {
             return $(child).is('col');
           }),
-          'colgroup contians cols'
+          'colgroup contians cols',
         );
         var widths = _(colgroup.find('col')).map(function (col) {
           return $(col).attr('width');

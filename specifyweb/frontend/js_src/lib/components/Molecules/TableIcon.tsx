@@ -23,7 +23,7 @@ const getHue = spanNumber(
   // eslint-disable-next-line unicorn/prefer-code-point
   'z'.charCodeAt(0) * 2,
   0,
-  MAX_HUE
+  MAX_HUE,
 );
 
 /** Generate an HSL color based on the first 2 characters of a string */
@@ -31,7 +31,7 @@ export function stringToColor(rawName: string): string {
   const name = rawName.toLowerCase();
   return `hsl(${getHue(
     // eslint-disable-next-line unicorn/prefer-code-point
-    (name[0] ?? 'a').charCodeAt(0) + (name[1] ?? 'a').charCodeAt(0)
+    (name[0] ?? 'a').charCodeAt(0) + (name[1] ?? 'a').charCodeAt(0),
   )}, 70%, 50%)`;
 }
 
@@ -63,8 +63,8 @@ export function TableIcon({
     label === false
       ? undefined
       : typeof label === 'string'
-      ? label
-      : table?.label ?? camelToHuman(name);
+        ? label
+        : table?.label ?? camelToHuman(name);
   if (tableName === undefined) {
     const tableIconSource = getIcon(name);
     // Display a legacy Specify 6 icon
@@ -94,10 +94,7 @@ export function TableIcon({
 export const tableIconUndefined = (
   <span
     aria-label={wbPlanText.unmapped()}
-    className={`
-      h-table-icon w-table-icon flex items-center justify-center font-bold
-      text-red-600
-    `}
+    className={`flex h-table-icon w-table-icon items-center justify-center font-bold text-red-600`}
     role="img"
   >
     {icons.ban}
@@ -107,10 +104,7 @@ export const tableIconUndefined = (
 export const tableIconSelected = (
   <span
     aria-label={wbPlanText.mapped()}
-    className={`
-      h-table-icon w-table-icon flex items-center justify-center font-bold
-      text-green-500
-    `}
+    className={`flex h-table-icon w-table-icon items-center justify-center font-bold text-green-500`}
     role="img"
   >
     {icons.check}

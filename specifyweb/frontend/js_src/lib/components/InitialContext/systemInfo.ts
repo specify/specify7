@@ -28,7 +28,7 @@ let systemInfo: SystemInfo;
 
 export const fetchContext = load<SystemInfo>(
   '/context/system_info.json',
-  'application/json'
+  'application/json',
 ).then((data) => {
   systemInfo = data;
   if (systemInfo.stats_url !== null)
@@ -50,9 +50,9 @@ export const fetchContext = load<SystemInfo>(
          * case-sensitive way. Thus, don't convert keys to lower case, but leave
          * them as they were sent in previous versions of Specify 7
          */
-        false
+        false,
       ),
-      { errorMode: 'silent' }
+      { errorMode: 'silent' },
     ).catch(softFail);
   return systemInfo;
 });

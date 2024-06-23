@@ -62,7 +62,7 @@ export function useHotHooks({
           'isModified',
           true,
           visualRow,
-          visualCol
+          visualCol,
         );
       if (workbench.cells.getCellMetaFromArray(metaArray, 'isNew'))
         workbench.cells.runMetaUpdateEffects(
@@ -70,7 +70,7 @@ export function useHotHooks({
           'isNew',
           true,
           visualRow,
-          visualCol
+          visualCol,
         );
       if (workbench.cells.getCellMetaFromArray(metaArray, 'isSearchResult'))
         workbench.cells.runMetaUpdateEffects(
@@ -78,7 +78,7 @@ export function useHotHooks({
           'isSearchResult',
           true,
           visualRow,
-          visualCol
+          visualCol,
         );
       if (workbench.mappings?.mappedHeaders?.[physicalCol] === undefined)
         td.classList.add('text-gray-500');
@@ -100,7 +100,7 @@ export function useHotHooks({
       isValid,
       value: string | null = '',
       visualRow,
-      property
+      property,
     ) => {
       if (workbench.hot === undefined) return;
       const visualCol = workbench.hot.propToCol(property);
@@ -110,7 +110,7 @@ export function useHotHooks({
       const issues = workbench.cells.getCellMeta(
         physicalRow,
         physicalCol,
-        'issues'
+        'issues',
       );
       /*
        * Don't duplicate failedParsingPickList message if both front-end and
@@ -125,16 +125,16 @@ export function useHotHooks({
               whitespaceSensitive(
                 backEndText.failedParsingPickList({
                   value: `"${value ?? 'null'}"`,
-                })
+                }),
               ),
             ]),
         ...issues.filter(
           (issue) =>
             !issue.endsWith(
               whitespaceSensitive(
-                backEndText.failedParsingPickList({ value: '' })
-              )
-            )
+                backEndText.failedParsingPickList({ value: '' }),
+              ),
+            ),
         ),
       ]);
       if (JSON.stringify(issues) !== JSON.stringify(newIssues))
@@ -142,7 +142,7 @@ export function useHotHooks({
           physicalRow,
           physicalCol,
           'issues',
-          newIssues
+          newIssues,
         );
     },
 
@@ -167,7 +167,7 @@ export function useHotHooks({
 
       const filteredChanges = unfilteredChanges.filter(
         ([, property]) =>
-          (property as number) < workbench.dataset.columns.length
+          (property as number) < workbench.dataset.columns.length,
       );
       if (
         filteredChanges.length === unfilteredChanges.length ||
@@ -180,7 +180,7 @@ export function useHotHooks({
           workbench.hot!.propToCol(property as number),
           newValue,
         ]),
-        'CopyPaste.paste'
+        'CopyPaste.paste',
       );
       return false;
     },
@@ -208,7 +208,7 @@ export function useHotHooks({
             typeof property === 'number'
               ? property
               : workbench.hot!.toPhysicalColumn(
-                  workbench.hot!.propToCol(property as number | string)
+                  workbench.hot!.propToCol(property as number | string),
                 ),
           oldValue,
           newValue,
@@ -224,7 +224,7 @@ export function useHotHooks({
             // Or where value changed from null to empty
             (oldValue !== null || newValue !== '') &&
             // Or the column does not exist (that can happen on paste)
-            visualCol < workbench.dataset.columns.length
+            visualCol < workbench.dataset.columns.length,
         );
 
       if (changes.length === 0) return;
@@ -233,10 +233,10 @@ export function useHotHooks({
         changes
           // Ignore changes to unmapped columns
           .filter(
-            ({ physicalCol }) => physicalColToMappingCol(physicalCol) !== -1
+            ({ physicalCol }) => physicalColToMappingCol(physicalCol) !== -1,
           )
           .sort(sortFunction(({ visualRow }) => visualRow))
-          .map(({ physicalRow }) => physicalRow)
+          .map(({ physicalRow }) => physicalRow),
       );
 
       /*
@@ -246,7 +246,7 @@ export function useHotHooks({
        */
       if (!workbench.undoRedoIsHandled)
         changedRows.forEach((physicalRow) =>
-          workbench.disambiguation.clearDisambiguation(physicalRow)
+          workbench.disambiguation.clearDisambiguation(physicalRow),
         );
 
       changes.forEach(
@@ -262,14 +262,14 @@ export function useHotHooks({
             workbench.cells.getCellMeta(
               physicalRow,
               physicalCol,
-              'originalValue'
+              'originalValue',
             ) === undefined
           )
             workbench.cells.setCellMeta(
               physicalRow,
               physicalCol,
               'originalValue',
-              oldValue
+              oldValue,
             );
           workbench.cells.recalculateIsModifiedState(physicalRow, physicalCol, {
             visualRow,
@@ -284,9 +284,9 @@ export function useHotHooks({
               physicalCol,
               'isSearchResult',
               workbench.utils.searchFunction(newValue),
-              { visualRow, visualCol }
+              { visualRow, visualCol },
             );
-        }
+        },
       );
 
       spreadsheetChanged();
@@ -294,7 +294,7 @@ export function useHotHooks({
 
       if (workbench.dataset.uploadplan)
         changedRows.forEach((physicalRow) =>
-          workbench.validation.startValidateRow(physicalRow)
+          workbench.validation.startValidateRow(physicalRow),
         );
     },
 
@@ -320,7 +320,7 @@ export function useHotHooks({
            * order and visual row order is the same
            */
           workbench.hot?.toPhysicalRow(visualRowStart + index) ??
-          visualRowStart + index
+          visualRowStart + index,
         // REFACTOR: use sortFunction here
       ).sort();
 
@@ -328,7 +328,7 @@ export function useHotHooks({
       addedRows
         .filter((physicalRow) => physicalRow < workbench.cells.cellMeta.length)
         .forEach((physicalRow) =>
-          workbench.cells?.cellMeta.splice(physicalRow, 0, [])
+          workbench.cells?.cellMeta.splice(physicalRow, 0, []),
         );
       if (workbench.hot !== undefined && source !== 'auto')
         spreadsheetChanged();
@@ -340,7 +340,7 @@ export function useHotHooks({
       if (workbench.hot === undefined) return;
       // Get indexes of removed rows in reverse order
       const removedRows = Array.from({ length: amount }, (_, index) =>
-        workbench.hot!.toPhysicalRow(visualRowStart + index)
+        workbench.hot!.toPhysicalRow(visualRowStart + index),
       )
         .filter((physicalRow) => physicalRow < workbench.cells.cellMeta.length)
         // REFACTOR: use sortFunction here
@@ -379,7 +379,7 @@ export function useHotHooks({
 
       const findTreeColumns = (
         sortConfig: RA<Handsontable.plugins.ColumnSorting.Config>,
-        deltaSearchConfig: RA<Handsontable.plugins.ColumnSorting.Config>
+        deltaSearchConfig: RA<Handsontable.plugins.ColumnSorting.Config>,
       ) =>
         sortConfig
           .map(({ column: visualCol, sortOrder }) => ({
@@ -392,7 +392,7 @@ export function useHotHooks({
             rankGroup: workbench
               .mappings!.treeRanks?.map((rankGroup, groupIndex) => ({
                 rankId: rankGroup.find(
-                  (mapping) => mapping.physicalCol === physicalCol
+                  (mapping) => mapping.physicalCol === physicalCol,
                 )?.rankId,
                 groupIndex,
               }))
@@ -407,7 +407,7 @@ export function useHotHooks({
            */
           .find(({ sortOrder, visualCol }) => {
             const deltaColumnState = deltaSearchConfig.find(
-              ({ column }) => column === visualCol
+              ({ column }) => column === visualCol,
             );
             return (
               deltaColumnState === undefined ||
@@ -438,7 +438,7 @@ export function useHotHooks({
 
       // Filter out columns that are about to be sorted
       const partialSortConfig = newSortConfig.filter(
-        ({ column }) => !columnsToSort.includes(column)
+        ({ column }) => !columnsToSort.includes(column),
       );
 
       const fullSortConfig = [
@@ -468,7 +468,7 @@ export function useHotHooks({
       setCache(
         'workBenchSortConfig',
         `${schema.domainLevelIds.collection}_${workbench.dataset.id}`,
-        physicalSortConfig
+        physicalSortConfig,
       );
     },
 
@@ -483,13 +483,13 @@ export function useHotHooks({
       workbench.cells.indexedCellMeta = undefined;
 
       const columnOrder = workbench.dataset.columns.map((_, visualCol) =>
-        workbench.hot!.toPhysicalColumn(visualCol)
+        workbench.hot!.toPhysicalColumn(visualCol),
       );
 
       if (
         workbench.dataset.visualorder === null ||
         columnOrder.some(
-          (i, index) => i !== workbench.dataset.visualorder![index]
+          (i, index) => i !== workbench.dataset.visualorder![index],
         )
       ) {
         overwriteReadOnly(workbench.dataset, 'visualorder', columnOrder);
@@ -498,7 +498,7 @@ export function useHotHooks({
             method: 'PUT',
             body: { visualorder: columnOrder },
             expectedErrors: [Http.NOT_FOUND],
-          }).then(checkDeletedFail)
+          }).then(checkDeletedFail),
         );
       }
     },
@@ -541,7 +541,7 @@ export function useHotHooks({
 function afterUndoRedo(
   workbench: Workbench,
   type: 'redo' | 'undo',
-  data: Action
+  data: Action,
 ): void {
   if (
     workbench.undoRedoIsHandled ||

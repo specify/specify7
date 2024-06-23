@@ -146,7 +146,7 @@ describe('handleAjaxResponse', () => {
         responseText: 'Service unavailable',
       },
       { ok: false, status: Http.UNAVAILABLE, statusText: '' },
-      'visible'
+      'visible',
     );
   });
 
@@ -173,7 +173,7 @@ describe('handleAjaxResponse', () => {
         responseText: 'Page not found',
       },
       { ok: false, status: Http.NOT_FOUND, statusText: '' },
-      'visible'
+      'visible',
     );
   });
 
@@ -196,7 +196,7 @@ describe('handleAjaxResponse', () => {
         responseText: 'Not allowed',
       },
       { ok: false, status: Http.FORBIDDEN, statusText: '' },
-      'visible'
+      'visible',
     );
   });
 
@@ -219,7 +219,7 @@ describe('handleAjaxResponse', () => {
         responseText: '{',
       },
       { ok: true, status: Http.OK, statusText: '' },
-      'visible'
+      'visible',
     );
   });
 
@@ -242,7 +242,7 @@ describe('handleAjaxResponse', () => {
         responseText: '<',
       },
       { ok: true, status: Http.OK, statusText: '' },
-      'visible'
+      'visible',
     );
   });
 });

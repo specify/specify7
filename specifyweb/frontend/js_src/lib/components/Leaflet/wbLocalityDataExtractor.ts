@@ -29,7 +29,7 @@ import {
 
 const addBaseTableName = (
   baseTableName: keyof Tables,
-  splitMappingPaths: RA<SplitMappingPath>
+  splitMappingPaths: RA<SplitMappingPath>,
 ): RA<SplitMappingPath> =>
   splitMappingPaths.map(({ mappingPath, ...rest }) => ({
     ...rest,
@@ -37,7 +37,7 @@ const addBaseTableName = (
   }));
 
 export const uniqueMappingPaths = (
-  mappingPaths: RA<MappingPath | undefined>
+  mappingPaths: RA<MappingPath | undefined>,
 ): RA<MappingPath> =>
   /*
    * See https://github.com/freaktechnik/eslint-plugin-array-func/issues/344
@@ -45,11 +45,11 @@ export const uniqueMappingPaths = (
   // eslint-disable-next-line array-func/from-map
   Array.from(
     new Set(filterArray(mappingPaths).map(mappingPathToString)),
-    splitJoinedMappingPath
+    splitJoinedMappingPath,
   ).map((path) => (path.length === 1 && path[0] === '' ? [] : path));
 
 const matchLocalityPinFields = (
-  splitMappingPaths: SplitMappingPaths
+  splitMappingPaths: SplitMappingPaths,
 ): RA<
   LocalityPinFields & { readonly matchedPathsToRelationship: RA<MappingPath> }
 > =>
@@ -61,16 +61,16 @@ const matchLocalityPinFields = (
         splitMappingPaths.map(({ mappingPath, canonicalMappingPath }) => {
           const subArrayPosition = findSubArray(
             canonicalMappingPath.map(toLowerCase),
-            pathToRelationship.map(toLowerCase)
+            pathToRelationship.map(toLowerCase),
           );
           return subArrayPosition === -1
             ? undefined
             : mappingPath.slice(0, subArrayPosition);
-        })
+        }),
       ),
     }))
     .filter(
-      ({ matchedPathsToRelationship }) => matchedPathsToRelationship.length > 0
+      ({ matchedPathsToRelationship }) => matchedPathsToRelationship.length > 0,
     );
 
 /** Find the index of a subArray in array. On failure returns -1 */
@@ -86,7 +86,7 @@ const filterSplitMappingPaths = (
   matchedLocalityGroups: RA<
     LocalityPinFields & { readonly matchedPathsToRelationship: RA<MappingPath> }
   >,
-  splitMappingPaths: SplitMappingPaths
+  splitMappingPaths: SplitMappingPaths,
 ): RA<SplitMappingPathWithFieldName> =>
   filterArray(
     matchedLocalityGroups.flatMap(
@@ -99,24 +99,24 @@ const filterSplitMappingPaths = (
                   mappingPathToString(splitMappingPath.canonicalMappingPath) ===
                   mappingPathToString([
                     ...mappingPath.filter(
-                      (mappingPathPart) => mappingPathPart !== ''
+                      (mappingPathPart) => mappingPathPart !== '',
                     ),
                     ...pathToField,
-                  ])
+                  ]),
               )
               .map((splitMappingPath) => ({
                 ...splitMappingPath,
                 fieldName: mappingPathToString(
-                  splitMappingPath.mappingPath.slice(-pathToField.length)
+                  splitMappingPath.mappingPath.slice(-pathToField.length),
                 ),
-              }))
-          )
-        )
-    )
+              })),
+          ),
+        ),
+    ),
   );
 
 function groupLocalityColumns(
-  splitMappingPaths: RA<SplitMappingPathWithFieldName>
+  splitMappingPaths: RA<SplitMappingPathWithFieldName>,
 ): RA<IR<string>> {
   const groupedLocalityColumns: R<R<string>> = {};
   const globalLocalityColumns: R<string> = {};
@@ -125,7 +125,7 @@ function groupLocalityColumns(
     if (indexOfLocality === -1) globalLocalityColumns[fieldName] = headerName;
     else {
       const groupName = mappingPathToString(
-        mappingPath.slice(0, indexOfLocality)
+        mappingPath.slice(0, indexOfLocality),
       );
       groupedLocalityColumns[groupName] ??= {};
       groupedLocalityColumns[groupName][fieldName] = headerName;
@@ -138,24 +138,25 @@ function groupLocalityColumns(
 }
 
 const filterInvalidLocalityColumnGroups = (
-  localityColumnGroups: RA<IR<string>>
+  localityColumnGroups: RA<IR<string>>,
 ): RA<IR<string>> =>
   localityColumnGroups.filter((localityColumnGroups) =>
     requiredLocalityColumns.every(
-      (requiredLocalityColumn) => requiredLocalityColumn in localityColumnGroups
-    )
+      (requiredLocalityColumn) =>
+        requiredLocalityColumn in localityColumnGroups,
+    ),
   );
 
 const findLocalityColumns = (
-  splitMappingPaths: SplitMappingPaths
+  splitMappingPaths: SplitMappingPaths,
 ): RA<IR<string>> =>
   filterInvalidLocalityColumnGroups(
     groupLocalityColumns(
       filterSplitMappingPaths(
         matchLocalityPinFields(splitMappingPaths),
-        splitMappingPaths
-      )
-    )
+        splitMappingPaths,
+      ),
+    ),
   );
 
 /**
@@ -164,12 +165,12 @@ const findLocalityColumns = (
  */
 export function getSelectedLocalityColumns(
   localityColumns: RA<IR<string>>,
-  selectedHeaders: RA<string>
+  selectedHeaders: RA<string>,
 ): RA<IR<string>> {
   const selectedGroups = localityColumns.filter((localityColumns) =>
     Object.values(localityColumns).some((localityColumn) =>
-      selectedHeaders.includes(localityColumn)
-    )
+      selectedHeaders.includes(localityColumn),
+    ),
   );
 
   return selectedGroups.length === 0 ? localityColumns : selectedGroups;
@@ -180,7 +181,7 @@ type SplitMappingPaths = RA<
 >;
 
 const addCanonicalMappingPaths = (
-  splitMappingPaths: RA<SplitMappingPath>
+  splitMappingPaths: RA<SplitMappingPath>,
 ): SplitMappingPaths =>
   splitMappingPaths.map(({ mappingPath, ...rest }) => ({
     ...rest,
@@ -189,7 +190,7 @@ const addCanonicalMappingPaths = (
   }));
 
 const convertToLowerCase = (
-  splitMappingPaths: RA<SplitMappingPath>
+  splitMappingPaths: RA<SplitMappingPath>,
 ): RA<SplitMappingPath> =>
   splitMappingPaths.map(({ mappingPath, ...rest }) => ({
     ...rest,
@@ -198,19 +199,19 @@ const convertToLowerCase = (
 
 export const findLocalityColumnsInDataSet = (
   baseTableName: keyof Tables,
-  splitMappingPaths: RA<SplitMappingPath>
+  splitMappingPaths: RA<SplitMappingPath>,
 ): RA<IR<string>> =>
   findLocalityColumns(
     addCanonicalMappingPaths(
-      convertToLowerCase(addBaseTableName(baseTableName, splitMappingPaths))
-    )
+      convertToLowerCase(addBaseTableName(baseTableName, splitMappingPaths)),
+    ),
   );
 
 export const getLocalitiesDataFromSpreadsheet = (
   localityColumnGroups: RA<IR<string>>,
   spreadsheetData: RA<RA<string>>,
   headers: RA<string>,
-  customRowNumbers: RA<number>
+  customRowNumbers: RA<number>,
 ): RA<LocalityData> =>
   Object.values(localityColumnGroups).flatMap((localityColumns) =>
     spreadsheetData
@@ -223,8 +224,8 @@ export const getLocalitiesDataFromSpreadsheet = (
         reshapeLocalityData({
           ...locality,
           rowNumber: { headerName: 'Row Number', value: index },
-        })
-      )
+        }),
+      ),
   );
 
 /** Aggregate tree ranks into a single full name */
@@ -236,7 +237,7 @@ function reshapeLocalityData(localityData: LocalityData): LocalityData {
     }))
     .reverse();
   const treeRanks = findRanksInMappings(
-    localityDataEntries.map(({ mappingPath }) => mappingPath)
+    localityDataEntries.map(({ mappingPath }) => mappingPath),
   );
   const aggregatedTreeRanks = treeRanks.reduce<R<Field<number | string>>>(
     (aggregated, { groupName, treeRankLocation }, index) => {
@@ -257,7 +258,7 @@ function reshapeLocalityData(localityData: LocalityData): LocalityData {
 
       return aggregated;
     },
-    {}
+    {},
   );
 
   return Object.fromEntries(
@@ -270,21 +271,21 @@ function reshapeLocalityData(localityData: LocalityData): LocalityData {
             return [mappingPathString, field] as const;
           else if (
             treeRanks.findIndex(
-              (treeRank) => treeRank.groupName === groupName
+              (treeRank) => treeRank.groupName === groupName,
             ) === index
           )
             return [mappingPathString, aggregatedTreeRanks[groupName]] as const;
           else return undefined;
         })
-        .reverse()
-    )
+        .reverse(),
+    ),
   );
 }
 
 export function getLocalityCoordinate(
   row: RA<string>,
   headers: RA<string>,
-  localityColumns: IR<string>
+  localityColumns: IR<string>,
 ): LocalityData | false {
   const getFieldCurried = (fieldName: string): Field<string> => ({
     headerName: localityColumns[fieldName],
@@ -298,6 +299,6 @@ export function getLocalityCoordinate(
   return getLocalityData(
     localityColumns,
     getFieldCurried,
-    formatCoordinateCurried
+    formatCoordinateCurried,
   );
 }

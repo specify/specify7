@@ -21,7 +21,7 @@ export const crashReportMapper: IR<
             <LogLine key={index} line={line as IR<unknown>} />
           ) : (
             <CrashReportFallback key={index} value={line} />
-          )
+          ),
         )}
       </div>
     ) : (
@@ -101,7 +101,7 @@ function resolveLogValues(rawValue: unknown): unknown {
   return consoleLog.map(({ context, ...rest }) => ({
     ...rest,
     context: Object.fromEntries(
-      Object.entries(context).map(([key, value]) => [key, resolve(value)])
+      Object.entries(context).map(([key, value]) => [key, resolve(value)]),
     ),
   }));
 }
@@ -136,10 +136,7 @@ const colorMapper = {
 function LogLine({ line }: { readonly line: IR<unknown> }): JSX.Element {
   return (
     <div
-      className={`
-        flex gap-2 p-1
-        ${colorMapper[line.type as 'info'] ?? colorMapper.info}
-      `}
+      className={`flex gap-2 p-1 ${colorMapper[line.type as 'info'] ?? colorMapper.info} `}
     >
       <div className="flex-1">
         {Array.isArray(line.message) ? (

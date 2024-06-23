@@ -19,10 +19,10 @@ export function PerformAttachmentTask({
   readonly workPromiseGenerator: (
     uploadable: PartialUploadableFileSpec,
     mockUpload: boolean,
-    triggerRetry: () => void
+    triggerRetry: () => void,
   ) => Promise<PartialUploadableFileSpec>;
   readonly onCompletedWork: (
-    uploadables: RA<PartialUploadableFileSpec>
+    uploadables: RA<PartialUploadableFileSpec>,
   ) => void;
   readonly children: (props: {
     readonly workProgress: AttachmentWorkProgress;
@@ -62,7 +62,7 @@ export function PerformAttachmentTask({
   const handleProgress = (
     postUpload: PartialUploadableFileSpec,
     currentIndex: number,
-    nextIndex: number
+    nextIndex: number,
   ) => {
     setWorkProgress((progress) => ({
       ...progress,
@@ -70,7 +70,7 @@ export function PerformAttachmentTask({
     }));
     workRef.current.mappedFiles = workRef.current.mappedFiles.map(
       (uploadble, postIndex) =>
-        postIndex === currentIndex ? postUpload : uploadble
+        postIndex === currentIndex ? postUpload : uploadble,
     );
   };
 
@@ -129,7 +129,7 @@ export function PerformAttachmentTask({
                   type: 'interrupted',
                   retryingIn: retryTimes[nextTry],
                 }));
-              }
+              },
             ).then((result) =>
               // If stopped by the user, but a new status change was reported, preserve it.
               isMocking && result.status?.type === 'matched'
@@ -142,12 +142,12 @@ export function PerformAttachmentTask({
                         : 'interruptionStopped',
                     } as const,
                   }
-                : result
+                : result,
             );
             handleProgress(
               workResult,
               currentUploadingIndex,
-              nextUploadingIndex
+              nextUploadingIndex,
             );
           }
 
@@ -161,7 +161,7 @@ export function PerformAttachmentTask({
           // TODO: Check if this is the best way of doing this. This should always be the end of the upload loop.
           resolve(undefined);
         });
-      }
+      },
     );
     return () => {
       destructorCalled = true;
@@ -192,7 +192,7 @@ export function PerformAttachmentTask({
 
 const useTimeout = (
   type: AttachmentWorkProgress['type'],
-  setWorkProgress: GetOrSet<AttachmentWorkProgress>[1]
+  setWorkProgress: GetOrSet<AttachmentWorkProgress>[1],
 ) =>
   React.useEffect(() => {
     let interval: ReturnType<typeof setInterval> | undefined;

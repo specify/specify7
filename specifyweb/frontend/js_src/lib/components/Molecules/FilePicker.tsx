@@ -38,7 +38,7 @@ export function FilePicker({
   const allowMultiple = 'onFilesSelected' in rest;
   const filePickerButton = React.useRef<HTMLButtonElement>(null);
   function handleFileSelected(
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ): void {
     if (handleFileChange(event.target.files ?? undefined))
       event.target.value = '';
@@ -66,7 +66,7 @@ export function FilePicker({
 
   const { isDragging, callbacks } = useDragDropFiles(
     handleFileChange,
-    filePickerButton
+    filePickerButton,
   );
   return (
     <label
@@ -87,18 +87,11 @@ export function FilePicker({
         onChange={handleFileSelected}
       />
       <span
-        className={`
-          align-center flex justify-center text-center normal-case
-          ${className.secondaryButton}
-          ${className.niceButton}
-          ${containerClassName}
-          ${
-            isDragging
-              ? 'ring-brand-200 dark:ring-brand-400 bg-white ring dark:bg-neutral-700'
-              : ''
-          }
-          ${isFocused ? '!ring ring-blue-500' : ''}
-        `}
+        className={`align-center flex justify-center text-center normal-case ${className.secondaryButton} ${className.niceButton} ${containerClassName} ${
+          isDragging
+            ? 'bg-white ring ring-brand-200 dark:bg-neutral-700 dark:ring-brand-400'
+            : ''
+        } ${isFocused ? '!ring ring-blue-500' : ''} `}
         ref={filePickerButton}
       >
         <span>
@@ -137,7 +130,7 @@ export function FilePicker({
  */
 export const downloadFile = async (
   fileName: string,
-  text: string
+  text: string,
 ): Promise<void> =>
   new Promise((resolve) => {
     let fileDownloaded = false;
@@ -148,7 +141,7 @@ export const downloadFile = async (
       const element = iframe.contentWindow.document.createElement('a');
       element.setAttribute(
         'href',
-        `data:text/plain;charset=utf-8,${encodeURIComponent(text)}`
+        `data:text/plain;charset=utf-8,${encodeURIComponent(text)}`,
       );
       element.setAttribute('download', fileName);
 
@@ -171,14 +164,14 @@ export const downloadFile = async (
 
 export const fileToText = async (
   file: File,
-  encoding = 'utf-8'
+  encoding = 'utf-8',
 ): Promise<string> =>
   new Promise((resolve, reject) => {
     const fileReader = new FileReader();
     fileReader.addEventListener('load', ({ target }) =>
       typeof target?.result === 'string'
         ? resolve(target.result)
-        : reject(new Error('File is not a text file'))
+        : reject(new Error('File is not a text file')),
     );
     fileReader.addEventListener('error', () => reject(fileReader.error));
     fileReader.readAsText(file, encoding);

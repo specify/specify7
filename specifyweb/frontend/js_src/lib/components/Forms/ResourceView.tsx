@@ -78,7 +78,7 @@ export const NO_CLONE = new Set<keyof Tables>([
 export const augmentMode = (
   isReadOnly: boolean,
   isNew: boolean,
-  tableName: keyof Tables | undefined
+  tableName: keyof Tables | undefined,
 ): boolean =>
   isReadOnly ||
   tableName === undefined ||
@@ -114,7 +114,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly resource: SpecifyResource<SCHEMA> | undefined;
   readonly viewName?: string;
   readonly headerButtons?: (
-    specifyNetworkBadge: JSX.Element | undefined
+    specifyNetworkBadge: JSX.Element | undefined,
   ) => JSX.Element;
   readonly extraButtons?: JSX.Element | undefined;
   readonly deletionMessage?: string | undefined;
@@ -150,13 +150,13 @@ export function ResourceView<SCHEMA extends AnySchema>({
   const [makeFormDialogsModal] = userPreferences.use(
     'form',
     'behavior',
-    'makeFormDialogsModal'
+    'makeFormDialogsModal',
   );
 
   const isReadOnly = augmentMode(
     React.useContext(ReadOnlyContext),
     resource?.isNew() === true,
-    resource?.specifyTable.name
+    resource?.specifyTable.name,
   );
   const isInSearchDialog = React.useContext(SearchDialogContext);
   const isInFormEditor = React.useContext(InFormEditorContext);
@@ -181,7 +181,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   const [openAsReadOnly] = userPreferences.use(
     'form',
     'behavior',
-    'openAsReadOnly'
+    'openAsReadOnly',
   );
 
   const hasOwnButton =
@@ -197,7 +197,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
       openAsReadOnly &&
       hasOwnButton &&
       !resource.isNew() &&
-      !isNotReadOnlyContext
+      !isNotReadOnlyContext,
   );
 
   const navigate = useNavigate();
@@ -230,7 +230,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
           const printOnSave = userPreferences.get(
             'form',
             'preferences',
-            'printOnSave'
+            'printOnSave',
           );
           if (printOnSave[resource.specifyTable.name] === true)
             reportEvents.trigger('createReport', resource);

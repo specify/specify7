@@ -20,7 +20,7 @@ import type { SchemaData } from './schemaData';
 
 export const maxSchemaValueLength = getField(
   tables.SpLocaleItemStr,
-  'text'
+  'text',
 ).length;
 
 export function SchemaConfigTable({
@@ -37,11 +37,11 @@ export function SchemaConfigTable({
   readonly onChange: (container: SerializedResource<SpLocaleContainer>) => void;
   readonly name: NewSpLocaleItemString | SpLocaleItemString | undefined;
   readonly onChangeName: (
-    containerName: NewSpLocaleItemString | SpLocaleItemString
+    containerName: NewSpLocaleItemString | SpLocaleItemString,
   ) => void;
   readonly desc: NewSpLocaleItemString | SpLocaleItemString | undefined;
   readonly onChangeDesc: (
-    containerName: NewSpLocaleItemString | SpLocaleItemString
+    containerName: NewSpLocaleItemString | SpLocaleItemString,
   ) => void;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
@@ -124,7 +124,7 @@ function FormatterPicker({
   const formatters = Object.fromEntries(
     schemaData[kind]
       .filter(({ tableName }) => tableName === table?.name)
-      .map(({ name, title }) => [name, title] as const)
+      .map(({ name, title }) => [name, title] as const),
   );
   const formatterName = container[type];
   const navigate = useNavigate();
@@ -138,7 +138,7 @@ function FormatterPicker({
   const urlPart = type === 'format' ? 'formatter' : 'aggregator';
   const index = schemaData[kind].find(
     (formatter) =>
-      formatter.name === formatterName && formatter.tableName === table?.name
+      formatter.name === formatterName && formatter.tableName === table?.name,
   )?.index;
 
   return (
@@ -166,7 +166,7 @@ function FormatterPicker({
                 onClick={(event): void => {
                   event.preventDefault();
                   navigate(
-                    `/specify/overlay/resources/app-resource/${resourceId}/${urlPart}/${table.name}/${index}/`
+                    `/specify/overlay/resources/app-resource/${resourceId}/${urlPart}/${table.name}/${index}/`,
                   );
                 }}
               />
@@ -179,7 +179,7 @@ function FormatterPicker({
               onClick={(event): void => {
                 event.preventDefault();
                 navigate(
-                  `/specify/overlay/resources/app-resource/${resourceId}/${urlPart}/${table.name}/`
+                  `/specify/overlay/resources/app-resource/${resourceId}/${urlPart}/${table.name}/`,
                 );
               }}
             />

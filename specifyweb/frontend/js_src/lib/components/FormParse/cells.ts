@@ -39,7 +39,7 @@ import { fetchView, parseFormDefinition } from './index';
 
 /** Parse column width definitions */
 export const processColumnDefinition = (
-  columnDefinition: string
+  columnDefinition: string,
 ): RA<number | undefined> =>
   (columnDefinition.endsWith(',p:g')
     ? columnDefinition.slice(0, -1 * ',p:g'.length)
@@ -149,8 +149,8 @@ const processCellType: {
       fieldDefinition.pluginDefinition.type === 'PartialDateUI'
         ? table.getFields(
             fieldDefinition.pluginDefinition.dateFields.join(
-              backboneFieldSeparator
-            )
+              backboneFieldSeparator,
+            ),
           )
         : undefined) ?? fields;
 
@@ -191,7 +191,7 @@ const processCellType: {
     icon: getParsedAttribute(cell, 'icon'),
     forClass: f.maybe(
       getParsedAttribute(cell, 'forClass'),
-      (forClass) => getTable(forClass)?.name
+      (forClass) => getTable(forClass)?.name,
     ),
   }),
   async SubView({ cell, table, getProperty }) {
@@ -203,7 +203,7 @@ const processCellType: {
         {
           cell,
           table,
-        }
+        },
       );
       return { type: 'Blank' };
     }
@@ -223,7 +223,7 @@ const processCellType: {
     const rawSortField = getProperty('sortField');
     const parsedSort = f.maybe(rawSortField, toLargeSortConfig);
     const sortFields = relationship!.relatedTable.getFields(
-      parsedSort?.fieldNames.join(backboneFieldSeparator) ?? ''
+      parsedSort?.fieldNames.join(backboneFieldSeparator) ?? '',
     );
 
     const viewName = getParsedAttribute(cell, 'viewName');
@@ -234,15 +234,15 @@ const processCellType: {
       viewName === undefined
         ? viewName
         : await fetchView(viewName).then(
-            (view) => view?.defaultSubviewFormType
+            (view) => view?.defaultSubviewFormType,
           );
 
     const formType =
       rawFormType === undefined
         ? defaultFormType ?? 'form'
         : rawFormType === 'table'
-        ? 'formTable'
-        : 'form';
+          ? 'formTable'
+          : 'form';
 
     return {
       type: 'SubView',
@@ -288,7 +288,7 @@ const processCellType: {
   Blank: async () => ({ type: 'Blank' }),
   Unsupported: async ({ cell }) => {
     console.warn(
-      `Unsupported cell type: ${getParsedAttribute(cell, 'type') ?? '(null)'}`
+      `Unsupported cell type: ${getParsedAttribute(cell, 'type') ?? '(null)'}`,
     );
     return {
       type: 'Unsupported',
@@ -299,11 +299,11 @@ const processCellType: {
 
 export type FormCellDefinition = ValueOf<CellTypes> & {
   readonly id: string | undefined;
-  readonly align: typeof cellAlign[number];
+  readonly align: (typeof cellAlign)[number];
   readonly colSpan: number;
   readonly visible: boolean;
   readonly ariaLabel: LocalizedString | undefined;
-  readonly verticalAlign: typeof cellVerticalAlign[number];
+  readonly verticalAlign: (typeof cellVerticalAlign)[number];
 };
 
 const cellTypeTranslation: IR<keyof CellTypes> = {
@@ -323,7 +323,7 @@ const cellTypeTranslation: IR<keyof CellTypes> = {
  */
 export async function parseFormCell(
   table: SpecifyTable,
-  cellNode: SimpleXmlNode
+  cellNode: SimpleXmlNode,
 ): Promise<FormCellDefinition> {
   const cellClass = getParsedAttribute(cellNode, 'type') ?? '';
   const cellType = cellTypeTranslation[cellClass.toLowerCase()];
@@ -337,7 +337,7 @@ export async function parseFormCell(
 
   const parsedCell = processCellType[cellType] ?? processCellType.Unsupported;
   const properties = parseSpecifyProperties(
-    getAttribute(cellNode, 'initialize') ?? ''
+    getAttribute(cellNode, 'initialize') ?? '',
   );
   const getProperty = (name: string): string | undefined =>
     properties[name.toLowerCase()];
@@ -351,13 +351,13 @@ export async function parseFormCell(
     align: f.includes(cellAlign, align)
       ? align
       : cellType === 'Label'
-      ? 'right'
-      : 'left',
+        ? 'right'
+        : 'left',
     verticalAlign: f.includes(cellVerticalAlign, verticalAlign)
       ? verticalAlign
       : cellType === 'SubView'
-      ? 'stretch'
-      : 'center',
+        ? 'stretch'
+        : 'center',
     /*
      * Specify 6 has `initialize="visible=false"` and
      * `initialize="vis=false"` attributes for some cell definitions.

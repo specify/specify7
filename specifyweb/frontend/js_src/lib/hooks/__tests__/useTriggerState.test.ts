@@ -56,7 +56,7 @@ test('Change state in response to defaultValue change', () => {
     ({ value }) => useTriggerState(value),
     {
       initialProps: { value: initialValue },
-    }
+    },
   );
 
   expect(result.current[0]).toBe(initialValue);

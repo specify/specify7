@@ -104,9 +104,9 @@ export function HeaderItemsPreferenceItem({
             .flatMap((entries) => Object.values(entries))
             .flat()
             .filter(
-              ({ name }) => !menuItems.some((item) => item.name === name)
+              ({ name }) => !menuItems.some((item) => item.name === name),
             ),
-    [rawUserTools, menuItems]
+    [rawUserTools, menuItems],
   );
 
   const defaultItems = rawMenuItems?.map(({ name }) => name) ?? [];
@@ -145,7 +145,7 @@ export function OrderPicker<SCHEMA extends AnySchema>({
   readonly onChange: (
     order:
       | `-${string & keyof SCHEMA['fields']}`
-      | (string & keyof SCHEMA['fields'])
+      | (string & keyof SCHEMA['fields']),
   ) => void;
 }): JSX.Element {
   return (
@@ -163,7 +163,7 @@ export function OrderPicker<SCHEMA extends AnySchema>({
              * "order === name" is necessary in case Accession.timestampCreated
              * is a hidden field in the schema
              */
-            ({ isHidden, name }) => !isHidden || order === name
+            ({ isHidden, name }) => !isHidden || order === name,
           )
           .map(({ name, label }) => (
             <option key={name} value={name}>
@@ -205,7 +205,7 @@ export function FontFamilyPreferenceItem({
         data: item,
       })),
     ],
-    []
+    [],
   );
   const isReadOnly = React.useContext(ReadOnlyContext);
   return isReadOnly ? (
@@ -302,7 +302,7 @@ export function DefaultPreferenceItemRender({
       : undefined;
   const validationAttributes = React.useMemo(
     () => f.maybe(parser, getValidationAttributes),
-    [parser]
+    [parser],
   );
   const { validationRef, inputRef, setValidation } = useValidation();
   const [internalValue, setInternalValue] = useTriggerState(value);
@@ -332,7 +332,7 @@ export function DefaultPreferenceItemRender({
         definition.values.find((item) => item.value === value).description,
         (description) => (
           <p>{description}</p>
-        )
+        ),
       )}
     </>
   ) : parser?.type === 'checkbox' ? (

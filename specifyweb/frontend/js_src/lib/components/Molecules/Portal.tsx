@@ -19,7 +19,7 @@ export function Portal({
 }): JSX.Element {
   const element = React.useMemo(
     () => defaultElement ?? document.createElement('div'),
-    [defaultElement]
+    [defaultElement],
   );
 
   React.useEffect(() => {

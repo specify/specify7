@@ -25,7 +25,7 @@ export function AddStatPage({
     | ((
         item: CustomStat | DefaultStat,
         categoryIndex?: number,
-        itemIndex?: number
+        itemIndex?: number,
       ) => void)
     | ((item: CustomStat | DefaultStat) => void);
   readonly onLoad:
@@ -33,7 +33,7 @@ export function AddStatPage({
         pageIndex: number,
         categoryIndex: number,
         itemIndex: number,
-        value: number | string
+        value: number | string,
       ) => void)
     | undefined;
 }): JSX.Element {
@@ -41,7 +41,7 @@ export function AddStatPage({
     (categoryIndex: number, itemIndex: number, value: number | string) => {
       onLoad?.(pageIndex, categoryIndex, itemIndex, value);
     },
-    [onLoad, pageIndex]
+    [onLoad, pageIndex],
   );
   return (
     <li key={pageIndex}>

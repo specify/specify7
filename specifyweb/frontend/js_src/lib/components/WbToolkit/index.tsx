@@ -43,14 +43,14 @@ export function WbToolkit({
     const delimiter = userPreferences.get(
       'workBench',
       'editor',
-      'exportFileDelimiter'
+      'exportFileDelimiter',
     );
 
     downloadDataSet(
       dataset.name,
       dataset.rows,
       dataset.columns,
-      delimiter
+      delimiter,
     ).catch(raise);
   };
 

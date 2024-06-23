@@ -12,7 +12,7 @@ export const schemaLocalizationFile = 'schema_localization.xml';
 export async function gatherSchemaLocalization(
   // If undefined, won't emit files
   weblateDirectory: string | undefined,
-  configDirectory: string
+  configDirectory: string,
 ): Promise<{
   readonly dictionaries: DictionaryUsages;
   readonly languages: RA<string>;
@@ -27,7 +27,7 @@ export async function gatherSchemaLocalization(
   if (filePaths.length === 0) {
     console.error(
       'Unable to find any localization files. Make sure you are running from ' +
-        'specify6/config directory'
+        'specify6/config directory',
     );
     // eslint-disable-next-line require-atomic-updates
     process.exitCode = 1;
@@ -44,11 +44,11 @@ export async function gatherSchemaLocalization(
             nodeParseXml(
               (
                 await fs.promises.readFile(path.join(configDirectory, filePath))
-              ).toString()
-            )
+              ).toString(),
+            ),
           ),
-        ] as const
-    )
+        ] as const,
+    ),
   );
 
   if (typeof weblateDirectory === 'string')
@@ -61,22 +61,22 @@ export async function gatherSchemaLocalization(
   const languages = Array.from(
     new Set(
       parsed.flatMap(([_, parsed]) =>
-        Object.values(parsed).flatMap(({ strings }) => Object.keys(strings))
-      )
-    )
+        Object.values(parsed).flatMap(({ strings }) => Object.keys(strings)),
+      ),
+    ),
   );
 
   const dictionaries = await Promise.all(
     parsed.map(async ([filePath, parsed]) =>
-      schemaToPoFile(parsed, languages, weblateDirectory, filePath)
-    )
+      schemaToPoFile(parsed, languages, weblateDirectory, filePath),
+    ),
   );
 
   return {
     dictionaries: Object.fromEntries(
       dictionaries.map(
-        (dictionary) => [dictionary.categoryName, dictionary] as const
-      )
+        (dictionary) => [dictionary.categoryName, dictionary] as const,
+      ),
     ),
     languages,
   };
@@ -86,7 +86,7 @@ export async function gatherSchemaLocalization(
 async function searchFiles(
   directory: string,
   fileName: string,
-  originalDirectory = directory
+  originalDirectory = directory,
 ): Promise<RA<string>> {
   const files = await fs.promises.readdir(directory, { withFileTypes: true });
   const fileNames = await Promise.all(
@@ -97,7 +97,7 @@ async function searchFiles(
       else if (file.name === fileName)
         return [path.relative(originalDirectory, fullPath)];
       else return [];
-    })
+    }),
   );
   return fileNames.flat();
 }

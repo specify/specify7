@@ -18,12 +18,12 @@ export const typeSearchesSpec = f.store(() =>
         pipe(
           syncers.object(typeSearchSpec()),
           syncer(postProcessTypeSearch, (_typeSearch) =>
-            error('Reverse type search syncer is not implemented')
-          )
-        )
-      )
+            error('Reverse type search syncer is not implemented'),
+          ),
+        ),
+      ),
     ),
-  })
+  }),
 );
 
 export type TypeSearch = Exclude<
@@ -44,7 +44,7 @@ export function postProcessTypeSearch({
       .map(
         typeof query === 'string' && query.length > 0
           ? columnToFieldMapper(query)
-          : f.id
+          : f.id,
       ) ?? [];
   const parsedSearchFields = rawSearchFieldsNames
     .map((searchField) => table.getFields(searchField) ?? [])
@@ -62,8 +62,8 @@ export function postProcessTypeSearch({
         filterArray([
           field.table === table ? undefined : field.table.label,
           field.label,
-        ]).join(' / ')
-      )
+        ]).join(' / '),
+      ),
     );
 
   return {
@@ -81,26 +81,26 @@ const typeSearchSpec = f.store(() =>
   createXmlSpec({
     name: pipe(
       syncers.xmlAttribute('name', 'required'),
-      syncers.default(localized(''))
+      syncers.default(localized('')),
     ),
     table: pipe(
       syncers.xmlAttribute('tableId', 'required'),
       syncers.maybe(syncers.toDecimal),
-      syncers.maybe(syncers.tableId)
+      syncers.maybe(syncers.tableId),
     ),
     // Sp6 concatenates this into SQL. Vulnerable to SQL injection
     searchFields: pipe(
       syncers.xmlAttribute('searchField', 'required'),
-      syncers.maybe(syncers.split(','))
+      syncers.maybe(syncers.split(',')),
     ),
     // Sp6 concatenates this into SQL. Vulnerable to SQL injection
     displayFields: pipe(
       syncers.xmlAttribute('displayCols', 'required'),
-      syncers.maybe(syncers.split(','))
+      syncers.maybe(syncers.split(',')),
     ),
     format: syncers.xmlAttribute('format', 'empty', false),
     formatter: syncers.xmlAttribute('dataObjFormatter', 'empty'),
     // Sp6 executes this query directly. Quite vulnerable
     query: syncers.xmlContent,
-  })
+  }),
 );

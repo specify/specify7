@@ -25,15 +25,15 @@ export const fetchLegacyForms = f.store(
       .then(async ([{ data }]) =>
         Promise.all(
           xmlToSpec(data, dataEntryItems()).items.map(async ({ viewName }) =>
-            f.maybe(viewName, resolveTable)
-          )
-        )
+            f.maybe(viewName, resolveTable),
+          ),
+        ),
       )
-      .then(filterArray)
+      .then(filterArray),
 );
 
 async function resolveTable(
-  viewName: string
+  viewName: string,
 ): Promise<SpecifyTable | undefined> {
   const table = getTable(viewName);
   if (typeof table === 'object') return table;

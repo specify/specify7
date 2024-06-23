@@ -171,7 +171,7 @@ export function UiCommand({
 }): JSX.Element | null {
   const Command = commandRenderers[
     commandDefinition.type
-  ] as typeof commandRenderers['GenerateLabel'];
+  ] as (typeof commandRenderers)['GenerateLabel'];
   return (
     <Command
       commandDefinition={commandDefinition as UiCommands['GenerateLabel']}

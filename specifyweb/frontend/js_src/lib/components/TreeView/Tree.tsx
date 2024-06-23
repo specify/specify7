@@ -75,42 +75,36 @@ export function Tree<SCHEMA extends AnyTree>({
   const [treeAccentColor] = userPreferences.use(
     'treeEditor',
     treeToPref[tableName],
-    'treeAccentColor'
+    'treeAccentColor',
   );
 
   const id = useId('tree-view');
 
   const [collapsedRanks, setCollapsedRanks] = useCachedState(
     'tree',
-    `collapsedRanks${tableName}`
+    `collapsedRanks${tableName}`,
   );
 
   const [synonymColor] = userPreferences.use(
     'treeEditor',
     treeToPref[tableName],
-    'synonymColor'
+    'synonymColor',
   );
 
   const statsThreshold = getPref(
-    `TreeEditor.Rank.Threshold.${tableName as 'Geography'}`
+    `TreeEditor.Rank.Threshold.${tableName as 'Geography'}`,
   );
   const getStats = React.useCallback(
     async (nodeId: number | 'null', rankId: number): Promise<Stats> =>
       rankId >= statsThreshold
         ? fetchStats(`${baseUrl}/${nodeId}/stats/`)
         : Promise.resolve({}),
-    [baseUrl, statsThreshold]
+    [baseUrl, statsThreshold],
   );
 
   return (
     <div
-      className={`
-        grid-table h-full flex-1 grid-cols-[repeat(var(--cols),auto)] 
-        content-start overflow-auto rounded border border-2
-        border-[var(--edge-color)] from-[var(--edge-color)] via-[var(--middle-color)] to-[var(--edge-color)]
-        p-1 pt-0 outline-none
-        ${highContrast ? 'border dark:border-white' : 'bg-gradient-to-bl'}
-      `}
+      className={`grid-table h-full flex-1 grid-cols-[repeat(var(--cols),auto)] content-start overflow-auto rounded border border-2 border-[var(--edge-color)] from-[var(--edge-color)] via-[var(--middle-color)] to-[var(--edge-color)] p-1 pt-0 outline-none ${highContrast ? 'border dark:border-white' : 'bg-gradient-to-bl'} `}
       role="none table"
       // First role is for screen readers. Second is for styling
       style={
@@ -132,7 +126,7 @@ export function Tree<SCHEMA extends AnyTree>({
         setFocusPath([-1]);
         globalThis.setTimeout(
           () => setFocusPath(focusPath.length > 0 ? focusPath : [0]),
-          0
+          0,
         );
       }}
     >
@@ -142,13 +136,7 @@ export function Tree<SCHEMA extends AnyTree>({
             const rankName = rank.title || rank.name;
             return (
               <div
-                className={`dark:brightness-125" sticky top-0 mt-1
-                  flex gap-1 whitespace-nowrap 
-                  border border-transparent border-b-[color:var(--accent-color-300)] 
-                  bg-[color:var(--background)] p-2 p-2 brightness-95
-                  ${index === 0 ? 'rounded-tl-md' : ''}
-                  ${index + 1 === length ? 'rounded-tr-md' : ''}
-              `}
+                className={`dark:brightness-125" sticky top-0 mt-1 flex gap-1 whitespace-nowrap border border-transparent border-b-[color:var(--accent-color-300)] bg-[color:var(--background)] p-2 brightness-95 ${index === 0 ? 'rounded-tl-md' : ''} ${index + 1 === length ? 'rounded-tr-md' : ''} `}
                 key={index}
                 role="columnheader"
               >
@@ -163,7 +151,7 @@ export function Tree<SCHEMA extends AnyTree>({
                     {isEditingRanks &&
                     hasTablePermission(
                       treeDefinitionItems[0]._tableName,
-                      'create'
+                      'create',
                     ) ? (
                       <AddRank treeDefinitionItems={treeDefinitionItems} />
                     ) : null}
@@ -173,7 +161,7 @@ export function Tree<SCHEMA extends AnyTree>({
                   id={id(rank.rankId.toString())}
                   onClick={(): void =>
                     setCollapsedRanks(
-                      toggleItem(collapsedRanks ?? [], rank.rankId)
+                      toggleItem(collapsedRanks ?? [], rank.rankId),
                     )
                   }
                 >

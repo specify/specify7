@@ -50,13 +50,13 @@ export const statsSpecTest: StatsSpec = {
                         readonly lots: number;
                         readonly total: number;
                       }
-                    | undefined
+                    | undefined,
                 ) =>
                   prep === undefined
                     ? undefined
                     : showPreparationsTotal
-                    ? `${formatNumber(prep.lots)} / ${formatNumber(prep.total)}`
-                    : formatNumber(prep.lots),
+                      ? `${formatNumber(prep.lots)} / ${formatNumber(prep.total)}`
+                      : formatNumber(prep.lots),
             },
           },
         },

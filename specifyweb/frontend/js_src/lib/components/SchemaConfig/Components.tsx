@@ -29,7 +29,7 @@ export function SchemaConfigHeader({
         {localized(
           `${schemaText.schemaConfig()} (${
             languages[language]?.replaceAll(/[()]/gu, '') ?? language
-          })`
+          })`,
         )}
       </H2>
       <Button.Small
@@ -84,7 +84,7 @@ export function PickList({
             .flatMap((group) =>
               Array.isArray(group)
                 ? group.map(([name]) => name)
-                : Object.keys(group)
+                : Object.keys(group),
             )
             .includes(value) ? undefined : (
             <option value={value}>{`${queryText.invalidPicklistValue({

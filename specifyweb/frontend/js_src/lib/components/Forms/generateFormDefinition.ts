@@ -23,13 +23,13 @@ export function autoGenerateViewDefinition<SCHEMA extends AnySchema>(
   table: SpecifyTable<SCHEMA>,
   formType: FormType,
   mode: FormMode,
-  fieldsToShow: RA<TableFields<SCHEMA>> = getFieldsForAutoView(table, [])
+  fieldsToShow: RA<TableFields<SCHEMA>> = getFieldsForAutoView(table, []),
 ): ViewDescription {
   return {
     ...(formType === 'form' ? generateForm : generateFormTable)(
       table,
       mode,
-      fieldsToShow
+      fieldsToShow,
     ),
     name: '',
     formType,
@@ -45,13 +45,13 @@ export function autoGenerateViewDefinition<SCHEMA extends AnySchema>(
  */
 export function getFieldsForAutoView<SCHEMA extends AnySchema>(
   table: SpecifyTable<SCHEMA>,
-  fieldsToSkip: RA<TableFields<SCHEMA>>
+  fieldsToSkip: RA<TableFields<SCHEMA>>,
 ): RA<TableFields<SCHEMA>> {
   const baseFields = table.literalFields
     .filter((field) => !fieldsToSkip.includes(field.name))
     .sort(sortFunction(({ isRequired }) => isRequired, true));
   const filteredFields = baseFields.filter(
-    (field) => !field.isHidden && !field.isReadOnly
+    (field) => !field.isHidden && !field.isReadOnly,
   );
   // BUG: if displayed as a dependent sub view, should hide relationship to parent
   const relationships = table.relationships
@@ -60,7 +60,7 @@ export function getFieldsForAutoView<SCHEMA extends AnySchema>(
         !field.isHidden &&
         !field.isReadOnly &&
         !fieldsToSkip.includes(field.name) &&
-        (field.isRequired || field.isDependent())
+        (field.isRequired || field.isDependent()),
     )
     .sort(sortFunction(({ isRequired }) => isRequired, true));
   // Hide hidden fields, unless all fields are hidden
@@ -74,13 +74,13 @@ export function getFieldsForAutoView<SCHEMA extends AnySchema>(
 function generateFormTable(
   model: SpecifyTable,
   _mode: FormMode,
-  fieldsToShow: RA<string>
+  fieldsToShow: RA<string>,
 ): ParsedFormDefinition {
   const fields = fieldsToShow
     .map((fieldName) => model.strictGetField(fieldName))
     .filter(
       (field): field is LiteralField =>
-        !field.isRelationship && !field.isHidden && !field.isReadOnly
+        !field.isRelationship && !field.isHidden && !field.isReadOnly,
     );
   return {
     columns: Array.from(fields).fill(undefined),
@@ -106,14 +106,14 @@ const cellAttributes = {
 function generateForm(
   table: SpecifyTable,
   mode: FormMode,
-  fieldsToShow: RA<string>
+  fieldsToShow: RA<string>,
 ): ParsedFormDefinition {
   const allFields = fieldsToShow.map((fieldName) =>
-    table.strictGetField(fieldName)
+    table.strictGetField(fieldName),
   );
   const [fields, relationships] = split<LiteralField, Relationship>(
     allFields,
-    (field) => field.isRelationship
+    (field) => field.isRelationship,
   );
   const skipLabels =
     fields.length === 0 ||
@@ -153,7 +153,7 @@ function generateForm(
                   id: field.name,
                 },
               ],
-            ] as const
+            ] as const,
         )
         .flatMap(([label, field]) => [
           // Remove redundant labels from checkboxes
@@ -173,7 +173,7 @@ function generateForm(
           ],
       ...relationships
         .filter(({ relatedTable }) =>
-          hasTablePermission(relatedTable.name, 'read')
+          hasTablePermission(relatedTable.name, 'read'),
         )
         .flatMap(
           (field) =>
@@ -223,7 +223,7 @@ function generateForm(
                       viewName: undefined,
                     } as const),
               ],
-            ] as const
+            ] as const,
         ),
     ]),
   };
@@ -233,7 +233,7 @@ function generateForm(
  * Generate definition for a non-relationship field
  */
 function getFieldDefinition(
-  field: LiteralField
+  field: LiteralField,
 ): CellTypes['Field'] & FormCellDefinition {
   const parser = resolveParser(field);
   // FEATURE: render date fields using Partial Date UI
@@ -253,26 +253,26 @@ function getFieldDefinition(
             printOnSave: false,
           }
         : typeof parser.pickListName === 'string'
-        ? {
-            type: 'ComboBox',
-            defaultValue: undefined,
-            pickList: parser.pickListName,
-          }
-        : field.type === 'text'
-        ? {
-            type: 'TextArea',
-            defaultValue: undefined,
-            rows: undefined,
-          }
-        : {
-            type: 'Text',
-            defaultValue: undefined,
-            min: parser.min,
-            max: parser.max,
-            step: parser.step,
-            minLength: parser.minLength,
-            maxLength: parser.maxLength,
-          }),
+          ? {
+              type: 'ComboBox',
+              defaultValue: undefined,
+              pickList: parser.pickListName,
+            }
+          : field.type === 'text'
+            ? {
+                type: 'TextArea',
+                defaultValue: undefined,
+                rows: undefined,
+              }
+            : {
+                type: 'Text',
+                defaultValue: undefined,
+                min: parser.min,
+                max: parser.max,
+                step: parser.step,
+                minLength: parser.minLength,
+                maxLength: parser.maxLength,
+              }),
     },
   };
 }

@@ -50,16 +50,16 @@ const dependentFieldSeeker = (suffix: string): IR<string> =>
   Object.fromEntries(
     Object.values(genericTables)
       .flatMap(({ literalFields }) =>
-        literalFields.filter((v) => v.name.toLowerCase().endsWith(suffix))
+        literalFields.filter((v) => v.name.toLowerCase().endsWith(suffix)),
       )
       .map(
         (v) =>
           [
             v.name,
             v.table.getField(v.name.slice(0, -suffix.length))?.name,
-          ] as const
+          ] as const,
       )
-      .filter(([_dependent, source]) => typeof source === 'string')
+      .filter(([_dependent, source]) => typeof source === 'string'),
   ) as IR<string>;
 
 export const strictDependentFields = f.store<IR<string>>(() => ({
@@ -97,7 +97,7 @@ export function CarryForwardConfig({
   const [globalEnabled, setGlobalEnabled] = userPreferences.use(
     'form',
     'preferences',
-    'enableCarryForward'
+    'enableCarryForward',
   );
   const isEnabled = globalEnabled.includes(table.name);
   const canChange = !NO_CLONE.has(table.name);
@@ -154,18 +154,18 @@ function CarryForwardConfigDialog({
   const [showHiddenFields, setShowHiddenFields] = userPreferences.use(
     'form',
     'preferences',
-    'carryForwardShowHidden'
+    'carryForwardShowHidden',
   );
 
   const [globalConfig, setGlobalConfig] = userPreferences.use(
     'form',
     'preferences',
-    'carryForward'
+    'carryForward',
   );
 
   const uniqueFields = getUniqueFields(table);
   const defaultConfig = getFieldsToClone(table).filter(
-    (fieldName) => !uniqueFields.includes(fieldName)
+    (fieldName) => !uniqueFields.includes(fieldName),
   );
   const isDefaultConfig = (fields: RA<string>): boolean =>
     JSON.stringify(normalize(fields)) ===
@@ -173,7 +173,7 @@ function CarryForwardConfigDialog({
 
   const config =
     (globalConfig[table.name] as RA<string> | undefined)?.filter(
-      (fieldName) => !uniqueFields.includes(fieldName)
+      (fieldName) => !uniqueFields.includes(fieldName),
     ) ?? defaultConfig;
 
   const handleChange = (fields: RA<string>): void =>
@@ -187,16 +187,16 @@ function CarryForwardConfigDialog({
       filterArray(
         parentTable?.relationships
           .filter(({ relatedTable }) => relatedTable === table)
-          .flatMap(({ otherSideName }) => otherSideName) ?? []
+          .flatMap(({ otherSideName }) => otherSideName) ?? [],
       ),
-    [parentTable, table]
+    [parentTable, table],
   );
 
   const literalFields = table.literalFields.filter(
     ({ name, overrides, isVirtual }) =>
       !isVirtual &&
       (!overrides.isHidden || showHiddenFields) &&
-      !invisibleCarry.has(name)
+      !invisibleCarry.has(name),
   );
   const relationships = table.relationships.filter(
     (field) =>
@@ -204,7 +204,7 @@ function CarryForwardConfigDialog({
       !field.isVirtual &&
       (!field.overrides.isHidden || showHiddenFields) &&
       (field.isDependent() || !relationshipIsToMany(field)) &&
-      !invisibleCarry.has(field.name)
+      !invisibleCarry.has(field.name),
   );
 
   const id = useId('form-carry-forward');
@@ -223,9 +223,9 @@ function CarryForwardConfigDialog({
                         ({ name, isVirtual, overrides }) =>
                           !isVirtual &&
                           !reverseRelationships.includes(name) &&
-                          (!overrides.isHidden || config.includes(name))
+                          (!overrides.isHidden || config.includes(name)),
                       )
-                      .map(({ name }) => name)
+                      .map(({ name }) => name),
               )
             }
           >
@@ -244,9 +244,9 @@ function CarryForwardConfigDialog({
                           !isVirtual &&
                           !reverseRelationships.includes(name) &&
                           overrides.isHidden &&
-                          config.includes(name)
+                          config.includes(name),
                       )
-                      .map(({ name }) => name)
+                      .map(({ name }) => name),
               )
             }
           >
@@ -330,15 +330,15 @@ function CarryForwardCategory({
                     const dependents = filterArray(
                       Object.entries(dependentFields())
                         .filter(([_dependent, source]) => source === field.name)
-                        .map(([dependent]) => table.getField(dependent)?.name)
+                        .map(([dependent]) => table.getField(dependent)?.name),
                     );
                     handleChange(
                       isChecked
                         ? f.unique([...carryForward, field.name, ...dependents])
                         : carryForward.filter(
                             (name) =>
-                              name !== field.name && !dependents.includes(name)
-                          )
+                              name !== field.name && !dependents.includes(name),
+                          ),
                     );
                   }}
                 />

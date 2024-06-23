@@ -63,20 +63,20 @@ export function MissingAgentsDialog({
                   division,
                   isRequired:
                     response.MissingAgentForAccessibleCollection?.all_accessible_divisions.includes(
-                      divisionId
+                      divisionId,
                     ) === true,
                   ...rest,
-                }))
-              )
+                })),
+              ),
             ).then((userAgents) =>
               Array.from(userAgents).sort(
-                sortFunction(({ division }) => division.name)
-              )
+                sortFunction(({ division }) => division.name),
+              ),
             )
           : undefined,
-      [userAgents, response]
+      [userAgents, response],
     ),
-    true
+    true,
   );
 
   const isReadOnly =
@@ -115,15 +115,15 @@ export function MissingAgentsDialog({
                   headers: {},
                   body: filterArray(
                     userAgents!.map(({ address }) =>
-                      idFromUrl(address.get('agent') ?? '')
-                    )
+                      idFromUrl(address.get('agent') ?? ''),
+                    ),
                   ),
                   expectedErrors: [Http.BAD_REQUEST],
                 }).then(({ data, status }) =>
                   status === Http.BAD_REQUEST
                     ? setResponse(JSON.parse(data))
-                    : handleClose()
-                )
+                    : handleClose(),
+                ),
               )
         }
       >
@@ -147,7 +147,7 @@ export function MissingAgentsDialog({
               />
               {f.includes(
                 response.AgentInUseException ?? [],
-                idFromUrl(address.get('agent') ?? '')
+                idFromUrl(address.get('agent') ?? ''),
               ) && (
                 <ErrorMessage className="mt-2">
                   {userText.agentInUse()}

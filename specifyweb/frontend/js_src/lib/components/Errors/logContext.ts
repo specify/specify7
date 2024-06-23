@@ -43,14 +43,14 @@ export const pushContext = (part: LogPathPart): void =>
   modifyContext((path) => [...path, part]);
 
 function modifyContext(
-  callback: (path: RA<BasePathPart>) => RA<BasePathPart>
+  callback: (path: RA<BasePathPart>) => RA<BasePathPart>,
 ): void {
   const rawPath = getLogContext()[pathKey] ?? [];
   const path: RA<BasePathPart> = Array.isArray(rawPath)
     ? rawPath
     : rawPath === undefined
-    ? []
-    : [rawPath];
+      ? []
+      : [rawPath];
   const newPath = callback(path);
   setLogContext({
     ...getLogContext(),
@@ -66,7 +66,7 @@ export const addContext = (data: IR<unknown>): void =>
         ...path.at(-1)?.extras,
         ...data,
       },
-    })
+    }),
   );
 
 export const pathKey = 'path';
@@ -96,10 +96,10 @@ export function deduplicateLogContext(log: RA<LogMessage>): {
       if (typeof value !== 'object' || value === null) return;
       if (Array.isArray(value))
         value.forEach((item) =>
-          typeof item === 'object' ? cache(value) : undefined
+          typeof item === 'object' ? cache(value) : undefined,
         );
       else cache(value);
-    })
+    }),
   );
 
   const sharedLogContext = Array.from(map.entries())
@@ -117,7 +117,7 @@ export function deduplicateLogContext(log: RA<LogMessage>): {
   const newLog = log.map(({ context, ...rest }) => ({
     ...rest,
     context: Object.fromEntries(
-      Object.entries(context).map(([key, value]) => [key, replace(value)])
+      Object.entries(context).map(([key, value]) => [key, replace(value)]),
     ),
   }));
 

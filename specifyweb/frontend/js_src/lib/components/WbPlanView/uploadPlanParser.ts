@@ -52,15 +52,15 @@ const parseColumnOptions = (matchingOptions: ColumnOptions): ColumnOptions => ({
   ...defaultColumnOptions,
   ...(Object.fromEntries(
     Object.entries(matchingOptions).filter(
-      ([optionName]) => optionName in defaultColumnOptions
-    )
+      ([optionName]) => optionName in defaultColumnOptions,
+    ),
   ) as Partial<ColumnOptions>),
 });
 
 const parseTree = (
   table: SpecifyTable,
   uploadPlan: TreeRecord,
-  mappingPath: MappingPath
+  mappingPath: MappingPath,
 ): RA<SplitMappingPath> =>
   Object.entries(uploadPlan.ranks).flatMap(([rankName, rankData]) =>
     parseWbCols(
@@ -70,15 +70,15 @@ const parseTree = (
             name: rankData,
           }
         : rankData.treeNodeCols,
-      [...mappingPath, formatTreeRank(rankName)]
-    )
+      [...mappingPath, formatTreeRank(rankName)],
+    ),
   );
 
 function parseTreeTypes(
   table: SpecifyTable,
   uploadPlan: TreeRecordVariety,
   makeMustMatch: (table: SpecifyTable) => void,
-  mappingPath: MappingPath
+  mappingPath: MappingPath,
 ): RA<SplitMappingPath> {
   if ('mustMatchTreeRecord' in uploadPlan) makeMustMatch(table);
 
@@ -101,7 +101,7 @@ function resolveField(table: SpecifyTable, fieldName: string): RA<string> {
 const parseWbCols = (
   table: SpecifyTable,
   wbCols: IR<ColumnDefinition>,
-  mappingPath: MappingPath
+  mappingPath: MappingPath,
 ) =>
   Object.entries(wbCols).map(([fieldName, fieldData]) => ({
     mappingPath: [...mappingPath, ...resolveField(table, fieldName)],
@@ -116,7 +116,7 @@ const parseUploadTable = (
   table: SpecifyTable,
   uploadPlan: NestedUploadTable | UploadTable,
   makeMustMatch: (model: SpecifyTable) => void,
-  mappingPath: MappingPath
+  mappingPath: MappingPath,
 ): RA<SplitMappingPath> => [
   ...parseWbCols(table, uploadPlan.wbcols, mappingPath),
   ...Object.entries(uploadPlan.toOne).flatMap(([relationshipName, mappings]) =>
@@ -124,8 +124,8 @@ const parseUploadTable = (
       table.strictGetRelationship(relationshipName).relatedTable,
       mappings,
       makeMustMatch,
-      [...mappingPath, table.strictGetRelationship(relationshipName).name]
-    )
+      [...mappingPath, table.strictGetRelationship(relationshipName).name],
+    ),
   ),
   ...('toMany' in uploadPlan
     ? Object.entries(uploadPlan.toMany).flatMap(
@@ -139,9 +139,9 @@ const parseUploadTable = (
                 ...mappingPath,
                 table.strictGetRelationship(relationshipName).name,
                 formatToManyIndex(index + 1),
-              ]
-            )
-          )
+              ],
+            ),
+          ),
       )
     : []),
 ];
@@ -150,7 +150,7 @@ function parseUploadTableTypes(
   table: SpecifyTable,
   uploadPlan: UploadTableVariety,
   makeMustMatch: (table: SpecifyTable) => void,
-  mappingPath: MappingPath
+  mappingPath: MappingPath,
 ): RA<SplitMappingPath> {
   if ('mustMatchTable' in uploadPlan) makeMustMatch(table);
 
@@ -158,7 +158,7 @@ function parseUploadTableTypes(
     table,
     Object.values(uploadPlan)[0],
     makeMustMatch,
-    mappingPath
+    mappingPath,
   );
 }
 
@@ -166,7 +166,7 @@ const parseUploadable = (
   table: SpecifyTable,
   uploadPlan: Uploadable,
   makeMustMatch: (table: SpecifyTable) => void,
-  mappingPath: MappingPath
+  mappingPath: MappingPath,
 ): RA<SplitMappingPath> =>
   'treeRecord' in uploadPlan || 'mustMatchTreeRecord' in uploadPlan
     ? parseTreeTypes(table, uploadPlan, makeMustMatch, mappingPath)
@@ -190,7 +190,7 @@ export function parseUploadPlan(uploadPlan: UploadPlan): {
     baseTable,
     lines: parseUploadable(baseTable, uploadPlan.uploadable, makeMustMatch, []),
     mustMatchPreferences: Object.fromEntries(
-      Array.from(mustMatchTables, (tableName) => [tableName, true])
+      Array.from(mustMatchTables, (tableName) => [tableName, true]),
     ),
   };
 }

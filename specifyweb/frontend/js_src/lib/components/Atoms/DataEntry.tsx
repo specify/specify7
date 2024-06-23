@@ -18,14 +18,14 @@ import { wrap } from './wrapper';
 const dataEntryButton = (
   className: string,
   title: LocalizedString,
-  icon: keyof typeof icons
+  icon: keyof typeof icons,
 ) =>
   function (
     props: Omit<TagProps<'button'>, 'children' | 'type'> & {
       readonly onClick:
         | ((event: React.MouseEvent<HTMLButtonElement>) => void)
         | undefined;
-    }
+    },
   ): JSX.Element {
     return (
       <Button.Icon
@@ -39,13 +39,13 @@ const dataEntryButton = (
 
 export const columnDefinitionsToCss = (
   columns: RA<number | undefined>,
-  flexibleColumnWidth: boolean
+  flexibleColumnWidth: boolean,
 ): string =>
   columns
     .map((width) =>
       typeof width === 'number'
         ? `${width}${flexibleColumnWidth ? 'fr' : 'px'}`
-        : 'auto'
+        : 'auto',
     )
     .join(' ');
 
@@ -80,26 +80,26 @@ export const DataEntry = {
       style: {
         gridTemplateColumns: columnDefinitionsToCss(
           viewDefinition.columns,
-          flexibleColumnWidth
+          flexibleColumnWidth,
         ),
         ...style,
       },
       ...props,
-    })
+    }),
   ),
   Header: wrap('DataEntry.Header', 'header', className.formHeader),
   Title: wrap(
     'DataEntry.Title',
     'h2',
-    `${className.headerPrimary} ${className.formTitle}`
+    `${className.headerPrimary} ${className.formTitle}`,
   ),
   Cell: wrap<
     'div',
     {
       readonly colSpan: number;
-      readonly align: typeof cellAlign[number];
+      readonly align: (typeof cellAlign)[number];
       readonly visible: boolean;
-      readonly verticalAlign: typeof cellVerticalAlign[number];
+      readonly verticalAlign: (typeof cellVerticalAlign)[number];
     }
   >(
     'DataEntry.Cell',
@@ -115,21 +115,21 @@ export const DataEntry = {
           align === 'right'
             ? 'flex-end'
             : align === 'center'
-            ? 'center'
-            : undefined,
+              ? 'center'
+              : undefined,
         alignSelf:
           verticalAlign === 'stretch'
             ? 'stretch'
             : verticalAlign === 'center'
-            ? 'self-center'
-            : verticalAlign === 'start'
-            ? 'self-start'
-            : verticalAlign === 'end'
-            ? 'self-end'
-            : undefined,
+              ? 'self-center'
+              : verticalAlign === 'start'
+                ? 'self-start'
+                : verticalAlign === 'end'
+                  ? 'self-end'
+                  : undefined,
         ...props.style,
       },
-    })
+    }),
   ),
   Footer: wrap('DataEntry.Footer', 'div', className.formFooter, {
     role: 'toolbar',
@@ -142,7 +142,7 @@ export const DataEntry = {
     ({ children, ...props }) => ({
       // A hack for Safari. See https://github.com/specify/specify7/issues/1535
       children: <div {...props}>{children}</div>,
-    })
+    }),
   ),
   SubFormTitle: wrap('DataEntry.SubFormTitle', 'h3', className.formTitle),
   Add: dataEntryButton(className.dataEntryAdd, commonText.add(), 'plus'),
@@ -151,17 +151,17 @@ export const DataEntry = {
   Clone: dataEntryButton(
     className.dataEntryClone,
     formsText.clone(),
-    'clipboard'
+    'clipboard',
   ),
   Search: dataEntryButton(
     className.dataEntrySearch,
     commonText.search(),
-    'search'
+    'search',
   ),
   Remove: dataEntryButton(
     className.dataEntryRemove,
     commonText.remove(),
-    'minus'
+    'minus',
   ),
   Visit({
     className: localClassName = '',

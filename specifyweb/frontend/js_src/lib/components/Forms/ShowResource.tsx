@@ -44,19 +44,19 @@ export function ShowResource({
                   ? navigate(
                       getResourceViewUrl(
                         resource.specifyTable.name,
-                        resource.id
+                        resource.id,
                       ),
-                      { replace: true }
+                      { replace: true },
                     )
-                  : undefined
+                  : undefined,
             )
           : new tables.RecordSet.Resource({
               dbTableId: resource.specifyTable.tableId,
               type: 0,
             }),
-      [recordSetId]
+      [recordSetId],
     ),
-    true
+    true,
   );
 
   useErrorContext('recordSet', recordSet);
@@ -66,8 +66,8 @@ export function ShowResource({
     typeof recordSetId === 'number'
       ? 'recordSets'
       : interactionTables.has(resource.specifyTable.name)
-      ? 'interactions'
-      : 'dataEntry'
+        ? 'interactions'
+        : 'dataEntry',
   );
 
   const navigate = useNavigate();
@@ -101,7 +101,7 @@ export function ViewResourceById({
   const state = locationToState(location, 'RecordSet');
   const record = React.useMemo(
     () => f.maybe(state?.resource, deserializeResource),
-    [state?.resource]
+    [state?.resource],
   );
   const isInRecordSet = typeof state === 'object';
 
@@ -111,7 +111,7 @@ export function ViewResourceById({
       typeof table === 'object'
         ? record ?? new table.Resource({ id: numericId })
         : undefined,
-    [table, record, numericId]
+    [table, record, numericId],
   );
 
   if (

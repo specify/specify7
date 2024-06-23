@@ -76,7 +76,7 @@ const findElement = (xml: string, path: RA<LogPathPart>): Position =>
         return parent;
       }
     },
-    { from: 0, to: 0 }
+    { from: 0, to: 0 },
   );
 
 /**
@@ -88,7 +88,7 @@ function findChildPosition(
   xml: string,
   tagName: string | undefined,
   index: number,
-  from: number
+  from: number,
 ): Position & { readonly tagName: string | undefined } {
   if (tagName === undefined) return { tagName, from, to: from };
   const newFrom = xml.indexOf('>', from) + 1;
@@ -113,7 +113,7 @@ const findClosing = (string: string): number | undefined =>
 function findChild(
   xml: string,
   tagName: string,
-  targetIndex: number
+  targetIndex: number,
 ): number | undefined {
   let index = 0;
   return finder(
@@ -139,7 +139,7 @@ function findChild(
       if (part.startsWith(end) && !/\w/u.test(part.charAt(end.length)))
         index += 1;
       return false;
-    }
+    },
   );
 }
 
@@ -150,7 +150,7 @@ function findChild(
 function finder(
   xml: string,
   tagStart: ((part: string) => boolean) | undefined,
-  tagEnd: ((part: string) => boolean) | undefined
+  tagEnd: ((part: string) => boolean) | undefined,
 ): number | undefined {
   let depth = 0;
   return (
@@ -166,7 +166,7 @@ function finder(
         if (depth < 0) return null;
         if (depth === 0 && tagEnd?.(match[0]) === true) return match.index;
         return undefined;
-      }
+      },
     ) ?? undefined
   );
 }
@@ -181,7 +181,7 @@ export function xmlStringTraverse<T>(
    * Return anything other than undefined to stop the traversal
    */
   startMatch: (match: RegExpExecArray) => T | undefined,
-  endMatch: (match: RegExpExecArray) => T | undefined
+  endMatch: (match: RegExpExecArray) => T | undefined,
 ): T | undefined {
   let match: RegExpExecArray | null;
   reTag.lastIndex = 0;

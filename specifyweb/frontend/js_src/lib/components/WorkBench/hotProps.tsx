@@ -30,13 +30,13 @@ export function useHotProps({
   const [autoWrapCol] = userPreferences.use(
     'workBench',
     'editor',
-    'autoWrapCol'
+    'autoWrapCol',
   );
 
   const [autoWrapRow] = userPreferences.use(
     'workBench',
     'editor',
-    'autoWrapRow'
+    'autoWrapRow',
   );
 
   const columns = React.useMemo(
@@ -47,15 +47,15 @@ export function useHotProps({
         (_, physicalCol) => ({
           // Get data from nth column for nth column
           data: physicalCol,
-        })
+        }),
       ),
-    [dataset.columns.length]
+    [dataset.columns.length],
   );
 
   const [enterMovesPref] = userPreferences.use(
     'workBench',
     'editor',
-    'enterMoveDirection'
+    'enterMoveDirection',
   );
   const enterMoves =
     enterMovesPref === 'col' ? { col: 1, row: 0 } : { col: 0, row: 1 };
@@ -79,16 +79,16 @@ export function useHotProps({
           isMapped={isMapped}
           tableIcon={tableIcon}
           tableLabel={tableLabel}
-        />
+        />,
       );
     },
-    [mappings]
+    [mappings],
   );
 
   const [enterBeginsEditing] = userPreferences.use(
     'workBench',
     'editor',
-    'enterBeginsEditing'
+    'enterBeginsEditing',
   );
 
   const hiddenColumns = React.useMemo(
@@ -99,19 +99,19 @@ export function useHotProps({
       // TODO: Typing possibly doesn't match for handsontable 12.1.0, fixed in 14
       copyPasteEnabled: false,
     }),
-    []
+    [],
   );
 
   const [minSpareRows] = userPreferences.use(
     'workBench',
     'editor',
-    'minSpareRows'
+    'minSpareRows',
   );
 
   const [tabMovesPref] = userPreferences.use(
     'workBench',
     'editor',
-    'tabMoveDirection'
+    'tabMoveDirection',
   );
   const tabMoves =
     tabMovesPref === 'col' ? { col: 1, row: 0 } : { col: 0, row: 1 };
@@ -147,7 +147,7 @@ function ColumnHeader({
       {isMapped ? (
         <img
           alt={tableLabel}
-          className="w-table-icon h-table-icon"
+          className="h-table-icon w-table-icon"
           src={tableIcon}
         />
       ) : (

@@ -13,27 +13,27 @@ export const Skeleton = {
   SmallSquare: wrap(
     'Skeletons.SmallSquare',
     'div',
-    `${skeleton} h-6 w-6 rounded`
+    `${skeleton} h-6 w-6 rounded`,
   ),
   Rectangle: wrap('Skeletons.Rectangle', 'div', `${skeleton} h-6 w-64 rounded`),
   SmallRectangle: wrap(
     'Skeletons.SmallRectangle',
     'div',
-    `${skeleton} h-6 w-16 rounded`
+    `${skeleton} h-6 w-16 rounded`,
   ),
   TallRectangle: wrap(
     'Skeletons.TallRectangle',
     'div',
-    `${skeleton} w-32 rounded`
+    `${skeleton} w-32 rounded`,
   ),
   ThinRectangle: wrap(
     'Skeletons.ThinRectangle',
     'div',
-    `${skeleton} w-32 w-6 rounded`
+    `${skeleton} w-32 w-6 rounded`,
   ),
   SmallCircle: wrap(
     'Skeletons.SmallCircle',
     'div',
-    `${skeleton} w-6 rounded-full`
+    `${skeleton} w-6 rounded-full`,
   ),
 };

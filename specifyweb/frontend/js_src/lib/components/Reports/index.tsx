@@ -85,11 +85,11 @@ export function ReportsView({
               : '/report_runner/get_reports/',
             {
               domainFilter: 'false',
-            }
+            },
           ),
           {
             headers: { Accept: 'application/json' },
-          }
+          },
         ).then(({ data: { objects } }) =>
           split(
             objects.map<ReportEntry>((entry) => ({
@@ -98,12 +98,12 @@ export function ReportsView({
               query: f.maybe(entry.query ?? undefined, serializeResource),
             })),
             ({ appResource }) =>
-              appResource.mimeType?.includes('report') === true
-          )
+              appResource.mimeType?.includes('report') === true,
+          ),
         ),
-      [table]
+      [table],
     ),
-    true
+    true,
   );
 
   const [selectedReport, setSelectedReport] = useLiveState(
@@ -115,13 +115,13 @@ export function ReportsView({
         resources.flat().length === 1
           ? resources.flat()[0]
           : undefined,
-      [autoSelectSingle, resources]
-    )
+      [autoSelectSingle, resources],
+    ),
   );
 
   const [attachmentSettings = false] = useAsyncState(
     fetchAttachmentSettings,
-    true
+    true,
   );
 
   const [labels, reports] = resources ?? [[], []];
@@ -185,15 +185,15 @@ function ReportRow({
 }): JSX.Element {
   const [sortConfig, handleSort, applySortConfig] = useSortConfig(
     cacheKey,
-    'name'
+    'name',
   );
   const resources = React.useMemo(
     () =>
       applySortConfig(
         unsortedResources,
-        ({ appResource }) => appResource[sortConfig.sortField]
+        ({ appResource }) => appResource[sortConfig.sortField],
       ),
-    [sortConfig, unsortedResources, applySortConfig]
+    [sortConfig, unsortedResources, applySortConfig],
   );
 
   return resources.length === 0 ? (

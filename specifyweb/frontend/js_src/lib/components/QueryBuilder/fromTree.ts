@@ -22,7 +22,7 @@ import { createQuery } from './index';
 export function makeQueryField(
   tableName: keyof Tables,
   path: string,
-  options: Partial<SerializedResource<SpQueryField>>
+  options: Partial<SerializedResource<SpQueryField>>,
 ): SpecifyResource<SpQueryField> {
   const field = QueryFieldSpec.fromPath(tableName, path.split('.'))
     .toSpQueryField()
@@ -31,8 +31,8 @@ export function makeQueryField(
   Object.entries(options).forEach(([key, value]) =>
     field.set(
       key as keyof SpQueryField['fields'],
-      (value as string | undefined) ?? null
-    )
+      (value as string | undefined) ?? null,
+    ),
   );
 
   return field;
@@ -40,7 +40,7 @@ export function makeQueryField(
 
 const makeField = (
   path: string,
-  options: Partial<SerializedResource<SpQueryField>>
+  options: Partial<SerializedResource<SpQueryField>>,
 ): SpecifyResource<SpQueryField> =>
   makeQueryField('CollectionObject', path, options);
 
@@ -48,7 +48,7 @@ const defaultFields: RR<
   AnyTree['tableName'],
   (
     nodeId: number,
-    rankName: string
+    rankName: string,
   ) => Promise<RA<SpecifyResource<SpQueryField>>>
 > = {
   Taxon: async (nodeId, rankName) => [
@@ -123,7 +123,7 @@ const defaultFields: RR<
                 isDisplay: false,
                 operStart: queryFieldFilters.equal.id,
                 startValue: nodeId.toString(),
-              }
+              },
             ),
           ]
         : []),
@@ -163,7 +163,7 @@ async function fetchPaleoPath(): Promise<string | undefined> {
   };
   const paleoContextTable =
     (await getDomainResource('discipline')?.fetch())?.get(
-      'paleoContextChildTable'
+      'paleoContextChildTable',
     ) ?? '';
   const paleoPath = paths[paleoContextTable];
   if (paleoPath === undefined)
@@ -177,11 +177,11 @@ async function fetchPaleoPath(): Promise<string | undefined> {
  */
 export async function queryFromTree(
   tableName: AnyTree['tableName'],
-  nodeId: number
+  nodeId: number,
 ): Promise<SpecifyResource<SpQuery>> {
   const tree = defined(
     getTreeTable(tableName),
-    `Unable to contract a tree query from the ${tableName} table`
+    `Unable to contract a tree query from the ${tableName} table`,
   );
   const node = new tree.Resource({ id: nodeId }, { noBusinessRules: true });
   await node.fetch();
@@ -191,18 +191,17 @@ export async function queryFromTree(
       tableName: tables.CollectionObject.label,
       nodeFullName: node.get('fullName') ?? node.get('name'),
     }),
-    tables.CollectionObject
+    tables.CollectionObject,
   );
 
-  const rank: SpecifyResource<TaxonTreeDefItem> = await node.rgetPromise(
-    'definitionItem'
-  );
+  const rank: SpecifyResource<TaxonTreeDefItem> =
+    await node.rgetPromise('definitionItem');
   query.set(
     'fields',
     await defaultFields[tree.name](
       nodeId,
-      formatTreeRank(rank.get('name') ?? rank.get('title'))
-    )
+      formatTreeRank(rank.get('name') ?? rank.get('title')),
+    ),
   );
 
   return query;

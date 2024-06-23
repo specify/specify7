@@ -46,7 +46,7 @@ export function CurrentUserLink({
         navigate(
           formatUrl(`/specify/security/user/${userInformation.id}/`, {
             collection: collectionId,
-          })
+          }),
         );
       }}
     >
@@ -81,7 +81,7 @@ export function ViewCollectionButton({
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const resource = React.useMemo(
     () => deserializeResource(collection),
-    [collection]
+    [collection],
   );
   return (
     <>
@@ -145,7 +145,7 @@ export function CollectionRoles({
         (hasPermission(
           '/permissions/roles',
           'copy_from_library',
-          collection.id
+          collection.id,
         ) &&
           hasPermission('/permissions/library/roles', 'read')) ? (
           <CreateCollectionRoleButton

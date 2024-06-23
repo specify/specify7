@@ -53,7 +53,7 @@ export function AppResourcesTab({
   readonly data: string | null;
   readonly isFullScreen: GetSet<boolean>;
   readonly onChange: (
-    data: string | (() => string | null | undefined) | null
+    data: string | (() => string | null | undefined) | null,
   ) => void;
   readonly onSetCleanup: (callback: () => Promise<void>) => void;
   readonly footer: JSX.Element;
@@ -93,7 +93,7 @@ export function AppResourcesTab({
 type Component = (props: AppResourceTabProps) => JSX.Element;
 
 export function useEditorTabs(
-  resource: SerializedResource<SpAppResource | SpViewSetObject>
+  resource: SerializedResource<SpAppResource | SpViewSetObject>,
 ): RA<{
   readonly label: LocalizedString;
   readonly component: (props: AppResourceTabProps) => JSX.Element;
@@ -131,8 +131,8 @@ export function useEditorTabs(
                     );
                   },
                 }
-              : undefined
-          )
+              : undefined,
+          ),
         );
   }, [subType]);
 }
@@ -158,7 +158,7 @@ function OtherCollectionWarning({
       (typeof directory.discipline === 'string' &&
         directory.discipline !==
           getResourceApiUrl('Discipline', schema.domainLevelIds.discipline)),
-    [directory]
+    [directory],
   );
   return isOtherScope ? (
     <WarningMessage>{resourcesText.wrongScopeWarning()}</WarningMessage>
@@ -176,11 +176,7 @@ export function Tabs({
     <Tab.Group selectedIndex={currentIndex} onChange={handleChange}>
       <Tab.List
         // Don't display tabs if there is only one tab
-        className={`
-          inline-flex w-fit flex-wrap gap-2 rounded
-          bg-[color:var(--form-background)]
-          ${Object.keys(tabs).length === 1 ? 'sr-only' : ''}
-        `}
+        className={`inline-flex w-fit flex-wrap gap-2 rounded bg-[color:var(--form-background)] ${Object.keys(tabs).length === 1 ? 'sr-only' : ''} `}
       >
         {Object.keys(tabs).map((label, index) => (
           <Tab

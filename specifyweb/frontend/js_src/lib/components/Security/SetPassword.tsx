@@ -26,7 +26,7 @@ export function PasswordResetDialog({
   const { validationRef, setValidation } = useValidation(
     password === repeatPassword
       ? undefined
-      : userText.passwordsDoNotMatchError()
+      : userText.passwordsDoNotMatchError(),
   );
 
   return (

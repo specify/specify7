@@ -12,7 +12,7 @@ test('<Form> removes notSubmitted class name on submit', async () => {
   const { asFragment, getByRole, user } = mount(
     <Form aria-label="form" onSubmit={(event): void => event.preventDefault()}>
       <input type="submit" />
-    </Form>
+    </Form>,
   );
   const form = getByRole('form');
   expect(form).toHaveClass(className.notSubmittedForm);
@@ -29,7 +29,7 @@ describe('<Input.Radio>', () => {
   test('ignores change if disabled', async () => {
     const handleChange = jest.fn();
     const { asFragment, getByRole, user } = mount(
-      <Input.Radio disabled onChange={handleChange} />
+      <Input.Radio disabled onChange={handleChange} />,
     );
     const radio = getByRole('radio');
     await user.click(radio);
@@ -43,7 +43,7 @@ describe('<Input.Radio>', () => {
       <>
         <Input.Radio name="a" />
         <Input.Radio name="a" />
-      </>
+      </>,
     );
     const radios = getAllByRole('radio');
     expect(radios).toHaveLength(2);
@@ -60,7 +60,7 @@ describe('<Input.Checkbox>', () => {
   test('calls onValueChange on click', async () => {
     const handleChange = jest.fn();
     const { asFragment, getByRole, user } = mount(
-      <Input.Checkbox onValueChange={handleChange} />
+      <Input.Checkbox onValueChange={handleChange} />,
     );
 
     const checkbox = getByRole('checkbox');
@@ -74,7 +74,7 @@ describe('<Input.Checkbox>', () => {
   test('ignores change when disabled', async () => {
     const handleChange = jest.fn();
     const { getByRole, user } = mount(
-      <Input.Checkbox disabled onChange={handleChange} />
+      <Input.Checkbox disabled onChange={handleChange} />,
     );
 
     const checkbox = getByRole('checkbox');
@@ -85,7 +85,7 @@ describe('<Input.Checkbox>', () => {
   test('ignores change when readOnly', async () => {
     const handleChange = jest.fn();
     const { getByRole, user } = mount(
-      <Input.Checkbox isReadOnly onChange={handleChange} />
+      <Input.Checkbox isReadOnly onChange={handleChange} />,
     );
     const checkbox = getByRole('checkbox');
     await user.click(checkbox);
@@ -109,7 +109,7 @@ describe('<Textarea>', () => {
   test('calls onValueChange on change', async () => {
     const handleChange = jest.fn();
     const { getByRole, user } = mount(
-      <Textarea value="a" onValueChange={handleChange} />
+      <Textarea value="a" onValueChange={handleChange} />,
     );
     const textarea = getByRole('textbox');
 
@@ -124,7 +124,7 @@ describe('<Select>', () => {
     const { asFragment, getByRole, user } = mount(
       <Select defaultValue="a">
         <option />
-      </Select>
+      </Select>,
     );
     const select = getByRole('combobox');
 
@@ -142,7 +142,7 @@ describe('<Select>', () => {
       <Select value="" onValueChange={handleChange}>
         <option />
         <option value="a" />
-      </Select>
+      </Select>,
     );
     const select = getByRole('combobox');
 

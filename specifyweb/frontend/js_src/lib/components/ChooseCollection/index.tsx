@@ -36,14 +36,14 @@ export function ChooseCollection(): JSX.Element {
           .flat()
           .filter(Boolean)}
         availableCollections={JSON.parse(
-          parseDjangoDump('available-collections') ?? '[]'
+          parseDjangoDump('available-collections') ?? '[]',
         )}
         // REFACTOR: store this on the front-end?
         initialValue={parseDjangoDump('initial-value') ?? null}
         nextUrl={parseDjangoDump<string>('next-url') ?? '/specify/'}
       />
     ),
-    []
+    [],
   );
 }
 
@@ -63,13 +63,13 @@ function Wrapped({
   React.useEffect(
     () =>
       typeof initialValue === 'string' ? submitRef.current?.focus() : undefined,
-    [initialValue]
+    [initialValue],
   );
 
   const [sortOrder] = userPreferences.use(
     'chooseCollection',
     'general',
-    'sortOrder'
+    'sortOrder',
   );
   const sortedCollections = React.useMemo(() => {
     const { fieldNames, direction } = toLargeSortConfig(sortOrder);
@@ -80,12 +80,12 @@ function Wrapped({
           collection[
             toLowerCase(
               fieldNames.join(
-                backboneFieldSeparator
-              ) as keyof Collection['fields']
+                backboneFieldSeparator,
+              ) as keyof Collection['fields'],
             )
           ],
-        direction === 'desc'
-      )
+        direction === 'desc',
+      ),
     );
   }, [availableCollections, sortOrder]);
 
@@ -110,7 +110,7 @@ function Wrapped({
   const [alwaysPrompt] = userPreferences.use(
     'chooseCollection',
     'general',
-    'alwaysPrompt'
+    'alwaysPrompt',
   );
   React.useEffect(() => {
     if (f.parseInt(initialValue ?? '') === undefined) return;
@@ -125,7 +125,7 @@ function Wrapped({
         (formRef.current?.querySelector('input:checked') as
           | HTMLElement
           | undefined) ?? undefined,
-        scrollIntoView
+        scrollIntoView,
       );
   }, [alwaysPrompt, initialValue, sortedCollections]);
 
@@ -174,9 +174,9 @@ function Wrapped({
                 loading(
                   ping('/accounts/logout/').then(() =>
                     globalThis.location.assign(
-                      formatUrl('/accounts/logout/', { next: nextUrl })
-                    )
-                  )
+                      formatUrl('/accounts/logout/', { next: nextUrl }),
+                    ),
+                  ),
                 )
               }
             >

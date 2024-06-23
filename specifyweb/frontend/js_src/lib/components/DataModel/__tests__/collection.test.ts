@@ -20,7 +20,7 @@ describe('fetchCollection', () => {
 
   test('Simple collection objects query', async () =>
     expect(
-      fetchCollection('CollectionObject', { limit: 1, domainFilter: true })
+      fetchCollection('CollectionObject', { limit: 1, domainFilter: true }),
     ).resolves.toEqual({
       records: [addMissingFields('CollectionObject', baseCoRecord)],
       totalCount: 2,
@@ -42,7 +42,7 @@ describe('fetchCollection', () => {
        * Deposit "domainFilter: true", false will be sent to back-end because
        * this table can't be scoped
        */
-      fetchCollection('Institution', { limit: 1, domainFilter: true })
+      fetchCollection('Institution', { limit: 1, domainFilter: true }),
     ).resolves.toEqual({
       records: [addMissingFields('Institution', baseInstitutionRecord)],
       totalCount: 2,
@@ -58,7 +58,7 @@ describe('fetchCollection', () => {
         total_count: 2,
       },
       objects: [baseLocalityRecord],
-    }
+    },
   );
 
   test('Locality query with simple filters and sort', async () =>
@@ -69,7 +69,7 @@ describe('fetchCollection', () => {
         orderBy: '-latLongAccuracy',
         yesNo1: true,
         domainFilter: false,
-      })
+      }),
     ).resolves.toEqual({
       records: [addMissingFields('Locality', baseLocalityRecord)],
       totalCount: 2,
@@ -82,7 +82,7 @@ describe('fetchCollection', () => {
         total_count: 2,
       },
       objects: [baseLocalityRecord],
-    }
+    },
   );
 
   test('Locality query with complex filters', async () =>
@@ -93,8 +93,8 @@ describe('fetchCollection', () => {
         {
           ...backendFilter('localityName').caseInsensitiveStartsWith('Test'),
           ...backendFilter('id').isIn([1, 2]),
-        }
-      )
+        },
+      ),
     ).resolves.toEqual({
       records: [addMissingFields('Locality', baseLocalityRecord)],
       totalCount: 2,
@@ -118,8 +118,8 @@ describe('fetchRelated', () => {
           resource_uri: getResourceApiUrl('Accession', 1),
         }),
         'accessionCitations',
-        1
-      )
+        1,
+      ),
     ).resolves.toEqual({
       records: [addMissingFields('AccessionCitation', baseCitationRecord)],
       totalCount: 2,

@@ -46,7 +46,7 @@ describe('fetchResource', () => {
 
   test('found case', async () =>
     expect(fetchResource('Agent', 1)).resolves.toEqual(
-      serializeResource(baseAgentRecord)
+      serializeResource(baseAgentRecord),
     ));
   test('not found case', async () =>
     expect(fetchResource('Agent', 2, false)).resolves.toBeUndefined());
@@ -79,7 +79,7 @@ overrideAjax(
       srclatlongunit: 0,
       timestampcreated: '2022-08-31',
     },
-  }
+  },
 );
 
 test('createResource', async () =>
@@ -90,14 +90,14 @@ test('createResource', async () =>
       resource_uri: getResourceApiUrl('Locality', 123),
       // This should get ignored
       id: 44,
-    })
+    }),
   ).resolves.toEqual(
     addMissingFields('Locality', {
       resource_uri: getResourceApiUrl('Locality', localityId),
       id: localityId,
       discipline: getResourceApiUrl('Discipline', 3),
       localityName: 'name',
-    })
+    }),
   ));
 
 describe('saveResource', () => {
@@ -110,17 +110,17 @@ describe('saveResource', () => {
     },
     {
       method: 'PUT',
-    }
+    },
   );
   test('without conflict', async () =>
     expect(
-      saveResource('Locality', 3, { localityName: 'name' })
+      saveResource('Locality', 3, { localityName: 'name' }),
     ).resolves.toEqual(
       addMissingFields('Locality', {
         resource_uri: getResourceApiUrl('Locality', 2),
         id: 1,
         localityName: 'name',
-      })
+      }),
     ));
 });
 
@@ -181,7 +181,7 @@ describe('strictParseResourceUrl', () => {
     ]));
   test('invalid url', () =>
     expect(() => strictParseResourceUrl('/api//1/')).toThrow(
-      /^Unable to parse resource API url/u
+      /^Unable to parse resource API url/u,
     ));
 });
 
@@ -202,7 +202,7 @@ describe('strictIdFromUrl', () => {
     expect(strictIdFromUrl('/api/specify/collectionobject/1/')).toBe(1));
   test('invalid url', () =>
     expect(() => strictIdFromUrl('/api//1/')).toThrow(
-      /^Unable to extract resource id from url/u
+      /^Unable to extract resource id from url/u,
     ));
 });
 
@@ -232,7 +232,7 @@ theories(parseJavaClassName, [
 describe('getCarryOverPreference', () => {
   test('default carry over fields', () =>
     expect(getCarryOverPreference(tables.SpQuery, true)).toEqual(
-      getFieldsToClone(tables.SpQuery)
+      getFieldsToClone(tables.SpQuery),
     ));
   test('customize carry over fields', () => {
     userPreferences.set('form', 'preferences', 'carryForward', {
@@ -243,7 +243,7 @@ describe('getCarryOverPreference', () => {
       'text1',
     ]);
     expect(getCarryOverPreference(tables.SpQuery, true)).toEqual(
-      getFieldsToClone(tables.SpQuery)
+      getFieldsToClone(tables.SpQuery),
     );
   });
 });
@@ -286,7 +286,7 @@ describe('getUniqueFields', () => {
 test('getFieldsToNotClone', () => {
   userPreferences.set('form', 'preferences', 'carryForward', {
     CollectionObject: getFieldsToClone(tables.CollectionObject).filter(
-      (name) => name !== 'text1'
+      (name) => name !== 'text1',
     ) as RA<TableFields<CollectionObject>>,
   });
   expect(getFieldsToNotClone(tables.CollectionObject, true)).toEqual([

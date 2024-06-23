@@ -48,24 +48,24 @@ export type ResolvedAttachmentRecord =
 
 const resolveAttachmentMatch = (
   matchedId: RA<number>,
-  disambiguated: number | undefined
+  disambiguated: number | undefined,
 ): ResolvedAttachmentRecord =>
   matchedId.length === 0
     ? { type: 'invalid', reason: 'noMatch' }
     : matchedId.length > 1 && disambiguated === undefined
-    ? {
-        type: 'invalid',
-        reason: 'multipleMatches',
-      }
-    : {
-        type: 'matched',
-        id: disambiguated ?? matchedId[0],
-      };
+      ? {
+          type: 'invalid',
+          reason: 'multipleMatches',
+        }
+      : {
+          type: 'matched',
+          id: disambiguated ?? matchedId[0],
+        };
 
 export function resolveAttachmentRecord(
   matchedId: RA<number> | undefined,
   disambiguated: number | undefined,
-  parsedName: string | undefined
+  parsedName: string | undefined,
 ): ResolvedAttachmentRecord {
   if (parsedName === undefined)
     return { type: 'invalid', reason: 'incorrectFormatter' };
@@ -75,7 +75,7 @@ export function resolveAttachmentRecord(
 }
 
 export const canDeleteAttachment = (
-  uploadSpec: PartialUploadableFileSpec
+  uploadSpec: PartialUploadableFileSpec,
 ): boolean =>
   uploadSpec.attachmentId !== undefined &&
   uploadSpec.matchedId !== undefined &&
@@ -90,7 +90,7 @@ type InQueryField = RA<{
 function generateInQueryResource(
   baseTable: keyof Tables,
   queryName: string,
-  inQueryFields: InQueryField
+  inQueryFields: InQueryField,
 ): SpecifyResource<SpQuery> {
   const queryFields = inQueryFields.map((inQueryField, index) => {
     const rawField =
@@ -105,7 +105,7 @@ function generateInQueryResource(
           };
     const { path, ...field } = rawField;
     return serializeResource(
-      makeQueryField(baseTable, rawField.path, { ...field, position: index })
+      makeQueryField(baseTable, rawField.path, { ...field, position: index }),
     );
   });
 
@@ -116,14 +116,14 @@ function generateInQueryResource(
       contextTableId: tables[baseTable].tableId,
       countOnly: false,
       fields: queryFields,
-    })
+    }),
   );
 }
 
 export async function validateAttachmentFiles(
   uploadableFiles: RA<PartialUploadableFileSpec>,
   uploadSpec: AttachmentUploadSpec,
-  keepDisambiguation: boolean = false
+  keepDisambiguation: boolean = false,
 ): Promise<RA<PartialUploadableFileSpec>> {
   const { baseTable, path } =
     staticAttachmentImportPaths[uploadSpec.staticPathKey];
@@ -136,10 +136,10 @@ export async function validateAttachmentFiles(
         field: { path },
         lookUp: uploadableFiles.map(({ uploadFile }) => uploadFile.parsedName),
       },
-    ]
+    ],
   );
   const rawValidationResponse = await validationPromiseGenerator(
-    validationQueryResource
+    validationQueryResource,
   );
   const mappedResponse = rawValidationResponse.map(([targetId, restResult]) => {
     const rawResult = uploadSpec.formatQueryResults(restResult[0]);
@@ -151,7 +151,7 @@ export async function validateAttachmentFiles(
   return matchFileSpec(
     uploadableFiles,
     filterArray(mappedResponse),
-    keepDisambiguation
+    keepDisambiguation,
   );
 }
 
@@ -161,7 +161,7 @@ type MatchSelectedFiles = {
 };
 export const matchSelectedFiles = (
   previousUploadables: RA<PartialUploadableFileSpec>,
-  filesToResolve: RA<PartialUploadableFileSpec>
+  filesToResolve: RA<PartialUploadableFileSpec>,
 ): MatchSelectedFiles =>
   filesToResolve.reduce<MatchSelectedFiles>(
     (previousMatchedSpec, uploadable) => {
@@ -173,7 +173,7 @@ export const matchSelectedFiles = (
           previousUploadable.uploadFile.file.size ===
             uploadable.uploadFile.file.size &&
           previousUploadable.uploadFile.file.type ===
-            uploadable.uploadFile.file.type
+            uploadable.uploadFile.file.type,
       );
       if (matchedIndex === -1)
         return {
@@ -181,7 +181,7 @@ export const matchSelectedFiles = (
           resolvedFiles: insertItem(
             previousMatchedSpec.resolvedFiles,
             previousMatchedSpec.resolvedFiles.length,
-            uploadable
+            uploadable,
           ),
         };
       const previousMatch = previousMatchedSpec.resolvedFiles[matchedIndex];
@@ -214,20 +214,20 @@ export const matchSelectedFiles = (
                 previousMatch.status.reason === 'alreadyUploaded')
                 ? previousMatch.status
                 : uploadable.status,
-          }
+          },
         ),
       };
     },
     {
       resolvedFiles: previousUploadables,
       duplicateFiles: [],
-    }
+    },
   );
 
 export function resolveFileNames(
   fileName: string,
   getFormatted: (rawName: number | string | undefined) => string | undefined,
-  formatter?: UiFormatter
+  formatter?: UiFormatter,
 ): string | undefined {
   // BUG: Won't catch if formatters begin or end with a space
   const splitName = stripFileExtension(fileName).trim();
@@ -235,18 +235,18 @@ export function resolveFileNames(
   if (
     formatter !== undefined &&
     formatter.fields.every(
-      (field) => !(field instanceof formatterTypeMapper.regex)
+      (field) => !(field instanceof formatterTypeMapper.regex),
     )
   ) {
     const formattedLength = formatter.fields.reduce(
       (length, field) => length + field.size,
-      0
+      0,
     );
     nameToParse = fileName.trim().slice(0, formattedLength);
   }
   let formatted = nameToParse === '' ? undefined : getFormatted(nameToParse);
   const numericFields = formatter?.fields.filter(
-    (field) => field instanceof formatterTypeMapper.numeric
+    (field) => field instanceof formatterTypeMapper.numeric,
   );
   if (
     formatter?.fields?.length === 1 &&
@@ -261,7 +261,7 @@ export function resolveFileNames(
 }
 
 const validationPromiseGenerator = async (
-  queryResource: SpecifyResource<SpQuery>
+  queryResource: SpecifyResource<SpQuery>,
 ): Promise<RA<readonly [number, RA<number | string | null>]>> =>
   ajax<{
     // First value is the primary key
@@ -278,13 +278,13 @@ const validationPromiseGenerator = async (
       limit: 0,
     }),
   }).then(({ data }) =>
-    data.results.map(([target, ...restResult]) => [target, restResult])
+    data.results.map(([target, ...restResult]) => [target, restResult]),
   );
 
 export const matchFileSpec = (
   uploadFileSpec: RA<PartialUploadableFileSpec>,
   queryResults: RA<readonly [number, string]>,
-  keepDisambiguation: boolean = false
+  keepDisambiguation: boolean = false,
 ): RA<PartialUploadableFileSpec> =>
   uploadFileSpec.map((spec) => {
     const specParsedName = spec.uploadFile?.parsedName;
@@ -292,7 +292,7 @@ export const matchFileSpec = (
     if (specParsedName === undefined || typeof spec.attachmentId === 'number')
       return spec;
     const matchingResults = queryResults.filter(
-      (result) => result[1] === specParsedName
+      (result) => result[1] === specParsedName,
     );
     const newSpec: PartialUploadableFileSpec = {
       ...spec,
@@ -316,7 +316,7 @@ export const matchFileSpec = (
 
 const getBaseModelInField = (
   baseTable: keyof Tables,
-  files: RA<PartialUploadableFileSpec>
+  files: RA<PartialUploadableFileSpec>,
 ) => ({
   field: {
     path: strictGetTable(baseTable).idField.name,
@@ -324,14 +324,14 @@ const getBaseModelInField = (
   },
   lookUp: filterArray(
     files.map((uploadable) =>
-      uploadable.status?.type === 'matched' ? uploadable.status.id : undefined
-    )
+      uploadable.status?.type === 'matched' ? uploadable.status.id : undefined,
+    ),
   ),
 });
 
 export async function reconstructDeletingAttachment(
   staticKey: keyof typeof staticAttachmentImportPaths,
-  deletableFiles: RA<PartialUploadableFileSpec>
+  deletableFiles: RA<PartialUploadableFileSpec>,
 ): Promise<RA<PartialUploadableFileSpec>> {
   const baseTable = staticAttachmentImportPaths[staticKey].baseTable;
   const relationshipName = `${baseTable}attachments`;
@@ -339,8 +339,8 @@ export async function reconstructDeletingAttachment(
   const path = `${relationshipName}.${attachmentTableId}`;
   const relatedAttachments = filterArray(
     deletableFiles.map((deletable) =>
-      deletable.status?.type === 'matched' ? deletable.attachmentId : undefined
-    )
+      deletable.status?.type === 'matched' ? deletable.attachmentId : undefined,
+    ),
   );
   const reconstructingQueryResource = generateInQueryResource(
     baseTable,
@@ -351,18 +351,18 @@ export async function reconstructDeletingAttachment(
         field: { path },
         lookUp: relatedAttachments,
       },
-    ]
+    ],
   );
 
   const queryResults = await validationPromiseGenerator(
-    reconstructingQueryResource
+    reconstructingQueryResource,
   );
   return inferDeletedAttachments(queryResults, deletableFiles);
 }
 
 export async function reconstructUploadingAttachmentSpec(
   staticKey: keyof typeof staticAttachmentImportPaths,
-  uploadableFiles: RA<PartialUploadableFileSpec>
+  uploadableFiles: RA<PartialUploadableFileSpec>,
 ): Promise<RA<PartialUploadableFileSpec>> {
   const baseTable = staticAttachmentImportPaths[staticKey].baseTable;
   const relationshipName = `${baseTable}attachments`;
@@ -372,8 +372,8 @@ export async function reconstructUploadingAttachmentSpec(
     uploadableFiles.map((uploadable) =>
       uploadable.status?.type === 'matched'
         ? uploadable.uploadTokenSpec?.attachmentLocation
-        : undefined
-    )
+        : undefined,
+    ),
   );
 
   const reconstructingQueryResource = generateInQueryResource(
@@ -392,17 +392,17 @@ export async function reconstructUploadingAttachmentSpec(
         field: { path: pathToAttachmentLocation },
         lookUp: filteredAttachmentLocations,
       },
-    ]
+    ],
   );
   const queryResults = await validationPromiseGenerator(
-    reconstructingQueryResource
+    reconstructingQueryResource,
   );
   return inferUploadedAttachments(queryResults, uploadableFiles);
 }
 
 export const inferUploadedAttachments = (
   queryResults: RA<readonly [number, RA<number | string | null>]>,
-  uploadableFiles: RA<PartialUploadableFileSpec>
+  uploadableFiles: RA<PartialUploadableFileSpec>,
 ): RA<PartialUploadableFileSpec> =>
   uploadableFiles.map((uploadable) => {
     if (uploadable.status?.type !== 'matched') return uploadable;
@@ -412,7 +412,7 @@ export const inferUploadedAttachments = (
         typeof attachmentLocation === 'string' &&
         targetId === matchedId &&
         attachmentLocation.toString() ===
-          uploadable.uploadTokenSpec!.attachmentLocation
+          uploadable.uploadTokenSpec!.attachmentLocation,
     );
 
     return {
@@ -422,30 +422,30 @@ export const inferUploadedAttachments = (
         typeof foundInQueryResult === 'object'
           ? ({ type: 'success', successType: 'uploaded' } as const)
           : uploadable.status.type === 'matched'
-          ? //
-            /*
-             *BUG: Handle case where attachment location is set to null or resource no longer exists better.
-             * Currently, it will incorrectly inform it to be interrupted. That is fine since trying to upload
-             * the dataset will automatically correctly regenerate tokens / show match error
-             */
-            ({
-              type: 'cancelled',
-              reason: 'uploadInterruption',
-            } as const)
-          : uploadable.status,
+            ? //
+              /*
+               *BUG: Handle case where attachment location is set to null or resource no longer exists better.
+               * Currently, it will incorrectly inform it to be interrupted. That is fine since trying to upload
+               * the dataset will automatically correctly regenerate tokens / show match error
+               */
+              ({
+                type: 'cancelled',
+                reason: 'uploadInterruption',
+              } as const)
+            : uploadable.status,
     };
   });
 
 export const inferDeletedAttachments = (
   queryResults: RA<readonly [number, RA<number | string | null>]>,
-  deletableFiles: RA<PartialUploadableFileSpec>
+  deletableFiles: RA<PartialUploadableFileSpec>,
 ): RA<PartialUploadableFileSpec> =>
   deletableFiles.map((deletable) => {
     if (deletable.status?.type !== 'matched') return deletable;
     const matchedId = deletable.status.id;
     const foundInQueryResult = queryResults.find(
       ([targetId, [attachmentId]]) =>
-        targetId === matchedId && attachmentId === deletable.attachmentId
+        targetId === matchedId && attachmentId === deletable.attachmentId,
     );
     return {
       ...deletable,
@@ -454,11 +454,11 @@ export const inferDeletedAttachments = (
         foundInQueryResult === undefined
           ? ({ type: 'success', successType: 'deleted' } as const)
           : deletable.status.type === 'matched'
-          ? ({
-              type: 'cancelled',
-              reason: 'rollbackInterruption',
-            } as const)
-          : deletable.status,
+            ? ({
+                type: 'cancelled',
+                reason: 'rollbackInterruption',
+              } as const)
+            : deletable.status,
     };
   });
 
@@ -493,7 +493,7 @@ export const keyLocalizationMapAttachment = {
 } as const;
 
 export function resolveAttachmentStatus(
-  attachmentStatus: AttachmentStatus
+  attachmentStatus: AttachmentStatus,
 ): string {
   if ('reason' in attachmentStatus) {
     const reason = keyLocalizationMapAttachment[attachmentStatus.reason];
@@ -509,7 +509,7 @@ export function resolveAttachmentStatus(
 
 export const getAttachmentsFromResource = (
   baseResource: SerializedResource<Tables['CollectionObject']>,
-  relationshipName: string
+  relationshipName: string,
 ): {
   readonly key: keyof SerializedResource<Tables['CollectionObject']>;
   readonly values: RA<SerializedResource<Tables['CollectionObjectAttachment']>>;
@@ -523,8 +523,8 @@ export const getAttachmentsFromResource = (
               SerializedResource<Tables['CollectionObjectAttachment']>
             >,
           }
-        : undefined
-    )
+        : undefined,
+    ),
   );
 
 type RecordResponse =
@@ -540,7 +540,7 @@ const wrapAjaxRecordResponse = async (
   >,
   // Defines errors on which to not trigger a retry.
   statusMap: RR<number | 'fallback', keyof typeof keyLocalizationMapAttachment>,
-  triggerRetry?: () => void
+  triggerRetry?: () => void,
 ): Promise<RecordResponse> =>
   ajaxPromise().then(({ data, status }) => {
     if (statusMap[status] !== undefined)
@@ -563,7 +563,7 @@ const baseStatusMap = {
 export const fetchForAttachmentUpload = async (
   baseTableName: keyof Tables,
   matchId: number,
-  triggerRetry?: () => void
+  triggerRetry?: () => void,
 ) =>
   wrapAjaxRecordResponse(
     async () =>
@@ -573,17 +573,17 @@ export const fetchForAttachmentUpload = async (
           headers: { Accept: 'application/json' },
           expectedErrors: Object.values(Http),
           errorMode: 'silent',
-        }
+        },
       ),
     { ...baseStatusMap, fallback: 'errorFetchingRecord' },
-    triggerRetry
+    triggerRetry,
   );
 
 export const saveForAttachmentUpload = async (
   baseTableName: keyof Tables,
   matchId: number,
   data: Partial<SerializedResource<CollectionObject>>,
-  triggerRetry?: () => void
+  triggerRetry?: () => void,
 ) =>
   wrapAjaxRecordResponse(
     async () =>
@@ -595,8 +595,8 @@ export const saveForAttachmentUpload = async (
           headers: { Accept: 'application/json' },
           errorMode: 'silent',
           expectedErrors: Object.values(Http),
-        }
+        },
       ),
     { ...baseStatusMap, fallback: 'saveError' },
-    triggerRetry
+    triggerRetry,
   );

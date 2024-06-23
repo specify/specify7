@@ -48,7 +48,7 @@ function RelationshipField({
   readonly field: Relationship;
 }): JSX.Element {
   const [formatted, setFormatted] = React.useState<string | false | undefined>(
-    undefined
+    undefined,
   );
   React.useEffect(() => {
     if (resource === undefined) return undefined;
@@ -56,7 +56,7 @@ function RelationshipField({
     const handleChange = (): void =>
       void fetchPathAsString(resource, [field])
         .then((value) =>
-          destructorCalled ? undefined : setFormatted(value ?? false)
+          destructorCalled ? undefined : setFormatted(value ?? false),
         )
         .catch(raise);
 
@@ -64,7 +64,7 @@ function RelationshipField({
       resource,
       `change:${field.name}`,
       handleChange,
-      true
+      true,
     );
     return (): void => {
       destructor();
@@ -81,8 +81,8 @@ function RelationshipField({
         formatted === undefined
           ? commonText.loading()
           : formatted === false
-          ? ''
-          : formatted.toString()
+            ? ''
+            : formatted.toString()
       }
     />
   );
@@ -104,7 +104,7 @@ function Field({
   const { value, updateValue, validationRef, parser } = useResourceValue(
     resource,
     field,
-    defaultParser
+    defaultParser,
   );
 
   /*
@@ -121,7 +121,7 @@ function Field({
   const [rightAlignNumberFields] = userPreferences.use(
     'form',
     'ui',
-    'rightAlignNumberFields'
+    'rightAlignNumberFields',
   );
 
   return (

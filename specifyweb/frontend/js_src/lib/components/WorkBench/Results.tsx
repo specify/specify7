@@ -51,7 +51,7 @@ export function WbUploaded({
         <Ul className="flex flex-1 flex-col gap-2">
           {Object.entries(recordCounts)
             .sort(
-              sortFunction(([_tableName, recordCount]) => recordCount, false)
+              sortFunction(([_tableName, recordCount]) => recordCount, false),
             )
             .map(([tableName, recordCount], index) =>
               typeof recordCount === 'number' ? (
@@ -60,7 +60,7 @@ export function WbUploaded({
                   recordCount={recordCount}
                   tableName={tableName}
                 />
-              ) : null
+              ) : null,
             )}
         </Ul>
         <div className="flex flex-wrap gap-2">
@@ -89,8 +89,8 @@ export function TableRecordCounts({
   readonly sortFunction?: (
     value: readonly [
       Lowercase<keyof Tables>,
-      ValueOf<Partial<Record<Lowercase<keyof Tables>, number>>>
-    ]
+      ValueOf<Partial<Record<Lowercase<keyof Tables>, number>>>,
+    ],
   ) => ValueOf<Partial<Record<Lowercase<keyof Tables>, number>>>;
 }): JSX.Element {
   const resolvedRecords =
@@ -107,7 +107,7 @@ export function TableRecordCounts({
             recordCount={recordCount}
             tableName={tableName}
           />
-        ) : null
+        ) : null,
       )}
     </Ul>
   );

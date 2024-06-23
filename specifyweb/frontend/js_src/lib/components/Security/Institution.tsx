@@ -57,7 +57,7 @@ function InstitutionView({
   const loading = React.useContext(LoadingContext);
   const location = useLocation();
   const isOverlay = location.pathname.startsWith(
-    '/specify/security/institution/role/create/'
+    '/specify/security/institution/role/create/',
   );
   const isRoleState =
     !isOverlay &&
@@ -126,7 +126,10 @@ function InstitutionView({
                     }
                     onClick={(): void =>
                       loading(
-                        downloadFile('Permission Policies.tsv', policiesToTsv())
+                        downloadFile(
+                          'Permission Policies.tsv',
+                          policiesToTsv(),
+                        ),
                       )
                     }
                   >
@@ -228,12 +231,12 @@ export function useAdmins():
             }).then(({ data }) => ({
               admins: new Set(data.sp7_admins.map(({ userid }) => userid)),
               legacyAdmins: new Set(
-                data.sp6_admins.map(({ userid }) => userid)
+                data.sp6_admins.map(({ userid }) => userid),
               ),
             }))
           : { admins: new Set<number>(), legacyAdmins: new Set<number>() },
-      []
+      [],
     ),
-    false
+    false,
   )[0];
 }

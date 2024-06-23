@@ -58,7 +58,7 @@ let index = 0;
 export const toReactRoutes = (
   enhancedRoutes: RA<EnhancedRoute>,
   title?: LocalizedString,
-  dismissible: boolean = true
+  dismissible: boolean = true,
 ): WritableArray<RouteObject> =>
   enhancedRoutes.map<IndexRouteObject | NonIndexRouteObject>((data) => {
     const {
@@ -75,8 +75,8 @@ export const toReactRoutes = (
     )
       softFail(
         new Error(
-          '"isSingleResource" only has effect for path\'s that end with "*"'
-        )
+          '"isSingleResource" only has effect for path\'s that end with "*"',
+        ),
       );
 
     const titleComponent =
@@ -152,12 +152,12 @@ function SingleResource({
     index === -1
       ? undefined
       : index === 0
-      ? location.pathname
-      : location.pathname.slice(0, index);
+        ? location.pathname
+        : location.pathname.slice(0, index);
   if (process.env.NODE_ENV !== 'production') {
     if (path === undefined)
       throw new Error(
-        'Unable to extract the base path for the single resource URL'
+        'Unable to extract the base path for the single resource URL',
       );
     else if (index > 0) {
       const decodedPath = decodeURIComponent(location.pathname.slice(0, index));
@@ -170,7 +170,7 @@ function SingleResource({
             decodedPath,
             location,
             parameters,
-          }
+          },
         );
     }
   }

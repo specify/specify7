@@ -19,7 +19,7 @@ export type RawExpressSearchResult = {
 };
 
 export function usePrimarySearch(
-  query: string
+  query: string,
 ): RA<RawExpressSearchResult> | false | undefined {
   const [primaryResults] = useAsyncState<RA<RawExpressSearchResult> | false>(
     React.useCallback(async () => {
@@ -41,20 +41,21 @@ export function usePrimarySearch(
                 caption: strictGetTable(tableName).label,
                 tableResults,
                 ajaxUrl,
-              }))
+              })),
       );
     }, [query]),
-    false
+    false,
   );
   return primaryResults;
 }
 
-const relatedSearchesPromise = contextUnlockedPromise.then(async (entrypoint) =>
-  entrypoint === 'main'
-    ? ajax<RA<string>>('/context/available_related_searches.json', {
-        headers: { Accept: 'application/json' },
-      }).then(({ data }) => data)
-    : foreverFetch<RA<string>>()
+const relatedSearchesPromise = contextUnlockedPromise.then(
+  async (entrypoint) =>
+    entrypoint === 'main'
+      ? ajax<RA<string>>('/context/available_related_searches.json', {
+          headers: { Accept: 'application/json' },
+        }).then(({ data }) => data)
+      : foreverFetch<RA<string>>(),
 );
 export const expressSearchFetchSize = 40;
 
@@ -82,7 +83,7 @@ type RelatedTableResult = {
 };
 
 export function useSecondarySearch(
-  query: string
+  query: string,
 ): RA<RawExpressSearchResult> | false | undefined {
   const [secondaryResults] = useAsyncState<RA<RawExpressSearchResult> | false>(
     React.useCallback(async () => {
@@ -99,9 +100,9 @@ export function useSecondarySearch(
             headers: { Accept: 'application/json' },
             expectedErrors: [Http.FORBIDDEN],
           }).then(({ data, status }) =>
-            status === Http.FORBIDDEN ? undefined : ([ajaxUrl, data] as const)
+            status === Http.FORBIDDEN ? undefined : ([ajaxUrl, data] as const),
           );
-        })
+        }),
       );
       return filterArray(results)
         .filter(([_ajaxUrl, { totalCount }]) => totalCount > 0)
@@ -148,7 +149,7 @@ export function useSecondarySearch(
           };
         });
     }, [query]),
-    false
+    false,
   );
   return secondaryResults;
 }

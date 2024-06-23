@@ -30,7 +30,7 @@ import type { FormatterTypesOutlet } from './Types';
  */
 export function XmlEditorShell<
   ITEM extends { readonly name: string },
-  OUTLET_CONTEXT extends { readonly items: GetSet<RA<ITEM>> }
+  OUTLET_CONTEXT extends { readonly items: GetSet<RA<ITEM>> },
 >({
   header,
   children,
@@ -49,7 +49,7 @@ export function XmlEditorShell<
   const uniqueNames = f.unique(items.map(({ name }) => name));
   const hasDuplicates = uniqueNames.length !== items.length;
   const { validationRef } = useValidation(
-    hasDuplicates ? resourcesText.duplicateFormatters() : ''
+    hasDuplicates ? resourcesText.duplicateFormatters() : '',
   );
 
   const setItem = (newItem: ITEM): void =>
@@ -153,8 +153,8 @@ export function FormatterWrapper(): JSX.Element {
                       ? itemIndex.toString() === index
                         ? { ...getSet[0], isDefault: !getSet[0].isDefault }
                         : { ...otherItem, isDefault: false }
-                      : otherItem
-                  )
+                      : otherItem,
+                  ),
                 )
               }
             />

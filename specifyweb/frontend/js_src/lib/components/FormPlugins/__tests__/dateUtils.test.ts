@@ -14,8 +14,8 @@ describe('getDateParser', () => {
       getDateParser(
         tables.CollectionObject.strictGetLiteralField(dateFieldName),
         'full',
-        new Date()
-      )
+        new Date(),
+      ),
     ).toMatchInlineSnapshot(`
       {
         "formatters": [
@@ -48,8 +48,8 @@ describe('getDateParser', () => {
       getDateParser(
         tables.CollectionObject.strictGetLiteralField(dateFieldName),
         'year',
-        undefined
-      )
+        undefined,
+      ),
     ).toMatchInlineSnapshot(`
       {
         "formatters": [

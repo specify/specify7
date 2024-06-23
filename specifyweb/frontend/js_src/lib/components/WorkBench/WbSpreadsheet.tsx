@@ -56,7 +56,7 @@ function WbSpreadsheetComponent({
   const isReadOnly = React.useContext(ReadOnlyContext);
   const physicalColToMappingCol = (physicalCol: number): number | undefined =>
     mappings?.lines.findIndex(
-      ({ headerName }) => headerName === dataset.columns[physicalCol]
+      ({ headerName }) => headerName === dataset.columns[physicalCol],
     );
 
   const { validation, cells, disambiguation } = workbench;
@@ -98,7 +98,7 @@ function WbSpreadsheetComponent({
                     wrapper.setAttribute(
                       'class',
                       `${wrapper.getAttribute('class')} flex flex-col !m-0
-                    pb-1`
+                    pb-1`,
                     );
                     wrapper.innerHTML = createdRecords
                       .map(([tableName, recordId, label]) => {
@@ -257,7 +257,7 @@ export const WbSpreadsheet = React.memo(WbSpreadsheetComponent);
 const fillCellsContextMenuItem = (
   hot: Handsontable,
   mode: 'down' | 'up',
-  isReadOnly: boolean
+  isReadOnly: boolean,
 ): Handsontable.plugins.ContextMenu.MenuItemConfig => ({
   name: mode === 'up' ? wbText.fillUp() : wbText.fillDown(),
   disabled: () =>
@@ -283,8 +283,8 @@ const fillCellsContextMenuItem = (
             startRow + index + 1,
             col,
             value,
-          ])
+          ]),
         );
-      })
+      }),
     ),
 });

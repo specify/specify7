@@ -18,23 +18,23 @@ requireContext();
 
 const tests: {
   readonly [SYNCER in keyof typeof syncers]: RA<
-    (typeof syncers[SYNCER] extends (
+    ((typeof syncers)[SYNCER] extends (
       ...args: RA<any>
     ) => Syncer<unknown, unknown>
       ? {
           readonly arguments:
-            | Parameters<typeof syncers[SYNCER]>
-            | (() => Parameters<typeof syncers[SYNCER]>);
+            | Parameters<(typeof syncers)[SYNCER]>
+            | (() => Parameters<(typeof syncers)[SYNCER]>);
         }
       : RR<never, never>) & {
-      readonly in: SyncerIn<ExtractSyncer<typeof syncers[SYNCER]>>;
+      readonly in: SyncerIn<ExtractSyncer<(typeof syncers)[SYNCER]>>;
       readonly out:
-        | SyncerOut<ExtractSyncer<typeof syncers[SYNCER]>>
-        | (() => SyncerOut<ExtractSyncer<typeof syncers[SYNCER]>>);
+        | SyncerOut<ExtractSyncer<(typeof syncers)[SYNCER]>>
+        | (() => SyncerOut<ExtractSyncer<(typeof syncers)[SYNCER]>>);
       readonly newOut?:
-        | SyncerOut<ExtractSyncer<typeof syncers[SYNCER]>>
-        | (() => SyncerOut<ExtractSyncer<typeof syncers[SYNCER]>>);
-      readonly final?: SyncerIn<ExtractSyncer<typeof syncers[SYNCER]>>;
+        | SyncerOut<ExtractSyncer<(typeof syncers)[SYNCER]>>
+        | (() => SyncerOut<ExtractSyncer<(typeof syncers)[SYNCER]>>);
+      readonly final?: SyncerIn<ExtractSyncer<(typeof syncers)[SYNCER]>>;
       readonly logContext?: LogPathPart;
       readonly error?: RA<unknown>;
       readonly warn?: RA<unknown>;
@@ -467,7 +467,7 @@ const tests: {
         createXmlSpec({
           a: pipe(
             syncers.xmlAttribute('a', 'required'),
-            syncers.fallback<string>('value')
+            syncers.fallback<string>('value'),
           ),
         }),
       ],
@@ -522,7 +522,7 @@ const tests: {
         (input) => ({
           a: syncers.xmlAttribute(
             input.definition.node?.tagName ?? 'c',
-            'required'
+            'required',
           ),
         }),
       ],
@@ -539,7 +539,7 @@ const tests: {
           a: pipe(
             syncers.xmlAttribute('a', 'skip'),
             // @ts-expect-error TS Getting confused
-            syncers.fallback(input.tableName)
+            syncers.fallback(input.tableName),
           ),
         }),
       ],
@@ -738,7 +738,7 @@ const tests: {
         'definition',
         pipe(
           syncers.xmlAttribute('type', 'required'),
-          syncers.fallback<string>('a')
+          syncers.fallback<string>('a'),
         ),
         {
           aa: 'A',
@@ -750,14 +750,14 @@ const tests: {
             createXmlSpec({
               attributeA: pipe(
                 syncers.xmlAttribute('a', 'skip'),
-                syncers.default<string>('a')
+                syncers.default<string>('a'),
               ),
             }),
           B: () =>
             createXmlSpec({
               attributeB: pipe(
                 syncers.xmlAttribute('b', 'skip'),
-                syncers.default<string>('b')
+                syncers.default<string>('b'),
               ),
             }),
           Unknown: () => createXmlSpec({}),
@@ -804,14 +804,14 @@ const tests: {
             createXmlSpec({
               attributeA: pipe(
                 syncers.xmlAttribute('a', 'skip'),
-                syncers.default<string>('a')
+                syncers.default<string>('a'),
               ),
             }),
           B: () =>
             createXmlSpec({
               attributeB: pipe(
                 syncers.xmlAttribute('b', 'skip'),
-                syncers.default<string>('b')
+                syncers.default<string>('b'),
               ),
             }),
           Unknown: () => createXmlSpec({}),
@@ -855,14 +855,14 @@ const tests: {
             createXmlSpec({
               attributeA: pipe(
                 syncers.xmlAttribute('a', 'skip'),
-                syncers.default<string>('a')
+                syncers.default<string>('a'),
               ),
             }),
           B: () =>
             createXmlSpec({
               attributeB: pipe(
                 syncers.xmlAttribute('b', 'skip'),
-                syncers.default<string>('b')
+                syncers.default<string>('b'),
               ),
             }),
           Unknown: () => createXmlSpec({}),
@@ -928,14 +928,14 @@ const tests: {
             createXmlSpec({
               attributeA: pipe(
                 syncers.xmlAttribute('a', 'skip'),
-                syncers.default<string>('a')
+                syncers.default<string>('a'),
               ),
             }),
           B: () =>
             createXmlSpec({
               attributeB: pipe(
                 syncers.xmlAttribute('b', 'skip'),
-                syncers.default<string>('b')
+                syncers.default<string>('b'),
               ),
             }),
           Unknown: () => createXmlSpec({}),
@@ -996,7 +996,7 @@ Object.entries(tests).forEach(([syncerName, tests]) =>
           error: expectedErrors = [],
           ...rest
         },
-        index
+        index,
       ) =>
         describe(`#${index + 1}`, () => {
           const syncer = syncers[syncerName] as
@@ -1020,7 +1020,7 @@ Object.entries(tests).forEach(([syncerName, tests]) =>
               JSON.stringify(input) === JSON.stringify(final)
             )
               throw new Error(
-                "Since input and final are the same, you don't need to specify final"
+                "Since input and final are the same, you don't need to specify final",
               );
 
             const result =
@@ -1030,7 +1030,7 @@ Object.entries(tests).forEach(([syncerName, tests]) =>
                       ? typeof rest.arguments === 'function'
                         ? rest.arguments()
                         : rest.arguments
-                      : error('Expected to receive "arguments"'))
+                      : error('Expected to receive "arguments"')),
                   ).serializer(input)
                 : syncer.serializer(input);
             const output =
@@ -1039,15 +1039,15 @@ Object.entries(tests).forEach(([syncerName, tests]) =>
             expect(
               result instanceof SpecifyTable || result instanceof FieldBase
                 ? result.toJSON()
-                : result
+                : result,
             ).toEqual(
               output instanceof SpecifyTable || output instanceof FieldBase
                 ? output.toJSON()
-                : output
+                : output,
             );
 
             expect(getLogContext()).toEqual(
-              logContext === undefined ? {} : { [pathKey]: [logContext] }
+              logContext === undefined ? {} : { [pathKey]: [logContext] },
             );
 
             expect(warnings).toEqual(expectedWarnings);
@@ -1067,7 +1067,7 @@ Object.entries(tests).forEach(([syncerName, tests]) =>
               JSON.stringify(output) === JSON.stringify(secondOutput)
             )
               throw new Error(
-                "Since output and secondOutput are the same, you don't need to specify secondOutput"
+                "Since output and secondOutput are the same, you don't need to specify secondOutput",
               );
 
             const result =
@@ -1077,20 +1077,20 @@ Object.entries(tests).forEach(([syncerName, tests]) =>
                       ? typeof rest.arguments === 'function'
                         ? rest.arguments()
                         : rest.arguments
-                      : error('Expected to receive "arguments"'))
+                      : error('Expected to receive "arguments"')),
                   ).deserializer(secondOutput)
                 : syncer.deserializer(secondOutput);
             expect(
               result instanceof SpecifyTable || result instanceof FieldBase
                 ? result.toJSON()
-                : result
+                : result,
             ).toEqual(
               final instanceof SpecifyTable || final instanceof FieldBase
                 ? final.toJSON()
-                : final
+                : final,
             );
           });
-        })
-    )
-  )
+        }),
+    ),
+  ),
 );

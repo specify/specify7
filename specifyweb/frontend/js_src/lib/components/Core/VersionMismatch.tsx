@@ -9,7 +9,7 @@ import { Dialog } from '../Molecules/Dialog';
 
 export function VersionMismatch(): JSX.Element | null {
   const [showVersionMismatch, setShowVersionMismatch] = React.useState(
-    getSystemInfo().specify6_version !== getSystemInfo().database_version
+    getSystemInfo().specify6_version !== getSystemInfo().database_version,
   );
   return showVersionMismatch ? (
     <Dialog

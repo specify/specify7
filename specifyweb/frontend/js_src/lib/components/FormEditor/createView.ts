@@ -19,7 +19,7 @@ export const createViewDefinition = (
   /** The name is expected to be already unique */
   name: LocalizedString,
   table: SpecifyTable,
-  template: ViewDefinition | 'new'
+  template: ViewDefinition | 'new',
 ): ViewSets =>
   template === 'new'
     ? createNewView(viewSets, name, table)
@@ -35,8 +35,8 @@ const tablesWithFormTable = f.store<RA<SpecifyTable>>(() =>
     (table) =>
       !table.isHidden &&
       !table.overrides.isHidden &&
-      (!table.isSystem || table.name.endsWith('Attachment'))
-  )
+      (!table.isSystem || table.name.endsWith('Attachment')),
+  ),
 );
 
 type View = ViewSets['views'][number];
@@ -45,7 +45,7 @@ type Definition = ViewSets['viewDefs'][number];
 function createNewView(
   viewSets: ViewSets,
   name: LocalizedString,
-  table: SpecifyTable
+  table: SpecifyTable,
 ): ViewSets {
   const formName = getUniqueDefinitionName(name, viewSets);
   const formTableName = getUniqueDefinitionName(`${name} Table`, viewSets);
@@ -61,7 +61,7 @@ function createNewView(
   } as const;
   const getAltViews = (
     name: LocalizedString,
-    isDefault: boolean
+    isDefault: boolean,
   ): View['altViews']['altViews'] => [
     {
       name: `${name} View`,
@@ -115,7 +115,7 @@ function createNewView(
 
 const getIconView = (
   name: LocalizedString,
-  table: SpecifyTable
+  table: SpecifyTable,
 ): Definition => ({
   name,
   table,
@@ -147,7 +147,7 @@ const getIconView = (
 const getTableView = (
   name: LocalizedString,
   formName: string,
-  table: SpecifyTable
+  table: SpecifyTable,
 ): Definition => ({
   name,
   table,
@@ -184,7 +184,7 @@ const getTableView = (
 
 const getFormView = (
   name: LocalizedString,
-  table: SpecifyTable
+  table: SpecifyTable,
 ): Definition => ({
   name,
   table,
@@ -244,11 +244,11 @@ const getFormView = (
 
 const getUniqueDefinitionName = (
   name: string,
-  viewSets: ViewSets
+  viewSets: ViewSets,
 ): LocalizedString =>
   getUniqueName(
     name,
-    viewSets.viewDefs.map((view) => view.name ?? '')
+    viewSets.viewDefs.map((view) => view.name ?? ''),
   );
 
 /**
@@ -257,17 +257,20 @@ const getUniqueDefinitionName = (
 function createViewFromTemplate(
   viewSets: ViewSets,
   name: LocalizedString,
-  template: ViewDefinition
+  template: ViewDefinition,
 ): ViewSets {
   const logContext = getLogContext();
   const { view, viewDefinitions } = parseFormView(template);
   setLogContext(logContext);
   const originalNames = filterArray(
-    view.altViews.altViews.map(({ viewDef }) => viewDef)
+    view.altViews.altViews.map(({ viewDef }) => viewDef),
   );
 
   const nameMapper = Object.fromEntries(
-    originalNames.map((name) => [name, getUniqueDefinitionName(name, viewSets)])
+    originalNames.map((name) => [
+      name,
+      getUniqueDefinitionName(name, viewSets),
+    ]),
   );
 
   const updatedAltViews = view.altViews.altViews.map((altView) => ({
@@ -310,10 +313,10 @@ function createViewFromTemplate(
                           ? nameMapper[localized(subChild.string)]
                           : undefined) ?? subChild.string,
                     }
-                  : subChild
+                  : subChild,
               ),
             }
-          : child
+          : child,
       ),
     },
   }));

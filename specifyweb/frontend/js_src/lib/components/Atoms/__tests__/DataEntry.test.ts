@@ -38,7 +38,7 @@ describe('DataEntry.Cell', () => {
       verticalAlign: 'stretch',
       visible: true,
     },
-    'colspan 1, align right, self stretch'
+    'colspan 1, align right, self stretch',
   );
   snapshot(
     DataEntry.Cell,
@@ -49,7 +49,7 @@ describe('DataEntry.Cell', () => {
       verticalAlign: 'center',
       visible: true,
     },
-    'colspan 3, align left, self center'
+    'colspan 3, align left, self center',
   );
   snapshot(
     DataEntry.Cell,
@@ -60,7 +60,7 @@ describe('DataEntry.Cell', () => {
       verticalAlign: 'end',
       visible: false,
     },
-    'invisible, self end'
+    'invisible, self end',
   );
 });
 
@@ -85,6 +85,6 @@ describe('DataEntry.visit', () => {
         viewUrl: () => 'RESOURCE_VIEW_URL',
       } as unknown as SpecifyResource<AnySchema>,
     },
-    'no resource'
+    'no resource',
   );
 });

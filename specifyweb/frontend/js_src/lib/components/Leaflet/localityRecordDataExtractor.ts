@@ -40,14 +40,14 @@ import {
 
 const splitMappingPath = (
   mappingPath: MappingPath,
-  index: number
+  index: number,
 ): readonly [MappingPath, MappingPath] => [
   mappingPath.slice(0, index),
   mappingPath.slice(index),
 ];
 
 function getNextMappingPathPart(
-  mappingPath: MappingPath
+  mappingPath: MappingPath,
 ): readonly [MappingPath, MappingPath] {
   for (let index = 0; index < mappingPath.length; index += 1)
     if (
@@ -62,14 +62,14 @@ type FilterFunction = (
   mappingPath: readonly [
     pastParts: MappingPath,
     currentPart: MappingPath,
-    nextParts: MappingPath
+    nextParts: MappingPath,
   ],
-  resource: Collection<AnySchema> | SpecifyResource<AnySchema>
+  resource: Collection<AnySchema> | SpecifyResource<AnySchema>,
 ) => boolean;
 
 export const defaultRecordFilterFunction: FilterFunction = (
   _mappingPathParts,
-  resource
+  resource,
 ) =>
   !('specifyTable' in resource) ||
   resource.specifyTable.name !== 'Determination' ||
@@ -84,7 +84,7 @@ async function recursiveResourceResolve(
     | undefined,
   mappingPath: MappingPath,
   filterFunction: FilterFunction,
-  pastParts: RA<string> = []
+  pastParts: RA<string> = [],
 ): Promise<RA<readonly [MappingPath, string]>> {
   if (mappingPath.length === 0)
     return [[pastParts, resource?.toString() ?? '']];
@@ -117,9 +117,9 @@ async function recursiveResourceResolve(
           tableName,
           `Unable to resolve table name for a resource: ${
             resource?.toJSON() ?? '(null)'
-          }`
+          }`,
         ),
-        'read'
+        'read',
       )
     )
       await resource.fetch();
@@ -136,11 +136,11 @@ async function recursiveResourceResolve(
       return [];
     const tableRanks = strictGetTreeDefinitionItems(
       treeTableName as 'Geography',
-      false
+      false,
     );
     const currentRank = defined(
       tableRanks.find(({ rankId }) => rankId === resource.get('rankId')),
-      'Failed to find matching tree rank'
+      'Failed to find matching tree rank',
     );
     const currentRankName = formatTreeRank(currentRank.name);
     return [
@@ -161,8 +161,8 @@ async function recursiveResourceResolve(
           recursiveResourceResolve(resource, nextPart, filterFunction, [
             ...pastParts,
             formatToManyIndex(index + 1),
-          ])
-        )
+          ]),
+        ),
     ).then((result) => result.flat());
   } else if (typeof resource === 'object' && 'rgetPromise' in resource) {
     const overwriteAgent =
@@ -181,10 +181,10 @@ async function recursiveResourceResolve(
 // eslint-disable-next-line functional/prefer-readonly-type
 export const parsedLocalityPinFields: [
   RA<MappingPath> | undefined,
-  RA<MappingPath> | undefined
+  RA<MappingPath> | undefined,
 ] = [undefined, undefined];
 export const parseLocalityPinFields = (
-  quickFetch: boolean
+  quickFetch: boolean,
 ): RA<MappingPath> => {
   const parsedResult = parsedLocalityPinFields[Number(quickFetch)];
   if (Array.isArray(parsedResult)) return parsedResult;
@@ -194,7 +194,7 @@ export const parseLocalityPinFields = (
     .filter(
       (mappingPath) =>
         mappingPath[0].toLowerCase() === 'locality' &&
-        (!quickFetch || mappingPath.length === 2)
+        (!quickFetch || mappingPath.length === 2),
     )
     .map((mappingPath) => mappingPath.slice(1));
 
@@ -211,7 +211,7 @@ export const parseLocalityPinFields = (
          * subsequent occurrences
          */
         mappingPaths.findIndex((existingGroupName) =>
-          pathStartsWith(existingGroupName, splitJoinedMappingPath(groupName))
+          pathStartsWith(existingGroupName, splitJoinedMappingPath(groupName)),
         ) === index
       )
         return [
@@ -220,7 +220,7 @@ export const parseLocalityPinFields = (
           'fullname',
         ];
       else return undefined;
-    })
+    }),
   );
 
   parsedLocalityPinFields[Number(quickFetch)] = filteredMappingPaths;
@@ -231,15 +231,15 @@ export async function fetchLocalityDataFromResource(
   localityResource: SpecifyResource<Locality>,
   // Don't fetch related tables. Only return data from the locality resource
   quickFetch = false,
-  filterFunction: FilterFunction = defaultRecordFilterFunction
+  filterFunction: FilterFunction = defaultRecordFilterFunction,
 ): Promise<LocalityData | false> {
   await treeRanksPromise;
   const filteredMappingPaths = parseLocalityPinFields(quickFetch);
 
   const results = await Promise.all(
     filteredMappingPaths.map(async (mappingPath) =>
-      recursiveResourceResolve(localityResource, mappingPath, filterFunction)
-    )
+      recursiveResourceResolve(localityResource, mappingPath, filterFunction),
+    ),
   );
 
   const localityData = formatLocalityDataObject(results.flat());
@@ -252,7 +252,7 @@ export async function fetchLocalityDataFromResource(
 const pathLabel: R<string> = {};
 
 export function formatLocalityDataObject(
-  results: RA<readonly [MappingPath, string | null]>
+  results: RA<readonly [MappingPath, string | null]>,
 ): LocalityData | false {
   const rawLocalityData = Object.fromEntries(
     results
@@ -261,7 +261,7 @@ export function formatLocalityDataObject(
         const stringPath = mappingPathToString(['locality', ...mappingPath]);
         pathLabel[stringPath] ??= generateMappingPathPreview(
           'Locality',
-          mappingPath
+          mappingPath,
         );
         return [
           stringPath,
@@ -270,7 +270,7 @@ export function formatLocalityDataObject(
             value: fieldValue?.toString() ?? '',
           },
         ] as const;
-      })
+      }),
   );
 
   return getLocalityData(
@@ -278,12 +278,12 @@ export function formatLocalityDataObject(
       Object.entries(rawLocalityData).map(([fieldName, { headerName }]) => [
         fieldName,
         headerName,
-      ])
+      ]),
     ),
     (fieldName) => rawLocalityData[fieldName] ?? { headerName: '', value: '' },
     (fieldName) => ({
       headerName: rawLocalityData[fieldName].headerName ?? '',
       value: formatCoordinate(rawLocalityData[fieldName].value ?? ''),
-    })
+    }),
   );
 }

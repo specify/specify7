@@ -47,11 +47,11 @@ let disciplineTrees: RA<AnyTree['tableName']> = allTrees;
 export const getDisciplineTrees = (): typeof disciplineTrees => disciplineTrees;
 
 export const isTreeTable = (
-  tableName: keyof Tables
+  tableName: keyof Tables,
 ): tableName is AnyTree['tableName'] => f.includes(allTrees, tableName);
 
 export const isTreeResource = (
-  resource: SpecifyResource<AnySchema>
+  resource: SpecifyResource<AnySchema>,
 ): resource is SpecifyResource<AnyTree> =>
   f.includes(allTrees, resource.specifyTable.name);
 
@@ -77,25 +77,25 @@ export const treeRanksPromise = Promise.all([
                 .map(async (treeName) =>
                   getDomainResource(getTreeScope(treeName) as 'discipline')
                     ?.rgetPromise(
-                      `${unCapitalize(treeName) as 'geography'}TreeDef`
+                      `${unCapitalize(treeName) as 'geography'}TreeDef`,
                     )
                     .then(async (treeDefinition) => ({
                       definition: treeDefinition,
                       ranks: await fetchRelated(
                         serializeResource(treeDefinition),
                         'treeDefItems',
-                        0
+                        0,
                       ).then(({ records }) =>
                         Array.from(records).sort(
-                          sortFunction(({ rankId }) => rankId)
-                        )
+                          sortFunction(({ rankId }) => rankId),
+                        ),
                       ),
                     }))
-                    .then((ranks) => [treeName, ranks] as const)
-                )
-            )
+                    .then((ranks) => [treeName, ranks] as const),
+                ),
+            ),
           )
-      : []
+      : [],
   )
   .then((ranks) => {
     // @ts-expect-error
@@ -104,35 +104,35 @@ export const treeRanksPromise = Promise.all([
   });
 
 function getTreeScope(
-  treeName: AnyTree['tableName']
-): keyof typeof schema['domainLevelIds'] | undefined {
+  treeName: AnyTree['tableName'],
+): keyof (typeof schema)['domainLevelIds'] | undefined {
   const treeRelationships = new Set(
     genericTables[`${treeName}TreeDef`].relationships.map(({ relatedTable }) =>
-      relatedTable.name.toLowerCase()
-    )
+      relatedTable.name.toLowerCase(),
+    ),
   );
   return Object.keys(schema.domainLevelIds).find((domainTable) =>
-    treeRelationships.has(domainTable)
+    treeRelationships.has(domainTable),
   );
 }
 
 export function getTreeDefinitionItems<TREE_NAME extends AnyTree['tableName']>(
   tableName: TREE_NAME,
-  includeRoot: boolean
-): typeof treeDefinitions[TREE_NAME]['ranks'] | undefined {
+  includeRoot: boolean,
+): (typeof treeDefinitions)[TREE_NAME]['ranks'] | undefined {
   const definition = caseInsensitiveHash(treeDefinitions, tableName);
   return definition?.ranks.slice(includeRoot ? 0 : 1);
 }
 
 export const strictGetTreeDefinitionItems = <
-  TREE_NAME extends AnyTree['tableName']
+  TREE_NAME extends AnyTree['tableName'],
 >(
   tableName: TREE_NAME,
-  includeRoot: boolean
-): typeof treeDefinitions[TREE_NAME]['ranks'] =>
+  includeRoot: boolean,
+): (typeof treeDefinitions)[TREE_NAME]['ranks'] =>
   defined(
     getTreeDefinitionItems(tableName, includeRoot),
-    `Unable to get tree ranks for a ${tableName} table`
+    `Unable to get tree ranks for a ${tableName} table`,
   );
 
 export const exportsForTests = {

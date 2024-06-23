@@ -47,7 +47,7 @@ import { ViewAttachmentFiles } from './ViewAttachmentFiles';
 export type AttachmentUploadSpec = {
   readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
   readonly formatQueryResults: (
-    value: number | string | null | undefined
+    value: number | string | null | undefined,
   ) => string | undefined;
 };
 export type PartialAttachmentUploadSpec = {
@@ -89,7 +89,7 @@ const fetchAndReconstructDataset = async (id: number) =>
       (returnFiles) => ({
         ...data,
         rows: returnFiles,
-      })
+      }),
     );
   });
 
@@ -100,7 +100,7 @@ function AttachmentImportByIdSafe({
 }): JSX.Element | null {
   const [attachmentDataSet] = usePromise<AttachmentDataSet | undefined>(
     React.useMemo(async () => fetchAndReconstructDataset(id), [id]),
-    true
+    true,
   );
   return attachmentDataSet === undefined ? null : (
     <AttachmentsImport attachmentDataSetResource={attachmentDataSet} />
@@ -117,8 +117,8 @@ function AttachmentsImport({
 
   const commitFileChange = (
     newUploadables: (
-      oldUploadables: RA<PartialUploadableFileSpec>
-    ) => RA<PartialUploadableFileSpec>
+      oldUploadables: RA<PartialUploadableFileSpec>,
+    ) => RA<PartialUploadableFileSpec>,
   ): void =>
     commitChange((oldState) => ({
       ...oldState,
@@ -128,7 +128,7 @@ function AttachmentsImport({
   const commitStatusChange = (newState: AttachmentDataSet['uploaderstatus']) =>
     commitChange(
       (oldState) => ({ ...oldState, uploaderstatus: newState }),
-      newState === 'validating'
+      newState === 'validating',
     );
 
   const applyFileNames = React.useCallback(
@@ -141,22 +141,22 @@ function AttachmentsImport({
               parsedName: resolveFileNames(
                 file.file.name,
                 eagerDataSet.uploadplan.formatQueryResults,
-                eagerDataSet.uploadplan.fieldFormatter
+                eagerDataSet.uploadplan.fieldFormatter,
               ),
             },
           },
-    [eagerDataSet.uploadplan.staticPathKey]
+    [eagerDataSet.uploadplan.staticPathKey],
   );
 
   const previousKeyRef = React.useRef(
-    attachmentDataSetResource.uploadplan.staticPathKey
+    attachmentDataSetResource.uploadplan.staticPathKey,
   );
   React.useEffect(() => {
     // Reset all parsed names if matching path is changed
     if (previousKeyRef.current !== eagerDataSet.uploadplan.staticPathKey) {
       previousKeyRef.current = eagerDataSet.uploadplan.staticPathKey;
       commitFileChange((files) =>
-        files.map(({ uploadFile }) => applyFileNames(uploadFile))
+        files.map(({ uploadFile }) => applyFileNames(uploadFile)),
       );
     }
   }, [applyFileNames, commitFileChange]);
@@ -170,9 +170,9 @@ function AttachmentsImport({
   const anyUploaded = React.useMemo(
     () =>
       eagerDataSet.rows.some(
-        (uploadable) => uploadable.attachmentId !== undefined
+        (uploadable) => uploadable.attachmentId !== undefined,
       ),
-    [eagerDataSet.uploaderstatus]
+    [eagerDataSet.uploaderstatus],
   );
 
   const handleFilesSelected = (files: FileList) => {
@@ -180,10 +180,10 @@ function AttachmentsImport({
     const oldRows = eagerDataSet.rows;
     const { resolvedFiles, duplicateFiles } = matchSelectedFiles(
       oldRows,
-      filesList
+      filesList,
     );
     (resolvedFiles as WritableArray<PartialUploadableFileSpec>).sort(
-      sortFunction((file) => file.uploadFile.file.name)
+      sortFunction((file) => file.uploadFile.file.name),
     );
     commitChange((oldState) => ({
       ...oldState,
@@ -215,7 +215,7 @@ function AttachmentsImport({
                 : strictGetTable(currentBaseTable).strictGetField(
                     staticAttachmentImportPaths[
                       eagerDataSet.uploadplan.staticPathKey
-                    ].path
+                    ].path,
                   ).label}
             </>
           )}
@@ -233,7 +233,7 @@ function AttachmentsImport({
       currentDataSet: eagerDataSet,
       fetchedStatus: attachmentDataSetResource.uploaderstatus,
     }),
-    [eagerDataSet.rows, eagerDataSet.uploaderstatus, eagerDataSet.uploadplan]
+    [eagerDataSet.rows, eagerDataSet.uploaderstatus, eagerDataSet.uploadplan],
   );
 
   useErrorContext('bulkAttachmentImport', errorContextData);
@@ -280,7 +280,7 @@ function AttachmentsImport({
             disabled={
               currentBaseTable === undefined ||
               !eagerDataSet.rows.some(
-                ({ uploadFile }) => uploadFile.parsedName !== undefined
+                ({ uploadFile }) => uploadFile.parsedName !== undefined,
                 // FEATURE: Allow validating without needing saved
               ) ||
               eagerDataSet.needsSaved
@@ -348,7 +348,7 @@ function AttachmentsImport({
                       ...uploadable,
                       disambiguated: disambiguatedId,
                     }
-                  : uploadable
+                  : uploadable,
               ),
             };
           })
@@ -370,7 +370,7 @@ function AttachmentsImport({
                     uploaderstatus: 'main',
                     rows: validatedFiles,
                   }),
-                  true
+                  true,
                 )
           }
         />

@@ -53,16 +53,13 @@ function Usages({
               return data;
             })
           : undefined,
-      [loadBlockers, resource, handleBlockersLoaded]
+      [loadBlockers, resource, handleBlockersLoaded],
     ),
-    false
+    false,
   );
   return (
     <td
-      className={`
-        flex-col !items-start overflow-auto
-        ${blockersLoaded ? 'h-[theme(spacing.40)]' : 'h-[theme(spacing.14)]'}
-      `}
+      className={`flex-col !items-start overflow-auto ${blockersLoaded ? 'h-[theme(spacing.40)]' : 'h-[theme(spacing.14)]'} `}
     >
       {loadBlockers ? (
         blockers === undefined ? (

@@ -14,6 +14,6 @@ test('fieldSpecsToLocalityMappings', () =>
         ['determinations', '#1', 'taxon', '$Species', 'taxonId'],
         ['determinations', '#1', 'isCurrent'],
         ['collectingEvent', 'locality'],
-      ].map((path) => QueryFieldSpec.fromPath('CollectionObject', path))
-    )
+      ].map((path) => QueryFieldSpec.fromPath('CollectionObject', path)),
+    ),
   ).toMatchInlineSnapshot(`[]`));

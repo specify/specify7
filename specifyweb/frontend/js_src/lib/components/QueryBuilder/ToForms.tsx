@@ -79,7 +79,7 @@ export function QueryToForms({
 function useSelectedResults(
   results: RA<QueryResultRow | undefined>,
   selectedRows: ReadonlySet<number>,
-  isOpen: boolean
+  isOpen: boolean,
 ): RA<number | undefined> {
   return React.useMemo(
     () =>
@@ -88,6 +88,6 @@ function useSelectedResults(
           ? (results.map((row) => row?.[queryIdField]) as RA<number>)
           : Array.from(selectedRows)
         : [],
-    [results, isOpen, selectedRows]
+    [results, isOpen, selectedRows],
   );
 }

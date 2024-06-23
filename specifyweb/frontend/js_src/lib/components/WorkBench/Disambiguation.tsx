@@ -100,12 +100,12 @@ function Row({
                 wbText.ambiguousTaxaChild({
                   node: resource.get('fullname'),
                   parent: parent.get('fullName'),
-                })
+                }),
               )
           : false,
-      [resource]
+      [resource],
     ),
-    false
+    false,
   );
   return (
     <Label.Inline>

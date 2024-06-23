@@ -43,7 +43,7 @@ describe('latLongUtils', () => {
         const result = Coord.parse(raw)!;
         expect(result).toBeInstanceOf(type);
         expect([result.sign, ...result.components]).toEqual(components);
-      })
+      }),
     ));
 
   describe('parse invalid', () =>
@@ -64,8 +64,8 @@ describe('latLongUtils', () => {
     ].forEach((value) =>
       [Lat, Long, Coord].map((parser) =>
         test(`${value} on ${parser.name}`, () =>
-          expect(parser.parse(value)).toBeUndefined())
-      )
+          expect(parser.parse(value)).toBeUndefined()),
+      ),
     ));
 
   describe('toDegs', () =>
@@ -77,7 +77,7 @@ describe('latLongUtils', () => {
       test(raw, () => {
         const result = Coord.parse(raw)!.toDegs();
         compareCoords(result, expectedComponents);
-      })
+      }),
     ));
 
   describe('toDegsMinsSecs', () =>
@@ -92,7 +92,7 @@ describe('latLongUtils', () => {
         const coord = new Coord(Number.parseFloat(raw));
         const result = coord.toDegsMinsSecs();
         compareCoords(result, expectedComponents);
-      })
+      }),
     ));
 
   describe('toDegsMins', () =>
@@ -104,7 +104,7 @@ describe('latLongUtils', () => {
         const coord = new Coord(Number.parseFloat(raw));
         const result = coord.toDegsMins();
         compareCoords(result, expectedComponents);
-      })
+      }),
     ));
 
   describe('format', () =>
@@ -121,7 +121,7 @@ describe('latLongUtils', () => {
         coord.sign = components.shift()!;
         coord.components = components;
         expect(coord.format(undefined)).toBe(formatted);
-      })
+      }),
     ));
 
   describe('toDegsMinsSecs', () =>
@@ -137,8 +137,8 @@ describe('latLongUtils', () => {
       '-0° 30\' 36"': new Coord(-0.51),
     }).forEach(([formatted, instance]) =>
       test(formatted, () =>
-        expect(instance.toDegsMinsSecs().format(undefined)).toBe(formatted)
-      )
+        expect(instance.toDegsMinsSecs().format(undefined)).toBe(formatted),
+      ),
     ));
 
   describe('Lat.parse, Long.parse, Coord.parse', () =>
@@ -169,7 +169,7 @@ describe('latLongUtils', () => {
           if (type === Coord || givenType === Coord || givenType === type)
             expect([result.sign, ...result.components]).toEqual(components);
           else expect(result).toBeUndefined();
-        })
+        }),
       );
     }));
 
@@ -180,7 +180,7 @@ describe('latLongUtils', () => {
           const result = type.parse(raw);
           if (type === Lat) expect(result).toBeUndefined();
           else expect(result).toBeInstanceOf(Long);
-        })
-      )
+        }),
+      ),
     ));
 });

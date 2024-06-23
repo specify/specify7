@@ -27,7 +27,7 @@ test.each([
     });
 
     expect(result.current[0]).toBe(expectedOutcome);
-  }
+  },
 );
 
 test.each([
@@ -45,7 +45,7 @@ test.each([
     });
 
     expect(result.current[0]).toBe(expectedOutcome);
-  }
+  },
 );
 
 test.each([
@@ -61,7 +61,7 @@ test.each([
     });
 
     expect(result.current[0]).toBe(expectedOutcome);
-  }
+  },
 );
 
 test.each([
@@ -79,7 +79,7 @@ test.each([
     });
 
     expect(result.current[0]).toBe(expectedOutcome);
-  }
+  },
 );
 
 test.each([
@@ -95,7 +95,7 @@ test.each([
     });
 
     expect(result.current[0]).toBe(expectedOutcome);
-  }
+  },
 );
 
 test.each([
@@ -112,7 +112,7 @@ test.each([
     });
 
     expect(result.current[0]).toBe(expectedOutcome);
-  }
+  },
 );
 
 test.each([
@@ -130,7 +130,7 @@ test.each([
     });
 
     expect(result.current[0]).toBe(expectedOutcome);
-  }
+  },
 );
 
 test('Test state updates whenever hook is called multiple times', () => {
@@ -172,7 +172,7 @@ test('Test state updates when default value changes', () => {
     ({ initialValue }) => useBooleanState(initialValue),
     {
       initialProps: { initialValue: true },
-    }
+    },
   );
 
   expect(result.current[0]).toBe(true);

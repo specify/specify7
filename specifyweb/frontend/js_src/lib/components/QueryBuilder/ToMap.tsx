@@ -60,7 +60,7 @@ export function QueryToMap({
   const ids = useSelectedResults(results, selectedRows);
   const localityMappings = React.useMemo(
     () => fieldSpecsToLocalityMappings(table.name, fieldSpecs),
-    [table.name, fieldSpecs]
+    [table.name, fieldSpecs],
   );
   return localityMappings.length === 0 ? null : (
     <>
@@ -84,16 +84,16 @@ export function QueryToMap({
 
 function useSelectedResults(
   results: RA<QueryResultRow | undefined>,
-  selectedRows: ReadonlySet<number>
+  selectedRows: ReadonlySet<number>,
 ): RA<QueryResultRow | undefined> {
   return React.useMemo(
     () =>
       selectedRows.size === 0
         ? results
         : results.filter((result) =>
-            f.has(selectedRows, result?.[queryIdField])
+            f.has(selectedRows, result?.[queryIdField]),
           ),
-    [results, selectedRows]
+    [results, selectedRows],
   );
 }
 
@@ -104,11 +104,11 @@ type LocalityColumn = {
 
 export function fieldSpecsToLocalityMappings(
   tableName: keyof Tables,
-  fieldSpecs: RA<QueryFieldSpec>
+  fieldSpecs: RA<QueryFieldSpec>,
 ) {
   const splitPaths = fieldSpecsToMappingPaths(fieldSpecs);
   const mappingPaths = splitPaths.map(({ mappingPath }) =>
-    mappingPathToString(mappingPath)
+    mappingPathToString(mappingPath),
   );
   return findLocalityColumnsInDataSet(tableName, splitPaths).map(
     (localityColumns) => {
@@ -126,7 +126,7 @@ export function fieldSpecsToLocalityMappings(
         });
 
       const basePath = splitJoinedMappingPath(
-        localityColumns['locality.longitude1']
+        localityColumns['locality.longitude1'],
       ).slice(0, -1);
       const idPath = mappingPathToString([...basePath, 'localityId']);
       return [
@@ -136,12 +136,12 @@ export function fieldSpecsToLocalityMappings(
           columnIndex: mappingPaths.indexOf(idPath),
         },
       ];
-    }
+    },
   );
 }
 
 const fieldSpecsToMappingPaths = (
-  fieldSpecs: RA<QueryFieldSpec>
+  fieldSpecs: RA<QueryFieldSpec>,
 ): RA<SplitMappingPath> =>
   fieldSpecs
     .map((fieldSpec) => fieldSpec.toMappingPath())
@@ -188,14 +188,14 @@ export function QueryToMapDialog({
 
   const taxonId = React.useMemo(
     () => brokerData?.taxonId ?? extractQueryTaxonId(tableName, fields),
-    [tableName, fields, brokerData?.taxonId]
+    [tableName, fields, brokerData?.taxonId],
   );
   const data = useMapData(brokerData, taxonId);
   const description = useExtendedMap(map, data);
 
   const markerEvents = React.useMemo(
     () => eventListener<{ readonly updated: undefined }>(),
-    []
+    [],
   );
 
   const handleAddPoints = React.useCallback(
@@ -214,14 +214,14 @@ export function QueryToMapDialog({
           ? initialData
           : {
               localityData: localityData.current.map(
-                ({ localityData }) => localityData
+                ({ localityData }) => localityData,
               ),
               onClick: createClickCallback(tableName, localityData.current),
-            }
+            },
       );
       markerEvents.trigger('updated');
     },
-    [tableName, localityMappings, markerEvents]
+    [tableName, localityMappings, markerEvents],
   );
 
   // Add initial results
@@ -281,7 +281,7 @@ export function QueryToMapDialog({
 
 const extractLocalities = (
   results: RA<QueryResultRow>,
-  localityMappings: RA<RA<LocalityColumn>>
+  localityMappings: RA<RA<LocalityColumn>>,
 ): RA<LocalityDataWithId> =>
   filterArray(
     results.flatMap((row) =>
@@ -292,24 +292,24 @@ const extractLocalities = (
               [localityColumn],
               // "+1" is to compensate for queryIdField
               row[columnIndex + 1]?.toString() ?? null,
-            ] as const
+            ] as const,
         );
         const localityData = formatLocalityDataObject(fields);
         const localityId = f.parseInt(
           fields.find(
-            ([localityColumn]) => localityColumn[0] === 'localityId'
-          )?.[1] ?? undefined
+            ([localityColumn]) => localityColumn[0] === 'localityId',
+          )?.[1] ?? undefined,
         );
         return localityData === false || typeof localityId !== 'number'
           ? undefined
           : { recordId: row[queryIdField] as number, localityId, localityData };
-      })
-    )
+      }),
+    ),
   );
 
 function createClickCallback(
   tableName: keyof Tables,
-  points: RA<LocalityDataWithId>
+  points: RA<LocalityDataWithId>,
 ): (index: number, event: L.LeafletEvent) => Promise<void> {
   const fullLocalityData: WritableArray<LocalityData | false | undefined> = [];
 
@@ -326,8 +326,8 @@ function createClickCallback(
           formatLocalityData(
             localityData!,
             getResourceViewUrl(tableName, points[index].recordId),
-            true
-          )
+            true,
+          ),
         );
   };
 }
@@ -335,7 +335,7 @@ function createClickCallback(
 function addLeafletMarkers(
   tableName: keyof Tables,
   map: LeafletInstance,
-  points: RA<LocalityDataWithId>
+  points: RA<LocalityDataWithId>,
 ): void {
   if (points.length === 0) return;
 
@@ -345,7 +345,7 @@ function addLeafletMarkers(
     getMarkersFromLocalityData({
       localityData,
       onMarkerClick: handleMarkerClick.bind(undefined, index),
-    })
+    }),
   );
 
   map.addMarkers(markers);
@@ -356,7 +356,7 @@ function addLeafletMarkers(
  */
 function useFetchLoop(
   handleFetchMore: (() => Promise<RA<QueryResultRow> | void>) | undefined,
-  handleAdd: (results: RA<QueryResultRow>) => void
+  handleAdd: (results: RA<QueryResultRow>) => void,
 ): void {
   const [lastResults, setLastResults] =
     React.useState<RA<QueryResultRow> | void>(undefined);

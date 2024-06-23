@@ -11,7 +11,7 @@ test('DialogButton closes the dialog', async () => {
   const { asFragment, getByRole, user } = mount(
     <DialogContext.Provider value={handleClose}>
       <Button.DialogClose>{commonText.view()}</Button.DialogClose>
-    </DialogContext.Provider>
+    </DialogContext.Provider>,
   );
 
   const button = getByRole('button');
@@ -32,7 +32,7 @@ describe('Button.Small', () => {
       variant: className.infoButton,
       className: 'a',
     },
-    'custom variant'
+    'custom variant',
   );
 });
 snapshot(Button.Fancy, { onClick: f.never });

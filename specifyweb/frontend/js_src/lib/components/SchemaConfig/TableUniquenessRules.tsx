@@ -44,12 +44,12 @@ export function TableUniquenessRules(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
 
   const [storedInitialRules = [], setStoredInitialRules] = React.useState(
-    getUniquenessRules(table.name)
+    getUniquenessRules(table.name),
   );
 
   const changesMade = React.useMemo(
     () => JSON.stringify(tableRules) !== JSON.stringify(storedInitialRules),
-    [storedInitialRules, tableRules]
+    [storedInitialRules, tableRules],
   );
 
   const [unloadProtected, setUnloadProtected] = React.useState(false);
@@ -57,12 +57,12 @@ export function TableUniquenessRules(): JSX.Element {
 
   const saveBlocked = React.useMemo(
     () => tableRules.some(({ duplicates }) => duplicates.totalDuplicates !== 0),
-    [tableRules]
+    [tableRules],
   );
 
   const fields = React.useMemo(
     () => table.literalFields.filter((field) => !field.isVirtual),
-    [table]
+    [table],
   );
 
   const relationships = React.useMemo(
@@ -70,10 +70,10 @@ export function TableUniquenessRules(): JSX.Element {
       table.relationships.filter(
         (relationship) =>
           (['many-to-one', 'one-to-one'] as RA<RelationshipType>).includes(
-            relationship.type
-          ) && !relationship.isVirtual
+            relationship.type,
+          ) && !relationship.isVirtual,
       ),
-    [table]
+    [table],
   );
 
   const handleRuleValidation = React.useCallback(
@@ -81,17 +81,17 @@ export function TableUniquenessRules(): JSX.Element {
       const filteredRule: UniquenessRule = {
         ...newRule,
         fields: newRule.fields.filter(
-          (field, index) => newRule.fields.indexOf(field) === index
+          (field, index) => newRule.fields.indexOf(field) === index,
         ),
         scopes: newRule.scopes.filter(
-          (scope, index) => newRule.scopes.indexOf(scope) === index
+          (scope, index) => newRule.scopes.indexOf(scope) === index,
         ),
       };
       loading(
         validateUniqueness(
           table.name,
           filteredRule.fields as unknown as RA<never>,
-          filteredRule.scopes as unknown as RA<never>
+          filteredRule.scopes as unknown as RA<never>,
         ).then((duplicates) => {
           const isNewRule = index > tableRules.length;
           setTableRules((previous) =>
@@ -100,14 +100,14 @@ export function TableUniquenessRules(): JSX.Element {
               : replaceItem(tableRules, index, {
                   rule: filteredRule,
                   duplicates,
-                })
+                }),
           );
 
           return filteredRule;
-        })
+        }),
       );
     },
-    [loading, table.name, tableRules, setTableRules]
+    [loading, table.name, tableRules, setTableRules],
   );
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -129,7 +129,7 @@ export function TableUniquenessRules(): JSX.Element {
                   isDatabaseConstraint: false,
                   scopes: [],
                 },
-                tableRules.length
+                tableRules.length,
               )
             }
           >
@@ -164,11 +164,11 @@ export function TableUniquenessRules(): JSX.Element {
                   rules: tableRules.map(({ rule }) => rule),
                   model: table.name,
                 },
-              }
+              },
             ).then((): void => {
               void setStoredTableRules(tableRules);
               return void setStoredInitialRules(tableRules);
-            })
+            }),
           );
         }}
       >

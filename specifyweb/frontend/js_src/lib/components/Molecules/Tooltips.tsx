@@ -129,14 +129,14 @@ export function TooltipManager(): JSX.Element {
     (
       forElement: HTMLElement | undefined,
       text: string | undefined,
-      placement: Placement
+      placement: Placement,
     ) => {
       setReference(forElement ?? null);
       setText(text);
       setIsOpen(typeof text === 'string');
       setRawPlacement(placement);
     },
-    [setReference]
+    [setReference],
   );
 
   const [tooltip, setTooltip] = React.useState<HTMLDivElement | null>(null);
@@ -147,7 +147,7 @@ export function TooltipManager(): JSX.Element {
         setTooltip(element);
         setFloating(element);
       },
-      [setFloating]
+      [setFloating],
     );
   useInteraction(tooltip ?? undefined, setContent, context, id);
 
@@ -168,18 +168,14 @@ export function TooltipManager(): JSX.Element {
     <FloatingPortal id="portal-root">
       {isOpen && typeof text === 'string' && !isHidden ? (
         <div
-          className={`
-            left-0 top-0 z-[10000] w-max whitespace-pre-line rounded
-            bg-gray-100 text-gray-900 shadow-md duration-0 dark:bg-black
-            dark:text-gray-200
-          `}
+          className={`left-0 top-0 z-[10000] w-max whitespace-pre-line rounded bg-gray-100 text-gray-900 shadow-md duration-0 dark:bg-black dark:text-gray-200`}
           id={id}
           ref={tooltipRef}
           role="tooltip"
           style={{
             position: strategy,
             transform: `translate(${roundByDevice(x ?? 0)}px,${roundByDevice(
-              y ?? 0
+              y ?? 0,
             )}px)`,
             padding: `${paddingRem}rem`,
             maxWidth: `calc(100vw - ${paddingRem * 2}rem)`,
@@ -225,7 +221,7 @@ globalThis.addEventListener?.(
     delayFocusIn = 0;
     delayMouseIn = 0;
   },
-  { once: true }
+  { once: true },
 );
 
 /**
@@ -236,10 +232,10 @@ function useInteraction(
   setContent: (
     forElement: HTMLElement | undefined,
     text: string | undefined,
-    placement: Placement
+    placement: Placement,
   ) => void,
   context: FloatingContext,
-  floatingId: string | undefined
+  floatingId: string | undefined,
 ): void {
   const [isEnabled] = userPreferences.use('general', 'ui', 'useCustomTooltips');
 
@@ -298,7 +294,7 @@ function useInteraction(
         toFlush(() => clearTimeout(timeOut));
       }
     },
-    [flush, handleClose]
+    [flush, handleClose],
   );
 
   React.useEffect(
@@ -308,7 +304,7 @@ function useInteraction(
             passive: true,
           })
         : undefined,
-    [container, handleOut]
+    [container, handleOut],
   );
 
   React.useEffect(() => {
@@ -330,7 +326,7 @@ function useInteraction(
     function display(
       type: 'focus' | 'mouseenter',
       element: HTMLElement,
-      title: LocalizedString
+      title: LocalizedString,
     ): void {
       const isDisplayed =
         currentElementRef.current !== undefined && contextRef.current.open;
@@ -351,8 +347,8 @@ function useInteraction(
           {
             passive: true,
             once: true,
-          }
-        )
+          },
+        ),
       );
 
       function handleSet(): void {
@@ -361,8 +357,8 @@ function useInteraction(
           whitespaceSensitive(title),
           f.maybe(
             element.getAttribute(titlePosition) ?? undefined,
-            normalizePlacement
-          ) ?? defaultPlacement
+            normalizePlacement,
+          ) ?? defaultPlacement,
         );
         if (typeof floatingIdRef.current === 'string')
           element.setAttribute('aria-describedby', floatingIdRef.current);
@@ -370,7 +366,7 @@ function useInteraction(
 
       const customDelay = f.maybe(
         element.getAttribute(titleDelay) ?? undefined,
-        f.parseInt
+        f.parseInt,
       );
       if (
         // If tooltip is already displayed, switch to displaying new tooltip right away
@@ -433,7 +429,7 @@ function useInteraction(
       typeof currentElement === 'object'
         ? listen(currentElement, 'click', handleClose)
         : undefined,
-    [handleClose, currentElement]
+    [handleClose, currentElement],
   );
 }
 
@@ -450,7 +446,7 @@ const allowedPlacements: ReadonlySet<Placement> = new Set([
 function normalizePlacement(raw: string): Placement {
   if (process.env.NODE_ENV !== 'production' && !f.has(allowedPlacements, raw))
     console.error(
-      `Unexpected tooltip position: ${raw}. Allowed values: top, right, bottom, left.`
+      `Unexpected tooltip position: ${raw}. Allowed values: top, right, bottom, left.`,
     );
 
   const normalized = raw.toLowerCase().trim();

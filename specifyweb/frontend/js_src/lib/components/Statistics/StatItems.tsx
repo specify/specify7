@@ -54,7 +54,7 @@ export function StatItem({
     | ((
         categoryIndex: number,
         itemIndex: number,
-        value: number | string
+        value: number | string,
       ) => void)
     | undefined;
   readonly onRename: ((newLabel: string) => void) | undefined;
@@ -62,7 +62,7 @@ export function StatItem({
 }): JSX.Element | null {
   const handleLoadItem = React.useCallback(
     (value: number | string) => handleLoad?.(categoryIndex, itemIndex, value),
-    [handleLoad, categoryIndex, itemIndex]
+    [handleLoad, categoryIndex, itemIndex],
   );
   const resolvedSpec = useResolvedStatSpec(item, formatterSpec);
 
@@ -135,9 +135,9 @@ function BackEndItem({
     () =>
       querySpec === undefined ||
       getNoAccessTables(
-        makeSerializedFieldsFromPaths(querySpec.tableName, querySpec.fields)
+        makeSerializedFieldsFromPaths(querySpec.tableName, querySpec.fields),
       ).length === 0,
-    [querySpec]
+    [querySpec],
   );
 
   const [hasStatPermission, setStatPermission] =
@@ -162,7 +162,7 @@ function BackEndItem({
             }
             return data;
           }),
-        fetchUrl
+        fetchUrl,
       ).then((data) => {
         if (data === undefined) {
           return undefined;
@@ -171,7 +171,7 @@ function BackEndItem({
         if (fetchValue === undefined) handleRemove?.();
         return fetchValue;
       }),
-    [pathToValue, fetchUrl, handleRemove]
+    [pathToValue, fetchUrl, handleRemove],
   );
   useStatValueLoad(value, promiseGenerator, handleLoadResolve);
   return (
@@ -218,7 +218,7 @@ function QueryItem({
 }): JSX.Element | null {
   const query = React.useMemo(
     () => querySpecToResource(label, querySpec),
-    [label, querySpec]
+    [label, querySpec],
   );
   const serializedQuery = serializeResource(query);
   const statStateRef = React.useMemo(
@@ -226,7 +226,7 @@ function QueryItem({
       getNoAccessTables(serializedQuery.fields).length === 0
         ? 'valid'
         : 'noPermission',
-    [querySpec]
+    [querySpec],
   );
 
   const [statState, setStatState] = React.useState<
@@ -242,7 +242,7 @@ function QueryItem({
       throttledPromise<AjaxResponseObject<{ readonly count: number }>>(
         'queryStats',
         queryCountPromiseGenerator(serializedQuery),
-        JSON.stringify(querySpec)
+        JSON.stringify(querySpec),
       ).then((response) => {
         if (response === undefined) return undefined;
         const { data, status } = response;
@@ -254,7 +254,7 @@ function QueryItem({
         return undefined;
       }),
 
-    [query, setStatState]
+    [query, setStatState],
   );
 
   useStatValueLoad(value, promiseGenerator, handleLoadResolve);
@@ -268,8 +268,8 @@ function QueryItem({
         statState === 'noPermission'
           ? userText.noPermission()
           : statState === 'error'
-          ? statsText.error()
-          : value
+            ? statsText.error()
+            : value
       }
       onClick={handleClick}
       onClone={handleClone}

@@ -38,7 +38,7 @@ export function LoadingScreen(): null {
     loading(
       new Promise<void>((resolve) => {
         resolveRef.current = resolve;
-      })
+      }),
     );
     return (): void => resolveRef.current?.();
   }, [loading]);
@@ -85,7 +85,7 @@ const preventAutoCloseTime = 300;
 
 const supportsBackdropBlur =
   globalThis.CSS?.supports(
-    '((-webkit-backdrop-filter: none) or (backdrop-filter: none))'
+    '((-webkit-backdrop-filter: none) or (backdrop-filter: none))',
   ) ?? false;
 
 // Used for 'inert' attribute addition
@@ -197,7 +197,7 @@ export function Dialog({
   const [modifyTitle] = userPreferences.use(
     'general',
     'dialog',
-    'updatePageTitle'
+    'updatePageTitle',
   );
 
   useTitle(modal && isOpen && modifyTitle ? header : undefined);
@@ -206,12 +206,12 @@ export function Dialog({
   const [transparentDialog] = userPreferences.use(
     'general',
     'dialog',
-    'transparentBackground'
+    'transparentBackground',
   );
   const [blurContentBehindDialog] = userPreferences.use(
     'general',
     'dialog',
-    'blurContentBehindDialog'
+    'blurContentBehindDialog',
   );
   const [showIcon] = userPreferences.use('general', 'dialog', 'showIcon');
 
@@ -219,7 +219,7 @@ export function Dialog({
   const [closeOnOutsideClick] = userPreferences.use(
     'general',
     'dialog',
-    'closeOnOutsideClick'
+    'closeOnOutsideClick',
   );
 
   /*
@@ -264,9 +264,9 @@ export function Dialog({
             // Check if dialog is already at the very top
             Math.max(...dialogIndexes) === zIndex
               ? undefined
-              : setZindex(getNextIndex)
+              : setZindex(getNextIndex),
           ),
-    [forceToTop, modal, isOpen, zIndex, container]
+    [forceToTop, modal, isOpen, zIndex, container],
   );
 
   /*
@@ -284,18 +284,18 @@ export function Dialog({
     container,
     isOpen,
     dimensionsKey,
-    handleResize
+    handleResize,
   );
 
   const [rememberPosition] = userPreferences.use(
     'general',
     'dialog',
-    'rememberPosition'
+    'rememberPosition',
   );
   const positionKey = rememberPosition ? dimensionsKey : undefined;
   const [dialogPositions = {}, setDialogPositions] = useCachedState(
     'dialogs',
-    'positions'
+    'positions',
   );
   const handleDrag = React.useCallback(
     (_: unknown, { x, y }: DraggableData) =>
@@ -305,7 +305,7 @@ export function Dialog({
             [positionKey]: [x, y],
           }))
         : undefined,
-    [positionKey, setDialogPositions]
+    [positionKey, setDialogPositions],
   );
   const handleDragged =
     typeof positionKey === 'string' ? handleDrag : undefined;
@@ -320,7 +320,7 @@ export function Dialog({
         : undefined;
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [positionKey]
+    [positionKey],
   );
 
   const isFullScreen = containerClassName.includes(dialogClassNames.fullScreen);
@@ -345,7 +345,7 @@ export function Dialog({
         <div {...props}>{children}</div>
       </Draggable>
     ),
-    [id, initialPosition, handleDragged]
+    [id, initialPosition, handleDragged],
   );
 
   const [buttonContainer, setButtonContainer] =
@@ -363,7 +363,7 @@ export function Dialog({
         ([_type, className]) =>
           className !== '' &&
           typeof buttonContainer.getElementsByClassName(className)[0] ===
-            'object'
+            'object',
       )?.[KEY] ?? 'none'
     );
   }, [showIcon, defaultIcon, buttons, buttonContainer]);
@@ -386,7 +386,7 @@ export function Dialog({
 
   const overlayElement: Props['overlayElement'] = (
     props: React.ComponentPropsWithRef<'div'>,
-    contentElement: React.ReactElement
+    contentElement: React.ReactElement,
   ) => (
     <div
       {...props}
@@ -428,21 +428,15 @@ export function Dialog({
       }}
       ariaHideApp={false}
       bodyOpenClassName={null}
-      className={`
-        flex flex-col gap-2 p-4 outline-none ${containerClassName}
-        overflow-x-hidden text-neutral-900 duration-0
-        dark:border dark:border-neutral-700 dark:text-neutral-200
-        ${modal ? '' : 'pointer-events-auto border border-gray-500'}
-        ${
-          reduceTransparency || highContrast || specialMode === 'noGradient'
-            ? dialogClassNames.solidBackground
-            : transparentDialog && modal
+      className={`flex flex-col gap-2 p-4 outline-none ${containerClassName} overflow-x-hidden text-neutral-900 duration-0 dark:border dark:border-neutral-700 dark:text-neutral-200 ${modal ? '' : 'pointer-events-auto border border-gray-500'} ${
+        reduceTransparency || highContrast || specialMode === 'noGradient'
+          ? dialogClassNames.solidBackground
+          : transparentDialog && modal
             ? supportsBackdropBlur
               ? dialogClassNames.transparentBackground
               : dialogClassNames.legacyTransparentBackground
             : dialogClassNames.gradientBackground
-        }
-      `}
+      } `}
       closeTimeoutMS={transitionDuration === 0 ? undefined : transitionDuration}
       // "overflow-x-hidden" is necessary for the "resize" handle to appear
       contentElement={draggableContainer}
@@ -502,11 +496,7 @@ export function Dialog({
     >
       {/* "p-4 -m-4" increases the handle size for easier dragging */}
       <div
-        className={`
-          flex items-center gap-2 md:gap-4
-          ${isFullScreen ? '' : '-m-4 cursor-move p-4'}
-          ${specialMode === 'orangeBar' ? '' : 'flex-wrap'}
-        `}
+        className={`flex items-center gap-2 md:gap-4 ${isFullScreen ? '' : '-m-4 cursor-move p-4'} ${specialMode === 'orangeBar' ? '' : 'flex-wrap'} `}
         id={id('handle')}
       >
         <div className="flex items-center gap-2">
@@ -520,7 +510,7 @@ export function Dialog({
         {headerButtons}
       </div>
       {specialMode === 'orangeBar' && (
-        <div className="border-brand-300 w-full border-b-2" />
+        <div className="w-full border-b-2 border-brand-300" />
       )}
       <DialogContext.Provider value={handleClose}>
         {/*
@@ -531,10 +521,7 @@ export function Dialog({
          * close
          */}
         <div
-          className={`
-            dark:text-neutral-350 -mx-1 flex-1 overflow-y-auto px-1 py-4
-            text-gray-700 ${contentClassName}
-          `}
+          className={`-mx-1 flex-1 overflow-y-auto px-1 py-4 text-gray-700 dark:text-neutral-350 ${contentClassName} `}
           id={id('content')}
           ref={contentRef}
         >
@@ -564,12 +551,12 @@ function useDialogSize(
   container: HTMLElement | null,
   isOpen: boolean,
   dimensionsKey: string | undefined,
-  handleResize: ((container: HTMLElement) => void) | undefined
+  handleResize: ((container: HTMLElement) => void) | undefined,
 ): { readonly width: number; readonly height: number } | undefined {
   const [rememberSize] = userPreferences.use(
     'general',
     'dialog',
-    'rememberSize'
+    'rememberSize',
   );
   const sizeKey = rememberSize ? dimensionsKey : undefined;
   const [dialogSizes = {}, setDialogSizes] = useCachedState('dialogs', 'sizes');
@@ -631,7 +618,7 @@ function useTitleChangeNotice(dimensionKey: string | undefined): void {
     changeCount.current += 1;
     if (changeCount.current > 3)
       console.warn(
-        'Dialog title changes too much. Please add a dimensionsKey="..." prop to the dialog'
+        'Dialog title changes too much. Please add a dimensionsKey="..." prop to the dialog',
       );
   }, [dimensionKey]);
 }

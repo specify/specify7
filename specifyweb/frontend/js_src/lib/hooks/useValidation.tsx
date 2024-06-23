@@ -19,7 +19,7 @@ import type { RA } from '../utils/types';
 export function useValidation<T extends Input = Input>(
   // Can set validation message from state or a prop
   message: RA<string> | string = '',
-  clearOnTyping: boolean = true
+  clearOnTyping: boolean = true,
 ): {
   // Set this as a ref prop on an input
   readonly validationRef: React.RefCallback<T>;
@@ -28,7 +28,7 @@ export function useValidation<T extends Input = Input>(
   // Can set validation message via this callback
   readonly setValidation: (
     message: RA<string> | string,
-    type?: 'auto' | 'focus' | 'silent'
+    type?: 'auto' | 'focus' | 'silent',
   ) => void;
 } {
   const inputRef = React.useRef<T | null>(null);
@@ -39,7 +39,7 @@ export function useValidation<T extends Input = Input>(
    * rendered
    */
   const validationMessageRef = React.useRef<string>(
-    Array.isArray(message) ? message.join('\n') : message
+    Array.isArray(message) ? message.join('\n') : message,
   );
 
   // Clear validation message on typing
@@ -63,9 +63,9 @@ export function useValidation<T extends Input = Input>(
         : listen(
             inputRef.current,
             'focus',
-            (): void => void inputRef.current?.reportValidity()
+            (): void => void inputRef.current?.reportValidity(),
           ),
-    []
+    [],
   );
 
   const isInFormEditor = React.useContext(InFormEditorContext);
@@ -85,7 +85,7 @@ export function useValidation<T extends Input = Input>(
   const setValidation = React.useCallback(
     function setValidation(
       message: RA<string> | string,
-      type: 'auto' | 'focus' | 'silent' = 'auto'
+      type: 'auto' | 'focus' | 'silent' = 'auto',
     ): void {
       const joined = Array.isArray(message) ? message.join('\n') : message;
       if (validationMessageRef.current === joined && type !== 'focus') return;
@@ -110,7 +110,7 @@ export function useValidation<T extends Input = Input>(
         input.reportValidity();
       else isPendingError.current = true;
     },
-    [isInFormEditor]
+    [isInFormEditor],
   );
 
   React.useEffect(() => setValidation(message), [message, setValidation]);
@@ -122,10 +122,10 @@ export function useValidation<T extends Input = Input>(
         inputRef.current = input;
         setValidation(
           validationMessageRef.current,
-          clearOnTyping ? 'auto' : 'focus'
+          clearOnTyping ? 'auto' : 'focus',
         );
       },
-      [setValidation]
+      [setValidation],
     ),
     setValidation,
   };

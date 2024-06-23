@@ -27,7 +27,7 @@ const baseProps: Omit<Parameters<typeof PartialDateUi>[0], 'dateField'> = {
 };
 const props = (
   resource = getResource(),
-  extra: Partial<Parameters<typeof PartialDateUi>[0]> = {}
+  extra: Partial<Parameters<typeof PartialDateUi>[0]> = {},
 ): Parameters<typeof PartialDateUi>[0] => ({
   ...baseProps,
   dateField: tables.CollectionObject.strictGetLiteralField(dateFieldName),

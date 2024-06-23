@@ -11,13 +11,13 @@ requireContext();
 
 test('resource is created for correct table', () =>
   expect(new tables.CollectionObject.Resource().specifyTable).toBe(
-    tables.CollectionObject
+    tables.CollectionObject,
   ));
 
 const collectionObjectId = 100;
 const collectionObjectUrl = getResourceApiUrl(
   'CollectionObject',
-  collectionObjectId
+  collectionObjectId,
 );
 const accessionId = 11;
 const accessionUrl = getResourceApiUrl('Accession', accessionId);
@@ -52,7 +52,7 @@ overrideAjax(
       offset: 0,
       total_count: 1,
     },
-  }
+  },
 );
 
 const accessionNumber = '2011-IC-116';
@@ -96,7 +96,7 @@ describe('rgetPromise', () => {
       id: collectionObjectId,
     });
     await expect(
-      resource.rgetPromise('accession.accessionNumber' as 'accession')
+      resource.rgetPromise('accession.accessionNumber' as 'accession'),
     ).resolves.toBe(accessionNumber);
   });
 
@@ -125,7 +125,7 @@ describe('rgetPromise', () => {
 const addressOfRecordId = 42;
 const addressOfRecordUrl = getResourceApiUrl(
   'AddressOfRecord',
-  addressOfRecordId
+  addressOfRecordId,
 );
 
 overrideAjax(addressOfRecordUrl, {
@@ -151,7 +151,7 @@ overrideAjax(
   {
     meta: { total_count: 2 },
     objects: accessionsResponse,
-  }
+  },
 );
 
 describe('rgetCollection', () => {
@@ -187,9 +187,8 @@ describe('rgetCollection', () => {
       id: collectionObjectId,
     });
     const firstDeterminations = await resource.rgetCollection('determinations');
-    const secondDeterminations = await resource.rgetCollection(
-      'determinations'
-    );
+    const secondDeterminations =
+      await resource.rgetCollection('determinations');
     expect(firstDeterminations.toJSON()).toEqual(determinationsResponse);
     expect(secondDeterminations.toJSON()).toEqual(determinationsResponse);
     expect(firstDeterminations).toBe(secondDeterminations);
@@ -238,7 +237,7 @@ overrideAjax(
         number1: 1,
       }),
     }),
-  }
+  },
 );
 
 overrideAjax(
@@ -250,7 +249,7 @@ overrideAjax(
       offset: 0,
       total_count: 1,
     },
-  }
+  },
 );
 
 test('save', async () => {
@@ -304,9 +303,8 @@ describe('placeInSameHierarchy', () => {
       id: 5,
     });
     const locality = new tables.Locality.Resource();
-    const hierarchyResource = await locality.placeInSameHierarchy(
-      collectionObject
-    );
+    const hierarchyResource =
+      await locality.placeInSameHierarchy(collectionObject);
     expect(hierarchyResource?.url()).toBe(getResourceApiUrl('Discipline', 3));
     expect(locality.get('discipline')).toBe(getResourceApiUrl('Discipline', 3));
   });
@@ -317,12 +315,12 @@ describe('placeInSameHierarchy', () => {
         id: 6,
         resource_uri: getResourceApiUrl('CollectionObject', 6),
       },
-      { noBusinessRules: true }
+      { noBusinessRules: true },
     );
     const locality = new tables.Locality.Resource();
     locality.set('discipline', null as never);
     await expect(
-      locality.placeInSameHierarchy(collectionObject)
+      locality.placeInSameHierarchy(collectionObject),
     ).resolves.toBeUndefined();
     expect(locality.get('discipline')).toBeNull();
   });
@@ -333,7 +331,7 @@ describe('placeInSameHierarchy', () => {
     });
     const author = new tables.Author.Resource();
     await expect(
-      author.placeInSameHierarchy(collectionObject)
+      author.placeInSameHierarchy(collectionObject),
     ).resolves.toBeUndefined();
   });
 
@@ -341,7 +339,7 @@ describe('placeInSameHierarchy', () => {
     const recordset = new tables.RecordSet.Resource({ id: 1 });
     const collectionObject = new tables.CollectionObject.Resource();
     await expect(
-      collectionObject.placeInSameHierarchy(recordset)
+      collectionObject.placeInSameHierarchy(recordset),
     ).resolves.toBeUndefined();
   });
 
@@ -349,7 +347,7 @@ describe('placeInSameHierarchy', () => {
     const locality = new tables.Locality.Resource({ id: 100 });
     const collectionObject = new tables.CollectionObject.Resource();
     await expect(
-      collectionObject.placeInSameHierarchy(locality)
+      collectionObject.placeInSameHierarchy(locality),
     ).resolves.toBeUndefined();
   });
 });

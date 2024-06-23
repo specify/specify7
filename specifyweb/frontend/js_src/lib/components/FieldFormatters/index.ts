@@ -39,21 +39,21 @@ export const fetchContext = Promise.all([
               formatter.fields.map((field) =>
                 typeof field.type === 'string'
                   ? new formatterTypeMapper[field.type](field)
-                  : undefined
-              )
+                  : undefined,
+              ),
             );
             resolvedFormatter = new UiFormatter(
               formatter.isSystem,
               formatter.title ?? formatter.name,
               fields,
-              formatter.table
+              formatter.table,
             );
           }
 
           return [formatter.name, resolvedFormatter];
-        }
-      )
-    )
+        },
+      ),
+    ),
   );
   return uiFormatters;
 });
@@ -66,7 +66,7 @@ export class UiFormatter {
     public readonly isSystem: boolean,
     public readonly title: LocalizedString,
     public readonly fields: RA<Field>,
-    public readonly table: SpecifyTable | undefined
+    public readonly table: SpecifyTable | undefined,
   ) {}
 
   /**
@@ -102,7 +102,7 @@ export class UiFormatter {
     return localized(
       this.fields
         .map((field, index) => field.canonicalize(values[index]))
-        .join('')
+        .join(''),
     );
   }
 
@@ -187,7 +187,7 @@ class AlphaField extends Field {
 
 class NumericField extends Field {
   public constructor(
-    options: Omit<ConstructorParameters<typeof Field>[0], 'value'>
+    options: Omit<ConstructorParameters<typeof Field>[0], 'value'>,
   ) {
     super({
       ...options,
@@ -248,7 +248,7 @@ export class CatalogNumberNumeric extends UiFormatter {
           byYear: false,
         }),
       ],
-      tables.CollectionObject
+      tables.CollectionObject,
     );
   }
 }

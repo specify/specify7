@@ -42,7 +42,7 @@ type Store<
   BUCKETS extends Record<
     number | string,
     Record<number | string, boolean | number | object | string>
-  >
+  >,
 > = {
   readonly [BUCKET_NAME in keyof BUCKETS]: {
     readonly listeners: readonly (() => void)[];
@@ -63,17 +63,17 @@ const store: Store<Buckets> = {};
  */
 export function useStore<
   BUCKET_NAME extends keyof Buckets,
-  ID extends keyof Buckets[BUCKET_NAME]
+  ID extends keyof Buckets[BUCKET_NAME],
 >(
   callback: (id: ID) => Promise<Buckets[BUCKET_NAME][ID]>,
   deleteCallback: (
     id: ID,
-    value: Buckets[BUCKET_NAME][ID] | undefined
+    value: Buckets[BUCKET_NAME][ID] | undefined,
   ) => Promise<undefined>,
   bucketName: BUCKET_NAME,
   id: ID,
   // Show the loading screen while the promise is being resolved
-  loadingScreen: boolean
+  loadingScreen: boolean,
 ): GetOrSet<Buckets[BUCKET_NAME][ID] | undefined> {
   const [state, setState] = useAsyncState<Buckets[BUCKET_NAME][ID]>(
     React.useCallback(() => {
@@ -86,7 +86,7 @@ export function useStore<
         store[bucketName].values[id] = callback(id);
       return store[bucketName].values[id];
     }, [callback, bucketName, id]),
-    loadingScreen
+    loadingScreen,
   );
   const updateState: React.Dispatch<
     React.SetStateAction<Buckets[BUCKET_NAME][ID] | undefined>
@@ -103,7 +103,7 @@ export function useStore<
         return resolvedState;
       });
     },
-    [setState, deleteCallback, bucketName, id]
+    [setState, deleteCallback, bucketName, id],
   );
   React.useEffect(() => {
     if (store[bucketName] === undefined)
@@ -115,7 +115,7 @@ export function useStore<
     store[bucketName].listeners.push(listener);
     return (): void => {
       store[bucketName].listeners = store[bucketName].listeners.filter(
-        (item) => item !== listener
+        (item) => item !== listener,
       );
     };
   }, [updateState, bucketName, id]);
@@ -127,7 +127,7 @@ export function useStore<
 export function useRecord<TABLE_NAME extends keyof Tables>(
   tableName: TABLE_NAME,
   id: number,
-  loadingScreen: boolean
+  loadingScreen: boolean,
 ): GetOrSet<Buckets[`/api/specify/${TABLE_NAME}/`][number] | undefined> {
   return useStore(
     React.useCallback(
@@ -135,15 +135,15 @@ export function useRecord<TABLE_NAME extends keyof Tables>(
         const resource = new (strictGetTable(tableName).Resource)({ id });
         return resource.fetch();
       },
-      [tableName]
+      [tableName],
     ),
     React.useCallback(
       (_id, resourcePromise) =>
         resourcePromise?.then((resource) => resource?.delete()),
-      [tableName]
+      [tableName],
     ),
     `/api/specify/${tableName}/` as const,
     id,
-    loadingScreen
+    loadingScreen,
   );
 }

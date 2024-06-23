@@ -16,7 +16,7 @@ export function AttachmentsValidationDialog({
   uploadSpec,
 }: {
   readonly onValidated: (
-    validatedFiles: RA<PartialUploadableFileSpec> | undefined
+    validatedFiles: RA<PartialUploadableFileSpec> | undefined,
   ) => void;
   readonly files: RA<PartialUploadableFileSpec>;
   readonly uploadSpec: AttachmentUploadSpec;

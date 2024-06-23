@@ -38,11 +38,11 @@ export function overrideAjax(
     readonly method?: string;
     readonly body?: unknown;
   } = {},
-  allowOverride = false
+  allowOverride = false,
 ): void {
   if (!url.startsWith('/'))
     throw new Error(
-      '"overrideAjax" must be called with a URL that starts with /'
+      '"overrideAjax" must be called with a URL that starts with /',
     );
   beforeAll(() => {
     overrides[url] ??= {};
@@ -52,7 +52,7 @@ export function overrideAjax(
          * This prevent accidentally calling overrideAjax twice with the same
          * URL in the same scope
          */
-        `Can\'t override ${url} [${method}] as there already is an override for that URL`
+        `Can\'t override ${url} [${method}] as there already is an override for that URL`,
       );
     overrides[url]![method] = {
       data: typeof response === 'function' ? response : () => response,
@@ -88,7 +88,7 @@ export async function ajaxMock<RESPONSE_TYPE>(
     body: requestBody,
     headers: { Accept: accept },
     expectedErrors = [],
-  }: Parameters<typeof ajax>[1]
+  }: Parameters<typeof ajax>[1],
 ): Promise<AjaxResponseObject<RESPONSE_TYPE>> {
   if (url.startsWith('https://stats.specifycloud.org/capture'))
     return formatResponse('', accept, expectedErrors, undefined);
@@ -134,14 +134,14 @@ export async function ajaxMock<RESPONSE_TYPE>(
        * and without the file extension
        */
       (fileName === dirent.name ||
-        fileName === splitFileName(dirent.name).fileName)
+        fileName === splitFileName(dirent.name).fileName),
   )?.name;
 
   if (targetFile === undefined)
     throw new Error(
       `No static source found for URL ${url} [${requestMethod}].\n` +
         `You can mock it by creating a file in ./lib/tests/ajax/static\n` +
-        `Alternatively, you can add overrideAjax() to your test`
+        `Alternatively, you can add overrideAjax() to your test`,
     );
 
   const file = await fs.promises.readFile(path.join(directoryName, targetFile));
@@ -163,7 +163,7 @@ const formatResponse = <RESPONSE_TYPE>(
   response: string,
   accept: MimeType | undefined,
   expectedErrors: RA<number>,
-  responseCode: number | undefined = Http.OK
+  responseCode: number | undefined = Http.OK,
 ): AjaxResponseObject<RESPONSE_TYPE> =>
   handleAjaxResponse({
     expectedErrors,

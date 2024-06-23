@@ -47,13 +47,13 @@ export function AppResourcesAside({
   readonly filters: AppResourceFiltersType | undefined;
   readonly isEmbedded: boolean;
   readonly onOpen?: (
-    resource: SerializedResource<SpAppResource | SpViewSetObj>
+    resource: SerializedResource<SpAppResource | SpViewSetObj>,
   ) => void;
   readonly conformations: GetSet<RA<AppResourcesConformation> | undefined>;
 }): JSX.Element {
   const resources = React.useMemo(
     () => filterAppResources(unfilteredResources, filters),
-    [filters, unfilteredResources]
+    [filters, unfilteredResources],
   );
   const resourcesTree = useResourcesTree(resources);
   useErrorContext('appResourcesTree', resourcesTree);
@@ -63,18 +63,15 @@ export function AppResourcesAside({
       initialConformations === emptyArray
         ? buildAppResourceConformation(resourcesTree)
         : initialConformations,
-    [initialConformations, resourcesTree]
+    [initialConformations, resourcesTree],
   );
   useOpenCurrent(conformations, setConformations, resourcesTree);
 
   return (
     <aside
-      className={`
-        !gap-2 sm:overflow-visible
-        ${
-          isEmbedded ? className.containerBaseUnstyled : className.containerBase
-        } 
-      `}
+      className={`!gap-2 sm:overflow-visible ${
+        isEmbedded ? className.containerBaseUnstyled : className.containerBase
+      } `}
     >
       <Ul className="flex flex-1 flex-col gap-1 overflow-auto" role="tree">
         {resourcesTree.map((resources) => (
@@ -103,7 +100,7 @@ export function AppResourcesAside({
 function useOpenCurrent(
   conformation: RA<AppResourcesConformation>,
   setConformations: (value: RA<AppResourcesConformation>) => void,
-  resourcesTree: AppResourcesTree
+  resourcesTree: AppResourcesTree,
 ): void {
   const { id } = useParams();
   React.useEffect(() => {
@@ -113,17 +110,17 @@ function useOpenCurrent(
 
     function updateConformation(
       category: AppResourcesTree[number],
-      conformation: AppResourcesConformation | undefined
+      conformation: AppResourcesConformation | undefined,
     ): AppResourcesConformation | undefined {
       const childrenConformation = filterArray(
         category.subCategories.map((item) =>
           updateConformation(
             item,
             conformation?.children.find(
-              (conformation) => conformation.key === item.key
-            )
-          )
-        )
+              (conformation) => conformation.key === item.key,
+            ),
+          ),
+        ),
       );
 
       return containsId(category) ||
@@ -139,7 +136,7 @@ function useOpenCurrent(
     function containsId(category: AppResourcesTree[number]): boolean {
       return (
         category.appResources.some(
-          (appResources) => appResources.id === idNumber!
+          (appResources) => appResources.id === idNumber!,
         ) ||
         category.viewSets.some((appResources) => appResources.id === idNumber!)
       );
@@ -150,10 +147,10 @@ function useOpenCurrent(
         resourcesTree.map((tree) =>
           updateConformation(
             tree,
-            conformation.find((conformation) => conformation.key === tree.key)
-          )
-        )
-      )
+            conformation.find((conformation) => conformation.key === tree.key),
+          ),
+        ),
+      ),
     );
     /*
      * Not listening to conformation changes to that this only runs on page
@@ -207,7 +204,7 @@ function TreeItem({
 }): JSX.Element {
   const { label, key, subCategories } = resourcesTree;
   const conformationIndex = conformations.findIndex(
-    (conformation) => conformation.key === key
+    (conformation) => conformation.key === key,
   );
   const isExpanded = conformationIndex !== -1;
   const conformation = conformations[conformationIndex] ?? {
@@ -236,7 +233,7 @@ function TreeItem({
           handleFold(
             conformationIndex === -1
               ? [...conformations, conformation]
-              : removeItem(conformations, conformationIndex)
+              : removeItem(conformations, conformationIndex),
           )
         }
       >
@@ -272,7 +269,7 @@ function TreeItem({
                   resourcesTree={resources}
                   onFold={(newConformation): void =>
                     handleFold(
-                      mutateConformation(conformations, key, newConformation)
+                      mutateConformation(conformations, key, newConformation),
                     )
                   }
                   onOpen={handleOpen}
@@ -310,10 +307,10 @@ function TreeItemResources({
           // Put view sets first. Sort by type
           ({ type }) => (type === 'viewSet' ? -1 : subTypes.indexOf(type)),
           // Secondary sort by name
-          ({ name }) => name
-        )
+          ({ name }) => name,
+        ),
       ),
-    [appResources, viewSets]
+    [appResources, viewSets],
   );
 
   return typeof directory === 'object' &&
@@ -339,10 +336,10 @@ function TreeItemResources({
 function mutateConformation(
   conformations: RA<AppResourcesConformation>,
   key: string,
-  childConformation: RA<AppResourcesConformation>
+  childConformation: RA<AppResourcesConformation>,
 ): RA<AppResourcesConformation> {
   const conformationIndex = conformations.findIndex(
-    (conformation) => conformation.key === key
+    (conformation) => conformation.key === key,
   );
   return replaceItem(conformations, conformationIndex, {
     key,

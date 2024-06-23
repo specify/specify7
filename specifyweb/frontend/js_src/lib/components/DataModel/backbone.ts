@@ -15,7 +15,7 @@ function createNamedConstructor(name, constructor) {
       `    // wrapper function created dynamically for "${name}"\n` +
       `    // constructor to allow instances to be identified in the debugger\n` +
       `    constructor.apply(this, arguments);\n` +
-      `};`
+      `};`,
   );
   return function_(constructor);
 }

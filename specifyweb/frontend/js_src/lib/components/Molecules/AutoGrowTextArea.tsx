@@ -11,7 +11,7 @@ export function AutoGrowTextArea({
   readonly containerClassName?: string;
 }): JSX.Element {
   const [textArea, setTextArea] = React.useState<HTMLTextAreaElement | null>(
-    null
+    null,
   );
   const [shadow, setShadow] = React.useState<HTMLDivElement | null>(null);
   /*
@@ -47,10 +47,7 @@ export function AutoGrowTextArea({
   }, [textArea, props.forwardRef]);
   return (
     <div
-      className={`
-        relative min-h-[calc(theme(spacing.7)*var(--rows))] overflow-hidden
-        ${containerClassName}
-      `}
+      className={`relative min-h-[calc(theme(spacing.7)*var(--rows))] overflow-hidden ${containerClassName} `}
       style={{ '--rows': props.rows ?? 3 } as React.CSSProperties}
     >
       {/*
@@ -58,20 +55,14 @@ export function AutoGrowTextArea({
        * https://css-tricks.com/the-cleanest-trick-for-autogrowing-textareas/
        */}
       <div
-        className={`
-          textarea-shadow invisible whitespace-pre-wrap [grid-area:1/1/2/2]
-          print:hidden ${className.textArea}
-        `}
+        className={`textarea-shadow invisible whitespace-pre-wrap [grid-area:1/1/2/2] print:hidden ${className.textArea} `}
         ref={setShadow}
       >
         {`${props.value?.toString() ?? ''} `}
       </div>
       <Textarea
         {...props}
-        className={`
-          absolute top-0 h-full [grid-area:1/1/2/2]
-          ${props.className ?? ''}
-        `}
+        className={`absolute top-0 h-full [grid-area:1/1/2/2] ${props.className ?? ''} `}
         forwardRef={setTextArea}
       />
     </div>

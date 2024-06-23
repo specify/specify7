@@ -38,7 +38,7 @@ export function Header({
 }): JSX.Element {
   const [rawIsCollapsed = false, setIsCollapsed] = useCachedState(
     'header',
-    'isCollapsed'
+    'isCollapsed',
   );
 
   const { pathname } = useLocation();
@@ -48,7 +48,7 @@ export function Header({
     .some(
       ({ url, name }) =>
         pathname.startsWith(url) &&
-        !menuItems.some((item) => item.name === name)
+        !menuItems.some((item) => item.name === name),
     );
 
   // Collapse the menu on narrow screens
@@ -81,7 +81,7 @@ export function Header({
       right: 'flex-row-reverse',
     };
     Object.entries(classNames).forEach(([key, className]) =>
-      root.classList.toggle(className, position === key)
+      root.classList.toggle(className, position === key),
     );
   }, [position]);
 
@@ -89,41 +89,32 @@ export function Header({
     () =>
       localized(
         userInformation.availableCollections.find(
-          ({ id }) => id === schema.domainLevelIds.collection
-        )?.collectionName
+          ({ id }) => id === schema.domainLevelIds.collection,
+        )?.collectionName,
       ) ?? commonText.chooseCollection(),
-    []
+    [],
   );
 
   const activeMenuItem = React.useContext(MenuContext);
   return (
     <header
-      className={`
-        hover:[&_a.link]:text-brand-300 flex [z-index:1]
-        dark:border-neutral-700 dark:bg-neutral-900 print:hidden
-        ${isHorizontal ? '' : 'flex-col'}
-        ${
-          position === 'left'
-            ? 'dark:border-r'
-            : position === 'top'
+      className={`flex [z-index:1] dark:border-neutral-700 dark:bg-neutral-900 print:hidden hover:[&_a.link]:text-brand-300 ${isHorizontal ? '' : 'flex-col'} ${
+        position === 'left'
+          ? 'dark:border-r'
+          : position === 'top'
             ? 'dark:border-b'
             : position === 'right'
-            ? 'dark:border-l'
-            : 'dark:border-t'
-        }
-        ${
-          isMenuLight
-            ? 'bg-gray-100 shadow-md shadow-gray-400'
-            : 'border-neutral-700 bg-neutral-800'
-        }
-      `}
+              ? 'dark:border-l'
+              : 'dark:border-t'
+      } ${
+        isMenuLight
+          ? 'bg-gray-100 shadow-md shadow-gray-400'
+          : 'border-neutral-700 bg-neutral-800'
+      } `}
     >
       <Logo isCollapsed={isCollapsed} isHorizontal={isHorizontal} />
       <nav
-        className={`
-          flex flex-1 overflow-auto
-          ${isHorizontal ? '' : 'flex-col'}
-        `}
+        className={`flex flex-1 overflow-auto ${isHorizontal ? '' : 'flex-col'} `}
       >
         <HeaderItems
           activeMenuItem={activeMenuItem}
@@ -215,8 +206,8 @@ export function MenuButton({
       isActive
         ? 'bg-brand-300 !text-white'
         : isSideBarDark
-        ? 'text-white'
-        : 'text-gray-700'
+          ? 'text-white'
+          : 'text-gray-700'
     }
     ${className.ariaHandled}
     ${extraProps?.className ?? ''}

@@ -73,14 +73,16 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     | ((newResource: SpecifyResource<SCHEMA>) => void)
     | undefined;
   readonly onFetch?: (
-    index: number
+    index: number,
   ) => Promise<RA<number | undefined> | undefined>;
   readonly hasSeveralResourceType?: boolean;
 }): JSX.Element | null {
   const [records, setRecords] = React.useState<
     RA<SpecifyResource<SCHEMA> | undefined>
   >(() =>
-    ids.map((id) => (id === undefined ? undefined : new table.Resource({ id })))
+    ids.map((id) =>
+      id === undefined ? undefined : new table.Resource({ id }),
+    ),
   );
 
   const previousIds = React.useRef(ids);
@@ -91,7 +93,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
         if (id === undefined) return undefined;
         else if (records[index]?.id === id) return records[index];
         else return new table.Resource({ id });
-      })
+      }),
     );
 
     return (): void => {
@@ -100,7 +102,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   }, [ids, table]);
 
   const [rawIndex, setIndex] = useTriggerState(
-    Math.max(0, defaultIndex ?? ids.length - 1)
+    Math.max(0, defaultIndex ?? ids.length - 1),
   );
   const index =
     typeof newResource === 'object'
@@ -200,7 +202,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
               />
               {hasTablePermission(
                 table.name,
-                isDependent ? 'create' : 'read'
+                isDependent ? 'create' : 'read',
               ) && typeof handleAdding === 'function' ? (
                 <DataEntry.Add
                   aria-label={addLabel}

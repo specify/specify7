@@ -12,30 +12,30 @@ import { toSimpleXmlNode, xmlToJson } from './xmlToJson';
 /** Get XML node attribute in a case-insensitive way */
 export const getAttribute = (
   { attributes }: SimpleXmlNode | XmlNode,
-  name: string
+  name: string,
 ): string | undefined => attributes[name] ?? attributes[name.toLowerCase()];
 
 /** Like getAttribute, but also trim the value and discard empty values */
 export const getParsedAttribute = (
   cell: SimpleXmlNode | XmlNode,
-  name: string
+  name: string,
 ): LocalizedString | undefined =>
   f.maybe(getAttribute(cell, name)?.trim(), (value) =>
-    value.length === 0 ? undefined : localized(value)
+    value.length === 0 ? undefined : localized(value),
   );
 
 export const getBooleanAttribute = (
   cell: SimpleXmlNode | XmlNode,
-  name: string
+  name: string,
 ): boolean | undefined => f.maybe(getParsedAttribute(cell, name), parseBoolean);
 
 export const createXmlSpec = <SPEC extends BaseSpec<SimpleXmlNode>>(
-  spec: SPEC
+  spec: SPEC,
 ): SPEC => spec;
 
 export const xmlToSpec = <SPEC extends BaseSpec<SimpleXmlNode>>(
   xml: Element,
-  spec: SPEC
+  spec: SPEC,
 ): SpecToJson<SPEC> => runParser(spec, toSimpleXmlNode(xmlToJson(xml)));
 
 /**
@@ -50,13 +50,13 @@ export const xmlToSpec = <SPEC extends BaseSpec<SimpleXmlNode>>(
 const symbolSyncerRaw: unique symbol = Symbol('Syncer Raw object');
 
 export const getOriginalSyncerInput = <T extends IR<unknown> = SimpleXmlNode>(
-  updated: T
+  updated: T,
 ): XmlNode | undefined =>
   Object.getOwnPropertyDescriptor(updated, symbolSyncerRaw)?.value;
 
 export const setOriginalSyncerInput = <IN extends IR<unknown>>(
   result: IN,
-  raw: XmlNode | undefined
+  raw: XmlNode | undefined,
 ): IN =>
   Object.defineProperty(result, symbolSyncerRaw, {
     value: raw,

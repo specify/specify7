@@ -174,7 +174,7 @@ export type UploadResult = {
 
 export function resolveBackendParsingMessage(
   key: string,
-  payload: IR<unknown>
+  payload: IR<unknown>,
 ): LocalizedString | undefined {
   if (key === 'failedParsingBoolean')
     return backEndText.failedParsingBoolean({ value: payload.value as string });
@@ -187,7 +187,7 @@ export function resolveBackendParsingMessage(
       agentTypeField: getField(tables.Agent, 'agentType').label,
       badType: payload.badType as string,
       validTypes: formatDisjunction(
-        (payload.validTypes as RA<LocalizedString>) ?? []
+        (payload.validTypes as RA<LocalizedString>) ?? [],
       ),
     });
   else if (key === 'valueTooLong')
@@ -226,7 +226,7 @@ export function resolveBackendParsingMessage(
 /** Back-end sends a validation key. Front-end translates it */
 export function resolveValidationMessage(
   key: string,
-  payload: IR<unknown>
+  payload: IR<unknown>,
 ): LocalizedString {
   const baseParsedMessage = resolveBackendParsingMessage(key, payload);
   if (baseParsedMessage !== undefined) {
@@ -258,6 +258,6 @@ export function resolveValidationMessage(
     return localized(
       `${key}${
         Object.keys(payload).length === 0 ? '' : ` ${JSON.stringify(payload)}`
-      }`
+      }`,
     );
 }
