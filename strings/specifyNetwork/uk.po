@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-06-20 19:09+0000\n"
+"PO-Revision-Date: 2024-06-23 05:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "specifyNetwork/uk/>\n"
@@ -25,7 +25,7 @@ msgstr "Specify Network"
 #: components/SpecifyNetwork/index.tsx:84
 #, fuzzy
 msgid "occurrenceOrGuidRequired"
-msgstr "Щоб відобразити цю сторінку, необхідно вказати назву виду або GUID"
+msgstr "Щоб відобразити цю сторінку, потрібно вказати назву виду або GUID"
 
 #. Used in: Components > Specify Network > Overlay
 #: components/SpecifyNetwork/Overlay.tsx:119
@@ -71,10 +71,9 @@ msgid "iDigBioDescription"
 msgstr ""
 "Випадки, записані в iDigBio, відображаються круглими зеленими точками, за "
 "винятком випадків із поточної колекції, записаної в iDigBio, які мають "
-"круглі червоні точки. Якщо збільшити масштаб червоних точок, з’явиться "
-"блакитна краплеподібна шпилька, натиснувши на шпильку, буде виконано запит "
-"місцевості в Specify, який покаже всі види в поточній базі даних Specify, "
-"зібрані з цього місця."
+"круглі червоні точки. Збільшення масштабу червоних крапок відкриває блакитну "
+"шпильку-сльозинку, клацання шпильки виконує запит місцевості в Specify, який "
+"показує всі види в поточній базі даних Specify, зібрані з цього місця."
 
 #. Used in: Components > Specify Network > Overlays
 #: components/SpecifyNetwork/overlays.ts:31
@@ -103,7 +102,7 @@ msgstr "Підключіться до GBIF"
 #, fuzzy
 msgid "institutionDistributionMap"
 msgstr ""
-"Карта розповсюдження всіх оцифрованих зразків, курованих у вашій установі"
+"Карта розповсюдження всіх оцифрованих зразків, збережених у вашій установі"
 
 #. Used in: Components > Specify Network Collection > Index
 #: components/SpecifyNetworkCollection/index.tsx:149
