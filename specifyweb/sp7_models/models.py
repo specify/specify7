@@ -90,8 +90,8 @@ class CollectionObjectGroupJoin(models.Model): # aka. CoJo or CogJoin
     text3 = models.TextField(blank=True, null=True, unique=False, db_column='Text3', db_index=False)
 
     # Relationships: Many-to-One
-    collectionobjectgroupparent = models.ForeignKey('CollectionObjectGroup', db_column='CollectionObjectGroupParentID', related_name='collectionobjectgroupjoins', null=False, on_delete=models.CASCADE)
-    collectionobjectchild = models.ForeignKey('specify.CollectionObject', db_column='CollectionObjectChildID', related_name='collectionobjectgroupjoins', null=False, on_delete=models.CASCADE)
+    collectionobjectgroupparent = models.ForeignKey('CollectionObjectGroup', db_column='CollectionObjectGroupParentID', related_name='cojos', null=False, on_delete=models.CASCADE)
+    collectionobjectchild = models.ForeignKey('specify.CollectionObject', db_column='CollectionObjectChildID', related_name='cojos', null=False, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'collectionobjectgroupjoin'
