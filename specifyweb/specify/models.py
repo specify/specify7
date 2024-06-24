@@ -1442,6 +1442,7 @@ class Collectionobject(models.Model):
     yesno4 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo4', db_index=False)
     yesno5 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo5', db_index=False)
     yesno6 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo6', db_index=False)
+    # TODO: Check if ismemberofcog should be a virtual field
     ismemberofcog = models.BooleanField(blank=True, null=True, unique=False, db_column='IsMemberOfCog', default=False, db_index=False)
     hasreferencecatalognumber = models.BooleanField(blank=True, null=True, unique=False, db_column='HasReferenceCatalogNumber', default=False, db_index=False)
 

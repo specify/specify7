@@ -8260,8 +8260,7 @@ datamodel = Datamodel(tables=[
             Field(name='text3', column='Text3', indexed=False, unique=False, required=False, type='java.lang.String', length=255)
         ],
         indexes=[
-            Index(name='IGSN', column_names=['IGSN']),
-            Index(name='GUID', column_names=['GUID'])
+        
         ],
         relationships=[
             Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID'),
@@ -8298,7 +8297,6 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='collectionobjectgroupparent', type='many-to-one', required=True, relatedModelName='CollectionObjectGroup', column='CollectionObjectGroupParentID'),
-            Relationship(name='collectionobjectgroupchild', type='many-to-one', required=True, relatedModelName='CollectionObjectGroup', column='CollectionObjectGroupChildID'),
             Relationship(name='collectionobjectchild', type='many-to-one', required=True, relatedModelName='CollectionObject', column='CollectionObjectChildID'),
         ],
         fieldAliases=[
