@@ -100,8 +100,7 @@ class TaxonTests(ApiTests):
     def test_isaccepted_on_save(self):
         kingdom = self.roottaxontreedefitem.children.create(
             name="Kingdom",
-            treedef=self.taxontreedef,
-            rankid=self.roottaxontreedefitem.rankid+100)
+            treedef=self.taxontreedef)
 
         animalia = self.roottaxon.children.create(
             name="Animalia",

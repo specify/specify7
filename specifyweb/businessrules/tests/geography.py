@@ -48,8 +48,7 @@ class GeographyTests(ApiTests):
 
         continent = earth.definitionitem.children.create(
             name="Continent",
-            treedef=earth.definition,
-            rankid=earth.definitionitem.rankid+100)
+            treedef=earth.definition)
 
         na = earth.children.create(
             name="North America",
