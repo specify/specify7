@@ -239,7 +239,9 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
             {totalCount > 1 && <div>{slider}</div>}
           </div>
         )}
+        isDependent={isDependent}
         isInRecordSet={!isNewRecordSet}
+        isLoading={isLoading || isExternalLoading}
         isSubForm={false}
         resource={resource}
         title={title}
@@ -252,15 +254,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
             : undefined
         }
         onSaved={(): void => handleSaved(resource!)}
-        isDependent={isDependent}
-        /*
-         * TODO: Figure out what to do with this line.
-         * ResourceView in this file was never passed a isInRecordSet prop until this PR
-         * but isNewRecordSet has been removed in https://github.com/specify/specify7/pull/4904
-         * Can possibly just pass on the isInRecordSet prop received by this component?
-         * isInRecordSet={isInRecordSet}
-         */
-        isLoading={isLoading || isExternalLoading}
       />
 
       {dialogs}

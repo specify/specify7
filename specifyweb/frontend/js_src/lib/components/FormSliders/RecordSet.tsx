@@ -418,10 +418,6 @@ function RecordSet<SCHEMA extends AnySchema>({
         }
         onClone={(resources: RA<SpecifyResource<SCHEMA>>): void => {
           go(totalCount, 'new', resources[0]);
-          /*
-           * );
-           * Bulk carry when there are multiple resources
-           */
           if (resources.length > 1) {
             const sortedResources = Array.from(resources).sort(
               sortFunction((r) => r.id)

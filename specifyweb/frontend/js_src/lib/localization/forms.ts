@@ -839,12 +839,7 @@ export const formsText = createDictionary({
     'de-ch': 'Schaltfläche „Übertrag anzeigen“',
   },
   bulkCarryForwardEnabled: {
-    'en-us': 'Show Bulk Carry Forward input amount',
-    'ru-ru': 'Показать кнопку «Перенести вперед»',
-    'es-es': 'Botón mostrar traer al frente',
-    'fr-fr': 'Afficher le bouton Reporter',
-    'uk-ua': 'Показати кнопку «Перенести вперед».',
-    'de-ch': 'Schaltfläche „Übertrag anzeigen“',
+    'en-us': 'Show Bulk Carry Forward count',
   },
   carryForwardDescription: {
     'en-us': 'Create a new record with certain fields carried over',
