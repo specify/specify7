@@ -99,7 +99,7 @@ export const treeRanksPromise = Promise.all([
   )
   .then((ranks) => {
     /*
-     * Ranks at the moment as a single key each with one defintion and its ranks, it comes from line 82 to 92, now it should return an array of deifnition for the rank taxons, array of what it is returning now, back end needs to chnage that from discipline table, needs to be a to many relationship instead of to one. to kee it consistent and more nanageble all the ranks should return an array, even geography, it will be an array of one, keep only one type.
+     * Ranks at the moment are a single key each with one defintion and its def + ranks, it comes from line 82 to 92, now it should return an array, back end needs to chnage that from discipline table, needs to be a to many relationship instead of to one. to keep it consistent and more nanageble all the ranks should return an array, even geography, it will be an array of one, keep only one type.
      */
     // @ts-expect-error
     treeDefinitions = Object.fromEntries(ranks.filter(Boolean));
