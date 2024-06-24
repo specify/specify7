@@ -14,7 +14,7 @@ import {
   deserializeResource,
   serializeResource,
 } from '../DataModel/serializers';
-import { strictGetTable } from '../DataModel/tables';
+import { genericTables, strictGetTable } from '../DataModel/tables';
 import type { PickList, PickListItem, Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { format } from '../Formatters/formatters';
@@ -154,11 +154,17 @@ async function fetchFromField(
     pickList.get('fieldName') ?? undefined,
     'Unable to fetch pick list items as pick list field is not set'
   );
+
+  const canBeScoped =
+    genericTables[tableName as keyof Tables]?.getScopingRelationship() !==
+      undefined ||
+    !f.includes(Object.keys(schema.domainLevelIds), toLowerCase(tableName));
+
   return fetchRows(tableName as keyof Tables, {
     limit,
     fields: { [fieldName]: ['string', 'number', 'boolean', 'null'] },
     distinct: true,
-    domainFilter: true,
+    domainFilter: canBeScoped,
   }).then((rows) =>
     rows
       .map((row) => row[fieldName] ?? '')
