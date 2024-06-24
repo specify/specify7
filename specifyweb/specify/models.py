@@ -2808,7 +2808,8 @@ class Discipline(models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: One-to-One
-    taxontreedef = models.OneToOneField('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='discipline', null=True, on_delete=protect_with_blockers)
+    # taxontreedef is no longer a OneToOneField, it is now a Many-to-One ForeignKey
+    # taxontreedef = models.OneToOneField('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='discipline', null=True, on_delete=protect_with_blockers)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -2818,6 +2819,7 @@ class Discipline(models.Model):
     geologictimeperiodtreedef = models.ForeignKey('GeologicTimePeriodTreeDef', db_column='GeologicTimePeriodTreeDefID', related_name='disciplines', null=False, on_delete=protect_with_blockers)
     lithostrattreedef = models.ForeignKey('LithoStratTreeDef', db_column='LithoStratTreeDefID', related_name='disciplines', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    taxontreedef = models.ForeignKey('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='discipline', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'discipline'

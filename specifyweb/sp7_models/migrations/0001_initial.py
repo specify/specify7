@@ -76,7 +76,6 @@ class Migration(migrations.Migration):
                 ('text2', models.TextField(blank=True, db_column='Text2', null=True)),
                 ('text3', models.TextField(blank=True, db_column='Text3', null=True)),
                 ('collectionobjectchild', models.ForeignKey(db_column='CollectionObjectChildID', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='collectionobjectchildren', to='specify.collectionobject')),
-                ('collectionobjectgroupchild', models.ForeignKey(db_column='CollectionObjectGroupChildID', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='collectionobjectgroupchildren', to='sp7_models.collectionobjectgroup')),
                 ('collectionobjectgroupparent', models.ForeignKey(db_column='CollectionObjectGroupParentID', on_delete=django.db.models.deletion.CASCADE, related_name='collectionobjectgroupparents', to='sp7_models.collectionobjectgroup')),
             ],
             options={
