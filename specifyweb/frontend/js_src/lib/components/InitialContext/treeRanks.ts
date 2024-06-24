@@ -97,6 +97,14 @@ export const treeRanksPromise = Promise.all([
           )
       : []
   )
+  /*
+   *   GetDomainResource('discipline').rgetPromise('taxonTreeDef') returns only a single TaxonTreeDef.
+   * https://github.com/specify/specify7/blob/812d723fd16712d8b232017fae6f5eb6c01d4ad9/[…]yweb/frontend/js_src/lib/components/InitialContext/treeRanks.ts
+   * The TreeDefs are a toOneIndependent relationship on the Discipline
+   * https://github.com/specify/specify7/blob/812d723fd16712d8b232017fae6f5eb6c01d4ad9/specifyweb/frontend/js_src/lib/components/DataModel/types.ts#L[…]1
+   * They should be a toManyIndependent  relationship instead.
+   * So that taxonTreeDef from a discipline is of type RA<TaxonTreeDef> (same for other trees)
+   */
   .then((ranks) => {
     /*
      * Ranks at the moment are a single key each with one defintion and its def + ranks, it comes from line 82 to 92, now it should return an array, back end needs to chnage that from discipline table, needs to be a to many relationship instead of to one. to keep it consistent and more nanageble all the ranks should return an array, even geography, it will be an array of one, keep only one type.
