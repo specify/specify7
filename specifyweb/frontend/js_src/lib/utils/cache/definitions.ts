@@ -84,6 +84,8 @@ export type CacheDefinitions = {
     readonly hideEmptyNodes: boolean;
     readonly isSplit: boolean;
     readonly isHorizontal: boolean;
+    // Make dynamic list of type depending on available trees?
+    readonly type: string;
   };
   readonly workBenchSortConfig: {
     readonly /**
