@@ -74,7 +74,7 @@ export function TreeViewWrapper(): JSX.Element | null {
   const treeName = getTable(tableName)?.name;
   const [treeDefinitions] = usePromise(treeRanksPromise, true);
   useErrorContext('treeDefinitions', treeDefinitions);
-
+  // Taxon: will not return an object anymore but an array of object, each for each availble tree type
   const treeDefinition =
     typeof treeDefinitions === 'object' &&
     typeof treeName === 'string' &&
