@@ -99,7 +99,13 @@ export function CarryForwardConfig({
     'preferences',
     'enableCarryForward'
   );
-  const isEnabled = globalEnabled.includes(table.name);
+  const [globalBulkEnabled, setGlobalBulkEnabled] = userPreferences.use(
+    'form',
+    'preferences',
+    'enableBukCarryForward'
+  );
+  const isCarryForwardEnabled = globalEnabled.includes(table.name);
+  const isBulkCarryEnabled = globalBulkEnabled.includes(table.name);
   const canChange = !NO_CLONE.has(table.name);
 
   return canChange ? (
@@ -107,7 +113,7 @@ export function CarryForwardConfig({
       {type === 'button' ? (
         <Label.Inline className="rounded bg-[color:var(--foreground)]">
           <Input.Checkbox
-            checked={isEnabled}
+            checked={isCarryForwardEnabled}
             onChange={(): void =>
               setGlobalEnabled(toggleItem(globalEnabled, table.name))
             }
@@ -127,6 +133,17 @@ export function CarryForwardConfig({
           title={formsText.carryForwardSettingsDescription()}
           onClick={handleOpen}
         />
+      )}
+      {isCarryForwardEnabled && (
+        <Label.Inline className="rounded bg-[color:var(--foreground)]">
+          <Input.Checkbox
+            checked={isBulkCarryEnabled}
+            onChange={(): void =>
+              setGlobalBulkEnabled(toggleItem(globalBulkEnabled, table.name))
+            }
+          />
+          {formsText.bulkCarryForwardEnabled()}
+        </Label.Inline>
       )}
       {isOpen && (
         <CarryForwardConfigDialog

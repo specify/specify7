@@ -219,8 +219,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     </ButtonComponent>
   );
 
-  const [carryForwardAmount, setCarryForwardAmount] = React.useState<number>(2);
-  const [showBulkCarryInput, setBulkCarryInput] = React.useState(false);
+  const [carryForwardAmount, setCarryForwardAmount] = React.useState<number>(1);
 
   return (
     <>
@@ -228,12 +227,10 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         <>
           {resource.specifyTable.name === 'CollectionObject' &&
           (isInRecordSet === false || isInRecordSet === undefined) &&
-          showBulkCarryInput ? (
+          isSaveDisabled &&
+          showCarry ? (
             <Label.Inline>
               <Input.Generic
-                autoFocus
-                forwardRef={(input): void => input?.focus()}
-                id={id('bulk-amount')}
                 type="number"
                 value={carryForwardAmount}
                 onValueChange={(value): void =>
@@ -244,23 +241,6 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
               />
             </Label.Inline>
           ) : null}
-          {resource.specifyTable.name === 'CollectionObject' &&
-          (isInRecordSet === false || isInRecordSet === undefined) &&
-          !resource.needsSaved ? (
-            <Button.Secondary
-              aria-controls={id('bulk-amount')}
-              title={commonText.bulkCarry()}
-              onClick={(): void => setBulkCarryInput(!showBulkCarryInput)}
-            >
-              {commonText.bulkCarry()}
-            </Button.Secondary>
-          ) : null}
-          {showClone &&
-            copyButton(
-              formsText.clone(),
-              formsText.cloneDescription(),
-              async () => [await resource.clone(true)]
-            )}
           {showCarry &&
             copyButton(
               formsText.carryForward(),
@@ -288,6 +268,12 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                     return Promise.all([resource, ...clones]);
                   }
                 : async () => [await resource.clone(false)]
+            )}
+          {showClone &&
+            copyButton(
+              formsText.clone(),
+              formsText.cloneDescription(),
+              async () => [await resource.clone(true)]
             )}
           {showAdd &&
             copyButton(
