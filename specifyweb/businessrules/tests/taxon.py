@@ -15,7 +15,7 @@ class TaxonTests(ApiTests):
             name="Test Taxon tree def")
 
         self.roottaxontreedefitem = self.taxontreedef.treedefitems.create(
-            name="root",
+            name="taxonomy_root",
             rankid=0)
 
         self.roottaxon = self.roottaxontreedefitem.treeentries.create(
