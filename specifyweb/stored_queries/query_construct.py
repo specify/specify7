@@ -6,11 +6,15 @@ from sqlalchemy import orm, sql
 from specifyweb.specify.models import datamodel
 
 from . import models
+from specifyweb.sp7_models.models import CollectionObjectType
 
 logger = logging.getLogger(__name__)
 
 
-def get_treedef(collection, tree_name):
+def get_treedef(collection, tree_name, co_type_name=None):
+    if co_type is not None and tree_name == 'Taxon':
+        co_type = CollectionObjectType.objects.get(name=co_type_name)
+        return co_type.taxontreedef
     return (collection.discipline.division.institution.storagetreedef
             if tree_name == 'Storage' else
             getattr(collection.discipline, tree_name.lower() + "treedef"))
@@ -39,7 +43,7 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
             logger.debug("using join cache for %r tree ranks.", table)
             ancestors, treedef = query.join_cache[(table, 'TreeRanks')]
         else:
-            treedef = get_treedef(query.collection, table.name)
+            treedef = get_treedef(query.collection, table.name, co_type_name=None) # TODO: pass value to co_type_name
             rank_count = treedef.treedefitems.count()
 
             ancestors = [node]

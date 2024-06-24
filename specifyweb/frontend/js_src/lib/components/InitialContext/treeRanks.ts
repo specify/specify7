@@ -70,6 +70,10 @@ export const treeRanksPromise = Promise.all([
             if (!f.has(paleoDiscs, discipline?.get('type')))
               disciplineTrees = commonTrees;
           })
+          // TODO: This needs to be edited so that the resulting api request calls
+          // `/api/specify/taxontreedefitem/?limit=0` with the `&treedef=1`
+          // filter removed, so that tree ranks from all taxon trees can be used
+          // in the QB field selector.
           .then(async () =>
             Promise.all(
               disciplineTrees
