@@ -9,6 +9,7 @@ import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
+import { ajax } from '../../utils/ajax';
 import { listen } from '../../utils/events';
 import { type GetSet, type RA } from '../../utils/types';
 import { caseInsensitiveHash } from '../../utils/utils';
@@ -28,7 +29,11 @@ import type { TaxonTreeDef, TaxonTreeDefItem } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useMenuItem } from '../Header/MenuContext';
 import { getPref } from '../InitialContext/remotePrefs';
-import { isTreeTable, treeRanksPromise } from '../InitialContext/treeRanks';
+import {
+  isTreeTable,
+  treeRanksPromise,
+  treeRanksPromise2,
+} from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
 import { ResourceEdit } from '../Molecules/ResourceLink';
 import { TableIcon } from '../Molecules/TableIcon';
