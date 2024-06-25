@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-06-20 19:09+0000\n"
+"PO-Revision-Date: 2024-06-25 21:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/query/"
 "ru/>\n"
@@ -168,7 +168,7 @@ msgstr "Когда файл экспорта будет завершен и го
 #: components/SchemaConfig/Components.tsx:90
 #, fuzzy
 msgid "invalidPicklistValue"
-msgstr "{value:string} (текущее, недопустимое значение)"
+msgstr "{value:string} (текущее, неверное значение)"
 
 #. 🟥Used in query builder header when querying on record set. Used in: Components > Query Builder > Header
 #: components/QueryBuilder/Header.tsx:91
