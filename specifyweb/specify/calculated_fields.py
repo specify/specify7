@@ -24,11 +24,6 @@ from specifyweb.specify.models import (
 logger = logging.getLogger(__name__)
 
 def calculate_totals_deaccession(obj, Model, related_field_name):
-    # TODO: This version commented was implemented based on specify6 code,
-    # but using calc_prep_item_count seems to be the correct way.
-    # total_preps = Model.objects.filter(deaccession=obj).count()
-    # total_items = Model.objects.filter(deaccession=obj).aggregate(
-    #     total=Sum(f"{related_field_name}__quantity"))["total"] or 0
     total_preps = 0
     total_items = 0
     for prep in Model.objects.filter(deaccession=obj):
