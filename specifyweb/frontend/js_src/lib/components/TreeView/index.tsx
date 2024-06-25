@@ -76,59 +76,47 @@ type TaxonTreeDefinition =
 export function TreeViewWrapper(): JSX.Element | null {
   useMenuItem('trees');
   const { tableName = '' } = useParams();
-  const treeName = getTable(tableName)?.name;
+  const treeName: AnyTree['tableName'] | undefined = getTable(tableName)
+    ?.name as AnyTree['tableName'];
   const [treeDefinitions] = usePromise(treeRanksPromise, true);
   useErrorContext('treeDefinitions', treeDefinitions);
   // Taxon: will not return an object anymore but an array of object, each for each availble tree type
-  const treeDefinition =
+  const treeDefinitionArray =
     typeof treeDefinitions === 'object' &&
     typeof treeName === 'string' &&
     isTreeTable(treeName)
       ? caseInsensitiveHash(treeDefinitions, treeName)
       : undefined;
 
-  const taxonTreeDefinitions: TaxonTreeDefinition = treeDefinitions
-    ? (Object.fromEntries(
-        Object.entries(treeDefinitions).filter(([key]) =>
-          key.startsWith('Taxon')
-        )
-      ) as TaxonTreeDefinition)
-    : undefined;
+  const [currentName, setCurrentName] = useCachedState('tree', 'type');
 
-  const treeTypeNames: RA<string> = taxonTreeDefinitions
-    ? Object.values(taxonTreeDefinitions).map((treeType) =>
-        treeType.definition.get('name')
-      )
+  const currentTreeDef = treeDefinitionArray?.find(
+    (item) => item.definition.get('name') === currentName
+  );
+
+  const treeNames: RA<string> = treeDefinitionArray
+    ? treeDefinitionArray.map((tree) => tree.definition.get('name'))
     : [];
-
-  const [treeType, setTreeType] = useCachedState('tree', 'type');
-
-  const selectedTreeDefinition =
-    taxonTreeDefinitions && treeType !== undefined
-      ? Object.values(taxonTreeDefinitions).find(
-          (tree) => tree.definition.get('name') === treeType
-        ) ?? treeDefinition
-      : treeDefinition;
 
   if (treeName === undefined || !isTreeTable(treeName)) return <NotFoundView />;
   return (
     <ProtectedTree action="read" treeName={treeName}>
-      {typeof selectedTreeDefinition === 'object' ? (
+      {typeof currentTreeDef === 'object' ? (
         <TreeView
           tableName={treeName}
-          treeDefinition={selectedTreeDefinition.definition}
-          treeDefinitionItems={selectedTreeDefinition.ranks}
-          treeTypeNames={treeTypeNames}
-          treeType={[treeType, setTreeType]}
+          treeDefinition={currentTreeDef.definition}
+          treeDefinitionItems={currentTreeDef.ranks}
+          treeTypeNames={treeNames}
+          treeType={[currentName, setCurrentName]}
           /**
            * We're casting this as a generic Specify Resource because
            * Typescript complains that the get method for each member of the
-           * union type of AnyTree is not compatible
+           * Union type of AnyTree is not compatible
            *
            */
-          key={(
-            selectedTreeDefinition.definition as SpecifyResource<AnySchema>
-          ).get('resource_uri')}
+          key={(currentTreeDef.definition as SpecifyResource<AnySchema>).get(
+            'resource_uri'
+          )}
         />
       ) : null}
     </ProtectedTree>

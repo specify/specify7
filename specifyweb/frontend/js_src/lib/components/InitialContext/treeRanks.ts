@@ -6,11 +6,7 @@
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
-import {
-  caseInsensitiveHash,
-  sortFunction,
-  unCapitalize,
-} from '../../utils/utils';
+import { caseInsensitiveHash, sortFunction } from '../../utils/utils';
 import { fetchCollection, fetchRelated } from '../DataModel/collection';
 import type {
   AnySchema,
@@ -20,15 +16,14 @@ import type {
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { fetchContext as fetchDomain, schema } from '../DataModel/schema';
 import { getDomainResource } from '../DataModel/scoping';
-import { serializeResource } from '../DataModel/serializers';
 import { genericTables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 
 let treeDefinitions: {
-  readonly [TREE_NAME in AnyTree['tableName']]: {
+  readonly [TREE_NAME in AnyTree['tableName']]: RA<{
     readonly definition: SpecifyResource<Tables[`${TREE_NAME}TreeDef`]>;
     readonly ranks: RA<SerializedResource<Tables[`${TREE_NAME}TreeDefItem`]>>;
-  };
+  }>;
 } = undefined!;
 
 /*
