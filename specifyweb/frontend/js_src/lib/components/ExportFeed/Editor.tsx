@@ -20,10 +20,12 @@ import { icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import {
+  fetchResource,
   getResourceApiUrl,
   idFromUrl,
   resourceOn,
 } from '../DataModel/resource';
+import { getFieldBlockerKey, useSaveBlockers } from '../DataModel/saveBlockers';
 import { tables } from '../DataModel/tables';
 import { CollectionPicker } from '../Header/ChooseCollection';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
@@ -360,14 +362,31 @@ function UserPicker({
   readonly isRequired: boolean;
 }): JSX.Element {
   const resource = React.useMemo(() => new tables.Agent.Resource(), []);
-  React.useEffect(
-    () =>
-      void resource.set(
-        'specifyUser',
-        id === undefined ? null : getResourceApiUrl('SpecifyUser', id)
-      ),
-    [resource, id]
-  );
+  const field = getField(tables.Agent, 'specifyUser');
+
+  const [_, setBlockers] = useSaveBlockers(resource, field);
+
+  React.useEffect(() => {
+    void resource.set(
+      'specifyUser',
+      id === undefined ? null : getResourceApiUrl('SpecifyUser', id)
+    );
+    if (id === undefined) return;
+    // Fetch resource to check for invalid SpecifyUser id entered through XML editor
+    fetchResource('SpecifyUser', id, false).then((res) => {
+      if (res?.id !== id)
+        void resource.set(
+          'specifyUser',
+          res === undefined ? null : getResourceApiUrl('SpecifyUser', id)
+        );
+      if (res === undefined)
+        setBlockers(
+          [resourcesText.invalidSpecifyUser()],
+          getFieldBlockerKey(field, 'invalidSpecifyUser')
+        );
+      else setBlockers([], getFieldBlockerKey(field, 'invalidSpecifyUser'));
+    });
+  }, [id]);
 
   const setIdRef = React.useRef(setId);
   setIdRef.current = setId;
@@ -384,7 +403,7 @@ function UserPicker({
 
   return (
     <QueryComboBox
-      field={getField(tables.Agent, 'specifyUser')}
+      field={field}
       forceCollection={undefined}
       formType="form"
       id={undefined}
