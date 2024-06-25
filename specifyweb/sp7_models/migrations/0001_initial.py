@@ -4,6 +4,7 @@ from django.db import migrations, models
 import django.db.models.deletion
 import django.utils.timezone
 import specifyweb.specify.models
+from specifyweb.specify.models import Taxontreedef, Taxontreedefitem
 
 
 class Migration(migrations.Migration):
@@ -13,6 +14,44 @@ class Migration(migrations.Migration):
     dependencies = [
         ('specify', '__first__'),
     ]
+
+    def add_new_default_taxon_trees():
+        TAXON_TREES = ["Minerals", "Rocks", "Meteorites", "Fossils"]
+        TAXON_RANKS = ["Root", "One", "Two", "Three"]
+        for tree in TAXON_TREES:
+            if Taxontreedef.objects.get(name=tree).exists():
+                continue
+            ttd = Taxontreedef.objects.create(name=tree)
+            ttd.save()
+            rank_id = 0
+            ttdi = None
+            for rank in TAXON_RANKS:
+                name = f"{tree} {rank}"
+                rank_id += 10
+                ttdi = Taxontreedefitem.objects.create(
+                    name=name,
+                    title=name,
+                    rankid=rank_id,
+                    parentitem=ttdi,
+                    taxontreedef=ttd,
+                )
+                ttdi.save()
+
+    def remove_new_default_taxon_trees():
+        TAXON_TREES = ["Minerals", "Rocks", "Meteorites", "Fossils"]
+        TAXON_RANKS = ["Root", "One", "Two", "Three"]
+
+        for tree in reversed(TAXON_TREES):
+            ttd = Taxontreedef.objects.filter(name=tree)
+            if ttd.exists():
+                for rank in reversed(TAXON_RANKS):
+                    name = f"{tree} {rank}"
+                    ttdi = Taxontreedefitem.objects.filter(
+                        name=name, taxontreedef=ttd.first()
+                    )
+                    if ttdi.exists():
+                        ttdi.delete()
+                ttd.delete()
 
     operations = [
         migrations.CreateModel(
@@ -75,8 +114,8 @@ class Migration(migrations.Migration):
                 ('text1', models.TextField(blank=True, db_column='Text1', null=True)),
                 ('text2', models.TextField(blank=True, db_column='Text2', null=True)),
                 ('text3', models.TextField(blank=True, db_column='Text3', null=True)),
-                ('collectionobjectchild', models.ForeignKey(db_column='CollectionObjectChildID', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='collectionobjectchildren', to='specify.collectionobject')),
-                ('collectionobjectgroupparent', models.ForeignKey(db_column='CollectionObjectGroupParentID', on_delete=django.db.models.deletion.CASCADE, related_name='collectionobjectgroupparents', to='sp7_models.collectionobjectgroup')),
+                ('child', models.ForeignKey(db_column='ChildID', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='collectionobjectchildren', to='specify.collectionobject')),
+                ('parent', models.ForeignKey(db_column='ParentID', on_delete=django.db.models.deletion.CASCADE, related_name='collectionobjectgroupparents', to='sp7_models.collectionobjectgroup')),
             ],
             options={
                 'db_table': 'collectionobjectgroupjoin',
@@ -125,4 +164,8 @@ class Migration(migrations.Migration):
         #         "specify", "CollectionObject"
         #     ).remove_from_class("ismemberofcog"),
         # ),
+        migrations.RunPython(
+            add_new_default_taxon_trees(),
+            reverse_code=remove_new_default_taxon_trees()
+        ),
     ]
