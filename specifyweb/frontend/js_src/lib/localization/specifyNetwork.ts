@@ -38,7 +38,7 @@ export const specifyNetworkText = createDictionary({
     'de-ch': 'Zu dieser Anfrage konnten keine Daten gefunden werden',
     'es-es': 'No se encuentran datos para esta solicitud',
     'fr-fr': 'Impossible de trouver des données pour cette demande',
-    'ru-ru': 'Не удалось найти данные по этому запросу.',
+    'ru-ru': 'Не удалось найти данные для этого запроса.',
     'uk-ua': 'Неможливо знайти дані для цього запиту',
   },
   noDataErrorDescription: {
@@ -145,10 +145,10 @@ export const specifyNetworkText = createDictionary({
     'uk-ua': `
       Випадки, записані в iDigBio, відображаються круглими зеленими точками, за
       винятком випадків із поточної колекції, записаної в iDigBio, які мають
-      круглі червоні точки. Якщо збільшити масштаб червоних точок, з’явиться
-      блакитна краплеподібна шпилька, натиснувши на шпильку, буде виконано запит
-      місцевості в Specify, який покаже всі види в поточній базі даних
-      Specify, зібрані з цього місця.
+      круглі червоні точки. Збільшення масштабу червоних крапок відкриває
+      блакитну шпильку-сльозинку, клацання шпильки виконує запит місцевості в
+      Specify, який показує всі види в поточній базі даних Specify, зібрані з
+      цього місця.
     `,
   },
   gbifDescription: {
@@ -195,16 +195,16 @@ export const specifyNetworkText = createDictionary({
     'de-ch': 'Mit GBIF verbinden',
     'es-es': 'Conectarse a GBIF',
     'fr-fr': 'Connectez-vous au GBIF',
-    'ru-ru': 'Подключиться к ГБИФ',
+    'ru-ru': 'Подключиться к GBIF',
     'uk-ua': 'Підключіться до GBIF',
   },
   searchForInstitution: {
     'en-us': 'Search for your institution:',
-    'de-ch': 'Suchen Sie nach Ihrer Institution:',
+    'de-ch': 'Mit GBIF verbinden',
     'es-es': 'Busque su institución:',
-    'fr-fr': 'Recherchez votre établissement :',
-    'ru-ru': 'Найдите свое учреждение:',
-    'uk-ua': 'Шукайте свій заклад:',
+    'fr-fr': 'Connectez-vous au GBIF',
+    'ru-ru': 'Подключиться к ГБИФ',
+    'uk-ua': 'Підключіться до GBIF',
   },
   institutionDistributionMap: {
     'en-us': `
@@ -228,7 +228,7 @@ export const specifyNetworkText = createDictionary({
       учреждении
     `,
     'uk-ua': `
-      Карта розповсюдження всіх оцифрованих зразків, курованих у вашій установі
+      Карта розповсюдження всіх оцифрованих зразків, збережених у вашій установі
     `,
   },
   collectionDistributionMap: {
@@ -249,7 +249,9 @@ export const specifyNetworkText = createDictionary({
       Карта распространения всех оцифрованных образцов, хранящихся в вашей
       коллекции.
     `,
-    'uk-ua': 'Карта розповсюдження всіх оцифрованих зразків у вашій колекції',
+    'uk-ua': `
+      Карта розповсюдження всіх оцифрованих зразків, збережених у вашій колекції
+    `,
   },
   startYear: {
     'en-us': 'Start Year',

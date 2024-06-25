@@ -1,11 +1,7 @@
 from specifyweb.context.app_resource import get_usertype
-from specifyweb.specify import models, api
+from specifyweb.specify.models import Spappresource, Spappresourcedir
 from specifyweb.specify.views import openapi
 from specifyweb.context.resources import Resource, Resources
-
-Spappresource = getattr(models, 'Spappresource')
-Spappresourcedir = getattr(models, 'Spappresourcedir')
-
 
 collection_resources = openapi(schema={
     "get": {

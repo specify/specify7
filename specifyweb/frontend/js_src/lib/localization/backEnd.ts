@@ -209,6 +209,25 @@ export const backEndText = createDictionary({
       Längengrad muss zwischen -180 und 180 liegen. Tatsächlich: {value:string}
     `,
   },
+  formatMismatch: {
+    'en-us': 'value {value:string} does not match formatter {formatter:string}',
+    'de-ch': `
+      Wert {value:string} stimmt nicht mit Formatierungsprogramm
+      {formatter:string} überein
+    `,
+    'es-es': `
+      el valor {value:string} no coincide con el formateador {formatter:string}
+    `,
+    'fr-fr': `
+      la valeur {value:string} ne correspond pas au formateur {formatter:string}
+    `,
+    'ru-ru': `
+      значение {value:string} не соответствует средству форматирования
+      {formatter:string}
+    `,
+    'uk-ua':
+      'значення {value:string} не відповідає форматеру {formatter:string}',
+  },
   invalidPartialRecord: {
     'en-us': 'this field must be empty if {column:string} is empty',
     'ru-ru': 'это поле должно быть пустым, если {column:string} пусто',
@@ -452,10 +471,12 @@ export const backEndText = createDictionary({
   operationAcrossTrees: {
     'en-us': '{operation:string} across trees',
     'de-ch': '{operation:string} über Bäume',
-    'es-es': '{operation:string} a través de árboles',
+    'es-es': 'el valor [X6X] no coincide con el formateador [X46X]',
     'fr-fr': '{operation:string} à travers les arbres',
-    'ru-ru': '{operation:string} среди деревьев',
-    'uk-ua': '{operation:string} через дерева',
+    'ru-ru': `
+      Неожиданный идентификатор таблицы «[X21X]» в запросе. Ожидается "[X61X]"
+    `,
+    'uk-ua': 'значення [X6X] не відповідає форматеру [X46X]',
   },
   limitReachedDeterminingAccepted: {
     'en-us': `
@@ -582,8 +603,8 @@ export const backEndText = createDictionary({
       demande. "{expectedTableId:string}" attendu
     `,
     'ru-ru': `
-      Не удалось найти принятый таксон для синонимизированного таксона с
-      идентификатором [X63X]
+      Неожиданный идентификатор таблицы «{tableId:string}» в запросе. Ожидается
+      "{expectedTableId:string}"
     `,
     'uk-ua': `
       Неочікуваний ІД таблиці "{tableId:string}" у запиті. Очікується

@@ -1,14 +1,11 @@
 import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
-import { theories } from '../../../tests/utils';
 import { addMissingFields } from '../addMissingFields';
-import { exportsForTests, fetchCollection, fetchRelated } from '../collection';
+import { fetchCollection, fetchRelated } from '../collection';
 import { backendFilter } from '../helpers';
 import { getResourceApiUrl } from '../resource';
 
 requireContext();
-
-const { mapQueryParameter, buildUrl } = exportsForTests;
 
 describe('fetchCollection', () => {
   const baseCoRecord = {
@@ -128,41 +125,3 @@ describe('fetchRelated', () => {
       totalCount: 2,
     }));
 });
-
-theories(mapQueryParameter, [
-  [['orderBy', 'A', 'CollectionObject'], 'a'],
-  [['domainFilter', true, 'CollectionObject'], 'true'],
-  [['domainFilter', false, 'CollectionObject'], undefined],
-  // Not scoped
-  [['domainFilter', true, 'AddressOfRecord'], undefined],
-  [['domainFilter', false, 'AddressOfRecord'], undefined],
-  // Attachment is an exception
-  [['domainFilter', true, 'Attachment'], 'true'],
-  [['domainFilter', false, 'Attachment'], undefined],
-  [['distinct', true, 'CollectionObject'], 'true'],
-  [['distinct', false, 'CollectionObject'], undefined],
-  [['test', true, 'CollectionObject'], 'True'],
-  [['test', false, 'CollectionObject'], 'False'],
-  [['test', 2, 'CollectionObject'], '2'],
-  [['test', 'a', 'CollectionObject'], 'a'],
-]);
-
-theories(buildUrl, [
-  [
-    [
-      `/api/specify_rows/Agent/`,
-      'Agent',
-      {
-        domainFilter: true,
-        limit: 1,
-        offset: 4,
-        orderBy: '-id',
-        firstName: 'Test',
-      },
-      {
-        createdByAgent__lastName: 'Test',
-      },
-    ],
-    '/api/specify_rows/Agent/?domainfilter=true&limit=1&offset=4&orderby=-id&firstname=Test&createdbyagent__lastname=Test',
-  ],
-]);
