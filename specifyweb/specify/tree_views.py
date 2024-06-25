@@ -15,7 +15,7 @@ from specifyweb.stored_queries import models
 from . import tree_extras
 from .api import get_object_or_404, obj_to_data, toJson
 from .auditcodes import TREE_MOVE
-from .models import datamodel
+from .models import datamodel, Taxontreedef, Taxontreedefitem
 from .tree_stats import get_tree_stats
 from .views import login_maybe_required, openapi
 
@@ -358,6 +358,22 @@ def tree_rank_item_count(request, tree, rankid):
     rank = get_object_or_404(tree_rank_model_name, id=rankid)
     count = tree_rank_count(tree, rank.id)
     return HttpResponse(toJson(count), content_type='application/json')
+
+@login_maybe_required
+@require_GET
+def all_taxon_trees(request):
+    """Returns a list of all taxon trees (taxon, mineral, rocks, meteorite, etc)."""
+    # TODO: Add permission check
+    trees = list(Taxontreedef.objects.all().values())
+    return HttpResponse(toJson(trees), content_type='application/json')
+
+@login_maybe_required
+@require_GET
+def all_taxon_tree_ranks(request):
+    """Returns a list of taxon tree ranks from all the taxon trees."""
+    # TODO: Add permission check
+    ranks = list(Taxontreedefitem.objects.all().values())
+    return HttpResponse(toJson(ranks), content_type='application/json')
 
 class TaxonMutationPT(PermissionTarget):
     resource = "/tree/edit/taxon"

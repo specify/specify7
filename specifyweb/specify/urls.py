@@ -40,6 +40,10 @@ urlpatterns = [
         url(r'^repair/$', tree_views.repair_tree),
     ])),
 
+    # taxon trees
+    url(r'^specify/taxon_trees/$', tree_views.all_taxon_trees),
+    url(r'^specify/taxon_tree_ranks/$', tree_views.all_taxon_trees),
+
     # locality set import endpoints
     url(r'^localityset/', include([
         url(r'^parse/$', views.parse_locality_set),
