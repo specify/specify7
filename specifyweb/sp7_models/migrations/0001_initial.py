@@ -16,12 +16,13 @@ class Migration(migrations.Migration):
     ]
 
     def add_new_default_taxon_trees():
-        TAXON_TREES = ["Minerals", "Rocks", "Meteorites", "Fossils"]
+        TAXON_TREES = ["Mineral", "Rock", "Meteorite", "Fossil"]
         TAXON_RANKS = ["Root", "One", "Two", "Three"]
         for tree in TAXON_TREES:
             if Taxontreedef.objects.get(name=tree).exists():
                 continue
-            ttd = Taxontreedef.objects.create(name=tree)
+            tree_name = f"{tree} Taxon"
+            ttd = Taxontreedef.objects.create(name=tree_name)
             ttd.save()
             rank_id = 0
             ttdi = None
@@ -38,11 +39,12 @@ class Migration(migrations.Migration):
                 ttdi.save()
 
     def remove_new_default_taxon_trees():
-        TAXON_TREES = ["Minerals", "Rocks", "Meteorites", "Fossils"]
+        TAXON_TREES = ["Mineral", "Rock", "Meteorite", "Fossil"]
         TAXON_RANKS = ["Root", "One", "Two", "Three"]
 
         for tree in reversed(TAXON_TREES):
-            ttd = Taxontreedef.objects.filter(name=tree)
+            tree_name = f"{tree} Taxon"
+            ttd = Taxontreedef.objects.filter(name=tree_name)
             if ttd.exists():
                 for rank in reversed(TAXON_RANKS):
                     name = f"{tree} {rank}"
@@ -131,7 +133,7 @@ class Migration(migrations.Migration):
             ADD COLUMN HasReferenceCatalogNumber bit(1) DEFAULT 0 NOT NULL;
             """,
             # Remove ismemberofcog and hasreferencecatalognumber fields from CollectionObject when unapplying migration
-            """
+            reverse_sql="""
             ALTER TABLE collectionobject
             DROP COLUMN IsMemberOfCog;
             ALTER TABLE collectionobject
