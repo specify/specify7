@@ -109,6 +109,7 @@ def create_roles() -> None:
     role.policies.create(resource="/tree/edit/taxon", action="synonymize")
     role.policies.create(resource="/tree/edit/taxon", action="desynonymize")
     role.policies.create(resource="/tree/edit/taxon", action="repair")
+    role.policies.create(resource="/tree/edit/taxon", action="read")
     role.policies.create(resource="/table/taxon", action="read")
     role.policies.create(resource="/table/taxon", action="update")
     role.policies.create(resource="/table/taxon", action="delete")

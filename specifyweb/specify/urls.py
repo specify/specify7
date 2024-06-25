@@ -41,8 +41,8 @@ urlpatterns = [
     ])),
 
     # taxon trees
-    url(r'^specify/taxon_trees/$', tree_views.all_taxon_trees),
-    url(r'^specify/taxon_tree_ranks/$', tree_views.all_taxon_trees),
+    url(r'^specify_tree/taxon_trees/$', tree_views.all_taxon_trees),
+    url(r'^specify_tree/taxon_tree_ranks/$', tree_views.all_taxon_trees),
 
     # locality set import endpoints
     url(r'^localityset/', include([

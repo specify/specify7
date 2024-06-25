@@ -363,7 +363,11 @@ def tree_rank_item_count(request, tree, rankid):
 @require_GET
 def all_taxon_trees(request):
     """Returns a list of all taxon trees (taxon, mineral, rocks, meteorite, etc)."""
-    # TODO: Add permission check
+    check_permission_targets(
+        request.specify_collection.id,
+        request.specify_user.id,
+        [perm_target("taxon").read],
+    )
     trees = list(Taxontreedef.objects.all().values())
     return HttpResponse(toJson(trees), content_type='application/json')
 
@@ -371,7 +375,11 @@ def all_taxon_trees(request):
 @require_GET
 def all_taxon_tree_ranks(request):
     """Returns a list of taxon tree ranks from all the taxon trees."""
-    # TODO: Add permission check
+    check_permission_targets(
+        request.specify_collection.id,
+        request.specify_user.id,
+        [perm_target("taxon").read],
+    )
     ranks = list(Taxontreedefitem.objects.all().values())
     return HttpResponse(toJson(ranks), content_type='application/json')
 
@@ -382,6 +390,7 @@ class TaxonMutationPT(PermissionTarget):
     synonymize = PermissionTargetAction()
     desynonymize = PermissionTargetAction()
     repair = PermissionTargetAction()
+    read = PermissionTargetAction()
 
 
 class GeographyMutationPT(PermissionTarget):
