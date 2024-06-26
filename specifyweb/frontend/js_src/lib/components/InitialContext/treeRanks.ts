@@ -16,6 +16,7 @@ import type {
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { fetchContext as fetchDomain, schema } from '../DataModel/schema';
 import { getDomainResource } from '../DataModel/scoping';
+import { deserializeResource } from '../DataModel/serializers';
 import { genericTables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 
@@ -74,12 +75,12 @@ export const treeRanksPromise = Promise.all([
                     [
                       treeName,
                       await fetchCollection(`${treeName}TreeDef`, {
-                        domainFilter: true,
+                        domainFilter: false,
                         limit: 0,
                       }).then(async ({ records }) =>
                         Promise.all(
                           records.map(async (definition) => ({
-                            definition,
+                            definition: deserializeResource(definition),
                             ranks: await fetchRelated(
                               definition,
                               'treeDefItems',

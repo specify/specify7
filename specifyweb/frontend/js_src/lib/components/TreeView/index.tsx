@@ -25,7 +25,12 @@ import type {
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { genericTables, getTable } from '../DataModel/tables';
-import type { TaxonTreeDef, TaxonTreeDefItem } from '../DataModel/types';
+import type {
+  GeographyTreeDef,
+  GeographyTreeDefItem,
+  TaxonTreeDef,
+  TaxonTreeDefItem,
+} from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useMenuItem } from '../Header/MenuContext';
 import { getPref } from '../InitialContext/remotePrefs';
@@ -88,7 +93,22 @@ export function TreeViewWrapper(): JSX.Element | null {
       ? caseInsensitiveHash(treeDefinitions, treeName)
       : undefined;
 
-  const [currentName, setCurrentName] = useCachedState('tree', 'type');
+  const [
+    currentName,
+    // = treeDefinitionArray?.[0]?.definition.get('name')
+    setCurrentName,
+  ] = useCachedState('tree', 'type');
+
+  /*
+   * Const nameNotUndefined =
+   *   currentName === undefined
+   *     ? treeDefinitionArray?.[0]?.definition.get('name')
+   *     : currentName;
+   */
+
+  React.useEffect(() => {
+    setCurrentName(treeDefinitionArray?.[0]?.definition.get('name'));
+  }, [treeDefinitionArray]);
 
   const currentTreeDef = treeDefinitionArray?.find(
     (item) => item.definition.get('name') === currentName
@@ -98,25 +118,48 @@ export function TreeViewWrapper(): JSX.Element | null {
     ? treeDefinitionArray.map((tree) => tree.definition.get('name'))
     : [];
 
+  console.log(
+    'treeDefinitions',
+    treeDefinitions,
+    'treeDefinitionArray',
+    treeDefinitionArray,
+    'treeNames',
+    treeNames,
+    'currentTreeDef',
+    currentTreeDef,
+    'currentName',
+    currentName
+  );
+
+  /*
+   * Function setCurrentTreeType(treeName: AnyTree['tableName']) {
+   *   setCurrentName((previous) => ({
+   *     ...previous,
+   *     [treeName]: nameNotUndefined,
+   *   }));
+   * }
+   */
+
   if (treeName === undefined || !isTreeTable(treeName)) return <NotFoundView />;
   return (
     <ProtectedTree action="read" treeName={treeName}>
       {typeof currentTreeDef === 'object' ? (
         <TreeView
+          key={(currentTreeDef.definition as SpecifyResource<AnySchema>).get(
+            'resource_uri'
+          )}
           tableName={treeName}
           treeDefinition={currentTreeDef.definition}
           treeDefinitionItems={currentTreeDef.ranks}
           treeTypeNames={treeNames}
-          treeType={[currentName, setCurrentName]}
+          // treeType={setCurrentTreeType}
           /**
            * We're casting this as a generic Specify Resource because
            * Typescript complains that the get method for each member of the
            * Union type of AnyTree is not compatible
            *
            */
-          key={(currentTreeDef.definition as SpecifyResource<AnySchema>).get(
-            'resource_uri'
-          )}
+          treeType={[currentName, setCurrentName]}
         />
       ) : null}
     </ProtectedTree>
@@ -133,17 +176,20 @@ function TreeView<SCHEMA extends AnyTree>({
   tableName,
   treeDefinition,
   treeDefinitionItems,
-  // TaxonTreeDefinitions,
   treeTypeNames,
   treeType: [treeType, setTreeType],
-}: {
+}: // SetTreeType,
+{
   readonly tableName: SCHEMA['tableName'];
   readonly treeDefinition: SpecifyResource<FilterTablesByEndsWith<'TreeDef'>>;
   readonly treeDefinitionItems: RA<
     SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
   >;
-  // Readonly taxonTreeDefinitions: TaxonTreeDefinition;
   readonly treeTypeNames: RA<string>;
+  /*
+   * Readonly treeType: string;
+   * readonly setTreeType: (treeName: AnyTree['tableName'], type: string) => void;
+   */
   readonly treeType: GetSet<string | undefined>;
 }): JSX.Element | null {
   const table = genericTables[tableName] as SpecifyTable<AnyTree>;

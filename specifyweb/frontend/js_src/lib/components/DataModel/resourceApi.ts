@@ -446,6 +446,9 @@ export const ResourceBase = Backbone.Model.extend({
         this.trigger('change', this);
         return undefined;
       }
+      case 'one-to-one': {
+        return value;
+      }
     }
     if (!field.isVirtual)
       softFail('Unhandled setting of relationship field', {

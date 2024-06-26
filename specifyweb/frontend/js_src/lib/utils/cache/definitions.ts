@@ -84,7 +84,9 @@ export type CacheDefinitions = {
     readonly hideEmptyNodes: boolean;
     readonly isSplit: boolean;
     readonly isHorizontal: boolean;
-    // Make dynamic list of type depending on available trees?
+    /*
+     * Readonly type: { readonly [tree in AnyTree['tableName']]: string };
+     */
     readonly type: string;
   };
   readonly workBenchSortConfig: {
