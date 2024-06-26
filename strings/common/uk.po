@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-06-20 19:09+0000\n"
+"PO-Revision-Date: 2024-06-26 14:07+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "common/uk/>\n"
@@ -401,7 +401,7 @@ msgstr "Попередній"
 #: components/Security/registry.ts:86
 #, fuzzy
 msgid "tool"
-msgstr "Завантаження…"
+msgstr "Інструмент"
 
 #. Used in: Components > Wb Toolkit > Index ⬤ Components > Work Bench > Wb View
 #: components/WbToolkit/index.tsx:62
@@ -605,7 +605,7 @@ msgstr "Продовжуйте"
 #: components/FormPlugins/LatLongUi.tsx:280
 #, fuzzy
 msgid "start"
-msgstr "старт"
+msgstr "Почніть"
 
 #. 🟥Noun. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:291
@@ -770,7 +770,7 @@ msgstr "Невідомий"
 #: components/SchemaConfig/Languages.tsx:93
 #, fuzzy
 msgid "language"
-msgstr "Мова"
+msgstr "Необмежений"
 
 #. Used in: Components > Schema Config > Languages
 #: components/SchemaConfig/Languages.tsx:104
