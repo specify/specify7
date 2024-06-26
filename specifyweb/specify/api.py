@@ -601,17 +601,16 @@ def handle_to_many(collection, agent, obj, data: Dict[str, Any]) -> None:
     for field_name, val in list(data.items()):
         field = obj._meta.get_field(field_name)
         if not field.is_relation or (field.many_to_one or field.one_to_one): continue # Skip *-to-one fields.
+        is_dependent = is_dependent_field(obj, field_name)
 
-        if isinstance(val, list):
-            assert isinstance(obj, models.Recordset) or obj.specify_model.get_field(field_name).dependent, \
-                   "got inline data for non dependent field %s in %s: %r" % (field_name, obj, val)
-        else:
-            # The field contains something other than nested data.
-            # Probably the URI of the collection of objects.
-            assert not obj.specify_model.get_field(field_name).dependent, \
-                "didn't get inline data for dependent field %s in %s: %r" % (field_name, obj, val)
-            continue
-
+        if not isinstance(val, list): 
+            if is_dependent: 
+                raise AssertionError("didn't get inline data for dependent field %s in %s: %r" % (field_name, obj, val))
+            else: 
+                # The field contains something other than nested data. 
+                # Probably the URI of the collection
+                continue
+        
         rel_model = field.related_model
         ids = [] # Ids not in this list will be deleted at the end.
         for rel_data in val:
@@ -621,19 +620,27 @@ def handle_to_many(collection, agent, obj, data: Dict[str, Any]) -> None:
                 rel_obj = update_obj(collection, agent,
                                      rel_model, rel_data['id'],
                                      rel_data['version'], rel_data,
-                                     parent_obj=obj)
+                                     parent_obj=obj if is_dependent_field(obj, field_name) else None)
+
             else:
                 # Create a new related object.
                 rel_obj = create_obj(collection, agent, rel_model, rel_data, parent_obj=obj)
+
+            if not is_dependent and not (isinstance(obj, models.Recordset) and field_name == 'recordsetitems'):
+                getattr(obj, field_name).add(rel_obj)
             ids.append(rel_obj.id) # Record the id as one to keep.
 
         # Delete related objects not in the ids list.
         # TODO: Check versions for optimistic locking.
-        to_delete = getattr(obj, field_name).exclude(id__in=ids)
-        for rel_obj in to_delete:
-            check_table_permissions(collection, agent, rel_obj, "delete")
-            auditlog.remove(rel_obj, agent, obj)
-        to_delete.delete()
+        to_remove = getattr(obj, field_name).exclude(id__in=ids).select_for_update()
+        if is_dependent or (isinstance(obj, models.Recordset) and field_name == 'recordsetitems'):
+            for rel_obj in to_remove:
+                check_table_permissions(collection, agent, rel_obj, "delete")
+                auditlog.remove(rel_obj, agent, obj)
+        
+            to_remove.delete()
+        else: 
+            getattr(obj, field_name).remove(*list(to_remove))
 
 @transaction.atomic
 def delete_resource(collection, agent, name, id, version) -> None:
