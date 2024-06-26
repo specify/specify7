@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-06-20 19:09+0000\n"
+"PO-Revision-Date: 2024-06-26 13:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "attachments/uk/>\n"
@@ -145,7 +145,7 @@ msgstr "Виконувався {action:string}, коли сталася пере
 #: components/AttachmentsBulkImport/utils.ts:473
 #, fuzzy
 msgid "matchError"
-msgstr "Помилка відповідності"
+msgstr "Помилка збігу"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:481
