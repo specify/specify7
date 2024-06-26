@@ -839,7 +839,4 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Требуется текущее определение.',
     'uk-ua': 'Потрібне поточне визначення.',
   },
-  invalidSpecifyUser: {
-    'en-us': 'Invalid specify user',
-  },
 } as const);

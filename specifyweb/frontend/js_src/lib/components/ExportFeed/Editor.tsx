@@ -3,6 +3,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
+import { formsText } from '../../localization/forms';
 import { headerText } from '../../localization/header';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
@@ -374,6 +375,7 @@ function UserPicker({
     if (id === undefined) return;
     // Fetch resource to check for invalid SpecifyUser id entered through XML editor
     fetchResource('SpecifyUser', id, false).then((res) => {
+      if (destructorCalled) return;
       if (res?.id !== id)
         void resource.set(
           'specifyUser',
@@ -381,11 +383,15 @@ function UserPicker({
         );
       if (res === undefined)
         setBlockers(
-          [resourcesText.invalidSpecifyUser()],
+          [formsText.invalidValue()],
           getFieldBlockerKey(field, 'invalidSpecifyUser')
         );
       else setBlockers([], getFieldBlockerKey(field, 'invalidSpecifyUser'));
     });
+    let destructorCalled = false;
+    return (): void => {
+      destructorCalled = true;
+    };
   }, [id]);
 
   const setIdRef = React.useRef(setId);
