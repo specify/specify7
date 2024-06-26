@@ -93,25 +93,41 @@ export function TreeViewWrapper(): JSX.Element | null {
       ? caseInsensitiveHash(treeDefinitions, treeName)
       : undefined;
 
-  const [
-    currentName,
-    // = treeDefinitionArray?.[0]?.definition.get('name')
-    setCurrentName,
-  ] = useCachedState('tree', 'type');
-
   /*
-   * Const nameNotUndefined =
-   *   currentName === undefined
-   *     ? treeDefinitionArray?.[0]?.definition.get('name')
-   *     : currentName;
+   * Const [
+   *   currentName,
+   * = treeDefinitionArray?.[0]?.definition.get('name')
+   *   setCurrentName,
+   * ] = useCachedState('tree', 'type');
    */
 
-  React.useEffect(() => {
-    setCurrentName(treeDefinitionArray?.[0]?.definition.get('name'));
-  }, [treeDefinitionArray]);
+  const [
+    currentName2 = {
+      treeName: treeDefinitionArray?.[0]?.definition.get('name'),
+    },
+    setCurrentName2,
+  ] = useCachedState('tree', 'type2');
 
-  const currentTreeDef = treeDefinitionArray?.find(
-    (item) => item.definition.get('name') === currentName
+  /*
+   * Const currentTreeTypeName =
+   *   currentName2?.[treeName] === undefined
+   *     ? treeDefinitionArray?.[0]?.definition.get('name')
+   *     : currentName2[treeName];
+   */
+
+  /*
+   * React.useEffect(() => {
+   *   setCurrentName(treeDefinitionArray?.[0]?.definition.get('name'));
+   * }, [treeDefinitionArray]);
+   */
+
+  /*
+   * Const currentTreeDef = treeDefinitionArray?.find(
+   *   (item) => item.definition.get('name') === currentName
+   * );
+   */
+  const currentTreeDef2 = treeDefinitionArray?.find(
+    (item) => item.definition.get('name') === currentName2[treeName]
   );
 
   const treeNames: RA<string> = treeDefinitionArray
@@ -131,35 +147,35 @@ export function TreeViewWrapper(): JSX.Element | null {
     currentName
   );
 
-  /*
-   * Function setCurrentTreeType(treeName: AnyTree['tableName']) {
-   *   setCurrentName((previous) => ({
-   *     ...previous,
-   *     [treeName]: nameNotUndefined,
-   *   }));
-   * }
-   */
+  function setCurrentTreeType(type) {
+    setCurrentName2((previous) => ({
+      ...previous,
+      [treeName]: type,
+    }));
+  }
+  // Console.log('currentName2', currentName2?.[treeName], currentTreeTypeName);
 
   if (treeName === undefined || !isTreeTable(treeName)) return <NotFoundView />;
   return (
     <ProtectedTree action="read" treeName={treeName}>
       {typeof currentTreeDef === 'object' ? (
         <TreeView
-          key={(currentTreeDef.definition as SpecifyResource<AnySchema>).get(
+          key={(currentTreeDef2.definition as SpecifyResource<AnySchema>).get(
             'resource_uri'
           )}
+          setCurrentTreeType={setCurrentTreeType}
           tableName={treeName}
-          treeDefinition={currentTreeDef.definition}
-          treeDefinitionItems={currentTreeDef.ranks}
-          treeTypeNames={treeNames}
-          // treeType={setCurrentTreeType}
+          treeDefinition={currentTreeDef2.definition}
+          treeType={currentName2[treeName]}
+          // treeType={[currentName, setCurrentName]}
+          treeDefinitionItems={currentTreeDef2.ranks}
           /**
            * We're casting this as a generic Specify Resource because
            * Typescript complains that the get method for each member of the
            * Union type of AnyTree is not compatible
            *
            */
-          treeType={[currentName, setCurrentName]}
+          treeTypeNames={treeNames}
         />
       ) : null}
     </ProtectedTree>
@@ -177,9 +193,10 @@ function TreeView<SCHEMA extends AnyTree>({
   treeDefinition,
   treeDefinitionItems,
   treeTypeNames,
-  treeType: [treeType, setTreeType],
-}: // SetTreeType,
-{
+  treeType,
+  // TreeType: [treeType, setTreeType],
+  setCurrentTreeType,
+}: {
   readonly tableName: SCHEMA['tableName'];
   readonly treeDefinition: SpecifyResource<FilterTablesByEndsWith<'TreeDef'>>;
   readonly treeDefinitionItems: RA<
@@ -190,7 +207,9 @@ function TreeView<SCHEMA extends AnyTree>({
    * Readonly treeType: string;
    * readonly setTreeType: (treeName: AnyTree['tableName'], type: string) => void;
    */
-  readonly treeType: GetSet<string | undefined>;
+  readonly treeType: string | undefined;
+  // Readonly treeType: GetSet<string | undefined>;
+  readonly setCurrentTreeType: (type: string) => void;
 }): JSX.Element | null {
   const table = genericTables[tableName] as SpecifyTable<AnyTree>;
 
@@ -324,11 +343,8 @@ function TreeView<SCHEMA extends AnyTree>({
             className="w-max"
             value={treeType}
             onValueChange={(treeType: string): void => {
-              setTreeType(treeType);
-              /*
-               * Will reload after type change
-               *  globalThis.location.reload()
-               */
+              setCurrentTreeType(treeType);
+              // SetTreeType(treeType);
             }}
           >
             {treeTypeNames.map((treeType: string) => (

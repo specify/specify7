@@ -88,6 +88,7 @@ export type CacheDefinitions = {
      * Readonly type: { readonly [tree in AnyTree['tableName']]: string };
      */
     readonly type: string;
+    readonly type2: { readonly [tree in AnyTree['tableName']]: string };
   };
   readonly workBenchSortConfig: {
     readonly /**
