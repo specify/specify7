@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-06-20 19:09+0000\n"
+"PO-Revision-Date: 2024-06-26 13:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "attachments/fr/>\n"
@@ -208,7 +208,7 @@ msgstr "Commencer le téléchargement des pièces jointes ?"
 #, fuzzy
 msgid "beginUploadDescription"
 msgstr ""
-"Le téléchargement des pièces jointes créera des pièces jointes dans le "
+"Le téléchargement des pièces jointes créera des pièces jointes sur le "
 "serveur d'actifs et dans la base de données Specify."
 
 #. Used in: Components > Attachments Bulk Import > Action State
