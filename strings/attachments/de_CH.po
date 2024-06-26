@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-06-20 19:09+0000\n"
+"PO-Revision-Date: 2024-06-26 13:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/attachments/de_CH/>\n"
@@ -308,7 +308,7 @@ msgstr "Gesamtzahl der Dateien"
 #: components/AttachmentsBulkImport/utils.ts:487
 #, fuzzy
 msgid "correctlyFormatted"
-msgstr "Korrekt formatiert"
+msgstr "Richtig formatiert"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:488
@@ -397,8 +397,8 @@ msgstr ""
 msgid "deleteAttachmentDataSetDescription"
 msgstr ""
 "Durch das Löschen eines Datensatzes werden dieser und sein Upload-Pfad "
-"dauerhaft entfernt. Nach dem Löschen ist für einen hochgeladenen Datensatz "
-"auch kein Rollback mehr möglich."
+"dauerhaft entfernt. Außerdem ist nach dem Löschen für einen hochgeladenen "
+"Datensatz kein Rollback mehr möglich."
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:492
