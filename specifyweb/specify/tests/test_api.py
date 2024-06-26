@@ -518,7 +518,9 @@ class InlineApiTests(ApiTests):
         even_dets = [d for d in data['determinations'] if d['number1'] % 2 == 0]
         for d in even_dets: data['determinations'].remove(d)
 
-        data['collectionobjectattribute'] = {'text1': 'look! an attribute'}
+        text1_data = 'look! an attribute'
+
+        data['collectionobjectattribute'] = {'text1': text1_data}
 
         api.update_obj(self.collection, self.agent, 'collectionobject',
                        data['id'], data['version'], data)
@@ -528,9 +530,88 @@ class InlineApiTests(ApiTests):
         for d in obj.determinations.all():
             self.assertFalse(d.number1 % 2 == 0)
 
-        self.assertEqual(obj.collectionobjectattribute.text1, 'look! an attribute')
+        self.assertEqual(obj.collectionobjectattribute.text1, text1_data)
 
+    def test_independent_set_inline(self):
+        accession_data = {
+            'accessionnumber': "a",
+            'division': api.uri_for_model('division', self.division.id),
+            'collectionobjects': [
+                api.obj_to_data(self.collectionobjects[0])
+            ]
+        }
 
+        accession = api.create_obj(self.collection, self.agent, 'Accession', accession_data)
+        self.collectionobjects[0].refresh_from_db()
+        self.assertEqual(accession, self.collectionobjects[0].accession)
+
+    def test_indepenent_removing_from_inline(self):
+        accession = models.Accession.objects.create(
+            accessionnumber="a",
+            version="0",
+            division=self.division
+        )
+
+        accession.collectionobjects.set(self.collectionobjects)
+
+        collection_objects_to_set = [self.collectionobjects[0], self.collectionobjects[3]]
+
+        accession_data = {
+            'accessionnumber': "a",
+            'division': api.uri_for_model('division', self.division.id),
+            'collectionobjects': [
+                api.obj_to_data(collection_object) for collection_object in collection_objects_to_set
+            ]
+        }
+        accession = api.update_obj(self.collection, self.agent, 'Accession', accession.id, accession.version, accession_data)
+
+        self.assertEqual(list(accession.collectionobjects.all()), collection_objects_to_set)
+
+        # ensure the other CollectionObjects have not been deleted
+        self.assertEqual(len(models.Collectionobject.objects.all()), len(self.collectionobjects))
+
+    def test_updating_independent_resource(self): 
+        co_to_modify = api.obj_to_data(self.collectionobjects[2])
+        co_to_modify.update({
+            'integer1': 10,
+            'determinations': [
+                {
+                    'iscurrent': True,
+                    'collectionmemberid': self.collection.id,
+                    'collectionobject': api.uri_for_model('Collectionobject', self.collectionobjects[2].id) 
+                }
+            ]
+        })
+
+        accession_data = {
+            'accessionnumber': "a",
+            'division': api.uri_for_model('division', self.division.id),
+            'collectionobjects': [
+                co_to_modify
+            ]
+        }
+
+        accession = api.create_obj(self.collection, self.agent, 'Accession', accession_data)
+        self.collectionobjects[2].refresh_from_db()
+        self.assertEqual(self.collectionobjects[2].integer1, 10)
+        self.assertEqual(len(self.collectionobjects[2].determinations.all()), 1)
+
+    def test_independent_creating_from_remoteside(self):
+        new_catalognumber = f'num-{len(self.collectionobjects)}'
+        accession_data = {
+            'accessionnumber': "a",
+            'division': api.uri_for_model('division', self.division.id),
+            'collectionobjects': [
+                {
+                    'catalognumber': new_catalognumber,
+                    'collection': api.uri_for_model('Collection', self.collection.id)
+                }
+            ]
+        }
+
+        accession = api.create_obj(self.collection, self.agent, 'Accession', accession_data)
+        self.assertTrue(models.Collectionobject.objects.filter(catalognumber=new_catalognumber).exists())
+    
     # version control on inlined resources should be tested
 
 
