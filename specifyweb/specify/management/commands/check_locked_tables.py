@@ -2,8 +2,12 @@ from django.core.management.base import BaseCommand
 from django.db import connection
 from time import sleep
 
-def check_locked_tables(table_names):
+def check_locked_tables(table_names=None):
     with connection.cursor() as cursor:
+        if table_names is None:
+            cursor.execute('SHOW TABLES')
+            table_names = [row[0] for row in cursor.fetchall()]
+
         table_list = ', '.join(['"{}"'.format(table_name) for table_name in table_names])
         cursor.execute(f'SHOW OPEN TABLES WHERE Table IN ({table_list}) AND In_use > 0')
         locked_tables = [row[1] for row in cursor.fetchall()]
@@ -25,7 +29,7 @@ class CheckLockedTables(BaseCommand):
     help = 'Check if specified tables are locked in the database'
 
     def add_arguments(self, parser):
-        parser.add_argument('table_names', nargs='+', type=str)
+        parser.add_argument('table_names', nargs='*', type=str)
 
     def handle(self, *args, **options):
         table_names = options['table_names']
