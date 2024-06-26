@@ -1442,8 +1442,7 @@ class Collectionobject(models.Model):
     yesno4 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo4', db_index=False)
     yesno5 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo5', db_index=False)
     yesno6 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo6', db_index=False)
-    # TODO: Check if ismemberofcog should be a virtual field
-    ismemberofcog = models.BooleanField(blank=True, null=True, unique=False, db_column='IsMemberOfCog', default=False, db_index=False)
+    # ismemberofcog = models.BooleanField(blank=True, null=True, unique=False, db_column='IsMemberOfCog', default=False, db_index=False)
     hasreferencecatalognumber = models.BooleanField(blank=True, null=True, unique=False, db_column='HasReferenceCatalogNumber', default=False, db_index=False)
 
     # Relationships: Many-to-One
@@ -1463,6 +1462,7 @@ class Collectionobject(models.Model):
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     paleocontext = models.ForeignKey('PaleoContext', db_column='PaleoContextID', related_name='collectionobjects', null=True, on_delete=protect_with_blockers)
     visibilitysetby = models.ForeignKey('SpecifyUser', db_column='VisibilitySetByID', related_name='+', null=True, on_delete=protect_with_blockers)
+    cotype = models.ForeignKey('sp7_models.CollectionObjectType', db_column='CoTypeID', related_name='collectionobjects', null=False, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'collectionobject'
@@ -2808,9 +2808,9 @@ class Discipline(models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: One-to-One
-    # taxontreedef is no longer a OneToOneField, it is now a Many-to-One ForeignKey.
-    # Since multiple taxon trees are allowed, taxontreedef just points to the default one
-    # taxontreedef = models.OneToOneField('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='discipline', null=True, on_delete=protect_with_blockers)
+    # This field is no longer used in Specify 7, since multiple Taxon trees, this is not assumed to be the default taxon
+    # tree, use CollectionObjectType is_default field
+    taxontreedef = models.OneToOneField('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='discipline', null=True, on_delete=protect_with_blockers)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -2820,7 +2820,6 @@ class Discipline(models.Model):
     geologictimeperiodtreedef = models.ForeignKey('GeologicTimePeriodTreeDef', db_column='GeologicTimePeriodTreeDefID', related_name='disciplines', null=False, on_delete=protect_with_blockers)
     lithostrattreedef = models.ForeignKey('LithoStratTreeDef', db_column='LithoStratTreeDefID', related_name='disciplines', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    taxontreedef = models.ForeignKey('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='discipline', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'discipline'

@@ -19,6 +19,7 @@ class CollectionObjectType(models.Model):
     # Fields
     name = models.CharField(blank=False, max_length=255, null=False, unique=False, db_column='Name', db_index=False)
     isloanable = models.BooleanField(blank=True, null=True, unique=False, db_column='IsLoanable', db_index=False)
+    isdefault = models.BooleanField(blank=True, null=False, unique=False, db_column='IsDefault', db_index=False, default=False)
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
@@ -35,6 +36,7 @@ class CollectionObjectType(models.Model):
     class Meta:
         db_table = 'collectionobjecttype'
         ordering = ()
+        unique_together = (('collection', 'isdefault'))
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     save = partialmethod(custom_save)
@@ -50,7 +52,7 @@ class CollectionObjectGroup(models.Model): # aka. Cog
     description = models.TextField(blank=True, null=True, unique=False, db_column='Description', db_index=False)
     igsn = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='IGSN', db_index=False)
     guid = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='GUID', db_index=False)
-    number = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='Number', db_index=False)
+    number1 = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='Number1', db_index=False)
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
