@@ -2808,7 +2808,8 @@ class Discipline(models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: One-to-One
-    # taxontreedef is no longer a OneToOneField, it is now a Many-to-One ForeignKey
+    # taxontreedef is no longer a OneToOneField, it is now a Many-to-One ForeignKey.
+    # Since multiple taxon trees are allowed, taxontreedef just points to the default one
     # taxontreedef = models.OneToOneField('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='discipline', null=True, on_delete=protect_with_blockers)
 
     # Relationships: Many-to-One
