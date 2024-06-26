@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
     ]
 
     def add_new_default_taxon_trees(apps, schema_editor):
-        TAXON_TREES = ["Mineral", "Rock"]
+        TAXON_TREES = ["Mineral", "Rock", "Meteorite", "Fossil"]
         TAXON_RANKS = ["Root", "One", "Two", "Three"]
         for tree in TAXON_TREES:
             if Taxontreedef.objects.filter(name=tree).exists():
@@ -41,7 +41,7 @@ class Migration(migrations.Migration):
                 ttdi.save()
 
     def remove_new_default_taxon_trees(apps, schema_editor):
-        TAXON_TREES = ["Mineral", "Rock"]
+        TAXON_TREES = ["Mineral", "Rock", "Meteorite", "Fossil"]
         TAXON_RANKS = ["One", "Two", "Three"]
 
         for tree in reversed(TAXON_TREES):
@@ -236,5 +236,8 @@ class Migration(migrations.Migration):
             add_new_default_taxon_trees,
             reverse_code=remove_new_default_taxon_trees
         ),
-        migrations.RunPython()
+        migrations.RunPython(
+            create_default_collection_types,
+            reverse_code=revert_default_collection_types
+        )
     ]
