@@ -611,6 +611,26 @@ class InlineApiTests(ApiTests):
 
         accession = api.create_obj(self.collection, self.agent, 'Accession', accession_data)
         self.assertTrue(models.Collectionobject.objects.filter(catalognumber=new_catalognumber).exists())
+
+    def test_reassigning_independent(self): 
+        acc1 = models.Accession.objects.create(
+            accessionnumber="a",
+            division = self.division
+        )
+
+        self.collectionobjects[0].accession = acc1
+        self.collectionobjects[0].save()
+
+        accession_data = {
+            'accessionnumber': "b",
+            'division': api.uri_for_model('division', self.division.id),
+            'collectionobjects': [
+                api.obj_to_data(self.collectionobjects[0])
+            ]
+        }
+        acc2 = api.create_obj(self.collection, self.agent, 'Accession', accession_data)
+        self.collectionobjects[0].refresh_from_db()
+        self.assertEqual(self.collectionobjects[0].accession, acc2)
     
     # version control on inlined resources should be tested
 
