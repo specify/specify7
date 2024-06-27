@@ -50,8 +50,6 @@ export function TreeViewWrapper(): JSX.Element | null {
     | AnyTree['tableName']
     | undefined;
 
-  if (treeName === undefined || !isTreeTable(treeName)) return <NotFoundView />;
-
   const [treeDefinitions] = usePromise(treeRanksPromise, true);
   useErrorContext('treeDefinitions', treeDefinitions);
 
@@ -60,7 +58,7 @@ export function TreeViewWrapper(): JSX.Element | null {
       ? caseInsensitiveHash(treeDefinitions, treeName)
       : undefined;
 
-  //FIXME: replace this with the correct default tree
+  // FIXME: replace this with the correct default tree
   const [
     currentDefinitionName = treeDefinitionArray === undefined
       ? undefined
@@ -76,15 +74,17 @@ export function TreeViewWrapper(): JSX.Element | null {
     ? treeDefinitionArray.map((tree) => tree.definition.name)
     : [];
 
-  return (
+  return treeName === undefined || !isTreeTable(treeName) ? (
+    <NotFoundView />
+  ) : (
     <ProtectedTree action="read" treeName={treeName}>
       {typeof currentTreeInformation === 'object' ? (
         <TreeView
+          setNewDefinition={setCurrentDefinition}
           tableName={treeName}
           treeDefinition={currentTreeInformation.definition}
           treeDefinitionItems={currentTreeInformation.ranks}
           treeTypeNames={treeDefinitionNames}
-          setNewDefinition={setCurrentDefinition}
         />
       ) : null}
     </ProtectedTree>
