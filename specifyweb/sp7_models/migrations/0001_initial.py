@@ -5,7 +5,7 @@ from django.db.models import Subquery, OuterRef
 import django.db.models.deletion
 import django.utils.timezone
 import specifyweb.specify.models
-from specifyweb.specify.models import Taxontreedef, Taxontreedefitem, Discipline, CollectionObject
+from specifyweb.specify.models import Taxontreedef, Taxontreedefitem, Discipline, Collectionobject
 from specifyweb.sp7_models.models import CollectionObjectType
 
 
@@ -87,7 +87,7 @@ class Migration(migrations.Migration):
         # The default collection object type for each collection type is the name of the discipline
         # Solution 1: Iteratively update each CollectionObject's collectionobjecttype
         # by fetching the corresponding CollectionObjectType
-        # for co in CollectionObject.objects.all():
+        # for co in Collectionobject.objects.all():
         #     discipline = co.collection.discipline
         #     name = discipline.name
         #     if CollectionObjectType.objects.filter(name=name).exists():
@@ -99,7 +99,7 @@ class Migration(migrations.Migration):
         for discipline in Discipline.objects.all():
             name = discipline.name
             cot = CollectionObjectType.objects.get(name=name)
-            (CollectionObject.objects
+            (Collectionobject.objects
                 .filter(collection__discipline=discipline)
                 .update(collectionobjecttype=cot))
 
@@ -116,7 +116,7 @@ class Migration(migrations.Migration):
         CollectionObjectType.objects.filter(isdefault=True).delete()
 
         # Reset all CollectionObject's collectionobjecttype to None
-        CollectionObject.objects.update(collectionobjecttype=None)
+        Collectionobject.objects.update(collectionobjecttype=None)
 
     operations = [
         migrations.CreateModel(
