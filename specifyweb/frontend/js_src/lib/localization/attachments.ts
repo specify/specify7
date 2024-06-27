@@ -191,7 +191,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Error de coincidencia',
     'fr-fr': 'Erreur de correspondance',
     'ru-ru': 'Ошибка совпадения',
-    'uk-ua': 'Помилка відповідності',
+    'uk-ua': 'Помилка збігу',
   },
   errorReadingFile: {
     'en-us': 'Error reading file',
@@ -336,7 +336,7 @@ export const attachmentsText = createDictionary({
     `,
     'es-es': 'Interrumpido. Reintentando en [X25X]',
     'fr-fr': `
-      Le téléchargement des pièces jointes créera des pièces jointes dans le
+      Le téléchargement des pièces jointes créera des pièces jointes sur le
       serveur d'actifs et dans la base de données Specify.
     `,
     'ru-ru': `
@@ -353,7 +353,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Unterbrochen',
     'es-es': 'interrumpido',
     'fr-fr': 'Interrompu',
-    'ru-ru': 'Прерванный',
+    'ru-ru': 'Прервано',
     'uk-ua': 'Перерваний',
   },
   tryNow: {
@@ -463,7 +463,7 @@ export const attachmentsText = createDictionary({
   },
   correctlyFormatted: {
     'en-us': 'Correctly Formatted',
-    'de-ch': 'Korrekt formatiert',
+    'de-ch': 'Richtig formatiert',
     'es-es': 'Formateado correctamente',
     'fr-fr': 'Correctement formaté',
     'ru-ru': 'Правильно отформатировано',
@@ -625,8 +625,8 @@ export const attachmentsText = createDictionary({
     `,
     'de-ch': `
       Durch das Löschen eines Datensatzes werden dieser und sein Upload-Pfad
-      dauerhaft entfernt. Nach dem Löschen ist für einen hochgeladenen Datensatz
-      auch kein Rollback mehr möglich.
+      dauerhaft entfernt. Außerdem ist nach dem Löschen für einen hochgeladenen
+      Datensatz kein Rollback mehr möglich.
     `,
     'es-es': `
       Al eliminar un conjunto de datos, se elimina permanentemente este y su
