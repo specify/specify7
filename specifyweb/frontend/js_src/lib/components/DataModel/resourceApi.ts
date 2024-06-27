@@ -446,6 +446,10 @@ export const ResourceBase = Backbone.Model.extend({
         this.trigger('change', this);
         return undefined;
       }
+
+      /** FIXME: move this from handleInlineDataData, and investigate other needed logic.
+       * i.e., see why this was needed
+       */
       case 'one-to-one': {
         return value;
       }
