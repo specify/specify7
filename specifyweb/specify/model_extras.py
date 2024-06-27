@@ -145,7 +145,14 @@ class Preparation(models.Model): # FUTURE: class Preparation(SpTimestampedModel)
     class Meta:
         abstract = True
 
+PALEO_DISCIPLINES = {'paleobotany', 'invertpaleo', 'vertpaleo'}
 
+class Discipline(models.Model):
+    def is_paleo(self):
+         return self.type.lower() in PALEO_DISCIPLINES
+    
+    class Meta:
+        abstract = True
 
 class Taxon(Tree):
     class Meta:

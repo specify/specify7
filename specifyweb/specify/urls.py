@@ -25,6 +25,8 @@ urlpatterns = [
     # this url always triggers a 500 for testing purposes
     url(r'^test_error/', views.raise_error),
 
+    url(r'^specify_trees/$', tree_views.all_tree_information),
+
     # special tree apis
     url(r'^specify_tree/(?P<tree>\w+)/', include([ # permissions added
         url(r'^(?P<id>\d+)/path/$', tree_views.path),
@@ -39,10 +41,6 @@ urlpatterns = [
         url(r'^(?P<treedef>\d+)/(?P<parentid>\w+)/(?P<sortfield>\w+)/$', tree_views.tree_view),
         url(r'^repair/$', tree_views.repair_tree),
     ])),
-
-    # taxon trees
-    url(r'^specify_tree/taxon_trees/$', tree_views.all_taxon_trees),
-    url(r'^specify_tree/taxon_tree_ranks/$', tree_views.all_taxon_trees),
 
     # locality set import endpoints
     url(r'^localityset/', include([

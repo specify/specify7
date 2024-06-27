@@ -2788,7 +2788,7 @@ class Determiner(models.Model):
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     save = partialmethod(custom_save)
 
-class Discipline(models.Model):
+class Discipline(model_extras.Discipline):
     specify_model = datamodel.get_table('discipline')
 
     # ID Field
