@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { FormCell } from '.';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
@@ -10,11 +9,12 @@ import { icons } from '../Atoms/Icons';
 import { useAttachment } from '../Attachments/Plugin';
 import { AttachmentViewer } from '../Attachments/Viewer';
 import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
-import { AnySchema } from '../DataModel/helperTypes';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { ViewDescription } from '../FormParse';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { ViewDescription } from '../FormParse';
 import { attachmentView } from '../FormParse/webOnlyViews';
 import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
+import { FormCell } from '.';
 
 export function CollapsedForm({
   resource,

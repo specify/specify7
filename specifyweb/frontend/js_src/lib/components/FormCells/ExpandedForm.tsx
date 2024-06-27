@@ -4,9 +4,9 @@ import { commonText } from '../../localization/common';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
-import { AnySchema } from '../DataModel/helperTypes';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { ViewDescription } from '../FormParse';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { ViewDescription } from '../FormParse';
 import { SpecifyForm } from '../Forms/SpecifyForm';
 
 export function ExpandedForm({

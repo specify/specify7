@@ -278,9 +278,9 @@ export function FormTable<SCHEMA extends AnySchema>({
                 <div className="contents" role="row">
                   {isExpanded[resource.cid] === true ? (
                     <ExpandedForm
-                      resource={resource}
-                      expandedViewDefinition={expandedViewDefinition}
                       collapsedViewDefinition={collapsedViewDefinition}
+                      expandedViewDefinition={expandedViewDefinition}
+                      resource={resource}
                       onCollapse={(): void =>
                         setExpandedRecords({
                           ...isExpanded,
@@ -290,15 +290,15 @@ export function FormTable<SCHEMA extends AnySchema>({
                     />
                   ) : (
                     <CollapsedForm
-                      resource={resource}
-                      isReadOnly={
-                        isReadOnly || collapsedViewDefinition.mode === 'view'
-                      }
+                      collapsedViewDefinition={collapsedViewDefinition}
                       isInSearchDialog={
                         isInSearchDialog ||
                         collapsedViewDefinition.mode === 'search'
                       }
-                      collapsedViewDefinition={collapsedViewDefinition}
+                      isReadOnly={
+                        isReadOnly || collapsedViewDefinition.mode === 'view'
+                      }
+                      resource={resource}
                       onExpand={(): void =>
                         setExpandedRecords({
                           ...isExpanded,

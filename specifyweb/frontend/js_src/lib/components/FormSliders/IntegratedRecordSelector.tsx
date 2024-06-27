@@ -27,10 +27,8 @@ import { InteractionDialog } from '../Interactions/InteractionDialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { AttachmentsCollection } from './AttachmentsCollection';
-import {
-  RecordSelectorFromCollection,
-  useRecordSelectorFromCollection,
-} from './RecordSelectorFromCollection';
+import type { RecordSelectorFromCollection } from './RecordSelectorFromCollection';
+import { useRecordSelectorFromCollection } from './RecordSelectorFromCollection';
 
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
 
@@ -126,8 +124,7 @@ export function IntegratedRecordSelector({
         setInteractionResource(resources[0]);
         handleOpenDialog();
       }
-      if (!isInteraction && formType !== 'formTable')
-        collection.add(resources);
+      if (!isInteraction && formType !== 'formTable') collection.add(resources);
       handleAdding(resources);
     },
     onDelete: (...args): void => {
