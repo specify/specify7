@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-06-20 19:09+0000\n"
+"PO-Revision-Date: 2024-06-27 06:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/locality/de_CH/>\n"
@@ -292,7 +292,7 @@ msgstr "Der Datensatz muss einen GUID-Header enthalten"
 #: components/LocalityUpdate/utils.ts:55
 #, fuzzy
 msgid "noLocalityMatchingGuid"
-msgstr "Kein Ort mit GUID: '{guid:string}'"
+msgstr "Der Locality Update-Prozess hat begonnen"
 
 #. Used in: Components > Locality Update > Utils
 #: components/LocalityUpdate/utils.ts:59
