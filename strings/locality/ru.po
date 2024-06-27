@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-06-20 19:09+0000\n"
+"PO-Revision-Date: 2024-06-27 06:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "locality/ru/>\n"
@@ -241,7 +241,7 @@ msgstr "Набор данных обновления местоположени�
 #: components/Notifications/NotificationRenderers.tsx:253
 #, fuzzy
 msgid "localityUpdateFailed"
-msgstr "Обновление местоположения не выполнено."
+msgstr "Обновление местоположения не выполнено"
 
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/utils.ts:39
@@ -294,7 +294,7 @@ msgstr "Набор данных должен содержать заголово
 #: components/LocalityUpdate/utils.ts:55
 #, fuzzy
 msgid "noLocalityMatchingGuid"
-msgstr "Нет местоположения с руководством: '{guid:string}'"
+msgstr "Процесс обновления местоположения запущен."
 
 #. Used in: Components > Locality Update > Utils
 #: components/LocalityUpdate/utils.ts:59
