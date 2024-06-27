@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-06-20 19:09+0000\n"
+"PO-Revision-Date: 2024-06-27 06:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "locality/es/>\n"
@@ -293,7 +293,7 @@ msgstr "El conjunto de datos debe contener un encabezado 'guid'"
 #: components/LocalityUpdate/utils.ts:55
 #, fuzzy
 msgid "noLocalityMatchingGuid"
-msgstr "Sin localidad con guid: '{guid:string}'"
+msgstr "El proceso de actualización de localidad ha comenzado."
 
 #. Used in: Components > Locality Update > Utils
 #: components/LocalityUpdate/utils.ts:59
@@ -301,7 +301,7 @@ msgstr "Sin localidad con guid: '{guid:string}'"
 msgid "multipleLocalitiesWithGuid"
 msgstr ""
 "Más de una localidad encontrada con guid: {guid:string}. ID de localidad: "
-"{localityIds: cadena}"
+"{localityIds: string}"
 
 #. Used in: Components > Locality Update > Status
 #: components/LocalityUpdate/Status.tsx:239
@@ -339,7 +339,7 @@ msgstr "Resultados de la actualización de la localidad"
 #: components/Notifications/NotificationRenderers.tsx:255
 #, fuzzy
 msgid "localityUpdateFailureResults"
-msgstr "Resultados de error de actualización de localidad"
+msgstr "Resultados de errores de actualización de localidad"
 
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:219
