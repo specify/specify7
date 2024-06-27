@@ -9,7 +9,6 @@ import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
-import { ajax } from '../../utils/ajax';
 import { listen } from '../../utils/events';
 import { type GetSet, type RA } from '../../utils/types';
 import { caseInsensitiveHash } from '../../utils/utils';
@@ -17,28 +16,17 @@ import { Container, H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label, Select } from '../Atoms/Form';
 import type {
-  AnySchema,
   AnyTree,
   FilterTablesByEndsWith,
   SerializedResource,
 } from '../DataModel/helperTypes';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { deserializeResource } from '../DataModel/serializers';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { genericTables, getTable } from '../DataModel/tables';
-import type {
-  GeographyTreeDef,
-  GeographyTreeDefItem,
-  TaxonTreeDef,
-  TaxonTreeDefItem,
-} from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useMenuItem } from '../Header/MenuContext';
 import { getPref } from '../InitialContext/remotePrefs';
-import {
-  isTreeTable,
-  treeRanksPromise,
-  treeRanksPromise2,
-} from '../InitialContext/treeRanks';
+import { isTreeTable, treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
 import { ResourceEdit } from '../Molecules/ResourceLink';
 import { TableIcon } from '../Molecules/TableIcon';
@@ -55,127 +43,48 @@ import {
 import { TreeViewSearch } from './Search';
 import { Tree } from './Tree';
 
-type TaxonTreeDefinition =
-  | {
-      readonly Taxon: {
-        readonly definition: SpecifyResource<TaxonTreeDef>;
-        readonly ranks: RA<SerializedResource<TaxonTreeDefItem>>;
-      };
-      /*
-       * Readonly TaxonMineral: {
-       *   readonly definition: SpecifyResource<TaxonTreeDef>;
-       *   readonly ranks: RA<SerializedResource<TaxonTreeDefItem>>;
-       * };
-       * readonly TaxonFossil: {
-       *   readonly definition: SpecifyResource<TaxonTreeDef>;
-       *   readonly ranks: RA<SerializedResource<TaxonTreeDefItem>>;
-       * };
-       * readonly TaxonRock: {
-       *   readonly definition: SpecifyResource<TaxonTreeDef>;
-       *   readonly ranks: RA<SerializedResource<TaxonTreeDefItem>>;
-       * };
-       */
-    }
-  | undefined;
-
 export function TreeViewWrapper(): JSX.Element | null {
   useMenuItem('trees');
   const { tableName = '' } = useParams();
-  const treeName: AnyTree['tableName'] | undefined = getTable(tableName)
-    ?.name as AnyTree['tableName'];
+  const treeName = getTable(tableName)?.name as
+    | AnyTree['tableName']
+    | undefined;
+
+  if (treeName === undefined || !isTreeTable(treeName)) return <NotFoundView />;
+
   const [treeDefinitions] = usePromise(treeRanksPromise, true);
   useErrorContext('treeDefinitions', treeDefinitions);
-  // Taxon: will not return an object anymore but an array of object, each for each availble tree type
+
   const treeDefinitionArray =
-    typeof treeDefinitions === 'object' &&
-    typeof treeName === 'string' &&
-    isTreeTable(treeName)
+    typeof treeDefinitions === 'object' && typeof treeName === 'string'
       ? caseInsensitiveHash(treeDefinitions, treeName)
       : undefined;
 
-  /*
-   * Const [
-   *   currentName,
-   * = treeDefinitionArray?.[0]?.definition.get('name')
-   *   setCurrentName,
-   * ] = useCachedState('tree', 'type');
-   */
-
+  //FIXME: replace this with the correct default tree
   const [
-    currentName2 = {
-      treeName: treeDefinitionArray?.[0]?.definition.get('name'),
-    },
-    setCurrentName2,
-  ] = useCachedState('tree', 'type2');
+    currentDefinitionName = treeDefinitionArray === undefined
+      ? undefined
+      : treeDefinitionArray[0].definition.name,
+    setCurrentDefinition,
+  ] = useCachedState('tree', `definition${treeName}`);
 
-  /*
-   * Const currentTreeTypeName =
-   *   currentName2?.[treeName] === undefined
-   *     ? treeDefinitionArray?.[0]?.definition.get('name')
-   *     : currentName2[treeName];
-   */
-
-  /*
-   * React.useEffect(() => {
-   *   setCurrentName(treeDefinitionArray?.[0]?.definition.get('name'));
-   * }, [treeDefinitionArray]);
-   */
-
-  /*
-   * Const currentTreeDef = treeDefinitionArray?.find(
-   *   (item) => item.definition.get('name') === currentName
-   * );
-   */
-  const currentTreeDef2 = treeDefinitionArray?.find(
-    (item) => item.definition.get('name') === currentName2[treeName]
+  const currentTreeInformation = treeDefinitionArray?.find(
+    ({ definition }) => definition.name === currentDefinitionName
   );
 
-  const treeNames: RA<string> = treeDefinitionArray
-    ? treeDefinitionArray.map((tree) => tree.definition.get('name'))
+  const treeDefinitionNames: RA<string> = treeDefinitionArray
+    ? treeDefinitionArray.map((tree) => tree.definition.name)
     : [];
 
-  console.log(
-    'treeDefinitions',
-    treeDefinitions,
-    'treeDefinitionArray',
-    treeDefinitionArray,
-    'treeNames',
-    treeNames,
-    'currentTreeDef',
-    currentTreeDef,
-    'currentName',
-    currentName
-  );
-
-  function setCurrentTreeType(type) {
-    setCurrentName2((previous) => ({
-      ...previous,
-      [treeName]: type,
-    }));
-  }
-  // Console.log('currentName2', currentName2?.[treeName], currentTreeTypeName);
-
-  if (treeName === undefined || !isTreeTable(treeName)) return <NotFoundView />;
   return (
     <ProtectedTree action="read" treeName={treeName}>
-      {typeof currentTreeDef === 'object' ? (
+      {typeof currentTreeInformation === 'object' ? (
         <TreeView
-          key={(currentTreeDef2.definition as SpecifyResource<AnySchema>).get(
-            'resource_uri'
-          )}
-          setCurrentTreeType={setCurrentTreeType}
           tableName={treeName}
-          treeDefinition={currentTreeDef2.definition}
-          treeType={currentName2[treeName]}
-          // treeType={[currentName, setCurrentName]}
-          treeDefinitionItems={currentTreeDef2.ranks}
-          /**
-           * We're casting this as a generic Specify Resource because
-           * Typescript complains that the get method for each member of the
-           * Union type of AnyTree is not compatible
-           *
-           */
-          treeTypeNames={treeNames}
+          treeDefinition={currentTreeInformation.definition}
+          treeDefinitionItems={currentTreeInformation.ranks}
+          treeTypeNames={treeDefinitionNames}
+          setNewDefinition={setCurrentDefinition}
         />
       ) : null}
     </ProtectedTree>
@@ -193,23 +102,17 @@ function TreeView<SCHEMA extends AnyTree>({
   treeDefinition,
   treeDefinitionItems,
   treeTypeNames,
-  treeType,
-  // TreeType: [treeType, setTreeType],
-  setCurrentTreeType,
+  setNewDefinition,
 }: {
   readonly tableName: SCHEMA['tableName'];
-  readonly treeDefinition: SpecifyResource<FilterTablesByEndsWith<'TreeDef'>>;
+  readonly treeDefinition: SerializedResource<
+    FilterTablesByEndsWith<'TreeDef'>
+  >;
   readonly treeDefinitionItems: RA<
     SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
   >;
   readonly treeTypeNames: RA<string>;
-  /*
-   * Readonly treeType: string;
-   * readonly setTreeType: (treeName: AnyTree['tableName'], type: string) => void;
-   */
-  readonly treeType: string | undefined;
-  // Readonly treeType: GetSet<string | undefined>;
-  readonly setCurrentTreeType: (type: string) => void;
+  readonly setNewDefinition: (newDefinition: string) => void;
 }): JSX.Element | null {
   const table = genericTables[tableName] as SpecifyTable<AnyTree>;
 
@@ -341,10 +244,9 @@ function TreeView<SCHEMA extends AnyTree>({
         {tableName === 'Taxon' && treeTypeNames.length > 1 ? (
           <Select
             className="w-max"
-            value={treeType}
-            onValueChange={(treeType: string): void => {
-              setCurrentTreeType(treeType);
-              // SetTreeType(treeType);
+            value={treeDefinition.name}
+            onValueChange={(newDefinition: string): void => {
+              setNewDefinition(newDefinition);
             }}
           >
             {treeTypeNames.map((treeType: string) => (
@@ -354,12 +256,12 @@ function TreeView<SCHEMA extends AnyTree>({
             ))}
           </Select>
         ) : (
-          <H2 title={treeDefinition.get('remarks') ?? undefined}>
-            {treeDefinition.get('name')}
+          <H2 title={treeDefinition.remarks ?? undefined}>
+            {treeDefinition.name}
           </H2>
         )}
         <ResourceEdit
-          resource={treeDefinition}
+          resource={deserializeResource(treeDefinition)}
           onSaved={(): void => globalThis.location.reload()}
         />
         <Button.Icon

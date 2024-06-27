@@ -3,11 +3,12 @@
  * given discipline.
  */
 
+import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
-import type { RA } from '../../utils/types';
+import { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
-import { caseInsensitiveHash, sortFunction } from '../../utils/utils';
-import { fetchCollection, fetchRelated } from '../DataModel/collection';
+import { caseInsensitiveHash } from '../../utils/utils';
+import {} from '../DataModel/schema';
 import type {
   AnySchema,
   AnyTree,
@@ -15,14 +16,21 @@ import type {
 } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { fetchContext as fetchDomain, schema } from '../DataModel/schema';
-import { getDomainResource } from '../DataModel/scoping';
-import { deserializeResource } from '../DataModel/serializers';
 import { genericTables } from '../DataModel/tables';
-import type { Tables } from '../DataModel/types';
+import type { GeographyTreeDef, Tables } from '../DataModel/types';
+import { serializeResource } from '../DataModel/serializers';
+import type { SerializedRecord } from '../DataModel/helperTypes';
+
+type TreeInformationBackend = {
+  readonly [TREE_NAME in AnyTree['tableName']]: RA<{
+    readonly definition: SerializedRecord<Tables[`${TREE_NAME}TreeDef`]>;
+    readonly ranks: RA<SerializedRecord<Tables[`${TREE_NAME}TreeDefItem`]>>;
+  }>;
+};
 
 let treeDefinitions: {
   readonly [TREE_NAME in AnyTree['tableName']]: RA<{
-    readonly definition: SpecifyResource<Tables[`${TREE_NAME}TreeDef`]>;
+    readonly definition: SerializedResource<Tables[`${TREE_NAME}TreeDef`]>;
     readonly ranks: RA<SerializedResource<Tables[`${TREE_NAME}TreeDefItem`]>>;
   }>;
 } = undefined!;
@@ -57,53 +65,30 @@ export const treeRanksPromise = Promise.all([
   import('../Permissions').then(async ({ fetchContext }) => fetchContext),
   import('../DataModel/tables').then(async ({ fetchContext }) => fetchContext),
   fetchDomain,
-])
-  .then(async ([{ hasTreeAccess, hasTablePermission }]) =>
-    hasTablePermission('Discipline', 'read')
-      ? getDomainResource('discipline')
-          ?.fetch()
-          .then((discipline) => {
-            if (!f.has(paleoDiscs, discipline?.get('type')))
-              disciplineTrees = commonTrees;
-          })
-          .then(async () =>
-            Promise.all(
-              disciplineTrees
-                .filter((treeName) => hasTreeAccess(treeName, 'read'))
-                .map(
-                  async (treeName) =>
-                    [
-                      treeName,
-                      await fetchCollection(`${treeName}TreeDef`, {
-                        domainFilter: false,
-                        limit: 0,
-                      }).then(async ({ records }) =>
-                        Promise.all(
-                          records.map(async (definition) => ({
-                            definition: deserializeResource(definition),
-                            ranks: await fetchRelated(
-                              definition,
-                              'treeDefItems',
-                              0
-                            ).then(({ records }) =>
-                              Array.from(records).sort(
-                                sortFunction(({ rankId }) => rankId)
-                              )
-                            ),
-                          }))
-                        )
-                      ),
-                    ] as const
-                )
-            )
-          )
-      : []
-  )
-  .then((results) => {
-    // @ts-expect-error
-    treeDefinitions = Object.fromEntries(results.filter(Boolean));
+]).then(() =>
+  ajax<TreeInformationBackend>('/api/specify_trees/', {
+    headers: { Accept: 'application/json' },
+  }).then(({ data }) => {
+    disciplineTrees = allTrees.filter((treeName) =>
+      Object.keys(data)
+        .map((key) => key.toLowerCase())
+        .includes(treeName.toLowerCase())
+    );
+
+    treeDefinitions = Object.fromEntries(
+      Object.entries(data).map(([treeName, definitions]) => [
+        treeName,
+        definitions.map(({ definition, ranks }) => ({
+          definition: serializeResource(
+            definition as SerializedRecord<GeographyTreeDef>
+          ),
+          ranks: ranks.map((rank) => serializeResource(rank)),
+        })),
+      ])
+    );
     return treeDefinitions;
-  });
+  })
+);
 
 function getTreeScope(
   treeName: AnyTree['tableName']
@@ -120,20 +105,35 @@ function getTreeScope(
 
 export function getTreeDefinitionItems<TREE_NAME extends AnyTree['tableName']>(
   tableName: TREE_NAME,
-  includeRoot: boolean
-): typeof treeDefinitions[TREE_NAME]['ranks'] | undefined {
-  const definition = caseInsensitiveHash(treeDefinitions, tableName);
-  return definition?.ranks.slice(includeRoot ? 0 : 1);
+  includeRoot: boolean,
+  rawDefinitionName?: string
+): typeof treeDefinitions[TREE_NAME][number]['ranks'] | undefined {
+  const specificTreeDefinitions = caseInsensitiveHash(
+    treeDefinitions,
+    tableName
+  );
+
+  //FIXME: replace this with the correct default tree
+  const definitionName =
+    rawDefinitionName === undefined
+      ? specificTreeDefinitions[0].definition.name
+      : rawDefinitionName;
+
+  return specificTreeDefinitions
+    .find(({ definition }) => definition.name === definitionName)
+    ?.ranks.slice(includeRoot ? 0 : 1);
 }
 
 export const strictGetTreeDefinitionItems = <
   TREE_NAME extends AnyTree['tableName']
 >(
   tableName: TREE_NAME,
-  includeRoot: boolean
-): typeof treeDefinitions[TREE_NAME]['ranks'] =>
+  includeRoot: boolean,
+  //FIXME: replace this with the correct default tree
+  rawDefinitionName?: string
+): typeof treeDefinitions[TREE_NAME][number]['ranks'] =>
   defined(
-    getTreeDefinitionItems(tableName, includeRoot),
+    getTreeDefinitionItems(tableName, includeRoot, rawDefinitionName),
     `Unable to get tree ranks for a ${tableName} table`
   );
 

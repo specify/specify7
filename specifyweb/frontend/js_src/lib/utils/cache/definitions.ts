@@ -81,14 +81,11 @@ export type CacheDefinitions = {
     readonly /** Open nodes in a given tree */
     [key in `conformations${AnyTree['tableName']}`]: Conformations;
   } & {
+    readonly [key in `definition${AnyTree['tableName']}`]: string;
+  } & {
     readonly hideEmptyNodes: boolean;
     readonly isSplit: boolean;
     readonly isHorizontal: boolean;
-    /*
-     * Readonly type: { readonly [tree in AnyTree['tableName']]: string };
-     */
-    readonly type: string;
-    readonly type2: { readonly [tree in AnyTree['tableName']]: string };
   };
   readonly workBenchSortConfig: {
     readonly /**
