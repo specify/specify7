@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-06-20 19:09+0000\n"
+"PO-Revision-Date: 2024-06-27 06:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "locality/uk/>\n"
@@ -292,14 +292,14 @@ msgstr "Набір даних має містити заголовок «guid».
 #: components/LocalityUpdate/utils.ts:55
 #, fuzzy
 msgid "noLocalityMatchingGuid"
-msgstr "Немає місцевості з guid: '{guid:string}'"
+msgstr "Розпочато процес оновлення місцевості"
 
 #. Used in: Components > Locality Update > Utils
 #: components/LocalityUpdate/utils.ts:59
 #, fuzzy
 msgid "multipleLocalitiesWithGuid"
 msgstr ""
-"За допомогою guid: {guid:string} знайдено більше одного населеного пункту. "
+"З guid: {guid:string} знайдено більше одного населеного пункту. "
 "Ідентифікатори населених пунктів: {localityIds: рядок}"
 
 #. Used in: Components > Locality Update > Status
