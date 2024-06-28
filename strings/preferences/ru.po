@@ -328,7 +328,7 @@ msgstr "Показать новое предупреждение набора д
 #: components/Preferences/UserDefinitions.tsx:1781
 #, fuzzy
 msgid "showNewDataSetWarningDescription"
-msgstr "Показывать информационное сообщение при создании нового набора данных."
+msgstr "Показывать информационное сообщение при создании нового набора данных"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:563
@@ -476,7 +476,7 @@ msgstr "Показывать значок в шапке"
 #: components/Preferences/UserDefinitions.tsx:208
 #, fuzzy
 msgid "scaleInterface"
-msgstr "Интерфейс масштабирования"
+msgstr "Масштабный интерфейс"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:209
@@ -792,7 +792,7 @@ msgstr "Фокус первого поля"
 #: components/Preferences/UserDefinitions.tsx:1894
 #, fuzzy
 msgid "doubleClickZoom"
-msgstr "Дважды щелкните, чтобы увеличить"
+msgstr "Дважды щелкните, чтобы увеличить масштаб"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1901
