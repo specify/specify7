@@ -421,13 +421,11 @@ model_names_by_app = {
         'Workbenchrowexportedrelationship',
         'Workbenchrowimage',
         'Workbenchtemplate',
-        'Workbenchtemplatemappingitem'
-    },
-    'sp7_models': {
+        'Workbenchtemplatemappingitem',
         'CollectionObjectType',
         'CollectionObjectGroup',
         'CollectionObjectGroupJoin'
-    },
+    }
 }
 
 # def import_model(model_name):

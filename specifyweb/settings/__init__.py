@@ -211,7 +211,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.contenttypes',
     'django.contrib.auth',
-    'specifyweb.sp7_models',
     'specifyweb.specify',
     'specifyweb.permissions',
     'specifyweb.accounts',
