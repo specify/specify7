@@ -103,6 +103,7 @@ class Accessionagent(models.Model):
     class Meta:
         db_table = 'accessionagent'
         ordering = ()
+        unique_together = (('role', 'agentid', 'accessionid'),)
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     save = partialmethod(custom_save)
@@ -444,6 +445,7 @@ class Agentspecialty(models.Model):
     class Meta:
         db_table = 'agentspecialty'
         ordering = ()
+        unique_together = (('agentid', 'ordernumber'),)
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     save = partialmethod(custom_save)
@@ -703,6 +705,7 @@ class Author(models.Model):
     class Meta:
         db_table = 'author'
         ordering = ('ordernumber',)
+        unique_together = (('referenceworkid', 'agentid'),)
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     save = partialmethod(custom_save)
@@ -807,6 +810,7 @@ class Borrowagent(models.Model):
     class Meta:
         db_table = 'borrowagent'
         ordering = ()
+        unique_together = (('role', 'agentid', 'borrowid'),)
         indexes = [
             # models.Index(fields=['CollectionMemberID'], name='BorColMemIDX2')
         ]
@@ -968,6 +972,7 @@ class Collectingevent(models.Model):
     class Meta:
         db_table = 'collectingevent'
         ordering = ()
+        unique_together = (('disciplineid', 'uniqueidentifier'),)
         indexes = [
             # models.Index(fields=['StationFieldNumber'], name='CEStationFieldNumberIDX'),
             # models.Index(fields=['StartDate'], name='CEStartDateIDX'),
@@ -1464,6 +1469,7 @@ class Collectionobject(models.Model):
     class Meta:
         db_table = 'collectionobject'
         ordering = ()
+        unique_together = (('collectionid', 'catalognumber'), ('collectionid', 'uniqueidentifier'),)
         indexes = [
             # models.Index(fields=['FieldNumber'], name='FieldNumberIDX'),
             # models.Index(fields=['CatalogedDate'], name='CatalogedDateIDX'),
@@ -1987,6 +1993,7 @@ class Collector(models.Model):
     class Meta:
         db_table = 'collector'
         ordering = ('ordernumber',)
+        unique_together = (('agentid', 'collectingeventid'),)
         indexes = [
             # models.Index(fields=['DivisionID'], name='COLTRDivIDX')
         ]
@@ -2622,6 +2629,7 @@ class Deaccessionagent(models.Model):
     class Meta:
         db_table = 'deaccessionagent'
         ordering = ()
+        unique_together = (('role', 'agentid', 'deaccessionid'),)
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     save = partialmethod(custom_save)
@@ -2750,6 +2758,7 @@ class Determinationcitation(models.Model):
     class Meta:
         db_table = 'determinationcitation'
         ordering = ()
+        unique_together = (('referenceworkid', 'determinationid'),)
         indexes = [
             # models.Index(fields=['CollectionMemberID'], name='DetCitColMemIDX')
         ]
@@ -2784,6 +2793,7 @@ class Determiner(models.Model):
     class Meta:
         db_table = 'determiner'
         ordering = ('ordernumber',)
+        unique_together = (('agentid', 'determinationid'),)
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     save = partialmethod(custom_save)
@@ -2886,6 +2896,7 @@ class Disposalagent(models.Model):
     class Meta:
         db_table = 'disposalagent'
         ordering = ()
+        unique_together = (('role', 'agentid', 'disposalid'),)
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     save = partialmethod(custom_save)
@@ -3267,6 +3278,7 @@ class Extractor(models.Model):
     class Meta:
         db_table = 'extractor'
         ordering = ('ordernumber',)
+        unique_together = (('agentid', 'dnasequenceid'),)
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     save = partialmethod(custom_save)
@@ -3474,6 +3486,7 @@ class Fundingagent(models.Model):
     class Meta:
         db_table = 'fundingagent'
         ordering = ()
+        unique_together = (('agentid', 'collectingtripid'),)
         indexes = [
             # models.Index(fields=['DivisionID'], name='COLTRIPDivIDX')
         ]
@@ -3836,6 +3849,7 @@ class Giftagent(models.Model):
     class Meta:
         db_table = 'giftagent'
         ordering = ()
+        unique_together = (('role', 'giftid', 'agentid'),)
         indexes = [
             # models.Index(fields=['DisciplineID'], name='GiftAgDspMemIDX')
         ]
@@ -3930,6 +3944,7 @@ class Groupperson(models.Model):
     class Meta:
         db_table = 'groupperson'
         ordering = ()
+        unique_together = (('ordernumber', 'groupid'),)
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     save = partialmethod(custom_save)
@@ -4327,6 +4342,7 @@ class Loanagent(models.Model):
     class Meta:
         db_table = 'loanagent'
         ordering = ()
+        unique_together = (('role', 'loanid', 'agentid'),)
         indexes = [
             # models.Index(fields=['DisciplineID'], name='LoanAgDspMemIDX')
         ]
@@ -4498,6 +4514,7 @@ class Locality(models.Model):
     class Meta:
         db_table = 'locality'
         ordering = ()
+        unique_together = (('disciplineid', 'uniqueidentifier'),)
         indexes = [
             # models.Index(fields=['LocalityName'], name='localityNameIDX'),
             # models.Index(fields=['DisciplineID'], name='LocalityDisciplineIDX'),
@@ -4561,6 +4578,7 @@ class Localitycitation(models.Model):
     class Meta:
         db_table = 'localitycitation'
         ordering = ()
+        unique_together = (('referenceworkid', 'localityid'),)
         indexes = [
             # models.Index(fields=['DisciplineID'], name='LocCitDspMemIDX')
         ]
@@ -4885,6 +4903,7 @@ class Pcrperson(models.Model):
     class Meta:
         db_table = 'pcrperson'
         ordering = ()
+        unique_together = (('agentid', 'dnasequenceid'),)
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     save = partialmethod(custom_save)
@@ -5120,6 +5139,7 @@ class Preparation(model_extras.Preparation):
     class Meta:
         db_table = 'preparation'
         ordering = ()
+        unique_together = (('collectionmemberid', 'barcode'),)
         indexes = [
             # models.Index(fields=['preparedDate'], name='PreparedDateIDX'),
             # models.Index(fields=['CollectionMemberID'], name='PrepColMemIDX'),
