@@ -359,7 +359,9 @@ export function getMappingLineData({
               ...(spec.includeSpecificTreeRanks
                 ? strictGetTreeDefinitionItems(
                     table.name as 'Geography',
-                    false
+                    false,
+                    undefined,
+                    true
                   ).map(({ name, title }) =>
                     name === defaultValue || generateFieldData === 'all'
                       ? ([

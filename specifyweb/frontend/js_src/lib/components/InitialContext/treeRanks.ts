@@ -106,7 +106,8 @@ function getTreeScope(
 export function getTreeDefinitionItems<TREE_NAME extends AnyTree['tableName']>(
   tableName: TREE_NAME,
   includeRoot: boolean,
-  rawDefinitionName?: string
+  rawDefinitionName?: string,
+  getAllRanks?: boolean
 ): typeof treeDefinitions[TREE_NAME][number]['ranks'] | undefined {
   const specificTreeDefinitions = caseInsensitiveHash(
     treeDefinitions,
@@ -123,10 +124,13 @@ export function getTreeDefinitionItems<TREE_NAME extends AnyTree['tableName']>(
     rawDefinitionName === undefined
       ? currentTreeDefinition?.definition.name
       : rawDefinitionName;
+  const allRanks = specificTreeDefinitions.flatMap((tree) => tree.ranks);
 
-  return specificTreeDefinitions
-    .find(({ definition }) => definition.name === definitionName)
-    ?.ranks.slice(includeRoot ? 0 : 1);
+  return getAllRanks === true
+    ? allRanks
+    : specificTreeDefinitions
+        .find(({ definition }) => definition.name === definitionName)
+        ?.ranks.slice(includeRoot ? 0 : 1);
 }
 
 export const strictGetTreeDefinitionItems = <
@@ -135,10 +139,16 @@ export const strictGetTreeDefinitionItems = <
   tableName: TREE_NAME,
   includeRoot: boolean,
   // FIXME: replace this with the correct default tree
-  rawDefinitionName?: string
+  rawDefinitionName?: string,
+  getAllRanks?: boolean
 ): typeof treeDefinitions[TREE_NAME][number]['ranks'] =>
   defined(
-    getTreeDefinitionItems(tableName, includeRoot, rawDefinitionName),
+    getTreeDefinitionItems(
+      tableName,
+      includeRoot,
+      rawDefinitionName,
+      getAllRanks
+    ),
     `Unable to get tree ranks for a ${tableName} table`
   );
 
