@@ -37,6 +37,7 @@ export type HtmlGeneratorFieldData = {
   readonly isDefault?: boolean;
   readonly isRelationship?: boolean;
   readonly tableName?: keyof Tables;
+  readonly tableTreeDef?: string;
 };
 
 type MappingLineBaseProps = {
@@ -242,17 +243,34 @@ export function MappingElement({
   const customSelectOptionGroups = Object.fromEntries(
     Object.entries(fieldGroups)
       .filter(([, groupFields]) => Object.entries(groupFields).length > 0)
-      .map(([groupName, groupFields], _index, { length }) => [
-        groupName,
-        {
-          // Don't show group labels if there is only one group
-          selectGroupLabel:
-            length === 1
-              ? undefined
-              : fieldGroupLabels[groupName as keyof typeof fieldGroupLabels],
-          selectOptionsData: groupFields,
-        },
-      ])
+      // FIXME: remove this or fix this, group taxon by trees
+      .map(([groupName, groupFields], _index, { length }) => {
+        const subGroups = Object.values(groupFields).some(
+          (field) => field.tableName === 'Taxon'
+        )
+          ? Object.entries(groupFields).reduce<Record<string, readonly any[]>>(
+              (accumulator, [fieldName, fieldData]) => {
+                const tableTreeDef = fieldData.tableTreeDef || 'No Tree Def';
+                accumulator[tableTreeDef] ||= [];
+                accumulator[tableTreeDef].push({ ...fieldData, fieldName });
+                return accumulator;
+              },
+              {}
+            )
+          : undefined;
+        console.log(subGroups, 'groupFields', groupFields);
+        return [
+          groupName,
+          {
+            // Don't show group labels if there is only one group
+            selectGroupLabel:
+              length === 1
+                ? undefined
+                : fieldGroupLabels[groupName as keyof typeof fieldGroupLabels],
+            selectOptionsData: groupFields,
+          },
+        ];
+      })
   );
 
   return props.isOpen ? (

@@ -362,7 +362,7 @@ export function getMappingLineData({
                     false,
                     undefined,
                     true
-                  ).map(({ name, title }) =>
+                  ).map(({ name, title, treeDef }) =>
                     name === defaultValue || generateFieldData === 'all'
                       ? ([
                           formatTreeRank(name),
@@ -371,6 +371,7 @@ export function getMappingLineData({
                             isRelationship: true,
                             isDefault: name === defaultValue,
                             tableName: table.name,
+                            tableTreeDef: treeDef,
                           },
                         ] as const)
                       : undefined
