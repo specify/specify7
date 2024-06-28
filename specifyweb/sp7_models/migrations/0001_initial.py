@@ -120,6 +120,61 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
+            name='CollectionObjectType',
+            fields=[
+                ('id', models.AutoField(db_column='CollectionObjectTypeID', primary_key=True, serialize=False)),
+                ('name', models.CharField(db_column='Name', max_length=255)),
+                ('isloanable', models.BooleanField(blank=True, db_column='IsLoanable', null=True)),
+                ('isdefault', models.BooleanField(blank=True, db_column='IsDefault', null=False, default=False)),
+                ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
+                ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
+                ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
+                ('text1', models.TextField(blank=True, db_column='Text1', null=True)),
+                ('text2', models.TextField(blank=True, db_column='Text2', null=True)),
+                ('text3', models.TextField(blank=True, db_column='Text3', null=True)),
+                ('collection', models.ForeignKey(db_column='CollectionID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='collectionobjecttypes', to='specify.collection')),
+                ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
+                ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
+                ('taxontreedef', models.ForeignKey(db_column='TaxonTreeDefID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='collectionobjecttypes', to='specify.taxontreedef')),
+            ],
+            options={
+                'db_table': 'collectionobjecttype',
+                'ordering': (),
+                'unique_together': (('collection', 'isdefault'),),
+            },
+        ),
+        migrations.RunPython(
+            create_default_collection_types,
+            reverse_code=revert_default_collection_types
+        ),
+        migrations.RunPython(
+            add_new_default_taxon_trees,
+            reverse_code=remove_new_default_taxon_trees
+        ),
+        migrations.RunSQL(
+            # Add hasreferencecatalognumber fields to CollectionObject
+            # Add CoTypeID foreign key to CollectionObject
+            """
+            ALTER TABLE collectionobject
+            ADD COLUMN HasReferenceCatalogNumber bit(1) DEFAULT 0 NOT NULL;
+            ALTER TABLE collectionobject
+            ADD COLUMN CoTypeID int NOT NULL;
+            ALTER TABLE collectionobject
+            ADD CONSTRAINT fk_collectionobject_collectionobjecttype
+            FOREIGN KEY (CoTypeID) REFERENCES collectionobjecttype(CollectionObjectTypeID);
+            """,
+            # Remove hasreferencecatalognumber fields from CollectionObject when unapplying migration
+            # Remove CoTypeID foreign key from CollectionObject when unapplying migration
+            reverse_sql="""
+            ALTER TABLE collectionobject
+            DROP COLUMN HasReferenceCatalogNumber;
+            ALTER TABLE collectionobject
+            DROP FOREIGN KEY fk_collectionobject_collectionobjecttype;
+            ALTER TABLE collectionobject
+            DROP COLUMN CoTypeID;
+            """
+        ),
+        migrations.CreateModel(
             name='CollectionObjectGroup',
             fields=[
                 ('id', models.AutoField(db_column='collectionobjectgroupid', primary_key=True, serialize=False)),
@@ -144,30 +199,6 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='CollectionObjectType',
-            fields=[
-                ('id', models.AutoField(db_column='CollectionObjectTypeID', primary_key=True, serialize=False)),
-                ('name', models.CharField(db_column='Name', max_length=255)),
-                ('isloanable', models.BooleanField(blank=True, db_column='IsLoanable', null=True)),
-                ('isdefault', models.BooleanField(blank=True, db_column='IsDefault', null=False, default=False)),
-                ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
-                ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
-                ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
-                ('text1', models.TextField(blank=True, db_column='Text1', null=True)),
-                ('text2', models.TextField(blank=True, db_column='Text2', null=True)),
-                ('text3', models.TextField(blank=True, db_column='Text3', null=True)),
-                ('collection', models.ForeignKey(db_column='CollectionID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='collectionobjecttypes', to='specify.collection')),
-                ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
-                ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
-                ('taxontreedef', models.ForeignKey(db_column='TaxonTreeDefID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='collectionobjecttypes', to='specify.taxontreedef')),
-            ],
-            options={
-                'db_table': 'collectionobjecttype',
-                'ordering': (),
-                'unique_together': (('collection', 'isdefault'),),
-            },
-        ),
-        migrations.CreateModel(
             name='CollectionObjectGroupJoin',
             fields=[
                 ('id', models.AutoField(db_column='collectionobjectgroupjoinid', primary_key=True, serialize=False)),
@@ -188,23 +219,6 @@ class Migration(migrations.Migration):
                 'db_table': 'collectionobjectgroupjoin',
                 'ordering': (),
             },
-        ),
-        migrations.RunSQL(
-            # Add hasreferencecatalognumber fields to CollectionObject
-            # Add CoTypeID foreign key to CollectionObject
-            """
-            ALTER TABLE collectionobject
-            ADD COLUMN HasReferenceCatalogNumber bit(1) DEFAULT 0 NOT NULL;
-            ALTER TABLE collectionobject
-            ADD COLUMN CoTypeID int;
-            """,
-            # Remove hasreferencecatalognumber fields from CollectionObject when unapplying migration
-            reverse_sql="""
-            ALTER TABLE collectionobject
-            DROP COLUMN HasReferenceCatalogNumber;
-            ALTER TABLE collectionobject
-            DROP COLUMN CoTypeID;
-            """
         ),
         # migrations.AddField( # This doesn't work right now because CollectionObject is in the specify django app
         #     model_name='ColllectionObject',
@@ -228,16 +242,8 @@ class Migration(migrations.Migration):
         #         ),
         #     ),
         #     # Remove ismemberofcog field from CollectionObject when unapplying migration
-        #     lambda apps, schema_editor: apps.get_model(
+        #     reverse_code=lambda apps, schema_editor: apps.get_model(
         #         "specify", "CollectionObject"
         #     ).remove_from_class("ismemberofcog"),
         # ),
-        migrations.RunPython(
-            add_new_default_taxon_trees,
-            reverse_code=remove_new_default_taxon_trees
-        ),
-        migrations.RunPython(
-            create_default_collection_types,
-            reverse_code=revert_default_collection_types
-        )
     ]
