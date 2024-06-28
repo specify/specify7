@@ -73,8 +73,8 @@ class Accession(models.Model):
         db_table = 'accession'
         ordering = ()
         indexes = [
-            models.Index(fields=['AccessionNumber'], name='AccessionNumberIDX'),
-            models.Index(fields=['DateAccessioned'], name='AccessionDateIDX')
+            models.Index(fields=['accessionnumber'], name='AccessionNumberIDX'),
+            models.Index(fields=['dateaccessioned'], name='AccessionDateIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -103,7 +103,7 @@ class Accessionagent(models.Model):
     class Meta:
         db_table = 'accessionagent'
         ordering = ()
-        unique_together = (('role', 'agentid', 'accessionid'),)
+        unique_together = (('role', 'agent', 'accession'),)
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     save = partialmethod(custom_save)
@@ -322,11 +322,11 @@ class Agent(models.Model):
         db_table = 'agent'
         ordering = ()
         indexes = [
-            models.Index(fields=['LastName'], name='AgentLastNameIDX'),
-            models.Index(fields=['FirstName'], name='AgentFirstNameIDX'),
-            models.Index(fields=['GUID'], name='AgentGuidIDX'),
-            models.Index(fields=['AgentType'], name='AgentTypeIDX'),
-            models.Index(fields=['Abbreviation'], name='AbbreviationIDX')
+            models.Index(fields=['lastname'], name='AgentLastNameIDX'),
+            models.Index(fields=['firstname'], name='AgentFirstNameIDX'),
+            models.Index(fields=['guid'], name='AgentGuidIDX'),
+            models.Index(fields=['agenttype'], name='AgentTypeIDX'),
+            models.Index(fields=['abbreviation'], name='AbbreviationIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -445,7 +445,7 @@ class Agentspecialty(models.Model):
     class Meta:
         db_table = 'agentspecialty'
         ordering = ()
-        unique_together = (('agentid', 'ordernumber'),)
+        unique_together = (('agent', 'ordernumber'),)
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     save = partialmethod(custom_save)
@@ -504,8 +504,8 @@ class Appraisal(models.Model):
         db_table = 'appraisal'
         ordering = ()
         indexes = [
-            models.Index(fields=['AppraisalNumber'], name='AppraisalNumberIDX'),
-            models.Index(fields=['AppraisalDate'], name='AppraisalDateIDX')
+            models.Index(fields=['appraisalnumber'], name='AppraisalNumberIDX'),
+            models.Index(fields=['appraisaldate'], name='AppraisalDateIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -557,11 +557,11 @@ class Attachment(models.Model):
         db_table = 'attachment'
         ordering = ()
         indexes = [
-            models.Index(fields=['Title'], name='TitleIDX'),
-            models.Index(fields=['DateImaged'], name='DateImagedIDX'),
-            models.Index(fields=['ScopeID'], name='AttchScopeIDIDX'),
-            models.Index(fields=['ScopeType'], name='AttchScopeTypeIDX'),
-            models.Index(fields=['GUID'], name='AttchmentGuidIDX')
+            models.Index(fields=['title'], name='TitleIDX'),
+            models.Index(fields=['dateimaged'], name='DateImagedIDX'),
+            models.Index(fields=['scopeid'], name='AttchScopeIDIDX'),
+            models.Index(fields=['scopetype'], name='AttchScopeTypeIDX'),
+            models.Index(fields=['guid'], name='AttchmentGuidIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -705,7 +705,7 @@ class Author(models.Model):
     class Meta:
         db_table = 'author'
         ordering = ('ordernumber',)
-        unique_together = (('referenceworkid', 'agentid'),)
+        unique_together = (('referencework', 'agent'),)
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     save = partialmethod(custom_save)
@@ -734,7 +734,7 @@ class Autonumberingscheme(models.Model):
         db_table = 'autonumberingscheme'
         ordering = ()
         indexes = [
-            models.Index(fields=['SchemeName'], name='SchemeNameIDX')
+            models.Index(fields=['schemename'], name='SchemeNameIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -779,9 +779,9 @@ class Borrow(models.Model):
         db_table = 'borrow'
         ordering = ()
         indexes = [
-            models.Index(fields=['InvoiceNumber'], name='BorInvoiceNumberIDX'),
-            models.Index(fields=['ReceivedDate'], name='BorReceivedDateIDX'),
-            models.Index(fields=['CollectionMemberID'], name='BorColMemIDX')
+            models.Index(fields=['invoicenumber'], name='BorInvoiceNumberIDX'),
+            models.Index(fields=['receiveddate'], name='BorReceivedDateIDX'),
+            models.Index(fields=['collectionmemberid'], name='BorColMemIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -810,7 +810,7 @@ class Borrowagent(models.Model):
     class Meta:
         db_table = 'borrowagent'
         ordering = ()
-        unique_together = (('role', 'agentid', 'borrowid'),)
+        unique_together = (('role', 'agent', 'borrow'),)
         indexes = [
             # models.Index(fields=['CollectionMemberID'], name='BorColMemIDX2')
         ]
@@ -874,9 +874,9 @@ class Borrowmaterial(models.Model):
         db_table = 'borrowmaterial'
         ordering = ()
         indexes = [
-            models.Index(fields=['MaterialNumber'], name='BorMaterialNumberIDX'),
-            models.Index(fields=['CollectionMemberID'], name='BorMaterialColMemIDX'),
-            models.Index(fields=['Description'], name='DescriptionIDX')
+            models.Index(fields=['materialnumber'], name='BorMaterialNumberIDX'),
+            models.Index(fields=['collectionmemberid'], name='BorMaterialColMemIDX'),
+            models.Index(fields=['description'], name='DescriptionIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -907,8 +907,8 @@ class Borrowreturnmaterial(models.Model):
         db_table = 'borrowreturnmaterial'
         ordering = ()
         indexes = [
-            models.Index(fields=['ReturnedDate'], name='BorrowReturnedDateIDX'),
-            models.Index(fields=['CollectionMemberID'], name='BorrowReturnedColMemIDX')
+            models.Index(fields=['returneddate'], name='BorrowReturnedDateIDX'),
+            models.Index(fields=['collectionmemberid'], name='BorrowReturnedColMemIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -972,13 +972,13 @@ class Collectingevent(models.Model):
     class Meta:
         db_table = 'collectingevent'
         ordering = ()
-        unique_together = (('disciplineid', 'uniqueidentifier'),)
+        unique_together = (('discipline', 'uniqueidentifier'),)
         indexes = [
-            models.Index(fields=['StationFieldNumber'], name='CEStationFieldNumberIDX'),
-            models.Index(fields=['StartDate'], name='CEStartDateIDX'),
-            models.Index(fields=['EndDate'], name='CEEndDateIDX'),
-            models.Index(fields=['UniqueIdentifier'], name='CEUniqueIdentifierIDX'),
-            models.Index(fields=['GUID'], name='CEGuidIDX')
+            models.Index(fields=['stationfieldnumber'], name='CEStationFieldNumberIDX'),
+            models.Index(fields=['startdate'], name='CEStartDateIDX'),
+            models.Index(fields=['enddate'], name='CEEndDateIDX'),
+            models.Index(fields=['uniqueidentifier'], name='CEUniqueIdentifierIDX'),
+            models.Index(fields=['guid'], name='CEGuidIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -1008,7 +1008,7 @@ class Collectingeventattachment(models.Model):
         db_table = 'collectingeventattachment'
         ordering = ()
         indexes = [
-            models.Index(fields=['CollectionMemberID'], name='CEAColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='CEAColMemIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -1038,7 +1038,7 @@ class Collectingeventattr(models.Model):
         db_table = 'collectingeventattr'
         ordering = ()
         indexes = [
-            models.Index(fields=['CollectionMemberID'], name='COLEVATColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='COLEVATColMemIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -1111,7 +1111,7 @@ class Collectingeventattribute(models.Model):
         db_table = 'collectingeventattribute'
         ordering = ()
         indexes = [
-            models.Index(fields=['DisciplineID'], name='COLEVATSDispIDX')
+            models.Index(fields=['discipline'], name='COLEVATSDispIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -1196,8 +1196,8 @@ class Collectingtrip(models.Model):
         db_table = 'collectingtrip'
         ordering = ()
         indexes = [
-            models.Index(fields=['CollectingTripName'], name='COLTRPNameIDX'),
-            models.Index(fields=['StartDate'], name='COLTRPStartDateIDX')
+            models.Index(fields=['collectingtripname'], name='COLTRPNameIDX'),
+            models.Index(fields=['startdate'], name='COLTRPStartDateIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -1227,7 +1227,7 @@ class Collectingtripattachment(models.Model):
         db_table = 'collectingtripattachment'
         ordering = ()
         indexes = [
-            models.Index(fields=['CollectionMemberID'], name='CTAColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='CTAColMemIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -1299,7 +1299,7 @@ class Collectingtripattribute(models.Model):
         db_table = 'collectingtripattribute'
         ordering = ()
         indexes = [
-            models.Index(fields=['DisciplineID'], name='COLTRPSDispIDX')
+            models.Index(fields=['discipline'], name='COLTRPSDispIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -1373,8 +1373,8 @@ class Collection(models.Model):
         db_table = 'collection'
         ordering = ()
         indexes = [
-            models.Index(fields=['CollectionName'], name='CollectionNameIDX'),
-            models.Index(fields=['GUID'], name='CollectionGuidIDX')
+            models.Index(fields=['collectionname'], name='CollectionNameIDX'),
+            models.Index(fields=['guid'], name='CollectionGuidIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -1469,15 +1469,15 @@ class Collectionobject(models.Model):
     class Meta:
         db_table = 'collectionobject'
         ordering = ()
-        unique_together = (('collectionid', 'catalognumber'), ('collectionid', 'uniqueidentifier'),)
+        unique_together = (('collection', 'catalognumber'), ('collection', 'uniqueidentifier'),)
         indexes = [
-            models.Index(fields=['FieldNumber'], name='FieldNumberIDX'),
-            models.Index(fields=['CatalogedDate'], name='CatalogedDateIDX'),
-            models.Index(fields=['CatalogNumber'], name='CatalogNumberIDX'),
-            models.Index(fields=['UniqueIdentifier'], name='COUniqueIdentifierIDX'),
-            models.Index(fields=['AltCatalogNumber'], name='AltCatalogNumberIDX'),
-            models.Index(fields=['GUID'], name='ColObjGuidIDX'),
-            models.Index(fields=['CollectionmemberID'], name='COColMemIDX')
+            models.Index(fields=['fieldnumber'], name='FieldNumberIDX'),
+            models.Index(fields=['catalogeddate'], name='CatalogedDateIDX'),
+            models.Index(fields=['catalognumber'], name='CatalogNumberIDX'),
+            models.Index(fields=['uniqueidentifier'], name='COUniqueIdentifierIDX'),
+            models.Index(fields=['altcatalognumber'], name='AltCatalogNumberIDX'),
+            models.Index(fields=['guid'], name='ColObjGuidIDX'),
+            models.Index(fields=['collectionmemberid'], name='COColMemIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -1507,7 +1507,7 @@ class Collectionobjectattachment(models.Model):
         db_table = 'collectionobjectattachment'
         ordering = ()
         indexes = [
-            models.Index(fields=['CollectionMemberID'], name='COLOBJATTColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='COLOBJATTColMemIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -1537,7 +1537,7 @@ class Collectionobjectattr(models.Model):
         db_table = 'collectionobjectattr'
         ordering = ()
         indexes = [
-            models.Index(fields=['CollectionMemberID'], name='COLOBJATRSColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='COLOBJATRSColMemIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -1684,7 +1684,7 @@ class Collectionobjectattribute(models.Model):
         db_table = 'collectionobjectattribute'
         ordering = ()
         indexes = [
-            models.Index(fields=['CollectionMemberID'], name='COLOBJATTRSColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='COLOBJATTRSColMemIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -1717,7 +1717,7 @@ class Collectionobjectcitation(models.Model):
         db_table = 'collectionobjectcitation'
         ordering = ()
         indexes = [
-            models.Index(fields=['CollectionMemberID'], name='COCITColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='COCITColMemIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -1906,7 +1906,7 @@ class Collectionobjectproperty(models.Model):
         db_table = 'collectionobjectproperty'
         ordering = ()
         indexes = [
-            models.Index(fields=['CollectionMemberID'], name='COLOBJPROPColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='COLOBJPROPColMemIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -1993,9 +1993,9 @@ class Collector(models.Model):
     class Meta:
         db_table = 'collector'
         ordering = ('ordernumber',)
-        unique_together = (('agentid', 'collectingeventid'),)
+        unique_together = (('agent', 'collectingevent'),)
         indexes = [
-            models.Index(fields=['DivisionID'], name='COLTRDivIDX')
+            models.Index(fields=['division'], name='COLTRDivIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -2026,8 +2026,8 @@ class Commonnametx(models.Model):
         db_table = 'commonnametx'
         ordering = ()
         indexes = [
-            models.Index(fields=['Name'], name='CommonNameTxNameIDX'),
-            models.Index(fields=['Country'], name='CommonNameTxCountryIDX')
+            models.Index(fields=['name'], name='CommonNameTxNameIDX'),
+            models.Index(fields=['country'], name='CommonNameTxCountryIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -2134,7 +2134,7 @@ class Conservdescription(models.Model):
         db_table = 'conservdescription'
         ordering = ()
         indexes = [
-            models.Index(fields=['ShortDesc'], name='ConservDescShortDescIDX')
+            models.Index(fields=['shortdesc'], name='ConservDescShortDescIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -2210,8 +2210,8 @@ class Conservevent(models.Model):
         db_table = 'conservevent'
         ordering = ()
         indexes = [
-            models.Index(fields=['ExamDate'], name='ConservExamDateIDX'),
-            models.Index(fields=['completedDate'], name='ConservCompletedDateIDX')
+            models.Index(fields=['examdate'], name='ConservExamDateIDX'),
+            models.Index(fields=['completeddate'], name='ConservCompletedDateIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -2269,8 +2269,8 @@ class Container(models.Model):
         db_table = 'container'
         ordering = ()
         indexes = [
-            models.Index(fields=['Name'], name='ContainerNameIDX'),
-            models.Index(fields=['CollectionMemberID'], name='ContainerMemIDX')
+            models.Index(fields=['name'], name='ContainerNameIDX'),
+            models.Index(fields=['collectionmemberid'], name='ContainerMemIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -2320,7 +2320,7 @@ class Dnaprimer(models.Model):
         db_table = 'dnaprimer'
         ordering = ()
         indexes = [
-            models.Index(fields=['PrimerDesignator'], name='DesignatorIDX')
+            models.Index(fields=['primerdesignator'], name='DesignatorIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -2378,9 +2378,9 @@ class Dnasequence(models.Model):
         db_table = 'dnasequence'
         ordering = ()
         indexes = [
-            models.Index(fields=['GenBankAccessionNumber'], name='GenBankAccIDX'),
-            models.Index(fields=['BOLDBarcodeID'], name='BOLDBarcodeIDX'),
-            models.Index(fields=['BOLDSampleID'], name='BOLDSampleIDX')
+            models.Index(fields=['genbankaccessionnumber'], name='GenBankAccIDX'),
+            models.Index(fields=['boldbarcodeid'], name='BOLDBarcodeIDX'),
+            models.Index(fields=['boldsampleid'], name='BOLDSampleIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -2600,8 +2600,8 @@ class Deaccession(models.Model):
         db_table = 'deaccession'
         ordering = ()
         indexes = [
-            models.Index(fields=['DeaccessionNumber'], name='DeaccessionNumberIDX'),
-            models.Index(fields=['DeaccessionDate'], name='DeaccessionDateIDX')
+            models.Index(fields=['deaccessionnumber'], name='DeaccessionNumberIDX'),
+            models.Index(fields=['deaccessiondate'], name='DeaccessionDateIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -2629,7 +2629,7 @@ class Deaccessionagent(models.Model):
     class Meta:
         db_table = 'deaccessionagent'
         ordering = ()
-        unique_together = (('role', 'agentid', 'deaccessionid'),)
+        unique_together = (('role', 'agent', 'deaccession'),)
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     save = partialmethod(custom_save)
@@ -2722,11 +2722,11 @@ class Determination(models.Model):
         db_table = 'determination'
         ordering = ('-iscurrent',)
         indexes = [
-            models.Index(fields=['DeterminedDate'], name='DeterminedDateIDX'),
-            models.Index(fields=['CollectionMemberID'], name='DetMemIDX'),
-            models.Index(fields=['AlternateName'], name='AlterNameIDX'),
-            models.Index(fields=['GUID'], name='DeterminationGuidIDX'),
-            models.Index(fields=['TypeStatusName'], name='TypeStatusNameIDX')
+            models.Index(fields=['determineddate'], name='DeterminedDateIDX'),
+            models.Index(fields=['collectionmemberid'], name='DetMemIDX'),
+            models.Index(fields=['alternatename'], name='AlterNameIDX'),
+            models.Index(fields=['guid'], name='DeterminationGuidIDX'),
+            models.Index(fields=['typestatusname'], name='TypeStatusNameIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -2758,9 +2758,9 @@ class Determinationcitation(models.Model):
     class Meta:
         db_table = 'determinationcitation'
         ordering = ()
-        unique_together = (('referenceworkid', 'determinationid'),)
+        unique_together = (('referencework', 'determination'),)
         indexes = [
-            models.Index(fields=['CollectionMemberID'], name='DetCitColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='DetCitColMemIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -2793,7 +2793,7 @@ class Determiner(models.Model):
     class Meta:
         db_table = 'determiner'
         ordering = ('ordernumber',)
-        unique_together = (('agentid', 'determinationid'),)
+        unique_together = (('agent', 'determination'),)
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     save = partialmethod(custom_save)
@@ -2830,7 +2830,7 @@ class Discipline(models.Model):
         db_table = 'discipline'
         ordering = ()
         indexes = [
-            models.Index(fields=['Name'], name='DisciplineNameIDX')
+            models.Index(fields=['name'], name='DisciplineNameIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -2867,8 +2867,8 @@ class Disposal(models.Model):
         db_table = 'disposal'
         ordering = ()
         indexes = [
-            models.Index(fields=['DisposalNumber'], name='DisposalNumberIDX'),
-            models.Index(fields=['DisposalDate'], name='DisposalDateIDX')
+            models.Index(fields=['disposalnumber'], name='DisposalNumberIDX'),
+            models.Index(fields=['disposaldate'], name='DisposalDateIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -2896,7 +2896,7 @@ class Disposalagent(models.Model):
     class Meta:
         db_table = 'disposalagent'
         ordering = ()
-        unique_together = (('role', 'agentid', 'disposalid'),)
+        unique_together = (('role', 'agent', 'disposal'),)
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     save = partialmethod(custom_save)
@@ -2984,7 +2984,7 @@ class Division(models.Model):
         db_table = 'division'
         ordering = ()
         indexes = [
-            models.Index(fields=['Name'], name='DivisionNameIDX')
+            models.Index(fields=['name'], name='DivisionNameIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -3027,8 +3027,8 @@ class Exchangein(models.Model):
         db_table = 'exchangein'
         ordering = ()
         indexes = [
-            models.Index(fields=['ExchangeDate'], name='ExchangeDateIDX'),
-            models.Index(fields=['DescriptionOfMaterial'], name='DescriptionOfMaterialIDX')
+            models.Index(fields=['exchangedate'], name='ExchangeDateIDX'),
+            models.Index(fields=['descriptionofmaterial'], name='DescriptionOfMaterialIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -3088,7 +3088,7 @@ class Exchangeinprep(models.Model):
         db_table = 'exchangeinprep'
         ordering = ()
         indexes = [
-            models.Index(fields=['DisciplineID'], name='ExchgInPrepDspMemIDX')
+            models.Index(fields=['discipline'], name='ExchgInPrepDspMemIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -3132,9 +3132,9 @@ class Exchangeout(models.Model):
         db_table = 'exchangeout'
         ordering = ()
         indexes = [
-            models.Index(fields=['ExchangeDate'], name='ExchangeOutdateIDX'),
+            models.Index(fields=['exchangedate'], name='ExchangeOutdateIDX'),
             # models.Index(fields=['DescriptionOfMaterial'], name='DescriptionOfMaterialIDX2'),
-            models.Index(fields=['ExchangeOutNumber'], name='ExchangeOutNumberIDX')
+            models.Index(fields=['exchangeoutnumber'], name='ExchangeOutNumberIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -3194,7 +3194,7 @@ class Exchangeoutprep(models.Model):
         db_table = 'exchangeoutprep'
         ordering = ()
         indexes = [
-            models.Index(fields=['DisciplineID'], name='ExchgOutPrepDspMemIDX')
+            models.Index(fields=['discipline'], name='ExchgOutPrepDspMemIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -3278,7 +3278,7 @@ class Extractor(models.Model):
     class Meta:
         db_table = 'extractor'
         ordering = ('ordernumber',)
-        unique_together = (('agentid', 'dnasequenceid'),)
+        unique_together = (('agent', 'dnasequence'),)
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     save = partialmethod(custom_save)
@@ -3310,9 +3310,9 @@ class Fieldnotebook(models.Model):
         db_table = 'fieldnotebook'
         ordering = ()
         indexes = [
-            models.Index(fields=['Name'], name='FNBNameIDX'),
-            models.Index(fields=['StartDate'], name='FNBStartDateIDX'),
-            models.Index(fields=['EndDate'], name='FNBEndDateIDX')
+            models.Index(fields=['name'], name='FNBNameIDX'),
+            models.Index(fields=['startdate'], name='FNBStartDateIDX'),
+            models.Index(fields=['enddate'], name='FNBEndDateIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -3368,8 +3368,8 @@ class Fieldnotebookpage(models.Model):
         db_table = 'fieldnotebookpage'
         ordering = ()
         indexes = [
-            models.Index(fields=['PageNumber'], name='FNBPPageNumberIDX'),
-            models.Index(fields=['ScanDate'], name='FNBPScanDateIDX')
+            models.Index(fields=['pagenumber'], name='FNBPPageNumberIDX'),
+            models.Index(fields=['scandate'], name='FNBPScanDateIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -3428,8 +3428,8 @@ class Fieldnotebookpageset(models.Model):
         db_table = 'fieldnotebookpageset'
         ordering = ()
         indexes = [
-            models.Index(fields=['StartDate'], name='FNBPSStartDateIDX'),
-            models.Index(fields=['EndDate'], name='FNBPSEndDateIDX')
+            models.Index(fields=['startdate'], name='FNBPSStartDateIDX'),
+            models.Index(fields=['enddate'], name='FNBPSEndDateIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -3486,9 +3486,9 @@ class Fundingagent(models.Model):
     class Meta:
         db_table = 'fundingagent'
         ordering = ()
-        unique_together = (('agentid', 'collectingtripid'),)
+        unique_together = (('agent', 'collectingtrip'),)
         indexes = [
-            models.Index(fields=['DivisionID'], name='COLTRIPDivIDX')
+            models.Index(fields=['division'], name='COLTRIPDivIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -3599,8 +3599,8 @@ class Geography(model_extras.Geography):
         db_table = 'geography'
         ordering = ()
         indexes = [
-            models.Index(fields=['Name'], name='GeoNameIDX'),
-            models.Index(fields=['FullName'], name='GeoFullNameIDX')
+            models.Index(fields=['name'], name='GeoNameIDX'),
+            models.Index(fields=['fullname'], name='GeoFullNameIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -3703,9 +3703,9 @@ class Geologictimeperiod(model_extras.Geologictimeperiod):
         db_table = 'geologictimeperiod'
         ordering = ()
         indexes = [
-            models.Index(fields=['Name'], name='GTPNameIDX'),
-            models.Index(fields=['FullName'], name='GTPFullNameIDX'),
-            models.Index(fields=['GUID'], name='GTPGuidIDX')
+            models.Index(fields=['name'], name='GTPNameIDX'),
+            models.Index(fields=['fullname'], name='GTPFullNameIDX'),
+            models.Index(fields=['guid'], name='GTPGuidIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -3818,8 +3818,8 @@ class Gift(models.Model):
         db_table = 'gift'
         ordering = ()
         indexes = [
-            models.Index(fields=['GiftNumber'], name='GiftNumberIDX'),
-            models.Index(fields=['GiftDate'], name='GiftDateIDX')
+            models.Index(fields=['giftnumber'], name='GiftNumberIDX'),
+            models.Index(fields=['giftdate'], name='GiftDateIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -3849,9 +3849,9 @@ class Giftagent(models.Model):
     class Meta:
         db_table = 'giftagent'
         ordering = ()
-        unique_together = (('role', 'giftid', 'agentid'),)
+        unique_together = (('role', 'gift', 'agent'),)
         indexes = [
-            models.Index(fields=['DisciplineID'], name='GiftAgDspMemIDX')
+            models.Index(fields=['discipline'], name='GiftAgDspMemIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -3915,7 +3915,7 @@ class Giftpreparation(models.Model):
         db_table = 'giftpreparation'
         ordering = ()
         indexes = [
-            models.Index(fields=['DisciplineID'], name='GiftPrepDspMemIDX')
+            models.Index(fields=['discipline'], name='GiftPrepDspMemIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -3944,7 +3944,7 @@ class Groupperson(models.Model):
     class Meta:
         db_table = 'groupperson'
         ordering = ()
-        unique_together = (('ordernumber', 'groupid'),)
+        unique_together = (('ordernumber', 'group'),)
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     save = partialmethod(custom_save)
@@ -3978,7 +3978,7 @@ class Inforequest(models.Model):
         db_table = 'inforequest'
         ordering = ()
         indexes = [
-            models.Index(fields=['CollectionMemberID'], name='IRColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='IRColMemIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -4031,8 +4031,8 @@ class Institution(models.Model):
         db_table = 'institution'
         ordering = ()
         indexes = [
-            models.Index(fields=['Name'], name='InstNameIDX'),
-            models.Index(fields=['GUID'], name='InstGuidIDX')
+            models.Index(fields=['name'], name='InstNameIDX'),
+            models.Index(fields=['guid'], name='InstGuidIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -4070,7 +4070,7 @@ class Institutionnetwork(models.Model):
         db_table = 'institutionnetwork'
         ordering = ()
         indexes = [
-            models.Index(fields=['Name'], name='InstNetworkNameIDX')
+            models.Index(fields=['name'], name='InstNetworkNameIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -4102,8 +4102,8 @@ class Journal(models.Model):
         db_table = 'journal'
         ordering = ()
         indexes = [
-            models.Index(fields=['JournalName'], name='JournalNameIDX'),
-            models.Index(fields=['GUID'], name='JournalGUIDIDX')
+            models.Index(fields=['journalname'], name='JournalNameIDX'),
+            models.Index(fields=['guid'], name='JournalGUIDIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -4194,9 +4194,9 @@ class Lithostrat(model_extras.Lithostrat):
         db_table = 'lithostrat'
         ordering = ()
         indexes = [
-            models.Index(fields=['Name'], name='LithoNameIDX'),
-            models.Index(fields=['FullName'], name='LithoFullNameIDX'),
-            models.Index(fields=['GUID'], name='LithoGuidIDX')
+            models.Index(fields=['name'], name='LithoNameIDX'),
+            models.Index(fields=['fullname'], name='LithoFullNameIDX'),
+            models.Index(fields=['guid'], name='LithoGuidIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -4311,9 +4311,9 @@ class Loan(models.Model):
         db_table = 'loan'
         ordering = ()
         indexes = [
-            models.Index(fields=['LoanNumber'], name='LoanNumberIDX'),
-            models.Index(fields=['LoanDate'], name='LoanDateIDX'),
-            models.Index(fields=['CurrentDueDate'], name='CurrentDueDateIDX')
+            models.Index(fields=['loannumber'], name='LoanNumberIDX'),
+            models.Index(fields=['loandate'], name='LoanDateIDX'),
+            models.Index(fields=['currentduedate'], name='CurrentDueDateIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -4342,9 +4342,9 @@ class Loanagent(models.Model):
     class Meta:
         db_table = 'loanagent'
         ordering = ()
-        unique_together = (('role', 'loanid', 'agentid'),)
+        unique_together = (('role', 'loan', 'agent'),)
         indexes = [
-            models.Index(fields=['DisciplineID'], name='LoanAgDspMemIDX')
+            models.Index(fields=['discipline'], name='LoanAgDspMemIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -4411,7 +4411,7 @@ class Loanpreparation(models.Model):
         db_table = 'loanpreparation'
         ordering = ()
         indexes = [
-            models.Index(fields=['DisciplineID'], name='LoanPrepDspMemIDX')
+            models.Index(fields=['discipline'], name='LoanPrepDspMemIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -4443,8 +4443,8 @@ class Loanreturnpreparation(models.Model):
         db_table = 'loanreturnpreparation'
         ordering = ()
         indexes = [
-            models.Index(fields=['ReturnedDate'], name='LoanReturnedDateIDX'),
-            models.Index(fields=['DisciplineID'], name='LoanRetPrepDspMemIDX')
+            models.Index(fields=['returneddate'], name='LoanReturnedDateIDX'),
+            models.Index(fields=['discipline'], name='LoanRetPrepDspMemIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -4514,13 +4514,13 @@ class Locality(models.Model):
     class Meta:
         db_table = 'locality'
         ordering = ()
-        unique_together = (('disciplineid', 'uniqueidentifier'),)
+        unique_together = (('discipline', 'uniqueidentifier'),)
         indexes = [
-            models.Index(fields=['LocalityName'], name='localityNameIDX'),
-            models.Index(fields=['DisciplineID'], name='LocalityDisciplineIDX'),
-            models.Index(fields=['NamedPlace'], name='NamedPlaceIDX'),
-            models.Index(fields=['UniqueIdentifier'], name='LocalityUniqueIdentifierIDX'),
-            models.Index(fields=['RelationToNamedPlace'], name='RelationToNamedPlaceIDX')
+            models.Index(fields=['localityname'], name='localityNameIDX'),
+            models.Index(fields=['discipline'], name='LocalityDisciplineIDX'),
+            models.Index(fields=['namedplace'], name='NamedPlaceIDX'),
+            models.Index(fields=['uniqueidentifier'], name='LocalityUniqueIdentifierIDX'),
+            models.Index(fields=['relationtonamedplace'], name='RelationToNamedPlaceIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -4578,9 +4578,9 @@ class Localitycitation(models.Model):
     class Meta:
         db_table = 'localitycitation'
         ordering = ()
-        unique_together = (('referenceworkid', 'localityid'),)
+        unique_together = (('referencework', 'locality'),)
         indexes = [
-            models.Index(fields=['DisciplineID'], name='LocCitDspMemIDX')
+            models.Index(fields=['discipline'], name='LocCitDspMemIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -4679,7 +4679,7 @@ class Localitynamealias(models.Model):
         db_table = 'localitynamealias'
         ordering = ()
         indexes = [
-            models.Index(fields=['Name'], name='LocalityNameAliasIDX')
+            models.Index(fields=['name'], name='LocalityNameAliasIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -4746,7 +4746,7 @@ class Materialsample(models.Model):
         db_table = 'materialsample'
         ordering = ()
         indexes = [
-            models.Index(fields=['GGBNSampleDesignation'], name='DesignationIDX')
+            models.Index(fields=['ggbn_sampledesignation'], name='DesignationIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -4823,7 +4823,7 @@ class Otheridentifier(models.Model):
         db_table = 'otheridentifier'
         ordering = ()
         indexes = [
-            models.Index(fields=['CollectionMemberID'], name='OthIdColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='OthIdColMemIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -4870,8 +4870,8 @@ class Paleocontext(models.Model):
         db_table = 'paleocontext'
         ordering = ()
         indexes = [
-            models.Index(fields=['PaleoContextName'], name='PaleoCxtNameIDX'),
-            models.Index(fields=['DisciplineID'], name='PaleoCxtDisciplineIDX')
+            models.Index(fields=['paleocontextname'], name='PaleoCxtNameIDX'),
+            models.Index(fields=['discipline'], name='PaleoCxtDisciplineIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -4903,7 +4903,7 @@ class Pcrperson(models.Model):
     class Meta:
         db_table = 'pcrperson'
         ordering = ()
-        unique_together = (('agentid', 'dnasequenceid'),)
+        unique_together = (('agent', 'dnasequence'),)
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     save = partialmethod(custom_save)
@@ -4953,8 +4953,8 @@ class Permit(models.Model):
         db_table = 'permit'
         ordering = ()
         indexes = [
-            models.Index(fields=['PermitNumber'], name='PermitNumberIDX'),
-            models.Index(fields=['IssuedDate'], name='IssuedDateIDX')
+            models.Index(fields=['permitnumber'], name='PermitNumberIDX'),
+            models.Index(fields=['issueddate'], name='IssuedDateIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -5017,7 +5017,7 @@ class Picklist(models.Model):
         db_table = 'picklist'
         ordering = ()
         indexes = [
-            models.Index(fields=['Name'], name='PickListNameIDX')
+            models.Index(fields=['name'], name='PickListNameIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -5141,11 +5141,11 @@ class Preparation(model_extras.Preparation):
         ordering = ()
         unique_together = (('collectionmemberid', 'barcode'),)
         indexes = [
-            models.Index(fields=['preparedDate'], name='PreparedDateIDX'),
-            models.Index(fields=['CollectionMemberID'], name='PrepColMemIDX'),
-            models.Index(fields=['GUID'], name='PrepGuidIDX'),
-            models.Index(fields=['SampleNumber'], name='PrepSampleNumIDX'),
-            models.Index(fields=['BarCode'], name='PrepBarCodeIDX')
+            models.Index(fields=['prepareddate'], name='PreparedDateIDX'),
+            models.Index(fields=['collectionmemberid'], name='PrepColMemIDX'),
+            models.Index(fields=['guid'], name='PrepGuidIDX'),
+            models.Index(fields=['samplenumber'], name='PrepSampleNumIDX'),
+            models.Index(fields=['barcode'], name='PrepBarCodeIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -5175,7 +5175,7 @@ class Preparationattachment(models.Model):
         db_table = 'preparationattachment'
         ordering = ()
         indexes = [
-            models.Index(fields=['CollectionMemberID'], name='PrepAttColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='PrepAttColMemIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -5205,7 +5205,7 @@ class Preparationattr(models.Model):
         db_table = 'preparationattr'
         ordering = ()
         indexes = [
-            models.Index(fields=['CollectionMemberID'], name='PrepAttrColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='PrepAttrColMemIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -5272,7 +5272,7 @@ class Preparationattribute(models.Model):
         db_table = 'preparationattribute'
         ordering = ()
         indexes = [
-            models.Index(fields=['CollectionMemberID'], name='PrepAttrsColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='PrepAttrsColMemIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -5461,7 +5461,7 @@ class Preparationproperty(models.Model):
         db_table = 'preparationproperty'
         ordering = ()
         indexes = [
-            models.Index(fields=['CollectionMemberID'], name='PREPPROPColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='PREPPROPColMemIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -5503,8 +5503,8 @@ class Project(models.Model):
         db_table = 'project'
         ordering = ()
         indexes = [
-            models.Index(fields=['ProjectName'], name='ProjectNameIDX'),
-            models.Index(fields=['ProjectNumber'], name='ProjectNumberIDX')
+            models.Index(fields=['projectname'], name='ProjectNameIDX'),
+            models.Index(fields=['projectnumber'], name='ProjectNumberIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -5608,10 +5608,10 @@ class Referencework(models.Model):
         db_table = 'referencework'
         ordering = ()
         indexes = [
-            models.Index(fields=['Title'], name='RefWrkTitleIDX'),
-            models.Index(fields=['Publisher'], name='RefWrkPublisherIDX'),
-            models.Index(fields=['GUID'], name='RefWrkGuidIDX'),
-            models.Index(fields=['ISBN'], name='ISBNIDX')
+            models.Index(fields=['title'], name='RefWrkTitleIDX'),
+            models.Index(fields=['publisher'], name='RefWrkPublisherIDX'),
+            models.Index(fields=['guid'], name='RefWrkGuidIDX'),
+            models.Index(fields=['isbn'], name='ISBNIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -5678,7 +5678,7 @@ class Repositoryagreement(models.Model):
         db_table = 'repositoryagreement'
         ordering = ()
         indexes = [
-            models.Index(fields=['RepositoryAgreementNumber'], name='RefWrkNumberIDX'),
+            models.Index(fields=['repositoryagreementnumber'], name='RefWrkNumberIDX'),
             # models.Index(fields=['StartDate'], name='RefWrkStartDate')
         ]
 
@@ -5751,10 +5751,10 @@ class Shipment(models.Model):
         db_table = 'shipment'
         ordering = ()
         indexes = [
-            models.Index(fields=['ShipmentNumber'], name='ShipmentNumberIDX'),
-            models.Index(fields=['ShipmentDate'], name='ShipmentDateIDX'),
-            models.Index(fields=['DisciplineID'], name='ShipmentDspMemIDX'),
-            models.Index(fields=['ShipmentMethod'], name='ShipmentMethodIDX')
+            models.Index(fields=['shipmentnumber'], name='ShipmentNumberIDX'),
+            models.Index(fields=['shipmentdate'], name='ShipmentDateIDX'),
+            models.Index(fields=['discipline'], name='ShipmentDspMemIDX'),
+            models.Index(fields=['shipmentmethod'], name='ShipmentMethodIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -5789,8 +5789,8 @@ class Spappresource(models.Model):
         db_table = 'spappresource'
         ordering = ()
         indexes = [
-            models.Index(fields=['Name'], name='SpAppResNameIDX'),
-            models.Index(fields=['MimeType'], name='SpAppResMimeTypeIDX')
+            models.Index(fields=['name'], name='SpAppResNameIDX'),
+            models.Index(fields=['mimetype'], name='SpAppResMimeTypeIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated'])
@@ -5875,7 +5875,7 @@ class Spappresourcedir(models.Model):
         db_table = 'spappresourcedir'
         ordering = ()
         indexes = [
-            models.Index(fields=['DisciplineType'], name='SpAppResourceDirDispTypeIDX')
+            models.Index(fields=['disciplinetype'], name='SpAppResourceDirDispTypeIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -6046,7 +6046,7 @@ class Spexportschemamapping(models.Model):
         db_table = 'spexportschemamapping'
         ordering = ()
         indexes = [
-            models.Index(fields=['CollectionMemberID'], name='SPEXPSCHMMAPColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='SPEXPSCHMMAPColMemIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -6076,7 +6076,7 @@ class Spfieldvaluedefault(models.Model):
         db_table = 'spfieldvaluedefault'
         ordering = ()
         indexes = [
-            models.Index(fields=['CollectionMemberID'], name='SpFieldValueDefaultColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='SpFieldValueDefaultColMemIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -6112,7 +6112,7 @@ class Splocalecontainer(models.Model):
         db_table = 'splocalecontainer'
         ordering = ()
         indexes = [
-            models.Index(fields=['Name'], name='SpLocaleContainerNameIDX')
+            models.Index(fields=['name'], name='SpLocaleContainerNameIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -6147,7 +6147,7 @@ class Splocalecontaineritem(models.Model):
         db_table = 'splocalecontaineritem'
         ordering = ()
         indexes = [
-            models.Index(fields=['Name'], name='SpLocaleContainerItemNameIDX')
+            models.Index(fields=['name'], name='SpLocaleContainerItemNameIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -6180,8 +6180,8 @@ class Splocaleitemstr(models.Model):
         db_table = 'splocaleitemstr'
         ordering = ()
         indexes = [
-            models.Index(fields=['Language'], name='SpLocaleLanguageIDX'),
-            models.Index(fields=['Country'], name='SpLocaleCountyIDX')
+            models.Index(fields=['language'], name='SpLocaleLanguageIDX'),
+            models.Index(fields=['country'], name='SpLocaleCountyIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -6265,7 +6265,7 @@ class Spquery(models.Model):
         db_table = 'spquery'
         ordering = ()
         indexes = [
-            models.Index(fields=['Name'], name='SpQueryNameIDX')
+            models.Index(fields=['name'], name='SpQueryNameIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -6341,7 +6341,7 @@ class Spreport(models.Model):
         db_table = 'spreport'
         ordering = ()
         indexes = [
-            models.Index(fields=['Name'], name='SpReportNameIDX')
+            models.Index(fields=['name'], name='SpReportNameIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -6375,7 +6375,7 @@ class Spsymbiotainstance(models.Model):
         db_table = 'spsymbiotainstance'
         ordering = ()
         indexes = [
-            models.Index(fields=['CollectionMemberID'], name='SPSYMINSTColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='SPSYMINSTColMemIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -6466,7 +6466,7 @@ class Spviewsetobj(models.Model):
         db_table = 'spviewsetobj'
         ordering = ()
         indexes = [
-            models.Index(fields=['Name'], name='SpViewObjNameIDX')
+            models.Index(fields=['name'], name='SpViewObjNameIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -6494,7 +6494,7 @@ class Spvisualquery(models.Model):
         db_table = 'spvisualquery'
         ordering = ()
         indexes = [
-            models.Index(fields=['Name'], name='SpVisualQueryNameIDX')
+            models.Index(fields=['name'], name='SpVisualQueryNameIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -6568,8 +6568,8 @@ class Storage(model_extras.Storage):
         db_table = 'storage'
         ordering = ()
         indexes = [
-            models.Index(fields=['Name'], name='StorNameIDX'),
-            models.Index(fields=['FullName'], name='StorFullNameIDX')
+            models.Index(fields=['name'], name='StorNameIDX'),
+            models.Index(fields=['fullname'], name='StorFullNameIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -6768,12 +6768,12 @@ class Taxon(model_extras.Taxon):
         db_table = 'taxon'
         ordering = ()
         indexes = [
-            models.Index(fields=['GUID'], name='TaxonGuidIDX'),
-            models.Index(fields=['TaxonomicSerialNumber'], name='TaxonomicSerialNumberIDX'),
-            models.Index(fields=['CommonName'], name='TaxonCommonNameIDX'),
-            models.Index(fields=['Name'], name='TaxonNameIDX'),
-            models.Index(fields=['FullName'], name='TaxonFullNameIDX'),
-            models.Index(fields=['EnvironmentalProtectionStatus'], name='EnvironmentalProtectionStatusIDX')
+            models.Index(fields=['guid'], name='TaxonGuidIDX'),
+            models.Index(fields=['taxonomicserialnumber'], name='TaxonomicSerialNumberIDX'),
+            models.Index(fields=['commonname'], name='TaxonCommonNameIDX'),
+            models.Index(fields=['name'], name='TaxonNameIDX'),
+            models.Index(fields=['fullname'], name='TaxonFullNameIDX'),
+            models.Index(fields=['environmentalprotectionstatus'], name='EPSIDX') # Avoid error: The index name 'EnvironmentalProtectionStatusIDX' cannot be longer than 30 characters.
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -7136,10 +7136,10 @@ class Treatmentevent(models.Model):
         db_table = 'treatmentevent'
         ordering = ()
         indexes = [
-            models.Index(fields=['DateReceived'], name='TEDateReceivedIDX'),
-            models.Index(fields=['DateTreatmentStarted'], name='TEDateTreatmentStartedIDX'),
-            models.Index(fields=['FieldNumber'], name='TEFieldNumberIDX'),
-            models.Index(fields=['TreatmentNumber'], name='TETreatmentNumberIDX')
+            models.Index(fields=['datereceived'], name='TEDateReceivedIDX'),
+            models.Index(fields=['datetreatmentstarted'], name='TEDateTreatmentStartedIDX'),
+            models.Index(fields=['fieldnumber'], name='TEFieldNumberIDX'),
+            models.Index(fields=['treatmentnumber'], name='TETreatmentNumberIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -7209,7 +7209,7 @@ class Voucherrelationship(models.Model):
         db_table = 'voucherrelationship'
         ordering = ()
         indexes = [
-            models.Index(fields=['CollectionMemberID'], name='VRXDATColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='VRXDATColMemIDX')
         ]
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
@@ -7273,7 +7273,7 @@ class Workbenchdataitem(models.Model):
         db_table = 'workbenchdataitem'
         ordering = ()
         indexes = [
-            models.Index(fields=['rowNumber'], name='DataItemRowNumberIDX')
+            models.Index(fields=['rownumber'], name='DataItemRowNumberIDX')
         ]
 
     save = partialmethod(custom_save)
@@ -7307,7 +7307,7 @@ class Workbenchrow(models.Model):
         db_table = 'workbenchrow'
         ordering = ()
         indexes = [
-            models.Index(fields=['RowNumber'], name='RowNumberIDX')
+            models.Index(fields=['rownumber'], name='RowNumberIDX')
         ]
 
     def get_decoded_data(self):
