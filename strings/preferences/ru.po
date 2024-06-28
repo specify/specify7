@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-06-20 19:09+0000\n"
+"PO-Revision-Date: 2024-06-28 16:45+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "preferences/ru/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.6-rc\n"
+"X-Generator: Weblate 5.7-dev\n"
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Preferences > Index ⬤ Components > Router > Routes
 #: components/Header/userToolDefinitions.ts:47
@@ -476,7 +476,7 @@ msgstr "Показывать значок в шапке"
 #: components/Preferences/UserDefinitions.tsx:208
 #, fuzzy
 msgid "scaleInterface"
-msgstr "Масштабный интерфейс"
+msgstr "Интерфейс масштабирования"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:209
@@ -792,7 +792,7 @@ msgstr "Фокус первого поля"
 #: components/Preferences/UserDefinitions.tsx:1894
 #, fuzzy
 msgid "doubleClickZoom"
-msgstr "Дважды щелкните, чтобы увеличить масштаб"
+msgstr "Дважды щелкните, чтобы увеличить"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1901
