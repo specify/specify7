@@ -4,22 +4,22 @@
  */
 
 import { ajax } from '../../utils/ajax';
+import { getCache } from '../../utils/cache';
 import { f } from '../../utils/functools';
-import { RA } from '../../utils/types';
+import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { caseInsensitiveHash } from '../../utils/utils';
-import {} from '../DataModel/schema';
 import type {
   AnySchema,
   AnyTree,
+  SerializedRecord,
   SerializedResource,
 } from '../DataModel/helperTypes';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { SpecifyResource } from '../DataModel/schema';
 import { fetchContext as fetchDomain, schema } from '../DataModel/schema';
+import { serializeResource } from '../DataModel/serializers';
 import { genericTables } from '../DataModel/tables';
 import type { GeographyTreeDef, Tables } from '../DataModel/types';
-import { serializeResource } from '../DataModel/serializers';
-import type { SerializedRecord } from '../DataModel/helperTypes';
 
 type TreeInformationBackend = {
   readonly [TREE_NAME in AnyTree['tableName']]: RA<{
@@ -65,7 +65,7 @@ export const treeRanksPromise = Promise.all([
   import('../Permissions').then(async ({ fetchContext }) => fetchContext),
   import('../DataModel/tables').then(async ({ fetchContext }) => fetchContext),
   fetchDomain,
-]).then(() =>
+]).then(async () =>
   ajax<TreeInformationBackend>('/api/specify_trees/', {
     headers: { Accept: 'application/json' },
   }).then(({ data }) => {
@@ -113,10 +113,15 @@ export function getTreeDefinitionItems<TREE_NAME extends AnyTree['tableName']>(
     tableName
   );
 
-  //FIXME: replace this with the correct default tree
+  const currentTreeName = getCache('tree', `definition${tableName}`);
+
+  const currentTreeDefinition = specificTreeDefinitions.find(
+    (tree) => tree.definition.name === currentTreeName
+  );
+
   const definitionName =
     rawDefinitionName === undefined
-      ? specificTreeDefinitions[0].definition.name
+      ? currentTreeDefinition?.definition.name
       : rawDefinitionName;
 
   return specificTreeDefinitions
@@ -129,7 +134,7 @@ export const strictGetTreeDefinitionItems = <
 >(
   tableName: TREE_NAME,
   includeRoot: boolean,
-  //FIXME: replace this with the correct default tree
+  // FIXME: replace this with the correct default tree
   rawDefinitionName?: string
 ): typeof treeDefinitions[TREE_NAME][number]['ranks'] =>
   defined(
