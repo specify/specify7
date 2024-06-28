@@ -15,12 +15,17 @@ import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { wbPlanText } from '../../localization/wbPlan';
+import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
 import type { IR, RA, RR } from '../../utils/types';
 import { filterArray, localized } from '../../utils/types';
 import { camelToKebab, upperToKebab } from '../../utils/utils';
 import { iconClassName, icons } from '../Atoms/Icons';
+import type { SerializedRecord } from '../DataModel/helperTypes';
+import { fetchResource } from '../DataModel/resource';
+import { serializeResource } from '../DataModel/serializers';
 import { getTable } from '../DataModel/tables';
-import type { Tables } from '../DataModel/types';
+import type { Tables, TaxonTreeDef } from '../DataModel/types';
 import {
   TableIcon,
   tableIconEmpty,
@@ -689,8 +694,49 @@ export function CustomSelectElement({
         )
       );
 
+  const groupedOptions = {};
+
+  Object.entries(customSelectOptionGroups ?? {}).forEach(
+    ([selectGroupName, { selectOptionsData }]) => {
+      Object.entries(selectOptionsData).forEach(([key, value]) => {
+        const tableTreeDef = value.tableTreeDef ?? 'no tree def';
+        groupedOptions[tableTreeDef] ||= {};
+        groupedOptions[tableTreeDef][key] = value;
+      });
+    }
+  );
+
+  const groups2 =
+    isOpen &&
+    has('interactive') &&
+    Object.entries(groupedOptions)
+      .filter(
+        ([, selectOptionsData]) => Object.keys(selectOptionsData).length > 0
+      )
+      // Create proper label for treedef, create group2 only for taxon
+      .map(([tableTreeDef, selectOptionsData], index) => (
+        <OptionGroup
+          hasArrow={has('arrow')}
+          hasIcon={has('icon')}
+          key={index}
+          selectGroupLabel={
+            customSelectSubtype === 'simple' ? undefined : tableTreeDef
+          }
+          selectGroupName={tableTreeDef}
+          selectOptionsData={selectOptionsData}
+          onClick={
+            typeof handleChange === 'function'
+              ? (payload): void => {
+                  handleChange(payload);
+                  handleClose?.();
+                }
+              : undefined
+          }
+        />
+      ));
+
   const listOfOptionsRef = React.useRef<HTMLDivElement>(null);
-  const customSelectOptions = (Boolean(unmapOption) || groups) && (
+  const customSelectOptions = (Boolean(unmapOption) || groups2) && (
     <div
       aria-label={selectLabel}
       aria-orientation="vertical"
@@ -709,7 +755,7 @@ export function CustomSelectElement({
       tabIndex={-1}
     >
       {unmapOption}
-      {groups}
+      {groups2}
     </div>
   );
 
