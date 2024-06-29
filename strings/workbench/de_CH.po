@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-06-20 19:09+0000\n"
+"PO-Revision-Date: 2024-06-29 07:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/workbench/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.6-rc\n"
+"X-Generator: Weblate 5.7-dev\n"
 
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 #: components/Header/menuItemDefinitions.ts:93
@@ -348,8 +348,8 @@ msgstr "Status des Datensatz-Uploads"
 #, fuzzy
 msgid "validationNoErrorsDescription"
 msgstr ""
-"Bei der Validierung wurden keine Fehler gefunden. Der Upload kann nun in "
-"die Datenbank erfolgen."
+"Bei der Validierung wurden keine Fehler gefunden. Der Upload kann in die "
+"Datenbank erfolgen."
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:307
