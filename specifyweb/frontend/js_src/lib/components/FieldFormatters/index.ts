@@ -15,6 +15,7 @@ import { tables } from '../DataModel/tables';
 import { error } from '../Errors/assert';
 import { load } from '../InitialContext';
 import { xmlToSpec } from '../Syncer/xmlUtils';
+import type { FieldFormatter } from './spec';
 import { fieldFormattersSpec } from './spec';
 
 let uiFormatters: IR<UiFormatter>;
@@ -24,33 +25,12 @@ export const fetchContext = Promise.all([
 ]).then(([formatters]) => {
   uiFormatters = Object.fromEntries(
     filterArray(
-      xmlToSpec(formatters, fieldFormattersSpec()).formatters.map(
+      xmlToSpec(formatters, fieldFormattersSpec()).fieldFormatters.map(
         (formatter) => {
-          let resolvedFormatter;
-          if (typeof formatter.external === 'string') {
-            if (
-              parseJavaClassName(formatter.external) ===
-              'CatalogNumberUIFieldFormatter'
-            )
-              resolvedFormatter = new CatalogNumberNumeric();
-            else return undefined;
-          } else {
-            const fields = filterArray(
-              formatter.fields.map((field) =>
-                typeof field.type === 'string'
-                  ? new formatterTypeMapper[field.type](field)
-                  : undefined
-              )
-            );
-            resolvedFormatter = new UiFormatter(
-              formatter.isSystem,
-              formatter.title ?? formatter.name,
-              fields,
-              formatter.table
-            );
-          }
-
-          return [formatter.name, resolvedFormatter];
+          const resolvedFormatter = resolveFieldFormatter(formatter);
+          return resolvedFormatter === undefined
+            ? undefined
+            : [formatter.name, resolvedFormatter];
         }
       )
     )
@@ -59,6 +39,31 @@ export const fetchContext = Promise.all([
 });
 export const getUiFormatters = (): typeof uiFormatters =>
   uiFormatters ?? error('Tried to access UI formatters before fetching them');
+
+export function resolveFieldFormatter(
+  formatter: FieldFormatter
+): UiFormatter | undefined {
+  if (typeof formatter.external === 'string') {
+    return parseJavaClassName(formatter.external) ===
+      'CatalogNumberUIFieldFormatter'
+      ? new CatalogNumberNumeric()
+      : undefined;
+  } else {
+    const fields = filterArray(
+      formatter.fields.map((field) =>
+        typeof field.type === 'string'
+          ? new formatterTypeMapper[field.type](field)
+          : undefined
+      )
+    );
+    return new UiFormatter(
+      formatter.isSystem,
+      formatter.title ?? formatter.name,
+      fields,
+      formatter.table
+    );
+  }
+}
 
 /* eslint-disable functional/no-class */
 export class UiFormatter {

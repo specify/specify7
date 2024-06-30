@@ -11,7 +11,7 @@ import { parseValue } from '../../utils/parser/parse';
 import type { IR, R, RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import type { JavaType } from '../DataModel/specifyField';
-import { cachableUrl, contextUnlockedPromise } from './index';
+import { cacheableUrl, contextUnlockedPromise } from './index';
 
 const preferences: R<string> = {};
 
@@ -22,7 +22,7 @@ const preferences: R<string> = {};
  */
 export const fetchContext = contextUnlockedPromise.then(async (entrypoint) =>
   entrypoint === 'main'
-    ? ajax(cachableUrl('/context/remoteprefs.properties'), {
+    ? ajax(cacheableUrl('/context/remoteprefs.properties'), {
         headers: { Accept: 'text/plain' },
       })
         .then(({ data: text }) =>
