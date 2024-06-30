@@ -33,7 +33,7 @@ import {
   pushContext,
   setLogContext,
 } from '../Errors/logContext';
-import { cachableUrl } from '../InitialContext';
+import { cacheableUrl } from '../InitialContext';
 import { getPref } from '../InitialContext/remotePrefs';
 import { formatUrl } from '../Router/queryString';
 import type { SimpleXmlNode } from '../Syncer/xmlToJson';
@@ -117,7 +117,7 @@ export const fetchView = async (
          * NOTE: If getView hasn't yet been invoked, the view URL won't be
          * marked as cachable
          */
-        cachableUrl(getViewSetApiUrl(name)),
+        cacheableUrl(getViewSetApiUrl(name)),
         {
           headers: { Accept: 'text/plain' },
           expectedErrors: [Http.NOT_FOUND],

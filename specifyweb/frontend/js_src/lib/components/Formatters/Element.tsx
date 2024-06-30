@@ -16,6 +16,7 @@ import { Form, Input, Label } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Submit } from '../Atoms/Submit';
 import { ReadOnlyContext } from '../Core/Contexts';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { Dialog } from '../Molecules/Dialog';
 import { NotFoundView } from '../Router/NotFoundView';
 import { resolveRelative } from '../Router/queryString';
@@ -25,8 +26,9 @@ import type { Aggregator, Formatter } from './spec';
 import type { FormatterTypesOutlet } from './Types';
 
 /**
- * Display a dialog for editing weblink/formatter/aggregator and calls a
- * render prop to render the actual interface
+ * Display a dialog for editing
+ * weblink/field formatter/formatter/aggregator and calls a render prop to
+ * render the actual interface
  */
 export function XmlEditorShell<
   ITEM extends { readonly name: string },
@@ -36,10 +38,7 @@ export function XmlEditorShell<
   children,
 }: {
   readonly header: LocalizedString;
-  readonly children: (props: {
-    readonly items: GetSet<RA<ITEM>>;
-    readonly item: GetSet<ITEM>;
-  }) => JSX.Element;
+  readonly children: (props: XmlEditorShellSlotProps<ITEM>) => JSX.Element;
 }): JSX.Element {
   const { index: rawIndex } = useParams();
   const { items: allItems } = useOutletContext<OUTLET_CONTEXT>();
@@ -118,6 +117,11 @@ export function XmlEditorShell<
   );
 }
 
+type XmlEditorShellSlotProps<ITEM extends { readonly name: string }> = {
+  readonly items: GetSet<RA<ITEM>>;
+  readonly item: GetSet<ITEM>;
+};
+
 export function FormatterWrapper(): JSX.Element {
   const { type, index } = useParams();
   const isReadOnly = React.useContext(ReadOnlyContext);
@@ -129,44 +133,66 @@ export function FormatterWrapper(): JSX.Element {
           : resourcesText.aggregator()
       }
     >
-      {({ item: getSet, items: [items, setItems] }): JSX.Element => (
-        <>
-          <Label.Block>
-            {resourcesText.title()}
-            <Input.Text
-              isReadOnly={isReadOnly}
-              value={getSet[0].title}
-              onValueChange={(title): void =>
-                getSet[1]({ ...getSet[0], title })
-              }
-            />
-          </Label.Block>
-          <Label.Inline>
-            <Input.Checkbox
-              checked={getSet[0].isDefault}
-              isReadOnly={isReadOnly}
-              onChange={(): void =>
-                setItems(
-                  // Ensure there is only one default
-                  items.map((otherItem, itemIndex) =>
-                    otherItem.table === getSet[0].table
-                      ? itemIndex.toString() === index
-                        ? { ...getSet[0], isDefault: !getSet[0].isDefault }
-                        : { ...otherItem, isDefault: false }
-                      : otherItem
-                  )
-                )
-              }
-            />
-            {resourcesText.default()}
-          </Label.Inline>
-          {type === 'formatter' ? (
+      {makeXmlEditorShellSlot<Aggregator | Formatter>(
+        (getSet) =>
+          type === 'formatter' ? (
             <FormatterElement item={getSet as GetSet<Formatter>} />
           ) : (
             <AggregatorElement item={getSet as GetSet<Aggregator>} />
-          )}
-        </>
+          ),
+        index,
+        isReadOnly
       )}
     </XmlEditorShell>
   );
 }
+
+export const makeXmlEditorShellSlot = <
+  ITEM extends {
+    readonly name: string;
+    readonly title: string | undefined;
+    readonly isDefault: boolean;
+    readonly table: SpecifyTable | undefined;
+  }
+>(
+  children: (getSet: GetSet<ITEM>) => JSX.Element,
+  index: string | undefined,
+  isReadOnly: boolean
+) =>
+  function XmlEditorShellSlot({
+    item: getSet,
+    items: [items, setItems],
+  }: XmlEditorShellSlotProps<ITEM>): JSX.Element {
+    return (
+      <>
+        <Label.Block>
+          {resourcesText.title()}
+          <Input.Text
+            isReadOnly={isReadOnly}
+            value={getSet[0].title}
+            onValueChange={(title): void => getSet[1]({ ...getSet[0], title })}
+          />
+        </Label.Block>
+        <Label.Inline>
+          <Input.Checkbox
+            checked={getSet[0].isDefault}
+            isReadOnly={isReadOnly}
+            onChange={(): void =>
+              setItems(
+                // Ensure there is only one default
+                items.map((otherItem, itemIndex) =>
+                  otherItem.table === getSet[0].table
+                    ? itemIndex.toString() === index
+                      ? { ...getSet[0], isDefault: !getSet[0].isDefault }
+                      : { ...otherItem, isDefault: false }
+                    : otherItem
+                )
+              )
+            }
+          />
+          {resourcesText.default()}
+        </Label.Inline>
+        {children(getSet)}
+      </>
+    );
+  };

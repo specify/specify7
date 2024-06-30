@@ -145,13 +145,20 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Веб-посилання',
     'de-ch': 'Weblinks',
   },
-  uiFormatters: {
+  fieldFormatters: {
     'en-us': 'Field Formatters',
     'ru-ru': 'Форматировщики полей',
     'es-es': 'Formateadores de campo',
     'fr-fr': 'Formateurs de champs',
     'uk-ua': 'Форматувальники полів',
     'de-ch': 'Feldformatierer',
+  },
+  fieldFormattersDescription: {
+    'en-us': `
+      Field formatter controls how data for a specific table field is
+      shown in query results, exports, and on the form. It determines
+      autonumbering and individual parts that make up the field.
+    `,
   },
   dataObjectFormatters: {
     'en-us': 'Record Formatters',
@@ -284,13 +291,21 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Доступные агрегаты таблиц',
     'uk-ua': 'Доступні агрегації таблиць',
   },
-  availableWebLink: {
+  availableWebLinks: {
     'en-us': 'Available Web Links',
     'de-ch': 'Verfügbare Weblinks',
     'es-es': 'Enlaces web disponibles',
     'fr-fr': 'Liens Web disponibles',
     'ru-ru': 'Доступные веб-ссылки',
     'uk-ua': 'Доступні веб-посилання',
+  },
+  availableFieldFormatters: {
+    'en-us': 'Available Field Formatters',
+    'de-ch': 'Verfügbare Feldformatierer',
+    'es-es': 'Formateadores de campo disponibles',
+    'fr-fr': 'Formateurs de champs disponibles',
+    'ru-ru': 'Доступные форматеры полей',
+    'uk-ua': 'Доступні форматувальники полів',
   },
   selectDefaultFormatter: {
     'en-us': 'Please select a default record formatter for this table',
@@ -845,5 +860,14 @@ export const resourcesText = createDictionary({
   primaryCogChildRequired: {
     'en-us':
       'A Consolidated Collection Object Group must have a primary Collection Object child',
+  },
+  formatterPreviewUnavailable: {
+    'en-us': 'Preview for formatter of this type is not available',
+  },
+  nonConformingInline: {
+    'en-us': '(non-conforming)',
+  },
+  parentCogSameAsChild: {
+    'en-us': 'A Collection Object Group cannot be a parent to itself',
   },
 } as const);

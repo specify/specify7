@@ -125,7 +125,7 @@ export function ResourcePreview({
   readonly table: SpecifyTable;
   readonly doFormatting: (
     resources: RA<SpecifyResource<AnySchema>>
-  ) => Promise<RA<React.ReactNode>>;
+  ) => Promise<RA<React.ReactNode>> | RA<React.ReactNode>;
   readonly isAggregator?: boolean;
 }): JSX.Element | null {
   const {

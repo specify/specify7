@@ -1,4 +1,5 @@
 import { f } from '../../utils/functools';
+import type { RA } from '../../utils/types';
 import { localized } from '../../utils/types';
 import type { LiteralField } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
@@ -7,24 +8,31 @@ import type { SpecToJson } from '../Syncer';
 import { pipe, syncer } from '../Syncer';
 import { syncers } from '../Syncer/syncers';
 import { createXmlSpec } from '../Syncer/xmlUtils';
-import { formatterTypeMapper } from './index';
+import { formatterTypeMapper } from '.';
 
 export const fieldFormattersSpec = f.store(() =>
   createXmlSpec({
-    formatters: pipe(
+    fieldFormatters: pipe(
       syncers.xmlChildren('format'),
       syncers.map(
         pipe(
           syncers.object(formatterSpec()),
           syncer(
-            ({ javaClass, ...formatter }) => ({
+            ({ javaClass, rawAutoNumber, ...formatter }) => ({
               ...formatter,
               table: getTable(javaClass ?? ''),
+              autoNumber: rawAutoNumber !== undefined,
               raw: {
                 javaClass,
+                legacyAutoNumber: rawAutoNumber,
               },
             }),
-            ({ table, raw: { javaClass }, ...formatter }) => ({
+            ({
+              table,
+              autoNumber,
+              raw: { javaClass, legacyAutoNumber },
+              ...formatter
+            }) => ({
               ...formatter,
               // "javaClass" is not always a database table
               javaClass:
@@ -32,6 +40,10 @@ export const fieldFormattersSpec = f.store(() =>
                 (getTable(javaClass ?? '') === undefined
                   ? javaClass
                   : undefined),
+              rawAutoNumber: autoNumber
+                ? legacyAutoNumber ??
+                  inferLegacyAutoNumber(table, formatter.fields)
+                : undefined,
             })
           ),
           syncer(
@@ -50,9 +62,31 @@ export const fieldFormattersSpec = f.store(() =>
   })
 );
 
+/**
+ * Specify 6 hardcoded special autonumbering behavior for a few tables.
+ * Accession table has special auto numbering, and collection object has
+ * two. Trying our best here to match the intended semantics for backwards
+ * compatibility.
+ */
+function inferLegacyAutoNumber(
+  table: SpecifyTable | undefined,
+  fields: RA<{ readonly type: keyof typeof formatterTypeMapper | undefined }>
+): string {
+  if (table?.name === 'Accession')
+    return 'edu.ku.brc.specify.dbsupport.AccessionAutoNumberAlphaNum';
+  else if (table?.name === 'CollectionObject') {
+    const isNumericOnly = fields.every((field) => field.type === 'numeric');
+    return isNumericOnly
+      ? 'edu.ku.brc.specify.dbsupport.CollectionAutoNumber'
+      : 'edu.ku.brc.specify.dbsupport.CollectionAutoNumberAlphaNum';
+  } else return 'edu.ku.brc.af.core.db.AutoNumberGeneric';
+}
+
 export type FieldFormatter = SpecToJson<
   ReturnType<typeof fieldFormattersSpec>
->['formatters'][number];
+>['fieldFormatters'][number];
+
+export type FieldFormatterField = FieldFormatter['fields'][number];
 
 const formatterSpec = f.store(() =>
   createXmlSpec({
@@ -68,14 +102,16 @@ const formatterSpec = f.store(() =>
     title: syncers.xmlAttribute('title', 'empty'),
     // Some special formatters don't have a class name
     javaClass: syncers.xmlAttribute('class', 'skip'),
-    // BUG: enforce no relationship fields
     rawField: syncers.xmlAttribute('fieldName', 'skip'),
     isDefault: pipe(
       syncers.xmlAttribute('default', 'skip'),
       syncers.maybe(syncers.toBoolean),
       syncers.default<boolean>(false)
     ),
-    autoNumber: pipe(
+    // Used only in special meta-formatters - we don't display these in the UI
+    legacyType: syncers.xmlAttribute('type', 'skip'),
+    legacyPartialDate: syncers.xmlAttribute('partialDate', 'skip'),
+    rawAutoNumber: pipe(
       syncers.xmlChild('autonumber', 'optional'),
       syncers.maybe(syncers.xmlContent)
     ),
@@ -95,7 +131,6 @@ const fieldSpec = f.store(() =>
     type: pipe(
       syncers.xmlAttribute('type', 'required'),
       syncers.fallback(localized('alphanumeric')),
-      // TEST: check if sp6 defines any other types not present in this list
       syncers.enum(Object.keys(formatterTypeMapper))
     ),
     size: pipe(

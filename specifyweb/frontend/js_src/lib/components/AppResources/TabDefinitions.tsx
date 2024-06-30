@@ -21,6 +21,8 @@ import type {
 } from '../DataModel/types';
 import { RssExportFeedEditor } from '../ExportFeed';
 import { exportFeedSpec } from '../ExportFeed/spec';
+import { FieldFormattersEditor } from '../FieldFormatters/Editor';
+import { fieldFormattersSpec } from '../FieldFormatters/spec';
 import { DataObjectFormatter } from '../Formatters';
 import { formattersSpec } from '../Formatters/spec';
 import { FormEditor } from '../FormEditor';
@@ -168,7 +170,10 @@ export const visualAppResourceEditors = f.store<
     visual: WebLinkEditor,
     xml: generateXmlEditor(webLinksSpec),
   },
-  uiFormatters: undefined,
+  uiFormatters: {
+    visual: FieldFormattersEditor,
+    xml: generateXmlEditor(fieldFormattersSpec),
+  },
   dataObjectFormatters: {
     visual: DataObjectFormatter,
     xml: generateXmlEditor(formattersSpec),

@@ -156,7 +156,7 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
     documentationUrl:
       'https://github.com/specify/specify6/blob/master/config/backstop/uiformatters.xml',
     icon: icons.hashtag,
-    label: resourcesText.uiFormatters(),
+    label: resourcesText.fieldFormatters(),
   },
   dataObjectFormatters: {
     mimeType: 'text/xml',
