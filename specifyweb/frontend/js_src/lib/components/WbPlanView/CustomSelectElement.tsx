@@ -7,9 +7,12 @@
  * @module
  */
 
+import { deserialize } from 'node:v8';
+
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { useId } from '../../hooks/useId';
 import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
@@ -22,9 +25,18 @@ import { filterArray, localized } from '../../utils/types';
 import { camelToKebab, upperToKebab } from '../../utils/utils';
 import { iconClassName, icons } from '../Atoms/Icons';
 import type { SerializedRecord } from '../DataModel/helperTypes';
-import { fetchResource } from '../DataModel/resource';
-import { serializeResource } from '../DataModel/serializers';
-import { getTable } from '../DataModel/tables';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import {
+  fetchResource,
+  idFromUrl,
+  strictIdFromUrl,
+} from '../DataModel/resource';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
+import { getTable, tables } from '../DataModel/tables';
+import type { TreeDefItem } from '../DataModel/treeBusinessRules';
 import type { Tables, TaxonTreeDef } from '../DataModel/types';
 import {
   TableIcon,
@@ -713,27 +725,40 @@ export function CustomSelectElement({
       .filter(
         ([, selectOptionsData]) => Object.keys(selectOptionsData).length > 0
       )
-      // Create proper label for treedef, create group2 only for taxon
-      .map(([tableTreeDef, selectOptionsData], index) => (
-        <OptionGroup
-          hasArrow={has('arrow')}
-          hasIcon={has('icon')}
-          key={index}
-          selectGroupLabel={
-            customSelectSubtype === 'simple' ? undefined : tableTreeDef
-          }
-          selectGroupName={tableTreeDef}
-          selectOptionsData={selectOptionsData}
-          onClick={
-            typeof handleChange === 'function'
-              ? (payload): void => {
-                  handleChange(payload);
-                  handleClose?.();
-                }
-              : undefined
-          }
-        />
-      ));
+      // Create group2 only for taxon
+      .map(([tableTreeDef, selectOptionsData], index) => {
+        const treeId = idFromUrl(tableTreeDef);
+
+        const [treeReturnValue] = useAsyncState<SpecifyResource<TaxonTreeDef>>(
+          React.useCallback(
+            async () =>
+              fetchResource(tableName, treeId).then(deserializeResource),
+            [treeId]
+          ),
+          true
+        );
+
+        return (
+          <OptionGroup
+            hasArrow={has('arrow')}
+            hasIcon={has('icon')}
+            key={index}
+            selectGroupLabel={
+              customSelectSubtype === 'simple' ? undefined : tableTreeDef
+            }
+            selectGroupName={tableTreeDef}
+            selectOptionsData={selectOptionsData}
+            onClick={
+              typeof handleChange === 'function'
+                ? (payload): void => {
+                    handleChange(payload);
+                    handleClose?.();
+                  }
+                : undefined
+            }
+          />
+        );
+      });
 
   const listOfOptionsRef = React.useRef<HTMLDivElement>(null);
   const customSelectOptions = (Boolean(unmapOption) || groups2) && (
