@@ -254,9 +254,9 @@ export function MappingElement({
     return fieldGroups;
   }, Object.fromEntries(Object.keys(fieldGroupLabels).map((groupName) => [groupName, {}])));
 
-  const [treeResults, setTreeResults] = React.useState<
-    RA<SpecifyResource<AnySchema> | undefined> | undefined
-  >(undefined);
+  const [treeResults, setTreeResults] = React.useState<string | undefined>(
+    undefined
+  );
 
   const fetchTreeResults = async (
     url: string
@@ -274,7 +274,8 @@ export function MappingElement({
     const deserializedResult = deserializeResource(
       fetchResult
     ) as SpecifyResource<AnySchema>;
-    setTreeResults([deserializedResult]);
+    const treeName = deserializedResult.get('name');
+    setTreeResults(treeName);
     return deserializedResult;
   };
 
