@@ -213,6 +213,7 @@ const fieldGroupLabels = {
   optionalFields: wbPlanText.optionalFields(),
   hiddenFields: wbPlanText.hiddenFields(),
 } as const;
+const dynamicFieldGroupLabels: Record<string, string> = {};
 
 export const mappingElementDividerClassName = `print:px-1 flex items-center px-2`;
 export const mappingElementDivider = (
@@ -231,12 +232,16 @@ export function MappingElement({
   const fieldGroups = Object.entries(fieldsData).reduce<
     R<R<CustomSelectElementOptionProps>>
   >((fieldGroups, [fieldName, fieldData]) => {
-    const groupName = getFieldGroupName(
-      fieldData.isHidden ?? false,
-      fieldData.isRequired ?? false
-    );
-    fieldGroups[groupName] ??= {};
-    fieldGroups[groupName][fieldName] = fieldData;
+    /*
+     * Const groupName = getFieldGroupName(
+     *   fieldData.isHidden ?? false,
+     *   fieldData.isRequired ?? false
+     * );
+     */
+    const groupName2 = fieldData.tableTreeDef ?? 'No Tree Def';
+    fieldGroups[groupName2] ??= {};
+    fieldGroups[groupName2][fieldName] = fieldData;
+
     return fieldGroups;
   }, Object.fromEntries(Object.keys(fieldGroupLabels).map((groupName) => [groupName, {}])));
 
@@ -250,7 +255,8 @@ export function MappingElement({
           selectGroupLabel:
             length === 1
               ? undefined
-              : fieldGroupLabels[groupName as keyof typeof fieldGroupLabels],
+              : // : fieldGroupLabels[groupName as keyof typeof fieldGroupLabels],
+                groupName,
           selectOptionsData: groupFields,
         },
       ])

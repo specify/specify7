@@ -699,9 +699,12 @@ export function CustomSelectElement({
             {...selectGroupData}
             hasArrow={has('arrow')}
             hasIcon={has('icon')}
-            selectGroupLabel={
-              customSelectSubtype === 'simple' ? selectGroupLabel : undefined
-            }
+            selectGroupLabel={selectGroupLabel}
+            /*
+             * SelectGroupLabel={
+             *   customSelectSubtype === 'simple' ? selectGroupLabel : undefined
+             * }
+             */
           />
         )
       );
@@ -726,7 +729,7 @@ export function CustomSelectElement({
       tabIndex={-1}
     >
       {unmapOption}
-      {tableName === 'Taxon' ? (
+      {/* {tableName === 'Taxon' ? (
         <TaxonTreeGroup
           customSelectOptionGroups={customSelectOptionGroups}
           customSelectSubtype={customSelectSubtype}
@@ -738,7 +741,8 @@ export function CustomSelectElement({
         />
       ) : (
         groups
-      )}
+      )} */}
+      {groups}
     </div>
   );
 
