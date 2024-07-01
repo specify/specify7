@@ -288,7 +288,7 @@ export function MappingElement({
           selectGroupLabel:
             length === 1
               ? undefined
-              : // : fieldGroupLabels[groupName as keyof typeof fieldGroupLabels],
+              : fieldGroupLabels[groupName as keyof typeof fieldGroupLabels] ??
                 groupName,
           selectOptionsData: groupFields,
         },
