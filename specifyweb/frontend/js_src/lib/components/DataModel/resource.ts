@@ -9,6 +9,7 @@ import { keysToLowerCase, removeKey } from '../../utils/utils';
 import {
   interactionPrepTables,
   interactionsWithPrepTables,
+  InteractionWithPreps,
 } from '../Interactions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { formatUrl } from '../Router/queryString';
@@ -16,6 +17,7 @@ import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { addMissingFields } from './addMissingFields';
 import { getFieldsFromPath } from './businessRules';
 import type {
+  AnyInteractionPreparation,
   AnySchema,
   SerializedRecord,
   SerializedResource,
@@ -305,8 +307,12 @@ export const getUniqueFields = (table: SpecifyTable): RA<string> =>
     ...table.relationships
       .filter(
         ({ relatedTable }) =>
-          interactionsWithPrepTables.includes(table.name) &&
-          interactionPrepTables.includes(relatedTable.name)
+          interactionsWithPrepTables.includes(
+            table.name as InteractionWithPreps['tableName']
+          ) &&
+          interactionPrepTables.includes(
+            relatedTable.name as AnyInteractionPreparation['tableName']
+          )
       )
       .map(({ name }) => name),
     ...filterArray(
