@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-07-01 17:32+0000\n"
+"PO-Revision-Date: 2024-07-01 19:09+0000\n"
 "Last-Translator: Antoine Lesimple <antoine.lesimple@ird.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/merging/"
 "fr/>\n"
@@ -49,9 +49,8 @@ msgstr "Aperçu {index:number|formatted}"
 
 #. Used in: Components > Merging > Compare Sub View
 #: components/Merging/CompareSubView.tsx:111
-#, fuzzy
 msgid "nRecords"
-msgstr "non catalogué"
+msgstr "{count:number|formatted} enregistrements"
 
 #. Used in: Components > Merging > Compare Sub View
 #: components/Merging/CompareSubView.tsx:425
@@ -61,53 +60,45 @@ msgstr "Contrôles de sous-vue"
 
 #. 🟥Example: "Merge Addresses". Used in: Components > Merging > Compare Sub View
 #: components/Merging/CompareSubView.tsx:211
-#, fuzzy
 msgid "mergeFields"
 msgstr "Fusionner {field:string}"
 
 #. Used in: Components > Merging > Index ⬤ Components > Preferences > User Definitions
 #: components/Merging/index.tsx:267
 #: components/Preferences/UserDefinitions.tsx:1584
-#, fuzzy
 msgid "autoPopulate"
 msgstr "Remplir automatiquement"
 
 #. Used in: Components > Merging > Header
 #: components/Merging/Header.tsx:88
-#, fuzzy
 msgid "dismissFromMerging"
-msgstr "Interdire la fusion"
+msgstr "Refuser la fusion"
 
 #. Used in: Components > Merging > Definitions
 #: components/Merging/definitions.ts:23
-#, fuzzy
 msgid "agentContainsGroupDescription"
-msgstr "Enregistrement fusionné"
+msgstr "Les Agents contiennent des groupes avec plusieurs membres"
 
 #. Used in: Components > Merging > Invalid Merge Records
 #: components/Merging/InvalidMergeRecords.tsx:30
-#, fuzzy
 msgid "recordNotBeMergedReason"
-msgstr "Les enregistrements suivants ne peuvent pas être fusionnés. Raison:"
+msgstr "Les enregistrements suivants ne peuvent pas être fusionnés. Raison :"
 
 #. Used in: Components > Merging > Invalid Merge Records
 #: components/Merging/InvalidMergeRecords.tsx:93
-#, fuzzy
 msgid "someCannotBeMerged"
-msgstr "Quelque chose s'est mal passé pendant le processus de fusion."
+msgstr "Certains des enregistrements ne peuvent pas être fusionnés."
 
 #. Used in: Components > Merging > Invalid Merge Records
 #: components/Merging/InvalidMergeRecords.tsx:88
-#, fuzzy
 msgid "mergeOthers"
-msgstr "Fusionner les autres"
+msgstr "En Fusionner d'autres"
 
 #. Used in: Components > Merging > Index
 #: components/Merging/index.tsx:408
-#, fuzzy
 msgid "warningMergeText"
 msgstr ""
-"Avant de continuer, veuillez noter que l'action suivante peut interrompre "
+"Avant de poursuivre, veuillez noter que l'action suivante peut interrompre "
 "les autres utilisateurs. Cette action peut entraîner des retards ou une "
 "indisponibilité temporaire de certaines fonctionnalités pour les "
 "utilisateurs Specify. Veuillez considérer l’impact sur leur expérience. "
@@ -116,61 +107,51 @@ msgstr ""
 #. Used in: Components > Merging > Status
 #: components/Merging/Status.tsx:24
 #: components/Merging/Status.tsx:25
-#, fuzzy
 msgid "mergeFailed"
-msgstr "Échec de la fusion"
+msgstr "Fusion échouée"
 
 #. Used in: Components > Merging > Status
 #: components/Merging/Status.tsx:26
-#, fuzzy
 msgid "mergeSucceeded"
 msgstr "Fusion réussie"
 
 #. Used in: Components > Merging > Status
 #: components/Merging/Status.tsx:23
-#, fuzzy
 msgid "merging"
 msgstr "Fusion"
 
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:150
-#, fuzzy
 msgid "mergingHasStarted"
 msgstr "Le processus de fusion a commencé."
 
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:205
-#, fuzzy
 msgid "mergingHasSucceeded"
 msgstr "Le processus de fusion a réussi."
 
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:167
-#, fuzzy
 msgid "mergingHasFailed"
 msgstr "Le processus de fusion a échoué."
 
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:185
-#, fuzzy
 msgid "mergingHasBeenCanceled"
 msgstr "Le processus de fusion a été annulé."
 
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:170
-#, fuzzy
 msgid "retryMerge"
-msgstr "Réessayez la fusion."
+msgstr "Tentative de fusion."
 
 #. Used in: Components > Merging > Status
 #: components/Merging/Status.tsx:144
-#, fuzzy
 msgid "mergingWentWrong"
-msgstr "Quelque chose s'est mal passé pendant le processus de fusion."
+msgstr "Quelque chose s'est mal passé durant le processus de fusion."
 
 #. Used in: Components > Merging > Usages
 #: components/Merging/Usages.tsx:22
 #: components/Merging/Usages.tsx:78
-#, fuzzy
 msgid "linkedRecords"
 msgstr "Enregistrements liés"
