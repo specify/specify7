@@ -242,7 +242,12 @@ export function MappingElement({
      *   fieldData.isRequired ?? false
      * );
      */
-    const groupName2 = fieldData.tableTreeDef ?? 'No Tree Def';
+    const groupName2 =
+      fieldData.tableTreeDef ??
+      getFieldGroupName(
+        fieldData.isHidden ?? false,
+        fieldData.isRequired ?? false
+      );
     fieldGroups[groupName2] ??= {};
     fieldGroups[groupName2][fieldName] = fieldData;
 
