@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-07-01 18:09+0000\n"
+"PO-Revision-Date: 2024-07-01 18:10+0000\n"
 "Last-Translator: Antoine Lesimple <antoine.lesimple@ird.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "preferences/fr/>\n"
@@ -129,7 +129,7 @@ msgstr "Réduire"
 #: components/Preferences/UserDefinitions.tsx:166
 #: components/Preferences/UserDefinitions.tsx:191
 msgid "noPreference"
-msgstr "Pas de préférence"
+msgstr "Aucune préférence"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:196
