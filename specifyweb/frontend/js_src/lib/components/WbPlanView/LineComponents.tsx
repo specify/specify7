@@ -258,17 +258,15 @@ export function MappingElement({
     undefined
   );
 
-  const fetchTreeResults = async (
-    url: string
-  ): Promise<SpecifyResource<AnySchema> | undefined> => {
+  const fetchTreeResults = async (url: string): Promise<void> => {
     const treeId = idFromUrl(url);
     if (treeId === undefined) {
-      return undefined;
+      return;
     }
 
     const fetchResult = await fetchResource('TaxonTreeDef', treeId);
     if (fetchResult === undefined) {
-      return undefined;
+      return;
     }
 
     const deserializedResult = deserializeResource(
@@ -276,7 +274,6 @@ export function MappingElement({
     ) as SpecifyResource<AnySchema>;
     const treeName = deserializedResult.get('name');
     setTreeResults(treeName);
-    return deserializedResult;
   };
 
   const customSelectOptionGroups = Object.fromEntries(
