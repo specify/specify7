@@ -24,7 +24,7 @@ import type { IR, RA, RR } from '../../utils/types';
 import { filterArray, localized } from '../../utils/types';
 import { camelToKebab, upperToKebab } from '../../utils/utils';
 import { iconClassName, icons } from '../Atoms/Icons';
-import type { SerializedRecord } from '../DataModel/helperTypes';
+import type { AnySchema, SerializedRecord } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
   fetchResource,
@@ -37,7 +37,7 @@ import {
 } from '../DataModel/serializers';
 import { getTable, tables } from '../DataModel/tables';
 import type { TreeDefItem } from '../DataModel/treeBusinessRules';
-import type { Tables, TaxonTreeDef } from '../DataModel/types';
+import type { Accession, Tables, TaxonTreeDef } from '../DataModel/types';
 import {
   TableIcon,
   tableIconEmpty,
@@ -706,62 +706,8 @@ export function CustomSelectElement({
         )
       );
 
-  const groupedOptions = {};
-
-  Object.entries(customSelectOptionGroups ?? {}).forEach(
-    ([selectGroupName, { selectOptionsData }]) => {
-      Object.entries(selectOptionsData).forEach(([key, value]) => {
-        const tableTreeDef = value.tableTreeDef ?? 'no tree def';
-        groupedOptions[tableTreeDef] ||= {};
-        groupedOptions[tableTreeDef][key] = value;
-      });
-    }
-  );
-
-  const groups2 =
-    isOpen &&
-    has('interactive') &&
-    Object.entries(groupedOptions)
-      .filter(
-        ([, selectOptionsData]) => Object.keys(selectOptionsData).length > 0
-      )
-      // Create group2 only for taxon
-      .map(([tableTreeDef, selectOptionsData], index) => {
-        const treeId = idFromUrl(tableTreeDef);
-
-        const [treeReturnValue] = useAsyncState<SpecifyResource<TaxonTreeDef>>(
-          React.useCallback(
-            async () =>
-              fetchResource(tableName, treeId).then(deserializeResource),
-            [treeId]
-          ),
-          true
-        );
-
-        return (
-          <OptionGroup
-            hasArrow={has('arrow')}
-            hasIcon={has('icon')}
-            key={index}
-            selectGroupLabel={
-              customSelectSubtype === 'simple' ? undefined : tableTreeDef
-            }
-            selectGroupName={tableTreeDef}
-            selectOptionsData={selectOptionsData}
-            onClick={
-              typeof handleChange === 'function'
-                ? (payload): void => {
-                    handleChange(payload);
-                    handleClose?.();
-                  }
-                : undefined
-            }
-          />
-        );
-      });
-
   const listOfOptionsRef = React.useRef<HTMLDivElement>(null);
-  const customSelectOptions = (Boolean(unmapOption) || groups2) && (
+  const customSelectOptions = (Boolean(unmapOption) || groups) && (
     <div
       aria-label={selectLabel}
       aria-orientation="vertical"
@@ -780,7 +726,18 @@ export function CustomSelectElement({
       tabIndex={-1}
     >
       {unmapOption}
-      {groups2}
+      {tableName === 'Taxon' ? (
+        <TaxonTreeGroup
+          customSelectOptionGroups={customSelectOptionGroups}
+          customSelectSubtype={customSelectSubtype}
+          handleChange={handleChange}
+          handleClose={handleClose}
+          has={has}
+          tableName={tableName}
+        />
+      ) : (
+        groups
+      )}
     </div>
   );
 
@@ -970,5 +927,108 @@ export function SuggestionBox({
       onChange={({ newValue }): void => handleSelect(newValue)}
       {...props}
     />
+  );
+}
+
+function TaxonTreeGroup({
+  customSelectOptionGroups,
+  tableName,
+  handleChange,
+  handleClose,
+  customSelectSubtype,
+  has,
+}: {
+  readonly customSelectOptionGroups:
+    | Readonly<Record<string, CustomSelectElementOptionGroupProps>>
+    | undefined;
+  readonly tableName: string | undefined;
+  readonly handleChange:
+    | ((props: Omit<ChangeEvent, 'currentTableName'>) => void)
+    | undefined;
+  readonly handleClose:
+    | (() => void)
+    | ((() => void) & (() => void))
+    | undefined;
+  readonly customSelectSubtype: CustomSelectSubtype;
+  readonly has: (property: Properties) => boolean;
+}): JSX.Element {
+  const groupedOptions:
+    | Readonly<Record<string, CustomSelectElementOptionGroupProps>>
+    | undefined = Object.entries(customSelectOptionGroups ?? {}).reduce(
+    (accumulator, [selectGroupName, { selectOptionsData }]) => {
+      Object.entries(selectOptionsData).forEach(([key, value]) => {
+        const tableTreeDef = value.tableTreeDef ?? 'no tree def';
+        accumulator[tableTreeDef] ||= {};
+        accumulator[tableTreeDef][key] = value;
+      });
+      return accumulator;
+    },
+    {}
+  );
+
+  const [treeResults, setTreeResults] =
+    React.useState<RA<SpecifyResource<AnySchema> | undefined>>();
+
+  React.useEffect(() => {
+    const fetchTreeResults = async (): Promise<void> => {
+      const results = await Promise.all(
+        Object.entries(groupedOptions)
+          .filter(
+            ([, selectOptionsData]) => Object.keys(selectOptionsData).length > 0
+          )
+          .map(async ([tableTreeDefUrl]) => {
+            const treeId = idFromUrl(tableTreeDefUrl);
+            const fetchResult =
+              tableName === undefined || treeId === undefined
+                ? undefined
+                : await fetchResource('TaxonTreeDef', treeId);
+            if (fetchResult === undefined) {
+              return undefined;
+            }
+            return deserializeResource(fetchResult);
+          })
+      );
+      setTreeResults(results);
+    };
+
+    fetchTreeResults().catch((error) => {
+      console.log(error);
+    });
+  }, [groupedOptions, tableName]);
+
+  return (
+    <>
+      {Object.entries(groupedOptions)
+        .filter(
+          ([, selectOptionsData]) => Object.keys(selectOptionsData).length > 0
+        )
+        .map(([tableTreeDefUrl, selectOptionsData], index) => {
+          const findResult = treeResults?.find(
+            (resource) => resource?.get('resource_uri') === tableTreeDefUrl
+          );
+          const labelName = findResult ? findResult.get('name') : undefined;
+
+          return (
+            <OptionGroup
+              hasArrow={has('arrow')}
+              hasIcon={has('icon')}
+              key={index}
+              selectGroupLabel={
+                customSelectSubtype === 'simple' ? undefined : labelName
+              }
+              selectGroupName={tableTreeDefUrl}
+              selectOptionsData={selectOptionsData}
+              onClick={
+                typeof handleChange === 'function'
+                  ? (payload): void => {
+                      handleChange(payload);
+                      handleClose?.();
+                    }
+                  : undefined
+              }
+            />
+          );
+        })}
+    </>
   );
 }
