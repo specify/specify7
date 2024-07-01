@@ -6,10 +6,10 @@ import { f } from '../../utils/functools';
 import type { DeepPartial, RA, RR } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { keysToLowerCase, removeKey } from '../../utils/utils';
+import type { InteractionWithPreps } from '../Interactions/helpers';
 import {
   interactionPrepTables,
   interactionsWithPrepTables,
-  InteractionWithPreps,
 } from '../Interactions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { formatUrl } from '../Router/queryString';
