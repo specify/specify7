@@ -733,6 +733,7 @@ export function CustomSelectElement({
           handleChange={handleChange}
           handleClose={handleClose}
           has={has}
+          isOpen={isOpen}
           tableName={tableName}
         />
       ) : (
@@ -937,6 +938,7 @@ function TaxonTreeGroup({
   handleClose,
   customSelectSubtype,
   has,
+  isOpen,
 }: {
   readonly customSelectOptionGroups:
     | Readonly<Record<string, CustomSelectElementOptionGroupProps>>
@@ -951,6 +953,7 @@ function TaxonTreeGroup({
     | undefined;
   readonly customSelectSubtype: CustomSelectSubtype;
   readonly has: (property: Properties) => boolean;
+  readonly isOpen: boolean;
 }): JSX.Element {
   const groupedOptions:
     | Readonly<Record<string, CustomSelectElementOptionGroupProps>>
@@ -998,37 +1001,39 @@ function TaxonTreeGroup({
 
   return (
     <>
-      {Object.entries(groupedOptions)
-        .filter(
-          ([, selectOptionsData]) => Object.keys(selectOptionsData).length > 0
-        )
-        .map(([tableTreeDefUrl, selectOptionsData], index) => {
-          const findResult = treeResults?.find(
-            (resource) => resource?.get('resource_uri') === tableTreeDefUrl
-          );
-          const labelName = findResult ? findResult.get('name') : undefined;
+      {isOpen &&
+        has('interactive') &&
+        Object.entries(groupedOptions)
+          .filter(
+            ([, selectOptionsData]) => Object.keys(selectOptionsData).length > 0
+          )
+          .map(([treeDefinitionUrl, selectOptionsData], index) => {
+            const findResult = treeResults?.find(
+              (resource) => resource?.get('resource_uri') === treeDefinitionUrl
+            );
+            const labelName = findResult ? findResult.get('name') : undefined;
 
-          return (
-            <OptionGroup
-              hasArrow={has('arrow')}
-              hasIcon={has('icon')}
-              key={index}
-              selectGroupLabel={
-                customSelectSubtype === 'simple' ? undefined : labelName
-              }
-              selectGroupName={tableTreeDefUrl}
-              selectOptionsData={selectOptionsData}
-              onClick={
-                typeof handleChange === 'function'
-                  ? (payload): void => {
-                      handleChange(payload);
-                      handleClose?.();
-                    }
-                  : undefined
-              }
-            />
-          );
-        })}
+            return (
+              <OptionGroup
+                hasArrow={has('arrow')}
+                hasIcon={has('icon')}
+                key={index}
+                selectGroupLabel={
+                  customSelectSubtype === 'simple' ? undefined : labelName
+                }
+                selectGroupName={treeDefinitionUrl}
+                selectOptionsData={selectOptionsData}
+                onClick={
+                  typeof handleChange === 'function'
+                    ? (payload): void => {
+                        handleChange(payload);
+                        handleClose?.();
+                      }
+                    : undefined
+                }
+              />
+            );
+          })}
     </>
   );
 }
