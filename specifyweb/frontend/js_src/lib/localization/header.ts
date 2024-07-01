@@ -32,7 +32,7 @@ export const headerText = createDictionary({
     'en-us': 'Current {collectionTable:string}',
     'ru-ru': 'Текущая {collectionTable:string}',
     'es-es': 'Actual {collectionTable:string}',
-    'fr-fr': 'Actuel {collectionTable:string}',
+    'fr-fr': 'Actuelle{collectionTable:string}',
     'uk-ua': 'Поточна {collectionTable:string}',
     'de-ch': 'Derzeitige {collectionTable:string}',
   },
@@ -143,6 +143,14 @@ export const headerText = createDictionary({
       abgeschlossen ist.
     `,
   },
+  localityUpdateTool: {
+    'en-us': 'Locality Update Tool',
+    'de-ch': 'DwCA-Ressource',
+    'es-es': 'Herramienta de actualización de localidad',
+    'fr-fr': 'Outil de mise à jour de localité',
+    'ru-ru': 'Основной',
+    'uk-ua': 'Ресурс DwCA',
+  },
   labelName: {
     'en-us': 'Label Name',
     'ru-ru': 'Название ярлыка',
@@ -171,7 +179,7 @@ export const headerText = createDictionary({
     'en-us': 'Create new report',
     'ru-ru': 'Создать новый отчет',
     'es-es': 'Crear nuevo informe',
-    'fr-fr': 'Créer un nouveau rapport',
+    'fr-fr': 'Créer un nouveau document',
     'uk-ua': 'Створити новий звіт',
     'de-ch': 'Neuen Bericht erstellen',
   },
@@ -187,10 +195,7 @@ export const headerText = createDictionary({
     'en-us': 'Tree repair is complete.',
     'ru-ru': 'Ремонт дерева завершен.',
     'es-es': 'La reparación del árbol está completa.',
-    'fr-fr': `
-      L'exportation a commencé. Vous recevrez une notification lorsque
-      l'exportation sera terminée.
-    `,
+    'fr-fr': 'Outil de mise à jour de localité',
     'uk-ua': 'Ремонт дерева завершено.',
     'de-ch': 'Die Baumreparatur ist abgeschlossen.',
   },
@@ -262,7 +267,7 @@ export const headerText = createDictionary({
     'en-us': 'Menu Items',
     'ru-ru': 'Элементы меню',
     'es-es': 'Elementos de menú',
-    'fr-fr': 'Éléments de menu',
+    'fr-fr': 'Éléments du menu',
     'uk-ua': 'Елементи меню',
     'de-ch': 'Menü-Einträge',
   },
@@ -270,7 +275,7 @@ export const headerText = createDictionary({
     'en-us': 'User Tools',
     'ru-ru': 'Инструменты',
     'es-es': 'Herramientas de usuario',
-    'fr-fr': 'Outils utilisateur',
+    'fr-fr': 'Outils Utilisateur',
     'uk-ua': 'Інструменти',
     'de-ch': 'Benutzerwerkzeuge',
   },
@@ -278,7 +283,7 @@ export const headerText = createDictionary({
     'en-us': 'User Tools ({userName:string})',
     'ru-ru': 'Инструменты ({userName:string})',
     'es-es': 'Herramientas de usuario ({userName:string})',
-    'fr-fr': 'Outils utilisateur ({userName:string})',
+    'fr-fr': 'Outils Utilisateur ({userName:string})',
     'uk-ua': 'Інструменти ({userName:string})',
     'de-ch': 'Benutzerwerkzeuge ({userName:string})',
   },
@@ -286,7 +291,7 @@ export const headerText = createDictionary({
     'en-us': 'Help Localize Specify 7',
     'ru-ru': 'Помогите локализовать Укажите 7',
     'es-es': 'Ayuda a localizar Especificar 7',
-    'fr-fr': 'Aide à localiser Spécifier 7',
+    'fr-fr': 'Aidez à traduire Specify 7',
     'uk-ua': 'Допоможіть перекласти Specify 7',
     'de-ch': 'Hilf beim übersetzen von Specify 7',
   },
@@ -307,7 +312,7 @@ export const headerText = createDictionary({
       instrucciones</link>.
     `,
     'fr-fr': `
-      Nous serions très reconnaissants de votre soutien pour la localisation de
+      Nous serions très reconnaissants de votre soutien pour la traduction de
       l'interface utilisateur Specify 7. Si vous êtes intéressé, veuillez
       <link>voir les instructions</link>.
     `,
@@ -404,7 +409,7 @@ export const headerText = createDictionary({
     'en-us': 'Administrative Tools',
     'ru-ru': 'Инструменты управления',
     'es-es': 'Herramientas administrativas',
-    'fr-fr': 'Outils administratifs',
+    'fr-fr': 'Outils Administrateur',
     'uk-ua': 'Адміністрування',
     'de-ch': 'Administrative Werkzeuge',
   },

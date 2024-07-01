@@ -39,7 +39,7 @@ import { CompareRecords } from './Compare';
 import { recordMergingTableSpec } from './definitions';
 import { InvalidMergeRecordsDialog } from './InvalidMergeRecords';
 import { mergingQueryParameter } from './queryString';
-import { Status } from './Status';
+import { MergeStatus } from './Status';
 
 export function RecordMergingLink({
   table,
@@ -277,7 +277,7 @@ function Merging({
       onClose={handleClose}
     >
       {mergeId === undefined ? undefined : (
-        <Status
+        <MergeStatus
           handleClose={() => {
             /*
              * Because we can not pass down anything from the Query Builder

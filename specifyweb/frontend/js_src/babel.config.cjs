@@ -19,7 +19,10 @@ module.exports = {
         ['@babel/preset-react'],
         ['@babel/preset-typescript'],
       ],
-      plugins: ['@babel/plugin-transform-modules-commonjs'],
+      plugins: [
+        '@babel/plugin-transform-modules-commonjs',
+        'babel-plugin-transform-import-meta',
+      ],
     },
   },
 };
