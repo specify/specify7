@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-06-28 18:09+0000\n"
-"Last-Translator: Grant Fitzsimmons <grant@specifysoftware.org>\n"
+"PO-Revision-Date: 2024-07-01 18:09+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "common/pt/>\n"
 "Language: pt\n"
@@ -455,7 +455,7 @@ msgstr "Desconhecido"
 #: components/SchemaConfig/Languages.tsx:93
 #, fuzzy
 msgid "language"
-msgstr "Linguagem"
+msgstr "Interações"
 
 #. Used in: Components > Schema Config > Languages
 #: components/SchemaConfig/Languages.tsx:104
