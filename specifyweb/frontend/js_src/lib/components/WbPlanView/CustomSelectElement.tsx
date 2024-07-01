@@ -979,8 +979,8 @@ function TaxonTreeGroup({
           .filter(
             ([, selectOptionsData]) => Object.keys(selectOptionsData).length > 0
           )
-          .map(async ([tableTreeDefUrl]) => {
-            const treeId = idFromUrl(tableTreeDefUrl);
+          .map(async ([treeDefinitionUrl]) => {
+            const treeId = idFromUrl(treeDefinitionUrl);
             const fetchResult =
               tableName === undefined || treeId === undefined
                 ? undefined
