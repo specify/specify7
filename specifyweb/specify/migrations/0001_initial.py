@@ -2430,7 +2430,7 @@ class Migration(migrations.Migration):
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
-                ('parent', models.ForeignKey(db_column='ParentItemID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='children', to='specify.taxontreedefitem')),
+                ('parent', models.ForeignKey(db_column='ParentItemID', null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='children', to='specify.taxontreedefitem')),
                 ('treedef', models.ForeignKey(db_column='TaxonTreeDefID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='treedefitems', to='specify.taxontreedef')),
             ],
             options={
@@ -2722,7 +2722,7 @@ class Migration(migrations.Migration):
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
-                ('parent', models.ForeignKey(db_column='ParentItemID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='children', to='specify.storagetreedefitem')),
+                ('parent', models.ForeignKey(db_column='ParentItemID', null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='children', to='specify.storagetreedefitem')),
                 ('treedef', models.ForeignKey(db_column='StorageTreeDefID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='treedefitems', to='specify.storagetreedef')),
             ],
             options={
@@ -3968,7 +3968,7 @@ class Migration(migrations.Migration):
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
-                ('parent', models.ForeignKey(db_column='ParentItemID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='children', to='specify.lithostrattreedefitem')),
+                ('parent', models.ForeignKey(db_column='ParentItemID', null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='children', to='specify.lithostrattreedefitem')),
                 ('treedef', models.ForeignKey(db_column='LithoStratTreeDefID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='treedefitems', to='specify.lithostrattreedef')),
             ],
             options={
@@ -4165,7 +4165,7 @@ class Migration(migrations.Migration):
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
-                ('parent', models.ForeignKey(db_column='ParentItemID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='children', to='specify.geologictimeperiodtreedefitem')),
+                ('parent', models.ForeignKey(db_column='ParentItemID', null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='children', to='specify.geologictimeperiodtreedefitem')),
                 ('treedef', models.ForeignKey(db_column='GeologicTimePeriodTreeDefID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='treedefitems', to='specify.geologictimeperiodtreedef')),
             ],
             options={
@@ -4211,7 +4211,7 @@ class Migration(migrations.Migration):
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
-                ('parent', models.ForeignKey(db_column='ParentItemID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='children', to='specify.geographytreedefitem')),
+                ('parent', models.ForeignKey(db_column='ParentItemID', null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='children', to='specify.geographytreedefitem')),
                 ('treedef', models.ForeignKey(db_column='GeographyTreeDefID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='treedefitems', to='specify.geographytreedef')),
             ],
             options={

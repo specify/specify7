@@ -12,15 +12,24 @@ from specifyweb.specify.models import (
     Discipline,
     Collectionobject,
     CollectionObjectType,
+    Collection,
 )
 
+# Migrations Operations Order:
+# 1. Create CollectionObjectType
+# 2. Add CollectionObjectType (cotype) realtionship to CollectionObject
+# 3. Add hasreferencecatalognumber field to CollectionObject
+# 4. Create default collection object types based on each discipline
+# 5. Create new default taxon trees and ranks
+# 6. Create CollectionObjectGroup
+# 7. Create CollectionObjectGroupJoin
 
 class Migration(migrations.Migration):
 
     initial = True
 
     dependencies = [
-        ('specify', '__first__'),
+        ('specify', '0001_initial'),
     ]
 
     def add_new_default_taxon_trees(apps, schema_editor):
@@ -79,50 +88,33 @@ class Migration(migrations.Migration):
     def create_default_collection_types(apps, schema_editor):
         # Create default collection types for each discipline
         for discipline in Discipline.objects.all():
-            name = discipline.name
-            if CollectionObjectType.objects.filter(name=name).exists():
+            discipline_name = discipline.name
+            if CollectionObjectType.objects.filter(name=discipline_name).exists():
                 continue
             cot = CollectionObjectType.objects.create(
-                name=name,
+                name=discipline_name,
                 isdefault=True,
-                collection=discipline.collection,
+                collection = Collection.objects.filter(discipline=discipline).first(),
                 taxontreedef=discipline.taxontreedef,
             )
             cot.save()
 
-        # The default collection object type for each collection type is the name of the discipline
-        # Solution 1: Iteratively update each CollectionObject's collectionobjecttype
-        # by fetching the corresponding CollectionObjectType
-        # for co in Collectionobject.objects.all():
-        #     discipline = co.collection.discipline
-        #     name = discipline.name
-        #     if CollectionObjectType.objects.filter(name=name).exists():
-        #         co.collectionobjecttype = CollectionObjectType.objects.get(name=name)
-        #         co.save()
-
-        # Solution 2: Iteratively update CollectionObjects' collectionobjecttype
-        # for each discipline in a bulk operation
+        # Iteratively update CollectionObjects' collectionobjecttype for each discipline in a bulk operation
         for discipline in Discipline.objects.all():
-            name = discipline.name
-            cot = CollectionObjectType.objects.get(name=name)
+            discipline_name = discipline.name
+            cot = CollectionObjectType.objects.get(name=discipline_name)
             (Collectionobject.objects
                 .filter(collection__discipline=discipline)
-                .update(collectionobjecttype=cot))
-
-        # Solution 3: Update all CollectionObjects' collectionobjecttype using a
-        # subquery to fetch the corresponding CollectionObjectType
-        # cot_subquery = CollectionObjectType.objects.filter(
-        #     name=OuterRef("collection__discipline__name")
-        # ).values("id")[:1]
-        # CollectionObject.objects.update(collectionobjecttype_id=Subquery(cot_subquery))
+                .update(cotype=cot))
 
     def revert_default_collection_types(apps, schema_editor):
-        # TODO: Fix this rever migration, and fix the ordering
+        # TODO: Fix this revert migration, and fix the ordering
         # Delete all default collection types
-        CollectionObjectType.objects.filter(isdefault=True).delete()
+        # CollectionObjectType.objects.filter(isdefault=True).delete()
 
         # Reset all CollectionObject's collectionobjecttype to None
-        Collectionobject.objects.update(collectionobjecttype=None)
+        # Collectionobject.objects.update(collectionobjecttype=None)
+        pass
 
     operations = [
         migrations.CreateModel(
@@ -149,6 +141,16 @@ class Migration(migrations.Migration):
                 'unique_together': (('collection', 'isdefault'),),
             },
         ),
+        migrations.AddField(
+            model_name='collectionobject',
+            name='cotype',
+            field=models.ForeignKey(db_column='CoTypeID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='collectionobjects', to='specify.collectionobjecttype'),
+        ),
+        migrations.AddField(
+            model_name='collectionobject',
+            name='hasreferencecatalognumber',
+            field=models.BooleanField(blank=True, db_column='HasReferenceCatalogNumber', default=False, null=True),
+        ),
         migrations.RunPython(
             create_default_collection_types,
             reverse_code=revert_default_collection_types
@@ -156,29 +158,6 @@ class Migration(migrations.Migration):
         migrations.RunPython(
             add_new_default_taxon_trees,
             reverse_code=remove_new_default_taxon_trees
-        ),
-        migrations.RunSQL(
-            # Add hasreferencecatalognumber fields to CollectionObject
-            # Add CoTypeID foreign key to CollectionObject
-            """
-            ALTER TABLE collectionobject
-            ADD COLUMN HasReferenceCatalogNumber bit(1) DEFAULT 0 NOT NULL;
-            ALTER TABLE collectionobject
-            ADD COLUMN CoTypeID int NOT NULL;
-            ALTER TABLE collectionobject
-            ADD CONSTRAINT fk_collectionobject_collectionobjecttype
-            FOREIGN KEY (CoTypeID) REFERENCES collectionobjecttype(CollectionObjectTypeID);
-            """,
-            # Remove hasreferencecatalognumber fields from CollectionObject when unapplying migration
-            # Remove CoTypeID foreign key from CollectionObject when unapplying migration
-            reverse_sql="""
-            ALTER TABLE collectionobject
-            DROP COLUMN HasReferenceCatalogNumber;
-            ALTER TABLE collectionobject
-            DROP FOREIGN KEY fk_collectionobject_collectionobjecttype;
-            ALTER TABLE collectionobject
-            DROP COLUMN CoTypeID;
-            """
         ),
         migrations.CreateModel(
             name='CollectionObjectGroup',
@@ -219,37 +198,11 @@ class Migration(migrations.Migration):
                 ('text2', models.TextField(blank=True, db_column='Text2', null=True)),
                 ('text3', models.TextField(blank=True, db_column='Text3', null=True)),
                 ('child', models.ForeignKey(db_column='ChildID', on_delete=django.db.models.deletion.CASCADE, related_name='cojos', to='specify.collectionobject')),
-                ('parent', models.ForeignKey(db_column='ParentID', on_delete=django.db.models.deletion.CASCADE, related_name='cojos', to='sp7_models.collectionobjectgroup')),
+                ('parent', models.ForeignKey(db_column='ParentID', on_delete=django.db.models.deletion.CASCADE, related_name='cojos', to='specify.collectionobjectgroup')),
             ],
             options={
                 'db_table': 'collectionobjectgroupjoin',
                 'ordering': (),
             },
         ),
-        # migrations.AddField( # This doesn't work right now because CollectionObject is in the specify django app
-        #     model_name='ColllectionObject',
-        #     name='ismemberofcog',
-        #     field=models.BooleanField(blank=True, null=True, unique=False, db_column='IsMemberOfCog', db_index=False),
-        #     preserve_default=False,
-        # ),
-        # migrations.RunPython(
-        #     # Add ismemberofcog field to CollectionObject
-        #     lambda apps, schema_editor: apps.get_model(
-        #         "specify", "CollectionObject"
-        #     ).add_to_class(
-        #         "ismemberofcog",
-        #         models.BooleanField(
-        #             blank=True,
-        #             null=True,
-        #             unique=False,
-        #             db_column="IsMemberOfCog",
-        #             default=False,
-        #             db_index=False,
-        #         ),
-        #     ),
-        #     # Remove ismemberofcog field from CollectionObject when unapplying migration
-        #     reverse_code=lambda apps, schema_editor: apps.get_model(
-        #         "specify", "CollectionObject"
-        #     ).remove_from_class("ismemberofcog"),
-        # ),
     ]

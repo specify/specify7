@@ -1467,7 +1467,7 @@ class Collectionobject(models.Model):
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     paleocontext = models.ForeignKey('PaleoContext', db_column='PaleoContextID', related_name='collectionobjects', null=True, on_delete=protect_with_blockers)
     visibilitysetby = models.ForeignKey('SpecifyUser', db_column='VisibilitySetByID', related_name='+', null=True, on_delete=protect_with_blockers)
-    cotype = models.ForeignKey('CollectionObjectType', db_column='CoTypeID', related_name='collectionobjects', null=False, on_delete=protect_with_blockers)
+    cotype = models.ForeignKey('CollectionObjectType', db_column='CoTypeID', related_name='collectionobjects', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'collectionobject'
