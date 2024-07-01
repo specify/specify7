@@ -13,6 +13,10 @@ import type { IR, R, RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { fetchResource, idFromUrl } from '../DataModel/resource';
+import { deserializeResource } from '../DataModel/serializers';
 import type { Tables } from '../DataModel/types';
 import type {
   CustomSelectElementOptionProps,
@@ -244,6 +248,30 @@ export function MappingElement({
 
     return fieldGroups;
   }, Object.fromEntries(Object.keys(fieldGroupLabels).map((groupName) => [groupName, {}])));
+
+  const [treeResults, setTreeResults] = React.useState<
+    RA<SpecifyResource<AnySchema> | undefined> | undefined
+  >(undefined);
+
+  const fetchTreeResults = async (
+    url: string
+  ): Promise<SpecifyResource<AnySchema> | undefined> => {
+    const treeId = idFromUrl(url);
+    if (treeId === undefined) {
+      return undefined;
+    }
+
+    const fetchResult = await fetchResource('TaxonTreeDef', treeId);
+    if (fetchResult === undefined) {
+      return undefined;
+    }
+
+    const deserializedResult = deserializeResource(
+      fetchResult
+    ) as SpecifyResource<AnySchema>;
+    setTreeResults([deserializedResult]);
+    return deserializedResult;
+  };
 
   const customSelectOptionGroups = Object.fromEntries(
     Object.entries(fieldGroups)
