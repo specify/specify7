@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2024-07-01 17:32+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Antoine Lesimple <antoine.lesimple@ird.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/merging/"
 "fr/>\n"
 "Language: fr\n"
@@ -13,7 +13,6 @@ msgstr ""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1578
-#, fuzzy
 msgid "recordMerging"
 msgstr "Fusion d'enregistrements"
 
@@ -24,32 +23,27 @@ msgstr "Fusion d'enregistrements"
 #: components/Merging/index.tsx:405
 #: components/Merging/index.tsx:418
 #: components/Router/OverlayRoutes.tsx:222
-#, fuzzy
 msgid "mergeRecords"
 msgstr "Fusionner les enregistrements"
 
 #. Used in: Components > Merging > Compare Sub View
 #: components/Merging/CompareSubView.tsx:225
-#, fuzzy
 msgid "mergedRecord"
 msgstr "Enregistrement fusionné"
 
 #. Used in: Components > Merging > Index
 #: components/Merging/index.tsx:451
-#, fuzzy
 msgid "showConflictingFieldsOnly"
-msgstr "Afficher uniquement les champs en conflit"
+msgstr "Afficher seulement les champs incompatibles"
 
 #. Used in: Components > Merging > Header
 #: components/Merging/Header.tsx:190
-#, fuzzy
 msgid "newMergedRecord"
 msgstr "Nouvel enregistrement fusionné"
 
 #. Used in: Components > Merging > Compare Sub View ⬤ Components > Merging > Header
 #: components/Merging/CompareSubView.tsx:230
 #: components/Merging/Header.tsx:191
-#, fuzzy
 msgid "duplicateRecord"
 msgstr "Aperçu {index:number|formatted}"
 
