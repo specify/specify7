@@ -254,26 +254,22 @@ export function MappingElement({
     return fieldGroups;
   }, Object.fromEntries(Object.keys(fieldGroupLabels).map((groupName) => [groupName, {}])));
 
-  const [treeResults, setTreeResults] = React.useState<string | undefined>(
-    undefined
-  );
-
-  const fetchTreeResults = async (url: string): Promise<void> => {
+  const fetchTreeResults = async (url: string): Promise<string | undefined> => {
     const treeId = idFromUrl(url);
     if (treeId === undefined) {
-      return;
+      return undefined;
     }
 
     const fetchResult = await fetchResource('TaxonTreeDef', treeId);
     if (fetchResult === undefined) {
-      return;
+      return undefined;
     }
 
     const deserializedResult = deserializeResource(
       fetchResult
     ) as SpecifyResource<AnySchema>;
-    const treeName = deserializedResult.get('name');
-    setTreeResults(treeName);
+
+    return deserializedResult.get('name') as string | undefined;
   };
 
   const customSelectOptionGroups = Object.fromEntries(
@@ -292,6 +288,28 @@ export function MappingElement({
         },
       ])
   );
+
+  const getCustomSelectOptionGroups = async (): Promise<void> => {
+    const customSelectOptionGroups = await Promise.all(
+      Object.entries(fieldGroups)
+        .filter(([, groupFields]) => Object.entries(groupFields).length > 0)
+        .map(async ([groupName, groupFields], _index, { length }) => {
+          const fetchedName = await fetchTreeResults(groupName);
+
+          return [
+            groupName,
+            {
+              // Don't show group labels if there is only one group
+              selectGroupLabel:
+                length === 1 ? undefined : fetchedName ?? groupName,
+              selectOptionsData: groupFields,
+            },
+          ];
+        })
+    );
+
+    return Object.fromEntries(customSelectOptionGroups);
+  };
 
   return props.isOpen ? (
     <CustomSelectElement
