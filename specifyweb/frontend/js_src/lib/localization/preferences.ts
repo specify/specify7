@@ -462,7 +462,8 @@ export const preferencesText = createDictionary({
     'de-ch': 'Seitentitel aktualisieren',
   },
   updatePageTitleDescription: {
-    'en-us': "Whether to update the title of the page to match dialog's header.",
+    'en-us':
+      "Whether to update the title of the page to match dialog's header.",
     'ru-ru': `
       Следует ли обновлять заголовок страницы, чтобы он соответствовал заголовку
       диалогового окна.
@@ -1548,7 +1549,8 @@ export const preferencesText = createDictionary({
   detectAutomaticallyDescription: {
     'en-us': 'Detect automatically based on catalog number format.',
     'ru-ru': 'Автоматическое обнаружение на основе формата каталожного номера.',
-    'es-es': 'Detectar automáticamente según el formato del número de catálogo.',
+    'es-es':
+      'Detectar automáticamente según el formato del número de catálogo.',
     'fr-fr':
       'Détecter automatiquement en fonction du format du numéro de catalogue.',
     'uk-ua': 'Визначати автоматично на основі формату номера каталогу.',
