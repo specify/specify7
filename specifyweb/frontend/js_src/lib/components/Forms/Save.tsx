@@ -106,7 +106,8 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const loading = React.useContext(LoadingContext);
   const [_, setFormContext] = React.useContext(FormContext);
 
-  const { showClone, showCarry, showAdd } = useEnabledButtons(resource);
+  const { showClone, showCarry, showBulkCarry, showAdd } =
+    useEnabledButtons(resource);
 
   const canCreate = hasTablePermission(resource.specifyTable.name, 'create');
   const canUpdate = hasTablePermission(resource.specifyTable.name, 'update');
@@ -228,14 +229,15 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           {resource.specifyTable.name === 'CollectionObject' &&
           (isInRecordSet === false || isInRecordSet === undefined) &&
           isSaveDisabled &&
-          showCarry ? (
+          showCarry &&
+          showBulkCarry ? (
             <Label.Inline>
               <Input.Generic
                 type="number"
                 value={carryForwardAmount}
                 onValueChange={(value): void =>
                   carryForwardAmount === undefined
-                    ? setCarryForwardAmount(2)
+                    ? setCarryForwardAmount(1)
                     : setCarryForwardAmount(Number.parseInt(value))
                 }
               />
@@ -358,11 +360,17 @@ function useEnabledButtons<SCHEMA extends AnySchema = AnySchema>(
   readonly showClone: boolean;
   readonly showCarry: boolean;
   readonly showAdd: boolean;
+  readonly showBulkCarry: boolean;
 } {
   const [enableCarryForward] = userPreferences.use(
     'form',
     'preferences',
     'enableCarryForward'
+  );
+  const [enableBulkCarryForward] = userPreferences.use(
+    'form',
+    'preferences',
+    'enableBukCarryForward'
   );
   const [disableClone] = userPreferences.use(
     'form',
@@ -383,6 +391,8 @@ function useEnabledButtons<SCHEMA extends AnySchema = AnySchema>(
 
   const showCarry =
     enableCarryForward.includes(tableName) && !NO_CLONE.has(tableName);
+  const showBulkCarry =
+    enableBulkCarryForward.includes(tableName) && !NO_CLONE.has(tableName);
   const showClone =
     !disableClone.includes(tableName) &&
     !NO_CLONE.has(tableName) &&
@@ -390,7 +400,7 @@ function useEnabledButtons<SCHEMA extends AnySchema = AnySchema>(
   const showAdd =
     !disableAdd.includes(tableName) && !FORBID_ADDING.has(tableName);
 
-  return { showClone, showCarry, showAdd };
+  return { showClone, showCarry, showBulkCarry, showAdd };
 }
 
 const appResourcesToNotClone = filterArray(
