@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-07-02 14:09+0000\n"
+"PO-Revision-Date: 2024-07-02 16:45+0000\n"
 "Last-Translator: Antoine Lesimple <antoine.lesimple@ird.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "preferences/fr/>\n"
@@ -589,13 +589,11 @@ msgstr "La touche Entrée amorce l'édition des cellules"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1684
-#, fuzzy
 msgid "tabMoveDirection"
-msgstr "Sens de déplacement lorsque la touche <key>Tabulation</key> est enfoncée"
+msgstr "Sens de déplacement lorsque la touche <key>Tab</key> est enfoncée"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1685
-#, fuzzy
 msgid "tabMoveDirectionDescription"
 msgstr ""
 "Vous pouvez vous déplacer dans la direction opposée en appuyant sur "
@@ -604,7 +602,6 @@ msgstr ""
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1692
 #: components/Preferences/UserDefinitions.tsx:1709
-#, fuzzy
 msgid "column"
 msgstr "Colonne"
 
@@ -613,82 +610,71 @@ msgstr "Colonne"
 #: components/LocalityUpdate/Status.tsx:416
 #: components/Preferences/UserDefinitions.tsx:1696
 #: components/Preferences/UserDefinitions.tsx:1713
-#, fuzzy
 msgid "row"
-msgstr "Rangée"
+msgstr "Ligne"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1701
-#, fuzzy
 msgid "enterMoveDirection"
-msgstr "Direction du mouvement lorsque la touche <key>Entrer</key> est enfoncée"
+msgstr "Sens de déplacement lorsque la touche <key>Entrer</key> est enfoncée"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1702
-#, fuzzy
 msgid "enterMoveDirectionDescription"
-msgstr "Synonyme couleur"
+msgstr ""
+"Vous pouvez vous déplacer dans la direction opposée en appuyant sur "
+"<key>Shift</key>+<key>Enter</key>"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1727
-#, fuzzy
 msgid "filterPickLists"
-msgstr "Filtrer les éléments de la liste de sélection"
+msgstr "Filtrer les éléments des listes déroulantes"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1520
 #: components/Preferences/UserDefinitions.tsx:1747
-#, fuzzy
 msgid "exportFileDelimiter"
-msgstr "Délimiteur de fichier d'exportation"
+msgstr "Séparateur des fichiers d'exportation"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1738
-#, fuzzy
 msgid "caseSensitive"
-msgstr "Sensible aux majuscules et minuscules"
+msgstr "Sensible aux majuscules/minuscules"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1742
-#, fuzzy
 msgid "caseInsensitive"
-msgstr "Insensible à la casse"
+msgstr "Insensible aux majuscules/minuscules"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1488
-#, fuzzy
 msgid "showNoReadTables"
-msgstr "Afficher les tableaux sans accès \"Lecture\""
+msgstr "Afficher les tables sans l'accès \"Lecture\""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1804
-#, fuzzy
 msgid "showNoAccessTables"
-msgstr "Afficher les tableaux sans accès \"Créer\""
+msgstr "Afficher les tableaux sans l'accès \"Créer\""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:738
-#, fuzzy
 msgid "textAreaAutoGrow"
 msgstr "Les zones de texte s'agrandissent automatiquement"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1621
-#, fuzzy
 msgid "clearQueryFilters"
 msgstr "Réinitialiser les filtres de requête"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1622
-#, fuzzy
 msgid "clearQueryFiltersDescription"
 msgstr ""
-"Efface tous les filtres de requête lors de l'exécution d'un rapport à "
-"partir d'un formulaire"
+"Efface tous les filtres de requête lors de l'exécution d'un rapport à partir "
+"d'un formulaire"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1629
-#, fuzzy
 msgid "queryParamtersFromForm"
 msgstr ""
 "Afficher les filtres de requête lors de l'exécution d'un rapport à partir "
@@ -696,111 +682,95 @@ msgstr ""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1045
-#, fuzzy
 msgid "autoGrowAutoComplete"
-msgstr "Sens de déplacement lorsque la touche [X27X]Tabulation[X35X] est enfoncée"
+msgstr "Autoriser la saisie automatique à devenir aussi large que nécessaire"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:753
-#, fuzzy
 msgid "tableNameInTitle"
 msgstr "Inclure le nom de la table dans le titre de la page du navigateur"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:760
-#, fuzzy
 msgid "focusFirstField"
-msgstr "Concentrez-vous sur le premier champ"
+msgstr "Prioriser le premier champ"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1894
-#, fuzzy
 msgid "doubleClickZoom"
-msgstr "Double-cliquez pour zoomer"
+msgstr "Double-cliquer pour zoomer"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1901
-#, fuzzy
 msgid "closePopupOnClick"
-msgstr "Fermer la pop-up lors d'un clic extérieur"
+msgstr "Fermer la pop-up avec un clic extérieur"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1908
-#, fuzzy
 msgid "animateTransitions"
 msgstr "Animer les transitions"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1915
-#, fuzzy
 msgid "panInertia"
-msgstr "Inertie du bac"
+msgstr "Inertie du pan"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1922
-#, fuzzy
 msgid "mouseDrags"
-msgstr "Mettre en surbrillance la sous-chaîne correspondante"
+msgstr "Modifier le curseur"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1929
-#, fuzzy
 msgid "scrollWheelZoom"
-msgstr "Zoom avec la molette de défilement"
+msgstr "Zoom avec la molette de la souris"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:806
-#, fuzzy
 msgid "flexibleColumnWidth"
-msgstr "Largeur de colonne flexible"
+msgstr "Largeur des colonnes flexible"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:813
 #, fuzzy
 msgid "flexibleSubGridColumnWidth"
-msgstr "Largeur de colonne de grille de sous-vue flexible"
+msgstr "Largeur flexible des colonnes de grille des sous-vues"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:469
-#, fuzzy
 msgid "closeOnEsc"
-msgstr "Icône et nom de la table"
+msgstr "Fermer en appuyant sur la touche <key>ESC</key>"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:476
-#, fuzzy
 msgid "closeOnOutsideClick"
-msgstr "Fermer sur clic extérieur"
+msgstr "Fermer avec clic extérieur"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:865
 #, fuzzy
 msgid "specifyNetworkBadge"
-msgstr "Spécifier le badge réseau"
+msgstr "Badge du réseau Specify"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:872
-#, fuzzy
 msgid "useAccessibleFullDatePicker"
-msgstr "Utiliser un sélecteur de date complet accessible"
+msgstr "Utiliser un sélecteur de date complète accessible"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:879
-#, fuzzy
 msgid "useAccessibleMonthPicker"
-msgstr "Utiliser le sélecteur de mois accessible"
+msgstr "Utiliser un sélecteur de mois accessible"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:886
-#, fuzzy
 msgid "rightAlignNumberFields"
 msgstr "Justifier à droite les champs numériques"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:293
-#, fuzzy
 msgid "roundedCorners"
-msgstr "Coins arrondis"
+msgstr "Angles arrondis"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:858
