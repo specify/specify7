@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-07-01 20:09+0000\n"
+"PO-Revision-Date: 2024-07-02 14:09+0000\n"
 "Last-Translator: Antoine Lesimple <antoine.lesimple@ird.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "preferences/fr/>\n"
@@ -420,7 +420,7 @@ msgstr "Afficher l'icône dans l'en-tête"
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:208
 msgid "scaleInterface"
-msgstr "Dimensionner l'interface"
+msgstr "Mettre à l'échelle l'interface"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:209
@@ -470,7 +470,7 @@ msgstr "Une URL vers une page qui serait intégrée à la page d'accueil :"
 #: components/Preferences/UserDefinitions.tsx:1830
 #: components/Preferences/UserDefinitions.tsx:1891
 msgid "behavior"
-msgstr "Comportement"
+msgstr "Fonctionnement"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1476
@@ -498,111 +498,94 @@ msgid "noRestrictionsModeWarning"
 msgstr ""
 "AVERTISSEMENT : l'activation de cette option peut entraîner une perte de "
 "données ou une altération de la base de données. Veuillez vous assurer que "
-"vous savez ce que vous faites"
+"vous savez ce que vous faites."
 
 #. Used in: Components > Preferences > Index
 #: components/Preferences/index.tsx:245
-#, fuzzy
 msgid "adminsOnlyPreference"
 msgstr "Vous n'êtes pas autorisé à modifier cette option"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1508
-#, fuzzy
 msgid "stickyScrolling"
-msgstr "Barre de défilement collante"
+msgstr "Barre de défilement figée"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:967
-#, fuzzy
 msgid "foreground"
 msgstr "Premier plan"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:237
 #: components/Preferences/UserDefinitions.tsx:975
-#, fuzzy
 msgid "background"
 msgstr "Arrière-plan"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:114
-#, fuzzy
 msgid "sidebarTheme"
 msgstr "Thème de la barre latérale"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:983
-#, fuzzy
 msgid "darkForeground"
 msgstr "Premier plan (thème sombre)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:245
 #: components/Preferences/UserDefinitions.tsx:991
-#, fuzzy
 msgid "darkBackground"
 msgstr "Arrière-plan (thème sombre)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:253
-#, fuzzy
 msgid "accentColor1"
-msgstr "Couleur d'accent 1"
+msgstr "Couleur de surlignage 1"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:261
-#, fuzzy
 msgid "accentColor2"
-msgstr "Couleur d'accent 2"
+msgstr "Couleur de surlignage 2"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:269
-#, fuzzy
 msgid "accentColor3"
-msgstr "Couleur d'accent 3"
+msgstr "Couleur de surlignage 3"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:277
-#, fuzzy
 msgid "accentColor4"
-msgstr "Couleur d'accent 4"
+msgstr "Couleur de surlignage 4"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:285
-#, fuzzy
 msgid "accentColor5"
-msgstr "Couleur d'accent 5"
+msgstr "Couleur de surlignage 5"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1656
-#, fuzzy
 msgid "spreadsheet"
 msgstr "Tableur"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1659
-#, fuzzy
 msgid "minSpareRows"
 msgstr "Nombre de lignes vides à la fin"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1670
-#, fuzzy
 msgid "autoWrapCols"
-msgstr "Naviguez de l’autre côté lorsque vous atteignez la colonne de bord"
+msgstr "Naviguez de l’autre côté lorsque vous atteignez la colonne du bord"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1677
-#, fuzzy
 msgid "autoWrapRows"
-msgstr "Naviguez de l’autre côté lorsque vous atteignez la rangée de bord"
+msgstr "Naviguez de l’autre côté lorsque vous atteignez la ligne du bord"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1718
-#, fuzzy
 msgid "enterBeginsEditing"
-msgstr "La touche Entrée commence à modifier la cellule"
+msgstr "La touche Entrée amorce l'édition des cellules"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1684
