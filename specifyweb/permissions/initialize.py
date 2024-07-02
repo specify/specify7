@@ -30,7 +30,7 @@ def create_admins() -> None:
 
     users = Specifyuser.objects.all()
     for user in users:
-        if user.is_admin():
+        if user.is_legacy_admin():
             UserPolicy.objects.get_or_create(
                 collection=None,
                 specifyuser_id=user.id,

@@ -285,7 +285,7 @@ export const userText = createDictionary({
       resource through the currently logged in account
     `,
     'ru-ru': `
-      У вас нет доступа к любому {collectionTable:string}, содержащему этот
+      У вас нет доступа ни к одному {collectionTable:string}, содержащему этот
       ресурс, через текущую учетную запись.
     `,
     'es-es': `
@@ -308,7 +308,7 @@ export const userText = createDictionary({
       collection.
     `,
     'ru-ru': `
-      Доступ к запрошенному ресурсу невозможен при входе в текущую коллекцию.
+      Доступ к запрошенному ресурсу недоступен при входе в текущую коллекцию.
     `,
     'es-es': `
       No se puede acceder al recurso solicitado mientras se está conectado a la
@@ -417,8 +417,8 @@ export const userText = createDictionary({
       la siguiente acción:
     `,
     'fr-fr': `
-      Vous ne disposez d'aucune stratégie ou d'un rôle qui vous autorise à
-      effectuer l'action suivante :
+      Vous ne disposez d'aucune stratégie ou rôle qui vous autorise à effectuer
+      l'action suivante :
     `,
     'uk-ua': `
       У вас немає жодної політики чи ролі, які дають вам дозвіл виконувати такі
@@ -645,7 +645,7 @@ export const userText = createDictionary({
     'ru-ru': '{collectionTable:string} Роли пользователей',
     'es-es': 'Roles de usuario de {collectionTable:string}',
     'fr-fr': '{collectionTable:string} Rôles des utilisateurs',
-    'uk-ua': '{collectionTable:string} Ролі користувачів',
+    'uk-ua': '{collectionTable:string} Ролі користувача',
     'de-ch': '{collectionTable:string} Benutzerrollen',
   },
   assignedUserRoles: {
@@ -699,7 +699,7 @@ export const userText = createDictionary({
     'ru-ru': 'Роль',
     'es-es': 'Rol',
     'fr-fr': 'Rôle',
-    'uk-ua': 'роль',
+    'uk-ua': 'Роль',
     'de-ch': 'Rolle',
   },
   read: {
@@ -715,7 +715,7 @@ export const userText = createDictionary({
     'ru-ru': 'Профиль разрешений пользователя (только для чтения)',
     'es-es': 'Perfil de permisos del usuario (solo lectura)',
     'fr-fr': "Profil d'autorisation de l'utilisateur (lecture seule)",
-    'uk-ua': 'Профіль дозволів користувача (лише читання)',
+    'uk-ua': 'Профіль дозволів користувача (тільки читання)',
     'de-ch': 'Berechtigungsprofil des Benutzers (schreibgeschützt)',
   },
   outOfDateWarning: {
@@ -932,7 +932,7 @@ export const userText = createDictionary({
     `,
     'de-ch': `
       Es ist kein externer Identitätsanbieter konfiguriert. Sie können einige in
-      den Servereinstellungen festlegen.
+      den 7 Servereinstellungen konfigurieren.
     `,
   },
   legacyPermissions: {

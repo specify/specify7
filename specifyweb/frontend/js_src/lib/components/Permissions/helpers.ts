@@ -5,6 +5,7 @@ import type { AnyTree } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { Tables } from '../DataModel/types';
+import { userInformation } from '../InitialContext/userInformation';
 import { toolDefinitions } from '../Security/registry';
 import { tableNameToResourceName } from '../Security/utils';
 import type { tableActions } from './definitions';
@@ -46,7 +47,9 @@ export const hasPermission = <
   action: keyof ReturnType<typeof getOperationPermissions>[number][RESOURCE],
   collectionId = schema.domainLevelIds.collection
 ): boolean =>
-  getOperationPermissions()[collectionId][resource][action]
+  resource === '%' && action === '%'
+    ? userInformation.isadmin
+    : getOperationPermissions()[collectionId][resource][action]
     ? true
     : f.log(`No permission to ${action.toString()} ${resource}`) ?? false;
 

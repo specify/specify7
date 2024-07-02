@@ -62,7 +62,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Операция не удалась',
     'es-es': 'Operación fallida',
     'fr-fr': "L'opération a échoué",
-    'uk-ua': 'Не вдалося виконати операцію',
+    'uk-ua': 'Операція не вдалася',
     'de-ch': 'Vorgang fehlgeschlagen',
   },
   actionFailedDescription: {
@@ -178,7 +178,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Не могу объединить в синонимы',
     'es-es': 'No se puede fusionar en sinónimos',
     'fr-fr': 'Impossible de fusionner avec des synonymes',
-    'uk-ua': 'Неможливо злити в синоніми',
+    'uk-ua': 'Не можна об’єднувати в синоніми',
     'de-ch': 'Kann nicht zu Synonymen zusammenführen',
   },
   cantSynonymizeSynonym: {
@@ -243,8 +243,8 @@ export const treeText = createDictionary({
       à déplacer vers
     `,
     'ru-ru': `
-      Выберите новую цель для препаратов «{nodeName:string}», которые будут
-      перемещены.
+      Выберите новую цель для препаратов «{nodeName:string}», в которую нужно
+      переместить
     `,
     'uk-ua': `
       Виберіть нову ціль для препаратів "{nodeName:string}", до якої потрібно
@@ -278,7 +278,12 @@ export const treeText = createDictionary({
       descendants correspondant en termes de nom et de rang étant eux-mêmes.
       fusionnés de manière récursive.
     `,
-    'uk-ua': 'Непрямий підрахунок [X9X].',
+    'uk-ua': `
+      Усі посилання на вузол {treeName:string} «{nodeName:string}» буде замінено
+      на «{parentName:string}», а всі нащадки «{nodeName:string}» буде
+      переміщено до «{parentName:string}», а будь-які нащадки, що відповідають
+      імені та рангу, будуть самі собою об'єднані рекурсивно.
+    `,
     'de-ch': `
       Alle Referenzen zu {treeName:string} "{nodeName:string}" werden mit
       "{parentName:string}" ersetzt. Alle Nachkommen von "{nodeName:string}"
@@ -325,10 +330,7 @@ export const treeText = createDictionary({
       El nodo {treeName:string} "{nodeName:string}" se convertirá en sinónimo de
       "{synonymName:string}".
     `,
-    'fr-fr': `
-      Le nœud {treeName:string} "{nodeName:string}" deviendra synonyme de
-      "{synonymName:string}".
-    `,
+    'fr-fr': 'Verticale',
     'de-ch': `
       Der {treeName:string}-Knoten "{nodeName:string}" wird zu einem Synonym von
       "{synonymName:string}".
@@ -360,7 +362,8 @@ export const treeText = createDictionary({
       "{nodeName:string}" wird nicht mehr ein Synonym von
       "{synonymName:string}" sein.
     `,
-    'uk-ua': 'Це призведе до остаточного видалення наступного ресурсу',
+    'uk-ua':
+      '"{nodeName:string}" більше не буде синонімом "{synonymName:string}".',
   },
   acceptedName: {
     'en-us': 'Preferred: {name:string}',
@@ -442,7 +445,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Прямой счет {collectionObjectTable:string}',
     'es-es': 'Conteo directo {collectionObjectTable:string}',
     'de-ch': 'Direkte {collectionObjectTable:string} Anzahl',
-    'fr-fr': 'Synonymes : [X10X]',
+    'fr-fr': 'Comptage direct {collectionObjectTable:string}',
     'uk-ua': 'Прямий підрахунок {collectionObjectTable:string}.',
   },
   indirectCollectionObjectCount: {
@@ -472,7 +475,7 @@ export const treeText = createDictionary({
   },
   associatedNodesOnly: {
     'en-us': 'Show only nodes with associated objects',
-    'de-ch': 'Synchronisieren',
+    'de-ch': 'Nur Knoten mit verknüpften Objekten anzeigen',
     'es-es': 'Vertical',
     'fr-fr': 'Verticale',
     'ru-ru': 'Вертикальный',
@@ -532,6 +535,6 @@ export const treeText = createDictionary({
     'es-es': 'Mover elementos',
     'fr-fr': 'Déplacer des éléments',
     'ru-ru': 'Переместить предметы',
-    'uk-ua': 'Перемістити елементи',
+    'uk-ua': 'Переміщення елементів',
   },
 } as const);

@@ -204,8 +204,8 @@ export const resourcesText = createDictionary({
       можно настроить на основе значения в записи.
     `,
     'uk-ua': `
-      «Формат таблиці» визначає, як дані з певної таблиці відображаються в
-      результатах запиту, експорті та комбінованих полях запиту. Він визначає
+      «Формат таблиці» керує тим, як дані з певної таблиці відображаються в
+      результатах запитів, експорті та комбінованих полях запитів. Він визначає
       поля для відображення та їх порядок. Умовне форматування можна налаштувати
       на основі значення в записі.
     `,
@@ -505,7 +505,7 @@ export const resourcesText = createDictionary({
     'es-es': '(por defecto)',
     'fr-fr': '(défaut)',
     'ru-ru': '(по умолчанию)',
-    'uk-ua': '(за замовчуванням)',
+    'uk-ua': '(за умовчанням)',
   },
   sortField: {
     'en-us': 'Sort Field',
@@ -542,7 +542,7 @@ export const resourcesText = createDictionary({
       форматирования записей.
     `,
     'uk-ua': `
-      Виконайте пошук у записах колекції, щоб переглянути інструмент
+      Виконайте пошук у своїх записах колекції, щоб переглянути інструмент
       форматування записів
     `,
   },
@@ -672,7 +672,7 @@ export const resourcesText = createDictionary({
     `,
     'uk-ua': `
       Цей ресурс належить до іншої колекції/дисципліни, ніж та, у якій ви зараз
-      перебуваєте. Рекомендується змінити колекцію перед редагуванням цього
+      перебуваєте. Рекомендовано змінити колекцію перед редагуванням цього
       ресурсу
     `,
   },
@@ -754,7 +754,7 @@ export const resourcesText = createDictionary({
     'es-es': 'Formateadores de registros',
     'fr-fr': "Formateurs d'enregistrement",
     'ru-ru': 'Форматеры записи',
-    'uk-ua': 'Форматувальники записів',
+    'uk-ua': 'Формати записів',
   },
   copyDefaultForms: {
     'en-us': 'Copy default forms',
@@ -833,5 +833,10 @@ export const resourcesText = createDictionary({
   },
   currentDeterminationRequired: {
     'en-us': 'A current determination is required.',
+    'de-ch': 'Eine aktuelle Feststellung ist erforderlich.',
+    'es-es': 'Se requiere una determinación actual.',
+    'fr-fr': 'Une détermination actuelle est requise.',
+    'ru-ru': 'Требуется текущее определение.',
+    'uk-ua': 'Потрібне поточне визначення.',
   },
 } as const);

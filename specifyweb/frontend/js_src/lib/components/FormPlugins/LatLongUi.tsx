@@ -141,7 +141,6 @@ function Coordinate({
     fieldType,
     step,
     handleFormatted,
-    setValidation,
     parser,
   ]);
 

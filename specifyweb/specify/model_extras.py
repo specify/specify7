@@ -54,7 +54,13 @@ class Specifyuser(models.Model): # FUTURE: class Specifyuser(SpTimestampedModel)
             return False
         return decrypted == password
 
-    def is_admin(self):
+    def is_admin(self): 
+        "Returns true if user is a Specify 7 admin."
+        return self.userpolicy_set.filter(
+            collection=None, resource="%", action="%"
+        ).exists()
+
+    def is_legacy_admin(self):
         "Returns true if user is a Specify 6 admin."
         from django.db import connection
         cursor = connection.cursor()

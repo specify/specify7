@@ -206,7 +206,7 @@ export const formsText = createDictionary({
     `,
     'en-us': 'Mon / Year',
     'ru-ru': 'Пн/Год',
-    'es-es': 'Lun / Año',
+    'es-es': 'Usar configuraciones personalizadas',
     'fr-fr': 'Mois / Année',
     'uk-ua': 'пн / рік',
     'de-ch': 'Mo / Jahr',
@@ -300,10 +300,7 @@ export const formsText = createDictionary({
       {recordSetTable:string} «{recordSetName:string}» будет удален. Записи, на
       которые имеются ссылки, НЕ будут удалены из базы данных.
     `,
-    'es-es': `
-      Se eliminará el {recordSetTable:string} "{recordSetName:string}". Los
-      registros referenciados NO serán eliminados de la base de datos.
-    `,
+    'es-es': 'Clon',
     'fr-fr': `
       Le {recordSetTable:string} "{recordSetName:string}" sera supprimé. Les
       enregistrements référencés ne seront PAS supprimés de la base de données.
@@ -320,7 +317,7 @@ export const formsText = createDictionary({
   saveRecordFirst: {
     'en-us': 'Save record first',
     'ru-ru': 'Сначала сохраните запись',
-    'es-es': 'Guardar registro primero',
+    'es-es': 'El artículo se eliminó correctamente.',
     'fr-fr': "Enregistrer d'abord l'enregistrement",
     'uk-ua': 'Спочатку збережіть запис',
     'de-ch': 'Datensatz zuerst speichern',
@@ -328,7 +325,7 @@ export const formsText = createDictionary({
   firstRecord: {
     'en-us': 'First Record',
     'ru-ru': 'Первая запись',
-    'es-es': 'Primer registro',
+    'es-es': 'Editar historial',
     'fr-fr': 'Premier enregistrement',
     'uk-ua': 'Перший запис',
     'de-ch': 'Erster Eintrag',
@@ -607,7 +604,7 @@ export const formsText = createDictionary({
   invalidValue: {
     'en-us': 'Invalid value',
     'ru-ru': 'Неверное значение',
-    'es-es': 'valor no válido',
+    'es-es': 'Hoy',
     'fr-fr': 'Valeur invalide',
     'uk-ua': 'Недійсне значення',
     'de-ch': 'Ungültiger Wert',
