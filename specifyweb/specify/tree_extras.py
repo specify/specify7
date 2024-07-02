@@ -715,9 +715,9 @@ class TreeRank(models.Model):
         # post_save
         post_tree_rank_save(self.__class__, self)
 
-    def delete(self, *args, **kwargs):
+    def delete(self, *args, allow_root_del=False, **kwargs):
         # pre_delete
-        if self.__class__.objects.get(id=self.id).parent is None:
+        if not allow_root_del and self.__class__.objects.get(id=self.id).parent is None:
             raise TreeBusinessRuleException(
                 "cannot delete root level tree definition item",
                 {"tree": self.__class__.__name__,
