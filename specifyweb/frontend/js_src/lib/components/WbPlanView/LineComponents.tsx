@@ -213,7 +213,6 @@ const fieldGroupLabels = {
   optionalFields: wbPlanText.optionalFields(),
   hiddenFields: wbPlanText.hiddenFields(),
 } as const;
-const dynamicFieldGroupLabels: Record<string, string> = {};
 
 export const mappingElementDividerClassName = `print:px-1 flex items-center px-2`;
 export const mappingElementDivider = (

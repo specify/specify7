@@ -243,7 +243,6 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
   readonly isRoot: boolean;
   readonly onRefresh: () => void;
 }): JSX.Element | null {
-  // FIXME:need to manage the multiple tree
   const [resource, setResource] = useLiveState<
     SpecifyResource<AnySchema> | undefined
   >(

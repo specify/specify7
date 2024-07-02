@@ -16,10 +16,12 @@ import { Container, H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label, Select } from '../Atoms/Form';
 import type {
+  AnySchema,
   AnyTree,
   FilterTablesByEndsWith,
   SerializedResource,
 } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { deserializeResource } from '../DataModel/serializers';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { genericTables, getTable } from '../DataModel/tables';
@@ -58,7 +60,6 @@ export function TreeViewWrapper(): JSX.Element | null {
       ? caseInsensitiveHash(treeDefinitions, treeName)
       : undefined;
 
-  // FIXME: replace this with the correct default tree
   const [
     currentDefinitionName = treeDefinitionArray === undefined
       ? undefined

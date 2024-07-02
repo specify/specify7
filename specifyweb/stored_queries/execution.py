@@ -52,9 +52,7 @@ def filter_by_collection(model, query, collection):
 
     if model is models.Taxon:
         logger.info("filtering taxon to discipline: %s", collection.discipline.name)
-        # disabled this in order to have all available taxons in a collection that has several taxon trees 
         return query
-        # return query.filter(model.TaxonTreeDefID == collection.discipline.taxontreedef_id)
 
     if model is models.TaxonTreeDefItem:
         logger.info("filtering taxon rank to discipline: %s", collection.discipline.name)
