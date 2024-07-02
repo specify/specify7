@@ -74,6 +74,7 @@ class Migration(migrations.Migration):
                         except Exception as e:
                             print(f"Error deleting taxontreedefitem {name}: {e}")
                             continue
+                
                 # Delete the TaxonTreeDefItem with name f"{tree} Root" with sql rather than Django ORM
                 with schema_editor.connection.cursor() as cursor:
                     cursor.execute(
@@ -106,15 +107,6 @@ class Migration(migrations.Migration):
             (Collectionobject.objects
                 .filter(collection__discipline=discipline)
                 .update(cotype=cot))
-
-    def revert_default_collection_types(apps, schema_editor):
-        # TODO: Fix this revert migration, and fix the ordering
-        # Delete all default collection types
-        # CollectionObjectType.objects.filter(isdefault=True).delete()
-
-        # Reset all CollectionObject's collectionobjecttype to None
-        # Collectionobject.objects.update(collectionobjecttype=None)
-        pass
 
     operations = [
         migrations.CreateModel(
@@ -151,10 +143,7 @@ class Migration(migrations.Migration):
             name='hasreferencecatalognumber',
             field=models.BooleanField(blank=True, db_column='HasReferenceCatalogNumber', default=False, null=True),
         ),
-        migrations.RunPython(
-            create_default_collection_types,
-            reverse_code=revert_default_collection_types
-        ),
+        migrations.RunPython(create_default_collection_types), # reverse handeled by table deletion
         migrations.RunPython(
             add_new_default_taxon_trees,
             reverse_code=remove_new_default_taxon_trees
