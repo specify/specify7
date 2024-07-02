@@ -27,10 +27,7 @@ import { InteractionDialog } from '../Interactions/InteractionDialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { AttachmentsCollection } from './AttachmentsCollection';
-import {
-  RecordSelectorFromCollection,
-  useRecordSelectorFromCollection,
-} from './RecordSelectorFromCollection';
+import { useRecordSelectorFromCollection } from './RecordSelectorFromCollection';
 
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
 
@@ -48,7 +45,7 @@ export function IntegratedRecordSelector({
   isCollapsed: defaultCollapsed,
   ...rest
 }: Omit<
-  Parameters<typeof RecordSelectorFromCollection>[0],
+  Parameters<typeof useRecordSelectorFromCollection>[0],
   'children' | 'onSlide' | 'table'
 > & {
   readonly dialog: 'modal' | 'nonModal' | false;
@@ -117,7 +114,14 @@ export function IntegratedRecordSelector({
   const isAttachmentTable =
     collection.table.specifyTable.name.includes('Attachment');
 
-  const state = useRecordSelectorFromCollection({
+  const {
+    resource,
+    slider,
+    isLoading,
+    dialogs,
+    onAdd: handleAddResource,
+    onRemove: handleRemoveResource,
+  } = useRecordSelectorFromCollection({
     collection,
     defaultIndex: isToOne ? 0 : index,
     relationship,
@@ -126,8 +130,7 @@ export function IntegratedRecordSelector({
         setInteractionResource(resources[0]);
         handleOpenDialog();
       }
-      if (!isInteraction && formType !== 'formTable')
-        collection.add(resources);
+      if (!isInteraction && formType !== 'formTable') collection.add(resources);
       handleAdding(resources);
     },
     onDelete: (...args): void => {
@@ -168,13 +171,13 @@ export function IntegratedRecordSelector({
                  * by ResourceView
                  */
                 resource={
-                  !isDependent && dialog === false ? state.resource : undefined
+                  !isDependent && dialog === false ? resource : undefined
                 }
               />
               {hasTablePermission(
                 relationship.relatedTable.name,
                 isDependent ? 'create' : 'read'
-              ) && typeof state.onAdd === 'function' ? (
+              ) && typeof handleAddResource === 'function' ? (
                 <DataEntry.Add
                   disabled={
                     isReadOnly || (isToOne && collection.models.length > 0)
@@ -183,22 +186,22 @@ export function IntegratedRecordSelector({
                     focusFirstField();
                     const resource =
                       new collection.table.specifyTable.Resource();
-                    state.onAdd!([resource]);
+                    handleAddResource([resource]);
                   }}
                 />
               ) : undefined}
               {hasTablePermission(
                 relationship.relatedTable.name,
                 isDependent ? 'delete' : 'read'
-              ) && typeof state.onRemove === 'function' ? (
+              ) && typeof handleRemoveResource === 'function' ? (
                 <DataEntry.Remove
                   disabled={
                     isReadOnly ||
                     collection.models.length === 0 ||
-                    state.resource === undefined
+                    resource === undefined
                   }
                   onClick={(): void => {
-                    state.onRemove!('minusButton');
+                    handleRemoveResource('minusButton');
                   }}
                 />
               ) : undefined}
@@ -210,16 +213,16 @@ export function IntegratedRecordSelector({
                 <AttachmentsCollection collection={collection} />
               )}
               {specifyNetworkBadge}
-              {!isToOne && state.slider}
+              {!isToOne && slider}
             </>
           )}
           isCollapsed={isCollapsed}
           isDependent={isDependent}
-          isLoading={state.isLoading}
+          isLoading={isLoading}
           isSubForm={dialog === false}
-          key={state.resource?.cid}
+          key={resource?.cid}
           preHeaderButtons={collapsibleButton}
-          resource={state.resource}
+          resource={resource}
           title={relationship.label}
           onAdd={undefined}
           onDeleted={collection.models.length <= 1 ? handleClose : undefined}
@@ -251,7 +254,7 @@ export function IntegratedRecordSelector({
           }}
         />
       ) : null}
-      {state.dialogs}
+      {dialogs}
     </ReadOnlyContext.Provider>
   );
 }
