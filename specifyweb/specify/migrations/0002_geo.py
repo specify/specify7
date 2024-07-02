@@ -32,60 +32,6 @@ class Migration(migrations.Migration):
         ('specify', '0001_initial'),
     ]
 
-    def add_new_default_taxon_trees(apps, schema_editor):
-        TAXON_TREES = ["Mineral", "Rock", "Meteorite", "Fossil"]
-        TAXON_RANKS = ["Root", "One", "Two", "Three"]
-        for tree in TAXON_TREES:
-            if Taxontreedef.objects.filter(name=tree).exists():
-                continue
-            tree_name = f"{tree} Taxon"
-            ttd = Taxontreedef.objects.create(name=tree_name)
-            ttd.save()
-            rank_id = 0
-            ttdi = None
-            for rank in TAXON_RANKS:
-                name = f"{tree} {rank}"
-                rank_id += 10
-                ttdi = Taxontreedefitem.objects.create(
-                    name=name,
-                    title=name,
-                    rankid=rank_id,
-                    parent=ttdi,
-                    treedef=ttd,
-                )
-                ttdi.save()
-
-    def remove_new_default_taxon_trees(apps, schema_editor):
-        TAXON_TREES = ["Mineral", "Rock", "Meteorite", "Fossil"]
-        TAXON_RANKS = ["One", "Two", "Three"]
-
-        for tree in reversed(TAXON_TREES):
-            tree_name = f"{tree} Taxon"
-            ttd = Taxontreedef.objects.filter(name=tree_name)
-            if ttd.exists():
-                for rank in reversed(TAXON_RANKS):
-                    name = f"{tree} {rank}"
-                    ttdi = Taxontreedefitem.objects.filter(
-                        name=name, treedef=ttd.first()
-                    )
-                    if ttdi.exists():
-                        try:
-                            ttdi.delete()
-                        except Exception as e:
-                            print(f"Error deleting taxontreedefitem {name}: {e}")
-                            continue
-                
-                # Delete the TaxonTreeDefItem with name f"{tree} Root" with sql rather than Django ORM
-                with schema_editor.connection.cursor() as cursor:
-                    cursor.execute(
-                        f"DELETE FROM taxontreedefitem WHERE Name = '{tree} Root'"
-                    )
-                try:
-                    ttd.delete()
-                except Exception as e:
-                    print(f"Error deleting taxontreedef {tree_name}: {e}")
-                    continue
-
     def create_default_collection_types(apps, schema_editor):
         # Create default collection types for each discipline
         for discipline in Discipline.objects.all():
@@ -144,10 +90,6 @@ class Migration(migrations.Migration):
             field=models.BooleanField(blank=True, db_column='HasReferenceCatalogNumber', default=False, null=True),
         ),
         migrations.RunPython(create_default_collection_types), # reverse handeled by table deletion
-        migrations.RunPython(
-            add_new_default_taxon_trees,
-            reverse_code=remove_new_default_taxon_trees
-        ),
         migrations.CreateModel(
             name='CollectionObjectGroup',
             fields=[

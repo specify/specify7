@@ -12,6 +12,7 @@ from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, check_permission_targets
 from specifyweb.specify.tree_ranks import tree_rank_count
 from specifyweb.stored_queries import models
+from specifyweb.specify.models import Taxontreedef, Taxontreedefitem
 from . import tree_extras
 from .api import get_object_or_404, obj_to_data, toJson
 from .auditcodes import TREE_MOVE
@@ -358,6 +359,65 @@ def tree_rank_item_count(request, tree, rankid):
     rank = get_object_or_404(tree_rank_model_name, id=rankid)
     count = tree_rank_count(tree, rank.id)
     return HttpResponse(toJson(count), content_type='application/json')
+
+TAXON_TREES = ["Mineral", "Rock", "Meteorite", "Fossil"]
+TAXON_RANKS = ["One", "Two", "Three"]
+
+# TODO: Add openapi schema for this endpoint
+@tree_mutation
+def add_geo_default_trees(request):
+    for tree in TAXON_TREES:
+        if Taxontreedef.objects.filter(name=tree).exists():
+            continue
+        tree_name = f"{tree} Taxon"
+        ttd = Taxontreedef.objects.create(name=tree_name)
+        ttd.save()
+        rank_id = 0
+        ttdi = None
+        for rank in TAXON_RANKS:
+            name = f"{tree} {rank}"
+            rank_id += 10
+            ttdi = Taxontreedefitem.objects.create(
+                name=name,
+                title=name,
+                rankid=rank_id,
+                parent=ttdi,
+                treedef=ttd,
+            )
+            ttdi.save()
+
+# TODO: Add openapi schema for this endpoint
+@tree_mutation
+def remove_geo_default_trees(request):
+    for tree in reversed(TAXON_TREES):
+        tree_name = f"{tree} Taxon"
+        ttd = Taxontreedef.objects.filter(name=tree_name)
+        if ttd.exists():
+            for rank in reversed(TAXON_RANKS):
+                name = f"{tree} {rank}"
+                ttdi = Taxontreedefitem.objects.filter(
+                    name=name, treedef=ttd.first()
+                )
+                if ttdi.exists():
+                    try:
+                        ttdi.delete()
+                    except Exception as e:
+                        print(f"Error deleting taxontreedefitem {name}: {e}")
+                        continue
+            
+            try:
+                root_item = Taxontreedefitem.objects.get(name=f"{tree} Root")
+                root_item.delete(allow_root_del=True)
+            except Taxontreedefitem.DoesNotExist:
+                print(f"Taxontreedefitem with name {tree} Root does not exist.")
+            except Exception as e:
+                print(f"Error deleting taxontreedefitem {tree} Root: {e}")
+
+            try:
+                ttd.delete()
+            except Exception as e:
+                print(f"Error deleting taxontreedef {tree_name}: {e}")
+
 
 class TaxonMutationPT(PermissionTarget):
     resource = "/tree/edit/taxon"

@@ -25,6 +25,9 @@ urlpatterns = [
     # this url always triggers a 500 for testing purposes
     url(r'^test_error/', views.raise_error),
 
+    url(r'^specify_trees/add_geo_default_trees/$', tree_views.add_geo_default_trees),
+    url(r'^specify_trees/remove_geo_default_trees/$', tree_views.remove_geo_default_trees),
+
     # special tree apis
     url(r'^specify_tree/(?P<tree>\w+)/', include([ # permissions added
         url(r'^(?P<id>\d+)/path/$', tree_views.path),
