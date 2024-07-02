@@ -797,20 +797,20 @@ export const preferencesText = createDictionary({
   noRestrictionsModeWarning: {
     'en-us': `
       WARNING: enabling this may lead to data loss or database corruption.
-      Please make sure you know what you are doing
+      Please make sure you know what you are doing.
     `,
     'ru-ru': `
       ВНИМАНИЕ: включение этого параметра может привести к потере данных или
-      повреждению базы данных. Пожалуйста, убедитесь, что вы знаете, что делаете
+      повреждению базы данных. Пожалуйста, убедитесь, что вы знаете, что делаете.
     `,
     'es-es': `
       ADVERTENCIA: habilitar esto puede provocar la pérdida de datos o la
       corrupción de la base de datos. Por favor asegúrese de saber lo que está
-      haciendo
+      haciendo.
     `,
     'uk-ua': `
       ПОПЕРЕДЖЕННЯ: увімкнення цієї функції може призвести до втрати даних або
-      пошкодження бази даних. Переконайтеся, що ви знаєте, що робите
+      пошкодження бази даних. Переконайтеся, що ви знаєте, що робите.
     `,
     'de-ch': `
       ACHTUNG: Das Aktivieren dieser Option kann zu Datenverlust oder
@@ -820,7 +820,7 @@ export const preferencesText = createDictionary({
     'fr-fr': `
       AVERTISSEMENT : l'activation de cette option peut entraîner une perte de
       données ou une corruption de la base de données. Veuillez vous assurer que
-      vous savez ce que vous faites
+      vous savez ce que vous faites.
     `,
   },
   adminsOnlyPreference: {
@@ -982,19 +982,19 @@ export const preferencesText = createDictionary({
     `,
     'ru-ru': `
       Вы можете двигаться в противоположном направлении, нажав
-      <key>Shift</key>+<key>Tab</key>
+      <key>Shift</key>+<key>Tab</key>.
     `,
     'es-es': `
       Puedes moverte en la dirección opuesta presionando
-      <key>Shift</key>+<key>Tab</key>
+      <key>Shift</key>+<key>Tab</key>.
     `,
     'fr-fr': `
       Vous pouvez vous déplacer dans la direction opposée en appuyant sur
-      <key>Shift</key>+<key>Tab</key>
+      <key>Shift</key>+<key>Tab</key>.
     `,
     'uk-ua': `
       Ви можете рухатися в протилежному напрямку, натискаючи
-      <key>Shift</key>+<key>Tab</key>
+      <key>Shift</key>+<key>Tab</key>.
     `,
     'de-ch': `
       Sie können sich in die entgegengesetzte Richtung bewegen, indem Sie
@@ -1033,10 +1033,10 @@ export const preferencesText = createDictionary({
       You can move in the opposite direction by pressing
       <key>Shift</key>+<key>Enter</key>.
     `,
-    'ru-ru': 'Цвет синонима',
-    'es-es': 'color sinónimo',
-    'fr-fr': 'Synonyme couleur',
-    'uk-ua': 'Синонім кольору',
+    'ru-ru': 'Цвет синонима.',
+    'es-es': 'color sinónimo.',
+    'fr-fr': 'Synonyme couleur.',
+    'uk-ua': 'Синонім кольору.',
     'de-ch': `
       Sie können sich in die entgegengesetzte Richtung bewegen, indem Sie
       <key>Umschalt</key>+<key>Eingabe</key> drücken.
