@@ -7,37 +7,20 @@
  * @module
  */
 
-import { deserialize } from 'node:v8';
-
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
 import { useId } from '../../hooks/useId';
 import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { wbPlanText } from '../../localization/wbPlan';
-import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/definitions';
 import type { IR, RA, RR } from '../../utils/types';
 import { filterArray, localized } from '../../utils/types';
 import { camelToKebab, upperToKebab } from '../../utils/utils';
 import { iconClassName, icons } from '../Atoms/Icons';
-import type { AnySchema, SerializedRecord } from '../DataModel/helperTypes';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import {
-  fetchResource,
-  idFromUrl,
-  strictIdFromUrl,
-} from '../DataModel/resource';
-import {
-  deserializeResource,
-  serializeResource,
-} from '../DataModel/serializers';
-import { getTable, tables } from '../DataModel/tables';
-import type { TreeDefItem } from '../DataModel/treeBusinessRules';
-import type { Accession, Tables, TaxonTreeDef } from '../DataModel/types';
+import { getTable } from '../DataModel/tables';
+import type { Tables } from '../DataModel/types';
 import {
   TableIcon,
   tableIconEmpty,

@@ -42,7 +42,6 @@ export let treeDefinitions: {
 const commonTrees = ['Geography', 'Storage', 'Taxon'] as const;
 const treesForPaleo = ['GeologicTimePeriod', 'LithoStrat'] as const;
 export const allTrees = [...commonTrees, ...treesForPaleo] as const;
-const paleoDiscs = new Set(['paleobotany', 'invertpaleo', 'vertpaleo']);
 /*
  * Until discipline information is loaded, assume all trees are appropriate in
  * this discipline
