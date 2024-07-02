@@ -17,6 +17,7 @@ import type { Tables } from '../DataModel/types';
 import {
   isTreeTable,
   strictGetTreeDefinitionItems,
+  treeDefinitions,
 } from '../InitialContext/treeRanks';
 import { hasTablePermission, hasTreeAccess } from '../Permissions/helpers';
 import type { CustomSelectSubtype } from './CustomSelectElement';
@@ -362,8 +363,18 @@ export function getMappingLineData({
                     false,
                     undefined,
                     true
-                  ).map(({ name, title, treeDef }) =>
-                    name === defaultValue || generateFieldData === 'all'
+                  ).map(({ name, title, treeDef }) => {
+                    const treeDefinition = treeDefinitions[table.name];
+
+                    const matchingDef = treeDefinition.find(
+                      (item) => item.definition.resource_uri === treeDef
+                    );
+
+                    const tableTreeDefName = matchingDef
+                      ? matchingDef.definition.name
+                      : 'Unknown';
+
+                    return name === defaultValue || generateFieldData === 'all'
                       ? ([
                           formatTreeRank(name),
                           {
@@ -371,11 +382,11 @@ export function getMappingLineData({
                             isRelationship: true,
                             isDefault: name === defaultValue,
                             tableName: table.name,
-                            tableTreeDef: treeDef,
+                            tableTreeDef: tableTreeDefName,
                           },
                         ] as const)
-                      : undefined
-                  )
+                      : undefined;
+                  })
                 : []),
             ]
       );

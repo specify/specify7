@@ -13,10 +13,6 @@ import type { IR, R, RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
-import type { AnySchema } from '../DataModel/helperTypes';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { fetchResource, idFromUrl } from '../DataModel/resource';
-import { deserializeResource } from '../DataModel/serializers';
 import type { Tables } from '../DataModel/types';
 import type {
   CustomSelectElementOptionProps,
@@ -41,7 +37,7 @@ export type HtmlGeneratorFieldData = {
   readonly isDefault?: boolean;
   readonly isRelationship?: boolean;
   readonly tableName?: keyof Tables;
-  readonly tableTreeDef?: string;
+  readonly tableTreeDefName?: string;
 };
 
 type MappingLineBaseProps = {
@@ -236,41 +232,17 @@ export function MappingElement({
   const fieldGroups = Object.entries(fieldsData).reduce<
     R<R<CustomSelectElementOptionProps>>
   >((fieldGroups, [fieldName, fieldData]) => {
-    /*
-     * Const groupName = getFieldGroupName(
-     *   fieldData.isHidden ?? false,
-     *   fieldData.isRequired ?? false
-     * );
-     */
-    const groupName2 =
-      fieldData.tableTreeDef ??
+    const groupName =
+      fieldData.tableTreeDefName ??
       getFieldGroupName(
         fieldData.isHidden ?? false,
         fieldData.isRequired ?? false
       );
-    fieldGroups[groupName2] ??= {};
-    fieldGroups[groupName2][fieldName] = fieldData;
+    fieldGroups[groupName] ??= {};
+    fieldGroups[groupName][fieldName] = fieldData;
 
     return fieldGroups;
   }, Object.fromEntries(Object.keys(fieldGroupLabels).map((groupName) => [groupName, {}])));
-
-  const fetchTreeResults = async (url: string): Promise<string | undefined> => {
-    const treeId = idFromUrl(url);
-    if (treeId === undefined) {
-      return undefined;
-    }
-
-    const fetchResult = await fetchResource('TaxonTreeDef', treeId);
-    if (fetchResult === undefined) {
-      return undefined;
-    }
-
-    const deserializedResult = deserializeResource(
-      fetchResult
-    ) as SpecifyResource<AnySchema>;
-
-    return deserializedResult.get('name') as string | undefined;
-  };
 
   const customSelectOptionGroups = Object.fromEntries(
     Object.entries(fieldGroups)
@@ -288,28 +260,6 @@ export function MappingElement({
         },
       ])
   );
-
-  const getCustomSelectOptionGroups = async (): Promise<void> => {
-    const customSelectOptionGroups = await Promise.all(
-      Object.entries(fieldGroups)
-        .filter(([, groupFields]) => Object.entries(groupFields).length > 0)
-        .map(async ([groupName, groupFields], _index, { length }) => {
-          const fetchedName = await fetchTreeResults(groupName);
-
-          return [
-            groupName,
-            {
-              // Don't show group labels if there is only one group
-              selectGroupLabel:
-                length === 1 ? undefined : fetchedName ?? groupName,
-              selectOptionsData: groupFields,
-            },
-          ];
-        })
-    );
-
-    return Object.fromEntries(customSelectOptionGroups);
-  };
 
   return props.isOpen ? (
     <CustomSelectElement

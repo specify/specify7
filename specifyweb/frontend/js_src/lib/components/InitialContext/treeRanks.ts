@@ -28,7 +28,7 @@ type TreeInformationBackend = {
   }>;
 };
 
-let treeDefinitions: {
+export let treeDefinitions: {
   readonly [TREE_NAME in AnyTree['tableName']]: RA<{
     readonly definition: SerializedResource<Tables[`${TREE_NAME}TreeDef`]>;
     readonly ranks: RA<SerializedResource<Tables[`${TREE_NAME}TreeDefItem`]>>;
