@@ -382,7 +382,7 @@ export function getMappingLineData({
                             isRelationship: true,
                             isDefault: name === defaultValue,
                             tableName: table.name,
-                            tableTreeDef: tableTreeDefName,
+                            tableTreeDefName,
                           },
                         ] as const)
                       : undefined;
