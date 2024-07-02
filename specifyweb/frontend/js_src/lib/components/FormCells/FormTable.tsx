@@ -308,11 +308,11 @@ export function FormTable<SCHEMA extends AnySchema>({
                   <FormTableUtils
                     displayDeleteButton={displayDeleteButton}
                     displayViewButton={displayViewButton}
-                    isExpanded={isExpanded}
-                    resource={resource}
-                    relationship={relationship}
-                    onDelete={handleDelete}
                     expandedViewDefinition={expandedViewDefinition}
+                    isExpanded={isExpanded}
+                    relationship={relationship}
+                    resource={resource}
+                    onDelete={handleDelete}
                   />
                 </div>
               </React.Fragment>

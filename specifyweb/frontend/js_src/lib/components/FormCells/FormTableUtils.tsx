@@ -1,15 +1,15 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
-import { IR } from '../../utils/types';
+import type { IR } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
-import { AnySchema } from '../DataModel/helperTypes';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { Relationship } from '../DataModel/specifyField';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { Relationship } from '../DataModel/specifyField';
 import { FormMeta } from '../FormMeta';
-import { ViewDescription } from '../FormParse';
+import type { ViewDescription } from '../FormParse';
 import { hasTablePermission } from '../Permissions/helpers';
 
 export function FormTableUtils({
@@ -19,14 +19,16 @@ export function FormTableUtils({
   displayDeleteButton,
   relationship,
   onDelete: handleDelete,
-  expandedViewDefinition
+  expandedViewDefinition,
 }: {
   readonly displayViewButton: boolean;
   readonly isExpanded: IR<boolean | undefined>;
   readonly resource: SpecifyResource<AnySchema>;
   readonly displayDeleteButton: boolean;
   readonly relationship: Relationship;
-  readonly onDelete: ((resource: SpecifyResource<AnySchema>) => void) | undefined;
+  readonly onDelete:
+    | ((resource: SpecifyResource<AnySchema>) => void)
+    | undefined;
   readonly expandedViewDefinition: ViewDescription | undefined;
 }): JSX.Element {
   return (
