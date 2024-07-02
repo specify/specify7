@@ -17,7 +17,7 @@ from specifyweb.specify.models import (
 
 # Migrations Operations Order:
 # 1. Create CollectionObjectType
-# 2. Add CollectionObjectType (cotype) realtionship to CollectionObject
+# 2. Add CollectionObjectType (coType) realtionship to CollectionObject
 # 3. Add hasreferencecatalognumber field to CollectionObject
 # 4. Create default collection object types based on each discipline
 # 5. Create new default taxon trees and ranks
@@ -136,7 +136,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='collectionobject',
             name='cotype',
-            field=models.ForeignKey(db_column='CoTypeID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='collectionobjects', to='specify.collectionobjecttype'),
+            field=models.ForeignKey(db_column='COTypeID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='collectionobjects', to='specify.collectionobjecttype'),
         ),
         migrations.AddField(
             model_name='collectionobject',

@@ -1594,7 +1594,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='treatmentEvents', type='one-to-many',required=False, relatedModelName='TreatmentEvent', otherSideName='collectionObject', dependent=True),
             Relationship(name='visibilitySetBy', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='VisibilitySetByID'),
             Relationship(name='voucherRelationships', type='one-to-many',required=False, relatedModelName='VoucherRelationship', otherSideName='collectionObject', dependent=True),
-            Relationship(name='coType', type='many-to-one', required=True, relatedModelName='CollectionObjectType', column='CoTypeID'),
+            Relationship(name='coType', type='many-to-one', required=True, relatedModelName='CollectionObjectType', column='COTypeID'),
         ],
         fieldAliases=[
 
