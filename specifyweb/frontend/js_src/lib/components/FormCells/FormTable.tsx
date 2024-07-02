@@ -9,15 +9,12 @@ import type { IR, RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { columnDefinitionsToCss, DataEntry } from '../Atoms/DataEntry';
-import { icons } from '../Atoms/Icons';
-import { Link } from '../Atoms/Link';
 import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
 import { backboneFieldSeparator } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { FormMeta } from '../FormMeta';
 import type { FormCellDefinition, SubViewSortField } from '../FormParse/cells';
 import { propsToFormMode, useViewDefinition } from '../Forms/useViewDefinition';
 import { loadingGif } from '../Molecules';
@@ -30,6 +27,7 @@ import { SearchDialog } from '../SearchDialog';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { CollapsedForm } from './CollapsedForm';
 import { ExpandedForm } from './ExpandedForm';
+import { FormTableUtils } from './FormTableUtils';
 
 const cellToLabel = (
   table: SpecifyTable,
@@ -307,47 +305,15 @@ export function FormTable<SCHEMA extends AnySchema>({
                       }
                     />
                   )}
-                  <div className="flex h-full flex-col gap-2" role="cell">
-                    {displayViewButton && isExpanded[resource.cid] === true ? (
-                      <Link.Small
-                        aria-label={commonText.openInNewTab()}
-                        className="flex-1"
-                        href={resource.viewUrl()}
-                        title={commonText.openInNewTab()}
-                      >
-                        {icons.externalLink}
-                      </Link.Small>
-                    ) : undefined}
-                    {displayDeleteButton &&
-                    (!resource.isNew() ||
-                      hasTablePermission(
-                        relationship.relatedTable.name,
-                        'delete'
-                      )) ? (
-                      <Button.Small
-                        aria-label={commonText.remove()}
-                        className="h-full"
-                        disabled={
-                          !resource.isNew() &&
-                          !hasTablePermission(
-                            resource.specifyTable.name,
-                            'delete'
-                          )
-                        }
-                        title={commonText.remove()}
-                        onClick={(): void => handleDelete(resource)}
-                      >
-                        {icons.trash}
-                      </Button.Small>
-                    ) : undefined}
-                    {isExpanded[resource.cid] === true && (
-                      <FormMeta
-                        className="flex-1"
-                        resource={resource}
-                        viewDescription={expandedViewDefinition}
-                      />
-                    )}
-                  </div>
+                  <FormTableUtils
+                    displayDeleteButton={displayDeleteButton}
+                    displayViewButton={displayViewButton}
+                    isExpanded={isExpanded}
+                    resource={resource}
+                    relationship={relationship}
+                    onDelete={handleDelete}
+                    expandedViewDefinition={expandedViewDefinition}
+                  />
                 </div>
               </React.Fragment>
             ))}
