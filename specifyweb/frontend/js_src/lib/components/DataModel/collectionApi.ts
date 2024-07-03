@@ -88,9 +88,10 @@ export const DependentCollection = Base.extend({
 export const LazyCollection = Base.extend({
   __name__: 'LazyCollectionBase',
   _neverFetched: true,
-  constructor(options = {}) {
+  constructor(options = {}, records = []) {
     this.table = this.model;
-    Base.call(this, null, options);
+    assert(_.isArray(records));
+    Base.call(this, records, options);
     this.filters = options.filters || {};
     this.domainfilter =
       Boolean(options.domainfilter) &&

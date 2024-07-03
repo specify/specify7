@@ -73,7 +73,7 @@ type CollectionConstructor<SCHEMA extends AnySchema> = new (
     >;
     readonly domainfilter?: boolean;
   },
-  tables?: RA<SpecifyResource<AnySchema>>
+  initalResources?: RA<SpecifyResource<SCHEMA>>
 ) => UnFetchedCollection<SCHEMA>;
 
 export type UnFetchedCollection<SCHEMA extends AnySchema> = {

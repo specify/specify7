@@ -4,12 +4,16 @@ import _ from 'underscore';
 
 import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
 import { Http } from '../../utils/ajax/definitions';
+import { filterArray, ValueOf } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { assert } from '../Errors/assert';
 import { softFail } from '../Errors/Crash';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { Backbone } from './backbone';
 import { attachBusinessRules } from './businessRules';
 import { backboneFieldSeparator } from './helpers';
+import { AnySchema, SerializedResource, SerializedRecord } from './helperTypes';
+import { SpecifyResource } from './legacyTypes';
 import {
   getFieldsToNotClone,
   getResourceApiUrl,
@@ -18,7 +22,12 @@ import {
   resourceFromUrl,
 } from './resource';
 import { initializeResource } from './scoping';
-import { specialFields } from './serializers';
+import { serializeResource, specialFields } from './serializers';
+import { LiteralField, Relationship } from './specifyField';
+import { Collection, SpecifyTable } from './specifyTable';
+import { Tables } from './types';
+import { IR } from '../../utils/types';
+import { tables } from './tables';
 
 // REFACTOR: remove @ts-nocheck
 
@@ -76,7 +85,19 @@ function eventHandlerForToMany(_related, field) {
 }
 
 // Always returns a resource
-const maybeMakeResource = (value, relatedTable) =>
+const maybeMakeResource = <
+  TABLE extends SpecifyTable<AnySchema>,
+  TABLE_SCHEMA extends Tables[TABLE['name']]
+>(
+  value:
+    | SpecifyResource<TABLE_SCHEMA>
+    | Partial<
+        | SerializedResource<TABLE_SCHEMA>
+        | SerializedRecord<TABLE_SCHEMA>
+        | { readonly id?: number }
+      >,
+  relatedTable: TABLE
+): SpecifyResource<TABLE_SCHEMA> =>
   value instanceof ResourceBase
     ? value
     : new relatedTable.Resource(value, { parse: true });
@@ -100,6 +121,7 @@ export const ResourceBase = Backbone.Model.extend({
   constructor() {
     this.specifyTable = this.constructor.specifyTable;
     this.dependentResources = {}; // References to related objects referred to by field in this resource
+    this.independentResources = {};
     Reflect.apply(Backbone.Model, this, arguments); // TEST: check if this is necessary
   },
   initialize(attributes, options) {
@@ -211,7 +233,10 @@ export const ResourceBase = Backbone.Model.extend({
     // Case insensitive
     return Backbone.Model.prototype.get.call(this, attribute.toLowerCase());
   },
-  storeDependent(field, related) {
+  storeDependent(
+    field: Relationship,
+    related: Collection<AnySchema> | SpecifyResource<AnySchema> | null
+  ): void {
     assert(field.isDependent());
     const setter =
       field.type === 'one-to-many'
@@ -219,7 +244,7 @@ export const ResourceBase = Backbone.Model.extend({
         : '_setDependentToOne';
     this[setter](field, related);
   },
-  _setDependentToOne(field, related) {
+  _setDependentToOne(field: Relationship, related) {
     const oldRelated = this.dependentResources[field.name.toLowerCase()];
     if (!related) {
       if (oldRelated) {
@@ -255,12 +280,20 @@ export const ResourceBase = Backbone.Model.extend({
       }
     }
   },
-  _setDependentToMany(field, toMany) {
+  _setDependentToMany(field: Relationship, toMany: Collection<AnySchema>) {
     const oldToMany = this.dependentResources[field.name.toLowerCase()];
     oldToMany && oldToMany.off('all', null, this);
 
     // Cache it and set up event handlers
     this.dependentResources[field.name.toLowerCase()] = toMany;
+    toMany.on('all', eventHandlerForToMany(toMany, field), this);
+  },
+  storeIndependentToMany(field: Relationship, toMany: Collection<AnySchema>) {
+    assert(!field.isDependent() && relationshipIsToMany(field));
+    const oldToMany = this.independentResources[field.name.toLowerCase()];
+    if (oldToMany !== undefined) oldToMany.off('all', null, this);
+
+    this.independentResources[field.name.toLowerCase()] = toMany;
     toMany.on('all', eventHandlerForToMany(toMany, field), this);
   },
   // Separate name to simplify typing
@@ -383,7 +416,7 @@ export const ResourceBase = Backbone.Model.extend({
   },
   _handleInlineDataOrResource(value, fieldName) {
     // BUG: check type of value
-    const field = this.specifyTable.getField(fieldName);
+    const field: Relationship = this.specifyTable.getField(fieldName);
     const relatedTable = field.relatedTable;
     // BUG: don't do anything for virtual fields
 
@@ -399,15 +432,23 @@ export const ResourceBase = Backbone.Model.extend({
           );
           this.storeDependent(field, collection);
         } else {
-          console.warn(
-            'got unexpected inline data for independent collection field',
-            { collection: this, field, value }
+          const collection = new relatedTable.ToOneCollection(
+            collectionOptions,
+            value
           );
+          this.storeIndependentToMany(field, collection);
         }
 
         // Because the foreign key is on the other side
         this.trigger(`change:${fieldName}`, this);
         this.trigger('change', this);
+
+        /**
+         * These are serialized and added to the JSON before being sent to the
+         * server and are not in the resource's attributes
+         *
+         * https://backbonejs.org/#Sync
+         */
         return undefined;
       }
       case 'many-to-one': {
@@ -533,9 +574,13 @@ export const ResourceBase = Backbone.Model.extend({
         return value;
       });
   },
-  async _rget(path, options) {
+  async _rget<OPTIONS extends { noBusinessRules: boolean }>(
+    path: RA<string>,
+    options: OPTIONS
+  ) {
     let fieldName = path[0].toLowerCase();
-    const field = this.specifyTable.getField(fieldName);
+    const field: LiteralField | Relationship | undefined =
+      this.specifyTable.getField(fieldName);
     field && (fieldName = field.name.toLowerCase()); // In case fieldName is an alias
     let value = this.get(fieldName);
     field ||
@@ -588,41 +633,9 @@ export const ResourceBase = Backbone.Model.extend({
           throw "can't traverse into a collection using dot notation";
         }
 
-        // Is the collection cached?
-        let toMany = this.dependentResources[fieldName];
-        if (!toMany) {
-          const collectionOptions = {
-            field: field.getReverse(),
-            related: this,
-          };
-
-          if (!field.isDependent()) {
-            return new related.ToOneCollection(collectionOptions);
-          }
-
-          if (this.isNew()) {
-            toMany = new related.DependentCollection(collectionOptions, []);
-            this.storeDependent(field, toMany);
-            return toMany;
-          } else {
-            console.warn('expected dependent resource to be in cache');
-            const temporaryCollection = new related.ToOneCollection(
-              collectionOptions
-            );
-            return temporaryCollection
-              .fetch({ limit: 0 })
-              .then(
-                () =>
-                  new related.DependentCollection(
-                    collectionOptions,
-                    temporaryCollection.tables
-                  )
-              )
-              .then((toMany) => {
-                _this.storeDependent(field, toMany);
-              });
-          }
-        }
+        return field.isDependent()
+          ? this.getDependentToMany(field)
+          : this.getIndependentToMany(field);
       }
       case 'zero-to-one': {
         /*
@@ -664,7 +677,77 @@ export const ResourceBase = Backbone.Model.extend({
       }
     }
   },
-  save({
+  async getDependentToMany(
+    field: Relationship
+  ): Promise<Collection<AnySchema>> {
+    assert(field.isDependent());
+
+    const fieldName = field.name.toLowerCase();
+    const relatedTable = field.relatedTable;
+
+    let toMany = this.dependentResources[fieldName];
+
+    if (toMany) return toMany;
+
+    const collectionOptions = {
+      field: field.getReverse(),
+      related: this,
+    };
+
+    if (this.isNew()) {
+      toMany = new relatedTable.DependentCollection(collectionOptions, []);
+      this.storeDependent(field, toMany);
+      return toMany;
+    } else {
+      console.warn('expected dependent resource to be in cache');
+      const temporaryCollection = new relatedTable.ToOneCollection(
+        collectionOptions
+      );
+      return temporaryCollection
+        .fetch({ limit: 0 })
+        .then(
+          () =>
+            new relatedTable.DependentCollection(
+              collectionOptions,
+              temporaryCollection.tables
+            )
+        )
+        .then((toMany) => {
+          _this.storeDependent(field, toMany);
+        });
+    }
+  },
+  async getIndependentToMany(
+    field: Relationship
+  ): Promise<Collection<AnySchema>> {
+    assert(!field.isDependent());
+
+    const fieldName = field.name.toLowerCase();
+    const relatedTable = field.relatedTable;
+
+    let toMany: Collection<AnySchema> = this.independentResources[fieldName];
+
+    if (toMany) return toMany;
+
+    const collectionOptions = {
+      field: field.getReverse(),
+      related: this,
+    };
+
+    if (this.isNew()) {
+      toMany = new relatedTable.ToOneCollection(collectionOptions);
+      this.storeIndependentToMany(field, toMany);
+      return toMany;
+    }
+
+    return new relatedTable.ToOneCollection(collectionOptions)
+      .fetch({ limit: 0 })
+      .then((collection) => {
+        this.storeIndependentToMany(field, collection);
+        return collection;
+      });
+  },
+  async save({
     onSaveConflict: handleSaveConflict,
     errorOnAlreadySaving = true,
   } = {}) {
@@ -730,6 +813,15 @@ export const ResourceBase = Backbone.Model.extend({
         json[fieldName] = related ? related.toJSON() : null;
       }
     });
+
+    Object.entries(self.independentResources).forEach(
+      ([fieldName, related]) => {
+        const field = self.specifyTable.getField(fieldName);
+        if (field.type === 'one-to-many' && related) {
+          json[fieldName] = related.toJSON();
+        }
+      }
+    );
     if (typeof this.get('resource_uri') !== 'string')
       json._tableName = this.specifyTable.name;
     return json;
