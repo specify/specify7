@@ -7561,7 +7561,6 @@ class CollectionObjectGroupJoin(models.Model): # aka. CoJo or CogJoin
     isprimary = models.BooleanField(blank=True, null=True, unique=False, db_column='IsPrimary', db_index=False)
     issubstrate = models.BooleanField(blank=True, null=True, unique=False, db_column='IsSubstrate', db_index=False)
     precedence = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='Precedence', db_index=False)
-    order = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='Order', db_index=False)
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
