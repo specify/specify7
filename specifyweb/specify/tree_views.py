@@ -409,14 +409,17 @@ def remove_geo_default_trees(request):
                 root_item = Taxontreedefitem.objects.get(name=f"{tree} Root")
                 root_item.delete(allow_root_del=True)
             except Taxontreedefitem.DoesNotExist:
-                print(f"Taxontreedefitem with name {tree} Root does not exist.")
+                error_message = f"Taxontreedefitem with name {tree} Root does not exist."
+                raise Taxontreedefitem.DoesNotExist(error_message)
             except Exception as e:
-                print(f"Error deleting taxontreedefitem {tree} Root: {e}")
+                error_message = f"Error deleting taxontreedefitem {tree} Root: {e}"
+                raise Exception(error_message)
 
             try:
                 ttd.delete()
             except Exception as e:
-                print(f"Error deleting taxontreedef {tree_name}: {e}")
+                error_message = f"Error deleting taxontreedef {tree_name}: {e}"
+                raise Exception(error_message)
 
 
 class TaxonMutationPT(PermissionTarget):
