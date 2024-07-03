@@ -485,7 +485,8 @@ export const preferencesText = createDictionary({
   },
   updatePageTitleFormDescription: {
     'en-us': 'Whether to update the title of the page to match current record.',
-    'ru-ru': 'Обновлять ли заголовок страницы в соответствии с текущей записью.',
+    'ru-ru':
+      'Обновлять ли заголовок страницы в соответствии с текущей записью.',
     'es-es': `
       Si se debe actualizar el título de la página para que coincida con el
       registro actual.
