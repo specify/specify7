@@ -371,7 +371,6 @@ def add_geo_default_trees(request):
             continue
         tree_name = f"{tree} Taxon"
         ttd = Taxontreedef.objects.create(name=tree_name)
-        ttd.save()
         rank_id = 0
         ttdi = None
         for rank in TAXON_RANKS:
@@ -384,42 +383,43 @@ def add_geo_default_trees(request):
                 parent=ttdi,
                 treedef=ttd,
             )
-            ttdi.save()
 
 # TODO: Add openapi schema for this endpoint
 @tree_mutation
 def remove_geo_default_trees(request):
-    for tree in reversed(TAXON_TREES):
+    for tree in TAXON_TREES:
         tree_name = f"{tree} Taxon"
         ttd = Taxontreedef.objects.filter(name=tree_name)
-        if ttd.exists():
-            for rank in reversed(TAXON_RANKS):
-                name = f"{tree} {rank}"
-                ttdi = Taxontreedefitem.objects.filter(
-                    name=name, treedef=ttd.first()
-                )
-                if ttdi.exists():
-                    try:
-                        ttdi.delete()
-                    except Exception as e:
-                        print(f"Error deleting taxontreedefitem {name}: {e}")
-                        continue
-            
-            try:
-                root_item = Taxontreedefitem.objects.get(name=f"{tree} Root")
-                root_item.delete(allow_root_del=True)
-            except Taxontreedefitem.DoesNotExist:
-                error_message = f"Taxontreedefitem with name {tree} Root does not exist."
-                raise Taxontreedefitem.DoesNotExist(error_message)
-            except Exception as e:
-                error_message = f"Error deleting taxontreedefitem {tree} Root: {e}"
-                raise Exception(error_message)
+        if not ttd.exists():
+            continue
+    
+        for rank in reversed(TAXON_RANKS):
+            name = f"{tree} {rank}"
+            ttdi = Taxontreedefitem.objects.filter(
+                name=name, treedef=ttd.first()
+            )
+            if ttdi.exists():
+                try:
+                    ttdi.delete()
+                except Exception as e:
+                    print(f"Error deleting taxontreedefitem {name}: {e}")
+                    continue
+        
+        try:
+            root_item = Taxontreedefitem.objects.get(name=f"{tree} Root")
+            root_item.delete(allow_root_del=True)
+        except Taxontreedefitem.DoesNotExist:
+            error_message = f"Taxontreedefitem with name {tree} Root does not exist."
+            raise Taxontreedefitem.DoesNotExist(error_message)
+        except Exception as e:
+            error_message = f"Error deleting taxontreedefitem {tree} Root: {e}"
+            raise Exception(error_message)
 
-            try:
-                ttd.delete()
-            except Exception as e:
-                error_message = f"Error deleting taxontreedef {tree_name}: {e}"
-                raise Exception(error_message)
+        try:
+            ttd.delete()
+        except Exception as e:
+            error_message = f"Error deleting taxontreedef {tree_name}: {e}"
+            raise Exception(error_message)
 
 
 class TaxonMutationPT(PermissionTarget):
