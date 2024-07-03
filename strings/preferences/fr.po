@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-07-03 14:09+0000\n"
+"PO-Revision-Date: 2024-07-03 16:45+0000\n"
 "Last-Translator: Antoine Lesimple <antoine.lesimple@ird.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "preferences/fr/>\n"
@@ -784,153 +784,129 @@ msgstr "Condenser les résultats des requêtes"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:455
-#, fuzzy
 msgid "blurContentBehindDialog"
-msgstr "Flou le contenu derrière la boîte de dialogue"
+msgstr "Flouter le contenu derrière les fenêtres"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1258
-#, fuzzy
 msgid "collectionSortOrderDescription"
-msgstr "Ceci détermine l'ordre visuel des collections"
+msgstr "Ceci détermine l'ordre d'affichage des collections"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1109
-#, fuzzy
 msgid "recordSetRecordToOpen"
 msgstr "Enregistrement à ouvrir par défaut"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:502
-#, fuzzy
 msgid "altClickToSupressNewTab"
 msgstr ""
-"<key>{altKeyName:string}</key>+<key>Cliquez sur</key> pour supprimer le "
-"nouvel onglet"
+"<key>{altKeyName:string}</key>+<key>Clique</key> pour supprimer un nouvel "
+"onglet"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:503
-#, fuzzy
 msgid "altClickToSupressNewTabDescription"
-msgstr "Utiliser le sélecteur de mois accessible"
+msgstr ""
+"<key>{altKeyName:string}</key>+<key>Clique</key> sur un lien qui s'ouvre "
+"normalement dans un nouvel onglet pour qu'il s'ouvre dans l'onglet actif"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:787
-#, fuzzy
 msgid "makeFormDialogsModal"
-msgstr "Rendre les boîtes de dialogue de formulaire grisées sur l'arrière-plan"
+msgstr "Rendre les fenêtres formulaires grisées en arrière-plan"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1309
-#, fuzzy
 msgid "autoScrollTree"
-msgstr "Arbre de défilement automatique vers le nœud ciblé"
+msgstr "Défilement automatique de l'arbre vers le noeud sélectionné"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1833
-#, fuzzy
 msgid "lineWrap"
 msgstr "Retour à la ligne"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1840
-#, fuzzy
 msgid "indentSize"
-msgstr "Taille du retrait"
+msgstr "Taille de l'alinéa"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1852
-#, fuzzy
 msgid "indentWithTab"
-msgstr "Indenter avec <key>Tabulation</key>"
+msgstr "Ajouter un alinéa avec <key>Tab</key>"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:767
-#, fuzzy
 msgid "formHeaderFormat"
 msgstr "Format d'en-tête de formulaire"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:774
-#, fuzzy
 msgid "iconAndTableName"
 msgstr "Icône et nom de la table"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:782
-#, fuzzy
 msgid "tableIcon"
-msgstr "Icône de tableau"
+msgstr "Icône de la table"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1131
-#, fuzzy
 msgid "maxHeight"
-msgstr "hauteur maximum"
+msgstr "Hauteur maximum"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1001
-#, fuzzy
 msgid "autoComplete"
-msgstr ""
-"Détermine les légendes des champs, les notes d'utilisation et les légendes "
-"des tableaux"
+msgstr "Saisie automatique"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1316
-#, fuzzy
 msgid "searchCaseSensitive"
 msgstr "Recherche sensible à la casse"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1323
-#, fuzzy
 msgid "searchField"
 msgstr "Champ de recherche"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:627
-#, fuzzy
 msgid "createInteractions"
 msgstr "Créer une interaction"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:630
-#, fuzzy
 msgid "useSpaceAsDelimiter"
-msgstr "Utiliser l'espace comme délimiteur"
+msgstr "Utiliser l'espace comme séparateur"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:651
-#, fuzzy
 msgid "useCommaAsDelimiter"
-msgstr "Utiliser la virgule comme délimiteur"
+msgstr "Utiliser la virgule comme séparateur"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:672
-#, fuzzy
 msgid "useNewLineAsDelimiter"
-msgstr "Utiliser une nouvelle ligne comme délimiteur"
+msgstr "Utiliser une nouvelle ligne comme séparateur"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:693
-#, fuzzy
 msgid "useCustomDelimiters"
-msgstr "Utiliser des délimiteurs personnalisés"
+msgstr "Utiliser des séparateurs personnalisés"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:694
-#, fuzzy
 msgid "useCustomDelimitersDescription"
 msgstr ""
-"Une liste de délimiteurs à utiliser, en plus de ceux définis ci-dessus. "
-"Mettez un délimiteur par ligne"
+"Une liste de séparateur à utiliser, en plus de ceux définis ci-dessus. "
+"Mettre un séparateur par ligne"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:638
 #: components/Preferences/UserDefinitions.tsx:659
 #: components/Preferences/UserDefinitions.tsx:680
-#, fuzzy
 msgid "detectAutomaticallyDescription"
 msgstr "Détecter automatiquement en fonction du format du numéro de catalogue"
 
@@ -938,7 +914,6 @@ msgstr "Détecter automatiquement en fonction du format du numéro de catalogue"
 #: components/Preferences/UserDefinitions.tsx:642
 #: components/Preferences/UserDefinitions.tsx:663
 #: components/Preferences/UserDefinitions.tsx:684
-#, fuzzy
 msgid "use"
 msgstr "Utiliser"
 
@@ -946,50 +921,42 @@ msgstr "Utiliser"
 #: components/Preferences/UserDefinitions.tsx:646
 #: components/Preferences/UserDefinitions.tsx:667
 #: components/Preferences/UserDefinitions.tsx:688
-#, fuzzy
 msgid "dontUse"
-msgstr "Zoom avec la molette de défilement"
+msgstr "Ne pas utiliser"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:569
 #: components/Preferences/UserDefinitions.tsx:581
-#, fuzzy
 msgid "position"
 msgstr "Position"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:575
-#, fuzzy
 msgid "top"
 msgstr "Haut"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:577
-#, fuzzy
 msgid "bottom"
 msgstr "Bas"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:574
-#, fuzzy
 msgid "left"
 msgstr "Gauche"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:576
-#, fuzzy
 msgid "right"
 msgstr "Droite"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:512
-#, fuzzy
 msgid "showUnsavedIndicator"
-msgstr "Afficher l'indicateur de modifications non enregistrées"
+msgstr "Afficher un indicateur pour les modifications non enregistrées"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:513
-#, fuzzy
 msgid "showUnsavedIndicatorDescription"
 msgstr ""
 "Afficher un \"*\" dans le titre de l'onglet lorsqu'il y a des modifications "
@@ -997,63 +964,54 @@ msgstr ""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1585
-#, fuzzy
 msgid "autoPopulateDescription"
 msgstr ""
 "Remplir automatiquement l'enregistrement fusionné avec les valeurs des "
-"doublons lors de l'ouverture de la boîte de dialogue de fusion"
+"doublons lors de l'ouverture de la fenêtre de fusion"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1598
-#, fuzzy
 msgid "autoCreateVariants"
 msgstr "Créer automatiquement des enregistrements {agentVariantTable:string}"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1602
-#, fuzzy
 msgid "autoCreateVariantsDescription"
 msgstr ""
 "Lors de la fusion d'agents, créez automatiquement des enregistrements "
-"{agentVariantTable:string} en fonction des variations du prénom/nom."
+"{agentVariantTable:string} basés sur les variations des nom/prénom."
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:110
-#, fuzzy
 msgid "collectionPreferences"
-msgstr "Personnalisation"
+msgstr "Préférences des collections"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:490
-#, fuzzy
 msgid "rememberDialogSizes"
 msgstr "Mémoriser les tailles des fenêtres de dialogue"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:483
-#, fuzzy
 msgid "rememberDialogPositions"
 msgstr "Mémoriser les positions des fenêtres de dialogue"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1276
-#, fuzzy
 msgid "autoPlayMedia"
 msgstr "Lire automatiquement les médias"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:225
-#, fuzzy
 msgid "useCustomTooltips"
-msgstr "Utiliser des info-bulles modernes"
+msgstr "Utiliser des bulles d'aide modernes"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1097
-#, fuzzy
 msgid "alwaysUseQueryBuilder"
 msgstr ""
-"Utilisez toujours la recherche du générateur de requêtes dans le formulaire "
-"de recherche"
+"Toujours utiliser la recherche via le créateur de requêtes dans le "
+"formulaire de recherche"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1821
