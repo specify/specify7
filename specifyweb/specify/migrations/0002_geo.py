@@ -82,7 +82,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='collectionobject',
             name='cotype',
-            field=models.ForeignKey(db_column='COTypeID', null=True, on_delete=models.DO_NOTHING, related_name='collectionobjects', to='specify.collectionobjecttype'),
+            field=models.ForeignKey(db_column='COTypeID', null=True, on_delete=models.SET_NULL, related_name='collectionobjects', to='specify.collectionobjecttype'),
         ),
         migrations.AddField(
             model_name='collectionobject',
