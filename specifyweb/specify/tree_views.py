@@ -363,9 +363,22 @@ def tree_rank_item_count(request, tree, rankid):
 TAXON_TREES = ["Mineral", "Rock", "Meteorite", "Fossil"]
 TAXON_RANKS = ["One", "Two", "Three"]
 
-# TODO: Add openapi schema for this endpoint
+@openapi(schema={
+    "post": {
+        "responses": {
+            "200": {
+                "description": "Success: The default geology trees were added."
+            },
+            "405": {
+                "description": "Error: Method not allowed."
+            }
+        }
+    }
+})
 @tree_mutation
 def add_geo_default_trees(request):
+    if request.method != 'POST':
+        return HttpResponse(toJson({'error': 'Method not allowed.'}), status=405, content_type="application/json")
     for tree in TAXON_TREES:
         if Taxontreedef.objects.filter(name=tree).exists():
             continue
@@ -384,9 +397,24 @@ def add_geo_default_trees(request):
                 treedef=ttd,
             )
 
-# TODO: Add openapi schema for this endpoint
+    return HttpResponse(toJson({'success': True}), content_type="application/json")
+
+@openapi(schema={
+    "delete": {
+        "responses": {
+            "200": {
+                "description": "Success: The default geology trees were removed."
+            },
+            "405": {
+                "description": "Error: Method not allowed."
+            }
+        }
+    }
+})
 @tree_mutation
 def remove_geo_default_trees(request):
+    if request.method != 'DELETE':
+        return HttpResponse(toJson({'error': 'Method not allowed.'}), status=405, content_type="application/json")
     for tree in TAXON_TREES:
         tree_name = f"{tree} Taxon"
         ttd = Taxontreedef.objects.filter(name=tree_name)
@@ -420,6 +448,8 @@ def remove_geo_default_trees(request):
         except Exception as e:
             error_message = f"Error deleting taxontreedef {tree_name}: {e}"
             raise Exception(error_message)
+        
+    return HttpResponse(toJson({'success': True}), content_type="application/json")
 
 
 class TaxonMutationPT(PermissionTarget):
