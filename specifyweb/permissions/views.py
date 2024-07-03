@@ -387,7 +387,7 @@ class UserRolesPT(PermissionTarget):
     resource = "/permissions/user/roles"
     read = PermissionTargetAction()
     update = PermissionTargetAction()
-# test commit
+
 class AllUserRoles(LoginRequiredMixin, View):
     def get(self, request, collectionid: int) -> http.HttpResponse:
         check_permission_targets(collectionid, request.specify_user.id, [UserRolesPT.read])
