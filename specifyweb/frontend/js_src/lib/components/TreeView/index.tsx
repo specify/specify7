@@ -60,12 +60,22 @@ export function TreeViewWrapper(): JSX.Element | null {
       ? caseInsensitiveHash(treeDefinitions, treeName)
       : undefined;
 
-  const [
-    currentDefinitionName = treeDefinitionArray === undefined
+  const initialDefinitionName =
+    treeDefinitionArray === undefined
       ? undefined
-      : treeDefinitionArray[0].definition.name,
-    setCurrentDefinition,
-  ] = useCachedState('tree', `definition${treeName}`);
+      : treeDefinitionArray[0].definition.name;
+
+  const [currentDefinitionName = initialDefinitionName, setCurrentDefinition] =
+    useCachedState('tree', `definition${treeName}`);
+
+  /*
+   * Const [
+   *   currentDefinitionName = treeDefinitionArray === undefined
+   *     ? undefined
+   *     : treeDefinitionArray[0].definition.name,
+   *   setCurrentDefinition,
+   * ] = useCachedState('tree', `definition${treeName}`);
+   */
 
   const currentTreeInformation = treeDefinitionArray?.find(
     ({ definition }) => definition.name === currentDefinitionName

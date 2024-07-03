@@ -13,27 +13,21 @@ import type {
   AnySchema,
   AnyTree,
   SerializedRecord,
-  SerializedResource,
 } from '../DataModel/helperTypes';
-import type { SpecifyResource } from '../DataModel/schema';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { fetchContext as fetchDomain, schema } from '../DataModel/schema';
 import { serializeResource } from '../DataModel/serializers';
 import { genericTables } from '../DataModel/tables';
 import type { GeographyTreeDef, Tables } from '../DataModel/types';
 
-type TreeInformationBackend = {
+type TreeInformation = {
   readonly [TREE_NAME in AnyTree['tableName']]: RA<{
     readonly definition: SerializedRecord<Tables[`${TREE_NAME}TreeDef`]>;
     readonly ranks: RA<SerializedRecord<Tables[`${TREE_NAME}TreeDefItem`]>>;
   }>;
 };
 
-export let treeDefinitions: {
-  readonly [TREE_NAME in AnyTree['tableName']]: RA<{
-    readonly definition: SerializedResource<Tables[`${TREE_NAME}TreeDef`]>;
-    readonly ranks: RA<SerializedResource<Tables[`${TREE_NAME}TreeDefItem`]>>;
-  }>;
-} = undefined!;
+export let treeDefinitions: TreeInformation = undefined!;
 
 /*
  * FEATURE: allow reordering trees
@@ -65,7 +59,7 @@ export const treeRanksPromise = Promise.all([
   import('../DataModel/tables').then(async ({ fetchContext }) => fetchContext),
   fetchDomain,
 ]).then(async () =>
-  ajax<TreeInformationBackend>('/api/specify_trees/', {
+  ajax<TreeInformation>('/api/specify_trees/', {
     headers: { Accept: 'application/json' },
   }).then(({ data }) => {
     disciplineTrees = allTrees.filter((treeName) =>
