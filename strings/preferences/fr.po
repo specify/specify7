@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-07-02 16:45+0000\n"
+"PO-Revision-Date: 2024-07-03 14:09+0000\n"
 "Last-Translator: Antoine Lesimple <antoine.lesimple@ird.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "preferences/fr/>\n"
@@ -774,15 +774,13 @@ msgstr "Angles arrondis"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:858
-#, fuzzy
 msgid "limitMaxFieldWidth"
 msgstr "Limiter la largeur maximale du champ"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1560
-#, fuzzy
 msgid "condenseQueryResults"
-msgstr "Condenser les résultats de la requête"
+msgstr "Condenser les résultats des requêtes"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:455
