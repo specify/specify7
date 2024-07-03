@@ -371,7 +371,7 @@ def add_geo_default_trees(request):
             continue
         tree_name = f"{tree} Taxon"
         ttd = Taxontreedef.objects.create(name=tree_name)
-        rank_id = 0
+        rank_id = -10
         ttdi = None
         for rank in TAXON_RANKS:
             name = f"{tree} {rank}"
