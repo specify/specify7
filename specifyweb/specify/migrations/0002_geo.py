@@ -127,8 +127,9 @@ class Migration(migrations.Migration):
                 ('text1', models.TextField(blank=True, db_column='Text1', null=True)),
                 ('text2', models.TextField(blank=True, db_column='Text2', null=True)),
                 ('text3', models.TextField(blank=True, db_column='Text3', null=True)),
-                ('child', models.ForeignKey(db_column='ChildID', on_delete=django.db.models.deletion.CASCADE, related_name='cojos', to='specify.collectionobject')),
-                ('parent', models.ForeignKey(db_column='ParentID', on_delete=django.db.models.deletion.CASCADE, related_name='cojos', to='specify.collectionobjectgroup')),
+                ('cogparent', models.ForeignKey(db_column='COGParentID', on_delete=django.db.models.deletion.CASCADE, related_name='parentcojos', to='specify.collectionobjectgroup')),
+                ('cogchild', models.OneToOneField(db_column='COGChildID', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='childcojo', to='specify.collectionobjectgroup')),
+                ('cochild', models.OneToOneField(db_column='COChildID', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='cojo', to='specify.collectionobject')),
             ],
             options={
                 'db_table': 'collectionobjectgroupjoin',

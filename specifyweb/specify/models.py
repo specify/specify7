@@ -1447,7 +1447,6 @@ class Collectionobject(models.Model):
     yesno4 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo4', db_index=False)
     yesno5 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo5', db_index=False)
     yesno6 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo6', db_index=False)
-    # ismemberofcog = models.BooleanField(blank=True, null=True, unique=False, db_column='IsMemberOfCog', default=False, db_index=False)
     hasreferencecatalognumber = models.BooleanField(blank=True, null=True, unique=False, db_column='HasReferenceCatalogNumber', default=False, db_index=False)
 
     # Relationships: Many-to-One
@@ -7557,7 +7556,6 @@ class CollectionObjectGroupJoin(models.Model): # aka. CoJo or CogJoin
     id = models.AutoField(primary_key=True, db_column='collectionobjectgroupjoinid')
 
     # Fields
-    # TODO: Check if order, version, timestampcreated, and timestampmodified are needed
     isprimary = models.BooleanField(blank=True, null=True, unique=False, db_column='IsPrimary', db_index=False)
     issubstrate = models.BooleanField(blank=True, null=True, unique=False, db_column='IsSubstrate', db_index=False)
     precedence = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='Precedence', db_index=False)
@@ -7569,8 +7567,11 @@ class CollectionObjectGroupJoin(models.Model): # aka. CoJo or CogJoin
     text3 = models.TextField(blank=True, null=True, unique=False, db_column='Text3', db_index=False)
 
     # Relationships: Many-to-One
-    parent = models.ForeignKey('CollectionObjectGroup', db_column='ParentID', related_name='cojos', null=False, on_delete=models.CASCADE)
-    child = models.ForeignKey('CollectionObject', db_column='ChildID', related_name='cojos', null=False, on_delete=models.CASCADE)
+    cogparent = models.ForeignKey('CollectionObjectGroup', db_column='COGParentID', related_name='parentcojos', null=False, on_delete=models.CASCADE)
+    
+    # Relationships: One-to-One
+    cogchild = models.OneToOneField('CollectionObjectGroup', db_column='COGChildID', related_name='childcojo', null=True, on_delete=models.CASCADE)
+    cochild = models.OneToOneField('CollectionObject', db_column='COChildID', related_name='cojo', null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'collectionobjectgroupjoin'
