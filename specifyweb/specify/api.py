@@ -5,6 +5,8 @@ Implements the RESTful business data API
 import json
 import logging
 import re
+import time
+import random
 from typing import Any, Dict, List, Optional, Tuple, Iterable, Union, \
     Callable
 from urllib.parse import urlencode
@@ -239,16 +241,69 @@ def collection_dispatch(request, model) -> HttpResponse:
         resp = HttpResponse(toJson(data), content_type='application/json')
 
     elif request.method == 'POST':
-        obj = post_resource(request.specify_collection,
-                            request.specify_user_agent,
-                            model, json.load(request),
-                            request.GET.get('recordsetid', None))
+        try:
+            obj = post_resource(request.specify_collection,
+                                request.specify_user_agent,
+                                model, json.load(request),
+                                request.GET.get('recordsetid', None))
+        # Handle deadlocks by retrying the operation, fixes deadlock issues to some extent.
+        # It's better to use collection_dispatch_bulk instead for bulk operations.
+        # Note: This is a temporary fix, remove when the front-end is updated to use bulk collection_dispatch_bulk.
+        except Exception as e:
+            if e.args[0] == 1213:  # Deadlock error code
+                logger.warning("Deadlock detected. Retrying post_resource operation.")
+                MAX_RETRIES = 100
+                for i in range(MAX_RETRIES):
+                    try:
+                        obj = post_resource(request.specify_collection,
+                                            request.specify_user_agent,
+                                            model, json.load(request),
+                                            request.GET.get('recordsetid', None))
+                        break
+                    except Exception as e:
+                        if i < MAX_RETRIES - 1:
+                            time.sleep(random.uniform(0.1, 1))  # wait a second before trying again
+                            continue
+                        else:
+                            raise
+            else:
+                raise
 
         resp = HttpResponseCreated(toJson(_obj_to_data(obj, checker)),
                                    content_type='application/json')
     else:
         # Unhandled request type.
         resp = HttpResponseNotAllowed(['GET', 'POST'])
+
+    return resp
+
+def collection_dispatch_bulk(request, model) -> HttpResponse:
+    """
+    Do the same as collection_dispatch, but for bulk POST operations.
+    Call this endpoint with a list of objects of the same type to create.
+    This reduces the amount of API calls needed to create multiple objects, like when creating multiple carry forwards.
+    """
+    checker = table_permissions_checker(request.specify_collection, request.specify_user_agent, "read")
+
+    if request.method == 'POST':
+        data = json.load(request)
+        resp_objs = []
+        for obj_data in data:
+            obj = post_resource(
+                request.specify_collection,
+                request.specify_user_agent,
+                model,
+                obj_data,
+                request.GET.get("recordsetid", None),
+            )
+            resp_objs.append(_obj_to_data(obj, checker))
+        
+        resp = HttpResponseCreated(toJson(resp_objs),
+                                   content_type='application/json')
+
+    else:
+        # Unhandled request type.
+        resp = HttpResponseNotAllowed(['POST'])
 
     return resp
 
