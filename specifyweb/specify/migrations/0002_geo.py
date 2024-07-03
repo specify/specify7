@@ -121,7 +121,6 @@ class Migration(migrations.Migration):
                 ('isprimary', models.BooleanField(blank=True, db_column='IsPrimary', null=True)),
                 ('issubstrate', models.BooleanField(blank=True, db_column='IsSubstrate', null=True)),
                 ('precedence', models.SmallIntegerField(blank=True, db_column='Precedence', null=True)),
-                ('order', models.SmallIntegerField(blank=True, db_column='Order', null=True)),
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
                 ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
