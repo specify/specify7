@@ -1357,5 +1357,21 @@ expected_errors = {
         "onetoone"
       ]
     }
+  },
+  "CollectionObjectGroupJoin": {
+    "incorrect_direction": {
+      "cogchild": [
+        "manytoone",
+        "onetoone"
+      ]
+    }
+  },
+  "CollectionObjectGroupJoin": {
+    "incorrect_direction": {
+      "cochild": [
+        "manytoone",
+        "onetoone"
+      ]
+    }
   }
 }

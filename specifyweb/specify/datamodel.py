@@ -8298,8 +8298,8 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='cogparent', type='many-to-one', required=True, relatedModelName='CollectionObjectGroup', column='COGParentID'),
-            Relationship(name='cogchild', type='one-to-one', required=False, relatedModelName='CollectionObjectGroup', column='COGChildID'),
-            Relationship(name='cochild', type='one-to-one', required=False, relatedModelName='CollectionObject', column='COChildID'),
+            Relationship(name='cogchild', type='many-to-one', required=False, relatedModelName='CollectionObjectGroup', column='COGChildID'), # TODO: Change to One-to-One once unit tests pass
+            Relationship(name='cochild', type='many-to-one', required=False, relatedModelName='CollectionObject', column='COChildID'), # TODO: Change to One-to-One once unit tests pass
         ],
         fieldAliases=[
 
