@@ -36,7 +36,6 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { FormContext } from './BaseResourceView';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
-import { resourceLimits } from 'worker_threads';
 
 export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 
