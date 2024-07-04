@@ -99,7 +99,9 @@ export const notificationRenderers: IR<
         <Link.Success
           className="w-fit"
           download
-          href={`/static/depository/${encodeURIComponent(notification.payload.file)}`}
+          href={`/static/depository/${encodeURIComponent(
+            notification.payload.file
+          )}`}
         >
           {notificationsText.download()}
         </Link.Success>
@@ -113,7 +115,9 @@ export const notificationRenderers: IR<
         <Link.Success
           className="w-fit"
           download
-          href={`/static/depository/${encodeURIComponent(notification.payload.file)}`}
+          href={`/static/depository/${encodeURIComponent(
+            notification.payload.file
+          )}`}
         >
           {notificationsText.download()}
         </Link.Success>
