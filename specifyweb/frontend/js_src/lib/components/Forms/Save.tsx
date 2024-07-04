@@ -277,14 +277,19 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                       { length: carryForwardAmount },
                       async () => {
                         const clonedResource = await resource.clone(false);
-                        clonedResource.set(
-                          'catalogNumber',
-                          wildCard as never
-                        );
+                        clonedResource.set('catalogNumber', wildCard as never);
                         return clonedResource;
                       }
                     );
-                    const saved = clones.reduce((alreadyInFetch, needToSave)=>[...alreadyInFetch, Promise.all(alreadyInFetch).then(()=> needToSave.then((res)=>res.save()))], [Promise.resolve(resource)]);
+                    const saved = clones.reduce(
+                      (alreadyInFetch, needToSave) => [
+                        ...alreadyInFetch,
+                        Promise.all(alreadyInFetch).then(async () =>
+                          needToSave.then(async (res) => res.save())
+                        ),
+                      ],
+                      [Promise.resolve(resource)]
+                    );
                     return Promise.all(saved);
                   }
                 : async () => [await resource.clone(false)]
