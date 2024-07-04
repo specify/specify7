@@ -36,6 +36,7 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { FormContext } from './BaseResourceView';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
+import { resourceLimits } from 'worker_threads';
 
 export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 
@@ -277,15 +278,15 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                       { length: carryForwardAmount },
                       async () => {
                         const clonedResource = await resource.clone(false);
-                        await clonedResource.set(
+                        clonedResource.set(
                           'catalogNumber',
                           wildCard as never
                         );
-                        await clonedResource.save();
                         return clonedResource;
                       }
                     );
-                    return Promise.all([resource, ...clones]);
+                    const saved = clones.reduce((alreadyInFetch, needToSave)=>[...alreadyInFetch, Promise.all(alreadyInFetch).then(()=> needToSave.then((res)=>res.save()))], [Promise.resolve(resource)]);
+                    return Promise.all(saved);
                   }
                 : async () => [await resource.clone(false)]
             )}
