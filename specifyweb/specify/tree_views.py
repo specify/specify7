@@ -157,20 +157,39 @@ def tree_view(request, treedef, tree, parentid, sortfield):
 
     with models.session_context() as session:
         set_group_concat_max_len(session)
-        query = session.query(id_col,
-                              node.name,
-                              node.fullName,
-                              node.nodeNumber,
-                              node.highestChildNodeNumber,
-                              node.rankId,
-                              node.AcceptedID,
-                              accepted.fullName,
-                              node.author if (includeAuthor and tree == 'taxon') else "NULL",
-                              # syns are to-many, so child can be duplicated
-                              sql.func.count(distinct(child_id)),
-                              # child are to-many, so syn's full name can be duplicated
-                              # FEATURE: Allow users to select a separator?? Maybe that's too nice
-                              group_concat(distinct(synonym.fullName), separator=', ')) \
+        
+        col_args = [
+            node.name,
+            node.fullName,
+            node.nodeNumber,
+            node.highestChildNodeNumber,
+            node.rankId,
+            node.AcceptedID,
+            accepted.fullName,
+            node.author if (includeAuthor and tree == 'taxon') else "NULL",
+        ]
+
+        apply_min = [
+            # for some reason, SQL is rejecting the group_by in some dbs
+            # due to "only_full_group_by". It is somehow not smart enough to see 
+            # that there is no dependency in the columns going from main table to the to-manys (child, and syns)
+            # I want to use ANY_VALUE() but that's not supported by MySQL 5.6- and MariaDB.
+            # I don't want to disable "only_full_group_by" in case someone misuses it...
+            # applying min to fool into thinking it is aggregated.
+            # these values are guarenteed to be the same
+            sql.func.min(arg) for arg in col_args
+            ]
+        
+        grouped = [
+            *apply_min, 
+            # syns are to-many, so child can be duplicated
+            sql.func.count(distinct(child_id)),
+            # child are to-many, so syn's full name can be duplicated
+            # FEATURE: Allow users to select a separator?? Maybe that's too nice
+            group_concat(distinct(synonym.fullName), separator=', ')
+        ]
+
+        query = session.query(id_col, *grouped) \
             .outerjoin(child, child.ParentID == id_col) \
             .outerjoin(accepted, node.AcceptedID == getattr(accepted, node._id)) \
             .outerjoin(synonym, synonym.AcceptedID == id_col) \
