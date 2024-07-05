@@ -283,6 +283,7 @@ def collection_dispatch_bulk(request, model) -> HttpResponse:
     Call this endpoint with a list of objects of the same type to create.
     This reduces the amount of API calls needed to create multiple objects, like when creating multiple carry forwards.
     """
+    resp: HttpResponse
     checker = table_permissions_checker(request.specify_collection, request.specify_user_agent, "read")
 
     if request.method == 'POST':
@@ -302,7 +303,6 @@ def collection_dispatch_bulk(request, model) -> HttpResponse:
                                    content_type='application/json')
 
     else:
-        # Unhandled request type.
         resp = HttpResponseNotAllowed(['POST'])
 
     return resp
