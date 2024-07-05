@@ -7,6 +7,7 @@ import { useId } from '../../hooks/useId';
 import { useIsModified } from '../../hooks/useIsModified';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import { ajax } from '../../utils/ajax';
 import { smoothScroll } from '../../utils/dom';
 import { listen } from '../../utils/events';
 import type { RA } from '../../utils/types';
@@ -255,7 +256,8 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                         'catalogNumber'
                       ).getUiFormatter()!;
                     const wildCard = formatter.valueOrWild();
-                    const clones = Array.from(
+
+                    const clonePromises = Array.from(
                       { length: carryForwardAmount },
                       async () => {
                         const clonedResource = await resource.clone(false);
@@ -263,11 +265,24 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                           'catalogNumber',
                           wildCard as never
                         );
-                        await clonedResource.save();
                         return clonedResource;
                       }
                     );
-                    return Promise.all([resource, ...clones]);
+
+                    const clones = await Promise.all(clonePromises);
+
+                    const backendClones = await ajax<
+                      RA<SpecifyResource<SCHEMA>>
+                    >(
+                      `/specify/bulk/${tables.CollectionObject.name.toLowerCase()}`,
+                      {
+                        method: 'POST',
+                        headers: { Accept: 'application/json' },
+                        body: clones,
+                      }
+                    ).then((data) => data.data);
+
+                    return Promise.all([resource, ...backendClones]);
                   }
                 : async () => [await resource.clone(false)]
             )}
