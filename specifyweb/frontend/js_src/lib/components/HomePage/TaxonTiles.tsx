@@ -4,10 +4,12 @@ import _ from 'underscore';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { welcomeText } from '../../localization/welcome';
 import { ajax } from '../../utils/ajax';
+import { getCache } from '../../utils/cache';
 import type { RA } from '../../utils/types';
 import { tables } from '../DataModel/tables';
 import {
-  getTreeDefinitionItems,
+  getTreeDefinitions,
+  strictGetTreeDefinitionItems,
   treeRanksPromise,
 } from '../InitialContext/treeRanks';
 import {
@@ -96,12 +98,26 @@ function useGenusRankId(): number | false | undefined {
   const [genusRankId] = useAsyncState(
     React.useCallback(
       async () =>
-        treeRanksPromise.then(
-          () =>
-            getTreeDefinitionItems('Taxon', false)!.find(
+        treeRanksPromise.then(() => {
+          const cachedDefinitionId = getCache('tree', 'definitionTaxon');
+
+          const definitionId = getTreeDefinitions(
+            'Taxon',
+            cachedDefinitionId === undefined
+              ? undefined
+              : {
+                  id: cachedDefinitionId,
+                }
+          )[0].definition.id;
+
+          return (
+            strictGetTreeDefinitionItems('Taxon', false, {
+              id: definitionId,
+            }).find(
               (item) => (item.name || item.title)?.toLowerCase() === 'genus'
             )?.rankId ?? false
-        ),
+          );
+        }),
       []
     ),
     false

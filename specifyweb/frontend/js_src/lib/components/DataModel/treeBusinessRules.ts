@@ -5,16 +5,13 @@ import { getPref } from '../InitialContext/remotePrefs';
 import { fetchPossibleRanks } from '../PickLists/TreeLevelPickList';
 import { formatUrl } from '../Router/queryString';
 import type { BusinessRuleResult } from './businessRules';
-import type {
-  AnyTree,
-  FilterTablesByEndsWith,
-  TableFields,
-} from './helperTypes';
+import type { AnyTree, TableFields } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
+import { Tables } from './types';
 
 // eslint-disable-next-line unicorn/prevent-abbreviations
 export type TreeDefItem<TREE extends AnyTree> =
-  FilterTablesByEndsWith<`${TREE['tableName']}TreeDefItem`>;
+  Tables[`${TREE['tableName']}TreeDefItem`];
 
 export const initializeTreeRecord = (
   resource: SpecifyResource<AnyTree>

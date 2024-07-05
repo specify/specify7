@@ -10,14 +10,15 @@ import { queryText } from '../../localization/query';
 import type { IR, RA, WritableArray } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { dateParts } from '../Atoms/Internationalization';
+import type { AnyTree } from '../DataModel/helperTypes';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getFrontEndOnlyFields, strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import {
+  getTreeDefinitions,
   isTreeTable,
   strictGetTreeDefinitionItems,
-  treeDefinitions,
 } from '../InitialContext/treeRanks';
 import { hasTablePermission, hasTreeAccess } from '../Permissions/helpers';
 import type { CustomSelectSubtype } from './CustomSelectElement';
@@ -358,35 +359,25 @@ export function getMappingLineData({
                   ]
                 : undefined,
               ...(spec.includeSpecificTreeRanks
-                ? strictGetTreeDefinitionItems(
-                    table.name as 'Geography',
-                    false,
-                    undefined,
-                    true
-                  ).map(({ name, title, treeDef }) => {
-                    const treeDefinition = treeDefinitions[table.name];
-
-                    const matchingDef = treeDefinition.find(
-                      (item) => item.definition.resource_uri === treeDef
-                    );
-
-                    const tableTreeDefName = matchingDef
-                      ? matchingDef.definition.name
-                      : 'Unknown';
-
-                    return name === defaultValue || generateFieldData === 'all'
-                      ? ([
-                          formatTreeRank(name),
-                          {
-                            optionLabel: title ?? name,
-                            isRelationship: true,
-                            isDefault: name === defaultValue,
-                            tableName: table.name,
-                            tableTreeDefName,
-                          },
-                        ] as const)
-                      : undefined;
-                  })
+                ? getTreeDefinitions(
+                    table.name as AnyTree['tableName']
+                  ).flatMap(({ definition, ranks }) =>
+                    // exclude the root rank for each tree
+                    ranks.slice(1).map(({ name, title }) =>
+                      name === defaultValue || generateFieldData === 'all'
+                        ? ([
+                            formatTreeRank(name),
+                            {
+                              optionLabel: title ?? name,
+                              isRelationship: true,
+                              isDefault: name === defaultValue,
+                              tableName: table.name,
+                              tableTreeDefName: definition.name,
+                            },
+                          ] as const)
+                        : undefined
+                    )
+                  )
                 : []),
             ]
       );
