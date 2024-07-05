@@ -3,7 +3,7 @@ from typing import Literal
 from django.db import transaction
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
-from sqlalchemy import sql
+from sqlalchemy import sql, distinct
 from sqlalchemy.orm import aliased
 
 from specifyweb.middleware.general import require_GET
@@ -12,6 +12,8 @@ from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, check_permission_targets
 from specifyweb.specify.tree_ranks import tree_rank_count
 from specifyweb.stored_queries import models
+from specifyweb.stored_queries.execution import set_group_concat_max_len
+from specifyweb.stored_queries.group_concat import group_concat
 from . import tree_extras
 from .api import get_object_or_404, obj_to_data, toJson
 from .auditcodes import TREE_MOVE
@@ -110,7 +112,10 @@ def tree_mutation(mutation):
 
                                         "type" : "integer",
                                         "description" : "The number of children the child node has"
-
+                                    },
+                                    {
+                                        "type": "string",
+                                        "description": "concat of fullname of syns"
                                     }
                                 ],
                             }
@@ -134,6 +139,7 @@ def tree_view(request, treedef, tree, parentid, sortfield):
     node = getattr(models, tree_table.name)
     child = aliased(node)
     accepted = aliased(node)
+    synonym = aliased(node)
     id_col = getattr(node, node._id)
     child_id = getattr(child, node._id)
     treedef_col = getattr(node, tree_table.name + "TreeDefID")
@@ -150,6 +156,7 @@ def tree_view(request, treedef, tree, parentid, sortfield):
         'includeauthor') if 'includeauthor' in request.GET else False
 
     with models.session_context() as session:
+        set_group_concat_max_len(session)
         query = session.query(id_col,
                               node.name,
                               node.fullName,
@@ -158,11 +165,15 @@ def tree_view(request, treedef, tree, parentid, sortfield):
                               node.rankId,
                               node.AcceptedID,
                               accepted.fullName,
-                              node.author if (
-                                          includeAuthor and tree == 'taxon') else "NULL",
-                              sql.functions.count(child_id)) \
+                              node.author if (includeAuthor and tree == 'taxon') else "NULL",
+                              # syns are to-many, so child can be duplicated
+                              sql.func.count(distinct(child_id)),
+                              # child are to-many, so syn's full name can be duplicated
+                              # FEATURE: Allow users to select a separator?? Maybe that's too nice
+                              group_concat(distinct(synonym.fullName), separator=', ')) \
             .outerjoin(child, child.ParentID == id_col) \
             .outerjoin(accepted, node.AcceptedID == getattr(accepted, node._id)) \
+            .outerjoin(synonym, synonym.AcceptedID == id_col) \
             .group_by(id_col) \
             .filter(treedef_col == int(treedef)) \
             .filter(node.ParentID == parentid) \
