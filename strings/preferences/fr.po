@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-07-03 16:45+0000\n"
+"PO-Revision-Date: 2024-07-05 16:45+0000\n"
 "Last-Translator: Antoine Lesimple <antoine.lesimple@ird.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "preferences/fr/>\n"
@@ -1021,31 +1021,26 @@ msgstr "Localiser les noms des ressources d'application reconnues"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1859
-#, fuzzy
 msgid "splitLongXml"
 msgstr "Diviser les longues lignes de XML en plusieurs lignes"
 
 #. Used in: Components > Molecules > Sync Attachment Picker
 #: components/Molecules/SyncAttachmentPicker.tsx:91
-#, fuzzy
 msgid "url"
 msgstr "URL"
 
 #. Used in: Components > Molecules > Sync Attachment Picker
 #: components/Molecules/SyncAttachmentPicker.tsx:85
-#, fuzzy
 msgid "pickAttachment"
 msgstr "Choisissez une pièce jointe"
 
 #. Used in: Components > Molecules > Sync Attachment Picker
 #: components/Molecules/SyncAttachmentPicker.tsx:113
-#, fuzzy
 msgid "attachmentFailed"
-msgstr "La pièce jointe n'a pas pu être chargée."
+msgstr "Le chargement de la pièce jointe a échoué."
 
 #. Used in: Components > Molecules > Sync Attachment Picker
 #: components/Molecules/SyncAttachmentPicker.tsx:58
-#, fuzzy
 msgid "pickImage"
 msgstr "Choisissez une image"
 
