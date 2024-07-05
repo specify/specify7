@@ -150,21 +150,6 @@ export function TreeRow<SCHEMA extends AnyTree>({
   const hasNoChildrenNodes =
     nodeStats?.directCount === 0 && nodeStats.childCount === 0;
 
-  const acceptedChildrenKey = `accepted${treeName.toLowerCase()}`;
-  const [synonymsNames] = useAsyncState(
-    React.useCallback(
-      async () =>
-        fetchRows(treeName as 'Taxon', {
-          fields: { name: ['string'] },
-          limit: 0,
-          [acceptedChildrenKey]: row.nodeId,
-          domainFilter: false,
-        }).then((rows) => rows.map(({ name }) => name)),
-      [acceptedChildrenKey, treeName, row.nodeId]
-    ),
-    false
-  );
-
   return hideEmptyNodes && hasNoChildrenNodes ? null : (
     <li role="treeitem row">
       {ranks.map((rankId) => {
@@ -247,11 +232,11 @@ export function TreeRow<SCHEMA extends AnyTree>({
                       ? treeText.acceptedName({
                           name: row.acceptedName ?? row.acceptedId.toString(),
                         })
-                      : synonymsNames === undefined ||
-                        synonymsNames.length === 0
+                        // backend will never return undefined...
+                      : row.synonymConcat === null
                       ? undefined
                       : treeText.synonyms({
-                          names: synonymsNames.join(', '),
+                          names: row.synonymConcat,
                         })
                   }
                 >

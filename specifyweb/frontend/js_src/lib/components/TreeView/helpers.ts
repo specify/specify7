@@ -25,7 +25,8 @@ export const fetchRows = async (fetchUrl: string) =>
         number | null,
         string | null,
         string,
-        number
+        number,
+        string
       ]
     >
   >(fetchUrl, {
@@ -44,6 +45,7 @@ export const fetchRows = async (fetchUrl: string) =>
           acceptedName = undefined,
           author = undefined,
           children,
+          synonymConcat
         ],
         index,
         { length }
@@ -59,6 +61,7 @@ export const fetchRows = async (fetchUrl: string) =>
         author,
         children,
         isLastChild: index + 1 === length,
+        synonymConcat
       })
     )
   );
