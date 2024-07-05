@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
@@ -8,7 +7,6 @@ import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
-import { fetchRows } from '../DataModel/collection';
 import type { AnyTree } from '../DataModel/helperTypes';
 import { getPref } from '../InitialContext/remotePrefs';
 import { userPreferences } from '../Preferences/userPreferences';
