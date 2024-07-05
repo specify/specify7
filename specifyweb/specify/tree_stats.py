@@ -75,8 +75,9 @@ def get_tree_stats(treedef, tree, parentid, specify_collection, session_context,
         # I don't even want to use depth, but some pathological tree might have cycles, and CTE depth
         # might be in millions as a custom setting..
 
-        depth = session.query(sql.func.count(getattr(tree_def_item, tree_def_item._id))).filter(
-            getattr(tree_def_item, treedef_col) == int(treedef)).as_scalar()
+        depth_query = session.query(sql.func.count(getattr(tree_def_item, tree_def_item._id))).filter(
+            getattr(tree_def_item, treedef_col) == int(treedef))
+        depth, = list(depth_query)[0]
         query = None
         try:
             if using_cte:
