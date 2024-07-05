@@ -5,8 +5,6 @@ Implements the RESTful business data API
 import json
 import logging
 import re
-import time
-import random
 from typing import Any, Dict, List, Optional, Tuple, Iterable, Union, \
     Callable
 from urllib.parse import urlencode
@@ -241,33 +239,10 @@ def collection_dispatch(request, model) -> HttpResponse:
         resp = HttpResponse(toJson(data), content_type='application/json')
 
     elif request.method == 'POST':
-        try:
-            obj = post_resource(request.specify_collection,
-                                request.specify_user_agent,
-                                model, json.load(request),
-                                request.GET.get('recordsetid', None))
-        # Handle deadlocks by retrying the operation, fixes deadlock issues to some extent.
-        # It's better to use collection_dispatch_bulk instead for bulk operations.
-        # Note: This is a temporary fix, remove when the front-end is updated to use bulk collection_dispatch_bulk.
-        except Exception as e:
-            if e.args[0] == 1213:  # Deadlock error code
-                logger.warning("Deadlock detected. Retrying post_resource operation.")
-                MAX_RETRIES = 100
-                for i in range(MAX_RETRIES):
-                    try:
-                        obj = post_resource(request.specify_collection,
-                                            request.specify_user_agent,
-                                            model, json.load(request),
-                                            request.GET.get('recordsetid', None))
-                        break
-                    except Exception as e:
-                        if i < MAX_RETRIES - 1:
-                            time.sleep(random.uniform(0.1, 1))  # wait a second before trying again
-                            continue
-                        else:
-                            raise
-            else:
-                raise
+        obj = post_resource(request.specify_collection,
+                            request.specify_user_agent,
+                            model, json.load(request),
+                            request.GET.get('recordsetid', None))
 
         resp = HttpResponseCreated(toJson(_obj_to_data(obj, checker)),
                                    content_type='application/json')
