@@ -23,8 +23,10 @@ import type { Tables } from '../DataModel/types';
 
 export type TreeInformation = {
   readonly [TREE_NAME in AnyTree['tableName']]: RA<{
-    readonly definition: SerializedResource<Tables[`${TREE_NAME}TreeDef`]>;
-    readonly ranks: RA<SerializedResource<Tables[`${TREE_NAME}TreeDefItem`]>>;
+    readonly definition: SerializedResource<FilterTablesByEndsWith<'TreeDef'>>;
+    readonly ranks: RA<
+      SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
+    >;
   }>;
 };
 
@@ -78,7 +80,9 @@ export const treeRanksPromise = Promise.all([
       Object.entries(data).map(([treeName, information]) => [
         treeName,
         information.map(({ definition, ranks }) => ({
-          definition: serializeResource(definition),
+          definition: serializeResource(
+            definition as SerializedRecord<FilterTablesByEndsWith<'TreeDef'>>
+          ) as SerializedResource<FilterTablesByEndsWith<'TreeDef'>>,
           ranks: ranks.map((rank) => serializeResource(rank)),
         })),
       ])
@@ -102,7 +106,9 @@ function getTreeScope(
 
 export function getTreeDefinitions<TREE_NAME extends AnyTree['tableName']>(
   tableName: TREE_NAME,
-  definitionFilter?: Partial<SerializedResource<Tables[`${TREE_NAME}TreeDef`]>>
+  definitionFilter?: Partial<
+    SerializedResource<FilterTablesByEndsWith<'TreeDef'>>
+  >
 ): typeof treeDefinitions[TREE_NAME] {
   const specificTreeDefinitions = caseInsensitiveHash(
     defined(treeDefinitions),

@@ -16,7 +16,11 @@ import { caseInsensitiveHash } from '../../utils/utils';
 import { Container, H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label, Select } from '../Atoms/Form';
-import type { AnyTree, SerializedResource } from '../DataModel/helperTypes';
+import type {
+  AnyTree,
+  FilterTablesByEndsWith,
+  SerializedResource,
+} from '../DataModel/helperTypes';
 import { deserializeResource } from '../DataModel/serializers';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { genericTables, getTable } from '../DataModel/tables';
@@ -44,7 +48,6 @@ import {
 } from './helpers';
 import { TreeViewSearch } from './Search';
 import { Tree } from './Tree';
-import { Tables } from '../DataModel/types';
 
 export function TreeViewWrapper(): JSX.Element | null {
   useMenuItem('trees');
@@ -120,7 +123,9 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
 }: {
   readonly tableName: TREE_NAME;
   readonly currentTreeInformation: TreeInformation[TREE_NAME][number];
-  readonly definitions: RA<SerializedResource<Tables[`${TREE_NAME}TreeDef`]>>;
+  readonly definitions: RA<
+    SerializedResource<FilterTablesByEndsWith<'TreeDef'>>
+  >;
   readonly setNewDefinition: (newDefinitionId: number) => void;
 }): JSX.Element | null {
   const table = genericTables[tableName] as SpecifyTable<AnyTree>;

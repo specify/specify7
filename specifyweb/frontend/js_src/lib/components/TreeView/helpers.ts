@@ -3,6 +3,7 @@ import type React from 'react';
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
 import { ajax } from '../../utils/ajax';
+import { getCache } from '../../utils/cache';
 import type { RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { throttle } from '../../utils/utils';
@@ -223,7 +224,9 @@ export function checkMoveViolatesEnforced(
   newParenRankId: number,
   currentRankId: number
 ): boolean {
-  const treeRanks = strictGetTreeDefinitionItems(tableName, true);
+  const treeRanks = strictGetTreeDefinitionItems(tableName, true, {
+    id: getCache('tree', `definition${tableName}`),
+  });
   const currentRankIndex = treeRanks.findIndex(
     ({ rankId }) => rankId === currentRankId
   );

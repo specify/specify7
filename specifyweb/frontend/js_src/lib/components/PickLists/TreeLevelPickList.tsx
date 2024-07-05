@@ -1,4 +1,5 @@
 import React from 'react';
+import { getCache } from '../../utils/cache';
 
 import type { RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
@@ -40,7 +41,8 @@ export const fetchPossibleRanks = async (
       fetchLowestChildRank(resource).then((lowestChildRank) =>
         strictGetTreeDefinitionItems(
           resource.specifyTable.name as 'Geography',
-          false
+          false,
+          { id: getCache('tree', `definition${resource.specifyTable.name}`) }
         )
           .filter(
             ({ rankId }) =>

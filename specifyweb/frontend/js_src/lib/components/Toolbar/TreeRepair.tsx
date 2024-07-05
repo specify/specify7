@@ -12,6 +12,7 @@ import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { treeText } from '../../localization/tree';
 import { ping } from '../../utils/ajax/ping';
+import { getCache } from '../../utils/cache';
 import { f } from '../../utils/functools';
 import { localized } from '../../utils/types';
 import { toLowerCase } from '../../utils/utils';
@@ -20,11 +21,11 @@ import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { deserializeResource } from '../DataModel/serializers';
 import { genericTables } from '../DataModel/tables';
-import type { TaxonTreeDef } from '../DataModel/types';
 import {
   getDisciplineTrees,
+  getTreeDefinitions,
   treeRanksPromise,
 } from '../InitialContext/treeRanks';
 import { Dialog } from '../Molecules/Dialog';
@@ -92,16 +93,33 @@ export function TreeSelectDialog({
                   : hasTreeAccess(treeName, 'read')
               )
               .map((treeName) => {
-                const treeDefinition = treeRanks[treeName]?.definition as
-                  | SpecifyResource<TaxonTreeDef>
-                  | undefined;
+                const cachedDefinitionId = getCache(
+                  'tree',
+                  `definition${treeName}`
+                );
+
+                const treeDefinition = deserializeResource(
+                  getTreeDefinitions(
+                    treeName,
+                    cachedDefinitionId === undefined
+                      ? undefined
+                      : {
+                          id: cachedDefinitionId,
+                        }
+                  )[0].definition
+                );
+
                 return (
                   <li className="contents" key={treeName}>
                     <div className="flex gap-2">
                       <Link.Default
                         className="flex-1"
                         href={getLink(treeName)}
-                        title={treeDefinition?.get('remarks') ?? undefined}
+                        title={
+                          (treeDefinition?.get('remarks') as
+                            | LocalizedString
+                            | undefined) ?? undefined
+                        }
                         onClick={(event): void => {
                           if (handleClick === undefined) return;
                           event.preventDefault();

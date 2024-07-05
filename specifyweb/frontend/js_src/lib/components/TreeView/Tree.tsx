@@ -15,7 +15,6 @@ import type {
   SerializedResource,
 } from '../DataModel/helperTypes';
 import { deserializeResource } from '../DataModel/serializers';
-import { Tables } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
 import { getPref } from '../InitialContext/remotePrefs';
 import { hasTablePermission } from '../Permissions/helpers';
@@ -56,7 +55,7 @@ export function Tree<
   onToggleEditingRanks: handleToggleEditingRanks,
 }: {
   readonly treeDefinitionItems: RA<
-    SerializedResource<Tables[`${TREE_NAME}TreeDefItem`]>
+    SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
   >;
   readonly tableName: TREE_NAME;
   readonly isEditingRanks: boolean;
