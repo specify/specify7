@@ -230,8 +230,8 @@ export function TreeRow<SCHEMA extends AnyTree>({
                       ? treeText.acceptedName({
                           name: row.acceptedName ?? row.acceptedId.toString(),
                         })
-                        // backend will never return undefined...
-                      : row.synonymConcat === null
+                      : // Backend will never return undefined...
+                      row.synonymConcat === null
                       ? undefined
                       : treeText.synonyms({
                           names: row.synonymConcat,
