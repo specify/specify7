@@ -461,6 +461,50 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
             },
         ),
         (
+            f"/api/specify/bulk/{table.django_name}/",
+            {
+                "post": {
+                    "tags": [table.django_name],
+                    "summary": f"Upload multiple records to the {table.django_name} table",
+                    "description": f"Upload multiple records to the {table.django_name} table",
+                    "parameters": [
+                        {
+                            "$ref": "#/components/parameters/collection_recordsetid"
+                        }
+                    ],
+                    "requestBody": {
+                        "required": True,
+                        "description": "An array containing a JSON representation of the objects to create",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": f"#/components/schemas/{table.django_name}",
+                                    }
+                                }
+                            }
+                        },
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "An array containing the newly created objects",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "array",
+                                        "items": {
+                                            "$ref": f"#/components/schemas/{table.django_name}",
+                                        }
+                                    }
+                                }
+                            },
+                        }
+                    },
+                },
+            }
+        ),
+        (
             f"/api/specify/{table.django_name}/{{id}}/",
             {
                 "parameters": [
