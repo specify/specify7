@@ -36,6 +36,7 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { FormContext } from './BaseResourceView';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
+import { raise } from '../Errors/Crash';
 
 export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 
@@ -284,13 +285,14 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                     const saved = clones.reduce(
                       (alreadyInFetch, needToSave) => [
                         ...alreadyInFetch,
-                        Promise.all(alreadyInFetch).then(async () =>
-                          needToSave.then(async (res) => res.save())
+                        (alreadyInFetch.at(-1)!).then(() =>
+                          // TODO: Make error handing more descriptive...
+                          needToSave.then((res) => res.save())
                         ),
                       ],
                       [Promise.resolve(resource)]
                     );
-                    return Promise.all(saved);
+                    return Promise.all(saved).catch(error);
                   }
                 : async () => [await resource.clone(false)]
             )}
