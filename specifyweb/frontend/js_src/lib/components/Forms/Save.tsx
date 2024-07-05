@@ -274,7 +274,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                     const backendClones = await ajax<
                       RA<SpecifyResource<SCHEMA>>
                     >(
-                      `/specify/bulk/${tables.CollectionObject.name.toLowerCase()}`,
+                      `api/specify/bulk/${tables.CollectionObject.name.toLowerCase()}`,
                       {
                         method: 'POST',
                         headers: { Accept: 'application/json' },
