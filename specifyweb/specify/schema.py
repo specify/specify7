@@ -446,7 +446,7 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                         },
                     },
                     "responses": {
-                        "200": {
+                        "201": {
                             "description": "A newly created object",
                             "content": {
                                 "application/json": {
@@ -487,7 +487,7 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                         },
                     },
                     "responses": {
-                        "200": {
+                        "201": {
                             "description": "An array containing the newly created objects",
                             "content": {
                                 "application/json": {
