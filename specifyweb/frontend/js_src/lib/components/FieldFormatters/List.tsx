@@ -63,7 +63,7 @@ export function FieldFormattersList(): JSX.Element {
           legacyPartialDate: undefined,
           autoNumber: false,
           external: undefined,
-          fields: [],
+          parts: [],
           raw: {
             javaClass: undefined,
             legacyAutoNumber: undefined,

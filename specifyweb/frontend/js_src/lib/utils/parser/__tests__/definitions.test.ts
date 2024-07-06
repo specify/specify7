@@ -5,7 +5,7 @@ import type {
 } from '../../../components/DataModel/specifyField';
 import { tables } from '../../../components/DataModel/tables';
 import {
-  formatterTypeMapper,
+  fieldFormatterTypeMapper,
   UiFormatter,
 } from '../../../components/FieldFormatters';
 import { userPreferences } from '../../../components/Preferences/userPreferences';
@@ -55,18 +55,16 @@ describe('parserFromType', () => {
 });
 
 const formatterFields = [
-  new formatterTypeMapper.constant({
+  new fieldFormatterTypeMapper.constant({
     size: 2,
     placeholder: localized('AB'),
-    regexPlaceholder: undefined,
     autoIncrement: false,
     byYear: false,
   }),
-  new formatterTypeMapper.numeric({
+  new fieldFormatterTypeMapper.numeric({
     size: 2,
     autoIncrement: true,
     byYear: false,
-    regexPlaceholder: undefined,
   }),
 ];
 const uiFormatter = new UiFormatter(

@@ -13,17 +13,16 @@ import { Input, Label } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { fetchContext as fetchFieldFormatters } from '../FieldFormatters';
 import {
   GenericFormatterPickList,
   ResourceMapping,
 } from '../Formatters/Components';
-import type { Formatter } from '../Formatters/spec';
 import { FormattersPickList } from '../PickLists/FormattersPickList';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import type { FieldFormatter } from './spec';
+import { fetchContext as fetchFieldFormatters } from '.';
+import type { FieldFormatter, FieldFormatterPart } from './spec';
 
-export function FieldFormatterFields({
+export function FieldFormatterParts({
   table,
   fieldFormatter: [fieldFormatter, setFieldFormatter],
 }: {
@@ -75,7 +74,7 @@ export function FieldFormatterFields({
           </thead>
           <tbody>
             {fields.map((field, index) => (
-              <Field
+              <Part
                 displayFormatter={displayFormatter}
                 field={[
                   field,
@@ -125,16 +124,14 @@ export function FieldFormatterFields({
   );
 }
 
-function Field({
+function Part({
   table,
-  field: [field, handleChange],
+  field: [part, handleChange],
   onRemove: handleRemove,
   displayFormatter,
 }: {
   readonly table: SpecifyTable;
-  readonly field: GetSet<
-    Formatter['definition']['fields'][number]['fields'][number]
-  >;
+  readonly field: GetSet<FieldFormatterPart>;
   readonly onRemove: () => void;
   readonly displayFormatter: boolean;
 }): JSX.Element {
@@ -148,10 +145,10 @@ function Field({
         <Input.Text
           aria-label={resourcesText.separator()}
           isReadOnly={isReadOnly}
-          value={field.separator}
+          value={part.separator}
           onValueChange={(separator): void =>
             handleChange({
-              ...field,
+              ...part,
               separator,
             })
           }
@@ -160,10 +157,10 @@ function Field({
       <td>
         <ResourceMapping
           mapping={[
-            field.field,
+            part.field,
             (fieldMapping): void =>
               handleChange({
-                ...field,
+                ...part,
                 field: fieldMapping,
               }),
           ]}
@@ -173,7 +170,7 @@ function Field({
       </td>
       {displayFormatter && (
         <td>
-          <FieldFormatterPicker field={[field, handleChange]} />
+          <FieldFormatterPicker field={[part, handleChange]} />
         </td>
       )}
       <td>
@@ -195,9 +192,7 @@ function Field({
 function FieldFormatterPicker({
   field: [field, handleChange],
 }: {
-  readonly field: GetSet<
-    Formatter['definition']['fields'][number]['fields'][number]
-  >;
+  readonly field: GetSet<FieldFormatterPart>;
 }): JSX.Element | null {
   const lastField = field.field?.at(-1);
   if (lastField === undefined) return null;
