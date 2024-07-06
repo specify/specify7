@@ -860,4 +860,38 @@ export const resourcesText = createDictionary({
   nonConformingInline: {
     'en-us': '(non-conforming)',
   },
+  hint: {
+    'en-us': 'Hint',
+    'de-ch': 'Hinweis',
+    'es-es': 'Sugerencia',
+    'fr-fr': 'Indice',
+    'ru-ru': 'Подсказка',
+    'uk-ua': 'Підказка',
+  },
+  constant: {
+    'en-us': 'Constant',
+  },
+  alpha: {
+    'en-us': 'Alpha',
+  },
+  numeric: {
+    'en-us': 'Numeric',
+  },
+  alphanumeric: {
+    'en-us': 'Alphanumeric',
+  },
+  anychar: {
+    'en-us': 'Any character',
+  },
+  regex: {
+    'en-us': 'Regular expression',
+  },
+  exampleField: {
+    'en-us': 'Example Field',
+    'de-ch': 'Beispielfeld',
+    'es-es': 'Campo de ejemplo',
+    'fr-fr': "Champ d'exemple",
+    'ru-ru': 'Пример поля',
+    'uk-ua': 'Приклад поле',
+  },
 } as const);

@@ -1,31 +1,38 @@
 import React from 'react';
 
+import { useParser } from '../../hooks/resource';
 import { formsText } from '../../localization/forms';
 import { resourcesText } from '../../localization/resources';
+import { schemaText } from '../../localization/schema';
+import { getValidationAttributes } from '../../utils/parser/definitions';
 import type { GetSet, RA } from '../../utils/types';
 import { ErrorMessage } from '../Atoms';
 import { Input, Label } from '../Atoms/Form';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { LiteralField } from '../DataModel/specifyField';
+import { softError } from '../Errors/assert';
+import { ResourceMapping } from '../Formatters/Components';
 import { ResourcePreview } from '../Formatters/Preview';
+import { useRightAlignClassName } from '../FormFields/Field';
 import { hasTablePermission } from '../Permissions/helpers';
+import type { MappingLineData } from '../WbPlanView/navigator';
 import type { UiFormatter } from '.';
 import { resolveFieldFormatter } from '.';
 import { FieldFormatterParts } from './Parts';
 import type { FieldFormatter } from './spec';
 
 export function FieldFormatterElement({
-  item: [fieldFormatter, setFieldFormatter],
+  item,
 }: {
   readonly item: GetSet<FieldFormatter>;
 }): JSX.Element {
+  const [fieldFormatter, setFieldFormatter] = item;
   const isReadOnly = React.useContext(ReadOnlyContext);
-  // FIXME: add field selector
   return (
     <>
       <Label.Inline>
-        {formsText.autoNumbering()}
         <Input.Checkbox
           checked={fieldFormatter.autoNumber !== undefined}
           isReadOnly={isReadOnly}
@@ -34,13 +41,12 @@ export function FieldFormatterElement({
             setFieldFormatter({ ...fieldFormatter, autoNumber })
           }
         />
+        {formsText.autoNumbering()}
       </Label.Inline>
+      <FieldPicker fieldFormatter={item} />
       {fieldFormatter.external === undefined &&
       typeof fieldFormatter.table === 'object' ? (
-        <FieldFormatterParts
-          fieldFormatter={[fieldFormatter, setFieldFormatter]}
-          table={fieldFormatter.table}
-        />
+        <FieldFormatterParts fieldFormatter={item} />
       ) : (
         <ErrorMessage>{resourcesText.editorNotAvailable()}</ErrorMessage>
       )}
@@ -49,23 +55,81 @@ export function FieldFormatterElement({
   );
 }
 
+function FieldPicker({
+  fieldFormatter: [fieldFormatter, setFieldFormatter],
+}: {
+  readonly fieldFormatter: GetSet<FieldFormatter>;
+}): JSX.Element | null {
+  const openIndex = React.useState<number | undefined>(undefined);
+  const mapping = React.useMemo(
+    () => (fieldFormatter.field === undefined ? [] : [fieldFormatter.field]),
+    [fieldFormatter.field]
+  );
+  return fieldFormatter.table === undefined ? null : (
+    <Label.Block>
+      {schemaText.field()}
+      <ResourceMapping
+        fieldFilter={excludeNonLiteral}
+        isRequired
+        mapping={[
+          mapping,
+          (mapping): void => {
+            if (mapping !== undefined && mapping?.length > 1)
+              softError('Expected mapping length to be no more than 1');
+            const field = mapping?.[0];
+            if (field?.isRelationship === true) {
+              softError(
+                'Did not expect relationship field in field formatter mapping'
+              );
+            } else {
+              setFieldFormatter({ ...fieldFormatter, field });
+            }
+          },
+        ]}
+        openIndex={openIndex}
+        table={fieldFormatter.table}
+      />
+    </Label.Block>
+  );
+}
+
+const excludeNonLiteral = (mappingData: MappingLineData): MappingLineData => ({
+  ...mappingData,
+  fieldsData: Object.fromEntries(
+    Object.entries(mappingData.fieldsData).filter(
+      ([_name, fieldData]) => fieldData.tableName === undefined
+    )
+  ),
+});
+
 function FieldFormatterPreview({
   fieldFormatter,
 }: {
   readonly fieldFormatter: FieldFormatter;
 }): JSX.Element | null {
-  const doFormatting = React.useCallback(
-    (resources: RA<SpecifyResource<AnySchema>>) => {
-      const resolvedFormatter = resolveFieldFormatter(fieldFormatter);
-      return resources.map((resource) =>
-        formatterToPreview(resource, fieldFormatter, resolvedFormatter)
-      );
-    },
+  const resolvedFormatter = React.useMemo(
+    () => resolveFieldFormatter(fieldFormatter),
     [fieldFormatter]
+  );
+  const doFormatting = React.useCallback(
+    (resources: RA<SpecifyResource<AnySchema>>) =>
+      resources.map((resource) =>
+        formatterToPreview(resource, fieldFormatter, resolvedFormatter)
+      ),
+    [fieldFormatter, resolvedFormatter]
   );
   return typeof fieldFormatter.table === 'object' &&
     hasTablePermission(fieldFormatter.table.name, 'read') ? (
-    <ResourcePreview doFormatting={doFormatting} table={fieldFormatter.table} />
+    <>
+      <FieldFormatterPreviewField
+        field={fieldFormatter.field}
+        resolvedFormatter={resolvedFormatter}
+      />
+      <ResourcePreview
+        doFormatting={doFormatting}
+        table={fieldFormatter.table}
+      />
+    </>
   ) : null;
 }
 
@@ -88,4 +152,36 @@ function formatterToPreview(
   return formatted === undefined
     ? `${value} ${resourcesText.nonConformingInline()}`
     : formatted;
+}
+
+function FieldFormatterPreviewField({
+  field,
+  resolvedFormatter,
+}: {
+  readonly field: LiteralField | undefined;
+  readonly resolvedFormatter: UiFormatter | undefined;
+}): JSX.Element | null {
+  const [value, setValue] = React.useState<string>('');
+  const isConforming = React.useMemo(
+    () => resolvedFormatter?.parse(value) !== undefined,
+    [value, resolvedFormatter]
+  );
+  const parser = useParser(field);
+
+  const validationAttributes = getValidationAttributes(parser);
+  const rightAlignClassName = useRightAlignClassName(parser.type, false);
+  return resolvedFormatter === undefined ? null : (
+    <Label.Block>
+      {`${resourcesText.exampleField()} ${
+        isConforming ? '' : resourcesText.nonConformingInline()
+      }`}
+      <Input.Generic
+        className={rightAlignClassName}
+        value={value}
+        onValueChange={setValue}
+        {...validationAttributes}
+        required={false}
+      />
+    </Label.Block>
+  );
 }

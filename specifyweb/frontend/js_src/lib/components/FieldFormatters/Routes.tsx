@@ -23,11 +23,15 @@ export const fieldFormattersRoutes = toReactRoutes([
         path: ':tableName',
         element: async () =>
           import('./List').then(
-            ({ FieldFormattersList }) => FieldFormattersList
+            ({ FieldFormatterEditorWrapper }) => FieldFormatterEditorWrapper
           ),
         children: [
           {
             index: true,
+            element: async () =>
+              import('./List').then(
+                ({ FieldFormattersList }) => FieldFormattersList
+              ),
           },
           {
             path: ':index',

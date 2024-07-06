@@ -1,5 +1,5 @@
 import React from 'react';
-import { useOutletContext, useParams } from 'react-router-dom';
+import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
 import { resourcesText } from '../../localization/resources';
 import type { GetSet, RA } from '../../utils/types';
@@ -38,6 +38,7 @@ export function FieldFormatterEditorWrapper(): JSX.Element {
 export function FieldFormattersList(): JSX.Element {
   const { tableName } = useParams();
   const { items } = useOutletContext<FieldFormattersOutlet>();
+  const navigate = useNavigate();
 
   return (
     <XmlEntryList
@@ -73,6 +74,7 @@ export function FieldFormattersList(): JSX.Element {
       header={resourcesText.availableFieldFormatters()}
       items={items}
       tableName={tableName}
+      onGoBack={(): void => navigate('../')}
     />
   );
 }
