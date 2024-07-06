@@ -1,88 +1,68 @@
 import React from 'react';
 
+import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
+import { formsText } from '../../localization/forms';
 import { queryText } from '../../localization/query';
 import { resourcesText } from '../../localization/resources';
-import { schemaText } from '../../localization/schema';
-import type { GetSet, RA } from '../../utils/types';
+import type { GetSet } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { removeItem, replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
-import { Input, Label } from '../Atoms/Form';
+import { Input, Label, Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
-import type { SpecifyTable } from '../DataModel/specifyTable';
-import {
-  GenericFormatterPickList,
-  ResourceMapping,
-} from '../Formatters/Components';
-import { FormattersPickList } from '../PickLists/FormattersPickList';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { fetchContext as fetchFieldFormatters } from '.';
+import { fieldFormatterLocalization, fieldFormatterTypeMapper } from '.';
 import type { FieldFormatter, FieldFormatterPart } from './spec';
 
 export function FieldFormatterParts({
-  table,
   fieldFormatter: [fieldFormatter, setFieldFormatter],
 }: {
-  readonly table: SpecifyTable;
   readonly fieldFormatter: GetSet<FieldFormatter>;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
 
-  const [displayFormatter, setDisplayFormatter] = React.useState(false);
+  const { parts } = fieldFormatter;
 
-  /*
-   * FIXME: display type field
-   * FIXME: display size field (but hardcode to 4 for year)
-   * FIXME: display placeholder/regex field (unless type year)
-   *
-   * FIXME: display byYear checkbox if type year
-   * FIXME: display autoIncrement checkbox if type number
-   */
+  const setParts = (newParts: typeof parts): void =>
+    setFieldFormatter({
+      ...fieldFormatter,
+      parts: newParts,
+    });
 
-  /*
-   * FIXME: make placeholder field required
-   * FIXME: infer placeholder in the UI for numeric
-   */
   return (
     <>
-      {fieldFormatter.fields.length === 0 ? undefined : (
+      {parts.length === 0 ? undefined : (
         <table
           /*
            * REFACTOR: replace min-w-[35rem] with a container query that replaces
            *   table layout with list layout
            */
           className={`
-            grid-table min-w-[35rem] gap-x-2 gap-y-2
-            [&_td]:!items-stretch
-            ${
-              displayFormatter
-                ? 'grid-cols-[min-content_1fr_auto_min-content]'
-                : 'grid-cols-[min-content_1fr_min-content]'
-            }
+            grid-table min-w-[35rem]
+            grid-cols-[auto_4rem_auto_auto_min-content]
+            gap-2 [&_td]:!items-stretch
           `}
         >
           <thead>
             <tr>
-              <th>{resourcesText.separator()}</th>
-              <th>{schemaText.field()}</th>
-              {displayFormatter && <th>{schemaText.customFieldFormat()}</th>}
+              <th>{resourcesText.type()}</th>
+              <th>{commonText.size()}</th>
+              <th>{resourcesText.hint()}</th>
+              <th>{formsText.autoNumber()}</th>
               <th />
             </tr>
           </thead>
           <tbody>
-            {fields.map((field, index) => (
+            {parts.map((part, index) => (
               <Part
-                displayFormatter={displayFormatter}
-                field={[
-                  field,
-                  (field): void => setFields(replaceItem(fields, index, field)),
-                ]}
                 key={index}
-                table={table}
-                onRemove={(): void => setFields(removeItem(fields, index))}
+                part={[
+                  part,
+                  (part): void => setParts(replaceItem(parts, index, part)),
+                ]}
+                onRemove={(): void => setParts(removeItem(parts, index))}
               />
             ))}
           </tbody>
@@ -92,32 +72,21 @@ export function FieldFormatterParts({
         <div className="flex gap-2 pt-2">
           <Button.Secondary
             onClick={(): void =>
-              setFields([
-                ...fields,
+              setParts([
+                ...parts,
                 {
-                  separator: localized(' '),
-                  aggregator: undefined,
-                  formatter: undefined,
-                  fieldFormatter: undefined,
-                  field: undefined,
+                  type: 'constant',
+                  size: 1,
+                  placeholder: localized(''),
+                  regexPlaceholder: undefined,
+                  byYear: false,
+                  autoIncrement: false,
                 },
               ])
             }
           >
             {resourcesText.addField()}
           </Button.Secondary>
-          <span className="-ml-2 flex-1" />
-          {fields.length > 0 && (
-            <Label.Inline>
-              <Input.Checkbox
-                checked={displayFormatter}
-                onValueChange={(): void =>
-                  setDisplayFormatter(!displayFormatter)
-                }
-              />
-              {resourcesText.customizeFieldFormatters()}
-            </Label.Inline>
-          )}
         </div>
       )}
     </>
@@ -125,54 +94,145 @@ export function FieldFormatterParts({
 }
 
 function Part({
-  table,
-  field: [part, handleChange],
+  part: [part, handleChange],
   onRemove: handleRemove,
-  displayFormatter,
 }: {
-  readonly table: SpecifyTable;
-  readonly field: GetSet<FieldFormatterPart>;
+  readonly part: GetSet<FieldFormatterPart>;
   readonly onRemove: () => void;
-  readonly displayFormatter: boolean;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
-  const [openIndex, setOpenIndex] = React.useState<number | undefined>(
-    undefined
+
+  React.useEffect(() => {
+    if (part.type === 'year')
+      handleChange({
+        ...part,
+        size: 4,
+        placeholder: fieldFormatterTypeMapper.year.placeholder,
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [part.type]);
+
+  React.useEffect(() => {
+    if (part.type === 'numeric')
+      handleChange({
+        ...part,
+        placeholder: fieldFormatterTypeMapper.numeric.buildPlaceholder(
+          part.size
+        ),
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [part.size, part.type]);
+
+  const enforcePlaceholderSize =
+    part.type === 'constant' ||
+    part.type === 'separator' ||
+    part.type === 'year';
+
+  const placeholderSize = enforcePlaceholderSize ? part.size : undefined;
+
+  /**
+   * While native browser validation does length enforcement, it only does so
+   * when the field value is changed by the user - if field already had
+   * incorrect value, or if validation requirement changed (because size field
+   * was changed), browser won't automatically re-validate so we have to
+   */
+  const requestedSize = placeholderSize ?? part.placeholder.length;
+  const actualSize = part.placeholder.length;
+  const { validationRef } = useValidation(
+    actualSize > requestedSize
+      ? queryText.tooLongErrorMessage({ maxLength: requestedSize })
+      : actualSize < requestedSize
+      ? queryText.tooShortErrorMessage({ minLength: requestedSize })
+      : undefined
   );
+
   return (
     <tr>
       <td>
-        <Input.Text
-          aria-label={resourcesText.separator()}
-          isReadOnly={isReadOnly}
-          value={part.separator}
-          onValueChange={(separator): void =>
+        <Select
+          aria-label={resourcesText.type()}
+          disabled={isReadOnly}
+          value={part.type}
+          onValueChange={(newType): void =>
             handleChange({
               ...part,
-              separator,
+              type: newType as keyof typeof fieldFormatterLocalization,
+            })
+          }
+        >
+          {Object.entries(fieldFormatterLocalization).map(([type, label]) => (
+            <option key={type} value={type}>
+              {label}
+            </option>
+          ))}
+        </Select>
+      </td>
+      <td>
+        <Input.Integer
+          aria-label={commonText.size()}
+          min={0}
+          required
+          value={part.size}
+          onValueChange={(size): void =>
+            handleChange({
+              ...part,
+              size,
+            })
+          }
+          isReadOnly={isReadOnly}
+          // Size is hardcoded to 4 for year
+          disabled={part.type === 'year'}
+        />
+      </td>
+      <td>
+        <Input.Text
+          aria-label={resourcesText.hint()}
+          disabled={part.type === 'year'}
+          forwardRef={validationRef}
+          isReadOnly={isReadOnly}
+          maxLength={placeholderSize}
+          minLength={placeholderSize}
+          required
+          value={part.placeholder}
+          onValueChange={(placeholder): void =>
+            handleChange({
+              ...part,
+              placeholder,
             })
           }
         />
       </td>
       <td>
-        <ResourceMapping
-          mapping={[
-            part.field,
-            (fieldMapping): void =>
-              handleChange({
-                ...part,
-                field: fieldMapping,
-              }),
-          ]}
-          openIndex={[openIndex, setOpenIndex]}
-          table={table}
-        />
+        {part.type === 'numeric' ? (
+          <Label.Inline>
+            <Input.Checkbox
+              checked={part.autoIncrement}
+              isReadOnly={isReadOnly}
+              onValueChange={(autoIncrement): void =>
+                handleChange({
+                  ...part,
+                  autoIncrement,
+                })
+              }
+            />
+            {formsText.autoNumber()}
+          </Label.Inline>
+        ) : part.type === 'year' ? (
+          <Label.Inline>
+            <Input.Checkbox
+              checked={part.byYear}
+              isReadOnly={isReadOnly}
+              onValueChange={(byYear): void =>
+                handleChange({
+                  ...part,
+                  byYear,
+                })
+              }
+            />
+            {formsText.autoNumberByYear()}
+          </Label.Inline>
+        ) : undefined}
       </td>
-      {displayFormatter && (
-        <td>
-          <FieldFormatterPicker field={[part, handleChange]} />
-        </td>
-      )}
       <td>
         {isReadOnly ? null : (
           <Button.Small
@@ -187,62 +247,4 @@ function Part({
       </td>
     </tr>
   );
-}
-
-function FieldFormatterPicker({
-  field: [field, handleChange],
-}: {
-  readonly field: GetSet<FieldFormatterPart>;
-}): JSX.Element | null {
-  const lastField = field.field?.at(-1);
-  if (lastField === undefined) return null;
-  else if (!lastField.isRelationship)
-    return (
-      <Label.Inline className="w-full">
-        <GenericFormatterPickList
-          itemsPromise={fetchFieldFormatters}
-          table={lastField.table}
-          value={field.fieldFormatter}
-          onChange={(fieldFormatter): void =>
-            handleChange({
-              ...field,
-              fieldFormatter,
-            })
-          }
-        />
-      </Label.Inline>
-    );
-  else if (relationshipIsToMany(lastField))
-    return (
-      <Label.Inline className="w-full">
-        <FormattersPickList
-          table={lastField.relatedTable}
-          type="aggregators"
-          value={field.aggregator}
-          onChange={(aggregator): void =>
-            handleChange({
-              ...field,
-              aggregator,
-            })
-          }
-        />
-      </Label.Inline>
-    );
-  else
-    return (
-      <Label.Inline className="w-full">
-        {resourcesText.formatter()}
-        <FormattersPickList
-          table={lastField.relatedTable}
-          type="formatters"
-          value={field.formatter}
-          onChange={(formatter): void =>
-            handleChange({
-              ...field,
-              formatter,
-            })
-          }
-        />
-      </Label.Inline>
-    );
 }

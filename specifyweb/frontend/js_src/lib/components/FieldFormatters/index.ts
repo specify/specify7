@@ -5,6 +5,8 @@
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { formsText } from '../../localization/forms';
+import { queryText } from '../../localization/query';
+import { resourcesText } from '../../localization/resources';
 import { getAppResourceUrl } from '../../utils/ajax/helpers';
 import type { IR, RA } from '../../utils/types';
 import { filterArray, localized } from '../../utils/types';
@@ -175,7 +177,7 @@ abstract class Part {
   }
 
   public get defaultValue(): LocalizedString {
-    return this.placeholder === 'YEAR'
+    return this.placeholder === YearPart.placeholder
       ? localized(new Date().getFullYear().toString())
       : this.placeholder;
   }
@@ -213,16 +215,22 @@ class NumericPart extends Part {
   public constructor(options: Omit<PartOptions, 'placeholder'>) {
     super({
       ...options,
-      placeholder: localized(''.padStart(options.size, '#')),
+      placeholder: NumericPart.buildPlaceholder(options.size),
     });
   }
 
   public get regex(): LocalizedString {
     return localized(`\\d{${this.size}}`);
   }
+
+  public static buildPlaceholder(size: number): LocalizedString {
+    return localized(''.padStart(size, '#'));
+  }
 }
 
 class YearPart extends Part {
+  public static readonly placeholder = localized('YEAR');
+
   public readonly type = 'year';
 
   public get regex(): LocalizedString {
@@ -297,3 +305,14 @@ export const fieldFormatterTypeMapper = {
   regex: RegexPart,
   separator: SeparatorPart,
 } as const;
+
+export const fieldFormatterLocalization = {
+  constant: resourcesText.constant(),
+  year: queryText.year(),
+  alpha: resourcesText.alpha(),
+  numeric: resourcesText.numeric(),
+  alphanumeric: resourcesText.alphanumeric(),
+  anychar: resourcesText.anychar(),
+  regex: resourcesText.regex(),
+  separator: resourcesText.separator(),
+};
