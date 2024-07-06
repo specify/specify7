@@ -1,6 +1,7 @@
 import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import type { SerializedResource } from '../../DataModel/helperTypes';
+import { idFromUrl } from '../../DataModel/resource';
 import { tables } from '../../DataModel/tables';
 import type { Taxon } from '../../DataModel/types';
 import { exportsForTests } from '../TreeLevelPickList';
@@ -72,7 +73,11 @@ describe('fetchPossibleRanks', () => {
     await animalia.fetch();
 
     await expect(
-      fetchPossibleRanks(animalia, animalia.id).then(ranksToPicklistItems)
+      fetchPossibleRanks(
+        animalia,
+        animalia.id,
+        idFromUrl(animalia.get('definition'))!
+      ).then(ranksToPicklistItems)
     ).resolves.toEqual([
       {
         title: 'Kingdom',
@@ -97,7 +102,11 @@ describe('fetchPossibleRanks', () => {
     await chordata.fetch();
 
     await expect(
-      fetchPossibleRanks(chordata, chordata.id).then(ranksToPicklistItems)
+      fetchPossibleRanks(
+        chordata,
+        chordata.id,
+        idFromUrl(chordata.get('definition'))!
+      ).then(ranksToPicklistItems)
     ).resolves.toEqual([
       {
         title: 'Kingdom',

@@ -7,6 +7,7 @@ import { formatUrl } from '../Router/queryString';
 import type { BusinessRuleResult } from './businessRules';
 import type { AnyTree, TableFields } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
+import { idFromUrl } from './resource';
 import { Tables } from './types';
 
 // eslint-disable-next-line unicorn/prevent-abbreviations
@@ -33,7 +34,11 @@ export const treeBusinessRules = async (
     const possibleRanks =
       parentDefItem === undefined
         ? undefined
-        : await fetchPossibleRanks(resource, parentDefItem.get('rankId'));
+        : await fetchPossibleRanks(
+            resource,
+            parentDefItem.get('rankId'),
+            idFromUrl(parentDefItem.get('treeDef'))!
+          );
 
     const doExpandSynonymActionsPref = getPref(
       `sp7.allow_adding_child_to_synonymized_parent.${resource.specifyTable.name}`
