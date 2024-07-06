@@ -134,14 +134,23 @@ const fieldSpec = f.store(() =>
       syncers.enum(Object.keys(formatterTypeMapper))
     ),
     size: pipe(
-      syncers.xmlAttribute('size', 'skip'),
+      syncers.xmlAttribute('size', 'required'),
       syncers.maybe(syncers.toDecimal),
       syncers.default<number>(1)
     ),
-    value: pipe(
+    /*
+     * For most fields, this is a human-friendly placeholder like ### or ABC.
+     * For regex fields, this contains the actual regular expression
+     */
+    placeholder: pipe(
       syncers.xmlAttribute('value', 'skip', false),
-      syncers.default(localized(' '))
+      syncers.default(localized(''))
     ),
+    /*
+     * Since regular expressions are less readable, this field is specifically
+     * for providing human-readable description of a regular expression
+     */
+    regexPlaceholder: syncers.xmlAttribute('pattern', 'skip', false),
     byYear: pipe(
       syncers.xmlAttribute('byYear', 'skip'),
       syncers.maybe(syncers.toBoolean),
@@ -152,7 +161,6 @@ const fieldSpec = f.store(() =>
       syncers.maybe(syncers.toBoolean),
       syncers.default<boolean>(false)
     ),
-    pattern: syncers.xmlAttribute('pattern', 'skip', false),
   })
 );
 

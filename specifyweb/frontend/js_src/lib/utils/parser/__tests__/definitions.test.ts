@@ -57,16 +57,16 @@ describe('parserFromType', () => {
 const formatterFields = [
   new formatterTypeMapper.constant({
     size: 2,
-    value: localized('AB'),
+    placeholder: localized('AB'),
+    regexPlaceholder: undefined,
     autoIncrement: false,
     byYear: false,
-    pattern: localized('\\d{1,2}'),
   }),
   new formatterTypeMapper.numeric({
     size: 2,
     autoIncrement: true,
     byYear: false,
-    pattern: localized('\\d{1,2}'),
+    regexPlaceholder: undefined,
   }),
 ];
 const uiFormatter = new UiFormatter(
@@ -76,7 +76,7 @@ const uiFormatter = new UiFormatter(
   tables.CollectionObject,
   undefined
 );
-const title = formsText.requiredFormat({ format: uiFormatter.pattern()! });
+const title = formsText.requiredFormat({ format: uiFormatter.defaultValue });
 
 describe('resolveParser', () => {
   test('simple string with parser merger', () => {
@@ -242,12 +242,10 @@ describe('formatterToParser', () => {
       ...parser
     } = formatterToParser({}, uiFormatter);
     expect(parser).toEqual({
-      // Regex may be coming from the user, thus disable strict mode
-      // eslint-disable-next-line require-unicode-regexp
-      pattern: new RegExp(uiFormatter.parseRegExp()),
+      pattern: uiFormatter.regex,
       title,
-      placeholder: uiFormatter.pattern()!,
-      value: uiFormatter.valueOrWild(),
+      placeholder: uiFormatter.placeholder,
+      value: uiFormatter.defaultValue,
     });
 
     expect(formatters).toBeInstanceOf(Array);

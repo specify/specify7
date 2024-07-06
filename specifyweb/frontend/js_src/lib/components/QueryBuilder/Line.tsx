@@ -160,7 +160,7 @@ export function QueryLine({
           required: false,
         };
         // Remove autoNumbering wildCard from default values
-        if (dataModelField.getUiFormatter()?.valueOrWild() === parser.value)
+        if (dataModelField.getUiFormatter()?.defaultValue === parser.value)
           parser = { ...parser, value: undefined };
 
         fieldType =

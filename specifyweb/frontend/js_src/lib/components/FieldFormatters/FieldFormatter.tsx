@@ -12,7 +12,7 @@ import { ResourcePreview } from '../Formatters/Preview';
 import { hasTablePermission } from '../Permissions/helpers';
 import type { UiFormatter } from '.';
 import { resolveFieldFormatter } from '.';
-import { Definitions } from './Definitions';
+import { FieldFormatterFields } from './Fields';
 import type { FieldFormatter } from './spec';
 
 export function FieldFormatterElement({
@@ -21,6 +21,7 @@ export function FieldFormatterElement({
   readonly item: GetSet<FieldFormatter>;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
+  // FIXME: add field selector
   return (
     <>
       <Label.Inline>
@@ -35,7 +36,9 @@ export function FieldFormatterElement({
         />
       </Label.Inline>
       {fieldFormatter.external === undefined ? (
-        <Definitions item={[fieldFormatter, setFieldFormatter]} />
+        <FieldFormatterFields
+          fieldFormatter={[fieldFormatter, setFieldFormatter]}
+        />
       ) : (
         <ErrorMessage>{resourcesText.editorNotAvailable()}</ErrorMessage>
       )}
@@ -76,8 +79,7 @@ function formatterToPreview(
   if (field === undefined) return '';
 
   const value = String(resource.get(field.name) ?? '');
-  if (value.length === 0)
-    return resolvedFormatter.pattern() ?? resolvedFormatter.valueOrWild();
+  if (value.length === 0) return resolvedFormatter.defaultValue;
 
   const formatted = resolvedFormatter.format(value);
 

@@ -76,7 +76,7 @@ const fileNameTestSpec: TestDefinition = {
         new formatterTypeMapper.regex({
           size: 3,
           autoIncrement: true,
-          value: localized('^\\d{1,6}(?:[a-zA-Z]{1,2})?$'),
+          placeholder: localized('^\\d{1,6}(?:[a-zA-Z]{1,2})?$'),
           byYear: false,
         }),
       ],

@@ -448,7 +448,7 @@ function useParser(searchField: LiteralField): {
     // Determine which delimiters are allowed
     const formatter = searchField.getUiFormatter();
     const formatted =
-      formatter?.fields.map((field) => field.value).join('') ?? '';
+      formatter?.fields.map((field) => field.placeholder).join('') ?? '';
     const formatterHasNewLine = formatted.includes('\n');
     const formatterHasSpaces = formatted.includes(' ');
     const formatterHasCommas = formatted.includes(',');

@@ -29,7 +29,8 @@ import { fullDateFormat } from './dateFormat';
 
 /** Makes sure a wrapped function would receive a string value */
 export const stringGuard =
-  (formatter: (value: string) => unknown) => (value: unknown) =>
+  (formatter: (value: string) => unknown) =>
+  (value: unknown): unknown =>
     typeof value === 'string'
       ? formatter(value)
       : error('Value is not a string');
@@ -102,7 +103,8 @@ type ExtendedJavaType = JavaType | 'day' | 'month' | 'year';
  * This could be resolved by enabling time mocking globally, but that's not
  * great as it can alter behavior of the code
  */
-const getDate = () => (process.env.NODE_ENV === 'test' ? testTime : new Date());
+const getDate = (): Date =>
+  process.env.NODE_ENV === 'test' ? testTime : new Date();
 
 export const parsers = f.store(
   (): RR<ExtendedJavaType, ExtendedJavaType | Parser> => ({
@@ -358,9 +360,8 @@ function resolveDate(
     if (values.length === 1) return values[0];
     const leftDate = new Date(values[0]);
     const rightDate = new Date(values[1]);
-    return leftDate.getTime() < rightDate.getTime() === takeMin
-      ? values[0]
-      : values[1];
+    const isLesser = leftDate < rightDate;
+    return isLesser === takeMin ? values[0] : values[1];
   }
   const callback = takeMin ? f.min : f.max;
   return callback(...(values as RA<number | undefined>));
@@ -370,9 +371,8 @@ export function formatterToParser(
   field: Partial<LiteralField | Relationship>,
   formatter: UiFormatter
 ): Parser {
-  const regExpString = formatter.parseRegExp();
   const title = formsText.requiredFormat({
-    format: formatter.pattern() ?? formatter.valueOrWild(),
+    format: formatter.placeholder,
   });
 
   const autoNumberingConfig = userPreferences.get(
@@ -385,29 +385,27 @@ export function formatterToParser(
     typeof tableName === 'string'
       ? (autoNumberingConfig[tableName] as RA<string>)
       : undefined;
-  const canAutoNumber =
-    formatter.canAutonumber() &&
-    (autoNumberingFields === undefined ||
-      autoNumberingFields.includes(field.name ?? ''));
+  const autoNumberingEnabled =
+    autoNumberingFields === undefined ||
+    autoNumberingFields.includes(field.name ?? '');
+  const canAutoNumber = formatter.canAutonumber() && autoNumberingEnabled;
 
   return {
-    // Regex may be coming from the user, thus disable strict mode
-    // eslint-disable-next-line require-unicode-regexp
-    pattern: regExpString === null ? undefined : new RegExp(regExpString),
+    pattern: formatter.regex,
     title,
     formatters: [stringGuard(formatter.parse.bind(formatter))],
     validators: [
       (value): string | undefined =>
         value === undefined || value === null ? title : undefined,
     ],
-    placeholder: formatter.pattern() ?? undefined,
+    placeholder: formatter.placeholder,
     type:
       field.type === undefined
         ? undefined
         : parserFromType(field.type as ExtendedJavaType).type,
     parser: (value: unknown): string =>
       formatter.canonicalize(value as RA<string>),
-    value: canAutoNumber ? formatter.valueOrWild() : undefined,
+    value: canAutoNumber ? formatter.defaultValue : undefined,
   };
 }
 
@@ -465,7 +463,7 @@ export function pluralizeParser(rawParser: Parser): Parser {
 // FEATURE: allow customizing this
 const separator = ',';
 
-/** Modify a regex pattern to allow a comma separate list of values */
+/** Modify a regex pattern to allow a comma separated list of values */
 export function pluralizeRegex(regex: RegExp): RegExp {
   const pattern = browserifyRegex(regex);
   // Pattern with whitespace

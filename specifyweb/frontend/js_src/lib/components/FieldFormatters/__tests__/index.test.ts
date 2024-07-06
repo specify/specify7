@@ -16,27 +16,31 @@ const getFormatter = (): UiFormatter | undefined =>
 const getSecondFormatter = (): UiFormatter | undefined =>
   getUiFormatters().AccessionNumber;
 
-describe('valueOrWild', () => {
+describe('defaultValue', () => {
   test('catalog number', () =>
-    expect(getFormatter()?.valueOrWild()).toBe('#########'));
+    expect(getFormatter()?.defaultValue).toBe('#########'));
 
   test('accession number', () =>
-    expect(getSecondFormatter()?.valueOrWild()).toBe('2022-AA-###'));
+    expect(getSecondFormatter()?.defaultValue).toBe('2022-AA-###'));
 });
 
-describe('parseRegExp', () => {
+describe('placeholder', () => {
   test('catalog number', () =>
-    expect(getFormatter()?.parseRegExp()).toBe('^(#########|\\d{0,9})$'));
+    expect(getUiFormatters().CatalogNumberNumericRegex?.placeholder).toBe(
+      '####[-A]'
+    ));
   test('accession number', () =>
-    expect(getSecondFormatter()?.parseRegExp()).toBe(
+    expect(getSecondFormatter()?.placeholder).toBe(
       '^(YEAR|\\d{4})(-)([a-zA-Z0-9]{2})(-)(###|\\d{3})$'
     ));
 });
 
-describe('pattern', () => {
+describe('regex', () => {
   test('catalog number', () =>
-    expect(getUiFormatters().CatalogNumberNumericRegex?.pattern()).toBe(
-      '####[-A]'
+    expect(getFormatter()?.regex.source).toBe('^(#########|\\d{0,9})$'));
+  test('accession number', () =>
+    expect(getSecondFormatter()?.regex.source).toBe(
+      '^(YEAR|\\d{4})(-)([a-zA-Z0-9]{2})(-)(###|\\d{3})$'
     ));
 });
 
