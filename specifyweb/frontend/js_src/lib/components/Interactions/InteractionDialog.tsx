@@ -50,10 +50,10 @@ import type {
   PreparationData,
   PreparationRow,
 } from './helpers';
-import { interactionsWithPrepTables } from './helpers';
 import {
   getPrepsAvailableForLoanCoIds,
   getPrepsAvailableForLoanRs,
+  interactionsWithPrepTables,
 } from './helpers';
 import { PrepDialog } from './PrepDialog';
 
@@ -433,8 +433,7 @@ function useParser(searchField: LiteralField): {
     const parser = pluralizeParser(resolveParser(searchField));
     // Determine which delimiters are allowed
     const formatter = searchField.getUiFormatter();
-    const formatted =
-      formatter?.fields.map((field) => field.placeholder).join('') ?? '';
+    const formatted = formatter?.defaultValue ?? '';
     const formatterHasNewLine = formatted.includes('\n');
     const formatterHasSpaces = formatted.includes(' ');
     const formatterHasCommas = formatted.includes(',');

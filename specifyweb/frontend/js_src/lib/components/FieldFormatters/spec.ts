@@ -8,7 +8,7 @@ import type { SpecToJson } from '../Syncer';
 import { pipe, syncer } from '../Syncer';
 import { syncers } from '../Syncer/syncers';
 import { createXmlSpec } from '../Syncer/xmlUtils';
-import { formatterTypeMapper } from '.';
+import { fieldFormatterTypeMapper } from '.';
 
 export const fieldFormattersSpec = f.store(() =>
   createXmlSpec({
@@ -42,7 +42,7 @@ export const fieldFormattersSpec = f.store(() =>
                   : undefined),
               rawAutoNumber: autoNumber
                 ? legacyAutoNumber ??
-                  inferLegacyAutoNumber(table, formatter.fields)
+                  inferLegacyAutoNumber(table, formatter.parts)
                 : undefined,
             })
           ),
@@ -70,7 +70,9 @@ export const fieldFormattersSpec = f.store(() =>
  */
 function inferLegacyAutoNumber(
   table: SpecifyTable | undefined,
-  fields: RA<{ readonly type: keyof typeof formatterTypeMapper | undefined }>
+  fields: RA<{
+    readonly type: keyof typeof fieldFormatterTypeMapper | undefined;
+  }>
 ): string {
   if (table?.name === 'Accession')
     return 'edu.ku.brc.specify.dbsupport.AccessionAutoNumberAlphaNum';
@@ -86,7 +88,7 @@ export type FieldFormatter = SpecToJson<
   ReturnType<typeof fieldFormattersSpec>
 >['fieldFormatters'][number];
 
-export type FieldFormatterField = FieldFormatter['fields'][number];
+export type FieldFormatterPart = FieldFormatter['parts'][number];
 
 const formatterSpec = f.store(() =>
   createXmlSpec({
@@ -119,19 +121,19 @@ const formatterSpec = f.store(() =>
       syncers.xmlChild('external', 'optional'),
       syncers.maybe(syncers.xmlContent)
     ),
-    fields: pipe(
+    parts: pipe(
       syncers.xmlChildren('field'),
-      syncers.map(syncers.object(fieldSpec()))
+      syncers.map(syncers.object(partSpec()))
     ),
   })
 );
 
-const fieldSpec = f.store(() =>
+const partSpec = f.store(() =>
   createXmlSpec({
     type: pipe(
       syncers.xmlAttribute('type', 'required'),
       syncers.fallback(localized('alphanumeric')),
-      syncers.enum(Object.keys(formatterTypeMapper))
+      syncers.enum(Object.keys(fieldFormatterTypeMapper))
     ),
     size: pipe(
       syncers.xmlAttribute('size', 'required'),
@@ -139,15 +141,15 @@ const fieldSpec = f.store(() =>
       syncers.default<number>(1)
     ),
     /*
-     * For most fields, this is a human-friendly placeholder like ### or ABC.
-     * For regex fields, this contains the actual regular expression
+     * For most parts, this is a human-friendly placeholder like ### or ABC.
+     * For regex parts, this contains the actual regular expression
      */
     placeholder: pipe(
       syncers.xmlAttribute('value', 'skip', false),
       syncers.default(localized(''))
     ),
     /*
-     * Since regular expressions are less readable, this field is specifically
+     * Since regular expressions are less readable, this part is specifically
      * for providing human-readable description of a regular expression
      */
     regexPlaceholder: syncers.xmlAttribute('pattern', 'skip', false),

@@ -15,7 +15,7 @@ import { tables } from '../DataModel/tables';
 import { error } from '../Errors/assert';
 import { load } from '../InitialContext';
 import { xmlToSpec } from '../Syncer/xmlUtils';
-import type { FieldFormatter, FieldFormatterField } from './spec';
+import type { FieldFormatter, FieldFormatterPart } from './spec';
 import { fieldFormattersSpec } from './spec';
 
 let uiFormatters: IR<UiFormatter>;
@@ -49,17 +49,17 @@ export function resolveFieldFormatter(
       ? new CatalogNumberNumeric()
       : undefined;
   } else {
-    const fields = filterArray(
-      formatter.fields.map((field) =>
-        typeof field.type === 'string'
-          ? new formatterTypeMapper[field.type](field)
+    const parts = filterArray(
+      formatter.parts.map((part) =>
+        typeof part.type === 'string'
+          ? new fieldFormatterTypeMapper[part.type](part)
           : undefined
       )
     );
     return new UiFormatter(
       formatter.isSystem,
       formatter.title ?? formatter.name,
-      fields,
+      parts,
       formatter.table
     );
   }
@@ -70,12 +70,12 @@ export class UiFormatter {
   public constructor(
     public readonly isSystem: boolean,
     public readonly title: LocalizedString,
-    public readonly fields: RA<Field>,
+    public readonly parts: RA<Part>,
     public readonly table: SpecifyTable | undefined
   ) {}
 
   public get defaultValue(): string {
-    return this.fields.map((field) => field.defaultValue).join('');
+    return this.parts.map((part) => part.defaultValue).join('');
   }
 
   public get placeholder(): string {
@@ -87,15 +87,19 @@ export class UiFormatter {
     // Regex may be coming from the user, thus disable strict mode
     // eslint-disable-next-line require-unicode-regexp
     return new RegExp(
-      `^${this.fields
-        .map((field) => `(${field.placeholderOrValueAsRegex})`)
+      `^${this.parts
+        .map((part) => `(${part.placeholderOrValueAsRegex})`)
         .join('')}$`
     );
   }
 
-  public get regexPlaceholder(): LocalizedString | undefined {
-    const placeholders = this.fields
-      .map((field) => field.regexPlaceholder)
+  public get size(): number {
+    return this.parts.reduce((size, field) => size + field.size, 0);
+  }
+
+  private get regexPlaceholder(): LocalizedString | undefined {
+    const placeholders = this.parts
+      .map((part) => part.regexPlaceholder)
       .filter(Boolean)
       .join('\n');
     return placeholders.length > 0 ? localized(placeholders) : undefined;
@@ -107,7 +111,7 @@ export class UiFormatter {
   }
 
   public canAutonumber(): boolean {
-    return this.fields.some((field) => field.canAutonumber());
+    return this.parts.some((part) => part.canAutonumber());
   }
 
   public format(value: string): LocalizedString | undefined {
@@ -117,14 +121,15 @@ export class UiFormatter {
 
   public canonicalize(values: RA<string>): LocalizedString {
     return localized(
-      this.fields
-        .map((field, index) => field.canonicalize(values[index]))
-        .join('')
+      this.parts.map((part, index) => part.canonicalize(values[index])).join('')
     );
   }
 }
 
-abstract class Field {
+type PartOptions = Omit<FieldFormatterPart, 'regexPlaceholder' | 'type'> &
+  Partial<Pick<FieldFormatterPart, 'regexPlaceholder'>>;
+
+abstract class Part {
   public readonly size: number;
 
   public readonly placeholder: LocalizedString;
@@ -135,13 +140,15 @@ abstract class Field {
 
   private readonly byYear: boolean;
 
+  public abstract readonly type: FieldFormatterPart['type'];
+
   public constructor({
     size,
     placeholder,
     autoIncrement,
     byYear,
     regexPlaceholder,
-  }: Omit<FieldFormatterField, 'type'>) {
+  }: PartOptions) {
     this.size = size;
     this.placeholder = placeholder;
     this.autoIncrement = autoIncrement;
@@ -180,22 +187,26 @@ abstract class Field {
   }
 }
 
-class ConstantField extends Field {
+class ConstantPart extends Part {
+  public readonly type = 'constant';
+
   public get regex(): LocalizedString {
     return this.placeholderAsRegex;
   }
 }
 
-class AlphaField extends Field {
+class AlphaPart extends Part {
+  public readonly type = 'alpha';
+
   public get regex(): LocalizedString {
     return localized(`[a-zA-Z]{${this.size}}`);
   }
 }
 
-class NumericField extends Field {
-  public constructor(
-    options: Omit<FieldFormatterField, 'placeholder' | 'type'>
-  ) {
+class NumericPart extends Part {
+  public readonly type = 'numeric';
+
+  public constructor(options: Omit<PartOptions, 'placeholder'>) {
     super({
       ...options,
       placeholder: localized(''.padStart(options.size, '#')),
@@ -207,33 +218,41 @@ class NumericField extends Field {
   }
 }
 
-class YearField extends Field {
+class YearPart extends Part {
+  public readonly type = 'year';
+
   public get regex(): LocalizedString {
     return localized(`\\d{${this.size}}`);
   }
 }
 
-class AlphaNumberField extends Field {
+class AlphaNumberPart extends Part {
+  public readonly type = 'alpha';
+
   public get regex(): LocalizedString {
     return localized(`[a-zA-Z0-9]{${this.size}}`);
   }
 }
 
-class AnyCharField extends Field {
+class AnyCharPart extends Part {
+  public readonly type = 'anychar';
+
   public get regex(): LocalizedString {
     return localized(`.{${this.size}}`);
   }
 }
 
-class RegexField extends Field {
+class RegexPart extends Part {
+  public readonly type = 'regex';
+
   public get regex(): LocalizedString {
     return this.placeholder;
   }
 }
 
-class SeparatorField extends ConstantField {}
+class SeparatorPart extends ConstantPart {}
 
-class CatalogNumberNumericField extends NumericField {
+class CatalogNumberNumericField extends NumericPart {
   public get regex(): LocalizedString {
     return localized(`\\d{0,${this.size}}`);
   }
@@ -262,13 +281,13 @@ export class CatalogNumberNumeric extends UiFormatter {
 }
 /* eslint-enable functional/no-class */
 
-export const formatterTypeMapper = {
-  constant: ConstantField,
-  year: YearField,
-  alpha: AlphaField,
-  numeric: NumericField,
-  alphanumeric: AlphaNumberField,
-  anychar: AnyCharField,
-  regex: RegexField,
-  separator: SeparatorField,
+export const fieldFormatterTypeMapper = {
+  constant: ConstantPart,
+  year: YearPart,
+  alpha: AlphaPart,
+  numeric: NumericPart,
+  alphanumeric: AlphaNumberPart,
+  anychar: AnyCharPart,
+  regex: RegexPart,
+  separator: SeparatorPart,
 } as const;

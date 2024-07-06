@@ -12,7 +12,7 @@ import { ResourcePreview } from '../Formatters/Preview';
 import { hasTablePermission } from '../Permissions/helpers';
 import type { UiFormatter } from '.';
 import { resolveFieldFormatter } from '.';
-import { FieldFormatterFields } from './Fields';
+import { FieldFormatterParts } from './Parts';
 import type { FieldFormatter } from './spec';
 
 export function FieldFormatterElement({
@@ -35,9 +35,11 @@ export function FieldFormatterElement({
           }
         />
       </Label.Inline>
-      {fieldFormatter.external === undefined ? (
-        <FieldFormatterFields
+      {fieldFormatter.external === undefined &&
+      typeof fieldFormatter.table === 'object' ? (
+        <FieldFormatterParts
           fieldFormatter={[fieldFormatter, setFieldFormatter]}
+          table={fieldFormatter.table}
         />
       ) : (
         <ErrorMessage>{resourcesText.editorNotAvailable()}</ErrorMessage>
