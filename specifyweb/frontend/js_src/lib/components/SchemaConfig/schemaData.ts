@@ -65,7 +65,7 @@ export const fetchSchemaData = async (): Promise<RawSchemaData> =>
         .map(([name, formatter]) => ({
           name,
           isSystem: formatter.isSystem,
-          value: formatter.valueOrWild(),
+          value: formatter.defaultValue,
         }))
         .filter(({ value }) => value)
     ),
