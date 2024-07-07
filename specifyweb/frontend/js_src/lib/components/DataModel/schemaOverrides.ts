@@ -30,7 +30,7 @@ export type TableConfigOverwrite =
   | 'system';
 
 type FieldConfigOverwrite = Partial<{
-  accessibility:
+  readonly accessibility:
     | 'optional' // Makes a required field optional
     | 'required'
     // Removes a field from the mapper (but not from Query Builder)
@@ -39,7 +39,7 @@ type FieldConfigOverwrite = Partial<{
     | 'hidden';
 
   // Indicates white space should not be ignored in the field
-  whiteSpaceSensitive: true;
+  readonly whiteSpaceSensitive: true;
 }>;
 
 const tableOverwrites: Partial<RR<keyof Tables, TableConfigOverwrite>> = {
