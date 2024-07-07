@@ -1,9 +1,9 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import { useValidation } from '../../hooks/useValidation';
+import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import { queryText } from '../../localization/query';
 import { resourcesText } from '../../localization/resources';
 import type { GetSet } from '../../utils/types';
 import { localized } from '../../utils/types';
@@ -50,7 +50,7 @@ export function FieldFormatterParts({
               <th>{resourcesText.type()}</th>
               <th>{commonText.size()}</th>
               <th>{resourcesText.hint()}</th>
-              <th>{formsText.autoNumber()}</th>
+              <th />
               <th />
             </tr>
           </thead>
@@ -117,7 +117,7 @@ function Part({
       handleChange({
         ...part,
         placeholder: fieldFormatterTypeMapper.numeric.buildPlaceholder(
-          part.size
+          part.size ?? 1
         ),
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -128,23 +128,14 @@ function Part({
     part.type === 'separator' ||
     part.type === 'year';
 
-  const placeholderSize = enforcePlaceholderSize ? part.size : undefined;
-
-  /**
-   * While native browser validation does length enforcement, it only does so
-   * when the field value is changed by the user - if field already had
-   * incorrect value, or if validation requirement changed (because size field
-   * was changed), browser won't automatically re-validate so we have to
-   */
-  const requestedSize = placeholderSize ?? part.placeholder.length;
-  const actualSize = part.placeholder.length;
-  const { validationRef } = useValidation(
-    actualSize > requestedSize
-      ? queryText.tooLongErrorMessage({ maxLength: requestedSize })
-      : actualSize < requestedSize
-      ? queryText.tooShortErrorMessage({ minLength: requestedSize })
-      : undefined
-  );
+  React.useEffect(() => {
+    if (enforcePlaceholderSize)
+      handleChange({
+        ...part,
+        size: part.placeholder.length,
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [part.placeholder, enforcePlaceholderSize]);
 
   return (
     <tr>
@@ -152,7 +143,7 @@ function Part({
         <Select
           aria-label={resourcesText.type()}
           disabled={isReadOnly}
-          value={part.type}
+          value={part.type ?? 'constant'}
           onValueChange={(newType): void =>
             handleChange({
               ...part,
@@ -170,6 +161,8 @@ function Part({
       <td>
         <Input.Integer
           aria-label={commonText.size()}
+          disabled={enforcePlaceholderSize}
+          isReadOnly={isReadOnly}
           min={0}
           required
           value={part.size}
@@ -179,25 +172,24 @@ function Part({
               size,
             })
           }
-          isReadOnly={isReadOnly}
-          // Size is hardcoded to 4 for year
-          disabled={part.type === 'year'}
         />
       </td>
       <td>
         <Input.Text
           aria-label={resourcesText.hint()}
           disabled={part.type === 'year'}
-          forwardRef={validationRef}
           isReadOnly={isReadOnly}
-          maxLength={placeholderSize}
-          minLength={placeholderSize}
           required
-          value={part.placeholder}
+          value={
+            part.type === 'regex'
+              ? part.regexPlaceholder ?? ''
+              : part.placeholder
+          }
           onValueChange={(placeholder): void =>
             handleChange({
               ...part,
-              placeholder,
+              [part.type === 'regex' ? 'regexPlaceholder' : 'placeholder']:
+                placeholder,
             })
           }
         />
@@ -231,6 +223,16 @@ function Part({
             />
             {formsText.autoNumberByYear()}
           </Label.Inline>
+        ) : part.type === 'regex' ? (
+          <RegexField
+            value={part.placeholder}
+            onChange={(placeholder): void =>
+              handleChange({
+                ...part,
+                placeholder,
+              })
+            }
+          />
         ) : undefined}
       </td>
       <td>
@@ -246,5 +248,37 @@ function Part({
         )}
       </td>
     </tr>
+  );
+}
+
+function RegexField({
+  value,
+  onChange: handleChange,
+}: {
+  readonly value: LocalizedString;
+  readonly onChange: (newValue: LocalizedString) => void;
+}): JSX.Element {
+  const isReadOnly = React.useContext(ReadOnlyContext);
+  const [pendingValue, setPendingValue] = useTriggerState(value);
+  return (
+    <Input.Text
+      aria-label={resourcesText.pattern()}
+      isReadOnly={isReadOnly}
+      placeholder={resourcesText.pattern()}
+      required
+      value={pendingValue}
+      onBlur={({ target }): void => {
+        try {
+          // Regex may be coming from the user, thus disable strict mode
+          // eslint-disable-next-line require-unicode-regexp
+          void new RegExp(target.value);
+          handleChange(target.value as LocalizedString);
+        } catch (error: unknown) {
+          target.setCustomValidity(String(error));
+          target.reportValidity();
+        }
+      }}
+      onValueChange={setPendingValue}
+    />
   );
 }
