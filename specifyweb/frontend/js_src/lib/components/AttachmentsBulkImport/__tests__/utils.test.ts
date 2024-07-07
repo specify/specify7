@@ -1,4 +1,5 @@
-import { LocalizedString } from 'typesafe-i18n';
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { requireContext } from '../../../tests/helpers';
 import { formatterToParser } from '../../../utils/parser/definitions';
 import type { IR, RA } from '../../../utils/types';
