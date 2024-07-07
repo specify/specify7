@@ -17,6 +17,7 @@ import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import type { SpLocaleContainerItem } from '../DataModel/types';
 import { ResourceLink } from '../Molecules/ResourceLink';
@@ -73,6 +74,13 @@ export function SchemaConfigFormat({
       />
       <FormatterLine
         {...lineProps}
+        extraComponents={
+          <FieldFormatterEditing
+            schemaData={schemaData}
+            table={field.table}
+            value={item.format}
+          />
+        }
         label={schemaText.formatted()}
         name="formatted"
         value={item.format}
@@ -344,4 +352,49 @@ function WebLinkEditing({
       />
     </>
   ) : null;
+}
+
+function FieldFormatterEditing({
+  table,
+  value,
+  schemaData,
+}: {
+  readonly table: SpecifyTable;
+  readonly value: string | null;
+  readonly schemaData: SchemaData;
+}): JSX.Element | null {
+  const index = schemaData.uiFormatters
+    .filter((formatter) => formatter.tableName === table.name)
+    .findIndex(({ name }) => name === value);
+  const resourceId = appResourceIds.UIFormatters;
+  const navigate = useNavigate();
+  if (resourceId === undefined) return null;
+
+  const baseUrl = `/specify/resources/app-resource/${resourceId}/field-formatters/${table.name}/`;
+  return (
+    <>
+      {typeof index === 'number' && (
+        <Link.Icon
+          className={className.dataEntryEdit}
+          href={`${baseUrl}${index}/`}
+          icon="pencil"
+          title={commonText.edit()}
+          onClick={(event): void => {
+            event.preventDefault();
+            navigate(`${baseUrl}${index}/`);
+          }}
+        />
+      )}
+      <Link.Icon
+        className={className.dataEntryAdd}
+        href={baseUrl}
+        icon="plus"
+        title={commonText.add()}
+        onClick={(event): void => {
+          event.preventDefault();
+          navigate(baseUrl);
+        }}
+      />
+    </>
+  );
 }
