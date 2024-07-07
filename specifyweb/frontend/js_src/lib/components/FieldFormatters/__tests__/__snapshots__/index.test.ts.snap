@@ -3,493 +3,493 @@
 exports[`field formatters are fetched and parsed correctly 1`] = `
 {
   "AccessionNumber": UiFormatter {
-    "fields": [
-      YearField {
+    "isSystem": true,
+    "parts": [
+      YearPart {
         "autoIncrement": false,
         "byYear": true,
-        "pattern": undefined,
+        "placeholder": "YEAR",
+        "regexPlaceholder": undefined,
         "size": 4,
         "type": "year",
-        "value": "YEAR",
       },
-      SeparatorField {
+      SeparatorPart {
         "autoIncrement": false,
         "byYear": false,
-        "pattern": undefined,
+        "placeholder": "-",
+        "regexPlaceholder": undefined,
         "size": 1,
-        "type": "separator",
-        "value": "-",
+        "type": "constant",
       },
-      AlphaNumberField {
+      AlphaNumberPart {
         "autoIncrement": false,
         "byYear": false,
-        "pattern": undefined,
+        "placeholder": "AA",
+        "regexPlaceholder": undefined,
         "size": 2,
-        "type": "alphanumeric",
-        "value": "AA",
+        "type": "alpha",
       },
-      SeparatorField {
+      SeparatorPart {
         "autoIncrement": false,
         "byYear": false,
-        "pattern": undefined,
+        "placeholder": "-",
+        "regexPlaceholder": undefined,
         "size": 1,
-        "type": "separator",
-        "value": "-",
+        "type": "constant",
       },
-      NumericField {
+      NumericPart {
         "autoIncrement": true,
         "byYear": false,
-        "pattern": undefined,
+        "placeholder": "###",
+        "regexPlaceholder": undefined,
         "size": 3,
         "type": "numeric",
-        "value": "###",
       },
     ],
-    "isSystem": true,
     "table": "[table Accession]",
     "title": "AccessionNumber",
   },
   "AccessionNumberByYear": UiFormatter {
-    "fields": [
-      YearField {
+    "isSystem": true,
+    "parts": [
+      YearPart {
         "autoIncrement": false,
         "byYear": true,
-        "pattern": undefined,
+        "placeholder": "YEAR",
+        "regexPlaceholder": undefined,
         "size": 4,
         "type": "year",
-        "value": "YEAR",
       },
-      SeparatorField {
+      SeparatorPart {
         "autoIncrement": false,
         "byYear": false,
-        "pattern": undefined,
+        "placeholder": "-",
+        "regexPlaceholder": undefined,
         "size": 1,
-        "type": "separator",
-        "value": "-",
+        "type": "constant",
       },
-      AlphaNumberField {
+      AlphaNumberPart {
         "autoIncrement": false,
         "byYear": false,
-        "pattern": undefined,
+        "placeholder": "AA",
+        "regexPlaceholder": undefined,
         "size": 2,
-        "type": "alphanumeric",
-        "value": "AA",
+        "type": "alpha",
       },
-      SeparatorField {
+      SeparatorPart {
         "autoIncrement": false,
         "byYear": false,
-        "pattern": undefined,
+        "placeholder": "-",
+        "regexPlaceholder": undefined,
         "size": 1,
-        "type": "separator",
-        "value": "-",
+        "type": "constant",
       },
-      AlphaNumberField {
+      AlphaNumberPart {
         "autoIncrement": false,
         "byYear": false,
-        "pattern": undefined,
+        "placeholder": "AAA",
+        "regexPlaceholder": undefined,
         "size": 3,
-        "type": "alphanumeric",
-        "value": "AAA",
+        "type": "alpha",
       },
     ],
-    "isSystem": true,
     "table": "[table Accession]",
     "title": "AccessionNumberByYear",
   },
   "AccessionStringFormatter": UiFormatter {
-    "fields": [
-      AlphaNumberField {
+    "isSystem": true,
+    "parts": [
+      AlphaNumberPart {
         "autoIncrement": false,
         "byYear": false,
-        "pattern": undefined,
+        "placeholder": "AAAAAAAAAA",
+        "regexPlaceholder": undefined,
         "size": 10,
-        "type": "alphanumeric",
-        "value": "AAAAAAAAAA",
+        "type": "alpha",
       },
     ],
-    "isSystem": true,
     "table": "[table Accession]",
     "title": "AccessionStringFormatter",
   },
   "CatalogNumber": UiFormatter {
-    "fields": [
-      YearField {
+    "isSystem": false,
+    "parts": [
+      YearPart {
         "autoIncrement": false,
         "byYear": false,
-        "pattern": undefined,
+        "placeholder": "YEAR",
+        "regexPlaceholder": undefined,
         "size": 4,
         "type": "year",
-        "value": "YEAR",
       },
-      SeparatorField {
+      SeparatorPart {
         "autoIncrement": false,
         "byYear": false,
-        "pattern": undefined,
+        "placeholder": "-",
+        "regexPlaceholder": undefined,
         "size": 1,
-        "type": "separator",
-        "value": "-",
+        "type": "constant",
       },
-      NumericField {
+      NumericPart {
         "autoIncrement": true,
         "byYear": false,
-        "pattern": undefined,
+        "placeholder": "######",
+        "regexPlaceholder": undefined,
         "size": 6,
         "type": "numeric",
-        "value": "######",
       },
     ],
-    "isSystem": false,
     "table": "[table CollectionObject]",
     "title": "CatalogNumber",
   },
   "CatalogNumberAlphaNumByYear": UiFormatter {
-    "fields": [
-      YearField {
+    "isSystem": false,
+    "parts": [
+      YearPart {
         "autoIncrement": false,
         "byYear": true,
-        "pattern": undefined,
+        "placeholder": "YEAR",
+        "regexPlaceholder": undefined,
         "size": 4,
         "type": "year",
-        "value": "YEAR",
       },
-      SeparatorField {
+      SeparatorPart {
         "autoIncrement": false,
         "byYear": false,
-        "pattern": undefined,
+        "placeholder": "-",
+        "regexPlaceholder": undefined,
         "size": 1,
-        "type": "separator",
-        "value": "-",
+        "type": "constant",
       },
-      NumericField {
+      NumericPart {
         "autoIncrement": true,
         "byYear": false,
-        "pattern": undefined,
+        "placeholder": "######",
+        "regexPlaceholder": undefined,
         "size": 6,
         "type": "numeric",
-        "value": "######",
       },
     ],
-    "isSystem": false,
     "table": "[table CollectionObject]",
     "title": "CatalogNumberAlphaNumByYear",
   },
   "CatalogNumberNumeric": CatalogNumberNumeric {
-    "fields": [
+    "isSystem": true,
+    "parts": [
       CatalogNumberNumericField {
         "autoIncrement": true,
         "byYear": false,
-        "pattern": undefined,
+        "placeholder": "#########",
+        "regexPlaceholder": undefined,
         "size": 9,
         "type": "numeric",
-        "value": "#########",
       },
     ],
-    "isSystem": true,
     "table": "[table CollectionObject]",
     "title": "Catalog Number Numeric",
   },
   "CatalogNumberNumericRegex": UiFormatter {
-    "fields": [
-      RegexField {
+    "isSystem": false,
+    "parts": [
+      RegexPart {
         "autoIncrement": false,
         "byYear": false,
-        "pattern": "####[-A]",
+        "placeholder": "[0-9]{4}(-[A-Z])?",
+        "regexPlaceholder": "####[-A]",
         "size": 1,
         "type": "regex",
-        "value": "[0-9]{4}(-[A-Z])?",
       },
     ],
-    "isSystem": false,
     "table": "[table CollectionObject]",
     "title": "CatalogNumberNumericRegex",
   },
   "Date": UiFormatter {
-    "fields": [],
     "isSystem": true,
+    "parts": [],
     "table": undefined,
     "title": "Date",
   },
   "DeaccessionNumber": UiFormatter {
-    "fields": [
-      YearField {
+    "isSystem": true,
+    "parts": [
+      YearPart {
         "autoIncrement": false,
         "byYear": true,
-        "pattern": undefined,
+        "placeholder": "YEAR",
+        "regexPlaceholder": undefined,
         "size": 4,
         "type": "year",
-        "value": "YEAR",
       },
-      SeparatorField {
+      SeparatorPart {
         "autoIncrement": false,
         "byYear": false,
-        "pattern": undefined,
+        "placeholder": "-",
+        "regexPlaceholder": undefined,
         "size": 1,
-        "type": "separator",
-        "value": "-",
+        "type": "constant",
       },
-      AlphaNumberField {
+      AlphaNumberPart {
         "autoIncrement": false,
         "byYear": false,
-        "pattern": undefined,
+        "placeholder": "AA",
+        "regexPlaceholder": undefined,
         "size": 2,
-        "type": "alphanumeric",
-        "value": "AA",
+        "type": "alpha",
       },
-      SeparatorField {
+      SeparatorPart {
         "autoIncrement": false,
         "byYear": false,
-        "pattern": undefined,
+        "placeholder": "-",
+        "regexPlaceholder": undefined,
         "size": 1,
-        "type": "separator",
-        "value": "-",
+        "type": "constant",
       },
-      NumericField {
+      NumericPart {
         "autoIncrement": false,
         "byYear": false,
-        "pattern": undefined,
+        "placeholder": "###",
+        "regexPlaceholder": undefined,
         "size": 3,
         "type": "numeric",
-        "value": "###",
       },
     ],
-    "isSystem": true,
     "table": "[table Deaccession]",
     "title": "DeaccessionNumber",
   },
   "GiftNumber": UiFormatter {
-    "fields": [
-      YearField {
+    "isSystem": true,
+    "parts": [
+      YearPart {
         "autoIncrement": false,
         "byYear": true,
-        "pattern": undefined,
+        "placeholder": "YEAR",
+        "regexPlaceholder": undefined,
         "size": 4,
         "type": "year",
-        "value": "YEAR",
       },
-      SeparatorField {
+      SeparatorPart {
         "autoIncrement": false,
         "byYear": false,
-        "pattern": undefined,
+        "placeholder": "-",
+        "regexPlaceholder": undefined,
         "size": 1,
-        "type": "separator",
-        "value": "-",
+        "type": "constant",
       },
-      NumericField {
+      NumericPart {
         "autoIncrement": true,
         "byYear": false,
-        "pattern": undefined,
+        "placeholder": "###",
+        "regexPlaceholder": undefined,
         "size": 3,
         "type": "numeric",
-        "value": "###",
       },
     ],
-    "isSystem": true,
     "table": "[table Gift]",
     "title": "GiftNumber",
   },
   "InfoRequestNumber": UiFormatter {
-    "fields": [
-      YearField {
+    "isSystem": true,
+    "parts": [
+      YearPart {
         "autoIncrement": false,
         "byYear": true,
-        "pattern": undefined,
+        "placeholder": "YEAR",
+        "regexPlaceholder": undefined,
         "size": 4,
         "type": "year",
-        "value": "YEAR",
       },
-      SeparatorField {
+      SeparatorPart {
         "autoIncrement": false,
         "byYear": false,
-        "pattern": undefined,
+        "placeholder": "-",
+        "regexPlaceholder": undefined,
         "size": 1,
-        "type": "separator",
-        "value": "-",
+        "type": "constant",
       },
-      NumericField {
+      NumericPart {
         "autoIncrement": true,
         "byYear": false,
-        "pattern": undefined,
+        "placeholder": "###",
+        "regexPlaceholder": undefined,
         "size": 3,
         "type": "numeric",
-        "value": "###",
       },
     ],
-    "isSystem": true,
     "table": "[table InfoRequest]",
     "title": "InfoRequestNumber",
   },
   "KUITeach": CatalogNumberNumeric {
-    "fields": [
+    "isSystem": true,
+    "parts": [
       CatalogNumberNumericField {
         "autoIncrement": true,
         "byYear": false,
-        "pattern": undefined,
+        "placeholder": "#########",
+        "regexPlaceholder": undefined,
         "size": 9,
         "type": "numeric",
-        "value": "#########",
       },
     ],
-    "isSystem": true,
     "table": "[table CollectionObject]",
     "title": "Catalog Number Numeric",
   },
   "LoanNumber": UiFormatter {
-    "fields": [
-      YearField {
+    "isSystem": true,
+    "parts": [
+      YearPart {
         "autoIncrement": false,
         "byYear": true,
-        "pattern": undefined,
+        "placeholder": "YEAR",
+        "regexPlaceholder": undefined,
         "size": 4,
         "type": "year",
-        "value": "YEAR",
       },
-      SeparatorField {
+      SeparatorPart {
         "autoIncrement": false,
         "byYear": false,
-        "pattern": undefined,
+        "placeholder": "-",
+        "regexPlaceholder": undefined,
         "size": 1,
-        "type": "separator",
-        "value": "-",
+        "type": "constant",
       },
-      NumericField {
+      NumericPart {
         "autoIncrement": true,
         "byYear": false,
-        "pattern": undefined,
+        "placeholder": "###",
+        "regexPlaceholder": undefined,
         "size": 3,
         "type": "numeric",
-        "value": "###",
       },
     ],
-    "isSystem": true,
     "table": "[table Loan]",
     "title": "LoanNumber",
   },
   "NumericBigDecimal": UiFormatter {
-    "fields": [
-      NumericField {
+    "isSystem": true,
+    "parts": [
+      NumericPart {
         "autoIncrement": false,
         "byYear": false,
-        "pattern": undefined,
+        "placeholder": "###############",
+        "regexPlaceholder": undefined,
         "size": 15,
         "type": "numeric",
-        "value": "###############",
       },
     ],
-    "isSystem": true,
     "table": undefined,
     "title": "NumericBigDecimal",
   },
   "NumericByte": UiFormatter {
-    "fields": [
-      NumericField {
+    "isSystem": true,
+    "parts": [
+      NumericPart {
         "autoIncrement": false,
         "byYear": false,
-        "pattern": undefined,
+        "placeholder": "###",
+        "regexPlaceholder": undefined,
         "size": 3,
         "type": "numeric",
-        "value": "###",
       },
     ],
-    "isSystem": true,
     "table": undefined,
     "title": "NumericByte",
   },
   "NumericDouble": UiFormatter {
-    "fields": [
-      NumericField {
+    "isSystem": true,
+    "parts": [
+      NumericPart {
         "autoIncrement": false,
         "byYear": false,
-        "pattern": undefined,
+        "placeholder": "##########",
+        "regexPlaceholder": undefined,
         "size": 10,
         "type": "numeric",
-        "value": "##########",
       },
     ],
-    "isSystem": true,
     "table": undefined,
     "title": "NumericDouble",
   },
   "NumericFloat": UiFormatter {
-    "fields": [
-      NumericField {
+    "isSystem": true,
+    "parts": [
+      NumericPart {
         "autoIncrement": false,
         "byYear": false,
-        "pattern": undefined,
+        "placeholder": "##########",
+        "regexPlaceholder": undefined,
         "size": 10,
         "type": "numeric",
-        "value": "##########",
       },
     ],
-    "isSystem": true,
     "table": undefined,
     "title": "NumericFloat",
   },
   "NumericInteger": UiFormatter {
-    "fields": [
-      NumericField {
+    "isSystem": true,
+    "parts": [
+      NumericPart {
         "autoIncrement": false,
         "byYear": false,
-        "pattern": undefined,
+        "placeholder": "##########",
+        "regexPlaceholder": undefined,
         "size": 10,
         "type": "numeric",
-        "value": "##########",
       },
     ],
-    "isSystem": true,
     "table": undefined,
     "title": "NumericInteger",
   },
   "NumericLong": UiFormatter {
-    "fields": [
-      NumericField {
+    "isSystem": true,
+    "parts": [
+      NumericPart {
         "autoIncrement": false,
         "byYear": false,
-        "pattern": undefined,
+        "placeholder": "##########",
+        "regexPlaceholder": undefined,
         "size": 10,
         "type": "numeric",
-        "value": "##########",
       },
     ],
-    "isSystem": true,
     "table": undefined,
     "title": "NumericLong",
   },
   "NumericShort": UiFormatter {
-    "fields": [
-      NumericField {
+    "isSystem": true,
+    "parts": [
+      NumericPart {
         "autoIncrement": false,
         "byYear": false,
-        "pattern": undefined,
+        "placeholder": "#####",
+        "regexPlaceholder": undefined,
         "size": 5,
         "type": "numeric",
-        "value": "#####",
       },
     ],
-    "isSystem": true,
     "table": undefined,
     "title": "NumericShort",
   },
   "PartialDate": UiFormatter {
-    "fields": [],
     "isSystem": false,
+    "parts": [],
     "table": undefined,
     "title": "PartialDate",
   },
   "PartialDateMonth": UiFormatter {
-    "fields": [],
     "isSystem": false,
+    "parts": [],
     "table": undefined,
     "title": "PartialDateMonth",
   },
   "PartialDateYear": UiFormatter {
-    "fields": [],
     "isSystem": false,
+    "parts": [],
     "table": undefined,
     "title": "PartialDateYear",
   },
   "SearchDate": UiFormatter {
-    "fields": [],
     "isSystem": true,
+    "parts": [],
     "table": undefined,
     "title": "SearchDate",
   },

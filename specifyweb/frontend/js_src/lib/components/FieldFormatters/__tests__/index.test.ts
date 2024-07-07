@@ -30,9 +30,7 @@ describe('placeholder', () => {
       '####[-A]'
     ));
   test('accession number', () =>
-    expect(getSecondFormatter()?.placeholder).toBe(
-      '^(YEAR|\\d{4})(-)([a-zA-Z0-9]{2})(-)(###|\\d{3})$'
-    ));
+    expect(getSecondFormatter()?.placeholder).toBe('2022-AA-###'));
 });
 
 describe('regex', () => {
