@@ -99,7 +99,7 @@ export function Fields({
           </tbody>
         </table>
       )}
-      {isReadOnly ? null : (
+      {isReadOnly ? undefined : (
         <div className="flex gap-2 pt-2">
           <Button.Secondary
             onClick={(): void =>
@@ -191,7 +191,7 @@ function Field({
         </td>
       )}
       <td>
-        {isReadOnly ? null : (
+        {isReadOnly ? undefined : (
           <>
             <Button.Small
               aria-label={commonText.remove()}

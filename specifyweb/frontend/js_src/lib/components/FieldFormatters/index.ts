@@ -61,7 +61,8 @@ export function resolveFieldFormatter(
     );
     return new UiFormatter(
       formatter.isSystem,
-      formatter.title ?? formatter.name,
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+      formatter.title || formatter.name,
       parts,
       formatter.table,
       formatter.field

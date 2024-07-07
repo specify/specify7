@@ -27,18 +27,20 @@ export const fieldFormattersRoutes = toReactRoutes([
           ),
         children: [
           {
-            index: true,
             element: async () =>
               import('./List').then(
                 ({ FieldFormattersList }) => FieldFormattersList
               ),
-          },
-          {
-            path: ':index',
-            element: async () =>
-              import('./Element').then(
-                ({ FieldFormatterWrapper }) => FieldFormatterWrapper
-              ),
+            children: [
+              { index: true },
+              {
+                path: ':index',
+                element: async () =>
+                  import('./Element').then(
+                    ({ FieldFormatterWrapper }) => FieldFormatterWrapper
+                  ),
+              },
+            ],
           },
         ],
       },
