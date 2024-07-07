@@ -35,12 +35,8 @@ export function FieldFormatterParts({
     <>
       {parts.length === 0 ? undefined : (
         <table
-          /*
-           * REFACTOR: replace min-w-[35rem] with a container query that replaces
-           *   table layout with list layout
-           */
           className={`
-            grid-table min-w-[35rem]
+            grid-table
             grid-cols-[auto_4rem_auto_auto_min-content]
             gap-2 [&_td]:!items-stretch
           `}
@@ -68,7 +64,7 @@ export function FieldFormatterParts({
           </tbody>
         </table>
       )}
-      {isReadOnly ? null : (
+      {isReadOnly ? undefined : (
         <div className="flex gap-2 pt-2">
           <Button.Secondary
             onClick={(): void =>
@@ -236,7 +232,7 @@ function Part({
         ) : undefined}
       </td>
       <td>
-        {isReadOnly ? null : (
+        {isReadOnly ? undefined : (
           <Button.Small
             aria-label={commonText.remove()}
             title={commonText.remove()}

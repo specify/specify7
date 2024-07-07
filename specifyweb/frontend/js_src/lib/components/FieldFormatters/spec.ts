@@ -65,7 +65,7 @@ export const fieldFormattersSpec = f.store(() =>
 /**
  * Specify 6 hardcoded special autonumbering behavior for a few tables.
  * Accession table has special auto numbering, and collection object has
- * two. Trying our best here to match the intended semantics for backwards
+ * two. Doing a best effort match of intended semantics for backwards
  * compatibility.
  */
 function inferLegacyAutoNumber(

@@ -72,7 +72,7 @@ export function XmlEditorShell<
     <Dialog
       buttons={
         <>
-          {isReadOnly ? null : (
+          {isReadOnly ? undefined : (
             <Button.Danger
               onClick={(): void => {
                 setItems(removeItem(items, index));
