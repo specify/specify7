@@ -15,7 +15,6 @@ import type { LiteralField } from '../DataModel/specifyField';
 import { softError } from '../Errors/assert';
 import { ResourceMapping } from '../Formatters/Components';
 import { ResourcePreview } from '../Formatters/Preview';
-import { useRightAlignClassName } from '../FormFields/Field';
 import { hasTablePermission } from '../Permissions/helpers';
 import type { MappingLineData } from '../WbPlanView/navigator';
 import type { UiFormatter } from '.';
@@ -34,9 +33,8 @@ export function FieldFormatterElement({
     <>
       <Label.Inline>
         <Input.Checkbox
-          checked={fieldFormatter.autoNumber !== undefined}
+          checked={fieldFormatter.autoNumber}
           isReadOnly={isReadOnly}
-          required
           onValueChange={(autoNumber): void =>
             setFieldFormatter({ ...fieldFormatter, autoNumber })
           }
@@ -169,14 +167,12 @@ function FieldFormatterPreviewField({
   const parser = useParser(field);
 
   const validationAttributes = getValidationAttributes(parser);
-  const rightAlignClassName = useRightAlignClassName(parser.type, false);
   return resolvedFormatter === undefined ? null : (
     <Label.Block>
       {`${resourcesText.exampleField()} ${
         isConforming ? '' : resourcesText.nonConformingInline()
       }`}
       <Input.Generic
-        className={rightAlignClassName}
         value={value}
         onValueChange={setValue}
         {...validationAttributes}

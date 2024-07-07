@@ -136,9 +136,8 @@ const partSpec = f.store(() =>
       syncers.enum(Object.keys(fieldFormatterTypeMapper))
     ),
     size: pipe(
-      syncers.xmlAttribute('size', 'required'),
-      syncers.maybe(syncers.toDecimal),
-      syncers.default<number>(1)
+      syncers.xmlAttribute('size', 'skip'),
+      syncers.maybe(syncers.toDecimal)
     ),
     /*
      * For most parts, this is a human-friendly placeholder like ### or ABC.

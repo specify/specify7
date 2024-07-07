@@ -539,7 +539,7 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Попередній перегляд',
   },
   previewExplainer: {
-    'en-us': 'Search your collection records to preview the record formatter',
+    'en-us': 'Search your collection records to preview the formatter',
     'de-ch': `
       Durchsuchen Sie Ihre Sammlungsdatensätze, um eine Vorschau des
       Datensatzformatierers anzuzeigen
@@ -553,12 +553,12 @@ export const resourcesText = createDictionary({
       formateur d'enregistrements
     `,
     'ru-ru': `
-      Выполните поиск в записях своей коллекции, чтобы просмотреть средство
-      форматирования записей.
+      Выполните поиск в записях своей коллекции, чтобы просмотреть
+      форматирования.
     `,
     'uk-ua': `
-      Виконайте пошук у своїх записах колекції, щоб переглянути інструмент
-      форматування записів
+      Виконайте пошук у своїх записах колекції, щоб переглянути
+      форматування 
     `,
   },
   editorNotAvailable: {
@@ -900,6 +900,9 @@ export const resourcesText = createDictionary({
     'fr-fr': "Champ d'exemple",
     'ru-ru': 'Пример поля',
     'uk-ua': 'Приклад поле',
+  },
+  pattern: {
+    'en-us': 'Pattern',
   },
   parentCogSameAsChild: {
     'en-us': 'A Collection Object Group cannot be a parent to itself',

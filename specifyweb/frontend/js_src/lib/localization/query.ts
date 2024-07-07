@@ -742,12 +742,6 @@ export const queryText = createDictionary({
       {maxLength:number|formatted}
     `,
   },
-  tooShortErrorMessage: {
-    'en-us': `
-      Field value is too short. Min allowed length is
-      {minLength:number|formatted}
-    `,
-  },
   future: {
     'en-us': 'in the future',
     'de-ch': 'Exportdatei wird erstellt',

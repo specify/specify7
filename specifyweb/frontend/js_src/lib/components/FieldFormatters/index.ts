@@ -149,7 +149,7 @@ abstract class Part {
   public abstract readonly type: FieldFormatterPart['type'];
 
   public constructor({
-    size,
+    size = 1,
     placeholder,
     autoIncrement,
     byYear,
@@ -215,7 +215,7 @@ class NumericPart extends Part {
   public constructor(options: Omit<PartOptions, 'placeholder'>) {
     super({
       ...options,
-      placeholder: NumericPart.buildPlaceholder(options.size),
+      placeholder: NumericPart.buildPlaceholder(options.size ?? 1),
     });
   }
 
