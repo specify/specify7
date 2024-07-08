@@ -7570,13 +7570,13 @@ class CollectionObjectGroupJoin(models.Model): # aka. CoJo or CogJoin
     parent = models.ForeignKey('CollectionObjectGroup', db_column='ParentID', related_name='parentcojos', null=False, on_delete=models.CASCADE)
     
     # Relationships: One-to-One
-    cog = models.ForeignKey('CollectionObjectGroup', db_column='COGID', related_name='cojo', null=True, on_delete=models.CASCADE)
-    co = models.ForeignKey('CollectionObject', db_column='COID', related_name='cojo', null=True, on_delete=models.CASCADE)
+    cog = models.OneToOneField('CollectionObjectGroup', db_column='COGID', related_name='cojo', null=True, on_delete=models.CASCADE)
+    co = models.OneToOneField('CollectionObject', db_column='COID', related_name='cojo', null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'collectionobjectgroupjoin'
         ordering = ()
-        unique_together = (('parent', 'cog'), ('parent', 'co')) # Adds constaint on DB, OneToOneField is just enforced on the Django side
+        unique_together = (('parent', 'cog'), ('parent', 'co'))
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     save = partialmethod(custom_save)

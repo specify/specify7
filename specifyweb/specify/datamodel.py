@@ -1594,6 +1594,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='visibilitySetBy', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='VisibilitySetByID'),
             Relationship(name='voucherRelationships', type='one-to-many',required=False, relatedModelName='VoucherRelationship', otherSideName='collectionObject', dependent=True),
             Relationship(name='coType', type='many-to-one', required=True, relatedModelName='CollectionObjectType', column='COTypeID'),
+            Relationship(name='cojo', type='ono-to-one', required=False, relatedModelName='CollectionObjectGroupJoin', otherSideName='co'),
         ],
         fieldAliases=[
 
@@ -8266,7 +8267,8 @@ datamodel = Datamodel(tables=[
         relationships=[
             Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID'),
             Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='cojo', type='ono-to-one', required=False, relatedModelName='CollectionObjectGroupJoin', otherSideName='cog'),
         ],
         fieldAliases=[
 
@@ -8297,8 +8299,8 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='parent', type='many-to-one', required=True, relatedModelName='CollectionObjectGroup', column='ParentID'),
-            Relationship(name='cog', type='many-to-one', required=False, relatedModelName='CollectionObjectGroup', column='COGID'), # TODO: Change to One-to-One once unit tests pass
-            Relationship(name='co', type='many-to-one', required=False, relatedModelName='CollectionObject', column='COID'), # TODO: Change to One-to-One once unit tests pass
+            Relationship(name='cog', type='one-to-one', required=False, relatedModelName='CollectionObjectGroup', column='COGID'),
+            Relationship(name='co', type='one-to-one', required=False, relatedModelName='CollectionObject', column='COID'),
         ],
         fieldAliases=[
 
