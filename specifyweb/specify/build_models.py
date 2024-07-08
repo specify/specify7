@@ -73,6 +73,7 @@ def make_model(module, table, datamodel):
         # It will manually send the pre_delete signal for the django model object.
         # The pre_delete function must contain logic that will prevent ForeignKey constraints from being violated.
         # This is needed because database constraints are checked before pre_delete signals are sent.
+        # This is not currently used, but is here for future use.
         pre_delete.send(sender=self.__class__, instance=self)
 
     def save_timestamped(self, *args, **kwargs):
@@ -95,6 +96,7 @@ def make_model(module, table, datamodel):
 
     attrs['Meta'] = Meta
     if table.django_name in tables_with_pre_constraints_delete:
+        # This is not currently used, but is here for future use.
         attrs['pre_constraints_delete'] = pre_constraints_delete
 
     if has_timestamp_fields:

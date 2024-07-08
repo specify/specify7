@@ -68,7 +68,7 @@ export const attachmentsText = createDictionary({
   unableToFindRelatedRecord: {
     'en-us': 'Unable to find related record',
     'es-es': 'No se puede encontrar el registro relacionado',
-    'fr-fr': "Impossible de trouver l'enregistrement associé",
+    'fr-fr': "Impossible de trouver l'enregistrement lié",
     'ru-ru': 'Не удалось найти связанную запись',
     'uk-ua': 'Неможливо знайти відповідний запис',
     'de-ch': 'Verknüpfter Datensatz kann nicht gefunden werden',
@@ -147,7 +147,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Incorrectly Formatted',
     'de-ch': 'Falsch formatiert',
     'es-es': 'Formateado incorrectamente',
-    'fr-fr': 'Mal formaté',
+    'fr-fr': 'Incorrectement formaté',
     'ru-ru': 'Неверный формат',
     'uk-ua': 'Неправильно відформатований',
   },
@@ -191,7 +191,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Error de coincidencia',
     'fr-fr': 'Erreur de correspondance',
     'ru-ru': 'Ошибка совпадения',
-    'uk-ua': 'Помилка відповідності',
+    'uk-ua': 'Помилка збігу',
   },
   errorReadingFile: {
     'en-us': 'Error reading file',
@@ -200,7 +200,7 @@ export const attachmentsText = createDictionary({
     'ru-ru': 'Ошибка чтения файла',
     'de-ch':
       'Wählen Sie Dateien aus oder ziehen Sie sie hierher, um zu beginnen.',
-    'uk-ua': 'Щоб почати, виберіть файли або перетягніть їх сюди.',
+    'uk-ua': 'Виберіть файли або перетягніть їх сюди, щоб почати.',
   },
   unhandledFatalResourceError: {
     'en-us': 'Unhandled fatal resource error:',
@@ -222,7 +222,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'New Attachment Data Set {date: string}',
     'de-ch': 'Neuer Anhangsdatensatz {date: string}',
     'es-es': 'Nuevo conjunto de datos adjuntos {date: string}',
-    'fr-fr': 'Nouvel ensemble de données de pièces jointes {date : chaîne}',
+    'fr-fr': 'Nouveau jeu de données de pièces jointes {date: string}',
     'ru-ru': 'Новый набор данных вложения {дата: строка}',
     'uk-ua': 'Новий набір даних вкладення {date: string}',
   },
@@ -231,7 +231,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Neuer Anhangsdatensatz',
     'es-es': 'Nuevo conjunto de datos adjuntos',
     'uk-ua': 'Новий набір даних вкладення',
-    'fr-fr': 'Fichiers en double trouvés',
+    'fr-fr': 'Nouveau jeu de données de pièces jointes',
     'ru-ru': 'Обнаружены повторяющиеся файлы',
   },
   uploadInterrupted: {
@@ -272,7 +272,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Rollback Interrupted',
     'de-ch': 'Rollback unterbrochen',
     'es-es': 'Reversión interrumpida',
-    'fr-fr': 'Restauration interrompue',
+    'fr-fr': 'Retour en arrière interrompu',
     'ru-ru': 'Откат прерван',
     'uk-ua': 'Відкат перервано',
   },
@@ -286,8 +286,8 @@ export const attachmentsText = createDictionary({
       wurden möglicherweise gelöscht
     `,
     'fr-fr': `
-      La restauration était en cours lorsqu'une interruption s'est produite.
-      Certains fichiers peuvent avoir été supprimés
+      Le retour en arrière était en cours lorsqu'une interruption s'est
+      produite. Certains fichiers peuvent avoir été supprimés
     `,
     'ru-ru': `
       Откат выполнялся, когда произошло прерывание. Некоторые файлы могли быть
@@ -336,7 +336,7 @@ export const attachmentsText = createDictionary({
     `,
     'es-es': 'Interrumpido. Reintentando en [X25X]',
     'fr-fr': `
-      Le téléchargement des pièces jointes créera des pièces jointes dans le
+      Le téléchargement des pièces jointes créera des pièces jointes sur le
       serveur d'actifs et dans la base de données Specify.
     `,
     'ru-ru': `
@@ -353,7 +353,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Unterbrochen',
     'es-es': 'interrumpido',
     'fr-fr': 'Interrompu',
-    'ru-ru': 'Прерванный',
+    'ru-ru': 'Прервано',
     'uk-ua': 'Перерваний',
   },
   tryNow: {
@@ -400,7 +400,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'No match',
     'de-ch': 'Keine Übereinstimmung',
     'es-es': 'Sin coincidencia',
-    'fr-fr': 'Aucune concordance',
+    'fr-fr': 'Aucune correspondance',
     'ru-ru': 'Не совпадает',
     'uk-ua': 'Немає відповідності',
   },
@@ -449,7 +449,7 @@ export const attachmentsText = createDictionary({
       beseitigen.
     `,
     'es-es': 'Múltiples coincidencias. Haga clic para eliminar la ambigüedad',
-    'fr-fr': "Plusieurs correspondances. Cliquez pour lever l'ambiguïté",
+    'fr-fr': 'Plusieurs correspondances. Cliquez pour clarifier',
     'ru-ru': 'Несколько матчей. Нажмите, чтобы устранить неоднозначность',
     'uk-ua': 'Кілька збігів. Натисніть, щоб усунути неоднозначність',
   },
@@ -463,7 +463,7 @@ export const attachmentsText = createDictionary({
   },
   correctlyFormatted: {
     'en-us': 'Correctly Formatted',
-    'de-ch': 'Korrekt formatiert',
+    'de-ch': 'Richtig formatiert',
     'es-es': 'Formateado correctamente',
     'fr-fr': 'Correctement formaté',
     'ru-ru': 'Правильно отформатировано',
@@ -491,7 +491,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'En archivo',
     'ru-ru': 'В файле',
     'uk-ua': 'У файлі',
-    'fr-fr': 'Pas de fichier',
+    'fr-fr': 'Dans le fichier',
   },
   duplicateFilesFound: {
     'en-us': 'Duplicate Files Found',
@@ -544,7 +544,8 @@ export const attachmentsText = createDictionary({
       La reversión estaba en curso cuando se produjo una interrupción. Es
       posible que algunos archivos hayan sido eliminados.
     `,
-    'fr-fr': 'Rechercher plus de pièces jointes',
+    'fr-fr':
+      "Arrêté à cause d'une erreur de téléchargement du précédent fichier",
     'ru-ru': 'Ищите больше вложений',
     'uk-ua': 'Шукайте більше вкладень',
   },
@@ -579,7 +580,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Progress',
     'de-ch': 'Fortschritt',
     'es-es': 'Progreso',
-    'fr-fr': 'Progrès',
+    'fr-fr': 'En cours',
     'ru-ru': 'Прогресс',
     'uk-ua': 'Прогрес',
   },
@@ -587,7 +588,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Rollback Results',
     'de-ch': 'Rollback-Ergebnisse',
     'es-es': 'Resultados de reversión',
-    'fr-fr': 'Résultats de la restauration',
+    'fr-fr': 'Résultats du retour en arrière',
     'ru-ru': 'Результаты отката',
     'uk-ua': 'Результати відкату',
   },
@@ -605,8 +606,8 @@ export const attachmentsText = createDictionary({
       datos han sido {acción: cadena}.
     `,
     'fr-fr': `
-      {success: number} sur les {total: number} pièces jointes de l'ensemble de
-      données étaient {action: string}.
+      {success : number} sur les {total : number} pièces jointes du jeu de
+      données étaient {action : string}.
     `,
     'ru-ru': `
       {success: Number} из {total: Number} вложений в наборе данных составило

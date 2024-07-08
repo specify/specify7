@@ -99,6 +99,14 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       icon: icons.rss,
     },
   },
+  [commonText.import()]: {
+    localityUpdate: {
+      title: headerText.localityUpdateTool(),
+      enabled: () => userInformation.isadmin,
+      url: '/specify/import/locality-dataset/',
+      icon: icons.globe,
+    },
+  },
   [headerText.documentation()]: {
     aboutSpecify: {
       title: welcomeText.aboutSpecify(),

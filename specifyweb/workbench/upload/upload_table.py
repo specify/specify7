@@ -10,7 +10,8 @@ from specifyweb.specify.datamodel import datamodel
 from specifyweb.specify.load_datamodel import Field, Relationship
 import specifyweb.stored_queries.models as sql_models
 from .column_options import ColumnOptions, ExtendedColumnOptions
-from .parsing import parse_many, ParseResult, ParseFailure
+from .parsing import parse_many, ParseResult, WorkBenchParseFailure
+
 from .upload_result import UploadResult, Uploaded, NoMatch, Matched, \
     MatchedMultiple, NullRecord, FailedBusinessRule, ReportInfo, \
     PicklistAddition, ParseFailures, PropagatedFailure
@@ -379,7 +380,7 @@ class BoundUploadTable(NamedTuple):
         missing_requireds = [
             # TODO: there should probably be a different structure for
             # missing required fields than ParseFailure
-            ParseFailure(parsedField.missing_required, {}, parsedField.column)
+            WorkBenchParseFailure(parsedField.missing_required, {}, parsedField.column)
             for parsedField in self.parsedFields
             if parsedField.missing_required is not None
         ]

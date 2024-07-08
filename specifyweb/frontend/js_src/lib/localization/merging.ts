@@ -80,7 +80,7 @@ export const mergingText = createDictionary({
     'de-ch': 'Zusammenführen {field:string}',
     'es-es': 'Fusionar {field:string}',
     'fr-fr': 'Fusionner {field:string}',
-    'uk-ua': 'Об’єднати {field:string}',
+    'uk-ua': "Об'єднати {field:string}",
   },
   autoPopulate: {
     'en-us': 'Auto-populate',
@@ -145,7 +145,7 @@ export const mergingText = createDictionary({
       vorübergehenden Nichtverfügbarkeit bestimmter Funktionen für
       Specify-Benutzer führen. Bitte bedenken Sie die Auswirkungen auf deren
       Benutzererfahrung. Diese Zusammenführung kann nicht rückgängig gemacht
-      werden
+      werden.
     `,
     'es-es': `
       Antes de continuar, tenga en cuenta que la siguiente acción puede

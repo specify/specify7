@@ -808,7 +808,7 @@ class SQLAlchemyModelTest(TestCase):
     def test_sqlalchemy_model_errors(self):
         for table in spmodels.datamodel.tables:
             table_errors = test_sqlalchemy_model(table)
-            self.assertTrue(len(table_errors) == 0 or table.name in expected_errors)
+            self.assertTrue(len(table_errors) == 0 or table.name in expected_errors, f"Did not find {table.name}. Has errors: {table_errors}")
             if 'not_found' in table_errors:
                 table_errors['not_found'] = sorted(table_errors['not_found'])
             if table_errors:
