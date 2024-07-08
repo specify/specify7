@@ -231,12 +231,10 @@ export function MappingElement({
   const fieldGroups = Object.entries(fieldsData).reduce<
     R<R<CustomSelectElementOptionProps>>
   >((fieldGroups, [fieldName, fieldData]) => {
-    const groupName =
-      fieldData.tableTreeDefName ??
-      getFieldGroupName(
-        fieldData.isHidden ?? false,
-        fieldData.isRequired ?? false
-      );
+    const groupName = getFieldGroupName(
+      fieldData.isHidden ?? false,
+      fieldData.isRequired ?? false
+    );
     fieldGroups[groupName] ??= {};
     fieldGroups[groupName][fieldName] = fieldData;
 
@@ -253,8 +251,7 @@ export function MappingElement({
           selectGroupLabel:
             length === 1
               ? undefined
-              : fieldGroupLabels[groupName as keyof typeof fieldGroupLabels] ??
-                groupName,
+              : fieldGroupLabels[groupName as keyof typeof fieldGroupLabels],
           selectOptionsData: groupFields,
         },
       ])
