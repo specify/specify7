@@ -277,7 +277,6 @@ def collection_dispatch_bulk(request, model) -> HttpResponse:
         resp_objs.append(_obj_to_data(obj, checker))
 
     resp = HttpResponseCreated(toJson(resp_objs), content_type='application/json')
-    # resp = JsonResponse(resp_objs, safe=False, content_type='application/json')
     return resp
 
 def collection_dispatch_bulk_copy(request, model, copies) -> HttpResponse:
@@ -288,7 +287,8 @@ def collection_dispatch_bulk_copy(request, model, copies) -> HttpResponse:
         resp = HttpResponseNotAllowed(['POST'])
 
     data = json.loads(request.body)
-    # resp_objs = []
+    data = dict(filter(lambda item: item[0] != 'id', data.items())) # Remove ID field before making copies
+    # resp_objs = [] # For now, we don't need to return the created objects to avoid sending large amounts of data 
     for _ in range(int(copies)):
         obj = post_resource(
             request.specify_collection,
