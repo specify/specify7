@@ -273,8 +273,9 @@ def collection_dispatch_bulk(request, model) -> HttpResponse:
                 request.GET.get("recordsetid", None),
             )
             resp_objs.append(_obj_to_data(obj, checker))
-        
+
         resp = HttpResponseCreated(toJson(resp_objs),
+                                   safe=False,
                                    content_type='application/json')
 
     else:
