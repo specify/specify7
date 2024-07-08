@@ -92,7 +92,7 @@ msgstr "Bewegung reduzieren"
 #: components/Preferences/UserDefinitions.tsx:128
 #. Used in: Components > Preferences > User Definitions
 msgid "reduceMotionDescription"
-msgstr "Nicht erforderliche Animationen und Übergänge deaktivieren"
+msgstr "Nicht erforderliche Animationen und Übergänge deaktivieren."
 
 #: components/Preferences/UserDefinitions.tsx:149
 #. Used in: Components > Preferences > User Definitions
@@ -104,7 +104,7 @@ msgstr "Transparenz reduzieren"
 msgid "reduceTransparencyDescription"
 msgstr ""
 "Durchsichtige Hintergründe für Benutzeroberflächenkomponenten wann immer "
-"möglich deaktivieren (z. B. Tabellenüberschriften in der Baumansicht)"
+"möglich deaktivieren (z. B. Tabellenüberschriften in der Baumansicht)."
 
 #: components/Preferences/UserDefinitions.tsx:171
 #. Used in: Components > Preferences > User Definitions
@@ -150,7 +150,7 @@ msgstr ""
 "Sie können jede Schriftart angeben, die sich auf Ihrem Computer befindet, "
 "auch wenn diese nicht in der Liste enthalten ist. Eine durch Kommas "
 "getrennte Liste von Schriftarten wird ebenfalls unterstützt, wobei die "
-"zweite Schriftart verwendet wird, wenn die erste nicht verfügbar ist usw"
+"zweite Schriftart verwendet wird, wenn die erste nicht verfügbar ist usw."
 
 #: components/Preferences/Renderers.tsx:197
 #: components/Preferences/Renderers.tsx:199
@@ -244,7 +244,7 @@ msgstr "Durchscheinende Dialoge"
 #: components/Preferences/UserDefinitions.tsx:448
 #. Used in: Components > Preferences > User Definitions
 msgid "translucentDialogDescription"
-msgstr "Dialogfenster mit durchscheinenden Hintergrund"
+msgstr "Dialogfenster mit durchscheinenden Hintergrund."
 
 #: components/Preferences/UserDefinitions.tsx:1248
 #. Used in: Components > Preferences > User Definitions
@@ -282,7 +282,7 @@ msgstr "Warnung für neuen Datensatz anzeigen"
 #: components/Preferences/UserDefinitions.tsx:1781
 #. Used in: Components > Preferences > User Definitions
 msgid "showNewDataSetWarningDescription"
-msgstr "Zeige eine Meldung beim erstellen eines neuen Datensatzes an"
+msgstr "Zeige eine Meldung beim erstellen eines neuen Datensatzes an."
 
 #: components/Preferences/UserDefinitions.tsx:563
 #. Used in: Components > Preferences > User Definitions
@@ -310,14 +310,14 @@ msgstr "Seitentitel aktualisieren"
 msgid "updatePageTitleDescription"
 msgstr ""
 "Titel der Seite so aktualisieren, dass er mit der Kopfzeile des Dialogs "
-"übereinstimmt"
+"übereinstimmt."
 
 #: components/Preferences/UserDefinitions.tsx:746
 #. Used in: Components > Preferences > User Definitions
 msgid "updatePageTitleFormDescription"
 msgstr ""
 "Titel der Seite aktualisieren, damit er mit dem aktuellen Datensatz "
-"übereinstimmt"
+"übereinstimmt."
 
 #: components/Preferences/UserDefinitions.tsx:1054
 #. Used in: Components > Preferences > User Definitions
@@ -354,7 +354,7 @@ msgstr "Beginnt mit (ohne Berücksichtigung der Groß-/Kleinschreibung)"
 msgid "startsWithDescription"
 msgstr ""
 "Suchen Sie nach Werten, die mit einer bestimmten Abfragezeichenfolge "
-"beginnen"
+"beginnen."
 
 #: components/Preferences/UserDefinitions.tsx:1021
 #. Used in: Components > Preferences > User Definitions
@@ -407,7 +407,7 @@ msgstr ""
 msgid "containsSecondDescription"
 msgstr ""
 "Kann _ für jedes einzelne Zeichen oder % für jede beliebige Anzahl von "
-"Zeichen verwenden"
+"Zeichen verwenden."
 
 #: components/Preferences/UserDefinitions.tsx:1038
 #. Used in: Components > Preferences > User Definitions
@@ -419,7 +419,7 @@ msgstr "Übereinstimmende Teilzeichenfolge hervorheben"
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "languageDescription"
-msgstr "Legt Feldüberschriften, Verwendungshinweise und Tabellenüberschriften fest"
+msgstr "Legt Feldüberschriften, Verwendungshinweise und Tabellenüberschriften fest."
 
 #: components/Preferences/UserDefinitions.tsx:462
 #. Used in: Components > Preferences > User Definitions
@@ -437,7 +437,7 @@ msgstr "Waagenschnittstelle"
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "scaleInterfaceDescription"
-msgstr "Skalieren Sie die Benutzeroberfläche entsprechend der Schriftgröße"
+msgstr "Skalieren Sie die Benutzeroberfläche entsprechend der Schriftgröße."
 
 #: components/Preferences/UserDefinitions.tsx:524
 #. Used in: Components > Preferences > User Definitions
@@ -720,7 +720,7 @@ msgstr "Abfragefilter zurücksetzen"
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "clearQueryFiltersDescription"
-msgstr "Löscht alle Abfragefilter beim Ausführen eines Berichts aus einem Formular"
+msgstr "Löscht alle Abfragefilter beim Ausführen eines Berichts aus einem Formular."
 
 #: components/Preferences/UserDefinitions.tsx:1629
 #. Used in: Components > Preferences > User Definitions
@@ -858,7 +858,7 @@ msgstr "Inhalte hinter dem Dialog verwischen"
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "collectionSortOrderDescription"
-msgstr "Dies bestimmt die visuelle Reihenfolge der Sammlungen"
+msgstr "Dies bestimmt die visuelle Reihenfolge der Sammlungen."
 
 #: components/Preferences/UserDefinitions.tsx:1109
 #. Used in: Components > Preferences > User Definitions
@@ -883,7 +883,7 @@ msgid "altClickToSupressNewTabDescription"
 msgstr ""
 "<key>{altKeyName:string}</key>+<key>Klicken</key> Sie auf einen Link, der "
 "normalerweise in einem neuen Tab geöffnet wird, um ihn im aktuellen Tab zu "
-"öffnen"
+"öffnen."
 
 #: components/Preferences/UserDefinitions.tsx:787
 #. Used in: Components > Preferences > User Definitions
@@ -993,7 +993,7 @@ msgstr "Benutzerdefinierte Trennzeichen verwenden"
 msgid "useCustomDelimitersDescription"
 msgstr ""
 "Eine Liste der zu verwendenden Trennzeichen zusätzlich zu den oben "
-"definierten. Setzen Sie ein Trennzeichen pro Zeile"
+"definierten. Setzen Sie ein Trennzeichen pro Zeile."
 
 #: components/Preferences/UserDefinitions.tsx:638
 #: components/Preferences/UserDefinitions.tsx:659
@@ -1001,7 +1001,7 @@ msgstr ""
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "detectAutomaticallyDescription"
-msgstr "Automatische Erkennung anhand des Katalognummernformats"
+msgstr "Automatische Erkennung anhand des Katalognummernformats."
 
 #: components/Preferences/UserDefinitions.tsx:642
 #: components/Preferences/UserDefinitions.tsx:663
@@ -1062,7 +1062,7 @@ msgstr "Indikator für nicht gespeicherte Änderungen anzeigen"
 msgid "showUnsavedIndicatorDescription"
 msgstr ""
 "Ein „*“ im Tab-Titel anzeigen, wenn es im aktuellen Tab nicht gespeicherte "
-"Änderungen gibt"
+"Änderungen gibt."
 
 #: components/Preferences/UserDefinitions.tsx:1585
 #. Used in: Components > Preferences > User Definitions
@@ -1179,7 +1179,7 @@ msgstr "URL des minimierten Bilds"
 msgid "customLogoDescription"
 msgstr ""
 "Eine URL zu einem Bild, das neben dem Logo „Specify“ im Navigationsmenü "
-"angezeigt wird"
+"angezeigt wird."
 
 #: components/Preferences/UserDefinitions.tsx:1567
 #. Used in: Components > Preferences > User Definitions

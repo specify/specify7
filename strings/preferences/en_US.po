@@ -91,7 +91,7 @@ msgstr "Reduce motion"
 #: components/Preferences/UserDefinitions.tsx:128
 #. Used in: Components > Preferences > User Definitions
 msgid "reduceMotionDescription"
-msgstr "Disable non-essential animations and transitions"
+msgstr "Disable non-essential animations and transitions."
 
 #: components/Preferences/UserDefinitions.tsx:149
 #. Used in: Components > Preferences > User Definitions
@@ -103,7 +103,7 @@ msgstr "Reduce transparency"
 msgid "reduceTransparencyDescription"
 msgstr ""
 "Whether to disable translucent backgrounds for user interface components "
-"whenever possible (e.g. table headers in tree view)"
+"whenever possible (e.g. table headers in tree view)."
 
 #: components/Preferences/UserDefinitions.tsx:171
 #. Used in: Components > Preferences > User Definitions
@@ -147,8 +147,8 @@ msgstr "Font family"
 msgid "fontFamilyDescription"
 msgstr ""
 "You can specify any font that is on your computer, even if it is not in the "
-"list. A comma separated list of fonts is also supported, where second font "
-"would be used if first one is not available and so on"
+"list. A comma-separated list of fonts is also supported, where each "
+"subsequent font will be used if the previous one is not available."
 
 #: components/Preferences/Renderers.tsx:197
 #: components/Preferences/Renderers.tsx:199
@@ -242,7 +242,7 @@ msgstr "Translucent dialogs"
 #: components/Preferences/UserDefinitions.tsx:448
 #. Used in: Components > Preferences > User Definitions
 msgid "translucentDialogDescription"
-msgstr "Whether dialogs have translucent background"
+msgstr "Whether dialogs have translucent background."
 
 #: components/Preferences/UserDefinitions.tsx:1248
 #. Used in: Components > Preferences > User Definitions
@@ -280,7 +280,7 @@ msgstr "Show new Data Set warning"
 #: components/Preferences/UserDefinitions.tsx:1781
 #. Used in: Components > Preferences > User Definitions
 msgid "showNewDataSetWarningDescription"
-msgstr "Show an informational message when creating a new Data Set"
+msgstr "Show an informational message when creating a new Data Set."
 
 #: components/Preferences/UserDefinitions.tsx:563
 #. Used in: Components > Preferences > User Definitions
@@ -306,12 +306,12 @@ msgstr "Update page title"
 #: components/Preferences/UserDefinitions.tsx:440
 #. Used in: Components > Preferences > User Definitions
 msgid "updatePageTitleDescription"
-msgstr "Whether to update the title of the page to match dialog's header"
+msgstr "Whether to update the title of the page to match dialog's header."
 
 #: components/Preferences/UserDefinitions.tsx:746
 #. Used in: Components > Preferences > User Definitions
 msgid "updatePageTitleFormDescription"
-msgstr "Whether to update the title of the page to match current record"
+msgstr "Whether to update the title of the page to match current record."
 
 #: components/Preferences/UserDefinitions.tsx:1054
 #. Used in: Components > Preferences > User Definitions
@@ -342,7 +342,7 @@ msgstr "Starts With (case-insensitive)"
 #: components/Preferences/UserDefinitions.tsx:1085
 #. Used in: Components > Preferences > User Definitions
 msgid "startsWithDescription"
-msgstr "Search for values that begin with a given query string"
+msgstr "Search for values that begin with a given query string."
 
 #: components/Preferences/UserDefinitions.tsx:1021
 #. Used in: Components > Preferences > User Definitions
@@ -384,7 +384,7 @@ msgstr "Search for values that contain a given query string (case-sensitive)."
 msgid "containsSecondDescription"
 msgstr ""
 "Can use _ to match any single character or % to match any number of "
-"characters"
+"characters."
 
 #: components/Preferences/UserDefinitions.tsx:1038
 #. Used in: Components > Preferences > User Definitions
@@ -394,7 +394,7 @@ msgstr "Highlight matched substring"
 #: components/Preferences/UserDefinitions.tsx:725
 #. Used in: Components > Preferences > User Definitions
 msgid "languageDescription"
-msgstr "Determines field captions, usage notes and table captions"
+msgstr "Determines field captions, usage notes and table captions."
 
 #: components/Preferences/UserDefinitions.tsx:462
 #. Used in: Components > Preferences > User Definitions
@@ -409,7 +409,7 @@ msgstr "Scale Interface"
 #: components/Preferences/UserDefinitions.tsx:209
 #. Used in: Components > Preferences > User Definitions
 msgid "scaleInterfaceDescription"
-msgstr "Scale interface to match font size"
+msgstr "Scale interface to match font size."
 
 #: components/Preferences/UserDefinitions.tsx:524
 #. Used in: Components > Preferences > User Definitions
@@ -477,7 +477,7 @@ msgstr "Allows querying data from any field in any table."
 msgid "noRestrictionsModeWarning"
 msgstr ""
 "WARNING: enabling this may lead to data loss or database corruption. Please "
-"make sure you know what you are doing"
+"make sure you know what you are doing."
 
 #: components/Preferences/index.tsx:245
 #. Used in: Components > Preferences > Index
@@ -576,7 +576,7 @@ msgstr "Direction of movement when <key>Tab</key> key is pressed"
 msgid "tabMoveDirectionDescription"
 msgstr ""
 "You can move in the opposite direction by pressing "
-"<key>Shift</key>+<key>Tab</key>"
+"<key>Shift</key>+<key>Tab</key>."
 
 #: components/Preferences/UserDefinitions.tsx:1692
 #: components/Preferences/UserDefinitions.tsx:1709
@@ -602,7 +602,7 @@ msgstr "Direction of movement when <key>Enter</key> key is pressed"
 msgid "enterMoveDirectionDescription"
 msgstr ""
 "You can move in the opposite direction by pressing "
-"<key>Shift</key>+<key>Enter</key>"
+"<key>Shift</key>+<key>Enter</key>."
 
 #: components/Preferences/UserDefinitions.tsx:1727
 #. Used in: Components > Preferences > User Definitions
@@ -648,7 +648,7 @@ msgstr "Reset query filters"
 #: components/Preferences/UserDefinitions.tsx:1622
 #. Used in: Components > Preferences > User Definitions
 msgid "clearQueryFiltersDescription"
-msgstr "Clears all query filters when running a Report from a Form"
+msgstr "Clears all query filters when running a Report from a Form."
 
 #: components/Preferences/UserDefinitions.tsx:1629
 #. Used in: Components > Preferences > User Definitions
@@ -763,7 +763,7 @@ msgstr "Blur content behind the dialog"
 #: components/Preferences/UserDefinitions.tsx:1258
 #. Used in: Components > Preferences > User Definitions
 msgid "collectionSortOrderDescription"
-msgstr "This determines the visual order of collections"
+msgstr "This determines the visual order of collections."
 
 #: components/Preferences/UserDefinitions.tsx:1109
 #. Used in: Components > Preferences > User Definitions
@@ -779,8 +779,8 @@ msgstr "<key>{altKeyName:string}</key>+<key>Click</key> to suppress new tab"
 #. Used in: Components > Preferences > User Definitions
 msgid "altClickToSupressNewTabDescription"
 msgstr ""
-"<key>{altKeyName:string}</key>+<key>Click</key> on a link that normally "
-"opens in a new tab to open it in the current tab"
+"<key>{altKeyName:string}</key>+<key>Click</key> a link that usually opens "
+"in a new tab to open it in the current tab."
 
 #: components/Preferences/UserDefinitions.tsx:787
 #. Used in: Components > Preferences > User Definitions
@@ -872,14 +872,14 @@ msgstr "Use custom delimiters"
 msgid "useCustomDelimitersDescription"
 msgstr ""
 "A list of delimiters to use, in addition to the ones defined above. Put one "
-"delimiter per line"
+"delimiter per line."
 
 #: components/Preferences/UserDefinitions.tsx:638
 #: components/Preferences/UserDefinitions.tsx:659
 #: components/Preferences/UserDefinitions.tsx:680
 #. Used in: Components > Preferences > User Definitions
 msgid "detectAutomaticallyDescription"
-msgstr "Detect automatically based on catalog number format"
+msgstr "Detect automatically based on catalog number format."
 
 #: components/Preferences/UserDefinitions.tsx:642
 #: components/Preferences/UserDefinitions.tsx:663
@@ -931,14 +931,14 @@ msgstr "Show unsaved changes indicator"
 msgid "showUnsavedIndicatorDescription"
 msgstr ""
 "Show an \"*\" in the tab title when there are unsaved changes in the "
-"current tab"
+"current tab."
 
 #: components/Preferences/UserDefinitions.tsx:1585
 #. Used in: Components > Preferences > User Definitions
 msgid "autoPopulateDescription"
 msgstr ""
 "Auto populate the merged record with values from duplicates when opening "
-"the merging dialog"
+"the merging dialog."
 
 #: components/Preferences/UserDefinitions.tsx:1598
 #. Used in: Components > Preferences > User Definitions
@@ -950,7 +950,7 @@ msgstr "Automatically create {agentVariantTable:string} records"
 msgid "autoCreateVariantsDescription"
 msgstr ""
 "When merging agents, automatically create {agentVariantTable:string} "
-"records based on on the variations of first name/last name."
+"records based on the variations of first name/last name."
 
 #: components/AppResources/types.tsx:110
 #. Used in: Components > App Resources > Types
@@ -1027,7 +1027,7 @@ msgstr "Collapsed Image URL"
 msgid "customLogoDescription"
 msgstr ""
 "A URL to an image that would be displayed next to the Specify logo in the "
-"navigation menu"
+"navigation menu."
 
 #: components/Preferences/UserDefinitions.tsx:1567
 #. Used in: Components > Preferences > User Definitions
