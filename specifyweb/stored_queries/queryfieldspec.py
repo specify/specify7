@@ -142,10 +142,9 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
                 else:
                     tree_rank_name = extracted_fieldname if extracted_fieldname else None
             if tree_rank_name is not None:
-                tree_rank = TreeRankQuery()
+                tree_rank = TreeRankQuery(name=tree_rank_name)
                 # doesn't make sense to query across ranks of trees. no, it doesn't block a theoretical query like family -> continent
                 tree_rank.relatedModelName = node.name
-                tree_rank.name = tree_rank_name
                 tree_rank.type = 'many-to-one'
                 join_path.append(tree_rank)
                 field = node.get_field(field or 'name') # to replicate 6 for now.
