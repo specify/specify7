@@ -232,17 +232,18 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           isSaveDisabled &&
           showCarry &&
           showBulkCarry ? (
-            <Label.Inline>
-              <Input.Generic
-                type="number"
-                value={carryForwardAmount}
-                onValueChange={(value): void =>
-                  carryForwardAmount === undefined
-                    ? setCarryForwardAmount(1)
-                    : setCarryForwardAmount(Number.parseInt(value))
-                }
-              />
-            </Label.Inline>
+            <Input.Integer
+              aria-label={formsText.bulkCarryForwardCount()}
+              className="!w-fit"
+              min={1}
+              placeholder="1"
+              value={carryForwardAmount}
+              onValueChange={(value): void =>
+                value === undefined
+                  ? setCarryForwardAmount(1)
+                  : setCarryForwardAmount(value)
+              }
+            />
           ) : null}
           {showCarry &&
             copyButton(
