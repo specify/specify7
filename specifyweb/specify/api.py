@@ -252,6 +252,7 @@ def collection_dispatch(request, model) -> HttpResponse:
 
     return resp
 
+@transaction.atomic
 def collection_dispatch_bulk(request, model) -> HttpResponse:
     """
     Do the same as collection_dispatch, but for bulk POST operations.
