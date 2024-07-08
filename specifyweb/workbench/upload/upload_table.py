@@ -249,13 +249,21 @@ class BoundUploadTable(NamedTuple):
 
         # this is handled here to make the matching query simple for the root table
         if to_one_override:
-            to_one_pack = FilterPredicate.from_simple_dict(
+            to_one_override_pack = FilterPredicate.from_simple_dict(
                 sql_table, 
                 ((FilterPredicate.rel_to_fk(specify_table.get_relationship(rel)), value.get_id()) for (rel, value) in to_one_override.items()),
                 path
                 )
         else:
-            query, to_one_pack = reduce(to_one_reduce, self.toOne.items(), (query, FilterPredicate()))
+            to_one_override_pack = FilterPredicate()
+
+        query, to_one_pack = reduce(
+            to_one_reduce,
+            # useful for one-to-ones
+            [(key, value) for (key, value) in self.toOne.items() if key not in to_one_override],
+            (query, to_one_override_pack)
+        )
+
         query, to_many_pack = reduce(to_many_reduce, self.toMany.items(), (query, FilterPredicate()))
         accumulated_pack = direct_field_pack.merge(to_many_pack).merge(to_one_pack)
 
@@ -298,23 +306,9 @@ class BoundUploadTable(NamedTuple):
 
         toOneResults_ = self._process_to_ones()
 
-        multi_one_to_one = lambda field, result: self.toOne[field].is_one_to_one() and isinstance(result.record_result, MatchedMultiple)
-
-        multipleOneToOneMatch = any(
-            # If a one-to-one related object matched multiple
-            # records, we won't be able to use it for matching
-            # this object, but we need to remember that there was
-            # data here.
-            multi_one_to_one(field, result)
-            for field, result in toOneResults_.items()
-        )
-
         toOneResults = {
-            # Filter out the one-to-ones that matched multiple
-            # b/c they aren't errors nor can be used for matching.
             field: result
             for field, result in toOneResults_.items()
-            if not multi_one_to_one(field, result)
         }
 
         if any(result.get_id() == "Failure" for result in toOneResults.values()):
@@ -329,7 +323,7 @@ class BoundUploadTable(NamedTuple):
         base_sql_table = getattr(sql_models, datamodel.get_table_strict(self.name).name)
         query, filter_predicate = self.get_predicates(self.session.query(getattr(base_sql_table, base_sql_table._id)), base_sql_table, toOneResults)
         
-        if all(v is None for v in attrs.values()) and not filter_predicate.filter and not multipleOneToOneMatch:
+        if all(v is None for v in attrs.values()) and not filter_predicate.filter:
             # nothing to upload
             return UploadResult(NullRecord(info), toOneResults, {})
 
@@ -345,6 +339,10 @@ class BoundUploadTable(NamedTuple):
             fieldname: to_one_def.process_row()
             for fieldname, to_one_def in
             sorted(self.toOne.items(), key=lambda kv: kv[0]) # make the upload order deterministic
+            # we don't care about being able to process one-to-one. Instead, we include them in the matching predicates.
+            # this allows handing "MatchedMultiple" case of one-to-ones more gracefully, while allowing us to include them
+            # in the matching. See "test_ambiguous_one_to_one_match" in testuploading.py
+            if not to_one_def.is_one_to_one()
         }
 
     def _match(self, query: Query, predicate: FilterPredicate, info: ReportInfo) -> Union[Matched, MatchedMultiple, None]:
@@ -402,9 +400,6 @@ class BoundUploadTable(NamedTuple):
             # But because the records can't be shared, the unupload order shouldn't matter anyways...
             sorted(self.toOne.items(), key=lambda kv: kv[0])
             if to_one_def.is_one_to_one()
-            if fieldname not in toOneResults # the field was removed b/c there were multiple matches
-            or isinstance(toOneResults[fieldname].record_result, Matched) # this stops the record from being shared
-            or isinstance(toOneResults[fieldname].record_result, MatchedMultiple) # this shouldn't ever be the case
         }}
 
         toOneIds: Dict[str, Optional[int]] = {}
@@ -464,6 +459,7 @@ class BoundMustMatchTable(BoundUploadTable):
         return {
             fieldname: to_one_def.match_row()
             for fieldname, to_one_def in self.toOne.items()
+            if not to_one_def.is_one_to_one()
         }
 
     def _do_upload(self, model, toOneResults: Dict[str, UploadResult], info: ReportInfo) -> UploadResult:

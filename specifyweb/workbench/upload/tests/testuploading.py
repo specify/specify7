@@ -437,11 +437,7 @@ class OneToOneAttributeTests(UploadTestsBase):
         for r in results:
             self.assertIsInstance(r.record_result, MatchedMultiple)
 
-    @skip("""
-    In theory we should be able to match the CE using the CEA but since the latter
-    is ambiguous we don't try currently.
-    """
-    )
+
     def test_ambiguous_one_to_one_match(self) -> None:
         get_table('Collectingevent').objects.all().delete()
 

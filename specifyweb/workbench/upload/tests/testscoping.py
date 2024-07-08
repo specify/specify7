@@ -176,6 +176,7 @@ class ScopingTests(UploadTestsBase):
             {'Collection Rel Type': self.rel_type_name, 'Cat # (2)': '888', 'Cat #': '32'}
         ]
         result = do_upload(self.collection, rows, scoped_plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
+
         left_side_cat_nums = [n.zfill(9) for n in '32 23'.split()]
         right_side_cat_nums = '999 888'.split()
         left_side_query = models.Collectionobject.objects.filter(collection_id=self.collection.id, catalognumber__in=left_side_cat_nums)
