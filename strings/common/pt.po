@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-07-01 18:09+0000\n"
+"PO-Revision-Date: 2024-07-08 17:57+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "common/pt/>\n"
@@ -124,7 +124,7 @@ msgstr "Conjuntos de registros"
 #: components/Toolbar/QueryTablesWrapper.tsx:150
 #, fuzzy
 msgid "import"
-msgstr "Importar"
+msgstr "Resolução em massa"
 
 #. Used in: Components > Query Builder > Results ⬤ Components > Wb Actions > Index
 #: components/QueryBuilder/Results.tsx:79
@@ -348,7 +348,7 @@ msgstr "Atualizar"
 #: components/WbPlanView/navigator.ts:546
 #, fuzzy
 msgid "fullDate"
-msgstr "Data Completa"
+msgstr "Expandir todos"
 
 #. 🟥Verb. Used in: Components > Atoms > Data Entry ⬤ Atoms > __tests__ > Button ⬤ Atoms > __tests__ > Index ⬤ Components > Molecules > Resource Link ⬤ Components > Tree View > Actions
 #: components/Atoms/DataEntry.tsx:149
@@ -772,7 +772,7 @@ msgstr "Cancelar"
 #: components/SchemaConfig/Tables.tsx:44
 #, fuzzy
 msgid "back"
-msgstr "Voltar"
+msgstr "Escolha os arquivos ou arraste-os aqui"
 
 #. Used in: Components > Export Feed > Dwca
 #: components/ExportFeed/Dwca.tsx:96
