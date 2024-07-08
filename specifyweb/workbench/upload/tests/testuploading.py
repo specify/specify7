@@ -2,7 +2,6 @@ import csv
 import io
 from datetime import datetime
 from decimal import Decimal
-from unittest import skip
 from uuid import uuid4
 
 from jsonschema import validate  # type: ignore
@@ -916,7 +915,7 @@ class UploadTests(UploadTestsBase):
             }
         ).apply_scoping(self.collection)[1]
         row = next(reader)
-        bt = tree_record.bind(self.collection, row, None, Auditor(self.collection, auditlog), sql_alchemy_session=None)
+        bt = tree_record.bind(row, None, Auditor(self.collection, auditlog), sql_alchemy_session=None)
         assert isinstance(bt, BoundTreeRecord)
         to_upload, matched = bt._match(bt._to_match())
 
@@ -965,7 +964,7 @@ class UploadTests(UploadTestsBase):
         #     parent=state,
         # )
 
-        bt = tree_record.bind(self.collection, row, None, Auditor(self.collection, auditlog), sql_alchemy_session=None)
+        bt = tree_record.bind(row, None, Auditor(self.collection, auditlog), sql_alchemy_session=None)
         assert isinstance(bt, BoundTreeRecord)
         to_upload, matched = bt._match(bt._to_match())
         self.assertEqual(
@@ -976,7 +975,7 @@ class UploadTests(UploadTestsBase):
         self.assertEqual(state.id, matched.id)
         self.assertEqual(set(['State/Prov/Pref', 'Country', 'Continent/Ocean']), set(matched.info.columns))
 
-        bt = tree_record.bind(self.collection, row, None, Auditor(self.collection, auditlog), sql_alchemy_session=None)
+        bt = tree_record.bind(row, None, Auditor(self.collection, auditlog), sql_alchemy_session=None)
         assert isinstance(bt, BoundTreeRecord)
         upload_result = bt.process_row()
         self.assertIsInstance(upload_result.record_result, Uploaded)
@@ -986,7 +985,7 @@ class UploadTests(UploadTestsBase):
         self.assertEqual(uploaded.definitionitem.name, "County")
         self.assertEqual(uploaded.parent.id, state.id)
 
-        bt = tree_record.bind(self.collection, row, None, Auditor(self.collection, auditlog), sql_alchemy_session=None)
+        bt = tree_record.bind(row, None, Auditor(self.collection, auditlog), sql_alchemy_session=None)
         assert isinstance(bt, BoundTreeRecord)
         to_upload, matched = bt._match(bt._to_match())
         self.assertEqual([], to_upload)
@@ -994,7 +993,7 @@ class UploadTests(UploadTestsBase):
         self.assertEqual(uploaded.id, matched.id)
         self.assertEqual(set(['Region', 'State/Prov/Pref', 'Country', 'Continent/Ocean']), set(matched.info.columns))
 
-        bt = tree_record.bind(self.collection, row, None, Auditor(self.collection, auditlog), sql_alchemy_session=None)
+        bt = tree_record.bind(row, None, Auditor(self.collection, auditlog), sql_alchemy_session=None)
         assert isinstance(bt, BoundTreeRecord)
         upload_result = bt.process_row()
         expected_info = ReportInfo(tableName='Geography', columns=['Continent/Ocean', 'Country', 'State/Prov/Pref', 'Region',], treeInfo=TreeInfo('County', 'Hendry Co.'))

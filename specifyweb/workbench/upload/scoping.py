@@ -102,13 +102,15 @@ def extend_columnoptions(colopts: ColumnOptions, collection, tablename: str, fie
         
         picklist = picklists[0] if len(collection_picklists) == 0 else collection_picklists[0]
 
+    ui_formatter = get_uiformatter(collection, tablename, fieldname)
+    scoped_formatter = None if ui_formatter is None else ui_formatter.apply_scope(collection)
     return ExtendedColumnOptions(
         column=colopts.column,
         matchBehavior=colopts.matchBehavior,
         nullAllowed=colopts.nullAllowed,
         default=colopts.default,
         schemaitem=schemaitem,
-        uiformatter=get_uiformatter(collection, tablename, fieldname),
+        uiformatter=scoped_formatter,
         picklist=picklist,
         dateformat=get_date_format(),
     )

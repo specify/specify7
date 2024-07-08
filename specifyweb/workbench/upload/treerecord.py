@@ -61,12 +61,12 @@ class ScopedTreeRecord(NamedTuple):
     def get_treedefs(self) -> Set:
         return {self.treedef}
 
-    def bind(self, collection, row: Row, uploadingAgentId: Optional[int], auditor: Auditor, sql_alchemy_session, cache: Optional[Dict]=None) -> Union["BoundTreeRecord", ParseFailures]:
+    def bind(self, row: Row, uploadingAgentId: Optional[int], auditor: Auditor, sql_alchemy_session, cache: Optional[Dict]=None) -> Union["BoundTreeRecord", ParseFailures]:
         parsedFields: Dict[str, List[ParseResult]] = {}
         parseFails: List[WorkBenchParseFailure] = []
         for rank, cols in self.ranks.items():
             nameColumn = cols['name']
-            presults, pfails = parse_many(collection, self.name, cols, row)
+            presults, pfails = parse_many(self.name, cols, row)
             parsedFields[rank] = presults
             parseFails += pfails
             filters = {k: v for result in presults for k, v in result.filter_on.items()}
@@ -98,8 +98,8 @@ class MustMatchTreeRecord(TreeRecord):
         return _can_cache, ScopedMustMatchTreeRecord(*s)
 
 class ScopedMustMatchTreeRecord(ScopedTreeRecord):
-    def bind(self, collection, row: Row, uploadingAgentId: Optional[int], auditor: Auditor, sql_alchemy_session, cache: Optional[Dict]=None) -> Union["BoundMustMatchTreeRecord", ParseFailures]:
-        b = super().bind(collection, row, uploadingAgentId, auditor, sql_alchemy_session, cache)
+    def bind(self, row: Row, uploadingAgentId: Optional[int], auditor: Auditor, sql_alchemy_session, cache: Optional[Dict]=None) -> Union["BoundMustMatchTreeRecord", ParseFailures]:
+        b = super().bind(row, uploadingAgentId, auditor, sql_alchemy_session, cache)
         return b if isinstance(b, ParseFailures) else BoundMustMatchTreeRecord(*b)
 
 class TreeDefItemWithParseResults(NamedTuple):

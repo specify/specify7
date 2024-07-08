@@ -120,55 +120,6 @@ class ScopingTests(UploadTestsBase):
         plan = self.example_plan.apply_scoping(self.collection)
         self.assertTrue(plan[0], 'caching is possible here, since no dynamic scope is being used')
 
-    # TODO: Refactor this one too
-    def deferred_scope_table_ignored_when_scoping_applied(self):
-        scoped_upload_plan = parse_plan(self.collection_rel_plan).apply_scoping(self.collection)
-
-        expected_scoping = ScopedUploadTable(
-            name='Collectionrelationship', 
-            wbcols={}, 
-            static={}, 
-            toOne={
-            'leftside': UploadTable(
-                name='Collectionobject', 
-                wbcols={'catalognumber': ColumnOptions(column='Cat #', matchBehavior='ignoreNever', nullAllowed=True, default=None)}, 
-                static={}, 
-                toOne={}, 
-                toMany={}, 
-                overrideScope=None), 
-            'rightside': DeferredScopeUploadTable(
-                name='Collectionobject', 
-                wbcols={'catalognumber': ColumnOptions(column='Cat # (2)', matchBehavior='ignoreNever', nullAllowed=True, default=None)}, 
-                static={}, 
-                toOne={}, 
-                toMany={}, 
-                related_key='collectionreltype', 
-                relationship_name='rightsidecollection', 
-                filter_field='name', 
-                overrideScope=None), 
-            'collectionreltype': ScopedUploadTable(
-                name='Collectionreltype', 
-                wbcols={'name': ExtendedColumnOptions(
-                    column='Collection Rel Type', 
-                    matchBehavior='ignoreNever', 
-                    nullAllowed=True, 
-                    default=None, 
-                    uiformatter=None, 
-                    schemaitem= models.Splocalecontaineritem.objects.get(name='name', container=models.Splocalecontainer.objects.get(name='collectionreltype', discipline_id=self.discipline.id)), 
-                    picklist=None, 
-                    dateformat='%m/%d/%Y')}, 
-                static={}, 
-                toOne={}, 
-                toMany={}, 
-                scopingAttrs={}, 
-                disambiguation=None)}, 
-            
-            toMany={}, 
-            scopingAttrs={}, 
-            disambiguation=None)
-        
-        self.assertEqual(scoped_upload_plan, expected_scoping)
-
     def test_collection_rel_uploaded_in_correct_collection(self):
         scoped_plan = parse_plan(self.collection_rel_plan)
         rows = [

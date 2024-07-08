@@ -14,7 +14,6 @@ from specifyweb.stored_queries.format import LDLM_TO_MYSQL, MYSQL_TO_MONTH, \
 from specifyweb.specify.parse import parse_coord, parse_date, ParseFailure, ParseSucess
 from .base import UploadTestsBase, get_table
 from ..column_options import ColumnOptions
-from ..parsing import ParseResult as PR
 from ..treerecord import TreeRecord
 from ..upload import do_upload, do_upload_csv
 from ..upload_plan_schema import parse_column_options

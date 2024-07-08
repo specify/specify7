@@ -123,7 +123,7 @@ def do_upload_dataset(
     ncols = len(ds.columns)
     rows = [dict(zip(ds.columns, row)) for row in ds.data]
     disambiguation = [get_disambiguation_from_row(ncols, row) for row in ds.data]
-    base_table, upload_plan = get_raw_ds_upload_plan(collection, ds)
+    base_table, upload_plan = get_raw_ds_upload_plan(ds)
 
     results = do_upload(collection, rows, upload_plan, uploading_agent_id, disambiguation, no_commit, allow_partial, progress, session_url=session_url)
     success = not any(r.contains_failure() for r in results)
@@ -176,7 +176,7 @@ def get_disambiguation_from_row(ncols: int, row: List) -> Disambiguation:
     extra = json.loads(row[ncols]) if row[ncols] else None
     return disambiguation.from_json(extra['disambiguation']) if extra and 'disambiguation' in extra else None
 
-def get_raw_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, Uploadable]:
+def get_raw_ds_upload_plan(ds: Spdataset) -> Tuple[Table, Uploadable]:
     if ds.uploadplan is None:
         raise Exception("no upload plan defined for dataset")
 
@@ -190,7 +190,7 @@ def get_raw_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, Uploadable
     return base_table, plan
 
 def get_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, ScopedUploadable]:
-    base_table, plan = get_raw_ds_upload_plan(collection, ds)
+    base_table, plan = get_raw_ds_upload_plan(ds)
     return base_table, plan.apply_scoping(collection)[1]
 
 
@@ -230,7 +230,7 @@ def do_upload(
                     scoped_table = cached_scope_table
 
                 with wb_session_context() as session:
-                    bind_result = scoped_table.disambiguate(da).bind(collection, row, uploading_agent_id, _auditor, session, cache)
+                    bind_result = scoped_table.disambiguate(da).bind(row, uploading_agent_id, _auditor, session, cache)
                     result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.process_row()
                     
                 results.append(result)
@@ -260,7 +260,7 @@ def validate_row(collection, upload_plan: ScopedUploadable, uploading_agent_id: 
         try:
             with savepoint("row validation"):
                 with session_context() as session:
-                    bind_result = upload_plan.disambiguate(da).bind(collection, row, uploading_agent_id, Auditor(collection, None), session)
+                    bind_result = upload_plan.disambiguate(da).bind(row, uploading_agent_id, Auditor(collection, None), session)
                     result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.process_row()
                 raise Rollback("validating only")
             break

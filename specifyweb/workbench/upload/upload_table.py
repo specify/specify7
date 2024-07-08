@@ -100,13 +100,13 @@ class ScopedUploadTable(NamedTuple):
         )
 
 
-    def bind(self, collection, row: Row, uploadingAgentId: int, auditor: Auditor, sql_alchemy_session, cache: Optional[Dict]=None
+    def bind(self, row: Row, uploadingAgentId: int, auditor: Auditor, sql_alchemy_session, cache: Optional[Dict]=None
              ) -> Union["BoundUploadTable", ParseFailures]:
-        parsedFields, parseFails = parse_many(collection, self.name, self.wbcols, row)
+        parsedFields, parseFails = parse_many(self.name, self.wbcols, row)
 
         toOne: Dict[str, BoundUploadable] = {}
         for fieldname, uploadable in self.toOne.items():
-            result = uploadable.bind(collection, row, uploadingAgentId, auditor, sql_alchemy_session, cache)
+            result = uploadable.bind(row, uploadingAgentId, auditor, sql_alchemy_session, cache)
             if isinstance(result, ParseFailures):
                 parseFails += result.failures
             else:
@@ -116,7 +116,7 @@ class ScopedUploadTable(NamedTuple):
         for fieldname, records in self.toMany.items():
             boundRecords: List[BoundUploadable] = []
             for record in records:
-                result_ = record.bind(collection, row, uploadingAgentId, auditor, sql_alchemy_session, cache)
+                result_ = record.bind(row, uploadingAgentId, auditor, sql_alchemy_session, cache)
                 if isinstance(result_, ParseFailures):
                     parseFails += result_.failures
                 else:
@@ -149,9 +149,9 @@ class OneToOneTable(UploadTable):
         return { 'oneToOneTable': self._to_json() }
 
 class ScopedOneToOneTable(ScopedUploadTable):
-    def bind(self, collection, row: Row, uploadingAgentId: int, auditor: Auditor, sql_alchemy_session, cache: Optional[Dict]=None
+    def bind(self, row: Row, uploadingAgentId: int, auditor: Auditor, sql_alchemy_session, cache: Optional[Dict]=None
              ) -> Union["BoundOneToOneTable", ParseFailures]:
-        b = super().bind(collection, row, uploadingAgentId, auditor, sql_alchemy_session, cache)
+        b = super().bind(row, uploadingAgentId, auditor, sql_alchemy_session, cache)
         return BoundOneToOneTable(*b) if isinstance(b, BoundUploadTable) else b
 
 class MustMatchTable(UploadTable):
@@ -163,9 +163,9 @@ class MustMatchTable(UploadTable):
         return { 'mustMatchTable': self._to_json() }
 
 class ScopedMustMatchTable(ScopedUploadTable):
-    def bind(self, collection, row: Row, uploadingAgentId: int, auditor: Auditor, sql_alchemy_session, cache: Optional[Dict]=None
+    def bind(self,row: Row, uploadingAgentId: int, auditor: Auditor, sql_alchemy_session, cache: Optional[Dict]=None
              ) -> Union["BoundMustMatchTable", ParseFailures]:
-        b = super().bind(collection, row, uploadingAgentId, auditor, sql_alchemy_session, cache)
+        b = super().bind(row, uploadingAgentId, auditor, sql_alchemy_session, cache)
         return BoundMustMatchTable(*b) if isinstance(b, BoundUploadTable) else b
 
 
