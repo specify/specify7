@@ -16,7 +16,7 @@ import { replaceKey } from '../../utils/utils';
 import { appResourceSubTypes } from '../AppResources/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
-import { Input, Label } from '../Atoms/Form';
+import { Input } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
