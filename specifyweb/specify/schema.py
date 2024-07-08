@@ -3,7 +3,7 @@
 from django import http
 from django.conf import settings
 from django.utils.translation import gettext as _
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, cast
 
 from specifyweb.middleware.general import require_GET
 from .datamodel import (
@@ -720,11 +720,11 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                                             "properties": {
                                                 "table": {
                                                     "type": "string",
-                                                    "example": getattr(next(filter(lambda rel: hasattr(rel, 'otherSideName') and rel.type.endswith('to-many') and not rel.dependent, table.relationships), None), "relatedModelName", 'Tablename').lower().capitalize()
+                                                    "example": get_first_valid_relationship_attr(cast(List[Relationship], table.relationships), "relatedModelName").lower().capitalize()
                                                 },
                                                 "field": {
                                                     "type": "string",
-                                                    "example": getattr(next(filter(lambda rel: hasattr(rel, 'otherSideName') and rel.type.endswith('to-many') and not rel.dependent, table.relationships), None), "otherSideName", 'fieldName'),
+                                                    "example": get_first_valid_relationship_attr(cast(List[Relationship], table.relationships), "otherSideName"),
                                                 },
                                                 "ids": {
                                                     "type": "array",
@@ -876,3 +876,9 @@ def field_to_schema(field: Field) -> Dict:
 
 def required_to_schema(field: Field, ftype: str) -> Dict:
     return {"type": ftype} if field.required else {"type": ftype, "nullable": True}
+
+def get_first_valid_relationship_attr(relationships: List[Relationship], attr_name: str) -> str:
+    for rel in relationships:
+        if hasattr(rel, 'otherSideName') and rel.type.endswith('to-many') and not rel.dependent:
+            return getattr(rel, attr_name, 'Default')
+    return 'Default'
