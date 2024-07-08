@@ -23,7 +23,7 @@ export function parseValue(
   parser: Parser,
   input: Input | undefined,
   value: string,
-  trim: boolean = !parser.whiteSpaceSensitive ?? true
+  trim: boolean = !parser.whiteSpaceSensitive
 ): InvalidParseResult | ValidParseResult {
   if (!parser.whiteSpaceSensitive && trim && value.trim() === '')
     return parser.required === true
