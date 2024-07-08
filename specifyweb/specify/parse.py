@@ -9,7 +9,7 @@ from decimal import Decimal
 from specifyweb.specify.agent_types import agent_types
 from specifyweb.stored_queries.format import get_date_format, MYSQL_TO_YEAR, MYSQL_TO_MONTH
 from specifyweb.specify.datamodel import datamodel, Table, Field, Relationship
-from specifyweb.specify.uiformatters import FormatMismatch, ScopedFormatter
+from specifyweb.specify.uiformatters import FormatMismatch, ScopedFormatter, CustomRepr
 
 ParseFailureKey = Literal[
 'valueTooLong',
@@ -43,7 +43,7 @@ class ParseSucess(NamedTuple):
 ParseResult = Union[ParseSucess, ParseFailure]
 
 
-def parse_field(table_name: str, field_name: str, raw_value: str, formatter: Optional[ScopedFormatter]) -> ParseResult:
+def parse_field(table_name: str, field_name: str, raw_value: str, formatter: Optional[CustomRepr]) -> ParseResult:
     table = datamodel.get_table_strict(table_name)
     field = table.get_field_strict(field_name)
 

@@ -8,8 +8,7 @@ from specifyweb.stored_queries.format import get_date_format
 from .uploadable import ScopedUploadable
 from .upload_table import UploadTable, ScopedUploadTable, ScopedOneToOneTable
 from .treerecord import TreeRecord, ScopedTreeRecord
-from .column_options import ColumnOptions, ExtendedColumnOptions
-
+from .column_options import ColumnOptions, ExtendedColumnOptions, CustomRepr
 
 """ There are cases in which the scoping of records should be dependent on another record/column in a WorkBench dataset.
 
@@ -104,13 +103,14 @@ def extend_columnoptions(colopts: ColumnOptions, collection, tablename: str, fie
 
     ui_formatter = get_uiformatter(collection, tablename, fieldname)
     scoped_formatter = None if ui_formatter is None else ui_formatter.apply_scope(collection)
+    friendly_repr = f'{tablename}-{fieldname}-{collection}'
     return ExtendedColumnOptions(
         column=colopts.column,
         matchBehavior=colopts.matchBehavior,
         nullAllowed=colopts.nullAllowed,
         default=colopts.default,
         schemaitem=schemaitem,
-        uiformatter=scoped_formatter,
+        uiformatter=None if scoped_formatter is None else CustomRepr(scoped_formatter, friendly_repr),
         picklist=picklist,
         dateformat=get_date_format(),
     )
