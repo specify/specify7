@@ -241,7 +241,7 @@ def collection_dispatch(request, model) -> HttpResponse:
     elif request.method == 'POST':
         obj = post_resource(request.specify_collection,
                             request.specify_user_agent,
-                            model, json.load(request),
+                            model, json.loads(request.body),
                             request.GET.get('recordsetid', None))
 
         resp = HttpResponseCreated(toJson(_obj_to_data(obj, checker)),
@@ -262,7 +262,7 @@ def collection_dispatch_bulk(request, model) -> HttpResponse:
     checker = table_permissions_checker(request.specify_collection, request.specify_user_agent, "read")
 
     if request.method == 'POST':
-        data = json.load(request)
+        data = json.loads(request.body)
         resp_objs = []
         for obj_data in data:
             obj = post_resource(
