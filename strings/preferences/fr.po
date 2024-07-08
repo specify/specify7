@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-07-08 17:57+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2024-07-08 19:09+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "preferences/fr/>\n"
 "Language: fr\n"
@@ -151,8 +151,8 @@ msgid "fontFamilyDescription"
 msgstr ""
 "Vous pouvez spécifier n'importe quelle police présente sur votre ordinateur, "
 "même si elle ne figure pas dans la liste. Une liste de polices séparées par "
-"des virgules est également prise en charge, la deuxième police étant "
-"utilisée si la première n'est pas disponible, etc."
+"des virgules est également prise en charge, où chaque police suivante sera "
+"utilisée si la précédente n'est pas disponible."
 
 #. Used in: Components > Preferences > Renderers
 #: components/Preferences/Renderers.tsx:197
