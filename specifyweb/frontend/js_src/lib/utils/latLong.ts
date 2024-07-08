@@ -69,7 +69,7 @@ function parse(rawValue: string): Coord | undefined {
 function makeLatLong(
   originalSign: number,
   components: RA<number>,
-  originalDirection?: 'e' | 'n' | 's' | 'w'
+  originalDirection?: 'e' | 'n' | 's' | 'w',
 ): Coord | undefined {
   if (components.some(Number.isNaN)) return undefined;
 
@@ -214,7 +214,7 @@ export class Long extends Coord {
  */
 function adjustComponents(
   originalComponents: RA<number>,
-  componentCount: number
+  componentCount: number,
 ): RA<number> {
   if (componentCount < 1 || originalComponents.length === 0)
     throw new RangeError('Arguments outside of allowed range');

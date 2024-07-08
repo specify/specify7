@@ -31,9 +31,9 @@ export function PreferencesAside({
             `/specify/user-preferences/#${definitions[activeCategory][0]}`,
             {
               replace: true,
-            }
+            },
           ),
-    [isInOverlay, definitions, activeCategory]
+    [isInOverlay, definitions, activeCategory],
   );
 
   const [freezeCategory, setFreezeCategory] = useFrozenCategory();
@@ -42,7 +42,7 @@ export function PreferencesAside({
   React.useEffect(() => {
     const active = location.hash.replace('#', '').toLowerCase();
     const activeIndex = definitions.findIndex(
-      ([name]) => name.toLowerCase() === active
+      ([name]) => name.toLowerCase() === active,
     );
     if (activeIndex !== -1) {
       setActiveCategory(activeIndex);
@@ -53,10 +53,7 @@ export function PreferencesAside({
 
   return (
     <aside
-      className={`
-        top-0 flex min-w-fit flex-shrink-0 flex-col divide-y-4 divide-[color:var(--form-background)]
-        overflow-y-auto md:sticky md:flex-1
-      `}
+      className={`top-0 flex min-w-fit flex-shrink-0 flex-col divide-y-4 divide-[color:var(--form-background)] overflow-y-auto md:sticky md:flex-1`}
     >
       {definitions.map(([category, { title }], index) => (
         <Link.Secondary
@@ -90,10 +87,10 @@ export function useFrozenCategory(): GetSet<number | undefined> {
             document.body,
             'resize',
             () => setFreezeCategory(undefined),
-            true
+            true,
           )
         : undefined,
-    [freezeCategory]
+    [freezeCategory],
   );
   React.useEffect(
     () =>
@@ -105,10 +102,10 @@ export function useFrozenCategory(): GetSet<number | undefined> {
               if (ignoreScroll.current) ignoreScroll.current = false;
               else setFreezeCategory(undefined);
             },
-            true
+            true,
           )
         : undefined,
-    [freezeCategory]
+    [freezeCategory],
   );
 
   /*

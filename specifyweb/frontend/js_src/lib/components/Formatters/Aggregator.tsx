@@ -19,7 +19,7 @@ export function AggregatorElement({
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
   const [openIndex, setOpenIndex] = React.useState<number | undefined>(
-    undefined
+    undefined,
   );
   return (
     <>
@@ -110,7 +110,7 @@ function AggregatorPreview({
   const doFormatting = React.useCallback(
     async (resources: RA<SpecifyResource<AnySchema>>) =>
       aggregate(resources, aggregator).then((aggregated) => [aggregated]),
-    [aggregator]
+    [aggregator],
   );
   return typeof aggregator.table === 'object' &&
     hasTablePermission(aggregator.table.name, 'read') ? (

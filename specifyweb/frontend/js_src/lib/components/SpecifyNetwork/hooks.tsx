@@ -9,9 +9,9 @@ export function useOccurrence(guid = ''): RA<BrokerRecord> | undefined {
   return useAsyncState(
     React.useCallback(
       async () => (guid === '' ? [] : fetchOccurrence(guid)),
-      [guid]
+      [guid],
     ),
-    false
+    false,
   )[0];
 }
 
@@ -19,8 +19,8 @@ export function useSpecies(speciesName = ''): RA<BrokerRecord> | undefined {
   return useAsyncState(
     React.useCallback(
       async () => (speciesName === '' ? [] : fetchName(speciesName)),
-      [speciesName]
+      [speciesName],
     ),
-    false
+    false,
   )[0];
 }

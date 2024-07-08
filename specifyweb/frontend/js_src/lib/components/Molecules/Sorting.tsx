@@ -43,22 +43,22 @@ export function SortIndicator<FIELD_NAMES extends string>({
 export function useSortConfig<NAME extends keyof SortConfigs>(
   cacheKey: NAME,
   defaultField: SortConfigs[NAME],
-  ascending = true
+  ascending = true,
 ): readonly [
   sortConfig: SortConfig<SortConfigs[NAME]>,
   handleSort: (fieldName: SortConfigs[NAME]) => void,
   applySortConfig: <T>(
     array: RA<T>,
-    mapper: (item: T) => boolean | number | string | null | undefined
-  ) => RA<T>
+    mapper: (item: T) => boolean | number | string | null | undefined,
+  ) => RA<T>,
 ] {
   const defaultValue = React.useMemo(
     () => ({ sortField: defaultField, ascending }),
-    [defaultField, ascending]
+    [defaultField, ascending],
   );
   const [sortConfig = defaultValue, setSortConfig] = useCachedState(
     'sortConfig',
-    cacheKey
+    cacheKey,
   );
   const handleClick = React.useCallback(
     (sortField: SortConfigs[NAME]) => {
@@ -69,28 +69,28 @@ export function useSortConfig<NAME extends keyof SortConfigs>(
       };
       (
         setSortConfig as (
-          sortConfig: SortConfig<SortConfigs[NAME]> | undefined
+          sortConfig: SortConfig<SortConfigs[NAME]> | undefined,
         ) => void
       )(newSortConfig);
     },
-    [sortConfig, setSortConfig]
+    [sortConfig, setSortConfig],
   );
   const applySortConfig = React.useCallback(
     <T,>(
       array: RA<T>,
-      mapper: (item: T) => boolean | number | string | null | undefined
+      mapper: (item: T) => boolean | number | string | null | undefined,
     ): RA<T> =>
       sortConfig === undefined
         ? array
         : Array.from(array).sort(sortFunction(mapper, !sortConfig.ascending)),
-    [sortConfig]
+    [sortConfig],
   );
   return [sortConfig, handleClick, applySortConfig];
 }
 
 export const toSmallSortConfig = (sortConfig: SubViewSortField): string =>
   `${sortConfig.direction === 'desc' ? '-' : ''}${sortConfig.fieldNames.join(
-    backboneFieldSeparator
+    backboneFieldSeparator,
   )}`;
 
 export const toLargeSortConfig = (sortConfig: string): SubViewSortField => ({

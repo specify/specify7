@@ -18,7 +18,7 @@ describe('Borrow Material business rules', () => {
   const borrowMaterialId = 1;
   const borrowMaterialUrl = getResourceApiUrl(
     'BorrowMaterial',
-    borrowMaterialId
+    borrowMaterialId,
   );
 
   const getBaseBorrowMaterial = () =>
@@ -52,7 +52,7 @@ describe('Collection Object business rules', () => {
   const collectionObjectlId = 2;
   const collectionObjectUrl = getResourceApiUrl(
     'CollectionObject',
-    collectionObjectlId
+    collectionObjectlId,
   );
 
   const getBaseCollectionObject = () =>
@@ -71,7 +71,7 @@ describe('Collection Object business rules', () => {
     overwriteReadOnly(
       schema,
       'embeddedCollectingEvent',
-      orginalEmbeddedCollectingEvent
+      orginalEmbeddedCollectingEvent,
     );
   });
 
@@ -132,7 +132,7 @@ describe('uniqueness rules', () => {
         offset: 0,
         total_count: 1,
       },
-    }
+    },
   );
   test('simple uniqueness rule', async () => {
     const collectionObject = new tables.CollectionObject.Resource({
@@ -144,8 +144,8 @@ describe('uniqueness rules', () => {
     const { result } = renderHook(() =>
       useSaveBlockers(
         collectionObject,
-        tables.CollectionObject.getField('catalogNumber')
-      )
+        tables.CollectionObject.getField('catalogNumber'),
+      ),
     );
 
     expect(result.current[0]).toStrictEqual([
@@ -175,7 +175,7 @@ describe('uniqueness rules', () => {
     await accessionAgent2.businessRuleManager?.checkField('role');
 
     const { result } = renderHook(() =>
-      useSaveBlockers(accessionAgent2, tables.AccessionAgent.getField('role'))
+      useSaveBlockers(accessionAgent2, tables.AccessionAgent.getField('role')),
     );
 
     expect(result.current[0]).toStrictEqual([
@@ -292,11 +292,11 @@ describe('treeBusinessRules', () => {
   overrideAjax('/api/specify/taxontreedefitem/22/', subSpeciesResponse);
   overrideAjax(
     '/api/specify_tree/taxon/3/predict_fullname/?name=oxyrinchus&treedefitemid=2',
-    oxyrinchusFullNameResponse
+    oxyrinchusFullNameResponse,
   );
   overrideAjax(
     '/api/specify_tree/taxon/6/predict_fullname/?name=dauricus&treedefitemid=2',
-    dauricusFullNameResponse
+    dauricusFullNameResponse,
   );
   overrideAjax('/api/specify/taxon/?limit=1&parent=4&orderby=rankid', {
     objects: [oxyrinchusSubSpeciesResponse],
@@ -329,7 +329,7 @@ describe('treeBusinessRules', () => {
     await taxon.businessRuleManager?.checkField('parent');
 
     const { result } = renderHook(() =>
-      useSaveBlockers(taxon, tables.Taxon.getField('parent'))
+      useSaveBlockers(taxon, tables.Taxon.getField('parent')),
     );
     expect(result.current[0]).toStrictEqual(['Bad tree structure.']);
   });
@@ -346,7 +346,7 @@ describe('treeBusinessRules', () => {
     await taxon.businessRuleManager?.checkField('parent');
 
     const { result } = renderHook(() =>
-      useSaveBlockers(taxon, tables.Taxon.getField('parent'))
+      useSaveBlockers(taxon, tables.Taxon.getField('parent')),
     );
     expect(result.current[0]).toStrictEqual(['Bad tree structure.']);
   });
@@ -362,14 +362,14 @@ describe('treeBusinessRules', () => {
     await taxon.businessRuleManager?.checkField('parent');
 
     const { result } = renderHook(() =>
-      useSaveBlockers(taxon, tables.Taxon.getField('parent'))
+      useSaveBlockers(taxon, tables.Taxon.getField('parent')),
     );
     expect(result.current[0]).toStrictEqual(['Bad tree structure.']);
 
     await taxon.businessRuleManager?.checkField('integer1');
 
     const { result: fieldChangeResult } = renderHook(() =>
-      useSaveBlockers(taxon, tables.Taxon.getField('parent'))
+      useSaveBlockers(taxon, tables.Taxon.getField('parent')),
     );
     expect(fieldChangeResult.current[0]).toStrictEqual(['Bad tree structure.']);
   });
@@ -380,7 +380,7 @@ describe('treeBusinessRules', () => {
       .mockImplementation((key) =>
         key === 'sp7.allow_adding_child_to_synonymized_parent.Taxon'
           ? true
-          : getPref(key)
+          : getPref(key),
       );
 
     const taxon = new tables.Taxon.Resource({
@@ -394,7 +394,7 @@ describe('treeBusinessRules', () => {
     await taxon.businessRuleManager?.checkField('parent');
 
     const { result } = renderHook(() =>
-      useSaveBlockers(taxon, tables.Taxon.getField('parent'))
+      useSaveBlockers(taxon, tables.Taxon.getField('parent')),
     );
     expect(result.current[0]).toStrictEqual([]);
   });

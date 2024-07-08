@@ -23,5 +23,5 @@ export const resolve = (specifier, context, nextResolve) =>
       specifier.endsWith('.png')
       ? new URL('__mocks__/fileMock.ts', import.meta.url).href
       : specifier,
-    context
+    context,
   );

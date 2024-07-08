@@ -104,7 +104,7 @@ export function Notifications({
               notifications.map((notification) => ({
                 ...notification,
                 read: true,
-              }))
+              })),
             );
             freezeFetchPromise.current = ping('/notifications/mark_read/', {
               method: 'POST',
@@ -130,7 +130,7 @@ export function Notifications({
                 onDelete={(promise): void => {
                   freezeFetchPromise.current = promise;
                   setNotifications(
-                    notifications.filter((item) => item !== notification)
+                    notifications.filter((item) => item !== notification),
                   );
                 }}
               />
@@ -171,7 +171,7 @@ function NotificationComponent({
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 body: formData({ message_id: notification.messageId }),
                 errorMode: 'dismissible',
-              }).then(f.void)
+              }).then(f.void),
             )
           }
         />

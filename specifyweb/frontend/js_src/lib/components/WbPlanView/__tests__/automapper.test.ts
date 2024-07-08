@@ -12,7 +12,7 @@ requireContext();
 
 theories(
   function AutoMapper(
-    parameters: AutoMapperConstructorParameters
+    parameters: AutoMapperConstructorParameters,
   ): AutoMapperResults {
     return new AutoMapperConstructor(parameters).map();
   },
@@ -197,7 +197,7 @@ theories(
         ],
       },
     },
-  ]
+  ],
 );
 
 test('circular tables are calculated correctly', () =>

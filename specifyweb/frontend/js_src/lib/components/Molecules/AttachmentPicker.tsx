@@ -6,6 +6,6 @@ import { ReactLazy } from '../Router/ReactLazy';
  */
 export const AttachmentPicker = ReactLazy(async () =>
   import('./SyncAttachmentPicker').then(
-    ({ SyncAttachmentPicker }) => SyncAttachmentPicker
-  )
+    ({ SyncAttachmentPicker }) => SyncAttachmentPicker,
+  ),
 );

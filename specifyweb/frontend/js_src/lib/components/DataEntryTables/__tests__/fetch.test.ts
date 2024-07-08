@@ -7,7 +7,7 @@ requireContext();
 
 test('fetches and parses list of data entry forms', async () =>
   expect(
-    fetchLegacyForms().then((forms) => forms.map(({ name }) => name))
+    fetchLegacyForms().then((forms) => forms.map(({ name }) => name)),
   ).resolves.toEqual([
     'CollectionObject',
     'CollectingEvent',

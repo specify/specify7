@@ -108,8 +108,8 @@ test('postProcessFormDef', () =>
     postProcessFormDef(
       [undefined],
       [[blankLabel], [], [missingLabelCheckbox]],
-      tables.CollectionObject
-    )
+      tables.CollectionObject,
+    ),
   ).toEqual({
     columns: [undefined, undefined, undefined],
     rows: [
@@ -133,7 +133,7 @@ test('createLabelsPostProcessor', () => {
       [looseLabel, missingLabelTextField],
       [blankLabel, checkboxWithLabel, divisionLabel],
     ],
-    tables.Accession
+    tables.Accession,
   );
   // Non-label cells are unchanged
   expect(processor(missingLabelTextField, 0, 0)).toEqual(missingLabelTextField);
@@ -162,8 +162,8 @@ test('indexFields', () => {
         [labelCell, divisionComboBox],
         [missingLabelTextField, checkboxWithLabel],
       ],
-      tables.Accession
-    )
+      tables.Accession,
+    ),
   ).toEqual({
     [missingLabelTextField.id]: {
       fieldNames: missingLabelTextField.fieldNames,
@@ -311,20 +311,20 @@ describe(addLabelTitle, () => {
           text: undefined,
           title: undefined,
         },
-        tables.CollectionObject
-      )
+        tables.CollectionObject,
+      ),
     ).toEqual({
       ...labelCell,
       text: getField(tables.CollectionObject, 'catalogNumber').label,
       title: getField(
         tables.CollectionObject,
-        'catalogNumber'
+        'catalogNumber',
       ).getLocalizedDesc(),
     }));
 
   test("doesn't replace existing text", () =>
     expect(addLabelTitle(labelCell, tables.CollectionObject)).toEqual(
-      labelCell
+      labelCell,
     ));
 
   test('adds label for division combo box', () =>
@@ -341,8 +341,8 @@ describe(addLabelTitle, () => {
           text: undefined,
           fieldNames: ['a'],
         },
-        tables.Accession
-      )
+        tables.Accession,
+      ),
     ).toEqual({ ...labelCell, text: 'a', fieldNames: ['a'] }));
 });
 
@@ -397,13 +397,13 @@ describe('addMissingLabel', () => {
     };
 
     expect(addMissingLabel(withLabel, tables.CollectionObject)).toEqual(
-      withLabel
+      withLabel,
     );
   });
 
   test('checkbox can get label from field label', () =>
     expect(
-      addMissingLabel(missingLabelCheckbox, tables.CollectionObject)
+      addMissingLabel(missingLabelCheckbox, tables.CollectionObject),
     ).toEqual({
       ...missingLabelCheckbox,
       fieldDefinition: {
@@ -418,13 +418,13 @@ describe('addMissingLabel', () => {
       ariaLabel: localized('test'),
     };
     expect(addMissingLabel(withLabel, tables.CollectionObject)).toEqual(
-      withLabel
+      withLabel,
     );
   });
 
   test('field cell can get label from field label', () =>
     expect(
-      addMissingLabel(missingLabelTextField, tables.CollectionObject)
+      addMissingLabel(missingLabelTextField, tables.CollectionObject),
     ).toEqual({
       ...missingLabelTextField,
       ariaLabel: getField(tables.CollectionObject, 'catalogNumber').label,

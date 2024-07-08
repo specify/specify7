@@ -65,7 +65,7 @@ export function IntegratedRecordSelector({
   const isReadOnly = augmentMode(
     React.useContext(ReadOnlyContext),
     false,
-    relationship.relatedTable.name
+    relationship.relatedTable.name,
   );
 
   const [isCollapsed, _handleCollapsed, handleExpand, handleToggle] =
@@ -94,7 +94,7 @@ export function IntegratedRecordSelector({
       if (isCollapsed) handleExpand();
       handleAdd?.(resources);
     },
-    [handleAdd, isCollapsed, handleExpand]
+    [handleAdd, isCollapsed, handleExpand],
   );
 
   const [rawIndex, setIndex] = useSearchParameter(urlParameter);
@@ -106,7 +106,7 @@ export function IntegratedRecordSelector({
     typeof collection.related === 'object' &&
     interactionPrepTables.includes(
       (relationship.relatedTable as SpecifyTable<AnyInteractionPreparation>)
-        .name
+        .name,
     );
 
   const [isDialogOpen, handleOpenDialog, handleCloseDialog] = useBooleanState();
@@ -180,7 +180,7 @@ export function IntegratedRecordSelector({
                     />
                     {hasTablePermission(
                       relationship.relatedTable.name,
-                      isDependent ? 'create' : 'read'
+                      isDependent ? 'create' : 'read',
                     ) && typeof handleAdd === 'function' ? (
                       <DataEntry.Add
                         disabled={
@@ -197,7 +197,7 @@ export function IntegratedRecordSelector({
                     ) : undefined}
                     {hasTablePermission(
                       relationship.relatedTable.name,
-                      isDependent ? 'delete' : 'read'
+                      isDependent ? 'delete' : 'read',
                     ) && typeof handleRemove === 'function' ? (
                       <DataEntry.Remove
                         disabled={

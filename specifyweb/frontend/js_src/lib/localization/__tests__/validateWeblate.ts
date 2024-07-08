@@ -7,13 +7,13 @@ import { checkComponents } from '../utils/validateWeblate';
 program
   .name('Validate Weblate config')
   .description(
-    'Makes sure Weblate components have valid settings. Creates missing components'
+    'Makes sure Weblate components have valid settings. Creates missing components',
   );
 
 const { error } = testLogging;
 
 scanUsages('silent')
   .then(async (usages) =>
-    usages === undefined ? undefined : checkComponents(usages, 'userInterface')
+    usages === undefined ? undefined : checkComponents(usages, 'userInterface'),
   )
   .catch(error);

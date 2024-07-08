@@ -33,9 +33,9 @@ export const traverseDom = (
   mapper: (
     path: RA<ParsedNode>,
     dom: ParsedNode,
-    rawNode: ParsedDom[number]
+    rawNode: ParsedDom[number],
   ) => ParsedNode,
-  path: RA<ParsedNode> = []
+  path: RA<ParsedNode> = [],
 ): ParsedDom =>
   dom.map((node) => {
     const parsedNode = toParsedNode(node);
@@ -74,7 +74,7 @@ export const toUnparsedNode = (node: ParsedNode): ParsedDom[number] =>
     ...(typeof node.tagName === 'string'
       ? { [node.tagName]: node.children }
       : {}),
-  } as ParsedDom[number]);
+  }) as ParsedDom[number];
 
 /**
  * It's important to use the same setting for parser and builder

@@ -61,7 +61,7 @@ function DateRangeComponent({
 function useRange(
   filterQueryField: SpecifyResource<SpQueryField>,
   table: SpecifyTable,
-  dateFields: RA<string>
+  dateFields: RA<string>,
 ): { readonly from: string; readonly to: string } | undefined {
   return useAsyncState(
     React.useCallback(
@@ -79,22 +79,22 @@ function useRange(
                         .set('isNot', true)
                         .set('operStart', queryFieldFilters.empty.id),
                       filterQueryField,
-                    ])
+                    ]),
                   ),
                   {
                     limit: 1,
-                  }
-                ).then((rows) => (rows.length === 0 ? null : rows[0][1]))
-            )
-          )
+                  },
+                ).then((rows) => (rows.length === 0 ? null : rows[0][1])),
+            ),
+          ),
         ).then((rawDates) => {
           const dates = Array.from(
             filterArray(
               rawDates.map((date) => {
                 if (date === null) return undefined;
                 return parseAnyDate(date);
-              })
-            )
+              }),
+            ),
           ).sort(sortFunction((date) => date.getTime()));
           return dates.length === 0
             ? undefined
@@ -103,9 +103,9 @@ function useRange(
                 to: dayjs(dates.at(-1)).format(fullDateFormat()),
               };
         }),
-      [table, filterQueryField, dateFields]
+      [table, filterQueryField, dateFields],
     ),
-    false
+    false,
   )[0];
 }
 
@@ -129,11 +129,11 @@ const rangeDateFields = f.store(() => ({
               (rangeDates.has(field.name) ||
                 `${table.name}Date`.toLowerCase() ===
                   field.name.toLowerCase()) &&
-              field.isTemporal()
+              field.isTemporal(),
           )
           .map(({ name }) => name),
       ])
-      .filter(([_tableName, fields]) => fields.length > 0)
+      .filter(([_tableName, fields]) => fields.length > 0),
   ),
   ...customDateFields,
 }));

@@ -24,6 +24,6 @@ test.each([
   [() => strictGetTable('Author'), undefined],
 ])('getAttachmentRelationship', (getSpecifyModel, relationshipName) =>
   expect(getAttachmentRelationship(getSpecifyModel())?.name).toEqual(
-    relationshipName
-  )
+    relationshipName,
+  ),
 );

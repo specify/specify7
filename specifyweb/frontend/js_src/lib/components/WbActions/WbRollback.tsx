@@ -62,7 +62,7 @@ function RollbackConfirmation({
                   method: 'POST',
                 })
                   .then(handleRollback)
-                  .finally(handleClose)
+                  .finally(handleClose),
               )
             }
           >

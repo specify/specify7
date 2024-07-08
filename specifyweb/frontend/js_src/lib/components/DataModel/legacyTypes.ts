@@ -55,19 +55,19 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
       SCHEMA['toManyDependent'] &
       SCHEMA['toManyIndependent'] &
       SCHEMA['toOneDependent'] &
-      SCHEMA['toOneIndependent'])[FIELD_NAME]
+      SCHEMA['toOneIndependent'])[FIELD_NAME],
   >(
-    fieldName: FIELD_NAME
+    fieldName: FIELD_NAME,
     // eslint-disable-next-line functional/prefer-readonly-type
   ): [VALUE] extends [never]
     ? never
     : VALUE extends AnySchema
-    ? VALUE extends null
-      ? string | null
-      : string
-    : VALUE extends RA<AnySchema>
-    ? string
-    : VALUE;
+      ? VALUE extends null
+        ? string | null
+        : string
+      : VALUE extends RA<AnySchema>
+        ? string
+        : VALUE;
   // Case-insensitive fetch of a -to-one resource
   rgetPromise<
     FIELD_NAME extends
@@ -75,10 +75,10 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
       | keyof SCHEMA['toOneIndependent'],
     VALUE = (IR<never> &
       SCHEMA['toOneDependent'] &
-      SCHEMA['toOneIndependent'])[FIELD_NAME]
+      SCHEMA['toOneIndependent'])[FIELD_NAME],
   >(
     fieldName: FIELD_NAME,
-    prePopulate?: boolean
+    prePopulate?: boolean,
   ): readonly [VALUE] extends readonly [never]
     ? never
     : Promise<
@@ -92,13 +92,13 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
       | keyof SCHEMA['toOneIndependent'],
     VALUE = (IR<never> &
       SCHEMA['toOneDependent'] &
-      SCHEMA['toOneIndependent'])[FIELD_NAME]
+      SCHEMA['toOneIndependent'])[FIELD_NAME],
   >(
     fieldName: FIELD_NAME,
     options?: {
       readonly prePop?: boolean;
       readonly noBusinessRules?: boolean;
-    }
+    },
   ): readonly [VALUE] extends readonly [never]
     ? never
     : Promise<
@@ -111,9 +111,9 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
     FIELD_NAME extends keyof (SCHEMA['toManyDependent'] &
       SCHEMA['toManyIndependent']),
     VALUE extends (SCHEMA['toManyDependent'] &
-      SCHEMA['toManyIndependent'])[FIELD_NAME]
+      SCHEMA['toManyIndependent'])[FIELD_NAME],
   >(
-    fieldName: FIELD_NAME
+    fieldName: FIELD_NAME,
   ): Promise<Collection<VALUE[number]>>;
   set<
     FIELD_NAME extends
@@ -129,7 +129,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
       SCHEMA['toManyDependent'] &
       SCHEMA['toManyIndependent'] &
       SCHEMA['toOneDependent'] &
-      SCHEMA['toOneIndependent'])[FIELD_NAME]
+      SCHEMA['toOneIndependent'])[FIELD_NAME],
   >(
     fieldName: FIELD_NAME,
     value: readonly [VALUE] extends readonly [never]
@@ -147,12 +147,12 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
                   | RA<SerializedResource<VALUE[number]>>
                   | RA<SpecifyResource<VALUE[number]>>
               : null extends VALUE
-              ?
-                  | SerializedResource<Exclude<VALUE, null>>
-                  | SpecifyResource<Exclude<VALUE, null>>
-                  | null
-              : SerializedResource<VALUE> | SpecifyResource<VALUE>),
-    options?: { readonly silent: boolean }
+                ?
+                    | SerializedResource<Exclude<VALUE, null>>
+                    | SpecifyResource<Exclude<VALUE, null>>
+                    | null
+                : SerializedResource<VALUE> | SpecifyResource<VALUE>),
+    options?: { readonly silent: boolean },
   ): SpecifyResource<SCHEMA>;
   // Not type safe
   bulkSet(value: IR<unknown>): SpecifyResource<SCHEMA>;
@@ -161,12 +161,12 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
     Collection<SCHEMA> | SpecifyResource<SCHEMA> | null | undefined
   >;
   getDependentResource<FIELD_NAME extends keyof SCHEMA['toOneDependent']>(
-    fieldName: FIELD_NAME
+    fieldName: FIELD_NAME,
   ):
     | SpecifyResource<Exclude<SCHEMA['toOneDependent'][FIELD_NAME], null>>
     | undefined;
   getDependentResource<FIELD_NAME extends keyof SCHEMA['toManyDependent']>(
-    fieldName: FIELD_NAME
+    fieldName: FIELD_NAME,
   ): Collection<SCHEMA['toManyDependent'][FIELD_NAME][number]> | undefined;
   save(props?: {
     readonly onSaveConflict?: () => void;
@@ -183,16 +183,16 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   getRelatedObjectCount(
     fieldName:
       | (string & keyof SCHEMA['toManyDependent'])
-      | (string & keyof SCHEMA['toManyIndependent'])
+      | (string & keyof SCHEMA['toManyIndependent']),
   ): Promise<number | undefined>;
   url(): string;
   placeInSameHierarchy(
-    resource: SpecifyResource<AnySchema>
+    resource: SpecifyResource<AnySchema>,
   ): SpecifyResource<AnySchema> | undefined;
   on(
     eventName: string,
     callback: (...args: RA<never>) => void,
-    thisArgument?: any
+    thisArgument?: any,
   ): void;
   once(eventName: string, callback: (...args: RA<never>) => void): void;
   off(eventName?: string, callback?: (...args: RA<never>) => void): void;

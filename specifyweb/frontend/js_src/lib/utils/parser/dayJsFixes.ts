@@ -10,7 +10,7 @@ import { fullDateFormat, monthFormat } from './dateFormat';
  */
 export function parseDate(
   precision: PartialDatePrecision,
-  value: string
+  value: string,
 ): ReturnType<typeof dayjs> {
   return (
     fixDayJsBugs(precision, value) ??
@@ -30,7 +30,7 @@ export function parseDate(
             monthFormat(),
             fullDateFormat(),
           ],
-      true
+      true,
     )
   );
 }
@@ -44,7 +44,7 @@ export function parseDate(
  */
 function fixDayJsBugs(
   precision: PartialDatePrecision,
-  value: string
+  value: string,
 ): ReturnType<typeof dayjs> | undefined {
   if (precision === 'month-year') return unsafeParseMonthYear(value);
   else if (precision === 'full') return unsafeParseFullDate(value);
@@ -56,7 +56,7 @@ function fixDayJsBugs(
  * parsed as an invalid date.
  */
 function unsafeParseMonthYear(
-  value: string
+  value: string,
 ): ReturnType<typeof dayjs> | undefined {
   const parsed = /(\d{2})\D(\d{4})/.exec(value)?.slice(1);
   if (parsed === undefined) return undefined;
@@ -69,7 +69,7 @@ function unsafeParseMonthYear(
  * is parsed as an invalid date.
  */
 function unsafeParseFullDate(
-  value: string
+  value: string,
 ): ReturnType<typeof dayjs> | undefined {
   if (fullDateFormat().toUpperCase() !== 'DD/MM/YYYY') return;
   const parsed = /(\d{2})\D(\d{2})\D(\d{4})/.exec(value)?.slice(1);

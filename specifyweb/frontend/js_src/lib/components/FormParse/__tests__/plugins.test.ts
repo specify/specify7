@@ -16,7 +16,7 @@ const xml = (xml: string): SimpleXmlNode =>
 const cell = xml(`<cell formatting="test" />`);
 
 const parse = (
-  props: Partial<Parameters<typeof parseUiPlugin>[0]>
+  props: Partial<Parameters<typeof parseUiPlugin>[0]>,
 ): ReturnType<typeof parseUiPlugin> =>
   parseUiPlugin({
     cell,
@@ -48,7 +48,7 @@ describe('parseUiPlugin', () => {
     expect(
       parse({
         getProperty: generateInit({ name: 'LatLonUI' }),
-      })
+      }),
     ).toEqual({
       type: 'LatLonUI',
       step: undefined,
@@ -63,7 +63,7 @@ describe('parseUiPlugin', () => {
           step: '-3.2',
           latLongType: 'Line',
         }),
-      })
+      }),
     ).toEqual({
       type: 'LatLonUI',
       step: -3.2,
@@ -75,7 +75,7 @@ describe('parseUiPlugin', () => {
       parse({
         getProperty: generateInit({ name: 'PartialDateUI' }),
         fields: [tables.Locality.strictGetField('timestampCreated')],
-      })
+      }),
     ).toEqual({
       type: 'PartialDateUI',
       defaultValue: undefined,
@@ -96,7 +96,7 @@ describe('parseUiPlugin', () => {
         }),
         fields: [tables.Locality.strictGetField('timestampCreated')],
         defaultValue: `${today} + 3 days`,
-      })
+      }),
     ).toEqual({
       type: 'PartialDateUI',
       defaultValue: new Date('2022-09-03T03:37:10.400Z'),
@@ -114,7 +114,7 @@ describe('parseUiPlugin', () => {
           relName: 'abc',
         }),
         table: tables.CollectionObject,
-      })
+      }),
     ).toEqual({
       type: 'CollectionRelOneToManyPlugin',
       relationship: 'abc',
@@ -129,7 +129,7 @@ describe('parseUiPlugin', () => {
           name: 'ColRelTypePlugin',
           relName: 'abc',
         }),
-      })
+      }),
     ).toEqual({
       type: 'WrongTable',
       supportedTables: ['CollectionObject'],
@@ -144,7 +144,7 @@ describe('parseUiPlugin', () => {
           relName: 'abc',
         }),
         table: tables.CollectionObject,
-      })
+      }),
     ).toEqual({
       type: 'ColRelTypePlugin',
       relationship: 'abc',
@@ -157,7 +157,7 @@ describe('parseUiPlugin', () => {
         getProperty: generateInit({
           name: 'LocalityGeoRef',
         }),
-      })
+      }),
     ).toEqual({
       type: 'LocalityGeoRef',
     }));
@@ -168,7 +168,7 @@ describe('parseUiPlugin', () => {
         getProperty: generateInit({
           name: 'WebLinkButton',
         }),
-      })
+      }),
     ).toEqual({
       type: 'WebLinkButton',
       webLink: undefined,
@@ -183,7 +183,7 @@ describe('parseUiPlugin', () => {
           webLink: 'abc',
           icon: 'test',
         }),
-      })
+      }),
     ).toEqual({
       type: 'WebLinkButton',
       webLink: 'abc',
@@ -198,7 +198,7 @@ describe('parseUiPlugin', () => {
           relName: 'abc',
         }),
         table: tables.CollectingEventAttribute,
-      })
+      }),
     ).toEqual({
       type: 'HostTaxonPlugin',
       relationship: 'abc',
@@ -211,7 +211,7 @@ describe('parseUiPlugin', () => {
           name: 'LocalityGoogleEarth',
           relName: 'abc',
         }),
-      })
+      }),
     ).toEqual({
       type: 'LocalityGoogleEarth',
     }));
@@ -222,7 +222,7 @@ describe('parseUiPlugin', () => {
         getProperty: generateInit({
           name: 'PaleoMap',
         }),
-      })
+      }),
     ).toEqual({
       type: 'PaleoMap',
     }));

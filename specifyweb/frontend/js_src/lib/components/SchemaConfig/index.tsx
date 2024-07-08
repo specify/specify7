@@ -45,25 +45,25 @@ export function SchemaConfigMain(): JSX.Element {
 
   const [container, setContainer, isChanged] = useSchemaContainer(
     schemaData.tables,
-    table.name
+    table.name,
   );
   const [language, country = null] = rawLanguage.split('-');
   const [name, setName, nameChanged] = useContainerString(
     'containerName',
     container,
     language,
-    country
+    country,
   );
   const [desc, setDesc, descChanged] = useContainerString(
     'containerDesc',
     container,
     language,
-    country
+    country,
   );
   const [items, setItem, changedItems] = useContainerItems(
     container,
     language,
-    country
+    country,
   );
   const [index, setIndex] = React.useState(0);
   const item = items?.[index];
@@ -72,7 +72,7 @@ export function SchemaConfigMain(): JSX.Element {
     isChanged || nameChanged || descChanged || changedItems.length > 0;
   const unsetUnloadProtect = useUnloadProtect(
     isModified,
-    schemaText.unsavedSchemaUnloadProtect()
+    schemaText.unsavedSchemaUnloadProtect(),
   );
 
   const canSave =
@@ -173,7 +173,7 @@ export function SchemaConfigMain(): JSX.Element {
 }
 
 const saveString = async (
-  resource: NewSpLocaleItemString | SpLocaleItemString
+  resource: NewSpLocaleItemString | SpLocaleItemString,
 ): Promise<unknown> =>
   'resource_uri' in resource &&
   typeof resource.id === 'number' &&
@@ -190,9 +190,9 @@ const handleSaved = async (rawLanguage: string): Promise<void> =>
     {
       method: 'HEAD',
       cache: 'no-cache',
-    }
+    },
   )
     // Reload the page after schema changes
     .then((): void =>
-      globalThis.location.assign(`/specify/schema-config/${rawLanguage}/`)
+      globalThis.location.assign(`/specify/schema-config/${rawLanguage}/`),
     );

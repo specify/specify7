@@ -52,7 +52,7 @@ const combinations = <T>(keys: RA<T>): RA<Readonly<readonly [T, T]>> =>
   keys.flatMap((value, index) =>
     keys
       .slice(index + 1)
-      .map((combinedValue) => [value, combinedValue] as const)
+      .map((combinedValue) => [value, combinedValue] as const),
   );
 
 export function getBrokerKeys(records: RA<IR<unknown>>): RA<string> {
@@ -60,16 +60,16 @@ export function getBrokerKeys(records: RA<IR<unknown>>): RA<string> {
   // Get all keys shared by at least 2 aggregators
   const commonKeys = new Set(
     combinations(keys).flatMap(([left, right]) =>
-      Array.from(left).filter((key) => right.has(key))
-    )
+      Array.from(left).filter((key) => right.has(key)),
+    ),
   );
   // Return all keys, putting common keys at the beginning
   return Array.from(
     new Set(
       [...commonKeys, ...keys.flatMap((keys) => Array.from(keys))].filter(
-        (key) => !fieldsToExclude.has(key)
-      )
-    )
+        (key) => !fieldsToExclude.has(key),
+      ),
+    ),
   );
 }
 
@@ -79,7 +79,7 @@ export const getValue = (response: BrokerRecord, key: string): unknown =>
     ({ field, service, provider }) =>
       field === key &&
       service === response.service &&
-      provider === response.provider.code
+      provider === response.provider.code,
   )
     ? ''
     : response.record[key];

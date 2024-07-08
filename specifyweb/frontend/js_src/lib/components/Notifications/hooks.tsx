@@ -39,7 +39,7 @@ export function useNotificationsFetch({
       const startFetchTimestamp = new Date();
 
       const url = getSinceUrl(
-        lastFetchDateRef.current === undefined ? undefined : since
+        lastFetchDateRef.current === undefined ? undefined : since,
       );
 
       /*
@@ -69,13 +69,13 @@ export function useNotificationsFetch({
              *    shouldn't bring down entire application
              */
             errorMode: 'silent',
-          })
+          }),
         )
         .then(({ data: newNotifications }) => {
           if (destructorCalled) return;
 
           setNotifications((existingNotifications) =>
-            mergeAndSortNotifications(existingNotifications, newNotifications)
+            mergeAndSortNotifications(existingNotifications, newNotifications),
           );
 
           lastFetchDateRef.current = startFetchTimestamp;
@@ -85,7 +85,7 @@ export function useNotificationsFetch({
               ? undefined
               : globalThis.setTimeout(
                   () => doFetch(lastFetchDateRef.current),
-                  pullInterval
+                  pullInterval,
                 );
         })
         .catch(console.error);
@@ -122,7 +122,7 @@ function mergeAndSortNotifications(
     Omit<GenericNotification, 'messageId' | 'payload'> & {
       readonly message_id: string;
     }
-  >
+  >,
 ): RA<GenericNotification> {
   const mappedNewNotifications = newNotifications.map(
     ({ message_id, read, timestamp, type, ...rest }) => ({
@@ -131,19 +131,19 @@ function mergeAndSortNotifications(
       timestamp,
       type,
       payload: rest as IR<LocalizedString>,
-    })
+    }),
   );
 
   const filteredNewNotifications = mappedNewNotifications.filter(
     (newNotification) =>
       !existingNotifications?.some(
         (existingNotification) =>
-          existingNotification.messageId === newNotification.messageId
-      )
+          existingNotification.messageId === newNotification.messageId,
+      ),
   );
 
   return [...(existingNotifications ?? []), ...filteredNewNotifications].sort(
-    sortFunction(({ timestamp }) => new Date(timestamp).getTime(), true)
+    sortFunction(({ timestamp }) => new Date(timestamp).getTime(), true),
   );
 }
 

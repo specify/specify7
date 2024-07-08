@@ -29,13 +29,13 @@ export function ResourceDisambiguationDialog({
   const [fetchedResources] = useAsyncState(
     React.useCallback(
       async () => resourcesPromiseGenerator(baseTable, resourcesToResolve),
-      [baseTable, resourcesToResolve]
+      [baseTable, resourcesToResolve],
     ),
-    false
+    false,
   );
 
   const previousSelectedResource = fetchedResources?.find(
-    (resource) => resource.id === previousSelected
+    (resource) => resource.id === previousSelected,
   );
 
   return fetchedResources === undefined ? null : (
@@ -51,14 +51,14 @@ export function ResourceDisambiguationDialog({
 
 const resourcesPromiseGenerator = async (
   baseTable: keyof Tables,
-  resources: RA<number>
+  resources: RA<number>,
 ): Promise<RA<SpecifyResource<AnySchema>>> =>
   Promise.all(
     resources.map(async (resourceId) =>
-      fetchResource(baseTable, resourceId, false)
-    )
+      fetchResource(baseTable, resourceId, false),
+    ),
   )
     .then((data) =>
-      data.map((unsafeData) => f.maybe(unsafeData, deserializeResource))
+      data.map((unsafeData) => f.maybe(unsafeData, deserializeResource)),
     )
     .then(filterArray);

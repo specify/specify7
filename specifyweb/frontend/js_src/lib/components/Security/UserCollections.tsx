@@ -44,11 +44,11 @@ function UserCollectionsUi({
     React.useCallback(
       async () =>
         fetchCollection('Collection', { limit: 0, domainFilter: false }).then(
-          ({ records }) => records
+          ({ records }) => records,
         ),
-      []
+      [],
     ),
-    true
+    true,
   );
   const [selected, setSelected] = useAsyncState(
     React.useCallback(
@@ -56,9 +56,9 @@ function UserCollectionsUi({
         ajax<RA<number>>(`/context/user_collection_access_for_sp6/${userId}/`, {
           headers: { Accept: 'application/json' },
         }).then(({ data }) => data),
-      [userId]
+      [userId],
     ),
-    true
+    true,
   );
   const id = useId('user-collection-ui');
   const loading = React.useContext(LoadingContext);
@@ -84,7 +84,7 @@ function UserCollectionsUi({
             ping(`/context/user_collection_access_for_sp6/${userId}/`, {
               method: 'PUT',
               body: selected,
-            }).then(handleClose)
+            }).then(handleClose),
           )
         }
       >
@@ -125,8 +125,8 @@ export function UserCollections({
           user === undefined
             ? commonText.loading()
             : user.isNew()
-            ? userText.saveUserFirst()
-            : undefined
+              ? userText.saveUserFirst()
+              : undefined
         }
         onClick={handleOpen}
       >
@@ -173,7 +173,7 @@ export function CollectionAccess({
 }: {
   readonly userPolicies: IR<RA<Policy> | undefined> | undefined;
   readonly onChange: (
-    userPolicies: IR<RA<Policy> | undefined> | undefined
+    userPolicies: IR<RA<Policy> | undefined> | undefined,
   ) => void;
   readonly onChangedAgent: () => void;
   readonly collectionId: number;
@@ -183,10 +183,10 @@ export function CollectionAccess({
   const hasCollectionAccess =
     userPolicies?.[collectionId]?.some(
       ({ resource, actions }) =>
-        resource === collectionAccessResource && actions.includes('access')
+        resource === collectionAccessResource && actions.includes('access'),
     ) ?? false;
   const collectionAddress = userAgents?.find(({ collections }) =>
-    collections.includes(collectionId)
+    collections.includes(collectionId),
   )?.address;
   const hasAgent = (collectionAddress?.get('agent')?.length ?? 0) > 0;
 
@@ -197,10 +197,10 @@ export function CollectionAccess({
             collectionAddress,
             'change:agent',
             handleChangeAgent,
-            false
+            false,
           )
         : undefined,
-    [collectionAddress, handleChangeAgent]
+    [collectionAddress, handleChangeAgent],
   );
 
   /**
@@ -214,7 +214,7 @@ export function CollectionAccess({
       hasCollectionAccess && !canAssignAgent && !hasAgent
         ? handleToggle()
         : undefined,
-    [canAssignAgent, hasCollectionAccess, hasAgent]
+    [canAssignAgent, hasCollectionAccess, hasAgent],
   );
 
   const handleToggle = (): void =>
@@ -225,7 +225,7 @@ export function CollectionAccess({
             collectionId.toString(),
             hasCollectionAccess
               ? defined(userPolicies[collectionId]).filter(
-                  ({ resource }) => resource !== collectionAccessResource
+                  ({ resource }) => resource !== collectionAccessResource,
                 )
               : [
                   ...defined(userPolicies[collectionId]),
@@ -233,9 +233,9 @@ export function CollectionAccess({
                     resource: collectionAccessResource,
                     actions: ['access'],
                   },
-                ]
+                ],
           )
-        : undefined
+        : undefined,
     );
 
   const isReadOnly = React.useContext(ReadOnlyContext) || !canAssignAgent;
@@ -250,7 +250,7 @@ export function CollectionAccess({
               !hasPermission(
                 '/permissions/policies/user',
                 'update',
-                collectionId
+                collectionId,
               ) ||
               userPolicies === undefined ||
               (!hasCollectionAccess && !canAssignAgent && !hasAgent)

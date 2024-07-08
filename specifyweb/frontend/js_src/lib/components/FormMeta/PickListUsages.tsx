@@ -60,13 +60,13 @@ function PickListUsagesDialog({
 }
 
 function usePickListQuery(
-  resource: SpecifyResource<PickList>
+  resource: SpecifyResource<PickList>,
 ): SpecifyResource<SpQuery> {
   return React.useMemo(
     () =>
       createQuery(
         formsText.usagesOfPickList({ pickList: resource.get('name') }),
-        tables.SpLocaleContainerItem
+        tables.SpLocaleContainerItem,
       ).set('fields', [
         QueryFieldSpec.fromPath('SpLocaleContainerItem', [
           'container',
@@ -87,6 +87,6 @@ function usePickListQuery(
           .set('operStart', queryFieldFilters.equal.id)
           .set('startValue', resource.get('name')),
       ]),
-    [resource]
+    [resource],
   );
 }

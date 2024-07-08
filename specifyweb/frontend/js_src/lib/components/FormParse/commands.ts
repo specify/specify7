@@ -57,8 +57,8 @@ const processUiCommand: {
     !hasTablePermission('LoanReturnPreparation', 'update')
       ? { type: 'Blank' }
       : table.name === 'Loan'
-      ? { type: 'ReturnLoan' }
-      : { type: 'WrongTable', supportedTables: ['Loan'] },
+        ? { type: 'ReturnLoan' }
+        : { type: 'WrongTable', supportedTables: ['Loan'] },
   Unsupported: ({ name }) => {
     console.error(`Unsupported command: ${name ?? '(null)'}`);
     return { type: 'Unsupported', name };
@@ -80,7 +80,7 @@ export type CommandDefinition = {
 
 export function parseUiCommand(
   cell: SimpleXmlNode,
-  table: SpecifyTable
+  table: SpecifyTable,
 ): CommandDefinition {
   const name = getParsedAttribute(cell, 'name');
   const label = getParsedAttribute(cell, 'label');
@@ -97,8 +97,8 @@ export function parseUiCommand(
         table.name
       } form. Instead, try ` +
         `displaying it on the ${formatDisjunction(
-          definition.supportedTables.map(localized)
-        )} form`
+          definition.supportedTables.map(localized),
+        )} form`,
     );
 
   return {

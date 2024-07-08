@@ -52,7 +52,7 @@ export const Form = wrap(
         props.onSubmit(event);
       }
     },
-  })
+  }),
 );
 
 /*
@@ -61,7 +61,7 @@ export const Form = wrap(
  */
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const withHandleBlur = <TYPE extends InputType>(
-  handleBlur: ((event: React.FocusEvent<TYPE>) => void) | undefined
+  handleBlur: ((event: React.FocusEvent<TYPE>) => void) | undefined,
 ) => ({
   onBlur(event: React.FocusEvent<TYPE>): void {
     const input = event.target as TYPE;
@@ -78,7 +78,7 @@ export const withHandleBlur = <TYPE extends InputType>(
  */
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const withPreventWheel = <TYPE extends InputType>(
-  handleWheel: ((event: React.WheelEvent<TYPE>) => void) | undefined
+  handleWheel: ((event: React.WheelEvent<TYPE>) => void) | undefined,
 ) => ({
   onWheel(event: React.WheelEvent<TYPE>): void {
     const target = event.target as TYPE;
@@ -123,14 +123,14 @@ export const Input = {
         )
           Array.from(
             document.body.querySelectorAll(
-              `input[type="radio"][name="${props.name}"].${className.notTouchedInput}`
-            )
+              `input[type="radio"][name="${props.name}"].${className.notTouchedInput}`,
+            ),
           ).forEach((input) =>
-            input.classList.remove(className.notTouchedInput)
+            input.classList.remove(className.notTouchedInput),
           );
         handleBlur?.(event);
       },
-    })
+    }),
   ),
   Checkbox: wrap<
     'input',
@@ -156,7 +156,7 @@ export const Input = {
         props.onChange?.(event);
       },
       readOnly: isReadOnly,
-    })
+    }),
   ),
   Text: wrap<
     'input',
@@ -180,7 +180,7 @@ export const Input = {
         props.onChange?.(event);
       },
       readOnly: isReadOnly,
-    })
+    }),
   ),
   Generic: wrap<
     'input',
@@ -226,7 +226,7 @@ export const Input = {
       },
       ...withPreventWheel(props.onWheel),
       readOnly: isReadOnly,
-    })
+    }),
   ),
   Integer: wrap<
     'input',
@@ -252,12 +252,12 @@ export const Input = {
             ...withHandleBlur(props.onBlur),
             onChange(event): void {
               onValueChange?.(
-                Number.parseInt((event.target as HTMLInputElement).value)
+                Number.parseInt((event.target as HTMLInputElement).value),
               );
               props.onChange?.(event);
             },
             readOnly: isReadOnly,
-          }
+          },
   ),
   Float: wrap<
     'input',
@@ -279,14 +279,14 @@ export const Input = {
       ...withHandleBlur(props.onBlur),
       onChange(event): void {
         onValueChange?.(
-          Number.parseFloat((event.target as HTMLInputElement).value)
+          Number.parseFloat((event.target as HTMLInputElement).value),
         );
         props.onChange?.(event);
       },
       step: props.step ?? 'any',
       ...withPreventWheel(props.onWheel),
       readOnly: isReadOnly,
-    })
+    }),
   ),
 };
 export const Textarea = wrap<
@@ -312,7 +312,7 @@ export const Textarea = wrap<
       props.onChange?.(event);
     },
     readOnly: isReadOnly,
-  })
+  }),
 );
 export const selectMultipleSize = 4;
 export const Select = wrap<
@@ -354,7 +354,7 @@ export const Select = wrap<
       if (props.required !== true && props.multiple === true) {
         selected.map((option) => option.classList.add('dark:bg-neutral-100'));
         unselected.map((option) =>
-          option.classList.remove('dark:bg-neutral-100')
+          option.classList.remove('dark:bg-neutral-100'),
         );
       }
       const value = (event.target as HTMLSelectElement).value;
@@ -368,5 +368,5 @@ export const Select = wrap<
       onValuesChange?.(selected.map(({ value }) => localized(value)));
       props.onChange?.(event);
     },
-  })
+  }),
 );

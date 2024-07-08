@@ -28,7 +28,7 @@ type AttachmentSettings = {
 let settings: AttachmentSettings | undefined;
 export const attachmentSettingsPromise = load<AttachmentSettings | IR<never>>(
   '/context/attachment_settings.json',
-  'application/json'
+  'application/json',
 ).then((data) => {
   if (Object.keys(data).length > 0) settings = data as AttachmentSettings;
   return attachmentsAvailable();
@@ -77,7 +77,7 @@ function iconForMimeType(mimeType: string): {
 
 export const fetchAssetToken = async (
   fileName: string,
-  silent: boolean = false
+  silent: boolean = false,
 ) =>
   ajax(formatUrl('/attachment_gw/get_token/', { fileName }), {
     headers: { Accept: 'text/plain' },
@@ -99,7 +99,7 @@ export type AttachmentThumbnail = {
 
 export async function fetchThumbnail(
   attachment: SerializedResource<Attachment>,
-  scale = getPref('attachment.preview_size')
+  scale = getPref('attachment.preview_size'),
 ): Promise<AttachmentThumbnail | undefined> {
   const mimeType = attachment.mimeType ?? undefined;
   const thumbnail =
@@ -135,7 +135,7 @@ export async function fetchThumbnail(
 
 export const formatAttachmentUrl = (
   attachment: SerializedResource<Attachment>,
-  token: string | undefined
+  token: string | undefined,
 ): string | undefined =>
   typeof settings === 'object'
     ? formatUrl(settings.read, {
@@ -148,11 +148,11 @@ export const formatAttachmentUrl = (
     : undefined;
 
 export const fetchOriginalUrl = async (
-  attachment: SerializedResource<Attachment>
+  attachment: SerializedResource<Attachment>,
 ): Promise<string | undefined> =>
   typeof attachment.attachmentLocation === 'string'
     ? fetchToken(attachment.attachmentLocation).then((token) =>
-        formatAttachmentUrl(attachment, token)
+        formatAttachmentUrl(attachment, token),
       )
     : Promise.resolve(undefined);
 
@@ -160,7 +160,7 @@ export async function uploadFile(
   file: File,
   handleProgress: (percentage: number | true) => void,
   uploadAttachmentSpec?: UploadAttachmentSpec,
-  strict = true
+  strict = true,
 ): Promise<SpecifyResource<Attachment> | undefined> {
   if (settings === undefined) return undefined;
 
@@ -175,7 +175,7 @@ export async function uploadFile(
             body: {
               filenames: [file.name],
             },
-          }
+          },
         ).then(({ data }) => data[0]);
 
   if (data.attachmentLocation === undefined || data.token === undefined)
@@ -196,7 +196,7 @@ export async function uploadFile(
 
   const xhr = new XMLHttpRequest();
   xhr.upload?.addEventListener('progress', (event) =>
-    handleProgress(event.lengthComputable ? event.loaded / event.total : true)
+    handleProgress(event.lengthComputable ? event.loaded / event.total : true),
   );
   xhr.open('POST', settings.write);
   xhr.send(formData);
@@ -218,12 +218,12 @@ export async function uploadFile(
 
               errorMode: strict ? 'visible' : 'silent',
               text: xhr.responseText,
-            })
+            }),
           );
         } catch (error) {
           reject(error);
         }
-    })
+    }),
   );
   return new tables.Attachment.Resource({
     attachmentlocation: data.attachmentLocation,
@@ -248,7 +248,7 @@ function fixMimeType(originalMimeType: string): string {
     const mimeType = 'application/octet-stream';
     console.warn(
       `Shortened the Attachment mimeType from "${originalMimeType}"` +
-        ` to "${mimeType}" due to length limit`
+        ` to "${mimeType}" due to length limit`,
     );
     return mimeType;
   }

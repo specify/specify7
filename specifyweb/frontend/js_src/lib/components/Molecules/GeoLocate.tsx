@@ -56,7 +56,7 @@ export function GenericGeoLocate({
         ...baseData,
         ...data,
       }).replaceAll(/%7c/giu, '|'),
-    [data]
+    [data],
   );
 
   return (

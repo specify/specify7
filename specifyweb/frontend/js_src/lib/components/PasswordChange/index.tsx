@@ -26,7 +26,7 @@ export function PasswordChange(): JSX.Element {
         }}
       />
     ),
-    []
+    [],
   );
 }
 
@@ -43,13 +43,13 @@ function ChangePassword({
   const [formErrors] = React.useState(data.formErrors);
 
   const { validationRef: oldPasswordRef } = useValidation(
-    data.oldPasswordErrors
+    data.oldPasswordErrors,
   );
   const { validationRef: newPasswordRef } = useValidation(
-    data.newPasswordErrors
+    data.newPasswordErrors,
   );
   const { validationRef: repeatPasswordRef } = useValidation(
-    data.repeatPasswordErrors
+    data.repeatPasswordErrors,
   );
 
   return (

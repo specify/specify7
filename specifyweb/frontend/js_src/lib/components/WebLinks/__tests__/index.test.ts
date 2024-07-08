@@ -13,8 +13,8 @@ test('weblinks are fetched and parsed correctly', async () =>
               webLink.name,
               // Get rid of symbols
               JSON.parse(JSON.stringify(webLink)),
-            ] as const
-        )
-      )
-    )
+            ] as const,
+        ),
+      ),
+    ),
   ).resolves.toMatchSnapshot());

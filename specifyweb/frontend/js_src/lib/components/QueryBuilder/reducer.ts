@@ -109,7 +109,7 @@ export const reducer = generateReducer<MainState, Actions>({
       : {
           ...state,
           mappingView: mappingPathIsComplete(
-            state.fields[action.line].mappingPath
+            state.fields[action.line].mappingPath,
           )
             ? state.fields[action.line].mappingPath
             : state.mappingView,

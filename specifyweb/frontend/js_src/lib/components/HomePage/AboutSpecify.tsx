@@ -47,9 +47,9 @@ function AboutDialog({
                 downloadFile(
                   `Specify 7 System Information - ${new Date().toJSON()}.txt`,
                   produceStackTrace(
-                    `System Information report. Generated on ${new Date().toJSON()}`
-                  )
-                )
+                    `System Information report. Generated on ${new Date().toJSON()}`,
+                  ),
+                ),
               )
             }
           >
@@ -156,11 +156,11 @@ function DatabaseCreationDate(): JSX.Element {
     React.useCallback(
       async () =>
         fetchCollection('SpVersion', { limit: 1, domainFilter: false }).then(
-          ({ records }) => records[0]?.timestampCreated
+          ({ records }) => records[0]?.timestampCreated,
         ),
-      []
+      [],
     ),
-    false
+    false,
   );
   return <DateElement date={date} fallback={commonText.loading()} flipDates />;
 }
@@ -176,11 +176,11 @@ function GitSha(): JSX.Element {
           errorMode: 'dismissible',
           expectedErrors: [Http.NOT_FOUND],
         }).then(({ data, status }) =>
-          status === Http.NOT_FOUND ? false : data
+          status === Http.NOT_FOUND ? false : data,
         ),
-      []
+      [],
     ),
-    false
+    false,
   );
   return (
     <>
@@ -211,11 +211,11 @@ function BuildDate(): JSX.Element {
           errorMode: 'dismissible',
           expectedErrors: [Http.NOT_FOUND],
         }).then(({ data, status }) =>
-          status === Http.NOT_FOUND ? commonText.unknown() : data
+          status === Http.NOT_FOUND ? commonText.unknown() : data,
         ),
-      []
+      [],
     ),
-    false
+    false,
   );
   return <DateElement date={buildDate} fallback={commonText.loading()} />;
 }

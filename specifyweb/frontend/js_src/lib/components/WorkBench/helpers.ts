@@ -7,7 +7,7 @@ export const downloadDataSet = async (
   name: string,
   rows: RA<RA<string>>,
   columns: RA<string>,
-  delimiter: string
+  delimiter: string,
 ): Promise<void> =>
   new Promise((resolve, reject) =>
     stringify(
@@ -18,9 +18,9 @@ export const downloadDataSet = async (
       (error, output) => {
         if (error === undefined)
           resolve(
-            downloadFile(name.endsWith('.csv') ? name : `${name}.tsv`, output)
+            downloadFile(name.endsWith('.csv') ? name : `${name}.tsv`, output),
           );
         else reject(error);
-      }
-    )
+      },
+    ),
   );

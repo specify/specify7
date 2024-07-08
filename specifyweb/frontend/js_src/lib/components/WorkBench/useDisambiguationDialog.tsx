@@ -67,12 +67,12 @@ export function useDisambiguationDialog({
     const physicalCol = hot.toPhysicalColumn(visualCol);
 
     const matches = validation.uploadResults.ambiguousMatches[physicalRow].find(
-      ({ physicalCols }) => physicalCols.includes(physicalCol)
+      ({ physicalCols }) => physicalCols.includes(physicalCol),
     );
     if (matches === undefined) return;
     const tableName = getTableFromMappingPath(
       mappings.baseTable.name,
-      matches.mappingPath
+      matches.mappingPath,
     );
     const table = strictGetTable(tableName);
     const resources = new table.LazyCollection({
@@ -92,7 +92,7 @@ export function useDisambiguationDialog({
         setResource(resources);
         setPhysicalRow(physicalRow);
         openDisambiguation();
-      })
+      }),
     );
   }, [mappings, hot]);
 
@@ -116,7 +116,7 @@ export function useDisambiguationDialog({
             disambiguation.setDisambiguation(
               disambiguationPhysicalRow!,
               disambiguationMatches!.mappingPath,
-              selected.id
+              selected.id,
             );
             validation.startValidateRow(disambiguationPhysicalRow!);
             hot?.render();
@@ -136,14 +136,14 @@ export function useDisambiguationDialog({
                       key === disambiguationMatches!.key &&
                       typeof disambiguation.getDisambiguation(physicalRow)[
                         mappingPathToString(mappingPath)
-                      ] !== 'number'
+                      ] !== 'number',
                   );
 
                 if (ambiguousMatchToDisambiguate !== undefined) {
                   disambiguation.setDisambiguation(
                     physicalRow,
                     ambiguousMatchToDisambiguate.mappingPath,
-                    selected.id
+                    selected.id,
                   );
                   validation.startValidateRow(physicalRow);
                 }

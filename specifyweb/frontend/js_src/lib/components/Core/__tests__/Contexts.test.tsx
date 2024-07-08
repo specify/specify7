@@ -32,12 +32,12 @@ jest.mock('../../Errors/Crash', () => ({
 
 test('<Contexts> is providing error context', async () => {
   const handleError = jest.fn(
-    (value: React.ContextType<typeof ErrorContext>) => value
+    (value: React.ContextType<typeof ErrorContext>) => value,
   );
   const { findByRole, queryByRole, user } = mount(
     <Contexts>
       <LeakContext context={ErrorContext} onLoaded={handleError} />
-    </Contexts>
+    </Contexts>,
   );
 
   const emitError = handleError.mock.calls[0][0]!;
@@ -47,7 +47,7 @@ test('<Contexts> is providing error context', async () => {
       <button type="button" onClick={handleClose}>
         {mainText.errorMessage()}
       </button>
-    ))
+    )),
   );
   const button = await findByRole('button');
   await user.click(button);
@@ -57,12 +57,12 @@ test('<Contexts> is providing error context', async () => {
 
 test('<Contexts> provide a loading context', async () => {
   const handleLoading = jest.fn(
-    (value: React.ContextType<typeof LoadingContext>) => value
+    (value: React.ContextType<typeof LoadingContext>) => value,
   );
   const { findByRole } = render(
     <Contexts>
       <LeakContext context={LoadingContext} onLoaded={handleLoading} />
-    </Contexts>
+    </Contexts>,
   );
 
   // Loading
@@ -95,10 +95,10 @@ test('<Contexts> provide a loading context', async () => {
 
 test('<Contexts> is providing UnloadProtectsContext', () => {
   const handleUnloadProtect = jest.fn(
-    (value: React.ContextType<typeof UnloadProtectsContext>) => value
+    (value: React.ContextType<typeof UnloadProtectsContext>) => value,
   );
   const handleSetUnloadProtect = jest.fn(
-    (value: React.ContextType<typeof SetUnloadProtectsContext>) => value
+    (value: React.ContextType<typeof SetUnloadProtectsContext>) => value,
   );
   render(
     <Contexts>
@@ -110,7 +110,7 @@ test('<Contexts> is providing UnloadProtectsContext', () => {
         context={SetUnloadProtectsContext}
         onLoaded={handleSetUnloadProtect}
       />
-    </Contexts>
+    </Contexts>,
   );
 
   // Unload Protects

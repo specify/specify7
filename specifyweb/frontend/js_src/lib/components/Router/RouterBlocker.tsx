@@ -29,10 +29,10 @@ type Transition = {
  * https://github.com/remix-run/react-router/commit/256cad70d3fd4500b1abcfea66f3ee622fb90874
  */
 export function useRouterBlocker(
-  callback: (location: SafeLocation) => Promise<'ignore' | 'unblock'>
+  callback: (location: SafeLocation) => Promise<'ignore' | 'unblock'>,
 ): { readonly block: () => void; readonly unblock: () => void } {
   const { navigator } = React.useContext(
-    NavigationContext
+    NavigationContext,
   ) as NavigationContextWithBlock;
 
   const blockerCallback = React.useCallback(
@@ -41,7 +41,7 @@ export function useRouterBlocker(
         retry();
         return resolution;
       }),
-    [callback]
+    [callback],
   );
 
   const unblockRef = React.useRef<(() => void) | undefined>(undefined);

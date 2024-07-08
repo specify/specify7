@@ -12,7 +12,7 @@ import { keysToLowerCase } from '../../utils/utils';
 export function formatUrl(
   url: string,
   parameters: IR<number | string | null | undefined>,
-  toLowerCase = true
+  toLowerCase = true,
 ): string {
   const urlObject = new URL(url, getUrl());
   urlObject.search = new URLSearchParams({
@@ -20,13 +20,13 @@ export function formatUrl(
     ...Object.fromEntries(
       filterArray(
         Object.entries(
-          toLowerCase ? keysToLowerCase(parameters) : parameters
+          toLowerCase ? keysToLowerCase(parameters) : parameters,
         ).map(([key, value]) =>
           value === undefined || value === null
             ? undefined
-            : [key, value.toString()]
-        )
-      )
+            : [key, value.toString()],
+        ),
+      ),
     ),
   }).toString();
   // If received a URL without hostname, return a URL without hostname
@@ -44,7 +44,7 @@ export const parseUrl = (url: string = getUrl()): IR<string> =>
 
 export function resolveRelative(
   relativePath: string,
-  currentUrl = getUrl()
+  currentUrl = getUrl(),
 ): string {
   const bareUrl = new URL(currentUrl).pathname;
   const url = resolvePath(relativePath, bareUrl);

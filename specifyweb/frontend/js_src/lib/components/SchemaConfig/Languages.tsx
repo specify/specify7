@@ -47,7 +47,7 @@ export function ChooseSchemaLanguage(): JSX.Element {
               {label.includes('(')
                 ? label
                 : localized(
-                    `${label} (${code.split(languageSeparator).at(-1) ?? code})`
+                    `${label} (${code.split(languageSeparator).at(-1) ?? code})`,
                   )}
             </Link.Default>
           </li>

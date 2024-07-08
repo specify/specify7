@@ -49,12 +49,12 @@ export function CreateAppResource(): JSX.Element {
   const resourcesTree = useResourcesTree(resources);
   const directory = React.useMemo(
     () => findAppResourceDirectory(resourcesTree, directoryKey),
-    [resourcesTree, directoryKey]
+    [resourcesTree, directoryKey],
   );
 
   const [name, setName] = React.useState<string>('');
   const [type, setType] = React.useState<AppResourceType | undefined>(
-    undefined
+    undefined,
   );
   const [mimeType, setMimeType] = React.useState<string | undefined>(undefined);
   const [templateFile, setTemplateFile] = React.useState<
@@ -135,7 +135,7 @@ export function CreateAppResource(): JSX.Element {
                     )}
                   </td>
                 </tr>
-              )
+              ),
           )}
         </tbody>
       </table>
@@ -159,23 +159,23 @@ export function CreateAppResource(): JSX.Element {
  */
 export const findAppResourceDirectory = (
   tree: AppResourcesTree,
-  searchKey: string
+  searchKey: string,
 ): ScopedAppResourceDir | undefined =>
   mappedFind(tree, ({ key, directory, subCategories }) =>
     key === searchKey
       ? directory
-      : findAppResourceDirectory(subCategories, searchKey)
+      : findAppResourceDirectory(subCategories, searchKey),
   );
 
 /** Find "directoryKey" for an app resource directory with given id */
 export const findAppResourceDirectoryKey = (
   tree: AppResourcesTree,
-  directoryId: number
+  directoryId: number,
 ): string | undefined =>
   mappedFind(tree, ({ key, directory, subCategories }) =>
     directory?.id === directoryId
       ? key
-      : findAppResourceDirectoryKey(subCategories, directoryId)
+      : findAppResourceDirectoryKey(subCategories, directoryId),
   );
 
 function getUrl(
@@ -183,7 +183,7 @@ function getUrl(
   type: AppResourceType,
   name: string,
   mimeType: string | undefined,
-  templateFile?: string
+  templateFile?: string,
 ): string {
   const path = type.tableName === 'SpAppResource' ? 'app-resource' : 'view-set';
   return formatUrl(`/specify/resources/${path}/new/`, {
@@ -218,9 +218,9 @@ function ViewSetTemplates({
             handleSelect(false);
             return undefined;
           }),
-      [handleSelect]
+      [handleSelect],
     ),
-    true
+    true,
   );
   return viewSets === undefined ? null : (
     <Dialog
@@ -264,9 +264,9 @@ function EditAppResource({
           name: name.trim(),
           specifyUser: userInformation.resource_uri,
           spAppResourceDir: directory.resource_uri,
-        })
+        }),
       ),
-    [directory, name, type, mimeType]
+    [directory, name, type, mimeType],
   );
 
   const navigate = useNavigate();
@@ -304,8 +304,8 @@ function EditAppResource({
             type,
             resource.get('name'),
             resource.get('mimeType') ?? undefined,
-            templateFile
-          )
+            templateFile,
+          ),
         );
         /*
          * Prevent saving a resource to fix

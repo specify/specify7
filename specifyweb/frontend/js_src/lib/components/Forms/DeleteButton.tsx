@@ -55,20 +55,20 @@ export function DeleteButton<SCHEMA extends AnySchema>({
    * button's resource can change often.
    */
   readonly deferred?: boolean;
-  readonly component?: typeof Button['Secondary'];
+  readonly component?: (typeof Button)['Secondary'];
   readonly onDeleted?: () => void;
   readonly isIcon?: boolean;
 }): JSX.Element {
   const [deferred, setDeferred] = useLiveState<boolean>(
-    React.useCallback(() => initialDeferred, [initialDeferred, resource])
+    React.useCallback(() => initialDeferred, [initialDeferred, resource]),
   );
 
   const [blockers, setBlockers] = useAsyncState<RA<DeleteBlocker>>(
     React.useCallback(
       async () => (deferred ? undefined : fetchBlockers(resource)),
-      [resource, deferred]
+      [resource, deferred],
     ),
-    false
+    false,
   );
 
   const [isOpen, handleOpen, handleClose] = useBooleanState();
@@ -180,7 +180,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
 function resolveParentViaOtherside(
   parentRelationship: Relationship,
   directRelationship: Relationship,
-  id: number
+  id: number,
 ) {
   const baseTable = parentRelationship.relatedTable;
   return createQuery('Delete blockers', baseTable).set('fields', [
@@ -201,7 +201,7 @@ function resolveParentViaOtherside(
 
 export async function fetchBlockers(
   resource: SpecifyResource<AnySchema>,
-  expectFailure: boolean = false
+  expectFailure: boolean = false,
 ): Promise<RA<DeleteBlocker>> {
   const { data, status } = await ajax<
     RA<{
@@ -216,7 +216,7 @@ export async function fetchBlockers(
     {
       headers: { Accept: 'application/json' },
       expectedErrors: expectFailure ? [Http.NOT_FOUND] : [],
-    }
+    },
   );
   if (status === Http.NOT_FOUND) return [];
 
@@ -244,7 +244,7 @@ export async function fetchBlockers(
                   parentRelationship.otherSideName === undefined
                     ? createQuery(
                         'Delete blockers',
-                        directRelationship.table
+                        directRelationship.table,
                       ).set('fields', [
                         QueryFieldSpec.fromPath(directRelationship.table.name, [
                           directRelationship.table.idField.name,
@@ -262,23 +262,23 @@ export async function fetchBlockers(
                           [
                             parentRelationship.name,
                             parentRelationship.relatedTable.idField.name,
-                          ]
+                          ],
                         ).toSpQueryField(),
                       ])
                     : resolveParentViaOtherside(
                         parentRelationship,
                         directRelationship,
-                        resource.id
-                      )
+                        resource.id,
+                      ),
                 ),
                 {
                   limit: 0,
-                }
+                },
               ).then((rows) =>
                 rows.map(([direct, parent]) => ({
                   direct,
                   parent,
-                }))
+                })),
               ),
       },
     ] as const;

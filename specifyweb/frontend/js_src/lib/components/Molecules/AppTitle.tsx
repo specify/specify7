@@ -20,7 +20,7 @@ export function AppTitle({
   const [updateFormTitle] = userPreferences.use(
     'form',
     'behavior',
-    'updatePageTitle'
+    'updatePageTitle',
   );
   useTitle(source !== 'form' || updateFormTitle ? title : undefined);
   return null;
@@ -31,7 +31,7 @@ export function useTitle(title: LocalizedString | undefined): void {
   const [unsavedIndicator] = userPreferences.use(
     'general',
     'behavior',
-    'unsavedIndicator'
+    'unsavedIndicator',
   );
   const blockers = React.useContext(UnloadProtectsContext)!;
   const isBlocked = unsavedIndicator && blockers.length > 0;

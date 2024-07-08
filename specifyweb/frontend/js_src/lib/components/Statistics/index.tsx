@@ -70,13 +70,13 @@ function ProtectedStatsPage(): JSX.Element | null {
   const [initialSharedLayout, setSharedLayout] = collectionPreferences.use(
     'statistics',
     'appearance',
-    'layout'
+    'layout',
   );
 
   const [refreshRate] = collectionPreferences.use(
     'statistics',
     'appearance',
-    'refreshRate'
+    'refreshRate',
   );
 
   const [sharedLayout, setLocalSharedLayout] = React.useState<
@@ -88,20 +88,20 @@ function ProtectedStatsPage(): JSX.Element | null {
       layout:
         | RA<StatLayout>
         | ((
-            oldLayout: RA<StatLayout> | undefined
+            oldLayout: RA<StatLayout> | undefined,
           ) => RA<StatLayout> | undefined)
-        | undefined
+        | undefined,
     ) => {
       setLocalSharedLayout(layout);
       setSharedLayout(layout);
     },
-    [setLocalSharedLayout, setSharedLayout]
+    [setLocalSharedLayout, setSharedLayout],
   );
 
   const [initialPersonalLayout, setPersonalLayout] = userPreferences.use(
     'statistics',
     'appearance',
-    'layout'
+    'layout',
   );
 
   const [personalLayout, setLocalPersonalLayout] = React.useState<
@@ -113,25 +113,25 @@ function ProtectedStatsPage(): JSX.Element | null {
       layout:
         | RA<StatLayout>
         | ((
-            oldLayout: RA<StatLayout> | undefined
+            oldLayout: RA<StatLayout> | undefined,
           ) => RA<StatLayout> | undefined)
-        | undefined
+        | undefined,
     ) => {
       setLocalPersonalLayout(layout);
       setPersonalLayout(layout);
     },
-    [setLocalPersonalLayout, setPersonalLayout]
+    [setLocalPersonalLayout, setPersonalLayout],
   );
 
   const [showPreparationsTotal] = collectionPreferences.use(
     'statistics',
     'appearance',
-    'showPreparationsTotal'
+    'showPreparationsTotal',
   );
 
   const formatterSpec = React.useMemo<StatFormatterSpec>(
     () => ({ showPreparationsTotal }),
-    [showPreparationsTotal]
+    [showPreparationsTotal],
   );
   const [defaultLayout, setDefaultLayout] = React.useState<
     RA<StatLayout> | undefined
@@ -168,7 +168,7 @@ function ProtectedStatsPage(): JSX.Element | null {
 
   const hasEditPermission = hasPermission(
     '/preferences/statistics',
-    'edit_shared'
+    'edit_shared',
   );
 
   const canEditIndex = (isCollection: boolean): boolean =>
@@ -198,7 +198,7 @@ function ProtectedStatsPage(): JSX.Element | null {
       activePage.isShared,
       activePage.pageIndex,
       state,
-    ]
+    ],
   );
 
   useErrorContext('statistics', errorContextState);
@@ -215,7 +215,7 @@ function ProtectedStatsPage(): JSX.Element | null {
 
   const allCategories = React.useMemo(
     () => backEndStatsSpec.map(({ responseKey }) => responseKey),
-    []
+    [],
   );
   const allDynamicQueries = React.useMemo(
     () =>
@@ -223,10 +223,10 @@ function ProtectedStatsPage(): JSX.Element | null {
         key: responseKey,
         spec: dynamicQuerySpec,
       })),
-    []
+    [],
   );
   const [categoriesToFetch, setCategoriesToFetch] = React.useState<RA<string>>(
-    []
+    [],
   );
   const [dynamicQueriesToRun, setDynamicQueriesToRun] = React.useState<
     RA<DynamicQuerySpec>
@@ -245,7 +245,7 @@ function ProtectedStatsPage(): JSX.Element | null {
     const absentBackEndCategories =
       sourceLayout === undefined ? [] : getBackendUrlToFetch(sourceLayout);
     const notCurrentlyFetching = absentBackEndCategories.filter(
-      (category) => !categoriesToFetch.includes(category)
+      (category) => !categoriesToFetch.includes(category),
     );
     if (notCurrentlyFetching.length > 0) {
       setCategoriesToFetch([...categoriesToFetch, ...notCurrentlyFetching]);
@@ -259,7 +259,7 @@ function ProtectedStatsPage(): JSX.Element | null {
         : getDynamicQuerySpecsToFetch(sourceLayout);
     const notCurrentlyRunning = absentDynamicCategories.filter(
       (maybeRunningSpec) =>
-        !dynamicQueriesToRun.some(({ key }) => key === maybeRunningSpec.key)
+        !dynamicQueriesToRun.some(({ key }) => key === maybeRunningSpec.key),
     );
     if (notCurrentlyRunning.length > 0) {
       setDynamicQueriesToRun([...dynamicQueriesToRun, ...notCurrentlyRunning]);
@@ -270,7 +270,7 @@ function ProtectedStatsPage(): JSX.Element | null {
   const defaultBackEndResponse = useBackendApi(defaultCategoriesToFetch);
   const dynamicCategoriesResponse = useDynamicGroups(dynamicQueriesToRun);
   const defaultDynamicCategoriesResponse = useDynamicGroups(
-    defaultDynamicQueriesToRun
+    defaultDynamicQueriesToRun,
   );
 
   /*
@@ -310,14 +310,14 @@ function ProtectedStatsPage(): JSX.Element | null {
       ? undefined
       : sharedLayout[activePage.pageIndex]
     : personalLayout?.[activePage.pageIndex].categories === undefined
-    ? undefined
-    : personalLayout[activePage.pageIndex];
+      ? undefined
+      : personalLayout[activePage.pageIndex];
 
   const handleChange = React.useCallback(
     (
       newCategories: (
-        oldCategory: StatLayout['categories']
-      ) => StatLayout['categories']
+        oldCategory: StatLayout['categories'],
+      ) => StatLayout['categories'],
     ): void =>
       setCurrentLayout((oldLayout: RA<StatLayout> | undefined) =>
         oldLayout === undefined
@@ -325,43 +325,43 @@ function ProtectedStatsPage(): JSX.Element | null {
           : replaceItem(oldLayout, activePage.pageIndex, {
               ...oldLayout[activePage.pageIndex],
               categories: newCategories(
-                oldLayout[activePage.pageIndex].categories
+                oldLayout[activePage.pageIndex].categories,
               ),
-            })
+            }),
       ),
-    [activePage.pageIndex, activePage.isShared]
+    [activePage.pageIndex, activePage.isShared],
   );
   // Used to set unknown categories once for layout initially, and every time for default layout
   useBackEndCategorySetter(
     backEndResponse,
     handleChange,
     categoriesToFetch,
-    formatterSpec
+    formatterSpec,
   );
   useDefaultBackendCategorySetter(
     defaultBackEndResponse,
     setDefaultLayout,
-    formatterSpec
+    formatterSpec,
   );
   useDefaultDynamicCategorySetter(
     defaultDynamicCategoriesResponse,
-    setDefaultLayout
+    setDefaultLayout,
   );
   useDynamicCategorySetter(dynamicCategoriesResponse, handleChange);
 
   const previousCollectionLayout = React.useRef(
-    sharedLayout as unknown as RA<StatLayout>
+    sharedLayout as unknown as RA<StatLayout>,
   );
   const previousLayout = React.useRef(
-    personalLayout as unknown as RA<StatLayout>
+    personalLayout as unknown as RA<StatLayout>,
   );
 
   React.useEffect(() => {
     handleSharedLayoutChange((layout) =>
-      applyRefreshLayout(layout, refreshRate * 60)
+      applyRefreshLayout(layout, refreshRate * 60),
     );
     handlePersonalLayoutChange((layout) =>
-      applyRefreshLayout(layout, refreshRate * 60)
+      applyRefreshLayout(layout, refreshRate * 60),
     );
   }, [handlePersonalLayoutChange, handleSharedLayoutChange]);
 
@@ -384,7 +384,7 @@ function ProtectedStatsPage(): JSX.Element | null {
                   ? date.toJSON()
                   : pageLayout.lastUpdated,
             };
-          })
+          }),
     );
   }, [
     activePage.pageIndex,
@@ -397,7 +397,7 @@ function ProtectedStatsPage(): JSX.Element | null {
   const handleAdd = (
     item: CustomStat | DefaultStat,
     categoryIndex?: number,
-    itemIndex?: number
+    itemIndex?: number,
   ): void =>
     handleChange((oldCategory) =>
       replaceItem(oldCategory, categoryIndex ?? -1, {
@@ -408,13 +408,13 @@ function ProtectedStatsPage(): JSX.Element | null {
             : replaceItem(
                 oldCategory[categoryIndex ?? -1].items,
                 itemIndex,
-                item
+                item,
               ),
-      })
+      }),
     );
 
   const modifyName = (
-    item: CustomStat | DefaultStat
+    item: CustomStat | DefaultStat,
   ): CustomStat | DefaultStat => {
     if (pageLayout === undefined) {
       return item;
@@ -434,7 +434,7 @@ function ProtectedStatsPage(): JSX.Element | null {
       pageIndex: number,
       categoryIndex: number,
       itemIndex: number,
-      value: number | string
+      value: number | string,
     ) =>
       setDefaultLayout((oldValue) =>
         f.maybe(oldValue, (oldValue) =>
@@ -453,14 +453,14 @@ function ProtectedStatsPage(): JSX.Element | null {
                       itemIndex
                     ],
                     itemValue: value,
-                  }
+                  },
                 ),
-              }
+              },
             ),
-          })
-        )
+          }),
+        ),
       ),
-    [setDefaultLayout]
+    [setDefaultLayout],
   );
   const handleLoad = React.useCallback(
     (categoryIndex: number, itemIndex: number, value: number | string) =>
@@ -471,9 +471,9 @@ function ProtectedStatsPage(): JSX.Element | null {
             ...oldCategory[categoryIndex].items[itemIndex],
             itemValue: value,
           }),
-        })
+        }),
       ),
-    [handleChange]
+    [handleChange],
   );
 
   const refreshPage = () => {
@@ -484,8 +484,8 @@ function ProtectedStatsPage(): JSX.Element | null {
         : replaceItem(
             layout,
             activePage.pageIndex,
-            setLayoutUndefined(layout[activePage.pageIndex])
-          )
+            setLayoutUndefined(layout[activePage.pageIndex]),
+          ),
     );
     setCategoriesToFetch([]);
   };
@@ -494,7 +494,7 @@ function ProtectedStatsPage(): JSX.Element | null {
     layout[activePage.isShared ? statsText.shared() : statsText.private()]?.[
       activePage.pageIndex
     ],
-    defaultLayout
+    defaultLayout,
   );
 
   return sharedLayout === undefined ? null : (
@@ -529,7 +529,7 @@ function ProtectedStatsPage(): JSX.Element | null {
               const statsTsv = statsToTsv(
                 layout,
                 activePage.pageIndex,
-                activePage.isShared ? 0 : 1
+                activePage.isShared ? 0 : 1,
               );
               const sourceName = Object.keys(layout)[sourceIndex];
               const pageName =
@@ -580,7 +580,7 @@ function ProtectedStatsPage(): JSX.Element | null {
                     : previousLayout;
                   const newIndex = Math.min(
                     pageIndex,
-                    previousLayoutRef.current.length - 1
+                    previousLayoutRef.current.length - 1,
                   );
                   return {
                     isShared,
@@ -614,10 +614,7 @@ function ProtectedStatsPage(): JSX.Element | null {
       <div className="flex flex-col md:overflow-hidden">
         <div className="flex flex-col gap-2 overflow-y-hidden md:flex-row">
           <aside
-            className={`
-                 top-0 flex min-w-fit flex-1 flex-col divide-y-4 !divide-[color:var(--form-background)]
-                 md:sticky
-              `}
+            className={`top-0 flex min-w-fit flex-1 flex-col divide-y-4 !divide-[color:var(--form-background)] md:sticky`}
           >
             <Ul className="flex flex-col gap-6">
               {Object.entries(layout).map(
@@ -676,7 +673,7 @@ function ProtectedStatsPage(): JSX.Element | null {
                         ))}
                       </Ul>
                     </li>
-                  )
+                  ),
               )}
             </Ul>
           </aside>
@@ -694,7 +691,7 @@ function ProtectedStatsPage(): JSX.Element | null {
                   ? undefined
                   : (label): void => {
                       const targetSourceLayout = getSourceLayout(
-                        state.isShared
+                        state.isShared,
                       );
                       getSourceLayoutSetter(state.isShared)((layout) =>
                         layout === undefined
@@ -706,7 +703,7 @@ function ProtectedStatsPage(): JSX.Element | null {
                                 categories: [],
                                 lastUpdated: undefined,
                               },
-                            ]
+                            ],
                       );
                       setState({
                         type: 'EditingState',
@@ -726,7 +723,7 @@ function ProtectedStatsPage(): JSX.Element | null {
                   ? undefined
                   : (): void => {
                       const targetSourceLayout = getSourceLayout(
-                        state.isShared
+                        state.isShared,
                       );
                       if (
                         targetSourceLayout !== undefined &&
@@ -735,7 +732,7 @@ function ProtectedStatsPage(): JSX.Element | null {
                         getSourceLayoutSetter(state.isShared)((oldLayout) =>
                           oldLayout === undefined
                             ? undefined
-                            : removeItem(oldLayout, state.pageIndex!)
+                            : removeItem(oldLayout, state.pageIndex!),
                         );
                         setState({
                           type: 'EditingState',
@@ -745,7 +742,7 @@ function ProtectedStatsPage(): JSX.Element | null {
                             activePage.isShared === state.isShared
                               ? getOffsetOne(
                                   activePage.pageIndex,
-                                  state.pageIndex
+                                  state.pageIndex,
                                 )
                               : activePage.pageIndex,
                           isShared: activePage.isShared,
@@ -758,7 +755,7 @@ function ProtectedStatsPage(): JSX.Element | null {
                   ? undefined
                   : (value): void => {
                       const targetSourceLayout = getSourceLayout(
-                        state.isShared
+                        state.isShared,
                       );
                       if (targetSourceLayout !== undefined) {
                         getSourceLayoutSetter(state.isShared)((layout) =>
@@ -767,7 +764,7 @@ function ProtectedStatsPage(): JSX.Element | null {
                             : replaceItem(layout, state.pageIndex, {
                                 ...layout[state.pageIndex],
                                 label: value,
-                              })
+                              }),
                         );
                       }
                       setState({
@@ -807,7 +804,7 @@ function ProtectedStatsPage(): JSX.Element | null {
                         replaceItem(oldCategory, categoryIndex, {
                           ...oldCategory[categoryIndex],
                           label: newName,
-                        })
+                        }),
                       )
                   : undefined
               }
@@ -831,9 +828,9 @@ function ProtectedStatsPage(): JSX.Element | null {
                                     querySpec,
                                     itemValue: undefined,
                                   }),
-                            }
+                            },
                           ),
-                        })
+                        }),
                       )
               }
               onLoad={handleLoad}
@@ -844,10 +841,10 @@ function ProtectedStatsPage(): JSX.Element | null {
                         ...oldCategory[categoryIndex],
                         items: removeItem(
                           oldCategory[categoryIndex].items,
-                          itemIndex
+                          itemIndex,
                         ),
                       })
-                    : removeItem(oldCategory, categoryIndex)
+                    : removeItem(oldCategory, categoryIndex),
                 )
               }
               onRename={
@@ -862,9 +859,9 @@ function ProtectedStatsPage(): JSX.Element | null {
                             {
                               ...oldCategory[categoryIndex].items[itemIndex],
                               label: localized(newLabel),
-                            }
+                            },
                           ),
-                        })
+                        }),
                       )
                   : undefined
               }
@@ -894,11 +891,11 @@ function ProtectedStatsPage(): JSX.Element | null {
                       items: items?.map((item) =>
                         item.type === 'DefaultStat'
                           ? (removeKey(item, 'isVisible') as DefaultStat)
-                          : item
+                          : item,
                       ),
                     })),
                     lastUpdated,
-                  }))
+                  })),
             );
           }}
           onInitialLoad={() => {

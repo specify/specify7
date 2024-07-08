@@ -32,7 +32,7 @@ import type { GetOrSet } from '../utils/types';
 export function useAsyncState<T>(
   callback: () => Promise<T | undefined> | T | undefined,
   // Show the loading screen while the promise is being resolved
-  loadingScreen: boolean
+  loadingScreen: boolean,
 ): GetOrSet<T | undefined> {
   const [state, setState] = React.useState<T | undefined>(undefined);
   const loading = React.useContext(LoadingContext);
@@ -48,7 +48,7 @@ export function useAsyncState<T>(
     const promise = Promise.resolve(callback()).then((newState) =>
       destructorCalled
         ? undefined
-        : setState(typeof newState === 'function' ? () => newState : newState)
+        : setState(typeof newState === 'function' ? () => newState : newState),
     );
 
     if (loadingScreen) loading(promise);
@@ -73,11 +73,11 @@ export function useMultipleAsyncState<RESPONSE extends Record<any, unknown>>(
         readonly [K in keyof RESPONSE]: () => Promise<RESPONSE[K]>;
       }
     | undefined,
-  loadingScreen: boolean
+  loadingScreen: boolean,
 ): GetOrSet<Partial<RESPONSE> | undefined> {
   const loading = React.useContext(LoadingContext);
   const [state, setState] = React.useState<Partial<RESPONSE> | undefined>(
-    undefined
+    undefined,
   );
   React.useLayoutEffect(() => {
     let destructorCalled = false;
@@ -94,8 +94,8 @@ export function useMultipleAsyncState<RESPONSE extends Record<any, unknown>>(
             return { ...oldStateSafe, [key]: data };
           });
           return undefined;
-        })
-      )
+        }),
+      ),
     );
     if (loadingScreen) {
       loading(wrappedPromise);
@@ -112,10 +112,10 @@ export function useMultipleAsyncState<RESPONSE extends Record<any, unknown>>(
 
 export function usePromise<T>(
   promise: Promise<T>,
-  loadingScreen: boolean
+  loadingScreen: boolean,
 ): GetOrSet<T | undefined> {
   return useAsyncState(
     React.useCallback(async () => promise, [promise]),
-    loadingScreen
+    loadingScreen,
   );
 }

@@ -53,7 +53,7 @@ export type QueryField = {
 
 /** Convert SpQueryField to internal QueryField representation */
 export function parseQueryFields(
-  queryFields: RA<SerializedResource<SpQueryField>>
+  queryFields: RA<SerializedResource<SpQueryField>>,
 ): RA<QueryField> {
   return group(
     Array.from(queryFields)
@@ -61,7 +61,7 @@ export function parseQueryFields(
       .map(({ isNot, isDisplay, ...field }, index) => {
         const fieldSpec = QueryFieldSpec.fromStringId(
           field.stringId,
-          field.isRelFld ?? false
+          field.isRelFld ?? false,
         );
 
         /*
@@ -78,13 +78,13 @@ export function parseQueryFields(
                   parseValue(
                     parserFromType('java.sql.Timestamp'),
                     undefined,
-                    value
-                  )
+                    value,
+                  ),
                 )
                 .map((parsed) =>
                   parsed?.isValid
                     ? (parsed.parsed as string)
-                    : field.startValue ?? ''
+                    : field.startValue ?? '',
                 )
                 .join(',')
             : field.startValue;
@@ -100,9 +100,9 @@ export function parseQueryFields(
             filter: {
               type: defined(
                 Object.entries(queryFieldFilters).find(
-                  ([_, { id }]) => id === field.operStart
+                  ([_, { id }]) => id === field.operStart,
                 ),
-                `Unknown SpQueryField.operStart value: ${field.operStart}`
+                `Unknown SpQueryField.operStart value: ${field.operStart}`,
               )[KEY],
               isNot,
               startValue,
@@ -110,7 +110,7 @@ export function parseQueryFields(
             isDisplay,
           },
         ] as const;
-      })
+      }),
   ).map(([_mappingPath, groupedFields]) => ({
     ...removeKey(groupedFields[0], 'filter'),
     filters: groupedFields.map(({ filter }) => filter),
@@ -129,14 +129,14 @@ export const queryFieldIsPhantom = (field: QueryField) =>
 
 export const queryFieldsToFieldSpecs = (
   baseTableName: keyof Tables,
-  fields: RA<QueryField>
+  fields: RA<QueryField>,
 ): RA<readonly [QueryField, QueryFieldSpec]> =>
   fields
     .filter(({ mappingPath }) => mappingPathIsComplete(mappingPath))
     .map((field) => {
       const fieldSpec = QueryFieldSpec.fromPath(
         baseTableName,
-        field.mappingPath
+        field.mappingPath,
       );
       if (field.id === PHANTOM_FIELD_ID) fieldSpec.isPhantom = true;
       return [field, fieldSpec];
@@ -157,13 +157,13 @@ const auditLogMappingPaths = [
 export const augmentQueryFields = (
   baseTableName: keyof Tables,
   fields: RA<QueryField>,
-  isDistinct: boolean
+  isDistinct: boolean,
 ): RA<QueryField> =>
   isDistinct
     ? fields
     : baseTableName === 'SpAuditLog'
-    ? addQueryFields(fields, auditLogMappingPaths, true)
-    : addLocalityFields(baseTableName, fields);
+      ? addQueryFields(fields, auditLogMappingPaths, true)
+      : addLocalityFields(baseTableName, fields);
 
 /**
  * It is expected by QueryResultsWrapper that this function does not change
@@ -173,16 +173,16 @@ export const augmentQueryFields = (
 const addQueryFields = (
   fields: RA<QueryField>,
   fieldsToAdd: RA<MappingPath>,
-  makeVisible: boolean
+  makeVisible: boolean,
 ): RA<QueryField> => [
   ...fields.map((field) => {
     const path = mappingPathToString(
-      field.mappingPath.filter((part) => !valueIsToManyIndex(part))
+      field.mappingPath.filter((part) => !valueIsToManyIndex(part)),
     );
     const isPhantom =
       !field.isDisplay &&
       fieldsToAdd.some(
-        (mappingPath) => path === mappingPathToString(mappingPath)
+        (mappingPath) => path === mappingPathToString(mappingPath),
       );
     return {
       ...field,
@@ -197,9 +197,9 @@ const addQueryFields = (
       fields.every(
         (field) =>
           mappingPathToString(
-            field.mappingPath.filter((part) => !valueIsToManyIndex(part))
-          ) !== mappingPathToString(mappingPath)
-      )
+            field.mappingPath.filter((part) => !valueIsToManyIndex(part)),
+          ) !== mappingPathToString(mappingPath),
+      ),
     )
     .map(
       (mappingPath) =>
@@ -217,7 +217,7 @@ const addQueryFields = (
               isNot: false,
             },
           ],
-        } as const)
+        }) as const,
     ),
 ];
 
@@ -226,15 +226,15 @@ const addQueryFields = (
  */
 function addLocalityFields(
   baseTableName: keyof Tables,
-  fields: RA<QueryField>
+  fields: RA<QueryField>,
 ): RA<QueryField> {
   const fieldSpecs = fields.map((field) =>
-    QueryFieldSpec.fromPath(baseTableName, field.mappingPath)
+    QueryFieldSpec.fromPath(baseTableName, field.mappingPath),
   );
   const localityIndexes = fieldSpecs.map((spec) =>
     spec.joinPath.findIndex(
-      (part) => part.isRelationship && part.relatedTable.name === 'Locality'
-    )
+      (part) => part.isRelationship && part.relatedTable.name === 'Locality',
+    ),
   );
   const rawLocalityPaths: RA<MappingPath> = [
     ...(baseTableName === 'Locality' ? [[]] : []),
@@ -244,8 +244,8 @@ function addLocalityFields(
           ? undefined
           : fieldSpecs[fieldIndex].joinPath
               .slice(0, localityIndex + 1)
-              .map(({ name }) => name)
-      )
+              .map(({ name }) => name),
+      ),
     ),
   ];
   const localityPaths = uniqueMappingPaths(rawLocalityPaths);
@@ -255,16 +255,16 @@ function addLocalityFields(
     .map((parts) =>
       parts.length === 2
         ? parts[1]
-        : error('Only direct locality fields are supported')
+        : error('Only direct locality fields are supported'),
     )
     .map((fieldName) => tables.Locality.strictGetField(fieldName).name);
 
   return addQueryFields(
     fields,
     localityPaths.flatMap((path) =>
-      localityFieldNames.map((fieldName) => [...path, fieldName])
+      localityFieldNames.map((fieldName) => [...path, fieldName]),
     ),
-    false
+    false,
   );
 }
 
@@ -294,7 +294,7 @@ export const addFormattedField = (fields: RA<QueryField>): RA<QueryField> =>
 /** Convert internal QueryField representation to SpQueryFields */
 export const unParseQueryFields = (
   baseTableName: keyof Tables,
-  fields: RA<QueryField>
+  fields: RA<QueryField>,
 ): RA<SerializedResource<SpQueryField>> =>
   queryFieldsToFieldSpecs(baseTableName, fields).flatMap(
     ([field, fieldSpec], index) => {
@@ -310,7 +310,7 @@ export const unParseQueryFields = (
       return field.filters
         .filter((filter, index) =>
           // Filter out duplicate or redundant "any"
-          hasFilters ? filter.type !== 'any' : index === 0
+          hasFilters ? filter.type !== 'any' : index === 0,
         )
         .map(
           ({ type, startValue, isNot }, index) =>
@@ -319,9 +319,9 @@ export const unParseQueryFields = (
               operStart: defined(
                 // Back-end treats "equal" with blank startValue as "any"
                 Object.entries(queryFieldFilters).find(
-                  ([name]) => name === type
+                  ([name]) => name === type,
                 ),
-                `Unknown query field filter type: ${type}`
+                `Unknown query field filter type: ${type}`,
               )[VALUE].id,
               startValue,
               isNot,
@@ -331,34 +331,34 @@ export const unParseQueryFields = (
                */
               isDisplay: commonData.isDisplay && index === 0,
               // REFACTOR: add missing nullable fields here
-            } as unknown as SerializedResource<SpQueryField>)
+            }) as unknown as SerializedResource<SpQueryField>,
         );
-    }
+    },
   );
 
 export function hasLocalityColumns(fields: RA<QueryField>): boolean {
   const fieldNames = new Set(
     fields
       .filter(({ isDisplay }) => isDisplay)
-      .map(({ mappingPath }) => mappingPath.at(-1))
+      .map(({ mappingPath }) => mappingPath.at(-1)),
   );
   return fieldNames.has('latitude1') && fieldNames.has('longitude1');
 }
 
 const containsOr = (
-  fieldSpecMapped: RA<readonly [QueryField, QueryFieldSpec]>
+  fieldSpecMapped: RA<readonly [QueryField, QueryFieldSpec]>,
 ): boolean => fieldSpecMapped.some(([field]) => field.filters.length > 1);
 
 const containsSpecifyUsername = (
   baseTableName: keyof Tables,
-  fieldSpecMapped: RA<readonly [QueryField, QueryFieldSpec]>
+  fieldSpecMapped: RA<readonly [QueryField, QueryFieldSpec]>,
 ): boolean =>
   fieldSpecMapped.some(([field]) => {
     const includesUserValue = field.filters.some(({ startValue }) =>
-      startValue.includes(currentUserValue)
+      startValue.includes(currentUserValue),
     );
     const terminatingField = genericTables[baseTableName].getField(
-      mappingPathToString(field.mappingPath)
+      mappingPathToString(field.mappingPath),
     );
     const endsWithSpecifyUser =
       terminatingField?.isRelationship === false &&
@@ -368,12 +368,12 @@ const containsSpecifyUsername = (
   });
 
 const containsRelativeDate = (
-  fieldSpecMapped: RA<readonly [QueryField, QueryFieldSpec]>
+  fieldSpecMapped: RA<readonly [QueryField, QueryFieldSpec]>,
 ): boolean =>
   fieldSpecMapped.some(
     ([field, fieldSpec]) =>
       field.filters.some(({ startValue }) => startValue.includes(today)) &&
-      fieldSpec.datePart === 'fullDate'
+      fieldSpec.datePart === 'fullDate',
   );
 
 // If contains modern fields/functionality set isFavourite to false, to not appear directly in 6
@@ -385,7 +385,7 @@ export function isModern(query: SpecifyResource<SpQuery>): boolean {
 
   const fieldSpecsMapped = queryFieldsToFieldSpecs(
     baseTableName,
-    parseQueryFields(fields)
+    parseQueryFields(fields),
   );
 
   return (
@@ -396,24 +396,24 @@ export function isModern(query: SpecifyResource<SpQuery>): boolean {
 }
 
 export function getNoAccessTables(
-  queryFields: RA<SerializedResource<SpQueryField>>
+  queryFields: RA<SerializedResource<SpQueryField>>,
 ): RA<keyof Tables> {
   const tableNames = queryFields.flatMap((field) => {
     const fieldSpec = QueryFieldSpec.fromStringId(
       field.stringId,
-      field.isRelFld ?? false
+      field.isRelFld ?? false,
     );
     return filterArray(
       fieldSpec.joinPath.flatMap((field) => [
         field.table.name,
         field.isRelationship ? field.relatedTable.name : undefined,
-      ])
+      ]),
     );
   });
 
   const withoutDuplicates = new Set(tableNames);
 
   return Array.from(withoutDuplicates).filter(
-    (name) => !hasTablePermission(name, 'read')
+    (name) => !hasTablePermission(name, 'read'),
   );
 }

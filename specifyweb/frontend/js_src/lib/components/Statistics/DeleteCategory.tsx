@@ -42,7 +42,7 @@ export function DeleteStatsCategory({
             </>
           }
           header={localized(
-            `${statsText.deleteCategory()} '${categoryLabel}'?`
+            `${statsText.deleteCategory()} '${categoryLabel}'?`,
           )}
           onClose={toggleTriedToDelete}
         >

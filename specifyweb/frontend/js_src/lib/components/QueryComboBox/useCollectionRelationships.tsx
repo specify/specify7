@@ -22,7 +22,7 @@ export type CollectionRelationships = {
 };
 
 export function useCollectionRelationships(
-  resource: SpecifyResource<AnySchema> | undefined
+  resource: SpecifyResource<AnySchema> | undefined,
 ): CollectionRelationships | false | undefined {
   const [collectionRelationships] = useAsyncState<
     CollectionRelationships | false
@@ -40,12 +40,12 @@ export function useCollectionRelationships(
           {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             leftsidecollection_id: schema.domainLevelIds.collection,
-          }
+          },
         ).then(({ records }) =>
           records.map((relationship) => ({
             id: relationship.id,
             collection: idFromUrl(relationship.rightSideCollection ?? ''),
-          }))
+          })),
         ),
         right: fetchCollection(
           'CollectionRelType',
@@ -53,16 +53,16 @@ export function useCollectionRelationships(
           {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             rightsidecollection_id: schema.domainLevelIds.collection,
-          }
+          },
         ).then(({ records }) =>
           records.map((relationship) => ({
             id: relationship.id,
             collection: idFromUrl(relationship.leftSideCollection ?? ''),
-          }))
+          })),
         ),
       });
     }, [resource]),
-    false
+    false,
   );
   return collectionRelationships;
 }

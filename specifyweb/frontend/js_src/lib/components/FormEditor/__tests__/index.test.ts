@@ -60,7 +60,7 @@ test('Can edit a form definition', () => {
     viewDefs: replaceItem(
       augmented.viewDefs,
       0,
-      removeKey(augmented.viewDefs[0], 'raw')
+      removeKey(augmented.viewDefs[0], 'raw'),
     ),
   };
   // Get rid of symbols
@@ -70,13 +70,13 @@ test('Can edit a form definition', () => {
   const initialXml = process({ ...raw, attributes: {} });
   expect(initialXml).toBe(
     process(
-      xmlToJson(strictParseXml(`<viewdef>${testFormDefinition}</viewdef>`))
-    )
+      xmlToJson(strictParseXml(`<viewdef>${testFormDefinition}</viewdef>`)),
+    ),
   );
 
   // Make a small edit
   const columnDefinitionIndex = raw.children.findIndex(
-    (node) => node.type === 'XmlNode' && node.tagName === 'columnDef'
+    (node) => node.type === 'XmlNode' && node.tagName === 'columnDef',
   );
   const newAugmented: ViewSets = {
     ...augmented,
@@ -103,7 +103,7 @@ test('Can edit a form definition', () => {
           children: [
             ...augmented.viewDefs[0].raw.children.slice(
               0,
-              columnDefinitionIndex + 2
+              columnDefinitionIndex + 2,
             ),
             {
               type: 'XmlNode',
@@ -114,7 +114,7 @@ test('Can edit a form definition', () => {
               children: [{ type: 'Text', string: 'test' }],
             },
             ...augmented.viewDefs[0].raw.children.slice(
-              columnDefinitionIndex - 1
+              columnDefinitionIndex - 1,
             ),
           ],
         },

@@ -55,10 +55,10 @@ export const fetchSchemaData = async (): Promise<RawSchemaData> =>
       schemaType: 0,
     }).then(({ records }) => index(records)),
     formatters: fetchFormatters.then(({ formatters }) =>
-      formatAggregators(formatters)
+      formatAggregators(formatters),
     ),
     aggregators: fetchFormatters.then(({ aggregators }) =>
-      formatAggregators(aggregators)
+      formatAggregators(aggregators),
     ),
     uiFormatters: fetchUiFormatters.then((formatters) =>
       Object.entries(formatters)
@@ -67,10 +67,10 @@ export const fetchSchemaData = async (): Promise<RawSchemaData> =>
           isSystem: formatter.isSystem,
           value: formatter.valueOrWild(),
         }))
-        .filter(({ value }) => value)
+        .filter(({ value }) => value),
     ),
     webLinks: webLinks.then((webLinks) =>
-      webLinks.map((webLink, index) => ({ ...webLink, index }))
+      webLinks.map((webLink, index) => ({ ...webLink, index })),
     ),
     pickLists: fetchSchemaPickLists(),
   });
@@ -90,6 +90,6 @@ export const fetchSchemaPickLists = async (): Promise<
           },
           // Filter out front-end only pick lists
         ])
-        .filter(([id]) => typeof id === 'number')
-    )
+        .filter(([id]) => typeof id === 'number'),
+    ),
   );

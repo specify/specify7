@@ -79,7 +79,7 @@ export type PreferenceItem<VALUE> = {
  * This is used to enforce the same generic value be used inside a PreferenceItem
  */
 export const definePref = <VALUE>(
-  definition: PreferenceItem<VALUE>
+  definition: PreferenceItem<VALUE>,
 ): PreferenceItem<VALUE> => definition;
 
 export type GenericPreferences = IR<{

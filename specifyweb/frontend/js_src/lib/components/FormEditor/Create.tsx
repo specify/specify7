@@ -37,7 +37,7 @@ export function CreateFormDefinition({
 }): JSX.Element {
   const [isCreating, handleCreating, handleNotCreating] = useBooleanState();
   const [views, setViews] = React.useState<AllTableViews | undefined>(
-    undefined
+    undefined,
   );
   const loading = React.useContext(LoadingContext);
 
@@ -52,7 +52,7 @@ export function CreateFormDefinition({
           onClick={(): void =>
             views === undefined
               ? loading(
-                  fetchAllViews(table.name).then(setViews).then(handleCreating)
+                  fetchAllViews(table.name).then(setViews).then(handleCreating),
                 )
               : handleCreating()
           }
@@ -116,19 +116,19 @@ function ListViews({
 }): JSX.Element {
   const grouped = React.useMemo(() => {
     const byDiscipline = group(
-      views.map((view) => [view.disciplineId, view] as const)
+      views.map((view) => [view.disciplineId, view] as const),
     );
     return byDiscipline.map(
       ([parentKey, children]) =>
         [
           parentKey,
           group(children.map((view) => [view.category, view])),
-        ] as const
+        ] as const,
     );
   }, [views]);
 
   const [preview, setPreview] = React.useState<ViewDefinition | undefined>(
-    undefined
+    undefined,
   );
 
   const { disciplines } = useOutletContext<FormEditorOutlet>();
@@ -196,9 +196,9 @@ export function PreviewView({
   const viewDefinition = useAsyncState(
     React.useCallback(
       async () => parseViewDefinition(view, 'form', 'edit', table),
-      [view, table]
+      [view, table],
     ),
-    true
+    true,
   )[0];
 
   return (
@@ -244,10 +244,10 @@ function ChooseName({
       name,
       viewSets.views.map(({ name }) => name ?? ''),
       Number.POSITIVE_INFINITY,
-      'name'
+      'name',
     );
   const [name, setName] = React.useState(() =>
-    getUnique(template === 'new' ? table.name : template.name)
+    getUnique(template === 'new' ? table.name : template.name),
   );
 
   const navigate = useNavigate();
@@ -275,7 +275,7 @@ function ChooseName({
               name:
                 viewSets.name === '' ? appResource.get('name') : viewSets.name,
             },
-            [uniqueName]
+            [uniqueName],
           );
           navigate(resolveRelative(`./${uniqueName}`));
         }}

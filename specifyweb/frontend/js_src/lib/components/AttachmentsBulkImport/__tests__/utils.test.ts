@@ -55,7 +55,7 @@ const fileNameTestSpec: TestDefinition = {
           byYear: false,
         }),
       ],
-      tables.CollectionObject
+      tables.CollectionObject,
     ),
     testCases: [
       ['000.jpg', '000'],
@@ -79,7 +79,7 @@ const fileNameTestSpec: TestDefinition = {
           byYear: false,
         }),
       ],
-      tables.CollectionObject
+      tables.CollectionObject,
     ),
     testCases: [
       ['45265.jpg', '45265'],
@@ -107,16 +107,16 @@ describe('file names resolution test', () => {
                   value.toString(),
                   formatterToParser(field, formatter),
                   undefined,
-                  true
+                  true,
                 );
         const resultFormatter = getResultFormatter(uiFormatter);
         allTestCases.forEach(([input, output]) => {
           expect(resolveFileNames(input, resultFormatter, uiFormatter)).toEqual(
-            output
+            output,
           );
         });
       });
-    }
+    },
   );
 });
 

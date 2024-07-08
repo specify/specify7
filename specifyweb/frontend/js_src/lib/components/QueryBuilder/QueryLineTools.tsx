@@ -35,10 +35,7 @@ export function QueryLineTools({
   const isBasic = React.useContext(IsQueryBasicContext);
   return (
     <div
-      className={`
-       ${isBasic ? 'flex h-full items-center justify-end gap-2' : 'contents'} 
-       print:hidden
-      `}
+      className={` ${isBasic ? 'flex h-full items-center justify-end gap-2' : 'contents'} print:hidden`}
     >
       {fieldMeta.canOpenMap && typeof handleOpenMap === 'function' ? (
         <Button.Small
@@ -54,11 +51,7 @@ export function QueryLineTools({
       <Button.Small
         aria-label={queryText.showButtonDescription()}
         aria-pressed={field.isDisplay}
-        className={`
-          ${className.ariaHandled} 
-          ${isFieldComplete ? '' : 'invisible'} 
-          ${isBasic ? 'h-full' : ''}
-        `}
+        className={` ${className.ariaHandled} ${isFieldComplete ? '' : 'invisible'} ${isBasic ? 'h-full' : ''} `}
         title={queryText.showButtonDescription()}
         variant={
           field.isDisplay
@@ -77,18 +70,16 @@ export function QueryLineTools({
           field.sortType === 'ascending'
             ? queryText.ascendingSort()
             : field.sortType === 'descending'
-            ? queryText.descendingSort()
-            : queryText.sort()
+              ? queryText.descendingSort()
+              : queryText.sort()
         }
-        className={`
-         ${isFieldComplete ? undefined : 'invisible'} ${isBasic ? 'h-full' : ''}
-        `}
+        className={` ${isFieldComplete ? undefined : 'invisible'} ${isBasic ? 'h-full' : ''} `}
         title={
           field.sortType === 'ascending'
             ? queryText.ascendingSort()
             : field.sortType === 'descending'
-            ? queryText.descendingSort()
-            : queryText.sort()
+              ? queryText.descendingSort()
+              : queryText.sort()
         }
         onClick={handleChange?.bind(undefined, {
           ...field,
@@ -101,8 +92,8 @@ export function QueryLineTools({
         {field.sortType === 'ascending'
           ? icons.arrowCircleUp
           : field.sortType === 'descending'
-          ? icons.arrowCircleDown
-          : icons.circle}
+            ? icons.arrowCircleDown
+            : icons.circle}
       </Button.Small>
       <Button.Small
         aria-label={queryText.moveUp()}

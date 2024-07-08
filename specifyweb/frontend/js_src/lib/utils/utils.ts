@@ -47,8 +47,8 @@ export const camelToHuman = (value: string): LocalizedString =>
   localized(
     capitalize(value.replaceAll(/([a-z])([A-Z])/gu, '$1 $2')).replace(
       /Dna\b/u,
-      'DNA'
-    )
+      'DNA',
+    ),
   );
 
 /** Type-safe variant of toLowerCase */
@@ -81,7 +81,7 @@ export function findArrayDivergencePoint<T>(
   // The source array to use in the comparison
   source: RA<T>,
   // The search array to use in the comparison
-  search: RA<T>
+  search: RA<T>,
 ): number {
   if (source === null || search === null) return -1;
 
@@ -109,7 +109,7 @@ export const spanNumber =
     minInput: number,
     maxInput: number,
     minOutput: number,
-    maxOutput: number
+    maxOutput: number,
   ): ((input: number) => number) =>
   (input: number): number =>
     ((input - minInput) / (maxInput - minInput)) * (maxOutput - minOutput) +
@@ -118,7 +118,7 @@ export const spanNumber =
 /** Get Dictionary's key in a case insensitive way */
 export const caseInsensitiveHash = <
   KEY extends string,
-  DICTIONARY extends RR<KEY, unknown>
+  DICTIONARY extends RR<KEY, unknown>,
 >(
   dictionary: DICTIONARY,
   searchKey:
@@ -126,19 +126,19 @@ export const caseInsensitiveHash = <
     | KEY
     | Lowercase<KEY>
     | Uncapitalize<KEY>
-    | Uppercase<KEY>
+    | Uppercase<KEY>,
 ): DICTIONARY[KEY] =>
   searchKey in dictionary
     ? dictionary[searchKey as KEY]
     : (Object.entries(dictionary).find(
-        ([key]) => (key as string).toLowerCase() === searchKey.toLowerCase()
+        ([key]) => (key as string).toLowerCase() === searchKey.toLowerCase(),
       )?.[VALUE] as DICTIONARY[KEY]);
 
 /** Generate a sort function for Array.prototype.sort */
 export const sortFunction =
   <T, V extends Date | boolean | number | string | null | undefined>(
     mapper: (value: T) => V,
-    reverse = false
+    reverse = false,
   ): ((left: T, right: T) => -1 | 0 | 1) =>
   (left: T, right: T): -1 | 0 | 1 => {
     const [leftValue, rightValue] = reverse
@@ -148,8 +148,8 @@ export const sortFunction =
     return typeof leftValue === 'string' && typeof rightValue === 'string'
       ? (leftValue.localeCompare(rightValue) as -1 | 0 | 1)
       : (leftValue ?? 0) > (rightValue ?? 0)
-      ? 1
-      : -1;
+        ? 1
+        : -1;
   };
 
 /** Like sortFunction, but can sort based on multiple fields */
@@ -170,8 +170,8 @@ export const multiSortFunction =
                 ? (payload[index + 1] as boolean)
                 : false,
             ] as const)
-          : undefined
-      )
+          : undefined,
+      ),
     );
 
     for (const [mapper, isReverse] of mappers) {
@@ -182,8 +182,8 @@ export const multiSortFunction =
       return typeof leftValue === 'string' && typeof rightValue === 'string'
         ? (leftValue.localeCompare(rightValue) as -1 | 0 | 1)
         : leftValue > rightValue
-        ? 1
-        : -1;
+          ? 1
+          : -1;
     }
     return 0;
   };
@@ -195,22 +195,22 @@ export const split = <LEFT_ITEM, RIGHT_ITEM = LEFT_ITEM>(
   discriminator: (
     item: LEFT_ITEM | RIGHT_ITEM,
     index: number,
-    array: RA<LEFT_ITEM | RIGHT_ITEM>
-  ) => boolean
+    array: RA<LEFT_ITEM | RIGHT_ITEM>,
+  ) => boolean,
 ): readonly [left: RA<LEFT_ITEM>, right: RA<RIGHT_ITEM>] =>
   array
     .map((item, index) => [item, discriminator(item, index, array)] as const)
     .reduce<
       readonly [
         left: RA<LEFT_ITEM | RIGHT_ITEM>,
-        right: RA<LEFT_ITEM | RIGHT_ITEM>
+        right: RA<LEFT_ITEM | RIGHT_ITEM>,
       ]
     >(
       ([left, right], [item, isRight]) => [
         [...left, ...(isRight ? [] : [item])],
         [...right, ...(isRight ? [item] : [])],
       ],
-      [[], []]
+      [[], []],
     ) as readonly [left: RA<LEFT_ITEM>, right: RA<RIGHT_ITEM>];
 
 /**
@@ -220,7 +220,7 @@ export const split = <LEFT_ITEM, RIGHT_ITEM = LEFT_ITEM>(
  * KEY doesn't have to be a string. It can be of any time
  */
 export const group = <KEY, VALUE>(
-  entries: RA<readonly [key: KEY, value: VALUE]>
+  entries: RA<readonly [key: KEY, value: VALUE]>,
 ): RA<readonly [key: KEY, values: RA<VALUE>]> =>
   Array.from(
     entries
@@ -228,15 +228,15 @@ export const group = <KEY, VALUE>(
       .reduce<Map<KEY, RA<VALUE>>>(
         (grouped, [key, value]) =>
           grouped.set(key, [...(grouped.get(key) ?? []), value]),
-        new Map()
+        new Map(),
       )
-      .entries()
+      .entries(),
   );
 
 // Find a value in an array, and return it's mapped variant
 export function mappedFind<ITEM, RETURN_TYPE>(
   array: RA<ITEM>,
-  callback: (item: ITEM, index: number) => RETURN_TYPE | undefined
+  callback: (item: ITEM, index: number) => RETURN_TYPE | undefined,
 ): RETURN_TYPE | undefined {
   let value = undefined;
   array.some((item, index) => {
@@ -251,7 +251,7 @@ export function mappedFind<ITEM, RETURN_TYPE>(
  */
 export function removeKey<
   DICTIONARY extends IR<unknown>,
-  OMIT extends keyof DICTIONARY
+  OMIT extends keyof DICTIONARY,
 >(object: DICTIONARY, ...toOmit: RA<OMIT>): Omit<DICTIONARY, OMIT> {
   if (toOmit.length === 1) {
     const { [toOmit[0]]: _, ...newObject } = object;
@@ -259,8 +259,8 @@ export function removeKey<
   } else {
     const newObject = Object.fromEntries(
       Object.entries<Omit<DICTIONARY, OMIT>>(object).filter(
-        ([key]) => !f.includes(toOmit, key)
-      )
+        ([key]) => !f.includes(toOmit, key),
+      ),
     );
     return newObject as Omit<DICTIONARY, OMIT>;
   }
@@ -273,14 +273,14 @@ export const clamp = (min: number, value: number, max: number): number =>
 export const insertItem = <T>(
   array: RA<T>,
   index: number,
-  newItem: T
+  newItem: T,
 ): RA<T> => [...array.slice(0, index), newItem, ...array.slice(index)];
 
 /** Create a new array with a given item replaced */
 export const replaceItem = <T>(
   array: RA<T>,
   index: number,
-  newItem: T
+  newItem: T,
 ): RA<T> =>
   array[index] === newItem
     ? array
@@ -310,7 +310,7 @@ export const toggleItem = <T>(array: RA<T>, item: T): RA<T> =>
 export const moveItem = <T>(
   array: RA<T>,
   index: number,
-  direction: 'down' | 'up'
+  direction: 'down' | 'up',
 ): RA<T> =>
   direction === 'up'
     ? index <= 0
@@ -322,19 +322,19 @@ export const moveItem = <T>(
           ...array.slice(index + 1),
         ]
     : index + 1 >= array.length
-    ? array
-    : [
-        ...array.slice(0, index),
-        array[index + 1],
-        array[index],
-        ...array.slice(index + 2),
-      ];
+      ? array
+      : [
+          ...array.slice(0, index),
+          array[index + 1],
+          array[index],
+          ...array.slice(index + 2),
+        ];
 
 /** Creates a new object with a given key replaced */
 export const replaceKey = <T extends IR<unknown>>(
   object: T,
   targetKey: keyof T,
-  newValue: T[keyof T]
+  newValue: T[keyof T],
 ): T =>
   object[targetKey] === newValue
     ? object
@@ -354,7 +354,7 @@ export const escapeRegExp = (string: string): string =>
 
 /** Recursively convert keys on an object to lowercase */
 export const keysToLowerCase = <OBJECT extends IR<unknown>>(
-  resource: OBJECT
+  resource: OBJECT,
 ): KeysToLowerCase<OBJECT> =>
   Object.fromEntries(
     Object.entries(resource).map(([key, value]) => [
@@ -363,12 +363,12 @@ export const keysToLowerCase = <OBJECT extends IR<unknown>>(
         ? value.map((value) =>
             typeof value === 'object' && value !== null
               ? keysToLowerCase(value)
-              : (value as KeysToLowerCase<OBJECT>)
+              : (value as KeysToLowerCase<OBJECT>),
           )
         : typeof value === 'object' && value !== null
-        ? keysToLowerCase(value as IR<unknown>)
-        : value,
-    ])
+          ? keysToLowerCase(value as IR<unknown>)
+          : value,
+    ]),
   ) as unknown as KeysToLowerCase<OBJECT>;
 
 export const takeBetween = <T>(array: RA<T>, first: T, last: T): RA<T> =>
@@ -381,7 +381,7 @@ export const takeBetween = <T>(array: RA<T>, first: T, last: T): RA<T> =>
 export const chunk = <T>(array: RA<T>, chunkSize: number): RA<RA<T>> =>
   Array.from(
     Array.from({ length: Math.ceil(array.length / chunkSize) }),
-    (_, index) => array.slice(index * chunkSize, (index + 1) * chunkSize)
+    (_, index) => array.slice(index * chunkSize, (index + 1) * chunkSize),
   );
 
 /** Convert seconds to minutes and seconds and return the string */
@@ -437,7 +437,7 @@ export function hexToHsl(hex: string): HSL {
  */
 export function throttle<ARGUMENTS extends RA<unknown>>(
   callback: (...rest: ARGUMENTS) => void,
-  wait: number
+  wait: number,
 ): (...rest: ARGUMENTS) => void {
   let timeout: ReturnType<typeof setTimeout> | undefined;
   let previousArguments: ARGUMENTS | undefined;

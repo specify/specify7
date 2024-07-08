@@ -87,7 +87,7 @@ export type ViewDefinition = {
 };
 
 export const formTypes = ['form', 'formTable'] as const;
-export type FormType = typeof formTypes[number];
+export type FormType = (typeof formTypes)[number];
 export type FormMode = 'edit' | 'search' | 'view';
 
 let views: R<ViewDefinition | undefined> = {};
@@ -108,7 +108,7 @@ export function clearViewLocal(viewName: string): void {
 }
 
 export const fetchView = async (
-  name: string
+  name: string,
 ): Promise<ViewDefinition | undefined> =>
   name in views
     ? views[name]
@@ -121,12 +121,12 @@ export const fetchView = async (
         {
           headers: { Accept: 'text/plain' },
           expectedErrors: [Http.NOT_FOUND],
-        }
+        },
       )
         .then(async ({ data, status }) => {
           if (status === Http.NOT_FOUND)
             console.error(
-              `Unable to find a view definition for the "${name}" view`
+              `Unable to find a view definition for the "${name}" view`,
             );
 
           return status === Http.NOT_FOUND || status === Http.NO_CONTENT
@@ -142,7 +142,7 @@ export const fetchView = async (
 
 // REFACTOR: Remove the need for this once Specify 7 has its own default forms
 async function correctDefaultViewDefinition(
-  view: ViewDefinition
+  view: ViewDefinition,
 ): Promise<ViewDefinition> {
   const viewDefinitions = parseViewDefinitions(view.viewdefs);
   if (Object.keys(viewDefinitions).length === 0) {
@@ -168,7 +168,7 @@ async function correctDefaultViewDefinition(
       .size === 1 &&
     getAttribute(
       xmlToJson(viewDefinitions[Object.values(view.altviews)[0].viewdef]),
-      'type'
+      'type',
     ) === 'formtable';
 
   if (useDefaultExpanded) {
@@ -183,7 +183,7 @@ async function correctDefaultViewDefinition(
         if (defaultExpandedDefinition === undefined) return view;
 
         const defaultViewDefs = parseViewDefinitions(
-          defaultExpandedDefinition.viewdefs
+          defaultExpandedDefinition.viewdefs,
         );
 
         const newAltViews = {
@@ -192,8 +192,8 @@ async function correctDefaultViewDefinition(
             Object.entries(defaultExpandedDefinition.altviews).filter(
               ([_, { viewdef }]) =>
                 getAttribute(xmlToJson(defaultViewDefs[viewdef]), 'type') !==
-                'formtable'
-            )
+                'formtable',
+            ),
           ),
         };
         const newViewDefs = {
@@ -204,16 +204,16 @@ async function correctDefaultViewDefinition(
               ([viewDefName, _]) =>
                 getAttribute(
                   xmlToJson(defaultViewDefs[viewDefName]),
-                  'type'
-                ) !== 'formtable'
-            )
+                  'type',
+                ) !== 'formtable',
+            ),
           ),
         };
         overwriteReadOnly(view, 'defaultSubviewFormType', 'formTable');
         overwriteReadOnly(view, 'altviews', newAltViews);
         overwriteReadOnly(view, 'viewdefs', newViewDefs);
         return view;
-      }
+      },
     );
   }
   return view;
@@ -223,7 +223,7 @@ export async function parseViewDefinition(
   view: ViewDefinition,
   defaultType: FormType,
   originalMode: FormMode,
-  currentTable: SpecifyTable
+  currentTable: SpecifyTable,
 ): Promise<ViewDescription | undefined> {
   const logContext = getLogContext();
   addContext({ view, defaultType, originalMode });
@@ -238,14 +238,14 @@ export async function parseViewDefinition(
       ? parseFormTableDefinition
       : async (
           viewDefinition: SimpleXmlNode,
-          table: SpecifyTable
+          table: SpecifyTable,
         ): Promise<ParsedFormDefinition> =>
           parseFormDefinition(viewDefinition, table).then(
-            (definition) => definition[0].definition
+            (definition) => definition[0].definition,
           );
 
   const [errors, parsed] = captureLogOutput(async () =>
-    parser(viewDefinition, table)
+    parser(viewDefinition, table),
   );
   setLogContext(logContext);
 
@@ -263,7 +263,7 @@ export async function parseViewDefinition(
 export function resolveViewDefinition(
   view: ViewDefinition,
   formType: FormType,
-  mode: FormMode
+  mode: FormMode,
 ):
   | {
       readonly viewDefinition: SimpleXmlNode;
@@ -282,7 +282,7 @@ export function resolveViewDefinition(
     view.altviews,
     viewDefinitions,
     formType,
-    mode
+    mode,
   );
 
   const definition = viewDefinition.children.definition?.at(0)?.text;
@@ -301,13 +301,13 @@ export function resolveViewDefinition(
     formType === 'formTable'
       ? 'formTable'
       : formTypes.find(
-          (type) => type.toLowerCase() === newFormType?.toLowerCase()
+          (type) => type.toLowerCase() === newFormType?.toLowerCase(),
         ) ?? 'form';
   if (resolvedFormType === undefined)
     console.warn(
       `Unknown form type ${
         newFormType ?? '(null)'
-      }. Expected one of ${formatDisjunction(formTypes.map(localized))}`
+      }. Expected one of ${formatDisjunction(formTypes.map(localized))}`,
     );
 
   return {
@@ -318,13 +318,13 @@ export function resolveViewDefinition(
       tableName === undefined
         ? undefined
         : strictGetTable(
-            tableName === 'ObjectAttachmentIFace' ? 'Attachment' : tableName
+            tableName === 'ObjectAttachmentIFace' ? 'Attachment' : tableName,
           ),
   };
 }
 
 const parseViewDefinitions = (
-  viewDefinitions: ViewDefinition['viewdefs']
+  viewDefinitions: ViewDefinition['viewdefs'],
 ): IR<Element> =>
   Object.fromEntries(
     Object.entries(viewDefinitions).map(([name, xml]) => {
@@ -340,23 +340,23 @@ const parseViewDefinitions = (
           ? parsed
           : defined(
               parsed.querySelector('viewdef') ?? undefined,
-              `Unable to find a <viewdef> tag for a ${name} view definition`
+              `Unable to find a <viewdef> tag for a ${name} view definition`,
             ),
       ];
-    })
+    }),
   );
 
 function resolveAltView(
   rawAltViews: ViewDefinition['altviews'],
   viewDefinitions: IR<Element>,
   formType: FormType,
-  mode: FormMode
+  mode: FormMode,
 ): {
   readonly altView: ViewDefinition['altviews'][number];
   readonly viewDefinition: SimpleXmlNode;
 } {
   let altViews: RA<AltView> = Object.values(rawAltViews).filter(
-    (altView) => altView.mode === mode
+    (altView) => altView.mode === mode,
   );
   if (altViews.length === 0) altViews = Object.values(rawAltViews);
 
@@ -387,7 +387,7 @@ export type ParsedFormDefinition = {
 
 async function parseFormTableDefinition(
   viewDefinition: SimpleXmlNode,
-  table: SpecifyTable
+  table: SpecifyTable,
 ): Promise<ParsedFormDefinition> {
   const definition = await parseFormDefinition(viewDefinition, table);
 
@@ -400,9 +400,9 @@ async function parseFormTableDefinition(
         .map((cell) =>
           cell.type === 'Label' && typeof cell.labelForCellId === 'string'
             ? [cell.labelForCellId, cell]
-            : undefined
-        )
-    )
+            : undefined,
+        ),
+    ),
   );
   const row = rows
     .flat()
@@ -443,12 +443,12 @@ async function parseFormTableDefinition(
 
 function parseFormTableColumns(
   viewDefinition: SimpleXmlNode,
-  row: RA<FormCellDefinition>
+  row: RA<FormCellDefinition>,
 ): RA<number | undefined> {
   const columnCount = f.sum(row.map(({ colSpan }) => colSpan));
   const rawColumnDefinition = f.maybe(
     getColumnDefinition(viewDefinition, 'table'),
-    processColumnDefinition
+    processColumnDefinition,
   );
   return [
     ...(rawColumnDefinition ?? []),
@@ -475,7 +475,7 @@ export type ConditionalFormDefinition = RA<{
 
 export async function parseFormDefinition(
   viewDefinition: SimpleXmlNode,
-  table: SpecifyTable
+  table: SpecifyTable,
 ): Promise<ConditionalFormDefinition> {
   const rowsContainers = viewDefinition?.children?.rows ?? [];
   const context = getLogContext();
@@ -493,14 +493,14 @@ export async function parseFormDefinition(
         processColumnDefinition(
           directColumnDefinitions.length === 0
             ? getColumnDefinitions(viewDefinition)
-            : directColumnDefinitions
+            : directColumnDefinitions,
         ),
         await parseRows(rows, table),
-        table
+        table,
       );
 
       const condition = getParsedAttribute(rowsContainer, 'condition')?.split(
-        '='
+        '=',
       );
       if (typeof condition === 'object') {
         if (condition.length === 1 && condition[0] === 'always')
@@ -521,7 +521,7 @@ export async function parseFormDefinition(
 
       setLogContext(context);
       return { condition: undefined, definition };
-    })
+    }),
   );
 
   setLogContext(context);
@@ -532,7 +532,7 @@ function getColumnDefinitions(viewDefinition: SimpleXmlNode): string {
   const definition =
     getColumnDefinition(
       viewDefinition,
-      getPref('form.definition.columnSource')
+      getPref('form.definition.columnSource'),
     ) ?? getColumnDefinition(viewDefinition, undefined);
   // Specify 7 handles forms without column definition fine, so no need to warn for this
   return definition ?? getParsedAttribute(viewDefinition, 'colDef') ?? '';
@@ -540,15 +540,15 @@ function getColumnDefinitions(viewDefinition: SimpleXmlNode): string {
 
 const getColumnDefinition = (
   viewDefinition: SimpleXmlNode,
-  os: string | undefined
+  os: string | undefined,
 ): string | undefined =>
   viewDefinition.children.columnDef?.find((child) =>
-    typeof os === 'string' ? getParsedAttribute(child, 'os') === os : true
+    typeof os === 'string' ? getParsedAttribute(child, 'os') === os : true,
   )?.text;
 
 const parseRows = async (
   rawRows: RA<SimpleXmlNode>,
-  table: SpecifyTable
+  table: SpecifyTable,
 ): Promise<RA<RA<FormCellDefinition>>> =>
   Promise.all(
     rawRows.map(async (row, index) => {
@@ -571,11 +571,11 @@ const parseRows = async (
 
           setLogContext(context);
           return data;
-        })
+        }),
       );
       setLogContext(context);
       return data ?? [];
-    })
+    }),
   );
 
 export const exportsForTests = {

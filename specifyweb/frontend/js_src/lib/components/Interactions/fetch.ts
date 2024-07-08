@@ -22,10 +22,10 @@ export const fetchLegacyInteractions = f.store(async () =>
             ? action === 'RET_LOAN'
               ? tables.LoanReturnPreparation
               : table
-            : undefined
-      )
-    )
-  )
+            : undefined,
+      ),
+    ),
+  ),
 );
 
 export const defaultInteractionTables: RA<keyof Tables> = [

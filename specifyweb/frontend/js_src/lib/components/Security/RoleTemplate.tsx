@@ -44,15 +44,15 @@ export function CreateRole({
         Promise.all(
           collections.map(async (collection) =>
             fetchRoles(collection.id).then(
-              (roles) => [collection ?? '', roles ?? []] as const
-            )
-          )
+              (roles) => [collection ?? '', roles ?? []] as const,
+            ),
+          ),
         ).then((roles) =>
-          roles.filter(([_collection, roles]) => roles.length > 0)
+          roles.filter(([_collection, roles]) => roles.length > 0),
         ),
-      [collections]
+      [collections],
     ),
-    false
+    false,
   );
   const currentRoleNames = (
     scope === 'institution'
@@ -100,7 +100,7 @@ export function CreateRole({
       ((hasPermission(
         '/permissions/roles',
         'copy_from_library',
-        collectionId
+        collectionId,
       ) ||
         hasPermission('/permissions/roles', 'create', collectionId)) &&
         hasPermission('/permissions/library/roles', 'read', collectionId)) ? (
@@ -119,14 +119,14 @@ export function CreateRole({
                         onClick={(): void => {
                           const roleName = getUniqueName(
                             role.name,
-                            currentRoleNames
+                            currentRoleNames,
                           );
                           loading(
                             (scope === 'institution' ||
                             hasPermission(
                               '/permissions/roles',
                               'create',
-                              collectionId
+                              collectionId,
                             )
                               ? Promise.resolve({
                                   ...role,
@@ -148,14 +148,14 @@ export function CreateRole({
                                       libraryRoleId: role.id,
                                       name: roleName,
                                     }),
-                                  }
+                                  },
                                 ).then(({ data }) => data)
                             ).then((newRole) =>
                               handleCreated({
                                 ...newRole,
                                 policies: role.policies,
-                              })
-                            )
+                              }),
+                            ),
                           );
                         }}
                       >

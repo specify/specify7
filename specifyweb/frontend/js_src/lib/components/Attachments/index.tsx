@@ -72,12 +72,12 @@ function Attachments({
 
   const [order = defaultSortOrder, setOrder] = useCachedState(
     'attachments',
-    'sortOrder'
+    'sortOrder',
   );
 
   const [filter = defaultFilter, setFilter] = useCachedState(
     'attachments',
-    'filter'
+    'filter',
   );
 
   const [collectionSizes] = useAsyncState(
@@ -93,13 +93,13 @@ function Attachments({
             allTablesWithAttachments().length === tablesWithAttachments().length
               ? {}
               : backendFilter('tableId').isIn(
-                  tablesWithAttachments().map(({ tableId }) => tableId)
-                )
+                  tablesWithAttachments().map(({ tableId }) => tableId),
+                ),
           ).then<number>(({ totalCount }) => totalCount),
           unused: fetchCollection(
             'Attachment',
             { limit: 1, domainFilter: true },
-            backendFilter('tableId').isNull()
+            backendFilter('tableId').isNull(),
           ).then<number>(({ totalCount }) => totalCount),
           byTable: f.all(
             Object.fromEntries(
@@ -111,18 +111,18 @@ function Attachments({
                   tableID: tableId,
                   domainFilter: true,
                 }).then<number>(({ totalCount }) => totalCount),
-              ])
-            )
+              ]),
+            ),
           ),
         }),
-      []
+      [],
     ),
-    false
+    false,
   );
 
   const [scale = defaultAttachmentScale, setScale] = useCachedState(
     'attachments',
-    'scale'
+    'scale',
   );
 
   const [collection, setCollection, fetchMore] = useCollection(
@@ -139,18 +139,18 @@ function Attachments({
           filter.type === 'unused'
             ? backendFilter('tableId').isNull()
             : filter.type === 'byTable'
-            ? {
-                tableId: genericTables[filter.tableName].tableId,
-              }
-            : allTablesWithAttachments().length ===
-              tablesWithAttachments().length
-            ? {}
-            : backendFilter('tableId').isIn(
-                tablesWithAttachments().map(({ tableId }) => tableId)
-              )
+              ? {
+                  tableId: genericTables[filter.tableName].tableId,
+                }
+              : allTablesWithAttachments().length ===
+                  tablesWithAttachments().length
+                ? {}
+                : backendFilter('tableId').isIn(
+                    tablesWithAttachments().map(({ tableId }) => tableId),
+                  ),
         ),
-      [order, filter]
-    )
+      [order, filter],
+    ),
   );
 
   return (
@@ -170,7 +170,7 @@ function Attachments({
                   : {
                       type: 'byTable',
                       tableName: filter as keyof Tables,
-                    }
+                    },
               )
             }
           >

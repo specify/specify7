@@ -95,7 +95,7 @@ export async function ajax<RESPONSE_TYPE = string>(
     expectedErrors = [],
     errorMode = safeMethods.has(method) ? 'dismissible' : 'visible',
     ...options
-  }: AjaxProps
+  }: AjaxProps,
 ): Promise<AjaxResponseObject<RESPONSE_TYPE>> {
   /**
    * When running in a test environment, mock the calls rather than make
@@ -161,7 +161,7 @@ export async function ajax<RESPONSE_TYPE = string>(
           response,
           text: error.toString(),
         });
-      }
+      },
     )
     .finally(() => {
       pendingRequests[url] = undefined;

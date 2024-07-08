@@ -8,9 +8,9 @@ export const reportsAvailable = contextUnlockedPromise.then(
           cachableUrl('/context/report_runner_status.json'),
           {
             headers: { Accept: 'application/json' },
-          }
+          },
         )
           .then(({ data }) => data.available)
           .catch(() => false)
-      : false
+      : false,
 );

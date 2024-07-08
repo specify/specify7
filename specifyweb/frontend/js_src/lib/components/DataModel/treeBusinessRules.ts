@@ -17,7 +17,7 @@ export type TreeDefItem<TREE extends AnyTree> =
   FilterTablesByEndsWith<`${TREE['tableName']}TreeDefItem`>;
 
 export const initializeTreeRecord = (
-  resource: SpecifyResource<AnyTree>
+  resource: SpecifyResource<AnyTree>,
 ): void =>
   resource.isNew()
     ? void resource.set('isAccepted', true, { silent: true })
@@ -25,7 +25,7 @@ export const initializeTreeRecord = (
 
 export const treeBusinessRules = async (
   resource: SpecifyResource<AnyTree>,
-  fieldName: TableFields<AnyTree>
+  fieldName: TableFields<AnyTree>,
 ): Promise<BusinessRuleResult | undefined> =>
   getRelatedTreeTables(resource).then(async ({ parent, definitionItem }) => {
     if (parent === undefined) return undefined;
@@ -39,7 +39,7 @@ export const treeBusinessRules = async (
         : await fetchPossibleRanks(resource, parentDefItem.get('rankId'));
 
     const doExpandSynonymActionsPref = getPref(
-      `sp7.allow_adding_child_to_synonymized_parent.${resource.specifyTable.name}`
+      `sp7.allow_adding_child_to_synonymized_parent.${resource.specifyTable.name}`,
     );
     const isParentSynonym = !parent.get('isAccepted');
 
@@ -81,17 +81,17 @@ export const treeBusinessRules = async (
           resource.set(
             'fullName',
             typeof fullName === 'string' ? fullName : null,
-            { silent: true }
+            { silent: true },
           ),
-      })
+      }),
     );
   });
 
 const getRelatedTreeTables = async <
   TREE extends AnyTree,
-  TREE_DEF_ITEM extends TreeDefItem<AnyTree>
+  TREE_DEF_ITEM extends TreeDefItem<AnyTree>,
 >(
-  resource: SpecifyResource<TREE>
+  resource: SpecifyResource<TREE>,
 ): Promise<{
   readonly parent: SpecifyResource<TREE> | undefined;
   readonly definitionItem: SpecifyResource<TREE_DEF_ITEM> | undefined;
@@ -112,11 +112,11 @@ const getRelatedTreeTables = async <
 
 const predictFullName = async <
   TREE extends AnyTree,
-  TREE_DEF_ITEM extends TreeDefItem<TREE>
+  TREE_DEF_ITEM extends TreeDefItem<TREE>,
 >(
   resource: SpecifyResource<TREE>,
   parent: SpecifyResource<TREE>,
-  definitionItem: SpecifyResource<TREE_DEF_ITEM>
+  definitionItem: SpecifyResource<TREE_DEF_ITEM>,
 ): Promise<string> =>
   ajax(
     formatUrl(
@@ -126,9 +126,9 @@ const predictFullName = async <
       {
         name: resource.get('name'),
         treeDefItemId: definitionItem.id,
-      }
+      },
     ),
     {
       headers: { Accept: 'text/plain' },
-    }
+    },
   ).then(({ data }) => data);

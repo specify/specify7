@@ -30,7 +30,7 @@ describe('LazyCollection', () => {
     {
       meta: { total_count: 2 },
       objects: accessionsResponse,
-    }
+    },
   );
 
   overrideAjax(
@@ -38,7 +38,7 @@ describe('LazyCollection', () => {
     {
       meta: { total_count: 2 },
       objects: accessionsResponse,
-    }
+    },
   );
 
   test('can create a new instance', () => {

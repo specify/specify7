@@ -117,15 +117,15 @@ describe('sortFunction', () => {
   test('Custom function for Numbers', () => {
     expect(
       [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].sort(
-        sortFunction((value) => Math.abs(5 - value))
-      )
+        sortFunction((value) => Math.abs(5 - value)),
+      ),
     ).toEqual([5, 4, 6, 3, 7, 2, 8, 1, 9, 10]);
   });
   test('Custom function for Numbers (reversed)', () => {
     expect(
       [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].sort(
-        sortFunction((value) => Math.abs(5 - value), true)
-      )
+        sortFunction((value) => Math.abs(5 - value), true),
+      ),
     ).toEqual([10, 1, 9, 2, 8, 3, 7, 4, 6, 5]);
   });
 });
@@ -141,9 +141,9 @@ test('multiSortFunction', () => {
       multiSortFunction(
         ({ type }) => type,
         ({ priority }) => priority,
-        true
-      )
-    )
+        true,
+      ),
+    ),
   ).toEqual([
     { type: 'c', priority: 4 },
     { type: 'c', priority: 3 },
@@ -185,12 +185,12 @@ describe('mappedFind', () => {
   test('Found value', () =>
     expect(
       mappedFind([undefined, 1, 2, 3, 4, 5], (value) =>
-        typeof value === 'number' ? value * 2 : undefined
-      )
+        typeof value === 'number' ? value * 2 : undefined,
+      ),
     ).toBe(2));
   test('Not found a value', () =>
     expect(
-      mappedFind([undefined, undefined, undefined], f.id)
+      mappedFind([undefined, undefined, undefined], f.id),
     ).toBeUndefined());
 });
 

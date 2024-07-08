@@ -21,7 +21,7 @@ function entrypoint(): void {
     console.log(
       '%cDocumentation for Developers:\n',
       'font-weight: bold',
-      'https://github.com/specify/specify7/wiki/Docker-Workflow-for-Development'
+      'https://github.com/specify/specify7/wiki/Docker-Workflow-for-Development',
     );
   }
   const entrypointName =
@@ -39,11 +39,11 @@ function entrypoint(): void {
     root.setAttribute(
       'class',
       `flex h-screen print:h-auto overflow-hidden print:overflow-auto
-      bg-[color:var(--background)] text-neutral-900 dark:text-neutral-200`
+      bg-[color:var(--background)] text-neutral-900 dark:text-neutral-200`,
     );
     portalRoot.setAttribute(
       'class',
-      'text-neutral-900 dark:text-neutral-200 list-none'
+      'text-neutral-900 dark:text-neutral-200 list-none',
     );
     const reactRoot = createRoot(root);
     reactRoot.render(
@@ -52,7 +52,7 @@ function entrypoint(): void {
           <SetCssVariables />
           <EntrypointRouter />
         </Contexts>
-      </React.StrictMode>
+      </React.StrictMode>,
     );
   });
 }

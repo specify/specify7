@@ -51,7 +51,7 @@ export const leafletControls = {
           'dark:bg-black',
           'p-2',
           '!cursor-pointer',
-          'rounded'
+          'rounded',
         );
         button.innerHTML = legacyNonJsxIcons.arrowsExpand;
 
@@ -92,7 +92,7 @@ export const leafletControls = {
         '!cursor-pointer',
         'rounded',
         // Hidden by default, until map enters the full-screen mode
-        'hidden'
+        'hidden',
       );
       button.innerHTML = legacyNonJsxIcons.printer;
 

@@ -32,14 +32,14 @@ const pickListFetchPromises: R<Promise<SpecifyResource<PickList> | undefined>> =
   {};
 
 export async function fetchPickList(
-  pickListName: string
+  pickListName: string,
 ): Promise<SpecifyResource<PickList> | undefined> {
   pickListFetchPromises[pickListName] ??= unsafeFetchPickList(pickListName);
   return pickListFetchPromises[pickListName];
 }
 
 async function unsafeFetchPickList(
-  pickListName: string
+  pickListName: string,
 ): Promise<SpecifyResource<PickList> | undefined> {
   getFrontEndPickLists();
 
@@ -68,7 +68,7 @@ async function unsafeFetchPickList(
 
 const rawFetchPickList = async (
   name: string,
-  domainFilter: boolean
+  domainFilter: boolean,
 ): Promise<SpecifyResource<PickList> | undefined> =>
   fetchCollection('PickList', {
     name,
@@ -77,14 +77,14 @@ const rawFetchPickList = async (
   }).then(({ records }) => f.maybe(records[0], deserializeResource));
 
 async function fetchPickListItems(
-  pickList: SpecifyResource<PickList>
+  pickList: SpecifyResource<PickList>,
 ): Promise<RA<SerializedResource<PickListItem>>> {
   const type = (pickList?.get('type') as 0 | 1 | 2 | undefined) ?? 0;
   let items;
 
   const limit = Math.max(
     0,
-    pickList.get('readOnly') ? pickList.get('sizeLimit') ?? 0 : 0
+    pickList.get('readOnly') ? pickList.get('sizeLimit') ?? 0 : 0,
   );
 
   if (type === PickListTypes.TABLE)
@@ -111,14 +111,14 @@ export const PickListSortType = {
 /** From the table picklist */
 async function fetchFromTable(
   pickList: SpecifyResource<PickList>,
-  limit: number
+  limit: number,
 ): Promise<RA<PickListItemSimple>> {
   const tableName = strictGetTable(pickList.get('tableName')).name;
   if (!hasTablePermission(tableName, 'read')) return [];
 
   const scopeTablePicklist = getCollectionPref(
     'sp7_scope_table_picklists',
-    schema.domainLevelIds.collection
+    schema.domainLevelIds.collection,
   );
 
   const { records } = await fetchCollection(tableName, {
@@ -132,27 +132,27 @@ async function fetchFromTable(
       format(
         deserializeResource(record),
         pickList.get('formatter') ?? undefined,
-        true
+        true,
       ).then((title) => ({
         value: record.id.toString(),
         title,
-      }))
-    )
+      })),
+    ),
   );
 }
 
 /** From the field picklist */
 async function fetchFromField(
   pickList: SpecifyResource<PickList>,
-  limit: number
+  limit: number,
 ): Promise<RA<PickListItemSimple>> {
   const tableName = defined(
     pickList.get('tableName') ?? undefined,
-    'Unable to fetch pick list item as pick list table is not set'
+    'Unable to fetch pick list item as pick list table is not set',
   );
   const fieldName = defined(
     pickList.get('fieldName') ?? undefined,
-    'Unable to fetch pick list items as pick list field is not set'
+    'Unable to fetch pick list items as pick list field is not set',
   );
   return fetchRows(tableName as keyof Tables, {
     limit,
@@ -162,7 +162,7 @@ async function fetchFromField(
   }).then((rows) =>
     rows
       .map((row) => row[fieldName] ?? '')
-      .map((value) => ({ value, title: value }))
+      .map((value) => ({ value, title: value })),
   );
 }
 
@@ -180,8 +180,8 @@ export function getPickListItems(pickList: SpecifyResource<PickList>): RA<{
     pickList.get('sortType') === PickListSortType.TITLE_SORT
       ? Array.from(items).sort(sortFunction(({ title }) => title))
       : pickList.get('sortType') === PickListSortType.ORDINAL_SORT
-      ? Array.from(items).sort(sortFunction(({ ordinal }) => ordinal))
-      : items
+        ? Array.from(items).sort(sortFunction(({ ordinal }) => ordinal))
+        : items
   ).map(({ value, title }) => ({
     value: value ?? title,
     title: title ?? value,

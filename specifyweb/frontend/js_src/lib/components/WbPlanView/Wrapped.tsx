@@ -116,8 +116,8 @@ export function WbPlanView({
           : {
               type: 'SelectBaseTable',
             },
-      [uploadPlan, headers]
-    )
+      [uploadPlan, headers],
+    ),
   );
   useErrorContext('state', state);
 

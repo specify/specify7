@@ -11,7 +11,7 @@ requireContext();
 describe('tablesFilter', () => {
   test('include all', () =>
     expect(tablesFilter(true, true, true, tables.WorkbenchRowImage)).toBe(
-      true
+      true,
     ));
 
   test('showHiddenTables excludes hidden and system', () =>
@@ -34,6 +34,6 @@ describe('tablesFilter', () => {
     expect(
       tablesFilter(false, false, false, tables.GeographyTreeDefItem, [
         'GeographyTreeDefItem',
-      ])
+      ]),
     ).toBe(true));
 });

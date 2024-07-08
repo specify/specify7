@@ -19,7 +19,7 @@ export type BrokerOverlay = {
 };
 
 export function getGbifLayers(
-  name: RA<BrokerRecord>
+  name: RA<BrokerRecord>,
 ): BrokerOverlay | undefined {
   const taxonKey = extractBrokerField(name, 'gbif', 's2n:gbif_taxon_key');
   if (taxonKey === undefined) return undefined;
@@ -42,7 +42,7 @@ export const getGbifLayer = (mapData: IR<string>, pane?: string): L.TileLayer =>
         bin: 'hex',
         ...mapData,
       },
-      false
+      false,
     )
       .replaceAll('%7B', '{')
       .replaceAll('%7D', '}'),
@@ -53,7 +53,7 @@ export const getGbifLayer = (mapData: IR<string>, pane?: string): L.TileLayer =>
       format: '@1x.png',
       // Leaflet crashes violently if "pane" key is present, but undefined
       ...(typeof pane === 'string' ? { pane } : {}),
-    }
+    },
   );
 
 const legendGradient = `<span
@@ -68,7 +68,7 @@ const getIdbLayer = async (
   scientificName: string,
   collectionCode: string | undefined,
   layerName: string,
-  className: string = 'saturate-200 brightness-125'
+  className: string = 'saturate-200 brightness-125',
 ): Promise<IR<L.TileLayer>> =>
   ajax<{
     readonly itemCount: number;
@@ -96,13 +96,13 @@ const getIdbLayer = async (
               attribution: 'iDigBio and the user community',
               className,
             }),
-          }
+          },
     )
     .catch(() => ({}));
 
 export function useIdbLayers(
   occurrence: RA<BrokerRecord> | undefined,
-  scientificName: string | undefined
+  scientificName: string | undefined,
 ): BrokerOverlay | undefined {
   const [layers] = useAsyncState<BrokerOverlay>(
     React.useCallback(async () => {
@@ -112,7 +112,7 @@ export function useIdbLayers(
       const collectionCode =
         extractBrokerField(occurrence ?? [], 'idb', 'dwc:collectionCode') ??
         userInformation.availableCollections.find(
-          ({ id }) => id === schema.domainLevelIds.collection
+          ({ id }) => id === schema.domainLevelIds.collection,
         )?.code ??
         undefined;
       if (idbScientificName === undefined) return undefined;
@@ -121,7 +121,7 @@ export function useIdbLayers(
           global: getIdbLayer(
             idbScientificName,
             undefined,
-            `iDigBio ${legendPoint('bg-emerald-500')}`
+            `iDigBio ${legendPoint('bg-emerald-500')}`,
           ),
           collection: getIdbLayer(
             idbScientificName,
@@ -129,7 +129,7 @@ export function useIdbLayers(
             `iDigBio (${
               collectionCode ?? 'collection'
             } points only) ${legendPoint('bg-rose-500')}`,
-            'hue-rotate-180 saturate-150 brightness-125'
+            'hue-rotate-180 saturate-150 brightness-125',
           ),
         })
         .then(({ global, collection }) => ({
@@ -140,7 +140,7 @@ export function useIdbLayers(
           description: specifyNetworkText.iDigBioDescription(),
         }));
     }, [occurrence, scientificName]),
-    false
+    false,
   );
   return layers;
 }

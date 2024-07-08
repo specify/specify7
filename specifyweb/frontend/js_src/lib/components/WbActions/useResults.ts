@@ -24,14 +24,14 @@ export function useResults({
   const initialHiddenRows = React.useMemo(
     () =>
       hot === undefined ? [] : getHotPlugin(hot, 'hiddenRows').getHiddenRows(),
-    [hot, workbench.dataset.columns]
+    [hot, workbench.dataset.columns],
   );
   const initialHiddenCols = React.useMemo(
     () =>
       hot === undefined
         ? []
         : getHotPlugin(hot, 'hiddenColumns').getHiddenColumns(),
-    [hot, workbench.dataset.columns]
+    [hot, workbench.dataset.columns],
   );
 
   // Makes the hot changes required for upload view results
@@ -45,14 +45,14 @@ export function useResults({
         if (!workbench.cells.getCellMetaFromArray(metaArray, 'isNew')) return;
         rowsToInclude.add(f.fastParseInt(physicalRow));
         colsToInclude.add(physicalCol);
-      })
+      }),
     );
     const rowsToHide = workbench.data
       .map((_, physicalRow) => physicalRow)
       .filter(
         (physicalRow) =>
           !rowsToInclude.has(physicalRow) &&
-          !initialHiddenRows.includes(physicalRow)
+          !initialHiddenRows.includes(physicalRow),
       )
       .map(hot.toVisualRow);
     const colsToHide = workbench.dataset.columns
@@ -60,7 +60,7 @@ export function useResults({
       .filter(
         (physicalCol) =>
           !colsToInclude.has(physicalCol) &&
-          !initialHiddenCols.includes(physicalCol)
+          !initialHiddenCols.includes(physicalCol),
       )
       .map(hot.toVisualColumn);
 
@@ -74,13 +74,13 @@ export function useResults({
       } else {
         getHotPlugin(hot, 'hiddenRows').showRows(
           rowsToHide.filter(
-            (visualRow) => !initialHiddenRows.includes(visualRow)
-          )
+            (visualRow) => !initialHiddenRows.includes(visualRow),
+          ),
         );
         getHotPlugin(hot, 'hiddenColumns').showColumns(
           colsToHide.filter(
-            (visualCol) => !initialHiddenCols.includes(visualCol)
-          )
+            (visualCol) => !initialHiddenCols.includes(visualCol),
+          ),
         );
         triggerDatasetRefresh();
       }

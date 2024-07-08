@@ -51,7 +51,7 @@ export async function savePlan({
   const renamedLines = renameNewlyCreatedHeaders(
     baseTableName,
     dataset.columns,
-    lines.filter(({ mappingPath }) => mappingPathIsComplete(mappingPath))
+    lines.filter(({ mappingPath }) => mappingPathIsComplete(mappingPath)),
   );
 
   const newlyAddedHeaders = renamedLines
@@ -59,14 +59,14 @@ export async function savePlan({
       ({ headerName, mappingPath }) =>
         mappingPath.length > 0 &&
         mappingPath[0] !== emptyMapping &&
-        !dataset.columns.includes(headerName)
+        !dataset.columns.includes(headerName),
     )
     .map(({ headerName }) => headerName);
 
   const uploadPlan = uploadPlanBuilder(
     baseTableName,
     renamedLines,
-    getMustMatchTables({ baseTableName, lines, mustMatchPreferences })
+    getMustMatchTables({ baseTableName, lines, mustMatchPreferences }),
   );
 
   const dataSetRequestUrl = `/api/workbench/dataset/${dataset.id}/`;
@@ -89,23 +89,23 @@ export async function savePlan({
                 ...(visualorder ??
                   Object.keys(dataset.columns).map(f.unary(Number.parseInt))),
                 ...newlyAddedHeaders.map((headerName) =>
-                  columns.indexOf(headerName)
+                  columns.indexOf(headerName),
                 ),
               ],
             },
-          }).then(f.void)
-        )
+          }).then(f.void),
+        ),
   );
 }
 
 /* Unmap headers that have a duplicate mapping path */
 export function deduplicateMappings(
   lines: RA<MappingLine>,
-  focusedLine: number | false
+  focusedLine: number | false,
 ): RA<MappingLine> {
   const duplicateMappingIndexes = findDuplicateMappings(
     lines.map(({ mappingPath }) => mappingPath).filter(mappingPathIsComplete),
-    focusedLine
+    focusedLine,
   );
 
   return lines.map((line, index) =>
@@ -114,7 +114,7 @@ export function deduplicateMappings(
           ...line,
           mappingPath: line.mappingPath.slice(0, -1),
         }
-      : line
+      : line,
   );
 }
 
@@ -151,8 +151,8 @@ export function getMustMatchTables({
         (!schema.embeddedCollectingEvent ||
           (list[index - 1]?.tableName ?? baseTableName) !==
             'CollectionObject' ||
-          list[index].tableName !== 'CollectingEvent')
-    )
+          list[index].tableName !== 'CollectingEvent'),
+    ),
   );
 
   const tables = arrayOfMappingLineData
@@ -162,7 +162,7 @@ export function getMustMatchTables({
         getTable(tableName) === undefined ||
         (!tableName.endsWith('attribute') &&
           // Exclude embedded paleo context
-          (!schema.embeddedPaleoContext || tableName !== 'PaleoContext'))
+          (!schema.embeddedPaleoContext || tableName !== 'PaleoContext')),
     )
     .sort(sortFunction((tableName) => getTable(tableName)?.label ?? null));
 
@@ -172,7 +172,7 @@ export function getMustMatchTables({
         tableName,
         // Whether "mustMatch" is checked by default
         tableName === 'PrepType' && !('preptype' in mustMatchPreferences),
-      ])
+      ]),
     ),
     ...mustMatchPreferences,
   };
@@ -180,7 +180,7 @@ export function getMustMatchTables({
 
 export const pathStartsWith = (
   mappingPath: MappingPath,
-  subPath: MappingPath
+  subPath: MappingPath,
 ): boolean =>
   /*
    * Can't use String.prototype.startsWith here.
@@ -192,7 +192,7 @@ export const pathStartsWith = (
 export const getMappedFields = (
   lines: RA<{ readonly mappingPath: MappingPath }>,
   // A mapping path that would be used as a filter
-  mappingPathFilter: MappingPath
+  mappingPathFilter: MappingPath,
 ): RA<string> =>
   lines
     .filter((line) => pathStartsWith(line.mappingPath, mappingPathFilter))
@@ -255,7 +255,7 @@ export function mutateMappingPath({
               (ignoreTreeRanks && valueIsTreeRank(part)))
               ? index + 1
               : index,
-          originalIndex
+          originalIndex,
         )
       : originalIndex;
 

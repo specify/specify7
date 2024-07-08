@@ -35,23 +35,23 @@ export function GbifMap({
         }>(
           formatUrl(
             'https://api.gbif.org/v2/map/occurrence/density/capabilities.json',
-            mapData
+            mapData,
           ),
           {
             headers: {
               Accept: 'application/json',
             },
-          }
+          },
         ).then(
           ({ data }) =>
             [
               data.minYear ?? rangeDefaults[0],
               data.maxYear ?? rangeDefaults[1],
-            ] as const
+            ] as const,
         ),
-      [mapData]
+      [mapData],
     ),
-    false
+    false,
   );
 
   const [range, setRange] = useTriggerState(yearRange);
@@ -60,7 +60,7 @@ export function GbifMap({
   const [throttledRange, setThrottledRange] = React.useState(range);
   const handleChange = React.useMemo(
     () => _.debounce(setThrottledRange, debounceRate),
-    []
+    [],
   );
   React.useEffect(() => handleChange(range), [range, handleChange]);
 
@@ -106,7 +106,7 @@ function MapWrapper({
           : { year: `${range[0]},${range[1]}` }),
         ...mapData,
       },
-      customPaneName
+      customPaneName,
     );
     map.addLayer(overlay.current);
   }, [map, range, mapData]);

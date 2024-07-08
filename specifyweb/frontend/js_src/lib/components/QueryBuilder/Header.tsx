@@ -72,17 +72,14 @@ export function QueryHeader({
         )
           navigate('/specify/', { replace: true });
       }),
-    [query]
+    [query],
   );
 
   const [isBasic, setIsBasic] = useQueryViewPref(query.id);
 
   return (
     <header
-      className={`
-        flex flex-col items-center justify-between gap-2
-        overflow-x-auto whitespace-nowrap sm:flex-row 
-        sm:overflow-x-visible`}
+      className={`flex flex-col items-center justify-between gap-2 overflow-x-auto whitespace-nowrap sm:flex-row sm:overflow-x-visible`}
     >
       <div className="flex items-center justify-center gap-2">
         <TableIcon label name={state.baseTableName} />
@@ -131,7 +128,7 @@ export function QueryHeader({
         <ToggleMappingViewButton fields={state.fields} />
         {hasToolPermission(
           'queryBuilder',
-          queryResource.isNew() ? 'create' : 'update'
+          queryResource.isNew() ? 'create' : 'update',
         ) && !isEmbedded ? (
           <SaveQueryButtons
             fields={state.fields}
@@ -148,8 +145,8 @@ export function QueryHeader({
                 Number.POSITIVE_INFINITY;
               return state.fields.every((field) =>
                 field.filters.every(
-                  ({ startValue }) => startValue.length < fieldLengthLimit
-                )
+                  ({ startValue }) => startValue.length < fieldLengthLimit,
+                ),
               );
             }}
           />

@@ -111,7 +111,7 @@ const processUiPlugin: {
       step: f.parseFloat(getProperty('step')),
       latLongType:
         coordinateType.find(
-          (type) => type.toLowerCase() === latLongType.toLowerCase()
+          (type) => type.toLowerCase() === latLongType.toLowerCase(),
         ) ?? 'Point',
       ignoreFieldName: true,
     };
@@ -122,7 +122,7 @@ const processUiPlugin: {
     const dateFields = table.getFields(getProperty('df') ?? '') ?? fields;
     if (dateFields === undefined) {
       console.error(
-        "Can't display PartialDateUi because initialize.df is not set"
+        "Can't display PartialDateUi because initialize.df is not set",
       );
       return { type: 'Blank' };
     }
@@ -148,7 +148,7 @@ const processUiPlugin: {
     const relationship = getProperty('relName');
     if (relationship === undefined) {
       console.error(
-        "Can't display CollectionRelOneToManyPlugin because initialize.relname is not set"
+        "Can't display CollectionRelOneToManyPlugin because initialize.relname is not set",
       );
       return { type: 'Blank' };
     } else if (
@@ -170,7 +170,7 @@ const processUiPlugin: {
     const relationship = getProperty('relName');
     if (relationship === undefined) {
       console.error(
-        "Can't display CollectionRelOneToManyPlugin because initialize.relname is not set"
+        "Can't display CollectionRelOneToManyPlugin because initialize.relname is not set",
       );
       return { type: 'Blank' };
     } else if (
@@ -268,17 +268,17 @@ export function parseUiPlugin({
     console.error(
       `Can't display ${pluginName} on ${table.name} form. Instead, try ` +
         `displaying it on the ${formatDisjunction(
-          result.supportedTables.map(localized)
-        )} form`
+          result.supportedTables.map(localized),
+        )} form`,
     );
   if (ignoreFieldName === true && fields !== undefined)
     console.warn(
       `Field name of ${fields
         .map(({ name }) => name)
         .join(
-          '.'
+          '.',
         )} was provided to ${pluginName}, but it is not used by the plugin.\n` +
-        `If you need it for a label, consider using an id instead`
+        `If you need it for a label, consider using an id instead`,
     );
 
   return result;

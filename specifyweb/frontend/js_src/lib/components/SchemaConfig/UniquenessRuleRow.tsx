@@ -58,14 +58,14 @@ export function UniquenessRuleRow({
     !isModifyingRule && hasDuplicates
       ? schemaText.uniquenessDuplicatesFound()
       : '',
-    false
+    false,
   );
 
   const invalidUniqueReason = getUniqueInvalidReason(
     rule.scopes.map(
-      (scope) => getFieldsFromPath(table, scope).at(-1) as Relationship
+      (scope) => getFieldsFromPath(table, scope).at(-1) as Relationship,
     ),
-    filterArray(rule.fields.map((field) => table.getField(field)))
+    filterArray(rule.fields.map((field) => table.getField(field))),
   );
 
   return (
@@ -150,28 +150,28 @@ function ModifyUniquenessRule({
   const [separator] = userPreferences.use(
     'queryBuilder',
     'behavior',
-    'exportFileDelimiter'
+    'exportFileDelimiter',
   );
 
   const uniqueFields = React.useMemo(
     () =>
       fields.map((field) => [field.name, field.localization.name!] as const),
-    [fields]
+    [fields],
   );
 
   const uniqueRelationships = React.useMemo(
     () =>
       relationships.map(
-        (field) => [field.name, field.localization.name!] as const
+        (field) => [field.name, field.localization.name!] as const,
       ),
-    [relationships]
+    [relationships],
   );
 
   const hasDuplicates = fetchedDuplicates.totalDuplicates !== 0;
 
   const { validationRef } = useValidation(
     hasDuplicates ? schemaText.uniquenessDuplicatesFound() : undefined,
-    false
+    false,
   );
 
   return (
@@ -212,7 +212,7 @@ function ModifyUniquenessRule({
                       return field.isRelationship
                         ? `${field.name}_id`
                         : field.name;
-                    }
+                    },
                   ),
                 ];
 
@@ -220,13 +220,13 @@ function ModifyUniquenessRule({
                   ({ duplicates, fields }) => [
                     duplicates.toString(),
                     ...Object.values(fields).map((fieldValue) =>
-                      JSON.stringify(fieldValue)
+                      JSON.stringify(fieldValue),
                     ),
-                  ]
+                  ],
                 );
 
                 downloadDataSet(fileName, rows, columns, separator).catch(
-                  raise
+                  raise,
                 );
               }}
             >
@@ -290,7 +290,7 @@ function ModifyUniquenessRule({
               fields: insertItem(
                 rule.fields,
                 rule.fields.length,
-                fields.find(({ name }) => !rule.fields.includes(name))!.name
+                fields.find(({ name }) => !rule.fields.includes(name))!.name,
               ),
             })
           }

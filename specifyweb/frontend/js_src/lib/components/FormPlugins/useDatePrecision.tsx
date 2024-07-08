@@ -17,7 +17,7 @@ export type PartialDatePrecision = keyof typeof datePrecisions;
 export function useDatePrecision(
   resource: SpecifyResource<AnySchema> | undefined,
   precisionFieldName: string | undefined,
-  defaultPrecision: PartialDatePrecision
+  defaultPrecision: PartialDatePrecision,
 ): {
   readonly precision: GetSet<PartialDatePrecision>;
   readonly precisionValidationRef: React.RefCallback<HTMLSelectElement>;
@@ -27,12 +27,12 @@ export function useDatePrecision(
       precisionFieldName === undefined
         ? undefined
         : resource?.specifyTable.getField(precisionFieldName),
-    [resource, precisionFieldName]
+    [resource, precisionFieldName],
   );
   const numericDefaultPrecision = datePrecisions[defaultPrecision];
   const precisionParser = React.useMemo(
     () => ({ value: numericDefaultPrecision }),
-    [numericDefaultPrecision]
+    [numericDefaultPrecision],
   );
   const {
     value: numericPrecision,
@@ -41,7 +41,7 @@ export function useDatePrecision(
   } = useResourceValue<keyof typeof reverseDatePrecisions>(
     resource,
     precisionField,
-    precisionParser
+    precisionParser,
   );
   const databasePrecision =
     numericPrecision === undefined
@@ -52,7 +52,7 @@ export function useDatePrecision(
   const setPrecision = React.useCallback(
     (precision: PartialDatePrecision) =>
       setNumericPrecision(datePrecisions[precision] ?? numericDefaultPrecision),
-    [setNumericPrecision, numericDefaultPrecision]
+    [setNumericPrecision, numericDefaultPrecision],
   );
 
   return { precision: [precision, setPrecision], precisionValidationRef };

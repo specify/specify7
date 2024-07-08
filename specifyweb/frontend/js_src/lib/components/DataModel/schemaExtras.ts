@@ -26,10 +26,10 @@ export const schemaAliases: RR<'', IR<string>> & {
 
 export const schemaExtras: {
   readonly [TABLE_NAME in keyof Tables]?: (
-    table: SpecifyTable<Tables[TABLE_NAME]>
+    table: SpecifyTable<Tables[TABLE_NAME]>,
   ) => readonly [
     fields: RA<LiteralField | Relationship>,
-    callback?: () => void
+    callback?: () => void,
   ];
 } = {
   Agent: (table) => [

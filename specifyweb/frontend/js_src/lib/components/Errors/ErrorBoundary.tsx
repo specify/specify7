@@ -45,7 +45,7 @@ export class ErrorBoundary extends React.Component<
 
   public componentDidCatch(
     error: Error,
-    errorInfo: { readonly componentStack: string }
+    errorInfo: { readonly componentStack: string },
   ): void {
     // Reload the page if webpack bundle is stale
     if (
@@ -78,7 +78,7 @@ export class ErrorBoundary extends React.Component<
             // Any arguments that are given to the error() function:
             details: Object.getOwnPropertyDescriptor(
               this.state.error,
-              errorDetails
+              errorDetails,
             )?.value,
           })}
           dismissible={this.props.dismissible}

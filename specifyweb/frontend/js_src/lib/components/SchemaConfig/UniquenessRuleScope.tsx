@@ -32,7 +32,7 @@ export function UniquenessRuleScope({
   const [mappingPath, setMappingPath] = React.useState<RA<string>>(
     rule.scopes.length === 0
       ? [databaseMappingPathField]
-      : rule.scopes[0].split(djangoLookupSeparator)
+      : rule.scopes[0].split(djangoLookupSeparator),
   );
 
   const databaseScopeData: Readonly<Record<string, HtmlGeneratorFieldData>> = {
@@ -45,15 +45,15 @@ export function UniquenessRuleScope({
   };
 
   const getValidScopeRelationships = (
-    table: SpecifyTable
+    table: SpecifyTable,
   ): Readonly<Record<string, HtmlGeneratorFieldData>> =>
     Object.fromEntries(
       table.relationships
         .filter(
           (relationship) =>
             !(['one-to-many', 'many-to-many'] as RA<RelationshipType>).includes(
-              relationship.type
-            ) && !relationship.isVirtual
+              relationship.type,
+            ) && !relationship.isVirtual,
         )
         .map((relationship) => [
           relationship.name,
@@ -64,12 +64,12 @@ export function UniquenessRuleScope({
             optionLabel: relationship.localization.name!,
             tableName: relationship.relatedTable.name,
           },
-        ])
+        ]),
     );
 
   const updateLineData = (
     mappingLines: RA<MappingLineData>,
-    mappingPath: RA<string>
+    mappingPath: RA<string>,
   ): RA<MappingLineData> =>
     mappingLines.map((lineData, index) => ({
       ...lineData,
@@ -77,7 +77,7 @@ export function UniquenessRuleScope({
         Object.entries(lineData.fieldsData).map(([field, data]) => [
           field,
           { ...data, isDefault: mappingPath[index] === field },
-        ])
+        ]),
       ),
     }));
 
@@ -104,7 +104,7 @@ export function UniquenessRuleScope({
                 ? table
                 : getFieldsFromPath(
                     table,
-                    mappingPath.slice(0, index + 1).join(djangoLookupSeparator)
+                    mappingPath.slice(0, index + 1).join(djangoLookupSeparator),
                   )[index].table;
             return {
               customSelectSubtype: 'simple',
@@ -116,10 +116,10 @@ export function UniquenessRuleScope({
               },
             };
           }),
-          mappingPath
+          mappingPath,
         ),
-      [rule.scopes, table]
-    )
+      [rule.scopes, table],
+    ),
   );
 
   const getRelationshipData = (newTableName: keyof Tables): MappingLineData => {
@@ -143,7 +143,7 @@ export function UniquenessRuleScope({
             const newMappingPath = replaceItem(
               mappingPath.slice(0, index + 1),
               index,
-              rest.newValue
+              rest.newValue,
             );
             setMappingPath(newMappingPath);
             setLineData((lineData) =>
@@ -152,8 +152,8 @@ export function UniquenessRuleScope({
                   ...lineData.slice(0, index + 1),
                   getRelationshipData(rest.newTableName!),
                 ],
-                newMappingPath
-              )
+                newMappingPath,
+              ),
             );
             if (isDoubleClick)
               handleChanged({

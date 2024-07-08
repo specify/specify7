@@ -56,7 +56,7 @@ overrideAjax('/api/specify/taxon/?limit=1&parent=2&orderby=rankid', {
 test('fetchLowestChildRank', async () => {
   const animalia = new tables.Taxon.Resource(
     { id: 2 },
-    { noBusinessRules: true }
+    { noBusinessRules: true },
   );
   await animalia.fetch();
 
@@ -67,12 +67,12 @@ describe('fetchPossibleRanks', () => {
   test('fetchPossibleRanks', async () => {
     const animalia = new tables.Taxon.Resource(
       { id: 2 },
-      { noBusinessRules: true }
+      { noBusinessRules: true },
     );
     await animalia.fetch();
 
     await expect(
-      fetchPossibleRanks(animalia, animalia.id).then(ranksToPicklistItems)
+      fetchPossibleRanks(animalia, animalia.id).then(ranksToPicklistItems),
     ).resolves.toEqual([
       {
         title: 'Kingdom',
@@ -92,12 +92,12 @@ describe('fetchPossibleRanks', () => {
   test('only next enforced is fetched', async () => {
     const chordata = new tables.Taxon.Resource(
       { id: 3 },
-      { noBusinessRules: true }
+      { noBusinessRules: true },
     );
     await chordata.fetch();
 
     await expect(
-      fetchPossibleRanks(chordata, chordata.id).then(ranksToPicklistItems)
+      fetchPossibleRanks(chordata, chordata.id).then(ranksToPicklistItems),
     ).resolves.toEqual([
       {
         title: 'Kingdom',

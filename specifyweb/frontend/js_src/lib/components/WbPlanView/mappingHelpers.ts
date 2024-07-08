@@ -17,7 +17,7 @@ import type { ColumnOptions } from './uploadPlanParser';
  *
  */
 export const relationshipIsToMany = (
-  relationship: Relationship | undefined
+  relationship: Relationship | undefined,
 ): boolean =>
   relationship?.type.includes('-to-many') === true ||
   relationship?.type === 'zero-to-one';
@@ -93,7 +93,7 @@ export const formatPartialField = (fieldName: string, part: string): string =>
   `${fieldName}${schema.fieldPartSeparator}${part}`;
 
 export function parsePartialField<PART extends string>(
-  value: string
+  value: string,
 ): readonly [fieldName: string, part: PART] {
   const split = value.split(schema.fieldPartSeparator);
   if (split.length !== 2) throw new Error('failed to parse partial field');
@@ -123,7 +123,7 @@ export type SplitMappingPath = {
  */
 export const findDuplicateMappings = (
   mappingPaths: RA<MappingPath>,
-  focusedLine: number | false
+  focusedLine: number | false,
 ): RA<number> => {
   const duplicateIndexes: WritableArray<number> = [];
 
@@ -135,13 +135,13 @@ export const findDuplicateMappings = (
         duplicateIndexes.push(
           typeof focusedLine === 'number' && focusedLine === index
             ? dictionaryOfMappings.indexOf(stringMappingPath)
-            : index
+            : index,
         );
       else dictionaryOfMappings.push(stringMappingPath);
 
       return dictionaryOfMappings;
     },
-    []
+    [],
   );
 
   return duplicateIndexes;
@@ -149,10 +149,12 @@ export const findDuplicateMappings = (
 
 /** Replaces all -to-many indexes with #1 */
 export const getCanonicalMappingPath = (
-  mappingPath: MappingPath
+  mappingPath: MappingPath,
 ): MappingPath =>
   mappingPath.map((mappingPathPart) =>
-    valueIsToManyIndex(mappingPathPart) ? formatToManyIndex(1) : mappingPathPart
+    valueIsToManyIndex(mappingPathPart)
+      ? formatToManyIndex(1)
+      : mappingPathPart,
   );
 
 /** Filters out -to-many and tree ranks from the mapping path */
@@ -162,7 +164,7 @@ export const getGenericMappingPath = (mappingPath: MappingPath): MappingPath =>
       !valueIsToManyIndex(mappingPathPart) &&
       !valueIsTreeRank(mappingPathPart) &&
       mappingPathPart !== formattedEntry &&
-      mappingPathPart !== emptyMapping
+      mappingPathPart !== emptyMapping,
   );
 
 /**
@@ -182,7 +184,7 @@ export const getGenericMappingPath = (mappingPath: MappingPath): MappingPath =>
  * ]
  */
 export function deflateMappingPaths(
-  mappingPaths: RA<MappingPath>
+  mappingPaths: RA<MappingPath>,
 ): RA<MappingPath> {
   const changes: R<string> = {};
   return mappingPaths.reduce<RA<MappingPath>>(
@@ -192,7 +194,7 @@ export function deflateMappingPaths(
       mappingPath.forEach((mappingPathPart, partIndex) => {
         if (!valueIsToManyIndex(mappingPathPart)) return;
         const subPath = mappingPathToString(
-          newMappingPath.slice(0, partIndex + 1)
+          newMappingPath.slice(0, partIndex + 1),
         );
         if (resetToManys) changes[subPath] = formatToManyIndex(1);
         if (subPath in changes) {
@@ -209,9 +211,9 @@ export function deflateMappingPaths(
               .find(
                 (mappingPath) =>
                   mappingPathToString(mappingPath.slice(0, -1)) ===
-                  mappingPathToString(newMappingPath.slice(0, partIndex))
+                  mappingPathToString(newMappingPath.slice(0, partIndex)),
               )
-              ?.slice(-1)[0] ?? formatToManyIndex(0)
+              ?.slice(-1)[0] ?? formatToManyIndex(0),
           ) + 1;
         if (newIndex >= getNumberFromToManyIndex(mappingPathPart)) return;
         resetToManys = true;
@@ -221,6 +223,6 @@ export function deflateMappingPaths(
       });
       return [...mappingPaths, newMappingPath];
     },
-    []
+    [],
   );
 }

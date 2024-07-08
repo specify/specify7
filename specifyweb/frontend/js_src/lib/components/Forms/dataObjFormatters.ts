@@ -74,12 +74,12 @@ export const fetchFormatters: Promise<{
   entrypoint === 'main'
     ? ajax<Document>(
         cachableUrl(
-          formatUrl('/context/app.resource', { name: 'DataObjFormatters' })
+          formatUrl('/context/app.resource', { name: 'DataObjFormatters' }),
         ),
         {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           headers: { Accept: 'text/xml' },
-        }
+        },
       ).then(({ data: definitions }) => ({
         formatters: filterArray(
           Array.from(
@@ -101,7 +101,7 @@ export const fetchFormatters: Promise<{
                     formatter: getParsedAttribute(field, 'formatter') ?? '',
                     fieldFormatter: getParsedAttribute(field, 'format'),
                   })).filter(({ fieldName }) => fieldName.length > 0),
-                })
+                }),
               ).filter(({ fields }) => fields.length > 0);
               // External DataObjFormatters are not supported
               if (fields.length === 0) return undefined;
@@ -115,8 +115,8 @@ export const fetchFormatters: Promise<{
                 switchFieldName:
                   typeof field === 'string' && !isSingle ? field : undefined,
               };
-            }
-          )
+            },
+          ),
         ),
         aggregators: filterArray(
           Array.from(
@@ -132,14 +132,14 @@ export const fetchFormatters: Promise<{
                 separator: getAttribute(aggregatorNode, 'separator') ?? '',
                 format: getAttribute(aggregatorNode, 'format') ?? '',
               };
-            }
-          )
+            },
+          ),
         ),
       }))
     : foreverFetch<{
         readonly formatters: RA<Formatter>;
         readonly aggregators: RA<Aggregator>;
-      }>()
+      }>(),
 );
 
 export const getMainTableFields = (tableName: keyof Tables): RA<LiteralField> =>
@@ -148,13 +148,13 @@ export const getMainTableFields = (tableName: keyof Tables): RA<LiteralField> =>
       ({ type, overrides }) =>
         type === 'java.lang.String' &&
         !overrides.isHidden &&
-        !overrides.isReadOnly
+        !overrides.isReadOnly,
     )
     .sort(sortFunction(({ isRequired }) => isRequired, true));
 
 export const naiveFormatter = (
   tableLabel: string,
-  id: number | undefined
+  id: number | undefined,
 ): LocalizedString =>
   id === undefined
     ? formsText.newResourceTitle({ tableName: tableLabel })
@@ -166,12 +166,12 @@ export const naiveFormatter = (
 export async function format<SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA> | undefined,
   formatterName: string | undefined,
-  tryBest: true
+  tryBest: true,
 ): Promise<LocalizedString>;
 export async function format<SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA> | undefined,
   formatterName?: string,
-  tryBest?: false
+  tryBest?: false,
 ): Promise<LocalizedString | undefined>;
 export async function format<SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA> | undefined,
@@ -180,7 +180,7 @@ export async function format<SCHEMA extends AnySchema>(
    * Format a resource even if no formatter is present, or some permissions
    * are missing
    */
-  tryBest: boolean = false
+  tryBest: boolean = false,
 ): Promise<LocalizedString | undefined> {
   if (typeof resource !== 'object' || resource === null) return undefined;
   if (hasTablePermission(resource.specifyTable.name, 'read')) {
@@ -192,7 +192,7 @@ export async function format<SCHEMA extends AnySchema>(
     await hijackBackboneAjax(
       [Http.NOT_FOUND],
       async () => resource.fetch(),
-      () => f.void()
+      () => f.void(),
     );
   }
   const resolvedFormatterName =
@@ -202,7 +202,7 @@ export async function format<SCHEMA extends AnySchema>(
   const formatter = resolveFormatter(
     formatters,
     resolvedFormatterName,
-    resource.specifyTable
+    resource.specifyTable,
   );
 
   // Doesn't support switch fields that are in child objects
@@ -211,7 +211,7 @@ export async function format<SCHEMA extends AnySchema>(
       ? formatter.fields.find(
           ({ value }) =>
             (value?.toString() ?? '') ===
-            (resource.get(formatter.switchFieldName ?? '') ?? '').toString()
+            (resource.get(formatter.switchFieldName ?? '') ?? '').toString(),
         )?.fields ?? formatter.fields[0].fields
       : formatter.fields[0].fields;
 
@@ -225,14 +225,14 @@ export async function format<SCHEMA extends AnySchema>(
    */
   const isEmptyResource = fields
     .map(({ fieldName }) =>
-      resource.get(fieldName.split(backboneFieldSeparator)[0])
+      resource.get(fieldName.split(backboneFieldSeparator)[0]),
     )
     .every((value) => value === undefined || value === null || value === '');
 
   return isEmptyResource
     ? automaticFormatter ?? undefined
     : Promise.all(
-        fields.map(async (field) => formatField(field, resource, tryBest))
+        fields.map(async (field) => formatField(field, resource, tryBest)),
       ).then(
         (values) =>
           values.reduce<string>(
@@ -240,8 +240,8 @@ export async function format<SCHEMA extends AnySchema>(
               `${result}${
                 result.length === 0 && index !== 0 ? '' : separator
               }${formatted}`,
-            ''
-          ) as LocalizedString
+            '',
+          ) as LocalizedString,
       );
 }
 
@@ -253,7 +253,7 @@ async function formatField(
     fieldFormatter,
   }: Formatter['fields'][number]['fields'][number],
   resource: SpecifyResource<AnySchema>,
-  tryBest: boolean
+  tryBest: boolean,
 ): Promise<{ readonly formatted: string; readonly separator?: string }> {
   if (typeof fieldFormatter === 'string' && fieldFormatter === '')
     return { formatted: '' };
@@ -282,12 +282,12 @@ async function formatField(
           : fieldFormat(
               field,
               value as string | undefined,
-              resolveParser(field)
-            )
+              resolveParser(field),
+            ),
       )
     : tryBest
-    ? naiveFormatter(resource.specifyTable.name, resource.id)
-    : userText.noPermission();
+      ? naiveFormatter(resource.specifyTable.name, resource.id)
+      : userText.noPermission();
 
   return { formatted, separator: formatted ? separator : '' };
 }
@@ -295,7 +295,7 @@ async function formatField(
 const resolveFormatter = (
   formatters: RA<Formatter>,
   formatterName: string | undefined,
-  model: SpecifyTable
+  model: SpecifyTable,
 ): Formatter =>
   formatters.find(({ name }) => name === formatterName) ??
   findDefaultFormatter(formatters, model.longName) ??
@@ -303,7 +303,7 @@ const resolveFormatter = (
 
 const findDefaultFormatter = (
   formatters: RA<Formatter>,
-  modelLongNmae: string
+  modelLongNmae: string,
 ): Formatter | undefined =>
   formatters
     .filter(({ className }) => className === modelLongNmae)
@@ -331,7 +331,7 @@ const autoGenerateFormatter = (model: SpecifyTable): Formatter => ({
 });
 
 export async function aggregate(
-  collection: Collection<AnySchema>
+  collection: Collection<AnySchema>,
 ): Promise<string> {
   const { aggregators } = await fetchFormatters;
 
@@ -341,7 +341,7 @@ export async function aggregate(
     aggregators.find(({ name }) => name === aggregatorName) ??
     aggregators.find(
       ({ className, isDefault }) =>
-        className === collection.table.specifyTable.longName && isDefault
+        className === collection.table.specifyTable.longName && isDefault,
     );
 
   if (aggregator === undefined) softFail(new Error('Aggregator not found'));
@@ -350,9 +350,9 @@ export async function aggregate(
 
   return Promise.all(
     collection.models.map(async (resource) =>
-      format(resource, aggregator?.format)
-    )
+      format(resource, aggregator?.format),
+    ),
   ).then((formatted) =>
-    filterArray(formatted).join(aggregator?.separator ?? ', ')
+    filterArray(formatted).join(aggregator?.separator ?? ', '),
   );
 }

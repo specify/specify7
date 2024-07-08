@@ -27,7 +27,7 @@ export function SvgIcon({
   const isAttachmentTable = isAttachment(name);
   const fontSize = React.useMemo(
     () => getFontSize(shortName, isAttachmentTable),
-    [shortName, isAttachmentTable]
+    [shortName, isAttachmentTable],
   );
   return (
     <svg
@@ -108,8 +108,8 @@ function getShortName(rawName: keyof Tables): string {
     rawName.endsWith('Attachment') && rawName !== 'Attachment'
       ? rawName.slice(0, -'Attachment'.length)
       : rawName.startsWith('Sp')
-      ? rawName.slice(2)
-      : rawName;
+        ? rawName.slice(2)
+        : rawName;
   const capitalLetters = name.replaceAll(/[^A-Z]/gu, '');
   return capitalLetters.length > 1
     ? capitalLetters.slice(0, 3)
@@ -131,22 +131,22 @@ function getFontSize(name: string, isAttachmentTable: boolean): number {
 
 const startsWith = <T,>(
   prefix: string,
-  resolved: T
+  resolved: T,
 ): Partial<RR<keyof Tables, T>> =>
   Object.fromEntries(
     Object.keys(tables)
       .filter((tableName) => tableName.startsWith(prefix))
-      .map((tableName) => [tableName, resolved])
+      .map((tableName) => [tableName, resolved]),
   );
 
 const endsWith = <T,>(
   prefix: string,
-  resolved: T
+  resolved: T,
 ): Partial<RR<keyof Tables, T>> =>
   Object.fromEntries(
     Object.keys(tables)
       .filter((tableName) => tableName.endsWith(prefix))
-      .map((tableName) => [tableName, resolved])
+      .map((tableName) => [tableName, resolved]),
   );
 
 const nameMapper = f.store<Partial<RR<keyof Tables, string>>>(() => ({

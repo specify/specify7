@@ -12,10 +12,10 @@ import { LoadingScreen } from '../Molecules/Dialog';
  * when any component is being loaded.
  */
 export function ReactLazy<PROPS extends IR<unknown>>(
-  componentPromise: () => Promise<React.FunctionComponent<PROPS>>
+  componentPromise: () => Promise<React.FunctionComponent<PROPS>>,
 ) {
   const Lazy = React.lazy(async () =>
-    componentPromise().then((module) => ({ default: module }))
+    componentPromise().then((module) => ({ default: module })),
   );
   function Wrapped(props: PROPS & React.PropsWithRef<PROPS>): JSX.Element {
     return (

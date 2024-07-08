@@ -29,7 +29,7 @@ export const SubViewContext = React.createContext<
       readonly sortField: SubViewSortField | undefined;
       readonly handleChangeFormType: (formType: FormType) => void;
       readonly handleChangeSortField: (
-        sortField: SubViewSortField | undefined
+        sortField: SubViewSortField | undefined,
       ) => void;
     }
   | undefined
@@ -86,9 +86,9 @@ export function SubView({
               Array.from(collection.models).sort(
                 sortFunction(
                   (resource) => resource.get(field),
-                  sortField.direction === 'desc'
-                )
-              )
+                  sortField.direction === 'desc',
+                ),
+              ),
             );
             return collection;
           });
@@ -107,8 +107,8 @@ export function SubView({
             new Error(
               `Can't render a SubView for ` +
                 `${relationship.table.name}.${relationship.name} because ` +
-                `reverse relationship does not exist`
-            )
+                `reverse relationship does not exist`,
+            ),
           );
           return undefined;
         }
@@ -133,17 +133,17 @@ export function SubView({
         overwriteReadOnly(
           collection,
           'related',
-          collection.related ?? parentResource
+          collection.related ?? parentResource,
         );
         overwriteReadOnly(
           collection,
           'field',
-          collection.field ?? relationship.getReverse()
+          collection.field ?? relationship.getReverse(),
         );
         return collection;
       }
     },
-    [parentResource, relationship, sortField]
+    [parentResource, relationship, sortField],
   );
 
   const [collection, setCollection] = React.useState<
@@ -167,13 +167,13 @@ export function SubView({
                */
               versionRef.current === localVersionRef
                 ? setCollection(collection)
-                : undefined
+                : undefined,
             )
             .catch(raise);
         },
-        true
+        true,
       ),
-    [parentResource, relationship, fetchCollection]
+    [parentResource, relationship, fetchCollection],
   );
 
   const [formType, setFormType] = useTriggerState(initialFormType);
@@ -185,7 +185,7 @@ export function SubView({
       handleChangeFormType: setFormType,
       handleChangeSortField: setSortField,
     }),
-    [relationship, formType, sortField, setFormType, setSortField]
+    [relationship, formType, sortField, setFormType, setSortField],
   );
 
   const [isOpen, _, handleClose, handleToggle] = useBooleanState(!isButton);
@@ -193,7 +193,7 @@ export function SubView({
   const [isAttachmentConfigured] = usePromise(attachmentSettingsPromise, true);
 
   const isAttachmentTable = attachmentRelatedTables().includes(
-    relationship.relatedTable.name
+    relationship.relatedTable.name,
   );
 
   const isAttachmentMisconfigured =
@@ -206,14 +206,11 @@ export function SubView({
         <Button.BorderedGray
           aria-label={relationship.label}
           aria-pressed={isOpen}
-          className={`
-            w-fit 
-            ${
-              (collection?.models.length ?? 0) > 0
-                ? '!ring-brand-300 dark:!ring-brand-400 ring-2 dark:!ring-2'
-                : ''
-            } 
-          ${isOpen ? '!bg-brand-300 dark:!bg-brand-500' : ''}`}
+          className={`w-fit ${
+            (collection?.models.length ?? 0) > 0
+              ? 'ring-2 !ring-brand-300 dark:!ring-2 dark:!ring-brand-400'
+              : ''
+          } ${isOpen ? '!bg-brand-300 dark:!bg-brand-500' : ''}`}
           title={relationship.label}
           onClick={handleToggle}
         >
@@ -256,7 +253,7 @@ export function SubView({
                 : ([resource]): void =>
                     void parentResource.set(
                       relationship.name,
-                      resource as never
+                      resource as never,
                     )
             }
             onClose={handleClose}

@@ -33,9 +33,11 @@ export function ReportRecordSets({
     () =>
       getTableById(
         query.contextTableId ??
-          f.parseInt(parseSpecifyProperties(appResource.metaData ?? '').tableid)
+          f.parseInt(
+            parseSpecifyProperties(appResource.metaData ?? '').tableid,
+          ),
       ),
-    [query, appResource]
+    [query, appResource],
   );
   const recordSetsPromise = React.useMemo(
     async () =>
@@ -46,16 +48,16 @@ export function ReportRecordSets({
         dbTableId: table.tableId,
         limit: 500,
       }),
-    [table]
+    [table],
   );
   React.useEffect(
     () =>
       void recordSetsPromise
         .then(({ totalCount }) =>
-          totalCount === 0 ? setState({ type: 'Raw' }) : undefined
+          totalCount === 0 ? setState({ type: 'Raw' }) : undefined,
         )
         .catch(softFail),
-    [recordSetsPromise]
+    [recordSetsPromise],
   );
   const [state, setState] = React.useState<
     | State<
@@ -93,7 +95,7 @@ export function ReportRecordSets({
             children,
             <Button.Info onClick={(): void => setState({ type: 'Raw' })}>
               {queryText.query()}
-            </Button.Info>
+            </Button.Info>,
           )
         }
       </RecordSetsDialog>

@@ -21,14 +21,14 @@ export const routes: RA<EnhancedRoute> = [
     path: 'specify-network-collection',
     element: () =>
       import('../SpecifyNetworkCollection').then(
-        ({ SpecifyNetworkCollection }) => SpecifyNetworkCollection
+        ({ SpecifyNetworkCollection }) => SpecifyNetworkCollection,
       ),
   },
   {
     path: 'simple-search',
     element: () =>
       import('../Header/ExpressSearchTask').then(
-        ({ ExpressSearchView }) => ExpressSearchView
+        ({ ExpressSearchView }) => ExpressSearchView,
       ),
     title: headerText.simpleSearch(),
   },
@@ -54,7 +54,7 @@ export const routes: RA<EnhancedRoute> = [
         path: ':tableName',
         element: () =>
           import('../SchemaViewer/helpers').then(
-            ({ SchemaViewerRedirect }) => SchemaViewerRedirect
+            ({ SchemaViewerRedirect }) => SchemaViewerRedirect,
           ),
       },
     ],
@@ -78,7 +78,7 @@ export const routes: RA<EnhancedRoute> = [
         path: 'institution',
         element: () =>
           import('../Security/Institution').then(
-            ({ SecurityInstitution }) => SecurityInstitution
+            ({ SecurityInstitution }) => SecurityInstitution,
           ),
         children: [
           {
@@ -91,7 +91,7 @@ export const routes: RA<EnhancedRoute> = [
                 path: 'create',
                 element: () =>
                   import('../Security/CreateLibraryRole').then(
-                    ({ CreateLibraryRole }) => CreateLibraryRole
+                    ({ CreateLibraryRole }) => CreateLibraryRole,
                   ),
               },
               {
@@ -99,14 +99,14 @@ export const routes: RA<EnhancedRoute> = [
                 title: userText.newRole(),
                 element: () =>
                   import('../Security/LibraryRole').then(
-                    ({ SecurityLibraryRole }) => SecurityLibraryRole
+                    ({ SecurityLibraryRole }) => SecurityLibraryRole,
                   ),
               },
               {
                 path: ':roleId',
                 element: () =>
                   import('../Security/LibraryRole').then(
-                    ({ SecurityLibraryRole }) => SecurityLibraryRole
+                    ({ SecurityLibraryRole }) => SecurityLibraryRole,
                   ),
               },
             ],
@@ -120,14 +120,14 @@ export const routes: RA<EnhancedRoute> = [
             path: 'new',
             element: () =>
               import('../Security/User').then(
-                ({ SecurityUser }) => SecurityUser
+                ({ SecurityUser }) => SecurityUser,
               ),
           },
           {
             path: ':userId',
             element: () =>
               import('../Security/User').then(
-                ({ SecurityUser }) => SecurityUser
+                ({ SecurityUser }) => SecurityUser,
               ),
           },
         ],
@@ -136,7 +136,7 @@ export const routes: RA<EnhancedRoute> = [
         path: 'collection/:collectionId',
         element: () =>
           import('../Security/Collection').then(
-            ({ SecurityCollection }) => SecurityCollection
+            ({ SecurityCollection }) => SecurityCollection,
           ),
         children: [
           {
@@ -150,7 +150,7 @@ export const routes: RA<EnhancedRoute> = [
                 title: userText.createRole(),
                 element: () =>
                   import('../Security/CreateRole').then(
-                    ({ CreateCollectionRole }) => CreateCollectionRole
+                    ({ CreateCollectionRole }) => CreateCollectionRole,
                   ),
               },
               {
@@ -158,14 +158,14 @@ export const routes: RA<EnhancedRoute> = [
                 title: userText.newRole(),
                 element: () =>
                   import('../Security/CollectionRole').then(
-                    ({ SecurityCollectionRole }) => SecurityCollectionRole
+                    ({ SecurityCollectionRole }) => SecurityCollectionRole,
                   ),
               },
               {
                 path: ':roleId',
                 element: () =>
                   import('../Security/CollectionRole').then(
-                    ({ SecurityCollectionRole }) => SecurityCollectionRole
+                    ({ SecurityCollectionRole }) => SecurityCollectionRole,
                   ),
               },
             ],
@@ -182,14 +182,14 @@ export const routes: RA<EnhancedRoute> = [
         title: attachmentsText.attachments(),
         element: () =>
           import('../Attachments').then(
-            ({ AttachmentsView }) => AttachmentsView
+            ({ AttachmentsView }) => AttachmentsView,
           ),
       },
       {
         path: 'import/:id',
         element: () =>
           import('../AttachmentsBulkImport/Import').then(
-            ({ AttachmentImportById }) => AttachmentImportById
+            ({ AttachmentImportById }) => AttachmentImportById,
           ),
       },
     ],
@@ -212,7 +212,7 @@ export const routes: RA<EnhancedRoute> = [
         path: 'plan/:id',
         element: () =>
           import('../WbPlanView').then(
-            ({ WbPlanViewWrapper }) => WbPlanViewWrapper
+            ({ WbPlanViewWrapper }) => WbPlanViewWrapper,
           ),
       },
     ],
@@ -233,7 +233,7 @@ export const routes: RA<EnhancedRoute> = [
         element: () =>
           import('../LocalityUpdate').then(
             ({ LocalityUpdateFromDataSet: ImportLocalitySet }) =>
-              ImportLocalitySet
+              ImportLocalitySet,
           ),
       },
     ],
@@ -243,7 +243,7 @@ export const routes: RA<EnhancedRoute> = [
     title: resourcesText.appResources(),
     element: () =>
       import('../AppResources').then(
-        ({ AppResourcesWrapper }) => AppResourcesWrapper
+        ({ AppResourcesWrapper }) => AppResourcesWrapper,
       ),
     children: [
       {
@@ -251,14 +251,14 @@ export const routes: RA<EnhancedRoute> = [
         title: resourcesText.addResource(),
         element: () =>
           import('../AppResources/Create').then(
-            ({ CreateAppResource }) => CreateAppResource
+            ({ CreateAppResource }) => CreateAppResource,
           ),
       },
       {
         path: 'app-resource/:id/*',
         element: () =>
           import('../AppResources/EditorWrapper').then(
-            ({ AppResourceView }) => AppResourceView
+            ({ AppResourceView }) => AppResourceView,
           ),
         isSingleResource: true,
       },
@@ -266,7 +266,7 @@ export const routes: RA<EnhancedRoute> = [
         path: 'view-set/:id/*',
         element: () =>
           import('../AppResources/EditorWrapper').then(
-            ({ ViewSetView }) => ViewSetView
+            ({ ViewSetView }) => ViewSetView,
           ),
         isSingleResource: true,
       },
@@ -305,14 +305,14 @@ export const routes: RA<EnhancedRoute> = [
         index: true,
         element: () =>
           import('../Forms/DataTask').then(
-            ({ ViewRecordSet }) => ViewRecordSet
+            ({ ViewRecordSet }) => ViewRecordSet,
           ),
       },
       {
         path: ':index',
         element: () =>
           import('../Forms/DataTask').then(
-            ({ ViewRecordSet }) => ViewRecordSet
+            ({ ViewRecordSet }) => ViewRecordSet,
           ),
       },
     ],
@@ -331,7 +331,7 @@ export const routes: RA<EnhancedRoute> = [
     path: 'bycatalog/:collectionCode/:catalogNumber/',
     element: () =>
       import('../Forms/DataTask').then(
-        ({ ViewResourceByCatalog }) => ViewResourceByCatalog
+        ({ ViewResourceByCatalog }) => ViewResourceByCatalog,
       ),
   },
   {
@@ -341,21 +341,21 @@ export const routes: RA<EnhancedRoute> = [
         path: ':id',
         element: () =>
           import('../QueryBuilder').then(
-            ({ QueryBuilderById }) => QueryBuilderById
+            ({ QueryBuilderById }) => QueryBuilderById,
           ),
       },
       {
         path: 'new/:tableName',
         element: () =>
           import('../QueryBuilder').then(
-            ({ NewQueryBuilder }) => NewQueryBuilder
+            ({ NewQueryBuilder }) => NewQueryBuilder,
           ),
       },
       {
         path: 'fromtree/:tableName/:id',
         element: () =>
           import('../QueryBuilder').then(
-            ({ QueryBuilderFromTree }) => QueryBuilderFromTree
+            ({ QueryBuilderFromTree }) => QueryBuilderFromTree,
           ),
       },
     ],
@@ -365,7 +365,7 @@ export const routes: RA<EnhancedRoute> = [
     title: preferencesText.preferences(),
     element: () =>
       import('../Preferences').then(
-        ({ PreferencesWrapper }) => PreferencesWrapper
+        ({ PreferencesWrapper }) => PreferencesWrapper,
       ),
   },
   {
@@ -373,14 +373,14 @@ export const routes: RA<EnhancedRoute> = [
     title: schemaText.schemaConfig(),
     element: () =>
       import('../Toolbar/SchemaConfig').then(
-        ({ SchemaConfig }) => SchemaConfig
+        ({ SchemaConfig }) => SchemaConfig,
       ),
     children: [
       {
         index: true,
         element: () =>
           import('../SchemaConfig/Languages').then(
-            ({ ChooseSchemaLanguage }) => ChooseSchemaLanguage
+            ({ ChooseSchemaLanguage }) => ChooseSchemaLanguage,
           ),
       },
       {
@@ -388,7 +388,7 @@ export const routes: RA<EnhancedRoute> = [
         title: schemaText.addLanguage(),
         element: () =>
           import('../SchemaConfig/Languages').then(
-            ({ AddLanguage }) => AddLanguage
+            ({ AddLanguage }) => AddLanguage,
           ),
       },
       {
@@ -399,14 +399,14 @@ export const routes: RA<EnhancedRoute> = [
             title: schemaText.tables(),
             element: () =>
               import('../SchemaConfig/Tables').then(
-                ({ SchemaConfigTables }) => SchemaConfigTables
+                ({ SchemaConfigTables }) => SchemaConfigTables,
               ),
           },
           {
             path: ':tableName',
             element: () =>
               import('../SchemaConfig').then(
-                ({ SchemaConfigMain }) => SchemaConfigMain
+                ({ SchemaConfigMain }) => SchemaConfigMain,
               ),
           },
         ],
@@ -420,14 +420,14 @@ export const routes: RA<EnhancedRoute> = [
         path: 'switch-collection/:collectionId',
         element: () =>
           import('../RouterCommands/SwitchCollection').then(
-            ({ SwitchCollectionCommand }) => SwitchCollectionCommand
+            ({ SwitchCollectionCommand }) => SwitchCollectionCommand,
           ),
       },
       {
         path: 'test-error',
         element: () =>
           import('../RouterCommands/TestError').then(
-            ({ TestErrorCommand }) => TestErrorCommand
+            ({ TestErrorCommand }) => TestErrorCommand,
           ),
       },
       {
@@ -435,7 +435,7 @@ export const routes: RA<EnhancedRoute> = [
         title: headerText.clearCache(),
         element: () =>
           import('../RouterCommands/CacheBuster').then(
-            ({ CacheBuster }) => CacheBuster
+            ({ CacheBuster }) => CacheBuster,
           ),
       },
     ],
@@ -454,7 +454,7 @@ export const routes: RA<EnhancedRoute> = [
         title: developmentText.crashReportVisualizer(),
         element: () =>
           import('../Developer/CrashReportVisualizer').then(
-            ({ CrashReportVisualizer }) => CrashReportVisualizer
+            ({ CrashReportVisualizer }) => CrashReportVisualizer,
           ),
       },
     ],

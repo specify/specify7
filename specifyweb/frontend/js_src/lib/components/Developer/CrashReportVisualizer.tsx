@@ -26,8 +26,8 @@ export function CrashReportVisualizer(): JSX.Element {
               loading(
                 downloadFile(
                   `${fileName || 'Crash Report'}.html`,
-                  document.documentElement.outerHTML
-                )
+                  document.documentElement.outerHTML,
+                ),
               )
             }
           >

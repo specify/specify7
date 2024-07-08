@@ -6,5 +6,5 @@ requireContext();
 
 test('getAutoNumberingFields', () =>
   expect(
-    getAutoNumberingFields(tables.CollectionObject).map(({ name }) => name)
+    getAutoNumberingFields(tables.CollectionObject).map(({ name }) => name),
   ).toEqual(['catalogNumber']));

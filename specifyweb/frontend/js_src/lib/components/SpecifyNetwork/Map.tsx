@@ -43,9 +43,9 @@ export function SpecifyNetworkMap({
         typeof data.taxonId === 'number'
           ? queryFromTree('Taxon', data.taxonId)
           : undefined,
-      [data.taxonId]
+      [data.taxonId],
     ),
-    true
+    true,
   );
   return data.taxonId === false ? (
     <NoBrokerData onClose={handleClose} />
@@ -72,11 +72,11 @@ function MapWrapper({
   const [query] = useResource(queryResource);
   const table = React.useMemo(
     () => getTableById(query.contextTableId),
-    [query.contextTableId]
+    [query.contextTableId],
   );
 
   const [selectedRows, setSelectedRows] = React.useState<ReadonlySet<number>>(
-    new Set()
+    new Set(),
   );
   const fields = React.useMemo(() => getFields(query), [query]);
   const props = useQueryResultsWrapper({
@@ -106,7 +106,7 @@ function getFields(query: SerializedResource<SpQuery>): RA<QueryField> {
   const localityField = fields.find(({ mappingPath }) =>
     mappingPath
       .join(backboneFieldSeparator)
-      .startsWith('collectingEvent.locality')
+      .startsWith('collectingEvent.locality'),
   );
   return localityField === undefined
     ? ([
@@ -152,7 +152,7 @@ function Map({
   ) as RA<QueryResultRow> | undefined;
   const localityMappings = React.useMemo(
     () => fieldSpecsToLocalityMappings(tableName, props?.fieldSpecs ?? []),
-    [props?.fieldSpecs]
+    [props?.fieldSpecs],
   );
   return props?.initialData === undefined || loadedResults === undefined ? (
     <LoadingScreen />
@@ -172,30 +172,30 @@ function Map({
 
 export function extractQueryTaxonId(
   baseTableName: keyof Tables,
-  fields: RA<QueryField>
+  fields: RA<QueryField>,
 ): number | undefined {
   const idField = tables.Taxon.idField;
   const pairedFields = filterArray(
     fields.flatMap(({ mappingPath }, index) =>
       genericTables[baseTableName].getField(
-        getGenericMappingPath(mappingPath).join(backboneFieldSeparator)
+        getGenericMappingPath(mappingPath).join(backboneFieldSeparator),
       ) === idField
         ? fields[index]?.filters.map(({ type, isNot, startValue }) =>
-            type === 'equal' && !isNot ? f.parseInt(startValue) : undefined
+            type === 'equal' && !isNot ? f.parseInt(startValue) : undefined,
           )
-        : undefined
-    )
+        : undefined,
+    ),
   );
   if (pairedFields.length > 1)
     console.warn(
-      'More than one taxon id found in the query. Using the first one'
+      'More than one taxon id found in the query. Using the first one',
     );
   return pairedFields[0];
 }
 
 export function useExtendedMap(
   map: LeafletInstance | undefined,
-  { speciesName, species, occurrence }: BrokerData
+  { speciesName, species, occurrence }: BrokerData,
 ): JSX.Element | undefined {
   const gbif = React.useMemo(() => f.maybe(species, getGbifLayers), [species]);
   const iDigBio = useIdbLayers(occurrence, speciesName);
@@ -205,14 +205,14 @@ export function useExtendedMap(
       ...gbif?.layers,
       ...iDigBio?.layers,
     }),
-    [gbif, iDigBio]
+    [gbif, iDigBio],
   );
 
   React.useEffect(() => {
     if (map === undefined || layerGroup === undefined) return;
     Object.entries(overlays)
       .filter(([label]) =>
-        map.controlLayers._layers.every(({ name }) => name !== label)
+        map.controlLayers._layers.every(({ name }) => name !== label),
       )
       .forEach(([label, layer]) => map.controlLayers.addOverlay(layer, label));
   }, [map, overlays]);

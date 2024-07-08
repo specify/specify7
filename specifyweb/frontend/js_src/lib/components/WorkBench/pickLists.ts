@@ -16,7 +16,7 @@ export type WbPickLists = RR<
 export const fetchWbPickLists = async (
   columns: RA<string>,
   tableNames: RA<keyof Tables>,
-  lines: RA<SplitMappingPath>
+  lines: RA<SplitMappingPath>,
 ): Promise<WbPickLists> =>
   Promise.all(
     tableNames
@@ -41,5 +41,5 @@ export const fetchWbPickLists = async (
             items: getPickListItems(definition).map(({ title }) => title),
           },
         };
-      })
+      }),
   ).then((items) => Object.fromEntries(filterArray(items).map(Object.values)));

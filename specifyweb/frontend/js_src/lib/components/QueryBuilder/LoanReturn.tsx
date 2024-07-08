@@ -45,7 +45,7 @@ import type { QueryField } from './helpers';
 const returnLoanPreps = async (
   query: SerializedRecord<SpQuery>,
   loanReturnPreparation: SpecifyResource<LoanReturnPreparation>,
-  commit: boolean
+  commit: boolean,
 ): Promise<
   RA<{
     readonly loanId: number;
@@ -77,10 +77,10 @@ const returnLoanPreps = async (
         loanNumber: loannumber,
         totalPreps: loanpreparations.reduce(
           (count, { quantity }) => count + (quantity ?? 0),
-          0
+          0,
         ),
       }))
-      .sort(sortFunction(({ loanNumber }) => loanNumber))
+      .sort(sortFunction(({ loanNumber }) => loanNumber)),
   );
 
 export function QueryLoanReturn({
@@ -116,12 +116,12 @@ export function QueryLoanReturn({
           ? returnLoanPreps(
               state.queryResource,
               state.loanReturnPreparation,
-              false
+              false,
             )
           : undefined,
-      [state]
+      [state],
     ),
-    true
+    true,
   );
   const id = useId('query-loan-return');
   const loading = React.useContext(LoadingContext);
@@ -140,7 +140,7 @@ export function QueryLoanReturn({
             queryResource: resourceToJson(
               typeof getQueryFieldRecords === 'function'
                 ? queryResource.set('fields', getQueryFieldRecords())
-                : queryResource
+                : queryResource,
             ),
           })
         }
@@ -179,8 +179,8 @@ export function QueryLoanReturn({
                   returnLoanPreps(
                     state.queryResource,
                     state.loanReturnPreparation,
-                    true
-                  ).then((): void => setState({ type: 'Returned' }))
+                    true,
+                  ).then((): void => setState({ type: 'Returned' })),
                 )
               }
             >

@@ -84,7 +84,7 @@ function QueryRecordSet({
       specifyUser: userInformation.id,
       contextTableId: recordSet.get('dbTableId'),
     }),
-    [recordSet]
+    [recordSet],
   );
   return (
     <QueryListDialog
@@ -96,9 +96,9 @@ function QueryRecordSet({
       }
       newQueryUrl={formatUrl(
         `/specify/query/new/${getTableById(
-          recordSet.get('dbTableId')
+          recordSet.get('dbTableId'),
         ).name.toLowerCase()}/`,
-        { recordSetId: recordSet.id }
+        { recordSetId: recordSet.id },
       )}
       onClose={handleClose}
     />

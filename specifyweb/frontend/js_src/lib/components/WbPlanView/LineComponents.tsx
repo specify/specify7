@@ -159,10 +159,7 @@ export function MappingLineComponent({
         </Button.Small>
       </div>
       <div
-        className={`
-          flex max-w-[25vw] items-center justify-end border-t border-t-gray-500
-          p-2 ${isComplete ? '' : 'font-extrabold text-red-600'}
-        `}
+        className={`flex max-w-[25vw] items-center justify-end border-t border-t-gray-500 p-2 ${isComplete ? '' : 'font-extrabold text-red-600'} `}
         id={id('header')}
       >
         {headerName}
@@ -170,11 +167,7 @@ export function MappingLineComponent({
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
       <ul
         aria-label={wbPlanText.columnMapping()}
-        className={`
-          flex flex-wrap items-center gap-2 border-t border-t-gray-500
-          py-2 print:gap-1
-          ${isFocused ? 'bg-gray-300 dark:bg-neutral-700' : ''}
-        `}
+        className={`flex flex-wrap items-center gap-2 border-t border-t-gray-500 py-2 print:gap-1 ${isFocused ? 'bg-gray-300 dark:bg-neutral-700' : ''} `}
         ref={lineRef}
         tabIndex={0}
         onClick={handleFocus}
@@ -229,15 +222,20 @@ export function MappingElement({
 }: MappingElementProps): JSX.Element {
   const fieldGroups = Object.entries(fieldsData).reduce<
     R<R<CustomSelectElementOptionProps>>
-  >((fieldGroups, [fieldName, fieldData]) => {
-    const groupName = getFieldGroupName(
-      fieldData.isHidden ?? false,
-      fieldData.isRequired ?? false
-    );
-    fieldGroups[groupName] ??= {};
-    fieldGroups[groupName][fieldName] = fieldData;
-    return fieldGroups;
-  }, Object.fromEntries(Object.keys(fieldGroupLabels).map((groupName) => [groupName, {}])));
+  >(
+    (fieldGroups, [fieldName, fieldData]) => {
+      const groupName = getFieldGroupName(
+        fieldData.isHidden ?? false,
+        fieldData.isRequired ?? false,
+      );
+      fieldGroups[groupName] ??= {};
+      fieldGroups[groupName][fieldName] = fieldData;
+      return fieldGroups;
+    },
+    Object.fromEntries(
+      Object.keys(fieldGroupLabels).map((groupName) => [groupName, {}]),
+    ),
+  );
 
   const customSelectOptionGroups = Object.fromEntries(
     Object.entries(fieldGroups)
@@ -252,7 +250,7 @@ export function MappingElement({
               : fieldGroupLabels[groupName as keyof typeof fieldGroupLabels],
           selectOptionsData: groupFields,
         },
-      ])
+      ]),
   );
 
   return props.isOpen ? (
@@ -279,7 +277,7 @@ export function MappingElement({
                     </span>
                   ),
                 },
-              ])
+              ]),
             )}
             onSelect={(selection): void =>
               props.onAutoMapperSuggestionSelection?.(selection)

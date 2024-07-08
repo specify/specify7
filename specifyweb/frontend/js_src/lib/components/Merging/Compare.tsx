@@ -33,7 +33,7 @@ export function CompareRecords({
 }): JSX.Element {
   const resources = React.useMemo(
     () => records.map(deserializeResource),
-    [records]
+    [records],
   );
   const conformation = useMergeConformation(table, resources);
   return (
@@ -83,16 +83,7 @@ export function MergeContainer({
       onSubmit={handleSubmit}
     >
       <table
-        className={`
-          grid-table
-          grid-cols-[auto,repeat(var(--columns),minmax(15rem,1fr))]
-          overflow-auto
-          [&_:is(td,th):nth-child(2)]:mr-1
-          [&_:is(td,th):nth-child(2)]:border-r
-          [&_:is(td,th):nth-child(2)]:border-gray-500
-          [&_:is(td,th):nth-child(2)]:pr-2
-          [&_:is(th,td)]:p-1
-        `}
+        className={`grid-table grid-cols-[auto,repeat(var(--columns),minmax(15rem,1fr))] overflow-auto [&_:is(td,th):nth-child(2)]:mr-1 [&_:is(td,th):nth-child(2)]:border-r [&_:is(td,th):nth-child(2)]:border-gray-500 [&_:is(td,th):nth-child(2)]:pr-2 [&_:is(th,td)]:p-1`}
         style={
           {
             '--columns': recordCount + 1,
@@ -107,15 +98,15 @@ export function MergeContainer({
 
 export function useMergeConformation(
   table: SpecifyTable,
-  records: RA<SpecifyResource<AnySchema>>
+  records: RA<SpecifyResource<AnySchema>>,
 ): RA<LiteralField | Relationship> {
   const [showMatching = false] = useCachedState(
     'merging',
-    'showMatchingFields'
+    'showMatchingFields',
   );
   return React.useMemo(
     () => findDiffering(showMatching, table, records),
-    [showMatching, table, records]
+    [showMatching, table, records],
   );
 }
 
@@ -125,7 +116,7 @@ export function useMergeConformation(
 function findDiffering(
   showMatching: boolean,
   table: SpecifyTable,
-  records: RA<SpecifyResource<AnySchema>>
+  records: RA<SpecifyResource<AnySchema>>,
 ): RA<LiteralField | Relationship> {
   const differing = findDifferingFields(showMatching, table, records);
   return showMatching ? differing : hideDependent(differing);
@@ -145,13 +136,13 @@ export const unMergeableFields = f.store(
       'timestampCreated',
       'timestampModified',
       'version',
-    ])
+    ]),
 );
 
 function findDifferingFields(
   showMatching: boolean,
   table: SpecifyTable,
-  records: RA<SpecifyResource<AnySchema>>
+  records: RA<SpecifyResource<AnySchema>>,
 ): RA<LiteralField | Relationship> {
   // Don't display independent -to-many relationships
   const fields = table.fields.filter(
@@ -159,7 +150,7 @@ function findDifferingFields(
       !unMergeableFields().has(field.name) &&
       (!field.isRelationship ||
         field.isDependent() ||
-        !relationshipIsToMany(field))
+        !relationshipIsToMany(field)),
   );
 
   if (records.length > 0 && !showMatching) {
@@ -171,16 +162,16 @@ function findDifferingFields(
               .map((record) =>
                 field.isRelationship && field.isDependent()
                   ? record.getDependentResource(field.name)?.toJSON()
-                  : record.get(field.name)
+                  : record.get(field.name),
               )
               .map((value) =>
                 value === null ||
                 value === undefined ||
                 (Array.isArray(value) && value.length === 0)
                   ? ''
-                  : value
-              )
-          ).size > 1
+                  : value,
+              ),
+          ).size > 1,
       )
       .filter(({ name }) => !unMergeableFields().has(name));
     /*
@@ -197,7 +188,7 @@ function findDifferingFields(
           ? record.getDependentResource(field.name)
           : (record.get(field.name) as string);
       return value !== undefined && value !== null && value !== '';
-    })
+    }),
   );
   return nonEmptyFields.length === 0 ? fields : nonEmptyFields;
 }
@@ -207,7 +198,7 @@ function findDifferingFields(
  * as merging date1 should also merge date1precision.
  */
 const hideDependent = (
-  fields: RA<LiteralField | Relationship>
+  fields: RA<LiteralField | Relationship>,
 ): RA<LiteralField | Relationship> =>
   fields.filter(({ name }) => {
     const sourceField = strictDependentFields()[name];

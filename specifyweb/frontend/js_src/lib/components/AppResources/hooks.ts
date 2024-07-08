@@ -32,7 +32,7 @@ export type AppResources = {
 };
 
 export function useAppResources(
-  loadingScreen: boolean = true
+  loadingScreen: boolean = true,
 ): GetOrSet<AppResources | undefined> {
   return useAsyncState(
     React.useCallback(
@@ -42,7 +42,7 @@ export function useAppResources(
             limit: 0,
             domainFilter: false,
           }).then<AppResources['directories']>(({ records }) =>
-            records.map((record) => ({ ...record, scope: getScope(record) }))
+            records.map((record) => ({ ...record, scope: getScope(record) })),
           ),
           disciplines: fetchCollection('Discipline', {
             limit: 0,
@@ -65,9 +65,9 @@ export function useAppResources(
             domainFilter: false,
           }).then(({ records }) => records),
         }),
-      []
+      [],
     ),
-    loadingScreen
+    loadingScreen,
   );
 }
 
@@ -98,7 +98,7 @@ export function useResourcesTree(resources: AppResources): AppResourcesTree {
   const [localize] = userPreferences.use(
     'appResources',
     'appearance',
-    'localizeResourceNames'
+    'localizeResourceNames',
   );
   return React.useMemo<AppResourcesTree>(() => {
     const tree = getAppResourceTree(resources);
@@ -116,7 +116,7 @@ const localizeTree = (tree: AppResourcesTree): AppResourcesTree =>
 function localizeResource(
   resource: SerializedResource<SpAppResource> & {
     readonly label?: LocalizedString;
-  }
+  },
 ): SerializedResource<SpAppResource> & { readonly label?: LocalizedString } {
   const type = appResourceSubTypes[getAppResourceType(resource)];
   // Check that resource of this type can only have one specific name
@@ -130,11 +130,11 @@ function localizeResource(
 }
 
 export function useAppResourceCount(
-  resourcesTree: AppResourcesTree[number]
+  resourcesTree: AppResourcesTree[number],
 ): number {
   return React.useMemo(
     () => getAppResourceCount(resourcesTree),
-    [resourcesTree]
+    [resourcesTree],
   );
 }
 
@@ -143,7 +143,7 @@ export function useAppResourceCount(
  */
 export function useAppResourceData(
   resource: SerializedResource<SpAppResource | SpViewSetObj>,
-  initialData: string | undefined
+  initialData: string | undefined,
 ): {
   readonly resourceData: GetOrSet<
     SerializedResource<SpAppResourceData> | undefined
@@ -175,14 +175,14 @@ export function useAppResourceData(
                  * For some reason, app resource can have multiple app resource
                  * datas (but it never does in practice)
                  */
-                records[0] ?? newResource
+                records[0] ?? newResource,
             )
           : newResource;
       const newData = fixLineBreaks(dataResource.data ?? '');
       initialValue.current = newData;
       return { ...dataResource, data: newData };
     }, [resource, initialData]),
-    true
+    true,
   );
   return {
     resourceData: [resourceData, setResourceData],
@@ -194,14 +194,14 @@ const fixLineBreaks = (string: string): string =>
   string.replaceAll(/[\n\r]+/gu, '\n');
 
 export const getAppResourceExtension = (
-  resource: SerializedResource<SpAppResource | SpViewSetObj>
+  resource: SerializedResource<SpAppResource | SpViewSetObj>,
 ): string =>
   resource._tableName === 'SpViewSetObj'
     ? 'xml'
     : getResourceExtension(resource as SerializedResource<SpAppResource>);
 
 function getResourceExtension(
-  resource: SerializedResource<SpAppResource>
+  resource: SerializedResource<SpAppResource>,
 ): 'jrxml' | 'json' | 'properties' | 'txt' | 'xml' {
   const type = appResourceSubTypes[getAppResourceType(resource)];
   const mimeType = resource.mimeType?.toLowerCase() ?? type?.mimeType ?? '';

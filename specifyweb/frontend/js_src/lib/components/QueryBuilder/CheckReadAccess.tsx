@@ -23,17 +23,17 @@ export function CheckReadAccess({
     const tableNames = query.fields.flatMap((field) => {
       const fieldSpec = QueryFieldSpec.fromStringId(
         field.stringId,
-        field.isRelFld ?? false
+        field.isRelFld ?? false,
       );
       return fieldSpec.joinPath.map((field) =>
-        field.isRelationship ? field.relatedTable.name : field.table.name
+        field.isRelationship ? field.relatedTable.name : field.table.name,
       );
     });
 
     const withoutDuplicates = new Set(tableNames);
 
     return Array.from(withoutDuplicates).filter(
-      (name) => !hasTablePermission(name, 'read')
+      (name) => !hasTablePermission(name, 'read'),
     );
   }
 

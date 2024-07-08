@@ -64,8 +64,7 @@ jobs:
           MYSQL_PASSWORD: MasterPassword
           MYSQL_DATABASE: test_SpecifyDB
           MYSQL_ROOT_PASSWORD: password
-        options:
-          --health-cmd="mariadb-admin ping" --health-interval=5s
+        options: --health-cmd="mariadb-admin ping" --health-interval=5s
           --health-timeout=2s --health-retries=3
 
     steps:
@@ -87,8 +86,7 @@ jobs:
       - name:
           Patch Specify datamodel (Sam, you made the Attachment.origFilename too
           long)
-        run:
-          sed -i 's/name="origFilename"
+        run: sed -i 's/name="origFilename"
           type="java.lang.String"/name="origFilename" type="text"/'
           ./Specify6/config/specify_datamodel.xml
 
@@ -118,8 +116,7 @@ jobs:
           echo "DATABASE_PORT = ${{ job.services.mariadb.ports[3306] }}" >> specifyweb/settings/local_specify_settings.py
 
       - name: Need these files to be present
-        run:
-          make specifyweb/settings/build_version.py
+        run: make specifyweb/settings/build_version.py
           specifyweb/settings/secret_key.py
 
       - name: Verify MariaDB connection
@@ -161,7 +158,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: specifyweb/frontend/js_src/package.json
-          cache: 'npm'
+          cache: "npm"
           cache-dependency-path: specifyweb/frontend/js_src/package-lock.json
 
       - name: Build frontend
@@ -180,8 +177,7 @@ jobs:
 
       - name: Clone branch that stores localization strings
         # Listen for changes to production branch
-        if:
-          github.ref == format('refs/heads/{0}',
+        if: github.ref == format('refs/heads/{0}',
           github.event.repository.default_branch)
         id: weblate
         uses: actions/checkout@v3
@@ -196,8 +192,7 @@ jobs:
           npm run localizationTests -- --emit ../../../weblate-localization/strings
 
       - name: Sync localization strings with Weblate (only on production branch)
-        if:
-          github.ref == format('refs/heads/{0}',
+        if: github.ref == format('refs/heads/{0}',
           github.event.repository.default_branch)
         working-directory: weblate-localization
         run: |
@@ -263,8 +258,7 @@ jobs:
         #  - This would have already run on the feature branch by the time code
         #    is pushed into production.
         #  - There shouldn't be many direct pushes to production anyway
-        if:
-          github.ref != format('refs/heads/{0}',
+        if: github.ref != format('refs/heads/{0}',
           github.event.repository.default_branch)
         working-directory: specifyweb/frontend/js_src
         run: |

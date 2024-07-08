@@ -40,12 +40,12 @@ export function SchemaConfigFormat({
 }): JSX.Element {
   const [userPickLists, systemPickLists] = split(
     Object.values(schemaData.pickLists),
-    ({ isSystem }) => isSystem
+    ({ isSystem }) => isSystem,
   ).map((group) =>
     group
       .map(({ name }) => name)
       .sort(sortFunction(f.id))
-      .map((name) => [name, name] as const)
+      .map((name) => [name, name] as const),
   );
   const id = useId('schema-config-field');
 
@@ -79,7 +79,7 @@ export function SchemaConfigFormat({
                         })`
                       : ''
                   }`,
-                ] as const
+                ] as const,
             )
             .sort(sortFunction((value) => value[1])),
         }}
@@ -152,8 +152,8 @@ function FormatterLine({
     name === 'none' || name === 'pickList'
       ? true
       : name === 'webLink' || name === 'formatted'
-      ? !field.isRelationship
-      : false;
+        ? !field.isRelationship
+        : false;
   return (
     <div className={className.labelForCheckbox}>
       <Label.Inline>
@@ -168,7 +168,7 @@ function FormatterLine({
               name,
               typeof values === 'object'
                 ? Object.values(values)[0][0][0]! ?? null
-                : null
+                : null,
             )
           }
         />
@@ -201,8 +201,8 @@ function PickListEditing({
   const currentPickList = React.useMemo(() => {
     const id = f.parseInt(
       Object.entries(schemaData.pickLists).find(
-        ([_id, { name }]) => name === value
-      )?.[KEY]
+        ([_id, { name }]) => name === value,
+      )?.[KEY],
     );
     return typeof id === 'number'
       ? new tables.PickList.Resource({ id })
@@ -210,7 +210,7 @@ function PickListEditing({
   }, [schemaData.pickLists, value]);
 
   const [newPickList, setNewPickList] = React.useState(
-    () => new tables.PickList.Resource()
+    () => new tables.PickList.Resource(),
   );
   const loading = React.useContext(LoadingContext);
   const handleChanged = (): void =>
@@ -221,7 +221,7 @@ function PickListEditing({
           ...schemaData,
           pickLists,
         });
-      })
+      }),
     );
   const resourceView = {
     onSaved: handleChanged,
@@ -294,7 +294,7 @@ function WebLinkEditing({
           onClick={(event): void => {
             event.preventDefault();
             navigate(
-              `/specify/overlay/resources/app-resource/${resourceId}/web-link/${index}/`
+              `/specify/overlay/resources/app-resource/${resourceId}/web-link/${index}/`,
             );
           }}
         />
@@ -307,7 +307,7 @@ function WebLinkEditing({
         onClick={(event): void => {
           event.preventDefault();
           navigate(
-            `/specify/overlay/resources/app-resource/${resourceId}/web-link/`
+            `/specify/overlay/resources/app-resource/${resourceId}/web-link/`,
           );
         }}
       />

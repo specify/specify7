@@ -29,7 +29,7 @@ export function EditFormTables({
   const [tables, setTables] = useFormTables(type);
   const [showPrompt, handleProceed] = useBooleanState();
   const [isLegacy, handleLegacy, handleModern] = useBooleanState(
-    tables === 'legacy'
+    tables === 'legacy',
   );
   const id = useId('edit-form-tables');
   return showPrompt && Array.isArray(tables) ? (
@@ -84,28 +84,28 @@ export function EditFormTables({
 }
 
 export function useFormTables(
-  type: TableType
+  type: TableType,
 ): GetSet<RA<SpecifyTable> | 'legacy'> {
   const [tables, setTables] = userPreferences.use(
     type,
     'general',
-    'shownTables'
+    'shownTables',
   );
   const visibleTables =
     tables === 'legacy'
       ? []
       : tables.length === 0
-      ? filterArray(defaultVisibleForms[type].map(getTable))
-      : tables.map(getTableById);
+        ? filterArray(defaultVisibleForms[type].map(getTable))
+        : tables.map(getTableById);
   const accessibleTables = visibleTables.filter(({ name }) =>
-    hasTablePermission(name, 'read')
+    hasTablePermission(name, 'read'),
   );
   const handleChange = React.useCallback(
     (tables: RA<SpecifyTable> | 'legacy') =>
       setTables(
-        tables === 'legacy' ? 'legacy' : tables.map(({ tableId }) => tableId)
+        tables === 'legacy' ? 'legacy' : tables.map(({ tableId }) => tableId),
       ),
-    [setTables]
+    [setTables],
   );
   return [tables === 'legacy' ? 'legacy' : accessibleTables, handleChange];
 }

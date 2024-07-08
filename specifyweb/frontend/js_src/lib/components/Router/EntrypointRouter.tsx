@@ -32,7 +32,7 @@ export const entrypointRoutes: RA<EnhancedRoute> = [
         title: commonText.chooseCollection(),
         element: () =>
           import('../ChooseCollection').then(
-            ({ ChooseCollection }) => ChooseCollection
+            ({ ChooseCollection }) => ChooseCollection,
           ),
       },
       {
@@ -40,7 +40,7 @@ export const entrypointRoutes: RA<EnhancedRoute> = [
         title: userText.changePassword(),
         element: () =>
           import('../PasswordChange').then(
-            ({ PasswordChange }) => PasswordChange
+            ({ PasswordChange }) => PasswordChange,
           ),
       },
     ],
@@ -49,7 +49,7 @@ export const entrypointRoutes: RA<EnhancedRoute> = [
     path: 'specify/*',
     element: () =>
       import('../Core/ContextLoader').then(
-        ({ ContextLoader }) => ContextLoader
+        ({ ContextLoader }) => ContextLoader,
       ),
   },
   // This should never be reached as back-end has a redict, but good to have it just in case

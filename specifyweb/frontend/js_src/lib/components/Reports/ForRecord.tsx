@@ -30,13 +30,13 @@ export function ReportForRecord({
   const [clearQueryFilters] = userPreferences.use(
     'reports',
     'behavior',
-    'clearQueryFilters'
+    'clearQueryFilters',
   );
 
   const [showQueryParameters] = userPreferences.use(
     'reports',
     'behavior',
-    'queryParamtersFromForm'
+    'queryParamtersFromForm',
   );
 
   const query = React.useMemo(() => {
@@ -55,8 +55,8 @@ export function ReportForRecord({
               startValue: clearQueryFilters ? '' : field.startValue,
               operEnd: null,
               endValue: null,
-            }
-      )
+            },
+      ),
     );
     const newField = QueryFieldSpec.fromPath(table.name, [table.idField.name])
       .toSpQueryField()

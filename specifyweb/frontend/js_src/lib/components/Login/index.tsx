@@ -76,8 +76,8 @@ export function LoginLanguageChooser({
       onChange={(language): void =>
         loading(
           handleLanguageChange(language).then((): void =>
-            globalThis.location.reload()
-          )
+            globalThis.location.reload(),
+          ),
         )
       }
     />

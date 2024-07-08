@@ -71,12 +71,12 @@ export function PrepDialogRow({
           <Link.NewTab
             href={getResourceViewUrl(
               'CollectionObject',
-              preparation.collectionObjectId
+              preparation.collectionObjectId,
             )}
           >
             {syncFieldFormat(
               getField(tables.CollectionObject, 'catalogNumber'),
-              preparation.catalogNumber
+              preparation.catalogNumber,
             )}
           </Link.NewTab>
         </td>
@@ -108,7 +108,7 @@ export function PrepDialogRow({
                   state.type === 'Main'
                     ? loading(
                         getInteractionsForPrepId(
-                          preparation.preparationId
+                          preparation.preparationId,
                         ).then(([_id, ...rawItems]) => {
                           const [loans, gifts, exchangeOuts] = rawItems.map(
                             (preparations) =>
@@ -118,7 +118,7 @@ export function PrepDialogRow({
                                 .map(([id, label]) => ({
                                   id: Number.parseInt(id),
                                   label: localized(label),
-                                })) ?? []
+                                })) ?? [],
                           );
                           const count =
                             loans.length + gifts.length + exchangeOuts.length;
@@ -129,8 +129,8 @@ export function PrepDialogRow({
                                   resource: new (loans.length === 1
                                     ? tables.Loan
                                     : gifts.length === 1
-                                    ? tables.Gift
-                                    : tables.ExchangeOut
+                                      ? tables.Gift
+                                      : tables.ExchangeOut
                                   ).Resource({
                                     id: [...loans, ...gifts, ...exchangeOuts][0]
                                       .id,
@@ -143,9 +143,9 @@ export function PrepDialogRow({
                                     Gift: gifts,
                                     ExchangeOut: exchangeOuts,
                                   },
-                                }
+                                },
                           );
-                        })
+                        }),
                       )
                     : setState({ type: 'Main' })
                 }
@@ -175,7 +175,7 @@ export function PrepDialogRow({
                     resource: label,
                   })}
                 </Button.LikeLink>
-              ))
+              )),
             )}
           </td>
         </tr>

@@ -24,7 +24,7 @@ export function WbValidate({
   const [canLiveValidate] = userPreferences.use(
     'workBench',
     'general',
-    'liveValidation'
+    'liveValidation',
   );
   const [isLiveValidateOn, _, __, toggleLiveValidate] = useBooleanState();
   const handleValidate = () => startUpload('validate');
@@ -65,8 +65,8 @@ export function WbValidate({
           hasUnsavedChanges
             ? wbText.unavailableWhileEditing()
             : isMapped
-            ? undefined
-            : wbText.wbValidateUnavailable()
+              ? undefined
+              : wbText.wbValidateUnavailable()
         }
         onClick={handleValidate}
       >

@@ -33,11 +33,11 @@ export function MergeRecord({
   const overlayLocation = React.useContext(OverlayLocation);
   const [records = ''] = useSearchParameter(
     mergingQueryParameter,
-    overlayLocation
+    overlayLocation,
   );
   const ids = React.useMemo(
     () => filterArray(records.split(',').map(f.parseInt)),
-    [records]
+    [records],
   );
 
   const table = resource.specifyTable;
@@ -76,7 +76,7 @@ export function MergeRecord({
                   resource.id,
                   ...resources.map(({ id }) => id),
                 ].join(','),
-              })
+              }),
             )
           }
         />

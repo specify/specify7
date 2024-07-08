@@ -87,9 +87,9 @@ export function TreeSelectDialog({
                 permissionName === 'repair'
                   ? hasPermission(
                       `/tree/edit/${toLowerCase(treeName)}`,
-                      'repair'
+                      'repair',
                     )
-                  : hasTreeAccess(treeName, 'read')
+                  : hasTreeAccess(treeName, 'read'),
               )
               .map((treeName) => {
                 const treeDefinition = treeRanks[treeName]?.definition as
@@ -109,8 +109,8 @@ export function TreeSelectDialog({
                             Promise.resolve(handleClick(treeName)).then(() =>
                               typeof confirmationMessage === 'string'
                                 ? setIsFinished()
-                                : handleClose()
-                            )
+                                : handleClose(),
+                            ),
                           );
                         }}
                       >
@@ -151,7 +151,7 @@ export function TreeRepairOverlay(): JSX.Element {
       tree === undefined
         ? undefined
         : loading(handleClick(tree).then(handleClose)),
-    [loading, handleClose, tree]
+    [loading, handleClose, tree],
   );
 
   return (

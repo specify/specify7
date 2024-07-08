@@ -30,7 +30,7 @@ export function QueryFromMap({
   const [end, setEnd] = React.useState<Pair>(defaultPoint);
   const [lineIndexes, setLineIndexes] = React.useState<Pair>([0, 0]);
   const [markers, setMarkers] = React.useState<Pair<L.Marker> | undefined>(
-    undefined
+    undefined,
   );
 
   const [map, setMap] = React.useState<LeafletInstance | undefined>(undefined);
@@ -86,7 +86,7 @@ function extractState(filters: QueryField['filters']): Pair | undefined {
   const greaterFilter = parseFilter(filters, 'greaterOrEqual');
   const lessFilter = parseFilter(filters, 'lessOrEqual');
   const betweenFilter = filters.find(
-    ({ type }) => type === 'between'
+    ({ type }) => type === 'between',
   )?.startValue;
   if (typeof greaterFilter === 'number' && typeof lessFilter === 'number')
     return [greaterFilter, lessFilter + 360];
@@ -100,16 +100,16 @@ function extractState(filters: QueryField['filters']): Pair | undefined {
 
 const parseFilter = (
   filters: QueryField['filters'],
-  filter: 'greaterOrEqual' | 'lessOrEqual'
+  filter: 'greaterOrEqual' | 'lessOrEqual',
 ): number | undefined =>
   f.maybe(
     filters.find(({ type }) => type === filter)?.startValue,
-    f.parseFloat
+    f.parseFloat,
   );
 
 function findCoordinateLines(
   fields: RA<QueryField>,
-  lineNumber: number
+  lineNumber: number,
 ): readonly [number, number] {
   const line = fields[lineNumber];
   const [commonPath, fieldName] = [
@@ -122,7 +122,7 @@ function findCoordinateLines(
   const otherFieldIndex = fields.findIndex(
     ({ mappingPath }) =>
       mappingPathToString(mappingPath) ===
-      mappingPathToString([...commonPath, otherFieldName])
+      mappingPathToString([...commonPath, otherFieldName]),
   );
 
   const latitudeIndex = isLatitude ? lineNumber : otherFieldIndex;
@@ -134,7 +134,7 @@ function findCoordinateLines(
 const createMarkers = (
   map: L.Map,
   start: Pair,
-  end: Pair
+  end: Pair,
 ): readonly [L.Marker, L.Marker] => [
   createMarker(start).addTo(map),
   createMarker(end).addTo(map),
@@ -162,7 +162,7 @@ function handleMarkerClick(marker: L.Marker): void {
 function useMarkersChange(
   markers: Pair<L.Marker> | undefined,
   setLatitude: (latitude: Pair) => void,
-  setLongitude: (latitude: Pair) => void
+  setLongitude: (latitude: Pair) => void,
 ): void {
   React.useEffect(() => {
     if (markers === undefined) return;
@@ -173,7 +173,7 @@ function useMarkersChange(
 
 const setMarkerMoveHandler = (
   marker: L.Marker,
-  callback: (coordinates: Pair) => void
+  callback: (coordinates: Pair) => void,
 ): void =>
   void marker.on('move', () => {
     const { lat, lng } = marker.getLatLng();
@@ -183,7 +183,7 @@ const setMarkerMoveHandler = (
 function usePolygon(
   map: LeafletInstance | undefined,
   start: Pair,
-  end: Pair
+  end: Pair,
 ): void {
   React.useEffect(() => {
     if (map === undefined) return undefined;
@@ -198,7 +198,7 @@ function usePolygon(
 // Leaflet has terrible typings, so have to cast everything to Writable<>
 const pointsToPolygon = (
   [latitude1, longitude1]: Pair,
-  [latitude2, longitude2]: Pair
+  [latitude2, longitude2]: Pair,
 ): WritableArray<Writable<Pair>> => [
   [latitude1, longitude1],
   [latitude1, longitude2],
@@ -219,7 +219,7 @@ function getNewQueryLines(
   fields: RA<QueryField>,
   [latitudeLineIndex, longitudeLineIndex]: Pair,
   [latitude1, longitude1]: Pair,
-  [latitude2, longitude2]: Pair
+  [latitude2, longitude2]: Pair,
 ): RA<QueryField> {
   const definedLineIndex =
     latitudeLineIndex === -1 ? longitudeLineIndex : latitudeLineIndex;
@@ -280,7 +280,7 @@ function getNewQueryLines(
     return replaceItem(
       replaceItem(fields, longitudeLineIndex, longitudeLine),
       latitudeLineIndex,
-      latitudeLine
+      latitudeLine,
     );
   else {
     const definedField =
@@ -291,7 +291,7 @@ function getNewQueryLines(
     return insertItem(
       replaceItem(fields, definedLineIndex, definedField),
       definedLineIndex + 1,
-      missingField
+      missingField,
     );
   }
 }

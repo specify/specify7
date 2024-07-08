@@ -48,25 +48,25 @@ export function PrepReturnRow({
                 }>(async (collectionObject) => ({
                   catalogNumber: await fieldFormat(
                     getField(tables.CollectionObject, 'catalogNumber'),
-                    collectionObject.get('catalogNumber')
+                    collectionObject.get('catalogNumber'),
                   ),
                   taxon: await collectionObject
                     .rgetCollection('determinations')
                     .then(async ({ models }) =>
                       models
                         .find((determination) => determination.get('isCurrent'))
-                        ?.rgetPromise('preferredTaxon')
+                        ?.rgetPromise('preferredTaxon'),
                     )
                     .then((taxon) => taxon?.get('fullName') ?? ''),
                 }))),
                 prepType: await loanPreparation
                   .rgetPromise('prepType')
                   .then((prepType) => prepType.get('name')),
-              }
+              },
         ),
-      [preparation]
+      [preparation],
     ),
-    false
+    false,
   );
 
   const [showRemarks, _, __, handleToggle] = useBooleanState();
@@ -111,7 +111,7 @@ export function PrepReturnRow({
                   resolve,
                   unresolved,
                   remarks,
-                })
+                }),
               )
             }
           />
@@ -131,7 +131,7 @@ export function PrepReturnRow({
                   resolve: resolved,
                   unresolved,
                   remarks,
-                })
+                }),
               )
             }
           />

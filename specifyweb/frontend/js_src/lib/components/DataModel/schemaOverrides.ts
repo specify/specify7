@@ -234,25 +234,25 @@ export const tableViews: Partial<RR<keyof Tables, string>> = {
 };
 
 export const getTableOverwrite = (
-  tableName: keyof Tables
+  tableName: keyof Tables,
 ): TableConfigOverwrite | undefined => tableOverwrites[tableName];
 
 export const getGlobalFieldOverwrite = (
   tableName: keyof Tables,
-  fieldName: string
+  fieldName: string,
 ): FieldConfigOverwrite | undefined =>
   globalFieldOverrides[tableName as 'Accession']?.[fieldName as 'text1'] ??
   globalFieldOverrides.common?.[fieldName];
 
 export const getFieldOverwrite = (
   tableName: keyof Tables,
-  fieldName: string
+  fieldName: string,
 ): FieldConfigOverwrite | undefined =>
   fieldOverwrites[tableName as 'Accession']?.[fieldName as 'text1'] ??
   fieldOverwrites.common?.[fieldName] ??
   Object.entries(endsWithFieldOverwrites[tableName] ?? {}).find(([key]) =>
-    fieldName.endsWith(key)
+    fieldName.endsWith(key),
   )?.[VALUE] ??
   Object.entries(endsWithFieldOverwrites.common ?? {}).find(([key]) =>
-    fieldName.endsWith(key)
+    fieldName.endsWith(key),
   )?.[VALUE];

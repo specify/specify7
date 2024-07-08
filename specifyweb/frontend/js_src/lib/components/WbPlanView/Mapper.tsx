@@ -133,7 +133,7 @@ export function Mapper(props: {
   readonly onChangeBaseTable: () => void;
   readonly onSave: (
     lines: RA<MappingLine>,
-    mustMatchPreferences: IR<boolean>
+    mustMatchPreferences: IR<boolean>,
   ) => Promise<void>;
   // Initial values for the state:
   readonly changesMade: boolean;
@@ -147,13 +147,13 @@ export function Mapper(props: {
       lines: props.lines,
       mustMatchPreferences: props.mustMatchPreferences,
     },
-    getDefaultMappingState
+    getDefaultMappingState,
   );
   useErrorContext('state', state);
 
   const unsetUnloadProtect = useUnloadProtect(
     state.changesMade,
-    wbPlanText.unloadProtectMessage()
+    wbPlanText.unloadProtectMessage(),
   );
 
   // Set/unset unload protect
@@ -178,7 +178,7 @@ export function Mapper(props: {
     if (listOfMappings.current === null) return;
 
     const autoMapperSuggestions = listOfMappings.current.getElementsByClassName(
-      'custom-select-suggestion-list'
+      'custom-select-suggestion-list',
     )[0] as HTMLElement | undefined;
 
     if (!autoMapperSuggestions) return;
@@ -212,7 +212,7 @@ export function Mapper(props: {
 
   React.useEffect(
     () => listen(globalThis, 'resize', repositionSuggestionBox),
-    []
+    [],
   );
 
   // Fetch automapper suggestions when opening a custom select element
@@ -237,7 +237,7 @@ export function Mapper(props: {
           : dispatch({
               type: 'AutoMapperSuggestionsLoadedAction',
               autoMapperSuggestions,
-            })
+            }),
       )
       .catch(softFail);
 
@@ -255,7 +255,7 @@ export function Mapper(props: {
       state.lines
         .map(({ mappingPath }) => mappingPath)
         .filter(mappingPathIsComplete),
-      state.mustMatchPreferences
+      state.mustMatchPreferences,
     );
 
   const loading = React.useContext(LoadingContext);
@@ -303,7 +303,7 @@ export function Mapper(props: {
             <ReRunAutoMapper
               showConfirmation={(): boolean =>
                 state.lines.some(({ mappingPath }) =>
-                  mappingPathIsComplete(mappingPath)
+                  mappingPathIsComplete(mappingPath),
                 )
               }
               onClick={(): void =>
@@ -350,7 +350,7 @@ export function Mapper(props: {
               if (
                 state.validationResults.length > 0 &&
                 state.lines.some(({ mappingPath }) =>
-                  mappingPathIsComplete(mappingPath)
+                  mappingPathIsComplete(mappingPath),
                 )
               )
                 dispatch({
@@ -367,7 +367,7 @@ export function Mapper(props: {
                   : undefined
               }
               disabled={state.lines.every(
-                ({ mappingPath }) => !mappingPathIsComplete(mappingPath)
+                ({ mappingPath }) => !mappingPathIsComplete(mappingPath),
               )}
               role="menuitem"
               onClick={(): void =>
@@ -470,10 +470,7 @@ export function Mapper(props: {
             {wbPlanText.map()}
             <span
               aria-hidden="true"
-              className={`
-                text-green-500
-                ${mapButtonEnabled ? '' : 'invisible'}
-              `}
+              className={`text-green-500 ${mapButtonEnabled ? '' : 'invisible'} `}
             >
               &#8594;
             </span>
@@ -483,11 +480,7 @@ export function Mapper(props: {
 
       <Ul
         aria-label={wbPlanText.mappings()}
-        className={`
-          grid flex-1 auto-rows-max grid-cols-[theme(spacing.8)_max-content_auto]
-          overflow-x-hidden
-          print:grid-cols-[min-content_auto]
-        `}
+        className={`grid flex-1 auto-rows-max grid-cols-[theme(spacing.8)_max-content_auto] overflow-x-hidden print:grid-cols-[min-content_auto]`}
         forwardRef={listOfMappings}
         tabIndex={-1}
         onScroll={repositionSuggestionBox}
@@ -663,7 +656,7 @@ export function Mapper(props: {
                 if (listOfMappings.current)
                   smoothScroll(
                     listOfMappings.current,
-                    listOfMappings.current.scrollHeight
+                    listOfMappings.current.scrollHeight,
                   );
               }
         }

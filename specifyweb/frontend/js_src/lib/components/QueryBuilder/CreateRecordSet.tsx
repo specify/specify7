@@ -46,7 +46,7 @@ export function CreateRecordSet({
 
   const resolvedRecordIds = React.useMemo(
     () => (typeof recordIds === 'function' ? recordIds() : recordIds),
-    [recordIds]
+    [recordIds],
   );
 
   const ResolvedButton = Button[buttonType];
@@ -102,7 +102,7 @@ export function CreateRecordSet({
                 setState({
                   type: 'Saved',
                   recordSet: deserializeResource(recordSet),
-                })
+                }),
               )
               .catch((error) => {
                 setState({ type: 'Main' });

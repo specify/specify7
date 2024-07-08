@@ -22,11 +22,11 @@ export function ShareRecord({
   const recordSetId = f.parseInt(recordsetid);
   const collectionCode =
     userInformation.availableCollections.find(
-      ({ id }) => schema.domainLevelIds.collection === id
+      ({ id }) => schema.domainLevelIds.collection === id,
     )?.code ?? '';
   const catalogNumber =
     f.maybe(toTable(resource, 'CollectionObject'), (collectionObject) =>
-      collectionObject.get('catalogNumber')
+      collectionObject.get('catalogNumber'),
     ) ?? '';
   const rawUrl =
     collectionCode.length > 0 && catalogNumber.length > 0
@@ -36,7 +36,7 @@ export function ShareRecord({
       : getResourceViewUrl(
           resource.specifyTable.name,
           resource.id,
-          recordSetId
+          recordSetId,
         );
   const url = new URL(rawUrl, globalThis.location.origin).href;
   return (

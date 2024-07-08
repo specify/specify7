@@ -36,7 +36,7 @@ export const syncStrings = async (
       readonly lineNumber: number;
     }) => string | undefined;
   },
-  emitPath: string
+  emitPath: string,
 ): Promise<void> =>
   Promise.all(
     localStrings.flatMap(({ categoryName, strings }) => {
@@ -56,7 +56,7 @@ export const syncStrings = async (
                   msgstr: [
                     f.maybe(
                       localized(strings[language]),
-                      whitespaceSensitive
+                      whitespaceSensitive,
                     ) ?? '',
                   ],
                   comments: {
@@ -74,21 +74,21 @@ export const syncStrings = async (
                     previous: '',
                   },
                 },
-              ])
+              ]),
             ),
           },
         };
 
         const fileName = path.join(
           directoryPath,
-          `${mappers.languageCode(language)}${gettextExtension}`
+          `${mappers.languageCode(language)}${gettextExtension}`,
         );
         const merged = await mergePoSpec(spec, fileName);
         const po = gettextParser.po.compile(merged);
         await fs.promises.writeFile(fileName, po);
         console.log(fileName);
       });
-    })
+    }),
   ).then(f.void);
 
 export const gettextExtension = '.po';
@@ -98,7 +98,7 @@ export const gettextExtension = '.po';
  */
 export async function mergePoSpec(
   po: GetTextTranslations,
-  fileName: string
+  fileName: string,
 ): Promise<GetTextTranslations> {
   const weblatePo = await fs.promises
     .readFile(fileName)
@@ -109,7 +109,7 @@ export async function mergePoSpec(
     console.warn(
       `Unable to find an existing PO file for ${fileName}, thus ` +
         `merging won't be performed. This warning can be ignored if you are ` +
-        `creating a new component.`
+        `creating a new component.`,
     );
     return po;
   } else return mergeSpecs(po, weblatePo);
@@ -121,7 +121,7 @@ export async function mergePoSpec(
  */
 const mergeSpecs = (
   po: GetTextTranslations,
-  weblatePo: GetTextTranslations
+  weblatePo: GetTextTranslations,
 ): GetTextTranslations => ({
   ...po,
   ...weblatePo,
@@ -145,11 +145,11 @@ const mergeSpecs = (
                 local.comments?.[key as 'flag'] ||
                   weblate?.comments?.[key as 'flag'] ||
                   '',
-              ])
-            ) as typeof local['comments'],
+              ]),
+            ) as (typeof local)['comments'],
           },
         ];
-      })
+      }),
     ),
   },
 });

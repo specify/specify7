@@ -64,11 +64,10 @@ NOTE: Keep in mind the difference between language codes and locale names.
    ```js
    matches = Array.from(
      textarea.value.matchAll(
-       /(?:msgid "([^"]+)"|msgid ""\n((?:.+\n)+)msgstr "")/g
-     )
+       /(?:msgid "([^"]+)"|msgid ""\n((?:.+\n)+)msgstr "")/g,
+     ),
    ).map((match, index) => Array.from(match).slice(1).find(Boolean).trim());
    ```
-
 
 ## Additional resources
 

@@ -59,19 +59,19 @@ export function WebLinkDefinition({
                           field: [],
                         }
                       : type === 'ThisField'
-                      ? {
-                          type: 'ThisField',
-                        }
-                      : type === 'FormattedResource'
-                      ? {
-                          type: 'FormattedResource',
-                          formatter: localized(''),
-                        }
-                      : {
-                          type: 'UrlPart',
-                          value: localized(''),
-                        }
-                  )
+                        ? {
+                            type: 'ThisField',
+                          }
+                        : type === 'FormattedResource'
+                          ? {
+                              type: 'FormattedResource',
+                              formatter: localized(''),
+                            }
+                          : {
+                              type: 'UrlPart',
+                              value: localized(''),
+                            },
+                  ),
                 )
               }
             >
@@ -125,9 +125,9 @@ export function WebLinkDefinition({
 const formattersPromise = f.store(async () =>
   fetchFormatters.then(({ formatters }) =>
     Object.fromEntries(
-      formatters.map((formatter) => [formatter.name, formatter])
-    )
-  )
+      formatters.map((formatter) => [formatter.name, formatter]),
+    ),
+  ),
 );
 
 function Part({

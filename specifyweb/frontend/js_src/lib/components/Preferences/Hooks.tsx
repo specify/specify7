@@ -7,12 +7,12 @@ function useMedia(query: string): boolean {
   const media = React.useMemo(() => globalThis.matchMedia(query), [query]);
   const eventsTarget = React.useMemo(
     () => eventListener<{ readonly change: undefined }>(media),
-    [media]
+    [media],
   );
   const [matches, setMatches] = React.useState(media.matches);
   React.useEffect(
     () => eventsTarget.on('change', () => setMatches(media.matches), true),
-    [eventsTarget, media]
+    [eventsTarget, media],
   );
   return matches;
 }
@@ -35,7 +35,7 @@ export function useTransitionDuration(): number {
   const reduceMotion = useReducedMotion();
   return React.useMemo(
     () => (reduceMotion ? 0 : defaultTransitionDuration),
-    [reduceMotion]
+    [reduceMotion],
   );
 }
 
@@ -59,7 +59,7 @@ export function useReducedTransparency(): boolean {
   const [reduceTransparency] = userPreferences.use(
     'general',
     'ui',
-    'reduceTransparency'
+    'reduceTransparency',
   );
   const media = useMedia('(prefers-reduced-transparency: reduce)');
   return reduceTransparency === 'system'

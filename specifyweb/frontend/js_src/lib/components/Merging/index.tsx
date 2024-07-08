@@ -76,7 +76,7 @@ export function RecordMergingLink({
         needUpdateQueryResults.current = true;
         handleDeleted(resource.id);
       }),
-    [handleDeleted]
+    [handleDeleted],
   );
 
   return table.name in recordMergingTableSpec ? (
@@ -103,14 +103,14 @@ export function MergingDialog(): JSX.Element | null {
   const [rawIds = '', setIds] = useSearchParameter(mergingQueryParameter);
   const ids = React.useMemo(
     () => filterArray(rawIds.split(',').map(f.parseInt)),
-    [rawIds]
+    [rawIds],
   );
   React.useEffect(
     () =>
       resourceEvents.on('deleted', (resource) =>
-        setIds(ids.filter((id) => id !== resource.id).join(','))
+        setIds(ids.filter((id) => id !== resource.id).join(',')),
       ),
-    [ids, setIds]
+    [ids, setIds],
   );
 
   const handleDismiss = (dismissedIds: RA<number>): void =>
@@ -140,9 +140,11 @@ function RestrictMerge({
   const recordsToIgnore = React.useMemo(
     () =>
       records?.filter((record) =>
-        recordMergingTableSpec[table.name]?.unmergable?.matches(record as never)
+        recordMergingTableSpec[table.name]?.unmergable?.matches(
+          record as never,
+        ),
       ),
-    [records]
+    [records],
   );
 
   return records === undefined ? null : recordsToIgnore !== undefined &&
@@ -174,7 +176,7 @@ function Merging({
   // Close the dialog when resources are deleted/unselected
   React.useEffect(
     () => (records.length < 2 ? handleClose() : undefined),
-    [records, handleClose]
+    [records, handleClose],
   );
 
   const [form, setForm] = React.useState<HTMLFormElement | null>(null);
@@ -185,7 +187,7 @@ function Merging({
 
   const rawSpecifyResources = React.useMemo(
     () => records.map(deserializeResource),
-    [records, needUpdate]
+    [records, needUpdate],
   );
 
   const sortedResources = React.useMemo(
@@ -200,10 +202,10 @@ function Merging({
         multiSortFunction(
           (resource) => resource.get('specifyUser') ?? '',
           true,
-          (resource) => resource.get('timestampCreated')
-        )
+          (resource) => resource.get('timestampCreated'),
+        ),
       ),
-    [rawSpecifyResources]
+    [rawSpecifyResources],
   );
 
   const target = sortedResources[0];
@@ -222,20 +224,20 @@ function Merging({
                 userPreferences.get(
                   'recordMerging',
                   'behavior',
-                  'autoPopulate'
+                  'autoPopulate',
                 ),
-                target.id
-              )
+                target.id,
+              ),
             ).then(async (merged) => {
               const mergedResource = deserializeResource(
-                merged as SerializedResource<AnySchema>
+                merged as SerializedResource<AnySchema>,
               );
               if (merged !== undefined) await runAllFieldChecks(mergedResource);
               return mergedResource;
             }),
-      [table, records]
+      [table, records],
     ),
-    true
+    true,
   );
 
   const [mergeId, setMergeId] = React.useState<string | undefined>(undefined);
@@ -249,18 +251,18 @@ function Merging({
               loading(
                 postMergeResource(
                   records,
-                  autoMerge(table, records, false, target.id)
+                  autoMerge(table, records, false, target.id),
                 )
                   .then(async (merged) => {
                     // REFACTOR: move all this to postMergeResource?
                     const mergedResource = deserializeResource(
-                      merged as SerializedResource<AnySchema>
+                      merged as SerializedResource<AnySchema>,
                     );
                     if (merged !== undefined)
                       await runAllFieldChecks(mergedResource);
                     return mergedResource;
                   })
-                  .then(setMerged)
+                  .then(setMerged),
               )
             }
           >
@@ -316,11 +318,11 @@ function Merging({
                 },
                 expectedErrors: [Http.NOT_ALLOWED],
                 errorMode: 'dismissible',
-              }
+              },
             ).then(({ data, response }) => {
               if (!response.ok) return;
               setMergeId(data);
-            })
+            }),
           );
           setNeedUpdate(!needUpdate);
         }}
@@ -352,7 +354,7 @@ function MergeButton<SCHEMA extends AnySchema>({
 
   const [noShowWarning = false, setNoShowWarning] = useCachedState(
     'merging',
-    'warningDialog'
+    'warningDialog',
   );
 
   return form === null ? null : (
@@ -440,7 +442,7 @@ export function MergeDialogContainer({
 export function ToggleMergeView(): JSX.Element {
   const [showMatching = false, setShowMatching] = useCachedState(
     'merging',
-    'showMatchingFields'
+    'showMatchingFields',
   );
   return (
     <Label.Inline>
@@ -455,7 +457,7 @@ export function ToggleMergeView(): JSX.Element {
 
 function useResources(
   table: SpecifyTable,
-  selectedRows: RA<number>
+  selectedRows: RA<number>,
 ): RA<SerializedResource<AnySchema>> | undefined {
   /**
    * During merging, ids are removed from selectedRows one by one. Shouldn't
@@ -468,16 +470,16 @@ function useResources(
         Promise.all(
           selectedRows.map(async (id) => {
             const resource = cached.current.find(
-              (resource) => resource.id === id
+              (resource) => resource.id === id,
             );
             return resource ?? fetchResource(table.name, id);
-          })
+          }),
         ).then((resources) => {
           cached.current = resources;
           return resources;
         }),
-      [table, selectedRows]
+      [table, selectedRows],
     ),
-    true
+    true,
   )[0];
 }

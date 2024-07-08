@@ -18,7 +18,7 @@ const linkComponent = <EXTRA_PROPS extends IR<unknown> = RR<never, never>>(
   className: string,
   initialProps?:
     | TagProps<'a'>
-    | ((props: Readonly<EXTRA_PROPS> & TagProps<'a'>) => TagProps<'a'>)
+    | ((props: Readonly<EXTRA_PROPS> & TagProps<'a'>) => TagProps<'a'>),
 ) =>
   wrap<
     'a',
@@ -65,35 +65,35 @@ export const Link = {
     }) => ({
       className: `${classString} ${variant}`,
       ...props,
-    })
+    }),
   ),
   Fancy: linkComponent(
     'Link.Fancy',
-    `${className.niceButton} ${className.fancyButton}`
+    `${className.niceButton} ${className.fancyButton}`,
   ),
   Secondary: linkComponent(
     'Link.Secondary',
-    `${className.niceButton} ${className.secondaryButton}`
+    `${className.niceButton} ${className.secondaryButton}`,
   ),
   BorderedGray: linkComponent(
     'Link.BorderedGray',
-    `${className.niceButton} ${className.borderedGrayButton}`
+    `${className.niceButton} ${className.borderedGrayButton}`,
   ),
   Danger: linkComponent(
     'Link.Danger',
-    `${className.niceButton} ${className.dangerButton}`
+    `${className.niceButton} ${className.dangerButton}`,
   ),
   Info: linkComponent(
     'Link.Info',
-    `${className.niceButton} ${className.infoButton}`
+    `${className.niceButton} ${className.infoButton}`,
   ),
   Warning: linkComponent(
     'Link.Warning',
-    `${className.niceButton} ${className.warningButton}`
+    `${className.niceButton} ${className.warningButton}`,
   ),
   Success: linkComponent(
     'Link.Success',
-    `${className.niceButton} ${className.successButton}`
+    `${className.niceButton} ${className.successButton}`,
   ),
   Icon: linkComponent<IconProps>(
     'Link.Icon',
@@ -102,6 +102,6 @@ export const Link = {
       ...props,
       'aria-label': props['aria-label'] ?? props.title,
       children: icons[icon],
-    })
+    }),
   ),
 } as const;

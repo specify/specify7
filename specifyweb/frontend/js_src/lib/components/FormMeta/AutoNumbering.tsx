@@ -39,7 +39,7 @@ export function AutoNumbering({
 
 export const getAutoNumberingFields = (table: SpecifyTable): RA<LiteralField> =>
   table.literalFields.filter(
-    (field) => field.getUiFormatter()?.canAutonumber() === true
+    (field) => field.getUiFormatter()?.canAutonumber() === true,
   );
 
 function AutoNumberingDialog({
@@ -54,7 +54,7 @@ function AutoNumberingDialog({
   const [globalConfig, setGlobalConfig] = userPreferences.use(
     'form',
     'preferences',
-    'autoNumbering'
+    'autoNumbering',
   );
   const config =
     (globalConfig[resource.specifyTable.name] as RA<string> | undefined) ??

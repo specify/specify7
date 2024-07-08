@@ -40,7 +40,7 @@ export const webOnlyViews = f.store(() =>
       tables.SpecifyUser,
       'form',
       'edit',
-      getFieldsForAutoView(tables.SpecifyUser, ['password', 'userType'])
+      getFieldsForAutoView(tables.SpecifyUser, ['password', 'userType']),
     ),
     SpAppResource: autoGenerateViewDefinition(
       tables.SpAppResource,
@@ -56,41 +56,41 @@ export const webOnlyViews = f.store(() =>
         'spAppResourceDir',
         'spAppResourceDatas',
         'spReports',
-      ])
+      ]),
     ),
     // Hide non-name fields
     CollectionRelType: autoGenerateViewDefinition(
       tables.CollectionRelType,
       'form',
       'edit',
-      ['name', 'leftSideCollection', 'rightSideCollection', 'remarks']
+      ['name', 'leftSideCollection', 'rightSideCollection', 'remarks'],
     ),
     CollectionRelationship: autoGenerateViewDefinition(
       tables.CollectionRelationship,
       'form',
       'edit',
-      ['collectionRelType', 'leftSide', 'rightSide']
+      ['collectionRelType', 'leftSide', 'rightSide'],
     ),
     [spAppResourceView]: autoGenerateViewDefinition(
       tables.SpAppResource,
       'form',
       'edit',
-      ['name']
+      ['name'],
     ),
     // Hide non-name fields
     [spViewSetNameView]: autoGenerateViewDefinition(
       tables.SpViewSetObj,
       'form',
       'edit',
-      ['name']
+      ['name'],
     ),
     [recordSetView]: autoGenerateViewDefinition(
       tables.RecordSet,
       'form',
       'edit',
-      ['name', 'remarks']
+      ['name', 'remarks'],
     ),
-  } as const)
+  } as const),
 );
 
 export const attachmentView = 'ObjectAttachment';

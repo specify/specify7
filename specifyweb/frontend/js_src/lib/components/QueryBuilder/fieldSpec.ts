@@ -108,22 +108,22 @@ export class QueryFieldSpec {
       field === undefined
         ? undefined
         : overrideIsRelationship
-        ? field.name === 'fullName' || field.isRelationship
-          ? undefined
-          : field === field.table.idField
-          ? /*
-             * Back-end expects "taxonId" and other id fields for tree ranks
-             * to be called "ID" (case-sensitive)
-             */
-            'ID'
-          : field.name === 'author'
-          ? 'Author'
-          : field.name
-        : `${field.name}${
-            typeof this.datePart === 'string' && this.datePart !== 'fullDate'
-              ? `Numeric${capitalize(this.datePart)}`
-              : ''
-          }`,
+          ? field.name === 'fullName' || field.isRelationship
+            ? undefined
+            : field === field.table.idField
+              ? /*
+                 * Back-end expects "taxonId" and other id fields for tree ranks
+                 * to be called "ID" (case-sensitive)
+                 */
+                'ID'
+              : field.name === 'author'
+                ? 'Author'
+                : field.name
+          : `${field.name}${
+              typeof this.datePart === 'string' && this.datePart !== 'fullDate'
+                ? `Numeric${capitalize(this.datePart)}`
+                : ''
+            }`,
     ]).join(' ');
 
     const tableList = this.makeTableList();
@@ -162,14 +162,14 @@ export class QueryFieldSpec {
           ? relationshipIsToMany(field)
             ? formatToManyIndex(1)
             : isTreeTable(field.relatedTable.name)
-            ? formatTreeRank(
-                index + 1 === length
-                  ? this.treeRank ?? anyTreeRank
-                  : anyTreeRank
-              )
-            : undefined
+              ? formatTreeRank(
+                  index + 1 === length
+                    ? this.treeRank ?? anyTreeRank
+                    : anyTreeRank,
+                )
+              : undefined
           : undefined,
-      ])
+      ]),
     );
 
     /*
@@ -205,15 +205,15 @@ export class QueryFieldSpec {
           ? field.relatedTable.name.toLowerCase() === field.name.toLowerCase()
             ? field.relatedTable.tableId.toString()
             : `${field.relatedTable.tableId}-${field.name}`
-          : undefined
-      )
+          : undefined,
+      ),
     );
     return [this.baseTable.tableId, ...rest].join(',');
   }
 
   public static fromPath(
     baseTableName: keyof Tables,
-    path: RA<string>
+    path: RA<string>,
   ): QueryFieldSpec {
     const rootTable = strictGetTable(baseTableName);
     const fieldSpec = new QueryFieldSpec(strictGetTable(baseTableName));
@@ -257,11 +257,11 @@ export class QueryFieldSpec {
 
   public static fromStringId(
     stringId: string,
-    isRelationship: boolean
+    isRelationship: boolean,
   ): QueryFieldSpec {
     const match = defined(
       reStringId.exec(stringId) ?? undefined,
-      `Unable to parse a string id: ${stringId}`
+      `Unable to parse a string id: ${stringId}`,
     );
     const [fullPath, _tableName, fullFieldName] = match.slice(1);
     const [baseTableId, ...path] = isRelationship
@@ -307,8 +307,8 @@ export class QueryFieldSpec {
         typeof parsedField === 'object'
           ? parts.slice(0, -1).join(' ') || anyTreeRank
           : typeof field === 'object'
-          ? anyTreeRank
-          : fieldName || anyTreeRank;
+            ? anyTreeRank
+            : fieldName || anyTreeRank;
       fieldSpec.joinPath = filterArray([
         ...fieldSpec.joinPath,
         field === undefined

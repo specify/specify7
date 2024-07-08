@@ -19,7 +19,7 @@ function List({
     return (
       <Dict>
         {Object.fromEntries(
-          values.map((value, index) => [`[${index + 1}]`, value])
+          values.map((value, index) => [`[${index + 1}]`, value]),
         )}
       </Dict>
     );
@@ -89,11 +89,7 @@ function Dict({
   readonly children: IR<unknown>;
 }): JSX.Element {
   return (
-    <div
-      className={`
-        grid auto-rows-auto grid-cols-[auto_1fr] gap-2
-      `}
-    >
+    <div className={`grid auto-rows-auto grid-cols-[auto_1fr] gap-2`}>
       {Object.entries(fields).map(([label, value]) => (
         <Line key={label} label={label}>
           <BrokerValue>{value}</BrokerValue>

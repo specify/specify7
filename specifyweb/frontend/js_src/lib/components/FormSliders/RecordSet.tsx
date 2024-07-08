@@ -76,7 +76,7 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
           // Record is not part of a record set
           navigate(
             getResourceViewUrl(resource.specifyTable.name, resource.id),
-            { replace: true }
+            { replace: true },
           );
           return;
         }
@@ -91,10 +91,10 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
             limit: 1,
             domainFilter: false,
           },
-          backendFilter('id').lessThan(recordSetItemId)
+          backendFilter('id').lessThan(recordSetItemId),
         );
         setIndex(totalCount);
-      })
+      }),
     );
   }, [savedRecordSetItemIndex, loading, recordSet.id, resource.id]);
 
@@ -110,9 +110,9 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
               recordSet: recordSet.id,
               domainFilter: false,
             }).then(({ totalCount }) => totalCount),
-      [recordSet.id]
+      [recordSet.id],
     ),
-    true
+    true,
   );
 
   return totalCount === undefined || index === undefined ? null : (
@@ -135,7 +135,7 @@ const fetchSize = DEFAULT_FETCH_LIMIT * 2;
 /** Fetch IDs of records in a record set at a given position */
 const fetchItems = async (
   recordSetId: number,
-  offset: number
+  offset: number,
 ): Promise<RA<readonly [index: number, id: number]>> =>
   fetchRows('RecordSetItem', {
     limit: fetchSize,
@@ -145,12 +145,12 @@ const fetchItems = async (
     offset,
     fields: { recordId: ['number'] } as const,
   }).then((records) =>
-    records.map(({ recordId }, index) => [offset + index, recordId] as const)
+    records.map(({ recordId }, index) => [offset + index, recordId] as const),
   );
 
 const updateIds = (
   oldIds: RA<number | undefined>,
-  updates: RA<readonly [index: number, id: number]>
+  updates: RA<readonly [index: number, id: number]>,
 ): RA<number | undefined> =>
   updates.reduce(
     (items, [order, recordId]) => {
@@ -161,7 +161,7 @@ const updateIds = (
      * A trivial slice to create a shallow copy. Can't use Array.from
      * because that decompresses the sparse array
      */
-    oldIds.slice()
+    oldIds.slice(),
   );
 
 function RecordSet<SCHEMA extends AnySchema>({
@@ -212,7 +212,7 @@ function RecordSet<SCHEMA extends AnySchema>({
     index: number,
     recordId: number | 'new' | undefined,
     newResource?: SpecifyResource<SCHEMA>,
-    replace: boolean = false
+    replace: boolean = false,
   ): void =>
     recordId === undefined
       ? handleFetchMore(index)
@@ -220,7 +220,7 @@ function RecordSet<SCHEMA extends AnySchema>({
           getResourceViewUrl(
             currentRecord.specifyTable.name,
             recordId,
-            recordSet.id
+            recordSet.id,
           ),
           {
             state: {
@@ -228,11 +228,11 @@ function RecordSet<SCHEMA extends AnySchema>({
               recordSetItemIndex: index,
               resource: f.maybe(
                 newResource as SpecifyResource<AnySchema>,
-                serializeResource
+                serializeResource,
               ),
             },
             replace,
-          }
+          },
         );
 
   const previousIndex = React.useRef<number>(currentIndex);
@@ -248,8 +248,8 @@ function RecordSet<SCHEMA extends AnySchema>({
         clamp(
           0,
           previousIndex.current > index ? index - fetchSize + 1 : index,
-          totalCount
-        )
+          totalCount,
+        ),
       ).then(
         async (updates) =>
           new Promise((resolve) =>
@@ -258,11 +258,11 @@ function RecordSet<SCHEMA extends AnySchema>({
               const newIds = updateIds(oldIds, updates);
               resolve(newIds);
               return newIds;
-            })
-          )
+            }),
+          ),
       );
     },
-    [totalCount, recordSet.id, loading, handleLoading, handleLoaded]
+    [totalCount, recordSet.id, loading, handleLoading, handleLoaded],
   );
 
   const handleFetchMore = React.useCallback(
@@ -274,7 +274,7 @@ function RecordSet<SCHEMA extends AnySchema>({
         })
         .catch(softFail);
     },
-    [handleFetch]
+    [handleFetch],
   );
 
   // Fetch ID of record at current index
@@ -298,7 +298,7 @@ function RecordSet<SCHEMA extends AnySchema>({
 
   async function handleAdd(
     resources: RA<SpecifyResource<SCHEMA>>,
-    wasNew: boolean
+    wasNew: boolean,
   ): Promise<void> {
     if (!recordSet.isNew())
       await addIdsToRecordSet(resources.map(({ id }) => id));
@@ -312,13 +312,13 @@ function RecordSet<SCHEMA extends AnySchema>({
     setIds((oldIds = []) =>
       updateIds(
         oldIds,
-        resources.map(({ id }, index) => [totalCount + index, id])
-      )
+        resources.map(({ id }, index) => [totalCount + index, id]),
+      ),
     );
   }
 
   async function createNewRecordSet(
-    ids: RA<number | undefined>
+    ids: RA<number | undefined>,
   ): Promise<void> {
     await recordSet.save();
     await addIdsToRecordSet(ids);
@@ -326,7 +326,7 @@ function RecordSet<SCHEMA extends AnySchema>({
   }
 
   const addIdsToRecordSet = async (
-    ids: RA<number | undefined>
+    ids: RA<number | undefined>,
   ): Promise<void> =>
     Promise.all(
       ids.map(async (recordId) =>
@@ -335,8 +335,8 @@ function RecordSet<SCHEMA extends AnySchema>({
           : createResource('RecordSetItem', {
               recordId,
               recordSet: recordSet.get('resource_uri'),
-            })
-      )
+            }),
+      ),
     ).then(f.void);
 
   const [openDialogForTitle, _, __, setOpenDialogForTitle] =
@@ -394,19 +394,19 @@ function RecordSet<SCHEMA extends AnySchema>({
                             limit: 1,
                             domainFilter: false,
                           }).then(({ totalCount }) => totalCount !== 0),
-                    })
-                  )
+                    }),
+                  ),
                 ).then(async (results) => {
                   const [nonDuplicates, duplicates] = split(
                     results,
-                    ({ isDuplicate }) => isDuplicate
+                    ({ isDuplicate }) => isDuplicate,
                   );
                   if (duplicates.length > 0 && nonDuplicates.length === 0)
                     handleHasDuplicate();
                   else
                     return handleAdd(
                       nonDuplicates.map(({ resource }) => resource),
-                      false
+                      false,
                     );
                   return undefined;
                 })
@@ -436,9 +436,9 @@ function RecordSet<SCHEMA extends AnySchema>({
                               `record set. RecordSetItem not found. RecordId: ` +
                               `${ids[currentIndex] ?? 'null'}. Record set: ${
                                 recordSet.id
-                              }`
-                          ).id
-                        )
+                              }`,
+                          ).id,
+                        ),
                       )
                     : Promise.resolve()
                   ).then(() =>
@@ -447,8 +447,8 @@ function RecordSet<SCHEMA extends AnySchema>({
                       newIds.splice(currentIndex, 1);
                       if (newIds.length === 0) handleClose();
                       return newIds;
-                    })
-                  )
+                    }),
+                  ),
                 );
               }
             : undefined

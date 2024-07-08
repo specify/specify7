@@ -65,10 +65,10 @@ export function SearchDialog<SCHEMA extends AnySchema>(props: {
   const [alwaysUseQueryBuilder] = userPreferences.use(
     'form',
     'queryComboBox',
-    'alwaysUseQueryBuilder'
+    'alwaysUseQueryBuilder',
   );
   const [useQueryBuilder, handleUseQueryBuilder] = useBooleanState(
-    props.onlyUseQueryBuilder ? true : alwaysUseQueryBuilder
+    props.onlyUseQueryBuilder ? true : alwaysUseQueryBuilder,
   );
   return useQueryBuilder ? (
     <QueryBuilderSearch
@@ -86,15 +86,15 @@ export function SearchDialog<SCHEMA extends AnySchema>(props: {
 
 const filterResults = <SCHEMA extends AnySchema>(
   results: RA<SpecifyResource<SCHEMA>>,
-  extraFilters: RA<QueryComboBoxFilter<SCHEMA>>
+  extraFilters: RA<QueryComboBoxFilter<SCHEMA>>,
 ): RA<SpecifyResource<SCHEMA>> =>
   results.filter((result) =>
-    extraFilters.every((filter) => testFilter(result, filter))
+    extraFilters.every((filter) => testFilter(result, filter)),
   );
 
 function testFilter<SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA>,
-  { operation, field, value, isNot }: QueryComboBoxFilter<SCHEMA>
+  { operation, field, value, isNot }: QueryComboBoxFilter<SCHEMA>,
 ): boolean {
   const values = value.split(',').map(f.trim);
   const result =
@@ -102,19 +102,19 @@ function testFilter<SCHEMA extends AnySchema>(
       ? (resource.get(field) ?? 0) >= values[0] &&
         (resource.get(field) ?? 0) <= values[1]
       : operation === 'in'
-      ? // Cast numbers to strings
-        // eslint-disable-next-line eqeqeq
-        values.some((value) => value == resource.get(field))
-      : operation === 'less'
-      ? values.every((value) => (resource.get(field) ?? 0) < value)
-      : error('Invalid Query Combo Box search filter', {
-          filter: {
-            operation,
-            field,
-            values,
-          },
-          resource,
-        });
+        ? // Cast numbers to strings
+          // eslint-disable-next-line eqeqeq
+          values.some((value) => value == resource.get(field))
+        : operation === 'less'
+          ? values.every((value) => (resource.get(field) ?? 0) < value)
+          : error('Invalid Query Combo Box search filter', {
+              filter: {
+                operation,
+                field,
+                values,
+              },
+              resource,
+            });
   return isNot ? !result : result;
 }
 
@@ -141,9 +141,9 @@ function SearchForm<SCHEMA extends AnySchema>({
         {},
         {
           noBusinessRules: true,
-        }
+        },
       ),
-    [table]
+    [table],
   );
   const viewName = viewNameExceptions[table.name] ?? `${table.name}Search`;
 
@@ -200,15 +200,15 @@ function SearchForm<SCHEMA extends AnySchema>({
                     id: resource.id,
                     formatted: await format(resource, undefined, true),
                     resource,
-                  })
-                )
+                  }),
+                ),
               ).then((results) =>
                 setResults(
                   Array.from(results).sort(
-                    sortFunction(({ formatted }) => formatted)
-                  )
-                )
-              )
+                    sortFunction(({ formatted }) => formatted),
+                  ),
+                ),
+              ),
             )
             .finally(handleLoaded)
             .catch(raise);
@@ -222,10 +222,7 @@ function SearchForm<SCHEMA extends AnySchema>({
           />
         </SearchDialogContext.Provider>
         <Ul
-          className={`
-            h-40 min-w-96 overflow-auto rounded
-            border bg-white p-2 ring-1 ring-gray-500 dark:bg-neutral-700 dark:ring-0
-          `}
+          className={`h-40 min-w-96 overflow-auto rounded border bg-white p-2 ring-1 ring-gray-500 dark:bg-neutral-700 dark:ring-0`}
         >
           {isLoading ? (
             <li>{commonText.loading()}</li>
@@ -284,9 +281,9 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
     () =>
       createQuery(commonText.search(), table).set(
         'fields',
-        toQueryFields(table, extraFilters)
+        toQueryFields(table, extraFilters),
       ),
-    [table, extraFilters]
+    [table, extraFilters],
   );
   const [selected, setSelected] = React.useState<RA<number>>([]);
 
@@ -328,12 +325,12 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
 
 const toQueryFields = <SCHEMA extends AnySchema>(
   table: SpecifyTable<SCHEMA>,
-  filters: RA<QueryComboBoxFilter<SCHEMA>>
+  filters: RA<QueryComboBoxFilter<SCHEMA>>,
 ): RA<SpecifyResource<SpQueryField>> =>
   filters.map(({ field, operation, isNot, value }) =>
     QueryFieldSpec.fromPath(table.name, [field])
       .toSpQueryField()
       .set('operStart', queryFieldFilters[operation].id)
       .set('isNot', isNot)
-      .set('startValue', value)
+      .set('startValue', value),
   );

@@ -3,7 +3,7 @@ import type { Tables } from '../DataModel/types';
 
 const createItem = <TABLE_NAME extends keyof Tables>(
   baseTable: TABLE_NAME,
-  path: keyof Tables[TABLE_NAME]['fields']
+  path: keyof Tables[TABLE_NAME]['fields'],
 ) => ({
   baseTable,
   path,
@@ -12,17 +12,17 @@ const createItem = <TABLE_NAME extends keyof Tables>(
 export const staticAttachmentImportPaths: IR<ReturnType<typeof createItem>> = {
   collectionObjectCatalogNumber: createItem(
     'CollectionObject',
-    'catalogNumber'
+    'catalogNumber',
   ),
   collectionObjectAltCatalogNumber: createItem(
     'CollectionObject',
-    'altCatalogNumber'
+    'altCatalogNumber',
   ),
   taxonFullName: createItem('Taxon', 'fullName'),
   collectingEventGuid: createItem('CollectingEvent', 'guid'),
   collectingEventFieldnumber: createItem(
     'CollectingEvent',
-    'stationFieldNumber'
+    'stationFieldNumber',
   ),
   loanNumber: createItem('Loan', 'loanNumber'),
   accessionNumber: createItem('Accession', 'accessionNumber'),

@@ -30,11 +30,11 @@ export function FormatterList(): JSX.Element {
           table.name,
           currentItems.map((item) => item.name),
           undefined,
-          'name'
+          'name',
         );
         const newTitle = getUniqueName(
           table.label,
-          currentItems.map((item) => item.title ?? '')
+          currentItems.map((item) => item.title ?? ''),
         );
         const common = {
           name: newName,
@@ -76,7 +76,7 @@ export function XmlEntryList<
   ITEM extends {
     readonly table: SpecifyTable | undefined;
     readonly name: string;
-  }
+  },
 >({
   items: [items, setItems],
   tableName,
@@ -100,7 +100,7 @@ export function XmlEntryList<
     (item as IR<TYPE | undefined>)[key];
 
   const hasDefault = currentItems.some(
-    (item) => read<boolean>(item, 'isDefault') === true
+    (item) => read<boolean>(item, 'isDefault') === true,
   );
   return (
     <div className="flex flex-col gap-2 overflow-auto">
@@ -116,11 +116,11 @@ export function XmlEntryList<
                     read<boolean>(item, 'isDefault') === true
                       ? `(${resourcesText.default()})`
                       : ''
-                  }`
+                  }`,
                 )}
               </Link.Default>
             </li>
-          ) : undefined
+          ) : undefined,
         )}
       </Ul>
       {currentItems.length > 0 && !hasDefault ? (

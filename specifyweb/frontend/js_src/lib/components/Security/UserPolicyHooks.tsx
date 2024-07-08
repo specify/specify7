@@ -19,12 +19,12 @@ import { processPolicies } from './policyConverter';
 export function useUserPolicies(
   userResource: SpecifyResource<SpecifyUser>,
   collections: RA<SerializedResource<Collection>>,
-  initialCollection: number | undefined
+  initialCollection: number | undefined,
 ): readonly [
   userPolicies: IR<RA<Policy> | undefined> | undefined,
   setUserPolicies: (value: IR<RA<Policy> | undefined> | undefined) => void,
   initialPolicies: React.MutableRefObject<IR<RA<Policy> | undefined>>,
-  hasChanges: boolean
+  hasChanges: boolean,
 ] {
   const initialUserPolicies = React.useRef<IR<RA<Policy> | undefined>>({});
   const [userPolicies, setUserPolicies] = useAsyncState(
@@ -46,7 +46,7 @@ export function useUserPolicies(
                       },
                     ]
                   : [],
-              ])
+              ]),
             )
           : Promise.all(
               collections.map(async (collection) =>
@@ -61,7 +61,7 @@ export function useUserPolicies(
                      * handle the permission denied error
                      */
                     expectedErrors: [Http.FORBIDDEN],
-                  }
+                  },
                 ).then(
                   ({ data, status }) =>
                     [
@@ -69,18 +69,18 @@ export function useUserPolicies(
                       status === Http.FORBIDDEN
                         ? undefined
                         : processPolicies(data),
-                    ] as const
-                )
-              )
+                    ] as const,
+                ),
+              ),
             )
               .then((entries) => Object.fromEntries(entries))
               .then((policies) => {
                 initialUserPolicies.current = policies;
                 return policies;
               }),
-      [userResource, collections, initialCollection]
+      [userResource, collections, initialCollection],
     ),
-    false
+    false,
   );
   const changedPolices =
     typeof userPolicies === 'object' &&
@@ -93,12 +93,12 @@ export function useUserPolicies(
 
 /** Fetching user institutional policies */
 export function useUserInstitutionalPolicies(
-  userResource: SpecifyResource<SpecifyUser>
+  userResource: SpecifyResource<SpecifyUser>,
 ): readonly [
   institutionPolicies: RA<Policy> | undefined,
   setInstitutionPolicies: (value: RA<Policy>) => void,
   initialInstitutionPolicies: React.MutableRefObject<RA<Policy>>,
-  hasChanges: boolean
+  hasChanges: boolean,
 ] {
   const initialInstitutionPolicies = React.useRef<RA<Policy>>([]);
   const [institutionPolicies, setInstitutionPolicies] = useAsyncState(
@@ -107,23 +107,23 @@ export function useUserInstitutionalPolicies(
         userResource.isNew()
           ? []
           : hasDerivedPermission(
-              '/permissions/institutional_policies/user',
-              'read'
-            )
-          ? ajax<IR<RA<string>>>(
-              `/permissions/user_policies/institution/${userResource.id}/`,
-              {
-                headers: { Accept: 'application/json' },
-              }
-            ).then(({ data }) => {
-              const policies = processPolicies(data);
-              initialInstitutionPolicies.current = policies;
-              return policies;
-            })
-          : undefined,
-      [userResource]
+                '/permissions/institutional_policies/user',
+                'read',
+              )
+            ? ajax<IR<RA<string>>>(
+                `/permissions/user_policies/institution/${userResource.id}/`,
+                {
+                  headers: { Accept: 'application/json' },
+                },
+              ).then(({ data }) => {
+                const policies = processPolicies(data);
+                initialInstitutionPolicies.current = policies;
+                return policies;
+              })
+            : undefined,
+      [userResource],
     ),
-    false
+    false,
   );
   const changedInstitutionPolicies =
     typeof institutionPolicies === 'object' &&
@@ -141,7 +141,7 @@ export function useUserInstitutionalPolicies(
 
 /** Fetch User's OpenID Connect providers */
 export function useUserProviders(
-  userId: number | undefined
+  userId: number | undefined,
 ): IR<boolean> | undefined {
   const [providers] = useAsyncState<IR<boolean>>(
     React.useCallback(
@@ -175,16 +175,16 @@ export function useUserProviders(
                     .map(({ title, provider }) => [
                       title,
                       userProviders.some(
-                        (entry) => entry.provider === provider
+                        (entry) => entry.provider === provider,
                       ),
                     ])
-                    .sort(sortFunction(([title]) => title))
-                )
+                    .sort(sortFunction(([title]) => title)),
+                ),
               )
           : undefined,
-      [userId]
+      [userId],
     ),
-    false
+    false,
   );
 
   useErrorContext('providers', providers);

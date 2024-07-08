@@ -24,7 +24,7 @@ export function xmlToString(xml: Node, insertDeclaration = true): string {
     if (!hasXmlDeclaration && insertDeclaration) {
       const processingInstruction = document.createProcessingInstruction(
         'xml',
-        'version="1.0" encoding="UTF-8"'
+        'version="1.0" encoding="UTF-8"',
       );
       document.insertBefore(processingInstruction, document.firstChild);
     }

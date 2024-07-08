@@ -30,12 +30,12 @@ export function SecurityPoliciesWrapper({
 }): JSX.Element {
   const [orientation = 'vertical', setOrientation] = useCachedState(
     'securityTool',
-    'policiesLayout'
+    'policiesLayout',
   );
 
   const [isExpanded = true, setExpanded] = useCachedState(
     'securityTool',
-    'institutionPoliciesExpanded'
+    'institutionPoliciesExpanded',
   );
   const buttonTitle =
     orientation === 'vertical'
@@ -61,10 +61,7 @@ export function SecurityPoliciesWrapper({
     <details open={isExpanded}>
       <Summary onToggle={setExpanded}>
         <span
-          className={`
-            inline-flex items-center gap-4
-            ${collapsable ? '' : 'text-xl'}
-          `}
+          className={`inline-flex items-center gap-4 ${collapsable ? '' : 'text-xl'} `}
         >
           {header}
         </span>
@@ -119,17 +116,14 @@ export function SecurityPolicies({
 
   const [orientation = 'vertical'] = useCachedState(
     'securityTool',
-    'policiesLayout'
+    'policiesLayout',
   );
 
   const isReadOnly = React.useContext(ReadOnlyContext);
   return Array.isArray(policies) ? (
     <>
       <Ul
-        className={`
-          flex flex-col gap-2 overflow-auto
-          ${limitHeight ? 'max-h-[theme(spacing.96)]' : ''}
-        `}
+        className={`flex flex-col gap-2 overflow-auto ${limitHeight ? 'max-h-[theme(spacing.96)]' : ''} `}
         forwardRef={listRef}
       >
         {policies.map((policy, index) => (
@@ -139,8 +133,8 @@ export function SecurityPolicies({
                 (policy) =>
                   policy.resource === resource ||
                   policy.resource.startsWith(
-                    `${resource}${permissionSeparator}`
-                  )
+                    `${resource}${permissionSeparator}`,
+                  ),
               )
             }
             key={index}
@@ -195,7 +189,7 @@ function mutatePolicy(policy: Policy): Policy {
   const possibleActions = getAllActions(policy.resource);
   // Filter out non-existing actions
   const selectedActions = policy.actions.filter((action) =>
-    possibleActions.includes(action)
+    possibleActions.includes(action),
   );
   return replaceKey(
     policy,
@@ -209,7 +203,7 @@ function mutatePolicy(policy: Policy): Policy {
     possibleActions.length === 1
       ? possibleActions
       : hasTableActions(possibleActions)
-      ? f.unique(['read', ...selectedActions])
-      : selectedActions
+        ? f.unique(['read', ...selectedActions])
+        : selectedActions,
   );
 }

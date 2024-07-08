@@ -34,7 +34,7 @@ export function addMissingFields<TABLE_NAME extends keyof Tables>(
     toManyRelationships = 'set',
     requiredRelationships = 'set',
     optionalRelationships = 'define',
-  }: Partial<ResourceSpec> = {}
+  }: Partial<ResourceSpec> = {},
 ): SerializedResource<Tables[TABLE_NAME]> {
   const table = strictGetTable(tableName);
   const spec = {
@@ -62,16 +62,16 @@ export function addMissingFields<TABLE_NAME extends keyof Tables>(
                     (field.name === 'version'
                       ? 1
                       : (
-                          field.isRequired
-                            ? requiredFields === 'set'
-                            : optionalFields === 'set'
-                        )
-                      ? parserFromType(field.type).value
-                      : null),
+                            field.isRequired
+                              ? requiredFields === 'set'
+                              : optionalFields === 'set'
+                          )
+                        ? parserFromType(field.type).value
+                        : null),
               ]
-            : undefined
-        )
-      )
+            : undefined,
+        ),
+      ),
     ) as SerializedResource<Tables[TABLE_NAME]>),
     ...(scoping === undefined
       ? undefined
@@ -100,7 +100,7 @@ function shouldIncludeField(
     requiredRelationships,
     optionalRelationships,
   }: ResourceSpec,
-  isNew: boolean
+  isNew: boolean,
 ): boolean {
   if (field.isRelationship) {
     if (relationshipIsToMany(field)) {
@@ -118,7 +118,7 @@ function shouldIncludeField(
 function handleRelationship<TABLE_NAME extends keyof Tables>(
   record: DeepPartial<SerializedResource<Tables[TABLE_NAME]>>,
   field: Relationship,
-  spec: ResourceSpec
+  spec: ResourceSpec,
 ) {
   if (relationshipIsToMany(field))
     if (field.isDependent()) {
@@ -127,7 +127,7 @@ function handleRelationship<TABLE_NAME extends keyof Tables>(
         | undefined;
       return (
         records?.map((record) =>
-          addMissingFields(field.relatedTable.name, record, spec)
+          addMissingFields(field.relatedTable.name, record, spec),
         ) ?? (spec.toManyRelationships === 'set' ? [] : null)
       );
     } else {
@@ -153,7 +153,7 @@ function handleRelationship<TABLE_NAME extends keyof Tables>(
             (record[field.name as keyof typeof record] as Partial<
               SerializedResource<AnySchema>
             >) ?? {},
-            spec
+            spec,
           )
         : null)
     );

@@ -82,7 +82,7 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
         | undefined;
       readonly developmentGlobal: string;
       readonly syncChanges?: boolean;
-    }
+    },
   ) {}
 
   /**
@@ -97,11 +97,11 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
 
       const valuesResource = fetchResourceId(
         values.fetchUrl,
-        values.resourceName
+        values.resourceName,
       ).then(async (appResourceId) =>
         typeof appResourceId === 'number'
           ? fetchResourceData(values.fetchUrl, appResourceId)
-          : createDataResource(values.fetchUrl, values.resourceName)
+          : createDataResource(values.fetchUrl, values.resourceName),
       );
 
       const defaultValuesResource =
@@ -109,7 +109,7 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
           ? undefined
           : fetchDefaultResourceData(
               defaultValues.fetchUrl,
-              defaultValues.resourceName
+              defaultValues.resourceName,
             ).then((data) => {
               this.defaults = data ?? this.defaults;
             });
@@ -155,11 +155,11 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
       ? string & keyof DEFINITIONS[CATEGORY]['subCategories']
       : never,
     ITEM extends string &
-      keyof DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items']
+      keyof DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items'],
   >(
     category: CATEGORY,
     subcategory: SUBCATEGORY,
-    item: ITEM
+    item: ITEM,
   ): DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM] {
     const definition =
       this.options.definitions[category].subCategories[subcategory].items[item];
@@ -181,11 +181,11 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
       ? string & keyof DEFINITIONS[CATEGORY]['subCategories']
       : never,
     ITEM extends string &
-      keyof DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items']
+      keyof DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items'],
   >(
     category: CATEGORY,
     subcategory: SUBCATEGORY,
-    item: ITEM
+    item: ITEM,
   ): DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue'] {
     return (
       this.values[category]?.[subcategory]?.[item] ??
@@ -203,12 +203,12 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
       ? string & keyof DEFINITIONS[CATEGORY]['subCategories']
       : never,
     ITEM extends string &
-      keyof DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items']
+      keyof DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items'],
   >(
     category: CATEGORY,
     subcategory: SUBCATEGORY,
     item: ITEM,
-    value: DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
+    value: DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue'],
   ): DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue'] {
     const definition = this.definition(category, subcategory, item);
     let parsed;
@@ -222,7 +222,7 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
         parser,
         undefined,
         value.toString(),
-        parser.type !== 'text'
+        parser.type !== 'text',
       );
       if (parseResult.isValid) parsed = parseResult.parsed;
       else {
@@ -298,7 +298,7 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
         globalThis.clearTimeout(this.syncTimeoutInstance);
       this.syncTimeoutInstance = globalThis.setTimeout(
         (): void => void this.sync().catch(softFail),
-        syncTimeout
+        syncTimeout,
       );
     } else {
       this.isSyncPending = true;
@@ -324,7 +324,7 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
               metaData: '',
               data: JSON.stringify(this.values),
             }),
-          })
+          }),
         )
         .then(() => {
           this.syncPromise = undefined;
@@ -357,11 +357,11 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
       ? string & keyof DEFINITIONS[CATEGORY]['subCategories']
       : never,
     ITEM extends string &
-      keyof DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items']
+      keyof DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items'],
   >(
     category: CATEGORY,
     subcategory: SUBCATEGORY,
-    item: ITEM
+    item: ITEM,
   ): GetOrSet<
     DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
   > {
@@ -384,7 +384,7 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
           )
             setLocalValue(preferences.get(category, subcategory, item));
         }),
-      [category, subcategory, item, preferences]
+      [category, subcategory, item, preferences],
     );
 
     const updatePref = React.useCallback(
@@ -392,24 +392,24 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
         newPref:
           | DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
           | ((
-              oldPref: DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
-            ) => DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue'])
+              oldPref: DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue'],
+            ) => DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']),
       ): void => {
         const oldValue = preferences.get(category, subcategory, item);
         const newValueRaw =
           typeof newPref === 'function'
             ? (
                 newPref as (
-                  oldPref: DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
+                  oldPref: DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue'],
                 ) => DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
               )(oldValue)
             : newPref;
 
         setLocalValue(
-          preferences.set(category, subcategory, item, newValueRaw)
+          preferences.set(category, subcategory, item, newValueRaw),
         );
       },
-      [category, subcategory, item, preferences]
+      [category, subcategory, item, preferences],
     );
 
     return [localValue, updatePref] as const;
@@ -427,15 +427,15 @@ const mimeType = 'application/json';
  */
 export const fetchResourceId = async (
   fetchUrl: string,
-  resourceName: string
+  resourceName: string,
 ): Promise<number | undefined> =>
   ajax<RA<UserResource>>(cachableUrl(fetchUrl), {
     headers: { Accept: mimeType },
   }).then(
     ({ data }) =>
       data.find(
-        ({ name, mimetype }) => name === resourceName && mimetype === mimeType
-      )?.id
+        ({ name, mimetype }) => name === resourceName && mimetype === mimeType,
+      )?.id,
   );
 
 /**
@@ -443,7 +443,7 @@ export const fetchResourceId = async (
  */
 const fetchResourceData = async (
   fetchUrl: string,
-  appResourceId: number
+  appResourceId: number,
 ): Promise<ResourceWithData> =>
   ajax<ResourceWithData>(cachableUrl(`${fetchUrl}${appResourceId}/`), {
     headers: { Accept: mimeType },
@@ -454,7 +454,7 @@ const fetchResourceData = async (
  */
 const fetchDefaultResourceData = async (
   fetchUrl: string,
-  defaultResourceName: string
+  defaultResourceName: string,
 ): Promise<ResourceWithData> =>
   ajax(
     formatUrl(fetchUrl, {
@@ -464,10 +464,10 @@ const fetchDefaultResourceData = async (
     {
       headers: { Accept: 'text/plain' },
       errorMode: 'silent',
-    }
+    },
   )
     .then(({ data, status }) =>
-      status === Http.OK && data.trim().length > 0 ? JSON.parse(data) : {}
+      status === Http.OK && data.trim().length > 0 ? JSON.parse(data) : {},
     )
     .catch((error) => {
       softFail(error);
@@ -479,7 +479,7 @@ const fetchDefaultResourceData = async (
  */
 export const createDataResource = async (
   fetchUrl: string,
-  resourceName: string
+  resourceName: string,
 ): Promise<ResourceWithData> =>
   ajax<ResourceWithData>(fetchUrl, {
     headers: { Accept: mimeType },

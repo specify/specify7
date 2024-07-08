@@ -36,35 +36,35 @@ export type CollectionRelData = {
 export const processColRelationships = async (
   relationships: RA<SpecifyResource<CollectionRelationship>>,
   otherSide: 'left' | 'right',
-  formatting: string | undefined
+  formatting: string | undefined,
 ): Promise<CollectionRelData['collectionObjects']> =>
   Promise.all(
     relationships.map(async (relationship) =>
       relationship
         .rgetPromise(`${otherSide}Side`)
-        .then((collectionObject) => [relationship, collectionObject] as const)
-    )
+        .then((collectionObject) => [relationship, collectionObject] as const),
+    ),
   ).then(async (resources) =>
     Promise.all(
       resources.map(async ([relationship, collectionObject]) => ({
         formatted: await format(collectionObject, formatting).then(
-          (formatted) => formatted ?? localized(collectionObject.id.toString())
+          (formatted) => formatted ?? localized(collectionObject.id.toString()),
         ),
         resource: collectionObject,
         relationship,
-      }))
-    )
+      })),
+    ),
   );
 
 export async function fetchOtherCollectionData(
   resource: SpecifyResource<CollectionObject>,
   relationship: string,
   formatting: string | undefined,
-  muteWrongCollectionError = false
+  muteWrongCollectionError = false,
 ): Promise<CollectionRelData | undefined> {
   const { relationshipType, left, right } = await fetchCollection(
     'CollectionRelType',
-    { name: relationship, limit: 1, domainFilter: false }
+    { name: relationship, limit: 1, domainFilter: false },
   )
     // BUG: this does not handle the not found case
     .then(({ records }) => deserializeResource(records[0]))
@@ -73,7 +73,7 @@ export async function fetchOtherCollectionData(
         relationshipType,
         left: relationshipType.rgetPromise('leftSideCollection'),
         right: relationshipType.rgetPromise('rightSideCollection'),
-      })
+      }),
     );
   let side: 'left' | 'right';
   let otherSide: 'left' | 'right';
@@ -90,8 +90,8 @@ export async function fetchOtherCollectionData(
     if (!muteWrongCollectionError)
       softFail(
         new Error(
-          "Related collection plugin used with relation that doesn't match current collection"
-        )
+          "Related collection plugin used with relation that doesn't match current collection",
+        ),
       );
     return undefined;
   }
@@ -118,13 +118,13 @@ export async function fetchOtherCollectionData(
               : {
                   rightside_id: resource.id,
                   collectionreltype_id: relationshipType.id,
-                }
+                },
           ).then(async ({ records }) =>
             processColRelationships(
               records.map(deserializeResource),
               otherSide,
-              formatting
-            )
+              formatting,
+            ),
           )
         : [],
     otherCollection: {
@@ -132,7 +132,7 @@ export async function fetchOtherCollectionData(
       href: otherCollection.viewUrl(),
       name: otherCollection.get('collectionName') ?? '',
       formatted: await formattedCollection.then(
-        (formatted) => formatted ?? localized(otherCollection.id.toString())
+        (formatted) => formatted ?? localized(otherCollection.id.toString()),
       ),
     },
     side,

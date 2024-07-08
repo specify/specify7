@@ -17,7 +17,7 @@ export const schemaToPoFile = async (
   structure: SchemaStrings,
   languages: RA<string>,
   weblateDirectory: string | undefined,
-  sourceFilePath: string
+  sourceFilePath: string,
 ): Promise<DictionaryUsages[string]> => {
   const dictionaryUsages = {
     categoryName: schemaPathToComponentName(sourceFilePath),
@@ -33,8 +33,8 @@ export const schemaToPoFile = async (
                 lineNumber: 0,
               })),
             },
-          ] as const
-      )
+          ] as const,
+      ),
     ),
   };
 
@@ -47,7 +47,7 @@ export const schemaToPoFile = async (
         usage: ({ filePath }) => filePath,
         reference: f.undefined,
       },
-      weblateDirectory
+      weblateDirectory,
     );
 
   return dictionaryUsages;
@@ -70,7 +70,7 @@ function schemaPathToComponentName(sourceFilePath: string): string {
   if (sourceFilePath.includes(pathPathJoin))
     throw new Error(
       'Dash is not supported in path at the moment. ' +
-        'Modify componentNameToSchemaPath if need to support them'
+        'Modify componentNameToSchemaPath if need to support them',
     );
 
   const parts = sourceFilePath.split('/').slice(0, -1);

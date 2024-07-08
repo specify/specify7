@@ -13,7 +13,7 @@ export const webLinkRoutes = toReactRoutes([
     path: 'web-link',
     element: async () =>
       import('./Editor').then(
-        ({ WebLinkEditorWrapper }) => WebLinkEditorWrapper
+        ({ WebLinkEditorWrapper }) => WebLinkEditorWrapper,
       ),
     children: [
       {

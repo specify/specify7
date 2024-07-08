@@ -3,7 +3,7 @@ import type { RA } from '../../utils/types';
 
 export function assert(
   value: unknown,
-  message: string = 'Assertion failed'
+  message: string = 'Assertion failed',
 ): void {
   if (!Boolean(value)) error(message);
 }
@@ -62,5 +62,5 @@ export function breakpoint(): void {
  * for functions defined by third party libraries
  */
 export const tap = <ARGS extends RA<never>, RETURN>(
-  callback: (...args: ARGS) => RETURN
+  callback: (...args: ARGS) => RETURN,
 ) => f.tap(breakpoint, callback);

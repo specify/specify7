@@ -20,7 +20,7 @@ const node = {
   resource_uri: getResourceApiUrl('Taxon', taxonId),
 };
 overrideAjax(getResourceApiUrl('Taxon', taxonId), () =>
-  addMissingFields('Taxon', node)
+  addMissingFields('Taxon', node),
 );
 
 const rank = {
@@ -29,7 +29,7 @@ const rank = {
   resource_uri: getResourceApiUrl('TaxonTreeDefItem', rankId),
 };
 overrideAjax(getResourceApiUrl('TaxonTreeDefItem', rankId), () =>
-  addMissingFields('TaxonTreeDefItem', rank)
+  addMissingFields('TaxonTreeDefItem', rank),
 );
 
 test('getFields and extractQueryTaxonId', async () => {
@@ -46,22 +46,22 @@ test('getFields and extractQueryTaxonId', async () => {
   const queryWithoutLocality = {
     ...query,
     fields: query.fields.filter(
-      (field) => !field.stringId.includes('locality')
+      (field) => !field.stringId.includes('locality'),
     ),
   };
 
   const originalFields = parseQueryFields(
-    queryWithoutLocality.fields ?? []
+    queryWithoutLocality.fields ?? [],
   ).map(({ mappingPath }) => mappingPath.join('.'));
   const newFields = getFields(queryWithoutLocality);
   const addedFields = newFields.filter(
-    ({ mappingPath }) => !originalFields.includes(mappingPath.join('.'))
+    ({ mappingPath }) => !originalFields.includes(mappingPath.join('.')),
   );
   const newMappingPaths = new Set(
-    newFields.map(({ mappingPath }) => mappingPath.join('.'))
+    newFields.map(({ mappingPath }) => mappingPath.join('.')),
   );
   const removedFields = originalFields.filter(
-    (mappingPath) => !newMappingPaths.has(mappingPath)
+    (mappingPath) => !newMappingPaths.has(mappingPath),
   );
 
   expect(removedFields).toEqual([]);

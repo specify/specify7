@@ -15,13 +15,13 @@ import { queryIdField } from './Results';
 
 const needAuditLogFormatting = (fieldSpecs: RA<QueryFieldSpec>): boolean =>
   fieldSpecs.some(({ table }) =>
-    ['SpAuditLog', 'SpAuditLogField'].includes(table.name)
+    ['SpAuditLog', 'SpAuditLogField'].includes(table.name),
   );
 
 // REFACTOR: replace with <FormattedResourceUrl />
 async function resourceToLink(
   table: SpecifyTable,
-  id: number
+  id: number,
 ): Promise<JSX.Element | string> {
   const resource = new table.Resource({ id });
   let errorHandled = false;
@@ -37,11 +37,11 @@ async function resourceToLink(
             <Link.NewTab href={resource.viewUrl()}>{string}</Link.NewTab>
           ) : (
             string
-          )
+          ),
         ),
     (status) => {
       if (status === Http.NOT_FOUND) errorHandled = true;
-    }
+    },
   ).catch((error) => {
     if (errorHandled)
       return `${naiveFormatter(table.name, id)} ${formsText.deletedInline()}`;
@@ -50,24 +50,24 @@ async function resourceToLink(
 }
 
 export function getAuditRecordFormatter(
-  fieldSpecs: RA<QueryFieldSpec>
+  fieldSpecs: RA<QueryFieldSpec>,
 ):
   | ((
-      resultRow: RA<number | string | null>
+      resultRow: RA<number | string | null>,
     ) => Promise<RA<JSX.Element | string>>)
   | undefined {
   if (!needAuditLogFormatting(fieldSpecs)) return undefined;
   const fields = Array.from(
     fieldSpecs
       .map((fieldSpec) => fieldSpec.getField())
-      .map((field) => (field?.isRelationship === false ? field : undefined))
+      .map((field) => (field?.isRelationship === false ? field : undefined)),
   );
 
   const tableIdIndex = fields.findIndex((field) => field?.name === 'tableNum');
   if (tableIdIndex < 0) return undefined;
 
   const parentTableIdIndex = fields.findIndex(
-    (field) => field?.name === 'parentTableNum'
+    (field) => field?.name === 'parentTableNum',
   );
   if (parentTableIdIndex < 0) return undefined;
 
@@ -98,8 +98,8 @@ export function getAuditRecordFormatter(
             return fieldFormat(
               fields[index],
               (value ?? '').toString(),
-              fieldSpecs[index].parser
+              fieldSpecs[index].parser,
             );
-        })
+        }),
     );
 }

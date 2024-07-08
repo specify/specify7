@@ -20,7 +20,7 @@ import type { AppResourceScope, ScopedAppResourceDir } from './types';
 export const globalResourceKey = 'globalResource';
 
 export const getScope = (
-  directory: SerializedResource<SpAppResourceDir>
+  directory: SerializedResource<SpAppResourceDir>,
 ): AppResourceScope => {
   if (directory.discipline === null && directory.collection === null)
     return 'global';
@@ -35,7 +35,7 @@ export const getScope = (
 };
 
 export const getAppResourceTree = (
-  resources: AppResources
+  resources: AppResources,
 ): AppResourcesTree => [
   {
     label: resourcesText.globalResources(),
@@ -67,7 +67,7 @@ function getGlobalAllResources(resources: AppResources): {
   readonly viewSets: RA<SerializedResource<SpViewSetObj>>;
 } {
   const globalDirectories = resources.directories.filter(
-    (directory) => directory.scope === 'global'
+    (directory) => directory.scope === 'global',
   );
   if (globalDirectories.length === 0)
     globalDirectories.push({
@@ -91,7 +91,7 @@ function getGlobalAllResources(resources: AppResources): {
    */
   const { appResources, viewSets } = mergeDirectories(
     globalDirectories,
-    resources
+    resources,
   );
   return {
     directory: mainDirectory,
@@ -106,13 +106,13 @@ const remoteUserType = 'Prefs'.toLowerCase();
 
 const disambiguateGlobalPrefs = (
   appResources: RA<SerializedResource<SpAppResource>>,
-  directories: RA<SerializedResource<SpAppResourceDir>>
+  directories: RA<SerializedResource<SpAppResourceDir>>,
 ): AppResourcesTree[number]['appResources'] =>
   appResources.map((resource) => {
     if (resource.name !== prefResource) return resource;
     const directory = directories.find(
       ({ id }) =>
-        getResourceApiUrl('SpAppResourceDir', id) === resource.spAppResourceDir
+        getResourceApiUrl('SpAppResourceDir', id) === resource.spAppResourceDir,
     );
     if (!directory) return resource;
     const userType = directory.userType?.toLowerCase();
@@ -134,7 +134,7 @@ const disambiguateGlobalPrefs = (
  */
 const mergeDirectories = (
   directories: RA<SerializedResource<SpAppResourceDir>>,
-  resources: AppResources
+  resources: AppResources,
 ): DirectoryChildren =>
   directories
     .map((directory) => getDirectoryChildren(directory, resources))
@@ -143,7 +143,7 @@ const mergeDirectories = (
         appResources: [...combined.appResources, ...appResources],
         viewSets: [...combined.viewSets, ...viewSets],
       }),
-      { appResources: [], viewSets: [] }
+      { appResources: [], viewSets: [] },
     );
 
 type DirectoryChildren = {
@@ -153,24 +153,24 @@ type DirectoryChildren = {
 
 const getDirectoryChildren = (
   directory: SerializedResource<SpAppResourceDir>,
-  resources: AppResources
+  resources: AppResources,
 ): DirectoryChildren => ({
   appResources: resources.appResources.filter(
-    ({ spAppResourceDir }) => spAppResourceDir === directory.resource_uri
+    ({ spAppResourceDir }) => spAppResourceDir === directory.resource_uri,
   ),
   viewSets: resources.viewSets.filter(
-    ({ spAppResourceDir }) => spAppResourceDir === directory.resource_uri
+    ({ spAppResourceDir }) => spAppResourceDir === directory.resource_uri,
   ),
 });
 
 export const getScopedAppResources = (
-  resources: AppResources
+  resources: AppResources,
 ): AppResourcesTree =>
   resources.disciplines.map((discipline) => {
     const directories = resources.directories.filter(
       (directory) =>
         directory.scope === 'discipline' &&
-        directory.discipline === discipline.resource_uri
+        directory.discipline === discipline.resource_uri,
     );
     const directory =
       directories[0] ??
@@ -189,7 +189,7 @@ export const getScopedAppResources = (
 
 const getDisciplineAppResources = (
   discipline: SerializedResource<Discipline>,
-  resources: AppResources
+  resources: AppResources,
 ): AppResourcesTree =>
   resources.collections
     .filter((collection) => collection.discipline === discipline.resource_uri)
@@ -197,7 +197,7 @@ const getDisciplineAppResources = (
       const directories = resources.directories.filter(
         (directory) =>
           directory.collection === collection.resource_uri &&
-          directory.scope === 'collection'
+          directory.scope === 'collection',
       );
       const directory =
         directories[0] ??
@@ -221,7 +221,7 @@ const getDisciplineAppResources = (
 
 const getCollectionResources = (
   collection: SerializedResource<Collection>,
-  resources: AppResources
+  resources: AppResources,
 ): AppResourcesTree => [
   {
     label: userText.users(),
@@ -243,14 +243,14 @@ const getCollectionResources = (
 
 const getUserTypeResources = (
   collection: SerializedResource<Collection>,
-  resources: AppResources
+  resources: AppResources,
 ): AppResourcesTree =>
   userTypes.map((userType) => {
     const directories = resources.directories.filter(
       (directory) =>
         directory.collection === collection.resource_uri &&
         directory.userType?.toLowerCase() === userType.toLowerCase() &&
-        directory.scope === 'userType'
+        directory.scope === 'userType',
     );
     const directory =
       directories[0] ??
@@ -270,14 +270,14 @@ const getUserTypeResources = (
 
 const getUserResources = (
   collection: SerializedResource<Collection>,
-  resources: AppResources
+  resources: AppResources,
 ): AppResourcesTree =>
   resources.users.map((user) => {
     const directories = resources.directories.filter(
       (directory) =>
         directory.collection === collection.resource_uri &&
         directory.specifyUser === user.resource_uri &&
-        directory.scope === 'user'
+        directory.scope === 'user',
     );
     const directory =
       directories[0] ??

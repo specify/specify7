@@ -17,12 +17,12 @@ export function ListOfBaseTables({
   const [isNoRestrictionMode] = userPreferences.use(
     'workBench',
     'wbPlanView',
-    'noRestrictionsMode'
+    'noRestrictionsMode',
   );
   const [showNoAccessTables] = userPreferences.use(
     'workBench',
     'wbPlanView',
-    'showNoAccessTables'
+    'showNoAccessTables',
   );
 
   const filter = React.useCallback(
@@ -31,9 +31,9 @@ export function ListOfBaseTables({
         isNoRestrictionMode,
         showNoAccessTables,
         showAdvancedTables,
-        table
+        table,
       ),
-    [isNoRestrictionMode, showNoAccessTables]
+    [isNoRestrictionMode, showNoAccessTables],
   );
 
   return (
@@ -42,7 +42,8 @@ export function ListOfBaseTables({
       filter={filter}
       getAction={({ name }) =>
         () =>
-          handleClick(name)}
+          handleClick(name)
+        }
     />
   );
 }
@@ -52,7 +53,7 @@ export function ButtonWithConfirmation(props: {
   readonly dialogHeader: LocalizedString;
   readonly dialogMessage: React.ReactNode;
   readonly dialogButtons: (
-    confirm: () => void
+    confirm: () => void,
   ) => Parameters<typeof Dialog>[0]['buttons'];
   readonly onConfirm: () => void;
   readonly showConfirmation?: () => boolean;

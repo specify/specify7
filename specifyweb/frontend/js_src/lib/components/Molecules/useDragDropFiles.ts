@@ -7,7 +7,7 @@ function preventPropagation(event: React.DragEvent): void {
 
 export function useDragDropFiles(
   onFileChange: ((fileList: FileList) => void) | undefined,
-  forwardRef: React.RefObject<HTMLElement>
+  forwardRef: React.RefObject<HTMLElement>,
 ): {
   readonly isDragging: boolean;
   readonly callbacks: {
@@ -26,7 +26,7 @@ export function useDragDropFiles(
       preventPropagation(event);
       setIsDragging(false);
     },
-    [setIsDragging, onFileChange]
+    [setIsDragging, onFileChange],
   );
 
   const handleDragEnter = React.useCallback(
@@ -34,11 +34,11 @@ export function useDragDropFiles(
       setIsDragging(
         typeof onFileChange === 'function' &&
           ((event.dataTransfer?.files?.length ?? 0) !== 0 ||
-            (event.dataTransfer?.items.length ?? 0) !== 0)
+            (event.dataTransfer?.items.length ?? 0) !== 0),
       );
       preventPropagation(event);
     },
-    [onFileChange, setIsDragging]
+    [onFileChange, setIsDragging],
   );
 
   const handleDragLeave = React.useCallback(
@@ -53,7 +53,7 @@ export function useDragDropFiles(
       setIsDragging(false);
       preventPropagation(event);
     },
-    [setIsDragging]
+    [setIsDragging],
   );
 
   return {

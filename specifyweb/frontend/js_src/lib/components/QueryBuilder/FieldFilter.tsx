@@ -91,7 +91,7 @@ export function QueryInputField({
   >();
   const validationAttributes = getValidationAttributes(parser);
   const extractValues = (
-    target: HTMLInputElement | HTMLSelectElement
+    target: HTMLInputElement | HTMLSelectElement,
   ): RA<string> =>
     listInput
       ? Array.isArray(pickListItems)
@@ -117,7 +117,7 @@ export function QueryInputField({
       setValidation(
         queryText.tooLongErrorMessage({
           maxLength: Number.parseInt(validationAttributes.maxLength),
-        })
+        }),
       );
   }, [value, validationAttributes.maxLength, inputRef, setValidation]);
 
@@ -154,7 +154,7 @@ export function QueryInputField({
 
       const validResults = parseResults as RA<ValidParseResult>;
       const parsed = validResults.some(
-        ({ parsed }) => typeof parsed === 'object'
+        ({ parsed }) => typeof parsed === 'object',
       )
         ? input.value
         : validResults
@@ -200,11 +200,7 @@ export function QueryInputField({
   ) : (
     // This allows <input> to grow in size as needed
     <span
-      className={`
-        relative min-w-[theme(spacing.40)] after:invisible
-        after:block after:px-2 after:leading-[0px] after:content-[attr(data-value)]
-        ${isBasic ? 'flex-1' : ''}
-      `}
+      className={`relative min-w-[theme(spacing.40)] after:invisible after:block after:px-2 after:leading-[0px] after:content-[attr(data-value)] ${isBasic ? 'flex-1' : ''} `}
       // The :after pseudo element sets the width
       data-value={value}
     >
@@ -224,7 +220,7 @@ export function QueryInputField({
 
 const resolvePickListItem = (
   items: RA<PickListItemSimple>,
-  currentValue: string
+  currentValue: string,
 ): string =>
   items.find(({ value }) => value === currentValue)?.value ??
   items.find(({ title }) => title === currentValue)?.value ??
@@ -308,7 +304,7 @@ function Between({
 }): JSX.Element {
   const splitValue = React.useMemo(
     () => currentValue.split(','),
-    [currentValue]
+    [currentValue],
   );
   const [values, setValues] = useTriggerState(splitValue);
   const updateValues =
@@ -328,7 +324,7 @@ function Between({
       ...originalParser,
       isRequired: hasFilters,
     }),
-    [originalParser, hasFilters]
+    [originalParser, hasFilters],
   );
   return (
     <>
@@ -379,7 +375,7 @@ function In({
         ? getField(tables.SpQueryField, 'startValue').length
         : undefined,
     }),
-    [parser, enforceLengthLimit]
+    [parser, enforceLengthLimit],
   );
   return (
     <SingleField
@@ -587,7 +583,7 @@ export function QueryLineFilter({
           'step',
           'formatters',
           'parser',
-          'validators'
+          'validators',
         ),
         type: 'text',
       } as const);
@@ -597,12 +593,12 @@ export function QueryLineFilter({
       async () =>
         typeof parser.pickListName === 'string'
           ? fetchPickList(parser.pickListName).then((pickList) =>
-              typeof pickList === 'object' ? getPickListItems(pickList) : false
+              typeof pickList === 'object' ? getPickListItems(pickList) : false,
             )
           : false,
-      [parser.pickListName]
+      [parser.pickListName],
     ),
-    false
+    false,
   );
 
   // Fix for https://github.com/specify/specify7/issues/2296

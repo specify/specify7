@@ -47,12 +47,12 @@ export const fetchFormatters: Promise<{
         fetchSchema,
         fetchDomain,
       ]).then(([definitions]) => xmlToSpec(definitions, formattersSpec()))
-    : foreverFetch()
+    : foreverFetch(),
 );
 
 export const naiveFormatter = (
   tableLabel: string,
-  id: number | undefined
+  id: number | undefined,
 ): LocalizedString =>
   id === undefined
     ? formsText.newResourceTitle({ tableName: tableLabel })
@@ -65,13 +65,13 @@ export async function format<SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA> | undefined,
   defaultFormatter: Formatter | string | undefined,
   tryBest: true,
-  cycleDetection?: RA<SpecifyResource<AnySchema>>
+  cycleDetection?: RA<SpecifyResource<AnySchema>>,
 ): Promise<LocalizedString>;
 export async function format<SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA> | undefined,
   defaultFormatter?: Formatter | string,
   tryBest?: false,
-  cycleDetection?: RA<SpecifyResource<AnySchema>>
+  cycleDetection?: RA<SpecifyResource<AnySchema>>,
 ): Promise<LocalizedString | undefined>;
 export async function format<SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA> | undefined,
@@ -81,7 +81,7 @@ export async function format<SCHEMA extends AnySchema>(
    * are missing
    */
   tryBest = false,
-  cycleDetection: RA<SpecifyResource<AnySchema>> = []
+  cycleDetection: RA<SpecifyResource<AnySchema>> = [],
 ): Promise<LocalizedString | undefined> {
   if (typeof resource !== 'object' || resource === null || resource.deleted)
     return undefined;
@@ -94,7 +94,7 @@ export async function format<SCHEMA extends AnySchema>(
   const { definition } = resolveFormatter(
     formatters,
     resolvedDefaultFormatter,
-    resource.specifyTable
+    resource.specifyTable,
   );
 
   // Doesn't support switch fields that are in child objects
@@ -106,15 +106,15 @@ export async function format<SCHEMA extends AnySchema>(
 
   return Promise.all(
     fields.map(async (field) =>
-      formatField(field, resource, cycleDetection, tryBest)
-    )
+      formatField(field, resource, cycleDetection, tryBest),
+    ),
   ).then((values) => {
     const joined = values.reduce<string>(
       (result, { formatted, separator = '' }, index) =>
         `${result}${
           result.length === 0 && index !== 0 ? '' : separator
         }${formatted}`,
-      ''
+      '',
     );
     return joined.length === 0 ? automaticFormatter : localized(joined);
   });
@@ -125,7 +125,7 @@ export async function format<SCHEMA extends AnySchema>(
  */
 async function determineFields<SCHEMA extends AnySchema>(
   { conditionField, fields }: Formatter['definition'],
-  resource: SpecifyResource<SCHEMA>
+  resource: SpecifyResource<SCHEMA>,
 ): Promise<Formatter['definition']['fields'][number]['fields']> {
   if (fields.length === 0) return [];
   if (conditionField === undefined) return fields[0].fields;
@@ -150,12 +150,12 @@ async function formatField(
   },
   parentResource: SpecifyResource<AnySchema>,
   cycleDetection: RA<SpecifyResource<AnySchema>> = [],
-  tryBest: boolean = false
+  tryBest: boolean = false,
 ): Promise<{ readonly formatted: string; readonly separator?: string }> {
   const isCycle = cycleDetection.some(
     (resource) =>
       resource.id === parentResource.id &&
-      resource.specifyTable === parentResource.specifyTable
+      resource.specifyTable === parentResource.specifyTable,
   );
   const cycleDetector = [...cycleDetection, parentResource];
 
@@ -174,22 +174,22 @@ async function formatField(
             ? aggregate(
                 await resource.rgetCollection(field.name),
                 aggregator,
-                cycleDetector
+                cycleDetector,
               )
             : format(
                 await resource.rgetPromise(field.name),
                 formatter,
                 false,
-                cycleDetector
+                cycleDetector,
               ))
       : formatFieldValue
-      ? await fieldFormat(
-          field,
-          resource.get(field.name) as string | undefined,
-          undefined,
-          fieldFormatter
-        )
-      : (resource.get(field.name) as string | null) ?? undefined;
+        ? await fieldFormat(
+            field,
+            resource.get(field.name) as string | undefined,
+            undefined,
+            fieldFormatter,
+          )
+        : (resource.get(field.name) as string | null) ?? undefined;
   } else
     formatted = tryBest
       ? naiveFormatter(parentResource.specifyTable.name, parentResource.id)
@@ -208,7 +208,7 @@ async function formatField(
 export async function fetchPathAsString(
   baseResource: SpecifyResource<AnySchema>,
   field: RA<LiteralField | Relationship> | undefined,
-  formatFieldValue: boolean = true
+  formatFieldValue: boolean = true,
 ): Promise<string | undefined> {
   const value = await formatField(
     {
@@ -219,7 +219,7 @@ export async function fetchPathAsString(
       fieldFormatter: undefined,
       formatFieldValue,
     },
-    baseResource
+    baseResource,
   );
   return value.formatted;
 }
@@ -227,7 +227,7 @@ export async function fetchPathAsString(
 const resolveFormatter = (
   formatters: RA<Formatter>,
   defaultFormatter: Formatter | string | undefined,
-  table: SpecifyTable
+  table: SpecifyTable,
 ): Formatter =>
   (typeof defaultFormatter === 'object' ? defaultFormatter : undefined) ??
   formatters.find(({ name }) => name === defaultFormatter) ??
@@ -236,7 +236,7 @@ const resolveFormatter = (
 
 const findDefaultFormatter = (
   formatters: RA<Formatter>,
-  table: SpecifyTable
+  table: SpecifyTable,
 ): Formatter | undefined =>
   formatters
     .filter((formatter) => formatter.table === table)
@@ -284,7 +284,7 @@ export const getMainTableFields = (tableName: keyof Tables): RA<LiteralField> =>
   genericTables[tableName].literalFields
     .filter(
       ({ type, isRequired, isHidden, isReadOnly }) =>
-        type === 'java.lang.String' && !isReadOnly && (isRequired || !isHidden)
+        type === 'java.lang.String' && !isReadOnly && (isRequired || !isHidden),
     )
     .sort(
       multiSortFunction(
@@ -296,8 +296,8 @@ export const getMainTableFields = (tableName: keyof Tables): RA<LiteralField> =>
         true,
         ({ overrides, isVirtual }) =>
           !isVirtual && !overrides.isHidden && !overrides.isReadOnly,
-        true
-      )
+        true,
+      ),
     );
 
 export const exportsForTests = { formatField };

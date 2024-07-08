@@ -142,7 +142,7 @@ export const notificationRenderers: IR<
     const collectionId = Number.parseInt(notification.payload.collection_id);
     const mergeName = notification.payload.name;
     const collection = userInformation.availableCollections.find(
-      ({ id }) => id === collectionId
+      ({ id }) => id === collectionId,
     );
 
     return (
@@ -177,7 +177,7 @@ export const notificationRenderers: IR<
     const collectionId = Number.parseInt(notification.payload.collection_id);
     const mergeName = notification.payload.name;
     const collection = userInformation.availableCollections.find(
-      ({ id }) => id === collectionId
+      ({ id }) => id === collectionId,
     );
 
     return (
@@ -197,7 +197,7 @@ export const notificationRenderers: IR<
     const resource = React.useMemo(
       () =>
         typeof model === 'object' ? new model.Resource({ id }) : undefined,
-      [model, id]
+      [model, id],
     );
     return (
       resource !== undefined && (

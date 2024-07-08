@@ -74,7 +74,7 @@ function WrappedXmlEditor<SPEC extends BaseSpec<SimpleXmlNode>>({
     const parsed = parseXml(
       props.data === null || props.data.length === 0
         ? `<${rootTagName} />`
-        : props.data
+        : props.data,
     );
     return typeof parsed === 'string' ? parsed : xmlToJson(parsed);
   }, [props.data, rootTagName]);
@@ -87,8 +87,8 @@ function WrappedXmlEditor<SPEC extends BaseSpec<SimpleXmlNode>>({
         typeof xmlNode === 'object'
           ? serializer(toSimpleXmlNode(xmlNode))
           : (undefined as never),
-      [serializer, xmlNode]
-    )
+      [serializer, xmlNode],
+    ),
   );
 
   useErrorContext('initialXml', xmlNode);
@@ -109,19 +109,21 @@ function WrappedXmlEditor<SPEC extends BaseSpec<SimpleXmlNode>>({
   );
 }
 
-export type XmlEditorContext<SPEC extends BaseSpec<SimpleXmlNode>> =
-  | Omit<AppResourceTabProps, 'data'> & {
-      readonly xmlNode: XmlNode;
-      readonly syncer: Syncer<SimpleXmlNode, SpecToJson<SPEC>>;
-      readonly parsed: GetOrSet<SpecToJson<SPEC>>;
-    };
+export type XmlEditorContext<SPEC extends BaseSpec<SimpleXmlNode>> = Omit<
+  AppResourceTabProps,
+  'data'
+> & {
+  readonly xmlNode: XmlNode;
+  readonly syncer: Syncer<SimpleXmlNode, SpecToJson<SPEC>>;
+  readonly parsed: GetOrSet<SpecToJson<SPEC>>;
+};
 
 export function createXmlContext<SPEC extends BaseSpec<SimpleXmlNode>>(
-  spec: SPEC
+  spec: SPEC,
 ): React.Context<XmlEditorContext<SPEC> | undefined> {
   void spec;
   const context = React.createContext<XmlEditorContext<SPEC> | undefined>(
-    undefined
+    undefined,
   );
   context.displayName = 'XmlEditorContext';
   return context;

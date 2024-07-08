@@ -31,7 +31,7 @@ export function autoMerge(
    * Don't try to predict which record to get the data from.
    */
   cautious = true,
-  targetId?: number
+  targetId?: number,
 ): SerializedResource<AnySchema> {
   if (rawResources.length === 1) return rawResources[0];
   const resources = sortResources(rawResources);
@@ -48,9 +48,9 @@ export function autoMerge(
         allKeys.map((field) => [
           field.name,
           mergeField(field, resources, cautious, targetId),
-        ])
-      )
-    )
+        ]),
+      ),
+    ),
   );
 }
 
@@ -58,7 +58,7 @@ export function autoMerge(
  * Sort from newest to oldest
  */
 const sortResources = (
-  resources: RA<SerializedResource<AnySchema>>
+  resources: RA<SerializedResource<AnySchema>>,
 ): RA<SerializedResource<AnySchema>> =>
   Array.from(resources).sort(
     multiSortFunction(
@@ -67,15 +67,15 @@ const sortResources = (
       (resource) => resource.timestampCreated ?? '',
       true,
       (resource) => resource.id ?? '',
-      true
-    )
+      true,
+    ),
   );
 
 function mergeField(
   field: LiteralField | Relationship,
   resources: RA<SerializedResource<AnySchema>>,
   cautious: boolean,
-  targetId?: number
+  targetId?: number,
 ):
   | RA<SerializedResource<AnySchema>>
   | SerializedResource<AnySchema>
@@ -104,8 +104,8 @@ function mergeField(
                     ? undefined
                     : getResourceApiUrl(field.table.name, targetId),
               }))
-              .map((resource) => JSON.stringify(resource))
-          )
+              .map((resource) => JSON.stringify(resource)),
+          ),
         );
         const parentResources =
           /*
@@ -131,7 +131,7 @@ function mergeField(
               return JSON.stringify(genericResource) === resource
                 ? JSON.stringify(directResource)
                 : undefined;
-            }
+            },
           );
           return resourceInParent ?? resource;
         });
@@ -141,7 +141,7 @@ function mergeField(
         return autoMerge(
           field.relatedTable,
           nonFalsyValues as unknown as RA<SerializedResource<AnySchema>>,
-          cautious
+          cautious,
         );
     else return firstValue;
   // Don't try to merge conflicts
@@ -151,8 +151,8 @@ function mergeField(
     return (
       Array.from(nonFalsyValues).sort(
         sortFunction((string) =>
-          typeof string === 'string' ? string.length : 0
-        )
+          typeof string === 'string' ? string.length : 0,
+        ),
       )[0] ?? firstValue
     );
   else return firstValue;
@@ -165,24 +165,24 @@ function mergeField(
 export const resourceToGeneric = (
   resource: SerializedResource<AnySchema>,
   // Whether to also clear away unique fields
-  strong: boolean
+  strong: boolean,
 ): SerializedResource<AnySchema> => {
   const uniqueFields = new Set(
-    strong ? getUniqueFields(resourceToTable(resource)) : []
+    strong ? getUniqueFields(resourceToTable(resource)) : [],
   );
   return Object.fromEntries(
     Object.entries(resource)
       .filter(
-        ([key]) => !unMergeableFields().has(key) && !uniqueFields.has(key)
+        ([key]) => !unMergeableFields().has(key) && !uniqueFields.has(key),
       )
       .map(([key, value]) => [
         key,
         Array.isArray(value)
           ? value.map((value) => resourceToGeneric(value, strong))
           : typeof value === 'object' && value !== null
-          ? resourceToGeneric(value, strong)
-          : value,
-      ])
+            ? resourceToGeneric(value, strong)
+            : value,
+      ]),
   ) as SerializedResource<AnySchema>;
 };
 
@@ -192,7 +192,7 @@ export const resourceToGeneric = (
  */
 const mergeDependentFields = (
   resources: RA<SerializedResource<AnySchema>>,
-  merged: IR<ReturnType<typeof mergeField>>
+  merged: IR<ReturnType<typeof mergeField>>,
 ): IR<ReturnType<typeof mergeField>> =>
   Object.fromEntries(
     Object.entries(merged).map(([fieldName, value]) => [
@@ -201,20 +201,20 @@ const mergeDependentFields = (
         ? mergeDependentField(
             resources,
             fieldName,
-            merged[strictDependentFields()[fieldName]]
+            merged[strictDependentFields()[fieldName]],
           )
         : value,
-    ])
+    ]),
   );
 
 function mergeDependentField(
   resources: RA<SerializedResource<AnySchema>>,
   fieldName: string,
-  sourceValue: ReturnType<typeof mergeField>
+  sourceValue: ReturnType<typeof mergeField>,
 ): ReturnType<typeof mergeField> {
   const sourceField = strictDependentFields()[fieldName];
   const sourceResource = resources.find(
-    (resource) => resource[sourceField] === sourceValue
+    (resource) => resource[sourceField] === sourceValue,
   );
   return sourceResource?.[fieldName] ?? null;
 }
@@ -224,11 +224,11 @@ function mergeDependentField(
  */
 export const postMergeResource = async (
   resources: RA<SerializedResource<AnySchema>>,
-  merged: IR<Awaited<ReturnType<typeof mergeField>>>
+  merged: IR<Awaited<ReturnType<typeof mergeField>>>,
 ): Promise<IR<Awaited<ReturnType<typeof mergeField>>>> =>
   genericPostProcessors.reduce(
     async (merged, processor) => processor(resources, await merged),
-    postProcessors[resources?.[0]._tableName]?.(resources, merged) ?? merged
+    postProcessors[resources?.[0]._tableName]?.(resources, merged) ?? merged,
   );
 
 const postProcessors: Partial<RR<keyof Tables, typeof postMergeResource>> = {
@@ -240,27 +240,27 @@ const postProcessors: Partial<RR<keyof Tables, typeof postMergeResource>> = {
     const [formattedMerged, ...formattedResources] = await Promise.all(
       [merged as SerializedResource<AnySchema>, ...resources].map(
         async (resource) =>
-          format(deserializeResource(resource)).then((value) => value ?? '')
-      )
+          format(deserializeResource(resource)).then((value) => value ?? ''),
+      ),
     );
     const final = formattedMerged.trim().toLowerCase();
     // FEATURE: detect typos and exclude them from variants (#2913)
     const variants = filterArray(
-      f.unique(formattedResources.map((formatted) => formatted?.trim()))
+      f.unique(formattedResources.map((formatted) => formatted?.trim())),
     ).filter((name) => name.toLowerCase() !== final && name.length > 0);
     const currentVariants = merged.variants as
       | RA<SerializedResource<AgentVariant>>
       | undefined;
     const existingNames = currentVariants?.map(({ name }) => name);
     const newVariants = variants.filter(
-      (variant) => existingNames?.includes(variant) === false
+      (variant) => existingNames?.includes(variant) === false,
     );
     return {
       ...merged,
       variants: [
         ...(currentVariants ?? []),
         ...newVariants.map((name) =>
-          addMissingFields('AgentVariant', { name })
+          addMissingFields('AgentVariant', { name }),
         ),
       ],
     };
@@ -277,7 +277,7 @@ const genericPostProcessors: RA<typeof postMergeResource> = [
               .map((resource) => resource[fieldName])
               .sort(sortFunction(f.id, true))[0] ?? value
           : value,
-      ])
+      ]),
     ),
 ];
 

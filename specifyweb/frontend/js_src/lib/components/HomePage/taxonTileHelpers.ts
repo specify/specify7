@@ -59,7 +59,7 @@ export function mergeNodes(nodes: RA<PairedNode>): {
  */
 function calculateThreshold(nodes: RA<PairedNode>): number {
   const counts = Object.entries(
-    countOccurrences(nodes.map(({ count }) => count))
+    countOccurrences(nodes.map(({ count }) => count)),
   ).reverse();
   let count = 0;
   let threshold = Number.POSITIVE_INFINITY;
@@ -150,7 +150,7 @@ export function makeTreeMap(container: SVGElement, rawRoot: PairedNode) {
     .attr('height', (d) => nodeRead(d, 'y1') - nodeRead(d, 'y0'))
     .attr(
       'class',
-      'cursor-pointer stroke-2 stroke-white dark:stroke-neutral-700'
+      'cursor-pointer stroke-2 stroke-white dark:stroke-neutral-700',
     )
     .attr('fill', (d) => color(d.data.name) as string);
 }
@@ -158,12 +158,12 @@ export function makeTreeMap(container: SVGElement, rawRoot: PairedNode) {
 /** Fix for incorrect typing for d3.HierarchyNode */
 const nodeRead = (
   node: HierarchyNode<PairedNode>,
-  key: 'x0' | 'x1' | 'y0' | 'y1'
+  key: 'x0' | 'x1' | 'y0' | 'y1',
 ): number => (node as unknown as Record<typeof key, number>)[key];
 
 export const getTitleGenerator =
   (
-    genusRankId: number | undefined
+    genusRankId: number | undefined,
   ): ((node: HierarchyNode<PairedNode>) => string) =>
   (node) =>
     filterArray(recurseTreeTiles(node, genusRankId) ?? []).join(' ') ||
@@ -171,7 +171,7 @@ export const getTitleGenerator =
 
 const recurseTreeTiles = (
   node: HierarchyNode<PairedNode>,
-  genusRankId: number | undefined
+  genusRankId: number | undefined,
 ): RA<string | undefined> | undefined =>
   genusRankId === undefined || node.data.rankId >= genusRankId
     ? [

@@ -47,7 +47,7 @@ export const syncers = {
      */
     mode: 'empty' | 'required' | 'skip',
     /** If true, trims the value. Also, converts "" to undefined */
-    trim = true
+    trim = true,
   ) =>
     syncer<SimpleXmlNode, LocalizedString | undefined>(
       (cell) => {
@@ -76,7 +76,7 @@ export const syncers = {
           text: undefined,
           children: {},
         };
-      }
+      },
     ),
 
   /**
@@ -93,7 +93,7 @@ export const syncers = {
       attributes: {},
       text: text?.trim(),
       children: {},
-    })
+    }),
   ),
 
   /**
@@ -108,7 +108,7 @@ export const syncers = {
   default: <T>(
     defaultValue: T extends (...args: RA<unknown>) => unknown
       ? never
-      : T | (() => T)
+      : T | (() => T),
   ) =>
     syncer<T | undefined, T>(
       (value) =>
@@ -119,7 +119,7 @@ export const syncers = {
         value ===
           (typeof defaultValue === 'function' ? defaultValue() : defaultValue)
           ? undefined
-          : value
+          : value,
     ),
 
   /**
@@ -128,7 +128,7 @@ export const syncers = {
   fallback: <T>(
     defaultValue: T extends (...args: RA<unknown>) => unknown
       ? never
-      : T | (() => T)
+      : T | (() => T),
   ) =>
     syncer<T | undefined, T>(
       (value) =>
@@ -136,7 +136,7 @@ export const syncers = {
         (typeof defaultValue === 'function' ? defaultValue() : defaultValue),
       (value) =>
         value ??
-        (typeof defaultValue === 'function' ? defaultValue() : defaultValue)
+        (typeof defaultValue === 'function' ? defaultValue() : defaultValue),
     ),
 
   /**
@@ -154,11 +154,11 @@ export const syncers = {
               (className ?? '').length === 0
                 ? ''
                 : `: ${tableName ?? className ?? ''}`
-            }`
+            }`,
           );
         return table;
       },
-      (table) => table?.longName
+      (table) => table?.longName,
     ),
 
   /**
@@ -171,11 +171,11 @@ export const syncers = {
         console.error(
           `Unknown table${
             (tableName ?? '').length === 0 ? '' : `: ${tableName ?? ''}`
-          }`
+          }`,
         );
       return table;
     },
-    (model) => model?.name
+    (model) => model?.name,
   ),
 
   /**
@@ -190,13 +190,13 @@ export const syncers = {
         return undefined;
       }
     },
-    (table) => table?.tableId
+    (table) => table?.tableId,
   ),
 
   /** Flip a boolean value */
   flip: syncer<boolean, boolean>(
     (value) => !value,
-    (value) => !value
+    (value) => !value,
   ),
 
   /** Convert any string to boolean */
@@ -209,7 +209,7 @@ export const syncers = {
       if (parsed === undefined) console.error('Invalid decimal number');
       return parsed;
     },
-    (value) => value?.toString()
+    (value) => value?.toString(),
   ),
 
   /** Convert string value to number */
@@ -219,7 +219,7 @@ export const syncers = {
       if (parsed === undefined) console.error('Invalid floating point number');
       return parsed;
     },
-    (value) => value?.toString()
+    (value) => value?.toString(),
   ),
 
   /**
@@ -263,7 +263,7 @@ export const syncers = {
                   },
                 ],
         },
-      })
+      }),
     ),
 
   /**
@@ -286,7 +286,7 @@ export const syncers = {
         children: {
           [tagName]: newChildren.map((child) => ({ ...child, tagName })),
         },
-      })
+      }),
     ),
 
   /**
@@ -303,7 +303,7 @@ export const syncers = {
         const merged = mergeSimpleXmlNodes(runBuilder(spec, shape));
         setOriginalSyncerInput(merged, getOriginalSyncerInput(shape));
         return merged;
-      }
+      },
     ),
 
   /**
@@ -326,7 +326,7 @@ export const syncers = {
           return result;
         }),
       // This might be undefined if JSON editor was used, and a typo was made
-      (elements) => elements?.map(deserializer) ?? []
+      (elements) => elements?.map(deserializer) ?? [],
     ),
 
   /**
@@ -341,7 +341,7 @@ export const syncers = {
       ReturnType<SYNCER['serializer']> | undefined
     >(
       (element) => f.maybe(element, serializer),
-      (element) => f.maybe(element, deserializer)
+      (element) => f.maybe(element, deserializer),
     ),
 
   /**
@@ -362,7 +362,7 @@ export const syncers = {
         node,
         logContext: getLogContext(),
       }),
-      ({ node }) => node
+      ({ node }) => node,
     ),
 
   /**
@@ -381,10 +381,10 @@ export const syncers = {
     SUB_SPEC extends BaseSpec<SimpleXmlNode>,
     NEW_OBJECT extends Omit<OBJECT, KEY> & {
       readonly [key in KEY]: SpecToJson<SUB_SPEC>;
-    }
+    },
   >(
     key: KEY,
-    spec: (dependent: OBJECT) => SUB_SPEC
+    spec: (dependent: OBJECT) => SUB_SPEC,
   ) =>
     syncer<OBJECT, NEW_OBJECT>(
       (object) => {
@@ -408,7 +408,7 @@ export const syncers = {
               .deserializer(object?.[key]),
             logContext: getLogContext(),
           },
-        } as unknown as OBJECT)
+        }) as unknown as OBJECT,
     ),
 
   /**
@@ -418,7 +418,7 @@ export const syncers = {
    */
   field: (
     tableName: keyof Tables | undefined,
-    mode: 'silent' | 'strict' | 'warn' = 'strict'
+    mode: 'silent' | 'strict' | 'warn' = 'strict',
   ) =>
     syncer<string | undefined, RA<LiteralField | Relationship> | undefined>(
       (fieldName) => {
@@ -427,11 +427,11 @@ export const syncers = {
         const field = genericTables[tableName].getFields(fieldName);
         if (field === undefined && mode !== 'silent')
           console[mode === 'strict' ? 'error' : 'warn'](
-            `Unknown field: ${fieldName}`
+            `Unknown field: ${fieldName}`,
           );
         return field;
       },
-      (fieldName) => fieldName?.map(({ name }) => name).join('.')
+      (fieldName) => fieldName?.map(({ name }) => name).join('.'),
     ),
 
   /**
@@ -442,23 +442,23 @@ export const syncers = {
     RAW,
     PARSED,
     OBJECT extends { readonly [key in KEY]: RAW },
-    NEW_OBJECT extends Omit<OBJECT, KEY> & { readonly [key in KEY]: PARSED }
+    NEW_OBJECT extends Omit<OBJECT, KEY> & { readonly [key in KEY]: PARSED },
   >(
     key: KEY,
     serializer: (object: OBJECT) => PARSED,
-    deserializer: (object: NEW_OBJECT) => RAW
+    deserializer: (object: NEW_OBJECT) => RAW,
   ) =>
     syncer<OBJECT, NEW_OBJECT>(
       (object) =>
         ({
           ...object,
           [key]: serializer(object),
-        } as unknown as NEW_OBJECT),
+        }) as unknown as NEW_OBJECT,
       (object) =>
         ({
           ...object,
           [key]: deserializer(object ?? {}),
-        } as unknown as OBJECT)
+        }) as unknown as OBJECT,
     ),
 
   /**
@@ -478,12 +478,12 @@ export const syncers = {
             `Unknown value "${
               value ?? ''
             }". Expected one of ${formatDisjunction(
-              (items as RA<string>).map(localized)
-            )}`
+              (items as RA<string>).map(localized),
+            )}`,
           );
         return item;
       },
-      (value) => value
+      (value) => value,
     ),
 
   /**
@@ -497,12 +497,12 @@ export const syncers = {
         if (!hasItem)
           console.error(
             `Unknown value "${value}". Expected one of ${formatDisjunction(
-              items.map((item) => localized(item.toString()))
-            )}`
+              items.map((item) => localized(item.toString())),
+            )}`,
           );
         return hasItem ? value : undefined;
       },
-      (value) => value
+      (value) => value,
     ),
 
   /**
@@ -511,7 +511,7 @@ export const syncers = {
   split: (separator: string) =>
     syncer<string, RA<string>>(
       (value) => (value === '' ? [] : value.split(separator)),
-      (value) => value.join(separator)
+      (value) => value.join(separator),
     ),
 
   /**
@@ -544,7 +544,7 @@ export const syncers = {
           (values) =>
             values
               .map((value) => value.replaceAll(separator, `\\${separator}`))
-              .join(`${separator} `)
+              .join(`${separator} `),
         )
       : error('Only single character separators are supported'),
 
@@ -574,7 +574,7 @@ export const syncers = {
        * If new value is undefined because failed parsing, but old value
        *  wasn't, then use the old value
        */
-      ({ bad, parsed }) => (parsed === undefined ? bad : deserializer(parsed))
+      ({ bad, parsed }) => (parsed === undefined ? bad : deserializer(parsed)),
     ),
 
   /**
@@ -583,7 +583,7 @@ export const syncers = {
   static: <T>(value: T) =>
     syncer<SimpleXmlNode, T>(
       () => value,
-      () => createSimpleXmlNode()
+      () => createSimpleXmlNode(),
     ),
 
   /**
@@ -599,7 +599,7 @@ export const syncers = {
     MAPPER extends {
       readonly [KEY in TYPE_MAPPER[keyof TYPE_MAPPER] | 'Unknown']: (
         input: IN,
-        extra: EXTRA & { readonly rawType: keyof TYPE_MAPPER }
+        extra: EXTRA & { readonly rawType: keyof TYPE_MAPPER },
       ) => BaseSpec<SimpleXmlNode>;
     },
     MAPPED extends {
@@ -609,7 +609,7 @@ export const syncers = {
         readonly type: TYPE_MAPPER[KEY];
         readonly rawType: string & keyof TYPE_MAPPER;
       };
-    }[keyof TYPE_MAPPER]
+    }[keyof TYPE_MAPPER],
   >(
     /**
      * They key in the original object at which the
@@ -640,7 +640,7 @@ export const syncers = {
     /**
      * Optional extra payload to pass to the function that returns the spec
      */
-    extraPayload: EXTRA
+    extraPayload: EXTRA,
   ) =>
     syncer<IN, IN & { readonly [_KEY in KEY]: MAPPED }>(
       (cell) => {
@@ -658,7 +658,7 @@ export const syncers = {
             ]) as TYPE_MAPPER[keyof TYPE_MAPPER]) ?? ('Unknown' as const);
         const spec = mapper[type] ?? mapper.Unknown;
         const { serializer } = syncers.object(
-          spec(cell, { ...extraPayload, rawType })
+          spec(cell, { ...extraPayload, rawType }),
         );
 
         return {
@@ -688,11 +688,11 @@ export const syncers = {
           typeFromRawType === definition.type
             ? rawType
             : Object.entries(typeMapper).find(
-                ([_raw, mapped]) => mapped === definition.type
+                ([_raw, mapped]) => mapped === definition.type,
               )?.[0] ?? rawType;
         const spec = mapper[definition.type] ?? mapper.Unknown;
         const { deserializer } = syncers.object(
-          spec(cell as unknown as IN, { ...extraPayload, rawType })
+          spec(cell as unknown as IN, { ...extraPayload, rawType }),
         );
         const node = deserializer(definition);
         const rawNode: NodeWithContext<SimpleXmlNode> = {
@@ -706,6 +706,6 @@ export const syncers = {
           ...cell,
           [nodeKey]: rawNode,
         } as unknown as IN;
-      }
+      },
     ),
 } as const;

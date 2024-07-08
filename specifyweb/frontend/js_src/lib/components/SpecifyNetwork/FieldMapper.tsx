@@ -66,11 +66,11 @@ const stringGuard =
 // Replace field value with a transformed value
 const valueMapper: IR<(value: unknown) => JSX.Element | string> = {
   'gbif:publishingOrgKey': stringGuard(
-    linkify('https://www.gbif.org/publisher/')
+    linkify('https://www.gbif.org/publisher/'),
   ),
   'gbif:gbifID': stringGuard(linkify('https://www.gbif.org/occurrence/')),
   'idigbio:uuid': stringGuard(
-    linkify('https://www.idigbio.org/portal/records/')
+    linkify('https://www.idigbio.org/portal/records/'),
   ),
   'mopho:specimen.specimen_id': stringGuard((specimenViewUrl) =>
     typeof extractMorphoSourceId(specimenViewUrl) === 'string' ? (
@@ -79,13 +79,13 @@ const valueMapper: IR<(value: unknown) => JSX.Element | string> = {
       </a>
     ) : (
       specimenViewUrl
-    )
+    ),
   ),
   's2n:worms_lsid': stringGuard((wormsLsid) =>
     typeof extractWormsId(wormsLsid) === 'string' ? (
       <a
         href={`http://www.marinespecies.org/aphia.php?p=taxdetails&id=${extractWormsId(
-          wormsLsid
+          wormsLsid,
         )}`}
         rel="noreferrer"
         target="_blank"
@@ -94,7 +94,7 @@ const valueMapper: IR<(value: unknown) => JSX.Element | string> = {
       </a>
     ) : (
       wormsLsid
-    )
+    ),
   ),
 };
 
@@ -193,7 +193,7 @@ export function mapBrokerFields<T>(dictionary: IR<RA<T>>): RA<TableRow<T>> {
       if (merge) {
         merge.fieldNames.forEach((fieldName) => mergedFields.add(fieldName));
         const cells = transpose(
-          merge.fieldNames.map((fieldName) => dictionary[fieldName])
+          merge.fieldNames.map((fieldName) => dictionary[fieldName]),
         );
         return {
           label: merge.label,

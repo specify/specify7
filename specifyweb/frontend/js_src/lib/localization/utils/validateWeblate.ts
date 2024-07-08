@@ -76,13 +76,13 @@ export const localizationKinds = {
 const ignoredComponents = new Set(['glossary']);
 
 export const getComponentKind = (
-  slug: string
+  slug: string,
 ): keyof typeof localizationKinds | undefined =>
   ignoredComponents.has(slug)
     ? undefined
     : slug.startsWith(schemaLocalizationName)
-    ? 'schema'
-    : 'userInterface';
+      ? 'schema'
+      : 'userInterface';
 
 function getToken(): string {
   const key = process.env.WEBLATE_API_TOKEN;
@@ -96,7 +96,7 @@ const doFetch = async (url: string): Promise<IR<unknown>> =>
     headers: { Authorization: getToken() },
   }).then(async (response) => response.json());
 const fetchComponents = async (
-  url = componentsApiUrl
+  url = componentsApiUrl,
 ): Promise<RA<IR<unknown>>> =>
   doFetch(url).then(async ({ results, next }) => [
     ...(typeof next === 'string' ? await fetchComponents(next) : []),
@@ -104,23 +104,23 @@ const fetchComponents = async (
       (results as RA<IR<unknown>>).map(async (component) => ({
         ...component,
         addons: await Promise.all(
-          (component.addons as RA<string>).map(doFetch)
+          (component.addons as RA<string>).map(doFetch),
         ),
-      }))
+      })),
     )),
   ]);
 
 export async function checkComponents(
   localStrings: DictionaryUsages,
-  kind: keyof typeof localizationKinds
+  kind: keyof typeof localizationKinds,
 ): Promise<void> {
   const localComponents = Object.values(localStrings).map(
-    ({ categoryName }) => categoryName
+    ({ categoryName }) => categoryName,
   );
   const allWeblateComponents = await fetchComponents();
   const weblateComponents = allWeblateComponents.filter(
     ({ slug, is_glossary }) =>
-      getComponentKind(slug as string) === kind && is_glossary === false
+      getComponentKind(slug as string) === kind && is_glossary === false,
   );
 
   checkSettings(weblateComponents, kind);
@@ -128,7 +128,7 @@ export async function checkComponents(
   const componentNames = weblateComponents.map(({ slug }) => slug as string);
 
   const unusedComponents = componentNames.filter(
-    (name) => !localComponents.includes(name)
+    (name) => !localComponents.includes(name),
   );
   unusedComponents.forEach((name) =>
     /*
@@ -140,22 +140,22 @@ export async function checkComponents(
     error(
       `Found a project "${name}" in Weblate, but it's not present on ` +
         `the current branch. If you intentionally removed it, make sure to also ` +
-        `remove it from Weblate.`
-    )
+        `remove it from Weblate.`,
+    ),
   );
 
   const missingComponents = localComponents.filter(
-    (name) => !componentNames.includes(name)
+    (name) => !componentNames.includes(name),
   );
   await createMissingComponents(missingComponents, kind);
 }
 
 const createMissingComponents = async (
   names: RA<string>,
-  kind: keyof typeof localizationKinds
+  kind: keyof typeof localizationKinds,
 ): Promise<void> =>
   Promise.all(names.map(async (name) => createComponent(name, kind))).then(
-    f.void
+    f.void,
   );
 
 /**
@@ -166,7 +166,7 @@ const createMissingComponents = async (
  */
 async function createComponent(
   name: string,
-  kind: keyof typeof localizationKinds
+  kind: keyof typeof localizationKinds,
 ): Promise<void> {
   warn(`Creating a component for "${name}"`);
   const { addons, ...settings } =
@@ -182,7 +182,7 @@ async function createComponent(
     .then(async (response) =>
       response.status === Http.CREATED
         ? f.void()
-        : Promise.reject(await response.text())
+        : Promise.reject(await response.text()),
     )
     .then(console.log);
 }
@@ -195,20 +195,20 @@ async function createComponent(
  */
 const checkSettings = (
   components: RA<IR<unknown>>,
-  kind: keyof typeof localizationKinds
+  kind: keyof typeof localizationKinds,
 ): void =>
   components.forEach((component) =>
     compareConfig(
       component.slug as string,
       component,
-      localizationKinds[kind].getComponentSettings(component.slug as string)
-    )
+      localizationKinds[kind].getComponentSettings(component.slug as string),
+    ),
   );
 
 function compareConfig(
   name: string,
   rawRemote: IR<unknown>,
-  local: IR<unknown>
+  local: IR<unknown>,
 ): void {
   const remote: IR<unknown> = {
     ...rawRemote,
@@ -222,10 +222,10 @@ function compareConfig(
         .filter(({ name }) => name in addOns)
         .sort(
           sortFunction(({ name }) =>
-            Object.keys(addOns).indexOf(name as keyof typeof addOns)
-          )
+            Object.keys(addOns).indexOf(name as keyof typeof addOns),
+          ),
         )
-        .map(({ name, configuration }) => [name, configuration])
+        .map(({ name, configuration }) => [name, configuration]),
     ),
     source_language: (rawRemote.source_language as { readonly code: string })
       .code,
@@ -237,7 +237,7 @@ function compareConfig(
           `Weblate config for "${name}" component for "${key}" setting ` +
             `does not match what is expected.\n` +
             `Expected: ${JSON.stringify(value)}\n` +
-            `Received: ${JSON.stringify(remote[key])}`
-        )
+            `Received: ${JSON.stringify(remote[key])}`,
+        ),
   );
 }

@@ -32,7 +32,7 @@ export type SyncerIn<SYNCER extends Syncer<unknown, unknown>> =
 export type SyncerOut<SYNCER extends Syncer<unknown, unknown>> =
   SYNCER extends Syncer<unknown, infer OUTPUT> ? OUTPUT : never;
 
-export type ExtractSyncer<T extends typeof syncers[keyof typeof syncers]> =
+export type ExtractSyncer<T extends (typeof syncers)[keyof typeof syncers]> =
   T extends (...args: RA<any>) => Syncer<unknown, unknown> ? ReturnType<T> : T;
 
 /**
@@ -40,7 +40,7 @@ export type ExtractSyncer<T extends typeof syncers[keyof typeof syncers]> =
  */
 export const syncer = <RAW, PARSED>(
   serializer: Serializer<RAW, PARSED>,
-  deserializer: Deserializer<RAW, PARSED>
+  deserializer: Deserializer<RAW, PARSED>,
 ): Syncer<RAW, PARSED> => ({
   serializer,
   deserializer,
@@ -51,7 +51,7 @@ export const syncer = <RAW, PARSED>(
  * can be reversed is such a cool property!
  */
 export const flipSyncer = <RAW, PARSED>(
-  syncer: Syncer<RAW, PARSED>
+  syncer: Syncer<RAW, PARSED>,
 ): Syncer<PARSED, RAW> => ({
   serializer: syncer.deserializer,
   deserializer: syncer.serializer,
@@ -67,29 +67,29 @@ export function pipe<R1, R2, R3, R4, R5, R6, R7>(
   t3: Syncer<R3, R4>,
   t4: Syncer<R4, R5>,
   t5: Syncer<R5, R6>,
-  t6: Syncer<R6, R7>
+  t6: Syncer<R6, R7>,
 ): Syncer<R1, R7>;
 export function pipe<R1, R2, R3, R4, R5, R6>(
   t1: Syncer<R1, R2>,
   t2: Syncer<R2, R3>,
   t3: Syncer<R3, R4>,
   t4: Syncer<R4, R5>,
-  t5: Syncer<R5, R6>
+  t5: Syncer<R5, R6>,
 ): Syncer<R1, R6>;
 export function pipe<R1, R2, R3, R4, R5>(
   t1: Syncer<R1, R2>,
   t2: Syncer<R2, R3>,
   t3: Syncer<R3, R4>,
-  t4: Syncer<R4, R5>
+  t4: Syncer<R4, R5>,
 ): Syncer<R1, R5>;
 export function pipe<R1, R2, R3, R4>(
   t1: Syncer<R1, R2>,
   t2: Syncer<R2, R3>,
-  t3: Syncer<R3, R4>
+  t3: Syncer<R3, R4>,
 ): Syncer<R1, R4>;
 export function pipe<R1, R2, R3>(
   t1: Syncer<R1, R2>,
-  t2: Syncer<R2, R3>
+  t2: Syncer<R2, R3>,
 ): Syncer<R1, R3>;
 export function pipe(
   ...syncers: RA<Syncer<unknown, unknown>>
@@ -100,7 +100,7 @@ export function pipe(
     deserializer: (value) =>
       syncers.reduceRight(
         (value, { deserializer }) => deserializer(value),
-        value
+        value,
       ),
   };
 }
@@ -127,7 +127,7 @@ export type SpecToJson<SPEC extends BaseSpec<any>> = {
 
 export const runParser = <RAW, SPEC extends BaseSpec<RAW>>(
   spec: SPEC,
-  raw: RAW
+  raw: RAW,
 ): SpecToJson<SPEC> => {
   const logContext = getLogContext();
   const path = logContext[pathKey];
@@ -140,7 +140,7 @@ export const runParser = <RAW, SPEC extends BaseSpec<RAW>>(
       const value = serializer(raw);
       setLogContext(context);
       return [key, value] as const;
-    })
+    }),
   );
   setLogContext(logContext);
   return result;
@@ -148,8 +148,8 @@ export const runParser = <RAW, SPEC extends BaseSpec<RAW>>(
 
 export const runBuilder = <RAW, SPEC extends BaseSpec<RAW>>(
   spec: SPEC,
-  shape: SpecToJson<SPEC>
+  shape: SpecToJson<SPEC>,
 ): RA<RAW> =>
   Object.entries(spec).map(([key, definition]) =>
-    definition.deserializer(shape?.[key])
+    definition.deserializer(shape?.[key]),
   );

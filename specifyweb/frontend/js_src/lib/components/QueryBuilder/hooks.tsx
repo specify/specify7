@@ -43,7 +43,7 @@ export function useFetchQueryResults({
       setResults(resolved);
       resultsRef.current = resolved;
     },
-    [setResults]
+    [setResults],
   );
 
   // Queue for fetching
@@ -95,8 +95,8 @@ export function useFetchQueryResults({
           )
             softFail(
               new Error(
-                `Returned ${newResults.length} results, when expected at most ${fetchSize}`
-              )
+                `Returned ${newResults.length} results, when expected at most ${fetchSize}`,
+              ),
             );
 
           // Results might have changed while fetching
@@ -115,7 +115,7 @@ export function useFetchQueryResults({
 
           fetchersRef.current = removeKey(
             fetchersRef.current,
-            fetchIndex.toString()
+            fetchIndex.toString(),
           );
 
           if (typeof index === 'number' && index >= combinedResults.length)
@@ -126,7 +126,7 @@ export function useFetchQueryResults({
 
       return fetchersRef.current[fetchIndex];
     },
-    [fetchResults, fetchSize, setResults, totalCount]
+    [fetchResults, fetchSize, setResults, totalCount],
   );
 
   return {

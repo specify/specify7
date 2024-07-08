@@ -92,7 +92,7 @@ export function QueryComboBox({
         record?.get('cataloger') ?? userInformation.agent.resource_uri,
         {
           silent: true,
-        }
+        },
       );
     }
     if (field.name === 'receivedBy') {
@@ -102,7 +102,7 @@ export function QueryComboBox({
         record?.get('receivedBy') ?? userInformation.agent.resource_uri,
         {
           silent: true,
-        }
+        },
       );
     }
   }, [resource, field]);
@@ -112,7 +112,7 @@ export function QueryComboBox({
   const typeSearch = useTypeSearch(
     initialTypeSearch,
     field,
-    initialRelatedTable
+    initialRelatedTable,
   );
 
   const isLoaded =
@@ -139,9 +139,9 @@ export function QueryComboBox({
             resource,
             'saved',
             () => setVersion((version) => version + 1),
-            false
+            false,
           ),
-    [resource]
+    [resource],
   );
 
   /*
@@ -186,19 +186,19 @@ export function QueryComboBox({
                           typeof typeSearch === 'object'
                             ? typeSearch.formatter
                             : undefined,
-                          true
+                          true,
                         )
                     ).then((formatted) => ({
                       label:
                         formatted ??
                         naiveFormatter(field.relatedTable.label, resource.id),
                       resource,
-                    }))
+                    })),
               )
           : { label: userText.noPermission(), resource: undefined },
-      [version, value, resource, field, typeSearch]
+      [version, value, resource, field, typeSearch],
     ),
-    false
+    false,
   );
 
   const [state, setState] = React.useState<
@@ -227,18 +227,19 @@ export function QueryComboBox({
     state.type === 'ViewResourceState' || state.type === 'AccessDeniedState'
       ? setState({ type: 'MainState' })
       : typeof relatedCollectionId === 'number' &&
-        !userInformation.availableCollections.some(
-          ({ id }) => id === relatedCollectionId
-        )
-      ? loading(
-          fetchResource('Collection', relatedCollectionId).then((collection) =>
-            setState({
-              type: 'AccessDeniedState',
-              collectionName: collection?.collectionName ?? '',
-            })
+          !userInformation.availableCollections.some(
+            ({ id }) => id === relatedCollectionId,
           )
-        )
-      : setState({ type: 'ViewResourceState', isReadOnly });
+        ? loading(
+            fetchResource('Collection', relatedCollectionId).then(
+              (collection) =>
+                setState({
+                  type: 'AccessDeniedState',
+                  collectionName: collection?.collectionName ?? '',
+                }),
+            ),
+          )
+        : setState({ type: 'ViewResourceState', isReadOnly });
 
   const subViewRelationship = React.useContext(SubViewContext)?.relationship;
   const pendingValueRef = React.useRef('');
@@ -275,7 +276,7 @@ export function QueryComboBox({
                     relatedTable,
                     subViewRelationship,
                   }),
-                })
+                }),
               )
               .map(serializeResource)
               .map((query) => ({
@@ -290,8 +291,8 @@ export function QueryComboBox({
                   collectionId: forceCollection ?? relatedCollectionId,
                   // REFACTOR: allow customizing these arbitrary limits
                   limit: 1000,
-                })
-              )
+                }),
+              ),
           ).then((responses) =>
             /*
              * If there are multiple search fields and both returns the
@@ -305,10 +306,10 @@ export function QueryComboBox({
                 field.isRelationship
                   ? field.relatedTable.name
                   : resource.specifyTable.name,
-                id
+                id,
               ),
               label,
-            }))
+            })),
           )
         : [],
     [
@@ -322,7 +323,7 @@ export function QueryComboBox({
       relatedCollectionId,
       resource,
       treeData,
-    ]
+    ],
   );
 
   const canAdd =
@@ -393,7 +394,7 @@ export function QueryComboBox({
                       resource: pendingValueToResource(
                         field,
                         typeSearch,
-                        pendingValueRef.current
+                        pendingValueRef.current,
                       ),
                     })
             : undefined
@@ -428,7 +429,7 @@ export function QueryComboBox({
                         resource: pendingValueToResource(
                           field,
                           typeSearch,
-                          pendingValueRef.current
+                          pendingValueRef.current,
                         ),
                       })
                 }
@@ -445,8 +446,8 @@ export function QueryComboBox({
                           setState({
                             type: 'AddResourceState',
                             resource,
-                          })
-                        )
+                          }),
+                        ),
                       )
                 }
               />
@@ -484,24 +485,24 @@ export function QueryComboBox({
                                       value: startValue,
                                     }
                                   : fieldName === 'nodeNumber'
-                                  ? {
-                                      field: 'nodeNumber',
-                                      operation: 'between',
-                                      isNot: true,
-                                      value: startValue,
-                                    }
-                                  : fieldName === 'collectionRelTypeId'
-                                  ? {
-                                      field: 'id',
-                                      operation: 'in',
-                                      isNot: false,
-                                      value: startValue,
-                                    }
-                                  : f.error(`extended filter not created`, {
-                                      fieldName,
-                                      startValue,
-                                    })
-                              )
+                                    ? {
+                                        field: 'nodeNumber',
+                                        operation: 'between',
+                                        isNot: true,
+                                        value: startValue,
+                                      }
+                                    : fieldName === 'collectionRelTypeId'
+                                      ? {
+                                          field: 'id',
+                                          operation: 'in',
+                                          isNot: false,
+                                          value: startValue,
+                                        }
+                                      : f.error(`extended filter not created`, {
+                                          fieldName,
+                                          startValue,
+                                        }),
+                              ),
                           ),
                         })
                     : undefined

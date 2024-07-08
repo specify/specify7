@@ -274,18 +274,18 @@ function Option({
   if ((!isEnabled || isDefault) && !isRelationship)
     classes.push(
       '!cursor-not-allowed dark:text-white',
-      'bg-[color:var(--custom-select-b1)]'
+      'bg-[color:var(--custom-select-b1)]',
     );
   else
     classes.push(
       'hover:bg-[color:var(--custom-select-b2)]',
-      'focus:bg-[color:var(--custom-select-b2)]'
+      'focus:bg-[color:var(--custom-select-b2)]',
     );
 
   if (isDefault)
     classes.push(
       'custom-select-option-selected cursor-auto dark:text-white',
-      '!bg-[color:var(--custom-select-accent)]'
+      '!bg-[color:var(--custom-select-accent)]',
     );
 
   const tableLabel = getTable(tableName ?? '')?.label;
@@ -361,10 +361,7 @@ function OptionGroup({
 }: CustomSelectElementOptionGroupProps): JSX.Element {
   return (
     <section
-      className={`
-        flex flex-col bg-[color:var(--custom-select-b1)]
-        custom-select-group-${camelToKebab(selectGroupName)}
-      `}
+      className={`flex flex-col bg-[color:var(--custom-select-b1)] custom-select-group-${camelToKebab(selectGroupName)} `}
       role="group"
     >
       {typeof selectGroupLabel === 'string' && (
@@ -396,7 +393,7 @@ function OptionGroup({
             hasArrow={hasArrow}
             hasIcon={hasIcon}
           />
-        )
+        ),
       )}
     </section>
   );
@@ -427,10 +424,7 @@ function ShadowListOfOptions({
   return (
     <span
       aria-hidden="true"
-      className={`
-        invisible -mt-2 flex flex-col overflow-y-scroll border
-        print:hidden
-      `}
+      className={`invisible -mt-2 flex flex-col overflow-y-scroll border print:hidden`}
       style={{ paddingRight: `${paddingRight}rem` }}
     >
       {fieldNames.map((fieldName, index) => (
@@ -472,7 +466,7 @@ export function CustomSelectElement({
   const has = React.useCallback(
     (property: Properties): boolean =>
       customSelectTypes[customSelectType].includes(property),
-    [customSelectType]
+    [customSelectType],
   );
   const handleChange =
     has('interactive') && typeof handleChangeRaw === 'function'
@@ -485,7 +479,7 @@ export function CustomSelectElement({
 
   // Used to store internal state if handleKeyboardClick is set
   const [selectedValue, setSelectedValue] = React.useState<string | undefined>(
-    undefined
+    undefined,
   );
   const customSelectOptionGroups =
     typeof selectedValue === 'string'
@@ -499,26 +493,26 @@ export function CustomSelectElement({
                   Object.entries(selectOptionsData).map(([key, data]) => [
                     key,
                     { ...data, isDefault: key === selectedValue },
-                  ])
+                  ]),
                 ),
               },
-            ]
-          )
+            ],
+          ),
         )
       : initialSelectOptionGroups;
 
   let inlineOptions: RA<CustomSelectElementDefaultOptionProps> = Object.values(
-    customSelectOptionGroups ?? {}
+    customSelectOptionGroups ?? {},
   ).flatMap(({ selectOptionsData }) =>
     Object.entries(selectOptionsData)
       .filter(
         ([_optionName, { isEnabled, isDefault }]) =>
-          isEnabled !== false || Boolean(isDefault)
+          isEnabled !== false || Boolean(isDefault),
       )
       .map(([optionName, optionData]) => ({
         optionName,
         ...optionData,
-      }))
+      })),
   );
 
   const defaultOption =
@@ -544,9 +538,7 @@ export function CustomSelectElement({
   if (has('header') && selectLabel)
     header = (
       <header
-        className={`
-          border-brand-300 bg-brand-100 dark:bg-brand-500 flex items-center gap-x-1 gap-y-2 rounded rounded-b-none border p-2
-        `}
+        className={`flex items-center gap-x-1 gap-y-2 rounded rounded-b-none border border-brand-300 bg-brand-100 p-2 dark:bg-brand-500`}
       >
         {has('icon') && (
           <Icon
@@ -572,24 +564,16 @@ export function CustomSelectElement({
         aria-describedby={id('validation')}
         aria-expanded={isOpen}
         aria-haspopup="listbox"
-        className={`
-          flex min-h-[theme(spacing.8)] min-w-max cursor-pointer
-          items-center gap-1 rounded px-1 text-left
-          md:min-w-[unset] dark:border-none
-          ${
-            defaultOption?.isRequired === true
-              ? 'custom-select-input-required bg-[color:var(--custom-select-b2)]'
-              : defaultOption?.isHidden === true
-              ? `custom-select-input-hidden bg-[color:var(--custom-select-b2)]
-                dark:!border-solid`
+        className={`flex min-h-[theme(spacing.8)] min-w-max cursor-pointer items-center gap-1 rounded px-1 text-left dark:border-none md:min-w-[unset] ${
+          defaultOption?.isRequired === true
+            ? 'custom-select-input-required bg-[color:var(--custom-select-b2)]'
+            : defaultOption?.isHidden === true
+              ? `custom-select-input-hidden bg-[color:var(--custom-select-b2)] dark:!border-solid`
               : customSelectType === 'OPTIONS_LIST' &&
-                defaultOption?.isRelationship === true
-              ? 'bg-yellow-250 dark:bg-yellow-900'
-              : customSelectElementBackground
-          }
-          ${isOpen ? 'z-[3] rounded-b-none' : ''}
-          ${handleClick === undefined ? '' : 'border border-gray-500'}
-        `}
+                  defaultOption?.isRelationship === true
+                ? 'bg-yellow-250 dark:bg-yellow-900'
+                : customSelectElementBackground
+        } ${isOpen ? 'z-[3] rounded-b-none' : ''} ${handleClick === undefined ? '' : 'border border-gray-500'} `}
         type="button"
         onClick={handleClick}
       >
@@ -603,15 +587,12 @@ export function CustomSelectElement({
           />
         )}
         <span
-          className={`
-            flex-1
-            ${
-              defaultOption.optionLabel === emptyMapping &&
-              customSelectType !== 'SIMPLE_LIST'
-                ? 'font-extrabold text-red-600'
-                : ''
-            }
-          `}
+          className={`flex-1 ${
+            defaultOption.optionLabel === emptyMapping &&
+            customSelectType !== 'SIMPLE_LIST'
+              ? 'font-extrabold text-red-600'
+              : ''
+          } `}
         >
           {defaultOption.optionLabel === emptyMapping
             ? wbPlanText.notSelected()
@@ -643,7 +624,7 @@ export function CustomSelectElement({
 
     const fieldNames = inlineOptions
       .map(({ optionLabel }) =>
-        optionLabel === emptyMapping ? wbPlanText.notSelected() : optionLabel
+        optionLabel === emptyMapping ? wbPlanText.notSelected() : optionLabel,
       )
       .filter((option): option is string => typeof option === 'string');
     optionsShadow =
@@ -661,12 +642,13 @@ export function CustomSelectElement({
     has('interactive') &&
     Object.entries(customSelectOptionGroups ?? {})
       .filter(
-        ([, { selectOptionsData }]) => Object.keys(selectOptionsData).length > 0
+        ([, { selectOptionsData }]) =>
+          Object.keys(selectOptionsData).length > 0,
       )
       .map(
         (
           [selectGroupName, { selectGroupLabel, ...selectGroupData }],
-          index
+          index,
         ) => (
           <OptionGroup
             key={index}
@@ -686,7 +668,7 @@ export function CustomSelectElement({
               customSelectSubtype === 'simple' ? selectGroupLabel : undefined
             }
           />
-        )
+        ),
       );
 
   const listOfOptionsRef = React.useRef<HTMLDivElement>(null);
@@ -695,14 +677,7 @@ export function CustomSelectElement({
       aria-label={selectLabel}
       aria-orientation="vertical"
       aria-readonly={!has('interactive') || typeof handleChange !== 'function'}
-      className={`
-        border-brand-300 h-fit flex-1 cursor-pointer
-        overflow-x-hidden rounded-b border bg-[color:var(--custom-select-b1)]
-        ${has('preview') ? 'z-[2]' : ''}
-        ${has('scroll') ? 'overflow-y-scroll' : 'overflow-y-auto'}
-        ${has('shadow') ? 'max-h-[theme(spacing.64)] shadow-md' : ''}
-        ${customSelectType === 'SUGGESTION_LIST' ? '' : 'min-w-max'}
-      `}
+      className={`h-fit flex-1 cursor-pointer overflow-x-hidden rounded-b border border-brand-300 bg-[color:var(--custom-select-b1)] ${has('preview') ? 'z-[2]' : ''} ${has('scroll') ? 'overflow-y-scroll' : 'overflow-y-auto'} ${has('shadow') ? 'max-h-[theme(spacing.64)] shadow-md' : ''} ${customSelectType === 'SUGGESTION_LIST' ? '' : 'min-w-max'} `}
       id={id('options')}
       ref={listOfOptionsRef}
       role="listbox"
@@ -729,7 +704,7 @@ export function CustomSelectElement({
       has('autoScroll')
     ) {
       const selectedOption = listOfOptionsRef.current.getElementsByClassName(
-        'custom-select-option-selected'
+        'custom-select-option-selected',
       )?.[0] as HTMLElement | undefined;
 
       if (typeof selectedOption === 'object')
@@ -747,11 +722,7 @@ export function CustomSelectElement({
   return (
     <article
       aria-live={has('interactive') ? 'polite' : 'off'}
-      className={`
-        custom-select relative flex h-8 flex-col
-        custom-select-${upperToKebab(customSelectType)}
-        ${customSelectClassNames[customSelectType] ?? ''}
-      `}
+      className={`custom-select relative flex h-8 flex-col custom-select-${upperToKebab(customSelectType)} ${customSelectClassNames[customSelectType] ?? ''} `}
       ref={customSelectElementRef}
       tabIndex={has('tabIndex') ? 0 : has('interactive') ? -1 : undefined}
       title={selectLabel}
@@ -763,7 +734,7 @@ export function CustomSelectElement({
                 // If newly focused element is a child, ignore onBlur event
                 (event.relatedTarget &&
                   customSelectElementRef.current?.contains(
-                    event.relatedTarget as Node
+                    event.relatedTarget as Node,
                   ) === true) ||
                 // If in development, don't close on outside click
                 process.env.NODE_ENV === 'development'
@@ -784,7 +755,7 @@ export function CustomSelectElement({
                 return;
 
               const selectedValueIndex = inlineOptions.findIndex(
-                ({ optionName }) => optionName === defaultOption?.optionName
+                ({ optionName }) => optionName === defaultOption?.optionName,
               );
               let newIndex: number | undefined;
               let close = false;

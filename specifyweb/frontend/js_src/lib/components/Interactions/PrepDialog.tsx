@@ -39,15 +39,15 @@ export function PrepDialog({
   const preparations = React.useMemo(() => {
     if (itemCollection === undefined) return rawPreparations;
     const mutatedPreparations = rawPreparations.map((item) =>
-      Object.fromEntries(Object.entries(item))
+      Object.fromEntries(Object.entries(item)),
     );
     const indexedPreparations = Object.fromEntries(
       group(
         mutatedPreparations.map((preparation) => [
           getResourceApiUrl('Preparation', preparation.preparationId),
           preparation,
-        ])
-      )
+        ]),
+      ),
     );
     itemCollection.models.forEach((preparation) => {
       if (!preparation.isNew()) return;
@@ -66,12 +66,12 @@ export function PrepDialog({
   const [selected, setSelected] = useLiveState<RA<number>>(
     React.useCallback(
       () => Array.from({ length: preparations.length }).fill(0),
-      [preparations.length]
-    )
+      [preparations.length],
+    ),
   );
   const canDeselect = selected.some((value) => value > 0);
   const canSelectAll = selected.some(
-    (value, index) => value < preparations[index].available
+    (value, index) => value < preparations[index].available,
   );
 
   const id = useId('prep-dialog');
@@ -137,7 +137,9 @@ export function PrepDialog({
           onValueChange={(newCount): void => {
             setBulkValue(newCount);
             setSelected(
-              preparations.map(({ available }) => Math.min(available, newCount))
+              preparations.map(({ available }) =>
+                Math.min(available, newCount),
+              ),
             );
           }}
         />
@@ -150,9 +152,9 @@ export function PrepDialog({
               interactionPrepTables.includes(
                 (
                   relationship.relatedTable as SpecifyTable<AnyInteractionPreparation>
-                ).name
-              )
-            )?.relatedTable
+                ).name,
+              ),
+            )?.relatedTable,
           ) as SpecifyTable<AnyInteractionPreparation>;
 
           const items = filterArray(
@@ -161,14 +163,14 @@ export function PrepDialog({
               const result = new itemTable.Resource();
               result.set(
                 'preparation',
-                getResourceApiUrl('Preparation', preparation.preparationId)
+                getResourceApiUrl('Preparation', preparation.preparationId),
               );
               result.set('quantity', selected[index]);
               const loanPreparation = toTable(result, 'LoanPreparation');
               loanPreparation?.set('quantityReturned', 0);
               loanPreparation?.set('quantityResolved', 0);
               return result;
-            })
+            }),
           );
 
           if (typeof itemCollection === 'object') {
@@ -229,20 +231,20 @@ export function PrepDialog({
 
 function setPreparationItems(
   interaction: SpecifyResource<InteractionWithPreps>,
-  items: RA<SpecifyResource<AnyInteractionPreparation>>
+  items: RA<SpecifyResource<AnyInteractionPreparation>>,
 ): void {
   const preparationRelationship = defined(
     interaction.specifyTable.relationships.find((relationship) =>
       interactionPrepTables.includes(
         (relationship.relatedTable as SpecifyTable<AnyInteractionPreparation>)
-          .name
-      )
-    )
+          .name,
+      ),
+    ),
   );
 
   // Typecast as a single case because the relatiships do not exist in the union type.
   (interaction as SpecifyResource<ExchangeOut>).set(
     preparationRelationship.name as 'exchangeOutPreps',
-    items as RA<SpecifyResource<ExchangeOutPrep>>
+    items as RA<SpecifyResource<ExchangeOutPrep>>,
   );
 }

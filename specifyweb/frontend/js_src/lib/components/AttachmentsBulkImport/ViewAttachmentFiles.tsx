@@ -26,7 +26,7 @@ import {
 const resolveAttachmentDatasetData = (
   uploadableFiles: RA<PartialUploadableFileSpec>,
   setDisambiguationIndex: (index: number) => void,
-  baseTableName: keyof Tables | undefined
+  baseTableName: keyof Tables | undefined,
 ) =>
   uploadableFiles.map(
     ({ uploadFile, status, matchedId, disambiguated, attachmentId }, index) => {
@@ -45,7 +45,7 @@ const resolveAttachmentDatasetData = (
           : resolveAttachmentRecord(
               matchedId,
               disambiguated,
-              uploadFile.parsedName
+              uploadFile.parsedName,
             );
 
       const isRuntimeError =
@@ -99,7 +99,7 @@ const resolveAttachmentDatasetData = (
         isNativeError: resolvedRecord?.type === 'invalid',
         isRuntimeError,
       } as const;
-    }
+    },
   );
 
 export function ViewAttachmentFiles({
@@ -116,7 +116,7 @@ export function ViewAttachmentFiles({
     | ((
         disambiguatedId: number,
         indexToDisambiguate: number,
-        multiple: boolean
+        multiple: boolean,
       ) => void)
     | undefined;
   readonly onFilesDropped?: (file: FileList) => void;
@@ -131,15 +131,15 @@ export function ViewAttachmentFiles({
       resolveAttachmentDatasetData(
         uploadableFiles,
         setDisambiguationIndex,
-        baseTableName
+        baseTableName,
       ),
-    [uploadableFiles, setDisambiguationIndex, baseTableName]
+    [uploadableFiles, setDisambiguationIndex, baseTableName],
   );
 
   const fileDropDivRef = React.useRef<HTMLDivElement>(null);
   const { isDragging, callbacks } = useDragDropFiles(
     handleFilesDropped,
-    fileDropDivRef
+    fileDropDivRef,
   );
 
   return (
@@ -162,7 +162,7 @@ export function ViewAttachmentFiles({
                 </div>
                 <div className="flex min-w-fit gap-1">
                   {uploadableFiles.some(
-                    ({ uploadFile: { file } }) => !(file instanceof File)
+                    ({ uploadFile: { file } }) => !(file instanceof File),
                   ) && (
                     <>
                       {dialogIcons.warning}

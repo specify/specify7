@@ -61,7 +61,7 @@ export function FormattersPickList({
       allFormatters
         .filter((formatter) => formatter.table === table)
         .sort(sortFunction(({ title }) => title)),
-    [allFormatters, table]
+    [allFormatters, table],
   );
 
   return (
@@ -89,7 +89,7 @@ export function GenericFormatterPickList<
   ITEM extends {
     readonly title: LocalizedString | undefined;
     readonly table: SpecifyTable | undefined;
-  }
+  },
 >({
   table,
   value = localized(''),
@@ -109,16 +109,16 @@ export function GenericFormatterPickList<
       Object.entries(allFormatters)
         .filter(
           ([_name, formatter]) =>
-            formatter.table === undefined || formatter.table === table
+            formatter.table === undefined || formatter.table === table,
         )
         .sort(
           multiSortFunction(
             ([_name, { table }]) => typeof table === 'object',
             true,
-            ([_name, { title }]) => title ?? ''
-          )
+            ([_name, { title }]) => title ?? '',
+          ),
         ),
-    [allFormatters, table]
+    [allFormatters, table],
   );
 
   return (
@@ -172,8 +172,8 @@ export function ResourceMapping({
       ...(rawPath.length === 0
         ? [emptyMapping]
         : relationship?.isRelationship === false
-        ? []
-        : [formattedEntry]),
+          ? []
+          : [formattedEntry]),
     ]);
   }, [mapping, table.name]);
   const [mappingPath, setMappingPath] = React.useState(sourcePath);
@@ -183,12 +183,12 @@ export function ResourceMapping({
       mappingPathToString(
         mappingPath.at(-1) === emptyMapping
           ? mappingPath.slice(0, -1)
-          : mappingPath
+          : mappingPath,
       ) ===
       mappingPathToString(
         sourcePath.at(-1) === formattedEntry
           ? sourcePath.slice(0, -1)
-          : sourcePath
+          : sourcePath,
       );
     // Fix for https://github.com/specify/specify7/issues/3332
     if (!isSamePath) setMappingPath(sourcePath);
@@ -204,7 +204,7 @@ export function ResourceMapping({
         generateFieldData: 'all',
         spec: navigatorSpecs.formatterEditor,
       }),
-    [table.name, mappingPath]
+    [table.name, mappingPath],
   );
 
   const validation = React.useMemo(
@@ -213,7 +213,7 @@ export function ResourceMapping({
       (mappingPath.length === 0 || mappingPath[0] === emptyMapping)
         ? [wbPlanText.mappingIsRequired()]
         : [],
-    [mappingPath, isRequired]
+    [mappingPath, isRequired],
   );
 
   const mappingLineProps = getMappingLineProps({
@@ -230,8 +230,8 @@ export function ResourceMapping({
           });
           const purePath = getGenericMappingPath(
             path.map((part) =>
-              valueIsPartialField(part) ? parsePartialField(part)[0] : part
-            )
+              valueIsPartialField(part) ? parsePartialField(part)[0] : part,
+            ),
           );
           const inflatedPath = table.getFields(purePath.join('.'));
           const lastField = inflatedPath?.at(-1);
@@ -240,7 +240,7 @@ export function ResourceMapping({
               relationshipIsToMany(lastField) &&
               !navigatorSpecs.formatterEditor.allowTransientToMany
               ? [...path, formattedEntry]
-              : path
+              : path,
           );
           setMapping(inflatedPath);
         },
@@ -273,7 +273,7 @@ export function ResourceMapping({
             />
           </li>
         )),
-        mappingElementDivider
+        mappingElementDivider,
       )}
     </Ul>
   );

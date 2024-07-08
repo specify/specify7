@@ -66,7 +66,7 @@ export function useStableLocation(location: SafeLocation): SafeLocation {
 
 export function locationToState<TYPE extends PureLocationState['type']>(
   location: SafeLocation,
-  type: TYPE
+  type: TYPE,
 ): Extract<PureLocationState, State<TYPE>> | undefined {
   const state = location.state;
   return state?.type === type

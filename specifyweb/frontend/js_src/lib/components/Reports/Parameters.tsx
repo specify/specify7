@@ -41,7 +41,7 @@ export function QueryParametersDialog({
   const table = getTableById(query.contextTableId);
 
   const [fields, setFields] = useLiveState<RA<QueryField>>(
-    React.useCallback(() => parseQueryFields(query.fields), [query])
+    React.useCallback(() => parseQueryFields(query.fields), [query]),
   );
   const id = useId('report-query');
   const [state, setState] = useLiveState<
@@ -65,8 +65,8 @@ export function QueryParametersDialog({
               query,
             }
           : { type: 'Main' },
-      [autoRun, query]
-    )
+      [autoRun, query],
+    ),
   );
 
   const [isBasic, setIsBasic] = useQueryViewPref(query.id);
@@ -111,7 +111,7 @@ export function QueryParametersDialog({
               query: replaceKey(
                 query,
                 'fields',
-                unParseQueryFields(table.name, fields)
+                unParseQueryFields(table.name, fields),
               ),
             })
           }

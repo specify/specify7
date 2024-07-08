@@ -110,7 +110,7 @@ overrideAjax(
       timestampmodified: null,
       version: 1,
     },
-  }
+  },
 );
 
 test('fetchBlockers', async () => {

@@ -37,7 +37,7 @@ export function WbLeafletMap({
             dataset.columns,
             mappings.localityColumns,
             true,
-            true
+            true,
           );
     const localityPoints =
       selection === undefined || mappings === undefined
@@ -45,10 +45,10 @@ export function WbLeafletMap({
         : getLocalitiesDataFromSpreadsheet(
             mappings.localityColumns,
             selection.visualRows.map((visualRow) =>
-              hot.getDataAtRow(visualRow)
+              hot.getDataAtRow(visualRow),
             ),
             getVisualHeaders(hot, dataset.columns),
-            selection.visualRows
+            selection.visualRows,
           );
     setLocalityPoints(localityPoints);
   };

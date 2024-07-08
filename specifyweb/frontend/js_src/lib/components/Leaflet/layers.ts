@@ -201,15 +201,15 @@ const layersPromise: Promise<Layers<SerializedLayer>> =
                   {
                     headers: { Accept: 'application/json' },
                     errorMode: 'silent',
-                  }
+                  },
                 ).then(({ data }) => data)
-              : (JSON.parse(data) as Layers<SerializedLayer>)
+              : (JSON.parse(data) as Layers<SerializedLayer>),
           )
           .catch((error) => {
             softFail(error);
             return defaultTileLayers;
           })
-      : foreverFetch()
+      : foreverFetch(),
   );
 
 /**
@@ -217,7 +217,7 @@ const layersPromise: Promise<Layers<SerializedLayer>> =
  * new L.tileLayer instances (Leaflet doesn't allow reusing them)
  */
 const parseLayersFromJson = (
-  json: Layers<SerializedLayer>
+  json: Layers<SerializedLayer>,
 ): Layers<L.TileLayer> =>
   Object.fromEntries(
     Object.entries(json).map(
@@ -247,11 +247,11 @@ const parseLayersFromJson = (
                             .join(' '),
                         }
                       : {}),
-                  }
+                  },
                 ),
-              ]
-            )
+              ],
+            ),
           ),
-        ] as const
-    )
+        ] as const,
+    ),
   );

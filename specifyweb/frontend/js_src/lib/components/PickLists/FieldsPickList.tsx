@@ -18,10 +18,10 @@ export function FieldsPickList(props: DefaultComboBoxProps): JSX.Element {
             (field) => ({
               value: field.name,
               title: field.label,
-            })
+            }),
           ) ?? []
         : [],
-    [props.resource]
+    [props.resource],
   );
   const [items, setItems] = React.useState<RA<PickListItemSimple>>(getItems);
   React.useEffect(
@@ -37,9 +37,9 @@ export function FieldsPickList(props: DefaultComboBoxProps): JSX.Element {
                 props.resource.set('fieldName', null as never);
               setItems(getItems);
             },
-            true
+            true,
           ),
-    [props.resource, getItems]
+    [props.resource, getItems],
   );
 
   return (

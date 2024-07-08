@@ -43,25 +43,25 @@ export function parseWbMappings(dataset: Dataset): WbMapping | undefined {
   const mappings = parseUploadPlan(dataset.uploadplan);
   const defaultValues = getDefaultValues(mappings.lines, dataset.columns);
   const tableNames = mappings.lines.map(({ mappingPath }) =>
-    getTableFromMappingPath(mappings.baseTable.name, mappingPath)
+    getTableFromMappingPath(mappings.baseTable.name, mappingPath),
   );
   const mappedHeaders = identifyMappedHeaders(
     dataset,
     tableNames,
-    mappings.lines
+    mappings.lines,
   );
   const localityColumns = findLocalityColumnsInDataSet(
     mappings.baseTable.name,
-    mappings.lines
+    mappings.lines,
   );
   const coordinateColumns = identifyCoordinateColumns(
     localityColumns,
-    dataset.columns
+    dataset.columns,
   );
   const treeRanks = identifyTreeRanks(
     mappings.lines,
     tableNames,
-    dataset.columns
+    dataset.columns,
   );
   return {
     ...mappings,
@@ -76,20 +76,20 @@ export function parseWbMappings(dataset: Dataset): WbMapping | undefined {
 
 const getDefaultValues = (
   lines: RA<SplitMappingPath>,
-  columns: RA<string>
+  columns: RA<string>,
 ): RR<number, string> =>
   Object.fromEntries(
     Object.entries(extractDefaultValues(lines, wbText.emptyStringInline())).map(
       ([headerName, defaultValue]) => [
         columns.indexOf(headerName),
         defaultValue,
-      ]
-    )
+      ],
+    ),
   );
 
 const extractDefaultValues = (
   lines: RA<SplitMappingPath>,
-  emptyStringReplacement: string
+  emptyStringReplacement: string,
 ): IR<string> =>
   Object.fromEntries(
     lines
@@ -99,14 +99,14 @@ const extractDefaultValues = (
           ? emptyStringReplacement
           : columnOptions.default,
       ])
-      .filter(([, defaultValue]) => defaultValue !== null)
+      .filter(([, defaultValue]) => defaultValue !== null),
   );
 
 /** Match columns to respective table icons */
 const identifyMappedHeaders = (
   dataset: Dataset,
   tableNames: RA<keyof Tables>,
-  lines: RA<SplitMappingPath>
+  lines: RA<SplitMappingPath>,
 ): RR<number, string> =>
   Object.fromEntries(
     tableNames.map(
@@ -114,14 +114,14 @@ const identifyMappedHeaders = (
         [
           mappingColToPhysicalCol(dataset, lines, mappingCol),
           getIcon(tableName) ?? unknownIcon,
-        ] as const
-    )
+        ] as const,
+    ),
   );
 
 const mappingColToPhysicalCol = (
   dataset: Dataset,
   lines: RA<SplitMappingPath>,
-  mappingCol: number
+  mappingCol: number,
 ): number => dataset.columns.indexOf(lines[mappingCol].headerName);
 
 const columnHandlers = {
@@ -133,7 +133,7 @@ const columnHandlers = {
 
 const identifyCoordinateColumns = (
   localityColumns: RA<IR<string>>,
-  columns: RA<string>
+  columns: RA<string>,
 ): RR<number, 'Lat' | 'Long'> =>
   Object.fromEntries(
     localityColumns.flatMap((localityColumns) =>
@@ -144,15 +144,15 @@ const identifyCoordinateColumns = (
             [
               columns.indexOf(headerName),
               columnHandlers[fieldName as 'locality.latitude1'],
-            ] as const
-        )
-    )
+            ] as const,
+        ),
+    ),
   );
 
 const identifyTreeRanks = (
   lines: RA<SplitMappingPath>,
   tableNames: RA<keyof Tables>,
-  columns: RA<string>
+  columns: RA<string>,
 ): RA<
   RA<{
     readonly physicalCol: number;
@@ -170,7 +170,7 @@ const identifyTreeRanks = (
           valueIsTreeRank(mappingPath.at(-2)) &&
           mappingPath.at(-1) === 'name' &&
           isTreeTable(tableNames[index]) &&
-          hasTreeAccess(tableNames[index] as AnyTree['tableName'], 'read')
+          hasTreeAccess(tableNames[index] as AnyTree['tableName'], 'read'),
       )
       .map(({ mappingPath, headerName, index }) => ({
         mappingGroup: mappingPathToString(mappingPath.slice(0, -2)),
@@ -183,7 +183,7 @@ const identifyTreeRanks = (
         physicalCol,
         rankId:
           Object.values(strictGetTreeDefinitionItems(tableName, false)).find(
-            ({ name }) => name === rankName
+            ({ name }) => name === rankName,
           )?.rankId ?? -1,
       }))
       .reduce<
@@ -197,5 +197,5 @@ const identifyTreeRanks = (
         groupedRanks[mappingGroup] ??= [];
         groupedRanks[mappingGroup].push(rankMapping);
         return groupedRanks;
-      }, {})
+      }, {}),
   );

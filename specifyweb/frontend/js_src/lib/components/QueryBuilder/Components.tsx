@@ -57,7 +57,7 @@ export function SaveQueryButtons({
   const [recordSetId] = useSearchParameter('recordsetid');
 
   const [showDialog, setShowDialog] = React.useState<'save' | 'saveAs' | false>(
-    false
+    false,
   );
   const showConfirmation = (): boolean =>
     fields.some(({ mappingPath }) => !mappingPathIsComplete(mappingPath));
@@ -89,11 +89,11 @@ export function SaveQueryButtons({
             navigate(
               formatUrl(
                 `/specify/query/${queryId}/`,
-                recordSetId === undefined ? {} : { recordSetId }
+                recordSetId === undefined ? {} : { recordSetId },
               ),
               {
                 replace: true,
-              }
+              },
             );
           }}
         />
@@ -133,7 +133,7 @@ export function ToggleMappingViewButton({
 }): JSX.Element {
   const [showMappingView = true, setShowMappingView] = useCachedState(
     'queryBuilder',
-    'showMappingView'
+    'showMappingView',
   );
 
   return (

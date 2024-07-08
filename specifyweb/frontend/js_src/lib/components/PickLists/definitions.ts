@@ -71,7 +71,7 @@ export const PickListTypes = {
 export const createPickListItem = (
   // It's weird that value can be null, but that's what the data model says
   value: string | null,
-  title: string
+  title: string,
 ): SerializedResource<PickListItem> =>
   addMissingFields('PickListItem', {
     value: value ?? title,
@@ -81,13 +81,13 @@ export const createPickListItem = (
 
 export function definePicklist(
   name: string,
-  items: RA<SerializedResource<PickListItem>>
+  items: RA<SerializedResource<PickListItem>>,
 ): SpecifyResource<PickList> {
   const pickList = new tables.PickList.Resource(
     {},
     {
       noBusinessRules: true,
-    }
+    },
   );
   pickList.set('name', name);
   pickList.set('readOnly', true);
@@ -102,9 +102,9 @@ export const pickListTablesPickList = f.store(() =>
   definePicklist(
     '_TablesByName',
     Object.values(genericTables).map(({ name, label }) =>
-      createPickListItem(name.toLowerCase(), label)
-    )
-  )
+      createPickListItem(name.toLowerCase(), label),
+    ),
+  ),
 );
 
 export const monthsPickListName = '_Months';
@@ -113,9 +113,9 @@ export const monthsPickList = f.store(() =>
   definePicklist(
     monthsPickListName,
     months.map((title, index) =>
-      createPickListItem((index + 1).toString(), title)
-    )
-  )
+      createPickListItem((index + 1).toString(), title),
+    ),
+  ),
 );
 
 /**
@@ -149,8 +149,8 @@ export const getFrontEndPickLists = f.store<{
   const tablesPickList = definePicklist(
     '_Tables',
     Object.values(genericTables).map(({ tableId, label }) =>
-      createPickListItem(tableId.toString(), label)
-    )
+      createPickListItem(tableId.toString(), label),
+    ),
   );
 
   const frontEndPickLists = {
@@ -158,16 +158,16 @@ export const getFrontEndPickLists = f.store<{
       agentType: definePicklist(
         '_AgentTypeComboBox',
         agentTypes.map((title, index) =>
-          createPickListItem(index.toString(), title)
-        )
+          createPickListItem(index.toString(), title),
+        ),
       ),
     },
     SpAuditLog: {
       action: definePicklist(
         '_AuditLogAction',
         auditLogActions.map((title, index) =>
-          createPickListItem(index.toString(), title)
-        )
+          createPickListItem(index.toString(), title),
+        ),
       ),
       tableNum: tablesPickList,
       parentTableNum: tablesPickList,
@@ -176,21 +176,21 @@ export const getFrontEndPickLists = f.store<{
       type: definePicklist(
         '_PickListType',
         pickListTypes.map((title, index) =>
-          createPickListItem(index.toString(), title)
-        )
+          createPickListItem(index.toString(), title),
+        ),
       ),
       tableName: pickListTablesPickList(),
       sortType: definePicklist(
         '_PickListSortType',
         pickListSortTypes().map((title, index) =>
-          createPickListItem(index.toString(), title)
-        )
+          createPickListItem(index.toString(), title),
+        ),
       ),
     },
     SpecifyUser: {
       userType: definePicklist(
         '_UserType',
-        userTypes.map((title) => createPickListItem(title, title))
+        userTypes.map((title) => createPickListItem(title, title)),
       ),
     },
     GeographyTreeDef: { fullNameDirection },
@@ -214,8 +214,8 @@ export const getFrontEndPickLists = f.store<{
       mimeType: definePicklist(
         '_MimeType',
         ['application/json', 'text/xml', 'jrxml/label', 'jrxml/report'].map(
-          (mimeType) => createPickListItem(mimeType, mimeType)
-        )
+          (mimeType) => createPickListItem(mimeType, mimeType),
+        ),
       ).set('readOnly', false),
     },
   };
@@ -225,7 +225,7 @@ export const getFrontEndPickLists = f.store<{
     ...Object.fromEntries(
       Object.values(frontEndPickLists)
         .flatMap((entries) => Object.values(entries))
-        .map((pickList) => [pickList.get('name'), pickList] as const)
+        .map((pickList) => [pickList.get('name'), pickList] as const),
     ),
   };
 
@@ -247,8 +247,8 @@ export const fetchPickLists = async (): Promise<
       ...pickLists,
       ...Object.fromEntries(
         records.map(
-          (pickList) => [pickList.name, deserializeResource(pickList)] as const
-        )
+          (pickList) => [pickList.name, deserializeResource(pickList)] as const,
+        ),
       ),
     };
     return pickLists;

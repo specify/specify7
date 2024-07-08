@@ -20,7 +20,7 @@ import { parseXml } from './parseXml';
 export const createLinter =
   (handler: (view: EditorView) => RA<Diagnostic>) =>
   (
-    handleChange: (results: RA<Diagnostic>, view: EditorView) => void
+    handleChange: (results: RA<Diagnostic>, view: EditorView) => void,
   ): Extension =>
     linter((view) => {
       let results: RA<Diagnostic>;
@@ -42,7 +42,7 @@ export const createLinter =
     });
 
 export const xmlLinter = (
-  spec: BaseSpec<SimpleXmlNode> | undefined
+  spec: BaseSpec<SimpleXmlNode> | undefined,
 ): ReturnType<typeof createLinter> =>
   createLinter(({ state }) => {
     const string = state.doc.toString();
@@ -50,14 +50,14 @@ export const xmlLinter = (
     return typeof parsed === 'string'
       ? [formatXmlError(state.doc, parsed)]
       : typeof spec === 'object'
-      ? parseXmlUsingSpec(spec, parsed, string)
-      : [];
+        ? parseXmlUsingSpec(spec, parsed, string)
+        : [];
   });
 
 function parseXmlUsingSpec(
   spec: BaseSpec<SimpleXmlNode>,
   xml: Element,
-  string: string
+  string: string,
 ): RA<Diagnostic> {
   const parsed = xmlToJson(xml);
   const simple = toSimpleXmlNode(parsed);
@@ -78,8 +78,8 @@ function parseXmlUsingSpec(
               .join('\n'),
             ...findNodePosition(string, context[pathKey] as RA<LogPathPart>),
           }
-        : undefined
-    )
+        : undefined,
+    ),
   );
 }
 

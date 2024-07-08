@@ -23,7 +23,7 @@ export function SpecifyNetworkCollection(): JSX.Element | null {
   const [key] = collectionPreferences.use(
     'statistics',
     'specifyNetwork',
-    'publishingOrganization'
+    'publishingOrganization',
   );
   return (
     <Container.Full className="gap-8">
@@ -36,7 +36,7 @@ function Institution(): JSX.Element | null {
   const [key, setKey] = collectionPreferences.use(
     'statistics',
     'specifyNetwork',
-    'publishingOrganization'
+    'publishingOrganization',
   );
   const [organizationTitle] = useAsyncState(
     React.useCallback(
@@ -50,13 +50,13 @@ function Institution(): JSX.Element | null {
                 Accept: 'application/json',
               },
             }).then(({ data }) => data.title),
-      [key]
+      [key],
     ),
-    true
+    true,
   );
   const mapData = React.useMemo(
     () => (key === undefined ? undefined : { publishingOrg: key }),
-    [key]
+    [key],
   );
   return organizationTitle === undefined ||
     key === undefined ||
@@ -95,18 +95,18 @@ function Collections({
         paginateGbif(
           formatUrl(`https://api.gbif.org/v1/dataset/search/`, {
             publishingOrg: key,
-          })
+          }),
         ).then((results) =>
           results
             .map(({ title, key }) => ({
               title: localized(title as string),
               key: key as string,
             }))
-            .sort(sortFunction(({ title }) => title))
+            .sort(sortFunction(({ title }) => title)),
         ),
-      [key]
+      [key],
     ),
-    false
+    false,
   );
 
   const [collection = collections?.[0].key, setCollection] =
@@ -119,7 +119,7 @@ function Collections({
         : {
             datasetKey: collection,
           },
-    [collection]
+    [collection],
   );
 
   return collections === undefined ? (

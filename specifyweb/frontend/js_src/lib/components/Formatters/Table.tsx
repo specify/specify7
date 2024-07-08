@@ -19,10 +19,10 @@ export function FormatterTablesList(): JSX.Element {
     group(
       filterArray(
         items.map((item) =>
-          item.table === undefined ? undefined : [item.table.name, item]
-        )
-      )
-    )
+          item.table === undefined ? undefined : [item.table.name, item],
+        ),
+      ),
+    ),
   );
   return (
     <>

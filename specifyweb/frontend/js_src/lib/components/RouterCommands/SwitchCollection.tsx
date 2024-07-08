@@ -11,7 +11,7 @@ import { formatUrl } from '../Router/queryString';
 export const switchCollection = (
   navigate: SafeNavigateFunction,
   collectionId: number,
-  nextUrl?: string
+  nextUrl?: string,
 ): void =>
   /**
    * React router has prevention against navigation during render. Unfortunately,
@@ -24,9 +24,9 @@ export const switchCollection = (
         formatUrl(`/specify/command/switch-collection/${collectionId}/`, {
           nextUrl:
             nextUrl ?? toLocalUrl(globalThis.location.href) ?? '/specify/',
-        })
+        }),
       ),
-    0
+    0,
   );
 
 export function SwitchCollectionCommand(): null {
@@ -41,9 +41,9 @@ export function SwitchCollectionCommand(): null {
           body: collectionId!.toString(),
           errorMode: 'dismissible',
         }).then(() => globalThis.location.replace(nextUrl)),
-      [collectionId, nextUrl]
+      [collectionId, nextUrl],
     ),
-    true
+    true,
   );
 
   return null;

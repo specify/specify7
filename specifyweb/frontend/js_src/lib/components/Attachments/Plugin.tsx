@@ -28,7 +28,7 @@ import { attachmentSettingsPromise, uploadFile } from './attachments';
 import { AttachmentViewer } from './Viewer';
 
 export function AttachmentsPlugin(
-  props: Parameters<typeof ProtectedAttachmentsPlugin>[0]
+  props: Parameters<typeof ProtectedAttachmentsPlugin>[0],
 ): JSX.Element | null {
   const [available] = usePromise(attachmentSettingsPromise, true);
   return available === undefined ? null : available ? (
@@ -42,7 +42,7 @@ export function AttachmentsPlugin(
 
 /** Retrieve attachment related to a given resource */
 export function useAttachment(
-  resource: SpecifyResource<AnySchema> | undefined
+  resource: SpecifyResource<AnySchema> | undefined,
 ): GetOrSet<SpecifyResource<Attachment> | false | undefined> {
   return useAsyncState(
     React.useCallback(
@@ -50,9 +50,9 @@ export function useAttachment(
         f.maybe(resource, (resource) => toTable(resource, 'Attachment')) ??
         (await resource?.rgetPromise('attachment')) ??
         false,
-      [resource]
+      [resource],
     ),
-    false
+    false,
   );
 }
 
@@ -68,7 +68,7 @@ function ProtectedAttachmentsPlugin({
 
   const filePickerContainer = React.useRef<HTMLDivElement | null>(null);
   const related = useTriggerState(
-    resource?.specifyTable.name === 'Attachment' ? undefined : resource
+    resource?.specifyTable.name === 'Attachment' ? undefined : resource,
   );
   return attachment === undefined ? (
     <AttachmentPluginSkeleton />
@@ -138,13 +138,13 @@ export function UploadAttachment({
             .then((attachment) =>
               attachment === undefined
                 ? handleFailed()
-                : handleUploaded(attachment)
+                : handleUploaded(attachment),
             )
             .catch((error) => {
               handleFailed();
               raise(error);
             })
-            .finally(() => setUploadProgress(undefined))
+            .finally(() => setUploadProgress(undefined)),
         )
       }
     />

@@ -1,4 +1,3 @@
-
 # [Specify 7](https://www.specifysoftware.org/products/specify-7/)
 
 The [Specify Collections Consortium](https://www.specifysoftware.org) is pleased
@@ -133,7 +132,7 @@ for evaluation purposes.
 ### Specify Collections Consortium (SCC) Members:
 
 We encourage members to use
-our  [Dockerized compositions](https://github.com/specify/docker-compositions)
+our [Dockerized compositions](https://github.com/specify/docker-compositions)
 of Specify 7. You can choose your desired version, make the necessary
 adjustments and then run a single command to get everything
 working. It is very simple and can be easily updated when new versions are
@@ -142,7 +141,7 @@ using Docker is available within the repository.
 
 [**📨 Click here to request
 access**](mailto:support@specifysoftware.org?subject=Requesting%20Docker%20Repository%20Access&body=My%20GitHub%20username%20is%3A%20%0D%0AMy%20Specify%20Member%20Institution%20is%3A%20%0D%0AAdditional%20Questions%20or%20Notes%3A%20)
-or email  [support@specifysoftware.org](mailto:support@specifysoftware.org)
+or email [support@specifysoftware.org](mailto:support@specifysoftware.org)
 with your GitHub username, member
 institution or collection, and any additional questions you have for us.
 
@@ -376,13 +375,13 @@ apply only those migrations needed for Specify 7 to operate.
 
 ### The Specify 7 Worker
 
-Starting from version `v7.6.0`, the Specify WorkBench utilizes this 
-dedicated worker process to handle the upload and validation operations. 
+Starting from version `v7.6.0`, the Specify WorkBench utilizes this
+dedicated worker process to handle the upload and validation operations.
 
 Starting from version `v7.9.0`, the record merging functionality employs the worker to handle all record merging activities.
 
-This worker process utilizes [Celery](https://docs.celeryproject.org/en/master/index.html), a job queue 
-management system, with [Redis](https://docs.celeryproject.org/en/master/getting-started/backends-and-brokers/redis.html) 
+This worker process utilizes [Celery](https://docs.celeryproject.org/en/master/index.html), a job queue
+management system, with [Redis](https://docs.celeryproject.org/en/master/getting-started/backends-and-brokers/redis.html)
 serving as the broker.
 
 The worker process can be started from the commandline

@@ -43,7 +43,7 @@ context.onmessage = function (e) {
     });
 
     const maxWidth = Math.max(
-      ...sheetData.map((row) => (row as RA<string>).length)
+      ...sheetData.map((row) => (row as RA<string>).length),
     );
 
     const data: RA<RA<string>> = sheetData.map((row) => {
@@ -56,7 +56,7 @@ context.onmessage = function (e) {
       });
       if (unSparseRow.length < maxWidth) {
         unSparseRow.push(
-          ...Array.from({ length: maxWidth - unSparseRow.length }).fill('')
+          ...Array.from({ length: maxWidth - unSparseRow.length }).fill(''),
         );
       }
       return unSparseRow;

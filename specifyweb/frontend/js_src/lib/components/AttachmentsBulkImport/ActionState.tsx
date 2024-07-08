@@ -29,7 +29,7 @@ export function ActionState({
       {commonText.colonLine({
         label: attachmentsText.onFile(),
         value: `${formatNumber(workProgress.uploaded)} / ${formatNumber(
-          workProgress.total
+          workProgress.total,
         )}`,
       })}
       <Progress max={workProgress.total} value={workProgress.uploaded} />

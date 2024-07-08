@@ -27,27 +27,27 @@ export function getUniqueName(
    * Can get this number from SQL schema for a given field
    */
   maxLength: number = Number.POSITIVE_INFINITY,
-  type: keyof typeof format = 'title'
+  type: keyof typeof format = 'title',
 ): LocalizedString {
   if (!usedNames.includes(name)) return localized(name);
   const { prefix, suffix } = format[type];
   const reSuffix = new RegExp(
     `${escapeRegExp(prefix)}(\\d+)${escapeRegExp(suffix)}$`,
-    'u'
+    'u',
   );
   const matchedSuffix = reSuffix.exec(name);
   const [{ length }, indexString] = matchedSuffix ?? ([[], '0'] as const);
   const strippedName = length > 0 ? name.slice(0, -1 * length) : name;
   const indexRegex = new RegExp(
     `^${escapeRegExp(strippedName)}${reSuffix.source}`,
-    'u'
+    'u',
   );
   const newIndex =
     Math.max(
       ...filterArray([
         f.parseInt(indexString),
         ...usedNames.map((name) => f.parseInt(indexRegex.exec(name)?.[1]) ?? 1),
-      ])
+      ]),
     ) + 1;
   const uniquePart = `${prefix}${newIndex}${suffix}`;
   const newName =
@@ -60,7 +60,7 @@ export function getUniqueName(
         name.slice(0, -1 * uniquePart.length),
         usedNames,
         maxLength,
-        type
+        type,
       )
     : localized(newName);
 }

@@ -14,11 +14,11 @@ snapshot(PartialDateUi, () =>
   props(getBaseResource(), {
     canChangePrecision: false,
     defaultPrecision: 'month-year',
-  })
+  }),
 );
 snapshot(PartialDateUi, () =>
   props(getBaseResource(), {
     canChangePrecision: false,
     defaultPrecision: 'year',
-  })
+  }),
 );

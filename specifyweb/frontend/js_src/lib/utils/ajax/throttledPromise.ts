@@ -46,13 +46,13 @@ export const networkRequestsSpec: RR<
 export async function throttledPromise<T>(
   key: keyof typeof networkRequestsSpec,
   promiseGenerator: () => Promise<T>,
-  promiseSpec: number | string
+  promiseSpec: number | string,
 ): Promise<T | undefined> {
   const { maxFetchCount, currentRequests } = networkRequestsSpec[key];
   while (currentRequests.length > maxFetchCount)
     await Promise.any(currentRequests);
   const promiseInFulfilled = maybeFulfilled.find(
-    (fulfilledPromise) => fulfilledPromise.spec === promiseSpec
+    (fulfilledPromise) => fulfilledPromise.spec === promiseSpec,
   );
   if (promiseInFulfilled !== undefined) return promiseInFulfilled;
   let promiseKilled = false;
@@ -70,7 +70,7 @@ export async function throttledPromise<T>(
         resolve(result);
       });
       currentRequests.push(promiseToAdd);
-    }
+    },
   ) as KillablePromise<T | undefined>;
   returnPromise.spec = promiseSpec;
 

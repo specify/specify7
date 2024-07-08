@@ -24,12 +24,12 @@ export function useDatePreferences(): {
   const [useDatePicker] = userPreferences.use(
     'form',
     'ui',
-    'useAccessibleFullDatePicker'
+    'useAccessibleFullDatePicker',
   );
   const [useMonthPicker] = userPreferences.use(
     'form',
     'ui',
-    'useAccessibleMonthPicker'
+    'useAccessibleMonthPicker',
   );
   return React.useMemo(() => {
     const dateType = useDatePicker ? 'date' : 'text';

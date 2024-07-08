@@ -44,14 +44,14 @@ export function CollectionPicker({
 }: {
   readonly collectionId: readonly [
     number | undefined,
-    (collectionId: number) => void
+    (collectionId: number) => void,
   ];
   readonly isReadOnly?: boolean;
 }): JSX.Element {
   const [sortOrder] = userPreferences.use(
     'chooseCollection',
     'general',
-    'sortOrder'
+    'sortOrder',
   );
   const sortedCollections = React.useMemo(() => {
     const { direction, fieldNames } = toLargeSortConfig(sortOrder);
@@ -61,11 +61,11 @@ export function CollectionPicker({
           (collection) =>
             collection[
               toLowerCase(
-                fieldNames.join(backboneFieldSeparator) as 'description'
+                fieldNames.join(backboneFieldSeparator) as 'description',
               )
             ],
-          direction === 'desc'
-        )
+          direction === 'desc',
+        ),
       )
       .map(serializeResource);
   }, [sortOrder]);

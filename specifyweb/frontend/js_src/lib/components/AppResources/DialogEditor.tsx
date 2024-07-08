@@ -24,14 +24,14 @@ export function DialogEditor(): JSX.Element | null {
       const resource = await fetchResource('SpAppResource', idInt);
       const directory = await fetchResource(
         'SpAppResourceDir',
-        strictIdFromUrl(resource.spAppResourceDir)
+        strictIdFromUrl(resource.spAppResourceDir),
       );
       return {
         resource,
         directory: { ...directory, scope: getScope(directory) },
       };
     }, [id]),
-    true
+    true,
   );
   const handleClose = React.useContext(OverlayContext);
 

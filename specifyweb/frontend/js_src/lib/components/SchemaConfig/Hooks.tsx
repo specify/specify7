@@ -22,11 +22,11 @@ import type { SchemaData } from './schemaData';
 
 export function useSchemaContainer(
   tables: SchemaData['tables'],
-  tableName: keyof Tables
+  tableName: keyof Tables,
 ): readonly [
   SerializedResource<SpLocaleContainer>,
   (container: SerializedResource<SpLocaleContainer>) => void,
-  boolean
+  boolean,
 ] {
   const initialValue = React.useRef<
     SerializedResource<SpLocaleContainer> | undefined
@@ -35,13 +35,13 @@ export function useSchemaContainer(
     React.useCallback(() => {
       const container = defined(
         Object.values(tables).find(
-          ({ name }) => name.toLowerCase() === tableName.toLowerCase()
+          ({ name }) => name.toLowerCase() === tableName.toLowerCase(),
         ),
-        `Unable to find SpLocaleContainer for ${tableName}`
+        `Unable to find SpLocaleContainer for ${tableName}`,
       );
       initialValue.current = container;
       return container;
-    }, [tables, tableName])
+    }, [tables, tableName]),
   );
   return [
     state,
@@ -54,12 +54,12 @@ export function useContainerString(
   itemType: 'containerDesc' | 'containerName',
   container: SerializedResource<SpLocaleContainer>,
   language: string,
-  country: string | null
+  country: string | null,
 ): Readonly<
   readonly [
     NewSpLocaleItemString | SpLocaleItemString | undefined,
     (containerName: NewSpLocaleItemString | SpLocaleItemString) => void,
-    boolean
+    boolean,
   ]
 > {
   const initialValue = React.useRef<
@@ -78,13 +78,13 @@ export function useContainerString(
             language,
             country,
             itemType,
-            container.resource_uri
+            container.resource_uri,
           );
           return initialValue.current;
         }),
-      [itemType, container.resource_uri, language, country]
+      [itemType, container.resource_uri, language, country],
     ),
-    false
+    false,
   );
   return [
     state,
@@ -96,7 +96,7 @@ export function useContainerString(
 export function useContainerItems(
   container: SerializedResource<SpLocaleContainer>,
   language: string,
-  country: string | null
+  country: string | null,
 ): Readonly<
   readonly [
     (
@@ -105,9 +105,9 @@ export function useContainerItems(
     ),
     (
       index: number,
-      item: SerializedResource<SpLocaleContainerItem> & WithFetchedStrings
+      item: SerializedResource<SpLocaleContainerItem> & WithFetchedStrings,
     ) => void,
-    RA<number>
+    RA<number>,
   ]
 > {
   const [changed, setChanged] = React.useState<RA<number>>([]);
@@ -130,12 +130,12 @@ export function useContainerItems(
                 domainFilter: false,
               },
               backendFilter(
-                formatRelationshipPath('itemName', 'container')
-              ).equals(container.id)
+                formatRelationshipPath('itemName', 'container'),
+              ).equals(container.id),
             ).then(({ records }) =>
               Object.fromEntries(
-                group(records.map((name) => [name.itemName, name]))
-              )
+                group(records.map((name) => [name.itemName, name])),
+              ),
             ),
             descriptions: fetchCollection(
               'SpLocaleItemStr',
@@ -144,17 +144,17 @@ export function useContainerItems(
                 domainFilter: false,
               },
               backendFilter(
-                formatRelationshipPath('itemDesc', 'container')
-              ).equals(container.id)
+                formatRelationshipPath('itemDesc', 'container'),
+              ).equals(container.id),
             ).then(({ records }) =>
               Object.fromEntries(
                 group(
                   records.map((description) => [
                     description.itemDesc,
                     description,
-                  ])
-                )
-              )
+                  ]),
+                ),
+              ),
             ),
           })
           .then(({ items, names, descriptions }) =>
@@ -162,7 +162,7 @@ export function useContainerItems(
               .filter(
                 (item) =>
                   /* Ignore removed fields (i.e, Accession->deaccessions) */
-                  getTable(container.name)!.getField(item.name) !== undefined
+                  getTable(container.name)!.getField(item.name) !== undefined,
               )
               .map((item) => ({
                 ...item,
@@ -172,41 +172,41 @@ export function useContainerItems(
                     language,
                     country,
                     'itemName',
-                    item.resource_uri
+                    item.resource_uri,
                   ),
                   desc: findString(
                     descriptions[item.resource_uri],
                     language,
                     country,
                     'itemDesc',
-                    item.resource_uri
+                    item.resource_uri,
                   ),
                 },
-              }))
+              })),
           )
           .then((items) => {
             setChanged([]);
             return items;
           }),
-      [container.id, container.resource_uri, container.name, language, country]
+      [container.id, container.resource_uri, container.name, language, country],
     ),
-    false
+    false,
   );
   const setItem = React.useCallback(
     (
       index: number,
-      item: SerializedResource<SpLocaleContainerItem> & WithFetchedStrings
+      item: SerializedResource<SpLocaleContainerItem> & WithFetchedStrings,
     ) => {
       setChanged([...changed, index]);
       setState(
         replaceItem(
           defined(state, 'Trying to modify SpLocalContainerItem before load'),
           index,
-          item
-        )
+          item,
+        ),
       );
     },
-    [state, setState, changed]
+    [state, setState, changed],
   );
   return [state, setItem, changed];
 }

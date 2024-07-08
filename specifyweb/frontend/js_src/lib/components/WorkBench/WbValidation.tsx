@@ -34,7 +34,7 @@ type UploadResults = {
             readonly [
               tableName: Lowercase<keyof Tables>,
               id: number,
-              alternativeLabel: string | ''
+              alternativeLabel: string | '',
             ]
           >
         >
@@ -86,7 +86,7 @@ export class WbValidation {
       case 'live': {
         this.liveValidationStack = Array.from(
           { length: this.workbench.hot.countRows() },
-          (_, visualRow) => this.workbench.hot!.toPhysicalRow(visualRow)
+          (_, visualRow) => this.workbench.hot!.toPhysicalRow(visualRow),
         ).reverse();
         this.triggerLiveValidation();
         this.workbench.utils?.toggleCellTypes('newCells', 'remove');
@@ -143,7 +143,7 @@ export class WbValidation {
 
   private gotRowValidationResult(
     physicalRow: number,
-    result: UploadResult
+    result: UploadResult,
   ): void {
     if (
       this.validationMode !== 'live' ||
@@ -152,21 +152,21 @@ export class WbValidation {
       return;
     this.uploadResults.ambiguousMatches[physicalRow] = [];
     this.workbench.hot.batch(() =>
-      this.applyRowValidationResults(physicalRow, result)
+      this.applyRowValidationResults(physicalRow, result),
     );
     this.workbench.cells?.updateCellInfoStats();
   }
 
   private getHeadersFromMappingPath(
     mappingPathFilter: RA<string>,
-    tryBest = true
+    tryBest = true,
   ): RA<string> {
     if (this.workbench.mappings === undefined) return [];
     if (!tryBest)
       // Find all columns with the shared parent mapping path
       return this.workbench.mappings.lines
         .filter(({ mappingPath }) =>
-          pathStartsWith(mappingPath, mappingPathFilter)
+          pathStartsWith(mappingPath, mappingPathFilter),
         )
         .map(({ headerName }) => headerName);
     return (
@@ -175,8 +175,8 @@ export class WbValidation {
           .mappings!.lines.filter(({ mappingPath }) =>
             pathStartsWith(
               mappingPath,
-              mappingPathFilter.slice(0, index === 0 ? undefined : -1 * index)
-            )
+              mappingPathFilter.slice(0, index === 0 ? undefined : -1 * index),
+            ),
           )
           .map(({ headerName }) => headerName);
         return columns.length > 0 ? columns : undefined;
@@ -186,7 +186,7 @@ export class WbValidation {
 
   private resolveValidationColumns(
     initialColumns: RA<string>,
-    inferColumnsCallback: (() => RA<string>) | undefined = undefined
+    inferColumnsCallback: (() => RA<string>) | undefined = undefined,
   ): RA<number> {
     // See https://github.com/specify/specify7/issues/810
     let columns: RA<string> = initialColumns.filter(Boolean);
@@ -202,7 +202,7 @@ export class WbValidation {
 
   private applyRowValidationResults(
     physicalRow: number,
-    result: UploadResult
+    result: UploadResult,
   ): void {
     const rowMeta: WritableArray<Partial<Writable<WbMeta>>> =
       this.workbench.dataset.columns.map(() => ({
@@ -214,16 +214,16 @@ export class WbValidation {
       key: KEY,
       value: KEY extends 'issues' ? string : WbMeta[KEY],
       columns: RA<string>,
-      inferColumnsCallback: (() => RA<string>) | undefined
+      inferColumnsCallback: (() => RA<string>) | undefined,
     ): void =>
       this.resolveValidationColumns(columns, inferColumnsCallback).forEach(
         (physicalCol) => {
           if (key === 'issues')
             (rowMeta[physicalCol][key] as WritableArray<string>).push(
-              capitalize(value as string)
+              capitalize(value as string),
             );
           else rowMeta[physicalCol][key as 'isNew'] = value as boolean;
-        }
+        },
       );
 
     this.parseRowValidationResults(result, setMeta, physicalRow);
@@ -237,8 +237,8 @@ export class WbValidation {
           physicalRow,
           physicalCol,
           key,
-          value
-        )
+          value,
+        ),
       );
     });
   }
@@ -252,12 +252,12 @@ export class WbValidation {
       key: KEY,
       value: KEY extends 'issues' ? string : WbMeta[KEY],
       columns: RA<string>,
-      inferColumnsCallback: (() => RA<string>) | undefined
-    ) => void
+      inferColumnsCallback: (() => RA<string>) | undefined,
+    ) => void,
   ): void {
     const resolveColumns = this.getHeadersFromMappingPath.bind(
       this,
-      mappingPath
+      mappingPath,
     );
 
     // Ignore these statuses
@@ -269,10 +269,10 @@ export class WbValidation {
         setMetaCallback(
           'issues',
           whitespaceSensitive(
-            resolveValidationMessage(issueMessage, payload ?? {})
+            resolveValidationMessage(issueMessage, payload ?? {}),
           ),
           [column],
-          resolveColumns
+          resolveColumns,
         );
       });
     else if (uploadStatus === 'NoMatch')
@@ -280,7 +280,7 @@ export class WbValidation {
         'issues',
         wbText.noMatchErrorMessage(),
         recordResult.NoMatch.info.columns,
-        resolveColumns
+        resolveColumns,
       );
     else if (uploadStatus === 'FailedBusinessRule')
       setMetaCallback(
@@ -288,18 +288,18 @@ export class WbValidation {
         whitespaceSensitive(
           resolveValidationMessage(
             recordResult.FailedBusinessRule.message,
-            recordResult.FailedBusinessRule.payload ?? {}
-          )
+            recordResult.FailedBusinessRule.payload ?? {},
+          ),
         ),
         recordResult.FailedBusinessRule.info.columns,
-        resolveColumns
+        resolveColumns,
       );
     else if (uploadStatus === 'MatchedMultiple') {
       this.uploadResults.ambiguousMatches[physicalRow] ??= [];
       this.uploadResults.ambiguousMatches[physicalRow].push({
         physicalCols: this.resolveValidationColumns(
           recordResult.MatchedMultiple.info.columns,
-          resolveColumns
+          resolveColumns,
         ),
         mappingPath,
         ids: recordResult.MatchedMultiple.ids,
@@ -309,14 +309,14 @@ export class WbValidation {
         'issues',
         whitespaceSensitive(wbText.matchedMultipleErrorMessage()),
         recordResult.MatchedMultiple.info.columns,
-        resolveColumns
+        resolveColumns,
       );
     } else if (uploadStatus === 'Uploaded') {
       setMetaCallback(
         'isNew',
         true,
         recordResult.Uploaded.info.columns,
-        undefined
+        undefined,
       );
       const tableName = toLowerCase(recordResult.Uploaded.info.tableName);
       this.uploadResults.recordCounts[tableName] ??= 0;
@@ -324,7 +324,7 @@ export class WbValidation {
       this.uploadResults.newRecords[physicalRow] ??= [];
       this.resolveValidationColumns(
         recordResult.Uploaded.info.columns,
-        undefined
+        undefined,
       ).forEach((physicalCol) => {
         this.uploadResults.newRecords[physicalRow]![physicalCol] ??= [];
         this.uploadResults.newRecords[physicalRow]![physicalCol].push([
@@ -339,8 +339,8 @@ export class WbValidation {
       raise(
         new Error(
           `Trying to parse unknown uploadStatus type "${uploadStatus}" at
-        row ${this.workbench.hot?.toVisualRow(physicalRow) ?? ''}`
-        )
+        row ${this.workbench.hot?.toVisualRow(physicalRow) ?? ''}`,
+        ),
       );
   }
 
@@ -350,10 +350,10 @@ export class WbValidation {
       key: KEY,
       value: KEY extends 'issues' ? string : WbMeta[KEY],
       columns: RA<string>,
-      inferColumnsCallback: (() => RA<string>) | undefined
+      inferColumnsCallback: (() => RA<string>) | undefined,
     ) => void,
     physicalRow: number,
-    initialMappingPath: MappingPath | undefined = []
+    initialMappingPath: MappingPath | undefined = [],
   ): void {
     const uploadResult = result.UploadResult;
     const uploadStatus = Object.keys(uploadResult.record_result)[0];
@@ -369,7 +369,7 @@ export class WbValidation {
       uploadResult.record_result,
       physicalRow,
       mappingPath,
-      setMetaCallback
+      setMetaCallback,
     );
 
     Object.entries(uploadResult.toOne).forEach(([fieldName, uploadResult]) =>
@@ -379,8 +379,8 @@ export class WbValidation {
         physicalRow,
         fieldName === 'parent' && isTree
           ? mappingPath.slice(0, -1)
-          : [...mappingPath, fieldName]
-      )
+          : [...mappingPath, fieldName],
+      ),
     );
 
     Object.entries(uploadResult.toMany).forEach(([fieldName, uploadResults]) =>
@@ -389,9 +389,9 @@ export class WbValidation {
           uploadResult,
           setMetaCallback,
           physicalRow,
-          [...mappingPath, fieldName, formatToManyIndex(toManyIndex + 1)]
-        )
-      )
+          [...mappingPath, fieldName, formatToManyIndex(toManyIndex + 1)],
+        ),
+      ),
     );
   }
 

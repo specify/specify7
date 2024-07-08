@@ -40,8 +40,8 @@ export function unsafeTriggerNotFound(): boolean {
     unsafeLocation === undefined
       ? '/specify/'
       : pathIsOverlay(locationToUrl(unsafeLocation))
-      ? '/specify/overlay/not-found/'
-      : unsafeLocation,
+        ? '/specify/overlay/not-found/'
+        : unsafeLocation,
     {
       replace: true,
       state:
@@ -49,7 +49,7 @@ export function unsafeTriggerNotFound(): boolean {
         pathIsOverlay(locationToUrl(unsafeLocation))
           ? unsafeLocation.state
           : { type: 'NotFoundPage' },
-    }
+    },
   );
   return typeof unsafeNavigateFunction === 'function';
 }
@@ -162,16 +162,16 @@ function useLinkIntercept(background: SafeLocation | undefined): void {
                   location: resolvedLocation.current,
                 },
               }
-            : undefined
+            : undefined,
         );
       }),
-    [navigate]
+    [navigate],
   );
 }
 
 /* Partially inspired by react-router's useLinkClickHandler() */
 function parseClickEvent(
-  event: Readonly<MouseEvent>
+  event: Readonly<MouseEvent>,
 ): { readonly url: string; readonly isOverlay: boolean } | undefined {
   const link = (event.target as HTMLElement)?.closest('a');
   if (
@@ -201,8 +201,8 @@ function parseClickEvent(
             'Relative URLs are not supported as they are unpredictable. ' +
               'Relative URL leads to different path depending on whether ' +
               'current URL has trailing slash or not. Consider calling ' +
-              'resolveRelative() first'
-          )
+              'resolveRelative() first',
+          ),
         );
       return {
         url: localUrl,
@@ -236,7 +236,7 @@ function Overlay({
     // False positive
     // eslint-disable-next-line functional/prefer-tacit
     () => handleCloseRef.current(),
-    []
+    [],
   );
 
   return (
@@ -257,7 +257,7 @@ export const isOverlay = (overlayContext: () => void): boolean =>
  * When in overlay, this context provides a function that closes the overlay.
  */
 export const OverlayContext = React.createContext<() => void>(
-  defaultOverlayContext
+  defaultOverlayContext,
 );
 OverlayContext.displayName = 'OverlayContext';
 
@@ -266,7 +266,7 @@ OverlayContext.displayName = 'OverlayContext';
  * this will provide location of that component
  */
 export const OverlayLocation = React.createContext<SafeLocation | undefined>(
-  undefined
+  undefined,
 );
 OverlayLocation.displayName = 'OverlayLocation';
 

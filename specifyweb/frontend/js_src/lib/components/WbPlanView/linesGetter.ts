@@ -23,10 +23,11 @@ export const defaultColumnOptions: ColumnOptions = {
 } as const;
 
 export const columnOptionsAreDefault = (
-  columnOptions: ColumnOptions
+  columnOptions: ColumnOptions,
 ): boolean =>
   Object.entries(columnOptions).every(
-    ([key, value]) => defaultColumnOptions[key as keyof ColumnOptions] === value
+    ([key, value]) =>
+      defaultColumnOptions[key as keyof ColumnOptions] === value,
   );
 
 /** Produce WbPlanView line and (optionally) run autoMapper s*/
@@ -51,7 +52,7 @@ export function getLinesFromHeaders({
       mappingPath: [emptyMapping],
       headerName,
       columnOptions: defaultColumnOptions,
-    })
+    }),
   );
 
   if (!runAutoMapper || baseTableName === undefined) return lines;
@@ -86,7 +87,7 @@ export function getLinesFromHeaders({
  */
 export function getLinesFromUploadPlan(
   originalHeaders: RA<string>,
-  uploadPlan: UploadPlan
+  uploadPlan: UploadPlan,
 ): {
   readonly baseTableName: keyof Tables;
   readonly lines: RA<MappingLine>;
@@ -115,8 +116,8 @@ export function getLinesFromUploadPlan(
         getLinesFromHeaders({
           headers,
           runAutoMapper: false,
-        })
-      )
+        }),
+      ),
     );
 
   return {

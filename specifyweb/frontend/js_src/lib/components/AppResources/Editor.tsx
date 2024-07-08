@@ -66,14 +66,14 @@ export function AppResourceEditor({
         resource:
           | SerializedResource<SpAppResource>
           | SerializedResource<SpViewSetObject>,
-        initialData: number | undefined
+        initialData: number | undefined,
       ) => void)
     | undefined;
   readonly onSaved: (
     resource:
       | SerializedResource<SpAppResource>
       | SerializedResource<SpViewSetObject>,
-    directory: ScopedAppResourceDir
+    directory: ScopedAppResourceDir,
   ) => void;
   readonly children: (renderProps: {
     readonly headerString: LocalizedString;
@@ -85,7 +85,7 @@ export function AppResourceEditor({
 }): JSX.Element | null {
   const appResource = React.useMemo(
     () => deserializeResource(resource as SerializedResource<SpAppResource>),
-    [resource]
+    [resource],
   );
   useErrorContext('appResource', resource);
 
@@ -121,7 +121,7 @@ export function AppResourceEditor({
       setIsFullScreen(value);
       syncData();
     },
-    [syncData]
+    [syncData],
   );
 
   const { title, formatted, form } = useResourceView({
@@ -142,7 +142,7 @@ export function AppResourceEditor({
       setTab(index);
       syncData();
     },
-    [syncData, setTab]
+    [syncData, setTab],
   );
   const isEditingForm =
     typeof toResource(resource, 'SpViewSetObj') === 'object';
@@ -213,7 +213,7 @@ export function AppResourceEditor({
   >(undefined);
   const handleSetCleanup = React.useCallback(
     (callback: (() => Promise<void>) | undefined) => setCleanup(() => callback),
-    []
+    [],
   );
 
   if (resourceData === undefined) return null;
@@ -224,7 +224,7 @@ export function AppResourceEditor({
       {formElement !== null &&
       hasToolPermission(
         'resources',
-        appResource.isNew() ? 'create' : 'update'
+        appResource.isNew() ? 'create' : 'update',
       ) ? (
         <SaveButton
           form={formElement}
@@ -246,7 +246,7 @@ export function AppResourceEditor({
                               tableName: appResource.specifyTable.label,
                             }),
                     },
-                    isClone ? resourceData.id : undefined
+                    isClone ? resourceData.id : undefined,
                   );
                 }
               : undefined
@@ -262,12 +262,12 @@ export function AppResourceEditor({
                 if (appResource.isNew())
                   appResource.set(
                     'spAppResourceDir',
-                    resourceDirectory.resource_uri
+                    resourceDirectory.resource_uri,
                   );
 
                 const subType = f.maybe(
                   toResource(serializeResource(appResource), 'SpAppResource'),
-                  getAppResourceType
+                  getAppResourceType,
                 );
                 // Set a mime type if it's not set yet
                 if (typeof subType === 'string') {
@@ -275,7 +275,7 @@ export function AppResourceEditor({
                   if (typeof type.name === 'string')
                     appResource.set(
                       'mimeType',
-                      type.mimeType ?? appResource.get('mimeType')
+                      type.mimeType ?? appResource.get('mimeType'),
                     );
                 }
 
@@ -291,7 +291,7 @@ export function AppResourceEditor({
                   data: data === undefined ? resourceData.data : data,
                   spAppResource:
                     toTable(appResource, 'SpAppResource')?.get(
-                      'resource_uri'
+                      'resource_uri',
                     ) ?? null,
                   spViewSetObj:
                     toTable(appResource, 'SpViewSetObj')?.get('resource_uri') ??
@@ -300,21 +300,21 @@ export function AppResourceEditor({
                 await appResourceData.save();
                 if (appResource.specifyTable.name === 'SpAppResource')
                   await clearUrlCache(
-                    getAppResourceUrl(appResource.get('name'))
+                    getAppResourceUrl(appResource.get('name')),
                   );
                 await cleanup?.();
 
                 setResourceData(
                   serializeResource(
-                    appResourceData
-                  ) as SerializedResource<SpAppResourceData>
+                    appResourceData,
+                  ) as SerializedResource<SpAppResourceData>,
                 );
 
                 handleSaved(resource, {
                   ...resourceDirectory,
                   scope: getScope(resourceDirectory),
                 });
-              })
+              }),
             );
 
             return false;

@@ -5,7 +5,7 @@ import { defined } from '../../utils/types';
 import { backboneFieldSeparator } from '../DataModel/helpers';
 
 export const columnToFieldMapper = (
-  sqlSelectQuery: string
+  sqlSelectQuery: string,
 ): ((columnName: string) => string) =>
   columnToField.bind(undefined, parseSqlQuery(sqlSelectQuery));
 
@@ -15,7 +15,7 @@ const reJoin = /join\s+(\w+\.\w+)\s+(?:as\s+)?(\w+)/giu;
 export function parseSqlQuery(sqlSelectQuery: string): IR<string> {
   const [_match, table, tableAlias] = defined(
     reFrom.exec(sqlSelectQuery) ?? undefined,
-    `Unable to parse SQL query: ${sqlSelectQuery}`
+    `Unable to parse SQL query: ${sqlSelectQuery}`,
   );
   const columnMapping = {
     [tableAlias]: table,
@@ -27,7 +27,7 @@ export function parseSqlQuery(sqlSelectQuery: string): IR<string> {
       const [table, fieldName] = fieldWithTable.split(backboneFieldSeparator);
       const col = defined(columnMapping[table]);
       columnMapping[alias] = `${col}.${fieldName}`;
-    }
+    },
   );
   return columnMapping;
 }

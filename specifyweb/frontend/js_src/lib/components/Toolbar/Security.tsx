@@ -45,9 +45,9 @@ export function SecurityPanel(): JSX.Element | null {
               domainFilter: false,
             }).then(({ records }) => records[0])
           : undefined,
-      []
+      [],
     ),
-    true
+    true,
   );
 
   const users = useAsyncState<IR<SerializedResource<SpecifyUser>>>(
@@ -61,9 +61,9 @@ export function SecurityPanel(): JSX.Element | null {
           : {
               [userInformation.id]: serializeResource(userInformation),
             },
-      []
+      [],
     ),
-    false
+    false,
   );
 
   const libraryRoles = useAsyncState<IR<Role>>(
@@ -77,13 +77,13 @@ export function SecurityPanel(): JSX.Element | null {
                 data.map((role) => ({
                   ...role,
                   policies: processPolicies(role.policies),
-                }))
-              )
+                })),
+              ),
             )
           : undefined,
-      []
+      [],
     ),
-    false
+    false,
   );
 
   const context: SecurityOutlet = {

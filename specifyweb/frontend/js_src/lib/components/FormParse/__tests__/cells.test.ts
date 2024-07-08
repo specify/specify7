@@ -45,7 +45,7 @@ const cell = (
     FormCellDefinition,
     'align' | 'ariaLabel' | 'colSpan' | 'id' | 'verticalAlign' | 'visible'
   > &
-    ValueOf<CellTypes>
+    ValueOf<CellTypes>,
 ): FormCellDefinition => ({
   id: undefined,
   colSpan: 1,
@@ -63,13 +63,13 @@ describe('parseFormCell', () => {
   test('base case', async () => {
     jest.spyOn(console, 'warn').mockImplementation();
     await expect(
-      parseFormCell(tables.CollectionObject, xml('<cell />'))
+      parseFormCell(tables.CollectionObject, xml('<cell />')),
     ).resolves.toEqual(
       cell({
         type: 'Unsupported',
         cellType: undefined,
         verticalAlign: 'center',
-      })
+      }),
     );
   });
 
@@ -79,9 +79,9 @@ describe('parseFormCell', () => {
       parseFormCell(
         tables.CollectionObject,
         xml(
-          '<cell invisible="true" type=" test2 " initialize="align=Center; verticalAlign=center" colSpan=" 5 " id="test" />'
-        )
-      )
+          '<cell invisible="true" type=" test2 " initialize="align=Center; verticalAlign=center" colSpan=" 5 " id="test" />',
+        ),
+      ),
     ).resolves.toEqual(
       cell({
         id: 'test',
@@ -92,7 +92,7 @@ describe('parseFormCell', () => {
         type: 'Unsupported',
         cellType: ' test2 ',
         verticalAlign: 'center',
-      })
+      }),
     );
   });
 
@@ -101,9 +101,9 @@ describe('parseFormCell', () => {
       parseFormCell(
         tables.CollectionObject,
         xml(
-          '<cell type=" field " uiType="text" invisible="true" name="CatalogNumber" isRequired="TRuE " initialize="align=RIGHT" colSpan=" 5 " id="test" />'
-        )
-      )
+          '<cell type=" field " uiType="text" invisible="true" name="CatalogNumber" isRequired="TRuE " initialize="align=RIGHT" colSpan=" 5 " id="test" />',
+        ),
+      ),
     ).resolves.toEqual(
       cell({
         id: 'test',
@@ -124,7 +124,7 @@ describe('parseFormCell', () => {
           maxLength: undefined,
           minLength: undefined,
         },
-      })
+      }),
     ));
 
   test('field required by schema', async () =>
@@ -132,9 +132,9 @@ describe('parseFormCell', () => {
       parseFormCell(
         tables.CollectionObject,
         xml(
-          '<cell type="field" uiType="text" name="  CollectionObject.CollectionMemberId  " />'
-        )
-      )
+          '<cell type="field" uiType="text" name="  CollectionObject.CollectionMemberId  " />',
+        ),
+      ),
     ).resolves.toEqual(
       cell({
         type: 'Field',
@@ -151,7 +151,7 @@ describe('parseFormCell', () => {
           maxLength: undefined,
           minLength: undefined,
         },
-      })
+      }),
     ));
 
   test('unknown field', async () => {
@@ -160,14 +160,14 @@ describe('parseFormCell', () => {
       parseFormCell(
         tables.CollectionObject,
         xml(
-          '<cell type="field" uiType="text" name="this" initialize="verticalAlign=end;"/>'
-        )
-      )
+          '<cell type="field" uiType="text" name="this" initialize="verticalAlign=end;"/>',
+        ),
+      ),
     ).resolves.toEqual(
       cell({
         type: 'Blank',
         verticalAlign: 'end',
-      })
+      }),
     );
   });
 
@@ -176,8 +176,8 @@ describe('parseFormCell', () => {
     await expect(
       parseFormCell(
         tables.CollectionObject,
-        xml('<cell type="field" uiType="text" name="this" default="A" />')
-      )
+        xml('<cell type="field" uiType="text" name="this" default="A" />'),
+      ),
     ).resolves.toEqual(
       cell({
         type: 'Field',
@@ -194,7 +194,7 @@ describe('parseFormCell', () => {
           maxLength: undefined,
           minLength: undefined,
         },
-      })
+      }),
     );
   });
 
@@ -202,8 +202,8 @@ describe('parseFormCell', () => {
     expect(
       parseFormCell(
         tables.Collector,
-        xml('<cell type="field" uiType="text" name="agent.lastName" />')
-      )
+        xml('<cell type="field" uiType="text" name="agent.lastName" />'),
+      ),
     ).resolves.toEqual(
       cell({
         type: 'Field',
@@ -221,7 +221,7 @@ describe('parseFormCell', () => {
           minLength: undefined,
           maxLength: undefined,
         },
-      })
+      }),
     ));
 
   test('fieldName overwritten by the PartialDateUI plugin', async () =>
@@ -229,9 +229,9 @@ describe('parseFormCell', () => {
       parseFormCell(
         tables.CollectionObject,
         xml(
-          '<cell type="field" uiType="plugin" initialize="name=PartialDateUI;df=catalogedDate" />'
-        )
-      )
+          '<cell type="field" uiType="plugin" initialize="name=PartialDateUI;df=catalogedDate" />',
+        ),
+      ),
     ).resolves.toEqual(
       cell({
         type: 'Field',
@@ -250,15 +250,15 @@ describe('parseFormCell', () => {
             defaultPrecision: 'full',
           },
         },
-      })
+      }),
     ));
 
   test('simple label with custom text', async () =>
     expect(
       parseFormCell(
         tables.CollectionObject,
-        xml('<cell type="Label" label="some text" />')
-      )
+        xml('<cell type="Label" label="some text" />'),
+      ),
     ).resolves.toEqual(
       cell({
         // Labels are right aligned by default
@@ -269,7 +269,7 @@ describe('parseFormCell', () => {
         title: undefined,
         labelForCellId: undefined,
         fieldNames: undefined,
-      })
+      }),
     ));
 
   test('label with Specify 6 localization string', async () =>
@@ -277,9 +277,9 @@ describe('parseFormCell', () => {
       parseFormCell(
         tables.CollectionObject,
         xml(
-          '<cell type="Label" label="FINDNEXT" labelfor=" 42" initialize="verticalAlign=center;"/>'
-        )
-      )
+          '<cell type="Label" label="FINDNEXT" labelfor=" 42" initialize="verticalAlign=center;"/>',
+        ),
+      ),
     ).resolves.toEqual(
       cell({
         align: 'right',
@@ -289,7 +289,7 @@ describe('parseFormCell', () => {
         title: undefined,
         labelForCellId: '42',
         fieldNames: undefined,
-      })
+      }),
     ));
 
   test('Separator', async () =>
@@ -297,9 +297,9 @@ describe('parseFormCell', () => {
       parseFormCell(
         tables.CollectionObject,
         xml(
-          '<cell type="separator"   label="FINDNEXT" name="unused" additional="unused" icon=" 42" forClass=" CollectionObject" />'
-        )
-      )
+          '<cell type="separator"   label="FINDNEXT" name="unused" additional="unused" icon=" 42" forClass=" CollectionObject" />',
+        ),
+      ),
     ).resolves.toEqual(
       cell({
         type: 'Separator',
@@ -307,15 +307,15 @@ describe('parseFormCell', () => {
         icon: '42',
         forClass: 'CollectionObject',
         verticalAlign: 'center',
-      })
+      }),
     ));
 
   test('basic SubView', async () =>
     expect(
       parseFormCell(
         tables.CollectionObject,
-        xml('<cell type="subView" name="determinationS "  />')
-      )
+        xml('<cell type="subView" name="determinationS "  />'),
+      ),
     ).resolves.toEqual(
       cell({
         type: 'SubView',
@@ -326,7 +326,7 @@ describe('parseFormCell', () => {
         isCollapsed: false,
         icon: undefined,
         sortField: undefined,
-      })
+      }),
     ));
 
   overrideAjax('/context/view.json?name=testView', {
@@ -347,9 +347,9 @@ describe('parseFormCell', () => {
       parseFormCell(
         tables.CollectionObject,
         xml(
-          '<cell type="subView" name="determinations" defaultType="table" viewName="testView " initialize="sortField=-iscurrent ;btn=true  ; icon=test ; collapse=true" />'
-        )
-      )
+          '<cell type="subView" name="determinations" defaultType="table" viewName="testView " initialize="sortField=-iscurrent ;btn=true  ; icon=test ; collapse=true" />',
+        ),
+      ),
     ).resolves.toEqual(
       cell({
         type: 'SubView',
@@ -360,7 +360,7 @@ describe('parseFormCell', () => {
         isCollapsed: true,
         icon: 'test',
         sortField: { fieldNames: ['isCurrent'], direction: 'desc' },
-      })
+      }),
     ));
 
   test('Subview with table defaulttype', async () =>
@@ -368,9 +368,9 @@ describe('parseFormCell', () => {
       parseFormCell(
         tables.CollectingEvent,
         xml(
-          '<cell type="subview" viewname="Collectors" id="5" name="collectors" colspan="13" rows="3"/>'
-        )
-      )
+          '<cell type="subview" viewname="Collectors" id="5" name="collectors" colspan="13" rows="3"/>',
+        ),
+      ),
     ).resolves.toEqual(
       cell({
         align: 'left',
@@ -387,7 +387,7 @@ describe('parseFormCell', () => {
         verticalAlign: 'stretch',
         viewName: 'Collectors',
         visible: true,
-      })
+      }),
     ));
 
   test('Panel with conditional rendering', async () =>
@@ -405,9 +405,9 @@ describe('parseFormCell', () => {
             </rows>
             <rows condition="always">
             </rows>
-          </cell>`
-        )
-      ).then((parsedCell) => JSON.parse(JSON.stringify(parsedCell)))
+          </cell>`,
+        ),
+      ).then((parsedCell) => JSON.parse(JSON.stringify(parsedCell))),
     ).resolves.toEqual(
       cell({
         type: 'Panel',
@@ -462,7 +462,7 @@ describe('parseFormCell', () => {
           },
         ],
         display: 'block',
-      })
+      }),
     ));
 
   test('inline Panel', async () =>
@@ -470,9 +470,9 @@ describe('parseFormCell', () => {
       parseFormCell(
         tables.CollectionObject,
         xml(
-          '<cell type="panel" colDef="p:g,2px,2px" panelType="buttonBar"><rows /></cell>'
-        )
-      )
+          '<cell type="panel" colDef="p:g,2px,2px" panelType="buttonBar"><rows /></cell>',
+        ),
+      ),
     ).resolves.toEqual(
       cell({
         type: 'Panel',
@@ -487,7 +487,7 @@ describe('parseFormCell', () => {
         ],
         display: 'inline',
         verticalAlign: 'center',
-      })
+      }),
     ));
 
   test('Command', async () =>
@@ -495,9 +495,9 @@ describe('parseFormCell', () => {
       parseFormCell(
         tables.Loan,
         xml(
-          '<cell type="command" name="ReturnLoan" label="generateLabelBtn" />'
-        )
-      )
+          '<cell type="command" name="ReturnLoan" label="generateLabelBtn" />',
+        ),
+      ),
     ).resolves.toEqual(
       cell({
         type: 'Command',
@@ -508,7 +508,7 @@ describe('parseFormCell', () => {
           label: localized('generateLabelBtn'),
         },
         verticalAlign: 'center',
-      })
+      }),
     ));
 
   test('Blank', async () =>
@@ -516,8 +516,8 @@ describe('parseFormCell', () => {
       parseFormCell(
         tables.CollectionObject,
         xml(
-          '<cell type="blank" name="ignored" initialize="verticalAlign=start;"/>'
-        )
-      )
+          '<cell type="blank" name="ignored" initialize="verticalAlign=start;"/>',
+        ),
+      ),
     ).resolves.toEqual(cell({ type: 'Blank', verticalAlign: 'start' })));
 });

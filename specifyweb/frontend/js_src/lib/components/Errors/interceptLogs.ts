@@ -27,14 +27,14 @@ const logTypes = [
 export type LogMessage = {
   readonly message: RA<unknown>;
   // Context is not a real type, but is used by deduplicateLogContext()
-  readonly type: typeof logTypes[number] | 'context';
+  readonly type: (typeof logTypes)[number] | 'context';
   readonly date: string;
   readonly context: IR<unknown>;
 };
 export const consoleLog: WritableArray<LogMessage> = [];
 
 export function serializeConsoleLog(
-  log: RA<LogMessage>
+  log: RA<LogMessage>,
 ): ReturnType<typeof deduplicateLogContext> {
   const { consoleLog, sharedLogContext } = deduplicateLogContext(log);
   return {
@@ -56,7 +56,7 @@ export function serializeConsoleLog(
 let redirectLog = false;
 let temporaryLog: typeof consoleLog = [];
 export function captureLogOutput<T>(
-  callback: () => T
+  callback: () => T,
 ): readonly [typeof consoleLog, T] {
   if (redirectLog) throw new Error('Already capturing log output');
   redirectLog = true;
@@ -88,7 +88,7 @@ export function toSafeObject(object: unknown): unknown {
         cache.add(value);
         // Note: this removes Symbols
         return Object.fromEntries(
-          Object.entries(value).map(([key, value]) => [key, convert(value)])
+          Object.entries(value).map(([key, value]) => [key, convert(value)]),
         );
       }
     else return value;

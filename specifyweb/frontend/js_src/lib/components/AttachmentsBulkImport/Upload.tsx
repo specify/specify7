@@ -42,14 +42,14 @@ import {
 
 async function prepareForUpload(
   dataSet: EagerDataSet,
-  baseTableName: keyof Tables
+  baseTableName: keyof Tables,
 ): Promise<RA<PartialUploadableFileSpec>> {
   // Matching happens here
   const validatedFiles = await validateAttachmentFiles(
     dataSet.rows,
     dataSet.uploadplan as AttachmentUploadSpec,
     // If user validated before, and chose disambiguation, need to preserve it
-    true
+    true,
   );
   const mappedUpload = await Promise.all(
     validatedFiles.map(async (uploadable) =>
@@ -57,16 +57,16 @@ async function prepareForUpload(
         uploadableFile: uploadable,
         baseTableName,
         dryRun: true,
-      })
-    )
+      }),
+    ),
   );
   const fileNamesToTokenize = filterArray(
     mappedUpload.map((uploadable) =>
       uploadable.status?.type === 'matched' &&
       uploadable.uploadTokenSpec === undefined
         ? uploadable.uploadFile.file.name
-        : undefined
-    )
+        : undefined,
+    ),
   );
   if (fileNamesToTokenize.length === 0) return mappedUpload;
   /*
@@ -83,7 +83,7 @@ async function prepareForUpload(
     if (fileNamesToTokenize.length !== data.length) {
       // Throwing an error for development testing. Hasn't happened yet.
       throw new Error(
-        'DEV: length changed in between effect calls. Unsafe. Aborting upload.'
+        'DEV: length changed in between effect calls. Unsafe. Aborting upload.',
       );
     }
     let indexInTokenData = 0;
@@ -118,7 +118,7 @@ export function AttachmentUpload({
   readonly dataSet: EagerDataSet;
   readonly onSync: (
     generatedState: RA<PartialUploadableFileSpec> | undefined,
-    isSyncing: boolean
+    isSyncing: boolean,
   ) => void;
   readonly baseTableName: keyof Tables | undefined;
 }): JSX.Element {
@@ -131,9 +131,9 @@ export function AttachmentUpload({
          * just before upload
          */
         ({ attachmentId, uploadFile }) =>
-          attachmentId === undefined && uploadFile.parsedName !== undefined
+          attachmentId === undefined && uploadFile.parsedName !== undefined,
       ),
-    [dataSet.rows]
+    [dataSet.rows],
   );
 
   const [upload, setTriedUpload] = React.useState<
@@ -154,7 +154,7 @@ export function AttachmentUpload({
       prepareForUpload(dataSet, baseTableName).then((mappedResult) => {
         if (destructorCalled) return;
         handleSync(mappedResult, true);
-      })
+      }),
     );
     return () => {
       destructorCalled = true;
@@ -165,7 +165,7 @@ export function AttachmentUpload({
     async (
       uploadable: PartialUploadableFileSpec,
       dryRun: boolean,
-      triggerRetry: () => void
+      triggerRetry: () => void,
     ): Promise<PartialUploadableFileSpec> =>
       uploadFileWrapped({
         uploadableFile: uploadable,
@@ -174,10 +174,10 @@ export function AttachmentUpload({
         dryRun,
         triggerRetry,
       }),
-    [baseTableName]
+    [baseTableName],
   );
   const [uploadedCount, setUploadedCount] = React.useState<number | undefined>(
-    undefined
+    undefined,
   );
 
   const handleUploadReMap = React.useCallback(
@@ -185,16 +185,16 @@ export function AttachmentUpload({
       const postResults = uploadables?.map((file) =>
         file.attachmentFromPreviousTry === undefined
           ? file
-          : removeKey(file, 'attachmentFromPreviousTry')
+          : removeKey(file, 'attachmentFromPreviousTry'),
       );
       handleSync(postResults, false);
       // Reset upload at the end
       setTriedUpload('main');
       setUploadedCount(
-        postResults?.filter(({ status }) => status?.type === 'success').length
+        postResults?.filter(({ status }) => status?.type === 'success').length,
       );
     },
-    [handleSync]
+    [handleSync],
   );
   const [available] = usePromise(attachmentSettingsPromise, true);
 
@@ -319,7 +319,7 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
   const record = resolveAttachmentRecord(
     uploadableFile.matchedId,
     uploadableFile.disambiguated,
-    uploadableFile.uploadFile.parsedName
+    uploadableFile.uploadFile.parsedName,
   );
   if (record.type !== 'matched')
     return getUploadableCommited({
@@ -334,10 +334,11 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
    */
   const attachmentUpload =
     uploadableFile.attachmentFromPreviousTry ??
-    (await (uploadableFile.uploadTokenSpec === undefined
-      ? Promise.resolve(undefined)
-      : // Connection could be lost here, so silencing errors
-        fetchAssetToken(uploadAttachmentSpec?.attachmentLocation!, true)
+    (await (
+      uploadableFile.uploadTokenSpec === undefined
+        ? Promise.resolve(undefined)
+        : // Connection could be lost here, so silencing errors
+          fetchAssetToken(uploadAttachmentSpec?.attachmentLocation!, true)
     )
       .then(async (token) =>
         /*
@@ -353,8 +354,8 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
                 uploadAttachmentSpec?.attachmentLocation === undefined
                 ? undefined
                 : { ...uploadAttachmentSpec, token },
-              false
-            )
+              false,
+            ),
       )
       .catch(triggerRetry));
 
@@ -372,7 +373,7 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
   const baseResourceResponse = await fetchForAttachmentUpload(
     baseTableName,
     matchId,
-    triggerRetry
+    triggerRetry,
   );
   if (baseResourceResponse.type === 'invalid')
     return getUploadableCommited({
@@ -403,7 +404,7 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
   > = serializeResource(
     new attachmentModel.Resource({
       attachment: attachmentUpload as never,
-    })
+    }),
   );
 
   const oridinalToSearch = oldAttachmentCollection.length;
@@ -420,7 +421,7 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
     baseTableName,
     matchId,
     newResourceWithAttachment,
-    triggerRetry
+    triggerRetry,
   );
   if (resourceSavedResponse.type === 'invalid')
     return getUploadableCommited({
@@ -433,7 +434,7 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
   const baseResourceSaved = resourceSavedResponse.record;
   const { values: attachmentsSaved } = getAttachmentsFromResource(
     baseResourceSaved,
-    `${baseTableName}attachments`
+    `${baseTableName}attachments`,
   );
 
   // This really shouldn't be anything other than 1.

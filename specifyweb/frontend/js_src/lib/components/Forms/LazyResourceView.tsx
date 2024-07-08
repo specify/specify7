@@ -5,5 +5,5 @@
 import { ReactLazy } from '../Router/ReactLazy';
 
 export const LazyResourceView = ReactLazy(async () =>
-  import('./ResourceView').then(({ ResourceView }) => ResourceView)
+  import('./ResourceView').then(({ ResourceView }) => ResourceView),
 );

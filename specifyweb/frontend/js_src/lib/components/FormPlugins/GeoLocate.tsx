@@ -48,9 +48,9 @@ function GeoLocate({
   const [data] = useAsyncState(
     React.useCallback(
       async () => getGeoLocateData(resource).then((data) => data ?? false),
-      [resource]
+      [resource],
     ),
-    true
+    true,
   );
   const loading = React.useContext(LoadingContext);
 
@@ -92,19 +92,19 @@ function GeoLocate({
               }
               detailsResource.set(
                 'maxUncertaintyEst',
-                uncertaintyParsed ?? null
+                uncertaintyParsed ?? null,
               );
               detailsResource.set(
                 'maxUncertaintyEstUnit',
-                typeof uncertaintyParsed === 'number' ? 'm' : ''
+                typeof uncertaintyParsed === 'number' ? 'm' : '',
               );
               detailsResource.set('errorPolygon', polyParsed ?? null);
             })
-            .then(handleClose)
+            .then(handleClose),
         );
       else handleClose();
     },
-    [loading, resource, handleClicked]
+    [loading, resource, handleClicked],
   );
 
   return data === undefined ? null : data === false ? (
@@ -138,7 +138,7 @@ function GeoLocate({
 }
 
 async function getGeoLocateData(
-  resource: SpecifyResource<Locality>
+  resource: SpecifyResource<Locality>,
 ): Promise<IR<string> | undefined> {
   const currentLat = resource.get('latitude1');
   const currentLon = resource.get('longitude1');
@@ -150,7 +150,7 @@ async function getGeoLocateData(
       : undefined;
 
   const constructGeography = async (
-    geography: SpecifyResource<Geography>
+    geography: SpecifyResource<Geography>,
   ): Promise<IR<string>> =>
     f
       .all({
@@ -177,7 +177,7 @@ async function getGeoLocateData(
   const geography = resource
     .rgetPromise('geography')
     .then(async (geography) =>
-      geography === null ? undefined : constructGeography(geography)
+      geography === null ? undefined : constructGeography(geography),
     );
 
   return f.all({ geography, uncertainty }).then(({ geography, uncertainty }) =>
@@ -193,6 +193,6 @@ async function getGeoLocateData(
                   .join('|'),
               }
             : {}),
-        }
+        },
   );
 }

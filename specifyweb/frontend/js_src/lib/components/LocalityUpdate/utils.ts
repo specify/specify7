@@ -20,7 +20,7 @@ export const localityUpdateAcceptedHeaders = f.store(
       ...tables.GeoCoordDetail.literalFields
         .map(({ name }) => name.toLowerCase())
         .filter((header) => header !== 'locality'),
-    ])
+    ]),
 );
 
 export const localityUpdateRequiredHeaders = new Set<LocalityUpdateHeader>([
@@ -43,7 +43,7 @@ export const localityUpdateStatusLocalization: RR<
 
 export function resolveLocalityUpdateErrorMessage(
   key: string,
-  payload: IR<unknown>
+  payload: IR<unknown>,
 ): LocalizedString {
   const baseParseResults = resolveBackendParsingMessage(key, payload);
 

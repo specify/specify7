@@ -10,7 +10,7 @@ export type SchemaLocation = {
 
 export const traverseSchema = (
   dom: ParsedDom,
-  callback: (location: SchemaLocation, entries: IR<string>) => IR<string>
+  callback: (location: SchemaLocation, entries: IR<string>) => IR<string>,
 ): ParsedDom =>
   traverseDom(dom, (path, typeNode, rawNode) => {
     // Check if we are in a field name or field description
@@ -18,8 +18,8 @@ export const traverseSchema = (
       typeNode?.tagName === 'names'
         ? 'name'
         : typeNode?.tagName === 'descs'
-        ? 'description'
-        : undefined;
+          ? 'description'
+          : undefined;
     if (type === undefined) return typeNode;
 
     // Get field name and table name
@@ -47,23 +47,23 @@ export const traverseSchema = (
         fieldName,
         type,
       },
-      entries
+      entries,
     );
 
     if (updatedEntries === entries) return typeNode;
 
     const updates = Object.entries(updatedEntries).filter(
-      ([key, value]) => value !== entries[key]
+      ([key, value]) => value !== entries[key],
     );
     if (updates.length === 0) return typeNode;
 
     const newEntries = updates.filter(
-      ([key, value]) => !(key in entries) && value !== ''
+      ([key, value]) => !(key in entries) && value !== '',
     );
 
     const updatedNode = traverseParent(
       rawNode,
-      (code, text) => updatedEntries[code] ?? text
+      (code, text) => updatedEntries[code] ?? text,
     );
 
     return {
@@ -82,7 +82,7 @@ function extractNodeName(node: ParsedNode | undefined): string | undefined {
 
 const traverseParent = (
   node: ParsedDom[number],
-  callback: (code: string, text: string) => string
+  callback: (code: string, text: string) => string,
 ): ParsedNode =>
   toParsedNode(
     traverseDom([node], (path, node) => {
@@ -107,7 +107,7 @@ const traverseParent = (
             ...node,
             text: updatedText,
           };
-    })[0]
+    })[0],
   );
 
 function entryToNode(code: string, text: string): ParsedDom[number] {

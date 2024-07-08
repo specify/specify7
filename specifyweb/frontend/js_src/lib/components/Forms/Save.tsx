@@ -69,7 +69,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   readonly saveRequired?: boolean;
   // Returning false would cancel the save proces (allowing to trigger custom behaviour)
   readonly onSaving?: (
-    unsetUnloadProtect: () => void
+    unsetUnloadProtect: () => void,
   ) => false | undefined | void;
   readonly onSaved?: () => void;
   readonly onAdd?: (newResource: SpecifyResource<SCHEMA>) => void;
@@ -80,7 +80,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const saveRequired = useIsModified(resource);
   const unsetUnloadProtect = useUnloadProtect(
     saveRequired || externalSaveRequired,
-    saveFormUnloadProtect
+    saveFormUnloadProtect,
   );
 
   const blockers = useAllSaveBlockers(resource, filterBlockers);
@@ -131,7 +131,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   function handleSubmit(): void {
     if (typeof setFormContext === 'function')
       setFormContext((formContext) =>
-        replaceKey(formContext, 'triedToSubmit', true)
+        replaceKey(formContext, 'triedToSubmit', true),
       );
 
     loading(
@@ -145,7 +145,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
               {
                 blocker,
                 resource,
-              }
+              },
             );
             setShownBlocker(blocker);
             return undefined;
@@ -165,15 +165,15 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
               Object.getOwnPropertyDescriptor(error_ ?? {}, errorHandledBy)
                 ?.value === hasSaveConflict
                 ? undefined
-                : error(error_)
+                : error(error_),
             )
             .finally(() => {
               unsetUnloadProtect();
               handleSaved?.();
               setIsSaving(false);
             });
-        }
-      )
+        },
+      ),
     );
   }
 
@@ -187,7 +187,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         event.stopPropagation();
         handleSubmitRef.current();
       }),
-    [loading, form]
+    [loading, form],
   );
 
   const ButtonComponent = saveBlocked ? Button.Danger : Button.Save;
@@ -198,7 +198,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const copyButton = (
     label: LocalizedString,
     description: LocalizedString,
-    handleClick: () => Promise<SpecifyResource<SCHEMA>>
+    handleClick: () => Promise<SpecifyResource<SCHEMA>>,
   ): JSX.Element => (
     <ButtonComponent
       className={saveBlocked ? '!cursor-not-allowed' : undefined}
@@ -222,19 +222,19 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
             copyButton(
               formsText.clone(),
               formsText.cloneDescription(),
-              async () => resource.clone(true)
+              async () => resource.clone(true),
             )}
           {showCarry &&
             copyButton(
               formsText.carryForward(),
               formsText.carryForwardDescription(),
-              async () => resource.clone(false)
+              async () => resource.clone(false),
             )}
           {showAdd &&
             copyButton(
               commonText.add(),
               formsText.addButtonDescription(),
-              async () => new resource.specifyTable.Resource()
+              async () => new resource.specifyTable.Resource(),
             )}
         </>
       ) : undefined}
@@ -283,9 +283,9 @@ function SaveBlockedDialog({
     () =>
       generateMappingPathPreview(
         field[0].table.name,
-        field.map(({ name }) => name)
+        field.map(({ name }) => name),
       ),
-    [field]
+    [field],
   );
   return (
     <Dialog
@@ -308,7 +308,7 @@ function SaveBlockedDialog({
  * Decide which of the "new resource" buttons to show
  */
 function useEnabledButtons<SCHEMA extends AnySchema = AnySchema>(
-  resource: SpecifyResource<SCHEMA>
+  resource: SpecifyResource<SCHEMA>,
 ): {
   readonly showClone: boolean;
   readonly showCarry: boolean;
@@ -317,12 +317,12 @@ function useEnabledButtons<SCHEMA extends AnySchema = AnySchema>(
   const [enableCarryForward] = userPreferences.use(
     'form',
     'preferences',
-    'enableCarryForward'
+    'enableCarryForward',
   );
   const [disableClone] = userPreferences.use(
     'form',
     'preferences',
-    'disableClone'
+    'disableClone',
   );
   const [disableAdd] = userPreferences.use('form', 'preferences', 'disableAdd');
 
@@ -333,7 +333,7 @@ function useEnabledButtons<SCHEMA extends AnySchema = AnySchema>(
       : undefined;
 
   const isDisabledCloneAppResource = appResourcesToNotClone.includes(
-    (appResourceName ?? '').toLowerCase()
+    (appResourceName ?? '').toLowerCase(),
   );
 
   const showCarry =
@@ -350,6 +350,6 @@ function useEnabledButtons<SCHEMA extends AnySchema = AnySchema>(
 
 const appResourcesToNotClone = filterArray(
   Object.keys(appResourceSubTypes).map((key) =>
-    appResourceSubTypes[key]?.name?.toLowerCase()
-  )
+    appResourceSubTypes[key]?.name?.toLowerCase(),
+  ),
 );

@@ -71,7 +71,7 @@ export function MergeStatus({
               setErrorMessage(errorMessage);
             }
             return undefined;
-          }
+          },
         )
         .catch(softFail);
     fetchStatus();
@@ -93,7 +93,7 @@ export function MergeStatus({
               onClick={(): void =>
                 void downloadFile(
                   `Merging ${mergingId} Crash Report - ${new Date().toJSON()}.txt`,
-                  produceStackTrace(errorMessage)
+                  produceStackTrace(errorMessage),
                 )
               }
             >
@@ -112,7 +112,7 @@ export function MergeStatus({
                   method: 'POST',
                 })
                   .then(handleClose)
-                  .catch(softFail)
+                  .catch(softFail),
               )
             }
           >

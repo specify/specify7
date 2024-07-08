@@ -53,15 +53,15 @@ const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
 // BUG: intercept 403 (if dataset has been transferred to another user)
 function useDataset(
-  datasetId: number | undefined
+  datasetId: number | undefined,
 ): GetSet<Dataset | undefined> {
   return useAsyncState(
     React.useCallback(
       async () =>
         typeof datasetId === 'number' ? fetchDataset(datasetId) : undefined,
-      [datasetId]
+      [datasetId],
     ),
-    true
+    true,
   );
 }
 

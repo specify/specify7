@@ -71,7 +71,7 @@ function RecordHistoryDialog({
 }
 
 function useEditHistoryQuery(
-  resource: SpecifyResource<AnySchema>
+  resource: SpecifyResource<AnySchema>,
 ): SpecifyResource<SpQuery> | undefined {
   const formatted = useFormatted(resource);
 
@@ -80,7 +80,7 @@ function useEditHistoryQuery(
       typeof formatted === 'string'
         ? createQuery(
             formsText.editHistoryQueryName({ formattedRecord: formatted }),
-            tables.SpAuditLog
+            tables.SpAuditLog,
           ).set('fields', [
             QueryFieldSpec.fromPath('SpAuditLog', ['tableNum'])
               .toSpQueryField()
@@ -114,6 +114,6 @@ function useEditHistoryQuery(
               .set('sortType', flippedSortTypes.descending),
           ])
         : undefined,
-    [resource, formatted]
+    [resource, formatted],
   );
 }

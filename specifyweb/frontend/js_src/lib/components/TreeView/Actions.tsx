@@ -34,7 +34,7 @@ const treeActions = [
   'synonymize',
 ] as const;
 
-type Action = typeof treeActions[number];
+type Action = (typeof treeActions)[number];
 
 export function TreeViewActions<SCHEMA extends AnyTree>({
   tableName,
@@ -58,7 +58,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   const isRoot = ranks[0] === focusedRow?.rankId;
 
   const [currentAction, setCurrentAction] = React.useState<Action | undefined>(
-    undefined
+    undefined,
   );
 
   function setAction(action: Action | undefined): void {
@@ -70,7 +70,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   const isSynonym = typeof focusedRow?.acceptedId === 'number';
 
   const doExpandSynonymActionsPref = getPref(
-    `sp7.allow_adding_child_to_synonymized_parent.${tableName}`
+    `sp7.allow_adding_child_to_synonymized_parent.${tableName}`,
   );
 
   const disableButtons =
@@ -190,7 +190,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
       )}
       {hasPermission(
         resourceName,
-        isSynonym ? 'desynonymize' : 'synonymize'
+        isSynonym ? 'desynonymize' : 'synonymize',
       ) && (
         <li className="contents">
           <Button.Icon
@@ -255,7 +255,7 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
         node.set('parent', parentNode.url());
       }
       return node;
-    }, [nodeId, tableName, addNew])
+    }, [nodeId, tableName, addNew]),
   );
 
   const isViewMode = !hasTablePermission(tableName, 'update');
@@ -331,7 +331,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
           type === 'desynonymize'
             ? undefined
             : formData({ target: focusedRow.nodeId }),
-      }
+      },
     );
   const isSynonym = typeof focusedRow.acceptedId === 'number';
   const isSameRecord = focusedRow.nodeId === actionRow.nodeId;
@@ -339,15 +339,17 @@ function ActiveAction<SCHEMA extends AnyTree>({
     type === 'move'
       ? treeText.nodeMoveHintMessage({ nodeName: actionRow.fullName })
       : type === 'merge'
-      ? treeText.mergeNodeHintMessage({ nodeName: actionRow.fullName })
-      : type === 'bulkMove'
-      ? treeText.bulkMoveNodeHintMessage({ nodeName: actionRow.fullName })
-      : type === 'synonymize'
-      ? treeText.synonymizeNodeHintMessage({ nodeName: actionRow.fullName })
-      : treeText.desynonymizeNodeMessage({
-          nodeName: actionRow.fullName,
-          synonymName: focusedRow.fullName,
-        });
+        ? treeText.mergeNodeHintMessage({ nodeName: actionRow.fullName })
+        : type === 'bulkMove'
+          ? treeText.bulkMoveNodeHintMessage({ nodeName: actionRow.fullName })
+          : type === 'synonymize'
+            ? treeText.synonymizeNodeHintMessage({
+                nodeName: actionRow.fullName,
+              })
+            : treeText.desynonymizeNodeMessage({
+                nodeName: actionRow.fullName,
+                synonymName: focusedRow.fullName,
+              });
   let disabled: string | false = false;
   if (type === 'move') {
     if (isSameRecord) disabled = title;
@@ -382,17 +384,19 @@ function ActiveAction<SCHEMA extends AnyTree>({
         {typeof disabled === 'string'
           ? disabled
           : type === 'move'
-          ? treeText.moveNodeHere({ nodeName: actionRow.fullName })
-          : type === 'bulkMove'
-          ? treeText.moveNodePreparationsHere({ nodeName: actionRow.fullName })
-          : type === 'merge'
-          ? treeText.mergeNodeHere({ nodeName: actionRow.fullName })
-          : type === 'synonymize'
-          ? treeText.makeSynonym({
-              nodeName: actionRow.fullName,
-              synonymName: focusedRow.fullName,
-            })
-          : treeText.desynonymizeNode()}
+            ? treeText.moveNodeHere({ nodeName: actionRow.fullName })
+            : type === 'bulkMove'
+              ? treeText.moveNodePreparationsHere({
+                  nodeName: actionRow.fullName,
+                })
+              : type === 'merge'
+                ? treeText.mergeNodeHere({ nodeName: actionRow.fullName })
+                : type === 'synonymize'
+                  ? treeText.makeSynonym({
+                      nodeName: actionRow.fullName,
+                      synonymName: focusedRow.fullName,
+                    })
+                  : treeText.desynonymizeNode()}
       </Button.Small>
       <Button.Small onClick={handleCancelAction}>
         {commonText.cancel()}
@@ -417,19 +421,19 @@ function ActiveAction<SCHEMA extends AnyTree>({
                   loading(
                     action()
                       .then(handleCompleteAction)
-                      .catch((error: Error) => setError(error.toString()))
+                      .catch((error: Error) => setError(error.toString())),
                   )
                 }
               >
                 {type === 'move'
                   ? treeText.moveNode()
                   : type === 'bulkMove'
-                  ? treeText.moveItems()
-                  : type === 'merge'
-                  ? treeText.mergeNode()
-                  : type === 'synonymize'
-                  ? treeText.synonymizeNode()
-                  : treeText.desynonymizeNode()}
+                    ? treeText.moveItems()
+                    : type === 'merge'
+                      ? treeText.mergeNode()
+                      : type === 'synonymize'
+                        ? treeText.synonymizeNode()
+                        : treeText.desynonymizeNode()}
               </Button.Info>
             </>
           }
@@ -437,12 +441,12 @@ function ActiveAction<SCHEMA extends AnyTree>({
             type === 'move'
               ? treeText.moveNode()
               : type === 'bulkMove'
-              ? treeText.moveItems()
-              : type === 'merge'
-              ? treeText.mergeNode()
-              : type === 'synonymize'
-              ? treeText.synonymizeNode()
-              : treeText.desynonymizeNode()
+                ? treeText.moveItems()
+                : type === 'merge'
+                  ? treeText.mergeNode()
+                  : type === 'synonymize'
+                    ? treeText.synonymizeNode()
+                    : treeText.desynonymizeNode()
           }
           onClose={handleCancelAction}
         >
@@ -453,27 +457,27 @@ function ActiveAction<SCHEMA extends AnyTree>({
                 parentName: focusedRow.fullName,
               })
             : type === 'bulkMove'
-            ? treeText.nodeBulkMoveMessage({
-                treeName,
-                nodeName: actionRow.fullName,
-                parentName: focusedRow.fullName,
-              })
-            : type === 'merge'
-            ? treeText.mergeNodeMessage({
-                treeName,
-                nodeName: actionRow.fullName,
-                parentName: focusedRow.fullName,
-              })
-            : type === 'synonymize'
-            ? treeText.synonymizeMessage({
-                treeName,
-                nodeName: actionRow.fullName,
-                synonymName: focusedRow.fullName,
-              })
-            : treeText.desynonymizeNodeMessage({
-                nodeName: actionRow.fullName,
-                synonymName: focusedRow.fullName,
-              })}
+              ? treeText.nodeBulkMoveMessage({
+                  treeName,
+                  nodeName: actionRow.fullName,
+                  parentName: focusedRow.fullName,
+                })
+              : type === 'merge'
+                ? treeText.mergeNodeMessage({
+                    treeName,
+                    nodeName: actionRow.fullName,
+                    parentName: focusedRow.fullName,
+                  })
+                : type === 'synonymize'
+                  ? treeText.synonymizeMessage({
+                      treeName,
+                      nodeName: actionRow.fullName,
+                      synonymName: focusedRow.fullName,
+                    })
+                  : treeText.desynonymizeNodeMessage({
+                      nodeName: actionRow.fullName,
+                      synonymName: focusedRow.fullName,
+                    })}
         </Dialog>
       ) : undefined}
     </menu>
@@ -496,7 +500,7 @@ function NodeDeleteButton({
       typeof nodeId === 'number'
         ? new genericTables[tableName].Resource({ id: nodeId })
         : undefined,
-    [tableName, nodeId]
+    [tableName, nodeId],
   );
 
   return disabled || resource === undefined ? (

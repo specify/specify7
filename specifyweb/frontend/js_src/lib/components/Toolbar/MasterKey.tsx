@@ -23,7 +23,7 @@ import { OverlayContext } from '../Router/Router';
 export function MasterKeyOverlay(): JSX.Element | null {
   const [password, setPassword] = React.useState<string>('');
   const [masterKey, setMasterKey] = React.useState<string | undefined>(
-    undefined
+    undefined,
   );
   const loading = React.useContext(LoadingContext);
   const id = useId('master-key');
@@ -60,10 +60,10 @@ export function MasterKeyOverlay(): JSX.Element | null {
               .then(({ data, status }) =>
                 status === Http.FORBIDDEN
                   ? setValidation(userText.incorrectPassword())
-                  : setMasterKey(data)
+                  : setMasterKey(data),
               )
               // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
-              .catch((error: Error) => setValidation(error.message))
+              .catch((error: Error) => setValidation(error.message)),
           )
         }
       >

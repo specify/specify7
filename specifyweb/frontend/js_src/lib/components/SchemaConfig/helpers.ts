@@ -21,7 +21,7 @@ export function findString(
   language: string,
   country: string | null,
   itemType: 'containerDesc' | 'containerName' | 'itemDesc' | 'itemName',
-  parentUrl: string
+  parentUrl: string,
 ): NewSpLocaleItemString | SpLocaleItemString {
   /*
    * Start searching for matching string from the end. This would align
@@ -33,13 +33,13 @@ export function findString(
     .find(
       (object) =>
         object.language === language &&
-        (object.country ?? '') === (country ?? '')
+        (object.country ?? '') === (country ?? ''),
     );
   if (typeof targetString === 'object') return targetString;
 
   const defaultItem = strings?.find(
     (object) =>
-      object.language === defaultLanguage && object.country === defaultCountry
+      object.language === defaultLanguage && object.country === defaultCountry,
   );
   newStringId += 1;
 
@@ -54,7 +54,7 @@ export function findString(
 
 /** Throws away unneeded fields */
 export const formatAggregators = (
-  aggregators: RA<Aggregator | Formatter>
+  aggregators: RA<Aggregator | Formatter>,
 ): RA<SchemaFormatter> =>
   aggregators.map(({ name = '', title = '', table }, index) => ({
     name,
@@ -70,7 +70,7 @@ export const formatAggregators = (
  *
  */
 export function getItemType(
-  item: SerializedResource<SpLocaleContainerItem>
+  item: SerializedResource<SpLocaleContainerItem>,
 ): ItemType {
   if (item.webLinkName !== null) return 'webLink';
   else if (item.pickListName !== null) return 'pickList';
@@ -93,7 +93,7 @@ export const localizedRelationshipTypes: IR<string> = {
  */
 export function javaTypeToHuman(
   type: string | null,
-  relatedTableName: string | undefined = ''
+  relatedTableName: string | undefined = '',
 ): string {
   if (type === null) return '';
   else if (type in localizedRelationshipTypes)

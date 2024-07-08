@@ -48,7 +48,7 @@ export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
   const getRecords = React.useCallback(
     (): RA<SpecifyResource<SCHEMA> | undefined> =>
       Array.from(collection.models),
-    [collection]
+    [collection],
   );
   const [records, setRecords] =
     React.useState<RA<SpecifyResource<SCHEMA> | undefined>>(getRecords);
@@ -65,9 +65,9 @@ export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
         collection,
         'add remove destroy',
         (): void => setRecords(getRecords),
-        true
+        true,
       ),
-    [collection, getRecords]
+    [collection, getRecords],
   );
 
   const [index, setIndex] = useTriggerState(Math.max(0, defaultIndex));
@@ -112,8 +112,8 @@ export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
       collection.remove(
         defined(
           records[index],
-          `Trying to remove a record with index ${index} which doesn't exists`
-        )
+          `Trying to remove a record with index ${index} which doesn't exists`,
+        ),
       );
       handleDelete?.(index, source);
       setRecords(getRecords);

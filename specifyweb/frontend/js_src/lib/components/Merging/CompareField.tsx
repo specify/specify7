@@ -67,7 +67,7 @@ function Field({
       ...fieldToDefinition(field),
       isReadOnly: false,
     }),
-    [field]
+    [field],
   );
   const fields = React.useMemo(() => [field], [field]);
   const isReadOnly = React.useContext(ReadOnlyContext);
@@ -117,7 +117,7 @@ function Field({
 }
 
 function fieldToDefinition(
-  field: LiteralField | Relationship
+  field: LiteralField | Relationship,
 ): ValueOf<FieldTypes> {
   const pickList = field.getPickList();
   if (field.isRelationship)
@@ -158,7 +158,7 @@ function fieldToDefinition(
         defaultValue: undefined,
         dateFields: [field.name],
         precisionField: Object.entries(strictDependentFields()).find(
-          ([_dependent, source]) => source === field.name
+          ([_dependent, source]) => source === field.name,
         )?.[0],
         defaultPrecision: 'full',
         canChangePrecision: true,
@@ -190,24 +190,24 @@ export function TransferButton({
       field === undefined
         ? resourceToGeneric(serializeResource(record), true)
         : record.get(field.name),
-    [field]
+    [field],
   );
 
   const [fromValue, setFromValue] = React.useState(() => getValue(from));
   React.useEffect(
     () => resourceOn(from, 'changed', () => setFromValue(getValue(from)), true),
-    [from, field]
+    [from, field],
   );
 
   const [toValue, setToValue] = React.useState(() => getValue(to));
   React.useEffect(
     () => resourceOn(to, 'changed', () => setToValue(getValue(to)), true),
-    [to, field]
+    [to, field],
   );
 
   const isSame = React.useMemo(
     () => JSON.stringify(fromValue) === JSON.stringify(toValue),
-    [fromValue, toValue]
+    [fromValue, toValue],
   );
   return (
     <Button.Small
@@ -224,7 +224,7 @@ export function TransferButton({
             .map(([dependent]) => dependent);
           const allFields = [field.name, ...dependentFields];
           allFields.forEach((fieldName) =>
-            to.set(fieldName, from.get(fieldName))
+            to.set(fieldName, from.get(fieldName)),
           );
         }
       }}

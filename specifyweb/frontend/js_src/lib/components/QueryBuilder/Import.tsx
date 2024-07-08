@@ -38,7 +38,7 @@ export function QueryImport({
   const navigate = useNavigate();
 
   const [hiddenFields, setHiddenFields] = React.useState<RA<QueryFieldSpec>>(
-    []
+    [],
   );
 
   const [queryResource, setQueryResource] = React.useState<
@@ -59,9 +59,9 @@ export function QueryImport({
           distinct: true,
           limit: 0,
         }),
-      []
+      [],
     ),
-    true
+    true,
   );
 
   return typeof queriesNames === 'object' ? (
@@ -83,7 +83,7 @@ export function QueryImport({
                     ...query,
                     specifyuser: getResourceApiUrl(
                       'SpecifyUser',
-                      userInformation.id
+                      userInformation.id,
                     ),
                     modifiedbyagent: null,
                     createdbyagent: null,
@@ -99,14 +99,14 @@ export function QueryImport({
                         query.fields.map((field) => {
                           const fieldSpec = QueryFieldSpec.fromStringId(
                             field.stringid,
-                            field.isrelfld ?? false
+                            field.isrelfld ?? false,
                           );
                           const isHidden = fieldSpec.joinPath.some(
-                            ({ isHidden }) => isHidden
+                            ({ isHidden }) => isHidden,
                           );
                           return isHidden ? fieldSpec : undefined;
-                        })
-                      )
+                        }),
+                      ),
                     );
                     return query;
                   })
@@ -121,13 +121,13 @@ export function QueryImport({
                               replaceKey(
                                 field,
                                 'id',
-                                undefined as unknown as null
-                              )
-                            )
+                                undefined as unknown as null,
+                              ),
+                            ),
                           ),
-                          'id'
-                        )
-                      )
+                          'id',
+                        ),
+                      ),
                   )
                   .then((queryResource) =>
                     queryResource.set(
@@ -135,12 +135,12 @@ export function QueryImport({
                       getUniqueName(
                         queryResource.get('name'),
                         queriesNames.map(({ name }) => name),
-                        getField(tables.SpQuery, 'name').length
-                      )
-                    )
+                        getField(tables.SpQuery, 'name').length,
+                      ),
+                    ),
                   )
                   .then(async (queryResource) => queryResource.save())
-                  .then(setQueryResource)
+                  .then(setQueryResource),
               )
             }
           />
@@ -164,7 +164,7 @@ export function QueryImport({
                       <TableIcon label name={field.baseTable.name} />
                       {generateMappingPathPreview(
                         field.baseTable.name,
-                        field.toMappingPath()
+                        field.toMappingPath(),
                       )}
                     </div>
                   </li>

@@ -8,7 +8,7 @@ import { useBooleanState } from './useBooleanState';
  */
 export function useInfiniteScroll(
   handleFetch: (() => Promise<unknown>) | undefined,
-  scroller: React.RefObject<HTMLElement | null>
+  scroller: React.RefObject<HTMLElement | null>,
 ): {
   readonly isFetching: boolean;
   readonly handleScroll: (event: React.UIEvent<HTMLElement>) => void;

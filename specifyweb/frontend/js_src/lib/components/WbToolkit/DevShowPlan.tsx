@@ -71,7 +71,7 @@ function RawUploadPlan({
   readonly onDeleted: () => void;
 }): JSX.Element {
   const [uploadPlan, setUploadPlane] = React.useState<string>(() =>
-    JSON.stringify(rawPlan, null, 4)
+    JSON.stringify(rawPlan, null, 4),
   );
   const loading = React.useContext(LoadingContext);
   return (
@@ -98,9 +98,9 @@ function RawUploadPlan({
                   .then((status) =>
                     status === Http.NOT_FOUND
                       ? handleDeleted()
-                      : handleChanged(plan)
+                      : handleChanged(plan),
                   )
-                  .finally(handleClose)
+                  .finally(handleClose),
               );
             }}
           >

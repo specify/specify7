@@ -40,7 +40,7 @@ import { MergeDialogContainer, ToggleMergeView } from './index';
 
 // Use this in more places?
 const handleMaybeToMany = (
-  dependent: Collection<AnySchema> | SpecifyResource<AnySchema>
+  dependent: Collection<AnySchema> | SpecifyResource<AnySchema>,
 ) =>
   dependent instanceof ResourceBase
     ? [dependent as SpecifyResource<AnySchema>]
@@ -60,7 +60,7 @@ export function MergeSubviewButton({
 
   const getCount = React.useCallback(() => {
     const dependentResource = resource.getDependentResource(
-      relationship.name
+      relationship.name,
     ) as Collection<AnySchema> | SpecifyResource<AnySchema> | null | undefined;
 
     return dependentResource === undefined || dependentResource === null
@@ -77,9 +77,9 @@ export function MergeSubviewButton({
         resource,
         `change:${relationship.name}`,
         () => setCount(getCount()),
-        true
+        true,
       ),
-    [resource, relationship, getCount]
+    [resource, relationship, getCount],
   );
 
   // If trying to save with invalid sub view, open the sub view
@@ -90,13 +90,13 @@ export function MergeSubviewButton({
       if (!isOpen) return false;
       handleOpen();
       return true;
-    }, [isOpen, handleOpen])
+    }, [isOpen, handleOpen]),
   );
 
   const blockers = useAllSaveBlockers(
     // Only get the blockers for the current resource
     merged === undefined ? resource : undefined,
-    relationship
+    relationship,
   );
   const SubviewButton =
     blockers.length === 0 ? Button.Secondary : Button.Danger;
@@ -124,7 +124,7 @@ export function MergeSubviewButton({
 
 function getChildren(
   resource: SpecifyResource<AnySchema>,
-  relationship: Relationship
+  relationship: Relationship,
 ): RA<SpecifyResource<AnySchema>> {
   // Move this type to getDependentResource?
   const children = resource.getDependentResource(relationship.name) as
@@ -149,16 +149,16 @@ function MergeDialog({
   readonly onClose: () => void;
 }): JSX.Element {
   const [mergedRecords, setMergedRecords] = React.useState(() =>
-    getChildren(merged, relationship)
+    getChildren(merged, relationship),
   );
 
   const [children, setChildren] = useChildren(
     mergedRecords,
     resources,
-    relationship
+    relationship,
   );
   const maxCount = Math.max(
-    ...[mergedRecords, ...children].map((children) => children.length)
+    ...[mergedRecords, ...children].map((children) => children.length),
   );
 
   // This is ugly, but will be removed once we get rid of Backbone
@@ -275,13 +275,13 @@ function MergeDialog({
                           ? insertItem(
                               children[columnIndex - 1],
                               index + 1,
-                              undefined
+                              undefined,
                             )
                           : children[columnIndex - 1],
                         index,
-                        direction
-                      )
-                    )
+                        direction,
+                      ),
+                    ),
                   );
               }}
             />
@@ -312,27 +312,29 @@ function MergeDialog({
 function useChildren(
   mergedRecords: RA<SpecifyResource<AnySchema>>,
   resources: RA<SpecifyResource<AnySchema> | undefined>,
-  relationship: Relationship
+  relationship: Relationship,
 ): GetOrSet<RA<RA<SpecifyResource<AnySchema> | undefined>>> {
   return useTriggerState(
     React.useMemo<RA<RA<SpecifyResource<AnySchema> | undefined>>>(() => {
       const children = resources.map((record) =>
-        record === undefined ? undefined : getChildren(record, relationship)
+        record === undefined ? undefined : getChildren(record, relationship),
       );
       const maxCount = Math.max(
-        ...[mergedRecords, ...children].map((children) => children?.length ?? 0)
+        ...[mergedRecords, ...children].map(
+          (children) => children?.length ?? 0,
+        ),
       );
       // Try to match duplicate children to those of merged records
       const mosaikChildren = children.map((records) =>
         records?.reduce<
           readonly [
             RR<number, SpecifyResource<AnySchema>>,
-            RA<string | undefined>
+            RA<string | undefined>,
           ]
         >(
           ([mappings, mergedRecords], record) => {
             const serialized = JSON.stringify(
-              resourceToGeneric(serializeResource(record), true)
+              resourceToGeneric(serializeResource(record), true),
             );
             const matchIndex = mergedRecords.indexOf(serialized);
             return matchIndex === -1
@@ -346,11 +348,11 @@ function useChildren(
             {},
             mergedRecords
               .map((record) =>
-                resourceToGeneric(serializeResource(record), true)
+                resourceToGeneric(serializeResource(record), true),
               )
               .map((resource) => JSON.stringify(resource)),
-          ]
-        )
+          ],
+        ),
       );
       // Append all unmatched children at the end
       return mosaikChildren.map((results, index) => {
@@ -362,7 +364,7 @@ function useChildren(
           ...(children[index]?.filter((record) => !mapped.has(record)) ?? []),
         ];
       });
-    }, [getChildren, resources, relationship])
+    }, [getChildren, resources, relationship]),
   );
 }
 
@@ -454,7 +456,7 @@ function SubViewHeader({
               {icons.chevronDown}
             </Button.Info>
           </td>
-        )
+        ),
       )}
     </tr>
   );
@@ -476,7 +478,7 @@ function SubViewBody({
     React.useMemo(() => {
       const records = filterArray(resources);
       return records.length === 0 ? [merged!] : records;
-    }, [resources, merged])
+    }, [resources, merged]),
   );
 
   return (

@@ -93,27 +93,27 @@ function ReportDialog({
               defined(
                 records[0].data ?? undefined,
                 'Trying to create a report from an invalid AppResource. ' +
-                  'App Resource must have valid XML content'
-              )
-            )
+                  'App Resource must have valid XML content',
+              ),
+            ),
           )
           .then((parsed) =>
             typeof parsed === 'object'
               ? parsed
-              : error(`Failed parsing XML report definition`, { report })
+              : error(`Failed parsing XML report definition`, { report }),
           ),
-      [appResource]
+      [appResource],
     ),
-    true
+    true,
   );
 
   const [runCount, setRunCount] = React.useState(0);
   const [missingAttachments, setMissingAttachments] = useAsyncState(
     React.useCallback(
       async () => f.maybe(definition, fixupImages),
-      [definition, runCount]
+      [definition, runCount],
     ),
-    true
+    true,
   );
   return Array.isArray(missingAttachments) && typeof definition === 'object' ? (
     missingAttachments.length === 0 ? (
@@ -147,9 +147,9 @@ async function fixupImages(definition: Element): Promise<RA<LocalizedString>> {
             ? undefined
             : image.textContent?.match(reImage)?.slice(1)?.[0] ?? undefined;
           return typeof match === 'string' ? [match, image] : undefined;
-        })
-      )
-    )
+        }),
+      ),
+    ),
   );
   const attachments = await fetchCollection(
     'Attachment',
@@ -157,10 +157,10 @@ async function fixupImages(definition: Element): Promise<RA<LocalizedString>> {
       limit: 0,
       domainFilter: false,
     },
-    backendFilter('title').isIn(Object.keys(fileNames))
+    backendFilter('title').isIn(Object.keys(fileNames)),
   ).then(({ records }) => records);
   const indexedAttachments = Object.fromEntries(
-    attachments.map((record) => [record.title ?? '', record])
+    attachments.map((record) => [record.title ?? '', record]),
   );
 
   const badImageUrl = `"${globalThis.location.origin}${unknownIcon}"`;
@@ -175,7 +175,7 @@ async function fixupImages(definition: Element): Promise<RA<LocalizedString>> {
         image.textContent = imageUrl;
       });
       return attachment === undefined ? localized(fileName) : undefined;
-    })
+    }),
   );
 }
 
@@ -235,7 +235,7 @@ function FixImagesDialog({
             attachment
               .set('title', missingAttachments[index])
               .save()
-              .then(handleRefresh)
+              .then(handleRefresh),
           )
         }
       />
@@ -265,12 +265,12 @@ function ParametersDialog({
           filterArray(
             Array.from(
               definition.querySelectorAll('parameter[isForPrompting="true"]'),
-              (parameter) => parameter.getAttribute('name')
-            )
-          ).map((name) => [name, ''])
+              (parameter) => parameter.getAttribute('name'),
+            ),
+          ).map((name) => [name, '']),
         ),
-      [definition]
-    )
+      [definition],
+    ),
   );
   useErrorContext('definition', definition);
   useErrorContext('parameters', parameters);
@@ -278,7 +278,7 @@ function ParametersDialog({
   useErrorContext('appResource', appResource);
 
   const [isSubmitted, handleSubmitted] = useBooleanState(
-    Object.values(parameters).length === 0
+    Object.values(parameters).length === 0,
   );
 
   const id = useId('report-parameters');

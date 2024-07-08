@@ -25,7 +25,7 @@ export const getLocalityField = (
   row: RA<string>,
   headers: RA<string>,
   localityColumns: IR<string>,
-  fieldName: string
+  fieldName: string,
 ): string => row[headers.indexOf(localityColumns[fieldName] ?? -1)] ?? '';
 
 export function formatCoordinate(coordinate: string): number {
@@ -38,7 +38,7 @@ export function formatCoordinate(coordinate: string): number {
 }
 
 export const findRanksInMappings = (
-  mappingPaths: RA<MappingPath>
+  mappingPaths: RA<MappingPath>,
 ): RA<{ readonly groupName: string; readonly treeRankLocation: number }> =>
   mappingPaths
     .map((mappingPath) => ({
@@ -51,24 +51,24 @@ export const findRanksInMappings = (
         : {
             treeRankLocation,
             groupName: mappingPathToString(
-              mappingPath.slice(0, treeRankLocation)
+              mappingPath.slice(0, treeRankLocation),
             ),
-          }
+          },
     );
 
 export const getLocalityData = (
   localityColumns: IR<string>,
   getField: (fieldName: string) => Field<string>,
-  formatCoordinate: (fieldName: string) => Field<number>
+  formatCoordinate: (fieldName: string) => Field<number>,
 ): LocalityData | false =>
   requiredLocalityColumns.every((fieldName) => getField(fieldName).value !== '')
     ? {
         ...Object.fromEntries(
           Object.keys(localityColumns)
             .filter(
-              (columnName) => !mappingLocalityColumns.includes(columnName)
+              (columnName) => !mappingLocalityColumns.includes(columnName),
             )
-            .map((columnName) => [columnName, getField(columnName)])
+            .map((columnName) => [columnName, getField(columnName)]),
         ),
         'locality.latitude1': formatCoordinate('locality.latitude1'),
         'locality.longitude1': formatCoordinate('locality.longitude1'),
@@ -80,7 +80,7 @@ export const getLocalityData = (
               'locality.longitude2': formatCoordinate('locality.longitude2'),
               'locality.latlongtype': {
                 value: ['line', ''].includes(
-                  getField('locality.latlongtype').value.toLowerCase()
+                  getField('locality.latlongtype').value.toLowerCase(),
                 )
                   ? 'line'
                   : 'rectangle',
@@ -89,7 +89,7 @@ export const getLocalityData = (
             }
           : {}),
         'locality.latlongaccuracy': isValidAccuracy(
-          getField('locality.latlongaccuracy').value
+          getField('locality.latlongaccuracy').value,
         )
           ? getField('locality.latlongaccuracy')
           : { value: '', headerName: '' },
@@ -97,7 +97,7 @@ export const getLocalityData = (
     : false;
 
 export function isValidAccuracy(
-  latlongaccuracy: string | undefined
+  latlongaccuracy: string | undefined,
 ): latlongaccuracy is string {
   try {
     return (

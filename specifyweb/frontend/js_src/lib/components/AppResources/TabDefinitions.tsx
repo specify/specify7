@@ -48,7 +48,7 @@ export type AppResourceTabProps = {
    * converted to string until it is necessary.
    */
   readonly onChange: (
-    data: string | (() => string | null | undefined) | null
+    data: string | (() => string | null | undefined) | null,
   ) => void;
   readonly onSetCleanup: (callback: () => Promise<void>) => void;
 };
@@ -73,12 +73,12 @@ const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
       appResource,
       React.useMemo(
         () => getField(appResource.specifyTable, 'spAppResourceDatas'),
-        [appResource.specifyTable]
+        [appResource.specifyTable],
       ),
       React.useCallback(() => {
         const editorView = codeMirrorRef.current?.view;
         return f.maybe(editorView, openLintPanel) ?? false;
-      }, [])
+      }, []),
     );
     const selectionRef = React.useRef<unknown | undefined>(undefined);
 
@@ -94,7 +94,7 @@ const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
           setStateRestored(true);
         }
       },
-      [stateRestored]
+      [stateRestored],
     );
     const isReadOnly = React.useContext(ReadOnlyContext);
 
@@ -107,7 +107,7 @@ const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
         onUpdate={({ state }): void => {
           selectionRef.current = state.selection.toJSON();
         }}
-        className={`border-brand-300 w-full overflow-auto border dark:border-none ${className}`}
+        className={`w-full overflow-auto border border-brand-300 dark:border-none ${className}`}
         /*
          * Disable spell check if we are doing own validation as otherwise it's
          * hard to differentiate between browser's spell check errors and our

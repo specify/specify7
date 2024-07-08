@@ -50,16 +50,16 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
   readonly containerRef?: React.RefObject<HTMLDivElement>;
 }): JSX.Element {
   const id = useId(
-    `form-${resource.specifyTable.name ?? viewDefinition?.table?.name ?? ''}`
+    `form-${resource.specifyTable.name ?? viewDefinition?.table?.name ?? ''}`,
   );
   const oldResourceRef = React.useRef<SpecifyResource<SCHEMA> | undefined>(
-    undefined
+    undefined,
   );
   React.useEffect(
     () => () => {
       oldResourceRef.current = resource;
     },
-    [resource]
+    [resource],
   );
 
   const [loadedResource] = useAsyncState(
@@ -69,11 +69,11 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
           [Http.NOT_FOUND],
           async () => resource.fetch(),
           (status) =>
-            status === Http.NOT_FOUND ? unsafeTriggerNotFound() : undefined
+            status === Http.NOT_FOUND ? unsafeTriggerNotFound() : undefined,
         ),
-      [resource]
+      [resource],
     ),
-    false
+    false,
   );
   useErrorContext('loadedResource', loadedResource);
 
@@ -93,12 +93,12 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
       isLoading: isAlreadyLoading || showLoading,
       parents: filterArray([...formContext.parents, viewName]),
     }),
-    [formContext, isAlreadyLoading, showLoading, viewName]
+    [formContext, isAlreadyLoading, showLoading, viewName],
   );
   const [flexibleColumnWidth] = userPreferences.use(
     'form',
     'definition',
-    'flexibleColumnWidth'
+    'flexibleColumnWidth',
   );
 
   const isReadOnly =
@@ -112,26 +112,19 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
   ) : (
     <SpecifyFormContext.Provider value={newFormContext}>
       <div
-        className={`
-          shrink-0
-          overflow-auto
-          ${showLoading ? 'relative' : ''}
-        `}
+        className={`shrink-0 overflow-auto ${showLoading ? 'relative' : ''} `}
         lang={language}
       >
         {showLoading && (
           <div
-            className={`
-               z-10 flex h-full w-full items-center justify-center
-               ${
-                 /*
-                  * If form is not yet visible, the logo should be reserving
-                  * some space for itself so as not to overlap with the
-                  * form header and the save button
-                  */
-                 formIsLoaded ? 'absolute' : ''
-               }
-             `}
+            className={`z-10 flex h-full w-full items-center justify-center ${
+              /*
+               * If form is not yet visible, the logo should be reserving
+               * some space for itself so as not to overlap with the
+               * form header and the save button
+               */
+              formIsLoaded ? 'absolute' : ''
+            } `}
           >
             {loadingGif}
           </div>
@@ -139,10 +132,7 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
         {formIsLoaded ? (
           <DataEntry.Grid
             aria-hidden={showLoading}
-            className={`
-              w-full 
-              ${showLoading ? 'pointer-events-none opacity-50' : ''}
-            `}
+            className={`w-full ${showLoading ? 'pointer-events-none opacity-50' : ''} `}
             display={viewDefinition?.columns.length === 1 ? 'block' : display}
             flexibleColumnWidth={flexibleColumnWidth}
             viewDefinition={viewDefinition}
@@ -163,7 +153,7 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
                           id: cellId,
                           ...cellData
                         },
-                        index
+                        index,
                       ) => (
                         <DataEntry.Cell
                           align={align}
@@ -182,7 +172,7 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
                             verticalAlign={verticalAlign}
                           />
                         </DataEntry.Cell>
-                      )
+                      ),
                     )}
                   </React.Fragment>
                 ))}
@@ -198,12 +188,12 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
 }
 
 export function useFirstFocus(
-  form: React.RefObject<HTMLDivElement | HTMLElement | null>
+  form: React.RefObject<HTMLDivElement | HTMLElement | null>,
 ) {
   const [focusFirstFieldPref] = userPreferences.use(
     'form',
     'behavior',
-    'focusFirstField'
+    'focusFirstField',
   );
 
   const refTimeout = React.useRef<ReturnType<typeof setTimeout>>();
@@ -214,7 +204,7 @@ export function useFirstFocus(
     clearTimeout(refTimeout.current);
     refTimeout.current = setTimeout(() => {
       const firstFocusableElement = form.current?.querySelector<HTMLElement>(
-        'button, a, input:not([type="hidden"]), select, textarea, [tabindex]:not([tabindex="-1"])'
+        'button, a, input:not([type="hidden"]), select, textarea, [tabindex]:not([tabindex="-1"])',
       )!;
 
       firstFocusableElement?.focus();

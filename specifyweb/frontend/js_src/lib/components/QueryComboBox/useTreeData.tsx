@@ -24,7 +24,7 @@ export type QueryComboBoxTreeData = {
 
 export function useTreeData(
   resource: SpecifyResource<AnySchema> | undefined,
-  field: LiteralField | Relationship
+  field: LiteralField | Relationship,
 ): QueryComboBoxTreeData | false | undefined {
   const [treeData] = useAsyncState<QueryComboBoxTreeData | false>(
     React.useCallback(async () => {
@@ -49,16 +49,16 @@ export function useTreeData(
                 {
                   // eslint-disable-next-line @typescript-eslint/naming-convention
                   parent_id: treeResource.id,
-                }
+                },
               ).then(({ records }) => records[0]?.rankId),
           treeRanks: treeRanksPromise.then(() =>
             strictGetTreeDefinitionItems(
               treeResource.specifyTable.name,
-              false
+              false,
             ).map((rank) => ({
               rankId: rank.rankId,
               isEnforced: rank.isEnforced ?? false,
-            }))
+            })),
           ),
         });
       } else if (field.name === 'acceptedParent') {
@@ -75,7 +75,7 @@ export function useTreeData(
       }
       return false;
     }, [resource, field]),
-    false
+    false,
   );
   return treeData;
 }

@@ -150,11 +150,11 @@ const pluginRenderers: {
     if (resource === undefined) return null;
     const collectingEventAttribute = toTable(
       resource,
-      'CollectingEventAttribute'
+      'CollectingEventAttribute',
     );
     if (relationship === undefined) {
       console.error(
-        "Can't display HostTaxonPlugin because initialize.relname is not set"
+        "Can't display HostTaxonPlugin because initialize.relname is not set",
       );
       return null;
     } else if (collectingEventAttribute === undefined) return null;

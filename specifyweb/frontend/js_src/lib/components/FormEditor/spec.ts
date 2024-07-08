@@ -26,19 +26,19 @@ export const viewSetsSpec = f.store(() =>
       syncers.xmlChild('views'),
       syncers.fallback(createSimpleXmlNode),
       syncers.xmlChildren('view'),
-      syncers.map(resolvedViewSpec())
+      syncers.map(resolvedViewSpec()),
     ),
     viewDefs: pipe(
       syncers.xmlChild('viewdefs'),
       syncers.fallback(createSimpleXmlNode),
       syncers.xmlChildren('viewdef'),
-      syncers.map(resolvedViewDefSpec())
+      syncers.map(resolvedViewDefSpec()),
     ),
     name: pipe(
       syncers.xmlAttribute('name', 'empty'),
-      syncers.default<string>('')
+      syncers.default<string>(''),
     ),
-  })
+  }),
 );
 
 type RawViewSets = SpecToJson<ReturnType<typeof viewSetsSpec>>;
@@ -66,27 +66,27 @@ const resolvedViewSpec = () =>
             ? localized(
                 typeof table === 'object'
                   ? getBusinessRuleClassFromTable(table.name)
-                  : ''
+                  : '',
               )
             : businessRules,
-      })
-    )
+      }),
+    ),
   );
 
 export function parseFormView(definition: ViewDefinition) {
   const view = resolvedViewSpec().serializer(
-    toSimpleXmlNode(xmlToJson(strictParseXml(definition.view)))
+    toSimpleXmlNode(xmlToJson(strictParseXml(definition.view))),
   );
   const usedDefinitions = new Set(
-    view.altViews.altViews.map(({ viewDef }) => viewDef)
+    view.altViews.altViews.map(({ viewDef }) => viewDef),
   );
   return {
     view,
     viewDefinitions: Object.values(definition.viewdefs)
       .map((definition) =>
         resolvedViewDefSpec().serializer(
-          toSimpleXmlNode(xmlToJson(strictParseXml(definition)))
-        )
+          toSimpleXmlNode(xmlToJson(strictParseXml(definition))),
+        ),
       )
       .filter(({ name }) =>
         /*
@@ -95,7 +95,7 @@ export function parseFormView(definition: ViewDefinition) {
          * "CollectionObjectAttachment Table" viewdef, don't create another
          * ObjectAttachment
          */
-        usedDefinitions.has(name)
+        usedDefinitions.has(name),
       ),
   };
 }
@@ -107,40 +107,40 @@ const viewSpec = f.store(() =>
     title: syncers.xmlAttribute('objTitle', 'skip'),
     description: pipe(
       syncers.xmlChild('desc', 'optional'),
-      syncers.maybe(syncers.xmlContent)
+      syncers.maybe(syncers.xmlContent),
     ),
     table: pipe(
       syncers.xmlAttribute('class', 'required'),
-      syncers.preserveInvalid(syncers.javaClassName(false))
+      syncers.preserveInvalid(syncers.javaClassName(false)),
     ),
     businessRules: pipe(
       syncers.xmlAttribute('busrules', 'skip'),
-      syncers.default(localized(''))
+      syncers.default(localized('')),
     ),
     altViews: pipe(
       syncers.xmlChild('altviews'),
       syncers.fallback<SimpleXmlNode>(createSimpleXmlNode),
-      syncers.object(altViewsSpec())
+      syncers.object(altViewsSpec()),
     ),
     legacyIsInternal: pipe(
       syncers.xmlAttribute('isInternal', 'skip'),
-      syncers.maybe(syncers.toBoolean)
+      syncers.maybe(syncers.toBoolean),
     ),
     // Not used in the code, but specified in the xml often
     legacyIsExternal: pipe(
       syncers.xmlAttribute('isExternal', 'skip'),
-      syncers.maybe(syncers.toBoolean)
+      syncers.maybe(syncers.toBoolean),
     ),
     legacyUseBusinessRules: pipe(
       syncers.xmlAttribute('useDefBusRule', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(true)
+      syncers.default<boolean>(true),
     ),
     legacyResourceLabels: pipe(
       syncers.xmlAttribute('resourceLabels', 'skip'),
-      syncers.maybe(syncers.toBoolean)
+      syncers.maybe(syncers.toBoolean),
     ),
-  })
+  }),
 );
 
 const altViewsSpec = f.store(() =>
@@ -154,9 +154,9 @@ const altViewsSpec = f.store(() =>
           syncers.change(
             'name',
             ({ name }) => name,
-            ({ name, viewDef }) => name ?? viewDef
-          )
-        )
+            ({ name, viewDef }) => name ?? viewDef,
+          ),
+        ),
       ),
       // Sp6 expects altView names to be unique
       syncer(f.id, (altViews) =>
@@ -164,45 +164,45 @@ const altViewsSpec = f.store(() =>
           ...altView,
           name: getUniqueName(
             name,
-            altViews.slice(0, index).map(({ name }) => name)
+            altViews.slice(0, index).map(({ name }) => name),
           ),
-        }))
-      )
+        })),
+      ),
     ),
     legacySelector: syncers.xmlAttribute('selector', 'skip'),
     // Present in the sp6 source code, but never used for anything
     legacyDefaultMode: pipe(
       syncers.xmlAttribute('defaultMode', 'skip'),
-      syncers.maybe(syncers.enum(['view', 'edit', 'search'] as const))
+      syncers.maybe(syncers.enum(['view', 'edit', 'search'] as const)),
     ),
-  })
+  }),
 );
 
 const altViewSpec = f.store(() =>
   createXmlSpec({
     name: pipe(
       syncers.xmlAttribute('name', 'required'),
-      syncers.default<string>('')
+      syncers.default<string>(''),
     ),
     viewDef: syncers.xmlAttribute('viewDef', 'required'),
     mode: pipe(
       syncers.xmlAttribute('mode', 'required'),
       syncers.maybe(syncers.enum(['edit', 'view', 'search'] as const)),
-      syncers.fallback<'edit' | 'search' | 'view'>('view' as const)
+      syncers.fallback<'edit' | 'search' | 'view'>('view' as const),
     ),
     default: pipe(
       syncers.xmlAttribute('default', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
+      syncers.default<boolean>(false),
     ),
     legacyTitle: syncers.xmlAttribute('title', 'skip'),
     legacyLabel: syncers.xmlAttribute('label', 'skip'),
     legacyValidated: pipe(
       syncers.xmlAttribute('validated', 'skip'),
-      syncers.maybe(syncers.toBoolean)
+      syncers.maybe(syncers.toBoolean),
     ),
     legacySelectorValue: syncers.xmlAttribute('selector_value', 'skip', false),
-  })
+  }),
 );
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -226,19 +226,19 @@ const resolvedViewDefSpec = () =>
             node.legacyGetTable ??
               (node.name?.endsWith('Search') === true
                 ? 'edu.ku.brc.af.ui.forms.DataGetterForHashMap'
-                : 'edu.ku.brc.af.ui.forms.DataGetterForObj')
+                : 'edu.ku.brc.af.ui.forms.DataGetterForObj'),
           ),
           legacySetTable: localized(
             node.legacySetTable ??
               (node.name?.endsWith('Search') === true
                 ? 'edu.ku.brc.af.ui.forms.DataSetterForHashMap'
-                : 'edu.ku.brc.af.ui.forms.DataSetterForObj')
+                : 'edu.ku.brc.af.ui.forms.DataSetterForObj'),
           ),
         };
         setOriginalSyncerInput(result, node.raw);
         return result;
-      }
-    )
+      },
+    ),
   );
 
 const viewDefSpec = f.store(() =>
@@ -246,29 +246,29 @@ const viewDefSpec = f.store(() =>
     name: syncers.xmlAttribute('name', 'required'),
     table: pipe(
       syncers.xmlAttribute('class', 'required'),
-      syncers.preserveInvalid(syncers.javaClassName(false))
+      syncers.preserveInvalid(syncers.javaClassName(false)),
     ),
     type: pipe(
       syncers.xmlAttribute('type', 'required'),
       syncers.maybe(
-        syncers.enum(['form', 'formtable', 'iconview', 'rstable'] as const)
+        syncers.enum(['form', 'formtable', 'iconview', 'rstable'] as const),
       ),
       /*
        * REFACTOR: try improving type inference to not require explicitly
        *   specifying generic
        */
-      syncers.fallback<'form' | 'formtable' | 'iconview' | 'rstable'>('form')
+      syncers.fallback<'form' | 'formtable' | 'iconview' | 'rstable'>('form'),
     ),
     legacyGetTable: syncers.xmlAttribute('getTable', 'required'),
     legacySetTable: syncers.xmlAttribute('setTable', 'required'),
     legacyEditableDialog: pipe(
       syncers.xmlAttribute('editableDlg', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(true)
+      syncers.default<boolean>(true),
     ),
     legacyUseResourceLabels: pipe(
       syncers.xmlAttribute('useResourceLabels', 'skip'),
-      syncers.maybe(syncers.toBoolean)
+      syncers.maybe(syncers.toBoolean),
     ),
     /*
      * Not parsing the rest of the form definition but leaving it as is so
@@ -281,7 +281,7 @@ const viewDefSpec = f.store(() =>
         ...defined(getOriginalSyncerInput(node), ''),
         attributes: {},
       }),
-      toSimpleXmlNode
+      toSimpleXmlNode,
     ),
-  })
+  }),
 );

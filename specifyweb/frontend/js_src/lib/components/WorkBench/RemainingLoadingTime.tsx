@@ -15,7 +15,7 @@ export function RemainingLoadingTime({
 }): JSX.Element | null {
   const startTime = React.useRef(Date.now());
   const [remainingTime, setRemainingTime] = React.useState<number | undefined>(
-    undefined
+    undefined,
   );
 
   // Calculate the remaining time

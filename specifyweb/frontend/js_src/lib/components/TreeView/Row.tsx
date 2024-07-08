@@ -39,7 +39,7 @@ export function TreeRow<SCHEMA extends AnyTree>({
   readonly getRows: (parentId: number | 'null') => Promise<RA<Row>>;
   readonly getStats: (
     nodeId: number,
-    rankId: number
+    rankId: number,
   ) => Promise<Stats | undefined>;
   readonly nodeStats: Stats[number] | undefined;
   readonly path: RA<Row>;
@@ -48,7 +48,7 @@ export function TreeRow<SCHEMA extends AnyTree>({
   readonly collapsedRanks: RA<number>;
   readonly conformation: Conformations | undefined;
   readonly onChangeConformation: (
-    conformation: Conformations | undefined
+    conformation: Conformations | undefined,
   ) => void;
   readonly focusPath: RA<number> | undefined;
   readonly actionRow: Row | undefined;
@@ -61,10 +61,10 @@ export function TreeRow<SCHEMA extends AnyTree>({
 }): JSX.Element | null {
   const [rows, setRows] = React.useState<RA<Row> | undefined>(undefined);
   const [childStats, setChildStats] = React.useState<Stats | undefined>(
-    undefined
+    undefined,
   );
   const previousConformation = React.useRef<Conformations | undefined>(
-    undefined
+    undefined,
   );
 
   React.useEffect(() => {
@@ -80,7 +80,7 @@ export function TreeRow<SCHEMA extends AnyTree>({
     if (!isLoading) return undefined;
 
     void getRows(row.nodeId).then((rows) =>
-      destructorCalled ? undefined : setRows(rows)
+      destructorCalled ? undefined : setRows(rows),
     );
 
     let destructorCalled = false;
@@ -95,7 +95,9 @@ export function TreeRow<SCHEMA extends AnyTree>({
     if (!isLoadingStats) return undefined;
 
     void getStats(row.nodeId, row.rankId).then((stats) =>
-      destructorCalled || stats === undefined ? undefined : setChildStats(stats)
+      destructorCalled || stats === undefined
+        ? undefined
+        : setChildStats(stats),
     );
 
     let destructorCalled = false;
@@ -125,7 +127,7 @@ export function TreeRow<SCHEMA extends AnyTree>({
       else handleChangeConformation([]);
       handleFocusNode(
         // "0" is a placeholder for id of first child node
-        focusChild ? [rows?.[0].nodeId ?? 0] : []
+        focusChild ? [rows?.[0].nodeId ?? 0] : [],
       );
     }
   }
@@ -144,7 +146,7 @@ export function TreeRow<SCHEMA extends AnyTree>({
       if (userPreferences.get('treeEditor', 'behavior', 'autoScroll'))
         scrollIntoView(element);
     },
-    []
+    [],
   );
 
   const hasNoChildrenNodes =
@@ -160,9 +162,9 @@ export function TreeRow<SCHEMA extends AnyTree>({
           [acceptedChildrenKey]: row.nodeId,
           domainFilter: false,
         }).then((rows) => rows.map(({ name }) => name)),
-      [acceptedChildrenKey, treeName, row.nodeId]
+      [acceptedChildrenKey, treeName, row.nodeId],
     ),
-    false
+    false,
   );
 
   return hideEmptyNodes && hasNoChildrenNodes ? null : (
@@ -181,19 +183,13 @@ export function TreeRow<SCHEMA extends AnyTree>({
                */
               aria-describedby={rankNameId(rankId.toString())}
               aria-pressed={isLoading ? 'mixed' : displayChildren}
-              className={`
-                -mb-[12px] -ml-[5px] mt-2
-                whitespace-nowrap rounded border border-transparent
-                ${className.ariaHandled}
-                ${
-                  isAction
-                    ? 'outline outline-1 outline-red-500'
-                    : isFocused
+              className={`-mb-[12px] -ml-[5px] mt-2 whitespace-nowrap rounded border border-transparent ${className.ariaHandled} ${
+                isAction
+                  ? 'outline outline-1 outline-red-500'
+                  : isFocused
                     ? 'outline outline-1 outline-blue-500'
                     : ''
-                }
-                ${hideEmptyNodes && isLoadingStats ? 'opacity-50' : ''}
-              `}
+              } ${hideEmptyNodes && isLoadingStats ? 'opacity-50' : ''} `}
               forwardRef={isFocused ? handleRef : undefined}
               key={rankId}
               style={{
@@ -222,19 +218,19 @@ export function TreeRow<SCHEMA extends AnyTree>({
                     ? isLoading
                       ? commonText.loading()
                       : row.children === 0
-                      ? treeText.leafNode()
-                      : displayChildren
-                      ? treeText.opened()
-                      : treeText.closed()
+                        ? treeText.leafNode()
+                        : displayChildren
+                          ? treeText.opened()
+                          : treeText.closed()
                     : undefined}
                 </span>
                 {isLoading
                   ? icons.clock
                   : row.children === 0
-                  ? icons.blank
-                  : displayChildren
-                  ? icons.chevronDown
-                  : icons.chevronRight}
+                    ? icons.blank
+                    : displayChildren
+                      ? icons.chevronDown
+                      : icons.chevronRight}
               </span>
               <span
                 className={
@@ -248,11 +244,11 @@ export function TreeRow<SCHEMA extends AnyTree>({
                           name: row.acceptedName ?? row.acceptedId.toString(),
                         })
                       : synonymsNames === undefined ||
-                        synonymsNames.length === 0
-                      ? undefined
-                      : treeText.synonyms({
-                          names: synonymsNames.join(', '),
-                        })
+                          synonymsNames.length === 0
+                        ? undefined
+                        : treeText.synonyms({
+                            names: synonymsNames.join(', '),
+                          })
                   }
                 >
                   {doIncludeAuthorPref &&
@@ -279,31 +275,26 @@ export function TreeRow<SCHEMA extends AnyTree>({
           );
         } else {
           const indexOfAncestor = path.findIndex(
-            (node) => node.rankId === rankId
+            (node) => node.rankId === rankId,
           );
           const currentNode = path[indexOfAncestor + 1];
           return (
             <span
               aria-hidden="true"
-              className={`
-                pointer-events-none whitespace-nowrap border
-                border-dotted border-transparent
-                ${
-                  // Add left border for empty cell before tree node
-                  indexOfAncestor !== -1 &&
-                  !(typeof currentNode === 'object' && currentNode.isLastChild)
-                    ? 'border-l-gray-500'
-                    : ''
-                }
-                ${
-                  // Add a line from parent till child
-                  typeof parentRankId === 'number' &&
-                  parentRankId <= rankId &&
-                  rankId < row.rankId
-                    ? 'border-b-gray-500'
-                    : ''
-                }
-              `}
+              className={`pointer-events-none whitespace-nowrap border border-dotted border-transparent ${
+                // Add left border for empty cell before tree node
+                indexOfAncestor !== -1 &&
+                !(typeof currentNode === 'object' && currentNode.isLastChild)
+                  ? 'border-l-gray-500'
+                  : ''
+              } ${
+                // Add a line from parent till child
+                typeof parentRankId === 'number' &&
+                parentRankId <= rankId &&
+                rankId < row.rankId
+                  ? 'border-b-gray-500'
+                  : ''
+              } `}
               key={rankId}
             />
           );

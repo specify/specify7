@@ -13,7 +13,7 @@ export function configureHandsontable(
   hot: Handsontable,
   mappings: WbMapping | undefined,
   dataset: Dataset,
-  pickLists: WbPickLists
+  pickLists: WbPickLists,
 ): void {
   identifyDefaultValues(hot, mappings);
   identifyPickLists(hot, pickLists);
@@ -22,7 +22,7 @@ export function configureHandsontable(
 
 export function identifyDefaultValues(
   hot: Handsontable,
-  mappings: WbMapping | undefined
+  mappings: WbMapping | undefined,
 ): void {
   if (mappings === undefined) return;
   hot.updateSettings({
@@ -55,7 +55,7 @@ function identifyPickLists(hot: Handsontable, pickLists: WbPickLists): void {
 function setSort(hot: Handsontable, dataset: Dataset): void {
   const sortConfig = getCache(
     'workBenchSortConfig',
-    `${schema.domainLevelIds.collection}_${dataset.id}`
+    `${schema.domainLevelIds.collection}_${dataset.id}`,
   );
   if (!Array.isArray(sortConfig)) return;
   const visualSortConfig = sortConfig.map(({ physicalCol, ...rest }) => ({
@@ -80,7 +80,7 @@ const hotPlugins = new WeakMap<
 
 export function getHotPlugin<NAME extends keyof Plugins>(
   hot: Handsontable,
-  pluginName: NAME
+  pluginName: NAME,
 ): Plugins[NAME] {
   let plugins = hotPlugins.get(hot);
   if (plugins === undefined) {

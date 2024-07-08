@@ -47,7 +47,7 @@ export function wrap<
    * For example, can make some optional props be required, forbid passing
    * children, or mutate extra props using mergeProps callback
    */
-  EXTRA_PROPS extends IR<unknown> = RR<never, never>
+  EXTRA_PROPS extends IR<unknown> = RR<never, never>,
 >(
   // Would be shown in React DevTools
   name: string,
@@ -55,10 +55,10 @@ export function wrap<
   className: string,
   initialProps?:
     | TagProps<TAG>
-    | ((props: Readonly<EXTRA_PROPS> & TagProps<TAG>) => TagProps<TAG>)
+    | ((props: Readonly<EXTRA_PROPS> & TagProps<TAG>) => TagProps<TAG>),
 ) {
   const wrapped = (
-    props: Readonly<EXTRA_PROPS> & TagProps<TAG>
+    props: Readonly<EXTRA_PROPS> & TagProps<TAG>,
   ): JSX.Element => {
     // Merge classNames
     const fullClassName =

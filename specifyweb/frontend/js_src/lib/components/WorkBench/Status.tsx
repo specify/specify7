@@ -35,7 +35,7 @@ export function WbStatus({
 
   const [status, setStatus] = React.useState<Status>(dataset.uploaderstatus);
   const [aborted, setAborted] = React.useState<boolean | 'failed' | 'pending'>(
-    false
+    false,
   );
 
   React.useEffect(() => {
@@ -149,12 +149,12 @@ export function WbStatus({
                   headers: { Accept: 'application/json' },
                   expectedErrors: [Http.UNAVAILABLE],
                   errorMode: 'silent',
-                }
+                },
               )
                 .then(({ data, status }) =>
                   status === Http.OK && ['ok', 'not running'].includes(data)
                     ? setAborted(true)
-                    : error('Invalid WbStatus response', { status, data })
+                    : error('Invalid WbStatus response', { status, data }),
                 )
                 .catch(() => setAborted('failed'));
             }}

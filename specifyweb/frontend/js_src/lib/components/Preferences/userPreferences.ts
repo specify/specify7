@@ -34,7 +34,7 @@ userPreferences.events.on(
       ...userPreferences.getRaw(),
     });
     setCache(cacheKey, 'defaultCached', userPreferences.getDefaults());
-  }, throttleRate)
+  }, throttleRate),
 );
 
 // Fetch up to date preferences from the back-end
@@ -45,10 +45,10 @@ cacheEvents.on('change', ({ category, key }) => {
   if (category !== cacheKey) return;
   if (key === 'cached')
     userPreferences.setRaw(
-      getCache(cacheKey, 'cached') ?? userPreferences.getRaw()
+      getCache(cacheKey, 'cached') ?? userPreferences.getRaw(),
     );
   else if (key === 'defaultCached')
     userPreferences.setDefaults(
-      getCache(cacheKey, 'defaultCached') ?? userPreferences.getDefaults()
+      getCache(cacheKey, 'defaultCached') ?? userPreferences.getDefaults(),
     );
 });

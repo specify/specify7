@@ -17,7 +17,7 @@ export const f = {
   /** Create a new version of the passed function that accepts only 1 argument */
   unary:
     <ARGUMENT, RETURN>(
-      callback: (argument: ARGUMENT) => RETURN
+      callback: (argument: ARGUMENT) => RETURN,
     ): ((argument: ARGUMENT) => RETURN) =>
     (argument) =>
       callback(argument),
@@ -57,8 +57,8 @@ export const f = {
         Object.entries(dictionary).map(async ([promiseName, promise]) => [
           promiseName,
           await promise,
-        ])
-      )
+        ]),
+      ),
     ) as T,
   sum: (array: RA<number>): number =>
     array.reduce((total, value) => total + value, 0),
@@ -82,7 +82,7 @@ export const f = {
    */
   maybe: <VALUE, RETURN>(
     value: VALUE | undefined | void,
-    callback: (value: VALUE) => RETURN
+    callback: (value: VALUE) => RETURN,
   ): RETURN | undefined => (value === undefined ? undefined : callback(value)),
   /**
    * A better typed version of Array.prototype.includes
@@ -103,7 +103,7 @@ export const f = {
   tap:
     <ARGUMENTS extends RA<unknown>, RETURN>(
       tapFunction: (...args: ARGUMENTS) => void,
-      action: (...args: ARGUMENTS) => RETURN
+      action: (...args: ARGUMENTS) => RETURN,
     ) =>
     (...args: ARGUMENTS): RETURN => {
       tapFunction(...args);

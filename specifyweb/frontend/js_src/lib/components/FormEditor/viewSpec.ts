@@ -24,11 +24,11 @@ export const formDefinitionSpec = (table: SpecifyTable | undefined) =>
   createXmlSpec({
     columnDefinitions: pipe(
       syncers.xmlChildren('columnDef'),
-      syncers.map(syncers.object(columnDefinitionSpec()))
+      syncers.map(syncers.object(columnDefinitionSpec())),
     ),
     rowDefinition: pipe(
       syncers.xmlChild('rowDef', 'optional'),
-      syncers.maybe(syncers.object(rowSizeDefinitionSpec()))
+      syncers.maybe(syncers.object(rowSizeDefinitionSpec())),
     ),
     legacyBusinessRules: pipe(
       /*
@@ -36,7 +36,7 @@ export const formDefinitionSpec = (table: SpecifyTable | undefined) =>
        * is no difference between it being emmpty and not being there at all
        */
       syncers.xmlChild('enableRules', 'optional'),
-      syncers.maybe(syncers.object(legacyBusinessRulesSpec()))
+      syncers.maybe(syncers.object(legacyBusinessRulesSpec())),
     ),
     definitions: definitions(table),
   });
@@ -46,7 +46,7 @@ const definitions = (table: SpecifyTable | undefined) =>
   pipe(
     syncers.xmlChildren('rows'),
     syncers.fallback<RA<SimpleXmlNode>>(() => [createSimpleXmlNode()]),
-    syncers.map(syncers.object(rowsSpec(table)))
+    syncers.map(syncers.object(rowsSpec(table))),
   );
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -66,7 +66,7 @@ const rowsSpec = (table: SpecifyTable | undefined) =>
                 'definition',
                 pipe(
                   syncers.xmlAttribute('type', 'required'),
-                  syncers.fallback(localized('field'))
+                  syncers.fallback(localized('field')),
                 ),
                 {
                   label: 'Label',
@@ -89,7 +89,7 @@ const rowsSpec = (table: SpecifyTable | undefined) =>
                   Blank: emptySpec,
                   Unknown: emptySpec,
                 } as const,
-                table
+                table,
               ),
               // Make sure command is on a correct table
               syncers.change(
@@ -101,7 +101,7 @@ const rowsSpec = (table: SpecifyTable | undefined) =>
                     cell.definition.name ??
                     (f.includes(
                       Object.keys(commandTables),
-                      cell.definition.label
+                      cell.definition.label,
                     )
                       ? cell.definition.label
                       : undefined);
@@ -116,7 +116,7 @@ const rowsSpec = (table: SpecifyTable | undefined) =>
                       `Can't display ${
                         cell.definition.label ?? name ?? 'plugin'
                       } on the ${table.name} form. Instead, try ` +
-                        `displaying it on the ${genericTables[allowedTable].label} form`
+                        `displaying it on the ${genericTables[allowedTable].label} form`,
                     );
                     return { ...cell.definition, name: undefined };
                   }
@@ -125,12 +125,12 @@ const rowsSpec = (table: SpecifyTable | undefined) =>
                     name,
                   };
                 },
-                ({ definition }) => definition
-              )
-            )
-          )
-        )
-      )
+                ({ definition }) => definition,
+              ),
+            ),
+          ),
+        ),
+      ),
     ),
     condition: pipe(
       syncers.xmlAttribute('condition', 'skip', false),
@@ -157,13 +157,13 @@ const rowsSpec = (table: SpecifyTable | undefined) =>
           return joined === undefined || joined.length === 0
             ? undefined
             : localized(`${joined}=${value}`);
-        }
-      )
+        },
+      ),
     ),
     columnDefinitions: pipe(
       syncers.xmlAttribute('colDef', 'skip'),
       syncers.default(localized('')),
-      syncers.split(',')
+      syncers.split(','),
     ),
   });
 
@@ -191,12 +191,12 @@ const preProcessProps = syncer<SimpleXmlNode, SimpleXmlNode>(
           value.length > 0 &&
           key.startsWith(prefix)
             ? [key.slice(prefix.length), value]
-            : undefined
-        )
-      )
+            : undefined,
+        ),
+      ),
     );
     const rest = Object.fromEntries(
-      entries.filter(([key]) => !key.startsWith(prefix))
+      entries.filter(([key]) => !key.startsWith(prefix)),
     );
     return {
       ...node,
@@ -205,7 +205,7 @@ const preProcessProps = syncer<SimpleXmlNode, SimpleXmlNode>(
         [attributeName]: buildSpecifyProperties(props),
       },
     };
-  }
+  },
 );
 
 const columnDefinitionSpec = f.store(() =>
@@ -213,7 +213,7 @@ const columnDefinitionSpec = f.store(() =>
     // Commonly one of 'lnx', 'mac', 'exp'
     os: syncers.xmlAttribute('os', 'skip'),
     definition: syncers.xmlContent,
-  })
+  }),
 );
 
 const rowSizeDefinitionSpec = f.store(() =>
@@ -221,23 +221,23 @@ const rowSizeDefinitionSpec = f.store(() =>
     auto: pipe(
       syncers.xmlAttribute('auto', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
+      syncers.default<boolean>(false),
     ),
     cell: syncers.xmlAttribute('cell', 'skip'),
     sep: syncers.xmlAttribute('sep', 'skip'),
     definition: pipe(
       syncers.xmlContent,
       syncers.default(''),
-      syncers.split(',')
+      syncers.split(','),
     ),
-  })
+  }),
 );
 
 const legacyBusinessRulesSpec = f.store(() =>
   createXmlSpec({
     id: syncers.xmlAttribute('id', 'skip'),
     rule: syncers.xmlContent,
-  })
+  }),
 );
 
 const cellSpec = f.store(() =>
@@ -247,7 +247,7 @@ const cellSpec = f.store(() =>
     colSpan: pipe(
       syncers.xmlAttribute('colSpan', 'skip'),
       syncers.maybe(syncers.toDecimal),
-      syncers.default<number>(1)
+      syncers.default<number>(1),
     ),
     description: syncers.xmlAttribute('desc', 'skip'),
     /*
@@ -258,35 +258,35 @@ const cellSpec = f.store(() =>
       syncers.xmlAttribute('invisible', 'skip'),
       syncers.maybe(syncers.toBoolean),
       syncers.default<boolean>(false),
-      syncers.flip
+      syncers.flip,
     ),
     title: syncers.xmlAttribute('initialize title', 'skip'),
     // Default: right for labels, left for the rest
     align: pipe(
       syncers.xmlAttribute('initialize align', 'skip'),
-      syncers.maybe(syncers.enum(['left', 'right', 'center']))
+      syncers.maybe(syncers.enum(['left', 'right', 'center'])),
     ),
     // Specify 7 only
     foregroundColor: syncers.xmlAttribute('initialize foregroundColor', 'skip'),
     // Specify 7 only
     foregroundColorDark: syncers.xmlAttribute(
       'initialize foregroundColorDark',
-      'skip'
+      'skip',
     ),
     legacyForegroundColor: syncers.xmlAttribute('initialize fg', 'skip'),
     legacyVisible: pipe(
       syncers.xmlAttribute('initialize visible', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(true)
+      syncers.default<boolean>(true),
     ),
     // In sp6, if true, disconnects the field from the database
     legacyIgnore: pipe(
       syncers.xmlAttribute('ignore', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
+      syncers.default<boolean>(false),
     ),
     rest: syncers.captureLogContext(),
-  })
+  }),
 );
 
 export const parseSpecifyProperties = (value = '', prefix = ''): IR<string> =>
@@ -301,15 +301,15 @@ export const parseSpecifyProperties = (value = '', prefix = ''): IR<string> =>
               `${prefix}${name}`,
               values.join('=').trim().replaceAll('%3B', ';'),
             ] as const);
-      })
-    )
+      }),
+    ),
   );
 
 const buildSpecifyProperties = (properties: IR<string>): string =>
   Object.entries(properties)
     .filter(([key, value]) => key.length > 0 && value.length > 0)
     .map(
-      ([key, value]) => `${key.toLowerCase()}=${value.replaceAll(';', '%3B')}`
+      ([key, value]) => `${key.toLowerCase()}=${value.replaceAll(';', '%3B')}`,
     )
     .join(';');
 
@@ -319,7 +319,7 @@ const labelSpec = f.store(() =>
     labelForCellId: syncers.xmlAttribute('labelFor', 'skip'),
     icon: syncers.xmlAttribute('icon', 'skip'),
     legacyName: syncers.xmlAttribute('name', 'skip'),
-  })
+  }),
 );
 
 const separatorSpec = f.store(() =>
@@ -328,14 +328,14 @@ const separatorSpec = f.store(() =>
     icon: syncers.xmlAttribute('icon', 'skip'),
     forClass: pipe(
       syncers.xmlAttribute('forClass', 'skip'),
-      syncers.maybe(syncers.tableName)
+      syncers.maybe(syncers.tableName),
     ),
     canCollapse: pipe(
       syncers.xmlAttribute('collapse', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
+      syncers.default<boolean>(false),
     ),
-  })
+  }),
 );
 
 const borderSpec = f.store(() =>
@@ -343,19 +343,19 @@ const borderSpec = f.store(() =>
     legacyBorderStyle: pipe(
       syncers.xmlAttribute('initialize border', 'skip'),
       syncers.maybe(
-        syncers.enum(['etched', 'lowered', 'raised', 'empty', 'line'])
-      )
+        syncers.enum(['etched', 'lowered', 'raised', 'empty', 'line']),
+      ),
     ),
     // Used only if border style is line
     legacyBorderColor: syncers.xmlAttribute('initialize borderColor', 'skip'),
     legacyBackgroundColor: syncers.xmlAttribute('initialize bgColor', 'skip'),
-  })
+  }),
 );
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const subViewSpec = (
   cell: SpecToJson<ReturnType<typeof cellSpec>>,
-  table: SpecifyTable | undefined
+  table: SpecifyTable | undefined,
 ) =>
   createXmlSpec({
     name: pipe(
@@ -374,12 +374,12 @@ const subViewSpec = (
           }
           return fields;
         },
-        (field) => field
-      )
+        (field) => field,
+      ),
     ),
     defaultType: pipe(
       syncers.xmlAttribute('defaultType', 'skip'),
-      syncers.maybe(syncers.enum(['form', 'table', 'icon'] as const))
+      syncers.maybe(syncers.enum(['form', 'table', 'icon'] as const)),
     ),
     buttonLabel: syncers.xmlAttribute('label', 'skip'),
     viewSetName: syncers.xmlAttribute('viewSetName', 'skip'),
@@ -387,22 +387,22 @@ const subViewSpec = (
     isReadOnly: pipe(
       syncers.xmlAttribute('readOnly', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
+      syncers.default<boolean>(false),
     ),
     legacyRows: pipe(
       syncers.xmlAttribute('rows', 'skip'),
       syncers.maybe(syncers.toDecimal),
-      syncers.default(5)
+      syncers.default(5),
     ),
     legacyValidationType: pipe(
       syncers.xmlAttribute('valType', 'skip'),
       syncers.maybe(syncers.enum(['Changed', 'Focus', 'None', 'OK'] as const)),
-      syncers.default('Changed')
+      syncers.default('Changed'),
     ),
     displayAsButton: pipe(
       syncers.xmlAttribute('initialize btn', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
+      syncers.default<boolean>(false),
     ),
     icon: syncers.xmlAttribute('initialize icon', 'skip'),
     legacyHelpContext: syncers.xmlAttribute('initialize hc', 'skip'),
@@ -436,44 +436,44 @@ const subViewSpec = (
               : toSmallSortConfig({
                   ...parsed,
                   fieldNames: parsed.fieldNames.map(({ name }) => name),
-                })
-        )
-      )
+                }),
+        ),
+      ),
     ),
     legacyNoScrollBars: pipe(
       syncers.xmlAttribute('initialize noScrollBars', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
+      syncers.default<boolean>(false),
     ),
     legacyNoSeparator: pipe(
       syncers.xmlAttribute('initialize noSep', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
+      syncers.default<boolean>(false),
     ),
     legacyNoSeparatorMoreButton: pipe(
       syncers.xmlAttribute('initialize noSepMoreBtn', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
+      syncers.default<boolean>(false),
     ),
     legacyDisplayAsToMany: pipe(
       syncers.xmlAttribute('initialize many', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
+      syncers.default<boolean>(false),
     ),
     legacyCollapse: pipe(
       syncers.xmlAttribute('initialize collapse', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
+      syncers.default<boolean>(false),
     ),
     legacyAddSearch: pipe(
       syncers.xmlAttribute('initialize addSearch', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
+      syncers.default<boolean>(false),
     ),
     legacyAddAdd: pipe(
       syncers.xmlAttribute('initialize addAdd', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
+      syncers.default<boolean>(false),
     ),
     ...borderSpec(),
   });
@@ -481,18 +481,18 @@ const subViewSpec = (
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const panelSpec = (
   _cell: SpecToJson<ReturnType<typeof cellSpec>>,
-  table: SpecifyTable | undefined
+  table: SpecifyTable | undefined,
 ) =>
   createXmlSpec({
     columnDefinitions: pipe(
       syncers.xmlAttribute('colDef', 'skip'),
       syncers.default(localized('')),
-      syncers.split(',')
+      syncers.split(','),
     ),
     rowDefinitions: pipe(
       syncers.xmlAttribute('rowDef', 'skip'),
       syncers.default(localized('')),
-      syncers.split(',')
+      syncers.split(','),
     ),
     /*
      * This is recognized by sp6 code, but never actually used to influence
@@ -514,7 +514,7 @@ const panelSpec = (
  * See https://github.com/microsoft/TypeScript/issues/45213
  */
 const veryUnsafeRows = (
-  table: SpecifyTable | undefined
+  table: SpecifyTable | undefined,
 ): Syncer<SimpleXmlNode, SimpleXmlNode> =>
   definitions(table) as unknown as Syncer<SimpleXmlNode, SimpleXmlNode>;
 
@@ -528,17 +528,17 @@ const commandSpec = f.store(() =>
   createXmlSpec({
     name: pipe(
       syncers.xmlAttribute('name', 'required'),
-      syncers.maybe(syncers.enum(Object.keys(commandTables)))
+      syncers.maybe(syncers.enum(Object.keys(commandTables))),
     ),
     legacyCommandType: pipe(
       syncers.xmlAttribute('commandType', 'skip'),
       syncers.maybe(
-        syncers.enum(['Interactions', 'App', 'ClearCache'] as const)
-      )
+        syncers.enum(['Interactions', 'App', 'ClearCache'] as const),
+      ),
     ),
     legacyAction: pipe(
       syncers.xmlAttribute('action', 'skip'),
-      syncers.maybe(syncers.enum(['ReturnLoan'] as const))
+      syncers.maybe(syncers.enum(['ReturnLoan'] as const)),
     ),
     label: pipe(
       syncers.xmlAttribute('label', 'skip'),
@@ -547,15 +547,15 @@ const commandSpec = f.store(() =>
         syncer(
           (label) =>
             label === 'SHOW_LOANS' ? localized('SHOW_INTERACTIONS') : label,
-          f.id
-        )
-      )
+          f.id,
+        ),
+      ),
     ),
     legacyIsDefault: pipe(
       syncers.xmlAttribute('default', 'skip'),
-      syncers.maybe(syncers.toBoolean)
+      syncers.maybe(syncers.toBoolean),
     ),
-  })
+  }),
 );
 
 const iconViewSpec = f.store(() =>
@@ -566,14 +566,14 @@ const iconViewSpec = f.store(() =>
     legacyNoSeparator: pipe(
       syncers.xmlAttribute('initialize noSep', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
+      syncers.default<boolean>(false),
     ),
     legacyNoMoreButton: pipe(
       syncers.xmlAttribute('initialize noSepMoreBtn', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
+      syncers.default<boolean>(false),
     ),
-  })
+  }),
 );
 
 // FIXME: when changing cell type, remove attributes
@@ -582,7 +582,7 @@ const emptySpec = f.store(() => createXmlSpec({}));
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const fieldSpec = (
   cell: SpecToJson<ReturnType<typeof cellSpec>>,
-  table: SpecifyTable | undefined
+  table: SpecifyTable | undefined,
 ) =>
   createXmlSpec({
     field: pipe(
@@ -592,7 +592,7 @@ const fieldSpec = (
         'definition',
         pipe(
           syncers.xmlAttribute('uiType', 'required'),
-          syncers.fallback(localized('text'))
+          syncers.fallback(localized('text')),
         ),
         {
           combobox: 'ComboBox',
@@ -632,7 +632,7 @@ const fieldSpec = (
           ColorChooser: emptySpec,
           Unknown: emptySpec,
         } as const,
-        { cell, table }
+        { cell, table },
       ),
       syncers.change(
         'isReadOnly',
@@ -640,8 +640,8 @@ const fieldSpec = (
           cell.isReadOnly ||
           cell.definition.rawType === 'dsptextfield' ||
           cell.definition.rawType === 'label',
-        ({ isReadOnly }) => isReadOnly
-      )
+        ({ isReadOnly }) => isReadOnly,
+      ),
     ),
   });
 
@@ -671,28 +671,28 @@ const rawFieldSpec = (table: SpecifyTable | undefined) =>
           )
             console.error(`Unknown field name: ${name}`);
           return parsed;
-        }, syncers.field(table?.name, 'strict').deserializer)
-      )
+        }, syncers.field(table?.name, 'strict').deserializer),
+      ),
     ),
     legacyEditOnCreate: pipe(
       syncers.xmlAttribute('initialize editOnCreate', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
+      syncers.default<boolean>(false),
     ),
     isRequired: pipe(
       syncers.xmlAttribute('required', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
+      syncers.default<boolean>(false),
     ),
     isReadOnly: pipe(
       syncers.xmlAttribute('readonly', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
+      syncers.default<boolean>(false),
     ),
     legacyValidationType: pipe(
       syncers.xmlAttribute('valType', 'skip'),
       syncers.maybe(syncers.enum(['Changed', 'Focus'] as const)),
-      syncers.default('Changed')
+      syncers.default('Changed'),
     ),
     defaultValue: syncers.xmlAttribute('default', 'skip'),
     // Example: '%s'
@@ -710,42 +710,42 @@ const comboBoxSpec = f.store(() =>
     // FEATURE: go over all attributes to see what sp7 should start supporting
     legacyData: pipe(
       syncers.xmlAttribute('initialize data', 'skip', false),
-      syncers.maybe(syncers.fancySplit(','))
+      syncers.maybe(syncers.fancySplit(',')),
     ),
-  })
+  }),
 );
 
 const textSpec = f.store(() =>
   createXmlSpec({
     minLength: pipe(
       syncers.xmlAttribute('initialize minLength', 'skip'),
-      syncers.maybe(syncers.toDecimal)
+      syncers.maybe(syncers.toDecimal),
     ),
     maxLength: pipe(
       syncers.xmlAttribute('initialize maxLength', 'skip'),
-      syncers.maybe(syncers.toDecimal)
+      syncers.maybe(syncers.toDecimal),
     ),
     isPassword: pipe(
       syncers.xmlAttribute('initialize isPassword', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
+      syncers.default<boolean>(false),
     ),
     legacyColumns: pipe(
       syncers.xmlAttribute('cols', 'skip'),
       syncers.maybe(syncers.toDecimal),
-      syncers.default(10)
+      syncers.default(10),
     ),
     // Allow editing even the auto numbered part of the formatted field
     legacyAllEdit: pipe(
       syncers.xmlAttribute('initialize allEdit', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
+      syncers.default<boolean>(false),
     ),
     // Allow entering only a part of the formatted field be typed in (used for search forms)
     legacyIsPartial: pipe(
       syncers.xmlAttribute('initialize isPartial', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
+      syncers.default<boolean>(false),
     ),
     // Only displayed in sp6 for uiType="textfieldinfo"
     legacyDisplayDialog: syncers.xmlAttribute('initialize displayDlg', 'skip'),
@@ -753,7 +753,7 @@ const textSpec = f.store(() =>
     legacyTransparent: pipe(
       syncers.xmlAttribute('initialize transparent', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
+      syncers.default<boolean>(false),
     ),
     /*
      * Used only if uiType="formattedtext". For Catalog Number field.
@@ -763,7 +763,7 @@ const textSpec = f.store(() =>
     legacyIsSeries: pipe(
       syncers.xmlAttribute('initialize series', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
+      syncers.default<boolean>(false),
     ),
     /*
      * Assume that the value received from the user is already formatted and
@@ -773,9 +773,9 @@ const textSpec = f.store(() =>
     legacyAssumeFormatted: pipe(
       syncers.xmlAttribute('initialize fromUiFmt', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
+      syncers.default<boolean>(false),
     ),
-  })
+  }),
 );
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -785,18 +785,18 @@ const textAreaSpec = (
     rawType,
   }: {
     readonly rawType: string;
-  }
+  },
 ) =>
   createXmlSpec({
     rows: pipe(
       syncers.xmlAttribute('rows', 'skip'),
       syncers.maybe(syncers.toDecimal),
-      syncers.default(rawType === 'textareabrief' ? 1 : 4)
+      syncers.default(rawType === 'textareabrief' ? 1 : 4),
     ),
     legacyColumns: pipe(
       syncers.xmlAttribute('cols', 'skip'),
       syncers.maybe(syncers.toDecimal),
-      syncers.default(10)
+      syncers.default(10),
     ),
   });
 
@@ -808,36 +808,36 @@ const queryComboBoxSpec = f.store(() =>
     showSearchButton: pipe(
       syncers.xmlAttribute('initialize searchBtn', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(true)
+      syncers.default<boolean>(true),
     ),
     showCloneButton: pipe(
       syncers.xmlAttribute('initialize cloneBtn', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
+      syncers.default<boolean>(false),
     ),
     showViewButton: pipe(
       syncers.xmlAttribute('initialize viewBtn', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
+      syncers.default<boolean>(false),
     ),
     showEditButton: pipe(
       syncers.xmlAttribute('initialize editBtn', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(true)
+      syncers.default<boolean>(true),
     ),
     showNewButton: pipe(
       syncers.xmlAttribute('initialize newBtn', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(true)
+      syncers.default<boolean>(true),
     ),
     legacyHelpContext: syncers.xmlAttribute('initialize hc', 'skip'),
     // Make query compatible with multiple ORMs
     legacyAdjustQuery: pipe(
       syncers.xmlAttribute('initialize adjustQuery', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(true)
+      syncers.default<boolean>(true),
     ),
-  })
+  }),
 );
 
 const checkBoxSpec = f.store(() =>
@@ -847,45 +847,45 @@ const checkBoxSpec = f.store(() =>
     legacyIsEditable: pipe(
       syncers.xmlAttribute('initialize editable', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
+      syncers.default<boolean>(false),
     ),
-  })
+  }),
 );
 
 const spinnerSpec = f.store(() =>
   createXmlSpec({
     min: pipe(
       syncers.xmlAttribute('initialize min', 'skip'),
-      syncers.maybe(syncers.toFloat)
+      syncers.maybe(syncers.toFloat),
     ),
     max: pipe(
       syncers.xmlAttribute('initialize max', 'skip'),
-      syncers.maybe(syncers.toFloat)
+      syncers.maybe(syncers.toFloat),
     ),
     // Specify 7 only
     step: pipe(
       syncers.xmlAttribute('initialize step', 'skip'),
-      syncers.maybe(syncers.toFloat)
+      syncers.maybe(syncers.toFloat),
     ),
-  })
+  }),
 );
 
 const listSpec = f.store(() =>
   createXmlSpec({
     legacyDisplayType: pipe(
       syncers.xmlAttribute('dsptype', 'skip'),
-      syncers.default(localized('list'))
+      syncers.default(localized('list')),
     ),
     legacyRows: pipe(
       syncers.xmlAttribute('rows', 'skip'),
       syncers.maybe(syncers.toDecimal),
-      syncers.default(15)
+      syncers.default(15),
     ),
     legacyData: pipe(
       syncers.xmlAttribute('data', 'skip', false),
-      syncers.maybe(syncers.fancySplit(','))
+      syncers.maybe(syncers.fancySplit(',')),
     ),
-  })
+  }),
 );
 
 const imageSpec = f.store(() =>
@@ -895,7 +895,7 @@ const imageSpec = f.store(() =>
       // Format: width,height in px
       syncers.default(localized('150,150')),
       syncers.split(','),
-      syncers.map(syncers.toDecimal)
+      syncers.map(syncers.toDecimal),
     ),
     /*
      * Whether to display the image. By default the image is only
@@ -903,21 +903,21 @@ const imageSpec = f.store(() =>
      */
     legacyIsVisible: pipe(
       syncers.xmlAttribute('initialize edit', 'skip'),
-      syncers.maybe(syncers.toBoolean)
+      syncers.maybe(syncers.toBoolean),
     ),
     legacyHasBorder: pipe(
       syncers.xmlAttribute('initialize border', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(true)
+      syncers.default<boolean>(true),
     ),
     legacyUrl: syncers.xmlAttribute('initialize url', 'skip'),
     legacyIcon: syncers.xmlAttribute('initialize icon', 'skip'),
     legacyIconSize: pipe(
       syncers.xmlAttribute('initialize iconSize', 'skip'),
       syncers.maybe(syncers.toDecimal),
-      syncers.maybe(syncers.numericEnum([16, 24, 32] as const))
+      syncers.maybe(syncers.numericEnum([16, 24, 32] as const)),
     ),
-  })
+  }),
 );
 
 const browseSpec = f.store(() =>
@@ -925,12 +925,12 @@ const browseSpec = f.store(() =>
     legacyDirectoriesOnly: pipe(
       syncers.xmlAttribute('initialize dirsonly', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
+      syncers.default<boolean>(false),
     ),
     legacyUseAlternateFilePicker: pipe(
       syncers.xmlAttribute('initialize forInput', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(true)
+      syncers.default<boolean>(true),
     ),
     /*
      * Extension to filter files by. Example "jpg". Only one is supported
@@ -943,7 +943,7 @@ const browseSpec = f.store(() =>
      */
     legacyFilterDescription: syncers.xmlAttribute(
       'initialize fileFilterDesc',
-      'skip'
+      'skip',
     ),
     /*
      * Example "jpeg". Adds that extension to picked file name if not already
@@ -951,9 +951,9 @@ const browseSpec = f.store(() =>
      */
     legacyDefaultExtension: syncers.xmlAttribute(
       'initialize defaultExtension',
-      'skip'
+      'skip',
     ),
-  })
+  }),
 );
 
 const pluginWrapperSpec = (
@@ -964,7 +964,7 @@ const pluginWrapperSpec = (
   }: {
     readonly cell: SpecToJson<ReturnType<typeof cellSpec>>;
     readonly table: SpecifyTable | undefined;
-  }
+  },
 ) =>
   createXmlSpec({
     // Disable plugin if cell with this id has no value
@@ -975,7 +975,7 @@ const pluginWrapperSpec = (
           rest: syncers.captureLogContext<SimpleXmlNode>().serializer(node),
         }),
         ({ rest }) =>
-          syncers.captureLogContext<SimpleXmlNode>().deserializer(rest)
+          syncers.captureLogContext<SimpleXmlNode>().deserializer(rest),
       ),
       syncers.switch(
         'rest',
@@ -1019,7 +1019,7 @@ const pluginWrapperSpec = (
           WorldWind: emptySpec,
           Unknown: emptySpec,
         } as const,
-        { field, cell, table }
+        { field, cell, table },
       ),
       syncer(
         (node) => {
@@ -1032,13 +1032,13 @@ const pluginWrapperSpec = (
             console.error(
               `Can't display ${node.definition.rawType} on ${table.name} form. Instead, try ` +
                 `displaying it on the ${formatDisjunction(
-                  tables.map(localized)
-                )} form`
+                  tables.map(localized),
+                )} form`,
             );
           return node;
         },
-        (node) => node
-      )
+        (node) => node,
+      ),
     ),
   });
 
@@ -1065,39 +1065,39 @@ const pluginSpec = {
       // Specify 7 only
       step: pipe(
         syncers.xmlAttribute('initialize step', 'skip'),
-        syncers.maybe(syncers.toFloat)
+        syncers.maybe(syncers.toFloat),
       ),
       // Specify 7 only
       defaultType: pipe(
         syncers.xmlAttribute('initialize latLongType', 'skip'),
         syncers.maybe(syncers.enum(['Point', 'Line', 'Rectangle'] as const)),
-        syncers.default('Point')
+        syncers.default('Point'),
       ),
     }),
   partialDate: (
     _: unknown,
-    { table }: { readonly table: SpecifyTable | undefined }
+    { table }: { readonly table: SpecifyTable | undefined },
   ) =>
     createXmlSpec({
       dateField: pipe(
         syncers.xmlAttribute('initialize df', 'required'),
-        syncers.maybe(syncers.field(table?.name))
+        syncers.maybe(syncers.field(table?.name)),
       ),
       datePrecisionField: pipe(
         syncers.xmlAttribute('initialize tp', 'skip'),
-        syncers.maybe(syncers.field(table?.name))
+        syncers.maybe(syncers.field(table?.name)),
       ),
       // Specify 7 only
       defaultType: pipe(
         syncers.xmlAttribute('initialize defaultPrecision', 'skip'),
         syncers.maybe(syncers.enum(['year', 'month-year', 'full'] as const)),
-        syncers.default('full')
+        syncers.default('full'),
       ),
       // Specify 7 only
       canChangePrecision: pipe(
         syncers.xmlAttribute('initialize canChangePrecision', 'skip'),
         syncers.maybe(syncers.toBoolean),
-        syncers.default<boolean>(true)
+        syncers.default<boolean>(true),
       ),
     }),
   collectionRelOneToMany: () =>
@@ -1109,7 +1109,7 @@ const pluginSpec = {
        */
       dataObjectFormatter: syncers.xmlAttribute(
         'initialize formatting',
-        'skip'
+        'skip',
       ),
     }),
   colRelType: () =>
@@ -1121,12 +1121,12 @@ const pluginSpec = {
        */
       dataObjectFormatter: syncers.xmlAttribute(
         'initialize formatting',
-        'skip'
+        'skip',
       ),
       legacyForceRightSide: pipe(
         syncers.xmlAttribute('initialize forceRightSide', 'skip'),
         syncers.maybe(syncers.toBoolean),
-        syncers.default<boolean>(false)
+        syncers.default<boolean>(false),
       ),
     }),
   localityGeoRef: () =>

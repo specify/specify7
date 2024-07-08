@@ -7,23 +7,23 @@ import { hasTablePermission } from '../Permissions/helpers';
 
 export const attachmentRelatedTables = f.store(() =>
   Object.keys(genericTables).filter((tableName) =>
-    tableName.endsWith('Attachment')
-  )
+    tableName.endsWith('Attachment'),
+  ),
 );
 
 export const allTablesWithAttachments = f.store(() =>
   filterArray(
     attachmentRelatedTables().map((tableName) =>
-      getTable(tableName.slice(0, -1 * 'Attachment'.length))
-    )
-  )
+      getTable(tableName.slice(0, -1 * 'Attachment'.length)),
+    ),
+  ),
 );
 
 /** Exclude tables without read access */
 export const tablesWithAttachments = f.store(() =>
   allTablesWithAttachments().filter((model) =>
-    hasTablePermission(model.name, 'read')
-  )
+    hasTablePermission(model.name, 'read'),
+  ),
 );
 
 /**
@@ -38,7 +38,7 @@ export const tablesWithAttachments = f.store(() =>
  * - FieldNotebookPageSet
  */
 export const getAttachmentRelationship = (
-  table: SpecifyTable
+  table: SpecifyTable,
 ): Relationship | undefined => {
   if (table.name === 'Attachment') return undefined;
   const commonRelationship = table.field[

@@ -24,11 +24,11 @@ export function AddRank({
   >;
 }): JSX.Element {
   const [state, setState] = React.useState<'add' | 'initial' | 'parent'>(
-    'initial'
+    'initial',
   );
 
   const [parentRank, setParentRank] = React.useState(
-    treeDefinitionItems[0].resource_uri
+    treeDefinitionItems[0].resource_uri,
   );
 
   const treeDef = treeDefinitionItems[0].treeDef;

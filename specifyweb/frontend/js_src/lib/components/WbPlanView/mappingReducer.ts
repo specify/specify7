@@ -32,7 +32,7 @@ import type { MatchBehaviors } from './uploadPlanParser';
 const modifyLine = (
   state: MappingState,
   line: number,
-  mappingLine: Partial<MappingLine>
+  mappingLine: Partial<MappingLine>,
 ): RA<MappingLine> =>
   replaceItem(state.lines, line, {
     ...state.lines[line],
@@ -193,7 +193,7 @@ export const reducer = generateReducer<MappingState, MappingActions>({
     showMappingView: setCache(
       'wbPlanViewUi',
       'showMappingView',
-      action.isVisible
+      action.isVisible,
     ),
   }),
   ValidationAction: ({ state, action: { validationResults } }) => ({
@@ -268,7 +268,7 @@ export const reducer = generateReducer<MappingState, MappingActions>({
       {
         headerName: uniquifyHeaders(
           [...state.lines.map(({ headerName }) => headerName), newHeaderName],
-          [state.lines.length]
+          [state.lines.length],
         ).at(-1)!,
         mappingPath: [emptyMapping],
         columnOptions: defaultColumnOptions,
@@ -282,7 +282,7 @@ export const reducer = generateReducer<MappingState, MappingActions>({
     showHiddenFields: setCache(
       'wbPlanViewUi',
       'showHiddenFields',
-      !state.showHiddenFields
+      !state.showHiddenFields,
     ),
     revealHiddenFieldsClicked: true,
   }),
@@ -319,7 +319,7 @@ export const reducer = generateReducer<MappingState, MappingActions>({
         modifyLine(state, line, {
           mappingPath: newMappingPath,
         }),
-        state.openSelectElement?.line ?? false
+        state.openSelectElement?.line ?? false,
       ),
       autoMapperSuggestions: undefined,
       changesMade: true,

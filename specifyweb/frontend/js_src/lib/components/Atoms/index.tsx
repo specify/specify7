@@ -15,7 +15,7 @@ export const ErrorMessage = wrap(
   'flex flex-col gap-2 p-2 text-white bg-red-500 rounded',
   {
     role: 'alert',
-  }
+  },
 );
 
 export const WarningMessage = wrap(
@@ -24,7 +24,7 @@ export const WarningMessage = wrap(
   'flex flex-col gap-2 p-2 text-white bg-orange-500 dark:bg-transparent border border-orange-500 rounded',
   {
     role: 'alert',
-  }
+  },
 );
 
 export const Container = {
@@ -54,7 +54,7 @@ export const Progress = wrap<'progress', { readonly value: number }>(
   'w-full h-3 bg-gray-200 dark:bg-neutral-700 rounded',
   {
     max: 100,
-  }
+  },
 );
 
 /*
@@ -91,11 +91,11 @@ export const Summary = wrap<
 export const Key = wrap(
   'Key',
   'kbd',
-  'bg-gray-200 border-1 dark:border-none dark:bg-neutral-700 rounded-sm mx-1 p-0.5'
+  'bg-gray-200 border-1 dark:border-none dark:bg-neutral-700 rounded-sm mx-1 p-0.5',
 );
 
 const defaultOneRem = 16;
 export const oneRem = Number.parseFloat(
   globalThis.getComputedStyle?.(document.documentElement).fontSize ??
-    defaultOneRem
+    defaultOneRem,
 );

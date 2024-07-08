@@ -19,7 +19,7 @@ import { isModern } from './helpers';
 async function doSave(
   query: SpecifyResource<SpQuery>,
   name: string,
-  isSaveAs: boolean
+  isSaveAs: boolean,
 ): Promise<number> {
   query.set('isFavorite', !isModern(query));
   const clonedQuery = isSaveAs ? await query.clone(true) : query;
@@ -48,7 +48,7 @@ export function QuerySaveDialog({
   const [name, setName] = React.useState<string>((): string =>
     isSaveAs
       ? getUniqueName(query.get('name'), [query.get('name')])
-      : query.get('name')
+      : query.get('name'),
   );
 
   const loading = React.useContext(LoadingContext);

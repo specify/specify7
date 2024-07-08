@@ -35,8 +35,8 @@ export function SpecifyUserAutoComplete({
               items.find(
                 (item) =>
                   item.label === valueRef.current ||
-                  item.searchValue === valueRef.current
-              )?.data ?? valueRef.current
+                  item.searchValue === valueRef.current,
+              )?.data ?? valueRef.current,
             ),
         }}
         minLength={0}

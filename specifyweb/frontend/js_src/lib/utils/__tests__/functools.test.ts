@@ -54,7 +54,7 @@ test('f.all', async () =>
     f.all({
       a: Promise.resolve('a1'),
       b: 'b1',
-    })
+    }),
   ).resolves.toEqual({ a: 'a1', b: 'b1' }));
 
 describe('f.sum', () => {
@@ -90,7 +90,7 @@ describe('f.has', () => {
 
 test('f.tap', () => {
   const callback = jest.fn(
-    (a: string, b: string) => `${b}${a}` as unknown as undefined
+    (a: string, b: string) => `${b}${a}` as unknown as undefined,
   );
   const tapped = f.tap(callback, (a: string, b: string) => `${a}${b}`);
   expect(tapped('a', 'b')).toBe('ab');

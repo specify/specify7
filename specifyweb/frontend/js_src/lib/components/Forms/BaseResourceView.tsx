@@ -72,7 +72,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
               })
               .catch(softFail);
           },
-          true
+          true,
         )
       : undefined;
   }, [resource]);
@@ -109,30 +109,30 @@ export function useResourceView<SCHEMA extends AnySchema>({
   const [tableNameInTitle] = userPreferences.use(
     'form',
     'behavior',
-    'tableNameInTitle'
+    'tableNameInTitle',
   );
 
   const [formHeaderFormat] = userPreferences.use(
     'form',
     'behavior',
-    'formHeaderFormat'
+    'formHeaderFormat',
   );
   const formattedTableName =
     resource === undefined
       ? localized('')
       : resource.isNew()
-      ? formsText.newResourceTitle({ tableName: resource.specifyTable.label })
-      : resource.specifyTable.label;
+        ? formsText.newResourceTitle({ tableName: resource.specifyTable.label })
+        : resource.specifyTable.label;
   const title =
     formatted.length === 0
       ? formattedTableName
       : resource?.specifyTable.name &&
-        tableNamesToHide.has(resource.specifyTable.name)
-      ? formatted
-      : commonText.colonLine({
-          label: formattedTableName,
-          value: formatted,
-        });
+          tableNamesToHide.has(resource.specifyTable.name)
+        ? formatted
+        : commonText.colonLine({
+            label: formattedTableName,
+            value: formatted,
+          });
 
   const formRef = React.useRef(form);
   formRef.current = form;
@@ -205,9 +205,9 @@ export const FormContext = React.createContext<
     meta: FormMetaType,
     setMeta:
       | ((
-          newState: FormMetaType | ((oldMeta: FormMetaType) => FormMetaType)
+          newState: FormMetaType | ((oldMeta: FormMetaType) => FormMetaType),
         ) => void)
-      | undefined
+      | undefined,
   ]
 >([
   {

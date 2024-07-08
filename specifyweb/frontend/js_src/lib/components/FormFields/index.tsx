@@ -80,22 +80,22 @@ const fieldRenderers: {
           value: defaultValue,
           required: isRequired,
         }),
-        [defaultValue, isRequired]
-      )
+        [defaultValue, isRequired],
+      ),
     );
 
     const [validationAttributes, setAttributes] = React.useState<IR<string>>(
-      {}
+      {},
     );
     React.useEffect(
       () => setAttributes(getValidationAttributes(parser)),
-      [parser]
+      [parser],
     );
 
     const [autoGrow] = userPreferences.use(
       'form',
       'behavior',
-      'textAreaAutoGrow'
+      'textAreaAutoGrow',
     );
     const Component =
       autoGrow && formType !== 'formTable' ? AutoGrowTextArea : Textarea;
@@ -189,7 +189,7 @@ const fieldRenderers: {
         maxLength,
         minLength,
       }),
-      [defaultValue, min, max, step, isRequired, maxLength, minLength]
+      [defaultValue, min, max, step, isRequired, maxLength, minLength],
     );
     return (
       <UiField

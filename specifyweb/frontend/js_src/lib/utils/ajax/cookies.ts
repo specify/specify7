@@ -9,7 +9,7 @@ const DEFAULT_DURATION = 90;
 export const createCookieString = (
   name: string,
   value: string,
-  days: number
+  days: number,
 ): string =>
   Object.entries({
     [name]: value,
@@ -22,7 +22,7 @@ export const createCookieString = (
 export function createCookie(
   name: string,
   value: string,
-  days: number = DEFAULT_DURATION
+  days: number = DEFAULT_DURATION,
 ): void {
   document.cookie = createCookieString(name, value, days);
 }

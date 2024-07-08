@@ -28,7 +28,7 @@ export const xmlToJson = (element: Element): XmlNode => ({
     Array.from(element.attributes, (attribute) => [
       attribute.name.toLowerCase(),
       attribute.value,
-    ])
+    ]),
   ),
   children: Array.from(element.childNodes, (node) =>
     node instanceof Comment
@@ -37,13 +37,13 @@ export const xmlToJson = (element: Element): XmlNode => ({
           comment: node.data,
         }
       : node instanceof Text
-      ? {
-          type: 'Text',
-          string: node.data,
-        }
-      : node instanceof Element
-      ? xmlToJson(node)
-      : error('Unknown element type', node)
+        ? {
+            type: 'Text',
+            string: node.data,
+          }
+        : node instanceof Element
+          ? xmlToJson(node)
+          : error('Unknown element type', node),
   ),
 });
 
@@ -55,16 +55,16 @@ export function jsonToXml(node: XmlNode): Element {
   const element = xmlDocument.createElement(node.tagName);
   xmlDocument.append(element);
   Object.entries(node.attributes).forEach(([name, value]) =>
-    value === undefined ? undefined : element.setAttribute(name, value)
+    value === undefined ? undefined : element.setAttribute(name, value),
   );
   node.children.forEach((child) =>
     element.append(
       child.type === 'Text'
         ? xmlDocument.createTextNode(child.string)
         : child.type === 'Comment'
-        ? xmlDocument.createComment(child.comment)
-        : jsonToXml(child)
-    )
+          ? xmlDocument.createComment(child.comment)
+          : jsonToXml(child),
+    ),
   );
   return element;
 }
@@ -111,12 +111,12 @@ export type SimpleChildren = IR<RA<SimpleXmlNode>>;
  */
 export function toSimpleXmlNode(node: XmlNode): SimpleXmlNode {
   const children = filterArray(
-    node.children.map((node) => (node.type === 'XmlNode' ? node : undefined))
+    node.children.map((node) => (node.type === 'XmlNode' ? node : undefined)),
   );
   const textContent = filterArray(
     node.children.map((node) =>
-      node.type === 'Text' ? node.string : undefined
-    )
+      node.type === 'Text' ? node.string : undefined,
+    ),
   );
   if (children.length === 0) {
     const string = textContent.join(' ').trim();
@@ -129,7 +129,7 @@ export function toSimpleXmlNode(node: XmlNode): SimpleXmlNode {
           text: string,
           children: {},
         },
-        node
+        node,
       );
   }
   return setOriginalSyncerInput(
@@ -139,10 +139,10 @@ export function toSimpleXmlNode(node: XmlNode): SimpleXmlNode {
       attributes: node.attributes,
       text: undefined,
       children: Object.fromEntries(
-        group(children.map((node) => [node.tagName, toSimpleXmlNode(node)]))
+        group(children.map((node) => [node.tagName, toSimpleXmlNode(node)])),
       ),
     },
-    node
+    node,
   );
 }
 

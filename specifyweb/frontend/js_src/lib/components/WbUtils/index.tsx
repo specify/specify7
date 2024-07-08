@@ -40,7 +40,7 @@ export function WbUtilsComponent({
       else clickSearch();
       utils.searchCells(event, searchRef.current);
     }, debounceRate),
-    [debounceRate, utils]
+    [debounceRate, utils],
   );
 
   return (
@@ -100,7 +100,7 @@ export function WbUtilsComponent({
                 {
                   key: 'SettingsChange',
                 },
-                searchRef.current
+                searchRef.current,
               );
           }}
         />

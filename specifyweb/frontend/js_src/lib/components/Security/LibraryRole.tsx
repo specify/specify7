@@ -48,10 +48,10 @@ export function SecurityLibraryRole(): JSX.Element {
               })
                 .then((): void =>
                   handleChangeLibraryRoles(
-                    removeKey(libraryRoles, role.id!.toString())
-                  )
+                    removeKey(libraryRoles, role.id!.toString()),
+                  ),
                 )
-                .then((): void => navigate(closeUrl, { replace: true }))
+                .then((): void => navigate(closeUrl, { replace: true })),
             )
           : undefined
       }
@@ -60,7 +60,7 @@ export function SecurityLibraryRole(): JSX.Element {
           (typeof role.id === 'number'
             ? updateLibraryRole(handleChangeLibraryRoles, role as Role)
             : createLibraryRole(handleChangeLibraryRoles, role as Role)
-          ).then((): void => navigate(closeUrl))
+          ).then((): void => navigate(closeUrl)),
         )
       }
     />
@@ -72,7 +72,7 @@ export function SecurityLibraryRole(): JSX.Element {
 }
 
 function useRole(
-  libraryRoles: IR<Role> | undefined
+  libraryRoles: IR<Role> | undefined,
 ): NewRole | Role | false | undefined {
   const location = useLocation();
   const state = locationToState(location, 'SecurityRole');
@@ -97,7 +97,7 @@ function useRole(
 
 export const updateLibraryRole = async (
   handleChange: GetOrSet<IR<Role> | undefined>[1],
-  role: Role
+  role: Role,
 ): Promise<void> =>
   ping(`/permissions/library_role/${role.id}/`, {
     method: 'PUT',
@@ -107,6 +107,6 @@ export const updateLibraryRole = async (
     },
   }).then((): void =>
     handleChange((roles) =>
-      replaceKey(defined(roles), role.id.toString(), role)
-    )
+      replaceKey(defined(roles), role.id.toString(), role),
+    ),
   );

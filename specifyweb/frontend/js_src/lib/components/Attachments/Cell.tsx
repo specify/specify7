@@ -108,13 +108,13 @@ export function AttachmentRecordLink({
               .then((related) =>
                 typeof related === 'object'
                   ? getBaseResourceId(table, related)
-                  : undefined
+                  : undefined,
               )
               .then((id) =>
                 typeof id === 'number'
                   ? handleViewRecord(table, id)
-                  : handleFailed()
-              )
+                  : handleFailed(),
+              ),
           )
         }
       >
@@ -137,11 +137,11 @@ export function AttachmentRecordLink({
 /** Fetch CollectionObjectAttachment for a given Attachment */
 async function fetchAttachmentParent(
   table: SpecifyTable,
-  attachment: SerializedResource<Attachment>
+  attachment: SerializedResource<Attachment>,
 ): Promise<SpecifyResource<AnySchema> | undefined> {
   const { records } = await fetchRelated(
     attachment,
-    getAttachmentRelationship(table)!.name as 'collectionObjectAttachments'
+    getAttachmentRelationship(table)!.name as 'collectionObjectAttachments',
   );
   return deserializeResource(records[0]);
 }
@@ -151,7 +151,7 @@ async function fetchAttachmentParent(
  */
 function getBaseResourceId(
   table: SpecifyTable,
-  related: SpecifyResource<AnySchema>
+  related: SpecifyResource<AnySchema>,
 ): number | undefined {
   // This would be a URL to CollectionObject
   const resourceUrl = related.get(table.name as 'CollectionObject');

@@ -29,7 +29,7 @@ export async function fieldFormat(
   field: LiteralField | undefined,
   value: boolean | number | string | null | undefined,
   parser?: Parser,
-  formatter?: string
+  formatter?: string,
 ): Promise<LocalizedString> {
   if (value === undefined || value === null) return localized('');
 
@@ -50,7 +50,7 @@ export async function fieldFormat(
 function uiFormatter(
   field: Partial<LiteralField> | undefined,
   value: string,
-  formatter?: string
+  formatter?: string,
 ): LocalizedString | undefined {
   const uiFormatter = field?.getUiFormatter?.();
   if (typeof uiFormatter === 'object') {
@@ -61,7 +61,7 @@ function uiFormatter(
         `Invalid value for ${
           formatter ?? field?.getFormat?.() ?? ''
         } formatter: ${value}`,
-        { field }
+        { field },
       );
   }
   return undefined;
@@ -69,7 +69,7 @@ function uiFormatter(
 
 function formatPickList(
   pickList: SpecifyResource<PickList> | undefined,
-  value: boolean | number | string
+  value: boolean | number | string,
 ): LocalizedString | undefined {
   if (pickList === undefined) return undefined;
   const parsedValue = value.toString();
@@ -87,20 +87,20 @@ function formatValue<STRICT extends boolean = false>(
   parser: Parser | undefined,
   value: boolean | number | string,
   // @ts-expect-error
-  strict: STRICT = false
+  strict: STRICT = false,
 ): STRICT extends true ? LocalizedString | undefined : LocalizedString {
   const resolvedParser = parser ?? resolveParser(field ?? {});
 
   const parseResults = parseValue(
     removeKey(resolvedParser, 'required'),
     undefined,
-    value.toString()
+    value.toString(),
   );
   if (parseResults.isValid)
     return localized(
       resolvedParser.printFormatter?.(parseResults.parsed, resolvedParser) ??
         (parseResults.parsed as string | undefined)?.toString() ??
-        ''
+        '',
     );
   else
     console.error('Failed to parse value for field', {
@@ -125,7 +125,7 @@ export function syncFieldFormat<STRICT extends boolean = false>(
   parser?: Parser,
   formatter?: string,
   // @ts-expect-error
-  strict: STRICT = false
+  strict: STRICT = false,
 ): ReturnType<typeof formatValue<STRICT>> {
   if (value === undefined || value === null) return '' as LocalizedString;
 

@@ -20,7 +20,7 @@ export const originalAttachmentsView = 'originalObjectAttachment';
 
 export const propsToFormMode = (
   isReadOnly: boolean,
-  isInSearchDialog: boolean
+  isInSearchDialog: boolean,
 ): FormMode => (isInSearchDialog ? 'search' : isReadOnly ? 'view' : 'edit');
 
 /**
@@ -45,7 +45,7 @@ export function useViewDefinition({
   const [globalConfig] = userPreferences.use(
     'form',
     'preferences',
-    'useCustomForm'
+    'useCustomForm',
   );
   const useGeneratedForm =
     Array.isArray(globalConfig) && f.includes(globalConfig, table?.name);
@@ -71,14 +71,14 @@ export function useViewDefinition({
             fallbackViewName !== resolvedViewName &&
             fallbackViewName !== attachmentView
               ? fetchViewDefinition(fallbackViewName, table, formType, mode)
-              : undefined)
+              : undefined),
         )
         .then(
           (definition) =>
-            definition ?? autoGenerateViewDefinition(table, formType, mode)
+            definition ?? autoGenerateViewDefinition(table, formType, mode),
         );
     }, [useGeneratedForm, viewName, formType, mode, table, fallbackViewName]),
-    false
+    false,
   );
 
   useErrorContext('viewDefinition', viewDefinition);
@@ -89,21 +89,21 @@ const fetchViewDefinition = async (
   viewName: string,
   table: SpecifyTable,
   formType: FormType,
-  mode: FormMode
+  mode: FormMode,
 ): Promise<ViewDescription | undefined> =>
   fetchView(
-    viewName === originalAttachmentsView ? 'ObjectAttachment' : viewName
+    viewName === originalAttachmentsView ? 'ObjectAttachment' : viewName,
   )
     .then((viewDefinition) =>
       typeof viewDefinition === 'object'
         ? parseViewDefinition(viewDefinition, formType, mode, table)
-        : undefined
+        : undefined,
     )
     .then((viewDefinition) => {
       if (typeof viewDefinition === 'object') {
         if (viewDefinition.table !== table)
           softFail(
-            new Error('View definition table does not match resource table')
+            new Error('View definition table does not match resource table'),
           );
         return viewName === originalAttachmentsView
           ? {
@@ -121,6 +121,6 @@ const fetchViewDefinition = async (
             formType,
             mode,
             table,
-          })
+          }),
         );
     });

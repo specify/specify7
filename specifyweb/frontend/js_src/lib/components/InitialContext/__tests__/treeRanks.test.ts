@@ -33,7 +33,7 @@ describe('isTreeResource', () => {
     expect(isTreeResource(new tables.Taxon.Resource())).toBe(true));
   test('GeologicTimePeriod is a tree resource, even though we are not in a paleo discipline', () =>
     expect(isTreeResource(new tables.GeologicTimePeriod.Resource())).toBe(
-      true
+      true,
     ));
   test('Locality', () =>
     expect(isTreeResource(new tables.Locality.Resource())).toBe(false));
@@ -46,22 +46,22 @@ describe('Get tree definition', () => {
     expect(getTreeDefinitionItems('Geography', true)).toMatchSnapshot());
   test('for a non-tree table', () =>
     expect(
-      getTreeDefinitionItems('Locality' as 'Taxon', true)
+      getTreeDefinitionItems('Locality' as 'Taxon', true),
     ).toBeUndefined());
   test('for a non-existent table', () =>
     expect(
-      getTreeDefinitionItems('SomeTable' as 'Taxon', true)
+      getTreeDefinitionItems('SomeTable' as 'Taxon', true),
     ).toBeUndefined());
 });
 
 describe('strictGetTreeDefinitionItems', () => {
   test('Taxon', () =>
     expect(strictGetTreeDefinitionItems('Taxon', false)).toEqual(
-      getTreeDefinitionItems('Taxon', false)
+      getTreeDefinitionItems('Taxon', false),
     ));
   test('Locality', () =>
     expect(() =>
-      strictGetTreeDefinitionItems('Locality' as 'Taxon', true)
+      strictGetTreeDefinitionItems('Locality' as 'Taxon', true),
     ).toThrow(/Unable to get tree ranks for a/u));
 });
 

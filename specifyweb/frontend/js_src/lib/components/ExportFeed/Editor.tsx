@@ -364,9 +364,9 @@ function UserPicker({
     () =>
       void resource.set(
         'specifyUser',
-        id === undefined ? null : getResourceApiUrl('SpecifyUser', id)
+        id === undefined ? null : getResourceApiUrl('SpecifyUser', id),
       ),
-    [resource, id]
+    [resource, id],
   );
 
   const setIdRef = React.useRef(setId);
@@ -377,9 +377,9 @@ function UserPicker({
         resource,
         'change',
         () => setIdRef.current(idFromUrl(resource.get('specifyUser') ?? '')),
-        false
+        false,
       ),
-    [resource]
+    [resource],
   );
 
   return (

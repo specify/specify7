@@ -52,8 +52,8 @@ export function WbConvertCoordinates({
             ? isUploaded
               ? wbText.unavailableWhenUploaded()
               : isResultsOpen
-              ? wbText.unavailableWhileViewingResults()
-              : undefined
+                ? wbText.unavailableWhileViewingResults()
+                : undefined
             : wbText.unavailableWithoutLocality()
         }
         onClick={openConvertCoords}
@@ -125,11 +125,11 @@ function CoordinateConverter({
 }): JSX.Element {
   const [applyAll = true, setApplyAll] = useCachedState(
     'coordinateConverter',
-    'applyAll'
+    'applyAll',
   );
   const [includeSymbols = false, setIncludeSymbols] = useCachedState(
     'coordinateConverter',
-    'includeSymbols'
+    'includeSymbols',
   );
   const [conversionFunction, setConversionFunction] = React.useState<
     ConversionFunction | undefined
@@ -142,9 +142,9 @@ function CoordinateConverter({
   const columnsToWorkWith = React.useMemo(
     () =>
       Object.keys(coordinateColumns).map((physicalCol) =>
-        hot.toVisualColumn(f.fastParseInt(physicalCol))
+        hot.toVisualColumn(f.fastParseInt(physicalCol)),
       ),
-    []
+    [],
   );
 
   React.useEffect(() => {
@@ -155,7 +155,7 @@ function CoordinateConverter({
       hot.scrollViewportTo(getSelectedLast(hot)[0], columnsToWorkWith[0]);
 
     const toPhysicalCol = columns.map((_, visualCol) =>
-      hot.toPhysicalColumn(visualCol)
+      hot.toPhysicalColumn(visualCol),
     );
 
     const includeSymbolsFunction = includeSymbols
@@ -167,17 +167,17 @@ function CoordinateConverter({
       showDirection
         ? finalValue
         : 'SW'.includes(finalValue.at(-1)!)
-        ? `-${finalValue.slice(0, -1)}`
-        : 'NE'.includes(finalValue.at(-1)!)
-        ? finalValue.slice(0, -1)
-        : finalValue;
+          ? `-${finalValue.slice(0, -1)}`
+          : 'NE'.includes(finalValue.at(-1)!)
+            ? finalValue.slice(0, -1)
+            : finalValue;
 
     const originalState = columnsToWorkWith.flatMap((visualCol) =>
       Array.from({ length: hot.countRows() }, (_, visualRow) => {
         const physicalRow = hot.toPhysicalRow(visualRow);
         const physicalCol = toPhysicalCol[visualCol];
         return [visualRow, visualCol, data[physicalRow][physicalCol]] as const;
-      })
+      }),
     );
 
     const changes = originalState
@@ -189,13 +189,13 @@ function CoordinateConverter({
         ) {
           const columnRole = coordinateColumns[toPhysicalCol[visualCol]];
           const coordinate = (columnRole === 'Lat' ? Lat : Long).parse(
-            originalValue
+            originalValue,
           );
           if (typeof coordinate === 'object')
             value = includeSymbolsFunction(
               stripCardinalDirections(
-                coordinate[conversionFunction]().format(undefined)
-              )
+                coordinate[conversionFunction]().format(undefined),
+              ),
             ).trim();
         }
         return [visualRow, visualCol, value] as const;
@@ -233,8 +233,8 @@ function CoordinateConverter({
       onClose={(): void => {
         hot.batch(() =>
           Array.from({ length: changeCountRef.current }).forEach(() =>
-            hot.undo()
-          )
+            hot.undo(),
+          ),
         );
         handleClose();
       }}
@@ -255,7 +255,7 @@ function CoordinateConverter({
                 {label}
               </Label.Inline>
             </li>
-          )
+          ),
         )}
         <br />
         <li>

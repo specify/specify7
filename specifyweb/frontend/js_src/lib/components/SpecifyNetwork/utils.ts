@@ -18,7 +18,7 @@ export function reorderBrokerFields<T>(mappedTable: IR<T>): IR<T> {
       ([fieldName, position]) =>
         !(fieldName in reorderedTable) ||
         !('after' in position) ||
-        !(position.after in reorderedTable)
+        !(position.after in reorderedTable),
     )
     .forEach(([fieldName, { after }]) => {
       const table = Object.entries(reorderedTable);
@@ -37,12 +37,12 @@ export function reorderBrokerFields<T>(mappedTable: IR<T>): IR<T> {
 
 export function deflateLocalityData(localityData: LocalityData): LocalityData {
   const deflatedMappingPaths = deflateMappingPaths(
-    Object.keys(localityData).map(splitJoinedMappingPath)
+    Object.keys(localityData).map(splitJoinedMappingPath),
   );
   return Object.fromEntries(
     Object.values(localityData).map((value, index) => [
       mappingPathToString(deflatedMappingPaths[index]),
       value,
-    ])
+    ]),
   );
 }

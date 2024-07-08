@@ -19,7 +19,7 @@ test.skip('Verify notifications are fetched when isOpen is true', async () => {
   const isOpen = true;
 
   const { result } = renderHook(() =>
-    useNotificationsFetch({ freezeFetchPromise, isOpen })
+    useNotificationsFetch({ freezeFetchPromise, isOpen }),
   );
 
   expect(result.current.notifications).toBeUndefined();
@@ -38,7 +38,7 @@ test('Verify setNotifications function works', () => {
   const isOpen = true;
 
   const { result } = renderHook(() =>
-    useNotificationsFetch({ freezeFetchPromise, isOpen })
+    useNotificationsFetch({ freezeFetchPromise, isOpen }),
   );
 
   const newNotifications = [
@@ -110,7 +110,7 @@ test('Verify mergeAndSortNotifications correctly merges and sorts notifications'
 
   const mergedAndSorted = mergeAndSortNotifications(
     existingNotifications,
-    newNotifications
+    newNotifications,
   );
 
   const expectedMergedAndSorted = [
@@ -179,12 +179,12 @@ describe('fetch notifications', () => {
         type: 'query-export-to-csv-complete',
         file: 'query_results_2023-09-19T01:22:00.782784.csv',
       },
-    ]
+    ],
   );
 
   const secondFetchTime = new Date(testTime);
   secondFetchTime.setMilliseconds(
-    secondFetchTime.getMilliseconds() + INITIAL_INTERVAL
+    secondFetchTime.getMilliseconds() + INITIAL_INTERVAL,
   );
 
   overrideAjax(
@@ -206,12 +206,12 @@ describe('fetch notifications', () => {
         type: 'query-export-to-csv-complete',
         file: 'query_results_2023-05-19T01:22:00.782784.csv',
       },
-    ]
+    ],
   );
 
   test.skip('Url makes correct address with since param and response parsed correctly', async () => {
     const { result } = renderHook(() =>
-      useNotificationsFetch({ freezeFetchPromise, isOpen })
+      useNotificationsFetch({ freezeFetchPromise, isOpen }),
     );
 
     await act(async () => {

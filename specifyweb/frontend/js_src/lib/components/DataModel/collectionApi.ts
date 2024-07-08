@@ -28,11 +28,11 @@ function setupToOne(collection, options) {
 
   assert(
     collection.field.table === collection.table.specifyTable,
-    "field doesn't belong to table"
+    "field doesn't belong to table",
   );
   assert(
     collection.field.relatedTable === collection.related.specifyTable,
-    'field is not to related resource'
+    'field is not to related resource',
   );
 }
 
@@ -53,7 +53,7 @@ export const DependentCollection = Base.extend({
          */
         this.trigger('saverequired');
       },
-      this
+      this,
     );
 
     setupToOne(this, options);
@@ -74,7 +74,7 @@ export const DependentCollection = Base.extend({
           .compact()
           .invoke('set', this.field.name, relatedUrl);
       },
-      this
+      this,
     );
   },
   isComplete() {

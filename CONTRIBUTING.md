@@ -71,7 +71,7 @@ Example workflow:
    `1234` is a number of GitHub issue
 5. We will review the changes and merge them into next release. You will receive
    credit in the release notes!
-   
+
 ### First Steps
 
 It's recomended to start with issues that are labled with

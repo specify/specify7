@@ -15,7 +15,7 @@ requireContext();
  * function does not seem to support generics at the moment
  */
 const typing = <T extends AnySchema = AnySchema>(
-  data: Partial<SerializedResource<T>>
+  data: Partial<SerializedResource<T>>,
 ): Partial<SerializedResource<AnySchema>> =>
   data as Partial<SerializedResource<AnySchema>>;
 

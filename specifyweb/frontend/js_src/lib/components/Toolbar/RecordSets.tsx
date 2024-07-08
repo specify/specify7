@@ -44,7 +44,7 @@ type Renderer = (props: {
   readonly children: JSX.Element;
   readonly dialog: (
     children: JSX.Element,
-    buttons?: JSX.Element
+    buttons?: JSX.Element,
   ) => JSX.Element;
 }) => JSX.Element;
 
@@ -95,9 +95,9 @@ export function RecordSetsDialog({
           dbTableId: table?.tableId,
           collectionMemberId: schema.domainLevelIds.collection,
         }),
-      [table, limit, offset, orderBy]
+      [table, limit, offset, orderBy],
     ),
-    false
+    false,
   );
 
   const totalCountRef = React.useRef<number | undefined>(undefined);
@@ -241,9 +241,9 @@ function Row({
           recordSet: recordSet.id,
           domainFilter: false,
         }).then(({ totalCount }) => totalCount),
-      [recordSet]
+      [recordSet],
     ),
-    false
+    false,
   );
 
   return (

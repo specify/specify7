@@ -71,9 +71,9 @@ export type Parser = Partial<{
    * Format a value before validating it. Formatters are applied in the order
    * they are defined
    */
-  readonly formatters: RA<typeof formatter[string]>;
+  readonly formatters: RA<(typeof formatter)[string]>;
   // Validate the value
-  readonly validators: RA<typeof validators[string]>;
+  readonly validators: RA<(typeof validators)[string]>;
   // Format the value after formatting it
   readonly parser: (value: unknown) => unknown;
   // Format the value for use in read only contexts
@@ -113,8 +113,8 @@ export const parsers = f.store(
         value === undefined
           ? ''
           : Boolean(value)
-          ? queryText.yes()
-          : commonText.no(),
+            ? queryText.yes()
+            : commonText.no(),
       value: false,
     },
 
@@ -193,7 +193,7 @@ export const parsers = f.store(
       formatters: [
         formatter.toLowerCase,
         stringGuard((value) =>
-          f.maybe(parseAnyDate(value), (date) => f.maybe(date, dayjs))
+          f.maybe(parseAnyDate(value), (date) => f.maybe(date, dayjs)),
         ),
       ],
       validators: [
@@ -247,7 +247,7 @@ export const parsers = f.store(
       type: 'text',
       value: '',
     },
-  })
+  }),
 );
 
 type ExtendedField = Partial<Omit<LiteralField | Relationship, 'type'>> & {
@@ -268,7 +268,7 @@ export function parserFromType(fieldType: ExtendedJavaType): Parser {
 
 export function resolveParser(
   field: Partial<LiteralField | Relationship>,
-  extras?: Partial<ExtendedField>
+  extras?: Partial<ExtendedField>,
 ): Parser {
   const fullField = { ...field, ...extras };
   let parser = parserFromType(fullField.type as ExtendedJavaType);
@@ -319,13 +319,13 @@ export function mergeParsers(base: Parser, extra: Parser): Parser {
       ...takeMax
         .map((key) => [key, resolveDate(base[key], extra[key], false)])
         .filter(([_key, value]) => Number.isFinite(value)),
-    ].filter(([_key, value]) => value !== undefined)
+    ].filter(([_key, value]) => value !== undefined),
   );
 }
 
 function resolveStep(
   left: Parser['step'],
-  right: Parser['step']
+  right: Parser['step'],
 ): Parser['step'] {
   if (left === right) return left;
   const values = filterArray([left, right]);
@@ -337,7 +337,7 @@ function resolveStep(
 function resolveDate(
   left: number | string | undefined,
   right: number | string | undefined,
-  takeMin: boolean
+  takeMin: boolean,
 ): number | string | undefined {
   const values = filterArray([left, right]);
   if (typeof values[0] === 'string') {
@@ -354,7 +354,7 @@ function resolveDate(
 
 export function formatterToParser(
   field: Partial<LiteralField | Relationship>,
-  formatter: UiFormatter
+  formatter: UiFormatter,
 ): Parser {
   const regExpString = formatter.parseRegExp();
   const title = formsText.requiredFormat({
@@ -364,7 +364,7 @@ export function formatterToParser(
   const autoNumberingConfig = userPreferences.get(
     'form',
     'preferences',
-    'autoNumbering'
+    'autoNumbering',
   );
   const tableName = field.table?.name;
   const autoNumberingFields =
@@ -424,7 +424,7 @@ export const getValidationAttributes = (parser: Parser): IR<string> => ({
       .map((attribute) => [
         attribute,
         `${parser[attribute as keyof Parser] as string}`,
-      ])
+      ]),
   ),
 });
 
@@ -454,14 +454,14 @@ export function pluralizeRegex(regex: RegExp): RegExp {
   const escaped = `\\s*(?:${pattern})\\s*`;
   return new RegExp(
     `^(?:|${escaped}(?:${separator}${escaped})*)$`,
-    regex.flags
+    regex.flags,
   );
 }
 
 /** Create a regex for matching min length and max length */
 export const lengthToRegex = (
   minLength: number,
-  maxLength: number | undefined
+  maxLength: number | undefined,
 ): RegExp => new RegExp(`^.{${minLength},${maxLength ?? ''}}$`, 'u');
 
 const booleanParser = f.store(() => parserFromType('java.lang.Boolean'));

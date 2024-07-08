@@ -18,10 +18,10 @@ import type { IR } from '../utils/types';
 export const mount = <
   Q extends Queries = typeof queries,
   CONTAINER extends DocumentFragment | Element = HTMLElement,
-  BASE_ELEMENT extends DocumentFragment | Element = CONTAINER
+  BASE_ELEMENT extends DocumentFragment | Element = CONTAINER,
 >(
   ui: React.ReactElement,
-  options: RenderOptions<Q, CONTAINER, BASE_ELEMENT> = {}
+  options: RenderOptions<Q, CONTAINER, BASE_ELEMENT> = {},
 ): RenderResult<Q, CONTAINER, BASE_ELEMENT> & {
   readonly user: UserEvent;
 } => ({
@@ -35,7 +35,7 @@ export const mount = <
 export function snapshot<PROPS extends IR<unknown>>(
   component: (props: PROPS) => React.ReactElement | null,
   props: PROPS | (() => PROPS),
-  testName?: string
+  testName?: string,
 ): void {
   const { name, displayName = name } = component as unknown as {
     readonly displayName: string;
@@ -45,7 +45,7 @@ export function snapshot<PROPS extends IR<unknown>>(
   test(testName ?? `${displayName} renders without errors`, () => {
     const resolvedProps = typeof props === 'function' ? props() : props;
     const { asFragment } = render(
-      React.createElement(component, resolvedProps)
+      React.createElement(component, resolvedProps),
     );
     expect(asFragment()).toMatchSnapshot();
   });

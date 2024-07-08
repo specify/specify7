@@ -33,10 +33,10 @@ export function DateQueryInputField({
   readonly onChange: ((newValue: string) => void) | undefined;
 }): JSX.Element | null {
   const [absolute, setAbsolute] = React.useState(() =>
-    reRelativeDate.test(currentValue) ? undefined : currentValue
+    reRelativeDate.test(currentValue) ? undefined : currentValue,
   );
   const [relative, setRelative] = React.useState(() =>
-    reRelativeDate.test(currentValue) ? currentValue : undefined
+    reRelativeDate.test(currentValue) ? currentValue : undefined,
   );
 
   const parsed = React.useMemo(() => {
@@ -54,7 +54,7 @@ export function DateQueryInputField({
   }, [relative]);
 
   const [isAbsolute, _, __, toggleAbsolute] = useBooleanState(
-    parsed === undefined
+    parsed === undefined,
   );
   const title = isAbsolute
     ? queryText.switchToRelative()
@@ -72,7 +72,7 @@ export function DateQueryInputField({
           toggleAbsolute();
           if (isAbsolute) {
             setRelative((oldRelative) =>
-              parsed === undefined ? `${today} + 0 day` : oldRelative
+              parsed === undefined ? `${today} + 0 day` : oldRelative,
             );
             setAbsolute(currentValue);
             if (parsed === undefined) {
@@ -81,7 +81,7 @@ export function DateQueryInputField({
           } else {
             if (reRelativeDate.test(currentValue)) {
               const parsedDate = dayjs(parseAnyDate(currentValue)).format(
-                databaseDateFormat
+                databaseDateFormat,
               );
               handleChange?.(parsedDate);
               setRelative(currentValue);

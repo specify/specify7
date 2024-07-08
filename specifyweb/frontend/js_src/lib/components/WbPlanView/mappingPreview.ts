@@ -69,7 +69,7 @@ const genericTables = new Set<string>(['referenceWork']);
  * paths shorter than 3 elements
  */
 const mappingPathSubset = <T extends string | undefined>(
-  mappingPath: RA<T | string>
+  mappingPath: RA<T | string>,
 ): RA<T | string> => [
   ...mappingPath
     .filter((mappingPathPart) => !valueIsToManyIndex(mappingPathPart))
@@ -83,7 +83,7 @@ const mappingPathSubset = <T extends string | undefined>(
  */
 export function generateMappingPathPreview(
   baseTableName: keyof Tables,
-  mappingPath: MappingPath
+  mappingPath: MappingPath,
 ): string {
   if (mappingPath.length === 0) return strictGetTable(baseTableName).label;
 
@@ -127,7 +127,7 @@ export function generateMappingPathPreview(
   const [
     fieldName = camelToHuman(databaseFieldName),
     tableOrRankName = camelToHuman(
-      getNameFromTreeRankName(databaseTableOrRankName)
+      getNameFromTreeRankName(databaseTableOrRankName),
     ),
     parentTableName = camelToHuman(databaseParentTableName),
   ] = mappingPathSubset(fieldLabels);
@@ -157,16 +157,16 @@ export function generateMappingPathPreview(
     fieldNameFormatted === undefined
       ? tableOrRankName || fieldName
       : fieldIsGeneric
-      ? tableOrRankName
-      : undefined;
+        ? tableOrRankName
+        : undefined;
 
   const tableNameFormatted =
     tablesToHide.has(databaseTableOrRankName) &&
     databaseFieldName !== formattedEntry
       ? [parentTableName || tableNameNonEmpty]
       : genericTables.has(databaseTableOrRankName)
-      ? [parentTableName, tableNameNonEmpty]
-      : [tableNameNonEmpty];
+        ? [parentTableName, tableNameNonEmpty]
+        : [tableNameNonEmpty];
 
   return filterArray([
     ...(valueIsTreeRank(databaseTableOrRankName)

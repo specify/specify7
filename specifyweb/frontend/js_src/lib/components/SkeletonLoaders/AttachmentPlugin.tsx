@@ -7,7 +7,7 @@ export function AttachmentPluginSkeleton() {
     <Skeleton.Root className="flex-col flex-wrap md:flex-row">
       <Skeleton.TallRectangle className="min-w-[30vh] md:flex-1" />
       <div className="flex flex-col items-center gap-4">
-        <div className="flex items-center gap-2 ">
+        <div className="flex items-center gap-2">
           <Skeleton.Rectangle />
           <Skeleton.SmallSquare />
         </div>

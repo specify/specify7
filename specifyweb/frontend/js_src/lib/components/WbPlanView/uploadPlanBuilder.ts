@@ -18,7 +18,7 @@ import type {
 
 export const toColumnOptions = (
   headerName: string,
-  columnOptions: ColumnOptions
+  columnOptions: ColumnOptions,
 ): ColumnDefinition =>
   JSON.stringify(columnOptions) === JSON.stringify(defaultColumnOptions)
     ? headerName
@@ -29,13 +29,13 @@ export const toColumnOptions = (
       };
 
 const toTreeRecordRanks = (
-  rankMappedFields: RA<SplitMappingPath>
+  rankMappedFields: RA<SplitMappingPath>,
 ): IR<ColumnDefinition> =>
   Object.fromEntries(
     rankMappedFields.map(({ mappingPath, headerName, columnOptions }) => [
       mappingPath[0].toLowerCase(),
       toColumnOptions(headerName, columnOptions),
-    ])
+    ]),
   );
 
 const toTreeRecordVariety = (lines: RA<SplitMappingPath>): TreeRecord => ({
@@ -45,21 +45,21 @@ const toTreeRecordVariety = (lines: RA<SplitMappingPath>): TreeRecord => ({
       {
         treeNodeCols: toTreeRecordRanks(rankMappedFields),
       },
-    ])
+    ]),
   ),
 });
 
 function toUploadTable(
   table: SpecifyTable,
   lines: RA<SplitMappingPath>,
-  mustMatchPreferences: RA<keyof Tables>
+  mustMatchPreferences: RA<keyof Tables>,
 ): UploadTable {
   const [fields, relationships] = split(
     lines,
-    ({ mappingPath }) => mappingPath.length > 1
+    ({ mappingPath }) => mappingPath.length > 1,
   );
   const [toOne, toMany] = split(relationships, ({ mappingPath }) =>
-    valueIsToManyIndex(mappingPath[1])
+    valueIsToManyIndex(mappingPath[1]),
   ).map(indexMappings);
 
   return {
@@ -69,8 +69,8 @@ function toUploadTable(
           [
             mappingPath[0].toLowerCase(),
             toColumnOptions(headerName, columnOptions),
-          ] as const
-      )
+          ] as const,
+      ),
     ),
     static: {},
     toOne: Object.fromEntries(
@@ -81,10 +81,10 @@ function toUploadTable(
             toUploadable(
               table.strictGetRelationship(fieldName).relatedTable,
               lines,
-              mustMatchPreferences
+              mustMatchPreferences,
             ),
-          ] as const
-      )
+          ] as const,
+      ),
     ),
     toMany: Object.fromEntries(
       toMany.map(
@@ -96,13 +96,13 @@ function toUploadTable(
                 toUploadTable(
                   table.strictGetRelationship(fieldName).relatedTable,
                   lines,
-                  mustMatchPreferences
+                  mustMatchPreferences,
                 ),
-                'toMany'
-              )
+                'toMany',
+              ),
             ),
-          ] as const
-      )
+          ] as const,
+      ),
     ),
   };
 }
@@ -111,7 +111,7 @@ const toUploadable = (
   table: SpecifyTable,
   lines: RA<SplitMappingPath>,
   mustMatchPreferences: RA<keyof Tables>,
-  isRoot = false
+  isRoot = false,
 ): Uploadable =>
   isTreeTable(table.name)
     ? Object.fromEntries([
@@ -137,7 +137,7 @@ const toUploadable = (
 export const uploadPlanBuilder = (
   baseTableName: keyof Tables,
   lines: RA<SplitMappingPath>,
-  mustMatchPreferences: RR<keyof Tables, boolean>
+  mustMatchPreferences: RR<keyof Tables, boolean>,
 ): UploadPlan => ({
   baseTableName: toLowerCase(baseTableName),
   uploadable: toUploadable(
@@ -146,12 +146,12 @@ export const uploadPlanBuilder = (
     Object.entries(mustMatchPreferences)
       .filter(([_, mustMatch]) => mustMatch)
       .map(([tableName]) => tableName),
-    true
+    true,
   ),
 });
 
 const indexMappings = (
-  mappings: RA<SplitMappingPath>
+  mappings: RA<SplitMappingPath>,
 ): RA<readonly [string, RA<SplitMappingPath>]> =>
   group(
     mappings.map(
@@ -162,6 +162,6 @@ const indexMappings = (
             ...rest,
             mappingPath: mappingPath.slice(1),
           },
-        ] as const
-    )
+        ] as const,
+    ),
   );

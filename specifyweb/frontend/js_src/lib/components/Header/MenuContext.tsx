@@ -8,7 +8,7 @@ import type { MenuItemName } from './menuItemDefinitions';
 
 /** Identifies active menu item */
 export const MenuContext = React.createContext<MenuItemName | undefined>(
-  undefined
+  undefined,
 );
 MenuContext.displayName = 'MenuContext';
 

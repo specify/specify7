@@ -72,7 +72,7 @@ export function InteractionDialog({
 }): JSX.Element {
   const itemTable = isLoanReturn ? tables.Loan : tables.CollectionObject;
   const searchField = itemTable.strictGetLiteralField(
-    itemTable.name === 'Loan' ? 'loanNumber' : 'catalogNumber'
+    itemTable.name === 'Loan' ? 'loanNumber' : 'catalogNumber',
   );
   const { parser, split, attributes } = useParser(searchField);
 
@@ -107,7 +107,7 @@ export function InteractionDialog({
   const loading = React.useContext(LoadingContext);
 
   function handleProceed(
-    recordSet: SerializedResource<RecordSet> | undefined
+    recordSet: SerializedResource<RecordSet> | undefined,
   ): void {
     const catalogNumbers = handleParse();
     if (catalogNumbers === undefined) return undefined;
@@ -123,26 +123,26 @@ export function InteractionDialog({
               loanNumbers: recordSet === undefined ? catalogNumbers : undefined,
             }),
             errorMode: 'dismissible',
-          }
+          },
         ).then(({ data }) =>
           setState({
             type: 'LoanReturnDoneState',
             result: data[0],
-          })
-        )
+          }),
+        ),
       );
     else if (typeof recordSet === 'object')
       loading(
         getPrepsAvailableForLoanRs(recordSet.id).then((data) =>
-          availablePrepsReady(undefined, data)
-        )
+          availablePrepsReady(undefined, data),
+        ),
       );
     else
       loading(
         (catalogNumbers.length === 0
           ? Promise.resolve([])
           : getPrepsAvailableForLoanCoIds('CatalogNumber', catalogNumbers)
-        ).then((data) => availablePrepsReady(catalogNumbers, data))
+        ).then((data) => availablePrepsReady(catalogNumbers, data)),
       );
   }
 
@@ -150,25 +150,25 @@ export function InteractionDialog({
 
   function availablePrepsReady(
     entries: RA<string> | undefined,
-    prepsData: RA<PreparationRow>
+    prepsData: RA<PreparationRow>,
   ) {
     const catalogNumbers = prepsData.map(([catalogNumber]) => catalogNumber);
     const missing =
       typeof entries === 'object'
         ? entries.filter(
-            (entry) => !catalogNumbers.some((data) => data.includes(entry))
+            (entry) => !catalogNumbers.some((data) => data.includes(entry)),
           )
         : [];
     const unavailablePrep = prepsData.filter(
-      (prepData) => Number.parseInt(prepData[10]) === 0
+      (prepData) => Number.parseInt(prepData[10]) === 0,
     );
     const availablePrep = prepsData.filter(
-      (prepData) => Number.parseInt(prepData[10]) > 0
+      (prepData) => Number.parseInt(prepData[10]) > 0,
     );
     const unavailable =
       typeof entries === 'object'
         ? entries.filter((entry) =>
-            unavailablePrep.some((item) => entry === item[0])
+            unavailablePrep.some((item) => entry === item[0]),
           )
         : [];
 
@@ -198,7 +198,7 @@ export function InteractionDialog({
 
   function handleParse(): RA<string> | undefined {
     const parseResults = split(catalogNumbers).map((value) =>
-      parseValue(parser, inputRef.current ?? undefined, value)
+      parseValue(parser, inputRef.current ?? undefined, value),
     );
     const errorMessages = parseResults
       .filter((result): result is InvalidParseResult => !result.isValid)
@@ -216,7 +216,7 @@ export function InteractionDialog({
       (parseResults as RA<ValidParseResult>)
         .filter(({ parsed }) => parsed !== null)
         .map(({ parsed }) => (parsed as number | string).toString())
-        .sort(sortFunction(f.id))
+        .sort(sortFunction(f.id)),
     );
     setCatalogNumbers(parsed.join('\n'));
 
@@ -228,7 +228,7 @@ export function InteractionDialog({
     itemCollection?.add(
       (interactionResource as SpecifyResource<
         DisposalPreparation | GiftPreparation | LoanPreparation
-      >) ?? new itemCollection.table.specifyTable.Resource()
+      >) ?? new itemCollection.table.specifyTable.Resource(),
     );
   };
 
@@ -328,8 +328,8 @@ export function InteractionDialog({
               typeof itemCollection === 'object'
                 ? interactionsText.addItems()
                 : itemTable.name === 'Loan'
-                ? interactionsText.recordReturn({ table: itemTable.label })
-                : interactionsText.createRecord({ table: actionTable.name })
+                  ? interactionsText.recordReturn({ table: itemTable.label })
+                  : interactionsText.createRecord({ table: actionTable.name })
             }
             onClose={handleClose}
           >
@@ -411,22 +411,22 @@ function useParser(searchField: LiteralField): {
   const [useSpaceAsDelimiter] = userPreferences.use(
     'interactions',
     'createInteractions',
-    'useSpaceAsDelimiter'
+    'useSpaceAsDelimiter',
   );
   const [useCommaAsDelimiter] = userPreferences.use(
     'interactions',
     'createInteractions',
-    'useCommaAsDelimiter'
+    'useCommaAsDelimiter',
   );
   const [useNewLineAsDelimiter] = userPreferences.use(
     'interactions',
     'createInteractions',
-    'useNewLineAsDelimiter'
+    'useNewLineAsDelimiter',
   );
   const [useCustomDelimiters] = userPreferences.use(
     'interactions',
     'createInteractions',
-    'useCustomDelimiters'
+    'useCustomDelimiters',
   );
 
   return React.useMemo(() => {

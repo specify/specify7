@@ -16,7 +16,7 @@ import { userPreferences } from '../Preferences/userPreferences';
 const getSearchField = (
   searchCaseSensitive: boolean,
   searchField: 'fullName' | 'name',
-  searchAlgorithm: 'contains' | 'startsWith'
+  searchAlgorithm: 'contains' | 'startsWith',
 ): string =>
   `${searchField}__${searchCaseSensitive ? '' : 'i'}${searchAlgorithm}`;
 
@@ -38,22 +38,22 @@ export function TreeViewSearch<SCHEMA extends AnyTree>({
   const [searchCaseSensitive] = userPreferences.use(
     'treeEditor',
     'behavior',
-    'searchCaseSensitive'
+    'searchCaseSensitive',
   );
   const [searchField] = userPreferences.use(
     'treeEditor',
     'behavior',
-    'searchField'
+    'searchField',
   );
   const [searchAlgorithm] = userPreferences.use(
     'treeEditor',
     'behavior',
-    'searchAlgorithm'
+    'searchAlgorithm',
   );
   const resolvedSearchField = getSearchField(
     searchCaseSensitive,
     searchField,
-    searchAlgorithm
+    searchAlgorithm,
   );
 
   return (
@@ -80,11 +80,11 @@ export function TreeViewSearch<SCHEMA extends AnyTree>({
               [resolvedSearchField]: searchCaseSensitive
                 ? value
                 : value.toLowerCase(),
-            }
+            },
           ).then(({ records }) =>
             records.map((node) => {
               const rankDefinition = treeDefinitionItems.find(
-                ({ rankId }) => rankId === node.rankId
+                ({ rankId }) => rankId === node.rankId,
               );
               const rankName = rankDefinition?.title || rankDefinition?.name;
               return {
@@ -92,7 +92,7 @@ export function TreeViewSearch<SCHEMA extends AnyTree>({
                 subLabel: rankName,
                 data: node as SerializedResource<SCHEMA>,
               };
-            })
+            }),
           )
         }
         value={searchValue}
@@ -102,22 +102,22 @@ export function TreeViewSearch<SCHEMA extends AnyTree>({
             `/api/specify_tree/${tableName.toLowerCase()}/${data.id}/path/`,
             {
               headers: { Accept: 'application/json' },
-            }
+            },
           )
             .then(({ data }) =>
               handleFocusPath(
                 Object.values(data)
                   .filter(
                     (
-                      node
+                      node,
                     ): node is {
                       readonly rankid: number;
                       readonly id: number;
-                    } => typeof node === 'object'
+                    } => typeof node === 'object',
                   )
                   .sort(sortFunction(({ rankid }) => rankid))
-                  .map(({ id }) => id)
-              )
+                  .map(({ id }) => id),
+              ),
             )
             .catch(console.error);
         }}

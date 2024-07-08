@@ -64,9 +64,9 @@ export function Wrapper({
           mimeType,
           name: name?.trim() ?? '',
           specifyUser: userInformation.resource_uri,
-        }
+        },
       ),
-    [name, mimeType, mode]
+    [name, mimeType, mode],
   );
   const resource = useAppResource(newResource, resources, mode);
   // Simplify typing
@@ -81,7 +81,7 @@ export function Wrapper({
     rawDirectoryKey,
     resourcesTree,
     resource,
-    resources
+    resources,
   );
 
   const baseHref = `/specify/resources/${
@@ -106,12 +106,12 @@ export function Wrapper({
             name: clonedResource.name,
             mimeType: 'mimeType' in record ? record.mimeType : undefined,
             clone,
-          })
+          }),
         )
       }
       onDeleted={(): void => {
         const mode = getAppResourceMode(
-          resource
+          resource,
           // Casting to simplify typing
         ) as 'appResources';
         setResources({
@@ -129,7 +129,7 @@ export function Wrapper({
           ],
           [mode]: [
             ...resources[mode as 'appResources'].filter(
-              ({ id }) => id !== appResource.id
+              ({ id }) => id !== appResource.id,
             ),
             appResource,
           ],
@@ -185,33 +185,33 @@ function useProps(): {
 function useAppResource(
   newResource: SerializedResource<SpAppResource | SpViewSetObj>,
   resources: AppResources,
-  mode: AppResourceMode
+  mode: AppResourceMode,
 ): SerializedResource<SpAppResource | SpViewSetObj> {
   const { id } = useParams();
   return React.useMemo(
     () =>
       resources[mode as 'appResources'].find(
-        (resource) => resource.id.toString() === id
+        (resource) => resource.id.toString() === id,
       ) ?? newResource,
-    [newResource, resources, id, mode]
+    [newResource, resources, id, mode],
   );
 }
 
 function useInitialData(
   resource: SerializedResource<SpAppResource | SpViewSetObj>,
   initialDataFrom: number | undefined,
-  templateFile: string | undefined
+  templateFile: string | undefined,
 ): string | false | undefined {
   return useAsyncState(
     React.useCallback(async () => {
       if (typeof initialDataFrom === 'number')
         return fetchResource('SpAppResourceData', initialDataFrom).then(
-          ({ data }) => data ?? ''
+          ({ data }) => data ?? '',
         );
       else if (typeof templateFile === 'string') {
         if (templateFile.includes('..'))
           console.error(
-            'Relative paths not allowed. Path is always relative to /static/config/'
+            'Relative paths not allowed. Path is always relative to /static/config/',
           );
         else
           return ajax(`/static/config/${templateFile}`, {
@@ -222,7 +222,7 @@ function useInitialData(
       }
       const subType = f.maybe(
         toResource(resource, 'SpAppResource'),
-        getAppResourceType
+        getAppResourceType,
       );
       if (typeof subType === 'string') {
         const type = appResourceSubTypes[subType];
@@ -238,7 +238,7 @@ function useInitialData(
       // Run this only once
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [initialDataFrom, templateFile]),
-    false
+    false,
   )[0];
 }
 
@@ -246,12 +246,12 @@ function useDirectory(
   directoryKey: string | undefined,
   resourcesTree: AppResourcesTree,
   resource: SerializedResource<SpAppResource | SpViewSetObj> | undefined,
-  resources: AppResources
+  resources: AppResources,
 ): ScopedAppResourceDir | undefined {
   return React.useMemo(() => {
     const directoryUrl = resource?.spAppResourceDir;
     const directory = resources.directories.find(
-      (directory) => directory.resource_uri === directoryUrl
+      (directory) => directory.resource_uri === directoryUrl,
     );
     if (typeof directory === 'object') return directory;
     else if (typeof directoryKey === 'string')

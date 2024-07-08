@@ -16,7 +16,7 @@ test('useDatePrecision', async () => {
     noBusinessRules: true,
   });
   const { result } = renderHook(() =>
-    useDatePrecision(resource, precisionField, baseProps.defaultPrecision)
+    useDatePrecision(resource, precisionField, baseProps.defaultPrecision),
   );
 
   // Default precision is used

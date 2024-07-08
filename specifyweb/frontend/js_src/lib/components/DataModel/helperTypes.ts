@@ -111,22 +111,22 @@ export type SerializedResource<SCHEMA extends AnySchema> = {
     | keyof SCHEMA['toOneIndependent']]: KEY extends keyof CommonFields
     ? CommonFields[KEY]
     : KEY extends keyof SCHEMA['fields']
-    ? SCHEMA['fields'][KEY]
-    : KEY extends keyof SCHEMA['toOneDependent']
-    ? Partial<
-        SerializedResource<Exclude<SCHEMA['toOneDependent'][KEY], null>>
-      > | null extends SCHEMA['toOneDependent'][KEY]
-      ? null
-      : never
-    : KEY extends keyof SCHEMA['toOneIndependent']
-    ? null extends SCHEMA['toOneIndependent'][KEY]
-      ? string | null
-      : string
-    : KEY extends keyof SCHEMA['toManyDependent']
-    ? RA<SerializedResource<SCHEMA['toManyDependent'][KEY][number]>>
-    : KEY extends keyof SCHEMA['toManyIndependent']
-    ? string
-    : never;
+      ? SCHEMA['fields'][KEY]
+      : KEY extends keyof SCHEMA['toOneDependent']
+        ? Partial<
+            SerializedResource<Exclude<SCHEMA['toOneDependent'][KEY], null>>
+          > | null extends SCHEMA['toOneDependent'][KEY]
+          ? null
+          : never
+        : KEY extends keyof SCHEMA['toOneIndependent']
+          ? null extends SCHEMA['toOneIndependent'][KEY]
+            ? string | null
+            : string
+          : KEY extends keyof SCHEMA['toManyDependent']
+            ? RA<SerializedResource<SCHEMA['toManyDependent'][KEY][number]>>
+            : KEY extends keyof SCHEMA['toManyIndependent']
+              ? string
+              : never;
 };
 
 /** Convert type's keys to lowercase */
@@ -136,10 +136,10 @@ export type KeysToLowerCase<DICTIONARY extends IR<unknown>> = {
   >]: DICTIONARY[KEY] extends IR<unknown>
     ? KeysToLowerCase<DICTIONARY[KEY]>
     : DICTIONARY[KEY] extends RA<unknown>
-    ? RA<
-        DICTIONARY[KEY][number] extends IR<unknown>
-          ? KeysToLowerCase<DICTIONARY[KEY][number]>
-          : DICTIONARY[KEY][number]
-      >
-    : DICTIONARY[KEY];
+      ? RA<
+          DICTIONARY[KEY][number] extends IR<unknown>
+            ? KeysToLowerCase<DICTIONARY[KEY][number]>
+            : DICTIONARY[KEY][number]
+        >
+      : DICTIONARY[KEY];
 };

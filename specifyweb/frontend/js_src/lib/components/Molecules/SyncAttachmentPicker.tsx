@@ -44,7 +44,7 @@ export function SyncAttachmentPicker({
     loading(
       fetchOriginalUrl(attachment).then((url) => {
         url === undefined ? setUrlNotFound(true) : handleChange(url);
-      })
+      }),
     );
     handleToggle();
   }

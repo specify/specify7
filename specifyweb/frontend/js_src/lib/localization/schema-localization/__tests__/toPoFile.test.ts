@@ -20,7 +20,7 @@ describe('Can convert path to component name and back', () =>
     test(`${path} <--> ${name}`, () => {
       expect(schemaPathToComponentName(path)).toBe(name);
       expect(componentNameToSchemaPath(name)).toBe(path);
-    })
+    }),
   ));
 
 theories(locationToString, [

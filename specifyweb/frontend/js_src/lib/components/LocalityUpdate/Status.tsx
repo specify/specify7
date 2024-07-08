@@ -92,7 +92,7 @@ export function LocalityUpdateStatus({
       void ping(`/api/localityset/abort/${taskId}/`, {
         method: 'POST',
       }).catch(softFail),
-    [taskId]
+    [taskId],
   );
 
   const title = localityUpdateStatusLocalization[state.taskstatus];
@@ -117,7 +117,7 @@ export function LocalityUpdateStatus({
     <LocalityUpdateParsed
       geoCoordDetails={
         state.taskinfo.rows.filter(
-          ({ geocoorddetail }) => geocoorddetail !== null
+          ({ geocoorddetail }) => geocoorddetail !== null,
         ).length
       }
       localities={state.taskinfo.rows.length}
@@ -270,9 +270,9 @@ export function LocalityUpdateSuccess({
         recordSetId === undefined
           ? undefined
           : fetchResource('RecordSet', recordSetId, false),
-      [recordSetId]
+      [recordSetId],
     ),
-    false
+    false,
   );
 
   const [formsOpened, handleFormsOpened, handleFormsClosed] = useBooleanState();
@@ -380,13 +380,13 @@ export function LocalityUpdateParseErrors({
                   rowNumber.toString(),
                   field,
                   resolveLocalityUpdateErrorMessage(message, payload),
-                ]
+                ],
               );
 
               loading(
                 downloadDataSet(`${fileName}.csv`, data, columns, ',').catch(
-                  softFail
-                )
+                  softFail,
+                ),
               );
             }}
           >
@@ -399,17 +399,7 @@ export function LocalityUpdateParseErrors({
       specialMode="noGradient"
       onClose={handleClose}
     >
-      <table
-        className="grid-table
-          grid-cols-[1fr_minmax(12rem,1fr)_1fr]
-          overflow-auto
-          [&_:is(td,th)]:border-gray-500
-          [&_:is(th,td)]:border-b
-          [&_:is(th,td)]:p-1
-          [&_:is(th,td)]:pr-2
-          sm:[&_:is(th,td)]:pr-4
-          "
-      >
+      <table className="grid-table grid-cols-[1fr_minmax(12rem,1fr)_1fr] overflow-auto [&_:is(td,th)]:border-gray-500 [&_:is(th,td)]:border-b [&_:is(th,td)]:p-1 [&_:is(th,td)]:pr-2 sm:[&_:is(th,td)]:pr-4">
         <thead>
           <tr>
             <td className={`sticky top-0 ${mergeCellBackground()} font-bold`}>

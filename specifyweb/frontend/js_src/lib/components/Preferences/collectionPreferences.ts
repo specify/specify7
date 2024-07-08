@@ -30,8 +30,8 @@ collectionPreferences.events.on(
       setCache(cacheKey, 'cached', {
         ...collectionPreferences.getRaw(),
       }),
-    throttleRate
-  )
+    throttleRate,
+  ),
 );
 
 // Fetch up to date preferences from the back-end
@@ -42,6 +42,6 @@ cacheEvents.on('change', ({ category, key }) => {
   if (category !== cacheKey) return;
   if (key === 'cached')
     collectionPreferences.setRaw(
-      getCache(cacheKey, 'cached') ?? collectionPreferences.getRaw()
+      getCache(cacheKey, 'cached') ?? collectionPreferences.getRaw(),
     );
 });

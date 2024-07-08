@@ -44,11 +44,11 @@ describe('stringGuard', () => {
 describe('parserFromType', () => {
   test('simple type is resolved', () =>
     expect(parserFromType('java.lang.Boolean')).toBe(
-      parsers()['java.lang.Boolean']
+      parsers()['java.lang.Boolean'],
     ));
   test('synonym type is resolved', () =>
     expect(parserFromType('java.math.BigDecimal')).toBe(
-      parsers()['java.lang.Double']
+      parsers()['java.lang.Double'],
     ));
   test('unknown returns default parser', () =>
     expect(parserFromType('unknown' as JavaType)).toEqual(parsers().text));
@@ -73,7 +73,7 @@ const uiFormatter = new UiFormatter(
   false,
   localized('test'),
   formatterFields,
-  tables.CollectionObject
+  tables.CollectionObject,
 );
 const title = formsText.requiredFormat({ format: uiFormatter.pattern()! });
 
@@ -84,7 +84,7 @@ describe('resolveParser', () => {
         type: 'java.lang.String',
         length: 5,
         isRequired: true,
-      })
+      }),
     ).toEqual({
       ...parserFromType('java.lang.String'),
       maxLength: 5,
@@ -97,8 +97,8 @@ describe('resolveParser', () => {
         { type: 'java.sql.Timestamp' },
         {
           datePart: 'month',
-        }
-      )
+        },
+      ),
     ).toEqual({
       ...parserFromType('month'),
       required: false,
@@ -107,7 +107,7 @@ describe('resolveParser', () => {
   });
   test('checkboxes are not required', () => {
     expect(
-      resolveParser({ type: 'java.lang.Boolean', isRequired: true })
+      resolveParser({ type: 'java.lang.Boolean', isRequired: true }),
     ).toEqual({
       ...parserFromType('java.lang.Boolean'),
       required: false,
@@ -120,7 +120,7 @@ describe('resolveParser', () => {
       getUiFormatter: () => uiFormatter,
     } as unknown as LiteralField;
     expect(
-      removeKey(resolveParser(field), 'formatters', 'parser', 'validators')
+      removeKey(resolveParser(field), 'formatters', 'parser', 'validators'),
     ).toEqual({
       ...parserFromType('java.lang.String'),
       required: false,
@@ -128,7 +128,7 @@ describe('resolveParser', () => {
         formatterToParser(field, uiFormatter),
         'formatters',
         'parser',
-        'validators'
+        'validators',
       ),
     });
   });
@@ -157,8 +157,8 @@ describe('mergeParsers', () => {
     expect(
       mergeParsers(
         { formatters: [formatter.toLowerCase] },
-        { formatters: [formatter.trim] }
-      )
+        { formatters: [formatter.trim] },
+      ),
     ).toEqual({ formatters: [formatter.toLowerCase, formatter.trim] }));
   test('step case', () => {
     expect(mergeParsers({ step: 'any' }, { step: undefined })).toEqual({

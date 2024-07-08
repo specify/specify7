@@ -75,13 +75,13 @@ export function initializeResource(resource: SpecifyResource<AnySchema>): void {
 }
 
 export function getDomainResource<
-  LEVEL extends keyof typeof schema.domainLevelIds
+  LEVEL extends keyof typeof schema.domainLevelIds,
 >(level: LEVEL): SpecifyResource<Tables[Capitalize<LEVEL>]> | undefined {
   const id = schema.domainLevelIds?.[level];
   if (id === undefined) {
     if ((level as 'collectionObject') === 'collectionObject') return undefined;
     console.error(
-      `Trying to access domain resource ${level} before domain is loaded`
+      `Trying to access domain resource ${level} before domain is loaded`,
     );
     return undefined;
   }
@@ -90,7 +90,7 @@ export function getDomainResource<
 }
 
 export function getScopingResource(
-  table: SpecifyTable
+  table: SpecifyTable,
 ):
   | { readonly relationship: Relationship; readonly resourceUrl: string }
   | undefined {
@@ -107,7 +107,7 @@ export function getScopingResource(
         relationship: domainField,
         resourceUrl: getResourceApiUrl(
           domainField.relatedTable.name,
-          schema.domainLevelIds[domainFieldName]
+          schema.domainLevelIds[domainFieldName],
         ),
       }
     : undefined;
@@ -121,7 +121,7 @@ export function getScopingResource(
  * can even if user does not have read access to the Collection table.
  */
 export function getCollectionForResource(
-  resource: SpecifyResource<AnySchema>
+  resource: SpecifyResource<AnySchema>,
 ): number | undefined {
   const collectionUrl = resource.get('collectionMemberId') as number | null;
   if (typeof collectionUrl === 'number') return collectionUrl;
@@ -141,7 +141,7 @@ export function getCollectionForResource(
  * belongs too
  */
 export async function fetchCollectionsForResource(
-  resource: SpecifyResource<AnySchema>
+  resource: SpecifyResource<AnySchema>,
 ): Promise<RA<number> | undefined> {
   const domainField = resource.specifyTable.getScopingRelationship();
   if (domainField === undefined) return undefined;
@@ -154,7 +154,7 @@ export async function fetchCollectionsForResource(
   const fieldsBetween = takeBetween(
     schema.orgHierarchy,
     'Collection',
-    domainResource.specifyTable.name
+    domainResource.specifyTable.name,
   )
     .map((level) => level.toLowerCase())
     .join(djangoLookupSeparator);
@@ -165,6 +165,6 @@ export async function fetchCollectionsForResource(
         { limit: 0, domainFilter: false },
         {
           [fieldsBetween]: domainResource.id.toString(),
-        }
+        },
       ).then(({ records }) => records.map(({ id }) => id));
 }

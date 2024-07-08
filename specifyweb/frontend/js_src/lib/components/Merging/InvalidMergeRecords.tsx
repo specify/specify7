@@ -49,7 +49,7 @@ function FormattedMemoizedResource({
 }): JSX.Element {
   const deserializedResource = React.useMemo(
     () => deserializeResource(resource),
-    [resource]
+    [resource],
   );
   return (
     <li
@@ -81,7 +81,7 @@ export function InvalidMergeRecordsDialog({
             <Button.Small
               onClick={() =>
                 handleDismiss(
-                  recordsToIgnore.map((record) => record.id as number)
+                  recordsToIgnore.map((record) => record.id as number),
                 )
               }
             >

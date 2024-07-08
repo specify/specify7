@@ -21,14 +21,14 @@ const defaultPreviewSize = 4;
 
 export function useResourcePreview(
   table: SpecifyTable,
-  isAggregator: boolean = false
+  isAggregator: boolean = false,
 ): {
   readonly resources: GetOrSet<RA<SpecifyResource<AnySchema>> | undefined>;
   readonly children: (
     callback: (
       resource: SpecifyResource<AnySchema>,
-      index: number
-    ) => React.ReactNode | undefined
+      index: number,
+    ) => React.ReactNode | undefined,
   ) => JSX.Element;
 } {
   const getSetResources = useAsyncState<RA<SpecifyResource<AnySchema>>>(
@@ -48,11 +48,11 @@ export function useResourcePreview(
                 : ['-timestampModified']),
               '-id',
             ].join(','),
-          }
+          },
         ).then(({ records }) => records.map(deserializeResource)),
-      [table]
+      [table],
     ),
-    false
+    false,
   );
   const [resources, setResources] = getSetResources;
 
@@ -124,7 +124,7 @@ export function ResourcePreview({
 }: {
   readonly table: SpecifyTable;
   readonly doFormatting: (
-    resources: RA<SpecifyResource<AnySchema>>
+    resources: RA<SpecifyResource<AnySchema>>,
   ) => Promise<RA<React.ReactNode>>;
   readonly isAggregator?: boolean;
 }): JSX.Element | null {
@@ -135,11 +135,11 @@ export function ResourcePreview({
   const [formatted] = useAsyncState(
     React.useCallback(
       async () => f.maybe(resources, doFormatting),
-      [resources, doFormatting]
+      [resources, doFormatting],
     ),
-    false
+    false,
   );
   return children((_, index) =>
-    formatted === undefined ? commonText.loading() : formatted[index]
+    formatted === undefined ? commonText.loading() : formatted[index],
   );
 }

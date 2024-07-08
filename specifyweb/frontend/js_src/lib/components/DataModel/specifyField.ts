@@ -46,7 +46,7 @@ const relationshipTypes = [
   'zero-to-one',
 ] as const;
 
-export type RelationshipType = typeof relationshipTypes[number];
+export type RelationshipType = (typeof relationshipTypes)[number];
 
 export type FieldDefinition = {
   readonly column?: string;
@@ -120,7 +120,7 @@ export abstract class FieldBase {
     table: SpecifyTable,
     fieldDefinition: Omit<FieldDefinition, 'type'> & {
       readonly type: JavaType | RelationshipType;
-    }
+    },
   ) {
     this.table = table;
 
@@ -135,8 +135,8 @@ export abstract class FieldBase {
       globalFieldOverride === 'required'
         ? true
         : globalFieldOverride === 'optional'
-        ? false
-        : fieldDefinition.required;
+          ? false
+          : fieldDefinition.required;
     this.type = fieldDefinition.type;
     this.length = fieldDefinition.length;
     this.databaseColumn = fieldDefinition.column;
@@ -229,14 +229,14 @@ export abstract class FieldBase {
   }
 
   public static fromJson(
-    value: string
+    value: string,
   ): LiteralField | Relationship | undefined {
     if (!value.endsWith(']')) return undefined;
     const name = value.startsWith('[literalField')
       ? 'literalField'
       : value.startsWith('[relationship')
-      ? 'relationship'
-      : undefined;
+        ? 'relationship'
+        : undefined;
     if (name === undefined) return undefined;
     const parts = value.replace(`[${name} `, '').replace(']', '').split('.');
     if (parts.length !== 2) return undefined;
@@ -280,7 +280,7 @@ export class Relationship extends FieldBase {
 
   public constructor(
     table: SpecifyTable,
-    relationshipDefinition: RelationshipDefinition
+    relationshipDefinition: RelationshipDefinition,
   ) {
     super(table, {
       ...relationshipDefinition,
@@ -322,9 +322,9 @@ export class Relationship extends FieldBase {
       this.name === 'collectingEvent'
       ? schema.embeddedCollectingEvent
       : this.table.name.toLowerCase() === schema.paleoContextChildTable &&
-        this.name === 'paleoContext'
-      ? schema.embeddedPaleoContext
-      : this.dependent;
+          this.name === 'paleoContext'
+        ? schema.embeddedPaleoContext
+        : this.dependent;
   }
 
   // Returns the field of the related table that is the reverse of this field.

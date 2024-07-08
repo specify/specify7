@@ -41,7 +41,7 @@ export function useTopChild(): {
       const { x, y } = container.getBoundingClientRect();
       const visibleElement = document.elementFromPoint(
         x,
-        y + marginTop
+        y + marginTop,
       ) as HTMLElement;
       if (visibleElement === null) return;
       const section = findSection(container, visibleElement);
@@ -82,7 +82,7 @@ const scrollThrottle = 50;
 
 function findSection(
   container: HTMLElement,
-  child: HTMLElement
+  child: HTMLElement,
 ): HTMLElement | undefined {
   const parent = child.parentElement;
   if (parent === container) return child;

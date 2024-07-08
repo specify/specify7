@@ -32,7 +32,7 @@ export const fieldFormattersSpec = f.store(() =>
                 (getTable(javaClass ?? '') === undefined
                   ? javaClass
                   : undefined),
-            })
+            }),
           ),
           syncer(
             ({ rawField, ...formatter }) => ({
@@ -42,12 +42,12 @@ export const fieldFormattersSpec = f.store(() =>
             ({ field, ...formatter }) => ({
               ...formatter,
               rawField: localized(field?.name),
-            })
-          )
-        )
-      )
+            }),
+          ),
+        ),
+      ),
     ),
-  })
+  }),
 );
 
 export type FieldFormatter = SpecToJson<
@@ -59,11 +59,11 @@ const formatterSpec = f.store(() =>
     isSystem: pipe(
       syncers.xmlAttribute('system', 'required'),
       syncers.maybe(syncers.toBoolean),
-      syncers.fallback(false)
+      syncers.fallback(false),
     ),
     name: pipe(
       syncers.xmlAttribute('name', 'required'),
-      syncers.default(localized(''))
+      syncers.default(localized('')),
     ),
     title: syncers.xmlAttribute('title', 'empty'),
     // Some special formatters don't have a class name
@@ -73,21 +73,21 @@ const formatterSpec = f.store(() =>
     isDefault: pipe(
       syncers.xmlAttribute('default', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
+      syncers.default<boolean>(false),
     ),
     autoNumber: pipe(
       syncers.xmlChild('autonumber', 'optional'),
-      syncers.maybe(syncers.xmlContent)
+      syncers.maybe(syncers.xmlContent),
     ),
     external: pipe(
       syncers.xmlChild('external', 'optional'),
-      syncers.maybe(syncers.xmlContent)
+      syncers.maybe(syncers.xmlContent),
     ),
     fields: pipe(
       syncers.xmlChildren('field'),
-      syncers.map(syncers.object(fieldSpec()))
+      syncers.map(syncers.object(fieldSpec())),
     ),
-  })
+  }),
 );
 
 const fieldSpec = f.store(() =>
@@ -96,34 +96,34 @@ const fieldSpec = f.store(() =>
       syncers.xmlAttribute('type', 'required'),
       syncers.fallback(localized('alphanumeric')),
       // TEST: check if sp6 defines any other types not present in this list
-      syncers.enum(Object.keys(formatterTypeMapper))
+      syncers.enum(Object.keys(formatterTypeMapper)),
     ),
     size: pipe(
       syncers.xmlAttribute('size', 'skip'),
       syncers.maybe(syncers.toDecimal),
-      syncers.default<number>(1)
+      syncers.default<number>(1),
     ),
     value: pipe(
       syncers.xmlAttribute('value', 'skip', false),
-      syncers.default(localized(' '))
+      syncers.default(localized(' ')),
     ),
     byYear: pipe(
       syncers.xmlAttribute('byYear', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
+      syncers.default<boolean>(false),
     ),
     autoIncrement: pipe(
       syncers.xmlAttribute('inc', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
+      syncers.default<boolean>(false),
     ),
     pattern: syncers.xmlAttribute('pattern', 'skip', false),
-  })
+  }),
 );
 
 function parseField(
   table: SpecifyTable | undefined,
-  name: string | undefined
+  name: string | undefined,
 ): LiteralField | undefined {
   if (name?.includes('.') === true) {
     console.error('Only direct fields are allowed');

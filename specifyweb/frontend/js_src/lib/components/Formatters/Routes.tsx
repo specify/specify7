@@ -18,7 +18,7 @@ export const formattersRoutes = toReactRoutes([
         index: true,
         element: async () =>
           import('./Table').then(
-            ({ FormatterTablesList }) => FormatterTablesList
+            ({ FormatterTablesList }) => FormatterTablesList,
           ),
       },
       {
@@ -33,7 +33,7 @@ export const formattersRoutes = toReactRoutes([
             path: ':index',
             element: async () =>
               import('./Element').then(
-                ({ FormatterWrapper }) => FormatterWrapper
+                ({ FormatterWrapper }) => FormatterWrapper,
               ),
           },
         ],

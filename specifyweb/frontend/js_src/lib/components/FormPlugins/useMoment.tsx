@@ -12,10 +12,10 @@ import { resourceOn } from '../DataModel/resource';
 export function useMoment(
   resource: SpecifyResource<AnySchema> | undefined,
   dateFieldName: string,
-  defaultValue: Date | undefined
+  defaultValue: Date | undefined,
 ): readonly [
   ReturnType<typeof dayjs> | undefined,
-  (value: ReturnType<typeof dayjs> | undefined) => void
+  (value: ReturnType<typeof dayjs> | undefined) => void,
 ] {
   const syncMoment = React.useCallback(
     (moment: ReturnType<typeof dayjs> | undefined) => {
@@ -32,7 +32,7 @@ export function useMoment(
         ? newMoment
         : moment;
     },
-    [resource, dateFieldName]
+    [resource, dateFieldName],
   );
   // Parsed date object
   const [moment, setMoment] = React.useState<
@@ -55,7 +55,7 @@ export function useMoment(
       resource,
       `change:${dateFieldName}`,
       () => setMoment(syncMoment),
-      true
+      true,
     );
   }, [resource, dateFieldName, syncMoment, defaultValue]);
 
@@ -69,7 +69,7 @@ export function useMoment(
           });
         setMoment(moment);
       },
-      [dateFieldName, resource]
+      [dateFieldName, resource],
     ),
   ];
 }

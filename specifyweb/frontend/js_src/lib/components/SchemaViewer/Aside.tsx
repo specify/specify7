@@ -26,15 +26,12 @@ export function SchemaViewerAside({
         : navigate(`/specify/data-model/#${tables[activeCategory].name[0]}`, {
             replace: true,
           }),
-    [isInOverlay, tables, activeCategory, navigate]
+    [isInOverlay, tables, activeCategory, navigate],
   );
 
   return (
     <aside
-      className={`
-        left-0 hidden min-w-fit flex-1 flex-col divide-y-4
-        divide-[color:var(--form-background)] overflow-y-auto md:flex
-      `}
+      className={`left-0 hidden min-w-fit flex-1 flex-col divide-y-4 divide-[color:var(--form-background)] overflow-y-auto md:flex`}
     >
       {tables.map(({ name: [tableName, jsxName] }, index) => (
         <Link.Secondary

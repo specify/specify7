@@ -19,7 +19,7 @@ declare namespace Intl {
       options?: {
         readonly type?: 'conjunction' | 'disjunction';
         readonly style?: 'long' | 'narrow' | 'short';
-      }
+      },
     );
 
     public format(values: RA<LocalizedString>): LocalizedString;
@@ -37,7 +37,7 @@ declare namespace Intl {
           | 'language'
           | 'region'
           | 'script';
-      }
+      },
     );
 
     public of(code: string): LocalizedString;
@@ -60,7 +60,7 @@ declare namespace Intl {
           | 'standard';
         readonly unitDisplay: 'long' | 'narrow' | 'short';
         readonly style: 'currency' | 'decimal' | 'percent' | 'unit';
-      }
+      },
     );
 
     public format(value: number): LocalizedString;
@@ -73,12 +73,12 @@ declare namespace Intl {
       options?: {
         readonly numeric: 'always' | 'auto';
         readonly style: 'long' | 'narrow' | 'short';
-      }
+      },
     );
 
     public format(
       count: number,
-      type: 'day' | 'hour' | 'minute' | 'month' | 'second' | 'week' | 'year'
+      type: 'day' | 'hour' | 'minute' | 'month' | 'second' | 'week' | 'year',
     ): LocalizedString;
   }
 
@@ -90,7 +90,7 @@ declare namespace Intl {
         readonly dateStyle?: 'full' | 'long' | 'medium' | 'short';
         readonly timeStyle?: 'full' | 'long' | 'medium' | 'short';
         readonly month?: 'long' | 'short';
-      }
+      },
     );
 
     public format(value: Readonly<Date>): LocalizedString;
@@ -104,7 +104,7 @@ declare namespace Intl {
         readonly sensitivity?: 'accent' | 'base' | 'case' | 'variant';
         readonly caseFirst?: 'lower' | 'upper' | false;
         readonly ignorePunctuation?: boolean;
-      }
+      },
     );
 
     public compare(left: string, right: string): -1 | 0 | 1;
@@ -114,7 +114,7 @@ declare namespace Intl {
 function getMonthNames(monthFormat: 'long' | 'short'): RA<LocalizedString> {
   const months = new Intl.DateTimeFormat(LANGUAGE, { month: monthFormat });
   return Array.from({ length: 12 }, (_, month) =>
-    months.format(new Date(0, month, 2, 0, 0, 0))
+    months.format(new Date(0, month, 2, 0, 0, 0)),
   );
 }
 
@@ -189,7 +189,7 @@ export const compareStrings = new Intl.Collator(
     sensitivity: 'base',
     caseFirst: 'upper',
     ignorePunctuation: true,
-  }
+  },
 ).compare;
 
 const sizeFormatter = new Intl.NumberFormat(LANGUAGE, {

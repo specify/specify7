@@ -19,7 +19,7 @@ export function hijackBackboneAjax<T>(
   expectedErrorCodes: RA<ValueOf<typeof Http>>,
   callback: () => T,
   successCallback?: (status: number) => void,
-  errorMode: AjaxErrorMode = 'visible'
+  errorMode: AjaxErrorMode = 'visible',
 ): T {
   expectedErrors = expectedErrorCodes;
   requestCallback = successCallback;
@@ -39,7 +39,7 @@ Backbone.ajax = function (request): JQueryXHR {
   if (request === undefined) throw new Error('Undefined Request');
   const url = defined(
     request.url,
-    'Unable to make a Backbone.ajax call as URL is undefined'
+    'Unable to make a Backbone.ajax call as URL is undefined',
   );
   const requestCallbackCopy = requestCallback;
   return promiseToXhr(
@@ -59,7 +59,7 @@ Backbone.ajax = function (request): JQueryXHR {
         body: request.type === 'GET' ? undefined : request.data,
         expectedErrors,
         errorMode: errorMessageMode,
-      }
+      },
     )
       .then(({ data, status }) => {
         requestCallbackCopy?.(status);
@@ -72,6 +72,6 @@ Backbone.ajax = function (request): JQueryXHR {
           ? request.error(error, 'error', undefined as never)
           : undefined;
         throw error;
-      })
+      }),
   );
 };

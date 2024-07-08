@@ -14,13 +14,13 @@ export const typeSearches = Promise.all([
   load<Element>(getAppResourceUrl('TypeSearches'), 'text/xml'),
   import('../DataModel/tables').then(async ({ fetchContext }) => fetchContext),
 ]).then(([xml]) =>
-  filterArray(xmlToSpec(xml, typeSearchesSpec()).typeSearches)
+  filterArray(xmlToSpec(xml, typeSearchesSpec()).typeSearches),
 );
 
 export function useTypeSearch(
   initialTypeSearch: TypeSearch | string | undefined,
   field: LiteralField | Relationship,
-  initialRelatedTable: SpecifyTable | undefined
+  initialRelatedTable: SpecifyTable | undefined,
 ): TypeSearch | false | undefined {
   const relatedTable =
     initialRelatedTable ??
@@ -36,10 +36,10 @@ export function useTypeSearch(
         (typeSearches) =>
           typeSearches.find(({ name }) => name === initialTypeSearch) ??
           typeSearches.find(({ table }) => table === relatedTable) ??
-          false
+          false,
       );
     }, [initialTypeSearch, relatedTable]),
-    false
+    false,
   );
   return typeSearch;
 }

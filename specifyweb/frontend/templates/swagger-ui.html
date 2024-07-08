@@ -1,5 +1,5 @@
 {% load i18n %}
-<!DOCTYPE html>
+<!doctype html>
 {% get_current_language as LANGUAGE_CODE %}
 <html lang="{{ LANGUAGE_CODE }}">
   <head>
@@ -24,7 +24,7 @@
         requestInterceptor: (req) => {
           req.headers["X-CSRFToken"] = "{{ csrf_token }}";
           return req;
-        }
+        },
       });
     </script>
   </body>

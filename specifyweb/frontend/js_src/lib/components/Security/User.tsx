@@ -116,7 +116,7 @@ export function SecurityUser(): JSX.Element {
               type: 'SecurityUser',
               user: serializeResource(newUser),
             },
-          }
+          },
         );
       }}
       onDeleted={(): void => {
@@ -138,7 +138,7 @@ export function SecurityUser(): JSX.Element {
               user: changedUser,
             },
             replace: true,
-          }
+          },
         );
       }}
     />
@@ -183,8 +183,8 @@ function UserView({
   const [password, setPassword] = useLiveState<string | undefined>(
     React.useCallback(
       () => (userResource.isNew() ? undefined : ''),
-      [userResource]
-    )
+      [userResource],
+    ),
   );
 
   const previewAffected =
@@ -195,7 +195,7 @@ function UserView({
   const loading = React.useContext(LoadingContext);
 
   const [rawCollectionId, setCollectionId] = React.useState<number>(
-    initialCollectionId ?? -1
+    initialCollectionId ?? -1,
   );
   const collectionId =
     rawCollectionId === -1
@@ -207,7 +207,7 @@ function UserView({
   const isReadOnly = augmentMode(
     React.useContext(ReadOnlyContext),
     userResource.isNew(),
-    'SpecifyUser'
+    'SpecifyUser',
   );
   const [state, setState] = React.useState<
     | State<
@@ -227,17 +227,17 @@ function UserView({
     institutionPolicies?.some(
       ({ resource, actions }) =>
         resource === anyResource &&
-        allActions.every((action) => actions.includes(action))
+        allActions.every((action) => actions.includes(action)),
     ) ?? false;
 
   const canSetPassword = hasPermission('/admin/user/password', 'update');
   const canCreateInviteLink = hasPermission(
     '/admin/user/invite_link',
-    'create'
+    'create',
   );
   const canSeeInstitutionalPolicies = hasDerivedPermission(
     '/permissions/institutional_policies/user',
-    'read'
+    'read',
   );
 
   const isInSearchDialog = React.useContext(SearchDialogContext);
@@ -298,7 +298,7 @@ function UserView({
                       !isSuperAdmin &&
                         hasDerivedPermission(
                           '/permissions/institutional_policies/user',
-                          'read'
+                          'read',
                         ) && (
                           <SecurityPoliciesWrapper
                             collapsable
@@ -357,7 +357,7 @@ function UserView({
                   {hasPermission(
                     '/permissions/user/roles',
                     'read',
-                    collectionId
+                    collectionId,
                   ) && (
                     <ReadOnlyContext.Provider
                       value={
@@ -381,7 +381,7 @@ function UserView({
                     hasPermission(
                       '/permissions/policies/user',
                       'read',
-                      collectionId
+                      collectionId,
                     ) ? (
                       <SecurityPoliciesWrapper
                         collapsable={false}
@@ -394,7 +394,7 @@ function UserView({
                             !hasPermission(
                               '/permissions/policies/user',
                               'update',
-                              collectionId
+                              collectionId,
                             )
                           }
                         >
@@ -408,8 +408,8 @@ function UserView({
                                     replaceKey(
                                       userPolicies,
                                       collectionId.toString(),
-                                      policies
-                                    )
+                                      policies,
+                                    ),
                                   )
                                 : undefined
                             }
@@ -438,7 +438,7 @@ function UserView({
               />
             </ErrorBoundary>
           </>,
-          '-mx-4 p-4 pt-0 flex-1 gap-8 [&_input]:max-w-[min(100%,var(--max-field-width))] overflow-auto'
+          '-mx-4 p-4 pt-0 flex-1 gap-8 [&_input]:max-w-[min(100%,var(--max-field-width))] overflow-auto',
         )}
         <DataEntry.Footer>
           {!userResource.isNew() &&
@@ -469,7 +469,7 @@ function UserView({
             .some(
               ({ id }) =>
                 hasPermission('/permissions/policies/user', 'update', id) ||
-                hasPermission('/permissions/user/roles', 'update', id)
+                hasPermission('/permissions/user/roles', 'update', id),
             ) ? (
             <SaveButton
               disabled={!changesMade || userAgents === undefined}
@@ -490,8 +490,8 @@ function UserView({
                         headers: {},
                         body: filterArray(
                           userAgents!.map(({ address }) =>
-                            idFromUrl(address.get('agent') ?? '')
-                          )
+                            idFromUrl(address.get('agent') ?? ''),
+                          ),
                         ),
                         expectedErrors: [Http.BAD_REQUEST],
                       })
@@ -507,40 +507,40 @@ function UserView({
                             response: JSON.parse(data),
                           })
                         : Array.isArray(institutionPolicies) &&
-                          changedInstitutionPolicies
-                        ? ajax(
-                            `/permissions/user_policies/institution/${userResource.id}/`,
-                            {
-                              method: 'PUT',
-                              body: decompressPolicies(institutionPolicies),
-                              headers: { Accept: 'text/plain' },
-                              expectedErrors: [Http.BAD_REQUEST],
-                            }
-                          ).then(({ data, status }) => {
-                            /*
-                             * Removing admin status fails if current user
-                             * is the last admin
-                             */
-                            if (status === Http.BAD_REQUEST) {
-                              const parsed: {
-                                readonly NoAdminUsersException: IR<never>;
-                              } = JSON.parse(data);
-                              if (
-                                typeof parsed === 'object' &&
-                                'NoAdminUsersException' in parsed
-                              )
-                                setState({
-                                  type: 'NoAdminsError',
-                                });
-                              else
-                                setState({
-                                  type: 'SettingAgents',
-                                  response: JSON.parse(data),
-                                });
-                            } else return true;
-                            return undefined;
-                          })
-                        : true
+                            changedInstitutionPolicies
+                          ? ajax(
+                              `/permissions/user_policies/institution/${userResource.id}/`,
+                              {
+                                method: 'PUT',
+                                body: decompressPolicies(institutionPolicies),
+                                headers: { Accept: 'text/plain' },
+                                expectedErrors: [Http.BAD_REQUEST],
+                              },
+                            ).then(({ data, status }) => {
+                              /*
+                               * Removing admin status fails if current user
+                               * is the last admin
+                               */
+                              if (status === Http.BAD_REQUEST) {
+                                const parsed: {
+                                  readonly NoAdminUsersException: IR<never>;
+                                } = JSON.parse(data);
+                                if (
+                                  typeof parsed === 'object' &&
+                                  'NoAdminUsersException' in parsed
+                                )
+                                  setState({
+                                    type: 'NoAdminsError',
+                                  });
+                                else
+                                  setState({
+                                    type: 'SettingAgents',
+                                    response: JSON.parse(data),
+                                  });
+                              } else return true;
+                              return undefined;
+                            })
+                          : true,
                     )
                     .then(async (canContinue) =>
                       canContinue === true
@@ -556,8 +556,8 @@ function UserView({
                                 ([collectionId, roles]) =>
                                   JSON.stringify(roles) !==
                                   JSON.stringify(
-                                    initialUserRoles.current?.[collectionId]
-                                  )
+                                    initialUserRoles.current?.[collectionId],
+                                  ),
                               )
                               .map(async ([collectionId, roles]) =>
                                 Array.isArray(roles)
@@ -568,17 +568,17 @@ function UserView({
                                         body: roles.map(({ roleId }) => ({
                                           id: roleId,
                                         })),
-                                      }
+                                      },
                                     )
-                                  : undefined
+                                  : undefined,
                               ),
                             ...Object.entries(userPolicies ?? {})
                               .filter(
                                 ([collectionId, policies]) =>
                                   JSON.stringify(policies) !==
                                   JSON.stringify(
-                                    initialUserPolicies.current?.[collectionId]
-                                  )
+                                    initialUserPolicies.current?.[collectionId],
+                                  ),
                               )
                               .map(async ([collectionId, policies]) =>
                                 Array.isArray(policies)
@@ -587,13 +587,13 @@ function UserView({
                                       {
                                         method: 'PUT',
                                         body: decompressPolicies(policies),
-                                      }
+                                      },
                                     )
-                                  : undefined
+                                  : undefined,
                               ),
                           ])
                             .then(() =>
-                              handleSave(serializeResource(userResource))
+                              handleSave(serializeResource(userResource)),
                             )
                             .then(() => {
                               // Sync initial values
@@ -608,11 +608,11 @@ function UserView({
                                * purposes
                                */
                               formElement?.classList.add(
-                                className.notSubmittedForm
+                                className.notSubmittedForm,
                               );
                             })
-                        : undefined
-                    )
+                        : undefined,
+                    ),
                 )
               }
               onSaving={(): false | undefined => {

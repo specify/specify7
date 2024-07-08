@@ -14,7 +14,7 @@ describe('Link.Small', () => {
       variant: className.infoButton,
       className: 'a',
     },
-    'custom variant'
+    'custom variant',
   );
 });
 

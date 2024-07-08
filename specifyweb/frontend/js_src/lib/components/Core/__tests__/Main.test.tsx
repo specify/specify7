@@ -7,16 +7,16 @@ import { Contexts } from '../Contexts';
 
 test('<Main> is providing MenuContext', () => {
   const handleMenu = jest.fn(
-    (value: React.ContextType<typeof MenuContext>) => value
+    (value: React.ContextType<typeof MenuContext>) => value,
   );
   const handleSetMenu = jest.fn(
-    (value: React.ContextType<typeof SetMenuContext>) => value
+    (value: React.ContextType<typeof SetMenuContext>) => value,
   );
   render(
     <Contexts>
       <LeakContext context={MenuContext} onLoaded={handleMenu} />
       <LeakContext context={SetMenuContext} onLoaded={handleSetMenu} />
-    </Contexts>
+    </Contexts>,
   );
 
   expect(handleMenu.mock.calls[0][0]!).toBeUndefined();

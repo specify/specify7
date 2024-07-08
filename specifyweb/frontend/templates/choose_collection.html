@@ -1,9 +1,6 @@
-{% include "head.html" %}
-"chooseCollection"
-{% include "body.html" %}
-{{ form.non_field_errors|json_script:'form-errors' }}
-{{ form.collection.errors|json_script:'collection-errors' }}
-{{ available_collections|json_script:'available-collections' }}
-{{ initial_value|json_script:'initial-value' }}
-{{ next|json_script:'next-url' }}
+{% include "head.html" %} "chooseCollection" {% include "body.html" %} {{
+form.non_field_errors|json_script:'form-errors' }} {{
+form.collection.errors|json_script:'collection-errors' }} {{
+available_collections|json_script:'available-collections' }} {{
+initial_value|json_script:'initial-value' }} {{ next|json_script:'next-url' }}
 {% include "footer.html" %}

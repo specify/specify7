@@ -15,37 +15,26 @@ export function Logo({
   const [collapsedLogo] = userPreferences.use(
     'header',
     'appearance',
-    'customLogoCollapsed'
+    'customLogoCollapsed',
   );
   const hueDifference = useHueDifference();
 
   return (
     <h1 className="contents">
       <a
-        className={`
-      flex items-center gap-2
-      ${isCollapsed ? 'p-2' : 'p-4'}
-      ${isHorizontal ? '' : 'flex-col'}
-    `}
+        className={`flex items-center gap-2 ${isCollapsed ? 'p-2' : 'p-4'} ${isHorizontal ? '' : 'flex-col'} `}
         href="/specify/"
       >
         {/* Both logos are loaded to prevent flickering on collapse/expand */}
         <img
           alt=""
-          className={`
-        hover:animate-hue-rotate
-        ${isCollapsed ? 'hidden' : ''}
-      `}
+          className={`hover:animate-hue-rotate ${isCollapsed ? 'hidden' : ''} `}
           src="/static/img/logo.svg"
           style={{ filter: `hue-rotate(${hueDifference}deg)` }}
         />
         <img
           alt=""
-          className={`
-      hover:animate-hue-rotate
-      ${isCollapsed ? '' : 'hidden'}
-      ${isHorizontal ? 'w-10' : ''}
-    `}
+          className={`hover:animate-hue-rotate ${isCollapsed ? '' : 'hidden'} ${isHorizontal ? 'w-10' : ''} `}
           src="/static/img/short_logo.svg"
           style={{ filter: `hue-rotate(${hueDifference}deg)` }}
         />
@@ -54,10 +43,7 @@ export function Logo({
         ) : (
           <img
             alt=""
-            className={`hover:animate-hue-rotate max-h-[theme(spacing.24)]
-        max-w-[theme(spacing.24)]
-        ${isCollapsed ? 'hidden' : ''}
-      `}
+            className={`max-h-[theme(spacing.24)] max-w-[theme(spacing.24)] hover:animate-hue-rotate ${isCollapsed ? 'hidden' : ''} `}
             src={logo}
           />
         )}
@@ -66,11 +52,7 @@ export function Logo({
         ) : (
           <img
             alt=""
-            className={`hover:animate-hue-rotate max-h-[theme(spacing.16)]
-      max-w-[theme(spacing.16)]
-      ${isCollapsed ? '' : 'hidden'}
-      ${isHorizontal ? 'w-10' : ''}
-    `}
+            className={`max-h-[theme(spacing.16)] max-w-[theme(spacing.16)] hover:animate-hue-rotate ${isCollapsed ? '' : 'hidden'} ${isHorizontal ? 'w-10' : ''} `}
             src={collapsedLogo}
           />
         )}

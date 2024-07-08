@@ -35,7 +35,7 @@ export type WbMetaArray = [
   isModified: boolean,
   isSearchResult: boolean,
   issues: RA<string>,
-  originalValue: string | undefined
+  originalValue: string | undefined,
 ];
 
 const defaultMetaValues = Object.freeze([
@@ -59,14 +59,14 @@ export class WbCellMeta {
   public constructor(private readonly workbench: Workbench) {
     this.updateCellInfoStats = throttle(
       this.updateCellInfoStats.bind(this),
-      this.workbench.throttleRate
+      this.workbench.throttleRate,
     );
   }
 
   public getCellMeta<KEY extends keyof WbMeta>(
     physicalRow: number,
     physicalCol: number,
-    key: KEY
+    key: KEY,
   ): WbMeta[KEY] {
     const index = metaKeys.indexOf(key);
     return (this.cellMeta[physicalRow]?.[physicalCol]?.[index] ??
@@ -75,7 +75,7 @@ export class WbCellMeta {
 
   public getCellMetaFromArray<KEY extends keyof WbMeta>(
     metaCell: WbMetaArray,
-    key: KEY
+    key: KEY,
   ): WbMeta[KEY] {
     const index = metaKeys.indexOf(key);
     return (metaCell?.[index] ?? defaultMetaValues[index]) as WbMeta[KEY];
@@ -89,7 +89,7 @@ export class WbCellMeta {
     physicalRow: number,
     physicalCol: number,
     key: KEY,
-    value: WbMeta[KEY]
+    value: WbMeta[KEY],
   ) {
     const currentValue = this.getCellMeta(physicalRow, physicalCol, key);
     const issuesChanged =
@@ -108,7 +108,7 @@ export class WbCellMeta {
     const index = metaKeys.indexOf(key);
     this.cellMeta[physicalRow] ??= [];
     this.cellMeta[physicalRow][physicalCol] ??= Array.from(
-      defaultMetaValues
+      defaultMetaValues,
     ) as unknown as WbMetaArray;
     this.cellMeta[physicalRow][physicalCol][index] = value;
 
@@ -125,9 +125,9 @@ export class WbCellMeta {
     const hasFrontEndValidationErrors = this.getCellMeta(
       physicalRow,
       physicalCol,
-      'issues'
+      'issues',
     ).some((issue) =>
-      issue.endsWith(backEndText.failedParsingPickList({ value: '' }))
+      issue.endsWith(backEndText.failedParsingPickList({ value: '' })),
     );
     if (hasFrontEndValidationErrors)
       /*
@@ -140,7 +140,7 @@ export class WbCellMeta {
     const originalCellValue = this.getCellMeta(
       physicalRow,
       physicalCol,
-      'originalValue'
+      'originalValue',
     );
     const cellValueChanged =
       originalCellValue !== undefined &&
@@ -154,7 +154,7 @@ export class WbCellMeta {
      */
     return this.workbench.disambiguation?.cellWasDisambiguated(
       physicalRow,
-      physicalCol
+      physicalCol,
     );
   }
 
@@ -167,7 +167,7 @@ export class WbCellMeta {
     visualIndexes: {
       readonly visualRow?: number;
       readonly visualCol?: number;
-    } = {}
+    } = {},
   ): void {
     const isModified = this.isCellModified(physicalRow, physicalCol);
     this.updateCellMeta(
@@ -175,7 +175,7 @@ export class WbCellMeta {
       physicalCol,
       'isModified',
       isModified,
-      visualIndexes
+      visualIndexes,
     );
   }
 
@@ -189,7 +189,7 @@ export class WbCellMeta {
     key: KEY,
     value: WbMeta[KEY],
     visualRow: number,
-    visualCol: number
+    visualCol: number,
   ) {
     if (this.workbench.hot === undefined) return;
 
@@ -199,35 +199,35 @@ export class WbCellMeta {
       cell?.classList[value === true ? 'add' : 'remove']('wb-modified-cell');
     else if (key === 'isSearchResult')
       cell?.classList[value === true ? 'add' : 'remove'](
-        'wb-search-match-cell'
+        'wb-search-match-cell',
       );
     else if (key === 'issues') {
       const issues = value as RA<string>;
       if (issues.length === 0)
         getHotPlugin(this.workbench.hot, 'comments').removeCommentAtCell(
           visualRow,
-          visualCol
+          visualCol,
         );
       else {
         getHotPlugin(this.workbench.hot, 'comments').setCommentAtCell(
           visualRow,
           visualCol,
-          issues.join('\n')
+          issues.join('\n'),
         );
         getHotPlugin(this.workbench.hot, 'comments').updateCommentMeta(
           visualRow,
           visualCol,
           {
             readOnly: true,
-          }
+          },
         );
       }
     } else
       throw new Error(
         `Tried to set unknown metaData record ${key}=${JSON.stringify(
-          value
+          value,
         )} for cell
-         ${visualRow}x${visualCol}`
+         ${visualRow}x${visualCol}`,
       );
   }
 
@@ -247,14 +247,14 @@ export class WbCellMeta {
       readonly cell?: HTMLTableCellElement;
       readonly visualRow?: number;
       readonly visualCol?: number;
-    } = {}
+    } = {},
   ) {
     if (this.workbench.hot === undefined) return;
     const isValueChanged = this.setCellMeta(
       physicalRow,
       physicalCol,
       key,
-      value
+      value,
     );
     if (!isValueChanged) return false;
 
@@ -269,7 +269,7 @@ export class WbCellMeta {
       key,
       value,
       visualRow,
-      visualCol
+      visualCol,
     );
 
     return true;
@@ -293,7 +293,7 @@ export class WbCellMeta {
       const resolveIndex = (
         visualRow: number,
         visualCol: number,
-        first: boolean
+        first: boolean,
       ) =>
         (this.workbench.utils.searchPreferences.navigation.direction ===
           'rowFirst') ===
@@ -305,16 +305,16 @@ export class WbCellMeta {
       Object.entries(this.cellMeta).forEach(([physicalRow, metaRow]) =>
         Object.entries(metaRow).forEach(([physicalCol, cellMeta]) => {
           const visualRow = this.workbench.hot!.toVisualRow(
-            f.fastParseInt(physicalRow)
+            f.fastParseInt(physicalRow),
           );
           const visualCol = this.workbench.hot!.toVisualColumn(
-            f.fastParseInt(physicalCol)
+            f.fastParseInt(physicalCol),
           );
           indexedCellMeta[resolveIndex(visualRow, visualCol, true)] ??= [];
           indexedCellMeta[resolveIndex(visualRow, visualCol, true)][
             resolveIndex(visualRow, visualCol, false)
           ] = cellMeta;
-        })
+        }),
       );
       this.indexedCellMeta = indexedCellMeta;
     }
@@ -329,23 +329,23 @@ export class WbCellMeta {
       newCells: cellMeta.reduce(
         (count, info) =>
           count + (this.getCellMetaFromArray(info, 'isNew') ? 1 : 0),
-        0
+        0,
       ),
       invalidCells: cellMeta.reduce(
         (count, info) =>
           count +
           (this.getCellMetaFromArray(info, 'issues').length > 0 ? 1 : 0),
-        0
+        0,
       ),
       searchResults: cellMeta.reduce(
         (count, info) =>
           count + (this.getCellMetaFromArray(info, 'isSearchResult') ? 1 : 0),
-        0
+        0,
       ),
       modifiedCells: cellMeta.reduce(
         (count, info) =>
           count + (this.getCellMetaFromArray(info, 'isModified') ? 1 : 0),
-        0
+        0,
       ),
     });
   }

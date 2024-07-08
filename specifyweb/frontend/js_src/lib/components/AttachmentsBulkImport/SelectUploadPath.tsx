@@ -47,21 +47,21 @@ export function SelectUploadPath({
               defined(strictGetTable(baseTable).getField(path)).label
             }`}
           </option>
-        )
+        ),
       )}
     </Select>
   );
 }
 
 export function generateUploadSpec(
-  staticPathKey: keyof typeof staticAttachmentImportPaths | undefined
+  staticPathKey: keyof typeof staticAttachmentImportPaths | undefined,
 ): PartialAttachmentUploadSpec {
   if (staticPathKey === undefined) return { staticPathKey };
   const { baseTable, path } = staticAttachmentImportPaths[staticPathKey];
   const queryFieldSpec = QueryFieldSpec.fromPath(baseTable, path.split('.'));
   const field = queryFieldSpec.getField();
   const queryResultsFormatter = (
-    value: number | string | null | undefined
+    value: number | string | null | undefined,
   ): string | undefined =>
     value === undefined || value === null || field?.isRelationship === true
       ? undefined
@@ -70,7 +70,7 @@ export function generateUploadSpec(
           value.toString(),
           queryFieldSpec.parser,
           undefined,
-          true
+          true,
         );
   return {
     staticPathKey,

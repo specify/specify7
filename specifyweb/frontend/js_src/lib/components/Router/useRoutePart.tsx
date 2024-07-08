@@ -8,7 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom';
  * as well as a callback to change it (changing it would clear :recordId)
  */
 export function useRoutePart<T extends string = string>(
-  name: string
+  name: string,
 ): readonly [string | undefined, (value: T | undefined) => void] {
   const parameters = useParams();
   const { matches } = React.useContext(RouteContext);

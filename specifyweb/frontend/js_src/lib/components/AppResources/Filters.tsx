@@ -31,7 +31,7 @@ export function AppResourcesFilters({
 }): JSX.Element {
   const [filters = defaultAppResourceFilters, setFilters] = useCachedState(
     'appResources',
-    'filters'
+    'filters',
   );
 
   const showAllResources = isAllAppResourceTypes(filters.appResources);
@@ -133,7 +133,7 @@ export function AppResourcesFilters({
                               ...filters,
                               appResources: toggleItem(
                                 filters.appResources,
-                                key
+                                key,
                               ),
                             })
                           }
@@ -156,7 +156,7 @@ export function AppResourcesFilters({
                         )}
                       </Label.Inline>
                     </li>
-                  )
+                  ),
                 )}
               </Ul>
             </li>

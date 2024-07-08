@@ -111,14 +111,11 @@ export function ExpressSearchView(): JSX.Element {
 
   return (
     <Container.Full
-      className={`
-        p-0
-        ${
-          query.length === 0
-            ? 'grid h-full grid-cols-1 grid-rows-[1fr_auto_1fr]'
-            : ''
-        }
-      `}
+      className={`p-0 ${
+        query.length === 0
+          ? 'grid h-full grid-cols-1 grid-rows-[1fr_auto_1fr]'
+          : ''
+      } `}
     >
       <div className="flex flex-col gap-2 p-4">
         <H2>{headerText.simpleSearch()}</H2>
@@ -192,46 +189,43 @@ function TableResult({
         }),
         {
           headers: { Accept: 'application/json' },
-        }
+        },
       ).then(
         ({ data }) =>
           (table.name in data
             ? (data as IR<QueryTableResult>)[table.name]
             : (data as QueryTableResult)
-          ).results
+          ).results,
       ),
-    [ajaxUrl, table.name]
+    [ajaxUrl, table.name],
   );
 
   const fieldSpecs = React.useMemo(
     () =>
       tableResults.fieldSpecs.map(({ stringId, isRelationship }) =>
-        QueryFieldSpec.fromStringId(stringId, isRelationship)
+        QueryFieldSpec.fromStringId(stringId, isRelationship),
       ),
-    [tableResults.fieldSpecs]
+    [tableResults.fieldSpecs],
   );
 
   const allFields = React.useMemo(
     () =>
       parseQueryFields(
         fieldSpecs.map((fieldSpec) =>
-          serializeResource(fieldSpec.toSpQueryField())
-        )
+          serializeResource(fieldSpec.toSpQueryField()),
+        ),
       ),
-    [fieldSpecs]
+    [fieldSpecs],
   );
 
   const [selectedRows, setSelectedRows] = React.useState<ReadonlySet<number>>(
-    new Set()
+    new Set(),
   );
 
   return (
     <details>
       <summary
-        className={`
-          link bg-brand-200 dark:bg-brand-500 hover:dark:!bg-brand-400 list-item
-          rounded p-1.5 hover:!text-white
-        `}
+        className={`link list-item rounded bg-brand-200 p-1.5 hover:!text-white dark:bg-brand-500 hover:dark:!bg-brand-400`}
       >
         {commonText.countLine({
           resource: caption,

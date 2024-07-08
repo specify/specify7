@@ -76,7 +76,7 @@ export function Contexts({
             {error({
               onClose: () =>
                 setErrors((newErrors) =>
-                  newErrors.filter((error) => error !== newError)
+                  newErrors.filter((error) => error !== newError),
                 ),
             })}
           </React.Fragment>
@@ -85,7 +85,7 @@ export function Contexts({
         globalErrors = newErrors;
         return newErrors;
       }),
-    []
+    [],
   );
   if (setError === undefined) pendingErrors.forEach(handleError);
   setError = handleError;
@@ -102,7 +102,7 @@ export function Contexts({
 
       setDevelopmentGlobal('_unloadProtects', resolvedValue);
     },
-    []
+    [],
   );
 
   const isReadOnly = React.useContext(ReadOnlyContext);
@@ -162,7 +162,7 @@ const loadingScreenDelay = 50;
 
 export function useLoadingLogic(
   handleLoading: () => void,
-  handleLoaded: () => void
+  handleLoaded: () => void,
 ): (promise: Promise<unknown>) => void {
   const holders = React.useRef<RA<number>>([]);
   const loadingTimeout = React.useRef<
@@ -183,7 +183,7 @@ export function useLoadingLogic(
         })
         .catch(crash);
     },
-    [handleLoading, handleLoaded]
+    [handleLoading, handleLoaded],
   );
 }
 

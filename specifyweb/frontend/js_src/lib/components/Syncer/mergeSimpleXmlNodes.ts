@@ -7,7 +7,7 @@ import type { SimpleXmlNode } from './xmlToJson';
  * Do basic merging of multiple SimpleXmlNode
  */
 export const mergeSimpleXmlNodes = (
-  specs: RA<SimpleXmlNode>
+  specs: RA<SimpleXmlNode>,
 ): SimpleXmlNode => ({
   type: 'SimpleXmlNode',
   tagName: specs[0]?.tagName ?? '',
@@ -16,16 +16,16 @@ export const mergeSimpleXmlNodes = (
 });
 
 const mergeAttributes = (
-  attributes: RA<SimpleXmlNode['attributes']>
+  attributes: RA<SimpleXmlNode['attributes']>,
 ): SimpleXmlNode['attributes'] =>
   Object.fromEntries(
     attributes.flatMap((attributes) =>
-      Object.entries(attributes).map(([name, value]) => [name, value] as const)
-    )
+      Object.entries(attributes).map(([name, value]) => [name, value] as const),
+    ),
   );
 
 function mergeContent(
-  content: RA<SimpleXmlNode>
+  content: RA<SimpleXmlNode>,
 ): Pick<SimpleXmlNode, 'children' | 'text'> {
   const textContent = filterArray(content.map(({ text }) => text));
   const nodeContent = content
@@ -36,14 +36,14 @@ function mergeContent(
       text: undefined,
       children: Object.fromEntries(
         group(nodeContent.flatMap((content) => Object.entries(content))).map(
-          ([key, values]) => [key, values.flat()]
-        )
+          ([key, values]) => [key, values.flat()],
+        ),
       ),
     };
   else {
     if (nodeContent.length > 0)
       throw new Error(
-        "Can't merge nodes that contain both text and node children"
+        "Can't merge nodes that contain both text and node children",
       );
     return { text: textContent.join(' ').trim(), children: {} };
   }

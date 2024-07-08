@@ -82,8 +82,8 @@ export function Main({
 
 const ReportEventHandler = ReactLazy(async () =>
   import('../Reports/Context').then(
-    ({ ReportEventHandler }) => ReportEventHandler
-  )
+    ({ ReportEventHandler }) => ReportEventHandler,
+  ),
 );
 
 function MissingAgent(): JSX.Element {

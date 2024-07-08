@@ -79,7 +79,7 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
     () => (): void => {
       lastIndexRef.current = index;
     },
-    [index]
+    [index],
   );
 
   const [state, setState] = React.useState<
@@ -115,9 +115,9 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
             f.maybe(field?.otherSideName, (fieldName) =>
               f.maybe(relatedResource?.url(), (url) =>
                 resources.forEach((resource) =>
-                  resource.set(fieldName, url as never)
-                )
-              )
+                  resource.set(fieldName, url as never),
+                ),
+              ),
             );
             handleAdded(resources);
           }}
@@ -149,10 +149,10 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
                      * once item is deleted
                      */
                     index < lastIndexRef.current ? index - 1 : index,
-                    totalCount - 2
+                    totalCount - 2,
                   ),
                   true,
-                  () => handleDelete(index, source)
+                  () => handleDelete(index, source),
                 )
               : undefined
         : undefined,

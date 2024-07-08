@@ -26,9 +26,9 @@ export function PickListEditor({
         resource,
         'change:tableName',
         () => setTableName(resource.get('tableName')),
-        true
+        true,
       ),
-    [resource]
+    [resource],
   );
 
   const table =
@@ -43,7 +43,7 @@ export function PickListEditor({
         : new table.LazyCollection({
             domainfilter: true,
           })) as Collection<AnySchema>,
-    [table]
+    [table],
   );
 
   return collection === undefined ? null : (

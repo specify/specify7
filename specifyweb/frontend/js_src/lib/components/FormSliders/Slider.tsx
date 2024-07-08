@@ -22,7 +22,7 @@ export function Slider({
       document.activeElement === inputRef.current
         ? undefined
         : setPendingValue(value),
-    [value]
+    [value],
   );
   const max = Math.max(1, count);
   const resolvedValue = Number.isNaN(pendingValue) ? '' : pendingValue + 1;
@@ -47,20 +47,14 @@ export function Slider({
       </Button.Small>
       <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-1 font-bold">
         <label
-          className={`
-            relative h-full after:invisible after:p-2
-            after:content-[attr(data-count)]
-          `}
+          className={`relative h-full after:invisible after:p-2 after:content-[attr(data-count)]`}
           data-count={count}
         >
           <span className="sr-only">
             {formsText.currentRecord({ total: count })}
           </span>
           <Input.Integer
-            className={`
-              no-arrows absolute left-0 top-0 h-full bg-white
-              text-center font-bold ring-1 dark:bg-neutral-600
-            `}
+            className={`no-arrows absolute left-0 top-0 h-full bg-white text-center font-bold ring-1 dark:bg-neutral-600`}
             disabled={
               handleChange === undefined || (max === 1 && resolvedValue === 1)
             }

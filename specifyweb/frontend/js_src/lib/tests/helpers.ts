@@ -31,7 +31,7 @@ export const requireContext = (): void => {
     getAppResourceUrl('leaflet-layers', 'quiet'),
     defaultTileLayers,
     {},
-    true
+    true,
   );
   beforeAll(async () => {
     unlockInitialContext('main');

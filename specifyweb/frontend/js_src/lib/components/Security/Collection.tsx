@@ -56,7 +56,7 @@ export function SecurityCollection(): JSX.Element {
   const { collectionId = '' } = useParams();
   const availableCollections = useAvailableCollections();
   const collection = availableCollections.find(
-    ({ id }) => id.toString() === collectionId
+    ({ id }) => id.toString() === collectionId,
   );
   return typeof collection === 'object' ? (
     <SetPermissionContext collectionId={collection.id}>
@@ -82,14 +82,14 @@ export function CollectionView({
               index(
                 defined(
                   roles,
-                  `Unable to fetch list of roles for collection with id ${collection.id}`
-                )
-              )
+                  `Unable to fetch list of roles for collection with id ${collection.id}`,
+                ),
+              ),
             )
           : undefined,
-      [collection.id]
+      [collection.id],
     ),
-    false
+    false,
   );
 
   const usersWithPolicies = useCollectionUsersWithPolicies(collection.id);
@@ -104,12 +104,12 @@ export function CollectionView({
   const navigate = useNavigate();
   const location = useLocation();
   const isOverlay = location.pathname.startsWith(
-    `/specify/security/collection/${collection.id}/role/create/`
+    `/specify/security/collection/${collection.id}/role/create/`,
   );
   const isRoleState =
     !isOverlay &&
     location.pathname.startsWith(
-      `/specify/security/collection/${collection.id}/role`
+      `/specify/security/collection/${collection.id}/role`,
     );
   const isMainState = !isRoleState;
   const outletState = useOutletContext<SecurityOutlet>();
@@ -168,7 +168,7 @@ export function CollectionView({
                             {roles.length > 0 && (
                               <span className="text-gray-500">
                                 {`(${formatConjunction(
-                                  roles.map(({ roleName }) => roleName)
+                                  roles.map(({ roleName }) => roleName),
                                 )})`}
                               </span>
                             )}
@@ -186,8 +186,8 @@ export function CollectionView({
                                       `/specify/security/user/${userId}/`,
                                       {
                                         collection: collection.id,
-                                      }
-                                    )
+                                      },
+                                    ),
                                   );
                                 }}
                               >
@@ -208,7 +208,7 @@ export function CollectionView({
                           navigate(
                             formatUrl('/specify/security/user/new/', {
                               collection: collection.id,
-                            })
+                            }),
                           );
                         }}
                       >
@@ -220,7 +220,7 @@ export function CollectionView({
               ) : hasPermission(
                   '/permissions/user/roles',
                   'read',
-                  collection.id
+                  collection.id,
                 ) ? (
                 commonText.loading()
               ) : (

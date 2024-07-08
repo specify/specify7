@@ -14,7 +14,7 @@ export function SchemaViewerTableList<
     | 'schemaViewerRelationships'
     | 'schemaViewerTables',
   FIELD_NAME extends SortConfigs[SORT_CONFIG],
-  DATA extends SchemaViewerRow<RR<FIELD_NAME, SchemaViewerValue>>
+  DATA extends SchemaViewerRow<RR<FIELD_NAME, SchemaViewerValue>>,
 >({
   sortName,
   headers,
@@ -32,7 +32,7 @@ export function SchemaViewerTableList<
 }): JSX.Element {
   const [sortConfig, handleSort, applySortConfig] = useSortConfig(
     sortName,
-    'name'
+    'name',
   );
   const data = React.useMemo(
     () =>
@@ -41,7 +41,7 @@ export function SchemaViewerTableList<
         const data = row[sortConfig.sortField] as SchemaViewerValue;
         return Array.isArray(data) ? data[0] : data;
       }),
-    [sortConfig, unsortedData, applySortConfig]
+    [sortConfig, unsortedData, applySortConfig],
   );
   const headersWithButtons = React.useMemo(
     () =>
@@ -52,9 +52,9 @@ export function SchemaViewerTableList<
             {label}
             <SortIndicator fieldName={name} sortConfig={sortConfig} />
           </Button.LikeLink>,
-        ])
+        ]),
       ),
-    [headers, handleSort, headerClassName]
+    [headers, handleSort, headerClassName],
   );
   return (
     <GenericSortedDataViewer<DATA>

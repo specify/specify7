@@ -17,13 +17,13 @@ const reReplace = /<(?<end>\/)?React.Fragment>/gu;
 export const serialize: NewPlugin['serialize'] = (...args): string => {
   const [value, { plugins }] = args;
   const jsxSerializer = plugins.find(
-    (v) => v.test !== test && v.test(value)
+    (v) => v.test !== test && v.test(value),
   ) as NewPlugin | undefined;
   if (jsxSerializer === undefined)
     throw new Error('Unable to find JSX serializer');
   if (jsxSerializer.serialize === undefined)
     throw new Error(
-      'Found old style serializer. Expected new style serializer'
+      'Found old style serializer. Expected new style serializer',
     );
   const serialized = jsxSerializer.serialize(...args);
   return serialized

@@ -46,10 +46,10 @@ export function MergingHeader({
 
 // "f.store" needed to resolve a circular dependency
 export const mergeCellBackground = f.store(
-  () => dialogClassNames.solidBackground
+  () => dialogClassNames.solidBackground,
 );
 export const mergeHeaderClassName = f.store(
-  () => `sticky top-0 ${mergeCellBackground()} z-[20]`
+  () => `sticky top-0 ${mergeCellBackground()} z-[20]`,
 );
 
 function HeaderLine({
@@ -67,14 +67,11 @@ function HeaderLine({
         <td className={mergeCellBackground()} />
         {[merged, ...resources].map((resource, index) => (
           <th
-            className={`
-              ${mergeHeaderClassName()}
-              ${
-                index === 0
-                  ? 'font-extrabold text-black dark:text-white'
-                  : 'font-normal'
-              }
-            `}
+            className={` ${mergeHeaderClassName()} ${
+              index === 0
+                ? 'font-extrabold text-black dark:text-white'
+                : 'font-normal'
+            } `}
             key={index}
             scope="col"
           >

@@ -25,8 +25,8 @@ import {
  */
 export function hasTablePermission(
   tableName: keyof Tables,
-  action: typeof tableActions[number],
-  collectionId = schema.domainLevelIds.collection
+  action: (typeof tableActions)[number],
+  collectionId = schema.domainLevelIds.collection,
 ): boolean {
   const isReadOnly = getCache('forms', 'readOnlyMode') ?? false;
   if (isReadOnly && action !== 'read') return false;
@@ -41,42 +41,42 @@ export function hasTablePermission(
 }
 
 export const hasPermission = <
-  RESOURCE extends keyof ReturnType<typeof getOperationPermissions>[number]
+  RESOURCE extends keyof ReturnType<typeof getOperationPermissions>[number],
 >(
   resource: RESOURCE,
   action: keyof ReturnType<typeof getOperationPermissions>[number][RESOURCE],
-  collectionId = schema.domainLevelIds.collection
+  collectionId = schema.domainLevelIds.collection,
 ): boolean =>
   resource === '%' && action === '%'
     ? userInformation.isadmin
     : getOperationPermissions()[collectionId][resource][action]
-    ? true
-    : f.log(`No permission to ${action.toString()} ${resource}`) ?? false;
+      ? true
+      : f.log(`No permission to ${action.toString()} ${resource}`) ?? false;
 
 export const hasToolPermission = (
   tool: keyof ReturnType<typeof toolDefinitions>,
-  action: typeof tableActions[number],
-  collectionId = schema.domainLevelIds.collection
+  action: (typeof tableActions)[number],
+  collectionId = schema.domainLevelIds.collection,
 ): boolean =>
   (toolDefinitions()[tool].tables as RA<keyof Tables>).every((tableName) =>
-    hasTablePermission(tableName, action, collectionId)
+    hasTablePermission(tableName, action, collectionId),
   );
 
 export const hasTreeAccess = (
   treeName: AnyTree['tableName'],
-  action: typeof tableActions[number],
-  collectionId = schema.domainLevelIds.collection
+  action: (typeof tableActions)[number],
+  collectionId = schema.domainLevelIds.collection,
 ): boolean =>
   hasTablePermission(treeName, action, collectionId) &&
   hasTablePermission(`${treeName}TreeDef`, action, collectionId) &&
   hasTablePermission(`${treeName}TreeDefItem`, action, collectionId);
 
 export const hasDerivedPermission = <
-  RESOURCE extends keyof ReturnType<typeof getDerivedPermissions>[number]
+  RESOURCE extends keyof ReturnType<typeof getDerivedPermissions>[number],
 >(
   resource: RESOURCE,
   action: keyof ReturnType<typeof getDerivedPermissions>[number][RESOURCE],
-  collectionId = schema.domainLevelIds.collection
+  collectionId = schema.domainLevelIds.collection,
 ): boolean =>
   getDerivedPermissions()[collectionId][resource][action]
     ? true
@@ -85,11 +85,11 @@ export const hasDerivedPermission = <
 /** Check if user has a given permission for each table in a mapping path */
 export const hasPathPermission = (
   mappingPath: RA<LiteralField | Relationship>,
-  action: typeof tableActions[number],
-  collectionId = schema.domainLevelIds.collection
+  action: (typeof tableActions)[number],
+  collectionId = schema.domainLevelIds.collection,
 ): boolean =>
   mappingPath
     .map((field) =>
-      field.isRelationship ? field.relatedTable.name : field.table.name
+      field.isRelationship ? field.relatedTable.name : field.table.name,
     )
     .every((tableName) => hasTablePermission(tableName, action, collectionId));

@@ -13,10 +13,10 @@ import { generateMappingPathPreview } from './mappingPreview';
 
 export function uniquifyHeaders(
   rawHeaders: RA<string>,
-  headersToUniquify: RA<number> | false = false
+  headersToUniquify: RA<number> | false = false,
 ): RA<string> {
   const headers = rawHeaders.map((header) =>
-    header.trim().length === 0 ? wbPlanText.noHeader() : header
+    header.trim().length === 0 ? wbPlanText.noHeader() : header,
   );
   headers.forEach((header, index) => {
     if (
@@ -32,7 +32,7 @@ export function uniquifyHeaders(
 export function renameNewlyCreatedHeaders(
   baseTableName: keyof Tables,
   headers: RA<string>,
-  lines: RA<MappingLine>
+  lines: RA<MappingLine>,
 ): RA<MappingLine> {
   const generatedHeaderPreviews = Object.fromEntries(
     lines
@@ -41,16 +41,16 @@ export function renameNewlyCreatedHeaders(
       .map(({ line, index }) => [
         index,
         generateMappingPathPreview(baseTableName, line.mappingPath),
-      ])
+      ]),
   );
 
   const newHeaders = lines.map(
-    ({ headerName }, index) => generatedHeaderPreviews[index] ?? headerName
+    ({ headerName }, index) => generatedHeaderPreviews[index] ?? headerName,
   );
 
   const uniqueHeaders = uniquifyHeaders(
     newHeaders,
-    Object.keys(generatedHeaderPreviews).map((index) => Number.parseInt(index))
+    Object.keys(generatedHeaderPreviews).map((index) => Number.parseInt(index)),
   );
 
   return lines.map((line, index) => ({

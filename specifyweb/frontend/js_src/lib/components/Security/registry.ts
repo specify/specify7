@@ -34,11 +34,11 @@ import {
  * each item
  */
 export const getRegistriesFromPath = (
-  resourceParts: RA<string>
+  resourceParts: RA<string>,
 ): RA<IR<Registry> | undefined> =>
   resourceParts.reduce<RA<IR<Registry> | undefined>>(
     (parts, part) => [...parts, parts.at(-1)?.[part]?.children],
-    [buildRegistry()]
+    [buildRegistry()],
   );
 
 export type Registry = {
@@ -78,7 +78,7 @@ const buildRegistry = f.store((): IR<Registry> => {
         localized: [schemaText.table(), table.label],
         actions: tableActions,
         groupName: localized(
-          isUncommonPermissionTable(table) ? userText.advancedTables() : ''
+          isUncommonPermissionTable(table) ? userText.advancedTables() : '',
         ),
       })),
     ...Object.entries(toolDefinitions()).map(([name, { label }]) => ({
@@ -117,7 +117,7 @@ const buildRegistry = f.store((): IR<Registry> => {
                         : commonText.all(),
                       children: {},
                       actions: getAllActions(
-                        partsToResourceName(resourceParts.slice(0, index + 1))
+                        partsToResourceName(resourceParts.slice(0, index + 1)),
                       ),
                       groupName: localized(''),
                       isInstitutional: false,
@@ -127,7 +127,7 @@ const buildRegistry = f.store((): IR<Registry> => {
             actions:
               index + 1 === length
                 ? getAllActions(
-                    partsToResourceName(resourceParts.slice(0, index + 1))
+                    partsToResourceName(resourceParts.slice(0, index + 1)),
                   )
                 : [],
             isInstitutional: true,
@@ -136,7 +136,7 @@ const buildRegistry = f.store((): IR<Registry> => {
             place[part].isInstitutional = false;
           return place[part].children;
         },
-        registry
+        registry,
       );
       return registry;
     },
@@ -148,7 +148,7 @@ const buildRegistry = f.store((): IR<Registry> => {
         groupName: localized(''),
         isInstitutional: false,
       },
-    }
+    },
   );
 });
 
@@ -160,25 +160,25 @@ export function policiesToTsv(): string {
   const iterate = (
     data: IR<Registry>,
     path: RA<string> = [],
-    isInstitutional = false
+    isInstitutional = false,
   ): RA<RA<string>> =>
     Object.entries(data).flatMap(([key, entry]) =>
       key === '%'
         ? []
         : Object.keys(entry.children).length > 0
-        ? iterate(
-            entry.children,
-            [...path, entry.label],
-            isInstitutional || entry.isInstitutional
-          )
-        : entry.actions.map((action) => [
-            [...path, entry.label].join(' > '),
-            actionToLabel(action),
-            isInstitutional || entry.isInstitutional
-              ? 'Institution'
-              : 'Collection',
-            entry.groupName,
-          ])
+          ? iterate(
+              entry.children,
+              [...path, entry.label],
+              isInstitutional || entry.isInstitutional,
+            )
+          : entry.actions.map((action) => [
+              [...path, entry.label].join(' > '),
+              actionToLabel(action),
+              isInstitutional || entry.isInstitutional
+                ? 'Institution'
+                : 'Collection',
+              entry.groupName,
+            ]),
     );
 
   return [
@@ -231,10 +231,10 @@ export const toolDefinitions = f.store(() =>
       label: tables.SpAuditLog.label,
       tables: ['SpAuditLog', 'SpAuditLogField'],
     },
-  } as const)
+  } as const),
 );
 
 export const toolTables = f.store(
   () =>
-    new Set(Object.values(toolDefinitions()).flatMap(({ tables }) => tables))
+    new Set(Object.values(toolDefinitions()).flatMap(({ tables }) => tables)),
 );

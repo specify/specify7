@@ -8,7 +8,7 @@ Object.defineProperty(globalThis, 'Response', {
     _body: string | undefined,
     {
       status,
-    }: { readonly status: number; readonly statusText: string | undefined }
+    }: { readonly status: number; readonly statusText: string | undefined },
   ) {
     return {
       status,

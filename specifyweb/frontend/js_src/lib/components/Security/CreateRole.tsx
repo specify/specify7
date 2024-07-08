@@ -13,7 +13,7 @@ import type { BackEndRole } from './utils';
 export const createCollectionRole = async (
   setRoles: GetOrSet<IR<Role> | undefined>[1],
   collectionId: number,
-  role: NewRole | Role
+  role: NewRole | Role,
 ): Promise<void> =>
   typeof role.id === 'number'
     ? setRoles((roles) => ({
@@ -36,7 +36,7 @@ export const createCollectionRole = async (
             ...role,
             policies: processPolicies(role.policies),
           },
-        }))
+        })),
       );
 
 export function CreateCollectionRole(): JSX.Element {

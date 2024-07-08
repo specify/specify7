@@ -85,18 +85,18 @@ export async function extractStrings(): Promise<ExtractedStrings> {
       const dictionaryFile = await import(filePathWithoutExtension);
 
       const dictionaries = Object.keys(dictionaryFile ?? {}).filter(
-        (dictionaryName) => dictionaryName.endsWith('Text')
+        (dictionaryName) => dictionaryName.endsWith('Text'),
       );
       if (dictionaries.length > 1)
         error(
           `Found multiple dictionaries in ${fileName}: ${dictionaries.join(
-            ', '
-          )}`
+            ', ',
+          )}`,
         );
       const dictionaryName = dictionaries[0];
       const strings = Object.getOwnPropertyDescriptor(
         dictionaryFile?.[dictionaryName ?? ''] ?? {},
-        rawDictionary
+        rawDictionary,
       )?.value as LanguageDictionary | undefined;
       if (typeof dictionaryName !== 'string' || typeof strings !== 'object') {
         error(`Unable to find a dictionary in ${fileName}`);
@@ -106,7 +106,7 @@ export async function extractStrings(): Promise<ExtractedStrings> {
       if (typeof strings !== 'object') {
         error(
           `Unable to find a dictionary in ${fileName}. Make sure it is called ` +
-            `${dictionaryName} and is wrapped in a call to createDictionary()`
+            `${dictionaryName} and is wrapped in a call to createDictionary()`,
         );
         return undefined;
       }
@@ -117,7 +117,7 @@ export async function extractStrings(): Promise<ExtractedStrings> {
       }
 
       return [fileName, { dictionaryName, strings }];
-    })
+    }),
   );
 
   return Object.fromEntries(Array.from(filterArray(extracted)));
@@ -139,7 +139,7 @@ export type DictionaryUsages = IR<{
 }>;
 
 export async function scanUsages(
-  mode: 'normal' | 'silent' | 'verbose'
+  mode: 'normal' | 'silent' | 'verbose',
 ): Promise<DictionaryUsages | undefined> {
   const debug = mode === 'verbose' ? console.log : () => undefined;
   const warn = mode === 'silent' ? () => undefined : globalWarn;
@@ -149,16 +149,16 @@ export async function scanUsages(
   // Check for usages of same key across multiple dictionaries
   group(
     Object.values(entries).flatMap(({ dictionaryName, strings }) =>
-      Object.keys(strings).map((key) => [key, dictionaryName])
-    )
+      Object.keys(strings).map((key) => [key, dictionaryName]),
+    ),
   ).forEach(([stringKey, usages]) =>
     usages.length > 1
       ? error(
           `Key "${stringKey}" is used in multiple dictionaries: ` +
             `${formatConjunction(usages.map(localized))}\n` +
-            `Unfortunately, that is not allowed because Weblate get's confused by it`
+            `Unfortunately, that is not allowed because Weblate get's confused by it`,
         )
-      : undefined
+      : undefined,
   );
 
   const dictionaries: DictionaryUsages = Object.fromEntries(
@@ -177,15 +177,15 @@ export async function scanUsages(
                       `A string for an undefined language "${language}" was `,
                       `found for key ${dictionaryName}.${key}\n`,
                       `Defined languages: ${formatConjunction(
-                        languages.map(localized)
+                        languages.map(localized),
                       )}\n`,
                       `Allowed meta keys: ${formatConjunction(
-                        localizationMetaKeys.map(localized)
+                        localizationMetaKeys.map(localized),
                       )}\n`,
                       `If you want to add a new language, add it to the `,
                       `languages array in ./localization/utils.tsx`,
-                    ].join('')
-                  )
+                    ].join(''),
+                  ),
                 );
 
               // Search for blacklisted characters
@@ -201,9 +201,9 @@ export async function scanUsages(
                             `String ${dictionaryName}.${key} for language `,
                             `${language} contains a blacklisted character `,
                             `"${character}"`,
-                          ].join('')
+                          ].join(''),
                         )
-                      : undefined
+                      : undefined,
                   );
               });
 
@@ -214,17 +214,17 @@ export async function scanUsages(
                     ...strings,
                     comment: f.maybe(
                       localized(strings.comment),
-                      whitespaceSensitive
+                      whitespaceSensitive,
                     ),
                   },
                   usages: [],
                 },
               ];
-            })
+            }),
           ),
         },
-      ]
-    )
+      ],
+    ),
   );
 
   if (Object.keys(dictionaries).length === 0)
@@ -236,21 +236,21 @@ export async function scanUsages(
   function gatherFiles(directoryPath: string): RA<string> {
     const [files, directories] = split(
       fs.readdirSync(directoryPath, { withFileTypes: true }),
-      (dirent) => dirent.isDirectory()
+      (dirent) => dirent.isDirectory(),
     ).map((entries) =>
-      entries.map(({ name }) => path.join(directoryPath, name))
+      entries.map(({ name }) => path.join(directoryPath, name)),
     );
     return [...files, ...directories.flatMap(gatherFiles)];
   }
 
   const sourceFiles = gatherFiles(libraryDirectory).filter((fileName) =>
-    extensionsToScan.has(fileName.split('.').at(-1)!)
+    extensionsToScan.has(fileName.split('.').at(-1)!),
   );
 
   debug('Looking for usages of strings');
   sourceFiles.forEach((filePath) => {
     const shortPath = filePath.slice(
-      filePath.indexOf('/js_src/') + '/js_src/'.length
+      filePath.indexOf('/js_src/') + '/js_src/'.length,
     );
     const fileName = path.basename(filePath);
     debug(`Looking for language string usages in ${fileName}`);
@@ -262,8 +262,8 @@ export async function scanUsages(
       const usages = fileContent.matchAll(
         new RegExp(
           `${dictionaryName}\\s*(?<follower>.)(?<keyName>\\w*)(?:(?<openBracket>\\()\\s*(?<followCharacter>.))?`,
-          'gu'
-        )
+          'gu',
+        ),
       );
 
       Array.from(usages, ({ groups, index }) => {
@@ -273,7 +273,7 @@ export async function scanUsages(
 
         const position = fileContent.slice(
           index - lookAroundLength,
-          index + lookAroundLength + dictionaryName.length + 20
+          index + lookAroundLength + dictionaryName.length + 20,
         );
         const lineNumber = fileContent.slice(0, index).split('\n').length;
 
@@ -284,7 +284,7 @@ export async function scanUsages(
               `\n\n`,
               `In ${shortPath} on line ${lineNumber}:\n`,
               `${position}`,
-            ].join('')
+            ].join(''),
           );
 
         // Matched an import statement (i.e, import { commonText } from ...)
@@ -299,7 +299,7 @@ export async function scanUsages(
             'Only static usages are supported to allow for static analysis.',
             followingCharacter === '['
               ? '\nDid you mean to use object index notation instead of array index notation?'
-              : ''
+              : '',
           );
           return;
         }
@@ -308,14 +308,14 @@ export async function scanUsages(
         if (keyName.length === 0) {
           report(
             `Unexpected usage of a ${dictionaryName} dictionary without a `,
-            'localization key'
+            'localization key',
           );
           return;
         }
 
         if (!(keyName in strings)) {
           report(
-            `Found unknown key ${dictionaryName}.${keyName} in ${fileName}`
+            `Found unknown key ${dictionaryName}.${keyName} in ${fileName}`,
           );
           return;
         }
@@ -323,7 +323,7 @@ export async function scanUsages(
         if (groups.openBracket !== '(') {
           report(
             `Unexpected usage of a ${dictionaryName}.${keyName} key\n`,
-            `Expected a function call (i.e ${dictionaryName}.${keyName}()`
+            `Expected a function call (i.e ${dictionaryName}.${keyName}()`,
           );
           return;
         }
@@ -336,19 +336,19 @@ export async function scanUsages(
           if (hasArguments)
             report(
               `${fileName} provides arguments to ${dictionaryName}.${keyName} `,
-              `but it is not supposed to.`
+              `but it is not supposed to.`,
             );
           else
             report(
               `${fileName} does not provide arguments to `,
-              `${dictionaryName}.${keyName} but it is supposed to.`
+              `${dictionaryName}.${keyName} but it is supposed to.`,
             );
         }
 
         if (groups.followCharacter !== ')' && groups.followCharacter !== '{')
           report(
             `Unexpected argument for ${dictionaryName}.${keyName}. Argument must `,
-            `be an object. Don't use positional arguments`
+            `be an object. Don't use positional arguments`,
           );
 
         strings[keyName].usages.push({
@@ -384,7 +384,7 @@ export async function scanUsages(
         if (value === undefined) {
           todo(
             `Missing localization string for key ${fileName}.${key} for ` +
-              `language ${language}`
+              `language ${language}`,
           );
           return;
         }
@@ -397,7 +397,7 @@ export async function scanUsages(
           originalValue: value,
         });
       });
-    })
+    }),
   );
 
   Object.entries(compoundDictionaries).forEach(([language, valueDictionary]) =>
@@ -409,13 +409,13 @@ export async function scanUsages(
             'Multiple instances of the same value were found for language ',
             `${language} in:\n`,
             ...instances.map(
-              ({ fileName, key }) => `\t"${fileName}" under key "${key}"\n`
+              ({ fileName, key }) => `\t"${fileName}" under key "${key}"\n`,
             ),
             'Value:\n',
             instances.at(-1)?.originalValue ?? valueString,
-          ].join('')
+          ].join(''),
         );
-      })
+      }),
   );
 
   // Unused key errors
@@ -423,8 +423,8 @@ export async function scanUsages(
     Object.entries(strings)
       .filter(([_keyName, { usages }]) => usages.length === 0)
       .forEach(([keyName]) =>
-        error(`No usages of ${dictionaryName}.${keyName} found`)
-      )
+        error(`No usages of ${dictionaryName}.${keyName} found`),
+      ),
   );
 
   // Output stats
@@ -436,8 +436,8 @@ export async function scanUsages(
           Object.keys(strings).length
         } keys with a total use count of ${Object.values(strings)
           .map(({ usages }) => usages.length)
-          .reduce((total, useCount) => total + useCount, 0)}`
-      )
+          .reduce((total, useCount) => total + useCount, 0)}`,
+      ),
     );
 
     log('');
@@ -446,16 +446,16 @@ export async function scanUsages(
         Object.values(strings).flatMap(({ strings }) =>
           Object.entries(strings)
             .filter(([language]) => f.includes(languages, language))
-            .map(([language, value]) => [language, value?.length ?? 0])
-        )
-      )
+            .map(([language, value]) => [language, value?.length ?? 0]),
+        ),
+      ),
     ).map(([language, characterLengths]) =>
       log(
         `Total number of characters for ${language} is ${characterLengths.reduce(
           (total, length) => total + length,
-          0
-        )}`
-      )
+          0,
+        )}`,
+      ),
     );
   }
 

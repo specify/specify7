@@ -11,13 +11,13 @@ export const dataEntryItems = f.store(() =>
       syncers.xmlChild('std'),
       syncers.fallback<SimpleXmlNode>(createSimpleXmlNode),
       syncers.xmlChildren('view'),
-      syncers.map(syncers.object(dataEntryItem()))
+      syncers.map(syncers.object(dataEntryItem())),
     ),
-  })
+  }),
 );
 
 const dataEntryItem = f.store(() =>
   createXmlSpec({
     viewName: syncers.xmlAttribute('view', 'required'),
-  })
+  }),
 );

@@ -29,9 +29,9 @@ export function FormTableCollection({
         collection,
         'add remove sort',
         () => setRecords(Array.from(collection.models)),
-        true
+        true,
       ),
-    [collection]
+    [collection],
   );
 
   const handleFetchMore = React.useCallback(async () => {
@@ -47,7 +47,7 @@ export function FormTableCollection({
       {
         field: collection.field,
         resource: collection.related,
-      }
+      },
     );
     return null;
   }

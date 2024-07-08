@@ -121,7 +121,7 @@ const records: RA<DeepPartial<SerializedResource<Agent>>> = [
 describe('autoMerge', () => {
   const run = (
     cautious: boolean,
-    targetId?: number
+    targetId?: number,
   ): SerializedResource<AnySchema> =>
     autoMerge(
       tables.Agent,
@@ -129,11 +129,11 @@ describe('autoMerge', () => {
         (record) =>
           addMissingFields(
             'Agent',
-            record
-          ) as unknown as SerializedResource<AnySchema>
+            record,
+          ) as unknown as SerializedResource<AnySchema>,
       ),
       cautious,
-      targetId
+      targetId,
     );
 
   test('cautious', () => {

@@ -31,12 +31,12 @@ export function formatXmlAttributes(xml: string): string {
           replacement: formatTag(part, indentString, extraIndent),
         });
     },
-    () => undefined
+    () => undefined,
   );
   return updates.reduceRight(
     (xml, { start, end, replacement }) =>
       `${xml.slice(0, start)}${replacement}${xml.slice(end)}`,
-    xml
+    xml,
   );
 }
 
@@ -49,7 +49,7 @@ function formatTag(part: string, indent: string, extraIndent: string): string {
   if (attributes.length === 0) return part;
   return `${open}${formatAttributes(
     attributes,
-    extraIndent
+    extraIndent,
   )}\n${indent}${close}`;
 }
 

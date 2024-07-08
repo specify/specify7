@@ -36,7 +36,7 @@ const formatCacheKey = (category: string, key: string): string =>
   [cachePrefix, category, key].join('-');
 
 function parseCacheKey(
-  formattedKey: string
+  formattedKey: string,
 ): readonly [string, string] | undefined {
   const parts = formattedKey.split('-');
   if (parts.length !== 3 || parts[0] !== cachePrefix) return undefined;
@@ -66,7 +66,7 @@ function initialize(): void {
       const parsedValue = JSON.parse(newValue);
       const [category, key] = parsedKey;
       genericSet(category, key, parsedValue);
-    }
+    },
   );
   eventListenerIsInitialized = true;
 }
@@ -87,10 +87,10 @@ function fetchBucket(formattedKey: string): void {
  */
 export const getCache = <
   CATEGORY extends string & keyof CacheDefinitions,
-  KEY extends string & keyof CacheDefinitions[CATEGORY]
+  KEY extends string & keyof CacheDefinitions[CATEGORY],
 >(
   category: CATEGORY,
-  key: KEY
+  key: KEY,
 ): CacheDefinitions[CATEGORY][KEY] | undefined =>
   genericGet<CacheDefinitions[CATEGORY][KEY]>(category, key);
 
@@ -99,7 +99,7 @@ function genericGet<TYPE>(
   // The name of the bucket
   category: string,
   // The name of the cache
-  key: string
+  key: string,
 ): TYPE | undefined {
   if (!eventListenerIsInitialized) initialize();
 
@@ -116,18 +116,18 @@ function genericGet<TYPE>(
 
 export const setCache = <
   CATEGORY extends string & keyof CacheDefinitions,
-  KEY extends string & keyof CacheDefinitions[CATEGORY]
+  KEY extends string & keyof CacheDefinitions[CATEGORY],
 >(
   category: CATEGORY,
   key: KEY,
   cacheValue: CacheDefinitions[CATEGORY][KEY],
-  triggerChange = true
+  triggerChange = true,
 ) =>
   genericSet<CacheDefinitions[CATEGORY][KEY]>(
     category,
     key,
     cacheValue,
-    triggerChange
+    triggerChange,
   );
 
 export const cacheEvents = eventListener<{
@@ -139,7 +139,7 @@ function genericSet<T>(
   key: string,
   // Any serializable value
   value: T,
-  triggerChange = true
+  triggerChange = true,
 ): T {
   if (!eventListenerIsInitialized) initialize();
 
@@ -157,7 +157,7 @@ function genericSet<T>(
 
   globalThis.localStorage.setItem(
     formatCacheKey(category, key),
-    JSON.stringify(value)
+    JSON.stringify(value),
   );
 
   if (triggerChange) cacheEvents.trigger('change', { category, key });

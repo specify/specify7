@@ -26,9 +26,9 @@ export function SetPermissionContext({
   const [fetchedCollection] = useAsyncState(
     React.useCallback(
       async () => fetchUserPermissions(collectionId),
-      [collectionId]
+      [collectionId],
     ),
-    true
+    true,
   );
   return (
     <PermissionContext.Provider value={collectionId}>

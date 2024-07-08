@@ -121,14 +121,14 @@ export function SecurityPolicy({
                     )
                       break;
                     const child = Object.keys(childResources).find(
-                      (part) => part !== anyResource
+                      (part) => part !== anyResource,
                     );
                     if (
                       child === undefined ||
                       // Don't select the part if it is disabled
                       (childResources[child].actions.length > 0 &&
                         isResourceMapped(
-                          partsToResourceName([...parts, child])
+                          partsToResourceName([...parts, child]),
                         ))
                     )
                       break;
@@ -144,14 +144,14 @@ export function SecurityPolicy({
                 {group(
                   Object.entries(registry).map(
                     ([partName, { groupName, ...rest }]) =>
-                      [groupName, [partName, rest]] as const
-                  )
+                      [groupName, [partName, rest]] as const,
+                  ),
                 ).map(([groupName, permissions]) => {
                   const children = permissions.map(
                     (
                       [partName, { label, actions, isInstitutional }],
                       _index,
-                      { length }
+                      { length },
                     ) => {
                       const parts = resourceNameToParts(resource);
                       const optionResource = partsToResourceName([
@@ -188,7 +188,7 @@ export function SecurityPolicy({
                           {label}
                         </option>
                       );
-                    }
+                    },
                   );
                   return groupName === '' ? (
                     children
@@ -200,7 +200,7 @@ export function SecurityPolicy({
                 })}
               </Select>
             </li>
-          )
+          ),
         )}
         {Array.isArray(extendedActions) && possibleActions!.length > 0 && (
           <li className="contents">

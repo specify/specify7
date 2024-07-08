@@ -46,7 +46,7 @@ export function WebLinkField({
   const definition = useDefinition(
     resource?.specifyTable,
     field?.name,
-    webLink
+    webLink,
   );
 
   const [builtUrl, setUrl] = React.useState<RA<string> | undefined>(undefined);
@@ -78,20 +78,20 @@ export function WebLinkField({
               part.type === 'Field'
                 ? fetchPathAsString(resource, part.field)
                 : part.type === 'ThisField'
-                ? typeof field === 'object'
-                  ? fetchPathAsString(resource, [field])
-                  : undefined
-                : part.type === 'FormattedResource'
-                ? format(resource, part.formatter, false)
-                : part.value
-            )
+                  ? typeof field === 'object'
+                    ? fetchPathAsString(resource, [field])
+                    : undefined
+                  : part.type === 'FormattedResource'
+                    ? format(resource, part.formatter, false)
+                    : part.value,
+            ),
           ).then((values) => values.map((value) => value ?? ''));
 
     return resourceOn(
       resource,
       'change',
       (): void => void buildUrl().then(setUrl),
-      true
+      true,
     );
   }, [resource, field, definition, formType]);
 
@@ -101,8 +101,8 @@ export function WebLinkField({
         typeof definition === 'object'
           ? definition.description
           : typeof webLink === 'object'
-          ? webLink.name
-          : webLink
+            ? webLink.name
+            : webLink
       }
       className="max-h-[theme(spacing.5)] max-w-[theme(spacing.10)]"
       src={getIcon(icon) ?? unknownIcon}
@@ -146,7 +146,7 @@ export function WebLinkField({
 function useDefinition(
   table: SpecifyTable | undefined,
   fieldName: string | undefined,
-  webLink: WebLink | string | undefined
+  webLink: WebLink | string | undefined,
 ): WebLink | false | undefined {
   const [definition] = useAsyncState<WebLink | false>(
     React.useCallback(async () => {
@@ -161,13 +161,13 @@ function useDefinition(
           {
             tableName: table?.name,
             fieldName,
-          }
+          },
         );
         return false;
       }
 
       const indexed: IR<WebLink> = Object.fromEntries(
-        definitions.map((definition) => [definition.name, definition] as const)
+        definitions.map((definition) => [definition.name, definition] as const),
       );
       const definition = caseInsensitiveHash(indexed, webLinkName);
       if (typeof definition === 'object') return definition;
@@ -180,7 +180,7 @@ function useDefinition(
         });
       return false;
     }, [table, fieldName, webLink]),
-    false
+    false,
   );
   return definition;
 }

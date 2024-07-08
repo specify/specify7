@@ -13,7 +13,7 @@ import { tables } from '../DataModel/tables';
 import type { Locality } from '../DataModel/types';
 
 export const coordinateType = ['Point', 'Line', 'Rectangle'] as const;
-export type CoordinateType = typeof coordinateType[number];
+export type CoordinateType = (typeof coordinateType)[number];
 
 function Coordinate({
   resource,
@@ -35,7 +35,7 @@ function Coordinate({
       resource,
       tables.Locality.strictGetField(coordinateTextField),
       undefined,
-      false
+      false,
     );
   const isChanging = React.useRef<boolean>(false);
   React.useEffect(
@@ -51,9 +51,9 @@ function Coordinate({
           )
             updateValue(resource.get(coordinateField));
         },
-        true
+        true,
       ),
-    [resource, coordinateField, coordinateTextField]
+    [resource, coordinateField, coordinateTextField],
   );
 
   React.useEffect(
@@ -68,9 +68,9 @@ function Coordinate({
           updateValue(parsed?.asFloat() ?? null);
         },
         // Only run this when coordinate field is changed externally
-        false
+        false,
       ),
-    [resource, coordinateField, updateValue, step, fieldType]
+    [resource, coordinateField, updateValue, step, fieldType],
   );
 
   const isLoading = React.useRef<boolean>(true);
@@ -98,7 +98,7 @@ function Coordinate({
         ? hasValue
           ? parsed?.format(step) ?? ''
           : commonText.notApplicable()
-        : undefined
+        : undefined,
     );
 
     isChanging.current = true;
@@ -118,7 +118,7 @@ function Coordinate({
         // Don't trigger unload protect needlessly
         (resource.needsSaved ? undefined : resource.get('srcLatLongUnit')) ??
         1,
-      { silent: true }
+      { silent: true },
     );
     resource.set(
       'originalLatLongUnit',
@@ -127,7 +127,7 @@ function Coordinate({
           ? undefined
           : resource.get('originalLatLongUnit')) ??
         null,
-      { silent: true }
+      { silent: true },
     );
     isChanging.current = false;
   }, [
@@ -167,10 +167,10 @@ function CoordinatePoint({
   readonly step: number | undefined;
 }): JSX.Element {
   const [latitude = '???', setLatitude] = React.useState<string | undefined>(
-    commonText.notApplicable()
+    commonText.notApplicable(),
   );
   const [longitude = '???', setLongitude] = React.useState<string | undefined>(
-    commonText.notApplicable()
+    commonText.notApplicable(),
   );
   return (
     <tr>
@@ -222,7 +222,7 @@ export function LatLongUi({
   readonly latLongType: CoordinateType;
 }): JSX.Element {
   const [coordinateType, setCoordinateType] = React.useState<CoordinateType>(
-    () => resource.get('latLongType') ?? latLongType
+    () => resource.get('latLongType') ?? latLongType,
   );
 
   React.useEffect(
@@ -233,11 +233,11 @@ export function LatLongUi({
         (): void =>
           setCoordinateType(
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-            (resource.get('latLongType') as CoordinateType) ?? 'Point'
+            (resource.get('latLongType') as CoordinateType) ?? 'Point',
           ),
-        false
+        false,
       ),
-    [resource]
+    [resource],
   );
 
   const isReadOnly = React.useContext(ReadOnlyContext);
@@ -277,8 +277,8 @@ export function LatLongUi({
               coordinateType === 'Point'
                 ? localityText.coordinates()
                 : coordinateType === 'Line'
-                ? commonText.start()
-                : localityText.northWestCorner()
+                  ? commonText.start()
+                  : localityText.northWestCorner()
             }
             resource={resource}
             step={step}

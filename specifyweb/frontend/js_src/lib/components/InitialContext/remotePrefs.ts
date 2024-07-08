@@ -33,10 +33,10 @@ export const fetchContext = contextUnlockedPromise.then(async (entrypoint) =>
               const [key, value] = line.split('=');
               if (typeof value === 'string')
                 preferences[key.trim()] = value.trim();
-            })
+            }),
         )
         .then(() => preferences)
-    : undefined
+    : undefined,
 );
 
 type Definitions = ReturnType<typeof remotePrefsDefinitions>;
@@ -50,47 +50,50 @@ type TypeOf<DEFINITION extends Definition> =
   DEFINITION['defaultValue'] extends string
     ? string
     : DEFINITION['defaultValue'] extends number
-    ? number
-    : boolean;
+      ? number
+      : boolean;
 
 type DefinitionOf<KEY extends keyof CollectionDefinitions | keyof Definitions> =
   KEY extends keyof Definitions
     ? Definitions[KEY]
     : KEY extends keyof CollectionDefinitions
-    ? CollectionDefinitions[KEY]
-    : never;
+      ? CollectionDefinitions[KEY]
+      : never;
 
 export const getPref = <KEY extends keyof Definitions>(
-  key: KEY
+  key: KEY,
 ): TypeOf<Definitions[KEY]> =>
   parsePref(
     preferences[key],
     defined(
       remotePrefsDefinitions()[key],
-      `Trying to get unknown remote pref ${key}`
-    )
+      `Trying to get unknown remote pref ${key}`,
+    ),
   ) as TypeOf<Definitions[KEY]>;
 
 export function getCollectionPref<KEY extends keyof CollectionDefinitions>(
   key: KEY,
-  collectionId: number
+  collectionId: number,
 ): TypeOf<DefinitionOf<KEY>> {
   const fullKey = `${key}${collectionPrefsDefinitions[key].separator}${collectionId}`;
   return parsePref(
     preferences[fullKey],
     defined(
       collectionPrefsDefinitions[key],
-      `Trying to get unknown collection-scoped remote pref ${key}`
-    )
+      `Trying to get unknown collection-scoped remote pref ${key}`,
+    ),
   ) as TypeOf<DefinitionOf<KEY>>;
 }
 
 function parsePref(
   rawValue: string | undefined,
-  { defaultValue, formatters = [], parser }: Definition
+  { defaultValue, formatters = [], parser }: Definition,
 ): boolean | number | string {
   const value = f.maybe(rawValue, (rawValue) =>
-    formatters.reduce<unknown>((value, formatter) => formatter(value), rawValue)
+    formatters.reduce<unknown>(
+      (value, formatter) => formatter(value),
+      rawValue,
+    ),
   );
   const parsed =
     typeof parser === 'string' && value !== undefined
@@ -275,7 +278,7 @@ export const remotePrefsDefinitions = f.store(
        *   isLegacy: true,
        * },
        */
-    } as const)
+    }) as const,
 );
 
 /**

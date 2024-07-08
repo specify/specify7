@@ -80,7 +80,7 @@ export function WbView({
       dataset.rows.length === 0
         ? [Array.from(dataset.columns).fill(null)]
         : dataset.rows,
-    [dataset]
+    [dataset],
   );
 
   const spreadsheetContainerRef = React.useRef<HTMLElement>(null);
@@ -93,7 +93,7 @@ export function WbView({
 
   const mappings = React.useMemo(
     (): WbMapping | undefined => parseWbMappings(dataset),
-    [dataset]
+    [dataset],
   );
   useErrorContext('mappings', mappings);
 

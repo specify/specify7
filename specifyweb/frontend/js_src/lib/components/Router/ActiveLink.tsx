@@ -43,7 +43,7 @@ export function useIsActive(rawHref: string, isExact: boolean): boolean {
 export function isSameUrl(
   location: Path,
   path: string,
-  isExact: boolean
+  isExact: boolean,
 ): boolean {
   const pathName = location.pathname.endsWith('/')
     ? location.pathname

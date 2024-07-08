@@ -6,7 +6,7 @@ import type { XmlNode } from './xmlToJson';
  */
 export const formatXmlNode = (
   node: XmlNode,
-  indentation: string = ''
+  indentation: string = '',
 ): XmlNode => ({
   ...node,
   children: formatXmlChildren(node.children, indentation),
@@ -16,7 +16,7 @@ const indent = '\t';
 
 const formatXmlChildren = (
   children: XmlNode['children'],
-  indentation: string
+  indentation: string,
 ): XmlNode['children'] =>
   trimTextNodes([
     ...children
@@ -24,8 +24,8 @@ const formatXmlChildren = (
         child.type === 'Text'
           ? { ...child, string: child.string.trim() }
           : child.type === 'XmlNode'
-          ? formatXmlNode(child, `${indentation}${indent}`)
-          : child
+            ? formatXmlNode(child, `${indentation}${indent}`)
+            : child,
       )
       .flatMap((child) => [
         {
@@ -54,14 +54,14 @@ const trimTextNodes = (children: XmlNode['children']): XmlNode['children'] =>
           },
         ];
       } else return [...children, child];
-    }, [])
+    }, []),
   );
 
 /**
  * Remove redundant whitespace-only text nodes
  */
 function removeWhitespaceNode(
-  children: XmlNode['children']
+  children: XmlNode['children'],
 ): XmlNode['children'] {
   if (children.length === 1 && children[0].type === 'Text') {
     if (children[0].string.trim().length === 0) return [];

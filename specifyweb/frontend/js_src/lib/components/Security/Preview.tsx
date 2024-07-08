@@ -34,22 +34,22 @@ export function PreviewPermissions({
           hasPermission('/permissions/roles', 'read', collectionId)) ||
         userId === userInformation.id
           ? queryUserPermissions(userId, collectionId).then(
-              compressPermissionQuery
+              compressPermissionQuery,
             )
           : false,
       // Force requery user permissions when user is saved
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      [userId, collectionId, userVersion]
+      [userId, collectionId, userVersion],
     ),
-    false
+    false,
   );
   const [isCollapsed = false, setCollapsed] = useCachedState(
     'securityTool',
-    'previewCollapsed'
+    'previewCollapsed',
   );
   const [isSystemCollapsed = false, setSystemCollapsed] = useCachedState(
     'securityTool',
-    'advancedPreviewCollapsed'
+    'advancedPreviewCollapsed',
   );
 
   const getOpenRoleUrl = (roleId: number): string =>

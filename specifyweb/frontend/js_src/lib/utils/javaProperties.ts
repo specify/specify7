@@ -7,11 +7,11 @@ import { escapeRegExp } from './utils';
 
 export const getProperty = (
   properties: string,
-  key: string
+  key: string,
 ): string | undefined =>
   f.maybe(
     regexForJavaProperty(key).exec(properties)?.[1],
-    unescapeJavaProperty
+    unescapeJavaProperty,
   );
 
 const regexForJavaProperty = (key: string): RegExp =>
