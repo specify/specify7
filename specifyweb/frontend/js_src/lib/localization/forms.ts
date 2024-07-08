@@ -838,6 +838,9 @@ export const formsText = createDictionary({
   bulkCarryForwardEnabled: {
     'en-us': 'Show Bulk Carry Forward count',
   },
+  bulkCarryForwardCount: {
+    'en-us': 'Bulk Carry Forward count',
+  },
   carryForwardDescription: {
     'en-us': 'Create a new record with certain fields carried over',
     'ru-ru': 'Создайте новую запись с переносом определенных полей.',
