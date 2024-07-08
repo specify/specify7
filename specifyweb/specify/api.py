@@ -17,7 +17,7 @@ from django import forms
 from django.db import transaction
 from django.apps import apps
 from django.http import (HttpResponse, HttpResponseBadRequest,
-                         Http404, HttpResponseNotAllowed, QueryDict)
+                         Http404, HttpResponseNotAllowed, JsonResponse, QueryDict)
 from django.core.exceptions import ObjectDoesNotExist, FieldError, FieldDoesNotExist
 from django.db.models.fields import DateTimeField, FloatField, DecimalField
 
@@ -276,7 +276,8 @@ def collection_dispatch_bulk(request, model) -> HttpResponse:
         )
         resp_objs.append(_obj_to_data(obj, checker))
 
-    resp = HttpResponseCreated(toJson(resp_objs), safe=False, content_type='application/json')
+    resp = HttpResponseCreated(toJson(resp_objs), content_type='application/json')
+    # resp = JsonResponse(resp_objs, safe=False, content_type='application/json')
     return resp
 
 def collection_dispatch_bulk_copy(request, model, copies) -> HttpResponse:
