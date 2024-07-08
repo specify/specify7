@@ -8208,7 +8208,7 @@ datamodel = Datamodel(tables=[
     ),
     Table( # CollectionObjectType
         sp7_only=True,
-        django_app='sp7_models',
+        django_app='specify',
         classname='edu.ku.brc.specify.datamodel.CollectionObjectType',
         table='collectionobjecttype',
         tableId=1015,
@@ -8241,7 +8241,7 @@ datamodel = Datamodel(tables=[
     ),
     Table( # CollectionObjectGroup
         sp7_only=True,
-        django_app='sp7_models',
+        django_app='specify',
         classname='edu.ku.brc.specify.datamodel.CollectionObjectGroup',
         table='collectionobjectgroup',
         tableId=1016,
@@ -8297,9 +8297,9 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='cogparent', type='many-to-one', required=True, relatedModelName='CollectionObjectGroup', column='COGParentID'),
-            Relationship(name='cogchild', type='many-to-one', required=False, relatedModelName='CollectionObjectGroup', column='COGChildID'), # TODO: Change to One-to-One once unit tests pass
-            Relationship(name='cochild', type='many-to-one', required=False, relatedModelName='CollectionObject', column='COChildID'), # TODO: Change to One-to-One once unit tests pass
+            Relationship(name='parent', type='many-to-one', required=True, relatedModelName='CollectionObjectGroup', column='ParentID'),
+            Relationship(name='cog', type='many-to-one', required=False, relatedModelName='CollectionObjectGroup', column='COGID'), # TODO: Change to One-to-One once unit tests pass
+            Relationship(name='co', type='many-to-one', required=False, relatedModelName='CollectionObject', column='COID'), # TODO: Change to One-to-One once unit tests pass
         ],
         fieldAliases=[
 

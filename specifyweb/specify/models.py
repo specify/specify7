@@ -7567,11 +7567,11 @@ class CollectionObjectGroupJoin(models.Model): # aka. CoJo or CogJoin
     text3 = models.TextField(blank=True, null=True, unique=False, db_column='Text3', db_index=False)
 
     # Relationships: Many-to-One
-    cogparent = models.ForeignKey('CollectionObjectGroup', db_column='COGParentID', related_name='parentcojos', null=False, on_delete=models.CASCADE)
+    parent = models.ForeignKey('CollectionObjectGroup', db_column='ParentID', related_name='parentcojos', null=False, on_delete=models.CASCADE)
     
     # Relationships: One-to-One
-    cogchild = models.OneToOneField('CollectionObjectGroup', db_column='COGChildID', related_name='childcojo', null=True, on_delete=models.CASCADE)
-    cochild = models.OneToOneField('CollectionObject', db_column='COChildID', related_name='cojo', null=True, on_delete=models.CASCADE)
+    cog = models.OneToOneField('CollectionObjectGroup', db_column='COGID', related_name='cojo', null=True, on_delete=models.CASCADE)
+    co = models.OneToOneField('CollectionObject', db_column='COID', related_name='cojo', null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'collectionobjectgroupjoin'
