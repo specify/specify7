@@ -128,12 +128,16 @@ class Migration(migrations.Migration):
                 ('text2', models.TextField(blank=True, db_column='Text2', null=True)),
                 ('text3', models.TextField(blank=True, db_column='Text3', null=True)),
                 ('parent', models.ForeignKey(db_column='ParentID', on_delete=django.db.models.deletion.CASCADE, related_name='parentcojos', to='specify.collectionobjectgroup')),
-                ('cog', models.OneToOneField(db_column='COGID', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='cojo', to='specify.collectionobjectgroup')),
-                ('co', models.OneToOneField(db_column='COID', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='cojo', to='specify.collectionobject')),
+                ('cog', models.ForeignKey(db_column='COGID', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='cojo', to='specify.collectionobjectgroup')),
+                ('co', models.ForeignKey(db_column='COID', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='cojo', to='specify.collectionobject')),
             ],
             options={
                 'db_table': 'collectionobjectgroupjoin',
                 'ordering': (),
             },
+        ),
+        migrations.AlterUniqueTogether(
+            name='collectionobjectgroupjoin',
+            unique_together={('parent', 'cog'), ('parent', 'co')},
         ),
     ]

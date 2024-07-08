@@ -1550,7 +1550,6 @@ datamodel = Datamodel(tables=[
             Field(name='yesNo4', column='YesNo4', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo5', column='YesNo5', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo6', column='YesNo6', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
-            # Field(name='ismemberofcog', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='hasreferencecatalognumber', column='HasReferenceCatalogNumber', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
         ],
         indexes=[
@@ -8275,7 +8274,7 @@ datamodel = Datamodel(tables=[
     ),
     Table( # CollectionObjectGroupJoin
         sp7_only=True,
-        django_app='sp7_models',
+        django_app='specify',
         classname='edu.ku.brc.specify.datamodel.CollectionObjectGroupJoin',
         table='collectionobjectgroupjoin',
         tableId=1017,

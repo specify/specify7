@@ -100,7 +100,7 @@ def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
             (det["resource_uri"] for det in dets if det["iscurrent"]), None
         )
 
-        extra["isMemberOfCOG"] = CollectionObjectGroupJoin.objects.filter(cochild=obj).exists()
+        extra["isMemberOfCOG"] = CollectionObjectGroupJoin.objects.filter(co=obj).exists()
 
     elif isinstance(obj, Loan):
         preps = data["loanpreparations"]
