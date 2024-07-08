@@ -252,7 +252,6 @@ def collection_dispatch(request, model) -> HttpResponse:
 
     return resp
 
-@transaction.atomic
 def collection_dispatch_bulk(request, model) -> HttpResponse:
     """
     Do the same as collection_dispatch, but for bulk POST operations.
@@ -262,26 +261,45 @@ def collection_dispatch_bulk(request, model) -> HttpResponse:
     resp: HttpResponse
     checker = table_permissions_checker(request.specify_collection, request.specify_user_agent, "read")
 
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        resp_objs = []
-        for obj_data in data:
-            obj = post_resource(
-                request.specify_collection,
-                request.specify_user_agent,
-                model,
-                obj_data,
-                request.GET.get("recordsetid", None),
-            )
-            resp_objs.append(_obj_to_data(obj, checker))
+    if request.method != 'POST':
+        resp = HttpResponseNotAllowed(['POST'])
+        
+    data = json.loads(request.body)
+    resp_objs = []
+    for obj_data in data:
+        obj = post_resource(
+            request.specify_collection,
+            request.specify_user_agent,
+            model,
+            obj_data,
+            request.GET.get("recordsetid", None),
+        )
+        resp_objs.append(_obj_to_data(obj, checker))
 
-        resp = HttpResponseCreated(toJson(resp_objs),
-                                   safe=False,
-                                   content_type='application/json')
+    resp = HttpResponseCreated(toJson(resp_objs), safe=False, content_type='application/json')
+    return resp
 
-    else:
+def collection_dispatch_bulk_copy(request, model, copies) -> HttpResponse:
+    resp: HttpResponse
+    checker = table_permissions_checker(request.specify_collection, request.specify_user_agent, "read")
+
+    if request.method != 'POST':
         resp = HttpResponseNotAllowed(['POST'])
 
+    data = json.loads(request.body)
+    # resp_objs = []
+    for _ in range(int(copies)):
+        obj = post_resource(
+            request.specify_collection,
+            request.specify_user_agent,
+            model,
+            data,
+            request.GET.get("recordsetid", None),
+        )
+        # resp_objs.append(_obj_to_data(obj, checker))
+
+    # resp = HttpResponseCreated(toJson(resp_objs), safe=False, content_type='application/json')
+    resp = HttpResponseCreated("Success")
     return resp
 
 def get_model_or_404(name: str):
