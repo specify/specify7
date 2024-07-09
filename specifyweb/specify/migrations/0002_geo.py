@@ -71,9 +71,6 @@ class Migration(migrations.Migration):
                 'unique_together': (('collection', 'isdefault'),),
             },
         ),
-        # Collection Object Group Type table
-        # name - text - slide, sheet, etc. - not null - businees rule, only these values
-        # type - text - consolidate, discrete, drill core - not null - businees rule, only these values
         migrations.CreateModel(
             name='CollectionObjectGroupType',
             fields=[
@@ -83,9 +80,6 @@ class Migration(migrations.Migration):
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
                 ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
-                ('text1', models.TextField(blank=True, db_column='Text1', null=True)),
-                ('text2', models.TextField(blank=True, db_column='Text2', null=True)),
-                ('text3', models.TextField(blank=True, db_column='Text3', null=True)),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
             ],
