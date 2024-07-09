@@ -528,7 +528,7 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                     ],
                     "requestBody": {
                         "required": True,
-                        "description": "An array containing a JSON representation of the objects to create",
+                        "description": "A serialized JSON representation of the object to clone",
                         "content": {
                             "application/json": {
                                 "schema": {
