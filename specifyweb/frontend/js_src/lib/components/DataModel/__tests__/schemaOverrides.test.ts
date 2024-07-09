@@ -12,8 +12,8 @@ theories(getTableOverwrite, [
 ]);
 
 theories(getGlobalFieldOverwrite, [
-  { in: ['Taxon', 'isAccepted'], out: { accessibility: 'readOnly' } },
-  { in: ['Geography', 'timestampCreated'], out: { accessibility: 'readOnly' } },
+  { in: ['Taxon', 'isAccepted'], out: { visibility: 'readOnly' } },
+  { in: ['Geography', 'timestampCreated'], out: { visibility: 'readOnly' } },
   {
     in: ['TaxonTreeDefItem', 'fullNameSeparator'],
     out: { whiteSpaceSensitive: true },
@@ -22,11 +22,11 @@ theories(getGlobalFieldOverwrite, [
 ]);
 
 theories(getFieldOverwrite, [
-  { in: ['Taxon', 'timestampCreated'], out: { accessibility: 'hidden' } },
-  { in: ['Agent', 'agentType'], out: { accessibility: 'optional' } },
+  { in: ['Taxon', 'timestampCreated'], out: { visibility: 'hidden' } },
+  { in: ['Agent', 'agentType'], out: { visibility: 'optional' } },
   { in: ['Agent', 'lastName'], out: undefined },
   {
     in: ['Attachment', 'collectingTripAttachments'],
-    out: { accessibility: 'hidden' },
+    out: { visibility: 'hidden' },
   },
 ]);

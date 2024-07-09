@@ -129,13 +129,13 @@ export abstract class FieldBase {
     const globalFieldOverride = getGlobalFieldOverwrite(table.name, this.name);
 
     this.isReadOnly =
-      globalFieldOverride?.accessibility === 'readOnly' ||
+      globalFieldOverride?.visibility === 'readOnly' ||
       fieldDefinition.readOnly === true;
 
     this.isRequired =
-      globalFieldOverride?.accessibility === 'required'
+      globalFieldOverride?.visibility === 'required'
         ? true
-        : globalFieldOverride?.accessibility === 'optional'
+        : globalFieldOverride?.visibility === 'optional'
         ? false
         : fieldDefinition.required;
     this.type = fieldDefinition.type;
@@ -152,21 +152,21 @@ export abstract class FieldBase {
         : camelToHuman(this.name);
 
     this.isHidden =
-      globalFieldOverride?.accessibility === 'hidden' ||
+      globalFieldOverride?.visibility === 'hidden' ||
       (this.localization.ishidden ?? false);
 
     // Apply overrides
     const fieldOverwrite = getFieldOverwrite(this.table.name, this.name);
 
     let isRequired =
-      fieldOverwrite?.accessibility !== 'optional' && this.isRequired;
+      fieldOverwrite?.visibility !== 'optional' && this.isRequired;
     let isHidden = this.isHidden;
 
     const isReadOnly =
-      this.isReadOnly || fieldOverwrite?.accessibility === 'readOnly';
+      this.isReadOnly || fieldOverwrite?.visibility === 'readOnly';
 
     // Overwritten hidden fields are made not required
-    if (fieldOverwrite?.accessibility === 'hidden') {
+    if (fieldOverwrite?.visibility === 'hidden') {
       isRequired = false;
       isHidden = true;
     }
@@ -255,8 +255,7 @@ export class LiteralField extends FieldBase {
   public readonly isRelationship: false = false;
 
   // Indicates white space should not be ignored in the field
-  // eslint-disable-next-line functional/prefer-readonly-type
-  public whiteSpaceSensitive: boolean;
+  public readonly whiteSpaceSensitive: boolean;
 
   public constructor(table: SpecifyTable, fieldDefinition: FieldDefinition) {
     super(table, fieldDefinition);
