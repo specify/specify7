@@ -8300,6 +8300,9 @@ datamodel = Datamodel(tables=[
             Field(name='text1', column='Text1', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='text3', column='Text3', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='integer1', column='Integer1', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='integer2', column='Integer2', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='integer3', column='Integer3', indexed=False, unique=False, required=False, type='java.lang.Integer'),
             Field(name='boolean1', column='Boolean1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='boolean2', column='Boolean2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='boolean3', column='Boolean3', indexed=False, unique=False, required=False, type='java.lang.Boolean')
