@@ -276,8 +276,7 @@ def collection_dispatch_bulk(request, model) -> HttpResponse:
         )
         resp_objs.append(_obj_to_data(obj, checker))
 
-    # resp = HttpResponseCreated(toJson(resp_objs), content_type='application/json')
-    resp = JsonResponse(resp_objs, status_code=201, safe=False, content_type='application/json')
+    resp = HttpResponseCreated(toJson(resp_objs), content_type='application/json')
     return resp
 
 def collection_dispatch_bulk_copy(request, model, copies) -> HttpResponse:
