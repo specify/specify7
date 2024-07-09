@@ -1363,11 +1363,7 @@ expected_errors = {
       "cog": [
         "manytoone",
         "onetoone"
-      ]
-    }
-  },
-  "CollectionObjectGroupJoin": {
-    "incorrect_direction": {
+      ],
       "co": [
         "manytoone",
         "onetoone"
