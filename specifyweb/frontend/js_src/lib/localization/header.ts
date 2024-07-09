@@ -143,6 +143,14 @@ export const headerText = createDictionary({
       abgeschlossen ist.
     `,
   },
+  localityUpdateTool: {
+    'en-us': 'Locality Update Tool',
+    'de-ch': 'DwCA-Ressource',
+    'es-es': 'Herramienta de actualización de localidad',
+    'fr-fr': 'Outil de mise à jour de localité',
+    'ru-ru': 'Основной',
+    'uk-ua': 'Ресурс DwCA',
+  },
   labelName: {
     'en-us': 'Label Name',
     'ru-ru': 'Название ярлыка',
@@ -187,10 +195,7 @@ export const headerText = createDictionary({
     'en-us': 'Tree repair is complete.',
     'ru-ru': 'Ремонт дерева завершен.',
     'es-es': 'La reparación del árbol está completa.',
-    'fr-fr': `
-      L'exportation a commencé. Vous recevrez une notification lorsque
-      l'exportation sera terminée.
-    `,
+    'fr-fr': 'Outil de mise à jour de localité',
     'uk-ua': 'Ремонт дерева завершено.',
     'de-ch': 'Die Baumreparatur ist abgeschlossen.',
   },

@@ -4,7 +4,6 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { overrideAjax } from '../../../tests/ajax';
 import { mockTime } from '../../../tests/helpers';
-testTime;
 import { testTime } from '../../../tests/testTime';
 import { formatDateForBackEnd } from '../../../utils/parser/dateFormat';
 import { formatUrl } from '../../Router/queryString';

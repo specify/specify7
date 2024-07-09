@@ -7967,7 +7967,7 @@ datamodel = Datamodel(tables=[
         fields=[
             Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
             Field(name='taskid', column='TaskID', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
-            Field(name='mergingstatus', column='MergingStatus', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+            Field(name='status', column='MergingStatus', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
             Field(name='response', column='Response', indexed=False, unique=False, required=False, type='text'),
             Field(name='table', column='Table', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
             Field(name='newrecordid', column='NewRecordID', indexed=False, unique=False, required=True, type='java.lang.Integer'),
@@ -7980,13 +7980,53 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='Collection_ID'),
-            Relationship(name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUser_ID'),
-            Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgent_ID'),
-            Relationship(name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgent_ID')
+            Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID'),
+            Relationship(name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUserID'),
+            Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 
+        ]
+    ),
+    Table( # LocalityUpdate
+        sp7_only = True,
+        django_app='notifications',
+        classname='edu.ku.brc.specify.datamodel.LocalityUpdate',
+        table='localityupdate',
+        tableId=1013,
+        idColumn='LocalityUpdateID',
+        idFieldName='localityUpdateId',
+        idField=IdField(name='localityUpdateId', column='LocalityUpdateID', type='java.lang.Integer'),
+        fields = [
+            Field(name='taskid', column='TaskID', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+            Field(name='status', column='MergingStatus', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+            Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp')
+        ],
+        relationships = [
+            Relationship(name='recordset', type='many-to-one', required=False, relatedModelName='RecordSet', column='RecordSetID'),
+            Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID'),
+            Relationship(name='specifyuser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUserID'),
+            Relationship(name='createdbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedbyagent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+        ]
+    ),
+    Table( #LocalityUpdateRowResult
+        sp7_only = True,
+        django_app='notifications',
+        classname='edu.ku.brc.specify.datamodel.LocalityUpdateRowResult',
+        table='localityupdaterowresult',
+        tableId=1014,
+        idColumn='LocalityUpdateRowResultID',
+        idFieldName='localityUpdateRowResultId',
+        idField=IdField(name='localityUpdateRowResultId', column='LocalityUpdateRowResultID', type='java.lang.Integer'),
+        fields = [
+            Field(name='rownumber', column='rownumber', indexed=False, unique=False, required=True, type='java.lang.Integer'),
+            Field(name='result', column='result', indexed=False, unique=False, required=True, type='json')
+        ],
+        relationships = [
+            Relationship(name='localityupdate', type='many-to-one', required=False, dependent=True, relatedModelName='LocalityUpdate', column='LocalityUpdateID', otherSideName='results')
         ]
     ),
     Table( # UserPolicy

@@ -16,17 +16,17 @@ import { softFail } from '../Errors/Crash';
 import { produceStackTrace } from '../Errors/stackTrace';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { downloadFile } from '../Molecules/FilePicker';
-import type { MergeStatus, StatusState } from './types';
+import type { MergingStatus, StatusState } from './types';
 import { initialStatusState } from './types';
 
-const statusLocalization: RR<MergeStatus, LocalizedString> = {
+const statusLocalization: RR<MergingStatus, LocalizedString> = {
   MERGING: mergingText.merging(),
   ABORTED: mergingText.mergeFailed(),
   FAILED: mergingText.mergeFailed(),
   SUCCEEDED: mergingText.mergeSucceeded(),
 };
 
-export function Status({
+export function MergeStatus({
   mergingId,
   handleClose,
 }: {
@@ -41,7 +41,7 @@ export function Status({
     let destructorCalled = false;
     const fetchStatus = () =>
       void ajax<{
-        readonly taskstatus: MergeStatus;
+        readonly taskstatus: MergingStatus;
         readonly taskprogress: {
           readonly total: number;
           readonly current: number;
@@ -135,7 +135,7 @@ export function Status({
           {state.status === 'MERGING' && (
             <>
               <Progress max={state.total} value={state.current} />
-              {percentage < 100 && <p>{percentage}%</p>}
+              {percentage < 100 && <p>{`${percentage}%`}</p>}
             </>
           )}
         </div>
