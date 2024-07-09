@@ -94,11 +94,6 @@ class Migration(migrations.Migration):
             name='cotype',
             field=models.ForeignKey(db_column='COTypeID', null=True, on_delete=models.SET_NULL, related_name='collectionobjects', to='specify.collectionobjecttype'),
         ),
-        migrations.AddField(
-            model_name='collectionobject',
-            name='hasreferencecatalognumber',
-            field=models.BooleanField(blank=True, db_column='HasReferenceCatalogNumber', default=False, null=True),
-        ),
         migrations.RunPython(create_default_collection_types), # reverse handeled by table deletion
         migrations.CreateModel(
             name='CollectionObjectGroup',
@@ -137,8 +132,8 @@ class Migration(migrations.Migration):
             name='CollectionObjectGroupJoin', # add as dependant to collection object group
             fields=[
                 ('id', models.AutoField(db_column='collectionobjectgroupjoinid', primary_key=True, serialize=False)),
-                ('isprimary', models.BooleanField(blank=True, db_column='IsPrimary', null=True)), # TODO: bunsiness rules to only allow one child
-                ('issubstrate', models.BooleanField(blank=True, db_column='IsSubstrate', null=True)), # TODO: bunsiness rules to only allow one child
+                ('isprimary', models.BooleanField(blank=True, db_column='IsPrimary', null=True)),
+                ('issubstrate', models.BooleanField(blank=True, db_column='IsSubstrate', null=True)),
                 ('precedence', models.SmallIntegerField(blank=True, db_column='Precedence', null=True)),
                 ('isconsolidated', models.BooleanField(blank=True, db_column='IsConsolidated', null=True)),
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
