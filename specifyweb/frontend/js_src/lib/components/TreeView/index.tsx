@@ -27,10 +27,10 @@ import { genericTables, getTable } from '../DataModel/tables';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useMenuItem } from '../Header/MenuContext';
 import { getPref } from '../InitialContext/remotePrefs';
+import type { TreeInformation } from '../InitialContext/treeRanks';
 import {
   getTreeDefinitions,
   isTreeTable,
-  TreeInformation,
   treeRanksPromise,
 } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
@@ -63,8 +63,8 @@ export function TreeViewWrapper(): JSX.Element | null {
     <NotFoundView />
   ) : treeDefinitions === undefined ? null : (
     <TreeViewFromDefinitions
-      treeName={treeName}
       treeDefinitions={treeDefinitions}
+      treeName={treeName}
     />
   );
 }
@@ -99,14 +99,14 @@ function TreeViewFromDefinitions<TREE_NAME extends AnyTree['tableName']>({
 
   return (
     <ProtectedTree action="read" treeName={treeName}>
-      {treeDefinitions !== undefined ? (
+      {treeDefinitions === undefined ? null : (
         <TreeView
-          setNewDefinition={setCurrentDefinition}
-          tableName={treeName}
           currentTreeInformation={currentTreeInformation}
           definitions={definitionsForTree.map(({ definition }) => definition)}
+          setNewDefinition={setCurrentDefinition}
+          tableName={treeName}
         />
-      ) : null}
+      )}
     </ProtectedTree>
   );
 }
@@ -223,6 +223,11 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
     return listen(window, 'resize', handleResize);
   }, []);
 
+  const deserializedResource = React.useMemo(
+    () => deserializeResource(treeDefinition),
+    [treeDefinition]
+  );
+
   const treeContainer = (type: TreeType) =>
     rows === undefined ? null : (
       <Tree
@@ -257,25 +262,27 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
         <TableIcon label name={table.name} />
         {definitions.length > 1 ? (
           <Select
+            aria-label={treeText.treePicker()}
             className="w-max"
+            title={treeText.treePicker()}
             value={treeDefinition.id}
             onValueChange={(newDefinition: string): void => {
-              setNewDefinition(f.parseInt(newDefinition) as number);
+              setNewDefinition(f.parseInt(newDefinition)!);
             }}
           >
             {definitions.map(({ id, name }) => (
-              <option key={name as string} value={id}>
-                {name as string}
+              <option key={name} value={id}>
+                {name}
               </option>
             ))}
           </Select>
         ) : (
-          <H2 title={(treeDefinition.remarks as string) ?? undefined}>
-            {treeDefinition.name as string}
+          <H2 title={treeDefinition.remarks! ?? undefined}>
+            {treeDefinition.name}
           </H2>
         )}
         <ResourceEdit
-          resource={deserializeResource(treeDefinition)}
+          resource={deserializedResource}
           onSaved={(): void => globalThis.location.reload()}
         />
         <Button.Icon

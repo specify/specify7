@@ -67,6 +67,76 @@ export function TreeSelectDialog({
   const [treeRanks] = usePromise(treeRanksPromise, true);
   const [isFinished, setIsFinished] = useBooleanState();
 
+  const treeList = React.useMemo(
+    () =>
+      getDisciplineTrees()
+        .filter((treeName) =>
+          permissionName === 'repair'
+            ? hasPermission(`/tree/edit/${toLowerCase(treeName)}`, 'repair')
+            : hasTreeAccess(treeName, 'read')
+        )
+        .map((treeName) => {
+          const cachedDefinitionId = getCache('tree', `definition${treeName}`);
+
+          const treeDefinition = deserializeResource(
+            getTreeDefinitions(
+              treeName,
+              cachedDefinitionId === undefined
+                ? undefined
+                : {
+                    id: cachedDefinitionId,
+                  }
+            )[0].definition
+          );
+
+          return (
+            <li className="contents" key={treeName}>
+              <div className="flex gap-2">
+                <Link.Default
+                  className="flex-1"
+                  href={getLink(treeName)}
+                  title={
+                    (treeDefinition?.get('remarks') as
+                      | LocalizedString
+                      | undefined) ?? undefined
+                  }
+                  onClick={(event): void => {
+                    if (handleClick === undefined) return;
+                    event.preventDefault();
+                    loading(
+                      Promise.resolve(handleClick(treeName)).then(() =>
+                        typeof confirmationMessage === 'string'
+                          ? setIsFinished()
+                          : handleClose()
+                      )
+                    );
+                  }}
+                >
+                  <TableIcon label={false} name={treeName} />
+                  {localized(treeDefinition?.get('name')) ??
+                    genericTables[treeName].label}
+                </Link.Default>
+                {typeof treeDefinition === 'object' && (
+                  <ResourceEdit
+                    resource={treeDefinition}
+                    onSaved={(): void => globalThis.location.reload()}
+                  />
+                )}
+              </div>
+            </li>
+          );
+        }),
+    [
+      confirmationMessage,
+      getLink,
+      handleClick,
+      handleClose,
+      loading,
+      permissionName,
+      setIsFinished,
+    ]
+  );
+
   return typeof treeRanks === 'object' ? (
     <Dialog
       buttons={
@@ -82,71 +152,7 @@ export function TreeSelectDialog({
         confirmationMessage
       ) : (
         <nav>
-          <Ul className="flex flex-col gap-1">
-            {getDisciplineTrees()
-              .filter((treeName) =>
-                permissionName === 'repair'
-                  ? hasPermission(
-                      `/tree/edit/${toLowerCase(treeName)}`,
-                      'repair'
-                    )
-                  : hasTreeAccess(treeName, 'read')
-              )
-              .map((treeName) => {
-                const cachedDefinitionId = getCache(
-                  'tree',
-                  `definition${treeName}`
-                );
-
-                const treeDefinition = deserializeResource(
-                  getTreeDefinitions(
-                    treeName,
-                    cachedDefinitionId === undefined
-                      ? undefined
-                      : {
-                          id: cachedDefinitionId,
-                        }
-                  )[0].definition
-                );
-
-                return (
-                  <li className="contents" key={treeName}>
-                    <div className="flex gap-2">
-                      <Link.Default
-                        className="flex-1"
-                        href={getLink(treeName)}
-                        title={
-                          (treeDefinition?.get('remarks') as
-                            | LocalizedString
-                            | undefined) ?? undefined
-                        }
-                        onClick={(event): void => {
-                          if (handleClick === undefined) return;
-                          event.preventDefault();
-                          loading(
-                            Promise.resolve(handleClick(treeName)).then(() =>
-                              typeof confirmationMessage === 'string'
-                                ? setIsFinished()
-                                : handleClose()
-                            )
-                          );
-                        }}
-                      >
-                        <TableIcon label={false} name={treeName} />
-                        {localized(treeDefinition?.get('name')) ??
-                          genericTables[treeName].label}
-                      </Link.Default>
-                      {typeof treeDefinition === 'object' && (
-                        <ResourceEdit
-                          resource={treeDefinition}
-                          onSaved={(): void => globalThis.location.reload()}
-                        />
-                      )}
-                    </div>
-                  </li>
-                );
-              })}
-          </Ul>
+          <Ul className="flex flex-col gap-1">{treeList}</Ul>
         </nav>
       )}
     </Dialog>

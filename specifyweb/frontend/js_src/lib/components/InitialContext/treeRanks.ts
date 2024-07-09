@@ -5,7 +5,7 @@
 
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
-import { RA } from '../../utils/types';
+import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { caseInsensitiveHash } from '../../utils/utils';
 import type {
@@ -15,7 +15,7 @@ import type {
   SerializedRecord,
   SerializedResource,
 } from '../DataModel/helperTypes';
-import { SpecifyResource } from '../DataModel/legacyTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { fetchContext as fetchDomain, schema } from '../DataModel/schema';
 import { serializeResource } from '../DataModel/serializers';
 import { genericTables } from '../DataModel/tables';
@@ -70,10 +70,11 @@ export const treeRanksPromise = Promise.all([
   }>('/api/specify_trees/', {
     headers: { Accept: 'application/json' },
   }).then(({ data }) => {
+    const treeNames = new Set(
+      Object.keys(data).map((key) => key.toLowerCase())
+    );
     disciplineTrees = allTrees.filter((treeName) =>
-      Object.keys(data)
-        .map((key) => key.toLowerCase())
-        .includes(treeName.toLowerCase())
+      treeNames.has(treeName.toLowerCase())
     );
 
     treeDefinitions = Object.fromEntries(
@@ -82,7 +83,7 @@ export const treeRanksPromise = Promise.all([
         information.map(({ definition, ranks }) => ({
           definition: serializeResource(
             definition as SerializedRecord<FilterTablesByEndsWith<'TreeDef'>>
-          ) as SerializedResource<FilterTablesByEndsWith<'TreeDef'>>,
+          ),
           ranks: ranks.map((rank) => serializeResource(rank)),
         })),
       ])
