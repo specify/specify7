@@ -48,6 +48,10 @@ class Migration(migrations.Migration):
             # Update CollectionObjects' collectionobjecttype for the discipline
             Collectionobject.objects.filter(collection=collection).update(cotype=cot)
 
+    def revert_default_collection_types(apps, schema_editor):
+        # Reverse handeled by table deletion.
+        pass
+
     operations = [
         migrations.CreateModel(
             name='CollectionObjectType',
@@ -94,7 +98,7 @@ class Migration(migrations.Migration):
             name='cotype',
             field=models.ForeignKey(db_column='COTypeID', null=True, on_delete=models.SET_NULL, related_name='collectionobjects', to='specify.collectionobjecttype'),
         ),
-        migrations.RunPython(create_default_collection_types), # reverse handeled by table deletion
+        migrations.RunPython(create_default_collection_types, revert_default_collection_types),
         migrations.CreateModel(
             name='CollectionObjectGroup',
             fields=[
