@@ -139,6 +139,7 @@ class Migration(migrations.Migration):
                 ('isprimary', models.BooleanField(blank=True, db_column='IsPrimary', null=True)), # TODO: bunsiness rules to only allow one child
                 ('issubstrate', models.BooleanField(blank=True, db_column='IsSubstrate', null=True)), # TODO: bunsiness rules to only allow one child
                 ('precedence', models.SmallIntegerField(blank=True, db_column='Precedence', null=True)),
+                ('isconsolidated', models.BooleanField(blank=True, db_column='IsConsolidated', null=True)),
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
                 ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
