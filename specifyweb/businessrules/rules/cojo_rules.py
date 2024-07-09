@@ -6,13 +6,13 @@ def cojo_pre_save(cojo):
     # So when a record is saved with isPrimary set to True, we need to set all other records with the same parentcog
     # to isPrimary = False.
     # NOTE: Decide if we want to throw here instead of updated other records.
-    if cojo.isprimary:
+    if cojo.isprimary == True:
         (cojo.__class__.objects
          .filter(parentcog=cojo.parentcog)
          .exclude(id=cojo.id)
          .update(isprimary=False))
 
-    if cojo.issubstrate:
+    if cojo.issubstrate == True:
         (cojo.__class__.objects
          .filter(parentcog=cojo.parentcog)
          .exclude(id=cojo.id)
