@@ -36,23 +36,16 @@ class Migration(migrations.Migration):
         # Create default collection types for each discipline
         for discipline in Discipline.objects.all():
             discipline_name = discipline.name
-            if CollectionObjectType.objects.filter(name=discipline_name).exists():
-                continue
-            cot = CollectionObjectType.objects.create(
+            cot, created = CollectionObjectType.objects.get_or_create(
                 name=discipline_name,
-                isdefault=True,
-                collection = Collection.objects.filter(discipline=discipline).first(),
-                taxontreedef=discipline.taxontreedef,
+                defaults={
+                    'isdefault': True,
+                    'collection': Collection.objects.filter(discipline=discipline).first(),
+                    'taxontreedef': discipline.taxontreedef,
+                }
             )
-            cot.save()
-
-        # Iteratively update CollectionObjects' collectionobjecttype for each discipline in a bulk operation
-        for discipline in Discipline.objects.all():
-            discipline_name = discipline.name
-            cot = CollectionObjectType.objects.get(name=discipline_name)
-            (Collectionobject.objects
-                .filter(collection__discipline=discipline)
-                .update(cotype=cot))
+            # Update CollectionObjects' collectionobjecttype for the discipline
+            Collectionobject.objects.filter(collection__discipline=discipline).update(cotype=cot)
 
     operations = [
         migrations.CreateModel(

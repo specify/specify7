@@ -17,4 +17,4 @@ def cogtype_pre_save(cog_type):
     if cog_type.name not in COG_TYPE_NAMES:
         raise ValueError(f'Invalid cog type name: {cog_type.name}')
     if cog_type.type not in COG_TYPE_TYPES:
-        raise ValueError(f'Invalid cog type type: {cog_type.type}')
+        raise ValueError(f'Invalid cog type: {cog_type.type}')
