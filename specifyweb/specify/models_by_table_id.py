@@ -206,6 +206,7 @@ model_names_by_table_id = {
     1015: 'CollectionObjectType',
     1016: 'CollectionObjectGroup',
     1017: 'CollectionObjectGroupJoin',
+    1018: 'CollectionObjectGroupType',
 }
 
 model_names_by_app = {
@@ -424,7 +425,8 @@ model_names_by_app = {
         'Workbenchtemplatemappingitem',
         'CollectionObjectType',
         'CollectionObjectGroup',
-        'CollectionObjectGroupJoin'
+        'CollectionObjectGroupJoin',
+        'CollectionObjectGroupType',
     }
 }
 

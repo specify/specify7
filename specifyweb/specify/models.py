@@ -7495,7 +7495,6 @@ class CollectionObjectType(models.Model):
 
     # Fields
     name = models.CharField(blank=False, max_length=255, null=False, unique=False, db_column='Name', db_index=False)
-    isloanable = models.BooleanField(blank=True, null=True, unique=False, db_column='IsLoanable', db_index=False)
     isdefault = models.BooleanField(blank=True, null=False, unique=False, db_column='IsDefault', db_index=False, default=False)
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
@@ -7518,6 +7517,33 @@ class CollectionObjectType(models.Model):
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     save = partialmethod(custom_save)
 
+class CollectionObjectGroupType(models.Model):
+    specify_model = datamodel.get_table('collectionobjectgrouptype')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='CollectionObjectGroupTypeID')
+
+    # Fields
+    name = models.CharField(blank=False, max_length=255, null=False, unique=False, db_column='Name', db_index=False) # microscope slide, whole rock, or piece of bark
+    cogtype = models.CharField(blank=True, max_length=255, null=False, unique=False, db_column='COGType', db_index=False) # discrete, consolidated, or drill core
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
+    text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
+    text3 = models.TextField(blank=True, null=True, unique=False, db_column='Text3', db_index=False)
+    
+    # Relationships: Many-to-One
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    
+    class Meta:
+        db_table = 'collectionobjectgrouptype'
+        ordering = ()
+
+    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    save = partialmethod(custom_save)
+
 class CollectionObjectGroup(models.Model): # aka. Cog
     specify_model = datamodel.get_table('collectionobjectgroup')
 
@@ -7529,16 +7555,25 @@ class CollectionObjectGroup(models.Model): # aka. Cog
     description = models.TextField(blank=True, null=True, unique=False, db_column='Description', db_index=False)
     igsn = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='IGSN', db_index=False)
     guid = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='GUID', db_index=False)
-    number1 = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='Number1', db_index=False)
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
     text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
     text3 = models.TextField(blank=True, null=True, unique=False, db_column='Text3', db_index=False)
+    integer1 = models.IntegerField(blank=True, null=True, unique=False, db_column='Integer1', db_index=False)
+    integer2 = models.IntegerField(blank=True, null=True, unique=False, db_column='Integer2', db_index=False)
+    integer3 = models.IntegerField(blank=True, null=True, unique=False, db_column='Integer3', db_index=False)
+    decimal1 = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Decimal1', db_index=False)
+    decimal2 = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Decimal2', db_index=False)
+    decimal3 = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Decimal3', db_index=False)
+    boolean1 = models.BooleanField(blank=True, null=True, unique=False, db_column='Boolean1', db_index=False)
+    boolean2 = models.BooleanField(blank=True, null=True, unique=False, db_column='Boolean2', db_index=False)
+    boolean3 = models.BooleanField(blank=True, null=True, unique=False, db_column='Boolean3', db_index=False)
 
     # Relationships: Many-to-One
     collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='collectionobjectgroups', null=False, on_delete=protect_with_blockers)
+    cogtype = models.ForeignKey('CollectionObjectGroupType', db_column='COGTypeID', related_name='collectionobjectgroups', null=False, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
@@ -7565,18 +7600,21 @@ class CollectionObjectGroupJoin(models.Model): # aka. CoJo or CogJoin
     text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
     text3 = models.TextField(blank=True, null=True, unique=False, db_column='Text3', db_index=False)
+    boolean1 = models.BooleanField(blank=True, null=True, unique=False, db_column='Boolean1', db_index=False)
+    boolean2 = models.BooleanField(blank=True, null=True, unique=False, db_column='Boolean2', db_index=False)
+    boolean3 = models.BooleanField(blank=True, null=True, unique=False, db_column='Boolean3', db_index=False)
 
     # Relationships: Many-to-One
-    parent = models.ForeignKey('CollectionObjectGroup', db_column='ParentID', related_name='parentcojos', null=False, on_delete=models.CASCADE)
+    parentcog = models.ForeignKey('CollectionObjectGroup', db_column='ParentCOGID', related_name='parentcojos', null=False, on_delete=models.CASCADE)
     
     # Relationships: One-to-One
-    cog = models.OneToOneField('CollectionObjectGroup', db_column='COGID', related_name='cojo', null=True, on_delete=models.CASCADE)
-    co = models.OneToOneField('CollectionObject', db_column='COID', related_name='cojo', null=True, on_delete=models.CASCADE)
+    childcog = models.OneToOneField('CollectionObjectGroup', db_column='ChildCOGID', related_name='cojo', null=True, on_delete=models.CASCADE)
+    childco = models.OneToOneField('CollectionObject', db_column='ChildCOID', related_name='cojo', null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'collectionobjectgroupjoin'
         ordering = ()
-        unique_together = (('parent', 'cog'), ('parent', 'co'))
+        unique_together = (('parentcog', 'childcog'), ('parentcog', 'childco'))
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     save = partialmethod(custom_save)

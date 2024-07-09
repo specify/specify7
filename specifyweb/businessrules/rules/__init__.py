@@ -22,5 +22,6 @@ from . import (
     recordset_rules,
     tree_rules,
     user_rules,
-    workbench_rules
+    workbench_rules,
+    cogtype_rules,
 )

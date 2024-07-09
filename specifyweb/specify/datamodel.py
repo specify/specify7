@@ -8216,7 +8216,6 @@ datamodel = Datamodel(tables=[
         idField=IdField(name='collectionObjectTypeId', column='collectionObjectTypeID', type='java.lang.Integer'),
         fields=[
             Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
-            Field(name='isloanable', column='IsLoanable', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='isdefault', column='IsDefault', indexed=False, unique=False, required=True, type='java.lang.Boolean'),
             Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
             Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
@@ -8252,19 +8251,28 @@ datamodel = Datamodel(tables=[
             Field(name='description', column='Description', indexed=False, unique=False, required=False, type='text'),
             Field(name='igsn', column='IGSN', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='guid', column='GUID', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
-            Field(name='number1', column='Number1', indexed=False, unique=False, required=False, type='java.lang.Integer'),
             Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
             Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='text1', column='Text1', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
-            Field(name='text3', column='Text3', indexed=False, unique=False, required=False, type='java.lang.String', length=255)
+            Field(name='text3', column='Text3', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='integer1', column='Integer1', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='integer2', column='Integer2', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='integer3', column='Integer3', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='decimal1', column='Decimal1', indexed=False, unique=False, required=False, type='java.lang.Double'),
+            Field(name='decimal2', column='Decimal2', indexed=False, unique=False, required=False, type='java.lang.Double'),
+            Field(name='decimal3', column='Decimal3', indexed=False, unique=False, required=False, type='java.lang.Double'),
+            Field(name='boolean1', column='Boolean1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='boolean2', column='Boolean2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='boolean3', column='Boolean3', indexed=False, unique=False, required=False, type='java.lang.Boolean')
         ],
         indexes=[
         
         ],
         relationships=[
             Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID'),
+            Relationship(name='cogtype', type='many-to-one', required=False, relatedModelName='CollectionObjectGroupType', column='CollectionObjectGroupTypeID'),
             Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
         ],
@@ -8290,15 +8298,48 @@ datamodel = Datamodel(tables=[
             Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='text1', column='Text1', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='text3', column='Text3', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='boolean1', column='Boolean1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='boolean2', column='Boolean2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='boolean3', column='Boolean3', indexed=False, unique=False, required=False, type='java.lang.Boolean')
+        ],
+        indexes=[
+
+        ],
+        relationships=[
+            Relationship(name='parentcog', type='many-to-one', required=True, relatedModelName='CollectionObjectGroup', column='ParentCOGID'),
+            Relationship(name='childcog', type='one-to-one', required=False, relatedModelName='CollectionObjectGroup', column='ChildCOGID'),
+            Relationship(name='childco', type='one-to-one', required=False, relatedModelName='CollectionObject', column='ChildCOID'),
+        ],
+        fieldAliases=[
+
+        ]
+    ),
+    Table( # CollectionObjectGroupType
+        sp7_only=True,
+        django_app='specify',
+        classname='edu.ku.brc.specify.datamodel.CollectionObjectGroupType',
+        table='collectionobjectgrouptype',
+        tableId=1018,
+        idColumn='CollectionObjectGroupTypeID',
+        idFieldName='collectionObjectGroupTypeId',
+        idField=IdField(name='collectionObjectGroupTypeId', column='CollectionObjectGroupTypeID', type='java.lang.Integer'),
+        fields=[
+            Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+            Field(name='cogtype', column='COGType', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='text1', column='Text1', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='text3', column='Text3', indexed=False, unique=False, required=False, type='java.lang.String', length=255)
         ],
         indexes=[
 
         ],
         relationships=[
-            Relationship(name='parent', type='many-to-one', required=True, relatedModelName='CollectionObjectGroup', column='ParentID'),
-            Relationship(name='cog', type='one-to-one', required=False, relatedModelName='CollectionObjectGroup', column='COGID'),
-            Relationship(name='co', type='one-to-one', required=False, relatedModelName='CollectionObject', column='COID'),
+            Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[
 

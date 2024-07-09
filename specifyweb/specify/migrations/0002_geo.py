@@ -60,7 +60,6 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(db_column='CollectionObjectTypeID', primary_key=True, serialize=False)),
                 ('name', models.CharField(db_column='Name', max_length=255)),
-                ('isloanable', models.BooleanField(blank=True, db_column='IsLoanable', null=True)),
                 ('isdefault', models.BooleanField(blank=True, db_column='IsDefault', null=False, default=False)),
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
@@ -77,6 +76,29 @@ class Migration(migrations.Migration):
                 'db_table': 'collectionobjecttype',
                 'ordering': (),
                 'unique_together': (('collection', 'isdefault'),),
+            },
+        ),
+        # Collection Object Group Type table
+        # name - text - slide, sheet, etc. - not null - businees rule, only these values
+        # type - text - consolidate, discrete, drill core - not null - businees rule, only these values
+        migrations.CreateModel(
+            name='CollectionObjectGroupType',
+            fields=[
+                ('id', models.AutoField(db_column='CollectionObjectGroupTypeID', primary_key=True, serialize=False)),
+                ('name', models.CharField(db_column='Name', max_length=255, null=False)),
+                ('cogtype', models.CharField(blank=True, db_column='COGType', max_length=255, null=False)),
+                ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
+                ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
+                ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
+                ('text1', models.TextField(blank=True, db_column='Text1', null=True)),
+                ('text2', models.TextField(blank=True, db_column='Text2', null=True)),
+                ('text3', models.TextField(blank=True, db_column='Text3', null=True)),
+                ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
+                ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
+            ],
+            options={
+                'db_table': 'collectionobjectgrouptype',
+                'ordering': (),
             },
         ),
         migrations.AddField(
@@ -98,14 +120,23 @@ class Migration(migrations.Migration):
                 ('description', models.TextField(blank=True, db_column='Description', null=True)),
                 ('igsn', models.CharField(blank=True, db_column='IGSN', max_length=255, null=True)),
                 ('guid', models.CharField(blank=True, db_column='GUID', max_length=255, null=True)),
-                ('number1', models.SmallIntegerField(blank=True, db_column='Number1', null=True)),
-                ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
-                ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
-                ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
+                ('integer1', models.IntegerField(blank=True, db_column='Integer1', null=True)),
+                ('integer2', models.IntegerField(blank=True, db_column='Integer2', null=True)),
+                ('integer3', models.IntegerField(blank=True, db_column='Integer3', null=True)),
+                ('decimal1', models.DecimalField(blank=True, db_column='Decimal1', decimal_places=10, max_digits=22, null=True)),
+                ('decimal2', models.DecimalField(blank=True, db_column='Decimal2', decimal_places=10, max_digits=22, null=True)),
+                ('decimal3', models.DecimalField(blank=True, db_column='Decimal3', decimal_places=10, max_digits=22, null=True)),
                 ('text1', models.TextField(blank=True, db_column='Text1', null=True)),
                 ('text2', models.TextField(blank=True, db_column='Text2', null=True)),
                 ('text3', models.TextField(blank=True, db_column='Text3', null=True)),
+                ('boolean1', models.BooleanField(blank=True, db_column='Boolean1', null=True)),
+                ('boolean2', models.BooleanField(blank=True, db_column='Boolean2', null=True)),
+                ('boolean3', models.BooleanField(blank=True, db_column='Boolean3', null=True)),
+                ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
+                ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
+                ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
                 ('collection', models.ForeignKey(db_column='CollectionID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='collectionobjectgroups', to='specify.collection')),
+                ('cogtype', models.ForeignKey(db_column='COGTypeID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='collectionobjectgroups', to='specify.collectionobjectgrouptype')),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
             ],
@@ -115,11 +146,11 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='CollectionObjectGroupJoin',
+            name='CollectionObjectGroupJoin', # add as dependant to collection object group
             fields=[
                 ('id', models.AutoField(db_column='collectionobjectgroupjoinid', primary_key=True, serialize=False)),
-                ('isprimary', models.BooleanField(blank=True, db_column='IsPrimary', null=True)),
-                ('issubstrate', models.BooleanField(blank=True, db_column='IsSubstrate', null=True)),
+                ('isprimary', models.BooleanField(blank=True, db_column='IsPrimary', null=True)), # TODO: bunsiness rules to only allow one child
+                ('issubstrate', models.BooleanField(blank=True, db_column='IsSubstrate', null=True)), # TODO: bunsiness rules to only allow one child
                 ('precedence', models.SmallIntegerField(blank=True, db_column='Precedence', null=True)),
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
@@ -127,9 +158,12 @@ class Migration(migrations.Migration):
                 ('text1', models.TextField(blank=True, db_column='Text1', null=True)),
                 ('text2', models.TextField(blank=True, db_column='Text2', null=True)),
                 ('text3', models.TextField(blank=True, db_column='Text3', null=True)),
-                ('parent', models.ForeignKey(db_column='ParentID', on_delete=django.db.models.deletion.CASCADE, related_name='parentcojos', to='specify.collectionobjectgroup')),
-                ('cog', models.OneToOneField(db_column='COGID', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='cojo', to='specify.collectionobjectgroup')),
-                ('co', models.OneToOneField(db_column='COID', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='cojo', to='specify.collectionobject')),
+                ('boolean1', models.BooleanField(blank=True, db_column='Boolean1', null=True)),
+                ('boolean2', models.BooleanField(blank=True, db_column='Boolean2', null=True)),
+                ('boolean3', models.BooleanField(blank=True, db_column='Boolean3', null=True)),
+                ('parentcog', models.ForeignKey(db_column='ParentCOGID', on_delete=django.db.models.deletion.CASCADE, related_name='parentcojos', to='specify.collectionobjectgroup')),
+                ('childcog', models.OneToOneField(db_column='ChildCOGID', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='cojo', to='specify.collectionobjectgroup')),
+                ('childco', models.OneToOneField(db_column='ChildCOID', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='cojo', to='specify.collectionobject')),
             ],
             options={
                 'db_table': 'collectionobjectgroupjoin',
@@ -138,6 +172,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterUniqueTogether(
             name='collectionobjectgroupjoin',
-            unique_together={('parent', 'cog'), ('parent', 'co')},
+            unique_together={('parentcog', 'childcog'), ('parentcog', 'childco')},
         ),
     ]
