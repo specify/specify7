@@ -258,11 +258,10 @@ def collection_dispatch_bulk(request, model) -> HttpResponse:
     Call this endpoint with a list of objects of the same type to create.
     This reduces the amount of API calls needed to create multiple objects, like when creating multiple carry forwards.
     """
-    resp: HttpResponse
     checker = table_permissions_checker(request.specify_collection, request.specify_user_agent, "read")
 
     if request.method != 'POST':
-        resp = HttpResponseNotAllowed(['POST'])
+        return HttpResponseNotAllowed(['POST'])
         
     data = json.loads(request.body)
     resp_objs = []
@@ -276,15 +275,13 @@ def collection_dispatch_bulk(request, model) -> HttpResponse:
         )
         resp_objs.append(_obj_to_data(obj, checker))
 
-    resp = HttpResponseCreated(toJson(resp_objs), content_type='application/json')
-    return resp
+    return HttpResponseCreated(toJson(resp_objs), content_type='application/json')
 
 def collection_dispatch_bulk_copy(request, model, copies) -> HttpResponse:
-    resp: HttpResponse
     checker = table_permissions_checker(request.specify_collection, request.specify_user_agent, "read")
 
     if request.method != 'POST':
-        resp = HttpResponseNotAllowed(['POST'])
+        return HttpResponseNotAllowed(['POST'])
 
     data = json.loads(request.body)
     data = dict(filter(lambda item: item[0] != 'id', data.items())) # Remove ID field before making copies
@@ -300,8 +297,7 @@ def collection_dispatch_bulk_copy(request, model, copies) -> HttpResponse:
         # resp_objs.append(_obj_to_data(obj, checker))
 
     # resp = HttpResponseCreated(toJson(resp_objs), safe=False, content_type='application/json')
-    resp = HttpResponseCreated("Success")
-    return resp
+    return HttpResponseCreated("Success")
 
 def get_model_or_404(name: str):
     """Lookup a specify model by name. Raise Http404 if not found."""
