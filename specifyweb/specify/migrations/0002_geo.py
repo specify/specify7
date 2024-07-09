@@ -33,19 +33,20 @@ class Migration(migrations.Migration):
     ]
 
     def create_default_collection_types(apps, schema_editor):
-        # Create default collection types for each discipline
-        for discipline in Discipline.objects.all():
+        # Create default collection types for each collection, named after the discipline
+        for collection in Collection.objects.all():
+            discipline = collection.discipline
             discipline_name = discipline.name
             cot, created = CollectionObjectType.objects.get_or_create(
                 name=discipline_name,
+                collection=collection,
+                taxontreedef=discipline.taxontreedef,
                 defaults={
                     'isdefault': True,
-                    'collection': Collection.objects.filter(discipline=discipline).first(),
-                    'taxontreedef': discipline.taxontreedef,
                 }
             )
             # Update CollectionObjects' collectionobjecttype for the discipline
-            Collectionobject.objects.filter(collection__discipline=discipline).update(cotype=cot)
+            Collectionobject.objects.filter(collection=collection).update(cotype=cot)
 
     operations = [
         migrations.CreateModel(
