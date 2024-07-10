@@ -66,7 +66,7 @@ export function TreeSelectDialog({
   const [treeRanks] = usePromise(treeRanksPromise, true);
   const [isFinished, setIsFinished] = useBooleanState();
 
-  const treeList = React.useMemo(
+  const treeData = React.useMemo(
     () =>
       getDisciplineTrees()
         .filter((treeName) =>
@@ -78,53 +78,9 @@ export function TreeSelectDialog({
           const treeDefinition = deserializeResource(
             getTreeDefinitions(treeName)[0].definition
           );
-
-          return (
-            <li className="contents" key={treeName}>
-              <div className="flex gap-2">
-                <Link.Default
-                  className="flex-1"
-                  href={getLink(treeName)}
-                  title={
-                    (treeDefinition?.get('remarks') as
-                      | LocalizedString
-                      | undefined) ?? undefined
-                  }
-                  onClick={(event): void => {
-                    if (handleClick === undefined) return;
-                    event.preventDefault();
-                    loading(
-                      Promise.resolve(handleClick(treeName)).then(() =>
-                        typeof confirmationMessage === 'string'
-                          ? setIsFinished()
-                          : handleClose()
-                      )
-                    );
-                  }}
-                >
-                  <TableIcon label={false} name={treeName} />
-                  {localized(treeDefinition?.get('name')) ??
-                    genericTables[treeName].label}
-                </Link.Default>
-                {typeof treeDefinition === 'object' && (
-                  <ResourceEdit
-                    resource={treeDefinition}
-                    onSaved={(): void => globalThis.location.reload()}
-                  />
-                )}
-              </div>
-            </li>
-          );
+          return [treeName, treeDefinition] as const;
         }),
-    [
-      confirmationMessage,
-      getLink,
-      handleClick,
-      handleClose,
-      loading,
-      permissionName,
-      setIsFinished,
-    ]
+    [permissionName]
   );
 
   return typeof treeRanks === 'object' ? (
@@ -142,7 +98,44 @@ export function TreeSelectDialog({
         confirmationMessage
       ) : (
         <nav>
-          <Ul className="flex flex-col gap-1">{treeList}</Ul>
+          <Ul className="flex flex-col gap-1">
+            {treeData.map(([treeName, treeDefinition]) => (
+              <li className="contents" key={treeName}>
+                <div className="flex gap-2">
+                  <Link.Default
+                    className="flex-1"
+                    href={getLink(treeName)}
+                    title={
+                      (treeDefinition?.get('remarks') as
+                        | LocalizedString
+                        | undefined) ?? undefined
+                    }
+                    onClick={(event): void => {
+                      if (handleClick === undefined) return;
+                      event.preventDefault();
+                      loading(
+                        Promise.resolve(handleClick(treeName)).then(() =>
+                          typeof confirmationMessage === 'string'
+                            ? setIsFinished()
+                            : handleClose()
+                        )
+                      );
+                    }}
+                  >
+                    <TableIcon label={false} name={treeName} />
+                    {localized(treeDefinition?.get('name')) ??
+                      genericTables[treeName].label}
+                  </Link.Default>
+                  {typeof treeDefinition === 'object' && (
+                    <ResourceEdit
+                      resource={treeDefinition}
+                      onSaved={(): void => globalThis.location.reload()}
+                    />
+                  )}
+                </div>
+              </li>
+            ))}
+          </Ul>
         </nav>
       )}
     </Dialog>
