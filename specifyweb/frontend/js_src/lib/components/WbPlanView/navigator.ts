@@ -356,7 +356,8 @@ export function getMappingLineData({
                 : undefined,
               ...(spec.includeSpecificTreeRanks
                 ? getTreeDefinitions(
-                    table.name as AnyTree['tableName']
+                    table.name as AnyTree['tableName'],
+                    undefined
                   ).flatMap(({ definition, ranks }) =>
                     // exclude the root rank for each tree
                     ranks.slice(1).map(({ name, title }) =>

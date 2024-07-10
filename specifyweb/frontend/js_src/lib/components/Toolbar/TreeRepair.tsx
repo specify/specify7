@@ -12,7 +12,6 @@ import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { treeText } from '../../localization/tree';
 import { ping } from '../../utils/ajax/ping';
-import { getCache } from '../../utils/cache';
 import { f } from '../../utils/functools';
 import { localized } from '../../utils/types';
 import { toLowerCase } from '../../utils/utils';
@@ -76,17 +75,8 @@ export function TreeSelectDialog({
             : hasTreeAccess(treeName, 'read')
         )
         .map((treeName) => {
-          const cachedDefinitionId = getCache('tree', `definition${treeName}`);
-
           const treeDefinition = deserializeResource(
-            getTreeDefinitions(
-              treeName,
-              cachedDefinitionId === undefined
-                ? undefined
-                : {
-                    id: cachedDefinitionId,
-                  }
-            )[0].definition
+            getTreeDefinitions(treeName)[0].definition
           );
 
           return (

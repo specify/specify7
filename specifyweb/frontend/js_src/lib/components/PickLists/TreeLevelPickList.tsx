@@ -27,9 +27,9 @@ const fetchTreeRoot = async (
 ): Promise<SerializedResource<TreeDefItem<AnyTree>>> =>
   treeRanksPromise.then(
     () =>
-      strictGetTreeDefinitionItems(treeName, true, {
-        id: treeDefinitionId,
-      }).find(({ rankId }) => rankId === 0)!
+      strictGetTreeDefinitionItems(treeName, true, treeDefinitionId).find(
+        ({ rankId }) => rankId === 0
+      )!
   );
 
 export const fetchPossibleRanks = async (
@@ -40,9 +40,11 @@ export const fetchPossibleRanks = async (
   treeRanksPromise
     .then(async () =>
       fetchLowestChildRank(resource).then((lowestChildRank) =>
-        strictGetTreeDefinitionItems(resource.specifyTable.name, false, {
-          id: treeDefinitionId,
-        })
+        strictGetTreeDefinitionItems(
+          resource.specifyTable.name,
+          false,
+          treeDefinitionId
+        )
           .filter(
             ({ rankId }) =>
               rankId > parentDefinitionRankId &&

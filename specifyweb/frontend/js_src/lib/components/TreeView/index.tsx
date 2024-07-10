@@ -90,16 +90,13 @@ function TreeViewFromDefinitions<TREE_NAME extends AnyTree['tableName']>({
 
   const currentTreeInformation = getTreeDefinitions(
     treeName,
-    currentDefinitionId === undefined
-      ? undefined
-      : {
-          id: currentDefinitionId,
-        }
+    currentDefinitionId
   )[0];
 
   return (
     <ProtectedTree action="read" treeName={treeName}>
-      {treeDefinitions === undefined ? null : (
+      {treeDefinitions === undefined ||
+      currentTreeInformation === undefined ? null : (
         <TreeView
           currentTreeInformation={currentTreeInformation}
           definitions={definitionsForTree.map(({ definition }) => definition)}

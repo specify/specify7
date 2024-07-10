@@ -182,9 +182,9 @@ const identifyTreeRanks = (
         mappingGroup,
         physicalCol,
         rankId:
-          Object.values(strictGetTreeDefinitionItems(tableName, false)).find(
-            ({ name }) => name === rankName
-          )?.rankId ?? -1,
+          Object.values(
+            strictGetTreeDefinitionItems(tableName, false, undefined)
+          ).find(({ name }) => name === rankName)?.rankId ?? -1,
       }))
       .reduce<
         R<

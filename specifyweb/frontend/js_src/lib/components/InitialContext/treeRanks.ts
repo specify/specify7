@@ -4,6 +4,7 @@
  */
 
 import { ajax } from '../../utils/ajax';
+import { getCache } from '../../utils/cache';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
@@ -107,30 +108,24 @@ function getTreeScope(
 
 export function getTreeDefinitions<TREE_NAME extends AnyTree['tableName']>(
   tableName: TREE_NAME,
-  definitionFilter?: Partial<
-    SerializedResource<FilterTablesByEndsWith<'TreeDef'>>
-  >
+  treeDefinitionId = getCache('tree', `definition${tableName}`)
 ): typeof treeDefinitions[TREE_NAME] {
   const specificTreeDefinitions = caseInsensitiveHash(
     defined(treeDefinitions),
     tableName
   );
 
-  return definitionFilter === undefined
+  return treeDefinitionId === undefined
     ? specificTreeDefinitions
-    : specificTreeDefinitions.filter(({ definition }) =>
-        Object.entries(definitionFilter).every(
-          ([key, value]) => caseInsensitiveHash(definition, key) === value
-        )
+    : specificTreeDefinitions.filter(
+        ({ definition }) => definition.id === treeDefinitionId
       );
 }
 
 export function getTreeDefinitionItems<TREE_NAME extends AnyTree['tableName']>(
   tableName: TREE_NAME,
   includeRoot: boolean,
-  definitionFilter?: Partial<
-    SerializedResource<FilterTablesByEndsWith<'TreeDef'>>
-  >
+  treeDefinitionId = getCache('tree', `definition${tableName}`)
 ): typeof treeDefinitions[TREE_NAME][number]['ranks'] | undefined {
   const specificTreeDefinitions =
     treeDefinitions === undefined
@@ -139,17 +134,12 @@ export function getTreeDefinitionItems<TREE_NAME extends AnyTree['tableName']>(
 
   return specificTreeDefinitions === undefined
     ? undefined
-    : definitionFilter === undefined ||
-      Object.keys(definitionFilter).length === 0
+    : treeDefinitionId === undefined
     ? specificTreeDefinitions.flatMap(({ ranks }) =>
         ranks.slice(includeRoot ? 0 : 1)
       )
     : specificTreeDefinitions
-        .find(({ definition }) =>
-          Object.entries(definitionFilter).every(
-            ([key, value]) => caseInsensitiveHash(definition, key) === value
-          )
-        )
+        .find(({ definition }) => definition.id === treeDefinitionId)
         ?.ranks.slice(includeRoot ? 0 : 1);
 }
 
@@ -158,12 +148,10 @@ export const strictGetTreeDefinitionItems = <
 >(
   tableName: TREE_NAME,
   includeRoot: boolean,
-  definitionFilter?: Partial<
-    SerializedResource<FilterTablesByEndsWith<'TreeDef'>>
-  >
+  treeDefinitionId = getCache('tree', `definition${tableName}`)
 ): typeof treeDefinitions[TREE_NAME][number]['ranks'] =>
   defined(
-    getTreeDefinitionItems(tableName, includeRoot, definitionFilter),
+    getTreeDefinitionItems(tableName, includeRoot, treeDefinitionId),
     `Unable to get tree ranks for a ${tableName} table`
   );
 
