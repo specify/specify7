@@ -96,13 +96,12 @@ function useGenusRankId(): number | false | undefined {
   const [genusRankId] = useAsyncState(
     React.useCallback(
       async () =>
-        treeRanksPromise.then(() => {
-          return (
+        treeRanksPromise.then(
+          () =>
             strictGetTreeDefinitionItems('Taxon', false).find(
               (item) => (item.name || item.title)?.toLowerCase() === 'genus'
             )?.rankId ?? false
-          );
-        }),
+        ),
       []
     ),
     false

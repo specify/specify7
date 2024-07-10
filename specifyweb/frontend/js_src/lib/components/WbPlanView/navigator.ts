@@ -359,7 +359,7 @@ export function getMappingLineData({
                     table.name as AnyTree['tableName'],
                     undefined
                   ).flatMap(({ definition, ranks }) =>
-                    // exclude the root rank for each tree
+                    // Exclude the root rank for each tree
                     ranks.slice(1).map(({ name, title }) =>
                       name === defaultValue || generateFieldData === 'all'
                         ? ([
