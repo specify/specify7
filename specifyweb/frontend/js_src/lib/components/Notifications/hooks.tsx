@@ -8,7 +8,7 @@ import { sortFunction } from '../../utils/utils';
 import { formatUrl } from '../Router/queryString';
 import type { GenericNotification } from './NotificationRenderers';
 
-let INITIAL_INTERVAL = (process.env.NODE_ENV === 'development') ? 60000 : 5000;
+const INITIAL_INTERVAL = (process.env.NODE_ENV === 'development') ? 60000 : 5000;
 const INTERVAL_MULTIPLIER = 1.1;
 
 export function useNotificationsFetch({
