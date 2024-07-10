@@ -285,7 +285,7 @@ def collection_dispatch_bulk_copy(request, model, copies) -> HttpResponse:
 
     data = json.loads(request.body)
     data = dict(filter(lambda item: item[0] != 'id', data.items())) # Remove ID field before making copies
-    # resp_objs = [] # For now, we don't need to return the created objects to avoid sending large amounts of data 
+    resp_objs = []
     for _ in range(int(copies)):
         obj = post_resource(
             request.specify_collection,
@@ -294,10 +294,9 @@ def collection_dispatch_bulk_copy(request, model, copies) -> HttpResponse:
             data,
             request.GET.get("recordsetid", None),
         )
-        # resp_objs.append(_obj_to_data(obj, checker))
+        resp_objs.append(_obj_to_data(obj, checker))
 
-    # resp = HttpResponseCreated(toJson(resp_objs), safe=False, content_type='application/json')
-    return HttpResponseCreated("Success")
+    resp = HttpResponseCreated(toJson(resp_objs), safe=False, content_type='application/json')
 
 def get_model_or_404(name: str):
     """Lookup a specify model by name. Raise Http404 if not found."""
