@@ -9,11 +9,26 @@ import { useNavigate } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
+import { usePromise } from '../../hooks/useAsyncState';
+import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useLiveState } from '../../hooks/useLiveState';
+import { commonText } from '../../localization/common';
+import { resourcesText } from '../../localization/resources';
+import { treeText } from '../../localization/tree';
+import { wbText } from '../../localization/workbench';
+import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
+import { caseInsensitiveHash } from '../../utils/utils';
+import { Button } from '../Atoms/Button';
+import { Select } from '../Atoms/Form';
 import type { Tables } from '../DataModel/types';
+import {
+  getTreeDefinitions,
+  treeRanksPromise,
+} from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
+import { Dialog } from '../Molecules/Dialog';
 import { ProtectedAction } from '../Permissions/PermissionDenied';
 import type { UploadResult } from '../WorkBench/resultsParser';
 import { savePlan } from './helpers';
@@ -121,25 +136,37 @@ export function WbPlanView({
   );
   useErrorContext('state', state);
 
+  const [isTaxonTable, setIsTaxonTable] = React.useState(false);
+
+  const [treeDefinitions] = usePromise(treeRanksPromise, true);
+  const definitionsForTree = treeDefinitions
+    ? caseInsensitiveHash(treeDefinitions, 'Taxon')
+    : undefined;
+  const definitions = definitionsForTree?.map(({ definition }) => definition);
+
   const navigate = useNavigate();
   return state.type === 'SelectBaseTable' ? (
     <ProtectedAction action="update" resource="/workbench/dataset">
       <BaseTableSelection
         headers={headers}
         onClose={(): void => navigate(`/specify/workbench/${dataset.id}/`)}
-        onSelected={(baseTableName): void =>
-          setState({
-            type: 'MappingState',
-            changesMade: true,
-            baseTableName,
-            lines: getLinesFromHeaders({
-              headers,
-              runAutoMapper: true,
+        onSelected={(baseTableName): void => {
+          if (baseTableName === 'Taxon') {
+            setIsTaxonTable(true);
+          } else {
+            setState({
+              type: 'MappingState',
+              changesMade: true,
               baseTableName,
-            }),
-            mustMatchPreferences: {},
-          })
-        }
+              lines: getLinesFromHeaders({
+                headers,
+                runAutoMapper: true,
+                baseTableName,
+              }),
+              mustMatchPreferences: {},
+            });
+          }
+        }}
         onSelectTemplate={(uploadPlan, headers): void =>
           setState({
             type: 'MappingState',
@@ -148,6 +175,21 @@ export function WbPlanView({
           })
         }
       />
+      {isTaxonTable && (
+        <Dialog
+          buttons={
+            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+          }
+          header={wbText.selectTree()}
+          onClose={(): void => setIsTaxonTable(false)}
+        >
+          {definitions?.map(({ id, name }) => (
+            <option key={name} value={id}>
+              {name}
+            </option>
+          ))}
+        </Dialog>
+      )}
     </ProtectedAction>
   ) : (
     <Mapper
