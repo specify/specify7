@@ -418,7 +418,10 @@ function RecordSet<SCHEMA extends AnySchema>({
         }
         onClone={(resources: RA<SpecifyResource<SCHEMA>>): void => {
           go(totalCount, 'new', resources[0]);
-          if (resources.length > 1) {
+          if (
+            resources.length > 1 &&
+            currentRecord.specifyTable.name === 'CollectionObject'
+          ) {
             const sortedResources = Array.from(resources).sort(
               sortFunction((r) => r.id)
             );
