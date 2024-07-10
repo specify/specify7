@@ -8250,7 +8250,6 @@ datamodel = Datamodel(tables=[
             Field(name='description', column='Description', indexed=False, unique=False, required=False, type='text'),
             Field(name='igsn', column='IGSN', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='guid', column='GUID', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
-            Field(name='isconsolidated', column='IsConsolidated', indexed=False, unique=False, required=True, type='java.lang.Boolean'),
             Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
             Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
@@ -8263,9 +8262,9 @@ datamodel = Datamodel(tables=[
             Field(name='decimal1', column='Decimal1', indexed=False, unique=False, required=False, type='java.lang.Double'),
             Field(name='decimal2', column='Decimal2', indexed=False, unique=False, required=False, type='java.lang.Double'),
             Field(name='decimal3', column='Decimal3', indexed=False, unique=False, required=False, type='java.lang.Double'),
-            Field(name='boolean1', column='Boolean1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
-            Field(name='boolean2', column='Boolean2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
-            Field(name='boolean3', column='Boolean3', indexed=False, unique=False, required=False, type='java.lang.Boolean')
+            Field(name='yesno1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='yesno2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='yesno3', column='YesNo3', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
         ],
         indexes=[
         

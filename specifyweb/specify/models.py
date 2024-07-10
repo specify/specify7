@@ -7551,7 +7551,6 @@ class CollectionObjectGroup(models.Model): # aka. Cog
     description = models.TextField(blank=True, null=True, unique=False, db_column='Description', db_index=False)
     igsn = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='IGSN', db_index=False)
     guid = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='GUID', db_index=False)
-    isconsolidated = models.BooleanField(blank=True, null=True, unique=False, db_column='IsConsolidated', db_index=False)
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
@@ -7564,9 +7563,9 @@ class CollectionObjectGroup(models.Model): # aka. Cog
     decimal1 = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Decimal1', db_index=False)
     decimal2 = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Decimal2', db_index=False)
     decimal3 = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Decimal3', db_index=False)
-    boolean1 = models.BooleanField(blank=True, null=True, unique=False, db_column='Boolean1', db_index=False)
-    boolean2 = models.BooleanField(blank=True, null=True, unique=False, db_column='Boolean2', db_index=False)
-    boolean3 = models.BooleanField(blank=True, null=True, unique=False, db_column='Boolean3', db_index=False)
+    yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
+    yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
+    yesno3 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo3', db_index=False)
 
     # Relationships: Many-to-One
     collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='collectionobjectgroups', null=False, on_delete=protect_with_blockers)
@@ -7600,9 +7599,9 @@ class CollectionObjectGroupJoin(models.Model): # aka. CoJo or CogJoin
     integer1 = models.IntegerField(blank=True, null=True, unique=False, db_column='Integer1', db_index=False)
     integer2 = models.IntegerField(blank=True, null=True, unique=False, db_column='Integer2', db_index=False)
     integer3 = models.IntegerField(blank=True, null=True, unique=False, db_column='Integer3', db_index=False)
-    boolean1 = models.BooleanField(blank=True, null=True, unique=False, db_column='Boolean1', db_index=False)
-    boolean2 = models.BooleanField(blank=True, null=True, unique=False, db_column='Boolean2', db_index=False)
-    boolean3 = models.BooleanField(blank=True, null=True, unique=False, db_column='Boolean3', db_index=False)
+    yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
+    yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
+    yesno3 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo3', db_index=False)
 
     # Relationships: Many-to-One
     parentcog = models.ForeignKey('CollectionObjectGroup', db_column='ParentCOGID', related_name='parentcojos', null=False, on_delete=models.CASCADE)
