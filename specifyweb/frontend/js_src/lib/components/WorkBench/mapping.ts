@@ -183,7 +183,7 @@ const identifyTreeRanks = (
         physicalCol,
         rankId:
           Object.values(
-            strictGetTreeDefinitionItems(tableName, false, undefined)
+            strictGetTreeDefinitionItems(tableName, false, 'all')
           ).find(({ name }) => name === rankName)?.rankId ?? -1,
       }))
       .reduce<

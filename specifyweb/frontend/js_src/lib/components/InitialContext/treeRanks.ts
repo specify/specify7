@@ -108,14 +108,17 @@ function getTreeScope(
 
 export function getTreeDefinitions<TREE_NAME extends AnyTree['tableName']>(
   tableName: TREE_NAME,
-  treeDefinitionId = getCache('tree', `definition${tableName}`)
+  treeDefinitionId: number | undefined | 'all' = getCache(
+    'tree',
+    `definition${tableName}`
+  )
 ): typeof treeDefinitions[TREE_NAME] {
   const specificTreeDefinitions = caseInsensitiveHash(
     defined(treeDefinitions),
     tableName
   );
 
-  return treeDefinitionId === undefined
+  return typeof treeDefinitionId !== 'number'
     ? specificTreeDefinitions
     : specificTreeDefinitions.filter(
         ({ definition }) => definition.id === treeDefinitionId
@@ -125,7 +128,10 @@ export function getTreeDefinitions<TREE_NAME extends AnyTree['tableName']>(
 export function getTreeDefinitionItems<TREE_NAME extends AnyTree['tableName']>(
   tableName: TREE_NAME,
   includeRoot: boolean,
-  treeDefinitionId = getCache('tree', `definition${tableName}`)
+  treeDefinitionId: number | undefined | 'all' = getCache(
+    'tree',
+    `definition${tableName}`
+  )
 ): typeof treeDefinitions[TREE_NAME][number]['ranks'] | undefined {
   const specificTreeDefinitions =
     treeDefinitions === undefined
@@ -134,7 +140,7 @@ export function getTreeDefinitionItems<TREE_NAME extends AnyTree['tableName']>(
 
   return specificTreeDefinitions === undefined
     ? undefined
-    : treeDefinitionId === undefined
+    : typeof treeDefinitionId !== 'number'
     ? specificTreeDefinitions.flatMap(({ ranks }) =>
         ranks.slice(includeRoot ? 0 : 1)
       )
@@ -148,7 +154,10 @@ export const strictGetTreeDefinitionItems = <
 >(
   tableName: TREE_NAME,
   includeRoot: boolean,
-  treeDefinitionId = getCache('tree', `definition${tableName}`)
+  treeDefinitionId: number | undefined | 'all' = getCache(
+    'tree',
+    `definition${tableName}`
+  )
 ): typeof treeDefinitions[TREE_NAME][number]['ranks'] =>
   defined(
     getTreeDefinitionItems(tableName, includeRoot, treeDefinitionId),
