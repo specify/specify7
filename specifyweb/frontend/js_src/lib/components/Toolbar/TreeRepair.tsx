@@ -13,7 +13,6 @@ import { headerText } from '../../localization/header';
 import { treeText } from '../../localization/tree';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
-import { localized } from '../../utils/types';
 import { toLowerCase } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
