@@ -123,8 +123,7 @@ export function TreeSelectDialog({
                     }}
                   >
                     <TableIcon label={false} name={treeName} />
-                    {localized(treeDefinition?.get('name')) ??
-                      genericTables[treeName].label}
+                    {genericTables[treeName].label}
                   </Link.Default>
                   {typeof treeDefinition === 'object' && (
                     <ResourceEdit
