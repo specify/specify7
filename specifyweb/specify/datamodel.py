@@ -8309,7 +8309,7 @@ datamodel = Datamodel(tables=[
 
         ],
         relationships=[
-            Relationship(name='parentcog', type='many-to-one', required=True, relatedModelName='CollectionObjectGroup', column='ParentCOGID'),
+            Relationship(name='parentcog', type='many-to-one', required=True, relatedModelName='CollectionObjectGroup', column='ParentCOGID', dependent=True),
             Relationship(name='childcog', type='one-to-one', required=False, relatedModelName='CollectionObjectGroup', column='ChildCOGID'),
             Relationship(name='childco', type='one-to-one', required=False, relatedModelName='CollectionObject', column='ChildCOID'),
         ],
