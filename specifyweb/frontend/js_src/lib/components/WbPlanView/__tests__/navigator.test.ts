@@ -31,7 +31,6 @@ theories(getMappingLineData, [
             isHidden: false,
             isDefault: false,
             isRelationship: false,
-            tableName: undefined,
           },
           catalogedDate: {
             optionLabel: 'Cat Date',
@@ -40,7 +39,6 @@ theories(getMappingLineData, [
             isHidden: false,
             isDefault: false,
             isRelationship: false,
-            tableName: undefined,
           },
           reservedText: {
             optionLabel: 'CT Scan',
@@ -258,7 +256,6 @@ theories(getMappingLineData, [
             isHidden: false,
             isDefault: false,
             isRelationship: false,
-            tableName: undefined,
           },
           typeStatusName: {
             optionLabel: 'Type Status',
@@ -294,70 +291,70 @@ theories(getMappingLineData, [
         customSelectSubtype: 'tree',
         selectLabel: localized('Taxon'),
         fieldsData: {
-          Taxonomy_$Kingdom: {
+          $Kingdom: {
             optionLabel: 'Kingdom',
             isRelationship: true,
             isDefault: false,
             tableName: 'Taxon',
             tableTreeDefName: 'Taxonomy',
           },
-          Taxonomy_$Phylum: {
+          $Phylum: {
             optionLabel: 'Phylum',
             isRelationship: true,
             isDefault: false,
             tableName: 'Taxon',
             tableTreeDefName: 'Taxonomy',
           },
-          Taxonomy_$Class: {
+          $Class: {
             optionLabel: 'Class',
             isRelationship: true,
             isDefault: false,
             tableName: 'Taxon',
             tableTreeDefName: 'Taxonomy',
           },
-          Taxonomy_$Order: {
+          $Order: {
             optionLabel: 'Order',
             isRelationship: true,
             isDefault: false,
             tableName: 'Taxon',
             tableTreeDefName: 'Taxonomy',
           },
-          Taxonomy_$Family: {
+          $Family: {
             optionLabel: 'Family',
             isRelationship: true,
             isDefault: true,
             tableName: 'Taxon',
             tableTreeDefName: 'Taxonomy',
           },
-          Taxonomy_$Subfamily: {
+          $Subfamily: {
             optionLabel: 'Subfamily',
             isRelationship: true,
             isDefault: false,
             tableName: 'Taxon',
             tableTreeDefName: 'Taxonomy',
           },
-          Taxonomy_$Genus: {
+          $Genus: {
             optionLabel: 'Genus',
             isRelationship: true,
             isDefault: false,
             tableName: 'Taxon',
             tableTreeDefName: 'Taxonomy',
           },
-          Taxonomy_$Subgenus: {
+          $Subgenus: {
             optionLabel: 'Subgenus',
             isRelationship: true,
             isDefault: false,
             tableName: 'Taxon',
             tableTreeDefName: 'Taxonomy',
           },
-          Taxonomy_$Species: {
+          $Species: {
             optionLabel: 'Species',
             isRelationship: true,
             isDefault: false,
             tableName: 'Taxon',
             tableTreeDefName: 'Taxonomy',
           },
-          Taxonomy_$Subspecies: {
+          $Subspecies: {
             optionLabel: 'Subspecies',
             isRelationship: true,
             isDefault: false,
@@ -411,7 +408,6 @@ theories(getMappingLineData, [
             isHidden: false,
             isDefault: false,
             isRelationship: false,
-            tableName: undefined,
           },
           source: {
             optionLabel: 'Source',
@@ -643,7 +639,6 @@ theories(getMappingLineData, [
             isRelationship: false,
             isRequired: false,
             optionLabel: 'CT Scan',
-            tableName: undefined,
           },
           reservedText2: {
             isDefault: false,
@@ -818,7 +813,6 @@ theories(getMappingLineData, [
             isRelationship: false,
             isRequired: false,
             optionLabel: 'Type Status',
-            tableName: undefined,
           },
         },
         selectLabel: localized('Determination'),
@@ -835,70 +829,70 @@ theories(getMappingLineData, [
             optionLabel: '(any rank)',
             tableName: 'Taxon',
           },
-          Taxonomy_$Class: {
+          $Class: {
             isDefault: false,
             isRelationship: true,
             optionLabel: 'Class',
             tableName: 'Taxon',
             tableTreeDefName: 'Taxonomy',
           },
-          Taxonomy_$Family: {
+          $Family: {
             isDefault: true,
             isRelationship: true,
             optionLabel: 'Family',
             tableName: 'Taxon',
             tableTreeDefName: 'Taxonomy',
           },
-          Taxonomy_$Genus: {
+          $Genus: {
             isDefault: false,
             isRelationship: true,
             optionLabel: 'Genus',
             tableName: 'Taxon',
             tableTreeDefName: 'Taxonomy',
           },
-          Taxonomy_$Kingdom: {
+          $Kingdom: {
             isDefault: false,
             isRelationship: true,
             optionLabel: 'Kingdom',
             tableName: 'Taxon',
             tableTreeDefName: 'Taxonomy',
           },
-          Taxonomy_$Order: {
+          $Order: {
             isDefault: false,
             isRelationship: true,
             optionLabel: 'Order',
             tableName: 'Taxon',
             tableTreeDefName: 'Taxonomy',
           },
-          Taxonomy_$Phylum: {
+          $Phylum: {
             isDefault: false,
             isRelationship: true,
             optionLabel: 'Phylum',
             tableName: 'Taxon',
             tableTreeDefName: 'Taxonomy',
           },
-          Taxonomy_$Species: {
+          $Species: {
             isDefault: false,
             isRelationship: true,
             optionLabel: 'Species',
             tableName: 'Taxon',
             tableTreeDefName: 'Taxonomy',
           },
-          Taxonomy_$Subfamily: {
+          $Subfamily: {
             isDefault: false,
             isRelationship: true,
             optionLabel: 'Subfamily',
             tableName: 'Taxon',
             tableTreeDefName: 'Taxonomy',
           },
-          Taxonomy_$Subgenus: {
+          $Subgenus: {
             isDefault: false,
             isRelationship: true,
             optionLabel: 'Subgenus',
             tableName: 'Taxon',
             tableTreeDefName: 'Taxonomy',
           },
-          Taxonomy_$Subspecies: {
+          $Subspecies: {
             isDefault: false,
             isRelationship: true,
             optionLabel: 'Subspecies',

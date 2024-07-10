@@ -254,15 +254,7 @@ export function getMappingLineData({
       customSelectSubtype,
       defaultValue: internalState.defaultValue,
       selectLabel: table.label,
-      fieldsData: Object.fromEntries(
-        filterArray(fieldsData).map(([rawKey, fieldData]) => {
-          const key =
-            fieldData.tableTreeDefName === undefined
-              ? rawKey
-              : `${fieldData.tableTreeDefName}_${rawKey}`;
-          return [key, fieldData];
-        })
-      ),
+      fieldsData: Object.fromEntries(filterArray(fieldsData)),
       tableName: table.name,
     });
 
