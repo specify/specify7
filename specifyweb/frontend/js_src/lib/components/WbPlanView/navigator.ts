@@ -301,6 +301,7 @@ export function getMappingLineData({
           ? [[formatToManyIndex(maxMappedElementNumber + 1), commonText.add()]]
           : [];
 
+      // Add prop with tree table name and filter if that prop has been passed
       commitInstanceData(
         'toMany',
         table,

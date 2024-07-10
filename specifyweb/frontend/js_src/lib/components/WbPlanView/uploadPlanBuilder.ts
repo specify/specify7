@@ -38,6 +38,7 @@ const toTreeRecordRanks = (
     ])
   );
 
+// TODO: need to update this to include tree def identifier
 const toTreeRecordVariety = (lines: RA<SplitMappingPath>): TreeRecord => ({
   ranks: Object.fromEntries(
     indexMappings(lines).map(([fullRankName, rankMappedFields]) => [
