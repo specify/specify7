@@ -249,29 +249,22 @@ export function getMappingLineData({
     customSelectSubtype: CustomSelectSubtype,
     table: SpecifyTable,
     fieldsData: RA<readonly [string, HtmlGeneratorFieldData] | undefined>
-  ): void => {
-    const isTree = isTreeTable(table.name);
-    const filteredArray = filterArray(fieldsData);
-    const filteredFieldsTreeData: Record<string, HtmlGeneratorFieldData> = {};
-
-    filteredArray.forEach(([key, value]) => {
-      const newKey = Object.hasOwn(filteredFieldsTreeData, key)
-        ? `${key}_${value.tableTreeDefName ?? ''}`
-        : key;
-
-      filteredFieldsTreeData[newKey] = value;
-    });
-
-    const filteredFieldsData = Object.fromEntries(filterArray(fieldsData));
-
+  ): void =>
     void internalState.mappingLineData.push({
       customSelectSubtype,
       defaultValue: internalState.defaultValue,
       selectLabel: table.label,
-      fieldsData: isTree ? filteredFieldsTreeData : filteredFieldsData,
+      fieldsData: Object.fromEntries(
+        filterArray(fieldsData).map(([rawKey, fieldData]) => {
+          const key =
+            fieldData.tableTreeDefName === undefined
+              ? rawKey
+              : `${fieldData.tableTreeDefName}_${rawKey}`;
+          return [key, fieldData];
+        })
+      ),
       tableName: table.name,
     });
-  };
 
   const lastPartIndex =
     mappingPath.at(-1) === emptyMapping
