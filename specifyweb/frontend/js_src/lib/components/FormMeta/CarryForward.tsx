@@ -19,7 +19,7 @@ import { Submit } from '../Atoms/Submit';
 import { getFieldsToClone, getUniqueFields } from '../DataModel/resource';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { genericTables } from '../DataModel/tables';
+import { genericTables, tables } from '../DataModel/tables';
 import { NO_CLONE } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
 import { userPreferences } from '../Preferences/userPreferences';
@@ -108,6 +108,11 @@ export function CarryForwardConfig({
   const isBulkCarryEnabled = globalBulkEnabled.includes(table.name);
   const canChange = !NO_CLONE.has(table.name);
 
+  const isWildCardValidForBulk =
+    tables.CollectionObject.strictGetLiteralField('catalogNumber')
+      .getUiFormatter()!
+      .valueOrWild() === '#########';
+
   return canChange ? (
     <>
       {type === 'button' ? (
@@ -134,7 +139,7 @@ export function CarryForwardConfig({
           onClick={handleOpen}
         />
       )}
-      {isCarryForwardEnabled && (
+      {isCarryForwardEnabled && isWildCardValidForBulk ? (
         <Label.Inline className="rounded bg-[color:var(--foreground)]">
           <Input.Checkbox
             checked={isBulkCarryEnabled}
@@ -144,7 +149,7 @@ export function CarryForwardConfig({
           />
           {formsText.bulkCarryForwardEnabled()}
         </Label.Inline>
-      )}
+      ) : null}
       {isOpen && (
         <CarryForwardConfigDialog
           parentTable={parentTable}
