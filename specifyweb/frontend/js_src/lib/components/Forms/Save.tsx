@@ -223,10 +223,11 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
 
   const [carryForwardAmount, setCarryForwardAmount] = React.useState<number>(1);
 
-  const isWildCardValidForBulk =
-    tables.CollectionObject.strictGetLiteralField('catalogNumber')
-      .getUiFormatter()!
-      .valueOrWild() === '#########';
+  const isWildCardValidForBulk = tables.CollectionObject.strictGetLiteralField(
+    'catalogNumber'
+  )
+    .getUiFormatter()
+    ?.canAutonumber();
 
   return (
     <>
@@ -237,7 +238,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           isSaveDisabled &&
           showCarry &&
           showBulkCarry &&
-          isWildCardValidForBulk ? (
+          isWildCardValidForBulk === true ? (
             <Input.Integer
               aria-label={formsText.bulkCarryForwardCount()}
               className="!w-fit"

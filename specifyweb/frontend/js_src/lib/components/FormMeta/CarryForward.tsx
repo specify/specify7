@@ -108,10 +108,11 @@ export function CarryForwardConfig({
   const isBulkCarryEnabled = globalBulkEnabled.includes(table.name);
   const canChange = !NO_CLONE.has(table.name);
 
-  const isWildCardValidForBulk =
-    tables.CollectionObject.strictGetLiteralField('catalogNumber')
-      .getUiFormatter()!
-      .valueOrWild() === '#########';
+  const isWildCardValidForBulk = tables.CollectionObject.strictGetLiteralField(
+    'catalogNumber'
+  )
+    .getUiFormatter()
+    ?.canAutonumber();
 
   return canChange ? (
     <>
@@ -139,7 +140,7 @@ export function CarryForwardConfig({
           onClick={handleOpen}
         />
       )}
-      {isCarryForwardEnabled && isWildCardValidForBulk ? (
+      {isCarryForwardEnabled && isWildCardValidForBulk === true ? (
         <Label.Inline className="rounded bg-[color:var(--foreground)]">
           <Input.Checkbox
             checked={isBulkCarryEnabled}
