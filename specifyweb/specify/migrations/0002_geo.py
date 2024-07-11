@@ -160,8 +160,4 @@ class Migration(migrations.Migration):
                 'ordering': (),
             },
         ),
-        migrations.AlterUniqueTogether(
-            name='collectionobjectgroupjoin',
-            unique_together={('parentcog', 'childcog'), ('parentcog', 'childco')},
-        ),
     ]

@@ -7613,7 +7613,6 @@ class CollectionObjectGroupJoin(models.Model): # aka. CoJo or CogJoin
     class Meta:
         db_table = 'collectionobjectgroupjoin'
         ordering = ()
-        unique_together = (('parentcog', 'childcog'), ('parentcog', 'childco'))
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     save = partialmethod(custom_save)
