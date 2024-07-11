@@ -189,6 +189,7 @@ export function getMappingLineData({
   showHiddenFields = false,
   mustMatchPreferences = {},
   spec,
+  taxonType,
 }: {
   readonly baseTableName: keyof Tables;
   // The mapping path
@@ -203,6 +204,7 @@ export function getMappingLineData({
   readonly showHiddenFields?: boolean;
   readonly mustMatchPreferences?: IR<boolean>;
   readonly spec: NavigatorSpec;
+  readonly taxonType?: string;
 }): RA<MappingLineData> {
   if (
     process.env.NODE_ENV !== 'production' &&
@@ -254,7 +256,11 @@ export function getMappingLineData({
       customSelectSubtype,
       defaultValue: internalState.defaultValue,
       selectLabel: table.label,
-      fieldsData: Object.fromEntries(filterArray(fieldsData)),
+      fieldsData: Object.fromEntries(
+        filterArray(fieldsData)
+          .filter((field) => field[1].tableTreeDefName === taxonType)
+          .map(([rawKey, fieldData]) => [rawKey, fieldData])
+      ),
       tableName: table.name,
     });
 
@@ -301,7 +307,6 @@ export function getMappingLineData({
           ? [[formatToManyIndex(maxMappedElementNumber + 1), commonText.add()]]
           : [];
 
-      // Add prop with tree table name and filter if that prop has been passed
       commitInstanceData(
         'toMany',
         table,

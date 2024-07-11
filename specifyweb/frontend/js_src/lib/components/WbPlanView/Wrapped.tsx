@@ -10,23 +10,16 @@ import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
 import { usePromise } from '../../hooks/useAsyncState';
-import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
-import { resourcesText } from '../../localization/resources';
-import { treeText } from '../../localization/tree';
 import { wbText } from '../../localization/workbench';
-import { f } from '../../utils/functools';
-import type { IR, RA } from '../../utils/types';
+import { type IR, type RA, localized } from '../../utils/types';
 import { caseInsensitiveHash } from '../../utils/utils';
+import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { Select } from '../Atoms/Form';
 import type { Tables } from '../DataModel/types';
-import {
-  getTreeDefinitions,
-  treeRanksPromise,
-} from '../InitialContext/treeRanks';
+import { treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
 import { Dialog } from '../Molecules/Dialog';
 import { ProtectedAction } from '../Permissions/PermissionDenied';
@@ -139,10 +132,27 @@ export function WbPlanView({
   const [isTaxonTable, setIsTaxonTable] = React.useState(false);
 
   const [treeDefinitions] = usePromise(treeRanksPromise, true);
-  const definitionsForTree = treeDefinitions
+  const definitionsForTreeTaxon = treeDefinitions
     ? caseInsensitiveHash(treeDefinitions, 'Taxon')
     : undefined;
-  const definitions = definitionsForTree?.map(({ definition }) => definition);
+  const definitions = definitionsForTreeTaxon?.map(
+    ({ definition }) => definition
+  );
+  const [taxonType, setTaxonType] = React.useState<string>();
+  const handleTreeType = (taxonTreeDefinitionName: string): void => {
+    setTaxonType(taxonTreeDefinitionName);
+    setState({
+      type: 'MappingState',
+      changesMade: true,
+      baseTableName: 'Taxon',
+      lines: getLinesFromHeaders({
+        headers,
+        runAutoMapper: true,
+        baseTableName: 'Taxon',
+      }),
+      mustMatchPreferences: {},
+    });
+  };
 
   const navigate = useNavigate();
   return state.type === 'SelectBaseTable' ? (
@@ -183,11 +193,15 @@ export function WbPlanView({
           header={wbText.selectTree()}
           onClose={(): void => setIsTaxonTable(false)}
         >
-          {definitions?.map(({ id, name }) => (
-            <option key={name} value={id}>
-              {name}
-            </option>
-          ))}
+          <Ul>
+            {definitions?.map(({ name }) => (
+              <li key={name} value={name}>
+                <Button.LikeLink onClick={(): void => handleTreeType(name)}>
+                  {localized(name)}
+                </Button.LikeLink>
+              </li>
+            ))}
+          </Ul>
         </Dialog>
       )}
     </ProtectedAction>
@@ -198,6 +212,7 @@ export function WbPlanView({
       dataset={dataset}
       lines={state.lines}
       mustMatchPreferences={state.mustMatchPreferences}
+      taxonType={taxonType}
       onChangeBaseTable={(): void =>
         setState({
           type: 'SelectBaseTable',

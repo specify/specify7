@@ -139,6 +139,7 @@ export function Mapper(props: {
   readonly changesMade: boolean;
   readonly lines: RA<MappingLine>;
   readonly mustMatchPreferences: IR<boolean>;
+  readonly taxonType?: string;
 }): JSX.Element {
   const [state, dispatch] = React.useReducer(
     reducer,
@@ -447,6 +448,7 @@ export function Mapper(props: {
               mustMatchPreferences: state.mustMatchPreferences,
               generateFieldData: 'all',
               spec: navigatorSpecs.wbPlanView,
+              taxonType: props.taxonType,
             }),
             customSelectType: 'OPENED_LIST',
             onChange({ isDoubleClick, ...rest }) {
@@ -535,6 +537,7 @@ export function Mapper(props: {
               mustMatchPreferences: state.mustMatchPreferences,
               generateFieldData: 'all',
               spec: navigatorSpecs.wbPlanView,
+              taxonType: props.taxonType,
             }),
           });
 
