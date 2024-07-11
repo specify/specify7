@@ -1368,6 +1368,7 @@ class Collection(models.Model):
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='collections', null=False, on_delete=protect_with_blockers)
     institutionnetwork = models.ForeignKey('Institution', db_column='InstitutionNetworkID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    collectionobjecttype = models.ForeignKey('CollectionObjectType', db_column='CollectionObjectTypeID', related_name='collections', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'collection'
@@ -1465,7 +1466,7 @@ class Collectionobject(models.Model):
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     paleocontext = models.ForeignKey('PaleoContext', db_column='PaleoContextID', related_name='collectionobjects', null=True, on_delete=protect_with_blockers)
     visibilitysetby = models.ForeignKey('SpecifyUser', db_column='VisibilitySetByID', related_name='+', null=True, on_delete=protect_with_blockers)
-    cotype = models.ForeignKey('CollectionObjectType', db_column='COTypeID', related_name='collectionobjects', null=True, on_delete=models.SET_NULL)
+    collectionobjecttype = models.ForeignKey('CollectionObjectType', db_column='CollectionObjectTypeID', related_name='collectionobjects', null=True, on_delete=models.SET_NULL)
 
     class Meta:
         db_table = 'collectionobject'
@@ -7494,7 +7495,6 @@ class CollectionObjectType(models.Model):
 
     # Fields
     name = models.CharField(blank=False, max_length=255, null=False, unique=False, db_column='Name', db_index=False)
-    isdefault = models.BooleanField(blank=True, null=False, unique=False, db_column='IsDefault', db_index=False, default=False)
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
@@ -7503,15 +7503,14 @@ class CollectionObjectType(models.Model):
     text3 = models.TextField(blank=True, null=True, unique=False, db_column='Text3', db_index=False)
     
     # Relationships: Many-to-One
-    collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='collectionobjecttypes', null=False, on_delete=protect_with_blockers)
-    taxontreedef = models.ForeignKey('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='collectionobjecttypes', null=False, on_delete=protect_with_blockers)
+    collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='cotypes', null=False, on_delete=protect_with_blockers)
+    taxontreedef = models.ForeignKey('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='cotypes', null=False, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     
     class Meta:
         db_table = 'collectionobjecttype'
         ordering = ()
-        unique_together = (('collection', 'isdefault'))
 
     timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     save = partialmethod(custom_save)
@@ -7530,7 +7529,7 @@ class CollectionObjectGroupType(models.Model):
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
     
     # Relationships: Many-to-One
-    collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='collectionobjecttypes', null=False, on_delete=protect_with_blockers)
+    collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='cogtypes', null=False, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     

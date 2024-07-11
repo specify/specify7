@@ -1474,7 +1474,8 @@ datamodel = Datamodel(tables=[
             Relationship(name='prepTypes', type='one-to-many',required=False, relatedModelName='PrepType', otherSideName='collection'),
             Relationship(name='rightSideRelTypes', type='one-to-many',required=False, relatedModelName='CollectionRelType', otherSideName='rightSideCollection'),
             Relationship(name='technicalContacts', type='one-to-many',required=False, relatedModelName='Agent', otherSideName='collTechContact'),
-            Relationship(name='userGroups', type='one-to-many',required=False, relatedModelName='SpPrincipal', otherSideName='scope')
+            Relationship(name='userGroups', type='one-to-many',required=False, relatedModelName='SpPrincipal', otherSideName='scope'),
+            Relationship(name='collectionObjectType', type='many-to-one',required=False, relatedModelName='CollectionObjectType', column='CollectionObjectTypeID', otherSideName='collections')
         ],
         fieldAliases=[
 
@@ -1592,7 +1593,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='treatmentEvents', type='one-to-many',required=False, relatedModelName='TreatmentEvent', otherSideName='collectionObject', dependent=True),
             Relationship(name='visibilitySetBy', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='VisibilitySetByID'),
             Relationship(name='voucherRelationships', type='one-to-many',required=False, relatedModelName='VoucherRelationship', otherSideName='collectionObject', dependent=True),
-            Relationship(name='coType', type='many-to-one', required=True, relatedModelName='CollectionObjectType', column='COTypeID'),
+            Relationship(name='collectionObjectType', type='many-to-one', required=True, relatedModelName='CollectionObjectType', column='CollectionObjectTypeID'),
             Relationship(name='cojo', type='one-to-one', required=False, relatedModelName='CollectionObjectGroupJoin', otherSideName='childco', dependent=True),
         ],
         fieldAliases=[
@@ -8216,7 +8217,6 @@ datamodel = Datamodel(tables=[
         idField=IdField(name='collectionObjectTypeId', column='collectionObjectTypeID', type='java.lang.Integer'),
         fields=[
             Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
-            Field(name='isdefault', column='IsDefault', indexed=False, unique=False, required=True, type='java.lang.Boolean'),
             Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
             Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),

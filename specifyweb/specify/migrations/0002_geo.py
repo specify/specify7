@@ -7,8 +7,7 @@ import django.db.models.deletion
 import django.utils.timezone
 import specifyweb.specify.models
 from specifyweb.specify.models import (
-    Taxontreedef,
-    Taxontreedefitem,
+    protect_with_blockers,
     Discipline,
     Collectionobject,
     CollectionObjectType,
@@ -58,22 +57,20 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(db_column='CollectionObjectTypeID', primary_key=True, serialize=False)),
                 ('name', models.CharField(db_column='Name', max_length=255)),
-                ('isdefault', models.BooleanField(blank=True, db_column='IsDefault', null=False, default=False)),
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
                 ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
                 ('text1', models.TextField(blank=True, db_column='Text1', null=True)),
                 ('text2', models.TextField(blank=True, db_column='Text2', null=True)),
                 ('text3', models.TextField(blank=True, db_column='Text3', null=True)),
-                ('collection', models.ForeignKey(db_column='CollectionID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='collectionobjecttypes', to='specify.collection')),
-                ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
-                ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
-                ('taxontreedef', models.ForeignKey(db_column='TaxonTreeDefID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='collectionobjecttypes', to='specify.taxontreedef')),
+                ('collection', models.ForeignKey(db_column='CollectionID', on_delete=protect_with_blockers, related_name='cotypes', to='specify.collection')),
+                ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
+                ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
+                ('taxontreedef', models.ForeignKey(db_column='TaxonTreeDefID', on_delete=protect_with_blockers, related_name='cotypes', to='specify.taxontreedef')),
             ],
             options={
                 'db_table': 'collectionobjecttype',
                 'ordering': (),
-                'unique_together': (('collection', 'isdefault'),),
             },
         ),
         migrations.CreateModel(
@@ -85,9 +82,9 @@ class Migration(migrations.Migration):
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
                 ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
-                ('collection', models.ForeignKey(db_column='CollectionID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='collectionobjectgroups', to='specify.collection')),
-                ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
-                ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
+                ('collection', models.ForeignKey(db_column='CollectionID', on_delete=protect_with_blockers, related_name='cogtypes', to='specify.collection')),
+                ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
+                ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
             ],
             options={
                 'db_table': 'collectionobjectgrouptype',
@@ -96,8 +93,13 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='collectionobject',
-            name='cotype',
-            field=models.ForeignKey(db_column='COTypeID', null=True, on_delete=models.SET_NULL, related_name='collectionobjects', to='specify.collectionobjecttype'),
+            name='collectionobjecttype',
+            field=models.ForeignKey(db_column='CollectionObjectTypeID', null=True, on_delete=models.SET_NULL, related_name='collectionobjects', to='specify.collectionobjecttype'),
+        ),
+        migrations.AddField(
+            model_name='collection',
+            name='collectionobjecttype',
+            field=models.ForeignKey(db_column='CollectionObjectTypeID', null=True, on_delete=protect_with_blockers, related_name='collections', to='specify.collectionobjecttype'),
         ),
         migrations.RunPython(create_default_collection_types, revert_default_collection_types),
         migrations.CreateModel(
@@ -123,10 +125,10 @@ class Migration(migrations.Migration):
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
                 ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
-                ('collection', models.ForeignKey(db_column='CollectionID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='collectionobjectgroups', to='specify.collection')),
-                ('cogtype', models.ForeignKey(db_column='COGTypeID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='collectionobjectgroups', to='specify.collectionobjectgrouptype')),
-                ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
-                ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
+                ('collection', models.ForeignKey(db_column='CollectionID', on_delete=protect_with_blockers, related_name='collectionobjectgroups', to='specify.collection')),
+                ('cogtype', models.ForeignKey(db_column='COGTypeID', on_delete=protect_with_blockers, related_name='collectionobjectgroups', to='specify.collectionobjectgrouptype')),
+                ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
+                ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
             ],
             options={
                 'db_table': 'collectionobjectgroup',
@@ -159,10 +161,7 @@ class Migration(migrations.Migration):
             options={
                 'db_table': 'collectionobjectgroupjoin',
                 'ordering': (),
+                'unique_together': (('parentcog', 'childco'),),
             },
-        ),
-        migrations.AlterUniqueTogether(
-            name='collectionobjectgroupjoin',
-            unique_together={('parentcog', 'childco')},
         ),
     ]
