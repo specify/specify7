@@ -62,6 +62,10 @@ export type Tables = {
   readonly CollectingTripAuthorization: CollectingTripAuthorization;
   readonly Collection: Collection;
   readonly CollectionObject: CollectionObject;
+  readonly CollectionObjectGroupType: CollectionObjectGroupType;
+  readonly CollectionObjectGroup: CollectionObjectGroup;
+  readonly CollectionObjectGroupJoin: CollectionObjectGroupJoin;
+  readonly CollectionObjectType: CollectionObjectType;
   readonly CollectionObjectAttachment: CollectionObjectAttachment;
   readonly CollectionObjectAttr: CollectionObjectAttr;
   readonly CollectionObjectAttribute: CollectionObjectAttribute;
@@ -1419,6 +1423,7 @@ export type CollectionObject = {
     readonly modifiedByAgent: Agent | null;
     readonly paleoContext: PaleoContext | null;
     readonly visibilitySetBy: SpecifyUser | null;
+    readonly coType: CollectionObjectType | null;
   };
   readonly toManyDependent: {
     readonly collectionObjectAttachments: RA<CollectionObjectAttachment>;
@@ -1638,6 +1643,108 @@ export type CollectionObjectCitation = {
   };
   readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: RR<never, never>;
+};
+export type CollectionObjectGroup = {
+  readonly tableName: 'CollectionObjectGroup';
+  readonly fields: {
+    readonly id: number;
+    readonly name: string | null;
+    readonly description: string | null;
+    readonly igsn: string | null;
+    readonly guid: string | null;
+    readonly version: number | null;
+    readonly timestampCreated: string;
+    readonly timestampModified: string | null;
+    readonly text1: string | null;
+    readonly text2: string | null;
+    readonly text3: string | null;
+    readonly integer1: number | null;
+    readonly integer2: number | null;
+    readonly integer3: number | null;
+    readonly decimal1: number | null;
+    readonly decimal2: number | null;
+    readonly decimal3: number | null;
+    readonly yesNo1: boolean | null;
+    readonly yesNo2: boolean | null;
+    readonly yesNo3: boolean | null;
+  };
+  readonly toOneDependent: {};
+  readonly toOneIndependent: {
+    readonly collection: Collection;
+    readonly cogType: CollectionObjectGroupType | null;
+    readonly createdByAgent: Agent | null;
+    readonly modifiedByAgent: Agent | null;
+  };
+};
+export type CollectionObjectGroupJoin = {
+  readonly tableName: 'CollectionObjectGroupJoin';
+  readonly fields: {
+    readonly id: number;
+    readonly isPrimary: boolean | null;
+    readonly isSubstrate: boolean | null;
+    readonly precedence: number | null;
+    readonly version: number | null;
+    readonly timestampCreated: string;
+    readonly timestampModified: string | null;
+    readonly text1: string | null;
+    readonly text2: string | null;
+    readonly text3: string | null;
+    readonly integer1: number | null;
+    readonly integer2: number | null;
+    readonly integer3: number | null;
+    readonly yesNo1: boolean | null;
+    readonly yesNo2: boolean | null;
+    readonly yesNo3: boolean | null;
+  };
+  readonly toOneDependent: {
+    readonly parentCOG: CollectionObjectGroup;
+    readonly childCOG: CollectionObjectGroup | null;
+    readonly childCO: CollectionObject | null;
+  };
+  readonly toOneIndependent: {};
+  readonly toManyDependent: {};
+  readonly toManyIndependent: {};
+};
+export type CollectionObjectGroupType = {
+  readonly tableName: 'CollectionObjectGroupType';
+  readonly fields: {
+    readonly id: number;
+    readonly name: string;
+    readonly cogType: string | null;
+    readonly version: number | null;
+    readonly timestampCreated: string;
+    readonly timestampModified: string | null;
+  };
+  readonly toOneDependent: RR<never, never>;
+  readonly toOneIndependent: {
+    readonly createdByAgent: Agent | null;
+    readonly modifiedByAgent: Agent | null;
+  };
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
+};
+export type CollectionObjectType = {
+  readonly tableName: 'CollectionObjectType';
+  readonly fields: {
+    readonly id: number;
+    readonly name: string;
+    readonly isDefault: boolean;
+    readonly version: number | null;
+    readonly timestampCreated: string;
+    readonly timestampModified: string | null;
+    readonly text1: string | null;
+    readonly text2: string | null;
+    readonly text3: string | null;
+  };
+  readonly toOneDependent: {
+    readonly collection: Collection;
+    readonly taxonTreeDef: TaxonTreeDef;
+    readonly createdByAgent: Agent | null;
+    readonly modifiedByAgent: Agent | null;
+  };
+  readonly toOneIndependent: {};
+  readonly toManyDependent: {};
+  readonly toManyIndependent: {};
 };
 export type CollectionObjectProperty = {
   readonly tableName: 'CollectionObjectProperty';
