@@ -1258,8 +1258,14 @@ expected_errors = {
   },
   "CollectionObject": {
     "not_found": [
-      "projects",
-    ]
+      "projects"
+    ],
+    "incorrect_direction": {
+      "cojo": [
+        "onetomany",
+        "onetoone"
+      ]
+    }
   },
   "DNASequencingRun": {
     "incorrect_table": {
@@ -1371,9 +1377,11 @@ expected_errors = {
     }
   },
   "CollectionObjectGroup": {
-    "not_found": [
-      "cojo",
-      "parentcojos"
-    ]
+    "incorrect_direction": {
+      "cojo": [
+        "onetomany",
+        "onetoone"
+      ]
+    }
   },
 }
