@@ -473,7 +473,9 @@ export const backEndText = createDictionary({
     'de-ch': '{operation:string} über Bäume',
     'es-es': 'el valor [X6X] no coincide con el formateador [X46X]',
     'fr-fr': '{operation:string} à travers les arbres',
-    'ru-ru': '{operation:string} среди деревьев',
+    'ru-ru': `
+      Неожиданный идентификатор таблицы «[X21X]» в запросе. Ожидается "[X61X]"
+    `,
     'uk-ua': 'значення [X6X] не відповідає форматеру [X46X]',
   },
   limitReachedDeterminingAccepted: {
