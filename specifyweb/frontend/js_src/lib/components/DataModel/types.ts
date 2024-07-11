@@ -1423,7 +1423,7 @@ export type CollectionObject = {
     readonly modifiedByAgent: Agent | null;
     readonly paleoContext: PaleoContext | null;
     readonly visibilitySetBy: SpecifyUser | null;
-    readonly coType: CollectionObjectType | null;
+    // readonly coType: CollectionObjectType | null;
   };
   readonly toManyDependent: {
     readonly collectionObjectAttachments: RA<CollectionObjectAttachment>;
@@ -1668,13 +1668,19 @@ export type CollectionObjectGroup = {
     readonly yesNo2: boolean | null;
     readonly yesNo3: boolean | null;
   };
-  readonly toOneDependent: {};
+  readonly toOneDependent: {
+    readonly cojo: CollectionObjectGroupJoin | null;
+  };
   readonly toOneIndependent: {
     readonly collection: Collection;
     readonly cogType: CollectionObjectGroupType | null;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
+  readonly toManyDependent: {
+    readonly parentCojos: CollectionObjectGroupJoin | null;
+  };
+  readonly toManyIndependent: {};
 };
 export type CollectionObjectGroupJoin = {
   readonly tableName: 'CollectionObjectGroupJoin';
@@ -1696,12 +1702,12 @@ export type CollectionObjectGroupJoin = {
     readonly yesNo2: boolean | null;
     readonly yesNo3: boolean | null;
   };
-  readonly toOneDependent: {
+  readonly toOneDependent: {};
+  readonly toOneIndependent: {
     readonly parentCOG: CollectionObjectGroup;
     readonly childCOG: CollectionObjectGroup | null;
     readonly childCO: CollectionObject | null;
   };
-  readonly toOneIndependent: {};
   readonly toManyDependent: {};
   readonly toManyIndependent: {};
 };
