@@ -7530,6 +7530,7 @@ class CollectionObjectGroupType(models.Model):
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
     
     # Relationships: Many-to-One
+    collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='collectionobjecttypes', null=False, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     

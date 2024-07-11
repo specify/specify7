@@ -85,6 +85,7 @@ class Migration(migrations.Migration):
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
                 ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
+                ('collection', models.ForeignKey(db_column='CollectionID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='collectionobjectgroups', to='specify.collection')),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
             ],
