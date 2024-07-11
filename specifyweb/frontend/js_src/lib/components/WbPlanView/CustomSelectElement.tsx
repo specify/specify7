@@ -523,7 +523,6 @@ export function CustomSelectElement({
 
   const defaultOption =
     previewOption ??
-    // Where comes from isDefault?
     inlineOptions.find(({ isDefault }) => isDefault) ??
     defaultDefaultOption;
 

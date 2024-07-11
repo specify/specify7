@@ -458,7 +458,6 @@ export function Mapper(props: {
                 dispatch({
                   type: 'ChangeSelectElementValueAction',
                   line: 'mappingView',
-                  // TableName in rest is undefined and therefore no mapping
                   ...rest,
                 });
             },
