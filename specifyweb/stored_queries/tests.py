@@ -1258,7 +1258,7 @@ expected_errors = {
   },
   "CollectionObject": {
     "not_found": [
-      "projects"
+      "projects",
     ]
   },
   "DNASequencingRun": {
@@ -1369,5 +1369,11 @@ expected_errors = {
         "onetoone"
       ]
     }
-  }
+  },
+  "CollectionObjectGroup": {
+    "not_found": [
+      "cojo",
+      "parentcojos"
+    ]
+  },
 }

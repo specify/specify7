@@ -409,6 +409,7 @@ dependent_fields = {
     'CollectionObject.rightsiderels',
     'Collectionobject.treatmentevents',
     'Collectionobject.voucherrelationships',
+    'CollectionobjectGroup.cojo',
     'CollectionObjectGroupJoin.parentcojo',
     'Commonnametx.citations',
     'Conservdescription.events',
