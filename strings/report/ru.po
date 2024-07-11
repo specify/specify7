@@ -93,8 +93,8 @@ msgid "generateLabel"
 msgstr "Сгенерировать метку"
 
 #: components/FormMeta/index.tsx:191
-#: components/FormParse/fields.ts:131
-#: components/FormParse/__tests__/fields.test.ts:142
+#: components/FormParse/fields.ts:132
+#: components/FormParse/__tests__/fields.test.ts:147
 #. Used in: Components > Form Meta > Index ⬤ Components > Form Parse > Fields ⬤ Form Parse > __tests__ > Fields
 msgid "generateLabelOnSave"
 msgstr "Генерировать метку при сохранении"

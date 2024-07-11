@@ -300,7 +300,7 @@ msgstr ""
 msgid "pluginName"
 msgstr "Назва плагіна"
 
-#: utils/parser/definitions.ts:109
+#: utils/parser/definitions.ts:110
 #: utils/parser/__tests__/definitions.test.ts:184
 #: utils/parser/__tests__/definitions.test.ts:186
 #. 🟥Yes/No probably shouldn't be translated as Specify 7 does not support changing which values are recognized as Yes/No in a given language. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions
@@ -310,8 +310,8 @@ msgstr "Неприпустиме значення для поля «Так/Ні�
 #: utils/parser/parse.ts:33
 #: utils/parser/__tests__/parse.test.ts:61
 #: utils/parser/__tests__/parse.test.ts:79
-#: utils/parser/__tests__/parse.test.ts:189
-#: utils/parser/__tests__/parse.test.ts:191
+#: utils/parser/__tests__/parse.test.ts:207
+#: utils/parser/__tests__/parse.test.ts:209
 #. Used in: Utils > Parser > Parse ⬤ Parser > __tests__ > Parse
 msgid "requiredField"
 msgstr "Поле обов'язкове."
@@ -326,19 +326,19 @@ msgstr "Недійсне значення"
 
 #: components/FormPlugins/DateInput.tsx:82
 #: components/FormPlugins/DateInput.tsx:84
-#: utils/parser/definitions.ts:203
-#: utils/parser/definitions.ts:205
-#: utils/parser/definitions.ts:360
+#: utils/parser/definitions.ts:204
+#: utils/parser/definitions.ts:206
+#: utils/parser/definitions.ts:368
 #: utils/parser/__tests__/definitions.test.ts:78
-#: utils/parser/__tests__/parse.test.ts:210
+#: utils/parser/__tests__/parse.test.ts:228
 #. 🟥Used in field validation messages on the form. Used in: Components > Form Plugins > Date Input ⬤ Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions ⬤ Parser > __tests__ > Parse
 msgid "requiredFormat"
 msgstr "Необхідний формат: {format:string}."
 
 #: utils/parser/definitions.ts:49
-#: utils/parser/__tests__/parse.test.ts:121
-#: utils/parser/__tests__/parse.test.ts:140
-#: utils/parser/__tests__/parse.test.ts:163
+#: utils/parser/__tests__/parse.test.ts:139
+#: utils/parser/__tests__/parse.test.ts:158
+#: utils/parser/__tests__/parse.test.ts:181
 #. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Parse
 msgid "inputTypeNumber"
 msgstr "Значення має бути числом"
