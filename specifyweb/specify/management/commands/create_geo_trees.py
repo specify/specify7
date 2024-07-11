@@ -1,10 +1,10 @@
-from typing import Any
+from typing import Any, Optional
 from django.core.management.base import BaseCommand
 from specifyweb.specify.tree_views import TAXON_TREES, TAXON_RANKS
 from specifyweb.specify.models import Taxontreedef, Taxontreedefitem
 
 class Command(BaseCommand):
-    def handle(self, *args: Any, **options: Any) -> str | None:
+    def handle(self, *args: Any, **options: Any) -> Optional[str]:
         help = "Add initial geology taxon tree definitions to the database."
 
         for tree in TAXON_TREES:
