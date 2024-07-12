@@ -8304,9 +8304,9 @@ datamodel = Datamodel(tables=[
             Field(name='integer1', column='Integer1', indexed=False, unique=False, required=False, type='java.lang.Integer'),
             Field(name='integer2', column='Integer2', indexed=False, unique=False, required=False, type='java.lang.Integer'),
             Field(name='integer3', column='Integer3', indexed=False, unique=False, required=False, type='java.lang.Integer'),
-            Field(name='boolean1', column='Boolean1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
-            Field(name='boolean2', column='Boolean2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
-            Field(name='boolean3', column='Boolean3', indexed=False, unique=False, required=False, type='java.lang.Boolean')
+            Field(name='yesno1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='yesno2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='yesno3', column='YesNo3', indexed=False, unique=False, required=False, type='java.lang.Boolean')
         ],
         indexes=[
 
