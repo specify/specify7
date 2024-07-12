@@ -39,13 +39,12 @@ class Migration(migrations.Migration):
             cot, created = CollectionObjectType.objects.get_or_create(
                 name=discipline_name,
                 collection=collection,
-                taxontreedef=discipline.taxontreedef,
-                defaults={
-                    'isdefault': True,
-                }
+                taxontreedef=discipline.taxontreedef
             )
             # Update CollectionObjects' collectionobjecttype for the discipline
-            Collectionobject.objects.filter(collection=collection).update(cotype=cot)
+            Collectionobject.objects.filter(collection=collection).update(collectionobjecttype=cot)
+            collection.collectionobjecttype = cot
+            collection.save()
 
     def revert_default_collection_types(apps, schema_editor):
         # Reverse handeled by table deletion.
