@@ -1679,7 +1679,7 @@ export type CollectionObjectGroup = {
     readonly modifiedByAgent: Agent | null;
   };
   readonly toManyDependent: {
-    // readonly parentCojos: CollectionObjectGroupJoin | null; // TODO: this causes typecheck errors
+    // Readonly parentCojos: CollectionObjectGroupJoin | null; // TODO: this causes typecheck errors
   };
   readonly toManyIndependent: {};
 };
