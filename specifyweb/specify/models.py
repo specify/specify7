@@ -7519,7 +7519,7 @@ class CollectionObjectGroupType(models.Model):
     specify_model = datamodel.get_table('collectionobjectgrouptype')
 
     # ID Field
-    id = models.AutoField(primary_key=True, db_column='CollectionObjectGroupTypeID')
+    id = models.AutoField(primary_key=True, db_column='COGTypeID')
 
     # Fields
     name = models.CharField(blank=False, max_length=255, null=False, unique=False, db_column='Name', db_index=False) # microscope slide, whole rock, or piece of bark

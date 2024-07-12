@@ -75,7 +75,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='CollectionObjectGroupType',
             fields=[
-                ('id', models.AutoField(db_column='CollectionObjectGroupTypeID', primary_key=True, serialize=False)),
+                ('id', models.AutoField(db_column='COGTypeID', primary_key=True, serialize=False)),
                 ('name', models.CharField(db_column='Name', max_length=255, null=False)),
                 ('cogtype', models.CharField(blank=True, db_column='COGType', max_length=255, null=False)),
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
