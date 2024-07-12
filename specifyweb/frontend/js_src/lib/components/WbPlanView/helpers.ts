@@ -68,7 +68,8 @@ export async function savePlan({
   const uploadPlan = uploadPlanBuilder(
     baseTableName,
     renamedLines,
-    getMustMatchTables({ baseTableName, lines, mustMatchPreferences })
+    getMustMatchTables({ baseTableName, lines, mustMatchPreferences }),
+    taxonTreeId
   );
 
   const dataSetRequestUrl = `/api/workbench/dataset/${dataset.id}/`;
@@ -77,7 +78,7 @@ export async function savePlan({
     method: 'PUT',
     body: {
       uploadplan: uploadPlan,
-      taxonTreeId,
+      // TaxonTreeId,
     },
   }).then(async () =>
     newlyAddedHeaders.length === 0

@@ -138,7 +138,8 @@ const toUploadable = (
 export const uploadPlanBuilder = (
   baseTableName: keyof Tables,
   lines: RA<SplitMappingPath>,
-  mustMatchPreferences: RR<keyof Tables, boolean>
+  mustMatchPreferences: RR<keyof Tables, boolean>,
+  taxonTreeId: number | undefined
 ): UploadPlan => ({
   baseTableName: toLowerCase(baseTableName),
   uploadable: toUploadable(
@@ -149,6 +150,7 @@ export const uploadPlanBuilder = (
       .map(([tableName]) => tableName),
     true
   ),
+  taxonTreeId,
 });
 
 const indexMappings = (

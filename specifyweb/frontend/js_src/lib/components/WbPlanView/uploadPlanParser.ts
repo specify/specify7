@@ -46,6 +46,7 @@ export type Uploadable = TreeRecordVariety | UploadTableVariety;
 export type UploadPlan = {
   readonly baseTableName: Lowercase<keyof Tables>;
   readonly uploadable: Uploadable;
+  readonly taxonTreeId: number | undefined;
 };
 
 const parseColumnOptions = (matchingOptions: ColumnOptions): ColumnOptions => ({
