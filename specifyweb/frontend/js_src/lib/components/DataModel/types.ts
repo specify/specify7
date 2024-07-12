@@ -1323,6 +1323,7 @@ export type Collection = {
     readonly discipline: Discipline;
     readonly institutionNetwork: Institution | null;
     readonly modifiedByAgent: Agent | null;
+    readonly collectionObjectType: CollectionObjectType | null;
   };
   readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: {
@@ -1423,7 +1424,7 @@ export type CollectionObject = {
     readonly modifiedByAgent: Agent | null;
     readonly paleoContext: PaleoContext | null;
     readonly visibilitySetBy: SpecifyUser | null;
-    // readonly coType: CollectionObjectType | null;
+    readonly collectionObectType: CollectionObjectType | null;
   };
   readonly toManyDependent: {
     readonly collectionObjectAttachments: RA<CollectionObjectAttachment>;
@@ -1678,7 +1679,7 @@ export type CollectionObjectGroup = {
     readonly modifiedByAgent: Agent | null;
   };
   readonly toManyDependent: {
-    readonly parentCojos: CollectionObjectGroupJoin | null;
+    // readonly parentCojos: CollectionObjectGroupJoin | null; // TODO: this causes typecheck errors
   };
   readonly toManyIndependent: {};
 };
@@ -1723,6 +1724,7 @@ export type CollectionObjectGroupType = {
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
+    readonly collection: Collection | null;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
@@ -1734,7 +1736,6 @@ export type CollectionObjectType = {
   readonly fields: {
     readonly id: number;
     readonly name: string;
-    readonly isDefault: boolean;
     readonly version: number | null;
     readonly timestampCreated: string;
     readonly timestampModified: string | null;
