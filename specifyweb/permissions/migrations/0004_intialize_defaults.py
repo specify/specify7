@@ -10,6 +10,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('permissions', '0003_auto_20220321_1445'),
+        ('specify', '0002_geo'), # Fails without having collection updated
     ]
 
     operations = [
