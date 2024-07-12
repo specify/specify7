@@ -258,7 +258,12 @@ export function getMappingLineData({
       selectLabel: table.label,
       fieldsData: Object.fromEntries(
         filterArray(fieldsData)
-          .filter((field) => field[1].tableTreeDefName === taxonType)
+          .filter((field) => {
+            if (internalState.mappingLineData.length === 0) {
+              return field[1].tableTreeDefName === taxonType;
+            }
+            return true;
+          })
           .map(([rawKey, fieldData]) => [rawKey, fieldData])
       ),
       tableName: table.name,
