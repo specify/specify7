@@ -42,11 +42,13 @@ export async function savePlan({
   baseTableName,
   lines,
   mustMatchPreferences,
+  taxonTreeId,
 }: {
   readonly dataset: Dataset;
   readonly baseTableName: keyof Tables;
   readonly lines: RA<MappingLine>;
   readonly mustMatchPreferences: IR<boolean>;
+  readonly taxonTreeId?: number | undefined;
 }): Promise<void> {
   const renamedLines = renameNewlyCreatedHeaders(
     baseTableName,
@@ -75,6 +77,7 @@ export async function savePlan({
     method: 'PUT',
     body: {
       uploadplan: uploadPlan,
+      taxonTreeId,
     },
   }).then(async () =>
     newlyAddedHeaders.length === 0

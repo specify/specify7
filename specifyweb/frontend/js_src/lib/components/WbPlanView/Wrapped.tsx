@@ -153,6 +153,10 @@ export function WbPlanView({
       mustMatchPreferences: {},
     });
   };
+  const taxonTree = definitionsForTreeTaxon?.find(
+    (tree) => tree.definition.name === taxonType
+  );
+  const taxonTreeId = taxonTree?.definition.id;
 
   const navigate = useNavigate();
   return state.type === 'SelectBaseTable' ? (
@@ -224,6 +228,7 @@ export function WbPlanView({
           baseTableName: state.baseTableName,
           lines,
           mustMatchPreferences,
+          taxonTreeId,
         }).then(() => navigate(`/specify/workbench/${dataset.id}/`))
       }
     />

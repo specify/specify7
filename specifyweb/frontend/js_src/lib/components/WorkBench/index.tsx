@@ -68,4 +68,7 @@ function useDataset(
 const fetchDataset = async (datasetId: number): Promise<Dataset> =>
   ajax<Dataset>(`/api/workbench/dataset/${datasetId}/`, {
     headers: { Accept: 'application/json' },
-  }).then(({ data }) => data);
+  }).then(({ data }) => {
+    console.log('');
+    return data;
+  });
