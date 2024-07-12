@@ -138,6 +138,7 @@ export function WbPlanView({
   const definitions = definitionsForTreeTaxon?.map(
     ({ definition }) => definition
   );
+
   const [taxonType, setTaxonType] = React.useState<string>();
   const handleTreeType = (taxonTreeDefinitionName: string): void => {
     setTaxonType(taxonTreeDefinitionName);
@@ -157,6 +158,10 @@ export function WbPlanView({
     (tree) => tree.definition.name === taxonType
   );
   const taxonTreeId = taxonTree?.definition.id;
+  const taxonCorrespondingId = definitionsForTreeTaxon?.find(
+    (tree) => tree.definition.id === uploadPlan?.taxonTreeId
+  );
+  const taxonIdName = taxonCorrespondingId?.definition.name;
 
   const navigate = useNavigate();
   return state.type === 'SelectBaseTable' ? (
@@ -216,7 +221,7 @@ export function WbPlanView({
       dataset={dataset}
       lines={state.lines}
       mustMatchPreferences={state.mustMatchPreferences}
-      taxonType={taxonType}
+      taxonType={taxonType ?? taxonIdName}
       onChangeBaseTable={(): void =>
         setState({
           type: 'SelectBaseTable',
