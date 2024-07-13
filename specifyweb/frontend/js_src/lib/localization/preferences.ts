@@ -2082,17 +2082,30 @@ export const preferencesText = createDictionary({
     comment: 'Alt key on the keyboard',
     'en-us': 'Alt',
   },
+  macOption: {
+    comment: 'Option key on the macOS keyboard',
+    'en-us': '⌥',
+  },
   ctrl: {
     comment: 'Ctrl key on the keyboard',
     'en-us': 'Ctrl',
   },
-  meta: {
-    comment: 'Meta key on the keyboard',
-    'en-us': 'Meta',
+  macControl: {
+    comment: 'Control key on the macOS keyboard',
+    'en-us': '⌃',
+  },
+  macMeta: {
+    comment: 'Meta/Command key on the macOS keyboard',
+    'en-us': '⌘',
+  },
+  macShift: {
+    comment: 'Shift key on the macOS keyboard',
+    'en-us': '⇧',
   },
   shift: {
     comment: 'Shift key on the keyboard',
     'en-us': 'Shift',
   },
-  pressKeys: { 'en-us': 'Press desired key combinations...' },
+  pressKeys: { 'en-us': 'Press desired key combination...' },
+  noKeyAssigned: { 'en-us': 'No key binding assigned' },
 } as const);

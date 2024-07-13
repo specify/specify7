@@ -44,7 +44,6 @@ import {
   SchemaLanguagePreferenceItem,
 } from '../Toolbar/Language';
 import type { KeyboardShortcuts } from './KeyboardContext';
-import { KeyboardShortcutBinding } from './KeyboardContext';
 import { KeyboardShortcutPreferenceItem } from './KeyboardShortcut';
 import type { MenuPreferences, WelcomePageMode } from './Renderers';
 import {

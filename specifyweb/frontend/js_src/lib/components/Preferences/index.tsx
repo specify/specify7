@@ -168,7 +168,7 @@ export function PreferencesContent({
         (
           [category, { title, description = undefined, subCategories }],
           index
-        ) => (
+        ): JSX.Element => (
           <ErrorBoundary dismissible key={category}>
             <Container.Center
               className="gap-8 overflow-y-visible"
@@ -318,7 +318,8 @@ function FormatString({
     <span>
       <StringToJsx
         components={{
-          key: (key) => <Key>{key}</Key>,
+          // eslint-disable-next-line react/no-unstable-nested-components
+          key: (key): JSX.Element => <Key>{key}</Key>,
         }}
         string={text}
       />

@@ -18,10 +18,12 @@ import type { RA, RR } from '../../utils/types';
  * - If keyboard shortcut was not explicitly set, the default shortcut, if any
  *   will be used
  */
-export type KeyboardShortcuts = Partial<RR<Platform, RA<string> | undefined>>;
+export type KeyboardShortcuts = Partial<
+  RR<KeyboardPlatform, RA<string> | undefined>
+>;
 
-type Platform = 'mac' | 'other' | 'windows';
-const platform: Platform =
+type KeyboardPlatform = 'mac' | 'other' | 'windows';
+export const keyboardPlatform: KeyboardPlatform =
   navigator.platform.toLowerCase().includes('mac') ||
   // Check for iphone || ipad || ipod
   navigator.platform.toLowerCase().includes('ip')
@@ -30,9 +32,20 @@ const platform: Platform =
     ? 'windows'
     : 'other';
 
-const modifierKeys = ['alt', 'control', 'meta', 'shift'];
-type ModifierKey = typeof modifierKeys[number];
-const modifierKeyNames = new Set(modifierKeys);
+const modifierKeys = ['Alt', 'Ctrl', 'Meta', 'Shift'] as const;
+export type ModifierKey = typeof modifierKeys[number];
+const allModifierKeys = new Set([...modifierKeys, 'AltGraph', 'CapsLock']);
+
+/**
+ * Do not allow binding a keyboard shortcut that includes only one of these
+ * keys, without any modifier.
+ *
+ * For example, do not allow binding keyboard shortcuts to Tab key. That key is
+ * important for accessibility and for keyboard navigation. Without it
+ * you won't be able to tab your way to the "Save" button to save the
+ * keyboard shortcut)
+ */
+const specialKeys = new Set(['Enter', 'Tab', ' ', 'Escape', 'Backspace']);
 
 /**
  * To keep the event listener as fast as possible, we are not looping though all
@@ -50,23 +63,18 @@ const listeners = new Map<string, () => void>();
 let interceptor: ((keys: string) => void) | undefined;
 export function setKeyboardEventInterceptor(
   callback: typeof interceptor
-): void {
+): () => void {
   interceptor = callback;
+  return (): void => {
+    if (interceptor === callback) interceptor = undefined;
+  };
 }
 
-/*
- * FIXME: handle case when key shortcut is not set for current platform
- * FIXME: add test for default preferences containing non-existing shortcuts
- * FIXME: add test for having shortcuts sorted
- * FIXME: add test for not binding defaults to Enter/Tab/Space/Escape other forbidden keys (ask ChatGPT for full list)
- * FIXME: make the useKeyboardShortcut() hook also return a localized keyboard
- * shortcut string for usage in UI tooltips
- */
 export function bindKeyboardShortcut(
   shortcut: KeyboardShortcuts,
   callback: () => void
 ): () => void {
-  const shortcuts = shortcut[platform] ?? [];
+  const shortcuts = resolvePlatformShortcuts(shortcut) ?? [];
   shortcuts.forEach((string) => {
     listeners.set(string, callback);
   });
@@ -81,33 +89,73 @@ export function bindKeyboardShortcut(
     });
 }
 
+/**
+ * If there is a keyboard shortcut defined for current system, use it
+ * (also, if current system explicitly has empty array of shortcuts, use it).
+ *
+ * Otherwise, use the keyboard shortcut from one of the other platforms if set,
+ * but change meta to ctrl and vice versa as necessary.
+ */
+export function resolvePlatformShortcuts(
+  shortcut: KeyboardShortcuts
+): RA<string> | undefined {
+  if ('platform' in shortcut) return shortcut[keyboardPlatform];
+  else if ('other' in shortcut)
+    return keyboardPlatform === 'windows'
+      ? shortcut.other
+      : shortcut.other?.map(replaceCtrlWithMeta);
+  else if ('windows' in shortcut)
+    return keyboardPlatform === 'other'
+      ? shortcut.other
+      : shortcut.other?.map(replaceCtrlWithMeta);
+  else if ('mac' in shortcut) return shortcut.other?.map(replaceMetaWithCtrl);
+  else return undefined;
+}
+
+const replaceCtrlWithMeta = (shortcut: string): string =>
+  shortcut
+    .split(keyJoinSymbol)
+    .map((key) => (key === 'ctrl' ? 'meta' : key))
+    .join(keyJoinSymbol);
+
+const replaceMetaWithCtrl = (shortcut: string): string =>
+  shortcut
+    .split(keyJoinSymbol)
+    .map((key) => (key === 'meta' ? 'ctrl' : key))
+    .join(keyJoinSymbol);
+
+/**
+ * Assumes keys and modifiers are sorted
+ */
 const keysToString = (modifiers: RA<ModifierKey>, keys: RA<string>): string =>
-  [...modifiers, ...keys].join('+');
+  [...modifiers, ...keys].join(keyJoinSymbol);
+export const keyJoinSymbol = '+';
 
 // eslint-disable-next-line functional/prefer-readonly-type
 const pressedKeys: string[] = [];
 
 document.addEventListener('keydown', (event) => {
   if (shouldIgnoreKeyPress(event)) return;
-  if (pressedKeys.includes(event.key)) return;
 
-  pressedKeys.push(event.key);
-  pressedKeys.sort();
+  if (!pressedKeys.includes(event.key)) {
+    pressedKeys.push(event.key);
+    pressedKeys.sort();
+  }
 
   const modifiers = resolveModifiers(event);
   const isEntering = isInInput(event);
-  // FIXME: should this include alt too?
-  const noModifiers = modifiers.length === 0 || modifiers[0] === 'Shift';
-  // Ignore single key shortcuts when in an input field
-  const ignore = noModifiers && isEntering;
+  const isPrintable = isPrintableModifier(modifiers);
+  // Ignore shortcuts that result in printed characters when in an input field
+  const ignore = isPrintable && isEntering;
   if (ignore) return;
+  if (modifiers.length === 0 && specialKeys.has(event.key)) return;
 
   const keyString = keysToString(modifiers, pressedKeys);
   const handler = interceptor ?? listeners.get(keyString);
   if (typeof handler === 'function') {
     handler(keyString);
     /*
-     * Do this only after calling handler, so that if handler throws an
+     * Do this only after calling the handler, so that if handler throws an
      * exception, the event can still be handled normally by the browser
      */
     event.preventDefault();
@@ -120,28 +168,22 @@ function shouldIgnoreKeyPress(event: KeyboardEvent): boolean {
 
   if (event.isComposing || event.repeat) return true;
 
-  /**
-   * Do not allow binding keyboard shortcuts to Tab key. That key is
-   * important for accessibility and for keyboard navigation. Without it
-   * you won't be able to tab your way to the "Save" button to save the
-   * keyboard shortcut)
-   */
-  if (key === 'Tab') return true;
   // See https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key#value
   if (key === 'Dead' || key === 'Unidentified') return true;
-  // FIXME: ignore all modifiers: https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_key_values#modifier_keys
-  const isModifier = modifierKeyNames.has(event.key.toLowerCase());
+
+  // Do not allow binding a key shortcut to a modifier key only
+  const isModifier = allModifierKeys.has(event.key);
 
   return !isModifier;
 }
 
-const resolveModifiers = (event: KeyboardEvent): RA<ModifierKey> =>
+export const resolveModifiers = (event: KeyboardEvent): RA<ModifierKey> =>
   Object.entries({
     // This order is important - keep it alphabetical
-    alt: event.altKey,
-    ctrl: event.ctrlKey,
-    meta: event.metaKey,
-    shift: event.shiftKey,
+    Alt: event.altKey,
+    Ctrl: event.ctrlKey,
+    Meta: event.metaKey,
+    Shift: event.shiftKey,
   })
     .filter(([_, isPressed]) => isPressed)
     .map(([modifier]) => modifier);
@@ -154,6 +196,21 @@ function isInInput(event: KeyboardEvent): boolean {
     target.tagName === 'TEXTAREA' ||
     target.isContentEditable
   );
+}
+
+/**
+ * On all platforms, shift key + letter produces a printable character (i.e shift+a = A)
+ *
+ * On mac, option (alt) key is used for producing printable characters too, but
+ * according to ChatGPT, in browser applications it is expected that keyboard
+ * shortcuts take precedence over printing characters.
+ */
+function isPrintableModifier(modifiers: RA<ModifierKey>): boolean {
+  if (modifiers.length === 0) return true;
+
+  if (modifiers.length === 1) return modifiers[0] === 'Shift';
+
+  return false;
 }
 
 document.addEventListener(
@@ -183,3 +240,9 @@ window.addEventListener(
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) pressedKeys.length = 0;
 });
+
+export const exportsForTests = {
+  keysToString,
+  modifierKeys,
+  specialKeys,
+};
