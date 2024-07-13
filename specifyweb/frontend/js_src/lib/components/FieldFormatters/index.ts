@@ -1,5 +1,5 @@
 /**
- * Parse and use Specify 6 UI Formatters
+ * Parse and use field formatters
  */
 
 import type { LocalizedString } from 'typesafe-i18n';
@@ -259,7 +259,16 @@ class RegexPart extends Part {
   public readonly type = 'regex';
 
   public get regex(): LocalizedString {
-    return this.placeholder;
+    let pattern: string = this.placeholder;
+    /*
+     * In UiFormatter.getRegex() we are adding ^ and $ as necessary, so trim
+     * them if they were present here
+     */
+    if (pattern.startsWith('/')) pattern = pattern.slice(1);
+    if (pattern.startsWith('^')) pattern = pattern.slice(1);
+    if (pattern.endsWith('/')) pattern = pattern.slice(0, -1);
+    if (pattern.endsWith('$')) pattern = pattern.slice(0, -1);
+    return pattern as LocalizedString;
   }
 }
 
