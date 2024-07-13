@@ -62,7 +62,6 @@ export function FieldFormattersList(): JSX.Element {
           isDefault: currentItems.length === 0,
           legacyType: undefined,
           legacyPartialDate: undefined,
-          autoNumber: false,
           external: undefined,
           parts: [],
           raw: {
