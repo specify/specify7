@@ -27,10 +27,6 @@ import { localizeKeyboardShortcut, resolvePlatformShortcuts } from './utils';
  * those in the UI if present on the page
  *
  * FIXME: open key shortcut viewer on cmd+/
- *
- * FIXME: localize some key shortcuts (arrow keys, home, etc)
- *
- * FIXME: add a mapping of allowed default keyboard shortcuts and use that in tests
  */
 
 export function KeyboardShortcutPreferenceItem({
