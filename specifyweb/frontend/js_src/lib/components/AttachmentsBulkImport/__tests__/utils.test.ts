@@ -1,7 +1,7 @@
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { requireContext } from '../../../tests/helpers';
-import { formatterToParser } from '../../../utils/parser/definitions';
+import { fieldFormatterToParser } from '../../../utils/parser/definitions';
 import type { IR, RA } from '../../../utils/types';
 import { localized } from '../../../utils/types';
 import { tables } from '../../DataModel/tables';
@@ -108,7 +108,7 @@ describe('file names resolution test', () => {
               : syncFieldFormat(
                   field,
                   value.toString(),
-                  formatterToParser(field, formatter),
+                  fieldFormatterToParser(field, formatter),
                   undefined,
                   true
                 );

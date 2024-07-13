@@ -296,7 +296,7 @@ export function resolveParser(
       ? undefined
       : (fullField as LiteralField).whiteSpaceSensitive,
     ...(typeof formatter === 'object'
-      ? formatterToParser(field, formatter)
+      ? fieldFormatterToParser(field, formatter)
       : {}),
   });
 }
@@ -361,7 +361,7 @@ function resolveDate(
   return callback(...(values as RA<number | undefined>));
 }
 
-export function formatterToParser(
+export function fieldFormatterToParser(
   field: Partial<LiteralField | Relationship>,
   formatter: UiFormatter
 ): Parser {

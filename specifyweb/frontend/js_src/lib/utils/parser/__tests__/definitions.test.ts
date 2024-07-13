@@ -19,7 +19,7 @@ import type { Parser } from '../definitions';
 import {
   browserifyRegex,
   formatter,
-  formatterToParser,
+  fieldFormatterToParser,
   getValidationAttributes,
   lengthToRegex,
   mergeParsers,
@@ -123,7 +123,7 @@ describe('resolveParser', () => {
       ...parserFromType('java.lang.String'),
       required: false,
       ...removeKey(
-        formatterToParser(field, uiFormatter),
+        fieldFormatterToParser(field, uiFormatter),
         'formatters',
         'parser',
         'validators'
@@ -237,7 +237,7 @@ describe('formatterToParser', () => {
       validators,
       parser: parserFunction,
       ...parser
-    } = formatterToParser({}, uiFormatter);
+    } = fieldFormatterToParser({}, uiFormatter);
     expect(parser).toEqual({
       pattern: uiFormatter.regex,
       title,
@@ -269,7 +269,7 @@ describe('formatterToParser', () => {
     userPreferences.set('form', 'preferences', 'autoNumbering', {
       CollectionObject: [],
     });
-    expect(formatterToParser(field, uiFormatter).value).toBeUndefined();
+    expect(fieldFormatterToParser(field, uiFormatter).value).toBeUndefined();
   });
 });
 
