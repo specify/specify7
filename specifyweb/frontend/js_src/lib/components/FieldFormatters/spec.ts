@@ -21,7 +21,6 @@ export const fieldFormattersSpec = f.store(() =>
             ({ javaClass, rawAutoNumber, ...formatter }) => ({
               ...formatter,
               table: getTable(javaClass ?? ''),
-              autoNumber: rawAutoNumber !== undefined,
               raw: {
                 javaClass,
                 legacyAutoNumber: rawAutoNumber,
@@ -29,7 +28,6 @@ export const fieldFormattersSpec = f.store(() =>
             }),
             ({
               table,
-              autoNumber,
               raw: { javaClass, legacyAutoNumber },
               ...formatter
             }) => ({
@@ -40,7 +38,7 @@ export const fieldFormattersSpec = f.store(() =>
                 (getTable(javaClass ?? '') === undefined
                   ? javaClass
                   : undefined),
-              rawAutoNumber: autoNumber
+              rawAutoNumber: formatter.parts.some(isAutoNumbering)
                 ? legacyAutoNumber ??
                   inferLegacyAutoNumber(table, formatter.parts)
                 : undefined,
@@ -83,6 +81,11 @@ function inferLegacyAutoNumber(
       : 'edu.ku.brc.specify.dbsupport.CollectionAutoNumberAlphaNum';
   } else return 'edu.ku.brc.af.core.db.AutoNumberGeneric';
 }
+
+const isAutoNumbering = (part: {
+  readonly autoIncrement: boolean;
+  readonly byYear: boolean;
+}): boolean => part.autoIncrement || part.byYear;
 
 export type FieldFormatter = SpecToJson<
   ReturnType<typeof fieldFormattersSpec>

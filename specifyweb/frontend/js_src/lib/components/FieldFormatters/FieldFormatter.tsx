@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { formsText } from '../../localization/forms';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
 import {
@@ -10,7 +9,6 @@ import {
 import type { GetSet, RA } from '../../utils/types';
 import { ErrorMessage } from '../Atoms';
 import { Input, Label } from '../Atoms/Form';
-import { ReadOnlyContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { LiteralField } from '../DataModel/specifyField';
@@ -29,20 +27,9 @@ export function FieldFormatterElement({
 }: {
   readonly item: GetSet<FieldFormatter>;
 }): JSX.Element {
-  const [fieldFormatter, setFieldFormatter] = item;
-  const isReadOnly = React.useContext(ReadOnlyContext);
+  const [fieldFormatter] = item;
   return (
     <>
-      <Label.Inline>
-        <Input.Checkbox
-          checked={fieldFormatter.autoNumber}
-          isReadOnly={isReadOnly}
-          onValueChange={(autoNumber): void =>
-            setFieldFormatter({ ...fieldFormatter, autoNumber })
-          }
-        />
-        {formsText.autoNumbering()}
-      </Label.Inline>
       <FieldPicker fieldFormatter={item} />
       {fieldFormatter.external === undefined &&
       typeof fieldFormatter.table === 'object' ? (
