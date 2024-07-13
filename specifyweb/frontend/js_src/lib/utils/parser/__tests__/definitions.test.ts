@@ -18,8 +18,8 @@ import { removeKey } from '../../utils';
 import type { Parser } from '../definitions';
 import {
   browserifyRegex,
-  formatter,
   fieldFormatterToParser,
+  formatter,
   getValidationAttributes,
   lengthToRegex,
   mergeParsers,
