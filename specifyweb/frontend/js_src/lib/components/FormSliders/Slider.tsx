@@ -29,18 +29,18 @@ export function Slider({
   return count > 0 ? (
     <nav className="flex justify-center gap-2 print:hidden">
       <Button.Small
-        aria-label={formsText.firstRecord()}
+        aria-label={formsText.goToFirstRecord()}
         disabled={value === 0 || handleChange === undefined}
-        title={formsText.firstRecord()}
+        title={formsText.goToFirstRecord()}
         onClick={(): void => handleChange?.(0)}
       >
         {icons.chevronDoubleLeft}
       </Button.Small>
       <Button.Small
-        aria-label={formsText.previousRecord()}
+        aria-label={formsText.goToPreviousRecord()}
         className="px-4 dark:bg-neutral-500"
         disabled={value === 0 || handleChange === undefined}
-        title={formsText.previousRecord()}
+        title={formsText.goToPreviousRecord()}
         onClick={(): void => handleChange?.(value - 1)}
       >
         {icons.chevronLeft}
@@ -84,18 +84,18 @@ export function Slider({
         <span>{count}</span>
       </div>
       <Button.Small
-        aria-label={formsText.nextRecord()}
+        aria-label={formsText.goToNextRecord()}
         className="px-4 dark:bg-neutral-500"
         disabled={value + 1 === count || handleChange === undefined}
-        title={formsText.nextRecord()}
+        title={formsText.goToNextRecord()}
         onClick={(): void => handleChange?.(value + 1)}
       >
         {icons.chevronRight}
       </Button.Small>
       <Button.Small
-        aria-label={formsText.lastRecord()}
+        aria-label={formsText.goToLastRecord()}
         disabled={value + 1 === count || handleChange === undefined}
-        title={formsText.lastRecord()}
+        title={formsText.goToLastRecord()}
         onClick={(): void => handleChange?.(count - 1)}
       >
         {icons.chevronDoubleRight}

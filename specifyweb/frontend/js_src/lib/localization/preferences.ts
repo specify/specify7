@@ -2078,4 +2078,21 @@ export const preferencesText = createDictionary({
     "uk-ua":
       "Увімкнути успадкування батьківського каталожного номера його порожнім дочірнім елементам.",
   },
+  alt: {
+    comment: 'Alt key on the keyboard',
+    'en-us': 'Alt',
+  },
+  ctrl: {
+    comment: 'Ctrl key on the keyboard',
+    'en-us': 'Ctrl',
+  },
+  meta: {
+    comment: 'Meta key on the keyboard',
+    'en-us': 'Meta',
+  },
+  shift: {
+    comment: 'Shift key on the keyboard',
+    'en-us': 'Shift',
+  },
+  pressKeys: { 'en-us': 'Press desired key combinations...' },
 } as const);
