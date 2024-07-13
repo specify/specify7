@@ -38,8 +38,8 @@ import type { TableFields } from '../DataModel/helperTypes';
 import { genericTables } from '../DataModel/tables';
 import type { Collection, Tables } from '../DataModel/types';
 import { error, softError } from '../Errors/assert';
-import type { KeyboardShortcuts } from '../Keyboard/config';
-import { KeyboardShortcutPreferenceItem } from '../Keyboard/shortcuts';
+import type { KeyboardShortcuts } from '../KeyboardShortcuts/config';
+import { KeyboardShortcutPreferenceItem } from '../KeyboardShortcuts/Shortcuts';
 import type { StatLayout } from '../Statistics/types';
 import {
   LanguagePreferencesItem,
