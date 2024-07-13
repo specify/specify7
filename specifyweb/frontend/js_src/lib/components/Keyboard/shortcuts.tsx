@@ -3,57 +3,35 @@
  */
 
 import React from 'react';
-import type { LocalizedString } from 'typesafe-i18n';
 
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { preferencesText } from '../../localization/preferences';
 import { listen } from '../../utils/events';
-import type { RA, RR } from '../../utils/types';
-import { localized } from '../../utils/types';
+import type { RA } from '../../utils/types';
 import { removeItem, replaceItem, replaceKey } from '../../utils/utils';
 import { Key } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import type { KeyboardShortcuts, ModifierKey } from './KeyboardContext';
+import type { PreferenceRendererProps } from '../Preferences/types';
+import type { KeyboardShortcuts } from './config';
+import { keyboardPlatform } from './config';
 import {
-  keyboardPlatform,
   keyJoinSymbol,
   resolveModifiers,
-  resolvePlatformShortcuts,
   setKeyboardEventInterceptor,
-} from './KeyboardContext';
-import type { PreferenceRendererProps } from './types';
+} from './context';
+import { localizeKeyboardShortcut, resolvePlatformShortcuts } from './utils';
 
 /*
  * FIXME: create a mechanism for setting shortcuts for a page, and then displaying
  * those in the UI if present on the page
+ *
+ * FIXME: open key shortcut viewer on cmd+/
+ *
+ * FIXME: localize some key shortcuts (arrow keys, home, etc)
+ *
+ * FIXME: add a mapping of allowed default keyboard shortcuts and use that in tests
  */
-
-const modifierLocalization: RR<ModifierKey, string> = {
-  Alt:
-    keyboardPlatform === 'mac'
-      ? preferencesText.macOption()
-      : preferencesText.alt(),
-  Ctrl:
-    keyboardPlatform === 'mac'
-      ? preferencesText.macControl()
-      : preferencesText.ctrl(),
-  // This key should never appear in non-mac platforms
-  Meta: preferencesText.macMeta(),
-  Shift:
-    keyboardPlatform === 'mac'
-      ? preferencesText.macShift()
-      : preferencesText.shift(),
-};
-
-const localizedKeyJoinSymbol = ' + ';
-export const localizeKeyboardShortcut = (shortcut: string): LocalizedString =>
-  localized(
-    shortcut
-      .split(keyJoinSymbol)
-      .map((key) => modifierLocalization[key as ModifierKey] ?? key)
-      .join(localizedKeyJoinSymbol)
-  );
 
 export function KeyboardShortcutPreferenceItem({
   value,

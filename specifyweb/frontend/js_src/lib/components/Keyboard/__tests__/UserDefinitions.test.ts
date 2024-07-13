@@ -1,7 +1,7 @@
-import type { KeyboardShortcuts, ModifierKey } from '../KeyboardContext';
-import { exportsForTests, keyJoinSymbol } from '../KeyboardContext';
-import type { GenericPreferences } from '../types';
-import { userPreferenceDefinitions } from '../UserDefinitions';
+import type { KeyboardShortcuts, ModifierKey } from '../context';
+import { exportsForTests, keyJoinSymbol } from '../context';
+import type { GenericPreferences } from '../../Preferences/types';
+import { userPreferenceDefinitions } from '../../Preferences/UserDefinitions';
 
 const { keysToString, modifierKeys, specialKeys } = exportsForTests;
 

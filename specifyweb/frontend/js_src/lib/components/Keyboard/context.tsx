@@ -2,50 +2,10 @@
  * Allows to register a key listener
  */
 
-import type { RA, RR } from '../../utils/types';
-
-/**
- * Because operating systems, browsers and browser extensions define many
- * keyboard shortcuts, many of which differ between operating systems, the set
- * of free keyboard shortcuts is quite small so it's difficult to have one
- * shortcut that works on all 3 platforms.
- *
- * To provide flexibility, without complicating the UI for people who only use
- * Specify on a single platform, we do the following:
- * - UI allows you to set keyboard shortcuts for the current platform only
- * - If you set keyboard shortcut on any platform, that shortcut is used on all
- *   platforms, unless you explicitly edited the shortcut on the other platform
- * - If keyboard shortcut was not explicitly set, the default shortcut, if any
- *   will be used
- */
-export type KeyboardShortcuts = Partial<
-  RR<KeyboardPlatform, RA<string> | undefined>
->;
-
-type KeyboardPlatform = 'mac' | 'other' | 'windows';
-export const keyboardPlatform: KeyboardPlatform =
-  navigator.platform.toLowerCase().includes('mac') ||
-  // Check for iphone || ipad || ipod
-  navigator.platform.toLowerCase().includes('ip')
-    ? 'mac'
-    : navigator.platform.toLowerCase().includes('win')
-    ? 'windows'
-    : 'other';
-
-const modifierKeys = ['Alt', 'Ctrl', 'Meta', 'Shift'] as const;
-export type ModifierKey = typeof modifierKeys[number];
-const allModifierKeys = new Set([...modifierKeys, 'AltGraph', 'CapsLock']);
-
-/**
- * Do not allow binding a keyboard shortcut that includes only one of these
- * keys, without any modifier.
- *
- * For example, do not allow binding keyboard shortcuts to Tab key. That key is
- * important for accessibility and for keyboard navigation. Without it
- * you won't be able to tab your way to the "Save" button to save the
- * keyboard shortcut)
- */
-const specialKeys = new Set(['Enter', 'Tab', ' ', 'Escape', 'Backspace']);
+import type { RA } from '../../utils/types';
+import type { KeyboardShortcuts, ModifierKey } from './config';
+import { allModifierKeys, specialKeyboardKeys } from './config';
+import { resolvePlatformShortcuts } from './utils';
 
 /**
  * To keep the event listener as fast as possible, we are not looping though all
@@ -90,41 +50,6 @@ export function bindKeyboardShortcut(
 }
 
 /**
- * If there is a keyboard shortcut defined for current system, use it
- * (also, if current system explicitly has empty array of shortcuts, use it).
- *
- * Otherwise, use the keyboard shortcut from one of the other platforms if set,
- * but change meta to ctrl and vice versa as necessary.
- */
-export function resolvePlatformShortcuts(
-  shortcut: KeyboardShortcuts
-): RA<string> | undefined {
-  if ('platform' in shortcut) return shortcut[keyboardPlatform];
-  else if ('other' in shortcut)
-    return keyboardPlatform === 'windows'
-      ? shortcut.other
-      : shortcut.other?.map(replaceCtrlWithMeta);
-  else if ('windows' in shortcut)
-    return keyboardPlatform === 'other'
-      ? shortcut.other
-      : shortcut.other?.map(replaceCtrlWithMeta);
-  else if ('mac' in shortcut) return shortcut.other?.map(replaceMetaWithCtrl);
-  else return undefined;
-}
-
-const replaceCtrlWithMeta = (shortcut: string): string =>
-  shortcut
-    .split(keyJoinSymbol)
-    .map((key) => (key === 'ctrl' ? 'meta' : key))
-    .join(keyJoinSymbol);
-
-const replaceMetaWithCtrl = (shortcut: string): string =>
-  shortcut
-    .split(keyJoinSymbol)
-    .map((key) => (key === 'meta' ? 'ctrl' : key))
-    .join(keyJoinSymbol);
-
-/**
  * Assumes keys and modifiers are sorted
  */
 const keysToString = (modifiers: RA<ModifierKey>, keys: RA<string>): string =>
@@ -148,7 +73,7 @@ document.addEventListener('keydown', (event) => {
   // Ignore shortcuts that result in printed characters when in an input field
   const ignore = isPrintable && isEntering;
   if (ignore) return;
-  if (modifiers.length === 0 && specialKeys.has(event.key)) return;
+  if (modifiers.length === 0 && specialKeyboardKeys.has(event.key)) return;
 
   const keyString = keysToString(modifiers, pressedKeys);
   const handler = interceptor ?? listeners.get(keyString);
@@ -243,6 +168,4 @@ document.addEventListener('visibilitychange', () => {
 
 export const exportsForTests = {
   keysToString,
-  modifierKeys,
-  specialKeys,
 };

@@ -38,13 +38,13 @@ import type { TableFields } from '../DataModel/helperTypes';
 import { genericTables } from '../DataModel/tables';
 import type { Collection, Tables } from '../DataModel/types';
 import { error, softError } from '../Errors/assert';
+import type { KeyboardShortcuts } from '../Keyboard/context';
+import { KeyboardShortcutPreferenceItem } from '../Keyboard/shortcuts';
 import type { StatLayout } from '../Statistics/types';
 import {
   LanguagePreferencesItem,
   SchemaLanguagePreferenceItem,
 } from '../Toolbar/Language';
-import type { KeyboardShortcuts } from './KeyboardContext';
-import { KeyboardShortcutPreferenceItem } from './KeyboardShortcut';
 import type { MenuPreferences, WelcomePageMode } from './Renderers';
 import {
   CollectionSortOrderPreferenceItem,
