@@ -18,12 +18,12 @@ import {
   contextUnlockedPromise,
   foreverFetch,
 } from '../InitialContext';
-import { formatUrl } from '../Router/queryString';
 import {
   bindKeyboardShortcut,
   resolvePlatformShortcuts,
-} from './KeyboardContext';
-import { localizeKeyboardShortcut } from './KeyboardShortcut';
+} from '../Keyboard/context';
+import { localizeKeyboardShortcut } from '../Keyboard/shortcuts';
+import { formatUrl } from '../Router/queryString';
 import type { GenericPreferences, PreferenceItem } from './types';
 
 /* eslint-disable functional/no-this-expression */
