@@ -42,6 +42,9 @@ import {
   LanguagePreferencesItem,
   SchemaLanguagePreferenceItem,
 } from '../Toolbar/Language';
+import type { KeyboardShortcuts } from './KeyboardContext';
+import { KeyboardShortcutBinding } from './KeyboardContext';
+import { KeyboardShortcutPreferenceItem } from './KeyboardShortcut';
 import type { MenuPreferences, WelcomePageMode } from './Renderers';
 import {
   CollectionSortOrderPreferenceItem,
@@ -51,7 +54,11 @@ import {
   HeaderItemsPreferenceItem,
   WelcomePageModePreferenceItem,
 } from './Renderers';
-import type { GenericPreferences, PreferencesVisibilityContext } from './types';
+import type {
+  GenericPreferences,
+  PreferenceItem,
+  PreferencesVisibilityContext,
+} from './types';
 import { definePref } from './types';
 
 const isLightMode = ({
@@ -73,6 +80,22 @@ const altKeyName = globalThis.navigator?.appVersion.includes('Mac')
  */
 const tableLabel = (tableName: keyof Tables): LocalizedString =>
   genericTables[tableName]?.label ?? camelToHuman(tableName);
+
+const defineKeyboardShortcut = (
+  title: LocalizedString,
+  defaultValue: KeyboardShortcuts | string
+): PreferenceItem<KeyboardShortcuts> =>
+  definePref<KeyboardShortcuts>({
+    title,
+    requiresReload: false,
+    visible: true,
+    defaultValue:
+      typeof defaultValue === 'string'
+        ? { other: [defaultValue] }
+        : defaultValue,
+    renderer: KeyboardShortcutPreferenceItem,
+    container: 'label',
+  });
 
 export const userPreferenceDefinitions = {
   general: {
@@ -1122,6 +1145,22 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
+          goToFirstRecord: defineKeyboardShortcut(
+            formsText.goToFirstRecord(),
+            'shift+M'
+          ),
+          goToPreviousRecord: defineKeyboardShortcut(
+            formsText.goToPreviousRecord(),
+            'shift+<'
+          ),
+          goToNextRecord: defineKeyboardShortcut(
+            formsText.goToNextRecord(),
+            'ctrl+ArrowDown'
+          ),
+          goToLastRecord: defineKeyboardShortcut(
+            formsText.goToLastRecord(),
+            'ctrl+ArrowDown'
+          ),
         },
       },
       formTable: {
