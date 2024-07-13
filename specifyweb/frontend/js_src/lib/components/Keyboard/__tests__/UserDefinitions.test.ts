@@ -1,9 +1,10 @@
-import type { KeyboardShortcuts, ModifierKey } from '../context';
-import { exportsForTests, keyJoinSymbol } from '../context';
 import type { GenericPreferences } from '../../Preferences/types';
 import { userPreferenceDefinitions } from '../../Preferences/UserDefinitions';
+import type { KeyboardShortcuts, ModifierKey } from '../config';
+import { keyLocalizations, modifierKeys, specialKeyboardKeys } from '../config';
+import { exportsForTests, keyJoinSymbol } from '../context';
 
-const { keysToString, modifierKeys, specialKeys } = exportsForTests;
+const { keysToString } = exportsForTests;
 
 test('Validate default keyboard shortcuts in userPreferenceDefinitions', () => {
   Object.entries(userPreferenceDefinitions as GenericPreferences).forEach(
@@ -51,9 +52,6 @@ function validateShortcut(
   const parts = shortcut.split(keyJoinSymbol);
   if (parts.length === 0) return 'unexpected empty shortcut';
 
-  /*
-   * FIXME: add test against default preferences containing non-existing shortcuts
-   */
   const shortcutModifierKeys = parts
     .map((part) => part as ModifierKey)
     .filter((part) => modifierKeys.includes(part))
@@ -69,7 +67,9 @@ function validateShortcut(
     return `shortcut is not normalized: ${normalizedShortcut} (expected keys to be sorted, with modifier keys before non-modifiers)`;
 
   if (shortcutModifierKeys.length === 0) {
-    const specialKey = nonModifierKeys.find((key) => specialKeys.has(key));
+    const specialKey = nonModifierKeys.find((key) =>
+      specialKeyboardKeys.has(key)
+    );
     if (typeof specialKey === 'string')
       return `can't use special reserved keys as default shortcuts, unless prefixed with a modifier key. Found ${specialKey}`;
   }
@@ -79,6 +79,10 @@ function validateShortcut(
 
   if (nonModifierKeys.length === 0)
     return 'shortcut must contain at least one non-modifier key';
+
+  const disallowedKey = nonModifierKeys.find((key) => !allowed.has(key));
+  if (typeof disallowedKey === 'string')
+    return `found an unknown key code: ${disallowedKey}. Make sure you are using key code rather than key name (e.g. use "KeyA" instead of "a"). To test, see what "keydown" event gives you for event.code (rather than event.key). If you are sure you have the key code, then you can extend the list of allowed keys in this test`;
 
   return undefined;
 }
@@ -93,41 +97,18 @@ function validateShortcut(
  */
 const allowed = new Set([
   // Not including modifier keys as the above check will only check non-modifiers
-  ...Array.from(specialKeys),
-  'ArrowDown',
-  'ArrowLeft',
-  'ArrowRight',
-  'ArrowUp',
-  'End',
-  'Home',
-  'PageDown',
-  'PageUp',
-  'Insert',
-  'F1',
-  'F2',
-  'F3',
-  'F4',
-  'F5',
-  'F6',
-  'F7',
-  'F8',
-  'F9',
-  'F10',
-  'F11',
-  'F12',
+  ...Array.from(specialKeyboardKeys),
+  ...Object.keys(keyLocalizations),
   'BrowserBack',
   'BrowserForward',
   'BrowserHome',
   'BrowserRefresh',
-  'BrowserrSearch',
+  'BrowserSearch',
   'Add',
   'Multiply',
   'Subtract',
   'Decimal',
   'Divide',
-  ...'01234567890-=qwertyuiop[]asdfghjkl;\'zxcvbnm,./\\`~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:"ZXCVBNM<>?'.split(
-    ''
-  ),
   /*
    * This list doesn't include more obscure keys, but we probably shouldn't be
    * using those in key shortcuts anyway

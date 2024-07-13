@@ -38,7 +38,7 @@ import type { TableFields } from '../DataModel/helperTypes';
 import { genericTables } from '../DataModel/tables';
 import type { Collection, Tables } from '../DataModel/types';
 import { error, softError } from '../Errors/assert';
-import type { KeyboardShortcuts } from '../Keyboard/context';
+import type { KeyboardShortcuts } from '../Keyboard/config';
 import { KeyboardShortcutPreferenceItem } from '../Keyboard/shortcuts';
 import type { StatLayout } from '../Statistics/types';
 import {
@@ -85,6 +85,14 @@ const tableLabel = (tableName: keyof Tables): LocalizedString =>
 
 const defineKeyboardShortcut = (
   title: LocalizedString,
+  /**
+   * If defined a keyboard shortcut for one platform, it will be automatically
+   * transformed (`ctrl -> cmd`) for the other platforms.
+   *
+   * Thus, you should define keyboard shortcuts for the "other" platform only,
+   * unless you actually want to use different keyboard shortcuts on different
+   * systems.
+   */
   defaultValue: KeyboardShortcuts | string
 ): PreferenceItem<KeyboardShortcuts> =>
   definePref<KeyboardShortcuts>({

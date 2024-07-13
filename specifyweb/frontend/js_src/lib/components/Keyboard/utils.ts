@@ -3,7 +3,11 @@ import type { LocalizedString } from 'typesafe-i18n';
 import type { RA } from '../../utils/types';
 import { localized } from '../../utils/types';
 import type { KeyboardShortcuts, ModifierKey } from './config';
-import { keyboardModifierLocalization, keyboardPlatform } from './config';
+import {
+  keyboardModifierLocalization,
+  keyboardPlatform,
+  keyLocalizations,
+} from './config';
 import { keyJoinSymbol } from './context';
 
 const localizedKeyJoinSymbol = ' + ';
@@ -11,7 +15,12 @@ export const localizeKeyboardShortcut = (shortcut: string): LocalizedString =>
   localized(
     shortcut
       .split(keyJoinSymbol)
-      .map((key) => keyboardModifierLocalization[key as ModifierKey] ?? key)
+      .map(
+        (key) =>
+          keyboardModifierLocalization[key as ModifierKey] ??
+          keyLocalizations[key] ??
+          key
+      )
       .join(localizedKeyJoinSymbol)
   );
 
@@ -41,11 +50,11 @@ export function resolvePlatformShortcuts(
 const replaceCtrlWithMeta = (shortcut: string): string =>
   shortcut
     .split(keyJoinSymbol)
-    .map((key) => (key === 'ctrl' ? 'meta' : key))
+    .map((key) => (key === 'Ctrl' ? 'Meta' : key))
     .join(keyJoinSymbol);
 
 const replaceMetaWithCtrl = (shortcut: string): string =>
   shortcut
     .split(keyJoinSymbol)
-    .map((key) => (key === 'meta' ? 'ctrl' : key))
+    .map((key) => (key === 'Meta' ? 'Ctrl' : key))
     .join(keyJoinSymbol);

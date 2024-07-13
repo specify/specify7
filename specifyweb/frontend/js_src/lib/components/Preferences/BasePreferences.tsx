@@ -18,11 +18,11 @@ import {
   contextUnlockedPromise,
   foreverFetch,
 } from '../InitialContext';
+import { bindKeyboardShortcut } from '../Keyboard/context';
 import {
-  bindKeyboardShortcut,
+  localizeKeyboardShortcut,
   resolvePlatformShortcuts,
-} from '../Keyboard/context';
-import { localizeKeyboardShortcut } from '../Keyboard/shortcuts';
+} from '../Keyboard/utils';
 import { formatUrl } from '../Router/queryString';
 import type { GenericPreferences, PreferenceItem } from './types';
 
