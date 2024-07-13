@@ -1,10 +1,12 @@
 import React from 'react';
 
-import { useParser } from '../../hooks/resource';
 import { formsText } from '../../localization/forms';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
-import { getValidationAttributes } from '../../utils/parser/definitions';
+import {
+  fieldFormatterToParser,
+  getValidationAttributes,
+} from '../../utils/parser/definitions';
 import type { GetSet, RA } from '../../utils/types';
 import { ErrorMessage } from '../Atoms';
 import { Input, Label } from '../Atoms/Form';
@@ -164,7 +166,13 @@ function FieldFormatterPreviewField({
     () => resolvedFormatter?.parse(value) !== undefined,
     [value, resolvedFormatter]
   );
-  const parser = useParser(field);
+  const parser = React.useMemo(
+    () =>
+      field === undefined || resolvedFormatter === undefined
+        ? { type: 'text' as const }
+        : fieldFormatterToParser(field, resolvedFormatter),
+    [field, resolvedFormatter]
+  );
 
   const validationAttributes = getValidationAttributes(parser);
   return resolvedFormatter === undefined ? null : (
@@ -173,6 +181,7 @@ function FieldFormatterPreviewField({
         isConforming ? '' : resourcesText.nonConformingInline()
       }`}
       <Input.Generic
+        type="text"
         value={value}
         onValueChange={setValue}
         {...validationAttributes}
