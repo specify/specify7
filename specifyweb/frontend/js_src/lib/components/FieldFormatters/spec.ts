@@ -123,10 +123,55 @@ const formatterSpec = f.store(() =>
     ),
     parts: pipe(
       syncers.xmlChildren('field'),
-      syncers.map(syncers.object(partSpec()))
+      syncers.map(
+        pipe(
+          syncers.object(partSpec()),
+          syncer(
+            (part) => ({
+              ...part,
+              placeholder:
+                part.type === 'regex'
+                  ? localized(trimRegexString(part.placeholder))
+                  : part.placeholder,
+            }),
+            (part) => ({
+              ...part,
+              placeholder:
+                part.type === 'regex'
+                  ? localized(normalizeRegexString(part.placeholder))
+                  : part.placeholder,
+            })
+          )
+        )
+      )
     ),
   })
 );
+
+/**
+ * Specify 6 expects the regex pattern to start with "/^" and end with "$/"
+ * because it parts each field part individually.
+ * In Specify 7, we construct a combined regex that parts all field parts at
+ * once.
+ * Thus we do not want the "^" and "$" to be part of the pattern as far as
+ * Specify 7 front-end is concerned, but we want it to be part of the pattern
+ * in the .xml to work with Specify 6.
+ */
+function trimRegexString(regexString: string): string {
+  let pattern = regexString;
+  if (pattern.startsWith('/')) pattern = pattern.slice(1);
+  if (pattern.startsWith('^')) pattern = pattern.slice(1);
+  if (pattern.endsWith('/')) pattern = pattern.slice(0, -1);
+  if (pattern.endsWith('$')) pattern = pattern.slice(0, -1);
+  if (pattern.startsWith('(') && pattern.endsWith(')'))
+    pattern = pattern.slice(1, -1);
+  return pattern;
+}
+function normalizeRegexString(regexString: string): string {
+  let pattern: string = trimRegexString(regexString);
+  if (pattern.includes('|')) pattern = `(${pattern})`;
+  return `/^${pattern}$/`;
+}
 
 const partSpec = f.store(() =>
   createXmlSpec({
@@ -179,3 +224,5 @@ function parseField(
     return undefined;
   } else return field;
 }
+
+export const exportsForTests = { trimRegexString, normalizeRegexString };
