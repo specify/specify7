@@ -62,8 +62,8 @@ const pressedKeys: string[] = [];
 document.addEventListener('keydown', (event) => {
   if (shouldIgnoreKeyPress(event)) return;
 
-  if (!pressedKeys.includes(event.key)) {
-    pressedKeys.push(event.key);
+  if (!pressedKeys.includes(event.code)) {
+    pressedKeys.push(event.code);
     pressedKeys.sort();
   }
 
@@ -73,7 +73,7 @@ document.addEventListener('keydown', (event) => {
   // Ignore shortcuts that result in printed characters when in an input field
   const ignore = isPrintable && isEntering;
   if (ignore) return;
-  if (modifiers.length === 0 && specialKeyboardKeys.has(event.key)) return;
+  if (modifiers.length === 0 && specialKeyboardKeys.has(event.code)) return;
 
   const keyString = keysToString(modifiers, pressedKeys);
   const handler = interceptor ?? listeners.get(keyString);
@@ -96,7 +96,7 @@ function shouldIgnoreKeyPress(event: KeyboardEvent): boolean {
   // See https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key#value
   if (key === 'Dead' || key === 'Unidentified') return true;
 
-  // Do not allow binding a key shortcut to a modifier key only
+  // Do not allow binding a key shortcut directly to a modifier key
   const isModifier = allModifierKeys.has(event.key);
 
   return !isModifier;
