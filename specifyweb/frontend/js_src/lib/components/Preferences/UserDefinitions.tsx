@@ -104,7 +104,7 @@ const defineKeyboardShortcut = (
         ? { other: [defaultValue] }
         : defaultValue,
     renderer: KeyboardShortcutPreferenceItem,
-    container: 'label',
+    container: 'div',
   });
 
 export const userPreferenceDefinitions = {
@@ -1157,19 +1157,19 @@ export const userPreferenceDefinitions = {
           }),
           goToFirstRecord: defineKeyboardShortcut(
             formsText.goToFirstRecord(),
-            'shift+M'
+            'Shift+M'
           ),
           goToPreviousRecord: defineKeyboardShortcut(
             formsText.goToPreviousRecord(),
-            'shift+<'
+            'Shift+<'
           ),
           goToNextRecord: defineKeyboardShortcut(
             formsText.goToNextRecord(),
-            'ctrl+ArrowDown'
+            'Ctrl+ArrowDown'
           ),
           goToLastRecord: defineKeyboardShortcut(
             formsText.goToLastRecord(),
-            'ctrl+ArrowDown'
+            'Ctrl+ArrowDown'
           ),
         },
       },

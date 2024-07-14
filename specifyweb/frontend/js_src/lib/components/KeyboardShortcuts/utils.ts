@@ -1,3 +1,4 @@
+import { platform } from '@floating-ui/react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import type { RA } from '../../utils/types';
@@ -7,22 +8,27 @@ import {
   keyboardModifierLocalization,
   keyboardPlatform,
   keyLocalizations,
+  shiftKeyLocalizations,
 } from './config';
 import { keyJoinSymbol } from './context';
 
-const localizedKeyJoinSymbol = ' + ';
-export const localizeKeyboardShortcut = (shortcut: string): LocalizedString =>
-  localized(
-    shortcut
-      .split(keyJoinSymbol)
-      .map(
-        (key) =>
-          keyboardModifierLocalization[key as ModifierKey] ??
-          keyLocalizations[key] ??
-          key
-      )
-      .join(localizedKeyJoinSymbol)
-  );
+export const localizedKeyJoinSymbol = ' + ';
+export function localizeKeyboardShortcut(shortcut: string): LocalizedString {
+  const parts = shortcut.split(keyJoinSymbol);
+  const hasShift = parts.includes('Shift');
+
+  const string = parts
+    .map(
+      (key) =>
+        keyboardModifierLocalization[key as ModifierKey] ??
+        (hasShift ? shiftKeyLocalizations[key] : undefined) ??
+        keyLocalizations[key] ??
+        key
+    )
+    .join(localizedKeyJoinSymbol);
+
+  return localized(string);
+}
 
 /**
  * If there is a keyboard shortcut defined for current system, use it
@@ -34,7 +40,7 @@ export const localizeKeyboardShortcut = (shortcut: string): LocalizedString =>
 export function resolvePlatformShortcuts(
   shortcut: KeyboardShortcuts
 ): RA<string> | undefined {
-  if ('platform' in shortcut) return shortcut[keyboardPlatform];
+  if (platform in shortcut) return shortcut[keyboardPlatform];
   else if ('other' in shortcut)
     return keyboardPlatform === 'windows'
       ? shortcut.other

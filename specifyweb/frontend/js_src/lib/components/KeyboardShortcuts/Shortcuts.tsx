@@ -7,7 +7,6 @@ import React from 'react';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { preferencesText } from '../../localization/preferences';
-import { listen } from '../../utils/events';
 import type { RA } from '../../utils/types';
 import { removeItem, replaceItem, replaceKey } from '../../utils/utils';
 import { Key } from '../Atoms';
@@ -15,18 +14,24 @@ import { Button } from '../Atoms/Button';
 import type { PreferenceRendererProps } from '../Preferences/types';
 import type { KeyboardShortcuts } from './config';
 import { keyboardPlatform } from './config';
+import { keyJoinSymbol, setKeyboardEventInterceptor } from './context';
 import {
-  keyJoinSymbol,
-  resolveModifiers,
-  setKeyboardEventInterceptor,
-} from './context';
-import { localizeKeyboardShortcut, resolvePlatformShortcuts } from './utils';
+  localizedKeyJoinSymbol,
+  localizeKeyboardShortcut,
+  resolvePlatformShortcuts,
+} from './utils';
 
-/*
+/**
+ * FIXME: define keyboard shortcuts for common actions and pages
+ *
+ * FIXME: allow setting keyboard shortcuts for arbitrary pages
+ *
  * FIXME: create a mechanism for setting shortcuts for a page, and then displaying
  * those in the UI if present on the page
  *
  * FIXME: open key shortcut viewer on cmd+/
+ *
+ * FIXME: warn if conflicting keyboard shortcut is assigned
  */
 
 export function KeyboardShortcutPreferenceItem({
@@ -103,41 +108,36 @@ function EditKeyboardShortcut({
   readonly onEditStart: (() => void) | undefined;
 }): JSX.Element {
   const [localState, setLocalState] = useTriggerState(shortcut);
-  const parts = localState.split(keyJoinSymbol);
+  const parts = localState.length === 0 ? [] : localState.split(keyJoinSymbol);
   const isEditing = typeof handleSave === 'function';
 
   React.useEffect(() => {
     if (isEditing) {
+      // Allows user to press Enter to finish setting keyboard shortcut.
+      saveButtonRef.current?.focus();
       setLocalState('');
-      const keyboardInterceptor = setKeyboardEventInterceptor(setLocalState);
-      /*
-       * Save the shortcut when Enter key is pressed.
-       * Keyboard interceptor won't react to single Enter key press as it
-       * is a special key, unless a modifier key is present.
-       */
-      const enterListener = listen(document, 'keydown', (event) => {
-        if (event.key === 'Enter' && resolveModifiers(event).length === 0)
-          handleSave(activeValue.current);
-      });
-      return () => {
-        keyboardInterceptor();
-        enterListener();
-      };
+      return setKeyboardEventInterceptor(setLocalState);
     }
     return undefined;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEditing, setLocalState]);
 
   const isEmpty = parts.length === 0;
   const activeValue = React.useRef(localState);
   activeValue.current = isEmpty ? shortcut : localState;
 
+  const saveButtonRef = React.useRef<HTMLButtonElement>(null);
+
+  const localizedParts = React.useMemo(
+    () => localizeKeyboardShortcut(localState).split(localizedKeyJoinSymbol),
+    [localState]
+  );
+
   return (
     <div className="flex gap-2">
       <div
         aria-atomic
         aria-live={isEditing ? 'polite' : undefined}
-        className="flex flex-1 flex-wrap items-center gap-2"
+        className="flex flex-1 flex-wrap content-center items-center gap-1"
       >
         {isEmpty ? (
           isEditing ? (
@@ -146,9 +146,11 @@ function EditKeyboardShortcut({
             preferencesText.noKeyAssigned()
           )
         ) : (
-          <kbd>
-            {shortcut.split(keyJoinSymbol).map((key) => (
-              <Key key={key}>{localizeKeyboardShortcut(key)}</Key>
+          <kbd className="contents">
+            {localizedParts.map((key, index) => (
+              <Key className="mx-0" key={index}>
+                {localizeKeyboardShortcut(key)}
+              </Key>
             ))}
           </kbd>
         )}
@@ -159,7 +161,7 @@ function EditKeyboardShortcut({
         </Button.Small>
       )}
       <Button.Small
-        aria-pressed={isEditing ? true : undefined}
+        forwardRef={saveButtonRef}
         onClick={
           isEditing
             ? (): void =>

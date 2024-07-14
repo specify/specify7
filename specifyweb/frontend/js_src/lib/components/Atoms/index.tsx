@@ -91,7 +91,7 @@ export const Summary = wrap<
 export const Key = wrap(
   'Key',
   'kbd',
-  'bg-gray-200 border-1 dark:border-none dark:bg-neutral-700 rounded-sm mx-1 p-0.5'
+  'bg-gray-200 border-1 dark:border-none dark:bg-neutral-700 rounded-sm mx-1 p-0.5 text-xl'
 );
 
 const defaultOneRem = 16;
