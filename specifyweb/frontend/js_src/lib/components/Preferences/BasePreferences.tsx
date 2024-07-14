@@ -467,7 +467,7 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
           definition.renderer.name !== 'KeyboardShortcutPreferenceItem'
         )
           throw new Error(
-            `Trying to listen to keyboard shortcut on a non-keyboard shortcut preference '${category}.${subcategory}.${item}'`
+            `Trying to listen to keyboard shortcut on a non-keyboard shortcut preference item '${category}.${subcategory}.${item}'`
           );
       });
     }
@@ -482,7 +482,7 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
     );
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    return React.useMemo(() => {
+    const localizedShortcut = React.useMemo(() => {
       const platformShortcuts = resolvePlatformShortcuts(shortcuts) ?? [];
       return platformShortcuts.length > 0
         ? ` (${formatDisjunction(
@@ -490,6 +490,8 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
           )})`
         : '';
     }, [shortcuts]);
+
+    return hasCallback ? localizedShortcut : '';
   }
 }
 

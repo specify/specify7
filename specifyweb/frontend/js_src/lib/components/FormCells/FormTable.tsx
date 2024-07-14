@@ -441,30 +441,31 @@ export function FormTable<SCHEMA extends AnySchema>({
         </DataEntry.Grid>
       </div>
     );
-  const addButton =
+
+  const canAdd =
     typeof handleAddResources === 'function' &&
     mode !== 'view' &&
     !disableAdding &&
     hasTablePermission(
       relationship.relatedTable.name,
       isDependent ? 'create' : 'read'
-    ) ? (
-      <DataEntry.Add
-        onClick={
-          disableAdding
-            ? undefined
-            : isDependent
-            ? (): void => {
-                const resource = new relationship.relatedTable.Resource();
-                handleAddResources([resource]);
-              }
-            : (): void =>
-                setState({
-                  type: 'SearchState',
-                })
+    );
+  const handleAddClick =
+    !canAdd || disableAdding
+      ? undefined
+      : isDependent
+      ? (): void => {
+          const resource = new relationship.relatedTable.Resource();
+          handleAddResources([resource]);
         }
-      />
-    ) : undefined;
+      : (): void =>
+          setState({
+            type: 'SearchState',
+          });
+
+  const addButton = canAdd ? (
+    <DataEntry.Add enableShortcut={dialog !== false} onClick={handleAddClick} />
+  ) : undefined;
   return dialog === false ? (
     <DataEntry.SubForm>
       <DataEntry.SubFormHeader>
