@@ -21,9 +21,11 @@ export type KeyboardShortcuts = Partial<
 
 type KeyboardPlatform = 'mac' | 'other' | 'windows';
 export const keyboardPlatform: KeyboardPlatform =
-  navigator.platform.toLowerCase().includes('mac') ||
-  // Check for iphone || ipad || ipod
-  navigator.platform.toLowerCase().includes('ip')
+  process.env.NODE_ENV === 'test'
+    ? 'other'
+    : navigator.platform.toLowerCase().includes('mac') ||
+      // Check for iphone || ipad || ipod
+      navigator.platform.toLowerCase().includes('ip')
     ? 'mac'
     : navigator.platform.toLowerCase().includes('win')
     ? 'windows'

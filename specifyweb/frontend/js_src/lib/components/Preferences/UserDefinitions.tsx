@@ -1157,19 +1157,23 @@ export const userPreferenceDefinitions = {
           }),
           goToFirstRecord: defineKeyboardShortcut(
             formsText.goToFirstRecord(),
-            'Shift+M'
+            'Ctrl+Shift+ArrowUp'
           ),
           goToPreviousRecord: defineKeyboardShortcut(
             formsText.goToPreviousRecord(),
-            'Shift+<'
+            'Ctrl+Shift+ArrowLeft'
           ),
           goToNextRecord: defineKeyboardShortcut(
             formsText.goToNextRecord(),
-            'Ctrl+ArrowDown'
+            'Ctrl+Shift+ArrowRight'
           ),
           goToLastRecord: defineKeyboardShortcut(
             formsText.goToLastRecord(),
-            'Ctrl+ArrowDown'
+            'Ctrl+Shift+ArrowDown'
+          ),
+          addResource: defineKeyboardShortcut(
+            resourcesText.addResource(),
+            'KeyA'
           ),
         },
       },

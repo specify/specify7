@@ -30,8 +30,6 @@ import {
  * those in the UI if present on the page
  *
  * FIXME: open key shortcut viewer on cmd+/
- *
- * FIXME: warn if conflicting keyboard shortcut is assigned
  */
 
 export function KeyboardShortcutPreferenceItem({
