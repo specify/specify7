@@ -34,9 +34,9 @@ export function localizeKeyboardShortcut(shortcut: string): LocalizedString {
 
   // If there is only one non-modifier key, then join the keys without separator
   const resolved =
-    nonModifiers.length > 1
-      ? [...modifiers, ...nonModifiers].join(localizedKeyJoinSymbol)
-      : `${modifiers.join('')}${nonModifiers[0]}`;
+    keyboardPlatform === 'mac' && nonModifiers.length === 1
+      ? `${modifiers.join('')}${nonModifiers[0]}`
+      : [...modifiers, ...nonModifiers].join(localizedKeyJoinSymbol);
 
   return localized(resolved);
 }
