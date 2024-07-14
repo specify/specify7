@@ -89,17 +89,21 @@ document.addEventListener('keydown', (event) => {
 });
 
 function shouldIgnoreKeyPress(event: KeyboardEvent): boolean {
-  const key = event.key;
+  const code = event.code;
 
   if (event.isComposing || event.repeat) return true;
 
-  // See https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key#value
-  if (key === 'Dead' || key === 'Unidentified') return true;
+  // See https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_code_values
+  if (
+    code === 'Dead' ||
+    code === 'Unidentified' ||
+    code === 'Unidentified' ||
+    code === ''
+  )
+    return true;
 
   // Do not allow binding a key shortcut directly to a modifier key
-  const isModifier = allModifierKeys.has(event.key);
-
-  return !isModifier;
+  return allModifierKeys.has(event.key);
 }
 
 export const resolveModifiers = (event: KeyboardEvent): RA<ModifierKey> =>

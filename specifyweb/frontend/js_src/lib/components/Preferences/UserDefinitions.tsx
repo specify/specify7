@@ -101,7 +101,7 @@ const defineKeyboardShortcut = (
         ? { other: [defaultValue] }
         : defaultValue,
     renderer: KeyboardShortcutPreferenceItem,
-    container: 'label',
+    container: 'div',
   });
 
 export const userPreferenceDefinitions = {
@@ -1154,19 +1154,19 @@ export const userPreferenceDefinitions = {
           }),
           goToFirstRecord: defineKeyboardShortcut(
             formsText.goToFirstRecord(),
-            'shift+M'
+            'Shift+M'
           ),
           goToPreviousRecord: defineKeyboardShortcut(
             formsText.goToPreviousRecord(),
-            'shift+<'
+            'Shift+<'
           ),
           goToNextRecord: defineKeyboardShortcut(
             formsText.goToNextRecord(),
-            'ctrl+ArrowDown'
+            'Ctrl+ArrowDown'
           ),
           goToLastRecord: defineKeyboardShortcut(
             formsText.goToLastRecord(),
-            'ctrl+ArrowDown'
+            'Ctrl+ArrowDown'
           ),
         },
       },
@@ -1997,35 +1997,19 @@ import('../DataModel/tables')
   .then(async ({ fetchContext, tables }) =>
     fetchContext.then(() => {
       const trees = userPreferenceDefinitions.treeEditor.subCategories;
-      overwriteReadOnly(
-        trees.geography,
-        'title',
-        getField(tables.Geography, 'name').label
-      );
-      overwriteReadOnly(
-        trees.taxon,
-        'title',
-        getField(tables.Taxon, 'name').label
-      );
-      overwriteReadOnly(
-        trees.storage,
-        'title',
-        getField(tables.Storage, 'name').label
-      );
+      overwriteReadOnly(trees.geography, 'title', tables.Geography.label);
+      overwriteReadOnly(trees.taxon, 'title', tables.Taxon.label);
+      overwriteReadOnly(trees.storage, 'title', tables.Storage.label);
       overwriteReadOnly(
         trees.geologicTimePeriod,
         'title',
-        getField(tables.Geography, 'name').label
+        tables.GeologicTimePeriod.label
       );
-      overwriteReadOnly(
-        trees.lithoStrat,
-        'title',
-        getField(tables.LithoStrat, 'name').label
-      );
+      overwriteReadOnly(trees.lithoStrat, 'title', tables.LithoStrat.label);
       overwriteReadOnly(
         userPreferenceDefinitions.form.subCategories.recordSet,
         'title',
-        getField(tables.RecordSet, 'name').label
+        tables.RecordSet.label
       );
 
       const treeSearchBehavior =

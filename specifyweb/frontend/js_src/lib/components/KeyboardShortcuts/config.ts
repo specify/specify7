@@ -39,6 +39,8 @@ export const allModifierKeys = new Set([
   'MetaRight',
   'ShiftLeft',
   'ShiftRight',
+  'ControlLeft',
+  'ControlRight',
   'AltLeft',
   'AltRight',
 ]);
@@ -90,6 +92,9 @@ export const specialKeyboardKeys = new Set([
  *
  * Try not to define keyboard shortcuts for keys that may be in a different
  * place in other keyboard layouts (the positions of special symbols wary a lot)
+ *
+ * See full list of key codes:
+ * https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_code_values
  */
 export const keyLocalizations: IR<string> = {
   ArrowDown: '↓',
@@ -146,4 +151,62 @@ export const keyLocalizations: IR<string> = {
   Quote: "'",
   Semicolon: ';',
   Slash: '/',
+};
+
+/**
+ * Like keyLocalizations, but applied if keyboard shortcut involves Shift key
+ */
+export const shiftKeyLocalizations: Record<string, string> = {
+  // FEATURE: decide if these should display differently when shift is pressed or not:
+  /*
+   * "Backquote": "~",
+   * "Backslash": "|",
+   * "BracketLeft": "{",
+   * "BracketRight": "}",
+   * "Comma": "<",
+   * "Digit0": ")",
+   * "Digit1": "!",
+   * "Digit2": "@",
+   * "Digit3": "#",
+   * "Digit4": "$",
+   * "Digit5": "%",
+   * "Digit6": "^",
+   * "Digit7": "&",
+   * "Digit8": "*",
+   * "Digit9": "(",
+   * "Equal": "+",
+   */
+  KeyA: 'A',
+  KeyB: 'B',
+  KeyC: 'C',
+  KeyD: 'D',
+  KeyE: 'E',
+  KeyF: 'F',
+  KeyG: 'G',
+  KeyH: 'H',
+  KeyI: 'I',
+  KeyJ: 'J',
+  KeyK: 'K',
+  KeyL: 'L',
+  KeyM: 'M',
+  KeyN: 'N',
+  KeyO: 'O',
+  KeyP: 'P',
+  KeyQ: 'Q',
+  KeyR: 'R',
+  KeyS: 'S',
+  KeyT: 'T',
+  KeyU: 'U',
+  KeyV: 'V',
+  KeyW: 'W',
+  KeyX: 'X',
+  KeyY: 'Y',
+  KeyZ: 'Z',
+  /*
+   * "Minus": "_",
+   * "Period": ">",
+   * "Quote": "\"",
+   * "Semicolon": ":",
+   * "Slash": "?"
+   */
 };
