@@ -68,7 +68,7 @@ snapshot(DataEntry.Footer, { children: 'Test' });
 snapshot(DataEntry.SubForm, { children: 'Test' });
 snapshot(DataEntry.SubFormHeader, { children: 'Test' });
 snapshot(DataEntry.SubFormTitle, { children: 'Test' });
-snapshot(DataEntry.Add, { onClick: f.never });
+snapshot(DataEntry.Add, { onClick: f.never, enableShortcut: true });
 snapshot(DataEntry.View, { onClick: f.never });
 snapshot(DataEntry.Edit, { onClick: f.never });
 snapshot(DataEntry.Clone, { onClick: f.never });

@@ -86,7 +86,7 @@ export function COJODialog({
 
   return (
     <>
-      <DataEntry.Add onClick={handleOpen} />
+      <DataEntry.Add enableShortcut onClick={handleOpen} />
       {isOpen && (
         <Dialog
           buttons={commonText.cancel()}
@@ -100,6 +100,7 @@ export function COJODialog({
                 <TableIcon label name={table.name} />
                 {table.label}
                 <DataEntry.Add
+                  enableShortcut
                   onClick={(): void => {
                     setState('Add');
                     setResourceTable(table);

@@ -51,7 +51,10 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   onFetch: handleFetch,
   hasSeveralResourceType,
   ...rest
-}: Omit<RecordSelectorProps<SCHEMA>, 'index' | 'records'> & {
+}: Omit<
+  RecordSelectorProps<SCHEMA>,
+  'enableKeyboardShortcuts' | 'index' | 'records'
+> & {
   /*
    * Undefined IDs are placeholders for items with unknown IDs (e.g in record
    * sets or query results with thousands of items)
@@ -125,6 +128,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     isLoading,
   } = useRecordSelector({
     ...rest,
+    enableKeyboardShortcuts: true,
     index,
     table,
     records:
@@ -208,6 +212,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                 <DataEntry.Add
                   aria-label={addLabel}
                   disabled={isReadOnly}
+                  enableShortcut
                   title={addLabel}
                   onClick={() => {
                     const resource = new table.Resource();

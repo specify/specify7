@@ -1,7 +1,6 @@
-import { platform } from '@floating-ui/react';
 import type { LocalizedString } from 'typesafe-i18n';
 
-import type { RA } from '../../utils/types';
+import type { RA, WritableArray } from '../../utils/types';
 import { localized } from '../../utils/types';
 import type { KeyboardShortcuts, ModifierKey } from './config';
 import {
@@ -17,17 +16,29 @@ export function localizeKeyboardShortcut(shortcut: string): LocalizedString {
   const parts = shortcut.split(keyJoinSymbol);
   const hasShift = parts.includes('Shift');
 
-  const string = parts
-    .map(
-      (key) =>
-        keyboardModifierLocalization[key as ModifierKey] ??
+  const modifiers: WritableArray<string> = [];
+  const nonModifiers: WritableArray<string> = [];
+  // eslint-disable-next-line functional/no-loop-statement
+  for (const key of parts) {
+    const localizedModifier = keyboardModifierLocalization[key as ModifierKey];
+    if (typeof localizedModifier === 'string')
+      modifiers.push(localizedModifier);
+    else {
+      nonModifiers.push(
         (hasShift ? shiftKeyLocalizations[key] : undefined) ??
-        keyLocalizations[key] ??
-        key
-    )
-    .join(localizedKeyJoinSymbol);
+          keyLocalizations[key] ??
+          key
+      );
+    }
+  }
 
-  return localized(string);
+  // If there is only one non-modifier key, then join the keys without separator
+  const resolved =
+    nonModifiers.length > 1
+      ? [...modifiers, ...nonModifiers].join(localizedKeyJoinSymbol)
+      : `${modifiers.join('')}${nonModifiers[0]}`;
+
+  return localized(resolved);
 }
 
 /**
@@ -40,7 +51,7 @@ export function localizeKeyboardShortcut(shortcut: string): LocalizedString {
 export function resolvePlatformShortcuts(
   shortcut: KeyboardShortcuts
 ): RA<string> | undefined {
-  if (platform in shortcut) return shortcut[keyboardPlatform];
+  if (keyboardPlatform in shortcut) return shortcut[keyboardPlatform];
   else if ('other' in shortcut)
     return keyboardPlatform === 'windows'
       ? shortcut.other

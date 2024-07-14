@@ -1,11 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[` renders without errors 1`] = `
+exports[`Add renders without errors 1`] = `
 <DocumentFragment>
   <button
-    aria-label="Add"
+    aria-label="Add (A)"
     class="icon link rounded !text-green-700 print:hidden "
-    title="Add"
+    title="Add (A)"
     type="button"
   >
     <svg
@@ -18,133 +18,6 @@ exports[` renders without errors 1`] = `
       <path
         clip-rule="evenodd"
         d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-        fill-rule="evenodd"
-      />
-    </svg>
-  </button>
-</DocumentFragment>
-`;
-
-exports[` renders without errors 2`] = `
-<DocumentFragment>
-  <button
-    aria-label="View"
-    class="icon link rounded !text-cyan-400 print:hidden "
-    title="View"
-    type="button"
-  >
-    <svg
-      aria-hidden="true"
-      class="w-6 h-6 flex-shrink-0"
-      fill="currentColor"
-      viewBox="0 0 20 20"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M10 12a2 2 0 100-4 2 2 0 000 4z"
-      />
-      <path
-        clip-rule="evenodd"
-        d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
-        fill-rule="evenodd"
-      />
-    </svg>
-  </button>
-</DocumentFragment>
-`;
-
-exports[` renders without errors 3`] = `
-<DocumentFragment>
-  <button
-    aria-label="Edit"
-    class="icon link rounded !text-orange-400 print:hidden "
-    title="Edit"
-    type="button"
-  >
-    <svg
-      aria-hidden="true"
-      class="w-6 h-6 flex-shrink-0"
-      fill="currentColor"
-      viewBox="0 0 20 20"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
-      />
-    </svg>
-  </button>
-</DocumentFragment>
-`;
-
-exports[` renders without errors 4`] = `
-<DocumentFragment>
-  <button
-    aria-label="Clone"
-    class="icon link rounded !text-amber-700 print:hidden "
-    title="Clone"
-    type="button"
-  >
-    <svg
-      aria-hidden="true"
-      class="w-6 h-6 flex-shrink-0"
-      fill="currentColor"
-      viewBox="0 0 20 20"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"
-      />
-      <path
-        d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"
-      />
-    </svg>
-  </button>
-</DocumentFragment>
-`;
-
-exports[` renders without errors 5`] = `
-<DocumentFragment>
-  <button
-    aria-label="Search"
-    class="icon link rounded !text-blue-500 print:hidden "
-    title="Search"
-    type="button"
-  >
-    <svg
-      aria-hidden="true"
-      class="w-6 h-6 flex-shrink-0"
-      fill="currentColor"
-      viewBox="0 0 20 20"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        clip-rule="evenodd"
-        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-        fill-rule="evenodd"
-      />
-    </svg>
-  </button>
-</DocumentFragment>
-`;
-
-exports[` renders without errors 6`] = `
-<DocumentFragment>
-  <button
-    aria-label="Remove"
-    class="icon link rounded !text-red-700 print:hidden "
-    title="Remove"
-    type="button"
-  >
-    <svg
-      aria-hidden="true"
-      class="w-6 h-6 flex-shrink-0"
-      fill="currentColor"
-      viewBox="0 0 20 20"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        clip-rule="evenodd"
-        d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
         fill-rule="evenodd"
       />
     </svg>
@@ -295,5 +168,132 @@ exports[`DataEntry.visit no resource 2`] = `
       </svg>
     </span>
   </a>
+</DocumentFragment>
+`;
+
+exports[`clipboard renders without errors 1`] = `
+<DocumentFragment>
+  <button
+    aria-label="Clone"
+    class="icon link rounded !text-amber-700 print:hidden "
+    title="Clone"
+    type="button"
+  >
+    <svg
+      aria-hidden="true"
+      class="w-6 h-6 flex-shrink-0"
+      fill="currentColor"
+      viewBox="0 0 20 20"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"
+      />
+      <path
+        d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"
+      />
+    </svg>
+  </button>
+</DocumentFragment>
+`;
+
+exports[`eye renders without errors 1`] = `
+<DocumentFragment>
+  <button
+    aria-label="View"
+    class="icon link rounded !text-cyan-400 print:hidden "
+    title="View"
+    type="button"
+  >
+    <svg
+      aria-hidden="true"
+      class="w-6 h-6 flex-shrink-0"
+      fill="currentColor"
+      viewBox="0 0 20 20"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M10 12a2 2 0 100-4 2 2 0 000 4z"
+      />
+      <path
+        clip-rule="evenodd"
+        d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+        fill-rule="evenodd"
+      />
+    </svg>
+  </button>
+</DocumentFragment>
+`;
+
+exports[`minus renders without errors 1`] = `
+<DocumentFragment>
+  <button
+    aria-label="Remove"
+    class="icon link rounded !text-red-700 print:hidden "
+    title="Remove"
+    type="button"
+  >
+    <svg
+      aria-hidden="true"
+      class="w-6 h-6 flex-shrink-0"
+      fill="currentColor"
+      viewBox="0 0 20 20"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        clip-rule="evenodd"
+        d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+        fill-rule="evenodd"
+      />
+    </svg>
+  </button>
+</DocumentFragment>
+`;
+
+exports[`pencil renders without errors 1`] = `
+<DocumentFragment>
+  <button
+    aria-label="Edit"
+    class="icon link rounded !text-orange-400 print:hidden "
+    title="Edit"
+    type="button"
+  >
+    <svg
+      aria-hidden="true"
+      class="w-6 h-6 flex-shrink-0"
+      fill="currentColor"
+      viewBox="0 0 20 20"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
+      />
+    </svg>
+  </button>
+</DocumentFragment>
+`;
+
+exports[`search renders without errors 1`] = `
+<DocumentFragment>
+  <button
+    aria-label="Search"
+    class="icon link rounded !text-blue-500 print:hidden "
+    title="Search"
+    type="button"
+  >
+    <svg
+      aria-hidden="true"
+      class="w-6 h-6 flex-shrink-0"
+      fill="currentColor"
+      viewBox="0 0 20 20"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        clip-rule="evenodd"
+        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+        fill-rule="evenodd"
+      />
+    </svg>
+  </button>
 </DocumentFragment>
 `;

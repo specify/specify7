@@ -8,6 +8,7 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { ViewDescription } from '../FormParse';
 import type { cellAlign, cellVerticalAlign } from '../FormParse/cells';
+import { userPreferences } from '../Preferences/userPreferences';
 import { Button } from './Button';
 import { className } from './className';
 import type { icons } from './Icons';
@@ -19,23 +20,24 @@ const dataEntryButton = (
   className: string,
   title: LocalizedString,
   icon: keyof typeof icons
-) =>
-  function (
+) => {
+  const component = (
     props: Omit<TagProps<'button'>, 'children' | 'type'> & {
       readonly onClick:
         | ((event: React.MouseEvent<HTMLButtonElement>) => void)
         | undefined;
     }
-  ): JSX.Element {
-    return (
-      <Button.Icon
-        className={`${className} ${props.className ?? ''}`}
-        icon={icon}
-        title={title}
-        {...props}
-      />
-    );
-  };
+  ): JSX.Element => (
+    <Button.Icon
+      className={`${className} ${props.className ?? ''}`}
+      icon={icon}
+      title={title}
+      {...props}
+    />
+  );
+  Object.defineProperty(component, 'name', { value: icon });
+  return component;
+};
 
 export const columnDefinitionsToCss = (
   columns: RA<number | undefined>,
@@ -53,6 +55,12 @@ export const columnDefinitionsToCss = (
  * Components for Specify Form
  * This is called DataEntry instead of Form because "Form" is already taken
  */
+
+const DataEntryAdd = dataEntryButton(
+  className.dataEntryAdd,
+  commonText.add(),
+  'plus'
+);
 
 export const DataEntry = {
   Grid: wrap<
@@ -145,7 +153,29 @@ export const DataEntry = {
     })
   ),
   SubFormTitle: wrap('DataEntry.SubFormTitle', 'h3', className.formTitle),
-  Add: dataEntryButton(className.dataEntryAdd, commonText.add(), 'plus'),
+  Add({
+    enableShortcut,
+    onClick: handleClick,
+    title = commonText.add(),
+    ...rest
+  }: Omit<Parameters<typeof DataEntryAdd>[0], 'onClick'> & {
+    readonly onClick: (() => void) | undefined;
+    readonly enableShortcut: boolean;
+  }): JSX.Element {
+    const addButtonShortcut = userPreferences.useKeyboardShortcut(
+      'form',
+      'recordSet',
+      'addResource',
+      enableShortcut && rest.disabled !== true ? handleClick : undefined
+    );
+    return (
+      <DataEntryAdd
+        title={`${title}${addButtonShortcut}`}
+        onClick={handleClick}
+        {...rest}
+      />
+    );
+  },
   View: dataEntryButton(className.dataEntryView, commonText.view(), 'eye'),
   Edit: dataEntryButton(className.dataEntryEdit, commonText.edit(), 'pencil'),
   Clone: dataEntryButton(
@@ -180,4 +210,3 @@ export const DataEntry = {
     ) : null;
   },
 };
-/* eslint-enable @typescript-eslint/naming-convention */

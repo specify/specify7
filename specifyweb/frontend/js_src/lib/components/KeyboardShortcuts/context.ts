@@ -2,7 +2,7 @@
  * Allows to register a key listener
  */
 
-import type { RA } from '../../utils/types';
+import type { RA, WritableArray } from '../../utils/types';
 import type { KeyboardShortcuts, ModifierKey } from './config';
 import { allModifierKeys, specialKeyboardKeys } from './config';
 import { resolvePlatformShortcuts } from './utils';
@@ -12,8 +12,14 @@ import { resolvePlatformShortcuts } from './utils';
  * set keyboard shortcuts and checking if any matches the set value - instead,
  * the registered shortcuts are stored in this hashmap, making it very easy
  * to check if a listener for current key combination exists.
+ *
+ * At the same time, some of our UI can be nested (imagine the record selector
+ * in a record set listening for next/previous record keyboard shortcut, and
+ * then the user opens a modal that also listens for the same shortcut) - to
+ * have things work correctly, we store listeners as a stack, with the most
+ * recently added listener (last one) being the active one.
  */
-const listeners = new Map<string, () => void>();
+const listeners = new Map<string, WritableArray<() => void>>();
 
 /**
  * When setting a keyboard shortcut in user preferences, we want to:
@@ -36,16 +42,16 @@ export function bindKeyboardShortcut(
 ): () => void {
   const shortcuts = resolvePlatformShortcuts(shortcut) ?? [];
   shortcuts.forEach((string) => {
-    listeners.set(string, callback);
+    const shortcutListeners = listeners.get(string);
+    if (shortcutListeners === undefined) listeners.set(string, [callback]);
+    else shortcutListeners.push(callback);
   });
   return () =>
     shortcuts.forEach((string) => {
-      /*
-       * Another listener may have been set on this shortcut - only unset if we
-       * are still the active listener
-       */
-      const activeListener = listeners.get(string);
-      if (activeListener === callback) listeners.delete(string);
+      const activeListeners = listeners.get(string)!;
+      const lastIndex = activeListeners.lastIndexOf(callback);
+      if (lastIndex !== -1) activeListeners.splice(lastIndex, 1);
+      if (activeListeners.length === 0) listeners.delete(string);
     });
 }
 
@@ -59,13 +65,9 @@ export const keyJoinSymbol = '+';
 // eslint-disable-next-line functional/prefer-readonly-type
 const pressedKeys: string[] = [];
 
+// Keep this code fast as it's in the hot path
 document.addEventListener('keydown', (event) => {
   if (shouldIgnoreKeyPress(event)) return;
-
-  if (!pressedKeys.includes(event.code)) {
-    pressedKeys.push(event.code);
-    pressedKeys.sort();
-  }
 
   const modifiers = resolveModifiers(event);
   const isEntering = isInInput(event);
@@ -75,8 +77,13 @@ document.addEventListener('keydown', (event) => {
   if (ignore) return;
   if (modifiers.length === 0 && specialKeyboardKeys.has(event.code)) return;
 
+  if (!pressedKeys.includes(event.code)) {
+    pressedKeys.push(event.code);
+    pressedKeys.sort();
+  }
+
   const keyString = keysToString(modifiers, pressedKeys);
-  const handler = interceptor ?? listeners.get(keyString);
+  const handler = interceptor ?? listeners.get(keyString)?.at(-1);
   if (typeof handler === 'function') {
     handler(keyString);
     /*
@@ -86,6 +93,13 @@ document.addEventListener('keydown', (event) => {
     event.preventDefault();
     event.stopPropagation();
   }
+
+  /**
+   * For key combinations involving arrows, the keyup is not fired reliably
+   * on macOS (i.e for Cmd+Shift+ArrowUp), thus we need to clear the pressed
+   * keys. This means you can't have a shortcut like Cmd+Shift+KeyQ+ArrowUp
+   */
+  if (keyString.includes('Arrow')) pressedKeys.length = 0;
 });
 
 function shouldIgnoreKeyPress(event: KeyboardEvent): boolean {
@@ -103,7 +117,7 @@ function shouldIgnoreKeyPress(event: KeyboardEvent): boolean {
     return true;
 
   // Do not allow binding a key shortcut directly to a modifier key
-  return allModifierKeys.has(event.key);
+  return allModifierKeys.has(event.code);
 }
 
 export const resolveModifiers = (event: KeyboardEvent): RA<ModifierKey> =>
@@ -145,9 +159,18 @@ function isPrintableModifier(modifiers: RA<ModifierKey>): boolean {
 document.addEventListener(
   'keyup',
   (event) => {
-    if (shouldIgnoreKeyPress(event)) return;
-    const index = pressedKeys.indexOf(event.key);
-    if (index !== -1) pressedKeys.splice(index, 1);
+    const index = pressedKeys.indexOf(event.code);
+    if (index === -1) pressedKeys.splice(index, 1);
+
+    /*
+     * If un-pressed any modifier, consider current shortcut finished.
+     *
+     * This is a workaround for an issue on macOS where in a shortcut like
+     * Cmd+Shift+ArrowUp, the keyup even is fired for Cmd and Shift, but not
+     * for ArrowUp
+     */
+    const isModifier = allModifierKeys.has(event.code);
+    if (isModifier) pressedKeys.length = 0;
   },
   { passive: true }
 );

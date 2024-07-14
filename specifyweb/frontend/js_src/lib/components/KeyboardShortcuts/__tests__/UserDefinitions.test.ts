@@ -1,8 +1,11 @@
+import { requireContext } from '../../../tests/helpers';
 import type { GenericPreferences } from '../../Preferences/types';
 import { userPreferenceDefinitions } from '../../Preferences/UserDefinitions';
 import type { KeyboardShortcuts, ModifierKey } from '../config';
 import { keyLocalizations, modifierKeys, specialKeyboardKeys } from '../config';
 import { exportsForTests, keyJoinSymbol } from '../context';
+
+requireContext();
 
 const { keysToString } = exportsForTests;
 
@@ -22,6 +25,7 @@ test('Validate default keyboard shortcuts in userPreferenceDefinitions', () => {
               const defaultValue =
                 itemDefinition.defaultValue as KeyboardShortcuts;
 
+              console.log(category, subCategory, item, defaultValue);
               if (typeof defaultValue !== 'object') return;
 
               Object.entries(defaultValue).forEach(([platform, shortcuts]) =>
@@ -30,7 +34,7 @@ test('Validate default keyboard shortcuts in userPreferenceDefinitions', () => {
                   if (error !== undefined)
                     // eslint-disable-next-line functional/no-throw-statement
                     throw new Error(
-                      `Invalid default value for a keyboard shortcut for ${category}.${subCategory}.${item} for platform ${platform} (value: ${shortcut}). Error: ${String(
+                      `Invalid default value for a keyboard shortcut for ${category}.${subCategory}.${item} for platform "${platform}" (value: ${shortcut}). Error: ${String(
                         error
                       )}`
                     );
