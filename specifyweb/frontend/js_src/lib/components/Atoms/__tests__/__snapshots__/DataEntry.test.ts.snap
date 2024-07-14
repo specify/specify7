@@ -3,9 +3,9 @@
 exports[`Add renders without errors 1`] = `
 <DocumentFragment>
   <button
-    aria-label="Add (A)"
+    aria-label="Add (a)"
     class="icon link rounded !text-green-700 print:hidden "
-    title="Add (A)"
+    title="Add (a)"
     type="button"
   >
     <svg
