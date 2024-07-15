@@ -8,7 +8,7 @@ import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
-import { clamp, split } from '../../utils/utils';
+import { clamp, sortFunction, split } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext } from '../Core/Contexts';
@@ -27,8 +27,13 @@ import {
 } from '../DataModel/resource';
 import { serializeResource } from '../DataModel/serializers';
 import { tables } from '../DataModel/tables';
-import type { RecordSet as RecordSetSchema, Tables } from '../DataModel/types';
+import type {
+  CollectionObject,
+  RecordSet as RecordSetSchema,
+  Tables,
+} from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
+import { format } from '../Formatters/formatters';
 import { recordSetView } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
@@ -412,7 +417,31 @@ function RecordSet<SCHEMA extends AnySchema>({
                 })
             : undefined
         }
-        onClone={(newResource): void => go(totalCount, 'new', newResource)}
+        onClone={(resources: RA<SpecifyResource<SCHEMA>>): void => {
+          go(totalCount, 'new', resources[0]);
+          if (resources.length > 1) {
+            const sortedResources = Array.from(resources).sort(
+              sortFunction((r) => r.id)
+            ) as RA<SpecifyResource<CollectionObject>>;
+            loading(
+              createNewRecordSet(
+                sortedResources.map((resource) => resource.id)
+              ).then(async () => {
+                const firstCollectionObject = await format(sortedResources[0]);
+                const lastCollectionObject = await format(
+                  sortedResources.at(-1)
+                );
+                recordSet.set(
+                  'name',
+                  `${
+                    tables.CollectionObject.label
+                  } Batch ${firstCollectionObject!} - ${lastCollectionObject!}`
+                );
+                await recordSet.save();
+              })
+            );
+          }
+        }}
         onClose={handleClose}
         onDelete={
           (recordSet.isNew() || hasToolPermission('recordSets', 'delete')) &&
