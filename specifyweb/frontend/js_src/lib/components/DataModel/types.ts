@@ -1424,7 +1424,7 @@ export type CollectionObject = {
     readonly modifiedByAgent: Agent | null;
     readonly paleoContext: PaleoContext | null;
     readonly visibilitySetBy: SpecifyUser | null;
-    readonly collectionObectType: CollectionObjectType | null;
+    readonly collectionObjectType: CollectionObjectType | null;
   };
   readonly toManyDependent: {
     readonly collectionObjectAttachments: RA<CollectionObjectAttachment>;
