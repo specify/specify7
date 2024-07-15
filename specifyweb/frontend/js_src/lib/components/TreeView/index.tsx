@@ -32,6 +32,7 @@ import { useTitle } from '../Molecules/AppTitle';
 import { ResourceEdit } from '../Molecules/ResourceLink';
 import { TableIcon } from '../Molecules/TableIcon';
 import { ProtectedTree } from '../Permissions/PermissionDenied';
+import { Dialog } from '../Molecules/Dialog';
 import { NotFoundView } from '../Router/NotFoundView';
 import { formatUrl } from '../Router/queryString';
 import { TreeViewActions } from './Actions';
@@ -221,6 +222,12 @@ function TreeView<SCHEMA extends AnyTree>({
     setSplitterKey(splitterKey + 1);
   };
 
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+
+  const handleButtonClick = () => {
+    setIsDialogOpen(true);
+  };
+
   return rows === undefined ? null : (
     <Container.Full>
       <header className="flex items-center gap-2 overflow-x-auto sm:flex-wrap sm:overflow-x-visible">
@@ -235,9 +242,7 @@ function TreeView<SCHEMA extends AnyTree>({
         <Button.Icon
           icon="plus"
           title="Add Tree"
-          onClick={() => {
-            // Add onClick handler logic here
-          }}
+          onClick={handleButtonClick}
         />
         <Button.Icon
           disabled={conformation.length === 0 || isSplit}
@@ -329,6 +334,11 @@ function TreeView<SCHEMA extends AnyTree>({
         />
         {treeText.associatedNodesOnly()}
       </Label.Inline>
+      {isDialogOpen && (
+        <Dialog onClose={() => setIsDialogOpen(false)}>
+          {/* Add dialog content here*/}
+        </Dialog>
+      )}
     </Container.Full>
   );
 }
