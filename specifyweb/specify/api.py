@@ -296,7 +296,7 @@ def collection_dispatch_bulk_copy(request, model, copies) -> HttpResponse:
         )
         resp_objs.append(_obj_to_data(obj, checker))
 
-    return HttpResponseCreated(toJson(resp_objs), safe=False, content_type='application/json')
+    return HttpResponseCreated(toJson(resp_objs), content_type='application/json')
 
 def get_model_or_404(name: str):
     """Lookup a specify model by name. Raise Http404 if not found."""

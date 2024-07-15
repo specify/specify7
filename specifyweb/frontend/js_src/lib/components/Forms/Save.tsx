@@ -19,18 +19,23 @@ import { className } from '../Atoms/className';
 import { Input } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
-import type { AnySchema } from '../DataModel/helperTypes';
+import type { AnySchema, SerializedRecord } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { BlockerWithResource } from '../DataModel/saveBlockers';
 import {
   findUnclaimedBlocker,
   useAllSaveBlockers,
 } from '../DataModel/saveBlockers';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import { tables } from '../DataModel/tables';
 import { error } from '../Errors/assert';
 import { errorHandledBy } from '../Errors/FormatError';
 import { InFormEditorContext } from '../FormEditor/Context';
+import { tableValidForBulkClone } from '../FormMeta/CarryForward';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
@@ -223,12 +228,6 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
 
   const [carryForwardAmount, setCarryForwardAmount] = React.useState<number>(1);
 
-  const isWildCardValidForBulk = tables.CollectionObject.strictGetLiteralField(
-    'catalogNumber'
-  )
-    .getUiFormatter()
-    ?.canAutonumber();
-
   return (
     <>
       {typeof handleAdd === 'function' && canCreate ? (
@@ -237,8 +236,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           (isInRecordSet === false || isInRecordSet === undefined) &&
           isSaveDisabled &&
           showCarry &&
-          showBulkCarry &&
-          isWildCardValidForBulk === true ? (
+          showBulkCarry ? (
             <Input.Integer
               aria-label={formsText.bulkCarryForwardCount()}
               className="!w-fit"
@@ -256,9 +254,14 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
             copyButton(
               formsText.carryForward(),
               formsText.carryForwardDescription(),
+              /**
+               * FEATURE: Extend this functionality to all tables
+               * See https://github.com/specify/specify7/pull/4804
+               *
+               */
               resource.specifyTable.name === 'CollectionObject' &&
                 carryForwardAmount > 2
-                ? async () => {
+                ? async (): Promise<RA<SpecifyResource<SCHEMA>>> => {
                     const formatter =
                       tables.CollectionObject.strictGetLiteralField(
                         'catalogNumber'
@@ -269,10 +272,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                       { length: carryForwardAmount },
                       async () => {
                         const clonedResource = await resource.clone(false);
-                        await clonedResource.set(
-                          'catalogNumber',
-                          wildCard as never
-                        );
+                        clonedResource.set('catalogNumber', wildCard as never);
                         return clonedResource;
                       }
                     );
@@ -280,19 +280,25 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                     const clones = await Promise.all(clonePromises);
 
                     const backendClones = await ajax<
-                      RA<SpecifyResource<SCHEMA>>
+                      RA<SerializedRecord<SCHEMA>>
                     >(
-                      `/api/specify/bulk/${tables.CollectionObject.name.toLowerCase()}/`,
+                      `/api/specify/bulk/${resource.specifyTable.name.toLowerCase()}/`,
                       {
                         method: 'POST',
                         headers: { Accept: 'application/json' },
                         body: clones,
                       }
-                    ).then((data) => data.data);
+                    ).then(({ data }) =>
+                      data.map((resource) =>
+                        deserializeResource(serializeResource(resource))
+                      )
+                    );
 
                     return Promise.all([resource, ...backendClones]);
                   }
-                : async () => [await resource.clone(false)]
+                : async (): Promise<RA<SpecifyResource<SCHEMA>>> => [
+                    await resource.clone(false),
+                  ]
             )}
           {showClone &&
             copyButton(
@@ -415,7 +421,9 @@ function useEnabledButtons<SCHEMA extends AnySchema = AnySchema>(
   const showCarry =
     enableCarryForward.includes(tableName) && !NO_CLONE.has(tableName);
   const showBulkCarry =
-    enableBulkCarryForward.includes(tableName) && !NO_CLONE.has(tableName);
+    enableBulkCarryForward.includes(tableName) &&
+    !NO_CLONE.has(tableName) &&
+    tableValidForBulkClone(resource.specifyTable);
   const showClone =
     !disableClone.includes(tableName) &&
     !NO_CLONE.has(tableName) &&

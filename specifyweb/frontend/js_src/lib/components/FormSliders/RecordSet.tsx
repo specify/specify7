@@ -33,6 +33,7 @@ import type {
   Tables,
 } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
+import { format } from '../Formatters/formatters';
 import { recordSetView } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
@@ -418,28 +419,23 @@ function RecordSet<SCHEMA extends AnySchema>({
         }
         onClone={(resources: RA<SpecifyResource<SCHEMA>>): void => {
           go(totalCount, 'new', resources[0]);
-          if (
-            resources.length > 1 &&
-            currentRecord.specifyTable.name === 'CollectionObject'
-          ) {
+          if (resources.length > 1) {
             const sortedResources = Array.from(resources).sort(
               sortFunction((r) => r.id)
-            );
+            ) as RA<SpecifyResource<CollectionObject>>;
             loading(
               createNewRecordSet(
                 sortedResources.map((resource) => resource.id)
               ).then(async () => {
-                const startingResourceCatNumber =
-                  serializeResource(
-                    sortedResources[0] as SpecifyResource<CollectionObject>
-                  ).catalogNumber ?? '0';
-                const endingResourceCatNumber =
-                  serializeResource(
-                    sortedResources.at(-1) as SpecifyResource<CollectionObject>
-                  ).catalogNumber ?? '0';
+                const firstCollectionObject = await format(sortedResources[0]);
+                const lastCollectionObject = await format(
+                  sortedResources.at(-1)
+                );
                 recordSet.set(
                   'name',
-                  `Batch #${startingResourceCatNumber} - #${endingResourceCatNumber}`
+                  `${
+                    tables.CollectionObject.label
+                  } Batch ${firstCollectionObject!} - ${lastCollectionObject!}`
                 );
                 await recordSet.save();
               })
