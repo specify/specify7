@@ -10,7 +10,7 @@ import { formatUrl } from '../Router/queryString';
 import type { GenericNotification } from './NotificationRenderers';
 
 const INITIAL_INTERVAL =
-  process.env.NODE_ENV === 'development' ? Number(MINUTE) : 5 * SECOND;
+  process.env.NODE_ENV === 'development' ? MINUTE : 5 * SECOND;
 const INTERVAL_MULTIPLIER = 1.1;
 
 export function useNotificationsFetch({
