@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-07-15 13:45+0000\n"
+"PO-Revision-Date: 2024-07-15 15:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/forms/"
 "ru/>\n"
@@ -463,13 +463,13 @@ msgstr "Показать кнопку «Перенести вперед»"
 #: components/FormMeta/CarryForward.tsx:171
 #, fuzzy
 msgid "bulkCarryForwardEnabled"
-msgstr "Показать количество массового переноса вперед"
+msgstr "Показать количество массовых переносов вперед"
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:241
 #, fuzzy
 msgid "bulkCarryForwardCount"
-msgstr "Массовый перенос вперед"
+msgstr "Показать количество массовых переносов вперед"
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:256
