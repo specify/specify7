@@ -17,13 +17,13 @@ msgid "forms"
 msgstr "Formulaires"
 
 #: components/Atoms/DataEntry.tsx:153
-#: components/Forms/Save.tsx:223
+#: components/Forms/Save.tsx:305
 #: components/Statistics/ResultsDialog.tsx:68
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Components > Statistics > Results Dialog
 msgid "clone"
 msgstr "Cloner"
 
-#: components/Forms/Save.tsx:224
+#: components/Forms/Save.tsx:306
 #. Used in: Components > Forms > Save
 msgid "cloneDescription"
 msgstr "Créer une copie complète de l'enregistrement actuel"
@@ -212,19 +212,19 @@ msgstr "Enregistrement suivant"
 msgid "currentRecord"
 msgstr "Objet actuel (sur {total:number|formatted})"
 
-#: components/Forms/ResourceView.tsx:384
-#: components/Forms/Save.tsx:37
+#: components/Forms/ResourceView.tsx:390
+#: components/Forms/Save.tsx:46
 #. Used in: Components > Forms > Resource View ⬤ Components > Forms > Save
 msgid "unsavedFormUnloadProtect"
 msgstr "Ce formulaire n'a pas été enregistré."
 
 #: components/AttachmentsBulkImport/utils.ts:482
-#: components/Forms/Save.tsx:260
+#: components/Forms/Save.tsx:336
 #. 🟥Meaning a conflict occurred when saving. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Forms > Save
 msgid "saveConflict"
 msgstr "Enregistrer le conflit"
 
-#: components/Forms/Save.tsx:263
+#: components/Forms/Save.tsx:339
 #. Used in: Components > Forms > Save
 msgid "saveConflictDescription"
 msgstr ""
@@ -233,12 +233,12 @@ msgstr ""
 "page doit être rechargée pour éviter que des données incohérentes soient "
 "enregistrées."
 
-#: components/Forms/Save.tsx:293
+#: components/Forms/Save.tsx:369
 #. Used in: Components > Forms > Save
 msgid "saveBlocked"
 msgstr "Enregistrement refusé"
 
-#: components/Forms/Save.tsx:296
+#: components/Forms/Save.tsx:372
 #. Used in: Components > Forms > Save
 msgid "saveBlockedDescription"
 msgstr "Le formulaire ne peut pas être enregistré en raison de l'erreur suivante :"
@@ -400,23 +400,23 @@ msgstr "Type de cellule non pris en charge"
 msgid "additionalResultsOmitted"
 msgstr "Résultats supplémentaires masqués"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:275
+#: components/FormSliders/RecordSelectorFromIds.tsx:278
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtect"
 msgstr "Continuer sans sauvegarder ?"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:278
+#: components/FormSliders/RecordSelectorFromIds.tsx:281
 #. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids
 #, fuzzy
 msgid "recordSelectorUnloadProtectDescription"
 msgstr "Vous souhaiterez peut-être enregistrer cet enregistrement avant de quitter."
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:224
+#: components/FormSliders/RecordSelectorFromIds.tsx:226
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "creatingNewRecord"
 msgstr "Création d'un nouvel enregistrement"
 
-#: components/FormSliders/RecordSet.tsx:359
+#: components/FormSliders/RecordSet.tsx:364
 #. Used in: Components > Form Sliders > Record Set
 msgid "createNewRecordSet"
 msgstr "Créer un nouveau jeu d'enregistrements"
@@ -436,12 +436,12 @@ msgstr "Inverse"
 msgid "deletedInline"
 msgstr "(supprimé)"
 
-#: components/FormSliders/RecordSet.tsx:470
+#: components/FormSliders/RecordSet.tsx:499
 #. 🟥Example: Duplicate Record Set Item. Used in: Components > Form Sliders > Record Set
 msgid "duplicateRecordSetItem"
 msgstr "Dupliquer {recordSetItemTable:string}"
 
-#: components/FormSliders/RecordSet.tsx:475
+#: components/FormSliders/RecordSet.tsx:504
 #. Used in: Components > Form Sliders > Record Set
 msgid "duplicateRecordSetItemDescription"
 msgstr "Cet enregistrement est déjà présent dans le {recordSetTable:string} actuel"
@@ -462,7 +462,7 @@ msgstr "Supprimer de {recordSetTable:string}"
 msgid "nothingFound"
 msgstr "Rien n'a été trouvé"
 
-#: components/Forms/Save.tsx:229
+#: components/Forms/Save.tsx:255
 #. 🟥Verb. Button label. Used in: Components > Forms > Save
 msgid "carryForward"
 msgstr "Reporter"
@@ -472,7 +472,17 @@ msgstr "Reporter"
 msgid "carryForwardEnabled"
 msgstr "Afficher le bouton Reporter"
 
-#: components/Forms/Save.tsx:230
+#: components/FormMeta/CarryForward.tsx:171
+#. Used in: Components > Form Meta > Carry Forward
+msgid "bulkCarryForwardEnabled"
+msgstr ""
+
+#: components/Forms/Save.tsx:241
+#. Used in: Components > Forms > Save
+msgid "bulkCarryForwardCount"
+msgstr ""
+
+#: components/Forms/Save.tsx:256
 #. Used in: Components > Forms > Save
 msgid "carryForwardDescription"
 msgstr "Créer un nouvel enregistrement avec certains champs reportés"
@@ -483,12 +493,12 @@ msgstr "Créer un nouvel enregistrement avec certains champs reportés"
 msgid "carryForwardSettingsDescription"
 msgstr "Configurer les champs à reporter"
 
-#: components/FormMeta/CarryForward.tsx:260
+#: components/FormMeta/CarryForward.tsx:303
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardTableSettingsDescription"
 msgstr "Configurer les champs à reporter ({tableName:string})"
 
-#: components/FormMeta/CarryForward.tsx:322
+#: components/FormMeta/CarryForward.tsx:365
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardUniqueField"
 msgstr "Ce champ doit être unique. Il ne peut pas être reporté"
@@ -503,7 +513,7 @@ msgstr "Afficher le bouton Cloner"
 msgid "addButtonEnabled"
 msgstr "Afficher le bouton Ajouter"
 
-#: components/Forms/Save.tsx:236
+#: components/Forms/Save.tsx:312
 #. Used in: Components > Forms > Save
 msgid "addButtonDescription"
 msgstr "Créer un nouvel enregistrement vierge"
@@ -654,12 +664,12 @@ msgstr "Nouveau {tableName:string}"
 msgid "resourceFormatter"
 msgstr "{tableName:string} #{id:number}"
 
-#: components/Forms/ResourceView.tsx:208
+#: components/Forms/ResourceView.tsx:213
 #. Used in: Components > Forms > Resource View
 msgid "resourceDeleted"
 msgstr "Ressource supprimée"
 
-#: components/Forms/ResourceView.tsx:211
+#: components/Forms/ResourceView.tsx:216
 #. Used in: Components > Forms > Resource View
 msgid "resourceDeletedDescription"
 msgstr "L'élément a été supprimé avec succès."
@@ -669,7 +679,7 @@ msgstr "L'élément a été supprimé avec succès."
 msgid "dateRange"
 msgstr "(Plage : {from:string} - {to:string})"
 
-#: components/FieldFormatters/index.ts:243
+#: components/FieldFormatters/index.ts:282
 #. 🟥Meaning "Catalog Number Numeric formatter". Used in: Components > Field Formatters > Index
 msgid "catalogNumberNumericFormatter"
 msgstr "Numéro de catalogue Numérique"

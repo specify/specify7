@@ -17,7 +17,7 @@ msgstr ""
 msgid "specifySeven"
 msgstr "Specify 7"
 
-#: components/Preferences/UserDefinitions.tsx:1734
+#: components/Preferences/UserDefinitions.tsx:1742
 #: components/WorkBench/DataSetMeta.tsx:282
 #: utils/parser/definitions.ts:118
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Data Set Meta ⬤ Utils > Parser > Definitions
@@ -34,10 +34,10 @@ msgstr "Нет"
 #: components/ExportFeed/ForceUpdate.tsx:33
 #: components/FormEditor/Create.tsx:67
 #: components/FormEditor/Create.tsx:261
-#: components/FormSliders/RecordSelectorFromIds.tsx:262
+#: components/FormSliders/RecordSelectorFromIds.tsx:265
 #: components/Forms/DeleteButton.tsx:107
 #: components/Forms/DeleteButton.tsx:131
-#: components/Forms/ResourceView.tsx:341
+#: components/Forms/ResourceView.tsx:347
 #: components/Header/ChooseCollection.tsx:26
 #: components/Header/ExpressSearchTask.tsx:49
 #: components/Interactions/InteractionDialog.tsx:261
@@ -168,7 +168,7 @@ msgstr "Создать"
 #: components/FormEditor/Create.tsx:208
 #: components/FormEditor/Table.tsx:82
 #: components/FormMeta/AutoNumbering.tsx:91
-#: components/FormMeta/CarryForward.tsx:256
+#: components/FormMeta/CarryForward.tsx:299
 #: components/FormMeta/Definition.tsx:53
 #: components/FormMeta/EditHistory.tsx:53
 #: components/FormMeta/PickListUsages.tsx:44
@@ -184,15 +184,15 @@ msgstr "Создать"
 #: components/FormPlugins/index.tsx:198
 #: components/FormPlugins/index.tsx:267
 #: components/FormSliders/AttachmentsCollection.tsx:74
-#: components/FormSliders/RecordSet.tsx:469
+#: components/FormSliders/RecordSet.tsx:498
 #: components/Formatters/Element.tsx:66
 #: components/Formatters/Element.tsx:88
 #: components/Forms/DataTask.tsx:134
 #: components/Forms/DeleteButton.tsx:161
-#: components/Forms/ResourceView.tsx:207
-#: components/Forms/ResourceView.tsx:344
-#: components/Forms/Save.tsx:257
-#: components/Forms/Save.tsx:292
+#: components/Forms/ResourceView.tsx:212
+#: components/Forms/ResourceView.tsx:350
+#: components/Forms/Save.tsx:333
+#: components/Forms/Save.tsx:368
 #: components/Header/UserTools.tsx:75
 #: components/HomePage/AboutSpecify.tsx:60
 #: components/Interactions/InteractionDialog.tsx:237
@@ -296,7 +296,7 @@ msgstr "Очистить все"
 
 #: components/AttachmentsBulkImport/Datasets.tsx:266
 #: components/AttachmentsBulkImport/Import.tsx:298
-#: components/Forms/Save.tsx:53
+#: components/Forms/Save.tsx:62
 #: components/Preferences/index.tsx:100
 #: components/QueryBuilder/FromMap.tsx:74
 #: components/QueryBuilder/Save.tsx:67
@@ -321,7 +321,7 @@ msgstr "Сохранить"
 #: components/ExportFeed/Editor.tsx:133
 #: components/FormSliders/RecordSelectorFromIds.tsx:178
 #: components/Formatters/List.tsx:138
-#: components/Forms/Save.tsx:235
+#: components/Forms/Save.tsx:311
 #: components/Merging/CompareSubView.tsx:184
 #: components/Molecules/AutoComplete.tsx:525
 #: components/PickLists/index.tsx:280
@@ -542,7 +542,7 @@ msgstr "Новый"
 #: components/FormEditor/Create.tsx:160
 #: components/FormMeta/index.tsx:99
 #: components/FormMeta/index.tsx:101
-#: components/Forms/ResourceView.tsx:217
+#: components/Forms/ResourceView.tsx:222
 #: components/Molecules/ResourceLink.tsx:111
 #: components/Reports/index.tsx:255
 #: components/Reports/index.tsx:259
@@ -567,7 +567,7 @@ msgstr "Редактировать"
 msgid "ignore"
 msgstr "Игнорировать"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:271
+#: components/FormSliders/RecordSelectorFromIds.tsx:274
 #: components/Merging/index.tsx:397
 #: components/Toolbar/Language.tsx:108
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Merging > Index ⬤ Components > Toolbar > Language
@@ -653,7 +653,7 @@ msgstr "Действия"
 #: components/ChooseCollection/index.tsx:138
 #: components/Header/ChooseCollection.tsx:27
 #: components/Header/index.tsx:94
-#: components/Preferences/UserDefinitions.tsx:1242
+#: components/Preferences/UserDefinitions.tsx:1250
 #: components/Router/EntrypointRouter.tsx:32
 #: components/Router/OverlayRoutes.tsx:62
 #. Used in: Components > Choose Collection > Index ⬤ Components > Header > Choose Collection ⬤ Components > Header > Index ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Entrypoint Router ⬤ Components > Router > Overlay Routes
@@ -953,11 +953,11 @@ msgstr "{header:string}:"
 #: components/FormCells/index.tsx:314
 #: components/FormCommands/index.tsx:128
 #: components/FormPlugins/index.tsx:207
-#: components/FormSliders/RecordSet.tsx:376
+#: components/FormSliders/RecordSet.tsx:381
 #: components/Formatters/Element.tsx:92
 #: components/Formatters/Formatter.tsx:126
 #: components/Forms/BaseResourceView.tsx:132
-#: components/Forms/Save.tsx:298
+#: components/Forms/Save.tsx:374
 #: components/Leaflet/index.ts:171
 #: components/LocalityUpdate/Status.tsx:519
 #: components/LocalityUpdate/utils.ts:64
