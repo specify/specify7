@@ -233,6 +233,13 @@ function TreeView<SCHEMA extends AnyTree>({
           onSaved={(): void => globalThis.location.reload()}
         />
         <Button.Icon
+        icon="plus"
+        title="Add Tree"
+        onClick={() => {
+          // Add onClick handler logic here
+        }}
+        />
+        <Button.Icon
           disabled={conformation.length === 0 || isSplit}
           icon="chevronDoubleLeft"
           title={commonText.collapseAll()}
