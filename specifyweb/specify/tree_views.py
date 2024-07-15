@@ -377,8 +377,6 @@ TAXON_RANKS = ["One", "Two", "Three"]
 })
 @tree_mutation
 def add_geo_default_trees(request):
-    if request.method != 'POST':
-        return HttpResponse(toJson({'error': 'Method not allowed.'}), status=405, content_type="application/json")
     for tree in TAXON_TREES:
         if Taxontreedef.objects.filter(name=tree).exists():
             continue

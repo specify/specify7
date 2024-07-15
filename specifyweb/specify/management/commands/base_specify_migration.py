@@ -11,6 +11,23 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         with connection.cursor() as cursor:
+            # Check django table
+            query = cursor.execute("""
+                SELECT 1
+                FROM django_migrations
+                LIMIT 1;
+            """)
+            if not query:
+                cursor.execute("""
+                    CREATE TABLE django_migrations (
+                        id int(11) NOT NULL AUTO_INCREMENT,
+                        app varchar(255) NOT NULL,
+                        name varchar(255) NOT NULL,
+                        applied datetime NOT NULL,
+                        PRIMARY KEY (id)
+                    );
+                """)
+
             # Check if the django_migrations table exists and create it if it doesn't
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS `django_migrations` (
