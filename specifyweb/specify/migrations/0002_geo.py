@@ -295,34 +295,34 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.RunPython(create_default_cog_types, revert_default_cog_types),
-        migrations.AddField(
+        migrations.AddField( # TODO: Revert these fields to null=False once unit tests are fixed
             model_name='geographytreedef',
             name='discipline',
-            field=models.ForeignKey(db_column='DisciplineID', default=initial_default_tree_def_discipline, null=True, on_delete=protect_with_blockers, related_name='geographytreedefs', to='specify.discipline'),
+            field=models.ForeignKey(db_column='DisciplineID', null=True, on_delete=protect_with_blockers, related_name='geographytreedefs', to='specify.discipline'),
             preserve_default=False,
         ),
         migrations.AddField(
             model_name='geologictimeperiodtreedef',
             name='discipline',
-            field=models.ForeignKey(db_column='DisciplineID', default=initial_default_tree_def_discipline, null=True, on_delete=protect_with_blockers, related_name='geologictimeperiodtreedefs', to='specify.discipline'),
+            field=models.ForeignKey(db_column='DisciplineID', null=True, on_delete=protect_with_blockers, related_name='geologictimeperiodtreedefs', to='specify.discipline'),
             preserve_default=False,
         ),
         migrations.AddField(
             model_name='lithostrattreedef',
             name='discipline',
-            field=models.ForeignKey(db_column='DisciplineID', default=initial_default_tree_def_discipline, null=True, on_delete=protect_with_blockers, related_name='lithostratstreedefs', to='specify.discipline'),
+            field=models.ForeignKey(db_column='DisciplineID', null=True, on_delete=protect_with_blockers, related_name='lithostratstreedefs', to='specify.discipline'),
             preserve_default=False,
         ),
         migrations.AddField(
             model_name='storagetreedef',
             name='institution',
-            field=models.ForeignKey(db_column='InstitutionID', default=initial_default_tree_def_institution, on_delete=protect_with_blockers, related_name='storagetreedefs', to='specify.institution'),
+            field=models.ForeignKey(db_column='InstitutionID', null=True, on_delete=protect_with_blockers, related_name='storagetreedefs', to='specify.institution'),
             preserve_default=False,
         ),
         migrations.AddField(
             model_name='taxontreedef',
             name='discipline',
-            field=models.ForeignKey(db_column='DisciplineID', default=initial_default_tree_def_discipline, null=True, on_delete=protect_with_blockers, related_name='taxontreedefs', to='specify.discipline'),
+            field=models.ForeignKey(db_column='DisciplineID', null=True, on_delete=protect_with_blockers, related_name='taxontreedefs', to='specify.discipline'),
             preserve_default=False,
         ),
         migrations.AlterField(
@@ -332,4 +332,34 @@ class Migration(migrations.Migration):
         ),
         migrations.RunPython(create_default_discipline_for_tree_defs, revert_default_discipline_for_tree_defs),
         migrations.RunPython(create_table_schema_config_with_defaults, revert_table_schema_config_with_defaults),
+        migrations.AlterField(
+            model_name='geographytreedef',
+            name='discipline',
+            field=models.ForeignKey(db_column='DisciplineID', null=False, on_delete=protect_with_blockers, related_name='geographytreedefs', to='specify.discipline'),
+            preserve_default=False,
+        ),
+        migrations.AlterField(
+            model_name='geologictimeperiodtreedef',
+            name='discipline',
+            field=models.ForeignKey(db_column='DisciplineID', null=False, on_delete=protect_with_blockers, related_name='geologictimeperiodtreedefs', to='specify.discipline'),
+            preserve_default=False,
+        ),
+        migrations.AlterField(
+            model_name='lithostrattreedef',
+            name='discipline',
+            field=models.ForeignKey(db_column='DisciplineID', null=False, on_delete=protect_with_blockers, related_name='lithostratstreedefs', to='specify.discipline'),
+            preserve_default=False,
+        ),
+        migrations.AlterField(
+            model_name='storagetreedef',
+            name='institution',
+            field=models.ForeignKey(db_column='InstitutionID', null=False, on_delete=protect_with_blockers, related_name='storagetreedefs', to='specify.institution'),
+            preserve_default=False,
+        ),
+        migrations.AlterField(
+            model_name='taxontreedef',
+            name='discipline',
+            field=models.ForeignKey(db_column='DisciplineID', null=False, on_delete=protect_with_blockers, related_name='taxontreedefs', to='specify.discipline'),
+            preserve_default=False,
+        ),
     ]
