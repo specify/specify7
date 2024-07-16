@@ -29,10 +29,10 @@ import { useMenuItem } from '../Header/MenuContext';
 import { getPref } from '../InitialContext/remotePrefs';
 import { isTreeTable, treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
+import { Dialog } from '../Molecules/Dialog';
 import { ResourceEdit } from '../Molecules/ResourceLink';
 import { TableIcon } from '../Molecules/TableIcon';
 import { ProtectedTree } from '../Permissions/PermissionDenied';
-import { Dialog } from '../Molecules/Dialog';
 import { NotFoundView } from '../Router/NotFoundView';
 import { formatUrl } from '../Router/queryString';
 import { TreeViewActions } from './Actions';
@@ -239,11 +239,7 @@ function TreeView<SCHEMA extends AnyTree>({
           resource={treeDefinition}
           onSaved={(): void => globalThis.location.reload()}
         />
-        <Button.Icon
-          icon="plus"
-          title="Add Tree"
-          onClick={handleButtonClick}
-        />
+        <Button.Icon icon="plus" title="Add Tree" onClick={handleButtonClick} />
         <Button.Icon
           disabled={conformation.length === 0 || isSplit}
           icon="chevronDoubleLeft"
@@ -336,11 +332,12 @@ function TreeView<SCHEMA extends AnyTree>({
       </Label.Inline>
       {isDialogOpen && (
         <Dialog
-        buttons={commonText.new()}
-        header={treeText.addTree()}
-        onClose={() => setIsDialogOpen(false)}>
+          buttons={commonText.new()}
+          header={treeText.addTree()}
+          onClose={() => setIsDialogOpen(false)}
+        >
           <Ul className="flex flex-col gap-2">
-            <li></li>
+            <li />
           </Ul>
         </Dialog>
       )}
