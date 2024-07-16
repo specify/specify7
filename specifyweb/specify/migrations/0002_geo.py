@@ -31,22 +31,22 @@ from specifyweb.specify.update_schema_config import (
 
 SCHEMA_CONFIG_TABLES = [
         ('CollectionObjectType', None),
-        # ('CollectionObjectGroupType', None),
-        # ('CollectionObjectGroup', None),
-        # ('CollectionObjectGroupJoin', None),
-        # ('SpUserExternalId', 'Stores provider identifiers and tokens for users who sign in using Single Sign On (SSO).'),
-        # ('SpAttachmentDataSet', 'Holds attachment data sets.'),
-        # ('UniquenessRule', 'Stores table names in the data model that have uniqueness rules configured for each discipline.'),
-        # ('UniquenessRuleField', 'Stores field names in the data model that have uniqueness rules configured for each discipline, linked to UniquenessRule records.'),
-        # ('NotificationsMessage', 'Stores user notifications.'),
-        # ('SpMerging', 'Tracks record and task IDs of records being merged.'),
-        # ('SpUserPolicy', 'Records permissions for a user within a collection.'),
-        # ('SpUserRole', 'Records roles associated with Specify users.'),
-        # ('SpRole', 'Stores names, descriptions, and collection information for user-created roles.'),
-        # ('SpRolePolicy', 'Stores resource and action permissions for user-created roles within a collection.'),
-        # ('SpLibraryRole', 'Stores names and descriptions of default roles that can be added to any collection.'),
-        # ('SpLibraryRolePolicy', 'Stores resource and action permissions for library roles within a collection.'),
-        # ('SpDataSet', 'Stores Specify Data Sets created during bulk import using the WorkBench, typically through spreadsheet uploads.')
+        ('CollectionObjectGroupType', None),
+        ('CollectionObjectGroup', None),
+        ('CollectionObjectGroupJoin', None),
+        ('SpUserExternalId', 'Stores provider identifiers and tokens for users who sign in using Single Sign On (SSO).'),
+        ('SpAttachmentDataSet', 'Holds attachment data sets.'),
+        ('UniquenessRule', 'Stores table names in the data model that have uniqueness rules configured for each discipline.'),
+        ('UniquenessRuleField', 'Stores field names in the data model that have uniqueness rules configured for each discipline, linked to UniquenessRule records.'),
+        ('NotificationsMessage', 'Stores user notifications.'),
+        ('SpMerging', 'Tracks record and task IDs of records being merged.'),
+        ('SpUserPolicy', 'Records permissions for a user within a collection.'),
+        ('SpUserRole', 'Records roles associated with Specify users.'),
+        ('SpRole', 'Stores names, descriptions, and collection information for user-created roles.'),
+        ('SpRolePolicy', 'Stores resource and action permissions for user-created roles within a collection.'),
+        ('SpLibraryRole', 'Stores names and descriptions of default roles that can be added to any collection.'),
+        ('SpLibraryRolePolicy', 'Stores resource and action permissions for library roles within a collection.'),
+        ('SpDataSet', 'Stores Specify Data Sets created during bulk import using the WorkBench, typically through spreadsheet uploads.')
     ]
 
 class Migration(migrations.Migration):
