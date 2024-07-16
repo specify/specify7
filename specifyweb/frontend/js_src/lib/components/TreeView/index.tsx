@@ -35,6 +35,7 @@ import { ProtectedTree } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
 import { formatUrl } from '../Router/queryString';
 import { TreeViewActions } from './Actions';
+import { CreateTree } from './CreateTree';
 import type { Row } from './helpers';
 import {
   deserializeConformation,
@@ -43,7 +44,6 @@ import {
 } from './helpers';
 import { TreeViewSearch } from './Search';
 import { Tree } from './Tree';
-import { CreateTree } from './CreateTree';
 
 export function TreeViewWrapper(): JSX.Element | null {
   useMenuItem('trees');
