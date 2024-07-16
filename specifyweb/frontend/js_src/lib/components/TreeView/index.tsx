@@ -12,7 +12,7 @@ import { treeText } from '../../localization/tree';
 import { listen } from '../../utils/events';
 import type { GetSet, RA } from '../../utils/types';
 import { caseInsensitiveHash } from '../../utils/utils';
-import { Container, H2, Ul } from '../Atoms';
+import { Container, H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import type {
@@ -29,7 +29,6 @@ import { useMenuItem } from '../Header/MenuContext';
 import { getPref } from '../InitialContext/remotePrefs';
 import { isTreeTable, treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
-import { Dialog } from '../Molecules/Dialog';
 import { ResourceEdit } from '../Molecules/ResourceLink';
 import { TableIcon } from '../Molecules/TableIcon';
 import { ProtectedTree } from '../Permissions/PermissionDenied';
@@ -44,6 +43,7 @@ import {
 } from './helpers';
 import { TreeViewSearch } from './Search';
 import { Tree } from './Tree';
+import { CreateTree } from './CreateTree';
 
 export function TreeViewWrapper(): JSX.Element | null {
   useMenuItem('trees');
@@ -222,12 +222,6 @@ function TreeView<SCHEMA extends AnyTree>({
     setSplitterKey(splitterKey + 1);
   };
 
-  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
-
-  const handleButtonClick = () => {
-    setIsDialogOpen(true);
-  };
-
   return rows === undefined ? null : (
     <Container.Full>
       <header className="flex items-center gap-2 overflow-x-auto sm:flex-wrap sm:overflow-x-visible">
@@ -239,7 +233,7 @@ function TreeView<SCHEMA extends AnyTree>({
           resource={treeDefinition}
           onSaved={(): void => globalThis.location.reload()}
         />
-        <Button.Icon icon="plus" title="Add Tree" onClick={handleButtonClick} />
+        <CreateTree />
         <Button.Icon
           disabled={conformation.length === 0 || isSplit}
           icon="chevronDoubleLeft"
@@ -330,17 +324,6 @@ function TreeView<SCHEMA extends AnyTree>({
         />
         {treeText.associatedNodesOnly()}
       </Label.Inline>
-      {isDialogOpen && (
-        <Dialog
-          buttons={commonText.new()}
-          header={treeText.addTree()}
-          onClose={() => setIsDialogOpen(false)}
-        >
-          <Ul className="flex flex-col gap-2">
-            <li />
-          </Ul>
-        </Dialog>
-      )}
     </Container.Full>
   );
 }
