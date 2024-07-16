@@ -8331,7 +8331,7 @@ datamodel = Datamodel(tables=[
         idField=IdField(name='cogTypeId', column='COGTypeID', type='java.lang.Integer'),
         fields=[
             Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
-            Field(name='cogtype', column='COGType', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
+            Field(name='type', column='Type', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
             Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
             Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),

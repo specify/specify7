@@ -125,7 +125,7 @@ class Migration(migrations.Migration):
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
                 ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
                 ('collection', models.ForeignKey(db_column='CollectionID', on_delete=protect_with_blockers, related_name='collectionobjectgroups', to='specify.collection')),
-                ('cogtype', models.ForeignKey(db_column='COGTypeID', on_delete=protect_with_blockers, related_name='collectionobjectgroups', to='specify.collectionobjectgrouptype')),
+                ('type', models.ForeignKey(db_column='TypeID', on_delete=protect_with_blockers, related_name='collectionobjectgroups', to='specify.collectionobjectgrouptype')),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
             ],
