@@ -67,22 +67,24 @@ export function TreeSelectDialog({
 
   const treeData = React.useMemo(
     () =>
-      getDisciplineTrees()
-        .filter((treeName) =>
-          permissionName === 'repair'
-            ? hasPermission(`/tree/edit/${toLowerCase(treeName)}`, 'repair')
-            : hasTreeAccess(treeName, 'read')
-        )
-        .map((treeName) => {
-          const treeDefinition = deserializeResource(
-            getTreeDefinitions(treeName)[0].definition
-          );
-          return [treeName, treeDefinition] as const;
-        }),
-    [permissionName]
+      typeof treeRanks === 'object'
+        ? getDisciplineTrees()
+            .filter((treeName) =>
+              permissionName === 'repair'
+                ? hasPermission(`/tree/edit/${toLowerCase(treeName)}`, 'repair')
+                : hasTreeAccess(treeName, 'read')
+            )
+            .map((treeName) => {
+              const treeDefinition = deserializeResource(
+                getTreeDefinitions(treeName)[0].definition
+              );
+              return [treeName, treeDefinition] as const;
+            })
+        : undefined,
+    [permissionName, treeRanks]
   );
 
-  return typeof treeRanks === 'object' ? (
+  return typeof treeRanks === 'object' && Array.isArray(treeData) ? (
     <Dialog
       buttons={
         <Button.Secondary onClick={handleClose}>
