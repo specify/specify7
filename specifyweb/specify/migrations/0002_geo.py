@@ -2,15 +2,13 @@
 # TODO: Finish editing this migration for the new app structure
 
 from django.db import migrations, models
-from django.db.models import Subquery, OuterRef
-import django.db.models.deletion
 import django.utils.timezone
-import specifyweb.specify.models
+from specifyweb.businessrules.rules.cogtype_rules import COG_TYPE_NAMES, COG_TYPE_TYPES
 from specifyweb.specify.models import (
     protect_with_blockers,
-    Discipline,
     Collectionobject,
     CollectionObjectType,
+    CollectionObjectGroupType,
     Collection,
 )
 
@@ -50,6 +48,20 @@ class Migration(migrations.Migration):
         # Reverse handeled by table deletion.
         pass
 
+    def create_default_cog_types(apps, schema_editor):
+        # Create default collection object group types for each collection, named after the discipline
+        for collection in Collection.objects.all():
+            for cog_type in COG_TYPE_TYPES:
+                CollectionObjectGroupType.objects.get_or_create(
+                    name=COG_TYPE_NAMES[cog_type],
+                    type=cog_type,
+                    collection=collection
+                )
+
+    def revert_default_cog_types(apps, schema_editor):
+        # Reverse handeled by table deletion
+        pass
+
     operations = [
         migrations.CreateModel(
             name='CollectionObjectType',
@@ -77,7 +89,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(db_column='COGTypeID', primary_key=True, serialize=False)),
                 ('name', models.CharField(db_column='Name', max_length=255, null=False)),
-                ('cogtype', models.CharField(blank=True, db_column='COGType', max_length=255, null=False)),
+                ('type', models.CharField(blank=True, db_column='Type', max_length=255, null=False)),
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
                 ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
@@ -125,7 +137,7 @@ class Migration(migrations.Migration):
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
                 ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
                 ('collection', models.ForeignKey(db_column='CollectionID', on_delete=protect_with_blockers, related_name='collectionobjectgroups', to='specify.collection')),
-                ('type', models.ForeignKey(db_column='TypeID', on_delete=protect_with_blockers, related_name='collectionobjectgroups', to='specify.collectionobjectgrouptype')),
+                ('cogtype', models.ForeignKey(db_column='COGTypeID', on_delete=protect_with_blockers, related_name='collectionobjectgroups', to='specify.collectionobjectgrouptype')),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
             ],
@@ -135,7 +147,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='CollectionObjectGroupJoin', # add as dependant to collection object group
+            name='CollectionObjectGroupJoin',
             fields=[
                 ('id', models.AutoField(db_column='collectionobjectgroupjoinid', primary_key=True, serialize=False)),
                 ('isprimary', models.BooleanField(blank=True, db_column='IsPrimary', null=True)),
@@ -163,4 +175,5 @@ class Migration(migrations.Migration):
                 'unique_together': (('parentcog', 'childco'),),
             },
         ),
+        migrations.RunPython(create_default_cog_types, revert_default_cog_types),
     ]

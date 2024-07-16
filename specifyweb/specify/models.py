@@ -7523,7 +7523,7 @@ class CollectionObjectGroupType(models.Model):
 
     # Fields
     name = models.CharField(blank=False, max_length=255, null=False, unique=False, db_column='Name', db_index=False) # microscope slide, whole rock, or piece of bark
-    cogtype = models.CharField(blank=True, max_length=255, null=False, unique=False, db_column='COGType', db_index=False) # discrete, consolidated, or drill core
+    type = models.CharField(blank=True, max_length=255, null=False, unique=False, db_column='Type', db_index=False) # discrete, consolidated, or drill core
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
     timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
@@ -7569,7 +7569,7 @@ class CollectionObjectGroup(models.Model): # aka. Cog
 
     # Relationships: Many-to-One
     collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='collectionobjectgroups', null=False, on_delete=protect_with_blockers)
-    type = models.ForeignKey('CollectionObjectGroupType', db_column='TypeID', related_name='collectionobjectgroups', null=False, on_delete=protect_with_blockers)
+    cogtype = models.ForeignKey('CollectionObjectGroupType', db_column='COGTypeID', related_name='collectionobjectgroups', null=False, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
