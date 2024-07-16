@@ -259,7 +259,10 @@ export function getMappingLineData({
       fieldsData: Object.fromEntries(
         filterArray(fieldsData)
           .filter((field) => {
-            if (internalState.mappingLineData.length === 0) {
+            if (
+              internalState.mappingLineData.length === 0 &&
+              taxonType !== undefined
+            ) {
               return field[1].tableTreeDefName === taxonType;
             }
             return true;
