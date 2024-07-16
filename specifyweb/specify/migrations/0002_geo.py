@@ -22,6 +22,7 @@ from specifyweb.specify.update_schema_config import (
     update_table_schema_config_with_defaults,
     revert_table_schema_config,
 )
+from specifyweb.specify.utils import testing_guard_clause
 
 # Migrations Operations Order:
 # 1. Create CollectionObjectType
@@ -53,6 +54,8 @@ SCHEMA_CONFIG_TABLES = [
     ]
 
 def create_temp_discipline():
+    if not testing_guard_clause():
+        raise Exception("Discipline not found in database.")
     institution = Institution.objects.create(
         name="Temp Institution",
         isaccessionsglobal=True,
@@ -155,6 +158,8 @@ class Migration(migrations.Migration):
         try:
             return Institution.objects.first().id
         except AttributeError: # Error handling for unit test building
+            if not testing_guard_clause():
+                raise Exception("Institution not found in database.")
             return models.Institution.objects.create(
                 name="Temp Institution",
                 isaccessionsglobal=True,
