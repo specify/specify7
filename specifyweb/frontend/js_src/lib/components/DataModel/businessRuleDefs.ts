@@ -1,5 +1,4 @@
 import { resourcesText } from '../../localization/resources';
-import { getCache, setCache } from '../../utils/cache';
 import type { BusinessRuleResult } from './businessRules';
 import type { AnySchema, TableFields } from './helperTypes';
 import {
@@ -147,16 +146,6 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           new tables.CollectingEvent.Resource()
         );
       }
-      collectionObject.set('collectionObjectType', getCache('collectionObjectType', 'typeValue') ?? null)
-      setCache('collectionObjectType', 'typeValue', null)
-    },
-    fieldChecks: {
-      collectionObjectType: (resource) => {
-        if (resource.isNew()) {
-          setCache('collectionObjectType', 'typeValue', resource.get('collectionObjectType') ?? null)
-          globalThis.location.reload();
-        }
-      },
     },
   },
 

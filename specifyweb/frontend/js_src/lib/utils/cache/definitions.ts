@@ -157,14 +157,12 @@ export type CacheDefinitions = {
     readonly showMatchingFields: boolean;
     readonly warningDialog: boolean;
   };
+
   readonly statistics: {
     readonly statsValue: RA<
       RA<RA<{ readonly itemName: string; readonly value: number | string }>>
     >;
   };
-  readonly collectionObjectType: {
-    readonly typeValue: string | null
-  }
 };
 
 export type SortConfigs = {
