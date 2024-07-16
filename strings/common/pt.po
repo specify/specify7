@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-07-08 17:57+0000\n"
+"PO-Revision-Date: 2024-07-16 18:17+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "common/pt/>\n"
@@ -427,7 +427,7 @@ msgstr "Correndo…"
 #: components/Header/ExpressSearchTask.tsx:168
 #, fuzzy
 msgid "noMatches"
-msgstr "Sem combinações"
+msgstr "País"
 
 #. Used in: Components > Query Builder > Field Filter ⬤ Components > Wb Utils > Index
 #: components/QueryBuilder/FieldFilter.tsx:74
@@ -436,7 +436,7 @@ msgstr "Sem combinações"
 #: components/WbUtils/index.tsx:60
 #, fuzzy
 msgid "searchQuery"
-msgstr "Consulta de pesquisa"
+msgstr "Ferramenta"
 
 #. Used in: Components > Attachments > Attachments ⬤ Components > Home Page > About Specify
 #: components/Attachments/attachments.ts:75
