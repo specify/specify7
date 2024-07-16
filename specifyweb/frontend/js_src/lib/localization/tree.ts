@@ -537,4 +537,12 @@ export const treeText = createDictionary({
     'ru-ru': 'Переместить предметы',
     'uk-ua': 'Переміщення елементів',
   },
+  addTree: {
+    'en-us': 'Add Tree',
+    'de-ch': 'TBA',
+    'es-es': 'TBA',
+    'fr-fr': 'TBA',
+    'ru-ru': 'TBA',
+    'uk-ua': 'TBA',
+  },
 } as const);

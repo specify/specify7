@@ -12,7 +12,7 @@ import { treeText } from '../../localization/tree';
 import { listen } from '../../utils/events';
 import type { GetSet, RA } from '../../utils/types';
 import { caseInsensitiveHash } from '../../utils/utils';
-import { Container, H2 } from '../Atoms';
+import { Container, H2, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import type {
@@ -335,8 +335,13 @@ function TreeView<SCHEMA extends AnyTree>({
         {treeText.associatedNodesOnly()}
       </Label.Inline>
       {isDialogOpen && (
-        <Dialog onClose={() => setIsDialogOpen(false)}>
-          {/* Add dialog content here*/}
+        <Dialog
+        buttons={commonText.new()}
+        header={treeText.addTree()}
+        onClose={() => setIsDialogOpen(false)}>
+          <Ul className="flex flex-col gap-2">
+            <li></li>
+          </Ul>
         </Dialog>
       )}
     </Container.Full>
