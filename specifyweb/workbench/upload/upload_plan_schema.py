@@ -34,6 +34,12 @@ schema: Dict = {
                 },
             ]
         },
+        "taxonTreeId": {
+            "oneOf": [
+                { "type": "integer" },
+                { "type": "null" }
+            ]
+        }
     },
     'required': [ 'baseTableName', 'uploadable' ],
     'additionalProperties': False,
@@ -138,6 +144,13 @@ schema: Dict = {
                   'additionalProperties': False
                 },
             ],
+        },
+
+        'taxonTreeId': {
+            "oneOf": [
+                { "type": "integer" },
+                { "type": "null" }
+            ]
         },
 
         'wbcols': {
