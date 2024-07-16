@@ -4,7 +4,6 @@
 from django.db import migrations, models
 import django.utils.timezone
 from specifyweb.businessrules.rules.cogtype_rules import COG_TYPE_NAMES, COG_TYPE_TYPES
-from specifyweb.businessrules.tests import discipline
 from specifyweb.specify.models import (
     protect_with_blockers,
     Collectionobject,
@@ -133,8 +132,8 @@ class Migration(migrations.Migration):
         for table, desc in SCHEMA_CONFIG_TABLES:
             try:
                 discipline_id = Discipline.objects.first().id
-            except Exception:
-                discipline_id = 1
+            except Exception: # This shouldn't happen, there needs to be a discipline, TODO: Fix this in unit tests
+                discipline_id = None
             update_table_schema_config_with_defaults(table, discipline_id, desc)
 
     def revert_table_schema_config_with_defaults(apps, schema_editor):
