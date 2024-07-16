@@ -147,6 +147,29 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         );
       }
     },
+    fieldChecks: {
+      collectionObjectType: (resource) => {
+        const fieldsToIgnore = [
+          'cataloger',
+          'catalogNumber',
+          'collection',
+          'version',
+          'projects',
+        ];
+        resource.specifyTable.fields
+          .filter((f) => !fieldsToIgnore.includes(f.name))
+          .map((f) => {
+            const fieldName = f.name as keyof (CollectionObject['fields'] &
+              CollectionObject['toManyDependent'] &
+              CollectionObject['toManyIndependent'] &
+              CollectionObject['toOneDependent'] &
+              CollectionObject['toOneIndependent']);
+            if (!f.isRelationship || !relationshipIsToMany(f))
+              resource.set(fieldName, null);
+            else resource.set(fieldName, []);
+          });
+      },
+    },
   },
 
   Determination: {
