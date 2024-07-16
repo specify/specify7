@@ -363,20 +363,7 @@ def tree_rank_item_count(request, tree, rankid):
 TAXON_TREES = ["Mineral", "Rock", "Meteorite", "Fossil"]
 TAXON_RANKS = ["One", "Two", "Three"]
 
-@openapi(schema={
-    "post": {
-        "responses": {
-            "200": {
-                "description": "Success: The default geology trees were added."
-            },
-            "405": {
-                "description": "Error: Method not allowed."
-            }
-        }
-    }
-})
-@tree_mutation
-def add_geo_default_trees(request):
+def add_geo_default_trees_func():
     for tree in TAXON_TREES:
         if Taxontreedef.objects.filter(name=tree).exists():
             continue
@@ -395,6 +382,21 @@ def add_geo_default_trees(request):
                 treedef=ttd,
             )
 
+@openapi(schema={
+    "post": {
+        "responses": {
+            "200": {
+                "description": "Success: The default geology trees were added."
+            },
+            "405": {
+                "description": "Error: Method not allowed."
+            }
+        }
+    }
+})
+@tree_mutation
+def add_geo_default_trees(request):
+    add_geo_default_trees_func()
     return HttpResponse(toJson({'success': True}), content_type="application/json")
 
 @openapi(schema={

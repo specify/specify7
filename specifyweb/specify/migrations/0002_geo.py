@@ -53,7 +53,7 @@ class Migration(migrations.Migration):
         for collection in Collection.objects.all():
             for cog_type in COG_TYPE_TYPES:
                 CollectionObjectGroupType.objects.get_or_create(
-                    name=COG_TYPE_NAMES[cog_type],
+                    name=cog_type,
                     type=cog_type,
                     collection=collection
                 )

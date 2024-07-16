@@ -8,13 +8,11 @@ def cojo_pre_save(cojo):
     # to isPrimary = False.
     if cojo.isprimary == True:
         (CollectionObjectGroupJoin.objects
-         .filter(parentcog=cojo.parentcog, isprimary=True)
-         .exclude(id=cojo.id)
+         .filter(parentcog=cojo.parentcog)
          .update(isprimary=False))
 
     if cojo.issubstrate == True:
         (CollectionObjectGroupJoin.objects
          .filter(parentcog=cojo.parentcog, issubstrate=True)
-         .exclude(id=cojo.id)
          .update(issubstrate=False))
         
