@@ -6548,10 +6548,10 @@ export type CollectionObjectGroupJoin = {
 export type CollectionObjectGroupType = {
   readonly tableName: 'CollectionObjectGroupType';
   readonly fields: {
-    readonly type: string;
     readonly name: string;
     readonly timestampcreated: string;
     readonly timestampmodified: string | null;
+    readonly type: string;
     readonly version: number | null;
   };
   readonly toOneDependent: RR<never, never>;

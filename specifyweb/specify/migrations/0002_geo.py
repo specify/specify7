@@ -10,6 +10,8 @@ from specifyweb.specify.models import (
     CollectionObjectType,
     CollectionObjectGroupType,
     Collection,
+    Discipline,
+    Institution,
 )
 
 # Migrations Operations Order:
@@ -37,7 +39,7 @@ class Migration(migrations.Migration):
             cot, created = CollectionObjectType.objects.get_or_create(
                 name=discipline_name,
                 collection=collection,
-                taxontreedef=discipline.taxontreedef
+                taxontreedef_id=discipline.taxontreedef_id
             )
             # Update CollectionObjects' collectionobjecttype for the discipline
             Collectionobject.objects.filter(collection=collection).update(collectionobjecttype=cot)
@@ -51,16 +53,50 @@ class Migration(migrations.Migration):
     def create_default_cog_types(apps, schema_editor):
         # Create default collection object group types for each collection, named after the discipline
         for collection in Collection.objects.all():
-            for cog_type in COG_TYPE_TYPES:
+            for cog_type_name, cog_type_type in zip(COG_TYPE_NAMES, COG_TYPE_TYPES):
                 CollectionObjectGroupType.objects.get_or_create(
-                    name=cog_type,
-                    type=cog_type,
+                    name=cog_type_name,
+                    type=cog_type_type,
                     collection=collection
                 )
 
     def revert_default_cog_types(apps, schema_editor):
         # Reverse handeled by table deletion
         pass
+
+    def create_default_discipline_for_tree_defs(apps, schema_editor):
+        for discipline in Discipline.objects.all():
+            geography_tree_def = discipline.geographytreedef
+            geography_tree_def.discipline = discipline
+            geography_tree_def.save()
+
+            geologic_time_period_tree_def = discipline.geologictimeperiodtreedef
+            geologic_time_period_tree_def.discipline = discipline
+            geologic_time_period_tree_def.save()
+
+            lithostrat_tree_def = discipline.lithostrattreedef
+            lithostrat_tree_def.discipline = discipline
+            lithostrat_tree_def.save()
+
+            # TODO: Fix BusinessRuleException 'Taxontreedef must have unique name in discipline'
+            # taxon_tree_def = discipline.taxontreedef
+            # taxon_tree_def.discipline = discipline
+            # taxon_tree_def.save()
+
+        for institution in Institution.objects.all():
+            storage_tree_def = institution.storagetreedef
+            storage_tree_def.institution = institution
+            storage_tree_def.save()
+
+    def revert_default_discipline_for_tree_defs(apps, schema_editor):
+        # Reverse handeled by table deletion
+        pass
+
+    def initial_default_tree_def_discipline() -> int:
+        return Discipline.objects.first().id
+
+    def initial_default_tree_def_institution() -> int:
+        return Institution.objects.first().id
 
     operations = [
         migrations.CreateModel(
@@ -176,4 +212,40 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.RunPython(create_default_cog_types, revert_default_cog_types),
+        migrations.AddField(
+            model_name='geographytreedef',
+            name='discipline',
+            field=models.ForeignKey(db_column='DisciplineID', default=initial_default_tree_def_discipline, on_delete=protect_with_blockers, related_name='geographytreedefs', to='specify.discipline'),
+            preserve_default=False,
+        ),
+        migrations.AddField(
+            model_name='geologictimeperiodtreedef',
+            name='discipline',
+            field=models.ForeignKey(db_column='DisciplineID', default=initial_default_tree_def_discipline, on_delete=protect_with_blockers, related_name='geologictimeperiodtreedefs', to='specify.discipline'),
+            preserve_default=False,
+        ),
+        migrations.AddField(
+            model_name='lithostrattreedef',
+            name='discipline',
+            field=models.ForeignKey(db_column='DisciplineID', default=initial_default_tree_def_discipline, on_delete=protect_with_blockers, related_name='lithostratstreedefs', to='specify.discipline'),
+            preserve_default=False,
+        ),
+        migrations.AddField(
+            model_name='storagetreedef',
+            name='institution',
+            field=models.ForeignKey(db_column='InstitutionID', default=initial_default_tree_def_institution, on_delete=protect_with_blockers, related_name='storagetreedefs', to='specify.institution'),
+            preserve_default=False,
+        ),
+        migrations.AddField(
+            model_name='taxontreedef',
+            name='discipline',
+            field=models.ForeignKey(db_column='DisciplineID', default=initial_default_tree_def_discipline, on_delete=protect_with_blockers, related_name='taxontreedefs', to='specify.discipline'),
+            preserve_default=False,
+        ),
+        migrations.AlterField(
+            model_name='discipline',
+            name='taxontreedef',
+            field=models.OneToOneField(db_column='TaxonTreeDefID', null=True, on_delete=protect_with_blockers, related_name='defaultdiscipline', to='specify.taxontreedef'),
+        ),
+        migrations.RunPython(create_default_discipline_for_tree_defs, revert_default_discipline_for_tree_defs),
     ]

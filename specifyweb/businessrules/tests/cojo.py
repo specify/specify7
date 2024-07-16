@@ -3,18 +3,18 @@ from specifyweb.specify.tests.test_api import ApiTests
 
 class CoJoTest(ApiTests):
     def test_cojo_rules_enforcement(self):
-        cog_type = CollectionObjectGroupType.objects.create(name='microscope slide', cogtype='discrete')
+        cog_type = CollectionObjectGroupType.objects.create(name='microscope slide', type='discrete')
         cog_1 = CollectionObjectGroup.objects.create(
             collection=self.collection,
-            cogtype=cog_type
+            type=cog_type
         )
         cog_2 = CollectionObjectGroup.objects.create(
             collection=self.collection,
-            cogtype=cog_type
+            type=cog_type
         )
         cog_3 = CollectionObjectGroup.objects.create(
             collection=self.collection,
-            cogtype=cog_type
+            type=cog_type
         )
         cojo_1 = CollectionObjectGroupJoin.objects.create(
             parentcog=cog_1,
@@ -39,7 +39,7 @@ class CoJoTest(ApiTests):
 
         cog_4 = CollectionObjectGroup.objects.create(
             collection=self.collection,
-            cogtype=cog_type
+            type=cog_type
         )
         cojo_3 = CollectionObjectGroupJoin.objects.create(
             parentcog=cog_1,
