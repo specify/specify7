@@ -34,24 +34,24 @@ from specifyweb.specify.utils import testing_guard_clause
 # 7. Create CollectionObjectGroupJoin
 
 SCHEMA_CONFIG_TABLES = [
-        ('CollectionObjectType', None),
-        ('CollectionObjectGroupType', None),
-        ('CollectionObjectGroup', None),
-        ('CollectionObjectGroupJoin', None),
-        ('SpUserExternalId', 'Stores provider identifiers and tokens for users who sign in using Single Sign On (SSO).'),
-        ('SpAttachmentDataSet', 'Holds attachment data sets.'),
-        ('UniquenessRule', 'Stores table names in the data model that have uniqueness rules configured for each discipline.'),
-        ('UniquenessRuleField', 'Stores field names in the data model that have uniqueness rules configured for each discipline, linked to UniquenessRule records.'),
-        ('Message', 'Stores user notifications.'),
-        ('SpMerging', 'Tracks record and task IDs of records being merged.'),
-        ('UserPolicy', 'Records permissions for a user within a collection.'),
-        ('UserRole', 'Records roles associated with ecify users.'),
-        ('Role', 'Stores names, descriptions, and collection information for user-created roles.'),
-        ('RolePolicy', 'Stores resource and action permissions for user-created roles within a collection.'),
-        ('LibraryRole', 'Stores names and descriptions of default roles that can be added to any collection.'),
-        ('LibraryRolePolicy', 'Stores resource and action permissions for library roles within a collection.'),
-        ('SpDataSet', 'Stores Specify Data Sets created during bulk import using the WorkBench, typically through spreadsheet uploads.')
-    ]
+    ('CollectionObjectType', None),
+    ('CollectionObjectGroupType', None),
+    ('CollectionObjectGroup', None),
+    ('CollectionObjectGroupJoin', None),
+    ('SpUserExternalId', 'Stores provider identifiers and tokens for users who sign in using Single Sign On (SSO).'),
+    ('SpAttachmentDataSet', 'Holds attachment data sets.'),
+    ('UniquenessRule', 'Stores table names in the data model that have uniqueness rules configured for each discipline.'),
+    ('UniquenessRuleField', 'Stores field names in the data model that have uniqueness rules configured for each discipline, linked to UniquenessRule records.'),
+    ('Message', 'Stores user notifications.'),
+    ('SpMerging', 'Tracks record and task IDs of records being merged.'),
+    ('UserPolicy', 'Records permissions for a user within a collection.'),
+    ('UserRole', 'Records roles associated with ecify users.'),
+    ('Role', 'Stores names, descriptions, and collection information for user-created roles.'),
+    ('RolePolicy', 'Stores resource and action permissions for user-created roles within a collection.'),
+    ('LibraryRole', 'Stores names and descriptions of default roles that can be added to any collection.'),
+    ('LibraryRolePolicy', 'Stores resource and action permissions for library roles within a collection.'),
+    ('SpDataSet', 'Stores Specify Data Sets created during bulk import using the WorkBench, typically through spreadsheet uploads.')
+]
 
 def create_temp_discipline():
     if not testing_guard_clause():
@@ -71,8 +71,8 @@ def create_temp_discipline():
         name="Temp gtptd"
     )
     geographytreedef = Geographytreedef.objects.create(name="Temp gtd")
-    datatype = models.Datatype.objects.create(name='Temp datatype')
-    return models.Discipline.objects.create(
+    datatype = Datatype.objects.create(name='Temp datatype')
+    return Discipline.objects.create(
         geologictimeperiodtreedef=geologictimeperiodtreedef,
         geographytreedef=geographytreedef,
         division=division,
@@ -150,13 +150,13 @@ class Migration(migrations.Migration):
 
     def initial_default_tree_def_discipline():
         try:
-            return Discipline.objects.first().id
+            return Discipline.objects.values_list('id', flat=True).first()
         except AttributeError: # Error handling for unit test building
             return create_temp_discipline().id
 
     def initial_default_tree_def_institution():
         try:
-            return Institution.objects.first().id
+            return Institution.objects.values_list('id', flat=True).first()
         except AttributeError: # Error handling for unit test building
             if not testing_guard_clause():
                 raise Exception("Institution not found in database.")
@@ -172,7 +172,7 @@ class Migration(migrations.Migration):
     def create_table_schema_config_with_defaults(apps, schema_editor):
         for table, desc in SCHEMA_CONFIG_TABLES:
             try:
-                discipline_id =  Discipline.objects.first().id
+                discipline_id =  Discipline.objects.values_list('id', flat=True).first()
             except AttributeError: # Error handling for unit test building
                 discipline_id = create_temp_discipline().id
             update_table_schema_config_with_defaults(table, discipline_id, desc)
@@ -298,31 +298,31 @@ class Migration(migrations.Migration):
         migrations.AddField( # TODO: Revert these fields to null=False once unit tests are fixed
             model_name='geographytreedef',
             name='discipline',
-            field=models.ForeignKey(db_column='DisciplineID', null=True, on_delete=protect_with_blockers, related_name='geographytreedefs', to='specify.discipline'),
+            field=models.ForeignKey(db_column='DisciplineID', default=initial_default_tree_def_discipline, null=False, on_delete=protect_with_blockers, related_name='geographytreedefs', to='specify.discipline'),
             preserve_default=False,
         ),
         migrations.AddField(
             model_name='geologictimeperiodtreedef',
             name='discipline',
-            field=models.ForeignKey(db_column='DisciplineID', null=True, on_delete=protect_with_blockers, related_name='geologictimeperiodtreedefs', to='specify.discipline'),
+            field=models.ForeignKey(db_column='DisciplineID', default=initial_default_tree_def_discipline, null=False, on_delete=protect_with_blockers, related_name='geologictimeperiodtreedefs', to='specify.discipline'),
             preserve_default=False,
         ),
         migrations.AddField(
             model_name='lithostrattreedef',
             name='discipline',
-            field=models.ForeignKey(db_column='DisciplineID', null=True, on_delete=protect_with_blockers, related_name='lithostratstreedefs', to='specify.discipline'),
+            field=models.ForeignKey(db_column='DisciplineID', default=initial_default_tree_def_discipline, null=False, on_delete=protect_with_blockers, related_name='lithostratstreedefs', to='specify.discipline'),
             preserve_default=False,
         ),
         migrations.AddField(
             model_name='storagetreedef',
             name='institution',
-            field=models.ForeignKey(db_column='InstitutionID', null=True, on_delete=protect_with_blockers, related_name='storagetreedefs', to='specify.institution'),
+            field=models.ForeignKey(db_column='InstitutionID', default=initial_default_tree_def_institution, null=False, on_delete=protect_with_blockers, related_name='storagetreedefs', to='specify.institution'),
             preserve_default=False,
         ),
         migrations.AddField(
             model_name='taxontreedef',
             name='discipline',
-            field=models.ForeignKey(db_column='DisciplineID', null=True, on_delete=protect_with_blockers, related_name='taxontreedefs', to='specify.discipline'),
+            field=models.ForeignKey(db_column='DisciplineID', default=initial_default_tree_def_discipline, null=False, on_delete=protect_with_blockers, related_name='taxontreedefs', to='specify.discipline'),
             preserve_default=False,
         ),
         migrations.AlterField(
@@ -332,34 +332,4 @@ class Migration(migrations.Migration):
         ),
         migrations.RunPython(create_default_discipline_for_tree_defs, revert_default_discipline_for_tree_defs),
         migrations.RunPython(create_table_schema_config_with_defaults, revert_table_schema_config_with_defaults),
-        migrations.AlterField(
-            model_name='geographytreedef',
-            name='discipline',
-            field=models.ForeignKey(db_column='DisciplineID', null=False, on_delete=protect_with_blockers, related_name='geographytreedefs', to='specify.discipline'),
-            preserve_default=False,
-        ),
-        migrations.AlterField(
-            model_name='geologictimeperiodtreedef',
-            name='discipline',
-            field=models.ForeignKey(db_column='DisciplineID', null=False, on_delete=protect_with_blockers, related_name='geologictimeperiodtreedefs', to='specify.discipline'),
-            preserve_default=False,
-        ),
-        migrations.AlterField(
-            model_name='lithostrattreedef',
-            name='discipline',
-            field=models.ForeignKey(db_column='DisciplineID', null=False, on_delete=protect_with_blockers, related_name='lithostratstreedefs', to='specify.discipline'),
-            preserve_default=False,
-        ),
-        migrations.AlterField(
-            model_name='storagetreedef',
-            name='institution',
-            field=models.ForeignKey(db_column='InstitutionID', null=False, on_delete=protect_with_blockers, related_name='storagetreedefs', to='specify.institution'),
-            preserve_default=False,
-        ),
-        migrations.AlterField(
-            model_name='taxontreedef',
-            name='discipline',
-            field=models.ForeignKey(db_column='DisciplineID', null=False, on_delete=protect_with_blockers, related_name='taxontreedefs', to='specify.discipline'),
-            preserve_default=False,
-        ),
     ]
