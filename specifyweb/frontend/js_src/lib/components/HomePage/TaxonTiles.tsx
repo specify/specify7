@@ -98,7 +98,8 @@ function useGenusRankId(): number | false | undefined {
       async () =>
         treeRanksPromise.then(
           () =>
-            strictGetTreeDefinitionItems('Taxon', false).find(
+            // REFACTOR: Narrow the TreeDefinition used to find the rankId of the Genus Rank
+            strictGetTreeDefinitionItems('Taxon', false, 'all').find(
               (item) => (item.name || item.title)?.toLowerCase() === 'genus'
             )?.rankId ?? false
         ),
