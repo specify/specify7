@@ -5,6 +5,7 @@ import dis
 from django.db import migrations, models
 import django.utils.timezone
 from specifyweb.businessrules.rules.cogtype_rules import COG_TYPE_NAMES, COG_TYPE_TYPES
+from specifyweb.businessrules.tests import discipline
 from specifyweb.specify.models import (
     protect_with_blockers,
     Collectionobject,
@@ -30,22 +31,22 @@ from specifyweb.specify.update_schema_config import (
 
 SCHEMA_CONFIG_TABLES = [
         ('CollectionObjectType', None),
-        ('CollectionObjectGroupType', None),
-        ('CollectionObjectGroup', None),
-        ('CollectionObjectGroupJoin', None),
-        ('SpUserExternalId', 'Stores provider identifiers and tokens for users who sign in using Single Sign On (SSO).'),
-        ('SpAttachmentDataSet', 'Holds attachment data sets.'),
-        ('UniquenessRule', 'Stores table names in the data model that have uniqueness rules configured for each discipline.'),
-        ('UniquenessRuleField', 'Stores field names in the data model that have uniqueness rules configured for each discipline, linked to UniquenessRule records.'),
-        ('NotificationsMessage', 'Stores user notifications.'),
-        ('SpMerging', 'Tracks record and task IDs of records being merged.'),
-        ('SpUserPolicy', 'Records permissions for a user within a collection.'),
-        ('SpUserRole', 'Records roles associated with Specify users.'),
-        ('SpRole', 'Stores names, descriptions, and collection information for user-created roles.'),
-        ('SpRolePolicy', 'Stores resource and action permissions for user-created roles within a collection.'),
-        ('SpLibraryRole', 'Stores names and descriptions of default roles that can be added to any collection.'),
-        ('SpLibraryRolePolicy', 'Stores resource and action permissions for library roles within a collection.'),
-        ('SpDataSet', 'Stores Specify Data Sets created during bulk import using the WorkBench, typically through spreadsheet uploads.')
+        # ('CollectionObjectGroupType', None),
+        # ('CollectionObjectGroup', None),
+        # ('CollectionObjectGroupJoin', None),
+        # ('SpUserExternalId', 'Stores provider identifiers and tokens for users who sign in using Single Sign On (SSO).'),
+        # ('SpAttachmentDataSet', 'Holds attachment data sets.'),
+        # ('UniquenessRule', 'Stores table names in the data model that have uniqueness rules configured for each discipline.'),
+        # ('UniquenessRuleField', 'Stores field names in the data model that have uniqueness rules configured for each discipline, linked to UniquenessRule records.'),
+        # ('NotificationsMessage', 'Stores user notifications.'),
+        # ('SpMerging', 'Tracks record and task IDs of records being merged.'),
+        # ('SpUserPolicy', 'Records permissions for a user within a collection.'),
+        # ('SpUserRole', 'Records roles associated with Specify users.'),
+        # ('SpRole', 'Stores names, descriptions, and collection information for user-created roles.'),
+        # ('SpRolePolicy', 'Stores resource and action permissions for user-created roles within a collection.'),
+        # ('SpLibraryRole', 'Stores names and descriptions of default roles that can be added to any collection.'),
+        # ('SpLibraryRolePolicy', 'Stores resource and action permissions for library roles within a collection.'),
+        # ('SpDataSet', 'Stores Specify Data Sets created during bulk import using the WorkBench, typically through spreadsheet uploads.')
     ]
 
 class Migration(migrations.Migration):
@@ -131,7 +132,8 @@ class Migration(migrations.Migration):
 
     def create_table_schema_config_with_defaults(apps, schema_editor):
         for table, desc in SCHEMA_CONFIG_TABLES:
-            update_table_schema_config_with_defaults(table, desc)
+            discipline_id = Discipline.objects.first().id
+            update_table_schema_config_with_defaults(table, discipline_id, desc)
 
     def revert_table_schema_config_with_defaults(apps, schema_editor):
         for table, _ in SCHEMA_CONFIG_TABLES:
