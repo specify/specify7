@@ -3,7 +3,7 @@
 
 from django.db import migrations, models
 import django.utils.timezone
-from specifyweb.businessrules.rules.cogtype_rules import COG_TYPE_NAMES, COG_TYPE_TYPES
+from specifyweb.businessrules.rules.cogtype_rules import COG_TYPE_TYPES
 from specifyweb.specify.models import (
     protect_with_blockers,
     Collectionobject,
@@ -77,10 +77,9 @@ class Migration(migrations.Migration):
     def create_default_cog_types(apps, schema_editor):
         # Create default collection object group types for each collection, named after the discipline
         for collection in Collection.objects.all():
-            # TODO: Implement by avoid using COG_TYPE_NAMES
-            for cog_type_name, cog_type_type in zip(COG_TYPE_NAMES, COG_TYPE_TYPES):
+            for cog_type_type in COG_TYPE_TYPES:
                 CollectionObjectGroupType.objects.get_or_create(
-                    name=cog_type_name,
+                    name=cog_type_type,
                     type=cog_type_type,
                     collection=collection
                 )
