@@ -117,6 +117,7 @@ class Migration(migrations.Migration):
         pass
 
     def initial_default_tree_def_discipline():
+        # TODO: No Discipline exists when building unit tests, need to fix
         discipline = Discipline.objects.first()
         if discipline:
             return discipline.id
@@ -125,6 +126,7 @@ class Migration(migrations.Migration):
         # return Discipline.objects.first().id
 
     def initial_default_tree_def_institution():
+        # TODO: No Institution exists when building unit tests, need to fix
         return Institution.objects.first().id
 
     def create_table_schema_config_with_defaults(apps, schema_editor):
