@@ -163,8 +163,8 @@ export type CacheDefinitions = {
     >;
   };
   readonly collectionObjectType: {
-    readonly typeValue: string | null
-  }
+    readonly typeValue: string | null;
+  };
 };
 
 export type SortConfigs = {
