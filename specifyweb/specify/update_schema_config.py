@@ -1,7 +1,4 @@
-from cgitb import text
-import dis
 import re
-from specifyweb.context.views import languages
 from specifyweb.specify.load_datamodel import Table
 from specifyweb.specify.models import (
     Splocalecontainer,
@@ -35,7 +32,7 @@ def update_table_schema_config_with_defaults(table_name, discipline_id, descript
     table_name = table.classname.split('.')[-1]
     table_desc = re.sub(r'(?<!^)(?=[A-Z])', r' ', table_name) if description is None else description
     table_config = TableSchemaConfig(
-        name=table.name,
+        name=table_name,
         discipline_id=discipline_id,
         schema_type=0,
         description=table_desc,
@@ -95,18 +92,18 @@ def update_table_schema_config_with_defaults(table_name, discipline_id, descript
             Splocaleitemstr.objects.create(**itm_str)
 
 def revert_table_schema_config(table_name):
-    table: Table = datamodel.get_table(table.name)
+    table: Table = datamodel.get_table(table_name)
     table_name = table.classname.split('.')[-1]
 
     container = Splocalecontainer.objects.get(name=table_name)
-    items = Splocalecontaineritem.objects.filter(splocalecontainer=container)
+    items = Splocalecontaineritem.objects.filter(container=container)
     for item in items:
         item_strs = Splocaleitemstr.objects.filter(Q(itemname=item) | Q(itemdesc=item))
         for item_str in item_strs:
             item_str.delete()
         item.delete()
     
-    item_strs = Splocaleitemstr.objects.filter(Q(containername=item) | Q(containerdesc=item))
+    item_strs = Splocaleitemstr.objects.filter(Q(containername=container) | Q(containerdesc=container))
     for item_str in item_strs:
         item_str.delete()
     container.delete()
