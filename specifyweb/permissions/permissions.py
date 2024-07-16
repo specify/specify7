@@ -190,7 +190,7 @@ def check_field_permissions(collection, actor, obj, fields: Iterable[str], actio
         table = obj.specify_model.name.lower()
     enforce(collection, actor, [f'/field/{table}/{field}' for field in fields], action)
 
-def table_permissions_checker(collection, actor, action: str) -> Callable[[Any], None]:
+def table_permissions_checker(collection, actor, action: TABLE_ACTION) -> Callable[[Any], None]:
     def checker(obj) -> None:
         check_table_permissions(collection, actor, obj, action)
     return checker
