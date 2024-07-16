@@ -110,7 +110,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='collection',
             name='collectionobjecttype',
-            field=models.ForeignKey(db_column='CollectionObjectTypeID', null=True, on_delete=protect_with_blockers, related_name='collections', to='specify.collectionobjecttype'),
+            field=models.ForeignKey(db_column='CollectionObjectTypeID', null=True, on_delete=models.SET_NULL, related_name='collections', to='specify.collectionobjecttype'),
         ),
         migrations.RunPython(create_default_collection_types, revert_default_collection_types),
         migrations.CreateModel(
