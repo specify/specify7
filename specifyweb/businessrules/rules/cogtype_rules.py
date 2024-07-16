@@ -14,6 +14,7 @@ COG_TYPE_TYPES = {
     'drill core'
 }
 
+# TODO: Maybe remove this rule?
 @orm_signal_handler('pre_save', 'CollectionObjectGroupType')
 def cogtype_pre_save(cog_type):
     # if cog_type.name not in COG_TYPE_NAMES:

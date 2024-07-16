@@ -106,6 +106,7 @@ class Migration(migrations.Migration):
         # Reverse handeled by table deletion.
         pass
 
+    # TODO: Move from migration to django command and api endpoint
     def create_default_cog_types(apps, schema_editor):
         # Create default collection object group types for each collection, named after the discipline
         for collection in Collection.objects.all():

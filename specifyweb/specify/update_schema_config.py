@@ -54,7 +54,7 @@ def update_table_schema_config_with_defaults(table_name, discipline_id, descript
     # Create Splocalecontainer for the tbale
     sp_local_container = Splocalecontainer.objects.create(
         name=table.name,
-        discipline=Discipline.objects.get(id=discipline_id),
+        discipline=Discipline.objects.values_list('id', flat=True).get(id=discipline_id),
         schematype=table_config.schema_type,
         ishidden=False,
         issystem=table.system,
