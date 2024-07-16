@@ -14,6 +14,10 @@ from specifyweb.specify.models import (
     Discipline,
     Institution,
 )
+from specifyweb.specify.update_schema_config import (
+    update_table_schema_config_with_defaults,
+    revert_table_schema_config,
+)
 
 # Migrations Operations Order:
 # 1. Create CollectionObjectType
@@ -23,6 +27,26 @@ from specifyweb.specify.models import (
 # 5. Create new default taxon trees and ranks
 # 6. Create CollectionObjectGroup
 # 7. Create CollectionObjectGroupJoin
+
+SCHEMA_CONFIG_TABLES = [
+        ('CollectionObjectType', None),
+        ('CollectionObjectGroupType', None),
+        ('CollectionObjectGroup', None),
+        ('CollectionObjectGroupJoin', None),
+        ('SpUserExternalId', 'Stores provider identifiers and tokens for users who sign in using Single Sign On (SSO).'),
+        ('SpAttachmentDataSet', 'Holds attachment data sets.'),
+        ('UniquenessRule', 'Stores table names in the data model that have uniqueness rules configured for each discipline.'),
+        ('UniquenessRuleField', 'Stores field names in the data model that have uniqueness rules configured for each discipline, linked to UniquenessRule records.'),
+        ('NotificationsMessage', 'Stores user notifications.'),
+        ('SpMerging', 'Tracks record and task IDs of records being merged.'),
+        ('SpUserPolicy', 'Records permissions for a user within a collection.'),
+        ('SpUserRole', 'Records roles associated with Specify users.'),
+        ('SpRole', 'Stores names, descriptions, and collection information for user-created roles.'),
+        ('SpRolePolicy', 'Stores resource and action permissions for user-created roles within a collection.'),
+        ('SpLibraryRole', 'Stores names and descriptions of default roles that can be added to any collection.'),
+        ('SpLibraryRolePolicy', 'Stores resource and action permissions for library roles within a collection.'),
+        ('SpDataSet', 'Stores Specify Data Sets created during bulk import using the WorkBench, typically through spreadsheet uploads.')
+    ]
 
 class Migration(migrations.Migration):
 
@@ -54,6 +78,7 @@ class Migration(migrations.Migration):
     def create_default_cog_types(apps, schema_editor):
         # Create default collection object group types for each collection, named after the discipline
         for collection in Collection.objects.all():
+            # TODO: Implement by avoid using COG_TYPE_NAMES
             for cog_type_name, cog_type_type in zip(COG_TYPE_NAMES, COG_TYPE_TYPES):
                 CollectionObjectGroupType.objects.get_or_create(
                     name=cog_type_name,
@@ -103,6 +128,14 @@ class Migration(migrations.Migration):
 
     def initial_default_tree_def_institution():
         return Institution.objects.first().id
+
+    def create_table_schema_config_with_defaults(apps, schema_editor):
+        for table, desc in SCHEMA_CONFIG_TABLES:
+            update_table_schema_config_with_defaults(table, desc)
+
+    def revert_table_schema_config_with_defaults(apps, schema_editor):
+        for table, _ in SCHEMA_CONFIG_TABLES:
+            revert_table_schema_config(table)
 
     operations = [
         migrations.CreateModel(
@@ -254,4 +287,5 @@ class Migration(migrations.Migration):
             field=models.OneToOneField(db_column='TaxonTreeDefID', null=True, on_delete=protect_with_blockers, related_name='defaultdiscipline', to='specify.taxontreedef'),
         ),
         migrations.RunPython(create_default_discipline_for_tree_defs, revert_default_discipline_for_tree_defs),
+        migrations.RunPython(create_table_schema_config_with_defaults, revert_table_schema_config_with_defaults),
     ]
