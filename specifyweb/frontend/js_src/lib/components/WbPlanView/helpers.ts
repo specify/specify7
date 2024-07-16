@@ -78,7 +78,6 @@ export async function savePlan({
     method: 'PUT',
     body: {
       uploadplan: uploadPlan,
-      // TaxonTreeId,
     },
   }).then(async () =>
     newlyAddedHeaders.length === 0
