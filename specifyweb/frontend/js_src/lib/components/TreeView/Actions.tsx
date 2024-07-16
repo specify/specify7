@@ -280,7 +280,7 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
           resource={resource}
           resourceView={{
             dialog: 'nonModal',
-            onAdd: isRoot ? undefined : setResource,
+            onAdd: isRoot ? undefined : ([resource]) => setResource(resource),
             onDeleted: handleRefresh,
             onSaved: handleRefresh,
           }}

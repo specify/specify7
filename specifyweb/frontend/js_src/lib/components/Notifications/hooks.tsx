@@ -5,10 +5,12 @@ import { ajax } from '../../utils/ajax';
 import { formatDateForBackEnd } from '../../utils/parser/dateFormat';
 import type { IR, RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
+import { MINUTE, SECOND } from '../Atoms/timeUnits';
 import { formatUrl } from '../Router/queryString';
 import type { GenericNotification } from './NotificationRenderers';
 
-const INITIAL_INTERVAL = 5000;
+const INITIAL_INTERVAL =
+  process.env.NODE_ENV === 'development' ? MINUTE : 5 * SECOND;
 const INTERVAL_MULTIPLIER = 1.1;
 
 export function useNotificationsFetch({
