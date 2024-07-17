@@ -136,7 +136,6 @@ class Migration(migrations.Migration):
             lithostrat_tree_def.discipline = discipline
             lithostrat_tree_def.save()
 
-            # TODO: Fix BusinessRuleException 'Taxontreedef must have unique name in discipline'
             taxon_tree_def = discipline.taxontreedef
             taxon_tree_def.discipline = discipline
             taxon_tree_def.save()
@@ -183,15 +182,6 @@ class Migration(migrations.Migration):
             for discipline in Discipline.objects.all():
                 for table, desc in SCHEMA_CONFIG_TABLES:
                     update_table_schema_config_with_defaults(table, discipline.id, discipline, desc)
-        # try:
-        #     discipline_id =  Discipline.objects.values_list('id', flat=True).first()
-        #     discipline = Discipline.objects.get(id=discipline_id)
-        # except AttributeError: # Error handling for unit test building
-        #     discipline, discipline_id = create_temp_discipline()
-        # if discipline_id is None:
-        #     discipline, discipline_id = create_temp_discipline()
-        # for table, desc in SCHEMA_CONFIG_TABLES:
-        #     update_table_schema_config_with_defaults(table, discipline_id, discipline, desc)
 
     def revert_table_schema_config_with_defaults(apps, schema_editor):
         for table, _ in SCHEMA_CONFIG_TABLES:
@@ -310,7 +300,8 @@ class Migration(migrations.Migration):
                 'unique_together': (('parentcog', 'childco'),),
             },
         ),
-        # migrations.RunPython(create_default_cog_types, revert_default_cog_types),
+        # migrations.RunPython(create_default_cog_types, revert_default_cog_types), # TODO: Move to django command and api endpoint
+        # NOTE: Maybe push these migrations to a separate migration file, so we have more type to fix issues.
         migrations.AddField( # TODO: Revert these fields to null=False once unit tests are fixed
             model_name='geographytreedef',
             name='discipline',
