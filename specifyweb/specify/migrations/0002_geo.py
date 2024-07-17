@@ -172,15 +172,17 @@ class Migration(migrations.Migration):
     #         ).id
 
     def create_table_schema_config_with_defaults(apps, schema_editor):
+        discipline = None
+        discipline_id = None
+        # Django migration runs before the initial data is created for the unit test DB.
+        try:
+            discipline_id =  Discipline.objects.values_list('id', flat=True).first()
+            discipline = Discipline.objects.get(id=discipline_id)
+        except AttributeError: # Error handling for unit test building
+            discipline, discipline_id = create_temp_discipline()
+        if discipline_id is None:
+            discipline, discipline_id = create_temp_discipline()
         for table, desc in SCHEMA_CONFIG_TABLES:
-            try:
-                discipline_id =  Discipline.objects.values_list('id', flat=True).first()
-            except AttributeError: # Error handling for unit test building
-                discipline, discipline_id = create_temp_discipline()
-            if discipline_id is None:
-                discipline, discipline_id = create_temp_discipline()
-            # if testing_guard_clause():
-            #     return 1 # Django migration runs before the initial data is created for the unit test DB.
             update_table_schema_config_with_defaults(table, discipline, desc)
 
     def revert_table_schema_config_with_defaults(apps, schema_editor):
@@ -300,7 +302,7 @@ class Migration(migrations.Migration):
                 'unique_together': (('parentcog', 'childco'),),
             },
         ),
-        migrations.RunPython(create_default_cog_types, revert_default_cog_types),
+        # migrations.RunPython(create_default_cog_types, revert_default_cog_types),
         migrations.AddField( # TODO: Revert these fields to null=False once unit tests are fixed
             model_name='geographytreedef',
             name='discipline',
