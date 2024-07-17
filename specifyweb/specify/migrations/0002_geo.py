@@ -119,10 +119,10 @@ class Migration(migrations.Migration):
         create_default_discipline_for_tree_defs()
         create_table_schema_config_with_defaults()
 
-    def renvert_cosolidated_python_django_migration_operations(apps, schema_editor):
+    def revert_cosolidated_python_django_migration_operations(apps, schema_editor):
         revert_table_schema_config_with_defaults()
-        revert_default_collection_types()
         revert_default_discipline_for_tree_defs()
+        revert_default_collection_types()
 
     operations = [
         migrations.CreateModel(
@@ -266,5 +266,5 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(db_column='DisciplineID', default=None, null=True, on_delete=protect_with_blockers, related_name='taxontreedefs', to='specify.discipline'),
             preserve_default=False,
         ),
-        migrations.RunPython(consolidated_python_django_migration_operations, renvert_cosolidated_python_django_migration_operations, atomic=True),
+        migrations.RunPython(consolidated_python_django_migration_operations, revert_cosolidated_python_django_migration_operations, atomic=True),
     ]
