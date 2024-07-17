@@ -8,10 +8,7 @@ from unittest import skip
 from datetime import datetime
 from django.db.models import Max
 from django.test import TestCase, Client
-from django.apps import apps
-# from django.db.models import Q
 
-# from specifyweb.businessrules.tests import discipline
 from specifyweb.permissions.models import UserPolicy
 from specifyweb.specify import api, models, scoping
 from specifyweb.businessrules.uniqueness_rules import UNIQUENESS_DISPATCH_UID, check_unique, apply_default_uniqueness_rules

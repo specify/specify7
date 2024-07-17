@@ -13,6 +13,6 @@ def cojo_pre_save(cojo):
 
     if cojo.issubstrate == True:
         (CollectionObjectGroupJoin.objects
-         .filter(parentcog=cojo.parentcog, issubstrate=True)
+         .filter(parentcog=cojo.parentcog)
          .update(issubstrate=False))
         
