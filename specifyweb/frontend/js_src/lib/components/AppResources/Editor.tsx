@@ -233,7 +233,7 @@ export function AppResourceEditor({
           onAdd={
             hasToolPermission('resources', 'create') &&
             typeof handleClone === 'function'
-              ? (newResource): void => {
+              ? ([newResource]): void => {
                   const resource = serializeResource(newResource);
                   const isClone = typeof resource.spAppResourceDir === 'string';
                   handleClone(
