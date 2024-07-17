@@ -8229,7 +8229,7 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='collection', type='many-to-one', required=True, relatedModelName='Collection', column='CollectionID'),
-            Relationship(name='taxonTreeDef', type='many-to-one', required=False, relatedModelName='TaxonTreeDef', column='TaxonTreeDefID'),
+            Relationship(name='taxonTreeDef', type='many-to-one', required=True, relatedModelName='TaxonTreeDef', column='TaxonTreeDefID'),
             Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
