@@ -750,7 +750,6 @@ class StoredQueriesTests(ApiTests):
     #     self.assertEqual(params, (7, 1, 2, 8, 1, 2))
 
 
-@skip("This test doesn't run in GitHub Actions.")
 def test_sqlalchemy_model(datamodel_table):
     table_errors = {
         'not_found': [],  # Fields / Relationships not found

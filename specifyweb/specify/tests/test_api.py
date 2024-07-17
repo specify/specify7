@@ -120,9 +120,6 @@ class MainSetupTearDown:
             discipline__name="Temp Discipline"
         ).update(discipline=self.discipline)
 
-        # Update temp records from  migration
-        # GeographyTreeDef.objects.filter(name='Temp gtd').update()
-
         Discipline.objects.filter(name='Temp Discipline').delete()
         Datatype.objects.filter(name='Temp Datatype').delete()
         Geologictimeperiodtreedef.objects.filter(name='Temp gtptd').delete()
