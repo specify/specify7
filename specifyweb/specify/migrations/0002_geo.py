@@ -108,17 +108,6 @@ class Migration(migrations.Migration):
         # Reverse handeled by table deletion.
         pass
 
-    # TODO: Move from migration to django command and api endpoint
-    def create_default_cog_types(apps, schema_editor):
-        # Create default collection object group types for each collection, named after the discipline
-        for collection in Collection.objects.all():
-            for cog_type_type in COG_TYPE_TYPES:
-                CollectionObjectGroupType.objects.get_or_create(
-                    name=cog_type_type,
-                    type=cog_type_type,
-                    collection=collection
-                )
-
     def revert_default_cog_types(apps, schema_editor):
         # Reverse handeled by table deletion
         pass
@@ -301,8 +290,6 @@ class Migration(migrations.Migration):
                 'unique_together': (('parentcog', 'childco'),),
             },
         ),
-        # migrations.RunPython(create_default_cog_types, revert_default_cog_types), # TODO: Move to django command and api endpoint
-        # NOTE: Maybe push these migrations to a separate migration file, so we have more type to fix issues.
         migrations.AddField(
             model_name='geographytreedef',
             name='discipline',

@@ -29,6 +29,7 @@ urlpatterns = [
 
     url(r'^specify_trees/add_geo_default_trees/$', tree_views.add_geo_default_trees),
     url(r'^specify_trees/remove_geo_default_trees/$', tree_views.remove_geo_default_trees),
+    url(r'^specify_trees/add_default_co_types/$', views.add_default_collection_object_types),
 
     # special tree apis
     url(r'^specify_tree/(?P<tree>\w+)/', include([ # permissions added
