@@ -722,12 +722,5 @@ def renumber_tree(table):
     tasknames = [name.format(tree_model.name) for name in ("UpdateNodes{}", "BadNodes{}")]
     Sptasksemaphore.objects.filter(taskname__in=tasknames).update(islocked=False)
 
-def is_instance_of_tree_def_item(obj):
-    tree_def_item_classes = [
-        spmodels.Geographytreedefitem,
-        spmodels.Geologictimeperiodtreedefitem,
-        spmodels.Lithostrattreedefitem,
-        spmodels.Storagetreedefitem,
-        spmodels.Taxontreedefitem,
-    ]
-    return any(isinstance(obj, cls) for cls in tree_def_item_classes)
+def is_treedefitem(obj):
+    return issubclass(obj.__class__, TreeRank)
