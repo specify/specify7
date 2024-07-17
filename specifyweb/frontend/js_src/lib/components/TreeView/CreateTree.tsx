@@ -4,11 +4,11 @@
  *
  *TODO:
  *- Finish CreateTree function
- *- 
+ *-
  */
 import React from 'react';
-import { useBooleanState } from '../../hooks/useBooleanState';
 
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
 import { Ul } from '../Atoms';
