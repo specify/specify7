@@ -2,7 +2,7 @@
 # TODO: Finish editing this migration for the new app structure
 
 from calendar import c
-from django.db import migrations, models
+from django.db import migrations, models, connection
 import django.utils.timezone
 from specifyweb.businessrules.rules.cogtype_rules import COG_TYPE_TYPES
 from specifyweb.specify.models import (
@@ -67,17 +67,18 @@ def create_temp_discipline():
     division = Division.objects.create(
         institution=institution, name="Temp Division"
     )
-    geologictimeperiodtreedef = Geologictimeperiodtreedef.objects.create(
-        name="Temp gtptd"
-    )
+    geologictimeperiodtreedef = Geologictimeperiodtreedef.objects.create(name="Temp gtptd")
+    # with connection.cursor() as cursor:
+    #     cursor.execute("INSERT INTO geologictimeperiodtreedef () VALUES ();")
     geographytreedef = Geographytreedef.objects.create(name="Temp gtd")
     datatype = Datatype.objects.create(name='Temp datatype')
-    return Discipline.objects.create(
+    discipline = Discipline.objects.create(
         geologictimeperiodtreedef=geologictimeperiodtreedef,
         geographytreedef=geographytreedef,
         division=division,
         datatype=datatype,
     )
+    return (discipline, discipline.id)
 
 class Migration(migrations.Migration):
 
@@ -149,34 +150,38 @@ class Migration(migrations.Migration):
         # Reverse handeled by table deletion
         pass
 
-    def initial_default_tree_def_discipline():
-        try:
-            return Discipline.objects.values_list('id', flat=True).first()
-        except AttributeError: # Error handling for unit test building
-            return create_temp_discipline().id
+    # def initial_default_tree_def_discipline():
+    #     try:
+    #         return Discipline.objects.values_list('id', flat=True).first()
+    #     except AttributeError: # Error handling for unit test building
+    #         return create_temp_discipline()[1]
 
-    def initial_default_tree_def_institution():
-        try:
-            return Institution.objects.values_list('id', flat=True).first()
-        except AttributeError: # Error handling for unit test building
-            if not testing_guard_clause():
-                raise Exception("Institution not found in database.")
-            return models.Institution.objects.create(
-                name="Temp Institution",
-                isaccessionsglobal=True,
-                issecurityon=False,
-                isserverbased=False,
-                issharinglocalities=True,
-                issinglegeographytree=True,
-            ).id
+    # def initial_default_tree_def_institution():
+    #     try:
+    #         return Institution.objects.values_list('id', flat=True).first()
+    #     except AttributeError: # Error handling for unit test building
+    #         if not testing_guard_clause():
+    #             raise Exception("Institution not found in database.")
+    #         return models.Institution.objects.create(
+    #             name="Temp Institution",
+    #             isaccessionsglobal=True,
+    #             issecurityon=False,
+    #             isserverbased=False,
+    #             issharinglocalities=True,
+    #             issinglegeographytree=True,
+    #         ).id
 
     def create_table_schema_config_with_defaults(apps, schema_editor):
         for table, desc in SCHEMA_CONFIG_TABLES:
             try:
                 discipline_id =  Discipline.objects.values_list('id', flat=True).first()
             except AttributeError: # Error handling for unit test building
-                discipline_id = create_temp_discipline().id
-            update_table_schema_config_with_defaults(table, discipline_id, desc)
+                discipline, discipline_id = create_temp_discipline()
+            if discipline_id is None:
+                discipline, discipline_id = create_temp_discipline()
+            # if testing_guard_clause():
+            #     return 1 # Django migration runs before the initial data is created for the unit test DB.
+            update_table_schema_config_with_defaults(table, discipline, desc)
 
     def revert_table_schema_config_with_defaults(apps, schema_editor):
         for table, _ in SCHEMA_CONFIG_TABLES:
@@ -299,31 +304,31 @@ class Migration(migrations.Migration):
         migrations.AddField( # TODO: Revert these fields to null=False once unit tests are fixed
             model_name='geographytreedef',
             name='discipline',
-            field=models.ForeignKey(db_column='DisciplineID', default=initial_default_tree_def_discipline, null=False, on_delete=protect_with_blockers, related_name='geographytreedefs', to='specify.discipline'),
+            field=models.ForeignKey(db_column='DisciplineID', default=None, null=True, on_delete=protect_with_blockers, related_name='geographytreedefs', to='specify.discipline'),
             preserve_default=False,
         ),
         migrations.AddField(
             model_name='geologictimeperiodtreedef',
             name='discipline',
-            field=models.ForeignKey(db_column='DisciplineID', default=initial_default_tree_def_discipline, null=False, on_delete=protect_with_blockers, related_name='geologictimeperiodtreedefs', to='specify.discipline'),
+            field=models.ForeignKey(db_column='DisciplineID', default=None, null=True, on_delete=protect_with_blockers, related_name='geologictimeperiodtreedefs', to='specify.discipline'),
             preserve_default=False,
         ),
         migrations.AddField(
             model_name='lithostrattreedef',
             name='discipline',
-            field=models.ForeignKey(db_column='DisciplineID', default=initial_default_tree_def_discipline, null=False, on_delete=protect_with_blockers, related_name='lithostratstreedefs', to='specify.discipline'),
+            field=models.ForeignKey(db_column='DisciplineID', default=None, null=True, on_delete=protect_with_blockers, related_name='lithostratstreedefs', to='specify.discipline'),
             preserve_default=False,
         ),
         migrations.AddField(
             model_name='storagetreedef',
             name='institution',
-            field=models.ForeignKey(db_column='InstitutionID', default=initial_default_tree_def_institution, null=False, on_delete=protect_with_blockers, related_name='storagetreedefs', to='specify.institution'),
+            field=models.ForeignKey(db_column='InstitutionID', default=None, null=True, on_delete=protect_with_blockers, related_name='storagetreedefs', to='specify.institution'),
             preserve_default=False,
         ),
         migrations.AddField(
             model_name='taxontreedef',
             name='discipline',
-            field=models.ForeignKey(db_column='DisciplineID', default=initial_default_tree_def_discipline, null=False, on_delete=protect_with_blockers, related_name='taxontreedefs', to='specify.discipline'),
+            field=models.ForeignKey(db_column='DisciplineID', default=None, null=True, on_delete=protect_with_blockers, related_name='taxontreedefs', to='specify.discipline'),
             preserve_default=False,
         ),
         migrations.AlterField(
