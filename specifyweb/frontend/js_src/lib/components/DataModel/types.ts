@@ -4,7 +4,7 @@
  * "NOTE:" comments
  *
  * Schema version: 2.11
- * Date generated: July 16, 2024
+ * Date generated: July 17, 2024
  *
  * The dataModel types were generated using the following code snippet.
  * After schema changes, it needs to be regenerated like this:
@@ -3187,13 +3187,11 @@ export type GeographyTreeDef = {
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
+    readonly discipline: Discipline;
     readonly modifiedByAgent: Agent | null;
   };
   readonly toManyDependent: { readonly treeDefItems: RA<GeographyTreeDefItem> };
-  readonly toManyIndependent: {
-    readonly disciplines: RA<Discipline>;
-    readonly treeEntries: RA<Geography>;
-  };
+  readonly toManyIndependent: { readonly treeEntries: RA<Geography> };
 };
 export type GeographyTreeDefItem = {
   readonly tableName: 'GeographyTreeDefItem';
@@ -3277,15 +3275,13 @@ export type GeologicTimePeriodTreeDef = {
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
+    readonly discipline: Discipline;
     readonly modifiedByAgent: Agent | null;
   };
   readonly toManyDependent: {
     readonly treeDefItems: RA<GeologicTimePeriodTreeDefItem>;
   };
-  readonly toManyIndependent: {
-    readonly disciplines: RA<Discipline>;
-    readonly treeEntries: RA<GeologicTimePeriod>;
-  };
+  readonly toManyIndependent: { readonly treeEntries: RA<GeologicTimePeriod> };
 };
 export type GeologicTimePeriodTreeDefItem = {
   readonly tableName: 'GeologicTimePeriodTreeDefItem';
@@ -3663,15 +3659,13 @@ export type LithoStratTreeDef = {
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
+    readonly discipline: Discipline;
     readonly modifiedByAgent: Agent | null;
   };
   readonly toManyDependent: {
     readonly treeDefItems: RA<LithoStratTreeDefItem>;
   };
-  readonly toManyIndependent: {
-    readonly disciplines: RA<Discipline>;
-    readonly treeEntries: RA<LithoStrat>;
-  };
+  readonly toManyIndependent: { readonly treeEntries: RA<LithoStrat> };
 };
 export type LithoStratTreeDefItem = {
   readonly tableName: 'LithoStratTreeDefItem';
@@ -5578,10 +5572,7 @@ export type StorageTreeDef = {
     readonly modifiedByAgent: Agent | null;
   };
   readonly toManyDependent: { readonly treeDefItems: RA<StorageTreeDefItem> };
-  readonly toManyIndependent: {
-    readonly institutions: RA<Institution>;
-    readonly treeEntries: RA<Storage>;
-  };
+  readonly toManyIndependent: { readonly treeEntries: RA<Storage> };
 };
 export type StorageTreeDefItem = {
   readonly tableName: 'StorageTreeDefItem';
