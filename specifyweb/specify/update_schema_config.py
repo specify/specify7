@@ -7,21 +7,22 @@ from specifyweb.specify.models import (
     Discipline,
     datamodel,
 )
-from typing import List, Optional
-from collections import namedtuple
+from typing import List, Optional, NamedTuple
 from django.db.models import Q
 
-TableSchemaConfig = namedtuple(
-    "TableSchemaConfig",
-    ["name", "discipline_id", "schema_type", "description", "language"],
-)
-TableSchemaConfig.__new__.__defaults__ = (0, "TBD", "en")
+class TableSchemaConfig(NamedTuple):
+    name: str
+    discipline_id: int
+    schema_type: int = 0
+    description: str = "TBD"
+    language: str = "en"
 
-FieldSchemaConfig = namedtuple(
-    "FieldSchemaConfig", ["name", "column", "java_type", "description", "language"]
-)
-FieldSchemaConfig.__new__.__defaults__ = ("", "en")
-
+class FieldSchemaConfig(NamedTuple):
+    name: str
+    column: str
+    java_type: str
+    description: str = ""
+    language: str = "en"
 
 def update_table_schema_config_with_defaults(
     table_name,
