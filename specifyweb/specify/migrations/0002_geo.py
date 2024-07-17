@@ -73,6 +73,7 @@ def create_temp_discipline():
     geographytreedef = Geographytreedef.objects.create(name="Temp gtd")
     datatype = Datatype.objects.create(name='Temp datatype')
     discipline = Discipline.objects.create(
+        name="Temp Discipline",
         geologictimeperiodtreedef=geologictimeperiodtreedef,
         geographytreedef=geographytreedef,
         division=division,
@@ -338,5 +339,5 @@ class Migration(migrations.Migration):
         #     field=models.OneToOneField(db_column='TaxonTreeDefID', null=True, on_delete=protect_with_blockers, related_name='defaultdiscipline', to='specify.taxontreedef'),
         # ),
         # migrations.RunPython(create_default_discipline_for_tree_defs, revert_default_discipline_for_tree_defs),
-        # migrations.RunPython(create_table_schema_config_with_defaults, revert_table_schema_config_with_defaults),
+        migrations.RunPython(create_table_schema_config_with_defaults, revert_table_schema_config_with_defaults),
     ]

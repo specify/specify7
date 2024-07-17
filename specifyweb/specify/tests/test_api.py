@@ -8,7 +8,10 @@ from unittest import skip
 from datetime import datetime
 from django.db.models import Max
 from django.test import TestCase, Client
+from django.apps import apps
+# from django.db.models import Q
 
+# from specifyweb.businessrules.tests import discipline
 from specifyweb.permissions.models import UserPolicy
 from specifyweb.specify import api, models, scoping
 from specifyweb.businessrules.uniqueness_rules import UNIQUENESS_DISPATCH_UID, check_unique, apply_default_uniqueness_rules
@@ -16,7 +19,6 @@ from specifyweb.businessrules.orm_signal_handler import connect_signal, disconne
 
 def get_table(name: str):
     return getattr(models, name.capitalize())
-
 
 class MainSetupTearDown:
     def setUp(self):
@@ -88,6 +90,45 @@ class MainSetupTearDown:
                 collection=self.collection,
                 catalognumber="num-%d" % i)
             for i in range(5)]
+
+        self.remove_temp_records()
+
+    def remove_temp_records(self):
+        # NOTE: Possibly use record_merge to remove temp records and update dependencies.
+        # For now, manually remove temp records left over from Django merging.
+        # from specifyweb.specify.models import (
+        #     Institution,
+        #     Division,
+        #     Geologictimeperiodtreedef,
+        #     Datatype,
+        #     Discipline,
+        #     Splocalecontainer,
+        #     # Splocalecontaineritem,
+        #     # Splocaleitemstr,
+        #     # GeographyTreeDef,
+        # )
+        # Avoid circular import, for now do this
+        Institution = apps.get_model('specify', 'Institution')
+        Division = apps.get_model('specify', 'Division')
+        Geologictimeperiodtreedef = apps.get_model('specify', 'Geologictimeperiodtreedef')
+        Datatype = apps.get_model('specify', 'Datatype')
+        Discipline = apps.get_model('specify', 'Discipline')
+        Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+
+        # Update temp records from schema config migration
+        Splocalecontainer.objects.filter(
+            discipline__name="Temp Discipline"
+        ).update(discipline=self.discipline)
+
+        # Update temp records from  migration
+        # GeographyTreeDef.objects.filter(name='Temp gtd').update()
+
+        Discipline.objects.filter(name='Temp Discipline').delete()
+        Datatype.objects.filter(name='Temp Datatype').delete()
+        Geologictimeperiodtreedef.objects.filter(name='Temp gtptd').delete()
+        Division.objects.filter(name='Temp Division').delete()
+        Institution.objects.filter(name='Temp Institution').delete()
+
 
 class ApiTests(MainSetupTearDown, TestCase): pass
 

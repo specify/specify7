@@ -1,4 +1,5 @@
 from django.test import TestCase
+from unittest import skip
 import sqlalchemy
 from specifyweb.specify.build_models import build_models
 from specifyweb.specify.datamodel import datamodel as sp7_datamodel
@@ -41,6 +42,7 @@ class DatamodelTests(TestCase):
         # with open('/opt/specify7/specifyweb/stored_queries/specify_models.py', 'w') as f:
         #     f.write(sqlalchemy_code)
 
+    @skip("This test is not needed anymore as the datamodel has changed from sp6")
     def test_datamodel_equivalence(self):
         # sp7_datamodel = build_datamodel_code_from_xml()
         # sp6_datamodel = load_datamodel()

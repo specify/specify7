@@ -110,7 +110,5 @@ def revert_table_schema_config(table_name):
             item_str.delete()
         item.delete()
     
-    item_strs = Splocaleitemstr.objects.filter(Q(containername=container) | Q(containerdesc=container))
-    for item_str in item_strs:
-        item_str.delete()
+    item_strs = Splocaleitemstr.objects.filter(Q(containername=container) | Q(containerdesc=container)).delete()
     container.delete()
