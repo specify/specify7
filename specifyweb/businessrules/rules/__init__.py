@@ -23,6 +23,5 @@ from . import (
     tree_rules,
     user_rules,
     workbench_rules,
-    cogtype_rules,
     cojo_rules,
 )

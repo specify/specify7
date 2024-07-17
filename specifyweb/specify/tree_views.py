@@ -1,7 +1,7 @@
 from functools import wraps
-from typing import Literal
+from typing import overload, Literal, List, TypedDict, Dict, Any, Union
 from django.db import transaction
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotAllowed
 from django.views.decorators.http import require_POST
 from sqlalchemy import sql
 from sqlalchemy.orm import aliased
@@ -10,7 +10,7 @@ from specifyweb.middleware.general import require_GET
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, check_permission_targets
-from specifyweb.specify.tree_ranks import tree_rank_count
+from specifyweb.specify.tree_ranks import tree_rank_count, TAXON_RANK_INCREMENT
 from specifyweb.stored_queries import models
 from specifyweb.specify.models import Taxontreedef, Taxontreedefitem
 from . import tree_extras
@@ -359,97 +359,6 @@ def tree_rank_item_count(request, tree, rankid):
     rank = get_object_or_404(tree_rank_model_name, id=rankid)
     count = tree_rank_count(tree, rank.id)
     return HttpResponse(toJson(count), content_type='application/json')
-
-TAXON_TREES = ["Mineral", "Rock", "Meteorite", "Fossil"]
-TAXON_RANKS = ["One", "Two", "Three"]
-
-def add_geo_default_trees_func():
-    for tree in TAXON_TREES:
-        if Taxontreedef.objects.filter(name=tree).exists():
-            continue
-        tree_name = f"{tree} Taxon"
-        ttd = Taxontreedef.objects.create(name=tree_name)
-        rank_id = -10
-        ttdi = None
-        for rank in TAXON_RANKS:
-            name = f"{tree} {rank}"
-            rank_id += 10
-            ttdi = Taxontreedefitem.objects.create(
-                name=name,
-                title=name,
-                rankid=rank_id,
-                parent=ttdi,
-                treedef=ttd,
-            )
-
-@openapi(schema={
-    "post": {
-        "responses": {
-            "200": {
-                "description": "Success: The default geology trees were added."
-            },
-            "405": {
-                "description": "Error: Method not allowed."
-            }
-        }
-    }
-})
-@tree_mutation
-def add_geo_default_trees(request):
-    add_geo_default_trees_func()
-    return HttpResponse(toJson({'success': True}), content_type="application/json")
-
-@openapi(schema={
-    "delete": {
-        "responses": {
-            "200": {
-                "description": "Success: The default geology trees were removed."
-            },
-            "405": {
-                "description": "Error: Method not allowed."
-            }
-        }
-    }
-})
-@tree_mutation
-def remove_geo_default_trees(request):
-    if request.method != 'DELETE':
-        return HttpResponse(toJson({'error': 'Method not allowed.'}), status=405, content_type="application/json")
-    for tree in TAXON_TREES:
-        tree_name = f"{tree} Taxon"
-        ttd = Taxontreedef.objects.filter(name=tree_name)
-        if not ttd.exists():
-            continue
-    
-        for rank in reversed(TAXON_RANKS):
-            name = f"{tree} {rank}"
-            ttdi = Taxontreedefitem.objects.filter(
-                name=name, treedef=ttd.first()
-            )
-            if ttdi.exists():
-                try:
-                    ttdi.delete()
-                except Exception as e:
-                    print(f"Error deleting taxontreedefitem {name}: {e}")
-                    continue
-        
-        try:
-            root_item = Taxontreedefitem.objects.get(name=f"{tree} Root")
-            root_item.delete(allow_root_del=True)
-        except Taxontreedefitem.DoesNotExist:
-            error_message = f"Taxontreedefitem with name {tree} Root does not exist."
-            raise Taxontreedefitem.DoesNotExist(error_message)
-        except Exception as e:
-            error_message = f"Error deleting taxontreedefitem {tree} Root: {e}"
-            raise Exception(error_message)
-
-        try:
-            ttd.delete()
-        except Exception as e:
-            error_message = f"Error deleting taxontreedef {tree_name}: {e}"
-            raise Exception(error_message)
-        
-    return HttpResponse(toJson({'success': True}), content_type="application/json")
 
 
 class TaxonMutationPT(PermissionTarget):

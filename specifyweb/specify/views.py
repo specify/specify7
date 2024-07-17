@@ -25,7 +25,6 @@ from specifyweb.specify.record_merging import record_merge_fx, record_merge_task
 from specifyweb.specify.update_locality import localityupdate_parse_success, localityupdate_parse_error, parse_locality_set as _parse_locality_set, upload_locality_set as _upload_locality_set, create_localityupdate_recordset, update_locality_task, parse_locality_task, LocalityUpdateStatus
 from . import api, models as spmodels
 from .specify_jar import specify_jar
-from specifyweb.businessrules.rules.cogtype_rules import COG_TYPE_TYPES
 
 
 def login_maybe_required(view):
@@ -1368,48 +1367,3 @@ def parse_locality_set_foreground(collection, column_headers: List[str], data: L
         return 422, errors
 
     return 200, parsed
-
-@openapi(schema={
-    'post': {
-        "responses": {
-            "200": {
-                "description": "Default collection object types added successfully",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "success": {
-                                    "type": "boolean"
-                                }
-                            },
-                            "required": ["success"]
-                        }
-                    }
-                }
-            },
-            "500": {
-                "description": "Internal server error"
-            }
-        }
-    }
-})
-@login_maybe_required
-@require_POST
-def add_default_collection_object_types(request: http.HttpRequest):
-    """
-    Add default  data to the database
-    """
-    add_default_collection_object_types_func()
-
-def add_default_collection_object_types_func():
-    # Create default collection object group types for each collection, named after the discipline
-    # NOTE: Edit what the default types are in the future
-    for collection in spmodels.Collection.objects.all():
-        for cog_type_type in COG_TYPE_TYPES:
-            spmodels.CollectionObjectGroupType.objects.get_or_create(
-                name=cog_type_type,
-                type=cog_type_type,
-                collection=collection
-            )
-    return http.HttpResponse(api.toJson({'success': True}), content_type="application/json")
