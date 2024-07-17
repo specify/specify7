@@ -260,7 +260,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                *
                */
               resource.specifyTable.name === 'CollectionObject' &&
-                carryForwardAmount > 2
+                carryForwardAmount > 1
                 ? async (): Promise<RA<SpecifyResource<SCHEMA>>> => {
                     const formatter =
                       tables.CollectionObject.strictGetLiteralField(
