@@ -91,41 +91,6 @@ class MainSetupTearDown:
                 catalognumber="num-%d" % i)
             for i in range(5)]
 
-        self.remove_temp_records()
-
-    def remove_temp_records(self):
-        # NOTE: Possibly use record_merge to remove temp records and update dependencies.
-        # For now, manually remove temp records left over from Django merging.
-        # from specifyweb.specify.models import (
-        #     Institution,
-        #     Division,
-        #     Geologictimeperiodtreedef,
-        #     Datatype,
-        #     Discipline,
-        #     Splocalecontainer,
-        #     # Splocalecontaineritem,
-        #     # Splocaleitemstr,
-        #     # GeographyTreeDef,
-        # )
-        # Avoid circular import, for now do this
-        Institution = apps.get_model('specify', 'Institution')
-        Division = apps.get_model('specify', 'Division')
-        Geologictimeperiodtreedef = apps.get_model('specify', 'Geologictimeperiodtreedef')
-        Datatype = apps.get_model('specify', 'Datatype')
-        Discipline = apps.get_model('specify', 'Discipline')
-        Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
-
-        # Update temp records from schema config migration
-        Splocalecontainer.objects.filter(
-            discipline__name="Temp Discipline"
-        ).update(discipline=self.discipline)
-
-        Discipline.objects.filter(name='Temp Discipline').delete()
-        Datatype.objects.filter(name='Temp Datatype').delete()
-        Geologictimeperiodtreedef.objects.filter(name='Temp gtptd').delete()
-        Division.objects.filter(name='Temp Division').delete()
-        Institution.objects.filter(name='Temp Institution').delete()
-
 
 class ApiTests(MainSetupTearDown, TestCase): pass
 

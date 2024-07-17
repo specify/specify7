@@ -18,7 +18,3 @@ def get_app_model(model_name: str):
         if hasattr(app, model_name):
             return getattr(app, model_name)
     return None
-
-def testing_guard_clause() -> bool:
-    # return "pytest" in sys.modules or getattr(settings, "TESTING", False)
-    return "pytest" in sys.modules

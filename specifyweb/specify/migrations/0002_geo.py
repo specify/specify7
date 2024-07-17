@@ -9,17 +9,12 @@ from specifyweb.specify.models import (
     CollectionObjectType,
     Collection,
     Discipline,
-    Institution,
-    Division,
-    Datatype,
-    Geologictimeperiodtreedef,
-    Geographytreedef,
+    Institution
 )
 from specifyweb.specify.update_schema_config import (
     update_table_schema_config_with_defaults,
     revert_table_schema_config,
 )
-from specifyweb.specify.utils import testing_guard_clause
 
 # Migrations Operations Order:
 # 1. Create CollectionObjectType
@@ -51,34 +46,6 @@ SCHEMA_CONFIG_TABLES = [
     ('LibraryRolePolicy', 'Stores resource and action permissions for library roles within a collection.'),
     ('SpDataSet', 'Stores Specify Data Sets created during bulk import using the WorkBench, typically through spreadsheet uploads.')
 ]
-
-def create_temp_discipline():
-    if not testing_guard_clause():
-        raise Exception("Discipline not found in database.")
-    institution = Institution.objects.create(
-        name="Temp Institution",
-        isaccessionsglobal=True,
-        issecurityon=False,
-        isserverbased=False,
-        issharinglocalities=True,
-        issinglegeographytree=True,
-    )
-    division = Division.objects.create(
-        institution=institution, name="Temp Division"
-    )
-    geologictimeperiodtreedef = Geologictimeperiodtreedef.objects.create(name="Temp gtptd")
-    # with connection.cursor() as cursor:
-    #     cursor.execute("INSERT INTO geologictimeperiodtreedef () VALUES ();")
-    geographytreedef = Geographytreedef.objects.create(name="Temp gtd")
-    datatype = Datatype.objects.create(name='Temp datatype')
-    discipline = Discipline.objects.create(
-        name="Temp Discipline",
-        geologictimeperiodtreedef=geologictimeperiodtreedef,
-        geographytreedef=geographytreedef,
-        division=division,
-        datatype=datatype,
-    )
-    return (discipline, discipline.id)
 
 class Migration(migrations.Migration):
 
@@ -138,39 +105,10 @@ class Migration(migrations.Migration):
         # Reverse handeled by table deletion
         pass
 
-    def initial_default_tree_def_discipline():
-        try:
-            return Discipline.objects.values_list('id', flat=True).first()
-        except AttributeError: # Error handling for unit test building
-            return create_temp_discipline()[1]
-
-    def initial_default_tree_def_institution():
-        try:
-            return Institution.objects.values_list('id', flat=True).first()
-        except AttributeError: # Error handling for unit test building
-            if not testing_guard_clause():
-                raise Exception("Institution not found in database.")
-            return models.Institution.objects.create(
-                name="Temp Institution",
-                isaccessionsglobal=True,
-                issecurityon=False,
-                isserverbased=False,
-                issharinglocalities=True,
-                issinglegeographytree=True,
-            ).id
-
     def create_table_schema_config_with_defaults(apps, schema_editor):
-        discipline = None
-        discipline_id = None
-        # Django migration runs before the initial data is created for the unit test DB.
-        if testing_guard_clause():
-            discipline, discipline_id = create_temp_discipline()
+        for discipline in Discipline.objects.all():
             for table, desc in SCHEMA_CONFIG_TABLES:
-                update_table_schema_config_with_defaults(table, discipline_id, discipline, desc)
-        else:
-            for discipline in Discipline.objects.all():
-                for table, desc in SCHEMA_CONFIG_TABLES:
-                    update_table_schema_config_with_defaults(table, discipline.id, discipline, desc)
+                update_table_schema_config_with_defaults(table, discipline.id, discipline, desc)
 
     def revert_table_schema_config_with_defaults(apps, schema_editor):
         for table, _ in SCHEMA_CONFIG_TABLES:
