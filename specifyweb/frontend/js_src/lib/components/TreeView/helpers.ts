@@ -24,9 +24,9 @@ export const fetchRows = async (fetchUrl: string) =>
         number,
         number | null,
         string | null,
-        string,
+        string | null,
         number,
-        string
+        string | null
       ]
     >
   >(fetchUrl, {
