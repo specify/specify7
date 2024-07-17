@@ -1279,13 +1279,7 @@ expected_errors = {
     "not_found": [
       "numberingSchemes",
       "userGroups"
-    ],
-    "incorrect_direction": {
-      "taxonTreeDef": [
-        "manytoone",
-        "onetoone"
-      ]
-    }
+    ]
   },
   "Division": {
     "not_found": [
