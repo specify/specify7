@@ -4,9 +4,10 @@
  *
  *TODO:
  *- Finish CreateTree function
- *- Finish
+ *- 
  */
 import React from 'react';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
@@ -22,25 +23,20 @@ export function CreateTree(): JSX.Element {
    *- add parameter to get the resource that will be added to using serializedresource
    *- for this to work, you set the template like how you would in ViewSetTemplates.
    */
-  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
-
-  const handleButtonClick = () => {
-    setIsDialogOpen(true);
-  };
-
+  const [isDialogOpen, handleOpen, handleClose] = useBooleanState();
   return (
     <>
       <Button.Icon
         className={className.dataEntryAdd}
         icon="plus"
         title={treeText.addTree()}
-        onClick={handleButtonClick}
+        onClick={handleOpen}
       />
       {isDialogOpen && (
         <Dialog
           buttons={commonText.new()}
           header={treeText.addTree()}
-          onClose={() => setIsDialogOpen(false)}
+          onClose={handleClose}
         >
           <Ul className="flex flex-col gap-2">
             <li />
