@@ -8,24 +8,19 @@ from specifyweb.specify.models import (
     datamodel,
 )
 from typing import List, Optional
-from dataclasses import dataclass
+from collections import namedtuple
 from django.db.models import Q
 
-@dataclass
-class TableSchemaConfig:
-    name: str
-    discipline_id: int
-    schema_type: int = 0
-    description: str = "TBD"
-    language: str = "en"
+TableSchemaConfig = namedtuple(
+    "TableSchemaConfig",
+    ["name", "discipline_id", "schema_type", "description", "language"],
+)
+TableSchemaConfig.__new__.__defaults__ = (0, "TBD", "en")
 
-@dataclass
-class FieldSchemaConfig:
-    name: str
-    column: str
-    java_type: str
-    description: str = ""
-    language: str = "en"
+FieldSchemaConfig = namedtuple(
+    "FieldSchemaConfig", ["name", "column", "java_type", "description", "language"]
+)
+FieldSchemaConfig.__new__.__defaults__ = ("", "en")
 
 
 def update_table_schema_config_with_defaults(
@@ -35,7 +30,7 @@ def update_table_schema_config_with_defaults(
     description: str = None,
 ):
     table: Table = datamodel.get_table(table_name)
-    table_name = table.classname.split('.')[-1]
+    table_name = table.name
     table_desc = re.sub(r'(?<!^)(?=[A-Z])', r' ', table_name) if description is None else description
     table_config = TableSchemaConfig(
         name=table_name,
@@ -104,7 +99,7 @@ def update_table_schema_config_with_defaults(
 
 def revert_table_schema_config(table_name):
     table: Table = datamodel.get_table(table_name)
-    table_name = table.classname.split('.')[-1]
+    table_name = table.name
 
     containers = Splocalecontainer.objects.filter(name=table_name)
     items = Splocalecontaineritem.objects.filter(container__in=containers)

@@ -47,7 +47,7 @@ SCHEMA_CONFIG_TABLES = [
     ('SpDataSet', 'Stores Specify Data Sets created during bulk import using the WorkBench, typically through spreadsheet uploads.')
 ]
 
-def create_default_collection_types(apps, schema_editor):
+def create_default_collection_types():
     # Create default collection types for each collection, named after the discipline
     for collection in Collection.objects.all():
         discipline = collection.discipline
@@ -62,15 +62,15 @@ def create_default_collection_types(apps, schema_editor):
         collection.collectionobjecttype = cot
         collection.save()
 
-def revert_default_collection_types(apps, schema_editor):
+def revert_default_collection_types():
     # Reverse handeled by table deletion.
     pass
 
-def revert_default_cog_types(apps, schema_editor):
+def revert_default_cog_types():
     # Reverse handeled by table deletion
     pass
 
-def create_default_discipline_for_tree_defs(apps, schema_editor):
+def create_default_discipline_for_tree_defs():
     for discipline in Discipline.objects.all():
         geography_tree_def = discipline.geographytreedef
         geography_tree_def.discipline = discipline
@@ -93,16 +93,16 @@ def create_default_discipline_for_tree_defs(apps, schema_editor):
         storage_tree_def.institution = institution
         storage_tree_def.save()
 
-def revert_default_discipline_for_tree_defs(apps, schema_editor):
+def revert_default_discipline_for_tree_defs():
     # Reverse handeled by table deletion
     pass
 
-def create_table_schema_config_with_defaults(apps, schema_editor):
+def create_table_schema_config_with_defaults():
     for discipline in Discipline.objects.all():
         for table, desc in SCHEMA_CONFIG_TABLES:
             update_table_schema_config_with_defaults(table, discipline.id, discipline, desc)
 
-def revert_table_schema_config_with_defaults(apps, schema_editor):
+def revert_table_schema_config_with_defaults():
     for table, _ in SCHEMA_CONFIG_TABLES:
         revert_table_schema_config(table)
 
@@ -115,14 +115,14 @@ class Migration(migrations.Migration):
     ]
     
     def consolidated_python_django_migration_operations(apps, schema_editor):
-        create_default_collection_types(apps, schema_editor)
-        create_default_discipline_for_tree_defs(apps, schema_editor)
-        create_table_schema_config_with_defaults(apps, schema_editor)
+        create_default_collection_types()
+        create_default_discipline_for_tree_defs()
+        create_table_schema_config_with_defaults()
 
     def renvert_cosolidated_python_django_migration_operations(apps, schema_editor):
-        revert_table_schema_config_with_defaults(apps, schema_editor)
-        revert_default_collection_types(apps, schema_editor)
-        revert_default_discipline_for_tree_defs(apps, schema_editor)
+        revert_table_schema_config_with_defaults()
+        revert_default_collection_types()
+        revert_default_discipline_for_tree_defs()
 
     operations = [
         migrations.CreateModel(
