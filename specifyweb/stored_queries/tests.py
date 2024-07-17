@@ -55,7 +55,6 @@ with session.context() as session:
 
 """
 
-
 class SQLAlchemySetup(ApiTests):
 
     test_sa_url = None
@@ -85,7 +84,7 @@ class SQLAlchemySetup(ApiTests):
             columns = django_cursor.description
             django_cursor.close()
             # SqlAlchemy needs to find columns back in the rows, hence adding label to columns
-            selects = [sqlalchemy.select([sqlalchemy.literal(column).label(columns[idx][0]) for idx, column in enumerate(row)]) for row
+            selects = [sqlalchemy.select([sqlalchemy.literal(sqlalchemy.null() if column is None else column).label(columns[idx][0]) for idx, column in enumerate(row)]) for row
                        in result_set]
             # union all instead of union because rows can be duplicated in the original query,
             # but still need to preserve the duplication
@@ -93,7 +92,6 @@ class SQLAlchemySetup(ApiTests):
             # Tests will fail when migrated to different background. TODO: Auto-detect dialects
             final_query = str(unioned.compile(compile_kwargs={"literal_binds": True, }, dialect=mysql.dialect()))
             return final_query, ()
-
 
 
 class SQLAlchemySetupTest(SQLAlchemySetup):

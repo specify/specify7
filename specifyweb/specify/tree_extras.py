@@ -91,7 +91,7 @@ class Tree(models.Model): # FUTURE: class Tree(SpTimestampedModel):
                     "rankid" : self.parent.rankid,
                     "fullName": self.parent.fullname,
                     "parentid": self.parent.parent.id,
-                    "children": list(self.parent.children.values('id', 'fullName'))
+                    "children": list(self.parent.children.values('id', 'fullname'))
                  }
                  })
 

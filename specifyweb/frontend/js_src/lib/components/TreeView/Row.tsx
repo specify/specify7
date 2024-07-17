@@ -231,11 +231,11 @@ export function TreeRow<SCHEMA extends AnyTree>({
                           name: row.acceptedName ?? row.acceptedId.toString(),
                         })
                       : // Backend will never return undefined...
-                      row.synonymConcat === null
-                      ? undefined
-                      : treeText.synonyms({
-                          names: row.synonymConcat,
+                      typeof row.synonyms === 'string'
+                      ? treeText.synonyms({
+                          names: row.synonyms,
                         })
+                      : undefined
                   }
                 >
                   {doIncludeAuthorPref &&
