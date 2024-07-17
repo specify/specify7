@@ -7,7 +7,7 @@ from specifyweb.specify.models import (
     Discipline,
     datamodel,
 )
-from typing import List
+from typing import List, Optional
 from dataclasses import dataclass
 from django.db.models import Q
 
@@ -27,13 +27,19 @@ class FieldSchemaConfig:
     description: str = ""
     language: str = "en"
 
-def update_table_schema_config_with_defaults(table_name, discipline, description=None):
+
+def update_table_schema_config_with_defaults(
+    table_name,
+    discipline_id: int,
+    discipline: Optional[Discipline],
+    description: str = None,
+):
     table: Table = datamodel.get_table(table_name)
     table_name = table.classname.split('.')[-1]
     table_desc = re.sub(r'(?<!^)(?=[A-Z])', r' ', table_name) if description is None else description
     table_config = TableSchemaConfig(
         name=table_name,
-        discipline_id=discipline.id,
+        discipline_id=discipline_id,
         schema_type=0,
         description=table_desc,
         language="en"
@@ -90,6 +96,7 @@ def update_table_schema_config_with_defaults(table_name, discipline, description
             }
             itm_str[k] = sp_local_container_item
             Splocaleitemstr.objects.create(**itm_str)
+
 
 def revert_table_schema_config(table_name):
     table: Table = datamodel.get_table(table_name)

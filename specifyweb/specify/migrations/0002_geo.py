@@ -137,9 +137,9 @@ class Migration(migrations.Migration):
             lithostrat_tree_def.save()
 
             # TODO: Fix BusinessRuleException 'Taxontreedef must have unique name in discipline'
-            # taxon_tree_def = discipline.taxontreedef
-            # taxon_tree_def.discipline = discipline
-            # taxon_tree_def.save()
+            taxon_tree_def = discipline.taxontreedef
+            taxon_tree_def.discipline = discipline
+            taxon_tree_def.save()
 
         for institution in Institution.objects.all():
             storage_tree_def = institution.storagetreedef
@@ -150,40 +150,48 @@ class Migration(migrations.Migration):
         # Reverse handeled by table deletion
         pass
 
-    # def initial_default_tree_def_discipline():
-    #     try:
-    #         return Discipline.objects.values_list('id', flat=True).first()
-    #     except AttributeError: # Error handling for unit test building
-    #         return create_temp_discipline()[1]
+    def initial_default_tree_def_discipline():
+        try:
+            return Discipline.objects.values_list('id', flat=True).first()
+        except AttributeError: # Error handling for unit test building
+            return create_temp_discipline()[1]
 
-    # def initial_default_tree_def_institution():
-    #     try:
-    #         return Institution.objects.values_list('id', flat=True).first()
-    #     except AttributeError: # Error handling for unit test building
-    #         if not testing_guard_clause():
-    #             raise Exception("Institution not found in database.")
-    #         return models.Institution.objects.create(
-    #             name="Temp Institution",
-    #             isaccessionsglobal=True,
-    #             issecurityon=False,
-    #             isserverbased=False,
-    #             issharinglocalities=True,
-    #             issinglegeographytree=True,
-    #         ).id
+    def initial_default_tree_def_institution():
+        try:
+            return Institution.objects.values_list('id', flat=True).first()
+        except AttributeError: # Error handling for unit test building
+            if not testing_guard_clause():
+                raise Exception("Institution not found in database.")
+            return models.Institution.objects.create(
+                name="Temp Institution",
+                isaccessionsglobal=True,
+                issecurityon=False,
+                isserverbased=False,
+                issharinglocalities=True,
+                issinglegeographytree=True,
+            ).id
 
     def create_table_schema_config_with_defaults(apps, schema_editor):
         discipline = None
         discipline_id = None
         # Django migration runs before the initial data is created for the unit test DB.
-        try:
-            discipline_id =  Discipline.objects.values_list('id', flat=True).first()
-            discipline = Discipline.objects.get(id=discipline_id)
-        except AttributeError: # Error handling for unit test building
+        if testing_guard_clause():
             discipline, discipline_id = create_temp_discipline()
-        if discipline_id is None:
-            discipline, discipline_id = create_temp_discipline()
-        for table, desc in SCHEMA_CONFIG_TABLES:
-            update_table_schema_config_with_defaults(table, discipline, desc)
+            for table, desc in SCHEMA_CONFIG_TABLES:
+                update_table_schema_config_with_defaults(table, discipline_id, discipline, desc)
+        else:
+            for discipline in Discipline.objects.all():
+                for table, desc in SCHEMA_CONFIG_TABLES:
+                    update_table_schema_config_with_defaults(table, discipline.id, discipline, desc)
+        # try:
+        #     discipline_id =  Discipline.objects.values_list('id', flat=True).first()
+        #     discipline = Discipline.objects.get(id=discipline_id)
+        # except AttributeError: # Error handling for unit test building
+        #     discipline, discipline_id = create_temp_discipline()
+        # if discipline_id is None:
+        #     discipline, discipline_id = create_temp_discipline()
+        # for table, desc in SCHEMA_CONFIG_TABLES:
+        #     update_table_schema_config_with_defaults(table, discipline_id, discipline, desc)
 
     def revert_table_schema_config_with_defaults(apps, schema_editor):
         for table, _ in SCHEMA_CONFIG_TABLES:
