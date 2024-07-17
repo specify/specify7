@@ -1425,7 +1425,6 @@ export type CollectionObject = {
   readonly toOneDependent: {
     readonly cojo: CollectionObjectGroupJoin | null;
     readonly collectionObjectAttribute: CollectionObjectAttribute | null;
-    readonly paleoContext: PaleoContext | null;
   };
   readonly toOneIndependent: {
     readonly accession: Accession | null;
@@ -1443,6 +1442,7 @@ export type CollectionObject = {
     readonly collectingEvent: CollectingEvent | null;
     readonly fieldNotebookPage: FieldNotebookPage | null;
     readonly inventorizedBy: Agent | null;
+    readonly paleoContext: PaleoContext | null;
     readonly visibilitySetBy: SpecifyUser | null;
   };
   readonly toManyDependent: {
