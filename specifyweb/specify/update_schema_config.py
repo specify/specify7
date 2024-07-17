@@ -57,6 +57,10 @@ def update_table_schema_config_with_defaults(
             language="en"
         ))
 
+    HIDDEN_FIELDS = [
+        "timestampcreated", "timestampmodified", "version", "createdbyagent", "modifiedbyagent"
+    ]
+
     # Create Splocalecontainer for the tbale
     sp_local_container = Splocalecontainer.objects.create(
         name=table.name,
@@ -82,7 +86,7 @@ def update_table_schema_config_with_defaults(
         sp_local_container_item = Splocalecontaineritem.objects.create(
             name=field.name,
             container=sp_local_container,
-            ishidden=False,
+            ishidden=field.name.lower() in HIDDEN_FIELDS,
             issystem=table.system,
             version=0,
         )
