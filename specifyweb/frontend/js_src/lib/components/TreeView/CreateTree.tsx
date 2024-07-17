@@ -24,23 +24,44 @@ export function CreateTree(): JSX.Element {
    *- for this to work, you set the template like how you would in ViewSetTemplates.
    */
   const [isDialogOpen, handleOpen, handleClose] = useBooleanState();
+  const [isSecondDialogOpen, handleSecondOpen, handleSecondClose] = useBooleanState();
+
+  const handleButtonClick = handleOpen;
+  const handleFirstDialogButtonClick = handleSecondOpen;
+
   return (
     <>
       <Button.Icon
         className={className.dataEntryAdd}
         icon="plus"
         title={treeText.addTree()}
-        onClick={handleOpen}
+        onClick={handleButtonClick}
       />
       {isDialogOpen && (
         <Dialog
-          buttons={commonText.new()}
+          buttons={<>
+            <Button.DialogClose component={Button.BorderedGray}>
+              {commonText.close()}
+            </Button.DialogClose>
+            <Button.Info onClick={handleFirstDialogButtonClick}>
+              {treeText.addTree()}
+            </Button.Info>
+          </>}
           header={treeText.addTree()}
-          onClose={handleClose}
-        >
+          onClose={handleClose} children={undefined}        >
           <Ul className="flex flex-col gap-2">
             <li />
           </Ul>
+          {isSecondDialogOpen && (
+            <Dialog
+              buttons={commonText.new()}
+              header="Tree Rank Form"
+              onClose={handleSecondClose} children={undefined}            >
+              <Ul className="flex flex-col gap-2">
+                <li />
+              </Ul>
+            </Dialog>
+          )}
         </Dialog>
       )}
     </>
