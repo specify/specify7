@@ -4,6 +4,8 @@ import { group, sortFunction } from '../utils/utils';
 
 const javaTypeToTypeScript = {
   text: 'string',
+  'json': 'string',
+  'blob': 'string',
   'java.lang.String': 'string',
   'java.lang.Byte': 'number',
   'java.lang.Short': 'number',
