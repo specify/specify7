@@ -8272,7 +8272,7 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='collection', type='many-to-one', required=False, relatedModelName='Collection', column='CollectionID'),
-            Relationship(name='cogtype', type='many-to-one', required=False, relatedModelName='CollectionObjectGroupType', column='COGTypeID'),
+            Relationship(name='cogtype', type='many-to-one', required=True, relatedModelName='CollectionObjectGroupType', column='COGTypeID'),
             Relationship(name='parentcojos', type='one-to-many', required=False, relatedModelName='CollectionObjectGroupJoin', otherSideName='parentcog', dependent=True),
             Relationship(name='cojo', type='one-to-one', required=False, relatedModelName='CollectionObjectGroupJoin', otherSideName='childcog', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
