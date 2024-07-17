@@ -230,8 +230,7 @@ export function TreeRow<SCHEMA extends AnyTree>({
                       ? treeText.acceptedName({
                           name: row.acceptedName ?? row.acceptedId.toString(),
                         })
-                      : // Backend will never return undefined...
-                      typeof row.synonyms === 'string'
+                      :typeof row.synonyms === 'string'
                       ? treeText.synonyms({
                           names: row.synonyms,
                         })
