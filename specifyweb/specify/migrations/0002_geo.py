@@ -47,6 +47,65 @@ SCHEMA_CONFIG_TABLES = [
     ('SpDataSet', 'Stores Specify Data Sets created during bulk import using the WorkBench, typically through spreadsheet uploads.')
 ]
 
+def create_default_collection_types(apps, schema_editor):
+    # Create default collection types for each collection, named after the discipline
+    for collection in Collection.objects.all():
+        discipline = collection.discipline
+        discipline_name = discipline.name
+        cot, created = CollectionObjectType.objects.get_or_create(
+            name=discipline_name,
+            collection=collection,
+            taxontreedef_id=discipline.taxontreedef_id
+        )
+        # Update CollectionObjects' collectionobjecttype for the discipline
+        Collectionobject.objects.filter(collection=collection).update(collectionobjecttype=cot)
+        collection.collectionobjecttype = cot
+        collection.save()
+
+def revert_default_collection_types(apps, schema_editor):
+    # Reverse handeled by table deletion.
+    pass
+
+def revert_default_cog_types(apps, schema_editor):
+    # Reverse handeled by table deletion
+    pass
+
+def create_default_discipline_for_tree_defs(apps, schema_editor):
+    for discipline in Discipline.objects.all():
+        geography_tree_def = discipline.geographytreedef
+        geography_tree_def.discipline = discipline
+        geography_tree_def.save()
+
+        geologic_time_period_tree_def = discipline.geologictimeperiodtreedef
+        geologic_time_period_tree_def.discipline = discipline
+        geologic_time_period_tree_def.save()
+
+        lithostrat_tree_def = discipline.lithostrattreedef
+        lithostrat_tree_def.discipline = discipline
+        lithostrat_tree_def.save()
+
+        taxon_tree_def = discipline.taxontreedef
+        taxon_tree_def.discipline = discipline
+        taxon_tree_def.save()
+
+    for institution in Institution.objects.all():
+        storage_tree_def = institution.storagetreedef
+        storage_tree_def.institution = institution
+        storage_tree_def.save()
+
+def revert_default_discipline_for_tree_defs(apps, schema_editor):
+    # Reverse handeled by table deletion
+    pass
+
+def create_table_schema_config_with_defaults(apps, schema_editor):
+    for discipline in Discipline.objects.all():
+        for table, desc in SCHEMA_CONFIG_TABLES:
+            update_table_schema_config_with_defaults(table, discipline.id, discipline, desc)
+
+def revert_table_schema_config_with_defaults(apps, schema_editor):
+    for table, _ in SCHEMA_CONFIG_TABLES:
+        revert_table_schema_config(table)
+
 class Migration(migrations.Migration):
 
     initial = True
@@ -54,65 +113,16 @@ class Migration(migrations.Migration):
     dependencies = [
         ('specify', '0001_initial'),
     ]
+    
+    def consolidated_python_django_migration_operations(apps, schema_editor):
+        create_default_collection_types(apps, schema_editor)
+        create_default_discipline_for_tree_defs(apps, schema_editor)
+        create_table_schema_config_with_defaults(apps, schema_editor)
 
-    def create_default_collection_types(apps, schema_editor):
-        # Create default collection types for each collection, named after the discipline
-        for collection in Collection.objects.all():
-            discipline = collection.discipline
-            discipline_name = discipline.name
-            cot, created = CollectionObjectType.objects.get_or_create(
-                name=discipline_name,
-                collection=collection,
-                taxontreedef_id=discipline.taxontreedef_id
-            )
-            # Update CollectionObjects' collectionobjecttype for the discipline
-            Collectionobject.objects.filter(collection=collection).update(collectionobjecttype=cot)
-            collection.collectionobjecttype = cot
-            collection.save()
-
-    def revert_default_collection_types(apps, schema_editor):
-        # Reverse handeled by table deletion.
-        pass
-
-    def revert_default_cog_types(apps, schema_editor):
-        # Reverse handeled by table deletion
-        pass
-
-    def create_default_discipline_for_tree_defs(apps, schema_editor):
-        for discipline in Discipline.objects.all():
-            geography_tree_def = discipline.geographytreedef
-            geography_tree_def.discipline = discipline
-            geography_tree_def.save()
-
-            geologic_time_period_tree_def = discipline.geologictimeperiodtreedef
-            geologic_time_period_tree_def.discipline = discipline
-            geologic_time_period_tree_def.save()
-
-            lithostrat_tree_def = discipline.lithostrattreedef
-            lithostrat_tree_def.discipline = discipline
-            lithostrat_tree_def.save()
-
-            taxon_tree_def = discipline.taxontreedef
-            taxon_tree_def.discipline = discipline
-            taxon_tree_def.save()
-
-        for institution in Institution.objects.all():
-            storage_tree_def = institution.storagetreedef
-            storage_tree_def.institution = institution
-            storage_tree_def.save()
-
-    def revert_default_discipline_for_tree_defs(apps, schema_editor):
-        # Reverse handeled by table deletion
-        pass
-
-    def create_table_schema_config_with_defaults(apps, schema_editor):
-        for discipline in Discipline.objects.all():
-            for table, desc in SCHEMA_CONFIG_TABLES:
-                update_table_schema_config_with_defaults(table, discipline.id, discipline, desc)
-
-    def revert_table_schema_config_with_defaults(apps, schema_editor):
-        for table, _ in SCHEMA_CONFIG_TABLES:
-            revert_table_schema_config(table)
+    def renvert_cosolidated_python_django_migration_operations(apps, schema_editor):
+        revert_table_schema_config_with_defaults(apps, schema_editor)
+        revert_default_collection_types(apps, schema_editor)
+        revert_default_discipline_for_tree_defs(apps, schema_editor)
 
     operations = [
         migrations.CreateModel(
@@ -164,7 +174,6 @@ class Migration(migrations.Migration):
             name='collectionobjecttype',
             field=models.ForeignKey(db_column='CollectionObjectTypeID', null=True, on_delete=models.SET_NULL, related_name='collections', to='specify.collectionobjecttype'),
         ),
-        migrations.RunPython(create_default_collection_types, revert_default_collection_types, atomic=True),
         migrations.CreateModel(
             name='CollectionObjectGroup',
             fields=[
@@ -257,6 +266,5 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(db_column='DisciplineID', default=None, null=True, on_delete=protect_with_blockers, related_name='taxontreedefs', to='specify.discipline'),
             preserve_default=False,
         ),
-        migrations.RunPython(create_default_discipline_for_tree_defs, revert_default_discipline_for_tree_defs, atomic=True),
-        migrations.RunPython(create_table_schema_config_with_defaults, revert_table_schema_config_with_defaults, atomic=True),
+        migrations.RunPython(consolidated_python_django_migration_operations, renvert_cosolidated_python_django_migration_operations, atomic=True),
     ]
