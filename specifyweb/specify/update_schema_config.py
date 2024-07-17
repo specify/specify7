@@ -102,13 +102,13 @@ def revert_table_schema_config(table_name):
     table: Table = datamodel.get_table(table_name)
     table_name = table.classname.split('.')[-1]
 
-    container = Splocalecontainer.objects.get(name=table_name)
-    items = Splocalecontaineritem.objects.filter(container=container)
-    for item in items:
-        item_strs = Splocaleitemstr.objects.filter(Q(itemname=item) | Q(itemdesc=item))
-        for item_str in item_strs:
-            item_str.delete()
-        item.delete()
-    
-    item_strs = Splocaleitemstr.objects.filter(Q(containername=container) | Q(containerdesc=container)).delete()
-    container.delete()
+    containers = Splocalecontainer.objects.filter(name=table_name)
+    items = Splocalecontaineritem.objects.filter(container__in=containers)
+    Splocaleitemstr.objects.filter(
+        Q(itemname__in=items) |
+        Q(itemdesc__in=items) |
+        Q(containername__in=containers) |
+        Q(containerdesc__in=containers)
+    ).delete()
+    items.delete()
+    containers.delete()
