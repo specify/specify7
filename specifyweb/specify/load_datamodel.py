@@ -411,7 +411,7 @@ dependent_fields = {
     'Collectionobject.treatmentevents',
     'Collectionobject.voucherrelationships',
     'CollectionobjectGroup.cojo',
-    'CollectionObjectGroupJoin.parentcojos',
+    'CollectionObjectGroup.parentcojos',
     'Commonnametx.citations',
     'Conservdescription.events',
     'Deaccession.deaccessionagents',
