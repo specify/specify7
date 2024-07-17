@@ -269,7 +269,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='discipline',
             name='taxontreedef',
-            field=models.ForeignKey(db_column='TaxonTreeDefID', default=django.utils.timezone.now, on_delete=protect_with_blockers, related_name='disciplines', to='specify.taxontreedef'),
+            field=models.ForeignKey(db_column='TaxonTreeDefID', default=None, on_delete=protect_with_blockers, related_name='disciplines', to='specify.taxontreedef'),
             preserve_default=False,
         ),
         migrations.RunPython(consolidated_python_django_migration_operations, revert_cosolidated_python_django_migration_operations, atomic=True),
