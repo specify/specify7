@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-07-15 19:09+0000\n"
+"PO-Revision-Date: 2024-07-17 10:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/tree/"
 "ru/>\n"
@@ -168,8 +168,8 @@ msgstr "Выберите новую цель для «{nodeName:string}», ко�
 #, fuzzy
 msgid "bulkMoveNodeHintMessage"
 msgstr ""
-"Выберите новую цель для препаратов «{nodeName:string}», в которую необходимо "
-"переместить"
+"Выберите новую цель для препаратов «{nodeName:string}», которые будут "
+"перемещены."
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:462
@@ -284,7 +284,7 @@ msgstr "({directCount:number|formatted})"
 #: components/TreeView/helpers.ts:194
 #, fuzzy
 msgid "directCollectionObjectCount"
-msgstr "Прямой счет {collectionObjectTable:string}"
+msgstr "Прямой {collectionObjectTable:string} счет"
 
 #. 🟥Example: Indirect Collection Object count. Used in: Components > Tree View > Helpers
 #: components/TreeView/helpers.ts:202
