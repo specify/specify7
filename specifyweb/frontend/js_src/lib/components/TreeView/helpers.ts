@@ -45,7 +45,7 @@ export const fetchRows = async (fetchUrl: string) =>
           acceptedName = undefined,
           author = undefined,
           children,
-          synonyms = undefined
+          synonyms = undefined,
         ],
         index,
         { length }
@@ -61,7 +61,7 @@ export const fetchRows = async (fetchUrl: string) =>
         author,
         children,
         isLastChild: index + 1 === length,
-        synonyms
+        synonyms,
       })
     )
   );
