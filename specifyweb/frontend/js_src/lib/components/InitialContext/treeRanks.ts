@@ -83,7 +83,7 @@ export const treeRanksPromise = Promise.all([
                       definition: treeDefinition,
                       ranks: await fetchRelated(
                         serializeResource(treeDefinition),
-                        'treeDefItems',
+                        'treeEntries',
                         0
                       ).then(({ records }) =>
                         Array.from(records).sort(

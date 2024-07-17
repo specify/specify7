@@ -6266,14 +6266,14 @@ export type Spuserexternalid = {
 export type Spattachmentdataset = {
   readonly tableName: 'Spattachmentdataset';
   readonly fields: {
-    readonly data: undefined | null;
+    readonly data: string | null; // underdefined causes type error
     readonly importedfilename: string | null;
     readonly name: string;
     readonly remarks: string | null;
     readonly timestampcreated: string;
     readonly timestampmodified: string | null;
     readonly uploadplan: string | null;
-    readonly uploadresult: undefined | null;
+    readonly uploadresult: string | null; // underdefined causes type error
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
@@ -6320,9 +6320,9 @@ export type Spmerging = {
   readonly tableName: 'Spmerging';
   readonly fields: {
     readonly name: string;
-    readonly newrecorddata: undefined | null;
+    readonly newrecorddata: string | null; // underdefined causes type error
     readonly newrecordid: number;
-    readonly oldrecordids: undefined | null;
+    readonly oldrecordids: string | null; // underdefined causes type error
     readonly response: string | null;
     readonly status: string;
     readonly table: string;
@@ -6361,7 +6361,7 @@ export type LocalityUpdate = {
 };
 export type LocalityUpdateRowResult = {
   readonly tableName: 'LocalityUpdateRowResult';
-  readonly fields: { readonly result: undefined; readonly rownumber: number };
+  readonly fields: { readonly result: string; readonly rownumber: number }; // underdefined causes type error
   readonly toOneDependent: { readonly localityupdate: LocalityUpdate | null };
   readonly toOneIndependent: RR<never, never>;
   readonly toManyDependent: RR<never, never>;
@@ -6430,8 +6430,8 @@ export type LibraryRolePolicy = {
 export type Spdataset = {
   readonly tableName: 'Spdataset';
   readonly fields: {
-    readonly columns: undefined;
-    readonly data: undefined | null;
+    readonly columns: string; // underdefined causes type error
+    readonly data: string | null; // underdefined causes type error
     readonly importedfilename: string | null;
     readonly name: string;
     readonly remarks: string | null;
@@ -6439,8 +6439,8 @@ export type Spdataset = {
     readonly timestampcreated: string;
     readonly timestampmodified: string | null;
     readonly uploadplan: string | null;
-    readonly uploadresult: undefined | null;
-    readonly visualorder: undefined | null;
+    readonly uploadresult: string | null; // underdefined causes type error
+    readonly visualorder: string | null; // underdefined causes type error
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
