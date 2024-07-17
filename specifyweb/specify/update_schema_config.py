@@ -46,7 +46,7 @@ def update_table_schema_config_with_defaults(
     )
 
     fields_config = []
-    for field in table.fields:
+    for field in table.all_fields:
         field_desc = field.name
         field_name = re.sub(r'(?<!^)(?=[A-Z])', ' ', field_desc).capitalize()
         fields_config.append(FieldSchemaConfig(
@@ -56,6 +56,10 @@ def update_table_schema_config_with_defaults(
             description=field_desc,
             language="en"
         ))
+
+    HIDDEN_FIELDS = [
+        "timestampcreated", "timestampmodified", "version", "createdbyagent", "modifiedbyagent"
+    ]
 
     # Create Splocalecontainer for the tbale
     sp_local_container = Splocalecontainer.objects.create(
@@ -82,7 +86,7 @@ def update_table_schema_config_with_defaults(
         sp_local_container_item = Splocalecontaineritem.objects.create(
             name=field.name,
             container=sp_local_container,
-            ishidden=False,
+            ishidden=field.name.lower() in HIDDEN_FIELDS,
             issystem=table.system,
             version=0,
         )
