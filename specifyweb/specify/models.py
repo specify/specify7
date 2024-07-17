@@ -2816,17 +2816,12 @@ class Discipline(models.Model):
     type = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='Type', db_index=False)
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
-    # Relationships: One-to-One
-    # This field is no longer used in Specify 7, since multiple Taxon trees, this is not assumed to be the default taxon
-    # tree, use CollectionObjectType is_default field
-    # taxontreedef = models.OneToOneField('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='discipline', null=True, on_delete=protect_with_blockers)
-    taxontreedef = models.OneToOneField('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='defaultdiscipline', null=True, on_delete=protect_with_blockers)
-
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     datatype = models.ForeignKey('DataType', db_column='DataTypeID', related_name='+', null=False, on_delete=protect_with_blockers)
     division = models.ForeignKey('Division', db_column='DivisionID', related_name='disciplines', null=False, on_delete=protect_with_blockers)
     geographytreedef = models.ForeignKey('GeographyTreeDef', db_column='GeographyTreeDefID', related_name='disciplines', null=False, on_delete=protect_with_blockers)
+    taxontreedef = models.ForeignKey('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='disciplines', null=False, on_delete=protect_with_blockers)
     geologictimeperiodtreedef = models.ForeignKey('GeologicTimePeriodTreeDef', db_column='GeologicTimePeriodTreeDefID', related_name='disciplines', null=False, on_delete=protect_with_blockers)
     lithostrattreedef = models.ForeignKey('LithoStratTreeDef', db_column='LithoStratTreeDefID', related_name='disciplines', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)

@@ -257,11 +257,6 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(db_column='DisciplineID', default=None, null=True, on_delete=protect_with_blockers, related_name='taxontreedefs', to='specify.discipline'),
             preserve_default=False,
         ),
-        migrations.AlterField(
-            model_name='discipline',
-            name='taxontreedef',
-            field=models.OneToOneField(db_column='TaxonTreeDefID', null=True, on_delete=protect_with_blockers, related_name='defaultdiscipline', to='specify.taxontreedef'),
-        ),
         migrations.RunPython(create_default_discipline_for_tree_defs, revert_default_discipline_for_tree_defs, atomic=True),
         migrations.RunPython(create_table_schema_config_with_defaults, revert_table_schema_config_with_defaults, atomic=True),
     ]

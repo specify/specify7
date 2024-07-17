@@ -2984,13 +2984,13 @@ datamodel = Datamodel(tables=[
             Relationship(name='dataType', type='many-to-one',required=True, relatedModelName='DataType', column='DataTypeID'),
             Relationship(name='division', type='many-to-one',required=True, relatedModelName='Division', column='DivisionID', otherSideName='disciplines'),
             Relationship(name='geographyTreeDef', type='many-to-one',required=True, relatedModelName='GeographyTreeDef', column='GeographyTreeDefID', otherSideName='disciplines'),
+            Relationship(name='taxonTreeDef', type='many-to-one',required=False, relatedModelName='TaxonTreeDef', column='TaxonTreeDefID', otherSideName='disciplines'),
             Relationship(name='geologicTimePeriodTreeDef', type='many-to-one',required=True, relatedModelName='GeologicTimePeriodTreeDef', column='GeologicTimePeriodTreeDefID', otherSideName='disciplines'),
             Relationship(name='lithoStratTreeDef', type='many-to-one',required=False, relatedModelName='LithoStratTreeDef', column='LithoStratTreeDefID', otherSideName='disciplines'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='numberingSchemes', type='many-to-many',required=False, relatedModelName='AutoNumberingScheme', otherSideName='disciplines'),
             Relationship(name='spExportSchemas', type='one-to-many',required=False, relatedModelName='SpExportSchema', otherSideName='discipline'),
             Relationship(name='spLocaleContainers', type='one-to-many',required=False, relatedModelName='SpLocaleContainer', otherSideName='discipline'),
-            Relationship(name='taxonTreeDef', type='one-to-one',required=False, relatedModelName='TaxonTreeDef', column='TaxonTreeDefID', otherSideName='discipline'),
             Relationship(name='userGroups', type='one-to-many',required=False, relatedModelName='SpPrincipal', otherSideName='scope')
         ],
         fieldAliases=[
@@ -6972,7 +6972,7 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            # Relationship(name='institution', type='many-to-one',required=True, relatedModelName='Institution', column='InstitutionID', otherSideName='storageTreeDefs'),
+            Relationship(name='institution', type='many-to-one',required=True, relatedModelName='Institution', column='InstitutionID', otherSideName='storageTreeDefs'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='treeDefItems', type='one-to-many',required=False, relatedModelName='StorageTreeDefItem', otherSideName='treeDef', dependent=True),
             Relationship(name='treeEntries', type='one-to-many',required=False, relatedModelName='Storage', otherSideName='definition')
@@ -7420,7 +7420,7 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(name='discipline', type='one-to-one',required=False, relatedModelName='Discipline', otherSideName='taxonTreeDefs'),
+            Relationship(name='discipline', type='many-to-one', column='DisciplineID',required=True, relatedModelName='Discipline', otherSideName='taxonTreeDefs'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='treeDefItems', type='one-to-many',required=False, relatedModelName='TaxonTreeDefItem', otherSideName='treeDef', dependent=True),
             Relationship(name='treeEntries', type='one-to-many',required=False, relatedModelName='Taxon', otherSideName='definition')
