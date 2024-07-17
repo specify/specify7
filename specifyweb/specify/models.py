@@ -6624,7 +6624,7 @@ class Storagetreedef(models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
-    institution = models.ForeignKey('Institution', db_column='InstitutionID', related_name='storagetreedefs', null=False, on_delete=protect_with_blockers)
+    institution = models.ForeignKey('Institution', db_column='InstitutionID', related_name='storagetreedefs', null=True, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
