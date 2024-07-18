@@ -750,7 +750,7 @@ class StoredQueriesTests(ApiTests):
     #     self.assertEqual(params, (7, 1, 2, 8, 1, 2))
 
 
-def test_sqlalchemy_model(datamodel_table):
+def validate_sqlalchemy_model(datamodel_table):
     table_errors = {
         'not_found': [],  # Fields / Relationships not found
         'incorrect_direction': {},  # Relationship direct not correct
@@ -802,7 +802,7 @@ def test_sqlalchemy_model(datamodel_table):
 class SQLAlchemyModelTest(TestCase):
     def test_sqlalchemy_model_errors(self):
         for table in spmodels.datamodel.tables:
-            table_errors = test_sqlalchemy_model(table)
+            table_errors = validate_sqlalchemy_model(table)
             self.assertTrue(len(table_errors) == 0 or table.name in expected_errors, f"Did not find {table.name}. Has errors: {table_errors}")
             if 'not_found' in table_errors:
                 table_errors['not_found'] = sorted(table_errors['not_found'])
