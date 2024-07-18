@@ -9,6 +9,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.9.6.1](https://github.com/specify/specify7/compare/v7.9.6...v7.9.6.1) (9 July 2024)
+
+- Fixes an issue that led to tree definition item separators being trimmed ([#5076](https://github.com/specify/specify7/pull/5076))
+- The form system now includes a `whiteSpaceSensitive` attribute, which allows any field to preserve whitespace upon saving
+
 ## [7.9.6](https://github.com/specify/specify7/compare/v7.9.5...v7.9.6) (1 July 2024)
 
 
