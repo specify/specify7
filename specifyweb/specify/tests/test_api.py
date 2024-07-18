@@ -29,6 +29,7 @@ from specifyweb.specify.models import (
     Agent,
     Specifyuser,
     CollectionObjectGroupType,
+    CollectionObjectType,
     Recordset,
     Disposal,
     Loan,
@@ -104,29 +105,15 @@ class MainSetupTearDown:
 
         self.collectingevent = Collectingevent.objects.create(
             discipline=self.discipline)
+        
+        self.collectionobjecttype = CollectionObjectType.objects.create(name="Test", collection=self.collection)
 
         self.collectionobjects = [
             Collectionobject.objects.create(
                 collection=self.collection,
                 catalognumber="num-%d" % i)
+                # collectionobjecttype=self.collectionobjecttype
             for i in range(5)]
-        
-        cog_type_picklist = Picklist.objects.create(
-            name='Default Collection Object Group Types',
-            tablename='CollectionObjectGroupType',
-            issystem=False,
-            type=1,
-            readonly=False,
-            collection=self.collection
-        )
-        Picklistitem.objects.create(
-            title='Discrete',
-            value='Discrete',
-            picklist=cog_type_picklist
-        )
-        self.cogtype = CollectionObjectGroupType.objects.create(
-            name="Test", type="Discrete", collection=self.collection
-        )
 
 
 class ApiTests(MainSetupTearDown, TestCase): pass
@@ -736,3 +723,23 @@ class ScopingTests(ApiTests):
         )
         self.assertEqual(scoping.in_same_scope(agent, other_collectionobject), True)
         self.assertEqual(scoping.in_same_scope(self.collectionobjects[0], agent), False)
+
+class DefaultsSetup(MainSetupTearDown, TestCase):
+    def setUp(self):
+        super().setUp()
+        cog_type_picklist = Picklist.objects.create(
+            name='Default Collection Object Group Types',
+            tablename='CollectionObjectGroupType',
+            issystem=False,
+            type=1,
+            readonly=False,
+            collection=self.collection
+        )
+        Picklistitem.objects.create(
+            title='Discrete',
+            value='Discrete',
+            picklist=cog_type_picklist
+        )
+        self.cogtype = CollectionObjectGroupType.objects.create(
+            name="Test", type="Discrete", collection=self.collection
+        )

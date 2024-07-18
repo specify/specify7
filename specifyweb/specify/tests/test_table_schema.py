@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.db import IntegrityError, transaction
-from specifyweb.specify.tests.test_api import ApiTests
+from specifyweb.specify.tests.test_api import DefaultsSetup
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify.models import (
     Collectionobject,
@@ -9,7 +9,7 @@ from specifyweb.specify.models import (
     CollectionObjectGroupJoin,
 )
 
-class TableSchemaTests(ApiTests):
+class TableSchemaTests(DefaultsSetup):
     def test_cojo(self) -> None:
         co_1 = Collectionobject.objects.create(collectionmemberid=1, collection=self.collection)
         co_2 = Collectionobject.objects.create(collectionmemberid=1, collection=self.collection)
