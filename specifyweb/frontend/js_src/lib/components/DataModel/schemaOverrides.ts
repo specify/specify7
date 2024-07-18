@@ -7,8 +7,9 @@
  * @module
  */
 
+import { f } from '../../utils/functools';
 import type { IR, RR } from '../../utils/types';
-import { VALUE } from '../../utils/utils';
+import { caseInsensitiveHash, VALUE } from '../../utils/utils';
 import type { TableFields } from './helperTypes';
 import type { Tables } from './types';
 
@@ -260,15 +261,18 @@ export const getGlobalFieldOverwrite = (
   tableName: keyof Tables,
   fieldName: string
 ): FieldConfigOverwrite | undefined =>
-  globalFieldOverrides[tableName as 'Accession']?.[fieldName as 'text1'] ??
-  globalFieldOverrides.common?.[fieldName];
+  f.maybe(globalFieldOverrides[tableName], (fieldOverwrites) =>
+    caseInsensitiveHash(fieldOverwrites, fieldName)
+  ) ?? caseInsensitiveHash(globalFieldOverrides.common, fieldName);
 
 export const getFieldOverwrite = (
   tableName: keyof Tables,
   fieldName: string
 ): FieldConfigOverwrite | undefined =>
-  fieldOverwrites[tableName as 'Accession']?.[fieldName as 'text1'] ??
-  fieldOverwrites.common?.[fieldName] ??
+  f.maybe(fieldOverwrites[tableName], (overwrites) =>
+    caseInsensitiveHash(overwrites, fieldName)
+  ) ??
+  caseInsensitiveHash(fieldOverwrites.common, fieldName) ??
   Object.entries(endsWithFieldOverwrites[tableName] ?? {}).find(([key]) =>
     fieldName.endsWith(key)
   )?.[VALUE] ??
