@@ -7616,15 +7616,6 @@ class CollectionObjectGroupJoin(models.Model): # aka. CoJo or CogJoin
         db_table = 'collectionobjectgroupjoin'
         ordering = ()
         # unique_together = (('childcog'), ('childco'))
-        constraints = [
-            # Constraint so that childcog and childco are not both null in the same record
-            CheckConstraint(
-                check=models.Q(
-                    ("childco__isnull", True), ("childcog__isnull", True), _negated=True
-                ),
-                name="childcog_childco_not_both_null",
-            ),
-        ]
 
     timestamptracker = FieldTracker(fields=["timestampcreated", "timestampmodified"])
     save = partialmethod(custom_save)

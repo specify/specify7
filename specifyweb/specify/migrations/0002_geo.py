@@ -123,6 +123,7 @@ def create_default_collection_object_types():
             tablename='CollectionObjectGroupType',
             issystem=False,
             type=1,
+            readonly=False,
             collection=collection
         )
         for cog_type in DEFAULT_COG_TYPES:
@@ -273,10 +274,6 @@ class Migration(migrations.Migration):
                 'db_table': 'collectionobjectgroupjoin',
                 'ordering': (),
             },
-        ),
-        migrations.AddConstraint(
-            model_name='collectionobjectgroupjoin',
-            constraint=models.CheckConstraint(check=models.Q(('childco__isnull', True), ('childcog__isnull', True), _negated=True), name='childcog_childco_not_both_null'),
         ),
         migrations.AddField(
             model_name='geographytreedef',
