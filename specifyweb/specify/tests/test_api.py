@@ -19,6 +19,7 @@ from specifyweb.specify.models import (
     Division,
     Geologictimeperiodtreedef,
     Geographytreedef,
+    Taxontreedef,
     Datatype,
     Discipline,
     Collection,
@@ -66,6 +67,8 @@ class MainSetupTearDown:
 
         self.geographytreedef.treedefitems.create(name="Planet", rankid="0")
 
+        self.taxontreedef = Taxontreedef.objects.create(name='Test ttd')
+
         self.datatype = Datatype.objects.create(
             name='Test datatype')
 
@@ -105,14 +108,16 @@ class MainSetupTearDown:
 
         self.collectingevent = Collectingevent.objects.create(
             discipline=self.discipline)
-        
-        self.collectionobjecttype = CollectionObjectType.objects.create(name="Test", collection=self.collection)
+
+        self.collectionobjecttype = CollectionObjectType.objects.create(
+            name="Test", collection=self.collection, taxontreedef=self.taxontreedef
+        )
 
         self.collectionobjects = [
             Collectionobject.objects.create(
                 collection=self.collection,
-                catalognumber="num-%d" % i)
-                # collectionobjecttype=self.collectionobjecttype
+                catalognumber="num-%d" % i,
+                collectionobjecttype=self.collectionobjecttype)
             for i in range(5)]
 
 
