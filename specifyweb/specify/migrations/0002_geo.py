@@ -3,13 +3,17 @@
 from calendar import c
 from django.db import migrations, models
 import django.utils.timezone
+from pyrsistent import v
 from specifyweb.specify.models import (
     protect_with_blockers,
     Collectionobject,
     CollectionObjectType,
+    CollectionObjectGroupType,
     Collection,
     Discipline,
-    Institution
+    Institution,
+    Picklist,
+    Picklistitem,
 )
 from specifyweb.specify.update_schema_config import (
     update_table_schema_config_with_defaults,
@@ -45,6 +49,12 @@ SCHEMA_CONFIG_TABLES = [
     ('LibraryRole', 'Stores names and descriptions of default roles that can be added to any collection.'),
     ('LibraryRolePolicy', 'Stores resource and action permissions for library roles within a collection.'),
     ('SpDataSet', 'Stores Specify Data Sets created during bulk import using the WorkBench, typically through spreadsheet uploads.')
+]
+
+DEFAULT_COG_TYPES = [
+    'Discrete',
+    'Consolidated',
+    'Drill Core',
 ]
 
 def create_default_collection_types():
@@ -105,6 +115,26 @@ def create_table_schema_config_with_defaults():
 def revert_table_schema_config_with_defaults():
     for table, _ in SCHEMA_CONFIG_TABLES:
         revert_table_schema_config(table)
+
+def create_default_collection_object_types():
+    for collection in Collection.objects.all():
+        cog_type_picklist = Picklist.objects.create(
+            name='Default Collection Object Group Types',
+            tablename='CollectionObjectGroupType',
+            issystem=False,
+            collection=collection
+        )
+        for cog_type in DEFAULT_COG_TYPES:
+            Picklistitem.objects.create(
+                title=cog_type,
+                value=cog_type,
+                picklist=cog_type_picklist
+            )
+
+def revert_default_collection_object_types():
+    # TODO: Implement this
+    pass
+
 
 class Migration(migrations.Migration):
 
