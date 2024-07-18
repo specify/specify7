@@ -267,8 +267,8 @@ class Migration(migrations.Migration):
                 ('yesno2', models.BooleanField(blank=True, db_column='YesNo2', null=True)),
                 ('yesno3', models.BooleanField(blank=True, db_column='YesNo3', null=True)),
                 ('parentcog', models.ForeignKey(db_column='ParentCOGID', on_delete=django.db.models.deletion.CASCADE, related_name='parentcojos', to='specify.collectionobjectgroup')),
-                ('childcog', models.ForeignKey(db_column='ChildCOGID', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='cojo', to='specify.collectionobjectgroup', unique=True)),
-                ('childco', models.ForeignKey(db_column='ChildCOID', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='cojo', to='specify.collectionobject', unique=True)),
+                ('childcog', models.OneToOneField(db_column='ChildCOGID', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='cojo', to='specify.collectionobjectgroup')),
+                ('childco', models.OneToOneField(db_column='ChildCOID', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='cojo', to='specify.collectionobject')),
             ],
             options={
                 'db_table': 'collectionobjectgroupjoin',

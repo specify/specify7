@@ -7609,13 +7609,12 @@ class CollectionObjectGroupJoin(models.Model): # aka. CoJo or CogJoin
     parentcog = models.ForeignKey('CollectionObjectGroup', db_column='ParentCOGID', related_name='parentcojos', null=False, on_delete=models.CASCADE)
 
     # Relationships: One-to-One
-    childcog = models.ForeignKey('CollectionObjectGroup', db_column='ChildCOGID', related_name='cojo', null=True, on_delete=models.CASCADE, unique=True)
-    childco = models.ForeignKey('CollectionObject', db_column='ChildCOID', related_name='cojo', null=True, on_delete=models.CASCADE, unique=True)
+    childcog = models.OneToOneField('CollectionObjectGroup', db_column='ChildCOGID', related_name='cojo', null=True, on_delete=models.CASCADE)
+    childco = models.OneToOneField('CollectionObject', db_column='ChildCOID', related_name='cojo', null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'collectionobjectgroupjoin'
         ordering = ()
-        # unique_together = (('childcog'), ('childco'))
 
     timestamptracker = FieldTracker(fields=["timestampcreated", "timestampmodified"])
     save = partialmethod(custom_save)

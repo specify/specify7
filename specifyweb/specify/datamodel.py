@@ -8329,8 +8329,8 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='parentcog', type='many-to-one', required=True, relatedModelName='CollectionObjectGroup', column='ParentCOGID', otherSideName='parentcojos'),
-            Relationship(name='childcog', type='many-to-one', required=False, relatedModelName='CollectionObjectGroup', column='ChildCOGID', otherSideName='cojo'),
-            Relationship(name='childco', type='many-to-one', required=False, relatedModelName='CollectionObject', column='ChildCOID', otherSideName='cojo'),
+            Relationship(name='childcog', type='one-to-one', required=False, relatedModelName='CollectionObjectGroup', column='ChildCOGID', otherSideName='cojo'),
+            Relationship(name='childco', type='one-to-one', required=False, relatedModelName='CollectionObject', column='ChildCOID', otherSideName='cojo'),
         ],
         fieldAliases=[
 

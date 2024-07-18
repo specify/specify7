@@ -1260,12 +1260,6 @@ expected_errors = {
     "not_found": [
       "projects"
     ],
-    # "incorrect_direction": {
-    #   "cojo": [
-    #     "onetomany",
-    #     # "onetoone"
-    #   ]
-    # }
   },
   "DNASequencingRun": {
     "incorrect_table": {
@@ -1370,12 +1364,12 @@ expected_errors = {
       ]
     }
   },
-  # "CollectionObjectGroup": {
-  #   "incorrect_direction": {
-  #     "cojo": [
-  #       "onetomany",
-  #       # "onetoone"
-  #     ]
-  #   }
-  # },
+  "CollectionObjectGroup": {
+    "incorrect_direction": {
+      "cojo": [
+        "onetomany",
+        "onetoone"
+      ]
+    }
+  },
 }
