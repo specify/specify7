@@ -1423,7 +1423,6 @@ export type CollectionObject = {
     readonly yesNo6: boolean | null;
   };
   readonly toOneDependent: {
-    readonly cojo: CollectionObjectGroupJoin | null;
     readonly collectionObjectAttribute: CollectionObjectAttribute | null;
   };
   readonly toOneIndependent: {
@@ -1446,6 +1445,7 @@ export type CollectionObject = {
     readonly visibilitySetBy: SpecifyUser | null;
   };
   readonly toManyDependent: {
+    readonly cojo: RA<CollectionObjectGroupJoin>;
     readonly collectionObjectAttachments: RA<CollectionObjectAttachment>;
     readonly collectionObjectAttrs: RA<CollectionObjectAttr>;
     readonly collectionObjectCitations: RA<CollectionObjectCitation>;
@@ -6497,7 +6497,7 @@ export type CollectionObjectGroup = {
     readonly yesno2: boolean | null;
     readonly yesno3: boolean | null;
   };
-  readonly toOneDependent: { readonly cojo: CollectionObjectGroupJoin | null };
+  readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly cogtype: CollectionObjectGroupType;
     readonly collection: Collection | null;
@@ -6505,6 +6505,7 @@ export type CollectionObjectGroup = {
     readonly modifiedByAgent: Agent | null;
   };
   readonly toManyDependent: {
+    readonly cojo: RA<CollectionObjectGroupJoin>;
     readonly parentcojos: RA<CollectionObjectGroupJoin>;
   };
   readonly toManyIndependent: RR<never, never>;

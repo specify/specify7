@@ -13,7 +13,7 @@
       "timestampcreated": "2012-08-09T12:29:16",
       "timestampmodified": "2012-08-09T12:29:16",
       "title": null,
-      "version": 7,
+      "version": 5,
       "createdbyagent": null,
       "modifiedbyagent": null,
       "parent": null,
@@ -35,7 +35,7 @@
       "timestampcreated": "2012-08-09T12:29:16",
       "timestampmodified": "2012-08-09T12:29:16",
       "title": null,
-      "version": 7,
+      "version": 5,
       "createdbyagent": null,
       "modifiedbyagent": null,
       "parent": "/api/specify/storagetreedefitem/1/",
@@ -57,7 +57,7 @@
       "timestampcreated": "2012-08-09T12:29:16",
       "timestampmodified": "2012-08-09T12:29:16",
       "title": null,
-      "version": 7,
+      "version": 5,
       "createdbyagent": null,
       "modifiedbyagent": null,
       "parent": "/api/specify/storagetreedefitem/2/",
@@ -79,7 +79,7 @@
       "timestampcreated": "2012-08-09T12:29:16",
       "timestampmodified": "2012-08-09T12:29:16",
       "title": null,
-      "version": 7,
+      "version": 5,
       "createdbyagent": null,
       "modifiedbyagent": null,
       "parent": "/api/specify/storagetreedefitem/3/",
@@ -89,5 +89,9 @@
       "resource_uri": "/api/specify/storagetreedefitem/4/"
     }
   ],
-  "meta": { "limit": 20, "offset": 0, "total_count": 4 }
+  "meta": {
+    "limit": 0,
+    "offset": 0,
+    "total_count": 4
+  }
 }

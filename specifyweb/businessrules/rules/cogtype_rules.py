@@ -1,13 +1,6 @@
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.businessrules.orm_signal_handler import orm_signal_handler
 
-# TODO: Make these user defineable and add defautls in django migration
-# COG_TYPE_NAMES = {
-#     'microscope slide', 
-#     'whole rock',
-#     'piece of bark'
-# }
-
 COG_TYPE_TYPES = {
     'discrete',
     'consolidated',

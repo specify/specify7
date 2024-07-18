@@ -7830,6 +7830,7 @@ datamodel = Datamodel(tables=[
     Table( # Spuserexternalid
         sp7_only=True,
         django_app='accounts',
+        system=True,
         classname='edu.ku.brc.specify.datamodel.Spuserexternalid',
         table='spuserexternalid',
         tableId=1000,
@@ -7906,6 +7907,7 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='discipline', type='many-to-one', required=False, relatedModelName='Discipline', column='DisciplineID'),
+            # Relationship(name='fields', type='one-to-many', required=False, relatedModelName='UniquenessRuleField') #REFACTOR: Add this to sqlalchemy models
         ],
         fieldAliases=[
 
@@ -8323,6 +8325,7 @@ datamodel = Datamodel(tables=[
     Table( # CollectionObjectGroupType
         sp7_only=True,
         django_app='specify',
+        system=True,
         classname='edu.ku.brc.specify.datamodel.CollectionObjectGroupType',
         table='collectionobjectgrouptype',
         tableId=1018,
