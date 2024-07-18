@@ -6,15 +6,15 @@ class CoJoTest(ApiTests):
         cog_type = CollectionObjectGroupType.objects.create(name='microscope slide', type='discrete', collection=self.collection)
         cog_1 = CollectionObjectGroup.objects.create(
             collection=self.collection,
-            type=cog_type
+            cogtype=cog_type
         )
         cog_2 = CollectionObjectGroup.objects.create(
             collection=self.collection,
-            type=cog_type
+            cogtype=cog_type
         )
         cog_3 = CollectionObjectGroup.objects.create(
             collection=self.collection,
-            type=cog_type
+            cogtype=cog_type
         )
         cojo_1 = CollectionObjectGroupJoin.objects.create(
             parentcog=cog_1,
@@ -39,7 +39,7 @@ class CoJoTest(ApiTests):
 
         cog_4 = CollectionObjectGroup.objects.create(
             collection=self.collection,
-            type=cog_type
+            cogtype=cog_type
         )
         cojo_3 = CollectionObjectGroupJoin.objects.create(
             parentcog=cog_1,
