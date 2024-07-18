@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import IntegrityError, transaction
 from specifyweb.specify.tests.test_api import ApiTests
+from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify.models import (
     Collectionobject,
     CollectionObjectGroup,
@@ -29,5 +30,5 @@ class TableSchemaTests(ApiTests):
             CollectionObjectGroupJoin.objects.create(parentcog=cog_3, childcog=cog_2, childco=None)
         with self.assertRaises(IntegrityError), transaction.atomic():
             CollectionObjectGroupJoin.objects.create(parentcog=cog_3, childcog=None, childco=co_1)
-        with self.assertRaises(IntegrityError), transaction.atomic():
+        with self.assertRaises(BusinessRuleException), transaction.atomic():
             CollectionObjectGroupJoin.objects.create(parentcog=cog_3, childcog=None, childco=None)
