@@ -7856,6 +7856,7 @@ datamodel = Datamodel(tables=[
     Table( # Spattachmentdataset TODO: check json field errors
         sp7_only=True,
         django_app='attachment_gw',
+        system=True,
         classname='edu.ku.brc.specify.datamodel.Spattachmentdataset',
         table='attachmentdataset',
         tableId=1001,
@@ -7890,6 +7891,7 @@ datamodel = Datamodel(tables=[
     ),
     Table( # UniquenessRule
         sp7_only=True,
+        system=True,
         django_app='businessrules',
         classname='edu.ku.brc.specify.datamodel.UniquenessRule',
         table='uniquenessrule',
@@ -7915,6 +7917,7 @@ datamodel = Datamodel(tables=[
     ),
     Table( # UniquenessRuleField
         sp7_only=True,
+        system=True,
         django_app='businessrules',
         classname='edu.ku.brc.specify.datamodel.UniquenessRuleField', # NOTE: the classname is what is used in the QB api
         table='uniquenessrule_fields',
@@ -7938,6 +7941,7 @@ datamodel = Datamodel(tables=[
     ),
     Table( # Message
         sp7_only=True,
+        system=True,
         django_app='notifications',
         classname='edu.ku.brc.specify.datamodel.Message', # NOTE: the classname is what is used in the QB api
         table='notifications_message',
@@ -7962,6 +7966,7 @@ datamodel = Datamodel(tables=[
     ),
     Table( # Spmerging
         sp7_only=True,
+        system=True,
         django_app='specify',
         classname='edu.ku.brc.specify.datamodel.Spmerging',
         table='spmerging',
@@ -7996,6 +8001,7 @@ datamodel = Datamodel(tables=[
     ),
     Table( # LocalityUpdate
         sp7_only = True,
+        system=True,
         django_app='notifications',
         classname='edu.ku.brc.specify.datamodel.LocalityUpdate',
         table='localityupdate',
@@ -8019,6 +8025,7 @@ datamodel = Datamodel(tables=[
     ),
     Table( #LocalityUpdateRowResult
         sp7_only = True,
+        system=True,
         django_app='notifications',
         classname='edu.ku.brc.specify.datamodel.LocalityUpdateRowResult',
         table='localityupdaterowresult',
@@ -8036,6 +8043,7 @@ datamodel = Datamodel(tables=[
     ),
     Table( # UserPolicy
         sp7_only=True,
+        system=True,
         django_app='permissions',
         classname='edu.ku.brc.specify.datamodel.UserPolicy',
         table='spuserpolicy',
@@ -8060,6 +8068,7 @@ datamodel = Datamodel(tables=[
     ),
     Table( # Role
         sp7_only=True,
+        system=True,
         django_app='permissions',
         classname='edu.ku.brc.specify.datamodel.Role',
         table='sprole',
@@ -8083,6 +8092,7 @@ datamodel = Datamodel(tables=[
     ),
     Table( # LibraryRole
         sp7_only=True,
+        system=True,
         django_app='permissions',
         classname='edu.ku.brc.specify.datamodel.LibraryRole',
         table='splibraryrole',
@@ -8106,6 +8116,7 @@ datamodel = Datamodel(tables=[
     ),
     Table( # UserRole
         sp7_only=True,
+        system=True,
         django_app='permissions',
         classname='edu.ku.brc.specify.datamodel.UserRole',
         table='spuserrole',
@@ -8129,6 +8140,7 @@ datamodel = Datamodel(tables=[
     ),
     Table( # RolePolicy
         sp7_only=True,
+        system=True,
         django_app='permissions',
         classname='edu.ku.brc.specify.datamodel.RolePolicy',
         table='sprolepolicy',
@@ -8152,6 +8164,7 @@ datamodel = Datamodel(tables=[
     ),
     Table( # LibraryRolePolicy
         sp7_only=True,
+        system=True,
         django_app='permissions',
         classname='edu.ku.brc.specify.datamodel.LibraryRolePolicy',
         table='splibraryrolepolicy',
@@ -8175,6 +8188,7 @@ datamodel = Datamodel(tables=[
     ),
     Table( # Spdataset
         sp7_only=True,
+        system=True,
         django_app='workbench',
         classname='edu.ku.brc.specify.datamodel.Spdataset',
         table='spdataset',
@@ -8325,7 +8339,6 @@ datamodel = Datamodel(tables=[
     Table( # CollectionObjectGroupType
         sp7_only=True,
         django_app='specify',
-        system=True,
         classname='edu.ku.brc.specify.datamodel.CollectionObjectGroupType',
         table='collectionobjectgrouptype',
         tableId=1018,

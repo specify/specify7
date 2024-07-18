@@ -37269,7 +37269,7 @@
     "classname": "edu.ku.brc.specify.datamodel.Spattachmentdataset",
     "table": "attachmentdataset",
     "tableId": 1001,
-    "system": false,
+    "system": true,
     "idColumn": "id",
     "idFieldName": "spAttachmentDataSetId",
     "fields": [
@@ -37379,7 +37379,7 @@
     "classname": "edu.ku.brc.specify.datamodel.UniquenessRule",
     "table": "uniquenessrule",
     "tableId": 1002,
-    "system": false,
+    "system": true,
     "idColumn": "UniquenessRuleID",
     "idFieldName": "uniquenessRuleId",
     "fields": [
@@ -37417,7 +37417,7 @@
     "classname": "edu.ku.brc.specify.datamodel.UniquenessRuleField",
     "table": "uniquenessrule_fields",
     "tableId": 1003,
-    "system": false,
+    "system": true,
     "idColumn": "uniquenessrule_fieldid",
     "idFieldName": "uniquenessRuleFieldId",
     "fields": [
@@ -37454,7 +37454,7 @@
     "classname": "edu.ku.brc.specify.datamodel.Message",
     "table": "notifications_message",
     "tableId": 1004,
-    "system": false,
+    "system": true,
     "idColumn": "id",
     "idFieldName": "messageId",
     "fields": [
@@ -37499,7 +37499,7 @@
     "classname": "edu.ku.brc.specify.datamodel.Spmerging",
     "table": "spmerging",
     "tableId": 1005,
-    "system": false,
+    "system": true,
     "idColumn": "id",
     "idFieldName": "spMergingId",
     "fields": [
@@ -37628,7 +37628,7 @@
     "classname": "edu.ku.brc.specify.datamodel.LocalityUpdate",
     "table": "localityupdate",
     "tableId": 1013,
-    "system": false,
+    "system": true,
     "idColumn": "LocalityUpdateID",
     "idFieldName": "localityUpdateId",
     "fields": [
@@ -37715,7 +37715,7 @@
     "classname": "edu.ku.brc.specify.datamodel.LocalityUpdateRowResult",
     "table": "localityupdaterowresult",
     "tableId": 1014,
-    "system": false,
+    "system": true,
     "idColumn": "LocalityUpdateRowResultID",
     "idFieldName": "localityUpdateRowResultId",
     "fields": [
@@ -37753,7 +37753,7 @@
     "classname": "edu.ku.brc.specify.datamodel.UserPolicy",
     "table": "spuserpolicy",
     "tableId": 1006,
-    "system": false,
+    "system": true,
     "idColumn": "id",
     "idFieldName": "userPolicyId",
     "fields": [
@@ -37800,7 +37800,7 @@
     "classname": "edu.ku.brc.specify.datamodel.Role",
     "table": "sprole",
     "tableId": 1007,
-    "system": false,
+    "system": true,
     "idColumn": "id",
     "idFieldName": "roleId",
     "fields": [
@@ -37838,7 +37838,7 @@
     "classname": "edu.ku.brc.specify.datamodel.LibraryRole",
     "table": "splibraryrole",
     "tableId": 1008,
-    "system": false,
+    "system": true,
     "idColumn": "id",
     "idFieldName": "libraryRoleId",
     "fields": [
@@ -37867,7 +37867,7 @@
     "classname": "edu.ku.brc.specify.datamodel.UserRole",
     "table": "spuserrole",
     "tableId": 1009,
-    "system": false,
+    "system": true,
     "idColumn": "id",
     "idFieldName": "userRoleId",
     "fields": [],
@@ -37895,7 +37895,7 @@
     "classname": "edu.ku.brc.specify.datamodel.RolePolicy",
     "table": "sprolepolicy",
     "tableId": 1010,
-    "system": false,
+    "system": true,
     "idColumn": "id",
     "idFieldName": "rolePolicyId",
     "fields": [
@@ -37934,7 +37934,7 @@
     "classname": "edu.ku.brc.specify.datamodel.LibraryRolePolicy",
     "table": "splibraryrolepolicy",
     "tableId": 1011,
-    "system": false,
+    "system": true,
     "idColumn": "id",
     "idFieldName": "libraryRolePolicyId",
     "fields": [
@@ -37973,7 +37973,7 @@
     "classname": "edu.ku.brc.specify.datamodel.Spdataset",
     "table": "spdataset",
     "tableId": 1012,
-    "system": false,
+    "system": true,
     "idColumn": "id",
     "idFieldName": "spDataSetId",
     "fields": [
@@ -38595,7 +38595,7 @@
     "classname": "edu.ku.brc.specify.datamodel.CollectionObjectGroupType",
     "table": "collectionobjectgrouptype",
     "tableId": 1018,
-    "system": true,
+    "system": false,
     "idColumn": "COGTypeID",
     "idFieldName": "cogTypeId",
     "fields": [
