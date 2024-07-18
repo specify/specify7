@@ -122,6 +122,7 @@ def create_default_collection_object_types():
             name='Default Collection Object Group Types',
             tablename='CollectionObjectGroupType',
             issystem=False,
+            type=1,
             collection=collection
         )
         for cog_type in DEFAULT_COG_TYPES:
