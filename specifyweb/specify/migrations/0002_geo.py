@@ -266,7 +266,7 @@ class Migration(migrations.Migration):
                 ('yesno1', models.BooleanField(blank=True, db_column='YesNo1', null=True)),
                 ('yesno2', models.BooleanField(blank=True, db_column='YesNo2', null=True)),
                 ('yesno3', models.BooleanField(blank=True, db_column='YesNo3', null=True)),
-                ('parentcog', models.ForeignKey(db_column='ParentCOGID', on_delete=django.db.models.deletion.CASCADE, related_name='parentcojos', to='specify.collectionobjectgroup')),
+                ('parentcog', models.ForeignKey(db_column='ParentCOGID', null=False, on_delete=django.db.models.deletion.CASCADE, related_name='parentcojos', to='specify.collectionobjectgroup')),
                 ('childcog', models.OneToOneField(db_column='ChildCOGID', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='cojo', to='specify.collectionobjectgroup')),
                 ('childco', models.OneToOneField(db_column='ChildCOID', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='cojo', to='specify.collectionobject')),
             ],

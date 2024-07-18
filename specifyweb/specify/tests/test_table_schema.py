@@ -13,6 +13,7 @@ class TableSchemaTests(DefaultsSetup):
     def test_cojo(self) -> None:
         co_1 = Collectionobject.objects.create(collectionmemberid=1, collection=self.collection)
         co_2 = Collectionobject.objects.create(collectionmemberid=1, collection=self.collection)
+        co_3 = Collectionobject.objects.create(collectionmemberid=1, collection=self.collection)
 
         cog_type = CollectionObjectGroupType.objects.create(
             name="microscope slide", type="Discrete", collection=self.collection
@@ -32,3 +33,5 @@ class TableSchemaTests(DefaultsSetup):
             CollectionObjectGroupJoin.objects.create(parentcog=cog_3, childcog=None, childco=co_1)
         with self.assertRaises(BusinessRuleException), transaction.atomic():
             CollectionObjectGroupJoin.objects.create(parentcog=cog_3, childcog=None, childco=None)
+        with self.assertRaises(BusinessRuleException), transaction.atomic():
+            CollectionObjectGroupJoin.objects.create(parentcog=cog_3, childcog=cog_1, childco=co_3)
