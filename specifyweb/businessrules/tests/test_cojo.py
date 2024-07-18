@@ -1,9 +1,9 @@
-from specifyweb.specify.models import CollectionObjectGroup, CollectionObjectGroupJoin, CollectionObjectGroupType
+from specifyweb.specify.models import CollectionObjectGroup, CollectionObjectGroupJoin, CollectionObjectGroupType, Picklist, Picklistitem
 from specifyweb.specify.tests.test_api import ApiTests
 
 class CoJoTest(ApiTests):
     def test_cojo_rules_enforcement(self):
-        cog_type = CollectionObjectGroupType.objects.create(name='microscope slide', type='discrete', collection=self.collection)
+        cog_type = CollectionObjectGroupType.objects.create(name='microscope slide', type='Discrete', collection=self.collection)
         cog_1 = CollectionObjectGroup.objects.create(
             collection=self.collection,
             cogtype=cog_type

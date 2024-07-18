@@ -15,7 +15,7 @@ class TableSchemaTests(ApiTests):
         co_2 = Collectionobject.objects.create(collectionmemberid=1, collection=self.collection)
 
         cog_type = CollectionObjectGroupType.objects.create(
-            name="microscope slide", type="discrete", collection=self.collection
+            name="microscope slide", type="Discrete", collection=self.collection
         )
 
         cog_1 = CollectionObjectGroup.objects.create(collection=self.collection, cogtype=cog_type)
