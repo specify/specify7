@@ -38,7 +38,7 @@ export function QueryTablesEdit({
   );
 }
 // TODO: temp fix, remove this, use to hide geo tables for COG until 9.8 release
-const GEO_TABLES = new Set([
+export const HIDDEN_GEO_TABLES = new Set([
   'CollectionObjectType',
   'CollectionObjectGroup',
   'CollectionObjectGroupJoin',
@@ -65,7 +65,7 @@ export function TablesListEdit({
       tablesFilter(isNoRestrictionMode, false, true, table, selectedValues)
     )
     // TODO: temp fix, remove this, use to hide geo tables for COG until 9.8 release
-    .filter((table) => !GEO_TABLES.has(table.name))
+    .filter((table) => !HIDDEN_GEO_TABLES.has(table.name))
     .map(({ name, label }) => ({ name, label }));
 
   const handleChanged = (items: RA<keyof Tables>): void =>

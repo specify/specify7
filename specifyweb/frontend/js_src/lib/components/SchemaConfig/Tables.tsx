@@ -20,6 +20,7 @@ import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
+import { HIDDEN_GEO_TABLES } from '../Toolbar/QueryTablesEdit';
 
 export function SchemaConfigTables(): JSX.Element {
   const { language = '' } = useParams();
@@ -101,13 +102,6 @@ const defaultFilter = (
   table: SpecifyTable
 ): boolean => tablesFilter(showHiddenTables, false, true, table);
 
-// TODO: temp fix, remove this, use to hide geo tables for COG until 9.8 release
-const GEO_TABLES = new Set([
-  'CollectionObjectType',
-  'CollectionObjectGroup',
-  'CollectionObjectGroupJoin',
-  'CollectionObjectGroupType',
-]);
 export function TableList({
   cacheKey,
   getAction,
@@ -131,7 +125,7 @@ export function TableList({
       Object.values(genericTables)
         .filter((table) => filter(showHiddenTables, table))
         // TODO: temp fix, remove this, use to hide geo tables for COG until 9.8 release
-        .filter((table) => !GEO_TABLES.has(table.name))
+        .filter((table) => !HIDDEN_GEO_TABLES.has(table.name))
         .sort(sortFunction(({ name }) => name)),
     [filter, showHiddenTables]
   );
