@@ -7606,10 +7606,8 @@ class CollectionObjectGroupJoin(models.Model): # aka. CoJo or CogJoin
 
     # Relationships: Many-to-One
     parentcog = models.ForeignKey('CollectionObjectGroup', db_column='ParentCOGID', related_name='parentcojos', null=False, on_delete=models.CASCADE)
-    
-    # Relationships: One-to-One
-    childcog = models.OneToOneField('CollectionObjectGroup', db_column='ChildCOGID', related_name='cojo', null=True, on_delete=models.CASCADE)
-    childco = models.OneToOneField('CollectionObject', db_column='ChildCOID', related_name='cojo', null=True, on_delete=models.CASCADE)
+    childcog = models.ForeignKey('CollectionObjectGroup', db_column='ChildCOGID', related_name='cojo', null=True, on_delete=models.CASCADE)
+    childco = models.ForeignKey('CollectionObject', db_column='ChildCOID', related_name='cojo', null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'collectionobjectgroupjoin'
