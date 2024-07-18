@@ -347,7 +347,7 @@ def add_collectingevents_to_locality(datamodel: Datamodel) -> None:
     datamodel.get_table_strict('locality').relationships.append(rel)
 
 def flag_dependent_fields(datamodel: Datamodel) -> None:
-    for name in dependent_fields:
+    for name in sp6_dependent_fields:
         tablename, fieldname = name.split('.')
         try:
             field = datamodel.get_table_strict(tablename).get_relationship(fieldname)
@@ -364,7 +364,7 @@ def flag_dependent_fields(datamodel: Datamodel) -> None:
             table.attachments_field.dependent = True
 
 def flag_system_tables(datamodel: Datamodel) -> None:
-    for name in system_tables:
+    for name in sp6_system_tables:
         datamodel.get_table_strict(name).system = True
 
     for table in datamodel.tables:
@@ -373,7 +373,7 @@ def flag_system_tables(datamodel: Datamodel) -> None:
         if table.name.endswith('treedef') or table.name.endswith('treedefitem'):
             table.system = True
 
-dependent_fields = {
+sp6_dependent_fields = {
     'Accession.accessionagents',
     'Accession.accessionauthorizations',
     'Accession.addressofrecord',
@@ -395,7 +395,6 @@ dependent_fields = {
     'Collectingtrip.collectingtripattribute',
     'Collectingtrip.collectingtripauthorizations',
     'Collectingtrip.fundingagents',
-    'Collectionobject.cojo',
     'Collectionobject.collectionobjectattribute',
     'Collectionobject.collectionobjectattrs',
     'Collectionobject.collectionobjectcitations',
@@ -410,8 +409,6 @@ dependent_fields = {
     'CollectionObject.rightsiderels',
     'Collectionobject.treatmentevents',
     'Collectionobject.voucherrelationships',
-    'CollectionobjectGroup.cojo',
-    'CollectionObjectGroup.parentcojos',
     'Commonnametx.citations',
     'Conservdescription.events',
     'Deaccession.deaccessionagents',
@@ -468,14 +465,13 @@ dependent_fields = {
 }
 
 
-system_tables = {
+sp6_system_tables = {
     'Attachment',
     'Attachmentimageattribute',
     'Attachmentmetadata',
     'Attachmenttag',
     'Attributedef',
     'Autonumberingscheme',
-    'CollectionObjectGroupType',
     'Datatype',
     'Morphbankview',
     'Picklist',
@@ -505,7 +501,6 @@ system_tables = {
     'Spviewsetobj',
     'Spvisualquery',
     'Specifyuser',
-    'Spuserexternalid',
     'Workbench',
     'Workbenchdataitem',
     'Workbenchrow',
