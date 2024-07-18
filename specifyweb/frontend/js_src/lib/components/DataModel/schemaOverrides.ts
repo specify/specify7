@@ -220,6 +220,9 @@ const fieldOverwrites: typeof globalFieldOverrides = {
   Agent: {
     agentType: { visibility: 'optional' },
   },
+  CollectionObject: {
+    collectionObjectType: { visibility: 'optional' },
+  },
   LoanPreparation: {
     isResolved: { visibility: 'optional' },
   },

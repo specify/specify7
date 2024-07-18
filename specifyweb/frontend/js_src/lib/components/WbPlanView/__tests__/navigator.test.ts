@@ -164,7 +164,7 @@ theories(getMappingLineData, [
             isEnabled: true,
             isHidden: false,
             isRelationship: true,
-            isRequired: true,
+            isRequired: false,
             optionLabel: 'Collection Object Type',
             tableName: 'CollectionObjectType',
           },
