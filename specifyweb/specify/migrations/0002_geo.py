@@ -132,8 +132,14 @@ def create_default_collection_object_types():
             )
 
 def revert_default_collection_object_types():
-    # TODO: Implement this
-    pass
+    for collection in Collection.objects.all():
+        cog_type_picklist = Picklist.objects.get(
+            name='Default Collection Object Group Types',
+            tablename='CollectionObjectGroupType',
+            collection=collection
+        )
+        Picklistitem.objects.filter(picklist=cog_type_picklist).delete()
+        cog_type_picklist.delete()
 
 
 class Migration(migrations.Migration):
@@ -148,8 +154,10 @@ class Migration(migrations.Migration):
         create_default_collection_types()
         create_default_discipline_for_tree_defs()
         create_table_schema_config_with_defaults()
+        create_default_collection_object_types()
 
     def revert_cosolidated_python_django_migration_operations(apps, schema_editor):
+        revert_default_collection_object_types()
         revert_table_schema_config_with_defaults()
         revert_default_discipline_for_tree_defs()
         revert_default_collection_types()

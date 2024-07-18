@@ -1,16 +1,16 @@
+from math import pi
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.businessrules.orm_signal_handler import orm_signal_handler
+from specifyweb.specify.models import Picklist, Picklistitem
 
-COG_TYPE_TYPES = {
-    'discrete',
-    'consolidated',
-    'drill core'
-}
+@orm_signal_handler('pre_save', 'CollectionObjectGroupType')
+def cogtype_pre_save(cog_type):
 
-# TODO: Comeback and decide what this rule should be
-# @orm_signal_handler('pre_save', 'CollectionObjectGroupType')
-# def cogtype_pre_save(cog_type):
-#     # if cog_type.name not in COG_TYPE_NAMES:
-#     #     raise BusinessRuleException(f'Invalid cog type name: {cog_type.name}')
-#     if cog_type.type not in COG_TYPE_TYPES:
-#         raise BusinessRuleException(f'Invalid cog type: {cog_type.type}')
+    # Ensure the cog_type type is validated by being the picklist.
+    # NOTE: Maybe add constraint on the cog_type name in the future.
+    default_cog_types_picklist = Picklist.objects.get(
+        name="Default Collection Object Group Types",
+        tablename="collectionobjectgrouptype",
+    )
+    if Picklistitem.objects.filter(picklist=default_cog_types_picklist, valuein=cog_type.type).count() == 0:
+        raise BusinessRuleException(f'Invalid cog type: {cog_type.type}')
