@@ -227,14 +227,17 @@ class Migration(migrations.Migration):
                 ('yesno2', models.BooleanField(blank=True, db_column='YesNo2', null=True)),
                 ('yesno3', models.BooleanField(blank=True, db_column='YesNo3', null=True)),
                 ('parentcog', models.ForeignKey(db_column='ParentCOGID', on_delete=django.db.models.deletion.CASCADE, related_name='parentcojos', to='specify.collectionobjectgroup')),
-                ('childcog', models.ForeignKey(db_column='ChildCOGID', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='cojo', to='specify.collectionobjectgroup')),
-                ('childco', models.ForeignKey(db_column='ChildCOID', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='cojo', to='specify.collectionobject')),
+                ('childcog', models.ForeignKey(db_column='ChildCOGID', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='cojo', to='specify.collectionobjectgroup', unique=True)),
+                ('childco', models.ForeignKey(db_column='ChildCOID', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='cojo', to='specify.collectionobject', unique=True)),
             ],
             options={
                 'db_table': 'collectionobjectgroupjoin',
                 'ordering': (),
-                'unique_together': (('parentcog', 'childco'),),
             },
+        ),
+        migrations.AddConstraint(
+            model_name='collectionobjectgroupjoin',
+            constraint=models.CheckConstraint(check=models.Q(('childco__isnull', True), ('childcog__isnull', True), _negated=True), name='childcog_childco_not_both_null'),
         ),
         migrations.AddField(
             model_name='geographytreedef',
