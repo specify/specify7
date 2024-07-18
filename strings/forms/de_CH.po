@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-07-17 16:45+0000\n"
+"PO-Revision-Date: 2024-07-18 15:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/forms/de_CH/>\n"
@@ -70,9 +70,7 @@ msgstr "Blockierte löschen"
 #: components/Forms/DeleteButton.tsx:168
 #, fuzzy
 msgid "deleteBlockedDescription"
-msgstr ""
-"Die Ressource kann nicht gelöscht werden, da sie von den folgenden "
-"Ressourcen referenziert wird:"
+msgstr "Verwendungen finden"
 
 #. Used in: Components > Schema Viewer > Schema To Tsv ⬤ Components > Wb Plan View > Custom Select Element
 #: components/SchemaViewer/schemaToTsv.tsx:26
@@ -550,7 +548,7 @@ msgstr "Schaltfläche „Übertrag anzeigen“"
 #: components/FormMeta/CarryForward.tsx:171
 #, fuzzy
 msgid "bulkCarryForwardEnabled"
-msgstr ""
+msgstr "Anzahl der Massenüberträge anzeigen"
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:241
