@@ -11,6 +11,7 @@ def cogtype_pre_save(cog_type):
     default_cog_types_picklist = Picklist.objects.get(
         name="Default Collection Object Group Types",
         tablename="collectionobjectgrouptype",
+        collection=cog_type.collection
     )
     if Picklistitem.objects.filter(picklist=default_cog_types_picklist, value=cog_type.type).count() == 0:
         raise BusinessRuleException(f'Invalid cog type: {cog_type.type}')
