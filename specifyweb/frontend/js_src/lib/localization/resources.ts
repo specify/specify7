@@ -148,7 +148,7 @@ export const resourcesText = createDictionary({
   uiFormatters: {
     'en-us': 'Field Formatters',
     'ru-ru': 'Форматировщики полей',
-    'es-es': 'Formateadores de campos',
+    'es-es': 'Formateadores de campo',
     'fr-fr': 'Formateurs de champs',
     'uk-ua': 'Форматувальники полів',
     'de-ch': 'Feldformatierer',
@@ -254,10 +254,10 @@ export const resourcesText = createDictionary({
       таблиц.
     `,
     'uk-ua': `
-      «Агрегація таблиць» контролює, як кілька записів таблиці консолідуються в
-      один текстовий рядок. Формат таблиці, роздільник, суфікс, поле сортування
-      та ліміт попереднього перегляду запису можна налаштувати. Він може
-      відображатися в результатах запитів і у форматах таблиць.
+      «Агрегація таблиць» контролює, як кілька записів таблиці об’єднуються
+      разом в один текстовий рядок. Формат таблиці, роздільник, суфікс, поле
+      сортування та ліміт попереднього перегляду запису можна налаштувати. Він
+      може відображатися в результатах запитів і у форматах таблиць.
     `,
   },
   formattedResource: {
@@ -448,7 +448,7 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Не удалось разобрать XML',
     'de-ch': 'XML konnte nicht analysiert werden',
     'es-es': 'No se pudo analizar XML',
-    'fr-fr': "Échec de l'analyse du XML",
+    'fr-fr': "Échec de l'analyse XML",
     'uk-ua': 'Не вдалося проаналізувати XML',
   },
   name: {
@@ -501,7 +501,7 @@ export const resourcesText = createDictionary({
   },
   defaultInline: {
     'en-us': '(default)',
-    'de-ch': 'Formatvorschau',
+    'de-ch': '(Standard)',
     'es-es': '(por defecto)',
     'fr-fr': '(défaut)',
     'ru-ru': '(по умолчанию)',
@@ -542,7 +542,7 @@ export const resourcesText = createDictionary({
       форматирования записей.
     `,
     'uk-ua': `
-      Виконайте пошук у записах колекції, щоб переглянути інструмент
+      Виконайте пошук у своїх записах колекції, щоб переглянути інструмент
       форматування записів
     `,
   },
@@ -568,7 +568,7 @@ export const resourcesText = createDictionary({
     'es-es': 'Agregar definición',
     'fr-fr': 'Ajouter une définition',
     'ru-ru': 'Добавить определение',
-    'uk-ua': 'Додати визначення',
+    'uk-ua': 'Додайте визначення',
   },
   deleteDefinition: {
     'en-us': 'Delete definition',
@@ -754,7 +754,7 @@ export const resourcesText = createDictionary({
     'es-es': 'Formateadores de registros',
     'fr-fr': "Formateurs d'enregistrement",
     'ru-ru': 'Форматеры записи',
-    'uk-ua': 'Форматувальники записів',
+    'uk-ua': 'Формати записів',
   },
   copyDefaultForms: {
     'en-us': 'Copy default forms',
@@ -830,5 +830,13 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Aperçu du format',
     'ru-ru': 'Предварительный просмотр формата',
     'uk-ua': 'Попередній перегляд формату',
+  },
+  currentDeterminationRequired: {
+    'en-us': 'A current determination is required.',
+    'de-ch': 'Eine aktuelle Feststellung ist erforderlich.',
+    'es-es': 'Se requiere una determinación actual.',
+    'fr-fr': 'Une détermination actuelle est requise.',
+    'ru-ru': 'Требуется текущее определение.',
+    'uk-ua': 'Потрібне поточне визначення.',
   },
 } as const);

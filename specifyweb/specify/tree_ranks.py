@@ -2,6 +2,7 @@ from functools import wraps
 from hmac import new
 from operator import ge
 from enum import Enum
+from django.db.models import Count
 
 from specifyweb.businessrules.exceptions import TreeBusinessRuleException
 from . import tree_extras
@@ -125,16 +126,19 @@ def post_tree_rank_save(tree_def_item_model, new_rank):
     new_rank_id = new_rank.rankid
 
     # Set the parent rank, that previously pointed to the target, to the new rank
-    child_ranks = tree_def_item_model.objects.filter(parent=parent_rank).exclude(id=new_rank.id).update(parent=new_rank)
+    child_ranks = (
+        tree_def_item_model.objects.filter(treedef=tree_def, parent=parent_rank)
+        .exclude(id=new_rank.id)
+        .update(parent=new_rank)
+    )
 
     # Regenerate full names
     tree_extras.set_fullnames(tree_def, null_only=False, node_number_range=None)
 
 def pre_tree_rank_deletion(tree_def_item_model, rank):
     tree_def = rank.treedef
-
     # Make sure no nodes are present in the rank before deleting rank
-    if tree_def_item_model.objects.filter(parent=rank).count() > 1:
+    if tree_def_item_model.objects.filter(treedef=tree_def, parent=rank).count() > 1:
         raise TreeBusinessRuleException("The Rank {rank.name} is not empty, cannot delete!")
 
     # Set the parent rank, that previously pointed to the old rank, to the target rank
@@ -171,7 +175,17 @@ def set_rank_id(new_rank):
 
     # Get tree def item model
     tree_def_item_model_name = (tree + 'treedefitem').lower().title()
-    tree_def_item_model = getattr(spmodels, tree_def_item_model_name.lower().title())
+    tree_def_item_model = getattr(spmodels, tree_def_item_model_name)
+
+    # Handle case where the parent rank is not given, and it is not the first rank added.
+    # This is happening in the UI workflow of Treeview->Treedef->Treedefitems->Add
+    if (
+        new_rank.parent is None
+        and new_rank.rankid is None
+        and getattr(spmodels, new_rank.specify_model.django_name).objects.filter(treedef=tree_def).count() > 1
+    ):
+        new_rank.parent = tree_def_item_model.objects.filter(treedef=tree_def).order_by("rankid").last()
+        parent_rank_name = new_rank.parent.name
 
     # Check if the new rank already has a rank id
     if getattr(new_rank, 'rankid', None):
@@ -179,7 +193,8 @@ def set_rank_id(new_rank):
         if new_rank.parent and new_rank_id <= new_rank.parent.rankid:
             raise TreeBusinessRuleException(
                 f"Rank ID {new_rank_id} must be greater than the parent rank ID {new_rank.parent.rankid}")
-        child_rank = tree_def_item_model.objects.filter( parent=new_rank.parent).exclude(id=new_rank.id)
+        child_rank = tree_def_item_model.objects.filter(treedef=new_rank.treedef,
+                                                        parent=new_rank.parent).exclude(id=new_rank.id)
         if child_rank.exists() and new_rank_id >= child_rank.first().rankid:
             # Raising this exception causes many workbench tests to fail
             # raise TreeBusinessRuleException(
@@ -280,12 +295,13 @@ def verify_rank_parent_chain_integrity(rank, rank_operation: RankOperation):
     """
     Verifies the parent chain integrity of the ranks.
     """
+    tree_def = rank.treedef
     tree_def_item_model_name = rank.specify_model.name.lower().title()
-    tree_def_item_model = getattr(spmodels, tree_def_item_model_name.lower().title())
+    tree_def_item_model = getattr(spmodels, tree_def_item_model_name)
 
     # Get all the ranks and their parent ranks
     rank_id_to_parent_dict = {item.id: item.parent.id if item.parent is not None else None
-                              for item in tree_def_item_model.objects.all()}
+                              for item in tree_def_item_model.objects.filter(treedef=tree_def)}
 
     # Edit the rank_id_to_parent_dict with the new rank, depending on the operation.
     if rank_operation == RankOperation.CREATED or rank_operation == RankOperation.UPDATED:

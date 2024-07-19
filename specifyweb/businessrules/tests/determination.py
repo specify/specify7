@@ -1,4 +1,4 @@
-from specifyweb.specify.api_tests import ApiTests
+from specifyweb.specify.tests.test_api import ApiTests
 
 class DeterminationTests(ApiTests):
     def test_only_one_determination_iscurrent(self):

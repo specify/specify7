@@ -27,7 +27,7 @@ class Command(BaseCommand):
 
     def handle(self, **options):
         if options['list']:
-            def admin(user): return 'admin' if user.is_admin() else ''
+            def admin(user): return 'admin' if user.is_legacy_admin() else ''
 
             for user in Specifyuser.objects.all():
                 self.stdout.write('\t'.join((user.name, user.usertype, admin(user))))

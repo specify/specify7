@@ -1,9 +1,18 @@
 from sqlalchemy import orm, inspect
 from unittest import skip, expectedFailure
 
+from specifyweb.accounts import models as acccounts_models
+from specifyweb.attachment_gw import models as attachment_gw_models
+from specifyweb.businessrules import models as businessrules_models
+from specifyweb.context import models as context_models
+from specifyweb.notifications import models as notifications_models
+from specifyweb.permissions import models as permissions_models
+from specifyweb.interactions import models as interactions_models
+from specifyweb.workbench import models as workbench_models
+
 from django.test import TestCase
 import specifyweb.specify.models as spmodels
-from specifyweb.specify.api_tests import ApiTests
+from specifyweb.specify.tests.test_api import ApiTests
 from .format import ObjectFormatter
 from .query_construct import QueryConstruct
 from .queryfieldspec import QueryFieldSpec
@@ -12,10 +21,9 @@ from django.conf import settings
 import sqlalchemy
 from sqlalchemy.dialects import mysql
 from django.db import connection
-from sqlalchemy import event, select, func
+from sqlalchemy import event
 from . import models
 from xml.etree import ElementTree
-from datetime import datetime
 # Used for pretty-formatting sql code for testing
 import sqlparse
 
@@ -770,18 +778,24 @@ def test_sqlalchemy_model(datamodel_table):
 
         if sa_direction != datamodel_direction:
             table_errors['incorrect_direction'][field.name] = [sa_direction, datamodel_direction]
+            print(f"Incorrect direction: {field.name} {sa_direction} {datamodel_direction}")
 
         remote_sql_table = sa_relationship.target.name.lower()
         remote_datamodel_table = field.relatedModelName.lower()
 
         if remote_sql_table.lower() != remote_datamodel_table:
-            table_errors['incorrect_table'][field.name] = [remote_sql_table, remote_datamodel_table]
+            # Check case where the relation model's name is different from the DB table name
+            remote_sql_table = sa_relationship.mapper._log_desc.split('(')[1].split('|')[0].lower()
+            if remote_sql_table.lower() != remote_datamodel_table:
+                table_errors['incorrect_table'][field.name] = [remote_sql_table, remote_datamodel_table]
+                print(f"Incorrect table: {field.name} {remote_sql_table} {remote_datamodel_table}")
 
         sa_column = list(sa_relationship.local_columns)[0].name
         if sa_column.lower() != (
-        datamodel_table.idColumn.lower() if getattr(field, 'column', None) is None else field.column.lower()):
+        datamodel_table.idColumn.lower() if not getattr(field, 'column', None) else field.column.lower()):
             table_errors['incorrect_columns'][field.name] = [sa_column, datamodel_table.idColumn.lower(),
                                                              getattr(field, 'column', None)]
+            print(f"Incorrect columns: {field.name} {sa_column} {datamodel_table.idColumn.lower()} {getattr(field, 'column', None)}")
 
     return {key: value for key, value in table_errors.items() if len(value) > 0}
 
@@ -789,7 +803,7 @@ class SQLAlchemyModelTest(TestCase):
     def test_sqlalchemy_model_errors(self):
         for table in spmodels.datamodel.tables:
             table_errors = test_sqlalchemy_model(table)
-            self.assertTrue(len(table_errors) == 0 or table.name in expected_errors)
+            self.assertTrue(len(table_errors) == 0 or table.name in expected_errors, f"Did not find {table.name}. Has errors: {table_errors}")
             if 'not_found' in table_errors:
                 table_errors['not_found'] = sorted(table_errors['not_found'])
             if table_errors:

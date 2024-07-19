@@ -3,8 +3,7 @@ import json
 from django.test import Client
 
 from specifyweb.specify import models
-from specifyweb.specify.api_tests import ApiTests
-from specifyweb.businessrules.models import UniquenessRule
+from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.businessrules.exceptions import BusinessRuleException
 
 

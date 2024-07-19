@@ -5,9 +5,7 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.views import View
 from specifyweb.specify import models, api
-
-Spappresource = getattr(models, 'Spappresource')
-Spappresourcedir = getattr(models, 'Spappresourcedir')
+from specifyweb.specify.models import Spappresource, Spappresourcedir
 
 class Resources(View):
     _spappresourcefilter = None

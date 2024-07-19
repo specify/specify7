@@ -68,6 +68,10 @@ def get_autonumber_group_filter(model, collection, format_name: str):
         return default
 
 class FormatMismatch(ValueError):
+    def __init__(self, *args: object, value: str, formatter: str) -> None:
+        super().__init__(*args)
+        self.value = value
+        self.formatter = formatter
     pass
 
 class UIFormatter(NamedTuple):
@@ -83,7 +87,7 @@ class UIFormatter(NamedTuple):
     def parse(self, value: str) -> Sequence[str]:
         match = re.match(self.parse_regexp(), value)
         if match is None:
-            raise FormatMismatch("value {} doesn't match formatter {}". format(repr(value), self.value()))
+            raise FormatMismatch("value {} doesn't match formatter {}".format(repr(value), self.value()), value=repr(value), formatter=self.value())
         return match.groups()
 
     def value(self) -> str:

@@ -37,7 +37,7 @@ export const queryText = createDictionary({
     'en-us': 'New Query',
     'es-es': 'Nueva consulta',
     'uk-ua': 'Новий запит',
-    'de-ch': 'Eine durch Kommas getrennte Liste von Werten',
+    'de-ch': 'Neue Abfrage',
     'fr-fr': 'Nouvelle requête',
     'ru-ru': 'Новый запрос',
   },
@@ -201,9 +201,9 @@ export const queryText = createDictionary({
   },
   queryExportStarted: {
     'en-us': 'Export File Being Created',
-    'ru-ru': 'Между',
+    'ru-ru': 'Создаваемый файл экспорта',
     'es-es': 'Archivo de exportación en proceso de creación',
-    'fr-fr': 'Entre',
+    'fr-fr': 'Exporter le fichier en cours de création',
     'uk-ua': 'Експортний файл створюється',
     'de-ch': 'Exportdatei wird erstellt',
   },
@@ -220,7 +220,10 @@ export const queryText = createDictionary({
       Коли файл експорту буде завершено та готовий до завантаження, з’явиться
       сповіщення.
     `,
-    'de-ch': 'in der Zukunft',
+    'de-ch': `
+      Wenn die Exportdatei vollständig ist und zum Download bereit steht, wird
+      eine Benachrichtigung angezeigt.
+    `,
     'fr-fr': `
       Une notification apparaîtra lorsque le fichier d'exportation sera terminé
       et prêt à être téléchargé.
@@ -309,7 +312,7 @@ export const queryText = createDictionary({
     'es-es': 'Crear CSV',
     'fr-fr': 'Créer un CSV',
     'uk-ua': 'Створити CSV',
-    'de-ch': 'In den Ergebnissen anzeigen',
+    'de-ch': 'CSV erstellen',
   },
   createKml: {
     'en-us': 'Create KML',
@@ -321,9 +324,9 @@ export const queryText = createDictionary({
   },
   createRecordSet: {
     'en-us': 'Create {recordSetTable:string}',
-    'ru-ru': 'Добавить новое поле',
+    'ru-ru': 'Создать {recordSetTable:string}',
     'es-es': 'Crear {recordSetTable:string}',
-    'fr-fr': 'Ajouter un nouveau champ',
+    'fr-fr': 'Créer {recordSetTable:string}',
     'uk-ua': 'Створити {modelName:string}',
     'de-ch': 'Erstellen {recordSetTable:string}',
   },
@@ -525,9 +528,9 @@ export const queryText = createDictionary({
   },
   falseOrNull: {
     'en-us': 'False or Empty',
-    'ru-ru': 'Двигаться вверх',
+    'ru-ru': 'Ложь или пусто',
     'es-es': 'Falso o vacío',
-    'fr-fr': 'Déplacer vers le haut',
+    'fr-fr': 'Faux ou vide',
     'uk-ua': 'False або Empty',
     'de-ch': 'Nach oben',
   },
@@ -831,7 +834,9 @@ export const queryText = createDictionary({
     `,
     'ru-ru': 'Следующие поля скрыты в импортированном запросе:',
     'uk-ua': 'В імпортованому вами запиті приховано такі поля:',
-    'de-ch': 'In der importierten Abfrage sind folgende Felder ausgeblendet:',
+    'de-ch': `
+      In der von Ihnen importierten Abfrage sind folgende Felder ausgeblendet:
+    `,
   },
   importNoReadPermission: {
     'en-us':
@@ -883,7 +888,7 @@ export const queryText = createDictionary({
   },
   scrollToEditor: {
     'en-us': 'Scroll to editor',
-    'de-ch': 'Falsch oder leer',
+    'de-ch': 'Zum Editor scrollen',
     'es-es': 'Desplazarse al editor',
     'uk-ua': 'Перейдіть до редактора',
     'fr-fr': "Faites défiler jusqu'à l'éditeur",
@@ -893,8 +898,8 @@ export const queryText = createDictionary({
     'en-us': 'View records',
     'de-ch': 'Datensätze anzeigen',
     'es-es': 'Elige el formateador',
-    'fr-fr': 'Égal',
-    'ru-ru': 'Равный',
+    'fr-fr': 'Afficher les enregistrements',
+    'ru-ru': 'Просмотр записей',
     'uk-ua': 'Переглянути записи',
   },
   chooseFormatter: {

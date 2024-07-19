@@ -1,6 +1,6 @@
 from django.db.models import ProtectedError
 from specifyweb.specify import models
-from specifyweb.specify.api_tests import ApiTests
+from specifyweb.specify.tests.test_api import ApiTests
 
 class LocalityBusinessRuleTests(ApiTests):
     def test_collectingevents_block_delete(self):

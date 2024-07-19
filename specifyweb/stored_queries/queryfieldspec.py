@@ -22,7 +22,7 @@ STRINGID_RE = re.compile(r'^([^\.]*)\.([^\.]*)\.(.*)$')
 DATE_PART_RE = re.compile(r'(.*)((NumericDay)|(NumericMonth)|(NumericYear))$')
 
 # Pull out author or groupnumber field from taxon query fields.
-TAXON_FIELD_RE = re.compile(r'(.*) ((Author)|(GroupNumber))$')
+TAXON_FIELD_RE = re.compile(r'(.*) ((Author)|(groupNumber))$')
 
 # Look to see if we are dealing with a tree node ID.
 TREE_ID_FIELD_RE = re.compile(r'(.*) (ID)$')
@@ -178,6 +178,10 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
     def is_temporal(self):
         field = self.get_field()
         return field is not None and field.is_temporal()
+
+    def is_json(self):
+        field = self.get_field()
+        return field is not None and field.type == 'json'
 
     def build_join(self, query, join_path):
         return query.build_join(self.root_table, self.root_sql_table, join_path)

@@ -17,6 +17,8 @@ urlpatterns = [
     url(r'^specify_schema/openapi.json$', schema.openapi),
     url(r'^specify_schema/(?P<model>\w+)/$', schema.view),
     url(r'^specify/(?P<model>\w+)/(?P<id>\d+)/$', views.resource), # permissions added
+    url(r'^specify/bulk/(?P<model>\w+)/(?P<copies>\d+)/$', views.collection_bulk_copy), # permissions added
+    url(r'^specify/bulk/(?P<model>\w+)/$', views.collection_bulk), # permissions added
     url(r'^specify/(?P<model>\w+)/$', views.collection), # permissions added
     url(r'^specify_rows/(?P<model>\w+)/$', views.rows), # permissions added
 
@@ -38,6 +40,14 @@ urlpatterns = [
         url(r'^(?P<treedef>\d+)/(?P<parentid>\w+)/stats/$', tree_views.tree_stats),
         url(r'^(?P<treedef>\d+)/(?P<parentid>\w+)/(?P<sortfield>\w+)/$', tree_views.tree_view),
         url(r'^repair/$', tree_views.repair_tree),
+    ])),
+
+    # locality set import endpoints
+    url(r'^localityset/', include([
+        url(r'^parse/$', views.parse_locality_set),
+        url(r'^import/$', views.upload_locality_set),
+        url(r'^status/(?P<taskid>[0-9a-fA-F-]+)/$', views.localityupdate_status),
+        url(r'^abort/(?P<taskid>[0-9a-fA-F-]+)/$', views.abort_localityupdate_task),
     ])),
 
     # generates Sp6 master key
