@@ -23,7 +23,7 @@ const linkComponent = <EXTRA_PROPS extends IR<unknown> = RR<never, never>>(
   wrap<
     'a',
     EXTRA_PROPS & {
-      readonly href: string;
+      readonly href: string | undefined;
       readonly children?:
         | JSX.Element
         | LocalizedString
