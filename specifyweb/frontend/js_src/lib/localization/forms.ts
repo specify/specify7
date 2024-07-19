@@ -860,6 +860,9 @@ export const formsText = createDictionary({
     'uk-ua': 'Налаштуйте поля для перенесення',
     'de-ch': 'Konfigurieren der zu übertragenden Felder',
   },
+  bulkCarryForwardSettingsDescription: {
+    'en-us': 'Configure fields to bulk carry forward',
+  },
   carryForwardTableSettingsDescription: {
     'en-us': 'Configure fields to carry forward ({tableName:string})',
     'ru-ru': 'Настройте поля для переноса ({tableName:string})',
