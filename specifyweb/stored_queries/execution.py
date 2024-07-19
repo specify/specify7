@@ -546,22 +546,33 @@ def execute(session, collection, user, tableid, distinct, series, count_only, fi
         if limit:
             query = query.limit(limit)
 
-        # newListQuery = []
-        # if series: 
-        #     resultsFormList = list(query)
-        #     # do some reogranization on the rows here 
-        #     for cat, index in resultsFormList actually need to go over the string of cat num and break it it will laways be the last column  
-        #         catRange = ''
-        #         idRange = []
-        #         if index === 0: 
-        #             catRange.push(cat.cat)
-        #             idRnage.push(cat.id)
-        #         else cat === catRange.at(-1) + 1 ? catRange.push(cat) (// need catNum at idx 0 and then jst chnage the second since a rnage)  & idRnage.push(cat.id) : 
-        #         1) newListQuery.push(catRange, idRange, cat.otherfields) 
-        #         2) catRange need to be cleared as well as idRange 
-        #         3) push new cat and id to start again 
+        def is_consecutive(a, b):
+            return int(b) == int(a) + 1
+        newListQuery = []
+        if series: 
+            resultsFormList = list(query)
 
-        #     return resultsFormList
+            for item in resultsFormList:
+                #need to dertermine which item is the cat number and which is the id than group
+                fields = item[1:]  # Get all fields except the first one
+                catalog_numbers = item[0].split(',')
+                if len(catalog_numbers) == 1:
+                    newListQuery.append(item)
+                    continue
+
+                grouped_numbers = [catalog_numbers[0]]
+                for i in range(1, len(catalog_numbers)):
+                    if is_consecutive(catalog_numbers[i - 1], catalog_numbers[i]):
+                        grouped_numbers[-1] = f"{grouped_numbers[-1]},{catalog_numbers[i]}"
+                    else:
+                        newListQuery.append((grouped_numbers.pop(), *fields))
+                        grouped_numbers.append(catalog_numbers[i])
+
+                if grouped_numbers:
+                    newListQuery.append((grouped_numbers.pop(), *fields))
+
+        print(newListQuery)
+
 
         return {'results': list(query)}
 
