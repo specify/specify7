@@ -64,6 +64,8 @@ export type Aggregator = SpecToJson<
   ReturnType<typeof formattersSpec>
 >['aggregators'][number];
 
+// eslint-disable-next-line capitalized-comments
+/* jscpd:ignore-start */
 const formatterSpec = f.store(() =>
   createXmlSpec({
     name: pipe(
@@ -87,6 +89,8 @@ const formatterSpec = f.store(() =>
     ),
   })
 );
+// eslint-disable-next-line capitalized-comments
+/* jscpd:ignore-end */
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const switchSpec = ({ table }: SpecToJson<ReturnType<typeof formatterSpec>>) =>

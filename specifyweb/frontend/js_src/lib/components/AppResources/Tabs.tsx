@@ -1,10 +1,9 @@
-import { Tab } from '@headlessui/react';
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
-import type { GetSet, IR, RA, RR } from '../../utils/types';
+import type { GetSet, RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { WarningMessage } from '../Atoms';
 import { toResource } from '../DataModel/helpers';
@@ -20,7 +19,6 @@ import type {
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { appResourceIcon } from './EditorComponents';
-import { radioButtonClassName } from './Filters';
 import { getAppResourceType, getResourceType } from './filtersHelpers';
 import type {
   AppResourceEditorType,
@@ -163,51 +161,4 @@ function OtherCollectionWarning({
   return isOtherScope ? (
     <WarningMessage>{resourcesText.wrongScopeWarning()}</WarningMessage>
   ) : null;
-}
-
-export function Tabs({
-  tabs,
-  index: [currentIndex, handleChange],
-}: {
-  readonly tabs: IR<JSX.Element>;
-  readonly index: GetSet<number>;
-}): JSX.Element {
-  return (
-    <Tab.Group selectedIndex={currentIndex} onChange={handleChange}>
-      <Tab.List
-        // Don't display tabs if there is only one tab
-        className={`
-          inline-flex w-fit flex-wrap gap-2 rounded
-          bg-[color:var(--form-background)]
-          ${Object.keys(tabs).length === 1 ? 'sr-only' : ''}
-        `}
-      >
-        {Object.keys(tabs).map((label, index) => (
-          <Tab
-            className={radioButtonClassName(currentIndex === index)}
-            key={index}
-            /**
-             * HeadlessUI does not trigger onChange on click on current tab.
-             * This is a workaround. It overrides their click handler only
-             * if the option IS current.
-             */
-            onClick={
-              currentIndex === index
-                ? (): void => handleChange(index)
-                : undefined
-            }
-          >
-            {label}
-          </Tab>
-        ))}
-      </Tab.List>
-      <Tab.Panels className="flex flex-1 overflow-hidden">
-        {Object.values(tabs).map((element, index) => (
-          <Tab.Panel className="flex flex-1 flex-col gap-4" key={index}>
-            <ErrorBoundary dismissible>{element}</ErrorBoundary>
-          </Tab.Panel>
-        ))}
-      </Tab.Panels>
-    </Tab.Group>
-  );
 }
