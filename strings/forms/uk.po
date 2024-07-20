@@ -1,10 +1,10 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-07-17 16:45+0000\n"
+"PO-Revision-Date: 2024-07-20 16:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Ukrainian "
-"<https://hosted.weblate.org/projects/specify-7/forms/uk/>\n"
+"Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
+"forms/uk/>\n"
 "Language: uk\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,318 +12,319 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.7-dev\n"
 
-#: components/Preferences/UserDefinitions.tsx:705
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:705
 msgid "forms"
 msgstr "Форми"
 
+#. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Components > Statistics > Results Dialog
 #: components/Atoms/DataEntry.tsx:153
 #: components/Forms/Save.tsx:305
 #: components/Statistics/ResultsDialog.tsx:68
-#. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Components > Statistics > Results Dialog
 msgid "clone"
 msgstr "Клон"
 
-#: components/Forms/Save.tsx:306
 #. Used in: Components > Forms > Save
+#: components/Forms/Save.tsx:306
 msgid "cloneDescription"
 msgstr "Створіть повну копію поточного запису"
 
-#: components/DataModel/uniquenessRules.ts:140
 #. Used in: Components > Data Model > Uniqueness Rules
+#: components/DataModel/uniquenessRules.ts:140
 msgid "valueMustBeUniqueToField"
 msgstr "Значення має бути унікальним для {fieldName:string}"
 
-#: components/DataModel/uniquenessRules.ts:143
 #. Used in: Components > Data Model > Uniqueness Rules
+#: components/DataModel/uniquenessRules.ts:143
 msgid "valueMustBeUniqueToDatabase"
 msgstr "Значення має бути унікальним для бази даних"
 
-#: components/DataModel/uniquenessRules.ts:131
 #. Used in: Components > Data Model > Uniqueness Rules
+#: components/DataModel/uniquenessRules.ts:131
 msgid "valuesOfMustBeUniqueToField"
 msgstr "Значення {values:string} мають бути унікальними для {fieldName:string}"
 
-#: components/DataModel/uniquenessRules.ts:135
 #. Used in: Components > Data Model > Uniqueness Rules
+#: components/DataModel/uniquenessRules.ts:135
 msgid "valuesOfMustBeUniqueToDatabase"
 msgstr "Значення {values:string} мають бути унікальними для бази даних"
 
-#: components/Forms/DeleteButton.tsx:112
 #. Used in: Components > Forms > Delete Button
+#: components/Forms/DeleteButton.tsx:112
 msgid "checkingIfResourceCanBeDeleted"
 msgstr "Перевірка можливості видалення ресурсу…"
 
+#. Used in: Components > Forms > Delete Button
 #: components/Forms/DeleteButton.tsx:86
 #: components/Forms/DeleteButton.tsx:94
 #: components/Forms/DeleteButton.tsx:165
-#. Used in: Components > Forms > Delete Button
 msgid "deleteBlocked"
 msgstr "Видалити заблокований"
 
-#: components/Forms/DeleteButton.tsx:168
 #. Used in: Components > Forms > Delete Button
+#: components/Forms/DeleteButton.tsx:168
 msgid "deleteBlockedDescription"
 msgstr "Знайти використання"
 
+#. Used in: Components > Schema Viewer > Schema To Tsv ⬤ Components > Wb Plan View > Custom Select Element
 #: components/SchemaViewer/schemaToTsv.tsx:26
 #: components/WbPlanView/CustomSelectElement.tsx:295
-#. Used in: Components > Schema Viewer > Schema To Tsv ⬤ Components > Wb Plan View > Custom Select Element
 msgid "relationship"
 msgstr "стосунки"
 
+#. Used in: Components > Form Plugins > Paleo Location
 #: components/FormPlugins/PaleoLocation.tsx:53
 #: components/FormPlugins/PaleoLocation.tsx:89
 #: components/FormPlugins/PaleoLocation.tsx:98
-#. Used in: Components > Form Plugins > Paleo Location
 msgid "paleoMap"
 msgstr "Карта Палео"
 
-#: components/FormPlugins/PaleoLocation.tsx:76
 #. 🟥Example: Geography Required. Used in: Components > Form Plugins > Paleo Location
+#: components/FormPlugins/PaleoLocation.tsx:76
 msgid "paleoRequiresGeography"
 msgstr "{geographyTable:string} Потрібний"
 
-#: components/FormPlugins/PaleoLocation.tsx:81
 #. Used in: Components > Form Plugins > Paleo Location
+#: components/FormPlugins/PaleoLocation.tsx:81
 msgid "paleoRequiresGeographyDescription"
 msgstr "Виберіть джерело таблиць"
 
-#: components/FormPlugins/DateInput.tsx:85
 #. Used in: Components > Form Plugins > Date Input
+#: components/FormPlugins/DateInput.tsx:85
 msgid "invalidDate"
 msgstr "Недійсна дата"
 
-#: components/Forms/DeleteButton.tsx:137
 #. Used in: Components > Forms > Delete Button
+#: components/Forms/DeleteButton.tsx:137
 msgid "deleteConfirmation"
 msgstr "Значення має бути унікальним для бази даних"
 
-#: components/Forms/DeleteButton.tsx:44
 #. Used in: Components > Forms > Delete Button
+#: components/Forms/DeleteButton.tsx:44
 msgid "deleteConfirmationDescription"
 msgstr "Цю дію не можна скасувати."
 
-#: components/FormPlugins/DatePrecisionPicker.tsx:28
 #. Used in: Components > Form Plugins > Date Precision Picker
+#: components/FormPlugins/DatePrecisionPicker.tsx:28
 msgid "datePrecision"
 msgstr "Точність дати"
 
-#: components/FormPlugins/DatePrecisionPicker.tsx:47
 #. 🟥A placeholder for partial date field when "month /year" type is selected. Visible only in browsers that don't support the "month" input type. Used in: Components > Form Plugins > Date Precision Picker
+#: components/FormPlugins/DatePrecisionPicker.tsx:47
 msgid "monthYear"
 msgstr "пн / рік"
 
-#: components/FormPlugins/DateInput.tsx:108
 #. 🟥A placeholder for partial date field when "year" type is selected. Used in: Components > Form Plugins > Date Input
+#: components/FormPlugins/DateInput.tsx:108
 msgid "yearPlaceholder"
 msgstr "РРРР"
 
-#: components/FormPlugins/DateInput.tsx:141
 #. Used in: Components > Form Plugins > Date Input
+#: components/FormPlugins/DateInput.tsx:141
 msgid "today"
 msgstr "Сьогодні"
 
-#: components/FormPlugins/DateInput.tsx:144
 #. Used in: Components > Form Plugins > Date Input
+#: components/FormPlugins/DateInput.tsx:144
 msgid "todayButtonDescription"
 msgstr "Встановити поточну дату"
 
-#: components/PickLists/index.tsx:285
 #. Used in: Components > Pick Lists > Index
+#: components/PickLists/index.tsx:285
 msgid "addToPickListConfirmation"
 msgstr "Додати до {pickListTable:string}?"
 
-#: components/PickLists/index.tsx:290
 #. Used in: Components > Pick Lists > Index
+#: components/PickLists/index.tsx:290
 msgid "addToPickListConfirmationDescription"
 msgstr "РРРР"
 
-#: components/PickLists/index.tsx:252
 #. Used in: Components > Pick Lists > Index
+#: components/PickLists/index.tsx:252
 msgid "invalidType"
 msgstr "Недійсний тип"
 
-#: components/PickLists/index.tsx:255
 #. Used in: Components > Pick Lists > Index
+#: components/PickLists/index.tsx:255
 msgid "invalidNumericPicklistValue"
 msgstr "Додаткові результати пропущено"
 
+#. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 #: components/Attachments/Plugin.tsx:88
 #: components/FormCells/FormTable.tsx:205
 #: components/FormCells/FormTable.tsx:519
 #: components/Forms/BaseResourceView.tsx:106
-#. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 msgid "noData"
 msgstr "Немає даних."
 
-#: components/Toolbar/RecordSetEdit.tsx:42
 #. Used in: Components > Toolbar > Record Set Edit
+#: components/Toolbar/RecordSetEdit.tsx:42
 msgid "recordSetDeletionWarning"
 msgstr ""
 "{recordSetTable:string} \"{recordSetName:string}\" буде видалено. Записи, "
 "на які посилаються, НЕ будуть видалені з бази даних."
 
+#. Used in: Components > Form Commands > Index ⬤ Components > Form Meta > Edit History ⬤ Components > Form Meta > Merge Record
 #: components/FormCommands/index.tsx:39
 #: components/FormMeta/EditHistory.tsx:31
 #: components/FormMeta/MergeRecord.tsx:53
-#. Used in: Components > Form Commands > Index ⬤ Components > Form Meta > Edit History ⬤ Components > Form Meta > Merge Record
 msgid "saveRecordFirst"
 msgstr "Спочатку збережіть запис"
 
+#. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 #: components/FormSliders/Slider.tsx:32
 #: components/FormSliders/Slider.tsx:34
 #: components/Preferences/UserDefinitions.tsx:1117
-#. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 msgid "firstRecord"
 msgstr "Перший запис"
 
+#. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 #: components/FormSliders/Slider.tsx:96
 #: components/FormSliders/Slider.tsx:98
 #: components/Preferences/UserDefinitions.tsx:1121
-#. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 msgid "lastRecord"
 msgstr "Останній запис"
 
+#. Used in: Components > Form Sliders > Slider
 #: components/FormSliders/Slider.tsx:40
 #: components/FormSliders/Slider.tsx:43
-#. Used in: Components > Form Sliders > Slider
 msgid "previousRecord"
 msgstr "Попередній запис"
 
+#. Used in: Components > Form Sliders > Slider
 #: components/FormSliders/Slider.tsx:87
 #: components/FormSliders/Slider.tsx:90
-#. Used in: Components > Form Sliders > Slider
 msgid "nextRecord"
 msgstr "Наступний запис"
 
-#: components/FormSliders/Slider.tsx:57
 #. Used in: Components > Form Sliders > Slider
+#: components/FormSliders/Slider.tsx:57
 msgid "currentRecord"
 msgstr "Поточний об'єкт (з {total:number|formatted})"
 
+#. Used in: Components > Forms > Resource View ⬤ Components > Forms > Save
 #: components/Forms/ResourceView.tsx:390
 #: components/Forms/Save.tsx:46
-#. Used in: Components > Forms > Resource View ⬤ Components > Forms > Save
 msgid "unsavedFormUnloadProtect"
 msgstr "Ця форма не збережена."
 
+#. 🟥Meaning a conflict occurred when saving. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Forms > Save
 #: components/AttachmentsBulkImport/utils.ts:482
 #: components/Forms/Save.tsx:336
-#. 🟥Meaning a conflict occurred when saving. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Forms > Save
 msgid "saveConflict"
 msgstr "Зберегти конфлікт"
 
-#: components/Forms/Save.tsx:339
 #. Used in: Components > Forms > Save
+#: components/Forms/Save.tsx:339
 msgid "saveConflictDescription"
 msgstr ""
 "Дані, показані на цій сторінці, були змінені іншим користувачем або на "
 "іншій вкладці браузера та застаріли. Сторінку потрібно перезавантажити, щоб "
 "запобігти збереженню суперечливих даних."
 
-#: components/Forms/Save.tsx:369
 #. Used in: Components > Forms > Save
+#: components/Forms/Save.tsx:369
 msgid "saveBlocked"
 msgstr "Запис інформації"
 
-#: components/Forms/Save.tsx:372
 #. Used in: Components > Forms > Save
+#: components/Forms/Save.tsx:372
 msgid "saveBlockedDescription"
 msgstr "Форму неможливо зберегти через таку помилку:"
 
+#. Used in: Components > Form Commands > Index
 #: components/FormCommands/index.tsx:115
 #: components/FormCommands/index.tsx:142
-#. Used in: Components > Form Commands > Index
 msgid "unavailableCommandButton"
 msgstr "Команда N/A"
 
+#. Used in: Components > Form Commands > Index
 #: components/FormCommands/index.tsx:120
 #: components/FormCommands/index.tsx:147
-#. Used in: Components > Form Commands > Index
 msgid "commandUnavailable"
 msgstr "Команда недоступна"
 
-#: components/FormCommands/index.tsx:124
 #. Used in: Components > Form Commands > Index
+#: components/FormCommands/index.tsx:124
 msgid "commandUnavailableDescription"
 msgstr "Ця команда наразі недоступна для Specify 7."
 
+#. Used in: Components > Form Commands > Index ⬤ Components > Form Plugins > Index
 #: components/FormCommands/index.tsx:126
 #: components/FormPlugins/index.tsx:205
-#. Used in: Components > Form Commands > Index ⬤ Components > Form Plugins > Index
 msgid "commandUnavailableSecondDescription"
 msgstr ""
 "Ймовірно, він був включений у цю форму з Specify 6 і може підтримуватися в "
 "майбутньому."
 
-#: components/FormCommands/index.tsx:129
 #. Used in: Components > Form Commands > Index
+#: components/FormCommands/index.tsx:129
 msgid "commandName"
 msgstr "Назва команди"
 
+#. Used in: Components > Form Plugins > Index
 #: components/FormPlugins/index.tsx:195
 #: components/FormPlugins/index.tsx:264
-#. Used in: Components > Form Plugins > Index
 msgid "unavailablePluginButton"
 msgstr "Плагін Н/Д"
 
+#. Used in: Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index
 #: components/FormPlugins/PaleoLocation.tsx:58
 #: components/FormPlugins/index.tsx:199
 #: components/FormPlugins/index.tsx:268
-#. Used in: Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index
 msgid "pluginNotAvailable"
 msgstr "Плагін недоступний"
 
-#: components/FormPlugins/index.tsx:203
 #. Used in: Components > Form Plugins > Index
+#: components/FormPlugins/index.tsx:203
 msgid "pluginNotAvailableDescription"
 msgstr "Цей плагін наразі недоступний для Specify 7"
 
+#. 🟥Example: ... Locality, Collecting Event or Collection Object forms. Used in: Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index
 #: components/FormPlugins/PaleoLocation.tsx:65
 #: components/FormPlugins/index.tsx:272
-#. 🟥Example: ... Locality, Collecting Event or Collection Object forms. Used in: Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index
 msgid "wrongTableForPlugin"
 msgstr ""
 "Цей плагін не можна використовувати у формі {currentTable:string}. "
 "Спробуйте перемістити його до форм {supportedTables:string}."
 
-#: components/FormCommands/index.tsx:151
 #. Used in: Components > Form Commands > Index
+#: components/FormCommands/index.tsx:151
 msgid "wrongTableForCommand"
 msgstr ""
 "Команду не можна використовувати у формі {currentTable:string}. Його можна "
 "використовувати лише у формі {correctTable:string}."
 
-#: components/FormPlugins/index.tsx:208
 #. Used in: Components > Form Plugins > Index
+#: components/FormPlugins/index.tsx:208
 msgid "pluginName"
 msgstr "Назва плагіна"
 
+#. 🟥Yes/No probably shouldn't be translated as Specify 7 does not support changing which values are recognized as Yes/No in a given language. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions
 #: utils/parser/definitions.ts:110
 #: utils/parser/__tests__/definitions.test.ts:184
 #: utils/parser/__tests__/definitions.test.ts:186
-#. 🟥Yes/No probably shouldn't be translated as Specify 7 does not support changing which values are recognized as Yes/No in a given language. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions
 msgid "illegalBool"
 msgstr "Неприпустиме значення для поля «Так/Ні»."
 
+#. Used in: Utils > Parser > Parse ⬤ Parser > __tests__ > Parse
 #: utils/parser/parse.ts:33
 #: utils/parser/__tests__/parse.test.ts:61
 #: utils/parser/__tests__/parse.test.ts:79
 #: utils/parser/__tests__/parse.test.ts:207
 #: utils/parser/__tests__/parse.test.ts:209
-#. Used in: Utils > Parser > Parse ⬤ Parser > __tests__ > Parse
 msgid "requiredField"
 msgstr "Поле обов'язкове."
 
+#. Used in: Parser > __tests__ > Definitions
 #: utils/parser/__tests__/definitions.test.ts:203
 #: utils/parser/__tests__/definitions.test.ts:205
 #: utils/parser/__tests__/definitions.test.ts:221
 #: utils/parser/__tests__/definitions.test.ts:223
-#. Used in: Parser > __tests__ > Definitions
 msgid "invalidValue"
 msgstr "Недійсне значення"
 
+#. 🟥Used in field validation messages on the form. Used in: Components > Form Plugins > Date Input ⬤ Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions ⬤ Parser > __tests__ > Parse
 #: components/FormPlugins/DateInput.tsx:82
 #: components/FormPlugins/DateInput.tsx:84
 #: utils/parser/definitions.ts:204
@@ -331,344 +332,343 @@ msgstr "Недійсне значення"
 #: utils/parser/definitions.ts:368
 #: utils/parser/__tests__/definitions.test.ts:78
 #: utils/parser/__tests__/parse.test.ts:228
-#. 🟥Used in field validation messages on the form. Used in: Components > Form Plugins > Date Input ⬤ Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions ⬤ Parser > __tests__ > Parse
 msgid "requiredFormat"
 msgstr "Необхідний формат: {format:string}."
 
+#. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Parse
 #: utils/parser/definitions.ts:49
 #: utils/parser/__tests__/parse.test.ts:139
 #: utils/parser/__tests__/parse.test.ts:158
 #: utils/parser/__tests__/parse.test.ts:181
-#. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Parse
 msgid "inputTypeNumber"
 msgstr "Значення має бути числом"
 
-#: components/PickLists/definitions.ts:27
 #. Used in: Components > Pick Lists > Definitions
+#: components/PickLists/definitions.ts:27
 msgid "organization"
 msgstr "організація"
 
-#: components/PickLists/definitions.ts:28
 #. Used in: Components > Pick Lists > Definitions
+#: components/PickLists/definitions.ts:28
 msgid "person"
 msgstr "особа"
 
-#: components/PickLists/definitions.ts:29
 #. Used in: Components > Pick Lists > Definitions
+#: components/PickLists/definitions.ts:29
 msgid "other"
 msgstr "Інший"
 
-#: components/PickLists/definitions.ts:30
 #. Used in: Components > Pick Lists > Definitions
+#: components/PickLists/definitions.ts:30
 msgid "group"
 msgstr "Група"
 
-#: components/PickLists/definitions.ts:34
 #. Used in: Components > Pick Lists > Definitions
+#: components/PickLists/definitions.ts:34
 msgid "userDefinedItems"
 msgstr "Визначені користувачем елементи"
 
-#: components/PickLists/definitions.ts:35
 #. Used in: Components > Pick Lists > Definitions
+#: components/PickLists/definitions.ts:35
 msgid "entireTable"
 msgstr "Ціла таблиця"
 
-#: components/PickLists/definitions.ts:36
 #. Used in: Components > Pick Lists > Definitions
+#: components/PickLists/definitions.ts:36
 msgid "fieldFromTable"
 msgstr "Поле з табл"
 
-#: components/FormCells/index.tsx:315
 #. Used in: Components > Form Cells > Index
+#: components/FormCells/index.tsx:315
 msgid "unsupportedCellType"
 msgstr "Непідтримуваний тип клітинки"
 
-#: components/SearchDialog/index.tsx:253
 #. 🟥Represents truncated search dialog output (when lots of results returned). Used in: Components > Search Dialog > Index
+#: components/SearchDialog/index.tsx:253
 msgid "additionalResultsOmitted"
 msgstr "Додаткові результати пропущено"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:278
 #. Used in: Components > Form Sliders > Record Selector From Ids
+#: components/FormSliders/RecordSelectorFromIds.tsx:278
 msgid "recordSelectorUnloadProtect"
 msgstr "Продовжити без збереження?"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:281
 #. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids
+#: components/FormSliders/RecordSelectorFromIds.tsx:281
 msgid "recordSelectorUnloadProtectDescription"
 msgstr "Можливо, ви захочете зберегти цей запис, перш ніж перейти."
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:226
 #. Used in: Components > Form Sliders > Record Selector From Ids
+#: components/FormSliders/RecordSelectorFromIds.tsx:226
 msgid "creatingNewRecord"
 msgstr "Створення нового запису"
 
-#: components/FormSliders/RecordSet.tsx:364
 #. Used in: Components > Form Sliders > Record Set
+#: components/FormSliders/RecordSet.tsx:364
 msgid "createNewRecordSet"
 msgstr "Створіть новий набір записів"
 
-#: components/PickLists/definitions.ts:145
 #. Used in: Components > Pick Lists > Definitions
+#: components/PickLists/definitions.ts:145
 msgid "forward"
 msgstr "вперед"
 
-#: components/PickLists/definitions.ts:144
 #. Used in: Components > Pick Lists > Definitions
+#: components/PickLists/definitions.ts:144
 msgid "reverse"
 msgstr "Зворотний"
 
-#: components/QueryBuilder/AuditLogFormatter.tsx:47
 #. Used in: Components > Query Builder > Audit Log Formatter
+#: components/QueryBuilder/AuditLogFormatter.tsx:47
 msgid "deletedInline"
 msgstr "(видалено)"
 
-#: components/FormSliders/RecordSet.tsx:499
 #. 🟥Example: Duplicate Record Set Item. Used in: Components > Form Sliders > Record Set
+#: components/FormSliders/RecordSet.tsx:499
 msgid "duplicateRecordSetItem"
 msgstr "Додаткові результати пропущено"
 
-#: components/FormSliders/RecordSet.tsx:504
 #. Used in: Components > Form Sliders > Record Set
+#: components/FormSliders/RecordSet.tsx:504
 msgid "duplicateRecordSetItemDescription"
 msgstr "Цей запис уже присутній у поточному {recordSetTable:string}"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:175
 #. Used in: Components > Form Sliders > Record Selector From Ids
+#: components/FormSliders/RecordSelectorFromIds.tsx:175
 msgid "addToRecordSet"
 msgstr "Додати до {recordSetTable:string}"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:180
 #. Used in: Components > Form Sliders > Record Selector From Ids
+#: components/FormSliders/RecordSelectorFromIds.tsx:180
 msgid "removeFromRecordSet"
 msgstr "Видалити з {recordSetTable:string}"
 
+#. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Molecules > Auto Complete
 #: components/AttachmentsBulkImport/utils.ts:484
 #: components/Molecules/AutoComplete.tsx:533
-#. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Molecules > Auto Complete
 msgid "nothingFound"
 msgstr "Нічого не знайдено"
 
-#: components/Forms/Save.tsx:255
 #. 🟥Verb. Button label. Used in: Components > Forms > Save
+#: components/Forms/Save.tsx:255
 msgid "carryForward"
 msgstr "Переносити"
 
-#: components/FormMeta/CarryForward.tsx:115
 #. Used in: Components > Form Meta > Carry Forward
+#: components/FormMeta/CarryForward.tsx:115
 msgid "carryForwardEnabled"
 msgstr "Показати кнопку «Перенести вперед»."
 
-#: components/FormMeta/CarryForward.tsx:171
 #. Used in: Components > Form Meta > Carry Forward
+#: components/FormMeta/CarryForward.tsx:171
 #, fuzzy
 msgid "bulkCarryForwardEnabled"
-msgstr ""
+msgstr "Показати підрахунок масового переносу"
 
-#: components/Forms/Save.tsx:241
 #. Used in: Components > Forms > Save
+#: components/Forms/Save.tsx:241
 #, fuzzy
 msgid "bulkCarryForwardCount"
-msgstr ""
+msgstr "Показати підрахунок масового переносу"
 
-#: components/Forms/Save.tsx:256
 #. Used in: Components > Forms > Save
+#: components/Forms/Save.tsx:256
 msgid "carryForwardDescription"
 msgstr "Створіть новий запис із певними перенесеними полями"
 
+#. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:118
 #: components/FormMeta/CarryForward.tsx:127
-#. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardSettingsDescription"
 msgstr "Налаштуйте поля для перенесення"
 
-#: components/FormMeta/CarryForward.tsx:303
 #. Used in: Components > Form Meta > Carry Forward
+#: components/FormMeta/CarryForward.tsx:303
 msgid "carryForwardTableSettingsDescription"
 msgstr "Налаштувати поля для перенесення ({tableName:string})"
 
-#: components/FormMeta/CarryForward.tsx:365
 #. Used in: Components > Form Meta > Carry Forward
+#: components/FormMeta/CarryForward.tsx:365
 msgid "carryForwardUniqueField"
 msgstr "Це поле має бути унікальним. Його не можна переносити"
 
-#: components/FormMeta/Clone.tsx:31
 #. Used in: Components > Form Meta > Clone
+#: components/FormMeta/Clone.tsx:31
 msgid "cloneButtonEnabled"
 msgstr "Показати кнопку клонування"
 
-#: components/FormMeta/Clone.tsx:57
 #. Used in: Components > Form Meta > Clone
+#: components/FormMeta/Clone.tsx:57
 msgid "addButtonEnabled"
 msgstr "Показати кнопку «Додати»."
 
-#: components/Forms/Save.tsx:312
 #. Used in: Components > Forms > Save
+#: components/Forms/Save.tsx:312
 msgid "addButtonDescription"
 msgstr "Створіть новий порожній запис"
 
+#. Used in: Components > Form Meta > Auto Numbering
 #: components/FormMeta/AutoNumbering.tsx:27
 #: components/FormMeta/AutoNumbering.tsx:92
-#. Used in: Components > Form Meta > Auto Numbering
 msgid "autoNumbering"
 msgstr "Автоматична нумерація"
 
-#: components/FormMeta/Definition.tsx:138
 #. Used in: Components > Form Meta > Definition
+#: components/FormMeta/Definition.tsx:138
 msgid "editFormDefinition"
 msgstr "Редагувати визначення форми"
 
-#: components/FormMeta/Definition.tsx:87
 #. Used in: Components > Form Meta > Definition
+#: components/FormMeta/Definition.tsx:87
 msgid "useAutoGeneratedForm"
 msgstr "Використовуйте автоматично створену форму"
 
-#: components/FormMeta/Definition.tsx:119
 #. Used in: Components > Form Meta > Definition
+#: components/FormMeta/Definition.tsx:119
 msgid "useFieldLabels"
 msgstr "Використовуйте локалізовані мітки полів"
 
-#: components/FormEditor/Editor.tsx:205
 #. Used in: Components > Form Editor > Editor
+#: components/FormEditor/Editor.tsx:205
 msgid "showFieldLabels"
 msgstr "Показати локалізовані мітки полів"
 
-#: components/FormEditor/Editor.tsx:204
 #. Used in: Components > Form Editor > Editor
+#: components/FormEditor/Editor.tsx:204
 msgid "showDataModelLabels"
 msgstr "Показати назви полів моделі даних"
 
+#. Used in: Components > Form Meta > Edit History
 #: components/FormMeta/EditHistory.tsx:34
 #: components/FormMeta/EditHistory.tsx:57
-#. Used in: Components > Form Meta > Edit History
 msgid "editHistory"
 msgstr "Історія редагування"
 
-#: components/FormMeta/EditHistory.tsx:82
 #. Used in: Components > Form Meta > Edit History
+#: components/FormMeta/EditHistory.tsx:82
 msgid "editHistoryQueryName"
 msgstr "Історія редагування для \"{formattedRecord:string}\""
 
-#: components/FormMeta/index.tsx:147
 #. Used in: Components > Form Meta > Index
+#: components/FormMeta/index.tsx:147
 msgid "formConfiguration"
 msgstr "Конфігурація форми"
 
-#: components/FormMeta/index.tsx:179
 #. Used in: Components > Form Meta > Index
+#: components/FormMeta/index.tsx:179
 msgid "formState"
 msgstr "Стан форми"
 
-#: components/FormMeta/index.tsx:227
 #. Used in: Components > Form Meta > Index
+#: components/FormMeta/index.tsx:227
 msgid "recordInformation"
 msgstr "Запис інформації"
 
-#: components/FormMeta/ShareRecord.tsx:44
 #. Used in: Components > Form Meta > Share Record
+#: components/FormMeta/ShareRecord.tsx:44
 msgid "shareRecord"
 msgstr "Поділитися записом"
 
+#. Used in: Components > Form Meta > Pick List Usages ⬤ Components > Form Meta > Query Tree Usages
 #: components/FormMeta/PickListUsages.tsx:26
 #: components/FormMeta/QueryTreeUsages.tsx:22
-#. Used in: Components > Form Meta > Pick List Usages ⬤ Components > Form Meta > Query Tree Usages
 msgid "findUsages"
 msgstr "Знайти використання"
 
-#: components/FormMeta/PickListUsages.tsx:68
 #. Used in: Components > Form Meta > Pick List Usages
+#: components/FormMeta/PickListUsages.tsx:68
 msgid "usagesOfPickList"
 msgstr "Використання списку вибору \"{pickList:string}\"."
 
-#: components/FormMeta/SubViewMeta.tsx:36
 #. Used in: Components > Form Meta > Sub View Meta
+#: components/FormMeta/SubViewMeta.tsx:36
 msgid "subForm"
 msgstr "Підформа"
 
+#. Used in: Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 #: components/FormMeta/SubViewMeta.tsx:37
 #: components/Preferences/UserDefinitions.tsx:1128
-#. Used in: Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 msgid "formTable"
 msgstr "Сітка"
 
-#: components/FormMeta/index.tsx:197
 #. Used in: Components > Form Meta > Index
+#: components/FormMeta/index.tsx:197
 msgid "subviewConfiguration"
 msgstr "Підвид"
 
-#: components/DataEntryTables/Edit.tsx:50
 #. Used in: Components > Data Entry Tables > Edit
+#: components/DataEntryTables/Edit.tsx:50
 msgid "selectSourceOfTables"
 msgstr "Виберіть джерело таблиць"
 
-#: components/DataEntryTables/Edit.tsx:71
 #. Used in: Components > Data Entry Tables > Edit
+#: components/DataEntryTables/Edit.tsx:71
 msgid "inheritLegacySettings"
 msgstr "Копіювати Вкажіть 6 параметрів"
 
-#: components/DataEntryTables/Edit.tsx:79
 #. Used in: Components > Data Entry Tables > Edit
+#: components/DataEntryTables/Edit.tsx:79
 msgid "useCustomSettings"
 msgstr "Використовуйте спеціальні налаштування"
 
+#. Used in: Components > Form Meta > Read Only Mode ⬤ Components > Header > User Tools
 #: components/FormMeta/ReadOnlyMode.tsx:20
 #: components/Header/UserTools.tsx:91
-#. Used in: Components > Form Meta > Read Only Mode ⬤ Components > Header > User Tools
 msgid "disableReadOnly"
 msgstr "Вимкнути режим лише для читання"
 
-#: components/FormMeta/ReadOnlyMode.tsx:20
 #. Used in: Components > Form Meta > Read Only Mode
+#: components/FormMeta/ReadOnlyMode.tsx:20
 msgid "enableReadOnly"
 msgstr "Увімкнути режим лише для читання"
 
-#: components/DataEntryTables/Edit.tsx:129
 #. Used in: Components > Data Entry Tables > Edit
+#: components/DataEntryTables/Edit.tsx:129
 msgid "configureDataEntryTables"
 msgstr "Налаштувати таблиці введення даних"
 
-#: components/DataEntryTables/Edit.tsx:130
 #. Used in: Components > Data Entry Tables > Edit
+#: components/DataEntryTables/Edit.tsx:130
 msgid "configureInteractionTables"
 msgstr "Налаштувати таблиці взаємодії"
 
+#. Used in: Components > Form Meta > Index
 #: components/FormMeta/index.tsx:67
 #: components/FormMeta/index.tsx:69
-#. Used in: Components > Form Meta > Index
 msgid "formMeta"
 msgstr "Мета форми"
 
+#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor ⬤ Components > Formatters > Formatters ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Data Obj Formatters
 #: components/AppResources/Create.tsx:283
 #: components/AppResources/Editor.tsx:245
 #: components/Formatters/formatters.ts:58
 #: components/Forms/BaseResourceView.tsx:124
 #: components/Forms/dataObjFormatters.ts:160
-#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor ⬤ Components > Formatters > Formatters ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Data Obj Formatters
 msgid "newResourceTitle"
 msgstr "Нове {tableName:string}"
 
+#. 🟥When resource does not have a formatter defined, this formatter is used. Used in: Components > Formatters > Formatters ⬤ Components > Forms > Data Obj Formatters
 #: components/Formatters/formatters.ts:59
 #: components/Forms/dataObjFormatters.ts:161
-#. 🟥When resource does not have a formatter defined, this formatter is used. Used in: Components > Formatters > Formatters ⬤ Components > Forms > Data Obj Formatters
 msgid "resourceFormatter"
 msgstr "{tableName:string} #{id:number}"
 
-#: components/Forms/ResourceView.tsx:213
 #. Used in: Components > Forms > Resource View
+#: components/Forms/ResourceView.tsx:213
 msgid "resourceDeleted"
 msgstr "Ресурс видалено"
 
-#: components/Forms/ResourceView.tsx:216
 #. Used in: Components > Forms > Resource View
+#: components/Forms/ResourceView.tsx:216
 msgid "resourceDeletedDescription"
 msgstr "Елемент успішно видалено."
 
-#: components/Forms/DateRange.tsx:53
 #. Used in: Components > Forms > Date Range
+#: components/Forms/DateRange.tsx:53
 msgid "dateRange"
 msgstr "(Діапазон: {from:string} - {to:string})"
 
-#: components/FieldFormatters/index.ts:282
 #. 🟥Meaning "Catalog Number Numeric formatter". Used in: Components > Field Formatters > Index
+#: components/FieldFormatters/index.ts:282
 msgid "catalogNumberNumericFormatter"
 msgstr "Каталожний номер Числовий"
