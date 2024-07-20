@@ -79,6 +79,8 @@ def api_view(dispatch_func):
 
 resource = api_view(api.resource_dispatch)
 collection = api_view(api.collection_dispatch)
+collection_bulk_copy = api_view(api.collection_dispatch_bulk_copy)
+collection_bulk = api_view(api.collection_dispatch_bulk)
 
 
 def raise_error(request):
