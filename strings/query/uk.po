@@ -197,7 +197,7 @@ msgstr "Створити {modelName:string}"
 msgid "saveAs"
 msgstr "Зберегти як"
 
-#: components/WbPlanView/navigator.ts:349
+#: components/WbPlanView/navigator.ts:354
 #. Used in: Components > Wb Plan View > Navigator
 msgid "anyRank"
 msgstr "(будь-який ранг)"
@@ -250,12 +250,12 @@ msgstr "Заперечувати"
 msgid "showButtonDescription"
 msgstr "Показати в результатах"
 
-#: components/WbPlanView/navigator.ts:401
+#: components/WbPlanView/navigator.ts:406
 #. Used in: Components > Wb Plan View > Navigator
 msgid "aggregatedInline"
 msgstr "(узагальнено)"
 
-#: components/WbPlanView/navigator.ts:402
+#: components/WbPlanView/navigator.ts:407
 #. Used in: Components > Wb Plan View > Navigator
 msgid "formattedInline"
 msgstr "(відформатований)"

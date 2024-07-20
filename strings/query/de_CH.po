@@ -229,7 +229,7 @@ msgstr "Erstellen {recordSetTable:string}"
 msgid "saveAs"
 msgstr "Export in KML nicht möglich"
 
-#: components/WbPlanView/navigator.ts:349
+#: components/WbPlanView/navigator.ts:354
 #. Used in: Components > Wb Plan View > Navigator
 #, fuzzy
 msgid "anyRank"
@@ -290,13 +290,13 @@ msgstr "Negieren"
 msgid "showButtonDescription"
 msgstr "(formatiert)"
 
-#: components/WbPlanView/navigator.ts:401
+#: components/WbPlanView/navigator.ts:406
 #. Used in: Components > Wb Plan View > Navigator
 #, fuzzy
 msgid "aggregatedInline"
 msgstr "(aggregiert)"
 
-#: components/WbPlanView/navigator.ts:402
+#: components/WbPlanView/navigator.ts:407
 #. Used in: Components > Wb Plan View > Navigator
 #, fuzzy
 msgid "formattedInline"
