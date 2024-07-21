@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-07-21 08:09+0000\n"
+"PO-Revision-Date: 2024-07-21 12:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/backEnd/de_CH/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 #: components/WorkBench/resultsParser.ts:180
 #, fuzzy
 msgid "failedParsingBoolean"
-msgstr "Wert „{value:string}“ kann nicht in True oder False aufgelöst werden"
+msgstr "Wert \"{value:string}\" kann nicht in True oder False aufgelöst werden"
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:182
