@@ -8,6 +8,7 @@ import { treeText } from '../../localization/tree';
 import { formData } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
 import type { GetSet, RA, RR } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { toLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
@@ -21,6 +22,7 @@ import { getPref } from '../InitialContext/remotePrefs';
 import { Dialog } from '../Molecules/Dialog';
 import { ResourceLink } from '../Molecules/ResourceLink';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
 import type { Row } from './helpers';
 import { checkMoveViolatesEnforced } from './helpers';
 
@@ -76,11 +78,14 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   const disableButtons =
     focusedRow === undefined || typeof currentAction === 'string';
 
-  return currentAction === undefined ||
+  const displayButtons =
+    currentAction === undefined ||
     actionRow === undefined ||
     focusedRow === undefined ||
     currentAction === 'add' ||
-    currentAction === 'edit' ? (
+    currentAction === 'edit';
+
+  return displayButtons ? (
     <menu className="contents">
       {hasPermission('/querybuilder/query', 'execute') && (
         <li className="contents">
@@ -92,14 +97,10 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
                 onClick={undefined}
               />
             ) : (
-              <Link.Icon
-                forwardRef={focusRef}
-                href={`/specify/query/fromtree/${tableName.toLowerCase()}/${
-                  focusedRow.nodeId
-                }/`}
-                icon="search"
-                target="_blank"
-                title={queryText.query()}
+              <QueryButton
+                focusedRow={focusedRow}
+                focusRef={focusRef}
+                tableName={tableName}
               />
             )
           ) : (
@@ -132,7 +133,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
             disabled={disableButtons}
             nodeId={focusedRow?.nodeId}
             tableName={tableName}
-            onDeleted={() => {
+            onDeleted={(): void => {
               handleRefresh();
               setFocusPath(focusPath?.slice(0, -1));
             }}
@@ -159,32 +160,33 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
       )}
       {hasPermission(resourceName, 'move') && (
         <li className="contents">
-          <Button.Icon
-            disabled={disableButtons || isRoot}
-            icon="arrowsMove"
-            title={treeText.move()}
-            onClick={(): void => setAction('move')}
+          <MoveButton
+            onClick={
+              disableButtons || isRoot
+                ? undefined
+                : (): void => setAction('move')
+            }
           />
         </li>
       )}
       {tableName === 'Storage' &&
       hasPermission(resourceName as '/tree/edit/storage', 'bulk_move') ? (
         <li className="contents">
-          <Button.Icon
-            disabled={disableButtons}
-            icon="truck"
-            title={treeText.moveItems()}
-            onClick={(): void => setAction('bulkMove')}
+          <BulkMoveButton
+            onClick={
+              disableButtons ? undefined : (): void => setAction('bulkMove')
+            }
           />
         </li>
       ) : null}
       {hasPermission(resourceName, 'merge') && (
         <li className="contents">
-          <Button.Icon
-            disabled={disableButtons || isRoot}
-            icon="merge"
-            title={treeText.merge()}
-            onClick={(): void => setAction('merge')}
+          <MergeButton
+            onClick={
+              disableButtons || isRoot
+                ? undefined
+                : (): void => setAction('merge')
+            }
           />
         </li>
       )}
@@ -193,18 +195,17 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
         isSynonym ? 'desynonymize' : 'synonymize'
       ) && (
         <li className="contents">
-          <Button.Icon
-            disabled={
+          <SynonymizeButton
+            isSynonym={isSynonym}
+            onClick={
               disableButtons ||
               isRoot ||
               (doExpandSynonymActionsPref
                 ? false
                 : !isSynonym && focusedRow.children > 0)
-            }
-            icon={isSynonym ? 'undoSynonym' : 'synonym'}
-            title={isSynonym ? treeText.undoSynonymy() : treeText.synonymize()}
-            onClick={(): void =>
-              setAction(isSynonym ? 'desynonymize' : 'synonymize')
+                ? undefined
+                : (): void =>
+                    setAction(isSynonym ? 'desynonymize' : 'synonymize')
             }
           />
         </li>
@@ -222,6 +223,123 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
         setAction(undefined);
         handleRefresh();
       }}
+    />
+  );
+}
+
+function QueryButton({
+  focusRef,
+  focusedRow,
+  tableName,
+}: {
+  readonly focusRef: React.MutableRefObject<HTMLAnchorElement | null>;
+  readonly focusedRow: Row;
+  readonly tableName: AnyTree['tableName'];
+}): JSX.Element {
+  const keyboardShortcut = userPreferences.useKeyboardShortcut(
+    'treeEditor',
+    'actions',
+    'query',
+    () => window.open(href, '_blank')
+  );
+
+  const href = `/specify/query/fromtree/${tableName.toLowerCase()}/${
+    focusedRow.nodeId
+  }/`;
+
+  return (
+    <Link.Icon
+      forwardRef={focusRef}
+      href={href}
+      icon="search"
+      target="_blank"
+      title={localized(`${queryText.query()}${keyboardShortcut}`)}
+    />
+  );
+}
+
+function MoveButton({
+  onClick: handleClick,
+}: {
+  readonly onClick: (() => void) | undefined;
+}): JSX.Element {
+  const keyboardShortcut = userPreferences.useKeyboardShortcut(
+    'treeEditor',
+    'actions',
+    'move',
+    handleClick
+  );
+  return (
+    <Button.Icon
+      icon="arrowsMove"
+      title={localized(`${treeText.move()}${keyboardShortcut}`)}
+      onClick={handleClick}
+    />
+  );
+}
+
+function BulkMoveButton({
+  onClick: handleClick,
+}: {
+  readonly onClick: (() => void) | undefined;
+}): JSX.Element {
+  const keyboardShortcut = userPreferences.useKeyboardShortcut(
+    'treeEditor',
+    'actions',
+    'bulkMove',
+    handleClick
+  );
+  return (
+    <Button.Icon
+      icon="truck"
+      title={localized(`${treeText.moveItems()}${keyboardShortcut}`)}
+      onClick={handleClick}
+    />
+  );
+}
+
+function MergeButton({
+  onClick: handleClick,
+}: {
+  readonly onClick: (() => void) | undefined;
+}): JSX.Element {
+  const keyboardShortcut = userPreferences.useKeyboardShortcut(
+    'treeEditor',
+    'actions',
+    'merge',
+    handleClick
+  );
+  return (
+    <Button.Icon
+      icon="merge"
+      title={localized(`${treeText.merge()}${keyboardShortcut}`)}
+      onClick={handleClick}
+    />
+  );
+}
+
+function SynonymizeButton({
+  isSynonym,
+  onClick: handleClick,
+}: {
+  readonly isSynonym: boolean;
+  readonly onClick: (() => void) | undefined;
+}): JSX.Element {
+  const keyboardShortcut = userPreferences.useKeyboardShortcut(
+    'treeEditor',
+    'actions',
+    'synonymize',
+    handleClick
+  );
+  return (
+    <Button.Icon
+      icon={isSynonym ? 'undoSynonym' : 'synonym'}
+      title={localized(
+        `${
+          isSynonym ? treeText.undoSynonymy() : treeText.synonymize()
+        }${keyboardShortcut}`
+      )}
+      onClick={handleClick}
     />
   );
 }
@@ -260,6 +378,14 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
 
   const isViewMode = !hasTablePermission(tableName, 'update');
 
+  const toggleRef = React.useRef<() => void>();
+  const keyboardShortcut = userPreferences.useKeyboardShortcut(
+    'treeEditor',
+    'actions',
+    addNew ? 'add' : 'edit',
+    disabled ? undefined : (): void => toggleRef.current?.()
+  );
+
   return (
     <>
       {disabled ? (
@@ -275,15 +401,18 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
           props={{
             'aria-disabled': disabled,
             icon: isViewMode ? 'eye' : addNew ? 'plus' : 'pencil',
-            title: label,
+            title: localized(`${label}${keyboardShortcut}`),
           }}
           resource={resource}
           resourceView={{
             dialog: 'nonModal',
-            onAdd: isRoot ? undefined : ([resource]) => setResource(resource),
+            onAdd: isRoot
+              ? undefined
+              : ([resource]): void => setResource(resource),
             onDeleted: handleRefresh,
             onSaved: handleRefresh,
           }}
+          toggleRef={toggleRef}
         />
       )}
     </>
@@ -370,16 +499,25 @@ function ActiveAction<SCHEMA extends AnyTree>({
     if (isSameRecord) disabled = title;
     else if (isSynonym) disabled = treeText.cantSynonymizeSynonym();
   }
+
+  const handleClick =
+    disabled === false ? (): void => setShowPrompt(true) : undefined;
+  const keyboardShortcut = userPreferences.useKeyboardShortcut(
+    'treeEditor',
+    'actions',
+    type === 'desynonymize' ? 'synonymize' : type,
+    handleClick
+  );
+
   return (
     <menu className="contents">
       <Button.Small
         className="normal-case"
-        disabled={disabled !== false}
         forwardRef={(element): void => {
           focusRef.current = element;
         }}
-        title={title}
-        onClick={(): void => setShowPrompt(true)}
+        title={`${title}${keyboardShortcut}`}
+        onClick={handleClick}
       >
         {typeof disabled === 'string'
           ? disabled

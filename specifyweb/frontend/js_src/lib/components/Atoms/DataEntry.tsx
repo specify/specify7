@@ -4,6 +4,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import type { RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { ViewDescription } from '../FormParse';
@@ -200,12 +201,20 @@ export const DataEntry = {
     readonly className?: string;
     readonly resource: SpecifyResource<AnySchema> | undefined;
   }): JSX.Element | null {
+    const ref = React.useRef<HTMLAnchorElement>(null);
+    const keyboardShortcut = userPreferences.useKeyboardShortcut(
+      'form',
+      'queryComboBox',
+      'openRelatedRecordInNewTab',
+      resource === undefined ? undefined : (): void => ref.current?.click()
+    );
     return typeof resource === 'object' && !resource.isNew() ? (
       <Link.NewTab
         aria-label={commonText.openInNewTab()}
         className={`${className.dataEntryVisit} ${localClassName}`}
+        forwardRef={ref}
         href={resource.viewUrl()}
-        title={commonText.openInNewTab()}
+        title={localized(`${commonText.openInNewTab()}${keyboardShortcut}`)}
       />
     ) : null;
   },
