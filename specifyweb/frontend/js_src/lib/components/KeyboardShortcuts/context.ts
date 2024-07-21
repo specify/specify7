@@ -160,7 +160,7 @@ document.addEventListener(
   'keyup',
   (event) => {
     const index = pressedKeys.indexOf(event.code);
-    if (index === -1) pressedKeys.splice(index, 1);
+    if (index !== -1) pressedKeys.splice(index, 1);
 
     /*
      * If un-pressed any modifier, consider current shortcut finished.

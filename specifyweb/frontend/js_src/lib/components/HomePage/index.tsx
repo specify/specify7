@@ -28,7 +28,7 @@ export function WelcomeView(): JSX.Element {
     <div className="flex h-full flex-col">
       {displaySearchBar && (
         <div className="flex justify-end gap-2 pr-4 pt-4">
-          <SearchForm formId={formId} />
+          <SearchForm autoFocus={false} formId={formId} />
           <Submit.Secondary form={formId}>
             {commonText.search()}
           </Submit.Secondary>

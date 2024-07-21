@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
@@ -8,9 +9,12 @@ import { f } from '../../utils/functools';
 import { mergeParsers, parserFromType } from '../../utils/parser/definitions';
 import { parseValue } from '../../utils/parser/parse';
 import type { GetOrSet, RA } from '../../utils/types';
-import { filterArray, setDevelopmentGlobal } from '../../utils/types';
+import {
+  filterArray,
+  localized,
+  setDevelopmentGlobal,
+} from '../../utils/types';
 import { keysToLowerCase, replaceKey } from '../../utils/utils';
-import { formatDisjunction } from '../Atoms/Internationalization';
 import { SECOND } from '../Atoms/timeUnits';
 import { softFail } from '../Errors/Crash';
 import {
@@ -18,11 +22,10 @@ import {
   contextUnlockedPromise,
   foreverFetch,
 } from '../InitialContext';
-import { bindKeyboardShortcut } from '../KeyboardShortcuts/context';
 import {
-  localizeKeyboardShortcut,
-  resolvePlatformShortcuts,
-} from '../KeyboardShortcuts/utils';
+  useKeyboardShortcutLabel,
+  useManualKeyboardShortcut,
+} from '../KeyboardShortcuts/hooks';
 import { formatUrl } from '../Router/queryString';
 import type { GenericPreferences, PreferenceItem } from './types';
 
@@ -445,13 +448,10 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
     subcategory: SUBCATEGORY,
     item: ITEM,
     callback: (() => void) | undefined
-  ): string {
+  ): LocalizedString {
     const [shortcuts] = this.use(category, subcategory, item);
 
     const hasCallback = typeof callback === 'function';
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const callbackRef = React.useRef(callback);
-    callbackRef.current = callback;
 
     // Calling hook conditionally like this is fine as this condition is constant during runtime of a page
     if (process.env.NODE_ENV === 'development') {
@@ -473,25 +473,12 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
     }
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    React.useEffect(
-      () =>
-        hasCallback
-          ? bindKeyboardShortcut(shortcuts, () => callbackRef.current?.())
-          : undefined,
-      [hasCallback, shortcuts]
-    );
+    useManualKeyboardShortcut(shortcuts, callback);
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const localizedShortcut = React.useMemo(() => {
-      const platformShortcuts = resolvePlatformShortcuts(shortcuts) ?? [];
-      return platformShortcuts.length > 0
-        ? ` (${formatDisjunction(
-            platformShortcuts.map(localizeKeyboardShortcut)
-          )})`
-        : '';
-    }, [shortcuts]);
+    const localizedShortcut = useKeyboardShortcutLabel(shortcuts);
 
-    return hasCallback ? localizedShortcut : '';
+    return hasCallback ? localizedShortcut : localized('');
   }
 }
 
