@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-07-21 02:09+0000\n"
+"PO-Revision-Date: 2024-07-21 10:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/user/"
 "ru/>\n"
@@ -190,7 +190,7 @@ msgstr ""
 #: components/Forms/OtherCollectionView.tsx:71
 #, fuzzy
 msgid "resourceInaccessible"
-msgstr "Доступ к запрошенному ресурсу недоступен при входе в текущую коллекцию."
+msgstr "Доступ к запрошенному ресурсу невозможен при входе в текущую коллекцию."
 
 #. Used in: Components > Forms > Other Collection View
 #: components/Forms/OtherCollectionView.tsx:74
