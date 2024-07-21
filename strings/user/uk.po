@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-07-21 02:09+0000\n"
+"PO-Revision-Date: 2024-07-21 10:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/user/"
 "uk/>\n"
@@ -134,9 +134,9 @@ msgstr "Увійдіть за допомогою Вказати облікови
 msgid "unknownOicUser"
 msgstr ""
 "Наразі немає жодного користувача, пов’язаного з вашим обліковим записом "
-"{providerName:string}. Якщо у вас є вказане ім’я користувача та пароль, ви "
-"можете ввести їх нижче, щоб пов’язати цього користувача з вашим обліковим "
-"записом {providerName:string} для майбутніх входів."
+"{providerName:string}. Якщо у вас є вказати ім’я користувача та пароль, ви "
+"можете ввести їх нижче, щоб пов’язати цього користувача з обліковим записом "
+"{providerName:string} для майбутніх входів."
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
 #: components/Header/userToolDefinitions.ts:83
@@ -414,7 +414,7 @@ msgstr "Спеціальна політика на рівні колекції (
 #: components/Security/Role.tsx:117
 #, fuzzy
 msgid "role"
-msgstr "Роль"
+msgstr "роль"
 
 #. Used in: Components > Security > Preview Tables
 #: components/Security/PreviewTables.tsx:65
