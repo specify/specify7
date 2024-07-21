@@ -34,7 +34,7 @@ export function TreeViewSearch<SCHEMA extends AnyTree>({
   readonly treeDefinitionItems: RA<
     SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
   >;
-  readonly forwardRef: React.RefObject<HTMLInputElement | null>;
+  readonly forwardRef: React.MutableRefObject<HTMLInputElement | null>;
   readonly onFocusPath: (focusPath: RA<number>) => void;
 }): JSX.Element {
   const [searchValue, setSearchValue] = React.useState<string>('');
@@ -60,16 +60,27 @@ export function TreeViewSearch<SCHEMA extends AnyTree>({
     searchAlgorithm
   );
 
+  const searchBoxRef = React.useRef<HTMLInputElement | null>(null);
+  const keyboardShortcut = userPreferences.useKeyboardShortcut(
+    'treeEditor',
+    'actions',
+    'search',
+    (): void => searchBoxRef.current?.focus()
+  );
+
   return (
     <div>
       {/* A React component that is also a TypeScript generic */}
       <AutoComplete<SerializedResource<SCHEMA>>
         filterItems={false}
-        forwardRef={forwardRef}
+        forwardRef={(element): void => {
+          forwardRef.current = element;
+          searchBoxRef.current = element;
+        }}
         inputProps={{
           'aria-label': treeText.searchTreePlaceholder(),
           placeholder: treeText.searchTreePlaceholder(),
-          title: treeText.searchTreePlaceholder(),
+          title: `${treeText.searchTreePlaceholder()}${keyboardShortcut}`,
         }}
         source={async (value) =>
           fetchCollection(

@@ -19,6 +19,7 @@ import { reportsText } from '../../localization/report';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
 import { statsText } from '../../localization/stats';
+import { treeText } from '../../localization/tree';
 import type { Language } from '../../localization/utils/config';
 import { LANGUAGE } from '../../localization/utils/config';
 import { wbPlanText } from '../../localization/wbPlan';
@@ -832,6 +833,15 @@ export const userPreferenceDefinitions = {
           }),
         },
       },
+      actions: {
+        title: preferencesText.actions(),
+        items: {
+          openFormMeta: defineKeyboardShortcut(
+            preferencesText.openFormMeta(),
+            'KeyM'
+          ),
+        },
+      },
       definition: {
         title: resourcesText.formDefinition(),
         items: {
@@ -1133,6 +1143,10 @@ export const userPreferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
+          openRelatedRecordInNewTab: defineKeyboardShortcut(
+            preferencesText.openRelatedRecordInNewTab(),
+            'KeyO'
+          ),
         },
       },
       recordSet: {
@@ -1478,6 +1492,19 @@ export const userPreferenceDefinitions = {
           }),
         },
       },
+      actions: {
+        title: preferencesText.actions(),
+        items: {
+          search: defineKeyboardShortcut(commonText.search(), 'KeyS'),
+          query: defineKeyboardShortcut(queryText.query(), 'KeyQ'),
+          edit: defineKeyboardShortcut(commonText.edit(), 'KeyE'),
+          add: defineKeyboardShortcut(treeText.addChild(), 'KeyA'),
+          move: defineKeyboardShortcut(treeText.moveNode(), 'KeyM'),
+          bulkMove: defineKeyboardShortcut(treeText.moveItems(), 'KeyB'),
+          merge: defineKeyboardShortcut(treeText.mergeNode(), 'KeyC'),
+          synonymize: defineKeyboardShortcut(treeText.synonymizeNode(), 'KeyY'),
+        },
+      },
       geography: {
         /*
          * This would be replaced with labels from schema once
@@ -1739,6 +1766,18 @@ export const userPreferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
+        },
+      },
+      actions: {
+        title: preferencesText.actions(),
+        items: {
+          query: defineKeyboardShortcut(queryText.query(), 'KeyR'),
+          count: defineKeyboardShortcut(queryText.countOnly(), 'KeyC'),
+          distinct: defineKeyboardShortcut(queryText.distinct(), 'KeyD'),
+          browseInForms: defineKeyboardShortcut(
+            queryText.browseInForms(),
+            'KeyF'
+          ),
         },
       },
     },

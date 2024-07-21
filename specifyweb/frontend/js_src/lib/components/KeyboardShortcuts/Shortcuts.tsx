@@ -147,7 +147,7 @@ function EditKeyboardShortcut({
           <kbd className="contents">
             {localizedParts.map((key, index) => (
               <Key className="mx-0" key={index}>
-                {localizeKeyboardShortcut(key)}
+                {key}
               </Key>
             ))}
           </kbd>

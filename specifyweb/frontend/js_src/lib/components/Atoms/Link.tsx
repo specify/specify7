@@ -42,7 +42,12 @@ export const Link = {
     children: (
       <>
         {props.children}
-        <span title={commonText.opensInNewTab()}>
+        <span
+          title={
+            (props.children === undefined ? props.title : undefined) ??
+            commonText.opensInNewTab()
+          }
+        >
           <span className="sr-only">{commonText.opensInNewTab()}</span>
           {icons.externalLink}
         </span>

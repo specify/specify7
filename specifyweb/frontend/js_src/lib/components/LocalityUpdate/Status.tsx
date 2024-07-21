@@ -32,6 +32,7 @@ import { Dialog } from '../Molecules/Dialog';
 import { downloadFile } from '../Molecules/FilePicker';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasToolPermission } from '../Permissions/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
 import { CreateRecordSet } from '../QueryBuilder/CreateRecordSet';
 import { downloadDataSet } from '../WorkBench/helpers';
 import { RemainingLoadingTime } from '../WorkBench/RemainingLoadingTime';
@@ -314,9 +315,7 @@ export function LocalityUpdateSuccess({
       )}
       {recordSet === undefined && (
         <div className="w-fit">
-          <Button.Small onClick={handleFormsOpened}>
-            {queryText.browseInForms()}
-          </Button.Small>
+          <BrowseInFormsButton onClick={handleFormsOpened} />
           {formsOpened && (
             <RecordSelectorFromIds
               canRemove={false}
@@ -346,6 +345,24 @@ export function LocalityUpdateSuccess({
         </div>
       )}
     </Dialog>
+  );
+}
+
+function BrowseInFormsButton({
+  onClick: handleClick,
+}: {
+  readonly onClick: () => void;
+}): JSX.Element {
+  const keyboardShortcut = userPreferences.useKeyboardShortcut(
+    'queryBuilder',
+    'actions',
+    'browseInForms',
+    handleClick
+  );
+  return (
+    <Button.Small title={keyboardShortcut} onClick={handleClick}>
+      {queryText.browseInForms()}
+    </Button.Small>
   );
 }
 

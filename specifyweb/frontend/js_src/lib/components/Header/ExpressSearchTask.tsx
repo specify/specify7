@@ -54,15 +54,17 @@ export function ExpressSearchOverlay(): JSX.Element {
       icon={icons.search}
       onClose={handleClose}
     >
-      <SearchForm formId={formId} />
+      <SearchForm autoFocus formId={formId} />
     </Dialog>
   );
 }
 
 export function SearchForm({
   formId,
+  autoFocus,
 }: {
   readonly formId: string;
+  readonly autoFocus: boolean;
 }): JSX.Element {
   const navigate = useNavigate();
   const [query = ''] = useSearchParameter('q');
@@ -75,28 +77,31 @@ export function SearchForm({
         navigate(formatUrl('/specify/express-search/', { q: pendingQuery }))
       }
     >
-      <SearchField value={value} />
+      <SearchField autoFocus={autoFocus} value={value} />
     </Form>
   );
 }
 
 function SearchField({
   value: [value, setValue],
+  autoFocus,
 }: {
   readonly value: GetSet<string>;
+  readonly autoFocus: boolean;
 }): JSX.Element {
   return (
     <Input.Generic
       aria-label={commonText.search()}
       autoComplete="on"
-      className="flex-1 bg-[color:var(--field-background)]"
-      // Name is for autocomplete purposes only
-      name="searchQuery"
+      autoFocus={autoFocus}
       placeholder={commonText.search()}
       required
       type="search"
       value={value}
       onValueChange={setValue}
+      className="flex-1 bg-[color:var(--field-background)]"
+      // Name is for autocomplete purposes only
+      name="searchQuery"
     />
   );
 }
@@ -123,7 +128,7 @@ export function ExpressSearchView(): JSX.Element {
       <div className="flex flex-col gap-2 p-4">
         <H2>{headerText.simpleSearch()}</H2>
         <Form onSubmit={(): void => setQuery(pendingQuery)}>
-          <SearchField value={value} />
+          <SearchField autoFocus value={value} />
           <Submit.Info className="sr-only">{commonText.search()}</Submit.Info>
         </Form>
       </div>

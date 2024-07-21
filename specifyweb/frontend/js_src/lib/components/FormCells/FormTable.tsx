@@ -507,6 +507,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                     {isExpanded[resource.cid] === true && (
                       <FormMeta
                         className="flex-1"
+                        enableKeyboardShortcut={false}
                         resource={resource}
                         viewDescription={expandedViewDefinition}
                       />

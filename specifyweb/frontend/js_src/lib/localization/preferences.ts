@@ -2111,4 +2111,13 @@ export const preferencesText = createDictionary({
   },
   pressKeys: { 'en-us': 'Press desired key combination...' },
   noKeyAssigned: { 'en-us': 'No key binding assigned' },
+  openRelatedRecordInNewTab: {
+    'en-us': 'Open related record in new tab',
+  },
+  openFormMeta: {
+    'en-us': 'Open form meta',
+  },
+  actions: {
+    'en-us': 'Actions',
+  },
 } as const);
