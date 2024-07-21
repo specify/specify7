@@ -159,7 +159,7 @@ function Part({
           aria-label={commonText.size()}
           disabled={enforcePlaceholderSize}
           isReadOnly={isReadOnly}
-          min={0}
+          min={1}
           required
           value={part.size}
           onValueChange={(size): void =>
@@ -173,7 +173,7 @@ function Part({
       <td>
         <Input.Text
           aria-label={resourcesText.hint()}
-          disabled={part.type === 'year'}
+          disabled={part.type === 'year' || part.type === 'numeric'}
           isReadOnly={isReadOnly}
           required
           value={
