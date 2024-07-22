@@ -1,4 +1,5 @@
 import { resourcesText } from '../../localization/resources';
+import { f } from '../../utils/functools';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import type { BusinessRuleResult } from './businessRules';
 import type { AnySchema, TableFields } from './helperTypes';
@@ -154,18 +155,19 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           'cataloger',
           'catalogNumber',
           'collection',
+          'collectionObjectType',
           'version',
           'projects',
         ];
         resource.specifyTable.fields
-          .filter((f) => !fieldsToIgnore.includes(f.name))
-          .map((f) => {
-            const fieldName = f.name as keyof (CollectionObject['fields'] &
+          .filter((field) => !f.includes(fieldsToIgnore, field.name))
+          .map((field) => {
+            const fieldName = field.name as keyof (CollectionObject['fields'] &
               CollectionObject['toManyDependent'] &
               CollectionObject['toManyIndependent'] &
               CollectionObject['toOneDependent'] &
               CollectionObject['toOneIndependent']);
-            if (!f.isRelationship || !relationshipIsToMany(f))
+            if (!field.isRelationship || !relationshipIsToMany(field))
               resource.set(fieldName, null);
             else resource.set(fieldName, []);
           });
