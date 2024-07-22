@@ -19,7 +19,7 @@ import { Submit } from '../Atoms/Submit';
 import { getFieldsToClone, getUniqueFields } from '../DataModel/resource';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { genericTables } from '../DataModel/tables';
+import { genericTables, tables } from '../DataModel/tables';
 import { NO_CLONE } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
 import { userPreferences } from '../Preferences/userPreferences';
@@ -99,7 +99,7 @@ export function CarryForwardConfig({
     'preferences',
     'enableCarryForward'
   );
-  const isEnabled = globalEnabled.includes(table.name);
+  const isCarryForwardEnabled = globalEnabled.includes(table.name);
   const canChange = !NO_CLONE.has(table.name);
 
   return canChange ? (
@@ -107,7 +107,7 @@ export function CarryForwardConfig({
       {type === 'button' ? (
         <Label.Inline className="rounded bg-[color:var(--foreground)]">
           <Input.Checkbox
-            checked={isEnabled}
+            checked={isCarryForwardEnabled}
             onChange={(): void =>
               setGlobalEnabled(toggleItem(globalEnabled, table.name))
             }
@@ -128,6 +128,7 @@ export function CarryForwardConfig({
           onClick={handleOpen}
         />
       )}
+      {isCarryForwardEnabled ? <BulkCloneConfig table={table} /> : null}
       {isOpen && (
         <CarryForwardConfigDialog
           parentTable={parentTable}
@@ -141,6 +142,48 @@ export function CarryForwardConfig({
 
 const normalize = (fields: RA<string>): RA<string> =>
   Array.from(fields).sort(sortFunction(f.id));
+
+/**
+ * FEATURE: Extend this to all tables
+ * See https://github.com/specify/specify7/pull/4804
+ */
+function BulkCloneConfig({
+  table,
+}: {
+  readonly table: SpecifyTable;
+}): JSX.Element | null {
+  const [globalBulkEnabled, setGlobalBulkEnabled] = userPreferences.use(
+    'form',
+    'preferences',
+    'enableBukCarryForward'
+  );
+
+  const isBulkCarryEnabled = globalBulkEnabled.includes(table.name);
+
+  return tableValidForBulkClone(table) ? (
+    <Label.Inline className="rounded bg-[color:var(--foreground)]">
+      <Input.Checkbox
+        checked={isBulkCarryEnabled}
+        onChange={(): void =>
+          setGlobalBulkEnabled(toggleItem(globalBulkEnabled, table.name))
+        }
+      />
+      {formsText.bulkCarryForwardEnabled()}
+    </Label.Inline>
+  ) : null;
+}
+
+export const tableValidForBulkClone = (table: SpecifyTable): boolean =>
+  table === tables.CollectionObject &&
+  !(
+    tables.CollectionObject.strictGetLiteralField('catalogNumber')
+      .getUiFormatter()
+      ?.fields.some(
+        (field) =>
+          field.type === 'regex' ||
+          (field.type === 'numeric' && !field.canAutonumber())
+      ) ?? false
+  );
 
 function CarryForwardConfigDialog({
   table,

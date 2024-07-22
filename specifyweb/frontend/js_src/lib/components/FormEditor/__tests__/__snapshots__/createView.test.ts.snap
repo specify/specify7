@@ -140,5 +140,9 @@ exports[`Tables with form tables computed correctly 1`] = `
   "[table TreatmentEvent]",
   "[table TreatmentEventAttachment]",
   "[table VoucherRelationship]",
+  "[table CollectionObjectType]",
+  "[table CollectionObjectGroup]",
+  "[table CollectionObjectGroupJoin]",
+  "[table CollectionObjectGroupType]",
 ]
 `;
