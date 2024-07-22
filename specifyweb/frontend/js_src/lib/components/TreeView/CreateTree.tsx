@@ -35,35 +35,33 @@ export function CreateTree(): JSX.Element {
           setIsActive(1);
         }}
       />
-      {(isActive === 1) ? (
-          <Dialog
-          buttons={<>
-            <Button.DialogClose
-              component={Button.BorderedGray}>
+      {isActive === 1 ? (
+        <Dialog
+          buttons={
+            <>
+              <Button.DialogClose component={Button.BorderedGray}>
                 {commonText.cancel()}
-            </Button.DialogClose>
-            <Button.Info 
-              onClick={() => setIsActive(2)}
-              >
+              </Button.DialogClose>
+              <Button.Info onClick={() => setIsActive(2)}>
                 {treeText.addTree()}
-            </Button.Info>
-          </>}
+              </Button.Info>
+            </>
+          }
           header={treeText.addTree()}
-          onClose={() => setIsActive(0)}>
+          onClose={() => setIsActive(0)}
+        >
           <Ul className="flex flex-col gap-2">
             <li />
           </Ul>
         </Dialog>
-        ) : (isActive === 2) ? (
-          <Dialog
-              buttons={commonText.save()}
-              header={treeText.newTree()}
-              onClose={() => setIsActive(0)}
-              specialMode="orangeBar">
-
-            </Dialog>
-        ) : null
-      }
+      ) : isActive === 2 ? (
+        <Dialog
+          buttons={commonText.save()}
+          header={treeText.newTree()}
+          specialMode="orangeBar"
+          onClose={() => setIsActive(0)}
+        />
+      ) : null}
     </>
   );
 }
