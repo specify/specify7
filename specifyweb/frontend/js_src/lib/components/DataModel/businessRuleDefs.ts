@@ -150,15 +150,15 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
     },
     fieldChecks: {
       collectionObjectType: (resource) => {
-        const fieldsToIgnore = [
+        const fieldsToIgnore = new Set([
           'cataloger',
           'catalogNumber',
           'collection',
           'version',
           'projects',
-        ];
+        ]);
         resource.specifyTable.fields
-          .filter((f) => !fieldsToIgnore.includes(f.name))
+          .filter((f) => !fieldsToIgnore.has(f.name))
           .map((f) => {
             const fieldName = f.name as keyof (CollectionObject['fields'] &
               CollectionObject['toManyDependent'] &
