@@ -132,13 +132,15 @@ def create_default_collection_object_types():
 
 def revert_default_collection_object_types():
     for collection in Collection.objects.all():
-        cog_type_picklist = Picklist.objects.get(
+        cog_type_picklist_qs = Picklist.objects.filter(
             name='Default Collection Object Group Types',
             tablename='CollectionObjectGroupType',
             collection=collection
         )
-        Picklistitem.objects.filter(picklist=cog_type_picklist).delete()
-        cog_type_picklist.delete()
+        if cog_type_picklist_qs.exists():
+            cog_type_picklist = cog_type_picklist_qs.first()
+            Picklistitem.objects.filter(picklist=cog_type_picklist).delete()
+            cog_type_picklist.delete()
 
 
 class Migration(migrations.Migration):
