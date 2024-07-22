@@ -1,3 +1,4 @@
+import { formsText } from '../../localization/forms';
 import { resourcesText } from '../../localization/resources';
 import type { BusinessRuleResult } from './businessRules';
 import type { AnySchema, TableFields } from './helperTypes';
@@ -49,6 +50,7 @@ type MappedBusinessRuleDefs = {
 };
 
 const CURRENT_DETERMINATION_KEY = 'determination-isCurrent';
+const DETERMINATION_TAXON_KEY = 'determination-taxon';
 
 export const businessRuleDefs: MappedBusinessRuleDefs = {
   Address: {
@@ -155,7 +157,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
     fieldChecks: {
       taxon: async (
         determination: SpecifyResource<Determination>
-      ): Promise<BusinessRuleResult | undefined> =>
+      ): Promise<BusinessRuleResult> =>
         determination
           .rgetPromise('taxon', true)
           .then((taxon: SpecifyResource<Taxon> | null) => {
@@ -170,32 +172,47 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
 
             const collectionObject = determination.collection
               ?.related as SpecifyResource<CollectionObject>;
-              collectionObject
+            collectionObject
               .rgetPromise('collectionObjectType', true)
               .then((coType: SpecifyResource<CollectionObjectType>) => {
-                if (idFromUrl(coType.get('taxonTreeDef')) !== idFromUrl(taxon?.get('definition') ?? '')) {
-                  return {
-                    isValid: false,
-                    reason: 'tree def not same',
-                  };
+                /*
+                 * Have to set save blockers directly here to get this working. 
+                 * Since following code has to wait for above rgetPromise to resolve, returning a Promise<BusinessRuleResult> for validation here is too slow and
+                 * does not get captured by business rules. 
+                 */
+                if (
+                  idFromUrl(coType.get('taxonTreeDef')) !==
+                  idFromUrl(taxon?.get('definition') ?? '')
+                ) {
+                  setSaveBlockers(
+                    determination,
+                    determination.specifyTable.field.taxon,
+                    [formsText.invalidTree()],
+                    DETERMINATION_TAXON_KEY
+                  );
+                } else {
+                  setSaveBlockers(
+                    determination,
+                    determination.specifyTable.field.taxon,
+                    [],
+                    DETERMINATION_TAXON_KEY
+                  );
                 }
-
-                return taxon === null
-                  ? {
-                      isValid: true,
-                      action: () => determination.set('preferredTaxon', null),
-                    }
-                  : {
-                      isValid: true,
-                      action: async () =>
-                        determination.set(
-                          'preferredTaxon',
-                          await getLastAccepted(taxon)
-                        ),
-                    };
               });
 
-            return undefined;
+            return taxon === null
+              ? {
+                  isValid: true,
+                  action: () => determination.set('preferredTaxon', null),
+                }
+              : {
+                  isValid: true,
+                  action: async () =>
+                    determination.set(
+                      'preferredTaxon',
+                      await getLastAccepted(taxon)
+                    ),
+                };
           }),
       isCurrent: async (
         determination: SpecifyResource<Determination>
