@@ -679,6 +679,8 @@ export const ResourceBase = Backbone.Model.extend({
     resource.needsSaved = false;
     // BUG: should do this for dependent resources too
 
+    resource.set('timestampModified', null);
+
     let errorHandled = false;
     const save = () =>
       Backbone.Model.prototype.save
