@@ -400,7 +400,8 @@ function CarryForwardCategory({
                 <Input.Checkbox
                   checked={f.includes(carryForward, field.name)}
                   disabled={
-                    isUnique || (isBulkConfig === true && field.isRequired)
+                    isUnique ||
+                    (isBulkConfig === true && field.localization.isrequired)
                   }
                   onValueChange={(isChecked): void => {
                     const dependents = filterArray(
