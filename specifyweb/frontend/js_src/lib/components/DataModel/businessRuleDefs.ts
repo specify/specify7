@@ -157,7 +157,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
     fieldChecks: {
       taxon: async (
         determination: SpecifyResource<Determination>
-      ): Promise<BusinessRuleResult> =>
+      ): Promise<BusinessRuleResult | undefined> =>
         determination
           .rgetPromise('taxon', true)
           .then((taxon: SpecifyResource<Taxon> | null) => {
