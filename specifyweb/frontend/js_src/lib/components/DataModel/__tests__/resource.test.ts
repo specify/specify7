@@ -231,18 +231,18 @@ theories(parseJavaClassName, [
 ]);
 describe('getCarryOverPreference', () => {
   test('default carry over fields', () =>
-    expect(getCarryOverPreference(tables.SpQuery, true)).toEqual(
+    expect(getCarryOverPreference(tables.SpQuery, true, false)).toEqual(
       getFieldsToClone(tables.SpQuery)
     ));
   test('customize carry over fields', () => {
     userPreferences.set('form', 'preferences', 'carryForward', {
       Locality: ['localityName', 'text1'],
     });
-    expect(getCarryOverPreference(tables.Locality, false)).toEqual([
+    expect(getCarryOverPreference(tables.Locality, false, false)).toEqual([
       'localityName',
       'text1',
     ]);
-    expect(getCarryOverPreference(tables.SpQuery, true)).toEqual(
+    expect(getCarryOverPreference(tables.SpQuery, true, false)).toEqual(
       getFieldsToClone(tables.SpQuery)
     );
   });
@@ -289,7 +289,7 @@ test('getFieldsToNotClone', () => {
       (name) => name !== 'text1'
     ) as RA<TableFields<CollectionObject>>,
   });
-  expect(getFieldsToNotClone(tables.CollectionObject, true)).toEqual([
+  expect(getFieldsToNotClone(tables.CollectionObject, true, false)).toEqual([
     'actualTotalCountAmt',
     'catalogNumber',
     'timestampModified',
@@ -302,7 +302,7 @@ test('getFieldsToNotClone', () => {
     'currentDetermination',
     'projects',
   ]);
-  expect(getFieldsToNotClone(tables.CollectionObject, false)).toEqual([
+  expect(getFieldsToNotClone(tables.CollectionObject, false, false)).toEqual([
     'actualTotalCountAmt',
     'catalogNumber',
     'timestampModified',
