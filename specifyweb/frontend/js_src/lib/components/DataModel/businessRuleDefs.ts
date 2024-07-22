@@ -10,6 +10,7 @@ import {
   updateLoanPrep,
 } from './interactionBusinessRules';
 import type { SpecifyResource } from './legacyTypes';
+import { idFromUrl } from './resource';
 import { setSaveBlockers } from './saveBlockers';
 import type { Collection } from './specifyTable';
 import { tables } from './tables';
@@ -17,6 +18,7 @@ import type {
   Address,
   BorrowMaterial,
   CollectionObject,
+  CollectionObjectType,
   Determination,
   DNASequence,
   LoanPreparation,
@@ -153,7 +155,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
     fieldChecks: {
       taxon: async (
         determination: SpecifyResource<Determination>
-      ): Promise<BusinessRuleResult> =>
+      ): Promise<BusinessRuleResult | undefined> =>
         determination
           .rgetPromise('taxon', true)
           .then((taxon: SpecifyResource<Taxon> | null) => {
@@ -165,19 +167,35 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
                 .then(async (accepted) =>
                   accepted === null ? taxon : getLastAccepted(accepted)
                 );
-            return taxon === null
-              ? {
-                  isValid: true,
-                  action: () => determination.set('preferredTaxon', null),
+
+            const collectionObject = determination.collection
+              ?.related as SpecifyResource<CollectionObject>;
+              collectionObject
+              .rgetPromise('collectionObjectType', true)
+              .then((coType: SpecifyResource<CollectionObjectType>) => {
+                if (idFromUrl(coType.get('taxonTreeDef')) !== idFromUrl(taxon?.get('definition') ?? '')) {
+                  return {
+                    isValid: false,
+                    reason: 'tree def not same',
+                  };
                 }
-              : {
-                  isValid: true,
-                  action: async () =>
-                    determination.set(
-                      'preferredTaxon',
-                      await getLastAccepted(taxon)
-                    ),
-                };
+
+                return taxon === null
+                  ? {
+                      isValid: true,
+                      action: () => determination.set('preferredTaxon', null),
+                    }
+                  : {
+                      isValid: true,
+                      action: async () =>
+                        determination.set(
+                          'preferredTaxon',
+                          await getLastAccepted(taxon)
+                        ),
+                    };
+              });
+
+            return undefined;
           }),
       isCurrent: async (
         determination: SpecifyResource<Determination>
