@@ -175,7 +175,12 @@ export type MappingLineData = Pick<
   readonly defaultValue: string;
 };
 
-const queryBuilderTreeFields = new Set(['fullName', 'author', 'groupNumber']);
+const queryBuilderTreeFields = new Set([
+  'fullName',
+  'author',
+  'groupNumber',
+  'geographyCode',
+]);
 
 /**
  * Get data required to build a mapping line from a source mapping path

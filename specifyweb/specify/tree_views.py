@@ -1,7 +1,7 @@
 from functools import wraps
 from typing import Literal, Tuple
 from django.db import transaction
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotAllowed
 from django.views.decorators.http import require_POST
 from sqlalchemy import sql
 from sqlalchemy.orm import aliased

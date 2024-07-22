@@ -522,6 +522,9 @@ def set_fields_from_data(obj, data: Dict[str, Any]) -> List[FieldChangeInfo]:
      return dirty_flds
 
 def is_dependent_field(obj, field_name: str) -> bool:
+    if obj.specify_model.get_field(field_name) is None:
+        return False
+
     return (
         obj.specify_model.get_field(field_name).dependent
 
