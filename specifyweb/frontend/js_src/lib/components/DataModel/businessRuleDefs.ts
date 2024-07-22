@@ -170,10 +170,13 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
 
             const collectionObject = determination.collection
               ?.related as SpecifyResource<CollectionObject>;
-              collectionObject
+            collectionObject
               .rgetPromise('collectionObjectType', true)
               .then((coType: SpecifyResource<CollectionObjectType>) => {
-                if (idFromUrl(coType.get('taxonTreeDef')) !== idFromUrl(taxon?.get('definition') ?? '')) {
+                if (
+                  idFromUrl(coType.get('taxonTreeDef')) !==
+                  idFromUrl(taxon?.get('definition') ?? '')
+                ) {
                   return {
                     isValid: false,
                     reason: 'tree def not same',
