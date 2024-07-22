@@ -151,14 +151,14 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
     },
     fieldChecks: {
       collectionObjectType: (resource) => {
-        const fieldsToIgnore = new Set([
+        const fieldsToIgnore = [
           'cataloger',
           'catalogNumber',
           'collection',
           'collectionObjectType',
           'version',
           'projects',
-        ]);
+        ];
         resource.specifyTable.fields
           .filter((field) => !f.includes(fieldsToIgnore, field.name))
           .map((field) => {
