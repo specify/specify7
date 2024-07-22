@@ -4,11 +4,11 @@
  *
  *TODO:
  *- Finish CreateTree function
- *-
+ *- Add in list of default options
+ *- Add default form for TreeDef in here?
  */
 import React from 'react';
 
-import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
 import { Ul } from '../Atoms';
@@ -23,11 +23,7 @@ export function CreateTree(): JSX.Element {
    *- add parameter to get the resource that will be added to using serializedresource
    *- for this to work, you set the template like how you would in ViewSetTemplates.
    */
-  const [isDialogOpen, handleOpen, handleClose] = useBooleanState();
-  const [isSecondDialogOpen, handleSecondOpen, handleSecondClose] = useBooleanState();
-
-  const handleButtonClick = handleOpen;
-  const handleFirstDialogButtonClick = handleSecondOpen;
+  const [isActive, setIsActive] = React.useState(0);
 
   return (
     <>
@@ -35,35 +31,39 @@ export function CreateTree(): JSX.Element {
         className={className.dataEntryAdd}
         icon="plus"
         title={treeText.addTree()}
-        onClick={handleButtonClick}
+        onClick={() => {
+          setIsActive(1);
+        }}
       />
-      {isDialogOpen && (
-        <Dialog
+      {(isActive === 1) ? (
+          <Dialog
           buttons={<>
-            <Button.DialogClose component={Button.BorderedGray}>
-              {commonText.close()}
+            <Button.DialogClose
+              component={Button.BorderedGray}>
+                {commonText.cancel()}
             </Button.DialogClose>
-            <Button.Info onClick={handleFirstDialogButtonClick}>
-              {treeText.addTree()}
+            <Button.Info 
+              onClick={() => setIsActive(2)}
+              >
+                {treeText.addTree()}
             </Button.Info>
           </>}
           header={treeText.addTree()}
-          onClose={handleClose} children={undefined}        >
+          onClose={() => setIsActive(0)}>
           <Ul className="flex flex-col gap-2">
             <li />
           </Ul>
-          {isSecondDialogOpen && (
-            <Dialog
-              buttons={commonText.new()}
-              header="Tree Rank Form"
-              onClose={handleSecondClose} children={undefined}            >
-              <Ul className="flex flex-col gap-2">
-                <li />
-              </Ul>
-            </Dialog>
-          )}
         </Dialog>
-      )}
+        ) : (isActive === 2) ? (
+          <Dialog
+              buttons={commonText.save()}
+              header={treeText.newTree()}
+              onClose={() => setIsActive(0)}
+              specialMode="orangeBar">
+
+            </Dialog>
+        ) : null
+      }
     </>
   );
 }

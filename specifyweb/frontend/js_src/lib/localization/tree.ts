@@ -539,10 +539,8 @@ export const treeText = createDictionary({
   },
   addTree: {
     'en-us': 'Add Tree',
-    'de-ch': 'TBA',
-    'es-es': 'TBA',
-    'fr-fr': 'TBA',
-    'ru-ru': 'TBA',
-    'uk-ua': 'TBA',
+  },
+  newTree: {
+    'en-us': 'New Tree Definition',
   },
 } as const);
