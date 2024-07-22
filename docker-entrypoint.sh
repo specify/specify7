@@ -10,6 +10,7 @@ if [ "$1" = 've/bin/gunicorn' ] || [ "$1" = 've/bin/python' ]; then
   # The following command is prone to failing
   # See https://github.com/specify/specify7/issues/789
   # and https://github.com/specify/docker-compositions/issues/7
+  ve/bin/python manage.py base_specify_migration
   ve/bin/python manage.py migrate
   set -e
 fi

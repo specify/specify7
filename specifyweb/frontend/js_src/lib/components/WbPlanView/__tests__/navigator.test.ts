@@ -132,6 +132,15 @@ theories(getMappingLineData, [
             isRelationship: true,
             tableName: 'Agent',
           },
+          cojo: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Cojo',
+            tableName: 'CollectionObjectGroupJoin',
+          },
           collectionObjectAttribute: {
             optionLabel: 'Col Obj Attribute',
             isEnabled: true,
@@ -149,6 +158,15 @@ theories(getMappingLineData, [
             isDefault: false,
             isRelationship: true,
             tableName: 'CollectionObjectCitation',
+          },
+          collectionObjectType: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Collection Object Type',
+            tableName: 'CollectionObjectType',
           },
           determinations: {
             optionLabel: 'Determinations',
@@ -500,6 +518,15 @@ theories(getMappingLineData, [
             optionLabel: 'Cataloger',
             tableName: 'Agent',
           },
+          cojo: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Cojo',
+            tableName: 'CollectionObjectGroupJoin',
+          },
           collectingEvent: {
             isDefault: false,
             isEnabled: true,
@@ -544,6 +571,15 @@ theories(getMappingLineData, [
             isRequired: false,
             optionLabel: 'Collection Object Citations',
             tableName: 'CollectionObjectCitation',
+          },
+          collectionObjectType: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Collection Object Type',
+            tableName: 'CollectionObjectType',
           },
           determinations: {
             isDefault: true,
