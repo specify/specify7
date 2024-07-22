@@ -1154,7 +1154,6 @@ export const formsText = createDictionary({
     'uk-ua': 'Каталожний номер Числовий',
   },
   invalidTree: {
-    'en-us':
-      'Taxon does not belong to the same tree as this Object Type',
+    'en-us': 'Taxon does not belong to the same tree as this Object Type',
   },
 } as const);

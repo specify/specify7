@@ -73,6 +73,8 @@ export type CacheDefinitions = {
     readonly applyAll: boolean;
   };
   readonly tree: {
+    readonly [key in `definition${AnyTree['tableName']}`]: number;
+  } & {
     readonly [key in `focusPath${AnyTree['tableName']}`]: RA<number>;
   } & {
     readonly /** Collapsed ranks in a given tree */
@@ -80,8 +82,6 @@ export type CacheDefinitions = {
   } & {
     readonly /** Open nodes in a given tree */
     [key in `conformations${AnyTree['tableName']}`]: Conformations;
-  } & {
-    readonly [key in `definition${AnyTree['tableName']}`]: number;
   } & {
     readonly hideEmptyNodes: boolean;
     readonly isSplit: boolean;
