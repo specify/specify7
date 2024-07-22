@@ -25,7 +25,7 @@ msgstr "Стол"
 #: components/Attachments/index.tsx:195
 #: components/FormEditor/Table.tsx:49
 #: components/Router/Routes.tsx:399
-#: components/SchemaConfig/Tables.tsx:48
+#: components/SchemaConfig/Tables.tsx:49
 #. Used in: Components > Attachments > Index ⬤ Components > Form Editor > Table ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
 #, fuzzy
 msgid "tables"
@@ -317,13 +317,13 @@ msgstr "Количество отношений"
 msgid "databaseSchema"
 msgstr "Схема базы данных"
 
-#: components/Toolbar/QueryTablesEdit.tsx:83
+#: components/Toolbar/QueryTablesEdit.tsx:91
 #. Used in: Components > Toolbar > Query Tables Edit
 #, fuzzy
 msgid "selectedTables"
 msgstr "Выбранные таблицы"
 
-#: components/Toolbar/QueryTablesEdit.tsx:81
+#: components/Toolbar/QueryTablesEdit.tsx:89
 #. Used in: Components > Toolbar > Query Tables Edit
 #, fuzzy
 msgid "possibleTables"

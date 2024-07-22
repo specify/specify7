@@ -101,7 +101,7 @@ msgid "cancel"
 msgstr "Скасувати"
 
 #: components/SchemaConfig/Languages.tsx:73
-#: components/SchemaConfig/Tables.tsx:44
+#: components/SchemaConfig/Tables.tsx:45
 #. Used in: Components > Schema Config > Languages ⬤ Components > Schema Config > Tables
 #, fuzzy
 msgid "back"
@@ -253,7 +253,7 @@ msgstr "Створити"
 #: components/Statistics/StatsPageEditing.tsx:42
 #: components/Toolbar/Language.tsx:76
 #: components/Toolbar/MasterKey.tsx:97
-#: components/Toolbar/QueryTablesEdit.tsx:73
+#: components/Toolbar/QueryTablesEdit.tsx:81
 #: components/Toolbar/QueryTablesWrapper.tsx:155
 #: components/Toolbar/TreeRepair.tsx:73
 #: components/TreeView/Actions.tsx:402
@@ -830,7 +830,7 @@ msgstr "Порядковий"
 
 #: components/Header/userToolDefinitions.ts:88
 #: components/QueryBuilder/Edit.tsx:80
-#: components/SchemaConfig/Tables.tsx:38
+#: components/SchemaConfig/Tables.tsx:39
 #: components/Security/ImportExport.tsx:252
 #: components/WbToolkit/DevShowPlan.tsx:85
 #: components/WbToolkit/index.tsx:87
@@ -949,7 +949,7 @@ msgstr "Закрити все"
 
 #: components/Preferences/index.tsx:221
 #: components/Statistics/index.tsx:564
-#: components/Toolbar/QueryTablesEdit.tsx:70
+#: components/Toolbar/QueryTablesEdit.tsx:78
 #. Used in: Components > Preferences > Index ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Query Tables Edit
 #, fuzzy
 msgid "reset"

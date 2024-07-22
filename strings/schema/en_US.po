@@ -13,7 +13,7 @@ msgstr "Table"
 #: components/Attachments/index.tsx:195
 #: components/FormEditor/Table.tsx:49
 #: components/Router/Routes.tsx:399
-#: components/SchemaConfig/Tables.tsx:48
+#: components/SchemaConfig/Tables.tsx:49
 #. Used in: Components > Attachments > Index ⬤ Components > Form Editor > Table ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
 msgid "tables"
 msgstr "Tables"
@@ -265,12 +265,12 @@ msgstr "Relationship count"
 msgid "databaseSchema"
 msgstr "Database Schema"
 
-#: components/Toolbar/QueryTablesEdit.tsx:83
+#: components/Toolbar/QueryTablesEdit.tsx:91
 #. Used in: Components > Toolbar > Query Tables Edit
 msgid "selectedTables"
 msgstr "Selected Tables"
 
-#: components/Toolbar/QueryTablesEdit.tsx:81
+#: components/Toolbar/QueryTablesEdit.tsx:89
 #. Used in: Components > Toolbar > Query Tables Edit
 msgid "possibleTables"
 msgstr "Possible Tables"

@@ -223,7 +223,7 @@ msgstr "Basistabelle auswählen"
 msgid "chooseExistingPlan"
 msgstr "Bestehenden Plan auswählen"
 
-#: components/SchemaConfig/Tables.tsx:163
+#: components/SchemaConfig/Tables.tsx:166
 #. Used in: Components > Schema Config > Tables
 msgid "showAllTables"
 msgstr "Erweiterte Tabellen anzeigen"

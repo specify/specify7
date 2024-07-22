@@ -264,7 +264,7 @@ msgstr "Sélectionnez une table de base"
 msgid "chooseExistingPlan"
 msgstr "Choisir un forfait existant"
 
-#: components/SchemaConfig/Tables.tsx:163
+#: components/SchemaConfig/Tables.tsx:166
 #. Used in: Components > Schema Config > Tables
 #, fuzzy
 msgid "showAllTables"
