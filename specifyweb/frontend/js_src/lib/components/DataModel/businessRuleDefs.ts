@@ -1,4 +1,5 @@
 import { resourcesText } from '../../localization/resources';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import type { BusinessRuleResult } from './businessRules';
 import type { AnySchema, TableFields } from './helperTypes';
 import {
