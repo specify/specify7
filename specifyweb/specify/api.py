@@ -368,6 +368,10 @@ def set_field_if_exists(obj, field: str, value) -> None:
     if f.concrete:
         setattr(obj, field, value)
 
+def _maybe_delete(data: Dict[str, Any], to_delete: str):
+    if to_delete in data:
+        del data[to_delete]
+
 def cleanData(model, data: Dict[str, Any], agent) -> Dict[str, Any]:
     """Returns a copy of data with only fields that are part of model, removing
     metadata fields and warning on unexpected extra fields."""
@@ -400,30 +404,18 @@ def cleanData(model, data: Dict[str, Any], agent) -> Dict[str, Any]:
         
     if model is models.Agent:
         # setting user agents is part of the user management system.
-        try:
-            del cleaned['specifyuser']
-        except KeyError:
-            pass
+        _maybe_delete(cleaned, 'specifyuser')
 
     # guid should only be updatable for taxon and geography
     if model not in (models.Taxon, models.Geography):
-        try:
-            del cleaned['guid']
-        except KeyError:
-            pass
+        _maybe_delete(cleaned, 'guid')
 
     # timestampcreated should never be updated.
-    # ... well it is now ¯\_(ツ)_/¯
-    # New requirments are for timestampcreated to be overridable.
-    try:
-        # del cleaned['timestampcreated']
-        pass
-    except KeyError:
-        pass
+    #  _maybe_delete(cleaned, 'timestampcreated')
 
     # Password should be set though the /api/set_password/<id>/ endpoint
-    if model is models.Specifyuser and 'password' in cleaned:
-        del cleaned['password']
+    if model is models.Specifyuser: 
+        _maybe_delete(cleaned, 'password')
 
     return cleaned
 
