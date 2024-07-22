@@ -1,7 +1,6 @@
 from functools import partialmethod
 from django.db import models
 from django.utils import timezone
-from model_utils import FieldTracker
 from specifyweb.businessrules.exceptions import AbortSave
 from specifyweb.specify.model_timestamp import pre_save_auto_timestamp_field_with_override
 from specifyweb.specify import model_extras
@@ -77,7 +76,7 @@ class Accession(models.Model):
             # models.Index(fields=['DateAccessioned'], name='AccessionDateIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Accessionagent(models.Model):
@@ -104,7 +103,7 @@ class Accessionagent(models.Model):
         db_table = 'accessionagent'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Accessionattachment(models.Model):
@@ -130,7 +129,7 @@ class Accessionattachment(models.Model):
         db_table = 'accessionattachment'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Accessionauthorization(models.Model):
@@ -156,7 +155,7 @@ class Accessionauthorization(models.Model):
         db_table = 'accessionauthorization'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Accessioncitation(models.Model):
@@ -185,7 +184,7 @@ class Accessioncitation(models.Model):
         db_table = 'accessioncitation'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Address(models.Model):
@@ -230,7 +229,7 @@ class Address(models.Model):
         db_table = 'address'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Addressofrecord(models.Model):
@@ -260,7 +259,7 @@ class Addressofrecord(models.Model):
         db_table = 'addressofrecord'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Agent(models.Model):
@@ -328,7 +327,7 @@ class Agent(models.Model):
             # models.Index(fields=['Abbreviation'], name='AbbreviationIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Agentattachment(models.Model):
@@ -354,7 +353,7 @@ class Agentattachment(models.Model):
         db_table = 'agentattachment'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Agentgeography(models.Model):
@@ -380,7 +379,7 @@ class Agentgeography(models.Model):
         db_table = 'agentgeography'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Agentidentifier(models.Model):
@@ -420,7 +419,7 @@ class Agentidentifier(models.Model):
         db_table = 'agentidentifier'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Agentspecialty(models.Model):
@@ -445,7 +444,7 @@ class Agentspecialty(models.Model):
         db_table = 'agentspecialty'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Agentvariant(models.Model):
@@ -473,7 +472,7 @@ class Agentvariant(models.Model):
         db_table = 'agentvariant'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Appraisal(models.Model):
@@ -506,7 +505,7 @@ class Appraisal(models.Model):
             # models.Index(fields=['AppraisalDate'], name='AppraisalDateIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Attachment(models.Model):
@@ -562,7 +561,7 @@ class Attachment(models.Model):
             # models.Index(fields=['GUID'], name='AttchmentGuidIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Attachmentimageattribute(models.Model):
@@ -602,7 +601,7 @@ class Attachmentimageattribute(models.Model):
         db_table = 'attachmentimageattribute'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Attachmentmetadata(models.Model):
@@ -627,7 +626,7 @@ class Attachmentmetadata(models.Model):
         db_table = 'attachmentmetadata'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Attachmenttag(models.Model):
@@ -651,7 +650,7 @@ class Attachmenttag(models.Model):
         db_table = 'attachmenttag'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Attributedef(models.Model):
@@ -678,7 +677,7 @@ class Attributedef(models.Model):
         db_table = 'attributedef'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Author(models.Model):
@@ -704,7 +703,7 @@ class Author(models.Model):
         db_table = 'author'
         ordering = ('ordernumber',)
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Autonumberingscheme(models.Model):
@@ -734,7 +733,7 @@ class Autonumberingscheme(models.Model):
             # models.Index(fields=['SchemeName'], name='SchemeNameIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Borrow(models.Model):
@@ -781,7 +780,7 @@ class Borrow(models.Model):
             # models.Index(fields=['CollectionMemberID'], name='BorColMemIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Borrowagent(models.Model):
@@ -811,7 +810,7 @@ class Borrowagent(models.Model):
             # models.Index(fields=['CollectionMemberID'], name='BorColMemIDX2')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Borrowattachment(models.Model):
@@ -837,7 +836,7 @@ class Borrowattachment(models.Model):
         db_table = 'borrowattachment'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Borrowmaterial(models.Model):
@@ -875,7 +874,7 @@ class Borrowmaterial(models.Model):
             # models.Index(fields=['Description'], name='DescriptionIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Borrowreturnmaterial(models.Model):
@@ -907,7 +906,7 @@ class Borrowreturnmaterial(models.Model):
             # models.Index(fields=['CollectionMemberID'], name='BorrowReturnedColMemIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Collectingevent(models.Model):
@@ -976,7 +975,7 @@ class Collectingevent(models.Model):
             # models.Index(fields=['GUID'], name='CEGuidIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Collectingeventattachment(models.Model):
@@ -1006,7 +1005,7 @@ class Collectingeventattachment(models.Model):
             # models.Index(fields=['CollectionMemberID'], name='CEAColMemIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Collectingeventattr(models.Model):
@@ -1036,7 +1035,7 @@ class Collectingeventattr(models.Model):
             # models.Index(fields=['CollectionMemberID'], name='COLEVATColMemIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Collectingeventattribute(models.Model):
@@ -1109,7 +1108,7 @@ class Collectingeventattribute(models.Model):
             # models.Index(fields=['DisciplineID'], name='COLEVATSDispIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Collectingeventauthorization(models.Model):
@@ -1134,7 +1133,7 @@ class Collectingeventauthorization(models.Model):
         db_table = 'collectingeventauthorization'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Collectingtrip(models.Model):
@@ -1195,7 +1194,7 @@ class Collectingtrip(models.Model):
             # models.Index(fields=['StartDate'], name='COLTRPStartDateIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Collectingtripattachment(models.Model):
@@ -1225,7 +1224,7 @@ class Collectingtripattachment(models.Model):
             # models.Index(fields=['CollectionMemberID'], name='CTAColMemIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Collectingtripattribute(models.Model):
@@ -1297,7 +1296,7 @@ class Collectingtripattribute(models.Model):
             # models.Index(fields=['DisciplineID'], name='COLTRPSDispIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Collectingtripauthorization(models.Model):
@@ -1322,7 +1321,7 @@ class Collectingtripauthorization(models.Model):
         db_table = 'collectingtripauthorization'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Collection(models.Model):
@@ -1372,7 +1371,7 @@ class Collection(models.Model):
             # models.Index(fields=['GUID'], name='CollectionGuidIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Collectionobject(models.Model):
@@ -1474,7 +1473,7 @@ class Collectionobject(models.Model):
             # models.Index(fields=['CollectionmemberID'], name='COColMemIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Collectionobjectattachment(models.Model):
@@ -1504,7 +1503,7 @@ class Collectionobjectattachment(models.Model):
             # models.Index(fields=['CollectionMemberID'], name='COLOBJATTColMemIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Collectionobjectattr(models.Model):
@@ -1534,7 +1533,7 @@ class Collectionobjectattr(models.Model):
             # models.Index(fields=['CollectionMemberID'], name='COLOBJATRSColMemIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Collectionobjectattribute(models.Model):
@@ -1681,7 +1680,7 @@ class Collectionobjectattribute(models.Model):
             # models.Index(fields=['CollectionMemberID'], name='COLOBJATTRSColMemIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Collectionobjectcitation(models.Model):
@@ -1714,7 +1713,7 @@ class Collectionobjectcitation(models.Model):
             # models.Index(fields=['CollectionMemberID'], name='COCITColMemIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Collectionobjectproperty(models.Model):
@@ -1903,7 +1902,7 @@ class Collectionobjectproperty(models.Model):
             # models.Index(fields=['CollectionMemberID'], name='COLOBJPROPColMemIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Collectionreltype(models.Model):
@@ -1929,7 +1928,7 @@ class Collectionreltype(models.Model):
         db_table = 'collectionreltype'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Collectionrelationship(models.Model):
@@ -1956,7 +1955,7 @@ class Collectionrelationship(models.Model):
         db_table = 'collectionrelationship'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Collector(models.Model):
@@ -1991,7 +1990,7 @@ class Collector(models.Model):
             # models.Index(fields=['DivisionID'], name='COLTRDivIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Commonnametx(models.Model):
@@ -2023,7 +2022,7 @@ class Commonnametx(models.Model):
             # models.Index(fields=['Country'], name='CommonNameTxCountryIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Commonnametxcitation(models.Model):
@@ -2058,7 +2057,7 @@ class Commonnametxcitation(models.Model):
         db_table = 'commonnametxcitation'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Conservdescription(models.Model):
@@ -2130,7 +2129,7 @@ class Conservdescription(models.Model):
             # models.Index(fields=['ShortDesc'], name='ConservDescShortDescIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Conservdescriptionattachment(models.Model):
@@ -2156,7 +2155,7 @@ class Conservdescriptionattachment(models.Model):
         db_table = 'conservdescriptionattachment'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Conservevent(models.Model):
@@ -2207,7 +2206,7 @@ class Conservevent(models.Model):
             # models.Index(fields=['completedDate'], name='ConservCompletedDateIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Conserveventattachment(models.Model):
@@ -2233,7 +2232,7 @@ class Conserveventattachment(models.Model):
         db_table = 'conserveventattachment'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Container(models.Model):
@@ -2266,7 +2265,7 @@ class Container(models.Model):
             # models.Index(fields=['CollectionMemberID'], name='ContainerMemIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Dnaprimer(models.Model):
@@ -2316,7 +2315,7 @@ class Dnaprimer(models.Model):
             # models.Index(fields=['PrimerDesignator'], name='DesignatorIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Dnasequence(models.Model):
@@ -2376,7 +2375,7 @@ class Dnasequence(models.Model):
             # models.Index(fields=['BOLDSampleID'], name='BOLDSampleIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Dnasequenceattachment(models.Model):
@@ -2402,7 +2401,7 @@ class Dnasequenceattachment(models.Model):
         db_table = 'dnasequenceattachment'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Dnasequencingrun(models.Model):
@@ -2458,7 +2457,7 @@ class Dnasequencingrun(models.Model):
         db_table = 'dnasequencingrun'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Dnasequencingrunattachment(models.Model):
@@ -2484,7 +2483,7 @@ class Dnasequencingrunattachment(models.Model):
         db_table = 'dnasequencerunattachment'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Dnasequencingruncitation(models.Model):
@@ -2519,7 +2518,7 @@ class Dnasequencingruncitation(models.Model):
         db_table = 'dnasequencingruncitation'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Datatype(models.Model):
@@ -2542,7 +2541,7 @@ class Datatype(models.Model):
         db_table = 'datatype'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Deaccession(models.Model):
@@ -2597,7 +2596,7 @@ class Deaccession(models.Model):
             # models.Index(fields=['DeaccessionDate'], name='DeaccessionDateIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Deaccessionagent(models.Model):
@@ -2623,7 +2622,7 @@ class Deaccessionagent(models.Model):
         db_table = 'deaccessionagent'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Deaccessionattachment(models.Model):
@@ -2649,7 +2648,7 @@ class Deaccessionattachment(models.Model):
         db_table = 'deaccessionattachment'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Determination(models.Model):
@@ -2721,7 +2720,7 @@ class Determination(models.Model):
             # models.Index(fields=['TypeStatusName'], name='TypeStatusNameIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Determinationcitation(models.Model):
@@ -2754,7 +2753,7 @@ class Determinationcitation(models.Model):
             # models.Index(fields=['CollectionMemberID'], name='DetCitColMemIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Determiner(models.Model):
@@ -2785,7 +2784,7 @@ class Determiner(models.Model):
         db_table = 'determiner'
         ordering = ('ordernumber',)
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Discipline(models.Model):
@@ -2823,7 +2822,7 @@ class Discipline(models.Model):
             # models.Index(fields=['Name'], name='DisciplineNameIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Disposal(models.Model):
@@ -2861,7 +2860,7 @@ class Disposal(models.Model):
             # models.Index(fields=['DisposalDate'], name='DisposalDateIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Disposalagent(models.Model):
@@ -2887,7 +2886,7 @@ class Disposalagent(models.Model):
         db_table = 'disposalagent'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Disposalattachment(models.Model):
@@ -2913,7 +2912,7 @@ class Disposalattachment(models.Model):
         db_table = 'disposalattachment'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Disposalpreparation(models.Model):
@@ -2940,7 +2939,7 @@ class Disposalpreparation(models.Model):
         db_table = 'disposalpreparation'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Division(models.Model):
@@ -2976,7 +2975,7 @@ class Division(models.Model):
             # models.Index(fields=['Name'], name='DivisionNameIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Exchangein(models.Model):
@@ -3020,7 +3019,7 @@ class Exchangein(models.Model):
             # models.Index(fields=['DescriptionOfMaterial'], name='DescriptionOfMaterialIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Exchangeinattachment(models.Model):
@@ -3046,7 +3045,7 @@ class Exchangeinattachment(models.Model):
         db_table = 'exchangeinattachment'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Exchangeinprep(models.Model):
@@ -3080,7 +3079,7 @@ class Exchangeinprep(models.Model):
             # models.Index(fields=['DisciplineID'], name='ExchgInPrepDspMemIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Exchangeout(models.Model):
@@ -3126,7 +3125,7 @@ class Exchangeout(models.Model):
             # models.Index(fields=['ExchangeOutNumber'], name='ExchangeOutNumberIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Exchangeoutattachment(models.Model):
@@ -3152,7 +3151,7 @@ class Exchangeoutattachment(models.Model):
         db_table = 'exchangeoutattachment'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Exchangeoutprep(models.Model):
@@ -3186,7 +3185,7 @@ class Exchangeoutprep(models.Model):
             # models.Index(fields=['DisciplineID'], name='ExchgOutPrepDspMemIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Exsiccata(models.Model):
@@ -3212,7 +3211,7 @@ class Exsiccata(models.Model):
         db_table = 'exsiccata'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Exsiccataitem(models.Model):
@@ -3238,7 +3237,7 @@ class Exsiccataitem(models.Model):
         db_table = 'exsiccataitem'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Extractor(models.Model):
@@ -3268,7 +3267,7 @@ class Extractor(models.Model):
         db_table = 'extractor'
         ordering = ('ordernumber',)
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Fieldnotebook(models.Model):
@@ -3303,7 +3302,7 @@ class Fieldnotebook(models.Model):
             # models.Index(fields=['EndDate'], name='FNBEndDateIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Fieldnotebookattachment(models.Model):
@@ -3329,7 +3328,7 @@ class Fieldnotebookattachment(models.Model):
         db_table = 'fieldnotebookattachment'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Fieldnotebookpage(models.Model):
@@ -3360,7 +3359,7 @@ class Fieldnotebookpage(models.Model):
             # models.Index(fields=['ScanDate'], name='FNBPScanDateIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Fieldnotebookpageattachment(models.Model):
@@ -3386,7 +3385,7 @@ class Fieldnotebookpageattachment(models.Model):
         db_table = 'fieldnotebookpageattachment'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Fieldnotebookpageset(models.Model):
@@ -3420,7 +3419,7 @@ class Fieldnotebookpageset(models.Model):
             # models.Index(fields=['EndDate'], name='FNBPSEndDateIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Fieldnotebookpagesetattachment(models.Model):
@@ -3446,7 +3445,7 @@ class Fieldnotebookpagesetattachment(models.Model):
         db_table = 'fieldnotebookpagesetattachment'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Fundingagent(models.Model):
@@ -3478,7 +3477,7 @@ class Fundingagent(models.Model):
             # models.Index(fields=['DivisionID'], name='COLTRIPDivIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Geocoorddetail(models.Model):
@@ -3540,7 +3539,7 @@ class Geocoorddetail(models.Model):
         db_table = 'geocoorddetail'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Geography(model_extras.Geography):
@@ -3590,7 +3589,7 @@ class Geography(model_extras.Geography):
             # models.Index(fields=['FullName'], name='GeoFullNameIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Geographytreedef(models.Model):
@@ -3615,7 +3614,7 @@ class Geographytreedef(models.Model):
         db_table = 'geographytreedef'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Geographytreedefitem(model_extras.Geographytreedefitem):
@@ -3648,7 +3647,7 @@ class Geographytreedefitem(model_extras.Geographytreedefitem):
         db_table = 'geographytreedefitem'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Geologictimeperiod(model_extras.Geologictimeperiod):
@@ -3695,7 +3694,7 @@ class Geologictimeperiod(model_extras.Geologictimeperiod):
             # models.Index(fields=['GUID'], name='GTPGuidIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Geologictimeperiodtreedef(models.Model):
@@ -3720,7 +3719,7 @@ class Geologictimeperiodtreedef(models.Model):
         db_table = 'geologictimeperiodtreedef'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Geologictimeperiodtreedefitem(model_extras.Geologictimeperiodtreedefitem):
@@ -3753,7 +3752,7 @@ class Geologictimeperiodtreedefitem(model_extras.Geologictimeperiodtreedefitem):
         db_table = 'geologictimeperiodtreedefitem'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Gift(models.Model):
@@ -3809,7 +3808,7 @@ class Gift(models.Model):
             # models.Index(fields=['GiftDate'], name='GiftDateIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Giftagent(models.Model):
@@ -3840,7 +3839,7 @@ class Giftagent(models.Model):
             # models.Index(fields=['DisciplineID'], name='GiftAgDspMemIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Giftattachment(models.Model):
@@ -3866,7 +3865,7 @@ class Giftattachment(models.Model):
         db_table = 'giftattachment'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Giftpreparation(models.Model):
@@ -3904,7 +3903,7 @@ class Giftpreparation(models.Model):
             # models.Index(fields=['DisciplineID'], name='GiftPrepDspMemIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Groupperson(models.Model):
@@ -3931,7 +3930,7 @@ class Groupperson(models.Model):
         db_table = 'groupperson'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Inforequest(models.Model):
@@ -3966,7 +3965,7 @@ class Inforequest(models.Model):
             # models.Index(fields=['CollectionMemberID'], name='IRColMemIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Institution(models.Model):
@@ -4020,7 +4019,7 @@ class Institution(models.Model):
             # models.Index(fields=['GUID'], name='InstGuidIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Institutionnetwork(models.Model):
@@ -4058,7 +4057,7 @@ class Institutionnetwork(models.Model):
             # models.Index(fields=['Name'], name='InstNetworkNameIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Journal(models.Model):
@@ -4091,7 +4090,7 @@ class Journal(models.Model):
             # models.Index(fields=['GUID'], name='JournalGUIDIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Latlonpolygon(models.Model):
@@ -4118,7 +4117,7 @@ class Latlonpolygon(models.Model):
         db_table = 'latlonpolygon'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Latlonpolygonpnt(models.Model):
@@ -4184,7 +4183,7 @@ class Lithostrat(model_extras.Lithostrat):
             # models.Index(fields=['GUID'], name='LithoGuidIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Lithostrattreedef(models.Model):
@@ -4209,7 +4208,7 @@ class Lithostrattreedef(models.Model):
         db_table = 'lithostrattreedef'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Lithostrattreedefitem(model_extras.Lithostrattreedefitem):
@@ -4242,7 +4241,7 @@ class Lithostrattreedefitem(model_extras.Lithostrattreedefitem):
         db_table = 'lithostrattreedefitem'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Loan(models.Model):
@@ -4301,7 +4300,7 @@ class Loan(models.Model):
             # models.Index(fields=['CurrentDueDate'], name='CurrentDueDateIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Loanagent(models.Model):
@@ -4331,7 +4330,7 @@ class Loanagent(models.Model):
             # models.Index(fields=['DisciplineID'], name='LoanAgDspMemIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Loanattachment(models.Model):
@@ -4357,7 +4356,7 @@ class Loanattachment(models.Model):
         db_table = 'loanattachment'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Loanpreparation(models.Model):
@@ -4398,7 +4397,7 @@ class Loanpreparation(models.Model):
             # models.Index(fields=['DisciplineID'], name='LoanPrepDspMemIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Loanreturnpreparation(models.Model):
@@ -4431,7 +4430,7 @@ class Loanreturnpreparation(models.Model):
             # models.Index(fields=['DisciplineID'], name='LoanRetPrepDspMemIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Locality(models.Model):
@@ -4506,7 +4505,7 @@ class Locality(models.Model):
             # models.Index(fields=['RelationToNamedPlace'], name='RelationToNamedPlaceIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Localityattachment(models.Model):
@@ -4532,7 +4531,7 @@ class Localityattachment(models.Model):
         db_table = 'localityattachment'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Localitycitation(models.Model):
@@ -4565,7 +4564,7 @@ class Localitycitation(models.Model):
             # models.Index(fields=['DisciplineID'], name='LocCitDspMemIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Localitydetail(models.Model):
@@ -4635,7 +4634,7 @@ class Localitydetail(models.Model):
         db_table = 'localitydetail'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Localitynamealias(models.Model):
@@ -4664,7 +4663,7 @@ class Localitynamealias(models.Model):
             # models.Index(fields=['Name'], name='LocalityNameAliasIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Materialsample(models.Model):
@@ -4731,7 +4730,7 @@ class Materialsample(models.Model):
             # models.Index(fields=['GGBNSampleDesignation'], name='DesignationIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Morphbankview(models.Model):
@@ -4762,7 +4761,7 @@ class Morphbankview(models.Model):
         db_table = 'morphbankview'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Otheridentifier(models.Model):
@@ -4808,7 +4807,7 @@ class Otheridentifier(models.Model):
             # models.Index(fields=['CollectionMemberID'], name='OthIdColMemIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Paleocontext(models.Model):
@@ -4856,7 +4855,7 @@ class Paleocontext(models.Model):
             # models.Index(fields=['DisciplineID'], name='PaleoCxtDisciplineIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Pcrperson(models.Model):
@@ -4886,7 +4885,7 @@ class Pcrperson(models.Model):
         db_table = 'pcrperson'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Permit(models.Model):
@@ -4938,7 +4937,7 @@ class Permit(models.Model):
             # models.Index(fields=['IssuedDate'], name='IssuedDateIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Permitattachment(models.Model):
@@ -4964,7 +4963,7 @@ class Permitattachment(models.Model):
         db_table = 'permitattachment'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Picklist(models.Model):
@@ -5001,7 +5000,7 @@ class Picklist(models.Model):
             # models.Index(fields=['Name'], name='PickListNameIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Picklistitem(models.Model):
@@ -5027,7 +5026,7 @@ class Picklistitem(models.Model):
         db_table = 'picklistitem'
         ordering = ('ordinal',)
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Preptype(models.Model):
@@ -5052,7 +5051,7 @@ class Preptype(models.Model):
         db_table = 'preptype'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Preparation(model_extras.Preparation):
@@ -5128,7 +5127,7 @@ class Preparation(model_extras.Preparation):
             # models.Index(fields=['BarCode'], name='PrepBarCodeIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Preparationattachment(models.Model):
@@ -5158,7 +5157,7 @@ class Preparationattachment(models.Model):
             # models.Index(fields=['CollectionMemberID'], name='PrepAttColMemIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Preparationattr(models.Model):
@@ -5188,7 +5187,7 @@ class Preparationattr(models.Model):
             # models.Index(fields=['CollectionMemberID'], name='PrepAttrColMemIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Preparationattribute(models.Model):
@@ -5255,7 +5254,7 @@ class Preparationattribute(models.Model):
             # models.Index(fields=['CollectionMemberID'], name='PrepAttrsColMemIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Preparationproperty(models.Model):
@@ -5444,7 +5443,7 @@ class Preparationproperty(models.Model):
             # models.Index(fields=['CollectionMemberID'], name='PREPPROPColMemIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Project(models.Model):
@@ -5487,7 +5486,7 @@ class Project(models.Model):
             # models.Index(fields=['ProjectNumber'], name='ProjectNumberIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Recordset(models.Model):
@@ -5523,7 +5522,7 @@ class Recordset(models.Model):
             # models.Index(fields=['name'], name='RecordSetNameIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Recordsetitem(models.Model):
@@ -5594,7 +5593,7 @@ class Referencework(models.Model):
             # models.Index(fields=['ISBN'], name='ISBNIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Referenceworkattachment(models.Model):
@@ -5620,7 +5619,7 @@ class Referenceworkattachment(models.Model):
         db_table = 'referenceworkattachment'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Repositoryagreement(models.Model):
@@ -5662,7 +5661,7 @@ class Repositoryagreement(models.Model):
             # models.Index(fields=['StartDate'], name='RefWrkStartDate')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Repositoryagreementattachment(models.Model):
@@ -5688,7 +5687,7 @@ class Repositoryagreementattachment(models.Model):
         db_table = 'repositoryagreementattachment'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Shipment(models.Model):
@@ -5737,7 +5736,7 @@ class Shipment(models.Model):
             # models.Index(fields=['ShipmentMethod'], name='ShipmentMethodIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Spappresource(models.Model):
@@ -5772,8 +5771,7 @@ class Spappresource(models.Model):
             # models.Index(fields=['Name'], name='SpAppResNameIDX'),
             # models.Index(fields=['MimeType'], name='SpAppResMimeTypeIDX')
         ]
-
-    timestamptracker = FieldTracker(fields=['timestampcreated'])
+    
     save = partialmethod(custom_save)
 
 class Spappresourcedata(models.Model):
@@ -5827,7 +5825,7 @@ class Spappresourcedata(models.Model):
     #     else:
     #         self._data = value
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(save_spappresourcedata)
 
 class Spappresourcedir(models.Model):
@@ -5858,7 +5856,7 @@ class Spappresourcedir(models.Model):
             # models.Index(fields=['DisciplineType'], name='SpAppResourceDirDispTypeIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Spauditlog(models.Model):
@@ -5891,7 +5889,7 @@ class Spauditlog(models.Model):
             self.recordversion = 0  # or some other default value
         custom_save(self, *args, **kwargs)
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(save_spauditlog)
 
 class Spauditlogfield(models.Model):
@@ -5917,7 +5915,7 @@ class Spauditlogfield(models.Model):
         db_table = 'spauditlogfield'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Spexportschema(models.Model):
@@ -5943,7 +5941,7 @@ class Spexportschema(models.Model):
         db_table = 'spexportschema'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Spexportschemaitem(models.Model):
@@ -5971,7 +5969,7 @@ class Spexportschemaitem(models.Model):
         db_table = 'spexportschemaitem'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Spexportschemaitemmapping(models.Model):
@@ -6000,7 +5998,7 @@ class Spexportschemaitemmapping(models.Model):
         db_table = 'spexportschemaitemmapping'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Spexportschemamapping(models.Model):
@@ -6029,7 +6027,7 @@ class Spexportschemamapping(models.Model):
             # models.Index(fields=['CollectionMemberID'], name='SPEXPSCHMMAPColMemIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Spfieldvaluedefault(models.Model):
@@ -6059,7 +6057,7 @@ class Spfieldvaluedefault(models.Model):
             # models.Index(fields=['CollectionMemberID'], name='SpFieldValueDefaultColMemIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Splocalecontainer(models.Model):
@@ -6095,7 +6093,7 @@ class Splocalecontainer(models.Model):
             # models.Index(fields=['Name'], name='SpLocaleContainerNameIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Splocalecontaineritem(models.Model):
@@ -6130,7 +6128,7 @@ class Splocalecontaineritem(models.Model):
             # models.Index(fields=['Name'], name='SpLocaleContainerItemNameIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Splocaleitemstr(models.Model):
@@ -6164,7 +6162,7 @@ class Splocaleitemstr(models.Model):
             # models.Index(fields=['Country'], name='SpLocaleCountyIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Sppermission(models.Model):
@@ -6210,7 +6208,7 @@ class Spprincipal(models.Model):
         db_table = 'spprincipal'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Spquery(models.Model):
@@ -6248,7 +6246,7 @@ class Spquery(models.Model):
             # models.Index(fields=['Name'], name='SpQueryNameIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Spqueryfield(models.Model):
@@ -6289,7 +6287,7 @@ class Spqueryfield(models.Model):
         db_table = 'spqueryfield'
         ordering = ('position',)
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Spreport(models.Model):
@@ -6324,7 +6322,7 @@ class Spreport(models.Model):
             # models.Index(fields=['Name'], name='SpReportNameIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Spsymbiotainstance(models.Model):
@@ -6358,7 +6356,7 @@ class Spsymbiotainstance(models.Model):
             # models.Index(fields=['CollectionMemberID'], name='SPSYMINSTColMemIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Sptasksemaphore(models.Model):
@@ -6390,7 +6388,7 @@ class Sptasksemaphore(models.Model):
         db_table = 'sptasksemaphore'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Spversion(models.Model):
@@ -6418,7 +6416,7 @@ class Spversion(models.Model):
         db_table = 'spversion'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Spviewsetobj(models.Model):
@@ -6449,7 +6447,7 @@ class Spviewsetobj(models.Model):
             # models.Index(fields=['Name'], name='SpViewObjNameIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Spvisualquery(models.Model):
@@ -6477,7 +6475,7 @@ class Spvisualquery(models.Model):
             # models.Index(fields=['Name'], name='SpVisualQueryNameIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Specifyuser(model_extras.Specifyuser):
@@ -6509,7 +6507,7 @@ class Specifyuser(model_extras.Specifyuser):
         db_table = 'specifyuser'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     # save = partialmethod(custom_save)
 
 class Storage(model_extras.Storage):
@@ -6552,7 +6550,7 @@ class Storage(model_extras.Storage):
             # models.Index(fields=['FullName'], name='StorFullNameIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Storageattachment(models.Model):
@@ -6578,7 +6576,7 @@ class Storageattachment(models.Model):
         db_table = 'storageattachment'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Storagetreedef(models.Model):
@@ -6603,7 +6601,7 @@ class Storagetreedef(models.Model):
         db_table = 'storagetreedef'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Storagetreedefitem(model_extras.Storagetreedefitem):
@@ -6636,7 +6634,7 @@ class Storagetreedefitem(model_extras.Storagetreedefitem):
         db_table = 'storagetreedefitem'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Taxon(model_extras.Taxon):
@@ -6756,7 +6754,7 @@ class Taxon(model_extras.Taxon):
             # models.Index(fields=['EnvironmentalProtectionStatus'], name='EnvironmentalProtectionStatusIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Taxonattachment(models.Model):
@@ -6782,7 +6780,7 @@ class Taxonattachment(models.Model):
         db_table = 'taxonattachment'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Taxonattribute(models.Model):
@@ -6968,7 +6966,7 @@ class Taxonattribute(models.Model):
         db_table = 'taxonattribute'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Taxoncitation(models.Model):
@@ -7003,7 +7001,7 @@ class Taxoncitation(models.Model):
         db_table = 'taxoncitation'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Taxontreedef(models.Model):
@@ -7030,7 +7028,7 @@ class Taxontreedef(models.Model):
         db_table = 'taxontreedef'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Taxontreedefitem(model_extras.Taxontreedefitem):
@@ -7064,7 +7062,7 @@ class Taxontreedefitem(model_extras.Taxontreedefitem):
         db_table = 'taxontreedefitem'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Treatmentevent(models.Model):
@@ -7122,7 +7120,7 @@ class Treatmentevent(models.Model):
             # models.Index(fields=['TreatmentNumber'], name='TETreatmentNumberIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Treatmenteventattachment(models.Model):
@@ -7148,7 +7146,7 @@ class Treatmenteventattachment(models.Model):
         db_table = 'treatmenteventattachment'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Voucherrelationship(models.Model):
@@ -7192,7 +7190,7 @@ class Voucherrelationship(models.Model):
             # models.Index(fields=['CollectionMemberID'], name='VRXDATColMemIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Workbench(models.Model):
@@ -7231,7 +7229,7 @@ class Workbench(models.Model):
             # models.Index(fields=['name'], name='WorkbenchNameIDX')
         ]
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Workbenchdataitem(models.Model):
@@ -7344,7 +7342,7 @@ class Workbenchrowexportedrelationship(models.Model):
         db_table = 'workbenchrowexportedrelationship'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Workbenchrowimage(models.Model):
@@ -7420,7 +7418,7 @@ class Workbenchtemplate(models.Model):
         db_table = 'workbenchtemplate'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class Workbenchtemplatemappingitem(models.Model):
@@ -7460,5 +7458,5 @@ class Workbenchtemplatemappingitem(models.Model):
         db_table = 'workbenchtemplatemappingitem'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
