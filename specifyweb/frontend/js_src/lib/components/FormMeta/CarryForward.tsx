@@ -327,9 +327,15 @@ function CarryForwardConfigDialog({
           </Submit.Info>
         </>
       }
-      header={formsText.carryForwardTableSettingsDescription({
-        tableName: table.label,
-      })}
+      header={
+        isBulkConfig === true
+          ? formsText.bulkCarryForwardTableSettingsDescription({
+              tableName: table.label,
+            })
+          : formsText.carryForwardTableSettingsDescription({
+              tableName: table.label,
+            })
+      }
       onClose={handleClose}
     >
       <Form className="overflow-hidden" id={id('form')} onSubmit={handleClose}>
@@ -398,7 +404,10 @@ function CarryForwardCategory({
                 }
               >
                 <Input.Checkbox
-                  checked={f.includes(carryForward, field.name)}
+                  checked={
+                    f.includes(carryForward, field.name) ||
+                    (isBulkConfig === true && field.localization.isrequired)
+                  }
                   disabled={
                     isUnique ||
                     (isBulkConfig === true && field.localization.isrequired)

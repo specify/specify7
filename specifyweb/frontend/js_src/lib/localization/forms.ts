@@ -872,6 +872,9 @@ export const formsText = createDictionary({
     'de-ch':
       'Konfigurieren Sie die zu übertragenden Felder ({tableName:string})',
   },
+  bulkCarryForwardTableSettingsDescription: {
+    'en-us': 'Configure fields to bulk carry forward ({tableName:string})',
+  },
   carryForwardUniqueField: {
     'en-us': 'This field must be unique. It can not be carried over',
     'ru-ru': 'Это поле должно быть уникальным. Его нельзя переносить',
