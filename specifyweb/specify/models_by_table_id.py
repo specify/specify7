@@ -202,7 +202,11 @@ model_names_by_table_id = {
     1011:'LibraryRolePolicy',
     1012:'Spdataset',
     1013: 'LocalityUpdate',
-    1014: 'LocalityUpdateRowResult'
+    1014: 'LocalityUpdateRowResult',
+    1015: 'CollectionObjectType',
+    1016: 'CollectionObjectGroup',
+    1017: 'CollectionObjectGroupJoin',
+    1018: 'CollectionObjectGroupType',
 }
 
 model_names_by_app = {
@@ -418,7 +422,11 @@ model_names_by_app = {
         'Workbenchrowexportedrelationship',
         'Workbenchrowimage',
         'Workbenchtemplate',
-        'Workbenchtemplatemappingitem'
+        'Workbenchtemplatemappingitem',
+        'CollectionObjectType',
+        'CollectionObjectGroup',
+        'CollectionObjectGroupJoin',
+        'CollectionObjectGroupType',
     }
 }
 
