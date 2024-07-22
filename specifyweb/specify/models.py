@@ -2,7 +2,7 @@ from functools import partialmethod
 from django.db import models
 from django.utils import timezone
 from specifyweb.businessrules.exceptions import AbortSave
-from specifyweb.specify.model_timestamp import pre_save_auto_timestamp_field_with_override
+from specifyweb.specify.model_timestamp import save_auto_timestamp_field_with_override
 from specifyweb.specify import model_extras
 from .datamodel import datamodel
 import logging
@@ -18,8 +18,7 @@ def protect_with_blockers(collector, field, sub_objs, using):
 def custom_save(self, *args, **kwargs):
     try:
         # Custom save logic here, if necessary
-        pre_save_auto_timestamp_field_with_override(self)
-        super(self.__class__, self).save(*args, **kwargs)
+        save_auto_timestamp_field_with_override(super(self.__class__, self).save, args, kwargs, self)
     except AbortSave as e:
         # Handle AbortSave exception as needed
         logger.error("Save operation aborted: %s", e)

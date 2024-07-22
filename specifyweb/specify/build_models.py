@@ -3,7 +3,7 @@ from django.db.models.signals import pre_delete
 
 from specifyweb.businessrules.exceptions import AbortSave
 from . import model_extras
-from .model_timestamp import pre_save_auto_timestamp_field_with_override, timestamp_fields
+from .model_timestamp import save_auto_timestamp_field_with_override
 
 appname = __name__.split('.')[-2]
 
@@ -59,13 +59,9 @@ def make_model(module, table, datamodel):
         if 'rankid' in attrs:
             ordering += ('rankid', )
 
-    has_timestamp_fields = any(field.lower() in timestamp_fields for field in table.fields)
-
     def save(self, *args, **kwargs):
         try:
-            if has_timestamp_fields:
-                pre_save_auto_timestamp_field_with_override(self)
-            return super(model, self).save(*args, **kwargs)
+            return save_auto_timestamp_field_with_override(super(model, self).save, args, kwargs, self)
         except AbortSave:
             return
         

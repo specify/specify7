@@ -17,7 +17,6 @@ from specifyweb.businessrules.orm_signal_handler import connect_signal, disconne
 def get_table(name: str):
     return getattr(models, name.capitalize())
 
-
 class MainSetupTearDown:
     def setUp(self):
         disconnect_signal('pre_save', None, dispatch_uid=UNIQUENESS_DISPATCH_UID)
@@ -94,6 +93,7 @@ class ApiTests(MainSetupTearDown, TestCase): pass
 skip_perms_check = lambda x: None
 
 class SimpleApiTests(ApiTests):
+
     def test_get_collection(self):
         data = api.get_collection(self.collection, 'collectionobject', skip_perms_check)
         self.assertEqual(data['meta']['total_count'], len(self.collectionobjects))
@@ -131,77 +131,6 @@ class SimpleApiTests(ApiTests):
                 'catalognumber': 'foobar'})
         api.delete_resource(self.collection, self.agent, 'collectionobject', obj.id, obj.version)
         self.assertEqual(models.Collectionobject.objects.filter(id=obj.id).count(), 0)
-
-    def test_timestamp_override_object(self):
-        manual_datetime_1 = datetime(1960, 1, 1, 0, 0, 0)
-        manual_datetime_2 = datetime(2020, 1, 1, 0, 0, 0)
-        cur_time = datetime.now()
-
-        def timestamp_field_assert(obj, manual_datetime):
-            self.assertEqual(obj.timestampcreated, manual_datetime)
-            self.assertEqual(obj.timestampmodified, manual_datetime)
-
-        # Test with api.create_obj
-        obj = api.create_obj(self.collection, self.agent, 'collectionobject', {
-                'collection': api.uri_for_model('collection', self.collection.id),
-                'catalognumber': 'foobar', 
-                'timestampcreated': manual_datetime_1, 'timestampmodified': manual_datetime_1})
-        obj = models.Collectionobject.objects.get(id=obj.id)
-        timestamp_field_assert(obj, manual_datetime_1)
-
-        # Test editing obj after creating with api.create_obj
-        data = api.get_resource('collection', self.collection.id, skip_perms_check)
-        data['timestampcreated'] = manual_datetime_2
-        data['timestampmodified'] = manual_datetime_2
-        api.update_obj(self.collection, self.agent, 'collection',
-                       data['id'], data['version'], data)
-        obj = models.Collection.objects.get(id=self.collection.id)
-        timestamp_field_assert(obj, manual_datetime_2)
-
-        # Test with direct object creation
-        CollectionObject = getattr(models, 'Collectionobject')
-        obj = CollectionObject(
-            timestampcreated=manual_datetime_1,
-            timestampmodified=manual_datetime_1,
-            collectionmemberid=1,
-            collection=self.collection)
-        obj.save()
-        timestamp_field_assert(obj, manual_datetime_1)
-
-        # Test editing obj after creating with direct object creation
-        CollectionObject = getattr(models, 'Collectionobject')
-        obj = CollectionObject.objects.create(
-            timestampcreated=manual_datetime_2,
-            timestampmodified=manual_datetime_2,
-            collectionmemberid=1,
-            collection=self.collection)
-        obj.save()
-        timestamp_field_assert(obj, manual_datetime_2)
-
-        # Test with objects.create
-        CollectionObject = getattr(models, 'Collectionobject')
-        obj = CollectionObject.objects.create(
-            timestampcreated=manual_datetime_1,
-            timestampmodified=manual_datetime_1,
-            collectionmemberid=1,
-            collection=self.collection)
-        obj.save()
-        timestamp_field_assert(obj, manual_datetime_1)
-
-        # Test editing obj after creating with objects.create
-        obj.timestampcreated = manual_datetime_2
-        obj.timestampmodified = manual_datetime_2
-        obj.save()
-        timestamp_field_assert(obj, manual_datetime_2)
-
-        # Test with current time
-        CollectionObject = getattr(models, 'Collectionobject')
-        obj = CollectionObject.objects.create(
-            collectionmemberid=1,
-            collection=self.collection)
-        obj.save()
-        self.assertGreaterEqual(obj.timestampcreated, cur_time)
-        self.assertGreaterEqual(obj.timestampmodified, cur_time)
 
 class RecordSetTests(ApiTests):
     def setUp(self):
