@@ -5,15 +5,22 @@ from sqlalchemy import orm, sql
 
 from specifyweb.specify.models import datamodel
 
-from . import models
+from specifyweb.stored_queries import models
 
 logger = logging.getLogger(__name__)
 
 
 def get_treedef(collection, tree_name):
-    return (collection.discipline.division.institution.storagetreedef
-            if tree_name == 'Storage' else
-            getattr(collection.discipline, tree_name.lower() + "treedef"))
+    if tree_name == 'Storage':
+        return collection.discipline.division.institution.storagetreedef
+    elif tree_name == 'Taxon':
+        return get_taxon_treedef(collection)
+    return getattr(collection.discipline, tree_name.lower() + "treedef")
+
+def get_taxon_treedef(collection, collection_object_type=None):
+    if collection_object_type is None:
+        return collection.collectionobjecttype.taxontreedef
+    return collection_object_type.taxontreedef
 
 class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter query join_cache param_count tree_rank_count')):
 
