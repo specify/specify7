@@ -7534,8 +7534,7 @@ class CollectionObjectGroupType(models.Model):
     class Meta:
         db_table = 'collectionobjectgrouptype'
         ordering = ()
-
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
+    
     save = partialmethod(custom_save)
 
 class CollectionObjectGroup(models.Model): # aka. Cog
