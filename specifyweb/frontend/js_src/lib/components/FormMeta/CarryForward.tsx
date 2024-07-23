@@ -409,7 +409,9 @@ function CarryForwardCategory({
                 <Input.Checkbox
                   checked={
                     f.includes(carryForward, field.name) ||
-                    (isBulkConfig === true && field.localization.isrequired)
+                    (isBulkConfig === true &&
+                      (field.localization.isrequired ||
+                        field.overrides.isRequired))
                   }
                   disabled={
                     isUnique ||
