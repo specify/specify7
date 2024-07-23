@@ -7511,7 +7511,6 @@ class CollectionObjectType(models.Model):
         db_table = 'collectionobjecttype'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     save = partialmethod(custom_save)
 
 class CollectionObjectGroupType(models.Model):
@@ -7576,7 +7575,6 @@ class CollectionObjectGroup(models.Model): # aka. Cog
         db_table = 'collectionobjectgroup'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     save = partialmethod(custom_save)
 
 class CollectionObjectGroupJoin(models.Model): # aka. CoJo or CogJoin
@@ -7613,5 +7611,4 @@ class CollectionObjectGroupJoin(models.Model): # aka. CoJo or CogJoin
         db_table = 'collectionobjectgroupjoin'
         ordering = ()
 
-    timestamptracker = FieldTracker(fields=["timestampcreated", "timestampmodified"])
     save = partialmethod(custom_save)
