@@ -415,7 +415,9 @@ function CarryForwardCategory({
                   }
                   disabled={
                     isUnique ||
-                    (isBulkConfig === true && field.localization.isrequired)
+                    (isBulkConfig === true &&
+                      (field.localization.isrequired ||
+                        field.overrides.isRequired))
                   }
                   onValueChange={(isChecked): void => {
                     const dependents = filterArray(
