@@ -176,25 +176,25 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
               .rgetPromise('collectionObjectType', true)
               .then((coType: SpecifyResource<CollectionObjectType>) => {
                 /*
-                 * Have to set save blockers directly here to get this working. 
+                 * Have to set save blockers directly here to get this working.
                  * Since following code has to wait for above rgetPromise to resolve, returning a Promise<BusinessRuleResult> for validation here is too slow and
-                 * does not get captured by business rules. 
+                 * does not get captured by business rules.
                  */
                 if (
-                  idFromUrl(coType.get('taxonTreeDef')) !==
+                  idFromUrl(coType.get('taxonTreeDef')) ===
                   idFromUrl(taxon?.get('definition') ?? '')
                 ) {
                   setSaveBlockers(
                     determination,
                     determination.specifyTable.field.taxon,
-                    [formsText.invalidTree()],
+                    [],
                     DETERMINATION_TAXON_KEY
                   );
                 } else {
                   setSaveBlockers(
                     determination,
                     determination.specifyTable.field.taxon,
-                    [],
+                    [formsText.invalidTree()],
                     DETERMINATION_TAXON_KEY
                   );
                 }
