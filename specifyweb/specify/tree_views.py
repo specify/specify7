@@ -1,7 +1,7 @@
 from functools import wraps
-from typing import Literal
+from typing import overload, Literal, List, TypedDict, Dict, Any, Union
 from django.db import transaction
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotAllowed
 from django.views.decorators.http import require_POST
 from sqlalchemy import sql
 from sqlalchemy.orm import aliased
@@ -10,8 +10,9 @@ from specifyweb.middleware.general import require_GET
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, check_permission_targets
-from specifyweb.specify.tree_ranks import tree_rank_count
+from specifyweb.specify.tree_ranks import tree_rank_count, TAXON_RANK_INCREMENT
 from specifyweb.stored_queries import models
+from specifyweb.specify.models import Taxontreedef, Taxontreedefitem
 from . import tree_extras
 from .api import get_object_or_404, obj_to_data, toJson
 from .auditcodes import TREE_MOVE
@@ -358,6 +359,7 @@ def tree_rank_item_count(request, tree, rankid):
     rank = get_object_or_404(tree_rank_model_name, id=rankid)
     count = tree_rank_count(tree, rank.id)
     return HttpResponse(toJson(count), content_type='application/json')
+
 
 class TaxonMutationPT(PermissionTarget):
     resource = "/tree/edit/taxon"
