@@ -7,6 +7,7 @@ import { useIsModified } from '../../hooks/useIsModified';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import type { RA } from '../../utils/types';
 import { Container } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -109,6 +110,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   isCollapsed,
   preHeaderButtons,
   containerRef,
+  isInRecordSet,
 }: {
   readonly isLoading?: boolean;
   readonly resource: SpecifyResource<SCHEMA> | undefined;
@@ -121,7 +123,9 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly dialog: 'modal' | 'nonModal' | false;
   readonly onSaving?: (unsetUnloadProtect: () => void) => false | void;
   readonly onSaved: (() => void) | undefined;
-  readonly onAdd: ((newResource: SpecifyResource<SCHEMA>) => void) | undefined;
+  readonly onAdd:
+    | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
+    | undefined;
   readonly onDeleted: (() => void) | undefined;
   readonly onClose: () => void;
   readonly children?: JSX.Element;
@@ -133,6 +137,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly isCollapsed?: boolean;
   readonly preHeaderButtons?: JSX.Element | undefined;
   readonly containerRef?: React.RefObject<HTMLDivElement>;
+  readonly isInRecordSet?: boolean;
 }): JSX.Element {
   const [isDeleted, setDeleted, setNotDeleted] = useBooleanState();
   // Remove isDeleted status when resource changes
@@ -224,6 +229,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
     ) : (
       <SaveButton
         form={formElement}
+        isInRecordSet={isInRecordSet}
         resource={resource}
         onAdd={handleAdd}
         onSaved={(): void => {

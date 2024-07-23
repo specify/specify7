@@ -17,7 +17,7 @@ from django import forms
 from django.db import transaction
 from django.apps import apps
 from django.http import (HttpResponse, HttpResponseBadRequest,
-                         Http404, HttpResponseNotAllowed, QueryDict)
+                         Http404, HttpResponseNotAllowed, JsonResponse, QueryDict)
 from django.core.exceptions import ObjectDoesNotExist, FieldError, FieldDoesNotExist
 from django.db.models.fields import DateTimeField, FloatField, DecimalField
 
@@ -241,7 +241,7 @@ def collection_dispatch(request, model) -> HttpResponse:
     elif request.method == 'POST':
         obj = post_resource(request.specify_collection,
                             request.specify_user_agent,
-                            model, json.load(request),
+                            model, json.loads(request.body),
                             request.GET.get('recordsetid', None))
 
         resp = HttpResponseCreated(toJson(_obj_to_data(obj, checker)),
@@ -251,6 +251,52 @@ def collection_dispatch(request, model) -> HttpResponse:
         resp = HttpResponseNotAllowed(['GET', 'POST'])
 
     return resp
+
+def collection_dispatch_bulk(request, model) -> HttpResponse:
+    """
+    Do the same as collection_dispatch, but for bulk POST operations.
+    Call this endpoint with a list of objects of the same type to create.
+    This reduces the amount of API calls needed to create multiple objects, like when creating multiple carry forwards.
+    """
+    checker = table_permissions_checker(request.specify_collection, request.specify_user_agent, "read")
+
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+        
+    data = json.loads(request.body)
+    resp_objs = []
+    for obj_data in data:
+        obj = post_resource(
+            request.specify_collection,
+            request.specify_user_agent,
+            model,
+            obj_data,
+            request.GET.get("recordsetid", None),
+        )
+        resp_objs.append(_obj_to_data(obj, checker))
+
+    return HttpResponseCreated(toJson(resp_objs), content_type='application/json')
+
+def collection_dispatch_bulk_copy(request, model, copies) -> HttpResponse:
+    checker = table_permissions_checker(request.specify_collection, request.specify_user_agent, "read")
+
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+
+    data = json.loads(request.body)
+    data = dict(filter(lambda item: item[0] != 'id', data.items())) # Remove ID field before making copies
+    resp_objs = []
+    for _ in range(int(copies)):
+        obj = post_resource(
+            request.specify_collection,
+            request.specify_user_agent,
+            model,
+            data,
+            request.GET.get("recordsetid", None),
+        )
+        resp_objs.append(_obj_to_data(obj, checker))
+
+    return HttpResponseCreated(toJson(resp_objs), content_type='application/json')
 
 def get_model_or_404(name: str):
     """Lookup a specify model by name. Raise Http404 if not found."""
@@ -468,6 +514,9 @@ def set_fields_from_data(obj, data: Dict[str, Any]) -> List[FieldChangeInfo]:
      return dirty_flds
 
 def is_dependent_field(obj, field_name: str) -> bool:
+    if obj.specify_model.get_field(field_name) is None:
+        return False
+
     return (
         obj.specify_model.get_field(field_name).dependent
 

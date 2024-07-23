@@ -1178,6 +1178,14 @@ export const userPreferenceDefinitions = {
             renderer: f.never,
             container: 'div',
           }),
+          enableBukCarryForward: definePref<RA<keyof Tables>>({
+            title: localized('_enableBulkCarryForward'),
+            requiresReload: false,
+            visible: false,
+            defaultValue: [],
+            renderer: f.never,
+            container: 'div',
+          }),
           /*
            * Can temporary disable clone for a given table
            * Since most tables are likely to have carry enabled, this pref is
