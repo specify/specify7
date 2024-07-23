@@ -130,6 +130,7 @@ function CustomEditTables({
           : formsText.configureInteractionTables()
       }
       isNoRestrictionMode={false}
+      parent="DataEntryList"
       tables={tables}
       onChange={handleChange}
       onClose={handleClose}

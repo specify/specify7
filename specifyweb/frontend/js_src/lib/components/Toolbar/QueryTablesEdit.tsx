@@ -31,6 +31,7 @@ export function QueryTablesEdit({
       defaultTables={defaultQueryTablesConfig}
       header={queryText.configureQueryTables()}
       isNoRestrictionMode={isNoRestrictionMode}
+      parent="QueryList"
       tables={tables}
       onChange={setTables}
       onClose={handleClose}
@@ -51,6 +52,7 @@ export function TablesListEdit({
   tables: selectedTables,
   onChange: handleChange,
   onClose: handleClose,
+  parent,
 }: {
   readonly isNoRestrictionMode: boolean;
   readonly defaultTables: RA<keyof Tables>;
@@ -58,11 +60,19 @@ export function TablesListEdit({
   readonly tables: RA<SpecifyTable>;
   readonly onChange: (table: RA<SpecifyTable>) => void;
   readonly onClose: () => void;
+  readonly parent: 'DataEntryList' | 'QueryList';
 }): JSX.Element {
   const selectedValues = selectedTables.map(({ name }) => name);
   const allTables = Object.values(genericTables)
     .filter((table) =>
-      tablesFilter(isNoRestrictionMode, false, true, table, selectedValues)
+      tablesFilter(
+        isNoRestrictionMode,
+        false,
+        true,
+        table,
+        selectedValues,
+        parent
+      )
     )
     // TODO: temp fix, remove this, use to hide geo tables for COG until 9.8 release
     .filter((table) => !HIDDEN_GEO_TABLES.has(table.name))
