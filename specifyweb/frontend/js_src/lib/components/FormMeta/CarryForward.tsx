@@ -88,10 +88,12 @@ export function CarryForwardConfig({
   table,
   parentTable,
   type,
+  isBulkConfig,
 }: {
   readonly table: SpecifyTable;
   readonly parentTable: SpecifyTable | undefined;
   readonly type: 'button' | 'cog';
+  readonly isBulkConfig?: boolean;
 }): JSX.Element | null {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const [globalEnabled, setGlobalEnabled] = userPreferences.use(
@@ -133,6 +135,7 @@ export function CarryForwardConfig({
       ) : null}
       {isOpen && (
         <CarryForwardConfigDialog
+          isBulkConfig={isBulkConfig}
           parentTable={parentTable}
           table={table}
           onClose={handleClose}
@@ -344,7 +347,7 @@ function CarryForwardConfigDialog({
             carryForward={config}
             fields={literalFields}
             header={schemaText.fields()}
-            isBulkConfig
+            isBulkConfig={isBulkConfig}
             table={table}
             uniqueFields={uniqueFields}
             onChange={handleChange}
@@ -353,7 +356,7 @@ function CarryForwardConfigDialog({
             carryForward={config}
             fields={relationships}
             header={schemaText.relationships()}
-            isBulkConfig
+            isBulkConfig={isBulkConfig}
             table={table}
             uniqueFields={uniqueFields}
             onChange={handleChange}
@@ -432,6 +435,7 @@ function CarryForwardCategory({
               </Label.Inline>
               {field.isRelationship && field.isDependent() && !isUnique ? (
                 <CarryForwardConfig
+                  isBulkConfig={isBulkConfig}
                   parentTable={field.table}
                   table={field.relatedTable}
                   type="cog"
