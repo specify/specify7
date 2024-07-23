@@ -60,7 +60,7 @@ export function TablesListEdit({
   readonly tables: RA<SpecifyTable>;
   readonly onChange: (table: RA<SpecifyTable>) => void;
   readonly onClose: () => void;
-  readonly parent: 'DataEntryList' | 'QueryList';
+  readonly parent?: 'QueryList';
 }): JSX.Element {
   const selectedValues = selectedTables.map(({ name }) => name);
   const allTables = Object.values(genericTables)

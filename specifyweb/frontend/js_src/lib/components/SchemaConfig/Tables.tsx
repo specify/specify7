@@ -83,7 +83,7 @@ export function tablesFilter(
   { name, overrides }: SpecifyTable,
   // Don't exclude a table if user already has it selected
   selectedTables: RA<keyof Tables> | undefined = undefined,
-  parent?: 'DataEntryList' | 'QueryList'
+  parent?: 'QueryList'
 ): boolean {
   if (selectedTables?.includes(name) === true) return true;
 
