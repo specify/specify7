@@ -78,7 +78,7 @@ msgstr "Изменить базовую таблицу"
 msgid "field"
 msgstr "Поле"
 
-#: components/FormMeta/CarryForward.tsx:313
+#: components/FormMeta/CarryForward.tsx:349
 #: components/Forms/generateFormDefinition.ts:130
 #: components/SchemaConfig/Fields.tsx:49
 #: components/SchemaConfig/Fields.tsx:60
@@ -89,7 +89,7 @@ msgstr "Поле"
 msgid "fields"
 msgstr "Поля"
 
-#: components/FormMeta/CarryForward.tsx:321
+#: components/FormMeta/CarryForward.tsx:358
 #: components/Forms/generateFormDefinition.ts:168
 #: components/SchemaConfig/Fields.tsx:68
 #: components/SchemaConfig/UniquenessRuleRow.tsx:254

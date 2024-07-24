@@ -18,13 +18,13 @@ msgid "forms"
 msgstr "Формы"
 
 #: components/Atoms/DataEntry.tsx:153
-#: components/Forms/Save.tsx:305
+#: components/Forms/Save.tsx:308
 #: components/Statistics/ResultsDialog.tsx:68
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Components > Statistics > Results Dialog
 msgid "clone"
 msgstr "Клонировать"
 
-#: components/Forms/Save.tsx:306
+#: components/Forms/Save.tsx:309
 #. Used in: Components > Forms > Save
 msgid "cloneDescription"
 msgstr "Создать полную копию текущей записи"
@@ -209,12 +209,12 @@ msgid "unsavedFormUnloadProtect"
 msgstr "Эта форма не сохранилась."
 
 #: components/AttachmentsBulkImport/utils.ts:482
-#: components/Forms/Save.tsx:336
+#: components/Forms/Save.tsx:339
 #. 🟥Meaning a conflict occurred when saving. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Forms > Save
 msgid "saveConflict"
 msgstr "Сохранить конфликт"
 
-#: components/Forms/Save.tsx:339
+#: components/Forms/Save.tsx:342
 #. Used in: Components > Forms > Save
 msgid "saveConflictDescription"
 msgstr ""
@@ -222,12 +222,12 @@ msgstr ""
 "на другой вкладке браузера и устарели. Страницу необходимо перезагрузить, "
 "чтобы предотвратить сохранение противоречивых данных."
 
-#: components/Forms/Save.tsx:369
+#: components/Forms/Save.tsx:372
 #. Used in: Components > Forms > Save
 msgid "saveBlocked"
 msgstr "Запись информации"
 
-#: components/Forms/Save.tsx:372
+#: components/Forms/Save.tsx:375
 #. Used in: Components > Forms > Save
 msgid "saveBlockedDescription"
 msgstr "Невозможно сохранить форму из-за следующей ошибки:"
@@ -454,12 +454,12 @@ msgstr "Ничего не найдено"
 msgid "carryForward"
 msgstr "Перенести вперед"
 
-#: components/FormMeta/CarryForward.tsx:115
+#: components/FormMeta/CarryForward.tsx:117
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardEnabled"
 msgstr "Показать кнопку «Перенести вперед»"
 
-#: components/FormMeta/CarryForward.tsx:171
+#: components/FormMeta/CarryForward.tsx:181
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardEnabled"
@@ -476,18 +476,28 @@ msgstr ""
 msgid "carryForwardDescription"
 msgstr "Создайте новую запись с переносом определенных полей."
 
-#: components/FormMeta/CarryForward.tsx:118
-#: components/FormMeta/CarryForward.tsx:127
+#: components/FormMeta/CarryForward.tsx:120
+#: components/FormMeta/CarryForward.tsx:129
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardSettingsDescription"
 msgstr "Настройте поля для переноса"
 
-#: components/FormMeta/CarryForward.tsx:303
+#: components/FormMeta/CarryForward.tsx:184
+#. Used in: Components > Form Meta > Carry Forward
+msgid "bulkCarryForwardSettingsDescription"
+msgstr ""
+
+#: components/FormMeta/CarryForward.tsx:338
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardTableSettingsDescription"
 msgstr "Настройте поля для переноса ({tableName:string})"
 
-#: components/FormMeta/CarryForward.tsx:365
+#: components/FormMeta/CarryForward.tsx:335
+#. Used in: Components > Form Meta > Carry Forward
+msgid "bulkCarryForwardTableSettingsDescription"
+msgstr ""
+
+#: components/FormMeta/CarryForward.tsx:408
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardUniqueField"
 msgstr "Это поле должно быть уникальным. Его нельзя переносить"
@@ -502,7 +512,7 @@ msgstr "Показать кнопку клонировать"
 msgid "addButtonEnabled"
 msgstr "Показать кнопку «Добавить»"
 
-#: components/Forms/Save.tsx:312
+#: components/Forms/Save.tsx:315
 #. Used in: Components > Forms > Save
 msgid "addButtonDescription"
 msgstr "Создать новую пустую запись"

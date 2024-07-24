@@ -18,7 +18,7 @@ msgstr ""
 msgid "specifySeven"
 msgstr "Вкажіть 7"
 
-#: components/Preferences/UserDefinitions.tsx:1742
+#: components/Preferences/UserDefinitions.tsx:1762
 #: components/WorkBench/DataSetMeta.tsx:282
 #: utils/parser/definitions.ts:118
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Data Set Meta ⬤ Utils > Parser > Definitions
@@ -174,7 +174,7 @@ msgstr "Створити"
 #: components/FormEditor/Create.tsx:208
 #: components/FormEditor/Table.tsx:82
 #: components/FormMeta/AutoNumbering.tsx:91
-#: components/FormMeta/CarryForward.tsx:299
+#: components/FormMeta/CarryForward.tsx:329
 #: components/FormMeta/Definition.tsx:53
 #: components/FormMeta/EditHistory.tsx:53
 #: components/FormMeta/PickListUsages.tsx:44
@@ -197,8 +197,8 @@ msgstr "Створити"
 #: components/Forms/DeleteButton.tsx:161
 #: components/Forms/ResourceView.tsx:212
 #: components/Forms/ResourceView.tsx:350
-#: components/Forms/Save.tsx:333
-#: components/Forms/Save.tsx:368
+#: components/Forms/Save.tsx:336
+#: components/Forms/Save.tsx:371
 #: components/Header/UserTools.tsx:75
 #: components/HomePage/AboutSpecify.tsx:60
 #: components/Interactions/InteractionDialog.tsx:237
@@ -332,7 +332,7 @@ msgstr "зберегти"
 #: components/ExportFeed/Editor.tsx:133
 #: components/FormSliders/RecordSelectorFromIds.tsx:178
 #: components/Formatters/List.tsx:138
-#: components/Forms/Save.tsx:311
+#: components/Forms/Save.tsx:314
 #: components/Merging/CompareSubView.tsx:184
 #: components/Molecules/AutoComplete.tsx:525
 #: components/PickLists/index.tsx:280
@@ -688,7 +688,7 @@ msgstr "Дії"
 #: components/ChooseCollection/index.tsx:138
 #: components/Header/ChooseCollection.tsx:27
 #: components/Header/index.tsx:94
-#: components/Preferences/UserDefinitions.tsx:1250
+#: components/Preferences/UserDefinitions.tsx:1270
 #: components/Router/EntrypointRouter.tsx:32
 #: components/Router/OverlayRoutes.tsx:62
 #. Used in: Components > Choose Collection > Index ⬤ Components > Header > Choose Collection ⬤ Components > Header > Index ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Entrypoint Router ⬤ Components > Router > Overlay Routes
@@ -1032,7 +1032,7 @@ msgstr "{header:string}:"
 #: components/Formatters/Element.tsx:92
 #: components/Formatters/Formatter.tsx:126
 #: components/Forms/BaseResourceView.tsx:132
-#: components/Forms/Save.tsx:374
+#: components/Forms/Save.tsx:377
 #: components/Leaflet/index.ts:171
 #: components/LocalityUpdate/Status.tsx:519
 #: components/LocalityUpdate/utils.ts:64

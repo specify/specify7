@@ -18,14 +18,14 @@ msgid "forms"
 msgstr "Formularios"
 
 #: components/Atoms/DataEntry.tsx:153
-#: components/Forms/Save.tsx:305
+#: components/Forms/Save.tsx:308
 #: components/Statistics/ResultsDialog.tsx:68
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Components > Statistics > Results Dialog
 #, fuzzy
 msgid "clone"
 msgstr "Clon"
 
-#: components/Forms/Save.tsx:306
+#: components/Forms/Save.tsx:309
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "cloneDescription"
@@ -241,13 +241,13 @@ msgid "unsavedFormUnloadProtect"
 msgstr "Este formulario no ha sido guardado."
 
 #: components/AttachmentsBulkImport/utils.ts:482
-#: components/Forms/Save.tsx:336
+#: components/Forms/Save.tsx:339
 #. 🟥Meaning a conflict occurred when saving. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Forms > Save
 #, fuzzy
 msgid "saveConflict"
 msgstr "Guardar conflicto"
 
-#: components/Forms/Save.tsx:339
+#: components/Forms/Save.tsx:342
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "saveConflictDescription"
@@ -256,13 +256,13 @@ msgstr ""
 "en otra pestaña del navegador y están desactualizados. La página debe "
 "recargarse para evitar que se guarden datos inconsistentes."
 
-#: components/Forms/Save.tsx:369
+#: components/Forms/Save.tsx:372
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "saveBlocked"
 msgstr "Información de registro"
 
-#: components/Forms/Save.tsx:372
+#: components/Forms/Save.tsx:375
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "saveBlockedDescription"
@@ -529,12 +529,12 @@ msgstr "Nada Encontrado"
 msgid "carryForward"
 msgstr "Llevar adelante"
 
-#: components/FormMeta/CarryForward.tsx:115
+#: components/FormMeta/CarryForward.tsx:117
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardEnabled"
 msgstr "Botón mostrar traer al frente"
 
-#: components/FormMeta/CarryForward.tsx:171
+#: components/FormMeta/CarryForward.tsx:181
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardEnabled"
@@ -551,18 +551,28 @@ msgstr ""
 msgid "carryForwardDescription"
 msgstr "Crear un nuevo registro con algunos campos transferidos"
 
-#: components/FormMeta/CarryForward.tsx:118
-#: components/FormMeta/CarryForward.tsx:127
+#: components/FormMeta/CarryForward.tsx:120
+#: components/FormMeta/CarryForward.tsx:129
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardSettingsDescription"
 msgstr "Configurar campos para transferir"
 
-#: components/FormMeta/CarryForward.tsx:303
+#: components/FormMeta/CarryForward.tsx:184
+#. Used in: Components > Form Meta > Carry Forward
+msgid "bulkCarryForwardSettingsDescription"
+msgstr ""
+
+#: components/FormMeta/CarryForward.tsx:338
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardTableSettingsDescription"
 msgstr "Configurar campos para transferir ({tableName:string})"
 
-#: components/FormMeta/CarryForward.tsx:365
+#: components/FormMeta/CarryForward.tsx:335
+#. Used in: Components > Form Meta > Carry Forward
+msgid "bulkCarryForwardTableSettingsDescription"
+msgstr ""
+
+#: components/FormMeta/CarryForward.tsx:408
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardUniqueField"
 msgstr "Este campo debe ser único. No se puede trasladar"
@@ -577,7 +587,7 @@ msgstr "Mostrar botón clonar"
 msgid "addButtonEnabled"
 msgstr "Mostrar botón añadir"
 
-#: components/Forms/Save.tsx:312
+#: components/Forms/Save.tsx:315
 #. Used in: Components > Forms > Save
 msgid "addButtonDescription"
 msgstr "Crear un nuevo registro en blanco"
