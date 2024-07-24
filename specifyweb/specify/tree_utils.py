@@ -1,5 +1,4 @@
-from math import e
-from typing import Union, Tuple
+from typing import Tuple
 from specifyweb.specify.models import (
     CollectionObjectType,
     Collection,
@@ -11,9 +10,7 @@ from specifyweb.specify.models import (
     Lithostrattreedef,
 )
 
-TreeDef = Union[Taxontreedef, Geographytreedef, Storagetreedef, Geologictimeperiodtreedef, Lithostrattreedef]
-
-def get_treedef(collection: Collection, tree_name: str) -> TreeDef:
+def get_treedef(collection: Collection, tree_name: str):
     # Get the appropriate TreeDef based on the Collection and tree_name
     treedef = None
     if tree_name == 'Taxon':
@@ -33,7 +30,7 @@ def get_treedef(collection: Collection, tree_name: str) -> TreeDef:
     return treedef
 
 # TODO: Double check that this in the intended logic
-def get_taxon_treedef(collection: Collection, collection_object_type: CollectionObjectType = None) -> Taxontreedef:
+def get_taxon_treedef(collection: Collection, collection_object_type: CollectionObjectType = None):
     # Use the provided collection_object_type if not None
     if collection_object_type and collection_object_type.taxontreedef:
         return collection_object_type.taxontreedef
