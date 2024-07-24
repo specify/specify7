@@ -5,7 +5,6 @@
  *TODO:
  *- Finish CreateTree function
  *- Add in list of default options
- *- Add check for permission
  */
 import React from 'react';
 
@@ -16,6 +15,7 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import type { AnyTree } from '../DataModel/helperTypes';
 import { Dialog } from '../Molecules/Dialog';
+import { userInformation } from '../InitialContext/userInformation';
 
 export function CreateTree<SCHEMA extends AnyTree>({
   tableName,
@@ -32,7 +32,7 @@ export function CreateTree<SCHEMA extends AnyTree>({
 
   return (
     <>
-      {tableName === 'Taxon' ? (
+      {tableName === 'Taxon' && userInformation.isadmin ? (
         <Button.Icon
           className={className.dataEntryAdd}
           icon="plus"
