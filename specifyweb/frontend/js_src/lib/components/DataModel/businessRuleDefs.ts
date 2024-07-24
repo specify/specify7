@@ -181,8 +181,8 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
                  * does not get captured by business rules.
                  */
                 if (
-                  idFromUrl(coType.get('taxonTreeDef')) ===
-                  idFromUrl(taxon?.get('definition') ?? '')
+                  coType.get('taxonTreeDef') ===
+                  (taxon?.get('definition') ?? '')
                 ) {
                   setSaveBlockers(
                     determination,
