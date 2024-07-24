@@ -5,6 +5,7 @@ import type { State } from 'typesafe-reducer';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useResourceValue } from '../../hooks/useResourceValue';
 import { commonText } from '../../localization/common';
+import { formsText } from '../../localization/forms';
 import { userText } from '../../localization/user';
 import { f } from '../../utils/functools';
 import { getValidationAttributes } from '../../utils/parser/definitions';
@@ -119,7 +120,7 @@ export function QueryComboBox({
     treeData !== undefined &&
     collectionRelationships !== undefined &&
     typeSearch !== undefined;
-  const { value, updateValue, validationRef, inputRef, parser } =
+  const { value, updateValue, validationRef, inputRef, parser, setValidation } =
     useResourceValue(resource, field, undefined);
 
   /**
@@ -171,30 +172,42 @@ export function QueryComboBox({
            */
           field.isDependent())
           ? resource
-              .rgetPromise<string, AnySchema>(field.name)
-              .then(async (resource) =>
-                resource === undefined || resource === null
-                  ? {
-                      label: localized(''),
-                      resource: undefined,
-                    }
-                  : (value === formattedRef.current?.value &&
+              .rgetPromise<string, AnySchema>(field.name, true, false)
+              .then(async (resource) => {
+                setValidation([]);
+                if (resource === undefined || resource === null) {
+                  return {
+                    label: localized(''),
+                    resource: undefined,
+                  };
+                } else {
+                  const formatted =
+                    value === formattedRef.current?.value &&
                     typeof formattedRef.current === 'object'
-                      ? Promise.resolve(formattedRef.current.formatted)
-                      : format(
+                      ? await Promise.resolve(formattedRef.current.formatted)
+                      : await format(
                           resource,
                           typeof typeSearch === 'object'
                             ? typeSearch.formatter
                             : undefined,
                           true
-                        )
-                    ).then((formatted) => ({
-                      label:
-                        formatted ??
-                        naiveFormatter(field.relatedTable.label, resource.id),
-                      resource,
-                    }))
-              )
+                        );
+
+                  return {
+                    label:
+                      formatted ??
+                      naiveFormatter(field.relatedTable.label, resource.id),
+                    resource,
+                  };
+                }
+              })
+              .catch((_) => {
+                setValidation([formsText.invalidValue()]);
+                return {
+                  label: localized(''),
+                  resource: undefined,
+                };
+              })
           : { label: userText.noPermission(), resource: undefined },
       [version, value, resource, field, typeSearch]
     ),
