@@ -11,7 +11,6 @@ import {
   updateLoanPrep,
 } from './interactionBusinessRules';
 import type { SpecifyResource } from './legacyTypes';
-import { idFromUrl } from './resource';
 import { setSaveBlockers } from './saveBlockers';
 import type { Collection } from './specifyTable';
 import { tables } from './tables';
@@ -170,35 +169,38 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
                   accepted === null ? taxon : getLastAccepted(accepted)
                 );
 
-            const collectionObject = determination.collection
-              ?.related as SpecifyResource<CollectionObject>;
-            collectionObject
-              .rgetPromise('collectionObjectType', true)
-              .then((coType: SpecifyResource<CollectionObjectType>) => {
-                /*
-                 * Have to set save blockers directly here to get this working.
-                 * Since following code has to wait for above rgetPromise to resolve, returning a Promise<BusinessRuleResult> for validation here is too slow and
-                 * does not get captured by business rules.
-                 */
-                if (
-                  coType.get('taxonTreeDef') ===
-                  (taxon?.get('definition') ?? '')
-                ) {
-                  setSaveBlockers(
-                    determination,
-                    determination.specifyTable.field.taxon,
-                    [],
-                    DETERMINATION_TAXON_KEY
-                  );
-                } else {
-                  setSaveBlockers(
-                    determination,
-                    determination.specifyTable.field.taxon,
-                    [formsText.invalidTree()],
-                    DETERMINATION_TAXON_KEY
-                  );
-                }
-              });
+            const collectionObject = determination.collection?.related;
+            if (
+              collectionObject !== undefined &&
+              collectionObject.specifyTable.name === 'CollectionObject'
+            )
+              (collectionObject as SpecifyResource<CollectionObject>)
+                .rgetPromise('collectionObjectType', true)
+                .then((coType: SpecifyResource<CollectionObjectType>) => {
+                  /*
+                   * Have to set save blockers directly here to get this working.
+                   * Since following code has to wait for above rgetPromise to resolve, returning a Promise<BusinessRuleResult> for validation here is too slow and
+                   * does not get captured by business rules.
+                   */
+                  if (
+                    coType.get('taxonTreeDef') ===
+                    (taxon?.get('definition') ?? '')
+                  ) {
+                    setSaveBlockers(
+                      determination,
+                      determination.specifyTable.field.taxon,
+                      [],
+                      DETERMINATION_TAXON_KEY
+                    );
+                  } else {
+                    setSaveBlockers(
+                      determination,
+                      determination.specifyTable.field.taxon,
+                      [formsText.invalidTree()],
+                      DETERMINATION_TAXON_KEY
+                    );
+                  }
+                });
 
             return taxon === null
               ? {
