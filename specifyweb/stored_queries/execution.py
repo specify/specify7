@@ -53,7 +53,7 @@ def filter_by_collection(model, query, collection):
 
     if model is models.Taxon:
         taxon_treedef_ids = get_taxon_treedef_ids(collection)
-        logger.info("filtering taxon to collection's collection object types: %s", collection.name)
+        logger.info("filtering taxon to collection's collection object types: %s", collection.collectionname)
         return query.filter(model.TaxonTreeDefID.in_(taxon_treedef_ids))
 
     if model is models.TaxonTreeDefItem:
