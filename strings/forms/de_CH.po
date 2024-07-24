@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-07-22 21:09+0000\n"
+"PO-Revision-Date: 2024-07-24 15:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/forms/de_CH/>\n"
@@ -561,8 +561,9 @@ msgstr "Konfigurieren der zu übertragenden Felder"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:184
+#, fuzzy
 msgid "bulkCarryForwardSettingsDescription"
-msgstr ""
+msgstr "Konfigurieren von Feldern für die Massenübertragung"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:338
@@ -573,8 +574,10 @@ msgstr "Dieser Befehl ist derzeit für Specify 7 nicht verfügbar."
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:335
+#, fuzzy
 msgid "bulkCarryForwardTableSettingsDescription"
 msgstr ""
+"Konfigurieren Sie die Felder für den Massenübertrag ({tableName:string})"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:408
