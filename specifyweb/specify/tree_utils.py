@@ -1,3 +1,4 @@
+from math import e
 from typing import Union, Tuple
 from specifyweb.specify.models import (
     CollectionObjectType,
@@ -13,11 +14,23 @@ from specifyweb.specify.models import (
 TreeDef = Union[Taxontreedef, Geographytreedef, Storagetreedef, Geologictimeperiodtreedef, Lithostrattreedef]
 
 def get_treedef(collection: Collection, tree_name: str) -> TreeDef:
-    if tree_name == 'Storage':
-        return collection.discipline.division.institution.storagetreedef
-    elif tree_name == 'Taxon':
+    # Get the appropriate TreeDef based on the Collection and tree_name
+    treedef = None
+    if tree_name == 'Taxon':
         return get_taxon_treedef(collection)
-    return getattr(collection.discipline, tree_name.lower() + "treedef")
+    elif tree_name == 'Storage':
+        treedef = Storagetreedef.objects.filter(institution=collection.discipline.division.institution).first()
+    elif tree_name == 'Geography':
+        treedef = Geographytreedef.objects.filter(discipline=collection.discipline).first()
+    elif tree_name == 'GeologicTimePeriod':
+        treedef = Geologictimeperiodtreedef.objects.filter(discipline=collection.discipline).first()
+    elif tree_name == 'LithoStrat':
+        treedef = Lithostrattreedef.objects.filter(discipline=collection.discipline).first()
+    
+    if treedef is None:
+        return getattr(collection.discipline, tree_name.lower() + 'treedef')
+    
+    return treedef
 
 # TODO: Double check that this in the intended logic
 def get_taxon_treedef(collection: Collection, collection_object_type: CollectionObjectType = None) -> Taxontreedef:
@@ -26,7 +39,7 @@ def get_taxon_treedef(collection: Collection, collection_object_type: Collection
         return collection_object_type.taxontreedef
 
     # Use the collection's default collectionobjecttype if it exists
-    if collection.collectionobjecttype:
+    if collection.collectionobjecttype and collection.collectionobjecttype.taxontreedef:
         return collection.collectionobjecttype.taxontreedef
 
     # Otherwise, try to get the first CollectionObjectType related to the collection
@@ -43,6 +56,7 @@ def get_taxon_treedef(collection: Collection, collection_object_type: Collection
 
 
 def get_taxon_treedefs(collection: Collection) -> Taxontreedef:
+    # Get all TaxonTreedefs related to the Collection based on CollectionObjectTypes
     return Taxontreedef.objects.filter(
         id__in=CollectionObjectType.objects.filter(collection=collection)
         .values_list("taxontreedef_id", flat=True)
@@ -50,6 +64,7 @@ def get_taxon_treedefs(collection: Collection) -> Taxontreedef:
     )
 
 def get_taxon_treedef_ids(collection: Collection) -> Tuple[int]:
+    # Get all TaxonTreedef IDs related to the Collection based on CollectionObjectTypes
     return tuple(
         CollectionObjectType.objects.filter(collection=collection).values_list(
             "taxontreedef_id", flat=True
