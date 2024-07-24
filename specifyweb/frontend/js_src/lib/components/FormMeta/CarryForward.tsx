@@ -88,10 +88,12 @@ export function CarryForwardConfig({
   table,
   parentTable,
   type,
+  isBulkConfig,
 }: {
   readonly table: SpecifyTable;
   readonly parentTable: SpecifyTable | undefined;
   readonly type: 'button' | 'cog';
+  readonly isBulkConfig?: boolean;
 }): JSX.Element | null {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const [globalEnabled, setGlobalEnabled] = userPreferences.use(
@@ -128,9 +130,12 @@ export function CarryForwardConfig({
           onClick={handleOpen}
         />
       )}
-      {isCarryForwardEnabled ? <BulkCloneConfig table={table} /> : null}
+      {isCarryForwardEnabled ? (
+        <BulkCloneConfig parentTable={parentTable} table={table} />
+      ) : null}
       {isOpen && (
         <CarryForwardConfigDialog
+          isBulkConfig={isBulkConfig}
           parentTable={parentTable}
           table={table}
           onClose={handleClose}
@@ -149,8 +154,10 @@ const normalize = (fields: RA<string>): RA<string> =>
  */
 function BulkCloneConfig({
   table,
+  parentTable,
 }: {
   readonly table: SpecifyTable;
+  readonly parentTable: SpecifyTable | undefined;
 }): JSX.Element | null {
   const [globalBulkEnabled, setGlobalBulkEnabled] = userPreferences.use(
     'form',
@@ -160,16 +167,35 @@ function BulkCloneConfig({
 
   const isBulkCarryEnabled = globalBulkEnabled.includes(table.name);
 
+  const [isOpen, handleOpen, handleClose] = useBooleanState();
+
   return tableValidForBulkClone(table) ? (
-    <Label.Inline className="rounded bg-[color:var(--foreground)]">
-      <Input.Checkbox
-        checked={isBulkCarryEnabled}
-        onChange={(): void =>
-          setGlobalBulkEnabled(toggleItem(globalBulkEnabled, table.name))
-        }
-      />
-      {formsText.bulkCarryForwardEnabled()}
-    </Label.Inline>
+    <>
+      <Label.Inline className="rounded bg-[color:var(--foreground)]">
+        <Input.Checkbox
+          checked={isBulkCarryEnabled}
+          onChange={(): void =>
+            setGlobalBulkEnabled(toggleItem(globalBulkEnabled, table.name))
+          }
+        />
+        {formsText.bulkCarryForwardEnabled()}
+        <Button.Small
+          className="ml-2"
+          title={formsText.bulkCarryForwardSettingsDescription()}
+          onClick={handleOpen}
+        >
+          {icons.cog}
+        </Button.Small>
+      </Label.Inline>
+      {isOpen && (
+        <CarryForwardConfigDialog
+          isBulkConfig
+          parentTable={parentTable}
+          table={table}
+          onClose={handleClose}
+        />
+      )}
+    </>
   ) : null;
 }
 
@@ -189,21 +215,25 @@ function CarryForwardConfigDialog({
   table,
   parentTable,
   onClose: handleClose,
+  isBulkConfig,
 }: {
   readonly table: SpecifyTable;
   readonly parentTable: SpecifyTable | undefined;
   readonly onClose: () => void;
+  readonly isBulkConfig?: boolean;
 }): JSX.Element {
   const [showHiddenFields, setShowHiddenFields] = userPreferences.use(
     'form',
     'preferences',
-    'carryForwardShowHidden'
+    isBulkConfig === true
+      ? 'bulkCarryForwardShowHidden'
+      : 'carryForwardShowHidden'
   );
 
   const [globalConfig, setGlobalConfig] = userPreferences.use(
     'form',
     'preferences',
-    'carryForward'
+    isBulkConfig === true ? 'bulkCarryForward' : 'carryForward'
   );
 
   const uniqueFields = getUniqueFields(table);
@@ -300,9 +330,15 @@ function CarryForwardConfigDialog({
           </Submit.Info>
         </>
       }
-      header={formsText.carryForwardTableSettingsDescription({
-        tableName: table.label,
-      })}
+      header={
+        isBulkConfig === true
+          ? formsText.bulkCarryForwardTableSettingsDescription({
+              tableName: table.label,
+            })
+          : formsText.carryForwardTableSettingsDescription({
+              tableName: table.label,
+            })
+      }
       onClose={handleClose}
     >
       <Form className="overflow-hidden" id={id('form')} onSubmit={handleClose}>
@@ -311,6 +347,7 @@ function CarryForwardConfigDialog({
             carryForward={config}
             fields={literalFields}
             header={schemaText.fields()}
+            isBulkConfig={isBulkConfig}
             table={table}
             uniqueFields={uniqueFields}
             onChange={handleChange}
@@ -319,6 +356,7 @@ function CarryForwardConfigDialog({
             carryForward={config}
             fields={relationships}
             header={schemaText.relationships()}
+            isBulkConfig={isBulkConfig}
             table={table}
             uniqueFields={uniqueFields}
             onChange={handleChange}
@@ -343,6 +381,7 @@ function CarryForwardCategory({
   uniqueFields,
   carryForward,
   onChange: handleChange,
+  isBulkConfig,
 }: {
   readonly header: string;
   readonly table: SpecifyTable;
@@ -350,6 +389,7 @@ function CarryForwardCategory({
   readonly uniqueFields: RA<string>;
   readonly carryForward: RA<string>;
   readonly onChange: (carryForward: RA<string>) => void;
+  readonly isBulkConfig?: boolean;
 }): JSX.Element | null {
   return fields.length > 0 ? (
     <>
@@ -357,6 +397,9 @@ function CarryForwardCategory({
       <Ul>
         {fields.map((field) => {
           const isUnique = uniqueFields.includes(field.name);
+          const isRequired =
+            isBulkConfig === true &&
+            (field.localization.isrequired || field.overrides.isRequired);
           return (
             <li className="flex gap-1" key={field.name}>
               <Label.Inline
@@ -367,8 +410,8 @@ function CarryForwardCategory({
                 }
               >
                 <Input.Checkbox
-                  checked={f.includes(carryForward, field.name)}
-                  disabled={isUnique}
+                  checked={f.includes(carryForward, field.name) || isRequired}
+                  disabled={isUnique || isRequired}
                   onValueChange={(isChecked): void => {
                     const dependents = filterArray(
                       Object.entries(dependentFields())
@@ -389,6 +432,7 @@ function CarryForwardCategory({
               </Label.Inline>
               {field.isRelationship && field.isDependent() && !isUnique ? (
                 <CarryForwardConfig
+                  isBulkConfig={isBulkConfig}
                   parentTable={field.table}
                   table={field.relatedTable}
                   type="cog"

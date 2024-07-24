@@ -260,7 +260,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                *
                */
               resource.specifyTable.name === 'CollectionObject' &&
-                carryForwardAmount > 2
+                carryForwardAmount > 1
                 ? async (): Promise<RA<SpecifyResource<SCHEMA>>> => {
                     const formatter =
                       tables.CollectionObject.strictGetLiteralField(
@@ -271,7 +271,10 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                     const clonePromises = Array.from(
                       { length: carryForwardAmount },
                       async () => {
-                        const clonedResource = await resource.clone(false);
+                        const clonedResource = await resource.clone(
+                          false,
+                          true
+                        );
                         clonedResource.set('catalogNumber', wildCard as never);
                         return clonedResource;
                       }

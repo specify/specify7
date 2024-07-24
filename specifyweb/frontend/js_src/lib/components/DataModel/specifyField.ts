@@ -257,8 +257,11 @@ export class LiteralField extends FieldBase {
   // Indicates white space should not be ignored in the field
   public readonly whiteSpaceSensitive: boolean;
 
+  public readonly datamodelDefinition: FieldDefinition;
+
   public constructor(table: SpecifyTable, fieldDefinition: FieldDefinition) {
     super(table, fieldDefinition);
+    this.datamodelDefinition = fieldDefinition;
     this.type = fieldDefinition.type;
 
     const globalFieldOverride = getGlobalFieldOverwrite(table.name, this.name);
@@ -288,6 +291,8 @@ export class Relationship extends FieldBase {
 
   public readonly type: RelationshipType;
 
+  public readonly datamodelDefinition: RelationshipDefinition;
+
   private readonly dependent: boolean;
 
   public readonly isRelationship: true = true;
@@ -301,6 +306,7 @@ export class Relationship extends FieldBase {
       indexed: false,
       unique: false,
     });
+    this.datamodelDefinition = relationshipDefinition;
 
     this.type = relationshipDefinition.type;
     this.otherSideName = relationshipDefinition.otherSideName;
