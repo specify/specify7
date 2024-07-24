@@ -13,6 +13,7 @@ from django.db import transaction
 from sqlalchemy import sql, orm, func, select
 from sqlalchemy.sql.expression import asc, desc, insert, literal
 
+from specifyweb.specify.tree_utils import get_taxon_treedef_ids
 from specifyweb.stored_queries.group_concat import group_by_displayed_fields
 
 from . import models
@@ -51,8 +52,9 @@ def filter_by_collection(model, query, collection):
         return query
 
     if model is models.Taxon:
-        logger.info("filtering taxon to discipline: %s", collection.discipline.name)
-        return query
+        taxon_treedef_ids = get_taxon_treedef_ids(collection)
+        logger.info("filtering taxon to collection's collection object types: %s", collection.name)
+        return query.filter(model.TaxonTreeDefID.in_(taxon_treedef_ids))
 
     if model is models.TaxonTreeDefItem:
         logger.info("filtering taxon rank to discipline: %s", collection.discipline.name)

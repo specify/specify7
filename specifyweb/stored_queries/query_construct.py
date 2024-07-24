@@ -3,36 +3,12 @@ from collections import namedtuple, deque
 
 from sqlalchemy import orm, sql
 
-from specifyweb.specify.models import datamodel, CollectionObjectType
+from specifyweb.specify.models import datamodel
+from specifyweb.specify.tree_utils import get_treedef
 
 from specifyweb.stored_queries import models
 
 logger = logging.getLogger(__name__)
-
-
-def get_treedef(collection, tree_name):
-    if tree_name == 'Storage':
-        return collection.discipline.division.institution.storagetreedef
-    elif tree_name == 'Taxon':
-        return get_taxon_treedef(collection)
-    return getattr(collection.discipline, tree_name.lower() + "treedef")
-
-def get_taxon_treedef(collection, collection_object_type=None): # TODO: Double check that this in the intended logic
-    # Use the provided collection_object_type if not None
-    if collection_object_type:
-        return collection_object_type.taxontreedef
-    
-    # Use the collection's default collectionobjecttype if it exists
-    if collection.collectionobjecttype:
-        return collection.collectionobjecttype.taxontreedef
-    
-    # Otherwise, try to get the first CollectionObjectType related to the collection
-    cot = CollectionObjectType.objects.filter(collection=collection).first()
-    if cot:
-        return cot.taxontreedef
-    
-    # Fallback to the old method of discipline's taxontreedef if no CollectionObjectType is found
-    return collection.discipline.taxontreedef
 
 class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter query join_cache param_count tree_rank_count')):
 

@@ -28,6 +28,7 @@ def filter_by_collection(queryset, collection, strict=True):
         return queryset.filter(definition__disciplines=collection.discipline)
 
     if queryset.model is Taxon:
+        # TODO: Make this more robust, like get_taxon_treedef
         return queryset.filter(definition=collection.collectionobjecttype.taxontreedef)
 
     if queryset.model is Storage:
