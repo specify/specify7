@@ -101,7 +101,7 @@ overrideAjax(
       ordinal: 32_767,
       remarks: null,
       resource_uri: undefined,
-      searchsynonymy: null,
+      searchsynonymy: false,
       selectdistinct: false,
       smushed: null,
       specifyuser: '/api/specify/specifyuser/2/',

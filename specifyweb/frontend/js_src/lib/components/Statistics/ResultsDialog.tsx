@@ -28,6 +28,7 @@ export const queryToSpec = (query: SerializedResource<SpQuery>): QuerySpec => ({
   tableName: query.contextName as keyof Tables,
   fields: addPath(query.fields),
   isDistinct: query.selectDistinct,
+  searchSynonymy: query.searchSynonymy,
 });
 
 export function FrontEndStatsResultDialog({
