@@ -233,7 +233,7 @@ function TreeView<SCHEMA extends AnyTree>({
           resource={treeDefinition}
           onSaved={(): void => globalThis.location.reload()}
         />
-        <CreateTree />
+        <CreateTree tableName={tableName} />
         <Button.Icon
           disabled={conformation.length === 0 || isSplit}
           icon="chevronDoubleLeft"
