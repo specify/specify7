@@ -451,7 +451,10 @@ export function Mapper(props: {
             customSelectType: 'OPENED_LIST',
             onChange({ isDoubleClick, ...rest }) {
               if (isDoubleClick && mapButtonEnabled)
-                dispatch({ type: 'MappingViewMapAction' });
+                dispatch({
+                  type: 'MappingViewMapAction',
+                  baseTableName: props.baseTableName,
+                });
               else if (!isReadOnly)
                 dispatch({
                   type: 'ChangeSelectElementValueAction',
@@ -465,7 +468,12 @@ export function Mapper(props: {
             className="flex-col justify-center p-2"
             disabled={!mapButtonEnabled}
             title={wbPlanText.mapButtonDescription()}
-            onClick={(): void => dispatch({ type: 'MappingViewMapAction' })}
+            onClick={(): void =>
+              dispatch({
+                type: 'MappingViewMapAction',
+                baseTableName: props.baseTableName,
+              })
+            }
           >
             {wbPlanText.map()}
             <span

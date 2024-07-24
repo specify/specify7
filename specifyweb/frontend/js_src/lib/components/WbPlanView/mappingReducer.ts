@@ -27,6 +27,7 @@ import type {
   SelectElementPosition,
 } from './Mapper';
 import { emptyMapping } from './mappingHelpers';
+import { generateMappingPathPreview } from './mappingPreview';
 import type { MatchBehaviors } from './uploadPlanParser';
 
 const modifyLine = (
@@ -72,7 +73,10 @@ type FocusLineAction = Action<
   }
 >;
 
-type MappingViewMapAction = Action<'MappingViewMapAction'>;
+type MappingViewMapAction = Action<
+  'MappingViewMapAction',
+  { readonly baseTableName: string }
+>;
 
 type AddNewHeaderAction = Action<
   'AddNewHeaderAction',
@@ -238,7 +242,7 @@ export const reducer = generateReducer<MappingState, MappingActions>({
         : state.mappingView,
     };
   },
-  MappingViewMapAction: ({ state }) => {
+  MappingViewMapAction: ({ action: { baseTableName }, state }) => {
     const mappingViewMappingPath = state.mappingView;
     const focusedLine = state.focusedLine;
     /*
@@ -251,12 +255,21 @@ export const reducer = generateReducer<MappingState, MappingActions>({
     )
       return state;
 
+    const newLine = replaceItem(state.lines, focusedLine, {
+      ...state.lines[focusedLine],
+      mappingPath: mappingViewMappingPath,
+    });
+
+    const newHeader = generateMappingPathPreview(
+      baseTableName as keyof Tables,
+      newLine[focusedLine].mappingPath
+    );
+
     return {
       ...state,
-      lines: replaceItem(state.lines, focusedLine, {
-        ...state.lines[focusedLine],
-        mappingPath: mappingViewMappingPath,
-      }),
+      lines: newLine.map((line, index) =>
+        index === focusedLine ? { ...line, headerName: newHeader } : line
+      ),
       changesMade: true,
       mappingsAreValidated: false,
     };
