@@ -96,7 +96,7 @@ function Wrapped({
   readonly onChange?: (props: {
     readonly fields: RA<SerializedResource<SpQueryField>>;
     readonly isDistinct: boolean | null;
-    readonly isSeries: boolean | null;
+    readonly searchSynonymy: boolean | null;
   }) => void;
 }): JSX.Element {
   const [query, setQuery] = useResource(queryResource);
@@ -161,9 +161,9 @@ function Wrapped({
     handleChange?.({
       fields: unParseQueryFields(state.baseTableName, state.fields),
       isDistinct: query.selectDistinct,
-      isSeries: query.smushed,
+      searchSynonymy: query.searchSynonymy,
     });
-  }, [state, query.selectDistinct, query.smushed]);
+  }, [state, query.selectDistinct, query.searchSynonymy]);
 
   /**
    * If tried to save a query, enforce the field length limit for the
@@ -578,7 +578,7 @@ function Wrapped({
               />
               <QueryToolbar
                 isDistinct={query.selectDistinct ?? false}
-                isSeries={query.smushed ?? false}
+                searchSynonymy={query.searchSynonymy ?? false}
                 showHiddenFields={showHiddenFields}
                 showSeries={showSeries}
                 tableName={table.name}
@@ -596,12 +596,12 @@ function Wrapped({
                   setSaveRequired(true);
                 }}
                 onToggleHidden={setShowHiddenFields}
-                onToggleSeries={(): void => {
+                onToggleSearchSynonymy={(): void =>
                   setQuery({
                     ...query,
-                    smushed: !(query.smushed ?? false),
-                  });
-                }}
+                    searchSynonymy: !(query.searchSynonymy ?? false),
+                  })
+                }
               />
             </div>
             {hasPermission('/querybuilder/query', 'execute') && (
