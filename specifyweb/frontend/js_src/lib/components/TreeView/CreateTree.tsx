@@ -14,14 +14,14 @@ import { treeText } from '../../localization/tree';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
-import { AnyTree } from '../DataModel/helperTypes';
+import type { AnyTree } from '../DataModel/helperTypes';
 import { Dialog } from '../Molecules/Dialog';
 
 export function CreateTree<SCHEMA extends AnyTree>({
-    tableName,
-  } : {
-    readonly tableName: SCHEMA['tableName'];
-  }): JSX.Element {
+  tableName,
+}: {
+  readonly tableName: SCHEMA['tableName'];
+}): JSX.Element {
   /*
    *TODO:
    *- add parameter to get the resource that will be added to using serializedresource
@@ -32,16 +32,16 @@ export function CreateTree<SCHEMA extends AnyTree>({
 
   return (
     <>
-      {tableName !== 'Taxon' ? null : 
-      <Button.Icon
-        className={className.dataEntryAdd}
-        icon="plus"
-        title={treeText.addTree()}
-        onClick={() => {
-          setIsActive(1);
-        }}
-      />
-      }
+      {tableName === 'Taxon' ? (
+        <Button.Icon
+          className={className.dataEntryAdd}
+          icon="plus"
+          title={treeText.addTree()}
+          onClick={() => {
+            setIsActive(1);
+          }}
+        />
+      ) : null}
       {isActive === 1 ? (
         <Dialog
           buttons={
