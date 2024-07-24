@@ -14,8 +14,8 @@ import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import type { AnyTree } from '../DataModel/helperTypes';
-import { Dialog } from '../Molecules/Dialog';
 import { userInformation } from '../InitialContext/userInformation';
+import { Dialog } from '../Molecules/Dialog';
 
 export function CreateTree<SCHEMA extends AnyTree>({
   tableName,
