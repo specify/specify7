@@ -82,15 +82,11 @@ export function tablesFilter(
   showAdvancedTables: boolean,
   { name, overrides }: SpecifyTable,
   // Don't exclude a table if user already has it selected
-  selectedTables: RA<keyof Tables> | undefined = undefined,
-  parent?: 'QueryList'
+  selectedTables: RA<keyof Tables> | undefined = undefined
 ): boolean {
   if (selectedTables?.includes(name) === true) return true;
 
-  const isRestricted =
-    parent === 'QueryList'
-      ? overrides.isHidden
-      : overrides.isHidden || overrides.isSystem;
+  const isRestricted = overrides.isHidden || overrides.isSystem;
   if (!showHiddenTables && isRestricted) return false;
   const hasAccess = hasTablePermission(name, 'read');
   if (!showNoAccessTables && !hasAccess) return false;
