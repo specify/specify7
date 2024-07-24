@@ -72,6 +72,11 @@ type CacheKey = {
     : never;
 }[keyof CacheDefinitions];
 
+const tablesToIncludeInQueryList = new Set<string>([
+  'Collection',
+  'Discipline',
+  'Division',
+]);
 /**
  * Get a function for trimming down all tables to list of tables
  * user is expected to commonly access
@@ -85,6 +90,7 @@ export function tablesFilter(
   selectedTables: RA<keyof Tables> | undefined = undefined
 ): boolean {
   if (selectedTables?.includes(name) === true) return true;
+  if (tablesToIncludeInQueryList.has(name)) return true;
 
   const isRestricted = overrides.isHidden || overrides.isSystem;
   if (!showHiddenTables && isRestricted) return false;
