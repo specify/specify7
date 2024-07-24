@@ -397,6 +397,9 @@ function CarryForwardCategory({
       <Ul>
         {fields.map((field) => {
           const isUnique = uniqueFields.includes(field.name);
+          const isRequired =
+            isBulkConfig === true &&
+            (field.localization.isrequired || field.overrides.isRequired);
           return (
             <li className="flex gap-1" key={field.name}>
               <Label.Inline
@@ -407,18 +410,8 @@ function CarryForwardCategory({
                 }
               >
                 <Input.Checkbox
-                  checked={
-                    f.includes(carryForward, field.name) ||
-                    (isBulkConfig === true &&
-                      (field.localization.isrequired ||
-                        field.overrides.isRequired))
-                  }
-                  disabled={
-                    isUnique ||
-                    (isBulkConfig === true &&
-                      (field.localization.isrequired ||
-                        field.overrides.isRequired))
-                  }
+                  checked={f.includes(carryForward, field.name) || isRequired}
+                  disabled={isUnique || isRequired}
                   onValueChange={(isChecked): void => {
                     const dependents = filterArray(
                       Object.entries(dependentFields())
