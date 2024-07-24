@@ -6,7 +6,7 @@ from sqlalchemy.sql.expression import func, distinct
 from specifyweb.middleware.general import require_GET
 from specifyweb.specify.views import login_maybe_required
 from specifyweb.specify.api import toJson
-from specifyweb.specify.tree_utils import get_taxon_treedef, get_taxon_treedef_ids, get_taxon_treedefs
+from specifyweb.specify.tree_utils import get_taxon_treedefs
 from specifyweb.specify.models import Taxon, Determination
 
 # from specifyweb.stored_queries.models import Determination, Taxon

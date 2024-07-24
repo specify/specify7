@@ -57,8 +57,9 @@ def filter_by_collection(model, query, collection):
         return query.filter(model.TaxonTreeDefID.in_(taxon_treedef_ids))
 
     if model is models.TaxonTreeDefItem:
-        logger.info("filtering taxon rank to discipline: %s", collection.discipline.name)
-        return query.filter(model.TaxonTreeDefID == collection.discipline.taxontreedef_id)
+        taxon_treedef_ids = get_taxon_treedef_ids(collection)
+        logger.info("filtering taxon rank to collection's collection object types: %s", collection.collectionname)
+        return query.filter(model.TaxonTreeDefID.in_(taxon_treedef_ids))
 
     if model is models.Geography:
         logger.info("filtering geography to discipline: %s", collection.discipline.name)
