@@ -13,14 +13,14 @@ class Command(BaseCommand):
             "start_date",
             type=str,
             nargs="?",
-            default="2024/06/01",
+            default="2024/07/01",
             help="Start date in YYYY/MM/DD format",
         )
         parser.add_argument(
             "end_date",
             type=str,
             nargs="?",
-            default="2024/07/24",
+            default="2024/07/22",
             help="End date in YYYY/MM/DD format",
         )
 
