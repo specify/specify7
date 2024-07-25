@@ -19,9 +19,9 @@ def get_treedef(collection: Collection, tree_name: str):
         treedef = Storagetreedef.objects.filter(institution=collection.discipline.division.institution).first()
     elif tree_name == 'Geography':
         treedef = Geographytreedef.objects.filter(discipline=collection.discipline).first()
-    elif tree_name == 'GeologicTimePeriod':
+    elif tree_name == 'Geologictimeperiod':
         treedef = Geologictimeperiodtreedef.objects.filter(discipline=collection.discipline).first()
-    elif tree_name == 'LithoStrat':
+    elif tree_name == 'Lithostrat':
         treedef = Lithostrattreedef.objects.filter(discipline=collection.discipline).first()
     
     if treedef is None:
@@ -50,7 +50,6 @@ def get_taxon_treedef(collection: Collection, collection_object_type: Collection
 
     # If all else fails, return the first TaxonTreedef found
     return Taxontreedef.objects.first()
-
 
 def get_taxon_treedefs(collection: Collection) -> Taxontreedef:
     # Get all TaxonTreedefs related to the Collection based on CollectionObjectTypes

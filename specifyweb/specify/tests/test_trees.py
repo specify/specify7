@@ -29,6 +29,11 @@ class TestTreeSetup(ApiTests):
         self.taxontreedef.treedefitems.create(name='Species', rankid=220)
         self.taxontreedef.treedefitems.create(name='Subspecies', rankid=230)
 
+        self.collectionobjecttype.taxontreedef = self.taxontreedef
+        self.collectionobjecttype.save()
+        self.collection.collectionobjecttype = self.collectionobjecttype
+        self.collection.save()
+
 class TestTree:
     def setUp(self)->None:
         super().setUp()

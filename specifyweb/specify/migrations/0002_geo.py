@@ -2,6 +2,7 @@
 
 from django.db import migrations, models
 import django.utils.timezone
+from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify.models import (
     protect_with_blockers,
     Collectionobject,
@@ -67,7 +68,10 @@ def create_default_collection_types():
         # Update CollectionObjects' collectionobjecttype for the discipline
         Collectionobject.objects.filter(collection=collection).update(collectionobjecttype=cot)
         collection.collectionobjecttype = cot
-        collection.save()
+        try:
+            collection.save()
+        except BusinessRuleException as e:
+            continue
 
 def revert_default_collection_types():
     # Reverse handeled by table deletion.
