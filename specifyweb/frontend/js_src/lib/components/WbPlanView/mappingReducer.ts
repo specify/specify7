@@ -326,14 +326,23 @@ export const reducer = generateReducer<MappingState, MappingActions>({
         mappingView: newMappingPath,
       };
 
+    const isMappingComplete = mappingPathIsComplete(newMappingPath);
+
+    const newHeader = isMappingComplete
+      ? generateMappingPathPreview(action.parentTableName!, newMappingPath)
+      : state.lines[line].headerName;
+
+    const updatedLines = deduplicateMappings(
+      modifyLine(state, line, {
+        mappingPath: newMappingPath,
+        headerName: newHeader,
+      }),
+      state.openSelectElement?.line ?? false
+    );
+
     return {
       ...state,
-      lines: deduplicateMappings(
-        modifyLine(state, line, {
-          mappingPath: newMappingPath,
-        }),
-        state.openSelectElement?.line ?? false
-      ),
+      lines: updatedLines,
       autoMapperSuggestions: undefined,
       changesMade: true,
       mappingsAreValidated: false,
