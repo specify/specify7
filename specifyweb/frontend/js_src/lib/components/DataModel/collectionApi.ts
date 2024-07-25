@@ -85,13 +85,81 @@ export const DependentCollection = Base.extend({
   create: notSupported,
 });
 
-export const LazyCollection = Base.extend({
-  __name__: 'LazyCollectionBase',
-  _neverFetched: true,
-  constructor(options = {}, records = []) {
+export const IndependentCollection = Base.extend({
+  __name__: 'IndependentCollectionBase',
+  constructor(options, records = []) {
     this.table = this.model;
     assert(_.isArray(records));
     Base.call(this, records, options);
+    this.filters = options.filters || {};
+    this.domainfilter =
+      Boolean(options.domainfilter) &&
+      this.model?.specifyTable.getScopingRelationship() !== undefined;
+  },
+  initialize(_tables, options) {
+    this.on(
+      'add remove',
+      function () {
+        /*
+         * Warning: changing a collection record does not trigger a
+         * change event in the parent (though it probably should)
+         */
+        this.trigger('saverequired');
+      },
+      this
+    );
+
+    setupToOne(this, options);
+  },
+  url() {
+    return `/api/specify/${this.model.specifyTable.name.toLowerCase()}/`;
+  },
+  parse(resp) {
+    let objects;
+    if (resp.meta) {
+      objects = resp.objects;
+    } else {
+      console.warn("expected 'meta' in response");
+      objects = resp;
+    }
+
+    return objects;
+  },
+  async fetch(options) {
+    if (this.related.isNew()) {
+      return this;
+    }
+
+    this.filters[this.field.name.toLowerCase()] = this.related.id;
+    if (this._fetch) return this._fetch;
+
+    options ||= {};
+
+    options.update = true;
+    options.remove = false;
+    options.silent = true;
+    assert(options.at == null);
+
+    options.data =
+      options.data ||
+      _.extend({ domainfilter: this.domainfilter }, this.filters);
+    options.data.offset = this.length;
+
+    _(options).has('limit') && (options.data.limit = options.limit);
+    this._fetch = Backbone.Collection.prototype.fetch.call(this, options);
+    return this._fetch.then(() => {
+      this._fetch = null;
+      return this;
+    });
+  },
+});
+
+export const LazyCollection = Base.extend({
+  __name__: 'LazyCollectionBase',
+  _neverFetched: true,
+  constructor(options = {}) {
+    this.table = this.model;
+    Base.call(this, null, options);
     this.filters = options.filters || {};
     this.domainfilter =
       Boolean(options.domainfilter) &&

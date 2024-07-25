@@ -434,7 +434,7 @@ export const ResourceBase = Backbone.Model.extend({
           );
           this.storeDependent(field, collection);
         } else {
-          const collection = new relatedTable.ToOneCollection(
+          const collection = new relatedTable.IndependentCollection(
             collectionOptions,
             value
           );
@@ -737,12 +737,12 @@ export const ResourceBase = Backbone.Model.extend({
     };
 
     if (this.isNew()) {
-      toMany = new relatedTable.ToOneCollection(collectionOptions);
+      toMany = new relatedTable.IndependentCollection(collectionOptions);
       this.storeIndependentToMany(field, toMany);
       return toMany;
     }
 
-    return new relatedTable.ToOneCollection(collectionOptions)
+    return new relatedTable.IndependentCollection(collectionOptions)
       .fetch({ limit: 0 })
       .then((collection) => {
         this.storeIndependentToMany(field, collection);
