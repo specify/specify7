@@ -209,7 +209,7 @@ msgstr "Выберите базовую таблицу"
 msgid "chooseExistingPlan"
 msgstr "Выберите существующий план"
 
-#: components/SchemaConfig/Tables.tsx:166
+#: components/SchemaConfig/Tables.tsx:169
 #. Used in: Components > Schema Config > Tables
 msgid "showAllTables"
 msgstr "Показать дополнительные таблицы"

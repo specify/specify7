@@ -98,7 +98,7 @@ msgid "cancel"
 msgstr "Отмена"
 
 #: components/SchemaConfig/Languages.tsx:73
-#: components/SchemaConfig/Tables.tsx:45
+#: components/SchemaConfig/Tables.tsx:46
 #. Used in: Components > Schema Config > Languages ⬤ Components > Schema Config > Tables
 msgid "back"
 msgstr "Назад"
@@ -776,7 +776,7 @@ msgstr "Порядковый номер"
 
 #: components/Header/userToolDefinitions.ts:88
 #: components/QueryBuilder/Edit.tsx:80
-#: components/SchemaConfig/Tables.tsx:39
+#: components/SchemaConfig/Tables.tsx:40
 #: components/Security/ImportExport.tsx:252
 #: components/WbToolkit/DevShowPlan.tsx:85
 #: components/WbToolkit/index.tsx:87

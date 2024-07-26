@@ -24,7 +24,7 @@ msgstr "Tableau"
 #: components/Attachments/index.tsx:195
 #: components/FormEditor/Table.tsx:49
 #: components/Router/Routes.tsx:399
-#: components/SchemaConfig/Tables.tsx:49
+#: components/SchemaConfig/Tables.tsx:50
 #. Used in: Components > Attachments > Index ⬤ Components > Form Editor > Table ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
 #, fuzzy
 msgid "tables"
