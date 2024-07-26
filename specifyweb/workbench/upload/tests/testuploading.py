@@ -9,9 +9,9 @@ from jsonschema import validate  # type: ignore
 
 from specifyweb.specify import auditcodes
 from specifyweb.specify.auditlog import auditlog
-from specifyweb.specify.test_trees import TestTree
+from specifyweb.specify.tests.test_trees import TestTree
 from specifyweb.specify.tree_extras import validate_tree_numbering
-from specifyweb.specify.test_trees import get_table
+from specifyweb.specify.tests.test_trees import get_table
 from .base import UploadTestsBase
 from ..parsing import filter_and_upload
 from ..tomany import ToManyRecord

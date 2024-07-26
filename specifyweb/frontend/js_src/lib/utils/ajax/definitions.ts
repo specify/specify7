@@ -13,6 +13,7 @@ export const Http = {
   CONFLICT: 409,
   TOO_LARGE: 413,
   MISDIRECTED: 421,
+  UNPROCESSABLE: 422,
   HUGE_HEADER: 431,
   SERVER_ERROR: 500,
   BAD_GATEWAY: 502,
@@ -47,12 +48,6 @@ export const httpCodeToErrorMessage: RR<ValueOf<typeof Http>, string> = {
     access to, or your session has expired. Please try logging in again, or
     repeat the action as a user with more permissions
   `,
-  // This error code is used by the front-end when request was aborted
-  [Http.MISDIRECTED]: `
-    This error happened because Specify failed to send a request to the server.
-    Please try again, and if the problem persists, contact your system
-    administrator.
-  `,
   [Http.CONFLICT]: `
     This error happened because the resource you tried to update has already
     been modified by someone else. Please refresh the page and try again.
@@ -62,20 +57,28 @@ export const httpCodeToErrorMessage: RR<ValueOf<typeof Http>, string> = {
     the configured server limit. Either contact your system administrator about
     increasing the limit, or try uploading a smaller file.
   `,
+  // This error code is used by the front-end when request was aborted
+  [Http.MISDIRECTED]: `
+    This error happened because Specify failed to send a request to the server.
+    Please try again, and if the problem persists, contact your system
+    administrator.
+  `,
+  [Http.UNPROCESSABLE]:
+    'This error is likely caused by a bug in Specify. Please report it.',
   [Http.HUGE_HEADER]:
     'Please try clearing your cookies or using a different browser.',
   [Http.SERVER_ERROR]: `
     This error may indicate a misconfiguration or a bug in Specify. Please
     double check your configuration and report this issue.
   `,
-  [Http.UNAVAILABLE]: `
-    This error happened because the server is overloaded or this resource is
-    currently unavailable. Please try logging in again later.
-  `,
   [Http.BAD_GATEWAY]: `
     This error likely happened because the server is down, is not yet started,
     or in a process of being restarted. If this issue does not resolve after a
     few minutes, contact your system administrator.
+  `,
+  [Http.UNAVAILABLE]: `
+    This error happened because the server is overloaded or this resource is
+    currently unavailable. Please try logging in again later.
   `,
   [Http.GATEWAY_TIMEOUT]: `
     This error likely happened because the server is overloaded or you sent a

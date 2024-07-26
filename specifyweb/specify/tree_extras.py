@@ -128,6 +128,43 @@ class Tree(models.Model): # FUTURE: class Tree(SpTimestampedModel):
     def accepted_id(self, value):
         setattr(self, self.accepted_id_attr(), value)
 
+class TreeRank(models.Model):
+    class Meta:
+            abstract = True
+
+    def save(self, *args, **kwargs):
+        # pre_save
+        if self.pk is None: # is it a new object?
+            pre_tree_rank_init(self)
+            verify_rank_parent_chain_integrity(self, RankOperation.CREATED)
+        else:
+            verify_rank_parent_chain_integrity(self, RankOperation.UPDATED)
+        
+        # save
+        super(TreeRank, self).save(*args, **kwargs)
+
+        # post_save
+        post_tree_rank_save(self.__class__, self)
+
+    def delete(self, *args, allow_root_del=False, **kwargs):
+        # pre_delete
+        if not allow_root_del and self.__class__.objects.get(id=self.id).parent is None:
+            raise TreeBusinessRuleException(
+                "cannot delete root level tree definition item",
+                {"tree": self.__class__.__name__,
+                 "localizationKey": 'deletingTreeRoot',
+                 "node": {
+                     "id": self.id
+                 }})
+        pre_tree_rank_deletion(self.__class__, self)
+        verify_rank_parent_chain_integrity(self, RankOperation.DELETED)
+
+        # delete
+        super(TreeRank, self).delete(*args, **kwargs)
+
+        # post_delete
+        post_tree_rank_deletion(self)
+
 
 
 def open_interval(model, parent_node_number, size):
@@ -685,51 +722,5 @@ def renumber_tree(table):
     tasknames = [name.format(tree_model.name) for name in ("UpdateNodes{}", "BadNodes{}")]
     Sptasksemaphore.objects.filter(taskname__in=tasknames).update(islocked=False)
 
-def is_instance_of_tree_def_item(obj):
-    tree_def_item_classes = [
-        spmodels.Geographytreedefitem,
-        spmodels.Geologictimeperiodtreedefitem,
-        spmodels.Lithostrattreedefitem,
-        spmodels.Storagetreedefitem,
-        spmodels.Taxontreedefitem,
-    ]
-    return any(isinstance(obj, cls) for cls in tree_def_item_classes)
-
-class TreeRank(models.Model):
-    class Meta:
-            abstract = True
-
-    def save(self, *args, **kwargs):
-        # pre_save
-        if hasattr(self, 'isaccepted'):
-            self.isaccepted = self.accepted_id == None
-        if self.pk is None: # is it a new object?
-            pre_tree_rank_init(self)
-            verify_rank_parent_chain_integrity(self, RankOperation.CREATED)
-        else:
-            verify_rank_parent_chain_integrity(self, RankOperation.UPDATED)
-        
-        # save
-        super(TreeRank, self).save(*args, **kwargs)
-
-        # post_save
-        post_tree_rank_save(self.__class__, self)
-
-    def delete(self, *args, **kwargs):
-        # pre_delete
-        if self.__class__.objects.get(id=self.id).parent is None:
-            raise TreeBusinessRuleException(
-                "cannot delete root level tree definition item",
-                {"tree": self.__class__.__name__,
-                 "localizationKey": 'deletingTreeRoot',
-                 "node": {
-                     "id": self.id
-                 }})
-        pre_tree_rank_deletion(self.__class__, self)
-        verify_rank_parent_chain_integrity(self, RankOperation.DELETED)
-
-        # delete
-        super(TreeRank, self).delete(*args, **kwargs)
-
-        # post_delete
-        post_tree_rank_deletion(self)
+def is_treedefitem(obj):
+    return issubclass(obj.__class__, TreeRank)

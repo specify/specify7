@@ -11,7 +11,7 @@ from typing_extensions import TypedDict
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify import models
 from .column_options import ColumnOptions, ExtendedColumnOptions
-from .parsing import ParseResult, ParseFailure, parse_many, filter_and_upload
+from .parsing import ParseResult, WorkBenchParseFailure, parse_many, filter_and_upload
 from .upload_result import UploadResult, NullRecord, NoMatch, Matched, \
     MatchedMultiple, Uploaded, ParseFailures, FailedBusinessRule, ReportInfo, \
     TreeInfo
@@ -59,7 +59,7 @@ class ScopedTreeRecord(NamedTuple):
 
     def bind(self, collection, row: Row, uploadingAgentId: Optional[int], auditor: Auditor, cache: Optional[Dict]=None, row_index: Optional[int] = None) -> Union["BoundTreeRecord", ParseFailures]:
         parsedFields: Dict[str, List[ParseResult]] = {}
-        parseFails: List[ParseFailure] = []
+        parseFails: List[WorkBenchParseFailure] = []
         for rank, cols in self.ranks.items():
             nameColumn = cols['name']
             presults, pfails = parse_many(collection, self.name, cols, row)
@@ -68,7 +68,7 @@ class ScopedTreeRecord(NamedTuple):
             filters = {k: v for result in presults for k, v in result.filter_on.items()}
             if filters.get('name', None) is None:
                 parseFails += [
-                    ParseFailure('invalidPartialRecord',{'column':nameColumn.column}, result.column)
+                    WorkBenchParseFailure('invalidPartialRecord',{'column':nameColumn.column}, result.column)
                     for result in presults
                     if any(v is not None for v in result.filter_on.values())
                 ]
@@ -303,7 +303,7 @@ class BoundTreeRecord(NamedTuple):
         missing_requireds = [
             # TODO: there should probably be a different structure for
             # missing required fields than ParseFailure
-            ParseFailure(r.missing_required, {}, r.column)
+            WorkBenchParseFailure(r.missing_required, {}, r.column)
             for tdiwpr in to_upload
             for r in tdiwpr.results
             if r.missing_required is not None

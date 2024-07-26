@@ -86,7 +86,7 @@ def _make_one_to_one(fieldname: str, rest: AdjustToOnes) -> AdjustToOnes:
 
 
 def extend_columnoptions(colopts: ColumnOptions, collection, tablename: str, fieldname: str) -> ExtendedColumnOptions:
-    schema_items = getattr(models, 'Splocalecontaineritem').objects.filter(
+    schema_items = models.Splocalecontaineritem.objects.filter(
         container__discipline=collection.discipline,
         container__schematype=0,
         container__name=tablename.lower(),
@@ -94,12 +94,11 @@ def extend_columnoptions(colopts: ColumnOptions, collection, tablename: str, fie
 
     schemaitem = schema_items and schema_items[0]
     picklistname = schemaitem and schemaitem.picklistname
-    picklist_model = getattr(models, 'Picklist')
 
     if not isinstance(picklistname, str):
         picklist = None
     else:
-        picklists = picklist_model.objects.filter(name=picklistname)
+        picklists = models.Picklist.objects.filter(name=picklistname)
         collection_picklists = picklists.filter(collection=collection)
         
         picklist = picklists[0] if len(collection_picklists) == 0 else collection_picklists[0]
@@ -121,7 +120,7 @@ def apply_scoping_to_uploadtable(ut: Union[UploadTable, DeferredScopeUploadTable
     adjust_to_ones = to_one_adjustments(collection, table)
     
     if ut.overrideScope is not None and isinstance(ut.overrideScope['collection'], int):
-        collection = getattr(models, "Collection").objects.filter(id=ut.overrideScope['collection']).get()
+        collection = models.Collection.objects.filter(id=ut.overrideScope['collection']).get()
     
 
     return ScopedUploadTable(

@@ -171,7 +171,7 @@ export const userText = createDictionary({
     'fr-fr': `
       Vous avez été invité à associer une connexion externe à votre compte
       utilisateur Specify. Cela vous permettra de vous connecter à Specify avec
-      le fournisseur que vous avez choisi à l'avenir.
+      le fournisseur de votre choix à l'avenir.
     `,
     'uk-ua': `
       Вас запросили пов’язати зовнішній логін із вашим обліковим записом
@@ -220,9 +220,9 @@ export const userText = createDictionary({
     `,
     'uk-ua': `
       Наразі немає жодного користувача, пов’язаного з вашим обліковим записом
-      {providerName:string}. Якщо у вас є вказати ім’я користувача та пароль,
-      ви можете ввести їх нижче, щоб пов’язати цього користувача з обліковим
-      записом {providerName:string} для майбутніх входів.
+      {providerName:string}. Якщо у вас є вказане ім’я користувача та пароль,
+      ви можете ввести їх нижче, щоб пов’язати цього користувача з вашим
+      обліковим записом {providerName:string} для майбутніх входів.
     `,
     'de-ch': `
       Derzeit ist Ihrem {providerName:string}-Konto kein Benutzer vom Typ
@@ -645,7 +645,7 @@ export const userText = createDictionary({
     'ru-ru': '{collectionTable:string} Роли пользователей',
     'es-es': 'Roles de usuario de {collectionTable:string}',
     'fr-fr': '{collectionTable:string} Rôles des utilisateurs',
-    'uk-ua': '{collectionTable:string} Ролі користувачів',
+    'uk-ua': '{collectionTable:string} Ролі користувача',
     'de-ch': '{collectionTable:string} Benutzerrollen',
   },
   assignedUserRoles: {
@@ -715,7 +715,7 @@ export const userText = createDictionary({
     'ru-ru': 'Профиль разрешений пользователя (только для чтения)',
     'es-es': 'Perfil de permisos del usuario (solo lectura)',
     'fr-fr': "Profil d'autorisation de l'utilisateur (lecture seule)",
-    'uk-ua': 'Профіль дозволів користувача (лише читання)',
+    'uk-ua': 'Профіль дозволів користувача (тільки читання)',
     'de-ch': 'Berechtigungsprofil des Benutzers (schreibgeschützt)',
   },
   outOfDateWarning: {
@@ -915,7 +915,7 @@ export const userText = createDictionary({
       Specify 7 server settings
     `,
     'ru-ru': `
-      Внешний поставщик удостоверений не настроен. Некоторые из них можно
+      Внешний поставщик удостоверений не настроен. Некоторые настройки можно
       настроить в разделе «Укажите 7 настроек сервера».
     `,
     'es-es': `

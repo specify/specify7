@@ -8,7 +8,7 @@ from django.db import transaction, IntegrityError
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify import models
 from .column_options import ColumnOptions, ExtendedColumnOptions
-from .parsing import parse_many, ParseResult, ParseFailure
+from .parsing import parse_many, ParseResult, WorkBenchParseFailure
 from .tomany import ToManyRecord, ScopedToManyRecord, BoundToManyRecord
 from .upload_result import UploadResult, Uploaded, NoMatch, Matched, \
     MatchedMultiple, NullRecord, FailedBusinessRule, ReportInfo, \
@@ -159,7 +159,7 @@ class DeferredScopeUploadTable(NamedTuple):
         if  self.overrideScope is not None and'collection' in self.overrideScope.keys():
             if isinstance(self.overrideScope['collection'], int):
                 collection_id = self.overrideScope['collection']
-                collection = getattr(models, "Collection").objects.get(id=collection_id)
+                collection = models.Collection.objects.get(id=collection_id)
                 scoped = self.apply_scoping(collection, defer=False)
             elif callable(self.overrideScope['collection']):
                 collection = self.overrideScope['collection'](self, row_index) if row_index is not None else default_collection
@@ -467,7 +467,7 @@ class BoundUploadTable(NamedTuple):
         missing_requireds = [
             # TODO: there should probably be a different structure for
             # missing required fields than ParseFailure
-            ParseFailure(parsedField.missing_required, {}, parsedField.column)
+            WorkBenchParseFailure(parsedField.missing_required, {}, parsedField.column)
             for parsedField in self.parsedFields
             if parsedField.missing_required is not None
         ]

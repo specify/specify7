@@ -10,6 +10,7 @@ import { type GetSet, type RA } from '../../utils/types';
 import { Container, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema } from '../DataModel/schema';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpQuery } from '../DataModel/types';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
@@ -25,6 +26,7 @@ import {
 import { fetchPickList } from '../PickLists/fetch';
 import { userPreferences } from '../Preferences/userPreferences';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
+import { recordSetFromQueryLoading } from './Components';
 import { CreateRecordSet } from './CreateRecordSet';
 import type { QueryFieldSpec } from './fieldSpec';
 import type { QueryField } from './helpers';
@@ -98,6 +100,8 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     totalCount: [totalCount, setTotalCount],
     canFetchMore,
   } = useFetchQueryResults(props);
+
+  const canMergeTable = canMerge(table);
 
   const visibleFieldSpecs = fieldSpecs.filter(({ isPhantom }) => !isPhantom);
   if (resultsRef !== undefined) resultsRef.current = results;
@@ -214,15 +218,14 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
         typeof fetchResults === 'function' &&
         visibleFieldSpecs.length > 0 ? (
           <>
-            {hasPermission('/record/merge', 'update') &&
-              hasTablePermission(table.name, 'update') && (
-                <RecordMergingLink
-                  selectedRows={selectedRows}
-                  table={table}
-                  onDeleted={handleDelete}
-                  onMerged={handleReRun}
-                />
-              )}
+            {canMergeTable ? (
+              <RecordMergingLink
+                selectedRows={selectedRows}
+                table={table}
+                onDeleted={handleDelete}
+                onMerged={handleReRun}
+              />
+            ) : undefined}
             {hasToolPermission('recordSets', 'create') && totalCount !== 0 ? (
               selectedRows.size > 0 && !isDistinct ? (
                 <CreateRecordSet
@@ -232,14 +235,19 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                    * if records were selected out of order)
                    */
                   baseTableName={fieldSpecs[0].baseTable.name}
-                  getIds={(): RA<number> =>
+                  defaultRecordSetName={
+                    queryResource?.isNew() ?? true
+                      ? undefined
+                      : queryResource?.get('name')
+                  }
+                  recordIds={(): RA<number> =>
                     loadedResults
                       .filter((result) =>
                         selectedRows.has(result[queryIdField] as number)
                       )
                       .map((result) => result[queryIdField] as number)
                   }
-                  queryResource={queryResource}
+                  saveComponent={recordSetFromQueryLoading}
                 />
               ) : (
                 createRecordSet
@@ -437,3 +445,20 @@ const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
 /** Record ID column index in Query Results when not in distinct mode */
 export const queryIdField = 0;
+
+function canMerge(table: SpecifyTable): boolean {
+  const isEmbeddedCollectingEvent = schema.embeddedCollectingEvent;
+  const isEmbeddedPaleoContext = schema.embeddedPaleoContext;
+  const canMerge =
+    hasPermission('/record/merge', 'update') &&
+    hasTablePermission(table.name, 'update');
+  const canMergePaleoContext =
+    table.name === 'PaleoContext' && !isEmbeddedPaleoContext && canMerge;
+  const canMergeCollectingEvent =
+    table.name === 'CollectingEvent' && !isEmbeddedCollectingEvent && canMerge;
+  const canMergeOtherTables =
+    table.name !== 'PaleoContext' &&
+    table.name !== 'CollectingEvent' &&
+    canMerge;
+  return canMergeOtherTables || canMergePaleoContext || canMergeCollectingEvent;
+}

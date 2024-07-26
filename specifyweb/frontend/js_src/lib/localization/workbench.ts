@@ -559,7 +559,7 @@ export const wbText = createDictionary({
       збіг необхідно усунути перед завантаженням.
     `,
     'de-ch': `
-      Dieser Wert stimmt mit zwei oder mehr vorhandenen Datenbankeinträgen
+      Dieser Wert stimmt mit zwei oder mehreren vorhandenen Datenbankeinträgen
       überein und die Übereinstimmung muss vor dem Hochladen eindeutig geklärt
       werden.
     `,
@@ -570,7 +570,7 @@ export const wbText = createDictionary({
     'es-es': 'Validar completado sin errores',
     'fr-fr': 'Validation terminée sans erreur',
     'uk-ua': 'Перевірка завершена без помилок',
-    'de-ch': 'Upload-Status des Datensatzes',
+    'de-ch': 'Status des Datensatz-Uploads',
   },
   validationNoErrorsDescription: {
     'en-us': `
