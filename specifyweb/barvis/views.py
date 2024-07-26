@@ -1,13 +1,13 @@
 from django.http import HttpResponse
-from django.db.models import Count, Q, OuterRef, Subquery, IntegerField
+from django.db.models import Count, Q
 
 from sqlalchemy.sql.expression import func, distinct
 
 from specifyweb.middleware.general import require_GET
 from specifyweb.specify.views import login_maybe_required
 from specifyweb.specify.api import toJson
-from specifyweb.specify.tree_utils import get_taxon_treedefs
-from specifyweb.specify.models import Taxon, Determination
+from specifyweb.specify.tree_utils import get_taxon_treedefs_by_collection
+from specifyweb.specify.models import Taxon
 
 # from specifyweb.stored_queries.models import Determination, Taxon
 
@@ -16,7 +16,7 @@ from django.db import connection
 @require_GET
 @login_maybe_required
 def taxon_bar(request):
-    "Returns the data for creating a taxon tiles visualization."  
+    # "Returns the data for creating a taxon tiles visualization."  
     # cursor = connection.cursor()
     # cursor.execute("""
     # SELECT t.TaxonID,
@@ -29,19 +29,13 @@ def taxon_bar(request):
     # """, [request.specify_collection.discipline.taxontreedef_id])
 
     # Implementing the previous SQL query in Django ORM:
-    taxon_tree_defs = get_taxon_treedefs(request.specify_collection)
+    taxon_tree_defs = get_taxon_treedefs_by_collection(request.specify_collection)
     taxons = (
         Taxon.objects.filter(definition__in=taxon_tree_defs)
         .annotate(
-            current_determination_count=Subquery(
-                Determination.objects.filter(taxon_id=OuterRef("id"), iscurrent=True)
-                .values("taxon_id")
-                .annotate(count=Count("*"))
-                .values("count"),
-                output_field=IntegerField(),
-            )
+            current_determination_count=Count('determinations', filter=Q(determinations__iscurrent=True))
         )
-        .values("id", "rankid", "parent_id", "name", "current_determination_count")
+        .values_list("id", "rankid", "parent_id", "name", "current_determination_count")
     )
     result = toJson(list(taxons))
 
