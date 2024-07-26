@@ -200,28 +200,25 @@ const getAllBlockers = (
       resources: [resource],
     })) ?? []),
   ...filterArray(
-    Object.entries(resource.dependentResources).flatMap(
-      ([fieldName, collectionOrResource]) =>
-        (filterBlockers !== undefined &&
-          fieldName.toLowerCase() !== filterBlockers?.name.toLowerCase()) ||
-        collectionOrResource === undefined ||
-        collectionOrResource === null
-          ? undefined
-          : (collectionOrResource instanceof ResourceBase
-              ? getAllBlockers(
-                  collectionOrResource as SpecifyResource<AnySchema>
-                )
-              : (collectionOrResource as Collection<AnySchema>).models.flatMap(
-                  f.unary(getAllBlockers)
-                )
-            ).map(({ field, resources, message }) => ({
-              field: [
-                resource.specifyTable.strictGetField(fieldName),
-                ...field,
-              ],
-              resources: [...resources, resource],
-              message,
-            }))
+    Object.entries({
+      ...resource.dependentResources,
+      ...resource.independentResources,
+    }).flatMap(([fieldName, collectionOrResource]) =>
+      (filterBlockers !== undefined &&
+        fieldName.toLowerCase() !== filterBlockers?.name.toLowerCase()) ||
+      collectionOrResource === undefined ||
+      collectionOrResource === null
+        ? undefined
+        : (collectionOrResource instanceof ResourceBase
+            ? getAllBlockers(collectionOrResource as SpecifyResource<AnySchema>)
+            : (collectionOrResource as Collection<AnySchema>).models.flatMap(
+                f.unary(getAllBlockers)
+              )
+          ).map(({ field, resources, message }) => ({
+            field: [resource.specifyTable.strictGetField(fieldName), ...field],
+            resources: [...resources, resource],
+            message,
+          }))
     )
   ),
 ];
