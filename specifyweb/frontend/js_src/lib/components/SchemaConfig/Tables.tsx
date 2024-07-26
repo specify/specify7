@@ -86,10 +86,8 @@ export function tablesFilter(
   selectedTables: RA<keyof Tables> | undefined = undefined
 ): boolean {
   if (selectedTables?.includes(name) === true) return true;
-  const userIsAdmin =
-    userInformation.isadmin && userInformation.usertype === 'Manager';
 
-  const isRestricted = userIsAdmin
+  const isRestricted = userInformation.isadmin
     ? overrides.isHidden
     : overrides.isHidden || overrides.isSystem;
   if (!showHiddenTables && isRestricted) return false;
