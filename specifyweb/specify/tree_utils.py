@@ -1,36 +1,29 @@
-from typing import Tuple
-from specifyweb.specify.models import (
-    CollectionObjectType,
-    Collection,
-    Taxontreedef,
-    Taxontreedef,
-    Geographytreedef,
-    Storagetreedef,
-    Geologictimeperiodtreedef,
-    Lithostrattreedef,
-)
+from typing import Tuple, List
+import specifyweb.specify.models as spmodels
+from django.db.models import Count, Model
 
-def get_treedef(collection: Collection, tree_name: str):
+def get_treedef(collection: spmodels.Collection, tree_name: str) ->  List[Tuple[int, int, int]]:
     # Get the appropriate TreeDef based on the Collection and tree_name
-    treedef = None
-    if tree_name == 'Taxon':
-        return get_taxon_treedef(collection)
-    elif tree_name == 'Storage':
-        treedef = Storagetreedef.objects.filter(institution=collection.discipline.division.institution).first()
-    elif tree_name == 'Geography':
-        treedef = Geographytreedef.objects.filter(discipline=collection.discipline).first()
-    elif tree_name == 'Geologictimeperiod':
-        treedef = Geologictimeperiodtreedef.objects.filter(discipline=collection.discipline).first()
-    elif tree_name == 'Lithostrat':
-        treedef = Lithostrattreedef.objects.filter(discipline=collection.discipline).first()
+
+    # we actually don't care here. everything can be not limited, but I'm doing it this way so that 
+    # we can mimic and follow legacy stuff as closely as possible. queryconstruct can perfectly handle
+    # even storage or geography being of multiple types. heck, everything gets converted to a list
+    _limit = lambda query: (query if tree_name.lower() == 'taxon' else query[:1])
+    search_filters = {'institution': collection.discipline.division.institution} if tree_name.lower() == 'storage' else {'discipline': collection.discipline}
     
-    if treedef is None:
-        return getattr(collection.discipline, tree_name.lower() + 'treedef')
+    lookup_tree = tree_name + 'treedef'
+    tree_model: Model = getattr(spmodels, lookup_tree)
+    # we get all the treedefids, and the count of item in each, corresponding to our search predicates
+    search_query = _limit(tree_model.objects.filter(**search_filters).annotate(item_counts=Count('treedefitems')).values_list('id', 'item_counts'))
     
-    return treedef
+    result = list(search_query)
+    assert len(result) > 0, "Got no definition to query on"
+
+    return result
+
 
 # TODO: Double check that this in the intended logic
-def get_taxon_treedef(collection: Collection, collection_object_type: CollectionObjectType = None):
+def get_taxon_treedef(collection: spmodels.Collection, collection_object_type: spmodels.CollectionObjectType = None):
     # Use the provided collection_object_type if not None
     if collection_object_type and collection_object_type.taxontreedef:
         return collection_object_type.taxontreedef
@@ -40,7 +33,7 @@ def get_taxon_treedef(collection: Collection, collection_object_type: Collection
         return collection.collectionobjecttype.taxontreedef
 
     # Otherwise, try to get the first CollectionObjectType related to the collection
-    cot = CollectionObjectType.objects.filter(collection=collection).first()
+    cot = spmodels.CollectionObjectType.objects.filter(collection=collection).first()
     if cot:
         return cot.taxontreedef
 
@@ -48,21 +41,18 @@ def get_taxon_treedef(collection: Collection, collection_object_type: Collection
     if collection.discipline.taxontreedef:
         return collection.discipline.taxontreedef
 
-    # If all else fails, return the first TaxonTreedef found
-    return Taxontreedef.objects.first()
+    # If all else fails crash
+    raise Exception("searched high and low, couldn't find any taon def. somewhere, someone messed up. was it you?")
 
-def get_taxon_treedefs(collection: Collection) -> Taxontreedef:
+def get_taxon_treedefs(collection: spmodels.Collection):
     # Get all TaxonTreedefs related to the Collection based on CollectionObjectTypes
-    return Taxontreedef.objects.filter(
-        id__in=CollectionObjectType.objects.filter(collection=collection)
-        .values_list("taxontreedef_id", flat=True)
-        .distinct()
-    )
+    return spmodels.Taxontreedef.objects.filter(cotypes__collection=collection)
 
-def get_taxon_treedef_ids(collection: Collection) -> Tuple[int]:
+# Alec, what is this? did you meant to get just the ids from get_taxon_treedefs call?
+def get_taxon_treedef_ids(collection: spmodels.Collection) -> Tuple[int]:
     # Get all TaxonTreedef IDs related to the Collection based on CollectionObjectTypes
     return tuple(
-        CollectionObjectType.objects.filter(collection=collection).values_list(
+        spmodels.CollectionObjectType.objects.filter(collection=collection).values_list(
             "taxontreedef_id", flat=True
         )
     )
