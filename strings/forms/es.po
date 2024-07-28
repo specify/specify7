@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-07-27 02:09+0000\n"
+"PO-Revision-Date: 2024-07-28 18:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/forms/"
 "es/>\n"
@@ -103,7 +103,7 @@ msgstr "{geographyTable:string} Requerido"
 #, fuzzy
 msgid "paleoRequiresGeographyDescription"
 msgstr ""
-"El complemento Paleo Map requiere que el {localityTable:string} tenga "
+"El complemento Paleo Map requiere que {localityTable:string} tenga "
 "coordenadas geográficas y que el contexto paleo tenga una edad geográfica "
 "con al menos una hora de inicio o una hora de finalización completa."
 
