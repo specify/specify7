@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-07-27 02:09+0000\n"
+"PO-Revision-Date: 2024-07-28 18:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/forms/"
 "ru/>\n"
@@ -168,7 +168,7 @@ msgstr "Добавить в {pickListTable:string}?"
 #, fuzzy
 msgid "addToPickListConfirmationDescription"
 msgstr ""
-"Добавить значение «{value:string}» в {pickListTable:string} с именем "
+"Добавить значение «{value:string}» к {pickListTable:string} с именем "
 "«{pickListName:string}»?"
 
 #. Used in: Components > Pick Lists > Index
@@ -793,7 +793,7 @@ msgstr "Ресурс удален"
 #: components/Forms/ResourceView.tsx:216
 #, fuzzy
 msgid "resourceDeletedDescription"
-msgstr "Элемент был успешно удален."
+msgstr "Объект успешно удален."
 
 #. Used in: Components > Forms > Date Range
 #: components/Forms/DateRange.tsx:53
