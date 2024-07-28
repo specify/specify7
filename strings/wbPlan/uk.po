@@ -18,7 +18,7 @@ msgstr ""
 #: components/WorkBench/WbView.tsx:192
 #, fuzzy
 msgid "dataMapper"
-msgstr "Data Mapper"
+msgstr "Картограф даних"
 
 #. Used in: Components > Wb Actions > Wb No Upload Plan ⬤ Components > Wb Plan View > State
 #: components/WbActions/WbNoUploadPlan.tsx:48
@@ -298,10 +298,10 @@ msgstr "Змінити базову таблицю для зіставлення
 #, fuzzy
 msgid "goToBaseTableDescription"
 msgstr ""
-"Вибір іншої базової таблиці для завантаження набору даних зробить цю "
-"таблицю новою відправною точкою для зіставлення стовпців і полів даних і "
-"видалить існуючі зіставлення. AutoMapper спробує зіставити стовпці з новими "
-"полями базової таблиці."
+"Вибір іншої базової таблиці для завантаження набору даних зробить цю таблицю "
+"новою відправною точкою для зіставлення стовпців і полів даних і видалить "
+"існуючі зіставлення. AutoMapper спробує зіставити стовпці з новими полями "
+"базової таблиці."
 
 #. Used in: Components > Wb Plan View > Line Components
 #: components/WbPlanView/LineComponents.tsx:152
