@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-07-27 02:09+0000\n"
+"PO-Revision-Date: 2024-07-28 18:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "forms/uk/>\n"
@@ -558,7 +558,7 @@ msgstr "Показати підрахунок масового переносу"
 #: components/Forms/Save.tsx:256
 #, fuzzy
 msgid "carryForwardDescription"
-msgstr "Створіть новий запис із певними перенесеними полями"
+msgstr "Створіть новий запис із перенесеними певними полями"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:120
@@ -583,7 +583,7 @@ msgstr "Налаштувати поля для перенесення ({tableNam
 #: components/FormMeta/CarryForward.tsx:335
 #, fuzzy
 msgid "bulkCarryForwardTableSettingsDescription"
-msgstr "Налаштувати поля для масового перенесення ({tableName:string})"
+msgstr "Налаштувати масове перенесення полів ({tableName:string})"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:408
