@@ -6,7 +6,7 @@ from sqlalchemy.sql.expression import func, distinct
 from specifyweb.middleware.general import require_GET
 from specifyweb.specify.views import login_maybe_required
 from specifyweb.specify.api import toJson
-from specifyweb.specify.tree_utils import get_taxon_treedefs_by_collection
+from specifyweb.specify.tree_utils import get_taxon_treedefs
 from specifyweb.specify.models import Taxon
 
 # from specifyweb.stored_queries.models import Determination, Taxon
@@ -29,9 +29,9 @@ def taxon_bar(request):
     # """, [request.specify_collection.discipline.taxontreedef_id])
 
     # Implementing the previous SQL query in Django ORM:
-    taxon_tree_defs = get_taxon_treedefs_by_collection(request.specify_collection)
+    taxon_tree_defs = get_taxon_treedefs(request.specify_collection)
     taxons = (
-        Taxon.objects.filter(definition__in=taxon_tree_defs)
+        Taxon.objects.filter(definition_id__in=taxon_tree_defs)
         .annotate(
             current_determination_count=Count('determinations', filter=Q(determinations__iscurrent=True))
         )

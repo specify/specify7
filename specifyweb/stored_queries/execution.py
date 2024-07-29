@@ -13,7 +13,7 @@ from django.db import transaction
 from sqlalchemy import sql, orm, func, select
 from sqlalchemy.sql.expression import asc, desc, insert, literal
 
-from specifyweb.specify.tree_utils import get_taxon_treedef_ids
+from specifyweb.specify.tree_utils import get_taxon_treedefs
 from specifyweb.stored_queries.group_concat import group_by_displayed_fields
 
 from . import models
@@ -52,12 +52,12 @@ def filter_by_collection(model, query, collection):
         return query
 
     if model is models.Taxon:
-        taxon_treedef_ids = get_taxon_treedef_ids(collection)
+        taxon_treedef_ids = get_taxon_treedefs(collection)
         logger.info("filtering taxon to collection's collection object types: %s", collection.collectionname)
         return query.filter(model.TaxonTreeDefID.in_(taxon_treedef_ids))
 
     if model is models.TaxonTreeDefItem:
-        taxon_treedef_ids = get_taxon_treedef_ids(collection)
+        taxon_treedef_ids = get_taxon_treedefs(collection)
         logger.info("filtering taxon rank to collection's collection object types: %s", collection.collectionname)
         return query.filter(model.TaxonTreeDefID.in_(taxon_treedef_ids))
 
@@ -643,5 +643,8 @@ def build_query(session, collection, user, tableid, field_specs,
     if distinct:
         query = group_by_displayed_fields(query, selected_fields)
 
-    logger.debug("query: %s", query.query)
+    internal_predicate = query.get_internal_filters(model)
+    query = query.filter(internal_predicate)
+
+    logger.warning("query: %s", query.query)
     return query.query, order_by_exprs

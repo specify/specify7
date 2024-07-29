@@ -31,7 +31,7 @@ def filter_by_collection(queryset, collection, strict=True):
 
     if queryset.model is Taxon:
         taxon_tree_defs = get_taxon_treedefs(collection)
-        return queryset.filter(definition__in=taxon_tree_defs)
+        return queryset.filter(definition_id_in=taxon_tree_defs)
 
     if queryset.model is Storage:
         return queryset.filter(definition__institutions=collection.discipline.division.institution.id)
