@@ -2,7 +2,7 @@ from typing import Tuple, List
 from django.db.models import Q, Count, Model
 import specifyweb.specify.models as spmodels
 
-def get_search_filters(collection: spmodels.Collection, tree: str, scope_storage_at_insititution=True):
+def get_search_filters(collection: spmodels.Collection, tree: str):
     tree_name = tree.lower()
     if tree_name == 'storage':
         return Q(institution=collection.discipline.division.institution)
