@@ -1,36 +1,42 @@
-
 import logging
 from functools import reduce
-from typing import List, Dict, Any, NamedTuple, Union, Optional, Set, Callable, Literal, cast
+from typing import List, Dict, Any, NamedTuple, Union, Optional, Set, Callable, Literal, cast, Tuple
 
 from django.db import transaction, IntegrityError
 
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify import models
+from specifyweb.specify.datamodel import datamodel
+from specifyweb.specify.load_datamodel import Field, Relationship
+import specifyweb.stored_queries.models as sql_models
 from .column_options import ColumnOptions, ExtendedColumnOptions
 from .parsing import parse_many, ParseResult, WorkBenchParseFailure
-from .tomany import ToManyRecord, ScopedToManyRecord, BoundToManyRecord
+
 from .upload_result import UploadResult, Uploaded, NoMatch, Matched, \
     MatchedMultiple, NullRecord, FailedBusinessRule, ReportInfo, \
     PicklistAddition, ParseFailures, PropagatedFailure
-from .uploadable import FilterPack, Exclude, Row, Uploadable, ScopedUploadable, \
-    BoundUploadable, Disambiguation, Auditor
+from .uploadable import FilterPredicate, Predicate, PredicateWithQuery, Row, Uploadable, ScopedUploadable, \
+    BoundUploadable, Disambiguation, Auditor, Filter
+
+from sqlalchemy.orm import Query, aliased, Session # type: ignore
+from sqlalchemy import sql, Table as SQLTable # type: ignore
+from sqlalchemy.sql.expression import ColumnElement # type: ignore
+from sqlalchemy.exc import OperationalError # type: ignore
 
 logger = logging.getLogger(__name__)
-
 
 class UploadTable(NamedTuple):
     name: str
     wbcols: Dict[str, ColumnOptions]
     static: Dict[str, Any]
     toOne: Dict[str, Uploadable]
-    toMany: Dict[str, List[ToManyRecord]]
+    toMany: Dict[str, List[Uploadable]]
 
     overrideScope: Optional[Dict[Literal['collection'], Optional[int]]] = None
 
-    def apply_scoping(self, collection) -> "ScopedUploadTable":
+    def apply_scoping(self, collection, row=None) -> Tuple[bool, "ScopedUploadTable"]:
         from .scoping import apply_scoping_to_uploadtable
-        return apply_scoping_to_uploadtable(self, collection)
+        return apply_scoping_to_uploadtable(self, collection, row)
 
     def get_cols(self) -> Set[str]:
         return set(cd.column for cd in self.wbcols.values()) \
@@ -47,7 +53,8 @@ class UploadTable(NamedTuple):
             for key, uploadable in self.toOne.items()
         }
         result['toMany'] = {
-            key: [to_many.to_json() for to_many in to_manys]
+            # legacy behaviour      
+            key: [to_many.to_json()['uploadTable'] for to_many in to_manys]
             for key, to_manys in self.toMany.items()
         }
         return result
@@ -57,158 +64,13 @@ class UploadTable(NamedTuple):
 
     def unparse(self) -> Dict:
         return { 'baseTableName': self.name, 'uploadable': self.to_json() }
-    
-class DeferredScopeUploadTable(NamedTuple):
-    ''' In the case that the scoping of a record in a WorkBench upload can not be known 
-    until the values of the rows are known, the scope of the record should be deferred until 
-    the row is being processed. 
-
-    When the upload table is parsed in .upload_plan_schema.py, if a table contains a field which scoping 
-    is unknown, a DeferredScope UploadTable is created. 
-
-    As suggested by the name, the DeferredScope UploadTable is not scoped or disambiguated until its bind()
-    method is called. In which case, the rows of the dataset are known and the scoping can be deduced  
-    '''
-    name: str
-    wbcols: Dict[str, ColumnOptions]
-    static: Dict[str, Any]
-    toOne: Dict[str, Uploadable]
-    toMany: Dict[str, List[ToManyRecord]]
-
-    related_key: str
-    relationship_name: str
-    filter_field: str
-
-    disambiguation: Disambiguation = None
-
-    """ In a DeferredScopeUploadTable, the overrideScope value can be either an integer 
-    (which follows the same logic as in UploadTable), or a function which has the parameter
-    signature: (deferred_upload_plan: DeferredScopeUploadTable, row_index: int) -> models.Collection
-    (see apply_deferred_scopes in .upload.py)
-
-    overrideScope should be of type 
-        Optional[Dict[Literal["collection"], Union[int, Callable[["DeferredScopeUploadTable", int], Any]]]]
-    
-    But recursively using the type within the class definition of a NamedTuple is not supported in our version 
-    of mypy
-    See https://github.com/python/mypy/issues/8695
-    """
-    overrideScope: Optional[Dict[Literal["collection"], Union[int, Callable[[Any, int], Any]]]] = None
-
-    
-    # Typehint for return type should be:  Union["ScopedUploadTable", "DeferredScopeUploadTable"]
-    def apply_scoping(self, collection, defer: bool = True) -> Union["ScopedUploadTable", Any]:
-        if not defer:
-            from .scoping import apply_scoping_to_uploadtable
-            return apply_scoping_to_uploadtable(self, collection)
-        else: return self
-
-    def get_cols(self) -> Set[str]:
-        return set(cd.column for cd in self.wbcols.values()) \
-            | set(col for u in self.toOne.values() for col in u.get_cols()) \
-            | set(col for rs in self.toMany.values() for r in rs for col in r.get_cols())
-
-
-    """
-        The Typehint for parameter collection should be: Union[int, Callable[["DeferredScopeUploadTable", int], Any]]
-        The Typehint for return type should be: "DeferredScopeUploadTable"
-    """
-    def add_colleciton_override(self, collection: Union[int, Callable[[Any, int], Any]]) -> Any:
-        ''' To modify the overrideScope after the DeferredScope UploadTable is created, use add_colleciton_override
-        To properly apply scoping (see self.bind()), the <collection> should either be a collection's id, or a callable (function), 
-        which has paramaters that accept: this DeferredScope UploadTable, and an integer representing the current row_index.
-        
-        Note that _replace(**kwargs) does not modify the original object. It insteads creates a new object with the same attributes except for
-        those added/changed in the paramater kwargs. 
-        
-        '''
-        return self._replace(overrideScope = {"collection": collection})
-    
-    def disambiguate(self, da: Disambiguation):
-        '''Disambiguation should only be used when the UploadTable is completely Scoped. 
-        
-        When a caller attempts to disambiguate a DeferredScope UploadTable, create and return
-        a copy of the DeferredScope Upload Table with the Disambiguation stored in a 
-        'disambiguation' attribute.
-
-        If this attribute exists when the DeferredScoped UploadTable is scoped, 
-        then disambiguate the new Scoped UploadTable using the stored Disambiguation
-        '''
-        return self._replace(disambiguation = da)
-
-    def get_treedefs(self) -> Set:
-        """ This method is needed because a ScopedUploadTable may call this when calling its own get_treedefs()
-        This returns an empty set unless the toOne or toMany Uploadable is a TreeRecord
-        """
-        return (
-            set(td for toOne in self.toOne.values() for td in toOne.get_treedefs()) | # type: ignore
-            set(td for toMany in self.toMany.values() for tmr in toMany for td in tmr.get_treedefs()) # type: ignore
-        )
-
-    def bind(self, default_collection, row: Row, uploadingAgentId: int, auditor: Auditor, cache: Optional[Dict]=None, row_index: Optional[int] = None
-             ) -> Union["BoundUploadTable", ParseFailures]:
-        
-        scoped = None
-        
-        ''' If the collection should be overridden and an integer (collection id) is provided, 
-        then get the collection with that id and apply the proper scoping.
-
-        Otherwise, if a funciton is provided (see apply_deferred_scopes in .upload.py), then call the function 
-        with the row and row_index to get the needed collection
-        '''
-        if  self.overrideScope is not None and'collection' in self.overrideScope.keys():
-            if isinstance(self.overrideScope['collection'], int):
-                collection_id = self.overrideScope['collection']
-                collection = models.Collection.objects.get(id=collection_id)
-                scoped = self.apply_scoping(collection, defer=False)
-            elif callable(self.overrideScope['collection']):
-                collection = self.overrideScope['collection'](self, row_index) if row_index is not None else default_collection
-                scoped = self.apply_scoping(collection, defer=False)
-        
-        # If the collection/scope should not be overriden, defer to the default behavior and assume 
-        # the record should be uploaded in the logged-in collection
-        if scoped is None: scoped = self.apply_scoping(default_collection, defer=False)
-
-        # self.apply_scoping is annotated to Union["ScopedUploadTable", Any]
-        # But at this point we know the variable scoped will always be a ScopedUploadTable
-        # We tell typing the type of the variable scoped will be ScopedUploadTable with the cast() function
-        scoped = cast(ScopedUploadTable, scoped)
-
-        # If the DeferredScope UploadTable contained any disambiguation data, then apply the disambiguation to the new
-        # ScopedUploadTable
-        # Because ScopedUploadTable.disambiguate() has return type of ScopedUploadable, we must specify the type as ScopedUploadTable
-        scoped_disambiguated = cast(ScopedUploadTable, scoped.disambiguate(self.disambiguation)) if self.disambiguation is not None else scoped
-        # Finally bind the ScopedUploadTable and return the BoundUploadTable or ParseFailures 
-        return scoped_disambiguated.bind(default_collection, row, uploadingAgentId, auditor, cache, row_index)
-    
-    def _to_json(self) -> Dict:
-        result = dict(
-            wbcols={k: v.to_json() for k,v in self.wbcols.items()},
-            static=self.static
-        )
-        result['toOne'] = {
-            key: uploadable.to_json()
-            for key, uploadable in self.toOne.items()
-        }
-        result['toMany'] = {
-            key: [to_many.to_json() for to_many in to_manys]
-            for key, to_manys in self.toMany.items()
-        }
-        return result
-
-    def to_json(self) -> Dict:
-        return { 'uploadTable': self._to_json() }
-
-    def unparse(self) -> Dict:
-        return { 'baseTableName': self.name, 'uploadable': self.to_json() }
-
 
 class ScopedUploadTable(NamedTuple):
     name: str
     wbcols: Dict[str, ExtendedColumnOptions]
     static: Dict[str, Any]
     toOne: Dict[str, ScopedUploadable]
-    toMany: Dict[str, List[ScopedToManyRecord]]
+    toMany: Dict[str, List['ScopedUploadable']] # type: ignore
     scopingAttrs: Dict[str, int]
     disambiguation: Optional[int]
 
@@ -238,23 +100,23 @@ class ScopedUploadTable(NamedTuple):
         )
 
 
-    def bind(self, collection, row: Row, uploadingAgentId: int, auditor: Auditor, cache: Optional[Dict]=None, row_index: Optional[int] = None
+    def bind(self, row: Row, uploadingAgentId: int, auditor: Auditor, sql_alchemy_session, cache: Optional[Dict]=None
              ) -> Union["BoundUploadTable", ParseFailures]:
-        parsedFields, parseFails = parse_many(collection, self.name, self.wbcols, row)
+        parsedFields, parseFails = parse_many(self.name, self.wbcols, row)
 
         toOne: Dict[str, BoundUploadable] = {}
         for fieldname, uploadable in self.toOne.items():
-            result = uploadable.bind(collection, row, uploadingAgentId, auditor, cache, row_index)
+            result = uploadable.bind(row, uploadingAgentId, auditor, sql_alchemy_session, cache)
             if isinstance(result, ParseFailures):
                 parseFails += result.failures
             else:
                 toOne[fieldname] = result
 
-        toMany: Dict[str, List[BoundToManyRecord]] = {}
+        toMany: Dict[str, List[BoundUploadable]] = {}
         for fieldname, records in self.toMany.items():
-            boundRecords: List[BoundToManyRecord] = []
+            boundRecords: List[BoundUploadable] = []
             for record in records:
-                result_ = record.bind(collection, row, uploadingAgentId, auditor, cache, row_index)
+                result_ = record.bind(row, uploadingAgentId, auditor, sql_alchemy_session, cache)
                 if isinstance(result_, ParseFailures):
                     parseFails += result_.failures
                 else:
@@ -275,34 +137,35 @@ class ScopedUploadTable(NamedTuple):
             uploadingAgentId=uploadingAgentId,
             auditor=auditor,
             cache=cache,
+            session=sql_alchemy_session
         )
 
 class OneToOneTable(UploadTable):
-    def apply_scoping(self, collection) -> "ScopedOneToOneTable":
-        s = super().apply_scoping(collection)
-        return ScopedOneToOneTable(*s)
+    def apply_scoping(self, collection, row=None) -> Tuple[bool, "ScopedOneToOneTable"]:
+        cache, s = super().apply_scoping(collection, row)
+        return cache, ScopedOneToOneTable(*s)
 
     def to_json(self) -> Dict:
         return { 'oneToOneTable': self._to_json() }
 
 class ScopedOneToOneTable(ScopedUploadTable):
-    def bind(self, collection, row: Row, uploadingAgentId: int, auditor: Auditor, cache: Optional[Dict]=None, row_index: Optional[int] = None
+    def bind(self, row: Row, uploadingAgentId: int, auditor: Auditor, sql_alchemy_session, cache: Optional[Dict]=None
              ) -> Union["BoundOneToOneTable", ParseFailures]:
-        b = super().bind(collection, row, uploadingAgentId, auditor, cache, row_index)
+        b = super().bind(row, uploadingAgentId, auditor, sql_alchemy_session, cache)
         return BoundOneToOneTable(*b) if isinstance(b, BoundUploadTable) else b
 
 class MustMatchTable(UploadTable):
-    def apply_scoping(self, collection) -> "ScopedMustMatchTable":
-        s = super().apply_scoping(collection)
-        return ScopedMustMatchTable(*s)
+    def apply_scoping(self, collection, row=None) -> Tuple[bool, "ScopedMustMatchTable"]:
+        cache, s = super().apply_scoping(collection, row)
+        return cache, ScopedMustMatchTable(*s)
 
     def to_json(self) -> Dict:
         return { 'mustMatchTable': self._to_json() }
 
 class ScopedMustMatchTable(ScopedUploadTable):
-    def bind(self, collection, row: Row, uploadingAgentId: int, auditor: Auditor, cache: Optional[Dict]=None, row_index: Optional[int] = None
+    def bind(self,row: Row, uploadingAgentId: int, auditor: Auditor, sql_alchemy_session, cache: Optional[Dict]=None
              ) -> Union["BoundMustMatchTable", ParseFailures]:
-        b = super().bind(collection, row, uploadingAgentId, auditor, cache, row_index)
+        b = super().bind(row, uploadingAgentId, auditor, sql_alchemy_session, cache)
         return BoundMustMatchTable(*b) if isinstance(b, BoundUploadTable) else b
 
 
@@ -311,12 +174,13 @@ class BoundUploadTable(NamedTuple):
     static: Dict[str, Any]
     parsedFields: List[ParseResult]
     toOne: Dict[str, BoundUploadable]
-    toMany: Dict[str, List[BoundToManyRecord]]
+    toMany: Dict[str, List[BoundUploadable]]
     scopingAttrs: Dict[str, int]
     disambiguation: Optional[int]
     uploadingAgentId: Optional[int]
     auditor: Auditor
     cache: Optional[Dict]
+    session: Any # TODO: Improve typing
 
     def is_one_to_one(self) -> bool:
         return False
@@ -324,31 +188,104 @@ class BoundUploadTable(NamedTuple):
     def must_match(self) -> bool:
         return False
 
-    def filter_on(self, path: str) -> FilterPack:
+    def get_predicates(self, query: Query, sql_table: SQLTable, to_one_override: Dict[str, UploadResult] = {}, path: List[str] = []) -> PredicateWithQuery:
         if self.disambiguation is not None:
             if getattr(models, self.name.capitalize()).objects.filter(id=self.disambiguation).exists():
-                return FilterPack([{f'{path}__id': self.disambiguation}], [])
+                return query, FilterPredicate([Predicate(getattr(sql_table, sql_table._id), self.disambiguation)])
+        
+        specify_table = datamodel.get_table_strict(self.name)
 
-        filters = {
-            (path + '__' + fieldname_): value
+        direct_field_pack = FilterPredicate.from_simple_dict(
+            sql_table,
+            ((specify_table.get_field_strict(fieldname).name, value)
             for parsedField in self.parsedFields
-            for fieldname_, value in parsedField.filter_on.items()
-        }
+            for fieldname, value in parsedField.filter_on.items()),
+            path=path
+            )
+        
+        def _reduce(
+                accumulated: PredicateWithQuery, 
+                # to-ones are converted to a list of one element to simplify handling to-manys
+                current: Tuple[str, Union[List[BoundUploadable], BoundUploadable]], 
+                # to-one and to-many handle return filter packs differently
+                specialize_callback: Callable[[FilterPredicate, BoundUploadable, Relationship, SQLTable, List[str]], Optional[FilterPredicate]]
+                ) -> PredicateWithQuery:
+            current_query, current_predicates = accumulated
+            relationship_name, upload_tables = current
+            if not isinstance(upload_tables, list):
+                upload_tables = [upload_tables]
+            relationship = specify_table.get_relationship(relationship_name)
+            related_model_name = relationship.relatedModelName
 
-        for toOneField, toOneTable in self.toOne.items():
-            fs, es = toOneTable.filter_on(path + '__' + toOneField)
-            for f in fs:
-                filters.update(f)
+            def _uploadables_reduce(accum: Tuple[PredicateWithQuery, List[ColumnElement], int], uploadable: BoundUploadable) -> Tuple[PredicateWithQuery, List[ColumnElement], int]:
+                next_sql_model: SQLTable = aliased(getattr(sql_models, related_model_name))
+                (query, previous_predicate), to_ignore, index = accum
+                _id = getattr(next_sql_model, next_sql_model._id)
+                extended_criterions = [_id != previous_id for previous_id in to_ignore]
+                criterion = sql.and_(*extended_criterions)
 
-        if all(v is None for v in filters.values()):
-            return FilterPack([], [Exclude(path + "__in", self.name, {**self.scopingAttrs, **self.static})])
+                joined = query.join(
+                    next_sql_model,
+                    getattr(sql_table, relationship.name),
+                )
+                if len(extended_criterions):
+                    # to make sure matches are record-aligned
+                    # disable this, and see what unit test fails to figure out what it does
+                    joined = joined.filter(criterion)
+                next_query, _raw_field_pack = uploadable.get_predicates(joined, next_sql_model, path=[*path, repr((index, relationship_name))])
+                to_merge = specialize_callback(_raw_field_pack, uploadable, relationship, sql_table, path)
+                if to_merge is not None:
+                    next_query = query
+                else:
+                    to_ignore = [*to_ignore, _id]
+                    to_merge = _raw_field_pack
+                return (next_query, previous_predicate.merge(to_merge)), to_ignore, index + 1
+            
+            reduced, _, __ = reduce(_uploadables_reduce, upload_tables, ((current_query, current_predicates), [], 0))
+            return reduced
+        
+        to_one_reduce = lambda accum, curr: _reduce(accum, curr, FilterPredicate.to_one_augment)
+        to_many_reduce = lambda accum, curr: _reduce(accum, curr, FilterPredicate.to_many_augment)
 
-        filters.update({
-            (path + '__' + fieldname): value
-            for fieldname, value in {**self.scopingAttrs, **self.static}.items()
-        })
+        # this is handled here to make the matching query simple for the root table
+        if to_one_override:
+            to_one_override_pack = FilterPredicate.from_simple_dict(
+                sql_table, 
+                ((FilterPredicate.rel_to_fk(specify_table.get_relationship(rel)), value.get_id()) for (rel, value) in to_one_override.items()),
+                path
+                )
+        else:
+            to_one_override_pack = FilterPredicate()
 
-        return FilterPack([filters], [])
+        query, to_one_pack = reduce(
+            to_one_reduce,
+            # useful for one-to-ones
+            [(key, value) for (key, value) in self.toOne.items() if key not in to_one_override],
+            (query, to_one_override_pack)
+        )
+
+        query, to_many_pack = reduce(to_many_reduce, self.toMany.items(), (query, FilterPredicate()))
+        accumulated_pack = direct_field_pack.merge(to_many_pack).merge(to_one_pack)
+
+        is_reducible = not (any(value[1] is not None for value in accumulated_pack.filter))
+        if is_reducible:
+            # don't care about excludes anymore
+            return query, FilterPredicate()
+
+        static_predicate = FilterPredicate.from_simple_dict(sql_table, iter(self.map_static_to_db().items()), path)
+
+        return query, static_predicate.merge(accumulated_pack)
+        
+    def map_static_to_db(self) -> Filter:
+        model = getattr(models, self.name.capitalize())
+        table = datamodel.get_table_strict(self.name)
+        raw_attrs = {**self.scopingAttrs, **self.static}
+        
+        return {
+            FilterPredicate.rel_to_fk(table.get_field_strict(model._meta.get_field(direct_field).name)): value 
+            for (direct_field, value) in raw_attrs.items()
+            }
+        
 
     def process_row(self) -> UploadResult:
         return self._handle_row(force_upload=False)
@@ -369,29 +306,13 @@ class BoundUploadTable(NamedTuple):
 
         toOneResults_ = self._process_to_ones()
 
-        multi_one_to_one = lambda field, result: self.toOne[field].is_one_to_one() and isinstance(result.record_result, MatchedMultiple)
-
-        multipleOneToOneMatch = any(
-            # If a one-to-one related object matched multiple
-            # records, we won't be able to use it for matching
-            # this object, but we need to remember that there was
-            # data here.
-            multi_one_to_one(field, result)
-            for field, result in toOneResults_.items()
-        )
-
         toOneResults = {
-            # Filter out the one-to-ones that matched multiple
-            # b/c they aren't errors nor can be used for matching.
             field: result
             for field, result in toOneResults_.items()
-            if not multi_one_to_one(field, result)
         }
 
         if any(result.get_id() == "Failure" for result in toOneResults.values()):
             return UploadResult(PropagatedFailure(), toOneResults, {})
-
-        toManyFilters = _to_many_filters_and_excludes(self.toMany)
 
         attrs = {
             fieldname_: value
@@ -399,16 +320,15 @@ class BoundUploadTable(NamedTuple):
             for fieldname_, value in parsedField.upload.items()
         }
 
-        attrs.update({ model._meta.get_field(fieldname).attname: r.get_id() for fieldname, r in toOneResults.items() })
-
-        to_many_filters, to_many_excludes = toManyFilters
-
-        if all(v is None for v in attrs.values()) and not to_many_filters and not multipleOneToOneMatch:
+        base_sql_table = getattr(sql_models, datamodel.get_table_strict(self.name).name)
+        query, filter_predicate = self.get_predicates(self.session.query(getattr(base_sql_table, base_sql_table._id)), base_sql_table, toOneResults)
+        
+        if all(v is None for v in attrs.values()) and not filter_predicate.filter:
             # nothing to upload
             return UploadResult(NullRecord(info), toOneResults, {})
 
         if not force_upload:
-            match = self._match(model, toOneResults, toManyFilters, info)
+            match = self._match(query, filter_predicate, info)
             if match:
                 return UploadResult(match, toOneResults, {})
 
@@ -419,40 +339,31 @@ class BoundUploadTable(NamedTuple):
             fieldname: to_one_def.process_row()
             for fieldname, to_one_def in
             sorted(self.toOne.items(), key=lambda kv: kv[0]) # make the upload order deterministic
+            # we don't care about being able to process one-to-one. Instead, we include them in the matching predicates.
+            # this allows handing "MatchedMultiple" case of one-to-ones more gracefully, while allowing us to include them
+            # in the matching. See "test_ambiguous_one_to_one_match" in testuploading.py
+            if not to_one_def.is_one_to_one()
         }
 
-    def _match(self, model, toOneResults: Dict[str, UploadResult], toManyFilters: FilterPack, info: ReportInfo) -> Union[Matched, MatchedMultiple, None]:
-        filters = {
-            fieldname_: value
-            for parsedField in self.parsedFields
-            for fieldname_, value in parsedField.filter_on.items()
-        }
-
-        filters.update({ model._meta.get_field(fieldname).attname: r.get_id() for fieldname, r in toOneResults.items() })
-
-        cache_key = (
-            self.name,
-            tuple(sorted(filters.items())),
-            toManyFilters.match_key(),
-            tuple(sorted(self.scopingAttrs.items())),
-            tuple(sorted(self.static.items())),
-        )
+    def _match(self, query: Query, predicate: FilterPredicate, info: ReportInfo) -> Union[Matched, MatchedMultiple, None]:
+        assert predicate.filter or predicate.exclude, "Attempting to match a null record!"
+        cache_key = predicate.cache_key()
 
         cache_hit: Optional[List[int]] = self.cache.get(cache_key, None) if self.cache is not None else None
         if cache_hit is not None:
             ids = cache_hit
         else:
-            to_many_filters, to_many_excludes = toManyFilters
-
-            qs = reduce(lambda q, e: q.exclude(**{e.lookup: getattr(models, e.table).objects.filter(**e.filter)}),
-                        to_many_excludes,
-                        reduce(lambda q, f: q.filter(**f),
-                               to_many_filters,
-                               model.objects.filter(**filters, **self.scopingAttrs, **self.static)))
-
-            ids = list(qs.values_list('id', flat=True)[:10])
-
-            if self.cache and ids:
+            query = predicate.apply_to_query(query)
+            try:
+                query = query.limit(10)
+                raw_ids: List[Tuple[int, Any]] = list(query)
+                ids = [_id[0] for _id in raw_ids]
+            except OperationalError as e:
+                if e.args[0] == "(MySQLdb.OperationalError) (1065, 'Query was empty')":
+                    ids = []
+                else:
+                    raise
+            if self.cache is not None and ids:
                 self.cache[cache_key] = ids
 
         n_matched = len(ids)
@@ -489,9 +400,6 @@ class BoundUploadTable(NamedTuple):
             # But because the records can't be shared, the unupload order shouldn't matter anyways...
             sorted(self.toOne.items(), key=lambda kv: kv[0])
             if to_one_def.is_one_to_one()
-            if fieldname not in toOneResults # the field was removed b/c there were multiple matches
-            or isinstance(toOneResults[fieldname].record_result, Matched) # this stops the record from being shared
-            or isinstance(toOneResults[fieldname].record_result, MatchedMultiple) # this shouldn't ever be the case
         }}
 
         toOneIds: Dict[str, Optional[int]] = {}
@@ -517,7 +425,7 @@ class BoundUploadTable(NamedTuple):
         self.auditor.insert(uploaded, self.uploadingAgentId, None)
 
         toManyResults = {
-            fieldname: _upload_to_manys(model, uploaded.id, fieldname, self.uploadingAgentId, self.auditor, self.cache, records)
+            fieldname: _upload_to_manys(model, uploaded.id, fieldname, self.uploadingAgentId, self.auditor, self.cache, records, self.session)
             for fieldname, records in
             sorted(self.toMany.items(), key=lambda kv: kv[0]) # make the upload order deterministic
         }
@@ -551,26 +459,14 @@ class BoundMustMatchTable(BoundUploadTable):
         return {
             fieldname: to_one_def.match_row()
             for fieldname, to_one_def in self.toOne.items()
+            if not to_one_def.is_one_to_one()
         }
 
     def _do_upload(self, model, toOneResults: Dict[str, UploadResult], info: ReportInfo) -> UploadResult:
         return UploadResult(NoMatch(info), toOneResults, {})
 
 
-def _to_many_filters_and_excludes(to_manys: Dict[str, List[BoundToManyRecord]]) -> FilterPack:
-    filters: List[Dict] = []
-    excludes: List[Exclude] = []
-
-    for toManyField, records in to_manys.items():
-        for record in records:
-            fs, es = record.filter_on(toManyField)
-            filters += fs
-            excludes += [e for e in es if e.filter]
-
-    return FilterPack(filters, excludes)
-
-
-def _upload_to_manys(parent_model, parent_id, parent_field, uploadingAgentId: Optional[int], auditor: Auditor, cache: Optional[Dict], records) -> List[UploadResult]:
+def _upload_to_manys(parent_model, parent_id, parent_field, uploadingAgentId: Optional[int], auditor: Auditor, cache: Optional[Dict], records, session) -> List[UploadResult]:
     fk_field = parent_model._meta.get_field(parent_field).remote_field.attname
 
     return [
@@ -585,6 +481,7 @@ def _upload_to_manys(parent_model, parent_id, parent_field, uploadingAgentId: Op
             uploadingAgentId=uploadingAgentId,
             auditor=auditor,
             cache=cache,
+            session=session
         ).force_upload_row()
         for record in records
     ]

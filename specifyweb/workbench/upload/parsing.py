@@ -52,9 +52,9 @@ def filter_and_upload(f: Filter, column: str) -> ParseResult:
     return ParseResult(f, f, None, column, None)
 
 
-def parse_many(collection, tablename: str, mapping: Dict[str, ExtendedColumnOptions], row: Row) -> Tuple[List[ParseResult], List[WorkBenchParseFailure]]:
+def parse_many(tablename: str, mapping: Dict[str, ExtendedColumnOptions], row: Row) -> Tuple[List[ParseResult], List[WorkBenchParseFailure]]:
     results = [
-        parse_value(collection, tablename, fieldname,
+        parse_value(tablename, fieldname,
                     row[colopts.column], colopts)
         for fieldname, colopts in mapping.items()
     ]
@@ -64,7 +64,7 @@ def parse_many(collection, tablename: str, mapping: Dict[str, ExtendedColumnOpti
     )
 
 
-def parse_value(collection, tablename: str, fieldname: str, value_in: str, colopts: ExtendedColumnOptions) -> Union[ParseResult, WorkBenchParseFailure]:
+def parse_value(tablename: str, fieldname: str, value_in: str, colopts: ExtendedColumnOptions) -> Union[ParseResult, WorkBenchParseFailure]:
     required_by_schema = colopts.schemaitem and colopts.schemaitem.isrequired
 
     result: Union[ParseResult, WorkBenchParseFailure]
@@ -79,10 +79,10 @@ def parse_value(collection, tablename: str, fieldname: str, value_in: str, colop
             result = ParseResult({fieldname: None}, {},
                                  None, colopts.column, missing_required)
         else:
-            result = _parse(collection, tablename, fieldname,
+            result = _parse(tablename, fieldname,
                             colopts, colopts.default)
     else:
-        result = _parse(collection, tablename, fieldname,
+        result = _parse(tablename, fieldname,
                         colopts, value_in.strip())
 
     if isinstance(result, WorkBenchParseFailure):
@@ -101,13 +101,12 @@ def parse_value(collection, tablename: str, fieldname: str, value_in: str, colop
         assertNever(colopts.matchBehavior)
 
 
-def _parse(collection, tablename: str, fieldname: str, colopts: ExtendedColumnOptions, value: str) -> Union[ParseResult, WorkBenchParseFailure]:
+def _parse(tablename: str, fieldname: str, colopts: ExtendedColumnOptions, value: str) -> Union[ParseResult, WorkBenchParseFailure]:
     table = datamodel.get_table_strict(tablename)
     field = table.get_field_strict(fieldname)
 
     if colopts.picklist:
-        result = parse_with_picklist(
-            collection, colopts.picklist, fieldname, value, colopts.column)
+        result = parse_with_picklist(colopts.picklist, fieldname, value, colopts.column)
         if result is not None:
             if isinstance(result, ParseResult) and hasattr(field, 'length') and field.length is not None and len(result.upload[fieldname]) > field.length:
                 return WorkBenchParseFailure(
@@ -120,7 +119,8 @@ def _parse(collection, tablename: str, fieldname: str, colopts: ExtendedColumnOp
                 )
             return result
 
-    parsed = parse_field(collection, tablename, fieldname, value)
+    formatter = colopts.uiformatter
+    parsed = parse_field(tablename, fieldname, value, formatter)
 
     if is_latlong(table, field) and isinstance(parsed, ParseSucess):
         coord_text_field = field.name.replace('itude', '') + 'text'
@@ -133,7 +133,7 @@ def _parse(collection, tablename: str, fieldname: str, colopts: ExtendedColumnOp
         return ParseResult.from_parse_success(parsed, parsed.to_upload, None, colopts.column, None)
 
 
-def parse_with_picklist(collection, picklist, fieldname: str, value: str, column: str) -> Union[ParseResult, WorkBenchParseFailure, None]:
+def parse_with_picklist(picklist, fieldname: str, value: str, column: str) -> Union[ParseResult, WorkBenchParseFailure, None]:
     if picklist.type == 0:  # items from picklistitems table
         try:
             item = picklist.picklistitems.get(title=value)

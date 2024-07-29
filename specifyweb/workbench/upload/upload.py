@@ -4,24 +4,23 @@ import logging
 import time
 from contextlib import contextmanager
 from datetime import datetime, timezone
-from typing import List, Dict, Union, Callable, Optional, Sized, Tuple, Any
+from typing import List, Dict, Union, Callable, Optional, Sized, Tuple, Any, cast
 
 from django.db import transaction
 from django.db.utils import OperationalError, IntegrityError
 from jsonschema import validate  # type: ignore
 
 from specifyweb.specify import models
-from specifyweb.specify.datamodel import datamodel
 from specifyweb.specify.auditlog import auditlog
 from specifyweb.specify.datamodel import Table
 from specifyweb.specify.tree_extras import renumber_tree, set_fullnames
-from specifyweb.workbench.upload.upload_table import DeferredScopeUploadTable, ScopedUploadTable
-
+from specifyweb.stored_queries.tests import setup_sqlalchemy
+from django.conf import settings
 from . import disambiguation
 from .upload_plan_schema import schema, parse_plan_with_basetable
 from .upload_result import Uploaded, UploadResult, ParseFailures, \
     json_to_UploadResult
-from .uploadable import ScopedUploadable, Row, Disambiguation, Auditor
+from .uploadable import ScopedUploadable, Row, Disambiguation, Auditor, Uploadable
 from ..models import Spdataset
 
 Rows = Union[List[Row], csv.DictReader]
@@ -113,7 +112,8 @@ def do_upload_dataset(
         ds: Spdataset,
         no_commit: bool,
         allow_partial: bool,
-        progress: Optional[Progress]=None
+        progress: Optional[Progress]=None,
+        session_url: Optional[str] = None
 ) -> List[UploadResult]:
     if ds.was_uploaded(): raise AssertionError("Dataset already uploaded", {"localizationKey" : "datasetAlreadyUploaded"})
     ds.rowresults = None
@@ -123,9 +123,9 @@ def do_upload_dataset(
     ncols = len(ds.columns)
     rows = [dict(zip(ds.columns, row)) for row in ds.data]
     disambiguation = [get_disambiguation_from_row(ncols, row) for row in ds.data]
-    base_table, upload_plan = get_ds_upload_plan(collection, ds)
+    base_table, upload_plan = get_raw_ds_upload_plan(ds)
 
-    results = do_upload(collection, rows, upload_plan, uploading_agent_id, disambiguation, no_commit, allow_partial, progress)
+    results = do_upload(collection, rows, upload_plan, uploading_agent_id, disambiguation, no_commit, allow_partial, progress, session_url=session_url)
     success = not any(r.contains_failure() for r in results)
     if not no_commit:
         ds.uploadresult = {
@@ -176,7 +176,7 @@ def get_disambiguation_from_row(ncols: int, row: List) -> Disambiguation:
     extra = json.loads(row[ncols]) if row[ncols] else None
     return disambiguation.from_json(extra['disambiguation']) if extra and 'disambiguation' in extra else None
 
-def get_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, ScopedUploadable]:
+def get_raw_ds_upload_plan(ds: Spdataset) -> Tuple[Table, Uploadable]:
     if ds.uploadplan is None:
         raise Exception("no upload plan defined for dataset")
 
@@ -186,51 +186,24 @@ def get_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, ScopedUploadab
         raise Exception("upload plan json is invalid")
 
     validate(plan, schema)
-    base_table, plan = parse_plan_with_basetable(collection, plan)
-    return base_table, plan.apply_scoping(collection)
+    base_table, plan = parse_plan_with_basetable(plan)
+    return base_table, plan
 
-def apply_deferred_scopes(upload_plan: ScopedUploadable, rows: Rows) -> ScopedUploadable:
-
-    def collection_override_function(deferred_upload_plan: DeferredScopeUploadTable, row_index: int): # -> models.Collection
-        # to call this function, we always know upload_plan is either a DeferredScopeUploadTable or ScopedUploadTable
-        related_uploadable: Union[ScopedUploadTable, DeferredScopeUploadTable] = upload_plan.toOne[deferred_upload_plan.related_key] # type: ignore
-        related_column_name = related_uploadable.wbcols['name'][0]
-        filter_value = rows[row_index][related_column_name] # type: ignore
-        
-        filter_search = {deferred_upload_plan.filter_field : filter_value}
-
-        related_table = datamodel.get_table(deferred_upload_plan.related_key)
-        if related_table is not None:
-            related = getattr(models, related_table.django_name).objects.get(**filter_search)
-            collection_id = getattr(related, deferred_upload_plan.relationship_name).id
-            collection = models.Collection.objects.get(id=collection_id)
-            return collection
-
-    if hasattr(upload_plan, 'toOne'):
-        # Without type ignores, MyPy throws the following error: "ScopedUploadable" has no attribute "toOne"
-        # MyPy expects upload_plan to be of type ScopedUploadable (from the paramater type)
-        # but within this if-statement we know that upload_plan is always an UploadTable 
-        # (or more specifically, one if its derivatives: DeferredScopeUploadTable or ScopedUploadTable)
-
-        for key, uploadable in upload_plan.toOne.items(): # type: ignore
-            _uploadable = uploadable
-            if hasattr(_uploadable, 'toOne'): _uploadable = apply_deferred_scopes(_uploadable, rows)
-            if isinstance(_uploadable, DeferredScopeUploadTable):
-                _uploadable = _uploadable.add_colleciton_override(collection_override_function)
-            upload_plan.toOne[key] = _uploadable # type: ignore
-
-    return upload_plan
+def get_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, ScopedUploadable]:
+    base_table, plan = get_raw_ds_upload_plan(ds)
+    return base_table, plan.apply_scoping(collection)[1]
 
 
 def do_upload(
         collection,
         rows: Rows,
-        upload_plan: ScopedUploadable,
+        upload_plan: Uploadable,
         uploading_agent_id: int,
         disambiguations: Optional[List[Disambiguation]]=None,
         no_commit: bool=False,
         allow_partial: bool=True,
-        progress: Optional[Progress]=None
+        progress: Optional[Progress]=None,
+        session_url = None,
 ) -> List[UploadResult]:
     cache: Dict = {}
     _auditor = Auditor(collection=collection, audit_log=None if no_commit else auditlog,
@@ -238,7 +211,8 @@ def do_upload(
                        # during validation
                        skip_create_permission_check=no_commit)
     total = len(rows) if isinstance(rows, Sized) else None
-    deffered_upload_plan = apply_deferred_scopes(upload_plan, rows)
+    cached_scope_table = None
+    wb_session_context = setup_sqlalchemy_wb(session_url)
     with savepoint("main upload"):
         tic = time.perf_counter()
         results: List[UploadResult] = []
@@ -246,8 +220,19 @@ def do_upload(
             _cache = cache.copy() if cache is not None and allow_partial else cache
             da = disambiguations[i] if disambiguations else None
             with savepoint("row upload") if allow_partial else no_savepoint():
-                bind_result = deffered_upload_plan.disambiguate(da).bind(collection, row, uploading_agent_id, _auditor, cache, i)
-                result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.process_row()
+                # the fact that upload plan is cachable, is invariant across rows.
+                # so, we just apply scoping once.
+                if cached_scope_table is None:
+                    can_cache, scoped_table = upload_plan.apply_scoping(collection, row)
+                    if can_cache:
+                        cached_scope_table = scoped_table
+                else:
+                    scoped_table = cached_scope_table
+
+                with wb_session_context() as session:
+                    bind_result = scoped_table.disambiguate(da).bind(row, uploading_agent_id, _auditor, session, cache)
+                    result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.process_row()
+                    
                 results.append(result)
                 if progress is not None:
                     progress(len(results), total)
@@ -262,19 +247,21 @@ def do_upload(
         if no_commit:
             raise Rollback("no_commit option")
         else:
-            fixup_trees(deffered_upload_plan, results)
+            fixup_trees(scoped_table, results)
 
     return results
 
 do_upload_csv = do_upload
 
-def validate_row(collection, upload_plan: ScopedUploadable, uploading_agent_id: int, row: Row, da: Disambiguation) -> UploadResult:
+def validate_row(collection, upload_plan: ScopedUploadable, uploading_agent_id: int, row: Row, da: Disambiguation, session_url: Optional[str]=None) -> UploadResult:
     retries = 3
+    session_context = setup_sqlalchemy_wb(session_url)
     while True:
         try:
             with savepoint("row validation"):
-                bind_result = upload_plan.disambiguate(da).bind(collection, row, uploading_agent_id, Auditor(collection, None))
-                result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.process_row()
+                with session_context() as session:
+                    bind_result = upload_plan.disambiguate(da).bind(row, uploading_agent_id, Auditor(collection, None), session)
+                    result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.process_row()
                 raise Rollback("validating only")
             break
 
@@ -316,3 +303,8 @@ def changed_tree(tree: str, result: UploadResult) -> bool:
 class NopLog(object):
     def insert(self, inserted_obj: Any, agent: Union[int, Any], parent_record: Optional[Any]) -> None:
         pass
+
+# to allow for unit tests to run
+def setup_sqlalchemy_wb(url: Optional[str]):
+    _, session_context = setup_sqlalchemy(url or settings.SA_DATABASE_URL)
+    return session_context

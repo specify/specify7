@@ -6,6 +6,7 @@ from sqlalchemy import orm, sql
 from specifyweb.specify.models import datamodel
 
 from . import models
+from .queryfieldspec import TreeRankQuery, QueryFieldSpec
 
 logger = logging.getLogger(__name__)
 
@@ -25,13 +26,13 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         kwargs['tree_rank_count'] = 0
         return super(QueryConstruct, cls).__new__(cls, *args, **kwargs)
 
-    def handle_tree_field(self, node, table, tree_rank, tree_field):
+    def handle_tree_field(self, node, table, tree_rank, next_join_path, current_field_spec: QueryFieldSpec):
         query = self
         if query.collection is None: raise AssertionError( # Not sure it makes sense to query across collections
             f"No Collection found in Query for {table}",
             {"table" : table,
              "localizationKey" : "noCollectionInQuery"}) 
-        logger.info('handling treefield %s rank: %s field: %s', table, tree_rank, tree_field)
+        logger.info('handling treefield %s rank: %s field: %s', table, tree_rank, next_join_path)
 
         treedefitem_column = table.name + 'TreeDefItemID'
 
@@ -55,16 +56,24 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         query = query._replace(param_count=self.param_count+1)
         treedefitem_param = sql.bindparam('tdi_%s' % query.param_count, value=treedef.treedefitems.get(name=tree_rank).id)
 
-        column_name = 'name' if tree_field is None else \
-                      node._id if tree_field == 'ID' else \
-                      table.get_field(tree_field.lower()).name
+        def make_tree_field_spec(tree_node):
+            return current_field_spec._replace(
+                root_table=table, # rebasing the query
+                root_sql_table=tree_node, # this is needed to preserve SQL aliased going to next part
+                join_path=next_join_path, # slicing join path to begin from after the tree
+            )
 
-        column = sql.case([
-            (getattr(ancestor, treedefitem_column) == treedefitem_param, getattr(ancestor, column_name))
-            for ancestor in ancestors
-        ])
+        cases = []
+        field = None # just to stop mypy from complaining.
+        for ancestor in ancestors:
+            field_spec = make_tree_field_spec(ancestor)
+            query, orm_field, field, table = field_spec.add_spec_to_query(query)
+            #field and table won't matter. rank acts as fork, and these two will be same across siblings
+            cases.append((getattr(ancestor, treedefitem_column) == treedefitem_param, orm_field))
 
-        return query, column
+        column = sql.case(cases)
+
+        return query, column, field, table
 
     def tables_in_path(self, table, join_path):
         path = deque(join_path)
@@ -74,7 +83,7 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
             field = path.popleft()
             if isinstance(field, str):
                 field = tables[-1].get_field(field, strict=True)
-            if not field.is_relationship:
+            if not field.is_relationship: # also handles tree ranks
                 break
 
             tables.append(datamodel.get_table(field.relatedModelName, strict=True))
@@ -88,8 +97,8 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
             field = path.popleft()
             if isinstance(field, str):
                 field = table.get_field(field, strict=True)
-
-            if not field.is_relationship:
+            # basically, tree ranks act as forks.
+            if not field.is_relationship or isinstance(field, TreeRankQuery):
                 break
             next_table = datamodel.get_table(field.relatedModelName, strict=True)
             logger.debug("joining: %r to %r via %r", table, next_table, field)

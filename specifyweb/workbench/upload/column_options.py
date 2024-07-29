@@ -1,6 +1,8 @@
 from typing import List, Dict, Any, NamedTuple, Union, Optional, Set
 from typing_extensions import Literal
 
+from specifyweb.specify.uiformatters import CustomRepr
+
 MatchBehavior = Literal["ignoreWhenBlank", "ignoreAlways", "ignoreNever"]
 
 class ColumnOptions(NamedTuple):
@@ -20,7 +22,7 @@ class ExtendedColumnOptions(NamedTuple):
     matchBehavior: MatchBehavior
     nullAllowed: bool
     default: Optional[str]
-    uiformatter: Any
+    uiformatter: Optional[CustomRepr]
     schemaitem: Any
     picklist: Any
     dateformat: Optional[str]

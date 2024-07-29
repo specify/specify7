@@ -69,6 +69,7 @@ class ObjectFormatter(object):
             return None
 
         def getFormatterFromSchema() -> Element:
+
             try:
                 formatter_name = Splocalecontainer.objects.get(
                     name=specify_model.name.lower(),
@@ -302,9 +303,6 @@ class ObjectFormatter(object):
         if field_spec.get_field() is not None:
             if field_spec.is_temporal() and field_spec.date_part == "Full Date":
                 field = self._dateformat(field_spec.get_field(), field)
-
-            elif field_spec.tree_rank is not None:
-                pass
 
             elif field_spec.is_relationship():
                 pass

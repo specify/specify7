@@ -6,7 +6,7 @@ from specifyweb.specify.models import Recordset
 from specifyweb.workbench.models import Spdataset
 from specifyweb.specify.tests.test_api import ApiTests
 from .upload import upload as uploader
-
+from django.conf import settings
 class DataSetTests(ApiTests):
 
     def test_reset_uploadplan_to_null(self) -> None:
@@ -71,8 +71,10 @@ class DataSetTests(ApiTests):
             content_type='application/json',
         )
         self.assertEqual(response.status_code, 204)
+
         dataset = Spdataset.objects.get(id=datasetid)
-        results = uploader.do_upload_dataset(self.collection, self.agent.id, dataset, no_commit=False, allow_partial=False)
+        results = uploader.do_upload_dataset(self.collection, self.agent.id, dataset, no_commit=False, allow_partial=False, session_url=settings.SA_TEST_DB_URL)
+
         self.assertTrue(dataset.uploadresult['success'])
 
         response = c.post(

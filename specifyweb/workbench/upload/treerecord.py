@@ -11,11 +11,15 @@ from typing_extensions import TypedDict
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify import models
 from .column_options import ColumnOptions, ExtendedColumnOptions
-from .parsing import ParseResult, WorkBenchParseFailure, parse_many, filter_and_upload
+
+from .parsing import ParseResult, WorkBenchParseFailure, parse_many, filter_and_upload, Filter
 from .upload_result import UploadResult, NullRecord, NoMatch, Matched, \
     MatchedMultiple, Uploaded, ParseFailures, FailedBusinessRule, ReportInfo, \
     TreeInfo
-from .uploadable import Row, FilterPack, Disambiguation as DA, Auditor
+from .uploadable import FilterPredicate, PredicateWithQuery, Row, Disambiguation as DA, Auditor
+
+from sqlalchemy.orm import Query # type: ignore
+from sqlalchemy import Table as SQLTable # type: ignore
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +28,7 @@ class TreeRecord(NamedTuple):
     name: str
     ranks: Dict[str, Dict[str, ColumnOptions]]
 
-    def apply_scoping(self, collection) -> "ScopedTreeRecord":
+    def apply_scoping(self, collection, row=None) -> Tuple[bool, "ScopedTreeRecord"]:
         from .scoping import apply_scoping_to_treerecord as apply_scoping
         return apply_scoping(self, collection)
 
@@ -55,14 +59,14 @@ class ScopedTreeRecord(NamedTuple):
         return self._replace(disambiguation=disambiguation.disambiguate_tree()) if disambiguation is not None else self
 
     def get_treedefs(self) -> Set:
-        return set([self.treedef])
+        return {self.treedef}
 
-    def bind(self, collection, row: Row, uploadingAgentId: Optional[int], auditor: Auditor, cache: Optional[Dict]=None, row_index: Optional[int] = None) -> Union["BoundTreeRecord", ParseFailures]:
+    def bind(self, row: Row, uploadingAgentId: Optional[int], auditor: Auditor, sql_alchemy_session, cache: Optional[Dict]=None) -> Union["BoundTreeRecord", ParseFailures]:
         parsedFields: Dict[str, List[ParseResult]] = {}
         parseFails: List[WorkBenchParseFailure] = []
         for rank, cols in self.ranks.items():
             nameColumn = cols['name']
-            presults, pfails = parse_many(collection, self.name, cols, row)
+            presults, pfails = parse_many(self.name, cols, row)
             parsedFields[rank] = presults
             parseFails += pfails
             filters = {k: v for result in presults for k, v in result.filter_on.items()}
@@ -89,13 +93,13 @@ class ScopedTreeRecord(NamedTuple):
         )
 
 class MustMatchTreeRecord(TreeRecord):
-    def apply_scoping(self, collection) -> "ScopedMustMatchTreeRecord":
-        s = super().apply_scoping(collection)
-        return ScopedMustMatchTreeRecord(*s)
+    def apply_scoping(self, collection, row=None) -> Tuple[bool, "ScopedMustMatchTreeRecord"]:
+        _can_cache, s = super().apply_scoping(collection)
+        return _can_cache, ScopedMustMatchTreeRecord(*s)
 
 class ScopedMustMatchTreeRecord(ScopedTreeRecord):
-    def bind(self, collection, row: Row, uploadingAgentId: Optional[int], auditor: Auditor, cache: Optional[Dict]=None, row_index: Optional[int] = None) -> Union["BoundMustMatchTreeRecord", ParseFailures]:
-        b = super().bind(collection, row, uploadingAgentId, auditor, cache, row_index)
+    def bind(self, row: Row, uploadingAgentId: Optional[int], auditor: Auditor, sql_alchemy_session, cache: Optional[Dict]=None) -> Union["BoundMustMatchTreeRecord", ParseFailures]:
+        b = super().bind(row, uploadingAgentId, auditor, sql_alchemy_session, cache)
         return b if isinstance(b, ParseFailures) else BoundMustMatchTreeRecord(*b)
 
 class TreeDefItemWithParseResults(NamedTuple):
@@ -126,8 +130,11 @@ class BoundTreeRecord(NamedTuple):
     def must_match(self) -> bool:
         return False
 
-    def filter_on(self, path: str) -> FilterPack:
-        return FilterPack([], [])
+    def get_predicates(self, query: Query, sql_table: SQLTable, to_one_override: Dict[str, UploadResult]={}, path: List[str] = []) -> PredicateWithQuery:
+        return query, FilterPredicate()
+    
+    def map_static_to_db(self) -> Filter:
+        raise NotImplementedError("to-many to trees not supported!")
 
     def match_row(self) -> UploadResult:
         return self._handle_row(must_match=True)

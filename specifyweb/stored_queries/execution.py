@@ -640,5 +640,5 @@ def build_query(session, collection, user, tableid, field_specs,
     if distinct:
         query = group_by_displayed_fields(query, selected_fields)
 
-    logger.debug("query: %s", query.query)
+    logger.warning("query: %s", query.query)
     return query.query, order_by_exprs
