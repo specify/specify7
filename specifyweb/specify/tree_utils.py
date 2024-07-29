@@ -27,6 +27,14 @@ def get_treedef(collection: spmodels.Collection, tree_name: str) ->  List[Tuple[
     )
 
     result = list(search_query)
+
+    # Handle null taxontreedef.discipline
+    if len(result) == 0 and tree_name.lower() == 'taxon':
+        result = list(spmodels.CollectionObjectType.objects\
+            .filter(collection=collection)\
+            .annotate(item_counts=Count('taxontreedef__treedefitems'))\
+            .values_list('taxontreedef_id', 'item_counts'))
+
     assert len(result) > 0, "No definition to query on"
 
     return result
@@ -62,12 +70,3 @@ def get_all_taxon_treedefs():
 def get_all_taxon_treedef_ids() -> Tuple[int]:
     # Get all TaxonTreedef IDs
     return tuple(spmodels.Taxontreedef.objects.values_list("id", flat=True))
-    
-def set_discipline_for_taxon_treedefs():
-    for treedef in get_all_taxon_treedefs():
-        if treedef.discipline:
-            continue
-        cot = spmodels.CollectionObjectType.objects.filter(taxontreedef=treedef).first()
-        if cot:
-            treedef.discipline = cot.collection.discipline
-            treedef.save()
