@@ -436,10 +436,25 @@ def all_tree_information(request):
         tree_defs = treedef_model.objects.all()
         for definition in tree_defs:
             ranks = definition.treedefitems.order_by('rankid')
-            result[tree].append({
-                'definition': obj_to_data(definition),
-                'ranks': [obj_to_data(rank) for rank in ranks]
-            })
+            if tree == 'Taxon': # Filter Taxon tree definitions by discipline
+                if (
+                    definition.discipline.id == request.specify_collection.discipline.id
+                    or models.CollectionObjectType.objects.filter(
+                        taxontreedef=definition,
+                        collection__discipline=request.specify_collection.discipline,
+                    ).exists()
+                ):
+                    result[tree].append(
+                        {
+                            "definition": obj_to_data(definition),
+                            "ranks": [obj_to_data(rank) for rank in ranks],
+                        }
+                    )
+            else:
+                result[tree].append({
+                    'definition': obj_to_data(definition),
+                    'ranks': [obj_to_data(rank) for rank in ranks]
+                })
 
     return HttpResponse(toJson(result), content_type='application/json')
 
