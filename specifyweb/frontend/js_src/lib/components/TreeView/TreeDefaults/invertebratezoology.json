@@ -1,0 +1,201 @@
+{
+	"tree": {
+		"treedef": {
+			"level": [
+				{
+					"locale": {
+						"_lang": "pt",
+						"_country": "",
+						"_var": "",
+						"_text": "Life"
+					},
+					"_name": "Life",
+					"_enforced": "true",
+					"_infullname": "false",
+					"_rank": "0"
+				},
+				{
+					"locale": {
+						"_lang": "pt",
+						"_country": "",
+						"_var": "",
+						"_text": "Kingdom"
+					},
+					"_name": "Kingdom",
+					"_enforced": "true",
+					"_infullname": "false",
+					"_rank": "10"
+				},
+				{
+					"locale": {
+						"_lang": "pt",
+						"_country": "",
+						"_var": "",
+						"_text": "Phylum"
+					},
+					"_name": "Phylum",
+					"_enforced": "true",
+					"_infullname": "false",
+					"_rank": "30"
+				},
+				{
+					"locale": {
+						"_lang": "pt",
+						"_country": "",
+						"_var": "",
+						"_text": "Class"
+					},
+					"_name": "Class",
+					"_enforced": "true",
+					"_infullname": "false",
+					"_rank": "60"
+				},
+				{
+					"locale": {
+						"_lang": "pt",
+						"_country": "",
+						"_var": "",
+						"_text": "Subclass"
+					},
+					"_name": "Subclass",
+					"_enforced": "false",
+					"_infullname": "false",
+					"_rank": "70"
+				},
+				{
+					"locale": {
+						"_lang": "pt",
+						"_country": "",
+						"_var": "",
+						"_text": "Superorder"
+					},
+					"_name": "Superorder",
+					"_enforced": "false",
+					"_infullname": "false",
+					"_rank": "90"
+				},
+				{
+					"locale": {
+						"_lang": "pt",
+						"_country": "",
+						"_var": "",
+						"_text": "Order"
+					},
+					"_name": "Order",
+					"_enforced": "true",
+					"_infullname": "false",
+					"_rank": "100"
+				},
+				{
+					"locale": {
+						"_lang": "pt",
+						"_country": "",
+						"_var": "",
+						"_text": "Suborder"
+					},
+					"_name": "Suborder",
+					"_enforced": "false",
+					"_infullname": "false",
+					"_rank": "110"
+				},
+				{
+					"locale": {
+						"_lang": "pt",
+						"_country": "",
+						"_var": "",
+						"_text": "Family"
+					},
+					"_name": "Family",
+					"_enforced": "true",
+					"_infullname": "false",
+					"_rank": "140"
+				},
+				{
+					"locale": {
+						"_lang": "pt",
+						"_country": "",
+						"_var": "",
+						"_text": "Subfamily"
+					},
+					"_name": "Subfamily",
+					"_enforced": "false",
+					"_infullname": "false",
+					"_rank": "150"
+				},
+				{
+					"locale": {
+						"_lang": "pt",
+						"_country": "",
+						"_var": "",
+						"_text": "Tribe"
+					},
+					"_name": "Tribe",
+					"_enforced": "false",
+					"_infullname": "false",
+					"_rank": "160"
+				},
+				{
+					"locale": {
+						"_lang": "pt",
+						"_country": "",
+						"_var": "",
+						"_text": "Subtribe"
+					},
+					"_name": "Subtribe",
+					"_enforced": "false",
+					"_infullname": "false",
+					"_rank": "170"
+				},
+				{
+					"locale": {
+						"_lang": "pt",
+						"_country": "",
+						"_var": "",
+						"_text": "Genus"
+					},
+					"_name": "Genus",
+					"_enforced": "true",
+					"_infullname": "true",
+					"_rank": "180"
+				},
+				{
+					"locale": {
+						"_lang": "pt",
+						"_country": "",
+						"_var": "",
+						"_text": "Subgenus"
+					},
+					"_name": "Subgenus",
+					"_enforced": "false",
+					"_infullname": "false",
+					"_rank": "190"
+				},
+				{
+					"locale": {
+						"_lang": "pt",
+						"_country": "",
+						"_var": "",
+						"_text": "Species"
+					},
+					"_name": "Species",
+					"_enforced": "true",
+					"_infullname": "true",
+					"_rank": "220"
+				},
+				{
+					"locale": {
+						"_lang": "pt",
+						"_country": "",
+						"_var": "",
+						"_text": "Subspecies"
+					},
+					"_name": "Subspecies",
+					"_enforced": "false",
+					"_infullname": "true",
+					"_rank": "230"
+				}
+			]
+		},
+		"nodes": ""
+	}
+}
