@@ -13,6 +13,7 @@ from specifyweb.specify.models import (
     Picklist,
     Picklistitem,
 )
+from specifyweb.specify.tree_utils import get_all_taxon_treedefs
 from specifyweb.specify.update_schema_config import (
     update_table_schema_config_with_defaults,
     revert_table_schema_config,
@@ -146,6 +147,19 @@ def revert_default_collection_object_types():
             Picklistitem.objects.filter(picklist=cog_type_picklist).delete()
             cog_type_picklist.delete()
 
+def set_discipline_for_taxon_treedefs():
+    for treedef in get_all_taxon_treedefs():
+        if treedef.discipline:
+            continue
+        cot = CollectionObjectType.objects.filter(taxontreedef=treedef).first()
+        if cot:
+            treedef.discipline = cot.collection.discipline
+            treedef.save()
+
+def revert_discipline_for_taxon_treedefs():
+    for treedef in get_all_taxon_treedefs():
+        treedef.discipline = None
+        treedef.save()
 
 class Migration(migrations.Migration):
 
@@ -160,8 +174,10 @@ class Migration(migrations.Migration):
         create_default_discipline_for_tree_defs()
         create_table_schema_config_with_defaults()
         create_default_collection_object_types()
+        set_discipline_for_taxon_treedefs()
 
     def revert_cosolidated_python_django_migration_operations(apps, schema_editor):
+        revert_discipline_for_taxon_treedefs()
         revert_default_collection_object_types()
         revert_table_schema_config_with_defaults()
         revert_default_discipline_for_tree_defs()

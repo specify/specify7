@@ -62,3 +62,12 @@ def get_all_taxon_treedefs():
 def get_all_taxon_treedef_ids() -> Tuple[int]:
     # Get all TaxonTreedef IDs
     return tuple(spmodels.Taxontreedef.objects.values_list("id", flat=True))
+    
+def set_discipline_for_taxon_treedefs():
+    for treedef in get_all_taxon_treedefs():
+        if treedef.discipline:
+            continue
+        cot = spmodels.CollectionObjectType.objects.filter(taxontreedef=treedef).first()
+        if cot:
+            treedef.discipline = cot.collection.discipline
+            treedef.save()
