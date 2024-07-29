@@ -434,7 +434,7 @@ def all_tree_information(request):
         result[tree] = []
 
         treedef_model = getattr(models, f'{tree.lower().capitalize()}treedef')
-        tree_defs = treedef_model.objects.filter(get_search_filters(request.specify_collection, tree))
+        tree_defs = treedef_model.objects.filter(get_search_filters(request.specify_collection, tree)).distinct()
         for definition in tree_defs:
             ranks = definition.treedefitems.order_by('rankid')            
             result[tree].append({

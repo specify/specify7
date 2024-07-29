@@ -29,6 +29,7 @@ def get_treedef(collection: spmodels.Collection, tree_name: str) ->  List[Tuple[
     search_query = _limit(
         tree_model.objects.filter(search_filters)
         .annotate(item_counts=Count("treedefitems"))
+        .distinct()
         .values_list("id", "item_counts")
     )
 
