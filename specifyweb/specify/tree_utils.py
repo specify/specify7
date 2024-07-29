@@ -4,7 +4,7 @@ import specifyweb.specify.models as spmodels
 
 def get_search_filters(collection: spmodels.Collection, tree: str, scope_storage_at_insititution=True):
     tree_name = tree.lower()
-    if tree_name == 'storage' and scope_storage_at_insititution:
+    if tree_name == 'storage':
         return Q(institution=collection.discipline.division.institution)
     discipline_query = Q(discipline=collection.discipline)
     if tree_name == 'taxon':
