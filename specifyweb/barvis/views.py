@@ -31,17 +31,11 @@ def taxon_bar(request):
     # Implementing the previous SQL query in Django ORM:
     taxon_tree_defs = get_taxon_treedefs(request.specify_collection)
     taxons = (
-        Taxon.objects.filter(definition__in=taxon_tree_defs)
+        Taxon.objects.filter(definition_id__in=taxon_tree_defs)
         .annotate(
-            current_determination_count=Subquery(
-                Determination.objects.filter(taxon_id=OuterRef("id"), iscurrent=True)
-                .values("taxon_id")
-                .annotate(count=Count("*"))
-                .values("count"),
-                output_field=IntegerField(),
-            )
+            current_determination_count=Count('determinations', filter=Q(determinations__iscurrent=True))
         )
-        .values("id", "rankid", "parent_id", "name", "current_determination_count")
+        .values_list("id", "rankid", "parent_id", "name", "current_determination_count")
     )
     result = toJson(list(taxons))
 

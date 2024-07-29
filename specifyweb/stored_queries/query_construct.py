@@ -17,14 +17,14 @@ def _safe_filter(query):
         return query.first()
     raise Exception(f"Got more than one matching: {list(query)}")
 
-class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter query join_cache param_count tree_rank_count')):
+class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter query join_cache tree_rank_count internal_filters')):
 
     def __new__(cls, *args, **kwargs):
         kwargs['join_cache'] = dict()
-        kwargs['param_count'] = 0
         # TODO: Use tree_rank_count to implement cases where formatter of taxon is defined with fields from the parent.
         # In that case, the cycle will end (unlike other cyclical cases).
         kwargs['tree_rank_count'] = 0
+        kwargs['internal_filters'] = []
         return super(QueryConstruct, cls).__new__(cls, *args, **kwargs)
 
     def handle_tree_field(self, node, table, tree_rank, tree_field):
@@ -68,8 +68,6 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
 
         assert len(treedefs_with_ranks) >= 1, "Didn't find the tree rank across any tree"
 
-        query = query._replace(param_count=self.param_count+1)
-
         column_name = 'name' if tree_field is None else \
                       node._id if tree_field == 'ID' else \
                       table.get_field(tree_field.lower()).name
@@ -88,6 +86,9 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         
         column = sql.case([case for per_ancestor in cases_per_ancestor for case in per_ancestor])
 
+        defs_to_filter_on = [def_id for (def_id, _) in treedefs_with_ranks]
+        new_filters = [*query.internal_filters, lambda model: getattr(model, treedef_column).in_(defs_to_filter_on)]
+        query = query._replace(internal_filters=new_filters)
         return query, column
 
     def tables_in_path(self, table, join_path):
@@ -130,6 +131,12 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
 
             table, model = next_table, aliased
         return query, model, table, field
+
+
+    #To make things "simpler", it doesn't apply any filters, but returns a single predicate
+    # @model is an input parameter, because cannot guess if it is aliased or not (callers are supposed to know that)
+    def get_internal_filters(self, model):
+        return sql.or_(*[get(model) for get in self.internal_filters])
 
 def add_proxy_method(name):
     def proxy(self, *args, **kwargs):
