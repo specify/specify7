@@ -2,11 +2,17 @@ from typing import Tuple, List
 from django.db.models import Q, Count, Model
 import specifyweb.specify.models as spmodels
 
-get_search_filters = lambda collection, tree: (
-    {"institution": collection.discipline.division.institution}
-    if tree.lower() == "storage"
-    else {"discipline": collection.discipline}
-)
+def get_search_filters(collection: spmodels.Collection, tree: str, scope_storage_at_insititution=True):
+    tree_name = tree.lower()
+    if tree_name == 'storage' and scope_storage_at_insititution:
+        return Q(institution=collection.discipline.division.institution)
+    discipline_query = Q(discipline=collection.discipline)
+    if tree_name == 'taxon':
+        discipline_query |= Q(
+            # TEST: should this only be added if discipline is null?
+            cotypes__collection=collection
+            )
+    return discipline_query
 
 def get_treedef(collection: spmodels.Collection, tree_name: str) ->  List[Tuple[int, int, int]]:
     # Get the appropriate TreeDef based on the Collection and tree_name
@@ -21,19 +27,12 @@ def get_treedef(collection: spmodels.Collection, tree_name: str) ->  List[Tuple[
 
     # Get all the treedefids, and the count of item in each, corresponding to our search predicates
     search_query = _limit(
-        tree_model.objects.filter(**search_filters)
+        tree_model.objects.filter(search_filters)
         .annotate(item_counts=Count("treedefitems"))
         .values_list("id", "item_counts")
     )
 
     result = list(search_query)
-
-    # Handle null taxontreedef.discipline
-    if len(result) == 0 and tree_name.lower() == 'taxon':
-        result = list(spmodels.CollectionObjectType.objects\
-            .filter(collection=collection)\
-            .annotate(item_counts=Count('taxontreedef__treedefitems'))\
-            .values_list('taxontreedef_id', 'item_counts'))
 
     assert len(result) > 0, "No definition to query on"
 

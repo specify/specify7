@@ -12,6 +12,7 @@ from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, check_permission_targets, has_table_permission
 from specifyweb.specify.tree_ranks import tree_rank_count
 from specifyweb.specify import models
+from specifyweb.specify.tree_utils import get_search_filters
 from specifyweb.stored_queries import models as sqlmodels
 from . import tree_extras
 from .api import get_object_or_404, obj_to_data, toJson
@@ -433,19 +434,9 @@ def all_tree_information(request):
         result[tree] = []
 
         treedef_model = getattr(models, f'{tree.lower().capitalize()}treedef')
-        tree_defs = treedef_model.objects.all()
+        tree_defs = treedef_model.objects.filter(get_search_filters(request.collection, tree, False))
         for definition in tree_defs:
-            ranks = definition.treedefitems.order_by('rankid')
-            if tree == 'Taxon': # Filter Taxon tree definitions by discipline
-                if (
-                    definition.discipline.id != request.specify_collection.discipline.id
-                    and not models.CollectionObjectType.objects.filter(
-                        taxontreedef=definition,
-                        collection__discipline=request.specify_collection.discipline,
-                    ).exists()
-                ):
-                    continue
-            
+            ranks = definition.treedefitems.order_by('rankid')            
             result[tree].append({
                 'definition': obj_to_data(definition),
                 'ranks': [obj_to_data(rank) for rank in ranks]
