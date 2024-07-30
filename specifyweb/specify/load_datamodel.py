@@ -481,7 +481,6 @@ sp6_system_tables = {
     'Spappresource',
     'Spappresourcedata',
     'Spappresourcedir',
-    'Spauditlog',
     'Spauditlogfield',
     'Spexportschema',
     'Spexportschemaitem',
