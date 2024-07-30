@@ -272,7 +272,10 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                     const clonePromises = Array.from(
                       { length: carryForwardAmount },
                       async () => {
-                        const clonedResource = await resource.clone(false);
+                        const clonedResource = await resource.clone(
+                          false,
+                          true
+                        );
                         clonedResource.set('catalogNumber', wildCard as never);
                         return clonedResource;
                       }

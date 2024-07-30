@@ -6192,7 +6192,7 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.SpAuditLog',
         table='spauditlog',
         tableId=530,
-        system=True,
+        system=False,
         idColumn='SpAuditLogID',
         idFieldName='spAuditLogId',
         idField=IdField(name='spAuditLogId', column='SpAuditLogID', type='java.lang.Integer'),
