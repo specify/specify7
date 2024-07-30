@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-07-30 14:41+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2024-07-30 15:45+0000\n"
+"Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/forms/"
 "es/>\n"
 "Language: es\n"
@@ -13,7 +13,6 @@ msgstr ""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:705
-#, fuzzy
 msgid "forms"
 msgstr "Formularios"
 
@@ -21,43 +20,36 @@ msgstr "Formularios"
 #: components/Atoms/DataEntry.tsx:153
 #: components/Forms/Save.tsx:308
 #: components/Statistics/ResultsDialog.tsx:68
-#, fuzzy
 msgid "clone"
-msgstr "Desactivar el modo de solo lectura"
+msgstr "Clonar"
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:309
-#, fuzzy
 msgid "cloneDescription"
 msgstr "Crear una copia completa del registro actual"
 
 #. Used in: Components > Data Model > Uniqueness Rules
 #: components/DataModel/uniquenessRules.ts:140
-#, fuzzy
 msgid "valueMustBeUniqueToField"
 msgstr "El valor debe ser exclusivo de {fieldName:string}"
 
 #. Used in: Components > Data Model > Uniqueness Rules
 #: components/DataModel/uniquenessRules.ts:143
-#, fuzzy
 msgid "valueMustBeUniqueToDatabase"
-msgstr "Nada Encontrado"
+msgstr "El valor debe ser único para la base de datos"
 
 #. Used in: Components > Data Model > Uniqueness Rules
 #: components/DataModel/uniquenessRules.ts:131
-#, fuzzy
 msgid "valuesOfMustBeUniqueToField"
 msgstr "Los valores de {values:string} deben ser únicos para {fieldName:string}"
 
 #. Used in: Components > Data Model > Uniqueness Rules
 #: components/DataModel/uniquenessRules.ts:135
-#, fuzzy
 msgid "valuesOfMustBeUniqueToDatabase"
 msgstr "Los valores de {values:string} deben ser únicos para la base de datos."
 
 #. Used in: Components > Forms > Delete Button
 #: components/Forms/DeleteButton.tsx:112
-#, fuzzy
 msgid "checkingIfResourceCanBeDeleted"
 msgstr "Comprobando si el recurso se puede eliminar…"
 
@@ -65,13 +57,11 @@ msgstr "Comprobando si el recurso se puede eliminar…"
 #: components/Forms/DeleteButton.tsx:86
 #: components/Forms/DeleteButton.tsx:94
 #: components/Forms/DeleteButton.tsx:165
-#, fuzzy
 msgid "deleteBlocked"
-msgstr "Eliminar bloqueado"
+msgstr "Borrado bloqueado"
 
 #. Used in: Components > Forms > Delete Button
 #: components/Forms/DeleteButton.tsx:168
-#, fuzzy
 msgid "deleteBlockedDescription"
 msgstr ""
 "El recurso no se puede eliminar porque los siguientes recursos hacen "
@@ -80,7 +70,6 @@ msgstr ""
 #. Used in: Components > Schema Viewer > Schema To Tsv ⬤ Components > Wb Plan View > Custom Select Element
 #: components/SchemaViewer/schemaToTsv.tsx:26
 #: components/WbPlanView/CustomSelectElement.tsx:295
-#, fuzzy
 msgid "relationship"
 msgstr "Relación"
 
@@ -88,66 +77,56 @@ msgstr "Relación"
 #: components/FormPlugins/PaleoLocation.tsx:53
 #: components/FormPlugins/PaleoLocation.tsx:89
 #: components/FormPlugins/PaleoLocation.tsx:98
-#, fuzzy
 msgid "paleoMap"
-msgstr "Mapa Paleo"
+msgstr "Paleo Map"
 
 #. 🟥Example: Geography Required. Used in: Components > Form Plugins > Paleo Location
 #: components/FormPlugins/PaleoLocation.tsx:76
-#, fuzzy
 msgid "paleoRequiresGeography"
-msgstr "{geographyTable:string} Requerido"
+msgstr "{geographyTable:string} obligatorio"
 
 #. Used in: Components > Form Plugins > Paleo Location
 #: components/FormPlugins/PaleoLocation.tsx:81
-#, fuzzy
 msgid "paleoRequiresGeographyDescription"
 msgstr ""
-"El complemento Paleo Map requiere que {localityTable:string} tenga "
-"coordenadas geográficas y que el contexto paleo tenga una edad geográfica "
-"con al menos una hora de inicio o una hora de finalización completa."
+"El plugin de Paleo Map requiere que la {localityTable:string} tenga "
+"coordenadas geográficas y que el contexto paleo tenga una fecha geográfica y "
+"al menos una hora de inicio y una hora final."
 
 #. Used in: Components > Form Plugins > Date Input
 #: components/FormPlugins/DateInput.tsx:85
-#, fuzzy
 msgid "invalidDate"
-msgstr "Fecha invalida"
+msgstr "Fecha no válida"
 
 #. Used in: Components > Forms > Delete Button
 #: components/Forms/DeleteButton.tsx:137
-#, fuzzy
 msgid "deleteConfirmation"
 msgstr ""
-"¿Está seguro de que desea eliminar permanentemente este {tableName:string} "
+"¿Éstas seguro de que deseas eliminar permanentemente este {tableName:string} "
 "de la base de datos?"
 
 #. Used in: Components > Forms > Delete Button
 #: components/Forms/DeleteButton.tsx:44
-#, fuzzy
 msgid "deleteConfirmationDescription"
 msgstr "Esta acción no se puede deshacer."
 
 #. Used in: Components > Form Plugins > Date Precision Picker
 #: components/FormPlugins/DatePrecisionPicker.tsx:28
-#, fuzzy
 msgid "datePrecision"
-msgstr "Precisión de fecha"
+msgstr "Precisión de la fecha"
 
 #. 🟥A placeholder for partial date field when "month /year" type is selected. Visible only in browsers that don't support the "month" input type. Used in: Components > Form Plugins > Date Precision Picker
 #: components/FormPlugins/DatePrecisionPicker.tsx:47
-#, fuzzy
 msgid "monthYear"
-msgstr "Usar configuraciones personalizadas"
+msgstr "Mes / Año"
 
 #. 🟥A placeholder for partial date field when "year" type is selected. Used in: Components > Form Plugins > Date Input
 #: components/FormPlugins/DateInput.tsx:108
-#, fuzzy
 msgid "yearPlaceholder"
 msgstr "AAAA"
 
 #. Used in: Components > Form Plugins > Date Input
 #: components/FormPlugins/DateInput.tsx:141
-#, fuzzy
 msgid "today"
 msgstr "Hoy"
 
@@ -376,9 +355,8 @@ msgstr "Se requiere campo."
 #: utils/parser/__tests__/definitions.test.ts:205
 #: utils/parser/__tests__/definitions.test.ts:221
 #: utils/parser/__tests__/definitions.test.ts:223
-#, fuzzy
 msgid "invalidValue"
-msgstr "Hoy"
+msgstr "Valor no válido"
 
 #. 🟥Used in field validation messages on the form. Used in: Components > Form Plugins > Date Input ⬤ Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions ⬤ Parser > __tests__ > Parse
 #: components/FormPlugins/DateInput.tsx:82
@@ -677,9 +655,8 @@ msgstr "Información de registro"
 
 #. Used in: Components > Form Meta > Share Record
 #: components/FormMeta/ShareRecord.tsx:44
-#, fuzzy
 msgid "shareRecord"
-msgstr "¿Agregar a [X7X]?"
+msgstr "Compartir registro"
 
 #. Used in: Components > Form Meta > Pick List Usages ⬤ Components > Form Meta > Query Tree Usages
 #: components/FormMeta/PickListUsages.tsx:26
