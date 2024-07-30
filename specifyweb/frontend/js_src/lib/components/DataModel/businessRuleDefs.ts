@@ -151,14 +151,16 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
     },
     fieldChecks: {
       collectionObjectType: (resource) => {
+        // Fields ignored for better UX/backend restrictions
         const fieldsToIgnore = [
           'cataloger',
           'catalogNumber',
           'collection',
           'collectionObjectType',
           'version',
-          'projects',
         ];
+
+        // Clear all fields of CO except to-many dependents
         resource.specifyTable.fields
           .filter((field) => !f.includes(fieldsToIgnore, field.name))
           .map((field) => {
@@ -167,10 +169,18 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
               CollectionObject['toManyIndependent'] &
               CollectionObject['toOneDependent'] &
               CollectionObject['toOneIndependent']);
-            if (!field.isRelationship || !relationshipIsToMany(field))
+            if (!field.isRelationship || !relationshipIsToMany(field) || !field.isDependent())
               resource.set(fieldName, null);
-            else resource.set(fieldName, []);
           });
+
+        // Delete all determinations
+        const determinations = resource.getDependentResource('determinations');
+        while (
+          determinations !== undefined &&
+          determinations.models.length > 0
+        ) {
+          determinations.remove(determinations.models[0]);
+        }
       },
     },
   },
