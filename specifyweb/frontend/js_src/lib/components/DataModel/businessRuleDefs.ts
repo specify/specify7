@@ -169,7 +169,11 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
               CollectionObject['toManyIndependent'] &
               CollectionObject['toOneDependent'] &
               CollectionObject['toOneIndependent']);
-            if (!field.isRelationship || !relationshipIsToMany(field) || !field.isDependent())
+            if (
+              !field.isRelationship ||
+              !relationshipIsToMany(field) ||
+              !field.isDependent()
+            )
               resource.set(fieldName, null);
           });
 
