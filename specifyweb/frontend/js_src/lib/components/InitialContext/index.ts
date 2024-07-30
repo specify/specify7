@@ -3,10 +3,7 @@
  */
 
 import type { MimeType } from '../../utils/ajax';
-import { f } from '../../utils/functools';
 import { defined } from '../../utils/types';
-import { formatNumber } from '../Atoms/Internationalization';
-import { SECOND } from '../Atoms/timeUnits';
 
 /**
  * This belongs to ./components/toolbar/cachebuster.tsx but was moved here
@@ -56,7 +53,6 @@ export const unlockInitialContext = (entrypoint: typeof entrypointName): void =>
 export const load = async <T>(path: string, mimeType: MimeType): Promise<T> =>
   contextUnlockedPromise.then(async (entrypoint) => {
     if (entrypoint !== 'main') return foreverFetch<T>();
-    const startTime = Date.now();
 
     // Doing async import to avoid a circular dependency
     const { ajax } = await import('../../utils/ajax');
@@ -65,21 +61,7 @@ export const load = async <T>(path: string, mimeType: MimeType): Promise<T> =>
       errorMode: 'visible',
       headers: { Accept: mimeType },
     });
-    const endTime = Date.now();
-    const timePassed = endTime - startTime;
-    // A very crude detection mechanism
-    const isCached = timePassed < 100;
 
-    // So as not to spam the tests
-    if (process.env.NODE_ENV !== 'test')
-      console.log(
-        `${path} %c[${
-          isCached
-            ? 'cached'
-            : `${formatNumber(f.round(timePassed / SECOND, 0.01))}s`
-        }]`,
-        `color: ${isCached ? '#9fa' : '#f99'}`
-      );
     return data;
   });
 
