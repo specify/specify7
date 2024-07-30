@@ -11,7 +11,6 @@ import {
   sortFunction,
   unCapitalize,
 } from '../../utils/utils';
-import { fetchRelated } from '../DataModel/collection';
 import type {
   AnySchema,
   AnyTree,
@@ -79,19 +78,18 @@ export const treeRanksPromise = Promise.all([
                     ?.rgetPromise(
                       `${unCapitalize(treeName) as 'geography'}TreeDef`
                     )
-                    .then(async (treeDefinition) => ({
-                      definition: treeDefinition,
-                      ranks: await fetchRelated(
-                        serializeResource(treeDefinition),
-                        'treeDefItems',
-                        0
-                      ).then(({ records }) =>
-                        Array.from(records).sort(
-                          sortFunction(({ rankId }) => rankId)
-                        )
-                      ),
-                    }))
-                    .then((ranks) => [treeName, ranks] as const)
+                    .then((treeDefinition) => {
+                      const ranks = {
+                        definition: treeDefinition,
+                        ranks: Array.from(
+                          treeDefinition.getDependentResource('treeDefItems')
+                            ?.models ?? [],
+                          (definitionItem) => serializeResource(definitionItem)
+                        ).sort(sortFunction(({ rankId }) => rankId)),
+                      };
+
+                      return [treeName, ranks] as const;
+                    })
                 )
             )
           )

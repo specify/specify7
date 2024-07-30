@@ -67,6 +67,12 @@
             "isDatabaseConstraint": false
         }
     ],
+    "CollectionObjectGroupJoin": [
+        {
+            "rule": [["childCOG"], ["childCO"]],
+            "isDatabaseConstraint": true
+        }
+    ],
     "Collector": [
         {
             "rule": [["agent"], ["collectingEvent"]],

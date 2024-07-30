@@ -7,26 +7,35 @@ import { useId } from '../../hooks/useId';
 import { useIsModified } from '../../hooks/useIsModified';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import { ajax } from '../../utils/ajax';
 import { smoothScroll } from '../../utils/dom';
 import { listen } from '../../utils/events';
+import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { replaceKey } from '../../utils/utils';
 import { appResourceSubTypes } from '../AppResources/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
+import { Input } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
-import type { AnySchema } from '../DataModel/helperTypes';
+import type { AnySchema, SerializedRecord } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { BlockerWithResource } from '../DataModel/saveBlockers';
 import {
   findUnclaimedBlocker,
   useAllSaveBlockers,
 } from '../DataModel/saveBlockers';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import { tables } from '../DataModel/tables';
 import { error } from '../Errors/assert';
 import { errorHandledBy } from '../Errors/FormatError';
 import { InFormEditorContext } from '../FormEditor/Context';
+import { tableValidForBulkClone } from '../FormMeta/CarryForward';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
@@ -57,6 +66,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   onSaving: handleSaving,
   onSaved: handleSaved,
   onAdd: handleAdd,
+  isInRecordSet,
 }: {
   readonly resource: SpecifyResource<SCHEMA>;
   readonly form: HTMLFormElement;
@@ -72,9 +82,10 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     unsetUnloadProtect: () => void
   ) => false | undefined | void;
   readonly onSaved?: () => void;
-  readonly onAdd?: (newResource: SpecifyResource<SCHEMA>) => void;
+  readonly onAdd?: (resources: RA<SpecifyResource<SCHEMA>>) => void;
   // Only display save blockers for a given field
   readonly filterBlockers?: LiteralField | Relationship;
+  readonly isInRecordSet?: boolean;
 }): JSX.Element {
   const id = useId('save-button');
   const saveRequired = useIsModified(resource);
@@ -101,7 +112,8 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const loading = React.useContext(LoadingContext);
   const [_, setFormContext] = React.useContext(FormContext);
 
-  const { showClone, showCarry, showAdd } = useEnabledButtons(resource);
+  const { showClone, showCarry, showBulkCarry, showAdd } =
+    useEnabledButtons(resource);
 
   const canCreate = hasTablePermission(resource.specifyTable.name, 'create');
   const canUpdate = hasTablePermission(resource.specifyTable.name, 'update');
@@ -198,7 +210,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const copyButton = (
     label: LocalizedString,
     description: LocalizedString,
-    handleClick: () => Promise<SpecifyResource<SCHEMA>>
+    handleClick: () => Promise<RA<SpecifyResource<SCHEMA>>>
   ): JSX.Element => (
     <ButtonComponent
       className={saveBlocked ? '!cursor-not-allowed' : undefined}
@@ -214,27 +226,94 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     </ButtonComponent>
   );
 
+  const [carryForwardAmount, setCarryForwardAmount] = React.useState<number>(1);
+
   return (
     <>
       {typeof handleAdd === 'function' && canCreate ? (
         <>
-          {showClone &&
-            copyButton(
-              formsText.clone(),
-              formsText.cloneDescription(),
-              async () => resource.clone(true)
-            )}
+          {resource.specifyTable.name === 'CollectionObject' &&
+          (isInRecordSet === false || isInRecordSet === undefined) &&
+          isSaveDisabled &&
+          showCarry &&
+          showBulkCarry ? (
+            <Input.Integer
+              aria-label={formsText.bulkCarryForwardCount()}
+              className="!w-fit"
+              min={1}
+              placeholder="1"
+              value={carryForwardAmount}
+              onValueChange={(value): void =>
+                Number.isNaN(value)
+                  ? setCarryForwardAmount(1)
+                  : setCarryForwardAmount(Number(value))
+              }
+            />
+          ) : null}
           {showCarry &&
             copyButton(
               formsText.carryForward(),
               formsText.carryForwardDescription(),
-              async () => resource.clone(false)
+              /**
+               * FEATURE: Extend this functionality to all tables
+               * See https://github.com/specify/specify7/pull/4804
+               *
+               */
+              resource.specifyTable.name === 'CollectionObject' &&
+                carryForwardAmount > 1
+                ? async (): Promise<RA<SpecifyResource<SCHEMA>>> => {
+                    const formatter =
+                      tables.CollectionObject.strictGetLiteralField(
+                        'catalogNumber'
+                      ).getUiFormatter()!;
+                    const wildCard = formatter.valueOrWild();
+
+                    const clonePromises = Array.from(
+                      { length: carryForwardAmount },
+                      async () => {
+                        const clonedResource = await resource.clone(
+                          false,
+                          true
+                        );
+                        clonedResource.set('catalogNumber', wildCard as never);
+                        return clonedResource;
+                      }
+                    );
+
+                    const clones = await Promise.all(clonePromises);
+
+                    const backendClones = await ajax<
+                      RA<SerializedRecord<SCHEMA>>
+                    >(
+                      `/api/specify/bulk/${resource.specifyTable.name.toLowerCase()}/`,
+                      {
+                        method: 'POST',
+                        headers: { Accept: 'application/json' },
+                        body: clones,
+                      }
+                    ).then(({ data }) =>
+                      data.map((resource) =>
+                        deserializeResource(serializeResource(resource))
+                      )
+                    );
+
+                    return Promise.all([resource, ...backendClones]);
+                  }
+                : async (): Promise<RA<SpecifyResource<SCHEMA>>> => [
+                    await resource.clone(false),
+                  ]
+            )}
+          {showClone &&
+            copyButton(
+              formsText.clone(),
+              formsText.cloneDescription(),
+              async () => [await resource.clone(true)]
             )}
           {showAdd &&
             copyButton(
               commonText.add(),
               formsText.addButtonDescription(),
-              async () => new resource.specifyTable.Resource()
+              async () => [new resource.specifyTable.Resource()]
             )}
         </>
       ) : undefined}
@@ -313,11 +392,17 @@ function useEnabledButtons<SCHEMA extends AnySchema = AnySchema>(
   readonly showClone: boolean;
   readonly showCarry: boolean;
   readonly showAdd: boolean;
+  readonly showBulkCarry: boolean;
 } {
   const [enableCarryForward] = userPreferences.use(
     'form',
     'preferences',
     'enableCarryForward'
+  );
+  const [enableBulkCarryForward] = userPreferences.use(
+    'form',
+    'preferences',
+    'enableBukCarryForward'
   );
   const [disableClone] = userPreferences.use(
     'form',
@@ -338,6 +423,10 @@ function useEnabledButtons<SCHEMA extends AnySchema = AnySchema>(
 
   const showCarry =
     enableCarryForward.includes(tableName) && !NO_CLONE.has(tableName);
+  const showBulkCarry =
+    enableBulkCarryForward.includes(tableName) &&
+    !NO_CLONE.has(tableName) &&
+    tableValidForBulkClone(resource.specifyTable);
   const showClone =
     !disableClone.includes(tableName) &&
     !NO_CLONE.has(tableName) &&
@@ -345,7 +434,7 @@ function useEnabledButtons<SCHEMA extends AnySchema = AnySchema>(
   const showAdd =
     !disableAdd.includes(tableName) && !FORBID_ADDING.has(tableName);
 
-  return { showClone, showCarry, showAdd };
+  return { showClone, showCarry, showBulkCarry, showAdd };
 }
 
 const appResourcesToNotClone = filterArray(
