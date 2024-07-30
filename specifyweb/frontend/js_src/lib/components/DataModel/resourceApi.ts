@@ -747,16 +747,21 @@ export const ResourceBase = Backbone.Model.extend({
     )
       return this;
     else if (this._fetch) return this._fetch;
-    else
-      return (this._fetch = hijackBackboneAjax(
-        options === undefined || options.strict ? undefined : [Http.NOT_FOUND],
-        () =>
-          Backbone.Model.prototype.fetch.call(this, options).then(() => {
-            this._fetch = null;
-            // BUG: consider doing this.needsSaved=false here
-            return this;
-          })
-      ));
+    else {
+      const fetchCallback = () =>
+        Backbone.Model.prototype.fetch.call(this, options).then(() => {
+          this._fetch = null;
+          // BUG: consider doing this.needsSaved=false here
+          return this;
+        });
+      if (options === undefined || options.strict)
+        return (this._fetch = fetchCallback);
+      else
+        return (this._fetch = hijackBackboneAjax(
+          [Http.NOT_FOUND],
+          fetchCallback
+        ));
+    }
   },
   parse(_resp) {
     // Since we are putting in data, the resource in now populated
