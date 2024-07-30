@@ -363,9 +363,9 @@ function FieldFormatterEditing({
   readonly value: string | null;
   readonly schemaData: SchemaData;
 }): JSX.Element | null {
-  const index = schemaData.uiFormatters
-    .filter((formatter) => formatter.tableName === table.name)
-    .findIndex(({ name }) => name === value);
+  const index = schemaData.uiFormatters.find(
+    ({ name }) => name === value
+  )?.index;
   const resourceId = appResourceIds.UIFormatters;
   const navigate = useNavigate();
   if (resourceId === undefined) return null;

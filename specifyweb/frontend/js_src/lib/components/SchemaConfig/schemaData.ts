@@ -47,6 +47,7 @@ type SimpleFieldFormatter = {
   readonly value: string;
   readonly field: LiteralField | undefined;
   readonly tableName: keyof Tables | undefined;
+  readonly index: number;
 };
 
 export const fetchSchemaData = async (): Promise<RawSchemaData> =>
@@ -71,6 +72,7 @@ export const fetchSchemaData = async (): Promise<RawSchemaData> =>
           value: formatter.defaultValue,
           field: formatter.field,
           tableName: formatter.table?.name,
+          index: formatter.originalIndex,
         }))
         .filter(({ value }) => value)
     ),

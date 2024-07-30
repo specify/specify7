@@ -95,7 +95,7 @@ function FieldFormatterPreview({
   readonly fieldFormatter: FieldFormatter;
 }): JSX.Element | null {
   const resolvedFormatter = React.useMemo(
-    () => resolveFieldFormatter(fieldFormatter),
+    () => resolveFieldFormatter(fieldFormatter, 0),
     [fieldFormatter]
   );
   const doFormatting = React.useCallback(
