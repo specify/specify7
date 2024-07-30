@@ -44,11 +44,13 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         else:
             
             treedefs = get_treedef(query.collection, table.name)
+
+            # We need to take the max here. Otherwise, it is possible that the same rank
+            # name may not occur at the same level across tree defs.
             max_depth = max(depth for _, depth in treedefs)
             
-            
             ancestors = [node]
-            for i in range(max_depth-1):
+            for _ in range(max_depth-1):
                 ancestor = orm.aliased(node)
                 query = query.outerjoin(ancestor, ancestors[-1].ParentID == getattr(ancestor, ancestor._id))
                 ancestors.append(ancestor)
@@ -87,7 +89,8 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         column = sql.case([case for per_ancestor in cases_per_ancestor for case in per_ancestor])
 
         defs_to_filter_on = [def_id for (def_id, _) in treedefs_with_ranks]
-        new_filters = [*query.internal_filters, lambda model: getattr(model, treedef_column).in_(defs_to_filter_on)]
+        # We don't want to include treedef if the rank is not present.
+        new_filters = [*query.internal_filters, lambda: getattr(node, treedef_column).in_(defs_to_filter_on)]
         query = query._replace(internal_filters=new_filters)
         return query, column
 
@@ -133,10 +136,10 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         return query, model, table, field
 
 
-    # To make things simpler, it doesn't apply any filters, but returns a single predicate.
+    # To make things "simpler", it doesn't apply any filters, but returns a single predicate
     # @model is an input parameter, because cannot guess if it is aliased or not (callers are supposed to know that)
-    def get_internal_filters(self, model):
-        return sql.or_(*[get(model) for get in self.internal_filters])
+    def get_internal_filters(self):
+        return sql.or_(*[get() for get in self.internal_filters])
 
 def add_proxy_method(name):
     def proxy(self, *args, **kwargs):

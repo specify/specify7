@@ -643,7 +643,7 @@ def build_query(session, collection, user, tableid, field_specs,
     if distinct:
         query = group_by_displayed_fields(query, selected_fields)
 
-    internal_predicate = query.get_internal_filters(model)
+    internal_predicate = query.get_internal_filters()
     query = query.filter(internal_predicate)
 
     logger.warning("query: %s", query.query)
