@@ -4,6 +4,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
 {
   "AccessionNumber": UiFormatter {
     "isSystem": true,
+    "originalIndex": 0,
     "parts": [
       YearPart {
         "autoIncrement": false,
@@ -51,6 +52,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
   },
   "AccessionNumberByYear": UiFormatter {
     "isSystem": true,
+    "originalIndex": 1,
     "parts": [
       YearPart {
         "autoIncrement": false,
@@ -98,6 +100,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
   },
   "AccessionStringFormatter": UiFormatter {
     "isSystem": true,
+    "originalIndex": 2,
     "parts": [
       AlphaNumberPart {
         "autoIncrement": false,
@@ -113,6 +116,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
   },
   "CatalogNumber": UiFormatter {
     "isSystem": false,
+    "originalIndex": 3,
     "parts": [
       YearPart {
         "autoIncrement": false,
@@ -144,6 +148,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
   },
   "CatalogNumberAlphaNumByYear": UiFormatter {
     "isSystem": false,
+    "originalIndex": 5,
     "parts": [
       YearPart {
         "autoIncrement": false,
@@ -175,6 +180,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
   },
   "CatalogNumberNumeric": CatalogNumberNumeric {
     "isSystem": true,
+    "originalIndex": 0,
     "parts": [
       CatalogNumberNumericField {
         "autoIncrement": true,
@@ -190,6 +196,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
   },
   "CatalogNumberNumericRegex": UiFormatter {
     "isSystem": false,
+    "originalIndex": 4,
     "parts": [
       RegexPart {
         "autoIncrement": false,
@@ -205,12 +212,14 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
   },
   "Date": UiFormatter {
     "isSystem": true,
+    "originalIndex": 8,
     "parts": [],
     "table": undefined,
     "title": "Date",
   },
   "DeaccessionNumber": UiFormatter {
     "isSystem": true,
+    "originalIndex": 9,
     "parts": [
       YearPart {
         "autoIncrement": false,
@@ -258,6 +267,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
   },
   "GiftNumber": UiFormatter {
     "isSystem": true,
+    "originalIndex": 10,
     "parts": [
       YearPart {
         "autoIncrement": false,
@@ -289,6 +299,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
   },
   "InfoRequestNumber": UiFormatter {
     "isSystem": true,
+    "originalIndex": 11,
     "parts": [
       YearPart {
         "autoIncrement": false,
@@ -320,6 +331,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
   },
   "KUITeach": CatalogNumberNumeric {
     "isSystem": true,
+    "originalIndex": 0,
     "parts": [
       CatalogNumberNumericField {
         "autoIncrement": true,
@@ -335,6 +347,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
   },
   "LoanNumber": UiFormatter {
     "isSystem": true,
+    "originalIndex": 13,
     "parts": [
       YearPart {
         "autoIncrement": false,
@@ -366,6 +379,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
   },
   "NumericBigDecimal": UiFormatter {
     "isSystem": true,
+    "originalIndex": 14,
     "parts": [
       NumericPart {
         "autoIncrement": false,
@@ -381,6 +395,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
   },
   "NumericByte": UiFormatter {
     "isSystem": true,
+    "originalIndex": 15,
     "parts": [
       NumericPart {
         "autoIncrement": false,
@@ -396,6 +411,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
   },
   "NumericDouble": UiFormatter {
     "isSystem": true,
+    "originalIndex": 16,
     "parts": [
       NumericPart {
         "autoIncrement": false,
@@ -411,6 +427,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
   },
   "NumericFloat": UiFormatter {
     "isSystem": true,
+    "originalIndex": 17,
     "parts": [
       NumericPart {
         "autoIncrement": false,
@@ -426,6 +443,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
   },
   "NumericInteger": UiFormatter {
     "isSystem": true,
+    "originalIndex": 18,
     "parts": [
       NumericPart {
         "autoIncrement": false,
@@ -441,6 +459,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
   },
   "NumericLong": UiFormatter {
     "isSystem": true,
+    "originalIndex": 19,
     "parts": [
       NumericPart {
         "autoIncrement": false,
@@ -456,6 +475,7 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
   },
   "NumericShort": UiFormatter {
     "isSystem": true,
+    "originalIndex": 20,
     "parts": [
       NumericPart {
         "autoIncrement": false,
@@ -471,24 +491,28 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
   },
   "PartialDate": UiFormatter {
     "isSystem": false,
+    "originalIndex": 21,
     "parts": [],
     "table": undefined,
     "title": "PartialDate",
   },
   "PartialDateMonth": UiFormatter {
     "isSystem": false,
+    "originalIndex": 22,
     "parts": [],
     "table": undefined,
     "title": "PartialDateMonth",
   },
   "PartialDateYear": UiFormatter {
     "isSystem": false,
+    "originalIndex": 23,
     "parts": [],
     "table": undefined,
     "title": "PartialDateYear",
   },
   "SearchDate": UiFormatter {
     "isSystem": true,
+    "originalIndex": 24,
     "parts": [],
     "table": undefined,
     "title": "SearchDate",

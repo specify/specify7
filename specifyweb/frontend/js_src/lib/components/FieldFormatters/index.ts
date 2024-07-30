@@ -28,8 +28,8 @@ export const fetchContext = Promise.all([
   uiFormatters = Object.fromEntries(
     filterArray(
       xmlToSpec(formatters, fieldFormattersSpec()).fieldFormatters.map(
-        (formatter) => {
-          const resolvedFormatter = resolveFieldFormatter(formatter);
+        (formatter, index) => {
+          const resolvedFormatter = resolveFieldFormatter(formatter, index);
           return resolvedFormatter === undefined
             ? undefined
             : [formatter.name, resolvedFormatter];
@@ -43,7 +43,8 @@ export const getUiFormatters = (): typeof uiFormatters =>
   uiFormatters ?? error('Tried to access UI formatters before fetching them');
 
 export function resolveFieldFormatter(
-  formatter: FieldFormatter
+  formatter: FieldFormatter,
+  index: number
 ): UiFormatter | undefined {
   if (typeof formatter.external === 'string') {
     return parseJavaClassName(formatter.external) ===
@@ -63,7 +64,8 @@ export function resolveFieldFormatter(
       // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       formatter.title || formatter.name,
       parts,
-      formatter.table
+      formatter.table,
+      index
     );
   }
 }
@@ -74,7 +76,8 @@ export class UiFormatter {
     public readonly isSystem: boolean,
     public readonly title: LocalizedString,
     public readonly parts: RA<Part>,
-    public readonly table: SpecifyTable | undefined
+    public readonly table: SpecifyTable | undefined,
+    public readonly originalIndex = 0
   ) {}
 
   public get defaultValue(): string {
