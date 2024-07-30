@@ -69,11 +69,12 @@ def create_default_collection_types():
         # Update CollectionObjects' collectionobjecttype for the discipline
         Collectionobject.objects.filter(collection=collection).update(collectionobjecttype=cot)
         collection.collectionobjecttype = cot
-        try:
-            collection.save()
-        except BusinessRuleException as e:
-            # TODO: Resolve th business rule exception so that the collection can be saved and not null
-            continue
+        collection.save()
+        # try:
+        #     collection.save()
+        # except BusinessRuleException as e:
+        #     # TODO: Resolve th business rule exception so that the collection can be saved and not null
+        #     continue
 
 def revert_default_collection_types():
     # Reverse handeled by table deletion.
