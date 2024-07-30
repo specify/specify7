@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
@@ -8,7 +7,6 @@ import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
-import { fetchRows } from '../DataModel/collection';
 import type { AnyTree } from '../DataModel/helperTypes';
 import { getPref } from '../InitialContext/remotePrefs';
 import { userPreferences } from '../Preferences/userPreferences';
@@ -150,21 +148,6 @@ export function TreeRow<SCHEMA extends AnyTree>({
   const hasNoChildrenNodes =
     nodeStats?.directCount === 0 && nodeStats.childCount === 0;
 
-  const acceptedChildrenKey = `accepted${treeName.toLowerCase()}`;
-  const [synonymsNames] = useAsyncState(
-    React.useCallback(
-      async () =>
-        fetchRows(treeName as 'Taxon', {
-          fields: { name: ['string'] },
-          limit: 0,
-          [acceptedChildrenKey]: row.nodeId,
-          domainFilter: false,
-        }).then((rows) => rows.map(({ name }) => name)),
-      [acceptedChildrenKey, treeName, row.nodeId]
-    ),
-    false
-  );
-
   return hideEmptyNodes && hasNoChildrenNodes ? null : (
     <li role="treeitem row">
       {ranks.map((rankId) => {
@@ -247,12 +230,11 @@ export function TreeRow<SCHEMA extends AnyTree>({
                       ? treeText.acceptedName({
                           name: row.acceptedName ?? row.acceptedId.toString(),
                         })
-                      : synonymsNames === undefined ||
-                        synonymsNames.length === 0
-                      ? undefined
-                      : treeText.synonyms({
-                          names: synonymsNames.join(', '),
+                      : typeof row.synonyms === 'string'
+                      ? treeText.synonyms({
+                          names: row.synonyms,
                         })
+                      : undefined
                   }
                 >
                   {doIncludeAuthorPref &&
