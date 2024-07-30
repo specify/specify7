@@ -90,7 +90,7 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
 
         defs_to_filter_on = [def_id for (def_id, _) in treedefs_with_ranks]
         # We don't want to include treedef if the rank is not present.
-        new_filters = [*query.internal_filters, lambda: getattr(node, treedef_column).in_(defs_to_filter_on)]
+        new_filters = [*query.internal_filters, getattr(node, treedef_column).in_(defs_to_filter_on)]
         query = query._replace(internal_filters=new_filters)
         return query, column
 
@@ -139,7 +139,7 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
     # To make things "simpler", it doesn't apply any filters, but returns a single predicate
     # @model is an input parameter, because cannot guess if it is aliased or not (callers are supposed to know that)
     def get_internal_filters(self):
-        return sql.or_(*[get() for get in self.internal_filters])
+        return sql.or_(*self.internal_filters)
 
 def add_proxy_method(name):
     def proxy(self, *args, **kwargs):
