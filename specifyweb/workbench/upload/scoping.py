@@ -3,6 +3,7 @@ from typing import Dict, Any, Optional, Tuple, Callable, Union
 from specifyweb.specify.datamodel import datamodel, Table, Relationship
 from specifyweb.specify.load_datamodel import DoesNotExistError
 from specifyweb.specify import models
+from specifyweb.specify.tree_utils import get_taxon_treedef
 from specifyweb.specify.uiformatters import get_uiformatter
 from specifyweb.stored_queries.format import get_date_format
 
@@ -187,6 +188,8 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
     table = datamodel.get_table_strict(tr.name)
 
     if table.name == 'Taxon':
+        # TODO: Add scoping in the workbench via the Upload Plan
+        # treedef = get_taxon_treedef(collection)
         treedef = collection.discipline.taxontreedef
 
     elif table.name == 'Geography':
