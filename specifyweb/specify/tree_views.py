@@ -1,19 +1,21 @@
 from functools import wraps
 from typing import Literal, Tuple
 from django.db import transaction
-from django.http import HttpResponse, HttpResponseNotAllowed
+from django.http import HttpResponse
 from django.views.decorators.http import require_POST
-from sqlalchemy import sql
+from sqlalchemy import sql, distinct
 from sqlalchemy.orm import aliased
 
 from specifyweb.middleware.general import require_GET
 from specifyweb.businessrules.exceptions import BusinessRuleException
-from specifyweb.permissions.permissions import PermissionTarget, \
-    PermissionTargetAction, check_permission_targets, has_table_permission
-from specifyweb.specify.tree_ranks import tree_rank_count
-from specifyweb.specify import models
-from specifyweb.specify.tree_utils import get_search_filters
+from specifyweb.permissions.permissions import PermissionTarget, PermissionTargetAction, check_permission_targets, has_table_permission
+
 from specifyweb.stored_queries import models as sqlmodels
+from specifyweb.stored_queries.execution import set_group_concat_max_len
+from specifyweb.stored_queries.group_concat import group_concat
+from specifyweb.specify.tree_utils import get_search_filters
+from specifyweb.specify import models
+from specifyweb.specify.tree_ranks import tree_rank_count
 from . import tree_extras
 from .api import get_object_or_404, obj_to_data, toJson
 from .auditcodes import TREE_MOVE
@@ -117,9 +119,12 @@ def tree_mutation(mutation):
                                     },
                                     {
 
-                                        "type": "integer",
-                                        "description": "The number of children the child node has"
-
+                                        "type" : "integer",
+                                        "description" : "The number of children the child node has"
+                                    },
+                                    {
+                                        "type": "string",
+                                        "description": "Concat of fullname of syonyms"
                                     }
                                 ],
                             }
@@ -137,48 +142,74 @@ def tree_view(request, treedef, tree: TREE_TABLE, parentid, sortfield):
     the tree defined by treedefid = <treedef>. The nodes are sorted
     according to <sortfield>.
     """
+    """
+    Also include the author of the node in the response if requested and the tree is the taxon tree.
+    There is a preference which can be enabled from within Specify which adds the author next to the 
+    fullname on the front end. 
+    See https://github.com/specify/specify7/pull/2818 for more context and a breakdown regarding 
+    implementation/design decisions
+    """
+    include_author = request.GET.get('includeauthor', False) and tree == 'taxon'
+    with sqlmodels.session_context() as session:
+        set_group_concat_max_len(session.connection())
+        results = get_tree_rows(treedef, tree, parentid, sortfield, include_author, session)
+    return HttpResponse(toJson(results), content_type='application/json')
+
+
+def get_tree_rows(treedef, tree, parentid, sortfield, include_author, session):
     tree_table = models.datamodel.get_table(tree)
     parentid = None if parentid == 'null' else int(parentid)
 
     node = getattr(sqlmodels, tree_table.name)
     child = aliased(node)
     accepted = aliased(node)
+    synonym = aliased(node)
     id_col = getattr(node, node._id)
     child_id = getattr(child, node._id)
     treedef_col = getattr(node, tree_table.name + "TreeDefID")
     orderby = tree_table.name.lower() + '.' + sortfield
+        
+    col_args = [
+        node.name,
+        node.fullName,
+        node.nodeNumber,
+        node.highestChildNodeNumber,
+        node.rankId,
+        node.AcceptedID,
+        accepted.fullName,
+        node.author if include_author else "NULL",
+    ]
 
-    """
-        Also include the author of the node in the response if requested and the tree is the taxon tree.
-        There is a preference which can be enabled from within Specify which adds the author next to the 
-        fullname on the front end. 
-        See https://github.com/specify/specify7/pull/2818 for more context and a breakdown regarding 
-        implementation/design decisions
-    """
-    includeAuthor = request.GET.get(
-        'includeauthor') if 'includeauthor' in request.GET else False
+    apply_min = [
+        # for some reason, SQL is rejecting the group_by in some dbs
+        # due to "only_full_group_by". It is somehow not smart enough to see 
+        # that there is no dependency in the columns going from main table to the to-manys (child, and syns)
+        # I want to use ANY_VALUE() but that's not supported by MySQL 5.6- and MariaDB.
+        # I don't want to disable "only_full_group_by" in case someone misuses it...
+        # applying min to fool into thinking it is aggregated.
+        # these values are guarenteed to be the same
+        sql.func.min(arg) for arg in col_args
+        ]
+    
+    grouped = [
+        *apply_min, 
+        # syns are to-many, so child can be duplicated
+        sql.func.count(distinct(child_id)),
+        # child are to-many, so syn's full name can be duplicated
+        # FEATURE: Allow users to select a separator?? Maybe that's too nice
+        group_concat(distinct(synonym.fullName), separator=', ')
+    ]
 
-    with sqlmodels.session_context() as session:
-        query = session.query(id_col,
-                              node.name,
-                              node.fullName,
-                              node.nodeNumber,
-                              node.highestChildNodeNumber,
-                              node.rankId,
-                              node.AcceptedID,
-                              accepted.fullName,
-                              node.author if (
-                                  includeAuthor and tree == 'taxon') else "NULL",
-                              sql.functions.count(child_id)) \
-            .outerjoin(child, child.ParentID == id_col) \
-            .outerjoin(accepted, node.AcceptedID == getattr(accepted, node._id)) \
-            .group_by(id_col) \
-            .filter(treedef_col == int(treedef)) \
-            .filter(node.ParentID == parentid) \
-            .order_by(orderby)
-        results = list(query)
-    return HttpResponse(toJson(results), content_type='application/json')
-
+    query = session.query(id_col, *grouped) \
+        .outerjoin(child, child.ParentID == id_col) \
+        .outerjoin(accepted, node.AcceptedID == getattr(accepted, node._id)) \
+        .outerjoin(synonym, synonym.AcceptedID == id_col) \
+        .group_by(id_col) \
+        .filter(treedef_col == int(treedef)) \
+        .filter(node.ParentID == parentid) \
+        .order_by(orderby)
+    results = list(query)
+    return results
 
 @login_maybe_required
 @require_GET
