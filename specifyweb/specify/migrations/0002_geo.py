@@ -72,6 +72,7 @@ def create_default_collection_types():
         try:
             collection.save()
         except BusinessRuleException as e:
+            # TODO: Resolve th business rule exception so that the collection can be saved and not null
             continue
 
 def revert_default_collection_types():

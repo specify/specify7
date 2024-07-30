@@ -184,7 +184,7 @@ def apply_scoping_to_tomanyrecord(tmr: ToManyRecord, collection) -> ScopedToMany
         scopingAttrs=scoping_relationships(collection, table),
     )
 
-def apply_scoping_to_treerecord(tr: TreeRecord, collection: models.Collection) -> ScopedTreeRecord:
+def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
     table = datamodel.get_table_strict(tr.name)
 
     if table.name == 'Taxon':
