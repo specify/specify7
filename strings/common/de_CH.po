@@ -451,7 +451,7 @@ msgstr "Tools"
 #: components/Statistics/StatsResult.tsx:78
 #: components/Toolbar/Language.tsx:224
 #: components/Toolbar/Language.tsx:258
-#: components/TreeView/Row.tsx:223
+#: components/TreeView/Row.tsx:206
 #: components/WorkBench/Disambiguation.tsx:123
 #. Used in: Components > Core > Context Loader ⬤ Components > Core > Contexts ⬤ Core > __tests__ > Contexts ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Fields > Combo Box ⬤ Components > Form Fields > Field ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Form Plugins > Collection Rel One To One ⬤ Components > Formatters > Preview ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Sub View ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Prep Return Row ⬤ Components > Leaflet > Index ⬤ Components > Merging > Usages ⬤ Components > Molecules > Auto Complete ⬤ Components > Molecules > Formatted Resource ⬤ Components > Molecules > Index ⬤ Components > Permissions > Format Error ⬤ Components > Preferences > Renderers ⬤ Components > Query Builder > Field Filter ⬤ Components > Query Builder > Formatter ⬤ Components > Query Builder > Results ⬤ Components > Query Combo Box > Index ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Index ⬤ Components > Search Dialog > Index ⬤ Components > Security > Collection ⬤ Components > Security > Collection Components ⬤ Components > Security > Collection Role ⬤ Components > Security > Institution ⬤ Components > Security > Policies ⬤ Components > Security > Preview ⬤ Components > Security > Role Template ⬤ Components > Security > User Collections ⬤ Components > Security > User Components ⬤ Components > Skeleton Loaders > Skeleton ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stats Result ⬤ Components > Toolbar > Language ⬤ Components > Tree View > Row ⬤ Components > Work Bench > Disambiguation
 msgid "loading"
@@ -974,8 +974,8 @@ msgstr "{header:string}:"
 #: components/Security/Collection.tsx:131
 #: components/Security/Institution.tsx:73
 #: components/Security/Role.tsx:116
-#: components/TreeView/helpers.ts:193
-#: components/TreeView/helpers.ts:201
+#: components/TreeView/helpers.ts:196
+#: components/TreeView/helpers.ts:204
 #: components/WorkBench/DataSetMeta.tsx:229
 #: components/WorkBench/DataSetMeta.tsx:236
 #: components/WorkBench/DataSetMeta.tsx:369

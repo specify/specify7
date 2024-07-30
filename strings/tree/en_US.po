@@ -181,13 +181,13 @@ msgstr ""
 "\"{nodeName:string}\" will no longer be a synonym of "
 "\"{synonymName:string}\"."
 
-#: components/TreeView/Row.tsx:247
-#: components/TreeView/Row.tsx:266
+#: components/TreeView/Row.tsx:230
+#: components/TreeView/Row.tsx:248
 #. Used in: Components > Tree View > Row
 msgid "acceptedName"
 msgstr "Preferred: {name:string}"
 
-#: components/TreeView/Row.tsx:253
+#: components/TreeView/Row.tsx:234
 #. Used in: Components > Tree View > Row
 msgid "synonyms"
 msgstr "Synonyms: {names:string}"
@@ -204,37 +204,37 @@ msgstr "{treeName:string} Tree"
 msgid "searchTreePlaceholder"
 msgstr "Search Tree"
 
-#: components/TreeView/Row.tsx:227
+#: components/TreeView/Row.tsx:210
 #. Used in: Components > Tree View > Row
 msgid "opened"
 msgstr "Opened"
 
-#: components/TreeView/Row.tsx:228
+#: components/TreeView/Row.tsx:211
 #. Used in: Components > Tree View > Row
 msgid "closed"
 msgstr "Closed"
 
-#: components/TreeView/Row.tsx:225
+#: components/TreeView/Row.tsx:208
 #. Used in: Components > Tree View > Row
 msgid "leafNode"
 msgstr "Leaf Node"
 
-#: components/TreeView/helpers.ts:210
+#: components/TreeView/helpers.ts:213
 #. 🟥Used to show tree node's direct and indirect usages. Used in: Components > Tree View > Helpers
 msgid "nodeStats"
 msgstr "({directCount:number|formatted}, {childCount:number|formatted})"
 
-#: components/TreeView/helpers.ts:209
+#: components/TreeView/helpers.ts:212
 #. 🟥Used to show leaf tree node's direct usages. Used in: Components > Tree View > Helpers
 msgid "leafNodeStats"
 msgstr "({directCount:number|formatted})"
 
-#: components/TreeView/helpers.ts:194
+#: components/TreeView/helpers.ts:197
 #. 🟥Example: Direct Collection Object count. Used in: Components > Tree View > Helpers
 msgid "directCollectionObjectCount"
 msgstr "Direct {collectionObjectTable:string} Count"
 
-#: components/TreeView/helpers.ts:202
+#: components/TreeView/helpers.ts:205
 #. 🟥Example: Indirect Collection Object count. Used in: Components > Tree View > Helpers
 msgid "indirectCollectionObjectCount"
 msgstr "Indirect {collectionObjectTable:string} Count"
