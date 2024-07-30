@@ -18,6 +18,7 @@ import { reportsText } from '../../localization/report';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
 import { statsText } from '../../localization/stats';
+import { treeText } from '../../localization/tree';
 import type { Language } from '../../localization/utils/config';
 import { LANGUAGE } from '../../localization/utils/config';
 import { wbPlanText } from '../../localization/wbPlan';
@@ -37,6 +38,8 @@ import type { TableFields } from '../DataModel/helperTypes';
 import { genericTables } from '../DataModel/tables';
 import type { Collection, Tables } from '../DataModel/types';
 import { error, softError } from '../Errors/assert';
+import type { KeyboardShortcuts } from '../KeyboardShortcuts/config';
+import { KeyboardShortcutPreferenceItem } from '../KeyboardShortcuts/Shortcuts';
 import type { StatLayout } from '../Statistics/types';
 import {
   LanguagePreferencesItem,
@@ -51,7 +54,11 @@ import {
   HeaderItemsPreferenceItem,
   WelcomePageModePreferenceItem,
 } from './Renderers';
-import type { GenericPreferences, PreferencesVisibilityContext } from './types';
+import type {
+  GenericPreferences,
+  PreferenceItem,
+  PreferencesVisibilityContext,
+} from './types';
 import { definePref } from './types';
 
 const isLightMode = ({
@@ -73,6 +80,30 @@ const altKeyName = globalThis.navigator?.appVersion.includes('Mac')
  */
 const tableLabel = (tableName: keyof Tables): LocalizedString =>
   genericTables[tableName]?.label ?? camelToHuman(tableName);
+
+const defineKeyboardShortcut = (
+  title: LocalizedString,
+  /**
+   * If defined a keyboard shortcut for one platform, it will be automatically
+   * transformed (`ctrl -> cmd`) for the other platforms.
+   *
+   * Thus, you should define keyboard shortcuts for the "other" platform only,
+   * unless you actually want to use different keyboard shortcuts on different
+   * systems.
+   */
+  defaultValue: KeyboardShortcuts | string
+): PreferenceItem<KeyboardShortcuts> =>
+  definePref<KeyboardShortcuts>({
+    title,
+    requiresReload: false,
+    visible: true,
+    defaultValue:
+      typeof defaultValue === 'string'
+        ? { other: [defaultValue] }
+        : defaultValue,
+    renderer: KeyboardShortcutPreferenceItem,
+    container: 'div',
+  });
 
 export const userPreferenceDefinitions = {
   general: {
@@ -799,6 +830,15 @@ export const userPreferenceDefinitions = {
           }),
         },
       },
+      actions: {
+        title: preferencesText.actions(),
+        items: {
+          openFormMeta: defineKeyboardShortcut(
+            preferencesText.openFormMeta(),
+            'KeyM'
+          ),
+        },
+      },
       definition: {
         title: resourcesText.formDefinition(),
         items: {
@@ -1100,6 +1140,10 @@ export const userPreferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
+          openRelatedRecordInNewTab: defineKeyboardShortcut(
+            preferencesText.openRelatedRecordInNewTab(),
+            'KeyO'
+          ),
         },
       },
       recordSet: {
@@ -1122,6 +1166,26 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
+          goToFirstRecord: defineKeyboardShortcut(
+            formsText.goToFirstRecord(),
+            'Ctrl+Shift+ArrowUp'
+          ),
+          goToPreviousRecord: defineKeyboardShortcut(
+            formsText.goToPreviousRecord(),
+            'Ctrl+Shift+ArrowLeft'
+          ),
+          goToNextRecord: defineKeyboardShortcut(
+            formsText.goToNextRecord(),
+            'Ctrl+Shift+ArrowRight'
+          ),
+          goToLastRecord: defineKeyboardShortcut(
+            formsText.goToLastRecord(),
+            'Ctrl+Shift+ArrowDown'
+          ),
+          addResource: defineKeyboardShortcut(
+            resourcesText.addResource(),
+            'KeyA'
+          ),
         },
       },
       formTable: {
@@ -1383,6 +1447,19 @@ export const userPreferenceDefinitions = {
           }),
         },
       },
+      actions: {
+        title: preferencesText.actions(),
+        items: {
+          search: defineKeyboardShortcut(commonText.search(), 'KeyS'),
+          query: defineKeyboardShortcut(queryText.query(), 'KeyQ'),
+          edit: defineKeyboardShortcut(commonText.edit(), 'KeyE'),
+          add: defineKeyboardShortcut(treeText.addChild(), 'KeyA'),
+          move: defineKeyboardShortcut(treeText.moveNode(), 'KeyM'),
+          bulkMove: defineKeyboardShortcut(treeText.moveItems(), 'KeyB'),
+          merge: defineKeyboardShortcut(treeText.mergeNode(), 'KeyC'),
+          synonymize: defineKeyboardShortcut(treeText.synonymizeNode(), 'KeyY'),
+        },
+      },
       geography: {
         /*
          * This would be replaced with labels from schema once
@@ -1598,6 +1675,18 @@ export const userPreferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
+        },
+      },
+      actions: {
+        title: preferencesText.actions(),
+        items: {
+          query: defineKeyboardShortcut(queryText.query(), 'KeyR'),
+          count: defineKeyboardShortcut(queryText.countOnly(), 'KeyC'),
+          distinct: defineKeyboardShortcut(queryText.distinct(), 'KeyD'),
+          browseInForms: defineKeyboardShortcut(
+            queryText.browseInForms(),
+            'KeyF'
+          ),
         },
       },
     },
@@ -1971,35 +2060,19 @@ import('../DataModel/tables')
   .then(async ({ fetchContext, tables }) =>
     fetchContext.then(() => {
       const trees = userPreferenceDefinitions.treeEditor.subCategories;
-      overwriteReadOnly(
-        trees.geography,
-        'title',
-        getField(tables.Geography, 'name').label
-      );
-      overwriteReadOnly(
-        trees.taxon,
-        'title',
-        getField(tables.Taxon, 'name').label
-      );
-      overwriteReadOnly(
-        trees.storage,
-        'title',
-        getField(tables.Storage, 'name').label
-      );
+      overwriteReadOnly(trees.geography, 'title', tables.Geography.label);
+      overwriteReadOnly(trees.taxon, 'title', tables.Taxon.label);
+      overwriteReadOnly(trees.storage, 'title', tables.Storage.label);
       overwriteReadOnly(
         trees.geologicTimePeriod,
         'title',
-        getField(tables.Geography, 'name').label
+        tables.GeologicTimePeriod.label
       );
-      overwriteReadOnly(
-        trees.lithoStrat,
-        'title',
-        getField(tables.LithoStrat, 'name').label
-      );
+      overwriteReadOnly(trees.lithoStrat, 'title', tables.LithoStrat.label);
       overwriteReadOnly(
         userPreferenceDefinitions.form.subCategories.recordSet,
         'title',
-        getField(tables.RecordSet, 'name').label
+        tables.RecordSet.label
       );
 
       const treeSearchBehavior =

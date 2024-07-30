@@ -41,6 +41,7 @@ export function usePaginator(
             <div>
               <Slider
                 count={pageCount ?? 0}
+                enableKeyboardShortcuts
                 value={currentPage}
                 onChange={setCurrentPage}
               />

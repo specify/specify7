@@ -1987,4 +1987,46 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Добавить панель поиска на главную страницу',
     'uk-ua': 'Додайте рядок пошуку на головну сторінку',
   },
+  alt: {
+    comment: 'Alt key on the keyboard',
+    'en-us': 'Alt',
+  },
+  macOption: {
+    comment: 'Option key on the macOS keyboard',
+    'en-us': '⌥',
+  },
+  ctrl: {
+    comment: 'Ctrl key on the keyboard',
+    'en-us': 'Ctrl',
+  },
+  macControl: {
+    comment: 'Control key on the macOS keyboard',
+    'en-us': '⌃',
+  },
+  macMeta: {
+    comment: 'Meta/Command key on the macOS keyboard',
+    'en-us': '⌘',
+  },
+  macShift: {
+    comment: 'Shift key on the macOS keyboard',
+    'en-us': '⇧',
+  },
+  shift: {
+    comment: 'Shift key on the keyboard',
+    'en-us': 'Shift',
+  },
+  keyboardShortcuts: {
+    'en-us': 'Keyboard Shortcuts',
+  },
+  pressKeys: { 'en-us': 'Press desired key combination...' },
+  noKeyAssigned: { 'en-us': 'No key binding assigned' },
+  openRelatedRecordInNewTab: {
+    'en-us': 'Open related record in new tab',
+  },
+  openFormMeta: {
+    'en-us': 'Open form meta',
+  },
+  actions: {
+    'en-us': 'Actions',
+  },
 } as const);
