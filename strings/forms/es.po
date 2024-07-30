@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-07-30 15:45+0000\n"
+"PO-Revision-Date: 2024-07-30 16:45+0000\n"
 "Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/forms/"
 "es/>\n"
@@ -272,63 +272,57 @@ msgstr "Comando no disponible"
 
 #. Used in: Components > Form Commands > Index
 #: components/FormCommands/index.tsx:124
-#, fuzzy
 msgid "commandUnavailableDescription"
 msgstr "Este comando no está disponible actualmente para Specify 7."
 
 #. Used in: Components > Form Commands > Index ⬤ Components > Form Plugins > Index
 #: components/FormCommands/index.tsx:126
 #: components/FormPlugins/index.tsx:205
-#, fuzzy
 msgid "commandUnavailableSecondDescription"
-msgstr "(eliminado)"
+msgstr ""
+"Probablemente se incluyó en este formulario desde Specify 6 y es posible que "
+"se admita en el futuro."
 
 #. Used in: Components > Form Commands > Index
 #: components/FormCommands/index.tsx:129
-#, fuzzy
 msgid "commandName"
 msgstr "Nombre del comando"
 
 #. Used in: Components > Form Plugins > Index
 #: components/FormPlugins/index.tsx:195
 #: components/FormPlugins/index.tsx:264
-#, fuzzy
 msgid "unavailablePluginButton"
-msgstr "Complemento N/A"
+msgstr "Complemento N/D"
 
 #. Used in: Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index
 #: components/FormPlugins/PaleoLocation.tsx:58
 #: components/FormPlugins/index.tsx:199
 #: components/FormPlugins/index.tsx:268
-#, fuzzy
 msgid "pluginNotAvailable"
 msgstr "Complemento no disponible"
 
 #. Used in: Components > Form Plugins > Index
 #: components/FormPlugins/index.tsx:203
-#, fuzzy
 msgid "pluginNotAvailableDescription"
 msgstr "Este complemento no está disponible actualmente para Specify 7"
 
 #. 🟥Example: ... Locality, Collecting Event or Collection Object forms. Used in: Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index
 #: components/FormPlugins/PaleoLocation.tsx:65
 #: components/FormPlugins/index.tsx:272
-#, fuzzy
 msgid "wrongTableForPlugin"
 msgstr ""
-"Este complemento no se puede utilizar en el formulario "
-"{currentTable:string}. Intente moverlo a los formularios "
-"{supportedTables:string}."
+"Este complemento no puede usarse en el formulario {currentTable:string}. "
+"Intenta moverlo a los formularios {supportedTables:string}."
 
 #. Used in: Components > Form Commands > Index
 #: components/FormCommands/index.tsx:151
-#, fuzzy
 msgid "wrongTableForCommand"
-msgstr "Número de catálogo numérico"
+msgstr ""
+"El comando no puede utilizarse en el formulario {currentTable:string}. Solo "
+"puede utilizarse en el formulario {correctTable:string}."
 
 #. Used in: Components > Form Plugins > Index
 #: components/FormPlugins/index.tsx:208
-#, fuzzy
 msgid "pluginName"
 msgstr "Nombre del complemento"
 
@@ -336,9 +330,8 @@ msgstr "Nombre del complemento"
 #: utils/parser/definitions.ts:110
 #: utils/parser/__tests__/definitions.test.ts:184
 #: utils/parser/__tests__/definitions.test.ts:186
-#, fuzzy
 msgid "illegalBool"
-msgstr "Valor ilegal para un campo Sí/No"
+msgstr "Valor no válido para un campo Sí/No"
 
 #. Used in: Utils > Parser > Parse ⬤ Parser > __tests__ > Parse
 #: utils/parser/parse.ts:33
@@ -346,9 +339,8 @@ msgstr "Valor ilegal para un campo Sí/No"
 #: utils/parser/__tests__/parse.test.ts:79
 #: utils/parser/__tests__/parse.test.ts:207
 #: utils/parser/__tests__/parse.test.ts:209
-#, fuzzy
 msgid "requiredField"
-msgstr "Se requiere campo."
+msgstr "Campo obligatorio"
 
 #. Used in: Parser > __tests__ > Definitions
 #: utils/parser/__tests__/definitions.test.ts:203
@@ -366,66 +358,56 @@ msgstr "Valor no válido"
 #: utils/parser/definitions.ts:368
 #: utils/parser/__tests__/definitions.test.ts:78
 #: utils/parser/__tests__/parse.test.ts:228
-#, fuzzy
 msgid "requiredFormat"
-msgstr "Formato requerido: {format:string}."
+msgstr "Formato obligatorio: {format:string}."
 
 #. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Parse
 #: utils/parser/definitions.ts:49
 #: utils/parser/__tests__/parse.test.ts:139
 #: utils/parser/__tests__/parse.test.ts:158
 #: utils/parser/__tests__/parse.test.ts:181
-#, fuzzy
 msgid "inputTypeNumber"
-msgstr "El valor debe ser un número."
+msgstr "El valor debe ser un número"
 
 #. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:27
-#, fuzzy
 msgid "organization"
 msgstr "Organización"
 
 #. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:28
-#, fuzzy
 msgid "person"
 msgstr "Persona"
 
 #. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:29
-#, fuzzy
 msgid "other"
 msgstr "Otro"
 
 #. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:30
-#, fuzzy
 msgid "group"
 msgstr "Grupo"
 
 #. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:34
-#, fuzzy
 msgid "userDefinedItems"
 msgstr "Elementos definidos por el usuario"
 
 #. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:35
-#, fuzzy
 msgid "entireTable"
-msgstr "Tabla entera"
+msgstr "Toda la tabla"
 
 #. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:36
-#, fuzzy
 msgid "fieldFromTable"
 msgstr "Campo de la tabla"
 
 #. Used in: Components > Form Cells > Index
 #: components/FormCells/index.tsx:315
-#, fuzzy
 msgid "unsupportedCellType"
-msgstr "Tipo de celda no compatible"
+msgstr "Celda no compatible"
 
 #. 🟥Represents truncated search dialog output (when lots of results returned). Used in: Components > Search Dialog > Index
 #: components/SearchDialog/index.tsx:253
