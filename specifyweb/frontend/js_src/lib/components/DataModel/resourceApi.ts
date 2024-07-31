@@ -755,7 +755,7 @@ export const ResourceBase = Backbone.Model.extend({
           return this;
         });
       if (options === undefined || options.strict)
-        return (this._fetch = fetchCallback);
+        return (this._fetch = fetchCallback());
       else
         return (this._fetch = hijackBackboneAjax(
           [Http.NOT_FOUND],
