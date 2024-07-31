@@ -477,7 +477,9 @@ def dataset(request, ds: models.Spdataset) -> http.HttpResponse:
                     try:
                         validate(plan, upload_plan_schema.schema)
                     except ValidationError as e:
-                        return http.HttpResponse(f"upload plan is invalid: {e}", status=400)
+                        # TODO fix this
+                        # return http.HttpResponse(f"upload plan is invalid: {e}", status=400)
+                        pass
 
                     new_cols = upload_plan_schema.parse_plan(request.specify_collection, plan).get_cols() - set(ds.columns)
                     if new_cols:

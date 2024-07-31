@@ -24,18 +24,18 @@ from .field_spec_maps import apply_specify_user_name
 from ..notifications.models import Message
 from ..permissions.permissions import check_table_permissions
 from ..specify.auditlog import auditlog
-from ..specify.models import Loan, Loanpreparation, Loanreturnpreparation
+from ..specify.models import Loan, Loanpreparation, Loanreturnpreparation, Taxontreedef
 
 logger = logging.getLogger(__name__)
 
 SORT_TYPES = [None, asc, desc]
 
-def set_group_concat_max_len(session):
+def set_group_concat_max_len(connection):
     """The default limit on MySQL group concat function is quite
     small. This function increases it for the database connection for
     the given session.
     """
-    session.connection().execute('SET group_concat_max_len = 1024 * 1024 * 1024')
+    connection.execute('SET group_concat_max_len = 1024 * 1024 * 1024')
 
 def filter_by_collection(model, query, collection):
     """Add predicates to the given query to filter result to items scoped
@@ -52,11 +52,13 @@ def filter_by_collection(model, query, collection):
 
     if model is models.Taxon:
         logger.info("filtering taxon to discipline: %s", collection.discipline.name)
-        return query
+        search_definitions = Taxontreedef.objects.filter(discipline=collection.discipline.id).values_list("id")
+        return query.filter(model.TaxonTreeDefID.in_(list(search_definitions)))
 
     if model is models.TaxonTreeDefItem:
         logger.info("filtering taxon rank to discipline: %s", collection.discipline.name)
-        return query.filter(model.TaxonTreeDefID == collection.discipline.taxontreedef_id)
+        search_definitions = Taxontreedef.objects.filter(discipline=collection.discipline.id).values_list("id")
+        return query.filter(model.TaxonTreeDefID.in_(list(search_definitions)))
 
     if model is models.Geography:
         logger.info("filtering geography to discipline: %s", collection.discipline.name)
@@ -190,7 +192,7 @@ def query_to_csv(session, collection, user, tableid, field_specs, path,
 
     See build_query for details of the other accepted arguments.
     """
-    set_group_concat_max_len(session)
+    set_group_concat_max_len(session.connection())
     query, __ = build_query(session, collection, user, tableid, field_specs, recordsetid, replace_nulls=True, distinct=distinct)
 
     logger.debug('query_to_csv starting')
@@ -227,7 +229,7 @@ def query_to_kml(session, collection, user, tableid, field_specs, path, captions
 
     See build_query for details of the other accepted arguments.
     """
-    set_group_concat_max_len(session)
+    set_group_concat_max_len(session.connection())
     query, __ = build_query(session, collection, user, tableid, field_specs, recordsetid, replace_nulls=True)
 
     logger.debug('query_to_kml starting')
@@ -529,7 +531,7 @@ def return_loan_preps(collection, user, agent, data):
 def execute(session, collection, user, tableid, distinct, count_only, field_specs, limit, offset, recordsetid=None, formatauditobjs=False):
     "Build and execute a query, returning the results as a data structure for json serialization"
 
-    set_group_concat_max_len(session)
+    set_group_concat_max_len(session.connection())
     query, order_by_exprs = build_query(session, collection, user, tableid, field_specs, recordsetid=recordsetid, formatauditobjs=formatauditobjs, distinct=distinct)
 
     if count_only:
@@ -640,5 +642,8 @@ def build_query(session, collection, user, tableid, field_specs,
     if distinct:
         query = group_by_displayed_fields(query, selected_fields)
 
-    logger.debug("query: %s", query.query)
+    internal_predicate = query.get_internal_filters()
+    query = query.filter(internal_predicate)
+
+    logger.warning("query: %s", query.query)
     return query.query, order_by_exprs
