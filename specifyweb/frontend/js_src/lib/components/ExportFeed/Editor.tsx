@@ -242,7 +242,6 @@ function FeedExportItem({
         <Label.Block>
           {resourcesText.runAsUser()}
           <UserPicker
-            type="userId"
             id={[
               item.userId,
               (userId): void =>
@@ -252,12 +251,12 @@ function FeedExportItem({
                 }),
             ]}
             isRequired
+            type="userId"
           />
         </Label.Block>
         <Label.Block>
           {resourcesText.notifyUser()}
           <UserPicker
-            type="notifyUserId"
             id={[
               item.notifyUserId,
               (notifyUserId): void =>
@@ -267,6 +266,7 @@ function FeedExportItem({
                 }),
             ]}
             isRequired={false}
+            type="notifyUserId"
           />
         </Label.Block>
         <Label.Block>
@@ -363,7 +363,7 @@ function UserPicker({
   id: [id, setId],
   isRequired,
 }: {
-  readonly type: 'userId' | 'notifyUserId';
+  readonly type: 'notifyUserId' | 'userId';
   readonly id: GetSet<number | undefined>;
   readonly isRequired: boolean;
 }): JSX.Element {

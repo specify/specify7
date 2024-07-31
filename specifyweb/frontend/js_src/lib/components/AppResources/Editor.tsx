@@ -16,7 +16,7 @@ import { icons } from '../Atoms/Icons';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { toResource, toTable } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { SpecifyResource } from '../DataModel/legacyTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { createResource } from '../DataModel/resource';
 import {
   deserializeResource,
