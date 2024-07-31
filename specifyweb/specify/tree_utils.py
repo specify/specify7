@@ -2,6 +2,8 @@ from typing import Tuple, List
 from django.db.models import Q, Count, Model
 import specifyweb.specify.models as spmodels
 
+lookup = lambda tree: (tree.lower() + 'def')
+
 def get_search_filters(collection: spmodels.Collection, tree: str):
     tree_name = tree.lower()
     if tree_name == 'storage':
@@ -12,6 +14,9 @@ def get_search_filters(collection: spmodels.Collection, tree: str):
             # TEST: should this only be added if discipline is null?
             cotypes__collection=collection
             )
+    tree_at_discipline = getattr(collection.discipline, lookup(tree))
+    if tree_at_discipline:
+        discipline_query |= Q(id=tree_at_discipline.id)
     return discipline_query
 
 def get_treedef(collection: spmodels.Collection, tree_name: str) ->  List[Tuple[int, int, int]]:
@@ -22,7 +27,7 @@ def get_treedef(collection: spmodels.Collection, tree_name: str) ->  List[Tuple[
     _limit = lambda query: (query if tree_name.lower() == 'taxon' else query[:1])
     search_filters = get_search_filters(collection, tree_name)
 
-    lookup_tree = tree_name + 'treedef'
+    lookup_tree = lookup(tree_name)
     tree_model: Model = getattr(spmodels, lookup_tree)
 
     # Get all the treedefids, and the count of item in each, corresponding to our search predicates
