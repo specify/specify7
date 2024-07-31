@@ -754,13 +754,10 @@ export const ResourceBase = Backbone.Model.extend({
           // BUG: consider doing this.needsSaved=false here
           return this;
         });
-      if (options === undefined || options.strict)
-        return (this._fetch = fetchCallback());
-      else
-        return (this._fetch = hijackBackboneAjax(
-          [Http.NOT_FOUND],
-          fetchCallback
-        ));
+      return (this._fetch =
+        options === undefined || options.strict
+          ? fetchCallback()
+          : hijackBackboneAjax([Http.NOT_FOUND], fetchCallback));
     }
   },
   parse(_resp) {
