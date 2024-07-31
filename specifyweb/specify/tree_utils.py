@@ -2,7 +2,7 @@ from typing import Tuple, List
 from django.db.models import Q, Count, Model
 import specifyweb.specify.models as spmodels
 
-lookup = lambda tree: (tree.lower() + 'def')
+lookup = lambda tree: (tree.lower() + 'treedef')
 
 def get_search_filters(collection: spmodels.Collection, tree: str):
     tree_name = tree.lower()
