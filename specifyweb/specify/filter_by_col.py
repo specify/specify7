@@ -5,8 +5,6 @@ Modules for filtering resources by the collection logged in
 from django.core.exceptions import FieldError
 from django.db.models import Q
 
-from specifyweb.specify.tree_utils import get_taxon_treedefs
-
 from .scoping import ScopeType
 from .models import Geography, Geologictimeperiod, Lithostrat, Taxon, Storage, \
     Attachment
@@ -30,8 +28,7 @@ def filter_by_collection(queryset, collection, strict=True):
         return queryset.filter(definition__disciplines=collection.discipline)
 
     if queryset.model is Taxon:
-        taxon_tree_defs = get_taxon_treedefs(collection)
-        return queryset.filter(definition_id_in=taxon_tree_defs)
+        return queryset.filter(definition__discipline=collection.discipline)
 
     if queryset.model is Storage:
         return queryset.filter(definition__institutions=collection.discipline.division.institution.id)

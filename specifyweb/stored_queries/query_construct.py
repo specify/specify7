@@ -5,7 +5,7 @@ from typing import Tuple, List
 from sqlalchemy import orm, sql
 
 import specifyweb.specify.models as spmodels
-from specifyweb.specify.tree_utils import get_treedef
+from specifyweb.specify.tree_utils import get_treedefs
 
 from specifyweb.stored_queries import models
 
@@ -43,7 +43,7 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
             ancestors, treedefs = query.join_cache[(table, 'TreeRanks')]
         else:
             
-            treedefs = get_treedef(query.collection, table.name)
+            treedefs = get_treedefs(query.collection, table.name)
 
             # We need to take the max here. Otherwise, it is possible that the same rank
             # name may not occur at the same level across tree defs.

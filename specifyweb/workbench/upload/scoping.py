@@ -3,7 +3,6 @@ from typing import Dict, Any, Optional, Tuple, Callable, Union
 from specifyweb.specify.datamodel import datamodel, Table, Relationship
 from specifyweb.specify.load_datamodel import DoesNotExistError
 from specifyweb.specify import models
-from specifyweb.specify.tree_utils import get_taxon_treedef
 from specifyweb.specify.uiformatters import get_uiformatter
 from specifyweb.stored_queries.format import get_date_format
 

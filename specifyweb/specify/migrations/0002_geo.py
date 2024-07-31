@@ -2,7 +2,6 @@
 
 from django.db import migrations, models
 import django.utils.timezone
-from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify.models import (
     protect_with_blockers,
     Collectionobject,
@@ -12,8 +11,8 @@ from specifyweb.specify.models import (
     Institution,
     Picklist,
     Picklistitem,
+    Taxontreedef
 )
-from specifyweb.specify.tree_utils import get_all_taxon_treedefs
 from specifyweb.specify.update_schema_config import (
     update_table_schema_config_with_defaults,
     revert_table_schema_config,
@@ -150,7 +149,7 @@ def revert_default_collection_object_types():
             cog_type_picklist.delete()
 
 def set_discipline_for_taxon_treedefs():
-    for treedef in get_all_taxon_treedefs():
+    for treedef in Taxontreedef.objects.all():
         if treedef.discipline:
             continue
         cot = CollectionObjectType.objects.filter(taxontreedef=treedef).first()
@@ -159,7 +158,7 @@ def set_discipline_for_taxon_treedefs():
             treedef.save()
 
 def revert_discipline_for_taxon_treedefs():
-    for treedef in get_all_taxon_treedefs():
+    for treedef in Taxontreedef.objects.all():
         treedef.discipline = None
         treedef.save()
 
