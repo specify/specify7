@@ -14,7 +14,7 @@ from sqlalchemy import sql, orm, func, select
 from sqlalchemy.sql.expression import asc, desc, insert, literal
 
 from specifyweb.stored_queries.group_concat import group_by_displayed_fields
-from specifyweb.specify.tree_utils import get_treedefs
+from specifyweb.specify.tree_utils import get_search_filters
 
 from . import models
 from .format import ObjectFormatter
@@ -25,7 +25,7 @@ from .field_spec_maps import apply_specify_user_name
 from ..notifications.models import Message
 from ..permissions.permissions import check_table_permissions
 from ..specify.auditlog import auditlog
-from ..specify.models import Loan, Loanpreparation, Loanreturnpreparation
+from ..specify.models import Loan, Loanpreparation, Loanreturnpreparation, Taxontreedef
 
 logger = logging.getLogger(__name__)
 
@@ -53,13 +53,13 @@ def filter_by_collection(model, query, collection):
 
     if model is models.Taxon:
         logger.info("filtering taxon to discipline: %s", collection.discipline.name)
-        tree_def_ids = [treedef[0] for treedef in get_treedefs(collection, 'taxon')]
-        return query.filter(model.TaxonTreeDefID.in_(tree_def_ids))
+        treedef_ids = Taxontreedef.objects.filter(get_search_filters(collection, 'taxon')).values_list('id', flat=True)
+        return query.filter(model.TaxonTreeDefID.in_(tuple(treedef_ids)))
 
     if model is models.TaxonTreeDefItem:
         logger.info("filtering taxon rank to discipline: %s", collection.discipline.name)
-        tree_def_ids = [treedef[0] for treedef in get_treedefs(collection, 'taxon')]
-        return query.filter(model.TaxonTreeDefID.in_(tree_def_ids))
+        treedef_ids = Taxontreedef.objects.filter(get_search_filters(collection, 'taxon')).values_list('id', flat=True)
+        return query.filter(model.TaxonTreeDefID.in_(tuple(treedef_ids)))
 
     if model is models.Geography:
         logger.info("filtering geography to discipline: %s", collection.discipline.name)
