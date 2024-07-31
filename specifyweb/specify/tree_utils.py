@@ -46,3 +46,13 @@ def get_treedefs(collection: spmodels.Collection, tree_name: str) ->  List[Tuple
 
     return result
 
+def scoped_treedef_ids(collection, tree_name: str) -> List[int]: 
+    treedef_name = datamodel.get_table_strict(lookup(tree_name)).django_name
+    treedef_model: Model = getattr(spmodels, treedef_name)
+
+    if tree_name.lower() == 'storage': 
+        query = spmodels.Storage.objects.filter(institution=collection.discipline.division.institution) 
+    else:
+        query = treedef_model.objects.filter(discipline=collection.discipline)
+
+    return list(query.values_list("id", flat=True))
