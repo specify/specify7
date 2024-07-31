@@ -11,6 +11,7 @@ import { f } from '../../utils/functools';
 import type { GetSet } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { removeItem, replaceItem } from '../../utils/utils';
+import { AppResourceContext } from '../AppResources/Editor';
 import type { AppResources } from '../AppResources/hooks';
 import { useAppResources } from '../AppResources/hooks';
 import { Ul } from '../Atoms';
@@ -241,6 +242,7 @@ function FeedExportItem({
         <Label.Block>
           {resourcesText.runAsUser()}
           <UserPicker
+            type="userId"
             id={[
               item.userId,
               (userId): void =>
@@ -255,6 +257,7 @@ function FeedExportItem({
         <Label.Block>
           {resourcesText.notifyUser()}
           <UserPicker
+            type="notifyUserId"
             id={[
               item.notifyUserId,
               (notifyUserId): void =>
@@ -356,16 +359,26 @@ const specifyUserTypeSearch = f.store<TypeSearch>(() => ({
 }));
 
 function UserPicker({
+  type,
   id: [id, setId],
   isRequired,
 }: {
+  readonly type: 'userId' | 'notifyUserId';
   readonly id: GetSet<number | undefined>;
   readonly isRequired: boolean;
 }): JSX.Element {
   const resource = React.useMemo(() => new tables.Agent.Resource(), []);
   const field = getField(tables.Agent, 'specifyUser');
 
+  const appResource = React.useContext(AppResourceContext);
+
+  // Form field blocker
   const [_, setBlockers] = useSaveBlockers(resource, field);
+  // Need to set a blocker on app resource to disable the save button
+  const [__, setAppResourceBlocker] = useSaveBlockers(
+    appResource,
+    getField(tables.SpAppResource, 'specifyUser')
+  );
 
   React.useEffect(() => {
     void resource.set(
@@ -381,12 +394,25 @@ function UserPicker({
           'specifyUser',
           res === undefined ? null : getResourceApiUrl('SpecifyUser', id)
         );
-      if (res === undefined)
+      if (res === undefined) {
         setBlockers(
           [formsText.invalidValue()],
-          getFieldBlockerKey(field, 'invalidSpecifyUser')
+          getFieldBlockerKey(field, `invalidSpecifyUser-${type}`)
         );
-      else setBlockers([], getFieldBlockerKey(field, 'invalidSpecifyUser'));
+        setAppResourceBlocker(
+          [formsText.invalidValue()],
+          getFieldBlockerKey(field, `invalidSpecifyUser-${type}`)
+        );
+      } else {
+        setBlockers(
+          [],
+          getFieldBlockerKey(field, `invalidSpecifyUser-${type}`)
+        );
+        setAppResourceBlocker(
+          [],
+          getFieldBlockerKey(field, `invalidSpecifyUser-${type}`)
+        );
+      }
     });
     let destructorCalled = false;
     return (): void => {
