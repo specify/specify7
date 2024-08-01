@@ -2,6 +2,7 @@ import { act, renderHook } from '@testing-library/react';
 
 import { overrideAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
+import { f } from '../../../utils/functools';
 import { overwriteReadOnly } from '../../../utils/types';
 import { getPref } from '../../InitialContext/remotePrefs';
 import type { SerializedResource } from '../helperTypes';
@@ -10,6 +11,7 @@ import { useSaveBlockers } from '../saveBlockers';
 import { schema } from '../schema';
 import { tables } from '../tables';
 import type {
+  CollectionObject,
   CollectionObjectType,
   Determination,
   Taxon,
@@ -132,6 +134,52 @@ describe('Collection Object business rules', () => {
     expect(result.current[0]).toStrictEqual([
       'Taxon does not belong to the same tree as this Object Type',
     ]);
+  });
+
+  const otherCollectionObjectTypeUrl = getResourceApiUrl(
+    'CollectionObjectType',
+    2
+  );
+  const otherCollectionObjectType: Partial<
+    SerializedResource<CollectionObjectType>
+  > = {
+    id: 2,
+    name: 'Fossil',
+    taxonTreeDef: getResourceApiUrl('Taxon', 2),
+    resource_uri: otherCollectionObjectTypeUrl,
+  };
+  overrideAjax(otherCollectionObjectTypeUrl, otherCollectionObjectType);
+
+  test('CollectionObject determinations clear when CollectionObjectType changes', async () => {
+    const collectionObject = getBaseCollectionObject();
+    collectionObject.set('collectionObjectType', otherCollectionObjectTypeUrl);
+
+    const determinations =
+      collectionObject.getDependentResource('determinations');
+
+    expect(determinations?.models.length).toBe(0);
+  });
+
+  test('CollectionObject simple fields clear when CollectionObjectType changes', async () => {
+    const collectionObject = getBaseCollectionObject();
+    collectionObject.set('collectionObjectType', otherCollectionObjectTypeUrl);
+
+    const fieldsToIgnore = [
+      'cataloger',
+      'catalogNumber',
+      'collection',
+      'collectionObjectType',
+      'version',
+    ];
+
+    collectionObject.specifyTable.fields
+      .filter((field) => !f.includes(fieldsToIgnore, field.name))
+      .filter((field) => !field.isRelationship)
+      .forEach((field) => {
+        const fieldName = field.name as keyof CollectionObject['fields'];
+        
+        expect(collectionObject.get(fieldName)).toBe(undefined);
+      });
   });
 });
 
