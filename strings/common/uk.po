@@ -79,7 +79,7 @@ msgstr "Немає"
 #: components/Toolbar/Query.tsx:210
 #: components/Toolbar/RecordSets.tsx:176
 #: components/Toolbar/RecordSets.tsx:215
-#: components/Toolbar/TreeRepair.tsx:73
+#: components/Toolbar/TreeRepair.tsx:91
 #: components/Toolbar/WbsDialog.tsx:180
 #: components/TreeView/Actions.tsx:398
 #: components/TreeView/Actions.tsx:414
@@ -197,8 +197,8 @@ msgstr "Створити"
 #: components/Forms/DeleteButton.tsx:161
 #: components/Forms/ResourceView.tsx:212
 #: components/Forms/ResourceView.tsx:350
-#: components/Forms/Save.tsx:336
-#: components/Forms/Save.tsx:371
+#: components/Forms/Save.tsx:337
+#: components/Forms/Save.tsx:372
 #: components/Header/UserTools.tsx:75
 #: components/HomePage/AboutSpecify.tsx:60
 #: components/Interactions/InteractionDialog.tsx:237
@@ -255,7 +255,7 @@ msgstr "Створити"
 #: components/Toolbar/MasterKey.tsx:97
 #: components/Toolbar/QueryTablesEdit.tsx:81
 #: components/Toolbar/QueryTablesWrapper.tsx:155
-#: components/Toolbar/TreeRepair.tsx:73
+#: components/Toolbar/TreeRepair.tsx:91
 #: components/TreeView/Actions.tsx:402
 #: components/WbActions/WbNoUploadPlan.tsx:42
 #: components/WbActions/index.tsx:199
@@ -332,7 +332,7 @@ msgstr "зберегти"
 #: components/ExportFeed/Editor.tsx:133
 #: components/FormSliders/RecordSelectorFromIds.tsx:178
 #: components/Formatters/List.tsx:138
-#: components/Forms/Save.tsx:314
+#: components/Forms/Save.tsx:315
 #: components/Merging/CompareSubView.tsx:184
 #: components/Molecules/AutoComplete.tsx:525
 #: components/PickLists/index.tsx:280
@@ -348,7 +348,7 @@ msgstr "зберегти"
 #: components/Statistics/StatsPageEditing.tsx:47
 #: components/Statistics/index.tsx:636
 #: components/Toolbar/ListEdit.tsx:145
-#: components/WbPlanView/navigator.ts:308
+#: components/WbPlanView/navigator.ts:306
 #: components/WebLinks/Definition.tsx:117
 #: components/WebLinks/List.tsx:53
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Export Feed > Editor ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Formatters > List ⬤ Components > Forms > Save ⬤ Components > Merging > Compare Sub View ⬤ Components > Molecules > Auto Complete ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Wrapped ⬤ Components > Schema Config > Format ⬤ Components > Schema Config > Languages ⬤ Components > Schema Config > Table ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Security > Collection Role ⬤ Components > Security > Policies ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Index ⬤ Components > Toolbar > List Edit ⬤ Components > Wb Plan View > Navigator ⬤ Components > Web Links > Definition ⬤ Components > Web Links > List
@@ -623,7 +623,7 @@ msgid "update"
 msgstr "оновлення"
 
 #: components/FormPlugins/DatePrecisionPicker.tsx:46
-#: components/WbPlanView/navigator.ts:551
+#: components/WbPlanView/navigator.ts:553
 #. Used in: Components > Form Plugins > Date Precision Picker ⬤ Components > Wb Plan View > Navigator
 #, fuzzy
 msgid "fullDate"
@@ -864,7 +864,7 @@ msgstr "Відхилити"
 
 #: components/DataModel/specifyTable.ts:262
 #: components/ExportFeed/Editor.tsx:190
-#: components/WbPlanView/navigator.ts:442
+#: components/WbPlanView/navigator.ts:444
 #. Used in: Components > Data Model > Specify Table ⬤ Components > Export Feed > Editor ⬤ Components > Wb Plan View > Navigator
 #, fuzzy
 msgid "id"
@@ -941,7 +941,7 @@ msgid "collapse"
 msgstr "Згорнути"
 
 #: components/AppResources/Aside.tsx:189
-#: components/TreeView/index.tsx:238
+#: components/TreeView/index.tsx:288
 #. Used in: Components > App Resources > Aside ⬤ Components > Tree View > Index
 #, fuzzy
 msgid "collapseAll"
@@ -1032,7 +1032,7 @@ msgstr "{header:string}:"
 #: components/Formatters/Element.tsx:92
 #: components/Formatters/Formatter.tsx:126
 #: components/Forms/BaseResourceView.tsx:132
-#: components/Forms/Save.tsx:377
+#: components/Forms/Save.tsx:378
 #: components/Leaflet/index.ts:171
 #: components/LocalityUpdate/Status.tsx:519
 #: components/LocalityUpdate/utils.ts:64

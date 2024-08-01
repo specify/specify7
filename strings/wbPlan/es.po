@@ -58,29 +58,29 @@ msgstr "Mapeado"
 msgid "matchBehavior"
 msgstr "Coincidir en comportamiento:"
 
-#: components/WbPlanView/LineComponents.tsx:172
+#: components/WbPlanView/LineComponents.tsx:173
 #. Used in: Components > Wb Plan View > Line Components
 msgid "columnMapping"
 msgstr "Asignación/Mapeo de columnas"
 
-#: components/WbPlanView/CustomSelectElement.tsx:890
-#: components/WbPlanView/LineComponents.tsx:210
+#: components/WbPlanView/CustomSelectElement.tsx:888
+#: components/WbPlanView/LineComponents.tsx:211
 #. Used in: Components > Wb Plan View > Custom Select Element ⬤ Components > Wb Plan View > Line Components
 msgid "suggestedMappings"
 msgstr "Sugerencia de asignaciones/mapeos:"
 
-#: components/WbPlanView/LineComponents.tsx:211
+#: components/WbPlanView/LineComponents.tsx:212
 #. Used in: Components > Wb Plan View > Line Components
 msgid "requiredFields"
 msgstr "Campos requeridos"
 
-#: components/WbPlanView/LineComponents.tsx:212
+#: components/WbPlanView/LineComponents.tsx:213
 #. Used in: Components > Wb Plan View > Line Components
 msgid "optionalFields"
 msgstr "Campos Opcionales"
 
 #: components/QueryBuilder/Import.tsx:155
-#: components/WbPlanView/LineComponents.tsx:213
+#: components/WbPlanView/LineComponents.tsx:214
 #. Used in: Components > Query Builder > Import ⬤ Components > Wb Plan View > Line Components
 msgid "hiddenFields"
 msgstr "Campos Ocultos"
@@ -260,8 +260,8 @@ msgstr ""
 "de campo de columna a datos y borrará las asignaciones existentes. El "
 "AutoMapper intentará asignar columnas a los nuevos campos de la tabla base."
 
-#: components/WbPlanView/LineComponents.tsx:152
-#: components/WbPlanView/LineComponents.tsx:155
+#: components/WbPlanView/LineComponents.tsx:153
+#: components/WbPlanView/LineComponents.tsx:156
 #. Used in: Components > Wb Plan View > Line Components
 msgid "clearMapping"
 msgstr "Borrar Asignacione"

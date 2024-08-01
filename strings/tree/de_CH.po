@@ -14,12 +14,12 @@ msgstr ""
 
 #: components/Header/menuItemDefinitions.ts:53
 #: components/Router/OverlayRoutes.tsx:78
-#: components/Toolbar/TreeRepair.tsx:43
+#: components/Toolbar/TreeRepair.tsx:42
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
 msgid "trees"
 msgstr "Hierarchien"
 
-#: components/DataModel/treeBusinessRules.ts:66
+#: components/DataModel/treeBusinessRules.ts:68
 #. Used in: Components > Data Model > Tree Business Rules
 msgid "badStructure"
 msgstr "Fehlerhafte Baumstruktur."
@@ -210,14 +210,14 @@ msgstr "Bevorzugt: {name:string}"
 msgid "synonyms"
 msgstr "Elemente verschieben"
 
-#: components/TreeView/index.tsx:123
+#: components/TreeView/index.tsx:150
 #. Used in: Components > Tree View > Index
 msgid "treeViewTitle"
 msgstr "{treeName:string} Baum"
 
-#: components/TreeView/Search.tsx:68
-#: components/TreeView/Search.tsx:69
 #: components/TreeView/Search.tsx:70
+#: components/TreeView/Search.tsx:71
+#: components/TreeView/Search.tsx:72
 #. Used in: Components > Tree View > Search
 msgid "searchTreePlaceholder"
 msgstr "Baum durchsuchen"
@@ -257,7 +257,7 @@ msgstr "Direkte {collectionObjectTable:string} Anzahl"
 msgid "indirectCollectionObjectCount"
 msgstr "Indirekte {collectionObjectTable:string} Anzahl"
 
-#: components/TreeView/Tree.tsx:160
+#: components/TreeView/Tree.tsx:163
 #. Used in: Components > Tree View > Tree
 msgid "editRanks"
 msgstr "Positionen bearbeiten"
@@ -267,28 +267,28 @@ msgstr "Positionen bearbeiten"
 msgid "resourceToDelete"
 msgstr "Dadurch wird die folgende Ressource dauerhaft gelöscht"
 
-#: components/TreeView/index.tsx:323
+#: components/TreeView/index.tsx:374
 #. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "associatedNodesOnly"
 msgstr "Nur Knoten mit verknüpften Objekten anzeigen"
 
-#: components/TreeView/index.tsx:255
+#: components/TreeView/index.tsx:306
 #. Used in: Components > Tree View > Index
 msgid "splitView"
 msgstr "Geteilte Sicht"
 
-#: components/TreeView/index.tsx:261
+#: components/TreeView/index.tsx:312
 #. Used in: Components > Tree View > Index
 msgid "horizontal"
 msgstr "Horizontal"
 
-#: components/TreeView/index.tsx:261
+#: components/TreeView/index.tsx:312
 #. Used in: Components > Tree View > Index
 msgid "vertical"
 msgstr "Vertikal"
 
-#: components/TreeView/index.tsx:270
+#: components/TreeView/index.tsx:321
 #. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "synchronize"
@@ -315,3 +315,9 @@ msgstr "Übergeordneten Rang auswählen"
 #, fuzzy
 msgid "moveItems"
 msgstr "Elemente verschieben"
+
+#: components/TreeView/index.tsx:262
+#: components/TreeView/index.tsx:264
+#. Used in: Components > Tree View > Index
+msgid "treePicker"
+msgstr ""

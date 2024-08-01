@@ -46,29 +46,29 @@ msgstr "Mapped"
 msgid "matchBehavior"
 msgstr "Match Behavior:"
 
-#: components/WbPlanView/LineComponents.tsx:172
+#: components/WbPlanView/LineComponents.tsx:173
 #. Used in: Components > Wb Plan View > Line Components
 msgid "columnMapping"
 msgstr "Column Mapping"
 
-#: components/WbPlanView/CustomSelectElement.tsx:890
-#: components/WbPlanView/LineComponents.tsx:210
+#: components/WbPlanView/CustomSelectElement.tsx:888
+#: components/WbPlanView/LineComponents.tsx:211
 #. Used in: Components > Wb Plan View > Custom Select Element ⬤ Components > Wb Plan View > Line Components
 msgid "suggestedMappings"
 msgstr "Suggested Mappings:"
 
-#: components/WbPlanView/LineComponents.tsx:211
+#: components/WbPlanView/LineComponents.tsx:212
 #. Used in: Components > Wb Plan View > Line Components
 msgid "requiredFields"
 msgstr "Required Fields"
 
-#: components/WbPlanView/LineComponents.tsx:212
+#: components/WbPlanView/LineComponents.tsx:213
 #. Used in: Components > Wb Plan View > Line Components
 msgid "optionalFields"
 msgstr "Optional Fields"
 
 #: components/QueryBuilder/Import.tsx:155
-#: components/WbPlanView/LineComponents.tsx:213
+#: components/WbPlanView/LineComponents.tsx:214
 #. Used in: Components > Query Builder > Import ⬤ Components > Wb Plan View > Line Components
 msgid "hiddenFields"
 msgstr "Hidden Fields"
@@ -245,8 +245,8 @@ msgstr ""
 "existing mappings. The AutoMapper will attempt to map columns to the new "
 "Base Table fields."
 
-#: components/WbPlanView/LineComponents.tsx:152
-#: components/WbPlanView/LineComponents.tsx:155
+#: components/WbPlanView/LineComponents.tsx:153
+#: components/WbPlanView/LineComponents.tsx:156
 #. Used in: Components > Wb Plan View > Line Components
 msgid "clearMapping"
 msgstr "Clear Mapping"
