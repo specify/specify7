@@ -537,4 +537,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Переместить предметы',
     'uk-ua': 'Переміщення елементів',
   },
+  treePicker: {
+    'en-us': 'Tree Picker',
+  },
 } as const);
