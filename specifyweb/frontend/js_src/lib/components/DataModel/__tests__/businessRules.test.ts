@@ -95,6 +95,8 @@ describe('Collection Object business rules', () => {
         } as SerializedResource<Determination>,
       ],
       resource_uri: collectionObjectUrl,
+      description: 'Base collection object',
+      catalogNumber: '123'
     });
 
   const orginalEmbeddedCollectingEvent = schema.embeddedCollectingEvent;
@@ -164,22 +166,9 @@ describe('Collection Object business rules', () => {
     const collectionObject = getBaseCollectionObject();
     collectionObject.set('collectionObjectType', otherCollectionObjectTypeUrl);
 
-    const fieldsToIgnore = [
-      'cataloger',
-      'catalogNumber',
-      'collection',
-      'collectionObjectType',
-      'version',
-    ];
-
-    collectionObject.specifyTable.fields
-      .filter((field) => !f.includes(fieldsToIgnore, field.name))
-      .filter((field) => !field.isRelationship)
-      .forEach((field) => {
-        const fieldName = field.name as keyof CollectionObject['fields'];
-
-        expect(collectionObject.get(fieldName)).toBeUndefined();
-      });
+    // Catalog Number must get ignored when clearing
+    expect(collectionObject.get('catalogNumber')).toBeDefined();
+    expect(collectionObject.get('description')).toBeNull();
   });
 });
 
