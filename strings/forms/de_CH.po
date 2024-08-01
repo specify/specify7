@@ -810,7 +810,7 @@ msgstr "(Bereich: {from:string} – {to:string})"
 msgid "catalogNumberNumericFormatter"
 msgstr "Katalognummer Numerisch"
 
-#: components/DataModel/businessRuleDefs.ts:199
+#: components/DataModel/businessRuleDefs.ts:239
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "invalidTree"
 msgstr ""
