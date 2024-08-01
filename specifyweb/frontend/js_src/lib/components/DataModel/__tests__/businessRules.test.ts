@@ -93,6 +93,8 @@ describe('Collection Object business rules', () => {
         } as SerializedResource<Determination>,
       ],
       resource_uri: collectionObjectUrl,
+      description: 'Base collection object',
+      catalogNumber: '123',
     });
 
   const orginalEmbeddedCollectingEvent = schema.embeddedCollectingEvent;
@@ -132,6 +134,39 @@ describe('Collection Object business rules', () => {
     expect(result.current[0]).toStrictEqual([
       'Taxon does not belong to the same tree as this Object Type',
     ]);
+  });
+
+  const otherCollectionObjectTypeUrl = getResourceApiUrl(
+    'CollectionObjectType',
+    2
+  );
+  const otherCollectionObjectType: Partial<
+    SerializedResource<CollectionObjectType>
+  > = {
+    id: 2,
+    name: 'Fossil',
+    taxonTreeDef: getResourceApiUrl('Taxon', 2),
+    resource_uri: otherCollectionObjectTypeUrl,
+  };
+  overrideAjax(otherCollectionObjectTypeUrl, otherCollectionObjectType);
+
+  test('CollectionObject determinations clear when CollectionObjectType changes', async () => {
+    const collectionObject = getBaseCollectionObject();
+    collectionObject.set('collectionObjectType', otherCollectionObjectTypeUrl);
+
+    const determinations =
+      collectionObject.getDependentResource('determinations');
+
+    expect(determinations?.models.length).toBe(0);
+  });
+
+  test('CollectionObject simple fields clear when CollectionObjectType changes', async () => {
+    const collectionObject = getBaseCollectionObject();
+    collectionObject.set('collectionObjectType', otherCollectionObjectTypeUrl);
+
+    // Catalog Number must get ignored when clearing
+    expect(collectionObject.get('catalogNumber')).toBeDefined();
+    expect(collectionObject.get('description')).toBeNull();
   });
 });
 

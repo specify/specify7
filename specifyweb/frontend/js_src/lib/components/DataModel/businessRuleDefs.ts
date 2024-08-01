@@ -1,5 +1,7 @@
 import { formsText } from '../../localization/forms';
 import { resourcesText } from '../../localization/resources';
+import { f } from '../../utils/functools';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import type { BusinessRuleResult } from './businessRules';
 import type { AnySchema, TableFields } from './helperTypes';
 import {
@@ -149,6 +151,44 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           new tables.CollectingEvent.Resource()
         );
       }
+    },
+    fieldChecks: {
+      collectionObjectType: (resource) => {
+        // Fields ignored for better UX/backend restrictions
+        const fieldsToIgnore = [
+          'cataloger',
+          'catalogNumber',
+          'collection',
+          'collectionObjectType',
+          'version',
+        ];
+
+        // Clear all fields of CO except to-many dependents
+        resource.specifyTable.fields
+          .filter((field) => !f.includes(fieldsToIgnore, field.name))
+          .map((field) => {
+            const fieldName = field.name as keyof (CollectionObject['fields'] &
+              CollectionObject['toManyDependent'] &
+              CollectionObject['toManyIndependent'] &
+              CollectionObject['toOneDependent'] &
+              CollectionObject['toOneIndependent']);
+            if (
+              !field.isRelationship ||
+              !relationshipIsToMany(field) ||
+              !field.isDependent()
+            )
+              resource.set(fieldName, null);
+          });
+
+        // Delete all determinations
+        const determinations = resource.getDependentResource('determinations');
+        while (
+          determinations !== undefined &&
+          determinations.models.length > 0
+        ) {
+          determinations.remove(determinations.models[0]);
+        }
+      },
     },
   },
 
