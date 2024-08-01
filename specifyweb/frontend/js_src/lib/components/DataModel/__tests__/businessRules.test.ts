@@ -2,7 +2,6 @@ import { act, renderHook } from '@testing-library/react';
 
 import { overrideAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
-import { f } from '../../../utils/functools';
 import { overwriteReadOnly } from '../../../utils/types';
 import { getPref } from '../../InitialContext/remotePrefs';
 import type { SerializedResource } from '../helperTypes';
@@ -11,7 +10,6 @@ import { useSaveBlockers } from '../saveBlockers';
 import { schema } from '../schema';
 import { tables } from '../tables';
 import type {
-  CollectionObject,
   CollectionObjectType,
   Determination,
   Taxon,
