@@ -2799,7 +2799,7 @@ class Determiner(models.Model):
     
     save = partialmethod(custom_save)
 
-class Discipline(models.Model):
+class Discipline(model_extras.Discipline):
     specify_model = datamodel.get_table('discipline')
 
     # ID Field
