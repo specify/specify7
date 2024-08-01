@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 
 import { overrideAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
@@ -9,7 +9,12 @@ import { getResourceApiUrl } from '../resource';
 import { useSaveBlockers } from '../saveBlockers';
 import { schema } from '../schema';
 import { tables } from '../tables';
-import type { Taxon, TaxonTreeDefItem } from '../types';
+import type {
+  CollectionObjectType,
+  Determination,
+  Taxon,
+  TaxonTreeDefItem,
+} from '../types';
 
 mockTime();
 requireContext();
@@ -49,6 +54,28 @@ describe('Borrow Material business rules', () => {
 });
 
 describe('Collection Object business rules', () => {
+  const collectionObjectTypeUrl = getResourceApiUrl('CollectionObjectType', 1);
+  const collectionObjectType: Partial<
+    SerializedResource<CollectionObjectType>
+  > = {
+    id: 1,
+    name: 'Entomology',
+    taxonTreeDef: getResourceApiUrl('Taxon', 1),
+    resource_uri: collectionObjectTypeUrl,
+  };
+  overrideAjax(collectionObjectTypeUrl, collectionObjectType);
+
+  const otherTaxonId = 1;
+  const otherTaxon: Partial<SerializedResource<Taxon>> = {
+    id: otherTaxonId,
+    isAccepted: true,
+    rankId: 10,
+    definition: getResourceApiUrl('TaxonTreeDef', 2),
+    resource_uri: getResourceApiUrl('Taxon', otherTaxonId),
+  };
+
+  overrideAjax(getResourceApiUrl('Taxon', otherTaxonId), otherTaxon);
+
   const collectionObjectlId = 2;
   const collectionObjectUrl = getResourceApiUrl(
     'CollectionObject',
@@ -58,6 +85,13 @@ describe('Collection Object business rules', () => {
   const getBaseCollectionObject = () =>
     new tables.CollectionObject.Resource({
       id: collectionObjectlId,
+      collectionobjecttype: collectionObjectTypeUrl,
+      determinations: [
+        {
+          taxon: getResourceApiUrl('Taxon', otherTaxonId),
+          preferredTaxon: getResourceApiUrl('Taxon', otherTaxonId),
+        } as SerializedResource<Determination>,
+      ],
       resource_uri: collectionObjectUrl,
     });
 
@@ -79,6 +113,25 @@ describe('Collection Object business rules', () => {
     const collectionObject = getBaseCollectionObject();
 
     expect(collectionObject.get('collectingEvent')).toBeDefined();
+  });
+
+  test('Save blocked when CollectionObjectType of a CollectionObject does not have same tree definition as its associated Determination -> taxon', async () => {
+    const collectionObject = getBaseCollectionObject();
+
+    const determination =
+      collectionObject.getDependentResource('determinations')?.models[0];
+
+    const { result } = renderHook(() =>
+      useSaveBlockers(determination, tables.Determination.getField('taxon'))
+    );
+
+    await act(async () => {
+      await determination?.businessRuleManager?.checkField('taxon');
+    });
+
+    expect(result.current[0]).toStrictEqual([
+      'Taxon does not belong to the same tree as this Object Type',
+    ]);
   });
 });
 
