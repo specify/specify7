@@ -483,8 +483,8 @@ msgstr "Conditional Field Value"
 msgid "formatPreview"
 msgstr "Format Preview"
 
-#: components/DataModel/businessRuleDefs.ts:207
-#: components/DataModel/businessRuleDefs.ts:225
+#: components/DataModel/businessRuleDefs.ts:244
+#: components/DataModel/businessRuleDefs.ts:262
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "currentDeterminationRequired"
 msgstr "A current determination is required."

@@ -756,3 +756,8 @@ msgstr "(Rango: {from:string} - {to:string})"
 #, fuzzy
 msgid "catalogNumberNumericFormatter"
 msgstr "Número de catálogo numérico"
+
+#: components/DataModel/businessRuleDefs.ts:199
+#. Used in: Components > Data Model > Business Rule Defs
+msgid "invalidTree"
+msgstr ""

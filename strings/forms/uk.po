@@ -802,3 +802,8 @@ msgstr "(Діапазон: {from:string} - {to:string})"
 #, fuzzy
 msgid "catalogNumberNumericFormatter"
 msgstr "Каталожний номер Числовий"
+
+#: components/DataModel/businessRuleDefs.ts:199
+#. Used in: Components > Data Model > Business Rule Defs
+msgid "invalidTree"
+msgstr ""

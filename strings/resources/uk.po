@@ -581,8 +581,8 @@ msgstr "Умовне значення поля"
 msgid "formatPreview"
 msgstr "Попередній перегляд формату"
 
-#: components/DataModel/businessRuleDefs.ts:207
-#: components/DataModel/businessRuleDefs.ts:225
+#: components/DataModel/businessRuleDefs.ts:244
+#: components/DataModel/businessRuleDefs.ts:262
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "currentDeterminationRequired"
