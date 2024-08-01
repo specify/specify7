@@ -94,7 +94,7 @@ describe('Collection Object business rules', () => {
       ],
       resource_uri: collectionObjectUrl,
       description: 'Base collection object',
-      catalogNumber: '123'
+      catalogNumber: '123',
     });
 
   const orginalEmbeddedCollectingEvent = schema.embeddedCollectingEvent;
