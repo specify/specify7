@@ -104,29 +104,29 @@ msgstr "Repair Tree"
 msgid "treeRepairComplete"
 msgstr "Tree repair is complete."
 
-#: components/ExportFeed/Editor.tsx:323
+#: components/ExportFeed/Editor.tsx:329
 #. Used in: Components > Export Feed > Editor
 msgid "choose"
 msgstr "Choose"
 
 #: components/ExportFeed/Dwca.tsx:42
-#: components/ExportFeed/Editor.tsx:317
+#: components/ExportFeed/Editor.tsx:323
 #. Used in: Components > Export Feed > Dwca ⬤ Components > Export Feed > Editor
 msgid "chooseDwca"
 msgstr "Choose DwCA"
 
-#: components/ExportFeed/Editor.tsx:209
+#: components/ExportFeed/Editor.tsx:213
 #. Used in: Components > Export Feed > Editor
 msgid "dwcaResource"
 msgstr "DwCA Resource"
 
 #: components/ExportFeed/Dwca.tsx:52
-#: components/ExportFeed/Editor.tsx:318
+#: components/ExportFeed/Editor.tsx:324
 #. Used in: Components > Export Feed > Dwca ⬤ Components > Export Feed > Editor
 msgid "chooseMetadataResource"
 msgstr "Choose Metadata resource"
 
-#: components/ExportFeed/Editor.tsx:224
+#: components/ExportFeed/Editor.tsx:228
 #. Used in: Components > Export Feed > Editor
 msgid "metadataResource"
 msgstr "Metadata Resource"

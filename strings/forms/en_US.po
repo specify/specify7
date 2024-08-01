@@ -324,11 +324,13 @@ msgstr "Illegal value for a Yes/No field"
 msgid "requiredField"
 msgstr "Field is required."
 
+#: components/ExportFeed/Editor.tsx:399
+#: components/ExportFeed/Editor.tsx:403
 #: utils/parser/__tests__/definitions.test.ts:203
 #: utils/parser/__tests__/definitions.test.ts:205
 #: utils/parser/__tests__/definitions.test.ts:221
 #: utils/parser/__tests__/definitions.test.ts:223
-#. Used in: Parser > __tests__ > Definitions
+#. Used in: Components > Export Feed > Editor ⬤ Parser > __tests__ > Definitions
 msgid "invalidValue"
 msgstr "Invalid value"
 
@@ -655,7 +657,7 @@ msgid "formMeta"
 msgstr "Form Meta"
 
 #: components/AppResources/Create.tsx:283
-#: components/AppResources/Editor.tsx:245
+#: components/AppResources/Editor.tsx:250
 #: components/Formatters/formatters.ts:58
 #: components/Forms/BaseResourceView.tsx:124
 #: components/Forms/dataObjFormatters.ts:160

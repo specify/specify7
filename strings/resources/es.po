@@ -106,7 +106,7 @@ msgstr "Subcategorías"
 msgid "rssExportFeed"
 msgstr "Fuente de exportación RSS"
 
-#: components/ExportFeed/Editor.tsx:98
+#: components/ExportFeed/Editor.tsx:102
 #. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "exports"
@@ -325,8 +325,8 @@ msgstr "No se pudo analizar XML"
 msgid "name"
 msgstr "Nombre"
 
-#: components/ExportFeed/Editor.tsx:46
-#: components/ExportFeed/Editor.tsx:160
+#: components/ExportFeed/Editor.tsx:50
+#: components/ExportFeed/Editor.tsx:164
 #: components/Formatters/Element.tsx:135
 #. Used in: Components > Export Feed > Editor ⬤ Components > Formatters > Element
 #, fuzzy
@@ -475,37 +475,37 @@ msgstr ""
 msgid "thisFieldName"
 msgstr "Este nombre de campo (solo para fines de vista previa)"
 
-#: components/ExportFeed/Editor.tsx:289
+#: components/ExportFeed/Editor.tsx:295
 #. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "publishEveryDays"
 msgstr "Publicar cada N días"
 
-#: components/ExportFeed/Editor.tsx:286
+#: components/ExportFeed/Editor.tsx:292
 #. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "publish"
 msgstr "Publicar"
 
-#: components/ExportFeed/Editor.tsx:180
+#: components/ExportFeed/Editor.tsx:184
 #. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "fileName"
 msgstr "Seleccione la tabla primero"
 
-#: components/ExportFeed/Editor.tsx:239
+#: components/ExportFeed/Editor.tsx:243
 #. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "runAsUser"
 msgstr "Ejecutar como usuario"
 
-#: components/ExportFeed/Editor.tsx:253
+#: components/ExportFeed/Editor.tsx:258
 #. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "notifyUser"
 msgstr "Enviar notificación de finalización al usuario"
 
-#: components/ExportFeed/Editor.tsx:267
+#: components/ExportFeed/Editor.tsx:273
 #. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "runInCollection"

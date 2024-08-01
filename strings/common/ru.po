@@ -318,7 +318,7 @@ msgid "save"
 msgstr "Сохранить"
 
 #: components/Atoms/DataEntry.tsx:148
-#: components/ExportFeed/Editor.tsx:133
+#: components/ExportFeed/Editor.tsx:137
 #: components/FormSliders/RecordSelectorFromIds.tsx:178
 #: components/Formatters/List.tsx:138
 #: components/Forms/Save.tsx:315
@@ -466,8 +466,8 @@ msgid "uploaded"
 msgstr "Загружено"
 
 #: components/Atoms/DataEntry.tsx:163
-#: components/ExportFeed/Editor.tsx:151
-#: components/ExportFeed/Editor.tsx:153
+#: components/ExportFeed/Editor.tsx:155
+#: components/ExportFeed/Editor.tsx:157
 #: components/FormCells/FormTable.tsx:407
 #: components/FormCells/FormTable.tsx:416
 #: components/FormPlugins/CollectionRelOneToMany.tsx:136
@@ -716,7 +716,7 @@ msgstr "Поисковый запрос"
 msgid "unknown"
 msgstr "Неизвестный"
 
-#: components/ExportFeed/Editor.tsx:70
+#: components/ExportFeed/Editor.tsx:74
 #: components/Login/index.tsx:116
 #: components/Preferences/UserDefinitions.tsx:85
 #: components/Preferences/UserDefinitions.tsx:724
@@ -806,7 +806,7 @@ msgid "dismiss"
 msgstr "Отклонить"
 
 #: components/DataModel/specifyTable.ts:262
-#: components/ExportFeed/Editor.tsx:190
+#: components/ExportFeed/Editor.tsx:194
 #: components/WbPlanView/navigator.ts:444
 #. Used in: Components > Data Model > Specify Table ⬤ Components > Export Feed > Editor ⬤ Components > Wb Plan View > Navigator
 msgid "id"

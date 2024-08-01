@@ -107,7 +107,7 @@ msgstr "Підкатегорії"
 msgid "rssExportFeed"
 msgstr "Канал експорту RSS"
 
-#: components/ExportFeed/Editor.tsx:98
+#: components/ExportFeed/Editor.tsx:102
 #. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "exports"
@@ -324,8 +324,8 @@ msgstr "Не вдалося проаналізувати XML"
 msgid "name"
 msgstr "Ім'я"
 
-#: components/ExportFeed/Editor.tsx:46
-#: components/ExportFeed/Editor.tsx:160
+#: components/ExportFeed/Editor.tsx:50
+#: components/ExportFeed/Editor.tsx:164
 #: components/Formatters/Element.tsx:135
 #. Used in: Components > Export Feed > Editor ⬤ Components > Formatters > Element
 #, fuzzy
@@ -473,37 +473,37 @@ msgstr ""
 msgid "thisFieldName"
 msgstr "Назва цього поля (лише для попереднього перегляду)"
 
-#: components/ExportFeed/Editor.tsx:289
+#: components/ExportFeed/Editor.tsx:295
 #. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "publishEveryDays"
 msgstr "Публікуйте кожні N днів"
 
-#: components/ExportFeed/Editor.tsx:286
+#: components/ExportFeed/Editor.tsx:292
 #. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "publish"
 msgstr "Опублікувати"
 
-#: components/ExportFeed/Editor.tsx:180
+#: components/ExportFeed/Editor.tsx:184
 #. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "fileName"
 msgstr "Спочатку виберіть таблицю"
 
-#: components/ExportFeed/Editor.tsx:239
+#: components/ExportFeed/Editor.tsx:243
 #. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "runAsUser"
 msgstr "Запуск від імені користувача"
 
-#: components/ExportFeed/Editor.tsx:253
+#: components/ExportFeed/Editor.tsx:258
 #. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "notifyUser"
 msgstr "Надіслати сповіщення про завершення користувачеві"
 
-#: components/ExportFeed/Editor.tsx:267
+#: components/ExportFeed/Editor.tsx:273
 #. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "runInCollection"

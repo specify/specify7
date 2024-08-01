@@ -122,8 +122,8 @@ msgstr "Установить область"
 msgid "caption"
 msgstr "Подпись"
 
-#: components/ExportFeed/Editor.tsx:58
-#: components/ExportFeed/Editor.tsx:170
+#: components/ExportFeed/Editor.tsx:62
+#: components/ExportFeed/Editor.tsx:174
 #: components/SchemaConfig/Field.tsx:59
 #: components/SchemaConfig/Table.tsx:66
 #: components/SchemaViewer/Fields.tsx:59

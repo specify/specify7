@@ -119,31 +119,31 @@ msgstr "Ремонтное дерево"
 msgid "treeRepairComplete"
 msgstr "Ремонт дерева завершен."
 
-#: components/ExportFeed/Editor.tsx:323
+#: components/ExportFeed/Editor.tsx:329
 #. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "choose"
 msgstr "Основной"
 
 #: components/ExportFeed/Dwca.tsx:42
-#: components/ExportFeed/Editor.tsx:317
+#: components/ExportFeed/Editor.tsx:323
 #. Used in: Components > Export Feed > Dwca ⬤ Components > Export Feed > Editor
 msgid "chooseDwca"
 msgstr "Выберите ДвКА"
 
-#: components/ExportFeed/Editor.tsx:209
+#: components/ExportFeed/Editor.tsx:213
 #. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "dwcaResource"
 msgstr "Ресурс DwCA"
 
 #: components/ExportFeed/Dwca.tsx:52
-#: components/ExportFeed/Editor.tsx:318
+#: components/ExportFeed/Editor.tsx:324
 #. Used in: Components > Export Feed > Dwca ⬤ Components > Export Feed > Editor
 msgid "chooseMetadataResource"
 msgstr "Выберите ресурс метаданных"
 
-#: components/ExportFeed/Editor.tsx:224
+#: components/ExportFeed/Editor.tsx:228
 #. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "metadataResource"

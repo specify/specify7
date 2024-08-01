@@ -83,7 +83,7 @@ msgstr "App Resource"
 msgid "rssExportFeed"
 msgstr "RSS Export Feed"
 
-#: components/ExportFeed/Editor.tsx:98
+#: components/ExportFeed/Editor.tsx:102
 #. Used in: Components > Export Feed > Editor
 msgid "exports"
 msgstr "Exports"
@@ -266,8 +266,8 @@ msgstr "Failed to parse XML"
 msgid "name"
 msgstr "Name"
 
-#: components/ExportFeed/Editor.tsx:46
-#: components/ExportFeed/Editor.tsx:160
+#: components/ExportFeed/Editor.tsx:50
+#: components/ExportFeed/Editor.tsx:164
 #: components/Formatters/Element.tsx:135
 #. Used in: Components > Export Feed > Editor ⬤ Components > Formatters > Element
 msgid "title"
@@ -393,32 +393,32 @@ msgstr ""
 msgid "thisFieldName"
 msgstr "This field name (for preview purposes only)"
 
-#: components/ExportFeed/Editor.tsx:289
+#: components/ExportFeed/Editor.tsx:295
 #. Used in: Components > Export Feed > Editor
 msgid "publishEveryDays"
 msgstr "Publish every N days"
 
-#: components/ExportFeed/Editor.tsx:286
+#: components/ExportFeed/Editor.tsx:292
 #. Used in: Components > Export Feed > Editor
 msgid "publish"
 msgstr "Publish"
 
-#: components/ExportFeed/Editor.tsx:180
+#: components/ExportFeed/Editor.tsx:184
 #. Used in: Components > Export Feed > Editor
 msgid "fileName"
 msgstr "File name"
 
-#: components/ExportFeed/Editor.tsx:239
+#: components/ExportFeed/Editor.tsx:243
 #. Used in: Components > Export Feed > Editor
 msgid "runAsUser"
 msgstr "Run as user"
 
-#: components/ExportFeed/Editor.tsx:253
+#: components/ExportFeed/Editor.tsx:258
 #. Used in: Components > Export Feed > Editor
 msgid "notifyUser"
 msgstr "Send completion notification to user"
 
-#: components/ExportFeed/Editor.tsx:267
+#: components/ExportFeed/Editor.tsx:273
 #. Used in: Components > Export Feed > Editor
 msgid "runInCollection"
 msgstr "Run in collection"
