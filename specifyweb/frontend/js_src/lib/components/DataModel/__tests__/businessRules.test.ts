@@ -177,8 +177,8 @@ describe('Collection Object business rules', () => {
       .filter((field) => !field.isRelationship)
       .forEach((field) => {
         const fieldName = field.name as keyof CollectionObject['fields'];
-        
-        expect(collectionObject.get(fieldName)).toBe(undefined);
+
+        expect(collectionObject.get(fieldName)).toBeUndefined();
       });
   });
 });
