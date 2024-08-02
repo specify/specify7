@@ -169,10 +169,13 @@ export function WbPlanView({
       <BaseTableSelection
         headers={headers}
         onClose={(): void => navigate(`/specify/workbench/${dataset.id}/`)}
-        onSelected={(baseTableName): void => {
-          if (baseTableName === 'Taxon') {
-            setIsTaxonTable(true);
-          } else {
+        onSelected={
+          (baseTableName): void => {
+            /*
+             * If (baseTableName === 'Taxon') {
+             *   setIsTaxonTable(true);
+             * } else {
+             */
             setState({
               type: 'MappingState',
               changesMade: true,
@@ -185,7 +188,8 @@ export function WbPlanView({
               mustMatchPreferences: {},
             });
           }
-        }}
+          // }
+        }
         onSelectTemplate={(uploadPlan, headers): void =>
           setState({
             type: 'MappingState',
@@ -222,6 +226,7 @@ export function WbPlanView({
       lines={state.lines}
       mustMatchPreferences={state.mustMatchPreferences}
       taxonType={taxonType ?? taxonIdName}
+      treeDefinitions={definitions}
       onChangeBaseTable={(): void =>
         setState({
           type: 'SelectBaseTable',

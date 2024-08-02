@@ -24,10 +24,15 @@ import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
+import type {
+  FilterTablesByEndsWith,
+  SerializedResource,
+} from '../DataModel/helperTypes';
 import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import type { TreeInformation } from '../InitialContext/treeRanks';
 import { TableIcon } from '../Molecules/TableIcon';
 import { Layout } from './Header';
 import {
@@ -140,6 +145,9 @@ export function Mapper(props: {
   readonly lines: RA<MappingLine>;
   readonly mustMatchPreferences: IR<boolean>;
   readonly taxonType?: string;
+  readonly treeDefinitions:
+    | readonly SerializedResource<FilterTablesByEndsWith<'TreeDef'>>[]
+    | undefined;
 }): JSX.Element {
   const [state, dispatch] = React.useReducer(
     reducer,
@@ -449,6 +457,7 @@ export function Mapper(props: {
               generateFieldData: 'all',
               spec: navigatorSpecs.wbPlanView,
               taxonType: props.taxonType,
+              treeDefinitions: props.treeDefinitions,
             }),
             customSelectType: 'OPENED_LIST',
             onChange({ isDoubleClick, ...rest }) {

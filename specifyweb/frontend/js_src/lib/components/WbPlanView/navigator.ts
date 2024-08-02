@@ -10,11 +10,16 @@ import { queryText } from '../../localization/query';
 import type { IR, RA, WritableArray } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { dateParts } from '../Atoms/Internationalization';
-import type { AnyTree } from '../DataModel/helperTypes';
+import type {
+  AnyTree,
+  FilterTablesByEndsWith,
+  SerializedResource,
+} from '../DataModel/helperTypes';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getFrontEndOnlyFields, strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
+import type { TreeInformation } from '../InitialContext/treeRanks';
 import { getTreeDefinitions, isTreeTable } from '../InitialContext/treeRanks';
 import { hasTablePermission, hasTreeAccess } from '../Permissions/helpers';
 import type { CustomSelectSubtype } from './CustomSelectElement';
@@ -195,6 +200,7 @@ export function getMappingLineData({
   mustMatchPreferences = {},
   spec,
   taxonType,
+  treeDefinitions,
 }: {
   readonly baseTableName: keyof Tables;
   // The mapping path
@@ -210,6 +216,9 @@ export function getMappingLineData({
   readonly mustMatchPreferences?: IR<boolean>;
   readonly spec: NavigatorSpec;
   readonly taxonType?: string;
+  readonly treeDefinitions:
+    | readonly SerializedResource<FilterTablesByEndsWith<'TreeDef'>>[]
+    | undefined;
 }): RA<MappingLineData> {
   if (
     process.env.NODE_ENV !== 'production' &&
@@ -264,7 +273,9 @@ export function getMappingLineData({
       fieldsData: Object.fromEntries(
         filterArray(fieldsData)
           .filter((field) => {
-            if (
+            if (table.name === 'Taxon' && mappingPath[0] === '0') {
+              return treeDefinitions?.map((definition) => definition.name);
+            } else if (
               internalState.mappingLineData.length === 0 &&
               taxonType !== undefined
             ) {
@@ -350,12 +361,24 @@ export function getMappingLineData({
     handleTreeRanks({ table }) {
       const defaultValue = getNameFromTreeRankName(internalState.defaultValue);
 
-      commitInstanceData(
-        'tree',
-        table,
+      const fieldsData: readonly (
+        | readonly [string, HtmlGeneratorFieldData]
+        | undefined
+      )[] =
         generateFieldData === 'none' ||
-          !hasTreeAccess(table.name as 'Geography', 'read')
+        !hasTreeAccess(table.name as 'Geography', 'read')
           ? []
+          : table.name === 'Taxon' && mappingPath[0] === '0' && treeDefinitions
+          ? treeDefinitions.map((treeDefinition) => [
+              treeDefinition.name,
+              {
+                optionLabel: treeDefinition.name,
+                isRelationship: true,
+                isDefault: false,
+                tableName: 'Taxon',
+                tableTreeDefName: treeDefinition.name,
+              },
+            ])
           : [
               spec.includeAnyTreeRank &&
               (generateFieldData === 'all' ||
@@ -395,8 +418,11 @@ export function getMappingLineData({
                     )
                   )
                 : []),
-            ]
-      );
+            ];
+
+      console.log(fieldsData);
+
+      commitInstanceData('tree', table, fieldsData);
     },
 
     handleSimpleFields({ table, parentRelationship }) {
