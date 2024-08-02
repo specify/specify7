@@ -7645,7 +7645,7 @@ class AbsoluteAge(models.Model):
 
     # Relationships: Many-to-One
     agent1 = models.ForeignKey('Agent', db_column='Agent1ID', related_name='+', null=True, on_delete=protect_with_blockers)
-    ageattachment = models.ForeignKey('AgeAttachment', db_column='AgeAttachmentID', related_name='absoluteages', null=True, on_delete=protect_with_blockers)
+    ageattachment = models.ForeignKey('AbsoluteAgeAttachment', db_column='AgeAttachmentID', related_name='absoluteages', null=True, on_delete=protect_with_blockers)
     collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='absoluteages', null=False, on_delete=models.CASCADE)
     # agename = models.ForeignKey('GeologicTimePeriod', db_column='AgeNameID', related_name='absoluteages', null=True, on_delete=protect_with_blockers)
 
@@ -7692,7 +7692,7 @@ class RelativeAge(models.Model):
     # Relationships: Many-to-One
     agename = models.ForeignKey('GeologicTimePeriod', db_column='AgeNameID', related_name='relativeages', null=True, on_delete=protect_with_blockers)
     agent1 = models.ForeignKey('Agent', db_column='Agent1ID', related_name='+', null=True, on_delete=protect_with_blockers)
-    ageattachment = models.ForeignKey('AgeAttachment', db_column='AgeAttachmentID', related_name='relativeages', null=True, on_delete=protect_with_blockers)
+    ageattachment = models.ForeignKey('RelativeAgeAttachment', db_column='AgeAttachmentID', related_name='relativeages', null=True, on_delete=protect_with_blockers)
     collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='relativeages', null=False, on_delete=models.CASCADE)
 
     class Meta:
@@ -7717,7 +7717,7 @@ class AbsoluteAgeAttachment(models.Model):
     # Relationships: Many-to-One
     absoluteage = models.ForeignKey('AbsoluteAge', db_column='AbsoluteAgeID', related_name='absoluteageattachments', null=False, on_delete=protect_with_blockers)
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='absoluteageattachments', null=False, on_delete=protect_with_blockers)
-    collectionmember = models.ForeignKey('CollectionMember', db_column='CollectionMemberID', related_name='absoluteageattachments', null=False, on_delete=protect_with_blockers)
+    collectionmember = models.ForeignKey('Collection', db_column='CollectionMemberID', related_name='absoluteageattachments', null=False, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
@@ -7743,7 +7743,7 @@ class RelativeAgeAttachment(models.Model):
     # Relationships: Many-to-One
     relativeage = models.ForeignKey('RelativeAge', db_column='RelativeAgeID', related_name='relativeageattachments', null=False, on_delete=protect_with_blockers)
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='relativeageattachments', null=False, on_delete=protect_with_blockers)
-    collectionmember = models.ForeignKey('CollectionMember', db_column='CollectionMemberID', related_name='relativegeattachments', null=False, on_delete=protect_with_blockers)
+    collectionmember = models.ForeignKey('Collection', db_column='CollectionMemberID', related_name='relativegeattachments', null=False, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
@@ -7770,7 +7770,7 @@ class AbsoluteAgeCitation(models.Model):
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
 
     # Relationships: Many-to-One
-    collectionmember = models.ForeignKey('CollectionMember', db_column='CollectionMemberID', related_name='absoluteagecitations', null=False, on_delete=protect_with_blockers)
+    collectionmember = models.ForeignKey('Collection', db_column='CollectionMemberID', related_name='absoluteagecitations', null=False, on_delete=protect_with_blockers)
     absoluteage = models.ForeignKey('AbsoluteAge', db_column='AbsoluteAgeID', related_name='absoluteagecitations', null=False, on_delete=protect_with_blockers)
     referencework = models.ForeignKey('ReferenceWork', db_column='ReferenceWorkID', related_name='absoluteagecitations', null=False, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -7799,7 +7799,7 @@ class RelativeAgeCitation(models.Model):
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
 
     # Relationships: Many-to-One
-    collectionmember = models.ForeignKey('CollectionMember', db_column='CollectionMemberID', related_name='relativeagecitations', null=False, on_delete=protect_with_blockers)
+    collectionmember = models.ForeignKey('Collection', db_column='CollectionMemberID', related_name='relativeagecitations', null=False, on_delete=protect_with_blockers)
     relativeage = models.ForeignKey('RelativeAge', db_column='RelativeAgeID', related_name='relativeagecitations', null=False, on_delete=protect_with_blockers)
     referencework = models.ForeignKey('ReferenceWork', db_column='ReferenceWorkID', related_name='relativeagecitations', null=False, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
