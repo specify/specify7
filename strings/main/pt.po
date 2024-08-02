@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-06-28 17:06+0000\n"
+"PO-Revision-Date: 2024-08-03 01:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "main/pt/>\n"
@@ -68,8 +68,8 @@ msgstr ""
 #, fuzzy
 msgid "criticalErrorOccurredDescription"
 msgstr ""
-"Para evitar a corrupção dos registros de dados, precisamos começar novamente "
-"a partir de um local seguro – a página inicial."
+"A versão Especificar [X20X] não corresponde à versão do banco de dados "
+"[X83X]."
 
 #. Used in: Components > Errors > Error Dialog
 #: components/Errors/ErrorDialog.tsx:39
