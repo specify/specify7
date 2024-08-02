@@ -51,7 +51,7 @@ const wbPlanView: NavigatorSpec = {
    * Hide nested -to-many relationships as they are not
    * supported by the WorkBench
    */
-  allowNestedToMany: false,
+  allowNestedToMany: true,
   ensurePermission: () =>
     userPreferences.get('workBench', 'wbPlanView', 'showNoAccessTables')
       ? 'create'

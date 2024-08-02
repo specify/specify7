@@ -92,14 +92,11 @@ function toUploadTable(
           [
             fieldName.toLowerCase(),
             indexMappings(lines).map(([_index, lines]) =>
-              removeKey(
                 toUploadTable(
                   table.strictGetRelationship(fieldName).relatedTable,
                   lines,
                   mustMatchPreferences
-                ),
-                'toMany'
-              )
+                )
             ),
           ] as const
       )

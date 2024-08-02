@@ -483,13 +483,12 @@ export function getMappingLineData({
 
             if (field.isRelationship) {
               isIncluded &&=
-                spec.allowNestedToMany ||
                 parentRelationship === undefined ||
                 (!isCircularRelationship(parentRelationship, field) &&
-                  !(
+                  (spec.allowNestedToMany || !(
                     relationshipIsToMany(field) &&
                     relationshipIsToMany(parentRelationship)
-                  ));
+                  )));
 
               isIncluded &&=
                 !canDoAction ||
