@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-07-16 18:17+0000\n"
+"PO-Revision-Date: 2024-08-03 01:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/specify-7/"
 "common/pt/>\n"
@@ -376,7 +376,7 @@ msgstr "Visualizar"
 #: components/FormCells/FormTable.tsx:395
 #, fuzzy
 msgid "openInNewTab"
-msgstr "Abrir em nova guia"
+msgstr "Abrir em uma nova guia"
 
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Header > Logo ⬤ Components > Permissions > Permission Denied ⬤ Components > Router Commands > Cache Buster
 #: components/Errors/ErrorDialog.tsx:164
