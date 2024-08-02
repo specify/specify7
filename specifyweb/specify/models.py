@@ -7650,7 +7650,7 @@ class AbsoluteAge(models.Model):
     # agename = models.ForeignKey('GeologicTimePeriod', db_column='AgeNameID', related_name='absoluteages', null=True, on_delete=protect_with_blockers)
 
     class Meta:
-        db_table = 'age'
+        db_table = 'absoluteage'
         ordering = ()
 
     save = partialmethod(custom_save)
@@ -7696,7 +7696,7 @@ class RelativeAge(models.Model):
     collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='relativeages', null=False, on_delete=models.CASCADE)
 
     class Meta:
-        db_table = 'age'
+        db_table = 'relativeage'
         ordering = ()
 
     save = partialmethod(custom_save)
@@ -7743,9 +7743,15 @@ class RelativeAgeAttachment(models.Model):
     # Relationships: Many-to-One
     relativeage = models.ForeignKey('RelativeAge', db_column='RelativeAgeID', related_name='relativeageattachments', null=False, on_delete=protect_with_blockers)
     attachment = models.ForeignKey('Attachment', db_column='AttachmentID', related_name='relativeageattachments', null=False, on_delete=protect_with_blockers)
-    collectionmember = models.ForeignKey('CollectionMember', db_column='CollectionMemberID', related_name='absoluteageattachments', null=False, on_delete=protect_with_blockers)
+    collectionmember = models.ForeignKey('CollectionMember', db_column='CollectionMemberID', related_name='relativegeattachments', null=False, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+
+    class Meta:
+        db_table = 'relativeageattachment'
+        ordering = ()
+
+    save = partialmethod(custom_save)
 
 class AbsoluteAgeCitation(models.Model):
     specify_model = datamodel.get_table('absoluteagecitation')
