@@ -477,7 +477,7 @@ def _upload_to_manys(parent_model, parent_id, parent_field, uploadingAgentId: Op
             parsedFields=record.parsedFields,
             toOne=record.toOne,
             static={**record.static, fk_field: parent_id},
-            toMany={},
+            toMany=record.toMany,
             uploadingAgentId=uploadingAgentId,
             auditor=auditor,
             cache=cache,
