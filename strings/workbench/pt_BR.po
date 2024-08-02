@@ -1,18 +1,31 @@
 msgid ""
-msgstr "Content-Type: text/plain\n"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2024-08-03 01:09+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
+"specify-7/workbench/pt_BR/>\n"
+"Language: pt_BR\n"
+"Content-Type: text/plain\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 5.7-dev\n"
+"Content-Transfer-Encoding: 8bit\n"
 
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 #: components/Header/menuItemDefinitions.ts:93
 #: components/Preferences/UserDefinitions.tsx:1668
 #: components/Router/OverlayRoutes.tsx:150
-#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
+#, fuzzy
 msgid "workBench"
-msgstr ""
+msgstr "Bancada de trabalho"
 
-#: components/WbToolkit/DevShowPlan.tsx:39
 #. Used in: Components > Wb Toolkit > Dev Show Plan
+#: components/WbToolkit/DevShowPlan.tsx:39
+#, fuzzy
 msgid "uploadPlan"
-msgstr ""
+msgstr "Carregar plano"
 
+#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Wb Actions > Wb Rollback ⬤ Components > Work Bench > Status
 #: components/AttachmentsBulkImport/Rollback.tsx:29
 #: components/AttachmentsBulkImport/Rollback.tsx:93
 #: components/AttachmentsBulkImport/Rollback.tsx:130
@@ -20,22 +33,25 @@ msgstr ""
 #: components/WbActions/WbRollback.tsx:30
 #: components/WbActions/WbRollback.tsx:69
 #: components/WorkBench/Status.tsx:76
-#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Wb Actions > Wb Rollback ⬤ Components > Work Bench > Status
+#, fuzzy
 msgid "rollback"
-msgstr ""
+msgstr "Reverter"
 
+#. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Wb Actions > Wb Validate ⬤ Components > Wb Plan View > Mapper
 #: components/AttachmentsBulkImport/Import.tsx:290
 #: components/WbActions/WbValidate.tsx:73
 #: components/WbPlanView/Mapper.tsx:380
-#. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Wb Actions > Wb Validate ⬤ Components > Wb Plan View > Mapper
+#, fuzzy
 msgid "validate"
-msgstr ""
+msgstr "Validar"
 
-#: components/WorkBench/Status.tsx:74
 #. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:74
+#, fuzzy
 msgid "validation"
-msgstr ""
+msgstr "Validação"
 
+#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Wb Actions > Wb Upload ⬤ Components > Work Bench > Status
 #: components/AttachmentsBulkImport/Upload.tsx:210
 #: components/AttachmentsBulkImport/Upload.tsx:236
 #: components/AttachmentsBulkImport/utils.ts:476
@@ -43,742 +59,929 @@ msgstr ""
 #: components/WbActions/WbUpload.tsx:54
 #: components/WbActions/WbUpload.tsx:62
 #: components/WorkBench/Status.tsx:75
-#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Wb Actions > Wb Upload ⬤ Components > Work Bench > Status
+#, fuzzy
 msgid "upload"
-msgstr ""
+msgstr "Carregar"
 
-#: components/WorkBench/Status.tsx:82
 #. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:82
+#, fuzzy
 msgid "rollingBack"
-msgstr ""
+msgstr "Revertendo"
 
+#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Work Bench > Status
 #: components/AttachmentsBulkImport/Upload.tsx:108
 #: components/WorkBench/Status.tsx:81
-#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Work Bench > Status
+#, fuzzy
 msgid "uploading"
-msgstr ""
+msgstr "Enviando"
 
+#. Used in: Components > Attachments Bulk Import > Validation Dialog ⬤ Components > Work Bench > Status
 #: components/AttachmentsBulkImport/ValidationDialog.tsx:41
 #: components/AttachmentsBulkImport/ValidationDialog.tsx:45
 #: components/WorkBench/Status.tsx:80
-#. Used in: Components > Attachments Bulk Import > Validation Dialog ⬤ Components > Work Bench > Status
+#, fuzzy
 msgid "validating"
-msgstr ""
+msgstr "Validando"
 
+#. Used in: Components > Work Bench > Wb Spreadsheet
 #: components/WorkBench/WbSpreadsheet.tsx:153
-#. Used in: Components > Work Bench > Wb Spreadsheet
+#, fuzzy
 msgid "disambiguate"
-msgstr ""
+msgstr "Desambiguar"
 
-#: components/WorkBench/WbSpreadsheet.tsx:262
 #. Used in: Components > Work Bench > Wb Spreadsheet
+#: components/WorkBench/WbSpreadsheet.tsx:262
+#, fuzzy
 msgid "fillDown"
-msgstr ""
+msgstr "Preencher"
 
-#: components/WorkBench/WbSpreadsheet.tsx:262
 #. Used in: Components > Work Bench > Wb Spreadsheet
+#: components/WorkBench/WbSpreadsheet.tsx:262
+#, fuzzy
 msgid "fillUp"
-msgstr ""
+msgstr "Encher"
 
+#. Used in: Components > Wb Actions > Wb Revert
 #: components/WbActions/WbRevert.tsx:33
 #: components/WbActions/WbRevert.tsx:41
-#. Used in: Components > Wb Actions > Wb Revert
+#, fuzzy
 msgid "revert"
-msgstr ""
+msgstr "Reverter"
 
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Actions > Wb Validate
 #: components/Preferences/UserDefinitions.tsx:1674
 #: components/WbActions/WbValidate.tsx:58
-#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Actions > Wb Validate
+#, fuzzy
 msgid "dataCheck"
-msgstr ""
+msgstr "Validação ao vivo"
 
+#. Used in: Components > Wb Actions > Wb Validate
 #: components/WbActions/WbValidate.tsx:54
 #: components/WbActions/WbValidate.tsx:57
-#. Used in: Components > Wb Actions > Wb Validate
+#, fuzzy
 msgid "dataCheckOn"
-msgstr ""
+msgstr "Validação ao vivo: ativada"
 
-#: components/Preferences/UserDefinitions.tsx:1675
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1675
+#, fuzzy
 msgid "dataCheckDescription"
 msgstr ""
+"Observe que a validação ao vivo é um recurso experimental e não substitui a "
+"validação regular."
 
+#. Used in: Components > Wb Toolkit > Change Owner
 #: components/WbToolkit/ChangeOwner.tsx:41
 #: components/WbToolkit/ChangeOwner.tsx:88
-#. Used in: Components > Wb Toolkit > Change Owner
+#, fuzzy
 msgid "changeOwner"
-msgstr ""
+msgstr "Alterar proprietário"
 
-#: components/WbToolkit/CoordinateConverter.tsx:61
 #. Used in: Components > Wb Toolkit > Coordinate Converter
+#: components/WbToolkit/CoordinateConverter.tsx:61
+#, fuzzy
 msgid "convertCoordinates"
-msgstr ""
+msgstr "Converter coordenadas"
 
+#. Used in: Components > Wb Utils > Index
 #: components/WbUtils/index.tsx:48
-#. Used in: Components > Wb Utils > Index
+#, fuzzy
 msgid "navigation"
-msgstr ""
+msgstr "Navegação"
 
-#: components/WbUtils/index.tsx:72
 #. Used in: Components > Wb Utils > Index
+#: components/WbUtils/index.tsx:72
+#, fuzzy
 msgid "replace"
-msgstr ""
+msgstr "Substituir"
 
+#. Used in: Components > Wb Utils > Index
 #: components/WbUtils/index.tsx:68
 #: components/WbUtils/index.tsx:76
-#. Used in: Components > Wb Utils > Index
+#, fuzzy
 msgid "replacementValue"
-msgstr ""
+msgstr "Valor de substituição"
 
+#. Used in: Components > Specify Network Collection > Setup ⬤ Components > Wb Utils > Index
 #: components/SpecifyNetworkCollection/Setup.tsx:69
 #: components/WbUtils/index.tsx:110
-#. Used in: Components > Specify Network Collection > Setup ⬤ Components > Wb Utils > Index
+#, fuzzy
 msgid "searchResults"
-msgstr ""
+msgstr "Procurar Resultados"
 
-#: components/WbUtils/Navigation.tsx:88
 #. Used in: Components > Wb Utils > Navigation
+#: components/WbUtils/Navigation.tsx:88
+#, fuzzy
 msgid "clickToToggle"
-msgstr ""
+msgstr "Clique para alternar a visibilidade"
 
+#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:111
 #: components/WorkBench/AdvancedSearch.tsx:214
 #: components/WorkBench/AdvancedSearch.tsx:216
-#. Used in: Components > Work Bench > Advanced Search
+#, fuzzy
 msgid "configureSearchReplace"
-msgstr ""
+msgstr "Configurar pesquisa e substituição"
 
+#. Used in: Components > Wb Utils > Index
 #: components/WbUtils/index.tsx:118
-#. Used in: Components > Wb Utils > Index
+#, fuzzy
 msgid "modifiedCells"
-msgstr ""
+msgstr "Células Modificadas"
 
+#. Used in: Components > Wb Utils > Index
 #: components/WbUtils/index.tsx:125
-#. Used in: Components > Wb Utils > Index
+#, fuzzy
 msgid "newCells"
-msgstr ""
+msgstr "Novas células"
 
-#: components/WbUtils/index.tsx:132
 #. Used in: Components > Wb Utils > Index
+#: components/WbUtils/index.tsx:132
+#, fuzzy
 msgid "errorCells"
-msgstr ""
+msgstr "Células de erro"
 
-#: components/WbPlanView/Mapper.tsx:387
 #. Used in: Components > Wb Plan View > Mapper
+#: components/WbPlanView/Mapper.tsx:387
+#, fuzzy
 msgid "dataEditor"
-msgstr ""
+msgstr "Editor de dados"
 
+#. Used in: Components > Work Bench > Use Disambiguation Dialog
 #: components/WorkBench/useDisambiguationDialog.tsx:104
-#. Used in: Components > Work Bench > Use Disambiguation Dialog
+#, fuzzy
 msgid "noDisambiguationResults"
-msgstr ""
+msgstr "Incapaz de desambiguar"
 
-#: components/WorkBench/useDisambiguationDialog.tsx:107
 #. Used in: Components > Work Bench > Use Disambiguation Dialog
+#: components/WorkBench/useDisambiguationDialog.tsx:107
+#, fuzzy
 msgid "noDisambiguationResultsDescription"
 msgstr ""
+"Nenhum dos registros correspondentes existe atualmente no banco de dados. "
+"Isso pode acontecer se todos os registros correspondentes tiverem sido "
+"excluídos desde que ocorreu o processo de validação ou se todas as "
+"correspondências forem ambíguas em relação a outros registros neste conjunto "
+"de dados. Neste último caso, você precisará adicionar campos e valores ao "
+"conjunto de dados para resolver a ambiguidade."
 
+#. Used in: Components > Work Bench > Disambiguation
 #: components/WorkBench/Disambiguation.tsx:68
-#. Used in: Components > Work Bench > Disambiguation
+#, fuzzy
 msgid "disambiguateMatches"
-msgstr ""
+msgstr "Desambiguar correspondências de múltiplos registros"
 
-#: components/WorkBench/Disambiguation.tsx:57
 #. Used in: Components > Work Bench > Disambiguation
+#: components/WorkBench/Disambiguation.tsx:57
+#, fuzzy
 msgid "applyAllUnavailable"
 msgstr ""
+"\"Aplicar tudo\" não está disponível enquanto a verificação de dados está em "
+"andamento."
 
+#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Wb Rollback
 #: components/AttachmentsBulkImport/Rollback.tsx:134
 #: components/WbActions/WbRollback.tsx:76
-#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Wb Rollback
+#, fuzzy
 msgid "beginRollback"
-msgstr ""
+msgstr "Iniciar a reversão do conjunto de dados?"
 
-#: components/WbActions/WbRollback.tsx:79
 #. Used in: Components > Wb Actions > Wb Rollback
+#: components/WbActions/WbRollback.tsx:79
+#, fuzzy
 msgid "beginRollbackDescription"
 msgstr ""
+"A reversão removerá os novos registros de dados que este conjunto de dados "
+"adicionou ao banco de dados Especificar. Toda a reversão será cancelada se "
+"algum dos dados carregados tiver sido referenciado (reutilizado) por outros "
+"registros de dados desde que foram carregados."
 
+#. Used in: Components > Wb Actions > Wb Upload
 #: components/WbActions/WbUpload.tsx:66
-#. Used in: Components > Wb Actions > Wb Upload
+#, fuzzy
 msgid "startUpload"
-msgstr ""
+msgstr "Iniciar o upload do conjunto de dados?"
 
-#: components/WbActions/WbUpload.tsx:69
 #. Used in: Components > Wb Actions > Wb Upload
+#: components/WbActions/WbUpload.tsx:69
+#, fuzzy
 msgid "startUploadDescription"
 msgstr ""
+"O upload do conjunto de dados adicionará os dados ao banco de dados "
+"Especificar."
 
+#. Used in: Components > Work Bench > Data Set Meta
 #: components/WorkBench/DataSetMeta.tsx:157
-#. Used in: Components > Work Bench > Data Set Meta
+#, fuzzy
 msgid "deleteDataSet"
-msgstr ""
+msgstr "Excluir este conjunto de dados?"
 
-#: components/WorkBench/DataSetMeta.tsx:84
 #. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:84
+#, fuzzy
 msgid "deleteDataSetDescription"
 msgstr ""
+"A exclusão de um conjunto de dados remove permanentemente ele e seu plano de "
+"upload. Os mapeamentos de dados não estarão mais disponíveis para "
+"reutilização com outros conjuntos de dados. Além disso, após a exclusão, a "
+"reversão não será mais uma opção para um conjunto de dados carregado."
 
+#. Used in: Components > Work Bench > Data Set Meta
 #: components/WorkBench/DataSetMeta.tsx:124
-#. Used in: Components > Work Bench > Data Set Meta
+#, fuzzy
 msgid "dataSetDeleted"
-msgstr ""
+msgstr "Conjunto de dados excluído com sucesso"
 
-#: components/WorkBench/DataSetMeta.tsx:127
 #. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:127
+#, fuzzy
 msgid "dataSetDeletedDescription"
-msgstr ""
+msgstr "Conjunto de dados excluído com sucesso."
 
+#. Used in: Components > Wb Actions > Wb Revert
 #: components/WbActions/WbRevert.tsx:45
-#. Used in: Components > Wb Actions > Wb Revert
+#, fuzzy
 msgid "revertChanges"
-msgstr ""
+msgstr "Reverter alterações não salvas?"
 
-#: components/WbActions/WbRevert.tsx:48
 #. Used in: Components > Wb Actions > Wb Revert
+#: components/WbActions/WbRevert.tsx:48
+#, fuzzy
 msgid "revertChangesDescription"
 msgstr ""
+"Esta ação descartará todas as alterações feitas no conjunto de dados desde o "
+"último salvamento."
 
-#: components/WbActions/WbSave.tsx:71
 #. Used in: Components > Wb Actions > Wb Save
+#: components/WbActions/WbSave.tsx:71
+#, fuzzy
 msgid "saving"
-msgstr ""
+msgstr "Salvando..."
 
-#: components/WorkBench/WbView.tsx:105
 #. Used in: Components > Work Bench > Wb View
+#: components/WorkBench/WbView.tsx:105
+#, fuzzy
 msgid "wbUnloadProtect"
-msgstr ""
+msgstr "As alterações neste conjunto de dados não foram salvas."
 
-#: components/WorkBench/WbValidation.tsx:281
 #. Used in: Components > Work Bench > Wb Validation
+#: components/WorkBench/WbValidation.tsx:281
+#, fuzzy
 msgid "noMatchErrorMessage"
 msgstr ""
+"Nenhum registro correspondente para a tabela de correspondência obrigatória."
 
-#: components/WorkBench/WbValidation.tsx:310
 #. Used in: Components > Work Bench > Wb Validation
+#: components/WorkBench/WbValidation.tsx:310
+#, fuzzy
 msgid "matchedMultipleErrorMessage"
 msgstr ""
+"Este valor corresponde a dois ou mais registros de banco de dados existentes "
+"e a correspondência deve ser desambiguada antes do upload."
 
+#. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:301
-#. Used in: Components > Wb Actions > Index
+#, fuzzy
 msgid "validationNoErrors"
-msgstr ""
+msgstr "Validação concluída sem erros"
 
-#: components/WbActions/index.tsx:304
 #. Used in: Components > Wb Actions > Index
+#: components/WbActions/index.tsx:304
+#, fuzzy
 msgid "validationNoErrorsDescription"
 msgstr ""
+"A validação não encontrou erros, está pronta para ser carregada no banco de "
+"dados."
 
+#. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:307
 #: components/WbActions/index.tsx:318
-#. Used in: Components > Wb Actions > Index
+#, fuzzy
 msgid "validationReEditWarning"
 msgstr ""
+"Nota: Se este conjunto de dados for editado e salvo novamente, Validar "
+"deverá ser executado novamente antes do upload para verificar se nenhum erro "
+"foi introduzido."
 
+#. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:312
-#. Used in: Components > Wb Actions > Index
+#, fuzzy
 msgid "validationErrors"
-msgstr ""
+msgstr "Validar Concluído com Erros"
 
+#. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:315
-#. Used in: Components > Wb Actions > Index
+#, fuzzy
 msgid "validationErrorsDescription"
-msgstr ""
+msgstr "A validação encontrou erros no conjunto de dados."
 
+#. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:325
-#. Used in: Components > Wb Actions > Index
+#, fuzzy
 msgid "uploadSuccessful"
-msgstr ""
+msgstr "Upload concluído sem erros"
 
-#: components/WbActions/index.tsx:326
 #. Used in: Components > Wb Actions > Index
+#: components/WbActions/index.tsx:326
+#, fuzzy
 msgid "uploadSuccessfulDescription"
 msgstr ""
+"Clique no botão “Resultados” para ver o número de novos registros "
+"adicionados a cada tabela do banco de dados."
 
+#. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:329
-#. Used in: Components > Wb Actions > Index
+#, fuzzy
 msgid "uploadErrors"
-msgstr ""
+msgstr "Falha no upload devido a células de erro"
 
+#. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:332
-#. Used in: Components > Wb Actions > Index
+#, fuzzy
 msgid "uploadErrorsDescription"
-msgstr ""
+msgstr "O upload falhou devido a um ou mais erros de valor de célula."
 
-#: components/WbActions/index.tsx:335
 #. Used in: Components > Wb Actions > Index
+#: components/WbActions/index.tsx:335
+#, fuzzy
 msgid "uploadErrorsSecondDescription"
 msgstr ""
+"Valide o conjunto de dados e revise as dicas de passagem do mouse para cada "
+"célula de erro e, em seguida, faça as correções apropriadas. Salve e tente "
+"novamente o upload."
 
+#. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:340
-#. Used in: Components > Wb Actions > Index
+#, fuzzy
 msgid "dataSetRollback"
-msgstr ""
+msgstr "O conjunto de dados foi revertido com sucesso"
 
-#: components/WbActions/index.tsx:341
 #. Used in: Components > Wb Actions > Index
+#: components/WbActions/index.tsx:341
+#, fuzzy
 msgid "dataSetRollbackDescription"
 msgstr ""
+"Este conjunto de dados revertido é salvo e pode ser editado ou recarregado."
 
+#. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:213
-#. Used in: Components > Wb Actions > Index
+#, fuzzy
 msgid "validationCanceled"
-msgstr ""
+msgstr "Validação cancelada"
 
-#: components/WbActions/index.tsx:221
 #. Used in: Components > Wb Actions > Index
+#: components/WbActions/index.tsx:221
+#, fuzzy
 msgid "validationCanceledDescription"
-msgstr ""
+msgstr "Validação do conjunto de dados cancelada."
 
+#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 #: components/AttachmentsBulkImport/Rollback.tsx:30
 #: components/WbActions/index.tsx:215
-#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
+#, fuzzy
 msgid "rollbackCanceled"
-msgstr ""
+msgstr "Reversão cancelada"
 
+#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 #: components/AttachmentsBulkImport/Rollback.tsx:31
 #: components/WbActions/index.tsx:223
-#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
+#, fuzzy
 msgid "rollbackCanceledDescription"
-msgstr ""
+msgstr "Reversão do conjunto de dados cancelada."
 
+#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Wb Actions > Index
 #: components/AttachmentsBulkImport/Upload.tsx:109
 #: components/WbActions/index.tsx:216
-#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Wb Actions > Index
+#, fuzzy
 msgid "uploadCanceled"
-msgstr ""
+msgstr "Carregamento cancelado"
 
+#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Wb Actions > Index
 #: components/AttachmentsBulkImport/Upload.tsx:110
 #: components/WbActions/index.tsx:224
-#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Wb Actions > Index
+#, fuzzy
 msgid "uploadCanceledDescription"
-msgstr ""
+msgstr "Carregamento do conjunto de dados cancelado."
 
+#. Used in: Components > Wb Toolkit > Coordinate Converter
 #: components/WbToolkit/CoordinateConverter.tsx:231
-#. Used in: Components > Wb Toolkit > Coordinate Converter
+#, fuzzy
 msgid "coordinateConverter"
-msgstr ""
+msgstr "Formato de geocoordenadas"
 
-#: components/WbToolkit/CoordinateConverter.tsx:242
 #. Used in: Components > Wb Toolkit > Coordinate Converter
+#: components/WbToolkit/CoordinateConverter.tsx:242
+#, fuzzy
 msgid "coordinateConverterDescription"
-msgstr ""
+msgstr "Escolha um formato de geocoordenada preferido"
 
-#: components/WorkBench/mapping.ts:82
 #. 🟥When empty string is used as a default value for a column, this is shown instead. Used in: Components > Work Bench > Mapping
+#: components/WorkBench/mapping.ts:82
+#, fuzzy
 msgid "emptyStringInline"
-msgstr ""
+msgstr "(sequência vazia)"
 
-#: components/WbActions/index.tsx:109
 #. Used in: Components > Wb Actions > Index
+#: components/WbActions/index.tsx:109
+#, fuzzy
 msgid "wbUploadedUnavailable"
-msgstr ""
+msgstr "O conjunto de dados deve ser validado ou carregado"
 
+#. Used in: Components > Wb Actions > Wb Validate
 #: components/WbActions/WbValidate.tsx:47
 #: components/WbActions/WbValidate.tsx:69
-#. Used in: Components > Wb Actions > Wb Validate
+#, fuzzy
 msgid "wbValidateUnavailable"
 msgstr ""
+"Um plano de upload precisa ser definido antes que este conjunto de dados "
+"possa ser validado"
 
+#. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Wb Validate ⬤ Components > Wb Toolkit > Change Owner ⬤ Components > Wb Toolkit > Index
 #: components/WbActions/WbUpload.tsx:47
 #: components/WbActions/WbValidate.tsx:66
 #: components/WbToolkit/ChangeOwner.tsx:38
 #: components/WbToolkit/index.tsx:84
-#. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Wb Validate ⬤ Components > Wb Toolkit > Change Owner ⬤ Components > Wb Toolkit > Index
+#, fuzzy
 msgid "unavailableWhileEditing"
-msgstr ""
+msgstr "Esta ação requer que todas as alterações sejam salvas"
 
-#: components/WbActions/WbUpload.tsx:49
 #. Used in: Components > Wb Actions > Wb Upload
+#: components/WbActions/WbUpload.tsx:49
+#, fuzzy
 msgid "uploadUnavailableWhileHasErrors"
 msgstr ""
+"O upload não está disponível enquanto algumas células apresentam erros de "
+"validação"
 
+#. Used in: Components > Wb Actions > Wb Validate ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Wb Utils > Index
 #: components/WbActions/WbValidate.tsx:45
 #: components/WbToolkit/CoordinateConverter.tsx:55
 #: components/WbToolkit/GeoLocate.tsx:54
 #: components/WbUtils/index.tsx:75
-#. Used in: Components > Wb Actions > Wb Validate ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Wb Utils > Index
+#, fuzzy
 msgid "unavailableWhileViewingResults"
 msgstr ""
+"Esta ação não está disponível durante a visualização dos resultados do upload"
 
-#: components/WbActions/index.tsx:106
 #. Used in: Components > Wb Actions > Index
+#: components/WbActions/index.tsx:106
+#, fuzzy
 msgid "unavailableWhileValidating"
 msgstr ""
+"Esta ação não está disponível enquanto a verificação de dados está em "
+"andamento"
 
+#. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Wb Toolkit > Wb Leaflet Map
 #: components/WbToolkit/CoordinateConverter.tsx:57
 #: components/WbToolkit/GeoLocate.tsx:56
 #: components/WbToolkit/WbLeafletMap.tsx:62
-#. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Wb Toolkit > Wb Leaflet Map
+#, fuzzy
 msgid "unavailableWithoutLocality"
-msgstr ""
+msgstr "Esta ferramenta requer que as colunas de localidade sejam mapeadas"
 
+#. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate
 #: components/WbToolkit/CoordinateConverter.tsx:53
 #: components/WbToolkit/GeoLocate.tsx:52
-#. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate
+#, fuzzy
 msgid "unavailableWhenUploaded"
-msgstr ""
+msgstr "Esta ferramenta não funciona com conjuntos de dados carregados"
 
-#: components/WorkBench/index.tsx:41
 #. Used in: Components > Work Bench > Index
+#: components/WorkBench/index.tsx:41
+#, fuzzy
 msgid "dataSetDeletedOrNotFound"
-msgstr ""
+msgstr "O conjunto de dados foi excluído por outra sessão."
 
-#: components/WbToolkit/CoordinateConverter.tsx:267
 #. Used in: Components > Wb Toolkit > Coordinate Converter
+#: components/WbToolkit/CoordinateConverter.tsx:267
+#, fuzzy
 msgid "includeDmsSymbols"
-msgstr ""
+msgstr "Incluir símbolos DMS"
 
+#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Work Bench > Results
 #: components/AttachmentsBulkImport/Upload.tsx:264
 #: components/WorkBench/Results.tsx:42
-#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Work Bench > Results
+#, fuzzy
 msgid "uploadResults"
-msgstr ""
+msgstr "Carregar resultados"
 
+#. Used in: Components > Work Bench > Results
 #: components/WorkBench/Results.tsx:43
-#. Used in: Components > Work Bench > Results
+#, fuzzy
 msgid "potentialUploadResults"
-msgstr ""
+msgstr "Resultados potenciais de upload"
 
-#: components/WorkBench/WbSpreadsheet.tsx:91
 #. Used in: Components > Work Bench > Wb Spreadsheet
+#: components/WorkBench/WbSpreadsheet.tsx:91
+#, fuzzy
 msgid "noUploadResultsAvailable"
-msgstr ""
+msgstr "Não há resultados de upload disponíveis para esta célula"
 
+#. Used in: Components > Work Bench > Results
 #: components/WorkBench/Results.tsx:47
-#. Used in: Components > Work Bench > Results
+#, fuzzy
 msgid "wbUploadedDescription"
-msgstr ""
+msgstr "Número de novos registros criados em cada tabela:"
 
-#: components/WorkBench/Results.tsx:48
 #. Used in: Components > Work Bench > Results
+#: components/WorkBench/Results.tsx:48
+#, fuzzy
 msgid "wbUploadedPotentialDescription"
-msgstr ""
+msgstr "Número de novos registros que seriam criados em cada tabela:"
 
+#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:116
-#. Used in: Components > Work Bench > Advanced Search
+#, fuzzy
 msgid "navigationOptions"
-msgstr ""
+msgstr "Opções de navegação"
 
+#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:118
-#. Used in: Components > Work Bench > Advanced Search
+#, fuzzy
 msgid "cursorPriority"
-msgstr ""
+msgstr "Prioridade do Cursor"
 
+#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:131
-#. Used in: Components > Work Bench > Advanced Search
+#, fuzzy
 msgid "columnFirst"
-msgstr ""
+msgstr "Coluna primeiro"
 
+#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:132
-#. Used in: Components > Work Bench > Advanced Search
+#, fuzzy
 msgid "rowFirst"
-msgstr ""
+msgstr "Linha primeiro"
 
+#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:138
-#. Used in: Components > Work Bench > Advanced Search
+#, fuzzy
 msgid "searchOptions"
-msgstr ""
+msgstr "Opções de busca"
 
+#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:144
-#. Used in: Components > Work Bench > Advanced Search
+#, fuzzy
 msgid "findEntireCellsOnly"
-msgstr ""
+msgstr "Encontre apenas células inteiras"
 
+#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:151
-#. Used in: Components > Work Bench > Advanced Search
+#, fuzzy
 msgid "matchCase"
-msgstr ""
+msgstr "Caso de compatibilidade"
 
+#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:158
-#. Used in: Components > Work Bench > Advanced Search
+#, fuzzy
 msgid "useRegularExpression"
-msgstr ""
+msgstr "Usar expressão regular"
 
+#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:165
-#. Used in: Components > Work Bench > Advanced Search
+#, fuzzy
 msgid "liveUpdate"
-msgstr ""
+msgstr "Pesquisa em tempo real"
 
+#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:170
-#. Used in: Components > Work Bench > Advanced Search
+#, fuzzy
 msgid "replaceOptions"
-msgstr ""
+msgstr "Substituir opções"
 
+#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:172
-#. Used in: Components > Work Bench > Advanced Search
+#, fuzzy
 msgid "replaceMode"
-msgstr ""
+msgstr "Modo de substituição"
 
+#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:185
-#. Used in: Components > Work Bench > Advanced Search
+#, fuzzy
 msgid "replaceAll"
-msgstr ""
+msgstr "Substitua todas as correspondências"
 
-#: components/WorkBench/AdvancedSearch.tsx:186
 #. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:186
+#, fuzzy
 msgid "replaceNext"
-msgstr ""
+msgstr "Substituir próxima ocorrência"
 
-#: components/Router/Routes.tsx:207
 #. Used in: Components > Router > Routes
+#: components/Router/Routes.tsx:207
+#, fuzzy
 msgid "importDataSet"
-msgstr ""
+msgstr "Importar conjunto de dados"
 
-#: components/WbImport/index.tsx:39
 #. Used in: Components > Wb Import > Index
+#: components/WbImport/index.tsx:39
+#, fuzzy
 msgid "wbImportHeader"
-msgstr ""
+msgstr "Importe um arquivo para criar um novo conjunto de dados"
 
+#. Used in: Components > Molecules > File Picker
 #: components/Molecules/FilePicker.tsx:265
-#. Used in: Components > Molecules > File Picker
+#, fuzzy
 msgid "previewDataSet"
-msgstr ""
+msgstr "Visualizar conjunto de dados"
 
-#: components/Molecules/FilePicker.tsx:305
 #. Used in: Components > Molecules > File Picker
+#: components/Molecules/FilePicker.tsx:305
+#, fuzzy
 msgid "errorImporting"
-msgstr ""
+msgstr "Ocorreram os seguintes erros ao importar o arquivo:"
 
+#. Used in: Components > Wb Import > Helpers
 #: components/WbImport/helpers.ts:107
 #: components/WbImport/helpers.ts:133
-#. Used in: Components > Wb Import > Helpers
+#, fuzzy
 msgid "corruptFile"
-msgstr ""
+msgstr "O arquivo {fileName:string} está corrompido ou não contém dados!"
 
+#. Used in: Components > Molecules > Csv File Picker
 #: components/Molecules/CsvFilePicker.tsx:157
-#. Used in: Components > Molecules > Csv File Picker
+#, fuzzy
 msgid "characterEncoding"
-msgstr ""
+msgstr "Codificação de caracteres:"
 
-#: components/Molecules/CsvFilePicker.tsx:198
 #. Used in: Components > Molecules > Csv File Picker
+#: components/Molecules/CsvFilePicker.tsx:198
+#, fuzzy
 msgid "delimiter"
-msgstr ""
+msgstr "Delimitador:"
 
+#. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 #: components/Molecules/CsvFilePicker.tsx:172
 #: components/Preferences/UserDefinitions.tsx:1555
 #: components/Preferences/UserDefinitions.tsx:1782
-#. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
+#, fuzzy
 msgid "comma"
-msgstr ""
+msgstr "Vírgula"
 
+#. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 #: components/Molecules/CsvFilePicker.tsx:174
 #: components/Preferences/UserDefinitions.tsx:1563
 #: components/Preferences/UserDefinitions.tsx:1790
-#. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
+#, fuzzy
 msgid "semicolon"
-msgstr ""
+msgstr "Ponto e vírgula"
 
+#. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 #: components/Molecules/CsvFilePicker.tsx:173
 #: components/Preferences/UserDefinitions.tsx:1559
 #: components/Preferences/UserDefinitions.tsx:1786
-#. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
+#, fuzzy
 msgid "tab"
-msgstr ""
+msgstr "Aba"
 
+#. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 #: components/Molecules/CsvFilePicker.tsx:175
 #: components/Preferences/UserDefinitions.tsx:1567
 #: components/Preferences/UserDefinitions.tsx:1794
-#. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
+#, fuzzy
 msgid "space"
-msgstr ""
+msgstr "Espaço"
 
+#. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 #: components/Molecules/CsvFilePicker.tsx:176
 #: components/Preferences/UserDefinitions.tsx:1571
 #: components/Preferences/UserDefinitions.tsx:1798
-#. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
+#, fuzzy
 msgid "pipe"
-msgstr ""
+msgstr "Cano"
 
+#. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 #: components/Molecules/CsvFilePicker.tsx:212
 #: components/Preferences/UserDefinitions.tsx:637
 #: components/Preferences/UserDefinitions.tsx:658
 #: components/Preferences/UserDefinitions.tsx:679
-#. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
+#, fuzzy
 msgid "determineAutomatically"
-msgstr ""
+msgstr "Determinar automaticamente"
 
-#: components/WbImport/index.tsx:118
 #. Used in: Components > Wb Import > Index
+#: components/WbImport/index.tsx:118
+#, fuzzy
 msgid "chooseDataSetName"
-msgstr ""
+msgstr "Nome do novo conjunto de dados:"
 
-#: components/Molecules/FilePicker.tsx:242
 #. Used in: Components > Molecules > File Picker
+#: components/Molecules/FilePicker.tsx:242
+#, fuzzy
 msgid "firstRowIsHeader"
-msgstr ""
+msgstr "A primeira linha é o cabeçalho:"
 
+#. Used in: Components > Molecules > File Picker ⬤ Components > Toolbar > Wbs Dialog
 #: components/Molecules/FilePicker.tsx:217
 #: components/Toolbar/WbsDialog.tsx:184
-#. Used in: Components > Molecules > File Picker ⬤ Components > Toolbar > Wbs Dialog
+#, fuzzy
 msgid "importFile"
-msgstr ""
+msgstr "Importar arquivo"
 
-#: components/WbImport/helpers.ts:66
 #. Used in: Components > Wb Import > Helpers
+#: components/WbImport/helpers.ts:66
+#, fuzzy
 msgid "columnName"
-msgstr ""
+msgstr "Coluna {columnIndex:number}"
 
+#. Used in: Components > Toolbar > Wbs Dialog
 #: components/Toolbar/WbsDialog.tsx:39
-#. Used in: Components > Toolbar > Wbs Dialog
+#, fuzzy
 msgid "newDataSetName"
-msgstr ""
+msgstr "Novo conjunto de dados {date}"
 
+#. Used in: Components > Toolbar > Wbs Dialog
 #: components/Toolbar/WbsDialog.tsx:209
-#. Used in: Components > Toolbar > Wbs Dialog
+#, fuzzy
 msgid "dataSets"
-msgstr ""
+msgstr "Conjuntos de dados do WorkBench"
 
+#. Used in: Components > Toolbar > Wbs Dialog
 #: components/Toolbar/WbsDialog.tsx:220
-#. Used in: Components > Toolbar > Wbs Dialog
+#, fuzzy
 msgid "wbsDialogEmpty"
-msgstr ""
+msgstr "Atualmente não existem conjuntos de dados."
 
+#. Used in: Components > Toolbar > Wbs Dialog
 #: components/Toolbar/WbsDialog.tsx:221
-#. Used in: Components > Toolbar > Wbs Dialog
+#, fuzzy
 msgid "createDataSetInstructions"
-msgstr ""
+msgstr "Use “Importar um arquivo” ou “Criar novo” para criar um novo."
 
-#: components/Toolbar/WbsDialog.tsx:195
 #. Used in: Components > Toolbar > Wbs Dialog
+#: components/Toolbar/WbsDialog.tsx:195
+#, fuzzy
 msgid "createNew"
-msgstr ""
+msgstr "Crie um novo"
 
-#: components/WorkBench/DataSetMeta.tsx:183
 #. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:183
+#, fuzzy
 msgid "dataSetMeta"
-msgstr ""
+msgstr "Propriedades do conjunto de dados"
 
+#. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
 #: components/AttachmentsBulkImport/Datasets.tsx:152
 #: components/AttachmentsBulkImport/Datasets.tsx:284
 #: components/WbPlanView/Mapper.tsx:403
 #: components/WorkBench/DataSetMeta.tsx:207
-#. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
+#, fuzzy
 msgid "dataSetName"
-msgstr ""
+msgstr "Nome do conjunto de dados"
 
+#. Used in: Components > Work Bench > Data Set Meta
 #: components/WorkBench/DataSetMeta.tsx:230
-#. Used in: Components > Work Bench > Data Set Meta
+#, fuzzy
 msgid "numberOfRows"
-msgstr ""
+msgstr "Numero de linhas"
 
+#. Used in: Components > Work Bench > Data Set Meta
 #: components/WorkBench/DataSetMeta.tsx:237
-#. Used in: Components > Work Bench > Data Set Meta
+#, fuzzy
 msgid "numberOfColumns"
-msgstr ""
+msgstr "Numero de colunas"
 
+#. Used in: Components > Work Bench > Data Set Meta
 #: components/WorkBench/DataSetMeta.tsx:336
-#. Used in: Components > Work Bench > Data Set Meta
+#, fuzzy
 msgid "importedFileName"
-msgstr ""
+msgstr "Nome do arquivo de importação"
 
-#: components/WorkBench/DataSetMeta.tsx:333
 #. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:333
+#, fuzzy
 msgid "noFileName"
-msgstr ""
+msgstr "(sem nome de arquivo)"
 
+#. Used in: Components > Wb Toolkit > Change Owner
 #: components/WbToolkit/ChangeOwner.tsx:92
-#. Used in: Components > Wb Toolkit > Change Owner
+#, fuzzy
 msgid "changeDataSetOwner"
-msgstr ""
+msgstr "Alterar proprietário do conjunto de dados"
 
-#: components/WbToolkit/ChangeOwner.tsx:109
 #. Used in: Components > Wb Toolkit > Change Owner
+#: components/WbToolkit/ChangeOwner.tsx:109
+#, fuzzy
 msgid "changeDataSetOwnerDescription"
-msgstr ""
+msgstr "Selecione Novo Proprietário:"
 
+#. Used in: Components > Wb Toolkit > Change Owner
 #: components/WbToolkit/ChangeOwner.tsx:77
 #: components/WbToolkit/ChangeOwner.tsx:80
-#. Used in: Components > Wb Toolkit > Change Owner
+#, fuzzy
 msgid "dataSetOwnerChanged"
-msgstr ""
+msgstr "Proprietário do conjunto de dados alterado"
 
+#. Used in: Components > Work Bench > Data Set Meta
 #: components/WorkBench/DataSetMeta.tsx:370
-#. Used in: Components > Work Bench > Data Set Meta
+#, fuzzy
 msgid "dataSet"
-msgstr ""
+msgstr "Conjunto de dados"
 
-#: components/Toolbar/WbsDialog.tsx:122
 #. Used in: Components > Toolbar > Wbs Dialog
+#: components/Toolbar/WbsDialog.tsx:122
+#, fuzzy
 msgid "dataSetTimestampUploaded"
-msgstr ""
+msgstr "Carimbo de data/hora enviado"
 
-#: components/WorkBench/DataSetMeta.tsx:374
 #. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:374
+#, fuzzy
 msgid "dataSetUploadedLabel"
-msgstr ""
+msgstr "(Carregado, somente leitura)"
 
+#. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:67
-#. Used in: Components > Work Bench > Status
+#, fuzzy
 msgid "wbStatusUnupload"
-msgstr ""
+msgstr "Status de reversão do conjunto de dados"
 
+#. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:66
-#. Used in: Components > Work Bench > Status
+#, fuzzy
 msgid "wbStatusUpload"
-msgstr ""
+msgstr "Status de upload do conjunto de dados"
 
-#: components/WorkBench/Status.tsx:65
 #. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:65
+#, fuzzy
 msgid "wbStatusValidation"
-msgstr ""
+msgstr "Status de validação do conjunto de dados"
 
+#. Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Work Bench > Status
 #: components/AttachmentsBulkImport/ActionState.tsx:38
 #: components/AttachmentsBulkImport/ActionState.tsx:39
 #: components/WorkBench/Status.tsx:102
-#. Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Work Bench > Status
+#, fuzzy
 msgid "aborting"
-msgstr ""
+msgstr "Abortando..."
 
-#: components/WorkBench/Status.tsx:92
 #. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:92
+#, fuzzy
 msgid "wbStatusAbortFailed"
 msgstr ""
+"Falha ao cancelar {operationName:string}. Por favor, tente novamente mais "
+"tarde"
 
-#: components/WorkBench/Status.tsx:119
 #. 🟥E.x, Validating... Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:119
+#, fuzzy
 msgid "wbStatusOperationNoProgress"
-msgstr ""
+msgstr "{operationName:string}..."
 
-#: components/WorkBench/Status.tsx:123
 #. 🟥E.x, Validating row 999/1,000. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:123
+#, fuzzy
 msgid "wbStatusOperationProgress"
 msgstr ""
+"{operationName:string} linha "
+"{current:number|formatted}/{total:number|formatted}"
 
+#. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:106
-#. Used in: Components > Work Bench > Status
+#, fuzzy
 msgid "wbStatusPendingDescription"
-msgstr ""
+msgstr "{operationName:string} deste conjunto de dados deve começar em breve."
 
-#: components/WorkBench/Status.tsx:109
 #. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:109
+#, fuzzy
 msgid "wbStatusPendingSecondDescription"
 msgstr ""
+"Se esta mensagem persistir por mais de 30 segundos, o processo "
+"{operationName:string} está ocupado com outro conjunto de dados. Por favor, "
+"tente novamente mais tarde."
 
+#. Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Work Bench > Status
 #: components/AttachmentsBulkImport/ActionState.tsx:24
 #: components/AttachmentsBulkImport/ActionState.tsx:53
 #: components/WorkBench/Status.tsx:162
-#. Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Work Bench > Status
+#, fuzzy
 msgid "stop"
-msgstr ""
+msgstr "Parar"
 
+#. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:133
-#. Used in: Components > Work Bench > Status
+#, fuzzy
 msgid "wbStatusError"
-msgstr ""
+msgstr "Ocorreu um erro durante {operationName:string}"
 
-#: components/WorkBench/Status.tsx:118
 #. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:118
+#, fuzzy
 msgid "updatingTrees"
-msgstr ""
+msgstr "Atualizando árvores..."
 
-#: components/WorkBench/RecordSet.tsx:66
 #. 🟥Default name of the record that would be created based on upload results. Used in: Components > Work Bench > Record Set
+#: components/WorkBench/RecordSet.tsx:66
+#, fuzzy
 msgid "recordSetName"
-msgstr ""
+msgstr "Carregamento WB de \"{dataSet:string}\""
 
-#: components/WorkBench/Disambiguation.tsx:100
 #. Used in: Components > Work Bench > Disambiguation
+#: components/WorkBench/Disambiguation.tsx:100
+#, fuzzy
 msgid "ambiguousTaxaChild"
-msgstr ""
+msgstr "{node:string} (em {parent:string})"
