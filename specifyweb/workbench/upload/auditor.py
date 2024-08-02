@@ -3,9 +3,7 @@ from typing import Any, NamedTuple, Optional, Union
 
 from specifyweb.specify.auditlog import AuditLog
 from specifyweb.permissions.permissions import check_table_permissions
-from specifyweb.specify import models
-
-Agent = getattr(models, 'Agent')
+from specifyweb.specify.models import Agent
 
 logger = logging.getLogger(__name__)
 

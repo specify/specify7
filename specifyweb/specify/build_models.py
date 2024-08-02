@@ -1,12 +1,9 @@
 from django.db import models
 from django.db.models.signals import pre_delete
 
-from model_utils import FieldTracker
-from requests import get
-
 from specifyweb.businessrules.exceptions import AbortSave
 from . import model_extras
-from .model_timestamp import pre_save_auto_timestamp_field_with_override
+from .model_timestamp import save_auto_timestamp_field_with_override
 
 appname = __name__.split('.')[-2]
 
@@ -64,7 +61,7 @@ def make_model(module, table, datamodel):
 
     def save(self, *args, **kwargs):
         try:
-            return super(model, self).save(*args, **kwargs)
+            return save_auto_timestamp_field_with_override(super(model, self).save, args, kwargs, self)
         except AbortSave:
             return
         
@@ -73,41 +70,19 @@ def make_model(module, table, datamodel):
         # It will manually send the pre_delete signal for the django model object.
         # The pre_delete function must contain logic that will prevent ForeignKey constraints from being violated.
         # This is needed because database constraints are checked before pre_delete signals are sent.
+        # This is not currently used, but is here for future use.
         pre_delete.send(sender=self.__class__, instance=self)
-
-    def save_timestamped(self, *args, **kwargs):
-        timestamp_override = kwargs.pop('timestamp_override', False)
-        pre_save_auto_timestamp_field_with_override(self, timestamp_override)
-        try:
-            super(model, self).save(*args, **kwargs)
-        except AbortSave:
-            return
-
-    field_names = [field.name.lower() for field in table.fields]
-    timestamp_fields = ['timestampcreated', 'timestampmodified']
-    has_timestamp_fields = any(field in field_names for field in timestamp_fields)
-
-    if has_timestamp_fields:
-        tracked_fields = [field for field in timestamp_fields if field in field_names]
-        attrs['tracker'] = FieldTracker(fields=tracked_fields)
-        for field in tracked_fields:
-            attrs[field] = models.DateTimeField(db_column=field) # default=timezone.now is handled in pre_save_auto_timestamp_field_with_override
 
     attrs['Meta'] = Meta
     if table.django_name in tables_with_pre_constraints_delete:
+        # This is not currently used, but is here for future use.
         attrs['pre_constraints_delete'] = pre_constraints_delete
 
-    if has_timestamp_fields:
-        attrs['save'] = save_timestamped
-    else:
-        attrs['save'] = save
+    attrs['save'] = save
 
     supercls = models.Model
     if hasattr(model_extras, table.django_name):
         supercls = getattr(model_extras, table.django_name)
-    elif has_timestamp_fields:
-        # FUTURE: supercls = SpTimestampedModel
-        pass
 
     model = type(table.django_name, (supercls,), attrs)
     return model
@@ -305,6 +280,8 @@ class make_boolean_field(make_field):
 # appropriate field constructor functions.
 field_type_map = {
     'text': make_text_field,
+    'json': make_text_field,
+    'blob': make_text_field,
     'java.lang.String': make_string_field,
     'java.lang.Integer': make_integer_field,
     'java.lang.Long': make_integer_field,

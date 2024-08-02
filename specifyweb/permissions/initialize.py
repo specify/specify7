@@ -30,7 +30,7 @@ def create_admins() -> None:
 
     users = Specifyuser.objects.all()
     for user in users:
-        if user.is_admin():
+        if user.is_legacy_admin():
             UserPolicy.objects.get_or_create(
                 collection=None,
                 specifyuser_id=user.id,
@@ -392,10 +392,10 @@ def create_roles() -> None:
                 r.policies.create(resource=lp.resource, action=lp.action)
 
 
-    for collection in Collection.objects.all():
+    for collection_id in Collection.objects.values_list('id', flat=True):
         # Copy the collection admin role into the collection roles.
         ca = Role.objects.create(
-            collection_id=collection.id,
+            collection_id=collection_id,
             name=collection_admin.name,
             description=collection_admin.description,
         )

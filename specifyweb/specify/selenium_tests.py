@@ -8,7 +8,7 @@ import os
 from django.test import LiveServerTestCase
 from selenium.webdriver.support.ui import WebDriverWait
 
-from .api_tests import MainSetupTearDown
+from specifyweb.specify.tests.test_api import MainSetupTearDown
 from .selenium_testsuite_runner import SeleniumTestSuiteRunner as TestRunner
 
 

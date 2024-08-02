@@ -889,7 +889,7 @@ export class AutoMapper {
       fixedNewPathParts = newPathParts.map((mappingPathPart) =>
         valueIsTreeRank(mappingPathPart)
           ? f.maybe(
-              getTreeDefinitionItems(tableName as 'Geography', false)?.find(
+              getTreeDefinitionItems(tableName, false, 'all')?.find(
                 ({ name }) =>
                   name.toLowerCase() ===
                   getNameFromTreeRankName(mappingPathPart).toLowerCase()

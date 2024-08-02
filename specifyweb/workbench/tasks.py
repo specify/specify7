@@ -5,13 +5,10 @@ from celery.utils.log import get_task_logger # type: ignore
 
 from django.db import connection, transaction
 
-from specifyweb.specify import models
+from specifyweb.specify.models import Collection, Agent
 from specifyweb.celery_tasks import LogErrorsTask, app
 
 from .models import Spdataset
-
-Workbench = getattr(models, 'Workbench')
-Collection = getattr(models, 'Collection')
 
 from .upload.upload import do_upload_dataset, unupload_dataset
 
@@ -57,7 +54,7 @@ def unupload(self, ds_id: int, agent_id: int) -> None:
 
     with transaction.atomic():
         ds = Spdataset.objects.select_for_update().get(id=ds_id)
-        agent = getattr(models, 'Agent').objects.get(id=agent_id)
+        agent = Agent.objects.get(id=agent_id)
 
         if ds.uploaderstatus is None:
             logger.info("dataset is not assigned to an upload task")

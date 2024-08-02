@@ -142,7 +142,7 @@ export const wbText = createDictionary({
     `,
     'de-ch': `
       Beachten Sie, dass die Live-Validierung eine experimentelle Funktion ist
-      und kein Ersatz für die regelmäßige Validierung darstellt.
+      und keinen Ersatz für die regelmäßige Validierung darstellt.
     `,
     'es-es': `
       Tenga en cuenta que la validación en vivo es una función experimental y no
@@ -559,7 +559,7 @@ export const wbText = createDictionary({
       збіг необхідно усунути перед завантаженням.
     `,
     'de-ch': `
-      Dieser Wert stimmt mit zwei oder mehr vorhandenen Datenbankeinträgen
+      Dieser Wert stimmt mit zwei oder mehreren vorhandenen Datenbankeinträgen
       überein und die Übereinstimmung muss vor dem Hochladen eindeutig geklärt
       werden.
     `,

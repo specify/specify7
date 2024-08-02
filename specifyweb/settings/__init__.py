@@ -263,4 +263,6 @@ try:
 except ImportError:
     pass
 
-
+SILENCED_SYSTEM_CHECKS = [
+    "fields.W342", # Allow ForeignKey(unique=True) instead of OneToOneField without gettig a warning
+]
