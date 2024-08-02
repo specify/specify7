@@ -3,6 +3,7 @@ from typing import List
 from django.db.models import Q, F
 from numpy import absolute
 from sqlalchemy.sql import or_, and_
+from sqlalchemy.orm import aliased
 
 from specifyweb.specify.models import AbsoluteAge, RelativeAge, Geologictimeperiod, Collectionobject
 from specifyweb.stored_queries import models as sq_models
@@ -122,38 +123,63 @@ def query_co_in_time_range(session, start_time: float, end_time: float, require_
     """
 
     assert_valid_time_range(start_time, end_time)
-    
-    # Define the filters
-    start_filter = sq_models.Collectionobject.startperiod >= start_time
-    end_filter = sq_models.Collectionobject.endperiod <= end_time
-    chrono_start_filter = sq_models.Collectionobject.startperiod >= (start_time + sq_models.Collectionobject.uncertainty)
-    chrono_end_filter = sq_models.Collectionobject.startperiod <= (end_time - sq_models.Collectionobject.uncertainty)
 
-    overlap_filter = or_(start_filter, end_filter)
-    chrono_overlap_filter = or_(chrono_start_filter, chrono_end_filter)
+    # Define filters
+    absolute_start_filter = AbsoluteAge.absoluteage >= (start_time - AbsoluteAge.ageuncertainty)
+    absolute_end_filter = AbsoluteAge.absoluteage <= (end_time + AbsoluteAge.ageuncertainty)
+    chrono_start_filter = Geologictimeperiod.startperiod >= (start_time - Geologictimeperiod.uncertainty)
+    chrono_end_filter = Geologictimeperiod.startperiod <= (end_time + Geologictimeperiod.uncertainty)
+
     if require_full_overlap:
-        overlap_filter = and_(start_filter, end_filter)
+        absolute_overlap_filter = and_(absolute_start_filter, absolute_end_filter)
         chrono_overlap_filter = and_(chrono_start_filter, chrono_end_filter)
+    else:
+        absolute_overlap_filter = or_(absolute_start_filter, absolute_end_filter)
+        chrono_overlap_filter = or_(chrono_start_filter, chrono_end_filter)
 
-    # Subqueries for related models
-    absolute_age_subquery = session.query(sq_models.AbsoluteAge.collectionobject_id).filter(overlap_filter).subquery()
-    relative_age_subquery = session.query(sq_models.RelativeAge.collectionobject_id).filter(overlap_filter).subquery()
-    geologic_time_period_subquery = session.query(sq_models.RelativeAge.collectionobject_id).join(
-        sq_models.Geologictimeperiod, sq_models.RelativeAge.agename == sq_models.Geologictimeperiod.name
-    ).filter(chrono_overlap_filter).subquery()
+    # Aliases for joins
+    relative_age_alias = aliased(RelativeAge)
+    geo_time_period_alias = aliased(sq_models.Geologictimeperiod)
+    collecting_event_alias = aliased(sq_models.CollectingEvent)
+    paleocontext_alias = aliased(sq_models.PaleoContext)
 
     # Combine all filters into a single query
+    # TODO: Fix and make more efficient
     combined_filter = or_(
-        sq_models.Collectionobject.id.in_(absolute_age_subquery),
-        sq_models.Collectionobject.id.in_(relative_age_subquery),
-        sq_models.Collectionobject.id.in_(geologic_time_period_subquery)
+        sq_models.CollectionObject.absoluteages.any(absolute_overlap_filter),
+        sq_models.CollectionObject.relativeages.any(relative_age_alias.agename.in_(
+            session.query(geo_time_period_alias.id).filter(chrono_overlap_filter)
+        )),
+        sq_models.CollectionObject.collectingevent.has(
+            collecting_event_alias.paleocontext.has(
+                or_(
+                    paleocontext_alias.chronosstrat.in_(
+                        session.query(geo_time_period_alias.id).filter(chrono_overlap_filter)
+                    ),
+                    paleocontext_alias.chronosstratend.in_(
+                        session.query(geo_time_period_alias.id).filter(chrono_overlap_filter)
+                    )
+                )
+            )
+        ),
+        sq_models.CollectionObject.collectingevent.has(
+            collecting_event_alias.locality.has(
+                paleocontext_alias.chronosstrat.in_(
+                    session.query(geo_time_period_alias.id).filter(chrono_overlap_filter)
+                )
+            )
+        ),
+        sq_models.CollectionObject.collectingevent.has(
+            collecting_event_alias.locality.has(
+                paleocontext_alias.chronosstratend.in_(
+                    session.query(geo_time_period_alias.id).filter(chrono_overlap_filter)
+                )
+            )
+        )
     )
 
-    # Query the collection objects
-    query = session.query(sq_models.Collectionobject).filter(combined_filter).distinct()
-    return query
-    # result = session.query(sq_models.Collectionobject.id).filter(combined_filter).distinct().all()
-    # return [row[0] for row in result]
+    # Execute query
+    return session.query(sq_models.CollectionObject).filter(combined_filter).distinct().all()
 
 def query_co_in_time_margin(session, time: float, uncertanty: float, require_full_overlap: bool = False):
     start_time = time - uncertanty
