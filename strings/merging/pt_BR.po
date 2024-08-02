@@ -1,0 +1,141 @@
+msgid ""
+msgstr "Content-Type: text/plain\n"
+
+#: components/Preferences/UserDefinitions.tsx:1606
+#. Used in: Components > Preferences > User Definitions
+msgid "recordMerging"
+msgstr ""
+
+#: components/FormMeta/MergeRecord.tsx:56
+#: components/Merging/index.tsx:89
+#: components/Merging/index.tsx:93
+#: components/Merging/index.tsx:405
+#: components/Merging/index.tsx:418
+#: components/Router/OverlayRoutes.tsx:222
+#. Used in: Components > Form Meta > Merge Record ⬤ Components > Merging > Index ⬤ Components > Router > Overlay Routes
+msgid "mergeRecords"
+msgstr ""
+
+#: components/Merging/CompareSubView.tsx:225
+#. Used in: Components > Merging > Compare Sub View
+msgid "mergedRecord"
+msgstr ""
+
+#: components/Merging/index.tsx:451
+#. Used in: Components > Merging > Index
+msgid "showConflictingFieldsOnly"
+msgstr ""
+
+#: components/Merging/Header.tsx:190
+#. Used in: Components > Merging > Header
+msgid "newMergedRecord"
+msgstr ""
+
+#: components/Merging/CompareSubView.tsx:230
+#: components/Merging/Header.tsx:191
+#. Used in: Components > Merging > Compare Sub View ⬤ Components > Merging > Header
+msgid "duplicateRecord"
+msgstr ""
+
+#: components/Merging/CompareSubView.tsx:111
+#. Used in: Components > Merging > Compare Sub View
+msgid "nRecords"
+msgstr ""
+
+#: components/Merging/CompareSubView.tsx:425
+#. Used in: Components > Merging > Compare Sub View
+msgid "subViewControls"
+msgstr ""
+
+#: components/Merging/CompareSubView.tsx:211
+#. 🟥Example: "Merge Addresses". Used in: Components > Merging > Compare Sub View
+msgid "mergeFields"
+msgstr ""
+
+#: components/Merging/index.tsx:267
+#: components/Preferences/UserDefinitions.tsx:1612
+#. Used in: Components > Merging > Index ⬤ Components > Preferences > User Definitions
+msgid "autoPopulate"
+msgstr ""
+
+#: components/Merging/Header.tsx:88
+#. Used in: Components > Merging > Header
+msgid "dismissFromMerging"
+msgstr ""
+
+#: components/Merging/definitions.ts:23
+#. Used in: Components > Merging > Definitions
+msgid "agentContainsGroupDescription"
+msgstr ""
+
+#: components/Merging/InvalidMergeRecords.tsx:30
+#. Used in: Components > Merging > Invalid Merge Records
+msgid "recordNotBeMergedReason"
+msgstr ""
+
+#: components/Merging/InvalidMergeRecords.tsx:93
+#. Used in: Components > Merging > Invalid Merge Records
+msgid "someCannotBeMerged"
+msgstr ""
+
+#: components/Merging/InvalidMergeRecords.tsx:88
+#. Used in: Components > Merging > Invalid Merge Records
+msgid "mergeOthers"
+msgstr ""
+
+#: components/Merging/index.tsx:408
+#. Used in: Components > Merging > Index
+msgid "warningMergeText"
+msgstr ""
+
+#: components/Merging/Status.tsx:24
+#: components/Merging/Status.tsx:25
+#. Used in: Components > Merging > Status
+msgid "mergeFailed"
+msgstr ""
+
+#: components/Merging/Status.tsx:26
+#. Used in: Components > Merging > Status
+msgid "mergeSucceeded"
+msgstr ""
+
+#: components/Merging/Status.tsx:23
+#. Used in: Components > Merging > Status
+msgid "merging"
+msgstr ""
+
+#: components/Notifications/NotificationRenderers.tsx:150
+#. Used in: Components > Notifications > Notification Renderers
+msgid "mergingHasStarted"
+msgstr ""
+
+#: components/Notifications/NotificationRenderers.tsx:205
+#. Used in: Components > Notifications > Notification Renderers
+msgid "mergingHasSucceeded"
+msgstr ""
+
+#: components/Notifications/NotificationRenderers.tsx:167
+#. Used in: Components > Notifications > Notification Renderers
+msgid "mergingHasFailed"
+msgstr ""
+
+#: components/Notifications/NotificationRenderers.tsx:185
+#. Used in: Components > Notifications > Notification Renderers
+msgid "mergingHasBeenCanceled"
+msgstr ""
+
+#: components/Notifications/NotificationRenderers.tsx:170
+#. Used in: Components > Notifications > Notification Renderers
+msgid "retryMerge"
+msgstr ""
+
+#: components/Merging/Status.tsx:144
+#. Used in: Components > Merging > Status
+msgid "mergingWentWrong"
+msgstr ""
+
+#: components/Merging/Usages.tsx:22
+#: components/Merging/Usages.tsx:78
+#. Used in: Components > Merging > Usages
+msgid "linkedRecords"
+msgstr ""

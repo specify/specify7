@@ -1,0 +1,102 @@
+msgid ""
+msgstr "Content-Type: text/plain\n"
+
+#: components/HomePage/index.tsx:65
+#: components/Router/Routes.tsx:464
+#. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
+msgid "pageTitle"
+msgstr ""
+
+#: components/Header/userToolDefinitions.ts:112
+#: components/HomePage/AboutSpecify.tsx:68
+#: components/Router/OverlayRoutes.tsx:197
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Home Page > About Specify ⬤ Components > Router > Overlay Routes
+msgid "aboutSpecify"
+msgstr ""
+
+#: components/HomePage/AboutSpecify.tsx:56
+#. Used in: Components > Home Page > About Specify
+msgid "downloadInformation"
+msgstr ""
+
+#: components/HomePage/TaxonTiles.tsx:80
+#: components/Preferences/Renderers.tsx:246
+#. Used in: Components > Home Page > Taxon Tiles ⬤ Components > Preferences > Renderers
+msgid "taxonTiles"
+msgstr ""
+
+#: components/HomePage/TaxonTiles.tsx:73
+#. Used in: Components > Home Page > Taxon Tiles
+msgid "taxonTilesDescription"
+msgstr ""
+
+#: components/HomePage/AboutSpecify.tsx:79
+#. Used in: Components > Home Page > About Specify
+msgid "fullAddress"
+msgstr ""
+
+#: components/HomePage/AboutSpecify.tsx:91
+#. Used in: Components > Home Page > About Specify
+msgid "disclosure"
+msgstr ""
+
+#: components/HomePage/AboutSpecify.tsx:92
+#. Used in: Components > Home Page > About Specify
+msgid "licence"
+msgstr ""
+
+#: components/HomePage/AboutSpecify.tsx:95
+#. Used in: Components > Home Page > About Specify
+msgid "systemInformation"
+msgstr ""
+
+#: components/HomePage/AboutSpecify.tsx:99
+#. Used in: Components > Home Page > About Specify
+msgid "specifyVersion"
+msgstr ""
+
+#: components/HomePage/AboutSpecify.tsx:100
+#. Used in: Components > Home Page > About Specify
+msgid "gitSha"
+msgstr ""
+
+#: components/HomePage/AboutSpecify.tsx:101
+#. Used in: Components > Home Page > About Specify
+msgid "buildDate"
+msgstr ""
+
+#: components/HomePage/AboutSpecify.tsx:103
+#. Used in: Components > Home Page > About Specify
+msgid "specifySixVersion"
+msgstr ""
+
+#: components/HomePage/AboutSpecify.tsx:106
+#. Used in: Components > Home Page > About Specify
+msgid "databaseVersion"
+msgstr ""
+
+#: components/HomePage/AboutSpecify.tsx:108
+#: components/SchemaViewer/index.tsx:34
+#. Used in: Components > Home Page > About Specify ⬤ Components > Schema Viewer > Index
+msgid "schemaVersion"
+msgstr ""
+
+#: components/HomePage/AboutSpecify.tsx:113
+#. Used in: Components > Home Page > About Specify
+msgid "databaseName"
+msgstr ""
+
+#: components/HomePage/AboutSpecify.tsx:135
+#. 🟥I believe ISA stands for Institution Service Agreement. Used in: Components > Home Page > About Specify
+msgid "isaNumber"
+msgstr ""
+
+#: components/HomePage/AboutSpecify.tsx:138
+#. Used in: Components > Home Page > About Specify
+msgid "browser"
+msgstr ""
+
+#: components/HomePage/AboutSpecify.tsx:117
+#. Used in: Components > Home Page > About Specify
+msgid "databaseCreationDate"
+msgstr ""

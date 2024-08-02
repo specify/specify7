@@ -1,0 +1,110 @@
+msgid ""
+msgstr "Content-Type: text/plain\n"
+
+#: components/AppResources/types.tsx:77
+#. Used in: Components > App Resources > Types
+msgid "label"
+msgstr ""
+
+#: components/Reports/index.tsx:160
+#: components/SchemaViewer/Fields.tsx:58
+#: components/SchemaViewer/Relationships.tsx:95
+#: components/SchemaViewer/Table.tsx:58
+#: components/SchemaViewer/schemaToTsv.tsx:16
+#: components/SchemaViewer/schemaToTsv.tsx:21
+#. Used in: Components > Reports > Index ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Table ⬤ Components > Schema Viewer > Schema To Tsv
+msgid "labels"
+msgstr ""
+
+#: components/AppResources/types.tsx:85
+#. Used in: Components > App Resources > Types
+msgid "report"
+msgstr ""
+
+#: components/Header/menuItemDefinitions.ts:86
+#: components/Preferences/UserDefinitions.tsx:1643
+#: components/Reports/Parameters.tsx:91
+#: components/Reports/index.tsx:142
+#: components/Reports/index.tsx:149
+#: components/Router/OverlayRoutes.tsx:144
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Reports > Parameters ⬤ Components > Reports > Index ⬤ Components > Router > Overlay Routes
+msgid "reports"
+msgstr ""
+
+#: components/Reports/Report.tsx:206
+#. Used in: Components > Reports > Report
+msgid "reportProblems"
+msgstr ""
+
+#: components/Reports/Report.tsx:210
+#. Used in: Components > Reports > Report
+msgid "reportProblemsDescription"
+msgstr ""
+
+#: components/Reports/Report.tsx:211
+#. Used in: Components > Reports > Report
+msgid "missingAttachments"
+msgstr ""
+
+#: components/Reports/Report.tsx:215
+#: components/Reports/Report.tsx:217
+#. Used in: Components > Reports > Report
+msgid "fix"
+msgstr ""
+
+#: components/Reports/Report.tsx:228
+#. Used in: Components > Reports > Report
+msgid "chooseFile"
+msgstr ""
+
+#: components/Reports/Report.tsx:316
+#. Used in: Components > Reports > Report
+msgid "reportParameters"
+msgstr ""
+
+#: components/Reports/Parameters.tsx:87
+#. Used in: Components > Reports > Parameters
+msgid "runReport"
+msgstr ""
+
+#: components/Reports/Report.tsx:52
+#. Used in: Components > Reports > Report
+msgid "missingReportQuery"
+msgstr ""
+
+#: components/Reports/Report.tsx:56
+#. Used in: Components > Reports > Report
+msgid "missingReportQueryDescription"
+msgstr ""
+
+#: components/Reports/Report.tsx:61
+#. Used in: Components > Reports > Report
+msgid "missingReport"
+msgstr ""
+
+#: components/Reports/Report.tsx:65
+#. Used in: Components > Reports > Report
+msgid "missingReportDescription"
+msgstr ""
+
+#: components/FormMeta/index.tsx:173
+#. Used in: Components > Form Meta > Index
+msgid "generateLabel"
+msgstr ""
+
+#: components/FormMeta/index.tsx:191
+#: components/FormParse/fields.ts:132
+#: components/FormParse/__tests__/fields.test.ts:147
+#. Used in: Components > Form Meta > Index ⬤ Components > Form Parse > Fields ⬤ Form Parse > __tests__ > Fields
+msgid "generateLabelOnSave"
+msgstr ""
+
+#: components/FormMeta/index.tsx:172
+#. Used in: Components > Form Meta > Index
+msgid "generateReport"
+msgstr ""
+
+#: components/FormMeta/index.tsx:190
+#. Used in: Components > Form Meta > Index
+msgid "generateReportOnSave"
+msgstr ""

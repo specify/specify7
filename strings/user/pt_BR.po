@@ -1,0 +1,573 @@
+msgid ""
+msgstr "Content-Type: text/plain\n"
+
+#: components/ChooseCollection/index.tsx:183
+#: components/Header/UserTools.tsx:54
+#: components/Header/userToolDefinitions.ts:39
+#: components/Login/OicLogin.tsx:84
+#: components/Login/index.tsx:160
+#: components/Permissions/PermissionDenied.tsx:230
+#: components/Router/EntrypointRouter.tsx:22
+#: components/Router/EntrypointRouter.tsx:27
+#. Used in: Components > Choose Collection > Index ⬤ Components > Header > User Tools ⬤ Components > Header > User Tool Definitions ⬤ Components > Login > Oic Login ⬤ Components > Login > Index ⬤ Components > Permissions > Permission Denied ⬤ Components > Router > Entrypoint Router
+msgid "logIn"
+msgstr ""
+
+#: components/Login/index.tsx:136
+#. Used in: Components > Login > Index
+msgid "username"
+msgstr ""
+
+#: components/Login/index.tsx:148
+#: components/Security/SetPassword.tsx:54
+#. Used in: Components > Login > Index ⬤ Components > Security > Set Password
+msgid "password"
+msgstr ""
+
+#: components/FormPlugins/CollectionRelOneToMany.tsx:181
+#: components/QueryComboBox/index.tsx:520
+#. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
+msgid "collectionAccessDenied"
+msgstr ""
+
+#: components/FormPlugins/CollectionRelOneToMany.tsx:184
+#: components/QueryComboBox/index.tsx:523
+#. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
+msgid "collectionAccessDeniedDescription"
+msgstr ""
+
+#: components/Header/userToolDefinitions.ts:33
+#: components/PasswordChange/index.tsx:99
+#: components/Router/EntrypointRouter.tsx:40
+#: components/Security/SetPassword.tsx:92
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Password Change > Index ⬤ Components > Router > Entrypoint Router ⬤ Components > Security > Set Password
+msgid "changePassword"
+msgstr ""
+
+#: components/PasswordChange/index.tsx:65
+#. Used in: Components > Password Change > Index
+msgid "oldPassword"
+msgstr ""
+
+#: components/PasswordChange/index.tsx:76
+#. Used in: Components > Password Change > Index
+msgid "newPassword"
+msgstr ""
+
+#: components/PasswordChange/index.tsx:88
+#. Used in: Components > Password Change > Index
+msgid "repeatPassword"
+msgstr ""
+
+#: components/Core/Main.tsx:94
+#: components/Header/userToolDefinitions.ts:27
+#. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions
+msgid "logOut"
+msgstr ""
+
+#: components/Security/MissingAgentsDialog.tsx:99
+#. Used in: Components > Security > Missing Agents Dialog
+msgid "setUserAgents"
+msgstr ""
+
+#: components/Core/Main.tsx:101
+#. Used in: Components > Core > Main
+msgid "noAgent"
+msgstr ""
+
+#: components/Core/Main.tsx:104
+#. Used in: Components > Core > Main
+msgid "noAgentDescription"
+msgstr ""
+
+#: components/Login/OicLogin.tsx:46
+#: components/Login/index.tsx:121
+#. Used in: Components > Login > Oic Login ⬤ Components > Login > Index
+msgid "helloMessage"
+msgstr ""
+
+#: components/Login/OicLogin.tsx:48
+#. Used in: Components > Login > Oic Login
+msgid "oicWelcomeMessage"
+msgstr ""
+
+#: components/Login/OicLogin.tsx:80
+#. Used in: Components > Login > Oic Login
+msgid "legacyLogin"
+msgstr ""
+
+#: components/Login/index.tsx:123
+#. Used in: Components > Login > Index
+msgid "unknownOicUser"
+msgstr ""
+
+#: components/Header/userToolDefinitions.ts:83
+#: components/Router/OverlayRoutes.tsx:173
+#: components/Toolbar/MasterKey.tsx:43
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
+msgid "generateMasterKey"
+msgstr ""
+
+#: components/Toolbar/MasterKey.tsx:71
+#. Used in: Components > Toolbar > Master Key
+msgid "userPassword"
+msgstr ""
+
+#: components/Toolbar/MasterKey.tsx:40
+#. Used in: Components > Toolbar > Master Key
+msgid "generate"
+msgstr ""
+
+#: components/Toolbar/MasterKey.tsx:98
+#. Used in: Components > Toolbar > Master Key
+msgid "masterKeyGenerated"
+msgstr ""
+
+#: components/Toolbar/MasterKey.tsx:104
+#. Used in: Components > Toolbar > Master Key
+msgid "masterKeyFieldLabel"
+msgstr ""
+
+#: components/Toolbar/MasterKey.tsx:62
+#. Used in: Components > Toolbar > Master Key
+msgid "incorrectPassword"
+msgstr ""
+
+#: components/Forms/OtherCollectionView.tsx:66
+#. Used in: Components > Forms > Other Collection View
+msgid "noAccessToResource"
+msgstr ""
+
+#: components/Forms/OtherCollectionView.tsx:71
+#. Used in: Components > Forms > Other Collection View
+msgid "resourceInaccessible"
+msgstr ""
+
+#: components/Forms/OtherCollectionView.tsx:74
+#. Used in: Components > Forms > Other Collection View
+msgid "selectCollection"
+msgstr ""
+
+#: components/Forms/OtherCollectionView.tsx:92
+#. 🟥Example: You can login to the Collection, to proceed:. Used in: Components > Forms > Other Collection View
+msgid "loginToProceed"
+msgstr ""
+
+#: components/Permissions/FormatError.tsx:33
+#: components/Permissions/PermissionDenied.tsx:232
+#. Used in: Components > Permissions > Format Error ⬤ Components > Permissions > Permission Denied
+msgid "sessionTimeOut"
+msgstr ""
+
+#: components/Permissions/PermissionDenied.tsx:239
+#. Used in: Components > Permissions > Permission Denied
+msgid "sessionTimeOutDescription"
+msgstr ""
+
+#: components/Formatters/formatters.ts:196
+#: components/Forms/dataObjFormatters.ts:290
+#: components/QueryComboBox/index.tsx:198
+#: components/Statistics/Categories.tsx:76
+#: components/Statistics/StatItems.tsx:186
+#: components/Statistics/StatItems.tsx:269
+#. 🟥Used in field formatter if user doesn't have read access to the related table. Used in: Components > Formatters > Formatters ⬤ Components > Forms > Data Obj Formatters ⬤ Components > Query Combo Box > Index ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stat Items
+msgid "noPermission"
+msgstr ""
+
+#: components/Forms/DataTask.tsx:135
+#: components/Permissions/PermissionDenied.tsx:223
+#. Used in: Components > Forms > Data Task ⬤ Components > Permissions > Permission Denied
+msgid "permissionDeniedError"
+msgstr ""
+
+#: components/Permissions/FormatError.tsx:62
+#. Used in: Components > Permissions > Format Error
+msgid "permissionDeniedDescription"
+msgstr ""
+
+#: components/Forms/DataTask.tsx:138
+#. Used in: Components > Forms > Data Task
+msgid "emptyRecordSetsReadOnly"
+msgstr ""
+
+#: components/Permissions/FormatError.tsx:120
+#. Used in: Components > Permissions > Format Error
+msgid "permissionDeniedForUrl"
+msgstr ""
+
+#: components/ChooseCollection/index.tsx:170
+#. Used in: Components > Choose Collection > Index
+msgid "noAccessToCollections"
+msgstr ""
+
+#: components/Header/userToolDefinitions.ts:25
+#. Used in: Components > Header > User Tool Definitions
+msgid "userAccount"
+msgstr ""
+
+#: components/Security/AdminStatusPlugin.tsx:84
+#. Used in: Components > Security > Admin Status Plugin
+msgid "removeAdmin"
+msgstr ""
+
+#: components/Security/AdminStatusPlugin.tsx:52
+#. Used in: Components > Security > Admin Status Plugin
+msgid "canNotRemoveYourself"
+msgstr ""
+
+#: components/Security/AdminStatusPlugin.tsx:84
+#. Used in: Components > Security > Admin Status Plugin
+msgid "makeAdmin"
+msgstr ""
+
+#: components/Security/AdminStatusPlugin.tsx:50
+#: components/Security/UserCollections.tsx:128
+#. Used in: Components > Security > Admin Status Plugin ⬤ Components > Security > User Collections
+msgid "saveUserFirst"
+msgstr ""
+
+#: components/Security/AdminStatusPlugin.tsx:55
+#. Used in: Components > Security > Admin Status Plugin
+msgid "mustBeManager"
+msgstr ""
+
+#: components/AppResources/tree.ts:227
+#: components/Security/CollectionRole.tsx:185
+#. Used in: Components > App Resources > Tree ⬤ Components > Security > Collection Role
+msgid "users"
+msgstr ""
+
+#: components/Security/Institution.tsx:140
+#. Used in: Components > Security > Institution
+msgid "institutionUsers"
+msgstr ""
+
+#: components/Security/Collection.tsx:151
+#. Used in: Components > Security > Collection
+msgid "collectionUsers"
+msgstr ""
+
+#: components/Security/SetPassword.tsx:40
+#: components/Security/SetPassword.tsx:92
+#: components/Security/UserComponents.tsx:191
+#: components/Security/UserComponents.tsx:195
+#. Used in: Components > Security > Set Password ⬤ Components > Security > User Components
+msgid "setPassword"
+msgstr ""
+
+#: components/Security/SetPassword.tsx:29
+#: components/Security/SetPassword.tsx:50
+#. Used in: Components > Security > Set Password
+msgid "passwordsDoNotMatchError"
+msgstr ""
+
+#: components/Security/SetPassword.tsx:65
+#. Used in: Components > Security > Set Password
+msgid "confirmPassword"
+msgstr ""
+
+#: components/Toolbar/Security.tsx:133
+#. Used in: Components > Toolbar > Security
+msgid "collections"
+msgstr ""
+
+#: components/Security/UserCollections.tsx:76
+#. Used in: Components > Security > User Collections
+msgid "configureCollectionAccess"
+msgstr ""
+
+#: components/Header/userToolDefinitions.ts:69
+#: components/Router/Routes.tsx:73
+#: components/Toolbar/Security.tsx:102
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security
+msgid "securityPanel"
+msgstr ""
+
+#: components/Security/Institution.tsx:83
+#. Used in: Components > Security > Institution
+msgid "userRoleLibrary"
+msgstr ""
+
+#: components/Security/ImportExport.tsx:246
+#. Used in: Components > Security > Import Export
+msgid "userRoles"
+msgstr ""
+
+#: components/Security/CollectionComponents.tsx:122
+#: components/Security/PreviewComponents.tsx:88
+#. Used in: Components > Security > Collection Components ⬤ Components > Security > Preview Components
+msgid "collectionUserRoles"
+msgstr ""
+
+#: components/Security/UserComponents.tsx:109
+#. Used in: Components > Security > User Components
+msgid "assignedUserRoles"
+msgstr ""
+
+#: components/Security/Role.tsx:153
+#. Used in: Components > Security > Role
+msgid "rolePolicies"
+msgstr ""
+
+#: components/Security/PreviewComponents.tsx:145
+#. Used in: Components > Security > Preview Components
+msgid "userPolicies"
+msgstr ""
+
+#: components/Security/User.tsx:388
+#. Used in: Components > Security > User
+msgid "customUserPolices"
+msgstr ""
+
+#: components/Security/Role.tsx:117
+#. Used in: Components > Security > Role
+msgid "role"
+msgstr ""
+
+#: components/Security/PreviewTables.tsx:65
+#. Used in: Components > Security > Preview Tables
+msgid "read"
+msgstr ""
+
+#: components/Security/Preview.tsx:61
+#. Used in: Components > Security > Preview
+msgid "userPermissionPreview"
+msgstr ""
+
+#: components/Security/Preview.tsx:65
+#. Used in: Components > Security > Preview
+msgid "outOfDateWarning"
+msgstr ""
+
+#: components/Security/PreviewComponents.tsx:173
+#. Used in: Components > Security > Preview Components
+msgid "allUsers"
+msgstr ""
+
+#: components/Security/PreviewComponents.tsx:174
+#. Used in: Components > Security > Preview Components
+msgid "thisUser"
+msgstr ""
+
+#: components/Permissions/FormatError.tsx:67
+#: components/Security/PreviewComponents.tsx:91
+#: components/Security/PreviewComponents.tsx:147
+#. Used in: Components > Permissions > Format Error ⬤ Components > Security > Preview Components
+msgid "action"
+msgstr ""
+
+#: components/AttachmentsBulkImport/Import.tsx:209
+#: components/Permissions/FormatError.tsx:68
+#: components/Security/PreviewComponents.tsx:92
+#: components/Security/PreviewComponents.tsx:148
+#. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Permissions > Format Error ⬤ Components > Security > Preview Components
+msgid "resource"
+msgstr ""
+
+#: components/Security/PreviewComponents.tsx:176
+#. Used in: Components > Security > Preview Components
+msgid "allCollections"
+msgstr ""
+
+#: components/Security/PreviewComponents.tsx:177
+#. Used in: Components > Security > Preview Components
+msgid "thisCollection"
+msgstr ""
+
+#: components/Security/utils.ts:144
+#. Used in: Components > Security > Utils
+msgid "allActions"
+msgstr ""
+
+#: components/Security/UserCollections.tsx:260
+#. Used in: Components > Security > User Collections
+msgid "collectionAccess"
+msgstr ""
+
+#: components/Router/Routes.tsx:150
+#. Used in: Components > Router > Routes
+msgid "createRole"
+msgstr ""
+
+#: components/Router/Routes.tsx:99
+#: components/Router/Routes.tsx:158
+#: components/Security/RoleTemplate.tsx:83
+#. Used in: Components > Router > Routes ⬤ Components > Security > Role Template
+msgid "newRole"
+msgstr ""
+
+#: components/Security/RoleTemplate.tsx:108
+#. Used in: Components > Security > Role Template
+msgid "fromLibrary"
+msgstr ""
+
+#: components/Security/RoleTemplate.tsx:177
+#. Used in: Components > Security > Role Template
+msgid "fromExistingRole"
+msgstr ""
+
+#: components/Security/ImportExport.tsx:32
+#. Used in: Components > Security > Import Export
+msgid "createNewRoles"
+msgstr ""
+
+#: components/Security/ImportExport.tsx:30
+#. Used in: Components > Security > Import Export
+msgid "updateExistingRoles"
+msgstr ""
+
+#: components/Security/ImportExport.tsx:31
+#. Used in: Components > Security > Import Export
+msgid "unchangedRoles"
+msgstr ""
+
+#: components/Security/UserComponents.tsx:86
+#. Used in: Components > Security > User Components
+msgid "institutionAdmin"
+msgstr ""
+
+#: components/Security/UserInviteLink.tsx:51
+#. Used in: Components > Security > User Invite Link
+msgid "createInviteLink"
+msgstr ""
+
+#: components/Security/UserInviteLink.tsx:56
+#. Used in: Components > Security > User Invite Link
+msgid "userInviteLink"
+msgstr ""
+
+#: components/Security/UserInviteLink.tsx:61
+#. Used in: Components > Security > User Invite Link
+msgid "userInviteLinkDescription"
+msgstr ""
+
+#: components/Security/UserInviteLink.tsx:72
+#. Used in: Components > Security > User Invite Link
+msgid "noProvidersForUserInviteLink"
+msgstr ""
+
+#: components/Security/UserComponents.tsx:243
+#. Used in: Components > Security > User Components
+msgid "legacyPermissions"
+msgstr ""
+
+#: components/Security/UserComponents.tsx:198
+#. Used in: Components > Security > User Components
+msgid "setPasswordBeforeSavePrompt"
+msgstr ""
+
+#: components/Security/UserCollections.tsx:133
+#. Used in: Components > Security > User Collections
+msgid "setCollections"
+msgstr ""
+
+#: components/Security/MissingAgentsDialog.tsx:153
+#. Used in: Components > Security > Missing Agents Dialog
+msgid "agentInUse"
+msgstr ""
+
+#: components/Security/MissingAgentsDialog.tsx:102
+#. Used in: Components > Security > Missing Agents Dialog
+msgid "setAgentsBeforeProceeding"
+msgstr ""
+
+#: components/Security/UserComponents.tsx:211
+#. Used in: Components > Security > User Components
+msgid "externalIdentityProviders"
+msgstr ""
+
+#: components/Security/registry.ts:116
+#. Used in: Components > Security > Registry
+msgid "allTables"
+msgstr ""
+
+#: components/Security/Institution.tsx:194
+#. Used in: Components > Security > Institution
+msgid "loadingAdmins"
+msgstr ""
+
+#: components/Security/Institution.tsx:158
+#. 🟥Shown next to user name for admin users. Used in: Components > Security > Institution
+msgid "specifyAdmin"
+msgstr ""
+
+#: components/Security/Institution.tsx:162
+#. 🟥Shown next to user name for admin users. Used in: Components > Security > Institution
+msgid "legacyAdmin"
+msgstr ""
+
+#: components/Security/Role.tsx:227
+#. Used in: Components > Security > Role
+msgid "deleteRoleWithUsers"
+msgstr ""
+
+#: components/Security/Role.tsx:230
+#. Used in: Components > Security > Role
+msgid "deleteRoleWithUsersDescription"
+msgstr ""
+
+#: components/Security/User.tsx:305
+#. Used in: Components > Security > User
+msgid "institutionPolicies"
+msgstr ""
+
+#: components/Security/User.tsx:665
+#. Used in: Components > Security > User
+msgid "cantRemoveLastAdmin"
+msgstr ""
+
+#: components/Security/User.tsx:668
+#. Used in: Components > Security > User
+msgid "cantRemoveLastAdminDescription"
+msgstr ""
+
+#: components/FormEditor/Editor.tsx:74
+#: components/Security/Policies.tsx:42
+#. Used in: Components > Form Editor > Editor ⬤ Components > Security > Policies
+msgid "switchToHorizontalLayout"
+msgstr ""
+
+#: components/FormEditor/Editor.tsx:75
+#: components/Security/Policies.tsx:43
+#. Used in: Components > Form Editor > Editor ⬤ Components > Security > Policies
+msgid "switchToVerticalLayout"
+msgstr ""
+
+#: components/Security/Preview.tsx:78
+#: components/Security/registry.ts:81
+#. Used in: Components > Security > Preview ⬤ Components > Security > Registry
+msgid "advancedTables"
+msgstr ""
+
+#: components/Security/utils.ts:132
+#. Used in: Components > Security > Utils
+msgid "excludedInstitutionalPolicies"
+msgstr ""
+
+#: components/Security/Policies.tsx:169
+#. Used in: Components > Security > Policies
+msgid "excludedInstitutionalPoliciesDescription"
+msgstr ""
+
+#: components/Security/User.tsx:262
+#. Used in: Components > Security > User
+msgid "accountSetupOptions"
+msgstr ""
+
+#: components/QueryBuilder/SpecifyUserAutoComplete.tsx:9
+#: components/QueryBuilder/SpecifyUserAutoComplete.tsx:10
+#. Used in: Components > Query Builder > Specify User Auto Complete
+msgid "currentUser"
+msgstr ""
+
+#: components/Security/CollectionComponents.tsx:66
+#: components/Security/CollectionComponents.tsx:71
+#: components/Security/RoleTemplate.tsx:96
+#. Used in: Components > Security > Collection Components ⬤ Components > Security > Role Template
+msgid "addRole"
+msgstr ""
+
+#: components/Security/Collection.tsx:215
+#. Used in: Components > Security > Collection
+msgid "addUser"
+msgstr ""
