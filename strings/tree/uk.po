@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-08-02 19:09+0000\n"
+"PO-Revision-Date: 2024-08-03 03:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/tree/"
 "uk/>\n"
@@ -59,7 +59,7 @@ msgstr "Синонімізувати"
 #: components/TreeView/Actions.tsx:403
 #, fuzzy
 msgid "actionFailed"
-msgstr "Операція не вдалася"
+msgstr "Не вдалося виконати операцію"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:406
@@ -90,7 +90,7 @@ msgstr "Перемістіть сюди \"{nodeName:string}\"."
 #: components/TreeView/Actions.tsx:387
 #, fuzzy
 msgid "moveNodePreparationsHere"
-msgstr "Перемістіть сюди всі препарати \"{nodeName:string}\"."
+msgstr "Перемістіть усі препарати \"{nodeName:string}\" сюди"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:450
@@ -104,7 +104,9 @@ msgstr ""
 #: components/TreeView/Actions.tsx:456
 #, fuzzy
 msgid "nodeBulkMoveMessage"
-msgstr "Скасувати синонімію"
+msgstr ""
+"Підготовка вузла {treeName:string} \"{nodeName:string}\" буде розміщено в "
+"новому місці \"{parentName:string}\"."
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:358
@@ -190,7 +192,7 @@ msgstr "Синонімізувати вузол"
 #: components/TreeView/Actions.tsx:391
 #, fuzzy
 msgid "makeSynonym"
-msgstr "Зробіть {nodeName:string} синонімом {synonymName:string}"
+msgstr "Зробити {nodeName:string} синонімом {synonymName:string}"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:346
@@ -352,7 +354,7 @@ msgstr "Виберіть батьківський рейтинг"
 #: components/TreeView/Actions.tsx:440
 #, fuzzy
 msgid "moveItems"
-msgstr "Переміщення елементів"
+msgstr "Перемістити елементи"
 
 #. Used in: Components > Tree View > Index
 #: components/TreeView/index.tsx:262
