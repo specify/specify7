@@ -1,3 +1,4 @@
+from ast import mod
 from django.db.models import ProtectedError
 
 from specifyweb.specify import models
@@ -54,5 +55,6 @@ class CollectionTests(ApiTests):
         with self.assertRaises(ProtectedError):
             self.collection.delete()
 
+        models.CollectionObjectType.objects.filter(collection=self.collection).delete()
         models.Collectionobject.objects.filter(collection=self.collection).delete()
         self.collection.delete()

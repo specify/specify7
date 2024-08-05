@@ -1,4 +1,7 @@
+import { formsText } from '../../localization/forms';
 import { resourcesText } from '../../localization/resources';
+import { f } from '../../utils/functools';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import type { BusinessRuleResult } from './businessRules';
 import type { AnySchema, TableFields } from './helperTypes';
 import {
@@ -17,6 +20,7 @@ import type {
   Address,
   BorrowMaterial,
   CollectionObject,
+  CollectionObjectType,
   Determination,
   DNASequence,
   LoanPreparation,
@@ -47,6 +51,7 @@ type MappedBusinessRuleDefs = {
 };
 
 const CURRENT_DETERMINATION_KEY = 'determination-isCurrent';
+const DETERMINATION_TAXON_KEY = 'determination-taxon';
 
 export const businessRuleDefs: MappedBusinessRuleDefs = {
   Address: {
@@ -147,13 +152,51 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         );
       }
     },
+    fieldChecks: {
+      collectionObjectType: (resource) => {
+        // Fields ignored for better UX/backend restrictions
+        const fieldsToIgnore = [
+          'cataloger',
+          'catalogNumber',
+          'collection',
+          'collectionObjectType',
+          'version',
+        ];
+
+        // Clear all fields of CO except to-many dependents
+        resource.specifyTable.fields
+          .filter((field) => !f.includes(fieldsToIgnore, field.name))
+          .map((field) => {
+            const fieldName = field.name as keyof (CollectionObject['fields'] &
+              CollectionObject['toManyDependent'] &
+              CollectionObject['toManyIndependent'] &
+              CollectionObject['toOneDependent'] &
+              CollectionObject['toOneIndependent']);
+            if (
+              !field.isRelationship ||
+              !relationshipIsToMany(field) ||
+              !field.isDependent()
+            )
+              resource.set(fieldName, null);
+          });
+
+        // Delete all determinations
+        const determinations = resource.getDependentResource('determinations');
+        while (
+          determinations !== undefined &&
+          determinations.models.length > 0
+        ) {
+          determinations.remove(determinations.models[0]);
+        }
+      },
+    },
   },
 
   Determination: {
     fieldChecks: {
       taxon: async (
         determination: SpecifyResource<Determination>
-      ): Promise<BusinessRuleResult> =>
+      ): Promise<BusinessRuleResult | undefined> =>
         determination
           .rgetPromise('taxon', true)
           .then((taxon: SpecifyResource<Taxon> | null) => {
@@ -165,6 +208,40 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
                 .then(async (accepted) =>
                   accepted === null ? taxon : getLastAccepted(accepted)
                 );
+
+            const collectionObject = determination.collection?.related;
+            if (
+              collectionObject !== undefined &&
+              collectionObject.specifyTable.name === 'CollectionObject'
+            )
+              (collectionObject as SpecifyResource<CollectionObject>)
+                .rgetPromise('collectionObjectType', true)
+                .then((coType: SpecifyResource<CollectionObjectType>) => {
+                  /*
+                   * Have to set save blockers directly here to get this working.
+                   * Since following code has to wait for above rgetPromise to resolve, returning a Promise<BusinessRuleResult> for validation here is too slow and
+                   * does not get captured by business rules.
+                   */
+                  if (
+                    coType.get('taxonTreeDef') ===
+                    (taxon?.get('definition') ?? '')
+                  ) {
+                    setSaveBlockers(
+                      determination,
+                      determination.specifyTable.field.taxon,
+                      [],
+                      DETERMINATION_TAXON_KEY
+                    );
+                  } else {
+                    setSaveBlockers(
+                      determination,
+                      determination.specifyTable.field.taxon,
+                      [formsText.invalidTree()],
+                      DETERMINATION_TAXON_KEY
+                    );
+                  }
+                });
+
             return taxon === null
               ? {
                   isValid: true,
