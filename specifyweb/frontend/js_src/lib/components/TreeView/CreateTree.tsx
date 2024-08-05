@@ -13,7 +13,9 @@ import { treeText } from '../../localization/tree';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
-import type { AnyTree } from '../DataModel/helperTypes';
+import type { AnyTree, FilterTablesByEndsWith } from '../DataModel/helperTypes';
+import { tables } from '../DataModel/tables';
+import { ResourceView } from '../Forms/ResourceView';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 
@@ -22,13 +24,19 @@ export function CreateTree<SCHEMA extends AnyTree>({
 }: {
   readonly tableName: SCHEMA['tableName'];
 }): JSX.Element {
-  /*
-   *TODO:
-   *- add parameter to get the resource that will be added to using serializedresource
-   *- for this to work, you set the template like how you would in ViewSetTemplates.
-   */
 
   const [isActive, setIsActive] = React.useState(0);
+
+  // TODO: Go serialized resource route instead, so we can easily read the default tree.
+  /*const treeDefResource: SerializedResource<TaxonTreeDef> = {
+    name: 'test',
+    remarks: 'this is a test tree',
+    fullnamedirection: 'forward',
+  }*/
+
+  // Currently, ResourceView is reloading each time you try to add a TreeDefItem. Needs to be solved
+  // May be solved by serialization and useMemo
+  const treeDefResource = React.useMemo(() => new tables.TaxonTreeDef.Resource(), []);
 
   return (
     <>
@@ -62,14 +70,17 @@ export function CreateTree<SCHEMA extends AnyTree>({
           </Ul>
         </Dialog>
       ) : isActive === 2 ? (
-        <Dialog
-          buttons={commonText.save()}
-          header={treeText.newTree()}
-          specialMode="orangeBar"
-          onClose={() => setIsActive(0)}
-        >
-          Taxon Definition form goes here.
-        </Dialog>
+          <ResourceView
+            dialog="modal"
+            isDependent={false}
+            isSubForm={false}
+            resource={treeDefResource}
+            title={treeText.newTree()}
+            onAdd={undefined}
+            onClose={() => setIsActive(0)}
+            onDeleted={undefined}
+            onSaved={(): void => globalThis.location.reload()}
+          />
       ) : null}
     </>
   );
