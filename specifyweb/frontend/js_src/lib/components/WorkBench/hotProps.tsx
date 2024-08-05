@@ -2,9 +2,8 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 
 import { wbPlanText } from '../../localization/wbPlan';
-import { f } from '../../utils/functools';
 import { icons } from '../Atoms/Icons';
-import { getTable } from '../DataModel/tables';
+import { TableIcon } from '../Molecules/TableIcon';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import type { WbMapping } from './mapping';
@@ -62,23 +61,19 @@ export function useHotProps({
 
   const colHeaders = React.useCallback(
     (physicalCol: number) => {
-      const tableIcon = mappings?.mappedHeaders?.[physicalCol];
-      const isMapped = tableIcon !== undefined;
+      const tableIconUrl = mappings?.mappedHeaders?.[physicalCol];
+      const isMapped = tableIconUrl !== undefined;
       const mappingCol = physicalColToMappingCol(physicalCol);
       const tableName =
         (typeof mappingCol === 'number'
           ? mappings?.tableNames[mappingCol]
-          : undefined) ?? tableIcon?.split('/').slice(-1)?.[0]?.split('.')?.[0];
-      const tableLabel = isMapped
-        ? f.maybe(tableName, getTable)?.label ?? tableName ?? ''
-        : '';
-      // REFACTOR: use new table icons
+          : undefined) ?? tableIconUrl?.split('/').slice(-1)?.[0]?.split('.')?.[0];
+
       return ReactDOMServer.renderToString(
         <ColumnHeader
           columnName={dataset.columns[physicalCol]}
           isMapped={isMapped}
-          tableIcon={tableIcon}
-          tableLabel={tableLabel}
+          tableName={tableName}
         />
       );
     },
@@ -133,22 +128,19 @@ export function useHotProps({
 
 function ColumnHeader({
   isMapped,
-  tableLabel,
-  tableIcon,
   columnName,
+  tableName
 }: {
   readonly isMapped: boolean;
-  readonly tableLabel: string;
-  readonly tableIcon: string | undefined;
   readonly columnName: string;
+  readonly tableName: string | undefined;
 }): JSX.Element {
   return (
     <div className="flex items-center gap-1 pl-4">
-      {isMapped ? (
-        <img
-          alt={tableLabel}
-          className="w-table-icon h-table-icon"
-          src={tableIcon}
+      {isMapped && tableName !== undefined ? (
+        <TableIcon
+          name={tableName}
+          label={false}
         />
       ) : (
         <span
