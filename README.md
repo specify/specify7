@@ -19,7 +19,7 @@ web-based data access and cloud computing. Specify 7 uses
 the same interface layout language as Specify 6, so any user interface
 customization made in one platform is mirrored in the other. Also Specify 6 and
 Specify 7 use the same data model and can work from the same Specify MySQL or MariaDB
-database, which means 6 an 7 can be run simultaneously with any Specify
+database, which means 6 and 7 can be run simultaneously with any Specify
 collection. Specify 7 helps
 transition Specify 6 collections to cloud computing. It is also a great starting
 platform for institutions that prefer zero workstation software installation and
