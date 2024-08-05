@@ -225,7 +225,6 @@ export const fetchRows = async <
         )
       )
     ),
-
     { headers: { Accept: 'application/json' } }
   );
   const keys = Object.keys(fields);

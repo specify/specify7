@@ -84,6 +84,9 @@ const viewSets = (): ViewSets =>
       {
         name: localized('CollectionObjectAttachment'),
         description: 'The Collection Object-Attachment View.',
+        businessRules: localized(
+          'edu.ku.brc.specify.datamodel.busrules.AttachmentBusRules'
+        ),
         legacyIsInternal: undefined,
         legacyIsExternal: undefined,
         legacyTable: undefined,
@@ -360,6 +363,8 @@ test('Create new view definition', () =>
           ],
         },
         description: 'The Collection Object-Attachment View.',
+        businessRules:
+          'edu.ku.brc.specify.datamodel.busrules.AttachmentBusRules',
         legacyResourceLabels: false,
         legacyUseBusinessRules: true,
         name: 'CollectionObjectAttachment',
@@ -414,6 +419,8 @@ test('Create new view definition', () =>
           ],
         },
         description: '',
+        businessRules:
+          'edu.ku.brc.specify.datamodel.busrules.AttachmentBusRules',
         legacyUseBusinessRules: true,
         name: 'CollectionObjectAttachment_2',
         table: '[table CollectionObjectAttachment]',
@@ -558,6 +565,8 @@ test('Add new view definition based on existing', () =>
           ],
         },
         description: 'The Collection Object-Attachment View.',
+        businessRules:
+          'edu.ku.brc.specify.datamodel.busrules.AttachmentBusRules',
         legacyResourceLabels: false,
         legacyUseBusinessRules: true,
         name: 'CollectionObjectAttachment',
@@ -608,6 +617,8 @@ test('Add new view definition based on existing', () =>
           ],
         },
         description: 'The Collection Object-Attachment View.',
+        businessRules:
+          'edu.ku.brc.specify.datamodel.busrules.AttachmentBusRules',
         legacyResourceLabels: false,
         legacyUseBusinessRules: true,
         name: 'A',

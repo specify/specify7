@@ -22,7 +22,10 @@ STRINGID_RE = re.compile(r'^([^\.]*)\.([^\.]*)\.(.*)$')
 DATE_PART_RE = re.compile(r'(.*)((NumericDay)|(NumericMonth)|(NumericYear))$')
 
 # Pull out author or groupnumber field from taxon query fields.
-TAXON_FIELD_RE = re.compile(r'(.*) ((Author)|(GroupNumber))$')
+TAXON_FIELD_RE = re.compile(r'(.*) ((Author)|(groupNumber))$')
+
+# Pull out geographyCode field from geography query fields.
+GEOGRAPHY_FIELD_RE = re.compile(r'(.*) ((geographyCode))$')
 
 # Look to see if we are dealing with a tree node ID.
 TREE_ID_FIELD_RE = re.compile(r'(.*) (ID)$')
@@ -58,7 +61,7 @@ def make_stringid(fs, table_list):
     return table_list, fs.table.name.lower(), field_name
 
 
-class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table date_part tree_rank tree_field")):
+class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table join_path table date_part tree_rank tree_field")):
     @classmethod
     def from_path(cls, path_in, add_id=False):
         path = deque(path_in)
@@ -80,6 +83,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
             join_path.append(node.idField)
 
         return cls(root_table=root_table,
+                   root_sql_table=getattr(models, root_table.name),
                    join_path=tuple(join_path),
                    table=node,
                    date_part='Full Date' if (join_path and join_path[-1].is_temporal()) else None,
@@ -117,8 +121,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
                 tree_rank = tree_id_match.group(1)
                 tree_field = 'ID'
             else:
-                tree_field_match = TAXON_FIELD_RE.match(extracted_fieldname) \
-                                   if node is datamodel.get_table('Taxon') else None
+                tree_field_match = TAXON_FIELD_RE.match(extracted_fieldname) if node is datamodel.get_table('Taxon') else GEOGRAPHY_FIELD_RE.match(extracted_fieldname) if node is datamodel.get_table('Geography') else None
                 if tree_field_match:
                     tree_rank = tree_field_match.group(1)
                     tree_field = tree_field_match.group(2)
@@ -130,6 +133,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
                 date_part = "Full Date"
 
         result = cls(root_table=root_table,
+                     root_sql_table=getattr(models, root_table.name),
                      join_path=tuple(join_path),
                      table=node,
                      date_part=date_part,
@@ -177,9 +181,12 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
         field = self.get_field()
         return field is not None and field.is_temporal()
 
+    def is_json(self):
+        field = self.get_field()
+        return field is not None and field.type == 'json'
+
     def build_join(self, query, join_path):
-        model = getattr(models, self.root_table.name)
-        return query.build_join(self.root_table, model, join_path)
+        return query.build_join(self.root_table, self.root_sql_table, join_path)
 
     def is_auditlog_obj_format_field(self, formatauditobjs):
         if not formatauditobjs or self.get_field() is None:
@@ -225,7 +232,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
 
         if self.tree_rank is None and self.get_field() is None:
             return (*query.objectformatter.objformat(
-                query, getattr(models, self.root_table.name), formatter), None, self.root_table)
+                query, self.root_sql_table, formatter), None, self.root_table)
 
         if self.is_relationship():
             # will be formatting or aggregating related objects

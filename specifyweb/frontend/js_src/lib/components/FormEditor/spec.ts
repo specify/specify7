@@ -1,9 +1,8 @@
 import { f } from '../../utils/functools';
-import type { RA, RR } from '../../utils/types';
+import type { RA } from '../../utils/types';
 import { defined, localized } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
 import { strictParseXml } from '../AppResources/parseXml';
-import type { Tables } from '../DataModel/types';
 import type { ViewDefinition } from '../FormParse';
 import type { SpecToJson } from '../Syncer';
 import { pipe, syncer } from '../Syncer';
@@ -19,6 +18,7 @@ import {
   getOriginalSyncerInput,
   setOriginalSyncerInput,
 } from '../Syncer/xmlUtils';
+import { getBusinessRuleClassFromTable } from './helpers';
 
 export const viewSetsSpec = f.store(() =>
   createXmlSpec({
@@ -53,21 +53,22 @@ const resolvedViewSpec = () =>
   pipe(
     syncers.object(viewSpec()),
     syncer(
-      ({ businessRules: _, table, ...node }) => ({
+      ({ table, ...node }) => ({
         ...node,
         table: table.parsed,
         legacyTable: table.bad,
       }),
-      ({ table, legacyTable, ...node }) => ({
+      ({ table, legacyTable, businessRules, ...node }) => ({
         ...node,
         table: { parsed: table, bad: legacyTable },
-        businessRules: localized(
-          typeof table === 'object'
-            ? `edu.ku.brc.specify.datamodel.busrules.${
-                businessRules[table.name] ?? table.name
-              }BusRules`
-            : ''
-        ),
+        businessRules:
+          f.trim(businessRules ?? '') === ''
+            ? localized(
+                typeof table === 'object'
+                  ? getBusinessRuleClassFromTable(table.name)
+                  : ''
+              )
+            : businessRules,
       })
     )
   );
@@ -98,14 +99,6 @@ export function parseFormView(definition: ViewDefinition) {
       ),
   };
 }
-
-/**
- * Most of the time business rules class name can be inferred from table name.
- * Exceptions:
- */
-const businessRules: Partial<RR<keyof Tables, string>> = {
-  Shipment: 'LoanGiftShipment',
-};
 
 const viewSpec = f.store(() =>
   createXmlSpec({

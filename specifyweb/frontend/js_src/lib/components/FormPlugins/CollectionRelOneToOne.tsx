@@ -6,6 +6,7 @@ import { Link } from '../Atoms/Link';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { CollectionObject } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
+import { InFormEditorContext } from '../FormEditor/Context';
 import { fetchOtherCollectionData } from './collectionRelData';
 
 export function CollectionOneToOnePlugin({
@@ -17,16 +18,23 @@ export function CollectionOneToOnePlugin({
   readonly relationship: string;
   readonly formatting: string | undefined;
 }): JSX.Element | null {
+  const isInFormEditor = React.useContext(InFormEditorContext);
+  const muteWrongCollectionError = isInFormEditor;
   const [data] = useAsyncState(
     React.useCallback(
       async () =>
-        fetchOtherCollectionData(resource, relationship, formatting)
+        fetchOtherCollectionData(
+          resource,
+          relationship,
+          formatting,
+          muteWrongCollectionError
+        )
           .then((data) => data ?? false)
           .catch((error) => {
             softFail(error);
             return undefined;
           }),
-      [resource, relationship]
+      [resource, relationship, muteWrongCollectionError]
     ),
     false
   );

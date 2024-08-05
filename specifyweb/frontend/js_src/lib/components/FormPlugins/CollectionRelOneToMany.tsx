@@ -15,6 +15,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { tables } from '../DataModel/tables';
 import type { CollectionObject } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
+import { InFormEditorContext } from '../FormEditor/Context';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
@@ -35,16 +36,21 @@ export function CollectionOneToManyPlugin({
   readonly relationship: string;
   readonly formatting: string | undefined;
 }): JSX.Element | null {
+  const isInFormEditor = React.useContext(InFormEditorContext);
+  const muteWrongCollectionError = isInFormEditor;
   const [data, setData] = useAsyncState<CollectionRelData | false>(
     React.useCallback(
       async () =>
-        fetchOtherCollectionData(resource, relationship, formatting).catch(
-          (error) => {
-            softFail(error);
-            return false;
-          }
-        ),
-      [resource, relationship]
+        fetchOtherCollectionData(
+          resource,
+          relationship,
+          formatting,
+          muteWrongCollectionError
+        ).catch((error) => {
+          softFail(error);
+          return false;
+        }),
+      [resource, relationship, muteWrongCollectionError]
     ),
     false
   );

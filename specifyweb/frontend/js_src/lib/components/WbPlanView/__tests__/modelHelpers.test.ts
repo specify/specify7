@@ -10,7 +10,7 @@ requireContext();
 theories(findRequiredMissingFields, [
   {
     in: [
-      mappingLines1.baseTableName as 'Accession',
+      mappingLines1.baseTableName as 'CollectionObject',
       (mappingLines1.lines as RA<SplitMappingPath>).map(
         ({ mappingPath }) => mappingPath
       ),

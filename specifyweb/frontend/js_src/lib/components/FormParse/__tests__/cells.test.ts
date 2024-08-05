@@ -1,3 +1,4 @@
+import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
 import type { PartialBy, ValueOf } from '../../../utils/types';
@@ -59,9 +60,11 @@ const xml = (xml: string): SimpleXmlNode =>
   toSimpleXmlNode(xmlToJson(strictParseXml(xml)));
 
 describe('parseFormCell', () => {
-  test('base case', () => {
+  test('base case', async () => {
     jest.spyOn(console, 'warn').mockImplementation();
-    expect(parseFormCell(tables.CollectionObject, xml('<cell />'))).toEqual(
+    await expect(
+      parseFormCell(tables.CollectionObject, xml('<cell />'))
+    ).resolves.toEqual(
       cell({
         type: 'Unsupported',
         cellType: undefined,
@@ -70,16 +73,16 @@ describe('parseFormCell', () => {
     );
   });
 
-  test('unsupported cell with some attributes', () => {
+  test('unsupported cell with some attributes', async () => {
     jest.spyOn(console, 'warn').mockImplementation();
-    expect(
+    await expect(
       parseFormCell(
         tables.CollectionObject,
         xml(
           '<cell invisible="true" type=" test2 " initialize="align=Center; verticalAlign=center" colSpan=" 5 " id="test" />'
         )
       )
-    ).toEqual(
+    ).resolves.toEqual(
       cell({
         id: 'test',
         colSpan: 3,
@@ -93,7 +96,7 @@ describe('parseFormCell', () => {
     );
   });
 
-  test('invisible field', () =>
+  test('invisible field', async () =>
     expect(
       parseFormCell(
         tables.CollectionObject,
@@ -101,7 +104,7 @@ describe('parseFormCell', () => {
           '<cell type=" field " uiType="text" invisible="true" name="CatalogNumber" isRequired="TRuE " initialize="align=RIGHT" colSpan=" 5 " id="test" />'
         )
       )
-    ).toEqual(
+    ).resolves.toEqual(
       cell({
         id: 'test',
         colSpan: 3,
@@ -120,11 +123,12 @@ describe('parseFormCell', () => {
           type: 'Text',
           maxLength: undefined,
           minLength: undefined,
+          whiteSpaceSensitive: false,
         },
       })
     ));
 
-  test('field required by schema', () =>
+  test('field required by schema', async () =>
     expect(
       parseFormCell(
         tables.CollectionObject,
@@ -132,7 +136,7 @@ describe('parseFormCell', () => {
           '<cell type="field" uiType="text" name="  CollectionObject.CollectionMemberId  " />'
         )
       )
-    ).toEqual(
+    ).resolves.toEqual(
       cell({
         type: 'Field',
         isRequired: true,
@@ -147,20 +151,85 @@ describe('parseFormCell', () => {
           type: 'Text',
           maxLength: undefined,
           minLength: undefined,
+          whiteSpaceSensitive: false,
         },
       })
     ));
 
-  test('unknown field', () => {
-    jest.spyOn(console, 'error').mockImplementation();
+  test('white space sensitivity required by schema', async () =>
     expect(
+      parseFormCell(
+        tables.TaxonTreeDefItem,
+        xml('<cell type="field" uiType="text" name="fullNameSeparator" />')
+      )
+    ).resolves.toEqual(
+      cell({
+        align: 'left',
+        ariaLabel: undefined,
+        colSpan: 1,
+        fieldDefinition: {
+          defaultValue: undefined,
+          isReadOnly: false,
+          max: undefined,
+          maxLength: undefined,
+          min: undefined,
+          minLength: undefined,
+          step: undefined,
+          type: 'Text',
+          whiteSpaceSensitive: true,
+        },
+        fieldNames: ['fullNameSeparator'],
+        id: undefined,
+        isRequired: false,
+        type: 'Field',
+        verticalAlign: 'center',
+        visible: true,
+      })
+    ));
+
+  test('white space sensitivity on field', async () =>
+    expect(
+      parseFormCell(
+        tables.CollectionObject,
+        xml(
+          '<cell type="field" uitype="text" name="text1" initialize="whiteSpaceSensitive=true" />'
+        )
+      )
+    ).resolves.toEqual(
+      cell({
+        align: 'left',
+        ariaLabel: undefined,
+        colSpan: 1,
+        fieldDefinition: {
+          defaultValue: undefined,
+          isReadOnly: false,
+          max: undefined,
+          maxLength: undefined,
+          min: undefined,
+          minLength: undefined,
+          step: undefined,
+          type: 'Text',
+          whiteSpaceSensitive: true,
+        },
+        fieldNames: ['text1'],
+        id: undefined,
+        isRequired: false,
+        type: 'Field',
+        verticalAlign: 'center',
+        visible: true,
+      })
+    ));
+
+  test('unknown field', async () => {
+    jest.spyOn(console, 'error').mockImplementation();
+    await expect(
       parseFormCell(
         tables.CollectionObject,
         xml(
           '<cell type="field" uiType="text" name="this" initialize="verticalAlign=end;"/>'
         )
       )
-    ).toEqual(
+    ).resolves.toEqual(
       cell({
         type: 'Blank',
         verticalAlign: 'end',
@@ -168,14 +237,14 @@ describe('parseFormCell', () => {
     );
   });
 
-  test('unknown field with default value', () => {
+  test('unknown field with default value', async () => {
     jest.spyOn(console, 'error').mockImplementation();
-    expect(
+    await expect(
       parseFormCell(
         tables.CollectionObject,
         xml('<cell type="field" uiType="text" name="this" default="A" />')
       )
-    ).toEqual(
+    ).resolves.toEqual(
       cell({
         type: 'Field',
         isRequired: false,
@@ -190,18 +259,19 @@ describe('parseFormCell', () => {
           type: 'Text',
           maxLength: undefined,
           minLength: undefined,
+          whiteSpaceSensitive: undefined,
         },
       })
     );
   });
 
-  test('relationship field names are parsed correctly', () =>
+  test('relationship field names are parsed correctly', async () =>
     expect(
       parseFormCell(
         tables.Collector,
         xml('<cell type="field" uiType="text" name="agent.lastName" />')
       )
-    ).toEqual(
+    ).resolves.toEqual(
       cell({
         type: 'Field',
         // The field is required by the data model
@@ -217,11 +287,12 @@ describe('parseFormCell', () => {
           type: 'Text',
           minLength: undefined,
           maxLength: undefined,
+          whiteSpaceSensitive: false,
         },
       })
     ));
 
-  test('fieldName overwritten by the PartialDateUI plugin', () =>
+  test('fieldName overwritten by the PartialDateUI plugin', async () =>
     expect(
       parseFormCell(
         tables.CollectionObject,
@@ -229,7 +300,7 @@ describe('parseFormCell', () => {
           '<cell type="field" uiType="plugin" initialize="name=PartialDateUI;df=catalogedDate" />'
         )
       )
-    ).toEqual(
+    ).resolves.toEqual(
       cell({
         type: 'Field',
         isRequired: false,
@@ -250,13 +321,13 @@ describe('parseFormCell', () => {
       })
     ));
 
-  test('simple label with custom text', () =>
+  test('simple label with custom text', async () =>
     expect(
       parseFormCell(
         tables.CollectionObject,
         xml('<cell type="Label" label="some text" />')
       )
-    ).toEqual(
+    ).resolves.toEqual(
       cell({
         // Labels are right aligned by default
         align: 'right',
@@ -269,7 +340,7 @@ describe('parseFormCell', () => {
       })
     ));
 
-  test('label with Specify 6 localization string', () =>
+  test('label with Specify 6 localization string', async () =>
     expect(
       parseFormCell(
         tables.CollectionObject,
@@ -277,7 +348,7 @@ describe('parseFormCell', () => {
           '<cell type="Label" label="FINDNEXT" labelfor=" 42" initialize="verticalAlign=center;"/>'
         )
       )
-    ).toEqual(
+    ).resolves.toEqual(
       cell({
         align: 'right',
         verticalAlign: 'center',
@@ -289,7 +360,7 @@ describe('parseFormCell', () => {
       })
     ));
 
-  test('Separator', () =>
+  test('Separator', async () =>
     expect(
       parseFormCell(
         tables.CollectionObject,
@@ -297,7 +368,7 @@ describe('parseFormCell', () => {
           '<cell type="separator"   label="FINDNEXT" name="unused" additional="unused" icon=" 42" forClass=" CollectionObject" />'
         )
       )
-    ).toEqual(
+    ).resolves.toEqual(
       cell({
         type: 'Separator',
         label: localized('Find Next'),
@@ -307,13 +378,13 @@ describe('parseFormCell', () => {
       })
     ));
 
-  test('basic SubView', () =>
+  test('basic SubView', async () =>
     expect(
       parseFormCell(
         tables.CollectionObject,
         xml('<cell type="subView" name="determinationS "  />')
       )
-    ).toEqual(
+    ).resolves.toEqual(
       cell({
         type: 'SubView',
         formType: 'form',
@@ -326,7 +397,20 @@ describe('parseFormCell', () => {
       })
     ));
 
-  test('SubView button with custom icon and sorting', () =>
+  overrideAjax('/context/view.json?name=testView', {
+    name: 'testView',
+    class: 'edu.ku.brc.specify.datamodel.Determination',
+    busrules: 'edu.ku.brc.specify.datamodel.busrules.DeterminationBusRules',
+    isexternal: 'true',
+    resourcelabels: 'false',
+    altviews: {},
+    viewdefs: {
+      'Determination Table':
+        '<viewdef type="formtable" name="Determination Table" class="edu.ku.brc.specify.datamodel.Determination" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">\n            <desc>Determination subform table for Collection Object form.</desc>\n            <definition>Determination</definition>\n        </viewdef>\n        ',
+    },
+  });
+
+  test('SubView button with custom icon and sorting', async () =>
     expect(
       parseFormCell(
         tables.CollectionObject,
@@ -334,7 +418,7 @@ describe('parseFormCell', () => {
           '<cell type="subView" name="determinations" defaultType="table" viewName="testView " initialize="sortField=-iscurrent ;btn=true  ; icon=test ; collapse=true" />'
         )
       )
-    ).toEqual(
+    ).resolves.toEqual(
       cell({
         type: 'SubView',
         formType: 'formTable',
@@ -347,14 +431,39 @@ describe('parseFormCell', () => {
       })
     ));
 
-  test('Panel with conditional rendering', () =>
+  test('Subview with table defaulttype', async () =>
     expect(
-      JSON.parse(
-        JSON.stringify(
-          parseFormCell(
-            tables.CollectionObject,
-            xml(
-              `<cell type="panel" colDef="1px,2px,2px">
+      parseFormCell(
+        tables.CollectingEvent,
+        xml(
+          '<cell type="subview" viewname="Collectors" id="5" name="collectors" colspan="13" rows="3"/>'
+        )
+      )
+    ).resolves.toEqual(
+      cell({
+        align: 'left',
+        ariaLabel: undefined,
+        colSpan: 7,
+        fieldNames: ['collectors'],
+        formType: 'formTable',
+        icon: undefined,
+        id: '5',
+        isButton: false,
+        isCollapsed: false,
+        sortField: undefined,
+        type: 'SubView',
+        verticalAlign: 'stretch',
+        viewName: 'Collectors',
+        visible: true,
+      })
+    ));
+
+  test('Panel with conditional rendering', async () =>
+    expect(
+      parseFormCell(
+        tables.CollectionObject,
+        xml(
+          `<cell type="panel" colDef="1px,2px,2px">
             <rows>
               <row>
                 <cell type="Label" label="FINDNEXT" labelfor=" 42" />
@@ -365,11 +474,9 @@ describe('parseFormCell', () => {
             <rows condition="always">
             </rows>
           </cell>`
-            )
-          )
         )
-      )
-    ).toEqual(
+      ).then((parsedCell) => JSON.parse(JSON.stringify(parsedCell)))
+    ).resolves.toEqual(
       cell({
         type: 'Panel',
         align: 'left',
@@ -426,7 +533,7 @@ describe('parseFormCell', () => {
       })
     ));
 
-  test('inline Panel', () =>
+  test('inline Panel', async () =>
     expect(
       parseFormCell(
         tables.CollectionObject,
@@ -434,7 +541,7 @@ describe('parseFormCell', () => {
           '<cell type="panel" colDef="p:g,2px,2px" panelType="buttonBar"><rows /></cell>'
         )
       )
-    ).toEqual(
+    ).resolves.toEqual(
       cell({
         type: 'Panel',
         definitions: [
@@ -451,7 +558,7 @@ describe('parseFormCell', () => {
       })
     ));
 
-  test('Command', () =>
+  test('Command', async () =>
     expect(
       parseFormCell(
         tables.Loan,
@@ -459,7 +566,7 @@ describe('parseFormCell', () => {
           '<cell type="command" name="ReturnLoan" label="generateLabelBtn" />'
         )
       )
-    ).toEqual(
+    ).resolves.toEqual(
       cell({
         type: 'Command',
         commandDefinition: {
@@ -472,7 +579,7 @@ describe('parseFormCell', () => {
       })
     ));
 
-  test('Blank', () =>
+  test('Blank', async () =>
     expect(
       parseFormCell(
         tables.CollectionObject,
@@ -480,5 +587,5 @@ describe('parseFormCell', () => {
           '<cell type="blank" name="ignored" initialize="verticalAlign=start;"/>'
         )
       )
-    ).toEqual(cell({ type: 'Blank', verticalAlign: 'start' })));
+    ).resolves.toEqual(cell({ type: 'Blank', verticalAlign: 'start' })));
 });

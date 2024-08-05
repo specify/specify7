@@ -1,31 +1,24 @@
+import type Handsontable from 'handsontable';
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { StringToJsx } from '../../localization/utils';
 import { wbText } from '../../localization/workbench';
 import { Http } from '../../utils/ajax/definitions';
-import { formData } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
-import type { RA } from '../../utils/types';
-import { defined, localized, overwriteReadOnly } from '../../utils/types';
+import { localized, overwriteReadOnly } from '../../utils/types';
 import { Button } from '../Atoms/Button';
-import { Form, Input, Label, Select } from '../Atoms/Form';
+import { Form, Input, Label } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { formatNumber } from '../Atoms/Internationalization';
 import { Submit } from '../Atoms/Submit';
 import type { EagerDataSet } from '../AttachmentsBulkImport/Import';
 import { LoadingContext } from '../Core/Contexts';
-import { Backbone } from '../DataModel/backbone';
-import { fetchCollection } from '../DataModel/collection';
 import { getField } from '../DataModel/helpers';
-import type { SerializedResource } from '../DataModel/helperTypes';
 import { tables } from '../DataModel/tables';
-import type { SpecifyUser } from '../DataModel/types';
-import { userInformation } from '../InitialContext/userInformation';
 import { useTitle } from '../Molecules/AppTitle';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { DateElement } from '../Molecules/DateElement';
@@ -188,7 +181,7 @@ export function DataSetMeta({
         </>
       }
       header={wbText.dataSetMeta()}
-      icon={<span className="text-blue-500"> {icons.table}</span>}
+      icon={icons.table}
       onClose={handleClose}
     >
       <Form
@@ -350,21 +343,25 @@ export function DataSetMeta({
   );
 }
 
-function DataSetName({
+export function DataSetName({
   dataset,
-  getRowCount,
+  hot,
 }: {
   readonly dataset: Dataset;
-  readonly getRowCount: () => number;
+  readonly hot: Handsontable | undefined;
 }): JSX.Element {
   const [showMeta, handleOpen, handleClose] = useBooleanState();
   const [name, setName] = React.useState(dataset.name);
+
+  const getRowCount = () =>
+    hot === undefined
+      ? dataset.rows.length
+      : hot.countRows() - hot.countEmptyRows(true);
 
   useTitle(name);
 
   return (
     <>
-      {' '}
       <h2 className="flex gap-1 overflow-y-auto">
         {dataset.uploadplan !== null && (
           <TableIcon label name={dataset.uploadplan.baseTableName} />
@@ -396,134 +393,4 @@ function DataSetName({
       )}
     </>
   );
-}
-
-const fetchListOfUsers = async (): Promise<
-  RA<SerializedResource<SpecifyUser>>
-> =>
-  fetchCollection('SpecifyUser', { limit: 500, domainFilter: false }).then(
-    ({ records: users }) => users.filter(({ id }) => id !== userInformation.id)
-  );
-
-function ChangeOwner({
-  dataset,
-  onClose: handleClose,
-}: {
-  readonly dataset: Dataset;
-  readonly onClose: () => void;
-}): JSX.Element | null {
-  const [users] = useAsyncState<RA<SerializedResource<SpecifyUser>>>(
-    fetchListOfUsers,
-    true
-  );
-
-  const id = useId('change-data-set-owner');
-  const [newOwner, setNewOwner] = React.useState<number | undefined>(undefined);
-  const [isChanged, setIsChanged] = React.useState(false);
-  const loading = React.useContext(LoadingContext);
-
-  return users === undefined ? null : isChanged ? (
-    <Dialog
-      buttons={commonText.close()}
-      header={wbText.dataSetOwnerChanged()}
-      onClose={(): void => unsafeNavigate('/specify/', { replace: true })}
-    >
-      <p>{wbText.dataSetOwnerChanged()}</p>
-    </Dialog>
-  ) : (
-    <Dialog
-      buttons={
-        <>
-          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Submit.Info disabled={newOwner === undefined} form={id('form')}>
-            {wbText.changeOwner()}
-          </Submit.Info>
-        </>
-      }
-      header={wbText.changeDataSetOwner()}
-      onClose={handleClose}
-    >
-      <Form
-        id={id('form')}
-        onSubmit={(): void =>
-          loading(
-            ping(`/api/workbench/transfer/${dataset.id}/`, {
-              method: 'POST',
-              body: formData({
-                specifyuserid: newOwner!,
-              }),
-            }).then(() => setIsChanged(true))
-          )
-        }
-      >
-        <Label.Block>
-          <p>{wbText.changeDataSetOwnerDescription()}</p>
-          <Select
-            size={10}
-            value={newOwner}
-            onChange={({ target }): void =>
-              setNewOwner(Number.parseInt(target.value))
-            }
-          >
-            {users.map((user) => (
-              <option key={user.id} value={user.id}>
-                {user.name}
-              </option>
-            ))}
-          </Select>
-        </Label.Block>
-      </Form>
-    </Dialog>
-  );
-}
-
-// A wrapper for DS Meta for embedding in the WB
-export class DataSetNameView extends Backbone.View {
-  // eslint-disable-next-line functional/prefer-readonly-type
-  private dataSetMeta: (() => void) | undefined;
-
-  // eslint-disable-next-line functional/prefer-readonly-type
-  private changeOwnerView: (() => void) | undefined;
-
-  public constructor(
-    private readonly options: {
-      readonly dataset: Dataset;
-      readonly el: HTMLElement;
-      readonly display: (
-        jsx: JSX.Element,
-        element?: HTMLElement,
-        destructor?: () => void
-      ) => () => void;
-      readonly getRowCount: () => number;
-    }
-  ) {
-    super(options);
-  }
-
-  public render(): this {
-    const nameContainer =
-      this.options.el.getElementsByClassName('wb-name-container')?.[0];
-    this.dataSetMeta = this.options.display(
-      <DataSetName
-        dataset={this.options.dataset}
-        getRowCount={this.options.getRowCount}
-      />,
-      defined(nameContainer, 'Unable to find Wb Name container') as HTMLElement
-    );
-    return this;
-  }
-
-  public changeOwner(): void {
-    const handleClose = (): void => void this.changeOwnerView?.();
-    this.changeOwnerView = this.options.display(
-      <ChangeOwner dataset={this.options.dataset} onClose={handleClose} />
-    );
-  }
-
-  public remove(): this {
-    this.dataSetMeta?.();
-    this.changeOwnerView?.();
-    Backbone.View.prototype.remove.call(this);
-    return this;
-  }
 }

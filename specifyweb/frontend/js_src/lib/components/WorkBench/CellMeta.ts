@@ -1,9 +1,9 @@
 import { backEndText } from '../../localization/backEnd';
-import { wbText } from '../../localization/workbench';
+import { f } from '../../utils/functools';
 import type { RA, WritableArray } from '../../utils/types';
-import { throttle } from '../../utils/utils';
+import { SET, throttle } from '../../utils/utils';
 import { getHotPlugin } from './handsontable';
-import type { WbView } from './WbView';
+import type { Workbench } from './WbView';
 
 const metaKeys = [
   'isNew',
@@ -31,11 +31,11 @@ export type WbCellCounts = {
 // REFACTOR: replace usages of WbMetaArray with WbMeta and test performance/memory
 // eslint-disable-next-line functional/prefer-readonly-type
 export type WbMetaArray = [
-  boolean,
-  boolean,
-  boolean,
-  RA<string>,
-  string | undefined
+  isNew: boolean,
+  isModified: boolean,
+  isSearchResult: boolean,
+  issues: RA<string>,
+  originalValue: string | undefined
 ];
 
 const defaultMetaValues = Object.freeze([
@@ -54,19 +54,16 @@ export class WbCellMeta {
 
   // Meta data for each cell (indexed by visual columns)
   // eslint-disable-next-line functional/prefer-readonly-type
-  private indexedCellMeta: RA<RA<WbMetaArray>> | undefined = undefined;
+  public indexedCellMeta: RA<RA<WbMetaArray>> | undefined = undefined;
 
-  // eslint-disable-next-line functional/prefer-readonly-type
-  public flushIndexedCellData: boolean = true;
-
-  public constructor(private readonly wbView: WbView) {
+  public constructor(private readonly workbench: Workbench) {
     this.updateCellInfoStats = throttle(
       this.updateCellInfoStats.bind(this),
-      this.wbView.throttleRate
+      this.workbench.throttleRate
     );
   }
 
-  getCellMeta<KEY extends keyof WbMeta>(
+  public getCellMeta<KEY extends keyof WbMeta>(
     physicalRow: number,
     physicalCol: number,
     key: KEY
@@ -76,7 +73,7 @@ export class WbCellMeta {
       defaultMetaValues[index]) as unknown as WbMeta[KEY];
   }
 
-  getCellMetaFromArray<KEY extends keyof WbMeta>(
+  public getCellMetaFromArray<KEY extends keyof WbMeta>(
     metaCell: WbMetaArray,
     key: KEY
   ): WbMeta[KEY] {
@@ -88,14 +85,13 @@ export class WbCellMeta {
    * This does not run visual side effects
    * For changing meta with side effects, use this.updateCellMeta
    */
-  setCellMeta<KEY extends keyof WbMeta>(
+  public setCellMeta<KEY extends keyof WbMeta>(
     physicalRow: number,
     physicalCol: number,
     key: KEY,
     value: WbMeta[KEY]
   ) {
     const currentValue = this.getCellMeta(physicalRow, physicalCol, key);
-
     const issuesChanged =
       key === 'issues' &&
       ((currentValue as RA<string>).length !== (value as RA<string>).length ||
@@ -116,7 +112,7 @@ export class WbCellMeta {
     ) as unknown as WbMetaArray;
     this.cellMeta[physicalRow][physicalCol][index] = value;
 
-    this.flushIndexedCellData = true;
+    this.indexedCellMeta = undefined;
 
     return true;
   }
@@ -149,14 +145,14 @@ export class WbCellMeta {
     const cellValueChanged =
       originalCellValue !== undefined &&
       (originalCellValue?.toString() ?? '') !==
-        (this.wbView.data[physicalRow][physicalCol]?.toString() ?? '');
+        (this.workbench.data[physicalRow][physicalCol]?.toString() ?? '');
     if (cellValueChanged) return true;
 
     /*
      * If cell was disambiguated, it should show up as changed, even if value
      * is unchanged
      */
-    return this.wbView.disambiguation.cellWasDisambiguated(
+    return this.workbench.disambiguation?.cellWasDisambiguated(
       physicalRow,
       physicalCol
     );
@@ -168,21 +164,19 @@ export class WbCellMeta {
   public recalculateIsModifiedState(
     physicalRow: number,
     physicalCol: number,
-    {
-      // Can optionally provide this to improve performance
-      visualRow = undefined,
-      // Can optionally provide this to improve performance
-      visualCol = undefined,
-    }: {
+    visualIndexes: {
       readonly visualRow?: number;
       readonly visualCol?: number;
     } = {}
   ): void {
     const isModified = this.isCellModified(physicalRow, physicalCol);
-    this.updateCellMeta(physicalRow, physicalCol, 'isModified', isModified, {
-      visualRow,
-      visualCol,
-    });
+    this.updateCellMeta(
+      physicalRow,
+      physicalCol,
+      'isModified',
+      isModified,
+      visualIndexes
+    );
   }
 
   /**
@@ -190,14 +184,14 @@ export class WbCellMeta {
    * This is the case when rendering off-screen issues (which don't require a cell
    * reference)
    */
-  runMetaUpdateEffects<KEY extends keyof WbMeta>(
+  public runMetaUpdateEffects<KEY extends keyof WbMeta>(
     cell: HTMLTableCellElement | undefined,
     key: KEY,
     value: WbMeta[KEY],
     visualRow: number,
     visualCol: number
   ) {
-    if (this.wbView.hot === undefined) return;
+    if (this.workbench.hot === undefined) return;
 
     if (key === 'isNew')
       cell?.classList[value === true ? 'add' : 'remove']('wb-no-match-cell');
@@ -210,17 +204,17 @@ export class WbCellMeta {
     else if (key === 'issues') {
       const issues = value as RA<string>;
       if (issues.length === 0)
-        getHotPlugin(this.wbView.hot, 'comments').removeCommentAtCell(
+        getHotPlugin(this.workbench.hot, 'comments').removeCommentAtCell(
           visualRow,
           visualCol
         );
       else {
-        getHotPlugin(this.wbView.hot, 'comments').setCommentAtCell(
+        getHotPlugin(this.workbench.hot, 'comments').setCommentAtCell(
           visualRow,
           visualCol,
           issues.join('\n')
         );
-        getHotPlugin(this.wbView.hot, 'comments').updateCommentMeta(
+        getHotPlugin(this.workbench.hot, 'comments').updateCommentMeta(
           visualRow,
           visualCol,
           {
@@ -237,7 +231,7 @@ export class WbCellMeta {
       );
   }
 
-  updateCellMeta<KEY extends keyof WbMeta>(
+  public updateCellMeta<KEY extends keyof WbMeta>(
     physicalRow: number,
     physicalCol: number,
     key: KEY,
@@ -255,7 +249,7 @@ export class WbCellMeta {
       readonly visualCol?: number;
     } = {}
   ) {
-    if (this.wbView.hot === undefined) return;
+    if (this.workbench.hot === undefined) return;
     const isValueChanged = this.setCellMeta(
       physicalRow,
       physicalCol,
@@ -265,10 +259,11 @@ export class WbCellMeta {
     if (!isValueChanged) return false;
 
     const visualRow =
-      initialVisualRow ?? this.wbView.hot.toVisualRow(physicalRow);
+      initialVisualRow ?? this.workbench.hot.toVisualRow(physicalRow);
     const visualCol =
-      initialVisualCol ?? this.wbView.hot.toVisualColumn(physicalCol);
-    const cell = initialCell ?? this.wbView.hot.getCell(visualRow, visualCol);
+      initialVisualCol ?? this.workbench.hot.toVisualColumn(physicalCol);
+    const cell =
+      initialCell ?? this.workbench.hot.getCell(visualRow, visualCol);
     this.runMetaUpdateEffects(
       cell ?? undefined,
       key,
@@ -289,18 +284,18 @@ export class WbCellMeta {
    * Also, if navigation direction is set to ColByCol, the resulting array
    * is transposed.
    *
-   * this.flushIndexedCellData is set to true whenever visual indexes change
+   * this.indexedCellMeta is set to undefined whenever visual indexes change
    *
    */
   public getCellMetaObject(): RA<RA<WbMetaArray>> {
-    if (this.flushIndexedCellData || this.indexedCellMeta === undefined) {
-      if (this.wbView.hot === undefined) return [];
+    if (this.indexedCellMeta === undefined) {
+      if (this.workbench.hot === undefined) return [];
       const resolveIndex = (
         visualRow: number,
         visualCol: number,
         first: boolean
       ) =>
-        (this.wbView.wbUtils.searchPreferences.navigation.direction ===
+        (this.workbench.utils.searchPreferences.navigation.direction ===
           'rowFirst') ===
         first
           ? visualRow
@@ -309,11 +304,11 @@ export class WbCellMeta {
       const indexedCellMeta: WritableArray<WritableArray<WbMetaArray>> = [];
       Object.entries(this.cellMeta).forEach(([physicalRow, metaRow]) =>
         Object.entries(metaRow).forEach(([physicalCol, cellMeta]) => {
-          const visualRow = this.wbView.hot!.toVisualRow(
-            (physicalRow as unknown as number) | 0
+          const visualRow = this.workbench.hot!.toVisualRow(
+            f.fastParseInt(physicalRow)
           );
-          const visualCol = this.wbView.hot!.toVisualColumn(
-            (physicalCol as unknown as number) | 0
+          const visualCol = this.workbench.hot!.toVisualColumn(
+            f.fastParseInt(physicalCol)
           );
           indexedCellMeta[resolveIndex(visualRow, visualCol, true)] ??= [];
           indexedCellMeta[resolveIndex(visualRow, visualCol, true)][
@@ -323,15 +318,14 @@ export class WbCellMeta {
       );
       this.indexedCellMeta = indexedCellMeta;
     }
-    this.flushIndexedCellData = false;
     return this.indexedCellMeta;
   }
 
   // MetaData
-  updateCellInfoStats() {
+  public updateCellInfoStats() {
     const cellMeta = this.cellMeta.flat();
 
-    const cellCounts: WbCellCounts = {
+    this.workbench.cellCounts[SET]({
       newCells: cellMeta.reduce(
         (count, info) =>
           count + (this.getCellMetaFromArray(info, 'isNew') ? 1 : 0),
@@ -353,47 +347,7 @@ export class WbCellMeta {
           count + (this.getCellMetaFromArray(info, 'isModified') ? 1 : 0),
         0
       ),
-    };
-
-    // Update navigation information
-    Object.values(
-      this.wbView.el.getElementsByClassName('wb-navigation-total')
-    ).forEach((navigationTotalElement) => {
-      const navigationContainer = navigationTotalElement.closest(
-        '.wb-navigation-section'
-      );
-      if (navigationContainer === null) return;
-      const navigationType = navigationContainer.getAttribute(
-        'data-navigation-type'
-      ) as keyof WbCellCounts | null;
-      if (navigationType === null) return;
-      navigationTotalElement.textContent =
-        cellCounts[navigationType]?.toString();
-
-      if (cellCounts[navigationType] === 0) {
-        const currentPositionElement =
-          navigationContainer.getElementsByClassName(
-            'wb-navigation-position'
-          )?.[0];
-        if (typeof currentPositionElement === 'object')
-          currentPositionElement.textContent = '0';
-      }
     });
-
-    const uploadButton =
-      this.wbView.el.querySelector<HTMLButtonElement>('.wb-upload');
-    if (uploadButton === null) return;
-    const title = wbText.uploadUnavailableWhileHasErrors();
-    if (
-      !uploadButton.disabled ||
-      uploadButton.getAttribute('title') === title
-    ) {
-      const hasErrors = cellCounts.invalidCells > 0;
-      uploadButton.toggleAttribute('disabled', hasErrors);
-      uploadButton.setAttribute('title', hasErrors ? title : '');
-    }
-
-    this.wbView.actions.operationCompletedMessage(cellCounts);
   }
 
   public cellIsType(metaArray: WbMetaArray, type: keyof WbCellCounts): boolean {

@@ -69,7 +69,7 @@ class UploadResultsTests(unittest.TestCase):
                 columns=['report info column 1', 'report info column 2'],
                 treeInfo=None
             ))
-        parse_failure: ParseFailure = ParseFailure(
+        parse_failure: WorkBenchParseFailure = WorkBenchParseFailure(
             message='parse failure message',
             payload={'parse failure payload key 1': 'parse failure payload value 1', 'parse failure payload key 2': 'parse failure payload value 2'},
             column='parse failure column')

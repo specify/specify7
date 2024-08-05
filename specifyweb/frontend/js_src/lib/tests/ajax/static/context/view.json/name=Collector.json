@@ -1,0 +1,27 @@
+{
+    "name": "Collector",
+    "class": "edu.ku.brc.specify.datamodel.Collector",
+    "busrules": "edu.ku.brc.specify.datamodel.busrules.CollectorBusRules",
+    "altviews": {
+        "Collector View": {
+            "name": "Collector View",
+            "viewdef": "Collector",
+            "mode": "view",
+            "default": "true"
+        },
+        "Collector Edit": {
+            "name": "Collector Edit",
+            "viewdef": "Collector",
+            "mode": "edit"
+        }
+    },
+    "viewdefs": {
+        "Collector": "<viewdef type=\"form\" name=\"Collector\" class=\"edu.ku.brc.specify.datamodel.Collector\" gettable=\"edu.ku.brc.af.ui.forms.DataGetterForObj\" settable=\"edu.ku.brc.af.ui.forms.DataSetterForObj\">\n            <desc>The Collector form.</desc>\n            <enableRules />\n\n            <columnDef>105px,2px,210px,5px,100px,2px,98px,300px,p:g</columnDef>\n            <columnDef os=\"lnx\">135px,2px,230px,5px,120px,2px,118px,325px,p:g</columnDef>\n            <columnDef os=\"mac\">130px,2px,215px,5px,140px,2px,138px,395px,p:g</columnDef>\n            <columnDef os=\"exp\">p,2px,p:g,5px:g,p,2px,p:g,p:g(2),p:g</columnDef>\n            <rowDef>p,2dlu,p:g,2dlu,p:g</rowDef>\n\n            <rows>\n                <row>\n                    <cell type=\"label\" labelfor=\"1\" />\n                    <cell type=\"field\" id=\"1\" name=\"agent\" uitype=\"querycbx\" initialize=\"name=Agent;title=Agent\" />\n                </row>\n                <row>\n                    <cell type=\"label\" labelfor=\"3\" />\n                    <cell type=\"field\" id=\"3\" name=\"remarks\" uitype=\"textareabrief\" rows=\"2\" colspan=\"6\" />\n                </row>\n                <!--<row>\n                    <cell type=\"label\" labelfor=\"9\"/>\n                    <cell type=\"field\" id=\"9\" name=\"createdByAgent\" uitype=\"label\" readonly=\"true\"  uifieldformatter=\"Agent\"/>\n                    <cell type=\"label\" labelfor=\"10\"/>\n                    <cell type=\"field\" id=\"10\" name=\"modifiedByAgent\" uitype=\"label\" readonly=\"true\"  uifieldformatter=\"Agent\"/>\n                    <cell type=\"label\" id=\"divLabel\" label=\" \" initialize=\"align=right\"/>\n                    <cell type=\"field\" id=\"4\" name=\"divisionCBX\" uitype=\"combobox\" ignore=\"true\"/>\n                </row>\n                <row>\n                \t<cell type=\"field\" id=\"34\" uitype=\"checkbox\" name=\"isPrimary\"/>                \t\n                </row>\n                <row>\n                    <cell type=\"label\" labelfor=\"11\"/>\n                    <cell type=\"field\" id=\"11\" name=\"timestampModified\" uitype=\"label\" readonly=\"true\"/>\n                    <cell type=\"label\" labelfor=\"12\"/>\n                    <cell type=\"field\" id=\"12\" name=\"timestampCreated\" uitype=\"label\" readonly=\"true\"/>\n                </row>-->\n            </rows>\n        </viewdef>\n\n        "
+    },
+    "view": "<view name=\"Collector\" class=\"edu.ku.brc.specify.datamodel.Collector\" busrules=\"edu.ku.brc.specify.datamodel.busrules.CollectorBusRules\">\n            <desc>The Collectors Form.</desc>\n            <altviews>\n                <altview name=\"Collector View\" viewdef=\"Collector\" mode=\"view\" validated=\"false\" default=\"true\" />\n                <altview name=\"Collector Edit\" viewdef=\"Collector\" mode=\"edit\" validated=\"true\" />\n            </altviews>\n        </view>\n\n        ",
+    "viewsetName": "Common",
+    "viewsetLevel": "Common",
+    "viewsetSource": "disk",
+    "viewsetId": null,
+    "viewsetFile": "common/common.views.xml"
+}

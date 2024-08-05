@@ -8,8 +8,14 @@ import { isTreeResource } from '../InitialContext/treeRanks';
 import type { BusinessRuleDefs } from './businessRuleDefs';
 import { businessRuleDefs } from './businessRuleDefs';
 import { backboneFieldSeparator, djangoLookupSeparator } from './helpers';
-import type { AnySchema, AnyTree, CommonFields } from './helperTypes';
+import type {
+  AnySchema,
+  AnyTree,
+  CommonFields,
+  TableFields,
+} from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
+import { ResourceBase } from './resourceApi';
 import {
   getFieldBlockerKey,
   propagateBlockerEvents,
@@ -77,7 +83,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       isTreeResource(this.resource as SpecifyResource<AnySchema>)
         ? treeBusinessRules(
             this.resource as SpecifyResource<AnyTree>,
-            processedFieldName
+            processedFieldName as TableFields<AnyTree>
           )
         : Promise.resolve({ isValid: true }),
     ];
@@ -162,15 +168,14 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       const field = this.resource.specifyTable.strictGetField(fieldName);
 
       results.forEach((result) => {
-        const ruleId = result.payload?.ruleId;
         const saveBlockerMessage = result.isValid ? [] : [result.reason];
         const saveBlockerKey =
-          ruleId === undefined
+          result.saveBlockerKey === undefined
             ? getFieldBlockerKey(field, 'business-rule')
-            : `uniqueness-${ruleId}`;
+            : result.saveBlockerKey;
 
         setSaveBlockers(
-          this.resource,
+          result.resource ?? this.resource,
           field,
           saveBlockerMessage,
           saveBlockerKey
@@ -223,9 +228,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   ): Promise<BusinessRuleResult<SCHEMA>> {
     const invalidResponse: BusinessRuleResult<SCHEMA> = {
       isValid: false,
-      payload: {
-        ruleId: rule.id!,
-      },
+      saveBlockerKey: `uniqueness-${rule.id!}`,
       reason: getUniqueInvalidReason(
         rule.scopes.map(
           (scope) =>
@@ -240,9 +243,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     };
     const validResponse: BusinessRuleResult<SCHEMA> = {
       isValid: true,
-      payload: {
-        ruleId: rule.id!,
-      },
+      saveBlockerKey: `uniqueness-${rule.id!}`,
     };
 
     const getFieldValue = async (
@@ -468,7 +469,9 @@ export function attachBusinessRules(
 
 export type BusinessRuleResult<SCHEMA extends AnySchema = AnySchema> = {
   readonly localDuplicates?: RA<SpecifyResource<SCHEMA>>;
-  readonly payload?: { readonly ruleId: number };
+  readonly saveBlockerKey?: string;
+  // Optionally specify the resource to block save on
+  readonly resource?: SpecifyResource<SCHEMA>;
 } & (
   | {
       readonly isValid: true;
@@ -476,3 +479,30 @@ export type BusinessRuleResult<SCHEMA extends AnySchema = AnySchema> = {
     }
   | { readonly isValid: false; readonly reason: string }
 );
+
+export const runAllFieldChecks = async (
+  resource: SpecifyResource<AnySchema>
+): Promise<void> => {
+  const relationships = resource.specifyTable.relationships;
+  await Promise.all(
+    relationships.map(async ({ name }) =>
+      resource.businessRuleManager?.checkField(name)
+    )
+  );
+  const mapResource = (
+    result?: Collection<AnySchema> | SpecifyResource<AnySchema> | null
+  ): RA<SpecifyResource<AnySchema>> =>
+    (result === undefined || result === null
+      ? []
+      : result instanceof ResourceBase
+      ? [result]
+      : (result as Collection<AnySchema>).models) as unknown as RA<
+      SpecifyResource<AnySchema>
+    >;
+  // Running only on dependent resources. the order shouldn't matter.....
+  await Promise.all(
+    Object.values(resource.dependentResources)
+      .flatMap(mapResource)
+      .map(async (next) => runAllFieldChecks(next))
+  );
+};

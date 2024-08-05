@@ -50,7 +50,7 @@ export function Report({
     <Dialog
       buttons={commonText.close()}
       header={reportsText.missingReportQuery()}
-      icon={<span className="text-blue-500">{icons.documentReport}</span>}
+      icon={icons.documentReport}
       onClose={handleClose}
     >
       {reportsText.missingReportQueryDescription()}
@@ -59,7 +59,7 @@ export function Report({
     <Dialog
       buttons={commonText.close()}
       header={reportsText.missingReport()}
-      icon={<span className="text-blue-500">{icons.documentReport}</span>}
+      icon={icons.documentReport}
       onClose={handleClose}
     >
       {reportsText.missingReportDescription()}
@@ -204,7 +204,7 @@ function FixImagesDialog({
         </>
       }
       header={reportsText.reportProblems()}
-      icon={<span className="text-blue-500">{icons.documentReport}</span>}
+      icon={icons.documentReport}
       onClose={handleClose}
     >
       {reportsText.reportProblemsDescription()}
@@ -226,7 +226,7 @@ function FixImagesDialog({
     <Dialog
       buttons={commonText.cancel()}
       header={reportsText.chooseFile()}
-      icon={<span className="text-blue-500">{icons.documentReport}</span>}
+      icon={icons.documentReport}
       onClose={(): void => setIndex(undefined)}
     >
       <UploadAttachment
@@ -314,7 +314,7 @@ function ParametersDialog({
         </>
       }
       header={reportsText.reportParameters()}
-      icon={<span className="text-blue-500">{icons.documentReport}</span>}
+      icon={icons.documentReport}
       onClose={handleClose}
     >
       <Form id={id('form')} onSubmit={handleSubmitted}>

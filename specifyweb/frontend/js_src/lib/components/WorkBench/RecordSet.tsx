@@ -6,7 +6,7 @@ import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import { formData } from '../../utils/ajax/helpers';
 import { Button } from '../Atoms/Button';
-import { LoadingContext } from '../Core/Contexts';
+import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { tables } from '../DataModel/tables';
 import {
   ProtectedAction,
@@ -16,13 +16,13 @@ import { unsafeNavigate } from '../Router/Router';
 import { EditRecordSet } from '../Toolbar/RecordSetEdit';
 
 export function CreateRecordSetButton({
-  dataSetId,
-  dataSetName,
+  datasetId,
+  datasetName,
   onClose: handleClosed,
   small,
 }: {
-  readonly dataSetId: number;
-  readonly dataSetName: string;
+  readonly datasetId: number;
+  readonly datasetName: string;
   readonly onClose: () => void;
   readonly small: boolean;
 }): JSX.Element {
@@ -38,8 +38,8 @@ export function CreateRecordSetButton({
         </ButtonComponent>
         {isOpen && (
           <CreateRecordSetDialog
-            dataSetId={dataSetId}
-            dataSetName={dataSetName}
+            datasetId={datasetId}
+            datasetName={datasetName}
             onClose={(): void => {
               handleClose();
               handleClosed();
@@ -52,39 +52,44 @@ export function CreateRecordSetButton({
 }
 
 function CreateRecordSetDialog({
-  dataSetId,
-  dataSetName,
+  datasetId,
+  datasetName,
   onClose: handleClose,
 }: {
-  readonly dataSetId: number;
-  readonly dataSetName: string;
+  readonly datasetId: number;
+  readonly datasetName: string;
   readonly onClose: () => void;
 }): JSX.Element {
   const recordSet = React.useMemo(
     () =>
       new tables.RecordSet.Resource({
-        name: wbText.recordSetName({ dataSet: dataSetName }),
+        name: wbText.recordSetName({ dataSet: datasetName }),
       }),
-    [dataSetId]
+    [datasetId]
   );
 
   const loading = React.useContext(LoadingContext);
   return (
-    <EditRecordSet
-      recordSet={recordSet}
-      onClose={handleClose}
-      onSaving={(unsetUnloadProtect): false => {
-        unsetUnloadProtect();
-        loading(
-          ajax<number>(`/api/workbench/create_recordset/${dataSetId}/`, {
-            method: 'POST',
-            headers: { Accept: 'application/json' },
-            body: formData({ name: recordSet.get('name') }),
-            errorMode: 'dismissible',
-          }).then(({ data }) => unsafeNavigate(`/specify/record-set/${data}/`))
-        );
-        return false;
-      }}
-    />
+    // Override readonly context set by workbench after upload so recordset meta can be edited
+    <ReadOnlyContext.Provider value={false}>
+      <EditRecordSet
+        recordSet={recordSet}
+        onClose={handleClose}
+        onSaving={(unsetUnloadProtect): false => {
+          unsetUnloadProtect();
+          loading(
+            ajax<number>(`/api/workbench/create_recordset/${datasetId}/`, {
+              method: 'POST',
+              headers: { Accept: 'application/json' },
+              body: formData({ name: recordSet.get('name') }),
+              errorMode: 'dismissible',
+            }).then(({ data }) =>
+              unsafeNavigate(`/specify/record-set/${data}/`)
+            )
+          );
+          return false;
+        }}
+      />
+    </ReadOnlyContext.Provider>
   );
 }

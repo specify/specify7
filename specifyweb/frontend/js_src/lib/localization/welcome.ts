@@ -30,8 +30,8 @@ export const welcomeText = createDictionary({
     'ru-ru': 'Скачать информацию',
     'es-es': 'Descargar información',
     'de-ch': 'Download Information',
-    'fr-fr': "Télécharger l'information",
-    'uk-ua': 'Завантажити інформацію',
+    'fr-fr': 'À propos de Spécifier 7',
+    'uk-ua': 'Про Specify 7',
   },
   taxonTiles: {
     'en-us': 'Taxon Tiles',
@@ -186,13 +186,14 @@ export const welcomeText = createDictionary({
     'uk-ua': `
       Програмне забезпечення Specify є продуктом консорціуму Specify Collections
       Consortium, яким керують і фінансують установи-члени. Члени-засновники
-      Консорціуму включають: Організацію наукових і промислових досліджень
+      консорціуму включають: Науково-промислову дослідницьку організацію
       Співдружності (CSIRO), Consejo Superior de Investigaciones Sientíficas,
       Датський консорціум музеїв, Muséum d'Histoire Naturelle Geneva,
       Університет Флориди, Університет Канзасу та Університет Мічигану.
-      Консорціум діє відповідно до некомерційного, 501(c)3, податкового статусу
-      США Центру досліджень Канзаського університету. З 1996 по 2018 рік Specify
-      підтримувався грантами Національного наукового фонду США.
+      Консорціум працює відповідно до некомерційного, 501(c)3, податкового
+      статусу США дослідницького центру Канзаського університету. З 1996 по
+      2018 рік Specify підтримувався грантами Національного наукового фонду
+      США.
     `,
     'de-ch': `
       Die Specify-Software ist ein Produkt des Specify Collections Consortiums,
@@ -231,10 +232,10 @@ export const welcomeText = createDictionary({
       v2.
     `,
     'uk-ua': `
-      Укажіть 7, Copyright 2023, Дослідницький центр Канзаського університету.
-      Specify поставляється без АБСОЛЮТНОЇ ГАРАНТІЇ. Це безкоштовне програмне
-      забезпечення з відкритим кодом, ліцензоване згідно з GNU General Public
-      License v2.
+      Укажіть 7, авторське право 2023, Дослідницький центр Канзаського
+      університету. Specify поставляється без АБСОЛЮТНОЇ ГАРАНТІЇ. Це
+      безкоштовне програмне забезпечення з відкритим кодом, ліцензоване згідно з
+      GNU General Public License v2.
     `,
     'de-ch': `
       Specify 7, Copyright 2023, University of Kansas Center for Research.

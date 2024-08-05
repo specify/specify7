@@ -109,7 +109,10 @@ export function XmlEditorShell<
             onValueChange={(name): void => setItem({ ...item, name })}
           />
         </Label.Block>
-        {children({ items: allItems, item: getSet })}
+        {children({
+          items: allItems,
+          item: getSet,
+        })}
       </Form>
     </Dialog>
   );

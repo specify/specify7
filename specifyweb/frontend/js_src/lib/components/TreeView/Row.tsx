@@ -7,12 +7,13 @@ import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
+import type { AnyTree } from '../DataModel/helperTypes';
 import { getPref } from '../InitialContext/remotePrefs';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Conformations, KeyAction, Row, Stats } from './helpers';
 import { formatTreeStats, mapKey, scrollIntoView } from './helpers';
 
-export function TreeRow({
+export function TreeRow<SCHEMA extends AnyTree>({
   row,
   getRows,
   getStats,
@@ -53,7 +54,7 @@ export function TreeRow({
   readonly onAction: (action: Exclude<KeyAction, 'child' | 'toggle'>) => void;
   readonly setFocusedRow?: (row: Row) => void;
   readonly synonymColor: string;
-  readonly treeName: string;
+  readonly treeName: SCHEMA['tableName'];
   readonly hideEmptyNodes: boolean;
 }): JSX.Element | null {
   const [rows, setRows] = React.useState<RA<Row> | undefined>(undefined);
@@ -228,6 +229,10 @@ export function TreeRow({
                     typeof row.acceptedId === 'number'
                       ? treeText.acceptedName({
                           name: row.acceptedName ?? row.acceptedId.toString(),
+                        })
+                      : typeof row.synonyms === 'string'
+                      ? treeText.synonyms({
+                          names: row.synonyms,
                         })
                       : undefined
                   }

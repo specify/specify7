@@ -15,7 +15,7 @@ import { Http } from '../../utils/ajax/definitions';
 import { formData } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
-import type { IR } from '../../utils/types';
+import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { removeKey, replaceKey } from '../../utils/utils';
 import { Container } from '../Atoms';
@@ -106,7 +106,7 @@ export function SecurityUser(): JSX.Element {
     <UserView
       initialCollectionId={f.parseInt(initialCollection)}
       user={user}
-      onAdd={(newUser): void => {
+      onAdd={([newUser]): void => {
         navigate(
           formatUrl(`/specify/security/user/new/`, {
             collection: initialCollection,
@@ -158,7 +158,7 @@ function UserView({
   readonly user: SerializedResource<SpecifyUser>;
   readonly initialCollectionId: number | undefined;
   readonly onSave: (changedUser: SerializedResource<SpecifyUser>) => void;
-  readonly onAdd: (resource: SpecifyResource<SpecifyUser>) => void;
+  readonly onAdd: (resources: RA<SpecifyResource<SpecifyUser>>) => void;
   readonly onDeleted: () => void;
 }): JSX.Element {
   const collections = useAvailableCollections();
@@ -432,7 +432,10 @@ function UserView({
               )}
             </SetPermissionContext>
             <ErrorBoundary dismissible>
-              <LegacyPermissions userResource={userResource} />
+              <LegacyPermissions
+                collections={collections}
+                userResource={userResource}
+              />
             </ErrorBoundary>
           </>,
           '-mx-4 p-4 pt-0 flex-1 gap-8 [&_input]:max-w-[min(100%,var(--max-field-width))] overflow-auto'

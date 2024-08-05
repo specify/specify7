@@ -1,3 +1,7 @@
+import { formsText } from '../../localization/forms';
+import { resourcesText } from '../../localization/resources';
+import { f } from '../../utils/functools';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import type { BusinessRuleResult } from './businessRules';
 import type { AnySchema, TableFields } from './helperTypes';
 import {
@@ -9,12 +13,14 @@ import {
   updateLoanPrep,
 } from './interactionBusinessRules';
 import type { SpecifyResource } from './legacyTypes';
+import { setSaveBlockers } from './saveBlockers';
 import type { Collection } from './specifyTable';
 import { tables } from './tables';
 import type {
   Address,
   BorrowMaterial,
   CollectionObject,
+  CollectionObjectType,
   Determination,
   DNASequence,
   LoanPreparation,
@@ -43,6 +49,9 @@ export type BusinessRuleDefs<SCHEMA extends AnySchema> = {
 type MappedBusinessRuleDefs = {
   readonly [TABLE in keyof Tables]?: BusinessRuleDefs<Tables[TABLE]>;
 };
+
+const CURRENT_DETERMINATION_KEY = 'determination-isCurrent';
+const DETERMINATION_TAXON_KEY = 'determination-taxon';
 
 export const businessRuleDefs: MappedBusinessRuleDefs = {
   Address: {
@@ -143,30 +152,51 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         );
       }
     },
+    fieldChecks: {
+      collectionObjectType: (resource) => {
+        // Fields ignored for better UX/backend restrictions
+        const fieldsToIgnore = [
+          'cataloger',
+          'catalogNumber',
+          'collection',
+          'collectionObjectType',
+          'version',
+        ];
+
+        // Clear all fields of CO except to-many dependents
+        resource.specifyTable.fields
+          .filter((field) => !f.includes(fieldsToIgnore, field.name))
+          .map((field) => {
+            const fieldName = field.name as keyof (CollectionObject['fields'] &
+              CollectionObject['toManyDependent'] &
+              CollectionObject['toManyIndependent'] &
+              CollectionObject['toOneDependent'] &
+              CollectionObject['toOneIndependent']);
+            if (
+              !field.isRelationship ||
+              !relationshipIsToMany(field) ||
+              !field.isDependent()
+            )
+              resource.set(fieldName, null);
+          });
+
+        // Delete all determinations
+        const determinations = resource.getDependentResource('determinations');
+        while (
+          determinations !== undefined &&
+          determinations.models.length > 0
+        ) {
+          determinations.remove(determinations.models[0]);
+        }
+      },
+    },
   },
 
   Determination: {
-    customInit: (determinaton: SpecifyResource<Determination>): void => {
-      if (determinaton.isNew()) {
-        const setCurrent = () => {
-          determinaton.set('isCurrent', true);
-          if (determinaton.collection !== undefined) {
-            determinaton.collection.models.forEach(
-              (other: SpecifyResource<Determination>) => {
-                if (other.cid !== determinaton.cid)
-                  other.set('isCurrent', false);
-              }
-            );
-          }
-        };
-        if (determinaton.collection !== null) setCurrent();
-        determinaton.on('add', setCurrent);
-      }
-    },
     fieldChecks: {
       taxon: async (
         determination: SpecifyResource<Determination>
-      ): Promise<BusinessRuleResult> =>
+      ): Promise<BusinessRuleResult | undefined> =>
         determination
           .rgetPromise('taxon', true)
           .then((taxon: SpecifyResource<Taxon> | null) => {
@@ -178,6 +208,40 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
                 .then(async (accepted) =>
                   accepted === null ? taxon : getLastAccepted(accepted)
                 );
+
+            const collectionObject = determination.collection?.related;
+            if (
+              collectionObject !== undefined &&
+              collectionObject.specifyTable.name === 'CollectionObject'
+            )
+              (collectionObject as SpecifyResource<CollectionObject>)
+                .rgetPromise('collectionObjectType', true)
+                .then((coType: SpecifyResource<CollectionObjectType>) => {
+                  /*
+                   * Have to set save blockers directly here to get this working.
+                   * Since following code has to wait for above rgetPromise to resolve, returning a Promise<BusinessRuleResult> for validation here is too slow and
+                   * does not get captured by business rules.
+                   */
+                  if (
+                    coType.get('taxonTreeDef') ===
+                    (taxon?.get('definition') ?? '')
+                  ) {
+                    setSaveBlockers(
+                      determination,
+                      determination.specifyTable.field.taxon,
+                      [],
+                      DETERMINATION_TAXON_KEY
+                    );
+                  } else {
+                    setSaveBlockers(
+                      determination,
+                      determination.specifyTable.field.taxon,
+                      [formsText.invalidTree()],
+                      DETERMINATION_TAXON_KEY
+                    );
+                  }
+                });
+
             return taxon === null
               ? {
                   isValid: true,
@@ -195,6 +259,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       isCurrent: async (
         determination: SpecifyResource<Determination>
       ): Promise<BusinessRuleResult> => {
+        // Disallow multiple determinations being checked as current
         if (
           determination.get('isCurrent') &&
           determination.collection !== undefined
@@ -207,16 +272,46 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             }
           );
         }
+        // Flag as invalid if no determinations are checked as current
         if (
           determination.collection !== undefined &&
           !determination.collection.models.some(
             (c: SpecifyResource<Determination>) => c.get('isCurrent')
           )
         ) {
-          determination.set('isCurrent', true);
+          return {
+            isValid: false,
+            reason: resourcesText.currentDeterminationRequired(),
+            saveBlockerKey: CURRENT_DETERMINATION_KEY,
+            resource: determination.collection.related,
+          };
         }
-        return { isValid: true };
+        return {
+          isValid: true,
+          saveBlockerKey: CURRENT_DETERMINATION_KEY,
+          resource: determination.collection?.related,
+        };
       },
+    },
+    onRemoved: (determination, collection): void => {
+      // Block save when a current determination is deleted
+      if (determination.get('isCurrent'))
+        setSaveBlockers(
+          collection.related ?? determination,
+          determination.specifyTable.field.isCurrent,
+          [resourcesText.currentDeterminationRequired()],
+          CURRENT_DETERMINATION_KEY
+        );
+    },
+    onAdded: (determination, collection): void => {
+      determination.set('isCurrent', true);
+      // Clear any existing save blocker on adding a new current determination
+      setSaveBlockers(
+        collection.related ?? determination,
+        determination.specifyTable.field.isCurrent,
+        [],
+        CURRENT_DETERMINATION_KEY
+      );
     },
   },
   DisposalPreparation: {

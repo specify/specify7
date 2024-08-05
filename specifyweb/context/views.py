@@ -77,7 +77,8 @@ def set_users_collections_for_sp6(cursor, user, collectionids):
         cursor.execute("delete specifyuser_spprincipal "
                        "from specifyuser_spprincipal "
                        "join spprincipal using (spprincipalid) "
-                       "where specifyuserid = %s and usergroupscopeid not in %s",
+                       "where specifyuserid = %s and usergroupscopeid not in %s"
+                       "and spprincipal.Name != 'Administrator'",
                        [user.id, collectionids])
 
         # Next delete the joins from the principals to any permissions.

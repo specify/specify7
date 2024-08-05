@@ -136,7 +136,7 @@ function FormatterPicker({
    */
   const resourceId = appResourceIds.DataObjFormatters;
   const urlPart = type === 'format' ? 'formatter' : 'aggregator';
-  const index = schemaData.formatters.find(
+  const index = schemaData[kind].find(
     (formatter) =>
       formatter.name === formatterName && formatter.tableName === table?.name
   )?.index;

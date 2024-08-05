@@ -123,6 +123,7 @@ function Field({
     'ui',
     'rightAlignNumberFields'
   );
+
   return (
     <Input.Generic
       forwardRef={validationRef}

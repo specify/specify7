@@ -148,10 +148,8 @@ export function OrderPicker<SCHEMA extends AnySchema>({
       | (string & keyof SCHEMA['fields'])
   ) => void;
 }): JSX.Element {
-  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <Select
-      disabled={isReadOnly}
       value={order}
       onValueChange={(newOrder): void =>
         handleChange(newOrder as Exclude<typeof order, undefined>)

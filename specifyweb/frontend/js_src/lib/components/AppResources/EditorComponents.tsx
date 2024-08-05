@@ -226,7 +226,11 @@ export function useCodeMirrorExtensions(
     function handleLinted(results: RA<Diagnostic>, view: EditorView): void {
       if (isFirstLint && results.length > 0) {
         isFirstLint = false;
-        setTimeout(() => openLintPanel(view), 0);
+        setTimeout(() => {
+          const currentFocus = document.activeElement as HTMLElement | null;
+          openLintPanel(view);
+          currentFocus?.focus();
+        }, 0);
       }
       setBlockers(
         filterArray(

@@ -7,6 +7,7 @@ import { useIsModified } from '../../hooks/useIsModified';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import type { RA } from '../../utils/types';
 import { Container } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -17,6 +18,7 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Tables } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { InFormEditorContext } from '../FormEditor/Context';
 import { AppTitle } from '../Molecules/AppTitle';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { IsNotReadOnly } from '../Molecules/ResourceLink';
@@ -36,15 +38,11 @@ import { propsToFormMode } from './useViewDefinition';
  */
 export const FORBID_ADDING = new Set<keyof Tables>([
   'TaxonTreeDef',
-  'TaxonTreeDefItem',
   'GeographyTreeDef',
-  'GeographyTreeDefItem',
   'StorageTreeDef',
-  'StorageTreeDefItem',
   'GeologicTimePeriodTreeDef',
   'GeologicTimePeriodTreeDefItem',
   'LithoStratTreeDef',
-  'LithoStratTreeDefItem',
   'Institution',
   'Division',
   'Discipline',
@@ -112,6 +110,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   isCollapsed,
   preHeaderButtons,
   containerRef,
+  isInRecordSet,
 }: {
   readonly isLoading?: boolean;
   readonly resource: SpecifyResource<SCHEMA> | undefined;
@@ -124,7 +123,9 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly dialog: 'modal' | 'nonModal' | false;
   readonly onSaving?: (unsetUnloadProtect: () => void) => false | void;
   readonly onSaved: (() => void) | undefined;
-  readonly onAdd: ((newResource: SpecifyResource<SCHEMA>) => void) | undefined;
+  readonly onAdd:
+    | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
+    | undefined;
   readonly onDeleted: (() => void) | undefined;
   readonly onClose: () => void;
   readonly children?: JSX.Element;
@@ -136,6 +137,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly isCollapsed?: boolean;
   readonly preHeaderButtons?: JSX.Element | undefined;
   readonly containerRef?: React.RefObject<HTMLDivElement>;
+  readonly isInRecordSet?: boolean;
 }): JSX.Element {
   const [isDeleted, setDeleted, setNotDeleted] = useBooleanState();
   // Remove isDeleted status when resource changes
@@ -162,6 +164,8 @@ export function ResourceView<SCHEMA extends AnySchema>({
     resource?.specifyTable.name
   );
   const isInSearchDialog = React.useContext(SearchDialogContext);
+  const isInFormEditor = React.useContext(InFormEditorContext);
+
   const {
     formElement,
     formPreferences,
@@ -225,6 +229,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
     ) : (
       <SaveButton
         form={formElement}
+        isInRecordSet={isInRecordSet}
         resource={resource}
         onAdd={handleAdd}
         onSaved={(): void => {
@@ -247,7 +252,8 @@ export function ResourceView<SCHEMA extends AnySchema>({
     !isSubForm &&
     typeof resource === 'object' &&
     !resource.isNew() &&
-    hasTablePermission(resource.specifyTable.name, 'delete') ? (
+    hasTablePermission(resource.specifyTable.name, 'delete') &&
+    !isInFormEditor ? (
       <ErrorBoundary dismissible>
         <DeleteButton
           deletionMessage={deletionMessage}
@@ -338,9 +344,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
             {deleteButton}
             {extraButtons ?? <span className="-ml-2 flex-1" />}
             {isModified && !isDependent ? (
-              <Button.Danger onClick={handleClose}>
-                {commonText.cancel()}
-              </Button.Danger>
+              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
             ) : (
               <Button.Info onClick={handleClose}>
                 {commonText.close()}

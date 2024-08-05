@@ -14,9 +14,10 @@ import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
+import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { tables } from '../DataModel/tables';
-import type { SpecifyUser } from '../DataModel/types';
+import type { Collection, SpecifyUser } from '../DataModel/types';
 import { Combobox } from '../FormFields/ComboBox';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
@@ -224,8 +225,10 @@ export function UserIdentityProviders({
 
 export function LegacyPermissions({
   userResource,
+  collections,
 }: {
   readonly userResource: SpecifyResource<SpecifyUser>;
+  readonly collections: RA<SerializedResource<Collection>>;
 }): JSX.Element {
   const admins = useAdmins();
   const [isAdmin, setIsAdmin] = useLiveState(
@@ -241,6 +244,7 @@ export function LegacyPermissions({
       {hasPermission('/permissions/list_admins', 'read') && (
         <div className="flex gap-2">
           <AdminStatusPlugin
+            collections={collections}
             isAdmin={isAdmin}
             user={userResource}
             onChange={setIsAdmin}
@@ -257,7 +261,7 @@ export function LegacyPermissions({
       >
         {userType.label}
         <Combobox
-          defaultValue={undefined}
+          defaultValue={userResource.get('userType') || undefined}
           field={userType}
           id={undefined}
           isDisabled={false}

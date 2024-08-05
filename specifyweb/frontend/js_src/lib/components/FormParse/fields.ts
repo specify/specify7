@@ -70,9 +70,16 @@ export type FieldTypes = {
       readonly min: number | string | undefined;
       readonly max: number | string | undefined;
       // These are used by numeric field only
-      readonly step: number | undefined;
+
+      /*
+       * 'any' is not a valid step attribute on the form, and not validated
+       * by the Syncer, but is required for the default step for floating
+       * point fields
+       */
+      readonly step: number | 'any' | undefined;
       readonly minLength: number | undefined;
       readonly maxLength: number | undefined;
+      readonly whiteSpaceSensitive: boolean | undefined;
     }
   >;
   readonly Plugin: State<
@@ -196,6 +203,10 @@ const processFieldType: {
     if (defaults.defaultValue === undefined && field === undefined)
       return { type: 'Blank' };
 
+    const whiteSpaceSensitive =
+      getProperty('whiteSpaceSensitive')?.toLowerCase() === 'true' ||
+      (field?.isRelationship ? undefined : field?.whiteSpaceSensitive);
+
     return {
       type: 'Text',
       ...defaults,
@@ -204,6 +215,7 @@ const processFieldType: {
       step: f.parseFloat(getProperty('step')),
       minLength: f.parseInt(getProperty('minLength')),
       maxLength: f.parseInt(getProperty('maxLength')),
+      whiteSpaceSensitive,
     };
   },
   QueryComboBox({ getProperty, fields }) {
@@ -217,7 +229,11 @@ const processFieldType: {
         hasNewButton: getProperty('newBtn')?.toLowerCase() !== 'false',
         hasSearchButton: getProperty('searchBtn')?.toLowerCase() !== 'false',
         hasEditButton: getProperty('editBtn')?.toLowerCase() !== 'false',
-        hasViewButton: getProperty('viewBtn')?.toLowerCase() === 'true',
+        hasViewButton:
+          getProperty('viewBtn') === undefined &&
+          getProperty('editBtn')?.toLowerCase() === 'false'
+            ? true
+            : getProperty('viewBtn')?.toLowerCase() === 'true',
         typeSearch: getProperty('name'),
         searchView: getProperty('searchView'),
       };

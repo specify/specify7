@@ -1,4 +1,5 @@
 import type Handsontable from 'handsontable';
+import type { Plugins } from 'handsontable/plugins';
 
 import { getCache } from '../../utils/cache';
 import { writable } from '../../utils/types';
@@ -19,7 +20,7 @@ export function configureHandsontable(
   setSort(hot, dataset);
 }
 
-function identifyDefaultValues(
+export function identifyDefaultValues(
   hot: Handsontable,
   mappings: WbMapping | undefined
 ): void {
@@ -73,16 +74,14 @@ const hotPlugins = new WeakMap<
   Handsontable,
   // eslint-disable-next-line functional/prefer-readonly-type
   {
-    [key in keyof Handsontable.PluginsCollection]?:
-      | Handsontable.PluginsCollection[key]
-      | undefined;
+    [key in keyof Plugins]?: Plugins[key] | undefined;
   }
 >();
 
-export function getHotPlugin<NAME extends keyof Handsontable.PluginsCollection>(
+export function getHotPlugin<NAME extends keyof Plugins>(
   hot: Handsontable,
   pluginName: NAME
-): Handsontable.PluginsCollection[NAME] {
+): Plugins[NAME] {
   let plugins = hotPlugins.get(hot);
   if (plugins === undefined) {
     plugins = {};

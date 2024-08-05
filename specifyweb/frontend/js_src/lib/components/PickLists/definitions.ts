@@ -44,6 +44,7 @@ const auditLogActions = [
   queryText.treeMove(),
   queryText.treeSynonymize(),
   queryText.treeDesynonymize(),
+  queryText.treeBulkMove(),
 ] as const;
 
 const pickListSortTypes = f.store(() => [
@@ -201,6 +202,12 @@ export const getFrontEndPickLists = f.store<{
       name: definePicklist('_PrepType', [])
         .set('type', PickListTypes.FIELDS)
         .set('tableName', 'preptype')
+        .set('fieldName', 'name'),
+    },
+    CollectionObjectType: {
+      name: definePicklist('_CollectionObjectType', [])
+        .set('type', PickListTypes.FIELDS)
+        .set('tableName', 'collectionobjecttype')
         .set('fieldName', 'name'),
     },
     CollectionRelType: {

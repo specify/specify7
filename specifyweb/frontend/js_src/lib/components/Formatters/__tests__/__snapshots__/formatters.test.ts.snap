@@ -2214,9 +2214,32 @@ exports[`getMainTableFields 1`] = `
     "pageNumber",
     "plateNumber",
   ],
+  "CollectionObjectGroup": [
+    "name",
+    "guid",
+    "igsn",
+    "text1",
+    "text2",
+    "text3",
+  ],
+  "CollectionObjectGroupJoin": [
+    "text1",
+    "text2",
+    "text3",
+  ],
+  "CollectionObjectGroupType": [
+    "name",
+    "type",
+  ],
   "CollectionObjectProperty": [
     "guid",
     "text1",
+  ],
+  "CollectionObjectType": [
+    "name",
+    "text1",
+    "text2",
+    "text3",
   ],
   "CollectionRelType": [
     "name",
@@ -2371,6 +2394,9 @@ exports[`getMainTableFields 1`] = `
   ],
   "GeographyTreeDefItem": [
     "name",
+    "fullNameSeparator",
+    "textAfter",
+    "textBefore",
     "title",
   ],
   "GeologicTimePeriod": [
@@ -2382,6 +2408,9 @@ exports[`getMainTableFields 1`] = `
   ],
   "GeologicTimePeriodTreeDefItem": [
     "name",
+    "fullNameSeparator",
+    "textAfter",
+    "textBefore",
     "title",
   ],
   "Gift": [
@@ -2425,6 +2454,13 @@ exports[`getMainTableFields 1`] = `
     "name",
   ],
   "LatLonPolygonPnt": [],
+  "LibraryRole": [
+    "name",
+  ],
+  "LibraryRolePolicy": [
+    "action",
+    "resource",
+  ],
   "LithoStrat": [
     "name",
     "guid",
@@ -2434,6 +2470,9 @@ exports[`getMainTableFields 1`] = `
   ],
   "LithoStratTreeDefItem": [
     "name",
+    "fullNameSeparator",
+    "textAfter",
+    "textBefore",
     "title",
   ],
   "Loan": [
@@ -2477,6 +2516,11 @@ exports[`getMainTableFields 1`] = `
     "name",
     "source",
   ],
+  "LocalityUpdate": [
+    "status",
+    "taskid",
+  ],
+  "LocalityUpdateRowResult": [],
   "MaterialSample": [
     "GGBN_absorbanceRatioMethod",
     "GGBN_concentrationUnit",
@@ -2492,6 +2536,7 @@ exports[`getMainTableFields 1`] = `
     "GGBN_weightMethod",
     "GGBN_weightUnit",
   ],
+  "Message": [],
   "MorphBankView": [],
   "OtherIdentifier": [
     "identifier",
@@ -2564,6 +2609,13 @@ exports[`getMainTableFields 1`] = `
     "status",
   ],
   "RepositoryAgreementAttachment": [],
+  "Role": [
+    "name",
+  ],
+  "RolePolicy": [
+    "action",
+    "resource",
+  ],
   "Shipment": [
     "shipmentNumber",
     "shipmentMethod",
@@ -2631,10 +2683,28 @@ exports[`getMainTableFields 1`] = `
   "SpVisualQuery": [
     "name",
   ],
+  "Spattachmentdataset": [
+    "name",
+  ],
+  "Spdataset": [
+    "name",
+    "rowresults",
+  ],
   "SpecifyUser": [
     "name",
     "password",
     "userType",
+  ],
+  "Spmerging": [
+    "name",
+    "status",
+    "table",
+    "taskid",
+  ],
+  "Spuserexternalid": [
+    "provider",
+    "providerid",
+    "idtoken",
   ],
   "Storage": [
     "name",
@@ -2645,6 +2715,9 @@ exports[`getMainTableFields 1`] = `
   ],
   "StorageTreeDefItem": [
     "name",
+    "fullNameSeparator",
+    "textAfter",
+    "textBefore",
     "title",
   ],
   "Taxon": [
@@ -2665,6 +2738,9 @@ exports[`getMainTableFields 1`] = `
   ],
   "TaxonTreeDefItem": [
     "name",
+    "fullNameSeparator",
+    "textAfter",
+    "textBefore",
     "title",
   ],
   "TreatmentEvent": [
@@ -2672,6 +2748,15 @@ exports[`getMainTableFields 1`] = `
     "type",
   ],
   "TreatmentEventAttachment": [],
+  "UniquenessRule": [
+    "modelname",
+  ],
+  "UniquenessRuleField": [],
+  "UserPolicy": [
+    "action",
+    "resource",
+  ],
+  "UserRole": [],
   "VoucherRelationship": [
     "collectionCode",
     "institutionCode",

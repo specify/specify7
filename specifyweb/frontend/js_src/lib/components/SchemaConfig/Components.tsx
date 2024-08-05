@@ -55,7 +55,7 @@ export function PickList({
 }: {
   readonly label?: LocalizedString;
   readonly value: string | null;
-  readonly groups: IR<IR<string> | RA<readonly [string, string]>>;
+  readonly groups: IR<IR<string> | RA<readonly [name: string, title: string]>>;
   readonly disabled?: boolean;
   readonly onChange: (value: string | null) => void;
   readonly className?: string;
@@ -84,7 +84,7 @@ export function PickList({
             .flatMap((group) =>
               Array.isArray(group)
                 ? group.map(([name]) => name)
-                : Object.values(group)
+                : Object.keys(group)
             )
             .includes(value) ? undefined : (
             <option value={value}>{`${queryText.invalidPicklistValue({
@@ -110,7 +110,7 @@ export function PickList({
 function Values({
   values,
 }: {
-  readonly values: IR<string> | RA<readonly [string, string]>;
+  readonly values: IR<string> | RA<readonly [value: string, label: string]>;
 }): JSX.Element {
   return (
     <>

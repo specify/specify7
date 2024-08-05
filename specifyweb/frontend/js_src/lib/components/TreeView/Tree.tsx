@@ -17,8 +17,10 @@ import type {
 import { deserializeResource } from '../DataModel/serializers';
 import { ResourceView } from '../Forms/ResourceView';
 import { getPref } from '../InitialContext/remotePrefs';
+import { hasTablePermission } from '../Permissions/helpers';
 import { useHighContrast } from '../Preferences/Hooks';
 import { userPreferences } from '../Preferences/userPreferences';
+import { AddRank } from './AddRank';
 import type { Conformations, Row, Stats } from './helpers';
 import { fetchStats } from './helpers';
 import { TreeRow } from './Row';
@@ -31,7 +33,10 @@ const treeToPref = {
   LithoStrat: 'lithoStrat',
 } as const;
 
-export function Tree<SCHEMA extends AnyTree>({
+export function Tree<
+  SCHEMA extends AnyTree,
+  TREE_NAME extends SCHEMA['tableName']
+>({
   treeDefinitionItems,
   tableName,
   isEditingRanks,
@@ -47,12 +52,12 @@ export function Tree<SCHEMA extends AnyTree>({
   searchBoxRef,
   baseUrl,
   setLastFocusedTree,
-  handleToggleEditingRanks,
+  onToggleEditingRanks: handleToggleEditingRanks,
 }: {
   readonly treeDefinitionItems: RA<
     SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
   >;
-  readonly tableName: SCHEMA['tableName'];
+  readonly tableName: TREE_NAME;
   readonly isEditingRanks: boolean;
   readonly hideEmptyNodes: boolean;
   readonly focusPath: GetSet<RA<number>>;
@@ -66,7 +71,7 @@ export function Tree<SCHEMA extends AnyTree>({
   readonly searchBoxRef: React.RefObject<HTMLInputElement | null>;
   readonly baseUrl: string;
   readonly setLastFocusedTree: () => void;
-  readonly handleToggleEditingRanks: () => void;
+  readonly onToggleEditingRanks: () => void;
 }): JSX.Element {
   const highContrast = useHighContrast();
 
@@ -151,12 +156,21 @@ export function Tree<SCHEMA extends AnyTree>({
                 role="columnheader"
               >
                 {index === 0 ? (
-                  <Button.Icon
-                    aria-pressed={isEditingRanks}
-                    icon="pencil"
-                    title={treeText.editRanks()}
-                    onClick={handleToggleEditingRanks}
-                  />
+                  <>
+                    <Button.Icon
+                      aria-pressed={isEditingRanks}
+                      icon="pencil"
+                      title={treeText.editRanks()}
+                      onClick={handleToggleEditingRanks}
+                    />
+                    {isEditingRanks &&
+                    hasTablePermission(
+                      treeDefinitionItems[0]._tableName,
+                      'create'
+                    ) ? (
+                      <AddRank treeDefinitionItems={treeDefinitionItems} />
+                    ) : null}
+                  </>
                 ) : null}
                 <Button.LikeLink
                   id={id(rank.rankId.toString())}
@@ -257,7 +271,7 @@ function EditTreeRank({
           resource={resource}
           onAdd={undefined}
           onClose={handleClose}
-          onDeleted={undefined}
+          onDeleted={(): void => globalThis.location.reload()}
           onSaved={(): void => globalThis.location.reload()}
         />
       ) : null}

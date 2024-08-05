@@ -31,6 +31,7 @@ exports[`Can edit a form definition 1`] = `
           },
         ],
       },
+      "businessRules": "edu.ku.brc.specify.datamodel.busrules.AccessionBusRules",
       "description": "The Accession form.",
       "legacyResourceLabels": false,
       "legacyUseBusinessRules": true,

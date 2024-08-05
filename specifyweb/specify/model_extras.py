@@ -3,8 +3,10 @@ import logging
 from django.db import models
 from django.contrib.auth.base_user import BaseUserManager
 from django.conf import settings
+from django.utils import timezone
 
-from .tree_extras import Tree
+from .model_timestamp import save_auto_timestamp_field_with_override
+from .tree_extras import Tree, TreeRank
 
 if settings.AUTH_LDAP_SERVER_URI is not None:
     from . import ldap_extras
@@ -52,7 +54,13 @@ class Specifyuser(models.Model):
             return False
         return decrypted == password
 
-    def is_admin(self):
+    def is_admin(self): 
+        "Returns true if user is a Specify 7 admin."
+        return self.userpolicy_set.filter(
+            collection=None, resource="%", action="%"
+        ).exists()
+
+    def is_legacy_admin(self):
         "Returns true if user is a Specify 6 admin."
         from django.db import connection
         cursor = connection.cursor()
@@ -109,7 +117,7 @@ class Specifyuser(models.Model):
         if self.id and self.usertype != 'Manager':
             self.clear_admin()
 
-        return super(Specifyuser, self).save(*args, **kwargs)
+        return save_auto_timestamp_field_with_override(super(Specifyuser, self).save, args, kwargs, self)
 
     class Meta:
         abstract = True
@@ -136,7 +144,14 @@ class Preparation(models.Model):
     class Meta:
         abstract = True
 
+PALEO_DISCIPLINES = {'paleobotany', 'invertpaleo', 'vertpaleo'}
 
+class Discipline(models.Model):
+    def is_paleo(self):
+         return self.type.lower() in PALEO_DISCIPLINES
+    
+    class Meta:
+        abstract = True
 
 class Taxon(Tree):
     class Meta:
@@ -155,5 +170,25 @@ class Geologictimeperiod(Tree):
         abstract = True
 
 class Lithostrat(Tree):
+    class Meta:
+        abstract = True
+
+class Geographytreedefitem(TreeRank):
+    class Meta:
+        abstract = True
+
+class Geologictimeperiodtreedefitem(TreeRank):
+    class Meta:
+        abstract = True
+
+class Lithostrattreedefitem(TreeRank):
+    class Meta:
+        abstract = True
+
+class Storagetreedefitem(TreeRank):
+    class Meta:
+        abstract = True
+
+class Taxontreedefitem(TreeRank):
     class Meta:
         abstract = True

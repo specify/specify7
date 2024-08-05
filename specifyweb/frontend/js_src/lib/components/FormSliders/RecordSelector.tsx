@@ -49,7 +49,9 @@ export type RecordSelectorState<SCHEMA extends AnySchema> = {
   // Use this to render <ResourceView>
   readonly resource: SpecifyResource<SCHEMA> | undefined;
   // Set this as an "Add" button event listener
-  readonly onAdd: (() => void) | undefined;
+  readonly onAdd:
+    | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
+    | undefined;
   // Set this as an "Remove" button event listener
   readonly onRemove:
     | ((source: 'deleteButton' | 'minusButton') => void)
@@ -123,9 +125,9 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
       ) : null,
     onAdd:
       typeof handleAdded === 'function'
-        ? (): void => {
+        ? (resources: RA<SpecifyResource<SCHEMA>>): void => {
             if (typeof relatedResource === 'object') {
-              const resource = new table.Resource();
+              const resource = resources[0];
               if (
                 typeof field?.otherSideName === 'string' &&
                 !relatedResource.isNew()

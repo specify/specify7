@@ -136,7 +136,8 @@ async function recursiveResourceResolve(
       return [];
     const tableRanks = strictGetTreeDefinitionItems(
       treeTableName as 'Geography',
-      false
+      false,
+      'all'
     );
     const currentRank = defined(
       tableRanks.find(({ rankId }) => rankId === resource.get('rankId')),

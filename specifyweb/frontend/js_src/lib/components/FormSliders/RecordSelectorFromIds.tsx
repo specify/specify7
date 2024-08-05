@@ -48,6 +48,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   onClone: handleClone,
   onDelete: handleDelete,
   onFetch: handleFetch,
+  hasSeveralResourceType,
   ...rest
 }: Omit<RecordSelectorProps<SCHEMA>, 'index' | 'records'> & {
   /*
@@ -69,11 +70,12 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   readonly onClose: () => void;
   readonly onSaved: (resource: SpecifyResource<SCHEMA>) => void;
   readonly onClone:
-    | ((newResource: SpecifyResource<SCHEMA>) => void)
+    | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
     | undefined;
   readonly onFetch?: (
     index: number
   ) => Promise<RA<number | undefined> | undefined>;
+  readonly hasSeveralResourceType?: boolean;
 }): JSX.Element | null {
   const [records, setRecords] = React.useState<
     RA<SpecifyResource<SCHEMA> | undefined>
@@ -206,7 +208,10 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                   aria-label={addLabel}
                   disabled={isReadOnly}
                   title={addLabel}
-                  onClick={handleAdding}
+                  onClick={() => {
+                    const resource = new table.Resource();
+                    handleAdding([resource]);
+                  }}
                 />
               ) : undefined}
               {typeof handleRemove === 'function' && canRemove ? (
@@ -224,7 +229,9 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                   className={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
                 />
               )}
-              {hasAttachments && !isNewRecordSet ? (
+              {hasAttachments &&
+              !hasSeveralResourceType &&
+              !resource?.isNew() ? (
                 <RecordSetAttachments records={records} onFetch={handleFetch} />
               ) : undefined}
               {specifyNetworkBadge}
@@ -233,6 +240,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
           </div>
         )}
         isDependent={isDependent}
+        isInRecordSet={!isNewRecordSet}
         isLoading={isLoading || isExternalLoading}
         isSubForm={false}
         resource={resource}

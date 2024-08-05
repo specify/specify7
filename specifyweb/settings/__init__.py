@@ -108,6 +108,7 @@ LANGUAGES = [
     ('fr-fr', 'français'),
     ('es-es', 'español'),
     ('de-ch', 'deutsch (schweiz)'),
+    ('pt-br', 'português (brasil)'),
 ]
 
 SITE_ID = 1
@@ -263,4 +264,6 @@ try:
 except ImportError:
     pass
 
-
+SILENCED_SYSTEM_CHECKS = [
+    "fields.W342", # Allow ForeignKey(unique=True) instead of OneToOneField without gettig a warning
+]

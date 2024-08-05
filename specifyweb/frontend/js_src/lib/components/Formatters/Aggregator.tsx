@@ -114,6 +114,10 @@ function AggregatorPreview({
   );
   return typeof aggregator.table === 'object' &&
     hasTablePermission(aggregator.table.name, 'read') ? (
-    <ResourcePreview doFormatting={doFormatting} table={aggregator.table} />
+    <ResourcePreview
+      doFormatting={doFormatting}
+      isAggregator
+      table={aggregator.table}
+    />
   ) : null;
 }

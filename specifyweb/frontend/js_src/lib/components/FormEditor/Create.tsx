@@ -3,6 +3,7 @@ import { useOutletContext } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
@@ -192,10 +193,14 @@ export function PreviewView({
   readonly onSelect: () => void;
 }): JSX.Element {
   const resource = React.useMemo(() => new table.Resource(), [table]);
-  const viewDefinition = React.useMemo(
-    () => parseViewDefinition(view, 'form', 'edit', table),
-    [view, table]
-  );
+  const viewDefinition = useAsyncState(
+    React.useCallback(
+      async () => parseViewDefinition(view, 'form', 'edit', table),
+      [view, table]
+    ),
+    true
+  )[0];
+
   return (
     <Dialog
       buttons={

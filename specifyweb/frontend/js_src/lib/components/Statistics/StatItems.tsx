@@ -9,10 +9,7 @@ import { Http } from '../../utils/ajax/definitions';
 import { throttledPromise } from '../../utils/ajax/throttledPromise';
 import { localized } from '../../utils/types';
 import { formatNumber } from '../Atoms/Internationalization';
-import {
-  deserializeResource,
-  serializeResource,
-} from '../DataModel/serializers';
+import { serializeResource } from '../DataModel/serializers';
 import { getNoAccessTables } from '../QueryBuilder/helpers';
 import {
   makeSerializedFieldsFromPaths,
@@ -244,7 +241,7 @@ function QueryItem({
     async () =>
       throttledPromise<AjaxResponseObject<{ readonly count: number }>>(
         'queryStats',
-        queryCountPromiseGenerator(deserializeResource(serializedQuery)),
+        queryCountPromiseGenerator(serializedQuery),
         JSON.stringify(querySpec)
       ).then((response) => {
         if (response === undefined) return undefined;
@@ -253,8 +250,7 @@ function QueryItem({
           setStatState('valid');
           return formatNumber(data.count);
         }
-        if (status === Http.FORBIDDEN) setStatState('noPermission');
-        setStatState('error');
+        setStatState(status === Http.FORBIDDEN ? 'noPermission' : 'error');
         return undefined;
       }),
 
