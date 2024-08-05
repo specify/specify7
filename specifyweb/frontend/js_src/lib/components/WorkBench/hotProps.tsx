@@ -67,7 +67,8 @@ export function useHotProps({
       const tableName =
         (typeof mappingCol === 'number'
           ? mappings?.tableNames[mappingCol]
-          : undefined) ?? tableIconUrl?.split('/').slice(-1)?.[0]?.split('.')?.[0];
+          : undefined) ??
+        tableIconUrl?.split('/').slice(-1)?.[0]?.split('.')?.[0];
 
       return ReactDOMServer.renderToString(
         <ColumnHeader
@@ -129,7 +130,7 @@ export function useHotProps({
 function ColumnHeader({
   isMapped,
   columnName,
-  tableName
+  tableName,
 }: {
   readonly isMapped: boolean;
   readonly columnName: string;
@@ -138,10 +139,7 @@ function ColumnHeader({
   return (
     <div className="flex items-center gap-1 pl-4">
       {isMapped && tableName !== undefined ? (
-        <TableIcon
-          name={tableName}
-          label={false}
-        />
+        <TableIcon label={false} name={tableName} />
       ) : (
         <span
           aria-label={wbPlanText.unmappedColumn()}
