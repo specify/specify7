@@ -265,12 +265,12 @@ msgstr "Relationship count"
 msgid "databaseSchema"
 msgstr "Database Schema"
 
-#: components/Toolbar/QueryTablesEdit.tsx:91
+#: components/Toolbar/QueryTablesEdit.tsx:90
 #. Used in: Components > Toolbar > Query Tables Edit
 msgid "selectedTables"
 msgstr "Selected Tables"
 
-#: components/Toolbar/QueryTablesEdit.tsx:89
+#: components/Toolbar/QueryTablesEdit.tsx:88
 #. Used in: Components > Toolbar > Query Tables Edit
 msgid "possibleTables"
 msgstr "Possible Tables"

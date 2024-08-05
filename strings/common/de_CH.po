@@ -247,7 +247,7 @@ msgstr "Erstellen"
 #: components/Statistics/StatsPageEditing.tsx:42
 #: components/Toolbar/Language.tsx:76
 #: components/Toolbar/MasterKey.tsx:97
-#: components/Toolbar/QueryTablesEdit.tsx:81
+#: components/Toolbar/QueryTablesEdit.tsx:80
 #: components/Toolbar/QueryTablesWrapper.tsx:155
 #: components/Toolbar/TreeRepair.tsx:91
 #: components/TreeView/Actions.tsx:402
@@ -879,7 +879,7 @@ msgstr "Alle zuklappen"
 
 #: components/Preferences/index.tsx:221
 #: components/Statistics/index.tsx:564
-#: components/Toolbar/QueryTablesEdit.tsx:78
+#: components/Toolbar/QueryTablesEdit.tsx:77
 #. Used in: Components > Preferences > Index ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Query Tables Edit
 msgid "reset"
 msgstr "Zurücksetzen"

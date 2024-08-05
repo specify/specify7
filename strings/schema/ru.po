@@ -317,13 +317,13 @@ msgstr "Количество отношений"
 msgid "databaseSchema"
 msgstr "Схема базы данных"
 
-#: components/Toolbar/QueryTablesEdit.tsx:91
+#: components/Toolbar/QueryTablesEdit.tsx:90
 #. Used in: Components > Toolbar > Query Tables Edit
 #, fuzzy
 msgid "selectedTables"
 msgstr "Выбранные таблицы"
 
-#: components/Toolbar/QueryTablesEdit.tsx:89
+#: components/Toolbar/QueryTablesEdit.tsx:88
 #. Used in: Components > Toolbar > Query Tables Edit
 #, fuzzy
 msgid "possibleTables"

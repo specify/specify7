@@ -316,13 +316,13 @@ msgstr "Nombre de relations"
 msgid "databaseSchema"
 msgstr "Schéma de base de données"
 
-#: components/Toolbar/QueryTablesEdit.tsx:91
+#: components/Toolbar/QueryTablesEdit.tsx:90
 #. Used in: Components > Toolbar > Query Tables Edit
 #, fuzzy
 msgid "selectedTables"
 msgstr "Tableaux sélectionnés"
 
-#: components/Toolbar/QueryTablesEdit.tsx:89
+#: components/Toolbar/QueryTablesEdit.tsx:88
 #. Used in: Components > Toolbar > Query Tables Edit
 #, fuzzy
 msgid "possibleTables"
