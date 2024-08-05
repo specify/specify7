@@ -163,6 +163,16 @@ export function WbPlanView({
   );
   const taxonIdName = taxonCorrespondingId?.definition.name;
 
+  const [treeSelected, setTreeSelected] = React.useState<string | undefined>();
+
+  const handleTreeSelection = (treeName: string): void => {
+    const taxonCorresponding = definitionsForTreeTaxon?.find(
+      (tree) => tree.definition.name === treeName
+    );
+    const taxonIdName = taxonCorresponding?.definition.name;
+    setTreeSelected(taxonIdName);
+  };
+
   const navigate = useNavigate();
   return state.type === 'SelectBaseTable' ? (
     <ProtectedAction action="update" resource="/workbench/dataset">
@@ -223,9 +233,10 @@ export function WbPlanView({
       baseTableName={state.baseTableName}
       changesMade={state.changesMade}
       dataset={dataset}
+      handleTreeSelection={handleTreeSelection}
       lines={state.lines}
       mustMatchPreferences={state.mustMatchPreferences}
-      taxonType={taxonType ?? taxonIdName}
+      taxonType={taxonType ?? treeSelected}
       treeDefinitions={definitions}
       onChangeBaseTable={(): void =>
         setState({

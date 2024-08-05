@@ -275,12 +275,15 @@ export function getMappingLineData({
           .filter((field) => {
             if (table.name === 'Taxon' && mappingPath[0] === '0') {
               return treeDefinitions?.map((definition) => definition.name);
-            } else if (
-              internalState.mappingLineData.length === 0 &&
-              taxonType !== undefined
-            ) {
-              return field[1].tableTreeDefName === taxonType;
             }
+            /*
+             * Else if (
+             *   internalState.mappingLineData.length === 0 &&
+             *   taxonType !== undefined
+             * ) {
+             *   return field[1].tableTreeDefName === taxonType;
+             * }
+             */
             return true;
           })
           .map(([rawKey, fieldData]) => [rawKey, fieldData])

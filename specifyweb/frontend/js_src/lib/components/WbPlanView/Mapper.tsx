@@ -148,6 +148,7 @@ export function Mapper(props: {
   readonly treeDefinitions:
     | readonly SerializedResource<FilterTablesByEndsWith<'TreeDef'>>[]
     | undefined;
+  readonly handleTreeSelection: (treeName: string) => void;
 }): JSX.Element {
   const [state, dispatch] = React.useReducer(
     reducer,
@@ -461,6 +462,8 @@ export function Mapper(props: {
             }),
             customSelectType: 'OPENED_LIST',
             onChange({ isDoubleClick, ...rest }) {
+              if (rest.index === 0 && rest.newTableName === 'Taxon')
+                props.handleTreeSelection(rest.newValue);
               if (isDoubleClick && mapButtonEnabled)
                 dispatch({ type: 'MappingViewMapAction' });
               else if (!isReadOnly)
