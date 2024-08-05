@@ -364,7 +364,7 @@ export function getMappingLineData({
     handleTreeRanks({ table }) {
       const defaultValue = getNameFromTreeRankName(internalState.defaultValue);
 
-      const fieldsData: readonly (
+      const fieldsTreeData: readonly (
         | readonly [string, HtmlGeneratorFieldData]
         | undefined
       )[] =
@@ -423,9 +423,7 @@ export function getMappingLineData({
                 : []),
             ];
 
-      console.log(fieldsData);
-
-      commitInstanceData('tree', table, fieldsData);
+      commitInstanceData('tree', table, fieldsTreeData);
     },
 
     handleSimpleFields({ table, parentRelationship }) {
