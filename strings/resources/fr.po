@@ -585,8 +585,8 @@ msgstr "Valeur du champ conditionnel"
 msgid "formatPreview"
 msgstr "Aperçu du format"
 
-#: components/DataModel/businessRuleDefs.ts:284
-#: components/DataModel/businessRuleDefs.ts:302
+#: components/DataModel/businessRuleDefs.ts:291
+#: components/DataModel/businessRuleDefs.ts:309
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "currentDeterminationRequired"

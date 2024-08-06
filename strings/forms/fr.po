@@ -815,7 +815,7 @@ msgstr "(Plage : {from:string} - {to:string})"
 msgid "catalogNumberNumericFormatter"
 msgstr "Numéro de catalogue Numérique"
 
-#: components/DataModel/businessRuleDefs.ts:239
+#: components/DataModel/businessRuleDefs.ts:245
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "invalidTree"
 msgstr ""

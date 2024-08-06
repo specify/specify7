@@ -803,7 +803,7 @@ msgstr "(Диапазон: {from:string} – {to:string})"
 msgid "catalogNumberNumericFormatter"
 msgstr "Номер по каталогу Числовой"
 
-#: components/DataModel/businessRuleDefs.ts:239
+#: components/DataModel/businessRuleDefs.ts:245
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "invalidTree"
 msgstr ""
