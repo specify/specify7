@@ -53,12 +53,11 @@ type MappedBusinessRuleDefs = {
 const CURRENT_DETERMINATION_KEY = 'determination-isCurrent';
 const DETERMINATION_TAXON_KEY = 'determination-taxon';
 
-const hasNoCurrentDetermination = (collection: Collection<Determination>) => {
-  return collection.models.length > 0 && !collection.models.some(
-    (determination: SpecifyResource<Determination>) =>
-      determination.get('isCurrent')
+const hasNoCurrentDetermination = (collection: Collection<Determination>) =>
+  collection.models.length > 0 &&
+  !collection.models.some((determination: SpecifyResource<Determination>) =>
+    determination.get('isCurrent')
   );
-};
 
 export const businessRuleDefs: MappedBusinessRuleDefs = {
   Address: {
@@ -266,8 +265,10 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       isCurrent: async (
         determination: SpecifyResource<Determination>
       ): Promise<BusinessRuleResult> => {
-        // Disallow multiple determinations being checked as current
-        // Unchecks other determination when one of them gets checked
+        /*
+         * Disallow multiple determinations being checked as current
+         * Unchecks other determination when one of them gets checked
+         */
         if (
           determination.get('isCurrent') &&
           determination.collection !== undefined
@@ -308,8 +309,8 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           [resourcesText.currentDeterminationRequired()],
           CURRENT_DETERMINATION_KEY
         );
+      // Unblock save when all determinations are removed
       else
-        // Unblock save when all determinations are removed
         setSaveBlockers(
           collection.related ?? determination,
           determination.specifyTable.field.isCurrent,
