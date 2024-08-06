@@ -90,6 +90,7 @@ describe('Collection Object business rules', () => {
         {
           taxon: getResourceApiUrl('Taxon', otherTaxonId),
           preferredTaxon: getResourceApiUrl('Taxon', otherTaxonId),
+          isCurrent: true,
         } as SerializedResource<Determination>,
       ],
       resource_uri: collectionObjectUrl,
@@ -167,6 +168,64 @@ describe('Collection Object business rules', () => {
     // Catalog Number must get ignored when clearing
     expect(collectionObject.get('catalogNumber')).toBeDefined();
     expect(collectionObject.get('description')).toBeNull();
+  });
+
+  test('CollectionObject -> determinations: New determinations are current by default', async () => {
+    const collectionObject = getBaseCollectionObject();
+    const determinations =
+      collectionObject.getDependentResource('determinations');
+
+    determinations?.add(new tables.Determination.Resource());
+
+    // Old determination gets unchecked as current
+    expect(determinations?.models[0].get('isCurrent')).toBe(false);
+    // New determination becomes current by default
+    expect(determinations?.models[1].get('isCurrent')).toBe(true);
+  });
+
+  test('CollectionObject -> determinations: Save blocked when no current determinations exist', async () => {
+    const collectionObject = getBaseCollectionObject();
+    const determination =
+      collectionObject.getDependentResource('determinations')?.models[0];
+
+    determination?.set('isCurrent', false);
+
+    const { result } = renderHook(() =>
+      useSaveBlockers(
+        collectionObject,
+        tables.Determination.getField('isCurrent')
+      )
+    );
+
+    await act(async () => {
+      await determination?.businessRuleManager?.checkField('isCurrent');
+    });
+
+    expect(result.current[0]).toStrictEqual([
+      'A current determination is required.',
+    ]);
+  });
+
+  test('CollectionObject -> determinations: Save is not blocked when all determinations are deleted', async () => {
+    const collectionObject = getBaseCollectionObject();
+    const determinations =
+      collectionObject.getDependentResource('determinations');
+    const determination = determinations?.models[0];
+
+    determinations?.remove(determination!);
+
+    const { result } = renderHook(() =>
+      useSaveBlockers(
+        collectionObject,
+        tables.Determination.getField('isCurrent')
+      )
+    );
+
+    await act(async () => {
+      await determination?.businessRuleManager?.checkField('isCurrent');
+    });
+
+    expect(result.current[0]).toStrictEqual([]);
   });
 });
 
