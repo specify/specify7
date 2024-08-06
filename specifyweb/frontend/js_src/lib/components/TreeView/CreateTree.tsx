@@ -5,6 +5,7 @@
  *TODO:
  *- Finish CreateTree function
  *- Add in list of default options
+ *- Figure out how to pass default options to second dialog.
  */
 import React from 'react';
 
@@ -13,8 +14,9 @@ import { treeText } from '../../localization/tree';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
-import type { AnyTree, FilterTablesByEndsWith } from '../DataModel/helperTypes';
-import { tables } from '../DataModel/tables';
+import type { AnyTree , SerializedResource} from '../DataModel/helperTypes';
+import { deserializeResource } from '../DataModel/serializers';
+import { TaxonTreeDef } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
@@ -27,16 +29,22 @@ export function CreateTree<SCHEMA extends AnyTree>({
 
   const [isActive, setIsActive] = React.useState(0);
 
-  // TODO: Go serialized resource route instead, so we can easily read the default tree.
-  /*const treeDefResource: SerializedResource<TaxonTreeDef> = {
-    name: 'test',
-    remarks: 'this is a test tree',
-    fullnamedirection: 'forward',
-  }*/
+  // TODO: Test resource, will need to be removed later on.
+  const treeDefResource: Partial<SerializedResource<TaxonTreeDef>> = {
+    _tableName: 'TaxonTreeDef',
+    name: 'Test',
+    remarks: 'This is a test',
+    fullNameDirection: 1,
+  }
 
-  // Currently, ResourceView is reloading each time you try to add a TreeDefItem. Needs to be solved
-  // May be solved by serialization and useMemo
-  const treeDefResource = React.useMemo(() => new tables.TaxonTreeDef.Resource(), []);
+  // May be a good idea to separate second dialog into own component/function, since hook needs to be used outside of the condition.
+  const resource = React.useMemo(
+    () =>
+      deserializeResource(treeDefResource), []
+  );
+
+  //Non-serialized resource version. Does work.
+  //const treeDefResource = React.useMemo(() => new tables.TaxonTreeDef.Resource(), []);
 
   return (
     <>
@@ -74,7 +82,7 @@ export function CreateTree<SCHEMA extends AnyTree>({
             dialog="modal"
             isDependent={false}
             isSubForm={false}
-            resource={treeDefResource}
+            resource={resource}
             title={treeText.newTree()}
             onAdd={undefined}
             onClose={() => setIsActive(0)}
