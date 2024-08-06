@@ -355,7 +355,7 @@ class BoundUploadTable(NamedTuple):
         else:
             query = predicate.apply_to_query(query)
             try:
-                query = query.limit(10)
+                query = query.distinct().limit(10)
                 raw_ids: List[Tuple[int, Any]] = list(query)
                 ids = [_id[0] for _id in raw_ids]
             except OperationalError as e:
