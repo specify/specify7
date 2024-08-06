@@ -27,7 +27,7 @@ ubiquitous web browser access.
 
 Specify 7’s architecture supports collaborative digitization projects and remote hosting of specimen databases. Without the need for a local area or campus network
 to connect to the MySQL data server, Specify 7 gives you and your collaborators
-access to a shared specimen database through any web browser. Finding it chllenging to obtain IT support to maintain a local secure database server? With the Specify 7 server
+access to a shared specimen database through any web browser. Finding it challenging to obtain IT support to maintain a local secure database server? With the Specify 7 server
 software supported on generic Linux servers, museums can utilize a server
 hosting service to provide support for the technical complexities of systems
 administration, security management, and backing-up. Want to create a joint
