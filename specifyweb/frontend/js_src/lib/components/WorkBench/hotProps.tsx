@@ -68,7 +68,7 @@ export function useHotProps({
         (typeof mappingCol === 'number'
           ? mappings?.tableNames[mappingCol]
           : undefined) ??
-        tableIconUrl?.split('/').slice(-1)?.[0]?.split('.')?.[0];
+        tableIconUrl?.split('/').slice(-1)[0]?.split('.')[0];
 
       return ReactDOMServer.renderToString(
         <ColumnHeader
