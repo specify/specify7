@@ -60,9 +60,9 @@ export function SvgIcon({
       </g>
       <g>
         <text
-          dominantBaseline="central"
           alignmentBaseline="middle"
           baselineShift="-10%"
+          dominantBaseline="central"
           fill="#FFFFFF"
           fontFamily="Francois One,sans-serif"
           fontSize={`${fontSize}px`}
