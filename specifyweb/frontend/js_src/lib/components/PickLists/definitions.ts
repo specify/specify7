@@ -60,6 +60,12 @@ export const userTypes = [
   'Guest',
 ] as const;
 
+export const collectionObjectGroupTypeTypes = [
+  'Discrete',
+  'Consolidated',
+  'Drill Core',
+] as const;
+
 export const PickListTypes = {
   // Items are defined in the PickListItems table
   ITEMS: 0,
@@ -208,6 +214,20 @@ export const getFrontEndPickLists = f.store<{
       name: definePicklist('_CollectionObjectType', [])
         .set('type', PickListTypes.FIELDS)
         .set('tableName', 'collectionobjecttype')
+        .set('fieldName', 'name'),
+    },
+    CollectionObjectGroupTypeType: {
+      name: definePicklist(
+        '_CollectionObjectGroupTypeType',
+        collectionObjectGroupTypeTypes.map((title) =>
+          createPickListItem(title, title)
+        )
+      ),
+    },
+    CollectionObjectGroupType: {
+      name: definePicklist('_CollectionObjectGroupType', [])
+        .set('type', PickListTypes.FIELDS)
+        .set('tableName', 'collectionobjectgrouptype')
         .set('fieldName', 'name'),
     },
     CollectionRelType: {
