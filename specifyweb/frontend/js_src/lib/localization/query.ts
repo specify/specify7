@@ -311,6 +311,14 @@ export const queryText = createDictionary({
     'uk-ua': 'Створити CSV',
     'de-ch': 'CSV erstellen',
   },
+  createExcelCsv: {
+    'en-us': 'Create Excel CSV',
+    'ru-ru': 'Создать файл Excel CSV',
+    'es-es': 'Crear CSV de Excel',
+    'fr-fr': 'Créer un CSV Excel',
+    'uk-ua': 'Створіть Excel CSV',
+    'de-ch': 'Excel-CSV erstellen',
+  },
   createKml: {
     'en-us': 'Create KML',
     'ru-ru': 'Создать KML',

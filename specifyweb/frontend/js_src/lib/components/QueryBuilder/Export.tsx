@@ -51,7 +51,7 @@ export function QueryExportButtons({
     undefined
   );
 
-  function doQueryExport(url: string, delimiter: string | undefined): void {
+  function doQueryExport(url: string, delimiter: string | undefined, encoding: string | undefined): void {
     if (typeof getQueryFieldRecords === 'function')
       queryResource.set('fields', getQueryFieldRecords());
     const serialized = queryResource.toJSON();
@@ -67,6 +67,7 @@ export function QueryExportButtons({
           ),
         recordSetId,
         delimiter,
+        encoding,
       }),
       errorMode: 'dismissible',
     });
@@ -141,11 +142,24 @@ export function QueryExportButtons({
           showConfirmation={showConfirmation}
           onClick={(): void => {
             selectedRows.size === 0
-              ? doQueryExport('/stored_query/exportcsv/', separator)
+              ? doQueryExport('/stored_query/exportcsv/', separator, 'utf-8')
               : exportSelected().catch(softFail);
           }}
         >
           {queryText.createCsv()}
+        </QueryButton>
+      )}
+      {containsResults && hasPermission('/querybuilder/query', 'export_csv') && (
+        <QueryButton
+          disabled={fields.length === 0}
+          showConfirmation={showConfirmation}
+          onClick={(): void => {
+            selectedRows.size === 0
+              ? doQueryExport('/stored_query/exportcsv/', separator, 'utf-8-sig')
+              : exportSelected().catch(softFail);
+          }}
+        >
+          {queryText.createExcelCsv()}
         </QueryButton>
       )}
       {canUseKml && (
@@ -154,7 +168,7 @@ export function QueryExportButtons({
           showConfirmation={showConfirmation}
           onClick={(): void =>
             hasLocalityColumns(fields)
-              ? doQueryExport('/stored_query/exportkml/', undefined)
+              ? doQueryExport('/stored_query/exportkml/', undefined, undefined)
               : setState('warning')
           }
         >
