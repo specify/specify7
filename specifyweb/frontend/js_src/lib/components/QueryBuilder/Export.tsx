@@ -51,7 +51,11 @@ export function QueryExportButtons({
     undefined
   );
 
-  function doQueryExport(url: string, delimiter: string | undefined, encoding: string | undefined): void {
+  function doQueryExport(
+    url: string,
+    delimiter: string | undefined,
+    encoding: string | undefined
+  ): void {
     if (typeof getQueryFieldRecords === 'function')
       queryResource.set('fields', getQueryFieldRecords());
     const serialized = queryResource.toJSON();
@@ -155,7 +159,11 @@ export function QueryExportButtons({
           showConfirmation={showConfirmation}
           onClick={(): void => {
             selectedRows.size === 0
-              ? doQueryExport('/stored_query/exportcsv/', separator, 'utf-8-sig')
+              ? doQueryExport(
+                  '/stored_query/exportcsv/',
+                  separator,
+                  'utf-8-sig'
+                )
               : exportSelected().catch(softFail);
           }}
         >
