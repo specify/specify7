@@ -28,6 +28,7 @@ export function CreateTree<SCHEMA extends AnyTree>({
 }): JSX.Element {
 
   const [isActive, setIsActive] = React.useState(0);
+  const [selectedResource, setSelectedResource] = React.useState<Partial<SerializedResource<TaxonTreeDef>> | null>(null);
 
   // TODO: Test resource, will need to be removed later on.
   const treeDefResource: Partial<SerializedResource<TaxonTreeDef>> = {
@@ -37,14 +38,35 @@ export function CreateTree<SCHEMA extends AnyTree>({
     fullNameDirection: 1,
   }
 
+  const treeDefResource2: Partial<SerializedResource<TaxonTreeDef>> = {
+    _tableName: 'TaxonTreeDef',
+    name: 'second test',
+    remarks: 'Testing another',
+    fullNameDirection: 1,
+  }
+
   // May be a good idea to separate second dialog into own component/function, since hook needs to be used outside of the condition.
   const resource = React.useMemo(
     () =>
       deserializeResource(treeDefResource), []
   );
 
+  const resource2 = React.useMemo(
+    () =>
+      deserializeResource(treeDefResource2), []
+  );
   //Non-serialized resource version. Does work.
   //const treeDefResource = React.useMemo(() => new tables.TaxonTreeDef.Resource(), []);
+
+  const handleTextClick = () => {
+    setSelectedResource(resource);
+    setIsActive(2);
+  };
+
+  const handleTextClick2 = () => {
+    setSelectedResource(resource2);
+    setIsActive(2);
+  };
 
   return (
     <>
@@ -74,21 +96,24 @@ export function CreateTree<SCHEMA extends AnyTree>({
           onClose={() => setIsActive(0)}
         >
           <Ul className="flex flex-col gap-2">
-            <li />
+            <li>
+              <span onClick={handleTextClick} className="cursor-pointer text-blue-500">
+                Test first resource view
+              </span>
+            </li>
+            <li>
+              <span onClick={handleTextClick2} className="cursor-pointer text-blue-500">
+                Test second resource view
+              </span>
+            </li>
           </Ul>
         </Dialog>
-      ) : isActive === 2 ? (
-          <ResourceView
-            dialog="modal"
-            isDependent={false}
-            isSubForm={false}
-            resource={resource}
-            title={treeText.newTree()}
-            onAdd={undefined}
-            onClose={() => setIsActive(0)}
-            onDeleted={undefined}
-            onSaved={(): void => globalThis.location.reload()}
-          />
+      ) : null}
+      {isActive === 2 && selectedResource ? (
+          <ResourceView 
+          dialog = "modal"
+          onClose={() => setIsActive(0)}
+          resource={selectedResource} />
       ) : null}
     </>
   );
