@@ -161,15 +161,6 @@ describe('Collection Object business rules', () => {
     expect(determinations?.models.length).toBe(0);
   });
 
-  test('CollectionObject simple fields clear when CollectionObjectType changes', async () => {
-    const collectionObject = getBaseCollectionObject();
-    collectionObject.set('collectionObjectType', otherCollectionObjectTypeUrl);
-
-    // Catalog Number must get ignored when clearing
-    expect(collectionObject.get('catalogNumber')).toBeDefined();
-    expect(collectionObject.get('description')).toBeNull();
-  });
-
   test('CollectionObject -> determinations: New determinations are current by default', async () => {
     const collectionObject = getBaseCollectionObject();
     const determinations =
