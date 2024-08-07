@@ -599,7 +599,8 @@ export const syncers = {
     MAPPER extends {
       readonly [KEY in TYPE_MAPPER[keyof TYPE_MAPPER] | 'Unknown']: (
         input: IN,
-        extra: EXTRA & { readonly rawType: keyof TYPE_MAPPER }
+        extra: EXTRA,
+        rawType: keyof TYPE_MAPPER
       ) => BaseSpec<SimpleXmlNode>;
     },
     MAPPED extends {
@@ -658,7 +659,7 @@ export const syncers = {
             ]) as TYPE_MAPPER[keyof TYPE_MAPPER]) ?? ('Unknown' as const);
         const spec = mapper[type] ?? mapper.Unknown;
         const { serializer } = syncers.object(
-          spec(cell, { ...extraPayload, rawType })
+          spec(cell, extraPayload, rawType)
         );
 
         return {
@@ -692,7 +693,7 @@ export const syncers = {
               )?.[0] ?? rawType;
         const spec = mapper[definition.type] ?? mapper.Unknown;
         const { deserializer } = syncers.object(
-          spec(cell as unknown as IN, { ...extraPayload, rawType })
+          spec(cell as unknown as IN, extraPayload, rawType)
         );
         const node = deserializer(definition);
         const rawNode: NodeWithContext<SimpleXmlNode> = {
