@@ -70,14 +70,14 @@ class Migration(migrations.Migration):
     ]
 
     def apply_migration(apps, schema_editor):
-        create_cotype_picklist()
-        create_cotype_splocalecontaineritem()
-        create_cotype_splocaleitemstr()
+        create_cogtype_picklist()
+        create_cogtype_splocalecontaineritem()
+        create_cogtype_splocaleitemstr()
 
     def revert_migration(apps, schema_editor):
-        revert_cotype_picklist()
-        revert_cotype_splocaleitemstr()
-        revert_cotype_splocalecontaineritem()
+        revert_cogtype_picklist()
+        revert_cogtype_splocaleitemstr()
+        revert_cogtype_splocalecontaineritem()
 
     operations = [
         migrations.RunPython(apply_migration, revert_migration, atomic=True)
