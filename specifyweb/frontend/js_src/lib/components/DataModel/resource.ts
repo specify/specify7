@@ -258,7 +258,6 @@ function getCarryOverPreference(
         'preferences',
         isBulkCarry ? 'bulkCarryForward' : 'carryForward'
       );
-  console.log(config, isBulkCarry);
   return config?.[table.name] ?? getFieldsToClone(table);
 }
 
