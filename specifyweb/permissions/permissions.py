@@ -170,7 +170,6 @@ def query(collectionid: Optional[int], userid: int, resource: str, action: str) 
         matching_role_policies=rps,
     )
 
-
 TABLE_ACTION = Literal["read", "create", "update", "delete"]
 
 def check_table_permissions(collection, actor, obj, action: TABLE_ACTION) -> None:
@@ -179,6 +178,9 @@ def check_table_permissions(collection, actor, obj, action: TABLE_ACTION) -> Non
     else:
         name = obj.specify_model.name.lower()
     enforce(collection, actor, [f'/table/{name}'], action)
+
+def has_table_permission(collection_id, user_id, table_name: str, action: TABLE_ACTION) -> bool:
+    return query(collection_id, user_id, f'/table/{table_name.lower()}', action).allowed
 
 def check_field_permissions(collection, actor, obj, fields: Iterable[str], action: str) -> None:
     if isinstance(obj, Table):

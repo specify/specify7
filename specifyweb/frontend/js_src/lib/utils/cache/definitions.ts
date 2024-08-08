@@ -73,6 +73,8 @@ export type CacheDefinitions = {
     readonly applyAll: boolean;
   };
   readonly tree: {
+    readonly [key in `definition${AnyTree['tableName']}`]: number;
+  } & {
     readonly [key in `focusPath${AnyTree['tableName']}`]: RA<number>;
   } & {
     readonly /** Collapsed ranks in a given tree */
