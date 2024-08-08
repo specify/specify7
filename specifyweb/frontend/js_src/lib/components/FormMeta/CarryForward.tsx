@@ -399,7 +399,9 @@ function CarryForwardCategory({
           const isUnique = uniqueFields.includes(field.name);
           const isRequired =
             isBulkConfig === true &&
-            (field.localization.isrequired || field.overrides.isRequired);
+            (field.localization.isrequired ||
+              field.overrides.isRequired ||
+              field.databaseColumn === 'CollectionObjectTypeID');
           return (
             <li className="flex gap-1" key={field.name}>
               <Label.Inline
