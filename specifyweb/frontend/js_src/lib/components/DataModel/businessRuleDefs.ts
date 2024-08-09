@@ -161,6 +161,9 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       collectionObjectType: (resource) => {
         // Delete all determinations
         const determinations = resource.getDependentResource('determinations');
+        if (determinations?.models.length === 0) {
+          return;
+        }
         const taxon = determinations?.models[0].get('taxon');
         const taxonId = idFromUrl(taxon ?? '');
         const COType = resource.get('collectionObjectType');
