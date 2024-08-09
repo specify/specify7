@@ -165,6 +165,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           return;
         }
         const taxon = determinations?.models[0].get('taxon');
+        if (typeof taxon !== 'string') return;
         const taxonId = idFromUrl(taxon ?? '');
         const COType = resource.get('collectionObjectType');
         const COTypeId = idFromUrl(COType);
