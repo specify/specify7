@@ -163,7 +163,6 @@ class QueryConstruct(
     def get_internal_filters(self):
         return sql.or_(*self.internal_filters)
 
-
 def add_proxy_method(name):
     def proxy(self, *args, **kwargs):
         method = getattr(self.query, name)

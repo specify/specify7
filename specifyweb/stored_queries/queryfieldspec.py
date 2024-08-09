@@ -134,7 +134,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
                     tree_field_match = GEOGRAPHY_FIELD_RE.match(extracted_fieldname)
                 else:
                     tree_field_match = None
-                
+
                 if tree_mot_field_match:
                     treedef_id = tree_mot_field_match.group(1)
                     tree_rank = tree_mot_field_match.group(2)
@@ -213,7 +213,12 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
             return self.get_field().name.lower() in ['oldvalue','newvalue']
 
     def is_specify_username_end(self):
-        return len(self.join_path) > 2 and self.join_path[-1].name == 'name' and self.join_path[-2].is_relationship and self.join_path[-2].relatedModelName == 'SpecifyUser'
+        return (
+            len(self.join_path) > 2
+            and self.join_path[-1].name == "name"
+            and self.join_path[-2].is_relationship
+            and self.join_path[-2].relatedModelName == "SpecifyUser"
+        )
 
     def apply_filter(self, query, orm_field, field, table, value=None, op_num=None, negate=False):
         no_filter = op_num is None or (self.tree_rank is None and self.get_field() is None)
