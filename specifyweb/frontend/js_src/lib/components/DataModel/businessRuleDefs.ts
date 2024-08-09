@@ -11,6 +11,7 @@ import {
   updateLoanPrep,
 } from './interactionBusinessRules';
 import type { SpecifyResource } from './legacyTypes';
+import { fetchResource, idFromUrl } from './resource';
 import { setSaveBlockers } from './saveBlockers';
 import type { Collection } from './specifyTable';
 import { tables } from './tables';
@@ -160,12 +161,35 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       collectionObjectType: (resource) => {
         // Delete all determinations
         const determinations = resource.getDependentResource('determinations');
-        while (
-          determinations !== undefined &&
-          determinations.models.length > 0
-        ) {
-          determinations.remove(determinations.models[0]);
-        }
+        const taxon = determinations?.models[0].get('taxon');
+        const taxonId = idFromUrl(taxon ?? '');
+        const COType = resource.get('collectionObjectType');
+        const COTypeId = idFromUrl(COType);
+
+        const fetchTaxon = fetchResource('Taxon', taxonId ?? 0);
+        const fetchCOType = fetchResource(
+          'CollectionObjectType',
+          COTypeId ?? 0
+        );
+
+        Promise.all([fetchTaxon, fetchCOType])
+          .then(([taxonResource, COTypeResource]) => {
+            const taxonTreeDefinition = taxonResource.definition;
+            const COTypeTreeDefinition = COTypeResource.taxonTreeDef;
+
+            // Remove all models from determinations
+            if (
+              taxonTreeDefinition !== COTypeTreeDefinition &&
+              determinations
+            ) {
+              while (determinations.models.length > 0) {
+                determinations.remove(determinations.models[0]);
+              }
+            }
+          })
+          .catch((error) => {
+            console.error('Error fetching resources:', error);
+          });
       },
     },
   },
