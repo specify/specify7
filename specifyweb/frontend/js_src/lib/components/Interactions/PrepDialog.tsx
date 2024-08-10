@@ -64,14 +64,20 @@ export function PrepDialog({
     return mutatedPreparations as RA<PreparationData>;
   }, [rawPreparations, itemCollection]);
 
-  const [selected, setSelected] = useLiveState<RA<number>>(
-    React.useCallback(
-      () => Array.from({ length: preparations.length }).fill(0),
-      [preparations.length]
-    )
+  // Change to use an object for selected state
+  const [selected, setSelected] = useLiveState<{
+    [key: string]: number;
+  }>(
+    React.useCallback(() => {
+      return preparations.reduce((acc, preparation) => {
+        acc[preparation.preparationId] = 0; // Initialize all to 0
+        return acc;
+      }, {} as { [key: string]: number });
+    }, [preparations])
   );
-  const canDeselect = selected.some((value) => value > 0);
-  const canSelectAll = selected.some(
+
+  const canDeselect = Object.values(selected).some((value) => value > 0);
+  const canSelectAll = Object.values(selected).some(
     (value, index) => value < preparations[index].available
   );
 
@@ -88,7 +94,7 @@ export function PrepDialog({
     'preparations',
     'catalogNumber',
     false
-  );  
+  );
 
   const sortedPreparations = applySortConfig(
     preparations,
@@ -104,6 +110,14 @@ export function PrepDialog({
         : unavailable
   );
 
+  // Handle selection change
+  const handleSelectChange = (preparationId: string, newSelected: number): void => {
+    setSelected((prev) => ({
+      ...prev,
+      [preparationId]: newSelected,
+    }));
+  };
+
   return (
     <Dialog
       buttons={
@@ -116,7 +130,13 @@ export function PrepDialog({
               disabled={!canSelectAll}
               title={interactionsText.selectAllAvailablePreparations()}
               onClick={(): void =>
-                setSelected(preparations.map(({ available }) => available))
+                setSelected((prev) => {
+                  const newSelected = { ...prev };
+                  sortedPreparations.forEach((prep) => {
+                    newSelected[prep.preparationId] = prep.available;
+                  });
+                  return newSelected;
+                })
               }
             >
               {interactionsText.selectAll()}
@@ -124,7 +144,13 @@ export function PrepDialog({
             <Button.Info
               disabled={!canDeselect}
               title={commonText.clearAll()}
-              onClick={(): void => setSelected(Array.from(selected).fill(0))}
+              onClick={(): void => setSelected((prev) => {
+                const newSelected = { ...prev };
+                Object.keys(newSelected).forEach((key) => {
+                  newSelected[key] = 0;
+                });
+                return newSelected;
+              })}
             >
               {interactionsText.deselectAll()}
             </Button.Info>
@@ -157,9 +183,13 @@ export function PrepDialog({
           value={bulkValue}
           onValueChange={(newCount): void => {
             setBulkValue(newCount);
-            setSelected(
-              preparations.map(({ available }) => Math.min(available, newCount))
-            );
+            setSelected((prev) => {
+              const newSelected = { ...prev };
+              sortedPreparations.forEach((prep) => {
+                newSelected[prep.preparationId] = Math.min(prep.available, newCount);
+              });
+              return newSelected;
+            });
           }}
         />
       </Label.Inline>
@@ -177,14 +207,15 @@ export function PrepDialog({
           ) as SpecifyTable<AnyInteractionPreparation>;
 
           const items = filterArray(
-            preparations.map((preparation, index) => {
-              if (selected[index] === 0) return undefined;
+            preparations.map((preparation) => {
+              const selectedQuantity = selected[preparation.preparationId];
+              if (selectedQuantity === 0) return undefined;
               const result = new itemTable.Resource();
               result.set(
                 'preparation',
                 getResourceApiUrl('Preparation', preparation.preparationId)
               );
-              result.set('quantity', selected[index]);
+              result.set('quantity', selectedQuantity);
               const loanPreparation = toTable(result, 'LoanPreparation');
               loanPreparation?.set('quantityReturned', 0);
               loanPreparation?.set('quantityResolved', 0);
@@ -210,60 +241,56 @@ export function PrepDialog({
           }
         }}
       >
-       <table className="grid-table grid-cols-[min-content_repeat(6,auto)] gap-2">
-        <thead>
-          <tr>
-            <th scope="col">
-              <span className="sr-only">{interactionsText.selectAll()}</span>
-            </th>
-            <th scope="col">
-              <Button.LikeLink onClick={(): void => handleSort('catalogNumber')}>
-                {getField(tables.CollectionObject, 'catalogNumber').label}
-                <SortIndicator fieldName="catalogNumber" sortConfig={sortConfig} />
-              </Button.LikeLink>
-            </th>
-            <th scope="col">
-              <Button.LikeLink onClick={(): void => handleSort('taxon')}>
-                {getField(tables.Determination, 'taxon').label}
-                <SortIndicator fieldName="taxon" sortConfig={sortConfig} />
-              </Button.LikeLink>
-            </th>
-            <th scope="col">
-              <Button.LikeLink onClick={(): void => handleSort('prepType')}>
-                {getField(tables.Preparation, 'prepType').label}
-                <SortIndicator fieldName="prepType" sortConfig={sortConfig} />
-              </Button.LikeLink>
-            </th>
-            <th scope="col">{commonText.selected()}</th>
-            <th scope="col">
-              <Button.LikeLink onClick={(): void => handleSort('available')}>
-                {interactionsText.available()}
-                <SortIndicator fieldName="available" sortConfig={sortConfig} />
-              </Button.LikeLink>
-            </th>
-            <th scope="col">
-              <Button.LikeLink onClick={(): void => handleSort('unavailable')}>
-                {interactionsText.unavailable()}
-                <SortIndicator fieldName="unavailable" sortConfig={sortConfig} />
-              </Button.LikeLink>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {sortedPreparations.map((preparation, index) => (
-            <PrepDialogRow
-              key={index}
-              preparation={preparation}
-              selected={selected[index]}
-              onChange={(newSelected): void =>
-                setSelected(replaceItem(selected, index, newSelected))
-              }
-            />
-          ))}
-        </tbody>
-      </table>
-
-
+        <table className="grid-table grid-cols-[min-content_repeat(6,auto)] gap-2">
+          <thead>
+            <tr>
+              <th scope="col">
+                <span className="sr-only">{interactionsText.selectAll()}</span>
+              </th>
+              <th scope="col">
+                <Button.LikeLink onClick={(): void => handleSort('catalogNumber')}>
+                  {getField(tables.CollectionObject, 'catalogNumber').label}
+                  <SortIndicator fieldName="catalogNumber" sortConfig={sortConfig} />
+                </Button.LikeLink>
+              </th>
+              <th scope="col">
+                <Button.LikeLink onClick={(): void => handleSort('taxon')}>
+                  {getField(tables.Determination, 'taxon').label}
+                  <SortIndicator fieldName="taxon" sortConfig={sortConfig} />
+                </Button.LikeLink>
+              </th>
+              <th scope="col">
+                <Button.LikeLink onClick={(): void => handleSort('prepType')}>
+                  {getField(tables.Preparation, 'prepType').label}
+                  <SortIndicator fieldName="prepType" sortConfig={sortConfig} />
+                </Button.LikeLink>
+              </th>
+              <th scope="col">{commonText.selected()}</th>
+              <th scope="col">
+                <Button.LikeLink onClick={(): void => handleSort('available')}>
+                  {interactionsText.available()}
+                  <SortIndicator fieldName="available" sortConfig={sortConfig} />
+                </Button.LikeLink>
+              </th>
+              <th scope="col">
+                <Button.LikeLink onClick={(): void => handleSort('unavailable')}>
+                  {interactionsText.unavailable()}
+                  <SortIndicator fieldName="unavailable" sortConfig={sortConfig} />
+                </Button.LikeLink>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {sortedPreparations.map((preparation) => (
+              <PrepDialogRow
+                key={preparation.preparationId} // Use preparationId as key
+                preparation={preparation}
+                selected={selected[preparation.preparationId] || 0} // Get selected quantity from mapping
+                onChange={(newSelected): void => handleSelectChange(preparation.preparationId, newSelected)}
+              />
+            ))}
+          </tbody>
+        </table>
       </Form>
     </Dialog>
   );
@@ -282,7 +309,7 @@ function setPreparationItems(
     )
   );
 
-  // Typecast as a single case because the relatiships do not exist in the union type.
+  // Typecast as a single case because the relationships do not exist in the union type.
   (interaction as SpecifyResource<ExchangeOut>).set(
     preparationRelationship.name as 'exchangeOutPreps',
     items as RA<SpecifyResource<ExchangeOutPrep>>
