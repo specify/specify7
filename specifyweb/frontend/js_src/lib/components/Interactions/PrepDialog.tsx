@@ -12,6 +12,7 @@ import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { ReadOnlyContext } from '../Core/Contexts';
+import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { getField, toTable } from '../DataModel/helpers';
 import type { AnyInteractionPreparation } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -82,6 +83,26 @@ export function PrepDialog({
 
   const [bulkValue, setBulkValue] = React.useState(0);
   const maxPrep = Math.max(...preparations.map(({ available }) => available));
+
+  const [sortConfig, handleSort, applySortConfig] = useSortConfig(
+    'preparations',
+    'catalogNumber',
+    false
+  );  
+
+  const sortedPreparations = applySortConfig(
+    preparations,
+    ({ catalogNumber, taxon, prepType, available, unavailable }) =>
+      sortConfig.sortField === 'catalogNumber'
+        ? catalogNumber
+        : sortConfig.sortField === 'taxon'
+        ? taxon
+        : sortConfig.sortField === 'prepType'
+        ? prepType
+        : sortConfig.sortField === 'available'
+        ? available
+        : unavailable
+  );
 
   return (
     <Dialog
@@ -189,39 +210,60 @@ export function PrepDialog({
           }
         }}
       >
-        <table className="grid-table grid-cols-[min-content_repeat(6,auto)] gap-2">
-          <thead>
-            <tr>
-              <th scope="col">
-                <span className="sr-only">{interactionsText.selectAll()}</span>
-              </th>
-              <th scope="col">
+       <table className="grid-table grid-cols-[min-content_repeat(6,auto)] gap-2">
+        <thead>
+          <tr>
+            <th scope="col">
+              <span className="sr-only">{interactionsText.selectAll()}</span>
+            </th>
+            <th scope="col">
+              <Button.LikeLink onClick={(): void => handleSort('catalogNumber')}>
                 {getField(tables.CollectionObject, 'catalogNumber').label}
-              </th>
-              <th scope="col">
+                <SortIndicator fieldName="catalogNumber" sortConfig={sortConfig} />
+              </Button.LikeLink>
+            </th>
+            <th scope="col">
+              <Button.LikeLink onClick={(): void => handleSort('taxon')}>
                 {getField(tables.Determination, 'taxon').label}
-              </th>
-              <th scope="col">
+                <SortIndicator fieldName="taxon" sortConfig={sortConfig} />
+              </Button.LikeLink>
+            </th>
+            <th scope="col">
+              <Button.LikeLink onClick={(): void => handleSort('prepType')}>
                 {getField(tables.Preparation, 'prepType').label}
-              </th>
-              <th scope="col">{commonText.selected()}</th>
-              <th scope="col">{interactionsText.available()}</th>
-              <th scope="col">{interactionsText.unavailable()}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {preparations.map((preparation, index) => (
-              <PrepDialogRow
-                key={index}
-                preparation={preparation}
-                selected={selected[index]}
-                onChange={(newSelected): void =>
-                  setSelected(replaceItem(selected, index, newSelected))
-                }
-              />
-            ))}
-          </tbody>
-        </table>
+                <SortIndicator fieldName="prepType" sortConfig={sortConfig} />
+              </Button.LikeLink>
+            </th>
+            <th scope="col">{commonText.selected()}</th>
+            <th scope="col">
+              <Button.LikeLink onClick={(): void => handleSort('available')}>
+                {interactionsText.available()}
+                <SortIndicator fieldName="available" sortConfig={sortConfig} />
+              </Button.LikeLink>
+            </th>
+            <th scope="col">
+              <Button.LikeLink onClick={(): void => handleSort('unavailable')}>
+                {interactionsText.unavailable()}
+                <SortIndicator fieldName="unavailable" sortConfig={sortConfig} />
+              </Button.LikeLink>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {sortedPreparations.map((preparation, index) => (
+            <PrepDialogRow
+              key={index}
+              preparation={preparation}
+              selected={selected[index]}
+              onChange={(newSelected): void =>
+                setSelected(replaceItem(selected, index, newSelected))
+              }
+            />
+          ))}
+        </tbody>
+      </table>
+
+
       </Form>
     </Dialog>
   );
