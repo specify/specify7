@@ -161,22 +161,22 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       collectionObjectType: (resource) => {
         // Delete all determinations
         const determinations = resource.getDependentResource('determinations');
-        if (determinations?.models.length === 0) {
-          return;
-        }
+        if (determinations?.models.length === 0) return;
+
         const taxon = determinations?.models[0].get('taxon');
         if (typeof taxon !== 'string') return;
+
         const taxonId = idFromUrl(taxon ?? '');
+
         const COType = resource.get('collectionObjectType');
         const COTypeId = idFromUrl(COType);
 
-        const fetchTaxon = fetchResource('Taxon', taxonId ?? 0);
-        const fetchCOType = fetchResource(
-          'CollectionObjectType',
-          COTypeId ?? 0
-        );
+        if (taxonId === undefined || COTypeId === undefined) return;
 
-        Promise.all([fetchTaxon, fetchCOType])
+        const fetchedTaxon = fetchResource('Taxon', taxonId);
+        const fetchedCOType = fetchResource('CollectionObjectType', COTypeId);
+
+        Promise.all([fetchedTaxon, fetchedCOType])
           .then(([taxonResource, COTypeResource]) => {
             const taxonTreeDefinition = taxonResource.definition;
             const COTypeTreeDefinition = COTypeResource.taxonTreeDef;
