@@ -17,7 +17,8 @@ def create_cotype_picklist(apps):
             sorttype=1,
             type=1,
             tablename='collectionobjecttype',
-            collection=collection
+            collection=collection,
+            formatter=PICKLIST_NAME
         )
 
 def revert_cotype_picklist(apps):
