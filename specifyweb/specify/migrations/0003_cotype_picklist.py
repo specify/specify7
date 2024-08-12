@@ -1,16 +1,12 @@
 from django.db import migrations
-from specifyweb.specify.models import (
-    Collection,
-    Splocalecontainer,
-    Splocalecontaineritem,
-    Splocaleitemstr,
-    Picklist
-)
 
 PICKLIST_NAME = 'CollectionObjectType'
 FIELD_NAME = 'collectionObjectType'
+COTYPE_TEXT = 'Collection Object Type'
 
-def create_cotype_picklist():
+def create_cotype_picklist(apps):
+    Collection = apps.get_model('specify', 'Collection')
+    Picklist = apps.get_model('specify', 'Picklist')
     # Create a cotype picklist for each collection
     for collection in Collection.objects.all():
         Picklist.objects.get_or_create(
@@ -24,60 +20,65 @@ def create_cotype_picklist():
             collection=collection
         )
 
-def revert_cotype_picklist():
+def revert_cotype_picklist(apps):
+    Picklist = apps.get_model('specify', 'Picklist')
     Picklist.objects.filter(name=PICKLIST_NAME).delete()
 
 
-def create_cotype_splocalecontaineritem():
+def create_cotype_splocalecontaineritem(apps):
+    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
     # Create a Splocalecontaineritem record for each CollectionObject Splocalecontainer
     # NOTE: Each discipline has its own CollectionObject Splocalecontainer
-    for container in Splocalecontainer.objects.filter(name='collectionobject'):
+    for container in Splocalecontainer.objects.filter(name='collectionobject', schematype=0):
         Splocalecontaineritem.objects.get_or_create(
             name=FIELD_NAME,
             picklistname=PICKLIST_NAME,
             type='ManyToOne',
-            container=container
+            container=container,
+            isrequired=True
         )
 
-def revert_cotype_splocalecontaineritem():
+def revert_cotype_splocalecontaineritem(apps):
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
     Splocalecontaineritem.objects.filter(name=FIELD_NAME).delete()
 
 
-def create_cotype_splocaleitemstr():
+def create_cotype_splocaleitemstr(apps):
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+    Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
     # Create caption & description records for collectionObjectType in Schema Config
     for container_item in Splocalecontaineritem.objects.filter(name=FIELD_NAME):
         Splocaleitemstr.objects.create(
             language='en',
-            text='Collection Object Type',
+            text=COTYPE_TEXT,
             itemname=container_item
         )
         Splocaleitemstr.objects.create(
             language='en',
-            text=FIELD_NAME,
+            text=COTYPE_TEXT,
             itemdesc=container_item
         )
 
-def revert_cotype_splocaleitemstr():
-    Splocaleitemstr.objects.filter(text=FIELD_NAME).delete()
-    Splocaleitemstr.objects.filter(text='Collection Object Type').delete()
+def revert_cotype_splocaleitemstr(apps):
+    Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
+    Splocaleitemstr.objects.filter(text=COTYPE_TEXT).delete()
 
 
 class Migration(migrations.Migration):
-    initial = True
-
     dependencies = [
         ('specify', '0002_geo'),
     ]
 
     def apply_migration(apps, schema_editor):
-        create_cotype_picklist()
-        create_cotype_splocalecontaineritem()
-        create_cotype_splocaleitemstr()
+        create_cotype_picklist(apps)
+        create_cotype_splocalecontaineritem(apps)
+        create_cotype_splocaleitemstr(apps)
 
     def revert_migration(apps, schema_editor):
-        revert_cotype_picklist()
-        revert_cotype_splocaleitemstr()
-        revert_cotype_splocalecontaineritem()
+        revert_cotype_picklist(apps)
+        revert_cotype_splocaleitemstr(apps)
+        revert_cotype_splocalecontaineritem(apps)
 
     operations = [
         migrations.RunPython(apply_migration, revert_migration, atomic=True)
