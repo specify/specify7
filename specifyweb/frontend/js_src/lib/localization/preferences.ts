@@ -1064,17 +1064,20 @@ export const preferencesText = createDictionary({
     'en-us': 'Add UTF-8 BOM to CSV file exports',
     'ru-ru': 'Добавить UTF-8 BOM в экспорт CSV-файла',
     'es-es': 'Agregar BOM UTF-8 a las exportaciones de archivos CSV',
-    'fr-fr': "Ajouter UTF-8 BOM aux exportations de fichiers CSV",
+    'fr-fr': 'Ajouter UTF-8 BOM aux exportations de fichiers CSV',
     'uk-ua': 'Додайте специфікацію UTF-8 до експорту файлу CSVу',
     'de-ch': 'UTF-8 BOM zum CSV-Dateiexport hinzufügen',
   },
   exportCSVutf8BOMDescription: {
     'en-us': 'Makes CSV file exports display correctly in Excel.',
     'ru-ru': 'Корректное отображение экспортированных CSV-файлов в Excel.',
-    'es-es': 'Hace que las exportaciones de archivos CSV se muestren correctamente en Excel.',
-    'fr-fr': "Permet aux exportations de fichiers CSV de s'afficher correctement dans Excel.",
+    'es-es':
+      'Hace que las exportaciones de archivos CSV se muestren correctamente en Excel.',
+    'fr-fr':
+      "Permet aux exportations de fichiers CSV de s'afficher correctement dans Excel.",
     'uk-ua': 'Змушує експорт файлів CSV правильно відображатися в Excel.',
-    'de-ch': 'Sorgt dafür, dass CSV-Dateiexporte in Excel korrekt angezeigt werden.',
+    'de-ch':
+      'Sorgt dafür, dass CSV-Dateiexporte in Excel korrekt angezeigt werden.',
   },
   caseSensitive: {
     'en-us': 'Case-sensitive',

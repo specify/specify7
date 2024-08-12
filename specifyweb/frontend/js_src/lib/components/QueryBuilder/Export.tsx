@@ -153,7 +153,11 @@ export function QueryExportButtons({
           showConfirmation={showConfirmation}
           onClick={(): void => {
             selectedRows.size === 0
-              ? doQueryExport('/stored_query/exportcsv/', separator, csvEncoding)
+              ? doQueryExport(
+                  '/stored_query/exportcsv/',
+                  separator,
+                  csvEncoding
+                )
               : exportSelected().catch(softFail);
           }}
         >
