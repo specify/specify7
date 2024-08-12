@@ -158,7 +158,7 @@ describe('Collection Object business rules', () => {
     const determinations =
       collectionObject.getDependentResource('determinations');
 
-    expect(determinations?.models.length).toBe(0);
+    expect(determinations?.models.length).toBe(1);
   });
 
   test('CollectionObject -> determinations: New determinations are current by default', async () => {
