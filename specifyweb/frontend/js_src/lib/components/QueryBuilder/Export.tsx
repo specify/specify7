@@ -51,7 +51,11 @@ export function QueryExportButtons({
     undefined
   );
 
-  function doQueryExport(url: string, delimiter: string | undefined, encoding: string | undefined): void {
+  function doQueryExport(
+    url: string,
+    delimiter: string | undefined,
+    encoding: string | undefined
+  ): void {
     if (typeof getQueryFieldRecords === 'function')
       queryResource.set('fields', getQueryFieldRecords());
     const serialized = queryResource.toJSON();
