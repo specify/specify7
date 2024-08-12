@@ -163,7 +163,13 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         const determinations = resource.getDependentResource('determinations');
         if (determinations?.models.length === 0) return;
 
-        const taxon = determinations?.models[0].get('taxon');
+        const currentTaxonResource = determinations?.models.find(
+          (determination) => determination.get('isCurrent')
+        );
+        if (currentTaxonResource === undefined) return;
+
+        const taxon = currentTaxonResource?.get('taxon');
+
         if (typeof taxon !== 'string') return;
 
         const taxonId = idFromUrl(taxon ?? '');
