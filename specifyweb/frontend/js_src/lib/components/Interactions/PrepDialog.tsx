@@ -64,15 +64,15 @@ export function PrepDialog({
     return mutatedPreparations as RA<PreparationData>;
   }, [rawPreparations, itemCollection]);
 
-  // Change to use an object for selected state
+  // Change to use an object for selected state allowing null values
   const [selected, setSelected] = useLiveState<{
-    [key: string]: number;
+    [key: string]: number | null;
   }>(
     React.useCallback(() => {
       return preparations.reduce((acc, preparation) => {
-        acc[preparation.preparationId] = 0; // Initialize all to 0
+        acc[preparation.preparationId] = null;
         return acc;
-      }, {} as { [key: string]: number });
+      }, {} as { [key: string]: number | null });
     }, [preparations])
   );
 
@@ -87,7 +87,7 @@ export function PrepDialog({
   // BUG: make this readOnly if don't have necessary permissions
   const isReadOnly = React.useContext(ReadOnlyContext);
 
-  const [bulkValue, setBulkValue] = React.useState(0);
+  const [bulkValue, setBulkValue] = React.useState<number | null>(null); // Allow bulkValue to be null
   const maxPrep = Math.max(...preparations.map(({ available }) => available));
 
   const [sortConfig, handleSort, applySortConfig] = useSortConfig(
@@ -111,7 +111,7 @@ export function PrepDialog({
   );
 
   // Handle selection change
-  const handleSelectChange = (preparationId: string, newSelected: number): void => {
+  const handleSelectChange = (preparationId: string, newSelected: number | null): void => {
     setSelected((prev) => ({
       ...prev,
       [preparationId]: newSelected,
@@ -147,7 +147,7 @@ export function PrepDialog({
               onClick={(): void => setSelected((prev) => {
                 const newSelected = { ...prev };
                 Object.keys(newSelected).forEach((key) => {
-                  newSelected[key] = 0;
+                  newSelected[key] = null;
                 });
                 return newSelected;
               })}
@@ -180,16 +180,28 @@ export function PrepDialog({
           max={maxPrep}
           min={0}
           title={interactionsText.selectedAmount()}
-          value={bulkValue}
+          value={bulkValue || 0}
           onValueChange={(newCount): void => {
-            setBulkValue(newCount);
-            setSelected((prev) => {
-              const newSelected = { ...prev };
-              sortedPreparations.forEach((prep) => {
-                newSelected[prep.preparationId] = Math.min(prep.available, newCount);
+            if (newCount === '') {
+              setBulkValue(0);
+              setSelected((prev) => {
+                const newSelected = { ...prev };
+                sortedPreparations.forEach((prep) => {
+                  newSelected[prep.preparationId] = null;
+                });
+                return newSelected;
               });
-              return newSelected;
-            });
+            } else {
+              const count = parseInt(newCount, 10);
+              setBulkValue(count);
+              setSelected((prev) => {
+                const newSelected = { ...prev };
+                sortedPreparations.forEach((prep) => {
+                  newSelected[prep.preparationId] = count === 0 ? 0 : Math.min(prep.available, count);
+                });
+                return newSelected;
+              });
+            }
           }}
         />
       </Label.Inline>
@@ -209,7 +221,7 @@ export function PrepDialog({
           const items = filterArray(
             preparations.map((preparation) => {
               const selectedQuantity = selected[preparation.preparationId];
-              if (selectedQuantity === 0) return undefined;
+              if (selectedQuantity === null || selectedQuantity === 0) return undefined;
               const result = new itemTable.Resource();
               result.set(
                 'preparation',
@@ -283,9 +295,9 @@ export function PrepDialog({
           <tbody>
             {sortedPreparations.map((preparation) => (
               <PrepDialogRow
-                key={preparation.preparationId} // Use preparationId as key
+                key={preparation.preparationId}
                 preparation={preparation}
-                selected={selected[preparation.preparationId] || 0} // Get selected quantity from mapping
+                selected={selected[preparation.preparationId] === null ? 0 : selected[preparation.preparationId]}
                 onChange={(newSelected): void => handleSelectChange(preparation.preparationId, newSelected)}
               />
             ))}
