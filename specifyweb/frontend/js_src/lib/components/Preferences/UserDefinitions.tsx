@@ -1572,6 +1572,18 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
+          exportCSVutf8BOM: definePref<boolean>({
+            title: preferencesText.exportCSVutf8BOM(),
+            description: (
+              <span>
+                {preferencesText.exportCSVutf8BOMDescription()}
+              </span>
+            ),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
           displayBasicView: definePref<boolean>({
             title: preferencesText.displayBasicView(),
             requiresReload: false,

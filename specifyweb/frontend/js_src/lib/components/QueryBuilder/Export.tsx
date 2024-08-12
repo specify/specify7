@@ -79,6 +79,13 @@ export function QueryExportButtons({
     'exportFileDelimiter'
   );
 
+  const [utf8BOM] = userPreferences.use(
+    'queryBuilder',
+    'behavior',
+    'exportCSVutf8BOM'
+  );
+  const csvEncoding = utf8BOM ? 'utf-8-sig' : 'utf-8';
+
   /*
    *Will be only called if query is not distinct,
    *selection not enabled when distinct selected
@@ -142,24 +149,11 @@ export function QueryExportButtons({
           showConfirmation={showConfirmation}
           onClick={(): void => {
             selectedRows.size === 0
-              ? doQueryExport('/stored_query/exportcsv/', separator, 'utf-8')
+              ? doQueryExport('/stored_query/exportcsv/', separator, csvEncoding)
               : exportSelected().catch(softFail);
           }}
         >
           {queryText.createCsv()}
-        </QueryButton>
-      )}
-      {containsResults && hasPermission('/querybuilder/query', 'export_csv') && (
-        <QueryButton
-          disabled={fields.length === 0}
-          showConfirmation={showConfirmation}
-          onClick={(): void => {
-            selectedRows.size === 0
-              ? doQueryExport('/stored_query/exportcsv/', separator, 'utf-8-sig')
-              : exportSelected().catch(softFail);
-          }}
-        >
-          {queryText.createExcelCsv()}
         </QueryButton>
       )}
       {canUseKml && (
