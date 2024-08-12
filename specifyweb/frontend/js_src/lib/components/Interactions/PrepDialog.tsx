@@ -7,7 +7,7 @@ import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
 import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
-import { group, replaceItem } from '../../utils/utils';
+import { group } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
