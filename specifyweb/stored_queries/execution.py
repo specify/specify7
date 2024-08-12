@@ -158,7 +158,7 @@ def do_export(spquery, collection, user, filename, exporttype, host):
             query_to_csv(session, collection, user, tableid, field_specs, path,
                          recordsetid=recordsetid, 
                          captions=spquery['captions'], strip_id=True,
-                         distinct=spquery['selectdistinct'], delimiter=spquery['delimiter'], encoding=spquery['encoding'])
+                         distinct=spquery['selectdistinct'], delimiter=spquery['delimiter'], bom=spquery['bom'])
         elif exporttype == 'kml':
             query_to_kml(session, collection, user, tableid, field_specs, path, spquery['captions'], host,
                          recordsetid=recordsetid, strip_id=False)
@@ -186,7 +186,7 @@ def stored_query_to_csv(query_id, collection, user, path):
 
 def query_to_csv(session, collection, user, tableid, field_specs, path,
                  recordsetid=None, captions=False, strip_id=False, row_filter=None,
-                 distinct=False, delimiter=',', encoding='utf-8'):
+                 distinct=False, delimiter=',', bom=False):
     """Build a sqlalchemy query using the QueryField objects given by
     field_specs and send the results to a CSV file at the given
     file path.
@@ -197,6 +197,10 @@ def query_to_csv(session, collection, user, tableid, field_specs, path,
     query, __ = build_query(session, collection, user, tableid, field_specs, recordsetid, replace_nulls=True, distinct=distinct)
 
     logger.debug('query_to_csv starting')
+
+    encoding = 'utf-8'
+    if bom:
+        encoding = 'utf-8-sig'
 
     with open(path, 'w', newline='', encoding=encoding) as f:
         csv_writer = csv.writer(f, delimiter=delimiter)

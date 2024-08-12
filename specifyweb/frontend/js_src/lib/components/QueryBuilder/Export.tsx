@@ -54,7 +54,7 @@ export function QueryExportButtons({
   function doQueryExport(
     url: string,
     delimiter: string | undefined,
-    encoding: string | undefined
+    bom: boolean | undefined
   ): void {
     if (typeof getQueryFieldRecords === 'function')
       queryResource.set('fields', getQueryFieldRecords());
@@ -71,7 +71,7 @@ export function QueryExportButtons({
           ),
         recordSetId,
         delimiter,
-        encoding,
+        bom,
       }),
       errorMode: 'dismissible',
     });
@@ -88,7 +88,6 @@ export function QueryExportButtons({
     'behavior',
     'exportCSVutf8BOM'
   );
-  const csvEncoding = utf8BOM ? 'utf-8-sig' : 'utf-8';
 
   /*
    *Will be only called if query is not distinct,
@@ -117,7 +116,7 @@ export function QueryExportButtons({
         generateMappingPathPreview(baseTableName, field.mappingPath)
       );
 
-    return downloadDataSet(name, filteredResults, columnsName, separator);
+    return downloadDataSet(name, filteredResults, columnsName, separator, utf8BOM);
   }
 
   const containsResults = results.current?.some((row) => row !== undefined);
@@ -156,7 +155,7 @@ export function QueryExportButtons({
               ? doQueryExport(
                   '/stored_query/exportcsv/',
                   separator,
-                  csvEncoding
+                  utf8BOM
                 )
               : exportSelected().catch(softFail);
           }}
