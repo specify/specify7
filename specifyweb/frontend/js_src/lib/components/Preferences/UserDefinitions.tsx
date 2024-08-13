@@ -1579,7 +1579,7 @@ export const userPreferenceDefinitions = {
             ),
             requiresReload: false,
             visible: true,
-            defaultValue: false,
+            defaultValue: true,
             type: 'java.lang.Boolean',
           }),
           displayBasicView: definePref<boolean>({
