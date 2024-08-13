@@ -1572,10 +1572,10 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
-          exportCSVutf8BOM: definePref<boolean>({
-            title: preferencesText.exportCSVutf8BOM(),
+          exportCsvUtf8Bom: definePref<boolean>({
+            title: preferencesText.exportCsvUtf8Bom(),
             description: (
-              <span>{preferencesText.exportCSVutf8BOMDescription()}</span>
+              <span>{preferencesText.exportCsvUtf8BomDescription()}</span>
             ),
             requiresReload: false,
             visible: true,

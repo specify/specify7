@@ -1060,7 +1060,7 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Роздільник файлу експорту',
     'de-ch': 'Trennzeichen für Exportdateien',
   },
-  exportCSVutf8BOM: {
+  exportCsvUtf8Bom: {
     'en-us': 'Add UTF-8 BOM to CSV file exports',
     'ru-ru': 'Добавить UTF-8 BOM в экспорт CSV-файла',
     'es-es': 'Agregar BOM UTF-8 a las exportaciones de archivos CSV',
@@ -1068,7 +1068,7 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Додайте специфікацію UTF-8 до експорту файлу CSVу',
     'de-ch': 'UTF-8 BOM zum CSV-Dateiexport hinzufügen',
   },
-  exportCSVutf8BOMDescription: {
+  exportCsvUtf8BomDescription: {
     'en-us': 'Adds a BOM (Byte Order Mark) to exported CSV files to ensure that the file is correctly recognized and displayed by various programs (Excel, OpenRefine, etc.), preventing issues with special characters and formatting.',
     'ru-ru': 'Корректное отображение экспортированных CSV-файлов в Excel.',
     'es-es':

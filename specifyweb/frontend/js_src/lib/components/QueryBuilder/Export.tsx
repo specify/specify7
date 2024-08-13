@@ -83,10 +83,10 @@ export function QueryExportButtons({
     'exportFileDelimiter'
   );
 
-  const [utf8BOM] = userPreferences.use(
+  const [utf8Bom] = userPreferences.use(
     'queryBuilder',
     'behavior',
-    'exportCSVutf8BOM'
+    'exportCsvUtf8Bom'
   );
 
   /*
@@ -116,7 +116,7 @@ export function QueryExportButtons({
         generateMappingPathPreview(baseTableName, field.mappingPath)
       );
 
-    return downloadDataSet(name, filteredResults, columnsName, separator, utf8BOM);
+    return downloadDataSet(name, filteredResults, columnsName, separator, utf8Bom);
   }
 
   const containsResults = results.current?.some((row) => row !== undefined);
@@ -155,7 +155,7 @@ export function QueryExportButtons({
               ? doQueryExport(
                   '/stored_query/exportcsv/',
                   separator,
-                  utf8BOM
+                  utf8Bom
                 )
               : exportSelected().catch(softFail);
           }}
