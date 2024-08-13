@@ -1069,7 +1069,8 @@ export const preferencesText = createDictionary({
     'de-ch': 'UTF-8 BOM zum CSV-Dateiexport hinzufügen',
   },
   exportCsvUtf8BomDescription: {
-    'en-us': 'Adds a BOM (Byte Order Mark) to exported CSV files to ensure that the file is correctly recognized and displayed by various programs (Excel, OpenRefine, etc.), preventing issues with special characters and formatting.',
+    'en-us':
+      'Adds a BOM (Byte Order Mark) to exported CSV files to ensure that the file is correctly recognized and displayed by various programs (Excel, OpenRefine, etc.), preventing issues with special characters and formatting.',
     'ru-ru': 'Корректное отображение экспортированных CSV-файлов в Excel.',
     'es-es':
       'Hace que las exportaciones de archivos CSV se muestren correctamente en Excel.',
