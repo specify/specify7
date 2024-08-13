@@ -18,7 +18,8 @@ def create_cogtype_picklist(apps):
             sorttype=1,
             type=1,
             tablename='collectionobjectgrouptype',
-            collection=collection
+            collection=collection,
+            formatter=PICKLIST_NAME
         )
 
 def revert_cogtype_picklist(apps):
