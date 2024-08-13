@@ -241,9 +241,10 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
     });
 
     const useLabels = getCache('forms', 'useFieldLabels') ?? true;
-    this.localization = getSchemaLocalization()[this.name.toLowerCase()] ?? {
-      items: {},
-    };
+    this.localization = getSchemaLocalization()[this.name.toLowerCase()] ??
+      getSchemaLocalization()[this.name] ?? {
+        items: {},
+      };
     if (!useLabels)
       this.localization = {
         ...this.localization,
