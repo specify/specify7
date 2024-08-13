@@ -60,7 +60,7 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
             query = query._replace(join_cache=query.join_cache.copy())
             query.join_cache[(table, 'TreeRanks')] = (ancestors, treedefs)
 
-        item_model = getattr(spmodels, table.name + "treedefitem")
+        item_model = getattr(spmodels, table.django_name + "treedefitem")
 
         # TODO: optimize out the ranks that appear? cache them
         treedefs_with_ranks: List[Tuple[int, int]] = [tup for tup in [
