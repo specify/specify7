@@ -125,7 +125,7 @@ def create_default_collection_object_types():
             name='Default Collection Object Group Types',
             tablename='CollectionObjectGroupType',
             issystem=False,
-            type=1,
+            type=0,
             readonly=False,
             collection=collection
         )
