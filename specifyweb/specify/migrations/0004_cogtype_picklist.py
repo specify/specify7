@@ -40,7 +40,7 @@ def create_cogtype_splocalecontaineritem(apps):
             picklistname=PICKLIST_NAME,
             type='ManyToOne',
             container=container,
-            isRequired=False
+            isrequired=False
         )
 
 def revert_cogtype_splocalecontaineritem(apps):
