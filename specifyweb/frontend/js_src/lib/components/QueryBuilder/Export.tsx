@@ -116,7 +116,13 @@ export function QueryExportButtons({
         generateMappingPathPreview(baseTableName, field.mappingPath)
       );
 
-    return downloadDataSet(name, filteredResults, columnsName, separator, utf8Bom);
+    return downloadDataSet(
+      name,
+      filteredResults,
+      columnsName,
+      separator,
+      utf8Bom
+    );
   }
 
   const containsResults = results.current?.some((row) => row !== undefined);
@@ -152,11 +158,7 @@ export function QueryExportButtons({
           showConfirmation={showConfirmation}
           onClick={(): void => {
             selectedRows.size === 0
-              ? doQueryExport(
-                  '/stored_query/exportcsv/',
-                  separator,
-                  utf8Bom
-                )
+              ? doQueryExport('/stored_query/exportcsv/', separator, utf8Bom)
               : exportSelected().catch(softFail);
           }}
         >
