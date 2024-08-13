@@ -5,8 +5,8 @@ FIELD_NAME = 'collectionObjectGroupType'
 PICKLIST_TEXT = 'Collection Object Group Type'
 
 def create_cogtype_picklist(apps):
-    Collection = apps.get_model('specifyweb', 'Collection')
-    Picklist = apps.get_model('specifyweb', 'Picklist')
+    Collection = apps.get_model('specify', 'Collection')
+    Picklist = apps.get_model('specify', 'Picklist')
     
     # Create a cogtype picklist for each collection
     for collection in Collection.objects.all():
