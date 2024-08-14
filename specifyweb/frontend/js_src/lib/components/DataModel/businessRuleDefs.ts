@@ -160,7 +160,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
     fieldChecks: {
       collectionObjectType: async (resource): Promise<undefined> => {
         /*
-         * TEST: write tests fot this
+         * TEST: write tests for this
          *  Delete all determinations
          */
         const determinations = resource.getDependentResource('determinations');
@@ -173,6 +173,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         if (
           taxonId !== undefined &&
           COTypeID !== undefined &&
+          currentDetermination !== undefined &&
           determinations !== undefined
         )
           await f
@@ -185,7 +186,12 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
               const COTypeTreeDefinition = fetchedCOType.taxonTreeDef;
 
               return taxonTreeDefinition === COTypeTreeDefinition
-                ? undefined
+                ? void setSaveBlockers(
+                    currentDetermination as SpecifyResource<AnySchema>,
+                    currentDetermination.specifyTable.field.taxon,
+                    [],
+                    DETERMINATION_TAXON_KEY
+                  )
                 : resource.set('determinations', []);
             })
             .catch((error) => {
