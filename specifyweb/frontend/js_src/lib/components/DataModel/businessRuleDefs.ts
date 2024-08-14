@@ -210,13 +210,13 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
                   accepted === null ? taxon : getLastAccepted(accepted)
                 );
 
-            const collectionObject = determination.collection?.related as
-              | SpecifyResource<CollectionObject>
-              | undefined;
+            const related = determination.collection?.related;
             if (
-              collectionObject !== undefined &&
-              collectionObject.specifyTable.name === 'CollectionObject'
+              related !== undefined &&
+              related.specifyTable.name === 'CollectionObject'
             ) {
+              const collectionObject =
+                related as SpecifyResource<CollectionObject>;
               void f
                 .all({
                   defaultType:
