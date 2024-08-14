@@ -161,45 +161,34 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       collectionObjectType: (resource) => {
         // Delete all determinations
         const determinations = resource.getDependentResource('determinations');
-        if (determinations?.models.length === 0) return;
-
-        const currentDetermination = determinations?.models.find(
+         const currentDetermination = determinations?.models.find(
           (determination) => determination.get('isCurrent')
         );
-        if (currentDetermination === undefined) return;
 
-        const taxon = currentDetermination?.get('taxon');
+        const taxonId = idFromUrl(currentDetermination?.get('taxon') ?? '');
+        const COTypeID = idFromUrl(resource.get('collectionObjectType') ?? '');
+        if (
+          taxonId !== undefined &&
+          COTypeID !== undefined &&
+          determinations !== undefined
+        )
+          f.all({
+            fetchedTaxon: fetchResource('Taxon', taxonId),
+            fetchedCOType: fetchResource('CollectionObjectType', COTypeID),
+          })
+            .then(({ fetchedTaxon, fetchedCOType }) => {
+              const taxonTreeDefinition = fetchedTaxon.definition;
+              const COTypeTreeDefinition = fetchedCOType.taxonTreeDef;
 
-        if (typeof taxon !== 'string') return;
+              if (taxonTreeDefinition === COTypeTreeDefinition) return;
 
-        const taxonId = idFromUrl(taxon ?? '');
-
-        const COType = resource.get('collectionObjectType');
-        const COTypeId = idFromUrl(COType);
-
-        if (taxonId === undefined || COTypeId === undefined) return;
-
-        const fetchedTaxon = fetchResource('Taxon', taxonId);
-        const fetchedCOType = fetchResource('CollectionObjectType', COTypeId);
-
-        Promise.all([fetchedTaxon, fetchedCOType])
-          .then(([taxonResource, COTypeResource]) => {
-            const taxonTreeDefinition = taxonResource.definition;
-            const COTypeTreeDefinition = COTypeResource.taxonTreeDef;
-
-            // Remove all models from determinations
-            if (
-              taxonTreeDefinition !== COTypeTreeDefinition &&
-              determinations
-            ) {
               while (determinations.models.length > 0) {
                 determinations.remove(determinations.models[0]);
               }
-            }
-          })
-          .catch((error) => {
-            console.error('Error fetching resources:', error);
-          });
+            })
+            .catch((error) => {
+              console.error('Error fetching resources:', error);
+            });
       },
     },
   },
