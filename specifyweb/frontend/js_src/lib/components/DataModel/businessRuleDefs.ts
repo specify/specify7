@@ -163,13 +163,10 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         collectionObject
           .rgetPromise('collection')
           .then((collection) =>
-          {
             collectionObject.set(
               'collectionObjectType',
               collection.get('collectionObjectType')
             )
-            console.log("test")
-          }
           );
     },
     fieldChecks: {
