@@ -20,7 +20,6 @@ import type {
   Address,
   BorrowMaterial,
   CollectionObject,
-  CollectionObjectType,
   Determination,
   DNASequence,
   LoanPreparation,
