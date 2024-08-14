@@ -51,7 +51,8 @@ def update_cogtype_type_splocalecontaineritem(apps):
     # NOTE: Each discipline has its own CollectionObjectGroupType Splocalecontainer
     for container in Splocalecontainer.objects.filter(name='collectionobjectgrouptype', schematype=0):
         Splocalecontaineritem.objects.filter(container=container, name='type').update(
-            type=0
+            picklistname='Default Collection Object Group Types',
+            isrequired=True
         )
 
 
