@@ -159,8 +159,10 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
     },
     fieldChecks: {
       collectionObjectType: async (resource): Promise<undefined> => {
-        //TEST: write tests fot this
-        // Delete all determinations
+        /*
+         * TEST: write tests fot this
+         *  Delete all determinations
+         */
         const determinations = resource.getDependentResource('determinations');
         const currentDetermination = determinations?.models.find(
           (determination) => determination.get('isCurrent')
