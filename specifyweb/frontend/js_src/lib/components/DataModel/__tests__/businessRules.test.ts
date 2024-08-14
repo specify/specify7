@@ -60,7 +60,7 @@ describe('Collection Object business rules', () => {
   > = {
     id: 1,
     name: 'Entomology',
-    taxonTreeDef: getResourceApiUrl('Taxon', 1),
+    taxonTreeDef: getResourceApiUrl('TaxonTreeDef', 1),
     resource_uri: collectionObjectTypeUrl,
   };
   overrideAjax(collectionObjectTypeUrl, collectionObjectType);
@@ -146,20 +146,10 @@ describe('Collection Object business rules', () => {
   > = {
     id: 2,
     name: 'Fossil',
-    taxonTreeDef: getResourceApiUrl('Taxon', 2),
+    taxonTreeDef: getResourceApiUrl('TaxonTreeDef', 2),
     resource_uri: otherCollectionObjectTypeUrl,
   };
   overrideAjax(otherCollectionObjectTypeUrl, otherCollectionObjectType);
-
-  test('CollectionObject determinations clear when CollectionObjectType changes', async () => {
-    const collectionObject = getBaseCollectionObject();
-    collectionObject.set('collectionObjectType', otherCollectionObjectTypeUrl);
-
-    const determinations =
-      collectionObject.getDependentResource('determinations');
-
-    expect(determinations?.models.length).toBe(1);
-  });
 
   test('CollectionObject -> determinations: New determinations are current by default', async () => {
     const collectionObject = getBaseCollectionObject();

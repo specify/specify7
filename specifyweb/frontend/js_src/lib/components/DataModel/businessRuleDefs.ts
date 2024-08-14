@@ -158,7 +158,8 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       }
     },
     fieldChecks: {
-      collectionObjectType: (resource) => {
+      collectionObjectType: async (resource): Promise<undefined> => {
+        //TEST: write tests fot this
         // Delete all determinations
         const determinations = resource.getDependentResource('determinations');
         const currentDetermination = determinations?.models.find(
@@ -172,23 +173,23 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           COTypeID !== undefined &&
           determinations !== undefined
         )
-          f.all({
-            fetchedTaxon: fetchResource('Taxon', taxonId),
-            fetchedCOType: fetchResource('CollectionObjectType', COTypeID),
-          })
+          await f
+            .all({
+              fetchedTaxon: fetchResource('Taxon', taxonId),
+              fetchedCOType: fetchResource('CollectionObjectType', COTypeID),
+            })
             .then(({ fetchedTaxon, fetchedCOType }) => {
               const taxonTreeDefinition = fetchedTaxon.definition;
               const COTypeTreeDefinition = fetchedCOType.taxonTreeDef;
 
-              if (taxonTreeDefinition === COTypeTreeDefinition) return;
-
-              while (determinations.models.length > 0) {
-                determinations.remove(determinations.models[0]);
-              }
+              return taxonTreeDefinition === COTypeTreeDefinition
+                ? undefined
+                : resource.set('determinations', []);
             })
             .catch((error) => {
               console.error('Error fetching resources:', error);
             });
+        return undefined;
       },
     },
   },
