@@ -157,6 +157,16 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           new tables.CollectingEvent.Resource()
         );
       }
+
+      // Set the default CoType
+      collectionObject
+        .rgetPromise('collection')
+        .then((collection) =>
+          collectionObject.set(
+            'collectionObjectType',
+            collection.get('collectionObjectType')
+          )
+        );
     },
     fieldChecks: {
       collectionObjectType: (resource) => {
