@@ -1,4 +1,4 @@
-from specifyweb.specify.models import Collection, Collectionobject, CollectionObjectType
+from specifyweb.specify.models import Collection, Collectionobject, Collectionobjecttype
 from specifyweb.specify.tests.test_api import ApiTests
 from ..exceptions import BusinessRuleException
 
@@ -15,7 +15,7 @@ class CollectionObjectTests(ApiTests):
             catalognumber=self.collectionobjects[0].catalognumber + 'foo')
 
     def test_default_collectionobjecttype(self):
-        default_type = CollectionObjectType.objects.create(
+        default_type = Collectionobjecttype.objects.create(
             name="default type",
             collection=self.collection,
             taxontreedef=self.discipline.taxontreedef
