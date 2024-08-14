@@ -159,14 +159,18 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       }
 
       // Set the default CoType
-      collectionObject
-        .rgetPromise('collection')
-        .then((collection) =>
-          collectionObject.set(
-            'collectionObjectType',
-            collection.get('collectionObjectType')
-          )
-        );
+      if (collectionObject.get('collectionObjectType') === undefined)
+        collectionObject
+          .rgetPromise('collection')
+          .then((collection) =>
+          {
+            collectionObject.set(
+              'collectionObjectType',
+              collection.get('collectionObjectType')
+            )
+            console.log("test")
+          }
+          );
     },
     fieldChecks: {
       collectionObjectType: (resource) => {
