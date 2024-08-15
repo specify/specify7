@@ -43,7 +43,7 @@ msgstr ""
 msgid "queryBuilder"
 msgstr ""
 
-#: components/QueryBuilder/Export.tsx:88
+#: components/QueryBuilder/Export.tsx:99
 #: components/QueryBuilder/index.tsx:128
 #: components/Router/OverlayRoutes.tsx:128
 #: components/Statistics/AddStatDialog.tsx:64
@@ -136,25 +136,25 @@ msgstr ""
 msgid "recordSetCreated"
 msgstr ""
 
-#: components/QueryBuilder/Export.tsx:132
+#: components/QueryBuilder/Export.tsx:149
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "missingCoordinatesForKml"
 msgstr ""
 
-#: components/QueryBuilder/Export.tsx:135
+#: components/QueryBuilder/Export.tsx:152
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "missingCoordinatesForKmlDescription"
 msgstr ""
 
-#: components/QueryBuilder/Export.tsx:124
+#: components/QueryBuilder/Export.tsx:141
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "queryExportStarted"
 msgstr ""
 
-#: components/QueryBuilder/Export.tsx:127
+#: components/QueryBuilder/Export.tsx:144
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "queryExportStartedDescription"
@@ -197,13 +197,13 @@ msgstr ""
 msgid "distinct"
 msgstr ""
 
-#: components/QueryBuilder/Export.tsx:148
+#: components/QueryBuilder/Export.tsx:165
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "createCsv"
 msgstr ""
 
-#: components/QueryBuilder/Export.tsx:161
+#: components/QueryBuilder/Export.tsx:178
 #. Used in: Components > Query Builder > Export
 #, fuzzy
 msgid "createKml"

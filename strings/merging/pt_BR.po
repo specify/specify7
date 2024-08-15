@@ -11,7 +11,7 @@ msgstr ""
 "X-Generator: Weblate 5.7-dev\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: components/Preferences/UserDefinitions.tsx:1606
+#: components/Preferences/UserDefinitions.tsx:1616
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "recordMerging"
@@ -72,7 +72,7 @@ msgid "mergeFields"
 msgstr ""
 
 #: components/Merging/index.tsx:267
-#: components/Preferences/UserDefinitions.tsx:1612
+#: components/Preferences/UserDefinitions.tsx:1622
 #. Used in: Components > Merging > Index ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "autoPopulate"

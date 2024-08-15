@@ -13,7 +13,7 @@ msgstr ""
 "X-Generator: Weblate 5.7-dev\n"
 
 #: components/Header/menuItemDefinitions.ts:93
-#: components/Preferences/UserDefinitions.tsx:1668
+#: components/Preferences/UserDefinitions.tsx:1678
 #: components/Router/OverlayRoutes.tsx:150
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 msgid "workBench"
@@ -108,7 +108,7 @@ msgstr "Auffüllen"
 msgid "revert"
 msgstr "Zurückkehren"
 
-#: components/Preferences/UserDefinitions.tsx:1674
+#: components/Preferences/UserDefinitions.tsx:1684
 #: components/WbActions/WbValidate.tsx:58
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Actions > Wb Validate
 #, fuzzy
@@ -122,7 +122,7 @@ msgstr "Live-Validierung"
 msgid "dataCheckOn"
 msgstr "Live-Validierung: Ein"
 
-#: components/Preferences/UserDefinitions.tsx:1675
+#: components/Preferences/UserDefinitions.tsx:1685
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "dataCheckDescription"
@@ -708,7 +708,7 @@ msgstr "Trennzeichen:"
 
 #: components/Molecules/CsvFilePicker.tsx:172
 #: components/Preferences/UserDefinitions.tsx:1555
-#: components/Preferences/UserDefinitions.tsx:1782
+#: components/Preferences/UserDefinitions.tsx:1792
 #. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "comma"
@@ -716,7 +716,7 @@ msgstr "Komma"
 
 #: components/Molecules/CsvFilePicker.tsx:174
 #: components/Preferences/UserDefinitions.tsx:1563
-#: components/Preferences/UserDefinitions.tsx:1790
+#: components/Preferences/UserDefinitions.tsx:1800
 #. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "semicolon"
@@ -724,7 +724,7 @@ msgstr "Semikolon"
 
 #: components/Molecules/CsvFilePicker.tsx:173
 #: components/Preferences/UserDefinitions.tsx:1559
-#: components/Preferences/UserDefinitions.tsx:1786
+#: components/Preferences/UserDefinitions.tsx:1796
 #. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "tab"
@@ -732,7 +732,7 @@ msgstr "Tab"
 
 #: components/Molecules/CsvFilePicker.tsx:175
 #: components/Preferences/UserDefinitions.tsx:1567
-#: components/Preferences/UserDefinitions.tsx:1794
+#: components/Preferences/UserDefinitions.tsx:1804
 #. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "space"
@@ -740,7 +740,7 @@ msgstr "Raum"
 
 #: components/Molecules/CsvFilePicker.tsx:176
 #: components/Preferences/UserDefinitions.tsx:1571
-#: components/Preferences/UserDefinitions.tsx:1798
+#: components/Preferences/UserDefinitions.tsx:1808
 #. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "pipe"

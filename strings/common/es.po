@@ -16,7 +16,7 @@ msgstr ""
 msgid "specifySeven"
 msgstr "Specify 7"
 
-#: components/Preferences/UserDefinitions.tsx:1762
+#: components/Preferences/UserDefinitions.tsx:1772
 #: components/WorkBench/DataSetMeta.tsx:282
 #: utils/parser/definitions.ts:118
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Data Set Meta ⬤ Utils > Parser > Definitions
@@ -217,8 +217,8 @@ msgstr "Crear"
 #: components/QueryBuilder/CheckReadAccess.tsx:42
 #: components/QueryBuilder/Components.tsx:288
 #: components/QueryBuilder/Edit.tsx:145
-#: components/QueryBuilder/Export.tsx:123
-#: components/QueryBuilder/Export.tsx:131
+#: components/QueryBuilder/Export.tsx:140
+#: components/QueryBuilder/Export.tsx:148
 #: components/QueryBuilder/Import.tsx:154
 #: components/QueryBuilder/LoanReturn.tsx:156
 #: components/QueryBuilder/LoanReturn.tsx:222
