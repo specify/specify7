@@ -691,7 +691,7 @@ msgstr "(Range: {from:string} - {to:string})"
 msgid "catalogNumberNumericFormatter"
 msgstr "Catalog Number Numeric"
 
-#: components/DataModel/businessRuleDefs.ts:245
+#: components/DataModel/businessRuleDefs.ts:266
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "invalidTree"
 msgstr "Taxon does not belong to the same tree as this Object Type"
