@@ -52,17 +52,17 @@ class UploadResultsTests(unittest.TestCase):
         self.assertEqual(noChange, NoChange.from_json(json.loads(j)))
 
     @given(updated=infer)
-    def testUploaded(self, updated: Updated):
+    def testUpdated(self, updated: Updated):
         j = json.dumps(updated.to_json())
         self.assertEqual(updated, Updated.from_json(json.loads(j)))
 
     @given(deleted=infer)
-    def testUploaded(self, deleted: Deleted):
+    def testDeleted(self, deleted: Deleted):
         j = json.dumps(deleted.to_json())
         self.assertEqual(deleted, Deleted.from_json(json.loads(j)))
 
     @given(matchedAndChanged=infer)
-    def testUploaded(self, matchedAndChanged: MatchedAndChanged):
+    def testMatchedAndChanged(self, matchedAndChanged: MatchedAndChanged):
         j = json.dumps(matchedAndChanged.to_json())
         self.assertEqual(matchedAndChanged, MatchedAndChanged.from_json(json.loads(j)))
 
