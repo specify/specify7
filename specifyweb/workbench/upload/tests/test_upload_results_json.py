@@ -47,12 +47,7 @@ class UploadResultsTests(unittest.TestCase):
         self.assertEqual(parseFailures, ParseFailures.from_json(json.loads(j)))
 
     @given(noChange=infer)
-    def testParseFailures(self, noChange: NoChange):
-        j = json.dumps(noChange.to_json())
-        self.assertEqual(noChange, NoChange.from_json(json.loads(j)))
-
-    @given(noChange=infer)
-    def testParseFailures(self, noChange: NoChange):
+    def testNoChange(self, noChange: NoChange):
         j = json.dumps(noChange.to_json())
         self.assertEqual(noChange, NoChange.from_json(json.loads(j)))
 
