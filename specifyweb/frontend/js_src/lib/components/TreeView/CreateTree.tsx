@@ -20,6 +20,7 @@ import { TaxonTreeDef } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
+import { defaultTreeDefs } from './TreeDefaults';
 
 export function CreateTree<SCHEMA extends AnyTree>({
   tableName,
@@ -30,41 +31,12 @@ export function CreateTree<SCHEMA extends AnyTree>({
   const [isActive, setIsActive] = React.useState(0);
   const [selectedResource, setSelectedResource] = React.useState<Partial<SerializedResource<TaxonTreeDef>> | null>(null);
 
-  // TODO: Test resource, will need to be removed later on.
-  const treeDefResource: Partial<SerializedResource<TaxonTreeDef>> = {
-    _tableName: 'TaxonTreeDef',
-    name: 'Test',
-    remarks: 'This is a test',
-    fullNameDirection: 1,
-  }
-
-  const treeDefResource2: Partial<SerializedResource<TaxonTreeDef>> = {
-    _tableName: 'TaxonTreeDef',
-    name: 'second test',
-    remarks: 'Testing another',
-    fullNameDirection: 1,
-  }
-
   // May be a good idea to separate second dialog into own component/function, since hook needs to be used outside of the condition.
-  const resource = React.useMemo(
-    () =>
-      deserializeResource(treeDefResource), []
-  );
+  // Turn into a function?
 
-  const resource2 = React.useMemo(
-    () =>
-      deserializeResource(treeDefResource2), []
-  );
-  //Non-serialized resource version. Does work.
-  //const treeDefResource = React.useMemo(() => new tables.TaxonTreeDef.Resource(), []);
-
-  const handleTextClick = () => {
-    setSelectedResource(resource);
-    setIsActive(2);
-  };
-
-  const handleTextClick2 = () => {
-    setSelectedResource(resource2);
+  const handleClick = (resource: Partial<SerializedResource<TaxonTreeDef>>) => {
+    const dsResource = deserializeResource(resource);
+    setSelectedResource(dsResource);
     setIsActive(2);
   };
 
@@ -87,25 +59,19 @@ export function CreateTree<SCHEMA extends AnyTree>({
               <Button.DialogClose component={Button.BorderedGray}>
                 {commonText.cancel()}
               </Button.DialogClose>
-              <Button.Info onClick={() => setIsActive(2)}>
-                {treeText.addTree()}
-              </Button.Info>
             </>
           }
           header={treeText.addTree()}
           onClose={() => setIsActive(0)}
         >
           <Ul className="flex flex-col gap-2">
-            <li>
-              <span onClick={handleTextClick} className="cursor-pointer text-blue-500">
-                Test first resource view
-              </span>
-            </li>
-            <li>
-              <span onClick={handleTextClick2} className="cursor-pointer text-blue-500">
-                Test second resource view
-              </span>
-            </li>
+            {defaultTreeDefs.map((resource, index) => (
+              <li key={index}>
+                <Button.LikeLink onClick={(): void => handleClick(resource)}>
+                  {resource.name}
+                </Button.LikeLink>
+              </li>
+            ))}
           </Ul>
         </Dialog>
       ) : null}

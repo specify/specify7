@@ -9,970 +9,516 @@ mammalogy
 ornithology
 paleobotany
 vacplant
-vertebreatepaleontology
+vertebratepaleontology
 */
 
-const botanytreedef = {
+/*
+* TODO: Figure out issue with errors (it's working fine even w/ the errors)
+* Also thing where order matters--haven't had issues with this before
+*/
+
+import { SerializedResource } from "../DataModel/helperTypes";
+import { TaxonTreeDef, TaxonTreeDefItem } from "../DataModel/types";
+import { RA } from "../../utils/types";
+
+const life: Partial<SerializedResource<TaxonTreeDefItem>> = {
+  _tableName: "TaxonTreeDefItem",
+  name: "Life",
+  title: "Life",
+  isEnforced: true,
+  isInFullName: false,
+  rankId: 0,
+}
+
+const kingdom: Partial<SerializedResource<TaxonTreeDefItem>> = {
+  _tableName: "TaxonTreeDefItem",
+  name: "Kingdom",
+  title: "Kingdom",
+  isEnforced: true,
+  isInFullName: false,
+  rankId: 10,
+}
+
+const subkingdom: Partial<SerializedResource<TaxonTreeDefItem>> = {
+  _tableName: "TaxonTreeDefItem",
+  name: "Subkingdom",
+  title: "Subkingdom",
+  isEnforced: false,
+  isInFullName: false,
+  rankId: 20,
+}
+
+const division: Partial<SerializedResource<TaxonTreeDefItem>> = {
+  _tableName: "TaxonTreeDefItem",
+  name: "Division",
+  title: "Division",
+  isEnforced: true,
+  isInFullName: false,
+  rankId: 30,
+}
+
+const subdivision: Partial<SerializedResource<TaxonTreeDefItem>> = {
+  _tableName: "TaxonTreeDefItem",
+  name: "Subdivision",
+  title: "Subdivision",
+  isEnforced: false,
+  isInFullName: false,
+  rankId: 40,
+}
+
+const phylum: Partial<SerializedResource<TaxonTreeDefItem>> = {
+  _tableName: "TaxonTreeDefItem",
+  name: "Phylum",
+  title: "Phylum",
+  isEnforced: true,
+  isInFullName: false,
+  rankId: 30,
+}
+
+const subphylum: Partial<SerializedResource<TaxonTreeDefItem>> = {
+  _tableName: "TaxonTreeDefItem",
+  name: "Subphylum",
+  title: "Subphylum",
+  isEnforced: false,
+  isInFullName: false,
+  rankId: 40,
+}
+
+const superclass: Partial<SerializedResource<TaxonTreeDefItem>> = {
+  _tableName: "TaxonTreeDefItem",
+  name: "Superclass",
+  title: "Superclass",
+  isEnforced: false,
+  isInFullName: false,
+  rankId: 50,
+}
+
+const taxonClass: Partial<SerializedResource<TaxonTreeDefItem>> = {
+  _tableName: "TaxonTreeDefItem",
+  name: "Class",
+  title: "Class",
+  isEnforced: true,
+  isInFullName: false,
+  rankId: 60,
+}
+
+const subclass: Partial<SerializedResource<TaxonTreeDefItem>> = {
+  _tableName: "TaxonTreeDefItem",
+  name: "Subclass",
+  title: "Subclass",
+  isEnforced: false,
+  isInFullName: false,
+  rankId: 70,
+}
+
+const infraclass: Partial<SerializedResource<TaxonTreeDefItem>> = {
+  _tableName: "TaxonTreeDefItem",
+  name: "Infraclass",
+  title: "Infraclass",
+  isEnforced: false,
+  isInFullName: false,
+  rankId: 80,
+}
+
+const superorder: Partial<SerializedResource<TaxonTreeDefItem>> = {
+  _tableName: "TaxonTreeDefItem",
+  name: "Superorder",
+  title: "Superorder",
+  isEnforced: false,
+  isInFullName: false,
+  rankId: 90,
+}
+
+const order: Partial<SerializedResource<TaxonTreeDefItem>> = {
+  _tableName: "TaxonTreeDefItem",
+  name: "Order",
+  title: "Order",
+  isEnforced: true,
+  isInFullName: false,
+  rankId: 100,
+}
+
+const suborder: Partial<SerializedResource<TaxonTreeDefItem>> = {
+  _tableName: "TaxonTreeDefItem",
+  name: "Suborder",
+  title: "Suborder",
+  isEnforced: false,
+  isInFullName: false,
+  rankId: 110,
+}
+
+const infraorder: Partial<SerializedResource<TaxonTreeDefItem>> = {
+  _tableName: "TaxonTreeDefItem",
+  name: "Infraorder",
+  title: "Infraorder",
+  isEnforced: false,
+  isInFullName: false,
+  rankId: 120,
+}
+
+const family: Partial<SerializedResource<TaxonTreeDefItem>> = {
+  _tableName: "TaxonTreeDefItem",
+  name: "Family",
+  title: "Family",
+  isEnforced: true,
+  isInFullName: false,
+  rankId: 140,
+}
+
+const subfamily: Partial<SerializedResource<TaxonTreeDefItem>> = {
+  _tableName: "TaxonTreeDefItem",
+  name: "Subfamily",
+  title: "Subfamily",
+  isEnforced: false,
+  isInFullName: false,
+  rankId: 150,
+}
+
+const tribe: Partial<SerializedResource<TaxonTreeDefItem>> = {
+  _tableName: "TaxonTreeDefItem",
+  name: "Tribe",
+  title: "Tribe",
+  isEnforced: false,
+  isInFullName: false,
+  rankId: 160,
+}
+
+const subtribe: Partial<SerializedResource<TaxonTreeDefItem>> = {
+  _tableName: "TaxonTreeDefItem",
+  name: "Subtribe",
+  title: "Subtribe",
+  isEnforced: false,
+  isInFullName: false,
+  rankId: 170,
+}
+
+const genus: Partial<SerializedResource<TaxonTreeDefItem>> = {
+  _tableName: "TaxonTreeDefItem",
+  name: "Genus",
+  title: "Genus",
+  isEnforced: true,
+  isInFullName: true,
+  rankId: 180,
+}
+
+const subgenus: Partial<SerializedResource<TaxonTreeDefItem>> = {
+  _tableName: "TaxonTreeDefItem",
+  name: "Subgenus",
+  title: "Subgenus",
+  isEnforced: false,
+  isInFullName: false,
+  rankId: 190,
+}
+
+const species: Partial<SerializedResource<TaxonTreeDefItem>> = {
+  _tableName: "TaxonTreeDefItem",
+  name: "Species",
+  title: "Species",
+  isEnforced: true,
+  isInFullName: true,
+  rankId: 220,
+}
+
+const subspecies: Partial<SerializedResource<TaxonTreeDefItem>> = {
+  _tableName: "TaxonTreeDefItem",
+  name: "Subspecies",
+  title: "Subspecies",
+  isEnforced: false,
+  isInFullName: true,
+  rankId: 230,
+}
+
+const variety: Partial<SerializedResource<TaxonTreeDefItem>> = {
+  _tableName: "TaxonTreeDefItem",
+  name: "Variety",
+  title: "Variety",
+  isEnforced: false,
+  isInFullName: true,
+  rankId: 240,
+}
+
+const subvariety: Partial<SerializedResource<TaxonTreeDefItem>> = {
+  _tableName: "TaxonTreeDefItem",
+  name: "Subvariety",
+  title: "Subvariety",
+  isEnforced: false,
+  isInFullName: true,
+  rankId: 250,
+}
+
+const forma: Partial<SerializedResource<TaxonTreeDefItem>> = {
+  _tableName: "TaxonTreeDefItem",
+  name: "Forma",
+  title: "Forma",
+  isEnforced: false,
+  isInFullName: true,
+  rankId: 260,
+}
+
+const subforma: Partial<SerializedResource<TaxonTreeDefItem>> = {
+  _tableName: "TaxonTreeDefItem",
+  name: "Subforma",
+  title: "Subforma",
+  isEnforced: false,
+  isInFullName: true,
+  rankId: 270,
+}
+
+export const botanyTreeDef: Partial<SerializedResource<TaxonTreeDef>> = {
+  _tableName: "TaxonTreeDef",
   name: "Botany",
   remarks: "A default taxon tree",
-  fullnamedirection: "forward",
-  level: [
-        {
-          "_name": "Life",
-          "_enforced": "true",
-          "_infullname": "false",
-          "_rank": "0"
-        },
-        {
-          "_name": "Kingdom",
-          "_enforced": "true",
-          "_infullname": "false",
-          "_rank": "10"
-        },
-        {
-          "_name": "Subkingdom",
-          "_enforced": "false",
-          "_infullname": "false",
-          "_rank": "20"
-        },
-        {
-          "_name": "Division",
-          "_enforced": "true",
-          "_infullname": "false",
-          "_rank": "30"
-        },
-        {
-          "_name": "Subdivision",
-          "_enforced": "false",
-          "_infullname": "false",
-          "_rank": "40"
-        },
-        {
-          "_name": "Class",
-          "_enforced": "true",
-          "_infullname": "false",
-          "_rank": "60"
-        },
-        {
-          "_name": "Subclass",
-          "_enforced": "false",
-          "_infullname": "false",
-          "_rank": "70"
-        },
-        {
-          "_name": "Superorder",
-          "_enforced": "false",
-          "_infullname": "false",
-          "_rank": "90"
-        },
-        {
-          "_name": "Order",
-          "_enforced": "true",
-          "_infullname": "false",
-          "_rank": "100"
-        },
-        {
-          "_name": "Suborder",
-          "_enforced": "false",
-          "_infullname": "false",
-          "_rank": "110"
-        },
-        {
-          "_name": "Family",
-          "_enforced": "true",
-          "_infullname": "false",
-          "_rank": "140"
-        },
-        {
-          "_name": "Genus",
-          "_enforced": "true",
-          "_infullname": "true",
-          "_rank": "180"
-        },
-        {
-          "_name": "Species",
-          "_enforced": "true",
-          "_infullname": "true",
-          "_rank": "220"
-        },
-        {
-          "_name": "Subspecies",
-          "_enforced": "false",
-          "_infullname": "true",
-          "_rank": "230"
-        },
-        {
-          "_name": "variety",
-          "_enforced": "false",
-          "_infullname": "true",
-          "_rank": "240"
-        },
-        {
-          "_name": "subvariety",
-          "_enforced": "false",
-          "_infullname": "true",
-          "_rank": "250"
-        },
-        {
-          "_name": "forma",
-          "_enforced": "false",
-          "_infullname": "true",
-          "_rank": "260"
-        },
-        {
-          "_name": "subforma",
-          "_enforced": "false",
-          "_infullname": "true",
-          "_rank": "270"
-        }
-      ]
+  fullNameDirection: 1,
+  treeDefItems: [
+    life,
+    kingdom,
+    subkingdom,
+    division,
+    subdivision,
+    taxonClass,
+    subclass,
+    superorder,
+    order,
+    suborder,
+    family,
+    genus,
+    species,
+    subspecies,
+    variety,
+    subvariety,
+    forma,
+    subforma,
+  ],
 }
 
 
-const entomologytreedef = {
+export const entomologyTreeDef: Partial<SerializedResource<TaxonTreeDef>> = {
+  _tableName: "TaxonTreeDef",
   name: "Entomology",
   remarks: "A default taxon tree",
-  fullnamedirection: "forward",
-  level: [
-        {
-          "_name": "Life",
-          "_enforced": "true",
-          "_infullname": "false",
-          "_rank": "0"
-        },
-        {
-          "_name": "Kingdom",
-          "_enforced": "true",
-          "_infullname": "false",
-          "_rank": "10"
-        },
-        {
-          "_name": "Phylum",
-          "_enforced": "true",
-          "_infullname": "false",
-          "_rank": "30"
-        },
-        {
-          "_name": "Subphylum",
-          "_enforced": "false",
-          "_infullname": "false",
-          "_rank": "40"
-        },
-        {
-          "_name": "Class",
-          "_enforced": "true",
-          "_infullname": "false",
-          "_rank": "60"
-        },
-        {
-          "_name": "Subclass",
-          "_enforced": "false",
-          "_infullname": "false",
-          "_rank": "70"
-        },
-        {
-          "_name": "Infraclass",
-          "_enforced": "false",
-          "_infullname": "false",
-          "_rank": "80"
-        },
-        {
-          "_name": "Superorder",
-          "_enforced": "false",
-          "_infullname": "false",
-          "_rank": "90"
-        },
-        {
-          "_name": "Order",
-          "_enforced": "true",
-          "_infullname": "false",
-          "_rank": "100"
-        },
-        {
-          "_name": "Suborder",
-          "_enforced": "false",
-          "_infullname": "false",
-          "_rank": "110"
-        },
-        {
-          "_name": "Infraorder",
-          "_enforced": "false",
-          "_infullname": "false",
-          "_rank": "120"
-        },
-        {
-          "_name": "Family",
-          "_enforced": "true",
-          "_infullname": "false",
-          "_rank": "140"
-        },
-        {
-          "_name": "Subfamily",
-          "_enforced": "false",
-          "_infullname": "false",
-          "_rank": "150"
-        },
-        {
-          "_name": "Tribe",
-          "_enforced": "false",
-          "_infullname": "false",
-          "_rank": "160"
-        },
-        {
-          "_name": "Subtribe",
-          "_enforced": "false",
-          "_infullname": "false",
-          "_rank": "170"
-        },
-        {
-          "_name": "Genus",
-          "_enforced": "true",
-          "_infullname": "true",
-          "_rank": "180"
-        },
-        {
-          "_name": "Subgenus",
-          "_enforced": "false",
-          "_infullname": "false",
-          "_rank": "190"
-        },
-        {
-          "_name": "Species",
-          "_enforced": "true",
-          "_infullname": "true",
-          "_rank": "220"
-        },
-        {
-          "_name": "Subspecies",
-          "_enforced": "false",
-          "_infullname": "true",
-          "_rank": "230"
-        }
-      ]
+  fullNameDirection: 1,
+  treeDefItems: [
+    life,
+    kingdom,
+    phylum,
+    subphylum,
+    taxonClass,
+    subclass,
+    infraclass,
+    superorder,
+    order,
+    suborder,
+    infraorder,
+    family,
+    subfamily,
+    tribe,
+    subtribe,
+    genus,
+    species,
+    subspecies,
+  ],
 }
 
-const herpetologytreedef = {
+export const herpetologyTreeDef: Partial<SerializedResource<TaxonTreeDef>> = {
+  _tableName: "TaxonTreeDef",
   name: "Herpetology",
   remarks: "A default taxon tree",
-  fullnamedirection: "forward",
-  level: [
-      {
-        "_name": "Life",
-        "_enforced": "true",
-        "_infullname": "false",
-        "_rank": "0"
-      },
-      {
-        "_name": "Kingdom",
-        "_enforced": "true",
-        "_infullname": "false",
-        "_rank": "10"
-      },
-      {
-        "_name": "Phylum",
-        "_enforced": "true",
-        "_infullname": "false",
-        "_rank": "30"
-      },
-      {
-        "_name": "Subphylum",
-        "_enforced": "false",
-        "_infullname": "false",
-        "_rank": "40"
-      },
-      {
-        "_name": "Class",
-        "_enforced": "true",
-        "_infullname": "false",
-        "_rank": "60"
-      },
-      {
-        "_name": "Subclass",
-        "_enforced": "false",
-        "_infullname": "false",
-        "_rank": "70"
-      },
-      {
-        "_name": "Superorder",
-        "_enforced": "false",
-        "_infullname": "false",
-        "_rank": "90"
-      },
-      {
-        "_name": "Order",
-        "_enforced": "true",
-        "_infullname": "false",
-        "_rank": "100"
-      },
-      {
-        "_name": "Family",
-        "_enforced": "true",
-        "_infullname": "false",
-        "_rank": "140"
-      },
-      {
-        "_name": "Subfamily",
-        "_enforced": "false",
-        "_infullname": "false",
-        "_rank": "150"
-      },
-      {
-        "_name": "Genus",
-        "_enforced": "true",
-        "_infullname": "true",
-        "_rank": "180"
-      },
-      {
-        "_name": "Species",
-        "_enforced": "true",
-        "_infullname": "true",
-        "_rank": "220"
-      },
-      {
-        "_name": "Subspecies",
-        "_enforced": "false",
-        "_infullname": "true",
-        "_rank": "230"
-      }
-    ]
+  fullNameDirection: 1,
+  treeDefItems: [
+    life,
+    kingdom,
+    phylum,
+    subphylum,
+    taxonClass,
+    subclass,
+    superorder,
+    order,
+    family,
+    genus,
+    species,
+    subspecies,
+  ],
 }
 
-const ichthyologytreedef = {
+export const ichthyologyTreeDef: Partial<SerializedResource<TaxonTreeDef>> = {
+  _tableName: "TaxonTreeDef",
   name: "Ichthyology",
   remarks: "A default taxon tree",
-  fullnamedirection: "forward",
-  level: [
-      {
-        "_name": "Life",
-        "_enforced": "true",
-        "_infullname": "false",
-        "_rank": "0"
-      },
-      {
-        "_name": "Kingdom",
-        "_enforced": "true",
-        "_infullname": "false",
-        "_rank": "10"
-      },
-      {
-        "_name": "Phylum",
-        "_enforced": "true",
-        "_infullname": "false",
-        "_rank": "30"
-      },
-      {
-        "_name": "Subphylum",
-        "_enforced": "false",
-        "_infullname": "false",
-        "_rank": "40"
-      },
-      {
-        "_name": "Superclass",
-        "_enforced": "false",
-        "_infullname": "false",
-        "_rank": "50"
-      },
-      {
-        "_name": "Class",
-        "_enforced": "true",
-        "_infullname": "false",
-        "_rank": "60"
-      },
-      {
-        "_name": "Subclass",
-        "_enforced": "false",
-        "_infullname": "false",
-        "_rank": "70"
-      },
-      {
-        "_name": "Infraclass",
-        "_enforced": "false",
-        "_infullname": "false",
-        "_rank": "80"
-      },
-      {
-        "_name": "Superorder",
-        "_enforced": "false",
-        "_infullname": "false",
-        "_rank": "90"
-      },
-      {
-        "_name": "Order",
-        "_enforced": "true",
-        "_infullname": "false",
-        "_rank": "100"
-      },
-      {
-        "_name": "Family",
-        "_enforced": "true",
-        "_infullname": "false",
-        "_rank": "140"
-      },
-      {
-        "_name": "Genus",
-        "_enforced": "true",
-        "_infullname": "true",
-        "_rank": "180"
-      },
-      {
-        "_name": "Species",
-        "_enforced": "true",
-        "_infullname": "true",
-        "_rank": "220"
-      },
-      {
-        "_name": "Subspecies",
-        "_enforced": "false",
-        "_infullname": "true",
-        "_rank": "230"
-      }
-    ]
+  fullNameDirection: 1,
+  treeDefItems: [
+    life,
+    kingdom,
+    phylum,
+    subphylum,
+    superclass,
+    taxonClass,
+    subclass,
+    infraclass,
+    superorder,
+    order,
+    family,
+    genus,
+    species,
+    subspecies,
+  ],
 }
 
-const invertebratepaleontologytreedef = {
+export const invertpaleoTreeDef: Partial<SerializedResource<TaxonTreeDef>> = {
+  _tableName: "TaxonTreeDef",
   name: "Invertebrate Paleontology",
   remarks: "A default taxon tree",
-  fullnamedirection: "forward",
-  level: [
-    {
-      "_name": "Life",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "0"
-    },
-    {
-      "_name": "Kingdom",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "10"
-    },
-    {
-      "_name": "Phylum",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "30"
-    },
-    {
-      "_name": "Class",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "60"
-    },
-    {
-      "_name": "Subclass",
-      "_enforced": "false",
-      "_infullname": "false",
-      "_rank": "70"
-    },
-    {
-      "_name": "Superorder",
-      "_enforced": "false",
-      "_infullname": "false",
-      "_rank": "90"
-    },
-    {
-      "_name": "Order",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "100"
-    },
-    {
-      "_name": "Family",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "140"
-    },
-    {
-      "_name": "Genus",
-      "_enforced": "true",
-      "_infullname": "true",
-      "_rank": "180"
-    },
-    {
-      "_name": "Species",
-      "_enforced": "true",
-      "_infullname": "true",
-      "_rank": "220"
-    }
-  ]
+  fullNameDirection: 1,
+  treeDefItems: [
+    life,
+    kingdom,
+    phylum,
+    taxonClass,
+    subclass,
+    superorder,
+    order,
+    family,
+    genus,
+    species,
+  ],
 }
 
-const invertebratezoologytreedef = {
+export const invertzooTreeDef: Partial<SerializedResource<TaxonTreeDef>> = {
+  _tableName: "TaxonTreeDef",
   name: "Invertebrate Zoology",
   remarks: "A default taxon tree",
-  fullnamedirection: "forward",
-  level: [
-    {
-      "_name": "Life",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "0"
-    },
-    {
-      "_name": "Kingdom",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "10"
-    },
-    {
-      "_name": "Phylum",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "30"
-    },
-    {
-      "_name": "Class",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "60"
-    },
-    {
-      "_name": "Subclass",
-      "_enforced": "false",
-      "_infullname": "false",
-      "_rank": "70"
-    },
-    {
-      "_name": "Superorder",
-      "_enforced": "false",
-      "_infullname": "false",
-      "_rank": "90"
-    },
-    {
-      "_name": "Order",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "100"
-    },
-    {
-      "_name": "Suborder",
-      "_enforced": "false",
-      "_infullname": "false",
-      "_rank": "110"
-    },
-    {
-      "_name": "Family",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "140"
-    },
-    {
-      "_name": "Subfamily",
-      "_enforced": "false",
-      "_infullname": "false",
-      "_rank": "150"
-    },
-    {
-      "_name": "Tribe",
-      "_enforced": "false",
-      "_infullname": "false",
-      "_rank": "160"
-    },
-    {
-      "_name": "Subtribe",
-      "_enforced": "false",
-      "_infullname": "false",
-      "_rank": "170"
-    },
-    {
-      "_name": "Genus",
-      "_enforced": "true",
-      "_infullname": "true",
-      "_rank": "180"
-    },
-    {
-      "_name": "Subgenus",
-      "_enforced": "false",
-      "_infullname": "false",
-      "_rank": "190"
-    },
-    {
-      "_name": "Species",
-      "_enforced": "true",
-      "_infullname": "true",
-      "_rank": "220"
-    },
-    {
-      "_name": "Subspecies",
-      "_enforced": "false",
-      "_infullname": "true",
-      "_rank": "230"
-    }
-  ]
+  fullNameDirection: 1,
+  treeDefItems: [
+    life,
+    kingdom,
+    phylum,
+    taxonClass,
+    subclass,
+    superorder,
+    order,
+    suborder,
+    family,
+    subfamily,
+    tribe,
+    subtribe,
+    genus,
+    subgenus,
+    species,
+    subspecies,
+  ],
 }
 
-const mammalogytreedef = {
-  name: "Mammalogy",
+export const mammalogyTreeDef: Partial<SerializedResource<TaxonTreeDef>> = {
+  _tableName: "TaxonTreeDef",
+  name: "Mammology",
   remarks: "A default taxon tree",
-  fullnamedirection: "forward",
-  level: [
-    {
-      "_name": "Life",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "0"
-    },
-    {
-      "_name": "Kingdom",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "10"
-    },
-    {
-      "_name": "Phylum",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "30"
-    },
-    {
-      "_name": "Class",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "60"
-    },
-    {
-      "_name": "Order",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "100"
-    },
-    {
-      "_name": "Family",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "140"
-    },
-    {
-      "_name": "Genus",
-      "_enforced": "true",
-      "_infullname": "true",
-      "_rank": "180"
-    },
-    {
-      "_name": "Species",
-      "_enforced": "true",
-      "_infullname": "true",
-      "_rank": "220"
-    },
-    {
-      "_name": "Subspecies",
-      "_enforced": "false",
-      "_infullname": "true",
-      "_rank": "230"
-    }
-  ]
+  fullNameDirection: 1,
+  treeDefItems: [
+    life,
+    kingdom,
+    phylum,
+    taxonClass,
+    order,
+    family,
+    genus,
+    species,
+    subspecies,
+  ],
 }
 
-const ornithology = {
+export const ornithologyTreeDef: Partial<SerializedResource<TaxonTreeDef>> = {
+  _tableName: "TaxonTreeDef",
   name: "Ornithology",
   remarks: "A default taxon tree",
-  fullnamedirection: "forward",
-  level: [
-    {
-      "_name": "Life",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "0"
-    },
-    {
-      "_name": "Kingdom",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "10"
-    },
-    {
-      "_name": "Phylum",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "30"
-    },
-    {
-      "_name": "Subphylum",
-      "_enforced": "false",
-      "_infullname": "false",
-      "_rank": "40"
-    },
-    {
-      "_name": "Class",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "60"
-    },
-    {
-      "_name": "Order",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "100"
-    },
-    {
-      "_name": "Family",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "140"
-    },
-    {
-      "_name": "Subfamily",
-      "_enforced": "false",
-      "_infullname": "false",
-      "_rank": "150"
-    },
-    {
-      "_name": "Genus",
-      "_enforced": "true",
-      "_infullname": "true",
-      "_rank": "180"
-    },
-    {
-      "_name": "Species",
-      "_enforced": "true",
-      "_infullname": "true",
-      "_rank": "220"
-    },
-    {
-      "_name": "Subspecies",
-      "_enforced": "false",
-      "_infullname": "true",
-      "_rank": "230"
-    }
-  ]
+  fullNameDirection: 1,
+  treeDefItems: [
+    life,
+    kingdom,
+    phylum,
+    subphylum,
+    taxonClass,
+    superorder,
+    order,
+    family,
+    subfamily,
+    genus,
+    species,
+    subspecies,
+  ],
 }
 
-const paleobotany = {
+export const paleobotTreeDef: Partial<SerializedResource<TaxonTreeDef>> = {
+  _tableName: "TaxonTreeDef",
   name: "Paleobotany",
   remarks: "A default taxon tree",
-  fullnamedirection: "forward",
-  level: [
-    {
-      "_name": "Life",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "0"
-    },
-    {
-      "_name": "Kingdom",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "10"
-    },
-    {
-      "_name": "Phylum",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "30"
-    },
-    {
-      "_name": "Class",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "60"
-    },
-    {
-      "_name": "Subclass",
-      "_enforced": "false",
-      "_infullname": "false",
-      "_rank": "70"
-    },
-    {
-      "_name": "Superorder",
-      "_enforced": "false",
-      "_infullname": "false",
-      "_rank": "90"
-    },
-    {
-      "_name": "Order",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "100"
-    },
-    {
-      "_name": "Family",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "140"
-    },
-    {
-      "_name": "Genus",
-      "_enforced": "true",
-      "_infullname": "true",
-      "_rank": "180"
-    },
-    {
-      "_name": "Species",
-      "_enforced": "true",
-      "_infullname": "true",
-      "_rank": "220"
-    }
-  ]
+  fullNameDirection: 1,
+  treeDefItems: [
+    life,
+    kingdom,
+    phylum,
+    taxonClass,
+    subclass,
+    superorder,
+    order,
+    family,
+    genus,
+    species,
+  ],
 }
 
-const vacplant = {
-  name: "Vascular Plant",
+export const vascplantTreeDef: Partial<SerializedResource<TaxonTreeDef>> = {
+  _tableName: "TaxonTreeDef",
+  name: "Vascular Plants",
   remarks: "A default taxon tree",
-  fullnamedirection: "forward",
-  level: [
-    {
-      "_name": "Life",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "0"
-    },
-    {
-      "_name": "Kingdom",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "10"
-    },
-    {
-      "_name": "Subkingdom",
-      "_enforced": "false",
-      "_infullname": "false",
-      "_rank": "20"
-    },
-    {
-      "_name": "Division",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "30"
-    },
-    {
-      "_name": "Subdivision",
-      "_enforced": "false",
-      "_infullname": "false",
-      "_rank": "40"
-    },
-    {
-      "_name": "Class",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "60"
-    },
-    {
-      "_name": "Subclass",
-      "_enforced": "false",
-      "_infullname": "false",
-      "_rank": "70"
-    },
-    {
-      "_name": "Superorder",
-      "_enforced": "false",
-      "_infullname": "false",
-      "_rank": "90"
-    },
-    {
-      "_name": "Order",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "100"
-    },
-    {
-      "_name": "Suborder",
-      "_enforced": "false",
-      "_infullname": "false",
-      "_rank": "110"
-    },
-    {
-      "_name": "Family",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "140"
-    },
-    {
-      "_name": "Genus",
-      "_enforced": "true",
-      "_infullname": "true",
-      "_rank": "180"
-    },
-    {
-      "_name": "Species",
-      "_enforced": "true",
-      "_infullname": "true",
-      "_rank": "220"
-    },
-    {
-      "_name": "Subspecies",
-      "_enforced": "false",
-      "_infullname": "true",
-      "_rank": "230"
-    },
-    {
-      "_name": "variety",
-      "_enforced": "false",
-      "_infullname": "true",
-      "_rank": "240"
-    },
-    {
-      "_name": "subvariety",
-      "_enforced": "false",
-      "_infullname": "true",
-      "_rank": "250"
-    },
-    {
-      "_name": "forma",
-      "_enforced": "false",
-      "_infullname": "true",
-      "_rank": "260"
-    },
-    {
-      "_name": "subforma",
-      "_enforced": "false",
-      "_infullname": "true",
-      "_rank": "270"
-    }
-  ]
+  fullNameDirection: 1,
+  treeDefItems: [
+    life,
+    kingdom,
+    subkingdom,
+    division,
+    subdivision,
+    taxonClass,
+    subclass,
+    superorder,
+    order,
+    suborder,
+    family,
+    genus,
+    species,
+    subspecies,
+    variety,
+    subvariety,
+    forma,
+    subforma,
+  ],
 }
 
-const vertebratepaleontology = {
+export const vertpaleoTreeDef: Partial<SerializedResource<TaxonTreeDef>> = {
+  _tableName: "TaxonTreeDef",
   name: "Vertebrate Paleontology",
   remarks: "A default taxon tree",
-  fullnamedirection: "forward",
-  level: [
-    {
-      "_name": "Life",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "0"
-    },
-    {
-      "_name": "Kingdom",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "10"
-    },
-    {
-      "_name": "Phylum",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "30"
-    },
-    {
-      "_name": "Class",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "60"
-    },
-    {
-      "_name": "Order",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "100"
-    },
-    {
-      "_name": "Family",
-      "_enforced": "true",
-      "_infullname": "false",
-      "_rank": "140"
-    },
-    {
-      "_name": "Genus",
-      "_enforced": "true",
-      "_infullname": "true",
-      "_rank": "180"
-    },
-    {
-      "_name": "Species",
-      "_enforced": "true",
-      "_infullname": "true",
-      "_rank": "220"
-    }
-  ]
+  fullNameDirection: 1,
+  treeDefItems: [
+    life,
+    kingdom,
+    phylum,
+    taxonClass,
+    order,
+    family,
+    genus,
+    species,
+  ],
 }
+
+export const defaultTreeDefs: RA<Partial<SerializedResource<TaxonTreeDef>>> = [
+  botanyTreeDef,
+  entomologyTreeDef,
+  herpetologyTreeDef,
+  ichthyologyTreeDef,
+  invertpaleoTreeDef,
+  invertzooTreeDef,
+  mammalogyTreeDef,
+  ornithologyTreeDef,
+  paleobotTreeDef,
+  vascplantTreeDef,
+  vertpaleoTreeDef,
+]
