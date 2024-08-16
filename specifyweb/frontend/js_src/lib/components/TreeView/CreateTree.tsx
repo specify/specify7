@@ -3,18 +3,20 @@
  *Contains stuff for dialogs, etc.
  *
  *TODO:
- *- Finish CreateTree function
- *- Add in list of default options
- *- Figure out how to pass default options to second dialog.
+ *- Add localizations for the tree default names
+ *- Add page reload upon save
+ *- Remove comments
  */
 import React from 'react';
 
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
+import { DeepPartial } from '../../utils/types';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
-import type { AnyTree , SerializedResource} from '../DataModel/helperTypes';
+import type { AnySchema, AnyTree , SerializedResource} from '../DataModel/helperTypes';
+import { SpecifyResource } from '../DataModel/legacyTypes';
 import { deserializeResource } from '../DataModel/serializers';
 import { TaxonTreeDef } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
@@ -29,12 +31,9 @@ export function CreateTree<SCHEMA extends AnyTree>({
 }): JSX.Element {
 
   const [isActive, setIsActive] = React.useState(0);
-  const [selectedResource, setSelectedResource] = React.useState<Partial<SerializedResource<TaxonTreeDef>> | null>(null);
+  const [selectedResource, setSelectedResource] = React.useState<SpecifyResource<AnySchema> | null>(null);
 
-  // May be a good idea to separate second dialog into own component/function, since hook needs to be used outside of the condition.
-  // Turn into a function?
-
-  const handleClick = (resource: Partial<SerializedResource<TaxonTreeDef>>) => {
+  const handleClick = (resource: DeepPartial<SerializedResource<TaxonTreeDef>>) => {
     const dsResource = deserializeResource(resource);
     setSelectedResource(dsResource);
     setIsActive(2);
@@ -77,9 +76,14 @@ export function CreateTree<SCHEMA extends AnyTree>({
       ) : null}
       {isActive === 2 && selectedResource ? (
           <ResourceView 
-          dialog = "modal"
+          dialog="modal"
+          isDependent={false}
+          isSubForm={false}
+          resource={selectedResource}
           onClose={() => setIsActive(0)}
-          resource={selectedResource} />
+          onSaved={undefined}
+          onAdd={undefined}
+          onDeleted={undefined}/>
       ) : null}
     </>
   );

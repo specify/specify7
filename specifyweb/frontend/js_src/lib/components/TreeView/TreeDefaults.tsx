@@ -19,7 +19,7 @@ vertebratepaleontology
 
 import { SerializedResource } from "../DataModel/helperTypes";
 import { TaxonTreeDef, TaxonTreeDefItem } from "../DataModel/types";
-import { RA } from "../../utils/types";
+import { DeepPartial, RA } from "../../utils/types";
 
 const life: Partial<SerializedResource<TaxonTreeDefItem>> = {
   _tableName: "TaxonTreeDefItem",
@@ -264,7 +264,7 @@ const subforma: Partial<SerializedResource<TaxonTreeDefItem>> = {
   rankId: 270,
 }
 
-export const botanyTreeDef: Partial<SerializedResource<TaxonTreeDef>> = {
+export const botanyTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> = {
   _tableName: "TaxonTreeDef",
   name: "Botany",
   remarks: "A default taxon tree",
@@ -292,7 +292,7 @@ export const botanyTreeDef: Partial<SerializedResource<TaxonTreeDef>> = {
 }
 
 
-export const entomologyTreeDef: Partial<SerializedResource<TaxonTreeDef>> = {
+export const entomologyTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> = {
   _tableName: "TaxonTreeDef",
   name: "Entomology",
   remarks: "A default taxon tree",
@@ -319,7 +319,7 @@ export const entomologyTreeDef: Partial<SerializedResource<TaxonTreeDef>> = {
   ],
 }
 
-export const herpetologyTreeDef: Partial<SerializedResource<TaxonTreeDef>> = {
+export const herpetologyTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> = {
   _tableName: "TaxonTreeDef",
   name: "Herpetology",
   remarks: "A default taxon tree",
@@ -340,7 +340,7 @@ export const herpetologyTreeDef: Partial<SerializedResource<TaxonTreeDef>> = {
   ],
 }
 
-export const ichthyologyTreeDef: Partial<SerializedResource<TaxonTreeDef>> = {
+export const ichthyologyTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> = {
   _tableName: "TaxonTreeDef",
   name: "Ichthyology",
   remarks: "A default taxon tree",
@@ -363,7 +363,7 @@ export const ichthyologyTreeDef: Partial<SerializedResource<TaxonTreeDef>> = {
   ],
 }
 
-export const invertpaleoTreeDef: Partial<SerializedResource<TaxonTreeDef>> = {
+export const invertpaleoTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> = {
   _tableName: "TaxonTreeDef",
   name: "Invertebrate Paleontology",
   remarks: "A default taxon tree",
@@ -382,7 +382,7 @@ export const invertpaleoTreeDef: Partial<SerializedResource<TaxonTreeDef>> = {
   ],
 }
 
-export const invertzooTreeDef: Partial<SerializedResource<TaxonTreeDef>> = {
+export const invertzooTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> = {
   _tableName: "TaxonTreeDef",
   name: "Invertebrate Zoology",
   remarks: "A default taxon tree",
@@ -407,7 +407,7 @@ export const invertzooTreeDef: Partial<SerializedResource<TaxonTreeDef>> = {
   ],
 }
 
-export const mammalogyTreeDef: Partial<SerializedResource<TaxonTreeDef>> = {
+export const mammalogyTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> = {
   _tableName: "TaxonTreeDef",
   name: "Mammology",
   remarks: "A default taxon tree",
@@ -425,7 +425,7 @@ export const mammalogyTreeDef: Partial<SerializedResource<TaxonTreeDef>> = {
   ],
 }
 
-export const ornithologyTreeDef: Partial<SerializedResource<TaxonTreeDef>> = {
+export const ornithologyTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> = {
   _tableName: "TaxonTreeDef",
   name: "Ornithology",
   remarks: "A default taxon tree",
@@ -446,7 +446,7 @@ export const ornithologyTreeDef: Partial<SerializedResource<TaxonTreeDef>> = {
   ],
 }
 
-export const paleobotTreeDef: Partial<SerializedResource<TaxonTreeDef>> = {
+export const paleobotTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> = {
   _tableName: "TaxonTreeDef",
   name: "Paleobotany",
   remarks: "A default taxon tree",
@@ -465,7 +465,7 @@ export const paleobotTreeDef: Partial<SerializedResource<TaxonTreeDef>> = {
   ],
 }
 
-export const vascplantTreeDef: Partial<SerializedResource<TaxonTreeDef>> = {
+export const vascplantTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> = {
   _tableName: "TaxonTreeDef",
   name: "Vascular Plants",
   remarks: "A default taxon tree",
@@ -492,7 +492,7 @@ export const vascplantTreeDef: Partial<SerializedResource<TaxonTreeDef>> = {
   ],
 }
 
-export const vertpaleoTreeDef: Partial<SerializedResource<TaxonTreeDef>> = {
+export const vertpaleoTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> = {
   _tableName: "TaxonTreeDef",
   name: "Vertebrate Paleontology",
   remarks: "A default taxon tree",
@@ -509,7 +509,7 @@ export const vertpaleoTreeDef: Partial<SerializedResource<TaxonTreeDef>> = {
   ],
 }
 
-export const defaultTreeDefs: RA<Partial<SerializedResource<TaxonTreeDef>>> = [
+export const defaultTreeDefs: RA<DeepPartial<SerializedResource<TaxonTreeDef>>> = [
   botanyTreeDef,
   entomologyTreeDef,
   herpetologyTreeDef,
