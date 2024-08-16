@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-08-15 19:09+0000\n"
+"PO-Revision-Date: 2024-08-16 08:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/schema/"
 "fr/>\n"
@@ -41,7 +41,7 @@ msgstr "Nom de la table"
 #: components/WebLinks/Element.tsx:52
 #, fuzzy
 msgid "withoutTable"
-msgstr "Sans tableau"
+msgstr "Sans Table"
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Security > Registry
 #: components/Header/userToolDefinitions.ts:52
@@ -58,14 +58,14 @@ msgstr "Configuration du schéma"
 #: components/SchemaConfig/index.tsx:75
 #, fuzzy
 msgid "unsavedSchemaUnloadProtect"
-msgstr "Les modifications du schéma n'ont pas été enregistrées"
+msgstr "Les modifications de schéma n'ont pas été enregistrées"
 
 #. Used in: Components > Schema Config > Components ⬤ Components > Wb Plan View > Mapper Components
 #: components/SchemaConfig/Components.tsx:38
 #: components/WbPlanView/MapperComponents.tsx:320
 #, fuzzy
 msgid "changeBaseTable"
-msgstr "Modifier la table de base"
+msgstr "Changer la table de base"
 
 #. Used in: Components > Formatters > Fields ⬤ Components > Locality Update > Status ⬤ Components > Schema Config > Field ⬤ Components > Web Links > Definition
 #: components/Formatters/Fields.tsx:69
@@ -86,7 +86,7 @@ msgstr "Champ"
 #: components/SchemaViewer/Fields.tsx:43
 #, fuzzy
 msgid "fields"
-msgstr "Des champs"
+msgstr "Champs"
 
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Viewer > Relationships
 #: components/FormMeta/CarryForward.tsx:358
@@ -159,7 +159,7 @@ msgstr "Format de tableau"
 #: components/SchemaConfig/Table.tsx:148
 #, fuzzy
 msgid "tableAggregation"
-msgstr "Agrégation de tables"
+msgstr "Agrégation de table"
 
 #. Used in: Components > Schema Config > Helpers
 #: components/SchemaConfig/helpers.ts:85
@@ -171,7 +171,7 @@ msgstr "Un à un"
 #: components/SchemaConfig/helpers.ts:86
 #, fuzzy
 msgid "oneToMany"
-msgstr "Un à plusieurs"
+msgstr "Un-à-plusieurs"
 
 #. Used in: Components > Schema Config > Helpers
 #: components/SchemaConfig/helpers.ts:87
@@ -191,7 +191,7 @@ msgstr "plusieurs à plusieurs"
 #: components/SchemaViewer/schemaToTsv.tsx:28
 #, fuzzy
 msgid "fieldLength"
-msgstr "Sans tableau"
+msgstr "Sans Table"
 
 #. Used in: Components > Form Meta > Index ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/FormMeta/index.tsx:74
@@ -200,7 +200,7 @@ msgstr "Sans tableau"
 #: components/SchemaViewer/schemaToTsv.tsx:24
 #, fuzzy
 msgid "readOnly"
-msgstr "Lecture seulement"
+msgstr "Lecture seule"
 
 #. Used in: Components > Schema Config > Format
 #: components/SchemaConfig/Format.tsx:55
@@ -255,7 +255,7 @@ msgstr "Modèle associé"
 #: components/SchemaViewer/schemaToTsv.tsx:31
 #, fuzzy
 msgid "otherSideName"
-msgstr "Autre nom de côté"
+msgstr "Nom de l'autre côté"
 
 #. Used in: Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/SchemaViewer/Relationships.tsx:61
@@ -281,7 +281,7 @@ msgstr "Télécharger en JSON"
 #: components/SchemaViewer/index.tsx:51
 #, fuzzy
 msgid "downloadAsXml"
-msgstr "Télécharger au format XML"
+msgstr "Télécharger en XML"
 
 #. Used in: Components > Schema Viewer > Index
 #: components/SchemaViewer/index.tsx:64
@@ -294,7 +294,7 @@ msgstr "Télécharger en TSV"
 #: components/SchemaViewer/schemaToTsv.tsx:19
 #, fuzzy
 msgid "tableId"
-msgstr "ID de table"
+msgstr "ID de la table"
 
 #. Used in: Components > Schema Viewer > Table
 #: components/SchemaViewer/Table.tsx:62
