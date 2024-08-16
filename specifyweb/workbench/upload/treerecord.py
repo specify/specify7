@@ -3,23 +3,23 @@ For uploading tree records.
 """
 
 import logging
-from typing import List, Dict, Any, Tuple, NamedTuple, Optional, Union, Set
+from typing import Generator, List, Dict, Any, Tuple, NamedTuple, Optional, Union, Set
 
 from django.db import transaction, IntegrityError
 from typing_extensions import TypedDict
 
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify import models
+from specifyweb.workbench.upload.clone import clone_record
+from specifyweb.workbench.upload.predicates import ContetRef, DjangoPredicates, SkippablePredicate, ToRemove, resolve_reference_attributes, safe_fetch
+from specifyweb.workbench.upload.preferences import should_defer_fields
 from .column_options import ColumnOptions, ExtendedColumnOptions
 
 from .parsing import ParseResult, WorkBenchParseFailure, parse_many, filter_and_upload, Filter
 from .upload_result import UploadResult, NullRecord, NoMatch, Matched, \
     MatchedMultiple, Uploaded, ParseFailures, FailedBusinessRule, ReportInfo, \
     TreeInfo
-from .uploadable import FilterPredicate, PredicateWithQuery, Row, Disambiguation as DA, Auditor
-
-from sqlalchemy.orm import Query # type: ignore
-from sqlalchemy import Table as SQLTable # type: ignore
+from .uploadable import Row, Disambiguation as DA, Auditor, ScopeGenerator
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +28,7 @@ class TreeRecord(NamedTuple):
     name: str
     ranks: Dict[str, Dict[str, ColumnOptions]]
 
-    def apply_scoping(self, collection, row=None) -> Tuple[bool, "ScopedTreeRecord"]:
+    def apply_scoping(self, collection, generator: ScopeGenerator = None, row=None) -> "ScopedTreeRecord":
         from .scoping import apply_scoping_to_treerecord as apply_scoping
         return apply_scoping(self, collection)
 
@@ -45,7 +45,7 @@ class TreeRecord(NamedTuple):
         return { 'treeRecord': result }
 
     def unparse(self) -> Dict:
-        return { 'baseTableName': self.name, 'uploadble': self.to_json() }
+        return { 'baseTableName': self.name, 'uploadable': self.to_json() }
 
 class ScopedTreeRecord(NamedTuple):
     name: str
@@ -54,14 +54,22 @@ class ScopedTreeRecord(NamedTuple):
     treedefitems: List
     root: Optional[Any]
     disambiguation: Dict[str, int]
+    batch_edit_pack: Optional[Dict[str, Any]]
 
     def disambiguate(self, disambiguation: DA) -> "ScopedTreeRecord":
         return self._replace(disambiguation=disambiguation.disambiguate_tree()) if disambiguation is not None else self
 
+    def apply_batch_edit_pack(self, batch_edit_pack: Optional[Dict[str, Any]]) -> "ScopedTreeRecord":
+        if batch_edit_pack is None:
+            return self
+        # batch-edit considers ranks as self-relationships, and are trivially stored in to-one
+        rank_from_pack = batch_edit_pack['to_one']
+        return self._replace(batch_edit_pack={rank: pack['self'] for (rank, pack) in rank_from_pack.items()})
+
     def get_treedefs(self) -> Set:
         return {self.treedef}
 
-    def bind(self, row: Row, uploadingAgentId: Optional[int], auditor: Auditor, sql_alchemy_session, cache: Optional[Dict]=None) -> Union["BoundTreeRecord", ParseFailures]:
+    def bind(self, row: Row, uploadingAgentId: Optional[int], auditor: Auditor, cache: Optional[Dict]=None) -> Union["BoundTreeRecord", ParseFailures]:
         parsedFields: Dict[str, List[ParseResult]] = {}
         parseFails: List[WorkBenchParseFailure] = []
         for rank, cols in self.ranks.items():
@@ -70,7 +78,7 @@ class ScopedTreeRecord(NamedTuple):
             parsedFields[rank] = presults
             parseFails += pfails
             filters = {k: v for result in presults for k, v in result.filter_on.items()}
-            if filters.get('name', None) is None and False:
+            if filters.get('name', None) is None:
                 parseFails += [
                     WorkBenchParseFailure('invalidPartialRecord',{'column':nameColumn.column}, result.column)
                     for result in presults
@@ -90,16 +98,17 @@ class ScopedTreeRecord(NamedTuple):
             uploadingAgentId=uploadingAgentId,
             auditor=auditor,
             cache=cache,
+            batch_edit_pack=self.batch_edit_pack
         )
 
 class MustMatchTreeRecord(TreeRecord):
-    def apply_scoping(self, collection, row=None) -> Tuple[bool, "ScopedMustMatchTreeRecord"]:
-        _can_cache, s = super().apply_scoping(collection)
-        return _can_cache, ScopedMustMatchTreeRecord(*s)
+    def apply_scoping(self, collection, generator: ScopeGenerator=None, row=None) -> "ScopedMustMatchTreeRecord":
+       s = super().apply_scoping(collection)
+       return ScopedMustMatchTreeRecord(*s)
 
 class ScopedMustMatchTreeRecord(ScopedTreeRecord):
-    def bind(self, row: Row, uploadingAgentId: Optional[int], auditor: Auditor, sql_alchemy_session, cache: Optional[Dict]=None) -> Union["BoundMustMatchTreeRecord", ParseFailures]:
-        b = super().bind(row, uploadingAgentId, auditor, sql_alchemy_session, cache)
+    def bind(self, row: Row, uploadingAgentId: Optional[int], auditor: Auditor, cache: Optional[Dict]=None) -> Union["BoundMustMatchTreeRecord", ParseFailures]:
+        b = super().bind(row, uploadingAgentId, auditor, cache)
         return b if isinstance(b, ParseFailures) else BoundMustMatchTreeRecord(*b)
 
 class TreeDefItemWithParseResults(NamedTuple):
@@ -113,6 +122,8 @@ MatchResult = Union[NoMatch, Matched, MatchedMultiple]
 
 MatchInfo = TypedDict('MatchInfo', {'id': int, 'name': str, 'definitionitem__name': str, 'definitionitem__rankid': int})
 
+FETCHED_ATTRS = ['id', 'name', 'definitionitem__name', 'definitionitem__rankid']
+
 class BoundTreeRecord(NamedTuple):
     name: str
     treedef: Any
@@ -123,6 +134,7 @@ class BoundTreeRecord(NamedTuple):
     auditor: Auditor
     cache: Optional[Dict]
     disambiguation: Dict[str, int]
+    batch_edit_pack: Optional[Dict[str, Any]]
 
     def is_one_to_one(self) -> bool:
         return False
@@ -130,11 +142,14 @@ class BoundTreeRecord(NamedTuple):
     def must_match(self) -> bool:
         return False
 
-    def get_predicates(self, query: Query, sql_table: SQLTable, to_one_override: Dict[str, UploadResult]={}, path: List[str] = []) -> PredicateWithQuery:
-        return query, FilterPredicate()
+    def get_django_predicates(self, should_defer_match: bool, to_one_override: Dict[str, UploadResult]={}) -> DjangoPredicates:
+        return SkippablePredicate()
     
-    def map_static_to_db(self) -> Filter:
-        raise NotImplementedError("to-many to trees not supported!")
+    def can_save(self) -> bool:
+        return False
+
+    def delete_row(self, info, parent_obj=None) -> UploadResult:
+        raise NotImplementedError()
 
     def match_row(self) -> UploadResult:
         return self._handle_row(must_match=True)
@@ -142,15 +157,22 @@ class BoundTreeRecord(NamedTuple):
     def process_row(self) -> UploadResult:
         return self._handle_row(must_match=False)
 
+    def save_row(self, force=False) -> UploadResult:
+        raise NotImplementedError()
+    
+    def get_to_remove(self) -> ToRemove:
+        raise NotImplementedError()
+    
     def _handle_row(self, must_match: bool) -> UploadResult:
-        tdiwprs = self._to_match()
+        references = self._get_reference()
+        tdiwprs = self._to_match(references)
 
         if not tdiwprs:
             columns = [pr.column for prs in self.parsedFields.values() for pr in prs]
             info = ReportInfo(tableName=self.name, columns=columns, treeInfo=None)
             return UploadResult(NullRecord(info), {}, {})
 
-        unmatched, match_result = self._match(tdiwprs)
+        unmatched, match_result = self._match(tdiwprs, references)
         if isinstance(match_result, MatchedMultiple):
             return UploadResult(match_result, {}, {})
 
@@ -159,18 +181,20 @@ class BoundTreeRecord(NamedTuple):
                 info = ReportInfo(tableName=self.name, columns=[r.column for tdiwpr in unmatched for r in tdiwpr.results], treeInfo=None)
                 return UploadResult(NoMatch(info), {}, {})
             else:
-                return self._upload(unmatched, match_result)
+                return self._upload(unmatched, match_result, references)
         else:
             return UploadResult(match_result, {}, {})
 
-    def _to_match(self) -> List[TreeDefItemWithParseResults]:
+    def _to_match(self, references=None) -> List[TreeDefItemWithParseResults]:
         return [
             TreeDefItemWithParseResults(tdi, self.parsedFields[tdi.name])
             for tdi in self.treedefitems
-            if tdi.name in self.parsedFields and any(v is not None for r in self.parsedFields[tdi.name] for v in r.filter_on.values())
+            if tdi.name in self.parsedFields 
+            and (any(v is not None for r in self.parsedFields[tdi.name] for v in r.filter_on.values())
+                and ((references is None) or any(v is not None for v in references[tdi.name]['attrs'])))
         ]
 
-    def _match(self, tdiwprs: List[TreeDefItemWithParseResults]) -> Tuple[List[TreeDefItemWithParseResults], MatchResult]:
+    def _match(self, tdiwprs: List[TreeDefItemWithParseResults], references=None) -> Tuple[List[TreeDefItemWithParseResults], MatchResult]:
         assert tdiwprs, "There has to be something to match."
         model = getattr(models, self.name)
 
@@ -182,14 +206,13 @@ class BoundTreeRecord(NamedTuple):
             tried_to_match.append(to_match)
             da = self.disambiguation.get(to_match.treedefitem.name, None)
 
+            matches = None
+
             if da is not None:
-                matches = list(model.objects.filter(id=da).values('id', 'name', 'definitionitem__name', 'definitionitem__rankid')[:10])
-                if not matches:
-                    # disambigation target was deleted or something
-                    # revert to regular matching mechanism
-                    matches = self._find_matching_descendent(parent, to_match)
-            else:
-                matches = self._find_matching_descendent(parent, to_match)
+                matches = list(model.objects.filter(id=da).values(*FETCHED_ATTRS)[:10])
+
+            if not matches:
+                matches = self._find_matching_descendent(parent, to_match, None if references is None else references.get(to_match.treedefitem.name))
 
             if len(matches) != 1:
                 # matching failed at to_match level
@@ -225,7 +248,7 @@ class BoundTreeRecord(NamedTuple):
                 info = ReportInfo(tableName=self.name, columns=matched_cols + [r.column for r in to_match.results], treeInfo=None)
                 return tdiwprs, NoMatch(info) # no levels matched at all
 
-    def _find_matching_descendent(self, parent: Optional[MatchInfo], to_match: TreeDefItemWithParseResults) -> List[MatchInfo]:
+    def _find_matching_descendent(self, parent: Optional[MatchInfo], to_match: TreeDefItemWithParseResults, reference=None) -> List[MatchInfo]:
         steps = sum(1 for tdi in self.treedefitems if parent['definitionitem__rankid'] < tdi.rankid <= to_match.treedefitem.rankid) \
             if parent is not None else 1
 
@@ -233,7 +256,10 @@ class BoundTreeRecord(NamedTuple):
 
         filters = {field: value for r in to_match.results for field, value in r.filter_on.items()}
 
-        cache_key = (self.name, steps, parent and parent['id'], to_match.treedefitem.id, tuple(sorted(filters.items())))
+        reference_id = None if reference is None else reference['ref'].pk
+        # Just adding the id of the reference is enough here
+        cache_key = (self.name, steps, parent and parent['id'], to_match.treedefitem.id, tuple(sorted(filters.items())), reference_id)
+
         cached: Optional[List[MatchInfo]] = self.cache.get(cache_key, None) if self.cache is not None else None
         if cached is not None:
             return cached
@@ -241,11 +267,24 @@ class BoundTreeRecord(NamedTuple):
         model = getattr(models, self.name)
 
         for d in range(steps):
-            matches = list(model.objects.filter(
-                definitionitem_id=to_match.treedefitem.id,
-                **filters,
-                **({'__'.join(["parent_id"]*(d+1)): parent['id']} if parent is not None else {})
-            ).values('id', 'name', 'definitionitem__name', 'definitionitem__rankid')[:10])
+            _filter = {
+                **(reference['attrs'] if reference is not None else {}), 
+                **filters, 
+                **({'__'.join(["parent_id"]*(d+1)): parent['id']} if parent is not None else {}),
+                **{'definitionitem_id': to_match.treedefitem.id}
+                }
+            
+            query = model.objects.filter(**_filter).values(*FETCHED_ATTRS)
+
+            matches: List[MatchInfo] = []
+
+            if reference_id is not None:
+                query_with_id = query.filter(id=reference_id)
+                matches = list(query_with_id[:10])
+            
+            if not matches:
+                matches = list(query[:10])
+
             if matches:
                 if self.cache is not None:
                     self.cache[cache_key] = matches
@@ -253,13 +292,13 @@ class BoundTreeRecord(NamedTuple):
 
         return matches
 
-    def _upload(self, to_upload: List[TreeDefItemWithParseResults], matched: Union[Matched, NoMatch]) -> UploadResult:
+    def _upload(self, to_upload: List[TreeDefItemWithParseResults], matched: Union[Matched, NoMatch], references=None) -> UploadResult:
         assert to_upload, f"Invalid Error: {to_upload}, can not upload matched resluts: {matched}"
         model = getattr(models, self.name)
 
         parent_info: Optional[Dict]
         if isinstance(matched, Matched):
-            parent_info = model.objects.values('id', 'name', 'definitionitem__rankid', 'definitionitem__name').get(id=matched.id)
+            parent_info = model.objects.values(*FETCHED_ATTRS).get(id=matched.id)
             parent_result = {'parent': UploadResult(matched, {}, {})}
         else:
             parent_info = None
@@ -276,13 +315,13 @@ class BoundTreeRecord(NamedTuple):
             if placeholders:
                 # dummy values were added above the nodes we want to upload
                 # rerun the match in case those dummy values already exist
-                unmatched, new_match_result = self._match(placeholders + to_upload)
+                unmatched, new_match_result = self._match(placeholders + to_upload, references)
                 if isinstance(new_match_result, MatchedMultiple):
                     return UploadResult(
                         FailedBusinessRule('invalidTreeStructure', {}, new_match_result.info),
                         {}, {}
                     )
-                return self._upload(unmatched, new_match_result)
+                return self._upload(unmatched, new_match_result, references)
 
         uploading_rankids = [u.treedefitem.rankid for u in to_upload]
         skipped_enforced = [
@@ -327,21 +366,33 @@ class BoundTreeRecord(NamedTuple):
                 treeInfo=TreeInfo(tdiwpr.treedefitem.name, attrs.get('name', ""))
             )
 
-            with transaction.atomic():
-                try:
-                    obj = self._do_insert(
-                        model,
+            new_attrs = dict(
                         createdbyagent_id=self.uploadingAgentId,
                         definitionitem=tdiwpr.treedefitem,
                         rankid=tdiwpr.treedefitem.rankid,
                         definition=self.treedef,
                         parent_id=parent_info and parent_info['id'],
-                        **attrs,
-                    )
+                        )
+            
+            reference_payload = None if references is None else references.get(tdiwpr.treedefitem.name, None)
+            
+            new_attrs = {
+                **(reference_payload['attrs'] if reference_payload is not None else {}),
+                **attrs,
+                **new_attrs,
+            }
+
+            ref = None if reference_payload is None else reference_payload['ref']
+
+            with transaction.atomic():
+                try:
+                    if ref is not None:
+                        obj = self._do_clone(ref, new_attrs)
+                    else:
+                        obj = self._do_insert(model, **new_attrs)
                 except (BusinessRuleException, IntegrityError) as e:
                     return UploadResult(FailedBusinessRule(str(e), {}, info), parent_result, {})
 
-            self.auditor.insert(obj, self.uploadingAgentId, None)
             result = UploadResult(Uploaded(obj.id, info, []), parent_result, {})
 
             parent_info = {'id': obj.id, 'definitionitem__rankid': obj.definitionitem.rankid}
@@ -350,13 +401,58 @@ class BoundTreeRecord(NamedTuple):
         return result
 
     def _do_insert(self, model, **kwargs):
-        obj = model(**kwargs)
-        obj.save(skip_tree_extras=True)
-        return obj
-
+        _inserter = self._get_inserter()
+        return _inserter(model, kwargs)
+    
+    def _get_inserter(self):
+        def _inserter(model, attrs):
+            obj = model(**attrs)
+            if model.specify_model.get_field('nodenumber'):
+                obj.save(skip_tree_extras=True)
+            else:
+                obj.save(force_insert=True)
+            self.auditor.insert(obj,  None)
+            return obj
+        return _inserter
+        
+    def _do_clone(self, ref, attrs):
+        _inserter = self._get_inserter()
+        return clone_record(ref, _inserter, {}, [], attrs)
+        
     def force_upload_row(self) -> UploadResult:
         raise NotImplementedError()
 
+    def _get_reference(self) -> Optional[Dict[str, Any]]:
+        # Much simpler than uploadTable. Just fetch all rank's references. Since we also require name to be not null, 
+        # the "deferForNull" is redundant. We, do, however need to look at deferForMatch, and we are done.
+
+        if self.batch_edit_pack is None:
+            return None
+        
+        model = getattr(models, self.name)
+
+        should_defer = should_defer_fields('match')
+
+        references = {}
+
+        previous_parent_id = None
+        for tdi in self.treedefitems:
+            if tdi.name not in self.batch_edit_pack:
+                continue
+            columns = [pr.column for pr in self.parsedFields[tdi.name]]
+            info = ReportInfo(tableName=self.name, columns=columns, treeInfo=None)
+            pack = self.batch_edit_pack[tdi.name]
+            try:
+                reference = safe_fetch(model, {'id': pack['id']}, pack.get('version', None))
+                if previous_parent_id is not None and previous_parent_id != reference.pk:
+                    raise BusinessRuleException("Tree structure changed, please re-run the query")
+            except (ContetRef, BusinessRuleException) as e:
+                raise BusinessRuleException(str(e), {}, info)
+                                        
+            previous_parent_id = reference.parent_id
+            references[tdi.name] = None if should_defer else {'ref': reference, 'attrs': resolve_reference_attributes([], model, reference)}
+
+        return references
 
 class BoundMustMatchTreeRecord(BoundTreeRecord):
     def must_match(self) -> bool:

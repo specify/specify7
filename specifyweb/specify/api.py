@@ -11,6 +11,8 @@ from urllib.parse import urlencode
 
 from typing_extensions import TypedDict
 
+from specifyweb.specify.field_change_info import FieldChangeInfo
+
 logger = logging.getLogger(__name__)
 
 from django import forms
@@ -368,6 +370,10 @@ def set_field_if_exists(obj, field: str, value) -> None:
     if f.concrete:
         setattr(obj, field, value)
 
+def _maybe_delete(data: Dict[str, Any], to_delete: str):
+    if to_delete in data:
+        del data[to_delete]
+
 def cleanData(model, data: Dict[str, Any], agent) -> Dict[str, Any]:
     """Returns a copy of data with only fields that are part of model, removing
     metadata fields and warning on unexpected extra fields."""
@@ -400,30 +406,18 @@ def cleanData(model, data: Dict[str, Any], agent) -> Dict[str, Any]:
         
     if model is models.Agent:
         # setting user agents is part of the user management system.
-        try:
-            del cleaned['specifyuser']
-        except KeyError:
-            pass
+        _maybe_delete(cleaned, 'specifyuser')
 
     # guid should only be updatable for taxon and geography
     if model not in (models.Taxon, models.Geography):
-        try:
-            del cleaned['guid']
-        except KeyError:
-            pass
+        _maybe_delete(cleaned, 'guid')
 
     # timestampcreated should never be updated.
-    # ... well it is now ¯\_(ツ)_/¯
-    # New requirments are for timestampcreated to be overridable.
-    try:
-        # del cleaned['timestampcreated']
-        pass
-    except KeyError:
-        pass
+    #  _maybe_delete(cleaned, 'timestampcreated')
 
     # Password should be set though the /api/set_password/<id>/ endpoint
-    if model is models.Specifyuser and 'password' in cleaned:
-        del cleaned['password']
+    if model is models.Specifyuser: 
+        _maybe_delete(cleaned, 'password')
 
     return cleaned
 
@@ -449,8 +443,6 @@ def create_obj(collection, agent, model, data: Dict[str, Any], parent_obj=None):
     handle_to_many(collection, agent, obj, data)
     return obj
 
-FieldChangeInfo = TypedDict('FieldChangeInfo', {'field_name': str, 'old_value': Any, 'new_value': Any})
-
 def fld_change_info(obj, field, val) -> Optional[FieldChangeInfo]:
     if field.name != 'timestampmodified':
         value = prepare_value(field, val)
@@ -458,7 +450,7 @@ def fld_change_info(obj, field, val) -> Optional[FieldChangeInfo]:
             value = None if value is None else float(value)
         old_value = getattr(obj, field.name)
         if str(old_value) != str(value): # ugh
-            return {'field_name': field.name, 'old_value': old_value, 'new_value': value}
+            return FieldChangeInfo(field_name=field.name, old_value=old_value, new_value=value)
     return None
 
 def set_fields_from_data(obj, data: Dict[str, Any]) -> List[FieldChangeInfo]:
@@ -584,7 +576,7 @@ def handle_fk_fields(collection, agent, obj, data: Dict[str, Any]) -> Tuple[List
         else:
             raise Exception('bad foreign key field in data')
         if str(old_related_id) != str(new_related_id):
-            dirty.append({'field_name': field_name, 'old_value': old_related_id, 'new_value': new_related_id})
+            dirty.append(FieldChangeInfo(field_name=field_name, old_value=old_related_id, new_value=new_related_id))
 
     return dependents_to_delete, dirty
 
@@ -641,9 +633,16 @@ def delete_resource(collection, agent, name, id, version) -> None:
     locking 'version'.
     """
     obj = get_object_or_404(name, id=int(id))
-    return delete_obj(obj, version, collection=collection, agent=agent)
+    return delete_obj(obj, (make_default_deleter(collection, agent)), version)
 
-def delete_obj(obj, version=None, parent_obj=None, collection=None, agent=None, clean_predelete=None) -> None:
+def make_default_deleter(collection=None, agent=None):
+    def _deleter(parent_obj, obj):
+        if collection and agent:
+            check_table_permissions(collection, agent, obj, "delete")
+            auditlog.remove(obj, agent, parent_obj)
+    return _deleter
+
+def delete_obj(obj, deleter: Optional[Callable[[Any, Any], None]]=None, version=None, parent_obj=None, clean_predelete=None) -> None:
     # need to delete dependent -to-one records
     # e.g. delete CollectionObjectAttribute when CollectionObject is deleted
     # but have to delete the referring record first
@@ -653,19 +652,22 @@ def delete_obj(obj, version=None, parent_obj=None, collection=None, agent=None, 
         if (field.many_to_one or field.one_to_one) and is_dependent_field(obj, field.name)
     ) if _f]
 
-    if collection and agent:
-        check_table_permissions(collection, agent, obj, "delete")
-        auditlog.remove(obj, agent, parent_obj)
     if version is not None:
         bump_version(obj, version)
+
     if clean_predelete:
         clean_predelete(obj)
+    
     if hasattr(obj, 'pre_constraints_delete'):
         obj.pre_constraints_delete()
+
+    if deleter:
+        deleter(parent_obj, obj)
+
     obj.delete()
 
     for dep in dependents_to_delete:
-      delete_obj(dep, version, parent_obj=obj, collection=collection, agent=agent, clean_predelete=clean_predelete)
+      delete_obj(dep, deleter, version, parent_obj=obj, clean_predelete=clean_predelete)
 
 
 @transaction.atomic
@@ -685,18 +687,15 @@ def update_obj(collection, agent, name: str, id, version, data: Dict[str, Any], 
 
     check_field_permissions(collection, agent, obj, [d['field_name'] for d in dirty], "update")
 
-    try:
-        obj._meta.get_field('modifiedbyagent')
-    except FieldDoesNotExist:
-        pass
-    else:
-        obj.modifiedbyagent = agent
+    if hasattr(obj, 'modifiedbyagent'):
+        setattr(obj, 'modifiedbyagent', agent)
 
     bump_version(obj, version)
     obj.save(force_update=True)
     auditlog.update(obj, agent, parent_obj, dirty)
+    deleter = make_default_deleter(collection=collection, agent=agent)
     for dep in dependents_to_delete:
-        delete_obj(dep, parent_obj=obj, collection=collection, agent=agent)
+        delete_obj(dep, deleter, parent_obj=obj)
     handle_to_many(collection, agent, obj, data)
     return obj
 

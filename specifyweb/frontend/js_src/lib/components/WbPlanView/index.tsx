@@ -47,7 +47,9 @@ export function WbPlanViewWrapper(): JSX.Element | null {
     React.useContext(ReadOnlyContext) ||
     !hasPermission('/workbench/dataset', 'update') ||
     typeof dataSet !== 'object' ||
-    dataSet.uploadresult?.success === true;
+    dataSet.uploadresult?.success === true ||
+    // FEATURE: Remove this
+    dataSet.isupdate;
 
   return dataSet === false ? (
     <NotFoundView />
@@ -64,6 +66,7 @@ export function WbPlanViewWrapper(): JSX.Element | null {
               )
         }
         uploadPlan={dataSet.uploadplan}
+        readonlySpec={dataSet.isupdate ? {mustMatch: false, columnOptions: false}: undefined}
       />
     </ReadOnlyContext.Provider>
   ) : null;

@@ -207,7 +207,7 @@ class NestedToManyTests(UploadTestsBase):
             )
         ]
 
-        results = do_upload(self.collection, data, plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         expected_results = [(Uploaded, -1), (Uploaded, -1), (Uploaded, -1), (Uploaded, -1), (Matched, 3), (Matched, 1)]
         for r, (e, check) in zip(results, expected_results):
             self.assertIsInstance(r.record_result, e)

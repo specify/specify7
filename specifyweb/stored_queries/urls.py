@@ -9,4 +9,5 @@ urlpatterns = [
     url(r'^exportkml/$', views.export_kml),
     url(r'^make_recordset/$', views.make_recordset),
     url(r'^return_loan_preps/$', views.return_loan_preps),
+    url(r'^batch_edit/$', views.batch_edit)
 ]

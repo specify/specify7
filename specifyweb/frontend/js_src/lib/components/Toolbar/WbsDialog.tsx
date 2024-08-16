@@ -29,13 +29,14 @@ import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
-import { uniquifyDataSetName } from '../WbImport/helpers';
+import { DatasetVariants, uniquifyDataSetName } from '../WbImport/helpers';
 import type { Dataset, DatasetBriefPlan } from '../WbPlanView/Wrapped';
 import { WbDataSetMeta } from '../WorkBench/DataSetMeta';
+import { formatUrl } from '../Router/queryString';
 
 const createWorkbenchDataSet = async () =>
   createEmptyDataSet<Dataset>(
-    '/api/workbench/dataset/',
+    'workbench',
     wbText.newDataSetName({ date: new Date().toDateString() }),
     {
       importedfilename: '',
@@ -46,14 +47,14 @@ const createWorkbenchDataSet = async () =>
 export const createEmptyDataSet = async <
   DATASET extends AttachmentDataSet | Dataset
 >(
-  datasetUrl: string,
+  datasetVariant: keyof typeof DatasetVariants,
   name: LocalizedString,
   props?: Partial<DATASET>
-): Promise<DATASET> =>
-  ajax<DATASET>(datasetUrl, {
+): Promise<DATASET> => 
+  ajax<DATASET>(DatasetVariants[datasetVariant], {
     method: 'POST',
     body: {
-      name: await uniquifyDataSetName(name, undefined, datasetUrl),
+      name: await uniquifyDataSetName(name, undefined, datasetVariant),
       rows: [],
       ...props,
     },
@@ -129,21 +130,31 @@ function TableHeader({
   );
 }
 
+type DataSetFilter = {
+  readonly with_plan: number;
+  readonly isupdate: number
+}
 /** Render a dialog for choosing a data set */
 export function DataSetsDialog({
   onClose: handleClose,
   showTemplates,
   onDataSetSelect: handleDataSetSelect,
+  filterByBatchEdit=false
 }: {
   readonly showTemplates: boolean;
   readonly onClose: () => void;
   readonly onDataSetSelect?: (id: number) => void;
+  readonly filterByBatchEdit?: boolean;
 }): JSX.Element | null {
+  const datasetFilter: DataSetFilter = {
+    with_plan: showTemplates ? 1 : 0,
+    isupdate: filterByBatchEdit ? 1 : 0
+  }
   const [unsortedDatasets] = useAsyncState(
     React.useCallback(
       async () =>
         ajax<RA<DatasetBriefPlan>>(
-          `/api/workbench/dataset/${showTemplates ? '?with_plan' : ''}`,
+          formatUrl('/api/workbench/dataset/', datasetFilter),
           { headers: { Accept: 'application/json' } }
         ).then(({ data }) => data),
       [showTemplates]
@@ -169,8 +180,9 @@ export function DataSetsDialog({
       )
     : undefined;
 
+  // While being granular in permissions is nice, it is redudant here, since batch-edit datasets cannot be created.
   const canImport =
-    hasPermission('/workbench/dataset', 'create') && !showTemplates;
+    hasPermission('/workbench/dataset', 'create') && !showTemplates && !filterByBatchEdit;
   const navigate = useNavigate();
   const loading = React.useContext(LoadingContext);
   return Array.isArray(datasets) ? (
@@ -284,4 +296,9 @@ export function DataSetsDialog({
 export function DataSetsOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
   return <DataSetsDialog showTemplates={false} onClose={handleClose} />;
+}
+
+export function BatchEditDataSetsOverlay(): JSX.Element {
+  const handleClose = React.useContext(OverlayContext);
+  return <DataSetsDialog showTemplates={false} onClose={handleClose} filterByBatchEdit />;
 }

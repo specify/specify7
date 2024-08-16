@@ -69,8 +69,8 @@ export function PerformAttachmentTask({
       uploaded: (nextIndex === currentIndex ? 0 : 1) + progress.uploaded,
     }));
     workRef.current.mappedFiles = workRef.current.mappedFiles.map(
-      (uploadble, postIndex) =>
-        postIndex === currentIndex ? postUpload : uploadble
+      (uploadable, postIndex) =>
+        postIndex === currentIndex ? postUpload : uploadable
     );
   };
 

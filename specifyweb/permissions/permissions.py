@@ -1,4 +1,4 @@
-from typing import Any, Callable, Tuple, List, Dict, Union, Iterable, Optional, NamedTuple
+from typing import Any, Callable, Literal, Tuple, List, Dict, Union, Iterable, Optional, NamedTuple
 
 import logging
 logger = logging.getLogger(__name__)
@@ -171,8 +171,9 @@ def query(collectionid: Optional[int], userid: int, resource: str, action: str) 
         matching_role_policies=rps,
     )
 
+PERMISSION_ACTIONS = Union[Literal['read'], Literal['update'], Literal['create'], Literal['delete']]
 
-def check_table_permissions(collection, actor, obj, action: str) -> None:
+def check_table_permissions(collection, actor, obj, action: PERMISSION_ACTIONS) -> None:
     if isinstance(obj, Table):
         name = obj.name.lower()
     else:
@@ -186,7 +187,7 @@ def check_field_permissions(collection, actor, obj, fields: Iterable[str], actio
         table = obj.specify_model.name.lower()
     enforce(collection, actor, [f'/field/{table}/{field}' for field in fields], action)
 
-def table_permissions_checker(collection, actor, action: str) -> Callable[[Any], None]:
+def table_permissions_checker(collection, actor, action: PERMISSION_ACTIONS) -> Callable[[Any], None]:
     def checker(obj) -> None:
         check_table_permissions(collection, actor, obj, action)
     return checker

@@ -1,10 +1,12 @@
 import re
 from contextlib import contextmanager
 import logging
+from typing import List
 
 from specifyweb.specify.tree_ranks import RankOperation, post_tree_rank_save, pre_tree_rank_deletion, \
     verify_rank_parent_chain_integrity, pre_tree_rank_init, post_tree_rank_deletion
-from specifyweb.specify.model_timestamp import pre_save_auto_timestamp_field_with_override
+from specifyweb.specify.model_timestamp import save_auto_timestamp_field_with_override
+from specifyweb.specify.field_change_info import FieldChangeInfo
 logger = logging.getLogger(__name__)
 
 
@@ -27,14 +29,13 @@ def validate_node_numbers(table, revalidate_after=True):
     if revalidate_after:
         validate_tree_numbering(table)
 
-class Tree(models.Model): # FUTURE: class Tree(SpTimestampedModel):
+class Tree(models.Model):
     class Meta:
         abstract = True
 
     def save(self, *args, skip_tree_extras=False, **kwargs):
         def save():
-            pre_save_auto_timestamp_field_with_override(self)
-            super(Tree, self).save(*args, **kwargs)
+            save_auto_timestamp_field_with_override(super(Tree, self).save, args, kwargs, self)
 
         if skip_tree_extras:
             return save()
@@ -91,7 +92,7 @@ class Tree(models.Model): # FUTURE: class Tree(SpTimestampedModel):
                     "rankid" : self.parent.rankid,
                     "fullName": self.parent.fullname,
                     "parentid": self.parent.parent.id,
-                    "children": list(self.parent.children.values('id', 'fullName'))
+                    "children": list(self.parent.children.values('id', 'fullname'))
                  }
                  })
 
@@ -275,7 +276,7 @@ def moving_node(to_save):
     to_save.nodenumber = current.nodenumber
     to_save.highestchildnodenumber = current.highestchildnodenumber
 
-def mutation_log(action, node, agent, parent, dirty_flds):
+def mutation_log(action, node, agent, parent, dirty_flds: List[FieldChangeInfo]):
     from .auditlog import auditlog
     auditlog.log_action(action, node, agent, node.parent, dirty_flds)
 
@@ -327,7 +328,7 @@ def merge(node, into, agent):
             node.delete()
             node.id = id
             mutation_log(TREE_MERGE, node, agent, node.parent,
-                         [{'field_name': model.specify_model.idFieldName, 'old_value': node.id, 'new_value': into.id}])
+                         [FieldChangeInfo(field_name, model.specify_model.idFieldName, old_value=node.id, new_value=into.id)])
             return
         except ProtectedError as e: 
             """ Cannot delete some instances of TREE because they are referenced 
@@ -357,8 +358,8 @@ def bulk_move(node, into, agent):
 
     models.Preparation.objects.filter(storage = node).update(storage = into)
 
-    mutation_log(TREE_BULK_MOVE, node, agent, node.parent,
-                        [{'field_name': model.specify_model.idFieldName, 'old_value': node.id, 'new_value': into.id}])
+    field_change_info: FieldChangeInfo = FieldChangeInfo(field_name=model.specify_model.idFieldName, old_value=node.id, new_value=into.id)
+    mutation_log(TREE_BULK_MOVE, node, agent, node.parent, [field_change_info])
 
 def synonymize(node, into, agent):
     logger.info('synonymizing %s to %s', node, into)
@@ -418,9 +419,11 @@ def synonymize(node, into, agent):
              }})
     node.acceptedchildren.update(**{node.accepted_id_attr().replace('_id', ''): target})
     #assuming synonym can't be synonymized
-    mutation_log(TREE_SYNONYMIZE, node, agent, node.parent,
-                 [{'field_name': 'acceptedid','old_value': None, 'new_value': target.id},
-                  {'field_name': 'isaccepted','old_value': True, 'new_value': False}])
+    field_change_infos = [
+        FieldChangeInfo(field_name='acceptedid', old_value=None, new_value=target.id),
+        FieldChangeInfo(field_name='isaccepted', old_value=True, new_value=False)
+        ]
+    mutation_log(TREE_SYNONYMIZE, node, agent, node.parent, field_change_infos)
 
     if model._meta.db_table == 'taxon':
         node.determinations.update(preferredtaxon=target)
@@ -434,9 +437,12 @@ def desynonymize(node, agent):
     node.accepted_id = None
     node.isaccepted = True
     node.save()
-    mutation_log(TREE_DESYNONYMIZE, node, agent, node.parent,
-                 [{'field_name': 'acceptedid','old_value': old_acceptedid, 'new_value': None},
-                  {'field_name': 'isaccepted','old_value': False, 'new_value': True}])
+
+    field_change_infos = [
+        FieldChangeInfo(field_name='acceptedid', old_value=old_acceptedid, new_value=None),
+        FieldChangeInfo(field_name='isaccepted', old_value=False, new_value=True)
+    ]
+    mutation_log(TREE_DESYNONYMIZE, node, agent, node.parent, field_change_infos)
 
     if model._meta.db_table == 'taxon':
         node.determinations.update(preferredtaxon=F('taxon'))

@@ -15,6 +15,7 @@ import { wbText } from '../../localization/workbench';
 import type { RA } from '../../utils/types';
 import { Redirect } from './Redirect';
 import type { EnhancedRoute } from './RouterUtils';
+import { batchEditText } from '../../localization/batchEdit';
 
 /* eslint-disable @typescript-eslint/promise-function-async */
 /**
@@ -237,6 +238,15 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         element: () =>
           import('../SchemaConfig/TableUniquenessRules').then(
             ({ TableUniquenessRules }) => TableUniquenessRules
+          ),
+      },
+      {
+        // There's no physical difference between a workbench and batch-edit dataset, but separating them out helps UI.
+        path: 'batch-edit',
+        title: batchEditText.batchEdit(),
+        element: () =>
+          import('../Toolbar/WbsDialog').then(
+            ({ BatchEditDataSetsOverlay }) => BatchEditDataSetsOverlay
           ),
       },
     ],

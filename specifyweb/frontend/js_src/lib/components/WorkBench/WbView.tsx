@@ -109,6 +109,9 @@ export function WbView({
     invalidCells: 0,
     searchResults: 0,
     modifiedCells: 0,
+    updatedCells: 0,
+    deletedCells: 0,
+    matchedAndChangedCells: 0
   });
 
   const workbench = React.useMemo<Workbench>(() => {

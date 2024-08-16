@@ -17,7 +17,6 @@ import type { Dataset } from '../WbPlanView/Wrapped';
 import { WbView } from './WbView';
 
 export function WorkBench(): JSX.Element {
-  useMenuItem('workBench');
 
   const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, true);
   const { id } = useParams();
@@ -25,6 +24,8 @@ export function WorkBench(): JSX.Element {
 
   const [dataset, setDataset] = useDataset(datasetId);
   useErrorContext('dataSet', dataset);
+
+  useMenuItem(dataset?.isupdate ? 'batchEdit' : 'workBench');
 
   const loading = React.useContext(LoadingContext);
   const [isDeleted, handleDeleted] = useBooleanState();

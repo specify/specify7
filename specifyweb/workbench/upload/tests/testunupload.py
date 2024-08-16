@@ -64,7 +64,7 @@ class UnUploadTests(UploadTestsBase):
                          ).count(),
                          "No picklistitems in audit log yet.")
 
-        results = do_upload(self.collection, data, plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
+        results = do_upload(self.collection, data, plan, self.agent.id)
 
         self.assertEqual(3, get_table('Picklistitem').objects.filter(picklist__name='Habitat').count(),
                          "There are now three items in the picklist.")
@@ -121,7 +121,7 @@ class UnUploadTests(UploadTestsBase):
                          ).count(),
                          "No geography in audit log yet.")
 
-        results = do_upload(self.collection, data, plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
+        results = do_upload(self.collection, data, plan, self.agent.id)
 
         self.assertEqual(9,
                          get_table('Spauditlog').objects.filter(
@@ -220,6 +220,6 @@ class UnUploadTests(UploadTestsBase):
             {'catno': '1', 'cataloger': 'Doe', 'collector': 'Doe'},
         ]
 
-        results = do_upload(self.collection, data, plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         for result in reversed(results):
             unupload_record(result, self.agent)

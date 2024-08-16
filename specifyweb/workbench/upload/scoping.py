@@ -1,11 +1,12 @@
-from typing import Dict, Any, Optional, Tuple, Callable, Union, List
+from functools import reduce
+from typing import Dict, Any, Generator, Tuple, Callable, List
 from specifyweb.specify.datamodel import datamodel, Table
 from specifyweb.specify.load_datamodel import DoesNotExistError
 from specifyweb.specify import models
 from specifyweb.specify.uiformatters import get_uiformatter
 from specifyweb.stored_queries.format import get_date_format
 
-from .uploadable import ScopedUploadable
+from .uploadable import ScopeGenerator, ScopedUploadable
 from .upload_table import UploadTable, ScopedUploadTable, ScopedOneToOneTable
 from .treerecord import TreeRecord, ScopedTreeRecord
 from .column_options import ColumnOptions, ExtendedColumnOptions, CustomRepr
@@ -112,18 +113,21 @@ def extend_columnoptions(colopts: ColumnOptions, collection, tablename: str, fie
         schemaitem=schemaitem,
         uiformatter=None if scoped_formatter is None else CustomRepr(scoped_formatter, friendly_repr),
         picklist=picklist,
-        dateformat=get_date_format(),
+        dateformat=get_date_format()
     )
 
-def get_deferred_scoping(key, table_name, uploadable, row, base_ut):
+def get_deferred_scoping(key: str, table_name: str, uploadable: UploadTable, row: Dict[str, Any], base_ut, generator: ScopeGenerator):
     deferred_key  = (table_name, key)
     deferred_scoping = DEFERRED_SCOPING.get(deferred_key, None)
 
     if deferred_scoping is None:
-        return True, uploadable
+        return uploadable
 
     if row:
         related_key, filter_field, relationship_name = deferred_scoping
+        other = base_ut.toOne[related_key]
+        if not isinstance(other, UploadTable):
+            raise Exception("invalid scoping scheme!")
         related_column_name = base_ut.toOne[related_key].wbcols[filter_field].column
         filter_value = row[related_column_name]
         filter_search = {filter_field: filter_value}
@@ -135,42 +139,32 @@ def get_deferred_scoping(key, table_name, uploadable, row, base_ut):
         collection_id = None
 
     # don't cache anymore, since values can be dependent on rows.
-    return False, uploadable._replace(overrideScope = {'collection': collection_id})
+    if generator is not None:
+        next(generator) # a bit hacky
+    return uploadable._replace(overrideScope = {'collection': collection_id})
 
-def _apply_scoping_to_uploadtable(table, row, collection, base_ut):
-    def _update_uploadtable(field: str, uploadable: UploadTable):
-        can_cache_this, uploadable = get_deferred_scoping(field, table.django_name, uploadable, row, base_ut)
-        can_cache_sub, scoped = uploadable.apply_scoping(collection, row)
-        return can_cache_this and can_cache_sub, scoped
-    return _update_uploadtable
-
-def apply_scoping_to_one(ut, collection, table, callback) -> Tuple[bool, Dict[str, ScopedUploadable]]:
-    adjust_to_ones = to_one_adjustments(collection, table)
-    to_ones_items = list(ut.toOne.items())
-    to_one_results = [(f, callback(f, u)) for (f, u) in to_ones_items]
-    to_ones = {f: adjust_to_ones(u, f) for f, (_, u) in to_one_results}
-    return all(_can_cache for (_, (_can_cache, __)) in to_one_results), to_ones
-
-def apply_scoping_to_uploadtable(ut: UploadTable, collection, row=None) -> Tuple[bool, ScopedUploadTable]:
+def apply_scoping_to_uploadtable(ut: UploadTable, collection, generator: ScopeGenerator = None, row=None) -> ScopedUploadTable:
     table = datamodel.get_table_strict(ut.name)
     if ut.overrideScope is not None and isinstance(ut.overrideScope['collection'], int):
-        collection = models.Collection.objects.filter(id=ut.overrideScope['collection']).get()
+        collection = models.Collection.objects.get(id=ut.overrideScope['collection'])
     
+    to_one_fields = get_to_one_fields(collection)
 
-    callback = _apply_scoping_to_uploadtable(table, row, collection, ut)
-    can_cache_to_one, to_ones = apply_scoping_to_one(ut, collection, table, callback)
+    adjuster = reduce(lambda accum, curr: _make_one_to_one(curr, accum), to_one_fields.get(table.name.lower(), []), lambda u, f: u)
 
-    to_many_results: List[Tuple[str, List[Tuple[bool, ScopedUploadTable]]]] = [
-        (f,  [(callback(f, r)) for r in rs]) for (f, rs) in ut.toMany.items()
-    ]
+    apply_scoping = lambda key, value: get_deferred_scoping(key, table.django_name, value, row, ut, generator).apply_scoping(collection, generator, row)
 
-    can_cache_to_many = all(_can_cache for (_, tmr) in to_many_results for (_can_cache, __) in tmr)
-    to_many = {
-        f: [set_order_number(i, tmr) for i, (_, tmr) in enumerate(scoped_tmrs)]
-        for f, scoped_tmrs in to_many_results
+    to_ones = {
+        key: adjuster(apply_scoping(key, value), key)
+        for (key, value) in ut.toOne.items()
     }
 
-    return can_cache_to_many and can_cache_to_one, ScopedUploadTable(
+    to_many = {
+        key: [set_order_number(i, apply_scoping(key, record)) for i, record in enumerate(records)]
+        for (key, records) in ut.toMany.items()
+    }
+
+    scoped_table = ScopedUploadTable(
         name=ut.name,
         wbcols={f: extend_columnoptions(colopts, collection, table.name, f) for f, colopts in ut.wbcols.items()},
         static=static_adjustments(table, ut.wbcols, ut.static),
@@ -178,28 +172,22 @@ def apply_scoping_to_uploadtable(ut: UploadTable, collection, row=None) -> Tuple
         toMany=to_many, #type: ignore
         scopingAttrs=scoping_relationships(collection, table),
         disambiguation=None,
+        # Often, we'll need to recur down to clone (nested one-to-ones). Having this entire is handy in such a case
+        to_one_fields = to_one_fields,
+        match_payload=None
     )
 
-def to_one_adjustments(collection, table: Table) -> AdjustToOnes:
-    adjust_to_ones: AdjustToOnes = lambda u, f: u
-    if collection.isembeddedcollectingevent and table.name == 'CollectionObject':
-        adjust_to_ones = _make_one_to_one('collectingevent', adjust_to_ones)
+    return scoped_table
 
-    elif collection.discipline.ispaleocontextembedded and table.name.lower() == collection.discipline.paleocontextchildtable.lower():
-        adjust_to_ones = _make_one_to_one('paleocontext', adjust_to_ones)
-
-    if table.name == 'CollectionObject':
-        adjust_to_ones = _make_one_to_one('collectionobjectattribute', adjust_to_ones)
-    if table.name == 'CollectingEvent':
-        adjust_to_ones = _make_one_to_one('collectingeventattribute', adjust_to_ones)
-    if table.name == 'Attachment':
-        adjust_to_ones = _make_one_to_one('attachmentimageattribute', adjust_to_ones)
-    if table.name == 'CollectingTrip':
-        adjust_to_ones = _make_one_to_one('collectingtripattribute', adjust_to_ones)
-    if table.name == 'Preparation':
-        adjust_to_ones = _make_one_to_one('preparationattribute', adjust_to_ones)
-
-    return adjust_to_ones
+def get_to_one_fields(collection) -> Dict[str, List['str']]:
+    return {
+        'collectionobject': [*(['collectingevent'] if collection.isembeddedcollectingevent else []), 'collectionobjectattribute'],
+        'collectingevent': ['collectingeventattribute'],
+        'attachment': ['attachmentimageattribute'],
+        'collectingtrip': ['collectingtripattribute'],
+        'preparation': ['preparationattribute'],
+        **({collection.discipline.paleocontextchildtable.lower(): ['paleocontext']} if collection.discipline.ispaleocontextembedded else {})
+    }
 
 def static_adjustments(table: Table, wbcols: Dict[str, ColumnOptions], static: Dict[str, Any]) -> Dict[str, Any]:
     # not sure if this is the right place for this, but it will work for now.
@@ -217,7 +205,7 @@ def set_order_number(i: int, tmr: ScopedUploadTable) -> ScopedUploadTable:
         return tmr._replace(scopingAttrs={**tmr.scopingAttrs, 'ordernumber': i})
     return tmr
 
-def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> Tuple[bool, ScopedTreeRecord]:
+def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
     table = datamodel.get_table_strict(tr.name)
 
     if table.name == 'Taxon':
@@ -246,12 +234,12 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> Tuple[bool, Scope
 
     root = list(getattr(models, table.name.capitalize()).objects.filter(definitionitem=treedefitems[0])[:1]) # assume there is only one
 
-    # don't imagine a use-case for making it non-cachable
-    return True, ScopedTreeRecord(
+    return ScopedTreeRecord(
         name=tr.name,
         ranks={r: {f: extend_columnoptions(colopts, collection, table.name, f) for f, colopts in cols.items()} for r, cols in tr.ranks.items()},
         treedef=treedef,
         treedefitems=list(treedef.treedefitems.order_by('rankid')),
         root=root[0] if root else None,
         disambiguation={},
+        batch_edit_pack=None
     )

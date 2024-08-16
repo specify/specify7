@@ -13,13 +13,11 @@ from jsonschema import validate  # type: ignore
 from specifyweb.specify import models
 from specifyweb.specify.auditlog import auditlog
 from specifyweb.specify.datamodel import Table
+from specifyweb.specify.func import Func
 from specifyweb.specify.tree_extras import renumber_tree, set_fullnames
-from specifyweb.stored_queries.tests import setup_sqlalchemy
-from django.conf import settings
 from . import disambiguation
 from .upload_plan_schema import schema, parse_plan_with_basetable
-from .upload_result import Uploaded, UploadResult, ParseFailures, \
-    json_to_UploadResult
+from .upload_result import Deleted, RecordResult, Updated, Uploaded, UploadResult, ParseFailures
 from .uploadable import ScopedUploadable, Row, Disambiguation, Auditor, Uploadable
 from ..models import Spdataset
 
@@ -60,7 +58,7 @@ def unupload_dataset(ds: Spdataset, agent, progress: Optional[Progress]=None) ->
     with transaction.atomic():
         for row in reversed(results):
             logger.info(f"rolling back row {current} of {total}")
-            upload_result = json_to_UploadResult(row)
+            upload_result = UploadResult.from_json(row)
             if not upload_result.contains_failure():
                 unupload_record(upload_result, agent)
 
@@ -112,8 +110,7 @@ def do_upload_dataset(
         ds: Spdataset,
         no_commit: bool,
         allow_partial: bool,
-        progress: Optional[Progress]=None,
-        session_url: Optional[str] = None
+        progress: Optional[Progress]=None
 ) -> List[UploadResult]:
     if ds.was_uploaded(): raise AssertionError("Dataset already uploaded", {"localizationKey" : "datasetAlreadyUploaded"})
     ds.rowresults = None
@@ -122,10 +119,12 @@ def do_upload_dataset(
 
     ncols = len(ds.columns)
     rows = [dict(zip(ds.columns, row)) for row in ds.data]
+
     disambiguation = [get_disambiguation_from_row(ncols, row) for row in ds.data]
+    batch_edit_packs = [get_batch_edit_pack_from_row(ncols, row) for row in ds.data]
     base_table, upload_plan = get_raw_ds_upload_plan(ds)
 
-    results = do_upload(collection, rows, upload_plan, uploading_agent_id, disambiguation, no_commit, allow_partial, progress, session_url=session_url)
+    results = do_upload(collection, rows, upload_plan, uploading_agent_id, disambiguation, no_commit, allow_partial, progress, batch_edit_packs=batch_edit_packs)
     success = not any(r.contains_failure() for r in results)
     if not no_commit:
         ds.uploadresult = {
@@ -157,7 +156,7 @@ def create_recordset(ds: Spdataset, name: str):
     table, upload_plan = get_ds_upload_plan(ds.collection, ds)
     assert ds.rowresults is not None
     results = json.loads(ds.rowresults)
-
+    
     rs = models.Recordset.objects.create(
         collectionmemberid=ds.collection.id,
         dbtableid=table.tableId,
@@ -167,14 +166,18 @@ def create_recordset(ds: Spdataset, name: str):
     )
     models.Recordsetitem.objects.bulk_create([
         models.Recordsetitem(order=i, recordid=record_id, recordset=rs)
-        for i, r in enumerate(map(json_to_UploadResult, results))
-        if isinstance(r.record_result, Uploaded) and (record_id := r.get_id()) is not None and record_id != 'Failure'
+        for i, r in enumerate(map(UploadResult.from_json, results))
+        if (isinstance(r.record_result, Uploaded) or isinstance(r.record_result, Updated)) and (record_id := r.get_id()) is not None and record_id != 'Failure'
     ])
     return rs
 
 def get_disambiguation_from_row(ncols: int, row: List) -> Disambiguation:
     extra = json.loads(row[ncols]) if row[ncols] else None
     return disambiguation.from_json(extra['disambiguation']) if extra and 'disambiguation' in extra else None
+
+def get_batch_edit_pack_from_row(ncols: int, row: List) -> Optional[Dict[str, Any]]:
+    extra: Optional[Dict[str, Any]] = json.loads(row[ncols]) if row[ncols] else None
+    return extra.get('batch_edit', None) if extra else None
 
 def get_raw_ds_upload_plan(ds: Spdataset) -> Tuple[Table, Uploadable]:
     if ds.uploadplan is None:
@@ -191,8 +194,7 @@ def get_raw_ds_upload_plan(ds: Spdataset) -> Tuple[Table, Uploadable]:
 
 def get_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, ScopedUploadable]:
     base_table, plan = get_raw_ds_upload_plan(ds)
-    return base_table, plan.apply_scoping(collection)[1]
-
+    return base_table, plan.apply_scoping(collection)
 
 def do_upload(
         collection,
@@ -203,36 +205,49 @@ def do_upload(
         no_commit: bool=False,
         allow_partial: bool=True,
         progress: Optional[Progress]=None,
-        session_url = None,
+        batch_edit_packs: Optional[List[Optional[Dict[str, Any]]]] = None
 ) -> List[UploadResult]:
     cache: Dict = {}
     _auditor = Auditor(collection=collection, audit_log=None if no_commit else auditlog,
                        # Done to allow checking skipping write permission check
                        # during validation
-                       skip_create_permission_check=no_commit)
+                       skip_create_permission_check=no_commit,
+                       agent=models.Agent.objects.get(id=uploading_agent_id)
+                       )
     total = len(rows) if isinstance(rows, Sized) else None
     cached_scope_table = None
-    wb_session_context = setup_sqlalchemy_wb(session_url)
+
+    # I'd make this a generator (so "global" variable is internal, rather than a rogue callback setting a global variable)
+    gen = Func.make_generator()
+
     with savepoint("main upload"):
         tic = time.perf_counter()
         results: List[UploadResult] = []
         for i, row in enumerate(rows):
             _cache = cache.copy() if cache is not None and allow_partial else cache
             da = disambiguations[i] if disambiguations else None
+            batch_edit_pack = batch_edit_packs[i] if batch_edit_packs else None
             with savepoint("row upload") if allow_partial else no_savepoint():
                 # the fact that upload plan is cachable, is invariant across rows.
-                # so, we just apply scoping once.
+                # so, we just apply scoping once. Honestly, see if it causes enough overhead to even warrant caching
                 if cached_scope_table is None:
-                    can_cache, scoped_table = upload_plan.apply_scoping(collection, row)
+                    cannot_cache, scoped_table = Func.tap_call(lambda: upload_plan.apply_scoping(collection, gen, row), gen)
+                    can_cache = not cannot_cache
                     if can_cache:
                         cached_scope_table = scoped_table
                 else:
                     scoped_table = cached_scope_table
 
-                with wb_session_context() as session:
-                    bind_result = scoped_table.disambiguate(da).bind(row, uploading_agent_id, _auditor, session, cache)
-                    result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.process_row()
-                    
+                bind_result = scoped_table.disambiguate(da).apply_batch_edit_pack(batch_edit_pack).bind(row, uploading_agent_id, _auditor, cache)
+                if isinstance(bind_result, ParseFailures):
+                    result = UploadResult(bind_result, {}, {})
+                else:
+                    can_save = bind_result.can_save()
+                    # We need to have additional context on whether we can save or not. This could, hackily, be taken from ds's isupdate field. 
+                    # But, that seeems very hacky. Instead, we can easily check if the base table can be saved. Legacy ones will simply return false,
+                    # so we'll be able to proceed fine.
+                    result = (bind_result.save_row(force=True) if can_save else bind_result.process_row())
+                
                 results.append(result)
                 if progress is not None:
                     progress(len(results), total)
@@ -253,15 +268,13 @@ def do_upload(
 
 do_upload_csv = do_upload
 
-def validate_row(collection, upload_plan: ScopedUploadable, uploading_agent_id: int, row: Row, da: Disambiguation, session_url: Optional[str]=None) -> UploadResult:
+def validate_row(collection, upload_plan: ScopedUploadable, uploading_agent_id: int, row: Row, da: Disambiguation) -> UploadResult:
     retries = 3
-    session_context = setup_sqlalchemy_wb(session_url)
     while True:
         try:
             with savepoint("row validation"):
-                with session_context() as session:
-                    bind_result = upload_plan.disambiguate(da).bind(row, uploading_agent_id, Auditor(collection, None), session)
-                    result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.process_row()
+                bind_result = upload_plan.disambiguate(da).bind(row, uploading_agent_id, Auditor(collection, None))
+                result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.process_row()
                 raise Rollback("validating only")
             break
 
@@ -304,7 +317,85 @@ class NopLog(object):
     def insert(self, inserted_obj: Any, agent: Union[int, Any], parent_record: Optional[Any]) -> None:
         pass
 
-# to allow for unit tests to run
-def setup_sqlalchemy_wb(url: Optional[str]):
-    _, session_context = setup_sqlalchemy(url or settings.SA_DATABASE_URL)
-    return session_context
+def adjust_pack(pack: Optional[Dict[str, Any]], upload_result: UploadResult, commit_uploader: Callable[[RecordResult], None]):
+    if isinstance(upload_result.record_result, Uploaded):
+        commit_uploader(upload_result.record_result)
+    if pack is None:
+        return None
+    current_result = upload_result.record_result
+    self = pack['self']
+    self = {**self, 'version': None, 'id': None if isinstance(current_result, Deleted) else self['id']}
+    to_ones = Func.maybe(pack.get('to_one'), lambda to_one: {key: adjust_pack(value, upload_result.toOne[key], commit_uploader) for key, value in to_one.items()}) # type: ignore
+    to_many = Func.maybe(pack.get('to_many'), lambda to_many: {key: [adjust_pack(record, upload_result.toMany[key][_id], commit_uploader) for _id, record in enumerate(records)] for (key, records) in to_many.items()}) # type: ignore
+    return {
+        'self': self,
+        'to_one': to_ones,
+        'to_many': to_many
+    }
+
+def rollback_batch_edit(parent: Spdataset, collection, agent, progress: Optional[Progress]=None) -> None:
+    assert parent.isupdate, "What are you trying to do here?"
+
+    backer: Spdataset = parent.backer
+
+    assert backer is not None, "Backer isn't there, what did you do?"
+    
+    # Need to do a couple of things before we go do stuff. 
+    # 1. Remove all version info (duh)
+    # 2. Check if corresponding was a deleted cell. If it was, replace the main with null id.
+
+    ncols = len(parent.columns)
+    current = [get_batch_edit_pack_from_row(ncols, row) for row in parent.data]
+
+    assert len(backer.columns) == ncols # C'mon, we handle so much. they deserve it.
+
+    inserted_records = []
+    
+    assert parent.rowresults is not None
+    row_results = json.loads(parent.rowresults)
+
+    def look_up_in_backer(_id):
+        row = parent.data[_id]
+        pack = get_batch_edit_pack_from_row(ncols, row)
+        # Could have added a new row. This handles future use cases.
+        # we could literally crash here right now, bc this won't happen currently.
+        if pack is None:
+            return None
+        result = row_results[_id]
+        upload_result = UploadResult.from_json(result)
+        # impossible to get stop iteration.
+        is_match = lambda _backer_pack: (_backer_pack is not None) and (_backer_pack['self']['id'] == pack['self']['id'])
+        _filter = filter(lambda row: Func.maybe(get_batch_edit_pack_from_row(ncols, row), is_match), backer.data)
+        gen = next(_filter)
+        return gen, adjust_pack(get_batch_edit_pack_from_row(ncols, row), upload_result, _commit_uploader)
+    
+    def _commit_uploader(result):
+        inserted_records.append(result)
+
+    rows_to_backup = []
+    packs = []
+    # Yes, we don't care about reverse here.
+    for row in range(len(parent.data)):
+        r, be = look_up_in_backer(row)
+        rows_to_backup.append(dict(zip(parent.columns, r)))
+        packs.append(be)
+
+    # Don't use parent's plan...
+    base_table, upload_plan = get_raw_ds_upload_plan(backer)
+    results = do_upload(collection, rows_to_backup, upload_plan, agent, None, False, False, progress, packs)
+
+    success = not any(r.contains_failure() for r in results)
+
+    if not success:
+        raise RollbackFailure("Unable to roll back")
+    
+    unupload_dataset(parent, agent, progress)
+    
+    parent.rowresults = json.dumps([r.to_json() for r in results])
+    parent.save(update_fields=['rowresults'])
+
+    
+
+
+        
+

@@ -25,7 +25,6 @@ NO_FIELD_VALUE = {}
 
 logger = logging.getLogger(__name__)
 
-
 @orm_signal_handler('pre_save', None, dispatch_uid=UNIQUENESS_DISPATCH_UID)
 def check_unique(model, instance):
     model_name = instance.__class__.__name__

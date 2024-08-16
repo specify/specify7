@@ -1,3 +1,4 @@
+from specifyweb.specify.func import Func
 from ..upload_plan_schema import schema, parse_plan
 from ..upload_table import UploadTable, OneToOneTable, ScopedUploadTable, ScopedOneToOneTable, ColumnOptions, ExtendedColumnOptions
 from ..upload import do_upload
@@ -81,7 +82,7 @@ class ScopingTests(UploadTestsBase):
 
         self.assertNotIsInstance(ce_rel, OneToOneTable)
 
-        scoped = plan.apply_scoping(self.collection)[1]
+        scoped = plan.apply_scoping(self.collection)
 
         assert isinstance(scoped, ScopedUploadTable)
         scoped_ce_rel = scoped.toOne['collectingevent']
@@ -106,19 +107,19 @@ class ScopingTests(UploadTestsBase):
             wbcols={},
             static={},
             toMany={},
-        ).apply_scoping(self.collection)[1]
+        ).apply_scoping(self.collection)
 
         self.assertIsInstance(plan.toOne['paleocontext'], ScopedOneToOneTable)
 
     def test_caching_scoped_false(self) -> None:
-
-        plan = parse_plan(self.collection_rel_plan).apply_scoping(self.collection)
-
-        self.assertFalse(plan[0], 'contains collection relationship, should never be cached')
+        generator = Func.make_generator()
+        plan = Func.tap_call(lambda: parse_plan(self.collection_rel_plan).apply_scoping(self.collection, generator), generator)
+        self.assertTrue(plan[0], 'contains collection relationship, should never be cached')
 
     def test_caching_true(self):
-        plan = self.example_plan.apply_scoping(self.collection)
-        self.assertTrue(plan[0], 'caching is possible here, since no dynamic scope is being used')
+        generator = Func.make_generator()
+        plan = Func.tap_call(lambda: self.example_plan.apply_scoping(self.collection), generator)
+        self.assertFalse(plan[0], 'caching is possible here, since no dynamic scope is being used')
 
     def test_collection_rel_uploaded_in_correct_collection(self):
         scoped_plan = parse_plan(self.collection_rel_plan)
@@ -126,7 +127,7 @@ class ScopingTests(UploadTestsBase):
             {'Collection Rel Type': self.rel_type_name, 'Cat # (2)': '999', 'Cat #': '23'}, 
             {'Collection Rel Type': self.rel_type_name, 'Cat # (2)': '888', 'Cat #': '32'}
         ]
-        result = do_upload(self.collection, rows, scoped_plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
+        result = do_upload(self.collection, rows, scoped_plan, self.agent.id)
 
         left_side_cat_nums = [n.zfill(9) for n in '32 23'.split()]
         right_side_cat_nums = '999 888'.split()

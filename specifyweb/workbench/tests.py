@@ -73,7 +73,7 @@ class DataSetTests(ApiTests):
         self.assertEqual(response.status_code, 204)
 
         dataset = Spdataset.objects.get(id=datasetid)
-        results = uploader.do_upload_dataset(self.collection, self.agent.id, dataset, no_commit=False, allow_partial=False, session_url=settings.SA_TEST_DB_URL)
+        results = uploader.do_upload_dataset(self.collection, self.agent.id, dataset, no_commit=False, allow_partial=False)
 
         self.assertTrue(dataset.uploadresult['success'])
 

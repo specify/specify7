@@ -1,26 +1,31 @@
-from typing import Iterator, List, Dict, Tuple, Any, NamedTuple, Optional, TypedDict, Union, Set
+from contextlib import contextmanager
+import re
+from typing import Dict, Generator, Callable, Literal, NamedTuple, Tuple, Any, Optional, TypedDict, Union, Set
 from typing_extensions import Protocol
 
-from functools import reduce
 
-from sqlalchemy import Table as SQLTable # type: ignore
-import sqlalchemy as db # type: ignore
-from sqlalchemy.orm import Query # type: ignore
-from sqlalchemy.sql.expression import ColumnElement # type: ignore
-
-from specifyweb.specify.load_datamodel import Field, Relationship
-from specifyweb.specify.models import datamodel
+from specifyweb.context.remote_prefs import get_remote_prefs
+from specifyweb.workbench.upload.predicates import DjangoPredicates, ToRemove
 
 from .upload_result import UploadResult, ParseFailures
 from .auditor import Auditor
-import specifyweb.stored_queries.models as sql_models
+
+NULL_RECORD = 'null_record'
+
+ScopeGenerator = Optional[Generator[int, None, None]]
+
+Progress = Callable[[int, Optional[int]], None]
+
+Row = Dict[str, str]
+
+Filter = Dict[str, Any]
 
 class Uploadable(Protocol):
     # also returns if the scoped table returned can be cached or not.
     # depends on whether scope depends on other columns. if any definition is found,
     # we cannot cache. well, we can make this more complicated by recursviely caching
     # static parts of even a non-entirely-cachable uploadable.
-    def apply_scoping(self, collection, row=None) -> Tuple[bool, "ScopedUploadable"]:
+    def apply_scoping(self, collection, generator: ScopeGenerator = None, row=None) -> "ScopedUploadable":
         ...
 
     def get_cols(self) -> Set[str]:
@@ -31,8 +36,6 @@ class Uploadable(Protocol):
 
     def unparse(self) -> Dict:
         ...
-
-Row = Dict[str, str]
 
 class DisambiguationInfo(Protocol):
     def disambiguate(self) -> Optional[int]:
@@ -54,122 +57,14 @@ class ScopedUploadable(Protocol):
     def disambiguate(self, disambiguation: Disambiguation) -> "ScopedUploadable":
         ...
 
-    def bind(self, row: Row, uploadingAgentId: int, auditor: Auditor, sql_alchemy_session, cache: Optional[Dict]=None) -> Union["BoundUploadable", ParseFailures]:
+    def bind(self, row: Row, uploadingAgentId: int, auditor: Auditor, cache: Optional[Dict]=None) -> Union["BoundUploadable", ParseFailures]:
         ...
 
     def get_treedefs(self) -> Set:
         ...
-
-Filter = Dict[str, Any]
-
-def filter_match_key(f: Filter) -> str:
-    return repr(sorted(f.items()))
-
-class Matchee(TypedDict):
-    # need to reference the fk in the penultimate table in join to to-many
-    ref: ColumnElement
-    # which column to use in the table (== the otherside of ref)
-    backref: str
-    filters: Filter
-    path: List[str]
-
-def matchee_to_key(matchee: Matchee):
-    return (matchee['backref'], matchee['path'], filter_match_key(matchee['filters']))
-
-class Predicate(NamedTuple):
-    ref: ColumnElement
-    value: Any = None
-    path: List[str] = []
-
-class FilterPredicate(NamedTuple):
-    # gets flatenned into ANDs
-    filter: List[Predicate] = []
-    # basically the entire exclude can be flatenned into ORs. (NOT A and NOT B -> NOT (A or B))
-    # significantly reduces the tables needed in the look-up query (vs Django's default)
-    exclude: Dict[
-        str, # the model name
-        List[Matchee] # list of found references
-        ] = {}
-
-    def merge(self, other: 'FilterPredicate') -> 'FilterPredicate':
-        filters = [*self.filter, *other.filter]
-        exclude = reduce(
-            lambda accum, current: {**accum, current[0]: [*accum.get(current[0], []), *current[1]]},
-            other.exclude.items(),
-            self.exclude
-        )
-        return FilterPredicate(filters, exclude)
     
-    def to_one_augment(self, uploadable: 'BoundUploadable', relationship: Relationship, sql_table: SQLTable, path: List[str]) -> Optional['FilterPredicate']:
-        if self.filter or self.exclude:
-            return None
-        return FilterPredicate([Predicate(getattr(sql_table, relationship.column), None, [*path, relationship.name])])
-
-    def to_many_augment(self, uploadable: 'BoundUploadable', relationship: Relationship, sql_table: SQLTable, path: List[str]) -> Optional['FilterPredicate']:
-        if self.filter:
-            return None
-        
-        # nested excludes don't make sense and complicates everything. this avoids it (while keeping semantics same)
-        return FilterPredicate(exclude={
-            relationship.relatedModelName: [{
-                'ref': getattr(sql_table, sql_table._id),
-                'backref': relationship.otherSideName,
-                'filters': uploadable.map_static_to_db(),
-                'path': path
-            }]
-        })
-    
-    @staticmethod
-    def from_simple_dict(sql_table: SQLTable, iterator: Iterator[Tuple[str, Any]], path:List[str]=[]):
-        # REFACTOR: make this inline?
-        return FilterPredicate(
-            [Predicate(getattr(sql_table, fieldname), value, [*path, fieldname])
-            for fieldname, value in iterator]
-        )
-        
-    def apply_to_query(self, query: Query) -> Query:
-        direct = db.and_(*[(field == value) for field, value, _ in self.filter])
-        excludes = db.or_(*[FilterPredicate._map_exclude(items) for items in self.exclude.items()])
-        filter_by = direct if not self.exclude else db.and_(
-                direct,
-                db.not_(excludes)
-                )
-        return query.filter(filter_by)
-    
-    @staticmethod
-    def _map_exclude(current: Tuple[str, List[Matchee]]):
-        model_name, matches = current
-        sql_table = getattr(sql_models, model_name)
-        table = datamodel.get_table_strict(model_name)
-        assert len(matches) > 0, "got nothing to exclude"
-
-        criterion = [
-            db.and_(
-                getattr(sql_table, table.get_relationship(matchee['backref']).column) == matchee['ref'],
-                db.and_(
-                    *[
-                     getattr(sql_table, field) == value
-                     for field, value in matchee['filters'].items()
-                     ]
-                )
-                )
-            for matchee in matches
-            ]
-        
-        # dbs limit 1 anyways...
-        return (db.exists(db.select([1])).where(db.or_(*criterion)))
-    
-    @staticmethod
-    def rel_to_fk(field: Field):
-        return field.column if field.is_relationship else field.name
-    
-    def cache_key(self) -> str:
-        filters = sorted((repr(_filter.path), _filter.value) for _filter in self.filter)
-        excludes = sorted((key, sorted(matchee_to_key(value) for value in values)) for (key, values) in self.exclude.items())
-        return repr((filters, excludes))
-    
-PredicateWithQuery = Tuple[Query, FilterPredicate]
-
+    def apply_batch_edit_pack(self, batch_edit_pack: Optional[Dict[str, Any]]) -> "ScopedUploadable":
+        ...
 
 class BoundUploadable(Protocol):
     def is_one_to_one(self) -> bool:
@@ -178,7 +73,10 @@ class BoundUploadable(Protocol):
     def must_match(self) -> bool:
         ...
     
-    def get_predicates(self, query: Query, sql_table: SQLTable, to_one_override: Dict[str, UploadResult]={}, path: List[str] = []) -> PredicateWithQuery:
+    def get_django_predicates(self, should_defer_match: bool, to_one_override: Dict[str, UploadResult] = {}) -> DjangoPredicates:
+        ...
+
+    def get_to_remove(self) -> ToRemove:
         ...
 
     def match_row(self) -> UploadResult:
@@ -189,6 +87,13 @@ class BoundUploadable(Protocol):
 
     def force_upload_row(self) -> UploadResult:
         ...
+    
+    def save_row(self, force=False) -> UploadResult:
+        ...
 
-    def map_static_to_db(self) -> Filter:
+    # I don't want to use dataset's isupdate=True, so using this. That is, the entire "batch edit" can work perfectly fine using workbench.
+    def can_save(self) -> bool:
+        ...
+
+    def delete_row(self, info, parent_obj=None) -> UploadResult:
         ...

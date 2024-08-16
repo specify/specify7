@@ -4,6 +4,7 @@ from typing import Dict, Any, Optional, List, NamedTuple, Tuple, Union, NoReturn
 from django.core.exceptions import ObjectDoesNotExist
 
 from specifyweb.specify.datamodel import datamodel
+from specifyweb.workbench.upload.predicates import filter_match_key
 from .column_options import ExtendedColumnOptions
 from specifyweb.specify.parse import parse_field, is_latlong, ParseSucess, ParseFailure
 
@@ -31,10 +32,9 @@ class WorkBenchParseFailure(NamedTuple):
     def to_json(self) -> List:
         return list(self)
 
-
 class ParseResult(NamedTuple):
     filter_on: Filter
-    upload: Dict[str, Any]
+    upload: Filter
     add_to_picklist: Optional[PicklistAddition]
     column: str
     missing_required: Optional[str]
@@ -44,7 +44,6 @@ class ParseResult(NamedTuple):
         return cls(filter_on=filter_on, upload=ps.to_upload, add_to_picklist=add_to_picklist, column=column, missing_required=missing_required)
 
     def match_key(self) -> str:
-        from .uploadable import filter_match_key
         return filter_match_key(self.filter_on)
 
 
@@ -76,7 +75,7 @@ def parse_value(tablename: str, fieldname: str, value_in: str, colopts: Extended
                 "field is required by schema config" if required_by_schema else
                 None
             )
-            result = ParseResult({fieldname: None}, {},
+            result = ParseResult({fieldname: None}, {fieldname: None},
                                  None, colopts.column, missing_required)
         else:
             result = _parse(tablename, fieldname,

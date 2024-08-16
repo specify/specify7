@@ -1,5 +1,10 @@
 import logging
 from time import time
+from typing import Any
+from typing_extensions import TypedDict
+
+from specifyweb.specify.field_change_info import FieldChangeInfo
+
 
 logger = logging.getLogger(__name__)
 import re
@@ -16,8 +21,9 @@ Collection = datamodel.get_table_strict('Collection')
 Discipline = datamodel.get_table_strict('Discipline')
 Division = datamodel.get_table_strict('Division')
 
-from . import auditcodes
 
+from . import auditcodes
+    
 class AuditLog(object):
 
     _auditingFlds = None
@@ -67,7 +73,7 @@ class AuditLog(object):
                 if fldattr != 'version' and hasattr(obj, fldattr):
                     val = getattr(obj, fldattr)
                     if val is not None:
-                        self._log_fld_update({'field_name': fldattr, 'old_value': val, 'new_value': None}, log_obj, agent)
+                        self._log_fld_update(FieldChangeInfo(field_name=fldattr, old_value=val, new_value=None), log_obj, agent)
             for spfld in obj.specify_model.relationships:
                 if spfld.type.lower().endswith("many-to-one"):
                     fldattr = spfld.name.lower()
@@ -75,11 +81,11 @@ class AuditLog(object):
                         val = getattr(obj, fldattr)
                         field = obj._meta.get_field(fldattr);
                         if isinstance(val, field.related_model):
-                            self._log_fld_update({'field_name': fldattr, 'old_value': val.id, 'new_value': None}, log_obj, agent)
+                            self._log_fld_update(FieldChangeInfo(field_name=fldattr, old_value=val.id, new_value=None), log_obj, agent)
                         elif isinstance(val, str) and not val.endswith('.None'):
                             fk_model, fk_id = parse_uri(val)
                             if fk_model == field.related_model.__name__.lower() and  fk_id is not None:
-                                self._log_fld_update({'field_name': fldattr, 'old_value': fk_id, 'new_value': None}, log_obj, agent)
+                                self._log_fld_update(FieldChangeInfo(field_name=fldattr, old_value=fk_id, new_value=None), log_obj, agent)
         return log_obj
         
     def _log(self, action, obj, agent, parent_record):

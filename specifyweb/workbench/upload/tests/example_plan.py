@@ -269,4 +269,4 @@ upload_plan = UploadTable(
     )
 
 def with_scoping(collection) -> ScopedUploadTable:
-    return upload_plan.apply_scoping(collection)[1]
+    return upload_plan.apply_scoping(collection)

@@ -8,18 +8,18 @@ from xml.sax.saxutils import quoteattr
 
 from sqlalchemy import orm, Table as SQLTable, inspect
 from sqlalchemy.sql.expression import case, func, cast, literal, Label
-from sqlalchemy.sql.functions import concat, count
+from sqlalchemy.sql.functions import concat
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 from sqlalchemy.sql.elements import Extract
 from sqlalchemy import types
 
-from typing import Tuple, Optional, Union, Any
+from typing import Tuple, Optional, Union
 
 from specifyweb.context.app_resource import get_app_resource
 from specifyweb.context.remote_prefs import get_remote_prefs
 
-from specifyweb.specify.models import datamodel, Spappresourcedata, \
-    Splocalecontainer, Splocalecontaineritem
+from specifyweb.specify.agent_types import agent_types
+from specifyweb.specify.models import datamodel, Splocalecontainer
 
 from specifyweb.specify.datamodel import Field, Relationship, Table
 from specifyweb.stored_queries.queryfield import QueryField
@@ -38,7 +38,7 @@ Spauditlog_model = datamodel.get_table('SpAuditLog')
 
 
 class ObjectFormatter(object):
-    def __init__(self, collection, user, replace_nulls):
+    def __init__(self, collection, user, replace_nulls, format_agent_type=False):
 
         formattersXML, _, __ = get_app_resource(collection, user, 'DataObjFormatters')
         self.formattersDom = ElementTree.fromstring(formattersXML)
@@ -48,6 +48,7 @@ class ObjectFormatter(object):
         self.collection = collection
         self.replace_nulls = replace_nulls
         self.aggregator_count = 0
+        self.format_agent_type = format_agent_type
 
     def getFormatterDef(self, specify_model: Table, formatter_name) -> Optional[Element]:
         def lookup(attr: str, val: str) -> Optional[Element]:
@@ -327,6 +328,12 @@ class ObjectFormatter(object):
 
     def _fieldformat(self, specify_field: Field,
                      field: Union[InstrumentedAttribute, Extract]):
+        
+        if self.format_agent_type and specify_field is Agent_model.get_field("agenttype"):
+            cases = [(field == _id, name) for (_id, name) in enumerate(agent_types)]
+            _case = case(cases)
+            return blank_nulls(_case) if self.replace_nulls else _case
+        
         if specify_field.type == "java.lang.Boolean":
             return field != 0
 

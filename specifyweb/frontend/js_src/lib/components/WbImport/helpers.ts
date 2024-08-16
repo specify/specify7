@@ -157,12 +157,18 @@ function guessDelimiter(text: string): string {
 
 const MAX_NAME_LENGTH = 64;
 
+export const DatasetVariants = {
+  'workbench': '/api/workbench/dataset/',
+  'batchEdit': '/api/workbench/dataset/?isupdate=1',
+  'bulkAttachment': '/attachment_gw/dataset/'
+} as const;
+
 export async function uniquifyDataSetName(
   name: string,
   currentDataSetId?: number,
-  datasetsUrl = '/api/workbench/dataset/'
+  datasetsUrl: keyof typeof DatasetVariants = 'workbench'
 ): Promise<LocalizedString> {
-  return ajax<RA<DatasetBrief>>(datasetsUrl, {
+  return ajax<RA<DatasetBrief>>(DatasetVariants[datasetsUrl], {
     headers: { Accept: 'application/json' },
   }).then(({ data: datasets }) =>
     getUniqueName(

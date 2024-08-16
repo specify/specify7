@@ -40,7 +40,7 @@ import {
   valueIsToManyIndex,
   valueIsTreeRank,
 } from './mappingHelpers';
-import { getMaxToManyIndex, isCircularRelationship } from './modelHelpers';
+import { getMaxToManyIndex, isCircularRelationship, isNestedToMany } from './modelHelpers';
 import type { NavigatorSpec } from './navigatorSpecs';
 
 type NavigationCallbackPayload = {
@@ -176,8 +176,6 @@ export type MappingLineData = Pick<
 > & {
   readonly defaultValue: string;
 };
-
-const queryBuilderTreeFields = new Set(['fullName', 'author', 'groupNumber']);
 
 /**
  * Get data required to build a mapping line from a source mapping path
@@ -391,8 +389,7 @@ export function getMappingLineData({
         ((generateFieldData === 'all' &&
           (!isTreeTable(table.name) ||
             mappingPath[internalState.position - 1] ===
-              formatTreeRank(anyTreeRank) ||
-            queryBuilderTreeFields.has(formattedEntry))) ||
+              formatTreeRank(anyTreeRank))) ||
           internalState.defaultValue === formattedEntry)
           ? ([
               formattedEntry,
@@ -474,8 +471,7 @@ export function getMappingLineData({
               spec.includeAllTreeFields ||
               !isTreeTable(table.name) ||
               mappingPath[internalState.position - 1] ===
-                formatTreeRank(anyTreeRank) ||
-              queryBuilderTreeFields.has(field.name);
+                formatTreeRank(anyTreeRank)
 
             isIncluded &&=
               getFrontEndOnlyFields()[table.name]?.includes(field.name) !==
@@ -485,10 +481,7 @@ export function getMappingLineData({
               isIncluded &&=
                 parentRelationship === undefined ||
                 (!isCircularRelationship(parentRelationship, field) &&
-                  (spec.allowNestedToMany || !(
-                    relationshipIsToMany(field) &&
-                    relationshipIsToMany(parentRelationship)
-                  )));
+                  (spec.allowNestedToMany || !isNestedToMany(parentRelationship, field)));
 
               isIncluded &&=
                 !canDoAction ||

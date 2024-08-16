@@ -1584,4 +1584,43 @@ export const wbText = createDictionary({
     'fr-fr': '{node:string} (dans {parent:string})',
     'uk-ua': '{node:string} (у {parent:string})',
   },
+  updatedCells: {
+    'en-us': "Updated Cells"
+  },
+  deletedCells: {
+    'en-us': "Deleted Cells"
+  },
+  updateResults: {
+    'en-us': 'Update Results'
+  },
+  potentialUpdateResults: {
+    'en-us': 'Potential Update Results'
+  },
+  affectedResults: {
+    'en-us': "Records affected"
+  },
+  potentialAffectedResults: {
+    'en-us': "Potential records affected"
+  },
+  wbAffectedDescription: {
+    'en-us': 'Number of new records affected in each table:',
+  },
+  wbAffectedPotentialDescription: {
+    'en-us': 'Number of new records that would be affected in each table:',
+  },
+  recordsCreated: {
+    'en-us': "Records created"
+  },
+  recordsUpdated: {
+    'en-us': "Records updated"
+  },
+  recordsDeleted: {
+    'en-us': "Records deleted (not including dependents)"
+  },
+  recordsMatchedAndChanged: {
+    'en-us': "Records matched, different from current related"
+  },
+  matchAndChanged: {
+    'en-us': "Matched and changed cells"
+  }
 } as const);

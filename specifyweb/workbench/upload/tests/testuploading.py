@@ -49,7 +49,7 @@ class TreeMatchingTests(UploadTreeSetup):
             {'County': 'Johnson', 'City': 'Olathe'},
             {'County': 'Johnson', 'City': 'Olathe'},
         ]
-        results = do_upload(self.collection, data, plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Matched)
         self.assertEqual(results[0].get_id(), results[1].get_id())
@@ -79,7 +79,7 @@ class TreeMatchingTests(UploadTreeSetup):
             {'State': 'Texas', 'City': 'Austin'},
             {'State': 'Missouri', 'City': 'Columbia'},
         ]
-        results = do_upload(self.collection, data, plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         self.assertEqual(
             results[0].record_result,
             FailedBusinessRule(
@@ -113,7 +113,7 @@ class TreeMatchingTests(UploadTreeSetup):
             {'State': 'Missouri', 'City': 'Springfield'},
             {'State': 'Illinois', 'City': 'Springfield'},
         ]
-        results = do_upload(self.collection, data, plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         for r in results:
             self.assertIsInstance(r.record_result, Matched)
         self.assertEqual(self.springmo.id, results[0].record_result.get_id())
@@ -134,7 +134,7 @@ class TreeMatchingTests(UploadTreeSetup):
             {'City': 'Springfield'},
             {'City': 'Springfield'},
         ]
-        results = do_upload(self.collection, data, plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         for r in results:
             assert isinstance(r.record_result, MatchedMultiple)
             self.assertEqual(set([self.springmo.id, self.springill.id]), set(r.record_result.ids))
@@ -155,7 +155,7 @@ class TreeMatchingTests(UploadTreeSetup):
         data = [
             {'State': 'Missouri', 'County': 'Greene', 'City': 'Springfield'},
         ]
-        results = do_upload(self.collection, data, plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         for r in results:
             assert isinstance(r.record_result, Matched)
             self.assertEqual(self.springmo.id, r.record_result.id)
@@ -176,7 +176,7 @@ class TreeMatchingTests(UploadTreeSetup):
             {'County': 'Johnson', 'City': 'Olathe'},
             {'County': 'Johnson', 'City': 'Olathe'},
         ]
-        results = do_upload(self.collection, data, plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Matched)
         self.assertEqual(results[0].get_id(), results[1].get_id())
@@ -202,7 +202,7 @@ class TreeMatchingTests(UploadTreeSetup):
             {'County': 'Johnson', 'City': 'Olathe'},
             {'County': 'Shawnee', 'City': 'Topeka'},
         ]
-        results = do_upload(self.collection, data, plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Uploaded)
 
@@ -229,7 +229,7 @@ class TreeMatchingTests(UploadTreeSetup):
         data = [
             {'State': 'Missouri', 'County': 'Greene', 'City': 'Rogersville'},
         ]
-        results = do_upload(self.collection, data, plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertEqual(self.greene.id, get_table('Geography').objects.get(id=results[0].get_id()).parent_id)
 
@@ -257,7 +257,7 @@ class OneToOneAttributeTests(UploadTestsBase):
             {'guid': str(uuid4()), 'height': "100"},
             {'guid': str(uuid4()), 'height': "200"},
         ]
-        results = do_upload(self.collection, data, plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         for r in results:
             self.assertIsInstance(r.record_result, Uploaded)
         aias = [get_table('Attachment').objects.get(id=r.get_id()).attachmentimageattribute_id for r in results]
@@ -285,7 +285,7 @@ class OneToOneAttributeTests(UploadTestsBase):
             {'guid': str(uuid4()), 'integer': "100"},
             {'guid': str(uuid4()), 'integer': "200"},
         ]
-        results = do_upload(self.collection, data, plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         for r in results:
             self.assertIsInstance(r.record_result, Uploaded)
         ctas = [get_table('Collectingtrip').objects.get(id=r.get_id()).collectingtripattribute_id for r in results]
@@ -331,7 +331,7 @@ class OneToOneAttributeTests(UploadTestsBase):
             {'guid': str(uuid4()), 'integer': "100", 'catno': '1', 'preptype': 'tissue'},
             {'guid': str(uuid4()), 'integer': "200", 'catno': '1', 'preptype': 'tissue'},
         ]
-        results = do_upload(self.collection, data, plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         for r in results:
             self.assertIsInstance(r.record_result, Uploaded)
         pas = [get_table('Preparation').objects.get(id=r.get_id()).preparationattribute_id for r in results]
@@ -362,7 +362,7 @@ class OneToOneAttributeTests(UploadTestsBase):
             {'catno': "3", 'number': "100"},
             {'catno': "4", 'number': "200"},
         ]
-        results = do_upload(self.collection, data, plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         for r in results:
             self.assertIsInstance(r.record_result, Uploaded)
         coas = [get_table('Collectionobject').objects.get(id=r.get_id()).collectionobjectattribute_id for r in results]
@@ -392,7 +392,7 @@ class OneToOneAttributeTests(UploadTestsBase):
             {'sfn': "3", 'number': "100"},
             {'sfn': "4", 'number': "200"},
         ]
-        results = do_upload(self.collection, data, plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         for r in results:
             self.assertIsInstance(r.record_result, Uploaded)
         ceas = [get_table('Collectingevent').objects.get(id=r.get_id()).collectingeventattribute_id for r in results]
@@ -432,7 +432,7 @@ class OneToOneAttributeTests(UploadTestsBase):
         data = [
             {'sfn': "", 'number': "100"},
         ]
-        results = do_upload(self.collection, data, plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         for r in results:
             self.assertIsInstance(r.record_result, MatchedMultiple)
 
@@ -467,7 +467,7 @@ class OneToOneAttributeTests(UploadTestsBase):
         data = [
             {'sfn': "1", 'number': "100"},
         ]
-        results = do_upload(self.collection, data, plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         for r in results:
             self.assertIsInstance(r.record_result, Matched)
 
@@ -493,7 +493,7 @@ class OneToOneAttributeTests(UploadTestsBase):
             {'catno': "2", 'number': "100"},
             {'catno': "", 'number': "100"},
         ]
-        results = do_upload(self.collection, data, plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         for r in results:
             self.assertIsInstance(r.record_result, Uploaded)
         coas = [get_table('Collectionobject').objects.get(id=r.get_id()).collectionobjectattribute_id for r in results]
@@ -539,7 +539,7 @@ class UploadTests(UploadTestsBase):
             {'Catno': '2', 'Genus': 'Foo', 'Species': 'Bar'},
             {'Catno': '3', 'Genus': 'Foo', 'Species': 'Bar'},
         ]
-        results = do_upload(self.collection, data, plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         dets = [get_table('Collectionobject').objects.get(id=r.get_id()).determinations.get() for r in results]
         self.assertTrue(all(d.iscurrent for d in dets), "created determinations have iscurrent = true by default")
 
@@ -581,7 +581,7 @@ class UploadTests(UploadTestsBase):
             {'Catno': '2', 'Genus': 'Foo', 'Species': 'Bar', 'iscurrent': 'false'},
             {'Catno': '3', 'Genus': 'Foo', 'Species': 'Bar', 'iscurrent': 'false'},
         ]
-        results = do_upload(self.collection, data, plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         dets = [get_table('Collectionobject').objects.get(id=r.get_id()).determinations.get() for r in results]
         self.assertFalse(any(d.iscurrent for d in dets), "created determinations have iscurrent = false by override")
 
@@ -628,7 +628,7 @@ class UploadTests(UploadTestsBase):
             {'title': "A Natural History of Mung Beans", 'author1': "Mungophilius", 'author2': "Philomungus"},
             {'title': "A Natural History of Mung Beans", 'author1': "Philomungus", 'author2': "Mungophilius"},
         ]
-        results = do_upload(self.collection, data, plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Uploaded, "The previous record should not be matched b/c the authors are in a different order.")
         self.assertIsInstance(results[2].record_result, Matched, "The previous record should be matched b/c the authors are in the same order.")
@@ -675,7 +675,7 @@ class UploadTests(UploadTestsBase):
             {'title': "A Natural History of Mung Beans", 'author1': "Mungophilius", 'on1': '1', 'author2': "Philomungus", 'on2': '0'},
             {'title': "A Natural History of Mung Beans", 'author1': "Philomungus", 'on1': '0', 'author2': "Mungophilius", 'on2': '1'},
         ]
-        results = do_upload(self.collection, data, plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Uploaded, "The previous record should not be matched b/c the authors are in a different order.")
         self.assertIsInstance(results[2].record_result, Matched, "The previous record should be matched b/c the authors are in the same order.")
@@ -767,7 +767,7 @@ class UploadTests(UploadTestsBase):
 5091,Gastropoda,Muricoidea,Marginellidae,Prunum,,donovani,,"(Olsson, 1967)",,,,,,, , ,,USA,FLORIDA,Hendry Co.,"Cochran Pit, N of Rt. 80, W of LaBelle",,North America,Date unk'n,,,,,2,0,0,Dry; shell,Dry,,,,,,1,,,,150,,,LWD,MJP,03/12/1997,26° 44.099' N,,81° 29.027' W,,Point,,,25/10/2016,0,Marine,0,G. Moller,,G.,,Moller,,,,,,,,,,,,
 5097,Gastropoda,Muricoidea,Marginellidae,Prunum,,onchidella,,"(Dall, 1890)",,,,,,,,,,USA,FLORIDA,Hendry Co.,"Cochran Pit, N of Route 80, W of LaBelle",,North America,1972,1972,,,,10,0,0,Dry; shell,Dry,,,,,,1,,,,241,,Taken from spoil from 1972-1975.,LWD,MJP,03/12/1997,26° 44.099' N,,81° 29.027' W,,Point,,,16/08/2016,0,Marine,0,M. Buffington,,M.,,Buffington,,,,,,,,,,,,
 '''))
-        upload_results = do_upload_csv(self.collection, reader, self.example_plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
+        upload_results = do_upload_csv(self.collection, reader, self.example_plan, self.agent.id)
         uploaded_catnos = []
         for r in upload_results:
             self.assertIsInstance(r.record_result, Uploaded)
@@ -913,9 +913,9 @@ class UploadTests(UploadTestsBase):
                 'State': {'name': parse_column_options('State/Prov/Pref')},
                 'County': {'name': parse_column_options('Region')},
             }
-        ).apply_scoping(self.collection)[1]
+        ).apply_scoping(self.collection)
         row = next(reader)
-        bt = tree_record.bind(row, None, Auditor(self.collection, auditlog), sql_alchemy_session=None)
+        bt = tree_record.bind(row, None, Auditor(self.collection, auditlog))
         assert isinstance(bt, BoundTreeRecord)
         to_upload, matched = bt._match(bt._to_match())
 
@@ -964,7 +964,7 @@ class UploadTests(UploadTestsBase):
         #     parent=state,
         # )
 
-        bt = tree_record.bind(row, None, Auditor(self.collection, auditlog), sql_alchemy_session=None)
+        bt = tree_record.bind(row, None, Auditor(self.collection, auditlog))
         assert isinstance(bt, BoundTreeRecord)
         to_upload, matched = bt._match(bt._to_match())
         self.assertEqual(
@@ -975,7 +975,7 @@ class UploadTests(UploadTestsBase):
         self.assertEqual(state.id, matched.id)
         self.assertEqual(set(['State/Prov/Pref', 'Country', 'Continent/Ocean']), set(matched.info.columns))
 
-        bt = tree_record.bind(row, None, Auditor(self.collection, auditlog), sql_alchemy_session=None)
+        bt = tree_record.bind(row, None, Auditor(self.collection, auditlog))
         assert isinstance(bt, BoundTreeRecord)
         upload_result = bt.process_row()
         self.assertIsInstance(upload_result.record_result, Uploaded)
@@ -985,7 +985,7 @@ class UploadTests(UploadTestsBase):
         self.assertEqual(uploaded.definitionitem.name, "County")
         self.assertEqual(uploaded.parent.id, state.id)
 
-        bt = tree_record.bind(row, None, Auditor(self.collection, auditlog), sql_alchemy_session=None)
+        bt = tree_record.bind(row, None, Auditor(self.collection, auditlog))
         assert isinstance(bt, BoundTreeRecord)
         to_upload, matched = bt._match(bt._to_match())
         self.assertEqual([], to_upload)
@@ -993,7 +993,7 @@ class UploadTests(UploadTestsBase):
         self.assertEqual(uploaded.id, matched.id)
         self.assertEqual(set(['Region', 'State/Prov/Pref', 'Country', 'Continent/Ocean']), set(matched.info.columns))
 
-        bt = tree_record.bind(row, None, Auditor(self.collection, auditlog), sql_alchemy_session=None)
+        bt = tree_record.bind(row, None, Auditor(self.collection, auditlog))
         assert isinstance(bt, BoundTreeRecord)
         upload_result = bt.process_row()
         expected_info = ReportInfo(tableName='Geography', columns=['Continent/Ocean', 'Country', 'State/Prov/Pref', 'Region',], treeInfo=TreeInfo('County', 'Hendry Co.'))
@@ -1011,7 +1011,7 @@ class UploadTests(UploadTestsBase):
         co_entries = get_table('Spauditlog').objects.filter(tablenum=get_table('Collectionobject').specify_model.tableId)
         self.assertEqual(0, co_entries.count(), "No collection objects in audit log yet.")
 
-        upload_results = do_upload_csv(self.collection, reader, self.example_plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
+        upload_results = do_upload_csv(self.collection, reader, self.example_plan, self.agent.id)
         failed_result = upload_results[2]
         self.assertIsInstance(failed_result.record_result, FailedBusinessRule)
         for result in upload_results:
@@ -1054,7 +1054,7 @@ class UploadTests(UploadTestsBase):
             get_table('collector').objects.count(),
         ]
 
-        upload_results = do_upload_csv(self.collection, reader, self.example_plan, self.agent.id, allow_partial=False, session_url=settings.SA_TEST_DB_URL)
+        upload_results = do_upload_csv(self.collection, reader, self.example_plan, self.agent.id, allow_partial=False)
         failed_result = upload_results[2]
         self.assertIsInstance(failed_result.record_result, FailedBusinessRule)
 

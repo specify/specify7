@@ -1,5 +1,5 @@
 import type { IR, RA, RR } from '../../utils/types';
-import { group, removeKey, split, toLowerCase } from '../../utils/utils';
+import { group, split, toLowerCase } from '../../utils/utils';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';

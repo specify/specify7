@@ -105,6 +105,8 @@ export type MappingState = State<
   }
 >;
 
+export type ReadonlySpec = {readonly mustMatch: boolean; readonly columnOptions: boolean};
+
 export const getDefaultMappingState = ({
   changesMade,
   lines,
@@ -139,6 +141,7 @@ export function Mapper(props: {
   readonly changesMade: boolean;
   readonly lines: RA<MappingLine>;
   readonly mustMatchPreferences: IR<boolean>;
+  readonly readonlySpec?: ReadonlySpec
 }): JSX.Element {
   const [state, dispatch] = React.useReducer(
     reducer,
@@ -249,8 +252,7 @@ export function Mapper(props: {
 
   const id = useId('wbplanviewmapper');
 
-  const validate = (): RA<MappingPath> =>
-    findRequiredMissingFields(
+  const validate = (): RA<MappingPath> => findRequiredMissingFields(
       props.baseTableName,
       state.lines
         .map(({ mappingPath }) => mappingPath)
@@ -283,6 +285,8 @@ export function Mapper(props: {
     state.lines.length > 0 &&
     mappingPathIsComplete(state.mappingView) &&
     getMappedFieldsBind(state.mappingView).length === 0;
+  
+  const disableSave = props.readonlySpec === undefined ? isReadOnly : Object.values(props.readonlySpec).every(Boolean);
 
   return (
     <Layout
@@ -327,6 +331,7 @@ export function Mapper(props: {
               })
             }
           />
+          <ReadOnlyContext.Provider value={props.readonlySpec?.mustMatch ?? isReadOnly}>
           <MustMatch
             getMustMatchPreferences={(): IR<boolean> =>
               getMustMatchTables({
@@ -359,6 +364,7 @@ export function Mapper(props: {
                 });
             }}
           />
+          </ReadOnlyContext.Provider>
           {!isReadOnly && (
             <Button.Small
               className={
@@ -386,11 +392,12 @@ export function Mapper(props: {
           >
             {isReadOnly ? wbText.dataEditor() : commonText.cancel()}
           </Link.Small>
-          {!isReadOnly && (
+          {!disableSave && (
             <Button.Small
               disabled={!state.changesMade}
               variant={className.saveButton}
-              onClick={(): void => handleSave(false)}
+              // This is a bit complicated to resolve correctly. Each component should have its own validator..
+              onClick={(): void => handleSave(isReadOnly)}
             >
               {commonText.save()}
             </Button.Small>
@@ -547,7 +554,7 @@ export function Mapper(props: {
                   customSelectSubtype: 'simple',
                   fieldsData: mappingOptionsMenu({
                     id: (suffix) => id(`column-options-${line}-${suffix}`),
-                    isReadOnly,
+                    isReadOnly: props.readonlySpec?.columnOptions ?? isReadOnly,
                     columnOptions,
                     onChangeMatchBehaviour: (matchBehavior) =>
                       dispatch({

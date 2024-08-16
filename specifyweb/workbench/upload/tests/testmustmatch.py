@@ -39,7 +39,7 @@ class MustMatchTests(UploadTestsBase):
             dict(name="Douglas Co. KS", Continent="North America", Country="USA", State="Kansas", County="Douglas"),
             dict(name="Greene Co. MO", Continent="North America", Country="USA", State="Missouri", County="Greene")
         ]
-        results = do_upload(self.collection, data, plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         for r in results:
             assert isinstance(r.record_result, Uploaded)
 
@@ -102,7 +102,7 @@ class MustMatchTests(UploadTestsBase):
             dict(name="Douglas Co. KS", Continent="North America", Country="USA", State="Kansas", County="Douglas"),
             dict(name="Emerald City", Continent="North America", Country="USA", State="Kansas", County="Oz"),
         ]
-        results = do_upload(self.collection, data, plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertNotIsInstance(results[1].record_result, Uploaded)
         self.assertIsInstance(results[1].toOne['geography'].record_result, NoMatch)
@@ -128,7 +128,7 @@ class MustMatchTests(UploadTestsBase):
         starting_ce_count = get_table('Collectingevent').objects.count()
         starting_co_count = get_table('Collectionobject').objects.count()
 
-        results = do_upload(self.collection, data, plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         for r, expected in zip(results, [Matched, NoMatch, Matched, NoMatch]):
             self.assertIsInstance(r.toOne['collectingevent'].record_result, expected)
 
@@ -151,7 +151,7 @@ class MustMatchTests(UploadTestsBase):
 
         ce_count_before_upload = get_table('Collectingevent').objects.count()
 
-        results = do_upload(self.collection, data, plan, self.agent.id, session_url=settings.SA_TEST_DB_URL)
+        results = do_upload(self.collection, data, plan, self.agent.id)
         ces = set()
         for r, expected in zip(results, [Matched, NoMatch, NullRecord, Matched, NoMatch]):
             self.assertIsInstance(r.toOne['collectingevent'].record_result, expected)

@@ -11,7 +11,7 @@ import { wbText } from '../../localization/workbench';
 import { f } from '../../utils/functools';
 import type { RR, ValueOf } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
-import { H2, Ul } from '../Atoms';
+import { H2, H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { formatNumber } from '../Atoms/Internationalization';
 import { strictGetTable } from '../DataModel/tables';
@@ -19,6 +19,16 @@ import type { Tables } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { TableIcon } from '../Molecules/TableIcon';
 import { CreateRecordSetButton } from './RecordSet';
+import { RecordCounts } from './WbValidation';
+import { LocalizedString } from 'typesafe-i18n';
+
+
+const localizationMap: Record<keyof RecordCounts, LocalizedString> = {
+  'Uploaded': wbText.recordsCreated(),
+  'Deleted': wbText.recordsDeleted(),
+  'MatchedAndChanged': wbText.recordsMatchedAndChanged(),
+  'Updated': wbText.recordsUpdated()
+}
 
 export function WbUploaded({
   recordCounts,
@@ -27,7 +37,7 @@ export function WbUploaded({
   isUploaded,
   onClose: handleClose,
 }: {
-  readonly recordCounts: Partial<Record<Lowercase<keyof Tables>, number>>;
+  readonly recordCounts: RecordCounts;
   readonly datasetId: number;
   readonly datasetName: string;
   readonly isUploaded: boolean;
@@ -37,31 +47,17 @@ export function WbUploaded({
     <ErrorBoundary dismissible>
       <div className="flex h-full w-60 flex-col gap-4">
         <div>
-          <H2>
-            {isUploaded
-              ? wbText.uploadResults()
-              : wbText.potentialUploadResults()}
-          </H2>
+          <H2>{isUploaded ? wbText.affectedResults() : wbText.potentialAffectedResults()}</H2>
           <p>
             {isUploaded
-              ? wbText.wbUploadedDescription()
-              : wbText.wbUploadedPotentialDescription()}
+              ? wbText.wbAffectedDescription()
+              : wbText.wbAffectedPotentialDescription()
+              }
           </p>
         </div>
         <Ul className="flex flex-1 flex-col gap-2">
-          {Object.entries(recordCounts)
-            .sort(
-              sortFunction(([_tableName, recordCount]) => recordCount, false)
-            )
-            .map(([tableName, recordCount], index) =>
-              typeof recordCount === 'number' ? (
-                <TableResults
-                  key={index}
-                  recordCount={recordCount}
-                  tableName={tableName}
-                />
-              ) : null
-            )}
+          {Object.entries(recordCounts).sort(sortFunction(([value])=>value)).map(
+            ([resultType, recordsPerType], id)=><ResultsPerType resultType={resultType} recordsPerType={recordsPerType} key={id}/>)}
         </Ul>
         <div className="flex flex-wrap gap-2">
           {isUploaded && (
@@ -79,6 +75,24 @@ export function WbUploaded({
       </div>
     </ErrorBoundary>
   );
+}
+
+function ResultsPerType({resultType, recordsPerType}:{readonly resultType: keyof RecordCounts; readonly recordsPerType: ValueOf<RecordCounts>}): JSX.Element {
+  return <>
+      <H3>{localizationMap[resultType]}</H3>
+      {Object.entries(recordsPerType ?? {}).sort(
+        sortFunction(([_tableName, recordCount]) => recordCount, false)
+      )
+      .map(([tableName, recordCount], index) =>
+        typeof recordCount === 'number' ? (
+          <TableResults
+            key={index}
+            recordCount={recordCount}
+            tableName={tableName}
+          />
+        ) : null
+      )}
+  </>
 }
 
 export function TableRecordCounts({

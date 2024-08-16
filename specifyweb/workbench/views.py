@@ -21,7 +21,7 @@ from specifyweb.permissions.permissions import PermissionTarget, PermissionTarge
     check_permission_targets, check_table_permissions
 from . import models, tasks
 from .upload import upload as uploader, upload_plan_schema
-from .upload.upload import do_upload_dataset
+from .upload.upload import do_upload_dataset, rollback_batch_edit
 
 logger = logging.getLogger(__name__)
 
@@ -329,7 +329,13 @@ def datasets(request) -> http.HttpResponse:
         return http.JsonResponse(models.Spdataset.get_meta_fields(
             request,
             ["uploadresult"],
-            {'uploadplan__isnull':False} if 'with_plan' in request.GET else None
+            {
+                **({'uploadplan__isnull':False} if request.GET.get('with_plan', 0) else {}),
+                # Defaults to false, to not have funny behaviour if frontend omits isupdate. 
+                # That is, assume normal dataset is needed unless specifically told otherwise.
+                **({'isupdate': request.GET.get('isupdate', False)}),
+                **({'parent_id': None})
+            }
         ), safe=False)
 
 @openapi(schema={
@@ -626,8 +632,6 @@ def upload(request, ds, no_commit: bool, allow_partial: bool) -> http.HttpRespon
             return http.HttpResponse('dataset has already been uploaded.', status=400)
 
         taskid = str(uuid4())
-        do_upload_dataset(request.specify_collection, request.specify_user_agent.id, ds, no_commit, allow_partial, None)
-        """
         async_result = tasks.upload.apply_async([
             request.specify_collection.id,
             request.specify_user_agent.id,
@@ -640,8 +644,7 @@ def upload(request, ds, no_commit: bool, allow_partial: bool) -> http.HttpRespon
             'taskid': taskid
         }
         ds.save(update_fields=['uploaderstatus'])
-        """
-    return http.JsonResponse('ok', safe=False)
+    return http.JsonResponse(taskid, safe=False)
 
 
 @openapi(schema={
@@ -680,14 +683,14 @@ def unupload(request, ds) -> http.HttpResponse:
             return http.HttpResponse('dataset has not been uploaded.', status=400)
 
         taskid = str(uuid4())
-        async_result = tasks.unupload.apply_async([ds.id, request.specify_user_agent.id], task_id=taskid)
+        async_result = tasks.unupload.apply_async([ds.id, request.specify_collection.id, request.specify_user_agent.id], task_id=taskid)
         ds.uploaderstatus = {
             'operation': "unuploading",
             'taskid': taskid
         }
         ds.save(update_fields=['uploaderstatus'])
 
-    return http.JsonResponse(async_result.id, safe=False)
+    return http.JsonResponse('w', safe=False)
 
 
 # @login_maybe_required

@@ -1,15 +1,6 @@
 from sqlalchemy import orm, inspect
 from unittest import skip, expectedFailure
 
-from specifyweb.accounts import models as acccounts_models
-from specifyweb.attachment_gw import models as attachment_gw_models
-from specifyweb.businessrules import models as businessrules_models
-from specifyweb.context import models as context_models
-from specifyweb.notifications import models as notifications_models
-from specifyweb.permissions import models as permissions_models
-from specifyweb.interactions import models as interactions_models
-from specifyweb.workbench import models as workbench_models
-
 from django.test import TestCase
 import specifyweb.specify.models as spmodels
 from specifyweb.specify.tests.test_api import ApiTests
@@ -73,7 +64,7 @@ def setup_sqlalchemy(url: str):
       result_set = django_cursor.fetchall()
       columns = django_cursor.description
       # SqlAlchemy needs to find columns back in the rows, hence adding label to columns
-      selects = [sqlalchemy.select([sqlalchemy.literal(column).label(columns[idx][0]) for idx, column in enumerate(row)]) for row
+      selects = [sqlalchemy.select([(sqlalchemy.null() if column is None else sqlalchemy.sql.expression.literal(column) if isinstance(column, str) else column) for idx, column in enumerate(row)]) for row
                   in result_set]
       # union all instead of union because rows can be duplicated in the original query,
       # but still need to preserve the duplication

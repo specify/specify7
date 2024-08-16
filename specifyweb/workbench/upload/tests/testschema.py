@@ -17,7 +17,7 @@ class SchemaTests(UploadTestsBase):
     def test_schema_parsing(self) -> None:
         Draft7Validator.check_schema(schema)
         validate(example_plan.json, schema)
-        plan = parse_plan(example_plan.json).apply_scoping(self.collection)[1] # keeping this same
+        plan = parse_plan(example_plan.json).apply_scoping(self.collection) # keeping this same
         # have to test repr's here because NamedTuples of different
         # types can be equal if their fields are equal.
         self.assertEqual(repr(plan), repr(self.example_plan_scoped))

@@ -127,6 +127,24 @@ export function WbUtilsComponent({
         totalCount={cellCounts.newCells}
         utils={utils}
       />
+      <Navigation
+        label={wbText.updatedCells()}
+        name="updatedCells"
+        totalCount={cellCounts.updatedCells}
+        utils={utils}
+      />
+      <Navigation
+        label={wbText.deletedCells()}
+        name="deletedCells"
+        totalCount={cellCounts.deletedCells}
+        utils={utils}
+      />
+      <Navigation
+        label={wbText.matchAndChanged()}
+        name="matchedAndChangedCells"
+        totalCount={cellCounts.matchedAndChangedCells}
+        utils={utils}
+      />
       {!isUploaded && (
         <Navigation
           label={wbText.errorCells()}

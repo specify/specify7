@@ -4,7 +4,7 @@ import logging
 import os
 import re
 
-from typing import List
+from typing import List, NamedTuple, Optional, TypedDict
 import xml.dom.minidom
 from collections import namedtuple, defaultdict
 from datetime import datetime, timedelta
@@ -14,6 +14,8 @@ from django.conf import settings
 from django.db import transaction
 from sqlalchemy import sql, orm, func, select
 from sqlalchemy.sql.expression import asc, desc, insert, literal
+
+from specifyweb.specify.field_change_info import FieldChangeInfo
 
 from . import models
 from .format import ObjectFormatter
@@ -33,12 +35,20 @@ logger = logging.getLogger(__name__)
 
 SORT_TYPES = [None, asc, desc]
 
-def set_group_concat_max_len(session):
+class BuildQueryProps(NamedTuple):
+    recordsetid: Optional[int] = None
+    replace_nulls: bool = False
+    formatauditobjs: bool = False
+    distinct: bool = False
+    implicit_or: bool = True
+    format_agent_type: bool = False
+
+def set_group_concat_max_len(connection):
     """The default limit on MySQL group concat function is quite
     small. This function increases it for the database connection for
     the given session.
     """
-    session.connection().execute('SET group_concat_max_len = 1024 * 1024 * 1024')
+    connection.execute('SET group_concat_max_len = 1024 * 1024 * 1024')
 
 def filter_by_collection(model, query, collection):
     """Add predicates to the given query to filter result to items scoped
@@ -178,8 +188,8 @@ def query_to_csv(session, collection, user, tableid, field_specs, path,
 
     See build_query for details of the other accepted arguments.
     """
-    set_group_concat_max_len(session)
-    query, __ = build_query(session, collection, user, tableid, field_specs, recordsetid, replace_nulls=True, distinct=distinct)
+    set_group_concat_max_len(session.connection())
+    query, __ = build_query(session, collection, user, tableid, field_specs, BuildQueryProps(recordsetid=recordsetid, replace_nulls=True, distinct=distinct))
 
     logger.debug('query_to_csv starting')
 
@@ -215,8 +225,8 @@ def query_to_kml(session, collection, user, tableid, field_specs, path, captions
 
     See build_query for details of the other accepted arguments.
     """
-    set_group_concat_max_len(session)
-    query, __ = build_query(session, collection, user, tableid, field_specs, recordsetid, replace_nulls=True)
+    set_group_concat_max_len(session.connection())
+    query, __ = build_query(session, collection, user, tableid, field_specs, BuildQueryProps(recordsetid=recordsetid, replace_nulls=True))
 
     logger.debug('query_to_kml starting')
 
@@ -482,9 +492,9 @@ def return_loan_preps(collection, user, agent, data):
                 lp.save()
 
                 auditlog.update(lp, agent, None, [
-                    {'field_name': 'quantityresolved', 'old_value': lp.quantityresolved - quantity, 'new_value': lp.quantityresolved},
-                    {'field_name': 'quantityreturned', 'old_value': lp.quantityreturned - quantity, 'new_value': lp.quantityreturned},
-                    {'field_name': 'isresolved', 'old_value': was_resolved, 'new_value': True},
+                    FieldChangeInfo(field_name='quantityresolved', old_value=lp.quantityresolved - quantity, new_value=lp.quantityresolved),
+                    FieldChangeInfo(field_name='quantityreturned', old_value=lp.quantityreturned - quantity, new_value=lp.quantityreturned),
+                    FieldChangeInfo(field_name='isresolved', old_value=was_resolved, new_value=True)
                 ])
 
                 new_lrp = Loanreturnpreparation.objects.create(
@@ -511,11 +521,11 @@ def return_loan_preps(collection, user, agent, data):
                 ])
         return to_return
 
-def execute(session, collection, user, tableid, distinct, count_only, field_specs, limit, offset, recordsetid=None, formatauditobjs=False):
+def execute(session, collection, user, tableid, distinct, count_only, field_specs, limit, offset, format_agent_type=False, recordsetid=None, formatauditobjs=False):
     "Build and execute a query, returning the results as a data structure for json serialization"
 
-    set_group_concat_max_len(session)
-    query, order_by_exprs = build_query(session, collection, user, tableid, field_specs, recordsetid=recordsetid, formatauditobjs=formatauditobjs, distinct=distinct)
+    set_group_concat_max_len(session.connection())
+    query, order_by_exprs = build_query(session, collection, user, tableid, field_specs, BuildQueryProps(recordsetid=recordsetid, formatauditobjs=formatauditobjs, distinct=distinct, format_agent_type=format_agent_type))
 
     if count_only:
         return {'count': query.count()}
@@ -527,8 +537,7 @@ def execute(session, collection, user, tableid, distinct, count_only, field_spec
 
         return {'results': list(query)}
 
-def build_query(session, collection, user, tableid, field_specs,
-                recordsetid=None, replace_nulls=False, formatauditobjs=False, distinct=False, implicit_or=True):
+def build_query(session, collection, user, tableid, field_specs, props: BuildQueryProps = BuildQueryProps()):
     """Build a sqlalchemy query using the QueryField objects given by
     field_specs.
 
@@ -563,8 +572,8 @@ def build_query(session, collection, user, tableid, field_specs,
 
     query = QueryConstruct(
         collection=collection,
-        objectformatter=ObjectFormatter(collection, user, replace_nulls),
-        query=session.query(func.group_concat(id_field.distinct(), separator=',')) if distinct else session.query(id_field),
+        objectformatter=ObjectFormatter(collection, user, props.replace_nulls, format_agent_type=props.format_agent_type),
+        query=session.query(func.group_concat(id_field.distinct(), separator=',')) if props.distinct else session.query(id_field),
     )
 
     tables_to_read = set([
@@ -578,9 +587,9 @@ def build_query(session, collection, user, tableid, field_specs,
 
     query = filter_by_collection(model, query, collection)
 
-    if recordsetid is not None:
-        logger.debug("joining query to recordset: %s", recordsetid)
-        recordset = session.query(models.RecordSet).get(recordsetid)
+    if props.recordsetid is not None:
+        logger.debug("joining query to recordset: %s", props.recordsetid)
+        recordset = session.query(models.RecordSet).get(props.recordsetid)
         if not (recordset.dbTableId == tableid): raise AssertionError(
             f"Unexpected tableId '{tableid}' in request. Expected '{recordset.dbTableId}'",
             {"tableId" : tableid,
@@ -596,7 +605,7 @@ def build_query(session, collection, user, tableid, field_specs,
     for fs in field_specs:
         sort_type = SORT_TYPES[fs.sort_type]
 
-        query, field, predicate = fs.add_to_query(query, formatauditobjs=formatauditobjs)
+        query, field, predicate = fs.add_to_query(query, formatauditobjs=props.formatauditobjs)
         if fs.display:
             formatted_field = query.objectformatter.fieldformat(fs, field)
             query = query.add_columns(formatted_field)
@@ -608,7 +617,7 @@ def build_query(session, collection, user, tableid, field_specs,
         if predicate is not None:
             predicates_by_field[fs.fieldspec].append(predicate)
 
-    if implicit_or:
+    if props.implicit_or:
         implicit_ors = [
             reduce(sql.or_, ps)
             for ps in predicates_by_field.values()
@@ -622,8 +631,8 @@ def build_query(session, collection, user, tableid, field_specs,
         where = reduce(sql.and_, (p for ps in predicates_by_field.values() for p in ps))
         query = query.filter(where)
 
-    if distinct:
+    if props.distinct:
         query = group_by_displayed_fields(query, selected_fields)
 
-    logger.warning("query: %s", query.query)
+    logger.debug("query: %s", query.query)
     return query.query, order_by_exprs

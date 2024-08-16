@@ -18,7 +18,7 @@ import { ProtectedAction } from '../Permissions/PermissionDenied';
 import type { UploadResult } from '../WorkBench/resultsParser';
 import { savePlan } from './helpers';
 import { getLinesFromHeaders, getLinesFromUploadPlan } from './linesGetter';
-import type { MappingLine } from './Mapper';
+import type { MappingLine, ReadonlySpec } from './Mapper';
 import { Mapper } from './Mapper';
 import { BaseTableSelection } from './State';
 import type { UploadPlan } from './uploadPlanParser';
@@ -77,6 +77,7 @@ export type Dataset = DatasetBase &
     readonly rows: RA<RA<string>>;
     readonly uploadplan: UploadPlan | null;
     readonly visualorder: RA<number> | null;
+    readonly isupdate: boolean
   };
 
 /**
@@ -86,11 +87,13 @@ export function WbPlanView({
   dataset,
   uploadPlan,
   headers,
+  readonlySpec
 }: {
   readonly uploadPlan: UploadPlan | null;
   readonly headers: RA<string>;
   readonly dataset: Dataset;
-}): JSX.Element {
+  readonly readonlySpec?: ReadonlySpec
+  }): JSX.Element {
   useTitle(dataset.name);
 
   const [state, setState] = useLiveState<
@@ -169,6 +172,7 @@ export function WbPlanView({
           mustMatchPreferences,
         }).then(() => navigate(`/specify/workbench/${dataset.id}/`))
       }
+      readonlySpec={readonlySpec}
     />
   );
 }

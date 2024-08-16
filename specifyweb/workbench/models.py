@@ -1,10 +1,8 @@
 import json
-from functools import partialmethod
-from model_utils import FieldTracker
 
 from django import http
 from django.core.exceptions import ObjectDoesNotExist
-from django.db import models, transaction
+from django.db import models
 from django.http import Http404
 from django.utils import timezone
 
@@ -86,8 +84,6 @@ class Dataset(models.Model):
     class Meta:
         abstract = True
 
-    # save = partialmethod(custom_save)
-
 
 class Spdataset(Dataset):
     specify_model = datamodel.get_table('spdataset')
@@ -96,19 +92,22 @@ class Spdataset(Dataset):
     visualorder = models.JSONField(null=True)
     rowresults = models.TextField(null=True)
 
+    isupdate = models.BooleanField(default=False)
+
+    # very complicated. Essentially, each batch-edit dataset gets backed by another dataset (for rollbacks).
+    # This should be a one-to-one field, imagine the mess otherwise.
+    parent = models.OneToOneField('Spdataset', related_name='backer', null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'spdataset'
-
-    # timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
-    # save = partialmethod(custom_save)
 
     def get_dataset_as_dict(self):
         ds_dict = super().get_dataset_as_dict()
         ds_dict.update({
             "columns": self.columns,
             "visualorder": self.visualorder,
-            "rowresults": self.rowresults and json.loads(self.rowresults)
+            "rowresults": self.rowresults and json.loads(self.rowresults),
+            "isupdate": self.isupdate
         })
         return ds_dict
 

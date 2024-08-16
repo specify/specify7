@@ -8,6 +8,8 @@ import { userPreferences } from '../Preferences/userPreferences';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import type { WbMapping } from './mapping';
 import type { WbPickLists } from './pickLists';
+import { getPhysicalColToMappingCol } from './hotHelpers';
+import { BATCH_EDIT_KEY, BatchEditPack, isBatchEditNullRecord } from './batchEditHelpers';
 
 export function configureHandsontable(
   hot: Handsontable,
@@ -18,7 +20,43 @@ export function configureHandsontable(
   identifyDefaultValues(hot, mappings);
   identifyPickLists(hot, pickLists);
   setSort(hot, dataset);
+  makeUnmappedColumnsReadonly(hot, mappings, dataset);
+  makeNullRecordsReadOnly(hot, mappings, dataset);
 }
+
+// TODO: Playaround with making this part of React
+function makeUnmappedColumnsReadonly(hot: Handsontable, mappings: WbMapping | undefined, dataset: Dataset): void {
+  if (dataset.isupdate !== true || mappings === undefined) return;
+  const physicalColToMappingCol = getPhysicalColToMappingCol(mappings, dataset);
+  hot.updateSettings({
+    // not sure if anything else is needeed..
+    columns: (index) => ({readOnly: physicalColToMappingCol(index) === -1})
+  })
+}
+
+function makeNullRecordsReadOnly(hot: Handsontable, mappings: WbMapping | undefined, dataset: Dataset): void {
+  if (dataset.isupdate !== true || mappings === undefined) return;
+  const physicalColToMappingCol = getPhysicalColToMappingCol(mappings, dataset);
+  hot.updateSettings({
+    cells: (physicalRow, physicalCol, _property) => {
+      const mappingCol = physicalColToMappingCol(physicalCol);
+      const batchEditRaw: string | undefined = hot.getDataAtRow(physicalRow).at(-1)
+      const batchEditPack: BatchEditPack | undefined = batchEditRaw === undefined || batchEditRaw === null ? undefined : JSON.parse(batchEditRaw)[BATCH_EDIT_KEY];
+      if (mappingCol !== -1 && mappingCol !== undefined && batchEditPack !== undefined){
+        return {
+          readOnly: isBatchEditNullRecord(batchEditPack, mappings.baseTable, mappings.lines[mappingCol].mappingPath)
+        }
+      }
+      if (mappingCol === -1){
+        return {readOnly: true}
+      }
+      return {
+        readOnly: false
+      }
+    }
+  })
+}
+
 
 export function identifyDefaultValues(
   hot: Handsontable,

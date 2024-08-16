@@ -23,12 +23,6 @@ STRINGID_RE = re.compile(r'^([^\.]*)\.([^\.]*)\.(.*)$')
 # to request a filter on that subportion of the date.
 DATE_PART_RE = re.compile(r'(.*)((NumericDay)|(NumericMonth)|(NumericYear))$')
 
-# Pull out author or groupnumber field from taxon query fields.
-TAXON_FIELD_RE = re.compile(r'(.*) ((Author)|(groupNumber))$')
-
-# Look to see if we are dealing with a tree node ID.
-TREE_ID_FIELD_RE = re.compile(r'(.*) (ID)$')
-
 def extract_date_part(fieldname):
     match = DATE_PART_RE.match(fieldname)
     if match:
@@ -53,17 +47,39 @@ def make_table_list(fs):
     rest = [field_to_elem(f) for f in path if not isinstance(f, TreeRankQuery)]
     return ','.join(first + rest)
 
+def make_tree_fieldnames(table: Table, reverse=False):
+    mapping = {
+        'ID': table.idFieldName.lower(),
+        '': 'name' 
+    }
+    if reverse:
+        return {value: key for (key, value) in mapping.items()}
+    return mapping
+
+def find_tree_and_field(table, fieldname: str):
+    fieldname = fieldname.strip()
+    if fieldname == '':
+        return None, None
+    tree_rank_and_field = fieldname.split(' ')
+    mapping = make_tree_fieldnames(table)
+    if len(tree_rank_and_field) == 1:
+        return tree_rank_and_field[0], mapping[""]
+    tree_rank, tree_field = tree_rank_and_field
+    return tree_rank, mapping.get(tree_field, tree_field)
+
 def make_stringid(fs, table_list):
     tree_ranks = [f.name for f in fs.join_path if isinstance(f, TreeRankQuery)]
     if tree_ranks:
-        # FUTURE: Just having this for backwards compatibility;
-        field_name = tree_ranks[0]
+        field_name = tree_ranks
+        reverse = make_tree_fieldnames(fs.table, reverse=True)
+        last_field_name = fs.join_path[-1].name
+        field_name = " ".join([*field_name, reverse.get(last_field_name.lower(), last_field_name)])
     else:
         # BUG: Malformed previous stringids are rejected. they desrve it.
         field_name = (fs.join_path[-1].name if fs.join_path else '')
     if fs.date_part is not None and fs.date_part != "Full Date":
         field_name += 'Numeric' + fs.date_part
-    return table_list, fs.table.name.lower(), field_name
+    return table_list, fs.table.name.lower(), field_name.strip()
 
 class TreeRankQuery(Relationship):
     # FUTURE: used to remember what the previous value was. Useless after 6 retires
@@ -131,19 +147,8 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table root_sql_table joi
         field = node.get_field(extracted_fieldname, strict=False)
 
         if field is None: # try finding tree
-            tree_id_match = TREE_ID_FIELD_RE.match(extracted_fieldname)
-            if tree_id_match:
-                tree_rank_name = tree_id_match.group(1)
-                field = node.idFieldName
-            else:
-                tree_field_match = TAXON_FIELD_RE.match(extracted_fieldname) \
-                                   if node is datamodel.get_table('Taxon') else None
-                if tree_field_match:
-                    tree_rank_name = tree_field_match.group(1)
-                    field = (tree_field_match.group(2))
-                else:
-                    tree_rank_name = extracted_fieldname if extracted_fieldname else None
-            if tree_rank_name is not None:
+            tree_rank_name, field = find_tree_and_field(node, extracted_fieldname)
+            if tree_rank_name:
                 tree_rank = TreeRankQuery(name=tree_rank_name)
                 # doesn't make sense to query across ranks of trees. no, it doesn't block a theoretical query like family -> continent
                 tree_rank.relatedModelName = node.name

@@ -46,7 +46,7 @@ export function useHotProps({
         { length: dataset.columns.length + 1 },
         (_, physicalCol) => ({
           // Get data from nth column for nth column
-          data: physicalCol,
+          data: physicalCol
         })
       ),
     [dataset.columns.length]

@@ -10,7 +10,7 @@ from specifyweb.celery_tasks import LogErrorsTask, app
 
 from .models import Spdataset
 
-from .upload.upload import do_upload_dataset, unupload_dataset
+from .upload.upload import do_upload_dataset, rollback_batch_edit, unupload_dataset
 
 logger = get_task_logger(__name__)
 
@@ -46,7 +46,7 @@ def upload(self, collection_id: int, uploading_agent_id: int, ds_id: int, no_com
         ds.save(update_fields=['uploaderstatus'])
 
 @app.task(base=LogErrorsTask, bind=True)
-def unupload(self, ds_id: int, agent_id: int) -> None:
+def unupload(self, collection_id: int, ds_id: int, agent_id: int) -> None:
 
     def progress(current: int, total: Optional[int]) -> None:
         if not self.request.called_directly:
@@ -55,6 +55,7 @@ def unupload(self, ds_id: int, agent_id: int) -> None:
     with transaction.atomic():
         ds = Spdataset.objects.select_for_update().get(id=ds_id)
         agent = Agent.objects.get(id=agent_id)
+        collection = Collection.objects.get(id=collection_id)
 
         if ds.uploaderstatus is None:
             logger.info("dataset is not assigned to an upload task")
@@ -71,7 +72,10 @@ def unupload(self, ds_id: int, agent_id: int) -> None:
              "expectedUploadStatus" : "unuoloading",
              "localizationKey" : "invalidUploadStatus"})
 
-        unupload_dataset(ds, agent, progress)
+        if ds.isupdate:
+            rollback_batch_edit(ds, collection, agent, progress)
+        else:
+            unupload_dataset(ds, agent, progress)
 
         ds.uploaderstatus = None
         ds.save(update_fields=['uploaderstatus'])

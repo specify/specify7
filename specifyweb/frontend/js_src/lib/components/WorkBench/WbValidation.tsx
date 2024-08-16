@@ -11,10 +11,29 @@ import {
   formatToManyIndex,
   formatTreeRank,
 } from '../WbPlanView/mappingHelpers';
-import type { WbMeta } from './CellMeta';
+import type { WbCellCounts, WbMeta } from './CellMeta';
 import type { UploadResult } from './resultsParser';
 import { resolveValidationMessage } from './resultsParser';
 import type { Workbench } from './WbView';
+
+type Records = WritableArray<
+  WritableArray<
+    WritableArray<
+      Readonly<
+        readonly [
+          tableName: Lowercase<keyof Tables>,
+          id: number,
+          alternativeLabel: string | ''
+        ]
+      >
+    >
+  >
+>
+
+// just to make things manageable
+type RecordCountsKey = keyof Pick<UploadResult['UploadResult']['record_result'], 'Deleted'|'MatchedAndChanged'|'Updated'|'Uploaded'>;
+
+export type RecordCounts = Partial<Record<RecordCountsKey, Partial<Record<Lowercase<keyof Tables>, number>>>>;
 
 type UploadResults = {
   readonly ambiguousMatches: WritableArray<
@@ -25,23 +44,11 @@ type UploadResults = {
       readonly key: string;
     }>
   >;
-  readonly recordCounts: Partial<Record<Lowercase<keyof Tables>, number>>;
-  readonly newRecords: Partial<
-    WritableArray<
-      WritableArray<
-        WritableArray<
-          Readonly<
-            readonly [
-              tableName: Lowercase<keyof Tables>,
-              id: number,
-              alternativeLabel: string | ''
-            ]
-          >
-        >
-      >
-    >
-  >;
+  readonly recordCounts: RecordCounts;
+  // Updated + MatchedAndChanged + New
+  readonly interestingRecords: Records;
 };
+
 
 /* eslint-disable functional/no-this-expression */
 export class WbValidation {
@@ -58,7 +65,7 @@ export class WbValidation {
   public uploadResults: UploadResults = {
     ambiguousMatches: [],
     recordCounts: {},
-    newRecords: [],
+    interestingRecords: []
   };
 
   public constructor(private readonly workbench: Workbench) {
@@ -78,7 +85,7 @@ export class WbValidation {
     this.uploadResults = {
       ambiguousMatches: [],
       recordCounts: {},
-      newRecords: [],
+      interestingRecords: [],
     };
     this.workbench.cells.cellMeta = [];
 
@@ -89,8 +96,8 @@ export class WbValidation {
           (_, visualRow) => this.workbench.hot!.toPhysicalRow(visualRow)
         ).reverse();
         this.triggerLiveValidation();
-        this.workbench.utils?.toggleCellTypes('newCells', 'remove');
-        this.workbench.utils?.toggleCellTypes('invalidCells', 'remove');
+        const toRemove: RA<keyof WbCellCounts> = ['newCells', 'updatedCells', 'deletedCells', 'matchedAndChangedCells'];
+        toRemove.forEach((key)=>this.workbench.utils?.toggleCellTypes(key, 'remove'));
         break;
       }
       case 'off': {
@@ -261,7 +268,7 @@ export class WbValidation {
     );
 
     // Ignore these statuses
-    if (['NullRecord', 'PropagatedFailure', 'Matched'].includes(uploadStatus)) {
+    if ((['NullRecord', 'PropagatedFailure', 'Matched', 'NoChange']).includes(uploadStatus)) {
     } else if (uploadStatus === 'ParseFailures')
       recordResult.ParseFailures.failures.forEach((line) => {
         const [issueMessage, payload, column] =
@@ -311,27 +318,37 @@ export class WbValidation {
         recordResult.MatchedMultiple.info.columns,
         resolveColumns
       );
-    } else if (uploadStatus === 'Uploaded') {
+    } 
+    // TODO: Discuss if MatchedAndChanged needs to shown. or whatever.
+    else if (uploadStatus === 'Uploaded' || uploadStatus === 'Updated' || uploadStatus === 'MatchedAndChanged' || uploadStatus === 'Deleted') {
+      // All these meta ones are interesting
+      const metaKey = uploadStatus === 'Uploaded' ? 'isNew' : uploadStatus === 'Updated' ? 'isUpdated' : uploadStatus === 'MatchedAndChanged' ? 'isMatchedAndChanged' : 'isDeleted';
       setMetaCallback(
-        'isNew',
+        metaKey,
         true,
-        recordResult.Uploaded.info.columns,
+        recordResult[uploadStatus].info.columns,
         undefined
       );
-      const tableName = toLowerCase(recordResult.Uploaded.info.tableName);
-      this.uploadResults.recordCounts[tableName] ??= 0;
-      this.uploadResults.recordCounts[tableName]! += 1;
-      this.uploadResults.newRecords[physicalRow] ??= [];
+      
+      const tableName = toLowerCase(recordResult[uploadStatus].info.tableName);
+      this.uploadResults.recordCounts[uploadStatus] ??= {};
+      this.uploadResults.recordCounts[uploadStatus]![tableName]! ??= 0;
+      this.uploadResults.recordCounts[uploadStatus]![tableName]! += 1;
+
+      if (uploadStatus === 'Deleted') return; // Not sure if there is any value in showing deleted id's itself, right?
+
+      const writable = this.uploadResults.interestingRecords;
+      writable[physicalRow] ??= [];
       this.resolveValidationColumns(
-        recordResult.Uploaded.info.columns,
+        recordResult[uploadStatus].info.columns,
         undefined
       ).forEach((physicalCol) => {
-        this.uploadResults.newRecords[physicalRow]![physicalCol] ??= [];
-        this.uploadResults.newRecords[physicalRow]![physicalCol].push([
+        writable[physicalRow]![physicalCol] ??= [];
+        writable[physicalRow]![physicalCol].push([
           tableName,
-          recordResult.Uploaded.id,
-          recordResult.Uploaded.info?.treeInfo
-            ? `${recordResult.Uploaded.info.treeInfo.name} (${recordResult.Uploaded.info.treeInfo.rank})`
+          recordResult[uploadStatus].id,
+          recordResult[uploadStatus].info?.treeInfo
+            ? `${recordResult[uploadStatus].info.treeInfo!.name} (${recordResult[uploadStatus].info.treeInfo!.rank})`
             : '',
         ]);
       });

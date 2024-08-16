@@ -62,6 +62,9 @@ const config: Config = {
         indigo: {
           350: 'hsl(232deg 92% 79%)',
         },
+        peach:{
+          250: 'hsl(23deg, 92%, 75%)',
+        },
         neutral: {
           350: 'hsl(0deg 0% 73%)',
         },
