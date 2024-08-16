@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-08-15 19:09+0000\n"
+"PO-Revision-Date: 2024-08-16 08:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/schema/pt_BR/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 #: components/WebLinks/Element.tsx:40
 #, fuzzy
 msgid "table"
-msgstr ""
+msgstr "Mesa"
 
 #. Used in: Components > Attachments > Index ⬤ Components > Form Editor > Table ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
 #: components/Attachments/index.tsx:195
@@ -41,7 +41,7 @@ msgstr "Nome da tabela"
 #: components/WebLinks/Element.tsx:52
 #, fuzzy
 msgid "withoutTable"
-msgstr ""
+msgstr "Sem Mesa"
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Security > Registry
 #: components/Header/userToolDefinitions.ts:52
@@ -52,20 +52,20 @@ msgstr ""
 #: components/Security/registry.ts:206
 #, fuzzy
 msgid "schemaConfig"
-msgstr ""
+msgstr "Configuração do esquema"
 
 #. Used in: Components > Schema Config > Index
 #: components/SchemaConfig/index.tsx:75
 #, fuzzy
 msgid "unsavedSchemaUnloadProtect"
-msgstr ""
+msgstr "As alterações do esquema não foram salvas"
 
 #. Used in: Components > Schema Config > Components ⬤ Components > Wb Plan View > Mapper Components
 #: components/SchemaConfig/Components.tsx:38
 #: components/WbPlanView/MapperComponents.tsx:320
 #, fuzzy
 msgid "changeBaseTable"
-msgstr ""
+msgstr "Alterar tabela base"
 
 #. Used in: Components > Formatters > Fields ⬤ Components > Locality Update > Status ⬤ Components > Schema Config > Field ⬤ Components > Web Links > Definition
 #: components/Formatters/Fields.tsx:69
@@ -75,7 +75,7 @@ msgstr ""
 #: components/WebLinks/Definition.tsx:25
 #, fuzzy
 msgid "field"
-msgstr ""
+msgstr "Campo"
 
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Viewer > Fields
 #: components/FormMeta/CarryForward.tsx:349
@@ -86,7 +86,7 @@ msgstr ""
 #: components/SchemaViewer/Fields.tsx:43
 #, fuzzy
 msgid "fields"
-msgstr ""
+msgstr "Campos"
 
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Viewer > Relationships
 #: components/FormMeta/CarryForward.tsx:358
@@ -112,14 +112,14 @@ msgstr "Banco de dados"
 #: components/SchemaConfig/UniquenessRuleScope.tsx:178
 #, fuzzy
 msgid "setScope"
-msgstr ""
+msgstr "Definir escopo"
 
 #. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table
 #: components/SchemaConfig/Field.tsx:49
 #: components/SchemaConfig/Table.tsx:56
 #, fuzzy
 msgid "caption"
-msgstr ""
+msgstr "Rubrica"
 
 #. Used in: Components > Export Feed > Editor ⬤ Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv ⬤ Components > Security > Role ⬤ Components > Web Links > Element
 #: components/ExportFeed/Editor.tsx:62
@@ -133,7 +133,7 @@ msgstr ""
 #: components/WebLinks/Element.tsx:30
 #, fuzzy
 msgid "description"
-msgstr ""
+msgstr "Descrição"
 
 #. Used in: Components > Schema Config > Table
 #: components/SchemaConfig/Table.tsx:104
@@ -145,7 +145,7 @@ msgstr "Ocultar tabela"
 #: components/SchemaConfig/Field.tsx:88
 #, fuzzy
 msgid "hideField"
-msgstr ""
+msgstr "Ocultar campo"
 
 #. Used in: Components > Formatters > Types ⬤ Components > Schema Config > Table
 #: components/Formatters/Types.tsx:56
@@ -159,7 +159,7 @@ msgstr "Formato de tabela"
 #: components/SchemaConfig/Table.tsx:148
 #, fuzzy
 msgid "tableAggregation"
-msgstr ""
+msgstr "Agregação de tabelas"
 
 #. Used in: Components > Schema Config > Helpers
 #: components/SchemaConfig/helpers.ts:85
@@ -171,7 +171,7 @@ msgstr "Um para um"
 #: components/SchemaConfig/helpers.ts:86
 #, fuzzy
 msgid "oneToMany"
-msgstr ""
+msgstr "Um para muitos"
 
 #. Used in: Components > Schema Config > Helpers
 #: components/SchemaConfig/helpers.ts:87
@@ -183,7 +183,7 @@ msgstr "Muitos para um"
 #: components/SchemaConfig/helpers.ts:88
 #, fuzzy
 msgid "manyToMany"
-msgstr ""
+msgstr "muitos para muitos"
 
 #. Used in: Components > Schema Config > Field ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/SchemaConfig/Field.tsx:69
@@ -191,7 +191,7 @@ msgstr ""
 #: components/SchemaViewer/schemaToTsv.tsx:28
 #, fuzzy
 msgid "fieldLength"
-msgstr ""
+msgstr "Sem Mesa"
 
 #. Used in: Components > Form Meta > Index ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/FormMeta/index.tsx:74
@@ -200,7 +200,7 @@ msgstr ""
 #: components/SchemaViewer/schemaToTsv.tsx:24
 #, fuzzy
 msgid "readOnly"
-msgstr ""
+msgstr "Somente leitura"
 
 #. Used in: Components > Schema Config > Format
 #: components/SchemaConfig/Format.tsx:55
@@ -212,14 +212,14 @@ msgstr "Formato de campo"
 #: components/SchemaConfig/Format.tsx:65
 #, fuzzy
 msgid "formatted"
-msgstr ""
+msgstr "Formatado"
 
 #. Used in: Components > Schema Config > Format ⬤ Components > Web Links > Element
 #: components/SchemaConfig/Format.tsx:92
 #: components/WebLinks/Element.tsx:26
 #, fuzzy
 msgid "webLink"
-msgstr ""
+msgstr "Link da Web"
 
 #. Used in: Components > Schema Config > Format
 #: components/SchemaConfig/Format.tsx:120
@@ -241,7 +241,7 @@ msgstr "Campos Únicos"
 #: components/SchemaViewer/schemaToTsv.tsx:29
 #, fuzzy
 msgid "databaseColumn"
-msgstr ""
+msgstr "Coluna do banco de dados"
 
 #. Used in: Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/SchemaViewer/Relationships.tsx:102
@@ -255,7 +255,7 @@ msgstr "Modelo relacionado"
 #: components/SchemaViewer/schemaToTsv.tsx:31
 #, fuzzy
 msgid "otherSideName"
-msgstr ""
+msgstr "Nome do outro lado"
 
 #. Used in: Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/SchemaViewer/Relationships.tsx:61
@@ -263,25 +263,25 @@ msgstr ""
 #: components/SchemaViewer/schemaToTsv.tsx:32
 #, fuzzy
 msgid "dependent"
-msgstr ""
+msgstr "Dependente"
 
 #. Used in: Components > Schema Viewer > Relationships
 #: components/SchemaViewer/Relationships.tsx:77
 #, fuzzy
 msgid "independent"
-msgstr ""
+msgstr "Independente"
 
 #. Used in: Components > Schema Viewer > Index
 #: components/SchemaViewer/index.tsx:44
 #, fuzzy
 msgid "downloadAsJson"
-msgstr ""
+msgstr "Baixar como JSON"
 
 #. Used in: Components > Schema Viewer > Index
 #: components/SchemaViewer/index.tsx:51
 #, fuzzy
 msgid "downloadAsXml"
-msgstr ""
+msgstr "Baixar como XML"
 
 #. Used in: Components > Schema Viewer > Index
 #: components/SchemaViewer/index.tsx:64
@@ -294,13 +294,13 @@ msgstr "Baixar como TSV"
 #: components/SchemaViewer/schemaToTsv.tsx:19
 #, fuzzy
 msgid "tableId"
-msgstr ""
+msgstr "ID da tabela"
 
 #. Used in: Components > Schema Viewer > Table
 #: components/SchemaViewer/Table.tsx:62
 #, fuzzy
 msgid "fieldCount"
-msgstr ""
+msgstr "Contagem de campos"
 
 #. Used in: Components > Schema Viewer > Table
 #: components/SchemaViewer/Table.tsx:63
@@ -314,19 +314,19 @@ msgstr "Contagem de relacionamento"
 #: components/Router/Routes.tsx:49
 #, fuzzy
 msgid "databaseSchema"
-msgstr ""
+msgstr "Esquema de banco de dados"
 
 #. Used in: Components > Toolbar > Query Tables Edit
 #: components/Toolbar/QueryTablesEdit.tsx:90
 #, fuzzy
 msgid "selectedTables"
-msgstr ""
+msgstr "Tabelas selecionadas"
 
 #. Used in: Components > Toolbar > Query Tables Edit
 #: components/Toolbar/QueryTablesEdit.tsx:88
 #, fuzzy
 msgid "possibleTables"
-msgstr ""
+msgstr "Tabelas Possíveis"
 
 #. Used in: Components > Schema Viewer > Table
 #: components/SchemaViewer/Table.tsx:45
@@ -338,7 +338,7 @@ msgstr "Ir para o topo"
 #: components/SchemaViewer/Fields.tsx:31
 #, fuzzy
 msgid "idField"
-msgstr ""
+msgstr "Campo ID"
 
 #. Used in: Components > Schema Config > Table Uniqueness Rules
 #: components/SchemaConfig/TableUniquenessRules.tsx:145
@@ -351,7 +351,7 @@ msgstr "{tableName:string} Regras de Unicidade"
 #: components/SchemaConfig/Table.tsx:93
 #, fuzzy
 msgid "uniquenessRules"
-msgstr ""
+msgstr "Regras de exclusividade"
 
 #. Used in: Components > Schema Config > Table Uniqueness Rules ⬤ Components > Schema Config > Uniqueness Rule Row
 #: components/SchemaConfig/TableUniquenessRules.tsx:178
@@ -364,13 +364,13 @@ msgstr "Campos Únicos"
 #: components/SchemaConfig/TableUniquenessRules.tsx:136
 #, fuzzy
 msgid "addUniquenessRule"
-msgstr ""
+msgstr "Adicionar regra de exclusividade"
 
 #. Used in: Components > Schema Config > Uniqueness Rule Row
 #: components/SchemaConfig/UniquenessRuleRow.tsx:240
 #, fuzzy
 msgid "configureUniquenessRule"
-msgstr ""
+msgstr "Configurar regra de exclusividade"
 
 #. Used in: Components > Schema Config > Table Uniqueness Rules ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Viewer > Fields
 #: components/SchemaConfig/TableUniquenessRules.tsx:179
@@ -378,7 +378,7 @@ msgstr ""
 #: components/SchemaViewer/Fields.tsx:38
 #, fuzzy
 msgid "scope"
-msgstr ""
+msgstr "Escopo"
 
 #. Used in: Components > Schema Config > Uniqueness Rule Row
 #: components/SchemaConfig/UniquenessRuleRow.tsx:59
@@ -391,25 +391,25 @@ msgstr "Duplicatas encontradas no banco de dados"
 #: components/SchemaConfig/UniquenessRuleRow.tsx:233
 #, fuzzy
 msgid "exportDuplicates"
-msgstr ""
+msgstr "Exportar Duplicatas"
 
 #. Used in: Components > Schema Config > Uniqueness Rule Row
 #: components/SchemaConfig/UniquenessRuleRow.tsx:208
 #, fuzzy
 msgid "numberOfDuplicates"
-msgstr ""
+msgstr "Contagem de campos"
 
 #. Used in: Components > Schema Config > Index
 #: components/SchemaConfig/index.tsx:38
 #, fuzzy
 msgid "schemaViewTitle"
-msgstr ""
+msgstr "Configuração do esquema: {tableName:string}"
 
 #. Used in: Components > Schema Viewer > Index
 #: components/SchemaViewer/index.tsx:57
 #, fuzzy
 msgid "schemaExportFileName"
-msgstr ""
+msgstr "Especifique 7 modelos de dados"
 
 #. Used in: Components > Schema Config > Fields
 #: components/SchemaConfig/Fields.tsx:78
@@ -421,10 +421,10 @@ msgstr "Classificar por campos ocultos"
 #: components/SchemaConfig/Fields.tsx:93
 #, fuzzy
 msgid "hidden"
-msgstr ""
+msgstr "escondido"
 
 #. Used in: Components > Formatters > Fields
 #: components/Formatters/Fields.tsx:70
 #, fuzzy
 msgid "customFieldFormat"
-msgstr ""
+msgstr "Formato de campo personalizado"
