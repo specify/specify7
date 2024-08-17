@@ -33,6 +33,11 @@ class TestTreeSetup(ApiTests):
         self.taxontreedef.treedefitems.create(name='Species', rankid=220)
         self.taxontreedef.treedefitems.create(name='Subspecies', rankid=230)
 
+        self.collectionobjecttype.taxontreedef = self.taxontreedef
+        self.collectionobjecttype.save()
+        self.collection.collectionobjecttype = self.collectionobjecttype
+        self.collection.save()
+
 class TestTree:
 
     def setUp(self)->None:
@@ -302,9 +307,6 @@ class AddDeleteRankResourcesTest(ApiTests):
         c = Client()
         c.force_login(self.specifyuser)
 
-        for obj in models.Taxontreedefitem.objects.all():
-            obj.delete()
-
         treedef_taxon = models.Taxontreedef.objects.create(name='TaxonTest')
 
         # Test adding default rank on empty heirarchy
@@ -349,7 +351,7 @@ class AddDeleteRankResourcesTest(ApiTests):
                          models.Taxontreedefitem.objects.get(name='Taxonomy Root').id)
 
         # Test foreign keys
-        for rank in models.Taxontreedefitem.objects.all():
+        for rank in models.Taxontreedefitem.objects.filter(treedef=treedef_taxon):
             self.assertEqual(treedef_taxon.id, rank.treedef.id)
 
         # Create test nodes

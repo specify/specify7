@@ -280,6 +280,8 @@ class make_boolean_field(make_field):
 # appropriate field constructor functions.
 field_type_map = {
     'text': make_text_field,
+    'json': make_text_field,
+    'blob': make_text_field,
     'java.lang.String': make_string_field,
     'java.lang.Integer': make_integer_field,
     'java.lang.Long': make_integer_field,
