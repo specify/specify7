@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-08-01 18:20+0000\n"
+"PO-Revision-Date: 2024-08-18 15:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "forms/uk/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.7-dev\n"
+"X-Generator: Weblate 5.7\n"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:705
@@ -263,7 +263,7 @@ msgstr "Зберегти конфлікт"
 msgid "saveConflictDescription"
 msgstr ""
 "Дані, показані на цій сторінці, були змінені іншим користувачем або на іншій "
-"вкладці браузера та застаріли. Сторінку необхідно перезавантажити, щоб "
+"вкладці браузера та застаріли. Сторінку потрібно перезавантажити, щоб "
 "запобігти збереженню суперечливих даних."
 
 #. Used in: Components > Forms > Save
@@ -419,7 +419,7 @@ msgstr "особа"
 #: components/PickLists/definitions.ts:29
 #, fuzzy
 msgid "other"
-msgstr "Інший"
+msgstr "інше"
 
 #. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:30
@@ -534,7 +534,7 @@ msgstr "Нічого не знайдено"
 #: components/Forms/Save.tsx:256
 #, fuzzy
 msgid "carryForward"
-msgstr "Переносити"
+msgstr "Перенести вперед"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:117
@@ -558,7 +558,7 @@ msgstr "Показати підрахунок масового переносу"
 #: components/Forms/Save.tsx:257
 #, fuzzy
 msgid "carryForwardDescription"
-msgstr "Створіть новий запис із певними перенесеними полями"
+msgstr "Створіть новий запис із перенесеними певними полями"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:120
@@ -583,7 +583,7 @@ msgstr "Налаштувати поля для перенесення ({tableNam
 #: components/FormMeta/CarryForward.tsx:335
 #, fuzzy
 msgid "bulkCarryForwardTableSettingsDescription"
-msgstr "Налаштувати поля для масового перенесення ({tableName:string})"
+msgstr "Налаштувати масове перенесення полів ({tableName:string})"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:408
