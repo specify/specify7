@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-08-01 18:20+0000\n"
+"PO-Revision-Date: 2024-08-18 15:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/forms/"
 "es/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.7-dev\n"
+"X-Generator: Weblate 5.7\n"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:705
@@ -127,13 +127,13 @@ msgstr "Hoy"
 #: components/FormPlugins/DateInput.tsx:144
 #, fuzzy
 msgid "todayButtonDescription"
-msgstr "Establecer en la fecha actual"
+msgstr "Establecer en fecha actual"
 
 #. Used in: Components > Pick Lists > Index
 #: components/PickLists/index.tsx:285
 #, fuzzy
 msgid "addToPickListConfirmation"
-msgstr "¿Agregar a {pickListTable:string}?"
+msgstr "¿Añadir a {pickListTable:string}?"
 
 #. Used in: Components > Pick Lists > Index
 #: components/PickLists/index.tsx:290
@@ -147,13 +147,13 @@ msgstr ""
 #: components/PickLists/index.tsx:252
 #, fuzzy
 msgid "invalidType"
-msgstr "Tipo no válido"
+msgstr "Tipo inválido"
 
 #. Used in: Components > Pick Lists > Index
 #: components/PickLists/index.tsx:255
 #, fuzzy
 msgid "invalidNumericPicklistValue"
-msgstr "En este {pickListTable:string} solo se admiten valores numéricos."
+msgstr "En este {pickListTable:string} solo se admiten valores numéricos"
 
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 #: components/Attachments/Plugin.tsx:88
@@ -168,7 +168,9 @@ msgstr "Sin datos."
 #: components/Toolbar/RecordSetEdit.tsx:42
 #, fuzzy
 msgid "recordSetDeletionWarning"
-msgstr "Clon"
+msgstr ""
+"Se eliminará el {recordSetTable:string} \"{recordSetName:string}\". Los "
+"registros a los que se hace referencia NO se eliminarán de la base de datos."
 
 #. Used in: Components > Form Commands > Index ⬤ Components > Form Meta > Edit History ⬤ Components > Form Meta > Merge Record
 #: components/FormCommands/index.tsx:39
@@ -176,7 +178,7 @@ msgstr "Clon"
 #: components/FormMeta/MergeRecord.tsx:53
 #, fuzzy
 msgid "saveRecordFirst"
-msgstr "El artículo se eliminó correctamente."
+msgstr "Guardar registro primero"
 
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 #: components/FormSliders/Slider.tsx:32
@@ -206,7 +208,7 @@ msgstr "Récord anterior"
 #: components/FormSliders/Slider.tsx:90
 #, fuzzy
 msgid "nextRecord"
-msgstr "Próximo registro"
+msgstr "Siguiente récord"
 
 #. Used in: Components > Form Sliders > Slider
 #: components/FormSliders/Slider.tsx:57
@@ -233,9 +235,10 @@ msgstr "Guardar conflicto"
 #, fuzzy
 msgid "saveConflictDescription"
 msgstr ""
-"Los datos mostrados en esta página han sido modificados por otro usuario o "
-"en otra pestaña del navegador y están desactualizados. La página debe "
-"recargarse para evitar que se guarden datos inconsistentes."
+"Los datos que se muestran en esta página han sido modificados por otro "
+"usuario o en otra pestaña del navegador y no están actualizados. Es "
+"necesario volver a cargar la página para evitar que se guarden datos "
+"incoherentes."
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:373
@@ -247,7 +250,7 @@ msgstr "Información de registro"
 #: components/Forms/Save.tsx:376
 #, fuzzy
 msgid "saveBlockedDescription"
-msgstr "El formulario no se puede guardar debido al siguiente error:"
+msgstr "No se puede guardar el formulario debido al siguiente error:"
 
 #. Used in: Components > Form Commands > Index
 #: components/FormCommands/index.tsx:115
@@ -419,7 +422,8 @@ msgstr "¿Continuar sin guardar?"
 #: components/FormSliders/RecordSelectorFromIds.tsx:281
 #, fuzzy
 msgid "recordSelectorUnloadProtectDescription"
-msgstr "Es posible que desee guardar este registro antes de navegar."
+msgstr ""
+"Es posible que desees guardar este registro antes de continuar navegando."
 
 #. Used in: Components > Form Sliders > Record Selector From Ids
 #: components/FormSliders/RecordSelectorFromIds.tsx:226
@@ -455,13 +459,13 @@ msgstr "(eliminado)"
 #: components/FormSliders/RecordSet.tsx:499
 #, fuzzy
 msgid "duplicateRecordSetItem"
-msgstr "Duplicado {recordSetItemTable:string}"
+msgstr "Duplicar {recordSetItemTable:string}"
 
 #. Used in: Components > Form Sliders > Record Set
 #: components/FormSliders/RecordSet.tsx:504
 #, fuzzy
 msgid "duplicateRecordSetItemDescription"
-msgstr "Este registro ya está presente en el {recordSetTable:string} actual."
+msgstr "Este registro ya está presente en el actual {recordSetTable:string}"
 
 #. Used in: Components > Form Sliders > Record Selector From Ids
 #: components/FormSliders/RecordSelectorFromIds.tsx:175
@@ -473,14 +477,14 @@ msgstr "Añadir a {recordSetTable:string}"
 #: components/FormSliders/RecordSelectorFromIds.tsx:180
 #, fuzzy
 msgid "removeFromRecordSet"
-msgstr "Quitar de {recordSetTable:string}"
+msgstr "Eliminar de {recordSetTable:string}"
 
 #. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Molecules > Auto Complete
 #: components/AttachmentsBulkImport/utils.ts:484
 #: components/Molecules/AutoComplete.tsx:533
 #, fuzzy
 msgid "nothingFound"
-msgstr "Nada Encontrado"
+msgstr "No se encontró nada"
 
 #. 🟥Verb. Button label. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:256
@@ -523,25 +527,25 @@ msgstr "Configurar campos para transferir"
 #: components/FormMeta/CarryForward.tsx:184
 #, fuzzy
 msgid "bulkCarryForwardSettingsDescription"
-msgstr "Configurar campos para realizar transferencias masivas"
+msgstr "Configurar campos para transferirlos en forma masiva"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:338
 #, fuzzy
 msgid "carryForwardTableSettingsDescription"
-msgstr "Configurar campos para transferir ({tableName:string})"
+msgstr "Configurar campos para trasladar ({tableName:string})"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:335
 #, fuzzy
 msgid "bulkCarryForwardTableSettingsDescription"
-msgstr "Configurar campos para transferencia masiva ({tableName:string})"
+msgstr "Configurar campos para transferirlos en bloque ({tableName:string})"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:408
 #, fuzzy
 msgid "carryForwardUniqueField"
-msgstr "Este campo debe ser único. No se puede trasladar"
+msgstr "Este campo debe ser único. No se puede transferir."
 
 #. Used in: Components > Form Meta > Clone
 #: components/FormMeta/Clone.tsx:31
@@ -566,7 +570,7 @@ msgstr "Crear un nuevo registro en blanco"
 #: components/FormMeta/AutoNumbering.tsx:92
 #, fuzzy
 msgid "autoNumbering"
-msgstr "Numeración automática"
+msgstr "Metaformulario"
 
 #. Used in: Components > Form Meta > Definition
 #: components/FormMeta/Definition.tsx:138
@@ -578,13 +582,13 @@ msgstr "Editar definición de formulario"
 #: components/FormMeta/Definition.tsx:87
 #, fuzzy
 msgid "useAutoGeneratedForm"
-msgstr "Usar formulario generado automáticamente"
+msgstr "Utilice el formulario generado automáticamente"
 
 #. Used in: Components > Form Meta > Definition
 #: components/FormMeta/Definition.tsx:119
 #, fuzzy
 msgid "useFieldLabels"
-msgstr "Utilice etiquetas de campo localizadas"
+msgstr "Comando N/A"
 
 #. Used in: Components > Form Editor > Editor
 #: components/FormEditor/Editor.tsx:205
@@ -603,13 +607,13 @@ msgstr "Mostrar nombres de campos del modelo de datos"
 #: components/FormMeta/EditHistory.tsx:57
 #, fuzzy
 msgid "editHistory"
-msgstr "Editar historial"
+msgstr "Historial de edición"
 
 #. Used in: Components > Form Meta > Edit History
 #: components/FormMeta/EditHistory.tsx:82
 #, fuzzy
 msgid "editHistoryQueryName"
-msgstr "Editar historial de \"{formattedRecord:string}\""
+msgstr "Historial de edición de \"{formattedRecord:string}\""
 
 #. Used in: Components > Form Meta > Index
 #: components/FormMeta/index.tsx:147
@@ -651,7 +655,7 @@ msgstr "Usos de la lista de selección \"{pickList:string}\""
 #: components/FormMeta/SubViewMeta.tsx:36
 #, fuzzy
 msgid "subForm"
-msgstr "Subformulario"
+msgstr "Subform"
 
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 #: components/FormMeta/SubViewMeta.tsx:37
@@ -682,14 +686,14 @@ msgstr "Copiar Especificar 6 configuraciones"
 #: components/DataEntryTables/Edit.tsx:79
 #, fuzzy
 msgid "useCustomSettings"
-msgstr "Usar configuraciones personalizadas"
+msgstr "Utilice configuraciones personalizadas"
 
 #. Used in: Components > Form Meta > Read Only Mode ⬤ Components > Header > User Tools
 #: components/FormMeta/ReadOnlyMode.tsx:20
 #: components/Header/UserTools.tsx:91
 #, fuzzy
 msgid "disableReadOnly"
-msgstr "Desactivar el modo de solo lectura"
+msgstr "Deshabilitar el modo de solo lectura"
 
 #. Used in: Components > Form Meta > Read Only Mode
 #: components/FormMeta/ReadOnlyMode.tsx:20
@@ -714,7 +718,7 @@ msgstr "Configurar tablas de interacción"
 #: components/FormMeta/index.tsx:69
 #, fuzzy
 msgid "formMeta"
-msgstr "Metaformulario"
+msgstr "Formulario Meta"
 
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor ⬤ Components > Formatters > Formatters ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Data Obj Formatters
 #: components/AppResources/Create.tsx:283
