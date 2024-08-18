@@ -1,15 +1,8 @@
 name: Dockerize Experimental
 
 on:
-  # This is for evaluation purposes
-  workflow_dispatch:
-    inputs:
-      manual_trigger:
-        description: 'Manual trigger'
-        required: true
-        default: 'true'
-#  push:
-#  pull_request:
+  push:
+  pull_request:
 
 jobs:
   dockerize:
