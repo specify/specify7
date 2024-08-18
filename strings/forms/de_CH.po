@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2024-08-01 18:20+0000\n"
+"PO-Revision-Date: 2024-08-18 15:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/forms/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.7-dev\n"
+"X-Generator: Weblate 5.7\n"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:705
@@ -222,7 +222,7 @@ msgstr "Letzter Eintrag"
 #: components/FormSliders/Slider.tsx:43
 #, fuzzy
 msgid "previousRecord"
-msgstr "Bisherigen Rekord"
+msgstr "Vorheriger Eintrag"
 
 #. Used in: Components > Form Sliders > Slider
 #: components/FormSliders/Slider.tsx:87
@@ -335,8 +335,8 @@ msgstr "Dieses Plugin ist derzeit nicht verfügbar für Specify 7"
 #, fuzzy
 msgid "wrongTableForPlugin"
 msgstr ""
-"Möglicherweise möchten Sie diesen Datensatz speichern, bevor Sie "
-"wegnavigieren."
+"Dieses Plugin kann nicht im Formular {currentTable:string} verwendet werden. "
+"Versuchen Sie, es in die Formulare {supportedTables:string} zu verschieben."
 
 #. Used in: Components > Form Commands > Index
 #: components/FormCommands/index.tsx:151
@@ -389,7 +389,7 @@ msgstr "Ungültiger Wert"
 #: utils/parser/__tests__/parse.test.ts:228
 #, fuzzy
 msgid "requiredFormat"
-msgstr "Kopieren Geben Sie 6 Einstellungen an"
+msgstr "Erforderliches Format: {format:string}."
 
 #. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Parse
 #: utils/parser/definitions.ts:49
@@ -398,9 +398,7 @@ msgstr "Kopieren Geben Sie 6 Einstellungen an"
 #: utils/parser/__tests__/parse.test.ts:181
 #, fuzzy
 msgid "inputTypeNumber"
-msgstr ""
-"Die Ressource kann nicht gelöscht werden, da sie von den folgenden "
-"Ressourcen referenziert wird:"
+msgstr "Der Wert muss eine Zahl sein"
 
 #. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:27
@@ -528,7 +526,7 @@ msgstr "Entfernen aus {recordSetTable:string}"
 #: components/Molecules/AutoComplete.tsx:533
 #, fuzzy
 msgid "nothingFound"
-msgstr "Nichts gefunden"
+msgstr "Keine gefunden"
 
 #. 🟥Verb. Button label. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:256
@@ -674,7 +672,7 @@ msgstr "Formularstatus"
 #: components/FormMeta/index.tsx:227
 #, fuzzy
 msgid "recordInformation"
-msgstr "Informationen aufnehmen"
+msgstr "Datensatzinformationen"
 
 #. Used in: Components > Form Meta > Share Record
 #: components/FormMeta/ShareRecord.tsx:44
@@ -737,7 +735,7 @@ msgstr "Benutzerdefinierte Einstellungen verwenden"
 #: components/Header/UserTools.tsx:91
 #, fuzzy
 msgid "disableReadOnly"
-msgstr "Werte von [X10X] müssen für [X44X] eindeutig sein."
+msgstr "Deaktivieren des Nur-Lese-Modus"
 
 #. Used in: Components > Form Meta > Read Only Mode
 #: components/FormMeta/ReadOnlyMode.tsx:20
@@ -762,7 +760,7 @@ msgstr "Konfigurieren Sie Interaktionstabellen"
 #: components/FormMeta/index.tsx:69
 #, fuzzy
 msgid "formMeta"
-msgstr "Formularstatus"
+msgstr "Formular-Meta"
 
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor ⬤ Components > Formatters > Formatters ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Data Obj Formatters
 #: components/AppResources/Create.tsx:283
