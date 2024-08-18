@@ -8,7 +8,7 @@ env:
   REGISTRY_IMAGE: specifyconsortium/specify7-service
 
 jobs:
-  dockerize:
+  build:
     runs-on: ubuntu-latest
     # "push" event is not triggered for forks, so need to listen for
     # pull_requests, but only for external ones, so as not to run the action
