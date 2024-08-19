@@ -1,4 +1,4 @@
-name: Dockerize Experimental
+name: Dockerize
 
 on:
   push:
