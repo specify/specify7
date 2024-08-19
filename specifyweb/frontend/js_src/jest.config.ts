@@ -224,7 +224,7 @@ const config: Config.InitialOptions = {
 
   // See https://stackoverflow.com/questions/69075510/jest-tests-failing-on-d3-import
   transformIgnorePatterns: [
-    '/node_modules/(?!d3|d3-array|internmap|delaunator|robust-predicates|csv-stringify)',
+    '/node_modules/(?!d3|d3-array|internmap|delaunator|robust-predicates|csv-stringify|csv-parse)',
   ],
 
   // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them

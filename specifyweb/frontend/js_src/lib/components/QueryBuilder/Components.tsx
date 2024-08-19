@@ -181,8 +181,7 @@ export function QueryButton({
 }
 
 /**
- * Create a Record Set from all query results.
- * See also `CreateRecordSet`
+ * Create a Record Set from query results.
  */
 export function MakeRecordSetButton({
   baseTableName,

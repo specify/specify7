@@ -2232,7 +2232,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(db_column='workbenchrowid', primary_key=True, serialize=False)),
                 ('biogeomancerresults', models.TextField(blank=True, db_column='BioGeomancerResults', null=True)),
-                ('_cardimagedata', models.BinaryField(blank=True, db_column='CardImageData', null=True)),
+                ('cardimagedata', models.BinaryField(blank=True, db_column='CardImageData', null=True)),
                 ('cardimagefullpath', models.CharField(blank=True, db_column='CardImageFullPath', max_length=255, null=True)),
                 ('errorestimate', models.DecimalField(blank=True, db_column='ErrorEstimate', decimal_places=10, max_digits=22, null=True)),
                 ('errorpolygon', models.TextField(blank=True, db_column='ErrorPolygon', null=True)),
@@ -2308,7 +2308,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(db_column='workbenchrowimageid', primary_key=True, serialize=False)),
                 ('attachtotablename', models.CharField(blank=True, db_column='AttachToTableName', max_length=64, null=True)),
-                ('_cardimagedata', models.BinaryField(blank=True, db_column='CardImageData', null=True)),
+                ('cardimagedata', models.BinaryField(blank=True, db_column='CardImageData', null=True)),
                 ('cardimagefullpath', models.CharField(blank=True, db_column='CardImageFullPath', max_length=255, null=True)),
                 ('imageorder', models.IntegerField(blank=True, db_column='ImageOrder', null=True)),
                 ('workbenchrow', models.ForeignKey(db_column='WorkbenchRowID', on_delete=django.db.models.deletion.DO_NOTHING, related_name='workbenchrowimages', to='specify.workbenchrow')),
@@ -2430,7 +2430,7 @@ class Migration(migrations.Migration):
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
-                ('parent', models.ForeignKey(db_column='ParentItemID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='children', to='specify.taxontreedefitem')),
+                ('parent', models.ForeignKey(db_column='ParentItemID', null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='children', to='specify.taxontreedefitem')),
                 ('treedef', models.ForeignKey(db_column='TaxonTreeDefID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='treedefitems', to='specify.taxontreedef')),
             ],
             options={
@@ -2722,7 +2722,7 @@ class Migration(migrations.Migration):
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
-                ('parent', models.ForeignKey(db_column='ParentItemID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='children', to='specify.storagetreedefitem')),
+                ('parent', models.ForeignKey(db_column='ParentItemID', null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='children', to='specify.storagetreedefitem')),
                 ('treedef', models.ForeignKey(db_column='StorageTreeDefID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='treedefitems', to='specify.storagetreedef')),
             ],
             options={
@@ -3028,7 +3028,7 @@ class Migration(migrations.Migration):
             name='Spappresourcedata',
             fields=[
                 ('id', models.AutoField(db_column='spappresourcedataid', primary_key=True, serialize=False)),
-                ('_data', models.BinaryField(blank=True, db_column='data', null=True)),
+                ('data', models.BinaryField(blank=True, db_column='data', null=True)),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
                 ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
@@ -3968,7 +3968,7 @@ class Migration(migrations.Migration):
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
-                ('parent', models.ForeignKey(db_column='ParentItemID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='children', to='specify.lithostrattreedefitem')),
+                ('parent', models.ForeignKey(db_column='ParentItemID', null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='children', to='specify.lithostrattreedefitem')),
                 ('treedef', models.ForeignKey(db_column='LithoStratTreeDefID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='treedefitems', to='specify.lithostrattreedef')),
             ],
             options={
@@ -4165,7 +4165,7 @@ class Migration(migrations.Migration):
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
-                ('parent', models.ForeignKey(db_column='ParentItemID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='children', to='specify.geologictimeperiodtreedefitem')),
+                ('parent', models.ForeignKey(db_column='ParentItemID', null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='children', to='specify.geologictimeperiodtreedefitem')),
                 ('treedef', models.ForeignKey(db_column='GeologicTimePeriodTreeDefID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='treedefitems', to='specify.geologictimeperiodtreedef')),
             ],
             options={
@@ -4211,7 +4211,7 @@ class Migration(migrations.Migration):
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
-                ('parent', models.ForeignKey(db_column='ParentItemID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='children', to='specify.geographytreedefitem')),
+                ('parent', models.ForeignKey(db_column='ParentItemID', null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='children', to='specify.geographytreedefitem')),
                 ('treedef', models.ForeignKey(db_column='GeographyTreeDefID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='treedefitems', to='specify.geographytreedef')),
             ],
             options={
@@ -6188,5 +6188,793 @@ class Migration(migrations.Migration):
             model_name='specifyuser',
             name='modifiedbyagent',
             field=models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent'),
+        ),
+        migrations.AddIndex(
+            model_name='workbenchrow',
+            index=models.Index(fields=['rownumber'], name='RowNumberIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='workbenchdataitem',
+            index=models.Index(fields=['rownumber'], name='DataItemRowNumberIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='workbench',
+            index=models.Index(fields=['name'], name='WorkbenchNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='voucherrelationship',
+            index=models.Index(fields=['collectionmemberid'], name='VRXDATColMemIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='treatmentevent',
+            index=models.Index(fields=['datereceived'], name='TEDateReceivedIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='treatmentevent',
+            index=models.Index(fields=['datetreatmentstarted'], name='TEDateTreatmentStartedIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='treatmentevent',
+            index=models.Index(fields=['fieldnumber'], name='TEFieldNumberIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='treatmentevent',
+            index=models.Index(fields=['treatmentnumber'], name='TETreatmentNumberIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='taxon',
+            index=models.Index(fields=['guid'], name='TaxonGuidIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='taxon',
+            index=models.Index(fields=['taxonomicserialnumber'], name='TaxonomicSerialNumberIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='taxon',
+            index=models.Index(fields=['commonname'], name='TaxonCommonNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='taxon',
+            index=models.Index(fields=['name'], name='TaxonNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='taxon',
+            index=models.Index(fields=['fullname'], name='TaxonFullNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='taxon',
+            index=models.Index(fields=['environmentalprotectionstatus'], name='EPSIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='storage',
+            index=models.Index(fields=['name'], name='StorNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='storage',
+            index=models.Index(fields=['fullname'], name='StorFullNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='spvisualquery',
+            index=models.Index(fields=['name'], name='SpVisualQueryNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='spviewsetobj',
+            index=models.Index(fields=['name'], name='SpViewObjNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='spsymbiotainstance',
+            index=models.Index(fields=['collectionmemberid'], name='SPSYMINSTColMemIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='spreport',
+            index=models.Index(fields=['name'], name='SpReportNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='spquery',
+            index=models.Index(fields=['name'], name='SpQueryNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='splocaleitemstr',
+            index=models.Index(fields=['language'], name='SpLocaleLanguageIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='splocaleitemstr',
+            index=models.Index(fields=['country'], name='SpLocaleCountyIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='splocalecontaineritem',
+            index=models.Index(fields=['name'], name='SpLocaleContainerItemNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='splocalecontainer',
+            index=models.Index(fields=['name'], name='SpLocaleContainerNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='spfieldvaluedefault',
+            index=models.Index(fields=['collectionmemberid'], name='SpFieldValueDefaultColMemIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='spexportschemamapping',
+            index=models.Index(fields=['collectionmemberid'], name='SPEXPSCHMMAPColMemIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='spappresourcedir',
+            index=models.Index(fields=['disciplinetype'], name='SpAppResourceDirDispTypeIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='spappresource',
+            index=models.Index(fields=['name'], name='SpAppResNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='spappresource',
+            index=models.Index(fields=['mimetype'], name='SpAppResMimeTypeIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='shipment',
+            index=models.Index(fields=['shipmentnumber'], name='ShipmentNumberIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='shipment',
+            index=models.Index(fields=['shipmentdate'], name='ShipmentDateIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='shipment',
+            index=models.Index(fields=['discipline'], name='ShipmentDspMemIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='shipment',
+            index=models.Index(fields=['shipmentmethod'], name='ShipmentMethodIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='repositoryagreement',
+            index=models.Index(fields=['repositoryagreementnumber'], name='RefWrkNumberIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='referencework',
+            index=models.Index(fields=['title'], name='RefWrkTitleIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='referencework',
+            index=models.Index(fields=['publisher'], name='RefWrkPublisherIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='referencework',
+            index=models.Index(fields=['guid'], name='RefWrkGuidIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='referencework',
+            index=models.Index(fields=['isbn'], name='ISBNIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='recordset',
+            index=models.Index(fields=['name'], name='RecordSetNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='project',
+            index=models.Index(fields=['projectname'], name='ProjectNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='project',
+            index=models.Index(fields=['projectnumber'], name='ProjectNumberIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='preparationproperty',
+            index=models.Index(fields=['collectionmemberid'], name='PREPPROPColMemIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='preparationattribute',
+            index=models.Index(fields=['collectionmemberid'], name='PrepAttrsColMemIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='preparationattr',
+            index=models.Index(fields=['collectionmemberid'], name='PrepAttrColMemIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='preparationattachment',
+            index=models.Index(fields=['collectionmemberid'], name='PrepAttColMemIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='preparation',
+            index=models.Index(fields=['prepareddate'], name='PreparedDateIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='preparation',
+            index=models.Index(fields=['collectionmemberid'], name='PrepColMemIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='preparation',
+            index=models.Index(fields=['guid'], name='PrepGuidIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='preparation',
+            index=models.Index(fields=['samplenumber'], name='PrepSampleNumIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='preparation',
+            index=models.Index(fields=['barcode'], name='PrepBarCodeIDX'),
+        ),
+        migrations.AlterUniqueTogether(
+            name='preparation',
+            unique_together={('collectionmemberid', 'barcode')},
+        ),
+        migrations.AddIndex(
+            model_name='picklist',
+            index=models.Index(fields=['name'], name='PickListNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='permit',
+            index=models.Index(fields=['permitnumber'], name='PermitNumberIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='permit',
+            index=models.Index(fields=['issueddate'], name='IssuedDateIDX'),
+        ),
+        migrations.AlterUniqueTogether(
+            name='pcrperson',
+            unique_together={('agent', 'dnasequence')},
+        ),
+        migrations.AddIndex(
+            model_name='paleocontext',
+            index=models.Index(fields=['paleocontextname'], name='PaleoCxtNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='paleocontext',
+            index=models.Index(fields=['discipline'], name='PaleoCxtDisciplineIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='otheridentifier',
+            index=models.Index(fields=['collectionmemberid'], name='OthIdColMemIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='materialsample',
+            index=models.Index(fields=['ggbn_sampledesignation'], name='DesignationIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='localitynamealias',
+            index=models.Index(fields=['name'], name='LocalityNameAliasIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='localitycitation',
+            index=models.Index(fields=['discipline'], name='LocCitDspMemIDX'),
+        ),
+        migrations.AlterUniqueTogether(
+            name='localitycitation',
+            unique_together={('referencework', 'locality')},
+        ),
+        migrations.AddIndex(
+            model_name='locality',
+            index=models.Index(fields=['localityname'], name='localityNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='locality',
+            index=models.Index(fields=['discipline'], name='LocalityDisciplineIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='locality',
+            index=models.Index(fields=['namedplace'], name='NamedPlaceIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='locality',
+            index=models.Index(fields=['uniqueidentifier'], name='LocalityUniqueIdentifierIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='locality',
+            index=models.Index(fields=['relationtonamedplace'], name='RelationToNamedPlaceIDX'),
+        ),
+        migrations.AlterUniqueTogether(
+            name='locality',
+            unique_together={('discipline', 'uniqueidentifier')},
+        ),
+        migrations.AddIndex(
+            model_name='loanreturnpreparation',
+            index=models.Index(fields=['returneddate'], name='LoanReturnedDateIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='loanreturnpreparation',
+            index=models.Index(fields=['discipline'], name='LoanRetPrepDspMemIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='loanpreparation',
+            index=models.Index(fields=['discipline'], name='LoanPrepDspMemIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='loanagent',
+            index=models.Index(fields=['discipline'], name='LoanAgDspMemIDX'),
+        ),
+        migrations.AlterUniqueTogether(
+            name='loanagent',
+            unique_together={('role', 'loan', 'agent')},
+        ),
+        migrations.AddIndex(
+            model_name='loan',
+            index=models.Index(fields=['loannumber'], name='LoanNumberIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='loan',
+            index=models.Index(fields=['loandate'], name='LoanDateIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='loan',
+            index=models.Index(fields=['currentduedate'], name='CurrentDueDateIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='lithostrat',
+            index=models.Index(fields=['name'], name='LithoNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='lithostrat',
+            index=models.Index(fields=['fullname'], name='LithoFullNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='lithostrat',
+            index=models.Index(fields=['guid'], name='LithoGuidIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='journal',
+            index=models.Index(fields=['journalname'], name='JournalNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='journal',
+            index=models.Index(fields=['guid'], name='JournalGUIDIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='institutionnetwork',
+            index=models.Index(fields=['name'], name='InstNetworkNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='institution',
+            index=models.Index(fields=['name'], name='InstNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='institution',
+            index=models.Index(fields=['guid'], name='InstGuidIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='inforequest',
+            index=models.Index(fields=['collectionmemberid'], name='IRColMemIDX'),
+        ),
+        migrations.AlterUniqueTogether(
+            name='groupperson',
+            unique_together={('ordernumber', 'group')},
+        ),
+        migrations.AddIndex(
+            model_name='giftpreparation',
+            index=models.Index(fields=['discipline'], name='GiftPrepDspMemIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='giftagent',
+            index=models.Index(fields=['discipline'], name='GiftAgDspMemIDX'),
+        ),
+        migrations.AlterUniqueTogether(
+            name='giftagent',
+            unique_together={('role', 'gift', 'agent')},
+        ),
+        migrations.AddIndex(
+            model_name='gift',
+            index=models.Index(fields=['giftnumber'], name='GiftNumberIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='gift',
+            index=models.Index(fields=['giftdate'], name='GiftDateIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='geologictimeperiod',
+            index=models.Index(fields=['name'], name='GTPNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='geologictimeperiod',
+            index=models.Index(fields=['fullname'], name='GTPFullNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='geologictimeperiod',
+            index=models.Index(fields=['guid'], name='GTPGuidIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='geography',
+            index=models.Index(fields=['name'], name='GeoNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='geography',
+            index=models.Index(fields=['fullname'], name='GeoFullNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='fundingagent',
+            index=models.Index(fields=['division'], name='COLTRIPDivIDX'),
+        ),
+        migrations.AlterUniqueTogether(
+            name='fundingagent',
+            unique_together={('agent', 'collectingtrip')},
+        ),
+        migrations.AddIndex(
+            model_name='fieldnotebookpageset',
+            index=models.Index(fields=['startdate'], name='FNBPSStartDateIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='fieldnotebookpageset',
+            index=models.Index(fields=['enddate'], name='FNBPSEndDateIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='fieldnotebookpage',
+            index=models.Index(fields=['pagenumber'], name='FNBPPageNumberIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='fieldnotebookpage',
+            index=models.Index(fields=['scandate'], name='FNBPScanDateIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='fieldnotebook',
+            index=models.Index(fields=['name'], name='FNBNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='fieldnotebook',
+            index=models.Index(fields=['startdate'], name='FNBStartDateIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='fieldnotebook',
+            index=models.Index(fields=['enddate'], name='FNBEndDateIDX'),
+        ),
+        migrations.AlterUniqueTogether(
+            name='extractor',
+            unique_together={('agent', 'dnasequence')},
+        ),
+        migrations.AddIndex(
+            model_name='exchangeoutprep',
+            index=models.Index(fields=['discipline'], name='ExchgOutPrepDspMemIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='exchangeout',
+            index=models.Index(fields=['exchangedate'], name='ExchangeOutdateIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='exchangeout',
+            index=models.Index(fields=['exchangeoutnumber'], name='ExchangeOutNumberIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='exchangeinprep',
+            index=models.Index(fields=['discipline'], name='ExchgInPrepDspMemIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='exchangein',
+            index=models.Index(fields=['exchangedate'], name='ExchangeDateIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='exchangein',
+            index=models.Index(fields=['descriptionofmaterial'], name='DescriptionOfMaterialIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='dnasequence',
+            index=models.Index(fields=['genbankaccessionnumber'], name='GenBankAccIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='dnasequence',
+            index=models.Index(fields=['boldbarcodeid'], name='BOLDBarcodeIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='dnasequence',
+            index=models.Index(fields=['boldsampleid'], name='BOLDSampleIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='dnaprimer',
+            index=models.Index(fields=['primerdesignator'], name='DesignatorIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='division',
+            index=models.Index(fields=['name'], name='DivisionNameIDX'),
+        ),
+        migrations.AlterUniqueTogether(
+            name='disposalagent',
+            unique_together={('role', 'agent', 'disposal')},
+        ),
+        migrations.AddIndex(
+            model_name='disposal',
+            index=models.Index(fields=['disposalnumber'], name='DisposalNumberIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='disposal',
+            index=models.Index(fields=['disposaldate'], name='DisposalDateIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='discipline',
+            index=models.Index(fields=['name'], name='DisciplineNameIDX'),
+        ),
+        migrations.AlterUniqueTogether(
+            name='determiner',
+            unique_together={('agent', 'determination')},
+        ),
+        migrations.AddIndex(
+            model_name='determinationcitation',
+            index=models.Index(fields=['collectionmemberid'], name='DetCitColMemIDX'),
+        ),
+        migrations.AlterUniqueTogether(
+            name='determinationcitation',
+            unique_together={('referencework', 'determination')},
+        ),
+        migrations.AddIndex(
+            model_name='determination',
+            index=models.Index(fields=['determineddate'], name='DeterminedDateIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='determination',
+            index=models.Index(fields=['collectionmemberid'], name='DetMemIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='determination',
+            index=models.Index(fields=['alternatename'], name='AlterNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='determination',
+            index=models.Index(fields=['guid'], name='DeterminationGuidIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='determination',
+            index=models.Index(fields=['typestatusname'], name='TypeStatusNameIDX'),
+        ),
+        migrations.AlterUniqueTogether(
+            name='deaccessionagent',
+            unique_together={('role', 'agent', 'deaccession')},
+        ),
+        migrations.AddIndex(
+            model_name='deaccession',
+            index=models.Index(fields=['deaccessionnumber'], name='DeaccessionNumberIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='deaccession',
+            index=models.Index(fields=['deaccessiondate'], name='DeaccessionDateIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='container',
+            index=models.Index(fields=['name'], name='ContainerNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='container',
+            index=models.Index(fields=['collectionmemberid'], name='ContainerMemIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='conservevent',
+            index=models.Index(fields=['examdate'], name='ConservExamDateIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='conservevent',
+            index=models.Index(fields=['completeddate'], name='ConservCompletedDateIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='conservdescription',
+            index=models.Index(fields=['shortdesc'], name='ConservDescShortDescIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='commonnametx',
+            index=models.Index(fields=['name'], name='CommonNameTxNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='commonnametx',
+            index=models.Index(fields=['country'], name='CommonNameTxCountryIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='collector',
+            index=models.Index(fields=['division'], name='COLTRDivIDX'),
+        ),
+        migrations.AlterUniqueTogether(
+            name='collector',
+            unique_together={('agent', 'collectingevent')},
+        ),
+        migrations.AddIndex(
+            model_name='collectionobjectproperty',
+            index=models.Index(fields=['collectionmemberid'], name='COLOBJPROPColMemIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='collectionobjectcitation',
+            index=models.Index(fields=['collectionmemberid'], name='COCITColMemIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='collectionobjectattribute',
+            index=models.Index(fields=['collectionmemberid'], name='COLOBJATTRSColMemIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='collectionobjectattr',
+            index=models.Index(fields=['collectionmemberid'], name='COLOBJATRSColMemIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='collectionobjectattachment',
+            index=models.Index(fields=['collectionmemberid'], name='COLOBJATTColMemIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='collectionobject',
+            index=models.Index(fields=['fieldnumber'], name='FieldNumberIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='collectionobject',
+            index=models.Index(fields=['catalogeddate'], name='CatalogedDateIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='collectionobject',
+            index=models.Index(fields=['catalognumber'], name='CatalogNumberIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='collectionobject',
+            index=models.Index(fields=['uniqueidentifier'], name='COUniqueIdentifierIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='collectionobject',
+            index=models.Index(fields=['altcatalognumber'], name='AltCatalogNumberIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='collectionobject',
+            index=models.Index(fields=['guid'], name='ColObjGuidIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='collectionobject',
+            index=models.Index(fields=['collectionmemberid'], name='COColMemIDX'),
+        ),
+        migrations.AlterUniqueTogether(
+            name='collectionobject',
+            unique_together={('collection', 'catalognumber'), ('collection', 'uniqueidentifier')},
+        ),
+        migrations.AddIndex(
+            model_name='collection',
+            index=models.Index(fields=['collectionname'], name='CollectionNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='collection',
+            index=models.Index(fields=['guid'], name='CollectionGuidIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='collectingtripattribute',
+            index=models.Index(fields=['discipline'], name='COLTRPSDispIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='collectingtripattachment',
+            index=models.Index(fields=['collectionmemberid'], name='CTAColMemIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='collectingtrip',
+            index=models.Index(fields=['collectingtripname'], name='COLTRPNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='collectingtrip',
+            index=models.Index(fields=['startdate'], name='COLTRPStartDateIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='collectingeventattribute',
+            index=models.Index(fields=['discipline'], name='COLEVATSDispIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='collectingeventattr',
+            index=models.Index(fields=['collectionmemberid'], name='COLEVATColMemIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='collectingeventattachment',
+            index=models.Index(fields=['collectionmemberid'], name='CEAColMemIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='collectingevent',
+            index=models.Index(fields=['stationfieldnumber'], name='CEStationFieldNumberIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='collectingevent',
+            index=models.Index(fields=['startdate'], name='CEStartDateIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='collectingevent',
+            index=models.Index(fields=['enddate'], name='CEEndDateIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='collectingevent',
+            index=models.Index(fields=['uniqueidentifier'], name='CEUniqueIdentifierIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='collectingevent',
+            index=models.Index(fields=['guid'], name='CEGuidIDX'),
+        ),
+        migrations.AlterUniqueTogether(
+            name='collectingevent',
+            unique_together={('discipline', 'uniqueidentifier')},
+        ),
+        migrations.AddIndex(
+            model_name='borrowreturnmaterial',
+            index=models.Index(fields=['returneddate'], name='BorrowReturnedDateIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='borrowreturnmaterial',
+            index=models.Index(fields=['collectionmemberid'], name='BorrowReturnedColMemIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='borrowmaterial',
+            index=models.Index(fields=['materialnumber'], name='BorMaterialNumberIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='borrowmaterial',
+            index=models.Index(fields=['collectionmemberid'], name='BorMaterialColMemIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='borrowmaterial',
+            index=models.Index(fields=['description'], name='DescriptionIDX'),
+        ),
+        migrations.AlterUniqueTogether(
+            name='borrowagent',
+            unique_together={('role', 'agent', 'borrow')},
+        ),
+        migrations.AddIndex(
+            model_name='borrow',
+            index=models.Index(fields=['invoicenumber'], name='BorInvoiceNumberIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='borrow',
+            index=models.Index(fields=['receiveddate'], name='BorReceivedDateIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='borrow',
+            index=models.Index(fields=['collectionmemberid'], name='BorColMemIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='autonumberingscheme',
+            index=models.Index(fields=['schemename'], name='SchemeNameIDX'),
+        ),
+        migrations.AlterUniqueTogether(
+            name='author',
+            unique_together={('referencework', 'agent')},
+        ),
+        migrations.AddIndex(
+            model_name='attachment',
+            index=models.Index(fields=['title'], name='TitleIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='attachment',
+            index=models.Index(fields=['dateimaged'], name='DateImagedIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='attachment',
+            index=models.Index(fields=['scopeid'], name='AttchScopeIDIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='attachment',
+            index=models.Index(fields=['scopetype'], name='AttchScopeTypeIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='attachment',
+            index=models.Index(fields=['guid'], name='AttchmentGuidIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='appraisal',
+            index=models.Index(fields=['appraisalnumber'], name='AppraisalNumberIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='appraisal',
+            index=models.Index(fields=['appraisaldate'], name='AppraisalDateIDX'),
+        ),
+        migrations.AlterUniqueTogether(
+            name='agentspecialty',
+            unique_together={('agent', 'ordernumber')},
+        ),
+        migrations.AddIndex(
+            model_name='agent',
+            index=models.Index(fields=['lastname'], name='AgentLastNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='agent',
+            index=models.Index(fields=['firstname'], name='AgentFirstNameIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='agent',
+            index=models.Index(fields=['guid'], name='AgentGuidIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='agent',
+            index=models.Index(fields=['agenttype'], name='AgentTypeIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='agent',
+            index=models.Index(fields=['abbreviation'], name='AbbreviationIDX'),
+        ),
+        migrations.AlterUniqueTogether(
+            name='accessionagent',
+            unique_together={('role', 'agent', 'accession')},
+        ),
+        migrations.AddIndex(
+            model_name='accession',
+            index=models.Index(fields=['accessionnumber'], name='AccessionNumberIDX'),
+        ),
+        migrations.AddIndex(
+            model_name='accession',
+            index=models.Index(fields=['dateaccessioned'], name='AccessionDateIDX'),
         ),
     ]

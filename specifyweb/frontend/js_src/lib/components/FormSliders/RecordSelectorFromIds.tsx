@@ -70,7 +70,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   readonly onClose: () => void;
   readonly onSaved: (resource: SpecifyResource<SCHEMA>) => void;
   readonly onClone:
-    | ((newResource: SpecifyResource<SCHEMA>) => void)
+    | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
     | undefined;
   readonly onFetch?: (
     index: number
@@ -185,6 +185,8 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
 
   const hasAttachments = tablesWithAttachments().includes(table);
 
+  const isNewRecordSet = isInRecordSet && title === undefined;
+
   return (
     <>
       <ResourceView
@@ -238,6 +240,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
           </div>
         )}
         isDependent={isDependent}
+        isInRecordSet={!isNewRecordSet}
         isLoading={isLoading || isExternalLoading}
         isSubForm={false}
         resource={resource}

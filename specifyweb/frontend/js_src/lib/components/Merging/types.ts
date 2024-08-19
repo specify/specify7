@@ -1,6 +1,6 @@
-export type MergeStatus = 'ABORTED' | 'FAILED' | 'MERGING' | 'SUCCEEDED';
+export type MergingStatus = 'ABORTED' | 'FAILED' | 'MERGING' | 'SUCCEEDED';
 export type StatusState = {
-  readonly status: MergeStatus;
+  readonly status: MergingStatus;
   readonly total: number;
   readonly current: number;
 };

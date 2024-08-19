@@ -18,15 +18,20 @@ from specifyweb.specify.models import (
     Collectionobject,
     Loan,
     Deaccession,
-    Accession
+    Accession,
+    Collectionobjectgroupjoin,
 )
 
 logger = logging.getLogger(__name__)
 
 def calculate_totals_deaccession(obj, Model, related_field_name):
-    total_preps = Model.objects.filter(deaccession=obj).count()
-    total_items = Model.objects.filter(deaccession=obj).aggregate(
-        total=Sum(f"{related_field_name}__quantity"))["total"] or 0
+    total_preps = 0
+    total_items = 0
+    for prep in Model.objects.filter(deaccession=obj):
+        counts = calc_prep_item_count(prep, related_field_name, {})
+        total_preps += counts["totalPreps"]
+        total_items += counts["totalItems"]
+    
     return total_preps, total_items
 
 def calc_prep_item_count(obj, prep_field_name, extra):
@@ -57,9 +62,7 @@ def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
         extra["isonloan"] = obj.isonloan()
 
     elif isinstance(obj, Specifyuser):
-        extra["isadmin"] = obj.userpolicy_set.filter(
-            collection=None, resource="%", action="%"
-        ).exists()
+        extra["isadmin"] = obj.is_admin()
 
     elif isinstance(obj, Collectionobject):
         preparations = obj.preparations.all()
@@ -100,6 +103,8 @@ def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
         extra["currentdetermination"] = next(
             (det["resource_uri"] for det in dets if det["iscurrent"]), None
         )
+
+        extra["isMemberOfCOG"] = Collectionobjectgroupjoin.objects.filter(childco=obj).exists()
 
     elif isinstance(obj, Loan):
         preps = data["loanpreparations"]

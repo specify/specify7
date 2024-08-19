@@ -4,7 +4,6 @@ A few non-business data resource end points
 
 import json
 from itertools import groupby
-import re
 from typing import Any, Callable, Dict, List, Optional
 import traceback
 
@@ -12,7 +11,6 @@ from django import http
 from django.db import IntegrityError, transaction, models
 from specifyweb.notifications.models import Message, Spmerging
 from django.db.models import Q
-from django.db.models.deletion import ProtectedError
 
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.celery_tasks import LogErrorsTask, app
@@ -384,10 +382,10 @@ def record_merge_task(self, model_name: str, old_model_ids: List[int], new_model
     merge_record = Spmerging.objects.get(id=merge_id)
     if response.status_code != 204:
         self.update_state(state='FAILED', meta={'current': current, 'total': total})
-        merge_record.mergingstatus = 'FAILED'
+        merge_record.status = 'FAILED'
     else:
         self.update_state(state='SUCCEEDED', meta={'current': total, 'total': total})
-        merge_record.mergingstatus = 'SUCCEEDED'
+        merge_record.status = 'SUCCEEDED'
     
     merge_record.response = response.content.decode()
     merge_record.save()

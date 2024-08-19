@@ -26,6 +26,7 @@ import {
 import { fetchPickList } from '../PickLists/fetch';
 import { userPreferences } from '../Preferences/userPreferences';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
+import { recordSetFromQueryLoading } from './Components';
 import { CreateRecordSet } from './CreateRecordSet';
 import type { QueryFieldSpec } from './fieldSpec';
 import type { QueryField } from './helpers';
@@ -234,14 +235,19 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                    * if records were selected out of order)
                    */
                   baseTableName={fieldSpecs[0].baseTable.name}
-                  getIds={(): RA<number> =>
+                  defaultRecordSetName={
+                    queryResource?.isNew() ?? true
+                      ? undefined
+                      : queryResource?.get('name')
+                  }
+                  recordIds={(): RA<number> =>
                     loadedResults
                       .filter((result) =>
                         selectedRows.has(result[queryIdField] as number)
                       )
                       .map((result) => result[queryIdField] as number)
                   }
-                  queryResource={queryResource}
+                  saveComponent={recordSetFromQueryLoading}
                 />
               ) : (
                 createRecordSet
