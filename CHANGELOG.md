@@ -9,6 +9,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.9.6.2](https://github.com/specify/specify7/compare/v7.9.6.1...v7.9.6.2) (22 July 2024)
+
+- Fixed an issue that prevented `TimestampModified` from being captured upon saving a record since the `v7.9.6` release ([#5108](https://github.com/specify/specify7/issues/5108) – *Reported by the University of Kansas and Ohio State University*)
+- Fixed an issue that caused large trees to perform slowly or crash the browser due to using too much memory ([#5115](https://github.com/specify/specify7/pull/5115) – *Reported by The Hebrew University of Jerusalem and Royal Botanic Gardens Edinburgh*)
+
 ## [7.9.6.1](https://github.com/specify/specify7/compare/v7.9.6...v7.9.6.1) (9 July 2024)
 
 - Fixes an issue that led to tree definition item separators being trimmed ([#5076](https://github.com/specify/specify7/pull/5076))

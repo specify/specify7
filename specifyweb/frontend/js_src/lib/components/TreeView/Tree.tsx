@@ -33,7 +33,10 @@ const treeToPref = {
   LithoStrat: 'lithoStrat',
 } as const;
 
-export function Tree<SCHEMA extends AnyTree>({
+export function Tree<
+  SCHEMA extends AnyTree,
+  TREE_NAME extends SCHEMA['tableName']
+>({
   treeDefinitionItems,
   tableName,
   isEditingRanks,
@@ -54,7 +57,7 @@ export function Tree<SCHEMA extends AnyTree>({
   readonly treeDefinitionItems: RA<
     SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
   >;
-  readonly tableName: SCHEMA['tableName'];
+  readonly tableName: TREE_NAME;
   readonly isEditingRanks: boolean;
   readonly hideEmptyNodes: boolean;
   readonly focusPath: GetSet<RA<number>>;

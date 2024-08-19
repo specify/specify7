@@ -16,6 +16,7 @@ import { icons } from '../Atoms/Icons';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { toResource, toTable } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { createResource } from '../DataModel/resource';
 import {
   deserializeResource,
@@ -45,6 +46,10 @@ import { AppResourcesTab, useEditorTabs } from './Tabs';
 import { getScope } from './tree';
 import type { ScopedAppResourceDir } from './types';
 import { appResourceSubTypes } from './types';
+
+export const AppResourceContext = React.createContext<
+  SpecifyResource<SpAppResource>
+>(undefined!);
 
 export function AppResourceEditor({
   resource,
@@ -326,22 +331,24 @@ export function AppResourceEditor({
 
   const content = (
     <ReadOnlyContext.Provider value={isReadOnly}>
-      <AppResourcesTab
-        appResource={appResource}
-        data={resourceData.data}
-        directory={directory}
-        footer={footer}
-        headerButtons={headerButtons}
-        isFullScreen={[isFullScreen, handleChangeFullScreen]}
-        label={formatted}
-        resource={resource}
-        tab={tabs[tab].component}
-        onChange={(data): void => {
-          if (typeof data === 'function') setLastData(() => data);
-          else setResourceData({ ...resourceData, data });
-        }}
-        onSetCleanup={handleSetCleanup}
-      />
+      <AppResourceContext.Provider value={appResource}>
+        <AppResourcesTab
+          appResource={appResource}
+          data={resourceData.data}
+          directory={directory}
+          footer={footer}
+          headerButtons={headerButtons}
+          isFullScreen={[isFullScreen, handleChangeFullScreen]}
+          label={formatted}
+          resource={resource}
+          tab={tabs[tab].component}
+          onChange={(data): void => {
+            if (typeof data === 'function') setLastData(() => data);
+            else setResourceData({ ...resourceData, data });
+          }}
+          onSetCleanup={handleSetCleanup}
+        />
+      </AppResourceContext.Provider>
     </ReadOnlyContext.Provider>
   );
 

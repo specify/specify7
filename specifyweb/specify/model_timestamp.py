@@ -1,51 +1,35 @@
-from django.db import models
 from django.utils import timezone
-from django.conf import settings
+from django.db.models import Model
 
-from model_utils import FieldTracker
+timestamp_fields = [('timestampmodified', True), ('timestampcreated', False)]
 
-def pre_save_auto_timestamp_field_with_override(obj, timestamp_override=None):
-    # Normal behavior is to update the timestamps automatically when saving.
-    # If timestampcreated or timestampmodified have been edited, don't update them to the current time.
-    cur_time = timezone.now()
-    timestamp_override = (
-        timestamp_override
-        if timestamp_override is not None
-        else getattr(settings, "TIMESTAMP_SAVE_OVERRIDE", False)
-    )
-    timestamp_fields = ['timestampcreated', 'timestampmodified']
-    for field in timestamp_fields:
-        if hasattr(obj, field) and hasattr(obj, 'timestamptracker'):
-            if not timestamp_override and field not in obj.timestamptracker.changed() and \
-                (not obj.id or not getattr(obj, field)):
-                setattr(obj, field, cur_time)
-            elif timestamp_override and not getattr(obj, field):
-                setattr(obj, field, cur_time)
+fields_to_skip = [field[0] for field in timestamp_fields if not field[1]]
 
-    avoid_null_timestamp_fields(obj)
+def save_auto_timestamp_field_with_override(save_func, args, kwargs, obj):
+    # If object already is present, reset timestamps to null.
+    model: Model = obj.__class__
+    is_forced_insert = kwargs.get('force_insert', False)
+    fields_to_update = kwargs.get('update_fields', None)
+    if fields_to_update is None:
+        fields_to_update = [
+            field.name for field in model._meta.get_fields(include_hidden=True) if field.concrete
+            and not field.primary_key
+            ]
 
-def avoid_null_timestamp_fields(obj):
-    cur_time = timezone.now()
-    if hasattr(obj, 'timestampcreated') and getattr(obj, 'timestampcreated') is None:
-        obj.timestampcreated = cur_time
-    if hasattr(obj, 'timestampmodified') and getattr(obj, 'timestampmodified') is None:
-        obj.timestampmodified = cur_time
+    if obj.id is not None:
+        fields_to_update = [
+            field for field in fields_to_update
+            if field not in fields_to_skip
+            ]
+        
+    current = timezone.now()
+    _set_if_empty(obj, timestamp_fields, current, obj.pk is not None)
+    new_kwargs = {**kwargs, 'update_fields': fields_to_update} if obj.pk is not None and not is_forced_insert else kwargs
+    return save_func(*args, **new_kwargs)
 
-# NOTE: This class is needed for when we get rid of dynamic model creation from Specify 6 datamodel.xml file.
-# NOTE: Currently in sperate file to avoid circular import.
-class SpTimestampedModel(models.Model):
-    """
-    SpTimestampedModel(id, timestampcreated, timestampmodified)
-    """
-
-    timestampcreated = models.DateTimeField(db_column='TimestampCreated', default=timezone.now)
-    timestampmodified = models.DateTimeField(db_column='TimestampModified', default=timezone.now)
-
-    timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
-
-    class Meta:
-        abstract = True
-
-    def save(self, *args, **kwargs):
-        pre_save_auto_timestamp_field_with_override(self)
-        super().save(*args, **kwargs)
+def _set_if_empty(obj, fields, default_value, override=False):
+    for field, can_override in fields:
+        if not hasattr(obj, field):
+            continue
+        if (override and can_override) or getattr(obj, field) is None:
+            setattr(obj, field, default_value)
