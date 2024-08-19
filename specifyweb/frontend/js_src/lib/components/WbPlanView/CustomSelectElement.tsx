@@ -682,9 +682,7 @@ export function CustomSelectElement({
             {...selectGroupData}
             hasArrow={has('arrow')}
             hasIcon={has('icon')}
-            selectGroupLabel={
-              customSelectSubtype === 'simple' ? selectGroupLabel : undefined
-            }
+            selectGroupLabel={selectGroupLabel}
           />
         )
       );
