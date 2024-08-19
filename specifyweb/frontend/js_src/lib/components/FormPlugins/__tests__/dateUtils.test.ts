@@ -32,6 +32,7 @@ describe('getDateParser', () => {
           [Function],
         ],
         "value": "2022-08-31",
+        "whiteSpaceSensitive": false,
       }
     `));
 
@@ -64,6 +65,7 @@ describe('getDateParser', () => {
           [Function],
         ],
         "value": undefined,
+        "whiteSpaceSensitive": false,
       }
     `));
 });

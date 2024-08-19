@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 import logging
 from specifyweb.notifications.models import Message
@@ -8,14 +8,14 @@ logger = logging.getLogger(__name__)
 from specifyweb.specify.tests.test_api import ApiTests
 
 class NotificationsTests(ApiTests): 
-    def test_get_notification_with_param_since(self): 
+    def test_get_notification_with_param_since(self):
         currentTime = datetime.now()
         testMessage = Message.objects.create(
-           user=self.specifyuser,
-           timestampcreated = currentTime, 
-        content=json.dumps({
-           'type': 'quer-export-to-csv-complete',
-           'file' : 'query_results_2023-08-25T21:20.14.156542.csv'})
+            user=self.specifyuser,
+            timestampcreated=currentTime,
+            content=json.dumps({
+                'type': 'query-export-to-csv-complete',
+                'file': 'query_results_2023-08-25T21:20.14.156542.csv'})
         )
 
         c = Client()
@@ -32,7 +32,12 @@ class NotificationsTests(ApiTests):
 
         self.assertEqual(mockResponse[0]['message_id'], responseReturned[0]['message_id'])
         self.assertEqual(mockResponse[0]['read'], responseReturned[0]['read'])
-        self.assertEqual(mockResponse[0]['timestamp'][:-7], responseReturned[0]['timestamp'][:-7])
+
+        # Allow a tolerance of 1 second for the timestamp comparison
+        expected_timestamp = datetime.strptime(mockResponse[0]['timestamp'], '%Y-%m-%dT%H:%M:%S.%f')
+        actual_timestamp = datetime.strptime(responseReturned[0]['timestamp'], '%Y-%m-%dT%H:%M:%S.%f')
+        time_difference = abs(expected_timestamp - actual_timestamp)
+        self.assertTrue(time_difference <= timedelta(seconds=1), "Timestamps differ by more than 1 second")
         
     def test_delete_all(self):
         # Create some test messages

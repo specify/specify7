@@ -175,7 +175,7 @@ def set_rank_id(new_rank):
 
     # Get tree def item model
     tree_def_item_model_name = (tree + 'treedefitem').lower().title()
-    tree_def_item_model = getattr(spmodels, tree_def_item_model_name.lower().title())
+    tree_def_item_model = getattr(spmodels, tree_def_item_model_name)
 
     # Handle case where the parent rank is not given, and it is not the first rank added.
     # This is happening in the UI workflow of Treeview->Treedef->Treedefitems->Add
