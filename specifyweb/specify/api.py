@@ -17,7 +17,7 @@ from django import forms
 from django.db import transaction
 from django.apps import apps
 from django.http import (HttpResponse, HttpResponseBadRequest,
-                         Http404, HttpResponseNotAllowed, QueryDict)
+                         Http404, HttpResponseNotAllowed, JsonResponse, QueryDict)
 from django.core.exceptions import ObjectDoesNotExist, FieldError, FieldDoesNotExist
 from django.db.models.fields import DateTimeField, FloatField, DecimalField
 
@@ -241,7 +241,7 @@ def collection_dispatch(request, model) -> HttpResponse:
     elif request.method == 'POST':
         obj = post_resource(request.specify_collection,
                             request.specify_user_agent,
-                            model, json.load(request),
+                            model, json.loads(request.body),
                             request.GET.get('recordsetid', None))
 
         resp = HttpResponseCreated(toJson(_obj_to_data(obj, checker)),
@@ -251,6 +251,52 @@ def collection_dispatch(request, model) -> HttpResponse:
         resp = HttpResponseNotAllowed(['GET', 'POST'])
 
     return resp
+
+def collection_dispatch_bulk(request, model) -> HttpResponse:
+    """
+    Do the same as collection_dispatch, but for bulk POST operations.
+    Call this endpoint with a list of objects of the same type to create.
+    This reduces the amount of API calls needed to create multiple objects, like when creating multiple carry forwards.
+    """
+    checker = table_permissions_checker(request.specify_collection, request.specify_user_agent, "read")
+
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+        
+    data = json.loads(request.body)
+    resp_objs = []
+    for obj_data in data:
+        obj = post_resource(
+            request.specify_collection,
+            request.specify_user_agent,
+            model,
+            obj_data,
+            request.GET.get("recordsetid", None),
+        )
+        resp_objs.append(_obj_to_data(obj, checker))
+
+    return HttpResponseCreated(toJson(resp_objs), content_type='application/json')
+
+def collection_dispatch_bulk_copy(request, model, copies) -> HttpResponse:
+    checker = table_permissions_checker(request.specify_collection, request.specify_user_agent, "read")
+
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+
+    data = json.loads(request.body)
+    data = dict(filter(lambda item: item[0] != 'id', data.items())) # Remove ID field before making copies
+    resp_objs = []
+    for _ in range(int(copies)):
+        obj = post_resource(
+            request.specify_collection,
+            request.specify_user_agent,
+            model,
+            data,
+            request.GET.get("recordsetid", None),
+        )
+        resp_objs.append(_obj_to_data(obj, checker))
+
+    return HttpResponseCreated(toJson(resp_objs), content_type='application/json')
 
 def get_model_or_404(name: str):
     """Lookup a specify model by name. Raise Http404 if not found."""
@@ -368,6 +414,10 @@ def set_field_if_exists(obj, field: str, value) -> None:
     if f.concrete:
         setattr(obj, field, value)
 
+def _maybe_delete(data: Dict[str, Any], to_delete: str):
+    if to_delete in data:
+        del data[to_delete]
+
 def cleanData(model, data: Dict[str, Any], agent) -> Dict[str, Any]:
     """Returns a copy of data with only fields that are part of model, removing
     metadata fields and warning on unexpected extra fields."""
@@ -400,30 +450,18 @@ def cleanData(model, data: Dict[str, Any], agent) -> Dict[str, Any]:
         
     if model is models.Agent:
         # setting user agents is part of the user management system.
-        try:
-            del cleaned['specifyuser']
-        except KeyError:
-            pass
+        _maybe_delete(cleaned, 'specifyuser')
 
     # guid should only be updatable for taxon and geography
     if model not in (models.Taxon, models.Geography):
-        try:
-            del cleaned['guid']
-        except KeyError:
-            pass
+        _maybe_delete(cleaned, 'guid')
 
     # timestampcreated should never be updated.
-    # ... well it is now ¯\_(ツ)_/¯
-    # New requirments are for timestampcreated to be overridable.
-    try:
-        # del cleaned['timestampcreated']
-        pass
-    except KeyError:
-        pass
+    #  _maybe_delete(cleaned, 'timestampcreated')
 
     # Password should be set though the /api/set_password/<id>/ endpoint
-    if model is models.Specifyuser and 'password' in cleaned:
-        del cleaned['password']
+    if model is models.Specifyuser: 
+        _maybe_delete(cleaned, 'password')
 
     return cleaned
 
@@ -476,6 +514,9 @@ def set_fields_from_data(obj, data: Dict[str, Any]) -> List[FieldChangeInfo]:
      return dirty_flds
 
 def is_dependent_field(obj, field_name: str) -> bool:
+    if obj.specify_model.get_field(field_name) is None:
+        return False
+
     return (
         obj.specify_model.get_field(field_name).dependent
 

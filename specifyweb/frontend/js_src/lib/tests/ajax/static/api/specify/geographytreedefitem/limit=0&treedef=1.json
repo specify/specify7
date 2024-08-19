@@ -23,28 +23,6 @@
       "resource_uri": "/api/specify/geographytreedefitem/1/"
     },
     {
-      "id": 3,
-      "fullnameseparator": ", ",
-      "isenforced": null,
-      "isinfullname": true,
-      "name": "Continent",
-      "rankid": 100,
-      "remarks": null,
-      "textafter": null,
-      "textbefore": null,
-      "timestampcreated": "2012-08-09T12:30:04",
-      "timestampmodified": "2012-08-09T12:30:04",
-      "title": "Continent",
-      "version": 1,
-      "createdbyagent": null,
-      "modifiedbyagent": null,
-      "parent": "/api/specify/geographytreedefitem/1/",
-      "treedef": "/api/specify/geographytreedef/1/",
-      "treeentries": "/api/specify/geography/?definitionitem=3",
-      "children": "/api/specify/geographytreedefitem/?parent=3",
-      "resource_uri": "/api/specify/geographytreedefitem/3/"
-    },
-    {
       "id": 2,
       "fullnameseparator": ", ",
       "isenforced": null,
@@ -65,6 +43,28 @@
       "treeentries": "/api/specify/geography/?definitionitem=2",
       "children": "/api/specify/geographytreedefitem/?parent=2",
       "resource_uri": "/api/specify/geographytreedefitem/2/"
+    },
+    {
+      "id": 3,
+      "fullnameseparator": ", ",
+      "isenforced": null,
+      "isinfullname": null,
+      "name": "Continent",
+      "rankid": 100,
+      "remarks": null,
+      "textafter": null,
+      "textbefore": null,
+      "timestampcreated": "2012-08-09T12:30:04",
+      "timestampmodified": "2012-08-09T12:30:04",
+      "title": null,
+      "version": 0,
+      "createdbyagent": null,
+      "modifiedbyagent": null,
+      "parent": "/api/specify/geographytreedefitem/1/",
+      "treedef": "/api/specify/geographytreedef/1/",
+      "treeentries": "/api/specify/geography/?definitionitem=3",
+      "children": "/api/specify/geographytreedefitem/?parent=3",
+      "resource_uri": "/api/specify/geographytreedefitem/3/"
     },
     {
       "id": 4,
@@ -112,7 +112,7 @@
     }
   ],
   "meta": {
-    "limit": 20,
+    "limit": 0,
     "offset": 0,
     "total_count": 5
   }
