@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 
 def get_tree_stats(treedef, tree, parentid, specify_collection, session_context, using_cte):
     tree_table = datamodel.get_table(tree)
+    tree_def_item = getattr(models, tree_table.name + 'TreeDefItem')
     parentid = None if parentid == 'null' else int(parentid)
     treedef_col = tree_table.name + "TreeDefID"
 
@@ -62,19 +63,21 @@ def get_tree_stats(treedef, tree, parentid, specify_collection, session_context,
 
 
     results = None
-
     with session_context() as session:
         # The join depth only needs to be enough to reach the bottom of the tree.
-        # That will be the number of distinct rankID values not less than
-        # the rankIDs of the children of parentid.
+        # "correct" depth is depth based on actual tree
+        # "incorrect" depth > "correct" is naively based on item-table
+        # If we use "correct" depth, we will make less joins in CTE (so CTE will be faster)
+        # but, "correct" depth takes too long to compute (needs to look at main tree table)
+        # As a compromise, we look at defitem table for "incorrect" depth, will be higher than "correct"
+        # depth. So yes, technicallly CTE will take "more" time, but experimentation reveals that
+        # CTE's "more" time, is still very much low than time taken to compute "correct" depth.
+        # I don't even want to use depth, but some pathological tree might have cycles, and CTE depth
+        # might be in millions as a custom setting..
 
-        # Also used in Recursive CTE to make sure cycles don't cause crash (very rare)
-
-        highest_rank = session.query(sql.func.min(tree_node.rankId)).filter(
-            tree_node.ParentID == parentid).as_scalar()
-        depth, = \
-            session.query(sql.func.count(distinct(tree_node.rankId))).filter(
-                tree_node.rankId >= highest_rank)[0]
+        depth_query = session.query(sql.func.count(getattr(tree_def_item, tree_def_item._id))).filter(
+            getattr(tree_def_item, treedef_col) == int(treedef))
+        depth, = list(depth_query)[0]
         query = None
         try:
             if using_cte:

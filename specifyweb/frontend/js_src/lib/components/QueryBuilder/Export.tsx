@@ -51,7 +51,11 @@ export function QueryExportButtons({
     undefined
   );
 
-  function doQueryExport(url: string, delimiter: string | undefined): void {
+  function doQueryExport(
+    url: string,
+    delimiter: string | undefined,
+    bom: boolean | undefined
+  ): void {
     if (typeof getQueryFieldRecords === 'function')
       queryResource.set('fields', getQueryFieldRecords());
     const serialized = queryResource.toJSON();
@@ -67,6 +71,7 @@ export function QueryExportButtons({
           ),
         recordSetId,
         delimiter,
+        bom,
       }),
       errorMode: 'dismissible',
     });
@@ -76,6 +81,12 @@ export function QueryExportButtons({
     'queryBuilder',
     'behavior',
     'exportFileDelimiter'
+  );
+
+  const [utf8Bom] = userPreferences.use(
+    'queryBuilder',
+    'behavior',
+    'exportCsvUtf8Bom'
   );
 
   /*
@@ -105,7 +116,13 @@ export function QueryExportButtons({
         generateMappingPathPreview(baseTableName, field.mappingPath)
       );
 
-    return downloadDataSet(name, filteredResults, columnsName, separator);
+    return downloadDataSet(
+      name,
+      filteredResults,
+      columnsName,
+      separator,
+      utf8Bom
+    );
   }
 
   const containsResults = results.current?.some((row) => row !== undefined);
@@ -141,7 +158,7 @@ export function QueryExportButtons({
           showConfirmation={showConfirmation}
           onClick={(): void => {
             selectedRows.size === 0
-              ? doQueryExport('/stored_query/exportcsv/', separator)
+              ? doQueryExport('/stored_query/exportcsv/', separator, utf8Bom)
               : exportSelected().catch(softFail);
           }}
         >
@@ -154,7 +171,7 @@ export function QueryExportButtons({
           showConfirmation={showConfirmation}
           onClick={(): void =>
             hasLocalityColumns(fields)
-              ? doQueryExport('/stored_query/exportkml/', undefined)
+              ? doQueryExport('/stored_query/exportkml/', undefined, undefined)
               : setState('warning')
           }
         >
