@@ -94,7 +94,7 @@ jobs:
       - name: Upload digest
         uses: actions/upload-artifact@v4
         with:
-          name: digests-${{ env.TIMESTAMP }}-${{ env.PLATFORM_PAIR }}
+          name: digests-${{ strategy.job-index }}
           path: /tmp/digests/*
           if-no-files-found: error
           retention-days: 1
