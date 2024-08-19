@@ -6,6 +6,7 @@ from django.db import models
 from django.http import Http404
 from django.utils import timezone
 
+from specifyweb.specify.func import Func
 from specifyweb.specify.models import Collection, Specifyuser, Agent, datamodel, custom_save
 from specifyweb.specify.api import uri_for_model
 
@@ -75,7 +76,7 @@ class Dataset(models.Model):
         ds_dict = {key: getattr(self, key) for key in self.object_response_fields}
         ds_dict.update({
             "rows": self.data,
-            "uploadplan": json.loads(self.uploadplan) if self.uploadplan else None,
+            "uploadplan": Func.maybe(self.uploadplan, json.loads),
             "createdbyagent": uri_for_model('agent', self.createdbyagent_id) if self.createdbyagent_id is not None else None,
             "modifiedbyagent": uri_for_model('agent', self.modifiedbyagent_id) if self.modifiedbyagent_id is not None else None
         })

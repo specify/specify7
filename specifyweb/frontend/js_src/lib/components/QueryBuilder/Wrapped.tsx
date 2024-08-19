@@ -52,7 +52,7 @@ import { getInitialState, reducer } from './reducer';
 import type { QueryResultRow } from './Results';
 import { QueryResultsWrapper } from './ResultsWrapper';
 import { QueryToolbar } from './Toolbar';
-import { BatchEdit } from '../BatchEdit';
+import { BatchEditFromQuery } from '../BatchEdit';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
@@ -590,7 +590,7 @@ function Wrapped({
                 }
                 extraButtons={
                   <>
-                  <BatchEdit query={queryResource} fields={state.fields} baseTableName={state.baseTableName}/>
+                  <BatchEditFromQuery query={queryResource} fields={state.fields} baseTableName={state.baseTableName}/>
                   {query.countOnly ? undefined : (
                     <QueryExportButtons
                       baseTableName={state.baseTableName}

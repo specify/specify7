@@ -15,11 +15,15 @@ engine = sqlalchemy.create_engine(settings.SA_DATABASE_URL, pool_recycle=setting
                                   connect_args={'cursorclass': SSCursor})
 Session = sessionmaker(bind=engine)
 
+
 def make_session_context(session_maker):
     @contextmanager
     def _session_context():
-        session = session_maker()
+        session, connection = session_maker()
         try:
+            if connection is None:
+                connection = session.connection()
+            session.info['connection'] = connection
             yield session
             session.commit()
         except:
@@ -29,13 +33,16 @@ def make_session_context(session_maker):
             session.close()
     return _session_context
 
-session_context = make_session_context(Session)
+
+session_context = make_session_context(lambda: (Session(), None))
+
 
 def generate_models():
     tables = build_models.make_tables(datamodel)
     classes = build_models.make_classes(datamodel)
     build_models.map_classes(datamodel, tables, classes)
     return tables, classes
+
 
 tables, classes = generate_models()
 

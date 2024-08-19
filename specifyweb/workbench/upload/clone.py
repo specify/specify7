@@ -22,7 +22,8 @@ GENERIC_FIELDS_TO_SKIP = [
     'version', 
     'id',
     'createdbyagent_id',
-    'modifiedbyagent_id'
+    'modifiedbyagent_id', 
+    'guid'
     ]
 
 @transaction.atomic()
@@ -43,8 +44,7 @@ def clone_record(reference_record, inserter: Callable[[Model, Dict[str, Any]], M
     def _cloned(value, field, is_dependent):
         if not is_dependent:
             return value
-        # Don't fetch the actual object till the very end, and when we _need_ to clone (as an optimization)
-        return clone_record(getattr(reference_record, field.name), inserter, one_to_ones)
+        return clone_record(getattr(reference_record, field.name), inserter, one_to_ones).pk
     
     attrs = {
         field.attname: Func.maybe(getattr(reference_record, field.attname), lambda obj: _cloned(obj, field, is_dependent)) # type: ignore

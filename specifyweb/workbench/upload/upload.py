@@ -219,7 +219,7 @@ def do_upload(
 
     # I'd make this a generator (so "global" variable is internal, rather than a rogue callback setting a global variable)
     gen = Func.make_generator()
-
+    
     with savepoint("main upload"):
         tic = time.perf_counter()
         results: List[UploadResult] = []
@@ -382,7 +382,7 @@ def rollback_batch_edit(parent: Spdataset, collection, agent, progress: Optional
 
     # Don't use parent's plan...
     base_table, upload_plan = get_raw_ds_upload_plan(backer)
-    results = do_upload(collection, rows_to_backup, upload_plan, agent, None, False, False, progress, packs)
+    results = do_upload(collection, rows_to_backup, upload_plan, agent.id, None, False, False, progress, packs)
 
     success = not any(r.contains_failure() for r in results)
 

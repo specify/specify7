@@ -3,9 +3,7 @@ import io
 import json
 import csv
 
-from unittest import expectedFailure
-
-from ..upload_result import Uploaded, Matched, NullRecord
+from ..upload_result import Uploaded, Matched
 
 from ..upload import do_upload_csv, validate_row
 from ..upload_plan_schema import parse_plan
@@ -46,7 +44,7 @@ class BugTests(UploadTestsBase):
         up = parse_plan(plan).apply_scoping(self.collection)
 
         result = validate_row(self.collection, up, self.agent.id, dict(zip(cols, row)), None)
-        self.assertNotIsInstance(result.record_result, NullRecord, "The CO should be created b/c it has determinations.")
+        self.assertNotIsInstance(result.record_result, Uploaded, "The CO should be created b/c it has determinations.")
 
     def test_duplicate_refworks(self) -> None:
         """ Andy found that duplicate reference works were being created from data similar to the following. """

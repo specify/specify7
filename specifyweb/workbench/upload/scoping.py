@@ -159,22 +159,28 @@ def apply_scoping_to_uploadtable(ut: UploadTable, collection, generator: ScopeGe
         for (key, value) in ut.toOne.items()
     }
 
+    model = getattr(models, table.django_name)
+
+    def _backref(key):
+        return model._meta.get_field(key).remote_field.attname
+
     to_many = {
-        key: [set_order_number(i, apply_scoping(key, record)) for i, record in enumerate(records)]
+        key: [set_order_number(i, apply_scoping(key, record))._replace(strong_ignore=[_backref(key)]) for i, record in enumerate(records)]
         for (key, records) in ut.toMany.items()
     }
 
     scoped_table = ScopedUploadTable(
         name=ut.name,
         wbcols={f: extend_columnoptions(colopts, collection, table.name, f) for f, colopts in ut.wbcols.items()},
-        static=static_adjustments(table, ut.wbcols, ut.static),
+        static=ut.static,
         toOne=to_ones,
         toMany=to_many, #type: ignore
         scopingAttrs=scoping_relationships(collection, table),
         disambiguation=None,
         # Often, we'll need to recur down to clone (nested one-to-ones). Having this entire is handy in such a case
         to_one_fields = to_one_fields,
-        match_payload=None
+        match_payload=None,
+        strong_ignore=[]
     )
 
     return scoped_table
@@ -188,16 +194,6 @@ def get_to_one_fields(collection) -> Dict[str, List['str']]:
         'preparation': ['preparationattribute'],
         **({collection.discipline.paleocontextchildtable.lower(): ['paleocontext']} if collection.discipline.ispaleocontextembedded else {})
     }
-
-def static_adjustments(table: Table, wbcols: Dict[str, ColumnOptions], static: Dict[str, Any]) -> Dict[str, Any]:
-    # not sure if this is the right place for this, but it will work for now.
-    if table.name == 'Agent' and 'agenttype' not in wbcols and 'agenttype' not in static:
-        static = {'agenttype': 1, **static}
-    elif table.name == 'Determination' and 'iscurrent' not in wbcols and 'iscurrent' not in static:
-        static = {'iscurrent': True, **static}
-    else:
-        static = static
-    return static
 
 def set_order_number(i: int, tmr: ScopedUploadTable) -> ScopedUploadTable:
     table = datamodel.get_table_strict(tmr.name)

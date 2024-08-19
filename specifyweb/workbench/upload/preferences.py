@@ -14,6 +14,7 @@ DeferFieldPrefs: Dict[DEFER_KEYS, PrefItem] = {
     'null_check': PrefItem(path=r'sp7\.batchEdit.deferForNullCheck=(.+)', default=False)
 }
 
+# During testing, this is mocked, so we don't have touch app resource data. During real deal, it'd touch the db.
 def should_defer_fields(for_type: DEFER_KEYS) -> bool:
     pref_item = DeferFieldPrefs[for_type]
     match = re.search(pref_item['path'], get_remote_prefs())

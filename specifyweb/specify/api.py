@@ -636,7 +636,7 @@ def delete_resource(collection, agent, name, id, version) -> None:
     return delete_obj(obj, (make_default_deleter(collection, agent)), version)
 
 def make_default_deleter(collection=None, agent=None):
-    def _deleter(parent_obj, obj):
+    def _deleter(obj, parent_obj):
         if collection and agent:
             check_table_permissions(collection, agent, obj, "delete")
             auditlog.remove(obj, agent, parent_obj)
@@ -662,7 +662,7 @@ def delete_obj(obj, deleter: Optional[Callable[[Any, Any], None]]=None, version=
         obj.pre_constraints_delete()
 
     if deleter:
-        deleter(parent_obj, obj)
+        deleter(obj, parent_obj)
 
     obj.delete()
 

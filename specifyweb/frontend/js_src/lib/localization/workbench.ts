@@ -1263,7 +1263,7 @@ export const wbText = createDictionary({
     'de-ch': 'Neuer Datensatz {date}',
   },
   dataSets: {
-    'en-us': 'WorkBench Data Sets',
+    'en-us': '{variant:string} Data Sets',
     'ru-ru': 'Наборы данных',
     'es-es': 'Conjuntos de datos de WorkBench',
     'fr-fr': 'Ensembles de données WorkBench',

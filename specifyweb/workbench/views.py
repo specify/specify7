@@ -12,8 +12,7 @@ from jsonschema import validate  # type: ignore
 from jsonschema.exceptions import ValidationError  # type: ignore
 
 from specifyweb.middleware.general import require_GET, require_http_methods
-from specifyweb.specify.api import create_obj, get_object_or_404, obj_to_data, \
-    toJson, uri_for_model
+from specifyweb.specify.api import get_object_or_404
 from specifyweb.specify.views import login_maybe_required, openapi
 from specifyweb.specify.models import Recordset, Specifyuser
 from specifyweb.notifications.models import Message
@@ -21,7 +20,6 @@ from specifyweb.permissions.permissions import PermissionTarget, PermissionTarge
     check_permission_targets, check_table_permissions
 from . import models, tasks
 from .upload import upload as uploader, upload_plan_schema
-from .upload.upload import do_upload_dataset, rollback_batch_edit
 
 logger = logging.getLogger(__name__)
 
@@ -683,7 +681,7 @@ def unupload(request, ds) -> http.HttpResponse:
             return http.HttpResponse('dataset has not been uploaded.', status=400)
 
         taskid = str(uuid4())
-        async_result = tasks.unupload.apply_async([ds.id, request.specify_collection.id, request.specify_user_agent.id], task_id=taskid)
+        async_result = tasks.unupload.apply_async([request.specify_collection.id, ds.id, request.specify_user_agent.id], task_id=taskid)
         ds.uploaderstatus = {
             'operation': "unuploading",
             'taskid': taskid

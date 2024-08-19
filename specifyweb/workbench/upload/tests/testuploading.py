@@ -22,7 +22,6 @@ from ..upload_result import Uploaded, UploadResult, Matched, MatchedMultiple, \
 from ..upload_table import UploadTable
 from ..uploadable import Auditor
 
-from django.conf import settings
 class UploadTreeSetup(TestTree, UploadTestsBase): pass
 
 class TreeMatchingTests(UploadTreeSetup):

@@ -468,12 +468,6 @@ export function getMappingLineData({
               !field.overrides.isReadOnly;
 
             isIncluded &&=
-              spec.includeAllTreeFields ||
-              !isTreeTable(table.name) ||
-              mappingPath[internalState.position - 1] ===
-                formatTreeRank(anyTreeRank)
-
-            isIncluded &&=
               getFrontEndOnlyFields()[table.name]?.includes(field.name) !==
               true;
 
@@ -494,7 +488,8 @@ export function getMappingLineData({
                     ));
 
               isIncluded &&=
-                spec.includeRelationshipsFromTree || !isTreeTable(table.name);
+                (spec.includeRelationshipsFromTree && mappingPath[internalState.position - 1] ===
+                  formatTreeRank(anyTreeRank)) || !isTreeTable(table.name);
 
               isIncluded &&=
                 spec.includeToManyToTree ||
@@ -502,8 +497,9 @@ export function getMappingLineData({
                  * Hide -to-many relationships to a tree table as they are
                  * not supported by the WorkBench
                  */
-                !relationshipIsToMany(field) ||
-                !isTreeTable(field.relatedTable.name);
+                !(relationshipIsToMany(field) &&
+                isTreeTable(field.relatedTable.name));
+            
             }
 
             return isIncluded;

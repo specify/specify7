@@ -16,13 +16,14 @@ type BatchEditRecord = {
 }
 
 export type BatchEditPack = {
-    readonly self: BatchEditRecord,
-    readonly to_one: R<BatchEditPack>,
-    readonly to_many: R<RA<BatchEditPack>>
+    readonly self?: BatchEditRecord,
+    readonly to_one?: R<BatchEditPack>,
+    readonly to_many?: R<RA<BatchEditPack>>
 }
 
-export const isBatchEditNullRecord = (batchEditPack: BatchEditPack, currentTable: SpecifyTable, mappingPath: MappingPath): boolean => {
-    if (mappingPath.length <= 1) return batchEditPack.self.id === NULL_RECORD;
+export const isBatchEditNullRecord = (batchEditPack: BatchEditPack | undefined, currentTable: SpecifyTable, mappingPath: MappingPath): boolean => {
+    if (batchEditPack == undefined) return false;
+    if (mappingPath.length <= 1) return batchEditPack?.self?.id === NULL_RECORD;
     const [node, ...rest] = mappingPath;
     if (isTreeTable(currentTable.name)) return false;
     const relationship = defined(currentTable.getRelationship(node));
@@ -31,8 +32,8 @@ export const isBatchEditNullRecord = (batchEditPack: BatchEditPack, currentTable
     if (relationshipIsToMany(relationship)){
         // id starts with 1...
         const toManyId = getNumberFromToManyIndex(rest[0]) - 1;
-        const toMany = batchEditPack.to_many[name][toManyId];
-        return toMany && isBatchEditNullRecord(toMany, relatedTable, rest.slice(1));
+        const toMany = batchEditPack?.to_many?.[name][toManyId];
+        return toMany !== undefined && isBatchEditNullRecord(toMany, relatedTable, rest.slice(1));
     }
-    return isBatchEditNullRecord(batchEditPack.to_one[name], relatedTable, rest);
+    return isBatchEditNullRecord(batchEditPack?.to_one?.[name], relatedTable, rest);
 }

@@ -12,7 +12,7 @@ from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify import models
 from specifyweb.workbench.upload.clone import clone_record
 from specifyweb.workbench.upload.predicates import ContetRef, DjangoPredicates, SkippablePredicate, ToRemove, resolve_reference_attributes, safe_fetch
-from specifyweb.workbench.upload.preferences import should_defer_fields
+import specifyweb.workbench.upload.preferences as defer_preference
 from .column_options import ColumnOptions, ExtendedColumnOptions
 
 from .parsing import ParseResult, WorkBenchParseFailure, parse_many, filter_and_upload, Filter
@@ -63,7 +63,7 @@ class ScopedTreeRecord(NamedTuple):
         if batch_edit_pack is None:
             return self
         # batch-edit considers ranks as self-relationships, and are trivially stored in to-one
-        rank_from_pack = batch_edit_pack['to_one']
+        rank_from_pack = batch_edit_pack.get('to_one', {})
         return self._replace(batch_edit_pack={rank: pack['self'] for (rank, pack) in rank_from_pack.items()})
 
     def get_treedefs(self) -> Set:
@@ -186,12 +186,13 @@ class BoundTreeRecord(NamedTuple):
             return UploadResult(match_result, {}, {})
 
     def _to_match(self, references=None) -> List[TreeDefItemWithParseResults]:
+        print(references)
         return [
             TreeDefItemWithParseResults(tdi, self.parsedFields[tdi.name])
             for tdi in self.treedefitems
             if tdi.name in self.parsedFields 
             and (any(v is not None for r in self.parsedFields[tdi.name] for v in r.filter_on.values())
-                and ((references is None) or any(v is not None for v in references[tdi.name]['attrs'])))
+                and ((references is None) or (tdi.name not in references) or (references[tdi.name] is None) or (any(v is not None for v in references[tdi.name]['attrs']))))
         ]
 
     def _match(self, tdiwprs: List[TreeDefItemWithParseResults], references=None) -> Tuple[List[TreeDefItemWithParseResults], MatchResult]:
@@ -423,6 +424,9 @@ class BoundTreeRecord(NamedTuple):
         raise NotImplementedError()
 
     def _get_reference(self) -> Optional[Dict[str, Any]]:
+        
+        FIELDS_TO_SKIP = ['nodenumber', 'highestchildnodenumber', 'parent_id']
+
         # Much simpler than uploadTable. Just fetch all rank's references. Since we also require name to be not null, 
         # the "deferForNull" is redundant. We, do, however need to look at deferForMatch, and we are done.
 
@@ -431,7 +435,7 @@ class BoundTreeRecord(NamedTuple):
         
         model = getattr(models, self.name)
 
-        should_defer = should_defer_fields('match')
+        should_defer = defer_preference.should_defer_fields('match')
 
         references = {}
 
@@ -450,7 +454,7 @@ class BoundTreeRecord(NamedTuple):
                 raise BusinessRuleException(str(e), {}, info)
                                         
             previous_parent_id = reference.parent_id
-            references[tdi.name] = None if should_defer else {'ref': reference, 'attrs': resolve_reference_attributes([], model, reference)}
+            references[tdi.name] = None if should_defer else {'ref': reference, 'attrs': resolve_reference_attributes(FIELDS_TO_SKIP, model, reference)}
 
         return references
 

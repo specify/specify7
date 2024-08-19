@@ -27,8 +27,9 @@ import { FormattedResourceUrl } from '../Molecules/FormattedResource';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasPermission } from '../Permissions/helpers';
 import { unsafeNavigate } from '../Router/Router';
-import { DatasetVariants, getMaxDataSetLength, uniquifyDataSetName } from '../WbImport/helpers';
+import { getMaxDataSetLength, uniquifyDataSetName } from '../WbImport/helpers';
 import type { Dataset } from '../WbPlanView/Wrapped';
+import { datasetVariants } from '../Toolbar/WbsDialog';
 
 const syncNameAndRemarks = async (
   name: LocalizedString,
@@ -43,7 +44,7 @@ const syncNameAndRemarks = async (
 
 type DataSetMetaProps = {
   readonly dataset: Dataset | EagerDataSet;
-  readonly datasetVariant: keyof typeof DatasetVariants;
+  readonly datasetVariant: keyof typeof datasetVariants;
   readonly getRowCount?: () => number;
   readonly permissionResource:
     | '/attachment_import/dataset'
@@ -118,7 +119,7 @@ export function DataSetMeta({
 
   const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false);
 
-  const datasetUrl = DatasetVariants[datasetVariant];
+  const datasetUrl = datasetVariants[datasetVariant];
 
   return isDeleted ? (
     <Dialog

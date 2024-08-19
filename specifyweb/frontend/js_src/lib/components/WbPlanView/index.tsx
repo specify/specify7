@@ -22,14 +22,8 @@ import { WbPlanView } from './Wrapped';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
-/**
- * Entrypoint React component for the workbench mapper
- */
 export function WbPlanViewWrapper(): JSX.Element | null {
   const { id = '' } = useParams();
-  const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, true);
-  useMenuItem('workBench');
-
   const [dataSet] = useAsyncState<Dataset | false>(
     React.useCallback(async () => {
       const dataSetId = f.parseInt(id);
@@ -41,6 +35,15 @@ export function WbPlanViewWrapper(): JSX.Element | null {
     }, [id]),
     true
   );
+  return dataSet === false ? <NotFoundView/> : dataSet === undefined ? null : <WbPlanViewSafe dataSet={dataSet}/>
+}
+
+/**
+ * Entrypoint React component for the workbench mapper
+ */
+function WbPlanViewSafe({dataSet}:{readonly dataSet: Dataset}): JSX.Element | null {
+  const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, true);
+  useMenuItem(dataSet.isupdate ? 'batchEdit' : 'workBench');
   useErrorContext('dataSet', dataSet);
 
   const isReadOnly =
@@ -51,9 +54,7 @@ export function WbPlanViewWrapper(): JSX.Element | null {
     // FEATURE: Remove this
     dataSet.isupdate;
 
-  return dataSet === false ? (
-    <NotFoundView />
-  ) : treeRanksLoaded && typeof dataSet === 'object' ? (
+  return treeRanksLoaded && typeof dataSet === 'object' ? (
     <ReadOnlyContext.Provider value={isReadOnly}>
       <WbPlanView
         dataset={dataSet}

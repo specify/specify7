@@ -9,7 +9,8 @@ class UploadTestsBase(TestTreeSetup):
 
         spard = get_table('Spappresourcedir').objects.create(usertype='Prefs')
         spar = get_table('Spappresource').objects.create(name='preferences', spappresourcedir=spard, level=3, specifyuser=self.specifyuser)
-        get_table('Spappresourcedata').objects.create(data='ui.formatting.scrdateformat=dd/MM/yyyy\n', spappresource=spar)
+
+        self.app_resource_data = get_table('Spappresourcedata').objects.create(data='ui.formatting.scrdateformat=dd/MM/yyyy\n', spappresource=spar)
 
         self.collection.catalognumformatname = "CatalogNumberNumeric"
         self.collection.save()

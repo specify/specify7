@@ -6,41 +6,55 @@ from specifyweb.specify.models import Recordset
 from specifyweb.workbench.models import Spdataset
 from specifyweb.specify.tests.test_api import ApiTests
 from .upload import upload as uploader
-from django.conf import settings
+
+
 class DataSetTests(ApiTests):
 
     def test_reset_uploadplan_to_null(self) -> None:
         c = Client()
         c.force_login(self.specifyuser)
         response = c.post(
-            '/api/workbench/dataset/',
+            "/api/workbench/dataset/",
             data={
-                'name': "Test data set",
-                'columns': [],
-                'rows': [],
-                'importedfilename': "foobar",
+                "name": "Test data set",
+                "columns": [],
+                "rows": [],
+                "importedfilename": "foobar",
             },
-            content_type='application/json',
+            content_type="application/json",
         )
         self.assertEqual(response.status_code, 201)
         data = json.loads(response.content)
-        datasetid = data['id']
+        datasetid = data["id"]
         response = c.put(
-            f'/api/workbench/dataset/{datasetid}/',
+            f"/api/workbench/dataset/{datasetid}/",
             data={
-                'name': "Test data set modified",
-                'uploadplan': {"baseTableName": "preptype", "uploadable": {"uploadTable": {"wbcols": {"name": "Preparation Type", "isloanable": "Is Loanable"}, "static": {}, "toOne": {}, "toMany": {}}}},
+                "name": "Test data set modified",
+                "uploadplan": {
+                    "baseTableName": "preptype",
+                    "uploadable": {
+                        "uploadTable": {
+                            "wbcols": {
+                                "name": "Preparation Type",
+                                "isloanable": "Is Loanable",
+                            },
+                            "static": {},
+                            "toOne": {},
+                            "toMany": {},
+                        }
+                    },
+                },
             },
-            content_type='application/json',
+            content_type="application/json",
         )
         self.assertEqual(response.status_code, 204)
         response = c.put(
-            f'/api/workbench/dataset/{datasetid}/',
+            f"/api/workbench/dataset/{datasetid}/",
             data={
-                'name': "Test data set modified modified",
-                'uploadplan': None,
+                "name": "Test data set modified modified",
+                "uploadplan": None,
             },
-            content_type='application/json',
+            content_type="application/json",
         )
         self.assertEqual(response.status_code, 204)
         dataset = Spdataset.objects.get(id=datasetid)
@@ -50,36 +64,54 @@ class DataSetTests(ApiTests):
         c = Client()
         c.force_login(self.specifyuser)
         response = c.post(
-            '/api/workbench/dataset/',
+            "/api/workbench/dataset/",
             data={
-                'name': "Test data set",
-                'columns': ["catno"],
-                'rows': [["1"], ["2"], ["3"]],
-                'importedfilename': "foobar",
+                "name": "Test data set",
+                "columns": ["catno"],
+                "rows": [["1"], ["2"], ["3"]],
+                "importedfilename": "foobar",
             },
-            content_type='application/json',
+            content_type="application/json",
         )
         self.assertEqual(response.status_code, 201)
         data = json.loads(response.content)
-        datasetid = data['id']
+        datasetid = data["id"]
         response = c.put(
-            f'/api/workbench/dataset/{datasetid}/',
+            f"/api/workbench/dataset/{datasetid}/",
             data={
-                'name': "Test data set modified",
-                'uploadplan': {"baseTableName": "collectionobject", "uploadable": {"uploadTable": {"wbcols": {"catalognumber": "catno",}, "static": {}, "toOne": {}, "toMany": {}}}},
+                "name": "Test data set modified",
+                "uploadplan": {
+                    "baseTableName": "collectionobject",
+                    "uploadable": {
+                        "uploadTable": {
+                            "wbcols": {
+                                "catalognumber": "catno",
+                            },
+                            "static": {},
+                            "toOne": {},
+                            "toMany": {},
+                        }
+                    },
+                },
             },
-            content_type='application/json',
+            content_type="application/json",
         )
         self.assertEqual(response.status_code, 204)
 
         dataset = Spdataset.objects.get(id=datasetid)
-        results = uploader.do_upload_dataset(self.collection, self.agent.id, dataset, no_commit=False, allow_partial=False)
+        results = uploader.do_upload_dataset(
+            self.collection,
+            self.agent.id,
+            dataset,
+            no_commit=False,
+            allow_partial=False,
+        )
 
-        self.assertTrue(dataset.uploadresult['success'])
+        self.assertTrue(dataset.uploadresult["success"])
 
         response = c.post(
-            f'/api/workbench/create_recordset/{datasetid}/',
-            data={'name': 'Foobar upload'},
+            f"/api/workbench/create_recordset/{datasetid}/",
+            data={"name": "Foobar upload"},
         )
         self.assertEqual(response.status_code, 201)
         recordset_id = json.loads(response.content)

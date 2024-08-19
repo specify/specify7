@@ -6,7 +6,7 @@ from specifyweb.specify.tree_stats import get_tree_stats
 from specifyweb.specify.tree_extras import set_fullnames
 from specifyweb.specify.tree_views import get_tree_rows
 from specifyweb.stored_queries.execution import set_group_concat_max_len
-from specifyweb.stored_queries.tests import SQLAlchemySetup
+from specifyweb.stored_queries.tests.tests import SQLAlchemySetup
 from contextlib import contextmanager
 from django.db import connection
 

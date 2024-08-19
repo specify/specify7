@@ -13,6 +13,7 @@ import { tables } from '../DataModel/tables';
 import { fileToText } from '../Molecules/FilePicker';
 import { uniquifyHeaders } from '../WbPlanView/headerHelper';
 import type { Dataset, DatasetBrief } from '../WbPlanView/Wrapped';
+import { datasetVariants } from '../Toolbar/WbsDialog';
 
 /**
  * REFACTOR: add this ESLint rule:
@@ -157,18 +158,12 @@ function guessDelimiter(text: string): string {
 
 const MAX_NAME_LENGTH = 64;
 
-export const DatasetVariants = {
-  'workbench': '/api/workbench/dataset/',
-  'batchEdit': '/api/workbench/dataset/?isupdate=1',
-  'bulkAttachment': '/attachment_gw/dataset/'
-} as const;
-
 export async function uniquifyDataSetName(
   name: string,
   currentDataSetId?: number,
-  datasetsUrl: keyof typeof DatasetVariants = 'workbench'
+  datasetsUrl: keyof typeof datasetVariants = 'workbench'
 ): Promise<LocalizedString> {
-  return ajax<RA<DatasetBrief>>(DatasetVariants[datasetsUrl], {
+  return ajax<RA<DatasetBrief>>(datasetVariants[datasetsUrl].fetchUrl, {
     headers: { Accept: 'application/json' },
   }).then(({ data: datasets }) =>
     getUniqueName(
