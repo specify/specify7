@@ -1,6 +1,5 @@
 import json
 from functools import partialmethod
-from model_utils import FieldTracker
 
 from django import http
 from django.core.exceptions import ObjectDoesNotExist
@@ -100,7 +99,6 @@ class Spdataset(Dataset):
     class Meta:
         db_table = 'spdataset'
 
-    # timestamptracker = FieldTracker(fields=['timestampcreated', 'timestampmodified'])
     # save = partialmethod(custom_save)
 
     def get_dataset_as_dict(self):

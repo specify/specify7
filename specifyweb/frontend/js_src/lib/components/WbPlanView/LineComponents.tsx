@@ -37,6 +37,7 @@ export type HtmlGeneratorFieldData = {
   readonly isDefault?: boolean;
   readonly isRelationship?: boolean;
   readonly tableName?: keyof Tables;
+  readonly tableTreeDefName?: string;
 };
 
 type MappingLineBaseProps = {
@@ -236,6 +237,7 @@ export function MappingElement({
     );
     fieldGroups[groupName] ??= {};
     fieldGroups[groupName][fieldName] = fieldData;
+
     return fieldGroups;
   }, Object.fromEntries(Object.keys(fieldGroupLabels).map((groupName) => [groupName, {}])));
 
