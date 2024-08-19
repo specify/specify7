@@ -42,7 +42,7 @@ def create_cotype_splocalecontaineritem(apps):
 
 def revert_cotype_splocalecontaineritem(apps):
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
-    Splocalecontaineritem.objects.filter(name=FIELD_NAME).delete()
+    Splocalecontaineritem.objects.filter(name=FIELD_NAME, container__name='collectionobject', container__schematype=0).delete()
 
 
 def create_cotype_splocaleitemstr(apps):
@@ -50,12 +50,12 @@ def create_cotype_splocaleitemstr(apps):
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
     # Create caption & description records for collectionObjectType in Schema Config
     for container_item in Splocalecontaineritem.objects.filter(name=FIELD_NAME):
-        Splocaleitemstr.objects.create(
+        Splocaleitemstr.objects.get_or_create(
             language='en',
             text=COTYPE_TEXT,
             itemname=container_item
         )
-        Splocaleitemstr.objects.create(
+        Splocaleitemstr.objects.get_or_create(
             language='en',
             text=COTYPE_TEXT,
             itemdesc=container_item
@@ -63,7 +63,8 @@ def create_cotype_splocaleitemstr(apps):
 
 def revert_cotype_splocaleitemstr(apps):
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
-    Splocaleitemstr.objects.filter(text=COTYPE_TEXT).delete()
+    Splocaleitemstr.objects.filter(text=COTYPE_TEXT, itemdesc__container__name='collectionobject', itemdesc__container__schematype=0).delete()
+    Splocaleitemstr.objects.filter(text=COTYPE_TEXT, itemname__container__name='collectionobject', itemname__container__schematype=0).delete()
 
 
 class Migration(migrations.Migration):
